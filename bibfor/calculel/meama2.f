@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,8 @@ C ======================================================================
 
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*8 MODELE,LCHAR(*),MATEL,PREFCH
+      CHARACTER*8 MODELE,LCHAR(*)
+      CHARACTER*19 MATEL,PREFCH
       CHARACTER*(*) MATE
       INTEGER NCHAR
 C ----------------------------------------------------------------------
@@ -31,7 +32,7 @@ C*    CALCUL DES MATRICES ELEMENTAIRES D'AMORTISSEMENT ACOUSTIQUE
 C*           ( ISO_FACE, 'AMOR_ACOU      R/F' )
 
 C     LES RESUELEM PRODUITS S'APPELLENT :
-C           PREFCH.ME000I , I=1,NCHAR
+C           PREFCH(1:8).ME000I , I=1,NCHAR
 
 C     ENTREES:
 
@@ -78,18 +79,15 @@ C*
       CALL JEMARQ()
       CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)
 C*
-      CALL JEEXIN(MATEL//'.REFE_RESU',IRET)
+      CALL JEEXIN(MATEL//'.RERR',IRET)
       IF (IRET.GT.0) THEN
-        CALL JEDETR(MATEL//'.REFE_RESU')
-        CALL JEDETR(MATEL//'.LISTE_RESU')
+        CALL JEDETR(MATEL//'.RERR')
+        CALL JEDETR(MATEL//'.RELR')
       END IF
       CALL MEMARE('V',MATEL,MODELE,MATE,' ','AMOR_ACOU')
-      CALL JECREO(MATEL//'.LISTE_RESU','V V K24')
-      CALL JEECRA(MATEL//'.LISTE_RESU','LONMAX',NCHAR,' ')
-      CALL JEVEUO(MATEL//'.LISTE_RESU','E',JLIRES)
 C*
       LPAOUT(1) = 'PMATTTC'
-      LCHOUT(1) = PREFCH//'.ME000'
+      LCHOUT(1) = PREFCH(1:8)//'.ME000'
       ILIRES = 0
       IF (LCHAR(1).NE.'        ') THEN
 
@@ -116,13 +114,7 @@ C*
           CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
           CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                'G')
-          CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-          IF (IRET.NE.0) THEN
-            ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-            CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-          ELSE
-            ILIRES = ILIRES - 1
-          END IF
+          CALL REAJRE(MATEL,LCHOUT(1),'G')
    10   CONTINUE
       END IF
    20 CONTINUE

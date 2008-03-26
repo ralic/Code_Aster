@@ -4,7 +4,7 @@
      &                   DSIDP1,SIPM,SIPP,RETCOM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C
       REAL*8      DEPSTH(6),VALRES(16),ALPHA
       REAL*8      LAMBDA,KAPA,PORO,PRESCR,M,PA,R,BETA,KC,PC0INI
       REAL*8      LAMBS,KAPAS,LAMBB,LAMBBM,ALPHAB,LAMP
-      REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,XK0S,XKS,FONC1,FONC2
+      REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,XK0S,XKS,FONC1,FONC2,MU
       REAL*8      SIELEQ,SIMOEL,H,A(6),AA(6),AP(6),AAP(6),SIEQM
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),TPLUS(6)
       REAL*8      SIGPMO,F1,F2,F3,F4,F5,F6,F,FP,COEF,PORO1,PORO2
@@ -100,6 +100,7 @@ C
       REAL*8      HHB(6,6),SES(6,6),HHBM(6,6),GG(6,6),SPS(6,6)
       REAL*8      D1G(6,6),ID2(6,6),DEVHYD(6,6),DEVHYM(6,6)
       REAL*8      D1GHHM(6,6)
+      REAL*8      UN,DEUX,TROIS,SIX,UNSDE
       INTEGER     NDIMSI,SIGNF,SIGNFI,IRET
       INTEGER     I,K,L,ITER, MATR,IADZI,IAZK24,UMESS,IUNIFI
       CHARACTER*2 BL2, FB2, CODRET(16)
@@ -109,6 +110,12 @@ C
       REAL*8       EPXMAX
       CHARACTER*8   NOMAIL
       REAL*8      VALPAM(1),R8MAEM
+C ======================================================================
+      PARAMETER   ( UN     = 1.D0   )
+      PARAMETER   ( DEUX   = 2.D0   )
+      PARAMETER   ( TROIS  = 3.D0   )
+      PARAMETER   ( SIX    = 6.D0   )
+      PARAMETER   ( UNSDE  = 0.5D0   )
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA        TOL/1.D-10/ZERO/0.D0/
 C DEB ------------------------------------------------------------------
@@ -125,85 +132,62 @@ C
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
-      NOMRES(1)='E'
-      NOMRES(2)='NU'
-      NOMRES(3)='ALPHA'
-      NOMRES(4)='PORO'
+      NOMRES(1)='ALPHA'
+      NOMRES(2)='MU'      
+      NOMRES(3)='PORO'
+      NOMRES(4)='KAPA'
       NOMRES(5)='LAMBDA'
-      NOMRES(6)='KAPA'
-      NOMRES(7)='M'
-      NOMRES(8)='PRES_CRIT'
-      NOMRES(9)='PA'
-      NOMRES(10)='R'
-      NOMRES(11)='BETA'
-      NOMRES(12)='KC'
-      NOMRES(13)='PC0_INIT'
-      NOMRES(14)='KAPAS'
-      NOMRES(15)='LAMBDAS'
-      NOMRES(16)='ALPHAB'
+      NOMRES(6)='M'
+      NOMRES(7)='PRES_CRIT'
+      NOMRES(8)='PA'
+      NOMRES(9)='R'
+      NOMRES(10)='BETA'
+      NOMRES(11)='KC'
+      NOMRES(12)='PC0_INIT'
+      NOMRES(13)='KAPAS'
+      NOMRES(14)='LAMBDAS'
+      NOMRES(15)='ALPHAB'
 C
       NOMPAR(1) = 'TEMP'
       VALPAM(1) = TM
 C
+      
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
-         E  = VALRES(1)
-         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
-         NU = VALRES(2)
-         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
-         PORO = VALRES(4)
-         PORO1 = PORO
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,7,
+     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+         MU     = VALRES(2)
+         PORO   = VALRES(3)      
+         PORO1  = PORO
+         KAPA   = VALRES(4)
          LAMBDA = VALRES(5)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
-         KAPA = VALRES(6)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
-         M     = VALRES(7)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
-         PRESCR = VALRES(8)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
+         M      = VALRES(6)
+         PRESCR = VALRES(7)
+         PA     = VALRES(8)
+         
+         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,6,
      &                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
-         PA = VALRES(9)
+
+         R = VALRES(9)
+         BETA = VALRES(10)
+         KC = VALRES(11)
+         PC0INI = VALRES(12)
+         KAPAS = VALRES(13)
+         LAMBS = VALRES(14)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(10),VALRES(10),CODRET(10), FB2 )
-         R = VALRES(10)
-         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(11),VALRES(11),CODRET(11), FB2 )
-         BETA = VALRES(11)
-         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(12),VALRES(12),CODRET(12), FB2 )
-         KC = VALRES(12)
-         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(13),VALRES(13),CODRET(13), FB2 )
-         PC0INI = VALRES(13)
-         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(14),VALRES(14),CODRET(14), FB2 )
-         KAPAS = VALRES(14)
-         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(15),VALRES(15),CODRET(15), FB2 )
-         LAMBS = VALRES(15)
-         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(16),VALRES(16),CODRET(16), BL2 )
-         IF ( CODRET(16) .NE. 'OK' ) THEN
-         VALRES(16) = M*(M-9.D0)*(M-3.D0)/9.D0/(6.D0-M)
+     &                 NOMRES(15),VALRES(15),CODRET(15), BL2 )
+         IF ( CODRET(15) .NE. 'OK' ) THEN
+         VALRES(15) = M*(M-9.D0)*(M-3.D0)/9.D0/(6.D0-M)
      &                *(1.D0/(1.D0-KAPA/LAMBDA))
-         ALPHAB = VALRES(16)
+         ALPHAB = VALRES(15)
          ELSE
-         ALPHAB = VALRES(16)
+         ALPHAB = VALRES(15)
          ENDIF
          CALL RCVALA(IMATE,' ','THM_INIT',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
-         PORO = VALRES(4)
+     &                 NOMRES(3),VALRES(3),CODRET(3), FB2 )
+         PORO = VALRES(3)
          PORO2 = PORO
          DIFF = PORO1-PORO2
          IF (ABS(DIFF) .GT. TOL) THEN
@@ -211,7 +195,7 @@ C
          ELSE
          PORO=PORO1
          ENDIF
-         DEUXMU = E/(1.D0+NU)
+         DEUXMU = DEUX*MU
          E0=PORO/(1.D0-PORO)
 C--- CALCUL DES COEFFICIENTS K ET K0 DE LA COURBE HYDROSTATIQUE
 C--- MECANIQUE
@@ -263,6 +247,7 @@ C     -------------------------------------------------------------
       IF (SIGMMO.LE.(-0.99D0*KC*P1)) THEN
            CALL U2MESS('F','ALGORITH6_61')
       ENDIF
+
       SIELEQ = 0.D0
       SIEQM = 0.D0
       DO 117 K = 1,NDIMSI
@@ -300,6 +285,8 @@ C
          KPMAX = MAX (KCP1 , ZERO)
 C    CALCUL DE LAMBDA COMME DANS LE PAPIER D'ALONSO
          LAMBBM = LAMBDA*((1.D0-R)*EXP(-BETA*P1M)+R)
+
+
 C     -- 6 DEFINITION DES VARIABLES INTERNES
 C     ------------------------------------
       PCRM(1) = VIM(1)
@@ -308,8 +295,23 @@ C     ------------------------------------
       PC0M(2) = VIM(4)
 C
       IF (PCRM(1).EQ.0.D0)  THEN
-      PCRMP1 = (PA/2.D0)*
+        PCRMP1 = (PA/2.D0)*
      &       (2*PRESCR/PA)**((LAMBDA-KAPA)/(LAMBB-KAPA))
+     
+C ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
+        NU = (TROIS*(UN+E0)*SIGMMO-DEUXMU*KAPA)/
+     &       (SIX*(UN+E0)*SIGMMO+DEUXMU*KAPA)
+     
+        E = DEUXMU*(UN+NU)
+
+        
+        IF ((E.LE.ZERO).OR.(NU.LE.ZERO).OR.(NU.GT.UNSDE)) THEN
+          CALL TECAEL(IADZI,IAZK24)
+          NOMAIL = ZK24(IAZK24-1+3) (1:8)
+          CALL U2MESK('A','COMPOR1_3',1,NOMAIL)
+        ENDIF
+C ----------------------------------------------------------
+
       ELSE
       PCRMP1=(PA/2.D0)*
      &       (2*PCRM(1)/PA)**((LAMBBM-KAPA)/(LAMBB-KAPA))
@@ -353,7 +355,7 @@ C     -- CRITERE HYDRIQUE EST ATTEINT
        PC0P(1) = P1
 C
        DEPPMO = 1/XKS*LOG((PC0P(1)+PA)/(PC0M(1)+PA))
-       PSP = DEPPMO
+       PSP = KC*PC0P(1)
          IF ((-XK0*DEPPMO).GT.EPXMAX) THEN
            UMESS  = IUNIFI('MESSAGE')
            CALL TECAEL(IADZI,IAZK24)
@@ -697,7 +699,7 @@ C     -- CALCUL DE LA DERIVEE DE PCRP PAR RAPPORT A P1
 C     -- REACTUALISATION DU SEUIL HYDRIQUE
         PC0P(1) = (PC0M(1)+PA)*EXP(XKS*DEPPMO)-PA
 C
-        PSP = DEPPMO
+        PSP = KC*PC0P(1)
 C
 C     -- REACTUALISATION DES CONTRAINTES NETTES DE BARCELONE
         SIGPMO = SIGMMO*EXP(XK0*(DEPSMO-DEPPMO))/
@@ -860,11 +862,105 @@ C     --------------------------------------------------------------
      &                    -SAT*BIOT)*KRON(K)
  165  CONTINUE
         ENDIF
+
+C---OPERATEUR TANGENT EN VITESSE  A LINSTATNT COURANT AU LIEU 
+C--- DE L OPERATEUR COHERENT (DANS LE DOUTE)
+      IF (MATR.EQ.2) THEN
+C
+      SIEQP = 0.0D0
+      DO 4000 K=1,NDIMSI
+           SIEQP = SIEQP + SIGPDV(K)**2
+ 4000  CONTINUE
+       SIEQP = SQRT(1.5D0*SIEQP)
+C     -- 9.3.11 CALCUL DU MODULE ELASTOPLASTIQUE H
+        H = M**4*(2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)*
+     &  (XK0*SIGPMO*(2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)+2.D0*XK*PCRP(1)*
+     &    (SIGPMO+KPMAX))+6.D0*DEUXMU*SIEQP**2*ALPHAB
+
+C     -- 9.3.12 CALCUL D'UN TERME INTERMEDIAIRE
+          DO 260 K=1,NDIMSI
+             A(K) = 0.D0
+ 260  CONTINUE
+          DO 230 K=1,3
+             A(K) = -XK0*M*M*SIGPMO*(2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)
+     &               *KRON(K)+3.D0*DEUXMU*SIGPDV(K)
+             AP(K) = -XK0*M*M*SIGPMO*(2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)
+     &               *KRON(K)+3.D0*DEUXMU*SIGPDV(K)*ALPHAB
+ 230  CONTINUE
+       CALL R8INIR(3,0.D0,AA,1)
+          DO 231 K=4,NDIMSI
+             AA(K) = 3.D0*DEUXMU*SIGPDV(K)
+             AAP(K) = 3.D0*DEUXMU*SIGPDV(K)*ALPHAB
+ 231  CONTINUE
+C
+C     -- 9.3.13 CALCUL DES TERMES DE DSIDEP
+       CALL R8INIR(NDIMSI*NDIMSI,0.D0,DSIDEP,1)
+          DO 232 K=1,3
+           DO 233 L=1,3
+             DSIDEP(K,L)=XK0*SIGPMO-DEUXMU/3.D0 -
+     &                  1.D0/2.D0/H*(A(K)*AP(L)+A(L)*AP(K))
+ 233  CONTINUE
+ 232  CONTINUE
+          DO 234 K=1,3
+          DO 235 L=4,NDIMSI
+             DSIDEP(K,L) = -1.D0/2.D0*(A(K)*AAP(L)+AP(K)*AA(L))
+             DSIDEP(K,L) = DSIDEP(K,L)/H
+             DSIDEP(L,K) = DSIDEP(K,L)
+ 235  CONTINUE
+ 234  CONTINUE
+          DO 236 K=4,NDIMSI
+          DO 237 L=4,NDIMSI
+             DSIDEP(K,L) = -1.D0/2.D0*(AA(K)*AAP(L)+AA(L)*AAP(K))
+             DSIDEP(K,L) = DSIDEP(K,L)/H
+ 237  CONTINUE
+ 236  CONTINUE
+           DO 238 K=1,NDIMSI
+           DSIDEP(K,K) = DEUXMU + DSIDEP(K,K)
+ 238  CONTINUE
+C     -- 9.3.14 CALCUL DE DSIDP1(6) CRITERE MECANIQUE ATTEINT-
+C     -----------------------------------------------------
+C     EN VITESSE :
+C     -----------
+      TRA = -3.D0*XK0*M*M*SIGPMO*(2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)
+      PAR = (KC*(2.D0*PCRP(1)-SIGPMO)-2.D0*PCRP(1)*
+     &                  (SIGPMO+KPMAX)*LOG(2.D0*PRESCR/PA)*
+     &                  ((LAMBDA-KAPA)/(LAMBB-KAPA)**2)*LAMP)
+          DO 261 K=1,3
+            DSIDP1(K) = -AP(K)*TRA/3.D0/H/XK0S/(P1+PA)
+     &                  +M*M*PAR/H*AP(K)
+     &                  +XK0*SIGPMO/XK0S/(P1+PA)
+     &                  -BIOT*SAT
+ 261  CONTINUE
+          DO 266 K=4,NDIMSI
+            DSIDP1(K)=-DEUXMU*TRA*SIGPDV(K)*ALPHAB/H/XK0S/(P1+PA)
+     &                   +3.D0*DEUXMU*SIGPDV(K)*ALPHAB*M*M*PAR/H
+ 266  CONTINUE
+        ENDIF
+C   -- 9.3.15 CALCUL DE DSIDEP(6,6)CRITERE HYDRIQUE ATTEINT-EN VITESSE:
+C   ---------------------------------------------------------------
+      IF (MATR.EQ.21) THEN
+          DO 262 K=1,3
+            DO 263 L=1,3
+              DSIDEP(K,L) = XK0*SIGPMO-DEUXMU/3.D0
+ 263  CONTINUE
+ 262  CONTINUE
+            DO 264 K=1,NDIMSI
+               DSIDEP(K,K) = DSIDEP(K,K)+DEUXMU
+ 264  CONTINUE
+C     -- 9.3.16 CALCUL DE DSIDP1(6) CRITERE HYDRIQUE ATTEINT-EN VITESSE:
+C     --------------------------------------------------------------
+          DO 265 K=1,NDIMSI
+            DSIDP1(K) = (XK0*SIGPMO/(P1+PA)*(1.D0/XKS+1.D0/XK0S)
+     &                    -SAT*BIOT)*KRON(K)
+ 265  CONTINUE
+        ENDIF
+
+C---------------------------------------------------------------------
 C
 C     -- 9.7 CALCUL DE DSIDEP(6,6)-MATRICE COHERENTE CRITERE MECANIQUE
 C      ATTEINT: MATRICE QUI RELIE LES CONTRAINTES AUX DEFORMATIONS
 C     -----------------------------------------------------------------
-        IF (MATR.EQ.2) THEN
+        IF (MATR.EQ.3) THEN
       SIEQP = 0.0D0
       DO 3000 K=1,NDIMSI
            SIEQP = SIEQP + SIGPDV(K)**2
@@ -1188,7 +1284,7 @@ C     9.8.6 LES TERMES DE L'OPERATEUR TANGENT COHERENT DSIDP1(6)
 C     --9.9 CALCUL DE DSIDEP(6,6) CRITERE HYDRIQUE ATTEINT
 C     MATRICE QUI RELIE LES CONTRAINTES AUX DEFORMATIONS
 C     ----------------------------------------------------
-       IF (MATR.EQ.21) THEN
+       IF (MATR.EQ.31) THEN
 C     9.9.1 -- MATRICE QUI RELIE LES CONTRAINTES AUX DEFORMATIONS
        CALL R8INIR(6*6,0.D0,VH,1)
        DO 340 K = 1,3

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1625,11 +1625,11 @@ SPECT2=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=(
 #
 
 AUTOSPC1=LIRE_INTE_SPEC(
-                       UNITE=19,
-                      FORMAT='MODULE_PHASE',
-                  PROL_DROITE='EXCLU',
-                 PROL_GAUCHE='EXCLU',
-                    INTERPOL='LIN'
+                        UNITE=19,
+                        FORMAT_C='MODULE_PHASE',
+                        PROL_DROITE='EXCLU',
+                        PROL_GAUCHE='EXCLU',
+                        INTERPOL='LIN'
                              )
 
 #

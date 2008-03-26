@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,13 +77,11 @@ C ----------------------------------------------------------------------
       CALL VRCINS(MODELE,MATE,' ',TIME,CHVARC)
 
       CALL MEMARE(BASE,VECEL,MODELE,MATE,CARA,OPTION)
-      CALL JEVEUO(VECELZ(1:8)//'.REFE_RESU','E',IAREFE)
+      CALL JEVEUO(VECELZ(1:19)//'.RERR','E',IAREFE)
       ZK24(IAREFE-1+3) (1:3) = 'OUI'
 
-      CALL JEEXIN(VECELZ(1:8)//'.LISTE_RESU',IRET)
-      IF (IRET.GT.0) CALL JEDETR(VECELZ(1:8)//'.LISTE_RESU')
-      CALL WKVECT(VECELZ(1:8)//'.LISTE_RESU',BASE//' V K24',2,JLIRES)
-      CALL JEECRA(VECELZ(1:8)//'.LISTE_RESU','LONUTI',0,' ')
+      CALL JEEXIN(VECELZ(1:19)//'.RELR',IRET)
+      IF (IRET.GT.0) CALL JEDETR(VECELZ(1:19)//'.RELR')
       IF (ICODE.EQ.2) GO TO 10
 
       LIGRMO = LIGREZ
@@ -132,13 +130,7 @@ C ----------------------------------------------------------------------
       CALL CORICH('E',LCHOUT(1),-1,IBID)
       CALL CALCUL('S',OPTION,LIGRMO,17,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE)
 
-      ILIRES = 0
-      CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-      IF (IRET.NE.0) THEN
-        ILIRES = ILIRES + 1
-        ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-        CALL JEECRA(VECELZ(1:8)//'.LISTE_RESU','LONUTI',ILIRES,' ')
-      END IF
+      CALL REAJRE(VECELZ,LCHOUT(1),BASE)
 
    10 CONTINUE
       CALL DETRSD('CHAMP_GD',CHVARC)

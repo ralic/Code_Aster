@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE DESATURATION -CONSOLIDATION AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,16 +82,17 @@ MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                        ORIE_PEAU_3D=_F(  GROUP_MA = ('HAUT', 'DEVANT', 'DROITE',),  )
                      )
 
-SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,  
+SOL=DEFI_MATERIAU(    ELAS=_F(  E = 18.E6,    NU = 0.3,  
                                      RHO = 2500.,  
                                      ALPHA = 1.E-5,  
                                    ), 
-                    CAM_CLAY=_F(PORO=0.14,
-                                LAMBDA=0.2,
-                                KAPA=0.02,           
-                                M=1.,
-                                PRES_CRIT=2.E5,
-                                PA=1.E5,),
+                    CAM_CLAY=_F(MU       = 7.76E6,
+                                PORO     = 0.14,
+                                LAMBDA   = 0.2,
+                                KAPA     = 0.02,           
+                                M        = 1.,
+                                PRES_CRIT= 2.E5,
+                                PA       = 1.E5,),
                     BARCELONE=_F(R=0.75,
                                 BETA=12.5E-6,
                                 KC=0.6,           
@@ -297,7 +298,7 @@ U1=STAT_NON_LINE(reuse=U1,
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),     
-                ITER_INTE_MAXI=100,      
+                ITER_INTE_MAXI=200,      
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        

@@ -1,4 +1,4 @@
-#@ MODIF meidee_iface Meidee  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_iface Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,17 +26,34 @@
 # interfaces
 
 
+import os
+from popen2 import Popen3
+
+from Numeric import minimum, maximum, array, arange
 from Tkinter import Frame, Label, Menubutton, Menu, StringVar, IntVar, Listbox
 from Tkinter import Toplevel, Scrollbar, Radiobutton, Button, Entry
-from Tkinter import Checkbutton, Canvas, Text
-from Numeric import minimum, maximum, array, arange
+from Tkinter import Checkbutton, Canvas, Text, END
+
+import aster
 from Cata.cata import IMPR_FONCTION, CREA_TABLE
-from Accas import _F
-import sys
+from Utilitai.Utmess import UTMESS
+from Stanley.xmgrace import Xmgr
+from Stanley.as_courbes import Courbe
 
 palette = [ "#%02x%02x%02x" % (i, 255-i, 0) for i in range(256) ]
 
 
+class GroupFrame(Frame):
+    def __init__(self, root, title, **kwargs):
+        kwargs.setdefault('relief', 'ridge')
+        kwargs.setdefault('borderwidth', 1)
+        Frame.__init__(self, **kwargs)
+        Label(self,text=title,background="#a0a0a0").grid(row=0,column=0,sticky='ew')
+        self.inner = Frame(self, borderwidth=0, relief='flat')
+        self.inner.grid(row=1,column=0,sticky='nsew')
+        self.rowconfigure(0,weight=0)
+        self.rowconfigure(1,weight=1)
+        self.columnconfigure(0,weight=1)
 
 
 class TabbedWindow(Frame):
@@ -58,17 +75,20 @@ class TabbedWindow(Frame):
           `b` est le RadioButton qui controle l'affichage du tab et
           `frame` est la Frame Tk à afficher
         """
-        Frame.__init__(self,root,relief='solid',borderwidth=4)
+        Frame.__init__(self,root,relief='flat',borderwidth=0)
         self.labels = {}
         self.objects = None
         #root.grid_propagate(0)
         self.tabnum = StringVar()
+        f = Frame(self,borderwidth=0,relief='flat')
         for i, name in enumerate(tablabels):
-            self.columnconfigure(i,weight=1)
-            b = Radiobutton(self, text=name, value=name, relief='solid',
-                            variable=self.tabnum,
-                            command=self.switch_tab).grid(row=0,column=i)
+            b = Radiobutton(f, text=name, value=name, relief='solid',
+                            variable=self.tabnum, indicatoron=0, borderwidth=1,
+                            bg='#a0a0a0', # selectcolor='#907070',
+                            command=self.switch_tab).pack(side='left')
             self.labels[name] = [ b, None ]
+        f.grid(row=0,column=0,sticky='w')
+        self.columnconfigure(0,weight=1)
 
         self.rowconfigure(0, weight=0)
         self.rowconfigure(1, weight=1)
@@ -76,7 +96,7 @@ class TabbedWindow(Frame):
         self.main = Frame(self, relief='ridge', borderwidth=4)
         self.main.rowconfigure(0, weight=1 )
         self.main.columnconfigure(0, weight=1 )
-        self.main.grid(row=1, column=0, columnspan=i+1, sticky='w'+'e'+'s'+'n')
+        self.main.grid(row=1, column=0, sticky='w'+'e'+'s'+'n')
         self.current_tab = None
         self.current_tab_frame = None
 
@@ -121,10 +141,10 @@ class TabbedWindow(Frame):
 
     def switch_tab(self, *args):
         """!Affiche le tab choisit par l'utilisateur (callback Tk)"""
-        self.objects.new_objects()
+        self.objects.recup_objects()
+##        self.objects.new_objects() # = recup_object en + light. aucun intérêt ?
         self.hide_current_tab()
         self.set_current_tab(self.tabnum.get())
-
 
 
 class LabelArray(object):
@@ -228,6 +248,7 @@ class LabelArray(object):
             rows.append(r)
         return rows
 
+
 class EntryArray(LabelArray):
     """!Un tableau de widget \a Entry"""
     def __init__(self, parent, l0, c0, nrows, ncols, cb=None, width=20 ):
@@ -263,6 +284,7 @@ class EntryArray(LabelArray):
         if self.cb:
             e.bind("<Return>", self.cb)
         return var, e
+
 
 class MenuArray(LabelArray):
     """!Un tableau de `MenuButton`"""
@@ -322,17 +344,37 @@ class ModeList:
     def return_list(self):
         return self.modes_list
 
-    def fill_modes(self, val, anum ):
+    def fill_modes(self, val, anum, format = '%.3f' ):
         """!Remplit une liste de modes avec les numéros/fréquences passés en paramètres
         
         \param lst un objet ListBox
-        \param afreq une liste extraite par un EXTR_TABLE (indice,valeur) des fréquences
-        \param anum une liste extraite par un EXTR_TABLE (indice,valeur) des numéros de mode
+        \param afreq une liste extraite par un EXTR_TABLE (indice,valeur) des fr\351quences
+        \param anum une liste extraite par un EXTR_TABLE (indice,valeur) des num\351ros de mode
         """
         self.modes_list.delete(0,'end')
         for i in xrange(val.shape[0]):
-            s = "%3d - %.3f" % (anum[i,1], val[i,1])
+            s = "%3d - "+format
+            s = s %(anum[i,1], val[i,1])
             self.modes_list.insert( 'end', s )
+
+    def fill_vect_base(self, anum, val ):
+        """!Remplit une liste de vecteurs avec les numéros/types passés en paramètres
+        
+        \param anum une liste extraite par un EXTR_TABLE (indice,valeur) des numéros de mode
+        \param anum une liste extraite par un EXTR_TABLE (indice,valeur) des types
+        """
+
+        self.modes_list.delete(0,'end')
+
+        for i in range(len(anum)) :
+            s = "%3d - %12s" % (anum[i], val[i])
+            self.modes_list.insert( 'end', s )
+
+    def clear_list(self):
+        """!Remise a zero de la liste de modes
+        
+        """
+        self.modes_list.delete(0,'end')
 
 #-------------------------------------------------------------------------------            
     
@@ -345,7 +387,8 @@ class MultiList(Frame):
 
         \param root Fenetre parente
         \param labels Les titres des colonnes
-        \param format Chaines de formattage pour les valeurs des listes (%s par défaut)
+        \param format Chaines de formattage
+               pour les valeurs des listes (%s par défaut)
         """
         Frame.__init__(self, root)
         self.labels = labels
@@ -393,7 +436,7 @@ class MyMenu(Menubutton):
 
     Simplifie la création de bouton `Menu` du style *Combobox*
     """
-    def __init__(self, root, options, var, cmd=None ):
+    def __init__(self, root, options, var, cmd=None, default_var=None):
         """!Constructeur
 
         \param root Le widget parent
@@ -402,7 +445,7 @@ class MyMenu(Menubutton):
         \param cmd Le callback associé (si différent de ``None``)
         """
         Menubutton.__init__( self, root, textvariable=var, relief='raised' )
-        var.set("Choisir")
+        var.set(default_var or "Choisir")
         self.menu = Menu( self, tearoff=0 )
         self["menu"] = self.menu
         for opt in options:
@@ -418,8 +461,51 @@ class MyMenu(Menubutton):
             self.menu.add_radiobutton( label=opt, variable=var, command=cmd )
 
 
+class VecteurEntry:
+    """Permet de rentrer les valeurs pour les 3 composantes
+    d'un vecteur.
+    """
+
+    def __init__(self, root, default_values, mess):
+        self.values = []
+        self.widgets = []
+        for def_val in default_values:
+            val = StringVar()
+            val.set(def_val)
+            self.values.append(val)
+            self.widgets.append(Entry(root, textvariable=val))
+        self.mess = mess
+
+    def grid(self, init_col, **kargs):
+        """Place les 3 entrées dans l'interface Tk"""
+        for idx, wid in enumerate(self.widgets):
+            wid.grid(column=init_col + idx, **kargs)
+
+    def get(self):
+        """Retourne les composantes du vecteur."""
+        res_values = []
+        for raw_val in self.values:
+            try:
+                val = float(raw_val.get())
+                res_values.append(val)
+            except ValueError:
+                self.mess.disp_mess(
+                    "Mauvaise entrée: " \
+                    "un des champs semble ne pas être un réel."
+                    )
+                return None
+
+        return tuple(res_values)
+
+    def destroy(self):
+        """Détruit l'object vecteur"""
+        for wid in self.widgets:
+            wid.destroy()
+
+
 class HLabelledItem(Frame):
-    """!Classe helper permettant de créer un widget et son label horizontalement"""
+    """!Classe helper permettant de créer
+    un widget et son label horizontalement"""
     _pos = "left-right"
     def __init__(self, root, label, klass, *args, **kwargs ):
         Frame.__init__(self, root)
@@ -438,7 +524,7 @@ class VLabelledItem(HLabelledItem):
 
 #------------------------------------------------------------------------------
 
-def PlotXMGrace(abscisse, ordonnees, couleur, legende):
+def PlotXMGrace(abscisse, ordonnees, couleur, legende, ech_x, ech_y):
     """!Sortie des données sur une courbe XMGrace
 
     \param abscisse abscisses du graphe
@@ -460,33 +546,147 @@ def PlotXMGrace(abscisse, ordonnees, couleur, legende):
                   SOUS_TITRE='Sous-titre',
                   LEGENDE_X='Fréquence',
                   LEGENDE_Y='Amplitude',
+                  ECHELLE_X=ech_x,
+                  ECHELLE_Y=ech_y,
                   **motscle
                   );
+
+class MeideeXmgr(Xmgr):
+    """Une interface à Xmgrace pouvant être lancée 
+    plusieur fois en même temps (l'unique différence 
+    avec la version Stanley)."""
+
+    def __init__(self, xmgr_idx, gr_max = 10, options=None,
+                       xmgrace=aster.repout() + '/xmgrace'):
+
+        self.gr_max   = gr_max        # nombre de graphes 
+        self.gr_act   = 0             # numero du graphe actif
+        self.sets     = [0]*gr_max    # nombre de sets par graphe
+        self.nom_pipe = 'xmgr%i.pipe' % xmgr_idx  # nom du pipe de communication
+        if xmgrace == "/xmgrace":
+            print "Pbl with atser repout ", aster.repout()
+            print "Testt ", aster.repout() + '/xmgrace'
+            self.xmgrace = "/usr/bin/xmgrace"
+        else:
+            self.xmgrace  = xmgrace
+
+        # Ouverture du pipe de communication avec xmgrace
+        if os.path.exists(self.nom_pipe) :
+          os.remove(self.nom_pipe)
+        os.mkfifo(self.nom_pipe)
+        self.pipe = open(self.nom_pipe,'a+')
+     
+        # Lancement de xmgrace
+        shell = self.xmgrace + ' -noask '
+        if options != None :
+           shell += options
+        shell +=' -graph ' + repr(gr_max-1) + ' -npipe ' + self.nom_pipe
+
+        # Teste le DISPLAY avant de lancer xmgrace...
+        if os.environ.has_key('DISPLAY'):
+          UTMESS('I','STANLEY_9',valk=[shell])
+          self.controle = Popen3(shell)  
+
+          # Mise a l'echelle des graphes
+          for i in xrange(gr_max) :
+            gr = 'G'+repr(i)
+            self.Send('WITH ' + gr)
+            self.Send('VIEW XMIN 0.10')
+            self.Send('VIEW XMAX 0.95')
+            self.Send('VIEW YMIN 0.10')
+            self.Send('VIEW YMAX 0.95')
+
+          # Activation du graphe G0
+          self.Active(0)
+
+        else:
+          UTMESS('A','STANLEY_3',valk=['XMGRACE'])
+
+    def Ech_x(self, ech_x) :
+        """Place l'échelle sur x à NORMAL, LOGARITHMIC ou RECIPROCAL"""
+        if self.Terminal_ouvert() :
+            self.Send('WITH G' + repr(self.gr_act))
+            # XXX un probleme Xmgrace (à revoir)
+            if ech_x == "LOGARITHMIC":
+                self.Send('WORLD XMIN 0.1')
+            self.Send('XAXES SCALE ' + ech_x)
+            self.Send('REDRAW')
+
+    def Ech_y(self, ech_y) :
+        """Place l'échelle sur y à NORMAL, LOGARITHMIC ou RECIPROCAL"""
+        if self.Terminal_ouvert() :
+            self.Send('WITH G' + repr(self.gr_act))
+            # XXX un probleme Xmgrace (à revoir)
+            if ech_y == "LOGARITHMIC":
+                self.Send('WORLD YMIN 0.1')
+            self.Send('YAXES SCALE ' + ech_y)
+            self.Send('REDRAW')
+
+
+class XmgrManager:
+    """Garde en référence les instances de `MeideeXmgr'.
+    """
+
+    def __init__(self):
+        self.xmgr_nb = 0
+        self.xmgr_list = []
+        self.echelle_dict = {'LIN' : 'NORMAL',
+                             'LOG' : 'LOGARITHMIC'}
+
+    def affiche(self, abscisse, ordonnees, couleur, legende, ech_x, ech_y):
+        """!Sortie des données sur une courbe XMGrace
+
+        \param abscisse abscisses du graphe
+        \param ordonnees tableau de valeurs
+        """
+        self.xmgr_nb += 1
+        xmgr = MeideeXmgr(self.xmgr_nb)
+        self.xmgr_list.append(xmgr)
+        
+        xmgr.Titre('Courbe', 'Sous_titre')
+        xmgr.Axe_x('Fréquence')
+        xmgr.Axe_y('Amplitude')
+        
+        for ord, leg in zip(ordonnees, legende):
+            cbr = Courbe(abscisse, ord)
+            xmgr.Courbe(cbr, leg)
+        
+        xmgr.Ech_x(self.echelle_dict[ech_x])
+        xmgr.Ech_y(self.echelle_dict[ech_y])
+    
+    def fermer(self):
+        """Enlève les fichiers temporaires utlisés
+        pour les graphiques et les pipe avec Xmgrace."""
+        for xmgr in self.xmgr_list:
+            xmgr.Fermer()
 
 
 def CreaTable(mcfact, titre, paras_out, mess):
     """!Sortie des données sous forme de sd_table"""
-    num = Compteur()
     TablesOut = paras_out["TablesOut"]
     TypeTable = paras_out["TypeTables"]
     DeclareOut = paras_out["DeclareOut"]
+    compteur = paras_out["ComptTable"]
+    paras_out["ComptTable"] = paras_out["ComptTable"] + 1
     
-    if not TablesOut[num.cpt]:
+    if paras_out["ComptTable"] > len(paras_out["TablesOut"]):
         mess.disp_mess("!! Il n'y a plus de noms de concepts     !!")
         mess.disp_mess("!! disponibles pour sortir des résultats !!")
         mess.disp_mess(" ")
         return
-    DeclareOut('__TAB', TablesOut[num.cpt])
+    
+    DeclareOut('__TAB', TablesOut[compteur])
     
     __TAB = CREA_TABLE(LISTE=mcfact,
                        TITRE = titre,
-                       TYPE_TABLE=TypeTable[num.cpt])
+                       TYPE_TABLE=TypeTable)
 
-    mess.disp_mess("Les résultats sont sauvés dans la table " + TablesOut[num.cpt].nom)
+    mess.disp_mess("Les résultats sont sauvés dans la table "
+                   + TablesOut[compteur].nom)
     mess.disp_mess("Cette table porte pour titre : " + titre)
     mess.disp_mess(" ")
 
-    return __TAB
+    return paras_out
 
 
 #-------------------------------------------------------------------------------
@@ -511,10 +711,10 @@ class MessageBox:
     
     def __init__(self, unite, interactif):
         self.interactif = interactif
-        if unite:
-            self.unite = unite #unite d'ecriture
-            self.mess_file = open('fort.'+str(unite),'w')
-##            sys.stdout = self.mess_file
+        self.unite = None
+#        if unite:
+#            self.unite = unite #unite d'ecriture
+#            self.mess_file = open('fort.'+str(unite),'w')
         if self.interactif == 'oui':    
             self.window = Toplevel()
             titre = Label(self.window, text='Fenetre de messages' )
@@ -553,7 +753,7 @@ class MessageBox:
 
 #------------------------------------------------------------------------------
         
-class MacMode:
+class MacMode(Canvas):
     """!Tracé d'une matrice de MAC
 
     Cet objet accepte un canvas produit par Tk. sa méthode
@@ -562,7 +762,7 @@ class MacMode:
     Cette classe est destinée à etre utilisée par meidee_help.MacWindow
     
     """
-    def __init__(self, canvas):
+    def __init__(self, root, **kwargs):
         """!Constructeur
 
         \param canvas l'objet canvas Tkinter
@@ -570,8 +770,7 @@ class MacMode:
          - items la liste des labels
          - mat la matrice des valeurs à représenter
         """
-        # l'objet canvas que l'on controle
-        self.canvas=canvas
+        Canvas.__init__(self, root, **kwargs)
         # la liste des labels
         self.items = {}
         # la matrice des valeurs à représenter
@@ -580,15 +779,15 @@ class MacMode:
     def show_mat(self, mat):
         """!Change la matrice à afficher"""
         self.mat = mat
-        self.display()
+        self.refresh_display()
 
-    def display(self):
+    def refresh_display(self):
         """!Redessine le contenu de la matrice"""
         self.clear()
         mat = self.mat
         n,m = mat.shape
-        width = self.canvas.winfo_width()
-        height = self.canvas.winfo_height()
+        width = self.winfo_width()
+        height = self.winfo_height()
         xc = width*arange(0., n+1, 1.)/(n+1)
         yc = height*arange(0., m+1, 1.)/(m+1)
         _min = minimum.reduce
@@ -599,19 +798,19 @@ class MacMode:
             for j in range(m):
                 v = int(255*(mat[i,j]-cmin)/(cmax-cmin))
                 col = palette[v]
-                rid=self.canvas.create_rectangle( xc[i], yc[j], xc[i+1], yc[j+1], fill=col )
+                rid=self.create_rectangle( xc[i], yc[j], xc[i+1], yc[j+1], fill=col )
                 self.items[rid] = (i,j)
 
     def clear(self):
         """!Efface les éléments du canvas (les cases)"""
         for i in self.items:
-            self.canvas.delete(i)
+            self.delete(i)
         self.items = {}
 
     def resize_ok(self):
         """!Attache l'événement "<Configure>" qui permet d'etre prévenu d'un redimensionnement
         de la fenetre"""
-        self.canvas.bind("<Configure>", self.configure )
+        self.bind("<Configure>", self.configure )
 
     def configure(self, event):
         """!Callback appelé lors du redimensionnement
@@ -620,7 +819,7 @@ class MacMode:
         dimensions
         """
         if self.mat:
-            self.display()            
+            self.refresh_display()
 
 #------------------------------------------------------------------------------
 
@@ -637,7 +836,7 @@ class MacWindow:
      - un bouton (log) permettant de commuter l'affichage linéaire et logarithmique
 
     """
-    def __init__(self, root, label, modes1, modes2, mat, name1=None, name2=None ):
+    def __init__(self, root, label, modes1, modes2, mat, name1=None, name2=None, top=None ):
         """!Constructeur
 
         :IVariables:
@@ -651,10 +850,10 @@ class MacWindow:
          - `diplayvar2`: variable liée à un label pour permettre l'affichage de la valeur sous le curseur
          - `top`: la fenetre toplevel qui contient l'interface
         """
-        from Tkinter import Canvas
         self.root = root
         self.mat = mat
-        top = self.top = Toplevel()
+        if not top:
+            top = self.top = Toplevel()
         top.rowconfigure(1, weight=1)
         top.columnconfigure(0, weight=1)
 
@@ -663,8 +862,8 @@ class MacWindow:
         titre.grid(row=0, column=0, columnspan=4, sticky='n' )
 
         # Graphique
-        canvas = Canvas( top )
-        canvas.grid( row=2, column=0, sticky='w'+'e'+'s'+'n' )
+        self.mac = MacMode( top )
+        self.mac.grid( row=2, column=0, sticky='w'+'e'+'s'+'n' )
         self.modes1 = modes1
         self.modes2 = modes2
 
@@ -686,7 +885,6 @@ class MacWindow:
         self.logvar = IntVar()
         logmode = Checkbutton(top,text="Log",variable=self.logvar, command=self.setlog )
         logmode.grid( row=4,column=0,columnspan=4)
-        self.mac = MacMode( canvas )
         self.mac.show_mat( mat )
         self.mac.resize_ok()
         self.displayvar1 = StringVar()
@@ -706,7 +904,7 @@ class MacWindow:
 
     def mode_info(self, event):
         """!Récupère la valeur MAC de la case sous le curseur"""
-        oid = self.mac.canvas.find_closest( event.x, event.y )
+        oid = self.mac.find_closest( event.x, event.y )
         if oid:
             i,j = self.mac.items.get(oid[0], (None,None) )
         else:
@@ -737,7 +935,44 @@ class MacWindow:
 
     def __del__(self):
         """!Pour verifier que la fenetre est bien liberee"""
-        print "Bye"      
+        print "Bye"
 
 
     
+
+class MessageBoxInteractif(Frame):
+    """!Classe dans laquelle on stocke la fentre de message (string)
+    et qui permet d'ecrire dans un .mess separe si l'utilisateur en a fait
+    la demande"""
+    
+    def __init__(self, root, unite):
+        Frame.__init__(self, root, borderwidth=0,relief='flat')
+        titre = Label(self, text='Fenetre de messages' )
+        titre.grid(row=0,column=0,columnspan=2)
+        self.columnconfigure(0,weight=1)
+        self.rowconfigure(1,weight=1)
+        affich = Frame(self, relief='flat', borderwidth=0)
+        affich.grid(row=1,sticky='w'+'e'+'s'+'n')
+        affich.columnconfigure(0,weight=1)
+        affich.rowconfigure(0,weight=1)
+        scroll = Scrollbar ( affich, orient='vertical' )
+        scroll.grid ( row=0, column=1, sticky='n'+'s' )
+        self.txt = Text(affich,yscrollcommand=scroll.set,background='white',height=5)
+        scroll["command"] = self.txt.yview
+        self.txt.grid( row=0, column=0, sticky='w'+'e'+'s'+'n')
+        self.unite = unite
+        if unite:
+            self.mess_file = open('fort.'+str(unite),'w')
+        else:
+            self.mess_file = StringIO.StringIO()
+
+
+    def disp_mess(self, new_mess):
+        """!Ecriture des messages dans le fichier sortie
+        s'il existe et dans la fenetre de message"""
+        if new_mess[-1:]!="\n":
+            new_mess += "\n"
+        self.txt.insert(END, new_mess)
+        self.txt.see(END)
+        self.mess_file.writelines( new_mess )
+

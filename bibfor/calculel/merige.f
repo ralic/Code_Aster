@@ -1,10 +1,11 @@
       SUBROUTINE MERIGE(MODELE,CARA,SIGG,MATEL,NH)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NH
-      CHARACTER*8 MODELE,CARA,SIGG,MATEL
+      CHARACTER*8 MODELE,CARA,SIGG
+      CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,12 +66,10 @@ C     ------------------------------------------------------------------
       CALL MESIGG(SIGG,EXISIG,CHSIGG)
       CALL ASSERT(EXISIG)
       CALL MEMARE('G',MATEL,MODELE,' ',CARA,OPTION)
-      CALL WKVECT(MATEL//'.LISTE_RESU','G V K24',1,JLIRES)
 
       LPAOUT(1) = 'PMATUUR'
-      LCHOUT(1) = MATEL//'.ME001'
+      LCHOUT(1) = MATEL(1:8)//'.ME001'
 
-      ILIRES = 0
       LIGRMO = MODELE//'.MODELE'
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = CHGEOM
@@ -92,12 +91,7 @@ C     ------------------------------------------------------------------
       LCHIN(9) = CARA(1:8)//'.CANBSP'
       OPTION = 'RIGI_MECA_GE'
       CALL CALCUL('S',OPTION,LIGRMO,9,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
-      CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-      IF (IRET.NE.0) THEN
-        ILIRES = ILIRES + 1
-        ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-        CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-      END IF
+      CALL REAJRE(MATEL,LCHOUT(1),'G')
 
       CALL JEDEMA()
       END

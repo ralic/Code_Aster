@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C-----------------------------------------------------------------------
         CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
         MATAS = ZK24(IREFE) (1:19)
         CALL JEVEUO(MATAS//'.LIME','L',ILIME)
-        CALL JEVEUO(ZK8(ILIME)//'.ME001     .NOLI','L',INOLI)
+        CALL JEVEUO(ZK24(ILIME)(1:8)//'.ME001     .NOLI','L',INOLI)
         MODELE = ZK24(INOLI) (1:8)
         CALL JEVEUO(ZK24(INOLI) (1:19)//'.LGRF','L',INOMA)
         MAILLA = ZK8(INOMA)

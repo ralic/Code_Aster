@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -489,8 +489,8 @@ C       ================================================================
               CNCGMP = ' '
               VFONO = ' '
               VAFONO = ' '
-              VRENO = '&&'//NOMPRO//'.LISTE_RESU     '
-              VARENO = '&&'//NOMPRO//'.LISTE_RESU     '
+              VRENO =  '&&'//NOMPRO//'           .RELR'
+              VARENO = '&&'//NOMPRO//'           .RELR'
 
               NH = 0
               IF (TYSD(1:8).EQ.'FOURIER_') THEN

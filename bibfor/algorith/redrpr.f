@@ -1,7 +1,7 @@
       SUBROUTINE REDRPR( MOD, IMATE, SIGP, VIP, DSDE, ICODE )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C --- ICODE = 0 CORRESPONDT AU CAS ELASTIQUE --------------------------
 C --- ICODE = 1 SINON -------------------------------------------------
 C =====================================================================
       INTEGER      NPG, NDT, NDI, NVI, TYPEDP
-      REAL*8       PPLUS, MATERF(4,2), HOOKF(6,6), DPDENO, DP
+      REAL*8       PPLUS, MATERF(5,2), HOOKF(6,6), DPDENO, DP
       REAL*8       SE(6), SEQ, PLAS, ALPHA, DPLITG, DPPATG, PHI
       REAL*8       SIIE, DEUX, TROIS,DDOT
 C ======================================================================

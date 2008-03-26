@@ -1,4 +1,4 @@
-# MODIF  DATE 27/11/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(  NOM = 'SDLL137A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+DEBUT( CODE=_F( NOM = 'SDLL137A',
+                NIV_PUB_WEB='INTERNET'),
+#       DEBUG=_F(SDVERI='OUI'),
+      );
 
 #**********************************
 # CREATION DU MODELE EXPERIMENTAL
@@ -44,15 +47,13 @@ KELEXP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      );
 
 MELEXP=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                     MODELE=MODLEXP,
-                     CARA_ELEM=CHCAREXP,
+                      MODELE=MODLEXP,
+                      CARA_ELEM=CHCAREXP,
                      );
 
-NUMEXP=NUME_DDL( MATR_RIGI=KELEXP,
-                );
+NUMEXP=NUME_DDL( MATR_RIGI=KELEXP,);
 
-KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP,
-                  NUME_DDL=NUMEXP,);
+KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP, NUME_DDL=NUMEXP,);
 
 MASSEXP=ASSE_MATRICE(MATR_ELEM=MELEXP,
                   NUME_DDL=NUMEXP,);
@@ -78,9 +79,11 @@ MODMESU=LIRE_RESU(TYPE_RESU='MODE_MECA',
                  TOUT_ORDRE='OUI',);
 
 # TRI EVENTUEL
+_nume_mode=(1,2,3,4,5)
+
 
 MODEIDE=EXTR_MODE(FILTRE_MODE=_F(MODE=MODMESU,
-                                  NUME_MODE=(1,2,3,4,5,),
+                                  NUME_MODE=_nume_mode,
                                   ),);
 
 #********************************
@@ -90,9 +93,9 @@ MODEIDE=EXTR_MODE(FILTRE_MODE=_F(MODE=MODMESU,
 MAILSUP=LIRE_MAILLAGE(UNITE=20);
 
 MODLSUP=AFFE_MODELE(MAILLAGE=MAILSUP,
-                   AFFE=(_F(GROUP_MA=('POUTRE','VISUAL',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_E',),),)
+                    AFFE=(_F(GROUP_MA=('POUTRE','VISUAL',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='POU_D_E',),),)
 
 MATSUP=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.3,
@@ -155,8 +158,8 @@ MODSTSUP=MODE_STATIQUE(MATR_RIGI=KASSUP,
                       _F(GROUP_NO='CAPTEUR',AVEC_CMP=('DY','DZ',),),
                       ),);
 
-IMPR_RESU(RESU=_F(RESULTAT=MODSTSUP,NOM_CHAM='DEPL',NOM_CMP='DY'),)
-IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=MODSTSUP,NOM_CHAM='DEPL',NOM_CMP='DY'),)
+#IMPR_RESU(RESU=_F(RESULTAT=MODSTSUP,NOM_CHAM='DEPL',NOM_CMP='DY'),)
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=MODSTSUP,NOM_CHAM='DEPL',NOM_CMP='DY'),)
 
 
 BASEMO=DEFI_BASE_MODALE(RITZ=(
@@ -231,8 +234,8 @@ MATERX=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              RHO=7800.,),);
 
 CHMATCPL=AFFE_MATERIAU(  MAILLAGE=MAILCPL,
-                    AFFE=(_F(GROUP_MA=('POUTRE',),
-                             MATER=MATERX,),),);
+                         AFFE=(_F(GROUP_MA=('POUTRE',),
+                                  MATER=MATERX,),),);
 
 CONDLCPL=AFFE_CHAR_MECA(MODELE=MODLCPL,
                       DDL_IMPO=( _F(GROUP_NO=('EXTERNE',),
@@ -292,7 +295,7 @@ CHCARINT=AFFE_CARA_ELEM(MODELE=MODLINT,
                                 ),);
 
 KELINT=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                     MODELE=MODLINT,
+                      MODELE=MODLINT,
                      CARA_ELEM=CHCARINT,
                      );
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PORTEE DE CABLES TRI-RENUM / AFFE_CHAR_MECA / DYNOLI(LDLT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ DEBUT(   CODE=_F(  NOM = 'YYYY103A',NIV_PUB_WEB='INTRANET'),
 
 #
 
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE( VERI_MAIL=_F(VERIF='OUI',APLAT=0.0))
 
 MO=AFFE_MODELE(   MAILLAGE=MA,AFFE=( 
                         _F( GROUP_MA = 'CABLE', PHENOMENE = 'MECANIQUE',
@@ -227,19 +227,19 @@ RESU=CALC_ELEM( reuse=RESU,
 TEST_RESU(RESU=(  
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',
-             PARA = 'INST',             VALE = 0.00000E+00),
+             PARA = 'INST',             VALE = 0.00000E+00, REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
              PARA = 'ITER_GLOB',        VALE_I = 0,     
-             CRITERE = 'ABSOLU',         PRECISION = 180.),
+             CRITERE = 'ABSOLU',         PRECISION = 180., REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',        
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
+             PARA = 'RESI_GLOB_RELA',   VALE = 0., REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',        PRECISION = 15.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
+             PARA = 'RESI_GLOB',        VALE = 0., REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',         PRECISION = 2.,
-             PARA = 'ITER_LINE',        VALE_I = 0))
+             PARA = 'ITER_LINE',        VALE_I = 0, REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'))
            )
 
 RESU=DYNA_NON_LINE( reuse=RESU,
@@ -275,19 +275,19 @@ RESU=DYNA_NON_LINE( reuse=RESU,
 
 TEST_RESU(RESU=(  
            _F(  RESULTAT = RESU,           NUME_ORDRE = 226,
-             PARA = 'INST',             VALE = 2.00000E+00),
+             PARA = 'INST',             VALE = 2.00000E+00, REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 226,
              PARA = 'ITER_GLOB',        VALE_I = 0,    
-             CRITERE = 'ABSOLU',         PRECISION = 7.),
+             CRITERE = 'ABSOLU',         PRECISION = 7., REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 226,
              CRITERE = 'ABSOLU',        PRECISION = 1.E-05,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
+             PARA = 'RESI_GLOB_RELA',   VALE = 0., REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 226,
              CRITERE = 'ABSOLU',        PRECISION = 0.5,
-             PARA = 'RESI_GLOB',        VALE = 0.),
+             PARA = 'RESI_GLOB',        VALE = 0., REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 226,
              CRITERE = 'ABSOLU',         PRECISION = 2.,
-             PARA = 'ITER_LINE',        VALE_I = 0))
+             PARA = 'ITER_LINE',        VALE_I = 0, REFERENCE='NON_REGRESSION', VERSION=' 3.06.09'))
            )
 
 G1=RECU_FONCTION( 
@@ -310,23 +310,23 @@ G3=RECU_FONCTION(
 
 TEST_FONCTION(
      VALEUR=_F(  FONCTION = F1,
-              VALE_PARA = 0.1,  VALE_REFE = -199.2865)
+              VALE_PARA = 0.1,  VALE_REFE = -199.2865, REFERENCE='NON_REGRESSION', VERSION=' 3.06.09')
               )
 
 TEST_FONCTION(
      VALEUR=_F(  FONCTION = G1,
               PRECISION = 0.0015,
-              VALE_PARA = 1.81, VALE_REFE = 3.475E4)
+              VALE_PARA = 1.81, VALE_REFE = 3.475E4, REFERENCE='NON_REGRESSION', VERSION=' 3.06.09')
               )
 
 TEST_FONCTION(
      VALEUR=_F(  FONCTION = G2,
-              VALE_PARA = 0.53, VALE_REFE = -2.732)
+              VALE_PARA = 0.53, VALE_REFE = -2.732, REFERENCE='NON_REGRESSION', VERSION=' 3.06.09')
               )
 
 TEST_FONCTION(
      VALEUR=_F(  FONCTION = G3,
-              VALE_PARA = 1.04, VALE_REFE = 2.616)
+              VALE_PARA = 1.04, VALE_REFE = 2.616, REFERENCE='NON_REGRESSION', VERSION=' 3.06.09')
               )
 
 FIN()

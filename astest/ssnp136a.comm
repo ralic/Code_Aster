@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 DEBUT(CODE=_F(NOM='SSNP136A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 
 # CORRESPOND A MU=3846154 PA
+mu = 3846154 ;
 E  = 1.E+7  ;
 nu = 0.3    ;
 
@@ -73,7 +74,8 @@ SOL=DEFI_MATERIAU(ELAS=_F(E     =E,
                           NU    =nu,
                           RHO   =rhos,
                           ALPHA =0.),
-                  CAM_CLAY=_F(PORO      =n,
+                  CAM_CLAY=_F(MU        =mu ,
+                              PORO      =n,
                               LAMBDA    =lambd,
                               KAPA      =kapa,
                               M         =M,

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,13 +158,13 @@ RESULTAT=U, NOM_CHAM='DEPL', NUME_ORDRE=1)
 
 TEST_RESU(CHAM_NO=(
             _F(  CHAM_GD = U1,       CRITERE = 'RELATIF',   PRECISION = 3.E-3,
-              NOEUD = 'C3',       NOM_CMP = 'DX',            VALE = 2.6517E-4),
+              NOEUD = 'C3',       NOM_CMP = 'DX',            VALE = 2.6517E-4, REFERENCE = 'ANALYTIQUE'),
             _F(  CHAM_GD = U1,       CRITERE = 'RELATIF',   PRECISION = 3.E-3,
-              NOEUD = 'C3',       NOM_CMP = 'DY',            VALE = 0.8839E-4),
+              NOEUD = 'C3',       NOM_CMP = 'DY',            VALE = 0.8839E-4, REFERENCE = 'ANALYTIQUE'),
             _F(  CHAM_GD = U1,       CRITERE = 'RELATIF',   PRECISION = 6.E-3,
-              NOEUD = 'D3',       NOM_CMP = 'DX',            VALE = 3.47902E-3),
+              NOEUD = 'D3',       NOM_CMP = 'DX',            VALE = 3.47902E-3, REFERENCE = 'ANALYTIQUE'),
             _F(  CHAM_GD = U1,       CRITERE = 'RELATIF',   PRECISION = 6.E-3,
-              NOEUD = 'D4',       NOM_CMP = 'DY',            VALE = -5.60084E-3))
+              NOEUD = 'D4',       NOM_CMP = 'DY',            VALE = -5.60084E-3, REFERENCE = 'ANALYTIQUE'))
             )
 
 #---------------------------------------------------------------------
@@ -185,13 +185,13 @@ RESULTAT=V, NOM_CHAM='DEPL', NUME_ORDRE=2)
 
 TEST_RESU(CHAM_NO=(
             _F(  CHAM_GD = V1,       CRITERE = 'RELATIF',   PRECISION = 3.E-3,
-              NOEUD = 'C3',       NOM_CMP = 'DX',            VALE = 2.6517E-4),
+              NOEUD = 'C3',       NOM_CMP = 'DX',            VALE = 2.6517E-4, REFERENCE = 'ANALYTIQUE'),
             _F(  CHAM_GD = V1,       CRITERE = 'RELATIF',   PRECISION = 3.E-3,
-              NOEUD = 'C3',       NOM_CMP = 'DY',            VALE = 0.8839E-4),
+              NOEUD = 'C3',       NOM_CMP = 'DY',            VALE = 0.8839E-4, REFERENCE = 'ANALYTIQUE'),
             _F(  CHAM_GD = V1,       CRITERE = 'RELATIF',   PRECISION = 6.E-3,
-              NOEUD = 'D3',       NOM_CMP = 'DX',            VALE = 3.47902E-3),
+              NOEUD = 'D3',       NOM_CMP = 'DX',            VALE = 3.47902E-3, REFERENCE = 'ANALYTIQUE'),
             _F(  CHAM_GD = V1,       CRITERE = 'RELATIF',   PRECISION = 6.E-3,
-              NOEUD = 'D4',       NOM_CMP = 'DY',            VALE = -5.60084E-3))
+              NOEUD = 'D4',       NOM_CMP = 'DY',            VALE = -5.60084E-3, REFERENCE = 'ANALYTIQUE'))
             )
 
 #======================================================================
@@ -262,19 +262,19 @@ DYNHAR0=DYNA_LINE_HARM(  MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = -1.65073E-05-9.22424E-06j,PRECISION = 3.5E-2,),
+       FREQ = 100.,      VALE_C = -1.65073E-05-9.22424E-06j,PRECISION = 3.5E-2, REFERENCE = 'AUTRE_ASTER'),
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = 2.52829E-05+1.80184E-05j,PRECISION = 3.E-2,),
+       FREQ = 100.,      VALE_C = 2.52829E-05+1.80184E-05j,PRECISION = 3.E-2,REFERENCE = 'AUTRE_ASTER'),
 
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = 5.79576E-03-1.03719E-02j,PRECISION = 3.5E-2,),
+       FREQ = 100.,      VALE_C = 5.79576E-03-1.03719E-02j,PRECISION = 3.5E-2, REFERENCE = 'AUTRE_ASTER'),
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = -1.13213E-02+1.58857E-02j,PRECISION = 3.E-2,),
+       FREQ = 100.,      VALE_C = -1.13213E-02+1.58857E-02j,PRECISION = 3.E-2, REFERENCE = 'AUTRE_ASTER'),
 
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = 6.51684E+00+3.64158E+00j,PRECISION = 3.5E-2,),
+       FREQ = 100.,      VALE_C = 6.51684E+00+3.64158E+00j,PRECISION = 3.5E-2, REFERENCE = 'AUTRE_ASTER'),
      _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = -9.98130E+00-7.11336E+00j,PRECISION = 3.E-2,))
+       FREQ = 100.,      VALE_C = -9.98130E+00-7.11336E+00j,PRECISION = 3.E-2, REFERENCE = 'AUTRE_ASTER'))
            ),
 
 #======================================================================
@@ -344,19 +344,19 @@ DYNHAC0=DYNA_LINE_HARM(  MATR_MASS=MATASCM, MATR_RIGI=MATASCR,
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = -1.65073E-05-9.22424E-06j,PRECISION = 3.5E-2,),
+       FREQ = 100.,      VALE_C = -1.65073E-05-9.22424E-06j,PRECISION = 3.5E-2, REFERENCE = 'AUTRE_ASTER'),
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = 2.52829E-05+1.80184E-05j,PRECISION = 3.E-2,),
+       FREQ = 100.,      VALE_C = 2.52829E-05+1.80184E-05j,PRECISION = 3.E-2, REFERENCE = 'AUTRE_ASTER'),
 
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = 5.79576E-03-1.03719E-02j,PRECISION = 3.5E-2,),
+       FREQ = 100.,      VALE_C = 5.79576E-03-1.03719E-02j,PRECISION = 3.5E-2, REFERENCE = 'AUTRE_ASTER'),
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = -1.13213E-02+1.58857E-02j,PRECISION = 3.E-2,),
+       FREQ = 100.,      VALE_C = -1.13213E-02+1.58857E-02j,PRECISION = 3.E-2, REFERENCE = 'AUTRE_ASTER'),
 
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DX',
-       FREQ = 100.,      VALE_C = 6.51684E+00+3.64158E+00j,PRECISION = 3.5E-2,),
+       FREQ = 100.,      VALE_C = 6.51684E+00+3.64158E+00j,PRECISION = 3.5E-2, REFERENCE = 'AUTRE_ASTER'),
      _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DY',
-       FREQ = 100.,      VALE_C = -9.98130E+00-7.11336E+00j,PRECISION = 3.E-2,))
+       FREQ = 100.,      VALE_C = -9.98130E+00-7.11336E+00j,PRECISION = 3.E-2, REFERENCE = 'AUTRE_ASTER'))
            )
 FIN();
 

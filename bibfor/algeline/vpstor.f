@@ -10,7 +10,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -173,7 +173,7 @@ C     CARACTERISTIQUES ELEMENTAIRES
      &          CARAEL,IRET)
         ELSEIF( TYPCON(1:9).EQ.'MODE_GENE')THEN
            CALL JEVEUO(RAIDE//'           .LIME','L',JMODG)
-           IF(ZK8(JMODG).EQ.'        ')THEN
+           IF(ZK24(JMODG)(1:8).EQ.'        ')THEN
 C            ON EST PASSE PAR UN PROJ_MATR_BASE
              CALL JEVEUO(RAIDE//'           .REFA','L',JMODG)
              CALL JEVEUO(ZK24(JMODG)(1:8)//'           .REFD','L',JRAID)
@@ -189,15 +189,15 @@ C            ON EST PASSE PAR UN PROJ_MATR_BASE
              GOTO 39
              ELSE
              CALL JEVEUO(ZK24(JRAID)(1:8)//'           .LIME','L',JLIME)
-             IF(ZK8(JLIME).NE.'        ')THEN
+             IF(ZK24(JLIME)(1:8).NE.'        ')THEN
 C            ON EST PASSE PAR UN ASSE_MATRICE/CALC_MATR_ELEM
-             CALL JEEXIN(ZK8(JLIME)//'      .MODG.SSME',IRET)
+             CALL JEEXIN(ZK24(JLIME)(1:8)//'      .MODG.SSME',IRET)
              IF(IRET.NE.0)THEN
-             CALL JEVEUO(ZK8(JLIME)//'      .MODG.SSME','L',JMACR)
+             CALL JEVEUO(ZK24(JLIME)(1:8)//'      .MODG.SSME','L',JMACR)
              CALL JEVEUO(ZK8(JMACR)//'.MAEL_INER_REFE','L',JBASM)
              CALL JEVEUO(ZK24(JBASM)(1:8)//'           .REFD','L',JRAID)
              CALL JEVEUO(ZK24(JRAID)(1:8)//'           .LIME','L',JLIME)
-             CALL JEVEUO(ZK8(JLIME)//'.REFE_RESU','L',JMERI)
+             CALL JEVEUO(ZK24(JLIME)(1:8)//'           .RERR','L',JMERI)
              MODELE=ZK24(JMERI)(1:8)
              CHMAT=ZK24(JMERI+3)(1:8)
              CARAEL=ZK24(JMERI+4)(1:8)
@@ -207,7 +207,7 @@ C            ON EST PASSE PAR UN ASSE_MATRICE/CALC_MATR_ELEM
              ENDIF
            ELSE
 C            ON EST PASSE PAR UN DEFI_MODELE_GENE
-             CALL JEVEUO(ZK8(JMODG)//'      .MODG.SSME','L',JMACR)
+             CALL JEVEUO(ZK24(JMODG)(1:8)//'      .MODG.SSME','L',JMACR)
              CALL JEVEUO(ZK8(JMACR)//'.MAEL_INER_REFE','L',JBASM)
              CALL JEVEUO(ZK24(JBASM)(1:8)//'           .REFD','L',JRAID)
              IF(ZK24(JRAID)(1:8).EQ.'        ')THEN
@@ -229,7 +229,7 @@ C            ON EST PASSE PAR UN DEFI_MODELE_GENE
            CALL DISMOI('F','CARA_ELEM',ZK24(JRAID)(1:8),'MATR_ASSE',
      &        IBID,CARAEL,IRET)
         ENDIF
-      ENDIF  
+      ENDIF 
 C
  39   CONTINUE
 

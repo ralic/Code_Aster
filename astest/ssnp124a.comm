@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
@@ -107,7 +107,7 @@ U2       = STAT_NON_LINE(
                                         _F( CHARGE        = DEPL_M2, ),
                                         _F( CHARGE        = DEPL_M4,
                                             FONC_MULT     = COEF2,),),
-                         COMP_INCR   = _F( RELATION       = 'DRUCKER_PRAGER',
+                         COMP_INCR   = _F( RELATION       = 'DRUCK_PRAGER',
                                            RESI_INTE_RELA = 1.E-6,
                                            ITER_INTE_MAXI = 100,),
                          NEWTON      = _F( MATRICE        = 'TANGENTE',

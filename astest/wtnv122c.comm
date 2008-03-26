@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D EN DILATANCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,11 +61,12 @@ MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI',),
                           CREA_GROUP_NO=_F(GROUP_MA='ROCHE',), );
 
-SOL=DEFI_MATERIAU(    ELAS=_F(  E = 22.4E6,    NU = 0.3,
-                                     RHO = 2500.,
-                                     ALPHA = 1.E-5,
-                                   ),
-                    CAM_CLAY=_F(PORO=0.14,
+SOL=DEFI_MATERIAU( ELAS=_F(  E = 7.74E6,
+                                NU = 0.3,
+                                RHO = 2500.,
+                                ALPHA = 1.E-5,),
+                    CAM_CLAY=_F(MU=6.E6,
+                                PORO=0.66,
                                 LAMBDA=0.25,
                                 KAPA=0.05,
                                 M=0.9,
@@ -113,7 +114,7 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 22.4E6,    NU = 0.3,
                                 TEMP = 293.,
                                 PRE1 = 1.0,
                                 PRE2 = 0.1E6,
-                                PORO = 0.14,
+                                PORO = 0.66,
                                 PRES_VAPE = 2269.8,
                                 )
                            )
@@ -342,7 +343,7 @@ TEST_RESU(RESU=(
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -1.560467E5,
+                       VALE = -1.801305E5,
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
@@ -351,7 +352,7 @@ TEST_RESU(RESU=(
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -1.815567E5,
+                       VALE = -1.958933E5,
                      ),
 
 # CONTRAINTE SIYY
@@ -380,7 +381,7 @@ TEST_RESU(RESU=(
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -1.560467E5,
+                       VALE = -1.801305E5,
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
@@ -389,7 +390,7 @@ TEST_RESU(RESU=(
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -1.815567E5,
+                       VALE = -1.958933E5,
                      ),
 
 # CONTRAINTE SIZZ
@@ -418,7 +419,7 @@ TEST_RESU(RESU=(
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -4.156324E5,
+                       VALE = -4.370169E5,
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
@@ -427,7 +428,7 @@ TEST_RESU(RESU=(
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -4.382215E5,
+                       VALE = -4.499593E5,
                      ),
 
 # PRESSION PRE1
@@ -438,7 +439,7 @@ TEST_RESU(RESU=(
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = 3.844327E4,
+                       VALE = 2.410662E4,
                      ))
                     )
 

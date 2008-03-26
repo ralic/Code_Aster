@@ -1,7 +1,8 @@
-      SUBROUTINE NMCHCR (MAT,DP,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
-     &                   DEUXMU,VISC,ETA,DT,VALDEN,F,SEQ,DENOMI)
+      SUBROUTINE NMCHCR (MAT,DP,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,
+     &  ALFA2M,DEUXMU,VISC,MEMO,RM,RP,QM,Q,KSIM,KSI,DT,F)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,21 +51,29 @@ C    ALFA2M(6)                     DU CALCUL PRECEDENT EST RELIE
 C                                 AU TENSEUR ALFAM PAR XM = 2/3*C*ALFAM
 C    DEUXMU         IN    R       COEFFICIENT DE LAME :2*MU
 C    VISC           IN    I       INDICATEUR DE VISCOSITE
-C    ETA            IN    R       PARAMETRE ETA DE VISCOSITE
+C    MEMO           IN    I       INDICATERU EFFET MEMOIRE
+C    RM             IN    R       R(INSTM)
+C    RP             IN    R       R(INSTP)=RM+DR
+C    QM             IN    R       Q(PM)
+C    QP             OUT   R       Q(PM+DP)
+C    KSIM           IN    R       KSI(PM)
+C    KSIP           OUT   R       KSI(PM+DP)
 C    DT             IN    R       VALEUR DE L'INCREMENT DE TEMPS DELTAT
-C    VALDEN         IN    R       PARAMETRE N DE VISCOSITE
 C    F              OUT   R       VALEUR DU CRITERE DE PLASTICITE
 C                                 POUR LA VALEUR DP
 C
 C -----  ARGUMENTS
-          INTEGER             NDIMSI,NBVAR,VISC
-           REAL*8             MAT(*),PM,SIGEDV(6),ALFAM(*),DEUXMU,DP
-           REAL*8             F,ALFA2M(*),ETA,DT,VALDEN
+          INTEGER             NDIMSI,NBVAR,VISC,MEMO
+           REAL*8      EPSPP(6),MAT(16),PM,SIGEDV(6),ALFAM(6),DEUXMU,DP
+           REAL*8    EPSPM(6), F,ALFA2M(6),DT,RM,RP,QM,Q,KSIM(6),KSI(6)
 C -----  VARIABLES LOCALES
            INTEGER     I
            REAL*8      R0,RINF,B,CINF,K,W,GAMMA0,AINF,C2INF ,GAMM20
-           REAL*8      ZERO,UN,DEUX,TROIS,C2P,GAMM2P,M2P,XN
-           REAL*8      PP,RP,CP,GAMMAP,MP,DENOMI,SEQ,S(6),R8MIEM
+           REAL*8      ZERO,UN,DEUX,TROIS,C2P,GAMM2P,M2P,XN,VI(6)
+           REAL*8      PP,CP,GAMMAP,MP,DENOMI,SEQ,S(6),R8MIEM,GRJEPS
+           REAL*8      MUMEM,VALDEN,KVI,ETAM,Q0MEM,QMMEM,DR,DEPSP(6)
+           REAL*8      CRITME,DQ,DKSI(6),XXN,PETIN(6),PETIN2(6),GQ
+           REAL*8      DEPPEQ,RPP,DQ1,NORME2,COEF
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -88,12 +97,21 @@ C     --------------------------------------
          C2INF =MAT(9)
          GAMM20=MAT(10)
       ENDIF
+      IF (VISC.EQ.1) THEN
+         VALDEN=MAT(11)
+         KVI =MAT(12)
+      ENDIF
+      IF (MEMO.EQ.1) THEN
+         ETAM=MAT(13)
+         Q0MEM=MAT(14)
+         QMMEM=MAT(15)
+         MUMEM=MAT(16)
+      ENDIF
 C
 C --- CALCUL DES DIFFERENTS TERMES INTERVENANT DANS LE CRITERE
 C --- DE PLASTICITE :
 C     =============
       PP     = PM + DP
-      RP     = RINF + (R0-RINF)*EXP(-B*PP)
       CP     = CINF * (UN+(K-UN)*EXP(-W*PP))
       GAMMAP = GAMMA0 * (AINF + (UN-AINF)*EXP(-B*PP))
       MP     = CP/(UN+GAMMAP*DP)
@@ -101,16 +119,58 @@ C     =============
          C2P = C2INF  * (UN+(K-UN)*EXP(-W*PP))
          GAMM2P = GAMM20 * (AINF + (UN-AINF)*EXP(-B*PP))
          M2P     = C2P/(UN+GAMM2P*DP)
-      ELSE
+       ELSE
          C2P=ZERO
          GAMM2P=ZERO
          M2P=ZERO
-       ENDIF
-       DENOMI = RP + (TROIS/DEUX*DEUXMU+MP+M2P)*DP
-       IF (VISC.EQ.1) THEN
-          DENOMI = DENOMI + ETA*((DP/DT)**(UN/VALDEN))
-       ENDIF
-C
+      ENDIF
+
+      IF (MEMO.EQ.1) THEN
+      
+C --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
+         DEPPEQ=0.D0
+         DO 120 I = 1, NDIMSI
+            DEPSP(I)=SIGEDV(I)
+     &            - (MP*DP*ALFAM(I)-M2P*DP*ALFA2M(I))/1.5D0
+            DEPPEQ=DEPPEQ+DEPSP(I)*DEPSP(I) 
+  120    CONTINUE
+         DEPPEQ=SQRT(DEPPEQ*1.5D0)
+         DO 121 I = 1, NDIMSI
+            DEPSP(I)=1.5D0*DP*DEPSP(I)/DEPPEQ
+            EPSPP(I)=EPSPM(I)+DEPSP(I)
+  121    CONTINUE
+         GRJEPS=0.0D0
+         DO 17 I=1,6
+             GRJEPS=GRJEPS+(EPSPP(I)-KSIM(I))**2
+   17    CONTINUE
+         GRJEPS=SQRT(GRJEPS*1.5D0)
+         CRITME=GRJEPS/1.5D0-QM
+         IF (CRITME.LE.0.0D0) THEN
+            DQ=0.0D0
+            DO 18 I=1,6
+               DKSI(I)=0.0D0
+   18       CONTINUE
+         ELSE
+            DQ=ETAM*CRITME
+            COEF=ETAM*QM+DQ
+            DO 19 I=1,6
+               IF (COEF.GT.R8MIEM()) THEN
+                  DKSI(I)=(1.D0-ETAM)*DQ*(EPSPP(I)-KSIM(I))/COEF
+               ELSE
+                  DKSI(I)=0.D0
+               ENDIF
+               KSI(I)=KSIM(I)+DKSI(I)
+   19       CONTINUE
+         ENDIF   
+         Q=QM+DQ
+         GQ=QMMEM+(Q0MEM-QMMEM)*EXP(-2.D0*MUMEM*Q)
+         DR=B*(GQ-RM)*DP/(1.D0+B*DP)
+         RP = RM + DR
+         RPP = R0 + RP 
+      ELSEIF (MEMO.EQ.0) THEN
+         RPP     = RINF + (R0-RINF)*EXP(-B*PP)
+      ENDIF   
+      
       SEQ = ZERO
 C
       DO 10 I = 1, NDIMSI
@@ -124,13 +184,15 @@ C
         SEQ  = SEQ + S(I)*S(I)
 C
   10  CONTINUE
-C
       SEQ = SQRT(TROIS/DEUX*SEQ)
-C
+      DENOMI = RPP + (TROIS/DEUX*DEUXMU+MP+M2P)*DP
+      IF (VISC.EQ.1) THEN
+         DENOMI = DENOMI + KVI*((DP/DT)**(UN/VALDEN))
+      ENDIF
       IF (SEQ.LE.R8MIEM()) THEN   
          F = SEQ - DENOMI         
       ELSE                        
          F = UN - DENOMI/SEQ      
       ENDIF
-                       
+
       END

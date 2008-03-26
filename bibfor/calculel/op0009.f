@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------
@@ -43,9 +43,9 @@ C     ------------------------------------------------------------------
       CHARACTER*1 BASE
       CHARACTER*4 CTYP
       CHARACTER*8 K8B,MODELE,CARA,SIGG,NOMCMP(6),BLAN8
-      CHARACTER*8 MATEL,RIGIEL,MASSEL
+      CHARACTER*8 RIGI8,MASS8,MATEZ
       CHARACTER*16 TYPE,OPER,SUROPT
-      CHARACTER*19 KCHA
+      CHARACTER*19 KCHA,MATEL,RIGIEL,MASSEL
       CHARACTER*24 TIME2,MATE,SDTHET,THETA,COMPOR
       LOGICAL EXITIM
       COMPLEX*16 C16B
@@ -58,13 +58,16 @@ C DEB ------------------------------------------------------------------
 
       BASE = 'G'
 
-      CALL GETRES(MATEL,TYPE,OPER)
+      CALL GETRES(MATEZ,TYPE,OPER)
+      MATEL=MATEZ
       BLAN8  = '        '
-      RIGIEL = ' '
-      MASSEL = ' '
+      RIGI8 = ' '
+      MASS8 = ' '
       SIGG = ' '
-      CALL GETVID(' ','RIGI_MECA',0,1,1,RIGIEL,N1)
-      CALL GETVID(' ','MASS_MECA',0,1,1,MASSEL,N2)
+      CALL GETVID(' ','RIGI_MECA',0,1,1,RIGI8,N1)
+      RIGIEL=RIGI8
+      CALL GETVID(' ','MASS_MECA',0,1,1,MASS8,N2)
+      MASSEL=MASS8
       CALL GETVTX(' ','OPTION',0,1,1,SUROPT,N3)
       CALL GETVID(' ','SIEF_ELGA',0,1,1,SIGG,N4)
       IF(N4.NE.0)THEN
@@ -166,20 +169,20 @@ C        COMPOR = ' '
 
    20 CONTINUE
 
-      CALL JEDETC(' ','&MEAMAC2.LISTE',1)
-      CALL JEDETC(' ','&MEAMAC2.REFE',1)
+      CALL JEDETC(' ','&MEAMAC2           .RELR',1)
+      CALL JEDETC(' ','&MEAMAC2           .RERR',1)
 
-      CALL JEDETC(' ','&MERIAC1.LISTE',1)
-      CALL JEDETC(' ','&MERIAC1.REFE',1)
-      CALL JEDETC(' ','&MERIAC2.LISTE',1)
-      CALL JEDETC(' ','&MERIAC2.REFE',1)
+      CALL JEDETC(' ','&MERIAC1           .RELR',1)
+      CALL JEDETC(' ','&MERIAC1           .RERR',1)
+      CALL JEDETC(' ','&MERIAC2           .RELR',1)
+      CALL JEDETC(' ','&MERIAC2           .RERR',1)
 
-      CALL JEDETC(' ','&MERITH1.LISTE',1)
-      CALL JEDETC(' ','&MERITH2.LISTE',1)
-      CALL JEDETC(' ','&MERITH3.LISTE',1)
-      CALL JEDETC(' ','&MERITH1.REFE',1)
-      CALL JEDETC(' ','&MERITH2.REFE',1)
-      CALL JEDETC(' ','&MERITH3.REFE',1)
+      CALL JEDETC(' ','&MERITH1           .RELR',1)
+      CALL JEDETC(' ','&MERITH2           .RELR',1)
+      CALL JEDETC(' ','&MERITH3           .RELR',1)
+      CALL JEDETC(' ','&MERITH1           .RERR',1)
+      CALL JEDETC(' ','&MERITH2           .RERR',1)
+      CALL JEDETC(' ','&MERITH3           .RERR',1)
 
       CALL JEDEMA()
       END

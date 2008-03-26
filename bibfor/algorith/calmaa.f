@@ -2,7 +2,7 @@
      &                  MAA)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,11 +53,11 @@ C--------- FIN DES COMMUNS JEVEUX ------------------------------------
 
       CHARACTER*(*) MOINT,MATE
       CHARACTER*1 DIR
-      CHARACTER*8 MATEL,K8BID,LPAIN(1),LPAOUT(1)
+      CHARACTER*8 K8BID,LPAIN(1),LPAOUT(1)
       CHARACTER*14 NUM
       CHARACTER*16 OPTION
-      CHARACTER*19 MAA
-      CHARACTER*24 LCHOUT(1),LCHIN(1),LIGRMO
+      CHARACTER*19 MATEL,MAA
+      CHARACTER*24 LCHOUT(1),LCHIN(1),LIGRMO,MAA2
       REAL*8  RTBLOC,JEVTBL
 
 
@@ -69,14 +69,14 @@ C--------------------D'INTERFACE -----------------------------------
       CALL JEMARQ()
       OPTION = 'FLUX_FLUI_'//DIR
       MATEL = '&&CA.MA'//DIR
-      MAA = MATEL//'.LISTE_RESU'
+      MAA2 = MATEL//'.RELR'
       CALL MEMARE('V',MATEL,MOINT(1:8),MATE,' ','FLUX_FLUI_ '//DIR)
-      CALL WKVECT(MAA,'V V K24',1,JLVA)
-      LCHOUT(1) = MATEL//'.ME000'
+      CALL WKVECT(MAA2,'V V K24',1,JLVA)
+      LCHOUT(1) = MATEL(1:8)//'.ME000'
       CALL CODENT(1,'D0',LCHOUT(1) (12:14))
       CALL CALCUL('S',OPTION,LIGRMO,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V')
       ZK24(JLVA) = LCHOUT(1)
-      CALL JEECRA(MAA,'LONUTI',1,K8BID)
+      CALL JEECRA(MAA2,'LONUTI',1,K8BID)
 
 
 C-------------------- NUMEROTATION ----------------------------------
@@ -90,8 +90,7 @@ C---------------ASSEMBLAGE DES MATRICES AX OU AY DES N(I)N(J)NX OU NY
 
       MAA = '&&CA.AA'//DIR
 
-      CALL ASSMAM('V',MAA,1,LCHOUT,1.D0,NUM,'ZERO',1)
-
+      CALL ASSMAM('V',MAA,1,MATEL,1.D0,NUM,'ZERO',1)
 
    10 CONTINUE
       CALL JEDEMA()

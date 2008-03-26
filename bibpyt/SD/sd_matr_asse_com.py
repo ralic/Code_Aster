@@ -1,4 +1,4 @@
-#@ MODIF sd_matr_asse_com SD  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_matr_asse_com SD  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ class sd_matr_asse_com(sd_titre):
     WALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R')))
     CONL = Facultatif(OJBVect(type=Parmi('C', 'R')))
     DIGS = Facultatif(OJBVect(type=Parmi('C', 'R'))) # seulement si solveurs LDLT et MULT_FRONT
-    LIME = Facultatif(AsVK8())
+    LIME = Facultatif(AsVK24())
     cine = Facultatif(sd_matr_cine(SDNom(nomj='')))
 
     def exists(self):

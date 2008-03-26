@@ -1,12 +1,12 @@
       SUBROUTINE NUMOCH(TLIMAT,NBMAT,BASE,LMOCH)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*8       TLIMAT(*)
+      CHARACTER*24      TLIMAT(*)
       INTEGER                  NBMAT
       CHARACTER*1                    BASE
       CHARACTER*(*)                       LMOCH
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C ======================================================================
 C
 C ----------------------------------------------------------------------
 C --- DESCRIPTION DES PARAMETRES
-C IN  K8   TLIMAT : LISTE DES MATELE DEFINISSANT LA NUMEROTATION
+C IN  K24  TLIMAT : LISTE DES MATELE DEFINISSANT LA NUMEROTATION
 C IN  I    NBMAT  : NOMBRE DE MATELE PASSES DANS TLIMAT
 C IN  K1   BASE   : BASE SUR LAQUELLE ON CREE LMOCH
 C OUT K*24 LMOCH  : L'OBJET DE NOM LMOCH EST CREE ET REMPLI, IL CONTIENT
@@ -53,7 +53,7 @@ C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      CHARACTER*8 MATEL
+      CHARACTER*19 MATEL
       CHARACTER*19 NOMLI
       CHARACTER*24 RESU
       CHARACTER*8 K8BID
@@ -66,9 +66,9 @@ C---- CALCUL DU NBRE MAX DE MODELES ET DE CHARGES
 C
       IDIML = 2
       DO 100 IMAT = 1,NBMAT
-         MATEL = TLIMAT(IMAT)
-         CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
-         CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI',NBRESU,K8BID)
+         MATEL = TLIMAT(IMAT)(1:19)
+         CALL JEVEUO(MATEL//'.RELR','L',IDLRES)
+         CALL JELIRA(MATEL//'.RELR','LONUTI',NBRESU,K8BID)
          IDIML = IDIML + NBRESU
   100 CONTINUE
 C
@@ -77,7 +77,7 @@ C
       CALL WKVECT(LMOCH,BASE//' V K24',IDIML,ILMOCH)
       NLMOCH = 0
       DO 110 IMAT = 1,NBMAT
-         MATEL = TLIMAT(IMAT)
+         MATEL = TLIMAT(IMAT)(1:19)
          CALL DISMOI('F','NB_SS_ACTI',MATEL,'MATR_ELEM',N1,K8BID,IERD)
 C
          IF (N1.GT.0) THEN
@@ -93,8 +93,8 @@ C
            ENDIF
          END IF
 C
-         CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
-         CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI ',NBRESU,K8BID)
+         CALL JEVEUO(MATEL//'.RELR','L',IDLRES)
+         CALL JELIRA(MATEL//'.RELR','LONUTI ',NBRESU,K8BID)
          DO 120 IRESU = 1,NBRESU
             RESU = ZK24(IDLRES+IRESU-1)
             CALL JEEXIN(RESU(1:19)//'.NOLI',IRET)

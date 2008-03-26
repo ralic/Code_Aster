@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/10/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -248,9 +248,9 @@ C                  1234567890123456789
       CALL WKVECT('&&'//NOMPRO//'.DEPL1','V V R',NEQ,IDEPL1)
       CALL WKVECT('&&'//NOMPRO//'.VITE1','V V R',NEQ,IVITE1)
       CALL WKVECT('&&'//NOMPRO//'.ACCE1','V V R',NEQ,IACCE1)
-      VEANEC = '&&VEANEC'
+      VEANEC = '&&VEANEC           '
       VAANEC = '?????'
-      VEONDE = '&&VEONDE'
+      VEONDE = '&&VEONDE           '
       VAONDE = '?????'
       CALL WKVECT('&&'//NOMPRO//'.FOIMPE','V V R',NEQ,IFIMPE)
       CALL WKVECT('&&'//NOMPRO//'.FOONDE','V V R',NEQ,IFONDE)

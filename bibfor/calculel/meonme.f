@@ -1,11 +1,12 @@
       SUBROUTINE MEONME(MODELE,NCHAR,LCHAR,MATE,MATEL)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NCHAR
-      CHARACTER*8 MODELE,LCHAR(*),MATEL
+      CHARACTER*8 MODELE,LCHAR(*)
+      CHARACTER*19 MATEL
       CHARACTER*(*) MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,17 +67,15 @@ C     ------------------------------------------------------------------
       CALL MECHAM(OPTION,MODELE,NCHAR,LCHAR,CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,ICODE)
 
-      CALL JEEXIN(MATEL//'.REFE_RESU',IRET)
+      CALL JEEXIN(MATEL//'.RERR',IRET)
       IF (IRET.GT.0) THEN
-        CALL JEDETR(MATEL//'.REFE_RESU')
-        CALL JEDETR(MATEL//'.LISTE_RESU')
+        CALL JEDETR(MATEL//'.RERR')
+        CALL JEDETR(MATEL//'.RELR')
       END IF
       CALL MEMARE('G',MATEL,MODELE,MATE,' ',OPTION)
-      CALL WKVECT(MATEL//'.LISTE_RESU','G V K24',MAX(NCHAR,1),JLIRES)
-      CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',0,' ')
 
       LPAOUT(1) = 'PMATUUR'
-      LCHOUT(1) = MATEL//'.ME001'
+      LCHOUT(1) = MATEL(1:8)//'.ME001'
       ILIRES = 0
       IF (LCHAR(1).NE.'        ') THEN
 
@@ -111,13 +110,7 @@ C           LIGRCH = LCHAR(ICHA)//'.CHME.LIGRE'
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),'G')
           END IF
    10   CONTINUE
       END IF

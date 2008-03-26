@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ETUDE  : ESSAI TRIAXIAL AVEC LE MODELE DE TYPE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,7 +150,7 @@ RES = STAT_NON_LINE(MODELE = MODEMECA,
                    EXCIT = (_F(CHARGE = PR_LATE, FONC_MULT = COEF1),
                             _F( CHARGE = DEP_SYM),
                             _F( CHARGE = DEP_V, FONC_MULT = COEF2)),
-                   COMP_INCR = _F(RELATION = 'DRUCKER_PRAGER',
+                   COMP_INCR = _F(RELATION = 'DRUCK_PRAGER',
                                     RESI_INTE_RELA = 1.E-6,
                                     ITER_INTE_MAXI = 100,
                                     ITER_INTE_PAS  = -10,),
@@ -263,7 +263,7 @@ for i in range(n):
                                _F(CHARGE=DEP_SYM),
                                _F(CHARGE=DEP_V,
                                   FONC_MULT=COEF2),),
-                        COMP_INCR=_F(RELATION='DRUCKER_PRAGER',
+                        COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                      RESI_INTE_RELA=1.E-6,
                                      ITER_INTE_MAXI=100,
                                      ITER_INTE_PAS=-10,),

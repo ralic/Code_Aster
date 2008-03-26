@@ -5,7 +5,7 @@
      &                  MATASS,MAPREC,CNDIRP,CNCHCI,MEDIRI,COMPOR,
      &                  TYPESE,STYPSE,NOPASE,VAPRIN,VAPRMO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,12 +125,13 @@ C 0.3. ==> VARIABLES LOCALES
       DATA TYPRES /'R'/
       DATA NOMCMP /'INST    ','DELTAT  ','THETA   ','KHI     ',
      &             'R       ','RHO     '/
-      DATA MEMASS /'&&METMAS.LISTE_RESU'/
-      DATA MERIGI /'&&METRIG.LISTE_RESU'/
-      DATA VEDIRI /'&&VETDIR.LISTE_RESU'/
-      DATA VECHTP /'&&VETCHA.LISTE_RESU'/
-      DATA VECHTN /'&&VENCHA.LISTE_RESU'/
-      DATA VETNTI,VETNTP /'&&VETNTI.LISTE_RESU','&&VETNTH.LISTE_RESU'/
+      DATA MEMASS /'&&METMAS           .RELR'/
+      DATA MERIGI /'&&METRIG           .RELR'/
+      DATA VEDIRI /'&&VETDIR           .RELR'/
+      DATA VECHTP /'&&VETCHA           .RELR'/
+      DATA VECHTN /'&&VENCHA           .RELR'/
+      DATA VETNTI,VETNTP /'&&VETNTI           .RELR',
+     &                    '&&VETNTH           .RELR'/
       DATA CNCHTP,CNTNTP,CNTNTI,CNCHNL  /4*' '/
       DATA BIDON  /' '/
 
@@ -540,7 +541,7 @@ C 3.2. ==> ASSEMBLAGE DE LA MATRICE
           CALL JEVEUO(MERIGI,'L',JMER)
           IF (ZK24(JMER)(1:8).NE.'        ') THEN
             NBMAT = NBMAT + 1
-            TLIMAT(NBMAT) = ZK24(JMER)
+            TLIMAT(NBMAT) = MERIGI 
           END IF
         END IF
 
@@ -549,8 +550,8 @@ C 3.2. ==> ASSEMBLAGE DE LA MATRICE
           CALL JEVEUO(MEDIRI,'L',JMED)
           IF (ZK24(JMED)(1:8).NE.'        ') THEN
             NBMAT = NBMAT + 1
-            TLIMAT(NBMAT) = ZK24(JMED)
-          END IF
+            TLIMAT(NBMAT) = MEDIRI
+      END IF
         END IF
 
         CALL JEEXIN(MEMASS,IRET)
@@ -558,8 +559,8 @@ C 3.2. ==> ASSEMBLAGE DE LA MATRICE
           CALL JEVEUO(MEMASS,'L',JMEM)
           IF (ZK24(JMEM) (1:8).NE.'        ') THEN
             NBMAT = NBMAT + 1
-            TLIMAT(NBMAT) = ZK24(JMEM)
-          END IF
+            TLIMAT(NBMAT) =MEMASS
+         END IF
         END IF
 
         CALL ASMATR (NBMAT,TLIMAT,' ',NUMEDD,SOLVEU,

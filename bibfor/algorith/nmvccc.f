@@ -3,7 +3,7 @@
      &                  EXIEPA,EXIPHA,VECEL )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
       CHARACTER*8  MODELE
       LOGICAL      EXITEM,EXIHYD,EXISEC,EXIEPA,EXIPHA
-      CHARACTER*8  VECEL
+      CHARACTER*19 VECEL
 C
 C ----------------------------------------------------------------------
 C
@@ -96,25 +96,17 @@ C
       MASQUE = '.VEXXX'
       LIGRMO = MODELE(1:8)//'.MODELE'
 C
-C --- ACCES AU VECT_ELEM
-C
-      CALL JEVEUO(VECEL// '.LISTE_RESU','E',JVC)
-C
 C --- THERMIQUE
 C
       IF (EXITEM) THEN
         NBR       = NBR+1
         CALL CODENT(NBR,'D0',MASQUE(4:6))
-        LCHOUT(1) =  VECEL// MASQUE
+        LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_TEMP_R'
         CALL CALCUL('C',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
      &                                NBOUT ,LCHOUT,LPAOUT,'V')
         CALL JEEXIN(LCHOUT(1)//'.RESL',IRET)
-        IF (IRET.GT.0) THEN
-          ZK24(JVC -1 + NBR) = LCHOUT(1)
-        ELSE
-          NBR=NBR-1
-        ENDIF
+        CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
 C
 C --- HYDRATATION
@@ -122,11 +114,11 @@ C
       IF (EXIHYD) THEN
         NBR       = NBR+1
         CALL CODENT(NBR,'D0',MASQUE(4:6))
-        LCHOUT(1) =  VECEL// MASQUE
+        LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_HYDR_R'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
      &                                NBOUT ,LCHOUT,LPAOUT,'V')
-        ZK24(JVC + NBR - 1) = LCHOUT(1)
+        CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
 C
 C --- SECHAGE
@@ -134,11 +126,11 @@ C
       IF (EXISEC) THEN
         NBR       = NBR+1
         CALL CODENT(NBR,'D0',MASQUE(4:6))
-        LCHOUT(1) =  VECEL// MASQUE
+        LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_SECH_R'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
      &                                NBOUT ,LCHOUT,LPAOUT,'V')
-        ZK24(JVC + NBR - 1) = LCHOUT(1)
+        CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
 C
 C --- DEFORMATION ANELASTIQUE
@@ -146,11 +138,11 @@ C
       IF (EXIEPA) THEN
         NBR       = NBR+1
         CALL CODENT(NBR,'D0',MASQUE(4:6))
-        LCHOUT(1) =  VECEL// MASQUE
+        LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_EPSA_R'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
      &                                NBOUT ,LCHOUT,LPAOUT,'V')
-        ZK24(JVC + NBR - 1) = LCHOUT(1)
+        CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
 C
 C --- PHASES METALLURGIQUES
@@ -158,19 +150,12 @@ C
       IF (EXIPHA) THEN
         NBR       = NBR+1
         CALL CODENT(NBR,'D0',MASQUE(4:6))
-        LCHOUT(1) =  VECEL// MASQUE
+        LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_META_Z'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
      &                                NBOUT ,LCHOUT,LPAOUT,'V')
-        ZK24(JVC + NBR - 1) = LCHOUT(1)
+        CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
-C
-C --- NOMBRE DE VECT_ELEM
-C
-      IF (NBR.GT.5) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF
-      CALL JEECRA(VECEL(1:8)//'.LISTE_RESU','LONUTI',NBR  ,K8BID )
 C
       CALL JEDEMA()
       END

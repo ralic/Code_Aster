@@ -10,7 +10,7 @@ C
       CHARACTER*1 BASE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,9 +86,9 @@ C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      CHARACTER*8 MATEL,K8
+      CHARACTER*8 K8
       CHARACTER*8 KBID
-      CHARACTER*19 PREFIX
+      CHARACTER*19 PREFIX,MATEL
       CHARACTER*24 RESU,NOMLI,K24LIL,KMAILL
 C-----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -168,10 +168,10 @@ C
 C     -- VERIFICATION DES MATR_ELEM :
 C     -------------------------------
       DO 100 IMAT = 1,NBMAT
-         MATEL = ZK8(ILIMAT+IMAT-1)
-         CALL JEEXIN(MATEL//'.REFE_RESU',IRET1)
+         MATEL = ZK24(ILIMAT+IMAT-1)(1:19)
+         CALL JEEXIN(MATEL//'.RERR',IRET1)
          CALL ASSERT(IRET1.GT.0)
-         CALL JEVEUO(MATEL//'.REFE_RESU','L',IAREFR)
+         CALL JEVEUO(MATEL//'.RERR','L',IAREFR)
          MODELE= ZK24(IAREFR-1+1)(1:8)
          SUROPT= ZK24(IAREFR-1+2)(1:16)
          IF (((MODELE.NE.MODELS).AND.(MODELS.NE.' '))
@@ -192,10 +192,10 @@ C
            EXISS1= 'NON'
          END IF
 C
-         CALL JEEXIN(MATEL//'.LISTE_RESU',IRET)
+         CALL JEEXIN(MATEL//'.RELR',IRET)
          IF (IRET.GT.0) THEN
-           CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
-           CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI',NBRESU,K1BID)
+           CALL JELIRA(MATEL//'.RELR','LONUTI',NBRESU,K1BID)
+           IF(NBRESU.GT.0)CALL JEVEUO(MATEL//'.RELR','L',IDLRES)
            IDIMLI = IDIMLI + NBRESU
          ELSE
            IF (EXISS1(1:3).EQ.'NON') CALL U2MESS('F','ASSEMBLA_19')
@@ -235,11 +235,11 @@ C
 C---- CALCUL DE LILI
 C
       DO 110 IMAT = 1,NBMAT
-         MATEL = ZK8(ILIMAT+IMAT-1)
-         CALL JEEXIN(MATEL//'.LISTE_RESU',IRET)
+         MATEL = ZK24(ILIMAT+IMAT-1)(1:19)
+         CALL JEEXIN(MATEL//'.RELR',IRET)
          IF (IRET.EQ.0) GO TO 110
-         CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
-         CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI ',NBRESU,K1BID)
+         CALL JELIRA(MATEL//'.RELR','LONUTI ',NBRESU,K1BID)
+         IF(NBRESU.GT.0)CALL JEVEUO(MATEL//'.RELR','L',IDLRES)
          DO 120 IRESU = 1,NBRESU
             RESU = ZK24(IDLRES+IRESU-1)
 C

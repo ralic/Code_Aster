@@ -8,7 +8,7 @@
       CHARACTER*19        NOMNUM, NOMSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,8 +59,8 @@ C
       ZI(IADESC+1) = NBMODE
       ZI(IADESC+2) = 2
 C
-      CALL WKVECT ( MATRGE//'.LIME', 'G V K8', 1, IALIME )
-      ZK8(IALIME) = '        '
+      CALL WKVECT ( MATRGE//'.LIME', 'G V K24', 1, IALIME )
+      ZK24(IALIME) = '                        '
 C
       CALL WKVECT ( MATRGE//'.CONL', 'G V R' , NBMODE, IACONL )
       DO 10 I = 1 , NBMODE

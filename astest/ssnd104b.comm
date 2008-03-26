@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,17 +134,6 @@ U3       = CALC_NO( reuse    = U3,
                   )
   
 TEST_RESU( RESU = (
-###########################
-# --- CONTRAINTE SIXX --- #
-###########################
-                _F(   RESULTAT   = U3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
-                      NOM_CMP    = 'SIXX',
-                      INST       = 2.0,
-                      PRECISION  = 1.E-3,
-                      VALE       = 5.1133158214079E-10),
 ###########################
 # --- CONTRAINTE SIYY --- #
 ###########################
@@ -299,17 +288,6 @@ U4       = CALC_NO( reuse    = U4,
                   )
   
 TEST_RESU( RESU = (
-###########################
-# --- CONTRAINTE SIXX --- #
-###########################
-                _F(   RESULTAT   = U4,
-                      REFERENCE  = 'NON_REGRESSION',
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
-                      NOM_CMP    = 'SIXX',
-                      INST       = 2.0,
-                      PRECISION  = 1.E-3,
-                      VALE       = 8.0654900873493E-10),
 ###########################
 # --- CONTRAINTE SIYY --- #
 ###########################

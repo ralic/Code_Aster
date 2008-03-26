@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,9 +79,9 @@ C
       REAL*8      EPXMAX
       PARAMETER   (EPXMAX = 5.D0)
       CHARACTER*8 NOMAIL
-      REAL*8      DEPSTH(6),VALRES(10)
+      REAL*8      DEPSTH(6),VALRES(9)
       REAL*8      LAMBDA,KAPA,PORO,PRESCR,M,PA
-      REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,FONC
+      REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,FONC,MU
       REAL*8      SIELEQ,SIMOEL,H,A(6),AA(6),SIEQM, TOTO, TOTO1
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),TPLUS(6)
       REAL*8      SIGPMO,F1,F2,F3,F4,F5,F6,F,FP,COEF,PORO1,PORO2
@@ -92,9 +92,9 @@ C
       REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6),SS(6,6),TT(6,6)
       REAL*8      HH(6,6),SES(6,6),SIEQP,GG(6,6),SPS(6,6),HHM(6,6)
       REAL*8      D1G(6,6),D1GHHM(6,6),ID2(6,6),DEVHYD(6,6),DEVHYM(6,6)
-      REAL*8      DEUX,DIFF,DIFF1,DIFF2,XAU
+      REAL*8      DIFF,DIFF1,DIFF2,XAU
       REAL*8      FXI1,FXI2,FXI3,FXI,FXS1,FXS2,FXS3,FXS,ZERO,EPS
-      REAL*8      UN,IDEN6(6,6), VALM, VALP
+      REAL*8      UN,DEUX,TROIS,SIX,UNSDE,IDEN6(6,6), VALM, VALP
       INTEGER     NDIMSI,SIGNF,SIGNFI,SIGNFS
       INTEGER     I,K,L,ITER, MATR
       CHARACTER*2 BL2, FB2, CODRET(9)
@@ -102,8 +102,14 @@ C
       REAL*8      VALPAM(3),EMAX,DEPSEQ
 C ======================================================================
       PARAMETER   ( ZERO   = 0.D0   )
+      PARAMETER   ( UN     = 1.D0   )
+      PARAMETER   ( DEUX   = 2.D0   )
+      PARAMETER   ( TROIS  = 3.D0   )
+      PARAMETER   ( SIX    = 6.D0   )
+      PARAMETER   ( UNSDE  = 0.5D0   )
+      
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA        TOL/1.D-10/DEUX/2.D0/
+      DATA        TOL/1.D-10/
 C DEB ------------------------------------------------------------------
 C
 C     -- 1 INITIALISATIONS :
@@ -117,95 +123,69 @@ C
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
-      NOMRES(1)='E'
-      NOMRES(2)='NU'
-      NOMRES(3)='ALPHA'
-      NOMRES(4)='PORO'
+      NOMRES(1)='ALPHA'
+      NOMRES(2)='MU'
+      NOMRES(3)='PORO'
+      NOMRES(4)='KAPA'
       NOMRES(5)='LAMBDA'
-      NOMRES(6)='KAPA'
-      NOMRES(7)='M'
-      NOMRES(8)='PRES_CRIT'
-      NOMRES(9)='PA'
+      NOMRES(6)='M'
+      NOMRES(7)='PRES_CRIT'
+      NOMRES(8)='PA'
 C
       NOMPAR(1) = 'TEMP'
       VALPAM(1) = TM
 C
+
       IF (COMPOR(1)(1:9) .EQ. 'CAM_CLAY ' ) THEN
+
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
-         E  = VALRES(1)
-         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
-         NU = VALRES(2)
-         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
+
          IF ((IISNAN(TP).EQ.0).AND.(IISNAN(TM).GT.0)) THEN
-           IF ((IISNAN(TREF).GT.0).OR.(CODRET(3) .NE.'OK')) THEN 
+           IF ((IISNAN(TREF).GT.0).OR.(CODRET(1) .NE.'OK')) THEN 
              CALL U2MESS('F','CALCULEL_31')
            ELSE
-             COEF = VALRES(3)*(TP-TREF) - VALRES(3)*(TM-TREF)
+             COEF = VALRES(1)*(TP-TREF) - VALRES(1)*(TM-TREF)
            ENDIF
          ELSE
-             VALRES(3) = 0.D0
+             VALRES(1) = 0.D0
              COEF = 0.D0
          ENDIF
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
-         PORO = VALRES(4)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,7,
+     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+         MU     = VALRES(2)
+         PORO   = VALRES(3)
+         KAPA   = VALRES(4)
          LAMBDA = VALRES(5)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
-         KAPA = VALRES(6)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
-         M     = VALRES(7)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
-         PRESCR = VALRES(8)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
-         PA = VALRES(9)
+         M      = VALRES(6)
+         PRESCR = VALRES(7)
+         PA     = VALRES(8)
       ENDIF
       IF (((COMPOR(1)(1:6) .EQ. 'KIT_HM') .OR.
      &     (COMPOR(1)(1:7) .EQ. 'KIT_HHM') .OR.
      &     (COMPOR(1)(1:7) .EQ. 'KIT_THM') .OR.
      &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
      &     (COMPOR(11)(1:9) .EQ. 'CAM_CLAY ')) THEN
+
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
-         E  = VALRES(1)
-         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
-         NU = VALRES(2)
-         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         COEF = VALRES(3)*(TP-TREF) - VALRES(3)*(TM-TREF)
+     &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
+         IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+         COEF = VALRES(1)*(TP-TREF) - VALRES(1)*(TM-TREF)
  
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
-         PORO = VALRES(4)
-         PORO1 = PORO
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,7,
+     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+         MU     = VALRES(2)
+         PORO   = VALRES(3)
+         PORO1  = PORO
+         KAPA   = VALRES(4)
          LAMBDA = VALRES(5)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
-         KAPA = VALRES(6)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
-         M     = VALRES(7)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
-         PRESCR = VALRES(8)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
-         PA = VALRES(9)
+         M      = VALRES(6)
+         PRESCR = VALRES(7)
+         PA     = VALRES(8)
+
          CALL RCVALA(IMATE,' ','THM_INIT',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
-         PORO = VALRES(4)
+     &                 NOMRES(3),VALRES(3),CODRET(3), FB2 )
+         PORO = VALRES(3)
          PORO2 = PORO
          DIFF = PORO1-PORO2
          IF (ABS(DIFF) .GT. TOL) THEN
@@ -214,7 +194,7 @@ C
          PORO=PORO1
          ENDIF
       ENDIF
-         DEUXMU = E/(1.D0+NU)
+         DEUXMU = DEUX*MU
          E0=PORO/(1.D0-PORO)
          XK0 = (1.D0+E0)/KAPA
          XK= (1.D0+E0)/(LAMBDA-KAPA)
@@ -280,8 +260,13 @@ C ---- INITIALISATION A T=0
 
 
 C ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
-        EMAX = 3.D0*XK0*SIGMMO
-        IF (E.GE.EMAX) THEN
+        NU = (TROIS*(UN+E0)*SIGMMO-DEUXMU*KAPA)/
+     &      (SIX*(UN+E0)*SIGMMO+DEUXMU*KAPA)
+     
+        E = DEUXMU*(UN+NU)
+        
+        
+        IF ((E.LE.ZERO).OR.(NU.LE.ZERO).OR.(NU.GT.UNSDE)) THEN
           CALL TECAEL(IADZI,IAZK24)
           NOMAIL = ZK24(IAZK24-1+3) (1:8)
           CALL U2MESK('A','COMPOR1_3',1,NOMAIL)

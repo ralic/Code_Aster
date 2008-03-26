@@ -2,7 +2,7 @@
      &                  DEPDEL,VECELZ,INSTAM,COMPOR,CARCRI,LIGREZ,VITES,
      &                  ACCEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
       IMPLICIT NONE
       CHARACTER*(*) MATE,LIGREZ,VECELZ
-      CHARACTER*8 VECELE
+      CHARACTER*19 VECELE
       CHARACTER*24 MODELE,CARELE,CHARGE,INFCHA,DEPMOI,DEPDEL,COMPOR,
      &             CARCRI,VITES,ACCEL
       REAL*8 INSTAP,INSTAM
@@ -96,7 +96,7 @@ C     ------------------------------------------------------------------
 
 
       VECELE = VECELZ
-      IF (VECELE.EQ.' ') VECELE = '&&VEMSUI'
+      IF (VECELE.EQ.' ') VECELE = '&&VEMSUI           '
       RESUEL = '&&VECGME.???????'
 
 
@@ -117,16 +117,8 @@ C     -- ALLOCATION DU VECT_ELEM RESULTAT :
 C     -------------------------------------
       CALL DETRSD('VECT_ELEM',VECELE)
       CALL MEMARE('V',VECELE,MODELE(1:8),MATE,CARELE,'CHAR_MECA')
-      IF (BIDON) THEN
-        CALL WKVECT(VECELE//'.LISTE_RESU','V V K24',1,JLVE)
-        CALL JEECRA(VECELE//'.LISTE_RESU','LONUTI',0,K8BID)
-        GO TO 60
-      ELSE
-        LONLIS = (NBCHMX+ZI(JINF+2*NCHAR+2))*NCHAR
-        CALL WKVECT(VECELE//'.LISTE_RESU','V V K24',LONLIS,JLVE)
-        CALL JEECRA(VECELE//'.LISTE_RESU','LONUTI',0,K8BID)
-      END IF
-
+      CALL REAJRE(VECELE,' ','V')
+      IF (BIDON) GO TO 60
 
       LIGRMO = LIGREZ
       IF (LIGRMO.EQ.' ') LIGRMO = MODELE(1:8)//'.MODELE'
@@ -225,7 +217,7 @@ C     -------------------------------------
      &                      RESUEL,PAOUT,'V')
               END IF
               ILVE = ILVE + 1
-              ZK24(JLVE-1+ILVE) = RESUEL
+              CALL REAJRE(VECELE,RESUEL,'V')
             END IF
    20     CONTINUE
         END IF
@@ -242,18 +234,13 @@ C          1 - VITESSE
         CALL NMVGME(MODELE,LIGREL,CARELE,CHARGE,ICHA,INSTAP,RESUFV,
      &              DEPMOI,DEPDEL,VITES)
         DO 40 II = 1,1
-          CALL JEEXIN(RESUFV(II)//'.RESL',IER)
-          IF (IER.GT.0) THEN
-            ILVE = ILVE + 1
-            ZK24(JLVE-1+ILVE) = RESUFV(II)
-          END IF
+          CALL REAJRE(VECELE,RESUFV(II),'V')
    40   CONTINUE
 
    50 CONTINUE
-      CALL JEECRA(VECELE//'.LISTE_RESU','LONUTI',ILVE,K8BID)
 
    60 CONTINUE
 
-      VECELZ = VECELE//'.LISTE_RESU'
+      VECELZ = VECELE//'.RELR'
       CALL JEDEMA()
       END

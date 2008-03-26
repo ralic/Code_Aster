@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CAVITE 2D CALCUL DE SENSIBILITE (LOI DE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -190,7 +190,7 @@ RES=STAT_NON_LINE(MODELE=MODEMECA,
                             FONC_MULT=COEF1),
                          _F(CHARGE=CALHAU,
                             FONC_MULT=COEF1),),
-                  COMP_INCR=_F(RELATION='DRUCKER_PRAGER',
+                  COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                RESI_INTE_RELA=1E-09,
                                ITER_INTE_MAXI=5,
                                ITER_INTE_PAS=10,),
@@ -386,7 +386,7 @@ for i in range(n):
                                     FONC_MULT=COEF1),
                                  _F(CHARGE=CALHAU,
                                     FONC_MULT=COEF1),),
-                          COMP_INCR=_F(RELATION='DRUCKER_PRAGER',
+                          COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                        RESI_INTE_RELA=1E-06,
                                        ITER_INTE_MAXI=5,
                                        ITER_INTE_PAS=10,),
@@ -408,7 +408,7 @@ for i in range(n):
                                     FONC_MULT=COEF1),
                                  _F(CHARGE=CALHAU,
                                     FONC_MULT=COEF1),),
-                          COMP_INCR=_F(RELATION='DRUCKER_PRAGER',
+                          COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                        RESI_INTE_RELA=1E-06,
                                        ITER_INTE_MAXI=5,
                                        ITER_INTE_PAS=10,),

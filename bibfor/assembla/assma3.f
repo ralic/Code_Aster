@@ -7,7 +7,7 @@
      &    NOMLI,NOMLID,INFOFE,
      &    JTMP2,JVALM,ILINU,IDD,ELLAGR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,9 +46,8 @@ C-----------------------------------------------------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
       LOGICAL LMASYM, LMESYM
-      CHARACTER*19 MAT19
+      CHARACTER*19 MAT19,MATEL
       CHARACTER*14 NU14
-      CHARACTER*8 MATEL
       CHARACTER*2 TT
       REAL*8 C1,C2
       CHARACTER*24 NOMLI,NOMLID,INFOFE

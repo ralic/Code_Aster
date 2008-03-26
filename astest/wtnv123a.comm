@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,11 +83,12 @@ MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                        ORIE_PEAU_3D=_F(  GROUP_MA = ('HAUT', 'DEVANT', 'DROITE',),  )
                      )
 
-SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,
+SOL=DEFI_MATERIAU(    ELAS=_F(  E = 7.2E6,    NU = 0.3,
                                      RHO = 2500.,
                                      ALPHA = 1.E-5,
                                    ),
-                    CAM_CLAY=_F(PORO=0.14,
+                    CAM_CLAY=_F(MU=2.76E6,
+                                PORO=0.14,
                                 LAMBDA=0.2,
                                 KAPA=0.02,
                                 M=1.,
@@ -143,7 +144,7 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,
                                 PRE2 = 1.E5,
                                 PORO = 0.14,
                                 PRES_VAPE = 2269.8,
-                                DEGR_SATU=0.099,
+                                DEGR_SATU=0.99,
                                 )
                            )
 
@@ -176,7 +177,7 @@ P0=AFFE_CHAR_MECA(    MODELE=MODELE,
 TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                             _F(  JUSQU_A = 1.,    NOMBRE = 10, ),
                             _F(  JUSQU_A = 3.,    NOMBRE = 5, ),
-                            _F(  JUSQU_A = 6.,    NOMBRE = 5, ),)
+                            _F(  JUSQU_A = 6.,    NOMBRE = 10, ),)
                          )
 TEMPS2=DEFI_LIST_REEL(   DEBUT=6.,INTERVALLE=(
                             _F(  JUSQU_A = 8.,    NOMBRE = 8,  ),
@@ -308,7 +309,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 )),
                          COMP_INCR=_F(
                 RELATION = 'KIT_HHM',
-                ITER_INTE_MAXI=100,
+                ITER_INTE_MAXI=200,
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),
@@ -502,7 +503,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',
                        INST=20.,
                        PRECISION = (1.E-4,1.E-5),
-                       VALE = -4.3443E-02,
+                       VALE = -6.96750E-02,
                      ),
 # PRESSION CRITIQUE
                 _F(    RESULTAT = U1,

@@ -4,7 +4,7 @@
       CHARACTER*(*)    CHAMNO,MODELE,MATE,NU,VECTAS,          OPT
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/02/96   AUTEUR CIBHHRA R.MEDDOURI 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C------------------------------------------------------------------
       INTEGER       IBID
       REAL*8        R8BID
       CHARACTER*1   K1BID
-      CHARACTER*19  VE
+      CHARACTER*24  VE
 C------------------------------------------------------------------
 C
 C     --- CALCUL DU VECTEUR ELEMENTAIRE DE FLUX ---
@@ -48,7 +48,7 @@ C
 C     --- ASSEMBLAGE DU VECTEUR ELEMENTAIRE DE FLUX SUR LA
 C                       NUMEROTATION NU DU MODELE THERMIQUE ---
 C
-      CALL ASSVEC('V',VECTAS,1,VE,1.0D0,NU,' ','ZERO',1)
+      CALL ASSVEC('V',VECTAS,1,VE(1:19),1.0D0,NU,' ','ZERO',1)
       CALL JEDETR(VE)
 C
       CALL JELIRA(VECTAS(1:19)//'.DESC','LONMAX',ND,K1BID)

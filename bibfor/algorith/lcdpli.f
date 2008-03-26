@@ -2,7 +2,7 @@
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C =====================================================================
       IMPLICIT      NONE
       INTEGER       IRET,NVI
       REAL*8        DEPS(6),VIM(NVI),VIP(NVI),SIG(6),DDOT
-      REAL*8        SIGM(6),MATERF(4,2),DSIDEP(6,6)
+      REAL*8        SIGM(6),MATERF(5,2),DSIDEP(6,6)
       CHARACTER*8   MOD
       CHARACTER*16  OPTION
 C =====================================================================

@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,8 +81,8 @@ C CREATION DE LA MATRICE GENERALISE SUPPORT
       ZK24(JREFA-1+2)=NUGENE
       ZK24(JREFA-1+9) = 'MS'
       ZK24(JREFA-1+10) = 'GENE'
-      CALL WKVECT(MATGEN//'           .LIME','V V K8',1,LDLIM)
-      ZK8(LDLIM)=NUGENE
+      CALL WKVECT(MATGEN//'           .LIME','V V K24',1,LDLIM)
+      ZK24(LDLIM)=NUGENE
 
 C recuperation des parametres a garder dans le modele gene
       CALL GETVTX(' ','NOM_PARA',1,1,NBMAX,KPAR,IPAR)

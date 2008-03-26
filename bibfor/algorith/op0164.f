@@ -6,7 +6,7 @@ C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,8 +176,8 @@ C
      &                                            'CONSTANT', 2 )
       CALL JEECRA ( RESU//'.VALM', 'LONMAX', NTERM, K8B )
 C
-      CALL WKVECT ( RESU//'.LIME', 'G V K8', 1, IALIME )
-      ZK8(IALIME) = '        '
+      CALL WKVECT ( RESU//'.LIME', 'G V K24', 1, IALIME )
+      ZK24(IALIME) = '                        '
 C
       CALL WKVECT ( RESU//'.CONL', 'G V C' , NUEQ, IACONL )
       DO 10 I = 1 , NUEQ

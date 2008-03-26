@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,11 +82,12 @@ MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
 
 # MATERIAU 
 
-SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,  
+SOL=DEFI_MATERIAU(    ELAS=_F(  E = 7.2E6,    NU = 0.3,  
                                      RHO = 2500.,  
                                      ALPHA = 1.E-5,  
                                    ), 
-                    CAM_CLAY=_F(PORO=0.14,
+                    CAM_CLAY=_F(MU=2.76E6,
+                                PORO=0.14,
                                 LAMBDA=0.2,
                                 KAPA=0.02,           
                                 M=1.,
@@ -177,15 +178,15 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                             _F(  JUSQU_A = 6.,    NOMBRE = 15, ),)
                          )
 TEMPS2=DEFI_LIST_REEL(   DEBUT=6.,INTERVALLE=(
-                            _F(  JUSQU_A = 12.,    NOMBRE = 25,  ),)
+                            _F(  JUSQU_A = 12.,    NOMBRE = 50,  ),)
                          )
 
 TEMPS3=DEFI_LIST_REEL(   DEBUT=12.,INTERVALLE=(
-                            _F(  JUSQU_A = 18.,    NOMBRE = 25,  ),)
+                            _F(  JUSQU_A = 18.,    NOMBRE = 50,  ),)
                          )
 
 TEMPS4=DEFI_LIST_REEL(   DEBUT=18.,INTERVALLE=(
-                            _F(  JUSQU_A = 24.,    NOMBRE = 40,  ),)
+                            _F(  JUSQU_A = 24.,    NOMBRE = 80,  ),)
                          )
 
 # AFFECTATION DE L ETAT INITIAL NON SATURE 
@@ -715,7 +716,7 @@ U4=STAT_NON_LINE(ETAT_INIT=_F(
                 ),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
-                ITER_INTE_MAXI=100, 
+                ITER_INTE_MAXI=200, 
                 RELATION_KIT = (
                   'BARCELONE',        'LIQU_GAZ',
                   'HYDR_UTIL',  ),      

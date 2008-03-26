@@ -1,6 +1,6 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
-C MODIF CALCULEL  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,9 @@ C TOLE  CRP_20
 
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*8 MODELE,LCHARZ,CARA,MATEL,KBID,LCMP(5)
+      CHARACTER*8 MODELE,LCHARZ,CARA,KBID,LCMP(5)
       CHARACTER*(*) MODELZ,CARAZ,MATELZ,LCHAR(*),MATE,BASEZ
+      CHARACTER*19 MATEL
       REAL*8 TIME
       LOGICAL EXITIM,LFONC
       INTEGER NCHAR
@@ -121,7 +122,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHVREF='&&ME2MME.VARC.REF'
 
 
-C     -- CALCUL DE .REFE_RESU:
+C     -- CALCUL DE .RERR:
       CALL MEMARE(BASE,MATEL,MODELE,MATE,CARA,'CHAR_MECA')
 
 C     -- S'IL N' Y A PAS D'ELEMENTS CLASSIQUES, ON RESSORT:
@@ -138,13 +139,11 @@ C        ET CHAM_MATER :
       CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
 
       IF (NCHAR.EQ.0) GO TO 60
-      LONLIS = 10*NCHAR
-      CALL JEEXIN(MATEL//'.LISTE_RESU',IRET)
-      IF (IRET.GT.0) CALL JEDETR(MATEL//'.LISTE_RESU')
-      CALL WKVECT(MATEL//'.LISTE_RESU',BASE//' V K24',LONLIS,JLIRES)
+      CALL JEEXIN(MATEL//'.RELR',IRET)
+      IF (IRET.GT.0) CALL JEDETR(MATEL//'.RELR')
 
       LPAOUT(1) = 'PVECTUR'
-      LCHOUT(1) = MATEL//'.VEXXX'
+      LCHOUT(1) = MATEL(1:8)//'.VEXXX'
       ILIRES = 0
         LPAIN(1) = 'PGEOMER'
         LCHIN(1) = CHGEOM
@@ -205,13 +204,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRCH,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.FORNO',IRET)
@@ -228,13 +221,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRCH,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 
 C      -- SI LE MODELE NE CONTIENT PAS D'ELEMENTS CLASSIQUES, ON SAUTE:
@@ -255,13 +242,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.FCO2D',IRET)
@@ -279,13 +260,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.FCO3D',IRET)
@@ -303,13 +278,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.F2D3D',IRET)
@@ -327,13 +296,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.F1D3D',IRET)
@@ -351,13 +314,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.F2D2D',IRET)
@@ -375,13 +332,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.F1D2D',IRET)
@@ -398,13 +349,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.F1D1D',IRET)
@@ -425,13 +370,7 @@ C ====================================================================
             LCHIN(13) = CHCARA(11)
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.PESAN',IRET)
@@ -449,13 +388,7 @@ C ====================================================================
             LCHIN(13) = CHCARA(11)
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.ROTAT',IRET)
@@ -469,13 +402,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.EPSIN',IRET)
@@ -503,13 +430,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.FELEC',IRET)
@@ -521,13 +442,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
 C         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
@@ -558,13 +473,7 @@ C         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
    30     CONTINUE
    40     CONTINUE
 C ====================================================================
@@ -593,13 +502,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
             CALL DETRSD('CHAMP_GD',CHVARC)
           END IF
 C ====================================================================
@@ -619,13 +522,7 @@ C ====================================================================
             LCHIN(6) = CHCARA(5)
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.VNOR ',IRET)
@@ -642,13 +539,7 @@ C ====================================================================
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
 C!
@@ -669,13 +560,7 @@ C!
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
 
@@ -696,12 +581,12 @@ C CHARGE DE TYPE EVOL_CHAR
           IF (IRET.NE.0) THEN
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-            ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
             CALL COPISD('CHAMP_GD',BASE,RESUFV(I),LCHOUT(1))
             CALL DETRSD('CHAMP_GD',RESUFV(I))
           END IF
  200    CONTINUE
-        CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
+
         CALL JEDETR(CHARGE)
 
 C ====================================================================

@@ -1,4 +1,4 @@
-#@ MODIF meidee0 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF meidee0 Messages  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,10 +25,18 @@ cata_msg={
 Le modèle mesuré doit etre un concept de type DYNA_HARMO ou MODE_MECA.
 """),
 2: _("""
-Erreur pendant l'importation des modules MEIDEE.
+Le maillage et les déformées ne sont pas compatibles.
 """),
 3: _("""
-Le maillage et les déformées ne sont pas compatibles.
+Calcul de MAC impossible : bases incompatibles.
+"""),
+4: _("""
+Problème inverse impossible : problème de cohérence entre les données.
+"""),
+5: _("""
+Problème de NUME_DDL dans MACRO_EXPANS : il est possible de le preciser
+a l'appel de la macro. Si vous utilisez MACRO_EXPANS par l'intermediaire d'une IHM,
+contactez l'assistance technique.
 """),
 
 }

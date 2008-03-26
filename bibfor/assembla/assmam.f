@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,10 +72,10 @@ C-----------------------------------------------------------------------
       COMMON /CAII18/CADIST
       CHARACTER*1 BASE1,TYPSCA,KBID
       CHARACTER*2 TT
-      CHARACTER*8 MATEL,K8BID,NOGDCO,NOGDSI,MA,MA2,MO,MO2
+      CHARACTER*8 K8BID,NOGDCO,NOGDSI,MA,MA2,MO,MO2
       CHARACTER*8 KNUMER,SYMEL,KEMPIC,KAMPIC
       CHARACTER*14 NUDEV,NU14
-      CHARACTER*19 MATDEV,MAT19,RESU
+      CHARACTER*19 MATDEV,MAT19,RESU,MATEL
       CHARACTER*24 NOMLI,METHOD,SDFETI,K24B,NOMLOG,NOMLID,INFOFE
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       CHARACTER*1 MATSYM,TYPMAT
@@ -317,9 +317,9 @@ C             -- MATR_ASSE ESCLAVE LIEE AU SOUS-DOMAINE IDD
 
 
 C     -- RECOPIE DE LA LISTE DES MATR_ELEM DANS 1 OBJET JEVEUX
-      CALL WKVECT(MATDEV//'.LIME',BASE1//' V K8 ',NBMAT,ILIMAT)
+      CALL WKVECT(MATDEV//'.LIME',BASE1//' V K24 ',NBMAT,ILIMAT)
       DO 20 I=1,NBMAT
-        ZK8(ILIMAT+I-1)=TLIMAT(I)
+        ZK24(ILIMAT+I-1)=TLIMAT(I)
         IF (DBG .AND. TLIMAT(I).NE.' ') CALL CHEKSD(TLIMAT(I),
      &      'SD_MATR_ELEM',IRET)
    20 CONTINUE
@@ -489,7 +489,7 @@ C         =============================
           DO 230 IMAT=1,NBMAT
             C1=LICOEF(IMAT)
             C2=C1
-            MATEL=ZK8(ILIMAT+IMAT-1)
+            MATEL=ZK24(ILIMAT+IMAT-1)(1:19)
             CALL DISMOI('F','NOM_MODELE',MATEL,'MATR_ELEM',IBID,MO2,
      &                  IERD)
             CALL DISMOI('F','SUR_OPTION',MATEL,'MATR_ELEM',IBID,OPTIO,
@@ -511,12 +511,11 @@ C           ----------------------------------
 
 C           3.2 TRAITEMENT DES ELEMENTS FINIS CLASSIQUES
 C           -------------------------------------------
-            CALL JEEXIN(MATEL//'.LISTE_RESU',IRET)
+            CALL JEEXIN(MATEL//'.RELR',IRET)
             IF (IRET.EQ.0)GOTO 220
 
-            CALL JEVEUO(MATEL//'.LISTE_RESU','L',JLRES)
-            CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI ',NBRESU,KBID)
-
+            CALL JELIRA(MATEL//'.RELR','LONUTI ',NBRESU,KBID)
+            IF(NBRESU.GT.0)CALL JEVEUO(MATEL//'.RELR','L',JLRES)
 
 C           BOUCLE SUR LES RESU_ELEM
 C           ==========================

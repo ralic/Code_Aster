@@ -2,7 +2,7 @@
      &                  CHTNI,MERIGI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,11 +92,10 @@ C DEB ------------------------------------------------------------------
 
       CALL JEEXIN(MERIGI,IRET)
       IF (IRET.EQ.0) THEN
-        MERIGI = '&&METRIG.LISTE_RESU'
-        CALL MEMARE('V',MERIGI(1:8),MODELE(1:8),MATE,CARELE,'RIGI_THER')
-        CALL WKVECT(MERIGI,'V V K24',NCHAR*NBCHMX+1,JMER)
+        MERIGI = '&&METRIG           .RELR'
+        CALL MEMARE('V',MERIGI,MODELE(1:8),MATE,CARELE,'RIGI_THER')
       ELSE
-        CALL JEVEUO(MERIGI,'E',JMER)
+        CALL JEDETR(MERIGI)
       END IF
 
       LIGREL(1) = MODELE(1:8)//'.MODELE'
@@ -123,13 +122,8 @@ C DEB ------------------------------------------------------------------
         CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
         CALL CALCUL('S',OPTION,LIGREL(1),6,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &              'V')
-        CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-        IF (IRET.NE.0) THEN
-          ZK24(JMER-1+ILIRES) = LCHOUT(1)
-          CALL JEECRA(MERIGI,'LONUTI',ILIRES,' ')
-        ELSE
-          ILIRES = ILIRES - 1
-        END IF
+        CALL REAJRE(MERIGI,LCHOUT(1),'V')
+
       END IF
 
       IF (NCHAR.GT.0) THEN
@@ -171,13 +165,7 @@ C DEB ------------------------------------------------------------------
                 CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
                 CALL CALCUL('S',OPTION,LIGREL(NLIGR(K)),NBOPT(K),LCHIN,
      &                      LPAIN,1,LCHOUT,LPAOUT,'V')
-                CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-                IF (IRET.NE.0) THEN
-                  ZK24(JMER-1+ILIRES) = LCHOUT(1)
-                  CALL JEECRA(MERIGI,'LONUTI',ILIRES,K8BID)
-                ELSE
-                  ILIRES = ILIRES - 1
-                END IF
+                CALL REAJRE(MERIGI,LCHOUT(1),'V')
               END IF
    10       CONTINUE
           END IF

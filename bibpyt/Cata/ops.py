@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -277,48 +277,39 @@ def detruire(self,d):
    if hasattr(self,"executed") and self.executed == 1:
       return
    if self["CONCEPT"]!=None:
-     sd=[]
-     for mc in self["CONCEPT"]:
-       mcs=mc["NOM"]
-       if mcs is None:continue
-       if type(mcs) == types.ListType or type(mcs) == types.TupleType:
-         for e in mcs:
-           if isinstance(e,ASSD):
-             sd.append(e)
-             e=e.nom
-       # traitement particulier pour les listes de concepts, on va mettre à None
-       # le terme de l'indice demandé dans la liste :
-       # nomconcept_i est supprimé, nomconcept[i]=None
-           indice=e[e.rfind('_')+1:]
-           concept_racine=e[:e.rfind('_')]
-           if indice!='' and d.has_key(concept_racine) and type(d[concept_racine])==types.ListType:
-              try               :
-                                  indici=int(indice)
-                                  d[concept_racine][indici]=None
-              except ValueError : pass
-       # pour tous les concepts :
-           if d.has_key(e):del d[e]
-           if self.jdc.sds_dict.has_key(e):del self.jdc.sds_dict[e]
-       else:
-         if isinstance(mcs,ASSD):
-           sd.append(mcs)
-           mcs=mcs.nom
-       # traitement particulier pour les listes de concepts, on va mettre à None
-       # le terme de l'indice demandé dans la liste :
-       # nomconcept_i est supprimé, nomconcept[i]=None
-         indice=mcs[mcs.rfind('_')+1:]
-         concept_racine=mcs[:mcs.rfind('_')]
-         if indice!='' and d.has_key(concept_racine) and type(d[concept_racine])==types.ListType:
-            try               :
-                                indici=int(indice)
-                                d[concept_racine][indici]=None
-            except ValueError : pass
-       # pour tous les concepts :
-         if d.has_key(mcs):del d[mcs]
-         if self.jdc.sds_dict.has_key(mcs):del self.jdc.sds_dict[mcs]
-     for s in sd:
-       # On signale au parent que le concept s n'existe plus apres l'étape self 
-       self.parent.delete_concept_after_etape(self,s)
+      sd = []
+      for mc in self["CONCEPT"]:
+         mcs = mc["NOM"]
+         if mcs is None:
+            continue
+         if type(mcs) not in (list, tuple):
+            mcs = [mcs]
+       
+         for co in mcs:
+            if isinstance(co, ASSD):
+               sd.append(co)
+               co = co.nom
+            # traitement particulier pour les listes de concepts, on va mettre à None
+            # le terme de l'indice demandé dans la liste :
+            # nomconcept_i est supprimé, nomconcept[i]=None
+            i = co.rfind('_')
+            if i > 0 and not co.endswith('_'):
+               concept_racine = co[:i]
+               if d.has_key(concept_racine) and type(d[concept_racine]) is list:
+                  try:
+                     num = int(co[i+1:])
+                     d[concept_racine][num] = None
+                  except (ValueError, IndexError):
+                     # cas : RESU_aaa ou (RESU_8 avec RESU[8] non initialisé)
+                     pass
+            # pour tous les concepts :
+            if d.has_key(co):
+               del d[co]
+            if self.jdc.sds_dict.has_key(co):
+               del self.jdc.sds_dict[co]
+      for s in sd:
+         # On signale au parent que le concept s n'existe plus apres l'étape self 
+         self.parent.delete_concept_after_etape(self,s)
 
 def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
    """

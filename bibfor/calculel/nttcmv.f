@@ -5,7 +5,7 @@
      &                   CNDIRP,CNCHCI,CNCHTP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,10 +79,11 @@ C
       DATA TYPRES /'R'/
       DATA NOMCMP /'INST    ','DELTAT  ','THETA   ','KHI     ',
      &             'R       ','RHO     '/
-      DATA MERIGI,MEDIRI /'&&METRIG.LISTE_RESU','&&METDIR.LISTE_RESU'/
-      DATA METRNL        /'&&METNTH.LISTE_RESU'/
-      DATA VEDIRI        /'&&VETDIR.LISTE_RESU'/
-      DATA VECHTP        /'&&VETCHA.LISTE_RESU'/
+      DATA MERIGI        /'&&METRIG           .RELR'/
+      DATA MEDIRI        /'&&METDIR           .RELR'/
+      DATA METRNL        /'&&METNTH           .RELR'/
+      DATA VEDIRI        /'&&VETDIR           .RELR'/
+      DATA VECHTP        /'&&VETCHA           .RELR'/
       DATA TIMEMO        /'&&OP0171.TIMEMO'/
 C
 C ----------------------------------------------------------------------
@@ -174,7 +175,7 @@ C
         CALL JEVEUO (MERIGI,'L',JMER)
         IF (ZK24(JMER)(1:8).NE.'        ') THEN
           NBMAT = NBMAT + 1
-          TLIMAT(NBMAT) = ZK24(JMER)
+          TLIMAT(NBMAT) =MERIGI(1:19)
         END IF
 C
         CALL JEEXIN(METRNL,IRET)
@@ -182,13 +183,13 @@ C
           CALL JEVEUO (METRNL,'L',JMET)
           IF (ZK24(JMET)(1:8).NE.'        ') THEN
             NBMAT = NBMAT + 1
-            TLIMAT(NBMAT) = ZK24(JMET)
+            TLIMAT(NBMAT) =METRNL(1:19)
           END IF
         END IF
 C
         IF (ZK24(JMED)(1:8).NE.'        ') THEN
           NBMAT = NBMAT + 1
-          TLIMAT(NBMAT) = ZK24(JMED)
+          TLIMAT(NBMAT) =MEDIRI(1:19)
         END IF
 C
 C --- ASSEMBLAGE DE LA MATRICE

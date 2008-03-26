@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ cata_msg={
 """),
 
 3: _("""
- CAM_CLAY :: le coefficient de poisson est négatif
+ CAM_CLAY :: le coefficient de poisson et ou le module d'Young ne sont pas corrects
              dans la maille %(k1)s
              
              *** vérifiez la cohérence des données mécaniques suivantes :
@@ -42,7 +42,10 @@ cata_msg={
 
                  il faut notamment vérifier ceci:
                
-                 E < 3*PO*(1+e0)/kapa ***
+                 0. <NU = (3*(1+e0)*P- - 2*kapa*mu)/
+                          (6*(1+e0)*P- + 2*kapa*mu) <= 0.5 
+                          
+                          et E >0 ***
 """),
 
 4: _("""
@@ -186,4 +189,5 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
  VISC_CINx_CHAB :: pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU. 
  Si vous voulez seulement de l'élastoplasticité, il faut utiliser VMIS_CINx_CHAB.
 """),
+
 }

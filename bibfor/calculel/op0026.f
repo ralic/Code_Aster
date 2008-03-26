@@ -1,7 +1,7 @@
       SUBROUTINE OP0026(IER   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF CALCULEL  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,19 +64,19 @@ C-----------------------------------------------------------------------
       REAL*8          RBID,INSTAM,INSTAP,CONST(2)
       COMPLEX*16      CBID
       CHARACTER*1     TYPCST(2),TYPECH(2),TYPRES
-      CHARACTER*8     RESULT,TABLE
+      CHARACTER*8     RESULT,TABLE,KBID
       CHARACTER*14    NUMMOI,NUMDEL
       CHARACTER*16    LOPT(3),OPTION
       CHARACTER*19    LISCHA,K19BLA
       CHARACTER*19    LINST,CHTMP,LIGREL,CATMP
-      CHARACTER*8     MEDIRI,MERIGI,VEFINT,KBID
+      CHARACTER*19    MEDIRI,MERIGI,VEFINT
       CHARACTER*24    DEPDEL,MATE,CARELE,COMPOR,CARCRI,INPSCO
       CHARACTER*24    DEPPLU,SIGPLU,VARPLU,COMMOI,MODELE,DEPMOI
       CHARACTER*24    COMPLU, CODERE
       CHARACTER*24    VALMOI(8),VALPLU(8),DEPALG(8)
       CHARACTER*24    SIGMOI,VARMOI,NOMCH(2),CHPRES,DEPMO1
       CHARACTER*24    K24BLA,K24BID
-      CHARACTER*8     MEELEM(8),VEELEM(30)      
+      CHARACTER*19    MEELEM(8),VEELEM(30)      
       LOGICAL         TABRET(0:10),FONACT(19)
 C-----------------------------------------------------------------------
       DATA LISCHA     /'&&OP0026.LISCHA'/
@@ -88,7 +88,6 @@ C-----------------------------------------------------------------------
       DATA SIGMOI     /'&&OP0026.SIGMOI'/
       DATA COMMOI     /'&&OP0026.COMMOI'/
       DATA COMPLU     /'&&OP0026.COMPLU'/
-      DATA MEDIRI     /'&&MEDIRI'/
 C      
 C ----------------------------------------------------------------------
 C      
@@ -112,6 +111,7 @@ C     --------------------------
       CALL GCNCON('_',VARPLU)
       CALL GCNCON('_',MERIGI)
       CALL GCNCON('_',VEFINT)
+      CALL GCNCON('_',MEDIRI)
       CALL GCNCON('_',CODERE)
 
 C     RECUPERATION DES OPTIONS DEMANDEES

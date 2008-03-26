@@ -1,6 +1,6 @@
-# MODIF  DATE 09/10/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
-# TITRE TP FORMATION NON LINEAIRE PLAQUE TROUEE EN TRACTION - PILOTAGE
+# TITRE ENONCE TP2 FORMATION THERMOPLASTICITE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,49 +35,16 @@ MO=AFFE_MODELE(MAILLAGE=M,
                        MODELISATION='C_PLAN',),);
 
 # COURBE DE TRACTION
+CTRAC = LIRE_FONCTION(UNITE=21,
+                      NOM_PARA='EPSI',
+                      PROL_DROITE='CONSTANT',)
 
-CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(1.00000E-03,2.00000E+02,
-                          6.00000E-03,2.15275E+02,
-                          1.10000E-02,2.27253E+02,
-                          1.60000E-02,2.36630E+02,
-                          2.10000E-02,2.43964E+02,
-                          2.60000E-02,2.49694E+02,
-                          3.10000E-02,2.54168E+02,
-                          3.60000E-02,2.57659E+02,
-                          4.10000E-02,2.60382E+02,
-                          4.60000E-02,2.62506E+02,
-                          5.10000E-02,2.64161E+02,
-                          5.60000E-02,2.65451E+02,
-                          6.10000E-02,2.66457E+02,
-                          6.60000E-02,2.67240E+02,
-                          7.10000E-02,2.67850E+02,
-                          7.60000E-02,2.68325E+02,
-                          8.10000E-02,2.68696E+02,
-                          8.60000E-02,2.68984E+02,
-                          9.10000E-02,2.69209E+02,
-                          9.60000E-02,2.69384E+02,
-                          1.01000E-01,2.69520E+02,
-                          1.06000E-01,2.69626E+02,
-                          1.11000E-01,2.69709E+02,
-                          1.16000E-01,2.69773E+02,
-                          1.21000E-01,2.69823E+02,
-                          1.26000E-01,2.69862E+02,
-                          1.31000E-01,2.69893E+02,
-                          1.36000E-01,2.69917E+02,
-                          1.41000E-01,2.69935E+02,
-                          1.46000E-01,2.69949E+02,
-                          1.51000E-01,2.69961E+02,
-                          1.56000E-01,2.69969E+02,
-                          1.61000E-01,2.69976E+02,
-                          1.66000E-01,2.69981E+02,
-                          1.71000E-01,2.69986E+02,
-                          1.76000E-01,2.69989E+02,
-                          1.81000E-01,2.69991E+02,
-                          1.86000E-01,2.69993E+02,
-                          1.91000E-01,2.69994E+02,
-                          1.96000E-01,2.69996E+02,
-                          2.00000E-01,2.69996E+02,
-                          ),PROL_DROITE='CONSTANT',);
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=_F(FONCTION=CTRAC,),
+              TITRE='Courbe de traction',
+              LEGENDE_X='Deformation',
+              LEGENDE_Y='Contrainte (MPa)',);
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.3,),
@@ -108,51 +75,63 @@ F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            ),);
 
 # DISCRETISATION EN TEMPS
-TFIN = 4.0;
+Sy = 200.0;
+
+Su = 270.0;
+
+TMAX = (0.9 * Su);
+
+TFIN = 230.0;
+
+TELAS = (Sy / 3.0);
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=TFIN,
-                                    NOMBRE=160,),);
+                      INTERVALLE=(_F(JUSQU_A=TELAS,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=TFIN,
+                                     NOMBRE=30,),
+                                  _F(JUSQU_A=TMAX,
+                                     NOMBRE=20,),),);
 
-L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=TFIN,
-                                    NOMBRE=40,),);
-
-#PILOTAGE                            
+# PREMIER CALCUL : ON RESTE ELASTIQUE
 
 RESUNL=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CM,
                      EXCIT=(_F(CHARGE=CH1,),
                             _F(CHARGE=CH2,
-                               TYPE_CHARGE='FIXE_PILO',),),
+                               FONC_MULT=F_DEPL,),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                      INCREMENT=_F(LIST_INST=L_INST,
-                                  INST_FIN=TFIN,
-                                  SUBD_METHODE='UNIFORME',
-                                  SUBD_PAS=10,
-                                  SUBD_NIVEAU=10,),
-                     NEWTON=_F(REAC_ITER=1,),
-                     SOLVEUR=_F(STOP_SINGULIER='DECOUPE'),
-                     PILOTAGE=_F(TYPE='DDL_IMPO',
-                                 COEF_MULT=1.0,
-                                 GROUP_NO='G',
-                                 NOM_CMP='DY',),
-                     ARCHIVAGE=_F(LIST_INST=L_ARCH,),
-#                      SUIVI_DDL=(_F(NUME_SUIVI=1,
-#                                    NOM_CHAM='DEPL',
-#                                    NOM_CMP='DY',
-#                                    GROUP_NO='G',),
-#                                 _F(NUME_SUIVI=2,
-#                                    NOM_CHAM='SIEF_ELGA',
-#                                    NOM_CMP='SIYY',
-#                                    VALE_MAX='OUI',),
-#                                 _F(NUME_SUIVI=3,
-#                                    NOM_CHAM='VARI_ELGA',
-#                                    NOM_CMP='V1',
-#                                    VALE_MAX='OUI',),),
-                                   );
+                                  INST_FIN=TELAS,),);
 
+# CALCUL SANS SOUCI JUSQU'A TFIN
+# SUBDIVISION DU PAS DE TEMPS
+# LE NOMBRE D'ITERATIONS POUR CONVERGER AUGMENTE
+
+RESUNL=STAT_NON_LINE(reuse =RESUNL,
+                     MODELE=MO,
+                     CHAM_MATER=CM,
+                     EXCIT=(_F(CHARGE=CH1,),
+                            _F(CHARGE=CH2,
+                               FONC_MULT=F_DEPL,),),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
+                                  ITER_INTE_MAXI=100,),
+                     ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_FIN=TFIN,
+                                  SUBD_METHODE='EXTRAPOLE',
+                                  SUBD_PAS=2,
+                                  SUBD_NIVEAU=20,),
+                     NEWTON=_F(REAC_ITER=1,),
+                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
+
+# AU DELA DE 430. : NON CONVERGENCE
+#ou pivot nul 
+# ON DEPASSE SANS DOUTE LA CHARGE LIMITE
+#Il faut mener le calcul autrement (pilotage) 
+#
 #
 # INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
 
@@ -178,6 +157,31 @@ RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
                OPTION='SIEF_NOEU_ELGA',);
 
+#
+# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
+#######################################################
+
+
+DYG=RECU_FONCTION(RESULTAT=RESUNL,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='G',);
+
+SYG=RECU_FONCTION(RESULTAT=RESUNL,
+                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='G',);
+
+# COURBES AVEC XMGRACE 
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=82,
+              COURBE=_F(FONC_X=DYG,
+                        FONC_Y=SYG,),
+              TITRE='SigmaYY en fonction de Dy au point G ',
+              LEGENDE_X='Deplacement DY au point G',
+              LEGENDE_Y='Contraine SIGMAYY',);
+
 SIGBAS=MACR_LIGN_COUPE(RESULTAT=RESUNL,
                        NOM_CHAM='SIEF_ELNO_ELGA',
                        LIGN_COUPE=_F(NB_POINTS=30,
@@ -189,13 +193,141 @@ IMPR_TABLE(TABLE=SIGBAS,
                      VALE=TFIN,),
            NOM_PARA=('ABSC_CURV','SIYY',),);
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  INST=TFIN,
+TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
+                   INST=TELAS,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='B',
+                   VALE=(3.0 * TELAS),
+                   PRECISION=0.03,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESUNL,
+                   INST=TELAS,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=(-1.0 * TELAS),
+                   PRECISION=0.03,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESUNL,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='G',
+                   VALE=TFIN,
+                   REFERENCE='ANALYTIQUE',),),);
+
+#
+# CHARGE PUIS DECHARGE
+#######################################################
+
+
+# DISCRETISATION EN TEMPS
+TFIN1 = 200.0;
+
+TFIN2 = 300.0;
+
+
+F_DEPL2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                            TFIN1,TFIN1,
+                            TFIN2,0.,
+                            ),);
+
+L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(_F(JUSQU_A=TELAS,
+                                      NOMBRE=1,),
+                                   _F(JUSQU_A=TFIN1,
+                                      NOMBRE=30,),
+                                   _F(JUSQU_A=TFIN2,
+                                      NOMBRE=10,),),);
+
+RESUNL2=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CM,
+                      EXCIT=(_F(CHARGE=CH1,),
+                             _F(CHARGE=CH2,
+                                FONC_MULT=F_DEPL2,),),
+                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                      INCREMENT=_F(LIST_INST=L_INST2,
+                                   SUBD_METHODE='EXTRAPOLE',
+                                   SUBD_PAS=2,
+                                   SUBD_NIVEAU=20,),
+                      NEWTON=_F(PREDICTION='ELASTIQUE',
+                                REAC_ITER=1,),
+                      RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                      ARCHIVAGE=_F(LIST_INST=L_INST2,),);
+
+# INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
+
+RESUNL2=CALC_ELEM(reuse =RESUNL2,
+                  RESULTAT=RESUNL2,
+                  OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELGA_SIGM',),);
+
+# DEPOUILLEMENTS DES RESULTATS
+# VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
+
+IMPR_RESU(MODELE=MO,
+          RESU=(_F(RESULTAT=RESUNL2,
+                   NOM_CHAM='EQUI_ELGA_SIGM',
+                   VALE_MAX='OUI',),
+                _F(RESULTAT=RESUNL2,
+                   NOM_CHAM='VARI_ELGA',
+                   VALE_MAX='OUI',),),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUNL2,),);
+
+RESUNL2=CALC_NO(reuse =RESUNL2,
+                RESULTAT=RESUNL2,
+                OPTION='SIEF_NOEU_ELGA',);
+
+#
+# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
+#######################################################
+
+
+DYG2=RECU_FONCTION(RESULTAT=RESUNL2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='G',);
+
+SYG2=RECU_FONCTION(RESULTAT=RESUNL2,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='G',);
+
+# COURBES AVEC XMGRACE 
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=84,
+              COURBE=_F(FONC_X=DYG2,
+                        FONC_Y=SYG2,),
+              TITRE='SigmaYY en fonction de Dy au point G ',
+              BORNE_X=(0.0,3.0,),
+              BORNE_Y=(0.0,7.0,),
+              GRILLE_X=0.5,
+              GRILLE_Y=1.0,
+              LEGENDE_X='D\xe9placement DY au point G',
+              LEGENDE_Y='Contraine SIGMAYY',);
+
+SIGBAS2=MACR_LIGN_COUPE(RESULTAT=RESUNL2,
+                        NOM_CHAM='SIEF_ELNO_ELGA',
+                        LIGN_COUPE=_F(NB_POINTS=30,
+                                      COOR_ORIG=(10,0,),
+                                      COOR_EXTR=(100,0,),),);
+
+IMPR_TABLE(TABLE=SIGBAS2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=TFIN,),
+           NOM_PARA=('ABSC_CURV','SIYY',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
+                  INST=TFIN2,
                   NOM_CHAM='SIEF_NOEU_ELGA',
                   NOM_CMP='SIYY',
                   GROUP_NO='G',
-                  VALE=243.0,
-                  PRECISION=(0.015,0.0001,),
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=0.01,
+                  REFERENCE='ANALYTIQUE',),);
 
 FIN();

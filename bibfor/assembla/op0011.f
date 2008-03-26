@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,9 +46,9 @@ C======================================================================
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      INTEGER      NLIMAT
+      INTEGER      NLIMAT,IMATEL
       PARAMETER   (NLIMAT=100)
-      INTEGER      IER,IFM,NBID,NBMAT,NIV,NBCHA,IACHA,JNSLV
+      INTEGER      IER,IFM,NBID,NBMAT,NIV,NBCHA,IACHA,JNSLV,IL
       REAL*8       RTBLOC, JEVTBL
       CHARACTER*2  BASE
       CHARACTER*8  K8B, TLIMAT(NLIMAT), NUUTI, RENUM, MO, METHOD
@@ -98,10 +98,14 @@ C
 
       NBMAT = -NBMAT
       CALL GETVID ( ' ', 'MATR_RIGI', 0,1,NBMAT, TLIMAT, NBMAT )
+      CALL WKVECT('&&OP001_LIST_MATEL','V V K24',NBMAT,IMATEL)
+      DO 10 IL=1,NBMAT
+        ZK24(IMATEL+IL-1)=TLIMAT(IL)
+ 10   CONTINUE
 
 C --- CALCUL DE LA NUMEROTATION PROPREMENT DITE :
 C     -----------------------------------------
-      CALL NUMDDL ( NUDEV, 'G', NBMAT, TLIMAT, RENUM)
+      CALL NUMDDL ( NUDEV, 'G', NBMAT,ZK24(IMATEL), RENUM)
 
 C --- CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
 C     -----------------------------------------------------------

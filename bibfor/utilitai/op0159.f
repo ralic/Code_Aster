@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,9 +42,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER VERSIO,NBELEM
       LOGICAL ULEXIS
-      CHARACTER*8 K8B,FORMAT,MATRIC,MODEL1,NOMMAI,GRAIN
+      CHARACTER*8 K8B,FORMAT,MODEL1,NOMMAI,GRAIN
       CHARACTER*16 OPTION,OPTIO2,FICHIE
-      CHARACTER*19 MATR,LIGRE1,LIGREL
+      CHARACTER*19 MATR,LIGRE1,LIGREL,MATRIC
       CHARACTER*24 NOLI,DESC
 C     ------------------------------------------------------------------
 C
@@ -83,9 +83,9 @@ C
             WRITE (IFIC,'(A)')'    -1'
             WRITE (IFIC,'(A)')'   780'
             K=0
-            CALL JEVEUO(MATRIC//'.LISTE_RESU','L',JLRESU)
-            CALL JELIRA(MATRIC//'.LISTE_RESU','LONMAX',NBRESU,K8B)
-            CALL JEVEUO(MATRIC//'.REFE_RESU','L',JRRESU)
+            CALL JEVEUO(MATRIC//'.RELR','L',JLRESU)
+            CALL JELIRA(MATRIC//'.RELR','LONMAX',NBRESU,K8B)
+            CALL JEVEUO(MATRIC//'.RERR','L',JRRESU)
             OPTION=ZK24(JRRESU+1)
             DO 40 IMEL=1,NBRESU
               MATR=ZK24(JLRESU+IMEL-1)

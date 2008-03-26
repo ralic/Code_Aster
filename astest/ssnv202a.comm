@@ -1,4 +1,4 @@
-# MODIF  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE ETUDE:  ESSAI OEDOMETRIQUE NON-DRAINE (MECA PUR) AVEC LA LOI DE CAMCLAY
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,7 @@ DEBUT(CODE=_F(NOM='SSNV202A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 # PROPRIETES MECANIQUES
 E    = 1.2*6.E5 ;
 NU   = 0.3      ;
+mu = 276923.      ;
 RHO  = 1900.    ;
 
 
@@ -61,8 +62,12 @@ MAILLAGE = DEFI_GROUP(reuse= MAILLAGE,
                       CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI'),
                       CREA_GROUP_NO=_F(GROUP_MA='ROCHE'));
 
-SOL=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU, RHO=RHO, ALPHA=0.), 
-                  CAM_CLAY=_F(PORO      = N,
+SOL=DEFI_MATERIAU(ELAS=_F(E=E,
+                          NU=NU, 
+                          RHO=RHO, 
+                          ALPHA=0.), 
+                  CAM_CLAY=_F(MU        =mu,
+                              PORO      = N,
                               LAMBDA    = LAMBD,
                               KAPA      = KAPA,
                               M         = M,

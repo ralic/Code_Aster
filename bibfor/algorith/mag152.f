@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,7 @@ C
         CALL JEECRA(NOMRES//'           .UALF','LONMAX',NTBLOC,K8BID)
 
 
-        CALL WKVECT(NOMRES//'           .LIME','G V K8',1,IALIME)
+        CALL WKVECT(NOMRES//'           .LIME','G V K24',1,IALIME)
         CALL WKVECT(NOMRES//'           .CONL','G V R',NUEQ,IACONL)
 C
 C       CAS DU CHAM_NO
@@ -153,7 +153,7 @@ C
         CALL JECREC(NOMRES//'           .UALF','G V R','NU','DISPERSE',
      &              'CONSTANT',NBLOC)
         CALL JEECRA(NOMRES//'           .UALF','LONMAX',NTBLOC,K8BID)
-        CALL WKVECT(NOMRES//'           .LIME','G V K8',1,IALIME)
+        CALL WKVECT(NOMRES//'           .LIME','G V K24',1,IALIME)
         CALL WKVECT(NOMRES//'           .CONL','G V R',NUEQ,IACONL)
 
       END IF
@@ -180,10 +180,10 @@ C---------------------ET DU .CONL ---------------------------
       ZK24(JREFA-1+10) = 'GENE'
 
       IF (N10.GT.0) THEN
-        ZK8(IALIME) = MODGEN
+        ZK24(IALIME) = MODGEN
 
       ELSE
-        ZK8(IALIME) = '  '
+        ZK24(IALIME) = '  '
       END IF
 
       DO 30 I = 1,NUEQ

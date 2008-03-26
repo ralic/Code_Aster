@@ -3,7 +3,7 @@
       CHARACTER*(*)       MATOUT, MATIN, BASE, TYPC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,11 +98,11 @@ C     --------------------------
         CALL JEVEUO(LIME,'L',JREFAI)
 C
         LIME = NOMOUT//'.LIME'
-        CALL JECREO(LIME,CLASSE//' V K8')
+        CALL JECREO(LIME,CLASSE//' V K24')
         CALL JEECRA(LIME,'LONMAX',NBVAL,'  ')
         CALL JEVEUO(LIME,'E',JREFAO)
         DO 15 IVAL=0,NBVAL-1
-           ZK8(JREFAO+IVAL) = ZK8(JREFAI+IVAL)
+           ZK24(JREFAO+IVAL) = ZK24(JREFAI+IVAL)
   15    CONTINUE
       ENDIF
 

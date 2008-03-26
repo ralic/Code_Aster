@@ -2,7 +2,7 @@
      &                  SOLVEU,LISCHA,MATRIG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 
       IMPLICIT NONE
-      CHARACTER*8   MERIGI,MEDIRI
+      CHARACTER*19  MERIGI,MEDIRI
       CHARACTER*24  NUMEDD,RESOCO
       CHARACTER*19  MATRIG,SOLVEU,LISCHA
       LOGICAL       FONACT(*)
@@ -67,8 +67,10 @@ C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      NBMAT,JMED
-      CHARACTER*8  TLIMAT(3),MCONEL
+      INTEGER      NBMAT,JMED,NBR
+      CHARACTER*8 K8B
+      CHARACTER*19 TLIMAT(3)
+      CHARACTER*19 MCONEL
       CHARACTER*24 MELEME
       INTEGER      JMELEM    
       LOGICAL      ISFONC,LCTCC        
@@ -88,20 +90,20 @@ C
         CALL JEVEUO(MELEME,'L',JMELEM)
         MCONEL = ZK8(JMELEM+1-1)
       ENDIF
-      
-      CALL JEVEUO(MEDIRI(1:8)//'.LISTE_RESU','L',JMED)
-      IF ( ZK24(JMED)(1:8) .EQ. '        ' ) THEN
+
+      CALL JELIRA(MEDIRI//'.RELR','LONMAX',NBR,K8B)
+      IF(NBR.EQ.0)THEN
         NBMAT = 1
-        TLIMAT(1) = MERIGI(1:8)         
+        TLIMAT(1) = MERIGI        
       ELSE
         NBMAT = 2
-        TLIMAT(1) = MERIGI(1:8)         
-        TLIMAT(2) = MEDIRI(1:8)
+        TLIMAT(1) = MERIGI         
+        TLIMAT(2) = MEDIRI
       ENDIF
 C        
       IF (LCTCC) THEN
         NBMAT = NBMAT + 1      
-        TLIMAT(NBMAT) = MCONEL(1:8)     
+        TLIMAT(NBMAT) = MCONEL    
       END IF
 C          
       CALL ASMATR(NBMAT ,TLIMAT,' ',NUMEDD,SOLVEU,

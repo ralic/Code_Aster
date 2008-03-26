@@ -2,7 +2,7 @@
      &                  NBSUIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
       INTEGER      N1,N2,N3,N4,INO,IMA,IGNO,IOCC,NBN
       INTEGER      IBID,IRET,NCHP,NCMP,I,NBNO,NBMA,NBGN
       INTEGER      JNOE,JGRN,JMAI,NBPT,NBGM,IGMA
-      INTEGER      JCMP,JGRM,NBM,II
+      INTEGER      JCMP,JGRM,NBM,II,NN
       INTEGER      N6,N7,N8
       LOGICAL      CHAMNO,CHAMES,CHAMEV,LSTOP
       CHARACTER*8  K8B,MO,SDDL
@@ -236,13 +236,15 @@ C
      &           NOCHP(I)(1:9) .EQ. 'VALE_CONT'.OR.
      &         (LSUIVI(IOCC).AND.NOCHP(I)(1:9).EQ.'FORC_NODA'))THEN
                IF ( N1 .NE. 0 ) THEN
-                  NBPT = NBPT + NBNO
+                 NBPT=NBNO
                ELSEIF ( N2 .NE. 0 ) THEN
+                  NN = 0
                   DO 18 IGNO = 0 , NBGN-1
                      CALL JELIRA (JEXNOM(GRPNO,ZK8(JGRN+IGNO)),
      &                            'LONMAX',NBN,K8B )
-                     NBPT = NBPT + NBN
+                    NN = NN + NBN
  18               CONTINUE
+                  NBPT = NN
                ELSE IF (LSUIVI(IOCC))THEN
                   IF( (N7.NE.0) .OR. (N8.NE.0) ) NBPT=NBPT+1
                ELSE

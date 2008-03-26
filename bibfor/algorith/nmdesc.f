@@ -7,7 +7,7 @@
      &                  MEELEM,MEASSE,VEELEM,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
       CHARACTER*24 VALMOI(8),POUGD(8),VALPLU(8),DEPALG(8),SECMBR(8)
       CHARACTER*24 DEFICO,RESOCO
       LOGICAL      PREMIE,FONACT(*)
-      CHARACTER*8  MEELEM(8),VEELEM(30)      
+      CHARACTER*19 MEELEM(8),VEELEM(30)      
       CHARACTER*19 MEASSE(8)      
 C 
 C ----------------------------------------------------------------------

@@ -2,7 +2,7 @@
      &                  VEELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C
       CHARACTER*19     SDDYNA 
       CHARACTER*24     SDSENS,NUMEDD
       CHARACTER*24     POUGD(8),DEPALG(8)     
-      CHARACTER*8      VEELEM(30)
+      CHARACTER*19     VEELEM(30)
 C 
 C ----------------------------------------------------------------------
 C
@@ -74,7 +74,7 @@ C
       CHARACTER*24 DEPKM1,VITKM1,ACCKM1,ROMKM1,ROMK     
       CHARACTER*24 DEPENT,VITENT,ACCENT   
       CHARACTER*24 DEPENM,VITENM,ACCENM,CNINER 
-      CHARACTER*8  VEINER,VEHYST,VEMODA                       
+      CHARACTER*19 VEINER,VEHYST,VEMODA                       
 C
 C ----------------------------------------------------------------------
 C

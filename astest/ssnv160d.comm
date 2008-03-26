@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JOUMANA J. EL GHARIB
 # TITRE TEST HYDROSTATIQUE  CAM_CLAY en AXISYMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,19 +79,20 @@ LI1=DEFI_LIST_REEL(DEBUT=0.0,
 #  CARACTERISTIQUES DU MATERIAU
 #
 
-MATER0=DEFI_MATERIAU(ELAS=_F(E=4.2000000E7,
+MATER0=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
                                  NU=0.285),);
 
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=4.2000000E7,
+MATER=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
                             NU=0.285,
-                            ALPHA=0,),
-                    CAM_CLAY=_F(PORO=0.14,
-                                LAMBDA=0.25,
-                                KAPA=0.05,           
-                                M=0.9,
-                                PRES_CRIT=3.E5,
-                                PA=1.E5,),);
+                            ALPHA=0.,),
+                CAM_CLAY=_F(MU  = 6.E6,
+                            PORO=0.66,
+                            LAMBDA=0.25,
+                            KAPA=0.05,           
+                            M=0.9,
+                            PRES_CRIT=3.E5,
+                            PA=1.E5,),);
 
 CHM0=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
@@ -262,7 +263,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=5000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -2.30686E-02,        
+                       VALE = -9.120148E-03,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -272,7 +273,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=6000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -2.56819E-02,        
+                       VALE = -1.0153303E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -282,7 +283,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=6500.,  
                        PRECISION = 1.E-5,   
-                       VALE = -3.14183E-02,        
+                       VALE = -1.242118E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -292,7 +293,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=7000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -3.67294E-02,        
+                       VALE = -1.452090E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -302,7 +303,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=7500.,  
                        PRECISION = 1.E-5,   
-                       VALE = -4.16738E-02,        
+                       VALE = -1.647570E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -312,7 +313,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=8000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -4.62991E-02,        
+                       VALE = -1.830429E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -322,7 +323,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=9000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -4.21757E-02,        
+                       VALE = -1.667409E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -332,7 +333,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=10000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -1.64938E-02,        
+                       VALE = -6.520793E-03,        
                      ),),),
 
 FIN();

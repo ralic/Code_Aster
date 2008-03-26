@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -484,6 +484,8 @@ C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
             ENDIF
           ELSE IF (( COMPOR(1)(1:14).EQ. 'VMIS_CIN1_CHAB') .OR.
      &             ( COMPOR(1)(1:14).EQ. 'VMIS_CIN2_CHAB') .OR.
+     &             ( COMPOR(1)(1:14).EQ. 'VMIS_CIN2_MEMO') .OR.
+     &             ( COMPOR(1)(1:14).EQ. 'VISC_CIN2_MEMO') .OR.
      &             ( COMPOR(1)(1:14).EQ. 'VISC_CIN1_CHAB') .OR.
      &             ( COMPOR(1)(1:14).EQ. 'VISC_CIN2_CHAB')) THEN
             IF ( INT(CRIT(6)) .EQ. 0 ) THEN
@@ -491,9 +493,8 @@ C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
                  CALL U2MESS('F','ALGORITH6_91')
               ELSE
                  CALL NMCHAB (FAMI,KPG,KSP, NDIM, TYPMOD, IMATE,COMPOR,
-     &                      CRIT,INSTAM, INSTAP,
-     &                      DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP,
-     &                      CODRET)
+     &                      CRIT,INSTAM, INSTAP,DEPS, SIGM, VIM, OPTION,
+     &                      SIGP, VIP, DSIDEP,CODRET)
               ENDIF
             ELSE
               CALL U2MESS('F','ALGORITH6_82')

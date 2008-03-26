@@ -1,6 +1,6 @@
       SUBROUTINE SS2MME(MO,VECEL,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,8 @@ C ======================================================================
 C
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*8 MO,VECEL
+      CHARACTER*8 MO
+      CHARACTER*19 VECEL
       CHARACTER*1 BASE
 C ----------------------------------------------------------------------
 C     BUT: TRAITER LE MOT-CLEF SOUS_STRUC DE LA COMMANDE
@@ -31,7 +32,7 @@ C
 C     IN:     MO : NOM DU MODELE
 C          VECEL : NOM DU VECT_ELEM
 C
-C     OUT: VECEL EST (EVENTUELLEMENT) ENRICHI DE L'OBJET .LISTE_CHAR
+C     OUT: VECEL EST (EVENTUELLEMENT) ENRICHI DE L'OBJET .RELC
 C
 C ----------------------------------------------------------------------
 C
@@ -77,12 +78,12 @@ C
       CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
       CALL JEVEUO(MA//'.NOMACR','L',IAMACR)
 C
-      CALL JEVEUO(VECEL//'.REFE_RESU','E',IAREFR)
+      CALL JEVEUO(VECEL//'.RERR','E',IAREFR)
       ZK24(IAREFR-1+3)='OUI_SOUS_STRUC'
 C
-      CALL JECREC(VECEL//'.LISTE_CHAR',BASE//' V I','NO','CONTIG',
+      CALL JECREC(VECEL//'.RELC',BASE//' V I','NO','CONTIG',
      &             'CONSTANT',NBOC)
-      CALL JEECRA(VECEL//'.LISTE_CHAR','LONMAX',NBSMA,KBID)
+      CALL JEECRA(VECEL//'.RELC','LONMAX',NBSMA,KBID)
 C
 C
       CALL WKVECT('&&SS2MME.LMAI','V V K8',NBSMA,IALMAI)
@@ -93,8 +94,8 @@ C     --------------------------------
       DO 10, IOC= 1,NBOC
 C
         CALL GETVTX('SOUS_STRUC','CAS_CHARGE',IOC,1,1,NOMCAS,N1)
-        CALL JECROC(JEXNOM(VECEL//'.LISTE_CHAR',NOMCAS))
-        CALL JEVEUO(JEXNOM(VECEL//'.LISTE_CHAR',NOMCAS),'E',IALSCH)
+        CALL JECROC(JEXNOM(VECEL//'.RELC',NOMCAS))
+        CALL JEVEUO(JEXNOM(VECEL//'.RELC',NOMCAS),'E',IALSCH)
 C
 C       -- CAS : TOUT: 'OUI' :
 C       ----------------------

@@ -1,4 +1,4 @@
-#@ MODIF sd_matr_elem SD  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF sd_matr_elem SD  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,27 +26,27 @@ from SD.sd_cara_elem import sd_cara_elem
 
 
 class sd_matr_elem(AsBase):
-    nomj = SDNom(fin=8)
-    REFE_RESU  = AsVK24(lonmax=5, )
-    LISTE_RESU = Facultatif(AsVK24())
+    nomj = SDNom(fin=19)
+    RERR = AsVK24(lonmax=5, )
+    RELR = Facultatif(AsVK24())
     TITR = AsVK80(SDNom(debut=19), optional=True)
     
-    # indirection par LISTE_RESU :
-    def check_matr_elem_i_LISTE_RESU(self, checker):
-        if not self.LISTE_RESU.exists : return
-        lnom = self.LISTE_RESU.get_stripped()
+    # indirection par RELR :
+    def check_matr_elem_i_RELR(self, checker):
+        if not self.RELR.exists : return
+        lnom = self.RELR.get_stripped()
         for nom in lnom:
             if nom != '' :
                 sd2 = sd_resuelem(nom); sd2.check(checker)
 
 
     def check_1(self, checker):
-        refe = self.REFE_RESU.get_stripped()
+        refe = self.RERR.get_stripped()
         assert refe[2] in ('OUI_SOUS_STRUC', 'NON_SOUS_STRUC'), refe
 
-        # existence de LISTE_RESU :
+        # existence de RELR :
         if refe[2] == 'NON_SOUS_STRUC':
-            assert self.LISTE_RESU.exists
+            assert self.RELR.exists
 
         assert refe[1] != '', refe
 

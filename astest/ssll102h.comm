@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -137,46 +137,46 @@ TEST_RESU(RESU=(
      _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 1',
            NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
            NOM_CMP = 'DX',                VALE = 5.E-10,
-           PRECISION = 0.01),
+           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
 
      _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 1',
            NOM_CHAM = 'SIGM_ELNO_DEPL',    MAILLE = 'MA1',
            GROUP_NO = 'O',
            NOM_CMP = 'SIXX',              VALE = 5.,
-           PRECISION = 0.01),
+           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
 
      _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 2',
            NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
            NOM_CMP = 'DY',                VALE = 2.E-07,
-           PRECISION = 0.01),
+           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
 
      _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 2',
            NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
            NOM_CMP = 'DRZ',               VALE = 1.5E-07,
-           PRECISION = 0.01),
+           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
 
      _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 2',
            NOM_CHAM = 'SIGM_ELNO_DEPL',    MAILLE = 'MA1',
            GROUP_NO = 'O',
            NOM_CMP = 'SIXX',              VALE = 300.,
-           PRECISION = 0.036),
+           PRECISION = 0.036, REFERENCE = 'ANALYTIQUE'),
 
      _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 3',
            NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
            NOM_CMP = 'DY',                VALE = 1.5E-07,
-           PRECISION = 0.01),
+           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
 
      _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 3',
            NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
            NOM_CMP = 'DRZ',               VALE = 1.5E-07,
-           PRECISION = 0.01),
+           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
 
      _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 3',
            NOM_CHAM = 'SIGM_ELNO_DEPL',    MAILLE = 'MA1',
            GROUP_NO = 'O',
            NOM_CMP = 'SIXX',              VALE = 150.,
-           PRECISION = 0.01))
-           )
+           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE')
+           ))
 
 #
 FIN()

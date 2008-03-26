@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF observation_ops Macro  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,8 +86,6 @@ def observation_ops(self,
         __proj = RESULTAT
 
 
-
-
 #***********************************************
 #  PHASE DE CHANGEMENT DE REPERE
 #***********************************************
@@ -110,12 +108,21 @@ def observation_ops(self,
 
     # cham_mater et cara_elem pour le resultat a projeter
     jdc = CONTEXT.get_current_step().jdc
-    nom_cara_elem = aster.getvectjev( RESULTAT.nom.ljust(19) + '.CARA        ' )
-    nom_cara_elem = nom_cara_elem[0].strip()
-    cara_elem = jdc.sds_dict[nom_cara_elem]
-    nom_cham_mater = aster.getvectjev( RESULTAT.nom.ljust(19) + '.MATE        ' )
-    nom_cham_mater = nom_cham_mater[0].strip()
-    cham_mater = jdc.sds_dict[nom_cham_mater]
+    nom_cara_elem = aster.getvectjev( RESULTAT.nom.ljust(19) +
+                                      '.CARA        ' )[0].strip()
+    if len(nom_cara_elem) > 0 :
+##        nom_cara_elem = nom_cara_elem[0].strip()
+        cara_elem = jdc.sds_dict[nom_cara_elem]
+    else:
+        cara_elem = None
+    
+    nom_cham_mater = aster.getvectjev( RESULTAT.nom.ljust(19) +
+                                       '.MATE        ' )[0].strip()
+    if len(nom_cham_mater) > 0 :
+##        nom_cham_mater = nom_cham_mater[0].strip()
+        cham_mater = jdc.sds_dict[nom_cham_mater]
+    else:
+        cham_mater = None
 
     # recuperation du maillage associe au modele experimental
     _maillag = aster.getvectjev( MODELE_2.nom.ljust(8) + '.MODELE    .LGRF        ' )
@@ -127,6 +134,7 @@ def observation_ops(self,
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
     mayanum = jdc.sds_dict[maillage]
+
 
     if MODIF_REPERE != None :
         for modi_rep in MODIF_REPERE :
@@ -148,10 +156,9 @@ def observation_ops(self,
                         vect = { option : modi_rep[option] }
                 if len(vect) != 1 :
                     UTMESS('E','UTILITAI7_9')
-                chnorm    = crea_normale(self, MODELE_1, MODELE_2,
-                                         cham_mater, cara_elem, NUME_DDL)
 
-
+                chnorm = crea_normale(self, MODELE_1, MODELE_2, NUME_DDL,
+                                                      cham_mater, cara_elem)
                 chnormx = chnorm.EXTR_COMP('DX',[],1)
                 ind_noeuds = chnormx.noeud
                 nom_allno = [mayaexp.NOMNOE.get()[k-1] for k in ind_noeuds]
@@ -221,10 +228,10 @@ def observation_ops(self,
 
     if FILTRE != None:
         nb_fi = len(FILTRE)
+        liste = []
 
         for ind in num_ordr:
             filtres = []
-            liste = []
             __chamex = CREA_CHAMP(TYPE_CHAM  = 'NOEU_DEPL_R',
                                   OPERATION  = 'EXTR',
                                   RESULTAT   = __proj,
@@ -248,14 +255,17 @@ def observation_ops(self,
                                        ASSE      = filtres
                                        );
 
+
             mcfact2 = {'CHAM_GD'    : __cham[ind-1],
                        'MODELE'     : MODELE_2,
-                       'CHAM_MATER' : cham_mater,
-                       'CARA_ELEM'  : cara_elem,
                        'NOM_CAS'    : str(ind)}
+            if cham_mater is not None:
+                mcfact2['CHAM_MATER'] = cham_mater
+            if cara_elem is not None:
+                mcfact2['CARA_ELEM'] = cara_elem
 
             liste.append(mcfact2)
-            DETRUIRE( CONCEPT= _F( NOM = __chamex ))
+            DETRUIRE( CONCEPT= _F( NOM = __chamex ), INFO=1)
 
 
         self.DeclareOut( 'RESU', self.sd)
@@ -272,7 +282,7 @@ def observation_ops(self,
             # faisant un defi_base_modale dans lequel on met zero modes du concept RESULTAT
             # TODO : permettre la creation directement d'un resu de type mode_meca avec
             # CREA_RESU
-            RESBID = CREA_RESU( OPERATION = 'AFFE',
+            _RESBID = CREA_RESU( OPERATION = 'AFFE',
                                 TYPE_RESU = 'MULT_ELAS',
                                 NOM_CHAM  = 'DEPL',
                                 AFFE      = liste,
@@ -281,7 +291,7 @@ def observation_ops(self,
             RESU = DEFI_BASE_MODALE( RITZ = (
                                              _F( MODE_MECA = RESULTAT,
                                                  NMAX_MODE = 0,),
-                                             _F( MULT_ELAS = RESBID),
+                                             _F( MULT_ELAS = _RESBID),
                                             ),
                                      NUME_REF=NUME_DDL
                                    );
@@ -301,12 +311,11 @@ def observation_ops(self,
 # RECUPERATION DES NORMALES
 #**********************************************
 
-def crea_normale(self, modele_1, modele_2, cham_mater, cara_el, nume_ddl):
-
+def crea_normale(self, modele_1, modele_2,
+                 nume_ddl, cham_mater=None, cara_elem=None):
     """Cree un champ de vecteurs normaux sur le maillage experimental, par
        projection du champ de normales cree sur le maillage numerique
     """
-
     import Numeric
     PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
     CREA_CHAMP  = self.get_cmd('CREA_CHAMP')
@@ -324,15 +333,21 @@ def crea_normale(self, modele_1, modele_2, cham_mater, cara_el, nume_ddl):
 
     DEFI_GROUP( reuse = mayanum,
                 MAILLAGE      = mayanum,
-                CREA_GROUP_MA = _F( NOM  = '&&TOUMAIL',
+                CREA_GROUP_MA = _F( NOM  = '&&TOUMAI',
                                     TOUT = 'OUI' )
                );
 
     __norm1 = CREA_CHAMP( MODELE    = modele_1,
                           OPERATION = 'NORMALE',
                           TYPE_CHAM = 'NOEU_GEOM_R',
-                          GROUP_MA  = '&&TOUMAIL',
+                          GROUP_MA  = '&&TOUMAI',
                          );
+
+    DEFI_GROUP( reuse = mayanum,
+                MAILLAGE      = mayanum,
+                DETR_GROUP_MA = _F( NOM  = '&&TOUMAI' )
+               );
+
 
     __norm2 = CREA_CHAMP( OPERATION = 'ASSE',
                           TYPE_CHAM = 'NOEU_DEPL_R',
@@ -344,16 +359,19 @@ def crea_normale(self, modele_1, modele_2, cham_mater, cara_el, nume_ddl):
                                          )
                          );
 
+    affe_dct = {'CHAM_GD' : __norm2,
+                'INST' : 1,
+                'MODELE' : modele_1}
+    if cham_mater is not None:
+        affe_dct["CHAM_MATER"] = cham_mater
+    if cara_elem is not None:
+        affe_dct["CARA_ELEM"] = cara_elem
+    
     __norm3 = CREA_RESU( OPERATION = 'AFFE',
                          TYPE_RESU = 'EVOL_ELAS',
                          NOM_CHAM  = 'DEPL',
-                         AFFE      = _F( CHAM_GD    = __norm2,
-                                         INST       = 1,
-                                         MODELE     = modele_1,
-                                         CHAM_MATER = cham_mater,
-                                         CARA_ELEM  = cara_el
-                                         )
-                         );
+                         AFFE      = _F(**affe_dct)
+                       );
 
 
     __norm4 = PROJ_CHAMP( RESULTAT   = __norm3,
@@ -478,7 +496,8 @@ def find_no(maya,mcsimp):
         for group in mcsimp['GROUP_MA'] :
             list_ma.append(maya.GROUPEMA.get()[group.ljust(8)])
         for mail in list_ma :
-            ind_ma = maya.NOMMAI.get().index(mail.ljust(8))
+            tmp = list(maya.NOMMAI.get())
+            ind_ma = tmp.index(mail.ljust(8))
             for ind_no in maya.CONNEX[ind_ma] :
                 nomnoe = maya.NOMNOE.get()[ind_no]
                 if nomnoe not in list_no :

@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -364,6 +364,13 @@ C
              CARAEL=ZK8(JCARA)
              GOTO 44
           ENDIF
+        ENDIF
+C POUR LES BASES TYPE MODE_MECA SANS REFERENCE
+        IF(ZK24(JRAID)(1:8).EQ.'        ') THEN
+          MODELE='        '
+          CHMAT ='        '
+          CARAEL='        '
+          GOTO 44
         ENDIF
         CALL DISMOI('F','NOM_MODELE',ZK24(JRAID)(1:8),'MATR_ASSE',
      &     IBID,MODELE,IRET)

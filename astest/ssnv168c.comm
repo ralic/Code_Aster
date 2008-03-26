@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE TYPE (3D)
@@ -115,7 +115,7 @@ U1=STAT_NON_LINE(
      _F( CHARGE       = PR_V,
                                      FONC_MULT    = COEF1),
      _F( CHARGE       = DEP_SYM)),
-                  COMP_INCR  = _F( RELATION       = 'DRUCKER_PRAGER',
+                  COMP_INCR  = _F( RELATION       = 'DRUCK_PRAGER',
                                    RESI_INTE_RELA = 1.E-6,
                                    ITER_INTE_MAXI = 100),
                   NEWTON     = _F( MATRICE        = 'TANGENTE',
@@ -172,7 +172,7 @@ U2 = STAT_NON_LINE(
               _F( CHARGE       = DEP_SYM),
               _F( CHARGE       = DEP_V,
                                        FONC_MULT    = COEF2)),
-                    COMP_INCR  = _F( RELATION       = 'DRUCKER_PRAGER',
+                    COMP_INCR  = _F( RELATION       = 'DRUCK_PRAGER',
                                      RESI_INTE_RELA = 1.E-6,
                                      ITER_INTE_MAXI = 100,
                                      ITER_INTE_PAS  = -10,),

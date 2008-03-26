@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,18 +205,19 @@ TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
                OBSERVATION=(
-                         _F(NOM_CHAM='DEPL_ABSOLU',
+                         _F(NOM_CHAM=('DEPL_ABSOLU','VITE_ABSOLU'),
                             NOM_CMP='DX',
                             LIST_INST= L_INST,
                             NOEUD='NO1',SUIVI_DDL='NON'),
-                          _F(NOM_CHAM='VITE_ABSOLU',
-                            NOM_CMP='DX',
-                            NOEUD='NO1',SUIVI_DDL='NON'),
-                          _F(NOM_CHAM='ACCE_ABSOLU',
+                         _F(NOM_CHAM='VITE_ABSOLU',
                             NOM_CMP='DX',
                             NOEUD='NO1',SUIVI_DDL='NON'),
                          _F(NUME_SUIVI=1,
                             NOM_CHAM='DEPL_ABSOLU',
+                            NOM_CMP='DX',
+                            NOEUD='NO1',SUIVI_DDL='OUI'),
+                         _F(NUME_SUIVI=1,
+                            NOM_CHAM=('DEPL_ABSOLU','VITE_ABSOLU'),
                             NOM_CMP='DX',
                             NOEUD='NO1',SUIVI_DDL='OUI'),
                             ),

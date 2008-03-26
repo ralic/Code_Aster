@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
@@ -136,7 +136,7 @@ U1       = STAT_NON_LINE(
       _F( CHARGE = DEP_SYM,     ),
       _F( CHARGE = P0,          )),
                           COMP_INCR = _F( RELATION     = 'KIT_HM',          
-                                          RELATION_KIT = ('DRUCKER_PRAGER',
+                                          RELATION_KIT = ('DRUCK_PRAGER',
                        'LIQU_SATU',
                                                           'HYDR_UTIL',  ),      
                                          ),
@@ -176,7 +176,7 @@ U2       = STAT_NON_LINE( MODELE     = MODELE,
       _F( CHARGE    = DEP_V,            
                                              FONC_MULT = EVOL_DEV,)),
                           COMP_INCR  = _F( RELATION     = 'KIT_HM',          
-                                           RELATION_KIT = ('DRUCKER_PRAGER',
+                                           RELATION_KIT = ('DRUCK_PRAGER',
                  'LIQU_SATU',
                                                            'HYDR_UTIL',),),
                           ETAT_INIT  = _F( EVOL_NOLI  = U1,         

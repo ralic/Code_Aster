@@ -3,7 +3,7 @@
      &                   VTEMP,VTEMPM,VTEMPP,VHYDR,VHYDRP,TMPCHI,TMPCHF,
      &                   COMPOR,CNDIRP,CNCHCI,VEC2ND,VEC2NI,PREM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,10 +75,10 @@ C
       DATA TYPRES        /'R'/
       DATA CHSOL         /'&&NXPRED.SOLUTION'/
       DATA BIDON         /'&&FOMULT.BIDON'/
-      DATA VERESI        /'&&VERESI.LISTE_RESU'/
-      DATA VEBTLA        /'&&VETBTL.LISTE_RESU'/
+      DATA VERESI        /'&&VERESI           .RELR'/
+      DATA VEBTLA        /'&&VETBTL           .RELR'/
       DATA VABTLA        /' '/
-      DATA VEBUEM        /'&&VEBUEM.LISTE_RESU'/
+      DATA VEBUEM        /'&&VEBUEM           .RELR'/
       DATA VABUEM        /' '/
       DATA CNRESI        /' '/
 C

@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TYPMAT,MEELEM,MATRIX)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C
       REAL*8        INSTAM,INSTAP
       CHARACTER*24  NUMEDD,RESOCO
       CHARACTER*5   TYPMAT
-      CHARACTER*8   MEELEM(8)
+      CHARACTER*19  MEELEM(8)
       CHARACTER*19  MATRIX
       LOGICAL       FONACT(*)      
 C 
@@ -69,7 +69,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      CHARACTER*8  MERIGI,MEDIRI,MEMASS,MEAMOR,MESUIV,MESSTR        
+      CHARACTER*19 MERIGI,MEDIRI,MEMASS,MEAMOR,MESUIV,MESSTR        
       INTEGER      IFM,NIV    
 C      
 C ----------------------------------------------------------------------

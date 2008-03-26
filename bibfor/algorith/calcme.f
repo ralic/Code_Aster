@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,7 +120,7 @@ C ======================================================================
          NU     = ELAS(2)
          ALPHA0 = ELAS(3)
       ENDIF
-      IF (( MECA.EQ.'DRUCKER_PRAGER' ).OR.(MECA.EQ.'LETK')) THEN
+      IF (( MECA.EQ.'DRUCK_PRAGER' ).OR.(MECA.EQ.'LETK')) THEN
          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
      &                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
@@ -228,7 +228,7 @@ C ======================================================================
       IF (MECA.EQ.'DRUCK_PRAGER' .OR. MECA.EQ.'DRUCK_PRAG_N_A' ) THEN
          MECTRU = .TRUE.
          TINI = T - DT
-         CALL LCDRPR(TYPMOD,OPTION,IMATE,COMPOR,CONGEM(ADCOME),
+         CALL LCDRPR(TYPMOD,OPTION,IMATE,MECA,CONGEM(ADCOME),
      &               TINI,T,TREF,DEPS,VINTM,VINTP,
      &               CONGEP(ADCOME),DSDEME,RETCOM)
       ENDIF

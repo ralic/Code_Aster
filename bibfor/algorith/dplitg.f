@@ -1,10 +1,10 @@
       FUNCTION DPLITG (MATER, PPLUS, PLAS)
 C
       IMPLICIT      NONE
-      REAL*8        MATER(4,2), PPLUS, PLAS, DPLITG
+      REAL*8        MATER(5,2), PPLUS, PLAS, DPLITG
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

@@ -1,4 +1,4 @@
-#@ MODIF sd_vect_elem SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_vect_elem SD  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,13 +23,13 @@ from SD.sd_resuelem import sd_resuelem
 from SD.sd_matr_elem import sd_matr_elem
 
 class sd_vect_elem(sd_matr_elem):
-    nomj = SDNom(fin=8)
-    LISTE_CHAR = Facultatif(AsColl(acces='NO', stockage='CONTIG', modelong='CONSTANT', type='I', ))
+    nomj = SDNom(fin=19)
+    RELC = Facultatif(AsColl(acces='NO', stockage='CONTIG', modelong='CONSTANT', type='I', ))
 
 
-    def check_LISTE_CHAR(self, checker):
-        if not self.LISTE_CHAR.exists : return
-        lchar = self.LISTE_CHAR.get()
+    def check_RELC(self, checker):
+        if not self.RELC.exists : return
+        lchar = self.RELC.get()
         for nochar in lchar.keys() :
             for k in lchar[nochar] :
                 assert k in (0,1) , lchar

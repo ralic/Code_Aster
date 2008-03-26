@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+#& MODIF COMMUN  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -76,6 +76,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "VMIS_CIN2_CHAB",
                                         "VISC_CIN1_CHAB",
                                         "VISC_CIN2_CHAB",
+                                        "VMIS_CIN2_MEMO",
+                                        "VISC_CIN2_MEMO",
                                         "LMARC",
                                         "LMARC_IRRA",
                                         "ROUSSELIER",
@@ -195,6 +197,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           VMIS_CIN2_CHAB  =SIMP(statut='c',typ='I',defaut=14,into=(14,)),
           VISC_CIN1_CHAB  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           VISC_CIN2_CHAB  =SIMP(statut='c',typ='I',defaut=14,into=(14,)),
+          VMIS_CIN2_MEMO  =SIMP(statut='c',typ='I',defaut=28,into=(28,)),
+          VISC_CIN2_MEMO  =SIMP(statut='c',typ='I',defaut=28,into=(28,)),
           LMARC           =SIMP(statut='c',typ='I',defaut=20,into=(20,)),
           LMARC_IRRA      =SIMP(statut='c',typ='I',defaut=20,into=(20,)),
           VISC_TAHERI     =SIMP(statut='c',typ='I',defaut=9,into=(9,)),

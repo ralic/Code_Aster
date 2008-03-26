@@ -1,10 +1,11 @@
       SUBROUTINE MERIBI(MODELE,CARA,CHSIGG,MATEL,NH)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NH
-      CHARACTER*8 MODELE,CARA,MATEL
+      CHARACTER*8 MODELE,CARA
+      CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +54,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 LIGRMO,LCHIN(10),LCHOUT(1),CHSIGG
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM
       LOGICAL EXISIG
-      INTEGER ICODE,ILIRES,IRET,JLIRES
+      INTEGER ICODE,IRET
 
       CALL JEMARQ()
       IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
@@ -64,12 +65,10 @@ C     ------------------------------------------------------------------
      &            ICODE)
 
       CALL MEMARE('V',MATEL,MODELE,' ',CARA,OPTION)
-      CALL WKVECT(MATEL//'.LISTE_RESU','V V K24',1,JLIRES)
 
       LPAOUT(1) = 'PMATUUR'
-      LCHOUT(1) = MATEL//'.ME001'
+      LCHOUT(1) = MATEL(1:8)//'.ME001'
 
-      ILIRES = 0
       LIGRMO = MODELE(1:8)//'.MODELE'
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = CHGEOM
@@ -91,12 +90,7 @@ C     ------------------------------------------------------------------
       LCHIN(9) = CARA(1:8)//'.CANBSP'
       OPTION = 'RIGI_MECA_GE'
       CALL CALCUL('S',OPTION,LIGRMO,9,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V')
-      CALL EXISD('CHAMP',LCHOUT(1) (1:19),IRET)
-      IF (IRET.NE.0) THEN
-        ILIRES = ILIRES + 1
-        ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-        CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-      END IF
+      CALL REAJRE(MATEL,LCHOUT(1),'V')
 
       CALL JEDEMA()
       END

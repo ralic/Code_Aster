@@ -1,4 +1,4 @@
-#@ MODIF meidee_correlation Meidee  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF meidee_correlation Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,407 +27,42 @@
 # La classe InterfaceCorrelation dirige les objets graphiques
 
 from Utilitai.Utmess import UTMESS
-try:
-    import Numeric
-    import sys
-    import aster
-    from Meidee.meidee_cata import Resultat, CaraElem, InterSpectre, MeideeObjects
-    from Meidee.meidee_iface import MacWindow, MacMode, MyMenu, ModeList
-##    from Meidee.TkPlotCanvas import PlotCanvas
-    from Accas import _F
-    import weakref
-    import os
-    from Cata.cata import modele_sdaster , mode_meca, matr_asse_depl_r, maillage_sdaster
-    from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
-    from Cata.cata import IMPR_RESU, RECU_TABLE, MAC_MODES, DETRUIRE
-    from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, CO, MACRO_EXPANS
-    from Tkinter import Frame, Menubutton, Menu, StringVar, IntVar, Listbox
-    from Tkinter import Toplevel, Scrollbar, Label, Radiobutton, Button, Entry
-    from Tkinter import Checkbutton, Canvas
 
-    # Recuperation de deux UL disponibles pour les operations du superviseur GMSH
-    # TODO: proprifier ca si possible
-    _TUL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-    _ULGMSH=_TUL['UNITE_LIBRE',1]
-    DEFI_FICHIER(FICHIER='TMP',UNITE=_ULGMSH)
-    _TUL2=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-    _ULMAIL=_TUL2['UNITE_LIBRE',1]
-    DEFI_FICHIER(ACTION='LIBERER',UNITE=_ULGMSH)
-    DETRUIRE(CONCEPT = _F(NOM = (_TUL,_TUL2)), INFO=1)
+import Numeric
+import sys
+import aster
+from Meidee.meidee_cata import Resultat, CaraElem, InterSpectre, MeideeObjects
 
+from Accas import _F
+import weakref
+import os
 
-    
-except ImportError:
-    UTMESS('F','MEIDEE0_2')
+from Tkinter import Frame, Menubutton, Menu, StringVar, IntVar, Listbox
+from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
+from Tkinter import Checkbutton, Canvas
+from Meidee.meidee_iface import MacWindow, MacMode, MyMenu, ModeList
+from Meidee.meidee_calcul_correlation import MeideeCorrelation
 
 try:
     from Stanley.gmsh import GMSH
 except ImportError:
     # Mode standalone
     from gmsh import GMSH
-   
+
 
 palette = [ "#%02x%02x%02x" % (i, 255-i, 0) for i in range(256) ]
 
 GMSH_CANDIDATES = [ os.path.join( pth, "gmsh" ) for pth in os.environ['PATH'].split(":") ]
 GMSH_CANDIDATES += ["./gmsh"] # custom paths
-GMSH_CANDIDATES += ["/logiciels/aster/outils/gmsh"]
+GMSH_CANDIDATES += ["/logiciels/Aster/outils/gmsh"]
 GMSH_CANDIDATES += ["/aster/outils/gmsh"]
-
 
 for pth in GMSH_CANDIDATES:
     if os.access( pth, os.X_OK ):
         GMSH_PATH = pth
-        print "gmsh found here:" , GMSH_PATH
         break
 else:
-    print "Couldn't find gmsh executable"   
     GMSH_PATH = 'gmsh'
-
-
-
-
-#######################
-#                     #
-#  CLASSES DE CALCUL  #
-#                     #
-#######################
-
-def extract_mac_array( mac_mode ):
-    """!Reconstruit un tableau numeric de modes MAC
-
-    /param mac_mode concept Table aster
-    """
-    data1 = mac_mode.EXTR_TABLE().Array('NUME_MODE_1','MAC')
-    data2 = mac_mode.EXTR_TABLE().Array('NUME_MODE_2','MAC')
-    N = int(Numeric.maximum.reduce(data1[:,0]))
-    M = int(Numeric.maximum.reduce(data2[:,0]))
-    mac = Numeric.zeros( (N,M), Numeric.Float )
-    for i in range(data1.shape[0]):
-        i1 = int(data1[i,0])-1
-        i2 = int(data2[i,0])-1
-        mac[ i1, i2 ] = data1[i,1]
-    return mac
-
-class MeideeCorrelation:
-    """!Classe qui s'occupe des calculs de l'interface correlation
-
-    Cette classe un peu fourre-tout a pour but de séparer les calculs
-    spécifique aster de l'interface graphique. L'objectif étant de pouvoir
-    tester plus rapidement l'interface graphique en cours de développement.
-    
-    """
-    def __init__(self, macro, mess):
-        """!Constructeur
-
-        \param macro le self de l'objet macro provenant de macro_visu_meidee_ops
-        """
-        self.resu_num = None
-        self.resu_exp = None
-        self.norme_num = None
-        self.norme_exp = None
-        self.Calc_Modes = {
-            ("phi_et", ) : self.mac_et,
-            ("phi_et", "phi_num" ) : self.mac_et_num,
-            ("phi_exp", ) : self.mac_exp,
-            ("phi_exp", "phi_num_red") : self.mac_exp_red,
-            ("phi_num",) : self.mac_num,
-            ("phi_num_red",) : self.mac_numred,
-            }
-        self.resu_et = None
-        self.resu_num_extr = None
-        self.resu_red = None
-        self.resu_exp_extr = None
-        self.proj_meth = "SVD"
-        self.proj_param = (1.e-2,)
-        self.concepts = {}      # mapping number -> (name,owned)
-        self.concepts_names = {} #mapping name -> number
-        self.macro = macro
-        self.mess = mess
-
-    def __setitem__(self, n, val):
-        """!Emulation d'un dictionnaire
-
-        On implemente __setitem__
-        pour faire croire au superviseur qu'on cree
-        un concept dans une liste"""
-        self.concepts[n] = val
-
-    def __getitem__(self, n):
-        """!Emulation d'un dictionnaire
-
-        On implémente __getitem__ pour les meme raison, et pour
-        faire de l'allocation dynamique de numéro de concept
-        on se comporte comme une liste"""
-        return self.concepts[n]
-
-    def is_valid( self ):
-        """!Indique si on a spécifié un résultat numérique et un résultat expérimental
-
-        Valide si on a précisé un resultat numérique et un résultat
-        experimental"""
-        bool = (self.resu_num is not None and self.resu_exp is not None)
-        return bool
-
-    def Setup( self, resu_num, resu_exp,
-               norme_num, norme_exp ):
-        """!Paramétrage de l'objet
-        
-        On fournit les objets aster nécessaires au calcul. Par défaut, la liste des modes
-        sélectionnés dans self.modes_num_liste est la liste de tous les numéros d'ordre.
-        """
-        self.resu_num = resu_num
-        self.resu_exp = resu_exp
-        self.norme_num = norme_num
-        self.norme_exp = norme_exp
-        self.resu_et = None
-        self.resu_red = None
-        self.resu_num_extr = None
-        self.resu_exp_extr = None
-
-    def cleanup(self):
-        """!Détruit les objets temporaires créés par calc_proj_resu"""
-        self.resu_et = None
-        self.resu_num_extr = None
-        self.resu_exp_extr = None
-        self.resu_red = None
-        items = self.concepts_names.items()
-        for name, (n,owners) in items:
-            for c in owners[:]:
-                if c() is None:
-                    owners.remove(c)
-            if not owners:
-                self.mess.disp_mess( ("Destruction de "+name ) )
-                DETRUIRE(CONCEPT=_F(NOM=(name,)),
-                         ALARME='OUI', INFO=1)
-                del self.concepts_names[name]
-                del self.concepts[n]
-            else:
-                self.mess.disp_mess( ("Concept"+name+"toujours utile"+ owners))
-                for c in owners:
-                    self.mess.disp_mess( ("Owned by"+c() ) )
-        self.mess.disp_mess( ( " " ) )
-        
-
-
-    def __del__(self):
-        cleanup()
-
-    def register_result(self, result):
-        """!Enregistre un Resultat pour destruction ultérieure
-
-        Appelé par un objet Resultat pour s'enregistrer dans la liste des
-        objets Resultat qui utilisent ce concept et permet de ne pas détruire
-        ce concept si le Resultat est toujours utilisé.
-
-        On utilise une référence faible (weakref) qui permet de savoir si un
-        objet à été détruit sans compter comme une vrai référence :
-        c = weakref.ref(obj) # le refcount de obj est inchangé
-        x = c() # x == obj si obj n'a pas été détruit, None sinon
-        """
-        self.concepts_names[result.nom][1].append( weakref.ref(result) )
-
-    def unregister_result(self, result ):
-        """!Supprime un objet résultat de la liste des Resultat référencés"""
-        owners = []
-        if result.nom in self.concepts_names:
-            (n,owners) = self.concepts_names[ result.nom ]
-            for c in owners[:]:
-                if result == c():
-                    owners.remove(c)
-            if not owners:
-                del self.concepts_names[result.nom]
-        if not owners:
-            self.mess.disp_mess( ("Destruction de" +  result.nom) ) 
-            DETRUIRE(CONCEPT=_F(NOM=(result.nom,)), ALARME='OUI', INFO=1)
-
-
-
-    def get_modes_num(self):
-        return self.resu_num.get_modes()
-
-    def get_modes_exp(self):
-        return self.resu_exp.get_modes()
-
-    def calc_proj_resu(self, num_modes, exp_modes,
-                       resu_num, resu_exp,
-                       basename=None,
-                       reso=None):
-        """!Projection des modes experimentaux sur la base modale numérique
-            reso est different de None en mode non interactif. En mode
-            interactif, on va chercher les parametres de resolution dans
-            l'IHM                                                          """
-        self.mess.disp_mess( "Début de MACRO_EXPANS")
-        if not basename:
-            basename = "_tmp"
-            DETRUIRE(CONCEPT=_F(NOM=('_tmp_NX','_tmp_EX',
-                                     '_tmp_ET','_tmp_RD')),
-                     ALARME='NON', INFO=2 )
-        name_nx = basename+"_NX"
-        name_ex = basename+"_EX"
-        name_et = basename+"_ET"
-        name_rd = basename+"_RD"
-        res_nx = CO(name_nx)
-        res_ex = CO(name_ex)
-        res_et = CO(name_et)
-        res_rd = CO(name_rd)
-
-        if reso == None:
-            reso = []
-            if self.proj_meth == "SVD":
-                reso.append({"METHODE":"SVD", "EPS":self.proj_param[0] })
-            else:
-                reso.append({"METHODE":"LU"})
-        self.mess.disp_mess( ('Donnees num             : '+ resu_num.nom))
-        self.mess.disp_mess( ('nume_ordre selectionnes : '+ str(tuple(num_modes[0]))))        
-        self.mess.disp_mess( ('Donnees exp             : '+ resu_exp.nom))
-        self.mess.disp_mess( ('nume_ordre a etendre    : '+ str(tuple(exp_modes[0]))))
-        self.mess.disp_mess( ('type résolution         : ' + reso[0]['METHODE']))
-        self.mess.disp_mess("  ")
-
-##        try:
-        MACRO_EXPANS( MODELE_CALCUL = _F(MODELE = resu_num.modele,
-                                         BASE   = resu_num.obj,
-                                         NUME_MODE  = tuple(num_modes[0])),
-                      MODELE_MESURE = _F(MODELE = resu_exp.modele,
-                                         MESURE = resu_exp.obj,
-                                         NUME_MODE  = tuple(exp_modes[0])),
-                      RESU_NX = res_nx,
-                      RESU_EX = res_ex,
-                      RESU_ET = res_et,
-                      RESU_RD = res_rd,                           
-                      RESOLUTION = reso
-                     )
-##        except Exception, err:
-##            print "err = ", err
-##            self.mess.disp_mess("!! Erreur dans MACRO_EXPANS !!")
-##            self.mess.disp_mess( "Fin de MACRO_EXPANS")
-##            return
-                
-        self.resu_num_extr = Resultat(name_nx, res_nx, self.mess, owned=False)
-        self.resu_exp_extr = Resultat(name_ex, res_ex, self.mess, owned=False)
-        self.resu_et =Resultat(name_et, res_et, self.mess, owned=False)
-        self.resu_red=Resultat(name_rd, res_rd, self.mess, owned=False)
-
-        self.resu_et.cara_mod = self.resu_exp.get_cara_mod()
-        self.resu_red.cara_mod = Numeric.take(self.resu_exp.get_cara_mod(),
-                                              Numeric.array(exp_modes[0])-1, axis=0)
-
-        self.mess.disp_mess( "Fin de MACRO_EXPANS")
-        self.mess.disp_mess( " ")
-
-
-    def mac_et_num(self, num_modes, exp_modes, num_norme, exp_norme):
-        return self.resu_num_extr, self.resu_et, num_modes, exp_modes, num_norme
-
-    def mac_exp_red(self, num_modes, exp_modes, num_norme, exp_norme):
-        return self.resu_exp_extr, self.resu_red, num_modes, exp_modes, exp_norme
-
-    def mac_numred(self, num_modes, exp_modes, num_norme, exp_norme):
-        return self.resu_red, self.resu_red, num_modes, exp_modes, exp_norme
-
-    def mac_et(self, num_modes, exp_modes, num_norme, exp_norme):
-        return self.resu_et, self.resu_et, num_modes, exp_modes, num_norme
-    
-    def mac_num(self, num_modes, exp_modes, num_norme, exp_norme):
-        return self.resu_num_extr, self.resu_num_extr, num_modes, num_modes, num_norme
-        
-    def mac_exp(self, num_modes, exp_modes, num_norme, exp_norme):
-        return self.resu_exp_extr, self.resu_exp_extr, exp_modes, exp_modes, exp_norme
-
-    def calc_mac_mode( self, resu1, resu2, modes1, modes2, norme, modeles ):
-        """!Calcul de MAC entre deux bases modales compatibles"""
-        try:
-            o1 = resu1.obj
-            o2 = resu2.obj
-        except AttributeError:
-            self.mess.disp_mess( ( "modeles = " + str(modeles[0]) ) )
-            if modeles[0] == 'phi_num':
-                o1 = o2 = self.resu_num.obj
-            elif modeles[0] == 'phi_exp':
-                o1 = o2 = self.resu_exp.obj
-            else:
-                self.mess.disp_mess( ( "Les modes a visualiser n existent pas !!" ) )
-                self.mess.disp_mess( ( "Avez-vous cliqué sur Calculer ?" ) )
-                self.mess.disp_mess( ( "                               " ) )
-                return
-        __MAC = MAC_MODES(BASE_1=o1,
-                          BASE_2=o2,
-                          MATR_ASSE=norme,
-                          INFO=2
-                          )
-        self.mess.disp_mess( (  "      " ) ) 
-        mac = extract_mac_array( __MAC )
-        DETRUIRE(CONCEPT=_F(NOM=(__MAC,)))
-        return mac, modes1, modes2
-
-    def get_mac(self, modeles, num_modes, exp_modes, num_norme, exp_norme ):
-        """!Calculer le MAC entre deux analyses modales
-
-        On commence par extraire les modes sélectionnés pour le calcul et calculer
-        les projections (modes étendus, modes étendus réduits) avant d'utiliser
-        \see calc_mac_mode
-        """
-
-        self.mess.disp_mess("Calcul de MAC_MODE pour les modes :")        
-        self.mess.disp_mess( (str(num_modes) ) )
-        self.mess.disp_mess( (str(exp_modes) ) )
-        self.mess.disp_mess("  ")
-        oper = self.Calc_Modes[ modeles ]
-        resu1, resu2, modes1, modes2, norme = oper(num_modes, exp_modes, num_norme, exp_norme)
-        res = self.calc_mac_mode(resu1,resu2,modes1,modes2,norme, modeles)
-        
-        return res
-
-    def prep_fichier(self, mode_num, mode_exp, mode_num_red, mode_et):#, num_modes, exp_modes ):
-        """!Gestion preparation des fichiers pour l'appel de GMSH"""
-        if mode_num:
-            if not self.resu_num_extr:
-                self.resu_num_extr = self.resu_num
-            IMPR_RESU( UNITE   = _ULGMSH, 
-                       FORMAT  = 'GMSH',
-                       MODELE  = self.resu_num.modele,
-                       RESU    = _F(RESULTAT=self.resu_num_extr.obj,),
-                       )
-        if mode_exp:
-            if not self.resu_exp_extr:
-                self.resu_exp_extr = self.resu_exp          
-            IMPR_RESU( UNITE   = _ULGMSH,
-                       FORMAT  = 'GMSH',
-                       MODELE  = self.resu_exp.modele,
-                       RESU    = _F(RESULTAT=self.resu_exp_extr.obj,),
-                       )
-
-        if mode_et:
-            if not self.resu_et:
-                self.mess.disp_mess( "!!   Les calculs d'expansion n'ont pas    !!" )
-                self.mess.disp_mess( "!! encore ete faits. Cliquer sur Calculer !!" )
-                self.mess.disp_mess( "   " )
-            IMPR_RESU( UNITE   = _ULGMSH, 
-                       FORMAT  = 'GMSH',
-                       MODELE  = self.resu_num.modele,
-                       RESU    = _F(RESULTAT=self.resu_et.obj,),
-                       )
-            
-        if mode_num_red:
-            if not self.resu_red:
-                self.mess.disp_mess( "!!   Les calculs d'expansion n'ont pas    !!" )
-                self.mess.disp_mess( "!! encore ete faits. Cliquer sur Calculer !!" )
-                self.mess.disp_mess( "   " )                
-            IMPR_RESU( UNITE   = _ULGMSH, 
-                       FORMAT  = 'GMSH',
-                       MODELE  = self.resu_exp.modele,
-                       RESU    = _F(RESULTAT=self.resu_red.obj,),
-                       )
-        DEFI_FICHIER(ACTION='LIBERER', UNITE=_ULGMSH)
-
-    def get_fichier(self):
-        return "fort.%d" % _ULGMSH
-
-
-
-#-------------------------------------------------------------------------------------------------------
-
 
 
 ########################
@@ -435,8 +70,6 @@ class MeideeCorrelation:
 #  CLASSES GRAPHIQUES  #
 #                      #
 #######################
-
-
 
 
 #------------------------------------------------------------------------------------------------------
@@ -478,7 +111,7 @@ class InterfaceCorrelation(Frame):
         self.use_nume_mass = IntVar()
         self.proj_champ_meth = StringVar()
         self.proj_svd_param = StringVar()
-        self.meidee = MeideeCorrelation( macro, self.mess )
+        self.meidee = MeideeCorrelation( macro, self.mess, self.meidee_objects )
         self.term = None
         self.mac_windows = []
         self.term_gmsh = []
@@ -493,7 +126,7 @@ class InterfaceCorrelation(Frame):
 
     def teardown(self):
         """!Appelée par le gestionnaire de tab lors du masquage (passage à un autre tab)"""
-        self.meidee.cleanup()
+        return
 
 
 
@@ -745,7 +378,7 @@ class InterfaceCorrelation(Frame):
         modeles, num_modes, exp_modes, norme_num, norme_exp = self.prepare_macs()
         res_num = self.meidee.resu_num
         res_exp = self.meidee.resu_exp
-        self.meidee.calc_proj_resu(num_modes, exp_modes, res_num, res_exp, basename = None)
+        self.meidee.calc_proj_resu(num_modes, exp_modes, res_num, res_exp)
 
 
     def prepare_macs(self):
@@ -785,7 +418,6 @@ class InterfaceCorrelation(Frame):
         basename = self.export_name.get()
         if len(basename)>5:
             self.mess.disp_mess( "Le nom doit etre de 5 caractères maximum" )
-        print "test1"            
         modeles, num_modes, exp_modes, norme_num, norme_exp = self.prepare_macs()
         resu_num = self.meidee.resu_num
         resu_exp = self.meidee.resu_exp   

@@ -3,7 +3,7 @@
       CHARACTER*(*)     MOTFAZ, MATREZ, LISMAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/05/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF PREPOST  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C
       CHARACTER*1   K1BID
-      CHARACTER*8   MATEL
+      CHARACTER*19  MATEL
       CHARACTER*8   K8BID, NOMA, NOMNOE, NOMAIL
       CHARACTER*8   MONOEU, MOGRNO, MOMAIL, MOGRMA, MOTOUI
       CHARACTER*16  MOTFAC
@@ -197,11 +197,11 @@ C       ----------------------
 C
 C ---   RECUPERATION DE LA LISTE DES RESU_ELEM DU MATR_ELEM :
 C       ---------------------------------------------------
-        CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
+        CALL JEVEUO(MATEL//'.RELR','L',IDLRES)
 C
 C ---   RECUPERATION DU NOMBRE DE RESU_ELEM DU MATR_ELEM :
 C       ------------------------------------------------
-        CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI',NBRESU,K1BID)
+        CALL JELIRA(MATEL//'.RELR','LONUTI',NBRESU,K1BID)
 C
 C ---   BOUCLE SUR LES RESU_ELEM DU MATR_ELEM :
 C       -------------------------------------
@@ -381,11 +381,11 @@ C     -------------------------------------
 C
 C ---   RECUPERATION DE LA LISTE DES RESU_ELEM DU MATR_ELEM :
 C       ---------------------------------------------------
-        CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
+        CALL JEVEUO(MATEL//'.RELR','L',IDLRES)
 C
 C ---   RECUPERATION DU NOMBRE DE RESU_ELEM DU MATR_ELEM :
 C       ------------------------------------------------
-        CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI',NBRESU,K1BID)
+        CALL JELIRA(MATEL//'.RELR','LONUTI',NBRESU,K1BID)
 C
 C ---   BOUCLE SUR LES RESU_ELEM DU MATR_ELEM :
 C       -------------------------------------

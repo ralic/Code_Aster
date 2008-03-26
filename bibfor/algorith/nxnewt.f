@@ -6,7 +6,7 @@
      &                   COMPOR,CNVABT,CNRESI,PARCRI,PARCRR,REASMA,
      &                   TESTR,TESTM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,9 +81,9 @@ C
       DATA TYPRES        /'R'/
       DATA CHSOL         /'&&NXNEWT.SOLUTION'/
       DATA BIDON         /'&&FOMULT.BIDON'/
-      DATA VERESI        /'&&VERESI.LISTE_RESU'/
-      DATA VEBTLA        /'&&VETBTL.LISTE_RESU'/
-      DATA MERIGI        /'&&METRIG.LISTE_RESU'/
+      DATA VERESI        /'&&VERESI           .RELR'/
+      DATA VEBTLA        /'&&VETBTL           .RELR'/
+      DATA MERIGI        /'&&METRIG           .RELR'/
 C
 C ----------------------------------------------------------------------
 C
@@ -165,11 +165,11 @@ C
         NBMAT = 0
         IF (ZK24(JMER)(1:8).NE.'        ') THEN
           NBMAT = NBMAT + 1
-          TLIMAT(NBMAT) = ZK24(JMER)
+          TLIMAT(NBMAT) =MERIGI(1:19)
         END IF
         IF (ZK24(JMED)(1:8).NE.'        ') THEN
           NBMAT = NBMAT + 1
-          TLIMAT(NBMAT) = ZK24(JMED)
+          TLIMAT(NBMAT) =MEDIRI(1:19)
         END IF
 C
 C --- ASSEMBLAGE DE LA MATRICE

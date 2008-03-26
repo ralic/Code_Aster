@@ -1,7 +1,7 @@
       SUBROUTINE MERXTH(MODELE,CHARGE,INFCHA,CARELE,MATE,INST,CHTNI,
      &                  MERIGI,COMPOR,TMPCHI,TMPCHF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*16 OPTION
       CHARACTER*24 LIGREL(2),LCHIN(9),LCHOUT(1),LIGRCH
       CHARACTER*24 CHGEOM,CHCARA(15)
-      INTEGER IRET,NCHAR,ILIRES,JMER,ICHA,JCHAR,JINF
+      INTEGER IRET,NCHAR,ILIRES,ICHA,JCHAR,JINF
       LOGICAL EXICAR,EXIGEO
 C ----------------------------------------------------------------------
       INTEGER NBCHMX
@@ -92,11 +92,10 @@ C DEB ------------------------------------------------------------------
 
       CALL JEEXIN(MERIGI,IRET)
       IF (IRET.EQ.0) THEN
-        MERIGI = '&&METRIG.LISTE_RESU'
-        CALL MEMARE('V',MERIGI(1:8),MODELE(1:8),MATE,CARELE,'MTAN_THER')
-        CALL WKVECT(MERIGI,'V V K24',NCHAR*NBCHMX+1,JMER)
+        MERIGI = '&&METRIG           .RELR'
+        CALL MEMARE('V',MERIGI,MODELE(1:8),MATE,CARELE,'MTAN_THER')
       ELSE
-        CALL JEVEUO(MERIGI,'E',JMER)
+        CALL JEDETR(MERIGI)
       END IF
 
       LIGREL(1) = MODELE(1:8)//'.MODELE'
@@ -125,13 +124,7 @@ C DEB ------------------------------------------------------------------
         CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
         CALL CALCUL('S',OPTION,LIGREL(1),7,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &              'V')
-        CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-        IF (IRET.NE.0) THEN
-          ZK24(JMER-1+ILIRES) = LCHOUT(1)
-          CALL JEECRA(MERIGI,'LONUTI',ILIRES,' ')
-        ELSE
-          ILIRES = ILIRES - 1
-        END IF
+        CALL REAJRE(MERIGI,LCHOUT(1),'V')
       END IF
 
       IF (NCHAR.GT.0) THEN
@@ -166,13 +159,7 @@ C DEB ------------------------------------------------------------------
                 CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
                 CALL CALCUL('S',OPTION,LIGREL(NLIGR(K)),NBOPT(K),LCHIN,
      &                      LPAIN,1,LCHOUT,LPAOUT,'V')
-                CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-                IF (IRET.NE.0) THEN
-                  ZK24(JMER-1+ILIRES) = LCHOUT(1)
-                  CALL JEECRA(MERIGI,'LONUTI',ILIRES,K8BID)
-                ELSE
-                  ILIRES = ILIRES - 1
-                END IF
+                CALL REAJRE(MERIGI,LCHOUT(1),'V')
               END IF
    10       CONTINUE
           END IF

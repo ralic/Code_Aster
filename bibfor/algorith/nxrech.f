@@ -4,7 +4,7 @@
      &                   TMPCHI,TMPCHF,VEC2ND,CNVABT,CNRESI,RHO,
      &                   ITERHO,PARMER,PARMEI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/07/2007   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,8 +71,8 @@ C
       INTEGER      ITRMAX,K,ITERHO
       DATA TYPRES        /'R'/
       DATA BIDON         /'&&FOMULT.BIDON'/
-      DATA VERESI        /'&&VERESI.LISTE_RESU'/
-      DATA VEBTLA        /'&&VETBTL.LISTE_RESU'/
+      DATA VERESI        /'&&VERESI           .RELR'/
+      DATA VEBTLA        /'&&VETBTL           .RELR'/
 C
 C-----------------------------------------------------------------------
 C

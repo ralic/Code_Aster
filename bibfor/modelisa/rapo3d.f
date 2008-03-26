@@ -1,7 +1,7 @@
       SUBROUTINE RAPO3D(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C --------- VARIABLES LOCALES ---------------------------
       INTEGER IOP,NLIAI,I,NARL,NRL,IBID,JNOMA,JCOOR,INOM
       INTEGER NBCMP,NDDLA,NBEC,JPRNM,NLILI,K,IAPRNO,LONLIS,ILISNO
       INTEGER LOLIMA,JLISMA,NBMA,NBNO,NBGNO,NNO,N1,JGRO,IN,NUMNOP
-      INTEGER INO,J,INDIK8,IDINER,IAREFE,ILIRES,IDCH1,IDCH2,NBTERM
+      INTEGER INO,J,INDIK8,IDINER,IAREFE,IDCH1,IDCH2,NBTERM
       INTEGER JLISNO,JLISDL,JLISCR,JLISCC,JLISDI,JLISDM,IVAL
       INTEGER NCARA,IOCC,IER
 C --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
@@ -466,29 +466,23 @@ C     ------------------------------------------------------------
       CALL CALCUL('S','CARA_SECT_POUT4',LIGREL,2,LCHIN,LPAIN,2,LCHOUT,
      &            LPAOUT,'V')
 
-C --- CREATION DES .REFE_RESU DES VECTEURS EN SORTIE DE CALCUL
+C --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
 C     --------------------------------------------------------
-      CALL MEMARE('V','&&RAPO3D',MOD,' ',' ','CHAR_MECA')
-
-C --- CREATION DU .LISTE_RESU
-C     -----------------------
-      CALL WKVECT('&&RAPO3D.LISTE_RESU','V V K24',1,ILIRES)
+      CALL MEMARE('V','&&RAPO3D',MOD,' ',' ','CHAR_MECA')      
 
 C --- ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
 C     ---------------------------------------------------------
-
-      ZK24(ILIRES+1-1) = LCHOUT(1)
-
-      CALL ASSVEC('V','CH_DEPL_1',1,'&&RAPO3D.LISTE_RESU',UN,NUMDDL,' ',
-     &            'ZERO',1)
+      CALL JEDETR('&&RAPO3D           .RELR')
+      CALL REAJRE('&&RAPO3D',LCHOUT(1),'V')
+      CALL ASSVEC('V','CH_DEPL_1',1,'&&RAPO3D           .RELR',
+     &            UN,NUMDDL,' ','ZERO',1)
 
 C --- ASSEMBLAGE DE LCHOUT(2) DANS LE CHAMNO DE NOM 'CH_DEPL_2'
 C     ---------------------------------------------------------
-
-      ZK24(ILIRES+1-1) = LCHOUT(2)
-
-      CALL ASSVEC('V','CH_DEPL_2',1,'&&RAPO3D.LISTE_RESU',UN,NUMDDL,' ',
-     &            'ZERO',1)
+      CALL JEDETR('&&RAPO3D           .RELR')
+      CALL REAJRE('&&RAPO3D',LCHOUT(2),'V')
+      CALL ASSVEC('V','CH_DEPL_2',1,'&&RAPO3D           .RELR',
+     &            UN,NUMDDL,' ','ZERO',1)
 
       VALE1 = 'CH_DEPL_1          .VALE'
       VALE2 = 'CH_DEPL_2          .VALE'

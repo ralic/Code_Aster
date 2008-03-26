@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,9 @@ C     ARGUMENTS:
 C     ----------
       CHARACTER*(*) MODELZ,CHTNZ,CARAZ,MATEZ,VECELZ,TIMEZ
       CHARACTER*(*) LCHAR(*)
-      CHARACTER*8 MODELE,CARA,VECEL
+      CHARACTER*8 MODELE,CARA
       CHARACTER*8 LCHARZ
+      CHARACTER*19 VECEL
       CHARACTER*24 MATE,TIME
       INTEGER NCHAR
 C ......................................................................
@@ -83,7 +84,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*16 OPTION
       CHARACTER*24 LCHIN(5),LCHOUT(1),LIGRMO,LIGRCH
       CHARACTER*24 CHGEOM
-      INTEGER ICHA,IRET,ILIRES,IBID,IERD,JLIRES,JNOMO
+      INTEGER ICHA,IRET,ILIRES,IBID,IERD,JNOMO
 
 
       CALL JEMARQ()
@@ -95,19 +96,15 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LCHARZ = LCHAR(1)
       CALL MEGEOM(MODELE,LCHARZ,EXIGEO,CHGEOM)
 
-      CALL JEEXIN(VECEL//'.REFE_RESU',IRET)
+      CALL JEEXIN(VECEL//'.RERR',IRET)
       IF (IRET.GT.0) THEN
-        CALL JEDETR(VECEL//'.REFE_RESU')
-        CALL JEDETR(VECEL//'.LISTE_RESU')
+        CALL JEDETR(VECEL//'.RERR')
+        CALL JEDETR(VECEL//'.RELR')
       END IF
       CALL MEMARE('G',VECEL,MODELE,' ',CARA,'CHAR_THER')
-      CALL JECREO(VECEL//'.LISTE_RESU','G V K24')
-      LONLIS = MAX(1,5*NCHAR)
-      CALL JEECRA(VECEL//'.LISTE_RESU','LONMAX',LONLIS,' ')
-      CALL JEVEUO(VECEL//'.LISTE_RESU','E',JLIRES)
 
       LPAOUT(1) = 'PVECTTR'
-      LCHOUT(1) = VECEL//'.VE000'
+      LCHOUT(1) = VECEL(1:8)//'.VE000'
       ILIRES = 0
 
 C     BOUCLE SUR LES CHARGES POUR CALCULER :
@@ -161,13 +158,7 @@ C           --  ( CHAR_THER_TEXT_F , ISO_FACE ) SUR LE MODELE
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,5,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(VECEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
 C           --  ( CHAR_THER_FLUN_F , ISO_FACE ) SUR LE MODELE
@@ -185,13 +176,7 @@ C           --  ( CHAR_THER_FLUN_F , ISO_FACE ) SUR LE MODELE
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(VECEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
 C           --  ( CHAR_THER_FLUX_  , ISO_FACE ) SUR LE MODELE
@@ -209,13 +194,7 @@ C           --  ( CHAR_THER_FLUX_  , ISO_FACE ) SUR LE MODELE
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(VECEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
 C           --   ( CHAR_THER_SOUR_F , ISO    )  SUR LE MODELE
@@ -233,13 +212,7 @@ C           --   ( CHAR_THER_SOUR_F , ISO    )  SUR LE MODELE
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(VECEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
 C           --   ( CHAR_THER_GRAI_  ,  ISO_VOLU  ) SUR LE   MODELE
@@ -259,13 +232,7 @@ C           --   ( CHAR_THER_GRAI_  ,  ISO_VOLU  ) SUR LE   MODELE
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,4,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(VECEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
 C           --   ( THER_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
@@ -283,13 +250,7 @@ C           --   ( THER_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRCH,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(VECEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
    10   CONTINUE
       END IF

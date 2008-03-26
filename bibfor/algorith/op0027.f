@@ -2,7 +2,7 @@
 C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,8 +104,8 @@ C
           ZI(IDESC+1) = N
           ZI(IDESC+2) = 2
 C
-          CALL WKVECT ( NOMRES//'           .LIME', 'G V K8',1, IALIME)
-          ZK8(IALIME) = '        '
+          CALL WKVECT ( NOMRES//'           .LIME', 'G V K24',1, IALIME)
+          ZK24(IALIME) = '                        '
 C
           CALL WKVECT ( NOMRES//'           .CONL', 'G V R', N, IACONL)
           DO 10 I = 1 , N

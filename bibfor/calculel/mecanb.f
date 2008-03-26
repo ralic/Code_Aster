@@ -1,6 +1,6 @@
       SUBROUTINE MECANB(MODELE,MATEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,8 @@ C ======================================================================
 
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*8 MODELE,MATEL
+      CHARACTER*8 MODELE
+      CHARACTER*19 MATEL
 C ----------------------------------------------------------------------
 
 C     CALCUL DES SECONDS MEMBRES ELEMENTAIRES CONTENANT LES NORMALES
@@ -63,14 +64,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
-C     -- CALCUL DE .REFE_RESU:
+C     -- CALCUL DE .RERR:
       CALL JEMARQ()
       CALL MEMARE('V',MATEL,MODELE,' ',' ','CHAR_MECA')
 
-      LONLIS = 1
-      CALL JEEXIN(MATEL//'.LISTE_RESU',IRET)
-      IF (IRET.GT.0) CALL JEDETR(MATEL//'.LISTE_RESU')
-      CALL WKVECT(MATEL//'.LISTE_RESU','V V K24',LONLIS,JLIRES)
+      CALL JEDETR(MATEL//'.RELR')
 
       LCHAR(1) = ' '
       CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)
@@ -79,12 +77,11 @@ C     -- CALCUL DE .REFE_RESU:
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = CHGEOM
       LPAOUT(1) = 'PVECTUR'
-      LCHOUT(1) = MATEL//'.VE001'
+      LCHOUT(1) = MATEL(1:8)//'.VE001'
       LIGRMO = MODELE//'.MODELE'
       OPTION = 'CALC_NOEU_BORD'
       CALL CALCUL('S',OPTION,LIGRMO,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V')
-      ZK24(JLIRES) = LCHOUT(1)
-      CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',1,' ')
+      CALL REAJRE(MATEL,LCHOUT(1),'V')
 
       CALL JEDEMA()
       END

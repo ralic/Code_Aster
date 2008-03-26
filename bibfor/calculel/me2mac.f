@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,8 @@ C ======================================================================
 
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*8 MODELE,LCHAR(*),VECEL
+      CHARACTER*8 MODELE,LCHAR(*)
+      CHARACTER*19 VECEL
       CHARACTER*24 MATE
       INTEGER NCHAR
 C ----------------------------------------------------------------------
@@ -73,19 +74,15 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)
 
-      CALL JEEXIN(VECEL//'.REFE_RESU',IRET)
+      CALL JEEXIN(VECEL//'.RERR',IRET)
       IF (IRET.GT.0) THEN
-        CALL JEDETR(VECEL//'.REFE_RESU')
-        CALL JEDETR(VECEL//'.LISTE_RESU')
+        CALL JEDETR(VECEL//'.RERR')
+        CALL JEDETR(VECEL//'.RELR')
       END IF
       CALL MEMARE('G',VECEL,MODELE,MATE,' ','CHAR_ACOU')
-      CALL JECREO(VECEL//'.LISTE_RESU','G V K24')
-      LONLIS = MAX(1,5*NCHAR)
-      CALL JEECRA(VECEL//'.LISTE_RESU','LONMAX',LONLIS,' ')
-      CALL JEVEUO(VECEL//'.LISTE_RESU','E',JLIRES)
 
       LPAOUT(1) = 'PVECTTC'
-      LCHOUT(1) = VECEL//'.VE000'
+      LCHOUT(1) = VECEL(1:8)//'.VE000'
       ILIRES = 0
 
 C     BOUCLE SUR LES CHARGES POUR CALCULER :
@@ -131,13 +128,7 @@ C           --  ( CHAR_ACOU_VNOR_F , ISO_FACE ) SUR LE MODELE
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(VECEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C           --   ( ACOU_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.CIMPO',IRET)
@@ -154,13 +145,7 @@ C           --   ( ACOU_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRCH,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &                  'G')
-            CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
-            IF (IRET.NE.0) THEN
-              ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
-              CALL JEECRA(VECEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
-            ELSE
-              ILIRES = ILIRES - 1
-            END IF
+            CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
    10   CONTINUE
       END IF

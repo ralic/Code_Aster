@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 12/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,8 +134,6 @@ class MESSAGE_LOGGER:
       """Retourne le texte du message dans un dictionnaire dont les clés sont :
          'code', 'id_message', 'corps_message'
       """
-      dicarg = self.build_dict_args(valk, vali, valr)
-   
       # décodage : idmess => (catamess, numess)
       idmess  = idmess.strip()
       x = idmess.split("_")
@@ -157,6 +155,8 @@ class MESSAGE_LOGGER:
       
       # corps du message
       try:
+         dicarg = self.build_dict_args(valk, vali, valr)
+
          # cata_msg[num] = 'format'
          #              ou {'message' : 'format', 'context' : 'éléments de contexte'}
          if type(cata_msg[numess]) == dict:
@@ -182,11 +182,11 @@ class MESSAGE_LOGGER:
 Le message %s n'a pas pu etre formaté correctement.
 --------------------------------------------------------------------------
 %s
+Exception : %s
 --------------------------------------------------------------------------
 
 %s""" \
-      % (idmess,
-         ''.join(traceback.format_tb(sys.exc_traceback)), contacter_assistance),
+      % (idmess, ''.join(traceback.format_tb(sys.exc_traceback)), msg, contacter_assistance),
             'context_info'  : '',
          }
       # limite la longueur des ligness

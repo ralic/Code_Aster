@@ -2,7 +2,7 @@
      &                  MATSUI)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8   MESUIV
+      CHARACTER*19  MESUIV
       CHARACTER*24  NUMEDD
       CHARACTER*19  SOLVEU,LISCHA
       REAL*8        INSTAP
@@ -77,13 +77,13 @@ C
 C      
       FOMULT = LISCHA(1:19)//'.FCHA'
       BIDON  = .FALSE.
-      CALL JEEXIN(MESUIV(1:8)//'.LISTE_RESU',IRET)
+      CALL JEEXIN(MESUIV//'.RELR',IRET)
       IF ( IRET .NE. 0 ) THEN
-        CALL JELIRA(MESUIV(1:8)//'.LISTE_RESU','LONUTI',NBCHME,K8BID)
+        CALL JELIRA(MESUIV//'.RELR','LONUTI',NBCHME,K8BID)
         IF ( NBCHME .EQ. 0 ) THEN
           BIDON = .TRUE.
         ELSE
-          CALL JEVEUO(MESUIV(1:8)//'.LISTE_RESU','L',JMEC)
+          CALL JEVEUO(MESUIV//'.RELR','L',JMEC)
           IF ( ZK24(JMEC)(7:8) .EQ. '00' ) THEN
             BIDON = .TRUE.
           ENDIF  
@@ -126,19 +126,19 @@ C
         ZR(ILICOE+K-1)  = VALRES
  1    CONTINUE
 
-      CALL WKVECT('&&ASCOMA.LISTE_RESU','V V K24',1,JRESU)
-      CALL JEDUPO(MESUIV(1:8)//'.REFE_RESU',
-     &            'V','&&ASCOMA.REFE_RESU',.TRUE.)
+      CALL JEDUPO(MESUIV//'.RERR',
+     &            'V','&&ASCOMA           .RERR',.TRUE.)
       CALL WKVECT('&&ASCOMA.LISTE_COEF','V V R',1,JCOEF)
       DO 777,K=1,NBCHME
-        ZK24(JRESU) = ZK24(JMEC+K-1)
+        CALL JEDETR('&&ASCOMA           .RELR')
+        CALL REAJRE('&&ASCOMA',ZK24(JMEC+K-1),'V')
         ZR(JCOEF)   = ZR(ILICOE+K-1)
-        CALL ASMATR(1,'&&ASCOMA','&&ASCOMA.LISTE_COEF',NUMEDD,SOLVEU,
-     &              LISCHA,'CUMU','V',1,MATSUI)
+        CALL ASMATR(1,'&&ASCOMA           ','&&ASCOMA.LISTE_COEF',
+     &              NUMEDD,SOLVEU,LISCHA,'CUMU','V',1,MATSUI)
  777  CONTINUE
 C
-      CALL JEDETR('&&ASCOMA.LISTE_RESU')
-      CALL JEDETR('&&ASCOMA.REFE_RESU')
+      CALL JEDETR('&&ASCOMA           .RELR')
+      CALL JEDETR('&&ASCOMA           .RERR')
       CALL JEDETR('&&ASCOMA.LISTE_COEF')
       CALL JEDETR(LICOEF)
 9999  CONTINUE

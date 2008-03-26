@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,13 +77,13 @@ VECASS=RESOUDRE( reuse=VECASS,  MATR=MATASS,       CHAM_NO=VECASS )
 
 TEST_RESU(CHAM_NO=(
             _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-              NOEUD = 'C',        NOM_CMP = 'DX',            VALE = 2.6517E-4),
+              NOEUD = 'C',        NOM_CMP = 'DX',            VALE = 2.6517E-4, REFERENCE= 'ANALYTIQUE'),
             _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-              NOEUD = 'C',        NOM_CMP = 'DY',            VALE = 0.8839E-4),
+              NOEUD = 'C',        NOM_CMP = 'DY',            VALE = 0.8839E-4,REFERENCE= 'ANALYTIQUE'),
             _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-              NOEUD = 'D',        NOM_CMP = 'DX',            VALE = 3.47902E-3),
+              NOEUD = 'D',        NOM_CMP = 'DX',            VALE = 3.47902E-3,REFERENCE= 'ANALYTIQUE'),
             _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-        NOEUD = 'D',        NOM_CMP = 'DY',            VALE = -5.60084E-3)) )
+        NOEUD = 'D',        NOM_CMP = 'DY',            VALE = -5.60084E-3, REFERENCE= 'ANALYTIQUE')) )
 
 # =====================================================================
 #               C H A M _ E L E M   --->   C H A M _ N O
@@ -160,32 +160,32 @@ RESU1=CALC_NO(reuse=RESU1,  OPTION='SIGM_NOEU_CART',
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO_DEPL',  NUME_ORDRE = 1,
-MAILLE = 'AC', NOEUD = 'A',    NOM_CMP = 'SN',    VALE = 6.93641E+07),
+MAILLE = 'AC', NOEUD = 'A',    NOM_CMP = 'SN',    VALE = 6.93641E+07, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO_DEPL',  NUME_ORDRE = 1,
-MAILLE = 'BC', NOEUD = 'B',    NOM_CMP = 'SN',    VALE = -3.46815E+07),
+MAILLE = 'BC', NOEUD = 'B',    NOM_CMP = 'SN',    VALE = -3.46815E+07, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO_DEPL',  NUME_ORDRE = 1,
-MAILLE = 'CD', NOEUD = 'C',    NOM_CMP = 'SN',    VALE = 1.55074E+08),
+MAILLE = 'CD', NOEUD = 'C',    NOM_CMP = 'SN',    VALE = 1.55074E+08, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO_DEPL',  NUME_ORDRE = 1,
-MAILLE = 'BD', NOEUD = 'D',    NOM_CMP = 'SN',    VALE = -2.08067E+08))
+MAILLE = 'BD', NOEUD = 'D',    NOM_CMP = 'SN',    VALE = -2.08067E+08, REFERENCE= 'ANALYTIQUE'))
             )
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
-       NOEUD = 'A',    NOM_CMP = 'SIXX',    VALE = 4.90478E+07),
+       NOEUD = 'A',    NOM_CMP = 'SIXX',    VALE = 4.90478E+07, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
-       NOEUD = 'A',    NOM_CMP = 'SIYY',    VALE = 4.90478E+07),
+       NOEUD = 'A',    NOM_CMP = 'SIYY',    VALE = 4.90478E+07, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
-       NOEUD = 'A',    NOM_CMP = 'SIXY',    VALE = 2.41620E+03),
+       NOEUD = 'A',    NOM_CMP = 'SIXY',    VALE = 2.41620E+03, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
-       NOEUD = 'A',    NOM_CMP = 'SIXZ',    VALE = 2.41620E+03),
+       NOEUD = 'A',    NOM_CMP = 'SIXZ',    VALE = 2.41620E+03, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
-       NOEUD = 'B',    NOM_CMP = 'SIXX',    VALE = -6.34170E+07),
+       NOEUD = 'B',    NOM_CMP = 'SIXX',    VALE = -6.34170E+07, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
-       NOEUD = 'B',    NOM_CMP = 'SIYY',    VALE = -9.03343E+07),
+       NOEUD = 'B',    NOM_CMP = 'SIYY',    VALE = -9.03343E+07, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
-       NOEUD = 'B',    NOM_CMP = 'SIXY',    VALE = -9.86483E+03),
+       NOEUD = 'B',    NOM_CMP = 'SIXY',    VALE = -9.86483E+03, REFERENCE= 'ANALYTIQUE'),
      _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
-       NOEUD = 'B',    NOM_CMP = 'SIXZ',    VALE = 1.20101E+03))
+       NOEUD = 'B',    NOM_CMP = 'SIXZ',    VALE = 1.20101E+03, REFERENCE= 'ANALYTIQUE'))
             )
 
 #---------------------------------------------------------------------

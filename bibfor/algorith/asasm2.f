@@ -1,6 +1,6 @@
       SUBROUTINE ASASM2 (MRIGIZ,MDIRIZ,NUMDDZ,MATASS,SOLVEZ,INFCHA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER            NBMAT,JMED
-      CHARACTER*8        TLIMAT(2)
+      CHARACTER*19       TLIMAT(2)
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -58,13 +58,13 @@ C
       NUMEDD = NUMDDZ
       SOLVEU = SOLVEZ
 C
-      TLIMAT(1) = MERIGI(1:8)
+      TLIMAT(1) = MERIGI(1:19)
       CALL JEVEUO(MEDIRI,'L',JMED)
       IF ( ZK24(JMED)(1:8) .EQ. '        ' ) THEN
         NBMAT = 1
       ELSE
         NBMAT = 2
-        TLIMAT(2) = MEDIRI(1:8)
+        TLIMAT(2) = MEDIRI(1:19)
       ENDIF
       CALL ASMATR(NBMAT,TLIMAT,' ',NUMEDD,SOLVEU,INFCHA
      &           ,'ZERO','V',1,MATASS(1:15))

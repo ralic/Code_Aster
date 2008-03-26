@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
                     NOM_CMP = 'DY',
                     VALE = 0.003228713,
                     PRECISION = 0.006,
-                    CRITERE = 'RELATIF')
+                    CRITERE = 'RELATIF', REFERENCE = 'ANALYTIQUE')
           )
 
 #
@@ -148,7 +148,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
                     NOEUD = 'N1',
                     VALE = 6000.,
                     PRECISION = 1.E-6,
-                    CRITERE = 'RELATIF')
+                    CRITERE = 'RELATIF', REFERENCE = 'ANALYTIQUE')
           )
 
 #
@@ -160,7 +160,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
                     NOEUD = 'N11',
                     VALE = -12000.,
                     PRECISION = 1.E-6,
-                    CRITERE = 'RELATIF')
+                    CRITERE = 'RELATIF', REFERENCE = 'ANALYTIQUE')
           )
 
 #
@@ -172,7 +172,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
                     NOEUD = 'N8',
                     VALE = -13856.41,
                     PRECISION = 1.E-6,
-                    CRITERE = 'RELATIF')
+                    CRITERE = 'RELATIF', REFERENCE = 'ANALYTIQUE')
           )
 
 #

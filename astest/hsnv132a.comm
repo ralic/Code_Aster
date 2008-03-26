@@ -1,4 +1,4 @@
-# MODIF  DATE 11/12/2007   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 25/03/2008   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,11 +182,11 @@ PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
 
 IMPR_TABLE(TABLE = PK)
 
-# Cas test de non regression sur G
+# Cas test de non regression sur K1
 TEST_TABLE(TABLE=TABSIF,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
-           NOM_PARA='G',
-           VALE= 4.98781E+02,
+           NOM_PARA='K1',
+           VALE= 9.0033077632721E+06,
            CRITERE='RELATIF',
            PRECISION=1.e-4,
            REFERENCE='AUTRE_ASTER');                      

@@ -2,7 +2,7 @@
      &                  SECMBR,DEPALG,MEELEM,VEELEM,MEASSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
       CHARACTER*24 SDSENS 
       CHARACTER*19 SDDYNA     
       CHARACTER*24 VALMOI(8),VALPLU(8),POUGD(8),SECMBR(8),DEPALG(8)   
-      CHARACTER*8  VEELEM(30),MEELEM(8)         
+      CHARACTER*19  VEELEM(30),MEELEM(8)         
       CHARACTER*19 MEASSE(8)
 C 
 C ----------------------------------------------------------------------
@@ -68,7 +68,6 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*24 K24BLA   
-      CHARACTER*8  K8BLA 
       CHARACTER*19 K19BLA  
       INTEGER      NRPASE,I
       INTEGER      IFM,NIV
@@ -147,8 +146,7 @@ C
 C --- INITIALISATIONS
 C
       K24BLA = ' '    
-      K8BLA  = ' ' 
-      K19BLA = ' '
+      K19BLA = '                   '
 C
 C --- NOMS DES CHAMPS DE BASE (SANS SENSIBILITE)
 C    
@@ -181,6 +179,9 @@ C
 C
 C --- MATRICES ELEMENTAIRES 
 C                  
+      DO 9 I = 1,8 
+        MEELEM(I) = K19BLA          
+   9  CONTINUE
       MEELEM(1) = MERIGI
       MEELEM(2) = MEDIRI
       MEELEM(3) = MEMASS
@@ -204,7 +205,7 @@ C
 C --- VECTEURS ELEMENTAIRES 
 C       
       DO 10 I = 1,30 
-        VEELEM(I) = K8BLA          
+        VEELEM(I) = K19BLA          
    10 CONTINUE
       VEELEM(1)  = VEFINT 
       VEELEM(2)  = VEDIRI 

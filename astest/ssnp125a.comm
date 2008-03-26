@@ -1,4 +1,4 @@
-# MODIF  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,7 +142,7 @@ try :
                          _F( CHARGE = DEPL_GA,),
                          _F( CHARGE = DEPL_HA,
                              FONC_MULT = COEF,),),
-                 COMP_INCR=_F( RELATION = 'DRUCKER_PRAGER',
+                 COMP_INCR=_F( RELATION = 'DRUCK_PRAGER',
                                RESI_INTE_RELA = 1.E-6,
                                ITER_INTE_MAXI = 100,
                                ITER_INTE_PAS  = -10,),

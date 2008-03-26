@@ -1,7 +1,7 @@
       SUBROUTINE MEMZME(MODELE,MATEL)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C ----------------------------------------------------------------------
       LOGICAL EXIGEO
-      CHARACTER*8 MODELE,MATEL
-      CHARACTER*8 LPAIN(1),LPAOUT(1)
+      CHARACTER*19 MATEL
+      CHARACTER*8 LPAIN(1),LPAOUT(1),MODELE
       CHARACTER*24 LIGRMO,LCHIN(1),LCHOUT(1),OPTION,CHGEOM
 
       CALL JEMARQ()
@@ -54,15 +54,13 @@ C ----------------------------------------------------------------------
       IF (.NOT.EXIGEO) CALL U2MESS('F','CALCULEL3_63')
 
       CALL MEMARE('V',MATEL,MODELE,' ',' ','MASS_ZZ1')
-      CALL JEVEUO(MATEL//'.REFE_RESU','E',IAREFE)
+      CALL JEVEUO(MATEL//'.RERR','E',IAREFE)
       ZK24(IAREFE-1+3) (1:3) = 'OUI'
 
-      CALL JEEXIN(MATEL//'.LISTE_RESU',IRET)
-      IF (IRET.GT.0) CALL JEDETR(MATEL//'.LISTE_RESU')
-      CALL WKVECT(MATEL//'.LISTE_RESU','V V K24',1,JLIRES)
+      CALL JEDETR(MATEL//'.RELR')
 
       LPAOUT(1) = 'PMATZZR'
-      LCHOUT(1) = MATEL//'.ME001'
+      LCHOUT(1) = MATEL(1:8)//'.ME001'
 
       LIGRMO = MODELE//'.MODELE'
       LPAIN(1) = 'PGEOMER'
@@ -70,9 +68,7 @@ C ----------------------------------------------------------------------
 
       OPTION = 'MASS_ZZ1'
       CALL CALCUL('S',OPTION,LIGRMO,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V')
-
-      ZK24(JLIRES-1+1) = LCHOUT(1)
-      CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',1,' ')
+      CALL REAJRE(MATEL,LCHOUT(1),'V')
 
       CALL JEDEMA()
       END

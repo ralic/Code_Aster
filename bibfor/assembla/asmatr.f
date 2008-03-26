@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,CUMUL,
      &                  BASE,ITYSCA,MATAZ)
-C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -26,7 +26,7 @@ C ======================================================================
       CHARACTER*4   CUMUL
 C-----------------------------------------------------------------------
 C IN  I   NBMAT  : NOMBRE DE MATR_ELEM DE LA LISTE TLIMAT
-C IN  K8  TLIMAT : LISTE DES MATR_ELEM
+C IN  K19 TLIMAT : LISTE DES MATR_ELEM
 C IN  K24 LICOEF : NOM DU VECTEUR CONTENANT LES COEF. MULT.
 C                  DES MATR_ELEM
 C                  SI LICOEF=' ' ON PREND 1.D0 COMME COEF.
@@ -63,11 +63,10 @@ C-----------------------------------------------------------------------
       CHARACTER*1 MATSYM,TYPMAT
       CHARACTER*3 SYME
       CHARACTER*7 SYMEL
-      CHARACTER*8 MATEL
       CHARACTER*24 METRES,LICOE2
       INTEGER K
-      CHARACTER*8   TLIMA2(150)
-      CHARACTER*19 SOLVE2,MATAS
+      CHARACTER*8  MATK8,K8BID
+      CHARACTER*19 TLIMA2(150),SOLVE2,MATAS,MATEL,INFC19
       INTEGER ILICOE,I,JSLVK,IRET,IBID,IDBGAV,ILIMAT,IER
       INTEGER JREFA
 CDEB-------------------------------------------------------------------
@@ -77,6 +76,7 @@ CDEB-------------------------------------------------------------------
       MATAS  = MATAZ
       LICOE2 = LICOEF
       SOLVE2 = SOLVEU
+      INFC19 = INFCHA
       IF (SOLVE2.EQ.' ') THEN
         CALL DISMOI('F','SOLVEUR',NU,'NUME_DDL',IBID,SOLVE2,IER)
       ENDIF
@@ -105,7 +105,7 @@ C     ---------------------------------------------------------------
 C     -- PREPARATION DE LA LISTE DE MATR_ELEM POUR QU'ILS SOIENT
 C        DU MEME TYPE (SYMETRIQUE OU NON) QUE LA MATR_ASSE :
 C     ---------------------------------------------------------------
-      CALL WKVECT('&&ASMATR.LMATEL','V V K8',NBMAT,ILIMAT)
+      CALL WKVECT('&&ASMATR.LMATEL','V V K24',NBMAT,ILIMAT)
       MATSYM = TYPMAT(NBMAT,TLIMA2)
 
       CALL JEVEUO(SOLVE2//'.SLVK','L',JSLVK)
@@ -115,17 +115,18 @@ C     ---------------------------------------------------------------
           CALL DISMOI('F','TYPE_MATRICE',TLIMA2(I),'MATR_ELEM',IBID,
      &                SYMEL,IER)
           IF (SYMEL.EQ.'NON_SYM') THEN
-            CALL GCNCON('.',MATEL)
-            ZK8(ILIMAT+I-1) = MATEL
+            CALL GCNCON('.',MATK8)
+            MATEL=MATK8
+            ZK24(ILIMAT+I-1) = MATEL
             CALL RESYME(TLIMA2(I),'V',MATEL)
           ELSE
-            ZK8(ILIMAT+I-1) = TLIMA2(I)
+            ZK24(ILIMAT+I-1) = TLIMA2(I)
           END IF
    30   CONTINUE
         MATSYM = 'S'
       ELSE
         DO 40 I = 1,NBMAT
-          ZK8(ILIMAT+I-1) = TLIMA2(I)
+          ZK24(ILIMAT+I-1) = TLIMA2(I)
    40   CONTINUE
       END IF
 
@@ -152,7 +153,7 @@ C     ---------------------------------------------------------------
 
 C     -- ASSEMBLAGE PROPREMENT DIT :
 C     -------------------------------
-      CALL ASSMAM(BASE,MATAS,NBMAT,ZK8(ILIMAT),ZR(ILICOE),NU,
+      CALL ASSMAM(BASE,MATAS,NBMAT,ZK24(ILIMAT),ZR(ILICOE),NU,
      &             CUMUL,ITYSCA)
 
 
@@ -160,7 +161,7 @@ C     -- TRAITEMENT DES CHARGES CINEMATIQUES :
 C     ----------------------------------------
       CALL JEVEUO(MATAS//'.REFA','L',JREFA)
       CALL ASSERT(ZK24(JREFA-1+3).NE.'ELIMF')
-      CALL ASCIMA(INFCHA,NU,MATAS,CUMUL)
+      CALL ASCIMA(INFC19,NU,MATAS,CUMUL)
 
 
 C     -- MENAGE :
@@ -171,7 +172,7 @@ C     -----------
           CALL DISMOI('F','TYPE_MATRICE',TLIMA2(I),'MATR_ELEM',IBID,
      &                SYMEL,IER)
           IF (SYMEL.EQ.'SYMETRI') GOTO 60
-          CALL DETRSD('MATR_ELEM', ZK8(ILIMAT+I-1))
+          CALL DETRSD('MATR_ELEM', ZK24(ILIMAT+I-1)(1:19))
    60   CONTINUE
       END IF
 

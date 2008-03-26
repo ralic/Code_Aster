@@ -2,7 +2,7 @@
      &                  LISINS,SDOBSE,SDSUIV,NUMFIN,EVOL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/03/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,7 +33,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-C ROUTINE THER_NON_LINE (STRUCTURES DE DONNES)
+C ROUTINE THER_NON_LINE THER_LINEAIRE (STRUCTURES DE DONNES)
 C
 C CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
 C
@@ -61,17 +61,9 @@ C
 C ----------------------------------------------------------------------
 C
       CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)
-      IF (N1.NE.0) THEN
-        CALL JEEXIN(RESULT(1:8)//'           .DESC',IRET)
-        IF (IRET.EQ.0) THEN
-          DERNIE = 0
-        ELSE
-          CALL RSORAC(RESULT,'DERNIER',IBID    ,R8BID ,K8BID ,
-     &                C16BID,0.D0     ,'ABSOLU',DERNIE,1     ,
-     &                IBID  )
-        END IF
-      ELSE
+      IF (N1.EQ.0) THEN
         LISINS = ' '
+        DERNIE = 0
         GOTO 999
       ENDIF 
 C

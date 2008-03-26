@@ -4,7 +4,7 @@
      &                   CI2,TESTI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,8 @@ C
 C
       DATA TYPRES        /'R'/
       DATA CHSOL         /'&&NTTAIN.SOLUTION'/
-      DATA BIDON,VERESI  /'&&FOMULT.BIDON','&&VERESI.LISTE_RESU'/
-C
+      DATA BIDON         /'&&FOMULT.BIDON'/
+      DATA VERESI        /'&&VERESI           .RELR'/
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()

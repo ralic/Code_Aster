@@ -1,4 +1,4 @@
-#@ MODIF spectral0 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF spectral0 Messages  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,5 +52,22 @@ Erreur dans les données de fonctions.
 8: _("""
 Pas de calcul absolu avec TRAN_GENE.
 """),
+
+9: _("""
+Le fichier IDEAS est vide ou ne contient pas le data set demande
+"""),
+
+10: _("""
+Un des data sets 58 contient une donnee qui n'est pas un inter-spectre
+"""),
+
+11: _("""
+On ne traite pas les cas ou les abscisses frequentielles ne sont pas reglierement espacees
+"""),
+
+12: _("""
+Le mot-cle format correspond au format du fichier source, qui peut etre 'ASTER' ou 'IDEAS' (pour lire les DS58)
+"""),
+
 
 }

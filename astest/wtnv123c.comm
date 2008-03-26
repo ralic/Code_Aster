@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE ESSAI TRIAXIAL A SUCCION FIXEE AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,13 +82,14 @@ MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                        ORIE_PEAU_3D=_F(  GROUP_MA = ('HAUT', 'DEVANT', 'DROITE',),  )
                      )
 
-SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,  
+SOL=DEFI_MATERIAU(    ELAS=_F(  E = 7.2E6,    NU = 0.3,  
                                      RHO = 2500.,  
                                      ALPHA = 1.E-5,  
                                    ), 
-                    CAM_CLAY=_F(PORO=0.14,
+                    CAM_CLAY=_F(MU=2.76E6,
+                                PORO=0.14,
                                 LAMBDA=0.2,
-                                KAPA=0.02,           
+                                KAPA=0.02,
                                 M=1.,
                                 PRES_CRIT=2.E5,
                                 PA=1.E5,),
@@ -142,7 +143,7 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,
                                 PRE2 = 1.E5,  
                                 PORO = 0.14,  
                                 PRES_VAPE = 2269.8,
-                                DEGR_SATU=0.9,  
+                                DEGR_SATU=0.99,  
                                 )
                            )
 
@@ -180,9 +181,9 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                             _F(  JUSQU_A = 6.,    NOMBRE = 5, ),)
                          )
 TEMPS2=DEFI_LIST_REEL(   DEBUT=6.,INTERVALLE=(
-                            _F(  JUSQU_A = 10.,    NOMBRE = 8,  ),
-                            _F(  JUSQU_A = 15.,    NOMBRE = 10,  ),
-                            _F(  JUSQU_A = 20.,    NOMBRE = 10,  ),)
+                            _F(  JUSQU_A = 10.,    NOMBRE = 20,  ),
+                            _F(  JUSQU_A = 15.,    NOMBRE = 80,  ),
+                            _F(  JUSQU_A = 20.,    NOMBRE = 100,  ),)
                          )
 TEMPS3=DEFI_LIST_REEL(   DEBUT=20.,INTERVALLE=(
                             _F(  JUSQU_A = 22.,    NOMBRE = 5,  ),
@@ -267,7 +268,7 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',), 
-                ITER_INTE_MAXI=100,     
+                ITER_INTE_MAXI=300,     
                 ),
                        NEWTON=_F(
                      MATRICE='TANGENTE',
@@ -280,7 +281,7 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                        CONVERGENCE=_F(
                        ITER_GLOB_MAXI=50, 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+5,   
+                SIGM_REFE      = 1.0E+6,   
                 FLUX_HYD1_REFE = 1.0,  
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,     
@@ -329,7 +330,7 @@ U1=STAT_NON_LINE(reuse=U1,
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),      
-                ITER_INTE_MAXI=100,      
+                ITER_INTE_MAXI=300,      
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        
@@ -345,7 +346,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                        CONVERGENCE=_F( 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+5,   
+                SIGM_REFE      = 1.0E+6,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,
@@ -389,7 +390,7 @@ U1=STAT_NON_LINE(reuse=U1,
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),       
-                ITER_INTE_MAXI=100,     
+                ITER_INTE_MAXI=300,     
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        
@@ -405,7 +406,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                        CONVERGENCE=_F( 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+5,   
+                SIGM_REFE      = 1.0E+6,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,
@@ -449,7 +450,7 @@ U1=STAT_NON_LINE(reuse=U1,
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),      
-                ITER_INTE_MAXI=100,      
+                ITER_INTE_MAXI=300,      
                 ),
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U1,        
@@ -465,7 +466,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                        CONVERGENCE=_F( 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+5,   
+                SIGM_REFE      = 1.0E+6,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,
@@ -533,7 +534,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                        CONVERGENCE=_F( 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+5,   
+                SIGM_REFE      = 1.0E+6,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,
@@ -573,7 +574,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = -1.84046E-02,        
+                       VALE = -1.840485E-02,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -583,7 +584,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=20.,  
                        PRECISION = 1.E-4,   
-                       VALE = -4.34251E-02 ,        
+                       VALE = -6.953876E-02 ,        
                      ),
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'NON_REGRESSION',  
@@ -592,7 +593,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=34.,  
                        PRECISION = 1.E-4,   
-                       VALE = -2.54190E-02 ,        
+                       VALE = -7.812751E-03 ,        
                      ),
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'NON_REGRESSION',  
@@ -601,7 +602,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=46.,  
                        PRECISION = 1.E-4,   
-                       VALE = -1.75288E-02 ,        
+                       VALE = -1.7410557E-02 ,        
                      ),
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'NON_REGRESSION',  
@@ -661,7 +662,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=60.,  
                        PRECISION = 1.E-5,   
-                       VALE = 3.40812E5,        
+                       VALE = 4.489121E5,        
                      ),
 
 # INDICATEUR DE PLASTICITE MECANIQUE
@@ -715,7 +716,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V2',     
                        INST=60.,  
                        PRECISION = 1.E-5,   
-                       VALE = 1.,        
+                       VALE = 0.,        
                        CRITERE = 'ABSOLU',        
                      ),
 
@@ -727,7 +728,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V3',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = 3.6876E5,        
+                       VALE = 3.687648E5,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -767,7 +768,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V3',     
                        INST=60.,  
                        PRECISION = 1.E-4,   
-                       VALE = 3.46104E5,        
+                       VALE = 6.45223E5,        
                      ),
 
 

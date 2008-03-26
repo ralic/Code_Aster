@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PORTIQUE SOUMIS A DES EFFORTS ELECTRODYNAMIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,37 +180,47 @@ NOM_CHAM='DEPL', RESULTAT=NEWNONA,
 # VERIFICATION   DEPLACEMENTS T = 0.12 ET 0.70
 TEST_RESU(RESU=(
           _F(  RESULTAT = NEWNONA,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 12,
-            NOEUD = 'N88', NOM_CMP = 'DY', VALE = -0.0605, PRECISION = 1.E-3),
+            NOEUD = 'N88', NOM_CMP = 'DY', VALE = -0.0605, PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 70,
-            NOEUD = 'N88', NOM_CMP = 'DY', VALE = -0.1189, PRECISION = 1.E-3))
+            NOEUD = 'N88', NOM_CMP = 'DY', VALE = -0.1189, PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'))
           )
 
 # VERIFICATION   EFFORTS T = 0.12 ET 0.70
 TEST_RESU(RESU=(
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 12,
             MAILLE = 'M2',    NOEUD = 'N123',   NOM_CMP = 'MFZ',
-            VALE = -3071.,   PRECISION = 1.E-3),
+            VALE = -3071.,   PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 70,
             MAILLE = 'M2',    NOEUD = 'N123',   NOM_CMP = 'MFZ',
-            VALE = -6327.,   PRECISION = 1.E-3),
+            VALE = -6327.,   PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 12,
             MAILLE = 'M36',   NOEUD = 'N88',    NOM_CMP = 'MFZ',
-            VALE = 1296.,   PRECISION = 1.E-3),
+            VALE = 1296.,   PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 70,
             MAILLE = 'M36',   NOEUD = 'N88',    NOM_CMP = 'MFZ',
-            VALE = 2647.,   PRECISION = 1.E-3),
+            VALE = 2647.,   PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 12,
             MAILLE = 'M53',   NOEUD = 'N34',    NOM_CMP = 'MFZ',
-            VALE = -9239.,   PRECISION = 1.E-3),
+            VALE = -9239.,   PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 70,
             MAILLE = 'M53',   NOEUD = 'N34',    NOM_CMP = 'MFZ',
-            VALE = -18931.,  PRECISION = 1.E-3),
+            VALE = -18931.,  PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 12,
             MAILLE = 'M104',  NOEUD = 'N2',    NOM_CMP = 'MFZ',
-            VALE = -2916.,   PRECISION = 1.E-3),
+            VALE = -2916.,   PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 70,
             MAILLE = 'M104',  NOEUD = 'N2',    NOM_CMP = 'MFZ',
-            VALE = -6015.,   PRECISION = 1.E-3))
+            VALE = -6015.,   PRECISION = 1.E-3,
+            REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'))
               )
 
 FIN()

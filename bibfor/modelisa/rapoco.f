@@ -1,7 +1,7 @@
       SUBROUTINE RAPOCO(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -490,22 +490,17 @@ C     ------------------------------
       CALL CALCUL('S','CARA_SECT_POUT4',LIGREL,4,LCHIN,LPAIN,2,LCHOUT,
      &            LPAOUT,'V')
 
-C --- CREATION DES .REFE_RESU DES VECTEURS EN SORTIE DE CALCUL
+C --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
 C     --------------------------------------------------------
 
       CALL MEMARE('V','&&RAPOCO',MOD,' ',' ','CHAR_MECA')
 
-C --- CREATION DU .LISTE_RESU
-C     -----------------------
-      CALL WKVECT('&&RAPOCO.LISTE_RESU','V V K24',1,ILIRES)
-
 C --- ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
 C     ---------------------------------------------------------
-
-      ZK24(ILIRES+1-1) = LCHOUT(1)
-
-      CALL ASSVEC('V','&&RAPOCO.CH_DEPL_01',1,'&&RAPOCO.LISTE_RESU',UN,
-     &            NUMDDL,' ','ZERO',1)
+      CALL JEDETR('&&RAPOCO           .RELR')
+      CALL REAJRE('&&RAPOCO',LCHOUT(1),'V')
+      CALL ASSVEC('V','&&RAPOCO.CH_DEPL_01',1,
+     &            '&&RAPOCO           .RELR',UN,NUMDDL,' ','ZERO',1)
 
       VALE1 = '&&RAPOCO.CH_DEPL_01.VALE'
       CALL JEVEUO(VALE1,'L',IDCH1)
@@ -513,11 +508,11 @@ C     ---------------------------------------------------------
 
 C --- ASSEMBLAGE DE LCHOUT(2) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
 C     ---------------------------------------------------------
+      CALL JEDETR('&&RAPOCO           .RELR')
+      CALL REAJRE('&&RAPOCO',LCHOUT(2),'V')
 
-      ZK24(ILIRES+1-1) = LCHOUT(2)
-
-      CALL ASSVEC('V','&&RAPOCO.CH_DEPL_02',1,'&&RAPOCO.LISTE_RESU',UN,
-     &            NUMDDL,' ','ZERO',1)
+      CALL ASSVEC('V','&&RAPOCO.CH_DEPL_02',1,
+     &            '&&RAPOCO           .RELR',UN,NUMDDL,' ','ZERO',1)
 
       VALE2 = '&&RAPOCO.CH_DEPL_02.VALE'
       CALL JEVEUO(VALE2,'L',IDCH2)

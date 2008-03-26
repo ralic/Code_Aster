@@ -1,4 +1,4 @@
-#@ MODIF lire_inte_spec_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF lire_inte_spec_ops Macro  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,100 +18,247 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
-                            PROL_DROITE,PROL_GAUCHE,TITRE,INFO,**args):
-  ier=0
+def lire_inte_spec_ops(self,
+                       UNITE = None,
+                       FORMAT = None,
+                       FORMAT_C = None,
+                       NOM_PARA = None,
+                       NOM_RESU = None,
+                       INTERPOL = None,
+                       PROL_DROITE = None,
+                       PROL_GAUCHE = None,
+                       TITRE = None,
+                       INFO = None,
+                       **args):
+    ier=0
 
-  from Accas import _F
-  import os
-  from math import cos,sin
-  from Utilitai.Utmess     import  UTMESS
-  from Utilitai.UniteAster import UniteAster
-  # On importe les definitions des commandes a utiliser dans la macro
-  DEFI_FONCTION  =self.get_cmd('DEFI_FONCTION')
-  CREA_TABLE     =self.get_cmd('CREA_TABLE')
+    from Accas import _F
+    import os
+    from math import cos,sin,sqrt
+    from Utilitai.Utmess     import UTMESS
+    from Utilitai.UniteAster import UniteAster
+    # On importe les definitions des commandes a utiliser dans la macro
+    DEFI_FONCTION  =self.get_cmd('DEFI_FONCTION')
+    CREA_TABLE     =self.get_cmd('CREA_TABLE')
 
-  # La macro compte pour 1 dans la numerotation des commandes
-  self.set_icmd(1)
-  nompro='LIRE_INTE_SPEC'
+    # La macro compte pour 1 dans la numerotation des commandes
+    self.set_icmd(1)
+    nompro='LIRE_INTE_SPEC'
 
-  # Lecture de la fonction dans un fichier d unité logique UNITE
-  UL = UniteAster()
-  nomfich=UL.Nom(UNITE)
-  if not os.path.isfile(nomfich):
-     UTMESS('F','SPECTRAL0_4',valk=nomfich)
-  file=open(nomfich,'r')
-  texte=file.read()
-  file.close()
-  
-  list_fonc=texte.split('FONCTION_C')
-  entete=list_fonc.pop(0)
-  try : 
-    entete=entete[entete.index('DIM'):]
-    dim=int(entete[entete.index('=')+1:entete.index('\n')])
-  except ValueError : 
-    UTMESS('F','SPECTRAL0_5')
+    # Lecture de la fonction dans un fichier d unité logique UNITE
+    UL = UniteAster()
+    nomfich=UL.Nom(UNITE)
+    if not os.path.isfile(nomfich):
+       UTMESS('F','SPECTRAL0_4',valk=nomfich)
+    file=open(nomfich,'r')
+    texte=file.read()
+    file.close()
 
-  if len(list_fonc)!=(dim*(dim+1)/2):
-    UTMESS('F','SPECTRAL0_6')
 
-  nume_i=[]
-  nume_j=[]
-  l_fonc=[]
-  for i in range(dim*(dim+1)/2):
-    numi=list_fonc[i][list_fonc[i].index('I =')+3:]
-    numi=numi[:numi.index('\n')]
-    nume_i.append(int(numi))
-    numj=list_fonc[i][list_fonc[i].index('J =')+3:]
-    numj=numj[:numj.index('\n')]
-    nume_j.append(int(numj))
-    try : 
-      vale_fonc=list_fonc[i][list_fonc[i].index('VALEUR =\n')+9:list_fonc[i].index('FINSF\n')]
-      vale_fonc=vale_fonc.replace('\n',' ')
-      vale_fonc=map(float,vale_fonc.split())
-    except ValueError : 
-      UTMESS('F','SPECTRAL0_7')
+    if FORMAT == 'IDEAS':
+        # fabrication d'une liste de data sets 58
+        list_fonc = texte.split('    -1')
+        j = 0
+        for ind_fonc in range(len(list_fonc)):
+            try:
+                tmp = list_fonc[j].split()
+                if tmp[0] == '58':
+                    j = j+1
+                else:
+                    list_fonc.pop(j)
+            except IndexError:
+                list_fonc.pop(j)
 
-    liste=[]
-    if   FORMAT=='REEL_IMAG':
-      liste=vale_fonc
-    elif FORMAT=='MODULE_PHASE':
-      for i in range(len(vale_fonc)/3) :
-        module=vale_fonc[3*i+1]
-        phase =vale_fonc[3*i+2]
-        liste=liste+[vale_fonc[3*i],module*cos(phase),module*sin(phase)]
+        nb_fonc = len(list_fonc)
+        if nb_fonc == 0:
+            UTMESS('F', 'SPECTRAL0_9')
 
-    # création de la fonction ASTER :
-    _fonc=DEFI_FONCTION( NOM_PARA   =NOM_PARA,
-                         NOM_RESU   =NOM_RESU,
-                         PROL_DROITE=PROL_DROITE,
-                         PROL_GAUCHE=PROL_GAUCHE,
-                         INTERPOL   =INTERPOL,
-                         INFO       =INFO,
-                         TITRE      =TITRE,
-                         VALE_C     =liste,)
-    l_fonc.append(_fonc.nom)
+        l_fonc = []
+        l_noi  = []
+        l_noj  = []
+        l_cmpi = []
+        l_cmpj = []
+        for ind_fonc in range(nb_fonc):
+            # Extraction des en-tete : nom des noeuds, composantes (=ddl), de leur sens
+            fonc = list_fonc[ind_fonc]
+            ligne = fonc.split('\n')
 
-  nume_ib=[]
-  nume_jb=[]
-  for i in range(dim):
-    for j in range(i,dim):
-      nume_ib.append(i+1)
-      nume_jb.append(j+1)
-  if nume_i!=nume_ib or nume_j!=nume_jb : 
-      UTMESS('F','SPECTRAL0_3')
-  mcfact=[]
-  mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=(NOM_RESU),NUME_LIGN=(1,)))
-  mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))
-  mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dim,)    ,NUME_LIGN=(1,)))
-  mcfact.append(_F(PARA='NUME_ORDRE_I',LISTE_I=nume_i    ,NUME_LIGN=range(2,len(nume_i)+2)))
-  mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=nume_j    ,NUME_LIGN=range(2,len(nume_j)+2)))
-  mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fonc    ,NUME_LIGN=range(2,len(list_fonc)+2)))
-  self.DeclareOut('tab_inte',self.sd)
-  tab_inte=CREA_TABLE(LISTE=mcfact,
-                      TITRE=TITRE,
-                      TYPE_TABLE='TABLE_FONCTION')
+            record_6 = ligne[7].split()
+            if  record_6[0] != '2' and record_6[0] != '3' and record_6[0] != '9' :
+                UTMESS('F', 'SPECTRAL0_10')
+            nono   = record_6[4]             # nom du noeud
+            nuno   = int(record_6[5])        # numero
+            ddlno  = float(record_6[6])/10   # DDL
+            noref  = record_6[7]             # nom du noeud de reference
+            nuref  = int(record_6[8])        # numero
+            ddlref = float(record_6[9])/10   # DDL
+            # On traduit les ddl "chiffres" en vrais ddl. Avec le sens des capteurs.
+            sens_no,ddl_no = comp(ddlno)
+            sens_ref,ddl_ref = comp(ddlref)
+            signe = sens_no*sens_ref
 
-  # remet UNITE dans son état initial
-  UL.EtatInit()
-  return ier
+            # On ne garde que la triang sup de la matrice inter-spectrale
+            crit1 = nuno + ddlno
+            crit2 = nuref + ddlref
+            if crit1 > crit2:
+                continue
+            record_7 = ligne[8].split()
+            nbpairs = int(record_7[1])
+            if record_7[2] == 0:
+                UTMESS('F', 'SPECTRAL0_11')
+            f0 = float(record_7[3])
+            df = float(record_7[4])
+
+            # Liste des valeurs
+            liste = fonc.split('\n')
+            valeurs = ''
+            for ind in range(13):
+                liste.pop(0)
+            for ind_lign in range(len(liste)):
+                valeurs = valeurs + liste[ind_lign]
+            tmp = valeurs.split()
+            valeurs = [signe*float(tmp[ind]) for ind in range(len(tmp))]
+
+            liste = []
+            freq = f0
+            for ind_freq in range(nbpairs):
+                liste.append(freq)
+                liste.append(valeurs[2*ind_freq])
+                liste.append(valeurs[2*ind_freq+1])
+                freq = freq + df
+
+            # création de la fonction ASTER :
+            _fonc=DEFI_FONCTION( NOM_PARA   = NOM_PARA,
+                                 NOM_RESU   = NOM_RESU,
+                                 PROL_DROITE= PROL_DROITE,
+                                 PROL_GAUCHE= PROL_GAUCHE,
+                                 INTERPOL   = INTERPOL,
+                                 INFO       = INFO,
+                                 TITRE      = TITRE,
+                                 VALE_C     = liste,)
+            l_fonc.append(_fonc.nom)     # Liste des fonctions
+            l_noi.append('N'+str(nuno))  # Liste des noeuds de mesure
+            l_cmpi.append(ddl_no)        # DDL associes
+            l_noj.append('N'+str(nuref)) # Liste des noeuds de ref
+            l_cmpj.append(ddl_ref)       # DDL associes
+
+        # Verification a posteriori de la dimension de l'inter-spectre
+        tmp = 0.5*(-1+sqrt(1+8*len(l_fonc)))
+        dim = int(tmp)
+        nb_fonc = 0.5*dim*(dim+1) 
+
+        if dim != tmp :
+            UTMESS('F', 'SPECTRAL0_6')
+
+            
+        mcfact=[]
+        mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=(NOM_RESU),NUME_LIGN=(1,)))
+        mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))
+        mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dim)     ,NUME_LIGN=(1,)))
+        mcfact.append(_F(PARA='NOEUD_I'     ,LISTE_K=l_noi     ,NUME_LIGN=range(2,nb_fonc+2)))
+        mcfact.append(_F(PARA='NOM_CMP_I'   ,LISTE_K=l_cmpi    ,NUME_LIGN=range(2,nb_fonc+2)))
+        mcfact.append(_F(PARA='NOEUD_J'     ,LISTE_K=l_noj     ,NUME_LIGN=range(2,nb_fonc+2)))
+        mcfact.append(_F(PARA='NOM_CMP_J'   ,LISTE_K=l_cmpj    ,NUME_LIGN=range(2,nb_fonc+2)))
+        mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fonc    ,NUME_LIGN=range(2,nb_fonc+2)))
+        self.DeclareOut('tab_inte',self.sd)
+        tab_inte=CREA_TABLE(LISTE=mcfact,
+                          TITRE=TITRE,
+                          TYPE_TABLE='TABLE_FONCTION')
+
+        
+    elif FORMAT == 'ASTER':
+        list_fonc=texte.split('FONCTION_C')
+        entete=list_fonc.pop(0)
+        try : 
+            entete=entete[entete.index('DIM'):]
+            dim=int(entete[entete.index('=')+1:entete.index('\n')])
+        except ValueError : 
+            UTMESS('F', 'SPECTRAL0_5')
+
+        if len(list_fonc)!=(dim*(dim+1)/2):
+            UTMESS('F', 'SPECTRAL0_6')
+
+        nume_i=[]
+        nume_j=[]
+        l_fonc=[]
+        for i in range(dim*(dim+1)/2):
+            numi=list_fonc[i][list_fonc[i].index('I =')+3:]
+            numi=numi[:numi.index('\n')]
+            nume_i.append(int(numi))
+            numj=list_fonc[i][list_fonc[i].index('J =')+3:]
+            numj=numj[:numj.index('\n')]
+            nume_j.append(int(numj))
+            try : 
+                vale_fonc=list_fonc[i][list_fonc[i].index('VALEUR =\n')+9:list_fonc[i].index('FINSF\n')]
+                vale_fonc=vale_fonc.replace('\n',' ')
+                vale_fonc=map(float,vale_fonc.split())
+            except ValueError : 
+                UTMESS('F', 'SPECTRAL0_7')
+
+            liste=[]
+            if   FORMAT_C=='REEL_IMAG':
+                liste=vale_fonc
+            elif FORMAT_C=='MODULE_PHASE':
+                for i in range(len(vale_fonc)/3) :
+                  module=vale_fonc[3*i+1]
+                  phase =vale_fonc[3*i+2]
+                  liste=liste+[vale_fonc[3*i],module*cos(phase),module*sin(phase)]
+
+
+            # création de la fonction ASTER :
+            _fonc=DEFI_FONCTION( NOM_PARA   =NOM_PARA,
+                                 NOM_RESU   =NOM_RESU,
+                                 PROL_DROITE=PROL_DROITE,
+                                 PROL_GAUCHE=PROL_GAUCHE,
+                                 INTERPOL   =INTERPOL,
+                                 INFO       =INFO,
+                                 TITRE      =TITRE,
+                                 VALE_C     =liste,)
+            l_fonc.append(_fonc.nom)
+
+        nume_ib=[]
+        nume_jb=[]
+        for i in range(dim):
+            for j in range(i,dim):
+                nume_ib.append(i+1)
+                nume_jb.append(j+1)
+        if nume_i!=nume_ib or nume_j!=nume_jb : 
+            UTMESS('F', 'SPECTRAL0_3')
+        mcfact=[]
+        mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=(NOM_RESU),NUME_LIGN=(1,)))
+        mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))
+        mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dim,)    ,NUME_LIGN=(1,)))
+        mcfact.append(_F(PARA='NUME_ORDRE_I',LISTE_I=nume_i    ,NUME_LIGN=range(2,len(nume_i)+2)))
+        mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=nume_j    ,NUME_LIGN=range(2,len(nume_j)+2)))
+        mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fonc    ,NUME_LIGN=range(2,len(list_fonc)+2)))
+        self.DeclareOut('tab_inte',self.sd)
+        tab_inte=CREA_TABLE(LISTE=mcfact,
+                          TITRE=TITRE,
+                          TYPE_TABLE='TABLE_FONCTION')
+
+    else:
+        # mot-clé != 'ASTER', ou 'IDEAS' => ERREUR !
+        UTMESS('F', 'SPECTRAL0_12')
+        
+
+    # remet UNITE dans son état initial
+    UL.EtatInit()
+    return ier
+        
+        
+    
+def comp(ddlno):
+    sens = 1
+    if ddlno < 0:
+        sens = -1
+    if ddlno == .1:return sens,'DX'
+    elif ddlno == .2:return sens,'DY'
+    elif ddlno == .3:return sens,'DZ'
+    elif ddlno == .4:return sens,'DRX'
+    elif ddlno == .5:return sens,'DRY'
+    elif ddlno == .6:return sens,'DRZ'
+    else:
+        print "Probleme pour l'attribution des composantes"
+    
+    
+
