@@ -1,7 +1,8 @@
-      SUBROUTINE MMMJAC(ALIAS,IGEOM,FF,DFF,IAXIS,NDIM,
-     &                  JAC,IRET)
+      SUBROUTINE MMMJAC(ALIAS ,IGEOM ,FF    ,DFF   ,IAXIS ,
+     &                  NDIM  ,JAC   )
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,6 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*8  ALIAS      
       INTEGER      IGEOM
@@ -26,13 +29,15 @@ C ======================================================================
       INTEGER      NDIM      
       INTEGER      IAXIS
       REAL*8       JAC
-      INTEGER      IRET
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE UTILITAIRE (CONTACT METHODE CONTINUE)
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
 C CALCUL DU JACOBIEN D'UN ELEMENT
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
 C IN  IGEOM  : ADRESSE JEVEUX POUR LE VECTEUR GEOMETRIE ACTUALISEE
@@ -41,9 +46,6 @@ C IN  DFF    : DERIVEES PREMIERES DES FONCTIONS DE FORME EN XI YI
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  IAXIS  : VAUT 1 SI PROBLEME AXISYMETRIQUE
 C OUT JAC    : VALEUR DU JACOBIEN
-C OUT IRET   : RETOURNE UN CODE ERREUR
-C                0  TOUT VA BIEN
-C                1  ELEMENT INCONNU
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
@@ -65,13 +67,12 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER I
-      REAL*8 XX
-      REAL*8 DXDS,DYDS,DZDS
-      REAL*8 DXDE,DXDK,DYDE,DYDK,DZDE,DZDK
+      REAL*8  XX
+      REAL*8  DXDS,DYDS,DZDS
+      REAL*8  DXDE,DXDK,DYDE,DYDK,DZDE,DZDK
 C
-C  ----------------------------------------------------------
+C ----------------------------------------------------------------------
 C
-      IRET = 0
       DXDS = 0.D0
       DYDS = 0.D0
       DZDS = 0.D0 
@@ -178,7 +179,7 @@ C
         JAC = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ (DZDE*DXDK-DXDE*DZDK)**2+
      &        (DXDE*DYDK-DYDE*DXDK)**2)
       ELSE
-        IRET = 1
+        CALL ASSERT(.FALSE.)
       END IF
 
       END

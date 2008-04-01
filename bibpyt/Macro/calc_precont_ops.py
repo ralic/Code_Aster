@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_precont_ops Macro  DATE 31/03/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -400,6 +400,11 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   dExcit1.append(_F(CHARGE = _F_CA,
                     FONC_MULT=__FCT ),)
 
+  motscle4={}
+  if dReuse: motscle4['reuse']=[]
+  else:      motscle4['reuse']=dReuse
+
+
   RES=STAT_NON_LINE(
                      MODELE      =MODELE,
                      CARA_ELEM   =CARA_ELEM,
@@ -415,7 +420,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      INFO     =INFO,
                      TITRE = TITRE,
                      EXCIT = dExcit1,
-                     )
+                     **motscle4)
 
   # Recuperation du dernier numero d'ordre pour pouvoir  l'écraser dans RES
   __dico2 = RES.LIST_VARI_ACCES()

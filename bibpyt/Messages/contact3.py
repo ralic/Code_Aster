@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 10/03/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,34 +37,33 @@ L'option < %(k1)s > ne correspond a aucune option permise par le mot-clef < %(k2
 Note DVP: erreur de cohérence fortran/catalogue.            
 """),
 
-10 : _("""
-La matrice est singulière lors du calcul du repère local tangent au noeud maitre  %(k1)s  sur la maille maitre %(k2)s.
-Une erreur de définition de la maille: les vecteurs tangents sont colinéaires.
-"""),
-
-11 : _("""
-La matrice est singulière lors de la projection du point de contact  sur la maille maitre  %(k1)s.
-Une erreur de définition de la maille: les vecteurs tangents sont colinéaires.
-"""),
-
 12 : _("""
-L'algorithme de Newton a échoué lors du calcul du repère local tangent au noeud maitre %(k1)s sur la maille maitre  %(k2)s.
-Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas. 
+L'algorithme de Newton a échoué lors de la projection du point de contact de coordonnées
+  (%(r1)s,%(r2)s,%(r3)s)
+La distance finale %(r4)s entre le point et la maille ne correspond pas au minimum trouvé au cours
+de l'algorithme (%(r5)s).
+On prend le point correspondant à la distance minimale.
+Cause probable: la maille est courbée et le point se projette juste sur le noeud d'une maille.
+La critère d'arret du Newton est alors inopérant. Voir la documentation pour plus de détails.
+
 """),
 
 13 : _("""
-L'algorithme de Newton a échoué lors de la projection du point de contact  sur la maille maitre  %(k1)s.
+L'algorithme de Newton a échoué lors de la projection du point de contact de coordonnées
+  (%(r1)s,%(r2)s,%(r3)s)
+sur la maille %(k1)s.
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.  
 """),
 
 14 : _("""
-Les vecteurs tangents sont nuls au noeud maitre  %(k1)s  sur la maille maitre  %(k2)s.
-Une erreur de définition de la maille.
+Les vecteurs tangents sont nuls au niveau du projeté du point de contact de coordonnées
+  (%(r1)s,%(r2)s,%(r3)s) 
+sur la maille %(k1)s, 
+Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
 15 : _("""
-Contact méthode continue.
-Le vecteur DIRE_APPA est nul !
+La direction d'appariement fixe données par le vecteur DIRE_APPA est nulle !
 """),
 
 16 : _("""
@@ -72,20 +71,20 @@ Contact méthode continue.
 La méthode d'intégration est GAUSS, le champ VALE_CONT n'est pas créé.
 """),
 
-21 : _("""
-Les vecteurs tangents sont nuls lors de la projection du point de contact sur la maille maitre  %(k1)s. 
-Une erreur de définition de la maille.
+17 : _("""
+Contact méthode continue.
+Avec un FOND-FISSURE, il est impossible d'utiliser les options suivantes:
+- LISSAGE = 'OUI' ou/et
+- NORMALE = 'ESCL' ou
+- NORMALE = 'MAIT_ESCL'
 """),
 
-22 : _("""
-L'élement inconnu sur la maille maitre  %(k1)s.
-Cet élément n'est pas programmé pour le contact avec formualtion continue.
-Contactez l'assistance. 
-"""),
 
 23 : _("""
-Le vecteur normal est nul sur le noeud maitre  %(k1)s.
-Si vous avez activé le lissage, essayeé de le désactiver. 
+Le vecteur normal est nul au niveau du projeté du point de contact de coordonnées
+  (%(r1)s,%(r2)s,%(r3)s) 
+sur la maille %(k1)s, 
+Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
 24 : _("""
@@ -98,11 +97,11 @@ L'élément porté par la maille esclave %(k1)s n'est pas du bon type pour un fond 
 """),
 
 26 : _("""
-Schema d'intégration inconnu sur la maille  %(k1)s. 
+Le vecteur normal est nul au niveau du noeud %(k1)s.
 """),
 
 27 : _("""
-Code erreur introuvable. Contactez les développeurs.
+Le vecteur normal est nul au niveau de la maille %(k1)s.
 """),
 
 28 : _("""
@@ -110,17 +109,104 @@ Le statut du contact a changé %(i1)d fois au point de contact numéro %(i2)d sur 
 Présence de flip-flop. 
 """),
 
+30 : _("""
+Le couple de surfaces de contact %(i1)s pour l'appariement nodal est mal défini.
+Il faut moins de noeuds esclaves que de noeuds maitres pour respecter l'injectivité.
+Or ici:
+Nombre de noeuds maitres : %(i2)s
+Nombre de noeuds esclaves: %(i3)s
+Conseil: intervertissez les deux surfaces maitres et esclaves
+"""),
+
+31 : _("""
+Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
+%(k1)s sur la maille %(k2)s
+"""),
+
+32: _("""
+ Le mot-clef DIST_POUT ne fonctionne qu'avec des sections circulaires définies dans AFFE_CARA_ELEM.
+ """),
+
+33 : _("""
+L'erreur suivante est arrivée lors du pré-calcul des normales aux noeuds activées par les options
+- LISSAGE = 'OUI' ou/et
+- NORMALE = 'ESCL' ou
+- NORMALE = 'MAIT_ESCL'
+"""),
+
+34 : _("""
+Echec de l'orthogonalisation du repère tangent construit au niveau du projeté du point de contact de coordonnées
+  (%(r1)s,%(r2)s,%(r3)s) 
+sur la maille %(k1)s, 
+Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
+"""),
+
 35 : _("""
-Contact méthode continue. 
-  -> La normale calculée sur une maille est nulle.
-  -> Risque & Conseil :
-     Vérifier votre maillage.
+Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
+%(k1)s sur la noeud maitre %(k2)s
+"""),
+
+36 : _("""
+La maille %(k1)s est de type 'POI1', ce n'est pas autorisé sur une maille maitre. 
+"""),
+
+
+38 : _("""
+La maille %(k1)s est de type poutre et sa tangente est nulle.
+Vérifiez votre maillage.
+"""),
+
+39: _("""
+Problème pour récupérer l'épaisseur de la coque pour la maille  %(k1)s
+"""),
+
+40: _("""
+L'excentricité de la coque pour la maille %(k1)s n'est pas traitée
+"""),
+
+41: _("""
+Problème pour récupérer l'excentricité de la coque pour la maille  %(k1)s
 """),
 
 42 : _("""
 Contact méthodes discrètes. Il y a mélange de mailles quadratiques (TRIA6, TRIA7 ou QUAD9) avec des mailles QUAD8 sur la surface escalve du contact.
 On supprime la liaison entre les noeuds sommets et noeud milieu sur le QUAD8.
 Il y a risque d'interpénétration du noeud milieu pour le QUAD8 considéré.
+"""),
+
+43 : _("""
+La normale que vous avez prédéfinie par (VECT_* = 'VECT_Y') n'est pas utilisable en 2D.
+Utilisez plutot (ou Dingo) VECT_* = 'FIXE'
+"""),
+
+
+50: _("""
+Avec l'option VECT_MAIT = 'FIXE', seule l'option NORMALE = 'MAIT' est possible.
+"""),
+
+51: _("""
+Avec l'option VECT_MAIT = 'VECT_Y', seule l'option NORMALE = 'MAIT' est possible.
+"""),
+
+52: _("""
+Avec l'option VECT_ESCL = 'FIXE', seule l'option NORMALE = 'ESCL' est possible.
+"""),
+
+53: _("""
+Avec l'option VECT_ESCL = 'VECT_Y', seule l'option NORMALE = 'ESCL' est possible.
+"""),
+
+54: _("""
+Le LISSAGE n'est possible qu'avec des normales automatiques VECT_ESCL='AUTO' et/ou VECT_MAIT='AUTO'.
+"""),
+
+54: _("""
+Le LISSAGE n'est possible qu'avec des normales automatiques VECT_ESCL='AUTO' et/ou VECT_MAIT='AUTO'.
+"""),
+
+60 : _("""
+La maille %(k1)s est de type 'POI1', elle nécessite l'utilisation de l'option
+NORMALE='FIXE' avec une normale non-nulle. 
 """),
 
 85 : _("""

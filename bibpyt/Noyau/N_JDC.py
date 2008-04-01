@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,7 +116,9 @@ NONE = None
       #
       self.cr = self.CR(debut = "CR phase d'initialisation", 
                         fin = "fin CR phase d'initialisation")
-      self.g_context={}
+      # on met le jdc lui-meme dans le context global pour l'avoir sous
+      # l'etiquette "jdc" dans le fichier de commandes
+      self.g_context={ 'jdc' : self }
       # Liste pour stocker tous les concepts produits dans le JDC
       self.sds=[]
       # Dictionnaire pour stocker tous les concepts du JDC (acces rapide par le nom)

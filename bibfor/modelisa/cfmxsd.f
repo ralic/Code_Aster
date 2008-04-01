@@ -1,7 +1,7 @@
       SUBROUTINE CFMXSD(CHAR  ,FORMUL,NZOCO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,8 +41,10 @@ C
 C ----------------------------------------------------------------------
 C
       IF (FORMUL.EQ.'DISCRETE') THEN
+        CALL CARACM(CHAR  ,NZOCO)
         CALL CARACD(CHAR  ,NZOCO)
       ELSEIF (FORMUL.EQ.'CONTINUE') THEN
+        CALL CARACM(CHAR  ,NZOCO)
         CALL CARACC(CHAR  ,NZOCO)      
       ELSEIF (FORMUL.EQ.'XFEM') THEN
         CALL CARACX(CHAR  ,NZOCO)

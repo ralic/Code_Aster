@@ -1,4 +1,4 @@
-#@ MODIF sd_char_contact SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_char_contact SD  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,8 @@ class sd_char_contact(AsBase):
     COMAFO    = Facultatif(AsVR())
     JEUSUR    = Facultatif(AsVR())
     CONVCO    = Facultatif(AsVI())
-    DIRCO     = Facultatif(AsVR())
+    DIRNOR    = Facultatif(AsVR())
+    DIRAPP    = Facultatif(AsVR())
     ECPDON    = Facultatif(AsVI())
     CARFRO    = Facultatif(AsVR())
     FROTE     = Facultatif(AsVR())
@@ -96,6 +97,10 @@ class sd_char_contact(AsBase):
     XFIMAI    = Facultatif(AsVK8())
     XNBASC    = Facultatif(AsVK24())
     XNRELL    = Facultatif(AsVK24())
+    TANINI    = Facultatif(AsVR())
+    NORMCO    = Facultatif(AsVR())
+    TANGCO    = Facultatif(AsVR())  
+    EXCLFR    = Facultatif(AsVR())  
     MODELX    = Facultatif(AsVK8(lonmax=1,))
 
     # si contact xfem :

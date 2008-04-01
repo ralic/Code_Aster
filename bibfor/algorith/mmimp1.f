@@ -1,7 +1,7 @@
       SUBROUTINE MMIMP1(IFM   ,NOMA  ,DEFICO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,11 +61,11 @@ C
       INTEGER      CFMMVD,ZTABF,ZMAES
       INTEGER      NUMMAE,NUMMAM,IZONE
       CHARACTER*8  NOMESC,NOMMAI 
-      REAL*8       KSIPC1,KSIPC2,KSIPR1,KSIPR2,WPC
-      REAL*8       TAU1(3),TAU2(3)
-      CHARACTER*24 MAESCL,TABFIN
-      INTEGER      JMAESC,JTABF
-      INTEGER      NTPC,NBPC,IPC  
+      REAL*8       KSIPC1,KSIPC2,KSIPR1,KSIPR2,WPC,R8BID
+      REAL*8       TAU1(3),TAU2(3),NORM(3)
+      CHARACTER*24 MAESCL,TABFIN,NDIMCO
+      INTEGER      JMAESC,JTABF,JDIM
+      INTEGER      NTPC,NBPC,IPC,NDIMG  
       INTEGER      NTMAE,IMAE            
 C
 C ----------------------------------------------------------------------
@@ -77,8 +77,10 @@ C --- RECUPERATION DE QUELQUES DONNEES
 C
       MAESCL = DEFICO(1:16)//'.MAESCL'
       TABFIN = DEFICO(1:16)//'.TABFIN'
+      NDIMCO = DEFICO(1:16)//'.NDIMCO'
       CALL JEVEUO(MAESCL,'L',JMAESC)
       CALL JEVEUO(TABFIN,'L',JTABF)
+      CALL JEVEUO(NDIMCO,'L',JDIM)
       ZTABF = CFMMVD('ZTABF')     
       ZMAES = CFMMVD('ZMAES')              
 C
@@ -86,6 +88,7 @@ C --- INITIALISATIONS
 C
       NTMAE  = ZI(JMAESC)
       NTPC   = 0 
+      NDIMG  = ZI(JDIM)
 C    
 C --- BOUCLE SUR LES MAILLES ESCLAVES
 C
@@ -131,7 +134,7 @@ C
           KSIPR2 = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+5)
           IF (ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+22).EQ.1.D0) THEN
             WRITE(IFM,*) ' <CONTACT>        EXCLUS (HORS ZONE)'
-          ELSEIF (ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+17).EQ.1.D0) THEN
+          ELSEIF (ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+17).GE.1.D0) THEN
             WRITE(IFM,*) ' <CONTACT>        EXCLUS (SANS_NOEUD_FR)'
           ELSEIF (ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+24).NE.0.D0) THEN
             WRITE(IFM,*) ' <CONTACT>        EXCLUS (GROUP_NO_FOND)'
@@ -157,7 +160,13 @@ C
      &                TAU2(1),TAU2(2),TAU2(3)           
  2002 FORMAT (' <CONTACT>        TANGENTES : <',
      &         E10.3,',',E10.3,',',E10.3,'> <',
-     &         E10.3,',',E10.3,',',E10.3,'>')     
+     &         E10.3,',',E10.3,',',E10.3,'>')  
+      
+          CALL MMNORM(NDIMG,TAU1,TAU2,NORM,R8BID)
+          WRITE(IFM,2001) NORM(1),NORM(2),NORM(3)
+          
+ 2001 FORMAT (' <CONTACT>        NORMALE   : <',
+     &         E10.3,',',E10.3,',',E10.3,'>')          
  10     CONTINUE
         NTPC = NTPC + NBPC
  20   CONTINUE                            

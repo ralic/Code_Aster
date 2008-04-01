@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,12 +50,11 @@ CHA2=AFFE_CHAR_MECA(
                               _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
                               _F(  GROUP_NO = 'AXE',     DX = 0.0)),
                      CONTACT=_F(  APPARIEMENT = 'NODAL',
-                               RECHERCHE = 'NOEUD_BOUCLE',
+                               NORMALE = 'ESCL',
                                METHODE = 'LAGRANGIEN',
-                               PROJECTION = 'LINEAIRE',
                                GROUP_MA_MAIT = 'CON1',
                                GROUP_MA_ESCL = 'CON2'),
-                     INFO=2
+                     INFO=1
                            )
 
 #
@@ -66,12 +65,10 @@ CHA3=AFFE_CHAR_MECA(
                               _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
                               _F(  GROUP_NO = 'AXE',     DX = 0.0)),
                      CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
-                               RECHERCHE = 'NOEUD_BOUCLE',
                                METHODE = 'LAGRANGIEN',
-                               PROJECTION = 'LINEAIRE',
                                GROUP_MA_MAIT = 'CON1',
                                GROUP_MA_ESCL = 'CON2'),
-                     INFO=2
+                     INFO=1
                            )
 
 #
@@ -82,12 +79,10 @@ CHA4=AFFE_CHAR_MECA(
                               _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
                               _F(  GROUP_NO = 'AXE',     DX = 0.0)),
                      CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
-                               RECHERCHE = 'NOEUD_BOUCLE',
                                METHODE = 'CONTRAINTE',
-                               PROJECTION = 'LINEAIRE',
                                GROUP_MA_MAIT = 'CON1',
                                GROUP_MA_ESCL = 'CON2'),
-                     INFO=2
+                     INFO=1
                            )
 
 #
@@ -121,7 +116,7 @@ SOLVEUR=_F(SYME='OUI',),
                        CONVERGENCE=_F(
                 ARRET = 'OUI',
                 ITER_GLOB_MAXI = 10),
-                INFO=2
+                INFO=1
               )
 
 RESU2=CALC_ELEM( reuse=RESU2,
@@ -247,7 +242,7 @@ SOLVEUR=_F(SYME='OUI',),
                        CONVERGENCE=_F(
                 ARRET = 'OUI',
                 ITER_GLOB_MAXI = 10),
-               INFO=2
+               INFO=1
               )
 
 RESU3=CALC_ELEM( reuse=RESU3,
@@ -369,7 +364,7 @@ SOLVEUR=_F(SYME='OUI',),
                        CONVERGENCE=_F(
                 ARRET = 'OUI',
                 ITER_GLOB_MAXI = 10),
-                INFO=2
+                INFO=1
               )
 
 RESU4=CALC_ELEM( reuse=RESU4,

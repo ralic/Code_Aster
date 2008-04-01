@@ -9,7 +9,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C     ------------------------------------------------------------------
+      CHARACTER*2 CODRET
       CHARACTER*8 K8B,LPAIN(14),LPAOUT(1)
       CHARACTER*16 OPTION
       CHARACTER*19 CHVARC
@@ -68,7 +69,7 @@ C     ------------------------------------------------------------------
       CALL MECHAM(OPTION,MODELE,0,' ',CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,ICODE)
 
-      CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
+      CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
 
       CALL MEMARE('G',MATEL,MODELE,MATE,CARA,OPTION)
 C     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR ANGLES J.ANGLES 
+# MODIF  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ANGLES J.ANGLES
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
@@ -750,6 +750,7 @@ TEST_RESU(CHAM_NO=( _F( CHAM_GD = FAT_NLNO,
                         REFERENCE = 'NON_REGRESSION',
                         PRECISION = 1.0E-10,
                         VERSION = '9.02.15',
+                        CRITERE='ABSOLU',
                         VALE = -1.0521254211368E-20 ),
                     _F( CHAM_GD = FAT_NLNO,
                         NOM_CMP = 'EPNMOY1',

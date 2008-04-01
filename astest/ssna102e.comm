@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,21 +99,18 @@ LIAI=AFFE_CHAR_MECA(MODELE=MOD,
 
 CONT=AFFE_CHAR_MECA(MODELE=MOD,
                     CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
-                                RECHERCHE='NOEUD_BOUCLE',
                                 METHODE='GCP',
                                 ITER_GCP_MAXI=500,
                                 RESI_ABSO=1.E-3,
                                 GROUP_MA_MAIT='LAB1',
                                 GROUP_MA_ESCL='CEP2',),
                              _F(APPARIEMENT='MAIT_ESCL',
-                                RECHERCHE='NOEUD_BOUCLE',
                                 METHODE='GCP',
                                 ITER_GCP_MAXI=500,
                                 RESI_ABSO=1.E-3,
                                 GROUP_MA_MAIT='CME2',
                                 GROUP_MA_ESCL='CEP3',),
                              _F(APPARIEMENT='MAIT_ESCL',
-                                RECHERCHE='NOEUD_BOUCLE',
                                 METHODE='GCP',
                                 ITER_GCP_MAXI=500,
                                 RESI_ABSO=1.E-3,
@@ -231,7 +228,7 @@ TEST_TABLE(TABLE=REACENC,
            NOM_PARA='DY',
            VALE=17229.58,
            CRITERE='RELATIF',
-           PRECISION=0.015,
+           PRECISION=0.016,
            REFERENCE='SOURCE_EXTERNE',);
 # --------------------------------------------------------------------
 #                NON REGRESSION

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # DATE     : 03/08/2001
 # AUTEUR   : F. LEBOUVIER (DELTACAD)
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
@@ -117,9 +117,7 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MODE,
 
 # DEFINITION DU CONTACT
 CTAC=AFFE_CHAR_MECA(MODELE=MODE,
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               RECHERCHE='NOEUD_BOUCLE',
-                               REAC_GEOM='CONTROLE',
+                    CONTACT=_F(REAC_GEOM='CONTROLE',
                                NB_REAC_GEOM=2,
                                METHODE='PENALISATION',
                                FROTTEMENT='COULOMB',

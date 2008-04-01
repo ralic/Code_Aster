@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF med Messages  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,14 +32,24 @@ cata_msg = {
 
 2 : _("""
   -> Le nombre de points de Gauss est différent entre le fichier med et Aster:
-     - nombre de points de Gauss contenu dans le fichier MED : %(i2)d
-     - nombre de points de Gauss défini dans Aster           : %(i1)d
+      - nombre de points de Gauss contenu dans le fichier MED : %(i2)d
+      - nombre de points de Gauss défini dans Aster           : %(i1)d
+
+     Visiblement les éléments finis décrits dans le fichier MED ne sont pas les
+     mêmes que dans Code_Aster.
+     Si vous avez choisi PROL_ZERO='OUI', le champ sera initialisé à zéro sur
+     ces éléments.
+     Sinon, le champ ne sera pas initialisé (NaN, not a number). C'est le
+     comportement par défaut.
+
+  -> Risque & Conseil :
+      - Choisissez des éléments finis compatibles entre Aster et le code tiers
 """),
 
 3 : _("""
   -> Les point de Gauss Med/Aster ne correspondent pas géométriquement.
   -> Risque & Conseil:
-     Risque de résultats faux à cause ce cette incompatibilité.
+     Risque de résultats faux à cause cette incompatibilité.
 """),
 
 4 : _("""

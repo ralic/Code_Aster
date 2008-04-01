@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,7 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER LNOMA,IFM,NIVINF,ULISOP,I0,JREFE,JNUOM
       REAL*8 EPSI,R8B
       CHARACTER*1 KBID
+      CHARACTER*3 PROLZ
       CHARACTER*4 ACCE
       CHARACTER*8 RESU,NOMA,NOMO,TYPCHA,CHMAT,CARAEL
       CHARACTER*8 K8B,CRIT,CHAINE,MODELE,BASENO
@@ -613,6 +614,12 @@ C     =============================
           ELSE IF (NOCH(1:4).EQ.'DEPL') THEN
             NOMGD = 'DEPL_R  '
             TYPCHA = 'NOEU'
+          ELSE IF (NOCH(1:4).EQ.'VITE') THEN
+            NOMGD = 'DEPL_R  '
+            TYPCHA = 'NOEU'
+          ELSE IF (NOCH(1:4).EQ.'ACCE') THEN
+            NOMGD = 'DEPL_R  '
+            TYPCHA = 'NOEU'
           ELSE IF (NOCH(1:9).EQ.'SIEF_ELNO') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELNO'
@@ -715,6 +722,13 @@ C         --- LECTURE DES NOMS DE COMPOSANTES ASSOCIEES DEUX A DEUX
      &                  IAUX)
           ENDIF
 
+C         --- PROLONGEMENT PAR ZERO OU NOT A NUMBER
+
+          CALL GETVTX(' ', 'PROL_ZERO', 0, 1, 1, PROLZ, IAUX)
+          IF (PROLZ .NE. 'OUI') THEN
+             PROLZ = 'NAN'
+          ENDIF
+
 C         --- NOM DU FICHIER MED
           CALL ULISOG(MFICH, KFIC, SAUX01)
           IF ( KFIC(1:1).EQ.' ' ) THEN
@@ -802,9 +816,11 @@ C
               INST = ZR(JLIST+ITPS-1)
             ENDIF
 C
-            CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,NBCMPV,
-     &                  NCMPVA,NCMPVM,IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
-     &                  MFICH,LIGREL,OPTION,PARAM,IRET)
+            CALL LRCHME ( CHANOM, NOCHMD, K32B,
+     &                    NOMA, TYPCHA, NOMGD,
+     &                    NBCMPV, NCMPVA, NCMPVM, PROLZ,
+     &                    IINST, NUMPT, NUMORD, INST, CRIT, EPSI,
+     &                    MFICH, LIGREL, OPTION, PARAM, IRET )
 
 
 C        -- POUR LES CHAM_NO :

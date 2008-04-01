@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,7 +78,6 @@ CH2=AFFE_CHAR_MECA(
                    MODELE=MODE,
                    CONTACT=_F(REAC_GEOM      = 'CONTROLE',
                               NB_REAC_GEOM   = 2,
-                              RECHERCHE      = 'NOEUD_BOUCLE',
                               METHODE        = 'CONTRAINTE',
                               GROUP_MA_ESCL     = 'FACEINF',
                               GROUP_MA_MAIT     = 'SSOL',

@@ -1,7 +1,7 @@
       SUBROUTINE MAJUST(ALIAS,KSI1,KSI2,TOLEOU,LDIST)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,14 @@ C ----------------------------------------------------------------------
 C
       LDIST = .TRUE.
       DIST  = 1.D0 + 2.D0*TOLEOU
-      IF ((ALIAS(1:3).EQ.'SG2') .OR. (ALIAS(1:3).EQ.'SG3')) THEN
+      
+      IF (ALIAS(1:2).EQ.'SG') THEN
         IF (ABS(KSI1).GT.DIST) LDIST = .FALSE.
         IF (KSI1.LT.-1.D0) KSI1 = -1.D0
         IF (KSI1.GT.1.D0)  KSI1 = 1.D0
-      ELSE IF ((ALIAS(1:3).EQ.'TR3') .OR. (ALIAS(1:3).EQ.'TR6')) THEN
+      ELSE IF (ALIAS(1:2).EQ.'TR') THEN
         IF (ABS(KSI1).GT.DIST .OR.
-     &      ABS(KSI2).GT.DIST) LDIST = .FALSE.
+     &      ABS(KSI2).GT.DIST) LDIST = .FALSE.    
         IF (KSI1.LT.-1.D0) KSI1 = -1.D0
         IF (KSI2.LT.-1.D0) KSI2 = -1.D0
         IF (((KSI1-KSI2+2.D0).LT.-0.D0) .AND. 
@@ -72,7 +73,7 @@ C
           KSI1 = 1.D0
           KSI2 = -1.D0
         END IF
-        IF (((KSI1-KSI2-2).LT.-0.D0) .AND. 
+        IF (((KSI1-KSI2-2).LT.0.D0) .AND. 
      &      ((KSI1-KSI2+2).GT.0.D0) .AND.
      &      ((KSI1+KSI2).GT.0.D0)) THEN
           XII = (KSI1-KSI2)/2.D0
@@ -80,15 +81,16 @@ C
           KSI1 = XII
           KSI2 = YII
         END IF
-      ELSE IF ((ALIAS(1:3).EQ.'QU4') .OR. 
-     &         (ALIAS(1:3).EQ.'QU8') .OR.
-     &         (ALIAS(1:3).EQ.'QU9')) THEN
+      ELSE IF (ALIAS(1:2).EQ.'QU') THEN
         IF (ABS(KSI1).GT.DIST .OR.
-     &      ABS(KSI2).GT.DIST) LDIST = .FALSE.
+     &      ABS(KSI2).GT.DIST) LDIST = .FALSE.  
         IF (KSI1.LT.-1.D0) KSI1 = -1.D0
         IF (KSI1.GT.1.D0) KSI1 = 1.D0
         IF (KSI2.GT.1.D0) KSI2 = 1.D0
         IF (KSI2.LT.-1.D0) KSI2 = -1.D0
+      ELSE
+        CALL ASSERT(.FALSE.)  
       END IF
+
 
       END

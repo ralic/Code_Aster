@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,6 +172,7 @@ ERRERELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
                 NUME_ORDRE=1,NUME_PT=1,
                 TYPE_CHAM='ELEM_ERREUR',
                 NOM_CMP_IDEM='OUI',
+                PROL_ZERO='OUI',
                 INFO=2
                ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD=ERRERELU, ) ) ;
@@ -196,6 +197,7 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_ELAS',
                           _F( NOM_CHAM_MED='RESUTRQ2EPSI_ELNO_DEPL__________',
                               NOM_CHAM    ='EPSI_ELNO_DEPL'),
                          ) ,
+               PROL_ZERO='OUI',
                UNITE=81,TOUT_ORDRE='OUI');
 
 DEFI_FICHIER(UNITE=82, FICHIER='./fort.82')

@@ -1,6 +1,7 @@
-      SUBROUTINE CALFFX(ALIAS,XI,YI,TN)
+      SUBROUTINE CALFFX(ALIAS ,KSI1  ,KSI2  ,FF    )
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,98 +18,95 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
-C.......................................................................
-
-C BUT:   CALCUL DES FFS ET LEURS DERIVEES  AU POINT (XI,YI)
-
-C ENTREES  ---> ALIAS       : NOM D'ALIAS DE L'ELEMENT
-C          ---> XI,YI       : POINT DE CALCUL DES FFS ET DU JACOBIEN
-
-C SORTIES  <---  TN   : FFS EN XI,YI,ZI
-
-C.......................................................................
-
-      IMPLICIT REAL*8 (A-H,O-Z)
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
       CHARACTER*8 ALIAS
-      REAL*8 TN(9)
-C     REAL*8       TAU1(3),TAU2(3)
-
+      REAL*8      KSI1,KSI2,FF(9)
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
+C
+C CALCUL DES FONCTIONS DE FORME EN UN POINT DE L'ELEMENT DE REFERENCE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
+C IN  KSI1   : POINT DE CONTACT SUIVANT KSI1 DES FONCTIONS DE FORME 
+C IN  KSI2   : POINT DE CONTACT SUIVANT KSI2 DES FONCTIONS DE FORME 
+C OUT FF     : FONCTIONS DE FORMES EN KSI1,KSI2
+C
+C ----------------------------------------------------------------------
+C
+      REAL*8  A,B,C,D
+      REAL*8  AL31,AL32,AL33
+      REAL*8  UNS4
+      REAL*8  X
+      INTEGER I
+C
+C ----------------------------------------------------------------------
+C
       AL31(X) = 0.5D0*X* (X-1.D0)
       AL32(X) = - (X+1.D0)* (X-1.D0)
       AL33(X) = 0.5D0*X* (X+1.D0)
-      UNS4 = 0.25D0
-C  ----------------------------------------------------------
-
+      UNS4    = 0.25D0
+C
+C ----------------------------------------------------------------------
+C
+      DO 10 I=1,9
+        FF(I)     = 0.D0 
+ 10   CONTINUE
+C 
       IF (ALIAS(1:3).EQ.'SG2') THEN
-
-C   LES FF EN XI,YI,ZI ET LEURS D
-
-        TN(1) = 0.5D0* (1-XI)
-        TN(2) = 0.5D0* (1+XI)
-
-
+        FF(1)  = 0.5D0*(1-KSI1)
+        FF(2)  = 0.5D0*(1+KSI1)
       ELSE IF (ALIAS(1:3).EQ.'SG3') THEN
-
-        TN(1) = -0.5D0* (1.D0-XI)*XI
-        TN(2) =  0.5D0* (1.D0+XI)*XI
-        TN(3) =  1.0D0* (1.D0+XI)*(1-XI)
-
-
-
+        FF(1)  = -0.5D0* (1.D0-KSI1)*KSI1
+        FF(2)  =  0.5D0* (1.D0+KSI1)*KSI1
+        FF(3)  =  1.0D0* (1.D0+KSI1)*(1-KSI1)
       ELSE IF (ALIAS(1:3).EQ.'TR3') THEN
-
-        TN(1) = 0.5D0* (1.D0+YI)
-        TN(2) = -0.5D0* (XI+YI)
-        TN(3) = 0.5D0* (1.D0+XI)
-
+        FF(1)  = 0.5D0* (1.D0+KSI2)
+        FF(2)  = -0.5D0* (KSI1+KSI2)
+        FF(3)  = 0.5D0* (1.D0+KSI1)
       ELSE IF (ALIAS(1:3).EQ.'TR6') THEN
-
-        TN(1) = 0.5D0* (1.D+00+YI)*YI
-        TN(2) = 0.5D0* (XI+YI)* (XI+YI+1.D0)
-        TN(3) = 0.5D0* (1.D+00+XI)*XI
-        TN(4) = - (1.D0+YI)* (XI+YI)
-        TN(5) = - (1.D0+XI)* (XI+YI)
-        TN(6) = (1.D0+XI)* (1.D0+YI)
-
+        FF(1)  = 0.5D0* (1.D+00+KSI2)*KSI2
+        FF(2)  = 0.5D0* (KSI1+KSI2)* (KSI1+KSI2+1.D0)
+        FF(3)  = 0.5D0* (1.D+00+KSI1)*KSI1
+        FF(4)  = - (1.D0+KSI2)* (KSI1+KSI2)
+        FF(5)  = - (1.D0+KSI1)* (KSI1+KSI2)
+        FF(6)  = (1.D0+KSI1)* (1.D0+KSI2)
       ELSE IF (ALIAS(1:3).EQ.'QU4') THEN
-
-        UNS4 = 0.25D0
-        A = 1.D0 + XI
-        B = 1.D0 + YI
-        C = 1.D0 - XI
-        D = 1.D0 - YI
-        TN(1) = C*B*UNS4
-        TN(2) = C*D*UNS4
-        TN(3) = A*D*UNS4
-        TN(4) = A*B*UNS4
-
+        A      = 1.D0 + KSI1
+        B      = 1.D0 + KSI2
+        C      = 1.D0 - KSI1
+        D      = 1.D0 - KSI2
+        FF(1)  = C*B*UNS4
+        FF(2)  = C*D*UNS4
+        FF(3)  = A*D*UNS4
+        FF(4)  = A*B*UNS4
       ELSE IF (ALIAS(1:3).EQ.'QU8') THEN
-
-        TN(1) = (1.D0+YI)* (1.D0-XI)* (-1.D0-XI+YI)*0.25D0
-        TN(2) = (1.D0-YI)* (1.D0-XI)* (-1.D0-XI-YI)*0.25D0
-        TN(3) = (1.D0-YI)* (1.D0+XI)* (-1.D0+XI-YI)*0.25D0
-        TN(4) = (1.D0+YI)* (1.D0+XI)* (-1.D0+XI+YI)*0.25D0
-        TN(5) = (1.D0-YI)* (1.D0-XI)* (1.D0+YI)*0.5D0
-        TN(6) = (1.D0-YI)* (1.D0-XI)* (1.D0+XI)*0.5D0
-        TN(7) = (1.D0-YI)* (1.D0+XI)* (1.D0+YI)*0.5D0
-        TN(8) = (1.D0+YI)* (1.D0-XI)* (1.D0+XI)*0.5D0
-
-
+        FF(1)  = (1.D0+KSI2)* (1.D0-KSI1)* (-1.D0-KSI1+KSI2)*0.25D0
+        FF(2)  = (1.D0-KSI2)* (1.D0-KSI1)* (-1.D0-KSI1-KSI2)*0.25D0
+        FF(3)  = (1.D0-KSI2)* (1.D0+KSI1)* (-1.D0+KSI1-KSI2)*0.25D0
+        FF(4)  = (1.D0+KSI2)* (1.D0+KSI1)* (-1.D0+KSI1+KSI2)*0.25D0
+        FF(5)  = (1.D0-KSI2)* (1.D0-KSI1)* (1.D0+KSI2)*0.5D0
+        FF(6)  = (1.D0-KSI2)* (1.D0-KSI1)* (1.D0+KSI1)*0.5D0
+        FF(7)  = (1.D0-KSI2)* (1.D0+KSI1)* (1.D0+KSI2)*0.5D0
+        FF(8)  = (1.D0+KSI2)* (1.D0-KSI1)* (1.D0+KSI1)*0.5D0
       ELSE IF (ALIAS(1:3).EQ.'QU9') THEN
-
-        TN(1) = AL31(XI)*AL31(YI)
-        TN(2) = AL33(XI)*AL31(YI)
-        TN(3) = AL33(XI)*AL33(YI)
-        TN(4) = AL31(XI)*AL33(YI)
-        TN(5) = AL32(XI)*AL31(YI)
-        TN(6) = AL33(XI)*AL32(YI)
-        TN(7) = AL32(XI)*AL33(YI)
-        TN(8) = AL31(XI)*AL32(YI)
-        TN(9) = AL32(XI)*AL32(YI)
-
+        FF(1)  = AL31(KSI1)*AL31(KSI2)
+        FF(2)  = AL33(KSI1)*AL31(KSI2)
+        FF(3)  = AL33(KSI1)*AL33(KSI2)
+        FF(4)  = AL31(KSI1)*AL33(KSI2)
+        FF(5)  = AL32(KSI1)*AL31(KSI2)
+        FF(6)  = AL33(KSI1)*AL32(KSI2)
+        FF(7)  = AL32(KSI1)*AL33(KSI2)
+        FF(8)  = AL31(KSI1)*AL32(KSI2)
+        FF(9)  = AL32(KSI1)*AL32(KSI2)
       ELSE
-        CALL U2MESS('F','ELEMENTS_16')
+        CALL ASSERT(.FALSE.)
       END IF
 
       END

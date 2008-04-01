@@ -1,6 +1,6 @@
       SUBROUTINE CONORI(MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -408,6 +408,6 @@ C     ------------------------------------------------------------------
 C     ==================================================================
  9999 CONTINUE
 C     EMISSION D'UNE ERREUR <F> SI UNE ERREUR <E> S'EST PRODUITE
-      CALL CHKMSG(ICHK)
+      CALL CHKMSG(0, ICHK)
       CALL JEDEMA()
       END

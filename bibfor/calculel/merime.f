@@ -10,7 +10,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,6 +62,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C     ------------------------------------------------------------------
+      CHARACTER*2 CODRET
       CHARACTER*8 K8B,LPAIN(25),LPAOUT(2),STATUT,NOMRES,NOMGD,KBID
       CHARACTER*16 OPTION,NOMCMD,TYPRES
       CHARACTER*19 NOMFON,CHVARC
@@ -91,7 +92,7 @@ C     ------------------------------------------------------------------
 
 
       IF (NOMCMD.EQ.'MECA_STATIQUE'.OR.NOMCMD.EQ.'CALC_MATR_ELEM') THEN
-        CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
+        CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
       END IF
 
 

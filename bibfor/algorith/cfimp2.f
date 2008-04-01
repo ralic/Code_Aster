@@ -2,7 +2,7 @@
      &                  JAPPAR,JNOCO,JMACO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INTEGER      IFM
@@ -31,12 +32,15 @@ C
       INTEGER      JAPPAR
       INTEGER      JNOCO
       INTEGER      JMACO
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/ALGOCP/FRO2GD/FROGDP/FROLGD/FROPGD
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE DISCRETE - APPARIEMENT - UTILITAIRE)
 C
 C IMPRESSION DE L'ACTIVATION/DESACTIVATION DE LA LIAISON ESCLAVE/MAITRE
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
 C IN  NOMA   : NOM DU MAILLAGE
@@ -117,8 +121,9 @@ C --- PREPARATION DES CHAINES POUR LES NOMS
         TYPE2 ='/ND '
         NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
-      ELSE
-        CALL ASSERT(.FALSE.)
+      ELSE 
+        TYPE2  = ' NON'
+        NOMMAI = ' APPARIE'
       END IF
 
       IF (TYPOPE.EQ.'A') THEN

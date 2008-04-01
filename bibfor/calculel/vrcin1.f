@@ -1,6 +1,6 @@
-      SUBROUTINE VRCIN1(MODELE,CHMAT,CARELE,INST)
+      SUBROUTINE VRCIN1(MODELE,CHMAT,CARELE,INST,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
+      CHARACTER*2 CODRET
       CHARACTER*8 MODELE,CHMAT,CARELE
       REAL*8 INST
 C ======================================================================
@@ -52,6 +53,8 @@ C          .LISTE_SD(7*(I-1)+6) : PROLDR
 C               (SI EVOL : TYPE DE PROLONGEMENT A DROITE)
 C          .LISTE_SD(7*(I-1)+7) : FINST (OU ' ')
 C               (SI EVOL : FONCTION DE TRANSFORMATION DU TEMPS)
+C        CODRET (K2) : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE, 
+C                                            'NO' SINON
 C
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -93,6 +96,10 @@ C ----------------------------------------------------------------------
       CALL JELIRA(CHMAT//'.CVRCVARC','LONMAX',NBCVRC,KBID)
       CALL JEVEUO(CHMAT//'.CVRCVARC','L',JCVVAR)
       CALL JEVEUO(CHMAT//'.CVRCGD','L',JCVGD)
+
+C     INITIALISATION
+
+      CODRET = 'OK'
 
 
 C     1. CREATION DE CHMAT.LISTE_SD :
@@ -230,7 +237,11 @@ C              (AFFE_VARC/FONC_INST):
             ENDIF
             CALL RSINCH(NOMEVO,NOMSYM,'INST',INSTEV,NOMCH,PROLDR,PROLGA,
      &                  2,'V',IRET)
-            CALL ASSERT(IRET.LE.2)
+            CALL ASSERT(IRET.LE.12)
+            IF (IRET.GE.10) THEN
+              CODRET = 'NO'
+              GOTO 9999
+            ENDIF
           ELSE
             CALL ASSERT(TYSD.EQ.'CHAMP')
 C           -- SI TYSD='CHAMP', C'EST UN CHAMP INDEPENDANT DU TEMPS :

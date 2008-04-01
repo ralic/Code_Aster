@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,6 @@ CHA4=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(GROUP_MA_ESCL  = 'LCONTAR',
                                GROUP_MA_MAIT  = 'LBATIR',
                                APPARIEMENT    = 'MAIT_ESCL',
-                               RECHERCHE      = 'NOEUD_BOUCLE',
                                NORMALE        = 'MAIT',
                                METHODE        = 'CONTINUE',
                                INTEGRATION    = 'NOEUD',
@@ -91,8 +90,7 @@ CHA4=AFFE_CHAR_MECA(MODELE=MO,
                                USURE          = 'ARCHARD',
                                K              = 1.0E-12,
                                H              = 1.0,
-                               COULOMB        = 1.0,
-                               PROJECTION     = 'LINEAIRE'));
+                               COULOMB        = 1.0,));
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',

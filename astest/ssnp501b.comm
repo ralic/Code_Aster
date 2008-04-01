@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,7 +89,6 @@ DEPL=AFFE_CHAR_MECA(MODELE=MO,
 
 CON=AFFE_CHAR_MECA(MODELE=MO,
                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                              RECHERCHE='NOEUD_BOUCLE',
                               REAC_GEOM='CONTROLE',
                               NB_REAC_GEOM=2,
                               METHODE='LAGRANGIEN',

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,11 +74,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506A,
 
 #CONDITIONS AUX LIMITES
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               RECHERCHE = 'NOEUD_BOUCLE',
-                               REAC_GEOM='AUTOMATIQUE',
-                               METHODE='CONTRAINTE',
-                               GROUP_MA_MAIT='SMAI',
+                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
                                SANS_GROUP_NO=('PLANX','LS','LB'),),);
 

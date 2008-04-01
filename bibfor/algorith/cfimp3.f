@@ -2,7 +2,7 @@
      &                  NBLIAC,JCNSVR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*24 DEFICO
@@ -30,12 +31,15 @@ C
       INTEGER      JCNSVR
       CHARACTER*8  NOMA
       REAL*8       INSTAP
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : RESUCO
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE DISCRETE - APPARIEMENT - UTILITAIRE)
 C
 C IMPRESSION DES INFOS SUR LES LIAISONS DE CONTACT/FROTTEMENT
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
 C IN  NOMA   : NOM DU MAILLAGE
@@ -73,7 +77,7 @@ C
       CHARACTER*4  TYPE2
       CHARACTER*24 APPARI,CONTNO,CONTMA,APJEU
       INTEGER      JAPPAR,JNOCO,JMACO,JAPJEU
-      REAL*8       RN,R,COE,PROD,R8PREM,VARC,AJEUFT
+      REAL*8       RN,R,COE,PROD,VARC,AJEUFT
 C
 C ----------------------------------------------------------------------
 C
@@ -118,7 +122,8 @@ C
           NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
         ELSE
-          CALL ASSERT(.FALSE.)
+          TYPE2  = ' NON'
+          NOMMAI = ' APPARIE'
         END IF
 C
 C --- VALEURS
@@ -129,9 +134,6 @@ C
         COE = 0.0D0
         IF ( RN.NE.0.D0 ) THEN
           PROD = (ABS(R)-ABS(RN))
-          IF ( PROD/ABS(R).LT.-R8PREM() ) THEN
-             CALL U2MESS('F','CONTACT_87')
-          ENDIF
           COE = PROD/RN
         ENDIF
 

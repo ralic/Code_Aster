@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,12 +69,8 @@ CHA1=AFFE_CHAR_MECA(
 
 CHA2=AFFE_CHAR_MECA(
                      MODELE=MO,
-                     CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
-                               REAC_GEOM = 'AUTOMATIQUE',
-
-                               RECHERCHE = 'NOEUD_BOUCLE',
+                     CONTACT=_F(
                                METHODE = 'LAGRANGIEN',
-                               PROJECTION = 'LINEAIRE',
                                GROUP_MA_MAIT = 'CONTBAS',
                                GROUP_MA_ESCL = 'CONTHAUT'),
                            )
@@ -83,14 +79,11 @@ CHA2=AFFE_CHAR_MECA(
 
 CHA3=AFFE_CHAR_MECA(
                      MODELE=MO,
-                     CONTACT=_F(  APPARIEMENT = 'NODAL',
-                               RECHERCHE = 'NOEUD_BOUCLE',
-                               REAC_GEOM = 'AUTOMATIQUE',
-
+                     CONTACT=_F(APPARIEMENT = 'NODAL',
+                                NORMALE='ESCL',
                                METHODE = 'LAGRANGIEN',
-                               PROJECTION = 'LINEAIRE',
-                               GROUP_MA_MAIT = 'CONTBAS',
-                               GROUP_MA_ESCL = 'CONTHAUT'),
+                               GROUP_MA_ESCL = 'CONTBAS',
+                               GROUP_MA_MAIT = 'CONTHAUT'),
                            )
 
 #

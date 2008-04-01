@@ -1,4 +1,4 @@
-#@ MODIF modelisa3 Messages  DATE 10/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF modelisa3 Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,17 +160,6 @@ Suggestion :
  l'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyenne, au noeud  %(k1)s , est superieur a 10 degres et vaut  %(k2)s  degres.
 """),
 
-32: _("""
- que des sections circulaires !
-"""),
-
-33: _("""
- pb pour recuperer "r1" pour la maille  %(k1)s 
-"""),
-
-34: _("""
- pb pour recuperer "r2" pour la maille  %(k1)s 
-"""),
 
 35: _("""
  probleme pour determiner le rang de la composante <n> de la grandeur <sief_r>

@@ -1,7 +1,7 @@
       SUBROUTINE OP0026(IER   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,6 +64,7 @@ C-----------------------------------------------------------------------
       REAL*8          RBID,INSTAM,INSTAP,CONST(2)
       COMPLEX*16      CBID
       CHARACTER*1     TYPCST(2),TYPECH(2),TYPRES
+      CHARACTER*2     CODRET
       CHARACTER*8     RESULT,TABLE,KBID
       CHARACTER*14    NUMMOI,NUMDEL
       CHARACTER*16    LOPT(3),OPTION
@@ -195,8 +196,8 @@ C     -------------------------------------------------------
 
 C     LECTURE DES VARIABLES DE COMMANDE A L'INSTANT COURANT
 C     -----------------------------------------------------
-      CALL NMVCLE(MODELE,MATE,CARELE,LISCHA,INSTAP,COMPLU)
-      CALL NMVCLE(MODELE,MATE,CARELE,LISCHA,INSTAM,COMMOI)
+      CALL NMVCLE(MODELE,MATE,CARELE,LISCHA,INSTAP,COMPLU,CODRET)
+      CALL NMVCLE(MODELE,MATE,CARELE,LISCHA,INSTAM,COMMOI,CODRET)
 
 
 C ======================================================================

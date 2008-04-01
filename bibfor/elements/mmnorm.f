@@ -1,7 +1,7 @@
-      SUBROUTINE MMNORM(NDIM,TAU1,TAU2,NORM)
+      SUBROUTINE MMNORM(NDIM,TAU1,TAU2,NORM,NOOR)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,38 +25,39 @@ C
       REAL*8       TAU1(3)
       REAL*8       TAU2(3)
       REAL*8       NORM(3)
+      REAL*8       NOOR
 C      
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
-C CALCULE LA NORMALE A PARTIR DES TANGENTES DEJA DEFINIES
+C CALCULE LA NORMALE VERS INTERIEUR A PARTIR DES TANGENTES 
 C      
 C ----------------------------------------------------------------------
 C
 C
+C CETTE ROUTINE CALCULE LA NORMALE INTERIEURE A PARTIR DES
+C TANGENTES EXTERIEURES
+C
 C IN  NDIM   : DIMENSION DE LA MAILLE DE CONTACT
-C IN  TAU1   : PREMIERE TANGENTE
-C IN  TAU2   : SECONDE TANGENTE
-C OUT NORM   : NORMALE RESULTANTE
+C IN  TAU1   : PREMIERE TANGENTE EXTERIEURE
+C IN  TAU2   : SECONDE TANGENTE EXTERIEURE
+C OUT NORM   : NORMALE INTERIEURE
+C OUT NOOR   : NORME DE LA NORMALE
 C
 C
 C ----------------------------------------------------------------------
 C
-      REAL*8 NOOR
-C
-C ----------------------------------------------------------------------
-C
+
       IF (NDIM.EQ.2) THEN
         NORM(1) = -TAU1(2)
         NORM(2) = TAU1(1)
         NORM(3) = 0.D0
       ELSE IF (NDIM.EQ.3) THEN
         CALL PROVEC(TAU2,TAU1,NORM)
+      ELSE
+        CALL ASSERT(.FALSE.)  
       END IF
-
       CALL NORMEV(NORM,NOOR)
-      IF (NOOR.EQ.0.D0) THEN
-        CALL U2MESS('F','CONTACT3_35')
-      ENDIF
+
       END

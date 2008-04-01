@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE VALIDATION DE POU_D_TGM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,8 +120,9 @@ CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
                                   DIST_ESCL=31.75,
                                   FROTTEMENT='COULOMB',
                                   COEF_MATR_FROT=1.,
-                                  VECT_Y=(0.,0.,1.,),
-                                  REAC_GEOM='AUTOMATIQUE',
+                                  NORMALE = 'MAIT',
+                                  VECT_MAIT = 'VECT_Y',
+                                  MAIT_VECT_Y=(0.,0.,-1.,),
                                   COULOMB=0.,
                               
                               ),);
@@ -187,10 +188,10 @@ T_DEP_LA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=T_REA_LA,);
-IMPR_TABLE(TABLE=T_DEP_LA,);
+#IMPR_TABLE(TABLE=T_REA_LA,);
+#IMPR_TABLE(TABLE=T_DEP_LA,);
 
-IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=ULAG,NOM_CHAM='DEPL'))
+#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=ULAG,NOM_CHAM='DEPL'))
 
 TEST_TABLE(TABLE=T_REA_LA,
            NOM_PARA='DY',
@@ -237,6 +238,8 @@ TEST_TABLE(TABLE=T_REA_LA,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.7',);
 
+#FIN()
+
 #
 # ---- METHODE CONTINUE ----
 #      ________________
@@ -247,7 +250,9 @@ CHCON=AFFE_CHAR_MECA(MODELE=MODE,
                               METHODE='CONTINUE',
                                  ITER_GEOM_MAXI = 3,
                                  ITER_CONT_MAXI = 10,
-                                 VECT_ORIE_POU=(0.0,0.0,-1.0,),
+                                 NORMALE = 'MAIT',
+                                  VECT_MAIT = 'VECT_Y',
+                                  MAIT_VECT_Y=(0.,0.,-1.,),   
                                  DIST_MAIT=31.75,
                                  DIST_ESCL=31.75,
                               ),);
@@ -353,7 +358,9 @@ CHSIG=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='POU1',
                               GROUP_MA_ESCL='POU2',                                  
                               METHODE='CONTINUE',
-                                 VECT_ORIE_POU=(0.0,0.0,-1.0,),
+                              NORMALE = 'MAIT',
+                                  VECT_MAIT = 'VECT_Y',
+                                  MAIT_VECT_Y=(0.,0.,-1.,),
                                  DIST_MAIT=31.75,
                                  DIST_ESCL=31.75,
                               ),);

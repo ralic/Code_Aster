@@ -1,0 +1,1341 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 01/04/2008 - 11:18:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010922 DU 2007-05-31 12:30:52
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   CONTACT - Lissage encore faux!
+FONCTIONNALITE
+   Lissage tout juste grace aux corrections apportées par la fiche 11624
+   (pour les cas traités, ça fonctionne désormais correctement)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011624 DU 2008-01-10 12:16:26
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - AFFE_CONTACT (phase 1)
+FONCTIONNALITE
+   Première phase pour la création d'AFFE_CONTACT: la mutualisation de l'appariement entre la
+   méthode discrète et la méthode continue.
+   
+   PROJECTION PLUS EXACTE 
+   
+   On utilise un Newton pour calculer la projection du noeud esclave sur la maille maitre.
+   On adapte donc la méthode de projection "exacte" de la méthode continue pour les méthodes
+   discrètes (fiche 9896). La projection est "exacte", y compris pour les éléments quadratiques.
+   
+   On en profite pour étendre APPA_TYPE aux méthodes discrètes. Pour calculer la projection
+   du noeud esclave sur la maille maitre, la méthode continue propose soit d'utiliser une
+   méthode de
+   projection orthogonale classique pour trouver le point le plus proche, soit de calculer le
+   point apparié dans une direction d'appariement fixe donnée par l'utilisateur. Cette option
+   APPA_TYPE est utile dans les cas pathologiques où il n'y a pas unicité de la projection
+   (mailles concaves). On propose de l'étendre aux méthodes discrètes. 
+     APPA_TYPE = 'PROCHE'/'FIXE'
+     APPA_VECT  (0,-1,0) dans le cas où APPA_TYPE='FIXE'
+   
+   SYNTAXE UNIFORMISEE ET RATIONNALISEE
+   
+   1/ Résorption de l'option NOEUD_VOISIN qui n'existait qu'en discret. S'il s'avère qu'on a des
+   problèmes de perf. sur
+   l'appariement (jamais vu sur les études), on adaptera la méthode de mise en boîte
+   provenant d'Arlequin
+   
+   2/ Le mot_clef 'VECT_Y' n'a pas le même sens dans les deux méthodes
+     1/ Continue: s'utilise en conjonction avec SANS_NOEUD pour EXCLURE une direction de
+   frottement (il existe VECT_Z en plus) -> on change VECT_Y en  EXCL_FROT_1 et VECT_Z en
+   EXCL_FROT_2
+     2/ Discrète: s'utilise pour FIXER le repère tangent dans le cas du frottement
+   -> on résorbe dans le nouveau choix de la normale (voir point 3)
+   
+   3/ Choix de la normale identique dans les deux méthodes pour écrire la relation de
+   non-pénétration.
+   Principe:
+   * Les mailles de la surface maitre et de la surface esclave doivent être orientées
+   de manière à ce que leurs normales soient extérieures (ORIE_PEAU_* et ORIE_COQUE)
+   * L'utilisateur peut choisir le type de normale: MAIT/ESCL/MAIT_ESCL
+   maitre (défaut), esclave, moyenne entre esclave et maitre
+   
+   NB 1: pour l'appariement NODAL, il fuat utiliser la normale ESCLAVE préférentiellement, pour
+   des raisons de respect de l'injectivité de la projection.
+   NB 2: Pour calculer le jeu, en interne du code, les normales sont orientées vers
+   l'intérieur de
+   la maille maitre et vers l'extérieur de la maille esclave  (définition classique du jeu)
+   
+   4/ Définitions plus précises des normales si nécessaire. Que ce soit la normale maitre ou la
+   normale esclave, il est possible de définir un repere particulier. On retrouve ici
+   l'option 'VECT_Y' de la méthode discrète. Elle permet:
+   - de définir un repere dans les cas impossibles (poutre en 3D, mailles POI1 en appariement
+   nodal)
+   - de définir un repere pour eviter certains problèmes de pivots nuls avec le frottement
+   (orientation locale du repère tangent à la surface)
+   On garde toujours la logique pour l'utilisateur qu'il définit la normale EXTERIEURE.
+   L'option 'FIXE' permet de donner une normale fixe. Utile pour les mailles POI1 en nodale
+   et dans le cas HPP.
+   
+   SYNTAXE
+   
+   APPARIEMENT = 'NODAL'/'MAIT_ESCL'  ('NODAL' seulement si METHODE='DISCRETE')
+   NORMALE     = 'MAIT','ESCL','MAIT_ESCL'
+     * MAIT     : on utilise la normale à la maille maitre (par défaut)
+     * ESCL     : on utilise la normale esclave (calculée forcément par lissage car définie
+   sur un noeud et non une maille)
+     * MAIT_ESCL: moyenne entre normale maitre et normale esclave
+   LISSAGE     = 'OUI', 'NON', lissage des normales
+   
+   VECT_MAIT     = "AUTO","FIXE","VECT_Y" 
+    Normale à utiliser pour les mailles maîtres
+    'AUTO': calculé automatiquement
+    'FIXE': on utilise une normale fixe (donnée par MAIT_FIXE)
+    'VECT_Y': on utilise une normale fixe donnée par la seconde tangente (donné par
+   MAIT_VECT_Y). Utile dans le cas des poutres (la normale varie mais pas la tangente hors plan).
+   
+   VECT_ESCL     = "AUTO","FIXE","VECT_Y" 
+    Normale à utiliser pour les mailles esclves (idem VECT_MAIT)
+   
+   LISSAGE     = 'OUI', 'NON', lissage des normales
+   
+   APPA_TYPE      = 'PROCHE','FIXE',
+     * PROCHE    : on calcule les coord. du noeud apparié par recherche du plus proche (par
+   défaut)
+     * FIXE      : on calcule les coord. du noeud apparié dans une direction fixe donnée par
+   l'utilisateur (APPA_VECT)
+    
+   IMPLEMENTATION
+   
+   * Le code raisonne toujours sur la base du repère tangent, les deux tangentes (ou une en 2D)
+   étant orientées toujours de la même manière.
+   * Pré-calcul (CFCALN). Pour le LISSAGE, NORMALE='MAIT' et NORMALE='MAIT_ESCL', il est
+   nécessaire de
+   pré-calculer les tangentes en chaque noeud (esclave ou maitre suivant option).
+   On utilise pour ça l'algorithme de Newton en projetant le noeud sur sa propre maille. Le 
+   repère tangent obtenu est orthonormalisé (CFORTH)
+   * Appariement. L'appariement se fait en trois temps :
+   1/ Recherche du noeud maitre le plus proche du noeud esclave (MMREND)
+   2/ Recherche de la maille maitre la plus proche par projection sur les mailles
+   attachées au noeud maitre le plus proche (obtenu de 1). Routines CFPROJ.
+   La routine CFPROJ appelle le Newton (MMNEWT avec APPA_TYPE='PROCHE' et MMNEWD avec
+   APPA_TYPE='FIXE')
+   Elle sort:
+   - les coordonnées paramétriques de la projection sur la maille maitre
+   - le repere tangent local 
+   Ensuite, la routine reprojette éventuellement sur la maille sur la projection était en
+   dehors (utilisation de
+   la tolérance TOLE_PROJ_EXT)
+   Pour le choix de la maille maitre, la routine CFCHOI applique l'algorithme classique (on
+   prend la maille
+   maitre la plus proche suivant le jeu)
+   3/ Modification du repere local. CFTANR et MMTANR. Ces deux routines modifient le repere
+   local et choississe
+   la normale ad-hoc (option NORMALE, VECT_MAIT et VECT_ESCL, LISSAGE, options spécifiques
+   pour méthode
+   continue (EXCL_FROT_1, EXCL_PIVOT_NUL, etc).
+   Il n'y a pas de différence entre les deux méthodes (discrète et continue):
+   - récupération des tangentes maitres (après projection)
+   - récupération des tangentes esclaves si necessaires (pré-calculées dans CFCALN)
+   - re-calcul des tangentes maitres si lissage
+   - calcul de la normale résultante (MAIT/ESCL/MAIT_ESCL)
+   - application des options FIXE et VECT_Y
+   - recalcul final du repère tangent TAU1,TAU2
+   A partir de ce repère tangent, on peut calculer la normale
+   * CFNORM: calcule la normale EXTERIEURE à partir de TAU1,TAU2
+   * MMNORM: calcule la normale INTERIEURE à partir de TAU1,TAU2
+   * MMMRON: calcule les tangentes à partir de la normale INTERIEURE
+   
+   Remarques:
+   - GLUTE nécessaire entre discret et continue sur les fonctions de forme du fait
+   que la méthode continue n'utilise pas les FF standards (fiche 11236)
+   routines utilitaire: MMFONF, MMNONF, MMDONF et MM2ONF retourne les bonnes
+   fonctions (et dérivées) de forme suivant discret ou continue.
+   Pour le calcul de TOLE_PROJ_EXT, duplication également nécessaire: MAJUST et CFADJU.
+   - L'ensemble du processus est "commun" (excepté GLUTE précédente) pour tout le 
+   processus de projection/choix de normale.
+   - Plusieurs bugs détectés dans méthode continue
+   1/ DIST_POUT et DIST_COQUE (fiche 11880)
+   2/ L'algorithme de Newton ne pouvait jamais échouer (si ITER>200 mais pas de
+   convergence, il sortait quand même sans rien dire)
+   
+   IMPACTS
+   
+   Fortran - 104 routines modifiées.
+   Fortran - 31 routines ajoutées.
+   Fortran - 40 routines supprimées
+    (qui correspond essentiellement à l'ancienne partie "projection" de la méthode discrète).
+   
+   Python -  SD_CHAR_CONTACT modifiée
+   
+   Catalogue - AFFE_CHAR_MECA modifié
+   Catalogue - C_CONTACT ajouté (catalogue commun qui 
+   facilitera la transition vers AFFE_CONTACT)
+   
+   Cas-tests modifiés (syntaxe):
+   sdnl111c.comm  ssna102a.comm  ssnp502a.comm  ssnv128e.comm  ssnv167a.comm  ssnv504c.comm
+   sdnl111d.comm  ssna102b.comm  ssnp502b.comm  ssnv128f.comm  ssnv167c.comm  ssnv504d.comm
+   sdnv100a.comm  ssna102c.comm  ssnp502c.comm  ssnv128g.comm  ssnv501a.comm  ssnv504e.comm
+   sdnv100b.comm  ssna102e.comm  ssnv104b.comm  ssnv128h.comm  ssnv501b.comm  ssnv504f.comm
+   sdnv103a.comm  ssna105a.comm  ssnv104d.comm  ssnv128i.comm  ssnv501c.comm  ssnv504g.comm
+   sdnv103b.comm  ssna111a.comm  ssnv104f.comm  ssnv128j.comm  ssnv503a.comm  ssnv504h.comm
+   sdnv103c.comm  ssnl107b.comm  ssnv104g.comm  ssnv128k.comm  ssnv503b.comm  ssnv504i.comm
+   sdnv103d.comm  ssnl107d.comm  ssnv104h.comm  ssnv128l.comm  ssnv503c.comm  ssnv504j.comm
+   sdnv103f.comm  ssnl132a.comm  ssnv104i.comm  ssnv128m.comm  ssnv503d.comm  ssnv505a.comm
+   sdnv104a.comm  ssnl132b.comm  ssnv104j.comm  ssnv128n.comm  ssnv503e.comm  ssnv505b.comm
+   sdnv104b.comm  ssnp121b.comm  ssnv127c.comm  ssnv128o.comm  ssnv503f.comm  ssnv505c.comm
+   sdnv104c.comm  ssnp121c.comm  ssnv127d.comm  ssnv128r.comm  ssnv503g.comm  ssnv505e.comm
+   sdnv104d.comm  ssnp501a.comm  ssnv128a.comm  ssnv128t.comm  ssnv503h.comm  ssnv506a.comm
+   sdnv104e.comm  ssnp501b.comm  ssnv128b.comm  ssnv128u.comm  ssnv503i.comm  ssnv506b.comm
+   sdnv105a.comm  ssnp501c.comm  ssnv128c.comm  ssnv128v.comm  ssnv504a.comm  ssnv506c.comm
+   sdnv105c.comm  ssnp501d.comm  ssnv128d.comm  ssnv129d.comm  ssnv504b.comm  zzzz107b.comm
+   
+   IMPACT DOC:
+   
+   U4.44.01: AFFE_CHAR_MECA - création d'une nouvelle doc 'AFFE_CONTACT' et extraction de
+   l'ancienne
+   partie venant d'AFFE_CHAR_MECA. LE contact est désormais autonome pour sa doc U4.
+   R5.03.50: explication de toute la partie projection
+   V6.01.102 - V6.04.104 - V6.04.127 - V6.04.506
+   D4.06.14: doc SD_CHAR_CONTACT
+   
+   VALIDATION
+   183 cas-tests utilisant le contact, modifs de syntaxe
+   
+   3 cas-tests "cassés":
+   - sdnv104a: temps CPU limite
+   - ssnv504g: pbm mémoire dans IMPR_TABLE
+   - ssnv505a: échec du Newton pour la projection (COQUES_3D) !!!!
+   
+   12 cas-tests NOOK:
+   - ssna102a/b/c/e: un léger NOOK sur des valeurs "AUTRE_ASTER"
+   Ces valeurs proviennent de la moyenne de résultats de plusieurs codes.
+   On modifie les tolérances (NB: certains sont "meilleurs").
+   
+   - ssnv104f: léger NOOK sur valeur de non-régression mais resultats analytiques meilleurs
+    OK  SIYY         RELA     5.992 % VALE:-2.9659633028825D+03
+   M31      N291     TOLE     7.000 % REFE:-2.7983000000000D+03
+   6% au lieu de 6.2%
+   
+   - ssnv104i/j: léger NOOK sur deux valeurs "AUTRE_ASTER' mais tous les autres
+   sont "meilleurs', en particulier le ANALYTIQUE
+    OK  SIYY         RELA    11.405 % VALE:-3.1174552029434D+03
+   M5884    N1900    TOLE    15.500 % REFE:-2.7983000000000D+03
+   11.4% au lieu de 15.3%
+   
+   - ssnv127e: léger NOOK sur valeurs analytiques
+   
+   NOOK TPRESS       RELA     5.672 % VALE:-1.8823411991747D+07
+   SIXX              TOLE     5.500 % REFE:-1.7813000000000D+07
+   5.7% au lieu de 5.5%
+   
+   REFERENCE: ANALYTIQUE      
+   NOOK TPRESS       RELA     5.196 % VALE:-1.8738571451659D+07
+   SIXX              TOLE     5.100 % REFE:-1.7813000000000D+07
+   5.2% au lieu de 5.1%
+   
+   NB: on compare des "pressions" de contact via un POST_RELEVE_T sur 
+   surface des SIEF_ELNO_ELGA.
+   
+   - ssnv506c/d: très mauvais (indentation)
+   Normal, on compare des réactions nodales aux noeuds. Or, entre les deux versions,
+   ces valeurs ont bougé du fait de l'appariement (si on projette sur un autre noeud,
+   les vlauers n'ont rien à voir).
+   Si on compare des valeurs globales (déplacements, réaction du massif -> pas de changement
+   notable)
+   La seule valeur analytique qu'on l'on a, c'est le rayon de Hertz/Johnson, difficile à mesurer
+   sur EF.
+   
+   - yyyy106a/b: leger NOOk en non-régression
+   
+   Au final, le vrai cas-test embetant, c'est le ssnv505a qui échoue réellement.
+   Je propose de le laisser cassé pour l'instant (j'ai la solution).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01,R5.03.50,D4.06.14,U2.04.04,V6.01.102,V6.04.104,V6.04.127,V6.04.506
+VALIDATION
+   liste compl? contact
+NB_JOURS_TRAV  : 35.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009896 DU 2006-07-04 13:29:15
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TITRE
+   MN10 - CONTACT - Projection pour les elements quadratiques
+FONCTIONNALITE
+   Voir fiche 11624 pour le détail des développements
+   
+   Branchement de la méthode de projection "continue" (un Newton) sur la méthode discrète.
+   
+   Les premiers résultats (sur 100 cas-tests de la méthode discrète) ne font apparaitre aucun
+   écart entre l'ancienne méthode de projection et la nouvelle sur les éléments linéaires
+   (bonne nouvelle !)
+   Certains cas-tests sont meilleurs en référence analytique (en particulier ceux faisant
+   appel aux éléments quadratiques)
+   Un cas-test est franchement cassé: ssnv505a (COQUES_3D) la projection par Newton échoue.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complxc3xa8te contact
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 31/03/2008 - 15:14:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011502 DU 2007-11-26 08:37:37
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Utilisation de AND et XOR
+FONCTIONNALITE
+   Il semblerait que les fonctions fortran AND et XOR soient des extensions de fortran 77
+   (merci jacques et sa bible de la norme fortran), ce qui fait qu'elles sont inconnues de
+   certains compilateurs, comme g95.
+   
+   On les remplace par les fonctions F77 :
+   AND ---> IAND
+   XOR ---> IEOR
+   
+   Cela concerne deux routines : 
+   bibfor/jeveux/jxdeps.f
+   bibfor/jeveux/jxhcod.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011301 DU 2007-10-01 11:41:57
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Stanley et visualisation aux points de Gauss
+FONCTIONNALITE
+   Sous Stanley, dans le cas ou l'on visualise un champ ELGA avec Salome, on enleve le
+   ECLA_PG qui etait fait (il reste pour la visualisation sous GMSH). On envoie le champ ELGA
+   a Salome et on le visualise sous la forme d'un ScalarBar.
+   
+   A charge à l'utilisateur de creer une 2ieme vue sous Salome pour utiliser le visualisateur
+   Gauss.
+   
+   Dans un deuxieme temps, c'est à dire lorsque l'evolution ser disponible dans le module
+   pylotage, on pourra proposer la visualisation directement avec le visu Gauss.
+   
+   On ferme cette fiche car la 11481 trace la demande d'evolution pylotage + visu Gauss.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011573 DU 2007-12-18 10:15:34
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   Probleme visualisation de la deformee avec STANLEY
+FONCTIONNALITE
+   Cette anomalie concerne uniquement Stanley + Gmsh (pas Salome). Il y avait un probleme
+   depuis que l'on a intégré les mots-clés VECT_2D/3D dans IMPR_RESU format GMSH : depuis
+   Stanley, les champs etaient tous imprimés comme des champs SCALAIRE, ce qui interdisait de
+   visualiser le déformée à partir du champ DEPL.
+   
+   On adopte le fonctionnement suivant :
+    
+   - lorsque l'utilisateur choisi le champ DEPL :
+   
+   . et Composantes / TOUT_CMP, alors on ajoute TYPE_CHAM='VECT_2D' ou 'VECT_3D' à
+   l'IMPR_RESU généré par Stanley (2D ou 3D est determiné par la dimension trouvée dans le
+   DIME du maillage);
+   . et une ou plusieurs composantes (mais pas TOUT_CMP), alors on ajoute TYPE_CHAM='SCALAIRE'.
+   
+   
+   - lorsque l'utilisateur imprime un champ en cochant le bouton "Sur déformé", alors on
+   ajoute le champ DEPL avec le mot-clé VECT_2D ou VECT_3D
+   
+   AA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011557 DU 2007-12-14 15:10:51
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   En NEW9.2.1, le cas-test zzzz159c s'arrete en ARRET_ANORMAL sur Calibre
+FONCTIONNALITE
+   Le cas-test en question fait du macr_recal. Un des calculs esclaves a du s'arreter pour
+   une raison indeterminable (probleme d'exploitation, mémoire, etc..). Ce test repasse a
+   nouveau donc on ferme.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz159c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011500 DU 2007-11-26 08:14:20
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Stanley en mode validation
+FONCTIONNALITE
+   sans suite car deja rentré en 9.1.22 (11501)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011485 DU 2007-11-21 09:13:07
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Stanley et mode Validation
+FONCTIONNALITE
+   Une coquille s'est glissée lors de la derniere restitution, bien cachée derriere un
+   try/except. Ca ne concerne que le mode Validation (ecriture des md5sum pour la recette
+   graphique).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   stanley
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 01/04/2008 - 18:44:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011866 DU 2008-03-21 11:04:33
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.15, le cas-test sdll123a est NOOK sur Calibre et Rocks.
+FONCTIONNALITE
+   Les valeurs propres correspondants à un mode de corps rigide ne sont pas exactement
+   nulles. Or lorsque j'ai concocté le cas test sdll123a, j'ai commis l'erreur de ne pas être
+   assez tolérant pour les exclure.
+   Résultat : alors que la Bulle numérote correctement les modes (en excluant les modes de
+   corps rigide) et les valeurs de TEST_TABLE correspondent aux modes réellement testés, sur
+   les machines CALIBRE et ROCKS, les numéros des modes sont décalés par rapport aux valeurs
+   de test. Conséquence : des NOOK sur ces dernières plateformes.
+   Je corrige.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll123a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011867 DU 2008-03-21 11:13:11
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.15, le cas-test sdll140a s'arrete anormalement sur Bull, Calibre et Rocks.
+FONCTIONNALITE
+   Pour permettre le calcul de l'option MECA_GYRO dans MACRO_MATR_ASSE, j'ai ajouté le mot
+   clef CHARGE à cette option dans le catalogue de CALC_MATR_ELEM. Mais j'ai été distrait et
+   je l'ai spécifié comme mot clef obligatoire alors qu'il n'est que falcultatif (on ne
+   plante pas s'il est introduit mais il n'est pas utile).
+   Je corrige et répare le test SDLL140a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SDLL140a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 01/04/2008 - 18:50:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011644 DU 2008-01-15 16:11:31
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Petites evolutions dans LIRE_RESU format MED
+FONCTIONNALITE
+   Lors de la lecture d'un champ aux points de Gauss au format MED, on vérifie la cohérence
+   entre les points de Gauss tels qu'ils sont définis dans le fichier MED et dans Aster.
+   
+   Avant : si le nombre de points de Gauss "MED" était différent du nombre de points de Gauss
+   "Aster" ==> erreur <F>
+   
+   Maintenant : on émet simplement une alarme MED_2 et on ne remplit pas le champ sur les
+   éléments en cause.
+   
+   !    -> Le nombre de points de Gauss est différent entre le fichier med et Aster:
+   !        - nombre de points de Gauss contenu dans le fichier MED : 20
+   !        - nombre de points de Gauss défini dans Aster           : 4
+   !  
+   !       Visiblement les éléments finis décrits dans le fichier MED ne sont pas les
+   !       mêmes que dans Code_Aster.
+   !       Si vous avez choisi PROL_ZERO='OUI', le champ sera initialisé à zéro sur
+   !       ces éléments.
+   !     Sinon, le champ ne sera pas initialisé (NaN, not a number). C'est le comportement
+   par défaut.
+   !  
+   !    -> Risque & Conseil :
+   !        - Choisissez des éléments finis dans Aster et dans le code tiers
+   
+   
+   On aura donc des NaN là où le champ n'est pas défini. On ajoute donc le mot-clé PROL_ZERO
+   afin de laisser l'utilisateur mettre des valeurs nulles s'il le désire.
+   PROL_ZERO = 'NON' (défaut), on aura des NaN
+   PROL_ZERO = 'OUI', on met des 0.
+   
+   
+   Remarques : 
+   - dans CREA_CHAMP/PROJ_CHAMP, PROL_ZERO='NON' conduit à une erreur fatale, pas ici.
+   - PROL_ZERO (NaN ou 0.) s'applique aussi aux champs ELNO.
+   - on ajoute PROL_ZERO='OUI' dans zzzz161a (pourtant on fait du Aster-Aster).
+   
+   
+   
+   Détail : PROL_ZERO est utilisé dans le CESCEL dans lrceme.f.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.02.01, U7.02.02
+VALIDATION
+   astout LIRE_RESU
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011895 DU 2008-03-31 07:38:15
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pouvoir supprimer l'?ssion de certaines alarmes (pour mieux voir les autres !)
+FONCTIONNALITE
+   Permettre à l'utilisateur de supprimer l'affichage de certaines alarmes (dont il connait
+   l'origine) afin d'identifier plus facilement les autres alarmes qui pourraient apparaitre.
+   
+   Dans DEBUT et POURSUITE : nouveau mot-clé IGNORE_ALARME = ('MED_2',...)
+   
+   
+   Dans FIN, on affiche systématiquement un tableau récapitulatif des alarmes émises pendant
+   l'exécution (et le nombre d'occurences).
+   Les alarmes ignorées par l'utilisateur sont précédées de '*' pour les distinguer (et elles
+   apparaissent même si elles n'ont pas été émises).
+   
+      !--------------------------------------------------------------------!
+      !   Liste des alarmes émises lors de l'exécution du calcul.          !
+      !                                                                    !
+      !   Les alarmes que vous avez choisies d'ignorer sont précédées de * !
+      !   Nombre d'occurrences pour chacune des alarmes :                  !
+      !       *MED_10               émises  106 fois                       !
+      !       *MED_2                émises    0 fois                       !
+      !        SUPERVIS_1           émises    1 fois                       !
+      !       *SUPERVIS_40          émises    1 fois                       !
+      !--------------------------------------------------------------------!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.11.01, U4.11.03
+VALIDATION
+   test manuel
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011892 DU 2008-03-31 06:27:10
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.17, le cas-test ssna301b s'arrete par manque de temps CPU sur Bull et Rocks.
+FONCTIONNALITE
+   Le .para est à 70 s - 10 s de réserve CPU = 60 s. Or le test tourne en environ 55 s.
+   On augmente le .para à 120 s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssna301b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011894 DU 2008-03-31 06:37:51
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.17, le cas-test sslv135g est NOOK sur Rocks.
+FONCTIONNALITE
+   REFERENCE: NON_REGRESSION   VERSION: 9.02.15         
+   NOOK EPNMAX1      RELA    18.950 % VALE:-1.2515042839244D-20
+            N214     TOLE  1.00E-08 % REFE:-1.0521254211368D-20
+   
+   
+   => il faut tester les valeurs en absolu et non en relatif !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv135g
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 01/04/2008 - 10:14:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011804 DU 2008-02-25 15:33:58
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   MN08 - arret propre STAT_NON_LINE si transitoire varicom plus court
+FONCTIONNALITE
+   Lors d'un calcul via STAT_NON_LINE, si l'intervalle de temps sur lequel est définie une
+   variable de commande est plus court que celui sur lequel le calcul mécanique est réalisé,
+   le calcul s'arrête brutalement sans que la base soit sauvegardée.
+   
+   L'objectif est sauvegarder la base avec les pas de temps déjà convergés. 
+   
+   Pour ce faire, il faut:
+   - utiliser le code retour IER de RSINCH au niveau de VRCIN1 et le traduire en CODRET tel que:
+   pour chaque résultat 
+   CODRET = 'OK' si on a trouvé 
+   CODRET = 'NO' sinon
+   - remonter CODRET au niveau de NMVCLE puis de NMFCOM et enfin de l'OP0070.
+   
+   Dans l'OP0070, une nouvelle variable LOGICAL ECHVAR est introduite.
+   En sortie de NMFCOM, si CODRET ='NO', alors ECHVAR=.TRUE. et sauter en 1000 dans OP0070.
+   Dans NMERRO, ajouter le nouveau type d'exception ('Echec lors de l'interpolation de la
+   variable de commande')
+   
+   La validation a été réalisé en:
+   modifiant le cas-test yyyy101a afin de valider l'exception.
+   
+   Les routines fortran modifiées sont : 
+   cakg3d.f mebilg.f memam2.f meriro.f nmvcle.f op0106.f peweib.f 
+   mbilgl.f mecagl.f memame.f nmdete.f nmvcom.f op0175.f rsinch.f 
+   me2mme.f mecalg.f memokg.f nmerro.f op0026.f peecin.f vechde.f 
+   meacmv.f mecalm.f merifs.f nmfcom.f op0046.f peepot.f vrcin1.f 
+   meamme.f meficg.f merime.f nminit.f op0070.f peingl.f vrcins.f 
+   
+   Le python modifié est : 
+   Mecanonline.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   yyyy101a modifixc3xa9
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 31/03/2008 - 15:14:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011461 DU 2007-11-14 08:22:41
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   interversion des champs de dxc3xa9placement nominal et sensible pour 4 options
+FONCTIONNALITE
+   Problème:
+   ---------
+                                                                                            
+                           
+   Pour les 4 options :
+        efge_elno_sens.cata
+        sief_elga_sens.cata
+        sigm_elno_sens.cata
+        sipo_elno_sens.cata
+                                                                                            
+                           
+   2 champs d'entrée sont de meme nature (déplacement) mais l'un est le champ "nominal" et
+   l'autre est le champ "sensible".
+                                                                                            
+                           
+   Pour cela, dans ces 4 options, 2 paramètres sont définis :
+     PDEPLAR -> champ nominal
+     PDEPSEN -> champ sensible
+                                                                                            
+                           
+   Malheureusement, lors du passage de ces champs à CALCUL.f, une permutation (routine
+   mecalm.f) associe :
+     PDEPSEN -> champ nominal
+     PDEPLAR -> champ sensible
+                                                                                            
+                           
+   Du coup, le fortran des routines te00ij qui réalise ces options :
+     te0022.f  te0023.f  te0086.f  te0142.f
+   devient incompréhensible ...
+                                                                                            
+                           
+                                                                                            
+                           
+   Solution :
+   ----------
+   J'ai modifié les sources des routines te00ij pour qu'ils retrouvent leur "logique"
+   (PDEPSEN -> champ sensible).
+                                                                                            
+                           
+   Puis j'ai voulu "corriger" mecalm.f pour que à l'appel à mecalc.f :
+     CHAMGD -> champ de déplacement nominal
+     CHDESE -> champ de déplacement sensible
+   Malheureusement, c'est plus compliqué que cela et la routine mecalc.f ajoute elle aussi sa
+   "couche" de complexité dans le cas de la sensibilité.
+                                                                                            
+                           
+   Finalement, j'ai préféré ne pas toucher mecalm.f (sauf ajouter un commentaire pour
+   expliquer que la permutation n'est pas un bug mais une "glute" qui est reprise dans mecalc.f).
+   En revanche, je modifie mecalc.f pour permuter PDEPLAR et PDEPSEN.
+                                                                                            
+                           
+   Validation :
+   ------------
+   Suite à cette évolution, les 49 tests suivant sont OK
+                                                                                            
+                           
+     hpla101a  hpla101b  hplp101b  hplp100b  sensd01a  sensd09a  sensd09b
+     sensm01a  sensm02a  sensm03a  sensm06a  sensm06b  sensm08a  senst01a
+     senst02a  senst02b  senst03a  sensd04a  sensd09c  sensd11a  sensd11b
+     sensd11c  sensd11d  sensm12a  sslp101f  sensm07a  sensm11a  senst03b
+     sensd02a  sensd05a  sensd08a  sensd08b  senst04a  sensd03a  sensd09d
+     senst04b  senst05a  sensd06a  sslv110c  sensm09a  sensm04a  sensd10a
+     sensd10b  sensd10c  sensm05a  sensd10d  sensd07a  sensm10a  zzzz121b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   49 tests bien choisis
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008315 DU 2004-12-09 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.4)
+TITRE
+   fiabiliser les saves d'adresses JEVEUX
+FONCTIONNALITE
+   Problème :
+   ----------                                                                               
+            
+                           
+   Si dans le fortran d'une commande Aster, on fait :
+   for i = 1,n
+      création d'une fonction F1
+      évaluation de F1(x)
+      destruction de F1
+   enddo
+                                                                                            
+                           
+   On risque d'obtenir des résultats faux.
+                                                                                            
+                             
+   J'ai pu le vérifier en surchargeant LIRE_MAILLAGE comme ceci :
+                                                                                            
+                           
+   fichier e1.comm
+   ----------------------------------------------------------------
+   #DEBUT(DEBUG=_F(JEVEUX='OUI'))
+   DEBUT(DEBUG=_F(JEVEUX='NON'))
+                                                                                            
+                           
+   F1=DEFI_FONCTION(NOM_PARA='X', VALE=(0.,0.,100.,200.))
+   F2=DEFI_FONCTION(NOM_PARA='X', VALE=(0.,0.,100.,100.))
+                                                                                            
+                           
+   MA=LIRE_MAILLAGE()
+   FIN()
+   ----------------------------------------------------------------
+                                                                                            
+                           
+                                                                                            
+                           
+   fichier op0001.f (LIRE_MAILLAGE)
+   ----------------------------------------------------------------
+         SUBROUTINE OP0001 ( IER )
+         IMPLICIT NONE
+         INTEGER IER ,I ,IER2,J1,J2,K
+         CHARACTER*19 FV
+         CHARACTER*8 KNUM
+         REAL*8 VAL
+                                                                                            
+                           
+         FV='&&OP0001.FONC'
+                                                                                            
+                           
+         DO I=1,6
+   C       -- POUR SE DECALER DANS LA MEMOIRE :
+           CALL CODENT( I , 'D0' , KNUM  )
+           CALL WKVECT('&&OP0001.A'//KNUM,'V V R',100,J1)
+                                                                                            
+                           
+           IF ((I/2)*2.EQ.I) THEN
+             CALL COPISD('FONCTION','V','F1',FV)
+           ELSE
+             CALL COPISD('FONCTION','V','F2',FV)
+           ENDIF
+           CALL FOINTE ( 'F', FV, 1, 'X', 20.D0, VAL, IER2 )
+           WRITE(6,*) 'AJACOT VAL=',VAL
+                                                                                            
+                           
+   C       -- POUR SE DECALER DANS LA MEMOIRE :
+           CALL WKVECT('&&OP0001.B'//KNUM,'V V R',100,J1)
+                                                                                            
+                           
+           CALL DETRSD('FONCTION',FV)
+         ENDDO
+         END
+   ----------------------------------------------------------------
+                                                                                            
+                           
+                                                                                            
+                           
+   On obtient le fichier message suivant :
+   ----------------------------------------------------------------
+      MA=LIRE_MAILLAGE(INFO=1,
+                      VERI_MAIL=_F(APLAT=1.E-3,
+                                   VERIF='OUI'),
+                      UNITE=20,
+                      FORMAT='ASTER',
+                      );
+                                                                                            
+                           
+    AJACOT VAL=   20.0000000000000
+    AJACOT VAL=   20.0000000000000
+    AJACOT VAL=   20.0000000000000
+    AJACOT VAL=   20.0000000000000
+    AJACOT VAL=   20.0000000000000
+    AJACOT VAL=   20.0000000000000
+   ----------------------------------------------------------------
+                                                                                            
+                           
+   Alors que l'on aurait du obtenir une succession de valeurs : 20., 40., 20., 40., ...
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Solution :
+   ----------
+   Ce problème (de programmation incorrecte) est détecté si on utilise le mode "dbgjeveux"
+   d'ASTK.
+   Le code s'arrete dans fointe.f car la zone mémoire dont on a gardé abusivement la trace
+   par des "SAVE" a été remise à "undef" (ce qui provoque une erreur dès que l'on se sert de
+   cette zone mémoire).
+                                                                                            
+                           
+   Proposition d'évolution :
+   -------------------------
+   On met systématiquement à "undef" la zone mémoire qui était occupée par un objet JEVEUX
+   lorsqu'il est détruit ou déplacé sur disque.
+                                                                                            
+                           
+   Routine modifiée : jjlibp.f :
+   110d109
+   <         IF ( IDEBUG .EQ. 1 ) THEN
+   114d112
+   <         ENDIF
+   
+   NEW8 :
+   ------
+   Vu le faible impact de l'évolution (sources et CPU), je propose de la faire aussi en
+   version 8.
+                                                                                            
+                           
+   Remarques :
+   ------------
+   
+   1) Finalement, on ne met pas en oeuvre l'évolution proposée initialement dans la fiche car
+   elle était lourde à mettre en oeuvre pour un gain peu évident à chiffrer : les erreurs que
+   l'on cherchait à détecter étaient "hypothétiques". Y-en-avait-il vraiment dans le code ?
+   
+   2) Grace à cette évolution, j'ai pu détecter 7 tests de la liste restreinte qui se
+   seraient plantés en "dbgjeveux" (2 fiches émises aujourd'hui)
+                                                                                            
+                        
+   3) J'ai vérifié que le sur-cout CPU de cette évolution est négligeable :
+                                                                                            
+                           
+   J'ai fait passer 643 tests de la liste restreinte :
+   A : avant l'évolution
+   B : après mise à NaN lors de la destruction des objets
+   C : après mise à NaN lors de la destruction des objets ou du déplacement sur disque.
+                                                                                            
+                           
+   TEST             A        B      C
+   --------------------------------------
+   hsnv135a        632,98  629,89  633,74
+   wtnl100b        440,3   421,81  437,83
+   yyyy100a        400,64  403,86  418,6
+   feti001a        384,08  375,69  373,28
+   hsnv100a        322,6   320,63  332,27
+   ssnp14a         176,17  185,71  184,53
+   comp005b        116,02  107,23  110,86
+   sdll23a         90,41   90,41   91,48
+   ssnv203a        83,33   83,34   85,73
+   ssnl112e        82,92   83,56   84,39
+   ssna114a        82,73   85,16   87,33
+   demo002a        71,84   71,77   72,22
+   zzzz161a        71,27   70,14   72,83
+   sdls115a        66,38   60,56   61,22
+   wtnv126c        61,94   61,4    64,64
+   wtnv127a        61,42   60,24   63,54
+   sdld21a         58,67   57,28   58,32
+   sdlx01a         56,98   56,01   54,13
+   ssnd102b        50,63   49,78   53,24
+   wtnp118a        49,82   49,69   50,36
+   sdnd103a        47,36   44,13   45,77
+   ssnv186h        47,01   47,51   49,13
+   mumps01a        46,37   46,72   46,84
+   wtnp117b        44,38   44,39   47,91
+   ssnv181a        38      37,74   38,47
+   ssnv167b        37,46   39,34   38,22
+   ssns107a        37,02   36,17   36,64
+   rccm08a         35,77   35,72   35,88
+   ...
+   zzzz106a        2,05    1,52    1,63
+   zzzz129a        2,03    2,25    2,25
+   szlz105a        1,91    1,91    2,07
+   szlz108a        1,85    1,87    2,05
+   --------------------------------------
+   total          9168,06 9096,49 9289,96
+                                                                                            
+                           
+   On constate que le sur-cout CPU de l'évolution est négligeable.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso + liste restreinte
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF demo002a                        abbas M.ABBAS            518      2      1
+ CASTEST MODIF demo003a                        abbas M.ABBAS            201      2      4
+ CASTEST MODIF forma12d                        abbas M.ABBAS            224      2      4
+ CASTEST MODIF sdll123a                       boyere E.BOYERE           272      6      6
+ CASTEST MODIF sdnl111c                        abbas M.ABBAS            261      1      2
+ CASTEST MODIF sdnl111d                        abbas M.ABBAS            151      1      1
+ CASTEST MODIF sdnv100a                        abbas M.ABBAS            383      1      2
+ CASTEST MODIF sdnv100b                        abbas M.ABBAS            282      1      2
+ CASTEST MODIF sdnv103a                        abbas M.ABBAS            209      1      2
+ CASTEST MODIF sdnv103b                        abbas M.ABBAS            403      1      2
+ CASTEST MODIF sdnv103c                        abbas M.ABBAS            238      1      2
+ CASTEST MODIF sdnv103d                        abbas M.ABBAS            247      1      2
+ CASTEST MODIF sdnv103f                        abbas M.ABBAS            266      1      3
+ CASTEST MODIF sdnv104a                        abbas M.ABBAS            223      1      2
+ CASTEST MODIF sdnv104b                        abbas M.ABBAS            208      1      2
+ CASTEST MODIF sdnv104c                        abbas M.ABBAS            247      1      2
+ CASTEST MODIF sdnv104d                        abbas M.ABBAS            226      1      2
+ CASTEST MODIF sdnv104e                        abbas M.ABBAS            229      1      2
+ CASTEST MODIF sdnv105c                        abbas M.ABBAS            978      1      5
+ CASTEST MODIF sslv135g                     courtois M.COURTOIS         926      2      1
+ CASTEST MODIF ssna102a                        abbas M.ABBAS            301      9     18
+ CASTEST MODIF ssna102b                        abbas M.ABBAS            308      2      5
+ CASTEST MODIF ssna102c                        abbas M.ABBAS            311      2      5
+ CASTEST MODIF ssna102e                        abbas M.ABBAS            248      2      5
+ CASTEST MODIF ssna105a                        abbas M.ABBAS            229      1      2
+ CASTEST MODIF ssna111a                        abbas M.ABBAS            215      1      2
+ CASTEST MODIF ssna111b                        abbas M.ABBAS            223      2      1
+ CASTEST MODIF ssna301b                     courtois M.COURTOIS         200      1      1
+ CASTEST MODIF ssnl107b                        abbas M.ABBAS            165      7      3
+ CASTEST MODIF ssnl107c                        abbas M.ABBAS            177      8      3
+ CASTEST MODIF ssnl107d                        abbas M.ABBAS            227      7      3
+ CASTEST MODIF ssnl132a                        abbas M.ABBAS            913      7      3
+ CASTEST MODIF ssnl132b                        abbas M.ABBAS            962      8      3
+ CASTEST MODIF ssnp121b                        abbas M.ABBAS            163      2      4
+ CASTEST MODIF ssnp121c                        abbas M.ABBAS            165      1      2
+ CASTEST MODIF ssnp501a                        abbas M.ABBAS            252      1      2
+ CASTEST MODIF ssnp501b                        abbas M.ABBAS            248      1      2
+ CASTEST MODIF ssnp501c                        abbas M.ABBAS            241      2      3
+ CASTEST MODIF ssnp501d                        abbas M.ABBAS            256      1      2
+ CASTEST MODIF ssnp502a                        abbas M.ABBAS            255      1      2
+ CASTEST MODIF ssnp502b                        abbas M.ABBAS            256      1      2
+ CASTEST MODIF ssnp502c                        abbas M.ABBAS            248      2      3
+ CASTEST MODIF ssnv104b                        abbas M.ABBAS            476      8     13
+ CASTEST MODIF ssnv104d                        abbas M.ABBAS            488      6     13
+ CASTEST MODIF ssnv104f                        abbas M.ABBAS            510     14     24
+ CASTEST MODIF ssnv104g                        abbas M.ABBAS            497      1      5
+ CASTEST MODIF ssnv104h                        abbas M.ABBAS            291      2      7
+ CASTEST MODIF ssnv104i                        abbas M.ABBAS            366      5      7
+ CASTEST MODIF ssnv104j                        abbas M.ABBAS            370      4      5
+ CASTEST MODIF ssnv127b                        abbas M.ABBAS            426      2      1
+ CASTEST MODIF ssnv127c                        abbas M.ABBAS            437      2      3
+ CASTEST MODIF ssnv127d                        abbas M.ABBAS            431      2      3
+ CASTEST MODIF ssnv127e                        abbas M.ABBAS            426     15     16
+ CASTEST MODIF ssnv128a                        abbas M.ABBAS            462      3      8
+ CASTEST MODIF ssnv128b                        abbas M.ABBAS            430      3      8
+ CASTEST MODIF ssnv128c                        abbas M.ABBAS            430      3      9
+ CASTEST MODIF ssnv128d                        abbas M.ABBAS            436      4     10
+ CASTEST MODIF ssnv128e                        abbas M.ABBAS            397      4     11
+ CASTEST MODIF ssnv128f                        abbas M.ABBAS            413      3     13
+ CASTEST MODIF ssnv128g                        abbas M.ABBAS            275      4     12
+ CASTEST MODIF ssnv128h                        abbas M.ABBAS            393      3     12
+ CASTEST MODIF ssnv128i                        abbas M.ABBAS            414      4     11
+ CASTEST MODIF ssnv128j                        abbas M.ABBAS            394      3     11
+ CASTEST MODIF ssnv128k                        abbas M.ABBAS            288      3     11
+ CASTEST MODIF ssnv128l                        abbas M.ABBAS            253      5      8
+ CASTEST MODIF ssnv128m                        abbas M.ABBAS            295      1      2
+ CASTEST MODIF ssnv128n                        abbas M.ABBAS            228      1      2
+ CASTEST MODIF ssnv128o                        abbas M.ABBAS            262      2      6
+ CASTEST MODIF ssnv128q                        abbas M.ABBAS            213      2      2
+ CASTEST MODIF ssnv128r                        abbas M.ABBAS            158      1      2
+ CASTEST MODIF ssnv128t                        abbas M.ABBAS            201      2      4
+ CASTEST MODIF ssnv128u                        abbas M.ABBAS            225      2      4
+ CASTEST MODIF ssnv128v                        abbas M.ABBAS            202      2      4
+ CASTEST MODIF ssnv129d                        abbas M.ABBAS            199      1      2
+ CASTEST MODIF ssnv167a                        abbas M.ABBAS            175      1      2
+ CASTEST MODIF ssnv167b                        abbas M.ABBAS            260      1      2
+ CASTEST MODIF ssnv167c                        abbas M.ABBAS            268      1      3
+ CASTEST MODIF ssnv182a                        abbas M.ABBAS            268      2      2
+ CASTEST MODIF ssnv501a                        abbas M.ABBAS            403      1      5
+ CASTEST MODIF ssnv501b                        abbas M.ABBAS            350      5      9
+ CASTEST MODIF ssnv501c                        abbas M.ABBAS            409      1      3
+ CASTEST MODIF ssnv503a                        abbas M.ABBAS            412      2      4
+ CASTEST MODIF ssnv503b                        abbas M.ABBAS            426      2      4
+ CASTEST MODIF ssnv503c                        abbas M.ABBAS            428      2      4
+ CASTEST MODIF ssnv503d                        abbas M.ABBAS            425      2      4
+ CASTEST MODIF ssnv503e                        abbas M.ABBAS            562      3      5
+ CASTEST MODIF ssnv503f                        abbas M.ABBAS            541      4      3
+ CASTEST MODIF ssnv503g                        abbas M.ABBAS            562      3      5
+ CASTEST MODIF ssnv503h                        abbas M.ABBAS            401      2      3
+ CASTEST MODIF ssnv503i                        abbas M.ABBAS            559      1      3
+ CASTEST MODIF ssnv504a                        abbas M.ABBAS            305      5     17
+ CASTEST MODIF ssnv504b                        abbas M.ABBAS            267      3     11
+ CASTEST MODIF ssnv504c                        abbas M.ABBAS            217      2      8
+ CASTEST MODIF ssnv504d                        abbas M.ABBAS            296      1      3
+ CASTEST MODIF ssnv504e                        abbas M.ABBAS            238      3     11
+ CASTEST MODIF ssnv504f                        abbas M.ABBAS            282      3      6
+ CASTEST MODIF ssnv504g                        abbas M.ABBAS            279      7     32
+ CASTEST MODIF ssnv504h                        abbas M.ABBAS            231      1      2
+ CASTEST MODIF ssnv504i                        abbas M.ABBAS            211      1      3
+ CASTEST MODIF ssnv504j                        abbas M.ABBAS            267      1      3
+ CASTEST MODIF ssnv505b                        abbas M.ABBAS            182      1      2
+ CASTEST MODIF ssnv505c                        abbas M.ABBAS            184      2      5
+ CASTEST MODIF ssnv505e                        abbas M.ABBAS            184      1      3
+ CASTEST MODIF ssnv505f                        abbas M.ABBAS            290      5      3
+ CASTEST MODIF ssnv505g                        abbas M.ABBAS            247      8      5
+ CASTEST MODIF ssnv505h                        abbas M.ABBAS            460     15      8
+ CASTEST MODIF ssnv506a                        abbas M.ABBAS            222      2      6
+ CASTEST MODIF ssnv506b                        abbas M.ABBAS            227      1      2
+ CASTEST MODIF ssnv506c                        abbas M.ABBAS            220      4     14
+ CASTEST MODIF ssnv506d                        abbas M.ABBAS            227      4     36
+ CASTEST MODIF yyyy106a                        abbas M.ABBAS            656      4      4
+ CASTEST MODIF yyyy106b                        abbas M.ABBAS            650      4      4
+ CASTEST MODIF zzzz107b                        abbas M.ABBAS            138      1      2
+ CASTEST MODIF zzzz161a                     courtois M.COURTOIS         263      3      1
+CATALOPY AJOUT commun/c_contact                abbas M.ABBAS            316    316      0
+CATALOPY AJOUT commun/c_contact_f              abbas M.ABBAS            316    316      0
+CATALOPY MODIF commande/affe_char_meca         abbas M.ABBAS            813      5    289
+CATALOPY MODIF commande/affe_char_meca_f       abbas M.ABBAS            489      6    185
+CATALOPY MODIF commande/calc_matr_elem        boyere E.BOYERE           190      2      2
+CATALOPY MODIF commande/debut               courtois M.COURTOIS          95      9      6
+CATALOPY MODIF commande/lire_champ          courtois M.COURTOIS          66      3      1
+CATALOPY MODIF commande/lire_resu           courtois M.COURTOIS         208      3      1
+CATALOPY MODIF commande/poursuite           courtois M.COURTOIS          88      5      1
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3923     10      4
+ FORTRAN AJOUT algorith/cfadju                 abbas M.ABBAS            247    247      0
+ FORTRAN AJOUT algorith/cfcald                 abbas M.ABBAS            110    110      0
+ FORTRAN AJOUT algorith/cfcaln                 abbas M.ABBAS            269    269      0
+ FORTRAN AJOUT algorith/cfcarm                 abbas M.ABBAS            141    141      0
+ FORTRAN AJOUT algorith/cfcarn                 abbas M.ABBAS            131    131      0
+ FORTRAN AJOUT algorith/cfchno                 abbas M.ABBAS            223    223      0
+ FORTRAN AJOUT algorith/cfcoor                 abbas M.ABBAS            116    116      0
+ FORTRAN AJOUT algorith/cfnord                 abbas M.ABBAS            172    172      0
+ FORTRAN AJOUT algorith/cfnors                 abbas M.ABBAS            150    150      0
+ FORTRAN AJOUT algorith/cforth                 abbas M.ABBAS             75     75      0
+ FORTRAN AJOUT algorith/cfposn                 abbas M.ABBAS            104    104      0
+ FORTRAN AJOUT algorith/cfproj                 abbas M.ABBAS            251    251      0
+ FORTRAN AJOUT algorith/cftanr                 abbas M.ABBAS            228    228      0
+ FORTRAN AJOUT algorith/mm2onf                 abbas M.ABBAS            121    121      0
+ FORTRAN AJOUT algorith/mmcoor                 abbas M.ABBAS             78     78      0
+ FORTRAN AJOUT algorith/mmcpoi                 abbas M.ABBAS            120    120      0
+ FORTRAN AJOUT algorith/mmcpou                 abbas M.ABBAS            113    113      0
+ FORTRAN AJOUT algorith/mmctan                 abbas M.ABBAS            112    112      0
+ FORTRAN AJOUT algorith/mmdonf                 abbas M.ABBAS            123    123      0
+ FORTRAN AJOUT algorith/mmexcr                 abbas M.ABBAS            124    124      0
+ FORTRAN AJOUT algorith/mmfrex                 abbas M.ABBAS            111    111      0
+ FORTRAN AJOUT algorith/mmnonf                 abbas M.ABBAS            100    100      0
+ FORTRAN AJOUT elements/cal2fx                 abbas M.ABBAS            178    178      0
+ FORTRAN AJOUT elements/caldfx                 abbas M.ABBAS            149    149      0
+ FORTRAN AJOUT elements/mmmffm                 abbas M.ABBAS            101    101      0
+ FORTRAN AJOUT elements/mmmron                 abbas M.ABBAS             86     86      0
+ FORTRAN AJOUT modelisa/caracm                 abbas M.ABBAS             91     91      0
+ FORTRAN AJOUT modelisa/cazocg                 abbas M.ABBAS            124    124      0
+ FORTRAN AJOUT modelisa/cazocm                 abbas M.ABBAS            327    327      0
+ FORTRAN AJOUT modelisa/mmusur                 abbas M.ABBAS            102    102      0
+ FORTRAN AJOUT modelisa/normco                 abbas M.ABBAS            125    125      0
+ FORTRAN MODIF algeline/nbnomi                 abbas M.ABBAS             67     25     10
+ FORTRAN MODIF algorith/cakg3d               macocco K.MACOCCO          428      3      2
+ FORTRAN MODIF algorith/callam                 abbas M.ABBAS            130      1      1
+ FORTRAN MODIF algorith/cfaddm                 abbas M.ABBAS            145     46     45
+ FORTRAN MODIF algorith/cfchoi                 abbas M.ABBAS            158     75     51
+ FORTRAN MODIF algorith/cfcoef                 abbas M.ABBAS            144     31     42
+ FORTRAN MODIF algorith/cfcoem                 abbas M.ABBAS            167     33     33
+ FORTRAN MODIF algorith/cfcrsd                 abbas M.ABBAS            471     11      8
+ FORTRAN MODIF algorith/cfdisc                 abbas M.ABBAS            228      2      2
+ FORTRAN MODIF algorith/cfdisi                 abbas M.ABBAS            175     14     19
+ FORTRAN MODIF algorith/cfdisr                 abbas M.ABBAS            105      3      1
+ FORTRAN MODIF algorith/cfdist                 abbas M.ABBAS            176     66     43
+ FORTRAN MODIF algorith/cfelsn                 abbas M.ABBAS            113     28     19
+ FORTRAN MODIF algorith/cfgeom                 abbas M.ABBAS            128      2      1
+ FORTRAN MODIF algorith/cfimp1                 abbas M.ABBAS            199      8      4
+ FORTRAN MODIF algorith/cfimp2                 abbas M.ABBAS            197      9      4
+ FORTRAN MODIF algorith/cfimp3                 abbas M.ABBAS            170     10      8
+ FORTRAN MODIF algorith/cfimp4                 abbas M.ABBAS            623     59     38
+ FORTRAN MODIF algorith/cfimpd                 abbas M.ABBAS            105      1      1
+ FORTRAN MODIF algorith/cfimpe                 abbas M.ABBAS            124      1      1
+ FORTRAN MODIF algorith/cfinit                 abbas M.ABBAS            184      2      1
+ FORTRAN MODIF algorith/cfnewj                 abbas M.ABBAS             56     13     10
+ FORTRAN MODIF algorith/cfnorm                 abbas M.ABBAS             61     21    169
+ FORTRAN MODIF algorith/cfparm                 abbas M.ABBAS             93     26     25
+ FORTRAN MODIF algorith/cfparn                 abbas M.ABBAS             92     32     28
+ FORTRAN MODIF algorith/cfreli                 abbas M.ABBAS            162     40     86
+ FORTRAN MODIF algorith/cfsupm                 abbas M.ABBAS            135     28     14
+ FORTRAN MODIF algorith/chmano                 abbas M.ABBAS            257     95    105
+ FORTRAN MODIF algorith/conori              courtois M.COURTOIS         413      2      2
+ FORTRAN MODIF algorith/copnor                 abbas M.ABBAS            136     54     45
+ FORTRAN MODIF algorith/majusu                 abbas M.ABBAS            416     31     25
+ FORTRAN MODIF algorith/mappar                 abbas M.ABBAS            389    102     89
+ FORTRAN MODIF algorith/mcopco                 abbas M.ABBAS            115      1      1
+ FORTRAN MODIF algorith/meacmv               macocco K.MACOCCO          466      3      2
+ FORTRAN MODIF algorith/memokg               macocco K.MACOCCO          243      3      2
+ FORTRAN MODIF algorith/misazl                 abbas M.ABBAS            158    104     98
+ FORTRAN MODIF algorith/mmacon                 abbas M.ABBAS            145      7     49
+ FORTRAN MODIF algorith/mmcart                 abbas M.ABBAS            259      1      1
+ FORTRAN MODIF algorith/mmelel                 abbas M.ABBAS            137      1      1
+ FORTRAN MODIF algorith/mmelin                 abbas M.ABBAS            128      3      8
+ FORTRAN MODIF algorith/mmelty                 abbas M.ABBAS            146     44     22
+ FORTRAN MODIF algorith/mmfond                 abbas M.ABBAS            303      8      8
+ FORTRAN MODIF algorith/mmfonf                 abbas M.ABBAS             74     16     21
+ FORTRAN MODIF algorith/mmimp1                 abbas M.ABBAS            176     16      7
+ FORTRAN MODIF algorith/mmimp2                 abbas M.ABBAS            144      7      1
+ FORTRAN MODIF algorith/mmimp3                 abbas M.ABBAS            158      1      3
+ FORTRAN MODIF algorith/mmimp4                 abbas M.ABBAS            182      1      1
+ FORTRAN MODIF algorith/mminfp                 abbas M.ABBAS            432    136     58
+ FORTRAN MODIF algorith/mmjeux                 abbas M.ABBAS             89     34     29
+ FORTRAN MODIF algorith/mmligr                 abbas M.ABBAS            306      1      1
+ FORTRAN MODIF algorith/mmmbca                 abbas M.ABBAS            379     29     14
+ FORTRAN MODIF algorith/mmmres                 abbas M.ABBAS            972     22     22
+ FORTRAN MODIF algorith/mmnewd                 abbas M.ABBAS            221      9     14
+ FORTRAN MODIF algorith/mmnewt                 abbas M.ABBAS            288     61     16
+ FORTRAN MODIF algorith/mmnoex                 abbas M.ABBAS             94      2      2
+ FORTRAN MODIF algorith/mmproj                 abbas M.ABBAS            103      9     26
+ FORTRAN MODIF algorith/mmrema                 abbas M.ABBAS            102     28    154
+ FORTRAN MODIF algorith/mmrend                 abbas M.ABBAS            133     20     23
+ FORTRAN MODIF algorith/mmtang                 abbas M.ABBAS             72      1      1
+ FORTRAN MODIF algorith/mmtann                 abbas M.ABBAS             70     21     16
+ FORTRAN MODIF algorith/mmtanr                 abbas M.ABBAS            154     87     75
+ FORTRAN MODIF algorith/mmtgex                 abbas M.ABBAS            173     29     34
+ FORTRAN MODIF algorith/mmtole                 abbas M.ABBAS             88     14     16
+ FORTRAN MODIF algorith/nmdete               macocco K.MACOCCO          114      3      2
+ FORTRAN MODIF algorith/nmerro               macocco K.MACOCCO          102      7      3
+ FORTRAN MODIF algorith/nmfcom               macocco K.MACOCCO          108      7      5
+ FORTRAN MODIF algorith/nminit               macocco K.MACOCCO          357      8      7
+ FORTRAN MODIF algorith/nmmajd                 abbas M.ABBAS            157      7      1
+ FORTRAN MODIF algorith/nmtble                 abbas M.ABBAS            203      3      2
+ FORTRAN MODIF algorith/nmvcle               macocco K.MACOCCO          102      6      3
+ FORTRAN MODIF algorith/nmvcom               macocco K.MACOCCO           96      6      4
+ FORTRAN MODIF algorith/op0046               macocco K.MACOCCO          264      3      2
+ FORTRAN MODIF algorith/op0070               macocco K.MACOCCO          629     11      4
+ FORTRAN MODIF algorith/reacco                 abbas M.ABBAS             98      3      4
+ FORTRAN MODIF algorith/rechco                 abbas M.ABBAS            315     33     35
+ FORTRAN MODIF algorith/rechme                 abbas M.ABBAS            103      1      2
+ FORTRAN MODIF algorith/rechmn                 abbas M.ABBAS            198     40     97
+ FORTRAN MODIF algorith/rechno                 abbas M.ABBAS            285     94    159
+ FORTRAN MODIF algorith/redcex                 abbas M.ABBAS            230      1      1
+ FORTRAN MODIF algorith/rednex                 abbas M.ABBAS            206      1      1
+ FORTRAN MODIF algorith/restco                 abbas M.ABBAS            142      2      2
+ FORTRAN MODIF algorith/vechde               macocco K.MACOCCO          547      3      2
+ FORTRAN MODIF algorith/xappar                 abbas M.ABBAS            281    149    133
+ FORTRAN MODIF algorith/xmiszl                 abbas M.ABBAS            164     94     81
+ FORTRAN MODIF algorith/xmrema                 abbas M.ABBAS            288     83     51
+ FORTRAN MODIF calculel/mbilgl               macocco K.MACOCCO          379      4      3
+ FORTRAN MODIF calculel/me2mme               macocco K.MACOCCO          601      4      3
+ FORTRAN MODIF calculel/meamme               macocco K.MACOCCO          254      3      2
+ FORTRAN MODIF calculel/mebilg               macocco K.MACOCCO          246      4      3
+ FORTRAN MODIF calculel/mecagl               macocco K.MACOCCO          377      3      2
+ FORTRAN MODIF calculel/mecalc                pellet J.PELLET           544     19      7
+ FORTRAN MODIF calculel/mecalg               macocco K.MACOCCO          444      3      2
+ FORTRAN MODIF calculel/mecalm               macocco K.MACOCCO         2431     17     12
+ FORTRAN MODIF calculel/meceuc                pellet J.PELLET           273    120    136
+ FORTRAN MODIF calculel/meficg               macocco K.MACOCCO          429      3      2
+ FORTRAN MODIF calculel/memam2               macocco K.MACOCCO          140      3      2
+ FORTRAN MODIF calculel/memame               macocco K.MACOCCO          145      3      2
+ FORTRAN MODIF calculel/merifs               macocco K.MACOCCO          142      3      2
+ FORTRAN MODIF calculel/merime               macocco K.MACOCCO          189      3      2
+ FORTRAN MODIF calculel/meriro               macocco K.MACOCCO          141      3      2
+ FORTRAN MODIF calculel/op0026               macocco K.MACOCCO          280      4      3
+ FORTRAN MODIF calculel/op0175               macocco K.MACOCCO          556      3      2
+ FORTRAN MODIF calculel/vrcin1               macocco K.MACOCCO          297     14      3
+ FORTRAN MODIF calculel/vrcins               macocco K.MACOCCO          217      6      3
+ FORTRAN MODIF elements/calffx                 abbas M.ABBAS            112     79     81
+ FORTRAN MODIF elements/majust                 abbas M.ABBAS             96      9      7
+ FORTRAN MODIF elements/mmmffd                 abbas M.ABBAS             75     27    318
+ FORTRAN MODIF elements/mmmjac                 abbas M.ABBAS            185     13     12
+ FORTRAN MODIF elements/mmnorm                 abbas M.ABBAS             63     15     14
+ FORTRAN MODIF elements/te0022                pellet J.PELLET           138     12     17
+ FORTRAN MODIF elements/te0023                pellet J.PELLET           148     15     29
+ FORTRAN MODIF elements/te0086                pellet J.PELLET           169     15     28
+ FORTRAN MODIF elements/te0142                pellet J.PELLET           239      3      3
+ FORTRAN MODIF elements/te0363                 abbas M.ABBAS            396     16     13
+ FORTRAN MODIF elements/te0364                 abbas M.ABBAS            393     12      8
+ FORTRAN MODIF elements/te0365                 abbas M.ABBAS            362     12      9
+ FORTRAN MODIF elements/te0366                 abbas M.ABBAS            366     14     13
+ FORTRAN MODIF elements/te0367                 abbas M.ABBAS            423     17     15
+ FORTRAN MODIF jeveux/jjlibp                  pellet J.PELLET           118      1      3
+ FORTRAN MODIF jeveux/jxdeps                  assire A.ASSIRE            66      5      5
+ FORTRAN MODIF jeveux/jxhcod                  assire A.ASSIRE            38      2      2
+ FORTRAN MODIF modelisa/cacoco                 abbas M.ABBAS            192     42     33
+ FORTRAN MODIF modelisa/capoco                 abbas M.ABBAS            203     55     41
+ FORTRAN MODIF modelisa/caracc                 abbas M.ABBAS             85      7     25
+ FORTRAN MODIF modelisa/caracd                 abbas M.ABBAS             81      7     33
+ FORTRAN MODIF modelisa/caraco                 abbas M.ABBAS             99      1      1
+ FORTRAN MODIF modelisa/cazocc                 abbas M.ABBAS            468     22    110
+ FORTRAN MODIF modelisa/cazocd                 abbas M.ABBAS            278     10    223
+ FORTRAN MODIF modelisa/cazoco                 abbas M.ABBAS            190     15      6
+ FORTRAN MODIF modelisa/cazocv                 abbas M.ABBAS            115      1      1
+ FORTRAN MODIF modelisa/cfmmvd                 abbas M.ABBAS            105     12      7
+ FORTRAN MODIF modelisa/cfmxsd                 abbas M.ABBAS             55      3      1
+ FORTRAN MODIF modelisa/chveno                 abbas M.ABBAS            397     10     48
+ FORTRAN MODIF modelisa/limaco                 abbas M.ABBAS            209      5      1
+ FORTRAN MODIF modelisa/surfc1                 abbas M.ABBAS            170     46    181
+ FORTRAN MODIF modelisa/surfc2                 abbas M.ABBAS            280     47    153
+ FORTRAN MODIF modelisa/surfc3                 abbas M.ABBAS            185      1      1
+ FORTRAN MODIF modelisa/surfcl                 abbas M.ABBAS            474    130     35
+ FORTRAN MODIF modelisa/surfco                 abbas M.ABBAS            104      1      1
+ FORTRAN MODIF prepost/lrceme               courtois M.COURTOIS         254      5      3
+ FORTRAN MODIF prepost/lrchme               courtois M.COURTOIS         121      6      4
+ FORTRAN MODIF prepost/lrmpga               courtois M.COURTOIS         316      7      2
+ FORTRAN MODIF prepost/lrvcpg               courtois M.COURTOIS         269     18     16
+ FORTRAN MODIF prepost/op0106                macocco K.MACOCCO          811      3      2
+ FORTRAN MODIF supervis/op9999              courtois M.COURTOIS         153      5      4
+ FORTRAN MODIF utilitai/op0150              courtois M.COURTOIS        1024     20      4
+ FORTRAN MODIF utilitai/op0192              courtois M.COURTOIS         269     12      4
+ FORTRAN MODIF utilitai/peecin               macocco K.MACOCCO          380      3      2
+ FORTRAN MODIF utilitai/peepot               macocco K.MACOCCO          332      3      2
+ FORTRAN MODIF utilitai/peingl               macocco K.MACOCCO          701      3      2
+ FORTRAN MODIF utilitai/peweib               macocco K.MACOCCO          441      3      2
+ FORTRAN MODIF utilitai/rsinch               macocco K.MACOCCO          258      4      2
+ FORTRAN SUPPR algorith/carama                 abbas M.ABBAS            179      0    179
+ FORTRAN SUPPR algorith/caranm                 abbas M.ABBAS            123      0    123
+ FORTRAN SUPPR algorith/carano                 abbas M.ABBAS            111      0    111
+ FORTRAN SUPPR algorith/cfimpa                 abbas M.ABBAS             56      0     56
+ FORTRAN SUPPR algorith/cflisn                 abbas M.ABBAS            170      0    170
+ FORTRAN SUPPR algorith/cfliss                 abbas M.ABBAS            102      0    102
+ FORTRAN SUPPR algorith/cfmoyn                 abbas M.ABBAS             88      0     88
+ FORTRAN SUPPR algorith/cfnoma                 abbas M.ABBAS             93      0     93
+ FORTRAN SUPPR algorith/cfnose                 abbas M.ABBAS             86      0     86
+ FORTRAN SUPPR algorith/cfnotr                 abbas M.ABBAS             63      0     63
+ FORTRAN SUPPR algorith/cfoldj                 abbas M.ABBAS             54      0     54
+ FORTRAN SUPPR algorith/cfsupp                 abbas M.ABBAS            123      0    123
+ FORTRAN SUPPR algorith/cftang                 abbas M.ABBAS            137      0    137
+ FORTRAN SUPPR algorith/lissag                 abbas M.ABBAS            307      0    307
+ FORTRAN SUPPR algorith/mmerro                 abbas M.ABBAS            158      0    158
+ FORTRAN SUPPR algorith/mmexcl                 abbas M.ABBAS            132      0    132
+ FORTRAN SUPPR algorith/prdima                 abbas M.ABBAS             97      0     97
+ FORTRAN SUPPR algorith/prdiqu                 abbas M.ABBAS            135      0    135
+ FORTRAN SUPPR algorith/prdise                 abbas M.ABBAS             56      0     56
+ FORTRAN SUPPR algorith/prditr                 abbas M.ABBAS             99      0     99
+ FORTRAN SUPPR algorith/projec                 abbas M.ABBAS            187      0    187
+ FORTRAN SUPPR algorith/projen                 abbas M.ABBAS            145      0    145
+ FORTRAN SUPPR algorith/projin                 abbas M.ABBAS            162      0    162
+ FORTRAN SUPPR algorith/projl1                 abbas M.ABBAS            107      0    107
+ FORTRAN SUPPR algorith/projl2                 abbas M.ABBAS            169      0    169
+ FORTRAN SUPPR algorith/projli                 abbas M.ABBAS             74      0     74
+ FORTRAN SUPPR algorith/projma                 abbas M.ABBAS            193      0    193
+ FORTRAN SUPPR algorith/projno                 abbas M.ABBAS             81      0     81
+ FORTRAN SUPPR algorith/projqc                 abbas M.ABBAS            147      0    147
+ FORTRAN SUPPR algorith/projqd                 abbas M.ABBAS             74      0     74
+ FORTRAN SUPPR algorith/projqu                 abbas M.ABBAS            349      0    349
+ FORTRAN SUPPR algorith/projse                 abbas M.ABBAS             83      0     83
+ FORTRAN SUPPR algorith/projsq                 abbas M.ABBAS            160      0    160
+ FORTRAN SUPPR algorith/projt1                 abbas M.ABBAS            151      0    151
+ FORTRAN SUPPR algorith/projt2                 abbas M.ABBAS            235      0    235
+ FORTRAN SUPPR algorith/projtr                 abbas M.ABBAS             97      0     97
+ FORTRAN SUPPR algorith/projtt                 abbas M.ABBAS            103      0    103
+ FORTRAN SUPPR algorith/rechp1                 abbas M.ABBAS            119      0    119
+ FORTRAN SUPPR algorith/rechp2                 abbas M.ABBAS            143      0    143
+ FORTRAN SUPPR algorith/typema                 abbas M.ABBAS            116      0    116
+ FORTRAN SUPPR modelisa/mmdist                 abbas M.ABBAS            142      0    142
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         468     16      6
+  PYTHON MODIF Macro/calc_precont_ops         assire A.ASSIRE           459      7      2
+  PYTHON MODIF Messages/contact2               abbas M.ABBAS             39      1      1
+  PYTHON MODIF Messages/contact3               abbas M.ABBAS            252    120     34
+  PYTHON MODIF Messages/contact                abbas M.ABBAS            128     23     52
+  PYTHON MODIF Messages/contactdebg            abbas M.ABBAS            126      1      5
+  PYTHON MODIF Messages/elements               abbas M.ABBAS            335      1      5
+  PYTHON MODIF Messages/mecanonline          macocco K.MACOCCO          136      5      1
+  PYTHON MODIF Messages/med                 courtois M.COURTOIS         470     12      2
+  PYTHON MODIF Messages/modelisa2              abbas M.ABBAS            388      1     13
+  PYTHON MODIF Messages/modelisa3              abbas M.ABBAS            369      1     12
+  PYTHON MODIF Messages/supervis            courtois M.COURTOIS         425     22      1
+  PYTHON MODIF Noyau/N_JDC                  courtois M.COURTOIS         510      4      2
+  PYTHON MODIF SD/sd_char_contact              abbas M.ABBAS            145      7      2
+  PYTHON MODIF SD/sd_char_meca                 abbas M.ABBAS            110      1      1
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3224     95     19
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         586     67     13
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   33        5134      5134             +5134
+ MODIF :  291       90212      3911    5265     -1354
+ SUPPR :   41        5406              5406     -5406
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  365      100752      9045   10671     -1626 

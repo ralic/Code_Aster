@@ -1,0 +1,316 @@
+#& MODIF COMMUN  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+def C_CONTACT() : return FACT(statut='f',max='**',
+           fr="Définit les zones soumises à des conditions de contact unilatéral avec ou sans frottement",
+
+
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="CONTRAINTE",
+                                 into  =("VERIF","CONTRAINTE","LAGRANGIEN","PENALISATION","CONTINUE","GCP","XFEM") ),
+#
+# OPTIONS D'APPARIEMENT
+#
+
+           APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
+                                 into  =("NODAL","MAIT_ESCL")),
+
+           LISSAGE         =SIMP(statut='f',typ='TXM',defaut="NON",
+                                 into  =("OUI","NON")),          
+                             
+           NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
+                                 into  =("MAIT","MAIT_ESCL","ESCL"),),
+                                 
+           VECT_MAIT       =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                 into  =("AUTO","FIXE","VECT_Y")),                      
+
+           b_nmait_fixe     =BLOC(condition = "VECT_MAIT == 'FIXE'",
+             MAIT_FIXE     =SIMP(statut='f',typ='R',min=3,max=3),
+           ),
+
+           b_nmait_vecty    =BLOC(condition = "VECT_MAIT == 'VECT_Y'",
+             MAIT_VECT_Y   =SIMP(statut='f',typ='R',min=3,max=3),
+           ),
+
+           VECT_ESCL       =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                 into  =("AUTO","FIXE","VECT_Y")),                      
+
+           b_nescl_fixe     =BLOC(condition = "VECT_ESCL == 'FIXE'",
+             ESCL_FIXE     =SIMP(statut='f',typ='R',min=3,max=3),
+           ),
+
+           b_nescl_vecty    =BLOC(condition = "VECT_ESCL == 'VECT_Y'",
+             ESCL_VECT_Y   =SIMP(statut='f',typ='R',min=3,max=3),
+           ),
+
+
+           TYPE_APPA       =SIMP(statut='f',typ='TXM',defaut="PROCHE",
+                                 into  =("PROCHE","FIXE")),  
+                                 
+           b_appa_fixe     =BLOC(condition = "TYPE_APPA == 'FIXE'",
+             DIRE_APPA     =SIMP(statut='f',typ='R',min=3,max=3),
+           ),
+                                                                                         
+           DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+           DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+           DIST_MAIT       =SIMP(statut='f',typ='R'),
+           DIST_ESCL       =SIMP(statut='f',typ='R'),           
+
+           b_cara         =BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
+             CARA_ELEM       =SIMP(statut='o',typ=(cara_elem) ),
+           ),
+
+
+           TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),  
+                
+                      
+           b_xfem         =BLOC(condition = "METHODE == 'XFEM' ",
+             FISS_MAIT      = SIMP(statut='o',typ=fiss_xfem,max=1),
+             FISS_ESCL      = SIMP(statut='f',typ=fiss_xfem,max=1),
+             SIGN_MAIT      = SIMP(statut='f',typ='TXM',into=("+","-",) ),
+             SIGN_ESCL      = SIMP(statut='f',typ='TXM',into=("+","-",) ),
+             INTEGRATION    = SIMP(statut='f',typ='TXM',defaut="FPG4",into=("GAUSS","FPG4","FPG6","FPG7",) ),
+             COEF_REGU_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
+             ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut=30),
+             ITER_GEOM_MAXI  =SIMP(statut='f',typ='I',defaut=0),
+
+             CONTACT_INIT   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+             ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="VERSION1",into=("NON","VERSION1","VERSION2" , ) ),
+             COEF_ECHELLE   = SIMP(statut='f',typ='R',defaut=1.E+6),
+             FROTTEMENT     = SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ),
+             GLISSIERE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+             b_frotxfem    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
+               COULOMB        = SIMP(statut='o',typ='R',),
+               ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=2),
+               COEF_REGU_FROT = SIMP(statut='f',typ='R',defaut=100.E+0),
+               SEUIL_INIT     = SIMP(statut='f',typ='R',defaut=0.E+0),
+               ),
+           ),
+
+           b_notxfem         =BLOC(condition = "METHODE != 'XFEM' ",
+                                   regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),),
+             GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+             MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+             GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+             MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+           ),
+
+
+
+           b_verif         =BLOC(condition = "METHODE == 'VERIF' ",
+                                 fr="Paramètres de la méthode sans calcul de contact",
+                STOP_INTERP     =SIMP(statut='f',typ='TXM',defaut="NON",
+                                      into=("OUI","NON")),
+                TOLE_INTERP     =SIMP(statut='f',typ='R',defaut = 0.),
+
+                GROUP_MA_FOND   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           ),
+
+           b_active        =BLOC(condition = "METHODE == 'CONTRAINTE' ",
+                                 fr="Paramètres de la méthode des contraintes actives (contact uniquement)",
+                GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",
+                                      into=("OUI","NON")),
+                b_glissiere     =BLOC(condition = "GLISSIERE == 'OUI' ",
+                      ALARME_JEU  =SIMP(statut='f',typ='R',defaut=0.),
+                                 ),
+
+                STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",
+                                      into=("OUI","NON")),
+                NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
+                REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
+                        into=("AUTOMATIQUE","CONTROLE","SANS")),
+
+                b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
+                                 fr="Paramètre de la réactualisation géométrique",
+                      NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
+                                 ),
+
+                SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+
+           ),
+           b_lagrangien    =BLOC(condition = "METHODE == 'LAGRANGIEN' ",
+                                 fr="Paramètres de la méthode Lagrangienne (contact avec ou sans frottement)",
+                FROTTEMENT      =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ),
+                STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",
+                                      into=("OUI","NON")),
+                NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
+                ITER_MULT_MAXI  =SIMP(statut='f',typ='I'  ,defaut=4),
+
+                REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
+                                      into=("AUTOMATIQUE","CONTROLE","SANS")),
+
+                b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",fr="Paramètre de la réactualisation géométrique",
+                      NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
+
+                                 ),
+
+
+                SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+
+                b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
+                     COULOMB         =SIMP(statut='o',typ='R',),
+                     COEF_MATR_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
+                     ),),
+
+           b_penalisation       =BLOC(condition = "METHODE == 'PENALISATION' ",
+                                      fr="Paramètres de la méthode pénalisée (contact avec ou sans frottement)",
+                E_N             =SIMP(statut='f',typ='R'),
+                FROTTEMENT      =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ),
+                STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",
+                                      into=("OUI","NON")),
+                NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
+                ITER_MULT_MAXI  =SIMP(statut='f',typ='I',defaut=4),
+
+                REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
+                                      into=("AUTOMATIQUE","CONTROLE","SANS")),
+
+                b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",fr="Paramètre de la réactualisation géométrique",
+                      NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
+                                 ),
+
+                SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+                
+
+
+                b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
+                     COULOMB         =SIMP(statut='o',typ='R',),
+                     E_T             =SIMP(statut='f',typ='R',
+                                           fr="Active la pénalisation sur le frottement et définit le coefficient de pénalisation"),
+                     COEF_MATR_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
+                     ),),
+
+           b_continue      =BLOC(condition = "METHODE == 'CONTINUE' ",
+                                 fr="Paramètres de la méthode continue (contact avec ou sans frottement)",
+#                regles=(UN_PARMI('GLISSIERE','FROTTEMENT'),),
+
+# -------------------------------- CHOIX DE LA FORMULATION DE LA METHODE CONTINUE
+                ALGO_CONT   =SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",into=("LAGRANGIEN","AUGMENTE","STABILISE"),),
+                b_CONT_LAGR =BLOC(condition = "ALGO_CONT == 'LAGRANGIEN' ",fr="Parametres de la formulation Lagrangienne",
+                                  COEF_REGU_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+                b_CONT_STAB =BLOC(condition = "ALGO_CONT == 'STABILISE' ",fr="Parametres du Lagrangien stabilisé",
+                                  COEF_REGU_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                  COEF_STAB_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+                b_CONT_AUGM =BLOC(condition = "ALGO_CONT == 'AUGMENTE' ",fr="Parametres du Lagrangien augmenté",
+                                  COEF_REGU_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                  COEF_STAB_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                  COEF_PENA_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+# --------------------------------
+                GLISSIERE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+                b_glissiere =BLOC(condition = "GLISSIERE == 'OUI' ",
+                                  ALARME_JEU  =SIMP(statut='f',typ='R',defaut=0.),),
+# --------------------------------
+                COMPLIANCE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+                b_compliance    =BLOC(condition = "COMPLIANCE == 'OUI' ",fr="Parametres de la compliance",
+                                      ASPERITE =SIMP(statut='o',typ='R',),
+                                      E_N      =SIMP(statut='o',typ='R',),
+                                      E_V      =SIMP(statut='f',typ='R',defaut=0.E+0),),
+# --------------------------------
+                FOND_FISSURE    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+                b_FOND_FISSURE  =BLOC(condition = "FOND_FISSURE == 'OUI' ",fr="TRAITEMENT EN FOND DE FISSURE",
+                                      regles=(UN_PARMI('NOEUD_FOND','GROUP_NO_FOND','MAILLE_FOND','GROUP_MA_FOND'),),
+                                      NOEUD_FOND    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                                      GROUP_NO_FOND =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                                      MAILLE_FOND   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                                      GROUP_MA_FOND =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),),
+# --------------------------------
+                RACCORD_LINE_QUAD=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+                b_RACCORD_SURF   =BLOC(condition = "RACCORD_LINE_QUAD == 'OUI' ",fr="TRAITEMENT DU RACCORD SURFACIQUE",
+                                       regles=(UN_PARMI('NOEUD_RACC','GROUP_NO_RACC'),),
+                                       NOEUD_RACC    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                                       GROUP_NO_RACC =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
+# -------------------------------- MOTS-CLEF CONTACT
+                INTEGRATION      =SIMP(statut='f',typ='TXM',defaut="NOEUD",
+                                       into=("GAUSS","NOEUD","SIMPSON","SIMPSON1","SIMPSON2",
+                                             "NCOTES","NCOTES1","NCOTES2"),),
+                FORMULATION      =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","VITE"),),
+
+                ITER_GEOM_MAXI   =SIMP(statut='f',typ='I',defaut=2),
+                ITER_CONT_MAXI   =SIMP(statut='f',typ='I',defaut=30),
+                CONTACT_INIT     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),),
+# -------------------------------- détection automatique et exclusion des noeuds impliqués dans le pivot nul
+                EXCLUSION_PIV_NUL=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),),
+# -------------------------------- exclusion manuelle des noeuds impliqués dans le pivot nul;
+#                                  prévaut sur la fonctionnalité précédente sans pour autant interférer avec elle
+                SANS_NOEUD    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                SANS_GROUP_NO =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                regles        =(EXCLUS('SANS_NOEUD','SANS_GROUP_NO'),),
+# -------------------------------- MOTS-CLEF FROTTEMENT
+                FROTTEMENT      =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ),
+                b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
+                     ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
+                                      into=("LAGRANGIEN","AUGMENTE","STABILISE") ),
+                     b_FROT_LAGR =BLOC(condition = "ALGO_FROT == 'LAGRANGIEN' ",fr="Parametres de la formulation Lagrangienne",
+                                       COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+                     b_FROT_STAB =BLOC(condition = "ALGO_FROT == 'STABILISE' ",fr="Parametres du Lagrangien stabilisé",
+                                       COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                       COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+                     b_FROT_AUGM =BLOC(condition = "ALGO_FROT == 'AUGMENTE' ",fr="Parametres du Lagrangien augmenté",
+                                       COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                       COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                       COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+                     COULOMB            =SIMP(statut='o',typ='R',),
+                     SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                     SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                     regles             =(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
+                     b_sans_group_no_frot =BLOC(condition = "SANS_GROUP_NO_FR != None or SANS_NO_FR != None",
+                                                fr="Direction(s) de frottement à exclure",
+                                                EXCL_FROT_1 =SIMP(statut='f',typ='R',min=3,max=3),
+                                                EXCL_FROT_2 =SIMP(statut='f',typ='R',min=3,max=3),),
+                     ITER_FROT_MAXI =SIMP(statut='f',typ='I',defaut=2),
+                     SEUIL_INIT     =SIMP(statut='f',typ='R',defaut=0.E+0),
+                     USURE          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","ARCHARD",),),
+                     b_usure        =BLOC(condition = "USURE == 'ARCHARD' ",fr="Parametres de la loi d'usure d'Archard",
+                                          K =SIMP(statut='o',typ='R',),
+                                          H =SIMP(statut='o',typ='R',),),),),
+
+           b_gcp        =BLOC(condition = "METHODE == 'GCP' ",
+                                 fr="Paramètres de la méthode du gradient conjugué projeté (contact uniquement)",
+                RESI_ABSO       =SIMP(statut='o',typ='R',
+                                      fr="Critère de convergence (niveau d'interpénétration autorisé)"),
+                REAC_ITER       =SIMP(statut='f',typ='I',defaut=3, fr="Fréquence de réinitialisation de la conjugaison"),
+                ITER_GCP_MAXI   =SIMP(statut='f',typ='I',defaut=0, fr="Nombre d'itérations maximal pour le GCP"),
+                STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",
+                                      into=("OUI","NON")),
+                REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
+                                      into=("AUTOMATIQUE","CONTROLE","SANS")),
+
+                b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",fr="Paramètre de la réactualisation géométrique",
+                      NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
+
+                                 ),
+                PRE_COND         =SIMP(statut='f',typ='TXM',defaut="SANS",
+                      into=("DIRICHLET","SANS"),fr="Choix d'un préconditionneur (accélère la convergence)"),
+                ITER_PRE_MAXI   =SIMP(statut='f',typ='I',defaut=0, fr="Nombre d'itérations maximal pour le préconditionneur"),
+                COEF_RESI       =SIMP(statut='f',typ='R',defaut = 1.,
+                                        fr="Critère_Convergence_Préconditionneur = COEF_RESI*Critère_Convergence_GCP",),
+                RECH_LINEAIRE=SIMP(statut='f',typ='TXM',defaut="ADMISSIBLE",into=("ADMISSIBLE","NON_ADMISSIBLE"),
+                                        fr="Autorise-t-on de sortir du domaine admissible lors de la recherche linéaire",),
+                SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+           ),
+         );
+
+
+

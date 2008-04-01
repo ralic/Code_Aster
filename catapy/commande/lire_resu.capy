@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/11/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -176,7 +176,9 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans ASTER.", ),
              NOM_CMP_MED     =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans MED.", ),
            ),
-                  ),
+           PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),
+            fr="Affecte des valeurs nulles la ou le champ n'est pas defini (sinon il y a NaN)"),
+         ),
 
 # 2) blocs selon le type du résultat :
 #---------------------------------

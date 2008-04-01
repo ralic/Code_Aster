@@ -1,8 +1,8 @@
-      SUBROUTINE CFELSN(IZONE ,NOMA  ,POSESC,JDIM  ,JAPMEM,
-     &                  JNOCO ,JPSANS,JSANS ,SUPPOK)
+      SUBROUTINE CFELSN(NOMA  ,DEFICO,RESOCO,IZONE,POSNOE,
+     &                  SUPPOK)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,14 +22,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
+      CHARACTER*24 DEFICO,RESOCO
       INTEGER      IZONE
       CHARACTER*8  NOMA
-      INTEGER      POSESC
-      INTEGER      JDIM
-      INTEGER      JAPMEM
-      INTEGER      JNOCO
-      INTEGER      JPSANS
-      INTEGER      JSANS
+      INTEGER      POSNOE
       INTEGER      SUPPOK
 C      
 C ----------------------------------------------------------------------
@@ -42,13 +38,10 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  IZONE  : NUMERO DE LA ZONE COURANTE
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  POSESC : POSITION DU NOEUD ESCLAVE A TESTER DANS CONTNO
-C IN  JDIM   : POINTEUR VERS DEFICO(1:16)//'.NDIMCO'
-C IN  JAPMEM : POINTEUR VERS RESOCO(1:14)//'.APMEMO' 
-C IN  JNOCO  : POINTEUR VERS DEFICO(1:16)//'.NOEUCO'
-C IN  JPSANS : POINTEUR VERS DEFICO(1:16)//'.PSANS'
-C IN  JSANS  : POINTEUR VERS DEFICO(1:16)//'.SANSNO'
+C IN  POSNOE : POSITION DU NOEUD ESCLAVE A TESTER DANS CONTNO
 C OUT SUPPOK : ON A SUPPRIME LE NOEUD ESCLAVE ( = 1)
 C                                      OU PAS ( = 0)
 C
@@ -74,10 +67,26 @@ C
       INTEGER      K,IBID
       INTEGER      TYPSUP,POSSUP
       INTEGER      NSANS,NUMSAN,NUMESC,JDEC
+      CHARACTER*24 CONTNO
+      INTEGER      JNOCO
+      CHARACTER*24 PSANS,SANSNO
+      INTEGER      JPSANS,JSANS      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+C     
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      SANSNO = DEFICO(1:16)//'.SSNOCO'
+      PSANS  = DEFICO(1:16)//'.PSSNOCO'  
+C   
+      CALL JEVEUO(CONTNO,'L',JNOCO )
+      CALL JEVEUO(SANSNO,'L',JSANS )
+      CALL JEVEUO(PSANS, 'L',JPSANS)      
+C
+C --- INITIALISATIONS
 C
       SUPPOK = 0
       IBID   = 0
@@ -86,14 +95,14 @@ C
 C
 C --- NUMERO ABSOLU (DANS NOMA) DU NOEUD ESCLAVE
 C      
-      NUMESC = ZI(JNOCO+POSESC-1)
+      NUMESC = ZI(JNOCO+POSNOE-1)
       DO 10 K = 1,NSANS
         NUMSAN = ZI(JSANS+JDEC+K-1)
         IF (NUMESC.EQ.NUMSAN) THEN
           TYPSUP = -1
-          POSSUP = POSESC
-          CALL CFSUPM(NOMA  ,IZONE ,IBID  ,JDIM  ,JNOCO,
-     &                IBID  ,JAPMEM,IBID  ,POSSUP,TYPSUP)
+          POSSUP = POSNOE
+          CALL CFSUPM(NOMA  ,DEFICO,RESOCO,IZONE ,IBID  ,
+     &                POSSUP,TYPSUP)
           SUPPOK = 1
           GOTO 999
         END IF

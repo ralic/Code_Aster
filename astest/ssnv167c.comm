@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,10 +59,8 @@ CHBLO = AFFE_CHAR_MECA(    MODELE=MO,
 CHCO = AFFE_CHAR_MECA(    MODELE=MO,
                           CONTACT = _F( GROUP_MA_MAIT='CONT2',
                                         GROUP_MA_ESCL='CONT1',
-                                        PROJECTION = 'LINEAIRE',
                                         REAC_GEOM = 'CONTROLE',
                                         NB_REAC_GEOM = 5,
-#                                        RECHERCHE = 'NOEUD_VOISIN',
                                         TOLE_PROJ_EXT=1,
                                       ),
                           INFO =2)

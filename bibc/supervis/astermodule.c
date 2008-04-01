@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 22/02/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1085,11 +1085,17 @@ void DEFSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN int ltype,
 }
 
 /* ------------------------------------------------------------------ */
-void DEFP(CHKMSG,chkmsg, _OUT INTEGER *iret)
+void DEFPP(CHKMSG,chkmsg, _IN INTEGER *info_alarm, _OUT INTEGER *iret)
 {
    /*
       Interface Fortran/Python pour la vérification que tout s'est bien
-      passé, destinée à etre appelée dans FIN.
+      passé, destinée à etre appelée dans FIN ou au cours d'une commande.
+      Argument IN :
+         info_alarm = 1  on vérifie si les alarmes ignorées ont été émises ou non.
+                    = 0  on ne fait pas cette vérif
+      Retourne :
+         iret = 0   tout est ok
+         iret > 0   erreur
    */
    PyObject *res, *mess_log;
 
@@ -1098,7 +1104,7 @@ void DEFP(CHKMSG,chkmsg, _OUT INTEGER *iret)
       MYABORT("erreur lors de l'accès à l'objet MessageLog.");
    }
 
-   res = PyObject_CallMethod(mess_log, "check_counter", NULL);
+   res = PyObject_CallMethod(mess_log, "check_counter", "i", *info_alarm);
    if (!res) {
       MYABORT("erreur lors de l'appel à la méthode MessageLog.check_counter");
    }

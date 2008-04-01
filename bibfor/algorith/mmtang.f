@@ -2,7 +2,7 @@
      &                  TAU1  ,TAU2)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,14 +59,14 @@ C
 C --- CALCUL DES TANGENTES
 C
       DO 41 IDIM = 1,NDIM
-        DO 31 INO = 1,NNO
+        DO 31 INO = 1,NNO       
           TAU1(IDIM)  = COORMA(3*(INO-1)+IDIM)*DFF(1,INO) + TAU1(IDIM)
           IF (NDIM.EQ.3) THEN
             TAU2(IDIM)  = COORMA(3*(INO-1)+IDIM)*DFF(2,INO) + TAU2(IDIM)
-          ENDIF  
+          ENDIF
  31    CONTINUE
  41   CONTINUE 
 C
   999 CONTINUE 
-C
+C 
       END

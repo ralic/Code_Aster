@@ -1,4 +1,4 @@
-# MODIF  DATE 02/07/2007   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,7 +112,8 @@ CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
                                   DIST_ESCL=31.75,
                                   FROTTEMENT='COULOMB',
                                   COEF_MATR_FROT=1.,
-                                  VECT_Y=(0.,0.,1.,),
+                                  VECT_MAIT='VECT_Y',
+                                  MAIT_VECT_Y=(0.,0.,-1.,),
                                   REAC_GEOM='AUTOMATIQUE',
                                   COULOMB=0.,
                               
@@ -190,7 +191,8 @@ CHCON=AFFE_CHAR_MECA(MODELE=MODE,
                               METHODE='CONTINUE',
                                  ITER_GEOM_MAXI = 3,
                                  ITER_CONT_MAXI = 10,
-                                 VECT_ORIE_POU=(0.0,0.0,-1.0,),
+                                 VECT_MAIT='VECT_Y',
+                                  MAIT_VECT_Y=(0.,0.,-1.,),
                                  DIST_MAIT=31.75,
                               ),);
                               

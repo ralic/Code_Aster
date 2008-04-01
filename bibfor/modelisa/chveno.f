@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,30 +50,29 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       NBT, IER, N, NBMFAC, IMFAC, NOCC, IOCC, JGROUP,
      &              IPRES, IDNOR, IDTAN, IF1, IF2, IF3, IMF1, IMF2,
-     &              NBOBJ, IOBJ, NBMC, IC, UTMOTP, NORIEN, NBPAR, IRET,
+     &              NBOBJ, IOBJ, IC, UTMOTP, NORIEN, NBPAR, IRET,
      &              JGRO, NORIE1, NORIE2, NBMAIL, IMA, NUMAIL,NUMA,IBID,
-     &              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1, NOC,
-     &              NOC11,NOC12,NOC1, JCOOR, JTYMA, JNMA, NTRAIT
+     &              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1,
+     &              JCOOR, JTYMA, JNMA, NTRAIT,NBMC
       INTEGER       JMAB, NBMAPR, NBMABO, JPRI, JBOR, IMPB, ZERO
       INTEGER VALI
-      PARAMETER    ( NBT = 5 )
-      REAL*8        R8B, DNOR, R8PREM, DIR(3), ARMIN, PREC
+      PARAMETER    ( NBT = 4 )
+      REAL*8        R8B, DNOR, R8PREM, ARMIN, PREC
       LOGICAL       GETEXM, REORIE, MCFL(NBT)
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
       CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, TYPEL
-      CHARACTER*16  MCFT(NBT), MOTFAC, VALMC(4), TYPMC(4), CONCEP, CMD
-      CHARACTER*16  APPAR
+      CHARACTER*16  MCFT(NBT), MOTFAC, VALMC(2), TYPMC(2), CONCEP, CMD
       CHARACTER*19  NOMT19
       CHARACTER*24  GRMAMA, MAILMA, PARA
       CHARACTER*24  VALK(2)
 C
       DATA MCFT / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  ,
-     &            'EFFE_FOND'  , 'CONTACT'  /
+     &            'EFFE_FOND'   /
 C
 C     LA NORMALE DOIT ETRE SORTANTE:
       DATA MCFL / .TRUE.       , .TRUE.     , .FALSE.        ,
-     &            .TRUE.       , .TRUE.     /
+     &            .TRUE.       /
 C     ------------------------------------------------------------------
 C
       IER = 0
@@ -153,34 +152,15 @@ C           POUR CERTAINS CHARGEMENTS
                IF (IPRES.EQ.0.AND.IF1.EQ.0.AND.IF2.EQ.0.AND.IF3.EQ.0
      &                       .AND.IMF1.EQ.0.AND.IMF2.EQ.0) GOTO 200
             ENDIF
-C
-            IF ( MOTFAC .EQ. 'CONTACT' ) THEN
-               NBMC = 4
-               VALMC(1) = 'GROUP_MA_ESCL'
-               VALMC(2) = 'GROUP_MA_MAIT'
-               VALMC(3) = 'MAILLE_ESCL'
-               VALMC(4) = 'MAILLE_MAIT'
-               TYPMC(1) = 'GROUP_MA'
-               TYPMC(2) = 'GROUP_MA'
-               TYPMC(3) = 'MAILLE'
-               TYPMC(4) = 'MAILLE'
-            ELSE
-               NBMC = 2
-               VALMC(1) = 'GROUP_MA'
-               VALMC(2) = 'MAILLE'
-               TYPMC(1) = 'GROUP_MA'
-               TYPMC(2) = 'MAILLE'
-            ENDIF
+C            
+            NBMC = 2
+            VALMC(1) = 'GROUP_MA'
+            VALMC(2) = 'MAILLE'
+            TYPMC(1) = 'GROUP_MA'
+            TYPMC(2) = 'MAILLE'
 C
 C ---       RECUPERATION DE LA DIMENSION DU PROBLEME
 C
-            NOC  = 0
-            IF (MOTFAC .EQ. 'CONTACT') THEN
-               CALL GETVR8 (MOTFAC,'VECT_NORM_ESCL',IOCC,1,3,DIR,NOC)
-               CALL GETVR8 (MOTFAC,'VECT_Y',       IOCC,1,3, DIR, NOC11)
-               CALL GETVR8 (MOTFAC,'VECT_ORIE_POU',IOCC,1,3, DIR, NOC12)
-               NOC1=NOC11+NOC12
-            ENDIF
 C
             INDIC = 0
 C
@@ -224,15 +204,7 @@ C                    ----------------------
                          INDIC = 1
                          GOTO 211
                        ELSE
-C ---                    CAS D'UN CONTACT POINT-POINT
-C                        ----------------------------
-C                        ON VERIFIE DANS CALICO QUE CETTE OPTION N'EST
-C                        UTILISEE QUE DANS LE CAS DE L'APPARIEMENT NODAL
-                         IF(NOC.EQ.0) THEN
-                           CALL U2MESS('F','MODELISA4_20')
-                         ELSE
-                           GOTO 100
-                         ENDIF
+                         CALL U2MESS('F','MODELISA4_20')
                        ENDIF
 C
 C ---               CAS D'UNE MAILLE TRIA OU QUAD
@@ -250,7 +222,7 @@ C ---               CAS D'UNE MAILLE SEG
 C                   --------------------
                     ELSE IF(TYPEL(1:3) .EQ. 'SEG') THEN
                       NDIM1 = 2
-                      IF(NDIM .NE. NDIM1 .AND. NOC1.EQ.0) THEN
+                      IF(NDIM .NE. NDIM1) THEN
                           VALK(1) = NOMAIL
                           VALK(2) = TYPEL
                           CALL U2MESK('F','MODELISA4_22', 2 ,VALK)
@@ -338,17 +310,7 @@ C                      ----------------------
                            INDIC = 1
                            GOTO 211
                          ELSE
-C
-C ---                      CAS D'UN CONTACT POINT-POINT
-C                          ----------------------------
-C                          ON VERIFIE DANS CALICO QUE CETTE OPTION
-C                          N'EST UTILISEE QUE DANS LE CAS DE
-C                          L'APPARIEMENT NODAL
-                           IF(NOC.EQ.0) THEN
-                             CALL U2MESS('F','MODELISA4_20')
-                           ELSE
-                             GOTO 100
-                           ENDIF
+                           CALL U2MESS('F','MODELISA4_20')
                          ENDIF
 C
 C ---                  CAS D'UNE MAILLE TRIA OU QUAD

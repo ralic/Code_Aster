@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 10/03/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ Vous pouvez essayer d'augmenter ITER_PRE_MAXI
 """),
 
 6 : _("""
-Contact methode GCP. On ne peut utiliser le solveur GCPC avec le contact 
+Contact methode GCP. On ne peut utiliser le solveur GCPC avec le contact. 
 """),
 
 7 : _("""
@@ -56,91 +56,62 @@ Contact methode GCP. Le pas d'avancement est negatif ; risque de comportement ha
 """),
 
 9 : _("""
-Contact liaison glissiere. Des noeuds se decollent plus que la valeur d'ALARME_JEU:
-"""),
-
-10 : _("""
-Contact méthodes discrètes. Une maille maitre de type SEG a une longueur nulle. Verifiez votre maillage.
+Contact liaison glissiere. Des noeuds se décollent plus que la valeur d'ALARME_JEU:
 """),
 
 11 : _("""
-Contact méthodes discrètes. Le vecteur tangent défini par VECT_Y est colinéaire au vecteur normal.
+Le vecteur tangent défini par VECT_Y est colinéaire au vecteur normal.
 """),
 
-12 : _("""
-Contact méthodes discrètes. Le vecteur normal est colinéaire au plan de projection.
+13 : _("""
+La normale que vous avez prédéfinie (VECT_* = 'FIXE') sur le noeud %(k1)s est colinéaire à la tangente à la maille.
 """),
 
 14 : _("""
-Contact méthodes discrètes. La projection quadratique pour les triangles n'est pas disponible
+La normale que vous avez prédéfinie (VECT_* = 'FIXE') sur la maille %(k1)s est colinéaire à la tangente à la maille.
 """),
 
 15 : _("""
-Contact méthodes discrètes. Une maille maitre de type TRI a une surface nulle. Verifiez votre maillage.
+Le vecteur MAIT_FIXE ou ESCL_FIXE est nul !
 """),
 
-27 : _("""
-Contact méthodes discrètes. On n'a pas trouve de noeud maitre proche du noeud esclave : contacter les developpeurs
-"""),
-
-32 : _("""
-Contact méthodes discrètes. Pas de lissage des normales possible avec l'appariement nodal : contacter les developpeurs
-"""),
-
-54 : _("""
-Contact méthodes discrètes. On ne peut pas utiliser une direction d'appariement fixe VECT_NORM_ESCL si l'appariement n'est pas NODAL.
-"""),
-
-55 : _("""
-Contact méthodes discrètes. La commande VECT_Y n'est utilisable qu'en 3D.
-"""),
-
-56 : _("""
-Contact méthodes discrètes. La commande VECT_ORIE_POU n'est utilisable qu'en 3D.
+16 : _("""
+Le vecteur MAIT_VECT_Y ou ESCL_VECT_Y est nul !
 """),
 
 60 : _("""
-Contact méthodes discrètes. Vous utilisez des mailles de type SEG2/SEG3 en 3D sans definir un repere pour l'appariement. Voir les mots-clefs VECT_Y et VECT_ORIE_POU.
+La maille %(k1)s est de type 'SEG' (poutres) en 3D sans donner la normale pour l'appariement.
+Vous devez utilisez l'option NORMALE:
+- FIXE: qui décrit une normale constante pour la poutre
+- ou VECT_Y: qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
 """),
 
-75 : _("""
-Contact méthodes discrètes. Un POI1 ne peut pas etre une maille maitre.
+61 : _("""
+Le noeud %(k1)s fait partie d'une maille de type 'SEG' (poutres) en 3D sans donner la normale pour l'appariement.
+Vous devez utilisez l'option NORMALE:
+- FIXE: qui décrit une normale constante pour la poutre
+- ou VECT_Y: qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
 """),
 
-76 : _("""
-Contact. On ne peut pas avoir plus de 3 ddls impliques dans la meme relation unilaterale : contacter les developpeurs
-"""),
 
 83 : _("""
-Contact. Il y a plusieurs charges contenant des conditions de contact.
+Il y a plusieurs charges contenant des conditions de contact.
 """),
 
 84 : _("""
-Contact. Melange 2d et 3d dans le contact.
-"""),
-
-85 : _("""
-Contact. Melange dimensions maillage dans le contact.
-"""),
-
-86 : _("""
-Contact. Code methode contact incorrect : contacter les developpeurs
-"""),
-
-87 : _("""
-Contact. La norme tangentielle de frottement est negative: contacter les developpeurs
+Il ne faut pas que les surfaces de contact mélangent des mailles affectées d'une modélisations planes (D_PLAN, C_PLAN ou AXI)
+avec des mailles affectées d'une modélisation 3D. 
 """),
 
 88 : _("""
-Contact. Ne pas utiliser REAC_INCR=0 avec le frottement.
+Ne pas utiliser REAC_INCR=0 avec le frottement.
 """),
 
 93 : _("""
 Contact methode VERIF.
  -> Interpénétrations des surfaces.
- 
     Attention : si les mailles en contact sont quadratiques, le jeu aux noeuds milieux risque d'etre imprécis (oscillations entre noeuds sommets et milieux).
-
+ 
  -> Risque & Conseil :
     Vérifier si le niveau d'interpénétration des surfaces est acceptable dans
     votre problème.

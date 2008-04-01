@@ -1,0 +1,78 @@
+      SUBROUTINE MMCOOR(ALIAS ,NNO   ,NDIM  ,COORMA,FFORME,
+     &                  KSI1  ,KSI2  ,COORPT)
+C     
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      INTEGER      NDIM,NNO
+      CHARACTER*8  ALIAS,FFORME
+      REAL*8       KSI1,KSI2
+      REAL*8       COORMA(27),COORPT(3)
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (TOUTES METHODES - UTILITAIRE)
+C
+C CALCUL DES COORDONNEES D'UN POINT SUR UNE MAILLE A PARTIR
+C DE SES COORDONNEES PARAMETRIQUES 
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  ALIAS  : TYPE DE MAILLE
+C IN  NNO    : NOMBRE DE NOEUD SUR LA MAILLE
+C IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
+C IN  COORMA : COORDONNEES DES NOEUDS DE LA MAILLE 
+C IN  FFORME : TYPE DES FONCTIONS DE FORME
+C               'CONTINUE' POUR ELTS DE CONTACT
+C               'STANDARD' POUR ELTS STANDARDS
+C IN  KSI1   : COORDONNEE PARAMETRIQUE KSI DU PROJETE
+C IN  KSI2   : COORDONNEE PARAMETRIQUE ETA DU PROJETE
+C OUT COORPT : COORDONNEES DU POINT
+C
+C-----------------------------------------------------------------------
+C
+      INTEGER      IDIM,INO
+      REAL*8       FF(9)
+C
+C-----------------------------------------------------------------------
+C
+C
+C --- INITIALISATIONS
+C
+      DO 10 IDIM = 1,3
+        COORPT(IDIM) = 0.D0
+   10 CONTINUE
+C
+C --- FONCTIONS DE FORME
+C
+      CALL MMNONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
+     &            KSI2  ,FF    ) 
+C
+C --- COORDONNEES DU POINT
+C
+      DO 40 IDIM = 1,3
+        DO 30 INO = 1,NNO
+          COORPT(IDIM) = FF(INO)*COORMA(3*(INO-1)+IDIM) + COORPT(IDIM)
+   30   CONTINUE
+   40 CONTINUE
+C
+      END

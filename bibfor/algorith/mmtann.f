@@ -1,7 +1,7 @@
-      SUBROUTINE MMTANN(NDIM  ,TAU1  ,TAU2  ,NIVERR)
+      SUBROUTINE MMTANN(NDIM  ,TAU1  ,TAU2  ,IRET  )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,9 +21,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE      
-      INTEGER      NDIM
-      REAL*8       TAU1(3),TAU2(3)
-      INTEGER      NIVERR      
+      INTEGER      NDIM,IRET
+      REAL*8       TAU1(3),TAU2(3)  
 C
 C ----------------------------------------------------------------------
 C
@@ -37,29 +36,35 @@ C
 C IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
 C OUT TAU1   : PREMIER VECTEUR TANGENT EN XI,YI
 C OUT TAU2   : SECOND VECTEUR TANGENT EN XI,YI
-C OUT NIVERR : RETOURNE UN CODE ERREUR
-C                0  TOUT VA BIEN
-C                1  ELEMENT INCONNU
-C                2  MATRICE SINGULIERE (VECTEURS TANGENTS COLINEAIRES)
-C                3  DEPASSEMENT NOMBRE ITERATIONS MAX
-C                4  VECTEURS TANGENTS NULS
+C OUT IRET   : VAUT 1 SI TANGENTES NULLES, 0 SINON
 C      
 C ----------------------------------------------------------------------
 C
-      REAL*8       NTA1,NTA2
+      REAL*8       NTA1,NTA2,R8PREM
 C
 C ----------------------------------------------------------------------
 C
+      IRET = 0
+C
       CALL NORMEV(TAU1,NTA1)
-      IF (NDIM.EQ.3) THEN
+C
+      IF (NDIM.EQ.2) THEN
+        CALL NORMEV(TAU1,NTA1)
+        NTA2  = 1.D0
+      ELSEIF (NDIM.EQ.3) THEN
+        CALL NORMEV(TAU1,NTA1)
         CALL NORMEV(TAU2,NTA2)
-      ELSEIF (NDIM.EQ.2) THEN
-        NTA2 = 1.D0 
       ELSE
         CALL ASSERT(.FALSE.)   
-      ENDIF     
-      IF ((NTA1.EQ.0.D0).OR.(NTA2.EQ.0.D0)) THEN
-        NIVERR = 4
-      ENDIF  
+      ENDIF 
+C
+C --- VERIFICATION DES TANGENTES
+C
+      IF (ABS(NTA1).LE.R8PREM()) THEN
+        IRET = 1
+      ENDIF   
+      IF (ABS(NTA2).LE.R8PREM()) THEN
+        IRET = 2
+      ENDIF            
 C
       END

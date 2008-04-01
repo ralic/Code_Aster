@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,8 @@ LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
             NOM_CMP_IDEM =SIMP(statut='f',typ='TXM',into=("OUI",), ),
             NOM_CMP      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',),
             NOM_CMP_MED  =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',),
+            PROL_ZERO    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),
+               fr="Affecte des valeurs nulles la ou le champ n'est pas defini (sinon il y a NaN)"),
             NUME_PT      =SIMP(statut='f',typ='I'  ,validators=NoRepeat(),max='**',),
             NUME_ORDRE   =SIMP(statut='f',typ='I'  ,validators=NoRepeat(),max='**',
                            fr="Numero d ordre du champ à lire",ang="Rank of the field to be read" ),

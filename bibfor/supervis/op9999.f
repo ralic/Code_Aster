@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,11 +51,12 @@ C
       CALL JEMARQ()
       IFIN = 1
 
-
 C     TEST ERREUR E SANS ERREUR F
-      CALL CHKMSG(ICHK)
+C     1ER PASSAGE ICOND=1, ON AFFICHE LE RECAPITULATIF DES ALARMES
+C     2ND PASSAGE ICOND=0, INFO_ALARM=0
+      CALL CHKMSG(ICOND, ICHK)
 
-      IF ( ICOND .NE. 0 ) GOTO 9999
+      IF ( ICOND.NE.0 ) GOTO 9999
 C     -----  FIN DE LA ZONE DE TEST ------------------------------------
 C
 C     --- IMPRESSION DES SD RESULTAT

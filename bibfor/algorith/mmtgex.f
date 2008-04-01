@@ -1,9 +1,9 @@
-      SUBROUTINE MMTGEX(NOMA  ,NDIM  ,DEFICO,IZONE ,POSMAI,
-     &                  IPC   ,NPEX  ,INI1  ,INI2  ,EXNOEF,
-     &                  TAU1  ,TAU2  ,VALRET)
+      SUBROUTINE MMTGEX(NOMA  ,NDIM  ,DEFICO,IZONE ,POSMAE,
+     &                  IPC   ,EXNOEF,NBEXFR,NDEXFR,TAU1  ,
+     &                  TAU2  ,VALRET)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,14 +27,11 @@ C
       CHARACTER*8  NOMA
       INTEGER      NDIM
       INTEGER      IZONE
-      INTEGER      POSMAI
-      LOGICAL      EXNOEF
+      INTEGER      POSMAE
       INTEGER      IPC
-      INTEGER      NPEX
-      INTEGER      INI1
-      INTEGER      INI2      
-      REAL*8       TAU1(3)
-      REAL*8       TAU2(3)
+      INTEGER      NBEXFR,NDEXFR(3)   
+      REAL*8       TAU1(3),TAU2(3)
+      LOGICAL      EXNOEF
       INTEGER      VALRET
 C      
 C ----------------------------------------------------------------------
@@ -50,13 +47,12 @@ C IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
-C IN  POSMAI : NUMERO DE LA MAILLE MAITRE
-C IN  IPC    : NUMERO DU NOEUD DE LA MAILLE MAITRE
-C IN  NPEX   : NOMBRE DE NOEUDS EXCLUS SUR LA MAILLE
-C IN  INI1   : NUMERO DU PREMIER NOEUD A EXCLURE
-C IN  INI2   : NUMERO DU DEUXIEME NOEUD A EXCLURE
-C OUT EXNOEF : VAUT .TRUE. SI LE NOEUD DOIT ETRE EXCLU DE 
+C IN  POSMAE : NUMERO DE LA MAILLE ESCLAVE
+C IN  IPC    : NUMERO DU NOEUD DE LA MAILLE ESCLAVE
+C IN  EXNOEF : VAUT .TRUE. SI LE NOEUD DOIT ETRE EXCLU DE 
 C              LA SURFACE DE CONTACT SUIVANT UNE DIRECTION (FROTTEMENT)
+C IN  NBEXFR : NOMBRE DE NOEUDS A EXCLURE SUR LA MAILLE FROTTEMENT
+C IN  NDEXFR : NUMERO DES NOEUDS EXCLUS SUR LA MAILLE FROTTEMENT
 C OUT TAU1   : PREMIER VECTEUR TANGENT
 C OUT TAU2   : SECOND VECTEUR TANGENT
 C OUT VALRET : CODE RETOUR ERREUR
@@ -90,8 +86,8 @@ C
       INTEGER      JNOMA,JNOCO,JPONO
       REAL*8       NORM(3),COON1(3),COON2(3)
       REAL*8       NORN,NORT1,NORT2,NORME1,R8PREM
-      INTEGER      J,N1,N2,POSNO1,POSNO2,SUPPOK
-      INTEGER      JCOOR,IBID
+      INTEGER      J,N1,N2,POSNO1,POSNO2
+      INTEGER      JCOOR,IBID,SUPPOK
       LOGICAL      LBID
       CHARACTER*24 K24BID,K24BLA   
 C
@@ -114,44 +110,41 @@ C
 C --- INITIALISATIONS 
 C
       VALRET = 0
-      SUPPOK = 0
-      EXNOEF = .FALSE.
       K24BLA = ' '
-      POSNOE = ZI(JNOMA+ZI(JPONO+POSMAI-1)+IPC-1)
-      NUMNOE = ZI(JNOCO+POSNOE-1)            
+      POSNOE = ZI(JNOMA+ZI(JPONO+POSMAE-1)+IPC-1)
+      NUMNOE = ZI(JNOCO+POSNOE-1) 
 C     
 C --- REPERAGE SI LE NOEUD IPC EST UN NOEUD A EXCLURE (SUPPOK = 1)
 C
-      CALL CFMMEX(DEFICO,'FROT',IZONE ,NUMNOE,SUPPOK)
+      CALL CFMMEX(DEFICO,'FROT',IZONE ,NUMNOE,SUPPOK)               
 C
 C --- REDEFINITION DU REPERE
 C
-      IF (SUPPOK .EQ. 1) THEN
-        EXNOEF  = .TRUE.
-        IF (NPEX .EQ. 1) THEN
+      IF (SUPPOK.EQ.1) THEN
+        EXNOEF = .TRUE.
+        IF (NBEXFR.EQ. 1) THEN
           IF (NDIM .EQ. 2) THEN        
-            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
-     &                  IBID,TAU1,K24BID,LBID)
+            CALL MMINFP(IZONE ,DEFICO,K24BLA,'EXCL_FROT_1',
+     &                  IBID  ,TAU1  ,K24BID,LBID)
           ELSEIF (NDIM .EQ. 3) THEN
-            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Z',
-     &                  IBID,TAU1,K24BID,LBID)
-            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
-     &                  IBID,TAU2,K24BID,LBID) 
+            CALL MMINFP(IZONE ,DEFICO,K24BLA,'EXCL_FROT_2',
+     &                  IBID  ,TAU1  ,K24BID,LBID)
+            CALL MMINFP(IZONE ,DEFICO,K24BLA,'EXCL_FROT_1',
+     &                  IBID  ,TAU2  ,K24BID,LBID) 
           ELSE
             CALL ASSERT(.FALSE.)    
           ENDIF  
         ELSE
           CALL PROVEC(TAU2,TAU1,NORM)
-          IF (IPC .EQ. INI1) THEN
+          IF (IPC .EQ. NDEXFR(1)) THEN
             N1     = NUMNOE
-            POSNO2 = ZI(JNOMA+ZI(JPONO+POSMAI-1)+INI2-1)
+            POSNO2 = ZI(JNOMA+ZI(JPONO+POSMAE-1)+NDEXFR(2)-1)
             N2     = ZI(JNOCO+POSNO2-1)
           ELSE
             N2     = NUMNOE
-            POSNO1 = ZI(JNOMA+ZI(JPONO+POSMAI-1)+INI1-1)
+            POSNO1 = ZI(JNOMA+ZI(JPONO+POSMAE-1)+NDEXFR(1)-1)
             N1     = ZI(JNOCO+POSNO1-1)
           END IF
-
           DO 59 J = 1,3
             COON1(J) = ZR(JCOOR+3*(N1-1)+J-1)
             COON2(J) = ZR(JCOOR+3*(N2-1)+J-1)
@@ -160,7 +153,7 @@ C
           CALL NORMEV(TAU2,NORME1)         
           CALL PROVEC(TAU2,NORM,TAU1)
           NORN  = SQRT(NORM(1)*NORM(1)+NORM(2)*NORM(2)+
-     &            NORM(3)*NORM(3))    
+     &                 NORM(3)*NORM(3))    
           IF (NORN.LT.R8PREM()) THEN   
             VALRET = 1                          
           ENDIF                   
@@ -171,8 +164,10 @@ C
           VALRET = 2
         ELSEIF (NORT2.LT.R8PREM().AND.(NDIM.EQ.3)) THEN   
           VALRET = 3                          
-        ENDIF
-      ENDIF     
+        ENDIF    
+      ENDIF
+C
+  999 CONTINUE        
 C
       CALL JEDEMA()      
       END

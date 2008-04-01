@@ -3,7 +3,7 @@
      &                     TAU1  ,TAU2  ,NIVERR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,9 +61,7 @@ C OUT TAU1   : PREMIER VECTEUR TANGENT EN KSI1,KSI2
 C OUT TAU2   : SECOND VECTEUR TANGENT EN KSI1,KSI2
 C OUT NIVERR : RETOURNE UN CODE ERREUR
 C                0  TOUT VA BIEN
-C                1  ELEMENT INCONNU
-C                2  MATRICE SINGULIERE (VECTEURS TANGENTS COLINEAIRES)
-C                3  DEPASSEMENT NOMBRE ITERATIONS MAX
+C                1  ECHEC NEWTON
 C
 C ----------------------------------------------------------------------
 C
@@ -72,10 +70,11 @@ C
       REAL*8       MATRIX(2,2),PAR11(3),PAR12(3),PAR22(3)
       REAL*8       RESIDU(2),EPS
       REAL*8       DKSI1,DKSI2
-      REAL*8       DET,TEST,EPSREL,EPSABS,REFE
+      REAL*8       DET,TEST,EPSREL,EPSABS,REFE,TEST2
       INTEGER      INO,IDIM,ITER
       REAL*8       ZERO
-      PARAMETER    (ZERO=0.D0)     
+      PARAMETER    (ZERO=0.D0)   
+      REAL*8       DIST,DMIN,KSI1M,KSI2M,TAU1M(3),TAU2M(3),VALR(5)
 C
 C ----------------------------------------------------------------------
 C
@@ -94,6 +93,8 @@ C
       ITER   = 0
       EPSABS = EPSMAX/100.D0
       EPSREL = EPSMAX
+      ITEMAX = 200     
+      DMIN   = 1.D15
 C
 C --- DEBUT DE LA BOUCLE
 C      
@@ -119,11 +120,8 @@ C
 C --- CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
 C --- DANS LA MAILLE
 C
-        CALL MMFONF(FFORME,ALIAS ,KSI1   ,KSI2  ,
-     &              FF    ,DFF   ,DDFF   ,NIVERR)        
-        IF (NIVERR.NE.0) THEN
-          GOTO 999
-        ENDIF
+        CALL MMFONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
+     &              KSI2  ,FF    ,DFF   ,DDFF   )          
 C
 C --- CALCUL DU VECTEUR POSITION DU POINT COURANT SUR LA MAILLE
 C
@@ -136,13 +134,23 @@ C
 C --- CALCUL DES TANGENTES
 C
         CALL MMTANG(NDIM  ,NNO   ,COORMA,DFF   ,
-     &              TAU1  ,TAU2)
+     &              TAU1  ,TAU2)         
 C
 C --- CALCUL DE LA QUANTITE A MINIMISER
 C
         DO 35 IDIM = 1,NDIM
           VEC1(IDIM) = COORPT(IDIM) - VEC1(IDIM)
- 35     CONTINUE      
+ 35     CONTINUE     
+        DIST = SQRT(VEC1(1)*VEC1(1)+
+     &              VEC1(2)*VEC1(2)+
+     &              VEC1(3)*VEC1(3))
+        IF (DIST.LE.DMIN) THEN
+          DMIN = DIST
+          KSI1M = KSI1
+          KSI2M = KSI2
+          CALL DCOPY(3,TAU1,1,TAU1M,1)
+          CALL DCOPY(3,TAU2,1,TAU2M,1)
+        ENDIF
 C
 C --- CALCUL DU RESIDU
 C
@@ -192,13 +200,13 @@ C
         ENDIF
 C
         IF (DET.EQ.0.D0) THEN
-          NIVERR = 2
+          NIVERR = 1
           GOTO 999
         END IF
 C
         IF (NDIM.EQ.2) THEN
           DKSI1 = -RESIDU(1)/MATRIX(1,1)
-          DKSI2 = 0.D00
+          DKSI2 = 0.D0
         ELSE IF (NDIM.EQ.3) THEN  
           DKSI1 = (MATRIX(2,2)* (-RESIDU(1))-MATRIX(1,2)* 
      &               (-RESIDU(2)))/DET
@@ -207,15 +215,15 @@ C
         END IF
 C  
 C --- ACTUALISATION
-C
+C  
         KSI1 = KSI1 + DKSI1
         KSI2 = KSI2 + DKSI2     
-        ITER = ITER + 1
+        ITER = ITER + 1  
 C
 C --- CALCUL DE LA REFERENCE POUR TEST
 C
         REFE = (KSI1*KSI1+KSI2*KSI2)
-        IF (REFE.EQ.0.D0) THEN  
+        IF (REFE.LE.EPSREL) THEN  
           REFE = 1.D0   
           EPS  = EPSABS
         ELSE            
@@ -224,20 +232,57 @@ C
 C
 C --- CALCUL POUR LE TEST DE CONVERGENCE 
 C      
-        TEST = SQRT(DKSI1*DKSI1+DKSI2*DKSI2)/REFE       
+        TEST = SQRT(DKSI1*DKSI1+DKSI2*DKSI2)/REFE          
 C
 C --- EVALUATION DE LA CONVERGENCE
 C       
         IF ((TEST.GT.EPS) .AND. (ITER.LT.ITEMAX)) THEN
           GOTO 20
-        ELSEIF ((ITER.GT.ITEMAX).AND.(TEST.GT.EPS)) THEN
-          NIVERR = 3
+        ELSEIF ((ITER.GE.ITEMAX).AND.(TEST.GT.EPS)) THEN
+          NIVERR = 1
         ENDIF  
 C
 C --- FIN DE LA BOUCLE
 C 
 
-      
-  999 CONTINUE    
-      
+  999 CONTINUE      
+C
+      IF (ABS(DMIN).LE.1.D-15) THEN
+        TEST2 = ABS(DIST-DMIN)
+      ELSE
+        TEST2 = ABS(DIST-DMIN)/DMIN
+      ENDIF
+C
+      IF (TEST2.GT.1.D-8) THEN
+        VALR(1) = COORPT(1)
+        VALR(2) = COORPT(2)
+        VALR(3) = COORPT(3)
+        VALR(4) = DIST
+        VALR(5) = DMIN
+        CALL U2MESR('A','CONTACT3_12',5,VALR)
+        KSI1 = KSI1M
+        KSI2 = KSI2M
+        CALL DCOPY(3,TAU1M,1,TAU1,1)
+        CALL DCOPY(3,TAU2M,1,TAU2,1)
+        NIVERR = 0
+      ENDIF
+C
+      IF (NIVERR.EQ.1) THEN
+        WRITE(6,*) 'POINT A PROJETER: ',COORPT(1),COORPT(2),COORPT(3)
+        WRITE(6,*) 'MAILLE          ',ALIAS,NNO
+        WRITE(6,*) 'DISTANCE        ',DIST,DMIN
+        
+        DO 70 INO = 1,NNO 
+          WRITE(6,*) '  NOEUD ',INO
+          WRITE(6,*) '   (X,Y,Z)',COORMA(3*(INO-1)+1) ,
+     &                          COORMA(3*(INO-1)+2),
+     &                          COORMA(3*(INO-1)+3)
+  70    CONTINUE     
+        WRITE(6,*) 'KSI : ',KSI1,KSI2
+        WRITE(6,*) 'DKSI: ',DKSI1,DKSI2
+        WRITE(6,*) 'ITER: ',ITER
+        WRITE(6,*) 'TEST: ',SQRT(DKSI1*DKSI1+DKSI2*DKSI2),TEST
+        WRITE(6,*) 'REFE: ',(KSI1*KSI1+KSI2*KSI2),REFE,EPS   
+      ENDIF                  
+C      
       END

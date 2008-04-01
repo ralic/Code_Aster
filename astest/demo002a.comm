@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -152,6 +152,7 @@ CHCONT=AFFE_CHAR_MECA(MODELE=MO,
                      CONTACT=_F(GROUP_MA_MAIT='L3',
                                 GROUP_MA_ESCL='L4',
                                 SANS_GROUP_NO='F2',
+                                TOLE_PROJ_EXT = 0.75,
                                 REAC_GEOM="AUTOMATIQUE"),
                                 )
 

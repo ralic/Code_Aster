@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,7 +83,9 @@ CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
                                 DRZ=0.0,),),
                    CONTACT=(_F(GROUP_MA_MAIT='COQU1',
                                GROUP_MA_ESCL='POUT1',
-                               VECT_NORM_ESCL=(0.0,0.0,-1.0,),
+                               NORMALE = 'ESCL',
+                               VECT_ESCL = 'FIXE',
+                               ESCL_FIXE=(0.0,0.0,-1.0,),
                                DIST_ESCL=-0.2,
                                APPARIEMENT='NODAL',
                                METHODE='GCP',
@@ -92,7 +94,9 @@ CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
                                ),
                             _F(GROUP_MA_MAIT='COQU2',
                                GROUP_MA_ESCL='POUT2',
-                               VECT_NORM_ESCL=(0.0,0.0,-1.0,),
+                               NORMALE = 'ESCL',
+                               VECT_ESCL = 'FIXE',
+                               ESCL_FIXE=(0.0,0.0,-1.0,),
                                APPARIEMENT='NODAL',
                                METHODE='GCP',
                                RESI_ABSO=1.E-8,

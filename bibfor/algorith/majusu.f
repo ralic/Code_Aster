@@ -1,7 +1,7 @@
       SUBROUTINE MAJUSU(NOMA  ,DEFICO,RESOCO,DEPMOI,DEPDEL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,14 +72,14 @@ C
       INTEGER      JDIM,NDIM,NUNO,JUSU
       INTEGER      I,J,K,INO,IMA
       INTEGER      NCMPMX,JMAESC,NTMA
-      INTEGER      JDEPDE,JDEPDL,JDEMDE,JDEMDL,NBNOC,GD
+      INTEGER      JDEPDE,JDEPDL,JDEMDE,JDEMDL,NBPC,GD
       CHARACTER*19 USUMOI,USUPLU,USUFIX,USUINI
       INTEGER      JVALVM,JVALVP,JVALVI,JVALVX      
-      INTEGER      NUMAMA,NUMAES,NNOM,NNOE,NTPC
+      INTEGER      NUMMAM,NUMMAE,NNOM,NNOE,NTPC
       REAL*8       KWEAR,HWEAR,TAU1(3),TAU2(3),NORM(3),XPG,YPG,FF(9)
       REAL*8       DEPLPE(3),DEPLME(3),DEPLPM(3),DEPLMM(3),LAGSCP
       REAL*8       DEPPT(3),DEPMT(3),DEP(3),DISSIP,C(3,3)
-      REAL*8       R8BID
+      REAL*8       R8BID,NOOR,R8PREM
       CHARACTER*8  ALIAS,K8BID,NOMGD
       CHARACTER*19 DEPDES,DEPCN,DEPMOS,DEMCN
       CHARACTER*24 K24BID,K24BLA
@@ -182,22 +182,25 @@ C
       
       IF (NDIM .EQ. 3) THEN  
         DO 61 IMA = 1,NTMA  
-          NBNOC = ZI(JMAESC+ZMAES* (IMA-1)+3)
-          IZONE = ZI(JMAESC+ZMAES* (IMA-1)+2)
+          NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
+          IZONE = ZI(JMAESC+ZMAES*(IMA-1)+2)
           CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE_K',
      &                IBID  ,KWEAR ,K24BID,LBID)  
           CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE_H',
      &                IBID  ,HWEAR ,K24BID,LBID)                 
-          DO 51 INO = 1,NBNOC
-            NUMAES   = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+1))
-            NUMAMA   = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+2))
+          DO 51 INO = 1,NBPC
+            NUMMAE   = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+1))
+            NUMMAM   = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+2))
             TAU1(1)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+6)
             TAU1(2)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+7)
             TAU1(3)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+8)
             TAU2(1)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+9)
             TAU2(2)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+10)
             TAU2(3)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+11)
-            CALL MMNORM(NDIM,TAU1,TAU2,NORM)
+            CALL MMNORM(NDIM,TAU1,TAU2,NORM,NOOR)
+            IF (NOOR.LT.R8PREM()) THEN
+              CALL ASSERT(.FALSE.)
+            ENDIF
             
             DO 321 I = 1,NDIM
               DO 311 J = 1,NDIM
@@ -211,7 +214,7 @@ C
 C 
 C --- MAILLE ESCLAVE
 C       
-            CALL MMELTY(NOMA,NUMAES,ALIAS,NNOE,IBID)
+            CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
             YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
             CALL CALFFX(ALIAS,XPG,YPG,FF)            
@@ -223,7 +226,7 @@ C
             DEPLME(3) = 0.D0
             LAGSCP    = 0.D0        
             DO 31 I = 1,NNOE
-              NUNO      = ZI(IACNX1+ZI(ILCNX1-1+NUMAES)+I-2)
+              NUNO      = ZI(IACNX1+ZI(ILCNX1-1+NUMMAE)+I-2)
               DEPLPE(1) = DEPLPE(1)+ZR(JDEPDE-1+6*(NUNO-1)+1)*FF(I)
               DEPLPE(2) = DEPLPE(2)+ZR(JDEPDE-1+6*(NUNO-1)+2)*FF(I)
               DEPLPE(3) = DEPLPE(3)+ZR(JDEPDE-1+6*(NUNO-1)+3)*FF(I)
@@ -235,7 +238,7 @@ C
 C 
 C --- MAILLE MAITRE
 C             
-            CALL MMELTY(NOMA,NUMAMA,ALIAS,NNOM,IBID)
+            CALL MMELTY(NOMA,NUMMAM,ALIAS,NNOM,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
             YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
             CALL CALFFX(ALIAS,XPG,YPG,FF)   
@@ -246,7 +249,7 @@ C
             DEPLMM(2) = 0.D0
             DEPLMM(3) = 0.D0
             DO 41 I = 1,NNOM
-              NUNO = ZI(IACNX1+ZI(ILCNX1-1+NUMAMA)+I-2)
+              NUNO = ZI(IACNX1+ZI(ILCNX1-1+NUMMAM)+I-2)
               DEPLPM(1)=DEPLPM(1)+ZR(JDEPDE-1+6*(NUNO-1)+1)*FF(I)
               DEPLPM(2)=DEPLPM(2)+ZR(JDEPDE-1+6*(NUNO-1)+2)*FF(I)
               DEPLPM(3)=DEPLPM(3)+ZR(JDEPDE-1+6*(NUNO-1)+3)*FF(I)
@@ -288,22 +291,25 @@ C
             JVALVI = JVALVI + (NCMPMX - NCMPU) 
             JVALVX = JVALVX + (NCMPMX - NCMPU)     
  51       CONTINUE
-          NTPC = NTPC + NBNOC
+          NTPC = NTPC + NBPC
  61     CONTINUE
       ELSE IF (NDIM.EQ.2) THEN
         DO 62 IMA = 1,NTMA
-          NBNOC = ZI(JMAESC+ZMAES* (IMA-1)+3)
+          NBPC  = ZI(JMAESC+ZMAES* (IMA-1)+3)
           IZONE = ZI(JMAESC+ZMAES* (IMA-1)+2)
           CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE_K',
      &                IBID  ,KWEAR ,K24BID,LBID)  
           CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE_H',
      &                IBID  ,HWEAR ,K24BID,LBID)     
-          DO 52 INO = 1,NBNOC
-            NUMAES   = NINT(ZR(JTABF+ZTABF* (NTPC+INO-1)+1))
-            NUMAMA   = NINT(ZR(JTABF+ZTABF* (NTPC+INO-1)+2))
+          DO 52 INO = 1,NBPC
+            NUMMAE  = NINT(ZR(JTABF+ZTABF* (NTPC+INO-1)+1))
+            NUMMAM   = NINT(ZR(JTABF+ZTABF* (NTPC+INO-1)+2))
             TAU1(1)  = ZR(JTABF+ZTABF* (NTPC+INO-1)+6)
             TAU1(2)  = ZR(JTABF+ZTABF* (NTPC+INO-1)+7)
-            CALL MMNORM(NDIM,TAU1,TAU2,NORM)
+            CALL MMNORM(NDIM,TAU1,TAU2,NORM,NOOR)
+            IF (NOOR.LT.R8PREM()) THEN
+              CALL ASSERT(.FALSE.)
+            ENDIF
         
             DO 323 I = 1,NDIM
               DO 313 J = 1,NDIM
@@ -317,7 +323,7 @@ C
 C 
 C --- MAILLE ESCLAVE
 C       
-            CALL MMELTY(NOMA,NUMAES,ALIAS,NNOE,IBID)
+            CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
             YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
             CALL CALFFX(ALIAS,XPG,YPG,FF) 
@@ -327,7 +333,7 @@ C
             DEPLME(2) = 0.D0
             LAGSCP    = 0.D0  
             DO 32 I = 1,NNOE
-              NUNO = ZI(IACNX1+ZI(ILCNX1-1+NUMAES)+I-2)
+              NUNO = ZI(IACNX1+ZI(ILCNX1-1+NUMMAE)+I-2)
               DEPLPE(1) = DEPLPE(1)+ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
               DEPLPE(2) = DEPLPE(2)+ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
               DEPLME(1) = DEPLME(1)+ZR(JDEMDE-1+4*(NUNO-1)+1)*FF(I)
@@ -337,7 +343,7 @@ C
 C 
 C --- MAILLE MAITRE
 C             
-            CALL MMELTY(NOMA,NUMAMA,ALIAS,NNOM,IBID)
+            CALL MMELTY(NOMA,NUMMAM,ALIAS,NNOM,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
             YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
             CALL CALFFX(ALIAS,XPG,YPG,FF)   
@@ -346,7 +352,7 @@ C
             DEPLMM(1) = 0.D0
             DEPLMM(2) = 0.D0
             DO 42 I = 1,NNOM
-              NUNO = ZI(IACNX1+ZI(ILCNX1-1+NUMAMA)+I-2)
+              NUNO = ZI(IACNX1+ZI(ILCNX1-1+NUMMAM)+I-2)
               DEPLPM(1)=DEPLPM(1)+ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
               DEPLPM(2)=DEPLPM(2)+ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
               DEPLMM(1)=DEPLMM(1)+ZR(JDEMDE-1+4*(NUNO-1)+1)*FF(I)
@@ -387,7 +393,7 @@ C
             JVALVI = JVALVI + (NCMPMX - NCMPU) 
             JVALVX = JVALVX + (NCMPMX - NCMPU)
  52       CONTINUE
-          NTPC = NTPC + NBNOC
+          NTPC = NTPC + NBPC
  62     CONTINUE      
       ELSE
         CALL ASSERT(.FALSE.)

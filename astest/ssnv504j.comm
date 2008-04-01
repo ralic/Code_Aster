@@ -1,4 +1,4 @@
-# MODIF  DATE 09/07/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE   EXTRUSION D'UN LOPIN AVEC LE CONTACT GLISSIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,7 +115,6 @@ DDLIMP=AFFE_CHAR_MECA(MODELE=MO,
                                   
 CONTACT=AFFE_CHAR_MECA(MODELE=MO,
                        CONTACT=(_F(APPARIEMENT   ='MAIT_ESCL',
-                                   RECHERCHE     ='NOEUD_BOUCLE',
                                    METHODE       ='CONTINUE',
                                    GLISSIERE     ='OUI',
                                    ALARME_JEU    =.1,
@@ -125,7 +124,6 @@ CONTACT=AFFE_CHAR_MECA(MODELE=MO,
                                    GROUP_MA_MAIT ='FIL_MAI1',
                                    GROUP_MA_ESCL ='LOP_ESC1',),
                                 _F(APPARIEMENT   ='MAIT_ESCL',
-                                   RECHERCHE     ='NOEUD_BOUCLE',
                                    METHODE       ='CONTINUE',
                                    ITER_GEOM_MAXI=0,
                                    ITER_CONT_MAXI=50,

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,11 +117,9 @@ DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
 
 CONT=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               RECHERCHE='NOEUD_BOUCLE',
                                REAC_GEOM='CONTROLE',
                                NB_REAC_GEOM=2,
                                METHODE='CONTRAINTE',
-                              # FROTTEMENT='SANS',
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
                                SANS_GROUP_NO=('E','S'),),
@@ -184,15 +182,7 @@ IMPR_TABLE(TABLE=TAB_REAC,
 
 # TESTS DE NON REGRESSION
 # Xz = 0.
-TEST_RESU(RESU=_F(RESULTAT=SSNV506,
-                  NOEUD='N124',
-                  INST=0.1,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=1.76516E+04,
-                  PRECISION=5.E-5,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='7.3.23',),);
+
 
 TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOEUD='N125',
@@ -211,10 +201,10 @@ TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   INST=0.1,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
-                  VALE=1.79178E+04,
+                  VALE=5.85965E+04,
                   PRECISION=5.E-5,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='7.3.23',),);
+                  VERSION='8.2.17',),);
 
 TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOEUD='N351',

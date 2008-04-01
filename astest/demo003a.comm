@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -69,11 +69,9 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                              _F(GROUP_MA=('GM13'),
                                 DX=0.0,),
                                 ),
-                   CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                              GROUP_MA_MAIT='GM11',
+                   CONTACT=_F(GROUP_MA_MAIT='GM11',
                               GROUP_MA_ESCL='GM12',
                               NORMALE='MAIT_ESCL',
-                              RECHERCHE = 'NOEUD_BOUCLE',
                               ),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,

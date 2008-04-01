@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,14 +69,10 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(GROUP_MA_MAIT  = 'LBATI',
                                GROUP_MA_ESCL  = 'LCONTA',
-                               APPARIEMENT = 'MAIT_ESCL',
-                               RECHERCHE   = 'NOEUD_VOISIN',
-                               NORMALE     = 'MAIT',
                                REAC_GEOM   = 'SANS',
                                METHODE     = 'LAGRANGIEN',
                                FROTTEMENT  = 'COULOMB',
-                               COULOMB     = 1.0,
-                               PROJECTION  = 'LINEAIRE',)
+                               COULOMB     = 1.0,)
                     )
 #
 #

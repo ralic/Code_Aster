@@ -2,7 +2,7 @@
      &                  NDIM  ,NZOCO ,IZONE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,11 +70,11 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      NOC
       CHARACTER*16 FORMUL,METHOD,GLIS
-      LOGICAL      LGLIS
+      LOGICAL      LGLIS,LMAIL
       CHARACTER*16 VALK(2)
       CHARACTER*24 FORMCO
       INTEGER      JFORM
-      INTEGER      OLDFOR,NEWFOR 
+      INTEGER      OLDFOR,NEWFOR,FORM 
 C
 C ----------------------------------------------------------------------
 C
@@ -120,15 +120,16 @@ C
       END IF
 C
       IF (FORMUL.EQ.'DISCRETE') THEN
-        ZI(JFORM-1+IZONE) = 1
+        FORM   = 1
       ELSEIF (FORMUL.EQ.'CONTINUE') THEN
-        ZI(JFORM-1+IZONE) = 2
+        FORM   = 2
       ELSEIF (FORMUL.EQ.'XFEM') THEN
-        ZI(JFORM-1+IZONE) = 3
+        FORM   = 3
       ELSE
         VALK(1) = FORMUL
         CALL U2MESK('F','CONTACT3_1',1,VALK)
       ENDIF
+      ZI(JFORM-1+IZONE) = FORM
 C
 C --- TEST UNICITE DE LA FORMULATION
 C
@@ -159,7 +160,15 @@ C --- CREATION DES SD IDOINES
 C
       IF (IZONE.EQ.1) THEN
         CALL CFMXSD(CHAR  ,FORMUL,NZOCO)
-      ENDIF                
+      ENDIF    
+C
+C --- LECTURE PARAMETRES SPECIFIQUES FORMULATION MAILLEE
+C
+      LMAIL  = (FORM.EQ.1).OR.(FORM.EQ.2)               
+      IF (LMAIL) THEN
+        CALL CAZOCM(CHAR  ,MOTFAC,FONREE,NDIM  ,FORMUL,
+     &              IZONE )
+      ENDIF    
 C
 C --- LECTURE PARAMETRES SPECIFIQUES SUIVANT FORMULATION
 C      

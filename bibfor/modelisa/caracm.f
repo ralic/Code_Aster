@@ -1,0 +1,91 @@
+      SUBROUTINE CARACM(CHAR  ,NZOCO)
+C      
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C 
+      IMPLICIT NONE
+      CHARACTER*8  CHAR
+      INTEGER      NZOCO
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+C
+C CREATION DES SDS DE DEFINITION DU CONTACT
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
+C IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      CFMMVD,ZTOLE,ZDIRN
+      CHARACTER*24 DIRAPP,TOLECO,DIRNOR
+      INTEGER      JDIRAP,JTOLE,JDIRNO
+      CHARACTER*24 JEUSUP,JEUFO1,JEUFO2,JEUFO3
+      INTEGER      JJSUP,JJFO1,JJFO2,JJFO3     
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C   
+C --- NOMS SDS
+C  
+      TOLECO = CHAR(1:8)//'.CONTACT.TOLECO'       
+      DIRAPP = CHAR(1:8)//'.CONTACT.DIRAPP'
+      DIRNOR = CHAR(1:8)//'.CONTACT.DIRNOR'      
+      JEUSUP = CHAR(1:8)//'.CONTACT.JSUPCO'
+      JEUFO1 = CHAR(1:8)//'.CONTACT.JFO1CO'
+      JEUFO2 = CHAR(1:8)//'.CONTACT.JFO2CO'
+      JEUFO3 = CHAR(1:8)//'.CONTACT.JFO3CO'         
+C     
+      ZTOLE = CFMMVD('ZTOLE') 
+      ZDIRN = CFMMVD('ZDIRN')           
+C         
+      CALL WKVECT(JEUFO1,'G V K8',NZOCO        ,JJFO1 )
+      CALL WKVECT(JEUFO2,'G V K8',NZOCO        ,JJFO2 )
+      CALL WKVECT(JEUFO3,'G V K8',NZOCO        ,JJFO3 )
+      CALL WKVECT(TOLECO,'G V R' ,ZTOLE*NZOCO  ,JTOLE )
+      CALL WKVECT(JEUSUP,'G V R' ,NZOCO        ,JJSUP )
+      CALL WKVECT(DIRAPP,'G V R' ,3*NZOCO      ,JDIRAP)
+      CALL WKVECT(DIRNOR,'G V R' ,ZDIRN*NZOCO  ,JDIRNO)                 
+C
+      CALL JEDEMA()
+C
+      END

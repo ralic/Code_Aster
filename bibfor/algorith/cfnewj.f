@@ -1,7 +1,7 @@
-      SUBROUTINE CFNEWJ(NDIM,COORDP,COORDM,NORM,JEU)
+      SUBROUTINE CFNEWJ(NDIM  ,COORDE,COORDP,NORM  ,JEU   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,12 +20,11 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
-      IMPLICIT    NONE
-      INTEGER     NDIM
-      REAL*8      JEU
-      REAL*8      COORDP(3)
-      REAL*8      COORDM(3)    
-      REAL*8      NORM(3)
+      IMPLICIT    NONE      
+      INTEGER      NDIM
+      REAL*8       JEU
+      REAL*8       COORDE(3),COORDP(3)    
+      REAL*8       NORM(3)
 C      
 C ----------------------------------------------------------------------
 C
@@ -37,17 +36,21 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NDIM   : DIMENSION DU PROBLEME
-C IN  COORDP : COORDONNEES DU NOEUD ESCLAVE P
-C IN  COORDM : COORDONNEES DE LA PROJECTION M DU NOEUD P SUR LA MAILLE
-C IN  NORM   : NORMALE LISSEE/MOYENNE (OPTIONS LISSA/MOYEN)
+C IN  COORDE : COORDONNEES DU NOEUD ESCLAVE E
+C IN  COORDP : COORDONNEES DE LA PROJECTION DU NOEUD ESCLAVE E
+C IN  NORM   : NORMALE 
 C OUT JEU    : JEU
 C
 C ----------------------------------------------------------------------
 C   
-      JEU = (COORDM(1)-COORDP(1))*NORM(1) +
-     &      (COORDM(2)-COORDP(2))*NORM(2)
+
+C
+C --- CALCUL JEU
+C
+      JEU = (COORDP(1)-COORDE(1))*NORM(1) +
+     &      (COORDP(2)-COORDE(2))*NORM(2)
       IF (NDIM.EQ.3) THEN 
-        JEU = JEU + (COORDM(3)-COORDP(3))*NORM(3)
+        JEU = JEU + (COORDP(3)-COORDE(3))*NORM(3)
       ENDIF     
 
       END

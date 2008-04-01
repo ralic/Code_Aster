@@ -1,7 +1,7 @@
       SUBROUTINE CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,IFM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
@@ -25,12 +26,15 @@ C
       CHARACTER*24 RESOCO
       INTEGER      IFM
       INTEGER      NBLIAI
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/ALGOCP/FRO2GD/FROGDP/FROLGD/FROPGD
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE DISCRETE - APPARIEMENT - UTILITAIRE)
 C
 C IMPRESSION DES LIAISONS ESCLAVE/MAITRE
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
@@ -165,7 +169,7 @@ C
           NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
         ELSE 
-          TYPE2  =' NON'
+          TYPE2  = ' NON'
           NOMMAI = ' APPARIE'
         END IF
 C

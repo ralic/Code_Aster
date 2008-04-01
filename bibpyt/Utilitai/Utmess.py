@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,7 @@ import sys
 import traceback
 import imp
 import re
+from sets import Set
 
 # protection pour eficas
 try:
@@ -59,6 +60,9 @@ class MESSAGE_LOGGER:
       
       # compteur des alarmes émises { 'id_alarm' : count }
       self.count_alarm = {}
+      
+      # alarmes à ignorer
+      self._ignored_alarm = {}
       
       # on prépare le dictionnaire des valeurs par défaut des arguments (dicarg) :
       self.default_args = {}
@@ -172,8 +176,6 @@ class MESSAGE_LOGGER:
             'corps_message' : fmt_msg % dicarg,
             'context_info'  : self.get_context(ctxt_msg, idmess, dicarg),
          }
-         if code == 'I':
-            dictmess['id_message'] = ''
       except Exception, msg:
          dictmess = {
             'code'          : code,
@@ -252,7 +254,7 @@ Exception : %s
       dglob['context_info'] = ''.join(dglob['liste_context'])
       
       # liste des unités d'impression en fonction du type de message
-      l_unit = self.list_unit(dglob['code'])
+      l_unit = self.list_unit(dglob['code'], dglob['id_message'])
       
       # texte final et impression
       txt = self.format_message(dglob)
@@ -260,6 +262,52 @@ Exception : %s
          aster.affiche(unite, txt)
       
       self.init_buffer()
+
+# -----------------------------------------------------------------------------
+   def disable_alarm(self, idmess):
+      """Ignore l'alarme "idmess".
+      """
+      self._ignored_alarm[idmess] = self._ignored_alarm.get(idmess, 0) + 1
+#      print 'Ignorer %s (%d)' % (idmess, self._ignored_alarm[idmess])
+      
+   def reset_alarm(self, idmess):
+      """Réactive l'alarme "idmess".
+      """
+      self._ignored_alarm[idmess] = min(self._ignored_alarm.get(idmess, 0) - 1, 0)
+
+   def is_alarm_disabled(self, idmess):
+      """Doit-on ignorer l'alarme "idmess" ?
+      """
+      return self._ignored_alarm.get(idmess, 0) > 0
+
+   def info_alarm(self, only_ignored=False):
+      """Fournit les infos sur les alarmes activées.
+      """
+      s_alarm = Set(self._ignored_alarm.keys())
+      if not only_ignored:
+         s_alarm.update(self.count_alarm.keys())
+      l_alarm = list(s_alarm)
+      l_alarm.sort()
+      # on sépare des éventuels messages en attente
+      self.print_buffer_content()
+      # entete
+      dictmess = self.get_message('I', 'SUPERVIS_89')
+      self.add_to_buffer(dictmess)
+      # occurrences
+      for idmess in l_alarm:
+         mark = ' '
+         if self._ignored_alarm.get(idmess) is not None:
+            mark = '(*)'
+         dictmess = self.get_message('I', 'SUPERVIS_90', valk=(mark, idmess),
+                                     vali=self.count_alarm.get(idmess, 0))
+         self.add_to_buffer(dictmess)
+      if len(l_alarm) == 0:
+         dictmess = self.get_message('I', 'SUPERVIS_92')
+         self.add_to_buffer(dictmess)
+      # fermeture
+      dictmess = self.get_message('I', 'SUPERVIS_91')
+      self.add_to_buffer(dictmess)
+      self.print_buffer_content()
 
 # -----------------------------------------------------------------------------
    def update_counter(self):
@@ -273,26 +321,27 @@ Exception : %s
          self.erreur_E = False
       elif code == 'A':
          idmess = self.get_current_id()
-         # nombre d'occurence de cette alarme
+         # nombre d'occurrence de cette alarme
          self.count_alarm[idmess] = self.count_alarm.get(idmess, 0) + 1
-         if self.count_alarm[idmess] == nmax_alarm:
+         
+         if self.is_alarm_disabled(idmess) or self.count_alarm[idmess] > nmax_alarm:
+            # ignorer l'alarme ou count_alarm > max, on vide le buffer
+            self.init_buffer()
+         elif self.count_alarm[idmess] == nmax_alarm:
             # Pour mettre en relief le message SUPERVIS_41, on le sépare
             # de la dernière alarme
             self.print_buffer_content()
             dictmess = self.get_message(code, 'SUPERVIS_41',
                                         valk=idmess, vali=nmax_alarm)
             self.add_to_buffer(dictmess)
-         elif self.count_alarm[idmess] > nmax_alarm:
-            # count_alarm > 5, on vide le buffer
-            self.init_buffer()
 
 # -----------------------------------------------------------------------------
-   def check_counter(self, silent=False):
+   def check_counter(self, info_alarm=0, silent=0):
       """Méthode "jusqu'ici tout va bien" !
       Si des erreurs <E> se sont produites, on arrete le code en <F>.
       Appelée par FIN ou directement au cours de l'exécution d'une commande.
       Retourne un entier : 0 si tout est ok.
-      Si silent==True, on n'émet pas de message, on ne s'arrete pas.
+      Si silent==1, on n'émet pas de message, on ne s'arrete pas.
       """
       iret = 0
       if self.erreur_E:
@@ -300,6 +349,8 @@ Exception : %s
          self.erreur_E = False
          if not silent:
             self.print_message('F', 'SUPERVIS_6', exception=True)
+      if info_alarm:
+         self.info_alarm()
       return iret
 
 # -----------------------------------------------------------------------------
@@ -351,7 +402,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       }
       dmsg = dictmess.copy()
       dmsg['type_message'] = self.get_type_message(dictmess['code'])
-      if dmsg['id_message'] != '':
+      if dmsg['id_message'] != 'I':
          dmsg['str_id_message'] = '<%s>' % dmsg['id_message']
       else:
          dmsg['str_id_message'] = ''
@@ -395,7 +446,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       return clean_string(os.linesep.join(l_txt))
 
 # -----------------------------------------------------------------------------
-   def list_unit(self, code):
+   def list_unit(self, code, idmess):
       """Retourne la liste des noms de fichiers (logiques) sur lesquels doit
       etre imprimé le message.
       """
@@ -408,6 +459,9 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       }
       d['F'] = d['S'] = d['Z'] = d['E']
       d['X'] = d['A']
+      # exceptions pour quelques messages particuliers
+      if idmess == 'SUPERVIS_89':
+         code = 'A'
       return d.get(code, d['F'])
 
 # -----------------------------------------------------------------------------

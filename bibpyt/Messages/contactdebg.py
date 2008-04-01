@@ -1,4 +1,4 @@
-#@ MODIF contactdebg Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contactdebg Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,10 +116,6 @@ cata_msg={
 
 23: _("""
  <CONTACT_2> Appariement de type maitre/esclave - Creation de l'objet pour appariement symetrique. 
-"""),
-
-98: _("""
- <CONTACT> Erreur fatale <%(i1)s> dans <%(k1)s>: contacter les developpeurs
 """),
 
 99: _("""

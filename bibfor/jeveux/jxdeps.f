@@ -1,6 +1,6 @@
       SUBROUTINE JXDEPS ( IADINI , IADFIN , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 31/03/2008   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
 C TOLE CFT_720 CFT_726 CFT_726 CRP_18 CRS_508
       IMPLICIT REAL*8 (A-H,O-Z)
 C             ROUTINE AVEC ADHERENCE SYSTEME    CRAY
-C             FONCTION(S) UTILISEE(S) : AND
+C             FONCTION(S) UTILISEE(S) : IAND
 C
       INTEGER             IADINI , IADFIN , LSO
 C     ------------------------------------------------------------------
@@ -35,9 +35,9 @@ C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C DEB ------------------------------------------------------------------
-      IF ( AND ( JK1ZON + IADINI - 1 , MSLOIS ) .EQ. 0 .AND.
-     +     AND ( JK1ZON + IADFIN - 1 , MSLOIS ) .EQ. 0 .AND.
-     +     AND ( LSO , MSLOIS ) .EQ. 0          ) THEN
+      IF ( IAND ( JK1ZON + IADINI - 1 , MSLOIS ) .EQ. 0 .AND.
+     +     IAND ( JK1ZON + IADFIN - 1 , MSLOIS ) .EQ. 0 .AND.
+     +     IAND ( LSO , MSLOIS ) .EQ. 0          ) THEN
          JINI = ( JK1ZON + IADINI - 1 ) / LOIS + 1
          JFIN = ( JK1ZON + IADFIN - 1 ) / LOIS + 1
          IF ( JINI .GT. JFIN ) THEN

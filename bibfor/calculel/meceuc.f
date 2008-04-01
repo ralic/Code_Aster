@@ -1,16 +1,16 @@
-      SUBROUTINE MECEUC(STOP,POUX,OPTION,LIGREL,NIN,LCHIN,LPAIN,
-     &                 NOU,LCHOU,LPAOU,BASE)
+      SUBROUTINE MECEUC(STOP,POUX,OPTION,LIGREL,NIN,LCHIN,LPAIN,NOU,
+     &                  LCHOU,LPAOU,BASE)
 
       IMPLICIT NONE
 
       INTEGER NIN,NOU
-      CHARACTER*1   STOP
-      CHARACTER*8   POUX
+      CHARACTER*1 STOP
+      CHARACTER*8 POUX
       CHARACTER*(*) BASE,OPTION
       CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGREL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 31/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,9 +71,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 LCH1,LCH2,CHDYNR,CHDYNI,REEL,IMAG
       CHARACTER*19 CHACCR,CHACCI,CHDEPR,CHDEPI
       CHARACTER*16 OPTIO2
-      CHARACTER*8  NOMGD
-      INTEGER      IBID,I,IDESC,ICELD,GD,INDIC1,INDIC2,INDIC3,IRET
-      INTEGER      INDIC4
+      CHARACTER*8 NOMGD
+      INTEGER IBID,I,IDESC,ICELD,GD,INDIC1,INDIC2,INDIC3,IRET
+      INTEGER INDIC4
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -83,197 +83,181 @@ C
       REEL='&&MECEUC.REEL'
       LCH1='&&MECEUC.LCH1'
       LCH2='&&MECEUC.LCH2'
-      CHDYNR ='&&MECEUC.CHDYNR'
-      CHDYNI ='&&MECEUC.CHDYNI'
-      CHACCR ='&&MECEUC.CHACCR'
-      CHACCI ='&&MECEUC.CHACCI'
-      CHDEPR ='&&MECEUC.CHDEPR'
-      CHDEPI ='&&MECEUC.CHDEPI'
+      CHDYNR='&&MECEUC.CHDYNR'
+      CHDYNI='&&MECEUC.CHDYNI'
+      CHACCR='&&MECEUC.CHACCR'
+      CHACCI='&&MECEUC.CHACCI'
+      CHDEPR='&&MECEUC.CHDEPR'
+      CHDEPI='&&MECEUC.CHDEPI'
+      INDIC1=0
+      INDIC2=0
+      INDIC3=0
+      INDIC4=0
 
-C --- ON DIFFERENCIE LES OPTIONS SELON LE CHAMP EN ENTREE
-C     DANS CE CAS LE MODE LOCAL EST PDEPLAR ( CHAMP DEPL_X )
 
-      IF ((OPTIO2.EQ.'SIEF_ELGA_DEPL').OR.
-     &    (OPTIO2.EQ.'SIGM_ELNO_DEPL').OR.
-     &    (OPTIO2.EQ.'EPSI_ELNO_DEPL').OR.
-     &    (OPTIO2.EQ.'EPSI_ELGA_DEPL').OR.
-     &    (OPTIO2.EQ.'EFGE_ELNO_DEPL').OR.
-     &    (OPTIO2.EQ.'EFGE_ELNO_SENS').OR.
-     &    (OPTIO2.EQ.'SIPO_ELNO_DEPL').OR.
-     &    (OPTIO2.EQ.'SIPO_ELNO_SENS').OR.
-     &    (OPTIO2.EQ.'EPOT_ELEM_DEPL').OR.
-     &    (OPTIO2.EQ.'ECIN_ELEM_DEPL') ) THEN
-         DO 10 I=1,NIN
-            IF (LPAIN(I).EQ.'PDEPLAR') THEN
-               INDIC1=I
-               GOTO 10
-            ENDIF
- 10      CONTINUE
-         CALL JEVEUO(LCHIN(INDIC1)(1:19)//'.DESC','L',IDESC)
-         GD=ZI(IDESC)
-         CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)
-C        LE CHAMP EST REEL, ON FAIT UN APPEL A CALCUL ET ON SORT
-         IF ( NOMGD.EQ.'DEPL_R') THEN
-            CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
-     &                  LPAOU,BASE)
-            GOTO 9999
-C     LE CHAMP EST COMPLEXE, ON LE DIVISE EN PARTIE REELLE ET PARTIE
-C     IMAGINAIRE PUIS ON APPELLE CALCUL SUR CHACUN DES CHAMPS
-         ELSE IF ( NOMGD.EQ.'DEPL_C') THEN
-            CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
-C     DANS LE CAS DE POUTRE A LA POUX ON DOIT AUSSI DIVISER LE CHAMP
-C     PCHDYNR
-            IF (POUX.EQ.'OUI') THEN
-              DO 20 I=1,NIN
-                IF (LPAIN(I).EQ.'PCHDYNR') THEN
-                  INDIC2=I
-                ENDIF
- 20           CONTINUE
-              CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
-              LCHIN(INDIC1)=REEL
-              LCHIN(INDIC2)=CHDYNR
-              IF(OPTIO2(11:14).EQ.'SENS') THEN
-                 DO 25 I=1,NIN
-                   IF (LPAIN(I).EQ.'PACCSEN') THEN
-                     INDIC3=I
-                   ENDIF
- 25              CONTINUE
-                 CALL SEPACH(LCHIN(INDIC3),'V',CHACCR,CHACCI)
-                 LCHIN(INDIC1)=REEL
-                 LCHIN(INDIC3)=CHACCR
 
-                 DO 35 I=1,NIN
-                   IF (LPAIN(I).EQ.'PDEPSEN') THEN
-                     INDIC4=I
-                   ENDIF
- 35              CONTINUE 
-                 CALL SEPACH(LCHIN(INDIC4),'V',CHDEPR,CHDEPI)
-                 LCHIN(INDIC1)=REEL
-                 LCHIN(INDIC4)=CHDEPR
-              ENDIF
+C     1. CHAMP COMPLEXE = DEPL
+C     -----------------------------------------------
+      IF ((OPTIO2.EQ.'SIEF_ELGA_DEPL') .OR.
+     &    (OPTIO2.EQ.'SIGM_ELNO_DEPL') .OR.
+     &    (OPTIO2.EQ.'EPSI_ELNO_DEPL') .OR.
+     &    (OPTIO2.EQ.'EPSI_ELGA_DEPL') .OR.
+     &    (OPTIO2.EQ.'EFGE_ELNO_DEPL') .OR.
+     &    (OPTIO2.EQ.'EFGE_ELNO_SENS') .OR.
+     &    (OPTIO2.EQ.'SIPO_ELNO_DEPL') .OR.
+     &    (OPTIO2.EQ.'SIPO_ELNO_SENS') .OR.
+     &    (OPTIO2.EQ.'EPOT_ELEM_DEPL') .OR.
+     &    (OPTIO2.EQ.'ECIN_ELEM_DEPL')) THEN
+        DO 10 I=1,NIN
+          IF (LPAIN(I).EQ.'PDEPLAR')INDIC1=I
+   10   CONTINUE
+        CALL ASSERT(INDIC1.GT.0)
+        CALL JEVEUO(LCHIN(INDIC1)(1:19)//'.DESC','L',IDESC)
+        GD=ZI(IDESC)
+        CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)
 
-              CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH1,
-     &                    LPAOU,'V')
-              LCHIN(INDIC1)=IMAG
-              LCHIN(INDIC2)=CHDYNI
-              IF(OPTIO2(11:14).EQ.'SENS') THEN
-                 LCHIN(INDIC3)=CHACCI
-                 LCHIN(INDIC4)=CHDEPI
-              ENDIF
-              CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH2,
-     &                    LPAOU,'V')
-C     POUR LES OPTIONS D ENERGIE IL FAUT SOMMER LES RESULTATS
-              IF ((OPTIO2.EQ.'EPOT_ELEM_DEPL').OR.
-     &            (OPTIO2.EQ.'ECIN_ELEM_DEPL')) THEN
-                CALL BARYCH(LCH1,LCH2,1.D0,1.D0,LCHOU(1)(1:19),'G')
-              ELSE
-C     POUR LES AUTRES OPTIONS ON REASSEMBLE LES DEUX CHAMPS
-C     EN UN CHAMP COMPLEXE
-                CALL ASSACH(LCH1,LCH2,'G',LCHOU(1)(1:19))
-              ENDIF
-            ELSE
-              LCHIN(INDIC1)=REEL
-              CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH1,
-     &                    LPAOU,'V')
-              LCHIN(INDIC1)=IMAG
-              CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH2,
-     &                    LPAOU,'V')
-              IF ((OPTIO2.EQ.'EPOT_ELEM_DEPL').OR.
-     &            (OPTIO2.EQ.'ECIN_ELEM_DEPL')) THEN
-C     POUR LES OPTIONS D ENERGIE IL FAUT SOMMER LES RESULTATS
-                CALL BARYCH(LCH1,LCH2,1.D0,1.D0,LCHOU(1)(1:19),'G')
-              ELSE
-C     POUR LES AUTRES OPTIONS ON REASSEMBLE LES DEUX CHAMPS
-C     EN UN CHAMP COMPLEXE
-                CALL ASSACH(LCH1,LCH2,'G',LCHOU(1)(1:19))
-              ENDIF
-            ENDIF
-         ELSE
-            CALL U2MESS('F','CALCULEL3_28')
-         ENDIF
 
-C --- DANS CE CAS LE MODE LOCAL EST PCONTRR ( CHAMP SIEF_X )
+        IF (NOMGD.EQ.'DEPL_R') THEN
+C        ----------------------------------
+C         LE CHAMP EST REEL, ON FAIT UN APPEL A CALCUL ET ON SORT
+          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
+     &                LPAOU,BASE)
+          GOTO 70
 
-      ELSE IF ((OPTIO2.EQ.'ENEL_ELGA').OR.
-     &         (OPTIO2.EQ.'ENEL_ELNO_ELGA').OR.
-     &         (OPTIO2.EQ.'SIEF_ELNO_ELGA')) THEN
 
-         INDIC1=0
-         DO 30 I=1,NIN
-            IF (LPAIN(I).EQ.'PCONTRR') THEN
-               INDIC1=I
-CCC               CALL JEEXIN(LCHIN(INDIC1)(1:19)//'.CELD',ICELD)
-CCC               IF(ICELD.NE.0) GOTO 32
-            ENDIF
- 30      CONTINUE
-         CALL ASSERT ( INDIC1.NE.0 )
- 32      CONTINUE
-         CALL DISMOI('F','NOM_GD',LCHIN(INDIC1)(1:19),'CHAMP',
-     &                                                IBID,NOMGD,IBID)
-CC         CALL JEVEUO(LCHIN(INDIC1)(1:19)//'.CELD','L',ICELD)
-CC         GD=ZI(ICELD)
-CC         CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)
-C        LE CHAMP EST REEL, ON FAIT UN APPEL A CALCUL ET ON SORT
-         IF ( NOMGD.EQ.'SIEF_R') THEN
-            CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
-     &                  LPAOU,BASE)
-            GOTO 9999
-C     LE CHAMP EST COMPLEXE, ON LE DIVISE EN PARTIE REELLE ET PARTIE
-C     IMAGINAIRE PUIS ON APPELLE CALCUL SUR CHACUN DES CHAMPS
-         ELSE IF ( NOMGD.EQ.'SIEF_C') THEN
-C     DANS LE CAS DE POUTRE A LA POUX ON DOIT AUSSI DIVISER LE CHAMP
-C     PCHDYNR
-            IF (POUX.EQ.'OUI') THEN
-               DO 40 I=1,NIN
-                 IF (LPAIN(I).EQ.'PCHDYNR') THEN
-                   INDIC2=I
-                 ENDIF
- 40            CONTINUE
-               CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
-               LCHIN(INDIC1)=REEL
-               LCHIN(INDIC2)=CHDYNR
-               CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH1,
-     &                    LPAOU,'V')
-               LCHIN(INDIC1)=IMAG
-               LCHIN(INDIC2)=CHDYNI
-               CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH2,
-     &                     LPAOU,'V')
-               IF (OPTIO2.EQ.'SIEF_ELNO_ELGA') THEN
-C     POUR CETTE OPTION ON REASSEMBLE LES DEUX CHAMPS
-C     EN UN CHAMP COMPLEXE
-                 CALL BARYCH(LCH1,LCH2,1.D0,1.D0,LCHOU(1)(1:19),'G')
-               ELSE
-C     POUR LES OPTIONS D ENERGIE IL FAUT SOMMER LES RESULTATS
-                 CALL ASSACH(LCH1,LCH2,'G',LCHOU(1)(1:19))
-               ENDIF
-            ELSE
-               CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
-               LCHIN(INDIC1)=REEL
-               CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH1,
-     &                     LPAOU,'V')
-               LCHIN(INDIC1)=IMAG
-               CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH2,
-     &                     LPAOU,'V')
-               IF (OPTIO2.EQ.'SIEF_ELNO_ELGA') THEN
-C     POUR CETTE OPTION ON REASSEMBLE LES DEUX CHAMPS
-C     EN UN CHAMP COMPLEXE
-                 CALL ASSACH(LCH1,LCH2,'G',LCHOU(1)(1:19))
-               ELSE
-C     POUR LES OPTIONS D ENERGIE IL FAUT SOMMER LES RESULTATS
-                 CALL BARYCH(LCH1,LCH2,1.D0,1.D0,LCHOU(1)(1:19),'G')
-               ENDIF
-            ENDIF
-         ELSE
-            CALL U2MESS('F','CALCULEL3_28')
-         ENDIF
+        ELSEIF (NOMGD.EQ.'DEPL_C') THEN
+C        ----------------------------------
+C         LE CHAMP EST COMPLEXE, ON LE DIVISE EN PARTIE REELLE ET
+C         PARTIE IMAGINAIRE PUIS ON APPELLE CALCUL SUR CHACUN
+C         DES CHAMPS
+          CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
+          LCHIN(INDIC1)=REEL
+
+          IF (POUX.EQ.'OUI') THEN
+            DO 20 I=1,NIN
+              IF (LPAIN(I).EQ.'PCHDYNR')INDIC2=I
+   20       CONTINUE
+            CALL ASSERT(INDIC2.GT.0)
+            CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
+            LCHIN(INDIC2)=CHDYNR
+          ENDIF
+
+          IF (OPTIO2(11:14).EQ.'SENS') THEN
+            DO 30 I=1,NIN
+              IF (LPAIN(I).EQ.'PACCSEN')INDIC3=I
+   30       CONTINUE
+            CALL ASSERT(INDIC3.GT.0)
+            CALL SEPACH(LCHIN(INDIC3),'V',CHACCR,CHACCI)
+            LCHIN(INDIC3)=CHACCR
+
+            DO 40 I=1,NIN
+              IF (LPAIN(I).EQ.'PDEPSEN')INDIC4=I
+   40       CONTINUE
+            CALL ASSERT(INDIC4.GT.0)
+            CALL SEPACH(LCHIN(INDIC4),'V',CHDEPR,CHDEPI)
+            LCHIN(INDIC4)=CHDEPR
+          ENDIF
+
+C         -- CALCUL 1ERE PARTIE (R):
+          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH1,LPAOU,
+     &                'V')
+
+C         -- CALCUL 2EME PARTIE (I):
+          LCHIN(INDIC1)=IMAG
+          IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
+          IF (OPTIO2(11:14).EQ.'SENS') THEN
+            LCHIN(INDIC3)=CHACCI
+            LCHIN(INDIC4)=CHDEPI
+          ENDIF
+          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH2,LPAOU,
+     &                'V')
+
+
+C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
+          IF ((OPTIO2.EQ.'EPOT_ELEM_DEPL') .OR.
+     &        (OPTIO2.EQ.'ECIN_ELEM_DEPL')) THEN
+            CALL BARYCH(LCH1,LCH2,1.D0,1.D0,LCHOU(1)(1:19),'G')
+          ELSE
+            CALL ASSACH(LCH1,LCH2,'G',LCHOU(1)(1:19))
+          ENDIF
+
+        ELSE
+          CALL U2MESS('F','CALCULEL3_28')
+        ENDIF
+
+
+
+C     2. CHAMP COMPLEXE = SIEF
+C     -----------------------------------------------
+      ELSEIF ((OPTIO2.EQ.'ENEL_ELGA') .OR.
+     &        (OPTIO2.EQ.'ENEL_ELNO_ELGA') .OR.
+     &        (OPTIO2.EQ.'SIEF_ELNO_ELGA')) THEN
+
+
+        DO 50 I=1,NIN
+          IF (LPAIN(I).EQ.'PCONTRR')INDIC1=I
+   50   CONTINUE
+        CALL ASSERT(INDIC1.GT.0)
+        CALL DISMOI('F','NOM_GD',LCHIN(INDIC1)(1:19),'CHAMP',IBID,NOMGD,
+     &              IBID)
+
+        IF (NOMGD.EQ.'SIEF_R') THEN
+C       -------------------------------
+          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
+     &                LPAOU,BASE)
+          GOTO 70
+
+
+        ELSEIF (NOMGD.EQ.'SIEF_C') THEN
+C       -------------------------------
+          CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
+          LCHIN(INDIC1)=REEL
+
+          IF (POUX.EQ.'OUI') THEN
+            DO 60 I=1,NIN
+              IF (LPAIN(I).EQ.'PCHDYNR')INDIC2=I
+   60       CONTINUE
+            CALL ASSERT(INDIC2.GT.0)
+            CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
+            LCHIN(INDIC2)=CHDYNR
+          ENDIF
+
+C         -- CALCUL 1ERE PARTIE (R):
+          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH1,LPAOU,
+     &                'V')
+
+C         -- CALCUL 2EME PARTIE (I):
+          LCHIN(INDIC1)=IMAG
+          IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
+          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCH2,LPAOU,
+     &                'V')
+
+
+C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
+          IF (OPTIO2.EQ.'SIEF_ELNO_ELGA') THEN
+            CALL ASSACH(LCH1,LCH2,'G',LCHOU(1)(1:19))
+          ELSE
+            CALL BARYCH(LCH1,LCH2,1.D0,1.D0,LCHOU(1)(1:19),'G')
+          ENDIF
+
+        ELSE
+          CALL U2MESS('F','CALCULEL3_28')
+        ENDIF
+
+
+
+C     3. AUTRES OPTIONS :
+C     -----------------------------------------------
       ELSE
-C     POUR TOUTE LES AUTRES OPTIONS LE CALCUL EN COMPLEXE N EST PAS
-C     ENCORE AUTORISE ET ON FAIT DONC UN APPEL A CALCUL
-        CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
-     &              LPAOU,BASE)
+C       POUR TOUTE LES AUTRES OPTIONS LE CALCUL EN COMPLEXE N EST PAS
+C       ENCORE AUTORISE ET ON FAIT DONC UN APPEL A CALCUL
+        CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,LPAOU,
+     &              BASE)
       ENDIF
 
-9999  CONTINUE
+
+
+   70 CONTINUE
       CALL DETRSD('CHAMP',LCH1)
       CALL DETRSD('CHAMP',LCH2)
       CALL DETRSD('CHAMP',IMAG)

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,7 +103,6 @@ PTAN=AFFE_CHAR_MECA(MODELE=MODE,
 # DEFINITION DU CONTACT
 CTACC=AFFE_CHAR_MECA(MODELE=MODE,
                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               RECHERCHE='NOEUD_BOUCLE',
                                METHODE='CONTINUE',
                                ITER_FROT_MAXI=10,
                                ITER_GEOM_MAXI = 5,

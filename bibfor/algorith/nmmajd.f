@@ -6,7 +6,7 @@
      &                  ROMK)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -145,6 +145,12 @@ C
         CALL NMDEBG('VECT',DEPPLU,6)        
         WRITE (IFM,*) '<MECANONLINE> ...... DEPDEL : '
         CALL NMDEBG('VECT',DEPDEL,6)
+        IF (NDYNLO(SDDYNA,'DYNAMIQUE')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... VITPLU : '
+          CALL NMDEBG('VECT',VITPLU,6) 
+          WRITE (IFM,*) '<MECANONLINE> ...... ACCPLU : '
+          CALL NMDEBG('VECT',ACCPLU,6)           
+        ENDIF
       ENDIF
 C
       CALL JEDEMA()

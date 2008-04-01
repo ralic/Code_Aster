@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF supervis Messages  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -399,6 +399,27 @@ Types incompatibles entre glob.1 et pick.1 pour le concept de nom %(k1)s.
 
 88: _("""
 Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
+"""),
+
+# on ne veut pas émettre d'alarme mais que le message se voit, donc on fait la mise en forme ici !
+89 : _("""
+   !-----------------------------------------------------------------------!
+   !   Liste des alarmes émises lors de l'exécution du calcul.             !
+   !                                                                       !
+   !   Les alarmes que vous avez choisies d'ignorer sont précédées de (*). !
+   !   Nombre d'occurrences pour chacune des alarmes :                     !
+"""),
+        
+90 : _("""   !      %(k1)3s %(k2)-20s émises %(i1)4d fois                        !
+"""),
+
+91 : _("""   !-----------------------------------------------------------------------!
+
+"""),
+
+92 : _("""
+   !          aucune alarme                                                !
+
 """),
 
 }

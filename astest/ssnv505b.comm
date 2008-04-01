@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,6 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
 CH2=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
-                              RECHERCHE = 'NOEUD_BOUCLE',
                               SANS_GROUP_NO=('LA3A','LBINF'),
                               ),);
 

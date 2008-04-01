@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2008   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,7 +88,6 @@ CONTACT=AFFE_CHAR_MECA(MODELE=MODELE,
                        CONTACT=(
                                  _F(
                                     METHODE='CONTRAINTE',
-                                    RECHERCHE='NOEUD_BOUCLE',
                                     GROUP_MA_MAIT='CNT_POU1',
                                     GROUP_MA_ESCL='CNT_POU2',),
                         ),)

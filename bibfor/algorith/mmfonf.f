@@ -1,8 +1,8 @@
-        SUBROUTINE  MMFONF(FFORME,ALIAS ,KSI1   ,KSI2  ,
-     &                     FF    ,DFF   ,DDFF   ,IRET) 
+        SUBROUTINE  MMFONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
+     &                     KSI2  ,FF    ,DFF   ,DDFF   ) 
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +28,7 @@ C
       REAL*8      FF(9)
       REAL*8      DFF(2,9)
       REAL*8      DDFF(3,9)
-      INTEGER     IRET   
+      INTEGER     NNO,NDIM   
 C      
 C ----------------------------------------------------------------------
 C
@@ -48,32 +48,27 @@ C IN  FFORME : TYPE DES FONCTIONS DE FORME
 C               'CONTINUE' POUR ELTS DE CONTACT
 C               'STANDARD' POUR ELTS STANDARDS
 C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
-C IN  XI     : POINT DE CONTACT SUIVANT KSI1 DES
+C IN  NNO    : NOMBRE DE NOEUD DE L'ELEMENT
+C IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
+C IN  KSI1   : POINT DE CONTACT SUIVANT KSI1 DES
 C               FONCTIONS DE FORME ET LEURS DERIVEES
-C IN  YI     : POINT DE CONTACT SUIVANT KSI2 DES
+C IN  KSI2   : POINT DE CONTACT SUIVANT KSI2 DES
 C               FONCTIONS DE FORME ET LEURS DERIVEES
 C OUT FF     : FONCTIONS DE FORMES EN XI,YI
 C OUT DFF    : DERIVEES PREMIERES DES FONCTIONS DE FORME EN XI YI
 C OUT DDFF   : DERIVEES SECONDES DES FONCTIONS DE FORME EN XI YI
-C OUT IRET   : RETOURNE UN CODE ERREUR
-C                0  TOUT VA BIEN
-C                1  ELEMENT INCONNU
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER TYPBAR
-C
-C ----------------------------------------------------------------------
-C
-      TYPBAR = -1
-      IF (FFORME.EQ.'CONTINUE') THEN
-        CALL MMMFFD(ALIAS ,KSI1  ,KSI2   ,TYPBAR,
-     &              FF    ,DFF   ,DDFF   ,IRET)
-      ELSEIF (FFORME.EQ.'STANDARD') THEN
-        CALL ASSERT(.FALSE.)
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
-
       
+C
+      CALL MMNONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
+     &            KSI2  ,FF    ) 
+C     
+      CALL MMDONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
+     &            KSI2  ,DFF   )
+C
+      CALL MM2ONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
+     &            KSI2  ,DDFF  )
+
       END

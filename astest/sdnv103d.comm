@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,7 +68,6 @@ CH=AFFE_CHAR_MECA(
                COEF_MATR_FROT = 0.4,
                COULOMB = 0.25,
                METHODE = 'PENALISATION',
-               RECHERCHE = 'NOEUD_BOUCLE',
                E_T = 1.E5,
                ),
                );

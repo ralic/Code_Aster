@@ -1,7 +1,7 @@
-      SUBROUTINE MMELTY(NOMA,NUMA,ALIAS,NNO,NDIM)
+      SUBROUTINE MMELTY(NOMA  ,NUMA  ,ALIAS ,NNO   ,NDIM  )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,14 +45,16 @@ C               'SG2'
 C               'SG3'
 C               'TR3'
 C               'TR6'
+C               'TR7'
 C               'QU4'
 C               'QU8'
 C               'QU9'
 C OUT NNO    : NOMBRE DE NOEUDS DE CET ELEMENT
-C OUT NDIM   : DIMENSION DU PROBLEME (2D/3D)
+C OUT NDIM   : DIMENSION DE LA MAILLE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
+      CHARACTER*32 JEXNOM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -71,54 +73,74 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      IATYMA,ITYP,NUTYP
+      INTEGER      NTPOI1,NTSEG2,NTSEG3,NTTRI3,NTTRI6,NTTRI7
+      INTEGER      NTQUA4,NTQUA8,NTQUA9      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+C --- INITIALISATIONS
+C
       ALIAS(1:8) = '        '
+C
+C --- CODE TYPE DE LA MAILLE
+C      
       CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)
       ITYP  = IATYMA - 1 + NUMA
       NUTYP = ZI(ITYP)
 C
-      IF (NUTYP .EQ. 1) THEN
-        ALIAS(1:3) = 'PO1'
-        NNO  = 1
-        NDIM = 1
-      ELSEIF (NUTYP .EQ. 2) THEN
-        ALIAS(1:3) = 'SG2'
-        NNO = 2
-        NDIM = 2
-      ELSEIF (NUTYP .EQ. 4) THEN
-        ALIAS(1:3) = 'SG3'
-        NNO = 3
-        NDIM = 2
-      ELSEIF (NUTYP .EQ. 7) THEN
-        ALIAS(1:3) = 'TR3'
-        NNO = 3
-        NDIM = 3
-      ELSEIF (NUTYP .EQ. 9) THEN
-        ALIAS(1:3) = 'TR6'
-        NNO = 6
-        NDIM = 3
-      ELSEIF (NUTYP .EQ. 12) THEN
-        ALIAS(1:3) = 'QU4'
-        NNO = 4
-        NDIM = 3
-      ELSEIF (NUTYP .EQ. 14) THEN
-        ALIAS(1:3) = 'QU8'
-        NNO = 8
-        NDIM = 3
-      ELSEIF (NUTYP .EQ. 16) THEN
-        ALIAS(1:3) = 'QU9'
-        NNO = 9
-        NDIM = 3
+C --- CODES CATALOGUE
+C
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','POI1')  , NTPOI1 )
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG2')  , NTSEG2 )
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','SEG3')  , NTSEG3 )
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA3') , NTTRI3 )
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA6') , NTTRI6 )
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA7') , NTTRI7 )
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD4') , NTQUA4 )
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD8') , NTQUA8 )
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD9') , NTQUA9 )      
+C
+      IF (NUTYP .EQ. NTPOI1) THEN
+        ALIAS  = 'PO1'
+        NNO    = 1
+        NDIM   = 1
+      ELSEIF (NUTYP .EQ. NTSEG2) THEN
+        ALIAS  = 'SG2'
+        NNO    = 2
+        NDIM   = 2
+      ELSEIF (NUTYP .EQ. NTSEG3) THEN
+        ALIAS  = 'SG3'
+        NNO    = 3
+        NDIM   = 2
+      ELSEIF (NUTYP .EQ. NTTRI3) THEN
+        ALIAS  = 'TR3'
+        NNO    = 3
+        NDIM   = 3
+      ELSEIF (NUTYP .EQ. NTTRI7) THEN
+        ALIAS  = 'TR7'
+        NNO    = 7
+        NDIM   = 3      
+      ELSEIF (NUTYP .EQ. NTTRI6) THEN
+        ALIAS  = 'TR6'
+        NNO    = 6
+        NDIM   = 3
+      ELSEIF (NUTYP .EQ. NTQUA4) THEN
+        ALIAS  = 'QU4'
+        NNO    = 4
+        NDIM   = 3
+      ELSEIF (NUTYP .EQ. NTQUA8) THEN
+        ALIAS  = 'QU8'
+        NNO    = 8
+        NDIM   = 3
+      ELSEIF (NUTYP .EQ. NTQUA9) THEN
+        ALIAS  = 'QU9'
+        NNO    = 9
+        NDIM   = 3
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
-      IF ((NDIM.NE.2).AND.(NDIM.NE.3)) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF
 C
       CALL JEDEMA()
       END

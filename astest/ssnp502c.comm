@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,8 +89,7 @@ DEPL=AFFE_CHAR_MECA(MODELE=MO,
                                 DY=-2.225,),);
 
 CON=AFFE_CHAR_MECA(MODELE=MO,
-                     CONTACT=_F(RECHERCHE='NOEUD_BOUCLE',
-                                METHODE='CONTINUE',
+                     CONTACT=_F(METHODE='CONTINUE',
                                 FROTTEMENT='COULOMB',
                                 COULOMB=0.4,
                                 GROUP_MA_ESCL='LESC',

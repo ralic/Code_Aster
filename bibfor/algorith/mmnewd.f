@@ -3,7 +3,7 @@
      &                     KSI2  ,TAU1  ,TAU2  ,NIVERR)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,9 +63,7 @@ C OUT TAU1   : PREMIER VECTEUR TANGENT EN KSI1,KSI2
 C OUT TAU2   : SECOND VECTEUR TANGENT EN KSI1,KSI2
 C OUT NIVERR : RETOURNE UN CODE ERREUR
 C                0  TOUT VA BIEN
-C                1  ELEMENT INCONNU
-C                2  MATRICE SINGULIERE (VECTEURS TANGENTS COLINEAIRES)
-C                3  DEPASSEMENT NOMBRE ITERATIONS MAX
+C                1  ECHEC NEWTON
 C
 C ----------------------------------------------------------------------
 C
@@ -73,7 +71,7 @@ C
       REAL*8       VEC1(3)
       REAL*8       MATRI3(3,3),MATRI2(2,2)
       REAL*8       TEST,EPSREL,EPS,ALPHA
-      REAL*8       DKSI(3),R8BID      
+      REAL*8       DKSI(3),R8BID    
       INTEGER      INO,IDIM,ITER,IRET
       REAL*8       ZERO
       PARAMETER    (ZERO=0.D0)  
@@ -117,18 +115,15 @@ C
 C --- CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
 C --- DANS LA MAILLE
 C
-        CALL MMFONF(FFORME,ALIAS ,KSI1   ,KSI2  ,
-     &              FF    ,DFF   ,DDFF   ,NIVERR)        
-        IF (NIVERR.NE.0) THEN
-          GOTO 999
-        ENDIF
+        CALL MMFONF(FFORME,NDIM  ,NNO   ,ALIAS ,KSI1   ,
+     &              KSI2  ,FF    ,DFF   ,DDFF  )        
 C
 C --- CALCUL DU VECTEUR POSITION DU POINT COURANT SUR LA MAILLE
 C
         DO 40 IDIM = 1,NDIM
           DO 30 INO = 1,NNO
             VEC1(IDIM)  = COORMA(3*(INO-1)+IDIM)*FF(INO) + VEC1(IDIM) 
- 30      CONTINUE
+ 30       CONTINUE
  40     CONTINUE
 C
 C --- CALCUL DES TANGENTES
@@ -147,7 +142,7 @@ C
         DKSI(1) = VEC1(1) - ALPHA*DIR(1)
         DKSI(2) = VEC1(2) - ALPHA*DIR(2)
         IF (NDIM.EQ.3) THEN
-          DKSI(3) = VEC1(3)-ALPHA*DIR(3)  
+          DKSI(3) = VEC1(3) - ALPHA*DIR(3)  
         ENDIF             
 C
 C --- CALCUL DE LA MATRICE TANGENTE
@@ -172,13 +167,13 @@ C
         IF (NDIM.EQ.2) THEN
           CALL MGAUSS('NCVP',MATRI2,DKSI,2,2,1,R8BID,IRET)        
           IF (IRET.GT.0) THEN
-            NIVERR = 2
+            NIVERR = 1
             GOTO 999            
           ENDIF   
         ELSEIF (NDIM.EQ.3) THEN
           CALL MGAUSS('NCVP',MATRI3,DKSI,3,3,1,R8BID,IRET)        
           IF (IRET.GT.0) THEN
-            NIVERR = 2
+            NIVERR = 1
             GOTO 999            
           ENDIF
         ELSE
@@ -213,8 +208,8 @@ C --- EVALUATION DE LA CONVERGENCE
 C
         IF ((TEST.GT.EPS) .AND. (ITER.LT.ITEMAX)) THEN
           GOTO 20
-        ELSEIF ((ITER.GT.ITEMAX).AND.(TEST.GT.EPS)) THEN
-          NIVERR = 3
+        ELSEIF ((ITER.GE.ITEMAX).AND.(TEST.GT.EPS)) THEN
+          NIVERR = 1
         ENDIF                                  
 C
 C --- FIN DE LA BOUCLE

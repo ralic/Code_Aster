@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline Messages  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,6 +127,10 @@ cata_msg = {
 
 87 : _("""
     Recherche linéaire non favorable. Rho forcé à 1.
+"""),
+
+88 : _("""
+    Echec lors de l'interpolation de la variable de commande.
 """),
 
 }

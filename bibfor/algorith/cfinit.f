@@ -2,7 +2,7 @@
      &                  NUMINS,SDDYNA,VALMOI,VALPLU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -171,11 +171,12 @@ C
         ELSE
           CALL MISAZL(DEPMOI,DEFICO)
         ENDIF
-    
+
         IF (NDYNLO(SDDYNA,'DYNAMIQUE')) THEN
           CALL MISAZL(ACCPLU,DEFICO)
           CALL MISAZL(VITPLU,DEFICO)
-        END IF      
+        END IF 
+             
       ENDIF          
 C 
       CALL JEDEMA()

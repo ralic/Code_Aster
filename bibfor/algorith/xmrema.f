@@ -1,10 +1,10 @@
-      SUBROUTINE XMREMA(MODELE,NOMA,NDIM,DEFICO,IZONE,
-     &                  MMAIT,PMAIT,AMAIT,NMAIT,ZMAIT,
-     &                  GEOM,JMAESC,POSMIN,JEUMIN,NMIN,
-     &                  T1MIN,T2MIN,XIMIN,YIMIN,PROJIN)
+      SUBROUTINE XMREMA(MODELE,NOMA  ,NDIM  ,DEFICO,IZONE ,
+     &                  MMAIT ,PMAIT ,AMAIT ,NMAIT ,ZMAIT ,
+     &                  GEOM  ,JMAESC,POSMIN,JEUMIN,T1MIN ,
+     &                  T2MIN ,XIMIN ,YIMIN ,PROJIN)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C
       IMPLICIT NONE
       CHARACTER*8  NOMA,MODELE
       INTEGER      NDIM,ZMAIT,MMAIT,PMAIT,NMAIT,AMAIT,JMAESC
@@ -29,21 +30,22 @@ C ======================================================================
       REAL*8       GEOM(3)
       INTEGER      POSMIN
       REAL*8       JEUMIN
-      REAL*8       NMIN(3)
       REAL*8       T1MIN(3),T2MIN(3)
       REAL*8       XIMIN,YIMIN
       LOGICAL      PROJIN
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : XAPPAR
-C ----------------------------------------------------------------------
-C ROUTINE SPECIFIQUE A L'APPROCHE <<GRANDS GLISSEMENTS AVEC XFEM>>,
-C TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
-C ----------------------------------------------------------------------
+C ROUTINE XFEM (CONTACT - GRANDS GLISSEMENTS)
+C
 C RECHERCHER LA MAILLE MAITRE LA PLUS PROCHE CONNAISSANT LE POINT 
 C D'INTERSECTION MAITRE LE PLUS PROCHE DU POINT DE CONTACT ET FAIRE
 C LA PROJECTION 
-
+C
+C TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  MODELE : NOM DU MODELE
@@ -55,7 +57,6 @@ C IN  ZMAIT  : NUMERO DE LA ZONE DE CONTACT CONTENANT LE PMAIT
 C IN  GEOM   : COORDONNEES DU POINT DE CONTACT
 C OUT POSMIN : POSITION DE LA MAILLE MAITRE LA PLUS PROCHE
 C OUT JEUMIN : JEU MINIMUM
-C OUT NMIN   : NORMALE
 C OUT T1MIN  : PREMIER VECTEUR TANGENT
 C OUT T2MIN  : DEUXIEME VECTEUR TANGENT
 C OUT XIMIN  : COORDONNEE X DE LE PROJECTION MINIMALE DU POINT DE 
@@ -69,6 +70,7 @@ C              TOMBEEE HORS DE LA MAILLE MAITRE (A LA TOLERANCE PRES)
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
+      CHARACTER*32 JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -83,25 +85,26 @@ C
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER JDEC,JDEC1,ITEMAX,JCONX1,JCONX2
-      INTEGER JNFIS,JMOFIS,CFMMVD,ZMESX,INI,J,IAD,STATUT
-      INTEGER JCSD1,JCSV1,JCSL1,NFIS,N1,N2,NUGLA,NUGLB
-      INTEGER POSMA,IMA,NBMA,K,I,IA,NBNOS,NTMA,NUNOIN,NUNOG
-      INTEGER INO,POSNNO(10),IBID,NIVERR,NNO,NBN,NUMNOS(8)  
-      INTEGER NUMA,NO(9),AR(12,2),NBAR,NA,NB,NUNOA,NUNOB
-      REAL*8 JEU,R8GAEM,TAU1(3),TAU2(3),TOLEOU,R8BID,EPSMAX
-      REAL*8       COORMA(27),XI,YI,NORM(3),R3BID(3)
-      CHARACTER*8  ALIAS,TYPMA,NOMFIS
-      CHARACTER*24 CONTNO,CONTMA,MANOCO,PMANO,PNOMA,NOMACO
-      INTEGER      JNOCO,JMACO,JMANO,JPOMA,JPONO,JNOMA,JCOOR 
-      CHARACTER*24 K24BID,K24BLA
+      INTEGER      CFDISI,ITEMAX
+      INTEGER      CFMMVD,ZMESX
+      INTEGER      INI,IAD,STATUT
+      INTEGER      JCSD1,JCSV1,JCSL1
+      INTEGER      JCONX1,JCONX2      
+      INTEGER      POSMA,NUNOIN,NUNOG,NUGLA,NUGLB
+      INTEGER      N1,N2,NBNOS,NTMA
+      INTEGER      INO,NIVERR
+      INTEGER      I,J,K,IA,IMA
+      INTEGER      AR(12,2),NBAR,NA,NB,NUNOA,NUNOB
+      REAL*8       JEU,TAU1(3),TAU2(3)
+      REAL*8       CFDISR,TOLEOU,EPSMAX
+      REAL*8       COORMA(27),XI,YI
+      REAL*8       R8GAEM,R3BID(3)
+      CHARACTER*8  ALIAS,TYPMA,FFORME
       CHARACTER*19 CHS1
-      LOGICAL      LDIST,LBID,LDMIN
-      DATA K24BLA /' '/         
+      LOGICAL      LDIST,LDMIN,DIRAPP        
 C
 C ----------------------------------------------------------------------
 C
@@ -109,26 +112,27 @@ C
 C
 C --- INITIALISATIONS
 C
-      CHS1 = '&&XMREMA.CHS1'
-
+      CHS1   = '&&XMREMA.CHS1'
       JEUMIN = R8GAEM()
       PROJIN = .TRUE.
-      POSMIN = 0           
-
-      CALL MMINFP(IZONE,DEFICO,K24BLA,'TOLE_PROJ_EXT',
-     &            IBID,TOLEOU,K24BID,LBID)
-      CALL MMINFP(IZONE,DEFICO,K24BLA,'PROJ_NEWT_EPSI',
-     &            IBID,EPSMAX,K24BID,LBID)   
-      CALL MMINFP(IZONE,DEFICO,K24BLA,'PROJ_NEWT_ITER',
-     &            ITEMAX,R8BID,K24BID,LBID)       
-
+      POSMIN = 0      
       DO 10 I=1,27
         COORMA(I)=0.D0
-10    CONTINUE        
+10    CONTINUE    
+      FFORME = 'CONTINUE'
+      DIRAPP = .FALSE. 
+C
+C --- ALIAS ET TYPMA VALABLE POUR LE CAS 2D (IL FAUDRA CHANGER POUR 3D)
+C
+      ALIAS  = 'SG2'
+      TYPMA  = 'QUAD4'   
+C
+C --- INFOS GENERIQUES POUR L'ALGORITHME D'APPARIEMENT
+C         
+      TOLEOU = CFDISR(DEFICO,'TOLE_PROJ_EXT' ,IZONE)
+      EPSMAX = CFDISR(DEFICO,'PROJ_NEWT_RESI',IZONE)
+      ITEMAX = CFDISI(DEFICO,'PROJ_NEWT_ITER',IZONE) 
 
-C---ALIAS ET TYPMA VALABLE POUR LE CAS 2D (IL FAUDRA PROGRAMMER POUR 3D)
-      ALIAS='SG2'
-      TYPMA='QUAD4'
 C----------------------------------------------------------------------
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
@@ -190,10 +194,25 @@ C----RECUPERATION GEOMETRIE DES POINTS D'INTERS. DE LA FACETTE MAITRE
   130           CONTINUE
   120         CONTINUE
 C-----------PROJECTION SUR LA FACETTE MAITRE-------------------------
-              CALL MMPROJ(ALIAS,NDIM,NDIM,COORMA,GEOM,
-     &              ITEMAX,EPSMAX,TOLEOU,.FALSE.,R3BID,
-     &              'CONTINUE',XI,YI,TAU1,TAU2,
-     &              NORM,JEU,LDIST,NIVERR)
+              CALL MMPROJ(ALIAS ,NDIM  ,NDIM  ,COORMA,GEOM  ,
+     &                    ITEMAX,EPSMAX,TOLEOU,DIRAPP,R3BID ,
+     &                    FFORME,XI    ,YI    ,TAU1  ,TAU2  ,
+     &                    LDIST ,NIVERR)              
+C
+C --- ECHEC DE NEWTON
+C      
+              IF (NIVERR.EQ.1) THEN
+                CALL ASSERT(.FALSE.)
+              ENDIF    
+C
+C --- CALCUL DU JEU
+C
+              CALL MMJEUX(ALIAS ,NDIM  ,NDIM  ,COORMA,FFORME,
+     &                    XI    ,YI    ,GEOM  ,JEU   )              
+              
+C
+C --- CHOIX DE LA MAILLE 
+C               
               IF (JEU.LT.JEUMIN) THEN
                 POSMIN = POSMA
                 JEUMIN = JEU
@@ -201,7 +220,6 @@ C-----------PROJECTION SUR LA FACETTE MAITRE-------------------------
                 DO 40 K = 1,3
                   T1MIN(K) = TAU1(K)
                   T2MIN(K) = TAU2(K)
-                  NMIN(K)  = NORM(K)
    40           CONTINUE
                 XIMIN = XI
                 YIMIN = YI
@@ -209,7 +227,7 @@ C-----------PROJECTION SUR LA FACETTE MAITRE-------------------------
             ENDIF
  110      CONTINUE
  
-C------SI LE POINT DE CONTACT EST UN NOEUD----------------------	 
+C------SI LE POINT DE CONTACT EST UN NOEUD----------------------
         ELSE
 C---------BOUCLE SUR LES NOEUDS DE LA MAILLE COURANTE	
           DO 210 INO=1,NBNOS
@@ -225,10 +243,24 @@ C---------BOUCLE SUR LES NOEUDS DE LA MAILLE COURANTE
   220         CONTINUE
 C-----------PROJECTION SUR LA FACETTE MAITRE-------------------------
      
-              CALL MMPROJ(ALIAS,NDIM,NDIM,COORMA,GEOM,
-     &              ITEMAX,EPSMAX,TOLEOU,.FALSE.,R3BID,
-     &              'CONTINUE',XI,YI,TAU1,TAU2,
-     &              NORM,JEU,LDIST,NIVERR) 
+              CALL MMPROJ(ALIAS ,NDIM  ,NDIM  ,COORMA,GEOM  ,
+     &                    ITEMAX,EPSMAX,TOLEOU,DIRAPP,R3BID ,
+     &                    FFORME,XI    ,YI    ,TAU1  ,TAU2  ,
+     &                    LDIST ,NIVERR) 
+C
+C --- ECHEC DE NEWTON
+C      
+              IF (NIVERR.EQ.1) THEN
+                CALL ASSERT(.FALSE.)
+              ENDIF  
+C
+C --- CALCUL DU JEU
+C
+              CALL MMJEUX(ALIAS ,NDIM  ,NDIM  ,COORMA,FFORME,
+     &                    XI    ,YI    ,GEOM  ,JEU   )
+C
+C --- CHOIX DE LA MAILLE 
+C                                
               IF (JEU.LT.JEUMIN) THEN
                 POSMIN = POSMA
                 JEUMIN = JEU
@@ -236,7 +268,6 @@ C-----------PROJECTION SUR LA FACETTE MAITRE-------------------------
                 DO 240 K = 1,3
                   T1MIN(K) = TAU1(K)
                   T2MIN(K) = TAU2(K)
-                  NMIN(K)  = NORM(K)
  240            CONTINUE
                 XIMIN = XI
                 YIMIN = YI
@@ -249,6 +280,7 @@ C-----------PROJECTION SUR LA FACETTE MAITRE-------------------------
 
       IF (.NOT.LDMIN) PROJIN = .FALSE.
       IF (TOLEOU.EQ.-1.D0) PROJIN = .TRUE.
+
 
 C ----------------------------------------------------------------------
 

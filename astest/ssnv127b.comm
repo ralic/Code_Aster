@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,6 +135,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='LAGRANGIEN',
                                APPARIEMENT='NODAL',
+                               NORMALE = 'ESCL',
                                FROTTEMENT='COULOMB',
                                COULOMB=0.40000000000000002,
                                GROUP_MA_MAIT='BCC1',

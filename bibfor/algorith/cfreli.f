@@ -1,8 +1,8 @@
-      SUBROUTINE CFRELI(MATYP ,NBNOM  ,PROJ  ,ITRIA,LAMBDA,
-     &                  COORDM,COORMA,COEFNO)
+      SUBROUTINE CFRELI(NOMA  ,NUMMAI,NBNOM ,KSI1  ,KSI2,
+     &                  COEFNO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,12 +22,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*4  MATYP
-      REAL*8       LAMBDA(3)
+      CHARACTER*8  NOMA
+      REAL*8       KSI1,KSI2
       REAL*8       COEFNO(9)
-      INTEGER      PROJ,NBNOM
-      INTEGER      ITRIA
-      REAL*8       COORDM(3),COORMA(27)      
+      INTEGER      NUMMAI,NBNOM    
 C      
 C ----------------------------------------------------------------------
 C
@@ -38,34 +36,23 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  MATYP  : TYPE DE LA MAILLE MAITRE
-C                -> SEG2,SEG3,TRI3,TRI6,QUA4,QUA8,QUA9,NODE
-C                'NODE' EST POUR L'APPARIEMENT NODAL PUR
-C IN  NBNOM  : NOMBRE DE NOEUDS SUR LA MAILLE MAITRE
-C               /!\ NBRE DE NOEUDS POUR CALCUL COEFFICIENTS RELA. LINE.
-C              PEUT ETRE DIFFERENT DU NBRE NOEUDS PHYSIQUES SI COQUE 3D
-C                QUAD9_COQUE3D : NBNOM =8
-C                TRIA7_COQUE3D : NBNOM =6
-C IN  PROJ   : TYPE DE PROJECTION
-C               1 PROJECTION LINEAIRE
-C               2 PROJECTION QUADRATIQUE
-C IN  LAMBDA : COORDONNEES PARAMETRIQUES SUR LA MAILLE MAITRE
+C IN  NOMA   : MAILLAGE
+C IN  NBNOM  : NOIMBRE NOEUDS MAILLE MAITRE PORTANT DES DX/DY/DZ
+C IN  NUMMAI : NUMERO ABSOLU DE LA MAILLE
+C IN  KSIx   : COORDONNEES PARAMETRIQUES SUR LA MAILLE MAITRE
 C                 DE LA "PROJECTION" M 
-C IN  ITRIA  : INDICE DU TRIANGLE CHOISI DANS DECOUPE QUADRANGLE
 C OUT COEFNO : VALEURS EN M DES FONCTIONS DE FORME ASSOCIEES AUX NOEUDS
 C               MAITRES
-C              POUR APPARIEMENT NODAL: -1.D0 SUR LE NOEUD MAITRE
 C
 C ----------------------------------------------------------------------
 C
-      REAL*8       ZERO,UN, DEUX
+      REAL*8       ZERO,UN
       PARAMETER  ( ZERO   =  0.0D0  )      
       PARAMETER  ( UN     =  1.0D0  )
-      PARAMETER  ( DEUX   =  2.0D0  )
-      REAL*8       KSI1,KSI2,KSI3
-      REAL*8       KSIR(3)
+      REAL*8       KSI(3)
       INTEGER      K,IBID
       REAL*8       FF(9)
+      CHARACTER*8  ALIAS               
 C
 C ----------------------------------------------------------------------
 C
@@ -73,58 +60,44 @@ C --- INITIALISATIONS
 C
       DO 10 K = 1,9
         COEFNO(K) = ZERO
- 10   CONTINUE 
+ 10   CONTINUE
+C
+C --- CARACTERISTIQUE DE LA MAILLE 
+C     
+      CALL MMELTY(NOMA  ,NUMMAI,ALIAS ,IBID  ,IBID)
 C
 C --- COEFFICIENTS SUR NOEUD MAITRE SUIVANT TYPE APPARIEMENT/ELEMENT
 C
-      KSI1 = LAMBDA(1)
-      KSI2 = LAMBDA(2)
-      KSI3 = LAMBDA(3)       
-      IF (MATYP.EQ.'NODE') THEN  
-        COEFNO(1) = - UN                    
-      ELSEIF (MATYP.EQ.'SEG2') THEN
-        KSIR(1)   = DEUX*KSI1 - UN
-        KSIR(2)   = KSI2 
-        KSIR(3)   = KSI3 
-        CALL ELRFVF('SE2',KSIR,2,FF,IBID)
+      KSI(1) = KSI1
+      KSI(2) = KSI2
+      KSI(3) = UN - KSI1 - KSI2
+C      
+      IF (ALIAS.EQ.'SG2') THEN
+        CALL ELRFVF('SE2',KSI,2,FF,IBID)
         COEFNO(1) = - FF(1)
         COEFNO(2) = - FF(2)
         COEFNO(3) = ZERO        
-      ELSE IF (MATYP.EQ.'SEG3') THEN
-C --- ATTENTION ! FCTIONS DE FORME AUSSI DANS PROJSQ !!  
-        KSIR(1)   = DEUX*KSI1 - UN
-        KSIR(2)   = KSI2 
-        KSIR(3)   = KSI3 
-        CALL ELRFVF('SE3',KSIR,3,FF,IBID)
-        COEFNO(1) = - FF(1)
-        COEFNO(2) = - FF(2)
-        COEFNO(3) = - FF(3)  
-               
-      ELSE IF (MATYP(1:4).EQ.'TRI3') THEN 
-        KSIR(1)   = KSI1 
-        KSIR(2)   = KSI2 
-        KSIR(3)   = KSI3              
-        CALL ELRFVF('TR3',KSIR,3,FF,IBID)
+      ELSE IF (ALIAS.EQ.'SG3') THEN
+        CALL ELRFVF('SE3',KSI,3,FF,IBID)
         COEFNO(1) = - FF(1)
         COEFNO(2) = - FF(2)
         COEFNO(3) = - FF(3)        
-      ELSE IF (MATYP(1:4).EQ.'TRI6') THEN 
-        KSIR(1)   = KSI1 
-        KSIR(2)   = KSI2 
-        KSIR(3)   = KSI3              
-        CALL ELRFVF('TR6',KSIR,6,FF,IBID)
+      ELSE IF (ALIAS(1:4).EQ.'TR3') THEN              
+        CALL ELRFVF('TR3',KSI,3,FF,IBID)
+        COEFNO(1) = - FF(1)
+        COEFNO(2) = - FF(2)
+        COEFNO(3) = - FF(3)        
+      ELSE IF (ALIAS(1:4).EQ.'TR6') THEN             
+        CALL ELRFVF('TR6',KSI,6,FF,IBID)
         COEFNO(1) = - FF(1)
         COEFNO(2) = - FF(2)
         COEFNO(3) = - FF(3)
         COEFNO(4) = - FF(4)
         COEFNO(5) = - FF(5)
         COEFNO(6) = - FF(6)      
-      ELSE IF (MATYP(1:4).EQ.'TRI7') THEN 
-        KSIR(1)   = KSI1 
-        KSIR(2)   = KSI2 
-        KSIR(3)   = KSI3   
+      ELSE IF (ALIAS(1:4).EQ.'TR7') THEN
         IF (NBNOM.EQ.7) THEN           
-          CALL ELRFVF('TR7',KSIR,7,FF,IBID)        
+          CALL ELRFVF('TR7',KSI,7,FF,IBID)        
           COEFNO(1) = - FF(1)
           COEFNO(2) = - FF(2)
           COEFNO(3) = - FF(3)
@@ -133,48 +106,29 @@ C --- ATTENTION ! FCTIONS DE FORME AUSSI DANS PROJSQ !!
           COEFNO(6) = - FF(6)
           COEFNO(7) = - FF(7)
         ELSEIF (NBNOM.EQ.6) THEN           
-          CALL ELRFVF('TR3',KSIR,3,FF,IBID)        
+          CALL ELRFVF('TR3',KSI,3,FF,IBID)                
           COEFNO(1) = - FF(1)
           COEFNO(2) = - FF(2)
-          COEFNO(3) = - FF(3)
+          COEFNO(3) = - FF(3)                       
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF                               
-      ELSE IF (MATYP(1:3).EQ.'QUA') THEN
-        IF (ITRIA.EQ.1) THEN
-          KSIR(1)   = DEUX*(KSI1+KSI2) - UN
-          KSIR(2)   = DEUX*KSI2 - UN
-          KSIR(3)   = KSI3 
-        ELSEIF (ITRIA.EQ.2) THEN
-          KSIR(1)   = DEUX*(KSI1) - UN
-          KSIR(2)   = DEUX*(KSI1+KSI2) - UN
-          KSIR(3)   = KSI3 
-        ELSEIF (ITRIA.EQ.3) THEN
-          KSIR(1)   = DEUX*KSI1 - UN
-          KSIR(2)   = DEUX*KSI2 - UN
-          KSIR(3)   = KSI3    
-        ELSEIF (ITRIA.EQ.4) THEN
-          KSIR(1)   = -DEUX*KSI2 + UN
-          KSIR(2)   = DEUX*(KSI1+KSI2) - UN
-          KSIR(3)   = KSI3                                    
-        ELSE
-          CALL CFIMPA('CFRELI',1)
-        ENDIF
-        IF (MATYP.EQ.'QUA4') THEN
-          CALL ELRFVF('QU4',KSIR,4,FF,IBID)
+      ELSE IF (ALIAS(1:2).EQ.'QU') THEN
+        IF (ALIAS.EQ.'QU4') THEN
+          CALL ELRFVF('QU4',KSI,4,FF,IBID)
           COEFNO(1) = - FF(1)
           COEFNO(2) = - FF(2)
           COEFNO(3) = - FF(3)
           COEFNO(4) = - FF(4) 
-        ELSEIF (MATYP.EQ.'QUA8') THEN
-          CALL ELRFVF('QU4',KSIR,4,FF,IBID)
+        ELSEIF (ALIAS.EQ.'QU8') THEN
+          CALL ELRFVF('QU4',KSI,4,FF,IBID)
           COEFNO(1) = - FF(1)
           COEFNO(2) = - FF(2)
           COEFNO(3) = - FF(3)
           COEFNO(4) = - FF(4)             
-        ELSEIF (MATYP.EQ.'QUA9') THEN
+        ELSEIF (ALIAS.EQ.'QU9') THEN
           IF (NBNOM.EQ.9) THEN         
-            CALL ELRFVF('QU9',KSIR,9,FF,IBID)
+            CALL ELRFVF('QU9',KSI,9,FF,IBID)
             COEFNO(1) = - FF(1)
             COEFNO(2) = - FF(2)
             COEFNO(3) = - FF(3)
@@ -185,7 +139,7 @@ C --- ATTENTION ! FCTIONS DE FORME AUSSI DANS PROJSQ !!
             COEFNO(8) = - FF(8)          
             COEFNO(9) = - FF(9)
           ELSEIF (NBNOM.EQ.8) THEN   
-            CALL ELRFVF('QU8',KSIR,8,FF,IBID)
+            CALL ELRFVF('QU8',KSI,8,FF,IBID)
             COEFNO(1) = - FF(1)
             COEFNO(2) = - FF(2)
             COEFNO(3) = - FF(3)

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX PLAQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,9 +67,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DY=0.0,),),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=(_F(METHODE='CONTRAINTE',
-                                RECHERCHE = 'NOEUD_BOUCLE',
-                                GROUP_MA_MAIT='AB',
+                    CONTACT=(_F(GROUP_MA_MAIT='AB',
                                 GROUP_MA_ESCL='EF',),),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,

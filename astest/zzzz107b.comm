@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE TEST DE LA LEVEE DE L'EXCEPTION ARRETCPUERROR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,7 +83,6 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                               GROUP_MA_MAIT='GM11',
                               GROUP_MA_ESCL='GM12',
                               NORMALE='MAIT_ESCL',
-                              RECHERCHE = 'NOEUD_BOUCLE',
                               ),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,

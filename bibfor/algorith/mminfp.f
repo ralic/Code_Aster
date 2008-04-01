@@ -1,8 +1,8 @@
-      SUBROUTINE MMINFP(IZ    ,DEFICO,RESOCO,QUESTI ,
+      SUBROUTINE MMINFP(IZ    ,DEFICO,RESOCO,QUESTZ ,
      &                  IREP  ,RREP  ,KREP  ,LREP   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C
       IMPLICIT NONE
       CHARACTER*24  DEFICO,RESOCO
       INTEGER       IZ
-      CHARACTER*(*) QUESTI
+      CHARACTER*(*) QUESTZ
       INTEGER       IREP(*)
       REAL*8        RREP(*)
       CHARACTER*(*) KREP(*)
@@ -70,13 +70,16 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IZONE
-      INTEGER      CFMMVD,ZCMCF,ZMETH,ZTOLE,ZECPD,ZDIRE
-      INTEGER      ZPOUD,ZTGDE
-      CHARACTER*24 CARACF,NORLIS,DIRCO,METHCO,TANDEF,TANPOU,ECPDON
-      INTEGER      JCMCF,JNORLI,JDIR,JMETH,JTGDEF,JPOUDI,JECPD
-      CHARACTER*24 TOLECO
-      INTEGER      JTOLE     
+      INTEGER      IZONE,IRET
+      INTEGER      CFMMVD,ZCMCF,ZMETH,ZTOLE,ZECPD,ZEXCL,ZDIRN
+      CHARACTER*24 CARACF,DIRNOR,METHCO,ECPDON
+      INTEGER      JCMCF,JDIRNO,JMETH,JECPD
+      CHARACTER*24 TOLECO,DIRAPP,NDIMCO,EXCLFR
+      INTEGER      JTOLE,JDIRAP,JDIM,JEXCLF 
+      CHARACTER*24 JEUPOU,JEUCOQ
+      INTEGER      JJPOU,JJCOQ 
+      INTEGER      NNOCO   
+      CHARACTER*24 QUESTI
 C
 C ----------------------------------------------------------------------
 C
@@ -92,39 +95,41 @@ C
       IREP(1) = 0
       RREP(1) = 0.D0
       LREP(1) = .FALSE.
+      QUESTI = QUESTZ
 C   
 C --- ACCES AUX SDS
 C 
       CARACF = DEFICO(1:16)//'.CARACF'
-      NORLIS = DEFICO(1:16)//'.NORLIS'
-      DIRCO  = DEFICO(1:16)//'.DIRCO'
+      DIRAPP = DEFICO(1:16)//'.DIRAPP'
+      DIRNOR = DEFICO(1:16)//'.DIRNOR'     
       METHCO = DEFICO(1:16)//'.METHCO'
-      TANDEF = DEFICO(1:16)//'.TANDEF'
-      TANPOU = DEFICO(1:16)//'.TANPOU'
+      NDIMCO = DEFICO(1:16)//'.NDIMCO'
       ECPDON = DEFICO(1:16)//'.ECPDON'
       TOLECO = DEFICO(1:16)//'.TOLECO'
+      JEUPOU = DEFICO(1:16)//'.JEUPOU'
+      JEUCOQ = DEFICO(1:16)//'.JEUCOQ' 
+      EXCLFR = DEFICO(1:16)//'.EXCLFR'     
 C
       ZMETH = CFMMVD('ZMETH')
       ZTOLE = CFMMVD('ZTOLE')
       ZCMCF = CFMMVD('ZCMCF')
       ZECPD = CFMMVD('ZECPD')
-      ZDIRE = CFMMVD('ZDIRE')
-      ZPOUD = CFMMVD('ZPOUD')
-      ZTGDE = CFMMVD('ZTGDE')      
-C            
-      CALL JEEXIN(CARACF,JCMCF)      
-      IF (JCMCF.EQ.0) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF
+      ZEXCL = CFMMVD('ZEXCL')  
+      ZDIRN = CFMMVD('ZDIRN')                 
 C
 C --- QUESTIONS
 C
       IF     (QUESTI.EQ.'FOND_FISSURE') THEN
-        CALL JEVEUO(CARACF,'L',JCMCF)
-        IF (ZR(JCMCF+ZCMCF*(IZONE-1)+11) .EQ. 0.D0) THEN
+        CALL JEEXIN(CARACF,IRET)
+        IF (IRET.EQ.0) THEN
           LREP(1) = .FALSE.
         ELSE
-          LREP(1) = .TRUE.
+          CALL JEVEUO(CARACF,'L',JCMCF)
+          IF (ZR(JCMCF+ZCMCF*(IZONE-1)+11) .EQ. 0.D0) THEN
+            LREP(1) = .FALSE.
+          ELSE
+            LREP(1) = .TRUE.
+          ENDIF
         ENDIF
 C        
       ELSEIF (QUESTI.EQ.'RACCORD_LINE_QUAD') THEN
@@ -145,6 +150,26 @@ C
           LREP(1) = .FALSE.
         ELSE
           LREP(1) = .TRUE.
+        ENDIF
+C
+      ELSEIF (QUESTI.EQ.'DIST_POUTRE') THEN
+        CALL JEVEUO(NDIMCO,'L',JDIM  )
+        CALL JEVEUO(JEUPOU,'L',JJPOU )
+        NNOCO  = ZI(JDIM+4)
+        IF ( ZR(JJPOU-1+NNOCO+1).GT.0.5D0 ) THEN
+          LREP(1) = .TRUE.
+        ELSE
+          LREP(1) = .FALSE.
+        ENDIF        
+C
+      ELSEIF (QUESTI.EQ.'DIST_COQUE') THEN
+        CALL JEVEUO(NDIMCO,'L',JDIM  )
+        CALL JEVEUO(JEUCOQ,'L',JJCOQ )
+        NNOCO  = ZI(JDIM+4)
+        IF ( ZR(JJCOQ-1+NNOCO+1).GT.0.5D0 ) THEN
+          LREP(1) = .TRUE.
+        ELSE
+          LREP(1) = .FALSE.
         ENDIF
 C
       ELSEIF (QUESTI.EQ.'COMPLIANCE') THEN
@@ -240,12 +265,70 @@ C
         ENDIF
 C
       ELSEIF (QUESTI.EQ.'LISSAGE') THEN
-        CALL JEVEUO(NORLIS,'L',JNORLI)
-        IF (ZI(JNORLI+IZONE-1+1).EQ.1) THEN
+        CALL JEVEUO(METHCO,'L',JMETH)
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+10).EQ.0) THEN
+          LREP(1) = .FALSE.
+        ELSEIF (ZI(JMETH+ZMETH*(IZONE-1)+10).EQ.1) THEN
+          LREP(1) = .TRUE.
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+C
+      ELSEIF (QUESTI.EQ.'NORMALE') THEN
+        CALL JEVEUO(METHCO,'L',JMETH)
+        IREP(1) = ZI(JMETH+ZMETH*(IZONE-1)+8)             
+C
+      ELSEIF (QUESTI.EQ.'MAIT') THEN
+        CALL JEVEUO(METHCO,'L',JMETH)
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+8).EQ.0) THEN
+          LREP(1) = .TRUE.
+        ELSE
+          LREP(1) = .FALSE.
+        ENDIF 
+C
+      ELSEIF (QUESTI.EQ.'MAIT_ESCL') THEN
+        CALL JEVEUO(METHCO,'L',JMETH)
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+8).EQ.1) THEN
           LREP(1) = .TRUE.
         ELSE
           LREP(1) = .FALSE.
         ENDIF
+C
+      ELSEIF (QUESTI.EQ.'ESCL') THEN
+        CALL JEVEUO(METHCO,'L',JMETH)
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+8).EQ.2) THEN
+          LREP(1) = .TRUE.
+        ELSE
+          LREP(1) = .FALSE.
+        ENDIF    
+C
+      ELSEIF (QUESTI.EQ.'VECT_MAIT') THEN
+        CALL JEVEUO(METHCO,'L',JMETH)
+        IREP(1) = ZI(JMETH+ZMETH*(IZONE-1)+11)
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+11).GT.0) THEN
+          CALL JEVEUO(DIRNOR,'L',JDIRNO)
+          RREP(1) = ZR(JDIRNO+ZDIRN*(IZONE-1))
+          RREP(2) = ZR(JDIRNO+ZDIRN*(IZONE-1)+1)
+          RREP(3) = ZR(JDIRNO+ZDIRN*(IZONE-1)+2)  
+        ELSE
+          RREP(1) = 0.D0
+          RREP(2) = 0.D0
+          RREP(3) = 0.D0  
+        ENDIF                     
+C
+      ELSEIF (QUESTI.EQ.'VECT_ESCL') THEN
+        CALL JEVEUO(METHCO,'L',JMETH)
+        IREP(1) = ZI(JMETH+ZMETH*(IZONE-1)+12)
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+12).GT.0) THEN
+          CALL JEVEUO(DIRNOR,'L',JDIRNO)
+          RREP(1) = ZR(JDIRNO+ZDIRN*(IZONE-1)+3)
+          RREP(2) = ZR(JDIRNO+ZDIRN*(IZONE-1)+4)
+          RREP(3) = ZR(JDIRNO+ZDIRN*(IZONE-1)+5)  
+        ELSE
+          RREP(1) = 0.D0
+          RREP(2) = 0.D0
+          RREP(3) = 0.D0  
+        ENDIF                                           
 C
       ELSEIF (QUESTI.EQ.'SEUIL_INIT') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
@@ -256,42 +339,31 @@ C
         IREP(1) = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+1))
         RREP(1) = ZR(JCMCF+ZCMCF*(IZONE-1)+1)                
 C
-      ELSEIF (QUESTI.EQ.'DIRE_APPA') THEN
-        CALL JEVEUO(DIRCO,'L',JDIR)
-        RREP(1) = ZR(JDIR+ZDIRE*(IZONE-1))
-        RREP(2) = ZR(JDIR+ZDIRE*(IZONE-1)+1)
-        RREP(3) = ZR(JDIR+ZDIRE*(IZONE-1)+2)
-        IF ((RREP(1).EQ.0.D0).AND.
-     &      (RREP(2).EQ.0.D0).AND.
-     &      (RREP(3).EQ.0.D0)) THEN
-          LREP(1) = .FALSE.
-        ELSE
-          LREP(1) = .TRUE.
-        ENDIF
-C
-      ELSEIF (QUESTI.EQ.'VECT_ORIE_POU') THEN
+      ELSEIF (QUESTI.EQ.'TYPE_APPA') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
-        IF (ZI(JMETH+ZMETH*(IZONE-1)+2).EQ.2) THEN
-          CALL JEVEUO(TANPOU,'L',JPOUDI)
-          LREP(1) = .TRUE.
-          RREP(1) = ZR(JPOUDI+ZPOUD*(IZONE-1))
-          RREP(2) = ZR(JPOUDI+ZPOUD*(IZONE-1)+1)
-          RREP(3) = ZR(JPOUDI+ZPOUD*(IZONE-1)+2)
-        ELSE
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+9).EQ.0) THEN
           LREP(1) = .FALSE.
           RREP(1) = 0.D0
           RREP(2) = 0.D0
-          RREP(3) = 0.D0
+          RREP(3) = 0.D0        
+        ELSEIF (ZI(JMETH+ZMETH*(IZONE-1)+9).EQ.1) THEN
+          CALL JEVEUO(DIRAPP,'L',JDIRAP)
+          LREP(1) = .TRUE.
+          RREP(1) = ZR(JDIRAP+3*(IZONE-1))
+          RREP(2) = ZR(JDIRAP+3*(IZONE-1)+1)
+          RREP(3) = ZR(JDIRAP+3*(IZONE-1)+2)
+        ELSE
+          CALL ASSERT(.FALSE.)
         ENDIF
 C
-      ELSEIF (QUESTI.EQ.'VECT_Y') THEN
+      ELSEIF (QUESTI.EQ.'EXCL_FROT_1') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
         IF (ZI(JMETH+ZMETH*(IZONE-1)+2).EQ.1) THEN
-          CALL JEVEUO(TANDEF,'L',JTGDEF)
+          CALL JEVEUO(EXCLFR,'L',JEXCLF)
           LREP(1) = .TRUE.
-          RREP(1) = ZR(JTGDEF+ZTGDE*(IZONE-1))
-          RREP(2) = ZR(JTGDEF+ZTGDE*(IZONE-1)+1)
-          RREP(3) = ZR(JTGDEF+ZTGDE*(IZONE-1)+2)
+          RREP(1) = ZR(JEXCLF+ZEXCL*(IZONE-1))
+          RREP(2) = ZR(JEXCLF+ZEXCL*(IZONE-1)+1)
+          RREP(3) = ZR(JEXCLF+ZEXCL*(IZONE-1)+2)
         ELSE
           LREP(1) = .FALSE.
           RREP(1) = 0.D0
@@ -299,11 +371,19 @@ C
           RREP(3) = 0.D0
         ENDIF
 C
-      ELSEIF (QUESTI.EQ.'VECT_Z') THEN
-        CALL JEVEUO(TANDEF,'L',JTGDEF)
-        RREP(1) = ZR(JTGDEF+ZTGDE*(IZONE-1)+3)
-        RREP(2) = ZR(JTGDEF+ZTGDE*(IZONE-1)+4)
-        RREP(3) = ZR(JTGDEF+ZTGDE*(IZONE-1)+5)
+      ELSEIF (QUESTI.EQ.'EXCL_FROT_2') THEN
+        IF (ZI(JMETH+ZMETH*(IZONE-1)+2).EQ.1) THEN
+          CALL JEVEUO(EXCLFR,'L',JEXCLF)
+          LREP(1) = .TRUE.
+          RREP(1) = ZR(JEXCLF+ZEXCL*(IZONE-1)+3)
+          RREP(2) = ZR(JEXCLF+ZEXCL*(IZONE-1)+4)
+          RREP(3) = ZR(JEXCLF+ZEXCL*(IZONE-1)+5)
+        ELSE
+          LREP(1) = .FALSE.
+          RREP(1) = 0.D0
+          RREP(2) = 0.D0
+          RREP(3) = 0.D0
+        ENDIF
 C
       ELSEIF (QUESTI.EQ.'ASPERITE') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
@@ -340,15 +420,13 @@ C
         ENDIF
 C
       ELSE
+        WRITE(6,*) '   NUM. ZONE    : <',IZONE  ,'>'
+        WRITE(6,*) '   QUESTION     : <',QUESTI ,'>'
+        WRITE(6,*) '   REPONSE  - I : <',IREP(1),'>'
+        WRITE(6,*) '   REPONSE  - R : <',RREP(1),'>'
+        WRITE(6,*) '   REPONSE  - L : <',LREP(1),'>'            
         CALL ASSERT(.FALSE.)
-      ENDIF
-C
-C     WRITE(6,*) 'APPEL A MMINFP... '
-C     WRITE(6,*) '   NUM. ZONE    : <',IZONE  ,'>'
-C     WRITE(6,*) '   QUESTION     : <',QUESTI ,'>'
-C     WRITE(6,*) '   REPONSE  - I : <',IREP(1),'>'
-C     WRITE(6,*) '   REPONSE  - R : <',RREP(1),'>'
-C     WRITE(6,*) '   REPONSE  - L : <',LREP(1),'>'        
+      ENDIF      
 C
       CALL JEDEMA()
       END

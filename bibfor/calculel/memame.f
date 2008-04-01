@@ -7,7 +7,7 @@
       CHARACTER*(*) OPTION,MODELE,MATE,CARA,COMPOR,MATEL,BASEZ
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C ----------------------------------------------------------------------
       CHARACTER*1 BASE
+      CHARACTER*2 CODRET
       CHARACTER*8 K8B,LPAIN(17),LPAOUT(2)
       CHARACTER*19 CHVARC
       CHARACTER*24 LIGRMO,LCHIN(17),LCHOUT(2)
@@ -70,7 +71,7 @@ C ----------------------------------------------------------------------
       NH = 0
       CALL MECHAM(OPTION,MODELE,NCHAR,LCHAR,CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,ICODE)
-      CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
+      CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
 
       CALL MEMARE(BASE,MATELZ(1:19),MODELE,MATE,CARA,OPTION)
       CALL JEVEUO(MATELZ(1:19)//'.RERR','E',IAREFE)

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,7 +101,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
-                                MATER=ACIER,),);
+                                MATER=ACIER),);
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='SURFINF',

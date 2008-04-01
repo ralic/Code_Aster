@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,8 +114,7 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MODE,
 
 # DEFINITION DU CONTACT
 CTAC=AFFE_CHAR_MECA(MODELE=MODE,
-                    CONTACT=_F(RECHERCHE='NOEUD_BOUCLE',
-                               METHODE='CONTINUE',
+                    CONTACT=_F(METHODE='CONTINUE',
                                FROTTEMENT='COULOMB',
                                COULOMB=0.3,
                                GROUP_MA_ESCL='LESC',

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,8 +103,10 @@ CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
                               METHODE='LAGRANGIEN',
                                   DIST_MAIT=31.75,
                                   DIST_ESCL=31.75,
-                                  VECT_ORIE_POU=(0.,0.,1.,),
-                                  REAC_GEOM='AUTOMATIQUE',
+                                  NORMALE = 'MAIT',
+                                  VECT_MAIT = 'VECT_Y',
+                                  MAIT_VECT_Y=(0.,0.,-1.,),
+                                 
 
                               ),);
 
@@ -116,8 +118,9 @@ CHPOU=AFFE_CHAR_MECA(MODELE=MODE, INFO=2,
                                   DIST_MAIT=31.75,
                                   DIST_POUTRE='OUI',
                                   CARA_ELEM=DEFI_R,
-                                  VECT_ORIE_POU=(0.,0.,1.,),
-                                  REAC_GEOM='AUTOMATIQUE',
+                                   NORMALE = 'MAIT',
+                                  VECT_MAIT = 'VECT_Y',
+                                  MAIT_VECT_Y=(0.,0.,-1.,),   
 
                               ),);
 

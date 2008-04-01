@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,6 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=(_F(GROUP_MA_MAIT = 'SBATI',
                                GROUP_MA_ESCL  = 'SCONTA',
-                               RECHERCHE      = 'NOEUD_VOISIN',
                                METHODE        = 'CONTINUE',
                                CONTACT_INIT   = 'OUI',
                                SEUIL_INIT     = 0.,

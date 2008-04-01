@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,11 +39,12 @@ try:
    
    from Utilitai.Utmess   import UTMESS
    from Build.B_SENSIBILITE_MEMO_NOM_SENSI import MEMORISATION_SENSIBILITE
+   from Execution.E_Global import MessageLog
 except:
    aster_exists = False
 
 
-def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG):
+def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM):
    """Fonction sdprod partie commune à DEBUT et POURSUITE.
    (on stocke un entier au lieu du logique)
    """
@@ -60,8 +61,17 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG):
       if not hasattr(jdc, 'memo_sensi'):
          jdc.memo_sensi = MEMORISATION_SENSIBILITE()
 
+      if hasattr(jdc, 'msg_init') and jdc.msg_init == 1:
+         # messages d'alarmes désactivés
+         if IGNORE_ALARM:
+            if not type(IGNORE_ALARM) in (list, tuple):
+               IGNORE_ALARM = [IGNORE_ALARM]
+            for idmess in IGNORE_ALARM:
+               MessageLog.disable_alarm(idmess)
+      jdc.msg_init = True
 
-def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
+
+def DEBUT(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
    """
        Fonction sdprod de la macro DEBUT
    """
@@ -69,7 +79,7 @@ def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande DEBUT ne peut exister qu'au niveau jdc")
 
-   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG)
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM)
 
 
 def build_debut(self,**args):
@@ -92,7 +102,7 @@ def build_debut(self,**args):
    self.definition.op=None
    return ier
 
-def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
+def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
    """
        Fonction sdprod de la macro POURSUITE
    """
@@ -100,7 +110,7 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
-   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG)
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM)
    
    if (self.codex and os.path.isfile("glob.1") or os.path.isfile("bhdf.1")):
      # Le module d'execution est accessible et glob.1 est present

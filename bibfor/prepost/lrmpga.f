@@ -3,7 +3,7 @@
      &                 INST,CRIT,PREC, OPTION, PARAM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -124,6 +124,7 @@ C
      &               'PY5',      'P13'/
 
 C-----------------------------------------------------------------------
+C
       CALL JEMARQ()
 C
       CALL INFNIV ( IFM, NIVINF )
@@ -259,8 +260,12 @@ C                 COMPARAISON DES COORDONNEES DES PG ASTER/MED
      &                   ELREF,ZK8(JTYMED+J-1),FAPG,NLOC,ZI(JPERM),
      &                   NUTYMA,CODRET)
 
+C                 SI LE NBRE PT GAUSS INCORRECT ET PAS DE <F>,
+C                 NBPG=0 : RIEN A ECRIRE DANS LRCMVE
+                  IF ( CODRET.EQ.4 ) THEN
+                     NBPG = 0
 C                 SI PERMUTATIONS AU NIVEAU DES PG ASTER/MED :
-                  IF(CODRET.EQ.1)THEN
+                  ELSE IF(CODRET.EQ.1)THEN
 C  ===>              REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A
 C                    UNE PERMUTATION DANS LES PG MED/ASTER
                      DO 220 IPGM=1,NBPG

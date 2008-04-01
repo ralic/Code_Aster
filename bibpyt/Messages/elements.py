@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,10 +79,6 @@ cata_msg = {
 15 : _("""
  la nature du matériau  %(k1)s  n'est pas traitée
  seules sont considérées les natures : ELAS, ELAS_ISTR, ELAS_ORTH .
-"""),
-
-16 : _("""
- type de maille inconnu
 """),
 
 17 : _("""

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 31/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,10 +51,10 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       REAL*8 SIGMA(162),CONTNO(162),REPERE(7),BARY(3)
-      REAL*8 NHARM,INSTAN,ZERO,DEPLA(81),SIGM2(162)
+      REAL*8 NHARM,INSTAN,ZERO,SIGM2(162)
       LOGICAL LSENS
       INTEGER JGANO,NBSIGM,NITER,I,ICONT,IDEPL,ITER,IDEPLC,IDFDE,
-     &        IGEOM,IMATE,J,INO,IPOIDS,IVF,NBINCO,
+     &        IGEOM,IMATE,J,INO,IPOIDS,IVF,
      &        NBSIG,NDIM,NNO,NNOS,NPG,IDEPS,IGAU,IRET,IDIM
 C     ------------------------------------------------------------------
 
@@ -101,51 +101,37 @@ C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
  150  CONTINUE
       CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 
-C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
-C      --------------------------------------------------
-      NBINCO = NNO*NDIM
       CALL JEVECH('PDEPLAR','L',IDEPL)
 
-C ---- RECUPERATION DU CHAMP DE DEPLACEMENT DERIVE SUR L'ELEMENT
-C      ---------------------------------------------------------
-      IF (LSENS) CALL JEVECH('PDEPSEN','L',IDEPS)
 
-        DO 20 I = 1,NBSIG*NPG
-          SIGMA(I) = ZERO
-   20   CONTINUE
+      DO 20 I = 1,NBSIG*NPG
+        SIGMA(I) = ZERO
+   20 CONTINUE
 
-        DO 50 I = 1,NBINCO
-          DEPLA(I) = ZR(IDEPL-1+I)
-   50   CONTINUE
 
-C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
-C ---- DE L'ELEMENT :
-C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES - SIGMA_RETRAIT)
-C      ------------------------------------
+
+      IF (LSENS) THEN
+        CALL JEVECH('PDEPSEN','L',IDEPS)
         CALL SIGVMC('GANO',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
-     &              IDFDE,ZR(IGEOM),DEPLA,
-     &              INSTAN,REPERE,
-     &              ZI(IMATE),NHARM,SIGMA,.FALSE.)
+     &            IDFDE,ZR(IGEOM),ZR(IDEPS),
+     &            INSTAN,REPERE,
+     &            ZI(IMATE),NHARM,SIGMA,.FALSE.)
 
+        CALL SIGVMC('GANO',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+     &              IDFDE,ZR(IGEOM),ZR(IDEPL),
+     &              INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,.TRUE.)
+        DO 70 I = 1,NBSIG*NPG
+          SIGMA(I) = SIGMA(I) + SIGM2(I)
+   70   CONTINUE
 
-C ---- CALC DU TERME COMPLEMENTAIRE DE CONTR 'VRAIES' SUR L'ELEMENT
-C ---- DANS LE CAS DE LA SENSIBILITE (TERME DA/DP*B*U)
-C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
-C ATTENTION!! POUR L'INSTANT(30/9/02) ON DOIT AVOIR SIGMA_THERMIQUE=0
-C      ------------------------------------
-        IF (LSENS) THEN
-          DO 60 I = 1,NBINCO
-            DEPLA(I) = ZR(IDEPS-1+I)
-   60     CONTINUE
-          CALL SIGVMC('GANO',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
-     &                IDFDE,ZR(IGEOM),DEPLA,
-     &                INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,.TRUE.)
-          DO 70 I = 1,NBSIG*NPG
-            SIGMA(I) = SIGMA(I) + SIGM2(I)
-   70     CONTINUE
-        END IF
+      ELSE
+        CALL SIGVMC('GANO',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+     &            IDFDE,ZR(IGEOM),ZR(IDEPL),
+     &            INSTAN,REPERE,
+     &            ZI(IMATE),NHARM,SIGMA,.FALSE.)
+      END IF
 
-        CALL PPGAN2(JGANO,NBSIG,SIGMA,CONTNO)
+      CALL PPGAN2(JGANO,NBSIG,SIGMA,CONTNO)
 
 
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE

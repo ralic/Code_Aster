@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(DEFICO,RESOCO,DEPDEL,NUMEDD,NOMA  ,
      &                  CNSINR,CNSPER,INST)
-C
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,7 +69,7 @@ C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C 
       INTEGER      IRET,INO,IFROT,NDD1,INOE,IN
       INTEGER      IBID,ILONG,IMA,ICMP,I,IZONE
-      INTEGER      NBNO,NBNOC,NBNOT,NNOM,NNOE
+      INTEGER      NBNO,NBPC,NBNOT,NNOM,NNOE
       INTEGER      JCONT,JFROT,ICONEX,IATYMA
       INTEGER      NBZONE,NBNOM,NTPC,NTMAE
       INTEGER      JCONTA,JPREMI,JEUTEM,JGLIE,JGLIM
@@ -135,9 +135,9 @@ C --- SORTIE SI PAS DE CONTACT
 C 
       MELEME = RESOCO(1:14)//'.MELEM'
       CALL JEVEUO(MELEME,'L',JMELEM)  
-      SCONEL    = ZK8(JMELEM+2-1)
+      SCONEL    = ZK8(JMELEM+2-1) 
       SCON19    = SCONEL
-      CALL JEEXIN(SCON19//'.RELR',IRET)
+      CALL JEEXIN(SCON19//'.RELR',IRET)       
       IF (IRET.EQ.0) THEN
         GOTO 999
       ENDIF      
@@ -271,8 +271,8 @@ C --- NOMBRE DE POINTS D'INTEGRATION DE CONTACT
 C
       NBNO  = 0    
       DO 20 IMA = 1,NTMAE
-        NBNOC = ZI(JMAESC+ZMAES*(IMA-1)+3)
-        NBNO = NBNO + NBNOC
+        NBPC = ZI(JMAESC+ZMAES*(IMA-1)+3)
+        NBNO = NBNO + NBPC
    20 CONTINUE
 C
 C --- CREATION D OBJETS DE TRAVAIL
@@ -304,7 +304,7 @@ C --- DES MAILLES
 C
         NTPC  = 0
         DO 60 IMA = 1,NTMAE
-          NBNOC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
+          NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
           IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2)
           INTEGR = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+1))
           IFROT  = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+5))
@@ -313,10 +313,10 @@ C --- INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
 C
           IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &        INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
-            NBNOC = NBNOC/2
+            NBPC = NBPC/2
           END IF
 C
-          DO 50 INO = 1,NBNOC
+          DO 50 INO = 1,NBPC
             NUMAES = ZR(JTABF+ZTABF*(NTPC+INO-1)+1)
             NUMAMA = ZR(JTABF+ZTABF*(NTPC+INO-1)+2)
 C
@@ -391,13 +391,13 @@ C
      &                                    DEPLPM(2)*TAU2(2) + 
      &                                    DEPLPM(3)*TAU2(3)
    50     CONTINUE
-          NTPC = NTPC + NBNOC
+          NTPC = NTPC + NBPC
    60   CONTINUE
 C
 C --- BOUCLE SUR TOUS LES NOEUDS DE CONTACT
 C
         DO 100 INO = 1,NBNOT
-          IF (ZR(JNOESC+ZNOES*(INO-1)+1).EQ.-1.D0) THEN
+          IF (ZR(JNOESC+ZNOES*(INO-1)).EQ.-1.D0) THEN
             GLI1 = 0.D0
             GLI2 = 0.D0
             GLI  = 0.D0
@@ -426,15 +426,15 @@ C
             NTPC = 0
             INOE = 0
             DO 90 IMA = 1,NTMAE
-              NBNOC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
+              NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
               IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2)
               INTEGR = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+1))
               IFROT  = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+5))
               IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &            INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
-                 NBNOC = NBNOC/2
+                 NBPC = NBPC/2
               END IF
-              DO 80 IN = 1,NBNOC
+              DO 80 IN = 1,NBPC
                 NUMAES = ZR(JTABF+ZTABF*(NTPC+IN-1)+1)
 C
 C --- COORD ABSOLUES DU POINT D INTEGRATION: COORE
@@ -569,7 +569,7 @@ C
                   END IF
                 END IF
    80         CONTINUE
-              NTPC = NTPC + NBNOC
+              NTPC = NTPC + NBPC
    90       CONTINUE
 C
 C --- CALCUL DES PERCUSSIONS
@@ -673,16 +673,16 @@ C
           IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2)
           INTEGR = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+1))
           IFROT  = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+5))
-          NBNOC  = ZI(JMAESC+ZMAES* (IMA-1)+3)
+          NBPC  = ZI(JMAESC+ZMAES* (IMA-1)+3)
 C
 C --- INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
 C
           IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &        INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
-            NBNOC = NBNOC/2
+            NBPC = NBPC/2
           END IF
 C
-          DO 130 INO = 1,NBNOC
+          DO 130 INO = 1,NBPC
             NUMAES = ZR(JTABF+ZTABF*(NTPC+INO-1)+1)
             NUMAMA = ZR(JTABF+ZTABF*(NTPC+INO-1)+2)
             NUNOE  = ZI(ICONEX+ZI(ILONG-1+NUMAES)+INO-2)
@@ -740,13 +740,13 @@ C
      &                             DEPLPM(2)*TAU1(2)
 
   130     CONTINUE
-          NTPC = NTPC + NBNOC
+          NTPC = NTPC + NBPC
   140   CONTINUE
 C
 C --- BOUCLE SUR TOUS LES NOEUDS DE CONTACT
 C
         DO 180 INO = 1,NBNOT
-          IF (ZR(JNOESC+10* (INO-1)+1).EQ.-1.D0) THEN
+          IF (ZR(JNOESC+ZNOES*(INO-1)).EQ.-1.D0) THEN
             GLI1 = 0.D0
             GLI  = 0.D0
             RTAX = 0.D0
@@ -771,15 +771,15 @@ C
             INOE = 0
             ZL(JPREMI-1+NUNOE) = .FALSE.
             DO 170 IMA = 1,NTMAE
-              NBNOC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
+              NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
               IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2)
               INTEGR = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+1))
               IFROT  = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+5))
               IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &            INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
-                 NBNOC = NBNOC/2
+                 NBPC = NBPC/2
               END IF
-              DO 160 IN = 1,NBNOC
+              DO 160 IN = 1,NBPC
                 NUMAES = ZR(JTABF+ZTABF*(NTPC+IN-1)+1)
 C
 C --- COORD ABSOLUES DU POINT D INTEGRATION: COORE
@@ -883,7 +883,7 @@ C
                   END IF
                 END IF
   160         CONTINUE
-              NTPC = NTPC + NBNOC
+              NTPC = NTPC + NBPC
   170       CONTINUE
 C
 C --- CALCUL DES PERCUSSIONS

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,8 +61,6 @@ CH=AFFE_CHAR_MECA(
              ),
             CONTACT=
             _F(APPARIEMENT  = 'MAIT_ESCL',
-               RECHERCHE = 'NOEUD_BOUCLE',
-
                GROUP_MA_MAIT='RIGID',
                GROUP_MA_ESCL='SZZ',
 

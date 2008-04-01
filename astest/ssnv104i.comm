@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 #  CAS_TEST  : SSNV104I
 #  TITRE : CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,9 +132,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DZ=0.0,),),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(METHODE='CONTRAINTE',
-                               RECHERCHE = 'NOEUD_BOUCLE',
-                               GROUP_MA_MAIT='SMAI',
+                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
                                ),);
 #_____________________________________________________________________
@@ -207,7 +205,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                        NOM_CMP='SIYY',
                        VALE=-2798.3000000000002,
                        CRITERE='RELATIF',
-                       PRECISION=0.155,
+                       PRECISION=0.12,
                        REFERENCE='ANALYTIQUE',),);
 #_____________________________________________________________________
 #
@@ -333,7 +331,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
                    GROUP_NO='I',
                    VALE=-0.16844000000000001,
                    CRITERE='RELATIF',
-                   PRECISION=0.031,
+                   PRECISION=0.084,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=RESU,
                    INST=1.,
@@ -342,7 +340,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
                    GROUP_NO='IP',
                    VALE=-0.16844000000000001,
                    CRITERE='RELATIF',
-                   PRECISION=0.031,
+                   PRECISION=0.081,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=RESU,
                    INST=1.,

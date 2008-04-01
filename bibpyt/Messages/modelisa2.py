@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa2 Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,18 +144,6 @@ cata_msg={
 
 38: _("""
  les courbures ky et kz ne sont pas prises en compte pour les poutres courbes
-"""),
-
-39: _("""
- pb pour recuperer "epais" pour la maille  %(k1)s
-"""),
-
-40: _("""
- excentricite non traitee
-"""),
-
-41: _("""
- pb pour recuperer "excent" pour la maille  %(k1)s
 """),
 
 42: _("""

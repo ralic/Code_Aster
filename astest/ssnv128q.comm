@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,7 +70,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                CONTACT_INIT   = 'OUI',
                                SEUIL_INIT     = 1.0E-1,
                                SANS_GROUP_NO_FR= 'PPS',
-                               VECT_Y = (-1.,0.,0.),
+                               EXCL_FROT_1 = (-1.,0.,0.),
                                COEF_REGU_FROT = 1.0,
                                COEF_REGU_CONT = 1.0,
                                ITER_GEOM_MAXI = 2,

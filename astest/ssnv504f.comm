@@ -1,4 +1,4 @@
-# MODIF  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,10 +113,7 @@ DDLIMP=AFFE_CHAR_MECA(MODELE=MO,
                                   DY=1.0,),);
 
 CONTACT=AFFE_CHAR_MECA(MODELE=MO,
-                       CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
-                                   RECHERCHE='NOEUD_BOUCLE',
-                                   METHODE='CONTRAINTE',
-                                   GLISSIERE='OUI',
+                       CONTACT=(_F(GLISSIERE='OUI',
                                    ALARME_JEU=0.1,
                                    REAC_GEOM='CONTROLE',
                                    NB_REAC_GEOM=2,                                  
@@ -231,7 +228,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NOM_CMP='DY',
                    GROUP_NO='K',
                    VALE=55.880000000000003,
-                   PRECISION=1.05E-2,
+                   PRECISION=1.1E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=6,

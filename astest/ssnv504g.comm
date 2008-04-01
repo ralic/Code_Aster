@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,11 +113,8 @@ DDLIMP=AFFE_CHAR_MECA(MODELE=MO,
                                   DY=1.0,),);
 
 CONTACT=AFFE_CHAR_MECA(MODELE=MO,
-                       CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
-                                   RECHERCHE='NOEUD_BOUCLE',
-                                   METHODE='CONTRAINTE',
-                                   GLISSIERE='OUI',
-                                   ALARME_JEU=0.1,
+                       CONTACT=(_F(GLISSIERE='OUI',
+                                   ALARME_JEU=0.15,
                                    REAC_GEOM='CONTROLE',
                                    NB_REAC_GEOM=2,                                  
                                    GROUP_MA_MAIT='FIL_MAI1',
@@ -176,11 +173,6 @@ U=CALC_NO(reuse =U,
                OPTION='SIEF_NOEU_ELGA',
                RESULTAT=U,);
 
-IMPR_RESU(MODELE=MO,
-          FORMAT='ASTER',UNITE=20,
-          RESU=_F(RESULTAT=U,
-                  MAILLAGE=MAILL1,
-                  ),);
 
 DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
                                GROUP_NO='LOP_ESC1',
@@ -198,31 +190,14 @@ TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               TOUT_CMP='OUI',
                               OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=DEPLAC,);
-IMPR_TABLE(TABLE=TCONT,);
-
-DEFI_FICHIER(ACTION='ASSOCIER',UNITE=37)
-
-IMPR_RESU(MODELE=MO,
-          FORMAT='CASTEM',UNITE=37,
-          RESU=_F(RESULTAT=U,
-                  MAILLAGE=MAILL1,
-                  NOM_CHAM=('DEPL',
-                            'VALE_CONT',
-                            'SIEF_NOEU_ELGA',
-                            ),
-                  TOUT_ORDRE='OUI',
-                  ),);
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='K',
-                   VALE=5.0,
-                   PRECISION=5.E-2,
+                   VALE=5.,
+                   PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=1,
@@ -236,7 +211,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NOM_CMP='DY',
                    GROUP_NO='K',
                    VALE=20.824999999999999,
-                   PRECISION=1.E-2,
+                   PRECISION=2.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=3,
@@ -250,7 +225,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NOM_CMP='DY',
                    GROUP_NO='K',
                    VALE=55.880000000000003,
-                   PRECISION=1.E-2,
+                   PRECISION=2.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=6,

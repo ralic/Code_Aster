@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 31/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,7 +69,7 @@ C     ------------------------------------------------------------------
       DATA NOMREF/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
 C     --------------------------------------------------
       ZERO = 0.D0
- 
+
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL JEVECH('PMATERC','L',LMATER)
@@ -164,7 +164,7 @@ C
      &           NOMRES,VALRES,CODRES,'FM')
         E   = VALRES(1)
         XNU = VALRES(2)
-        
+
 C
 C A CE NIVEAU : LA PROCEDURE HABITUELLE DE CALCUL DE SENSIBILITE DONNE :
 C   SI : DERIVATION PAR RAPPORT A E ALORS : E = 1 ET XNU = 0
@@ -206,9 +206,9 @@ C
            CALL JEVECH('PCONTPO','E',JEFFO)
         ENDIF
 C
-C       CALCUL DANS LE REPERE LOCAL DE LA POUTRE 
-C           - DU DEPLACEMENT 
-C           - DE LA DERIVEE DU DEPLACEMENT 
+C       CALCUL DANS LE REPERE LOCAL DE LA POUTRE
+C           - DU DEPLACEMENT
+C           - DE LA DERIVEE DU DEPLACEMENT
 C           - DE LA DERIVEE DE L'ACCELERATION
 C
         CALL DELOGL(IDEPL,RLOC)
@@ -219,8 +219,8 @@ C
             EFGE(I) = 0.D0
             DO 110 J = 1,NDDL
               EFGE(I) = EFGE(I)
-     &             + KLC(I,J) * RLOC(J)
-     &             + KLCS(I,J)* DRLOC(J)
+     &             + KLC(I,J) * DRLOC(J)
+     &             + KLCS(I,J)* RLOC(J)
      &             + MLC(I,J) * DALOC(J)
 110         CONTINUE
 100     CONTINUE

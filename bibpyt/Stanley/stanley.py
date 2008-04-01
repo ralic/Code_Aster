@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley Stanley  DATE 31/03/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1208,7 +1208,7 @@ class SELECTION:
   """
 
 
-  NonDeveloppePG = "Fonctionnalite non developpee : seules les options 'SIEF_ELGA', 'VARI_ELGA', 'SIEF_ELGA_TEMP' et 'FLUX_ELGA_TEMP' peuvent etre visualisees aux points de Gauss."
+#  NonDeveloppePG = "Fonctionnalite non developpee : seules les options 'SIEF_ELGA', 'VARI_ELGA', 'SIEF_ELGA_TEMP' et 'FLUX_ELGA_TEMP' peuvent etre visualisees aux points de Gauss."
   NonDeveloppeRS = "Fonctionnalite non developpee : seuls les resultats de type 'EVOL_ELAS', 'EVOL_THER', 'EVOL_NOLI', 'DYNA_TRANS', 'DYNA_HARMO' et 'MODE_MECA' sont geres."
 
   comb_tracables = {      # Combinaisons (type_champ, type_geom) tracables -> outil de trace
@@ -2269,6 +2269,75 @@ class DRIVER_ISOVALEURS(DRIVER):
     if 'TOUT_CMP' not in selection.nom_cmp :
       para['NOM_CMP'] = tuple(selection.nom_cmp)
 
+    # Cas particulier de la deformee
+#     if 'DEPL' in selection.nom_cham:
+#        if 'TOUT_CMP' in selection.nom_cmp:
+#           if   selection.geom[0] in ['VOLUME']:  ndim = 3
+#           elif selection.geom[0] in ['SURFACE']: ndim = 2
+#           else:
+#              # sinon on a choisi TOUT_MAILLAGE
+#              dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
+#              if   '3' in str(dim): ndim = 3
+#              elif '2' in str(dim): ndim = 2
+#              elif '1' in str(dim): ndim = 1
+# 
+# 
+#           if   ndim==3:
+#              para['TYPE_CHAM'] = 'VECT_3D'
+#              para['NOM_CMP'] = ('DX', 'DY', 'DZ')
+#           elif ndim==2:
+#              para['TYPE_CHAM'] = 'VECT_2D'
+#              para['NOM_CMP'] = ('DX', 'DY')
+#           else:
+#              para['TYPE_CHAM'] = 'SCALAIRE'
+#              para['NOM_CMP'] = tuple(selection.liste_cmp)
+# 
+#        else:
+#           para['NOM_CMP'] = tuple(selection.nom_cmp)
+#           para['TYPE_CHAM'] = 'SCALAIRE'
+
+#     # Cas particulier de la deformee
+#     if 'TOUT_CMP' in selection.nom_cmp:
+#        if   selection.geom[0] in ['VOLUME']:  ndim = 3
+#        elif selection.geom[0] in ['SURFACE']: ndim = 2
+#        else:
+#           # sinon on a choisi TOUT_MAILLAGE
+#           dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
+#           if   '3' in str(dim): ndim = 3
+#           elif '2' in str(dim): ndim = 2
+#           elif '1' in str(dim): ndim = 1
+# 
+#        if   ndim==3: dpara1 = { 'TYPE_CHAM': 'VECT_3D',  'NOM_CMP': ('DX', 'DY', 'DZ') }
+#        elif ndim==2: dpara1 = { 'TYPE_CHAM': 'VECT_2D',  'NOM_CMP': ('DX', 'DY') }
+#        else:         dpara1 = { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.liste_cmp) }
+# 
+#     else:
+#        dpara1 = { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.nom_cmp) }
+# 
+#     print 'dpara1=', dpara1
+
+
+    # Cas particulier de la deformee
+    if   selection.geom[0] in ['VOLUME']:  ndim = 3
+    elif selection.geom[0] in ['SURFACE']: ndim = 2
+    else:
+       # sinon on a choisi TOUT_MAILLAGE
+       dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
+       if   '3' in str(dim): ndim = 3
+       elif '2' in str(dim): ndim = 2
+       elif '1' in str(dim): ndim = 1
+    if   ndim==3: dpara1 = { 'TYPE_CHAM': 'VECT_3D',  'NOM_CMP': ('DX', 'DY', 'DZ') }
+    elif ndim==2: dpara1 = { 'TYPE_CHAM': 'VECT_2D',  'NOM_CMP': ('DX', 'DY') }
+    else:         dpara1 = { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.liste_cmp) }
+
+    # Si on a choisi le champ DEPL
+    if 'DEPL' in selection.nom_cham:
+       if 'TOUT_CMP' in selection.nom_cmp:
+          para.update( dpara1 )
+       else:
+          para.update( { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.nom_cmp) } )
+
+
     # Options supplementaires du IMPR_RESU pour la SENSIBILITE
     if contexte.para_sensi:
       para['SENSIBILITE'] = contexte.para_sensi
@@ -2282,10 +2351,11 @@ class DRIVER_ISOVALEURS(DRIVER):
           else:
              UTMESS('I','STANLEY_34')
              if selection.nom_cham != 'DEPL':
-                para0 = _F(RESULTAT   = contexte.resultat,
+                para1 = _F(RESULTAT   = contexte.resultat,
                            NOM_CHAM   = 'DEPL',
                            NUME_ORDRE = selection.numeros,)
-                para = [ para, para0 ]
+                para1.update( dpara1 )
+                para = [ para, para1 ]
 
     return para
 
@@ -2326,25 +2396,31 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
 
     # Tracé au format GMSH
     DEFI_FICHIER(UNITE = 33, INFO=1)
-    try:
-      IMPR_RESU( UNITE   = ul, 
+    IMPR_RESU( UNITE   = ul, 
                  FORMAT  = 'GMSH',
                  VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
                  RESU    = para,
                )
-    except aster.error,err:
-      self.erreur.Remonte_Erreur(err, [], 0)
-      DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
-      return
-    except aster.FatalError,err:
-      self.erreur.Remonte_Erreur(err, [], 0)
-      DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
-      return
-    except Exception,err:
-      texte = "Cette action n'est pas realisable.\n"+str(err)
-      self.erreur.Remonte_Erreur(err, [], 0, texte)
-      DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
-      return
+
+#     try:
+#       IMPR_RESU( UNITE   = ul, 
+#                  FORMAT  = 'GMSH',
+#                  VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
+#                  RESU    = para,
+#                )
+#     except aster.error,err:
+#       self.erreur.Remonte_Erreur(err, [], 0)
+#       DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+#       return
+#     except aster.FatalError,err:
+#       self.erreur.Remonte_Erreur(err, [], 0)
+#       DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+#       return
+#     except Exception,err:
+#       texte = "Cette action n'est pas realisable.\n"+str(err)
+#       self.erreur.Remonte_Erreur(err, [], 0, texte)
+#       DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+#       return
 
     DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
 
@@ -2367,7 +2443,7 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
 
   """
     Driver d'outils de post-traitement
-    Specialisation pour GMSH
+    Specialisation pour SALOME
 
     Methodes publiques
       Tracer : genere le fichier de post-traitement (IMPR_RESU) et lance GMSH

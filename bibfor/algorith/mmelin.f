@@ -1,7 +1,7 @@
-      SUBROUTINE MMELIN(NOMA,NUMA,TYPINT,NNINT,IRET)
+      SUBROUTINE MMELIN(NOMA,NUMA,TYPINT,NNINT)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C
       INTEGER     NUMA
       INTEGER     TYPINT
       INTEGER     NNINT
-      INTEGER     IRET
 C      
 C ----------------------------------------------------------------------
 C
@@ -49,9 +48,6 @@ C                 6 NEWTON-COTES
 C                 7 NEWTON-COTES_1
 C                 8 NEWTON-COTES_2
 C OUT NNINT  : NOMBRE DE POINTS D'INTEGRATION DE CET ELEMENT
-C OUT IRET   : CODE RETOUR ERREUR
-C                0 TOUT VA BIEN
-C                1 SCHEMA D'INTEGRATION INCONNU
 C
 C ----------------------------------------------------------------------
 C
@@ -60,7 +56,6 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      IRET = 0
       CALL MMELTY(NOMA,NUMA,ALIAS,IBID,IBID)
 C
       IF (TYPINT .EQ. 1) THEN
@@ -128,6 +123,6 @@ C
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 100
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 100
       ELSE
-        IRET = 1
+        CALL ASSERT(.FALSE.)
       END IF
       END

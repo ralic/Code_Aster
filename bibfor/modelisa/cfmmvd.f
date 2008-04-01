@@ -1,7 +1,7 @@
       INTEGER FUNCTION CFMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF MODELISA  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,15 +37,18 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   ZNOES,ZMETH,ZTOLE,ZTABF
-      PARAMETER (ZNOES=10,ZMETH=8 ,ZTOLE=6 ,ZTABF=30) 
-      INTEGER   ZCMCF,ZECPD,ZTGDE,ZDIRE
-      PARAMETER (ZCMCF=25,ZECPD=6 ,ZTGDE=6 ,ZDIRE=3 )
+      PARAMETER (ZNOES=1,ZMETH=12,ZTOLE=6 ,ZTABF=30) 
+      INTEGER   ZCMCF,ZECPD,ZTGDE,ZDIRN
+      PARAMETER (ZCMCF=25,ZECPD=6 ,ZTGDE=6 ,ZDIRN=6 )
       INTEGER   ZPOUD,ZDIME,ZMAES,ZPERC
       PARAMETER (ZPOUD=3 ,ZDIME=9 ,ZMAES=3 ,ZPERC=4 )    
       INTEGER   ZMESX,ZAPME,ZAPPA,ZREAC
       PARAMETER (ZMESX=4, ZAPME=4 ,ZAPPA=3 ,ZREAC=4 )
       INTEGER   ZCONV,ZRESU,ZCARF,ZXFEM
       PARAMETER (ZCONV=9 ,ZRESU=24,ZCARF=4 ,ZXFEM=27) 
+      INTEGER   ZEXCL
+      PARAMETER (ZEXCL=6 ) 
+      
                        
 C
 C ----------------------------------------------------------------------
@@ -66,8 +69,8 @@ C
         CFMMVD = ZECPD          
       ELSE IF (VECT.EQ.'ZTGDE') THEN
         CFMMVD = ZTGDE   
-      ELSE IF (VECT.EQ.'ZDIRE') THEN
-        CFMMVD = ZDIRE       
+      ELSE IF (VECT.EQ.'ZDIRN') THEN
+        CFMMVD = ZDIRN       
       ELSE IF (VECT.EQ.'ZPOUD') THEN
         CFMMVD = ZPOUD 
       ELSE IF (VECT.EQ.'ZDIME') THEN
@@ -91,9 +94,11 @@ C
       ELSE IF (VECT.EQ.'ZPERC') THEN
         CFMMVD = ZPERC 
       ELSE IF (VECT.EQ.'ZXFEM') THEN
-        CFMMVD = ZXFEM          
+        CFMMVD = ZXFEM    
+      ELSE IF (VECT.EQ.'ZEXCL') THEN
+        CFMMVD = ZEXCL                
       ELSE
-        CALL CFIMPA('CFMMVD',1) 
+        CALL ASSERT(.FALSE.)
       ENDIF  
 C
       CALL JEDEMA()

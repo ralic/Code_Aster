@@ -1,0 +1,102 @@
+      SUBROUTINE MMUSUR(DEFICO,RESOCO,NCMPMX,IZONE ,IMA   ,
+     &                  IPC   ,NBPC  ,JEUUSU)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C     
+      IMPLICIT NONE     
+      CHARACTER*24  DEFICO,RESOCO
+      INTEGER       IZONE, IPC, NBPC, IMA, NCMPMX
+      REAL*8        JEUUSU
+
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT - UTILITAIRE)
+C
+C CALCUL DU JEU AVEC USURE 
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  LUSURE : .TRUE. SI USURE
+C IN  IZONE  : ZONE DE CONTACT
+C IN  IPC    : NUMERO DU POINT DE CONTACT
+C IN  NBPC   : NOMBRE DE POINTS DE CONTACT
+C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT 
+C IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+C IN  IMA    : NUMERO DE LA MAILLE ESCLAVE
+C IN  NCMPMX : NOMBRE MAXI DE GRANDEURS DANS NEUT_R
+C OUT JEUUSU : JEU DU A L'USURE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      NCMPU
+      PARAMETER    (NCMPU=1)
+C      
+      CHARACTER*19 USUFIX
+      INTEGER      JVALEX
+      REAL*8       R8BID   
+      CHARACTER*24 K24BID,K24BLA   
+      LOGICAL      LUSURE    
+      INTEGER      IBID       
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ() 
+C
+C --- INTITIALISATIONS
+C
+      K24BLA = ' '         
+      JEUUSU = 0.D0
+C
+C --- OPTIONS SUR LA ZONE DE CONTACT
+C    
+      CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE',
+     &            IBID  ,R8BID ,K24BID,LUSURE)        
+C
+C --- USURE ?      
+C      
+      IF (LUSURE) THEN
+        USUFIX = RESOCO(1:14)//'.USUF'
+        CALL JEVEUO(USUFIX(1:19)//'.VALE','L',JVALEX)
+        JVALEX = JVALEX + (NCMPMX-NCMPU)*(IPC-1)*IMA
+        JEUUSU = - ABS(ZR(JVALEX+(NBPC*(IMA-1)+IPC-1)))
+      ENDIF    
+C      
+      CALL JEDEMA()
+      END
