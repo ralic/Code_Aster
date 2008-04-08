@@ -4,7 +4,7 @@
       CHARACTER*19        NSSCHE, NOMSD
 C*********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
 C   FONCTIONS EXTERNES
 C   ------------------
 C
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+      CHARACTER*32 JEXNUM,JEXATR
 C
 C   COMMUNS NORMALISES JEVEUX
 C   -------------------------
@@ -273,19 +273,12 @@ C
          CALL JEECRA(JEXNUM(NNUMA,IN),'LONMAX',LNGM,' ')
          CALL JEVEUO(JEXNUM(NNUMA,IN),'E',ANUMA)
 C
-CDEL     WRITE(6,*)'N = ', N
-CDEL
          PTM = 1
          PTV = 1
 C
          DO 210, IM = 1, NBM, 1
 C
             M = ZI(ADRM + IM-1)
-CDEL     WRITE(6,*)'IM   = ', IM
-CDEL     WRITE(6,*)'M    = ', M
-CDEL     WRITE(6,*)'PADR = ', ZI(APADR + M-1)
-CDEL     WRITE(6,*)'NBCO = ', ZI(APNCO + M-1)
-CDEL     WRITE(6,*)'NBSP = ', ZI(APNSP + M-1)
 C
             IF ( M .NE. 0 ) THEN
 C

@@ -1,7 +1,7 @@
       SUBROUTINE CFADJU(ALIAS,KSI1  ,KSI2  ,TOLEOU,LDIST)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,10 +52,11 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      LDIST = .TRUE.
-      
+      LDIST  = .TRUE.
+      ECART  = 0.D0
+C
       IF (ALIAS(1:2).EQ.'SG') THEN
-        
+        ECART = 0.D0
         IF ((KSI1.LT.-1.D0).OR.(KSI1.GT.1.D0)) THEN
           ECART  = ABS(KSI1)-1.D0
         ENDIF    
@@ -177,17 +178,31 @@ C
             IZONE = 1
             
           ELSEIF ((KSI2.GE.-1.D0).AND.(KSI2.LE.1.D0)) THEN  
-            IZONE = 2
-            ECART = SQRT((ABS(KSI1)-1.D0)*(ABS(KSI1)-1.D0))            
+            IZONE = 2            
           ELSEIF (KSI2.GT.1.D0) THEN
-            IZONE = 3
-            ECART = SQRT((ABS(KSI1)-1.D0)*(ABS(KSI1)-1.D0)+
-     &                   (ABS(KSI2)-1.D0)*(ABS(KSI2)-1.D0))            
+            IZONE = 3           
           ELSE 
             CALL ASSERT(.FALSE.)            
-          ENDIF 
-           
+          ENDIF     
         ENDIF
+        IF (KSI1.GT.1.D0) THEN
+          IF (KSI2.LT.-1.D0) THEN
+            IZONE = 7 
+          ELSEIF ((KSI2.GE.-1.D0).AND.(KSI2.LE.1.D0)) THEN  
+            IZONE = 6            
+          ELSEIF (KSI2.GT.1.D0) THEN
+            IZONE = 5           
+          ELSE 
+            CALL ASSERT(.FALSE.)            
+          ENDIF     
+        ENDIF        
+         IF ((KSI1.GE.-1.D0).AND.(KSI1.LE.1.D0)) THEN
+          IF (KSI2.LT.-1.D0) THEN
+            IZONE = 8          
+          ELSEIF (KSI2.GT.1.D0) THEN
+            IZONE = 4                       
+          ENDIF     
+        ENDIF       
 C
 C --- CALCUL DE L'ECART
 C
@@ -216,6 +231,7 @@ C
         IF (ECART.GT.TOLEOU) THEN
           LDIST = .FALSE.
         ENDIF
+        
 C
 C --- RABATTEMENT
 C        
@@ -239,7 +255,8 @@ C
           KSI2 = -1.D0        
         ELSEIF (IZONE.EQ.8) THEN
           KSI2 = -1.D0 
-        ENDIF                    
+        ENDIF 
+C            
       ELSE
         CALL ASSERT(.FALSE.)  
       END IF

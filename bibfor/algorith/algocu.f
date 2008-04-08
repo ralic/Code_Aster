@@ -2,7 +2,7 @@
      &                  DEPTOT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -464,6 +464,9 @@ C ======================================================================
 C 
 C --- CALCUL DES FORCES (AT.MU) 
 C 
+
+      CALL R8INIR(NEQ,0.D0,ZR(JATMU),1)
+
       COMPTS = 0
       DO 161 ILIAC = 1, NBLIAC
          LLIAC  = ZI(JLIAC+ILIAC-1)
@@ -472,7 +475,19 @@ C
          COMPTS = COMPTS + 1         
          CALL CALATM(NEQ,NBDDL,ZR(JMU-1+COMPTS),
      +               ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),ZR(JATMU))
- 161  CONTINUE     
+ 161  CONTINUE
+
+C
+C --- MAJ DU JEU (IL N'EST RECALCULE QU'EN DEBUT DE PAS DE TPS)
+C
+
+      DO 162 ILIAC = 1, NBLIAC
+        JDECAL = ZI(JPOI+ILIAC-1)
+        NBDDL  = ZI(JPOI+ILIAC) - ZI(JPOI+ILIAC-1)
+        CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
+     &             ZR(JRESU),VAL)      
+        ZR(JAPJEU+ILIAC-1) = ZR(JAPJEU+ILIAC-1) - VAL
+ 162  CONTINUE
 
       ZI(JCOCO+2) = NBLIAC
 C 

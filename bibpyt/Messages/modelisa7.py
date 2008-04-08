@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF modelisa7 Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,15 +31,16 @@ cata_msg={
 """),
 
 3: _("""
-  la method est de au-yang. on a  besoin du  vecteur de l axe vect_x et de l origine  orig_axe du cylindre
+  la methode est de AU-YANG
+  on a besoin du  vecteur de l'axe VECT_X et de l'origine ORIG_AXE du cylindre
 """),
 
 4: _("""
- le type de spectre est incompatible avec la configuration etudiee
+ le type de spectre est incompatible avec la configuration etudiée
 """),
 
 5: _("""
- probleme rencontre lors de l interpolation d un interspectre
+ probleme rencontré lors de l'interpolation d'un interspectre
 """),
 
 6: _("""
@@ -47,15 +48,19 @@ cata_msg={
 """),
 
 7: _("""
- l integrale double pour le calcul de la longueur de correlation ne converge pas.
+ l'intégrale double pour le calcul de la longueur de corrélation ne converge pas.
+ JM,IM  = %(i1)s , %(i2)s
+ valeur finale = %(r1)f
+ valeur au pas précédent = %(r2)f
+ erreur relative = %(r3)f
 """),
 
 8: _("""
- la liste de noms doit etre de meme longueur que la liste de group_ma
+ la liste de noms doit etre de meme longueur que la liste de GROUP_MA
 """),
 
 9: _("""
- le group_no :  %(k1)s  existe deja, on ne le cree donc pas.
+ le GROUP_NO :  %(k1)s  existe deja, on ne le crée donc pas.
 """),
 
 10: _("""
@@ -66,48 +71,36 @@ cata_msg={
  le groupe  %(k1)s  existe deja
 """),
 
-12: _("""
- erreur programmeur sur dimension de manoco
-"""),
-
-13: _("""
- erreur programmeur sur dimension de nomaco
-"""),
-
-14: _("""
- erreur programmeur sur dimension de mamaco
-"""),
-
 15: _("""
- faisceau_axial : il y a plus de types de grilles que de grilles
+ FAISCEAU_AXIAL : il y a plus de types de grilles que de grilles
 """),
 
 16: _("""
- faisceau_axial : il faut autant d'arguments pour les operandes <type_grille> et <coor_grille>
+ FAISCEAU_AXIAL : il faut autant d'arguments pour les operandes <TYPE_GRILLE> et <COOR_GRILLE>
 """),
 
 17: _("""
- faisceau_axial, operande <type_grille> : detection d'une valeur illicite
+ FAISCEAU_AXIAL, operande <TYPE_GRILLE> : detection d'une valeur illicite
 """),
 
 18: _("""
- faisceau_axial : il faut autant d'arguments pour les operandes <long_typg>, <larg_typg>, <epai_typg>, <rugo_typg>, <coef_trai_typg> et <coef_dpor_typg>
+ faisceau_axial : il faut autant d'arguments pour les operandes <LONG_TYPG>, <LARG_TYPG>, <EPAI_TYPG>, <RUGO_TYPG>, <COEF_TRAI_TYPG> et <COEF_DPOR_TYPG>
 """),
 
 19: _("""
- <faisceau_trans> le mot cle <couplage> doit etre renseigne au moins une fois sous l une des occurence du mot-cle facteur <faisceau_trans>
+ <FAISCEAU_TRANS> le mot cle <COUPLAGE> doit etre renseigné au moins une fois sous l'une des occurence du mot-cle facteur <FAISCEAU_TRANS>
 """),
 
 20: _("""
- <faisceau_trans> : si couplage <type_pas> , <type_reseau> et <pas> mots-cles obligatoires dans au moins l une des occurences du mot-cle facteur
+ <FAISCEAU_TRANS> : si couplage <TYPE_PAS> , <TYPE_RESEAU> et <PAS> mots-cles obligatoires dans au moins l une des occurences du mot-cle facteur
 """),
 
 21: _("""
- faisceau_trans : si pas de couplage <coef_mass_ajou> mot-cle obligatoire dans au moins l une des occurences du mot cle facteur <faisceau_trans>
+ FAISCEAU_TRANS : si pas de couplage <coef_mass_ajou> mot-cle obligatoire dans au moins l une des occurences du mot cle facteur <faisceau_trans>
 """),
 
 22: _("""
- <faisceau_trans> : le mot-cle <cara_elem> doit etre renseigne au moins une fois dans l une des occurences du mot-cle facteur <faisceau_trans>
+ <FAISCEAU_TRANS> : le mot-cle <CARA_ELEM> doit etre renseigne au moins une fois dans l une des occurences du mot-cle facteur <faisceau_trans>
 """),
 
 23: _("""
@@ -315,11 +308,12 @@ cata_msg={
 """),
 
 74: _("""
- les discretisations des fonctions de forme ne sont pas coherentes. les nombres de points sur 0,l et sur l,2l doivent etre communs a toutes les fonctions.
+ les discrétisations des fonctions de forme ne sont pas cohérentes
+ les nombres de points sur 0,l et sur l,2l doivent etre communs à toutes les fonctions.
 """),
 
 75: _("""
- le group_no  %(k1)s  ne fait pas partie du maillage :  %(k2)s
+ le GROUP_NO  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
 
 76: _("""
@@ -327,38 +321,32 @@ cata_msg={
 """),
 
 77: _("""
- le group_ma  %(k1)s  ne fait pas partie du maillage :  %(k2)s
+ le GROUP_MA  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
-
-
-
-
-
-
-
 
 79: _("""
  le type  %(k1)s d'objets a verifier n'est pas correct : il ne peut etre egal qu'a group_no ou noeud ou group_ma ou maille
 """),
 
 80: _("""
- defaut de planeite.l angle entre les normales aux mailles: %(k1)s  et  %(k2)s  est superieur a angl_max.
+ défaut de planéité
+ l angle entre les normales aux mailles: %(k1)s  et  %(k2)s  est supérieur à ANGL_MAX.
 """),
 
 81: _("""
-  %(k1)s  un identificateur est attendu :                             " %(k2)s " n en est pas un
+  %(k1)s  un identificateur est attendu : " %(k2)s " n'en est pas un
 """),
 
 82: _("""
-  %(k1)s  un identificateur depasse 8 caracteres
+  %(k1)s  un identificateur depasse 8 caractères
 """),
 
 83: _("""
-  %(k1)s  le mot cle fin n est pas attendu
+  %(k1)s  le mot cle FIN n'est pas attendu
 """),
 
 84: _("""
-  %(k1)s  le mot cle finsf n est pas attendu
+  %(k1)s  le mot cle FINSF n est pas attendu
 """),
 
 85: _("""
@@ -366,11 +354,13 @@ cata_msg={
 """),
 
 86: _("""
- la maille de nom :  %(k1)s  n'est pas de type segment, elle ne sera pas affectee par  %(k2)s
+ la maille de nom :  %(k1)s  n'est pas de type SEGMENT
+ elle ne sera pas affectée par  %(k2)s
 """),
 
 87: _("""
- la maille de nom :  %(k1)s  n'est pas de type tria ou quad, elle ne sera pas affectee par  %(k2)s
+ la maille de nom :  %(k1)s  n'est pas de type TRIA ou QUAD
+ elle ne sera pas affectee par  %(k2)s
 """),
 
 88: _("""
@@ -379,23 +369,26 @@ cata_msg={
 """),
 
 89: _("""
- la maille de numero :  %(k1)s  n'est pas de type segment, elle ne sera pas affectee par  %(k2)s
+ la maille de numéro :  %(k1)s  n'est pas de type SEGMENT
+ elle ne sera pas affectée par  %(k2)s
 """),
 
 90: _("""
- la maille de numero :  %(k1)s  n'est pas de type tria ou quad, elle ne sera pas affectee par  %(k2)s
+ la maille de numéro :  %(k1)s  n'est pas de type TRIA ou QUAD
+ elle ne sera pas affectée par  %(k2)s
 """),
 
 91: _("""
- erreur dans les noms de maille du group_ma:  %(k1)s  du mot-cle facteur  %(k2)s  : aucune n'est du bon type
+ erreur dans les noms de maille du GROUP_MA:  %(k1)s  du mot-cle facteur  %(k2)s
+ aucune maille n'est du bon type
 """),
 
 92: _("""
- la maille de nom :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s
+ la maille de nom :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectée par  %(k2)s
 """),
 
 93: _("""
- la maille de numero :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s
+ la maille de numéro :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s
 """),
 
 97: _("""

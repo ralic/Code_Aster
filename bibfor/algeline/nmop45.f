@@ -1,8 +1,8 @@
-      SUBROUTINE NMOP45(MATRIG,MATGEO,DEFO  ,OPTION,RESULT,
+      SUBROUTINE NMOP45(MATRIG,MATGEO,DEFO  ,OPTION,
      &                  NFREQ ,BANDE ,MOD45 ,MODES)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C
       CHARACTER*4  MOD45
       CHARACTER*19 MATRIG,MATGEO
       INTEGER      DEFO,NFREQ
-      CHARACTER*8  RESULT
       CHARACTER*16 OPTION
       REAL*8       BANDE(2)
       CHARACTER*8  MODES
@@ -87,7 +86,7 @@ C
       CHARACTER*8  KNEGA,METHOD,CHAINE
       CHARACTER*16 TYPCON,TYPRES
       CHARACTER*19 MATPSC,MATOPA,NUMEDD
-      INTEGER      LDSOR,LVEC,NEQ      
+      INTEGER      LDSOR,LVEC,NEQ
       CHARACTER*24 NOPARA(NBPARA)
       LOGICAL STURM,FLAGE
 C     ------------------------------------------------------------------
@@ -103,8 +102,8 @@ C     ------------------------------------------------------------------
      &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
      &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
 C     ------------------------------------------------------------------
-      
-      
+
+
 C
 C ----------------------------------------------------------------------
 C
@@ -131,11 +130,11 @@ C
       OMEMIN = BANDE(1)
       OMEMAX = BANDE(2)
 C
-C --- RECUPERATION DU RESULTAT 
+C --- RECUPERATION DU RESULTAT
 C
       TYPCON = 'MODE_FLAMB'
       IF ( MOD45 .EQ. 'VIBR' ) TYPCON = 'MODE_MECA'
-      
+
 
 
 C     --- TEST DU TYPE (COMPLEXE OU REELLE) DE LA MATRICE DE RAIDEUR ---
@@ -271,8 +270,9 @@ C     --- DETERMINATION DE NBVECT (DIMENSION DU SOUS ESPACE) ---
 C     --- TRAITEMENT SPECIFIQUE A SORENSEN ---
 
       IF ((METHOD.EQ.'SORENSEN') .AND. (NBVECT-NFREQ.LT.2)) THEN
+CC  AUGMENTATION FORCEE DE NBVECT
+CC (NECESSITE UNE ALARME OU INFO UTILISATEUR : A VOIR)
         NBVECT = NFREQ + 2
-        WRITE (IFM,*) 'AUGMENTATION FORCEE DE NBVECT = ',NBVECT
       END IF
 
 C     ------------------------------------------------------------------

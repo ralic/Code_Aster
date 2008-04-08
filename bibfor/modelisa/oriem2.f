@@ -1,7 +1,7 @@
       SUBROUTINE ORIEM2(TYPEMA,CNOEUD)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,12 +18,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
-      CHARACTER*8 TYPEMA 
-      REAL*8      CNOEUD(*)           
-C      
+      CHARACTER*8 TYPEMA
+      REAL*8      CNOEUD(*)
+C
 C ----------------------------------------------------------------------
 C
 C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
@@ -32,34 +32,34 @@ C ORIENTATION DES MAILLES SELON LE SENS DE L'ELEMENT DE REFERENCE
 C ON REMET LES COORDONNEES DES NOEUDS (CNOEUD) DANS LE BON SENS (2D)
 C
 C ----------------------------------------------------------------------
-C      
+C
 C
 C IN  TYPEMA : TYPE DE LA MAILLE
 C I/O CNOEUD : COORDONNEES DE LA MAILLE
-C      
+C
 C ----------------------------------------------------------------------
 C
       REAL*8      DDOT
       INTEGER     IELEM,I,J,I1,I2,P,N,DIM
       REAL*8      U(3),V(3),W(3),XN(3),R
-      LOGICAL     LINEAR 
-C      
+      LOGICAL     LINEAR
+C
       INTEGER     ZELEM,ZINO
       PARAMETER   (ZELEM=6,ZINO=20)
       INTEGER     INDEX(2,ZELEM)
       INTEGER     INO  (2,ZINO)
-C            
+C
       DATA INDEX /1 ,2 ,
-     &            3 ,4 , 
+     &            3 ,4 ,
      &            6 ,7 ,
-     &            9 ,11, 
-     &            14,16, 
+     &            9 ,11,
+     &            14,16,
      &            21,0 /
-      DATA INO / 2,3,   4,6,   2,4,   5,8,   6,7,   
-     &           2,3,   5,7,   9,10,  2,3,   5,6,   
-     &           7,9,   11,12, 13,15, 2,4,   6,8,   
+      DATA INO / 2,3,   4,6,   2,4,   5,8,   6,7,
+     &           2,3,   5,7,   9,10,  2,3,   5,6,
+     &           7,9,   11,12, 13,15, 2,4,   6,8,
      &           9,12,  10,11, 14,16, 17,20, 18,19 /
-C      
+C
 C ----------------------------------------------------------------------
 C
       IF (TYPEMA(1:4).EQ.'TRIA') THEN
@@ -69,11 +69,11 @@ C
         V(2) = CNOEUD(6) - CNOEUD(2)
         IF (U(1)*V(2).GT.U(2)*V(1)) THEN
           GOTO 999
-        ELSE  
+        ELSE
           LINEAR = TYPEMA(5:5) .EQ. '3'
           DIM    = 2
           IELEM  = 1
-        ENDIF  
+        ENDIF
       ELSEIF (TYPEMA(1:4).EQ.'QUAD') THEN
         U(1) = CNOEUD(5) - CNOEUD(1)
         U(2) = CNOEUD(6) - CNOEUD(2)
@@ -81,7 +81,7 @@ C
         V(2) = CNOEUD(8) - CNOEUD(4)
         IF (U(1)*V(2).GT.U(2)*V(1)) THEN
           GOTO 999
-        ELSE  
+        ELSE
           LINEAR = TYPEMA(5:5).EQ.'4'
           DIM    = 2
           IELEM  = 2
@@ -99,17 +99,17 @@ C
         CALL PROVEC(V,W,XN)
         IF (DDOT(3,U,1,XN,1).GT.0.D0) THEN
           GOTO 999
-        ELSE  
+        ELSE
           LINEAR = TYPEMA(6:6).EQ.'4'
           DIM    = 3
           IELEM  = 3
         ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
-        U(1) = CNOEUD(10) + CNOEUD(13) + CNOEUD(16) 
+        U(1) = CNOEUD(10) + CNOEUD(13) + CNOEUD(16)
      &           - CNOEUD(1) - CNOEUD(4) - CNOEUD(7)
         U(2) = CNOEUD(11) + CNOEUD(14) + CNOEUD(17)
      &           - CNOEUD(2) - CNOEUD(5) - CNOEUD(8)
-        U(3) = CNOEUD(12) + CNOEUD(15) + CNOEUD(18) 
+        U(3) = CNOEUD(12) + CNOEUD(15) + CNOEUD(18)
      &           - CNOEUD(3) - CNOEUD(6) - CNOEUD(9)
         V(1) = CNOEUD(13) + CNOEUD(4) - CNOEUD(10) - CNOEUD(1)
         V(2) = CNOEUD(14) + CNOEUD(5) - CNOEUD(11) - CNOEUD(2)
@@ -138,7 +138,7 @@ C
         CALL PROVEC(V,W,XN)
         IF (DDOT(3,U,1,XN,1).GT.0.D0) THEN
           GOTO 999
-        ELSE  
+        ELSE
           LINEAR = TYPEMA(5:5).EQ.'8'
           DIM    = 3
           IELEM  = 5

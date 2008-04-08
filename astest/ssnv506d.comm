@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,11 +156,7 @@ SSNV506=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 SSNV506=CALC_NO(reuse =SSNV506,
                  RESULTAT=SSNV506,
                  OPTION='REAC_NODA',
-                 MODELE=MO,);
-
-LINST2=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=10,),);                                   
+                 MODELE=MO,);                               
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  GROUP_NO='SESC',
@@ -173,11 +169,10 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
 IMPR_TABLE(TABLE=TAB_REAC,
            FORMAT='TABLEAU',);
 
-
 #----------------------------------------------------------------------
 #                   TESTS DES RESULTATS
 #----------------------------------------------------------------------
-# TESTS DE REFERENCE
+# TESTS SUR DES VALEURS ANALYTIQUES
 TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
@@ -191,7 +186,7 @@ TEST_TABLE(TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.4),
            VALE=-6.402702E+06,
-           PRECISION=0.21,
+           PRECISION=0.20,
            REFERENCE='SOURCE_EXTERNE',);
 
 TEST_TABLE(TABLE=TAB_REAC,
@@ -199,7 +194,7 @@ TEST_TABLE(TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6),
            VALE=-9.604053E+06,
-           PRECISION=0.20,
+           PRECISION=0.15,
            REFERENCE='SOURCE_EXTERNE',);
 
 TEST_TABLE(TABLE=TAB_REAC,
@@ -215,12 +210,50 @@ TEST_TABLE(TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0),
            VALE=-1.600675E+07,
-           PRECISION=0.08,
+           PRECISION=0.05,
            REFERENCE='SOURCE_EXTERNE',);
 
 
-# TESTS DE NON REGRESSION
-# A REMPLACER PAR FICHE 11640
+# TESTS DE NON REGRESSION SUR LES VALEURS
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.2),
+           VALE=-3.8594571852319E+06,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4),
+           VALE=-7.4460001383010E+06,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.6),
+           VALE=-1.0874592186103E+07,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8),
+           VALE=-1.3466662974731E+07,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0),
+           VALE=-1.6656857752912E+07,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
 
 
 

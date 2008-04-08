@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_cata Meidee  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,6 @@ from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
 from Cata.cata import mode_stat_forc, base_modale, nume_ddl_sdaster
 import Numeric
 from Numeric import array, transpose
-from Meidee.meidee_iface import CreaTable
 from Numeric import zeros
 from Accas import _F
 
@@ -1018,3 +1017,32 @@ def find_no(maya,mcsimp):
                         list_no.append(nomnoe) 
 
     return list_no
+
+
+def CreaTable(mcfact, titre, paras_out, mess):
+    """!Sortie des données sous forme de sd_table"""
+    from Cata.cata import CREA_TABLE
+    TablesOut = paras_out["TablesOut"]
+    TypeTable = paras_out["TypeTables"]
+    DeclareOut = paras_out["DeclareOut"]
+    compteur = paras_out["ComptTable"]
+    paras_out["ComptTable"] = paras_out["ComptTable"] + 1
+    
+    if paras_out["ComptTable"] > len(paras_out["TablesOut"]):
+        mess.disp_mess("!! Il n'y a plus de noms de concepts     !!")
+        mess.disp_mess("!! disponibles pour sortir des résultats !!")
+        mess.disp_mess(" ")
+        return
+    
+    DeclareOut('__TAB', TablesOut[compteur])
+    
+    __TAB = CREA_TABLE(LISTE=mcfact,
+                       TITRE = titre,
+                       TYPE_TABLE=TypeTable)
+
+    mess.disp_mess("Les résultats sont sauvés dans la table "
+                   + TablesOut[compteur].nom)
+    mess.disp_mess("Cette table porte pour titre : " + titre)
+    mess.disp_mess(" ")
+
+    return paras_out

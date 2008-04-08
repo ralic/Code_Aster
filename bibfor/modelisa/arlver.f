@@ -2,7 +2,7 @@
      &                  CINE  ,DIMVAR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       CHARACTER*8   MODELE
@@ -148,8 +148,8 @@ C
             GOTO 30
           ELSE
             IF (NTOT.EQ.0) THEN
-              MODEL = MODTE
-              CINE  = CINTE
+              MODEL = MODTE(1:8)
+              CINE  = CINTE(1:8)
             ELSE
               IF (MODTE.NE.MODEL) THEN
                 CALL U2MESS('F','ARLEQUIN_3')

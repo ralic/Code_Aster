@@ -1,26 +1,26 @@
       SUBROUTINE ARLTE(NDIM  ,NG    ,PG    ,
      &                 F1    ,DF1   ,NN1   ,L1,
      &                 F2    ,DF2   ,NN2   ,L2)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER NDIM
@@ -31,8 +31,8 @@ C
       REAL*8  L1(*)
       INTEGER NN2
       REAL*8  F2(NN2,*),DF2(NDIM,NN2,*)
-      REAL*8  L2(*)    
-C      
+      REAL*8  L2(*)
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -94,39 +94,39 @@ C
           DO 20 K = 1, NN1
             L1(P1) = L1(P1) + R1 * F1(K,I)
             P1 = P1 + 1
-            
+
             DO 21 L = 1, NDIM
               R2 = R0 * DF1(L,K,I)
 
 
-                
+
 
               DO 22 M = 1, NDIM
 
                 P3 = P3 + 1
-                L1(P3) = L1(P3) + R2*DF1(M,J,I)            
-                              
+                L1(P3) = L1(P3) + R2*DF1(M,J,I)
+
   22          CONTINUE
 
   21        CONTINUE
 
-  20      CONTINUE               
-C  
+  20      CONTINUE
+C
 C --- INTEGRATION MATRICES L2
 C
           DO 30 K = 1, NN2
-            
+
             L2(P2) = L2(P2) + R1 * F2(K,I)
-            P2 = P2 + 1 
-            
+            P2 = P2 + 1
+
             DO 31 L = 1, NDIM
 
               R2 = R0 * DF2(L,K,I)
 
               DO 32 M = 1, NDIM
                 P4 = P4 + 1
-                L2(P4) = L2(P4) + R2*DF1(M,J,I) 
-                
+                L2(P4) = L2(P4) + R2*DF1(M,J,I)
+
  32           CONTINUE
 
  31         CONTINUE
@@ -139,6 +139,6 @@ C
 
  99   CONTINUE
 
- 
+
 
       END

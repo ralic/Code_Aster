@@ -3,27 +3,27 @@
      &                  NOH   ,NNOH)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
-      CHARACTER*8 NOMMAI,TYPEMA       
+      CHARACTER*8 NOMMAI,TYPEMA
       INTEGER     DIME
       REAL*8      CSOM(*)
       INTEGER     NSOM
@@ -31,17 +31,17 @@ C
       INTEGER     NARE
       INTEGER     NOEPAN(*)
       INTEGER     NPAN
-      INTEGER     NECH 
+      INTEGER     NECH
       REAL*8      NOH(*)
-      INTEGER     NNOH    
-C      
+      INTEGER     NNOH
+C
 C ----------------------------------------------------------------------
 C
 C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
 C BOITES ENGLOBANTES + ARBRE BSP
 C
-C ECHANTILLONNAGE PONCTUEL D'UNE FRONTIERE DE MAILLE 
-C COORDONNEES DES POINTS AJOUTES 
+C ECHANTILLONNAGE PONCTUEL D'UNE FRONTIERE DE MAILLE
+C COORDONNEES DES POINTS AJOUTES
 C
 C ----------------------------------------------------------------------
 C
@@ -49,7 +49,7 @@ C
 C IN  NOMMAI : NOM DE LA MAILLE
 C IN  TYPEMA : TYPE DE LA MAILLE
 C IN  DIME   : DIMENSION DE L'ESPACE
-C IN  CSOM   : COORDONNEES DES SOMMETS 
+C IN  CSOM   : COORDONNEES DES SOMMETS
 C IN  NSOM   : NOMBRE DE SOMMETS (SANS LES POINTS D'ECHANTILLONNAGE)
 C IN  NOEARE : CONNECTIVITE DES ARETES
 C              ( NOMBRE DE NOEUDS ARETES 1, N1, N2, ...
@@ -61,15 +61,15 @@ C                NOMBRE NOEUDS NOEPAN 2, ...)
 C                     EN 3D, NB NOEUDS < 0 : LA FACE EST UN TRIANGLE
 C                            NB NOEUDS > 0 : LA FACE EST UN QUADRANGLE
 C IN  NPAN   : NOMBRE DE PANS
-C IN  NECH   : NOMBRE DE POINTS D'ECHANTILLONNAGE 
-C OUT NOH    : COORD. POINTS ECHANTILLONNANT FRONTIERE 
+C IN  NECH   : NOMBRE DE POINTS D'ECHANTILLONNAGE
+C OUT NOH    : COORD. POINTS ECHANTILLONNANT FRONTIERE
 C                COORD. SOMMETS ORIGINAUX
 C                COORD. POINTS ECHNATILLONS
 C                DIME: (DIME,NNOH)
 C OUT NNOH   : NOMBRE DE POINTS D'ECHANTILLONNAGE (Y COMPRIS
 C                SOMMETS ORIGINAUX !)
 C                DIME (2D) : NARE*(NHAPP+1)
-C                DIME (3D) : NPAN*(NHAPP**2+NHAPP+1) 
+C                DIME (3D) : NPAN*(NHAPP**2+NHAPP+1)
 C
 C ----------------------------------------------------------------------
 C
@@ -83,7 +83,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL INFDBG('ARLEQUIN',IFM,NIV)
-C 
+C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
@@ -106,34 +106,34 @@ C
       ENDIF
 C
 C --- TAILLE DES ECHANTILLONS
-C                
+C
       IF (NECH.LT.1) THEN
         CALL ASSERT(.FALSE.)
-      ELSE  
-        HQ = 2.D0/NECH 
-        HT = 1.D0/NECH 
+      ELSE
+        HQ = 2.D0/NECH
+        HT = 1.D0/NECH
       ENDIF
-C 
+C
 C --- ON COMMENCE PAR RECOPIER LES COORDONNEES DES SOMMETS ORIGINAUX
-C     
+C
       CALL DCOPY(DIME*NSOM,CSOM,1,NOH,1)
 C
-C --- DECALAGE POUR STOCKER LES POINTS D'ECHANTILLONNAGE APRES LES 
+C --- DECALAGE POUR STOCKER LES POINTS D'ECHANTILLONNAGE APRES LES
 C --- "VRAIS" SOMMETS
-C       
+C
       Q0 = NSOM*DIME + 1
 C
 C --- NOMBRE DE SOMMETS+NOMBRE POINTS ECHANTILLONNAGE
 C
       NNOH = NSOM + NARE*(NECH - 1)
-      IF (NIV.GE.2) THEN    
+      IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><ECH> ... NBRE DE POINTS '//
      &               'SUPPL. SUR ARETES  : ',NARE*(NECH - 1)
       ENDIF
 C
 C --- ECHANTILLONNAGE DES ARETES
-C      
-      P0   = 1    
+C
+      P0   = 1
       DO 10 IARE = 1, NARE
         NNP = NOEARE(P0)
         P0  = P0 + 1
@@ -145,7 +145,7 @@ C
           CALL ASSERT(.FALSE.)
         ENDIF
         M0(1) = -1.D0
-        DO 20 J = 2, NECH 
+        DO 20 J = 2, NECH
           M0(1) = M0(1) + HQ
           CALL FORME0(M0,TMAP,W0,NNP)
           IF (NNP.GT.9) THEN
@@ -154,7 +154,7 @@ C
           CALL MMPROD(CSOM  ,DIME  ,0     ,DIME  ,NOEARE(P0),
      &                NNP   ,W0    ,NNP   ,0     ,0         ,
      &                1     ,NOH(Q0))
-          Q0 = Q0 + DIME      
+          Q0 = Q0 + DIME
  20     CONTINUE
         P0 = P0 + NNP
  10   CONTINUE
@@ -163,12 +163,12 @@ C
 C
 C --- ECHANTILLONNAGE DES FACES (3D)
 C
-      
-      P0 = 1      
+
+      P0 = 1
       DO 30 IPAN = 1, NPAN
         NNP = NOEPAN(P0)
         P0  = P0 + 1
-        IF (NNP.LT.0) THEN 
+        IF (NNP.LT.0) THEN
           IF (NNP.EQ.-3) THEN
             TMAP = 'TRIA3'
           ELSEIF (NNP.EQ.-6) THEN
@@ -176,14 +176,14 @@ C
           ELSEIF (NNP.EQ.-7) THEN
             TMAP = 'TRIA7'
           ELSE
-            CALL ASSERT(.FALSE.)  
+            CALL ASSERT(.FALSE.)
           ENDIF
           NNOH = NNOH + (NECH - 1)*(NECH - 2)/2
-          M0(2) = 0.D0       
-          DO 40 J = 3, NECH 
+          M0(2) = 0.D0
+          DO 40 J = 3, NECH
             M0(2) = M0(2) + HT
             M0(1) = 0.D0
-            DO 41 K = J, NECH  
+            DO 41 K = J, NECH
               M0(1) = M0(1) + HT
               CALL FORME0(M0,TMAP,W0,NNP)
               IF (NNP.GT.9) THEN
@@ -192,7 +192,7 @@ C
               CALL MMPROD(CSOM,3,0,3,NOEPAN(P0),
      &                    NNP ,W0,NNP,0,0,1,NOH(Q0))
               Q0 = Q0 + 3
- 41         CONTINUE 
+ 41         CONTINUE
  40       CONTINUE
         ELSE
           IF (NNP.EQ.4) THEN
@@ -204,14 +204,14 @@ C
           ELSEIF (NNP.EQ.9) THEN
             TMAP = 'QUAD9'
           ELSE
-            CALL ASSERT(.FALSE.)              
+            CALL ASSERT(.FALSE.)
           ENDIF
           NNOH = NNOH + (NECH-1)*(NECH-1)
-          M0(2) = -1.D0   
+          M0(2) = -1.D0
           DO 50 J = 2, NECH
             M0(2) = M0(2) + HQ
             M0(1) = -1.D0
-            DO 51 K = 2, NECH 
+            DO 51 K = 2, NECH
               M0(1) = M0(1) + HQ
               CALL FORME0(M0,TMAP,W0,NNP)
               IF (NNP.GT.9) THEN
@@ -223,13 +223,13 @@ C
  51         CONTINUE
  50       CONTINUE
         ENDIF
-        P0 = P0 + ABS(NNP)        
+        P0 = P0 + ABS(NNP)
  30   CONTINUE
-C      
- 60   CONTINUE 
-C 
+C
+ 60   CONTINUE
+C
       IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><ECH> ... LISTE DES POINTS '  
+        WRITE(IFM,*) '<ARLEQUIN><ECH> ... LISTE DES POINTS '
         DO 300 IECH = 1, NNOH
           IF (DIME.EQ.2) THEN
             WRITE(IFM,*) '<ARLEQUIN><ECH> ...... POINT  <',IECH,'>  : ',
@@ -239,10 +239,10 @@ C
             WRITE(IFM,*) '<ARLEQUIN><ECH> ...... POINT  <',IECH,'>  : ',
      &        NOH(3*(IECH-1) + 1),
      &        NOH(3*(IECH-1) + 2),
-     &        NOH(3*(IECH-1) + 3)         
-          ENDIF                 
- 300    CONTINUE             
-        WRITE(IFM,*) '<ARLEQUIN><ECH> *** FIN ECHANTILLONNAGE '       
+     &        NOH(3*(IECH-1) + 3)
+          ENDIF
+ 300    CONTINUE
+        WRITE(IFM,*) '<ARLEQUIN><ECH> *** FIN ECHANTILLONNAGE '
       ENDIF
 
 C

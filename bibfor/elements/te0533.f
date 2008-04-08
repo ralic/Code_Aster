@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,9 +63,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
       INTEGER      INTEG,NFE,SINGU,JSTNO
       CHARACTER*8  ELREF,TYPMA,FPG,ELC
-      REAL*8       HE,SIGN,XG,FFI,FFJ,FFP(27),SAUT(3),KNP(3,3)
-      REAL*8       MMAT(204,204),JAC,AL,RHON,MU,RHOTK,PADIST,MULT
-      REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3),LAMB2(3)
+      REAL*8       FFI,FFJ,FFP(27),SAUT(3),KNP(3,3)
+      REAL*8       MMAT(204,204),JAC,RHON,MU,RHOTK,MULT
+      REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3)
       REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60),DDOT
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
       REAL*8       LSN,LST,R,RR,E,G(3),RBID
@@ -192,7 +192,7 @@ C       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
      &            IN(3).EQ.FAC(I,INO))    CPT=CPT+1
  103          CONTINUE
               IF (CPT.EQ.3) THEN
-C           	 WRITE(6,*)'MULTIPLICATION PAR 1/2'
+C MULTIPLICATION PAR 1/2
                  MULT=0.5D0
                  GOTO 104
               ENDIF
@@ -431,7 +431,7 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
 
  156            CONTINUE
  154          CONTINUE
- 
+
               DO 158 I=1,NNOF
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
@@ -468,7 +468,7 @@ C               CALCUL DE TAU.KN.P
                     TAUKNP(1,J) = TAUKNP(1,J) + TAU1(K,NLI) * KNP(K,J)
  162              CONTINUE
  161            CONTINUE
-  
+
                 IF (NDIM.EQ.3) THEN
                   DO 163 J = 1,NDIM
                     TAUKNP(2,J) = 0.D0

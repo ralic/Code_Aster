@@ -2,7 +2,7 @@
      &                    CHASOL, CRITEZ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -224,6 +224,10 @@ C     ----------------------------------
          IREP=1
          CALL RESGRA ( CHSOL, MATAS, CHSECM, CHCINE, MAPREC,
      &                 BASE, IREP, NITER, EPSI, CRITER )
+
+      ELSE IF (METRES.EQ.'PETSC') THEN
+C     ----------------------------------
+         CALL APETSC('RESOUD',SOLVEU,MATAS,CHSECM,CHSOL,CHCINE)
 
       ELSE
           CALL U2MESK('F','ALGELINE3_44',1,METRES)

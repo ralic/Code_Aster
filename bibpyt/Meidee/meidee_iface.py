@@ -1,4 +1,4 @@
-#@ MODIF meidee_iface Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_iface Meidee  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,6 @@ from Tkinter import Toplevel, Scrollbar, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, Canvas, Text, END
 
 import aster
-from Cata.cata import IMPR_FONCTION, CREA_TABLE
 from Utilitai.Utmess import UTMESS
 from Stanley.xmgrace import Xmgr
 from Stanley.as_courbes import Courbe
@@ -530,6 +529,7 @@ def PlotXMGrace(abscisse, ordonnees, couleur, legende, ech_x, ech_y):
     \param abscisse abscisses du graphe
     \param ordonnees tableau de valeurs
     """
+    from Cata.cata import IMPR_FONCTION
     _tmp = []
     for i in range(len(ordonnees)):
         _tmp.append( { 'ABSCISSE': abscisse,
@@ -660,33 +660,6 @@ class XmgrManager:
         for xmgr in self.xmgr_list:
             xmgr.Fermer()
 
-
-def CreaTable(mcfact, titre, paras_out, mess):
-    """!Sortie des données sous forme de sd_table"""
-    TablesOut = paras_out["TablesOut"]
-    TypeTable = paras_out["TypeTables"]
-    DeclareOut = paras_out["DeclareOut"]
-    compteur = paras_out["ComptTable"]
-    paras_out["ComptTable"] = paras_out["ComptTable"] + 1
-    
-    if paras_out["ComptTable"] > len(paras_out["TablesOut"]):
-        mess.disp_mess("!! Il n'y a plus de noms de concepts     !!")
-        mess.disp_mess("!! disponibles pour sortir des résultats !!")
-        mess.disp_mess(" ")
-        return
-    
-    DeclareOut('__TAB', TablesOut[compteur])
-    
-    __TAB = CREA_TABLE(LISTE=mcfact,
-                       TITRE = titre,
-                       TYPE_TABLE=TypeTable)
-
-    mess.disp_mess("Les résultats sont sauvés dans la table "
-                   + TablesOut[compteur].nom)
-    mess.disp_mess("Cette table porte pour titre : " + titre)
-    mess.disp_mess(" ")
-
-    return paras_out
 
 
 #-------------------------------------------------------------------------------

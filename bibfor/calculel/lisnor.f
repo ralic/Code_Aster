@@ -1,33 +1,33 @@
-      SUBROUTINE LISNOR(CARA,DIME,TYPMAI,NNORM ,NTANG  )  
-C               
+      SUBROUTINE LISNOR(CARA,DIME,TYPMAI,NNORM ,NTANG  )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
-C     
+C RESPONSABLE MEUNIER S.MEUNIER
+C
       IMPLICIT NONE
       CHARACTER*8   CARA
       INTEGER       DIME
       CHARACTER*16  TYPMAI
-      CHARACTER*10  NNORM,NTANG 
-C      
+      CHARACTER*10  NNORM,NTANG
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -35,7 +35,7 @@ C
 C LISSAGE DES NORMALES D'UN GROUPE D'ELEMENTS COQUES
 C
 C ----------------------------------------------------------------------
-C     
+C
 C IN  CARA   : SD CARA_ELEM
 C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  TYPMAI : SD CONTENANT NOM DES TYPES ELEMENTS (&&CATA.NOMTM)
@@ -66,7 +66,7 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C      
+C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8        DNRM2,R8PREM
@@ -83,19 +83,19 @@ C
       INTEGER       ITANG
       INTEGER       I,J,NUMA,INO,JTYPMM
       LOGICAL       LTOUT,ISBORD
-C      
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C --- INITIALISATIONS
-C 
-      CALL JEVEUO(TYPMAI,'L',JTYPMM)   
+C
+      CALL JEVEUO(TYPMAI,'L',JTYPMM)
 C
 C --- DESACTIVATION FLOATING POINT EXCEPTION
 C
-      CALL MATFPE(-1)        
-C      
+      CALL MATFPE(-1)
+C
 C --- LECTURE INFOS CARA_ELEM DES COQUES
 C --- NCMP: NOMBRE DE COMPOSANTES DANS SD CARA_COQ
 C --- NZONE: NOMBRE DE ZONES DEFINIES DANS AFFE_CARA_ELEM
@@ -105,8 +105,8 @@ C
       CALL JEVEUO(CARA//'.CARCOQUE  .VALE','L',JVALE)
       CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',ZI(JDESC)),'LONMAX',
      &            NCMP,K8BID)
-      NZONE = ZI(JDESC+2)      
-C      
+      NZONE = ZI(JDESC+2)
+C
 C --- LECTURE INFOS DU MAILLAGE
 C --- MAIL: NOM DU MAILLAGE
 C --- NNO : NOMBRE TOTAL DE NOEUDS DU MAILLAGE
@@ -137,14 +137,14 @@ C
 C
 C --- DEMI-EPAISSEUR DE LA COQUE
 C
-        EPAIS  = 0.5D0*ZR(JVALE+NCMP*(IZONE-1))    
-        LTOUT  = .FALSE. 
-C        
+        EPAIS  = 0.5D0*ZR(JVALE+NCMP*(IZONE-1))
+        LTOUT  = .FALSE.
+C
 C --- CHOIX DU POINTEUR SUR SD CARA_COQ SELON SI MAILLE, GROUP_MA OU
-C --- TOUT  
-C     
+C --- TOUT
+C
         ZONCOQ = ZI(JDESC+1+2*IZONE)
-C        
+C
         IF (ZONCOQ.EQ.1) THEN
           LTOUT = .TRUE.
         ELSEIF (ZONCOQ.EQ.2) THEN
@@ -157,9 +157,9 @@ C
           CALL JEVEUO(JEXNUM(CARA//'.CARCOQUE  .LIEL',J),'L',JMA)
           CALL JELIRA(JEXNUM(CARA//'.CARCOQUE  .LIEL',J),'LONMAX',
      &                NBMA,K8BID)
-        ELSE    
+        ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF              
+        ENDIF
 C
 C --- CALCUL EN CHAQUE NOEUD
 C
@@ -170,39 +170,39 @@ C
             NUMA = ZI(JMA-1+I)
           ENDIF
 C
-C --- TEST DE LA MAILLE 
-C      
-          CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),NOMMAI)  
-          TYPEMA = ZK8(JTYPMM+NUMA-1)    
-          IF (ISBORD(NOMMAI,TYPEMA,DIME)) THEN
+C --- TEST DE LA MAILLE
+C
+          CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),NOMMAI)
+          TYPEMA = ZK8(JTYPMM+NUMA-1)
+          IF (ISBORD(TYPEMA,DIME)) THEN
             GOTO 60
-          ENDIF              
+          ENDIF
 C
 C --- COORDONNEES DES NOEUDS DE LA MAILLE NUMA
 C
           CALL COSOLI(NUMA  ,ZI(JCONX),ZI(JLONG),ZR(JCOORD),DIME  ,
      &                CNOEUD)
           NBNO   = ZI(JLONG+NUMA) - ZI(JLONG+NUMA-1)
-C    
+C
 C --- TANGENTES DE LA MAILLE NUMA EXPRIMEES AUX NOEUDS
-C     
-          CALL TANGNT(CNOEUD,NBNO,DIME,TANG)  
+C
+          CALL TANGNT(CNOEUD,NBNO,DIME,TANG)
           JDECAL = JCONX-1+ZI(JLONG-1+NUMA)
-          ITANG  = 1  
+          ITANG  = 1
           DO 61 INO = 1, NBNO
             NUNO = ZI(JDECAL+INO-1)
             CALL JENUNO(JEXNUM(MAIL//'.NOMNOE',NUNO),NOMNOE)
-            ZI(JCOMPT-1+NUNO) = ZI(JCOMPT-1+NUNO) + 1     
+            ZI(JCOMPT-1+NUNO) = ZI(JCOMPT-1+NUNO) + 1
             IF (DIME.EQ.2) THEN
-              NORM = DNRM2(2,TANG(ITANG),1)   
+              NORM = DNRM2(2,TANG(ITANG),1)
               IF (NORM.LE.R8PREM()) THEN
                 VALK(1) = NOMNOE
-                VALK(2) = NOMMAI              
-                CALL U2MESK('F','ARLEQUIN_6',2,VALK)            
-              ENDIF  
+                VALK(2) = NOMMAI
+                CALL U2MESK('F','ARLEQUIN_6',2,VALK)
+              ENDIF
               ZR(JNORM + 2*(NUNO-1))   = ZR(JNORM + 2*(NUNO-1)  ) -
      &                   TANG(ITANG+1)*(EPAIS/NORM)
-              ZR(JNORM + 2*(NUNO-1)+1) = ZR(JNORM + 2*(NUNO-1)+1) + 
+              ZR(JNORM + 2*(NUNO-1)+1) = ZR(JNORM + 2*(NUNO-1)+1) +
      &                   TANG(ITANG  )*(EPAIS/NORM)
               ITANG = ITANG + 2
             ELSE
@@ -215,15 +215,15 @@ C
               NORM = DNRM2(3,W,1)
               IF (NORM.LE.R8PREM()) THEN
                 VALK(1) = NOMNOE
-                VALK(2) = NOMMAI              
-                CALL U2MESK('F','ARLEQUIN_6',2,VALK)             
-              ENDIF                         
+                VALK(2) = NOMMAI
+                CALL U2MESK('F','ARLEQUIN_6',2,VALK)
+              ENDIF
               CALL DAXPY(3,EPAIS/NORM,W,1,ZR(JNORM + 3*(NUNO-1)),1)
               CALL DCOPY(3,TANG(ITANG),1,ZR(JTANG + 6*(NUNO-1)),1)
               ITANG = ITANG + 6
-            ENDIF 
+            ENDIF
  61       CONTINUE
- 60     CONTINUE                 
+ 60     CONTINUE
  40   CONTINUE
 C
 C --- CALCUL DE LA MOYENNE SUR LES NOEUDS
@@ -233,22 +233,22 @@ C
       Q1 = JTANG
       DO 70 INO = 1, NNO
         NCPMA = ZI(JCOMPT)
-        IF (NCPMA.GT.0) THEN     
+        IF (NCPMA.GT.0) THEN
           CALL JENUNO(JEXNUM(MAIL//'.NOMNOE',INO),NOMNOE)
           IF (DIME.EQ.2) THEN
             NORM = DNRM2(2,ZR(Q0),1)
             IF (NORM.LE.R8PREM()) THEN
-              VALK(1) = NOMMAI              
-              CALL U2MESK('F','ARLEQUIN_7',1,VALK) 
-            ENDIF                  
+              VALK(1) = NOMMAI
+              CALL U2MESK('F','ARLEQUIN_7',1,VALK)
+            ENDIF
             ZR(Q1  ) = ZR(Q0+1)/NORM
             ZR(Q1+1) =-ZR(Q0  )/NORM
           ELSE
             CALL PROVEC(ZR(Q0),ZR(Q1),ZR(Q1+3))
-            NORM = DNRM2(3,ZR(Q1+3),1) 
+            NORM = DNRM2(3,ZR(Q1+3),1)
             IF (NORM.LE.R8PREM()) THEN
-              VALK(1) = NOMMAI              
-              CALL U2MESK('F','ARLEQUIN_7',1,VALK) 
+              VALK(1) = NOMMAI
+              CALL U2MESK('F','ARLEQUIN_7',1,VALK)
             ENDIF
             CALL DSCAL(3,1.D0/NORM,ZR(Q1+3),1)
             CALL PROVEC(ZR(Q1+3),ZR(Q0),ZR(Q1))
@@ -265,7 +265,7 @@ C
 C
 C --- REACTIVATION FLOATING POINT EXCEPTION
 C
-      CALL MATFPE(1)      
-C         
+      CALL MATFPE(1)
+C
       CALL JEDEMA()
       END

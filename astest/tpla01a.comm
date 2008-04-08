@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 # TITRE CYLINDRE CREUX EN THERMIQUE STATIONNAIRE (TRIA3/QUAD4 AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,11 +165,13 @@ TABTE1=MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
                    LIGN_COUPE  = ( _F( NB_POINTS  = 10,
                                        COOR_ORIG  = (3.000E-01,0.00E+00),
                                        COOR_EXTR  = (3.500E-01,1.00E-01),
-                                       INTITULE   = 'ligne1',),
+                                       INTITULE   = 'ligne1',
+                                       DISTANCE_MAX=0.001,),
                                    _F( NB_POINTS  = 12,
                                        COOR_ORIG  = (3.500E-01,0.00E+00),
                                        COOR_EXTR  = (3.000E-01,1.00E-01),
-                                       INTITULE   = 'ligne2',),
+                                       INTITULE   = 'ligne2',
+                                       DISTANCE_MAX=0.001,),
                                    ) )
 
 TEST_TABLE(    TABLE=TABTE1,

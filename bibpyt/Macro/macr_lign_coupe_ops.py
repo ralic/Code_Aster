@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -404,7 +404,7 @@ def crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou):
      a_suppr = Set(['INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE', 'INST', 'ABSC_CURV', 'COOR_X', 'COOR_Y', 'COOR_Z'])
      new_para = Set(dictb.para)
      new_para.difference_update(a_suppr)
- 
+
      lno_c2 = Set()
      for comp in new_para.difference(['NOEUD']):
         dictc = getattr(dictb, comp).NON_VIDE()
@@ -604,7 +604,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   from Utilitai.UniteAster import UniteAster
   from Utilitai.Utmess import  UTMESS
   ier=0
-  
+
   # On importe les definitions des commandes a utiliser dans la macro
   LIRE_MAILLAGE  =self.get_cmd('LIRE_MAILLAGE')
   DEFI_GROUP     =self.get_cmd('DEFI_GROUP')
@@ -786,7 +786,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   __recou=PROJ_CHAMP(METHODE='ELEM',
                      RESULTAT=RESULTAT,
                      MODELE_1=MODELE_1,
-                     DISTANCE_MAX=dmin*0.001,
+                     DISTANCE_MAX=m['DISTANCE_MAX'],
                      MODELE_2=__mocou,
                      TYPE_CHAM='NOEU',
                      NOM_CHAM=NOM_CHAM, **motscles);

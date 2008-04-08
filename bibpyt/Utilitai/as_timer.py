@@ -1,4 +1,4 @@
-#@ MODIF as_timer Utilitai  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF as_timer Utilitai  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,7 @@ class ASTER_TIMER:
          self.Start(self.total_key, name=self.TotalKey, num=self.MaxNumTimer)
 
 #-------------------------------------------------------------------------------
-   def Start(self, timer, mode='CONT', num=None, hide=False, name=None):
+   def Start(self, timer, mode='CONT', num=None, hide=None, name=None):
       """Start a new timer or restart one
       """
       name = name or str(timer)
@@ -152,7 +152,7 @@ class ASTER_TIMER:
          })
 
 #-------------------------------------------------------------------------------
-   def Stop(self, timer, hide=False):
+   def Stop(self, timer, hide=None):
       """Stop a timer
       """
       if self.timers.get(timer) is None:
@@ -182,7 +182,8 @@ class ASTER_TIMER:
          self.timers[timer]['tot_dt'] = self.timers[timer]['tot_dt'] + \
                dico['tot'] - self.timers[timer]['tot_t0']
          self.timers[timer]['tot_t0'] = dico['tot']
-         self.timers[timer]['hide'] = hide
+         if hide is not None:
+            self.timers[timer]['hide'] = hide
 
 #-------------------------------------------------------------------------------
    def StopAndGet(self, timer, *args, **kwargs):
@@ -207,7 +208,7 @@ class ASTER_TIMER:
       lk = self.timers.keys()
       if self.add_total:
          lk.remove(self.total_key)
-      for timer in [t for t in lk if self.timers[t]['state'] != 'stop']:
+      for timer in lk:
          self.Stop(timer)
 
 #-------------------------------------------------------------------------------
@@ -222,7 +223,7 @@ class ASTER_TIMER:
       labels = self.fmtstr % self.d_labels
       out = ['']
       # get timers list and sort by 'num'
-      lnum = [[val['num'], timer] for timer, val in self.timers.items() if not val['hide']]
+      lnum = [[val['num'], timer] for timer, val in self.timers.items() if val['hide'] is not True]
       lnum.sort()
       if lnum:
          out.append(self.sepa)

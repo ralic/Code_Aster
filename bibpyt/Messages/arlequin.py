@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF arlequin Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,7 +24,7 @@ cata_msg={
 
 
 1: _("""
- Pour Arlequin, la dimension topologique des modelisations de GROUP_MA_1 et GROUP_MA_2 doivent etre les memes:
+ Pour Arlequin, la dimension topologique des modélisations de GROUP_MA_1 et GROUP_MA_2 doivent être les mêmes:
   - C_PLAN (2D)
   - ou D_PLAN (2D)
   - ou AXIS (2D)
@@ -36,48 +36,48 @@ cata_msg={
 """),
 
 3: _("""
- Il y a plusieurs modelisations dans le meme groupe de maille
+ Il y a plusieurs modélisations dans le même groupe de maille
 """),
 
 4: _("""
- Il y a plusieurs cinematiques dans le meme groupe de maille
- (melange elements de structures/elements de milieu continu)
+ Il y a plusieurs cinématiques dans le même groupe de maille
+ (mélange éléments de structures/éléments de milieu continu)
 """),
 
 5: _("""
  Aucune maille du groupe n'est utilisable dans Arlequin, on rappelle ce qui est utilisable:
-  - elements de deformations planes (D_PLAN)
-  - elements de contraintes planes (C_PLAN)
-  - elements axisymetriques (AXIS)
-  - elements 3D
-  - elements de structure de type coques et plaques (DKT/DST/COQUE_3D/Q4G)
+  - éléments de déformations planes (D_PLAN)
+  - éléments de contraintes planes (C_PLAN)
+  - éléments axisymétriques (AXIS)
+  - éléments 3D
+  - éléments de structure de type coques et plaques (DKT/DST/COQUE_3D/Q4G)
 """),
 
 6: _("""
  La normale au noeud <%(k1)s> de la maille <%(k2)s> est nulle.
- Verifiez votre maillage (pas de mailles aplaties par exemple)
+ Vérifiez votre maillage (pas de mailles aplaties par exemple)
 """),
 
 7: _("""
  La normale moyenne sur la maille <%(k1)s> est nulle.
- Verifiez votre maillage (orientations des mailles par exemple)
+ Vérifiez votre maillage (orientations des mailles par exemple)
 """),
 
 8: _("""
- Il faut renseigner le mot-clef CARA_ELEM lorsqu'on utilise des elements coques
+ Il faut renseigner le mot-clef CARA_ELEM lorsqu'on utilise des éléments coques
 """),
 
 9: _("""
- Les deux domaines ne se recouvrent pas. Verifiez vos groupes.
+ Les deux domaines ne se recouvrent pas. Vérifiez vos groupes.
  """),
 
 10: _("""
- Le groupe de mailles de collage (GROUP_MA_COLL) doit etre un sous ensemble
+ Le groupe de mailles de collage (GROUP_MA_COLL) doit être un sous ensemble
  d'un des deux sous domaines GROUP_MA_1 ou GROUP_MA_2
  """),
 
 11: _("""
- La maille <%(k1)s> est de type %(k2)s : elle ne peut etre mise en boite.
+ La maille <%(k1)s> est de type %(k2)s : elle ne peut être mise en boîte.
  Ce type de maille n'est pas pris en compte.
 """),
 
@@ -87,7 +87,7 @@ cata_msg={
 
 13: _("""
  Nombre de couples appariés sous-estimé
- - Erreur avancée: contacter le support
+ - Erreur avancée : contacter le support
 """),
 
 14: _("""
@@ -98,8 +98,37 @@ cata_msg={
  La question %(k1)s n'existe pas dans la méthode Arlequin
 """),
 
+16: _("""
+ Pb d'assemblage pour le couple de mailles %(i1)d et %(i2)d
+"""),
 
+17: _("""
+ Le noeud <%(i1)d> est redondant
+"""),
 
+18: _("""
+ intégration par sous-mailles - 2d : le découpage en tria6 ne marche pas encore
+"""),
+
+19: _("""
+ élément de type <%(k1)s> interdit
+"""),
+
+20: _("""
+ Mise en boîtes : il est impossible de traiter le type de maille <%(k1)s>
+"""),
+
+21: _("""
+ Pb lors de mise en boîtes. La SD boîte concernée est <%(k1)s>. Informations :
+ dimension de l'espace : %(i1)d
+ nombre de mailles     : %(i2)d
+ nombre de pans        : %(i3)d
+ nombre de sommets     : %(i4)d
+"""),
+
+22: _("""
+  Maille inconnue : %(k1)s
+"""),
 
 23: _("""
  Mauvaise intersection
@@ -110,16 +139,24 @@ cata_msg={
 """),
 
 25: _("""
- L'intersection de la maille <%(k1)s> avec la maille <%(k2)s> a donné un polyedre
- non étoilé dont la tétraédrisation a été difficile. Il y a une erreur sur le volume obtenu après tetraédrisation.
-  Volume initial du polyedre de l'intersection: <%(r1)s>
-  Volume après découpe en tétraèdres du polyedre de l'intersection: <%(r2)s>
+ L'intersection de la maille <%(k1)s> avec la maille <%(k2)s> a donné un polyèdre
+ non étoilé dont la tétraédrisation a été difficile. Il y a une erreur sur le volume obtenu après tétraédrisation.
+  Volume initial du polyèdre de l'intersection: <%(r1)s>
+  Volume après découpe en tétraèdres du polyèdre de l'intersection: <%(r2)s>
   Soit un écart de <%(r3)s> %%
 --> Risques & conseils :
 Si cet écart est trop important sur trop de mailles de l'intersection, les termes de couplage Arlequin seront faux et
-pourront entrainer un résultat faux.
+pourront entraîner un résultat faux.
 Vous pouvez réduire ce risque en raffinant le maillage ou en utilisant des mailles plus simples (tétraèdres)
 
+"""),
+
+26: _("""
+ Dimension incorrecte : %(i1)d
+"""),
+
+27: _("""
+ Le nombre de noeuds est incohérent : %(i1)d
 """),
 
 
@@ -140,8 +177,12 @@ Vous pouvez réduire ce risque en raffinant le maillage ou en utilisant des maill
  On ne sait pas traiter les mailles de type %(k1)s avec la méthode Arlequin.
 """),
 
+
+
+
 99 : _("""
-   Le calcul de l'option %(k1)s n'est pas prévue avec Arlequin.
+ On a rencontré un problème dans la routine <%(k1)s>. 
+ - Erreur avancée : contacter le support
 """),
 
 }

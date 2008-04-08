@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF asojb Noyau  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -233,7 +233,7 @@ class OJB(AsBase):
         """Fonction utilitaire, renvoie une liste de chaines 'strippées'"""
         data = self.get()
         if data is not None:
-            return [ x.strip() for x in self.get() ]
+            return [ x.strip() for x in data ]
         else:
             return []
 

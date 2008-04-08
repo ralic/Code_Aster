@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline2 Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,11 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+ L'argument de "BLOC_DEBUT" doit être strictement positif,
+ il est pris à 1
+"""),
 
 2 : _("""
  Calcul des modes en eau au repos :
@@ -48,6 +53,10 @@ cata_msg = {
  On ne traite pas cette option
 """),
 
+8 : _("""
+ L'argument de "BLOC_FIN" est plus grand que le nombre de blocs de la matrice,
+ il est ramené à cette valeur
+"""),
 
 9 : _("""
  Les matrices à combiner ne sont pas construites sur le meme maillage.
@@ -246,11 +255,11 @@ cata_msg = {
 """),
 
 55 : _("""
- mot cle amor_reduit impossible pour cas generalise
+ mot cle AMOR_REDUIT impossible pour cas generalise
 """),
 
 56 : _("""
- mot cle amor_reduit impossible si option differente               de proche
+ mot cle AMOR_REDUIT impossible si option differente de PROCHE
 """),
 
 57 : _("""
@@ -270,7 +279,7 @@ cata_msg = {
 """),
 
 61 : _("""
- erreur trop de reajustementd'une borne de l'intervalle de recherche.
+ erreur trop de reajustement d'une borne de l'intervalle de recherche.
 """),
 
 62 : _("""
@@ -282,7 +291,7 @@ cata_msg = {
 """),
 
 64 : _("""
- le nombre param_ortho_soren n'est pas valide.
+ le nombre PARAM_ORTHO_SOREN n'est pas valide.
 """),
 
 65 : _("""
@@ -318,23 +327,23 @@ cata_msg = {
 """),
 
 73 : _("""
- pas de verification par sturm pour le probleme quadratique
+ pas de verification par STURM pour le problème quadratique
 """),
 
 74 : _("""
-  erreur de verification
+  erreur de vérification
 """),
 
 75 : _("""
- conclusion du utmess-e precedent
+  le problème traité étant quadratique, on double l'espace de recherche
 """),
 
 76 : _("""
- 3 ou 6 valeurs pour le mot cle "direction"
+ 3 ou 6 valeurs pour le mot cle "DIRECTION"
 """),
 
 77 : _("""
- pour le mot cle facteur  "pseudo_mode", il faut donner la matrice de masse.
+ pour le mot cle facteur  "PSEUDO_MODE", il faut donner la matrice de masse.
 """),
 
 78 : _("""
@@ -388,43 +397,43 @@ cata_msg = {
 """),
 
 89 : _("""
- le mot-cle maillage est obligatoire avec le mot-cle crea_fiss.
+ le mot-cle MAILLAGE est obligatoire avec le mot-cle CREA_FISS.
 """),
 
 90 : _("""
- le mot-cle maillage est obligatoire avec le mot-cle line_quad.
+ le mot-cle MAILLAGE est obligatoire avec le mot-cle LINE_QUAD.
 """),
 
 91 : _("""
- crea_maillage : l'option line_quad ne traite pas les macros mailles
+ CREA_MAILLAGE : l'option line_quad ne traite pas les macros mailles
 """),
 
 92 : _("""
- crea_maillage : l'option line_quad ne traite pas les absc_curv
+ CREA_MAILLAGE : l'option LINE_QUAD ne traite pas les ABSC_CURV
 """),
 
 93 : _("""
- le mot-cle maillage est obligatoire avec le mot-cle quad_line.
+ le mot-cle MAILLAGE est obligatoire avec le mot-cle QUAD_LINE.
 """),
 
 94 : _("""
- crea_maillage : l'option quad_line ne traite pas les macros mailles
+ CREA_MAILLAGE : l'option QUAD_LINE ne traite pas les macros mailles
 """),
 
 95 : _("""
- crea_maillage : l'option quad_line ne traite pas les absc_curv
+ CREA_MAILLAGE : l'option QUAD_LINE ne traite pas les ABSC_CURV
 """),
 
 96 : _("""
- le mot-cle maillage est obligatoire avec le mot-cle modi_maille.
+ le mot-cle MAILLAGE est obligatoire avec le mot-cle MODI_MAILLE.
 """),
 
 97 : _("""
- une seule occurrence de "quad_tria3"
+ une seule occurrence de "QUAD_TRIA3"
 """),
 
 98 : _("""
- le mot-cle maillage est obligatoire avec le mot-cle coqu_volu.
+ le mot-cle MAILLAGE est obligatoire avec le mot-cle COQU_VOLU.
 """),
 
 99 : _("""

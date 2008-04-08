@@ -4,7 +4,7 @@
      &                  NC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,26 +22,26 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       REAL*8  SC(3,*)
       REAL*8  PRECTR
-      INTEGER NBNO     
+      INTEGER NBNO
       INTEGER AS(2,*)
       INTEGER AF(2,*)
       INTEGER FS(3,*)
-      INTEGER NCMAX          
+      INTEGER NCMAX
       INTEGER NARE1
       INTEGER NARE2
       INTEGER NFAC1
-      INTEGER NFAC2      
+      INTEGER NFAC2
       REAL*8  SI(*)
-      INTEGER IS(*)      
+      INTEGER IS(*)
       LOGICAL TRAVL(*)
-      INTEGER NC 
+      INTEGER NC
       REAL*8  FQ(4,*)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
@@ -50,7 +50,7 @@ C
 C INTERSECTION DE DEUX POLYEDRES (3D)
 C
 C ----------------------------------------------------------------------
-C 
+C
 C
 C I/O SC     : IN  - COORDONNEES DES SOMMETS DES DEUX POLYEDRES
 C              OUT - COORDONNEES DES SOMMETS DE L'INTERSECTION
@@ -74,7 +74,7 @@ C              INDEXEE PAR NUMERO D'INTERSECTION
 C              DIM: NNS
 C OUT IS     : NOMBRE DE FACES DES COMPOSANTES CONNEXES DE
 C               L'INTERSECTION
-C                     DIM: 8*NBNO + 16*NNS + 4*(NARE1+NARE2) + 
+C                     DIM: 8*NBNO + 16*NNS + 4*(NARE1+NARE2) +
 C                          3*(NFAC1+NFAC2)
 C I/O TRAVL  : VECTEUR DE TRAVAIL DE BOOLEENS POUR PARCOURS
 C              UNIQUE DES INTERSECTIONS (INUTILE POUR LA SUITE)
@@ -83,14 +83,14 @@ C IN  NFAC1  : NOMBRE DE FACETTES DU PREMIER POLYEDRE CONVEXE
 C IN  NFAC2  : NOMBRE DE FACETTES DU SECOND POLYEDRE CONVEXE
 C IN  AS     : SOMMETS COMPOSANT LES ARETES DES POLYEDRES
 C                (ARETE1.ND1,ARETE1.ND2,
-C                 ARETE2.ND1,ARETE2.ND2...) 
-C                NARE1 ARETES PREMIER POLY. CONVEXE PUIS 
-C                NARE2 ARETES SECOND POLY. CONVEXE 
+C                 ARETE2.ND1,ARETE2.ND2...)
+C                NARE1 ARETES PREMIER POLY. CONVEXE PUIS
+C                NARE2 ARETES SECOND POLY. CONVEXE
 C IN  AF     : FACES ADJACENTES AUX ARETES DES POLYEDRES
 C                (ARETE1.FACE1,ARETE1.FACE2,
-C                 ARETE2.FACE1,ARETE2.FACE2...) 
-C                NARE1 ARETES PREMIER POLY. CONVEXE PUIS 
-C                NARE2 ARETES SECOND POLY. CONVEXE 
+C                 ARETE2.FACE1,ARETE2.FACE2...)
+C                NARE1 ARETES PREMIER POLY. CONVEXE PUIS
+C                NARE2 ARETES SECOND POLY. CONVEXE
 C IN  NARE1  : NOMBRE D'ARETES DU PREMIER POLYEDRE CONVEXE
 C IN  NARE2  : NOMBRE D'ARETES DU SECOND POLYEDRE CONVEXE
 C OUT NC     : NOMBRE DE COMPOSANTES CONNEXES
@@ -109,11 +109,11 @@ C
       INTEGER NF0,NFAC,F0,F1,F2,F3,F4,NI,I,J,P0,P1,P2,P3,P4
       REAL*8  CSI(3),V(3),R0,R1,R2
       LOGICAL LIR,LIS
-      INTEGER     IFM,NIV      
+      INTEGER     IFM,NIV
 C
 C ----------------------------------------------------------------------
 C
-      CALL INFDBG('ARLEQUIN',IFM,NIV) 
+      CALL INFDBG('ARLEQUIN',IFM,NIV)
 C
 C --- INITIALISATIONS
 C
@@ -125,19 +125,19 @@ C
       DO 10 A0 = 1, NARE
         IS(P0+A0) = 0
  10   CONTINUE
-C 
+C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> *** CALCUL INTERSECTION '//
-     &                'DE DEUX POLYEDRES '    
-      ENDIF  
+     &                'DE DEUX POLYEDRES '
+      ENDIF
 C
 C --- 1. NOUVEAUX SOMMETS
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> ... NOUVEAUX SOMMETS ?'
-      ENDIF  
+      ENDIF
       P3 = P0 + NARE + 1
       NI = 0
 
@@ -320,14 +320,14 @@ C
       ELSE
         WRITE(IFM,*) '<ARLEQUIN><INT> ...... ',NI,
      &               ' INTERSECTIONS DETECTEES'
-      ENDIF  
+      ENDIF
       ENDIF
 C
 C --- 2. NOUVELLES ARETES
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> ... CREATION NOUVELLES ARETES'
-      ENDIF  
+      ENDIF
       NA0 = NARE
 
 C --- 2.1 DECOUPAGE DES ARETES A PARTIR DE LA STRUCTURE AI
@@ -457,10 +457,10 @@ C
  130  CONTINUE
 C
 C --- 3. CONNECTIVITE DES FACES
-C      
+C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> ... CREATION CONNECTIVITE FACES'
-      ENDIF  
+      ENDIF
 C --- 3.1 GRAPHE FACE - ARETES (FA)
 C
       P0 = NFAC + 1
@@ -619,13 +619,13 @@ C
             IS(P4) = F1
             N = 1
             I = 0
-           
+
             GOTO 240
 
           ENDIF
 
  230    CONTINUE
-  
+
         GOTO 220
 
  240    CONTINUE
@@ -639,7 +639,7 @@ C
 
           A0 = -IS(P1)
           P1 = IS(P1+1)
-          IF (A0.EQ.0) THEN 
+          IF (A0.EQ.0) THEN
             GOTO 250
            ENDIF
           F1 = AF(1,A0)
@@ -656,7 +656,7 @@ C
             N = N + 1
           ENDIF
 
-          IF ((F2.NE.0).AND.(TRAVL(F2))) THEN
+          IF ((F2.NE.0).AND.TRAVL(F2)) THEN
             TRAVL(F2) = .FALSE.
             NSF = IS(P0+3*F2-3)
             F4 = IS(P0+3*F2-1)
@@ -666,7 +666,7 @@ C
             IS(P4+N) = F4
             N = N + 1
           ENDIF
-  
+
           GOTO 250
 
         ELSE
@@ -685,10 +685,10 @@ C
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> ... NBRE COMPOSANTES CONNEXES: ',
-     &                 NC 
+     &                 NC
         WRITE(IFM,*) '<ARLEQUIN><INT> *** FIN CALCUL INTERSECTION '//
-     &                'DE DEUX POLYEDRES '      
-      ENDIF  
+     &                'DE DEUX POLYEDRES '
+      ENDIF
 C
 
  270  CONTINUE

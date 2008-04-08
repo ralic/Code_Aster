@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 10/03/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -354,6 +354,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
         if MOD==None : UTMESS('F','RUPTURE0_18')
         MODEL = self.jdc.sds_dict[MOD[0].rstrip()]
+        dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
         for i in range(Nbf1):
           Porig = array(d_coorf[Lnf1[i]] )
           if Lnf1[i]==LNOFO[0] and DTANOR : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]
@@ -362,12 +363,14 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           TlibS[i] = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
                 NOM_CHAM='DEPL',MODELE=MODEL, VIS_A_VIS=_F(MAILLE_1 = ListmaS),
                 LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
-                               TYPE='SEGMENT', COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
+                               TYPE='SEGMENT', COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
+                               DISTANCE_MAX=dmax),);
           if SYME_CHAR=='SANS':
             TlibI[i] = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
                   NOM_CHAM='DEPL',MODELE=MODEL, VIS_A_VIS=_F(MAILLE_1 = ListmaI),
                 LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
-                               TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
+                               TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
+                               DISTANCE_MAX=dmax),);
 
 
 ##### Cas maillage regle###########

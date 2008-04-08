@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -239,7 +239,8 @@ TABDEP_2= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT_FISSURE',
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
 DEPREF_1=9.8756898959655E-02;
-DEPREF_2=1.7821038224100E-02;
+# CETTE VALEUR EST DE NON REGRESSION
+DEPREF_2=1.7771170448857E-02;
 
 TEST_TABLE(TABLE=TABDEP_1,
            NOM_PARA='DY',
@@ -262,7 +263,7 @@ TEST_TABLE(TABLE=TABDEP_2,
            TYPE_TEST='MIN',
            VALE=-DEPREF_2,
            CRITERE='RELATIF',
-           PRECISION=0.04,
+           PRECISION=1.e-5,
            REFERENCE='NON_REGRESSION',);         
 
 TEST_TABLE(TABLE=TABDEP_2,
@@ -270,7 +271,7 @@ TEST_TABLE(TABLE=TABDEP_2,
            TYPE_TEST='MAX',
            VALE=DEPREF_2,
            CRITERE='RELATIF',
-           PRECISION=0.04,
+           PRECISION=1.e-3,
            REFERENCE='NON_REGRESSION',);  
 
 # CES VALEURS DE NON REGRESSION ONT ETE OBTENUES AVEC LA 9.2.5
@@ -286,6 +287,7 @@ TEST_RESU(RESU=(
                    MAILLE='M277',
                    POINT=10,
                    VALE=VREF_1,
+           PRECISION=1.e-5,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=UTOT1,
                    INST=0.14,
@@ -294,6 +296,7 @@ TEST_RESU(RESU=(
                    MAILLE='M277',
                    POINT=10,
                    VALE=VREF_1,
+           PRECISION=1.e-5,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=UTOT1,
                    INST=0.3,
@@ -302,6 +305,7 @@ TEST_RESU(RESU=(
                    MAILLE='M277',
                    POINT=10,
                    VALE=VREF_2,
+           PRECISION=1.e-5,
                    REFERENCE='NON_REGRESSION',),
                    ),);
 

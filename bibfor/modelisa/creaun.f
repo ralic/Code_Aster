@@ -4,7 +4,7 @@
      &                  COEFCU,CMPGCU,MULTCU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,10 +93,12 @@ C
        INTEGER        CPTD,CPTG,CPTND
        CHARACTER*24   CMPCU,DIME
        INTEGER        JCPG,JCOEG,JCOED,JDIME
+       INTEGER        IFM,NIV
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFNIV(IFM,NIV)
 C ======================================================================
 C
 C --- INITIALISATIONS
@@ -169,10 +171,12 @@ C
      &                  EXIST)
 
             IF (EXIST.EQ.1) THEN
-              CALL JENUNO(JEXNUM(NOEUMA,NUMND),NOMNO)
-              VALK (1) = NOMNO
-              VALK (2) = CMP
-              CALL U2MESG('I', 'MODELISA8_58',2,VALK,0,0,0,0.D0)
+              IF(NIV.GE.2) THEN
+                CALL JENUNO(JEXNUM(NOEUMA,NUMND),NOMNO)
+                VALK (1) = NOMNO
+                VALK (2) = CMP
+                CALL U2MESG('I', 'MODELISA8_58',2,VALK,0,0,0,0.D0)
+              END IF
 
               ZK8(JCOMPG-1+CPTG) = CMP
               IF (TYPCMP.EQ.1) THEN

@@ -2,7 +2,7 @@
      &                MM1   ,MM2   ,PAN1  ,PAN2  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       LOGICAL MINTER
@@ -29,12 +29,12 @@ C
       INTEGER M2
       INTEGER DIME
       INTEGER D1(*)
-      INTEGER D2(*) 
+      INTEGER D2(*)
       REAL*8  MM1(*)
       REAL*8  MM2(*)
       REAL*8  PAN1(DIME+2,*)
-      REAL*8  PAN2(DIME+2,*) 
-C      
+      REAL*8  PAN2(DIME+2,*)
+C
 C ----------------------------------------------------------------------
 C
 C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
@@ -59,7 +59,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER NP1,NP2,I,J,K,NS,P1,P2,IRET    
+      INTEGER NP1,NP2,I,J,K,NS,P1,P2,IRET
       REAL*8  A(4,9),B(4,3),C(9),S2(9),R0,R1,DET
 C
 C ----------------------------------------------------------------------
@@ -96,7 +96,7 @@ C
           B(I,J) = -PAN1(I,P1+J)
  21     CONTINUE
  20   CONTINUE
-C 
+C
       K = 0
       DO 30 J = J, NP1
         K = K + 1

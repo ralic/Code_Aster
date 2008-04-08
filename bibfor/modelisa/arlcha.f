@@ -2,7 +2,7 @@
      &                  CHARGE,EQ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,14 +21,14 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER       DIME
       CHARACTER*10  NOM1,NOM2
       CHARACTER*8   CINE(3),CHARGE,NOMARL
       LOGICAL       EQ(5,*)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -36,12 +36,12 @@ C
 C TRANSFORMATION DES MATRICES ARLEQUIN MORSE EN RELATIONS LINEAIRES
 C
 C ----------------------------------------------------------------------
-C      
+C
 C
 C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  NOMARL : SD ARLEQUIN
-C IN  NOM1   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_1 
-C IN  NOM2   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_2 
+C IN  NOM1   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_1
+C IN  NOM2   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_2
 C IN  CINE   : CINEMATIQUES DES GROUPES DE MAILLE
 C IN  CHARGE : NOM UTILISATEUR DE LA CHARGE
 C IN  EQ     : EQUATIONS DE COUPLAGE SELECTIONNEES (CF ARLCLR)
@@ -69,7 +69,7 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C      
+C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8        PRECBB,PREC2,ARLGER
@@ -81,19 +81,19 @@ C
       INTEGER       P0,P1,I,J,I1,I2,NEL0,NEL,NDD0,NDD,NLG0,NLG
       LOGICAL       IA1,IA2,IAC
       REAL*8        R
-      INTEGER       IFM,NIV 
+      INTEGER       IFM,NIV
       INTEGER       NTECMP
-      PARAMETER     (NTECMP=6)    
+      PARAMETER     (NTECMP=6)
       CHARACTER*16  TECMP(NTECMP)
       INTEGER       NU(NTECMP)
-C            
+C
       DATA TECMP / 'D_DEPL_R_DX ','D_DEPL_R_DY ','D_DEPL_R_DZ ',
      &             'D_DEPL_R_DRX','D_DEPL_R_DRY','D_DEPL_R_DRZ' /
 C
 C ----------------------------------------------------------------------
-C 
+C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)  
+      CALL INFNIV(IFM,NIV)
 C
 C --- INITIALISATIONS ET PARAMETRES
 C
@@ -117,7 +117,7 @@ C
       DDC = DIME
       IF (IAC) DDC = DDC + DIME - 1
       IF ((I1.LT.0).OR.(I1.GT.3)) CALL ASSERT(.FALSE.)
-      IF ((I2.LT.0).OR.(I2.GT.3)) CALL ASSERT(.FALSE.)            
+      IF ((I2.LT.0).OR.(I2.GT.3)) CALL ASSERT(.FALSE.)
 C
 C --- LECTURE DONNEES MATRICES MORSES
 C
@@ -127,7 +127,7 @@ C
       CALL JEVEUO(NOMMO1(1:16)//'.VALE','L',B0)
       CALL JEVEUO(NOMMO1(1:16)//'.INO','L',B1)
       CALL JEVEUO(JEXATR(NOMMO1(1:16)//'.INO','LONCUM'),'L',B2)
-C      
+C
       NOMMO2 = NOM2(1:10)//'.MORSE'
       CALL JEVEUO(NOMMO2(1:16)//'.VALE','L',C0)
       CALL JEVEUO(NOMMO2(1:16)//'.INO','L',C1)
@@ -194,12 +194,12 @@ C
       ELSE
         NEL0 = 0
       ENDIF
-C      
+C
 C --- CREATION OU EXTENSION DES CARTES .CMULT ET .CIMPO
 C
       CALL CRAGCH(NT,'REEL','REEL',LIGRE)
-C      
-C --- CREATION OU EXTENSION DU LIGREL DE CHARGE LIGRCH      
+C
+C --- CREATION OU EXTENSION DU LIGREL DE CHARGE LIGRCH
 C
       CALL CRAGLC(NT,LIGRE)
 C
@@ -277,7 +277,7 @@ C
 C --- MATRICE MORSE 1
 C
       NLG = NLG0
-      
+
       GOTO (90,100,110) I1
 
       CALL ARLCH1(DIME  ,NNC   ,0     ,NU    ,ZR(B0),
@@ -311,7 +311,7 @@ C
 C --- MATRICE MORSE 2
 C
       NLG = NLG0
-      
+
       GOTO (130,140,150) I2
 
       CALL ARLCH1(DIME  ,NNC   ,1     ,NU    ,ZR(C0),

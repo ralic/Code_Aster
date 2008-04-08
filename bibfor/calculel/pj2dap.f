@@ -8,7 +8,7 @@
       CHARACTER*8 MA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF CALCULEL  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,12 +41,20 @@ C  IN   BTLC(*)    I  : OBJET .BT2DLC DE LA SD BOITE_2D
 C  IN   BTCO(*)    I  : OBJET .BT2DCO DE LA SD BOITE_2D
 C  IN   IFM        I  : NUMERO LOGIQUE DU FICHIER MESSAGE
 C  IN   NIV        I  : NIVEAU D'IMPRESSION POUR LES "INFO"
-C  OUT  NBTROU     I  : NOMBRE DE TRIA3 SOLUTIONS
-C  OUT  ITR3       I  : NUMERO D'UN TRIA3 SOLUTION
-C  OUT  COBARY(3)  R  : COORDONNEES BARYCENTRIQUES DE INO2 DANS ITR3
+C  IN   LDMAX      L  : .TRUE. : IL FAUT PRENDRE DISTMA EN COMPTE
+C  IN   DISTMA     R  : DISTANCE AU DELA DE LAQUELLE LE NOEUD INO2
+C                       NE SERA PAS PROJETE.
+C  OUT  NBTROU     I  : 1 -> ON A TROUVE 1 TRIA3 SOLUTION
+C                     : 0 -> ON N'A PAS TROUVE DE TRIA3 SOLUTION
+C  OUT  ITR3       I  : NUMERO DU TRIA3 SOLUTION
+C  OUT  COBARY(4)  R  : COORDONNEES BARYCENTRIQUES DE INO2 DANS ITR3
 C  OUT  DMIN       R  : DISTANCE DE INO2 AU BORD DE ITR3 SI INO2 EST
-C                       EXTERIEUR A ITR3. DMIN=0 SINON.
+C                       EXTERIEUR A ITR3.
 C  OUT  LOIN       L  : .TRUE. SI DMIN > 10% DIAMETRE(ITR3)
+
+C  REMARQUE :
+C    SI NBTROU=0, INO2 NE SERA PAS PROJETE CAR IL EST AU DELA DE DISTMA
+C    ALORS : DMIN=0, LOIN=.FALSE.
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
@@ -75,7 +83,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LOGICAL LDMAX,LOIN
       REAL*8 DISTMA,VALR(2)
 C DEB ------------------------------------------------------------------
-C     NTR3=TRIA3(1)
       NBTROU=0
       LOIN=.FALSE.
       DMIN=0.D0
@@ -100,58 +107,62 @@ C     DO 1,I=1,NTR3
         CALL PJ2DA1(INO2,GEOM2,I,GEOM1,TRIA3,COBAR2,OK)
         IF (OK) THEN
           ITR3=I
-          NBTROU=NBTROU+1
+          NBTROU=1
           COBARY(1)=COBAR2(1)
           COBARY(2)=COBAR2(2)
           COBARY(3)=COBAR2(3)
-          GOTO 20
+          GOTO 9999
         ENDIF
    10 CONTINUE
-   20 CONTINUE
 
 
 
 C     -- 2. : SI ECHEC DE LA RECHERCHE PRECEDENTE, ON
 C        CHERCHE LE TRIA3 ITR3 LE PLUS PROCHE DE INO2 :
 C     -------------------------------------------------------
-      IF (NBTROU.EQ.0) THEN
-        IF (LDMAX) THEN
-          DMIN=DISTMA
-        ELSE
-          DMIN=R8MAEM()
-        ENDIF
-C       -- PARCOURS DES MAILLES CANDIDATES :
-C       DO 2,I=1,NTR3  % ON PARCOURT TOUS LES TRIA3
+      IF (LDMAX) THEN
+        DMIN=DISTMA
+      ELSE
+        DMIN=R8MAEM()
+      ENDIF
+C     -- PARCOURS DES MAILLES CANDIDATES :
+C     DO 2,I=1,NTR3  % ON PARCOURT TOUS LES TRIA3
 
-C       -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
-        CALL PJ2DGB(INO2,GEOM2,GEOM1,TRIA3,BTDI,BTVR,BTNB,BTLC,BTCO,P1,
-     &              Q1,P2,Q2)
-        DO 50,P=P1,P2
-          DO 40,Q=Q1,Q2
-            NTRBT=BTNB((Q-1)*NX+P)
-            IPOSI=BTLC((Q-1)*NX+P)
-            DO 30,K=1,NTRBT
-              I=BTCO(IPOSI+K)
-              CALL PJ2DA2(INO2,GEOM2,I,GEOM1,TRIA3,COBAR2,D2,SURF)
-              IF (SQRT(D2).LT.DMIN) THEN
-                RTR3=SURF
-                ITR3=I
-                DMIN=SQRT(D2)
-                NBTROU=1
-                COBARY(1)=COBAR2(1)
-                COBARY(2)=COBAR2(2)
-                COBARY(3)=COBAR2(3)
-              ENDIF
-   30       CONTINUE
-   40     CONTINUE
-   50   CONTINUE
+C     -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
+      CALL PJ2DGB(INO2,GEOM2,GEOM1,TRIA3,BTDI,BTVR,BTNB,BTLC,BTCO,P1,
+     &            Q1,P2,Q2)
+      DO 50,P=P1,P2
+        DO 40,Q=Q1,Q2
+          NTRBT=BTNB((Q-1)*NX+P)
+          IPOSI=BTLC((Q-1)*NX+P)
+          DO 30,K=1,NTRBT
+            I=BTCO(IPOSI+K)
+            CALL PJ2DA2(INO2,GEOM2,I,GEOM1,TRIA3,COBAR2,D2,SURF)
+            IF (SQRT(D2).LT.DMIN) THEN
+              RTR3=SURF
+              ITR3=I
+              DMIN=SQRT(D2)
+              NBTROU=1
+              COBARY(1)=COBAR2(1)
+              COBARY(2)=COBAR2(2)
+              COBARY(3)=COBAR2(3)
+            ENDIF
+   30     CONTINUE
+   40   CONTINUE
+   50 CONTINUE
 
+
+      IF (NBTROU.EQ.1) THEN
         IF (RTR3.EQ.0) THEN
           LOIN=.TRUE.
         ELSE
           RTR3 = RTR3** (1.D0/2.D0)
           IF (DMIN/RTR3.GT.1.D-1) LOIN=.TRUE.
         END IF
+      ELSE
+        DMIN=0.D0
       ENDIF
-      
+
+9999  CONTINUE
+
       END

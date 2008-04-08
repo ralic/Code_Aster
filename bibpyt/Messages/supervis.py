@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -410,7 +410,7 @@ Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
    !   Nombre d'occurrences pour chacune des alarmes :                     !
 """),
         
-90 : _("""   !      %(k1)3s %(k2)-20s émises %(i1)4d fois                        !
+90 : _("""   !      %(k1)3s %(k2)-20s émise %(i1)4d fois                         !
 """),
 
 91 : _("""   !-----------------------------------------------------------------------!

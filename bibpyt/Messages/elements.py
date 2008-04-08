@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,16 +23,16 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
- arret du code
-"""),
-
-2 : _("""
- ABS(RAYON2-RAYON1).GT.EPSI
+ AFFE_CARA_ELEM : mot clé GENE_TUYAU
+ problème : OMEGA est différent de OMEGA2
+ omega  = %(r1)f
+ omega2 = %(r2)f
 """),
 
 5 : _("""
- problème de maillage TUYAU
- pour une maille definie par les noeuds N1 N2 N3  le noeud N3 doit etre le noeud milieu
+ problème de maillage TUYAU :
+ pour une maille définie par les noeuds N1 N2 N3,
+ le noeud N3 doit etre le noeud milieu
 """),
 
 6 : _("""
@@ -41,11 +41,10 @@ cata_msg = {
 """),
 
 7 : _("""
- angle du coude trop grand
-"""),
-
-8 : _("""
-  mailler plus fin
+  -> L'angle du coude est trop grand
+     ANGLE     = %(r1)f
+     ANGLE MAX = %(r2)f
+  -> Risque & Conseil : mailler plus fin
 """),
 
 9 : _("""
@@ -115,7 +114,8 @@ cata_msg = {
 """),
 
 28 : _("""
- décharge négative sans passer par meca 1 diminuer le pas de temps
+ décharge négative sans passer par meca 1
+ diminuer le pas de temps
 """),
 
 29 : _("""
@@ -205,7 +205,7 @@ cata_msg = {
 """),
 
 47 : _("""
- pas d excentrement avec FORC_NODA
+ pas d'excentrement avec FORC_NODA
  maille  : %(k1)s
 """),
 
@@ -220,7 +220,7 @@ cata_msg = {
 """),
 
 50 : _("""
- comportement elastique inexistant
+ comportement élastique inexistant
 """),
 
 51 : _("""
@@ -233,7 +233,8 @@ cata_msg = {
 """),
 
 53 : _("""
- problème: temperature sur la maille: %(k1)s : il manque la composante "TEMP"
+ problème :
+ température sur la maille: %(k1)s : il manque la composante "TEMP"
 """),
 
 55 : _("""
@@ -326,10 +327,6 @@ Erreur de programmation :
    L'attribut NBSIGM n'est pas défini pour cette modélisation.
 Solution :
    Il faut modifier la catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
-"""),
-
-94 : _("""
- arret sur erreur(s) utilisateur.
 """),
 
 }

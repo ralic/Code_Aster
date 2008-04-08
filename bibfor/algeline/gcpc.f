@@ -1,22 +1,22 @@
       SUBROUTINE GCPC(M,IN,IP,AC,INPC,IPPC,ACPC,BF,XP,R,RR,P,IREP,
      &                NITER,EPSI,CRITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C    -------------------------------------------------------------------
@@ -56,12 +56,11 @@ C DECLARATION PARAMETRES D'APPELS
       INTEGER M,IN(M),IP(*),INPC(M),IPPC(*),IREP,NITER
       REAL*8 AC(M),ACPC(M),BF(M),XP(M),R(M),RR(M),P(M),EPSI
       CHARACTER*24 CRITER
-            
+
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
-      REAL*8 VALR(2)
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -73,28 +72,27 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C DECLARATION VARIABLES LOCALES
       REAL*8 ZERO,BNORM,DNRM2,ANORM,EPSIX,ANORMX,RRRI,GAMA,RRRIM1,
-     &       PARAAF,ANORXX,RAU,DDOT
-      INTEGER IFM,NIV,I,JCRI,JCRR,JCRK,ITER,INIGPC,IRET
+     &       PARAAF,ANORXX,RAU,DDOT,VALR(2)
+      INTEGER IFM,NIV,I,JCRI,JCRR,JCRK,ITER,IRET
       INTEGER VALI
-           
+
       CALL MATFPE(-1)
 C
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
-      
+
 C-----PARAMETRE D'AFFICHAGE DE LA DECROISSANCE DU RESIDU
-C (SI ON GAGNE PARAAF * 100%)      
+C (SI ON GAGNE PARAAF * 100%)
       PARAAF = 0.1D0
-      
-C-----INITS DIVERS      
+
+C-----INITS DIVERS
       ZERO = 0.D0
       CALL ASSERT(IREP.EQ.0 .OR. IREP.EQ.1)
-      
+
 C-----CALCULS PRELIMINAIRES
 
 C      ---- CALCUL DE NORME DE BF
@@ -103,7 +101,7 @@ C      ---- CALCUL DE NORME DE BF
         DO 10 I = 1,M
           XP(I) = ZERO
    10   CONTINUE
-        WRITE (IFM,*)'>>>>>>> SECOND MEMBRE = 0 DONC SOLUTION = 0 '
+CC        WRITE (IFM,*)'>>>>>>> SECOND MEMBRE = 0 DONC SOLUTION = 0 '
         GO TO 80
       END IF
 
@@ -141,9 +139,9 @@ C       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
 C ---- ITERATIONS
       ANORMX = ANORM
       ANORXX = ANORM
-      
+
       DO 70 ITER = 1,NITER
-C       ---- PRECONDITIONNEMENT DU RESIDU:              
+C       ---- PRECONDITIONNEMENT DU RESIDU:
 C                                             ZK = (LDLT)-1. RK
 C                                                   RK <--- R()
 C                                                  ZK <--- RR()
@@ -161,7 +159,7 @@ C                                             RRRI <--- (RK,ZK)
 C       ---- NOUVELLE DIRECTION DE DESCENTE:
 C                                    BETAK = (RK,ZK)/(RK-1,ZK-1)
 C                                               BETAK <--- GAMA
-C                                        PK = BETAK * PK-1 + ZK 
+C                                        PK = BETAK * PK-1 + ZK
 C                                                   PK <--- P()
         IF (ITER.GT.1) THEN
           GAMA = RRRI/RRRIM1
@@ -181,7 +179,7 @@ C                                       XK+1 = XK + ALPHAK * PK
 C                                      RK+1 = RK + ALPHAK * ZZK
 C                                                 ZZK <--- RR()
 C                                                 XK  <--- XP()
-        CALL GCAX(M,IN,IP,AC,P,RR) 
+        CALL GCAX(M,IN,IP,AC,P,RR)
         RAU = -RRRI/DDOT(M,P,1,RR,1)
         CALL DAXPY(M,RAU,P,1,XP,1)
         CALL DAXPY(M,RAU,RR,1,R,1)
@@ -221,7 +219,7 @@ C    -----------
  1040 FORMAT ('   * NORME DU RESIDU INITIAL/FINAL/RELATIF=',
      &         D11.4,D11.4,D11.4)
  1041 FORMAT ('   * ITERATION',I5,' NORME DU RESIDU EN ABS/RELA =',
-     &         D11.4,D11.4)     
+     &         D11.4,D11.4)
  1050 FORMAT (1X,/,2X,32 ('*')/'  * CONVERGENCE EN ',I4,
      &       ' ITERATIONS'/2X,32 ('*'),/)
 C    -----------

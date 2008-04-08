@@ -1,7 +1,7 @@
       SUBROUTINE COQUNO(DIME,NNO,COQNOE)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,13 +18,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER DIME
       INTEGER NNO
       INTEGER COQNOE(2,*)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -41,7 +41,7 @@ C                          0 : PEAU INFERIEURE
 C                          1 : PEAU SUPERIEURE
 C
 C ----------------------------------------------------------------------
-C   
+C
       IF (DIME.EQ.2) THEN
         IF (NNO.EQ.3) THEN
           COQNOE(1,1) = 1

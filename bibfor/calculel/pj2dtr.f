@@ -6,7 +6,7 @@
       INTEGER NUTM2D(NBTM)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C     -----------------------------------------------
 
 
 C     2.1 REMPLISSAGE DE .PJEF_NB ET .PJEF_M1:
-C     -----------------------------
+C     -----------------------------------------
       CALL WKVECT(CORRES//'.PJEF_NB','V V I',NNO2,I2CONB)
       CALL WKVECT(CORRES//'.PJEF_M1','V V I',NNO2,I2COM1)
       IDECA2=0
@@ -119,6 +119,7 @@ C       IMA1 : MAILLE DE M1 ASSOCIE AU TRIA3 ITR
         ZI(I2COM1-1+INO2)=IMA1
         IDECA2=IDECA2+NBNO
 10    CONTINUE
+      IF (IDECA2.EQ.0) CALL U2MESS('F','CALCULEL3_97')
 
 
 C     2.2 ALLOCATION DE .PJEF_NU ET .PJEF_CF:

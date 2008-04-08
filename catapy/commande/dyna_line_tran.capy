@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +87,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
          ),
 
          SOLVEUR         =FACT(statut='d',
-         METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS") ),
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS","PETSC") ),
 
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
@@ -119,6 +119,14 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
              PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",into=("CENTRALISE","CENTRALISE")),
              ),
+
+           b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la méthode PETSC",
+             VARIANTE        =SIMP(statut='f',typ='TXM',into=("GMRES","BCGS","CR","CG","BICG","CHEBYCHEV",),defaut="GMRES" ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("ILU","SOR","BJACOBI"),defaut="ILU" ),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-8),
+             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
+           ),
          ),
 
          INCREMENT       =FACT(statut='o',max='**',

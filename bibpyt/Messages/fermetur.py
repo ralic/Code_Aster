@@ -1,4 +1,4 @@
-#@ MODIF fermetur Messages  DATE 23/10/2007   AUTEUR DESOZA T.DESOZA 
+#@ MODIF fermetur Messages  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,12 @@ cata_msg={
       On essaye d'utiliser une routine d'initialisation élémentaire (ini0xx)
       qui n'est pas encore programmée.
 """),
+
+10: _("""
+  Erreur :
+      le solveur "PETSc" n'est pas installé sur cette machine.
+"""),
+
 
 
 }

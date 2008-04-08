@@ -1,9 +1,9 @@
       SUBROUTINE NBNOCO(CHAR  ,MOTFAC,NOMA  ,MOTCLE,IZONE ,
      &                  ISURF ,INDQUA,JTRAV ,JSUMA ,JSUNO ,
-     &                  JNOQUA,LQUADV)
+     &                  JNOQUA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,8 +32,7 @@ C
       INTEGER       JTRAV
       INTEGER       JSUMA
       INTEGER       JSUNO
-      INTEGER       JNOQUA
-      LOGICAL       LQUADV      
+      INTEGER       JNOQUA     
 C     
 C ----------------------------------------------------------------------
 C
@@ -59,8 +58,6 @@ C IN  JTRAV  : POINTEUR VERS VECTEUR DE TRAVAIL 'BIDON'
 C I/O JSUMA  : POINTEUR SUR LA ZONE DES MAILLES
 C I/O JSUNO  : POINTEUR SUR LA ZONE DES NOEUDS
 C I/O JNOQUA : POINTEUR SUR LA ZONE DES NOEUDS QUADRATIQUES
-C OUT LQUADV : VAUT .TRUE. SI METHODE='VERIF' ET  NOMTM='QUAD8'OU'QUAD9'
-C              DECLENCHE L'ALARME 'CONTACT3_94' DANS NBSUCO
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -84,8 +81,6 @@ C
       CHARACTER*8  TYPENT,K8BID
       INTEGER      NBENT,NBMA,NBNO,NBNOQU,NB
       INTEGER      NMA,NGRMA
-      INTEGER      TYPALC,IBID
-      LOGICAL      LVERIF
 C
 C ----------------------------------------------------------------------
 C
@@ -103,11 +98,6 @@ C
       NBMA    = 0
       NBNO    = 0
       NBNOQU  = 0
-C
-C --- TYPE DE CONTACT
-C
-      CALL CFDISC(CHAR(1:8)//'.CONTACT',' ',TYPALC,IBID,IBID,IBID)
-      LVERIF = TYPALC.EQ.5
 C           
       CALL GETVEM(NOMA  ,TYPENT,MOTFAC,MOTCLE,
      &            IZONE ,1     ,0,K8BID,NBENT)
@@ -124,8 +114,7 @@ C
           NGRMA = NB
         ENDIF            
         CALL NBNOEL(CHAR      ,NOMA  ,TYPENT,NGRMA ,NMA   ,
-     &              ZK8(JTRAV),INDQUA,NBMA  ,NBNO  ,NBNOQU,
-     &              LVERIF    ,LQUADV)
+     &              ZK8(JTRAV),INDQUA,NBMA  ,NBNO  ,NBNOQU)
         ZI(JSUMA  + ISURF) = ZI(JSUMA  + ISURF - 1) + NBMA
         ZI(JSUNO  + ISURF) = ZI(JSUNO  + ISURF - 1) + NBNO
         ZI(JNOQUA + ISURF) = ZI(JNOQUA + ISURF - 1) + NBNOQU

@@ -1,9 +1,9 @@
       SUBROUTINE PLINT2(SC    ,NBNO  ,FS    ,DQ    ,NCMAX  ,
      &                  NSEG1 ,NSEG2 ,SI    ,IS    ,TRAVL  ,
      &                  NC)
-C       
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,21 +20,21 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       REAL*8  SC(2,*)
-      INTEGER NBNO      
+      INTEGER NBNO
       INTEGER FS(2,*)
-      REAL*8  DQ(3,*)  
-      INTEGER NCMAX          
+      REAL*8  DQ(3,*)
+      INTEGER NCMAX
       INTEGER NSEG1
       INTEGER NSEG2
       REAL*8  SI(*)
-      INTEGER IS(*)      
+      INTEGER IS(*)
       LOGICAL TRAVL(*)
-      INTEGER NC      
-C      
+      INTEGER NC
+C
 C ----------------------------------------------------------------------
 C
 C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
@@ -43,14 +43,14 @@ C
 C INTERSECTION DE DEUX POLYGONES (2D)
 C
 C ----------------------------------------------------------------------
-C 
-C      
+C
+C
 C I/O SC     : IN  - COORDONNEES DES SOMMETS DES DEUX POLYGONES
 C              OUT - COORDONNEES DES SOMMETS DE L'INTERSECTION
-C I/O NBNO   : IN  - NOMBRE DE SOMMETS DES DEUX POLYGONES 
+C I/O NBNO   : IN  - NOMBRE DE SOMMETS DES DEUX POLYGONES
 C              OUT - NOMBRE DE SOMMETS DES DEUX POLYGONES +
-C                    NOMBRE INTERSECTIONS                
-C IN  FS     : NOEUDS DEFINISSANT LES SEGMENTS DES DEUX POLYGONES 
+C                    NOMBRE INTERSECTIONS
+C IN  FS     : NOEUDS DEFINISSANT LES SEGMENTS DES DEUX POLYGONES
 C                (SEG1.ND1,SEG1.ND2,
 C                 SEG2.ND1,SEG2.ND2,...)
 C IN  DQ     : EQUATION DE DROITE ASSOCIEE AUX ARETES
@@ -85,11 +85,11 @@ C
       INTEGER I,J,P0,P1,P2
       REAL*8  R1,R2,R3,R4
       LOGICAL IR
-      INTEGER     IFM,NIV      
+      INTEGER     IFM,NIV
 C
 C ----------------------------------------------------------------------
 C
-      CALL INFDBG('ARLEQUIN',IFM,NIV) 
+      CALL INFDBG('ARLEQUIN',IFM,NIV)
 C
 C --- INITIALISATIONS
 C
@@ -101,25 +101,25 @@ C
       DO 10 I = 1, NARE
         IS(I) = 0
  10   CONTINUE
-C 
+C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> *** CALCUL INTERSECTION '//
-     &                'DE DEUX POLYGONES '    
-      ENDIF   
+     &                'DE DEUX POLYGONES '
+      ENDIF
 C
 C --- 1. NOUVEAUX SOMMETS
-C      
+C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> ... NOUVEAUX SOMMETS ?'
-      ENDIF  
+      ENDIF
       NS0 = NBNO
       DO 20 A1 = 1, NSEG1
 
         S1 = FS(1,A1)
         S2 = FS(2,A1)
-        DO 20 J = 1, NSEG2      
+        DO 20 J = 1, NSEG2
           A2 = NSEG1 + J
           S3 = FS(1,A2)
           S4 = FS(2,A2)
@@ -128,13 +128,13 @@ C ------- TEST INTERSECTION
 
           R3 = DQ(1,A1)*SC(1,S3) + DQ(2,A1)*SC(2,S3) + DQ(3,A1)
           R4 = DQ(1,A1)*SC(1,S4) + DQ(2,A1)*SC(2,S4) + DQ(3,A1)
-          
+
           IF (((R3.LT.0.D0).EQV.(R4.LT.0.D0)).OR.(R3.EQ.0.D0)
      &        .OR.(R4.EQ.0.D0)) GOTO 20
 
           R1 = DQ(1,A2)*SC(1,S1) + DQ(2,A2)*SC(2,S1) + DQ(3,A2)
           R2 = DQ(1,A2)*SC(1,S2) + DQ(2,A2)*SC(2,S2) + DQ(3,A2)
-          
+
           IF (((R1.LT.0.D0).EQV.(R2.LT.0.D0)).OR.(R1.EQ.0.D0)
      &        .OR.(R2.EQ.0.D0)) GOTO 20
 
@@ -150,7 +150,7 @@ C ------- STOCKAGE COORDONNEES SOMMET INTERSECTION
 
           NBNO = NBNO + 1
           SC(1,NBNO) = (1-R1)*SC(1,S1) + R1*SC(1,S2)
-          SC(2,NBNO) = (1-R1)*SC(2,S1) + R1*SC(2,S2)    
+          SC(2,NBNO) = (1-R1)*SC(2,S1) + R1*SC(2,S2)
 
 C ------- INSERTION TRIEE DU SOMMET INTERSECTION DANS AI(A1)
 
@@ -220,14 +220,14 @@ C
       ELSE
         WRITE(IFM,*) '<ARLEQUIN><INT> ...... ',NI,
      &               ' INTERSECTIONS DETECTEES'
-      ENDIF  
+      ENDIF
       ENDIF
 C
 C --- 2. NOUVELLES ARETES
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> ... CREATION NOUVELLES ARETES'
-      ENDIF  
+      ENDIF
       NA0 = NARE
       DO 50 I = 1, NA0
 
@@ -280,7 +280,7 @@ C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> ... CREATION GRAPHE SOMMET '//
      &               '-> ARETES'
-      ENDIF  
+      ENDIF
       P0 = NBNO + NCMAX
 
       DO 70 I = 1, NBNO
@@ -348,10 +348,10 @@ C
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN><INT> ... NBRE COMPOSANTES CONNEXES: ',
-     &                 NC 
+     &                 NC
         WRITE(IFM,*) '<ARLEQUIN><INT> *** FIN CALCUL INTERSECTION '//
-     &                'DE DEUX POLYGONES '    
-      ENDIF       
+     &                'DE DEUX POLYGONES '
+      ENDIF
 C
  120  CONTINUE
 

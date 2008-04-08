@@ -1,4 +1,4 @@
-#@ MODIF algeline Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algeline Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,6 +114,9 @@ cata_msg={
 23: _("""
  le noeud  %(k1)s  n'est pas équidistant des noeuds  %(k2)s  et  %(k3)s  pour la maille : %(k4)s 
  Améliorez le  maillage. Le code s'arrete pour éviter des résultats faux.
+ - distance n1-n3 = %(r1)g
+ - distance n2-n3 = %(r2)g
+ - tolérance      = %(r3)g
 """),
 
 24: _("""
@@ -138,6 +141,17 @@ cata_msg={
   -> Risque & Conseil :
      Les valeurs sont extrapolees en dehors des donnees d'essais.
      Les resultats du calcul seront a prendre avec circonspection.
+"""),
+
+28: _("""
+ Détermination des coefficients de la deformée axiale,
+ erreur relative sur la norme des déplacements radiaux : %(r1)g
+"""),
+
+29: _("""
+ L'ordre de coque est peut-etre mal identifié.
+ La base modale est trop riche ou le nombre de noeuds du maillage sur une circonference
+ est trop faible
 """),
 
 30: _("""

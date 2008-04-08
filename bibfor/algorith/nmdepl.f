@@ -9,7 +9,7 @@
      &                  RESOCO,DEFICU,RESOCU)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -208,9 +208,10 @@ C
           CALL NMPICH(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
      &                COMPOR,LISCHA,CNFEXT,CNFINT,CNDIRI,
      &                CARCRI,FONACT,SDPILO,SDDYNA,ITERAT,
-     &                INDRO ,DINST ,RESOCO,VALMOI,VALPLU,
-     &                SECMBR,POUGD ,DEPALG,VEELEM,MEELEM,
-     &                MEASSE,ETA   ,RHO   ,OFFSET,LICCVG)
+     &                INDRO ,DINST ,RESOCO,RESOCU,VALMOI,
+     &                VALPLU,SECMBR,POUGD ,DEPALG,VEELEM,
+     &                MEELEM,MEASSE,ETA   ,RHO   ,OFFSET,
+     &                LICCVG)
           IF (LICCVG(1) .EQ. 1) THEN
             GOTO 9999
           ENDIF             
@@ -224,10 +225,11 @@ C
           CALL NMREPL(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
      &                COMPOR,LISCHA,CNFEXT,CNFINT,CNDIRI,
      &                PARMET,CARCRI,FONACT,ITERAT,INDRO ,
-     &                PARCRI,CONV  ,METHOD,RESOCO,SDPILO,
-     &                SDDYNA,VALMOI,VALPLU,DEPALG,POUGD ,
-     &                SECMBR,VEELEM,MEELEM,MEASSE,DINST ,
-     &                ETAN  ,ETA   ,RHO   ,OFFSET,LICCVG)
+     &                PARCRI,CONV  ,METHOD,RESOCO,RESOCU,
+     &                SDPILO,SDDYNA,VALMOI,VALPLU,DEPALG,
+     &                POUGD ,SECMBR,VEELEM,MEELEM,MEASSE,
+     &                DINST ,ETAN  ,ETA   ,RHO   ,OFFSET,
+     &                LICCVG)
         ELSE
           CALL COPISD('CHAMP_GD','V',DEPPRE(1),DDEPLA)
           CALL NMRELI(MODELE,NUMEDD,MATE  ,CARELE,COMREF,

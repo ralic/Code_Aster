@@ -6,7 +6,7 @@ C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,19 +43,16 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32   JEXNUM, JEXNOM
+      CHARACTER*32   JEXNUM
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      INTEGER      IBID, N1, N2, N3, N4, N5, NBVECT, IER,
-     +             IADRIF, LLREFE, NEQ, LLNEQU, JSCDE, ULISOP
-      REAL*8       RBID, PARTR, PARTI
-      COMPLEX*16   CBID
-C      CHARACTER*1  TYPMAT
-      CHARACTER*8  K8B, NOMRES, BASEMO, MATRAS, NUMGEN, INTERF
-      CHARACTER*16 TYPRES, NOMCOM, TYPBAS, MATRI2, K16NOM, TYPBIN
+      INTEGER      N1, N2, N4, IADRIF, JSCDE, ULISOP
+      REAL*8       PARTR, PARTI
+      CHARACTER*8  K8B, NOMRES, BASEMO, NUMGEN, INTERF
+      CHARACTER*16 TYPRES, NOMCOM, TYPBAS, K16NOM, TYPBIN
       CHARACTER*19 RESU , STOLCI
       CHARACTER*14 NUGENE
-      CHARACTER*24 MATRIC, TABRIG, TABFRQ
+      CHARACTER*24 TABRIG, TABFRQ
       CHARACTER*72 TEXTE
       REAL*8 A(3)
       INTEGER*8    LONG1,LONG2,LONG3
@@ -75,8 +72,6 @@ C
       CALL GETVTX ( ' ', 'TYPE' , 1,1,1, TYPBIN, N2 )
 C
       CALL GETTCO ( BASEMO, TYPBAS )
-C      TYPMAT= TYPRES(16:16)
-C      WRITE(6,*) 'TYPMAT = ',TYPMAT
 C
       NUGENE = NUMGEN
       STOLCI = NUMGEN//'      .SLCS'
@@ -129,8 +124,8 @@ C      NBMODE = NBMODD + NBMODS
         REWIND IFMIS
 C
 C   Lecture d'entiers INTEGER*8 en binaire venant de MISS3D
-C   On convertir ensuite en INTEGER (*4 sur machine 32 bits, sinon *8).
-C   Les reels ne posent pas de probleme : ce sont toujousr des REAL*8
+C   On convertit ensuite en INTEGER (*4 sur machine 32 bits, sinon *8).
+C   Les reels ne posent pas de probleme : ce sont toujours des REAL*8
 C
         READ(IFMIS) LONG1,LONG2,LONG3
         NFREQ=LONG1
@@ -167,7 +162,6 @@ C
       NUEQ   = ZI(JSCDE-1+1)
 C      NTBLOC = ZI(JSCDE-1+2)
 C      NBLOC  = ZI(JSCDE-1+3)
-C      WRITE(6,*) 'NUEQ = ',NUEQ,' NBMODE = ',NBMODE
       NTERM = NUEQ*(NUEQ+1)/2
 C
       RESU = ' '

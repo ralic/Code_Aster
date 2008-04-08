@@ -1,7 +1,7 @@
       SUBROUTINE ARFACE(FS,NFACE,AS,FA,NARE)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,12 +18,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER NFACE,NARE
       INTEGER FS(*),AS(*),FA(*)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -55,7 +55,7 @@ C
       INTEGER     ARE(16),S0,S1,I,F,A,P0,P1,P2,Q0,Q1
 C
 C ----------------------------------------------------------------------
-C 
+C
       P0   = 1
       Q0   = 0
       Q1   = 1
@@ -83,7 +83,7 @@ C
 
         CALL NOARE(TYPEMA,ARE)
         NARE = NBARE(TYPEMA)
-        
+
         Q0 = Q0 + 1
         FA(Q0) = NARE
 

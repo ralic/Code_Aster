@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 31/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ C OUT : CODRET : CODE DE RETOUR (0 SI TOUT VA BIEN)
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       15/05/02 (OB): CALCUL DE LA SENSIBILITE DU FLUX THERMIQUE +
-C                      MODIFS FORMELLES (IDENTATION...)
+C                      MODIFS FORMELLES (INDENTATION...)
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -74,7 +74,7 @@ C PARAMETRES D'APPELS
       CHARACTER*24 VALK
       CHARACTER*24 LCHIN(MAXIN),LCHOUT(1),CHDEP2,CHELE2,CHC,CHTHET,
      &             MATSEN,CHNOVA
-      INTEGER IAUX,IBID,IRET1,IRET2,IER,IERD,NB,NBIN,IFM,NIV,I,IRET
+      INTEGER IAUX,IBID,IRET1,IRET2,IER,NB,NBIN,IFM,NIV,IRET
       INTEGER I1,I2,INDIK8
       LOGICAL INDMEC
 
@@ -517,13 +517,6 @@ C           -- GLUTE MECALM.F : IL FAUT PERMUTER PDEPLAR ET PDEPSEN
             LPAIN(I2)='PDEPSEN'
           ENDIF
    20     CONTINUE
-        END IF
-
-        IF (NIV.EQ.2) THEN
-          WRITE (IFM,*) '-->  OPTION         :',OPTION
-          DO 30 I = 1,NBIN
-            WRITE (IFM,*) '     LPAIN/LCHIN    :',LPAIN(I),' ',LCHIN(I)
-   30     CONTINUE
         END IF
 
         CALL MECEUC('C',POUX,OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,1,

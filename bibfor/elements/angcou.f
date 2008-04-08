@@ -2,7 +2,7 @@
      &    ANGL1,ANGL2,ANGL3,PGL1,PGL2,PGL3,OMEGA,DN1N2,EPSI,CRIT,ZK3)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C ======================================================================
       REAL*8  ANGL1(3),ANGL2(3),ANGL3(3),COSOME,SINOME,NX1,ZCOUD(3)
       REAL*8  ZK1(3),ZK2(3),AXE(3),ZZK1(3),ZZZK1(3),ZKINI(3),ZK3(3),R8PI
       REAL*8 COSTET,CT,ST,OMEGA,DN1N2,NX2,OMEGA2,NORME3,EPSI2,THEMAX
-      REAL*8 PSCA
+      REAL*8 PSCA,VALR(2)
       CHARACTER*8  CRIT
 C ......................................................................
 C
@@ -47,9 +47,9 @@ C                      DN1N2      -->  DN1N2  DISTANCE ENTRE EXTREMITES
 C                      ZK2        -->  VECTEUR ZK AU NOEUD MILIEU
 C ......................................................................
 C
-      INTEGER    ICOUDE,I,IZK,IFM,NIV
+      INTEGER    ICOUDE,I,IZK
 C
-C                          NOEUD 3 = NOEUD MILIEU
+C     NOEUD 3 = NOEUD MILIEU
       DO 1 I=1,3
          ANGL1(I)=0.D0
          ANGL2(I)=0.D0
@@ -140,10 +140,9 @@ C
          COSTET=DDOT(3,T1,1,T2,1)
          THETA=2.D0*ATAN2(NORMEZ,COSTET)
          IF (THETA.GT.THEMAX) THEN
-             CALL INFNIV ( IFM , NIV )
-             CALL U2MESS('A','ELEMENTS_7')
-             WRITE(IFM,*) 'ANGLE = ',THETA,' ANGLE MAX = ',THEMAX
-             CALL U2MESS('A','ELEMENTS_8')
+             VALR(1) = THETA
+             VALR(2) = THEMAX
+             CALL U2MESR('A','ELEMENTS_7',2,VALR)
          ENDIF
          RAYON = DN1N2/2.D0/NORMEZ
 C        CALCUL DES REPERES LOCAUX EN CHAQUE NOEUD
@@ -254,11 +253,9 @@ C        OMEGA ANGLE ENTRE Z ET ZK1 ET AUSSI ENTRE Z ET ZK2
          ENDIF
 
          IF (ABS(OMEGA2-OMEGA).GT.TEST) THEN
-             CALL INFNIV ( IFM , NIV )
-             WRITE(IFM,*) 'AFFE_CARA_ELEM : MOT CLE GENE_TUYAU'
-             WRITE(IFM,*) 'PROBLEME : OMEGA DIFFERENT DE OMEGA2 '
-             WRITE(IFM,*) 'OMEGA= ',OMEGA,' OMEGA2= ',OMEGA2
-             CALL U2MESS('F','ELEMENTS_1')
+             VALR(1)=OMEGA
+             VALR(2)=OMEGA2
+             CALL U2MESR('F','ELEMENTS_1',2,VALR)
          ENDIF
       ENDIF
       END

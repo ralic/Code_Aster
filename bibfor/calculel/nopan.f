@@ -1,7 +1,7 @@
       SUBROUTINE NOPAN(TYPEMA,NOEPAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,17 +21,17 @@ C
 C
 C ======================================================================
 C TOLE CRP_20
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       CHARACTER*8  TYPEMA
       INTEGER      NOEPAN(*)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
 C
-C INDICES DES NOEUDS DEFINISSANT LES PANS D'UNE MAILLE 
+C INDICES DES NOEUDS DEFINISSANT LES PANS D'UNE MAILLE
 C
 C ----------------------------------------------------------------------
 C
@@ -43,9 +43,9 @@ C                     NOMBRE NOEUDS PAN    2, N1, N2, ...)
 C                     EN 3D, NB NOEUDS < 0 : TRIANGLE
 C                            NB NOEUDS > 0 : QUADRANGLE
 C
-C INDICE: ORDRE DU NOEUD DANS LA MAILLE 
+C INDICE: ORDRE DU NOEUD DANS LA MAILLE
 C    EX: POUR HEXA8 NOEUDS 1 A 8
-C 
+C
 C ROUTINE SOEUR : NBPAN
 C
 C ----------------------------------------------------------------------
@@ -80,8 +80,7 @@ C
             NOEPAN(11) = 1
             NOEPAN(12) = 6
         ELSE
-          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
-          CALL ASSERT(.FALSE.) 
+          CALL U2MESK('F','ARLEQUIN_22',1,TYPEMA)
         ENDIF
       ELSEIF (TYPEMA(1:4).EQ.'QUAD') THEN
         IF (TYPEMA(5:5).EQ.'4') THEN
@@ -130,8 +129,7 @@ C
             NOEPAN(15) = 1
             NOEPAN(16) = 8
         ELSE
-          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
-          CALL ASSERT(.FALSE.)          
+          CALL U2MESK('F','ARLEQUIN_22',1,TYPEMA)
         ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'TETRA') THEN
         IF (TYPEMA(6:6).EQ.'4') THEN
@@ -181,8 +179,7 @@ C
             NOEPAN(27) = 10
             NOEPAN(28) = 9
         ELSE
-          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
-          CALL ASSERT(.FALSE.) 
+          CALL U2MESK('F','ARLEQUIN_22',1,TYPEMA)
         ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
         IF (TYPEMA(6:6).EQ.'6') THEN
@@ -326,8 +323,7 @@ C
           NOEPAN(40) = 14
           NOEPAN(41) = 15
         ELSE
-          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
-          CALL ASSERT(.FALSE.)  
+          CALL U2MESK('F','ARLEQUIN_22',1,TYPEMA)
         ENDIF
       ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN
         IF (TYPEMA(5:5).EQ.'8') THEN
@@ -574,12 +570,10 @@ C
           NOEPAN(59) = 20
           NOEPAN(60) = 26
         ELSE
-          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
-          CALL ASSERT(.FALSE.)  
+          CALL U2MESK('F','ARLEQUIN_22',1,TYPEMA)
         ENDIF
       ELSE
-        WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
-        CALL ASSERT(.FALSE.)
+        CALL U2MESK('F','ARLEQUIN_22',1,TYPEMA)
       ENDIF
 
       END

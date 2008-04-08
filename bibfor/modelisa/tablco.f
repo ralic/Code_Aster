@@ -1,8 +1,8 @@
       SUBROUTINE TABLCO(CHAR  ,NOMA  ,NZOCO ,NSUCO ,NMACO ,
      &                  NNOCO ,NMANO ,NNOMA ,NMAMA)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/11/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,13 +32,13 @@ C
       INTEGER      NMANO
       INTEGER      NNOMA
       INTEGER      NMAMA
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
 C
 C CONSTRUCTION DES CONNECTIVITES INVERSES
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -62,7 +62,7 @@ C              (ON STOCKE LA POSITION DANS CONTMA, PAS LE NUMERO ABSOLU)
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXATR,JEXNUM
+      CHARACTER*32 JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -84,11 +84,10 @@ C
       INTEGER      IMA,IMA2,INO,NBID,I,NO,IZONE,I1,I2,IZOCO
       INTEGER      NUMNO,NUMA
       INTEGER      NMAX,NBNO,NBMA
-      INTEGER      ISUCO,JDECNO,JDECMA,IDECMA,DECAL
+      INTEGER      ISUCO,JDECNO,JDECMA,IDECMA
       INTEGER      JTRAV,JTRAV2,INC,LONG,JPROC
 
       INTEGER      JJNO1,NBNO1,NO1
-      INTEGER      JJNO2
 
       CHARACTER*8  K8BID
 
@@ -96,9 +95,8 @@ C
       INTEGER      JZONE,JSUMA,JSUNO,JMACO,JNOCO,JMANO,JPOMA
 
       CHARACTER*24 MANOCO,PMANO,NOMACO,PNOMA,MAMACO,PMAMA,NOZOCO
-      INTEGER      JNOMA,JPONO,JMAMA,JPOIN,JZOCO,ISURF,NNN,IAINVE,ILINVE
+      INTEGER      JNOMA,JPONO,JMAMA,JPOIN,JZOCO,NNN,IAINVE,ILINVE
       INTEGER      NUMALO
-      CHARACTER*3  K3
       CHARACTER*19 CONINV
 
 C ----------------------------------------------------------------------
@@ -188,7 +186,7 @@ C ------- ET NOMBRE DE NOEUDS ET MAILLES POUR LA SURFACE ISUCO
         JDECMA = ZI(JSUMA+ISUCO-1)
         NBNO   = ZI(JSUNO+ISUCO) - ZI(JSUNO+ISUCO-1)
         NBMA   = ZI(JSUMA+ISUCO) - ZI(JSUMA+ISUCO-1)
-        
+
 C ------- EXAMEN DES NOEUDS DE LA SURFACE
         DO 30 INO = 1,NBNO
 
@@ -231,7 +229,7 @@ C ======================================================================
 
       NMANO = ZI(JPOMA+NNOCO)
       IF (NMANO.GT.LONG) THEN
-        CALL U2MESS('F','MODELISA7_12')
+        CALL ASSERT(.FALSE.)
       END IF
       CALL JEECRA(MANOCO,'LONUTI',NMANO,K8BID)
 
@@ -326,7 +324,7 @@ C ======================================================================
 
       NNOMA = ZI(JPONO+NMACO)
       IF (NNOMA.GT.LONG) THEN
-        CALL U2MESS('F','MODELISA7_13')
+        CALL ASSERT(.FALSE.)
       END IF
       CALL JEECRA(NOMACO,'LONUTI',NNOMA,K8BID)
 
@@ -396,7 +394,7 @@ C       VERIFICATION DE LA LONGUEUR DU TABLEAU MAMACO ET STOCKAGE
 C ======================================================================
       NMAMA = ZI(JPOIN+NMACO)
       IF (NMAMA.GT.LONG) THEN
-        CALL U2MESS('F','MODELISA7_14')
+        CALL ASSERT(.FALSE.)
       END IF
       CALL JEECRA(MAMACO,'LONUTI',NMAMA,K8BID)
 

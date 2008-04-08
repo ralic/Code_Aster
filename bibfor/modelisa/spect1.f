@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,21 +69,20 @@ C
       CHARACTER*8  NOMU,NOMZON,K8BID
       CHARACTER*19 SPECTR,BASE
       REAL*8       VITE(NPV),VMOYZI,VMOYTO
-      INTEGER      NUOR(NBM)
+      INTEGER      NUOR(NBM),VALI(2)
 C
       INTEGER      DIM,NBVAL,ICMP
       CHARACTER*8  NOMCMP,DEPLA(3)
       CHARACTER*19 TYPFLU,CAELEM,NOMFON
       CHARACTER*24 REFE,FSIC,FSVI,FSVK,PROFVN,FRHOE,NOMCHA,VALR,VALE
       CHARACTER*3  TOUT
-      REAL*8       SPECT2,SPECT4,RBID
+      REAL*8       SPECT2,SPECT4,RBID,VALX(3)
       EXTERNAL     SPECT4
       DATA DEPLA   /'DX      ','DY      ','DZ      '/
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       TOL = 1.D-05
       IER = 0
-      IFR = IUNIFI('RESULTAT')
 C
 C
 C --- 1.RECUPERATION D'INFORMATIONS PAR INDIRECTION ---
@@ -196,13 +195,6 @@ C
       NBFONC = (DIM* (DIM+1))/2
       CALL WKVECT('&&SPECT1.TEMP.LC2','V V R',NBFONC,ILC2)
 C
- 500  FORMAT(1X,'JM,IM = ',I3,1X,I3)
- 501  FORMAT(1X,'VALEUR FINALE',10X,' : ',G23.16)
- 502  FORMAT(1X,'VALEUR AU PAS PRECEDENT : ',G23.16)
- 503  FORMAT(1X,'ERREUR RELATIVE',8X,' : ',F21.16,1X,'%')
-C
-C
-C
 C --- 5.4 CREATION ET REMPLISSAGE DU VECTEUR DE TRAVAIL .DEFM ---
 C     (DEFORMEE POUR CHAQUE MODE, EN CHAQUE NOEUD, DANS LA DIRECTION
 C      CHOISIE PAR L'UTILISATEUR OU PRISE EN COMPTE DE TOUTES
@@ -257,12 +249,12 @@ C
      &                           R1,ERR,NBP,IM,JM)
 C
             IF (IER.NE.0) THEN
-              CALL U2MESS('A','MODELISA7_7')
-              WRITE(IFR,500) NUOR(JM),NUOR(IM)
-              WRITE(IFR,501) ZR(ILC2+KK-1)
-              WRITE(IFR,502) R1
-              WRITE(IFR,503) ERR
-              WRITE(IFR,*)
+              VALI(1)=NUOR(JM)
+              VALI(2)=NUOR(IM)
+              VALX(1)=ZR(ILC2+KK-1)
+              VALX(2)=R1
+              VALX(3)=ERR
+              CALL U2MESG('A','MODELISA7_7',0,' ',2,VALI,3,VALX)
             END IF
    80     CONTINUE
    90   CONTINUE

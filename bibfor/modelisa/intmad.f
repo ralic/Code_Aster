@@ -2,51 +2,51 @@
      &                NOMMA1,TYPEM1,CSOM1 ,NBNO1  ,CPAN1  ,
      &                CSOM2 ,NBNO2 ,ARE2  ,NARE2  ,PAN2,
      &                FA2   ,NPAN2 ,TRAVR ,TRAVI  ,TRAVL)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       REAL*8       INTMAD
       INTEGER      DIME
       CHARACTER*8  NOMARL
-      CHARACTER*8  TYPEM1,NOMMA1     
+      CHARACTER*8  TYPEM1,NOMMA1
       INTEGER      NBNO1
-      REAL*8       CSOM1(DIME,*) 
+      REAL*8       CSOM1(DIME,*)
       REAL*8       CPAN1(DIME+2,*)
       INTEGER      NBNO2
-      REAL*8       CSOM2(DIME,*)           
-      INTEGER      ARE2(*),PAN2(*),FA2(*) 
+      REAL*8       CSOM2(DIME,*)
+      INTEGER      ARE2(*),PAN2(*),FA2(*)
       INTEGER      NARE2,NPAN2
       INTEGER      TRAVI(*)
       LOGICAL      TRAVL(*)
-      REAL*8       TRAVR(*) 
-C      
+      REAL*8       TRAVR(*)
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
-C   
+C
 C RATIO VOLUME (MAILLE INTER DOMAINE) / VOLUME (MAILLE)
-C      
+C
 C ----------------------------------------------------------------------
-C     
+C
 C
 C
 C IN  DIME   : DIMENSION DE L'ESPACE
@@ -64,10 +64,10 @@ C IN  PAN2   : CONNECTIVITE FACES DE FRONTIERE (CF. NAFINT)
 C IN  FA2    : GRAPHE FACES -> ARETES (CF. ARFACE)
 C IN  NPAN2  : NOMBRE DE FACES DE LA FRONTIERE
 C
-C I/O TRAVR  : VECTEURS DE TRAVAIL DE REELS 
+C I/O TRAVR  : VECTEURS DE TRAVAIL DE REELS
 C                DIME : 35*NBNO2*NHINT**2 + 66*NHINT**2 + 18*(NHINT+1)
 C I/O TRAVI  : VECTEURS DE TRAVAIL D'ENTIERS
-C                DIME : (NBNO2+6)*(50*NHINT**2+22*NHINT+22) + 
+C                DIME : (NBNO2+6)*(50*NHINT**2+22*NHINT+22) +
 C                         162*NBNO2*NHINT**2
 C IN  TRAVL  : VECTEURS DE TRAVAIL DE BOOLEENS
 C                DIME : 2*(NBNO2+6)*NHINT**2
@@ -75,8 +75,8 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER     ZMXARE,ZMXPAN,ZMXNOE
-      PARAMETER   (ZMXARE = 48,ZMXPAN = 60,ZMXNOE = 27) 
-C      
+      PARAMETER   (ZMXARE = 48,ZMXPAN = 60,ZMXNOE = 27)
+C
       REAL*8      PRECVV,PRECTR,ARLGER
       INTEGER     NHINT,NCMAX,ARLGEI
       INTEGER     NBARE,NBPAN,NBSOM
@@ -86,32 +86,32 @@ C
       INTEGER     NSEG,NSEG1,NSEG2
       INTEGER     N,NC,NS,NF,NECH,NSOM2,NSOM1
       INTEGER     IFAC,ISEG
-      INTEGER     ARE1(ZMXARE),PAN1(ZMXPAN)     
+      INTEGER     ARE1(ZMXARE),PAN1(ZMXPAN)
       INTEGER     S1,S2,S3,PAS,PFS,PAF,PEQ,PZR,P,Q,I,J,K
       REAL*8      R,V0,VI,PREC,DIMH
-      CHARACTER*8 TYPEM2,NOMMA2 
-      INTEGER     OFFSOM,OFFFAC,OFFSEG,OFFARE 
-      INTEGER     IFM,NIV           
+      CHARACTER*8 TYPEM2,NOMMA2
+      INTEGER     OFFSOM,OFFFAC,OFFSEG,OFFARE
+      INTEGER     IFM,NIV
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFDBG('ARLEQUIN',IFM,NIV) 
-C 
+      CALL INFDBG('ARLEQUIN',IFM,NIV)
+C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN> RATIO VOLUME (MAILLE INTER DOMAINE) '//
      &               '/ VOLUME (MAILLE) '
         WRITE(IFM,*) '<ARLEQUIN>  MAILLE 1         : ',
-     &                NOMMA1,' - ',TYPEM1    
-      ENDIF 
+     &                NOMMA1,' - ',TYPEM1
+      ENDIF
 C
 C --- PARAMETRES
 C
       NHINT  = ARLGEI(NOMARL,'NHINT ')
       PRECVV = ARLGER(NOMARL,'PRECVV')
-      NCMAX  = ARLGEI(NOMARL,'NCMAX ')      
+      NCMAX  = ARLGEI(NOMARL,'NCMAX ')
 C
 C --- INITIALISATIONS
 C
@@ -128,39 +128,39 @@ C
       NOMMA2 = 'FRONTIER'
 C
 C --- VERIFICATIONS
-C      
-      IF (NBNO1.GT.ZMXNOE) THEN 
-        CALL ASSERT(.FALSE.)
-      ENDIF  
-      IF ((DIME.LT.2).OR.(DIME.GT.3)) THEN 
-        CALL ASSERT(.FALSE.)
-      ENDIF      
-C          
-C --- VALEUR ECHANTILLONNAGE: NHINT CAR SUIVANT SCHEMA INTEGRATION      
 C
-      NECH   = NHINT      
+      IF (NBNO1.GT.ZMXNOE) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      IF ((DIME.LT.2).OR.(DIME.GT.3)) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+C --- VALEUR ECHANTILLONNAGE: NHINT CAR SUIVANT SCHEMA INTEGRATION
+C
+      NECH   = NHINT
 C
 C --- ORIENTATION DE MA1
 C
       CALL ORIEM2(TYPEM1,CSOM1)
 C
 C --- CARACTERISTIQUES MA1: NBRE ARETES/PANS
-C 
+C
       NBNO1 = NBSOM(TYPEM1)
       NARE1 = NBARE(TYPEM1)
-      NPAN1 = NBPAN(TYPEM1) 
+      NPAN1 = NBPAN(TYPEM1)
 C
 C --- CARACTERISTIQUES MA1: CONNECTIVITES ARETES/PANS
-C 
-      CALL NOARE(TYPEM1,ARE1)    
-      CALL NOPAN(TYPEM1,PAN1)         
-C      
+C
+      CALL NOARE(TYPEM1,ARE1)
+      CALL NOPAN(TYPEM1,PAN1)
+C
 C --- ECHANTILLONNAGE PONCTUEL
 C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN> ECHANTILLONNAGE PONCTUEL'
-      ENDIF  
-C 
+      ENDIF
+C
       P = 1
       DO 10 I = 1, NPAN1
         NS   = PAN1(P)
@@ -175,7 +175,7 @@ C
           DO 31 K = 1, ABS(NS)
             N = PAN1(P+K)
             CSOM1(J,N) = CSOM1(J,N) - R
- 31       CONTINUE            
+ 31       CONTINUE
  30     CONTINUE
         P = P + ABS(NS) + 1
  10   CONTINUE
@@ -189,8 +189,8 @@ C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN> ECHANTILLONNAGE DE '//
      &               'LA FRONTIERE MAILLE 1 - CALCUL DES COORD.'
-      ENDIF  
-C 
+      ENDIF
+C
       CALL ECHMAP(NOMMA1,TYPEM1,DIME  ,CSOM1   ,NBNO1 ,
      &            ARE1  ,NARE1 ,PAN1  ,NPAN1   ,NECH  ,
      &            TRAVR               ,NSOM1)
@@ -198,8 +198,8 @@ C
       IF (NIV.GE.2) THEN
         WRITE(IFM,*) '<ARLEQUIN> ECHANTILLONNAGE DE '//
      &               'LA FRONTIERE - CALCUL DES COORD.'
-      ENDIF       
-C     
+      ENDIF
+C
       CALL ECHMAP(NOMMA2,TYPEM2,DIME  ,CSOM2   ,NBNO2 ,
      &            ARE2  ,NARE2 ,PAN2  ,NPAN2   ,NECH  ,
      &            TRAVR(1+DIME*NSOM1) ,NSOM2)
@@ -215,15 +215,15 @@ C
         WRITE(IFM,*) '<ARLEQUIN> ECHANTILLONNAGE DE '//
      &               'LA FRONTIERE MAILLE 1 - '//
      &               'CALCUL DES CONNECTIVITES'
-      ENDIF 
+      ENDIF
 C
       OFFSOM = 0
       OFFSEG = 0
       OFFFAC = 0
       OFFARE = 0
-C          
+C
       CALL ECHMCO(NOMMA1,TYPEM1,DIME  ,NECH  ,
-     &            NBNO1 ,NARE1 ,NPAN1 ,ARE1  ,PAN1  ,                 
+     &            NBNO1 ,NARE1 ,NPAN1 ,ARE1  ,PAN1  ,
      &            OFFSOM,OFFSEG,OFFFAC,OFFARE,
      &            PFS   ,PAS   ,PAF   ,
      &            TRAVI ,NSEG1 ,NFAC1)
@@ -232,25 +232,25 @@ C
         WRITE(IFM,*) '<ARLEQUIN> ECHANTILLONNAGE DE '//
      &               'LA FRONTIERE - '//
      &               'CALCUL DES CONNECTIVITES'
-      ENDIF       
+      ENDIF
 C
       OFFSOM = NSOM1
-      OFFSEG = NSEG1      
+      OFFSEG = NSEG1
       OFFFAC = NFAC1
       OFFARE = NARE1
 C
       IF (DIME.EQ.2) THEN
         CALL ECHMCO(NOMMA2,TYPEM2,DIME  ,NECH  ,
-     &              NBNO2 ,NARE2 ,NPAN2 ,ARE2  ,PAN2  ,               
+     &              NBNO2 ,NARE2 ,NPAN2 ,ARE2  ,PAN2  ,
      &              OFFSOM,OFFSEG,OFFFAC,OFFARE,
      &              PFS   ,PAS   ,PAF   ,
      &              TRAVI ,NSEG2 ,NFAC2)
       ELSE
         CALL ECHMCO(NOMMA2,TYPEM2,DIME  ,NECH  ,
-     &              NBNO2 ,NARE2 ,NPAN2 ,FA2   ,PAN2  ,               
+     &              NBNO2 ,NARE2 ,NPAN2 ,FA2   ,PAN2  ,
      &              OFFSOM,OFFSEG,OFFFAC,OFFARE,
      &              PFS   ,PAS   ,PAF   ,
-     &              TRAVI ,NSEG2 ,NFAC2)      
+     &              TRAVI ,NSEG2 ,NFAC2)
       ENDIF
 C
 C --- NOMBRE D'ENTITES (SEGMENTS EN 2D, FACETTES EN 3D)
@@ -261,7 +261,7 @@ C
         NFAC  = NFAC1 + NFAC2
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF 
+      ENDIF
 C
 C --- EQUATIONS DE DROITES / PLANS
 C EN 2D
@@ -274,20 +274,20 @@ C
       IF (DIME.EQ.2) THEN
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> EQUATIONS DES DROITES FRONTIERES '
-        ENDIF      
+        ENDIF
         DO 50 ISEG = 1, NSEG
           P  = PFS + 2*ISEG
           S1 = 2*TRAVI(P-2)
           S2 = 2*TRAVI(P-1)
-          P  = PEQ + 3*ISEG 
+          P  = PEQ + 3*ISEG
           TRAVR(P-3) = TRAVR(S2)   - TRAVR(S1)
           TRAVR(P-2) = TRAVR(S1-1) - TRAVR(S2-1)
           TRAVR(P-1) = TRAVR(S2-1)*TRAVR(S1) - TRAVR(S1-1)*TRAVR(S2)
  50     CONTINUE
-      ELSE 
+      ELSE
         IF (NIV.GE.2) THEN
-          WRITE(IFM,*) '<ARLEQUIN> EQUATIONS DES PLANS FRONTIERES ' 
-        ENDIF         
+          WRITE(IFM,*) '<ARLEQUIN> EQUATIONS DES PLANS FRONTIERES '
+        ENDIF
         DO 60 IFAC = 1, NFAC
           P = PFS + 3*IFAC
           S1 = 3*TRAVI(P-3)-2
@@ -310,32 +310,32 @@ C
           TRAVI(P) = TRAVI(Q)
           Q = Q + 2
  62     CONTINUE
-        V0 = PLVOL2(2,TRAVR,TRAVR,TRAVI,NSOM1) 
+        V0 = PLVOL2(2,TRAVR,TRAVR,TRAVI,NSOM1)
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> SURFACE DE LA MAILLE 1: ',V0
-        ENDIF              
+        ENDIF
       ELSE
         V0 = PLVOL3(TRAVR,TRAVI(PFS),NFAC1)
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> VOLUME DE LA MAILLE  1: ',V0
-        ENDIF        
+        ENDIF
       ENDIF
 C
-C --- INTERSECTION DE LA MAILLE AVEC LE DOMAINE 
+C --- INTERSECTION DE LA MAILLE AVEC LE DOMAINE
 C
       IF (DIME.EQ.2) THEN
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> CALCUL DE L''INTERSECTION ENTRE '//
      &                 'LES DEUX POLYGONES'
-        ENDIF       
+        ENDIF
         CALL PLINT2(TRAVR ,NSOM  ,TRAVI(PFS),TRAVR(PEQ),NCMAX ,
      &              NSEG1 ,NSEG2 ,TRAVR(PZR),TRAVI(PAS),TRAVL ,
      &              NC)
-      ELSE 
+      ELSE
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> CALCUL DE L''INTERSECTION ENTRE '//
-     &                 'LES DEUX POLYEDRES'         
-        ENDIF           
+     &                 'LES DEUX POLYEDRES'
+        ENDIF
         CALL PLINT3(TRAVR ,NSOM ,TRAVI(PFS),TRAVR(PEQ),NCMAX,
      &              PRECTR,NFAC1 ,NFAC2 ,TRAVI(PAS),TRAVI(PAF),
      &              NARE1,NARE2,TRAVR(PZR),TRAVI,TRAVL,
@@ -345,25 +345,25 @@ C
  70     CONTINUE
 
       ENDIF
-C      
+C
 C --- TROP DE COMPOSANTES CONNEXES
 C
-      IF (NC.GT.NCMAX) THEN 
-        CALL U2MESS('A','ARLEQUIN_24')  
-      ENDIF      
+      IF (NC.GT.NCMAX) THEN
+        CALL U2MESS('A','ARLEQUIN_24')
+      ENDIF
 C
 C --- PAS D'INTERSECTION
 C
       IF (NC.EQ.0) THEN
         IF (NIV.GE.2) THEN
          WRITE(IFM,*) '<ARLEQUIN> PAS D''INTERSECTION - PONDERATION = 1'
-        ENDIF           
+        ENDIF
         INTMAD = 1.D0
         GOTO 100
       ENDIF
 C
 C --- VOLUME DE L'INTERSECTION
-C      
+C
       VI = 0.D0
       IF (DIME.EQ.2) THEN
         DO 80 I = 1, NC
@@ -373,7 +373,7 @@ C
  80     CONTINUE
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> SURFACE DE L''INTERSECTION: ',VI
-        ENDIF    
+        ENDIF
       ELSE
         DO 90 I = 1, NC
           NF  = PAN2(I)
@@ -382,7 +382,7 @@ C
  90     CONTINUE
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> VOLUME DE L''INTERSECTION: ',VI
-        ENDIF 
+        ENDIF
       ENDIF
 C
 C --- RATIO
@@ -391,5 +391,5 @@ C
 
  100  CONTINUE
 C
-      CALL JEDEMA()      
+      CALL JEDEMA()
       END

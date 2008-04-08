@@ -1,7 +1,7 @@
       SUBROUTINE PANNO(TYPEMA,PAN  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +20,12 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       CHARACTER*8  TYPEMA
-      INTEGER      PAN(*)     
-C      
+      INTEGER      PAN(*)
+C
 C ----------------------------------------------------------------------
 C
 C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
@@ -120,7 +120,6 @@ C
         PAN(23) = 5
         PAN(24) = 6
       ELSE
-        WRITE(6,*) 'TYPEMA: ',TYPEMA
-        CALL ASSERT(.FALSE.)
+        CALL U2MESK('F','ARLEQUIN_22',1,TYPEMA)
       ENDIF
       END

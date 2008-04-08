@@ -8,7 +8,7 @@
       CHARACTER*8 MA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF CALCULEL  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,12 +41,20 @@ C  IN   BTLC(*)    I  : OBJET .BT3DLC DE LA SD BOITE_3D
 C  IN   BTCO(*)    I  : OBJET .BT3DCO DE LA SD BOITE_3D
 C  IN   IFM        I  : NUMERO LOGIQUE DU FICHIER MESSAGE
 C  IN   NIV        I  : NIVEAU D'IMPRESSION POUR LES "INFO"
-C  OUT  NBTROU     I  : NOMBRE DE TRIA3 SOLUTIONS
-C  OUT  ITR3       I  : NUMERO D'UN TRIA3 SOLUTION
-C  OUT  COBARY(3)  R  : COORDONNEES BARYCENTRIQUES DE INO2 DANS ITR3
+C  IN   LDMAX      L  : .TRUE. : IL FAUT PRENDRE DISTMA EN COMPTE
+C  IN   DISTMA     R  : DISTANCE AU DELA DE LAQUELLE LE NOEUD INO2
+C                       NE SERA PAS PROJETE.
+C  OUT  NBTROU     I  : 1 -> ON A TROUVE 1 TRIA3 SOLUTION
+C                     : 0 -> ON N'A PAS TROUVE DE TRIA3 SOLUTION
+C  OUT  ITR3       I  : NUMERO DU TRIA3 SOLUTION
+C  OUT  COBARY(4)  R  : COORDONNEES BARYCENTRIQUES DE INO2 DANS ITR3
 C  OUT  DMIN       R  : DISTANCE DE INO2 AU BORD DE ITR3 SI INO2 EST
-C                       EXTERIEUR A ITR3. DMIN=0 SINON.
+C                       EXTERIEUR A ITR3.
 C  OUT  LOIN       L  : .TRUE. SI DMIN > 10% DIAMETRE(ITR3)
+
+C  REMARQUE :
+C    SI NBTROU=0, INO2 NE SERA PAS PROJETE CAR IL EST AU DELA DE DISTMA
+C    ALORS : DMIN=0, LOIN=.FALSE.
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -74,7 +82,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LOGICAL LDMAX,LOIN
       REAL*8 DISTMA,VALR(2)
 C DEB ------------------------------------------------------------------
-C     NTR3=TRIA3(1)
       NBTROU=0
       LOIN=.FALSE.
       DMIN=0.D0
@@ -116,13 +123,18 @@ C       -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
    30   CONTINUE
    40 CONTINUE
 
-      IF (RTR3.EQ.0) THEN
-        LOIN=.TRUE.
+
+      IF (NBTROU.EQ.1) THEN
+        IF (RTR3.EQ.0) THEN
+          LOIN=.TRUE.
+        ELSE
+          RTR3 = RTR3** (1.D0/2.D0)
+          IF (DMIN/RTR3.GT.1.D-1) LOIN=.TRUE.
+        END IF
       ELSE
-        RTR3 = RTR3** (1.D0/2.D0)
-        IF (DMIN/RTR3.GT.1.D-1) LOIN=.TRUE.
-      END IF
-      
+        DMIN=0.D0
+      ENDIF
+
 
 
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/01/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 08/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -217,10 +217,7 @@ ini_lach=AFFE_CHAR_MECA(MODELE=MO,
 
 CHA_conp=AFFE_CHAR_MECA(MODELE=MO,
                         CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                                   NORMALE='MAIT',
-                                   RECHERCHE='NOEUD_BOUCLE',
                                    METHODE='LAGRANGIEN',
-                                   PROJECTION='LINEAIRE',
                                    GROUP_MA_MAIT='CONBAS',
                                    GROUP_MA_ESCL='CONHAUT',
                                    TOLE_PROJ_EXT=10000.0,
@@ -230,11 +227,8 @@ CHA_conp=AFFE_CHAR_MECA(MODELE=MO,
                                    COULOMB=0.0,),);
 
 CHA_cont=AFFE_CHAR_MECA(MODELE=MO,
-                        CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                                   NORMALE='MAIT',
-                                   RECHERCHE='NOEUD_BOUCLE',
+                        CONTACT=_F(APPARIEMENT='MAIT_ESCL',                                   
                                    METHODE='LAGRANGIEN',
-                                   PROJECTION='LINEAIRE',
                                    GROUP_MA_MAIT='CONBAS',
                                    GROUP_MA_ESCL='CONHAUT',
                                    TOLE_PROJ_EXT=10000.0,

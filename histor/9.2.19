@@ -1,0 +1,1280 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 08/04/2008 - 11:24:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011931 DU 2008-04-07 07:10:07
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.18, les cas-tests sdnv105b et sdnv105c s'arretent en ERREUR_<F> sur Calibre
+FONCTIONNALITE
+   Bug dans cfadju.
+   La variable ECART n'était pas initialisé pour le SEG2.
+   On trouvait des noeuds "hors mailles" alors que ce n'était pas vrai.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdnv105b,c
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011923 DU 2008-04-04 09:29:06
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   MN10 - Blindage projection
+FONCTIONNALITE
+   On corrige un bug sur le rabattement des noeuds dans le cas des
+   QUAD (CFADJU.F). En effet, il manquait la moitié des équations pour rabattre correctement
+   les noeuds dans la maille.
+   Impact: ssnv104i (meilleur)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv104i
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011921 DU 2008-04-04 09:10:31
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.18, le cas-test ssnv104i est NOOK sur Rocks.
+FONCTIONNALITE
+   Même erreur que la fiche 11923 sur cfadju 
+   Du fait de ce bug, on s'aperçoit que la valeur par défaut TOLE_PROJ_EXT=0.5 n'est pas
+   assez serrée. On met TOLE_PROJ_EXT=0.01.
+   Les valeurs sont MEILLEURES !
+   
+   
+   --------------------------------------------------------------------------------
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: ANALYTIQUE      
+    OK  SIYY         RELA    11.706 % VALE:-3.1258590263218D+03
+   M5884    N1900    TOLE    12.000 % REFE:-2.7983000000000D+03
+   
+   --------------------------------------------------------------------------------
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: AUTRE_ASTER     
+    OK  SIYY         RELA     5.415 % VALE:-3.1258590263218D+03
+   M5884    N1900    TOLE     9.000 % REFE:-2.9653000000000D+03
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: AUTRE_ASTER     
+    OK  SIYY         RELA     5.422 % VALE:-3.1260894346993D+03
+   M5896    N1900    TOLE     9.000 % REFE:-2.9653000000000D+03
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: AUTRE_ASTER     
+    OK  SIYY         RELA     5.425 % VALE:-3.1261673163308D+03
+   M5908    N1900    TOLE     9.000 % REFE:-2.9653000000000D+03
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: AUTRE_ASTER     
+    OK  SIYY         RELA     5.425 % VALE:-3.1261738682119D+03
+   M5920    N1900    TOLE     9.000 % REFE:-2.9653000000000D+03
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: AUTRE_ASTER     
+    OK  SIYY         RELA     5.426 % VALE:-3.1262092959868D+03
+   M5932    N1900    TOLE     9.000 % REFE:-2.9653000000000D+03
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: AUTRE_ASTER     
+    OK  SIYY         RELA     5.429 % VALE:-3.1262973288982D+03
+   M5944    N1900    TOLE     9.000 % REFE:-2.9653000000000D+03
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: AUTRE_ASTER     
+    OK  SIYY         RELA     5.436 % VALE:-3.1264964335313D+03
+   M5956    N1900    TOLE     9.000 % REFE:-2.9653000000000D+03
+    ---- CHAM_ELEM: SIELNO  
+   REFERENCE: AUTRE_ASTER     
+    OK  SIYY         RELA     5.449 % VALE:-3.1268655207296D+03
+   M5968    N1900    TOLE     9.000 % REFE:-2.9653000000000D+03
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DX           ABSO  1.84E-18   VALE: 1.4487723548205D-18
+            N1900    TOLE  1.00E-10   REFE:-3.9400000000000D-19
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DX           RELA    -1.022 % VALE:-1.1004326472875D-01
+            N1421    TOLE     5.800 % REFE:-1.1118000000000D-01
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DZ           RELA    -1.177 % VALE:-1.0987120233655D-01
+            N1828    TOLE     5.650 % REFE:-1.1118000000000D-01
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DY           RELA    -3.381 % VALE:-1.5747850012827D-01
+            N1421    TOLE    10.700 % REFE:-1.6299000000000D-01
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DY           RELA    -3.421 % VALE:-1.5741338252974D-01
+            N1828    TOLE    10.800 % REFE:-1.6299000000000D-01
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DX           RELA     5.684 % VALE:-1.7801436740313D-01
+            N1423    TOLE     8.400 % REFE:-1.6844000000000D-01
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DZ           RELA     5.341 % VALE:-1.7743702782118D-01
+            N1830    TOLE     8.100 % REFE:-1.6844000000000D-01
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DY           RELA     0.439 % VALE:-6.3180958061825D-01
+            N1423    TOLE     0.700 % REFE:-6.2905000000000D-01
+    ---- RESULTAT:  RESU     NUME_ORDRE:   1 NOM_CHAM: DEPL                                 
+                  
+   REFERENCE: AUTRE_ASTER     
+    OK  DY           RELA     0.320 % VALE:-6.3106406692006D-01
+            N1830    TOLE     0.680 % REFE:-6.2905000000000D-01
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv104i
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011917 DU 2008-04-04 08:41:45
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.18, des cas-tests s'arretent en ERREUR_F sur Bull et Rocks
+FONCTIONNALITE
+   Tous ces cas-tests n'ont pas été mis à jour au niveau de la syntaxe de AFFE_CHAR_MECA/CONTACT
+   + suppression malencontreuse de certains options d'INTEGRATION du catalogue pour XFEM .
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les cas-tests
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 07/04/2008 - 15:42:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011853 DU 2008-03-19 09:58:47
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   Alarme dans SDLL109[a,b,d]
+FONCTIONNALITE
+   Jean-Luc a remarqué en travaillant sur les cas tests sdll109abcd qu'ils provoquent une
+   émission d'alarme à propos du pas de temps.
+   Le pas de temps utilisé est 2 ms pour un pas préconisé de 1,5 ms.
+   Le pas conseillé par l'heuristique n'est pas obligatoire (Il y a une marge de sécurité.),
+   c'est pour cela que l'utilisateur peut passer outre.
+   J'ai pu vérifier, dans ce cas, qu'en raffinant le pas de temps, on ne change pas
+   notablement les résultats.
+   Commme ces tests sont issus d'un autre code (POUX), je préfère garder le pas de temps tel
+   qu'il est, avec l'alarme.
+   
+   En revanche, en utilisant le pas de temps raffiné, je me suis aperçu d'une erreur dans
+   REST_BAS_PHYS lorsqu'on veut interpoler des calculs de contraintes issus de
+   DYNA_TRAN_MODAL sur une liste d'instants différente que celle utilisée pour le calcul.
+   L'erreur provoque un plantage JEVEUX mais pas de résultats faux.
+   Je corrige.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdld109
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 07/04/2008 - 18:28:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011932 DU 2008-04-07 07:12:38
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.18, le cas-test ssnv205a s'arrete par manque de temps CPU sur Calibre.
+FONCTIONNALITE
+   Le test s'arrête au 250ème pas de temps (sur 250). Il ne lui manque donc pas grand chose
+   pour finir.
+   J'augmente un peu le temps dans le .para.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv205a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011933 DU 2008-04-07 07:14:54
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.18, le cas-test sslv135g est NOOK sur Calibre.
+FONCTIONNALITE
+   Le test était NOOK : évidemment, on teste une valeur nulle en relatif...
+   Il suffit de passer le test en CRITERE='ABSOLU'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv135g
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011934 DU 2008-04-07 07:29:48
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Petit bug dans l'affichage du tableau des temps CPU
+FONCTIONNALITE
+   L'affichage des commandes filles par IMPR_MACRO='OUI'/'NON' déclenche également
+   l'affichage des commandes dans le tableau récapitulatif des temps passés dans chaque commande.
+   
+   + correction faute d'orthographe dans supervis.py.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   visuelle
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011889 DU 2008-03-31 06:20:06
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.17, les cas-tests sdll137b, sdll137c et sdlv125a s'arretent en ARRET_<F> sur Bull.
+FONCTIONNALITE
+   On retire l'import de meidee_iface (interface) de meidee_cata pour ne pas imposer d'avoir
+   Tkinter sur des noeuds de calcul.
+   
+   La fonction CreaTable (qui appelle CREA_TABLE) est déplacée dans meidee_cata.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll137b, sdll137c et sdlv125a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 08/04/2008 - 18:29:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011782 DU 2008-02-19 10:25:21
+TYPE evolution concernant Salome (VERSION )
+TMA : CS
+TITRE
+   Maintenance de Pylotage pour fonctionner avec SALOME 3.2.9
+FONCTIONNALITE
+   Objet
+   ====
+   
+   Pylotage est un composant fourni avec le module Aster de Salome_Meca. Il permet l'accès
+   (éventuellement distant) aux services d'une session Salomé.
+   C'est en fait une encapsulation grâce au protocole CORBA (pour permettre la communication)
+   des modules python de Salomé (ceux que l'on appelle en TUI dans Salome, ou via un "dump
+   study")
+   
+   Evolution
+   =========
+   
+   La présente fiche a consisté à rendre Pylotage compatible avec SALOME 3.2.9 disponible
+   dans SALOME_MECA 2008.1
+   
+   Installation
+   ============
+   
+   Pour installer:
+   
+   svn co svn://cla02aster.cla.edfgdf.fr/astersalome/pylotage/tags/1.0.5
+   cd 1.0.5
+   python setup.py --salome=DEFAULT install --prefix=<chemin_d_aster>/public
+   
+   Voir aussi : A2.01.10-A
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso sur des tests
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011840 DU 2008-03-14 12:21:36
+TYPE aide utilisation concernant Code_Aster (VERSION 9.3)
+TITRE
+   Non convergence avec LIAISON_UNILATER (cas test hplp310)
+FONCTIONNALITE
+   Objet
+   =====
+   
+   Le cas test hplp310a est un cas test de mécanique de la rupture : un cylindre fissuré est
+   soumis à un transitoire thermique, sur une partie du transitoire la fissure est fermée
+   (contact entre les lèvres), et sur l'autre partie la fissure s'ouvre.
+   Dans le cas test, seule une moitié de la structure est représentée (->une seule lèvre).
+   Pour représenter le contact entre les lèvres, un petit bloc de module d'Young très élévé
+   est représenté, avec une condition de contact sur la lèvre.
+   Cette méthode n'est cependant pas adaptée, car l'énergie liée au bloc rigide est prise en
+   compte dans le calcul avec CALC_G. Cela conduit à des résultats faux dans le
+   post-traitement dans le calcul de K1 quand il y a des contraintes dans le bloc (c'est à
+   dire quand la fissure tend à se fermer) ; quand la fissure est complètement ouverte (et
+   c'est à cette partie qu'on s'intéresse généralement le plus) il n'y a pas de problème.
+   
+   Analyse
+   =======
+   
+   Quand on a affaire à une condition de contact simple comme ici avec une surface plane
+   parfaitement rigide (c'est ici le cas à cause de la symétrie), il est possible de passer
+   par une CL de type LIAISON_UNILATER en prescrivant que le déplacement sur la lèvre reste
+   toujours dans le demi-plan supérieur (i.e. ici DY>0). Cela évite ainsi de passer par un
+   bloc infiniment rigide dont le module d'Young devient un paramètre qui a une influence sur
+   la solution.
+   
+   Il s'est avéré que ce type de chargement était buggé (voir fiche 11906) rendant impossible
+   la convergence du calcul. Une fois ces anomalies corrigées, le cas-test modifié passe. Les
+   valeurs de K1 évoluent quand la fissure est fermée. On vérifie que cette nouvelle version
+   du cas test permet d'améliorer la précision du calcul quand la fissure est très largement
+   fermée.
+   
+   Remarque (E. Galenne)
+   =====================
+   
+   On doit réfléchir à une limitation du calcul de G sur une partie du maillage (évolution
+   qui servira aussi au calcul avec un modèle ARLEQUIN), mais en attendant la solution la
+   plus rapide consiste à remplacer le contact par une condition de type LIAISON_UNILATER.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hplp310a modifixc3xa9
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011906 DU 2008-04-01 14:00:22
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   MN10 - LIAISON_UNILATER bugg?
+FONCTIONNALITE
+   Objet
+   =====
+   
+   Erwan a remarqué (fiche 11840) qu'en remplaçant une condition de contact sur un bloc
+   infiniment rigide par une condition de type liaison unilatérale, le calcul ne convergeait
+   plus.
+   
+   Analyse
+   =======
+   
+   Il y a effectivement quelques petits bugs dans le traitement d'une CL de type
+   LIAISON_UNILATER : 
+   
+   - les efforts nécessaires à l'imposition de la CL quand celle-ci est activée (équivalent
+   d'une réaction d'appui) ne sont pas intégrés au résidu, on ne peut donc jamais atteindre
+   l'équilibre
+   - ces efforts sont faux car on oublie de remettre à zéro le vecteur qui les stockent (or
+   on les calcule par cumul)
+   - la condition n'est pas appliquée dans le bon sens (au lieu de faire comme indiqué dans
+   la doc : Somme(alpha_i.p_i) < r, on fait Somme(-1.0*alpha_i.p_i) < r)
+   - le jeu n'est pas réactualisé et si on fait plus d'une itération de Newton, la condition
+   n'est plus correctement appliquée
+   
+   Corrections
+   ===========
+   
+   nmassf.f : efforts extérieurs
+   algocu.f : raz de AT.MU et calcul final du jeu
+   cusign.f : inversion des signes
+   creaun.f : passage d'affichage en INFO=2
+   nmcere.f  nmcese.f  nmceta.f  nmdepl.f  nmfext.f  nmpich.f  nmrepl.f  op0070.f :
+   conséquence de l'ajout de la SD RESOCU en arguments de nmassf
+   
+   Version d'exploitation
+   ======================
+   
+   Les modifs sont à faire en 8.
+   
+   Il est possible que la condition n'ait pas été correctement appliquée car le jeu n'était
+   pas recalculé en fin d'algorithme. Il faudrait encore fabriquer un cas-test pour illustrer
+    la chose.
+   Dans les autres cas, si la condition était activée, il ne pouvait pas y avoir convergence
+   par le système n'était théoriquement pas équilibré.
+   
+   Validation
+   ==========
+   
+   * Sur un cas-test existant (hplp310a), un cylindre fissuré dont une seule moitié est
+   modélisée, on remplace la condition de contact avec un bloc infiniment rigide par CL
+   unilatérale sur le déplacement vertical (modélisation B)
+   * Ajout d'un nouveau cas-test avec deux mailles qui s'écrasent l'une sur l'autre : une
+   modélisation avec contact (A) et une modélisation par LIAISON_UNILATER (B)
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 8.2.11
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.02.310, V1.01.237
+VALIDATION
+   hplp310a, hplp310b, zzzz237a, zzzz237b
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011640 DU 2008-01-14 12:30:36
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   MN10 - rxc3xa9duire le temps CPU du test ssnv506d
+FONCTIONNALITE
+   Objet
+   =====
+   
+   Le cas-test SSNV506 traite de l'indentation d'un massif élasto-plastique parfait par une
+   sphère rigide. On dispose de résultats analytiques sur la réaction du massif sous l'effet
+   des forces de contact.
+   Certaines modélisations ne testaient plus ces valeurs analytiques (à cause du coût du
+   calcul vraisemblablement) mais seulement des valeurs de non-régression et uniquement sur
+   la valeur des forces nodales de contact (qui dépend fortement du maillage, de l'appariement).
+   
+   Réalisation
+   ===========
+   
+   On se propose dans cette fiche de remettre au carré les 6 modélisations. Pour cela on fait
+   en sorte que les 6 tests appliquent la totalité du chargement et non plus un dixième dans
+   certains cas et on testent désormais des valeurs de réactions du massif (sauf la
+   modélisation F, méthode continue pour laquelle on applique toujours 1/10 du chargement).
+   
+   Pour les modélisations C et F, un nouveau maillage au format MED a été produit par
+   DeltaCAD à partir du maillage 2D de la modélisation A. Celui-ci moins fin permet de
+   réduire les temps de calcul tout en obtenant des valeurs correctes proches des valeurs
+   analytiques avec un écart inférieur à 10%.
+   
+   Pour la modélisation D, on décide finalement de conserver le maillage initial en le
+   déraffinant encore (et ce pour éviter que toutes les modélisations aient le même type de
+   maillage dans le rayon). On voit en effet la part importante que joue le maillage sur ce
+   type de test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.506
+VALIDATION
+   ssnv506*
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 07/04/2008 - 15:05:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011878 DU 2008-03-25 16:14:45
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   POST_RCCM: bug pour les calculs sur piquage
+FONCTIONNALITE
+   Contexte
+   ======== 
+   Cette fiche a été émise par Deltacad suite à un appel à l'assistance téléphonique d'un
+   prestataire d'UTO.
+   Le problème signalé est une différence de résultat du calcul en fatigue si on définit son
+   chargement avec 6 composantes (FX,MX, ..) ou 12 composantes (FX_CORPS, FX_TUBU, ...).
+   Les chargements sont définis de manière à modéliser exactement le même problème, mais la
+   solution est très largement différente.
+   
+   Correction
+   ==========
+   Il y avait en effet des erreurs dans le calcul pour TYPE_RESU_MECA='UNITAIRE' quand les
+   situations sont définies par des torseurs d'effort sur le corps et sur la tubulure (mots
+   clés MX_CORPS, MX_TUBU...).
+   Cette erreur induisait des résultats faux pour toutes les options (PM_PB, SN et FATIGUE)
+   dès qu'un chargement de séisme était défini.
+   
+   - Première erreur : dans rc32s0 (routine de calcul des contraintes pour les combinaisons
+   de chargement), dans le cas avec température, décalage dans la lecture d'un vecteur :
+   Ligne 132 : SIGC = SIGUN(6*(ICMP+6-1)+ICMPS+6) 
+   à remplacer par  SIGC = SIGUN(6*(ICMP+6-1)+ICMPS)
+   C'est cette erreur qui explique que les résultats pour SN et pour le facteur d'usage
+   n'étaient pas réalistes.
+   
+   - Deuxième erreur : dans rc32s0, on ne faisait pas toutes les combinaisons de signes sur
+   le torseur de la situation de séisme pour calculer le max des contraintes. La
+   programmation revenait de fait à supposer que FX_CORP et FX_TUBU (et toutes les autres
+   composantes deux à deux) avaient le même signe.
+   Cette erreur induit une sous-estimation de tous les paramètres. C'est ce qui explique que
+   dans l'étude UTO on trouvait aussi un écart sur PM/PB.
+   
+   Remarque
+   ========
+   La correction fait que l'on multiplie par 64 le nombre de combinaisons à faire pour
+   maximiser les contraintes (passage de 2^6*nb_inst à 2^12*nb_inst). 
+   Pour ne pas nuire aux performances dans le cas où le chargement n'est défini que par 6
+   composantes (cas le plus général), on distingue les deux situations dans rc32s0 (paramètre
+   logique identifié dans rc32mu). Cependant dans le cas où le chargement est défini par les
+   12 composantes, on peut s'attendre à un temps de calcul 6à fois plus élevé.
+   
+   Dans le cas de l'étude UTO, les transitoires comportent de 80 à 320 pas de temps, ce qui
+   fait donc près de 1 million de combinaisons à traiter à chaque appel de rc32so !! de plus,
+   rc32s0 est appelé pour chaque combinaison de transitoire (et il y a 12 transitoires
+   définis...).
+   Le calcul avec le torseur à 6 composantes prend ainsi 60 s ; avec 12 composantes, on passe
+   à 3000 s. (sur clpaster)
+   
+   On rappelle donc qu'il est indispensable de ne sauvegarder dans les tableaux de
+   contraintes thermiques que les instants caractéristiques !!
+   En limitant le nombre de pas de temps dans les 7 transitoires thermiques à 15 au maximum
+   (en sélectionnant "à la main" les instants correspondants aux extrémaux), j'arrive
+   exactement au même résultat avec un temps de calcul significativement plus faible :
+   
+      
+   .                                   Avant correction     Après correction
+   .           Cas                     Temps  FU_origine       Temps  FU_origine
+   6 composantes  Tr. Th complet        60s      0,421          60s     0,421          
+   12 composantes Tr. Th complet        60s      0,62           3050s   0,421      
+   6 composantes  Tr. Th simpl.         4s       0,421          4s      0,421 
+   12 composantes Tr. Th simpl.         4s       0,62          210s     0,421 
+   
+   Si on veut relancer les calculs à partir de tableaux existants sans modifier les fichiers,
+   il faut utiliser CALC_TABLE / FILTRE -avec un filtre sur le numéro d'odre. C'est ce qui
+   est fait dans le cas test rccm11. A terme, on pourra utiliser un mot clé NUME_ORDRE dans
+   POST_RCCM (fiche d'évolution 11909).
+   
+   Validation 
+   ==========
+   L'étude fournie par UTO valide la correction.
+   Le cas test qui avait été restitué lors du développement du calcul unitaire sur
+   tubulure/corps est en mécanique pur sans séisme : l'erreur n'avait donc pas été détectée.
+   Pour compléter la validation, on restitue un nouveau cas test (rccm11a) basé sur l'étude
+   UTO. Le calcul mécanique n'est pas fait dans le test (on se contente d'ouvrir les tables)
+   et on ne prend en compte qu'une partie des transitoires pour obtenir un cas test qui
+   tourne en 80 s.
+   
+   Restitution v8
+   ==============
+   La correction a été faite en NEW8 le 03/04/2008.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 8.2.12
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.83.11, V3.04.150
+VALIDATION
+   rccm11 et etude fournie
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011790 DU 2008-02-21 16:50:51
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   suite fiche 10508 (MACR_LIGNE_COUP avec "trous" dans la matixc3xa8re)
+FONCTIONNALITE
+   Objet
+   =====
+   La fiche EL 11544 a permis d'améliorer les messages d'erreur dans PROJ_CHAMP, mais aussi
+   de corriger un bug dans la prise en compte du mot clé DISTANCE_MAX de PROJ_CHAMP.
+   Suite à cette correction, le cas test sslv134b s'arrête en erreur fatale dans POST_K1_K2_K3.
+   Cet opérateur, dans l'option TYPE_MAILLAGE='LIBRE', appelle MACR_LIGN_COUPE (donc
+   PROJ_CHAMP) pour extraire le déplacement sur les lèvres de la fissure.
+   
+   Analyse
+   =======
+   Il se trouve que dans sslv134b on n'a pas exactement une fissure mais une entaille (petit
+   angle entre les deux lèvres). Quand on projete le champ de déplacement sur un segment qui
+   passe exactement au milieu entre les deux lèvres, on a donc logiquement un message
+   signalant qu'on projete loin de la maille, puis un autre indiquant que des noeuds sont
+   éliminés car hors de la matière.
+   Il faut donc pouvoir ajouter une certaine tolérance dans la projection : c'est le rôle du
+   paramètre DISTANCE_MAX de PROJ_CHAM, mais ce paramètre n'est pas accessible dans
+   MACR_LIGN_COUPE.
+   
+   Correction
+   ==========
+   - Ajout du paramètre DISTANCE_MAX dans le catalogue de MACR_LIGN_COUPE. Par défaut, la
+   valeur de ce paramètre est nulle.
+   
+   - Dans POST_K1_K2_K3 : la valeur de DISTANCE_MAX dans les appels à MACR_LIGN_COUPE est
+   égale à PREC_VIS_A_VIS x ABSC_CURV_MAXI.
+   Le paramètre PREC_VIS_A_VIS existe déjà dans le catalogue de commande mais n'était pas
+   utilisé dans le cas TYPE_MAILLAGE='LIBRE'. Dans la cas TYPE_MAILLAGE='REGLE', il permet
+   d'indiquer la précision sur la distance entre deux noeuds en vis-à-vis.
+   
+   - Correction de plusieurs petits bugs dans le fortran (J. Pellet : varaiables non
+   initialisées, messages d'alarme, ...)
+   Routines impactées : pj1dtr.f  pj2dap.f  pj2dtr.f  pj3dap.f  pj3dtr.f  pj4dap.f  pj6dap.f
+   
+   Validation
+   ==========
+   Le cas test sslv134b valide les développements.
+   On est obligé d'introduire une DISTANCE_MAX non nulle dans les MACR_LIGN_COUPE du début du
+   fichier de commande (extraction des contraintes sur une ligne de coupe circulaire autour
+   du fond de fissure) : on considère en effet une ligne d'extraction confondue avec une des
+   faces du modèle, et, selon la précision dans les coordonnées des noeuds du maillage, on
+   est soit juste dans la matière soit juste en dehors.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05, U4.81.13
+VALIDATION
+   sslv134b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011869 DU 2008-03-21 12:58:18
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW9.2.15, le cas-test sslv134b s'arrete en erreur_<F> sur Bull, Calibre et Rocks.
+FONCTIONNALITE
+   Le cas test est corrigé par la fiche 11790.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv134b
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 08/04/2008 - 07:59:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011877 DU 2008-03-25 15:57:00
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Utilisation conjointe de MUMPS et PETSc dans la version sxc3xa9quentielle
+FONCTIONNALITE
+   Restitution de l'interface Code_Aster/PETSC. Les routines FORTRAN90 apetsc.F et 
+   apetsr.F sont introduites. Les scripts de l'AGLA ont été modifiés pour pouvoir
+   traiter les fichiers .F (appel du pre-processeur pour interprétation des directives), 
+   il est toutefois necessaire de specifier chaque fichier dans le profile astk, le 
+   traitement du contenu des repertoires n'est pas fonctionnel.
+   
+   Les routines cresol.f, preres.f et resoud.f et les catalogue des commandes DYNA_LINE_TRAN,
+   DYNA_NON_LINE, MECA_STATIQUE, STAT_NON_LINE, THER_LINEAIRE et THER_NON_LINE ont ete 
+   modifiees pour pouvoir appeler ce solveur.
+   
+            SOLVEUR         =FACT(statut='d',
+             
+   METHODE=SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS","FETI","PETSC")
+   ),
+         
+            ...
+   
+              b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la
+   méthode PETSC",
+                VARIANTE       
+   =SIMP(statut='f',typ='TXM',into=("GMRES","BCGS","CR","CG","BICG","CHEBYCHEV",),defaut="GMRES"
+   ),
+                PRE_COND       
+   =SIMP(statut='f',typ='TXM',into=("ILU","SOR","BJACOBI"),defaut="ILU" ),
+                RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+                RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-8),
+                NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
+              )
+   
+   On restitue une variante du test yyyy118 (modelisation d) pour valider le developement.
+   
+   En version sequentielle, la lirairie PETSc est construite de façon presque standard. 
+   
+   Sur BULL voici les parametres de configuration :
+   
+    config/configure.py --with-mpi=0 --with-x=0 --with-cc=icc --with-fc=ifort
+   --with-debugging=0 --with-blas-lapack-dir=/opt/intel/mkl/10.0.011 
+   
+   Il faut modifier le fichier include "petscconf.h" apres l'etape du "configure" :
+   
+   320,321c320,321
+   < #ifndef PETSC_HAVE_IPXFARGC_
+   < #define PETSC_HAVE_IPXFARGC_ 1
+   ---
+   > #ifndef PETSC_HAVE_IARGC_
+   > #define PETSC_HAVE_IARGC_ 1
+   488,489c488,489
+   < #ifndef PETSC_HAVE_PXFGETARG_NEW
+   < #define PETSC_HAVE_PXFGETARG_NEW 1
+   ---
+   > #ifndef PETSC_HAVE_BGL_IARGC
+   > #define PETSC_HAVE_BGL_IARGC 1
+   
+   
+   Il faut aussi modifier les sources des solveurs iteratifs pour supprimer l'etape de
+   verification 
+   de la matrice, celle provenant d'aster n'etant pas toujours definie positive.
+   ./petsc-2.3.2-p10/src/ksp/ksp/impls/cg/cg.c  
+   ./petsc-2.3.2-p10/src/ksp/ksp/impls/cr/cr.c
+   ./petsc-2.3.2-p10/src/ksp/ksp/impls/minres/minres.c
+   
+   En version séquentielle PETSc refuse de construire une version embarquant MUMPS :
+   
+   =================================================================================        
+                                                                                            
+                                    TESTING: alternateConfigureLibrary from
+   PETSc.packages.SCALAPACK(python/PETSc/package.py:343)                                    
+                                                                                     
+   *********************************************************************************
+            UNABLE to CONFIGURE with GIVEN OPTIONS    (see configure.log for details):
+   ---------------------------------------------------------------------------------------
+   Cannot use MUMPS with MPIUNI, you need a real MPI
+   *********************************************************************************
+   
+   Il est donc indispensable d'adapter l'installation du solveur MUMPS pour pouvoir le faire
+   cohabiter
+   avec PETSc. Il faut pour cela modifier la librairie MPI séquentielle fournie avec MUMPS en 
+   supprimant un certain nombre de points d'entree redefinis par PETSc mais il faut aussi
+   modifier
+   certaines definitions dans le fichier mpif.h.
+   Sur BULL la version de MUMPS est disponible sous  /aster/public/MUMPS_4.7.3_edf/lib, la
+   librairie
+   MPI séquentielle modifiee sous /aster/public/MUMPS_4.7.3_edf/libseq_mod.
+   
+   Le point d'entree apetsc.f est introduit dans la librairie fermetur pour pouvoir eviter de
+   faire
+   de PETSC un pre-requis de Code_Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.50.01
+VALIDATION
+   test yyyy118d
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011912 DU 2008-04-03 11:02:37
+TYPE express concernant Code_Aster (VERSION 9.3)
+TITRE
+   Erreur dans la commande FIN avec JEVEUX dynamique
+FONCTIONNALITE
+   Il s'agit d'une erreur dans la routine JELIBF appelée par la commande FIN lors de la
+   fermeture des base JEVEUX. Lors de la libération des objets systèmes JEVEUX, l'objet
+   $$ACCE destiné à receuillir les statistiques sur le nombre d'accès aux enregistrements du
+   fichier d'accès direct associé à la base et libéré et l'espace mémoire associé avec. Or
+   cet objet peut encore être utilisé ensuite, il faut donc retarder le free associé. Avec
+   l'usage classique de JEVEUX, on pointe toujours dans la zone globale gérée par JEVEUX, il
+   n'y a donc pas d'accès invalide à la mémoire. Avec JEVEUX dynamique, la zone fait l'objet
+   d'un free, il y a donc une erreur lorsqu'on essaie d'y accèder.
+   
+   C'est en utilisant le debuggeur idb que j'ai pu facilement remonter à l'instruction
+   invalide, gdb provoquant systématiquement un plantage du debuggeur.
+   
+   On corrige aussi la routine JEFINI dans laquelle l'impression de statistique en mode
+   JEVEUX dynamique peut provoquer un plantage brutal sur certaines plates-formes, le tableau
+   VALI est dimensionné à 4 et on utilise VALI(5).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   L'etude epicure
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 08/04/2008 - 07:59:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011870 DU 2008-03-21 13:04:43
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   En NEW9.2.15, les cas-tests ssnl133a et ssnl136b s'arretent en erreur_<F> sur Bull, Calibre et Rocks.
+FONCTIONNALITE
+   Dans ces tests il y a SOLVEUR=_F(STOP_SINGULIER='DECOUPE',)
+   
+   Le message <FACTOR_20> aurait donc dû être en <A> avec ensuite un re-découpage du pas de
+   temps or il est en <F>.
+   
+   Dans la routine cresol, il y a le test suivant :
+   |         "ELSEIF (KSTOP.EQ.'DECOUPE') THEN"
+   or KSTOP est un K*3. Le test n'est donc jamais vrai.
+   
+   Modification du KSTOP en k*8.
+   
+   Passage des 2 cas tests.
+   
+   Le cas STOP_SINGULIER='DECOUPE' n'est couvert par aucun cas test en liste 'R'.
+   Modification du 'para' de ssnl136b (16sec sur la Bull)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test ssnl133a et ssnl136b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 08/04/2008 - 09:30:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011898 DU 2008-03-31 12:45:13
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Messages d'erreur /  WRITE(6,*)
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En faisant un grep sur WRITE(6,*), on se rend compte qu'un très et trop grand nombre de
+   routines ne repectent pas la règle récente concernant les messages d'erreur qui consiste à
+   appeler U2MESS pour sortir du code par un message d'erreur d'un catalogue python.
+   
+   Les routines Arlequin sont notamment en cause, mais également beaucoup d'autres un peu
+   partout ailleurs dans le code.
+   
+   Solution :
+   ----------
+   
+   On modifie les sources pour :
+   - émettre un vrai message U2MESS propre (dans bibpyt/Messages/arlequin.py) quand il y a
+   lieu d'informer l'utilisateur du contexte de plantage par une phrase en français (par
+   opposition à paraphraser la condition d'émission de l'assert).
+   - faire un simple CALL ASSERT (avec éventuellement un commentaire fortran préalable et
+   non plus un write) quand on ne sait rien écrire de plus que le IF qui y conduit.
+   
+   On en profite pour faire (un peu !) le ménage dans beaucoup de routines (suppression des
+   déclarations de variables inutiles et des passages d'arguments inutiles).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Rien de particulier
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 07/04/2008 - 16:26:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011883 DU 2008-03-27 11:51:54
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   complxc3xa9ments sur VISC_CIN2_MEMO
+FONCTIONNALITE
+   Suite à la fiche 11768 (effet de mémoire), quelques compléments :
+   
+   - j'avais oublié de restituer le test SSND105B 
+   - suite à la relecture attentive de Julien, petites modifs de forme dans toutes les
+   modélisations HSNV125
+   
+   
+   Petite modification dans NMCHAB :on stocke dans V(2) (indicateur) :
+   * 0 si cela n'a pas plastiifé au point de Gauss courant,
+   * le nombre d'itérations internes utilisé pour converger (au lieu du max de ce nombre)
+   
+   
+   Correction dans le calcul de la fonction à annnuler (NMCHCR) : on normalise la fonction
+   dont on cherche le zero par :
+   DENOM = (SIGEDV(I) -DEUX/TROIS*CINF*ALFAM(I) )**2
+   qui ne dépend pas de la solution DP (le prédécent dénominateur en dépendait) 
+   
+   Corrections dans NMCHDP dans le cas visqueux :
+   - bracketting : 
+   au bout de ITER_INTE_MAXI iterations, si cela n'avait rien donné, la valeur de F(borne
+   max) n'était pas initialisée. On l'initialise maintenant.
+   
+   - recherche de la borne max : dans le cas visqueux, on prenait DT*(SEUIL/K)**n
+   Or suivant le pas de temps, cela peut être très grand. Si cette valeur est supérieure à 1,
+   on prend la borne max classique : SEUIL/(3Mu)
+   
+   Remarque : 2 alarmes dans SSND105B :
+   - une parce que j'utilise des HEXAS8
+   - une à cause de VISCOCHAB : un redécoupage de pas de temps après non-convergence locale
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.22.215, V6.08.105
+VALIDATION
+   hsnv125, SSND105B
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT hplp310b                       desoza T.DESOZA           861    861      0
+ CASTEST AJOUT rccm11a                       galenne E.GALENNE          669    669      0
+ CASTEST AJOUT ssnd105b                        proix J-M.PROIX          527    527      0
+ CASTEST AJOUT yyyy118d                     lefebvre J-P.LEFEBVRE       245    245      0
+ CASTEST AJOUT zzzz237a                       desoza T.DESOZA           269    269      0
+ CASTEST AJOUT zzzz237b                       desoza T.DESOZA           270    270      0
+ CASTEST MODIF cente01a                        abbas M.ABBAS            996     16     20
+ CASTEST MODIF hplp310a                       desoza T.DESOZA           861    204   1303
+ CASTEST MODIF hsna103a                     lefebvre J-P.LEFEBVRE       556      1      1
+ CASTEST MODIF hsnv125a                        proix J-M.PROIX          496    424    345
+ CASTEST MODIF hsnv125b                        proix J-M.PROIX          422    343    283
+ CASTEST MODIF hsnv125c                        proix J-M.PROIX          622    530    438
+ CASTEST MODIF hsnv125d                        proix J-M.PROIX          474    392    360
+ CASTEST MODIF hsnv125e                        proix J-M.PROIX          436      2      1
+ CASTEST MODIF hsnv125g                        proix J-M.PROIX          504    378    333
+ CASTEST MODIF mac3c01a                        abbas M.ABBAS            419      1      1
+ CASTEST MODIF sdnv105a                        abbas M.ABBAS           1317      1      7
+ CASTEST MODIF sdnv105b                        abbas M.ABBAS           1273      1      1
+ CASTEST MODIF sdnv105c                        abbas M.ABBAS            978      1      1
+ CASTEST MODIF sslp311a                      galenne E.GALENNE          278     10    176
+ CASTEST MODIF sslp311b                      galenne E.GALENNE          278     10    179
+ CASTEST MODIF sslp311c                      galenne E.GALENNE          273      9    177
+ CASTEST MODIF sslp311d                      galenne E.GALENNE          279      9    178
+ CASTEST MODIF sslv115a                     lefebvre J-P.LEFEBVRE       388      1      1
+ CASTEST MODIF sslv134b                      galenne E.GALENNE          847      3      1
+ CASTEST MODIF sslv135g                     courtois M.COURTOIS         927      4      3
+ CASTEST MODIF ssnl136b                     lefebvre J-P.LEFEBVRE       227      2      1
+ CASTEST MODIF ssnp110d                      galenne E.GALENNE          318      8      4
+ CASTEST MODIF ssnp311a                      galenne E.GALENNE          509      1    307
+ CASTEST MODIF ssnv104i                        abbas M.ABBAS            367     17     16
+ CASTEST MODIF ssnv127h                        abbas M.ABBAS            449      1      2
+ CASTEST MODIF ssnv128p                        abbas M.ABBAS            175      2      3
+ CASTEST MODIF ssnv205a                     courtois M.COURTOIS         601      1      1
+ CASTEST MODIF ssnv209a                        abbas M.ABBAS            231      2      5
+ CASTEST MODIF ssnv209b                        abbas M.ABBAS            512      1      1
+ CASTEST MODIF ssnv209c                        abbas M.ABBAS            512      1      1
+ CASTEST MODIF ssnv209d                        abbas M.ABBAS            516      1      1
+ CASTEST MODIF ssnv209e                        abbas M.ABBAS            512      1      1
+ CASTEST MODIF ssnv209f                        abbas M.ABBAS            252      2      4
+ CASTEST MODIF ssnv209h                        abbas M.ABBAS            448      1      1
+ CASTEST MODIF ssnv506a                       desoza T.DESOZA           259     49     12
+ CASTEST MODIF ssnv506b                       desoza T.DESOZA           268     49      8
+ CASTEST MODIF ssnv506c                       desoza T.DESOZA           276    106     50
+ CASTEST MODIF ssnv506d                       desoza T.DESOZA           260     45     12
+ CASTEST MODIF ssnv506e                       desoza T.DESOZA           250     49     11
+ CASTEST MODIF ssnv506f                       desoza T.DESOZA           278    100     50
+ CASTEST MODIF tpla01a                       galenne E.GALENNE          275      5      3
+ CASTEST MODIF wtnv126b                     lefebvre J-P.LEFEBVRE       824      1      1
+ CASTEST MODIF wtnv126c                     lefebvre J-P.LEFEBVRE       828      1      1
+ CASTEST MODIF zzzz186a                      galenne E.GALENNE           40      1      1
+CATALOPY MODIF commande/dyna_line_tran      lefebvre J-P.LEFEBVRE       166     10      2
+CATALOPY MODIF commande/dyna_non_line       lefebvre J-P.LEFEBVRE       389      9      2
+CATALOPY MODIF commande/macr_lign_coupe      galenne E.GALENNE          119      5      1
+CATALOPY MODIF commande/meca_statique       lefebvre J-P.LEFEBVRE       116     10      2
+CATALOPY MODIF commande/stat_non_line       lefebvre J-P.LEFEBVRE       373     10      2
+CATALOPY MODIF commande/ther_lineaire       lefebvre J-P.LEFEBVRE       122     10      2
+CATALOPY MODIF commande/ther_non_line       lefebvre J-P.LEFEBVRE       198     10      2
+CATALOPY MODIF commun/c_contact                abbas M.ABBAS            316      2      2
+ FORTRAN AJOUT algeline/crsvpe              lefebvre J-P.LEFEBVRE        94     94      0
+ FORTRAN MODIF algeline/cmmoma               meunier S.MEUNIER          217      8      8
+ FORTRAN MODIF algeline/coedef               meunier S.MEUNIER          314      3     14
+ FORTRAN MODIF algeline/diaghr               meunier S.MEUNIER           93     15     14
+ FORTRAN MODIF algeline/diatri               meunier S.MEUNIER          140      4      7
+ FORTRAN MODIF algeline/gcpc                 meunier S.MEUNIER          229      4      6
+ FORTRAN MODIF algeline/nmop45               meunier S.MEUNIER          435      4      4
+ FORTRAN MODIF algeline/op0014               meunier S.MEUNIER          214      4      9
+ FORTRAN MODIF algeline/op0045               meunier S.MEUNIER         1052      7     12
+ FORTRAN MODIF algeline/preres              lefebvre J-P.LEFEBVRE       248     12      1
+ FORTRAN MODIF algeline/resoud              lefebvre J-P.LEFEBVRE       258      5      1
+ FORTRAN MODIF algorith/algocu                desoza T.DESOZA           517     16      1
+ FORTRAN MODIF algorith/calcva               meunier S.MEUNIER          114      4      9
+ FORTRAN MODIF algorith/cfadju                 abbas M.ABBAS            264     24      7
+ FORTRAN MODIF algorith/cresol              lefebvre J-P.LEFEBVRE       209     17      4
+ FORTRAN MODIF algorith/cusign                desoza T.DESOZA            78      2      2
+ FORTRAN MODIF algorith/exfonc                desoza T.DESOZA           205      2      2
+ FORTRAN MODIF algorith/nmassf                desoza T.DESOZA           129     15      4
+ FORTRAN MODIF algorith/nmassv               meunier S.MEUNIER          373      1      2
+ FORTRAN MODIF algorith/nmcere                desoza T.DESOZA           198      7      6
+ FORTRAN MODIF algorith/nmcese                desoza T.DESOZA           197     10      8
+ FORTRAN MODIF algorith/nmceta                desoza T.DESOZA           267     14     12
+ FORTRAN MODIF algorith/nmchab                 proix J-M.PROIX          441      2      2
+ FORTRAN MODIF algorith/nmchcr                 proix J-M.PROIX          205     16      9
+ FORTRAN MODIF algorith/nmchdp                 proix J-M.PROIX          263     11      4
+ FORTRAN MODIF algorith/nmdepl                desoza T.DESOZA           321     10      8
+ FORTRAN MODIF algorith/nmfext                desoza T.DESOZA           105      5      5
+ FORTRAN MODIF algorith/nmflam               meunier S.MEUNIER          301      2      2
+ FORTRAN MODIF algorith/nmpich                desoza T.DESOZA           154     11      9
+ FORTRAN MODIF algorith/nmrepl                desoza T.DESOZA           367     13     11
+ FORTRAN MODIF algorith/op0070                desoza T.DESOZA           629      2      2
+ FORTRAN MODIF algorith/op0164               meunier S.MEUNIER          248      9     15
+ FORTRAN MODIF algorith/op0179               meunier S.MEUNIER          181      6     12
+ FORTRAN MODIF algorith/smevol               meunier S.MEUNIER          315      2      2
+ FORTRAN MODIF algorith/tran75                boyere E.BOYERE           635      8      3
+ FORTRAN MODIF algorith/trvpmd               meunier S.MEUNIER          159      4      1
+ FORTRAN MODIF algorith/xmpint               meunier S.MEUNIER          108      2      2
+ FORTRAN MODIF calculel/appaim               meunier S.MEUNIER          140      2      2
+ FORTRAN MODIF calculel/appari               meunier S.MEUNIER          522      2      2
+ FORTRAN MODIF calculel/arbrcr               meunier S.MEUNIER          123     10      7
+ FORTRAN MODIF calculel/arbrds               meunier S.MEUNIER           46      2      2
+ FORTRAN MODIF calculel/arbrim               meunier S.MEUNIER          127      2      2
+ FORTRAN MODIF calculel/arface               meunier S.MEUNIER          141      2      2
+ FORTRAN MODIF calculel/arlapf               meunier S.MEUNIER          150      2      2
+ FORTRAN MODIF calculel/arlbsp               meunier S.MEUNIER           83      2      2
+ FORTRAN MODIF calculel/arlcab               meunier S.MEUNIER           59      2      2
+ FORTRAN MODIF calculel/arlcar               meunier S.MEUNIER           68      3     19
+ FORTRAN MODIF calculel/arlcbo               meunier S.MEUNIER           48      2      2
+ FORTRAN MODIF calculel/arlcmo               meunier S.MEUNIER          100      2      2
+ FORTRAN MODIF calculel/arlcou               meunier S.MEUNIER          110      2      2
+ FORTRAN MODIF calculel/arlcvp               meunier S.MEUNIER           88      2      2
+ FORTRAN MODIF calculel/arldsd               meunier S.MEUNIER           97      3     20
+ FORTRAN MODIF calculel/arlfag               meunier S.MEUNIER           87      2      2
+ FORTRAN MODIF calculel/arlfc0               meunier S.MEUNIER           71      2      2
+ FORTRAN MODIF calculel/arlgdg               meunier S.MEUNIER          146      2      2
+ FORTRAN MODIF calculel/arlgei               meunier S.MEUNIER          105      2      4
+ FORTRAN MODIF calculel/arlger               meunier S.MEUNIER          107      2      2
+ FORTRAN MODIF calculel/arlimp               meunier S.MEUNIER           95      2      4
+ FORTRAN MODIF calculel/arlnim               meunier S.MEUNIER          145      2      2
+ FORTRAN MODIF calculel/arlpan               meunier S.MEUNIER          192      2      2
+ FORTRAN MODIF calculel/arlpar               meunier S.MEUNIER          239      3      5
+ FORTRAN MODIF calculel/arlpnd               meunier S.MEUNIER          579      2      5
+ FORTRAN MODIF calculel/arlsui               meunier S.MEUNIER           83      2      2
+ FORTRAN MODIF calculel/arlsup               meunier S.MEUNIER          217      2      2
+ FORTRAN MODIF calculel/arlt2r               meunier S.MEUNIER           63      2      2
+ FORTRAN MODIF calculel/arltim               meunier S.MEUNIER          150      2      2
+ FORTRAN MODIF calculel/bissec               meunier S.MEUNIER          352      4      4
+ FORTRAN MODIF calculel/boitea               meunier S.MEUNIER          124      2      2
+ FORTRAN MODIF calculel/boitel               meunier S.MEUNIER          186      2      2
+ FORTRAN MODIF calculel/boite                meunier S.MEUNIER          109      2      2
+ FORTRAN MODIF calculel/boiteq               meunier S.MEUNIER          490      2      2
+ FORTRAN MODIF calculel/boitfi               meunier S.MEUNIER          279      2      2
+ FORTRAN MODIF calculel/cerne                meunier S.MEUNIER           78      2      2
+ FORTRAN MODIF calculel/cfamil               meunier S.MEUNIER           93      3      3
+ FORTRAN MODIF calculel/cnnoeu               meunier S.MEUNIER           61      5      8
+ FORTRAN MODIF calculel/cnsoli               meunier S.MEUNIER           58      4      6
+ FORTRAN MODIF calculel/cocoqu               meunier S.MEUNIER           87      2      2
+ FORTRAN MODIF calculel/conoeu               meunier S.MEUNIER           65      2      2
+ FORTRAN MODIF calculel/coquno               meunier S.MEUNIER          135      2      2
+ FORTRAN MODIF calculel/cosoli               meunier S.MEUNIER           64      2      2
+ FORTRAN MODIF calculel/cotang               meunier S.MEUNIER          354      2      3
+ FORTRAN MODIF calculel/dedans               meunier S.MEUNIER           80      2      3
+ FORTRAN MODIF calculel/elbord               meunier S.MEUNIER          379      2      3
+ FORTRAN MODIF calculel/grmaim               meunier S.MEUNIER          137      2      2
+ FORTRAN MODIF calculel/grmama               meunier S.MEUNIER          199      2      3
+ FORTRAN MODIF calculel/hasard               meunier S.MEUNIER           91      2      2
+ FORTRAN MODIF calculel/isbord               meunier S.MEUNIER           55      4      6
+ FORTRAN MODIF calculel/isbox                meunier S.MEUNIER           63      3      4
+ FORTRAN MODIF calculel/lisnor               meunier S.MEUNIER          271      3      3
+ FORTRAN MODIF calculel/mecalc               meunier S.MEUNIER          537      3     10
+ FORTRAN MODIF calculel/minclu               meunier S.MEUNIER          117      2      2
+ FORTRAN MODIF calculel/minter               meunier S.MEUNIER          131      2      2
+ FORTRAN MODIF calculel/morsim               meunier S.MEUNIER          152      2      2
+ FORTRAN MODIF calculel/nafint               meunier S.MEUNIER          228      2      2
+ FORTRAN MODIF calculel/nbare                meunier S.MEUNIER           57      3      4
+ FORTRAN MODIF calculel/nbsom                meunier S.MEUNIER           57      3      4
+ FORTRAN MODIF calculel/noareq               meunier S.MEUNIER          215      3      4
+ FORTRAN MODIF calculel/nopan                meunier S.MEUNIER          579      8     14
+ FORTRAN MODIF calculel/npgaus               meunier S.MEUNIER          106      2      2
+ FORTRAN MODIF calculel/op0026               meunier S.MEUNIER          275      4      9
+ FORTRAN MODIF calculel/op0175               meunier S.MEUNIER          549     10     17
+ FORTRAN MODIF calculel/panarq               meunier S.MEUNIER          152      3      4
+ FORTRAN MODIF calculel/panno                meunier S.MEUNIER          125      3      4
+ FORTRAN MODIF calculel/pfamil               meunier S.MEUNIER          162      2      2
+ FORTRAN MODIF calculel/pforme               meunier S.MEUNIER           79      2      2
+ FORTRAN MODIF calculel/pgauss               meunier S.MEUNIER           67      2      2
+ FORTRAN MODIF calculel/pj1dtr               galenne E.GALENNE          169      2      1
+ FORTRAN MODIF calculel/pj2dap               galenne E.GALENNE          168     21     10
+ FORTRAN MODIF calculel/pj2dtr               galenne E.GALENNE          213      3      2
+ FORTRAN MODIF calculel/pj3dap               galenne E.GALENNE          177     20      9
+ FORTRAN MODIF calculel/pj3dtr               galenne E.GALENNE          282      2      1
+ FORTRAN MODIF calculel/pj4dap               galenne E.GALENNE          140     18      6
+ FORTRAN MODIF calculel/pj6dap               galenne E.GALENNE          138     20      9
+ FORTRAN MODIF calculel/pondim               meunier S.MEUNIER           98      2      2
+ FORTRAN MODIF calculel/quadim               meunier S.MEUNIER          215      2      2
+ FORTRAN MODIF calculel/refere               meunier S.MEUNIER          152      2      2
+ FORTRAN MODIF calculel/resth2               meunier S.MEUNIER          210      3     27
+ FORTRAN MODIF calculel/resthe               meunier S.MEUNIER          254      4     12
+ FORTRAN MODIF calculel/smplx2               meunier S.MEUNIER          157      2      2
+ FORTRAN MODIF calculel/sommet               meunier S.MEUNIER           66      2      2
+ FORTRAN MODIF calculel/tangnt               meunier S.MEUNIER          142      3      4
+ FORTRAN MODIF calculel/tecach               meunier S.MEUNIER          329      3      6
+ FORTRAN MODIF calculel/thaclm               meunier S.MEUNIER          868      3      3
+ FORTRAN MODIF elements/angco4               meunier S.MEUNIER          141      5      5
+ FORTRAN MODIF elements/angcou               meunier S.MEUNIER          261      9     12
+ FORTRAN MODIF elements/arltej               meunier S.MEUNIER           82      2      2
+ FORTRAN MODIF elements/coqsnl               meunier S.MEUNIER          390      9     33
+ FORTRAN MODIF elements/disief               meunier S.MEUNIER          131      1      4
+ FORTRAN MODIF elements/e1e2nn               meunier S.MEUNIER          145      2      8
+ FORTRAN MODIF elements/gcou2d               meunier S.MEUNIER          215      1      2
+ FORTRAN MODIF elements/te0060               meunier S.MEUNIER          427      2      7
+ FORTRAN MODIF elements/te0073               meunier S.MEUNIER          441      2      7
+ FORTRAN MODIF elements/te0339               meunier S.MEUNIER          354      1      2
+ FORTRAN MODIF elements/te0366               meunier S.MEUNIER          369      6      3
+ FORTRAN MODIF elements/te0367               meunier S.MEUNIER          424      6      5
+ FORTRAN MODIF elements/te0476               meunier S.MEUNIER          159      1      7
+ FORTRAN MODIF elements/te0533               meunier S.MEUNIER          619      5      5
+ FORTRAN MODIF jeveux/jefini                lefebvre J-P.LEFEBVRE       139      2      2
+ FORTRAN MODIF jeveux/jelibf                lefebvre J-P.LEFEBVRE       373     11     10
+ FORTRAN MODIF modelisa/accept               meunier S.MEUNIER          141      4     19
+ FORTRAN MODIF modelisa/acevrp               meunier S.MEUNIER          112      1      2
+ FORTRAN MODIF modelisa/arete3               meunier S.MEUNIER          120      2      2
+ FORTRAN MODIF modelisa/arlapp               meunier S.MEUNIER           94      3     19
+ FORTRAN MODIF modelisa/arlas0               meunier S.MEUNIER          125      2      2
+ FORTRAN MODIF modelisa/arlas1               meunier S.MEUNIER          108      2      2
+ FORTRAN MODIF modelisa/arlas2               meunier S.MEUNIER          152      2      2
+ FORTRAN MODIF modelisa/arlas3               meunier S.MEUNIER          169      2      2
+ FORTRAN MODIF modelisa/arlas4               meunier S.MEUNIER          248      2      2
+ FORTRAN MODIF modelisa/arlas9               meunier S.MEUNIER          101      2      2
+ FORTRAN MODIF modelisa/arlass               meunier S.MEUNIER           81      2      2
+ FORTRAN MODIF modelisa/arlast               meunier S.MEUNIER          251      8     12
+ FORTRAN MODIF modelisa/arlbbs               meunier S.MEUNIER          129      2      2
+ FORTRAN MODIF modelisa/arlbo0               meunier S.MEUNIER          133      2      2
+ FORTRAN MODIF modelisa/arlboi               meunier S.MEUNIER           93      3     19
+ FORTRAN MODIF modelisa/arlch0               meunier S.MEUNIER          154      2      2
+ FORTRAN MODIF modelisa/arlch1               meunier S.MEUNIER          110      2      2
+ FORTRAN MODIF modelisa/arlch2               meunier S.MEUNIER          143      2      2
+ FORTRAN MODIF modelisa/arlch3               meunier S.MEUNIER          109      2      2
+ FORTRAN MODIF modelisa/arlch4               meunier S.MEUNIER          155      2      2
+ FORTRAN MODIF modelisa/arlcha               meunier S.MEUNIER          347      2      2
+ FORTRAN MODIF modelisa/arlchi               meunier S.MEUNIER          374      2      2
+ FORTRAN MODIF modelisa/arlchr               meunier S.MEUNIER           82      2      2
+ FORTRAN MODIF modelisa/arlclc               meunier S.MEUNIER          146      3     19
+ FORTRAN MODIF modelisa/arlclr               meunier S.MEUNIER          222      2      2
+ FORTRAN MODIF modelisa/arlcol               meunier S.MEUNIER          112      2      2
+ FORTRAN MODIF modelisa/arlcp1               meunier S.MEUNIER          426      6      5
+ FORTRAN MODIF modelisa/arlcp2               meunier S.MEUNIER          105      4     22
+ FORTRAN MODIF modelisa/arlcpl               meunier S.MEUNIER          108      4      4
+ FORTRAN MODIF modelisa/arldeg               meunier S.MEUNIER          113      2      2
+ FORTRAN MODIF modelisa/arlelt               meunier S.MEUNIER          129      2      2
+ FORTRAN MODIF modelisa/arlfam               meunier S.MEUNIER          398      2     11
+ FORTRAN MODIF modelisa/arlfc1               meunier S.MEUNIER          333      3      4
+ FORTRAN MODIF modelisa/arlfc2               meunier S.MEUNIER          384      3      4
+ FORTRAN MODIF modelisa/arlfg                meunier S.MEUNIER          111      2      2
+ FORTRAN MODIF modelisa/arlfil               meunier S.MEUNIER           77      2      2
+ FORTRAN MODIF modelisa/arlflt               meunier S.MEUNIER           61      2      2
+ FORTRAN MODIF modelisa/arlgrc               meunier S.MEUNIER           91      4     21
+ FORTRAN MODIF modelisa/arlgri               meunier S.MEUNIER          113      2      2
+ FORTRAN MODIF modelisa/arlgrm               meunier S.MEUNIER          123      3      4
+ FORTRAN MODIF modelisa/arlicp               meunier S.MEUNIER          118      2      2
+ FORTRAN MODIF modelisa/arllcc               meunier S.MEUNIER          226      2      2
+ FORTRAN MODIF modelisa/arllec               meunier S.MEUNIER          134      2      2
+ FORTRAN MODIF modelisa/arllpo               meunier S.MEUNIER          116      3     20
+ FORTRAN MODIF modelisa/arlmaf               meunier S.MEUNIER          137      2      2
+ FORTRAN MODIF modelisa/arlmai               meunier S.MEUNIER          464      2      2
+ FORTRAN MODIF modelisa/arlmas               meunier S.MEUNIER          285      2      2
+ FORTRAN MODIF modelisa/arlmax               meunier S.MEUNIER          115      2      2
+ FORTRAN MODIF modelisa/arlmdi               meunier S.MEUNIER          101      2      2
+ FORTRAN MODIF modelisa/arlmed               meunier S.MEUNIER           77      3     20
+ FORTRAN MODIF modelisa/arlmod               meunier S.MEUNIER           65      6     29
+ FORTRAN MODIF modelisa/arlmol               meunier S.MEUNIER          176      4      8
+ FORTRAN MODIF modelisa/arlmom               meunier S.MEUNIER          124      2      2
+ FORTRAN MODIF modelisa/arlnor               meunier S.MEUNIER           88      3     20
+ FORTRAN MODIF modelisa/arlpon               meunier S.MEUNIER          101      2      2
+ FORTRAN MODIF modelisa/arlte                meunier S.MEUNIER          144      2      2
+ FORTRAN MODIF modelisa/arltii               meunier S.MEUNIER           75      2      2
+ FORTRAN MODIF modelisa/arltmm               meunier S.MEUNIER          159      6      9
+ FORTRAN MODIF modelisa/arlver               meunier S.MEUNIER          233      4      4
+ FORTRAN MODIF modelisa/boit2d               meunier S.MEUNIER          307      5      8
+ FORTRAN MODIF modelisa/boit3d               meunier S.MEUNIER          349      2      2
+ FORTRAN MODIF modelisa/boitcr               meunier S.MEUNIER          142     13     10
+ FORTRAN MODIF modelisa/boitds               meunier S.MEUNIER           46      2      2
+ FORTRAN MODIF modelisa/boitim               meunier S.MEUNIER          242      2      2
+ FORTRAN MODIF modelisa/caarle               meunier S.MEUNIER          240      3      3
+ FORTRAN MODIF modelisa/cagrf1               meunier S.MEUNIER          248      5      8
+ FORTRAN MODIF modelisa/creaun                desoza T.DESOZA           287      5      1
+ FORTRAN MODIF modelisa/echmap               meunier S.MEUNIER          249      2      2
+ FORTRAN MODIF modelisa/echmc2               meunier S.MEUNIER           85      2      2
+ FORTRAN MODIF modelisa/echmc3               meunier S.MEUNIER          442      2      2
+ FORTRAN MODIF modelisa/echmco               meunier S.MEUNIER          199      2      2
+ FORTRAN MODIF modelisa/exnocp                desoza T.DESOZA           162      2      5
+ FORTRAN MODIF modelisa/intinc               meunier S.MEUNIER          179      3     20
+ FORTRAN MODIF modelisa/intmad               meunier S.MEUNIER          395      2      2
+ FORTRAN MODIF modelisa/intmam               meunier S.MEUNIER          535      2      2
+ FORTRAN MODIF modelisa/intsma               meunier S.MEUNIER          242      3     21
+ FORTRAN MODIF modelisa/mudirx               meunier S.MEUNIER          111      3      7
+ FORTRAN MODIF modelisa/nbareq               meunier S.MEUNIER           66      3      4
+ FORTRAN MODIF modelisa/nbnoco                desoza T.DESOZA           127      3     14
+ FORTRAN MODIF modelisa/nbnocp                desoza T.DESOZA           116      2     10
+ FORTRAN MODIF modelisa/nbnoel                desoza T.DESOZA           138      4      9
+ FORTRAN MODIF modelisa/nbpan                meunier S.MEUNIER           62      3      4
+ FORTRAN MODIF modelisa/nbsuco                desoza T.DESOZA           127      9     13
+ FORTRAN MODIF modelisa/nbzoco               meunier S.MEUNIER          127      3      6
+ FORTRAN MODIF modelisa/noare                meunier S.MEUNIER          477      3      4
+ FORTRAN MODIF modelisa/nocoqu               meunier S.MEUNIER          168      2      2
+ FORTRAN MODIF modelisa/oriem2               meunier S.MEUNIER          181      2      2
+ FORTRAN MODIF modelisa/oriem3               meunier S.MEUNIER          196      3      6
+ FORTRAN MODIF modelisa/palim2               meunier S.MEUNIER          150      3      3
+ FORTRAN MODIF modelisa/palim3               meunier S.MEUNIER          147      3      3
+ FORTRAN MODIF modelisa/plcent               meunier S.MEUNIER          107      2      2
+ FORTRAN MODIF modelisa/plint2               meunier S.MEUNIER          358      2      2
+ FORTRAN MODIF modelisa/plint3               meunier S.MEUNIER          696      3      3
+ FORTRAN MODIF modelisa/pltri2               meunier S.MEUNIER          248      2      2
+ FORTRAN MODIF modelisa/pltri3               meunier S.MEUNIER          194      3      5
+ FORTRAN MODIF modelisa/plvol2               meunier S.MEUNIER          110      2      2
+ FORTRAN MODIF modelisa/plvol3               meunier S.MEUNIER           75      2      2
+ FORTRAN MODIF modelisa/poinco               meunier S.MEUNIER          149      2      2
+ FORTRAN MODIF modelisa/spect1               meunier S.MEUNIER          408      9     17
+ FORTRAN MODIF modelisa/tablco               meunier S.MEUNIER          434      7      9
+ FORTRAN MODIF modelisa/tmacoq               meunier S.MEUNIER           83      5      8
+ FORTRAN MODIF postrele/rc32mu               galenne E.GALENNE          216     12      2
+ FORTRAN MODIF postrele/rc32s0               galenne E.GALENNE          271    116     16
+ FORTRAN MODIF postrele/rvchlo               meunier S.MEUNIER          283      2      8
+ FORTRAN MODIF postrele/rvechd               meunier S.MEUNIER          209      1      8
+ FORTRAN MODIF prepost/raxini                meunier S.MEUNIER          125      1     21
+ FORTRAN MODIF prepost/tremno                meunier S.MEUNIER          345      2      9
+ FORTRAN MODIF prepost/vampli                meunier S.MEUNIER          353      2     13
+ FORTRAN MODIF soustruc/oreino               meunier S.MEUNIER          175      9     11
+ FORTRAN MODIF soustruc/piquag               meunier S.MEUNIER          212      2      8
+ FORTRAN MODIF soustruc/ssvalv               meunier S.MEUNIER          194      5     10
+ FORTRAN MODIF utilitai/aidcon               meunier S.MEUNIER           95      2      7
+ FORTRAN MODIF utilitai/dfmdf                meunier S.MEUNIER          252      1      2
+ FORTRAN MODIF utilitai/inimai               meunier S.MEUNIER          163      1      1
+ FORTRAN MODIF utilitai/op0064               meunier S.MEUNIER          478      7     16
+ FORTRAN MODIF utilitai/verico               meunier S.MEUNIER          146      1      6
+ FORTRAN SUPPR modelisa/arlcrt               meunier S.MEUNIER          127      0    127
+  PYTHON MODIF Macro/macr_lign_coupe_ops     galenne E.GALENNE          946      2      2
+  PYTHON MODIF Macro/post_k1_k2_k3_ops       galenne E.GALENNE         1189      6      3
+  PYTHON MODIF Meidee/meidee_calcul_fludela   courtois M.COURTOIS         751      6      4
+  PYTHON MODIF Meidee/meidee_cata           courtois M.COURTOIS        1048     30      2
+  PYTHON MODIF Meidee/meidee_iface          courtois M.COURTOIS         951      2     29
+  PYTHON MODIF Messages/algeline2            meunier S.MEUNIER          443     29     20
+  PYTHON MODIF Messages/algeline             meunier S.MEUNIER          431     15      1
+  PYTHON MODIF Messages/algorith6            meunier S.MEUNIER          275      4      4
+  PYTHON MODIF Messages/arlequin             meunier S.MEUNIER          188     64     23
+  PYTHON MODIF Messages/calculel3            galenne E.GALENNE          339     12      1
+  PYTHON MODIF Messages/elements5            meunier S.MEUNIER          184      5      1
+  PYTHON MODIF Messages/elements             meunier S.MEUNIER          332     18     21
+  PYTHON MODIF Messages/fermetur            lefebvre J-P.LEFEBVRE        80      7      1
+  PYTHON MODIF Messages/modelisa6            meunier S.MEUNIER          362     70     70
+  PYTHON MODIF Messages/modelisa7            meunier S.MEUNIER          404     42     49
+  PYTHON MODIF Messages/soustruc             meunier S.MEUNIER          442     29     18
+  PYTHON MODIF Messages/supervis            courtois M.COURTOIS         425      2      2
+  PYTHON MODIF Noyau/asojb                  courtois M.COURTOIS         342      2      2
+  PYTHON MODIF Utilitai/as_timer            courtois M.COURTOIS         254      6      5
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    7        2935      2935             +2935
+ MODIF :  325       85648      4307    6001     -1694
+ SUPPR :    1         127               127      -127
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  333       88710      7242    6128     +1114 

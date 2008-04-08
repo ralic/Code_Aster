@@ -4,7 +4,7 @@
       CHARACTER*(*)       MAILLA, MOMANU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,15 +44,15 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       JMAIL, IM, NUMA, JTYP, ITYP, INO, JPT, NNO, IN
       INTEGER       ITTR6, ITTR7, ITQU8, ITQU9, JVALE, NUNO,IATYMA
       INTEGER       ITSE3,ITSE4
-      REAL*8        CDG(3),DDOT
+      REAL*8        CDG(3),DDOT, VALR(3)
       CHARACTER*8   MA, NOMAIL, NONO1, NONO2, NONO3
       CHARACTER*24  TYPMAI, CONNEX, COOVAL,CANOMA,CANONO
-      CHARACTER*24 VALK(4)
+      CHARACTER*24  VALK(4)
 
-      REAL*8  COO1(3),COO2(3),COO3(3),THETA,EPSI,T13(3),T32(3),TEST
+      REAL*8  COO1(3),COO2(3),COO3(3),THETA,EPSI,T13(3),T32(3)
       REAL*8 NORMEN,NORME1,NORME2,N(3),OM(3),OC(3),C2,C6,T2,T6,T12(3)
       REAL*8 N3M(3),MC(3),MP(3),MR(3),X3(3),X4(3),COSTET,DN1N2
-      INTEGER ICOUDE,I,NUNO1,NUNO2,NUNO3,IADZI,IAZK24,IFM,NIV
+      INTEGER ICOUDE,I,NUNO1,NUNO2,NUNO3,IFM,NIV
 C     ------------------------------------------------------------------
 
       CALL JEMARQ ( )
@@ -147,14 +147,14 @@ C           VERIF QUE LE 3EME NOEUD EST BIEN AU MILIEU
                CALL JENUNO(JEXNUM(CANONO,NUNO2),NONO2)
                CALL JENUNO(JEXNUM(CANONO,NUNO3),NONO3)
                CALL INFNIV(IFM,NIV)
-               WRITE(IFM,*) 'DISTANCE N1-N3= ',NORME1
-               WRITE(IFM,*) 'DISTANCE N2-N3= ',NORME2
-               WRITE(IFM,*) 'TOLERANCE = ',EPSI
-                VALK(1) = NONO3
-                VALK(2) = NONO1
-                VALK(3) = NONO2
-                VALK(4) = NOMAIL
-                CALL U2MESK('F','ALGELINE_23', 4 ,VALK)
+               VALR(1) = NORME1
+               VALR(2) = NORME2
+               VALR(3) = EPSI
+               VALK(1) = NONO3
+               VALK(2) = NONO1
+               VALK(3) = NONO2
+               VALK(4) = NOMAIL
+               CALL U2MESG('F','ALGELINE_23', 4 ,VALK, 0 ,0, 3, VALR)
             ENDIF
 
             IF(NORMEN.LE.EPSI) THEN

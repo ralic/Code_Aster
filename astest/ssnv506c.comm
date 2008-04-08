@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,12 +27,24 @@
 DEBUT(CODE=_F(NOM='SSNV506C',NIV_PUB_WEB='INTERNET'),);
 
 #-------------------------------------------------------------------
-#                      LECTURE MAILLAGE SSNV506C.MGIB
+#                      LECTURE MAILLAGE SSNV506C.MMED
 #-------------------------------------------------------------------
 
-PRE_GIBI();
 
-SSNV506C=LIRE_MAILLAGE(INFO=1,);
+MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
+
+SSNV506C=CREA_MAILLAGE(MAILLAGE=MA,
+                       RESTREINT=_F( GROUP_MA=('BATI',
+                                               'BASE',
+                                               'SBXY',
+                                               'SBYZ',
+                                               'SESC',
+                                               'SMAI',
+                                               ),
+                                     GROUP_NO=('S',
+                                               'E'),
+                                    ),
+                      )
 
 #--------------------------------------------------------------------
 #                     DEFINITION DU MODELE
@@ -73,7 +85,7 @@ MBATI=DEFI_MATERIAU(ELAS=_F(E=210000,
                                  SY=50.0,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506C,
-                    AFFE=(_F(GROUP_MA='SPHSUP',
+                    AFFE=(_F(GROUP_MA='SMAI',
                              MATER=MSPH,),
                           _F(GROUP_MA='BATI',
                              MATER=MBATI,),),);
@@ -102,7 +114,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 #---------------------------------------------------------------------
 
 DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=(_F(GROUP_NO='SPHSUP',
+                       DDL_IMPO=(_F(GROUP_NO='SMAI',
                                     DX=0.,DY=-100.,DZ=0.,),
                                  _F(GROUP_NO='BASE',
                                     DX=0.,DY=0.,DZ=0.,),
@@ -117,8 +129,8 @@ DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
 
 CONT=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               REAC_GEOM='CONTROLE',
-                               NB_REAC_GEOM=2,
+                               #REAC_GEOM='CONTROLE',
+                               #NB_REAC_GEOM=2,
                                METHODE='CONTRAINTE',
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
@@ -138,13 +150,13 @@ SSNV506=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                        COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                     GROUP_MA='BATI'),
                        COMP_ELAS=_F(RELATION='ELAS',
-                                    GROUP_MA='SPHSUP',),
+                                    GROUP_MA='SMAI',),
                        INCREMENT=_F(LIST_INST=LINST,
-                                    INST_FIN=0.1,
+                                    #INST_FIN=0.1,
                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                     SUBD_PAS_MINI=9.9999999999999995E-07,),
                        NEWTON=_F(MATRICE='TANGENTE',
-                                 REAC_ITER=1,
+                                 REAC_ITER=3,
                                  ),
                        CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
                                       ITER_GLOB_MAXI=15,
@@ -161,9 +173,6 @@ SSNV506=CALC_NO(reuse =SSNV506,
                  OPTION='REAC_NODA',
                  MODELE=MO,);
 
-LINST2=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=10,),);                                   
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  GROUP_NO='SESC',
@@ -176,45 +185,92 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
 IMPR_TABLE(TABLE=TAB_REAC,
            FORMAT='TABLEAU',);
 
+
 #----------------------------------------------------------------------
 #                   TESTS DES RESULTATS
 #----------------------------------------------------------------------
+# TESTS SUR DES VALEURS ANALYTIQUES
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.2),
+           VALE=-3.201351E+06,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',);
 
-# TESTS DE NON REGRESSION
-# Xz = 0.
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4),
+           VALE=-6.402702E+06,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.6),
+           VALE=-9.604053E+06,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8),
+           VALE=-1.280540E+07,
+           PRECISION=0.10,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0),
+           VALE=-1.600675E+07,
+           PRECISION=0.12,
+           REFERENCE='ANALYTIQUE',);
 
 
-TEST_RESU(RESU=_F(RESULTAT=SSNV506,
-                  NOEUD='N125',
-                  INST=0.1,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=0.0,
-                  PRECISION=1.E-12,
-                  CRITERE='ABSOLU',
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='7.1.1',),);
+# TESTS DE NON REGRESSION SUR LES VALEURS
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.2),
+           VALE=-3.2007039703078E+06,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
 
-# Xx = 0.
-TEST_RESU(RESU=_F(RESULTAT=SSNV506,
-                  NOEUD='N349',
-                  INST=0.1,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=5.85965E+04,
-                  PRECISION=5.E-5,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.17',),);
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4),
+           VALE=-6.1485314878484E+06,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
 
-TEST_RESU(RESU=_F(RESULTAT=SSNV506,
-                  NOEUD='N351',
-                  INST=0.1,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=0.0,
-                  PRECISION=1.E-12,
-                  CRITERE='ABSOLU',
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='7.1.1',),);
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.6),
+           VALE=-9.3428411191477E+06,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8),
+           VALE=-1.1747310758365E+07,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0),
+           VALE=-1.4275240431472E+07,
+           VERSION='9.2.18',
+           REFERENCE='NON_REGRESSION',);
+
 
 FIN();             

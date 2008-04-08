@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/04/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -412,7 +412,7 @@ C     ========================================
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA')     THEN
          VIP(1)=PP
-         VIP(2)=MAX(NITER,NINT(VIP(2)))
+         VIP(2)=NITER
          DO 280 I = 1, 3
            VIP(I+2) = ALFA(I)
   280    CONTINUE

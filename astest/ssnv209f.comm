@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 08/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,6 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(GROUP_MA_MAIT     = 'SBAT',
                                GROUP_MA_ESCL     = 'SCONTA',
                                APPARIEMENT    = 'MAIT_ESCL',
-                               RECHERCHE      = 'NOEUD_VOISIN',
                                NORMALE        = 'MAIT',
                                METHODE        = 'CONTINUE',
                                INTEGRATION    = 'NOEUD',
@@ -121,8 +120,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                ITER_FROT_MAXI = 20,
                                ITER_CONT_MAXI = 30,
                                FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0,
-                               PROJECTION     = 'QUADRATIQUE',)
+                               COULOMB        = 1.0,)
                     );
                     
 

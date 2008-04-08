@@ -1,7 +1,7 @@
       SUBROUTINE CUSIGN(JCMPG,ICMP,SIGN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,12 +66,12 @@ C ----------------------------------------------------------------------
       CMP = ZK8(JCMPG-1+ICMP)
 
       IF (CMP(1:4).EQ.'PRE1') THEN
-        SIGN = +1.D0  
+        SIGN = +1.D0
       ELSE IF (CMP(1:4).EQ.'PRE2') THEN
-        SIGN = +1.D0     
+        SIGN = +1.D0
       ELSE
-        SIGN = -1.D0 
-      ENDIF  
+        SIGN = +1.D0
+      ENDIF
 
 C ----------------------------------------------------------------------
       CALL JEDEMA()

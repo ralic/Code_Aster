@@ -1,8 +1,8 @@
       SUBROUTINE ELBORD(MAIL  ,CINE  ,LIMA  ,NLIMA ,NTM   ,
      &                  BASE  ,NOM)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,15 +19,15 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       CHARACTER*19  NOM
-      INTEGER       LIMA(*)    
+      INTEGER       LIMA(*)
       CHARACTER*1   BASE
       CHARACTER*8   NTM(*),MAIL,CINE
       INTEGER       NLIMA
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -35,7 +35,7 @@ C
 C ELEMENTS DE BORD D'UN GROUPE DE MAILLE
 C
 C ----------------------------------------------------------------------
-C      
+C
 C
 C IN  NOM    : NOM DE L'OBJET MAILLES DE BORD
 C IN  DIME   : DIMENSION DE L'ESPACE
@@ -72,7 +72,7 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C      
+C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CHARACTER*8   TYPEMA,TYPEML
@@ -84,13 +84,13 @@ C
 C
       INTEGER PANCOQ(9)
       DATA PANCOQ / 4,2, 3,4,5, 1,4,6,2 /
-C      
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C --- INITIALISATIONS
-C      
+C
       NINT = 6*NLIMA
 C
 C --- LECTURE DONNEES MAILLAGE
@@ -148,15 +148,14 @@ C
         ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN
           TYPEML = 'HEXA8   '
         ELSE
-          WRITE(6,*) 'TYPEMA: ',TYPEMA
           CALL ASSERT(.FALSE.)
         ENDIF
 C
 C --- INFOS SUR MAILLES
-C        
+C
         CALL NOPAN(TYPEML,NOEPAN)
         NPAN = NBPAN(TYPEML)
-C        
+C
 C --- BOUCLE SUR LES PANS DE MA
 C
         P0 = 0

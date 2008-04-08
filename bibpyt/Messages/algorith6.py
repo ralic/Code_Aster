@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith6 Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,15 +27,15 @@ cata_msg = {
 """),
 
 13 : _("""
- dimension du problème inconnu
+ dimension du problème inconnue
 """),
 
 16 : _("""
- le fond de fissure d'un maillage 2d ne peut etre défini par des mailles
+ le fond de fissure d'un maillage 2d ne peut être défini par des mailles
 """),
 
 17 : _("""
- les mailles à modifier doivent etre de type "SEG3" ou "POI1"
+ les mailles à modifier doivent être de type "SEG3" ou "POI1"
 """),
 
 18 : _("""

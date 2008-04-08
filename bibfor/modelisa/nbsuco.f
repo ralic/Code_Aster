@@ -3,7 +3,7 @@
      &                  INDQUA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/01/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,7 +84,6 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      JTRAV
-      LOGICAL      LQUADV
 C
 C ----------------------------------------------------------------------
 C
@@ -92,38 +91,35 @@ C
 C
 C --- INITIALISATIONS
 C
-      LQUADV = .FALSE.
       CALL WKVECT ('&&NBSUCO.TRAV','V V K8',NTRAV,JTRAV)
 
       IF (ORDSTC.EQ.1) THEN
         CALL NBNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_ESCL',IZONE,
      &              ISURF ,INDQUA,JTRAV,JSUMA,JSUNO,
-     &              JNOQUA,LQUADV)
+     &              JNOQUA)
         CALL NBNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_ESCL'  ,IZONE,
      &              ISURF ,INDQUA,JTRAV,JSUMA,JSUNO,
-     &              JNOQUA,LQUADV)
+     &              JNOQUA)
         CALL NBNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_MAIT',IZONE,
      &              ISURF ,INDQUA,JTRAV,JSUMA,JSUNO,
-     &              JNOQUA,LQUADV)
+     &              JNOQUA)
         CALL NBNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_MAIT'  ,IZONE,
      &              ISURF ,INDQUA,JTRAV,JSUMA,JSUNO,
-     &              JNOQUA,LQUADV)
+     &              JNOQUA)
       ELSE
         CALL NBNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_MAIT',IZONE,
      &              ISURF ,INDQUA,JTRAV,JSUMA,JSUNO,
-     &              JNOQUA,LQUADV)
+     &              JNOQUA)
         CALL NBNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_MAIT'  ,IZONE,
      &              ISURF ,INDQUA,JTRAV,JSUMA,JSUNO,
-     &              JNOQUA,LQUADV)
+     &              JNOQUA)
         CALL NBNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_ESCL',IZONE,
      &              ISURF ,INDQUA,JTRAV,JSUMA,JSUNO,
-     &              JNOQUA,LQUADV)
+     &              JNOQUA)
         CALL NBNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_ESCL'  ,IZONE,
      &              ISURF ,INDQUA,JTRAV,JSUMA,JSUNO,
-     &              JNOQUA,LQUADV)
+     &              JNOQUA)
       ENDIF
-C
-      IF(LQUADV) CALL U2MESS('A','CONTACT3_94')
 C
       CALL JEDETR ('&&NBSUCO.TRAV')
 C

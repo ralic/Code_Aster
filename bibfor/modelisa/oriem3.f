@@ -2,7 +2,7 @@
      &                  CNXMA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,14 +19,14 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER     NUMA
-      CHARACTER*8 TYPEMA 
+      CHARACTER*8 TYPEMA
       REAL*8      CNOEUD(3,*)
       INTEGER     CNX(*),CNXC(*),CNXMA(*)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
@@ -56,7 +56,7 @@ C
       DATA INO / 0,2,1,5,4,3,6, 0,3,2,1,7,6,5,4,8, 0,2,1,3,6,5,4,7,9,8,
      & 0,2,1,3,5,4,8,7,6,9,11,10,14,13,12,  0,3,2,1,4,7,6,5,11,10,9,8,
      & 12,15,14,13,19,18,17,16,20,21,22,23,24,25,26 /
-C      
+C
 C ----------------------------------------------------------------------
 C
       P   = CNXC(NUMA)
@@ -171,17 +171,14 @@ C --- SELECTION SUIVANT TYPE DE MAILLE
         Q = INDEX(5)
 
       ELSE
-
-        WRITE(6,*) 'TYPEMA: ',TYPEMA
-        CALL ASSERT(.FALSE.)
-
+        CALL U2MESS('F','MODELISA6_9')
       ENDIF
 C
 C --- VERIFICATIONS
 C
       IF (NNO.GT.27) THEN
         CALL ASSERT(.FALSE.)
-      ENDIF      
+      ENDIF
 C
 C --- PERMUTATION
 C

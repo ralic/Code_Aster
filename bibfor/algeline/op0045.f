@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C VARIABLES LOCALES
       INTEGER NBPARI, NBPARR, NBPARK, NBPARA, MXDDL
       PARAMETER   ( NBPARI=8 , NBPARR=16 , NBPARK=2, NBPARA=26 )
       PARAMETER   ( MXDDL=1 )
-      INTEGER INDF, ISNNEM, IADX, IERFR, IMET, I, IADY, IEQ, IERX,IRET,
+      INTEGER INDF, ISNNEM, IADX, IMET, I, IADY, IEQ, IERX,IRET,
      &  IADRB, IADZ, IER1, IFM, ITEMAX, IADRH, IBID, IERD, IFREQ
       INTEGER LMAT(3), LSELEC, LRESID, LDSOR, LAMOR, LBRSS, LMASSE,
      &  LMTPSC, LRESUR, LTYPRI, LWORKD, LAUX, LRAIDE, LSIGN,LVALPR,
@@ -278,7 +278,7 @@ C     --- VALIDITE DES DONNEES ---
         RAUX = R8PREM()
         IF ((ALPHA.LT.1.2D0*RAUX).OR.(ALPHA.GT.0.83D0-RAUX)) THEN
             CALL U2MESS('E','ALGELINE2_64')
-         ENDIF
+        ENDIF
       ENDIF
 
 C     --- REGLES D'EXCLUSION ---
@@ -559,11 +559,11 @@ C     --- TRAITEMENT SPECIFIQUE A SORENSEN ---
 
       IF ((METHOD.EQ.'SORENSEN').AND.(NBVECT-NFREQ.LT.2)) THEN
         IF (NFREQ.GT.(NEQACT+2)) THEN
+CC        DIMINUTION FORCEE DE NFREQ
           NFREQ=NEQACT-2
-          WRITE(IFM,*) 'DIMINUTION FORCEE DE NFREQ = ',NFREQ
         ENDIF
+CC      AUGMENTATION FORCEE DE NBVECT
         NBVECT = NFREQ + 2
-        WRITE(IFM,*) 'AUGMENTATION FORCEE DE NBVECT = ',NBVECT
       ENDIF
 
 C     --- CORRECTION DE NBVECT DANS LE CAS QUADRATIQUE
@@ -571,13 +571,8 @@ C     --- CORRECTION DE NBVECT DANS LE CAS QUADRATIQUE
       IF (LAMOR.NE.0) THEN
          NBVECT = 2*NBVECT
          NFREQ = 2*NFREQ
-C         IF (NIV .GE. 1) THEN
-            WRITE(IFM,*)' LE PROBLEME TRAITE ETANT '//
-     &      'QUADRATIQUE, ON DOUBLE L''ESPACE DE RECHERCHE'
-            WRITE(IFM,*)
-C         ENDIF
+         CALL U2MESS('I','ALGELINE2_75')
       ENDIF
-
 
 C     ------------------------------------------------------------------
 C     --------------  ALLOCATION DES ZONES DE TRAVAIL   ----------------
@@ -690,7 +685,7 @@ C     --- CAS COMPLEXE QUADRATIQUE  ---
            CALL WKVECT('&&OP0045.VECT.AUR','V V R',2*NEQ*(NBVECT+1),
      &     LAUR)
          ELSE
-           WRITE(6,*)'CALCUL IMPOSSIBLE'
+           CALL ASSERT(.FALSE.)
          ENDIF
       ENDIF
 
@@ -1021,7 +1016,7 @@ C     ------------------------------------------------------------------
       ENDIF
 
       IF (FLAGE)
-     &  CALL U2MESS('F','ALGELINE2_75')
+     &  CALL ASSERT(.FALSE.)
 
 C     ------------------------------------------------------------------
 C     ----------- DESTRUCTION DES AUXILLIAIRES DE CALCUL  --------------

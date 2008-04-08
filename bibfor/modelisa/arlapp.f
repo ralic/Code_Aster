@@ -1,8 +1,8 @@
       SUBROUTINE ARLAPP(MAIL  ,TYPMAI,NOM1  ,NOM2  ,NORM,
      &                  NOMARL,DEGMAX,NBMAC ,NOMC  ,NAPP)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,16 +19,16 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
-C 
+C RESPONSABLE MEUNIER S.MEUNIER
+C
       IMPLICIT NONE
       CHARACTER*10  NOM1,NOM2,NOMC,NORM
-      CHARACTER*16  TYPMAI      
-      CHARACTER*8   MAIL,NOMARL   
+      CHARACTER*16  TYPMAI
+      CHARACTER*8   MAIL,NOMARL
       INTEGER       DEGMAX
       INTEGER       NBMAC
-      INTEGER       NAPP 
-C      
+      INTEGER       NAPP
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -39,14 +39,14 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  MAIL   : NOM UTILISATEUR DU MAILLAGE
-C IN  NOM1   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_1 
-C IN  NOM2   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_2 
-C IN  DEGMAX : DEGRE MAXIMUM DU GRAPHE NOEUD->MAILLE  
+C IN  NOM1   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_1
+C IN  NOM2   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_2
+C IN  DEGMAX : DEGRE MAXIMUM DU GRAPHE NOEUD->MAILLE
 C IN  TYPMAI : SD CONTENANT NOM DES TYPES ELEMENTS (&&CATA.NOMTM)
 C IN  NOMARL : NOM DE LA SD PRINCIPALE ARLEQUIN
 C IN  NORM   : NOM DE LA SD POUR STOCKAGE DES NORMALES
 C IN  NBMAC  : NOMBRE DE MAILLES DE LA ZONE DE COLLAGE
-C IN  NOMC   : NOM DE LA SD POUR LE COLLAGE 
+C IN  NOMC   : NOM DE LA SD POUR LE COLLAGE
 C OUT NAPP   : NOMBRE DE COUPLES D'APPARIEMENT
 C
 C SD DE SORTIE
@@ -55,39 +55,23 @@ C              MAILLE DOMAINE 1 -> MAILLES DOMAINE 2 EN VIS-A-VIS
 C              [MA1] : (MA2.1, MA2.2, MA2.3, ...)
 C                      AVEC MA* INDEX NOM*.GROUPEMA
 C
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C      
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C ----------------------------------------------------------------------
 C
       CHARACTER*24  NOMAPP,GRMAMA,NOMCOL,NGRMA1,NGRMA2
       CHARACTER*16  NOMBO1,NOMBO2,NOMARB,TRAVR
       INTEGER       ARLGEI,NHAPP
-C      
+C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ() 
+      CALL JEMARQ()
 C
 C --- INITIALISATIONS
-C 
+C
       NOMBO1 = NOM1(1:10)//'.BOITE'
-      NOMBO2 = NOM2(1:10)//'.BOITE'      
-      GRMAMA = NOM2(1:10)//'.GRMAMA'        
-      NOMARB = NOM2(1:10)//'.ARBRE'         
+      NOMBO2 = NOM2(1:10)//'.BOITE'
+      GRMAMA = NOM2(1:10)//'.GRMAMA'
+      NOMARB = NOM2(1:10)//'.ARBRE'
       NOMAPP = NOMARL(1:8)//'.GRAPH'
       NGRMA1 = NOM1(1:10)//'.GROUPEMA'
       NGRMA2 = NOM2(1:10)//'.GROUPEMA'
@@ -100,11 +84,11 @@ C
       CALL APPARI(MAIL  ,TYPMAI,NORM  ,GRMAMA,DEGMAX,
      &            NGRMA1,NOMBO1,NGRMA2,NOMBO2,NOMCOL,
      &            NOMAPP,NOMARB,NBMAC ,TRAVR ,NHAPP ,
-     &            NAPP)      
+     &            NAPP)
 C
 C --- MENAGE
 C
-      CALL ARLDSD('ARBRE',NOM2)      
+      CALL ARLDSD('ARBRE',NOM2)
       CALL JEDEMA()
 
       END

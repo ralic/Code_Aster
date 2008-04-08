@@ -3,22 +3,22 @@
      &                  NOMOPT, CXSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
       IMPLICIT     NONE
@@ -76,7 +76,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNOM,JEXNUM,JEXATR
+      CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
@@ -87,19 +87,10 @@ C-----------------------------------------------------------------------
       INTEGER       NBPG, NBPGP, SOMPGW, IMAP, IPG
 C
       REAL*8        VRESU(24)
-      REAL*8        CPXXI, CPYYI, CPZZI, CPXYI, CPXZI, CPYZI
-      REAL*8        CPXXJ, CPYYJ, CPZZJ, CPXYJ, CPXZJ, CPYZJ
       REAL*8        VAVMIS, VATRES, VMIS, TRES, TRAC, DETR
       REAL*8        TENSI(6), TENSJ(6), DTENS(6)
 C
-      CHARACTER*8  CHMAT1, NOMMAT, K8B
       CHARACTER*19 CNSR, CESR
-      CHARACTER*24 TYPMA
-
-C
-C-----------------------------------------------------------------------
-C234567                                                              012
-C-----------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
 C
@@ -144,7 +135,6 @@ C  BOUCLE SUR LES NOEUDS
 
             CNBNO = CNBNO + 1
             IF ( (L*INT(NBNOT/10.0D0)) .LT. CNBNO ) THEN
-               WRITE(6,*)NUMPAQ,'   ',(CNBNO-1)
                L = L + 1
             ENDIF
 
@@ -182,11 +172,11 @@ C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
                   TENSJ(4) = VWORK(ADRSJ + 4)
                   TENSJ(5) = VWORK(ADRSJ + 5)
                   TENSJ(6) = VWORK(ADRSJ + 6)
-            
+
 
                   DO 50 K=1, 6
                      DTENS(K) = TENSI(K) - TENSJ(K)
- 50               CONTINUE                
+ 50               CONTINUE
 
                   CALL RVINVT(DTENS,VMIS,TRES,TRAC,DETR)
 
@@ -199,7 +189,7 @@ C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
                   ENDIF
 
  40            CONTINUE
- 
+
  30         CONTINUE
 
 
@@ -264,7 +254,6 @@ C PASSE DIRECTEMENT A LA MAILLE SUIVANTE.
 
             NBPGP = NBPGP + NBPG
             IF ( (L*INT(NBPGT/10.0D0)) .LT. NBPGP ) THEN
-               WRITE(6,*)NUMPAQ,'   ',(NBPGP-NBPG)
                L = L + 1
             ENDIF
 
@@ -300,7 +289,7 @@ C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
                      TENSI(4) = VWORK(ADRSI + 4)
                      TENSI(5) = VWORK(ADRSI + 5)
                      TENSI(6) = VWORK(ADRSI + 6)
-               
+
                      TENSJ(1) = VWORK(ADRSJ + 1)
                      TENSJ(2) = VWORK(ADRSJ + 2)
                      TENSJ(3) = VWORK(ADRSJ + 3)
@@ -311,7 +300,7 @@ C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
 
                      DO 150 K=1, 6
                         DTENS(K) = TENSI(K) - TENSJ(K)
- 150                 CONTINUE                
+ 150                 CONTINUE
 
                      CALL RVINVT(DTENS,VMIS,TRES,TRAC,DETR)
 
@@ -324,7 +313,7 @@ C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
                      ENDIF
 
  140              CONTINUE
- 
+
  130           CONTINUE
 
 C 11. CONSTRUCTION D'UN CHAM_ELEM SIMPLE PUIS D'UN CHAM_ELEM CONTENANT

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 07/04/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -467,6 +467,13 @@ C
           END IF
           IF (INTERP(1:3).NE.'NON') THEN
             NOMCHA = NOMCHA(1:19)//'.VALE'
+            IF (IBID.GT.0) THEN
+              NOMCHA(20:24)='.VALE'
+            ELSE
+              NOMCHA(20:24)='.CELV'
+            END IF
+          END IF
+          IF (INTERP(1:3).NE.'NON') THEN
           ENDIF
           IF (LEFFOR)
      &     CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
@@ -536,13 +543,11 @@ C
                 CALL ASSERT(.FALSE.)
              ENDIF
              CHAMNO(20:24) = '.VALE'
-             IF (INTERP(1:3).EQ.'NON') THEN
-               CALL JEEXIN(CHAMNO,IBID)
-               IF (IBID.GT.0) THEN
+             CALL JEEXIN(CHAMNO,IBID)
+             IF (IBID.GT.0) THEN
                  CHAMNO(20:24) = '.VALE'
-               ELSE
+             ELSE
                  CHAMNO(20:24) = '.CELV'
-               END IF
              END IF
              CALL JEVEUO(CHAMNO,'E',LVALE)
 

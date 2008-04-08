@@ -1,29 +1,29 @@
       SUBROUTINE MORSIM(UNIT,NGRMAC,NGRMA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
-      CHARACTER*10  NGRMAC,NGRMA      
+      CHARACTER*10  NGRMAC,NGRMA
       INTEGER       UNIT
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -33,7 +33,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  UNIT   : UNITE D'IMPRESSION 
+C IN  UNIT   : UNITE D'IMPRESSION
 C IN  NGRMA  : NOM DE LA LISTE DES MAILLES DU GROUPE
 C IN  NGRMAC : NOM DE LA LISTE DES MAILLES DU GROUPE DE COLLAGE
 C
@@ -54,46 +54,46 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C      
+C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER      IRET 
+      INTEGER      IRET
       INTEGER      NLIG,NCOL,ILIG,ICOL,DIME,IVAL,IDIM
       INTEGER      JMDIM,JMVAL,JMINO
       INTEGER      JLGRF,JCINO
       CHARACTER*8  K8BID,NOMO,NOMA,NOMNO1,NOMNO2
       INTEGER      NUMNO1,NUMNO2,IOCC
       REAL*8       VALE
-C      
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- RECUPERATION MAILLAGE 
+C --- RECUPERATION MAILLAGE
 C
       CALL GETVID(' ','MODELE',0,1,1,NOMO,IOCC)
       IF (IOCC.EQ.0) THEN
         WRITE(UNIT,*) '<MORSE   > AFFICHAGE IMPOSSIBLE (VOIR MORSIM) '
-        GOTO 999  
+        GOTO 999
       ELSE
         WRITE(UNIT,*) '<MORSE   > SD DE LA MATRICE MORSE...'
       ENDIF
       CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',JLGRF)
-      NOMA = ZK8(JLGRF)                       
-C          
+      NOMA = ZK8(JLGRF)
+C
       CALL JEEXIN(NGRMAC(1:10)//'.INO',IRET)
       IF (IRET.EQ.0) THEN
         WRITE(UNIT,*) '<MORSE   > SD MORSE: <',
-     &          NGRMAC(1:10)//'.INO','> N''EXISTE PAS'        
+     &          NGRMAC(1:10)//'.INO','> N''EXISTE PAS'
       ELSE
         CALL JEVEUO(NGRMAC(1:10)//'.INO','L',JCINO)
-        CALL JELIRA(NGRMAC(1:10)//'.INO','LONMAX',NLIG,K8BID)      
-C        
+        CALL JELIRA(NGRMAC(1:10)//'.INO','LONMAX',NLIG,K8BID)
+C
         CALL JEEXIN(NGRMA(1:10)//'.MORSE.DIME',IRET)
         IF (IRET.EQ.0) THEN
           WRITE(UNIT,*) '<MORSE   > SD MORSE: <',
-     &            NGRMA(1:10)//'.MORSE.DIME','> N''EXISTE PAS'  
-          GOTO 999       
+     &            NGRMA(1:10)//'.MORSE.DIME','> N''EXISTE PAS'
+          GOTO 999
         ELSE
           CALL JEVEUO(NGRMA(1:10)//'.MORSE.DIME','L',JMDIM)
           DIME = ZI(JMDIM)
@@ -102,33 +102,33 @@ C
         CALL JEEXIN(NGRMA(1:10)//'.MORSE.INO',IRET)
         IF (IRET.EQ.0) THEN
           WRITE(UNIT,*) '<MORSE   > SD MORSE: <',
-     &            NGRMA(1:10)//'.MORSE.INO','> N''EXISTE PAS'  
-          GOTO 999       
+     &            NGRMA(1:10)//'.MORSE.INO','> N''EXISTE PAS'
+          GOTO 999
         ENDIF
-C        
+C
         WRITE(UNIT,*) '<MORSE   > ... DIMENSION DES MATRICES NODALES: ',
      &                 DIME
-C   
+C
         CALL JEEXIN(NGRMA(1:10)//'.MORSE.VALE',IRET)
         IF (IRET.EQ.0) THEN
           WRITE(UNIT,*) '<MORSE   > SD MORSE: <',
-     &            NGRMA(1:10)//'.MORSE.VALE','> N''EXISTE PAS'  
-          GOTO 999       
+     &            NGRMA(1:10)//'.MORSE.VALE','> N''EXISTE PAS'
+          GOTO 999
         ELSE
           CALL JEVEUO(NGRMA(1:10)//'.MORSE.VALE','L',JMVAL)
           IVAL = 1
         ENDIF
 C
         DO 70 ILIG = 1 , NLIG
-        
+
           CALL JEVEUO(JEXNUM(NGRMA(1:10)//'.MORSE.INO',ILIG),'L',JMINO)
-          NUMNO1 = ZI(JCINO+ILIG-1) 
-          CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUMNO1),NOMNO1) 
-                
+          NUMNO1 = ZI(JCINO+ILIG-1)
+          CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUMNO1),NOMNO1)
+
           IF (NUMNO1.NE.0) THEN
             CALL JELIRA(JEXNUM(NGRMA(1:10)//'.MORSE.INO',ILIG),'LONMAX',
-     &                  NCOL,K8BID)    
-            DO 80 ICOL = 1 , NCOL 
+     &                  NCOL,K8BID)
+            DO 80 ICOL = 1 , NCOL
               NUMNO2 = ZI(JMINO+ICOL-1)
               CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUMNO2),NOMNO2)
               WRITE(UNIT,*) '<MORSE   > ...... COUPLE (',
@@ -137,16 +137,16 @@ C
               DO 90 IDIM = 1,DIME
                 VALE = ZR(JMVAL+IVAL-1)
                 WRITE(UNIT,*) '<MORSE   > ...... VALE  : ',IDIM,
-     &                        ' - ',VALE   
-                IVAL = IVAL + 1           
-  90          CONTINUE                                   
- 80         CONTINUE 
-          ENDIF            
- 70     CONTINUE 
+     &                        ' - ',VALE
+                IVAL = IVAL + 1
+  90          CONTINUE
+ 80         CONTINUE
+          ENDIF
+ 70     CONTINUE
 
-      ENDIF       
+      ENDIF
 C
-  999 CONTINUE      
+  999 CONTINUE
 C
       CALL JEDEMA()
       END

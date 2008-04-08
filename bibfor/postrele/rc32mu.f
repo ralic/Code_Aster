@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IBID, NS(13), NBABSC, JABSC, IRET, JMUNE, JMUNO,
-     &             I, J, K, L, NDIM, JCONT, NCMP
+     &             I, J, K, L, NDIM, JCONT, NCMP, JCORP
       PARAMETER  ( NCMP = 6 )
       REAL*8       PREC, MOMEN0, MOMEN1
       REAL*8 VALR
@@ -121,6 +121,16 @@ C
       IF( NS(12) .NE. 0 )THEN
         CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(12))
       ENDIF
+
+C
+      CALL WKVECT ( '&&RC3200.CORPS', 'V V L', 1, JCORP )
+      IF( NS(10) .NE. 0 )THEN
+        ZL(JCORP) = .TRUE.
+      ELSE
+        ZL(JCORP) = .FALSE.
+      ENDIF
+C
+
 C
 C
 C --- ON RECUPERE L'ABSC_CURV DANS LA TABLE 'TABL_MX'

@@ -1,34 +1,34 @@
       SUBROUTINE COTANG(NBNO,DIME,TYPTAN,TANMAX,COETAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER DIME
-      INTEGER NBNO  
+      INTEGER NBNO
       INTEGER TANMAX
       REAL*8  COETAN(TANMAX)
-      CHARACTER*8 TYPTAN 
-C      
+      CHARACTER*8 TYPTAN
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -48,7 +48,7 @@ C           ( C1.1.1,C1.1.2,...,[C1.2.1,C1.2.2,...],
 C             [C2.1.1,C2.1.2,...,[C2.2.1,...]] )
 C
 C    FORME Ca.b.c
-C          a: NUMERO DU NOEUD (VAUT 1 SI TANGENTES 
+C          a: NUMERO DU NOEUD (VAUT 1 SI TANGENTES
 C             CONSTANTES SUR LA MAILLE)
 C          b: NUMERO DE LA TANGENTE (1 OU 2 TANGENTES SUIVANT 1D OU 2D)
 C          c: COEFFICIENT DE LA TANGENTE
@@ -59,13 +59,13 @@ C             C*.1.1 COEF 1 TANG 1 NOEUD *
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER I      
+      INTEGER I
 C
 C ----------------------------------------------------------------------
 C
       DO 10 I = 1, TANMAX
         COETAN(I) = 0.D0
- 10   CONTINUE      
+ 10   CONTINUE
 C
       IF (DIME.EQ.2) THEN
         IF (NBNO.EQ.3) THEN
@@ -82,7 +82,7 @@ C
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-      ELSE IF (DIME.EQ.3) THEN     
+      ELSE IF (DIME.EQ.3) THEN
         IF (NBNO.EQ.3) THEN
           COETAN(1) = -1.D0
           COETAN(2) =  1.D0
@@ -94,7 +94,7 @@ C
         ELSEIF (NBNO.EQ.6) THEN
           COETAN(1)  = -3.D0
           COETAN(2)  = -1.D0
-          COETAN(4)  =  4.D0         
+          COETAN(4)  =  4.D0
           COETAN(7)  = -3.D0
           COETAN(9)  = -1.D0
           COETAN(12) =  4.D0
@@ -228,7 +228,7 @@ C
             COETAN(32) =  1.D0
           ELSE
             CALL ASSERT(.FALSE.)
-          ENDIF  
+          ENDIF
         ELSEIF (NBNO.EQ.8) THEN
           COETAN(1)   = -3.D0
           COETAN(2)   = -1.D0
@@ -263,7 +263,7 @@ C
           COETAN(77)  = -1.D0
           COETAN(78)  =  2.D0
           COETAN(79)  =  1.D0
-          COETAN(80)  =  2.D0          
+          COETAN(80)  =  2.D0
           COETAN(81)  =  1.D0
           COETAN(82)  =  1.D0
           COETAN(83)  =  1.D0
@@ -293,8 +293,8 @@ C
           COETAN(119) =  2.D0
           COETAN(120) = -1.D0
           COETAN(121) = -1.D0
-          COETAN(124) =  1.D0        
-          TYPTAN      = 'VARIABLE' 
+          COETAN(124) =  1.D0
+          TYPTAN      = 'VARIABLE'
         ELSEIF (NBNO.EQ.9) THEN
           COETAN(1)   = -3.D0
           COETAN(2)   = -1.D0
@@ -307,13 +307,13 @@ C
           COETAN(23)  = -4.D0
           COETAN(29)  = -3.D0
           COETAN(30)  = -1.D0
-          COETAN(33)  =  4.D0       
+          COETAN(33)  =  4.D0
           COETAN(39)  =  3.D0
           COETAN(40)  =  1.D0
           COETAN(43)  = -4.D0
           COETAN(47)  =  1.D0
           COETAN(48)  =  3.D0
-          COETAN(51)  = -4.D0        
+          COETAN(51)  = -4.D0
           COETAN(57)  = -1.D0
           COETAN(58)  = -3.D0
           COETAN(61)  =  4.D0
@@ -346,10 +346,9 @@ C
           COETAN(160) =  1.D0
           TYPTAN      = 'VARIABLE'
         ELSE
-          WRITE(6,*) 'NBNO: ',NBNO
           CALL ASSERT(.FALSE.)
         ENDIF
       ELSE
-        CALL ASSERT(.FALSE.)  
+        CALL ASSERT(.FALSE.)
       ENDIF
       END

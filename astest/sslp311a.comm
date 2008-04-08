@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,7 +97,7 @@ G01A=CALC_G(    RESULTAT=CHAMDEPL,
 
 TEST_TABLE(       TABLE=G01A,
                        NOM_PARA='G',
-                           VALE=1.012506E2,
+                           VALE=1.012506E2,REFERENCE='ANALYTIQUE',
                       PRECISION=0.05    )
 
 #
@@ -121,7 +121,7 @@ G01B=CALC_G(    RESULTAT=CHAMDEPL,
 
 TEST_TABLE(       TABLE=G01B,
                        NOM_PARA='G',
-                           VALE=1.012506E2,
+                           VALE=1.012506E2,REFERENCE='ANALYTIQUE',
                       PRECISION=0.005    )
 
 #
@@ -146,7 +146,7 @@ G01C=CALC_G(    RESULTAT=CHAMDEPL,
 
 TEST_TABLE(       TABLE=G01C,
                        NOM_PARA='G',
-                           VALE=1.012506E2,
+                           VALE=1.012506E2,REFERENCE='ANALYTIQUE',
                       PRECISION=0.005    )
 
 #
@@ -169,7 +169,7 @@ G01D=CALC_G(    RESULTAT=CHAMDEPL,
 
 TEST_TABLE(       TABLE=G01D,
                        NOM_PARA='G',
-                           VALE=1.012506E2,
+                           VALE=1.012506E2,REFERENCE='ANALYTIQUE',
                       PRECISION=0.005    )
 
 #
@@ -201,7 +201,7 @@ G02A=CALC_G(    RESULTAT=CHAMDEPL,
 
 TEST_TABLE(       TABLE=G02A,
                        NOM_PARA='G',
-                           VALE=9.673620E1,
+                           VALE=9.673620E1,REFERENCE='ANALYTIQUE',
                       PRECISION=0.05    )
 
 #
@@ -225,7 +225,7 @@ G02B=CALC_G(    RESULTAT=CHAMDEPL,
 
 TEST_TABLE(       TABLE=G02B,
                        NOM_PARA='G',
-                           VALE=9.673620E1,
+                           VALE=9.673620E1,REFERENCE='ANALYTIQUE',
                       PRECISION=0.005    )
 
 #
@@ -248,7 +248,7 @@ G02C=CALC_G(    RESULTAT=CHAMDEPL,
 
 TEST_TABLE(       TABLE=G02C,
                        NOM_PARA='G',
-                           VALE=9.673620E1,
+                           VALE=9.673620E1,REFERENCE='ANALYTIQUE',
                       PRECISION=0.005    )
 
 #
@@ -271,174 +271,8 @@ G02D=CALC_G(    RESULTAT=CHAMDEPL,
 
 TEST_TABLE(       TABLE=G02D,
                        NOM_PARA='G',
-                           VALE=9.673620E1,
+                           VALE=9.673620E1,REFERENCE='ANALYTIQUE',
                       PRECISION=0.05    )
 
 FIN()
-#
-#
-##
-## CALCUL DE K1 ET K2 NON DISPONIBLE POUR UN BIMATERIAU
-##
-#
-#GK01A = CALC_G ( MODELE : MO
-#                         DEPL   : DEP
-#                         THETA  : THETA01A
-#                         FOND   : FOND1
-#                         CHARGE : CH
-#                         CHAM_MATER : CHMAT
-#                         SYME_CHAR : 'SANS'
-#                         OPTION : 'CALC_K_G'
-#                      ) ;
-#
-#GK01B = CALC_G ( MODELE : MO
-#                         DEPL   : DEP
-#                         THETA  : THETA01B
-#                         FOND   : FOND1
-#                         CHARGE : CH
-#                         CHAM_MATER : CHMAT
-#                         SYME_CHAR : 'SANS'
-#                         OPTION : 'CALC_K_G'
-#                      ) ;
-#
-#GK01C = CALC_G ( MODELE : MO
-#                         DEPL   : DEP
-#                         THETA  : THETA01C
-#                         FOND   : FOND1
-#                         CHARGE : CH
-#                         CHAM_MATER : CHMAT
-#                         SYME_CHAR : 'SANS'
-#                         OPTION : 'CALC_K_G'
-#                      ) ;
-#
-#GK01D = CALC_G ( MODELE : MO
-#                         DEPL   : DEP
-#                         THETA  : THETA01D
-#                         FOND   : FOND1
-#                         CHARGE : CH
-#                         CHAM_MATER : CHMAT
-#                         SYME_CHAR : 'SANS'
-#                         OPTION : 'CALC_K_G'
-#                      ) ;
-#
-#
-#
-#
-#GK02A = CALC_G ( MODELE : MO
-#                         DEPL   : DEP
-#                         THETA  : THETA02A
-#                         FOND   : FOND2
-#                         CHARGE : CH
-#                         CHAM_MATER : CHMAT
-#                         SYME_CHAR : 'SANS'
-#                         OPTION : 'CALC_K_G'
-#                      ) ;
-#
-#GK02B = CALC_G ( MODELE : MO
-#                         DEPL   : DEP
-#                         THETA  : THETA02B
-#                         FOND   : FOND2
-#                         CHARGE : CH
-#                         CHAM_MATER : CHMAT
-#                         SYME_CHAR : 'SANS'
-#                         OPTION : 'CALC_K_G'
-#                      ) ;
-#
-#GK02C = CALC_G ( MODELE : MO
-#                         DEPL   : DEP
-#                         THETA  : THETA02C
-#                         FOND   : FOND2
-#                         CHARGE : CH
-#                         CHAM_MATER : CHMAT
-#                         SYME_CHAR : 'SANS'
-#                         OPTION : 'CALC_K_G'
-#                      ) ;
-#
-#GK02D = CALC_G ( MODELE : MO
-#                         DEPL   : DEP
-#                         THETA  : THETA02D
-#                         FOND   : FOND2
-#                         CHARGE : CH
-#                         CHAM_MATER : CHMAT
-#                         SYME_CHAR : 'SANS'
-#                         OPTION : 'CALC_K_G'
-#                      ) ;
-#
-##
-## RESULTATS POINT DROIT
-##
-#       TEST_TABLE ( TABLE     : GK01A
-#                    NOM_PARA  : 'K1'
-#                    VALE      : 6.3145E6
-#                    PRECISION : 0.5    ) ;
-#       TEST_TABLE ( TABLE     : GK01B
-#                    NOM_PARA  : 'K1'
-#                    VALE      : 6.3145E6
-#                    PRECISION : 0.01    ) ;
-#       TEST_TABLE ( TABLE     : GK01C
-#                    NOM_PARA  : 'K1'
-#                    VALE      : 6.3145E6
-#                    PRECISION : 0.01    ) ;
-#       TEST_TABLE ( TABLE     : GK01D
-#                    NOM_PARA  : 'K1'
-#                    VALE      : 6.3145E6
-#                    PRECISION : 0.01    ) ;
-#       TEST_TABLE ( TABLE     : GK01A
-#                    NOM_PARA  : 'K2'
-#                    VALE      : 0.4831E6
-#                    PRECISION : 0.5    ) ;
-#       TEST_TABLE ( TABLE     : GK01B
-#                    NOM_PARA  : 'K2'
-#                    VALE      : 0.4831E6
-#                    PRECISION : 0.01    ) ;
-#       TEST_TABLE ( TABLE     : GK01C
-#                    NOM_PARA  : 'K2'
-#                    VALE      : 0.4831E6
-#                    PRECISION : 0.01    ) ;
-#       TEST_TABLE ( TABLE     : GK01D
-#                    NOM_PARA  : 'K2'
-#                    VALE      : 0.4831E6
-#                    PRECISION : 0.01    ) ;
-##
-## RESULTATS POINTS GAUCHE
-##
-#       TEST_TABLE ( TABLE     : GK02A
-#                    NOM_PARA  : 'K1'
-#                    VALE      : 5.6694E6
-#                    PRECISION : 0.5    ) ;
-##
-#       TEST_TABLE ( TABLE     : GK02B
-#                    NOM_PARA  : 'K1'
-#                    VALE      : 5.6694E6
-#                    PRECISION : 0.01    ) ;
-##
-#       TEST_TABLE ( TABLE     : GK02C
-#                    NOM_PARA  : 'K1'
-#                    VALE      : 5.6694E6
-#                    PRECISION : 0.01    ) ;
-##
-#       TEST_TABLE ( TABLE     : GK02D
-#                    NOM_PARA  : 'K1'
-#                    VALE      : 5.6694E6
-#                    PRECISION : 0.01    ) ;
-##
-#       TEST_TABLE ( TABLE     : GK02A
-#                    NOM_PARA  : 'K2'
-#                    VALE      : -2.4852E6
-#                    PRECISION : 0.5    ) ;
-##
-#       TEST_TABLE ( TABLE     : GK02B
-#                    NOM_PARA  : 'K2'
-#                    VALE      : -2.4852E6
-#                    PRECISION : 0.01    ) ;
-##
-#       TEST_TABLE ( TABLE     : GK02C
-#                    NOM_PARA  : 'K2'
-#                    VALE      : -2.4852E6
-#                    PRECISION : 0.01    ) ;
-##
-#       TEST_TABLE ( TABLE     : GK02D
-#                    NOM_PARA  : 'K2'
-#                    VALE      : -2.4852E6
-#                    PRECISION : 0.01    ) ;
-##
+

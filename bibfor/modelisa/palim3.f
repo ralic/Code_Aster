@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
+      CHARACTER*32     JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       N1, IER, IM, NUMA, NUME, IBID, LGP, LGM,
      &              ILIST, KLIST, LXLGUT, NBV1, I, NBMC, NBMA, JNOMA
@@ -141,7 +141,7 @@ C
  30   CONTINUE
       CALL JEDETR ( NOMJV )
 C
-      IF ( IER .NE. 0 ) CALL U2MESS('F','ELEMENTS_94')
+      IF ( IER .NE. 0 ) CALL ASSERT(.FALSE.)
 C
       CALL JEDEMA ( )
       END

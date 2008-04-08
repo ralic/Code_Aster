@@ -7,7 +7,7 @@
       CHARACTER*(*)       CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF SOUSTRUC  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
-      REAL*8 VALR
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -53,15 +52,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNOM, JEXNUM
+      CHARACTER*32       JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       IBID, I, J, K, N, IDIS, INOE, INOD, IRE1, IRE2
+      INTEGER       I, J, K, N, IDIS, INOE, INOD
       REAL*8        XA, YA, ZA, XB, YB, ZB, XAB, YAB, ZAB, AB2, XM, YM,
      &              ZM, XAM, YAM, ZAM, C, C2, XV, YV, ZV, V2, R8B,
-     &              ECART,R8PREM
-      COMPLEX*16    C16B
-      CHARACTER*8   K8B, NOMN
-      CHARACTER*19  NOMT19
+     &              ECART,R8PREM,VALR
+      CHARACTER*8   NOMN
       CHARACTER*24  NOMNOE
       CHARACTER*24 VALK(2)
 C DEB ------------------------------------------------------------------
@@ -120,12 +117,13 @@ C                         NE DEPASSE PAS LA TOLERANCE ---
          R8B = SQRT( R8B )
          IF ( R8B .GT. PREC ) THEN
             V2 = SQRT( V2 )
-            IF (IERA.EQ.0) THEN
-              CALL U2MESS('A','SOUSTRUC_22')
-             IERA = IERA+1
-            ENDIF
             CALL JENUNO( JEXNUM(NOMNOE,INOD),NOMN)
-            WRITE(*,*)'NOEUD ', NOMN,'TROP ELOIGNE DISTANCE',V2
+            IF (IERA.EQ.0) THEN
+              CALL U2MESG('A','SOUSTRUC_22',1,NOMN,0,0,1,V2)
+              IERA = IERA+1
+            ELSE
+              CALL U2MESG('I','SOUSTRUC_22',1,NOMN,0,0,1,V2)
+            ENDIF
             IER = IER + 1
          ENDIF
 C        --- VERIFICATION QUE LA PROJECTION EST BIEN

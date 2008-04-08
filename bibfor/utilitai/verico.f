@@ -1,6 +1,6 @@
       SUBROUTINE VERICO(NBMATO,NBPART,VAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,11 +115,6 @@ C CORPS DU PROGRAMME
  4          CONTINUE
             DO 5 I=ZI4(IDCO-1+ZI(LISTE+ID)),
      &                    ZI4(IDCO-1+ZI(LISTE+ID)+1)-1
-              IF(ZI4(CO-1+I).GT.NBMATO) THEN
-C                  WRITE(6,*)'TOTO'
-                  WRITE(6,*)'I',I,'LISTE',ZI(LISTE+ID)
-                  write(6,*)ZI(RENUM2-1+ZI4(CO-1+I)),ZI4(CO-1+I)
-              ENDIF
               IF (ZI(FLAGMA-1+ZI4(CO-1+I)).EQ.0) THEN
                 IF(ZI(NUMSDM-1+ZI(RENUM2-1+ZI4(CO-1+I))).EQ.NBRE)THEN
                   ZI(NUMSDM-1+ZI(RENUM2-1+ZI4(CO-1+I)))=NBPART-1

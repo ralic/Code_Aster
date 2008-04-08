@@ -3,7 +3,7 @@
       INTEGER             NBOCC, IMPR, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,10 +43,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*4   CNUM
       CHARACTER*8   CODE
-      CHARACTER*24  CNOM  , DESCRI, FICHIE
-      INTEGER       LONG(5), LADR(8)
+      CHARACTER*24  CNOM  , DESCRI
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -68,11 +66,8 @@ C
   10     CONTINUE
 C
          CALL GETVTX('CONCEPT','OPTION',IOCC,1,1,DESCRI,L)
-         WRITE(6,*) ' <AIDCON> : ',DESCRI
          IF ( ZK16(LLIST) .EQ. '*' ) THEN
-         WRITE(6,*) ' <AIDCON> :  ON A LU ETOILE '
             IF ( DESCRI .EQ. 'TOUT_TYPE' ) THEN
-               WRITE(6,*) ' <AIDCON> : ', IMPR
                CALL GCECCO('AIDE',IMPR,CODE,' ')
             ELSEIF ( DESCRI .EQ. 'CREER' ) THEN
                CALL GCECCO('AIDE',IMPR,CODE,' ')

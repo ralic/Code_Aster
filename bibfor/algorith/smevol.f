@@ -5,7 +5,7 @@
       CHARACTER*16      OPTION
       CHARACTER*24      MATE, COMPOR, PHASIN
       CHARACTER*(*)     MODELZ
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32                              ZK32
       CHARACTER*80                                       ZK80
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNOM, JEXNUM
+      CHARACTER*32    JEXNOM
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
@@ -128,9 +128,9 @@ C --- ET STOCKAGE DU CHAMP INITIAL DANS LA S D EVOL_THER (PAS 0 ET 1)
 
       IF (NUMPHA.EQ.0) THEN
         NUMPHI=1
-        
+
 C NUME_ORDRE = 0
-C ----------------        
+C ----------------
         NUM0 = ZI(JORDR)
         CALL RSEXCH ( TEMPER, 'TEMP', NUM0, TEMPE, IRET )
         IF (IRET.GT.0) THEN
@@ -153,16 +153,16 @@ C
         OPTIO2 = 'META_INIT_ELNO'
         LPAOUT(1) = 'PPHASNOU'
         LCHOUT(1) = '&&SMEVOL.PHAS_META1'
- 
+
         CALL COPISD('CHAM_ELEM_S','V',COMPOR,LCHOUT(1))
         CALL CALCUL('S',OPTIO2,LIGRMO,4,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
      &                'V')
- 
+
         CALL RSEXCH(TEMPER,'META_ELNO_TEMP',NUM0,NOMCH,IRET)
         CALL COPISD('CHAMP_GD','G','&&SMEVOL.PHAS_META1',NOMCH(1:19))
         CALL RSNOCH(TEMPER,'META_ELNO_TEMP',NUM0,' ')
         WRITE(IFM,1010) 'META_ELNO_TEMP', NUM0, INST0
-        
+
 C NUME_ORDRE = 1
 C ----------------
         NUM1 = ZI(JORDR+1)
@@ -182,9 +182,9 @@ C ----------------
         LCHIN(3) = TEMPE
         LPAIN(4) = 'PPHASIN'
         LCHIN(4) = PHASIN
-        
+
 C INITIALISATION AVEC 'META_INIT_ELNO'
-C        
+C
         OPTIO2 = 'META_INIT_ELNO'
         LPAOUT(1) = 'PPHASNOU'
         LCHOUT(1) = '&&SMEVOL.PHAS_META1'

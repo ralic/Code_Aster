@@ -3,7 +3,7 @@
      &                  IPNO  ,IPNOQU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/01/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -80,7 +80,6 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      INO,JDES   
       INTEGER      NOEUMI,NOEUSO
-      LOGICAL      LVERIF,LQUADV 
 C
 C ----------------------------------------------------------------------
 C
@@ -88,14 +87,12 @@ C
 C
 C --- INITIALISATIONS
 C 
-      LVERIF = .FALSE.
-      LQUADV = .FALSE.
       CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',NUMAIL),'L',JDES)      
 C
 C --- NOMBRE DE NOEUDS SOMMETS ET MILIEUX
 C
       CALL NBNOCP(NOMO  ,NOMTM ,NBNO  ,NUMAIL,INDQUA,
-     &            NOEUMI,NOEUSO,LVERIF,LQUADV)   
+     &            NOEUMI,NOEUSO)   
 C
 C --- AJOUT DE LA MAILLE
 C 

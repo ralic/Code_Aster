@@ -4,7 +4,7 @@
       INTEGER    N, LDA, LDEVEC
       REAL *8 EVAL(*), RWK(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,29 +35,31 @@ C      ACOPY : MATRICE DE TRAVAIL.
 C      RWK   : VECTEUR DE TRAVAIL.
 C      CWK   : VECTEUR DE TRAVAIL.
 C-----------------------------------------------------------------------
-      COMPLEX    *16 A(LDA,*), EVEC(LDEVEC,*), ACOPY(N,*), CWK(*)
+      COMPLEX*16 A(LDA,*), EVEC(LDEVEC,*), ACOPY(N,*), CWK(*)
       INTEGER    I, J
-      COMPLEX    *16 SCALE
-      REAL *8 AIMAG, DBLE
+      COMPLEX*16 SCALE
+      REAL*8     DBLE
       INTEGER    IZAMAX
 C
       IF (N .LT. 1) THEN
-         WRITE(6,*) 'THE ARGUMENT N = %(I1).  THE '//
-     &               'ORDER OF THE MATRIX MUST BE AT LEAST 1.'
+CC         WRITE(6,*) 'THE ARGUMENT N = %(I1).  THE '//
+CC     &               'ORDER OF THE MATRIX MUST BE AT LEAST 1.'
          CALL ASSERT(.FALSE.)
       END IF
 C
       IF (LDA .LT. N) THEN
-          WRITE(6,*) 'THE ARGUMENT LDA = %(I1).  THE '//
-     &               'LEADING DIMENSION OF THE MATRIX MUST BE AT '//
-     &               'LEAST EQUAL TO THE ORDER, N = %(I2).'
+CC          WRITE(6,*) 'THE ARGUMENT LDA = %(I1).  THE '//
+CC     &               'LEADING DIMENSION OF THE MATRIX MUST BE AT '//
+CC     &               'LEAST EQUAL TO THE ORDER, N = %(I2).'
+         CALL ASSERT(.FALSE.)
       END IF
 C
       IF (LDEVEC .LT. N) THEN
-         WRITE(6,*)  'THE ARGUMENT LDEVEC = %(I1).  THE '//
-     &               'LEADING DIMENSION OF THE EIGENVECTOR MATRIX '//
-     &               'MUST BE AT LEAST EQUAL TO THE ORDER, N = '//
-     &               '%(I2).'
+CC         WRITE(6,*)  'THE ARGUMENT LDEVEC = %(I1).  THE '//
+CC     &               'LEADING DIMENSION OF THE EIGENVECTOR MATRIX '//
+CC     &               'MUST BE AT LEAST EQUAL TO THE ORDER, N = '//
+CC     &               '%(I2).'
+         CALL ASSERT(.FALSE.)
       END IF
 C    --- A EST COPIEE DANS ACOPY
       DO 10  I=1, N
@@ -88,5 +90,4 @@ C   --- NORMALISATION DES VECTEURS PROPRES ---
      &       CALL ZMULT (N, 1.0D0/SCALE, EVEC(1,J), 1)
    20 CONTINUE
 C
- 9999 CONTINUE
       END

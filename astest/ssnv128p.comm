@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 08/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,8 +72,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                ITER_FROT_MAXI = 10,
                                ITER_CONT_MAXI = 1,
                                FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0,
-                               PROJECTION     = 'QUADRATIQUE'));
+                               COULOMB        = 1.0,));
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',

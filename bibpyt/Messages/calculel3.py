@@ -1,21 +1,21 @@
-#@ MODIF calculel3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel3 Messages  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -46,7 +46,7 @@ cata_msg = {
 """),
 
 6 : _("""
-  option  %(k1)s  non traitée pour un résultat de type  %(k2)s 
+  option  %(k1)s  non traitée pour un résultat de type  %(k2)s
 """),
 
 7 : _("""
@@ -55,17 +55,17 @@ cata_msg = {
 
 8 : _("""
  les champs SIEF_ELGA_DEPL, SIEF_ELGA, SIGM_ELNO_COQU et SIGM_ELNO_DEPL sont absents :
- on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s 
+ on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
 """),
 
 9 : _("""
  le champ  SIGM_ELNO_DEPL est absent :
- on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s 
+ on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
 """),
 
 10 : _("""
  le champ  SIGM_ELNO_COQU est absent :
- on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s 
+ on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
 """),
 
 11 : _("""
@@ -93,15 +93,15 @@ cata_msg = {
 """),
 
 18 : _("""
- pas de champ de contraintes pour calculer  %(k1)s 
+ pas de champ de contraintes pour calculer  %(k1)s
 """),
 
 19 : _("""
- probleme à l'appel de ALCHML pour  %(k1)s 
+ probleme à l'appel de ALCHML pour  %(k1)s
 """),
 
 20 : _("""
- pas de champ d'endommagement pour calculer  %(k1)s 
+ pas de champ d'endommagement pour calculer  %(k1)s
 """),
 
 21 : _("""
@@ -109,11 +109,11 @@ cata_msg = {
 """),
 
 22 : _("""
-  option inexistante: %(k1)s 
+  option inexistante: %(k1)s
 """),
 
 23 : _("""
- option :  %(k1)s 
+ option :  %(k1)s
 """),
 
 25 : _("""
@@ -121,7 +121,7 @@ cata_msg = {
 """),
 
 27 : _("""
- type :  %(k1)s  incompatible avec l'option :  %(k2)s 
+ type :  %(k1)s  incompatible avec l'option :  %(k2)s
 """),
 
 28 : _("""
@@ -153,7 +153,7 @@ cata_msg = {
 """),
 
 38 : _("""
- on ne traite pas le type_scalaire: %(k1)s 
+ on ne traite pas le type_scalaire: %(k1)s
 """),
 
 39 : _("""
@@ -243,7 +243,7 @@ cata_msg = {
 """),
 
 64 : _("""
- l'instant du calcul est pris  arbitrairement a 0.0 
+ l'instant du calcul est pris  arbitrairement a 0.0
 """),
 
 65 : _("""
@@ -255,11 +255,11 @@ cata_msg = {
 """),
 
 71 : _("""
- il faut 1 chargement de rotation et un seul. 
+ il faut 1 chargement de rotation et un seul.
 """),
 
 72 : _("""
-  il ne faut pas definir plus d"un champ de vitesse 
+  il ne faut pas definir plus d"un champ de vitesse
 """),
 
 73 : _("""
@@ -267,7 +267,7 @@ cata_msg = {
 """),
 
 74 : _("""
- type scalaire interdit : %(k1)s 
+ type scalaire interdit : %(k1)s
 """),
 
 79 : _("""
@@ -283,11 +283,11 @@ cata_msg = {
 """),
 
 84 : _("""
- il n y a pas de parametre  %(k1)s  associe a la grandeur: %(k2)s  dans l option: %(k3)s 
+ il n y a pas de parametre  %(k1)s  associe a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
 85 : _("""
- il y a plusieurs parametres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s 
+ il y a plusieurs parametres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
 89 : _("""
@@ -323,6 +323,17 @@ cata_msg = {
   pour prendre en compte les termes d'inertie,
   il est préférable d'utiliser la commande "CALC_ELEM".
   le mot cle "ACCE" n'est pas traité et les résultats risquent d'être faux.
+"""),
+
+97 : _("""
+  Erreur d'utilisation :
+    Fonctionnalité : PROJ_CHAMP
+    On cherche à projeter des mailles sur certains noeuds.
+    Mais la la liste de noeuds est vide.
+
+  Conseil :
+    Cette erreur peut venir d'une mauvaise utilisation du mot clé
+    PROJ_CHAMP/DISTANCE_MAX
 """),
 
 }

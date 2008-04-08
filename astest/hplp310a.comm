@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,8 @@ MA=LIRE_MAILLAGE()
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
       AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'D_PLAN'))
+
+
 
 MAT=DEFI_MATERIAU(ELAS=_F(  E = 1000., NU = 0.3, ALPHA = 1.E-6))
 
@@ -82,7 +84,7 @@ TEMP_EV=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
 TEMP_EV=CREA_RESU(    reuse=TEMP_EV,OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                         NOM_CHAM='TEMP',
                         AFFE=_F(  CHAM_GD = TEMP_IMP,
-                                  INST = 1.)
+                                  INST = (1.,10.,),)
                     )
 
 CL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
@@ -113,51 +115,9 @@ CL_SL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
 
                      )
 
-CH0=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.30)
-                            )
-
-CH1=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.32)
-                            )
-
-CH2=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.33)
-                            )
-
-CH3=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.335)
-                            )
-
-CH4=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.34)
-                            )
-
-CH5=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.345)
-                            )
-
-CH6=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.35)
-                            )
-
-CH7=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.36)
-                            )
-
-CH8=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.38)
-                            )
-
-CH9=AFFE_CHAR_MECA(   MODELE=MO,
-              PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.40)
-                            )
-
 CH10=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -1.)
                             )
-
-#CH_TEMP=AFFE_CHAR_MECA(   MODELE=MO, TEMP_CALCULEE=TEMP_EV )
 
 # champ de materiau sans temperature :
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
@@ -172,11 +132,9 @@ CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
             AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',EVOL=TEMP_EV,VALE_REF=0.),
                          )
 
-L_INST=DEFI_LIST_REEL(
-                             DEBUT=0.0,
-                              INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 1)
-                           )
 INSTMECA=DEFI_LIST_REEL(VALE=1.)
+
+
 # -------------------------------------------------------------
 # CALCUL AVEC LES CHARGEMENTS 1 ET 2 DE LA FICHE (SANS CONTACT)
 # -------------------------------------------------------------
@@ -187,7 +145,6 @@ CHAMDEPP=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=(
                           )
 
 CHAMDEPT=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT2,EXCIT=(
-              #_F( CHARGE = CH_TEMP),
               _F( CHARGE = CL_SL)),
               LIST_INST=INSTMECA,
                           )
@@ -196,296 +153,39 @@ CHAMDEPT=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT2,EXCIT=(
 # CALCUL AVEC LE CHARGEMENT 3 DE LA FICHE POUR DIFFERENTES
 # VALEUR DU PARAMETRE ALPHA (AVEC CONTACT)
 # -----------------------------------------------------------
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(1., 0.30,
+                            2., 0.32,
+                            3., 0.33,
+                            4., 0.335,
+                            5., 0.34,
+                            6., 0.345,
+                            7., 0.35,
+                            8., 0.36,
+                            9., 0.38,
+                            10., 0.40,),
+                      PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',);
 
+L_INST=DEFI_LIST_REEL(
+                             DEBUT=0.,
+                              INTERVALLE=_F( JUSQU_A = 10., NOMBRE = 10)
+                           )
 
-CHAMDEP0=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH0),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                        SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
-                   SUBD_PAS_MINI = 0.000001),
+CHAMDEP0=STAT_NON_LINE(MODELE=MO,
+                       CHAM_MATER=CHMAT2,
+                       EXCIT=(_F( CHARGE = CH10,
+                                 FONC_MULT=RAMPE),
+                              _F( CHARGE = CL)),
+                       COMP_ELAS=_F(RELATION = 'ELAS'),
+                       NEWTON=_F(MATRICE = 'ELASTIQUE'),
+                       INCREMENT=_F(LIST_INST = L_INST,
+                                    SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
+                                    SUBD_PAS_MINI = 0.000001),
                        CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4),
-#              INFO=2
+                ITER_GLOB_MAXI = 20),
               )
-
-CHAMDEP0=CALC_ELEM( reuse=CHAMDEP0,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP0,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP1=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH1),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                        SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                   SUBD_PAS_MINI = 0.000001),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP1=CALC_ELEM( reuse=CHAMDEP1,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP1,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP2=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH2),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                        SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                   SUBD_PAS_MINI = 0.000001),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP2=CALC_ELEM( reuse=CHAMDEP2,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP2,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP3=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH3),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP3=CALC_ELEM( reuse=CHAMDEP3,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP3,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP4=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH4),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP4=CALC_ELEM( reuse=CHAMDEP4,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP4,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP5=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH5),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP5=CALC_ELEM( reuse=CHAMDEP5,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP5,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP6=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH6),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP6=CALC_ELEM( reuse=CHAMDEP6,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP6,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP7=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH7),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP7=CALC_ELEM( reuse=CHAMDEP7,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP7,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP8=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH8),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP8=CALC_ELEM( reuse=CHAMDEP8,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP8,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
-
-CHAMDEP9=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                        EXCIT=(
-                             _F(
-                CHARGE = CH9),
-                             #_F( CHARGE = CH_TEMP),
-                             _F(
-                CHARGE = CL)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                        SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
-                   SUBD_PAS_MINI = 0.000001),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 4)
-              )
-
-CHAMDEP9=CALC_ELEM( reuse=CHAMDEP9,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=CHAMDEP9,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT
-              )
+              
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                          FOND_FISS=_F( GROUP_NO = ('P0',)),
@@ -718,20 +418,15 @@ GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
 # CALCUL DE G AVEC CHARGEMENT 3 DE LA FICHE
 # ------------------------------------------------
 
-# ********************************************************
-# ALPHA = 0.30
-# ********************************************************
-
 # COURONNE 0
 # ----------
 
-G0_30=CALC_G(   RESULTAT=CHAMDEP0,
+G0_C=CALC_G(   RESULTAT=CHAMDEP0,
                         THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME',
-                        NUME_ORDRE=1
                     )
 
-GK0_30=CALC_G(   RESULTAT=CHAMDEP0,
+GK0_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    MODULE = 1.,
                                    R_INF = 0.0025,
@@ -739,20 +434,18 @@ GK0_30=CALC_G(   RESULTAT=CHAMDEP0,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
 # COURONNE 1
 # ----------
 
-G1_30=CALC_G(   RESULTAT=CHAMDEP0,
+G1_C=CALC_G(   RESULTAT=CHAMDEP0,
                         THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
-                        NUME_ORDRE=1
                     )
 
-GK1_30=CALC_G(   RESULTAT=CHAMDEP0,
+GK1_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    MODULE = 1.,
                                    R_INF = 0.005,
@@ -760,20 +453,18 @@ GK1_30=CALC_G(   RESULTAT=CHAMDEP0,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND,),
                          SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
 # COURONNE 2
 # ----------
 
-G2_30=CALC_G(   RESULTAT=CHAMDEP0,
+G2_C=CALC_G(   RESULTAT=CHAMDEP0,
                         THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
-                        NUME_ORDRE=1
                     )
 
-GK2_30=CALC_G(   RESULTAT=CHAMDEP0,
+GK2_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    MODULE = 1.,
                                    R_INF = 0.0075,
@@ -781,20 +472,18 @@ GK2_30=CALC_G(   RESULTAT=CHAMDEP0,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
 # COURONNE 3
 # ----------
 
-G3_30=CALC_G(   RESULTAT=CHAMDEP0,
+G3_C=CALC_G(   RESULTAT=CHAMDEP0,
                         THETA=_F(THETA=THETA3),
                         SYME_CHAR='SYME',
-                        NUME_ORDRE=1
                     )
 
-GK3_30=CALC_G(   RESULTAT=CHAMDEP0,
+GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    MODULE = 1.,
                                    R_INF = 0.005,
@@ -802,802 +491,9 @@ GK3_30=CALC_G(   RESULTAT=CHAMDEP0,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
                          SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
-#
-# ********************************************************
-# ALPHA = 0.32
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_32=CALC_G(   RESULTAT=CHAMDEP1,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_32=CALC_G(   RESULTAT=CHAMDEP1,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_32=CALC_G(   RESULTAT=CHAMDEP1,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_32=CALC_G(   RESULTAT=CHAMDEP1,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_32=CALC_G(   RESULTAT=CHAMDEP1,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_32=CALC_G(   RESULTAT=CHAMDEP1,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_32=CALC_G(   RESULTAT=CHAMDEP1,
-                        THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_32=CALC_G(   RESULTAT=CHAMDEP1,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# ********************************************************
-# ALPHA = 0.33
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_33=CALC_G(   RESULTAT=CHAMDEP2,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_33=CALC_G(   RESULTAT=CHAMDEP2,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_33=CALC_G(   RESULTAT=CHAMDEP2,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_33=CALC_G(   RESULTAT=CHAMDEP2,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_33=CALC_G(   RESULTAT=CHAMDEP2,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_33=CALC_G(   RESULTAT=CHAMDEP2,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_33=CALC_G(   RESULTAT=CHAMDEP2,
-                        THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_33=CALC_G(   RESULTAT=CHAMDEP2,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# ********************************************************
-# ALPHA = 0.335
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_335=CALC_G(  RESULTAT=CHAMDEP3,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_335=CALC_G(  RESULTAT=CHAMDEP3,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_335=CALC_G(  RESULTAT=CHAMDEP3,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_335=CALC_G(  RESULTAT=CHAMDEP3,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_335=CALC_G(  RESULTAT=CHAMDEP3,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_335=CALC_G(  RESULTAT=CHAMDEP3,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_335=CALC_G(  RESULTAT=CHAMDEP3,
-                         THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_335=CALC_G(  RESULTAT=CHAMDEP3,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# ********************************************************
-# ALPHA = 0.34
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_34=CALC_G(   RESULTAT=CHAMDEP4,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_34=CALC_G(   RESULTAT=CHAMDEP4,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_34=CALC_G(   RESULTAT=CHAMDEP4,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_34=CALC_G(   RESULTAT=CHAMDEP4,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_34=CALC_G(   RESULTAT=CHAMDEP4,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_34=CALC_G(   RESULTAT=CHAMDEP4,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_34=CALC_G(   RESULTAT=CHAMDEP4,
-                        THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_34=CALC_G(   RESULTAT=CHAMDEP4,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# ********************************************************
-# ALPHA = 0.345
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_345=CALC_G(  RESULTAT=CHAMDEP5,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_345=CALC_G(  RESULTAT=CHAMDEP5,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_345=CALC_G(  RESULTAT=CHAMDEP5,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_345=CALC_G(  RESULTAT=CHAMDEP5,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_345=CALC_G(  RESULTAT=CHAMDEP5,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_345=CALC_G(  RESULTAT=CHAMDEP5,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_345=CALC_G(  RESULTAT=CHAMDEP5,
-                        THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_345=CALC_G(  RESULTAT=CHAMDEP5,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# ********************************************************
-# ALPHA = 0.35
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_35=CALC_G(   RESULTAT=CHAMDEP6,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_35=CALC_G(   RESULTAT=CHAMDEP6,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_35=CALC_G(   RESULTAT=CHAMDEP6,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_35=CALC_G(   RESULTAT=CHAMDEP6,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_35=CALC_G(   RESULTAT=CHAMDEP6,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_35=CALC_G(   RESULTAT=CHAMDEP6,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_35=CALC_G(   RESULTAT=CHAMDEP6,
-                        THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_35=CALC_G(   RESULTAT=CHAMDEP6,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# ********************************************************
-# ALPHA = 0.36
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_36=CALC_G(   RESULTAT=CHAMDEP7,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_36=CALC_G(   RESULTAT=CHAMDEP7,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_36=CALC_G(   RESULTAT=CHAMDEP7,
-                         THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_36=CALC_G(  RESULTAT=CHAMDEP7,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_36=CALC_G(   RESULTAT=CHAMDEP7,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_36=CALC_G(   RESULTAT=CHAMDEP7,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_36=CALC_G(   RESULTAT=CHAMDEP7,
-                         THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_36=CALC_G(   RESULTAT=CHAMDEP7,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# ********************************************************
-# ALPHA = 0.38
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_38=CALC_G(   RESULTAT=CHAMDEP8,
-                         THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_38=CALC_G(   RESULTAT=CHAMDEP8,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_38=CALC_G(   RESULTAT=CHAMDEP8,
-                         THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_38=CALC_G(   RESULTAT=CHAMDEP8,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_38=CALC_G(   RESULTAT=CHAMDEP8,
-                         THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_38=CALC_G(   RESULTAT=CHAMDEP8,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_38=CALC_G(   RESULTAT=CHAMDEP8,
-                         THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_38=CALC_G(   RESULTAT=CHAMDEP8,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# ********************************************************
-# ALPHA = 0.40
-# ********************************************************
-
-# COURONNE 0
-# ----------
-
-G0_40=CALC_G(   RESULTAT=CHAMDEP9,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK0_40=CALC_G(   RESULTAT=CHAMDEP9,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0025,
-                                   R_SUP = 0.005,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 1
-# ----------
-
-G1_40=CALC_G(   RESULTAT=CHAMDEP9,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK1_40=CALC_G(   RESULTAT=CHAMDEP9,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.0075,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 2
-# ----------
-
-G2_40=CALC_G(   RESULTAT=CHAMDEP9,
-                         THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK2_40=CALC_G(   RESULTAT=CHAMDEP9,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.0075,
-                                   R_SUP = 0.01,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
-
-# COURONNE 3
-# ----------
-
-G3_40=CALC_G(   RESULTAT=CHAMDEP9,
-                         THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
-                    )
-
-GK3_40=CALC_G(   RESULTAT=CHAMDEP9,
-                         THETA=_F(
-                                   MODULE = 1.,
-                                   R_INF = 0.005,
-                                   R_SUP = 0.03,
-                                   DIRECTION=(1., 0., 0.,),
-                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
-                         OPTION='CALC_K_G'
-                     )
 
 # *******************************************************
 ## IMPRESSION DES RESULTATS CHARGEMENT 1 SANS CONTACT
@@ -1666,12 +562,16 @@ TEST_TABLE(       TABLE=GK3_T,
 
 ## IMPRESSION DES RESULTATS CHARGEMENT CH3 AVEC CONTACT
 ## ----------------------------------------------------
+IMPR_TABLE(       TABLE=GK0_C,)
+IMPR_TABLE(       TABLE=GK1_C,)
+IMPR_TABLE(       TABLE=GK2_C,)
+IMPR_TABLE(       TABLE=GK3_C,)
 
 # ALPHA = 0.30
 # ------------
 
 
-TEST_TABLE(       TABLE=G0_30,
+TEST_TABLE(       TABLE=G0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                   VALE_I = 1),
                        NOM_PARA='G',
@@ -1679,7 +579,7 @@ TEST_TABLE(       TABLE=G0_30,
                       CRITERE='ABSOLU',
                       PRECISION=1.E-11   )
 
-TEST_TABLE(       TABLE=G1_30,
+TEST_TABLE(       TABLE=G1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                   VALE_I = 1),
                        NOM_PARA='G',
@@ -1687,7 +587,7 @@ TEST_TABLE(       TABLE=G1_30,
                       CRITERE='ABSOLU',
                       PRECISION=1.E-11   )
 
-TEST_TABLE(       TABLE=G2_30,
+TEST_TABLE(       TABLE=G2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                   VALE_I = 1),
                        NOM_PARA='G',
@@ -1695,7 +595,7 @@ TEST_TABLE(       TABLE=G2_30,
                       CRITERE='ABSOLU',
                       PRECISION=1.E-11   )
 
-TEST_TABLE(       TABLE=G3_30,
+TEST_TABLE(       TABLE=G3_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                   VALE_I = 1),
                        NOM_PARA='G',
@@ -1707,33 +607,33 @@ TEST_TABLE(       TABLE=G3_30,
 # ------------
 
 
-TEST_TABLE(       TABLE=G0_32,
+TEST_TABLE(       TABLE=G0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 2),
                        NOM_PARA='G',
                            VALE=0.,
                       CRITERE='ABSOLU',
                       PRECISION=1.E-11   )
 
-TEST_TABLE(       TABLE=G1_32,
+TEST_TABLE(       TABLE=G1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 2),
                        NOM_PARA='G',
                            VALE=0.,
                       CRITERE='ABSOLU',
                       PRECISION=1.E-11   )
 
-TEST_TABLE(       TABLE=G2_32,
+TEST_TABLE(       TABLE=G2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 2),
                        NOM_PARA='G',
                            VALE=0.,
                       CRITERE='ABSOLU',
                       PRECISION=1.E-11   )
 
-TEST_TABLE(       TABLE=G3_32,
+TEST_TABLE(       TABLE=G3_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 2),
                        NOM_PARA='G',
                            VALE=0.,
                       CRITERE='ABSOLU',
@@ -1743,55 +643,57 @@ TEST_TABLE(       TABLE=G3_32,
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_33,
+TEST_TABLE(       TABLE=GK0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 3),
                        NOM_PARA='K1',
                            VALE=1.2075E-3,
                       PRECISION=0.06    )
 
-TEST_TABLE(       TABLE=GK1_33,
+TEST_TABLE(       TABLE=GK1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 3),
                        NOM_PARA='K1',
                            VALE=1.2075E-3,
                       PRECISION=0.02    )
 
-TEST_TABLE(       TABLE=GK2_33,
+TEST_TABLE(       TABLE=GK2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 3),
                        NOM_PARA='K1',
                            VALE=1.2075E-3,
                       PRECISION=0.045    )
 
+
+                      
 # ALPHA = 0.335
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_335,
+TEST_TABLE(       TABLE=GK0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 4),
                        NOM_PARA='K1',
                            VALE=3.0187E-3,
                       PRECISION=0.025    )
 
-TEST_TABLE(       TABLE=GK1_335,
+TEST_TABLE(       TABLE=GK1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 4),
                        NOM_PARA='K1',
                            VALE=3.0187E-3,
                       PRECISION=0.02    )
 
-TEST_TABLE(       TABLE=GK2_335,
+TEST_TABLE(       TABLE=GK2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 4),
                        NOM_PARA='K1',
                            VALE=3.0187E-3,
                       PRECISION=0.02    )
 
-TEST_TABLE(       TABLE=GK3_335,
+TEST_TABLE(       TABLE=GK3_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 4),
                        NOM_PARA='K1',
                            VALE=3.0187E-3,
                       PRECISION=0.10   )
@@ -1800,30 +702,30 @@ TEST_TABLE(       TABLE=GK3_335,
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_34,
+TEST_TABLE(       TABLE=GK0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 5),
                        NOM_PARA='K1',
                            VALE=5.4336E-3,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK1_34,
+TEST_TABLE(       TABLE=GK1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 5),
                        NOM_PARA='K1',
                            VALE=5.4336E-3,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK2_34,
+TEST_TABLE(       TABLE=GK2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 5),
                        NOM_PARA='K1',
                            VALE=5.4336E-3,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK3_34,
+TEST_TABLE(       TABLE=GK3_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 5),
                        NOM_PARA='K1',
                            VALE=5.4336E-3,
                       PRECISION=0.01    )
@@ -1832,30 +734,30 @@ TEST_TABLE(       TABLE=GK3_34,
 # -------------
 
 
-TEST_TABLE(       TABLE=GK0_345,
+TEST_TABLE(       TABLE=GK0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 6),
                        NOM_PARA='K1',
                            VALE=8.5865E-3,
                       PRECISION=0.04    )
 
-TEST_TABLE(       TABLE=GK1_345,
+TEST_TABLE(       TABLE=GK1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 6),
                        NOM_PARA='K1',
                            VALE=8.5865E-3,
                       PRECISION=0.04    )
 
-TEST_TABLE(       TABLE=GK2_345,
+TEST_TABLE(       TABLE=GK2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 6),
                        NOM_PARA='K1',
                            VALE=8.5865E-3,
                       PRECISION=0.04    )
 
-TEST_TABLE(       TABLE=GK3_345,
+TEST_TABLE(       TABLE=GK3_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 6),
                        NOM_PARA='K1',
                            VALE=8.5865E-3,
                       PRECISION=0.04    )
@@ -1864,30 +766,30 @@ TEST_TABLE(       TABLE=GK3_345,
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_35,
+TEST_TABLE(       TABLE=GK0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 7),
                        NOM_PARA='K1',
                            VALE=1.2075E-2,
                       PRECISION=0.04    )
 
-TEST_TABLE(       TABLE=GK1_35,
+TEST_TABLE(       TABLE=GK1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 7),
                        NOM_PARA='K1',
                            VALE=1.2075E-2,
                       PRECISION=0.04    )
 
-TEST_TABLE(       TABLE=GK2_35,
+TEST_TABLE(       TABLE=GK2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 7),
                        NOM_PARA='K1',
                            VALE=1.2075E-2,
                       PRECISION=0.04    )
 
-TEST_TABLE(       TABLE=GK3_35,
+TEST_TABLE(       TABLE=GK3_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 7),
                        NOM_PARA='K1',
                            VALE=1.2075E-2,
                       PRECISION=0.04    )
@@ -1896,30 +798,30 @@ TEST_TABLE(       TABLE=GK3_35,
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_36,
+TEST_TABLE(       TABLE=GK0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 8),
                        NOM_PARA='K1',
                            VALE=2.1757E-2,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK1_36,
+TEST_TABLE(       TABLE=GK1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 8),
                        NOM_PARA='K1',
                            VALE=2.1757E-2,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK2_36,
+TEST_TABLE(       TABLE=GK2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 8),
                        NOM_PARA='K1',
                            VALE=2.1757E-2,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK3_36,
+TEST_TABLE(       TABLE=GK3_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 8),
                        NOM_PARA='K1',
                            VALE=2.1757E-2,
                       PRECISION=0.01    )
@@ -1928,33 +830,32 @@ TEST_TABLE(       TABLE=GK3_36,
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_40,
+TEST_TABLE(       TABLE=GK0_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 10),
                        NOM_PARA='K1',
                            VALE=6.6478E-2,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK1_40,
+TEST_TABLE(       TABLE=GK1_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 10),
                        NOM_PARA='K1',
                            VALE=6.6478E-2,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK2_40,
+TEST_TABLE(       TABLE=GK2_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 10),
                        NOM_PARA='K1',
                            VALE=6.6478E-2,
                       PRECISION=0.01    )
 
-TEST_TABLE(       TABLE=GK3_40,
+TEST_TABLE(       TABLE=GK3_C,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
+                                  VALE_I = 10),
                        NOM_PARA='K1',
                            VALE=6.6478E-2,
                       PRECISION=0.01    )
 
-FIN( )
-#
+FIN();

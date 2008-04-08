@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -221,7 +221,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            PAS_MINI_ELAS   =SIMP(statut='f',typ='R',defaut=0.0E+0),
          ),
          SOLVEUR         =FACT(statut='d',
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS") ),
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS","PETSC") ),
            b_mult_front    =BLOC(condition= "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
            ),
@@ -253,6 +253,13 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
+           b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la méthode PETSC",
+             VARIANTE        =SIMP(statut='f',typ='TXM',into=("GMRES","BCGS","CR","CG","BICG","CHEBYCHEV",),defaut="GMRES" ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("ILU","SOR","BJACOBI"),defaut="ILU" ),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-8),
+             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
+           ),
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          ),
 #-------------------------------------------------------------------
@@ -266,7 +273,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
              FLUX_THER_REFE  =SIMP(statut='f',typ='R'),
              FLUX_HYD1_REFE  =SIMP(statut='f',typ='R'),
              FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),
-             VARI_REFE       =SIMP(statut='f',typ='R'),
+             VARI_REFE       =SIMP(statut='f',typ='R'),                     
            ),
            RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
            RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),

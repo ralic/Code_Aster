@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF soustruc Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- les 2 maillages ne sont pas du meme type : 2d (ou 3d).
+ les 2 maillages ne sont pas du meme type : 2D (ou 3D).
 """),
 
 2: _("""
@@ -35,55 +35,65 @@ cata_msg={
 """),
 
 4: _("""
- le group_ma :  %(k1)s  est en double. on ignore le second.
+ le GROUP_MA :  %(k1)s  est en double. on ignore le second.
 """),
 
 5: _("""
- le group_no :  %(k1)s  est en double. on ignore le second.
+ le GROUP_NO :  %(k1)s  est en double. on ignore le second.
 """),
 
 6: _("""
- le noeud: %(k1)s  n'a pas les memes coordonnees dans les maillages:  %(k2)s  et  %(k3)s 
+ le noeud: %(k1)s  n'a pas les memes coordonnées dans les maillages:  %(k2)s  et  %(k3)s 
 """),
 
 7: _("""
- matrice de rigidite non inversible (modes rigides ???) - attention : criteres de choc non calcules
+ matrice de rigidité non inversible (modes rigides ???) 
+ - attention : critères de choc non calculés
 """),
 
 8: _("""
- matrice de rigidite : pivot quasi-nul (modes rigides ???) - attention : criteres de choc non calcules
+ matrice de rigidité : pivot quasi-nul (modes rigides ???) 
+ - attention : critères de choc non calculés
 """),
 
 9: _("""
- mot-clef "definition" interdit :le macr_elem:  %(k1)s  est deja defini.
+ mot-clef "DEFINITION" interdit :
+ le MACR_ELEM :  %(k1)s  est déja défini.
 """),
 
 10: _("""
- mot-clef "rigi_meca" interdit :il est deja calcule.
+ mot-clef "RIGI_MECA" interdit :
+ il est deja calculé.
 """),
 
 11: _("""
- mot-clef "rigi_meca" interdit :le resultat :  %(k1)s  existe deja.
+ mot-clef "RIGI_MECA" interdit :
+ le resultat :  %(k1)s  existe deja.
 """),
 
 12: _("""
- mot-clef "mass_meca" interdit :il faut avoir fait "definition" et "rigi_meca".
+ mot-clef "MASS_MECA" interdit :
+ il faut avoir fait "DEFINITION" et "RIGI_MECA".
 """),
 
 13: _("""
- mot-clef "mass_meca" interdit :il est deja calcule.
+ mot-clef "MASS_MECA" interdit :
+ il est deja calculé.
 """),
 
 14: _("""
- mot-clef "cas_charge" interdit :il faut avoir fait "definition" et "rigi_meca".
+ mot-clef "CAS_CHARGE" interdit :
+ il faut avoir fait "DEFINITION" et "RIGI_MECA".
 """),
 
 15: _("""
- cet operateur modifie un maillage existant. le resultat doit etre identique au concept donne dans l'argument maillage.
+ cet opérateur modifie un maillage existant
+ le resultat doit etre identique au concept donné dans l'argument MAILLAGE.
 """),
 
 16: _("""
- maillages avec super mailles : utiliser operation : sous-stru
+ maillages avec super mailles :
+ utiliser OPERATION = SOUS-STRU
 """),
 
 17: _("""
@@ -103,11 +113,12 @@ cata_msg={
 """),
 
 21: _("""
- critere inconnu
+ critère inconnu
 """),
 
 22: _("""
- noeud eloignes a la normale au segment
+ noeud %(k1)s trop éloigné de la normale au segment
+ distance = %(r1)f
 """),
 
 23: _("""
@@ -313,7 +324,7 @@ cata_msg={
 """),
 
 72: _("""
- erreur programmeur 2
+ indicateur de diagonalité de la matrice spectrale : %(r1)f 
 """),
 
 73: _("""

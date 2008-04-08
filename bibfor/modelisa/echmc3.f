@@ -1,37 +1,37 @@
       SUBROUTINE ECHMC3(NSOM  ,NOEARE,NARE  ,NOEPAN,NPAN  ,
      &                  NECH  ,OFFSOM,FS    ,NF)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
+C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER     NSOM
-      INTEGER     NOEARE(*)    
-      INTEGER     NARE   
-      INTEGER     NOEPAN(*)    
-      INTEGER     NPAN       
-      INTEGER     NECH  
+      INTEGER     NOEARE(*)
+      INTEGER     NARE
+      INTEGER     NOEPAN(*)
+      INTEGER     NPAN
+      INTEGER     NECH
       INTEGER     OFFSOM
-      INTEGER     FS(3,*) 
+      INTEGER     FS(3,*)
       INTEGER     NF
-C      
+C
 C ----------------------------------------------------------------------
 C
 C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
@@ -40,15 +40,15 @@ C
 C CONNECTIVITE DE L'ECHANTILLONNAGE PRODUIT PAR LA ROUTINE ECHMAP (3D)
 C
 C ----------------------------------------------------------------------
-C   
-C CHAQUE FACE(PAN) EST DECOUPEE EN FACETTES         
+C
+C CHAQUE FACE(PAN) EST DECOUPEE EN FACETTES
 C
 C IN  NSOM   : NOMBRE DE SOMMETS SANS LES POINTS D'ECHANTILLONNAGE
-C IN  NOEARE : NOEUDS DEFINISSANT LES ARETES DE LA MAILLE 
+C IN  NOEARE : NOEUDS DEFINISSANT LES ARETES DE LA MAILLE
 C              VOIR NOARE/NBARE
 C                   ( NOMBRE DE NOEUDS ARETES 1, N1, N2, ...
 C                     NOMBRE DE NOEUDS ARETES 2, N1, N2, ...)
-C              INDICE DES NOEUDS: ORDRE DU NOEUD DANS LA MAILLE 
+C              INDICE DES NOEUDS: ORDRE DU NOEUD DANS LA MAILLE
 C                                 (EX: POUR HEXA8 NOEUDS 1 A 8)
 C IN  NARE   : NOMBRE D'ARETES
 C IN  NOEPAN : NOEUDS DEFINISSANT LES FACES DE LA MAILLE
@@ -57,10 +57,10 @@ C                   ( NOMBRE NOEUDS PAN       1, N1, N2, ...
 C                     NOMBRE NOEUDS PAN       2, N1, N2, ...)
 C                     EN 3D, NB NOEUDS < 0 : TRIANGLE
 C                            NB NOEUDS > 0 : QUADRANGLE
-C              INDICE DES NOEUDS: ORDRE DU NOEUD DANS LA MAILLE 
+C              INDICE DES NOEUDS: ORDRE DU NOEUD DANS LA MAILLE
 C                                 (EX: POUR HEXA8 NOEUDS 1 A 8)
 C IN  NPAN   : NOMBRE DE FACES
-C IN  NECH   : NOMBRE DE POINTS D'ECHANTILLONNAGE 
+C IN  NECH   : NOMBRE DE POINTS D'ECHANTILLONNAGE
 C IN  OFFSOM : DECALAGE INDICE DANS LE TABLEAU DES SOMMETS
 C OUT NF     : NOMBRE DE FACETTES NF = 2*NPAN*NECH*NECH
 C OUT FS     : NOEUDS DEFINISSANT LES FACETTES TRIANGULAIRES
@@ -68,7 +68,7 @@ C                (FACE1.ND1,FACE1.ND2,FACE1.ND3,
 C                 FACE2.ND1,FACE2.ND2,FACE2.ND3,...)
 C              INDICE DES NOEUDS: SE REFERE AU TABLEAU NOH DANS ECHMAP
 C              NB: ON DECOUPE EN TRIANGLES UNIQUEMENT ! (TJS 3 NOEUDS)
-C 
+C
 C ----------------------------------------------------------------------
 C
       INTEGER     NNP,NA,I1,I2,I3,I4,N0,N1,N2,N3,N4,N5,N6,N7,N8,N9
@@ -82,13 +82,13 @@ C
 C
       N0 = NSOM + 1 + OFFSOM
       M0 = N0 + (NECH-1)*NARE
-C     
+C
       DO 10 I = 1, NPAN
         NNP = NOEPAN(P0)
         P0  = P0 + 1
 C
 C --- FACE TRIANGULAIRE
-C          
+C
         IF (NNP.LT.0) THEN
           NA = 4
 C
@@ -98,7 +98,7 @@ C
             NF = NF + 1
             FS(1,NF) = NOEPAN(P0)   + OFFSOM
             FS(2,NF) = NOEPAN(P0+1) + OFFSOM
-            FS(3,NF) = NOEPAN(P0+2) + OFFSOM  
+            FS(3,NF) = NOEPAN(P0+2) + OFFSOM
             GOTO 60
           ENDIF
 C
@@ -146,7 +146,7 @@ C
             NF = NF + 1
             FS(1,NF) = NOEPAN(P0) + OFFSOM
             FS(2,NF) = N1
-            FS(3,NF) = N9  
+            FS(3,NF) = N9
             NF = NF + 1
             FS(1,NF) = N3
             FS(2,NF) = NOEPAN(P0+1) + OFFSOM
@@ -166,7 +166,7 @@ C --- CAS GENERAL
 C
           M1 = M0
           M2 = M0 + NECH - 3
-          M3 = M0 - 1 + (NECH-1)*(NECH-2)/2 
+          M3 = M0 - 1 + (NECH-1)*(NECH-2)/2
 C
 C --- MAILLES PARTICULIERES
 C
@@ -249,7 +249,7 @@ C
 C --- MAILLES INTERIEURES DE LA FACETTE DE LA FRONTIERE
 C
           M0 = M0 - 2
-          DO 30 J = 5, NECH           
+          DO 30 J = 5, NECH
             M0 = M0 + 2
             DO 30 K = J, NECH
               NF = NF + 1
@@ -260,7 +260,7 @@ C
               FS(1,NF) = M0 + 1
               FS(2,NF) = M0 + NECH - J + 4
               FS(3,NF) = M0 + NECH - J + 3
-              M0 = M0 + 1      
+              M0 = M0 + 1
  30       CONTINUE
 C
           IF (NECH.EQ.3) THEN
@@ -281,7 +281,7 @@ C
             NF = NF + 1
             FS(1,NF) = NOEPAN(P0) + OFFSOM
             FS(2,NF) = NOEPAN(P0+1) + OFFSOM
-            FS(3,NF) = NOEPAN(P0+3) + OFFSOM       
+            FS(3,NF) = NOEPAN(P0+3) + OFFSOM
             NF = NF + 1
             FS(1,NF) = NOEPAN(P0+1) + OFFSOM
             FS(2,NF) = NOEPAN(P0+2) + OFFSOM
@@ -353,7 +353,7 @@ C
           FS(2,NF) = N3
           FS(3,NF) = M2
           NF = NF + 1
-          FS(1,NF) = M3   
+          FS(1,NF) = M3
           FS(2,NF) = N4
           FS(3,NF) = N5
           NF = NF + 1
@@ -361,17 +361,17 @@ C
           FS(2,NF) = NOEPAN(P0+2) + OFFSOM
           FS(3,NF) = N5
           NF = NF + 1
-          FS(1,NF) = N7 
+          FS(1,NF) = N7
           FS(2,NF) = M4
           FS(3,NF) = NOEPAN(P0+3) + OFFSOM
           NF = NF + 1
           FS(1,NF) = M4
           FS(2,NF) = N6
           FS(3,NF) = NOEPAN(P0+3) + OFFSOM
-C  
+C
 C --- MAILLES LIEES AUX ARETES
-C           
-          DO 40 J = 3, NECH         
+C
+          DO 40 J = 3, NECH
             NF = NF + 1
             FS(1,NF) = N1
             FS(2,NF) = N1 + I1
@@ -387,7 +387,7 @@ C
             NF = NF + 1
             FS(1,NF) = N3
             FS(2,NF) = N3 + I2
-            FS(3,NF) = M2 + NECH - 1          
+            FS(3,NF) = M2 + NECH - 1
             NF = NF + 1
             FS(1,NF) = M3 - 1
             FS(2,NF) = M3
@@ -395,7 +395,7 @@ C
             NF = NF + 1
             FS(1,NF) = M3
             FS(2,NF) = N5
-            FS(3,NF) = N5 + I3             
+            FS(3,NF) = N5 + I3
             NF = NF + 1
             FS(1,NF) = N7 + I4
             FS(2,NF) = M4 + 1 - NECH
@@ -403,7 +403,7 @@ C
             NF = NF + 1
             FS(1,NF) = M4 + 1 - NECH
             FS(2,NF) = M4
-            FS(3,NF) = N7            
+            FS(3,NF) = N7
             N1 = N1 + I1
             N3 = N3 + I2
             N5 = N5 + I3
@@ -418,8 +418,8 @@ C --- MAILLES INTERIEURES
 C
           M0 = M0 - 1
           DO 50 J = 3, NECH
-            M0 = M0 + 1           
-            DO 50 K = 3, NECH            
+            M0 = M0 + 1
+            DO 50 K = 3, NECH
               NF = NF + 1
               FS(1,NF) = M0
               FS(2,NF) = M0 + 1
@@ -428,7 +428,7 @@ C
               FS(1,NF) = M0 + 1
               FS(2,NF) = M0 + NECH
               FS(3,NF) = M0 + NECH - 1
-              M0 = M0 + 1             
+              M0 = M0 + 1
  50       CONTINUE
           M0 = M0 + NECH
         ENDIF

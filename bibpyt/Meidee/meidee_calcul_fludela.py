@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_fludela Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_fludela Meidee  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,10 +24,9 @@ import Numeric
 
 import aster
 from Accas import _F
-from Meidee.meidee_cata import Resultat, CaraElem, ChampMateriau, InterSpectre, MeideeObjects 
-from Cata.cata import CREA_CHAMP, RECU_TABLE, DETRUIRE, CREA_TABLE, DEFI_FONCTION
-from Meidee.meidee_iface import CreaTable
-from Utilitai.Utmess     import UTMESS
+from Meidee.meidee_cata import Resultat, CaraElem, ChampMateriau, InterSpectre
+from Meidee.meidee_cata import MeideeObjects, CreaTable
+from Utilitai.Utmess import UTMESS
 
 ####################
 #                  #
@@ -156,6 +155,7 @@ class MeideeFludela:
              de type table_fonction
              Les indices de la table sont les noms des parametre, et, associes,
              des fonctions avec en abscisse les vitesses et en ordonnee les valeurs"""
+        from Cata.cata import DEFI_FONCTION
         l_fonc = []
         vitesses = data.keys()
         vitesses.sort()
@@ -285,6 +285,7 @@ class MeideeFludela:
 
     def mat_gene(self, resu):
         """!Fonction utilitaire qui extrait les matrices K,M,C,f d'un sd_resultat"""
+        from Cata.cata import RECU_TABLE
         try:
             __freq=RECU_TABLE(CO=resu.obj,
                               NOM_PARA='FREQ',
@@ -670,7 +671,8 @@ def calc_meidee_longeq( resultat,
     int(phi^2(x).dc). On utilise le maillage associe au "resultat", pour
     avoir les coordonnes des noeuds. On classe les noeuds selon les y croissants
     """
-    
+
+    from Cata.cata import CREA_CHAMP, DETRUIRE, CREA_TABLE    
     __PHI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                      NUME_ORDRE=1,
                      OPERATION='EXTR',
