@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 14/04/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -485,19 +485,19 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   VAL4  = 3.0 * sqrt( RMT    * EPT2 )
   LZMAX = max ( VAL1 , VAL2, VAL3, VAL4 )
   ZMAXC = LZMAX + ( DEC/2.0 ) + D1 + D2
-  LOK = ( abs(ZMAX-ZMAXC) <= EPSI * abs(ZMAXC) )
+  LOK = ( (ZMAX-ZMAXC) >= -1.* EPSI * abs(ZMAXC) )
   if not LOK :
-    UTMESS('F','ASPIC0_13',valr=[ZMAX,ZMAXC])
+    UTMESS('A','ASPIC0_13',valr=[ZMAX,ZMAXC])
   RMC   = ( DEC - EPC ) / 2.0
   VAL1  = 1.5 * sqrt( RMC**3 / EPC )
   VAL2  = 3.0 * sqrt( RMC    * EPC )
   LXMAX = max( VAL1 , VAL2 )
   XMAXC = LXMAX + ( DET1 / 2.0 )
-  LOK = ( abs(XMAX-XMAXC) <= EPSI * abs(XMAXC) )
+  LOK = ( (XMAX-XMAXC) >= -1.* EPSI * abs(XMAXC) )
   if not LOK :
-    UTMESS('F','ASPIC0_13',valr=[ZMAX,ZMAXC])
-  message=         ' MACR_ASPIC_MAIL / X_MAX CALCULEE : %.2f \n'%XMAX
-  message=message+ ' MACR_ASPIC_MAIL / Z_MAX CALCULEE : %.2f \n'%XMAXC
+    UTMESS('A','ASPIC0_23',valr=[XMAX,XMAXC])
+  message=         ' MACR_ASPIC_MAIL : X_MAX CALCULEE : %.2f  X_MAX FOURNI : %.2f\n'%(XMAXC,XMAX)
+  message=message+ ' MACR_ASPIC_MAIL : Z_MAX CALCULEE : %.2f  Z_MAX FOURNI : %.2f\n'%(ZMAXC,ZMAX)
   aster.affiche('MESSAGE',message)
 #
 #     --- caracteristiques de la fissure ---
@@ -686,6 +686,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
      l_CREA_GROUP_NO.append('S_LAT2_C')
      l_CREA_GROUP_NO.append('S_LAT1_T')
      l_CREA_GROUP_NO.append('S_LAT2_T')
+     l_CREA_GROUP_NO.append('LEVRTUBU')
      if (TFISS=='NON_DEB') and (FISS_SOUDURE['TYPE']=='LONGUE') :
         l_CREA_GROUP_NO.append('PFONDINF')
         l_CREA_GROUP_NO.append('PFONDSUP')
@@ -722,6 +723,8 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
         motscles['CREA_GROUP_NO'].append(_F(GROUP_MA = 'FONDFISS',))
      if (TFISS=='NON_DEB') and (FISS_SOUDURE['TYPE']=='LONGUE') :
         motscles['CREA_GROUP_NO'].append(_F(GROUP_MA = ('FOND_SUP','FOND_INF',),))
+     if (TFISS=='NON_DEB') and (FISS_SOUDURE['TYPE']=='COURTE') :
+        motscles['CREA_GROUP_NO'].append(_F(GROUP_MA = 'FONDFISS',))
      __MAPROV=DEFI_GROUP(reuse   =__MAPROV,
                          MAILLAGE=__MAPROV,
                          **motscles )
@@ -746,7 +749,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
 #
 
   motscles={}
-  if TFISS=='DEB_INT' :
+  if not SAIN :
      motscles['ORIE_PEAU_3D']=_F(GROUP_MA=('PEAUINT','EXCORP1','EXCORP2','EXTUBU','LEVRTUBU','LEVRCORP'),)
   else :
      motscles['ORIE_PEAU_3D']=_F(GROUP_MA=('PEAUINT','EXCORP1','EXCORP2','EXTUBU',),)

@@ -1,7 +1,8 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRP_18 CRS_508 CRS_512 CRS_505
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,6 +149,8 @@ C
               IF ( IADYN .NE. 0 ) THEN
                 MCDYN = MCDYN - LONO(JLONO(IC)+ID(K)) * 
      &                  LTYP(JLTYP(IC)+ID(K))
+                MLDYN = MLDYN + LONO(JLONO(IC)+ID(K)) * 
+     &                  LTYP(JLTYP(IC)+ID(K))
                 CALL HPDEALLC ( IADYN , NBFREE , IBID )
               ELSE IF ( IADMI .NE. 0 ) THEN
                 CALL JJLIBP ( IADMI )
@@ -177,6 +180,8 @@ C
         IADYN = IADM (JIADM(IC) + 2*IDO)
         IF ( IADYN .NE. 0 ) THEN
           MCDYN = MCDYN - LONO(JLONO(IC)+IDO) * 
+     &            LTYP(JLTYP(IC)+IDO)
+          MLDYN = MLDYN + LONO(JLONO(IC)+IDO) * 
      &            LTYP(JLTYP(IC)+IDO)
           CALL HPDEALLC (IADYN , NBFREE , IBID)
         ELSE   
@@ -210,6 +215,7 @@ C
           IADYN = IADM (JIADM(IC) + 2*IDO  )
           IF ( IADYN .NE. 0 ) THEN
             MCDYN = MCDYN - LONO(JLONO(IC)+IDO)*LTYP(JLTYP(IC)+IDO)
+            MLDYN = MLDYN + LONO(JLONO(IC)+IDO)*LTYP(JLTYP(IC)+IDO)
             CALL HPDEALLC ( IADYN , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )

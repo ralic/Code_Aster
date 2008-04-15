@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 15/04/2008   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,10 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
               fr="Calcul du critère énergétique Gp suite à un calcul thermo-mécanique",
               reentrant='n',
               UIinfo={"groupes":("Post traitements",)},
-              regles=(UN_PARMI('IDENTIFICATION', 'PREDICTION'),),
+              regles=(UN_PARMI('IDENTIFICATION', 'PREDICTION'),
+                      UN_PARMI('THETA_2D','THETA_3D'),
+                      UN_PARMI('PAS_ENTAILLE','LIST_EP_COPEAUX'),
+                      PRESENT_PRESENT('THETA_2D','DIRECTION'),),
       
       # Résultat, modèle, comportement, chargement
       RESULTAT     = SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca),),
@@ -50,17 +53,44 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       ),
       SYME_CHAR    = SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS")),
       
-      DIRECTION    = SIMP(statut='o', typ='R', max=3),
-      THETA_2D     = FACT(statut='o', max='**',
+      DIRECTION    = SIMP(statut='f', typ='R', max=3),
+
+      THETA_2D     = FACT(statut='f', max='**',
                           fr="paramètres de définition des champs theta",
             GROUP_NO    = SIMP(statut='o', typ=grno, validators=NoRepeat(), max='**'),
             R_INF       = SIMP(statut='o', typ='R'),
             R_SUP       = SIMP(statut='o', typ='R'),
       ),
-      
+
+
+      THETA_3D        =FACT(statut='f',max='**',
+            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
+            R_INF           =SIMP(statut='o',typ='R'),
+            R_SUP           =SIMP(statut='o',typ='R'),
+                         ),
+         b_theta_3d     =BLOC(condition="THETA_3D != None",
+            LISSAGE         =FACT(statut='d',
+                DEGRE            =SIMP(statut='f',typ='I',defaut=5,into=(0,1,2,3,4,5,6,7) ),
+                LISSAGE_THETA    =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",
+                                  into=("LEGENDRE","LAGRANGE","LAGRANGE_REGU"),),
+                LISSAGE_G        =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",
+                                  into=("LEGENDRE","LAGRANGE","LAGRANGE_NO_NO","LAGRANGE_REGU"),),
+                             ),
+    
+            FOND_FISS       =SIMP(statut='o',typ=fond_fiss,max=1,),
+            NB_TRANCHES     =SIMP(statut='o',typ='I',max=1,
+                            fr="nombre de tranches: nombre de segments maillant le fond de fissure",),
+                         ),
+
+      # prise en compte de la traction compression
+      TRAC_COMP    = SIMP(statut='f',typ='TXM',into=("OUI",),
+                          fr="prise en compte de la traction-compression (plus lent)",
+                         ),
+
       # copeaux
-      GROUP_MA     = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
-      PAS_ENTAILLE = SIMP(statut='o', typ='R', val_min=0.),
+      GROUP_MA        = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
+      PAS_ENTAILLE    = SIMP(statut='f', typ='R', val_min=0.),
+      LIST_EP_COPEAUX = SIMP(statut='f', typ='R', max='**'),
       
       # critère sur Gp
       CRIT_MAXI_GP = SIMP(statut='f', typ='TXM', defaut="ABSOLU",

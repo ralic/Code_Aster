@@ -7,9 +7,10 @@
      &                  LISINS,INSTAM,SDPILO,SDDYNA,SDIMPR,
      &                  SDSUIV,SDSENS,SDOBSE,SDTIME,DEFICU,
      &                  RESOCU,RESOCO,VALMOI,VALPLU,POUGD ,
-     &                  SECMBR,DEPALG,MEASSE,VEELEM,MEELEM)
+     &                  SECMBR,DEPALG,MEASSE,VEELEM,MEELEM,
+     &                  CNFINT,CNDIRI)
 C
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 14/04/2008   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +52,7 @@ C
       CHARACTER*24 DEFICU,RESOCU
       CHARACTER*24 COMREF
       CHARACTER*19 CNVCFO,CNVCF1
+      CHARACTER*19 CNFINT,CNDIRI
 C
 C ----------------------------------------------------------------------
 C
@@ -352,6 +354,20 @@ C
       CALL NMFCOM('INIT',INSTAM,R8BID ,MODELE,NUMEDD,
      &            MATE  ,CARELE,COMPOR,LISCHA,VALMOI,
      &            VALPLU,COMREF,CNVCFO,CNVCF1,CODRET)
+
+C
+C --- RECUPERATION POUR HHT COMPLET
+C          
+      IF ( NDYNLO(SDDYNA,'HHT_COMPLET')) THEN
+        CALL NMIHHT(MODELE,NUMEDD,MATE  ,COMPOR,
+     &              CARELE,PARMET,LISCHA,SOLVEU,
+     &              CARCRI,SDDISC,
+     &              COMREF,ZFON,FONACT,
+     &              INSTAM,SDDYNA,SDSENS,
+     &              RESOCO,VALMOI,VALPLU,POUGD,
+     &              SECMBR,DEPALG,VEELEM,MEASSE,MEELEM,
+     &              CNFINT,CNDIRI)
+      ENDIF
 C
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#@ MODIF aspic0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF aspic0 Messages  DATE 14/04/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,9 +70,14 @@ Les piquages pénetrants sont autorisés uniquement avec les soudures de type 1.
 """),
 
 13: _("""
- Erreur donnees
+ La valeur de Z_MAX (cote maximale de la tubulure) est inférieure à la longueur 
+ d'amortissement calculée :
  Z_MAX fournie   : %(r1)f
  Z_MAX calculee  : %(r2)f
+-> Risque et Conseil :
+ La longueur d'amortissement est liée à l'onde de flexion se propageant depuis le piquage.
+ Si la longueur de la tubulure est inférieure à cette longueur, le calcul des contraintes 
+ dans le piquage ne sera pas indépendant du mode d'application des conditions aux limites.
 """),
 
 14: _("""
@@ -108,6 +113,27 @@ Fissure axisymetrique : le mot clef <LONGUEUR> ne doit pas etre renseigné.
 
 21: _("""
 Seuls gibi98 et gibi2000 sont appelables.
+"""),
+
+22: _("""
+Une interpénétration des lèvres est détectée pour le numéro d'ordre %(i1)d : sur les
+%(i2)d noeuds de chaque lèvre, %(i3)d noeuds s'interpénètrent.
+-> Risque et Conseil :
+Le contact n'est pas pris en compte dans le calcul. Le taux de restitution de l'énergie G
+est donc positif y compris là où la fissure tend à se refermer, ce qui peut conduire à
+des résultats trop pénalisants.
+Pour prendre en compte le contact entre les lèvres, il faut lancer le calcul hors macro.
+"""),
+
+23: _("""
+ La valeur de X_MAX (cote maximale du corps) est inférieure à la longueur d'amortissement 
+ calculée :
+ X_MAX fournie   : %(r1)f
+ X_MAX calculee  : %(r2)f
+-> Risque et Conseil :
+ La longueur d'amortissement est liée à l'onde de flexion se propageant depuis le piquage.
+ Si la longueur ddu corps est inférieure à cette longueur, le calcul des contraintes 
+ dans le piquage ne sera pas indépendant du mode d'application des conditions aux limites.
 """),
 
 }

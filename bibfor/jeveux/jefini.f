@@ -1,6 +1,7 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +41,8 @@ C
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      INTEGER          ICDYN , MXLTOT
+      COMMON /XDYNJE/  ICDYN , MXLTOT
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C     ==================================================================
@@ -124,6 +127,10 @@ C
      &                 VALI(3),'.' 
             WRITE(IFM,*) '    NOMBRE TOTAL DE LIBERATIONS :',    
      &                 VALI(4),'.' 
+            WRITE(IFM,*) '    ',ICDYN,' APPELS AU MECANISME DE ',
+     &                 'LIBERATION.' 
+            WRITE(IFM,*) '    TAILLE MEMOIRE CUMULEE RECUPEREE :',    
+     &                 MXLTOT,' Mo.' 
             WRITE(IFM,*) ' '
           ENDIF         
           CALL ENLIRD(LADATE)

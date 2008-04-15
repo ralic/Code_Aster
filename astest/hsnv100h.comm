@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2008   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,14 +35,12 @@ MAIL=LIRE_MAILLAGE( )
 
 FCT1=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
                                           PROL_GAUCHE='LINEAIRE',
-                      VALE=(
-                             0.200E-2,      400.,
-                             0.400E-2,      500.,)
-                                                    )
-
-#
-
+                       VALE=(
+                             0.500E-3,      100.,
+                             0.300E-2,      110.,))
+              
 MAT=DEFI_MATERIAU(    ELAS=_F( E = 200.E+3, NU = .3,ALPHA = 10.0E-6),
+                      THER=_F( RHO_CP = 0.0E-3,LAMBDA = 1.0E-3),
                       TRACTION=_F( SIGM = FCT1), )
 
 #
@@ -163,7 +161,32 @@ CTM=AFFE_MATERIAU(MAILLAGE=MAIL,
                                 NOM_VARC='TEMP',
                                 VALE_REF=0.),),);
 
+T0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
+                        AFFE=_F( TOUT = 'OUI', NOM_CMP = 'TEMP',
+                              VALE = 0.0)                 )
+TIMPVAR=DEFI_FONCTION(
+                             NOM_PARA='INST',  NOM_RESU='TEMP',
+                             VALE=(  0.E0,   0.E0,
+                                  100.E0, 100.E0,));
+MOTHER=AFFE_MODELE(  MAILLAGE=MAIL,
+         AFFE=_F( TOUT = 'OUI', MODELISATION = '3D', PHENOMENE = 'THERMIQUE'));
 
+CHTHER=AFFE_CHAR_THER_F(    MODELE=MOTHER,TEMP_IMPO=(
+                            _F( GROUP_NO = 'GRNOTOUT',  TEMP = TIMPVAR),),); 
+TEMPE=THER_LINEAIRE(  MODELE=MOTHER,   CHAM_MATER=CM,
+                   EXCIT=_F( CHARGE = CHTHER),
+                   ETAT_INIT=_F( CHAM_NO = T0),
+                   INCREMENT=_F( LIST_INST = L_INST)
+                        );
+CTM2=AFFE_MATERIAU(
+          MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI',MATER = MAT,),
+          AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TEMPE,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=0.),);
+                                            
 # -----------------------------------------------------------------------------
 # RESOLUTION
 # -----------------------------------------------------------------------------
@@ -178,7 +201,25 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
                                ITER_GLOB_MAXI=10,),);
 
+U2=STAT_NON_LINE(
+                MODELE=MOMECA,
+                CHAM_MATER=CTM2,
+                EXCIT=_F(
+                CHARGE = CHMECA),
+                         COMP_INCR=_F(
+                RELATION = 'VMIS_ISOT_TRAC'),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                         INCREMENT=_F(
+                LIST_INST = L_INST),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-5,
+                ITER_GLOB_MAXI = 10)
+              );
 
+IMPR_RESU(RESU=_F(RESULTAT=U));
+IMPR_RESU(RESU=_F(RESULTAT=U2));
 # -----------------------------------------------------------------------------
 # TESTS
 # -----------------------------------------------------------------------------
@@ -192,17 +233,17 @@ U=CALC_ELEM(reuse =U,
 #
 TEST_RESU(RESU=(
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
-            MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 8.666E-4),
+            MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 8.993E-4),
           _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,
-            MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -133.333),
+            MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -100.666),
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 3,
-            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.040E-3),
+            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.098E-3),
           _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 3,
-            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -160.),
+            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -101.2),
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 5,
-            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.170E-3),
+            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.248E-3),
           _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 5,
-            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -180.00),));
+            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -101.60),));
 
 #  TESTS DES ENERGIES
 
@@ -216,23 +257,331 @@ TEST_RESU(RESU=_F(RESULTAT=U,
                   NOM_CMP='TOTALE',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=0.044444,
+                  VALE=0.0253344,
                   REFERENCE='ANALYTIQUE',),);
 
+
+
+U=CALC_ELEM( reuse=U, OPTION=( 'EPSP_ELGA','EPME_ELGA_DEPL','EPMG_ELGA_DEPL'),
+                          RESULTAT=U, );
+
+TEST_RESU(RESU=(  _F( RESULTAT=U,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM='EPSP_ELGA',
+                      NOM_CMP='EPXX',
+                      MAILLE='M1',
+                      POINT=1,
+                      VALE=1.9600000000000E-04,
+                      PRECISION=(0.0001,1e-06,),
+                      REFERENCE='NON_REGRESSION',
+                      CRITERE='RELATIF',),
+                  _F( RESULTAT=U,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM='EPSP_ELGA',
+                      NOM_CMP='EPYY',
+                      MAILLE='M1',
+                      POINT=1,
+                      VALE=-3.9200000000000E-04,
+                      PRECISION=(0.0001,1e-06,),
+                      REFERENCE='NON_REGRESSION',
+                      CRITERE='RELATIF',),
+                   _F(RESULTAT = U,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPME_ELGA_DEPL',
+                      NOM_CMP='EPXX',
+                      MAILLE= 'M1',
+                      POINT=1,
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= 3.4840000000000E-04,
+                      CRITERE='RELATIF', ),
+                   _F( RESULTAT = U,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPME_ELGA_DEPL',
+                      NOM_CMP='EPYY',
+                      MAILLE= 'M1',
+                      POINT=1,
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= -9.0000000000000E-04,
+                      CRITERE='RELATIF', ),
+                    _F( RESULTAT = U,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPMG_ELGA_DEPL',
+                      NOM_CMP='EPXX',
+                      MAILLE= 'M1',
+                      POINT=1,
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= 3.4917925128000E-04,
+                      CRITERE='RELATIF', ),
+                    _F( RESULTAT = U,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPMG_ELGA_DEPL',
+                      NOM_CMP='EPYY',
+                      MAILLE= 'M1',
+                      POINT=1,
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= -9.0000000000000E-04,
+                      CRITERE='RELATIF', ), 
+                   ));
 #
+U=CALC_ELEM( reuse=U, OPTION=('EPSP_ELNO'),RESULTAT=U, );
+#
+TEST_RESU(RESU=(  _F( RESULTAT=U,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM='EPSP_ELNO',
+                      NOM_CMP='EPXX',
+                      MAILLE='M1',
+                      NOEUD ='N1',
+                      VALE=1.9600000000000E-04,
+                      PRECISION= 1E-03,
+                      REFERENCE='NON_REGRESSION',
+                      CRITERE='RELATIF',),
+                  _F( RESULTAT=U,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM='EPSP_ELNO',
+                      NOM_CMP='EPYY',
+                      MAILLE='M1',
+                      NOEUD ='N1',
+                      VALE=-3.9200000000000E-04,
+                      PRECISION= 1E-03,
+                      REFERENCE='NON_REGRESSION',
+                      CRITERE='RELATIF',),));
 
-T_TOT=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),
-                CHARGE=CHMECA,
-                RESULTAT=U,);
+U=CALC_ELEM( reuse=U, OPTION=('EPME_ELNO_DEPL','EPMG_ELNO_DEPL'),
+                          RESULTAT=U, );
+#
+TEST_RESU(RESU=(  
+                   _F(  RESULTAT = U,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPME_ELNO_DEPL',
+                      NOM_CMP='EPXX',
+                      MAILLE= 'M1',
+                      NOEUD ='N1',
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= 3.4840000000000E-04,
+                      CRITERE='RELATIF', ),
+                   _F( RESULTAT = U,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPME_ELNO_DEPL',
+                      NOM_CMP='EPYY',
+                      MAILLE= 'M1',
+                      NOEUD ='N1',
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= -9.0000000000000E-04,
+                      CRITERE='RELATIF', ),
+                   _F( RESULTAT = U,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPMG_ELNO_DEPL',
+                      NOM_CMP='EPXX',
+                      MAILLE= 'M1',
+                      NOEUD ='N1',
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= 3.4917925128000E-04,
+                      CRITERE='RELATIF', ),
+                  _F( RESULTAT = U,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPMG_ELNO_DEPL',
+                      NOM_CMP='EPYY',
+                      MAILLE= 'M1',
+                      NOEUD ='N1',
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= -9.0000000000000E-04,
+                      CRITERE='RELATIF', ), ));
 
-
+T_TOT=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),CHARGE=CHMECA,RESULTAT=U,);
+#
 IMPR_TABLE(TABLE=T_TOT);
-
+#
 TEST_TABLE(TABLE=T_TOT,
            FILTRE=_F(NOM_PARA='NUME_ORDRE', VALE_I=1,),
            NOM_PARA='TOTALE',
-           VALE=0.044444,
+           VALE=0.041721,
            REFERENCE='ANALYTIQUE',);
-           
+##############################################################################
+#  TESTS DES CONTRAINTES/DEFORMATIONS
+
+U2=CALC_ELEM(reuse =U2,
+            RESULTAT=U2,
+            OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO_ELGA',),);
+#
+TEST_RESU(RESU=(
+          _F(  RESULTAT =U2,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+            MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 8.993E-4),
+          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,
+            MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -100.666),
+          _F(  RESULTAT =U2,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 3,
+            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.098E-3),
+          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 3,
+            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -101.2),
+          _F(  RESULTAT =U2,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 5,
+            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.248E-3),
+          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 5,
+            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -101.60),));
+
+#  TESTS DES ENERGIES
+
+U2=CALC_ELEM(reuse =U2,
+            RESULTAT=U2,
+            OPTION=('ETOT_ELGA','ENEL_ELGA',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U2,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='TOTALE',
+                  MAILLE='M1',
+                  POINT=1,
+                  VALE=0.0253344,
+                  REFERENCE='ANALYTIQUE',),);
+
+
+
+U2=CALC_ELEM( reuse=U2, OPTION=( 'EPSP_ELGA','EPME_ELGA_DEPL','EPMG_ELGA_DEPL'),
+                          RESULTAT=U2, );
+
+TEST_RESU(RESU=(  _F( RESULTAT=U2,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM='EPSP_ELGA',
+                      NOM_CMP='EPXX',
+                      MAILLE='M1',
+                      POINT=1,
+                      VALE=1.9600000000000E-04,
+                      PRECISION=(0.0001,1e-06,),
+                      REFERENCE='NON_REGRESSION',
+                      CRITERE='RELATIF',),
+                 _F( RESULTAT=U2,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM='EPSP_ELGA',
+                      NOM_CMP='EPYY',
+                      MAILLE='M1',
+                      POINT=1,
+                      VALE=-3.9200000000000E-04,
+                      PRECISION=(0.0001,1e-06,),
+                      REFERENCE='NON_REGRESSION',
+                      CRITERE='RELATIF',),
+                 _F(  RESULTAT =U2,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPME_ELGA_DEPL',
+                      NOM_CMP='EPXX',
+                      MAILLE= 'M1',
+                      POINT=1,
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= 3.4840000000000E-04,
+                      CRITERE='RELATIF', ),   
+                 _F( RESULTAT =U2,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPME_ELGA_DEPL',
+                      NOM_CMP='EPYY',
+                      MAILLE= 'M1',
+                      POINT=1,
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= -9.0000000000000E-04,
+                      CRITERE='RELATIF', ),
+                  _F( RESULTAT =U2,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPMG_ELGA_DEPL',
+                      NOM_CMP='EPXX',
+                      MAILLE= 'M1',
+                      POINT=1,
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= 3.4917925128000E-04,
+                      CRITERE='RELATIF', ),
+                  _F( RESULTAT =U2,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPMG_ELGA_DEPL',
+                      NOM_CMP='EPYY',
+                      MAILLE= 'M1',
+                      POINT=1,
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= -9.0000000000000E-04,
+                      CRITERE='RELATIF', ), ));
+
+U2=CALC_ELEM( reuse=U2, OPTION=('EPSP_ELNO'),RESULTAT=U2,);
+
+#
+TEST_RESU(RESU=(  _F( RESULTAT=U2,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM='EPSP_ELNO',
+                      NOM_CMP='EPXX',
+                      MAILLE='M1',
+                      NOEUD ='N1',
+                      VALE=1.9600000000000E-04,
+                      PRECISION= 1E-03,
+                      REFERENCE='NON_REGRESSION',
+                      CRITERE='RELATIF',),
+                  _F( RESULTAT=U2,
+                      NUME_ORDRE = 5,
+                      NOM_CHAM='EPSP_ELNO',
+                      NOM_CMP='EPYY',
+                      MAILLE='M1',
+                      NOEUD ='N1',
+                      VALE=-3.9200000000000E-04,
+                      PRECISION= 1E-03,
+                      REFERENCE='NON_REGRESSION',
+                      CRITERE='RELATIF',),));
+U2=CALC_ELEM( reuse=U2, OPTION=('EPME_ELNO_DEPL','EPMG_ELNO_DEPL'),RESULTAT=U2,);
+#
+TEST_RESU(RESU=(  
+                  _F(  RESULTAT =U2,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPME_ELNO_DEPL',
+                      NOM_CMP='EPXX',
+                      MAILLE= 'M1',
+                      NOEUD ='N1',
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= 3.4840000000000E-04,
+                      CRITERE='RELATIF', ),
+                  _F( RESULTAT =U2,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPME_ELNO_DEPL',
+                      NOM_CMP='EPYY',
+                      MAILLE= 'M1',
+                      NOEUD ='N1',
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= -9.0000000000000E-04,
+                      CRITERE='RELATIF', ),
+                 _F( RESULTAT =U2,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPMG_ELNO_DEPL',
+                      NOM_CMP='EPXX',
+                      MAILLE= 'M1',
+                      NOEUD ='N1',
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= 3.4917925128000E-04,
+                      CRITERE='RELATIF', ), 
+                  _F( RESULTAT =U2,    
+                      NUME_ORDRE = 5,
+                      NOM_CHAM = 'EPMG_ELNO_DEPL',
+                      NOM_CMP='EPYY',
+                      MAILLE= 'M1',
+                      NOEUD ='N1',
+                      REFERENCE = 'NON_REGRESSION', 
+                      PRECISION=(0.0001,1e-06,),
+                      VALE= -9.0000000000000E-04,
+                      CRITERE='RELATIF', ), ));
+
+T_TOT2=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),
+                CHARGE=CHMECA,RESULTAT=U2,);
+#
+IMPR_TABLE(TABLE=T_TOT2);
+#
+TEST_TABLE(TABLE=T_TOT2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE', VALE_I=1,),
+           NOM_PARA='TOTALE',
+           VALE=0.041721,
+           REFERENCE='ANALYTIQUE',);        
 FIN()
 #

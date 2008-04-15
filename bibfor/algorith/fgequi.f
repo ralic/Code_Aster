@@ -1,6 +1,6 @@
       SUBROUTINE FGEQUI ( T, TYPZ, NDIM, EQUI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,7 @@ C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
 C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C                        . DIRECTION DES CONTRAINTES PRINCIPALES
 C                                                       (=3*3 VALEURS)
+C                        . TRACE                        (= 1 VALEUR)
 C               . DEFORMATIONS EQUIVALENTES  :
 C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
@@ -156,6 +157,7 @@ C ------ TRESCA = MAX DIFF VALEURS PRINCIPALES
          EQUI(2) = MAX ( ABS(EQUI(3)-EQUI(4)),
      +                   ABS(EQUI(3)-EQUI(5)),
      +                   ABS(EQUI(4)-EQUI(5)) )
+
 C ------ PREMIER INVARIANT
          CALL LCHYDR (TN,HYD)
 C ------ EQUIVALENT FATIGUE = SECOND INVARIANT * SIGNE(PREMIER INV)
@@ -172,7 +174,9 @@ C -      A L AUTRE VECTEUR
  202           CONTINUE
  200        CONTINUE
          ENDIF
-C
+             
+C ------ TRACE DES CONTRAINTES : TRSIG
+         EQUI(16) = T(1)+T(2)+T(3)
       ENDIF
 C
       END

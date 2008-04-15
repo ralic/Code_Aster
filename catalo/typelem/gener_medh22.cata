@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF TYPELEM  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -112,7 +112,7 @@ MODE_LOCAL__
                                         SIP      M11      FH11X    FH11Y    )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      M11      FH11X    FH11Y    )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG  )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      M11      FH11X    FH11Y    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
@@ -237,4 +237,3 @@ OPTION__
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-			      

@@ -1,7 +1,7 @@
-      SUBROUTINE NMCHSV(CNFINT,SECMBR,SDDYNA)
+      SUBROUTINE NMCHSV(CNFINT,SECMBR,SDDYNA,SDDISC,NUMINS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/04/2008   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,8 +21,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*19  CNFINT,SDDYNA
+      CHARACTER*19  CNFINT,SDDYNA,SDDISC
       CHARACTER*24  SECMBR(8)
+      INTEGER       NUMINS
 C 
 C ----------------------------------------------------------------------
 C
@@ -58,11 +59,12 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER       IRET     
       CHARACTER*24  HHTC ,LOSD
-      INTEGER       JHHTC,JLOSD
+      INTEGER       JHHTC,JLOSD,DIARCH
       CHARACTER*24  CNFEDO,CNFEPI,CNDIDO,CNDIPI,CNFSDO,CNFSPI
       CHARACTER*24  CNDIDI,CNCINE
       CHARACTER*24  FEDOLD,FEPILD,DIDOLD,DIPILD,FSDOLD,FSPILD
       CHARACTER*24  DIDILD,CINELD,CNFOLD
+      LOGICAL       NDYNLO
 C
 C ----------------------------------------------------------------------
 C
@@ -95,40 +97,65 @@ C
 C --- RECOPIE DES CHAMPS
 C
       CALL COPISD('CHAMP_GD','V',CNFINT,CNFOLD)
-
-      CALL EXISD('CHAMP',CNFEDO, IRET)
-      IF ( IRET .NE. 0 ) THEN
-        CALL COPISD('CHAMP_GD','V',CNFEDO,FEDOLD)
+      IF  ( NUMINS .LT. 2 ) THEN
+        CALL EXISD('CHAMP',CNFEDO, IRET)
+        IF ( IRET .NE. 0 ) THEN
+          CALL EXISD('CHAMP',FEDOLD, IRET)
+          IF ( IRET .EQ. 0 ) THEN
+            CALL COPISD('CHAMP_GD','V',CNFEDO,FEDOLD)
+          ENDIF
+        ENDIF
+        CALL EXISD('CHAMP',CNFEPI, IRET)
+        IF ( IRET .NE. 0 ) THEN
+          CALL EXISD('CHAMP',FEPILD, IRET)
+          IF ( IRET .EQ. 0 ) THEN
+            CALL COPISD('CHAMP_GD','V',CNFEPI,FEPILD)
+          ENDIF
+        ENDIF
+        CALL EXISD('CHAMP',CNDIDO, IRET)
+        IF ( IRET .NE. 0 ) THEN
+          CALL EXISD('CHAMP',DIDOLD, IRET)
+          IF ( IRET .EQ. 0 ) THEN
+            CALL COPISD('CHAMP_GD','V',CNDIDO,DIDOLD)
+          ENDIF
+        ENDIF
+        CALL EXISD('CHAMP',CNDIPI, IRET)
+        IF ( IRET .NE. 0 ) THEN
+          CALL EXISD('CHAMP',DIPILD, IRET)
+          IF ( IRET .EQ. 0 ) THEN
+            CALL COPISD('CHAMP_GD','V',CNDIPI,DIPILD)
+          ENDIF
+        ENDIF
+        CALL EXISD('CHAMP',CNFSDO, IRET)
+        IF ( IRET .NE. 0 ) THEN
+          CALL EXISD('CHAMP',FSDOLD, IRET)
+          IF ( IRET .EQ. 0 ) THEN
+            CALL COPISD('CHAMP_GD','V',CNFSDO,FSDOLD)
+          ENDIF
+        ENDIF
+        CALL EXISD('CHAMP',CNFSPI, IRET)
+        IF ( IRET .NE. 0 ) THEN
+          CALL EXISD('CHAMP',FSPILD, IRET)
+          IF ( IRET .EQ. 0 ) THEN
+            CALL COPISD('CHAMP_GD','V',CNFSPI,FSPILD)
+          ENDIF
+        ENDIF
+        CALL EXISD('CHAMP',CNDIDI, IRET)
+        IF ( IRET .NE. 0 ) THEN
+          CALL EXISD('CHAMP',DIDILD, IRET)
+          IF ( IRET .EQ. 0 ) THEN
+            CALL COPISD('CHAMP_GD','V',CNDIDI,DIDILD)
+          ENDIF
+        ENDIF
+        CALL EXISD('CHAMP',CNCINE, IRET)
+        IF ( IRET .NE. 0 ) THEN
+          CALL EXISD('CHAMP',CINELD, IRET)
+          IF ( IRET .EQ. 0 ) THEN
+            CALL COPISD('CHAMP_GD','V',CNCINE,CINELD)
+          ENDIF
+        ENDIF
       ENDIF
-      CALL EXISD('CHAMP',CNFEPI, IRET)
-      IF ( IRET .NE. 0 ) THEN
-        CALL COPISD('CHAMP_GD','V',CNFEPI,FEPILD)
-      ENDIF
-      CALL EXISD('CHAMP',CNDIDO, IRET)
-      IF ( IRET .NE. 0 ) THEN
-        CALL COPISD('CHAMP_GD','V',CNDIDO,DIDOLD)
-      ENDIF
-      CALL EXISD('CHAMP',CNDIPI, IRET)
-      IF ( IRET .NE. 0 ) THEN
-        CALL COPISD('CHAMP_GD','V',CNDIPI,DIPILD)
-      ENDIF
-      CALL EXISD('CHAMP',CNFSDO, IRET)
-      IF ( IRET .NE. 0 ) THEN
-        CALL COPISD('CHAMP_GD','V',CNFSDO,FSDOLD)
-      ENDIF
-      CALL EXISD('CHAMP',CNFSPI, IRET)
-      IF ( IRET .NE. 0 ) THEN
-        CALL COPISD('CHAMP_GD','V',CNFSPI,FSPILD)
-      ENDIF
-      CALL EXISD('CHAMP',CNDIDI, IRET)
-      IF ( IRET .NE. 0 ) THEN
-        CALL COPISD('CHAMP_GD','V',CNDIDI,DIDILD)
-      ENDIF
-      CALL EXISD('CHAMP',CNCINE, IRET)
-      IF ( IRET .NE. 0 ) THEN
-        CALL COPISD('CHAMP_GD','V',CNCINE,CINELD)
-      ENDIF
-
+C      
       ZL(JLOSD+10-1) = .TRUE.
 C
       CALL JEDEMA()

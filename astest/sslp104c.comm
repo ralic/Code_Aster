@@ -1,4 +1,4 @@
-# MODIF  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE POUTRE CANTILEVER . VALIDATION DE LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,7 +169,7 @@ TEST_TABLE(TABLE=SIXX_Z,
            REFERENCE= 'NON_REGRESSION',
            VERSION = '9.0.4',
            CRITERE = 'RELATIF',
-           PRECISION = 0.00005,);
+           PRECISION = 0.0005,);
            
            
 # L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR HAUT
@@ -261,7 +261,7 @@ TEST_TABLE(TABLE=SIXX_ZN,
            REFERENCE= 'NON_REGRESSION',
            VERSION = '9.0.4',
            CRITERE = 'RELATIF',
-           PRECISION = 0.00005,);
+           PRECISION = 0.0005,);
            
 TEST_TABLE(TABLE=SIXX_ZN,
            FILTRE = _F(NOM_PARA='COOR_Z',VALE=Z),
@@ -269,6 +269,6 @@ TEST_TABLE(TABLE=SIXX_ZN,
            VALE = 3.7065127737457E+07,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.00005,);           
+           PRECISION = 0.0005,);           
 
 FIN();

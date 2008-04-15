@@ -1,6 +1,7 @@
       SUBROUTINE JEDISP ( N , TAB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,18 +39,23 @@ C ----------------------------------------------------------------------
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C ----------------------------------------------------------------------
+      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C ----------------------------------------------------------------------
       LOGICAL          LAMOV
 C DEB ------------------------------------------------------------------
       IF ( LDYN .EQ. 1 ) THEN 
-        DO 11 K = 1,N
-         TAB(K) = ISMAEM()
+        TAB(1) = VMXDYN-(MCDYN-LISZON*LOIS)
+        DO 11 K = 2,N
+          TAB(K) = 0
   11    CONTINUE
         GOTO 200
       ENDIF     

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,10 +55,10 @@ MODE_LOCAL__
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z )
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5

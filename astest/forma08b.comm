@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2007   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 # RESPONSABLE sellali N.SELLALI
 # TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,14 +180,16 @@ TME=MACR_LIGN_COUPE(RESULTAT=RESU,NOM_CHAM='DEPL',
                                COOR_ORIG=(3.6,  3.79753766804580E+00, 3.12868934704165E-02),#N5802,
                                COOR_EXTR=(3.6,  3.8, 0.),#N5801,
                             NB_POINTS=2,
-                            OPERATION = 'EXTRACTION',),),)
+                            OPERATION = 'EXTRACTION',
+                            DISTANCE_MAX=0.001,),),)
 #IMPR_TABLE(TABLE=TME)
 TMM=MACR_LIGN_COUPE(RESULTAT=RESU,NOM_CHAM='DEPL',
                 LIGN_COUPE=(_F(TYPE='SEGMENT',
                                COOR_ORIG=(3.6,  3.79753766804580E+00,  3.12868934704165E-02),#N5802,
                                COOR_EXTR=(3.6,  3.8,  0.),#N5801,
                             NB_POINTS=2,
-                            OPERATION = 'MOYENNE',),),)
+                            OPERATION = 'MOYENNE',
+                            DISTANCE_MAX=0.001,),),)
 
 #IMPR_TABLE(TABLE=TMM)
 
@@ -198,7 +200,8 @@ TME2=MACR_LIGN_COUPE(RESULTAT=RESU,NOM_CHAM='DEPL',
                                COOR_ORIG=(3.6,  3.79753766804580E+00, 3.12868934704165E-02),#N5802,
                                COOR_EXTR=(3.6,  3.802462332, -3.12868934704165E-02),#COORD HORS DOMAINE,
                             NB_POINTS=3,
-                            OPERATION = 'EXTRACTION',),),)
+                            OPERATION = 'EXTRACTION',
+                            DISTANCE_MAX=0.001,),),)
 IMPR_TABLE(TABLE=TME2)
 
 TMM2=MACR_LIGN_COUPE(RESULTAT=RESU,NOM_CHAM='DEPL',
@@ -206,7 +209,8 @@ TMM2=MACR_LIGN_COUPE(RESULTAT=RESU,NOM_CHAM='DEPL',
                                COOR_ORIG=(3.6,  3.79753766804580E+00,  3.12868934704165E-02),#N5802,
                                COOR_EXTR=(3.6,  3.802462332, -3.12868934704165E-02),#COORD HORS DOMAINE,
                             NB_POINTS=3,
-                            OPERATION = 'MOYENNE',),),)
+                            OPERATION = 'MOYENNE',
+                            DISTANCE_MAX=0.001,),),)
 IMPR_TABLE(TABLE=TMM2)
 
 TEST_TABLE(      TABLE=TMM2,       NOM_PARA='DX',

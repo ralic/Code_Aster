@@ -3,7 +3,7 @@
       INTEGER                      IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
       VDY = -1.0D0
       MXDYN = MEJVDY ( VDY )
       IF ( MXDYN .GT. 0 ) THEN
-        WRITE(6,'(1X,A,I12,A,F12.3,A)') 'LIMITE MEMOIRE DYNAMIQUE   : ',
+        WRITE(6,'(1X,A,I14,A,F12.3,A)') 'LIMITE MEMOIRE DYNAMIQUE   : ',
      &      MXDYN*LOIS,' OCTETS (',MXDYN*LOIS*1.D0/UNMEGA,' MEGAOCTETS)'
       ENDIF
       CALL JEDEBU(4,IMEMO,MXDYN,IADZON,LMO,'MESSAGE','VIGILE',IDEBUG )
@@ -94,7 +94,7 @@ C-----------------AY------------------------
       CALL UTINIT(2, 80, 1)
 C-----------------AY------------------------
 
-      IF ( LERMEM ) CALL U2MESI('F','SUPERVIS_11',1,FNTMEM*LOIS)
+      IF ( LERMEM ) CALL U2MESI('F','SUPERVIS_11',1,INT(FNTMEM*LOIS))
 
       IF (IDEBUG .EQ. 1) THEN
          CALL U2MESS('I','SUPERVIS_12')

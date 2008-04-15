@@ -1,7 +1,7 @@
       SUBROUTINE  EPSTMC(FAMI,NDIM, INSTAN, POUM, IGAU,ISGAU,
      &                   XYZGAU,REPERE,MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,9 @@ C
            REAL*8 DIRE(3),ORIG(3),P(3,3),EPSTHL(6)
            REAL*8 VEPST1(6),VEPST2(6),HYDR,SECH,SREF
            INTEGER I,J,K,IRET
+      CHARACTER*6       EPSA(6)
+      DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
+     &              'EPSAYZ'/
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -111,7 +114,7 @@ C
          ENDIF
 C
 C ---- ---------------------------------------------------------------
-C ---- CALCUL DES DEFORMATIONS DU AU SECAHGE (OPTION CHAR_MECA_SECH_R)
+C ---- CALCUL DES DEFORMATIONS DU AU SECHAGE (OPTION CHAR_MECA_SECH_R)
 C ---- ---------------------------------------------------------------
       ELSEIF (OPTION(11:14).EQ.'SECH' ) THEN
 
@@ -132,6 +135,17 @@ C
             EPSTH(1) = - KDESSI*(SREF-SECH)
             EPSTH(2) = - KDESSI*(SREF-SECH)
             EPSTH(3) = - KDESSI*(SREF-SECH)
+
+C
+C ---- ---------------------------------------------------------------
+C ---- CALCUL DES DEFORMATIONS ANELASTIQUE (OPTION CHAR_MECA_EPSA_R)
+C ---- ---------------------------------------------------------------
+      ELSEIF (OPTION(11:14).EQ.'EPSA' ) THEN
+      DO 20 K=1,6
+        CALL RCVARC(' ',EPSA(K),POUM,FAMI,IGAU,ISGAU,EPSTH(K),IRET)
+        IF (IRET.EQ.1) EPSTH(K)=0.D0
+ 20   CONTINUE
+
 
 C ---- ------------------------------------------------------------
 C ---- CALCUL DES DEFORMATIONS THERMIQUES (OPTION CHAR_MECA_TEMP_R)

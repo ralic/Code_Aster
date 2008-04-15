@@ -1,7 +1,7 @@
       SUBROUTINE TE0531(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,6 +38,7 @@ C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
 C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C                        . DIRECTION DES CONTRAINTES PRINCIPALES 
 C                                                      (=3*3 VALEURS)
+C                        . TRACE                        (= 1 VALEUR)
 C     OPTION :  'EQUI_ELGA_SIGM'
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
@@ -46,7 +47,7 @@ C     REMARQUE:  LA DERNIERE GRANDEUR EST UTILISE
 C                PARTICULIEREMENT POUR DES CALCULS DE CUMUL DE
 C                DOMMAGE EN FATIGUE
 C ----------------------------------------------------------------------
-      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=15)
+      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=16)
 C ----------------------------------------------------------------------
       INTEGER IDEFO,ICONT,IEQUIF
       INTEGER IDCP,KP,J,I,INO
@@ -72,7 +73,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      NCEQ = 15
+      NCEQ = 16
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       CALL JEVECH('PCONTRR','L',ICONT)

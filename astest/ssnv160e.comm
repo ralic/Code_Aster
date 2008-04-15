@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 14/04/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D; AVEC SIMU_POINT_MAT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,15 +25,16 @@ DEBUT(CODE=_F( NOM = 'SSNV160E',NIV_PUB_WEB='INTERNET')   )
 #  CARACTERISTIQUES DU MATERIAU
 #
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=4.2000000E7,
+MATER=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
                             NU=0.285,
                             ALPHA=0.,),
-                    CAM_CLAY=_F(PORO=0.14,
-                                LAMBDA=0.25,
-                                KAPA=0.05,           
-                                M=0.9,
-                                PRES_CRIT=3.E5,
-                                PA=1.E5,),);
+                CAM_CLAY=_F(MU  = 6.E6,
+                            PORO=0.66,
+                            LAMBDA=0.25,
+                            KAPA=0.05,           
+                            M=0.9,
+                            PRES_CRIT=3.E5,
+                            PA=1.E5,),);
 
 ############################################
 
@@ -143,7 +144,7 @@ SYZINI= 0
 SXZINI= 0
 
 
-EXXINI= -4.62095E-02
+EXXINI= -1.82689E-02
 EYYINI= EXXINI
 EZZINI= EXXINI
 EXYINI= 0
@@ -163,7 +164,7 @@ RESU3=SIMU_POINT_MAT(
                                 EPXY=EXYINI,EPYZ=EYZINI,EPXZ=EXZINI,
                                 ),
                    VARI_INIT=_F(
-                                 VALE=(3.99500E+05,  1.00000E+00,  7.99000E+05 , 6.38519E-12,  4.92662E-02,  2.46165E-18,  1.98271E-02),
+                                 VALE=(3.99500E+05,  1.00000E+00,  7.99000E+05 , 4.63066E-10,  1.94773E-02,  2.99086E-17,  1.79821E+00),
                                 ),
                    SIGM_IMPOSE=_F(SIXX=PRESS2, SIYY=PRESS2, SIZZ=PRESS2,
                    ),
@@ -177,7 +178,7 @@ IMPR_TABLE(TABLE=RESU3)
 
 TEST_TABLE( TABLE=RESU3,
             FILTRE=_F(NOM_PARA='INST',VALE=8000.),
-            REFERENCE='AUTRE_ASTER',NOM_PARA ='EPXX',VALE=-4.62992E-02)
+            REFERENCE='AUTRE_ASTER',NOM_PARA ='EPXX',VALE=-1.830436E-02)
 
 
 TEST_TABLE( TABLE=RESU3,

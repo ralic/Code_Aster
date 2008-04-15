@@ -3,7 +3,7 @@
         INTEGER         IER
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/11/2007   AUTEUR ANGLES J.ANGLES 
+C MODIF PREPOST  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -261,7 +261,7 @@ C
       NOMSYM = 'EQUI_'//NOMOPT(6:14)
 C
       IF(NOMOPT(11:14).EQ.'SIGM') THEN
-        NTCMP = 6
+        NTCMP = 7
       ELSEIF(NOMOPT(11:14).EQ.'EPSI') THEN
         NTCMP = 5
       ELSEIF(NOMOPT(11:14).EQ.'EPME') THEN

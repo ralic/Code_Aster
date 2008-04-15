@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 14/04/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,6 +290,24 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        _chtrt[i] = AFFE_CHAR_MECA( MODELE       = modele ,
                                     FORCE_NODALE = mcfact , )
        i=i+1
+
+#
+#     --- commande AFFE_CHAR_MECA ---
+#         chargement mecanique :  verif contact levres
+#
+  if TYPE_MAILLAGE[:4]=='FISS' :
+    if TYPE_MAILLAGE in ('FISS_LONG_NONDEB','FISS_AXIS_NONDEB') :
+       mcfond = ('FOND_SUP','FOND_INF')
+    else :
+       mcfond = ('FONDFISS')
+    _chcont = AFFE_CHAR_MECA( MODELE   = modele ,
+                               CONTACT =_F(GROUP_MA_MAIT = 'LEVRCORP',
+                                           GROUP_MA_ESCL = 'LEVRTUBU',
+                                           METHODE='VERIF',
+                                           TOLE_INTERP = -1.e-6,
+                                           GROUP_MA_FOND=mcfond,),)
+
+
 #
 #     --- commande STAT_NON_LINE ---
 #
@@ -317,6 +335,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        else :
           mcfex.append(_F(CHARGE=_chtrt[i],))
        i=i+1
+  if TYPE_MAILLAGE[:4]=='FISS' :
+     mcfex.append(_F(CHARGE=_chcont,))
   motscles['EXCIT'] =mcfex
 #
   mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets
@@ -588,9 +608,11 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
           NOMMA.append('MAIL_ORI')
     elif TYPE_MAILLAGE in ('FISS_LONG_NONDEB','FISS_AXIS_NONDEB') :
        NBFIS = 2
-       NOMGRO.append(('P_FON1' ,'P_FIS1' ),)
-       NOMGRE.append(('P_FON2' ,'P_FIS2' ),)
+#       NOMGRO.append(('P_FON1' ,'P_FIS1' ),)
+#       NOMGRE.append(('P_FON2' ,'P_FIS2' ),)
+       NOMGRO.append(('PS_FON1','PS_FIS1'),)
        NOMGRO.append(('PI_FON1','PI_FIS1'),)
+       NOMGRE.append(('PS_FON2','PS_FIS2'),)
        NOMGRE.append(('PI_FON2','PI_FIS2'),)
        TABMA8.append('FOND_SUP')
        TABMA8.append('FOND_INF')
@@ -639,6 +661,32 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                           INTITULE   ='FOND_INF',
                                           OPERATION  ='EXTRACTION',))
         IMPR_TABLE(TABLE = __rthfis2, )
+#
+#   --- post traitement fissure :  interpénétration des lèvres ----
+#
+
+    if TYPE_MAILLAGE[:4]=='FISS' :
+      __tcont=POST_RELEVE_T( ACTION=_F(  INTITULE = 'Contact levres',
+                                GROUP_NO = 'LEVRTUBU',
+                                RESULTAT = nomres,
+                                TOUT_ORDRE = 'OUI',
+                                NOM_CHAM = 'VALE_CONT',
+                                NOM_CMP = 'CONT',
+                                OPERATION = 'EXTRACTION'))
+      tcont=__tcont.EXTR_TABLE()
+#      print tcont
+      numo = tcont['NUME_ORDRE'].values()['NUME_ORDRE']
+      numo=dict([(i,0) for i in numo]).keys()
+      nbinst = len(numo)
+      for i in range(1,nbinst+1) :
+        tabi = tcont.NUME_ORDRE==i
+        nbtot = len(tabi)
+        cont_actif=tabi.CONT>0.
+        nb_no_cont = len(cont_actif)
+        if nb_no_cont > 0 :
+           UTMESS('A','ASPIC0_22',vali=[i,nbtot,nb_no_cont])
+
+
 #
 #        boucle sur le nombre de fond de fissure
 #

@@ -4,7 +4,7 @@
       CHARACTER*6   TYPMOD
       INTEGER       NDIM, NCEQ ,NCMP, NBVA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -213,39 +213,39 @@ C
       IF (LELE2D) THEN
          TYPMOD = '2D'
          NDIM  = 2
-         NCEQ  = 15
-         NCMP  = 6
-         IF(NOMTE(1:2).EQ.'MI') NCEQ = 6
+         NCEQ  = 16
+         NCMP  = 7
+         IF(NOMTE(1:2).EQ.'MI') NCEQ = 7
       ELSEIF (LELE3D) THEN
          TYPMOD = '3D'
          NDIM  = 3
-         NCEQ  = 15
-         NCMP  = 6
-         IF(NOMTE(1:4).EQ.'MINC') NCEQ = 6
+         NCEQ  = 16
+         NCMP  = 7
+         IF(NOMTE(1:4).EQ.'MINC') NCEQ = 7
          IF(NOMTE.EQ.'MECA_SHB8') NBVA = 6
       ELSEIF(LELECQ)THEN
          TYPMOD = 'COQUE'
          NDIM  = 3
-         NCEQ  = 6
-         NCMP  = 6
+         NCEQ  = 7
+         NCMP  = 7
 C	 
 C --- ELEMENTS THM 
 C
       ELSEIF(LEDTHM)THEN
          TYPMOD = '2D'
          NDIM  = 2
-         NCEQ  = 6
-         NCMP  = 6
+         NCEQ  = 7
+         NCMP  = 7
       ELSEIF(LEATHM)THEN
          TYPMOD = '2D'
          NDIM  = 2
-         NCEQ  = 6
-         NCMP  = 6
+         NCEQ  = 7
+         NCMP  = 7
       ELSEIF(LE3THM)THEN
          TYPMOD = '3D'
          NDIM  = 3
-         NCEQ  = 6
-         NCMP  = 6
+         NCEQ  = 7
+         NCMP  = 7
       ELSE
          CALL U2MESS('F','MODELISA3_27')
       ENDIF

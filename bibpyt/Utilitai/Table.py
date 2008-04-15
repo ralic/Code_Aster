@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 15/04/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -349,14 +349,27 @@ class Table(TableBase):
       return Table(rows, self.para[:], self.type[:], self.titr)
 
 # ------------------------------------------------------------------------------
+   def add_para(self, para, typ):
+      """Ajoute un nouveau paramètre."""
+      if not type(para) in EnumTypes:
+         para=[para,]
+      if not type(typ) in EnumTypes:
+         typ =[typ,]
+      if len(typ) != len(para):
+         typ = [typ[0],] * len(para)
+      for p, t in zip(para, typ):
+         if not p in self.para:
+            self.para.append(p)
+            self.type.append(t)
+
+# ------------------------------------------------------------------------------
    def append(self, obj):
       """Ajoute une ligne (type dict) qui peut éventuellement définir un
       nouveau paramètre."""
       para=obj.keys()
       for p in para:
          if not p in self.para:
-            self.para.append(p)
-            self.type.append(_typaster(obj[p]))
+            self.add_para(p, _typaster(obj[p]))
          else:
             ip=self.para.index(p)
             self.type[ip]=_typaster(obj[p], self.type[ip])
@@ -381,8 +394,7 @@ class Table(TableBase):
          return
       if k_para in self.para :
          UTMESS('F','Table','(setitem) Le parametre %s existe déjà.' % k_para)
-      self.para.append(k_para)
-      self.type.append(_typaster(k_value[0]))
+      self.add_para(k_para, typ=_typaster(k_value[0]))
       i = 0
       for row in self:
          if i < len(k_value):

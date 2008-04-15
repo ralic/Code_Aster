@@ -3,7 +3,7 @@
       CHARACTER*(*) BASE,TOUS,MESS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/04/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,8 @@ C     2. RECUPERATION DE LA LISTE DES OBJETS :
 C     --------------------------------------------------------------
       CALL JELSTC(BAS1,' ',0,0,KBID,NBVAL)
       NBOBJ = -NBVAL
+C     -- ON AUGMENTE NBOBJ DE 1 CAR ON VA CREER UN OBJET DE PLUS !
+      NBOBJ = NBOBJ+1
       CALL WKVECT('&&IMPTOU.LISTE','V V K24',NBOBJ,IALIOB)
       CALL JELSTC(BAS1,' ',0,NBOBJ,ZK24(IALIOB),NBVAL)
 

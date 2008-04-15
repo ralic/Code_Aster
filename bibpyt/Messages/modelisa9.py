@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa9 Messages  DATE 15/04/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -392,6 +392,9 @@ Conseil :
 
 94 : _("""
      On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D
+"""),
+95 : _("""
+     ERREUR: l'auto-spectre est a valeurs négatives
 """),
 
 }

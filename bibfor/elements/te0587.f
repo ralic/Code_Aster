@@ -1,6 +1,6 @@
       SUBROUTINE TE0587(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ C ......................................................................
       REAL*8 FI,POIDS,R,R8PI,OMEGA
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA,L
       REAL*8 CP(2,2),CV(2,2),CO(4,4),SI(4,4),TK(4),XPG(4)
-      REAL*8 VEQG(6),VALMIN,VALMAX,R8MAEM,VAL
+      REAL*8 VEQG(16),VALMIN,VALMAX,R8MAEM,VAL
       INTEGER NNO,NNOS,JGANO,NDIM,NPG,NBCOU,NBSEC,LORIEN,NUMCMP
       INTEGER IPOIDS,IVF,ICOUDE,IC,KP,NBCMP,JIN,JCOOPG,JDFD2
       INTEGER ICAGEP,IGEOM,I1,I2,IH,IDFDK
@@ -458,7 +458,7 @@ C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 
 C INIALISATION DE EFG
 
-          DO 280,I = 1,6
+          DO 280,I = 1,16
             VEQG(I) = 0.D0
   280     CONTINUE
 
@@ -480,8 +480,9 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 
               IF (OPTION.EQ.'EQUI_ELGA_SIGM') THEN
                 CALL FGEQUI(SIG,'SIGM',3,VEQG)
-                ZR(JOUT-1+2*KPGS-1) = VEQG(1)
-                ZR(JOUT-1+2*KPGS) = VEQG(6)
+                ZR(JOUT-1+3*KPGS-2) = VEQG(1)
+                ZR(JOUT-1+3*KPGS-1) = VEQG(6)
+                ZR(JOUT-1+3*KPGS) = VEQG(16)
               ELSE
                 CALL FGEQUI(SIG,'EPSI',3,VEQG)
                 ZR(JOUT-1+2*KPGS-1) = VEQG(1)
@@ -526,11 +527,13 @@ C ======== RAPPEL DES CONTRAINTES ====================
           END IF
         ELSE IF (NOMCHA.EQ.'EQUI_ELGA_SIGM') THEN
           CALL JEVECH('PCONTEQ','L',JIN)
-          NBCMP = 2
+          NBCMP = 3
           IF (NOMCMP(1:4).EQ.'VMIS') THEN
             NUMCMP = 1
           ELSE IF (NOMCMP(1:7).EQ.'VMIS_SG') THEN
             NUMCMP = 2
+          ELSE IF (NOMCMP(1:5).EQ.'TRSIG') THEN
+            NUMCMP = 3
           ELSE
             CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
             GO TO 350

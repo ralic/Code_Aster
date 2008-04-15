@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 # TITRE VALIDATION POST_RELEVE_T 3D EN DIFFERENTS REPERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1091,7 +1091,7 @@ M1L_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST1',
                                       INTITULE='M1L_G: LISTE DE NOEUDS P7 P8, REPERE GLOBAL',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M1L_G,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1121,7 +1121,7 @@ M1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST1',
                                       INTITULE='M1_L: LISTE DE NOEUDS P7 P8, REPERE LOCAL: (1. 1. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M1_L,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1151,7 +1151,7 @@ M1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST1',
                                       INTITULE='M1_U: LISTE DE NOEUDS P7 P8, REPERE UTILISATEUR, ANGL_NAUT: ( 0. 0. 0. )',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M1_U,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1164,7 +1164,7 @@ M2L_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST2',
                                       INTITULE='M2L_G: LISTE DE NOEUDS P9 P10, REPERE GLOBAL',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M2L_G,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1193,8 +1193,8 @@ M2L_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',VECT_Y = ( 0., 1., 0., ),
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST2',
-                                      INTITULE='M2L_L: LISTE DE NOEUDS P9 P10 REPERE LOCAL VECT_Y: (0. 1. 0.)'
-                                      ),)
+                                      INTITULE='M2L_L: LISTE DE NOEUDS P9 P10 REPERE LOCAL VECT_Y: (0. 1. 0.)',
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M2L_L,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1225,7 +1225,7 @@ M2_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST2',
                                       INTITULE='M2_U: LISTE DE NOEUDS P9 P10 REPERE UTILISATEUR, ANGL_NAUT: ( 45. 0. 0. )',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M2_U,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1240,7 +1240,7 @@ M3L_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST3',
                                       INTITULE='M3L_G: LISTE DE NOEUDS P11 P12, REPERE GLOBAL',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M3L_G,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1272,7 +1272,7 @@ M3_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST3',
                                       INTITULE='M3_L: LISTE DE NOEUDS P11 P12, REPERE LOCAL: (-1. 0. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M3_L,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1307,7 +1307,7 @@ M3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST3',
                                       INTITULE='M3_U: LISTE DE NOEUDS P11 P12, REPERE UTILISATEUR,ANGL_NAUT : ( 90. 0. 0. )',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M3_U,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1321,7 +1321,7 @@ M4L_C=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST4',
                                       INTITULE='M4L_C:  LISTE DE NOEUDS P7 P11, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(TABLE=M4L_C,
    NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
              )
@@ -1355,7 +1355,7 @@ N1_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST1',
                                       INTITULE='N1_G: CHEMIN P7 P8, REPERE GLOBAL ',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N1_G,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', 'DZ', )
              )
@@ -1382,7 +1382,7 @@ N1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST1',
                                       INTITULE='N1_L: CHEMIN P7 P8 REPERE LOCAL, VECT_Y: (1. 1. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N1_L,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', 'DZ', )
              )
@@ -1410,7 +1410,7 @@ N1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST1',
                                       INTITULE='N1_U: CHEMIN P7 P8, REPERE UTILISATEUR,ANGL_NAUT : ( 0. 0. 0. )',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N1_U,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', 'DZ', )
              )
@@ -1443,7 +1443,7 @@ N2_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST2',
                                       INTITULE='N2_G:  CHEMIN P9 P10, REPERE GLOBAL',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N2_G,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', 'DZ', )
              )
@@ -1470,7 +1470,7 @@ N2_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST2',
                                       INTITULE='N1_L: CHEMIN P9 P10 REPERE LOCAL, VECT_Y: (0. 1. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N2_L,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', 'DZ', )
              )
@@ -1499,7 +1499,7 @@ N2_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST2',
                                       INTITULE='N1_U: CHEMIN P9 P810 REPERE UTILISATEUR,ANGL_NAUT : ( 45. 0. 0. )',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 
 
 IMPR_TABLE(   TABLE=N2_U,
@@ -1529,7 +1529,7 @@ N3_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST3',
                                       INTITULE='N3_G:  CHEMIN P11 P12, REPERE GLOBAL',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N3_G,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', 'DZ', )
              )
@@ -1558,7 +1558,7 @@ N3_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST3',
                                       INTITULE='N3_G:  CHEMIN P11 P12, REPERE LOCAL, VECT_Y: (-1. 0. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N3_L,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', 'DZ', )
              )
@@ -1589,7 +1589,7 @@ N3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       OPERATION='EXTRACTION',
                                       GROUP_NO='LIST3',
                                       INTITULE='N3_U:  CHEMIN P11 P12,  REPERE UTILISATEUR, ANGL_NAUT = ( 90., 0., 0., ),',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 IMPR_TABLE(   TABLE=N3_U,
                 NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', 'DZ', )
              )
@@ -1628,7 +1628,7 @@ O1_TDX=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
                                       GROUP_NO='LIST1',DIRECTION = ( 1., 0., 0., ),
                                       INTITULE='O1_TDX: CHEMIN P7 P8, TRAC_DIR DIRECTION: (1. 0. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 
 IMPR_TABLE(   TABLE=O1_TDX,
               NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
@@ -1660,7 +1660,7 @@ O1_TDY=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
                                       GROUP_NO='LIST1',DIRECTION = ( 0., 1., 0., ),
                                       INTITULE='O1_TDY: CHEMIN P7 P8, TRAC_DIR DIRECTION: (0. 1. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 
 IMPR_TABLE(   TABLE=O1_TDY,
               NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
@@ -1691,7 +1691,7 @@ O1_TDZ=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
                                       GROUP_NO='LIST1',DIRECTION = ( 0., 0., 1., ),
                                       INTITULE='O1_TDZ: CHEMIN P7 P8, TRAC_DIR DIRECTION: (0. 0. 1.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 
 IMPR_TABLE(   TABLE=O1_TDZ,
               NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
@@ -1725,7 +1725,7 @@ P1_TDX=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       NOM_CMP = ( 'DX', 'DY', 'DZ', ),
                                       GROUP_NO='LIST1',DIRECTION = ( 1., 0., 0., ),
                                       INTITULE='P1_TDX: CHEMIN P7 P8, TRAC_DIR DIRECTION: (1. 0. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 
 IMPR_TABLE(   TABLE=P1_TDX,
               NOM_PARA=( 'ABSC_CURV', 'TRAC_DIR', )
@@ -1754,7 +1754,7 @@ P2_TDX=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                                       NOM_CMP = ( 'DX', 'DY', 'DZ', ),
                                       GROUP_NO='LIST2',DIRECTION = ( -1., 1., 0., ),
                                       INTITULE='P2_TDX: CHEMIN P9 P10, TRAC_DIR DIRECTION: (-1. 1. 0.)',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 
 IMPR_TABLE(   TABLE=P2_TDX,
               NOM_PARA=( 'ABSC_CURV','TRAC_DIR',  )
@@ -1790,7 +1790,7 @@ INVA_M=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',INVARIANT = 'OUI',
                                       GROUP_NO='LIST1',
                                       INTITULE='INVA_M: LISTE DE NOEUDS P7 P8, INVARIANT, A PARTIR DE SIGM_NOEU_DEPL',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 
 IMPR_TABLE(   TABLE=INVA_M,
               NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'VMIS', 'TRESCA', 'TRACE', 'DETER'),
@@ -1825,7 +1825,7 @@ PRIN_M=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
                                       OPERATION='EXTRACTION',ELEM_PRINCIPAUX = 'OUI',
                                       GROUP_NO='LIST1',
                                       INTITULE='PRIN_M:LISTE DE NOEUDS P7 P8, ELEM_PRINCIPAUX A PARTIR DE SIGM_NOEU_DEPL',
-                                      ),)
+                                      DISTANCE_MAX=0.001,),)
 
 IMPR_TABLE(   TABLE=PRIN_M,
               NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'PRIN_1', 'PRIN_2', 'PRIN_3' )

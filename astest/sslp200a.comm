@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -620,17 +620,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.2757721660306E+09),
+                  VALE = 1.5739571943694E+09),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.2936472160414E+09),
+                  VALE = 1.5960231930198E+09),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.3115243006372E+09),
+                  VALE = 1.6180917831188E+09),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELNO_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
@@ -871,17 +871,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.3201225303874E+04),
+                  VALE = 5.5379302297985E+04),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.3523294968318E+04),
+                  VALE = 5.5739785109567E+04),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.3906255488799E+04),
+                  VALE = 5.6160378009916E+04),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELNO_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
@@ -1294,11 +1294,13 @@ MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
 
 TABL4A=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
                 LIGN_COUPE=(_F(TYPE='GROUP_NO',GROUP_NO='NOCHE2',NOM_CMP = ('EPXX', 'EPXY',),
-                            TRAC_DIR = 'OUI',DIRECTION = (0.5, 0.6, 0.3,),OPERATION = 'EXTRACTION',),),)
+                            TRAC_DIR = 'OUI',DIRECTION = (0.5, 0.6, 0.3,),OPERATION = 'EXTRACTION',
+                            DISTANCE_MAX=0.001,),),)
 
 TABL4B=MACR_LIGN_COUPE(CHAM_GD= CHAMNO1,NOM_CHAM='DEPL',MODELE=MO,
                 LIGN_COUPE=(_F(TYPE='GROUP_NO',GROUP_NO='NOCHE1',
-                              RESULTANTE = ('DY', 'DX',),OPERATION = 'MOYENNE',),),)
+                              RESULTANTE = ('DY', 'DX',),OPERATION = 'MOYENNE',
+                              DISTANCE_MAX=0.001,),),)
 
 TABLE4=CALC_TABLE(TABLE=TABL4A,
                   ACTION=_F(OPERATION='COMB',TABLE=TABL4B),)
@@ -1352,12 +1354,14 @@ TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_3',
 T_E1=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
                 LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
                             NOM_CMP = ('EPXX', 'EPXY',),
-                            TRAC_DIR = 'OUI',DIRECTION = (0.5, 0.6, 0.3,),OPERATION = 'EXTRACTION',),),)
+                            TRAC_DIR = 'OUI',DIRECTION = (0.5, 0.6, 0.3,),OPERATION = 'EXTRACTION',
+                            DISTANCE_MAX=0.001,),),)
 
 T_M1=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
                 LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
                             NOM_CMP = ('EPXX', 'EPXY',),
-                            TRAC_DIR = 'OUI',DIRECTION = (0.5, 0.6, 0.3,),OPERATION = 'MOYENNE',),),)
+                            TRAC_DIR = 'OUI',DIRECTION = (0.5, 0.6, 0.3,),OPERATION = 'MOYENNE',
+                            DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE', 
@@ -1393,12 +1397,14 @@ TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
 T_E2=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
                 LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
                             NOM_CMP = ('EPXX', 'EPXY',),
-                            TRAC_NOR = 'OUI',OPERATION = 'EXTRACTION',),),)
+                            TRAC_NOR = 'OUI',OPERATION = 'EXTRACTION',
+                            DISTANCE_MAX=0.001,),),)
 
 T_M2=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
                 LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
                             NOM_CMP = ('EPXX', 'EPXY',),
-                            TRAC_NOR = 'OUI',OPERATION = 'MOYENNE',),),)
+                            TRAC_NOR = 'OUI',OPERATION = 'MOYENNE',
+                            DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE', 
@@ -1434,11 +1440,13 @@ TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
 
 T_E3=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='DEPL',NUME_ORDRE = 2,
                 LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
-                            OPERATION = 'EXTRACTION',),),)
+                            OPERATION = 'EXTRACTION',
+                            DISTANCE_MAX=0.001,),),)
 
 T_M3=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='DEPL',NUME_ORDRE = 2,
                 LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
-                            OPERATION = 'MOYENNE',),),)
+                            OPERATION = 'MOYENNE',
+                            DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE', 

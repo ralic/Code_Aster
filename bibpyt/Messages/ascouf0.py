@@ -1,4 +1,4 @@
-#@ MODIF ascouf0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF ascouf0 Messages  DATE 14/04/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -322,6 +322,16 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 
 57: _("""
 Seuls gibi98 et gibi2000 sont appelables.
+"""),
+
+58: _("""
+Une interpénétration des lèvres est détectée pour le numéro d'ordre %(i1)d : sur les
+%(i2)d noeuds de chaque lèvre, %(i3)d noeuds s'interpénètrent.
+-> Risque et Conseil :
+Le contact n'est pas pris en compte dans le calcul. Le taux de restitution de l'énergie G
+est donc positif y compris là où la fissure tend à se refermer, ce qui peut conduire à
+des résultats trop pénalisants.
+Pour prendre en compte le contact entre les lèvres, il faut lancer le calcul hors macro.
 """),
 
 }

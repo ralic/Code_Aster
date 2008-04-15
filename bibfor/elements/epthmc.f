@@ -1,7 +1,7 @@
       SUBROUTINE EPTHMC (FAMI,NNO,NDIM,NBSIG,NPG,NI,XYZ,REPERE,
      +                  INSTAN,MATER,OPTION,EPSITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,8 +50,8 @@ C -----  ARGUMENTS
            REAL*8       NI(1), EPSITH(1)
            REAL*8       INSTAN, REPERE(7),XYZ(*)
 C -----  VARIABLES LOCALES
-           REAL*8       EPSTH(6),EPSHY(6),EPSSE(6),XYZGAU(3)
-           CHARACTER*16 OPTIO2, OPTIO3
+           REAL*8       EPSTH(6),EPSHY(6),EPSSE(6),XYZGAU(3),EPSAN(6)
+           CHARACTER*16 OPTIO2, OPTIO3,OPTIO4
            LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -104,12 +104,15 @@ C
           OPTIO3 = OPTION(1:9) // '_SECH'
           CALL EPSTMC(FAMI, NDIM, INSTAN, '+', IGAU, 1,
      &                XYZGAU,REPERE,MATER, OPTIO3, EPSSE)
+          OPTIO4 = OPTION(1:9) // '_EPSA'
+          CALL EPSTMC(FAMI, NDIM, INSTAN, '+', IGAU, 1,
+     &                XYZGAU,REPERE,MATER, OPTIO4, EPSAN)
 C
 C  --     DEFORMATIONS DE RETRAIT SUR L'ELEMENT
 C         -------------------------------------
           DO 60 I = 1, NBSIG
             EPSITH(I+NBSIG*(IGAU-1)) = EPSITH(I+NBSIG*(IGAU-1))
-     +                                + EPSHY(I) + EPSSE(I)
+     +                        + EPSHY(I) + EPSSE(I) + EPSAN(I)
   60      CONTINUE
 
   20  CONTINUE

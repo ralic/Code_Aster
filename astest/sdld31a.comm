@@ -1,0 +1,476 @@
+# MODIF  DATE 14/04/2008   AUTEUR GREFFET N.GREFFET 
+# TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_NON_LINE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(  NOM = 'SDLD31A',NIV_PUB_WEB='INTERNET'))
+#
+MA=LIRE_MAILLAGE()
+#
+MA=DEFI_GROUP( reuse=MA,
+               MAILLAGE=MA,
+               CREA_GROUP_NO=_F( 
+               TOUT_GROUP_MA = 'OUI'),);
+#
+MO=AFFE_MODELE( MAILLAGE=MA,
+                AFFE=_F( 
+                GROUP_MA = ('RESSORT','MASS',),
+                PHENOMENE = 'MECANIQUE',
+                MODELISATION = 'DIS_T'),);
+
+omega0=2.*3.14159*3.
+KK=omega0*omega0
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MO,
+                          DISCRET=(_F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORT',
+                                        VALE = (KK,  KK,  KK, )),
+                                   _F(  CARA = 'M_T_D_N',  GROUP_MA = 'MASS',
+                                        VALE = 1.))
+                         )
+#
+MATE_BID=DEFI_MATERIAU(ELAS=_F( 
+                E = 20000.,
+                RHO=7900.0,
+                NU = 0.49999,
+                ),);
+#
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=
+                     _F(GROUP_MA = 'RESSORT', MATER = MATE_BID),);
+#
+pasdt=1.E-2
+# 
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                _F(  JUSQU_A = 20,     PAS = pasdt),
+                ),);
+# 
+LIAISON=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(
+                _F( GROUP_NO = 'A',  DX=0., DY=0., DZ=0. , ),
+                _F( GROUP_NO = 'B',  DX=0., DY=0.,),
+                ),);
+#
+TRACTION=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_NODALE=_F( GROUP_NO = 'B', FZ = 1.),);
+#
+#   Chargement sinusoidal
+#
+OMEGA=omega0*1.1
+SINOMEGT = FORMULE(NOM_PARA='INST',VALE='sin(OMEGA*INST)')
+FSIN=CALC_FONC_INTERP(         FONCTION=SINOMEGT,
+                               LIST_PARA=L_INST,
+                               NOM_PARA = 'INST',
+                               NOM_RESU='ALPHA',
+                               INTERPOL='LIN',
+                               TITRE='SINUS OMEGA T'
+                            )
+#
+tfin = 1.
+#
+#  Solution obtenue avec schema NEWMARK
+#
+REPNEW=DYNA_NON_LINE( 
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='DEPLACEMENT',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,
+                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
+            );
+#
+#  Solution obtenue avec schema HHT MODI_EQUI='NON'
+#
+REPACM=DYNA_NON_LINE( 
+                SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                               FORMULATION='DEPLACEMENT',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,
+                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
+             );
+#
+#  Solution obtenue avec schema HHT MODI_EQUI='OUI'
+#
+REPHHT=DYNA_NON_LINE( 
+                SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                               MODI_EQUI='OUI',
+                               FORMULATION='DEPLACEMENT',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,
+                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
+             );
+#
+#  Solution obtenue avec schema HHT MODI_EQUI='OUI' et plusieurs poursuites
+#
+REPHHTP=DYNA_NON_LINE( 
+                SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                               MODI_EQUI='OUI',
+                               FORMULATION='DEPLACEMENT',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = 0.21,
+                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
+             );
+#
+REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
+                       ETAT_INIT=_F(EVOL_NOLI=REPHHTP,
+                                    INST=0.2,
+                                    PRECISION=1e-07),
+                SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                               MODI_EQUI='OUI',
+                               FORMULATION='DEPLACEMENT',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = 0.36,
+                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 10),
+             );
+#
+REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
+                       ETAT_INIT=_F(EVOL_NOLI=REPHHTP,
+                                    INST=0.35,
+                                    PRECISION=1e-07),
+                SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                               MODI_EQUI='OUI',
+                               FORMULATION='DEPLACEMENT',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,
+                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 10),
+            );
+
+#
+#  Les valeurs de references sont obtenues avec Matlab R2006b
+#
+TEST_RESU(RESU=(
+                _F(RESULTAT=REPNEW,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=0.010804500210685,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPNEW,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.004067177949539,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPNEW,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.013026189840935,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPNEW,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=-4.647918136289064,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPNEW,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=2.374868231956595,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPNEW,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=5.579336777301602,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACM,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=0.009022484264194,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACM,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.002024215270766,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACM,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.007916064932944,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACM,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=-4.014757608870114,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACM,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=1.648991827912175,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACM,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=3.763679971148900,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHT,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=0.010775515187707,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHT,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.004178742085076,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHT,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.013121050364360,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHT,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=-4.686476424945377,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHT,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=2.754032987312598,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHT,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=5.958627684771400,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHTP,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=0.010775515187707,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHTP,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.004178742085076,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHTP,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.013121050364360,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHTP,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=-4.686476424945377,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHTP,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=2.754032987312598,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPHHTP,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=5.958627684771400,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+             ),);
+#
+#  Sorties graphiques
+#
+# AZNEW=RECU_FONCTION( RESULTAT=REPNEW,
+#                      NOM_CHAM='ACCE',
+#                      GROUP_NO='B',
+#                      NOM_CMP='DZ',
+#                      );
+# AZHHT=RECU_FONCTION( RESULTAT=REPHHT,
+#                      NOM_CHAM='ACCE',
+#                      GROUP_NO='B',
+#                      NOM_CMP='DZ',
+#                      );
+# AZHHTP=RECU_FONCTION( RESULTAT=REPHHTP,
+#                      NOM_CHAM='ACCE',
+#                      GROUP_NO='B',
+#                      NOM_CMP='DZ',
+#                      );
+# UZNEW=RECU_FONCTION( RESULTAT=REPNEW,
+#                      NOM_CHAM='DEPL',
+#                      GROUP_NO='B',
+#                      NOM_CMP='DZ',
+#                      );
+# UZHHT=RECU_FONCTION( RESULTAT=REPHHT,
+#                      NOM_CHAM='DEPL',
+#                      GROUP_NO='B',
+#                      NOM_CMP='DZ',
+#                      );
+# UZHHTP=RECU_FONCTION( RESULTAT=REPHHTP,
+#                      NOM_CHAM='DEPL',
+#                      GROUP_NO='B',
+#                      NOM_CMP='DZ',
+#                      );
+# IMPR_FONCTION(FORMAT='XMGRACE',
+#               UNITE=38,
+#               COURBE=(
+#                       _F(FONCTION=UZNEW,),
+#                       _F(FONCTION=UZHHT,),
+#                       _F(FONCTION=UZHHTP,),
+#                       ),);
+# IMPR_FONCTION(FORMAT='XMGRACE',
+#               UNITE=39,
+#               COURBE=(
+#                       _F(FONCTION=AZNEW,),
+#                       _F(FONCTION=AZHHT,),
+#                       _F(FONCTION=AZHHTP,),
+#                       ),);
+#
+FIN();

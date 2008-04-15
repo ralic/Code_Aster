@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
+%& MODIF TYPELEM  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -164,10 +164,10 @@ MODE_LOCAL__
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z )
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    )
     ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG )
     ESINGUL  = SING_R   ELEM__         (DEGRE    TAILLE   )
     ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE    TAILLE   )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )

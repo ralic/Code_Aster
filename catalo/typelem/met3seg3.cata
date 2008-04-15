@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     EEFGENOR = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     EEFGENOC = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
-    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     VMIS_SG  )
+    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     VMIS_SG  TRSIG    )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     )
     EMINMAX  = SPMA_R   ELGA__ RIGI    (MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX
                                         NPCOUMIN NPCOUMAX NPSECMIN NPSECMAX )

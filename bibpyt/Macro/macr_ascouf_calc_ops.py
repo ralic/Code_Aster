@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 14/04/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,7 +91,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
   self.DeclareOut('modele',MODELE)
   mcfact=[]
-  if (PRES_REP!=None) and (PRES_REP['PRES_LEVRE']=='OUI') and (TYPE_MAILLAGE[:4]=='FISS') :
+  if (TYPE_MAILLAGE[:4]=='FISS') :
      mcfact.append(_F(GROUP_MA=GRMAIL     ,PHENOMENE='MECANIQUE',MODELISATION='3D'    ))
   else:
      mcfact.append(_F(GROUP_MA=GRMAIL[:5] ,PHENOMENE='MECANIQUE',MODELISATION='3D'    ))
@@ -309,6 +309,17 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                   FORCE_NODALE = mcfact , )
       i=i+1
 #
+#     --- commande AFFE_CHAR_MECA ---
+#         chargement mecanique :  verif contact levres
+#
+  if TYPE_MAILLAGE in ('FISS_COUDE','FISS_AXIS_DEB'):
+    _chcont = AFFE_CHAR_MECA( MODELE   = modele ,
+                               CONTACT =_F(GROUP_MA_MAIT = 'FACE1',
+                                           GROUP_MA_ESCL = 'FACE2',
+                                           METHODE='VERIF',
+                                           GROUP_MA_FOND='FONDFISS',
+                                           TOLE_INTERP = -1.E-6,),)
+#
 #     --- commande STAT_NON_LINE ---
 #
   motscles={}
@@ -328,6 +339,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
        else :
           mcfex.append(_F(CHARGE=_chtor[i],))
        i=i+1
+  if TYPE_MAILLAGE in ('FISS_COUDE','FISS_AXIS_DEB'):
+    mcfex.append(_F(CHARGE=_chcont,))
   motscles['EXCIT'] =mcfex
 #
   mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets
@@ -646,6 +659,27 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                     PAGINATION = 'INTITULE');
 #
   if TYPE_MAILLAGE in ('FISS_COUDE','FISS_AXIS_DEB'):
+#
+#   --- post traitement fissure :  interpénétration des lèvres ----
+#
+    __tcont=POST_RELEVE_T( ACTION=_F(  INTITULE = 'Contact levres',
+                                GROUP_NO = 'FACE2',
+                                RESULTAT = nomres,
+                                TOUT_ORDRE = 'OUI',
+                                NOM_CHAM = 'VALE_CONT',
+                                NOM_CMP = 'CONT',
+                                OPERATION = 'EXTRACTION'))
+    tcont=__tcont.EXTR_TABLE()
+    numo = tcont['NUME_ORDRE'].values()['NUME_ORDRE']
+    numo=dict([(i,0) for i in numo]).keys()
+    nbinst = len(numo)
+    for i in range(1,nbinst+1) :
+      tabi = tcont.NUME_ORDRE==i
+      nbtot = len(tabi)
+      cont_actif=tabi.CONT>0.
+      nb_no_cont = len(cont_actif)
+      if nb_no_cont > 0 :
+         UTMESS('A','ASCOUF0_58',vali=[i,nbtot,nb_no_cont])
 #
 #   --- post traitement fissure :  calcul de g ----
 #

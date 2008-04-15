@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/04/2008   AUTEUR PELLET J.PELLET 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@ MASEC=LIRE_MAILLAGE(UNITE=21,);
 
 
 GF=DEFI_GEOM_FIBRE(INFO=2,
- 
+
                     FIBRE = (_F(GROUP_FIBRE='SACI',
                             CARA = 'DIAMETRE',
                             COOR_AXE_POUTRE = (0.,0.,),
@@ -33,7 +33,7 @@ GF=DEFI_GEOM_FIBRE(INFO=2,
                            MAILLAGE_SECT = MASEC, TOUT_SECT = 'OUI',
                            COOR_AXE_POUTRE = (0., 0.,),),
                      )
- 
+
 
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
                   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),);
@@ -122,15 +122,15 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
                               ),
                 # NEWTON=_F(MATRICE='ELASTIQUE',),
                  NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
-                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
+                 CONVERGENCE=_F(RESI_GLOB_RELA=3.E-5,
                                 ITER_GLOB_MAXI=200,),
                  );
 
- 
+
 
 U1=CALC_NO(OPTION='REAC_NODA',
-           reuse =U1, RESULTAT=U1,    
-           
+           reuse =U1, RESULTAT=U1,
+
            );
 
 #IMPR_RESU(RESU=(_F(RESULTAT=U1,NOM_CHAM='REAC_NODA',GROUP_NO = 'A',NOM_CMP='DY'),
@@ -138,7 +138,7 @@ U1=CALC_NO(OPTION='REAC_NODA',
 #                ))
 
 U1=CALC_ELEM(OPTION='EPSI_ELGA_DEPL',
-             reuse =U1,RESULTAT=U1,   
+             reuse =U1,RESULTAT=U1,
              );
 
 #test de quelques resultats aux pas 2 , 12 et 20
@@ -211,7 +211,7 @@ NOM_CMP='SIXX',VALE=2.64E+04,REFERENCE='SOURCE_EXTERNE',PRECISION=3.E-2),
 
 FIN()
 # **************************************************************
-# 
+#
 #              Pour TEST_RESU : Resultats a 3 instants
 #
 # **************************************************************
@@ -230,7 +230,7 @@ Btt   = [  3.81E+06,   2.64E+04 ,  3.76E+03 ]
 
 
 # **************************************************************
-# 
+#
 #              Methode de subdivision
 #                 EXTRAPOLE,  OPTION = 'GARDE_DERNIERES'
 #
@@ -326,7 +326,7 @@ NOM_CMP='SIXX',VALE=2.64E+04,REFERENCE='SOURCE_EXTERNE',PRECISION=3.E-2),
 
 
 # **************************************************************
-# 
+#
 #              Methode de subdivision (celle par defaut)
 #                 EXTRAPOLE,  OPTION = 'IGNORE_PREMIERES'
 #

@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux Messages  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,10 +229,6 @@ cata_msg = {
  Taille de la partition principale %(r1)g 
 """),
 
-46 : _("""
- Libération des segments alloues dynamiquement pour une longueur cumulée de %(i1)d (entiers) 
-"""),
-
 47 : _("""
  Erreur lors de la relecture d'un enregistrement sur le fichier d'accès direct.
 """),
@@ -288,14 +284,16 @@ cata_msg = {
 
 60 : _("""
  Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer 
- une zone mémoire de longueur %(i1)d (entiers).
+ une zone mémoire de longueur %(i1)d (octets).
+ La dernière opération de libération mémoire a permis de récupérer %(i2)d (octets). 
 
 """),
 
 62 : _("""
  Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer 
  une zone mémoire de longueur %(i1)d (octets), on dépasse la limite maximum 
- fixée à %(i2)d (octets) et on occupe déjà %(i3)d (octets). 
+ fixée à %(i2)d (octets) et on occupe déjà %(i3)d (octets).
+ La dernière opération de libération mémoire a permis de récupérer %(i4)d (octets). 
 
 """),
 

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,18 +54,15 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (MXCMEL=54)
       PARAMETER (NBRES=3)
       PARAMETER (NBSGM=4)
-      REAL*8 VALRES(NBRES),EPSM(MXCMEL),EPSANE(MXCMEL),EPSPLA(MXCMEL)
+      REAL*8 VALRES(NBRES),EPSM(MXCMEL),EPSPLA(MXCMEL)
       REAL*8 EPSPLN(MXCMEL),SIGMA(NBSGM), VALPAR,C1,C2,TRSIG
       REAL*8 EPSFL(NBSGM),EPSFLF(NBSGM)
       REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN
       CHARACTER*2  CODRET(NBRES)
       CHARACTER*8  NOMRES(NBRES),NOMPAR,MOD3D
-      CHARACTER*6       EPSA(6)
       CHARACTER*16 OPTIO2,PHENOM,CMP1,CMP2
       CHARACTER*16 COMPOR
       LOGICAL      LFLU, LTEATT
-      DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
-     &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
 
 C --- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -82,7 +79,6 @@ C     ---------------
       MOD3D = '3D'
 
       DO 10 I = 1,MXCMEL
-        EPSANE(I) = ZERO
         EPSPLN(I) = ZERO
    10 CONTINUE
 C --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
@@ -118,17 +114,6 @@ C        ------------------------------------------------
 C ---    RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION :
 C        -------------------------------------------------------------
       CALL JEVECH('PCONTRR','L',IDSIG)
-
-C ---    RECUPERATION DES DEFORMATIONS ANELASTIQUES AUX NOEUDS
-C ---    DE L'ELEMENT :
-C        ------------
-      DO 20 K=1,NBSIG
-        DO 30 IGAU=1,NPG
-          CALL RCVARC(' ',EPSA(K),'+','RIGI',IGAU,1,
-     &                  EPSANE(NBSIG*(IGAU-1)+K),IRET)
-          IF (IRET.EQ.1) EPSANE(NBSIG*(IGAU-1)+K)=0.D0
- 30     CONTINUE
- 20   CONTINUE
 
 C ---    ON VERIFIE QUE LE MATERIAU EST ISOTROPE
 C ---    (POUR L'INSTANT PAS D'ORTHOTROPIE NI D'ISOTROPIE TRANSVERSE
@@ -255,23 +240,19 @@ C ---       D'INTEGRATION COURANT
 C ---       I.E. EPSPLA = EPS_TOT - EPS_THERM - EPS_ELAS - EPS_ANELAS :
 C ---                             - EPS_FLUAGE :
 C           ---------------------------------------------------------
-        EPSPLA(NBSIG* (IGAU-1)+1) = EPSM(NBSIG* (IGAU-1)+1) -
-     &                                EPSANE(NBSIG* (IGAU-1)+1) -
-     &                                (C1*SIGMA(1)-C2*TRSIG) - EPSFLF(1)
-        EPSPLA(NBSIG* (IGAU-1)+2) = EPSM(NBSIG* (IGAU-1)+2) -
-     &                                EPSANE(NBSIG* (IGAU-1)+2) -
-     &                                (C1*SIGMA(2)-C2*TRSIG) - EPSFLF(2)
+        EPSPLA(NBSIG* (IGAU-1)+1) = EPSM(NBSIG* (IGAU-1)+1) 
+     &                              - (C1*SIGMA(1)-C2*TRSIG) - EPSFLF(1)
+        EPSPLA(NBSIG* (IGAU-1)+2) = EPSM(NBSIG* (IGAU-1)+2) 
+     &                              - (C1*SIGMA(2)-C2*TRSIG) - EPSFLF(2)
         IF (NOMTE(3:4).EQ.'CP') THEN
           EPSPLA(NBSIG* (IGAU-1)+3) = - (EPSPLA(NBSIG* (IGAU-1)+1)+
      &                                  EPSPLA(NBSIG* (IGAU-1)+2))
         ELSE
           EPSPLA(NBSIG* (IGAU-1)+3) = EPSM(NBSIG* (IGAU-1)+3) -
-     &                                  EPSANE(NBSIG* (IGAU-1)+3) -
      &                                  (C1*SIGMA(3)-C2*TRSIG) -
      &                                  EPSFLF(3)
         END IF
         EPSPLA(NBSIG* (IGAU-1)+4) = EPSM(NBSIG* (IGAU-1)+4) -
-     &                                EPSANE(NBSIG* (IGAU-1)+4) -
      &                                C1*SIGMA(4) - EPSFLF(4)
 
   120 CONTINUE

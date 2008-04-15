@@ -1,7 +1,7 @@
       SUBROUTINE TE0335(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,7 @@ C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
 C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C                        . DIRECTION DES CONTRAINTES PRINCIPALES 
 C                                                       (=3*3 VALEURS)
+C                        . TRACE                        (= 1 VALEUR)
 C               . DEFORMATIONS EQUIVALENTES  :
 C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
@@ -63,11 +64,11 @@ C     REMARQUE:  LA DERNIERE GRANDEUR EST UTILISE
 C                PARTICULIEREMENT POUR DES CALCULS DE CUMUL DE
 C                DOMMAGE EN FATIGUE
 C                EQPG (CONT/DEF EQUIVALENT PG)
-C                DIMENSIONNE  A  NEQMAX CMP MAX * 21 PG MAX
+C                DIMENSIONNE  A  NEQMAX CMP MAX * 27 PG MAX
 C                EQNO (CONT/DEF EQUIVALENT NOEUDS)
 C                DIMENSIONNE  A  NEQMAX CMP MAX * 27 NO MAX
 C ----------------------------------------------------------------------
-      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=15)
+      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=16)
 C ----------------------------------------------------------------------
       INTEGER IDEFO,ICONT,IEQUIF
       INTEGER IDCP,KP,J,I,INO
@@ -100,8 +101,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
         NCEQ = 5
         NCMP = 5
       ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
-        NCEQ = 15
-        NCMP = 6
+        NCEQ = 16
+        NCMP = 7
       END IF
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)

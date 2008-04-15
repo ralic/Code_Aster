@@ -1,6 +1,7 @@
       SUBROUTINE JJLDYN ( LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,8 +57,12 @@ C
       COMMON /ICONJE/  ISSTAT
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      INTEGER          ICDYN , MXLTOT
+      COMMON /XDYNJE/  ICDYN , MXLTOT
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      +               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -68,11 +73,12 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       CHARACTER*1    CGENR
       CHARACTER*32   NOM32
-      INTEGER        IADDI(2)
+      INTEGER        IADDI(2),ICOUNT,LMEMT
 C
 C     ON LISTE LES OBJETS ALLOUES DYNAMIQUEMENT EN BALAYANT
 C     L'ENSEMBLE DES OBJETS, EN COMMENCANT PAR LA BASE VOLATILE
 C 
+      ICDYN = ICDYN+1
       LTOT = 0
       NCLA1 = 1
       NCLA2 = INDEX ( CLASSE , '$' ) - 1
@@ -107,20 +113,20 @@ C
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X A OU X D, ON PEUT LE LIBERER
 C
+                    IF ( IXLONO .NE. 0 ) THEN
+                      IBLONO = IADM ( JIADM(IC) + 2*IXLONO-1 )
+                      LONOI = ISZON(JISZON + IBLONO - 1 + K)
+                    ELSE
+                      LONOI = LONO(JLONO(IC)+ IXDESO)
+                    ENDIF
+                    LTYPI = LTYP( JLTYP(IC)+IXDESO )
+                    LSV   = LONOI * LTYPI
                     IF ( ISF .EQ. 4 ) THEN
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X D, IL FAUT D'ABORD L'ECRIRE
 C
                       IADDI(1) = ISZON(JISZON + IBIADD -1 + 2*K-1)
                       IADDI(2) = ISZON(JISZON + IBIADD -1 + 2*K  )
-                      IF ( IXLONO .NE. 0 ) THEN
-                        IBLONO = IADM ( JIADM(IC) + 2*IXLONO-1 )
-                        LONOI = ISZON(JISZON + IBLONO - 1 + K)
-                      ELSE
-                        LONOI = LONO(JLONO(IC)+ IXDESO)
-                      ENDIF
-                      LTYPI = LTYP( JLTYP(IC)+IXDESO )
-                      LSV   = LONOI * LTYPI
                       CALL JXECRO ( IC, IADMOC, IADDI, LSV, 0, K)
                       ISZON(JISZON + IBIADD -1 + 2*K-1) = IADDI(1)
                       ISZON(JISZON + IBIADD -1 + 2*K  ) = IADDI(2)
@@ -148,14 +154,14 @@ C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X A OU X D, ON PEUT LE LIBERER
 C
+                LTYPI = LTYP( JLTYP(IC)+J )
+                LSV   = LONO( JLONO(IC)+J ) * LTYPI
                 IF ( ISF .EQ. 4 ) THEN
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X D, IL FAUT D'ABORD L'ECRIRE
 C
                   IADDI(1) = IADD ( JIADD(IC)+2*J-1 )
                   IADDI(2) = IADD ( JIADD(IC)+2*J   )
-                  LTYPI = LTYP( JLTYP(IC)+J )
-                  LSV   = LONO( JLONO(IC)+J ) * LTYPI
                   CALL JXECRO ( IC, IADMI, IADDI, LSV, 0, J)
                   IADD( JIADD(IC)+2*J-1 ) = IADDI(1)
                   IADD( JIADD(IC)+2*J   ) = IADDI(2)
@@ -172,5 +178,6 @@ C               write(6,*) ' OS ',NOM32,' lg =',IL
           ENDIF 
  205    CONTINUE
  200  CONTINUE
+      MXLTOT=MXLTOT+(LTOT*LOIS)/(1024*1024)
 C
       END

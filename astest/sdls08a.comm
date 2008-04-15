@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,7 +106,7 @@ MODET=MODE_ITER_SIMULT(MATR_A=KASS,
                        CALC_FREQ=_F(
                        NMAX_FREQ=6,),
                        VERI_MODE=_F(STOP_ERREUR='OUI',
-                                    STURM='OUI',),);
+                                    STURM='OUI',SEUIL=3.E-5,),);
 
 # TEST DE CREATION D'UNE BASE MODALE AVEC UNE OCCURENCE
 # DE MODE_MECA

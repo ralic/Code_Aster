@@ -1,7 +1,8 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +74,7 @@ C ----------------------------------------------------------------------
      &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C ----------------------------------------------------------------------
       INTEGER          INIT,IADDI(2),IBLANC,ID(2),IDEC(2),VALLOC,LSIC
-      INTEGER          IC,IVAL(3)
+      INTEGER          IC,IVAL(4)
       LOGICAL          LEXACT,LEPS,LINIT,LDEPS,LAMOV,LXA,LXD,RETRO
       CHARACTER *8     CBLANC
       EQUIVALENCE    ( CBLANC,IBLANC )
@@ -125,17 +126,17 @@ C
         LSIC = LSI + 9
  50     CONTINUE
         ILDYNA = ILDYNA+1
-        IF ( MXDYN+(LSIC-LISZON)*LOIS .GT. VMXDYN ) THEN 
+        IF ( MCDYN+(LSIC-LISZON)*LOIS .GT. VMXDYN ) THEN 
           IF ( ILDYNA .GT. 1 ) THEN
             CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
      &                  //' IMPOSEE ATTEINTE')
             IVAL(1)=LSIC*LOIS
             IVAL(2)=VMXDYN
-            IVAL(3)=MXDYN-(LISZON*LOIS)
-            CALL U2MESI('S','JEVEUX_62',3,IVAL)
+            IVAL(3)=MCDYN-(LISZON*LOIS)
+            IVAL(4)=LTOT*LOIS
+            CALL U2MESI('S','JEVEUX_62',4,IVAL)
           ELSE
             CALL JJLDYN(LTOT)
-            CALL U2MESI('I','JEVEUX_46',1,LTOT)
             GOTO 50
           ENDIF
         ENDIF
@@ -154,10 +155,11 @@ C
           IF ( IESSAI .GT. 1 ) THEN
             CALL JEIMPM ( 'MESSAGE',' MEMOIRE INSUFFISANTE,'
      &                  //' ALLOCATION IMPOSSIBLE')
-            CALL U2MESI('S','JEVEUX_60',1,LSIC)
+            IVAL(1)=LSIC*LOIS
+            IVAL(2)=LTOT*LOIS
+            CALL U2MESI('S','JEVEUX_60',2,IVAL)
           ELSE
             CALL JJLDYN(LTOT)
-            CALL U2MESI('I','JEVEUX_46',1,LTOT)
             GOTO 50
           ENDIF  
         ENDIF

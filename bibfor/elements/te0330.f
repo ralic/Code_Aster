@@ -1,7 +1,7 @@
       SUBROUTINE TE0330(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,12 +30,13 @@ C           . CONTRAINTES PRINCIPALES	   (= 3 VALEURS)
 C           . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C           . DIRECTION DES CONTRAINTES PRINCIPALES 
 C           				   (=3*3 VALEURS)
+C           . TRACE                        (= 1 VALEUR)
 C     OPTIONS :  'EQUI_ELNO_SIGM'
 
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
-      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=15)
+      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=16)
 C ----------------------------------------------------------------------
       INTEGER IDEFO,ICONT,IEQUIF
       INTEGER IDCP,KP,J,I,INO
@@ -103,6 +104,7 @@ C -   CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS
             CALL FGEQUI(SIGMA,'SIGM',NDIM1,EQPG(IDCP+1))
  103     CONTINUE
 
+
       ELSEIF(TYPMOD.EQ.'3D'.OR. TYPMOD.EQ.'COQUE') THEN
 
          IF(NOMTE.EQ.'MECA_SHB8') THEN
@@ -138,4 +140,5 @@ C -       STOCKAGE
   110       CONTINUE
   120     CONTINUE
         END IF
+          
       END
