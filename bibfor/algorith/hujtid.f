@@ -1,7 +1,7 @@
-        SUBROUTINE HUJTID (MOD, MATER, SIG, VIN, DSDE, DEPS, IRET)
+        SUBROUTINE HUJTID (MOD, IMAT, SIGR, VIN, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,13 +22,13 @@ C ---------------------------------------------------------------------
 C CALCUL DE LA MATRICE TANGENTE DU PROBLEME CONTINU DE LA LOI DE HUJEUX
 C POUR LE MECANISME PLASTIQUE DEVIATOIRE
 C IN   MOD     :  MODELISATION
-C      MATER   :  COEFFICIENTS MATERIAU
+C      IMAT    :  ADRESSE DU MATERIAU CODE
 C      SIG     :  CONTRAINTES
 C      VIN     :  VARIABLES INTERNES
 C OUT  DSDE    :  MATRICE TANGENTE
 C ======================================================================
-        INTEGER     NDT, NDI, I, J, K, KK, L, LL
-        INTEGER     NBMECA, IND(4), IRET
+        INTEGER     NDT, NDI, I, J, K, KK, L, LL, NVI
+        INTEGER     NBMECA, IND(4), IRET, IMAT
         REAL*8      N, BETA, DHUJ, M, PCO, PREF, PC
         REAL*8      PHI, ANGDIL, MDIL, DEGR, BHUJ
         REAL*8      RC(4), YD(15), DPSIDS(6,6), P(4), Q(3) 
@@ -40,10 +40,11 @@ C ======================================================================
         REAL*8      D(4,6), TE(6,6), SIGD(12), B3(4), LA
         REAL*8      ACYC, AMON, CMON, KSI(3), AD(3), X4, CCYC
         REAL*8      TOLE, DET, XK(2), TH(2), PROD, PS, DEV(3)
-        REAL*8      TP, TP1, DEPS(6), DENO, LAMBDA
+        REAL*8      TP, TP1, DEPS(6), DENO, LAMBDA, TEMPF
+        REAL*8      SIGR(6)
         CHARACTER*8 MOD
-C ======================================================================
-        COMMON /TDIM/ NDT, NDI
+
+        COMMON /TDIM/ NDT  , NDI
 C ======================================================================
         PARAMETER   ( TOLE = 1.D-6 )
         PARAMETER   ( ZERO = 0.D0 )
@@ -52,9 +53,26 @@ C ======================================================================
         PARAMETER   ( DEUX = 2.D0 )
         PARAMETER   ( DEGR = 0.0174532925199D0 )
 C ======================================================================
+
 C        CALL JEMARQ ()
-C        WRITE(6,'(A,32(1X,E16.9))')'VIN =',(VIN(I),I=1,32)
+
+C        WRITE(6,'(A,10(1X,E16.9))')'VIN =',(VIN(I),I=1,35)
 C       WRITE(6,'(A,6(1X,E19.12))')'SIGF - TID =',(SIG(I),I=1,6)
+
+        TEMPF = 0.D0
+        CALL HUJMAT (MOD, IMAT, TEMPF, MATER, NDT, NDI, NVI)
+C        WRITE(6,*)'NDT =',NDT,' - NDI =',NDI,' - NVI =',NVI
+        DO 5 I = 1, NDT
+            SIG(I) = SIGR(I)
+  5     CONTINUE        
+
+        IF(NDT.LT.6)THEN  
+          DO 10 I = 5, 6
+            SIG(I)=ZERO
+ 10       CONTINUE    
+          NDT  = 6
+        ENDIF        
+
 C ======================================================================
 C - RECUPERATION DES GRANDEURS UTILES : I1, VARIABLES INTERNES R ET X, -
 C ======================================================================
@@ -116,8 +134,11 @@ C --- MODIFICATION A APPORTER POUR MECANISMES CYCLIQUES
             RC(NBMECA) = VIN(K)
             IF (K .LT. 4) THEN
               CALL HUJPRJ (K, SIG, SIGD(NBMECA*3-2), P(NBMECA), 
-     &                     Q(NBMECA))              
-              IF ((P(NBMECA)/PREF) .LE. TOLE) GOTO 999
+     &                     Q(NBMECA))    
+              IF ((P(NBMECA)/PREF) .LE. TOLE) THEN
+                IRET = 1
+                GOTO 999
+              ENDIF
               CALL HUJKSI('KSI   ',MATER,RC(NBMECA),KSI(NBMECA),IRET)
               IF(IRET.EQ.1) GOTO 999
               AD(NBMECA) = ACYC+KSI(NBMECA)*(AMON-ACYC)
@@ -125,7 +146,10 @@ C --- MODIFICATION A APPORTER POUR MECANISMES CYCLIQUES
             IF ((K .GT.4) .AND. (K .LT. 8)) THEN            
               CALL HUJPRC(NBMECA, K-4, SIG, VIN, MATER, YD,
      &                      P(NBMECA), Q(NBMECA), SIGD(NBMECA*3-2))
-              IF ((P(NBMECA)/PREF) .LE. TOLE) GOTO 999
+              IF ((P(NBMECA)/PREF) .LE. TOLE) THEN
+                IRET = 1
+                GOTO 999
+              ENDIF
               CALL HUJKSI('KSI   ',MATER,RC(NBMECA),KSI(NBMECA),IRET)
               IF(IRET.EQ.1) GOTO 999
               AD(NBMECA) = DEUX*(ACYC+KSI(NBMECA)*(AMON-ACYC))
@@ -145,7 +169,7 @@ C       WRITE(6,'(A,9(1X,E12.5))')'SIGD =',(SIGD(I),I=1,9)
 Caf 31/05/07 Fin        
         DO 17 K = 1, NBMECA
           CALL HUJDDD('DFDS  ', IND(K), MATER, IND, YD,
-     &         VIN, DFDS((K-1)*NDT+1), DPSIDS, IRET)          
+     &         VIN, DFDS((K-1)*NDT+1), DPSIDS, IRET)     
           IF (IRET.EQ.1) GOTO 999
           CALL HUJDDD('PSI   ', IND(K), MATER, IND, YD,
      &         VIN, PSI((K-1)*NDT+1), DPSIDS, IRET)
@@ -294,16 +318,15 @@ Caf 04/06/07 Debut
            PROD  = SIGD(3*K-2)*TH(1) + SIGD(3*K)*TH(2)/DEUX
            B3(K) = M*P(K)*(UN-BHUJ*LOG(P(K)/PC))*
      &             (UN+PROD/Q(K))*(UN-RC(K))**DEUX /AD(K)          
-C          B3(K) = M*P(K)*(UN-BHUJ*LOG(P(K)/PC))*
-C     &             2*(UN-RC(K))**DEUX /AD(K)      
          ELSEIF (KK .EQ. 8) THEN
            
            B3(K) = DHUJ*PC*(UN-RC(K))**DEUX /CCYC          
 Caf 04/06/07 Fin           
          ENDIF
          
-         IF(ABS(B3(K)).LT.TOLE)THEN
+         IF((ABS(B3(K)).LT.TOLE).AND.(RC(K).NE.UN))THEN
            IRET = 1
+           WRITE(6,*)'--- B3 IRET =',IRET,'-- B3 =',B3(K)
            GOTO 1000
          ENDIF
  43      CONTINUE    
@@ -317,11 +340,6 @@ C ------------ FIN I.3.
  44          CONTINUE
            B(K,K) =  B(K,K) + B3(K)
  42        CONTINUE
-C       WRITE(6,*)'B ='
-C       DO I = 1, NBMECA
-C         WRITE(6,'(4(1X,E16.9))')(B(I,J),J=1,NBMECA)
-C       ENDDO
-C       WRITE(6,*)
 
 C =====================================================================
 C --- II. CALCUL DE D(K,I) = E(K)*HOOK (NBMECAXNDT) -----------------
@@ -337,13 +355,7 @@ C =====================================================================
            DO 50 J = 1, NDT
              D(K,I) = D(K,I) - HOOK(J,I)*DFDS(KK+J)
  50          CONTINUE
-C       WRITE(6,'(A,24(1X,E16.9))')'DFDS =',(DFDS(I),I=1,24)
-C       WRITE(6,*)
-C       WRITE(6,*)'D ='
-C       DO I = 1, NBMECA
-C         WRITE(6,'(6(1X,E16.9))')(D(I,J),J=1,6)
-C      ENDDO
-C       WRITE(6,*)
+
 C =====================================================================
 C --- III. CALCUL DE D = B-1*D ----------------------------------------
 C =====================================================================
@@ -352,6 +364,7 @@ C =====================================================================
 C =====================================================================
 C --- IV. CALCUL DE TE = IDEN6 - E*D (6X6) ----------------------------
 C =====================================================================
+
        CALL LCINMA (ZERO, TE)
        DO 61 I = 1, NDT
          TE(I,I) = UN
@@ -363,9 +376,6 @@ C =====================================================================
            DO 60 J = 1, NDT
              TE(I,J) = TE(I,J) - PSI(KK+I)*D(K,J)
  60          CONTINUE
-C       WRITE(6,'(A,6(1X,E16.9))')'PSI  =',(PSI(I),I=1,24)
-C       WRITE(6,'(A,6(1X,E16.9))')'DFDS =',(DFDS(I),I=1,24)
-C       WRITE(6,*)
        
 C =====================================================================
 C --- V. CALCUL DE LA MATRICE TANGENTE EXPLICITE DSDE(I,J,K,L) = ------
@@ -379,16 +389,15 @@ C =====================================================================
             DSDE(I,J) = ZERO  
  820    CONTINUE  
         CALL LCPRMM (HOOK, TE, DSDE)
-
+       
         GOTO 1000
-
-
+        
 C =====================================================================
 C        CALL JEDEMA ()
 C =====================================================================
  999  CONTINUE
-      CALL U2MESS ('F', 'COMPOR1_14')
+      CALL U2MESS ('A', 'COMPOR1_14')
        
  1000 CONTINUE
-
+       
       END

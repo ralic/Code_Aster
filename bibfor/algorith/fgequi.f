@@ -1,6 +1,6 @@
       SUBROUTINE FGEQUI ( T, TYPZ, NDIM, EQUI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -173,10 +173,11 @@ C -      A L AUTRE VECTEUR
                   EQUI(6+((I-1)*NBVEC)+J) = VECP(J,I)
  202           CONTINUE
  200        CONTINUE
+
+C ------    TRACE DES CONTRAINTES : TRSIG
+            EQUI(16) = T(1)+T(2)+T(3)
+
          ENDIF
-             
-C ------ TRACE DES CONTRAINTES : TRSIG
-         EQUI(16) = T(1)+T(2)+T(3)
       ENDIF
 C
       END

@@ -2,7 +2,7 @@
      +                   RESUFK,LAMOR,KTYP)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,18 +22,6 @@ C ======================================================================
 C     ECRITURE DES FREQUENCES RELATIVEMENT A LA METHODE UTILISEE
 C     IMPRESSION D'OFFICE SUR "MESSAGE"
 C-----------------------------------------------------------------------
-C     SUBROUTINES APPELLEES:
-C        INFNIV, R8VIDE, ISNNEM.
-C     FONCTIONS INTRINSEQUES:
-C        NONE.
-C     ------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C      24/01/2000 TOILETTAGE FORTRAN,
-C                 GESTION DE L'AFFICHAGE DE L'AMORTISSEMENT,
-C                 INTRODUCTION DE LA METHODE DE SORENSEN,
-C                 DISPARITION DU IF (NIV.EQ... INITIAL.
-C      30/01/2001 AFFICHAGE NORME D'ERREUR POUR MODE_ITER_INV
-C-----------------------------------------------------------------------
       IMPLICIT   NONE
 
 C PARAMETRES D'APPEL
@@ -43,34 +31,38 @@ C PARAMETRES D'APPEL
       CHARACTER*1       KTYP
 
 C VARIABLES LOCALES
-      INTEGER IFM, IFREQ, IRESO, ITERB, ITERJ, ITERQ, ITERA, INDF,
-     &  ISNNEM,NIV
-      REAL*8 FFF, AM, ERR, PREC, UNDF, R8VIDE, CHA, AM2, ERC
+      INTEGER      IFM,IFREQ,IRESO,ITERB,ITERJ,ITERQ,ITERA,INDF,ISNNEM,
+     &             NIV,NFSUP
+      REAL*8       FFF,AM,ERR,PREC,UNDF,R8VIDE,CHA,AM2,ERC,ERRMOY
+      CHARACTER*27 STRAUX
 C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
       UNDF = R8VIDE()
       INDF = ISNNEM()
-
+      ERRMOY = 0.D0
+      IF (NFREQ.EQ.0) CALL ASSERT(.FALSE.)
       IF (RESUFK(NFREQ,2) .EQ. 'BATHE_WILSON') THEN
-         IF (TYPRES .EQ. 'DYNAMIQUE') THEN
-           WRITE(IFM,1000)
-         ELSE
-           WRITE(IFM,1001)
-         ENDIF
-         DO 10 IFREQ = 1, NFREQ
-            IRESO = RESUFI(IFREQ,1)
-            FFF   = RESUFR(IFREQ,1)
-            CHA   = RESUFR(IFREQ,2)
-            AM    = RESUFR(IFREQ,4)
-            ITERB = RESUFI(IFREQ,3)
-            ITERJ = RESUFI(IFREQ,5)
-            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
-              WRITE(IFM,1010) IRESO,FFF,AM,ITERB,ITERJ
-            ELSE
-              WRITE(IFM,1010) IRESO,CHA,AM,ITERB,ITERJ
-            ENDIF
- 10      CONTINUE
-         WRITE(IFM,7777)
+        IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+          WRITE(IFM,1000)
+        ELSE
+          WRITE(IFM,1001)
+        ENDIF
+        DO 10 IFREQ = 1, NFREQ
+          IRESO = RESUFI(IFREQ,1)
+          FFF   = RESUFR(IFREQ,1)
+          CHA   = RESUFR(IFREQ,2)
+          AM    = RESUFR(IFREQ,4)
+          ITERB = RESUFI(IFREQ,3)
+          ITERJ = RESUFI(IFREQ,5)
+          ERRMOY = ERRMOY + ABS(AM)
+          IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+            WRITE(IFM,1010) IRESO,FFF,AM,ITERB,ITERJ
+          ELSE
+            WRITE(IFM,1010) IRESO,CHA,AM,ITERB,ITERJ
+          ENDIF
+ 10     CONTINUE
+        WRITE(IFM,7776)ERRMOY/NFREQ
+        WRITE(IFM,7777)
 
       ELSEIF ( RESUFK(NFREQ,2) .EQ. 'LANCZOS' ) THEN
         IF (LAMOR.EQ.0) THEN
@@ -96,12 +88,14 @@ C     ------------------------------------------------------------------
             AM  = RESUFR(IFREQ,3)
           ENDIF
           ITERQ = RESUFI(IFREQ,2)
+          ERRMOY = ERRMOY + ABS(AM)
           IF (TYPRES .EQ. 'DYNAMIQUE') THEN
             WRITE(IFM,2010) IRESO,FFF,AM,ITERQ
           ELSE
             WRITE(IFM,2010) IRESO,CHA,AM,ITERQ
           ENDIF
  20     CONTINUE
+        IF (LAMOR.EQ.0) WRITE(IFM,7776)ERRMOY/NFREQ
         WRITE(IFM,7777)
 
       ELSEIF ( RESUFK(NFREQ,2) .EQ. 'SORENSEN' ) THEN
@@ -118,31 +112,78 @@ C     ------------------------------------------------------------------
             WRITE(IFM,2203)
           ENDIF
         ENDIF
-         DO 35 IFREQ = 1, NFREQ
-            IRESO = RESUFI(IFREQ,1)
-            FFF   = RESUFR(IFREQ,1)
-            CHA   = RESUFR(IFREQ,2)
-            IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
-              AM  = RESUFR(IFREQ,4)
-            ELSE
-              AM  = RESUFR(IFREQ,3)
-              ERC = RESUFR(IFREQ,4)
-            ENDIF
-        IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+        DO 35 IFREQ = 1, NFREQ
+          IRESO = RESUFI(IFREQ,1)
+          FFF   = RESUFR(IFREQ,1)
+          CHA   = RESUFR(IFREQ,2)
+          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+            AM  = RESUFR(IFREQ,4)
+            ERRMOY = ERRMOY + ABS(AM)
+          ELSE
+            AM  = RESUFR(IFREQ,3)
+            ERC = RESUFR(IFREQ,4)
+            ERRMOY = ERRMOY + ABS(ERC)
+          ENDIF
+          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
             IF (TYPRES .EQ. 'DYNAMIQUE') THEN
               WRITE(IFM,2210) IRESO,FFF,AM
             ELSE
               WRITE(IFM,2210) IRESO,CHA,AM
             ENDIF
-        ELSE
+          ELSE
             IF (TYPRES .EQ. 'DYNAMIQUE') THEN
               WRITE(IFM,2211) IRESO,FFF,AM,ERC
             ELSE
               WRITE(IFM,2211) IRESO,CHA,AM,ERC
             ENDIF
-        ENDIF
+          ENDIF
  35      CONTINUE
+         WRITE(IFM,7776)ERRMOY/NFREQ
          WRITE(IFM,7777)
+         
+      ELSEIF ( RESUFK(NFREQ,2)(1:2) .EQ. 'QZ' ) THEN
+        STRAUX='ALGORITHME '//RESUFK(NFREQ,2)(1:16)
+        IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+          IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+            WRITE(IFM,3200)STRAUX
+          ELSE
+            WRITE(IFM,3201)STRAUX
+          ENDIF
+        ELSE
+          IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+            WRITE(IFM,3202)STRAUX
+          ELSE
+            WRITE(IFM,3203)STRAUX
+          ENDIF
+        ENDIF
+        DO 36 IFREQ = 1, NFREQ
+          IRESO = RESUFI(IFREQ,1)
+          FFF   = RESUFR(IFREQ,1)
+          CHA   = RESUFR(IFREQ,2)
+          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+            AM  = RESUFR(IFREQ,4)
+            ERRMOY = ERRMOY + ABS(AM)
+          ELSE
+            AM  = RESUFR(IFREQ,3)
+            ERC = RESUFR(IFREQ,4)
+            ERRMOY = ERRMOY + ABS(ERC)
+          ENDIF
+          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+              WRITE(IFM,3210) IRESO,FFF,AM
+            ELSE
+              WRITE(IFM,3210) IRESO,CHA,AM
+            ENDIF
+          ELSE
+            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
+              WRITE(IFM,3211) IRESO,FFF,AM,ERC
+            ELSE
+              WRITE(IFM,3211) IRESO,CHA,AM,ERC
+            ENDIF
+          ENDIF
+ 36     CONTINUE
+        WRITE(IFM,7776)ERRMOY/NFREQ
+        WRITE(IFM,7777)
 
       ELSEIF ((RESUFK(NFREQ,2) .EQ. 'INVERSE_R'  .OR.
      +         RESUFK(NFREQ,2) .EQ. 'INVERSE_C') .AND.
@@ -223,9 +264,9 @@ C     ------------------------------------------------------------------
             ERR   = RESUFR(IFREQ,15)
             AM2   = RESUFR(IFREQ,4)
             IF (TYPRES .EQ. 'DYNAMIQUE') THEN
-            WRITE(IFM,6010) IRESO,FFF,AM,ITERA,ITERQ,ERR,AM2
+              WRITE(IFM,6010) IRESO,FFF,AM,ITERA,ITERQ,ERR,AM2
             ELSE
-            WRITE(IFM,6010) IRESO,CHA,AM,ITERA,ITERQ,ERR,AM2
+              WRITE(IFM,6010) IRESO,CHA,AM,ITERA,ITERQ,ERR,AM2
             ENDIF
             RESUFR(IFREQ,14) = UNDF
             RESUFR(IFREQ,15) = UNDF
@@ -247,7 +288,6 @@ C     ------------------------------------------------------------------
          DO 70 IFREQ = 1, NFREQ
             IRESO = RESUFI(IFREQ,1)
             FFF   = RESUFR(IFREQ,1)
-            CHA   = RESUFR(IFREQ,2)
             AM    = RESUFR(IFREQ,3)
             ITERB = RESUFI(IFREQ,2)
             PREC  = RESUFR(IFREQ,14)
@@ -255,9 +295,9 @@ C     ------------------------------------------------------------------
             ERR   = RESUFR(IFREQ,15)
             AM2   = RESUFR(IFREQ,4)
             IF (TYPRES .EQ. 'DYNAMIQUE') THEN
-            WRITE(IFM,7010) IRESO,FFF,AM,ITERB,PREC,ITERQ,ERR,AM2
+              WRITE(IFM,7010) IRESO,FFF,AM,ITERB,PREC,ITERQ,ERR,AM2
             ELSE
-            WRITE(IFM,7010) IRESO,CHA,AM,ITERB,PREC,ITERQ,ERR,AM2
+              WRITE(IFM,7010) IRESO,CHA,AM,ITERB,PREC,ITERQ,ERR,AM2
             ENDIF
             RESUFR(IFREQ,14) = UNDF
             RESUFR(IFREQ,15) = UNDF
@@ -315,6 +355,26 @@ C     ------------------------------------------------------------------
  2210 FORMAT (1P,6X,I4,5X,E12.5,6X,E12.5)
  2211 FORMAT (1P,6X,I4,5X,E12.5,6X,E12.5,6X,E12.5)
 
+
+ 3200 FORMAT ( 7X,'CALCUL MODAL:  METHODE GLOBALE DE TYPE QR',/,
+     +        22X,A27,/,/,
+     +        4X,'NUMERO',4X,'FREQUENCE (HZ)',4X,'NORME D''ERREUR')
+ 3201 FORMAT ( 7X,'CALCUL MODAL:  METHODE GLOBALE DE TYPE QR',/,
+     +        22X,A27,/,/,
+     +        4X,'NUMERO',4X,'CHARGE CRITIQUE',4X,'NORME D''ERREUR')
+ 3202 FORMAT ( 7X,'CALCUL MODAL:  METHODE GLOBALE DE TYPE QR',/,
+     +        22X,A27,/,/,
+     +        4X,'NUMERO',4X,'FREQUENCE (HZ)',4X,'AMORTISSEMENT',4X,
+     +        'NORME D''ERREUR')
+ 3203 FORMAT ( 7X,'CALCUL MODAL:  METHODE GLOBALE DE TYPE QR',/,
+     +        22X,A27,/,/,
+     +        4X,'NUMERO',4X,'CHARGE CRITIQUE',4X,'AMORTISSEMENT',4X,
+     +        'NORME D''ERREUR')
+ 3210 FORMAT (1P,6X,I4,5X,E12.5,6X,E12.5)
+ 3211 FORMAT (1P,6X,I4,5X,E12.5,6X,E12.5,6X,E12.5)
+
+
+
  4000 FORMAT ( 7X,'CALCUL MODAL:  METHODE D''ITERATION INVERSE',/,
      +        54X,'INVERSE',/,
      +        4X,'NUMERO',4X,'FREQUENCE (HZ)',4X,'AMORTISSEMENT',4X,
@@ -362,6 +422,7 @@ C     ------------------------------------------------------------------
  7010 FORMAT (1P,6X,I4,5X,E12.5,6X,E12.5,5X,I4,4X,E12.5,4X,I4,4X,E12.5,
      +        6X,E12.5)
 
+ 7776 FORMAT(' NORME D''ERREUR MOYENNE: ',E12.5)
  7777 FORMAT ( / )
 
 C     ------------------------------------------------------------------

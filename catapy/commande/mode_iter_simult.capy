@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/03/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+# RESPONSABLE BOYERE E.BOYERE
 def mode_iter_simult_prod(MATR_A,MATR_C,TYPE_RESU,**args ):
   if TYPE_RESU == "MODE_FLAMB" : return mode_flamb
   if AsType(MATR_C) == matr_asse_depl_r : return mode_meca_c
@@ -38,7 +39,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
          MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
          MATR_C          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
          METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",
-                               into=("TRI_DIAG","JACOBI","SORENSEN") ),
+                               into=("TRI_DIAG","JACOBI","SORENSEN","QZ") ),
          b_tri_diag =BLOC(condition = "METHODE == 'TRI_DIAG'",
            PREC_ORTHO      =SIMP(statut='f',typ='R',defaut= 1.E-12,val_min=0.E+0 ),
            NMAX_ITER_ORTHO =SIMP(statut='f',typ='I',defaut= 5,val_min=0 ),
@@ -56,6 +57,9 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
            NMAX_ITER_SOREN =SIMP(statut='f',typ='I',defaut= 20,val_min=0 ),  
            PARA_ORTHO_SOREN=SIMP(statut='f',typ='R',defaut= 0.717,val_min=0.E+0 ),
          ),
+         b_qz =BLOC(condition = "METHODE == 'QZ'",
+           TYPE_QZ      =SIMP(statut='f',typ='TXM',defaut="QZ_SIMPLE",into=("QZ_QR","QZ_SIMPLE","QZ_EQUI") ),  
+         ),
          TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",
                                into=("MODE_FLAMB","DYNAMIQUE"),
                                fr="Type d analyse" ),
@@ -64,7 +68,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
 
          b_flamb         =BLOC(condition = "TYPE_RESU == 'MODE_FLAMB'",
            CALC_FREQ       =FACT(statut='d',min=0,
-             OPTION          =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE"),
+             OPTION       =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE","TOUT"),
                                    fr="Choix de l option et par conséquent du shift du problème modal" ),
              b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites valeurs propres",
                NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),
@@ -94,7 +98,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
 
          b_dynam        =BLOC(condition = "TYPE_RESU == 'DYNAMIQUE'",
            CALC_FREQ       =FACT(statut='d',min=0,
-             OPTION          =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE"),
+             OPTION      =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE","TOUT"),
                                    fr="Choix de l option et par conséquent du shift du problème modal" ),
              b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites valeurs propres",
                NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),

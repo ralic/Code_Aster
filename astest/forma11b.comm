@@ -1,4 +1,4 @@
-# MODIF  DATE 25/02/2008   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TP ANALYSE MODALE TPAM2
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,9 @@
 #                 CORRIGE TP ANALYSE MODAL N2 
 #                        MODES DE CORPS RIGIDE
 #
-#
+# OBJECTIF POUR LA BASE DE CAS-TESTS ASTER: MODAL GENERALISE REEL.
+# INTERCOMPARAISON DES METHODES DE SOUS-ESPACES (SORENSEN, LANCZOS,
+# ET QZ).
 #-------------------------------------------------------------------
 
 #directory = "/home/xxx/ASTER/TP_MODAL/TPAM2/"
@@ -70,6 +72,48 @@ MODE_SOB=MODE_ITER_SIMULT(MATR_A=K_ASSE,
                                        FREQ=(0.0,2700.0,),),
                           TITRE='1/ METHODE DE SORENSEN',);
 
+TEST_RESU(RESU=(_F(RESULTAT=MODE_SOB,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=-1.9812845715584E-04,
+                   PRECISION=1E-04,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='ABSOLU',
+                   VERSION='9.2.28',)))
+TEST_RESU(RESU=(_F(RESULTAT=MODE_SOB,
+                   NUME_ORDRE=7,
+                   PARA='FREQ',
+                   VALE=2.4696406072596E+03,
+                   PRECISION=1E-08,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   VERSION='9.2.28',)))
+                   
+MODE_QZ=MODE_ITER_SIMULT(MATR_A=K_ASSE,
+                          MATR_B=M_ASSE,
+                          METHODE='QZ',
+                          TYPE_QZ='QZ_QR',
+                          CALC_FREQ=_F(OPTION='BANDE',
+                                       FREQ=(0.0,2700.0,),),
+                          TITRE='1/ METHODE QZ',);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=-2.1745583238148E-03,
+                   PRECISION=1E-03,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='ABSOLU',
+                   VERSION='9.2.28',)))
+TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
+                   NUME_ORDRE=16,
+                   PARA='FREQ',
+                   VALE=2.6136412395659E+03,
+                   PRECISION=1E-08,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   VERSION='9.2.28',)))
+                                          
 # IMPRESSIONS DES PARAMETRES EN SUS DANS .RESU   
 IMPR_RESU(RESU=_F(RESULTAT=MODE_SOB,
                   TOUT_CHAM='NON',
@@ -89,19 +133,19 @@ IMPR_RESU(FORMAT='CASTEM',UNITE=55,
 # FIN DE LA QUESTION 1.
 #FIN();
 
-# QUESTION 2: CALCUL BANDE AVEC LANCZOS AVEC OU SANS OPTION MODE RIGIDE    
+# QUESTION 2: CALCUL BANDE AVEC LANCZOS SANS OU AVEC OPTION MODE RIGIDE    
 
-MODE_LAS=MODE_ITER_SIMULT(MATR_A=K_ASSE,
-                          MATR_B=M_ASSE,
-                          METHODE='TRI_DIAG',
-                          OPTION='MODE_RIGIDE',
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(0.0,2800.0,),),
-                          VERI_MODE=_F(STOP_ERREUR='NON',),
-                          TITRE='2/ METHODE DE LANCZOS AVEC OPTION MODE RIGIDE',);
-IMPR_RESU(RESU=_F(RESULTAT=MODE_LAS,
-                  TOUT_CHAM='NON',
-                  TOUT_PARA='OUI',),);
+#MODE_LAS=MODE_ITER_SIMULT(MATR_A=K_ASSE,
+#                          MATR_B=M_ASSE,
+#                          METHODE='TRI_DIAG',
+#                          OPTION='SANS',
+#                          CALC_FREQ=_F(OPTION='BANDE',
+#                                       FREQ=(0.0,2800.0,),),
+#                          VERI_MODE=_F(STOP_ERREUR='NON',),
+#                          TITRE='2/ METHODE DE LANCZOS AVEC OPTION MODE RIGIDE',);
+#IMPR_RESU(RESU=_F(RESULTAT=MODE_LAS,
+#                  TOUT_CHAM='NON',
+#                  TOUT_PARA='OUI',),);
 MODE_LAA=MODE_ITER_SIMULT(MATR_A=K_ASSE,
                           MATR_B=M_ASSE,
                           METHODE='TRI_DIAG',

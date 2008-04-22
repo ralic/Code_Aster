@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE JMBHH01 J.M.PROIX
+# RESPONSABLE DESROCHES X.DESROCHES
 def modi_repere_prod(RESULTAT,**args):
   if AsType(RESULTAT) != None : return AsType(RESULTAT)
 

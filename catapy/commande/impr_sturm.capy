@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+# RESPONSABLE BOYERE E.BOYERE
 IMPR_STURM=PROC(nom="IMPR_STURM",op=32,fr="Calculer et imprimer le nombre de valeurs propres dans un intervalle donné",
             UIinfo={"groupes":("Résolution",)},
          MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r ) ),

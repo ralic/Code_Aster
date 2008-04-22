@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+# RESPONSABLE NISTOR I.NISTOR
 DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
                      reentrant='f',
                      fr="Définit la base d'une sous-structuration dynamique ou d'une recombinaison modale",

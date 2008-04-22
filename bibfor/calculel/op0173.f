@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,11 +87,11 @@ C          ------------------------------
 C
       ELSEIF ( TYPESD .EQ. 'MATR_ELEM_DEPL_R' ) THEN
 C          ------------------------------
-         CALL COPISD ( 'MATR_ELEM', 'G', VALK(1:8), NOMRES )
+         CALL COPISD ( 'MATR_ELEM', 'G', VALK, NOMRES )
 C
       ELSEIF ( TYPESD .EQ. 'VECT_ELEM_DEPL_R' ) THEN
 C          ------------------------------
-         CALL COPISD ( 'VECT_ELEM', 'G', VALK(1:8), NOMRES )
+         CALL COPISD ( 'VECT_ELEM', 'G', VALK, NOMRES )
 C
       ELSEIF ( TYPESD .EQ. 'CHAM_GD_SDASTER' ) THEN
 C          ------------------------------

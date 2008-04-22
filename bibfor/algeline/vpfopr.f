@@ -3,7 +3,7 @@
      &                   PRECDC, NPREC, NBRSSA, NBLAGR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -265,10 +265,10 @@ C        --- CENTRAGE DE L INTERVALLE ---
          ENDIF
 
 C     ------------------------------------------------------------------
-C     ------------------------ OPTION PLUS_PETITE ----------------------
+C     ------------------------ OPTION PLUS_PETITE OU TOUT -------------
 C     ------------------------------------------------------------------
 
-      ELSE IF ( OPTION .EQ. 'PLUS_PETITE' ) THEN
+      ELSE IF ((OPTION.EQ.'PLUS_PETITE').OR.(OPTION.EQ.'TOUT')) THEN
 
          OMGSHI = 0.D0
          NBESSA = 0

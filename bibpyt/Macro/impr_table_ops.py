@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF impr_table_ops Macro  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,9 +23,6 @@
 import os.path
 import re
 from sets import Set
-
-from types import ListType, TupleType, StringTypes
-EnumTypes=(ListType, TupleType)
 
 
 # ------------------------------------------------------------------------------
@@ -79,7 +76,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    ltab=[]
    if args['SENSIBILITE']:
       lps=args['SENSIBILITE']
-      if not type(lps) in EnumTypes:
+      if not type(lps) in (list, tuple):
          lps=[lps,]
       for ps in lps:
          ncomp = self.jdc.memo_sensi.get_nocomp(TABLE.nom, ps.nom)
@@ -98,7 +95,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    nom_para=ltab[0][0].para
    if args['NOM_PARA']:
       nom_para=args['NOM_PARA']
-   if not type(nom_para) in EnumTypes:
+   if not type(nom_para) in (list, tuple):
       nom_para=[nom_para,]
 
    # 0.4.2. Traiter le cas des UL réservées
@@ -179,7 +176,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       # 4.4. regroupement par paramètre : PAGINATION
       if args['PAGINATION']:
          l_ppag=args['PAGINATION']
-         if not type(l_ppag) in EnumTypes:
+         if not type(l_ppag) in (list, tuple):
             l_ppag=[l_ppag,]
          kargs['PAGINATION'] = [p for p in l_ppag if p in nom_para]
          l_para_err          = [p for p in l_ppag if not p in nom_para]
@@ -189,9 +186,9 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       timp.Impr(**kargs)
 
       # ----- 5. IMPR_FONCTION='OUI'
-      if args['IMPR_FONCTION'] and args['IMPR_FONCTION']=='OUI':
+      if args['IMPR_FONCTION'] == 'OUI':
          # cherche parmi les cellules celles qui contiennent un nom de fonction
-         dfon={}
+         dfon = []
          p_extr = Set(['FONCTION', 'FONCTION_C'])
          p_extr.intersection_update(timp.para)
          if len(p_extr) > 0:
@@ -199,12 +196,12 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
             textr = timp.__getitem__(list(p_extr))
             for row in textr:
                for par,cell in row.items():
-                  if type(cell) in StringTypes:
+                  if type(cell) in (str, unicode):
                      cell = cell.strip()
                      if aster.getvectjev('%-19s.PROL' % cell) != None:
-                        dfon['%-19s' % cell] = par
+                        dfon.append(['%-19s' % cell, par])
             # impression des fonctions trouvées
-            for f,par in dfon.items():
+            for f,par in dfon:
                __fonc=RECU_FONCTION(
                   TABLE=sdtab,
                   FILTRE=_F(
@@ -212,6 +209,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
                      VALE_K=f,
                   ),
                   NOM_PARA_TABL=par,
+                  TITRE = 'Fonction %s' % f,
                )
                __fonc.Trace(**kfonc)
                DETRUIRE(CONCEPT=_F(NOM=('__fonc',),), ALARME='NON', INFO=1,)

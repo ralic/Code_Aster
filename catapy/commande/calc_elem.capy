@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE JMBHH01 J.M.PROIX
+# RESPONSABLE ASSIRE A.ASSIRE
 def calc_elem_prod(RESULTAT,**args):
    if AsType(RESULTAT) != None : return AsType(RESULTAT)
    raise AsException("type de concept resultat non prevu")

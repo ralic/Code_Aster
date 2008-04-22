@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/04/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,19 +76,36 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506A,
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
-                               SANS_GROUP_NO=('PLANX','LS','LB'),),);
+## UNIQUEMENT SI ON MET LE LIAISON_DDL PLUS BAS
+#                               SANS_GROUP_NO=('PLANX','LS','LB'),
+#                               SANS_GROUP_NO=('E','S',),
+                               ),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='NDPL',
                                  DY=-100.0,),
-                              _F(GROUP_NO=('LS','LB'),
-                                 DX=0.0,),
+## INUTILE EN AXI (IMPLICITE)
+#                               _F(GROUP_NO=('LS','LB'),
+#                                  DX=0.0,),
                               _F(GROUP_NO='PLANX',
                                  DX=0.0,DY=0.0,),),
-                    LIAISON_DDL=_F(GROUP_NO=('E','S'),
-                                   DDL=('DY','DY'),
-                                   COEF_MULT=(1.0,-1.0),
-                                   COEF_IMPO=0.0,),);
+## CETTE LIAISON ENTRE LES NOEUDS E ET S NE SERT A RIEN
+## IL N'Y A PAS DE MOUVEMENT DE CORPS RIGIDES CAR
+## ON EST EN AXI ET LA SPHERE EST COMPLETEMENT BLOQUEE
+#                     LIAISON_DDL=_F(GROUP_NO=('E','S'),
+#                                    DDL=('DY','DY'),
+#                                    COEF_MULT=(1.0,-1.0),
+#                                    COEF_IMPO=0.0,),
+                                   );
+
+# CHA2=AFFE_CHAR_CINE(MODELE=MO,
+#                     MECA_IMPO=(_F(GROUP_NO='NDPL',
+#                                  DY=-100.0,),
+# #                               _F(GROUP_NO=('LS','LB'),
+# #                                  DX=0.0,),
+#                               _F(GROUP_NO='PLANX',
+#                                  DX=0.0,DY=0.0,),),
+#                                    );
 
 #------------------------------------------------------------------ 
 #                         RESOLUTION
@@ -102,8 +119,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=1.0,
                                     NOMBRE=17,),),);
 
-
-U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',METHODE='MUMPS',),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=CHA1,),
@@ -120,7 +136,9 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=15,),
-                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
+                INFO=1,
+                );
 
 #------------------------------------------------------------------ 
 #                         POST TRAITEMENT
@@ -131,7 +149,8 @@ U=CALC_NO(reuse =U,
           OPTION='REAC_NODA',
           MODELE=MO,
           CHAM_MATER=CHMAT,
-          EXCIT=_F(CHARGE=CHA2,),);
+          EXCIT=_F(CHARGE=CHA2,),
+          );
 
 LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
@@ -240,7 +259,7 @@ TEST_RESU(RESU=_F(RESULTAT=U,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
                   VALE=1.1058333934147E+06,
-                  PRECISION=1.E-5,
+                  PRECISION=1.5E-4,
                   CRITERE='RELATIF',
                   REFERENCE='NON_REGRESSION',
                   VERSION='7.1.6',),);

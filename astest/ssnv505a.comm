@@ -1,4 +1,4 @@
-# MODIF  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,8 +102,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MODE,
                               DIST_MAIT=31.75,
                               CARA_ELEM=CARA, 
                               DIST_COQUE='OUI', 
-#                              DIST_ESCL=31.75,
-                              RECHERCHE = 'NOEUD_BOUCLE',
                               TOLE_PROJ_EXT=0.25,
                               SANS_NOEUD_QUAD='NON',
                               ),

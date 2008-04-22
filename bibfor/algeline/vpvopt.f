@@ -4,7 +4,7 @@
       REAL*8                              FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,8 +23,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     CONTROLE DE VALIDITE DE L'OPTION SUR LES FREQUENCES
 C     ------------------------------------------------------------------
-      CHARACTER*16   LOPTFR(3), OPTIOM, TYPRES
-      DATA  LOPTFR / 'CENTRE ', 'BANDE   ', 'PLUS_PETITE' /
+      CHARACTER*16   LOPTFR(4), OPTIOM, TYPRES
+      DATA  LOPTFR / 'CENTRE ', 'BANDE   ', 'PLUS_PETITE', 'TOUT    ' /
 C     ------------------------------------------------------------------
 C IN  OPTION   : K : NOM DE L'OPTION
 C              = 'PLUS_PETITE'    (ITERATION SIMULTANEE EN SOUS-ESPACE)
@@ -36,7 +36,7 @@ C IN  FREQ     : R : LISTE DES FREQUENCES FOURNIES EN ENTREE
 C OUT IER      : R : CODE RETOUR
 C     ------------------------------------------------------------------
       IER=0
-      CALL UTREMT( OPTION , LOPTFR , 3 , IRET )
+      CALL UTREMT( OPTION , LOPTFR , 4 , IRET )
       IF ( IRET .EQ. 0 ) THEN
          OPTIOM = OPTION
          IER = IER + 1
@@ -57,7 +57,8 @@ C     ------------------------------------------------------------------
                IER = IER + 1
                CALL U2MESS('E','ALGELINE3_84')
             ENDIF
-         ELSEIF ( OPTION .EQ. 'PLUS_PETITE') THEN
+         ELSEIF (( OPTION .EQ. 'PLUS_PETITE').OR.
+     &           ( OPTION .EQ. 'TOUT')) THEN
             IF ( NBFREQ.NE.0 ) THEN
                CALL U2MESS('I','ALGELINE3_85')
             ENDIF
@@ -78,7 +79,8 @@ C     ------------------------------------------------------------------
                IER = IER + 1
                CALL U2MESS('E','ALGELINE3_88')
             ENDIF
-         ELSEIF ( OPTION .EQ. 'PLUS_PETITE') THEN
+         ELSEIF (( OPTION .EQ. 'PLUS_PETITE').OR.
+     &           ( OPTION .EQ. 'TOUT')) THEN
             IF ( NBFREQ.NE.0 ) THEN
                CALL U2MESS('I','ALGELINE3_89')
             ENDIF

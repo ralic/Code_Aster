@@ -1,9 +1,9 @@
-      SUBROUTINE CONNOR (MELFLU,TYPFLU,FREQ,MODE,NUOR,AMOC,CARAC,
+      SUBROUTINE CONNOR (MELFLU,TYPFLU,FREQ,BASE,NUOR,AMOC,CARAC,
      &                   MASG,LNOE,NBM,VITE,RHO,ABSCUR)
 
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/01/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGELINE  DATE 21/04/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C -------------------------
       COMMON /CVARJE/ZC(1)
       LOGICAL ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
+      CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
@@ -60,23 +60,32 @@ C
 C ARGUMENTS
 C ---------
       CHARACTER*19  MELFLU
-      CHARACTER*8   TYPFLU
+      CHARACTER*8   TYPFLU,BASE
       INTEGER       NBM
       INTEGER       NUOR(NBM),LNOE
       REAL*8        AMOC(NBM),MASG(NBM),CARAC(2),FREQ(NBM)
       REAL*8        VITE(LNOE),ABSCUR(LNOE)
-      REAL*8        RHO(2*LNOE),MODE(LNOE*NBM)
+      REAL*8        RHO(2*LNOE)
 C
 C VARIABLES LOCALES
 C -----------------
       REAL*8       COEF(NBM),DELTA(NBM),AMORED(NBM),RHOTUB,RHOS
       INTEGER      IMODE,IM,IFSVR,IFSVI,NBMA,NBZEX,NMAMIN,NMAMAX
       INTEGER      IENER,IMA,IZONE,IVCN,IVEN,ICSTE,MODUL,NBVAL,I,J
-      INTEGER      JCONN, MODUL2, K, JZONE
+      INTEGER      JCONN,MODUL2,K,JZONE,IFSVK,IDE,IRE,NEQ,IDEP,KREF,IBID
+      INTEGER      LDEPL(6),LMASG,INCREM,ID,IRAP
       REAL*8       DI,DE,MASTUB,DIAMEQ,LTUBE,NUMERA(NBM),DENOMI
-      REAL*8       PAS,CORREL,R8PI,A,B,C,D,E,F,MPHI2(NBM)
-      REAL*8       COEFF1,COEFF2,COEFF3,COEFF4,COEFF5,COEFF6
-      CHARACTER*24 FSVR,FSVI
+      REAL*8       PAS,CORREL,R8PI,A,B,C,D,E,F,G,MPHI2(NBM)
+      REAL*8       MODETR(3*LNOE*NBM),MODE(LNOE*NBM)
+      REAL*8       COEFF1,COEFF2,COEFF3,COEFF4,COEFF5,COEFF6,COEFF7
+      REAL*8       ALPHA,BETA,GAMMA,ZETA,THETA,OMEGA,RHOEQ
+      REAL*8       PHI,LAMBDA,ETA,NU,MU,KSI,MASS(NBM)
+      CHARACTER*8  DEPLA(3),DEPL,K8B
+      CHARACTER*14 NUMDDL
+      CHARACTER*19 MASSE
+      CHARACTER*24 FSVR,FSVI,FSVK
+      DATA DEPLA  /'DX      ','DY      ','DZ      '/
+      DATA LDEPL  /1,2,3,4,5,6/
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -88,6 +97,9 @@ C     ------------------------------------------------------------
 
       FSVI = TYPFLU//'           .FSVI'
       CALL JEVEUO(FSVI,'L',IFSVI)
+
+      FSVK = TYPFLU//'           .FSVK'
+      CALL JEVEUO(FSVK,'L',IFSVK)
 
       CALL JEVEUO('&&MDCONF.TEMPO','L',JZONE)
 
@@ -110,20 +122,46 @@ C     LA VALEUR DE L ENERGIE DU AU FLUIDE
 C     PAR ORDRE ON DONNE POUR LE MODE 1 LES VALEURS SUR CHAQUE ZONE
 C     PUIS LE MODE 2 ET ETC
 
-      CALL WKVECT('&&CONNOR.ENERGI','V V R',NBZEX*NBM,IENER)
+      CALL WKVECT('&&CONNOR.ENERGI','V V R',2*NBZEX*NBM,IENER)
       CALL WKVECT('&&CONNOR.CSTE','V V R',NBZEX,ICSTE)
 
-      CALL WKVECT(MELFLU(1:8)//'.VCN','G V R',NBVAL*NBM,IVCN)
-      CALL WKVECT(MELFLU(1:8)//'.VEN','G V R',NBM,IVEN)
+      CALL WKVECT(MELFLU(1:8)//'.VCN','G V R',2*NBVAL*NBM,IVCN)
+      CALL WKVECT(MELFLU(1:8)//'.VEN','G V R',2*NBM,IVEN)
       CALL WKVECT(MELFLU(1:8)//'.MASS','V V R',2,JCONN)
+      CALL WKVECT(MELFLU(1:8)//'.RAP','G V R',2*NBVAL*NBM,IRAP)
 C
       MASTUB = 0.D0
       RHOS   = 0.D0
       LTUBE  = ABSCUR(LNOE)-ABSCUR(1)
 
+
+C ---      DIRECTION DANS LAQUELLE AGISSENT LES FORCES FLUIDELASTIQUES
+      IDEP = 0
+      DEPL = ZK8(IFSVK+1)
+      DO 7 IDE = 1,3
+         IF ( DEPLA(IDE) .EQ. DEPL ) IDEP = IDE
+  7   CONTINUE
+C ---  DEFORMEES MODALES
+C
+      CALL JEVEUO ( BASE//'           .REFD' , 'L', KREF )
+      MASSE = ZK24(KREF+1)
+      CALL MTDSCR ( MASSE )
+      CALL DISMOI('F','NOM_NUME_DDL',MASSE,
+     &            'MATR_ASSE',IBID,NUMDDL,IRE)
+      CALL DISMOI('F','NB_EQUA'     ,MASSE,
+     &            'MATR_ASSE',NEQ ,K8B   ,IRE)
+C
+
+C     EXTRACTION DE LA COMPOSANTE SELON LA DIRECTION DE L ECOULEMENT DES
+C     DIFFERENTS MODES
+      CALL EXTMOD(BASE,NUMDDL,NUOR,NBM,MODE,NEQ,LNOE,IDEP,1)
+
+C     EXTRACTION DES COMPOSANTES DE TRANSLATION DES  DIFFERENTS MODES
+      CALL EXTMOD(BASE,NUMDDL,NUOR,NBM,MODETR,NEQ,LNOE,LDEPL,3)
+
       DO 10 IMA=1,NBMA
 
-         MASTUB = MASTUB + (ABSCUR(IMA+1)-ABSCUR(IMA))*
+         RHOEQ = RHOEQ + (ABSCUR(IMA+1)-ABSCUR(IMA))*
      &            (RHOTUB+(DI**2/(DE**2-DI**2))*((RHO(IMA+LNOE)+
      &            RHO(IMA+LNOE+1))/2)+
      &            (2*CORREL/R8PI())*(DE**2/(DE**2-DI**2))*((RHO(IMA)+
@@ -132,10 +170,15 @@ C
      &                 ((RHO(IMA)+RHO(IMA+1))/2)
  10   CONTINUE
 
-      MASTUB = ((R8PI()/4)*(DE**2-DI**2)*MASTUB)/LTUBE
+      MASTUB = ((R8PI()/4)*(DE**2-DI**2)*RHOEQ)/LTUBE
       RHOS   = RHOS/LTUBE
       ZR(JCONN  ) = MASTUB
       ZR(JCONN+1) = RHOS
+
+
+
+C     1)  METHODE GEVIBUS
+C         ===============
 
 C     CALCUL DE LA VITESSE CRITIQUE INTER TUBES POUR CHAQUE COMBINAISON
 C     DES CONSTANTE DE CONNORS ET POUR CHAQUE MODE
@@ -159,7 +202,7 @@ C        DELTA(IMODE)=(2*R8PI()*AMORED(IMODE))/SQRT(1-AMORED(IMODE)**2)
             NMAMAX=ZI(JZONE+2*(IZONE-1)+2)-1
 C     RHO EST DE LA FORME A*S+B
 C     V   EST DE LA FORME C*S+D
-C     PHI EST DE LA GORME E*S+F
+C     PHI EST DE LA FORME E*S+F
             DO 40 IMA=NMAMIN,NMAMAX
                A=(RHO(IMA+1)-RHO(IMA))/(ABSCUR(IMA+1)-ABSCUR(IMA))
                B=RHO(IMA)-A*ABSCUR(IMA)
@@ -263,8 +306,138 @@ C    LE MODE PROPRE DU TUBE EST DE LA FORME C*S+D
  100     CONTINUE
 
          ZR(IVEN-1+IM) = SQRT((NUMERA(IM)*MASTUB) / (MPHI2(IM)*RHOS))
-
+         DO 95 I=1,NBVAL
+           ZR(IRAP-1+(IM-1)*NBVAL+I) = ZR(IVEN-1+IM)/
+     &           ZR(IVCN-1+(IM-1)*NBVAL+I)
+C           write(6,*)'Rapport Gevibus': ZR(IRAP-1+(IM-1)*NBVAL+I)
+ 95      CONTINUE
  90   CONTINUE
+
+
+
+
+C     2)  FORMULATION ALTERNATIVE 
+C         ===============
+
+C     CALCUL DE LA VITESSE CRITIQUE INTER TUBES POUR CHAQUE COMBINAISON
+C     DES CONSTANTE DE CONNORS ET POUR CHAQUE MODE
+
+      DO 120 IM=1,NBM
+
+         IMODE=NUOR(IM)
+C        LES LIGNES COMMENTARISEES CORRESPONDENT A
+C        UN AMORTISSEMENT MODAL CALCULE PAR LA FORMULE :
+C        AMORTISSEMENT/(4*PI*(MASSE GENERALISE*FREQUENCE)
+
+C        AMORED(IMODE)=AMOC(IMODE)/(4*R8PI()*MASG(IMODE)*FREQ(IMODE))
+C        DELTA(IMODE)=(2*R8PI()*AMORED(IMODE))/SQRT(1-AMORED(IMODE)**2)
+
+         DO 130 IZONE=1,NBZEX
+
+            NMAMIN=ZI(JZONE+2*(IZONE-1)+1)
+            NMAMAX=ZI(JZONE+2*(IZONE-1)+2)-1
+C     RHO EST DE LA FORME A*S+B
+C     V   EST DE LA FORME C*S+D
+C     PHI EST DE LA FORME E*S+F
+            DO 140 IMA=NMAMIN,NMAMAX
+               A=(RHO(IMA+1)-RHO(IMA))/(ABSCUR(IMA+1)-ABSCUR(IMA))
+               B=RHO(IMA)-A*ABSCUR(IMA)
+
+               C=(VITE(IMA+1)-VITE(IMA))/(ABSCUR(IMA+1)-ABSCUR(IMA))
+               D=VITE(IMA)-C*ABSCUR(IMA)
+               
+               COEFF1=0.D0
+               COEFF2=0.D0
+               COEFF3=0.D0
+               COEFF4=0.D0
+               COEFF5=0.D0
+               COEFF6=0.D0
+             
+C PRISE EN COMPTE DES DDL DE TRANSLATION
+
+               DO 145 ID=1,3
+                 INCREM = (LNOE*(IM-1)+IMA-1)*3+ID
+                 E=(MODETR(INCREM+3)-MODETR(INCREM))
+     &           /(ABSCUR(IMA+1)-ABSCUR(IMA))
+                 F=MODETR(INCREM)-E*ABSCUR(IMA)
+
+C    COEFFICIENT DU POLYNOME DU 5 DEGRES RESULTAT DE RHO*V**2*PHI**2
+
+                 COEFF1=A*C**2*E**2+COEFF1
+                 COEFF2=2*A*E*F*(C**2)+2*A*(E**2)*C*D+(C**2)*(E**2)*B+
+     &                      COEFF2
+                 COEFF3=A*(F**2)*(C**2)+4*A*E*F*C*D+A*(E**2)*(D**2)+
+     &                  2*E*F*(C**2)*B+2*(E**2)*C*D*B+COEFF3
+                 COEFF4=2*A*C*D*(F**2)+2*A*E*F*(D**2)+(F**2)*(C**2)*B+
+     &                  4*E*F*C*D*B+(E**2)*(D**2)*B+COEFF4
+                 COEFF5=2*C*D*(F**2)*B+2*E*F*(D**2)*B+(D**2)*(F**2)*A+
+     &                      COEFF5
+                 COEFF6=(D**2)*(F**2)*B+COEFF6
+                 
+ 145           CONTINUE
+
+               ZR(IENER-1+NBZEX*(IM-1)+IZONE+NBZEX*NBM)=
+     &         ZR(IENER-1+NBZEX*(IM-1)+IZONE+NBZEX*NBM)+
+     &         (COEFF1*(ABSCUR(IMA+1)**6-ABSCUR(IMA)**6))/6+
+     &         (COEFF2*(ABSCUR(IMA+1)**5-ABSCUR(IMA)**5))/5+
+     &         (COEFF3*(ABSCUR(IMA+1)**4-ABSCUR(IMA)**4))/4+
+     &         (COEFF4*(ABSCUR(IMA+1)**3-ABSCUR(IMA)**3))/3+
+     &         (COEFF5*(ABSCUR(IMA+1)**2-ABSCUR(IMA)**2))/2+
+     &         COEFF6*(ABSCUR(IMA+1)-ABSCUR(IMA))
+ 140        CONTINUE
+ 130     CONTINUE
+ 120  CONTINUE
+
+      DO 150 I=1,NBVAL
+         MODUL=1
+
+         DO 160 J=1,NBZEX
+            MODUL=1
+            DO 165 K=(J+1),NBZEX
+               MODUL=MODUL*ZI(IFSVI+1+NBZEX+K)
+165         CONTINUE
+            IF (J.EQ.1) THEN
+               PAS=(I-1)/MODUL
+            ELSE
+               MODUL2=MODUL*ZI(IFSVI+1+NBZEX+J)
+               PAS=(MOD((I-1),MODUL2))/MODUL
+            ENDIF
+            ZR(ICSTE-1+J)=ZR(IFSVR+3+2*(J-1))+PAS*
+     &             (ZR(IFSVR+3+2*(J-1)+1)-ZR(IFSVR+3+2*(J-1)))
+     &             /(ZI(IFSVI+1+NBZEX+J)-1)
+160       CONTINUE
+
+         DO 170 IM=1,NBM
+            NUMERA(IM)=0.D0
+            DENOMI=0.D0
+            DO 180 IZONE=1,NBZEX
+               NUMERA(IM) = NUMERA(IM)+
+     &                  ZR(IENER-1+NBZEX*(IM-1)+IZONE+NBZEX*NBM)
+               DENOMI = DENOMI+ZR(ICSTE-1+IZONE)**(-2)*
+     &                  ZR(IENER-1+NBZEX*(IM-1)+IZONE+NBZEX*NBM)
+180         CONTINUE
+            ZR(IVCN-1+(IM-1)*NBVAL+I+NBM*NBVAL)=
+     &                        SQRT((NUMERA(IM)/DENOMI))*COEF(IM)
+170      CONTINUE
+150   CONTINUE
+
+C    CALCUL DE LA VITESSE EFFICACE POUR CHAQUE MODE PROPRE
+
+      DO 190 IM=1,NBM
+
+C    LA MASSE GENERALISEE DU MODE IM
+
+         CALL RSADPA ( BASE,'L',1,'MASS_GENE'    ,NUOR(IM),0,LMASG,K8B)
+         MASS(IM) = ZR(LMASG)
+         ZR(IVEN-1+NBM+IM) = SQRT((NUMERA(IM)*MASTUB) / (MASS(IM)*RHOS))
+         DO 195 I=1,NBVAL
+           ZR(IRAP-1+(IM-1)*NBVAL+I+NBM*NBVAL) = ZR(IVEN-1+NBM+IM)/
+     &        ZR(IVCN-1+(IM-1)*NBVAL+I+NBM*NBVAL)
+C           write(6,*)'Rapport': ZR(IRAP-1+(IM-1)*NBVAL+I+NBM*NBVAL)
+195      CONTINUE
+190   CONTINUE
+
+
 
       CALL JEDEMA()
       END

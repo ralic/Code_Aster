@@ -1,7 +1,7 @@
       INTEGER FUNCTION CFMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   ZNOES,ZMETH,ZTOLE,ZTABF
-      PARAMETER (ZNOES=1,ZMETH=12,ZTOLE=6 ,ZTABF=30) 
+      PARAMETER (ZNOES=1,ZMETH=12,ZTOLE=7 ,ZTABF=30) 
       INTEGER   ZCMCF,ZECPD,ZTGDE,ZDIRN
       PARAMETER (ZCMCF=25,ZECPD=6 ,ZTGDE=6 ,ZDIRN=6 )
       INTEGER   ZPOUD,ZDIME,ZMAES,ZPERC
@@ -47,9 +47,7 @@ C
       INTEGER   ZCONV,ZRESU,ZCARF,ZXFEM
       PARAMETER (ZCONV=9 ,ZRESU=24,ZCARF=4 ,ZXFEM=27) 
       INTEGER   ZEXCL
-      PARAMETER (ZEXCL=6 ) 
-      
-                       
+      PARAMETER (ZEXCL=6 )                       
 C
 C ----------------------------------------------------------------------
 C

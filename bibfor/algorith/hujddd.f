@@ -2,7 +2,7 @@
      &                      VEC, MAT, IRET)
          IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -456,8 +456,8 @@ C --- MECANISMES DEVIATOIRES CYCLIQUES
           
           DO 74 I = 1, NDI
             IF (I . NE. (K-4)) THEN
-               VEC(I) = FAC*(R-SCXH*D12/QC)
-               IF( .NOT. CONSOL ) VEC(I) = VEC(I)+D12*SIGDC(I)/QC
+               IF( .NOT. CONSOL ) 
+     &         VEC(I) = FAC*(R-SCXH*D12/QC)+D12*SIGDC(I)/QC
             ENDIF
   74      CONTINUE
           IF ( .NOT. CONSOL ) VEC(NDT+5-K)= D12*SIGDC(NDT+5-K)/QC
@@ -508,7 +508,7 @@ C              NOMAIL = ZK24(IAZK24-1+3) (1:8)
  81       CONTINUE
  
           IF (.NOT.CONSOL) VEC(NDT+1-K) = SIGD(NDT+1-K) /Q/2.D0
-         
+
         ELSEIF (K .EQ. 4) THEN
         
           DO 82 I = 1, NDI
@@ -567,9 +567,8 @@ C --- PREVOIR TEST POUR TRACTION ET DIVISION PAR ZERO
   84      CONTINUE        
           IF (.NOT.CONSOL) 
      &           VEC(NDT+5-K) = SIGDC(NDT+5-K)/QC/2.D0
+
 Caf 09/05/07 Fin
-C         WRITE(6,'(3(A,E16.9))')'PROD =',PROD,' --- SIGDC(1)=',SIGDC(1)
-C     &                           ,' --- SIGD(1) =',SIGD(1)       
         ENDIF
                 
       ENDIF

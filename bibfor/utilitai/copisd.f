@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/04/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER       IRET, IRES, I, NBTU, JLTN1, JLTN2
       CHARACTER*1   BAS2
-      CHARACTER*8   K8B, MAIL1, MAIL2, K81, K82
+      CHARACTER*8   K8B, MAIL1, MAIL2
       CHARACTER*14  COM1, COM2, NU1, NU2
       CHARACTER*16  TYP2SD, CORR1, CORR2
       CHARACTER*19  CH1, CH2, SDR1, K191, K192
@@ -316,15 +316,22 @@ C       -- OBJETS QUE JE NE CONNAIS PAS !! (JP) :
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'MATR_ELEM' .OR. TYPESD.EQ.'VECT_ELEM') THEN
 C     ---------------------------------------------------------------
-        K81 = SD1
-        K82 = SD2
-        CALL JEDUP1(K81//'.LISTE_RESU',BAS2,K82//'.LISTE_RESU')
-        CALL JEDUP1(K81//'.REFE_RESU',BAS2,K82//'.REFE_RESU')
+        K191 = SD1
+        K192 = SD2
+        CALL JEDUP1(K191//'.RELR',BAS2,K192//'.RELR')
+        CALL JEEXIN(K191//'.RERR',IRET)
+        IF (IRET.NE.0)THEN
+           CALL JEDUP1(K191//'.RERR',BAS2,K192//'.RERR')
+        ENDIF
         IF(TYPESD.EQ.'VECT_ELEM')THEN
-           CALL JEEXIN(K81//'.LISTE_CHAR',IRET)
+           CALL JEEXIN(K191//'.RELC',IRET)
            IF(IRET.NE.0)THEN
-             CALL JEDUP1(K81//'.LISTE_CHAR',BAS2,K82//'.LISTE_CHAR')
+              CALL JEDUP1(K191//'.RELC',BAS2,K192//'.RELC')
            ENDIF
+        ENDIF
+        CALL JEEXIN(K191//'.TITR',IRET)
+        IF(IRET.NE.0)THEN
+           CALL JEDUP1(K191//'.TITR',BAS2,K192//'.TITR')
         ENDIF
 
 C ----------------------------------------------------------------------

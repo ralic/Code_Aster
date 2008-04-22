@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
+# OBJECTIF POUR LA BASE DE CAS-TESTS ASTER: MODAL GENERALISE COMPLEXE.
+# INTERCOMPARAISON DES METHODES DE SOUS-ESPACES (SORENSEN, QZ, PYTHON).
 
 # CAS_TEST__: ZZZZ208A
 #             VALIDATION FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES
@@ -179,14 +180,26 @@ MODEGD=MODE_ITER_SIMULT(MATR_A=KDIAG,
                                     STURM='NON',),);
 
 # calcul des modes propres generalises (MATR_A= matrice generalisee complexe)
-MODCGD=MODE_ITER_SIMULT(MATR_A=KDIAGC,INFO=2,
+# Avec Sorensen
+MODCGD=MODE_ITER_SIMULT(MATR_A=KDIAGC,
                        MATR_B=MDIAG,
                        CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=1000.,
+                                    FREQ=500.,
                                     NMAX_FREQ=5,),
                        VERI_MODE=_F(STOP_ERREUR='NON',
-                                    STURM='NON',),);
+                                    STURM='NON',),
+                                    );
 
+# Avec QZ
+MODCQZ=MODE_ITER_SIMULT(MATR_A=KDIAGC,
+                       MATR_B=MDIAG,
+                       METHODE='QZ',
+                       CALC_FREQ=_F(OPTION='CENTRE',
+                                    FREQ=500.,
+                                    NMAX_FREQ=5,),
+                       VERI_MODE=_F(STOP_ERREUR='NON',
+                                    STURM='NON',),
+                                    );
 # calcul de la reponse harmonique generalisee
 DYNDIAG=DYNA_LINE_HARM(MATR_MASS=MDIAG,
                     MATR_RIGI=KDIAGC,
@@ -290,6 +303,43 @@ TEST_RESU(RESU=(
                   ),
                   ),);
 
+TEST_RESU(RESU=(
+               _F(RESULTAT=MODCQZ,
+                  NUME_MODE=1,
+                  PARA='FREQ',
+                  VALE=frequencc[0],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODCQZ,
+                  NUME_MODE=2,
+                  PARA='FREQ',
+                  VALE=frequencc[1],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODCQZ,
+                  NUME_MODE=3,
+                  PARA='FREQ',
+                  VALE=frequencc[2],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODCQZ,
+                  NUME_MODE=4,
+                  PARA='FREQ',
+                  VALE=frequencc[3],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODCQZ,
+                  NUME_MODE=5,
+                  PARA='FREQ',
+                  VALE=frequencc[4],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+                  ),);
 TEST_RESU(OBJET=_F(NOM='DYNDIAG .001.000001.VALE',
                   S_R=VALDYND,
                   PRECISION=0.01,

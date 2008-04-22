@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,16 +37,6 @@ L'option < %(k1)s > ne correspond a aucune option permise par le mot-clef < %(k2
 Note DVP: erreur de cohérence fortran/catalogue.            
 """),
 
-12 : _("""
-L'algorithme de Newton a échoué lors de la projection du point de contact de coordonnées
-  (%(r1)s,%(r2)s,%(r3)s)
-La distance finale %(r4)s entre le point et la maille ne correspond pas au minimum trouvé au cours
-de l'algorithme (%(r5)s).
-On prend le point correspondant à la distance minimale.
-Cause probable: la maille est courbée et le point se projette juste sur le noeud d'une maille.
-La critère d'arret du Newton est alors inopérant. Voir la documentation pour plus de détails.
-
-"""),
 
 13 : _("""
 L'algorithme de Newton a échoué lors de la projection du point de contact de coordonnées

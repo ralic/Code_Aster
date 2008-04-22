@@ -1,5 +1,5 @@
 
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -282,10 +282,12 @@ CH2=AFFE_CHAR_MECA(MODELE=MODEL,
                    CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
                                GROUP_MA_MAIT='LFC2',
                                GROUP_MA_ESCL='LC1D',
+                               TOLE_APPA = 60.,
                                SANS_GROUP_NO=('C1','C2'),),
                             _F(APPARIEMENT='MAIT_ESCL',
                                GROUP_MA_MAIT='LEA2',
                                GROUP_MA_ESCL='LA1B',
+                               TOLE_APPA = 60.,
                                SANS_GROUP_NO=('A1','A2'),),),
                    INFO=2,);
 #           
@@ -331,8 +333,6 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                                    ITER_GLOB_MAXI=200),
                     INFO=1,);
 
-DEFI_FICHIER(UNITE=37)
-IMPR_RESU(FORMAT='CASTEM',UNITE=37,RESU=_F(MAILLAGE=MAILL1,RESULTAT=DEFOR,NOM_CHAM='DEPL'))
 
 TEST_RESU(RESU=(_F(RESULTAT=DEFOR,
                    NUME_ORDRE=10,

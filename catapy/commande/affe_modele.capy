@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE JMBHH01 J.M.PROIX
+# RESPONSABLE PELLET J.PELLET
 AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
             UIinfo={"groupes":("Modélisation",)},
                  fr="Définir le phénomène physique modélisé et le type d'éléments finis sur le maillage",reentrant='n',
@@ -61,185 +61,185 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                 b_mecanique     =BLOC( condition = "PHENOMENE=='MECANIQUE'",
                                         fr="modélisations mécaniques",
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
-                                                                      "2D_DIS_T",
-                                                                      "2D_DIS_TR",
-                                                                      "2D_FLUI_ABSO",
-                                                                      "2D_FLUI_PESA",
-                                                                      "2D_FLUI_STRU",
-                                                                      "2D_FLUIDE",
-                                                                      "3D",
-                                                                      "3D_ABSO",
-                                                                      "3D_FAISCEAU",
-                                                                      "3D_FLUI_ABSO",
-                                                                      "3D_FLUIDE",
-                                                                      "3D_INCO",
-                                                                      "3D_INCO_GD",
-                                                                      "3D_SI",
-                                                                      "3D_GRAD_EPSI",
-                                                                      "3D_GRAD_VARI",
-                                                                      "3D_XFEM_CONT",
-                                                                      "3D_JOINT",
-                                                                      "AXIS",
-                                                                      "AXIS_FLUI_STRU",
-                                                                      "AXIS_FLUIDE",
-                                                                      "AXIS_FOURIER",
-                                                                      "AXIS_INCO",
-                                                                      "AXIS_INCO_GD",
-                                                                      "AXIS_NS",
-                                                                      "AXIS_SI",
-                                                                      "AXIS_GRAD_VARI",
-                                                                      "AXIS_JOINT",
-                                                                      "AXIS_ELDI",
-                                                                      "BARRE",
-                                                                      "2D_BARRE",
-                                                                      "C_PLAN",
-                                                                      "C_PLAN_XFEM_CONT",
-                                                                      "C_PLAN_NS",
-                                                                      "C_PLAN_SI",
-                                                                      "C_PLAN_GRAD_EPSI",
-                                                                      "CABLE",
-                                                                      "CABLE_POULIE",
-                                                                      "COQUE_3D",
-                                                                      "COQUE_AXIS",
-                                                                      "COQUE_C_PLAN",
-                                                                      "COQUE_D_PLAN",
-                                                                      "D_PLAN",
-                                                                      "D_PLAN_XFEM_CONT",
-                                                                      "D_PLAN_GRAD_EPSI",
-                                                                      "D_PLAN_GRAD_VARI",
-                                                                      "D_PLAN_NS",
-                                                                      "PLAN_JOINT",
-                                                                      "PLAN_ELDI",
-                                                                      "D_PLAN_ABSO",
-                                                                      "D_PLAN_INCO",
-                                                                      "D_PLAN_INCO_GD",
-                                                                      "D_PLAN_SI",
-                                                                      "DIS_T",
-                                                                      "DIS_TR",
-                                                                      "DKT",
-                                                                      "DKTG",
-                                                                      "DST",
-                                                                      "FLUI_STRU",
-                                                                      "GRILLE_EXCENTRE",
-                                                                      "GRILLE_MEMBRANE",
-                                                                      "POU_C_T",
-                                                                      "POU_D_E",
-                                                                      "POU_D_EM",
-                                                                      "POU_D_T",
-                                                                      "POU_D_T_GD",
-                                                                      "POU_D_TG",
-                                                                      "POU_D_TGM",
-                                                                      "Q4G",
-                                                                      "TUYAU_3M",
-                                                                      "TUYAU_6M",
-                                                                      "SHB8",
-                                                                      "D_PLAN_HHM",
-                                                                      "D_PLAN_HM",
-                                                                      "D_PLAN_THH",
-                                                                      "D_PLAN_THHM",
-                                                                      "D_PLAN_THM",
-                                                                      "D_PLAN_HHMD",
-                                                                      "D_PLAN_HH2MD",
-                                                                      "D_PLAN_HMD",
-                                                                      "D_PLAN_THHD",
-                                                                      "D_PLAN_THH2D",
-                                                                      "D_PLAN_THVD",
-                                                                      "D_PLAN_THH2MD",
-                                                                      "D_PLAN_THHMD",
-                                                                      "D_PLAN_THMD",
-                                                                      "D_PLAN_HHMS",
-                                                                      "D_PLAN_HH2MS",
-                                                                      "D_PLAN_HMS",
-                                                                      "D_PLAN_THHS",
-                                                                      "D_PLAN_THH2S",
-                                                                      "D_PLAN_THVS",
-                                                                      "D_PLAN_THH2MS",
-                                                                      "D_PLAN_THHMS",
-                                                                      "D_PLAN_THMS",
-                                                                      "D_PLAN_HM_P",
-                                                                      "D_PLAN_HHD",
-                                                                      "D_PLAN_HHS",
-                                                                      "D_PLAN_HH2D",
-                                                                      "D_PLAN_HH2S",
-                                                                      "AXIS_THH",
-                                                                      "AXIS_THHM",
-                                                                      "AXIS_THM",
-                                                                      "AXIS_HHM",
-                                                                      "AXIS_HM",
-                                                                      "AXIS_HH2MD",
-                                                                      "AXIS_HHMD",
-                                                                      "AXIS_HMD",
-                                                                      "AXIS_THHD",
-                                                                      "AXIS_THH2D",
-                                                                      "AXIS_THVD",
-                                                                      "AXIS_THHMD",
-                                                                      "AXIS_THH2MD",
-                                                                      "AXIS_THMD",
-                                                                      "AXIS_HH2MS",
-                                                                      "AXIS_HHMS",
-                                                                      "AXIS_HMS",
-                                                                      "AXIS_THHS",
-                                                                      "AXIS_THH2S",
-                                                                      "AXIS_THVS",
-                                                                      "AXIS_THHMS",
-                                                                      "AXIS_THH2MS",
-                                                                      "AXIS_THMS",
-                                                                      "AXIS_HHD",
-                                                                      "AXIS_HHS",
-                                                                      "AXIS_HH2D",
-                                                                      "AXIS_HH2S",
-                                                                      "3D_HHM" ,
-                                                                      "3D_HM",
-                                                                      "3D_THH",
-                                                                      "3D_THV",
-                                                                      "3D_THHM",
-                                                                      "3D_THM",
-                                                                      "3D_HHMD",
-                                                                      "3D_HMD",
-                                                                      "3D_THHD",
-                                                                      "3D_THVD",
-                                                                      "3D_THHMD",
-                                                                      "3D_THMD",
-                                                                      "3D_HHMS",
-                                                                      "3D_HMS",
-                                                                      "3D_THHS",
-                                                                      "3D_THVS",
-                                                                      "3D_THHMS",
-                                                                      "3D_THMS",
-                                                                      "3D_THH2MD",
-                                                                      "3D_THH2MS",
-                                                                      "3D_HH2MD",
-                                                                      "3D_HH2MS",
-                                                                      "3D_THH2S",
-                                                                      "3D_THH2D",
-                                                                      "3D_HHD",
-                                                                      "3D_HHS",
-                                                                      "3D_HH2D",
-                                                                      "3D_HH2S",
-                                                                      "D_PLAN_2DG",
-                                                                      "D_PLAN_DIL",
+                                  "2D_DIS_T",        # RESP. : FLEJOU J.L.FLEJOU
+                                  "2D_DIS_TR",       # RESP. : FLEJOU J.L.FLEJOU
+                                  "2D_FLUI_ABSO",    # RESP. : DEVESA G.DEVESA
+                                  "2D_FLUI_PESA",    # RESP. : GREFFET N.GREFFET
+                                  "2D_FLUI_STRU",    # RESP. : GREFFET N.GREFFET
+                                  "2D_FLUIDE",       # RESP. : GREFFET N.GREFFET
+                                  "3D",              # RESP. : DESROCHES X.DESROCHES
+                                  "3D_ABSO",         # RESP. : DEVESA G.DEVESA
+                                  "3D_FAISCEAU",     # RESP. : VOLDOIRE F.VOLDOIRE
+                                  "3D_FLUI_ABSO",    # RESP. : DEVESA G.DEVESA
+                                  "3D_FLUIDE",       # RESP. : GREFFET N.GREFFET
+                                  "3D_INCO",         # RESP. : MICHEL S.MICHEL
+                                  "3D_INCO_GD",      # RESP. : MICHEL S.MICHEL
+                                  "3D_SI",           # RESP. : DESROCHES X.DESROCHES
+                                  "3D_GRAD_EPSI",    # RESP. : MICHEL S.MICHEL
+                                  "3D_GRAD_VARI",    # RESP. : MICHEL S.MICHEL
+                                  "3D_XFEM_CONT",    # RESP. : GENIAUT S.GENIAUT
+                                  "3D_JOINT",        # RESP. : LAVERNE J.LAVERNE
+                                  "AXIS",            # RESP. : LEFEBVRE J.P.LEFEBVRE
+                                  "AXIS_FLUI_STRU",  # RESP. : GREFFET N.GREFFET
+                                  "AXIS_FLUIDE",     # RESP. : GREFFET N.GREFFET
+                                  "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
+                                  "AXIS_INCO",       # RESP. : MICHEL S.MICHEL
+                                  "AXIS_INCO_GD",    # RESP. : MICHEL S.MICHEL
+                                  "AXIS_NS",         # RESP. : BADEL P.BADEL
+                                  "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
+                                  "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
+                                  "AXIS_JOINT",      # RESP. : LAVERNE J.LAVERNE
+                                  "AXIS_ELDI",       # RESP. : LAVERNE J.LAVERNE
+                                  "BARRE",           # RESP. : FLEJOU J.L.FLEJOU
+                                  "2D_BARRE",        # RESP. : FLEJOU J.L.FLEJOU
+                                  "C_PLAN",          # RESP. : LEFEBVRE J.P.LEFEBVRE
+                                  "C_PLAN_XFEM_CONT",# RESP. : GENIAUT S.GENIAUT
+                                  "C_PLAN_NS",       # RESP. : BADEL P.BADEL
+                                  "C_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
+                                  "C_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
+                                  "CABLE",           # RESP. : FLEJOU J.L.FLEJOU
+                                  "CABLE_POULIE",    # RESP. : None
+                                  "COQUE_3D",        # RESP. : DESROCHES X.DESROCHES
+                                  "COQUE_AXIS",      # RESP. : DESROCHES X.DESROCHES
+                                  "COQUE_C_PLAN",    # RESP. : DESROCHES X.DESROCHES
+                                  "COQUE_D_PLAN",    # RESP. : DESROCHES X.DESROCHES
+                                  "D_PLAN",          # RESP. : LEFEBVRE J.P.LEFEBVRE
+                                  "D_PLAN_XFEM_CONT",# RESP. : GENIAUT S.GENIAUT
+                                  "D_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_GRAD_VARI",# RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_NS",       # RESP. : BADEL P.BADEL
+                                  "PLAN_JOINT",      # RESP. : LAVERNE J.LAVERNE
+                                  "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
+                                  "D_PLAN_ABSO",     # RESP. : DEVESA G.DEVESA
+                                  "D_PLAN_INCO",     # RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_INCO_GD",  # RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
+                                  "DIS_T",           # RESP. : FLEJOU J.L.FLEJOU
+                                  "DIS_TR",          # RESP. : FLEJOU J.L.FLEJOU
+                                  "DKT",             # RESP. : DESROCHES X.DESROCHES
+                                  "DKTG",            # RESP. : MARKOVIC D.MARKOVIC
+                                  "DST",             # RESP. : DESROCHES X.DESROCHES
+                                  "FLUI_STRU",       # RESP. : GREFFET N.GREFFET
+                                  "GRILLE_EXCENTRE", # RESP. : ROSPARS C.ROSPARS
+                                  "GRILLE_MEMBRANE", # RESP. : ROSPARS C.ROSPARS
+                                  "POU_C_T",         # RESP. : FLEJOU J.L.FLEJOU
+                                  "POU_D_E",         # RESP. : FLEJOU J.L.FLEJOU
+                                  "POU_D_EM",        # RESP. : FLEJOU J.L.FLEJOU
+                                  "POU_D_T",         # RESP. : FLEJOU J.L.FLEJOU
+                                  "POU_D_T_GD",      # RESP. : FLEJOU J.L.FLEJOU
+                                  "POU_D_TG",        # RESP. : FLEJOU J.L.FLEJOU
+                                  "POU_D_TGM",       # RESP. : FLEJOU J.L.FLEJOU
+                                  "Q4G",             # RESP. : DESROCHES X.DESROCHES
+                                  "TUYAU_3M",        # RESP. : PROIX J.M.PROIX
+                                  "TUYAU_6M",        # RESP. : PROIX J.M.PROIX
+                                  "SHB8",            # RESP. : DESROCHES X.DESROCHES
+                                  "D_PLAN_HHM",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HM",       # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THH",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THHM",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THM",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HHMD",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HH2MD",    # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HMD",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THHD",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THH2D",    # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THVD",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THH2MD",   # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THHMD",    # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THMD",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HHMS",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HH2MS",    # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HMS",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THHS",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THH2S",    # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THVS",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THH2MS",   # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THHMS",    # RESP. : GRANET S.GRANET
+                                  "D_PLAN_THMS",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HM_P",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HHD",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HHS",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HH2D",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HH2S",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_2DG",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_DIL",      # RESP. : GRANET S.GRANET
+                                  "AXIS_THH",        # RESP. : GRANET S.GRANET
+                                  "AXIS_THHM",       # RESP. : GRANET S.GRANET
+                                  "AXIS_THM",        # RESP. : GRANET S.GRANET
+                                  "AXIS_HHM",        # RESP. : GRANET S.GRANET
+                                  "AXIS_HM",         # RESP. : GRANET S.GRANET
+                                  "AXIS_HH2MD",      # RESP. : GRANET S.GRANET
+                                  "AXIS_HHMD",       # RESP. : GRANET S.GRANET
+                                  "AXIS_HMD",        # RESP. : GRANET S.GRANET
+                                  "AXIS_THHD",       # RESP. : GRANET S.GRANET
+                                  "AXIS_THH2D",      # RESP. : GRANET S.GRANET
+                                  "AXIS_THVD",       # RESP. : GRANET S.GRANET
+                                  "AXIS_THHMD",      # RESP. : GRANET S.GRANET
+                                  "AXIS_THH2MD",     # RESP. : GRANET S.GRANET
+                                  "AXIS_THMD",       # RESP. : GRANET S.GRANET
+                                  "AXIS_HH2MS",      # RESP. : GRANET S.GRANET
+                                  "AXIS_HHMS",       # RESP. : GRANET S.GRANET
+                                  "AXIS_HMS",        # RESP. : GRANET S.GRANET
+                                  "AXIS_THHS",       # RESP. : GRANET S.GRANET
+                                  "AXIS_THH2S",      # RESP. : GRANET S.GRANET
+                                  "AXIS_THVS",       # RESP. : GRANET S.GRANET
+                                  "AXIS_THHMS",      # RESP. : GRANET S.GRANET
+                                  "AXIS_THH2MS",     # RESP. : GRANET S.GRANET
+                                  "AXIS_THMS",       # RESP. : GRANET S.GRANET
+                                  "AXIS_HHD",        # RESP. : GRANET S.GRANET
+                                  "AXIS_HHS",        # RESP. : GRANET S.GRANET
+                                  "AXIS_HH2D",       # RESP. : GRANET S.GRANET
+                                  "AXIS_HH2S",       # RESP. : GRANET S.GRANET
+                                  "3D_HHM" ,         # RESP. : GRANET S.GRANET
+                                  "3D_HM",           # RESP. : GRANET S.GRANET
+                                  "3D_THH",          # RESP. : GRANET S.GRANET
+                                  "3D_THV",          # RESP. : GRANET S.GRANET
+                                  "3D_THHM",         # RESP. : GRANET S.GRANET
+                                  "3D_THM",          # RESP. : GRANET S.GRANET
+                                  "3D_HHMD",         # RESP. : GRANET S.GRANET
+                                  "3D_HMD",          # RESP. : GRANET S.GRANET
+                                  "3D_THHD",         # RESP. : GRANET S.GRANET
+                                  "3D_THVD",         # RESP. : GRANET S.GRANET
+                                  "3D_THHMD",        # RESP. : GRANET S.GRANET
+                                  "3D_THMD",         # RESP. : GRANET S.GRANET
+                                  "3D_HHMS",         # RESP. : GRANET S.GRANET
+                                  "3D_HMS",          # RESP. : GRANET S.GRANET
+                                  "3D_THHS",         # RESP. : GRANET S.GRANET
+                                  "3D_THVS",         # RESP. : GRANET S.GRANET
+                                  "3D_THHMS",        # RESP. : GRANET S.GRANET
+                                  "3D_THMS",         # RESP. : GRANET S.GRANET
+                                  "3D_THH2MD",       # RESP. : GRANET S.GRANET
+                                  "3D_THH2MS",       # RESP. : GRANET S.GRANET
+                                  "3D_HH2MD",        # RESP. : GRANET S.GRANET
+                                  "3D_HH2MS",        # RESP. : GRANET S.GRANET
+                                  "3D_THH2S",        # RESP. : GRANET S.GRANET
+                                  "3D_THH2D",        # RESP. : GRANET S.GRANET
+                                  "3D_HHD",          # RESP. : GRANET S.GRANET
+                                  "3D_HHS",          # RESP. : GRANET S.GRANET
+                                  "3D_HH2D",         # RESP. : GRANET S.GRANET
+                                  "3D_HH2S",         # RESP. : GRANET S.GRANET
                                                                      )  )  ),
 
                 b_thermique     =BLOC( condition = "PHENOMENE=='THERMIQUE'",
                                         fr="modélisations thermiques",
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
-                                                                      "3D",
-                                                                      "3D_DIAG",
-                                                                      "AXIS",
-                                                                      "AXIS_DIAG",
-                                                                      "AXIS_FOURIER",
-                                                                      "COQUE",
-                                                                      "COQUE_AXIS",
-                                                                      "COQUE_PLAN",
-                                                                      "PLAN",
-                                                                      "PLAN_DIAG",
+                                  "3D",              # RESP. : DURAND C.DURAND
+                                  "3D_DIAG",         # RESP. : DURAND C.DURAND
+                                  "AXIS",            # RESP. : DURAND C.DURAND
+                                  "AXIS_DIAG",       # RESP. : DURAND C.DURAND
+                                  "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
+                                  "COQUE",           # RESP. : DESROCHES X.DESROCHES
+                                  "COQUE_AXIS",      # RESP. : DESROCHES X.DESROCHES
+                                  "COQUE_PLAN",      # RESP. : DESROCHES X.DESROCHES
+                                  "PLAN",            # RESP. : DURAND C.DURAND
+                                  "PLAN_DIAG",       # RESP. : DURAND C.DURAND
                                                                       ),),),
 
                 b_acoustique    =BLOC( condition = "PHENOMENE=='ACOUSTIQUE'",
                                         fr="modélisations acoustiques",
                      MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
-                                                                       "3D",
-                                                                       "PLAN"
+                                  "3D",              # RESP. : None
+                                  "PLAN"             # RESP. : None
                                                                        ), ),),
 
          ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE G8BHHXD X.DESROCHES
+# RESPONSABLE DESROCHES X.DESROCHES
 POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
                fr="Calcul de quantités globales (masse, inerties, énergie, ...) sur tout ou partie du modèle",

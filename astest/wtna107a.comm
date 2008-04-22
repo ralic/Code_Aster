@@ -1,0 +1,212 @@
+# MODIF  DATE 22/04/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# TITRE  - COUPLE TH ANALYTIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+DEBUT(CODE=_F(NOM='WTNA107A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+INST1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=5.E5,
+                                    NOMBRE=10,),),);
+
+EVOLFLU=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.0,0.0,10000.0,1.0),
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',);
+
+MAIL=LIRE_MAILLAGE( );
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='LDROIT',),
+                               _F(GROUP_MA='LGAUCHE',),
+                               _F(GROUP_MA='LBAS',),
+                               _F(GROUP_MA='LHAUT',),
+                               _F(GROUP_MA='BG',),),);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS_THM',),);
+
+BIDON=DEFI_CONSTANTE(VALE=0.0,);
+
+UN=DEFI_CONSTANTE(VALE=1.0,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,);
+
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+
+LAMB=DEFI_CONSTANTE(VALE=1.8,);
+
+KINTBG=DEFI_CONSTANTE(VALE=9.9999999999999998E-20,);
+
+MATERBG=DEFI_MATERIAU(ELAS=_F(E=2.166000000E9,
+                              NU=0.29999999999999999,
+                              RHO=2410.0,
+                              ALPHA=1.0000000000000001E-05,),
+                      COMP_THM = 'LIQU_SATU',
+                      THM_LIQU=_F(RHO=1000.0,
+                                  UN_SUR_K=5.0000000000000003E-10,
+                                  ALPHA=1.E-4,
+                                  CP=4180.0,
+                                  VISC=VISCOLIQ,
+                                  D_VISC_TEMP=DVISCOL,),
+                      THM_GAZ=_F(MASS_MOL=0.02896,
+                                 CP=1000.0,
+                                 VISC=BIDON,
+                                 D_VISC_TEMP=BIDON,),
+                      THM_VAPE_GAZ=_F(MASS_MOL=0.017999999999999999,
+                                      CP=1870.0,
+                                      VISC=BIDON,
+                                      D_VISC_TEMP=BIDON,),
+                      THM_INIT=_F(TEMP=293.0,
+                                  PRE1=0.0,
+                                  PRE2=1.E5,
+                                  PORO=0.14000000000000001,
+                                  PRES_VAPE=2320.0,
+                                  DEGR_SATU=1.0,),
+                      THM_DIFFU=_F(R_GAZ=8.3149999999999995,
+                                   RHO=2410.0,
+                                   CP=565.0,
+                                   BIOT_COEF=1.0,
+                                   SATU_PRES=UN,
+                                   D_SATU_PRES=ZERO,
+                                   PESA_X=0.0,
+                                   PESA_Y=0.0,
+                                   PESA_Z=0.0,
+                                   PERM_IN=KINTBG,
+                                   PERM_LIQU=UN,
+                                   D_PERM_LIQU_SATU=ZERO,
+                                   PERM_GAZ=BIDON,
+                                   D_PERM_SATU_GAZ=BIDON,
+                                   D_PERM_PRES_GAZ=BIDON,
+                                   LAMB_T=LAMB,
+                                   ),);
+
+CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F(GROUP_MA='BG',
+                             MATER=MATERBG,),);
+
+CALBORD=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=(_F(GROUP_NO='LGAUCHE',
+                                    DX=0.0,),
+                                 _F(GROUP_NO='LDROIT',
+                                    DX=0.0,),),);
+
+CALBAS=AFFE_CHAR_MECA(MODELE=MODELE,
+                      DDL_IMPO=_F(GROUP_NO='LBAS',
+                                  DY=0.0,),);
+
+CALHAUT=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='LHAUT',
+                                   DY=0.0,),);
+
+FLUXT=AFFE_CHAR_MECA(MODELE=MODELE,
+                     FLUX_THM_REP=_F(GROUP_MA='LHAUT',
+                                     FLUN=100.0,
+                                     FLUN_HYDR1=0.0,),);
+
+U0=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT0,
+                 EXCIT=(_F(CHARGE=CALBAS,),
+                        _F(CHARGE=CALHAUT,),
+                        _F(CHARGE=CALBORD,),
+                        _F(CHARGE=FLUXT,),),
+                 COMP_INCR=_F(RELATION='KIT_THM',PARM_THETA=0.56999999999999995,
+                              RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
+                 INCREMENT=_F(LIST_INST=INST1,),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                 ARCHIVAGE=_F(PAS_ARCH=1,),);
+
+U0=CALC_ELEM(reuse =U0,
+             TOUT_ORDRE='OUI',
+             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+             RESULTAT=U0,);
+
+TEST_RESU(RESU=(_F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRE1',
+                   NOEUD='N22', VALE=3.00191E+06,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                _F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRE1',
+                   NOEUD='N17', VALE=3.57179E+06,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                _F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRE1',
+                   NOEUD='N12', VALE=4.10153E+06,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                _F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRE1',
+                   NOEUD='N7', VALE=4.48384E+06,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                _F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRE1',
+                   NOEUD='N2', VALE=4.62229E+06,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                   ),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='TEMP',
+                   NOEUD='N22', VALE=1.26972E+01,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                _F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='TEMP',
+                   NOEUD='N17', VALE=1.79869E+01,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                _F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='TEMP',
+                   NOEUD='N12', VALE=2.47689E+01,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                _F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='TEMP',
+                   NOEUD='N7', VALE=3.32198E+01,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                _F(RESULTAT=U0,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='TEMP',
+                   NOEUD='N2', VALE=4.34240E+01,
+                   REFERENCE='NON_REGRESSION',VERSION='9.2.18'),
+                   ),);
+
+
+FIN();

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE thomasso D.THOMASSON
+# RESPONSABLE THOMASSON D.THOMASSON
 #
 from Macro.impr_oar_ops import impr_oar_ops
 IMPR_OAR =MACRO(nom="IMPR_OAR",op= impr_oar_ops, sd_prod=None,

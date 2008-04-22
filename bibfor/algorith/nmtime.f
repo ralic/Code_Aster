@@ -1,7 +1,7 @@
       SUBROUTINE NMTIME(PHASEZ,TIMEZ ,SDTIME,VALL  ,VALR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/01/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,6 +43,7 @@ C                'DEBUT' LANCEMENT DU TIMER
 C                'FIN'   ARRET DU TIMER
 C                'MES'   CALCUL DES CRITERES D'ARRET SUR TEMPS
 C                'VAL'   RECUPERE VALEUR DU TEMPS
+C                'LONG'  TEMPS PASSE DANS DERNIERE PAS/NEWTON/ARCHIVE
 C IN  TIMER  : NOM DU TIMER
 C                'PAS'   TIMER POUR UN PAS DE TEMPS
 C                'ITE'   TIMER POUR UNE ITERATION DE NEWTON
@@ -103,7 +104,7 @@ C
         CALL WKVECT(TIMPAS,'V V R',4,JTPAS)
         CALL WKVECT(TIMITE,'V V R',4,JTITE)
         CALL WKVECT(TIMARC,'V V R',4,JTARC)
-        CALL WKVECT(TIMINF,'V V R',4,JTINF)
+        CALL WKVECT(TIMINF,'V V R',6,JTINF)
         GOTO 999
       ELSE
         CALL JEVEUO(TIMPAS,'E',JTPAS)
@@ -114,13 +115,14 @@ C
 C            
       IF (PHASE.EQ.'INIT') THEN
         CALL UTTCPU(ITPAS,'INIT',4,ZR(JTPAS))
+        ZR(JTINF+1-1) = ZR(JTPAS+3-1)
         CALL UTTCPU(ITITE,'INIT',4,ZR(JTITE))
+        ZR(JTINF+2-1) = ZR(JTITE+3-1)
         CALL UTTCPU(ITARC,'INIT',4,ZR(JTARC))  
-            
+        ZR(JTINF+3-1) = ZR(JTARC+3-1)    
       ELSEIF (PHASE.EQ.'DEBUT') THEN
         IF (TIMER.EQ.'PAS') THEN
-          CALL UTTCPU(ITPAS,'DEBUT',4,ZR(JTPAS)) 
-          ZR(JTINF+1-1) = ZR(JTPAS+3-1)
+          CALL UTTCPU(ITPAS,'DEBUT',4,ZR(JTPAS))      
         ELSEIF (TIMER.EQ.'ITE') THEN
           CALL UTTCPU(ITITE,'DEBUT',4,ZR(JTITE))
         ELSEIF (TIMER.EQ.'ARC') THEN
@@ -133,10 +135,18 @@ C
         IF (TIMER.EQ.'PAS') THEN
           CALL UTTCPU(ITPAS,'FIN',4,ZR(JTPAS))
           VALR = ZR(JTPAS+3-1) - ZR(JTINF+1-1)
+          ZR(JTINF+4-1) = VALR
+          ZR(JTINF+1-1) = ZR(JTPAS+3-1)
         ELSEIF (TIMER.EQ.'ITE') THEN
           CALL UTTCPU(ITITE,'FIN',4,ZR(JTITE))
+          VALR = ZR(JTITE+3-1) - ZR(JTINF+2-1)
+          ZR(JTINF+5-1) = VALR
+          ZR(JTINF+2-1) = ZR(JTITE+3-1)
         ELSEIF (TIMER.EQ.'ARC') THEN
           CALL UTTCPU(ITARC,'FIN',4,ZR(JTARC))
+          VALR = ZR(JTARC+3-1) - ZR(JTINF+3-1)
+          ZR(JTINF+6-1) = VALR
+          ZR(JTINF+3-1) = ZR(JTARC+3-1)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF 
@@ -163,11 +173,23 @@ C
           VALR = ZR(JTITE+4-1)
         ELSEIF (TIMER.EQ.'PAS') THEN
           VALR = ZR(JTPAS+4-1)  
+        ELSEIF (TIMER.EQ.'ARC') THEN
+          VALR = ZR(JTARC+4-1)     
         ELSEIF (TIMER.EQ.'RES') THEN
           VALR = ZR(JTITE+1-1)          
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF                
+        ENDIF 
+      ELSEIF (PHASE.EQ.'LONG') THEN
+        IF (TIMER.EQ.'ITE') THEN
+          VALR = ZR(JTINF+5-1)
+        ELSEIF (TIMER.EQ.'PAS') THEN
+          VALR = ZR(JTINF+4-1)
+        ELSEIF (TIMER.EQ.'ARC') THEN
+          VALR = ZR(JTINF+6-1)           
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF                        
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

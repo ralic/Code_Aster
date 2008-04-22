@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE PELLET J.PELLET
 
 RESOUDRE=OPER(nom="RESOUDRE",op=15,sd_prod=cham_no_sdaster,reentrant='f',
                fr="Résolution par méthode directe un système d'équations linéaires préalablement factorisé par FACT_LDLT"+

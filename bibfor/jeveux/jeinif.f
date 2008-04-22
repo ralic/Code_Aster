@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -325,9 +325,9 @@ C
             LONO(JLONO(IC)+I) = NRHCOD(IC)
             LSO(I)            = NRHCOD(IC) * LTYP(JLTYP(IC)+I)
           ELSE IF ( I.EQ.14 ) THEN
-            LONG(JLONG(IC)+I) = 2*NBLMAX(IC)
-            LONO(JLONO(IC)+I) = 2*NBLMAX(IC)
-            LSO(I)            = 2*NBLMAX(IC) * LTYP(JLTYP(IC)+I)
+            LONG(JLONG(IC)+I) = 3*NBLMAX(IC)
+            LONO(JLONO(IC)+I) = 3*NBLMAX(IC)
+            LSO(I)            = 3*NBLMAX(IC) * LTYP(JLTYP(IC)+I)
           ELSE IF ( I.EQ.15 ) THEN
             LONG(JLONG(IC)+I) = NBLMAX(IC)
             LONO(JLONO(IC)+I) = NBLMAX(IC)

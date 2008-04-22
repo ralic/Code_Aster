@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE PELLET J.PELLET
 IMPR_MATRICE=PROC(nom="IMPR_MATRICE",op= 159,
                   fr="Imprimer sur un fichier au format IDEAS des matrices élémentaires et assemblées",
                   UIinfo={"groupes":("Impression",)},

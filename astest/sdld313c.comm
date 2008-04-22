@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,9 +17,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#       ANALYSE MODALE
+#       ANALYSE MODALE, PROBLEME MODAL GENERALISE A MATRICE K COMPLEXE
+#
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
+# OBJECTIF POUR LA BASE DE CAS-TESTS ASTER: MODAL GENERALISE COMPLEXE.
+# INTERCOMPARAISON DES METHODES DE SOUS-ESPACES (SORENSEN ET QZ).
 #CAS_TEST__:SDLD313C
 #
 
@@ -88,26 +91,24 @@ MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=INCONNUS )
 # CALCUL DES FREQUENCES PROPRES
 #-------------------------------------------------
 #
-
-MODES=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
+# AVEC SORENSEN
+MODE_SO=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
                        MATR_B=MATRMASS,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=10.,
-                                    NMAX_FREQ=2,
-                                    APPROCHE='COMPLEXE',),
-                       VERI_MODE=_F(STOP_ERREUR='NON',),
+                                    NMAX_FREQ=2,),
                        INFO=1,);
 
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
+TEST_RESU(RESU=(_F(RESULTAT=MODE_SO,
                    NUME_ORDRE=1,
                    PARA='FREQ',
                    VALE=6.4537,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODES,
+                _F(RESULTAT=MODE_SO,
                    NUME_ORDRE=2,
                    PARA='FREQ',
                    VALE=15.5806,
@@ -116,14 +117,56 @@ TEST_RESU(RESU=(_F(RESULTAT=MODES,
                    REFERENCE='ANALYTIQUE',),
                    ),);
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
+TEST_RESU(RESU=(_F(RESULTAT=MODE_SO,
                    NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
                    VALE=0.05,
                    CRITERE='RELATIF',
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODES,
+                _F(RESULTAT=MODE_SO,
+                   NUME_ORDRE=2,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.05,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                   ),);
+# AVEC QZ
+MODE_QZ=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
+                       MATR_B=MATRMASS,
+                       METHODE='QZ',
+                       TYPE_QZ='QZ_EQUI',
+                       CALC_FREQ=_F(OPTION='CENTRE',
+                                    FREQ=10.,
+                                    NMAX_FREQ=2,),
+                       INFO=1,);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=6.4537,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   VALE=15.5806,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                   ),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
+                   NUME_ORDRE=1,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.05,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ,
                    NUME_ORDRE=2,
                    PARA='AMOR_REDUIT',
                    VALE=0.05,

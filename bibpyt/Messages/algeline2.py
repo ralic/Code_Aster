@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF algeline2 Messages  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -311,7 +311,8 @@ cata_msg = {
 """),
 
 69 : _("""
- pour le probleme generalise ou quadratique complexe on utilise seulement l'algorithme de sorensen
+ pour le probleme generalise ou quadratique complexe on utilise seulement
+ METHODE='SORENSEN' ou 'QZ'
 """),
 
 70 : _("""
@@ -327,7 +328,10 @@ cata_msg = {
 """),
 
 73 : _("""
- pas de verification par STURM pour le problème quadratique
+ !! ATTENTION !!, POUR L''INSTANT, PAS DE POST-VERIFICATION DE TYPE STURM
+ (COMPTAGE DU BON NOMBRE DES VALEURS PROPRES CALCULEES) LORSQU'ON EST
+ DANS LE PLAN COMPLEXE:
+            MODAL GENERALISE AVEC K COMPLEXE OU MODAL QUADRATIQUE.
 """),
 
 74 : _("""

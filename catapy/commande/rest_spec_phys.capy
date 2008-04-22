@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+# RESPONSABLE ADOBES A.ADOBES
 REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=table_fonction,
                     reentrant='n',
             fr="Calculer la réponse d'une structure dans la base physique",

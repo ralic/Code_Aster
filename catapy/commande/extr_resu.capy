@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/09/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE LEFEBVRE J.P.LEFEBVRE
+
 def extr_resu_prod(RESULTAT,**args):
   if AsType(RESULTAT) == evol_elas    : return evol_elas
   if AsType(RESULTAT) == evol_noli    : return evol_noli

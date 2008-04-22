@@ -1,4 +1,4 @@
-# MODIF  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,8 +85,8 @@ SOL0=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                             ANGDIL   = 33.,
                             PCO      = -1.E6,
                             PREF     = -1.E6,
-                            AMON     = 0.0001,
-                            ACYC     = 0.008,
+                            AMON     = 0.008,
+                            ACYC     = 0.0001,
                             CMON     = 0.2,
                             CCYC     = 0.1,
                             RD_ELA   = 0.005,
@@ -107,8 +107,8 @@ SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                             ANGDIL   = 33.,
                             PCO      = -1.E6,
                             PREF     = -1.E6,
-                            AMON     = 0.0001,
-                            ACYC     = 0.008,
+                            AMON     = 0.008,
+                            ACYC     = 0.0001,
                             CMON     = 0.2,
                             CCYC     = 0.1,
                             RD_ELA   = 0.005,

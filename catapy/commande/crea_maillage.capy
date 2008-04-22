@@ -1,5 +1,4 @@
-#& MODIF COMMANDE  DATE 03/03/2008   AUTEUR FLEJOU J-L.FLEJOU 
-# RESPONSABLE MCOURTOI M.COURTOIS
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE PELLET J.PELLET
 CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
             reentrant='n',fr="Crée un maillage à partir d'un maillage existant",
             UIinfo={"groupes":("Maillage",)},

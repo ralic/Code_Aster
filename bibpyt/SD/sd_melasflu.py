@@ -1,4 +1,4 @@
-#@ MODIF sd_melasflu SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_melasflu SD  DATE 21/04/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,6 +44,7 @@ class sd_melasflu(AsBase):
     # si FAISCEAU_TRANS + couplage fluide-structure + BASE_MODALE/AMOR_REDUIT_CONN :
     VCN  = Facultatif(AsVR())
     VEN  = Facultatif(AsVR())
+    RAP  = Facultatif(AsVR())
 
     sd_table   = sd_table(SDNom(nomj=''))
     sd_l_table = Facultatif(sd_l_table(SDNom(nomj=''))) # Si FAISCEAU_AXIAL
@@ -111,6 +112,7 @@ class sd_melasflu(AsBase):
         if self.VCN.exists : assert self.VEN.exists
         if self.VEN.exists : assert self.VCN.exists
         if self.VEN.exists : assert itypfl == 1 and couplage == 1
+        if self.RAP.exists : assert (self.VEN.exists and self.VCN.exists)
 
         # vérification de l'objet .VCN :
         #--------------------------------
@@ -120,13 +122,22 @@ class sd_melasflu(AsBase):
             nbval=0
             for i in range(nbzone) :
                 nbval=nbval+fsvi[2+nbzone+i]
-            assert self.VCN.lonmax == nbmode*nbval
+            assert self.VCN.lonmax == nbmode*nbval*2
 
         # vérification de l'objet .VEN :
         #--------------------------------
         if self.VEN.exists :
-            assert self.VEN.lonmax == nbmode
+            assert self.VEN.lonmax == nbmode*2
 
+        # vérification de l'objet .RAP :
+        #--------------------------------
+        if self.RAP.exists :
+            fsvi=typfl.FSVI.get()
+            nbzone=fsvi[1]
+            nbval=0
+            for i in range(nbzone) :
+                nbval=nbval+fsvi[2+nbzone+i]
+            assert self.RAP.lonmax == nbmode*nbval*2
 
         # vérification de la SD table contenant les cham_no :
         #----------------------------------------------------

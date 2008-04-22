@@ -2,7 +2,7 @@
      &                  IZONE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,7 +75,7 @@ C
       CHARACTER*16 LISSA,VALK(2)
       CHARACTER*16 APPA,NORM,APTY,TYPNOR
       REAL*8       DIR(3),NOOR,R8PREM
-      REAL*8       DIST1,DIST2,LAMB
+      REAL*8       DIST1,DIST2,TOLJ,TOLA
       CHARACTER*8  JEUF1,JEUF2
 C
 C ----------------------------------------------------------------------
@@ -86,7 +86,8 @@ C --- INITIALISATIONS
 C
       DIST1  = 0.D0
       DIST2  = 0.D0
-      LAMB   = 0.D0     
+      TOLJ   = 0.D0  
+      TOLA   = 0.D0   
       JEUF1  = ' '
       JEUF2  = ' ' 
 C
@@ -196,14 +197,29 @@ C
 C --- PARAMETRE APPARIEMENT: TOLE_PROJ_EXT
 C --- TOLE_PROJ_EXT <0: LA PROJECTION HORS DE LA MAILLE EST INTERDITE
 C --- TOLE_PROJ_EXT >0: LA PROJECTION HORS DE LA MAILLE EST AUTORISEE
-C ---                    MAIS LIMITEE PAR LAMB
+C ---                    MAIS LIMITEE PAR TOLJ
 C
-      CALL GETVR8(MOTFAC,'TOLE_PROJ_EXT',IZONE,1,1,LAMB,NOC)
-      IF (LAMB .LT. 0.D0) THEN
+      call jxveri(' ',' ')
+      CALL GETVR8(MOTFAC,'TOLE_PROJ_EXT',IZONE,1,1,TOLJ,NOC)
+      IF (TOLJ .LT. 0.D0) THEN
         ZR(JTOLE+ZTOLE*(IZONE-1)) = -1.D0
       ELSE
-        ZR(JTOLE+ZTOLE*(IZONE-1)) = LAMB
-      END IF                         
+        ZR(JTOLE+ZTOLE*(IZONE-1)) = TOLJ
+      END IF
+      call jxveri(' ',' ')   
+C
+C --- PARAMETRE APPARIEMENT: TOLE_APPA
+C --- TOLE_APPA <0: ON APPARIE QUELQUE SOIT LA DISTANCE ESCLAVE/MAITRE
+C --- TOLE_APPA >0: ON APPARIE SI DISTANCE ESCLAVE/MAITRE<TOLE
+C
+      CALL GETVR8(MOTFAC,'TOLE_APPA',IZONE,1,1,TOLA,NOC)
+      write(6,*) 'ZTOLE: ',ZTOLE
+      IF (TOLA .LT. 0.D0) THEN
+        ZR(JTOLE+ZTOLE*(IZONE-1)+6) = -1.D0
+      ELSE
+        ZR(JTOLE+ZTOLE*(IZONE-1)+6) = TOLA
+      END IF 
+             call jxveri(' ',' ')                         
 C
 C --- TYPE DE NORMALE
 C

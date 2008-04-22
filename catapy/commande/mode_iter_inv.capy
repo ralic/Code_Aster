@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+# RESPONSABLE BOYERE E.BOYERE
 def mode_iter_inv_prod(MATR_A,MATR_C,TYPE_RESU,**args ):
   if TYPE_RESU == "MODE_FLAMB" : return mode_flamb
   if AsType(MATR_C) == matr_asse_depl_r : return mode_meca_c

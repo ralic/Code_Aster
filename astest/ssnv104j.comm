@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 
 #  TITRE : CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,6 +135,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='GCP',
                                RESI_ABSO=1.E-8,
+                               TOLE_PROJ_EXT = 0.1,
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
                                PRE_COND='DIRICHLET',
@@ -209,7 +210,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                        NOM_CMP='SIYY',
                        VALE=-2798.3000000000002,
                        CRITERE='RELATIF',
-                       PRECISION=0.12,
+                       PRECISION=0.155,
                        REFERENCE='ANALYTIQUE',),);
 #_____________________________________________________________________
 #

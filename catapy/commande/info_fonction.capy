@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 from Macro.info_fonction_ops import info_fonction_ops
 def info_fonction_prod(self,ECART_TYPE,RMS,NOCI_SEISME,MAX,NORME, **args):
    if (RMS         != None): return table_sdaster

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMUN  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ def C_CONTACT_F() : return FACT(statut='f',max='**',
              CARA_ELEM       =SIMP(statut='o',typ=(cara_elem) ),
            ),
 
-
+           TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
            TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),  
                 
                       

@@ -1,7 +1,7 @@
       SUBROUTINE MGAUSS(CARA,A,B,DIM,NORDRE,NB,DET,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C                              IRET = 0 : OK
 C                              IRET > 0 : PB
 
 C ----------------------------------------------------------------------
-      INTEGER N,NRHS,LDB,LDX,IFM,NIV,I,J,LDA,LDAF
+      INTEGER N,NRHS,LDB,LDX,IFM,NIV,I,J,LDA,LDAF,INDI
       INTEGER*4 IPIV4(DIM),INF4,IWORK4(DIM)
       INTEGER VALI(2)
       REAL*8 AF(DIM,DIM),R(DIM),C(DIM),X(DIM,NB),RCOND
@@ -142,6 +142,11 @@ C       -- RECOPIE DE X DANS B :
 
         IF (LDET) THEN
           DET = 1.D0
+          DO 25 I = 1,N-1
+            INDI = I+1
+            DO 25 J = INDI, N  
+              IF(IPIV4(I).GE.IPIV4(J)) DET = DET*(-1.D0)              
+   25     CONTINUE
           DO 30 I = 1,N
             DET = DET*AF(I,I)
    30     CONTINUE
@@ -179,6 +184,11 @@ C       ---   RESOLUTION
         IRET = INF4
         IF (LDET) THEN
           DET = 1.D0
+          DO 75 I = 1,N-1
+            INDI = I+1
+            DO 75 J = INDI, N  
+              IF(IPIV4(I).GE.IPIV4(J)) DET = DET*(-1.D0)
+   75     CONTINUE
           DO 80 I = 1,N
             DET = DET*AF(I,I)
    80     CONTINUE

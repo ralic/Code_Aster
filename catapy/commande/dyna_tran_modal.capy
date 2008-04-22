@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+# RESPONSABLE BOYERE E.BOYERE
 DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                      fr="Calcul de la réponse dynamique transitoire d'un système amorti ou non en coordonées généralisées"
                         +" par superposition modale ou par sous structuration",

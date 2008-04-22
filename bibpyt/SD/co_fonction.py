@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF co_fonction SD  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@ import Accas
 from SD import *
 from sd_fonction import sd_fonction_aster
 
+import os
 import Numeric
 from math import pi
 
@@ -74,7 +75,8 @@ class fonction_class(ASSD):
       from Utilitai.Graph import Graph
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
-            Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU']])
+            Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU']],
+            Leg=os.linesep.join(self.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
 
 # -----------------------------------------------------------------------------
@@ -224,7 +226,8 @@ class fonction_c(fonction_class, sd_fonction_aster):
       para = self.Parametres()
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
-       Lab=[para['NOM_PARA'], '%s_R' % para['NOM_RESU'], '%s_I' % para['NOM_RESU']])
+         Lab=[para['NOM_PARA'], '%s_R' % para['NOM_RESU'], '%s_I' % para['NOM_RESU']],
+         Leg=os.linesep.join(self.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
    def __call__(self,val):
       ### Pour EFICAS : substitution de l'instance de classe
@@ -324,5 +327,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       lv=self.Valeurs()[1]
       dp=self.Parametres()[0]
       for lx,ly in lv:
-         gr.AjoutCourbe(Val=[lx,ly], Lab=[dp['NOM_PARA_FONC'],dp['NOM_RESU']])
+         gr.AjoutCourbe(Val=[lx,ly], Lab=[dp['NOM_PARA_FONC'],dp['NOM_RESU']],
+            Leg=os.linesep.join(self.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
+

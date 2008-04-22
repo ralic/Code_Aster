@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+#@ MODIF algeline5 Messages  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -303,4 +303,35 @@ cata_msg={
     La masse du modele est nulle. On ne peut normer par rapport a la masse.
 """),
 
+59: _("""
+    Méthode QZ dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !
+"""),
+60: _("""
+    Méthode QZ dans MODE_ITER_SIMULT: La variante QR ne fonctionne qu'avec une
+    matrice B symétrique définie positive ! Donc elle n'accepte pas le flambement,
+    les Lagranges d'AFFE_CHAR_MECA, une matrice de rigidité complexe ou les
+    problèmes modaux quadratiques.
+"""),
+61: _("""
+    Méthode QZ dans MODE_ITER_SIMULT: propriété spectrale non respectée sur la
+    valeur propre n %(i1)d !. On a pas |alpha| < ||A|| et |béta| < ||B|| 
+                     |alpha|=%(r1)f, ||A||=%(r2)f
+                     | béta|=%(r3)f, ||B||=%(r4)f
+"""),
+62: _("""
+    Méthode QZ dans MODE_ITER_SIMULT: On trouve un nombre de valeurs propres 
+    %(i1)d différent du nombre de ddls physiques actifs %(i2)d ! 
+"""),
+63: _("""
+    Méthode QZ dans MODE_ITER_SIMULT + OPTION='BANDE': On trouve un nombre de 
+    valeurs propres %(i1)d différent du nombre de valeurs propres détecté
+    dans la bande %(i2)d ! 
+"""),
+64: _("""
+    Problème modal quadratique et méthode de JACOBI sont incompatible !
+    Essayer plutôt la méthode de SORENSEN (METHODE='SORENSEN'). 
+"""),
+65: _("""
+    L'option de calcul 'TOUT' n'est licite qu'avec METHODE='QZ'! 
+"""),
 }

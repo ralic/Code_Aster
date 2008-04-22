@@ -3,7 +3,7 @@
      &                     TAU1  ,TAU2  ,NIVERR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,11 +70,11 @@ C
       REAL*8       MATRIX(2,2),PAR11(3),PAR12(3),PAR22(3)
       REAL*8       RESIDU(2),EPS
       REAL*8       DKSI1,DKSI2
-      REAL*8       DET,TEST,EPSREL,EPSABS,REFE,TEST2
+      REAL*8       DET,TEST,EPSREL,EPSABS,REFE
       INTEGER      INO,IDIM,ITER
       REAL*8       ZERO
       PARAMETER    (ZERO=0.D0)   
-      REAL*8       DIST,DMIN,KSI1M,KSI2M,TAU1M(3),TAU2M(3),VALR(5)
+      REAL*8       DIST
 C
 C ----------------------------------------------------------------------
 C
@@ -94,7 +94,6 @@ C
       EPSABS = EPSMAX/100.D0
       EPSREL = EPSMAX
       ITEMAX = 200     
-      DMIN   = 1.D15
 C
 C --- DEBUT DE LA BOUCLE
 C      
@@ -144,13 +143,6 @@ C
         DIST = SQRT(VEC1(1)*VEC1(1)+
      &              VEC1(2)*VEC1(2)+
      &              VEC1(3)*VEC1(3))
-        IF (DIST.LE.DMIN) THEN
-          DMIN = DIST
-          KSI1M = KSI1
-          KSI2M = KSI2
-          CALL DCOPY(3,TAU1,1,TAU1M,1)
-          CALL DCOPY(3,TAU2,1,TAU2M,1)
-        ENDIF
 C
 C --- CALCUL DU RESIDU
 C
@@ -247,30 +239,10 @@ C
 
   999 CONTINUE      
 C
-      IF (ABS(DMIN).LE.1.D-15) THEN
-        TEST2 = ABS(DIST-DMIN)
-      ELSE
-        TEST2 = ABS(DIST-DMIN)/DMIN
-      ENDIF
-C
-      IF (TEST2.GT.1.D-8) THEN
-        VALR(1) = COORPT(1)
-        VALR(2) = COORPT(2)
-        VALR(3) = COORPT(3)
-        VALR(4) = DIST
-        VALR(5) = DMIN
-        CALL U2MESR('A','CONTACT3_12',5,VALR)
-        KSI1 = KSI1M
-        KSI2 = KSI2M
-        CALL DCOPY(3,TAU1M,1,TAU1,1)
-        CALL DCOPY(3,TAU2M,1,TAU2,1)
-        NIVERR = 0
-      ENDIF
-C
       IF (NIVERR.EQ.1) THEN
         WRITE(6,*) 'POINT A PROJETER: ',COORPT(1),COORPT(2),COORPT(3)
         WRITE(6,*) 'MAILLE          ',ALIAS,NNO
-        WRITE(6,*) 'DISTANCE        ',DIST,DMIN
+        WRITE(6,*) 'DISTANCE        ',DIST
         
         DO 70 INO = 1,NNO 
           WRITE(6,*) '  NOEUD ',INO

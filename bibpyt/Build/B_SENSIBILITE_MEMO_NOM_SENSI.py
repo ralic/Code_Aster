@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ def addto(liste, obj):
 class MEMORISATION_SENSIBILITE:
    """Classe pour la mémorisation des concepts sensibles et leurs dérivées.
    """
-   def __init__(self, jdc=None, debug=False):
+   def __init__(self, jdc=None, debug=True):
       """Initialisation de la structure
       """
       self.jdc = jdc
@@ -75,6 +75,9 @@ class MEMORISATION_SENSIBILITE:
       self.d_para_cmde = {}
       # dictionnaire : para_autre : Set()       (pour les theta geom)
       self.d_para_autre = {}
+      
+      # pour l'enregistrement différé
+      self.d_buffer = {}
       
 
    def reparent(self, parent):
@@ -208,6 +211,19 @@ class MEMORISATION_SENSIBILITE:
       for sd in (sd_nomi, para_sensi, sd_deriv):
          self.d_sd[sd.nom.strip()] = sd
 
+   def register_names(self, nosimp, nopase, nocomp):
+      """On stocke uniquement les noms avant une commande qui crée un concept dérivé.
+      Uniquement pour le PAR_LOT='NON'.
+      """
+      self.d_buffer[(nosimp, nopase)] = nocomp
+
+   def register_final(self, sd_nomi, para_sensi, sd_deriv):
+      """Termine l'enregistrement après la commande.
+      Uniquement pour le PAR_LOT='NON'.
+      """
+      self.register(sd_nomi, para_sensi, sd_deriv, new_etape=sd_nomi.etape)
+      del self.d_buffer[sd_nomi.nom.strip(), para_sensi.nom.strip()]
+
 
    # appelé par SENSIBILITE_JDC.new_jdc
    def get_nom_compose(self, sd_nomi, para_sensi):
@@ -235,11 +251,14 @@ class MEMORISATION_SENSIBILITE:
    def get_nocomp(self, nosimp, nopase):
       """On récupère le nom composé associé à un nom simple et un para_sensi
       """
-      key = self._key_(nosimp, nopase)
-      sd_deriv   = self.get_nom_compose(*key)
-      nocomp = _VIDE_
-      if hasattr(sd_deriv, 'nom'):
-         nocomp = sd_deriv.nom
+      # en attente d'enregistrement final ?
+      nocomp = self.d_buffer.get((nosimp, nopase))
+      if nocomp is None:
+         key = self._key_(nosimp, nopase)
+         sd_deriv   = self.get_nom_compose(*key)
+         nocomp = _VIDE_
+         if hasattr(sd_deriv, 'nom'):
+            nocomp = sd_deriv.nom
       if self._debug:
          print '#memo_sensi#get_nocomp', nosimp, nopase, nocomp
       return nocomp

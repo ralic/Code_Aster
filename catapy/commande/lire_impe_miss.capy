@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/09/2006   AUTEUR ACBHHCD G.DEVESA 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE DEVESA G.DEVESA
 LIRE_IMPE_MISS=OPER(nom="LIRE_IMPE_MISS",op= 164,sd_prod=matr_asse_gene_c,
                     fr="Création d une matrice assemblée à partir de base modale",
                     reentrant='n',

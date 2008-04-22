@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 21/04/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,11 +31,7 @@ cata_msg={
      (ou écarter les fissures). 
 """),
 
-2: _("""
-  -> Le nombre de fissures autorisées avec X-FEM est limité à (i1)i
-  -> Risque & Conseil: 
-     Il faut réduire le nombre de fissures introduites.
-"""),
+
 
 3: _("""
   -> Le modèle %(k1)s est incompatible avec la méthode X-FEM.
@@ -87,6 +83,15 @@ cata_msg={
   Il vaut veuiller à ce que ce point singulier ne soit pas inclus dans la couronne
   d'intégration du champ theta. 
   Conseil : réduisez la taille de la couronne du champ theta : (mot-clés RSUP et RINF).
+"""),
+
+13: _("""
+     Dans le modèle, des mailles SEG2 ou SEG3 possèdent des noeuds enrichis par X-FEM.
+     Ceci n'est pas encore possible en 3D.
+     Conseils : si ces mailles sont importantes pour le calcul (charge linéique...), il faut
+     les mettre loin de de la fissure.
+     Si ces mailles ne servent pas pour le calcul, il vaut mieux ne pas les affecter dans le modèle,
+     ou bien les supprimer du maillage.
 """),
 
 14: _("""

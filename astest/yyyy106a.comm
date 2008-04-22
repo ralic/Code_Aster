@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAPET 3D, CONTACT, TEMPERATURE MED, METIS, INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -250,12 +250,15 @@ CHMC1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                                        COEF_IMPO=0.E+0,),),
                      CONTACT=(_F(GROUP_MA_MAIT='MC11_PLA',
                                  GROUP_MA_ESCL='MC11_COR',
+                                 TOLE_PROJ_EXT = 0.1,
                                  REAC_GEOM='SANS',),
                               _F(GROUP_MA_MAIT='MC12_PLA',
                                  GROUP_MA_ESCL='MC12_COR',
+                                 TOLE_PROJ_EXT = 0.1,
                                  REAC_GEOM='SANS',),
                               _F(GROUP_MA_MAIT='MC13_PLA',
                                  GROUP_MA_ESCL='MC13_COR',
+                                 TOLE_PROJ_EXT = 0.1,
                                  REAC_GEOM='SANS',),),
                      INFO=1,);
 
@@ -565,7 +568,7 @@ TEST_TABLE(TABLE=SIG0,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=180.0,),
            NOM_PARA='SIYY',
-           VALE=114744788.347,
+           VALE=112585892.63761,
            REFERENCE='NON_REGRESSION',
            VERSION='6.0.32',);
 
@@ -573,7 +576,7 @@ TEST_TABLE(TABLE=SIG1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=180.0,),
            NOM_PARA='SIYY',
-           VALE=101277775.6,
+           VALE=98225840.544138,
            REFERENCE='NON_REGRESSION',
            VERSION='6.0.32',);
 
@@ -581,7 +584,7 @@ TEST_TABLE(TABLE=SIG2,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=180.0,),
            NOM_PARA='SIYY',
-           VALE=94707678.9924,
+           VALE=90152123.109036,
            REFERENCE='NON_REGRESSION',
            VERSION='6.0.32',);
 
@@ -589,7 +592,7 @@ TEST_TABLE(TABLE=SIG3,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=180.0,),
            NOM_PARA='SIYY',
-           VALE=100059889.743,
+           VALE=95100781.124664,
            REFERENCE='NON_REGRESSION',
            VERSION='6.0.32',);
 
@@ -605,7 +608,7 @@ TEST_TABLE(TABLE=DEP_11P,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N6388',),
            NOM_PARA='DY',
-           VALE=0.000660880896318,
+           VALE=0.00065894263026434,
            REFERENCE='NON_REGRESSION',
            VERSION='6.0.32',);
 
@@ -621,7 +624,7 @@ TEST_TABLE(TABLE=DEP_12P,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N6395',),
            NOM_PARA='DY',
-           VALE=0.000651866808937,
+           VALE=0.00064813667975432,
            REFERENCE='NON_REGRESSION',
            VERSION='6.0.32',);
 

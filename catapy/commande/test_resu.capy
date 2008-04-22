@@ -1,5 +1,4 @@
-#& MODIF COMMANDE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
-# RESPONSABLE VABHHTS J.PELLET
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,6 +18,7 @@
 #
 #
 # ======================================================================
+# RESPONSABLE LEFEBVRE J.P.LEFEBVRE
 TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Impression",)},
          fr="Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence",

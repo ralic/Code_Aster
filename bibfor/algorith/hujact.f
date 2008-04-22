@@ -2,7 +2,7 @@
      &                     NEGMUL, CHGMEC, INDMEC)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,7 @@ C                            DES MECANISMES ACTIFS
 C   ------------------------------------------------------------------
         INTEGER       NDT, NDI, I, J, MONO 
         REAL*8        TOLE, SIGD(6),SIGF(6)
-        REAL*8        VIND(*), VINF(*), VINS(32), VINT(32)
+        REAL*8        VIND(*), VINF(*), VINS(35), VINT(35)
         REAL*8        MATER(22,2), UN, ZERO 
         REAL*8        I1F, I1D, PCREF, PSF, PSM
         REAL*8        SEUIL, RD, RF
@@ -55,11 +55,11 @@ C -------------- DETERMINATION DES CRITERES ACTIFS A T+DT -----------
 C ===================================================================
 C        WRITE(6,'(A,8(1X,L1))')'NEGMUL =',(NEGMUL(I),I=1,8)
 C        WRITE(6,'(A,6(1X,E16.9))')'SIGF =',(SIGF(I),I=1,6)
-C        WRITE(6,'(A,32(1X,E16.9))')'1 --- VINF =',(VINF(I),I=1,32)
+C        WRITE(6,'(A,10(1X,E16.9))')'1 --- VINF =',(VINF(I),I=1,35)
         DO 20 I = 1, 8
           INDMEC(I) = .FALSE.
   20    CONTINUE
-        DO 30 I = 1, 32
+        DO 30 I = 1, 35
           VINT(I) = VIND(I)
   30    CONTINUE
 
@@ -390,7 +390,7 @@ C           WRITE(6,*)'VINF(22) =',VINF(22),' --- VIND(22) =',VIND(22)
           ENDIF
 
   40    CONTINUE
-C        WRITE(6,'(A,32(1X,E16.9))')'2 --- VINF =',(VINF(I),I=1,32)
+C        WRITE(6,'(A,10(1X,E16.9))')'2 --- VINF =',(VINF(I),I=1,35)
  999    CONTINUE
 1001    FORMAT(A,I3)    
 2000    FORMAT(A,28(1X,E12.5)) 

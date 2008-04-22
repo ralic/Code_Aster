@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,8 +16,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE ZENTNER I.ZENTNER
 from Macro.dyna_iss_vari_ops import dyna_iss_vari_ops
-#
 #
 DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",op=dyna_iss_vari_ops ,sd_prod=table_fonction,
                     fr="Calcul du spectre de réponse ou de la reponse temporelle sismique incoherente par decomposition spectrale",

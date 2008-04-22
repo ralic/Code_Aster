@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,8 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # -*- coding: iso-8859-1 -*-
-
-# RESPONSABLE MCOURTOI M.COURTOIS
+# RESPONSABLE COURTOIS M.COURTOIS
 
 def calc_table_prod(self, TABLE, ACTION, **kargs):
    """Typage du concept produit.

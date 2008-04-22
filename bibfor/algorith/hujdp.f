@@ -1,7 +1,8 @@
-        SUBROUTINE HUJDP (MOD, DEPS, SIGD, SIGF, MATER, VIN)
+        SUBROUTINE HUJDP (MOD, DEPS, SIGD, SIGF, MATER,
+     &                    VIN, NDEC, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,27 +25,31 @@ C       IN  DEPS   :  INCREMENT DE DEFORMATION
 C           SIGD   :  CONTRAINTE  A T
 C           SIGF   :  CONTRAINTE ELASTIQUE A T+DT
 C           MATER  :  PROPRIETES MATERIAU
-C       OUT DEPS   :  INCREMENT DE DEFORMATION REAJUSTE
+C       OUT NDEC   :  NOMBRE DE REDECOUPAGE DE DEPS
+C           IRET   :  CODE RETOUR
 C       ---------------------------------------------------------------
-        INTEGER       NDT, NDI, I, J, NP
-        REAL*8        I1D, N, PREF, K0, IRET, NI
+        INTEGER       NDT, NDI, I, J, NDEC, IRET
+        REAL*8        I1D, N, PREF, K0, NI
         REAL*8        DEPS(6), SIGD(6), SIGF(6)
-        REAL*8        MATER(22,2), TOLE, RP, RI, VIN(*)
-        REAL*8        ZERO, UN, DEUX, DEPSV, COEF 
-        REAL*8        EPSVP, BETA, D, FR, I1E, TETA 
+        REAL*8        MATER(22,2), TOLE, TOL, RI, VIN(*)
+        REAL*8        ZERO, UN, D13, DEUX, DEPSV, COEF 
+        REAL*8        EPSVP, BETA, D, FR, I1E 
         REAL*8        DFDS(6), E, NU, AL, LA, DEMU 
         REAL*8        HOOKNL(6,6), DSIG(6), FIDSIG   
-        REAL*8        PCO, RATIO, P, QF, QD, TAUF(3)
-        REAL*8        TAUD(3), RELA1, RELA2  
+        REAL*8        PCO, RATIO, PF, PD, QF, QD, TAUF(3)
+        REAL*8        TAUD(3), RELA1, RELA2
         CHARACTER*8   MOD
-        
+
         COMMON /TDIM/ NDT, NDI
 
-        DATA          ZERO  / 0.D0 /
-        DATA          UN    / 1.D0 /
-        DATA          DEUX  / 2.D0 /
+        DATA ZERO, D13, UN, DEUX, TOL
+     &  / 0.D0, 0.33333333333334D0, 1.D0, 2.D0, 1.D-6 /
 
-C       ---------------------------------------------------------------
+        IF (NDEC.GT.1) THEN
+          IRET =1
+          GOTO 500
+        ENDIF
+
         PREF  = MATER(8,2)
         N     = MATER(1,2)
         BETA  = MATER(2,2)
@@ -53,51 +58,50 @@ C       ---------------------------------------------------------------
         EPSVP = VIN(23)
         
         DEPSV = DEPS(1)+DEPS(2)+DEPS(3)
-        I1D   = (SIGD(1)+SIGD(2)+SIGD(3))/3.D0    
+        I1D   = D13*(SIGD(1)+SIGD(2)+SIGD(3))
          
-        TOLE = 1.D-1
+        TOLE = 0.1D0
+
 
 C ----------------------------------------------------
 C 1 --- CRITERE LIMITANT L EVOLUTION DE P: DP/P < TOLE
 C ----------------------------------------------------
-
-        K0   = MATER(1,1)/(3.D0*(UN-DEUX*MATER(2,1)))
+        K0   = D13*MATER(1,1) /(UN-DEUX*MATER(2,1))
         COEF = (I1D/PREF)**N
-        RP   = K0*COEF*DEPSV/(TOLE*I1D)
-        IF (RP .GT. 10) RP = 10.D0     
-        NP = NINT(RP)   
-        IF(NP.LT.1) NP=1
-        RP = ABS(DEPSV*BETA/LOG(UN+TOLE))
+        IF ((I1D/PREF) .GT. TOL) THEN
+          RI = K0*COEF*DEPSV /I1D
+        ELSE
+          RI = ZERO
+          WRITE(6,'(A)')'HUJDP :: DP/P : CAS NON PREVU'
+        ENDIF
+        
+        IF (RI.GT.UN) THEN
+          RI = UN
+        ELSEIF (RI.LT.TOLE) THEN
+          RI = TOLE
+        ENDIF
+        NDEC = NINT(RI/TOLE)   
+
 
 C ----------------------------------------------------------------      
 C 2 --- CRITERE A RESPECTER POUR L EVOLUTION DU MECANISME ISOTROPE
 C   ---         FR/(DFDS*C*DEPS)*TOLE > TETA = 1/RI             
-C ----------------------------------------------------------------
-        FR = D*PCO*EXP(-BETA*EPSVP)
-        DO 10 I = 1, NDI
-          DFDS(I) = - UN/3.D0
- 10     CONTINUE
-        
-C ======================================================================
-C -------------------- 2.1 CONSTRUCTION DE C ---------------------------
-C ======================================================================
-
+C ====================================================================
+C -------------------- 2.1 CONSTRUCTION DE C -------------------------
+C ====================================================================
         CALL LCINMA (ZERO, HOOKNL)
         
-        I1E  = (SIGF(1)+SIGF(2)+SIGF(3))/3.D0
+        I1E  = D13*(SIGF(1)+SIGF(2)+SIGF(3))
         E    = MATER(1,1) * (I1E/PREF)**N
         NU   = MATER(2,1)
         AL   = E *(UN-NU) /(UN+NU) /(UN-DEUX*NU)
         DEMU = E        /(UN+NU)
         LA   = E*NU/(UN+NU)/(UN-DEUX*NU)
-        
-C ====================================================================
-C --- 3D/DP/AX -------------------------------------------------------
-C ====================================================================
 
         IF (MOD(1:2) .EQ. '3D'     .OR.
      &      MOD(1:6) .EQ. 'D_PLAN' .OR.
      &      MOD(1:4) .EQ. 'AXIS') THEN
+     
           DO 30 I = 1, NDI
           DO 30 J = 1, NDI
             IF (I.EQ.J) HOOKNL(I,J) = AL
@@ -106,76 +110,68 @@ C ====================================================================
           DO 35 I = NDI+1, NDT
              HOOKNL(I,I) = DEMU
  35       CONTINUE
- 
-C ====================================================================
-C --- CP/1D ----------------------------------------------------------
-C ====================================================================
 
         ELSEIF (MOD(1:6) .EQ. 'C_PLAN' .OR.
-     &            MOD(1:2) .EQ. '1D')   THEN
+     &          MOD(1:2) .EQ. '1D')   THEN
+     
           CALL U2MESS('F','COMPOR1_4')
+          
         ENDIF
-
-C ====================================================================
-C -------------- 2.2 CALCUL DE DSIGMA = C*DEPSILON -------------------
-C ====================================================================
-
+        
         CALL LCPRMV (HOOKNL, DEPS, DSIG)
 
+
 C ====================================================================
-C -------------- 2.3 CALCUL DE FIDSIG = DFDS*DSIG --------------------
+C -------------- 2.2 CALCUL DE FIDSIG = DFDS*DSIG --------------------
 C ====================================================================
         FIDSIG = ZERO
         DO 40 I = 1, NDI
-          FIDSIG = FIDSIG + DSIG(I) * DFDS(I)
- 40     CONTINUE
-        IF(FIDSIG.EQ.ZERO)THEN
-          TETA = 1.D0
-        ELSE
-          TETA = ABS(FR/FIDSIG)*TOLE*1.D-1
+          FIDSIG = FIDSIG - D13*DSIG(I)
+ 40       CONTINUE
+        FR = D*PCO*EXP(-BETA*EPSVP)
+        RI = ABS(FIDSIG/FR)
+
+        IF (RI.GT.UN) THEN
+          RI = UN
+        ELSEIF (RI.LT.TOLE) THEN
+          RI = TOLE
         ENDIF
-        RI = UN/TETA
-        IF (RI .GT. 10.D0) RI = 10.D0     
-        NI = NINT(RI)   
-        IF(NI.LT.1) NI=1
+        NI = NINT(RI/TOLE)   
+        IF (NDEC.LT.NI) NDEC = NI
 
-        IF(NP.LT.NI)NP = NI
 
 C -------------------------------------------------------
-C 1 --- CRITERE LIMITANT L EVOLUTION DE Q: DQ/PREF < TOLE
-C -------------------------------------------------------
-
+C 3 --- CRITERE LIMITANT L EVOLUTION DE Q: DQ/PREF < TOLE
+C -------------------------------------------------------    
         DO 45 I = 1, 3
-          CALL HUJPRJ(I, SIGF, TAUF, P, QF)
-          CALL HUJPRJ(I, SIGD, TAUD, P, QD)
-          IF(ABS(QD).LT.TOLE)THEN
-            RATIO = ZERO
+        
+          CALL HUJPRJ(I, SIGD, TAUD, PD, QD)
+          CALL HUJPRJ(I, SIGF, TAUF, PF, QF)
+          IF (ABS(QF-QD).LT.TOLE) THEN
+            RI =ZERO
           ELSE  
-            RATIO = ABS(QF-QD)/ABS(PREF)
-          ENDIF  
+            RI =ABS((QF-QD)/PREF)
+          ENDIF
+          
           RELA1 = ZERO
           RELA2 = ZERO
-          IF(ABS(TAUD(1)).GT.TOLE)
-     &            RELA1 = ABS((TAUF(1)-TAUD(1))/PREF)
-          IF(ABS(TAUD(3)).GT.TOLE)
-     &            RELA2 = ABS((TAUF(3)-TAUD(3))/PREF)
-          IF(RELA1.GT.RATIO)RATIO = RELA1
-          IF(RELA2.GT.RATIO)RATIO = RELA2
-C         
-          IF (RATIO.GT.TOLE)THEN
-            RI = RATIO / TOLE
+          IF (ABS(TAUD(1)).GT.TOLE)
+     &    RELA1 = ABS((TAUF(1)-TAUD(1))/PREF)
+          IF (ABS(TAUD(3)).GT.TOLE)
+     &    RELA2 = ABS((TAUF(3)-TAUD(3))/PREF)
+          IF (RELA1.GT.RI) RI = RELA1
+          IF (RELA2.GT.RI) RI = RELA2
+          
+          IF (RI.GT.UN) THEN
+            RI = UN
+          ELSEIF (RI.LT.TOLE) THEN
+            RI = TOLE
           ENDIF
-          IF (RI .GT. 10.D0) RI = 10.D0
-          NI = NINT(RI) 
-          IF(NI.LT.1) NI=1
-C
-          IF(NP.LT.NI)NP = NI
+          NI = NINT(RI/TOLE)
+          IF (NDEC.LT.NI) NDEC = NI
+          
  45     CONTINUE 
         
-C
-C --- INCREMENT DE DEFORMATION CHOISI : DEPS = DEPS / (N = MAX(RI,RP))
-C       
-        DO 50 I = 1, NDT
-          DEPS(I) = DEPS(I)/NP
-  50    CONTINUE
-        END
+C        write(6,*) 'incmax=',ndec
+ 500   CONTINUE
+       END

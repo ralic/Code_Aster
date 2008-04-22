@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -475,7 +475,8 @@ class TraceTableau(TraceGraph):
          tit.append(self.DicForm['ccom']+' '+g.SousTitre)
          # legendes
          for i in range(g.NbCourbe):
-            tit.append(self.DicForm['ccom']+' Courbe '+str(i)+' '+g.Legendes[i])
+            tit.append(self.DicForm['ccom']+' Courbe '+str(i))
+            tit.extend([self.DicForm['ccom']+' '+leg for leg in g.Legendes[i].split(os.linesep)])
          Tab.titr=self.DicForm['cfin'].join(tit)
          # noms des paramètres/colonnes
          Tab.para.append(g.Labels[0][0])
@@ -826,7 +827,7 @@ class TraceXmgrace(TraceGraph):
       descr.append('@    s'+sn+' fill color '+color)
       descr.append('@    s'+sn+' avalue color '+color)
       descr.append('@    s'+sn+' errorbar color '+color)
-      descr.append('@    s'+sn+' legend "'+args['Leg']+'"')
+      descr.append('@    s'+sn+' legend "'+args['Leg'].replace(os.linesep, ' ; ')+'"')
       return descr
 # ------------------------------------------------------------------------------
    def Trace(self):

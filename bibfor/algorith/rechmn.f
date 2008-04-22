@@ -2,7 +2,7 @@
      &                  IESCL0)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,8 +79,8 @@ C
       INTEGER      KE,IESCL,IBID
       INTEGER      POSNOM,SUPPOK
       INTEGER      IFM,NIV
-      LOGICAL      DIRAPP
-      REAL*8       DIR(3)
+      LOGICAL      DIRAPP,LBID
+      REAL*8       DIR(3),TOLEAP
 C
 C ----------------------------------------------------------------------
 C
@@ -118,7 +118,9 @@ C
 C --- OPTIONS SUR LA ZONE DE CONTACT
 C            
       CALL MMINFP(IZONE ,DEFICO,K24BLA,'TYPE_APPA',
-     &            IBID  ,DIR   ,K24BID,DIRAPP) 
+     &            IBID  ,DIR   ,K24BID,DIRAPP)
+      CALL MMINFP(IZONE ,DEFICO,K24BLA,'TOLE_APPA',
+     &            IBID  ,TOLEAP,K24BID,LBID  )       
       PROJ   = CFDISI(DEFICO,'PROJECTION',IZONE)          
 C
 C --- NUMEROS DES SURFACES MAITRE ET ESCLAVE
@@ -172,8 +174,8 @@ C
 C
 C --- RECHERCHE DU NOEUD MAITRE LE PLUS PROCHE 
 C
-          CALL MMREND(DEFICO,NEWGEO,ISURFM,COORPT,DIRAPP,
-     &                DIR   ,POSNOM)       
+          CALL MMREND(DEFICO,NEWGEO,ISURFM,COORPT,TOLEAP,
+     &                DIRAPP,DIR   ,POSNOM)
 C
 C --- STOCKAGE DU NOEUD ESCLAVE
 C           

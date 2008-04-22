@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 21/04/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,12 +60,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER        ITYPFL,NIVPAR,NIVDEF,NBM,NPV,NUOR(NBM),JVCN,JVEN
-      INTEGER        NIVE,NBVAL,LFSVI,PAS,JCONN
+      INTEGER        NIVE,NBVAL,LFSVI,PAS,JCONN,JRAP
       CHARACTER*19   MELFLU
       CHARACTER*8    TYPFLU
       REAL*8         CARAC(2),FREQ(2*NBM*NPV),FREQI(*),VITE(NPV),AMOC(*)
       REAL*8         VRMIN,VRMAX,VRMIN1,VRMIN2,VRMAX1,VRMAX2
-      REAL*8         VMOY,VMOYTO,REDUIT,RAPPOR
+      REAL*8         VMOY,VMOYTO,REDUIT,RAPPOR,RAPPO2
 C
       INTEGER        NBR,JTRAV1,JTRAV2,JTRAV3,JTRAV4,JVIT1,JVIT2,JZONE
       INTEGER        JTR1,JTR2,JVRZO,LFSVR,JCSTE
@@ -78,7 +78,8 @@ C
       CHARACTER*13   XVMIN,XVMAX,XVMOY
       CHARACTER*30   CHAM30
       CHARACTER*19   CHAM19
-      CHARACTER*24   NOM1,NOM2,FSVI,CRAPPO,CREDUI,CCSTE,CVCN,CTRAV
+      CHARACTER*24   NOM1,NOM2,FSVI,CRAPPO,CREDUI,CRAPP2,CREDU2,CCSTE
+      CHARACTER*24   CVCN,CVCN2,CTRAV
       CHARACTER*100  CHAV11,CHAV12,CHAV13,CHAV21,CHAV22,CHAV23
       CHARACTER*100  CHAV31,CHAV32,CHAV33,CHAV34
       CHARACTER*100  CHAZP1,CHAZV1,CHAZP2,CHAZV2,CHAZP3,CHAZV3
@@ -167,21 +168,22 @@ C
               CALL JEVEUO(MELFLU(1:8)//'.VEN','L',JVEN)
               CALL JEVEUO(MELFLU(1:8)//'.VCN','L',JVCN)
               CALL JEVEUO(MELFLU(1:8)//'.MASS','L',JCONN)
+              CALL JEVEUO(MELFLU(1:8)//'.RAP','L',JRAP)
 
               CALL JEVEUO(TYPFLU//'           .FSVR','L',LFSVR)
               FSVI = TYPFLU//'           .FSVI'
               CALL JEVEUO(FSVI,'L',LFSVI)
               NBVAL=1
-              CTRAV2='*'
+              CTRAV2=' *'
               DO 50 I=1,NZONE
                  NBVAL=NBVAL*ZI(LFSVI+1+NZONE+I)
                  CTRAV2((2+(30*(I-1))):(2+(30*I)))=CHAM30
   50          CONTINUE
 
-              DO 60 I=1,90
+              DO 60 I=1,180
                  CTRAV2((1+(30*NZONE)+I):(1+(30*NZONE)+I))='*'
   60          CONTINUE
-                CTRAV2((1+(30*NZONE)+91):(1+(30*NZONE)+91))='*'
+                CTRAV2((1+(30*NZONE)+181):(1+(30*NZONE)+181))='*'
               CALL WKVECT('&&FLUIMP.CSTE','V V R',NZONE,JCSTE)
            ENDIF
         ENDIF
@@ -449,22 +451,23 @@ C
         WRITE (IFR,*)
         WRITE (IFR,*) '==============================================='
         WRITE (IFR,*)
-        CALL CODREE(ZR(JCONN),'E',CTRAV)
-        WRITE(IFR,'(A)')'MASSE LINEIQUE DE REFERENCE DU TUBE (kg/m) : '
-     &  //CTRAV
-        CALL CODREE(ZR(JCONN+1),'E',CTRAV)
-        WRITE(IFR,'(A)')'MASSE VOLUMIQUE DE REFERENCE
-     & DU FLUIDE SECONDAIRE (kg/m3) : '//CTRAV
+        WRITE (IFR,1003) ZR(JCONN) 
+        WRITE (IFR,1004) ZR(JCONN+1)
+        
              IF (CALCUL(1)) THEN
 
-        WRITE (IFR,5002)('*',J=1,91)
+        WRITE (IFR,5007)('*',J=1,117)
         WRITE (IFR,'(A)')' *   MODE    *      FREQUENCE(Hz)      *
-     &    AMORTISSEMENT (%)    *  VITESSE EFFICACE (m/s) *'
+     &    AMORTISSEMENT (%)    *  VITESSE EFFICACE (m/s) *
+     &  VITESSE EFFICACE (m/s) *'
+        WRITE (IFR,'(A)')' *           *                         *
+     &                         *       (GEVIBUS)         *
+     &       TTES CMPS         *'
 
-        WRITE (IFR,5002)('*',J=1,91)
+        WRITE (IFR,5007)('*',J=1,117)
         WRITE (IFR,5001) IMOD,FREQI(IMOD),(AMOC(IM)*100),
-     &                   ZR(JVEN-1+IM)
-        WRITE (IFR,5002)('*',J=1,91)
+     &                   ZR(JVEN-1+IM),ZR(JVEN-1+NBM+IM)
+        WRITE (IFR,5007)('*',J=1,117)
         WRITE (IFR,*)
 
              ENDIF
@@ -480,25 +483,25 @@ C
      &                        ZR(LFSVR+3+2*(J-1)+1),J=1,NZONE)
              WRITE(IFR,5005) (CHAM30,J=1,NZONE)
              WRITE(IFR,*)
-             CTRAV1='*'
-             CTRAV3='*'
+             CTRAV1=' *'
+             CTRAV3=' * '
              DO 90 I=1,NZONE
                 CALL CODENT(I,'D',I3)
-                CTRAV1((2+30*(I-1)):(2+(30*I)))='           ZONE '//I3
+                CTRAV1((3+30*(I-1)):(3+(30*I)))='           ZONE '//I3
      &           //'          *'
 90           CONTINUE
-             CTRAV1((2+(30*NZONE)+90):(2+(30*NZONE)+90))='*'
-             CTRAV3(((15*NZONE)-10):((15*NZONE)+11))=
-     &             'CONSTANTES DE CONNORS'
-             CTRAV3((1+(30*NZONE)):(1+(30*NZONE)))='*'
-             CTRAV3((2+(30*NZONE)):(2+(30*NZONE)+90))=
-     & '    VITESSE CRITIQUE (m/s)   *    VITESSE REDUITE CRITIQUE    *
-     &  RAPPORT D INSTABILITE    *'
-             WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)+90))
+C             CTRAV1((3+(30*NZONE)+120):(3+(30*NZONE)+120))='*'
+             CTRAV3(((15*NZONE)-9):((15*NZONE)+12))=
+     &             ' CONSTANTES DE CONNORS'
+             CTRAV3((2+(30*NZONE)):(2+(30*NZONE)))='*'
+             CTRAV3((3+(30*NZONE)):(3+(30*NZONE)+120))=
+     & '    VITESSE CRITIQUE (m/s)   *   VITESSE REDUITE CRITIQUE  *
+     &    RAPPORT D INSTABILITE    *     RAPPORT TTES CMPS       *'
+             WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)))
              WRITE(IFR,'(A)') CTRAV1(1:(2+(30*NZONE)+90))
-             WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)+90))
-             WRITE(IFR,'(A)') CTRAV3(1:(2+(30*NZONE)+90))
-             WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)+90))
+             WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)+120))
+             WRITE(IFR,'(A)') CTRAV3(1:(2+(30*NZONE)+120))
+             WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)+120))
 
              DO 100 I=1,NBVAL
                 CTRAV1='* '
@@ -521,18 +524,14 @@ C
 
 110            CONTINUE
              REDUIT=ZR(JVCN-1+(IM-1)*NBVAL+I)/(FREQI(IMOD)*CARAC(1))
-             RAPPOR=ZR(JVEN-1+IM)/ZR(JVCN-1+(IM-1)*NBVAL+I)
-             CALL CODREE (RAPPOR,'E',CRAPPO)
-             CALL CODREE (REDUIT,'E',CREDUI)
-             CALL CODREE (ZR(JVCN-1+(IM-1)*NBVAL+I),'E',CVCN)
-             CTRAV1((3+(30*NZONE)):(3+(30*NZONE)+90))=
-     &       '  '//CVCN//'  *    '//CREDUI//'    *  '//CRAPPO//' *'
+             RAPPOR=ZR(JRAP-1+(IM-1)*NBVAL+I)
+             RAPPO2=ZR(JRAP-1+NBM*NBVAL+(IM-1)*NBVAL+I)
 
-             WRITE(IFR,'(A)') CTRAV1(1:(3+(30*NZONE)+90))
-
+             WRITE(IFR,5006) ZR(JCSTE), ZR(JVCN-1+(IM-1)*NBVAL+I), 
+     &                       REDUIT,RAPPOR,RAPPO2
 
  100         CONTINUE
-             WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)+90))
+             WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)+120))
              WRITE(IFR,*)
           ENDIF
 C
@@ -583,6 +582,9 @@ C --- FORMATS
 C
  1001 FORMAT (1P,' VITESSE MOYENNE SUR L ENSEMBLE DES ZONES = ',D13.6)
  1002 FORMAT (1P,' MODE : NUMERO D ORDRE:',I3,'/ FREQ:',D13.6)
+ 1003 FORMAT (1P,' MASSE LINEIQUE DE REFERENCE DU TUBE (kg/m) : ',E13.6)
+ 1004 FORMAT (1P,' MASSE VOLUMIQUE DE REFERENCE DU FLUIDE
+     & SECONDAIRE (kg/m3) : ',E13.6)
  2001 FORMAT (A2,4A16)
  2002 FORMAT (A66)
 
@@ -592,11 +594,13 @@ C
  4001 FORMAT (1X,' MODE N ',I3)
  4002 FORMAT (1X,' VITESSE N ',I3)
 
- 5001 FORMAT (1P,1X,'*',3X,I3,5X,'*',4(5X,D13.6,7X,'*'))
+ 5001 FORMAT (1P,1X,'*',3X,I3,5X,'*',4(5X,E13.6,7X,'*'))
  5002 FORMAT (1X,91A1)
  5003 FORMAT (1X,'*',100(10X,A4,1X,I3,11X,'*'))
  5004 FORMAT (1P,1X,100('*',D13.6,1X,'-',D13.6,1X))
  5005 FORMAT (1X,'*',100A30)
+ 5006 FORMAT (1P,1X,'*',5(8X,E13.6,8X,'*'))
+ 5007 FORMAT (1P,1X,118A1)
 C
 
       END

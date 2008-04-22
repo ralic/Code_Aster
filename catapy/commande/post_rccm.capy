@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE JMBHH01 J.M.PROIX
+# RESPONSABLE GALENNE E.GALENNE
 POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
                fr="Vérification des critères de niveau 0 et certains critères de niveau A du RCC-M-B3200 (Edition 1991)",
                reentrant='n',

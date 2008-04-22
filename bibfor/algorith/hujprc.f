@@ -1,7 +1,7 @@
         SUBROUTINE HUJPRC (KK, K, TIN, VIN, MATER, YF, P, Q, TOUD)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,17 +37,25 @@ C  --------------------------------------------------------
         
         PARAMETER     (NMOD = 15)
         
+                
+        INTEGER   IFM, NIV
         REAL*8    YF(NMOD), D12, DD, DEUX, VIN(*)
-        REAL*8    RK, XK(2), TH(2), SI 
+        REAL*8    RK, XK(2), TH(2), SI, PA 
         REAL*8    TIN(6), TOU(3), TOUD(3), P, Q
         REAL*8    EPSVP, BETA, B, PHI, PCREF, PCR
-        REAL*8    M, UN, DEGR, MATER(22,2) 
+        REAL*8    M, UN, DEGR, MATER(22,2), TOLE       
+        LOGICAL      DEBUG
 
         PARAMETER (DEGR  = 0.0174532925199D0)
+        PARAMETER (TOLE  = 1.D-6)
+
         COMMON /TDIM/ NDT  , NDI
+        COMMON /MESHUJ/ DEBUG
 
         DATA   D12, DEUX, UN /0.5D0, 2.D0, 1.D0/
         
+        CALL INFNIV (IFM, NIV)
+
 C ==================================================================
 C --- VARIABLES INTERNES -------------------------------------------
 C ==================================================================
@@ -66,6 +74,7 @@ C ==================================================================
         B     = MATER(4, 2)
         PHI   = MATER(5, 2)
         PCREF = MATER(7, 2)
+        PA    = MATER(8, 2)
         PCR   = PCREF*EXP(-BETA*EPSVP)
         M     = SIN(DEGR*PHI)
 C ======================================================================
@@ -89,6 +98,16 @@ C ======================================================================
 
         TOU(1)=DD
         TOU(2)=-DD
+
+        IF ((P/PA) .LE. TOLE) THEN
+           IF (DEBUG) WRITE (IFM,'(A)')
+     &                'HUJPRC :: LOG(PK/PA) NON DEFINI'
+           Q = 0.D0
+           TOUD(1) = 0.D0
+           TOUD(2) = 0.D0
+           TOUD(3) = 0.D0
+           GOTO 999
+        ENDIF
         
         TOUD(1) = TOU(1)-(XK(1)-RK*TH(1))*P*(UN-B*LOG(P/PCR))*M
         TOUD(2) = - TOUD(1)        
@@ -96,4 +115,5 @@ C ======================================================================
         Q = TOUD(1)**DEUX + (TOUD(3)**DEUX)/DEUX
         Q = SQRT(Q)
 
+ 999    CONTINUE
         END

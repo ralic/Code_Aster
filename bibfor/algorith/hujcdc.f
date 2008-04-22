@@ -1,7 +1,7 @@
         SUBROUTINE HUJCDC (K, MATER, SIG ,VIN, SEUIL)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -96,6 +96,13 @@ C ==================================================================
         TOU(1)  = DD
         TOU(2)  = -DD
         
+        IF ((PK/PA) .LE. TOLE) THEN
+           IF (DEBUG) WRITE (IFM,'(A)')
+     &                'HUJCDC :: LOG(PK/PA) NON DEFINI'
+           SEUIL=-1.D0
+           GOTO 999
+        ENDIF
+
         TOUC(2) = TOU(3)-(XK(2)-RK*TH(2))*PK*
      &             (UN-B*LOG(PK/PCR))*M
         TOUC(1) = TOU(1)-(XK(1)-RK*TH(1))*PK*
@@ -103,14 +110,7 @@ C ==================================================================
         
         QK  = TOUC(1)**DEUX + (TOUC(2)**DEUX)/DEUX
         QK  = SQRT(QK)
-                
-        IF ((PK/PA) .LE. TOLE) THEN
-           IF (DEBUG) WRITE (IFM,'(A)')
-     &                'HUJCDC :: LOG(PK/PA) NON DEFINI'
-           SEUIL=-1.D0
-           GOTO 999
-        ENDIF
-        
+                        
 C ==================================================================
 C --- CALCUL DU SEUIL DU MECANISME CYCLIQUE DEVIATOIRE K -----------
 C ==================================================================

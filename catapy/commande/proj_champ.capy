@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE VABHHTS J.PELLET
+# RESPONSABLE PELLET J.PELLET
 def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
     if AsType(RESULTAT) != None : return AsType(RESULTAT)
     if CHAM_NO_REFE     != None : return cham_no_sdaster

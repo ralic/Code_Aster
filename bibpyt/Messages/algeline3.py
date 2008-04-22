@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algeline3 Messages  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -390,7 +390,7 @@ cata_msg={
 """),
 
 85: _("""
- pour l'option  "PLUS_PETITE" les frequences de "FREQ" sont ignorées.
+ pour les options  "PLUS_PETITE" et "TOUT" les frequences de "FREQ" sont ignorées.
 """),
 
 86: _("""
@@ -406,7 +406,7 @@ cata_msg={
 """),
 
 89: _("""
- pour l'option  "PLUS_PETITE" les charges critiques de "CHAR_CRIT" sont ignorées.
+ pour l'option  "PLUS_PETITE" et "TOUT" les charges critiques de "CHAR_CRIT" sont ignorées.
 """),
 
 90: _("""

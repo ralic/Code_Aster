@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 21/04/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
 #--------------------------------------------------------
    dgene = MATR_GENE[0].cree_dict_valeurs(MATR_GENE[0].mc_liste)
    if dgene['MATR_AMOR'] != None:
-     print ' MATR_AMOR existe'
+     aster.affiche('MESSAGE',' MATR_AMOR existe')
      __ma_amort = MATR_GENE['MATR_AMOR']
    else:         
      __ma_amort=COMB_MATR_ASSE(CALC_AMOR_GENE=_F(MASS_GENE = MATR_GENE['MATR_MASS'] ,
@@ -77,8 +77,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
                                         AMOR_REDUIT= (  0.0,),
                                          ),                               
                                   );
-     print 'MATR_AMOR pas donnee, on prend AMOR_REDUIT=0.0,'
-
+     aster.affiche('MESSAGE',' MATR_AMOR pas donnee, on prend AMOR_REDUIT=0.0,')
 #   dint = INTERF[0].cree_dict_valeurs(INTERF[0].mc_liste)
 #   dcoh = MATR_COHE[0].cree_dict_valeurs(MATR_COHE[0].mc_liste)
    
@@ -103,7 +102,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
    nom_bamo2 = MATR_GENE['MATR_RIGI'].REFA.get()[0] 
    if string.strip(nom_bamo) != string.strip(nom_bamo1) or string.strip(nom_bamo) != string.strip(nom_bamo2) or string.strip(nom_bamo1) != string.strip(nom_bamo2):
       UTMESS('F','ALGORITH5_42')
-
+   
 
    nbnot, nbl, nbma, nbsm, nbsmx, dime = num_mail.DIME.get()
 
@@ -118,20 +117,19 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
    #  print noe_interf  
    nbno, nbval = noe_interf.shape
    if INFO==2:
-      print 'NBNO INTERFACE : ', nbno
-
+      aster.affiche('MESSAGE','NBNO INTERFACE : '+str(nbno))
   # MODES
+   nbval, nbmodt,nbmodd,nbmods = nume_resu.UTIL.get()
 
-   if INTERF['MODE_INTERF']=='CORP_RIGI':
-      nbmods = 6
-   elif INTERF['MODE_INTERF']=='TOUT':
-      nbmods = nbno
-   nbmodt = MATR_GENE['MATR_RIGI'].DESC.get()[1]
-   nbmodd=nbmodt-nbmods 
+
+   nbmodt2 = MATR_GENE['MATR_RIGI'].DESC.get()[1]
+   if nbmodt2 != nbmodt:
+       UTMESS('F','ALGORITH5_42')
 
    if INFO==2:
-      print 'NOMBRE DE MODES: ', nbmodt, '   MODES DYNAMIQUES: ', nbmodd,  '   MODES STATIQUES: ', nbmods
-      print 'COMPOSANTE :', NOM_CMP
+      texte = 'NOMBRE DE MODES: '+str(nbmodt)+'   MODES DYNAMIQUES: '+str(nbmodd)+'   MODES STATIQUES: '+str(nbmods)
+      aster.affiche('MESSAGE',texte)
+      aster.affiche('MESSAGE','COMPOSANTE '+NOM_CMP)
    SPEC = Num.zeros((NB_FREQ,nbmodt,nbmodt), Num.Float)+1j
 #
 #---------------------------------------------------------------------
@@ -142,7 +140,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
 
    for k in range(0,NB_FREQ):
       freqk=FREQ_INIT+PAS*k
-      print 'FREQUENCE DE CALCUL:',  freqk
+      aster.affiche('MESSAGE','FREQUENCE DE CALCUL: '+str(freqk))
 
       # Matrice de coherence                  
       XX=noe_interf[:,0]
@@ -178,18 +176,19 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
       nbme=0
  
       if INFO==2:
-         print 'ETOT : ', etot
+         aster.affiche('MESSAGE','ETOT :'+str(etot))
       while nbme < nbno:
          ener= eig[nbme]+ener
          prec=ener/etot
          nbme=nbme+1
          if INFO==2:
-            print 'VALEUR PROPRE ', nbme, ' : ', eig[nbme-1]
+            aster.affiche('MESSAGE','VALEUR PROPRE  '+str(nbme)+' : '+str(eig[nbme-1]))
          if prec > PRECISION :
             break
 
-      print 'NOMBRE DE MODES POD RETENUS: ', nbme
-      print 'PRECISION (ENERGIE RETENUE):', prec
+      aster.affiche('MESSAGE','NOMBRE DE MODES POD RETENUS : '+str(nbme))
+      aster.affiche('MESSAGE','PRECISION (ENERGIE RETENUE) : '+str(prec))      
+
       PVEC=Num.zeros((nbme,nbno), Num.Float)
       for k1 in range(0,nbme):
          PVEC[k1, 0:nbno]=Num.sqrt(eig[k1])*vec[k1] 
@@ -251,7 +250,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
                   if maxm<10.E-6:
                      XO[modp,mods]=0.0 
                   else:
-                     print 'erreur mode' , modp 
+                     UTMESS('F','UTILITAI5_89')                     
                else:
                   fact=1./som                  
                   XO[modp,mods]=fact*Num.innerproduct(MCMP,PVEC[modp])

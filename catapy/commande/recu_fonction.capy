@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE MCOURTOI M.COURTOIS
+# RESPONSABLE COURTOIS M.COURTOIS
 def recu_fonction_prod(RESULTAT=None,TABLE=None,RESU_GENE=None,
                        BASE_ELAS_FLUI=None,CHAM_GD=None,NAPPE=None,
                        NOM_PARA_TABL=None,**args):

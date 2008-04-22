@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -417,9 +417,7 @@ Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
 
 """),
 
-92 : _("""
-   !          aucune alarme                                                !
-
+92 : _("""   !          aucune alarme                                                !
 """),
 
 }

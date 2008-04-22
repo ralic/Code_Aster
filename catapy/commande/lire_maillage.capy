@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE VABHHTS J.PELLET
+# RESPONSABLE PELLET J.PELLET
 LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
                    fr="Crée un maillage par lecture d'un fichier au format Aster ou Med",
                    ang="Readings of a mesh file",

@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 21/04/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -239,7 +239,7 @@ C
          ENDIF
       ENDIF
       IF (CALCUL(2)) THEN
-         CALL CONNOR(MELFLU, TYPFLU,ZR(IFREQI),ZR(LDEFM),NUOR,AMOC,
+         CALL CONNOR(MELFLU, TYPFLU,ZR(IFREQI),BASE,NUOR,AMOC,
      &               CARAC,MASG,LNOE,NBM,ZR(LPROFV),
      &               ZR(LRHO),ZR(LABSC))
       ENDIF

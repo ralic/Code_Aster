@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -236,7 +236,7 @@ TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.2),
-           VALE=-3.2007039703078E+06,
+           VALE=-3.2100211525420E+06,
            VERSION='9.2.18',
            REFERENCE='NON_REGRESSION',);
 
@@ -244,7 +244,7 @@ TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.4),
-           VALE=-6.1485314878484E+06,
+           VALE=-6.1671049051614E+06,
            VERSION='9.2.18',
            REFERENCE='NON_REGRESSION',);
 
@@ -252,7 +252,7 @@ TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6),
-           VALE=-9.3428411191477E+06,
+           VALE=-9.1689400243373E+06,
            VERSION='9.2.18',
            REFERENCE='NON_REGRESSION',);
 
@@ -268,7 +268,7 @@ TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0),
-           VALE=-1.4275240431472E+07,
+           VALE=-1.4244370172067E+07,
            VERSION='9.2.18',
            REFERENCE='NON_REGRESSION',);
 

@@ -2,7 +2,7 @@
      &                  IESCL0,NFESCL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,8 +87,8 @@ C
       REAL*8       JEU,NOOR,R8PREM
       CHARACTER*24 K24BLA,K24BID 
       REAL*8       COORDE(3),COORDM(3)
-      LOGICAL      DIRAPP
-      REAL*8       DIR(3)         
+      LOGICAL      DIRAPP,LBID
+      REAL*8       DIR(3),TOLEAP         
       REAL*8       COEF(30),COFX(30),COFY(30),COEFNO(1)  
       REAL*8       NORM(3),TAU1(3),TAU2(3),TAU1M(3),TAU2M(3) 
       INTEGER      DDL(30) 
@@ -135,7 +135,9 @@ C
 C --- OPTIONS SUR LA ZONE DE CONTACT
 C            
       CALL MMINFP(IZONE ,DEFICO,K24BLA,'TYPE_APPA'        ,
-     &            IBID  ,DIR   ,K24BID,DIRAPP)                
+     &            IBID  ,DIR   ,K24BID,DIRAPP) 
+      CALL MMINFP(IZONE ,DEFICO,K24BLA,'TOLE_APPA',
+     &            IBID  ,TOLEAP,K24BID,LBID  )                     
 C
 C --- NOMBRE MAXIMUM DE NOEUDS ESCLAVES ET DIMENSION DU PROBLEME
 C
@@ -201,8 +203,8 @@ C
 C
 C --- RECHERCHE DU NOEUD MAITRE LE PLUS PROCHE 
 C
-          CALL MMREND(DEFICO,NEWGEO,ISURFM,COORDE,DIRAPP,
-     &                DIR   ,POSNOM) 
+          CALL MMREND(DEFICO,NEWGEO,ISURFM,COORDE,TOLEAP,
+     &                DIRAPP,DIR   ,POSNOM)
           IF (POSNOM.EQ.0) THEN
             CALL ASSERT(.FALSE.) 
           ELSE

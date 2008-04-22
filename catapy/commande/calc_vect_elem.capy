@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE VABHHTS J.PELLET
+# RESPONSABLE PELLET J.PELLET
 def calc_vect_elem_prod(OPTION,**args):
   if OPTION == "CHAR_MECA" :      return vect_elem_depl_r
   if OPTION == "CHAR_THER" :      return vect_elem_temp_r
