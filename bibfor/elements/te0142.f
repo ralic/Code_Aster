@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 31/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/05/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -181,16 +181,16 @@ C
         ELSE IF(ABS(E).LT.R8PREM()) THEN
           DERIVE = 'NU'
           E   = VALRES(1)
-C          XNU = VALRES(2)
+          XNU = VALRES(2)
         END IF
         CALL PORIGI(NOMTE,E,XNU,KLV)
 C
         IF(DERIVE(1:2).EQ.'NU') THEN
 C VALEUR NULLE SAUF POUR LES DDL DE TORSION
             VALTOR = -KLV(10)/(1.D0 + XNU)
-C            DO 300 I = 1,NL
-C              KLV(I) = 0.D0
-C300         CONTINUE
+            DO 300 I = 1,NL
+              KLV(I) = 0.D0
+300         CONTINUE
             KLV(10) =  VALTOR
             KLV(49) = -VALTOR
             KLV(55) =  VALTOR

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 06/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -284,7 +284,7 @@ DEPLPES=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
-                  OPTION=('EFGE_ELNO_DEPL',),
+                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL'),
                   REPE_COQUE =_F( NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),
                          )
@@ -298,7 +298,7 @@ DEPLDIL=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-                  OPTION=('EFGE_ELNO_DEPL',),
+                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL'),
                   REPE_COQUE =_F( NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),
                          )
@@ -312,7 +312,7 @@ DEPLDILT=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
-                  OPTION=('EFGE_ELNO_DEPL',),
+                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL'),
                   REPE_COQUE =_F( NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),
                          )
@@ -326,7 +326,7 @@ DEPLDI2=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-                  OPTION=('EFGE_ELNO_DEPL',),
+                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL'),
                   REPE_COQUE =_F( NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),
                          )
@@ -339,7 +339,7 @@ DEPLDI2T=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
-                  OPTION=('EFGE_ELNO_DEPL',),
+                  OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL'),
                   REPE_COQUE =_F( NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),
                          )
@@ -417,7 +417,24 @@ TEST_RESU(RESU=(
         REFERENCE = 'ANALYTIQUE',       NOEUD = 'N203', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M20', NOM_CHAM = 'EFGE_ELNO_DEPL',
-        REFERENCE = 'ANALYTIQUE',      NOEUD = 'N11', NOM_CMP = 'NYY',   VALE = -0.20000E+0)
+        REFERENCE = 'ANALYTIQUE',      NOEUD = 'N11', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
+#
+# EFFORTS GENERALISES
+             _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+        NUME_ORDRE = 1,     MAILLE = 'M1', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        REFERENCE = 'ANALYTIQUE',      NOEUD = 'N203', NOM_CMP = 'SIXX',   VALE = 2.9258515047010E-15),
+#
+             _F(  RESULTAT = DEPLDILT,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+        NUME_ORDRE = 1,     MAILLE = 'M1', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        REFERENCE = 'ANALYTIQUE',     NOEUD = 'N203', NOM_CMP = 'SIXX',   VALE = 2.9258515047010E-15),
+#
+             _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+        NUME_ORDRE = 1,     MAILLE = 'M1', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N203', NOM_CMP = 'SIXX',   VALE = 2.8571428571449E-01),
+#
+             _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+        NUME_ORDRE = 1,     MAILLE = 'M1', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N203', NOM_CMP = 'SIXX',   VALE = 2.8571428571449E-01),
 )
 #
             )

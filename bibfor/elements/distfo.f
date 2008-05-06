@@ -1,10 +1,10 @@
-      FUNCTION DISTFO(IFONC,XX,YY,NORMX,NORMY)
+      FUNCTION DISTFO(ZIMAT,KFONC,XX,YY,NORMX,NORMY)
 
         IMPLICIT  NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,15 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       REAL*8 DISTFO
 
-      INTEGER      IFONC,I,ITMAX,IER
+      INTEGER      I,ITMAX,IER,ZIMAT
       REAL*8       XX,YY,NORMX,NORMY,FX,X0,Y0,DY
       REAL*8       XI,YI,XM1,RES,YM1,RP,DYM1,TOL,RPX
       REAL*8       XM2,YM2,DYI,VALR(4)
+      CHARACTER*8  KFONC
+      CHARACTER*2   CODRES
+      CHARACTER*16  PHENOM
 
+      PHENOM = 'GLRC_DAMAGE'
       TOL = 1.0D-3
       X0 = XX / NORMX
       Y0 = YY / NORMY
@@ -41,8 +45,8 @@ C ======================================================================
       YM1   = 1.0D20
 
       XI  = XI* NORMX
-      CALL CAFONC(IFONC,XI,YI)
-      CALL CDNFON(IFONC,XI,1,DYI,IER)
+      CALL RCVALA(ZIMAT,' ',PHENOM,1,'X ',XI,1,KFONC,YI,CODRES,'FM')
+      CALL CDNFON(ZIMAT,KFONC,XI,1,DYI,IER)
       YI   = YI/ NORMY
       XI   = XI/ NORMX
       DYI  = DYI * NORMX / NORMY
@@ -64,8 +68,8 @@ C        XI  =  RP*(Y0 - YM1 + DYM1*XM1 + X0/DYM1)
         XI  =  RP*(Y0 - YM1 + DYM1*XM1) + X0/(DYM1*DYM1 + 1.0D0)
 
         XI  = XI* NORMX
-        CALL CAFONC(IFONC,XI,YI)
-        CALL CDNFON(IFONC,XI,1,DYI,IER)
+        CALL RCVALA(ZIMAT,' ',PHENOM,1,'X ',XI,1,KFONC,YI,CODRES,'FM')
+        CALL CDNFON(ZIMAT,KFONC,XI,1,DYI,IER)
         YI   = YI/ NORMY
         XI   = XI/ NORMX
         DYI  = DYI * NORMX / NORMY

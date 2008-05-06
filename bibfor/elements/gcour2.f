@@ -4,7 +4,7 @@
        IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,6 +181,12 @@ C
           ZR(IN2+(I-1)*3+2-1) = DIR(2)/NORME
           ZR(IN2+(I-1)*3+3-1) = DIR(3)/NORME
 1       CONTINUE
+        CALL DISMMO('A','ELEM_VOLU_QUAD',NOMO,IBID,REPK,IERD)
+        IF(REPK.EQ.'OUI') THEN
+           MILIEU = .TRUE.
+        ELSE IF(REPK.EQ.'NON') THEN
+           MILIEU = .FALSE.
+        ENDIF
 
       ELSE
 C

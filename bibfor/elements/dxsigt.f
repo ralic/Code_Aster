@@ -1,6 +1,6 @@
       SUBROUTINE DXSIGT(NOMTE,XYZL,PGL,IC,INIV,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C     -----------------
       IRET5 = 0
       CALL R8INIR(24,0.D0,SIGT,1)
       CALL RCVARC(' ','TEMP','REF','NOEU',1,1,TREF,IRET1)
+      IF(IRET1.EQ.0) THEN
       IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
      &    NOMTE(1:8).EQ.'MEGRDKT'  .OR.
      &    NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
@@ -167,9 +168,9 @@ C          ----------------------------------------
 
 C --- CAS ELAS_COQUE
 
-        CALL U2MESK('A','ELEMENTS_51',1,PHENOM(1:10))
+        CALL U2MESK('A','ELEMENTS_52',1,PHENOM(1:10))
       END IF
 
    20 CONTINUE
-
+      END IF
       END

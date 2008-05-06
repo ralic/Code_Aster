@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,7 +88,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DRY=0.0,
                                  DRZ=0.0,),),);
 
-CHA2=AFFE_CHAR_MECA_F(VERI_NORM='NON',
+CHA2=AFFE_CHAR_MECA(VERI_NORM='NON',
                       MODELE=MO,
                       CONTACT=(_F(APPARIEMENT='NODAL',
                                   GROUP_MA_MAIT='COQU1',

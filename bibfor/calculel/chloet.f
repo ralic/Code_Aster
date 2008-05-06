@@ -1,7 +1,7 @@
       SUBROUTINE CHLOET(IPARG,ETENDU,JCELD)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
 
-C     -- LE CHAMP LOCAL EST-IL ETENDU ?
+C     -- LE CHAMP LOCAL EST-IL UN CHAM_ELEM ETENDU ?
 C     OUI  SI CHAMP GLOBAL ASSOCIE EST 1 CHAM_ELEM ETENDU
 C     --------------------------------------------------
       IACHLO = ZI(IAWLOC-1+7* (IPARG-1)+1)
@@ -82,7 +82,7 @@ C     --------------------------------------------------
       ELSE
         TYCH = ZK8(IACHOK-1+2* (ICH-1)+1)
         IF (TYCH.NE.'CHML') GO TO 20
-        JCELD = ZI(IACHOI-1+2* (ICH-1)+1)
+        JCELD = ZI(IACHOI-1+3* (ICH-1)+1)
       END IF
       IF ((ZI(JCELD-1+4).EQ.0).AND.(ZI(JCELD-1+3).LE.1)) THEN
         GO TO 20

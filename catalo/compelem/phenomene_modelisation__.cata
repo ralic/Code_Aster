@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -84,11 +84,29 @@ PHENOMENE_MODELISATION__
 %        En général : 6 (X6) pour les éléments 3D, 4 (X4) pour certains éléments 2D
 %
 %
+%  VOLU_FINI = 'OUI' : l'élément est de type "volume fini". Cela implique :
+%               - les calculs élémentaires peuvent utiliser les voisins (routine tecac2.f)
+%               - les matrices élémentaires sont de type "VOISIN_VF"
+%
+%
+%  TYPE_VOISIN = typvoi : type du voisinage des éléments de type "volume_fini"
+%                la chaine de caractères typvoi est formée d'une suite de K2 tels que :
+%                  'F3' : voisin 3D par une face
+%                  'A2' : voisin 2D par une arrete
+%                   ...   (voir routine voiuti.f)
+%
+%
+%
 % ==========================================================================================
 
 
 
    PHENOMENE__  MECANIQUE       CODE__  'ME'
+
+       MODELISATION__ 'VF1'      DIM__ 2 2  CODE__ 'VF1'
+              ATTRIBUT__  VOLU_FINI=OUI  TYPE_VOISIN=A2
+              MAILLE__ TRIA3     ELEMENT__ VF1T3
+              MAILLE__ QUAD4     ELEMENT__ VF1Q4
 
        MODELISATION__ 'CONT_DVP_2D'      DIM__ 1 2   CODE__ 'CT2'
               MAILLE__ SEG2      ELEMENT__ COS2E2D

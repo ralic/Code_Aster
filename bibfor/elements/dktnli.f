@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 26/02/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,11 +128,11 @@ C            D2D:    MATRICE DE RIGIDITE TANGENTE MATERIELLE (2D)
 C            DF :    MATRICE DE RIGIDITE TANGENTE MATERIELLE (FLEXION)
 C            DM :    MATRICE DE RIGIDITE TANGENTE MATERIELLE (MEMBRANE)
 C            DMF:    MATRICE DE RIGIDITE TANGENTE MATERIELLE (COUPLAGE)
-      REAL*8 BF(3,3*NNO), BM(3,2*NNO)
+      REAL*8 BF(3,3*NNO), BM(3,2*NNO), BMQ(2,3)
 C            BF :    MATRICE "B" (FLEXION)
 C            BM :    MATRICE "B" (MEMBRANE)
       REAL*8 FLEX(3*NNO*3*NNO), MEMB(2*NNO*2*NNO)
-      REAL*8 MEFL(2*NNO*3*NNO), WORK(3*NNO*3*NNO)
+      REAL*8 MEFL(2*NNO*3*NNO), WORK(3*NNO*3*NNO),AUX,AUX1
 C           MEMB:    MATRICE DE RIGIDITE DE MEMBRANE
 C           FLEX:    MATRICE DE RIGIDITE DE FLEXION
 C           WORK:    TABLEAU DE TRAVAIL
@@ -145,13 +145,14 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
       INTEGER   ICACOQ, ICARCR, ICOMPO, ICONTM, ICONTP, ICOU, ICPG,
      &          IER, IGAUH, IINSTM, IINSTP, IMATE, INO, IPG, IRET, ISP,
      &          ITEMP, IVARIM, IVARIP, IVARIX,
-     &          IVPG, J, K, NBCON, NBSP, NBVAR, NDIMV
+     &          IVPG, J, K, NBCON, NBSP, NBVAR, NDIMV,INO2
       REAL*8     DEUX, RAC2, QSI, ETA, CARA(25), JACOB(5)
       REAL*8    CTOR,COEHSD
       REAL*8    LC,JACGAU,BMAT(6,18)
-      REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
-      LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ,LTEATT
+      REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3,D4,D2,D5,D6
+      LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ,LTEATT,LEUL
       CHARACTER*24 NOMELE
+      CHARACTER*39 MESS
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
@@ -197,7 +198,13 @@ C     --------------------------------------------------------
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PCARCRI','L',ICARCR)
       CALL JEVECH('PCACOQU','L',ICACOQ)
-
+      
+      LEUL = ZK16(ICOMPO+2)(1:6).EQ.'EULER_'      
+      IF(LEUL .AND. ZK16(ICOMPO)(1:4).NE.'ELAS') THEN
+       WRITE(MESS,'(A16)(A7)(A16)') ZK16(ICOMPO),' avec ',ZK16(ICOMPO+2)
+       CALL U2MESK('F','ELEMENTS2_73',1,MESS)      
+      ENDIF 
+       
       IF (VECTEU) THEN
         CALL JEVECH('PCONTPR','E',ICONTP)
         CALL JEVECH('PVARIPR','E',IVARIP)
@@ -308,13 +315,32 @@ C     -------------------------------------------------
           CALL DXTBM ( CARA(9), BM )
           CALL DKTBF ( QSI, ETA, CARA, BF )
         ENDIF
-
 C       -- CALCUL DE EPS, DEPS, KHI, DKHI :
 C       -----------------------------------
         CALL PMRVEC('ZERO',3,2*NNOEL,BM, UM, EPS)
         CALL PMRVEC('ZERO',3,2*NNOEL,BM,DUM,DEPS)
         CALL PMRVEC('ZERO',3,3*NNOEL,BF, UF, KHI)
         CALL PMRVEC('ZERO',3,3*NNOEL,BF,DUF,DKHI)
+
+C     -- EULER_ALMANSI - TERMES QUADRATIQUES
+        IF(LEUL) THEN
+          CALL R8INIR(6,0.D0,BMQ,1)
+          DO 145,I = 1,2
+            DO 146,K = 1,NNO
+              DO 142,J = 1,2
+                BMQ(I,J) = BMQ(I,J) + BM(I,2*(K-1)+I)*DUM(J,K)
+ 142          CONTINUE
+              BMQ(I,3) = BMQ(I,3) + BM(I,2*(K-1)+I)*DUF(1,K)            
+ 146        CONTINUE
+ 145      CONTINUE
+ 
+          DO 150, K = 1,3
+            DO 155, I = 1,2
+              DEPS(I) = DEPS(I) - 0.5D0*BMQ(I,K)*BMQ(I,K)
+ 155        CONTINUE
+            DEPS(3) = DEPS(3) - BMQ(1,K)*BMQ(2,K)
+ 150      CONTINUE
+        ENDIF
 
 C       -- CALCUL DE L'ECOULEMENT PLASTIQUE SUR CHAQUE COUCHE:
 C          PAR INTEGRATION EN TROIS POINTS
@@ -387,6 +413,7 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
      &                  LC,
      &                  ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
             ENDIF
+
 
 C            DIVISION DE LA CONTRAINTE DE CISAILLEMENT PAR SQRT(2)
 C            POUR STOCKER LA VALEUR REELLE

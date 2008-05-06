@@ -1,12 +1,10 @@
-      SUBROUTINE D2CRO2(NMNBN,NMPLAS,NMDPLA,NMDDPL,NMPROX,CNBN
-     &                 ,CPLAS,CDPLAS,CDDPLA,CZEF,CZEG,CIEF,CPROX
+      SUBROUTINE D2CRO2(ZIMAT,NMNBN,NMPLAS,NMDPLA,NMDDPL,NMPROX,CNBN
+     &                 ,CPLAS,CDPLAS,CDDPLA,RPARA,CIEF,CPROX
      &                 ,CDEPS,CNCRIT,CDTG,CIER,CDEPSP,DC1,DC2)
-
       IMPLICIT NONE
-C-----------------------------------------------------------------------
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,53 +21,48 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-        REAL*8  NMNBN(6)         
-        REAL*8  NMPLAS(2,3)   
-        REAL*8  NMDPLA(2,2)  
-        REAL*8  NMDDPL(2,2)
-        REAL*8  NMZEF        
-        REAL*8  NMZEG         
-        INTEGER NMIEF  
-        INTEGER NMPROX(2)  
-
+      REAL*8  NMNBN(6)         
+      REAL*8  NMPLAS(2,3)   
+      REAL*8  NMDPLA(2,2)  
+      REAL*8  NMDDPL(2,2)
+      REAL*8  NMZEF        
+      REAL*8  NMZEG         
+      INTEGER NMIEF, ZIMAT 
+      INTEGER NMPROX(2)  
 C---------------------------------------------
-        REAL*8  CNBN(6)         
-        REAL*8  CPLAS(2,3)   
-        REAL*8  CDPLAS(2,2)  
-        REAL*8  CDDPLA(2,2)
-        REAL*8  CZEF        
-        REAL*8  CZEG         
-        INTEGER CIEF  
-        INTEGER CPROX(2)  
+      REAL*8  CNBN(6)         
+      REAL*8  CPLAS(2,3)   
+      REAL*8  CDPLAS(2,2)  
+      REAL*8  CDDPLA(2,2)
+      REAL*8  CZEF        
+      REAL*8  CZEG         
+      INTEGER CIEF  
+      INTEGER CPROX(2)  
 C---------------------------------------------
-       REAL*8  CDEPS(6)   
-       INTEGER CNCRIT     
-       REAL*8  CDTG(6,6)  
-       INTEGER CIER  
-       REAL*8  CDEPSP(6)  
-
+      REAL*8  CDEPS(6)   
+      INTEGER CNCRIT     
+      REAL*8  CDTG(6,6)  
+      INTEGER CIER  
+      REAL*8  CDEPSP(6)  
 C-------------------------------------------
-      REAL*8  DC1(6,6),DC2(6,6)
-
-      REAL*8
-     &      DF1(6),DF2(6),DF(6,2),TDF(2,6),DFU1(6),DFU2(6),DFU(6,2),
-     &      TDEPH(2,6),H1(6,6),H2(6,6),DDEPS(6),TDDEPS(1,6),
-     &      TDEPH1(1,6),TDEPH2(1,6),
-     &      DCFU1(6),DCFU2(6),TDCFU1(1,6),TDCFU2(1,6),
-     &      AUXD1(1),AUXE1(1),AUXE2(1),AUXF1(1),AUXF2(1),
-     &      A(2),B(2),C(2),D(2),E(2),F(2),
-     &      AA(2),BB(2),CC(2),DD(2),EE(2),FF(2),
-     &      LAMBDA(2,2),X(8),Y(8),NORMXY(8),DEPSP2(6,2)
+      REAL*8  DC1(6,6),DC2(6,6),NORMM,TDEPH(2,6),H1(6,6),H2(6,6)
+      REAL*8  DF1(6),DF2(6),DF(6,2),TDF(2,6),DFU1(6),DFU2(6),DFU(6,2)
+      REAL*8  DDEPS(6),TDDEPS(1,6),TDEPH1(1,6),TDEPH2(1,6),DCFU1(6)
+      REAL*8  DCFU2(6),TDCFU1(1,6),TDCFU2(1,6),AUXD1(1),AUXE1(1)
+      REAL*8  AUXE2(1),AUXF1(1),AUXF2(1),A(2),B(2),C(2),D(2),E(2),F(2)
+      REAL*8  AA(2),BB(2),CC(2),DD(2),EE(2),FF(2),LAMBDA(2,2),X(8),Y(8)
+      REAL*8  NORMXY(8),DEPSP2(6,2)
+      REAL*8  CP(6),CP2(2,6),FPLASS,RPARA(3)
       INTEGER NBROOT,I,IRAN(8),J
-      REAL*8  CP(6),CP2(2,6),FPLASS
-
       INTEGER     JJ,II,KK
 
-      CALL DFPLGL(NMNBN,NMPLAS,NMDPLA,NMDDPL,1,DF1)
+      CZEF  = RPARA(1)
+      CZEG  = RPARA(2)
+      NORMM = RPARA(3)
 
+      CALL DFPLGL(NMNBN,NMPLAS,NMDPLA,NMDDPL,1,DF1)
       CALL DFPLGL(NMNBN,NMPLAS,NMDPLA,NMDDPL,2,DF2)
-     
-     
+
       DO 10, J = 1,6
         DF(J,1) = DF1(J) 
         DF(J,2) = DF2(J) 
@@ -78,7 +71,6 @@ C-------------------------------------------
  10   CONTINUE     
 
       CALL DFUUSS(NMNBN,NMPLAS,NMDPLA,NMDDPL,NMPROX,1,DFU1)
-
       CALL DFUUSS(NMNBN,NMPLAS,NMDPLA,NMDDPL,NMPROX,2,DFU2)
 
       DO 20, J = 1,6
@@ -87,17 +79,14 @@ C-------------------------------------------
  20   CONTINUE
 
       CALL  HPLASS(NMNBN,NMPLAS,NMDPLA,NMDDPL,1,H1)
-
       CALL  HPLASS(NMNBN,NMPLAS,NMDPLA,NMDDPL,2,H2)
 
       CALL MATMUL(CDTG,CDEPS,6,6,1,DDEPS)
-
       DO 30, J = 1,6
         TDDEPS(1,J) =  DDEPS(J)    
  30   CONTINUE
 
       CALL MATMUL(TDDEPS,H1,1,6,6,TDEPH1)
-
       CALL MATMUL(TDDEPS,H2,1,6,6,TDEPH2)
 
       DO 40, J = 1,6
@@ -206,25 +195,24 @@ C-------------------------------------------
             CDEPSP(JJ) = DEPSP2(JJ,1) + DEPSP2(JJ,2)
  90       CONTINUE         
 
-          CALL NMNET2 (NMNBN,CNBN,CPLAS,CDPLAS,CDDPLA,CZEF,CZEG
+          CALL NMNET2 (ZIMAT,NMNBN,CNBN,CPLAS,CDPLAS,CDDPLA,CZEF,CZEG
      &                ,CIEF,CPROX,CDEPS,CNCRIT,CDTG,CIER,CDEPSP
-     &                ,DC1,DC2,DEPSP2)
-
+     &                ,DC1,DC2,DEPSP2,NORMM)
           IF(CIER .GT. 0) THEN
             I=I+1
           ELSE
             GOTO 100
           ENDIF
-
        ENDIF
         
  94    CONTINUE
  95    CONTINUE
  
       CIER=3
-
       CALL R8INIR(6,0.0D0,CDEPSP,1)
-
  100  CONTINUE
 
+      RPARA(1) = CZEF
+      RPARA(2) = CZEG
+      RPARA(3) = NORMM
       END 

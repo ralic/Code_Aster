@@ -1,6 +1,5 @@
       SUBROUTINE DXGLRC ( NOMTE, OPT, COMPOR, XYZL, UL, DUL, BTSIG,
      &                    KTAN, EFFINT, PGL, CODRET )
-
       IMPLICIT NONE
 
       INTEGER      CODRET
@@ -9,7 +8,7 @@
       CHARACTER*16 OPT, NOMTE, COMPOR(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,11 +114,11 @@ C            EFFINT : EFFORTS DANS LE REPERE DE L'ELEMENT
 C            DF :    MATRICE DE RIGIDITE TANGENTE MATERIELLE (FLEXION)
 C            DM :    MATRICE DE RIGIDITE TANGENTE MATERIELLE (MEMBRANE)
 C            DMF:    MATRICE DE RIGIDITE TANGENTE MATERIELLE (COUPLAGE)
-      REAL*8 BF(3,3*4),BM(3,2*4)
+      REAL*8 BF(3,3*4),BM(3,2*4), BMQ(2,3)
 C            BF :    MATRICE "B" (FLEXION)
 C            BM :    MATRICE "B" (MEMBRANE)
       REAL*8 FLEX(3*4,3*4),MEMB(2*4,2*4)
-      REAL*8 MEFL(2*4,3*4),WORK(3,3*4)
+      REAL*8 MEFL(2*4,3*4),WORK(3,3*4),D4,D2,AUX,AUX1
 C           MEMB:    MATRICE DE RIGIDITE DE MEMBRANE
 C           FLEX:    MATRICE DE RIGIDITE DE FLEXION
 C           WORK:    TABLEAU DE TRAVAIL
@@ -131,13 +130,15 @@ C     ------------------
       REAL*8   T2EV(4),T2VE(4),T1VE(9),CARAT3(21),JACOB(5),CARAQ4(25)
 
       REAL*8   MATR(50),SIGM(6)
-      INTEGER  MATI(50)
       INTEGER  TSHEAR, ICARA
       REAL*8   EPST(6), EP, SURFGP, SIG(6),DSIG(8),ECR(21),ECRP(21)
       REAL*8   EPSM(6),MVAL(50),QSI,ETA
       INTEGER  MENT(50),ICPG,ICPV,NVINT,T(2,2),IBID
       REAL*8   LAMBDA,DEUXMU,DEUMUF,LAMF,GT,GC,GF,SEUIL,ALPHA
-      CHARACTER*8 K8BID
+      LOGICAL  LEUL
+      CHARACTER*8  K8BID,MATK(10)
+      CHARACTER*24 KMATR
+      CHARACTER*39 MESS
       REAL*8      R8BID
 C     ------------------------------------------------------------------
 
@@ -163,6 +164,7 @@ C
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PCACOQU','L',ICACOQ)
 
+      LEUL = ZK16(ICOMPO+2)(1:6).EQ.'EULER_'      
       IF (VECTEU) THEN
         CALL JEVECH('PCONTPR','E',ICONTP)
         CALL JEVECH('PVARIPR','E',IVARIP)
@@ -256,10 +258,28 @@ C
         CALL JEVECH('PCACOQU','L',ICARA)
 C ---   EPAISSEUR TOTALE :
         EP = ZR(ICARA)
+C     -- EULER_ALMANSI - TERMES QUADRATIQUES
+        IF(LEUL) THEN
+          CALL R8INIR(6,0.D0,BMQ,1)
+          DO 145,I = 1,2
+            DO 146,K = 1,NNO
+              DO 142,J = 1,2
+                BMQ(I,J) = BMQ(I,J) + BM(I,2*(K-1)+I)*DUM(J,K)
+ 142          CONTINUE
+              BMQ(I,3) = BMQ(I,3) + BM(I,2*(K-1)+I)*DUF(1,K)            
+ 146        CONTINUE
+ 145      CONTINUE
+ 
+          DO 150, K = 1,3
+            DO 155, I = 1,2
+              DEPS(I) = DEPS(I) - 0.5D0*BMQ(I,K)*BMQ(I,K)
+ 155        CONTINUE
+            DEPS(3) = DEPS(3) - BMQ(1,K)*BMQ(2,K)
+ 150      CONTINUE
+        ENDIF  
 
         DO 60, I = 1,50
           MATR(I) = 0.0D0
-          MATI(I) = 0
  60     CONTINUE
 
         TSHEAR = 0
@@ -288,13 +308,12 @@ C ---   EPAISSEUR TOTALE :
             ECR(I)     = ZR(IVARIM-1 + ICPV + I)
  75       CONTINUE
 
-          CALL MAGLRC (NNO,COMPOR,PGL,MATR,MATI,DELAS,ECR)
+          CALL MAGLRC (ZI(IMATE),NNO,COMPOR,PGL,MATR,DELAS,ECR)
 
 C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
           SURFGP = POIDS
-          CALL GLRCMM(MATR,MATI,EP,SURFGP,PGL,SIG
+          CALL GLRCMM(ZI(IMATE),MATR,EP,SURFGP,PGL,SIG
      &               ,EPST,DEPS,DSIG,ECR,TSHEAR,DELAS,DSIDEP)
-
           DO 78, I = 1,3
             DSIG(I)     = DSIG(I) * EP
             DSIG(3 + I) = DSIG(3 + I) * EP*EP / 6.D0
@@ -422,6 +441,7 @@ C
 C     -- ACCUMULATION DES SOUS MATRICES DANS KTAN :
 C     -----------------------------------------------
       IF (MATRIC) THEN
+       
         IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN
           CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,KTAN)
         ELSE IF(NOMTE(1:8).EQ.'MEDKQG4 ') THEN

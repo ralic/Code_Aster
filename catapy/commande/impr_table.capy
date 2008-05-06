@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,6 +69,21 @@ IMPR_TABLE=MACRO(nom="IMPR_TABLE",op=impr_table_ops,sd_prod=None,
                               into=("MODULE_PHASE","REEL_IMAG") ),
    NOM_PARA       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
    IMPR_FONCTION  =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+
+   # Mise en page du tableau ou du graphique
+   b_tableau = BLOC(condition = "FORMAT == 'TABLEAU'",
+                    fr="Mots-clés propres au format Tableau",
+      SEPARATEUR      =SIMP(statut='f',typ='TXM',defaut=' ',
+                            fr="Séparateur des colonnes du tableau (ex : ' ', ';'...)"),
+      COMMENTAIRE     =SIMP(statut='f',typ='TXM',defaut='#',
+                            fr="Caractère indiquant au traceur de fonction que la ligne peut etre ignorée"),
+      COMM_PARA       =SIMP(statut='f',typ='TXM',defaut='',
+                            fr="Caractère utilisé pour commentariser la ligne des labels de colonnes"),
+      DEBUT_LIGNE     =SIMP(statut='f',typ='TXM',defaut='',
+                            fr="Caractère de debut de ligne"),
+      FIN_LIGNE       =SIMP(statut='f',typ='TXM',defaut='\n',
+                            fr="Caractère de fin de ligne"),
+    ),
 
    # mise en forme pour les formats qui passent par Graph
    b_forme         =BLOC(condition = "FORMAT == 'XMGRACE'",

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 06/05/2008   AUTEUR KHAM M.KHAM 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -54,12 +54,12 @@ C -----  VARIABLES LOCALES
      &              JNOMA, JJJ, JGRO, N1, N2, N3, NOEUD, IOCC, NGV,
      &              IER, NDIM, IGR, NG, NBMAIL, NORIT, NORIEN, NTRAIT,
      &              JJV,NBMAVO, JMAVO, NBMATO, IMA, NBMAVI, JMAVI, K,
-     &              ZERO, JGV
+     &              ZERO, JGV, NCF3
       REAL*8        VECT(3), R8B, PREC, ARMIN
       COMPLEX*16    CBID
       LOGICAL       REORIE, ORIVEC
       CHARACTER*8   K8B, NNOEUD, GMAT
-      CHARACTER*16  MOFA2D, MOFA3D, MOFB3D
+      CHARACTER*16  MOFA2D, MOFA3D, MOFB3D, MOFC3D
       CHARACTER*19  NOMT19
       CHARACTER*24  MAMOD, NOMNOE, GRMAMA, PARA
       CHARACTER*24 VALK
@@ -79,10 +79,12 @@ C
       MOFA2D = 'ORIE_PEAU_2D'
       MOFA3D = 'ORIE_PEAU_3D'
       MOFB3D = 'ORIE_NORM_COQUE'
+      MOFC3D = 'ORIE_LIGNE'
 C
       CALL GETFAC ( MOFA2D, NBF1 )
       CALL GETFAC ( MOFA3D, NBF2 )
       CALL GETFAC ( MOFB3D, NBF3 )
+      CALL GETFAC ( MOFC3D, NCF3 )
 C
 C --- RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
 C     ------------------------------------------
@@ -224,7 +226,7 @@ C
          CALL JEDETR('&&ORILGM.GROUP_MA_VOLU')
  200  CONTINUE
 C
-C --- TRAITEMENT DE 'ORIE_NORM_COQUE' :
+C --- TRAITEMENT DE 'ORIE_NORM_COQUE':
 C     -------------------------------
 C
       DO 300 IOCC = 1 , NBF3
@@ -283,6 +285,66 @@ C
          ENDIF
          CALL JEDETR ( '&&ORILGM.WORK' )
  300  CONTINUE
+C
+C --- TRAITEMENT DE 'ORIE_LIGNE':
+C     ------------------------------
+C
+      DO 400 IOCC = 1 , NCF3
+         ORIVEC = .FALSE.
+         CALL GETVR8 ( MOFC3D, 'VECT_TANG', IOCC,1,0, VECT, N1 )
+         IF (N1.NE.0)THEN
+            ORIVEC = .TRUE.
+            CALL GETVR8 ( MOFC3D, 'VECT_TANG', IOCC,1,-N1, VECT, N1 )
+            CALL GETVID ( MOFC3D, 'NOEUD', IOCC,1,0, K8B, N2 )
+            IF (N2.NE.0)THEN
+               CALL GETVID ( MOFC3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )
+               CALL JENONU (JEXNOM(NOMNOE,NNOEUD),NOEUD)
+               IF(NOEUD.EQ.0)CALL U2MESK('F','MODELISA5_97',1,NNOEUD)
+            ELSE
+               CALL GETVID(MOFC3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
+               CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
+               IF ( IER .EQ. 10 ) THEN
+                  VALK = NNOEUD
+                  CALL U2MESG('F', 'MODELISA8_75',1,VALK,0,0,0,0.D0)
+               ELSEIF ( IER .EQ. 1 ) THEN
+                  VALK = K8B
+                  CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
+               ENDIF
+               CALL JENONU ( JEXNOM(NOMNOE,K8B), NOEUD )
+            ENDIF
+         ENDIF
+         CALL GETVEM ( NOMA, 'GROUP_MA', MOFC3D, 'GROUP_MA',
+     &                                           IOCC, 1, 0, K8B, NG )
+         NG = -NG
+         CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
+         CALL GETVEM ( NOMA, 'GROUP_MA', MOFC3D, 'GROUP_MA',
+     &                                     IOCC, 1, NG, ZK8(JJJ), NG )
+         IF ( ORIVEC ) THEN
+            DO 410 IGR = 1, NG
+               GMAT = ZK8(JJJ+IGR-1)
+               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
+               CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
+               WRITE(IFM,1000) GMAT,  NBMAIL
+               NORIEN=0
+               CALL ORVLSE ( NOMA, ZI(JGRO), NBMAIL, NORIEN,
+     &                                             VECT, NOEUD, PREC )
+               NORIT = NORIT + NORIEN
+               WRITE(IFM,1100) NORIEN
+ 410        CONTINUE
+         ELSE
+            DO 420 IGR = 1, NG
+               GMAT = ZK8(JJJ+IGR-1)
+               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
+               CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
+               WRITE(IFM,1000) GMAT,  NBMAIL
+               NORIEN=0
+               CALL ORNORM ( NOMA, ZI(JGRO), NBMAIL, REORIE, NORIEN )
+               NORIT = NORIT + NORIEN
+               WRITE(IFM,1100) NORIEN
+ 420        CONTINUE
+         ENDIF
+         CALL JEDETR ( '&&ORILGM.WORK' )
+ 400  CONTINUE
 C
       IF ( NORIT .NE. 0 )  WRITE(IFM,1010) NORIT
 C

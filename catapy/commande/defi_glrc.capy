@@ -1,0 +1,72 @@
+#& MODIF COMMANDE  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
+            UIinfo={"groupes":("Modélisation",)},
+                    fr="Déterminer les caractéristiques du béton armé homogénéisées à partir des propriétés du béton et de  "
+                        +" plusieurs types d'armature",
+         reuse = SIMP(statut='f',typ=mater_sdaster), 
+         BETON          =FACT(statut='o',max=1,
+           MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
+           EPAIS           =SIMP(statut='o',typ='R',val_min=0.E+0 ),
+           OMT             =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0.0E+0), 
+           EAT             =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0.0E+0), 
+           BT1             =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0.0E+0), 
+           BT2             =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0.0E+0), 
+           GAMMA           =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=1.E+0), 
+           QP1             =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=1.E+0), 
+           QP2             =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=1.E+0), 
+
+           C1N1            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C1N2            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C1N3            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C2N1            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C2N2            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C2N3            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C1M1            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C1M2            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C1M3            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C2M1            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C2M2            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           C2M3            =SIMP(statut='o',typ='R',val_min=0.E+0),
+         ),
+         NAPPE     =FACT(statut='o',max=10,
+           MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
+           OMX             =SIMP(statut='o',typ='R',val_min=0.E+0), 
+           OMY             =SIMP(statut='o',typ='R',val_min=0.E+0), 
+           RX              =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0), 
+           RY              =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0), 
+         ),
+         CABLE_PREC   =FACT(statut='f',max=1,
+           MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
+           OMX             =SIMP(statut='o',typ='R',val_min=0.E+0), 
+           OMY             =SIMP(statut='o',typ='R',val_min=0.E+0), 
+           RX              =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0), 
+           RY              =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0), 
+           PREX            =SIMP(statut='o',typ='R'), 
+           PREY            =SIMP(statut='o',typ='R'), 
+         ),
+         LINER           =FACT(statut='f',max=10,
+           MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
+           OML             =SIMP(statut='o',typ='R',val_min=0.E+0), 
+           RLR             =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0), 
+         ),
+         IMPRESSION      =FACT(statut='f',
+           UNITE           =SIMP(statut='f',typ='I',defaut=8),  
+         ),
+)  ;

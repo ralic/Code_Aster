@@ -1,7 +1,7 @@
         SUBROUTINE HUJDRC (K, MATER, SIG , VIN, PSM, PST)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,7 +34,7 @@ C       PST    : PRODUIT SCALAIRE ENTRE LA NORME DE LA SURFACE ET DR
 C   -------------------------------------------------------------------
         INTEGER NDT, NDI, I, K
         REAL*8  MATER(22,2), SIG(6), VIN(*)
-        REAL*8  B, PCO, BETA, PC, EPSVPM
+        REAL*8  B, PCO, BETA, PC, EPSVPM, PTRAC
         REAL*8  UN, ZERO, AEXP, EXPTOL, R8MAEM
         REAL*8  P, Q, M, PHI, DEGR, SIGD(3), PSM, REFM(2)
         REAL*8  POSF(3), REF(2), NORM(2), PST, TOLE
@@ -51,6 +51,7 @@ C   -------------------------------------------------------------------
         EPSVPM = VIN(23)
         PHI    = MATER(5,2)
         M      = SIN(DEGR*PHI)
+        PTRAC  = MATER(21,2)
         
         EXPTOL = LOG(1.D+20)
         EXPTOL = MIN(EXPTOL, 40.D0)
@@ -61,6 +62,9 @@ C   -------------------------------------------------------------------
         PC     = PCO*EXP(-BETA*EPSVPM)
         
         CALL HUJPRJ(K,SIG,SIGD,P,Q)
+        
+        P =P -PTRAC
+        
         DO 5 I = 1, 3
           IF(Q.GT.TOLE)THEN
             POSF(I) = SIGD(I)/(M*P*(UN-B*LOG(P/PC)))

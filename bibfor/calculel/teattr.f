@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C    OUT IRET   (I)   : CODE DE RETOUR :  0 -> OK
 C                                         1 -> ATTRIBUT ABSENT
 C-----------------------------------------------------------------------
 C  CETTE ROUTINE EST ACCESSIBLE PARTOUT DANS LE CODE. SI ELLE EST
-C  APPELEE EN DEHORS DE TE0000 (OU AVEC TYPEL != ' '), ELLE NECESSITE
+C  APPELEE EN DEHORS DE TE0000 (AVEC TYPEL != ' '), ELLE NECESSITE
 C  DES APPELS JEVEUX, ELLE DEVIENT DONC UN PEU COUTEUSE.
 C-----------------------------------------------------------------------
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -76,16 +76,10 @@ C----------------------------------------------------------------------
       NOMT2=TYPEL
       NOATT2=NOATTR
 
-      IF (NOMT2.EQ.' ') THEN
-        IF (IACTIF.EQ.1) THEN
-           NOMT2=NOMTE
-        ELSE
-           CALL ASSERT(.FALSE.)
-        END IF
-      END IF
-
+      IF (NOMT2.EQ.' ') CALL ASSERT(IACTIF.EQ.1)
       APELJE=.TRUE.
-      IF ((IACTIF.EQ.1) .AND. (NOMT2.EQ.NOMTE))  APELJE=.FALSE.
+      IF ((IACTIF.EQ.1) .AND. (NOMT2.EQ.' '))  APELJE=.FALSE.
+      IF (NOMT2.EQ.' ') NOMT2=NOMTE
 
 
       IF (APELJE) THEN

@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,4 +190,35 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
  Si vous voulez seulement de l'élastoplasticité, il faut utiliser VMIS_CINx_CHAB.
 """),
 
+33: _("""
+ NMHUJ :: ELAS/ELAS_ORTH :: erreur de lecture des propriétés matériaux.
+"""),
+
+34: _("""
+ HUJTID :: ELAS/ELAS_ORTH :: cas non prévu.
+"""),
+
+35: _("""
+ HUJDP :: ELAS/ELAS_ORTH :: cas non prévu.
+"""),
+
+36: _("""
+ HUJTEL :: ELAS/ELAS_ORTH :: cas non prévu.
+"""),
+
+37: _("""
+ HUJPOT :: ELAS/ELAS_ORTH :: cas non prévu.
+"""),
+
+38: _("""
+ HUJJID :: ELAS/ELAS_ORTH :: cas non prévu.
+"""),
+
+39: _("""
+ HUJIID :: ELAS/ELAS_ORTH :: cas non prévu.
+"""),
+
+40: _("""
+ HUJELA :: ELAS/ELAS_ORTH :: cas non prévu.
+"""),
 }

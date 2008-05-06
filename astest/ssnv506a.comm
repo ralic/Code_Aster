@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 06/05/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,9 +84,10 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='NDPL',
                                  DY=-100.0,),
-## INUTILE EN AXI (IMPLICITE)
-#                               _F(GROUP_NO=('LS','LB'),
-#                                  DX=0.0,),
+## INUTILE EN AXI (SI L'AXE D'AXISYMETRIE COINCIDE "PARFAITEMENT"
+##                 AVEC X=0)
+                              _F(GROUP_NO=('LS','LB'),
+                                 DX=0.0,),
                               _F(GROUP_NO='PLANX',
                                  DX=0.0,DY=0.0,),),
 ## CETTE LIAISON ENTRE LES NOEUDS E ET S NE SERT A RIEN
@@ -119,7 +120,8 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=1.0,
                                     NOMBRE=17,),),);
 
-U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',METHODE='MUMPS',),
+U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',#METHODE='MUMPS',
+                           ),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=CHA1,),
@@ -259,7 +261,7 @@ TEST_RESU(RESU=_F(RESULTAT=U,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
                   VALE=1.1058333934147E+06,
-                  PRECISION=1.5E-4,
+                  #PRECISION=1.5E-4,
                   CRITERE='RELATIF',
                   REFERENCE='NON_REGRESSION',
                   VERSION='7.1.6',),);
@@ -274,5 +276,11 @@ TEST_RESU(RESU=_F(RESULTAT=U,
                   CRITERE='ABSOLU',
                   REFERENCE='NON_REGRESSION',
                   VERSION='7.1.1',),);
+
+# IMPR_RESU(MODELE=MO,
+#           FORMAT='MED',
+#           RESU=_F(MAILLAGE=SSNV506A,
+#                   RESULTAT=U,
+#                   TOUT='OUI',),);
 
 FIN();

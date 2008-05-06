@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER     VALI(4),D1,D2
       CHARACTER*4 KIOC,CDIM
-      CHARACTER*8 NOMA,NOMU,K8B,VERIF(2)
+      CHARACTER*8 NOMA,NOMU,K8B,VERIF(2),EXIVF
       CHARACTER*8 TYPEMA,NOMAIL,TABMAI(8)
       CHARACTER*16 K16BID
       CHARACTER*16 CONCEP,CMD,PHENOM,TYPELE,MODELI,LMODEL(10),TYPEMO,
@@ -620,6 +620,13 @@ C     -------------------------------------------------
       IF (LAXIS) THEN
         CALL TAXIS(NOMA,ZI(JDMA),NBMAIL)
       END IF
+
+
+C     -- POUR LES VOLUMES FINIS, CREATION DU VOISINAGE :
+C     ---------------------------------------------------
+      CALL DISMOI('F','EXI_VF',LIGREL,'LIGREL',IBID,EXIVF,IBID)
+      IF (EXIVF.EQ.'OUI') CALL CREVGE(NOMA)
+
 
       CALL JEDEMA()
 

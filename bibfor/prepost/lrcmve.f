@@ -5,7 +5,7 @@
      &                    ADSL, ADSV, ADSD,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 06/05/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -304,7 +304,7 @@ C
         ENDIF
    21 CONTINUE
 C
-      IF ( KAUX.GT.0 ) THEN
+      IF ( KAUX.GT.0.AND.NIVINF.GT.1 ) THEN
         WRITE(IFM,2001) NOCHMD
         DO 22 , JAUX = 1 , NCMPRF
           IF ( ZL(ADREMP+JAUX-1) ) THEN

@@ -4,7 +4,7 @@
       CHARACTER*16  OPTION
       LOGICAL       GRILLE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,12 +49,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  I, J, K, I1, I2, INT, MULTIC, JCOQU, JDEPG
+      INTEGER  I,J,K,I1,I2,I3,INT, MULTIC, JCOQU, JDEPG,M1,M2,M3
       REAL*8   DETJ,WGT,WKT(9),DEPL(18),NFX(9),NFY(9),NMI(3)
       REAL*8   FLEX(9,9),MEMB(6,6),MEFL(6,9),MASLOC(171),MASGLO(171)
       REAL*8   RHO,EPAIS,ROE,ROF,CTOR,EXCENT,XINERT
-      REAL*8   R8GAEM,ZERO,UN,SIX,DOUZE,WGTF, WGTMF
-      REAL*8   QSI, ETA, CARAT3(21)
+      REAL*8   R8GAEM,ZERO,UN,SIX,HUIT,DOUZE,WGTF, WGTMF
+      REAL*8   QSI, ETA, CARAT3(21),AIRE,COEF1,COEF2
       LOGICAL  EXCE, INER
 C     ------------------------------------------------------------------
 C
@@ -64,6 +64,7 @@ C
       ZERO  =  0.0D0
       UN    =  1.0D0
       SIX   =  6.0D0
+      HUIT  =  8.0D0
       DOUZE = 12.0D0
 C
       CALL DXROEP(RHO,EPAIS)
@@ -214,17 +215,50 @@ C     ===============================
       IF (( OPTION .EQ. 'MASS_MECA' ).OR.(OPTION.EQ.'M_GAMMA')) THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,MAS)
 
-      ELSE IF (OPTION.EQ.'MASS_MECA_DIAG' .OR.
-     &         OPTION.EQ.'MASS_MECA_EXPLI' ) THEN
+      ELSEIF (OPTION.EQ.'MASS_MECA_DIAG') THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,MASLOC)
         WGT = CARAT3(8)*ROE
+        WGTF= CARAT3(8)*ROF
         CALL UTPSLG(3,6,PGL,MASLOC,MASGLO)
         CALL DIALUM(3,6,18,WGT,MASGLO,MAS)
+        
+      ELSEIF (OPTION.EQ.'MASS_MECA_EXPLI') THEN
+        CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,MASLOC)
+        WGT = CARAT3(8)*ROE
+        WGTF= CARAT3(8)*ROF
+        CALL UTPSLG(3,6,PGL,MASLOC,MASGLO)
+        CALL DIAEXP(3,6,18,MASGLO,MAS)
+
+        COEF1 = EPAIS*EPAIS/DOUZE
+        COEF2 = CARAT3(8)/HUIT
+        IF(COEF2 .GT. COEF1) THEN 
+          COEF1 = COEF2
+        ENDIF
+        DO 210 J = 1,NNO
+          K  = 6*(J-1) + 1
+          M2 = 6*(J-1) + 2
+          M3 = 6*(J-1) + 3
+          I1 = 6*(J-1) + 5
+          I2 = 6*(J-1) + 4
+          I3 = 6*J
+
+          M1 = (K + 1)*K/2 
+          M2 = (M2 + 1)*M2/2 
+          M3 = (M3 + 1)*M3/2 
+          I1 = (I1 + 1)*I1/2
+          I2 = (I2 + 1)*I2/2
+          I3 = (I3 + 1)*I3/2
+          
+          MAS(M2) = MAS(M1)
+          MAS(M3) = MAS(M1)
+          MAS(I1) = MAS(M1)*COEF1
+          MAS(I2) = MAS(I1)
+          MAS(I3) = MAS(I1)
+210     CONTINUE
 
       ELSE IF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
         CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,0,DEPL,ENER)
       END IF
-C
       END

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,23 +48,22 @@ C-----------------------------------------------------------------------
 
 C     FONCTIONS EXTERNES:
 C     -------------------
-      INTEGER GRDEUR,MAX
+      INTEGER GRDEUR
       CHARACTER*8 SCALAI
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER IPAR,TAILLE,GD,IRET1,IRET2
+      INTEGER IPAR,TAILLE,GD
       INTEGER IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS
       INTEGER IAOPPA,NPARIO,IAMLOC,ILMLOC,IADSGD
       INTEGER IANOOP,IANOTE,NBOBTR,IAOBTR,NBOBMX,NPARIN
       INTEGER  IEL
       INTEGER IPARIN,IPAROU
-      INTEGER INDIK8,ISMAEM
+      INTEGER INDIK8
       CHARACTER*24 NOCHL,NOCHL2
       CHARACTER*8 NOMPAR
       CHARACTER*8 SCAL
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -103,14 +102,6 @@ C       --------------------------------------------------------
         IPAROU = INDIK8(LPAOUT,NOMPAR,1,NOUT)
         ZI(IAWLOC-1+7* (IPAR-1)+7) =  IPARIN+IPAROU
         IF ((IPARIN+IPAROU).EQ.0)  GO TO 40
-
-C        -- SI LE CHAMP EST 'IN' ET N'EXISTE PAS ON PASSE :
-C        --------------------------------------------------
-        IF (IPARIN.GT.0) THEN
-          CALL JEEXIN(LCHIN(IPARIN)//'.DESC',IRET1)
-          CALL JEEXIN(LCHIN(IPARIN)//'.CELD',IRET2)
-          IF ((IRET1+IRET2).EQ.0)  GO TO 40
-        END IF
 
         GD = GRDEUR(NOMPAR)
         SCAL = SCALAI(GD)

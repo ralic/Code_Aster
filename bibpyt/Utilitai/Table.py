@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 15/04/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF Table Utilitai  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,12 +53,13 @@ if not sys.modules.has_key('Graph'):
 DicForm = {
    'csep'  : ' ',       # séparateur
    'ccom'  : '#',       # commentaire
+   'ccpara' : '',       # commentaire des labels
    'cdeb'  : '',        # début de ligne
    'cfin'  : '\n',      # fin de ligne
    'sepch' : ';',       # séparateur entre deux lignes d'une cellule
-   'formK' : '%-8s',    # chaines
+   'formK' : '%-12s',   # chaines
    'formR' : '%12.5E',  # réels
-   'formI' : '%8d'      # entiers
+   'formI' : '%12d'     # entiers
 }
 # type par défaut des chaines de caractères
 Kdef = 'K24'
@@ -209,7 +210,7 @@ class TableBase(object):
             txt.extend(['#TITRE '+lig for lig in self.titr.split('\n')])
          else:
             txt.extend([dform['ccom']+lig for lig in self.titr.split('\n')])
-      txt.append(dform['csep'].join(lspa))
+      txt.append(dform['ccpara'] + dform['csep'].join(lspa))
       if ASTER and typdef:
          txt.append(stype)
       for r in rows:
@@ -240,11 +241,10 @@ class TableBase(object):
             txt.append(dform['csep'].join(lig2))
       if ASTER:
          txt.append('#FIN_TABLE')
-      # ajout du debut de ligne
-      if dform['cdeb'] != '':
-         txt=[dform['cdeb']+t for t in txt]
+      # ajout des debut et fin de ligne
+      txt=[dform['cdeb']+t+dform['cfin'] for t in txt]
 
-      return dform['cfin'].join(txt)
+      return ''.join(txt)
 # ------------------------------------------------------------------------------
    def ImprTabCroise(self,**kargs):
       """Impression au format TABLEAU_CROISE d'une table ayant 3 paramètres.

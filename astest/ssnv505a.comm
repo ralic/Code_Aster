@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,12 +94,13 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
                                DY=-790.,
                              ),);
 
+F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
 
 CH2=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
                               SANS_GROUP_NO=('LBB1','LCC1'),
-                              DIST_MAIT=31.75,
+                              DIST_MAIT=F_DIST_M,
                               CARA_ELEM=CARA, 
                               DIST_COQUE='OUI', 
                               TOLE_PROJ_EXT=0.25,

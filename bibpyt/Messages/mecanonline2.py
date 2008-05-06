@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF mecanonline2 Messages  DATE 06/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,11 @@ cata_msg = {
  La convergence de la condition des contraintes planes peut être améliorée en 
  augmentant ITER_MAXI_DEBORST (=1 par défaut), sous le mot clef facteur COMP_INCR. 
 
+"""),
+
+4 : _("""
+ La charge definie dans STAT_NON_LINE en tant que une charge de type suiveuse, 
+ sous le mot-clé TYPE_CHARGE = 'SUIV' n'est pas une Charge SUIVEUSE.
 """),
 
 27 : _("""

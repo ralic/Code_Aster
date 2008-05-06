@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF modelisa4 Messages  DATE 06/05/2008   AUTEUR KHAM M.KHAM 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -365,10 +365,15 @@ cata_msg = {
   %(k1)s  mot cle " %(k2)s " ignore
 """),
 
+83 : _("""
+  le vecteur est perpendiculaire à la poutre.
+"""),
 
-
-
-
+84 : _("""
+  La poutre présente une ou plusieurs branches: cas non permis.
+  Essayez de créer des groupes de mailles différents pour
+  chaque branche et de les orienter indépendemment.
+"""),
 
 
 

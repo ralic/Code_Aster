@@ -1,13 +1,14 @@
-      SUBROUTINE ASSMA3(LMASYM,LMESYM,TT,MAT19,NU14,
-     &    MATEL,C2,IGR,IEL,C1,RANG,IFEL2,IFEL3,IFEL4,IFEL5,IFM,JFNUSD,
-     &    JNUEQ,JNUMSD,JPDMS,JRESL,NBVEL,NNOE,LFETI,LLICH,
-     &    LLICHD,LLICHP,LLIMO,LMUMPS,LPDMS,ILIMA,JADLI,JADNE,
-     &    JPRN1,JPRN2,JNULOC,JPOSDL,ADMODL,LCMODL,MODE,NEC,
-     &    NMXCMP,NCMP,NBLC,JSMHC,JSMDI,ICONX1,ICONX2,
-     &    NOMLI,NOMLID,INFOFE,
-     &    JTMP2,JVALM,ILINU,IDD,ELLAGR)
+      SUBROUTINE ASSMA3(LMASYM,LMESYM,TT,MAT19,NU14,MATEL,IGR,IEL,C1,
+     &                  RANG,IFEL2,IFEL3,IFEL4,IFEL5,IFM,JFNUSD,JNUEQ,
+     &                  JNUMSD,JPDMS,JRESL,JRSVI,NBVEL,NNOE,LFETI,LLICH,
+     &                  LLICHD,LLICHP,LLIMO,LMUMPS,LPDMS,ILIMA,JADLI,
+     &                  JADNE,JPRN1,JPRN2,JNULO1,JNULO2,JPOSD1,JPOSD2,
+     &                  ADMODL,LCMODL,MODE,NEC,NMXCMP,NCMP,NBLC,JSMHC,
+     &                  JSMDI,ICONX1,ICONX2,LIGRE1,LIGRE2,INFOFE,JTMP2,
+     &                  LGTMP2,JVALM,ILINU,IDD,ELLAGR,EXIVF,JDESC,
+     &                  JREPE,JPTVOI,JELVOI,CODVOI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +29,7 @@ C RESPONSABLE PELLET J.PELLET
 C TOLE CRP_21
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C BUT : ASSEMBLER UN ELEMENT FINI ORDINAIRE
+C BUT : ASSEMBLER UN ELEMENT FINI
 C-----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -45,28 +46,36 @@ C-----------------------------------------------------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
-      LOGICAL LMASYM, LMESYM
-      CHARACTER*19 MAT19,MATEL
+      LOGICAL LMASYM,LMESYM
+      CHARACTER*19 MAT19,MATEL,LIGRE1,LIGRE2
       CHARACTER*14 NU14
+      CHARACTER*(*) EXIVF
       CHARACTER*2 TT
       REAL*8 C1,C2
-      CHARACTER*24 NOMLI,NOMLID,INFOFE
+      CHARACTER*24 INFOFE
       INTEGER IEL,ADMODL,RANG,COMPT,ICONX1,ICONX2,JADLI,JADNE
       INTEGER I1,I2,IAD1,IAD11,IAD2,IAD21
       INTEGER IAUX1,IAUX2,IAUX3,IDD,IFEL2,IFEL3,IFEL4,IFEL5
-      INTEGER IFM,IGR,JFNUSD,ILIMA,ILINU,ITERM
-      INTEGER JFEL4,JNUEQ,JNULOC,JNUMSD,JPDMS,JPOSDL,JPRN1,JPRN2
-      INTEGER JRESL,JSMDI,JSMHC,JTMP2,JVALM(2)
-      INTEGER LCMODL,K1,K2,N2,N3
+      INTEGER IFM,IGR,JFNUSD,ILIMA,ILINU,NBTERM
+      INTEGER JFEL4,JNUEQ,JNULO1,JNUMSD,JPDMS,JPOSD1,JPRN1,JPRN2
+      INTEGER JRESL,JRSVI,JSMDI,JSMHC,JTMP2,JVALM(2),LGTMP2
+      INTEGER LCMODL,K1,K2,N2,N3,JNULO2,JPOSD2
       INTEGER MODE,N1,NBLC,NBVEL,NCMP,NDDL1,NDDL2
-      INTEGER NEC,NMXCMP,NNOE,NUMA,NK2
+      INTEGER NEC,NMXCMP,NNOE,NUMA,NK2,DECAEL,JDESC
       LOGICAL LFEL2,LFETI,LLICH,LLICHD,LLICHP,LLIMO,LMUMPS,LPDMS
+
+      CHARACTER*16 CODVOI
+      INTEGER NVOIMA,NSCOMA,JREPE,JPTVOI,JELVOI,NBVOIS
+      PARAMETER(NVOIMA=100,NSCOMA=4)
+      INTEGER LIVOIS(1:NVOIMA),TYVOIS(1:NVOIMA),NBNOVO(1:NVOIMA)
+      INTEGER NBSOCO(1:NVOIMA),LISOCO(1:NVOIMA,1:NSCOMA,1:2)
 C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
 C-----------------------------------------------------------------------
       INTEGER ZZCONX,ZZLIEL
-      INTEGER ZZNEMA,ZZPRNO,POSDD2,NUMLOC
+      INTEGER ZZNEMA,ZZPRNO,POSDD1,POSDD2,NUMLO1,NUMLO2
       INTEGER IMAIL,J,ILI,IGREL,NUNOEL,L,KNO,KDDL,K,ELLAGR
+      INTEGER NNOV,IGR2,MODE2,NUMAV,KVOIS
 
       ZZCONX(IMAIL,J)=ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
       ZZLIEL(ILI,IGREL,J)=ZI(ZI(JADLI+3*(ILI-1)+1)-1+
@@ -75,25 +84,30 @@ C-----------------------------------------------------------------------
      &                  ZI(ZI(JADNE+3*(ILI-1)+2)+IEL-1)+J-1)
       ZZPRNO(ILI,NUNOEL,L)=ZI(JPRN1-1+ZI(JPRN2+ILI-1)+
      &                     (NUNOEL-1)*(NEC+2)+L-1)
-      NUMLOC(KNO,K)=ZI(JNULOC-1+2*(KNO-1)+K)
-      POSDD2(KNO,KDDL)=ZI(JPOSDL-1+NMXCMP*(KNO-1)+KDDL)
+
+      NUMLO1(KNO,K)=ZI(JNULO1-1+2*(KNO-1)+K)
+      NUMLO2(KNO,K)=ZI(JNULO2-1+2*(KNO-1)+K)
+      POSDD1(KNO,KDDL)=ZI(JPOSD1-1+NMXCMP*(KNO-1)+KDDL)
+      POSDD2(KNO,KDDL)=ZI(JPOSD2-1+NMXCMP*(KNO-1)+KDDL)
 C----------------------------------------------------------------------
 
-      ITERM=0
+      NBTERM=0
 C     NUMA : NUMERO DE LA MAILLE
       NUMA=ZZLIEL(ILIMA,IGR,IEL)
+      C2=C1
+      IF ((NUMA.GT.0).AND.(LPDMS)) C2=C2*ZR(JPDMS-1+NUMA)
 
 
 C     -- MONITORING:
 C     ----------------
       IF ((INFOFE(5:5).EQ.'T') .AND. (LFETI)) THEN
-        WRITE (IFM,*)'<FETI/ASSMAM>','IDD',IDD,'LIGREL',NOMLI,'ILIMA',
+        WRITE (IFM,*)'<FETI/ASSMAM>','IDD',IDD,'LIGREL',LIGRE1,'ILIMA',
      &    ILIMA
         WRITE (IFM,*)'IGR',IGR,'IEL',IEL,'NUMA',NUMA
         IF (LLIMO)WRITE (IFM,*)'.LOGI',ZI(JFNUSD-1+ABS(NUMA))
         IF (LLICH) THEN
           IF (LLICHD) THEN
-            WRITE (IFM,*)'LIGREL DE CHARGE '//'PROJETE DE FILS ',NOMLID
+            WRITE (IFM,*)'LIGREL DE CHARGE '//'PROJETE DE FILS ',LIGRE2
           ELSE
             WRITE (IFM,*)'LIGREL DE CHARGE INITIAL'
           ENDIF
@@ -111,7 +125,7 @@ C       AU SOUS-DOMAINE IDD
         IF (NUMA.GT.0) THEN
           IF (LLICH) CALL U2MESS('F','ASSEMBLA_6')
 C         ELLE APPARTIENT AU GREL IGR DU LIGREL PHYSIQUE ILIMA
-          IF (ZI(JFNUSD-1+NUMA).NE.IDD)GOTO 150
+          IF (ZI(JFNUSD-1+NUMA).NE.IDD)GOTO 110
         ELSE
 C         ELLE APPARTIENT AU GREL IGR DU LIGREL TARDIF ILIMA
           IF (LLIMO) CALL U2MESS('F','ASSEMBLA_7')
@@ -128,11 +142,21 @@ C       DONNEES ATTRIBUEES AU PROC SI MAILLE PHYSIQUE: CHAQUE PROC
 C       NE TRAITE QUE CELLES ASSOCIEES AUX SD QUI LUI SONT ATTRIBUES
 C       SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
         IF (NUMA.GT.0) THEN
-          IF (ZI(JNUMSD-1+NUMA).NE.RANG) GOTO 150
+          IF (ZI(JNUMSD-1+NUMA).NE.RANG)GOTO 110
         ELSE
-          IF (RANG.NE.0)  GOTO 150
+          IF (RANG.NE.0)GOTO 110
         ENDIF
       ENDIF
+
+
+C     ---------------------------------------------------------------
+C     OBJET TEMPORAIRE .TMP2 :
+C     .TMP2 : (1:2*DIM(MATR_ELEM)) POSITION RELATIVE DANS LES BLOCS
+C     POUR LE I-EME REEL DE LA MATRICE ELEM :
+C     TMP2(2*(I-1)+1) --> NUMERO DU BLOC OU S'INJECTE I.
+C     TMP2(2*(I-1)+2) --> POSITION DANS LE BLOC DU REEL I.
+C     ---------------------------------------------------------------
+
 
 
 
@@ -146,21 +170,15 @@ C     1.1. MAILLE DU MAILLAGE :
 C     ------------------------
       IF (NUMA.GT.0) THEN
 
-        IF (LPDMS) THEN
-          C2=C1*ZR(JPDMS-1+NUMA)
-        ELSE
-          C2=C1
-        ENDIF
-
-        DO 51 K1=1,NNOE
+        DO 10 K1=1,NNOE
           N1=ZZCONX(NUMA,K1)
           IAD1=ZZPRNO(1,N1,1)
           CALL CORDDL(ADMODL,LCMODL,JPRN1,JPRN2,1,MODE,NEC,NCMP,N1,K1,
-     &                NDDL1,ZI(JPOSDL-1+NMXCMP*(K1-1)+1))
+     &                NDDL1,ZI(JPOSD1-1+NMXCMP*(K1-1)+1))
           CALL ASSERT(NDDL1.LE.NMXCMP)
-          ZI(JNULOC-1+2*(K1-1)+1)=IAD1
-          ZI(JNULOC-1+2*(K1-1)+2)=NDDL1
-   51   CONTINUE
+          ZI(JNULO1-1+2*(K1-1)+1)=IAD1
+          ZI(JNULO1-1+2*(K1-1)+2)=NDDL1
+   10   CONTINUE
 
 
 
@@ -189,23 +207,24 @@ C           C'EST UNE MAILLE TARDIVE SITUEE SUR UNE INTERFACE,
 C           DONC PARTAGEE ENTRE PLUSIEURS SOUS-DOMAINES
             COMPT=0
             IAUX2=(ZI(IFEL4)/3)-1
-            DO 60 JFEL4=0,IAUX2
+            DO 20 JFEL4=0,IAUX2
               IAUX3=IFEL4+3*JFEL4+3
               IF (ZI(IAUX3).EQ.NUMA) THEN
                 COMPT=COMPT+1
                 IF (ZI(IAUX3-1).EQ.IDD) THEN
 C                 ELLE CONCERNE LE SD, ON L'ASSEMBLE
                   LFEL2=.TRUE.
-                  GOTO 70
+                  GOTO 30
+
                 ENDIF
 C               ON A LU TOUTES LES VALEURS, ON SORT DE LA BOUCLE
-                IF (COMPT.EQ.-IAUX1)GOTO 70
+                IF (COMPT.EQ.-IAUX1)GOTO 30
               ENDIF
-   60       CONTINUE
-   70       CONTINUE
+   20       CONTINUE
+   30       CONTINUE
           ENDIF
 C         ON SAUTE LA CONTRIBUTION
-          IF (.NOT.LFEL2)GOTO 150
+          IF (.NOT.LFEL2)GOTO 110
         ENDIF
 
 
@@ -215,11 +234,11 @@ C         - TRIA3 TARDIF (NNOE=3, NUMA <0)
 C         - N1 EST UN NOEUD PHYSIQUE (>0)
 C         - N2 ET N3 SONT DES NOEUDS TARDIFS PORTANT 1 CMP: 'LAGR'
 C       --------------------------------------------------------------
-        IF ((ELLAGR.EQ.0).AND.(NNOE.EQ.3)) THEN
+        IF ((ELLAGR.EQ.0) .AND. (NNOE.EQ.3)) THEN
           N1=ZZNEMA(ILIMA,NUMA,1)
           N2=ZZNEMA(ILIMA,NUMA,2)
           N3=ZZNEMA(ILIMA,NUMA,3)
-          IF ((N1.GT.0).AND.(N2.LT.0).AND.(N3.LT.0)) THEN
+          IF ((N1.GT.0) .AND. (N2.LT.0) .AND. (N3.LT.0)) THEN
 C           -- POUR L'INSTANT ON NE VERIFIE PAS QUE N2 ET N3 NE
 C              PORTENT QUE LA CMP 'LAGR'
             ELLAGR=1
@@ -227,7 +246,7 @@ C              PORTENT QUE LA CMP 'LAGR'
         ENDIF
 
 
-        DO 141 K1=1,NNOE
+        DO 60 K1=1,NNOE
 C         N1 : INDICE DU NOEUDS DS LE .NEMA DU LIGREL
 C              DE CHARGE GLOBAL OU LOCAL
           N1=ZZNEMA(ILIMA,NUMA,K1)
@@ -249,7 +268,7 @@ C               NON SUR L'INTERFACE
 C               C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE
 C               DE L'INTERFACE
                 IAUX2=(ZI(IFEL5)/3)-1
-                DO 80 JFEL4=0,IAUX2
+                DO 40 JFEL4=0,IAUX2
                   IAUX3=IFEL5+3*JFEL4+3
                   IF (ZI(IAUX3).EQ.N1) THEN
                     IF (ZI(IAUX3-1).EQ.IDD) THEN
@@ -257,8 +276,8 @@ C                     VOICI SON NUMERO LOCAL CONCERNANT LE SD
                       N1=-ZI(IAUX3-2)
                     ENDIF
                   ENDIF
-   80           CONTINUE
-   90           CONTINUE
+   40           CONTINUE
+   50           CONTINUE
               ENDIF
             ENDIF
 
@@ -266,18 +285,18 @@ C                     VOICI SON NUMERO LOCAL CONCERNANT LE SD
 C           -- NUMERO D'EQUATION DU PREMIER DDL DE N1
             IAD1=ZZPRNO(ILINU,N1,1)
             CALL CORDDL(ADMODL,LCMODL,JPRN1,JPRN2,ILINU,MODE,NEC,NCMP,
-     &                  N1,K1,NDDL1,ZI(JPOSDL-1+NMXCMP*(K1-1)+1))
+     &                  N1,K1,NDDL1,ZI(JPOSD1-1+NMXCMP*(K1-1)+1))
 
           ELSE
 C           -- NOEUD PHYSIQUE
             IAD1=ZZPRNO(1,N1,1)
             CALL CORDDL(ADMODL,LCMODL,JPRN1,JPRN2,1,MODE,NEC,NCMP,N1,K1,
-     &                  NDDL1,ZI(JPOSDL-1+NMXCMP*(K1-1)+1))
+     &                  NDDL1,ZI(JPOSD1-1+NMXCMP*(K1-1)+1))
           ENDIF
 
-          ZI(JNULOC-1+2*(K1-1)+1)=IAD1
-          ZI(JNULOC-1+2*(K1-1)+2)=NDDL1
- 141    CONTINUE
+          ZI(JNULO1-1+2*(K1-1)+1)=IAD1
+          ZI(JNULO1-1+2*(K1-1)+2)=NDDL1
+   60   CONTINUE
       ENDIF
 
 
@@ -287,37 +306,88 @@ C     2. ON BOUCLE SUR LES TERMES DE LA MATRICE ELEMENTAIRE
 C        POUR NOTER OU ILS DOIVENT ETRE RECOPIES
 C     -----------------------------------------------------------
 
-      DO 50 K1=1,NNOE
-        IAD1=NUMLOC(K1,1)
-        NDDL1=NUMLOC(K1,2)
+      DO 100 K1=1,NNOE
+        IAD1=NUMLO1(K1,1)
+        NDDL1=NUMLO1(K1,2)
         IF (LMESYM) THEN
-           NK2=K1
+          NK2=K1
         ELSE
-           NK2=NNOE
+          NK2=NNOE
         ENDIF
-        DO 40 I1=1,NDDL1
-          DO 20 K2=1,NK2
-            IAD2=NUMLOC(K2,1)
-            NDDL2=NUMLOC(K2,2)
-            IF (LMESYM.AND.(K2.EQ.K1)) NDDL2=I1
-            DO 10 I2=1,NDDL2
-              IAD11=ZI(JNUEQ-1+IAD1+POSDD2(K1,I1)-1)
-              IAD21=ZI(JNUEQ-1+IAD2+POSDD2(K2,I2)-1)
-              CALL ASRETM(LMASYM,JTMP2,ITERM,JSMHC,JSMDI,IAD11,IAD21)
-   10       CONTINUE
-   20     CONTINUE
-   40   CONTINUE
-   50 CONTINUE
+        DO 90 I1=1,NDDL1
+          DO 80 K2=1,NK2
+            IAD2=NUMLO1(K2,1)
+            NDDL2=NUMLO1(K2,2)
+            IF (LMESYM .AND. (K2.EQ.K1))NDDL2=I1
+            DO 70 I2=1,NDDL2
+              IAD11=ZI(JNUEQ-1+IAD1+POSDD1(K1,I1)-1)
+              IAD21=ZI(JNUEQ-1+IAD2+POSDD1(K2,I2)-1)
+              CALL ASRETM(LMASYM,JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,IAD11,
+     &                    IAD21)
+   70       CONTINUE
+   80     CONTINUE
+   90   CONTINUE
+  100 CONTINUE
+
+
+C     -- SI LE RESUELEM EST 'VOISIN_VF', IL FAUT ENCORE ASSEMBLER LES
+C        CONTRIBUTIONS DES ELEMENTS VOISINS :
+C     -----------------------------------------------------------------
+      IF (EXIVF.EQ.'OUI') THEN
+        CALL ASSERT (.NOT.LPDMS)
+        CALL ASSERT (.NOT.LMESYM)
+        CALL VOIUTI(NUMA,CODVOI,NVOIMA,NSCOMA,JREPE,JPTVOI,JELVOI,
+     &                  NBVOIS,LIVOIS,TYVOIS,NBNOVO,NBSOCO,LISOCO)
+        CALL ASSERT(NBVOIS.LE.30)
+        DO 101, KVOIS=1,NBVOIS
+          NUMAV=LIVOIS(KVOIS)
+          NNOV =NBNOVO(KVOIS)
+          IGR2=ZI(JREPE-1+2*(NUMAV-1)+1)
+          MODE2=ZI(JDESC+IGR2+1)
+
+          DO 102 K2=1,NNOV
+            N2=ZZCONX(NUMAV,K2)
+            IAD2=ZZPRNO(1,N2,1)
+            CALL CORDDL(ADMODL,LCMODL,JPRN1,JPRN2,1,MODE2,NEC,NCMP,
+     &                  N2,K2,NDDL2,ZI(JPOSD2-1+NMXCMP*(K2-1)+1))
+            CALL ASSERT(NDDL2.LE.NMXCMP)
+            ZI(JNULO2-1+2*(K2-1)+1)=IAD2
+            ZI(JNULO2-1+2*(K2-1)+2)=NDDL2
+  102     CONTINUE
+
+
+          DO 103 K1=1,NNOE
+            IAD1=NUMLO1(K1,1)
+            NDDL1=NUMLO1(K1,2)
+            DO 93 I1=1,NDDL1
+              DO 83 K2=1,NNOV
+                IAD2=NUMLO2(K2,1)
+                NDDL2=NUMLO2(K2,2)
+                DO 73 I2=1,NDDL2
+                  IAD11=ZI(JNUEQ-1+IAD1+POSDD1(K1,I1)-1)
+                  IAD21=ZI(JNUEQ-1+IAD2+POSDD2(K2,I2)-1)
+                  CALL ASRETM(LMASYM,JTMP2,LGTMP2,NBTERM,JSMHC,
+     &                        JSMDI,IAD11,IAD21)
+   73           CONTINUE
+   83         CONTINUE
+   93       CONTINUE
+  103     CONTINUE
+
+  101   CONTINUE
+      ENDIF
 
 
 
 C     -----------------------------------------------------------
 C     3. ON RECOPIE EFFECTIVEMENT LES TERMES:
-C        (ITERM CONTIENT LE NOMBRE DE TERMES (R/C) A TRAITER)
+C        (NBTERM CONTIENT LE NOMBRE DE TERMES (R/C) A TRAITER)
 C     -----------------------------------------------------------
-      CALL ASCOPR(LMASYM,LMESYM,TT,JTMP2,ITERM,JRESL+NBVEL*(IEL-1),
-     &              C2,JVALM)
+      IF (EXIVF.EQ.'OUI') THEN
+        DECAEL=ZI(JRSVI-1+IEL)-1
+      ELSE
+        DECAEL=NBVEL*(IEL-1)
+      ENDIF
+      CALL ASCOPR(LMASYM,LMESYM,TT,JTMP2,NBTERM,JRESL+DECAEL,C2,JVALM)
 
-
-  150 CONTINUE
+  110 CONTINUE
       END

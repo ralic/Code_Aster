@@ -1,12 +1,9 @@
-      SUBROUTINE NMNET2(NMNBN,CNBN,CPLAS,CDPLAS
+      SUBROUTINE NMNET2(ZIMAT,NMNBN,CNBN,CPLAS,CDPLAS
      &                 ,CDDPLA,CZEF,CZEG,CIEF,CPROX,CDEPS
-     &                 ,CNCRIT,CDTG,CIER,CDEPSP,DC1,DC2,DEPSP2)
-
+     &                 ,CNCRIT,CDTG,CIER,CDEPSP,DC1,DC2,DEPSP2,NORMM)
         IMPLICIT  NONE
-C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,34 +20,28 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-        REAL*8  NMNBN(6)         
-        REAL*8  NMPLAS(2,3)   
-        REAL*8  NMDPLA(2,2)  
-        REAL*8  NMDDPL(2,2)
-        REAL*8  NMZEF        
-        REAL*8  NMZEG         
-        INTEGER NMIEF  
-        INTEGER NMPROX(2)  
-        
-C---------------------------------------------
-        REAL*8  CNBN(6)         
-        REAL*8  CPLAS(2,3)   
-        REAL*8  CDPLAS(2,2)  
-        REAL*8  CDDPLA(2,2)
-        REAL*8  CZEF        
-        REAL*8  CZEG         
-        INTEGER CIEF  
-        INTEGER CPROX(2)  
-
-C---------------------------------------------
+       REAL*8  NMNBN(6)         
+       REAL*8  NMPLAS(2,3)   
+       REAL*8  NMDPLA(2,2)  
+       REAL*8  NMDDPL(2,2)
+       REAL*8  NMZEF        
+       REAL*8  NMZEG         
+       INTEGER NMIEF  
+       INTEGER NMPROX(2)  
+       REAL*8  CNBN(6)         
+       REAL*8  CPLAS(2,3)   
+       REAL*8  CDPLAS(2,2)  
+       REAL*8  CDDPLA(2,2)
+       REAL*8  CZEF        
+       REAL*8  CZEG         
+       INTEGER CIEF  
+       INTEGER CPROX(2)  
        REAL*8  CDEPS(6)   
-       INTEGER CNCRIT     
+       INTEGER CNCRIT, ZIMAT    
        REAL*8  CDTG(6,6)  
        INTEGER CIER  
        REAL*8  CDEPSP(6)  
-
-C-------------------------------------------
-       REAL*8         DC1(6,6),DC2(6,6)
+       REAL*8         DC1(6,6),DC2(6,6),NORMM
        REAL*8         DEPSP2(6,2),CP(6),GPLASS
        INTEGER     J
 
@@ -64,13 +55,14 @@ C-------------------------------------------
          CNBN(J) = CNBN(J) - CP(J)
  20    CONTINUE
 
-       CALL MPPFFN(CNBN,CPLAS,CDPLAS,CDDPLA,CZEF,CZEG,CIEF,CPROX)
+       CALL MPPFFN(ZIMAT,CNBN,CPLAS,CDPLAS,CDDPLA,CZEF,CZEG,
+     &             CIEF,CPROX,NORMM)
        IF(CIEF .GT. 0) THEN
          CIER=2
          GOTO 30
        ENDIF
 
-      IF ( (GPLASS(CNBN,CPLAS,1)  .GT.  CZEG) 
+      IF ((GPLASS(CNBN,CPLAS,1).GT.CZEG) 
      & .OR.(GPLASS(CNBN,CPLAS,2)  .GT.  CZEG)) THEN
           CIER=1
       ELSE

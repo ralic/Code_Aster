@@ -1,8 +1,8 @@
-      SUBROUTINE HUJPRE (ETAT, MOD, CRIT, IMAT, MATER, DEPS, SIGD, SIGF,
-     &                   EPSD, VIND, IRET)
+      SUBROUTINE HUJPRE (ETAT, MOD, CRIT, IMAT, MATER, DEPS, SIGD,
+     &                    SIGF, EPSD, VIND, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,7 +63,7 @@ C                              IRET=1 => ECHEC
       REAL*8      EPSD(6), DEPS(6)
       REAL*8      SIGD(6), SIGF(6), DSIG(6), DSDE(6,6)
       REAL*8      MATER(22,2), I1, D13, TOLE, TRACE
-      REAL*8      PTRAC, PREF, MAXI, COHES, FACTOR
+      REAL*8      PTRAC, PREF, PISO, MAXI, COHES, FACTOR
       CHARACTER*7 ETAT
       CHARACTER*8 MOD, NOMAIL
       LOGICAL     DEBUG
@@ -74,6 +74,7 @@ C                              IRET=1 => ECHEC
       DATA   D13, TOLE  / 0.33333333334D0, 1.0D-6/
       
       PREF = MATER(8,2)
+      PISO =1.5D0*MATER(21,2)
 
       IF (ETAT .EQ. 'ELASTIC') THEN
       
@@ -89,7 +90,7 @@ C                              IRET=1 => ECHEC
           I1   =D13*TRACE(NDI,SIGF)
         ELSE
           IRET =0
-          I1   =0.D0
+          I1   =PISO
           IF (DEBUG) THEN
             CALL TECAEL(IADZI,IAZK24)
             NOMAIL = ZK24(IAZK24-1+3) (1:8)
@@ -99,8 +100,10 @@ C                              IRET=1 => ECHEC
           ENDIF
         ENDIF
         
-        IF (I1/PREF .LE. TOLE) THEN
+        IF ((I1 -PISO)/PREF .LE. TOLE) THEN
           IF (DEBUG) THEN
+            CALL TECAEL(IADZI,IAZK24)
+            NOMAIL = ZK24(IAZK24-1+3) (1:8)
             WRITE(6,'(10(A))')
      &      'HUJPRE :: TRACTION DANS LA PSEUDO-PREDICTION ELASTIQUE ',
      &      'DANS LA MAILLE ',NOMAIL
@@ -108,7 +111,9 @@ C                              IRET=1 => ECHEC
           CALL HUJELA (MOD, CRIT, MATER, DEPS, SIGD, SIGF, 
      &                 EPSD, IRET)
         ENDIF
+        
       ENDIF
+
 
 C ---> CONTROLE QU'AUCUNE COMPOSANTE DU VECTEUR SIGF NE SOIT POSITIVE
       DO 10 I = 1, NDT
@@ -127,26 +132,30 @@ C ---> CONTROLE QU'AUCUNE COMPOSANTE DU VECTEUR SIGF NE SOIT POSITIVE
         ENDIF
   20  CONTINUE
 
-C ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION      
 
+C ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION      
       IF(INDM.NE.0)THEN
-        COHES  = -1.D1
+        COHES  = -10.D0
         IF(DSIG(INDM).GT.TOLE)THEN
           FACTOR = (-SIGD(INDM)+COHES)/DSIG(INDM)  
           DO 30 I = 1, NDT
             DSIG(I) = FACTOR * DSIG(I)
   30      CONTINUE
           CALL LCSOVN (NDT, SIGD, DSIG, SIGF)        
-          WRITE(6,*)
-     &    'HUJPRE :: APPLICATION DE FACTOR POUR MODIFIER ',
-     &     'LA PREDICTION --- FACTOR =',FACTOR
-          WRITE(6,*)'SIGF =',(SIGF(I),I=1,NDT)
+          IF (DEBUG) THEN
+            WRITE (6,'(A,A,E12.5)')
+     &      'HUJPRE :: APPLICATION DE FACTOR POUR MODIFIER ',
+     &      'LA PREDICTION -> FACTOR =',FACTOR
+            WRITE(6,'(A,6(1X,E12.5))')'SIGF =',(SIGF(I),I=1,NDT)
+          ENDIF
         ELSE
           IRET = 1
+          CALL TECAEL(IADZI,IAZK24)
+          NOMAIL = ZK24(IAZK24-1+3) (1:8)
           WRITE(6,'(10(A))')
      &    'HUJPRE :: TRACTION DANS LA PSEUDO-PREDICTION ELASTIQUE ',
      &    'DANS LA MAILLE ',NOMAIL
         ENDIF
       ENDIF
-
+      
       END

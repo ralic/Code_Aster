@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/05/2008   AUTEUR KHAM M.KHAM 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,22 +27,27 @@
 
 DEBUT(CODE=_F( NOM = 'SSNV505F',NIV_PUB_WEB='INTERNET'));
 
-# ---------------------  MAILLAGE ----------------
 
+# ---------------------  MAILLAGE ----------------
 PRE_GIBI();
 
 MAILL1=LIRE_MAILLAGE();
 
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,
-                  CREA_GROUP_NO=(_F(GROUP_MA=('POU1',),
-                                   NOM='GROUP1',),
-                                 _F(GROUP_MA=('POU2',),
-                                   NOM='GROUP2',),
+                  CREA_GROUP_NO=(_F(GROUP_MA=('POU1',), NOM='GROUP1',),
+                                 _F(GROUP_MA=('POU2',), NOM='GROUP2',),
                                  ));
-                       
+                     
+MAILL1=MODI_MAILLAGE(reuse =MAILL1,
+                     MAILLAGE=MAILL1,
+                     ORIE_LIGNE=_F(GROUP_MA=('POU1',),
+                                   GROUP_NO='A',
+                                   VECT_TANG=(-1.,0.,0.),),
+                     INFO=2);
+
+                  
 # ---- MODELE : POUTRE DROITE D'EULER ----
-                
 MODE=AFFE_MODELE(MAILLAGE=MAILL1,
                  VERIF='MAILLE',
                  AFFE=(_F(GROUP_MA='POU1',
@@ -52,9 +57,9 @@ MODE=AFFE_MODELE(MAILLAGE=MAILL1,
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_E',),
                        ),);
+                       
 
 # ------------- DEFINITON DU MATERIAU -----------
-
 MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,NU=0.33333,RHO=7800.,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
@@ -62,7 +67,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                          MATER=MPOUTRE,),);
                          
 CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,
-                        INFO=2,
+                        INFO=1,
                         POUTRE=(_F(GROUP_MA='POU1',
                                    SECTION='RECTANGLE',
                                    CARA=('HY','HZ',),
@@ -73,8 +78,8 @@ CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,
                                    VALE=(63.5,10.16,),),
                                 ),);
 
-# ------------- DEFINITION D'UN CARA_ELEM POUR LE CONTACT -----------
 
+# ------------- DEFINITION D'UN CARA_ELEM POUR LE CONTACT -----------
 MOD2=AFFE_MODELE(MAILLAGE=MAILL1,
                  AFFE=_F(GROUP_MA='POU2',
                          PHENOMENE='MECANIQUE',
@@ -87,8 +92,8 @@ DEFI_R=AFFE_CARA_ELEM(MODELE=MOD2,
                                 CARA=('R1','R2',),
                                 VALE=(31.75,31.75,),),);
 
-# ---------- CONDITIONS AUX LIMITES --------------
 
+# ---------- CONDITIONS AUX LIMITES --------------
 COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
                         DDL_IMPO=(_F(GROUP_NO=('A','B',),
                                      DX=0.0,DY=0.0,DZ=0.0,
@@ -98,26 +103,7 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
                                   ),);
 
 CH1=AFFE_CHAR_MECA(MODELE=MODE,
-                   DDL_IMPO=(_F(GROUP_NO=('C'),
-                                DY=-790.,),
-                             ),);
-
-# ---- METHODE LAGRANGIENNE ----
-CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
-                   CONTACT=_F(GROUP_MA_MAIT='POU1',
-                              GROUP_MA_ESCL='POU2',
-                              
-                              METHODE='LAGRANGIEN',
-                                  DIST_MAIT=31.75,
-                                  DIST_ESCL=31.75,
-                                  FROTTEMENT='COULOMB',
-                                  COEF_MATR_FROT=1.,
-                                  VECT_MAIT='VECT_Y',
-                                  MAIT_VECT_Y=(0.,0.,-1.,),
-                                  REAC_GEOM='AUTOMATIQUE',
-                                  COULOMB=0.,
-                              
-                              ),);
+                   DDL_IMPO=(_F(GROUP_NO=('C'),DY=-790.,),),);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
@@ -132,20 +118,36 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
                                      NOMBRE=25,),),);
 
+
+# ---- METHODE LAGRANGIENNE ----
+CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
+                   CONTACT=_F(GROUP_MA_MAIT='POU1',
+                              GROUP_MA_ESCL='POU2',
+                              
+                              METHODE='LAGRANGIEN',
+                              DIST_MAIT=31.75,
+                              DIST_ESCL=31.75,
+                              FROTTEMENT='COULOMB',
+                              COEF_MATR_FROT=1.,
+                              VECT_MAIT='VECT_Y',
+                              MAIT_VECT_Y=(0.,0.,1.,),
+                              REAC_GEOM='AUTOMATIQUE',
+                              COULOMB=0.,
+                              
+                              ),);
+
 ULAG=STAT_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CHAMPCAR,
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHLAG,),
-                      ),
+                       _F(CHARGE=CHLAG,),),
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=1.,
                              SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                             SUBD_PAS_MINI=1E-8,
-                             ),
+                             SUBD_PAS_MINI=1E-8,),
                 NEWTON=_F(REAC_ITER=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                 ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
@@ -160,8 +162,8 @@ ULAG=CALC_NO(reuse =ULAG,
           CHAM_MATER=CM,
          );
 
+
 # ---- TABLEAUX ----
-                  
 T_REA_LA=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO=('A','B'),
                                  RESULTAT=ULAG,
@@ -179,22 +181,23 @@ T_DEP_LA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 IMPR_TABLE(TABLE=T_REA_LA,);
 IMPR_TABLE(TABLE=T_DEP_LA,);
 
+
 #
 # ---- METHODE CONTINUE ----
 #      ________________
-
 CHCON=AFFE_CHAR_MECA(MODELE=MODE,
-                   CONTACT=_F(DIST_POUTRE='OUI',
-                              GROUP_MA_MAIT='POU1',
-                              GROUP_MA_ESCL='POU2',
-                              CARA_ELEM=DEFI_R,
-                              METHODE='CONTINUE',
-                                 ITER_GEOM_MAXI = 3,
-                                 ITER_CONT_MAXI = 10,
-                                 VECT_MAIT='VECT_Y',
-                                  MAIT_VECT_Y=(0.,0.,-1.,),
-                                 DIST_MAIT=31.75,
-                              ),);
+                     CONTACT=_F(#DIST_POUTRE='OUI',
+                                GROUP_MA_MAIT='POU1',
+                                GROUP_MA_ESCL='POU2',
+                                #CARA_ELEM=DEFI_R,
+                                METHODE='CONTINUE',
+                                ITER_GEOM_MAXI = 3,
+                                ITER_CONT_MAXI = 10,
+                                VECT_MAIT='VECT_Y',
+                                MAIT_VECT_Y=(0.,0.,1.,),
+                                DIST_MAIT=31.75,
+                                DIST_ESCL=31.75,),
+                     INFO=1);
                               
 UCON=STAT_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
@@ -202,14 +205,12 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHCON,),
-                      ),
+                       _F(CHARGE=CHCON,),),
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=1.,
                              SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                             SUBD_PAS_MINI=1E-8,
-                             ),
+                             SUBD_PAS_MINI=1E-8,),
                 NEWTON=_F(REAC_ITER=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                 ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
@@ -224,8 +225,8 @@ UCON=CALC_NO(reuse =UCON,
           CHAM_MATER=CM,
          );
 
+
 # ---- TABLEAUX ----
-                  
 T_REA_CO=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO=('A','B'),
                                  RESULTAT=UCON,
@@ -240,8 +241,8 @@ T_DEP_CO=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-# ---- VALIDATION ----
 
+# ---- VALIDATION ----
 TEST_TABLE(TABLE=T_REA_CO,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',

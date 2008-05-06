@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -268,25 +268,6 @@ C     ------------------------------------------
             ZR(JMATR-1+I) = MATLOC(I)
    30     CONTINUE
 
-
-          IF (OPTION.EQ.'MASS_MECA_EXPLI' ) THEN
-C     CORRECTION DES TERMES CORRESPONDANT AU DRZ, MDRZ,
-C     NON PREVU PAR LA THEORIE COQUE ON RAJOUTE
-C     UN TERME DIAGONAL NON ZERO, EGAL A MDRZ=(MDRX+MDRY)/2
-C     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
-
-          DO 35 J = 1,NNO
-            N1 = 6*(J-1) + 5
-            N2 = 6*(J-1) + 4
-            NI = 6*J
-            NDIM = (NI + 1)*NI/2
-            N1   = (N1 + 1)*N1/2
-            N2   = (N2 + 1)*N2/2
-            ZR(JMATR-1+NDIM)=(ZR(JMATR-1+ N1)+ZR(JMATR-1+ N2))*0.5D0
-   35     CONTINUE
-          ENDIF
-
-
         END IF
 C
 C
@@ -313,10 +294,12 @@ C
              CALL U2MESS('F','ELEMENTS2_71')
            ENDIF
         ENDIF
-        IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
-C
-          CALL U2MESS('A','ELEMENTS2_72')
-C
+        IF ((ZK16(ICOMPO+2) (6:10).EQ.'_REAC') .OR. 
+     &      (ZK16(ICOMPO+2) (1:6 ).EQ.'EULER_') ) THEN
+
+          IF(ZK16(ICOMPO+2) (6:10).EQ.'_REAC') 
+     &     CALL U2MESS('A','ELEMENTS2_72')
+          
           DO 40 I = 1,NNO
             I1 = 3* (I-1)
             I2 = 6* (I-1)

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,6 +125,8 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MO,
 
 # DEFINITION DU CONTACT
 
+F_DIST_E=DEFI_CONSTANTE(VALE=-2.)
+
 CTAC=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
                                REAC_GEOM='CONTROLE',
@@ -139,7 +141,7 @@ CTAC=AFFE_CHAR_MECA(MODELE=MO,
                                NORMALE           = 'MAIT',
                                VECT_MAIT         = 'VECT_Y',
                                MAIT_VECT_Y       = (0.,0.,-1.,),
-                               DIST_ESCL=-2.0,
+                               DIST_ESCL=F_DIST_E,
                                ),);
 
 #---------------------------------------------------------------------

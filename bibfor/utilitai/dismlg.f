@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,6 +75,27 @@ C     -----------------------------------
         CALL JEEXIN(NOMOB//'.LIEL',IRET)
         REPK = 'NON'
         IF (IRET.GT.0) REPK = 'OUI'
+
+
+C     -----------------------------------------------------------------
+      ELSEIF ((QUESTI.EQ.'EXI_VF') ) THEN
+C     -----------------------------------------------------------------
+        REPK = 'NON'
+        CALL JEEXIN(NOMOB//'.LIEL',IRET)
+        IF (IRET.GT.0) THEN
+          CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGREL,K1BID)
+          DO 11,IGREL = 1,NBGREL
+            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',IALIEL)
+            CALL JELIRA(JEXNUM(NOMOB//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
+            ITYPEL = ZI(IALIEL-1+NEL)
+            CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
+            IF (LTEATT (NOMTE,'VOLU_FINI','OUI')) THEN
+              REPK = 'OUI'
+              GO TO 11
+            END IF
+ 11       CONTINUE
+        END IF
+
 
 C     -----------------------------------------------------------------
       ELSEIF ((QUESTI.EQ.'EXI_RDM')    .OR. (QUESTI.EQ.'EXI_POUX')  .OR.

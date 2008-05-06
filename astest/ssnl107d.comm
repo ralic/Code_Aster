@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,6 +64,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,),);
 
+F_DIST_E=DEFI_CONSTANTE(VALE=-0.2)
 
 CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
                    MODELE=MO,
@@ -86,7 +87,7 @@ CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
                                NORMALE = 'ESCL',
                                VECT_ESCL = 'FIXE',
                                ESCL_FIXE=(0.0,0.0,-1.0,),
-                               DIST_ESCL=-0.2,
+                               DIST_ESCL=F_DIST_E,
                                APPARIEMENT='NODAL',
                                METHODE='GCP',
                                RESI_ABSO=1.E-8,

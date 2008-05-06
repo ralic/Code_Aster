@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -367,10 +367,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    if FORMAT=='TABLEAU':
       # surcharge par les formats de l'utilisateur
       kargs['dform']={
-         'csep'  : args['SEPARATEUR'],
-         'ccom'  : args['COMMENTAIRE'],
-         'cdeb'  : args['DEBUT_LIGNE'],
-         'cfin'  : args['FIN_LIGNE']
+         'csep'   : args['SEPARATEUR'],
+         'ccom'   : args['COMMENTAIRE'],
+         'ccpara' : args['COMM_PARA'],
+         'cdeb'   : args['DEBUT_LIGNE'],
+         'cfin'   : args['FIN_LIGNE'],
       }
 
    # 2.2. au format AGRAF

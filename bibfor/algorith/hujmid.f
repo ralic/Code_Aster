@@ -3,7 +3,7 @@
      &  NEGMUL, NITER, EPSCON, IRET, SUBD, LOOP, NDEC0 )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -248,7 +248,8 @@ C ----  NON CONVERVENCE: ITERATION MAXI ATTEINTE  ----
      &                   ERIMP, EPSD, DEPS, SIGD, VIND)
            ELSE
              IRET = 1
-             WRITE(6,'(A,I3)')'NB ITERATIONS MAXI --- IRET =',IRET
+             WRITE(6,'(A,I3)')
+     &       'HUJMID :: NB ITERATIONS MAXI -> IRET =',IRET
              GOTO 9999
            ENDIF
           

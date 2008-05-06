@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMUN  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,15 +65,18 @@ def C_CONTACT() : return FACT(statut='f',max='**',
            b_appa_fixe     =BLOC(condition = "TYPE_APPA == 'FIXE'",
              DIRE_APPA     =SIMP(statut='f',typ='R',min=3,max=3),
            ),
-                                                                                         
-           DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-           DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-           DIST_MAIT       =SIMP(statut='f',typ='R'),
-           DIST_ESCL       =SIMP(statut='f',typ='R'),           
-
-           b_cara         =BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
-             CARA_ELEM       =SIMP(statut='o',typ=(cara_elem) ),
+           
+           b_dist_struct   =BLOC(condition = "METHODE != 'CONTINUE' and METHODE != 'XFEM' ",
+             DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+             DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+             b_cara         =BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
+               CARA_ELEM       =SIMP(statut='o',typ=(cara_elem) ),
+             ),
            ),
+           
+           DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+
 
            TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0), 
            TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),  

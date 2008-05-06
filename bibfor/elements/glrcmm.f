@@ -1,11 +1,8 @@
-      SUBROUTINE GLRCMM (MATR,MATI,EP,SURFGP,P,SIG,EPST,DEPS
-     &                 ,DSIG,ECR,TSHEAR,DELAS,DSIDEP)
-
+      SUBROUTINE GLRCMM (ZIMAT,MATR,EP,SURFGP,P,SIG,
+     &                 EPST,DEPS,DSIG,ECR,TSHEAR,DELAS,DSIDEP)
       IMPLICIT NONE
-C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,9 +37,7 @@ C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-
       REAL*8   MATR(*)
-      INTEGER  MATI(*)
       INTEGER  TSHEAR
       REAL*8   EP, SURFGP, P(3,3), SIG(*), DEPS(*), EPST(*)
       REAL*8   DSIG(*)
@@ -50,119 +45,29 @@ C
 
       REAL*8  VGLOB(3), VLOC(3), Q(2,2), TQ(2,2), ALPHOR,
      &      GG(2),DTLOC(2),DTORTH(2),DGAMOR(2),AUX,
-     &      MAXMP(2),MINMP(2),NMIN(2),NMAX(2)
+     &      MAXMP(2),MINMP(2),NMIN(2),NMAX(2),R8BID
       REAL*8 NMIN0,NMIN1,NMIN2,NMAX0,NMAX1,NMAX2,MP1N0,MP2N0
-      INTEGER I,IER, J
+      INTEGER I,IER,J
 
       INTEGER         MP1F(2),MP2F(2),DMP1F(2),DMP2F(2)
-     &               ,DDMP1F(2),DDMP2F(2)
-      REAL*8           NORMN,NORMM,DSIDEP(6,*),DELAS(6,*)
-      CHARACTER*24    CGLR
+     &               ,DDMP1F(2),DDMP2F(2),IFEPX
+      REAL*8           NORMN,NORMM,DSIDEP(6,*),DELAS(6,*),VALRES(4)
+      CHARACTER*24  CGLR,FEPX
       INTEGER       IMP1,IMP2,IDMP1,IDMP2,IDDMP1,IDDMP2,INN,INM
-      INTEGER       IMP1MX,IMP2MI
-
-C----------------------
+      INTEGER       IMP1MX,IMP2MI,ZIMAT,JMVR
+      CHARACTER*2   CODRES(8)
+      CHARACTER*8   NOMRES(8)
+      CHARACTER*16  PHENOM
+      CHARACTER*19  MATKI
+      LOGICAL       LFCAL
 
       CALL JEMARQ()
 
 C----- INITIALISATION DES OBJETS "GLRC"
 
-      CGLR = '&&GLRC.MP1FONC'
-      CALL JEEXIN(CGLR,IMP1)
-      IF (IMP1 .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V I',2,IMP1)
-      ELSE
-        CALL JEVEUO(CGLR,'E',IMP1)
-      ENDIF
-
-      CGLR = '&&GLRC.MP2FONC'
-      CALL JEEXIN(CGLR,IMP2)
-      IF (IMP2 .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V I',2,IMP2)
-      ELSE
-        CALL JEVEUO(CGLR,'E',IMP2)
-      ENDIF
-
-      CGLR = '&&GLRC.DMP1FONC'
-      CALL JEEXIN(CGLR,IDMP1)
-      IF (IDMP1 .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V I',2,IDMP1)
-      ELSE
-        CALL JEVEUO(CGLR,'E',IDMP1)
-      ENDIF
-
-      CGLR = '&&GLRC.DMP2FONC'
-      CALL JEEXIN(CGLR,IDMP2)
-      IF (IDMP2 .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V I',2,IDMP2)
-      ELSE
-        CALL JEVEUO(CGLR,'E',IDMP2)
-      ENDIF
-
-      CGLR = '&&GLRC.DDMP1FONC'
-      CALL JEEXIN(CGLR,IDDMP1)
-      IF (IDDMP1 .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V I',2,IDDMP1)
-      ELSE
-        CALL JEVEUO(CGLR,'E',IDDMP1)
-      ENDIF
-
-      CGLR = '&&GLRC.DDMP2FONC'
-      CALL JEEXIN(CGLR,IDDMP2)
-      IF (IDDMP2 .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V I',2,IDDMP2)
-      ELSE
-        CALL JEVEUO(CGLR,'E',IDDMP2)
-      ENDIF
-
-      CGLR = '&&GLRC.NORMN'
-      CALL JEEXIN(CGLR,INN)
-      IF (INN .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V R',1,INN)
-C         CALL JECREO(CGLR,'V V R')
-C         CALL JEVEUO(CGLR,'E',INN)
-       ELSE
-        CALL JEVEUO(CGLR,'E',INN)
-      ENDIF
-
-
-      CGLR = '&&GLRC.NORMM'
-      CALL JEEXIN(CGLR,INM)
-      IF (INM .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V R',1,INM)
-C         CALL JECREO(CGLR,'V V R')
-C         CALL JEVEUO(CGLR,'E',INM)
-      ELSE
-        CALL JEVEUO(CGLR,'E',INM)
-      ENDIF
-
-      CGLR = '&&GLRC.MP1'
-      CALL JEEXIN(CGLR,IMP1MX)
-      IF (IMP1MX .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V R',2,IMP1MX)
-      ELSE
-        CALL JEVEUO(CGLR,'E',IMP1MX)
-      ENDIF
-
-      CGLR = '&&GLRC.MP2'
-      CALL JEEXIN(CGLR,IMP2MI)
-      IF (IMP2MI .EQ. 0) THEN
-        CALL WKVECT(CGLR,'V V R',2,IMP2MI)
-      ELSE
-        CALL JEVEUO(CGLR,'E',IMP2MI)
-      ENDIF
-
+      PHENOM = 'GLRC_DAMAGE'
 
 C ---   TRANSFORMATION DES DONNEES
-
-       DO 5, I = 1,2
-        MP1F(I)   = MATI(I+1)
-        MP2F(I)   = MATI(I+3)
-        DMP1F(I)  = MATI(I+5)
-        DMP2F(I)  = MATI(I+7)
-        DDMP1F(I) = MATI(I+9)
-        DDMP2F(I) = MATI(I+11)
- 5    CONTINUE
 
       IF (ECR(12).LT.5.D0) THEN
         DO 10, I = 1,3
@@ -184,60 +89,42 @@ C ---   TRANSFORMATION DES DONNEES
       Q(1,2) = -Q(2,1)
       Q(2,2) = Q(1,1)
 
-       DO 40, I = 1,2
-         ZI(IMP1-1   + I) = MP1F(I)
-         ZI(IMP2-1   + I) = MP2F(I)
-         ZI(IDMP1-1  + I) = DMP1F(I)
-         ZI(IDMP2-1  + I) = DMP2F(I)
-         ZI(IDDMP1-1 + I) = DDMP1F(I)
-         ZI(IDDMP2-1 + I) = DDMP2F(I)
- 40    CONTINUE
+      NOMRES(1) = 'FMEX1'
+      NOMRES(2) = 'FMEX2'
+      NOMRES(3) = 'FMEY1'
+      NOMRES(4) = 'FMEY2'
+      
+      NOMRES(5) = 'MAXMP1'
+      NOMRES(6) = 'MINMP1'
+      NOMRES(7) = 'MAXMP2'
+      NOMRES(8) = 'MINMP2'
 
-        DO 50, I=1,2
-            CALL CAFONC(MP1F(I),0.D0,MP1N0)
-            CALL CAFONC(MP2F(I),0.D0,MP2N0)
+      DO 50, I=1,2
+        CALL RCVALA(ZIMAT,' ',PHENOM,1,'X ',0.D0,2,NOMRES(2*(I-1)+1),
+     &            VALRES,CODRES,'FM')
+        MP1N0 = VALRES(1)
+        MP2N0 = VALRES(2)
 
-            CALL MMFONC(MP1F(I),AUX,MAXMP(I))
-            CALL MMFONC(MP2F(I),MINMP(I),AUX)
+        CALL RCVALA(ZIMAT,' ',PHENOM,0,' ',R8BID,2,NOMRES(2*(I-1)+5),
+     &            VALRES,CODRES,'FM')
+        MAXMP(I) = VALRES(1)
+        MINMP(I) = VALRES(2)
+           
+        IF ( (MP1N0  .LT.  0.D0).OR.(MP2N0  .GT.  0.D0)
+     &      .OR.     (MAXMP(I)-MINMP(I) .LE. 0.D0)   ) THEN
+          CALL U2MESS('F','ELEMENTS_87')
+        ENDIF
+ 50   CONTINUE
 
-            ZR(IMP1MX-1 + I) = MAXMP(I)
-            ZR(IMP2MI-1 + I) = MINMP(I)
-
-
-            IF ( (MP1N0  .LT.  0.D0).OR.(MP2N0  .GT.  0.D0)
-     &          .OR.     (MAXMP(I)-MINMP(I) .LT. 0.D0)   ) THEN
-              CALL U2MESS('A','ELEMENTS_87')
-            ENDIF
- 50     CONTINUE
-        NORMM=0.5D0*MAX(MAXMP(1)-MINMP(1),MAXMP(2)-MINMP(2))
-
-        DO 60, I=1,2
-          IF(MP1F(I) .GT. 0) THEN
-            NMIN1 = -1.0D20
-            NMAX1 =  1.0D20
-            NMIN2 = -1.0D20
-            NMAX2 =  1.0D20
-            NMAX0=MIN(NMAX1,NMAX2)
-            NMIN0=MAX(NMIN1,NMIN2)
-
-            CALL INTERF(MP1F(I),MP2F(I),NORMM,NMIN0,NMIN(I))
-
-            CALL INTERF(MP1F(I),MP2F(I),NORMM, NMAX0,NMAX(I))
-
-          ELSE
-            NMAX(I)=0.D0
-            NMIN(I)=0.D0
-          ENDIF
-60      CONTINUE
-
-        NORMN=0.5D0*MAX(ABS(NMAX(1)-NMIN(1)),ABS(NMAX(2)-NMIN(2)))
-
-C ---   CALCUL
-        CALL GLRCDD(MATR,MATI,EP,SURFGP,Q,SIG,EPST,DEPS,DSIG
-     &             ,ECR,DELAS,DSIDEP)
-
-      ZR(INN) = NORMN
-      ZR(INM) = NORMM
+      NOMRES(1) = 'NORMM'
+      NOMRES(2) = 'NORMN'
+      CALL RCVALA(ZIMAT,' ',PHENOM,0,' ',R8BID,2,NOMRES,
+     &          VALRES,CODRES,'  ')
+      NORMM = VALRES(1)
+      NORMN = VALRES(2)
+     
+      CALL GLRCDD(ZIMAT,MAXMP,MINMP,MATR,EP,SURFGP,Q,SIG,
+     &            EPST,DEPS,DSIG,ECR,DELAS,DSIDEP,NORMM,NORMN)
 
       CALL JEDEMA()
 

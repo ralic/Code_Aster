@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,19 +88,8 @@ SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                             RI_CYC   = 0.0001,
                             DILA     = 1.0,));
 
-MATER1 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
-                                      NU = 0.3,),
-                     DRUCK_PRAGER = _F( H     = -200.0E6,
-                                   ALPHA = 0.33,
-                                   SY = 2.11E6,
-                                   P_ULTM = 0.01,
-                                   ECROUISSAGE = 'LINEAIRE',),);
-
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI', MATER=SOL));
-
-CHMAT1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=MATER1));
 
 #***********************************************************************
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
@@ -162,7 +151,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                               SUBD_PAS=10,
                               SUBD_NIVEAU=10,
                               INST_INIT=0.0,
-                              INST_FIN =10));
+                              INST_FIN =10.));
 
 
 #****************************************
@@ -172,7 +161,7 @@ U1=CALC_ELEM(reuse=U1,
              MODELE=MODELE,
              CHAM_MATER=CHMAT,
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',
-                     'EPSI_ELNO_DEPL',),
+                     'EPSI_ELNO_DEPL','INDI_LOCA_ELGA'),
              RESULTAT=U1);
 
 U1=CALC_NO(reuse=U1,
@@ -193,7 +182,7 @@ TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU_ELGA',
                                 RESULTAT=U1,
                                 NOM_CHAM='VARI_NOEU_ELGA',
                                 NOM_CMP=('V1','V2','V3','V4',
-                                         'V5','V6','V7','V8','V32'),
+                                         'V5','V6','V7','V8','V23','V32'),
                                 OPERATION='EXTRACTION'));
 
 TAB_EPSY=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU_DEPL',
@@ -229,12 +218,7 @@ TAB_SIG=CALC_TABLE(reuse=TAB_SIG,
                              TABLE=TAB_EPSY,
                              NOM_PARA='INST'));
 
-#IMPR_TABLE(TABLE=TAB_VARI);
-#IMPR_TABLE(TABLE=TAB_SIG);
-#IMPR_TABLE(TABLE=TAB_EPSV);
-#IMPR_RESU(RESU=_F(RESULTAT=U1,
-#                  NUME_ORDRE=(10,20,30,40,50,60,70,80,90,100),
-#                  NOM_CHAM=('INDI_LOCA_ELGA'),),);
+
 #**********************************#
 #       TEST_RESU AU POINT C       #
 #**********************************#
@@ -541,7 +525,7 @@ TEST_TABLE(TABLE=TAB_VARI,
                      PRECISION=.00009,
                      CRITERE='ABSOLU'));
 
-"""
+
 #------------------------------------------------
 # TEST DU CRITERE DE RICE EN NON REGRESSION 
 #------------------------------------------------
@@ -565,6 +549,7 @@ TEST_RESU(RESU=(
                    POINT=1,
                    VALE=4.42654E+01,
                    PRECISION=1.E-3,
+                   VALE_ABS='OUI',
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.2.20', ),                   
                 _F(RESULTAT=U1,
@@ -573,8 +558,9 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR2',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-4.42654E+01,
+                   VALE=4.42654E+01,
                    PRECISION=1.E-3,
+                   VALE_ABS='OUI',
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.2.20', ),
                 _F(RESULTAT=U1,
@@ -583,8 +569,9 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR3',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-2.98361E+01,
+                   VALE=2.98361E+01,
                    PRECISION=1.E-3,
+                   VALE_ABS='OUI',
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.2.20', ),
                 _F(RESULTAT=U1,
@@ -595,11 +582,10 @@ TEST_RESU(RESU=(
                    POINT=1,
                    VALE=2.98361E+01,
                    PRECISION=1.E-3,
+                   VALE_ABS='OUI',
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.2.20', ),
                    ),);
-"""
 
-FIN(FORMAT_HDF='OUI',
-    RETASSAGE='OUI');
+FIN();
 

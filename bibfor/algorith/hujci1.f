@@ -1,7 +1,7 @@
       SUBROUTINE HUJCI1 (CRIT, MATER, DEPS, SIGD, I1F, TRACT, IRET)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,8 +44,9 @@ C -----------------------------------------------------------------
       REAL*8  MATER(22,2), CRIT(*), DEPS(6), SIGD(6), I1D, I1F
       REAL*8  TRDEPS, COEF, EXIST, PREC, ALPHA, THETA
       REAL*8  X(4), Y(4)
-      REAL*8  YOUNG, POISSO, N, PA
-      REAL*8  ZERO, UN, DEUX, D13
+      REAL*8  YOUNG, POISSO, N, PA, PISO
+      REAL*8  ZERO, UN, DEUX, D13, C11, C12, C13, C22, C23, C33
+      REAL*8  E1, E2, E3, NU12, NU13, NU23, NU21, NU31, NU32, DELTA
       LOGICAL TRACT, DEBUG
       INTEGER I, NITER
 
@@ -60,30 +61,59 @@ C -----------------------------------------------------------------
       CALL INFNIV (IFM,NIV)
       
 
-C
 C       METHODE DE LA SECANTE
 C       =====================
-
       YOUNG   = MATER(1,1)
       POISSO  = MATER(2,1)
       PA      = MATER(8,2)
       N       = MATER(1,2)
+      PISO    = 1.5D0*MATER(21,2)
       IRET    = 0
       THETA   = UN
 
 
 C---> DETERMINATION DU TERME COEF = K0 x DEPS_VOLUMIQUE
-      TRDEPS = ZERO
-      DO 5 I = 1, NDI
-        TRDEPS = TRDEPS + DEPS(I)
-  5     CONTINUE
+      IF (MATER(17,1).EQ.UN) THEN
 
-      COEF = YOUNG*D13 /(UN-N)/(UN-DEUX*POISSO) * TRDEPS
+        TRDEPS = ZERO
+        DO 5 I = 1, NDI
+          TRDEPS = TRDEPS + DEPS(I)
+  5       CONTINUE
+
+        COEF = YOUNG*D13 /(UN-N)/(UN-DEUX*POISSO) * TRDEPS
+        
+      ELSEIF (MATER(17,1).EQ.DEUX) THEN
+      
+        E1   = MATER(1,1)
+        E2   = MATER(2,1)
+        E3   = MATER(3,1)
+        NU12 = MATER(4,1)
+        NU13 = MATER(5,1)
+        NU23 = MATER(6,1)
+        NU21 = MATER(13,1)
+        NU31 = MATER(14,1)
+        NU32 = MATER(15,1)
+        DELTA= MATER(16,1)
+        
+        C11 = (UN - NU23*NU32)*E1/DELTA
+        C12 = (NU21 + NU31*NU23)*E1/DELTA
+        C13 = (NU31 + NU21*NU32)*E1/DELTA
+        C22 = (UN - NU13*NU31)*E2/DELTA
+        C23 = (NU32 + NU31*NU12)*E2/DELTA
+        C33 = (UN - NU21*NU12)*E3/DELTA
+        
+        COEF = (C11+C12+C13)*DEPS(1) + (C12+C22+C23)*DEPS(2)
+     &         + (C13+C23+C33)*DEPS(3)
+        COEF = D13*COEF /(UN-N)
+      
+      ENDIF
 
       I1D = ZERO
       DO 10 I = 1, NDI
         I1D = I1D + D13*SIGD(I)
   10    CONTINUE
+  
+      I1D =I1D -PISO
   
       IF (I1D .GE. ZERO) THEN
         I1D = 1.D-12 * PA
@@ -102,8 +132,6 @@ C                  D'EXISTENCE DE LA SOLUTION AVEC P+ < P- < 0
       
       IF (EXIST .LE. ZERO) THEN
         IF (DEBUG) CALL U2MESS ('A', 'COMPOR1_13')
-C         IRET = 1
-C         GOTO 9999
         X(4)  = ZERO
         THETA = ZERO
         GOTO 50
@@ -122,7 +150,6 @@ C         GOTO 9999
 C
 C --- DETERMINATION DES BORNES DE RECHERCHE DE LA SOLUTION
 C     ====================================================
-
       ALPHA = 100.D0
 
       IF (COEF .LT. ZERO) THEN
@@ -138,8 +165,6 @@ C     ====================================================
           GOTO 45
         ELSEIF (Y(2) .LE. ZERO) THEN
           IF (DEBUG) CALL U2MESS ('A', 'COMPOR1_17')
-C           IRET = 1
-C           GOTO 9999
           X(4)  = ZERO
           THETA = ZERO
           GOTO 50
@@ -186,15 +211,13 @@ C     ===========================================
       WRITE (IFM,*) 'VALEUR DE F ACTUELLE', Y(4)
       WRITE (IFM,*) 'AUGMENTER ITER_INTE_MAXI'
 
-C      IRET = 1
-C      GOTO 9999
       X(4)  = ZERO
       THETA = ZERO
 
   50  CONTINUE
 
-      I1F = (UN-THETA)*(COEF*(I1D/PA)**N + I1D) + THETA*X(4)
-      IF (I1F .GE. ZERO) TRACT = .TRUE.
+      I1F = (UN-THETA)*(COEF*(I1D/PA)**N + I1D) + THETA*X(4) +PISO
+      IF (I1F .GE. PISO) TRACT = .TRUE.
 
  9999 CONTINUE
       END

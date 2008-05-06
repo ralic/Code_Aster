@@ -1,7 +1,7 @@
       SUBROUTINE XCONNO(MOX,CHFIS,BASE,CHGLO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/05/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER NFIS,IFIS,JJ,INO,NFISMX,II
+      INTEGER NFIS,IFIS,JJ,INO,II
       INTEGER IMA,ICMP,NBNOM,JMACNX,JLCNX
       INTEGER IBID,JINDIC,JG,NMAENR,I
       INTEGER JNFIS,JCNSFD,JCNSFC,JCNSFV,JCNSFK,JCNSFL
@@ -66,8 +66,7 @@ C
       CHARACTER*24  INDIC,GRP(3)
       CHARACTER*32  JEXATR
       LOGICAL       COMPCH
-      PARAMETER     (NFISMX=100)
-      CHARACTER*8  FISS(NFISMX),MA,NOMGD,NOMFIS
+      CHARACTER*8   MA,NOMGD,NOMFIS
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -78,13 +77,6 @@ C     1.RECUPERATION D'INFORMATIONS DANS MOX
 
       CALL JEVEUO(MOX//'.NFIS','L',JNFIS)
       NFIS = ZI(JNFIS)
-
-      CALL GETVID(' ', 'FISSURE', 1,1,0,FISS , NFIS )
-      NFIS = -NFIS
-
-      IF (NFIS .GT. NFISMX) CALL U2MESI ('F', 'XFEM_2', 1, NFISMX)
-
-      CALL GETVID(' ', 'FISSURE', 1,1,NFIS,FISS , IBID )
 
       CALL JEVEUO(MOX//'.FISS','L',JMOFIS)
       NOMFIS = ZK8(JMOFIS)
@@ -119,14 +111,14 @@ C     1.RECUPERATION D'INFORMATIONS DANS MOX
         NOMFIS = ZK8(JMOFIS-1 + IFIS)
         CALL CNOCNS(NOMFIS//CHFIS,'V',CNSF)
 
-        GRP(1)=FISS(IFIS)//'.MAILFISS  .HEAV'
-        GRP(2)=FISS(IFIS)//'.MAILFISS  .CTIP'
-        GRP(3)=FISS(IFIS)//'.MAILFISS  .HECT'
+        GRP(1)=NOMFIS//'.MAILFISS  .HEAV'
+        GRP(2)=NOMFIS//'.MAILFISS  .CTIP'
+        GRP(3)=NOMFIS//'.MAILFISS  .HECT'
 
         CALL JEVEUO(CNSF//'.CNSV','L',JCNSFV)
         CALL JEVEUO(CNSF//'.CNSL','L',JCNSFL)
 
-        INDIC=FISS(IFIS)//'.MAILFISS .INDIC'
+        INDIC=NOMFIS//'.MAILFISS .INDIC'
         CALL JEVEUO(INDIC,'L',JINDIC)
 
         DO 1000, II = 1,3
@@ -142,38 +134,54 @@ C--COPIER LE CHAMP 'CHFIS' POUR LES MAILLES '.HEAV','.CTIP' ET '.HECT'
                 INO = ZI(JMACNX + ZI(JLCNX-1+IMA)-2+JJ)
                 DO 1220, ICMP = 1,NCMP1
 
+C                 POUR CHAQUE TYPE 'R', I', 'L', 'K8', SI LE CHAM_NO
+C                 A DEJE ETE REMPLI, ON VERIFIE QUE C'EST AVEC LA MEME
+C                 VALEUR ET ON S'ARRETE AU CAS OU, SINON, ON LE REMPLIT
+
                   IF (TSCA.EQ.'R') THEN
-                    ZR(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZR(JCNSFV-1+
-     &                (INO-1)*NCMP1+ICMP)
-                    COMPCH = ZR(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
-     &                       ZR(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
+                    IF(ZL(JCNSL-1+(INO-1)*NCMP1+ICMP)) THEN 
+                      COMPCH = ZR(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
+     &                         ZR(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
+                      IF(.NOT. COMPCH ) CALL U2MESS('F','XFEM_1')
+                    ELSE
+                      ZR(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZR(JCNSFV-1+
+     &                  (INO-1)*NCMP1+ICMP)
+                      ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
+                    ENDIF
                   ELSE IF (TSCA.EQ.'I') THEN
-                    ZI(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZI(JCNSFV-1+
-     &                (INO-1)*NCMP1+ICMP)
-                    COMPCH = ZI(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
-     &                       ZI(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
+                    IF(ZL(JCNSL-1+(INO-1)*NCMP1+ICMP)) THEN 
+                      COMPCH = ZI(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
+     &                         ZI(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
+                      IF(.NOT. COMPCH ) CALL U2MESS('F','XFEM_1')
+                    ELSE
+                      ZI(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZI(JCNSFV-1+
+     &                  (INO-1)*NCMP1+ICMP)
+                      ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
+                    ENDIF
                   ELSE IF (TSCA.EQ.'L') THEN
-                    ZL(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZL(JCNSFV-1+
-     &                (INO-1)*NCMP1+ICMP)
-                    COMPCH = ZL(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQV.
-     &                       ZL(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
+                    IF(ZL(JCNSL-1+(INO-1)*NCMP1+ICMP)) THEN 
+                      COMPCH = ZL(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQV.
+     &                         ZL(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
+                      IF(.NOT. COMPCH ) CALL U2MESS('F','XFEM_1')
+                    ELSE
+                      ZL(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZL(JCNSFV-1+
+     &                  (INO-1)*NCMP1+ICMP)
+                      ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
+                    ENDIF
                   ELSE IF (TSCA.EQ.'K8') THEN
-                    ZK8(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZK8(JCNSFV-1+
-     &                (INO-1)*NCMP1+ICMP)
-                    COMPCH = ZK8(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
-     &                       ZK8(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
+                    IF(ZL(JCNSL-1+(INO-1)*NCMP1+ICMP)) THEN 
+                      COMPCH = ZK8(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
+     &                         ZK8(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
+                      IF(.NOT. COMPCH ) CALL U2MESS('F','XFEM_1')
+                    ELSE
+                      ZK8(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZK8(JCNSFV-1+
+     &                  (INO-1)*NCMP1+ICMP)
+                      ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
+                    ENDIF
                   ELSE
                     CALL ASSERT(.FALSE.)
                   END IF
 
-C-----------SI VALEUR DANS CNS EXISTE ET N EST PAS EGALE
-C-----------A CELLE DE CNSF -> ERREUR
-                  IF(.NOT. COMPCH  .AND.
-     &              ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP)) THEN
-                    CALL U2MESS('F','XFEM_1')
-                  ELSEIF (ZL(JCNSFL-1+ (INO-1)*NCMP1+ICMP)) THEN
-                    ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
-                  ENDIF
  1220           CONTINUE
  1210         CONTINUE
 

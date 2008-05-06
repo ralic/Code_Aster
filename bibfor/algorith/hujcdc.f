@@ -1,7 +1,7 @@
         SUBROUTINE HUJCDC (K, MATER, SIG ,VIN, SEUIL)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,9 +33,9 @@ C   ------------------------------------------------------------------
         INTEGER      IFM, NIV
         INTEGER      I,J
         REAL*8       MATER(22,2), SIG(6), VIN(*), SEUIL
-        REAL*8       UN, RK, EPSVP, PCR, PA, TOLE
-        REAL*8       DEGR, BETA, B, M, PHI, PCREF
-        REAL*8       SIGD(3), PK, QK, QXK, XK(2)
+        REAL*8       UN, R, EPSVP, PCR, PA, TOLE
+        REAL*8       DEGR, BETA, B, M, PHI, PCREF, PTRAC
+        REAL*8       SIGD(3), P, Q, X(2)
         REAL*8       TIN(6), TOU(3), TH(2), TOUC(2)
         REAL*8       D12, DD, DEUX      
         LOGICAL      DEBUG
@@ -49,17 +49,19 @@ C       ------------------------------------------------------------
         DATA   D12, DEUX /0.5D0, 2.D0/
 
         CALL INFNIV (IFM, NIV)
-        
+
+
 C ==================================================================
 C --- VARIABLES INTERNES -------------------------------------------
 C ==================================================================
         EPSVP = VIN(23)
-        RK    = VIN(4+K)
-        XK(1) = VIN(5+4*K)
-        XK(2) = VIN(6+4*K)      
+        R     = VIN(4+K)
+        X(1)  = VIN(5+4*K)
+        X(2)  = VIN(6+4*K)      
         TH(1) = VIN(7+4*K)
         TH(2) = VIN(8+4*K)      
-                
+
+
 C ==================================================================
 C --- CARACTERISTIQUES MATERIAU ------------------------------------
 C ==================================================================
@@ -69,13 +71,13 @@ C ==================================================================
         PCREF = MATER(7, 2)
         PA    = MATER(8, 2)
         PCR   = PCREF*EXP(-BETA*EPSVP)
+        PTRAC = MATER(21,2)
         M     = SIN(DEGR*PHI)
         
         
 C ==================================================================
-C --- PROJECTION DANS LE PLAN DEVIATEUR K ------------------------
+C --- PROJECTION DANS LE PLAN DEVIATEUR K --------------------------
 C ==================================================================
-        
         J = 1
         DO 10 I = 1, NDI
           IF (I .NE. K) THEN
@@ -85,36 +87,34 @@ C ==================================================================
   10     CONTINUE
 
         TOU(3) = SIG(NDT+1-K)
-
         DD     = D12*( TOU(1)-TOU(2) )       
-        
-C ==================================================================
-C --- CALCUL DE PK, QCK ---------------------------------------------
-C ==================================================================
 
-        PK      = D12*( TOU(1)+TOU(2) )
-        TOU(1)  = DD
-        TOU(2)  = -DD
+
+C ==================================================================
+C --- CALCUL DE PK, QCK --------------------------------------------
+C ==================================================================
+        P      = D12*( TOU(1)+TOU(2) )
+        P      = P -PTRAC
+        TOU(1) = DD
+        TOU(2) = -DD
         
-        IF ((PK/PA) .LE. TOLE) THEN
+        IF ((P/PA) .LE. TOLE) THEN
            IF (DEBUG) WRITE (IFM,'(A)')
-     &                'HUJCDC :: LOG(PK/PA) NON DEFINI'
+     &                'HUJCDC :: LOG(P/PA) NON DEFINI'
            SEUIL=-1.D0
            GOTO 999
         ENDIF
 
-        TOUC(2) = TOU(3)-(XK(2)-RK*TH(2))*PK*
-     &             (UN-B*LOG(PK/PCR))*M
-        TOUC(1) = TOU(1)-(XK(1)-RK*TH(1))*PK*
-     &             (UN-B*LOG(PK/PCR))*M
+        TOUC(2) = TOU(3)-(X(2)-R*TH(2))*P*(UN-B*LOG(P/PCR))*M
+        TOUC(1) = TOU(1)-(X(1)-R*TH(1))*P*(UN-B*LOG(P/PCR))*M
         
-        QK  = TOUC(1)**DEUX + (TOUC(2)**DEUX)/DEUX
-        QK  = SQRT(QK)
+        Q  = TOUC(1)**DEUX + (TOUC(2)**DEUX)/DEUX
+        Q  = SQRT(Q)
                         
 C ==================================================================
 C --- CALCUL DU SEUIL DU MECANISME CYCLIQUE DEVIATOIRE K -----------
 C ==================================================================
-        SEUIL = -QK /M/PK - RK*(UN-B*LOG(PK/PCR))
+        SEUIL = -Q /M/P - R*(UN-B*LOG(P/PCR))
 
  999   CONTINUE
        END

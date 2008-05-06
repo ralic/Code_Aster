@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -380,13 +380,15 @@ class TraceGraph:
       
       # formats de base (identiques à ceux du module Table)
       self.DicForm={
-         'csep'  : ' ',       # séparateur
-         'ccom'  : '#',       # commentaire
-         'cdeb'  : '',        # début de ligne
-         'cfin'  : '\n',      # fin de ligne
-         'formK' : '%-12s',   # chaines
-         'formR' : '%12.5E',  # réels
-         'formI' : '%12d'     # entiers
+         'csep'   : ' ',       # séparateur
+         'ccom'   : '#',       # commentaire
+         'ccpara' : '',        # commentaire des labels
+         'cdeb'   : '',        # début de ligne
+         'cfin'   : '\n',      # fin de ligne
+         'sepch'  : ';',       # remplace les sauts de ligne à l'intérieur d'une cellule
+         'formK'  : '%-12s',   # chaines
+         'formR'  : '%12.5E',  # réels
+         'formI'  : '%12d'     # entiers
       }
       if dform<>None and type(dform)==types.DictType:
          self.DicForm.update(dform)
@@ -498,7 +500,7 @@ class TraceTableau(TraceGraph):
                   except IndexError:
                      row[dCi['LabOrd'][k]]=None
             Tab.append(row)
-         Tab.Impr(FICHIER=self.NomFich[0], FORMAT='TABLEAU')
+         Tab.Impr(FICHIER=self.NomFich[0], FORMAT='TABLEAU', dform=self.DicForm)
          # erreurs ?
          if msg:
             UTMESS('A', 'Graph.TraceTableau', '\n'.join(msg))

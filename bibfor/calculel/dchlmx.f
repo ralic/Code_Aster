@@ -3,7 +3,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,8 @@ C ----------------------------------------------------------------------
       COMMON /CAII07/IACHOI,IACHOK
       COMMON /CAII02/IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,
      +       IAOPPA,NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
+      INTEGER EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
+      COMMON /CAII19/EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -66,7 +68,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER IGR,TE,IPAR,NVAL,MODE
       INTEGER IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,IAOPPA
       INTEGER NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
-      INTEGER NBSP,NCDYN,JEL,TAILL1
+      INTEGER NBSP,NCDYN,JEL,TAILL1,JRSVI,JCRSVI
       CHARACTER*8 NOPARA,TYCH
       CHARACTER*8 NOPARE
 
@@ -104,16 +106,20 @@ C             CAS DES CHAM_ELEM ETENDUS :
                   NCDYN=MAX(NCDYN,1)
                   TAILL1=TAILL1+NVAL*NCDYN*NBSP
  11             CONTINUE
-                TAILLE = MAX(TAILLE,TAILL1)
 
 C             CAS DES CHAM_ELEM NON ETENDUS :
               ELSE
-                TAILLE = MAX(TAILLE,NVAL*NBELGR)
-              END IF
-
+                TAILL1=NVAL*NBELGR
+              ENDIF
             ELSE
-              TAILLE = MAX(TAILLE,NVAL*NBELGR)
-            END IF
+              TAILL1=NVAL*NBELGR
+            ENDIF
+
+            IF (CALVOI.EQ.0) THEN
+              TAILLE = MAX(TAILLE,TAILL1)
+            ELSE
+              TAILLE = TAILLE+TAILL1
+            ENDIF
 
             GO TO 29
           END IF
@@ -129,14 +135,21 @@ C           ------
             NVAL = DIGDE2(MODE)
             TYCH = ZK8(IACHOK-1+2* (IPAROU-1)+1)
 
-C           CAS DES CHAM_ELEM :
             IF (TYCH(1:4).EQ.'CHML') THEN
-              JCELD = ZI(IACHOI-1+2* (IPAROU-1)+1)
+C             -- CAS DES CHAM_ELEM :
+              JCELD = ZI(IACHOI-1+3*(IPAROU-1)+1)
               LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
-              TAILLE = MAX(TAILLE,LGGREL)
             ELSE
-              TAILLE = MAX(TAILLE,NVAL*NBELGR)
+C             -- CAS DES RESUELEM :
+              IF (EVFINI.EQ.0) THEN
+                LGGREL = NVAL*NBELGR
+              ELSE
+                JRSVI = ZI(IACHOI-1+3*(IPAROU-1)+2)
+                JCRSVI = ZI(IACHOI-1+3*(IPAROU-1)+3)
+                LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+              ENDIF
             END IF
+            TAILLE = MAX(TAILLE,LGGREL)
 
             GO TO 29
           END IF

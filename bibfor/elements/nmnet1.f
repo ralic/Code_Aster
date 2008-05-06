@@ -1,12 +1,9 @@
-      SUBROUTINE NMNET1(NMNBN,CNBN
+      SUBROUTINE NMNET1(ZIMAT,NMNBN,CNBN
      &           ,CPLAS,CDPLAS,CDDPLA,CZEF,CZEG,CIEF,CPROX
-     &           ,CDEPS,CNCRIT,CDTG,CIER,CDEPSP,DC)
-
+     &           ,CDEPS,CNCRIT,CDTG,CIER,CDEPSP,DC,NORMM)
         IMPLICIT  NONE
-C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +24,6 @@ C ======================================================================
         REAL*8  NMPLAS(2,3)   
         REAL*8  NMDPLA(2,2)  
         REAL*8  NMDDPL(2,2)
-
 C---------------------------------------------
         REAL*8  CNBN(6)         
         REAL*8  CPLAS(2,3)   
@@ -35,28 +31,26 @@ C---------------------------------------------
         REAL*8  CDDPLA(2,2)
         REAL*8  CZEF        
         REAL*8  CZEG         
-        INTEGER CIEF  
+        INTEGER CIEF,ZIMAT  
         INTEGER CPROX(2)  
-
 C---------------------------------------------
        REAL*8  CDEPS(6)   
        INTEGER CNCRIT     
        REAL*8  CDTG(6,6)  
        INTEGER CIER  
        REAL*8  CDEPSP(6)  
-
 C-------------------------------------------
-      REAL*8     DC(6,6),CP(6),GPLASS
+      REAL*8     DC(6,6),CP(6),GPLASS,NORMM
       INTEGER    J
 
-       CALL MATMUL(CDTG,CDEPS,6,6,1,CNBN)
-       CALL MATMUL(DC,CDEPSP,6,6,1,CP)
-       DO 10, J = 1,6
-         CNBN(J) = NMNBN(J) + CNBN(J) - CP(J)
- 10    CONTINUE
+      CALL MATMUL(CDTG,CDEPS,6,6,1,CNBN)
+      CALL MATMUL(DC,CDEPSP,6,6,1,CP)
+      DO 10, J = 1,6
+        CNBN(J) = NMNBN(J) + CNBN(J) - CP(J)
+ 10   CONTINUE
 
-        CALL MPPFFN(CNBN,CPLAS,CDPLAS,CDDPLA,CZEF
-     &             ,CZEG,CIEF,CPROX )
+      CALL MPPFFN(ZIMAT,CNBN,CPLAS,CDPLAS,CDDPLA,CZEF
+     &            ,CZEG,CIEF,CPROX,NORMM )
      
       IF(CIEF .GT. 0) THEN
           CIER=2

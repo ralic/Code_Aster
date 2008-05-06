@@ -1,7 +1,7 @@
         SUBROUTINE HUJPRC (KK, K, TIN, VIN, MATER, YF, P, Q, TOUD)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,87 +33,99 @@ C      P     :  PRESSION ISOTROPE 2D DANS LE PLAN K
 C      Q     :  NORME DEVIATEUR CYCLIQUE K
 C      TOUD  :  TENSEUR DEVIATOIRE CYCLIQUE DES CONTRAINTES 
 C  --------------------------------------------------------
-        INTEGER   NDT, NDI, I, J, K, KK, NMOD
-        
-        PARAMETER     (NMOD = 15)
-        
-                
-        INTEGER   IFM, NIV
-        REAL*8    YF(NMOD), D12, DD, DEUX, VIN(*)
-        REAL*8    RK, XK(2), TH(2), SI, PA 
-        REAL*8    TIN(6), TOU(3), TOUD(3), P, Q
-        REAL*8    EPSVP, BETA, B, PHI, PCREF, PCR
-        REAL*8    M, UN, DEGR, MATER(22,2), TOLE       
-        LOGICAL      DEBUG
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      INTEGER   NDT, NDI, I, J, K, KK, NMOD
+      PARAMETER (NMOD = 15)
+      INTEGER   IFM, NIV, IADZI, IAZK24
+      REAL*8    YF(NMOD), D12, DD, DEUX, VIN(*)
+      REAL*8    R, X(2), TH(2), SI, PA, PTRAC
+      REAL*8    TIN(6), TOU(3), TOUD(3), P, PP, Q
+      REAL*8    EPSVP, BETA, B, PHI, PCREF, PCR
+      REAL*8    M, UN, DEGR, MATER(22,2), TOLE       
+      LOGICAL   DEBUG
+      CHARACTER*8 NOMAIL
+      
+      PARAMETER (DEGR = 0.0174532925199D0)
+      PARAMETER (TOLE = 1.D-6)
 
-        PARAMETER (DEGR  = 0.0174532925199D0)
-        PARAMETER (TOLE  = 1.D-6)
+      COMMON /TDIM/ NDT  , NDI
+      COMMON /MESHUJ/ DEBUG
 
-        COMMON /TDIM/ NDT  , NDI
-        COMMON /MESHUJ/ DEBUG
+      DATA   D12, DEUX, UN /0.5D0, 2.D0, 1.D0/
+      
+      CALL INFNIV (IFM, NIV)
 
-        DATA   D12, DEUX, UN /0.5D0, 2.D0, 1.D0/
-        
-        CALL INFNIV (IFM, NIV)
 
 C ==================================================================
 C --- VARIABLES INTERNES -------------------------------------------
 C ==================================================================
-        
-        EPSVP = YF(7)
-        RK    = YF(KK+7)
-        XK(1) = VIN(4*K+5)
-        XK(2) = VIN(4*K+6)
-        TH(1) = VIN(4*K+7)
-        TH(2) = VIN(4*K+8)
+      EPSVP = YF(7)
+      R     = YF(KK+7)
+      X(1)  = VIN(4*K+5)
+      X(2)  = VIN(4*K+6)
+      TH(1) = VIN(4*K+7)
+      TH(2) = VIN(4*K+8)
 
 C ==================================================================
 C --- CARACTERISTIQUES MATERIAU ------------------------------------
 C ==================================================================
-        BETA  = MATER(2, 2)
-        B     = MATER(4, 2)
-        PHI   = MATER(5, 2)
-        PCREF = MATER(7, 2)
-        PA    = MATER(8, 2)
-        PCR   = PCREF*EXP(-BETA*EPSVP)
-        M     = SIN(DEGR*PHI)
-C ======================================================================
-C ----------------- CONSTRUCTION DU DEVIATEUR DES CONTRAINTES ----------
-C ======================================================================
-        J = 1
-        DO 10 I = 1, NDI
-          IF (I .NE. K) THEN
-            TOU(J) = TIN(I)
-            J = J+1
-          ENDIF
-  10     CONTINUE
 
-        TOU(3)  = TIN(NDT+1-K)
-        DD      = D12*( TOU(1)-TOU(2) )
-        
-C ======================================================================
-C ----------------- CONSTRUCTION DU DEVIATEUR CYCLIQUE -----------------
-C ======================================================================
-        P = D12*( TOU(1)+TOU(2) )
-
-        TOU(1)=DD
-        TOU(2)=-DD
-
-        IF ((P/PA) .LE. TOLE) THEN
-           IF (DEBUG) WRITE (IFM,'(A)')
-     &                'HUJPRC :: LOG(PK/PA) NON DEFINI'
-           Q = 0.D0
-           TOUD(1) = 0.D0
-           TOUD(2) = 0.D0
-           TOUD(3) = 0.D0
-           GOTO 999
+      BETA  = MATER(2, 2)
+      B     = MATER(4, 2)
+      PHI   = MATER(5, 2)
+      PCREF = MATER(7, 2)
+      PA    = MATER(8, 2)
+      PCR   = PCREF*EXP(-BETA*EPSVP)
+      PTRAC = MATER(21,2)
+      M     = SIN(DEGR*PHI)
+      
+      
+C ==================================================================
+C ----------------- CONSTRUCTION DU DEVIATEUR DES CONTRAINTES ------
+C ==================================================================
+      J = 1
+      DO 10 I = 1, NDI
+        IF (I .NE. K) THEN
+          TOU(J) = TIN(I)
+          J = J+1
         ENDIF
-        
-        TOUD(1) = TOU(1)-(XK(1)-RK*TH(1))*P*(UN-B*LOG(P/PCR))*M
-        TOUD(2) = - TOUD(1)        
-        TOUD(3) = TOU(3)-(XK(2)-RK*TH(2))*P*(UN-B*LOG(P/PCR))*M 
-        Q = TOUD(1)**DEUX + (TOUD(3)**DEUX)/DEUX
-        Q = SQRT(Q)
+  10    CONTINUE
 
- 999    CONTINUE
-        END
+      TOU(3)  = TIN(NDT+1-K)
+      DD      = D12*(TOU(1)-TOU(2))
+
+
+C ==================================================================
+C ----------------- CONSTRUCTION DU DEVIATEUR CYCLIQUE -------------
+C ==================================================================
+      PP = D12*(TOU(1)+TOU(2)) -PTRAC
+
+      TOU(1)=DD
+      TOU(2)=-DD
+
+      IF ((PP/PA).LE.TOLE) THEN
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3) (1:8)
+        IF (DEBUG) WRITE (IFM,'(10(A))')
+     &  'HUJPRC :: LOG(P/PA) NON DEFINI DANS LA MAILLE ',NOMAIL
+        Q = 0.D0
+        TOUD(1) = 0.D0
+        TOUD(2) = 0.D0
+        TOUD(3) = 0.D0
+        GOTO 999
+      ENDIF
+      
+      TOUD(1) = TOU(1)-(X(1)-R*TH(1))*PP*(UN-B*LOG(PP/PCR))*M
+      TOUD(2) = - TOUD(1)        
+      TOUD(3) = TOU(3)-(X(2)-R*TH(2))*PP*(UN-B*LOG(PP/PCR))*M 
+      Q = TOUD(1)**DEUX + (TOUD(3)**DEUX)/DEUX
+      Q = SQRT(Q)
+      P = PP +PTRAC
+
+ 999  CONTINUE
+      END

@@ -4,7 +4,7 @@
       CHARACTER*24 LIEL1,TRAV
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
+C MODIF MODELISA  DATE 05/05/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -304,7 +304,15 @@ C         ELEMENTS NON X-FEM
 C         ------------------
 
             ELSE
+
               ZI(JJ+5)=ITYPEL
+
+C             ERREUR SI UN SEG DOIT ETRE ENRICHI EN 3D
+C             CAR LES ELEMENTS X-FEM DE BORD SEG N'EXISTENT PAS EN 3D
+
+              IF (NOTYPE(1:10).EQ.'MECA_ARETE'.AND.ZI(JJ+4).EQ.0)
+     &          CALL U2MESS('F','XFEM_13')
+
             ENDIF
 
  210    CONTINUE

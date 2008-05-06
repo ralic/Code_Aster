@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -257,10 +257,12 @@ C
              CALL U2MESS('F','ELEMENTS2_90')
            ENDIF
         ENDIF
-        IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
-C
-          CALL U2MESS('A','ELEMENTS2_72')
-C
+        IF ((ZK16(ICOMPO+2) (6:10).EQ.'_REAC') .OR. 
+     &      (ZK16(ICOMPO+2) (1:6 ).EQ.'EULER_') ) THEN
+
+          IF(ZK16(ICOMPO+2) (6:10).EQ.'_REAC') 
+     &     CALL U2MESS('A','ELEMENTS2_72')
+
           DO 40 I = 1,NNO
             I1 = 3* (I-1)
             I2 = 6* (I-1)

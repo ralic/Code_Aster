@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 05/05/2008   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -221,7 +221,7 @@ CHAF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=2,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,              
@@ -243,7 +243,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                     ITER_GLOB_MAXI=50,
                                     RESI_GLOB_RELA=1.E-6),
                    SOLVEUR=_F(METHODE='MUMPS',
-                                    PCENT_PIVOT=250,
+                                    PCENT_PIVOT=100,
                                     RESI_RELA=-1.),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
@@ -259,7 +259,7 @@ TABLAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                               GROUP_NO='NFISSU',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
-                             NUME_ORDRE=1,
+                             INST=1.0,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',),);
 
@@ -267,7 +267,7 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                               GROUP_NO='VOLU',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
-                             NUME_ORDRE=1,
+                             INST=1.0,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',),);
 
@@ -294,11 +294,6 @@ MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                                        RAYON=0.000001,
                                        PRECISION=0.00001,),
                                     _F(OPTION='ENV_SPHERE',
-                                       NOM='PPB',
-                                       POINT=(0.00125,0.,0.),
-                                       RAYON=0.000001,
-                                       PRECISION=0.00001,),
-                                    _F(OPTION='ENV_SPHERE',
                                        NOM='PPC',
                                        POINT=(0.005,0.,0.),
                                        RAYON=0.000001,
@@ -306,11 +301,6 @@ MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                                     _F(OPTION='ENV_SPHERE',
                                        NOM='PPD',
                                        POINT=(0.0075,0.,0.),
-                                       RAYON=0.000001,
-                                       PRECISION=0.00001,),
-                                    _F(OPTION='ENV_SPHERE',
-                                       NOM='PPE',
-                                       POINT=(0.01125,0.,0.),
                                        RAYON=0.000001,
                                        PRECISION=0.00001,),
                                     _F(NOM='NFISSU',
@@ -342,7 +332,7 @@ DEP_NFI=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('NFISSU',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 
@@ -366,7 +356,7 @@ DEP_PPA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPA',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPA = CALC_TABLE(reuse = DEP_PPA,
@@ -377,25 +367,11 @@ DEP_PPA = CALC_TABLE(reuse = DEP_PPA,
                                   VALE_K    = 'N[^M]',),),);
 
 
-DEP_PPB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('PPB',),
-                                RESULTAT=RES_XFEM,
-                                NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
-DEP_PPB = CALC_TABLE(reuse = DEP_PPB,
-                      TABLE = DEP_PPB,
-                      ACTION = (_F(OPERATION = 'FILTRE',
-                                  NOM_PARA  = 'NOEUD',
-                                  CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]',),),);
-
 DEP_PPC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPC',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);                                
 DEP_PPC = CALC_TABLE(reuse = DEP_PPC,
@@ -409,7 +385,7 @@ DEP_PPD=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPD',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPD = CALC_TABLE(reuse = DEP_PPD,
@@ -418,21 +394,6 @@ DEP_PPD = CALC_TABLE(reuse = DEP_PPD,
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
-
-DEP_PPE=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('PPE',),
-                                RESULTAT=RES_XFEM,
-                                NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
-DEP_PPE = CALC_TABLE(reuse = DEP_PPE,
-                      TABLE = DEP_PPE,
-                      ACTION = (_F(OPERATION = 'FILTRE',
-                                  NOM_PARA  = 'NOEUD',
-                                  CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]',),),);
-
 
 #----------------------------------------------
 #                   TEST TABLE
@@ -455,22 +416,6 @@ TEST_TABLE(TABLE=DEP_PPA,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
-           
-TEST_TABLE(TABLE=DEP_PPB,
-           NOM_PARA='DX',
-           TYPE_TEST='MAX',
-           VALE=2.51463E-05,
-           CRITERE='RELATIF',
-           PRECISION=preci,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=DEP_PPB,
-           NOM_PARA='DX',
-           TYPE_TEST='MIN',
-           VALE=2.51463E-05,
-           CRITERE='RELATIF',
-           PRECISION=preci,
-           REFERENCE='AUTRE_ASTER',);            
            
 TEST_TABLE(TABLE=DEP_PPC,
            NOM_PARA='DX',
@@ -504,20 +449,4 @@ TEST_TABLE(TABLE=DEP_PPD,
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
                                 
-TEST_TABLE(TABLE=DEP_PPE,
-           NOM_PARA='DX',
-           TYPE_TEST='MAX',
-           VALE=1.46880E-05,
-           CRITERE='RELATIF',
-           PRECISION=preci,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=DEP_PPE,
-           NOM_PARA='DX',
-           TYPE_TEST='MIN',
-           VALE=1.46880E-05,
-           CRITERE='RELATIF',
-           PRECISION=preci,
-           REFERENCE='AUTRE_ASTER',);
-
 FIN();

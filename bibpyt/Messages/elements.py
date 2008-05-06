@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF elements Messages  DATE 06/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -230,6 +230,12 @@ cata_msg = {
   -> Risque & Conseil :
      Pour les autres comportements, utiliser SIEF_ELNO_ELGA (efforts)
      ou SIGM_ELNO_COQU (contraintes en un point de l'épaisseur).
+"""),
+
+52 : _("""
+  -> Le type de comportement %(k1)s n'est pas prévu pour le calcul de
+     SIGM_ELNO_DEPL avec chargement thermique. Les seuls comportements autorisés sont :
+     ELAS, ou ELAS_ORTH
 """),
 
 53 : _("""

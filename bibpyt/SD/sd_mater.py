@@ -1,4 +1,4 @@
-#@ MODIF sd_mater SD  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF sd_mater SD  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,6 +54,20 @@ class sd_compor1(AsBase):
                 k=k2-nbr-nbc
                 nomfon=valk[nbr+nbc+nbk/2+k]
                 sd2=sd_fonction(nomfon) ; sd2.check(checker)
+        if nom[8:16]=='.GLRC_DA' :
+            valk=list(self.VALK.get_stripped())
+            if valk :
+                nbk2=self.VALK.lonuti
+                nbr=self.VALR.lonuti
+                nbc=self.VALC.lonuti
+                nbk=nbk2-nbr-nbc
+                for fon in ('FMEX1'  ,'FMEX2'  ,'FMEY1'  ,'FMEY2' , 
+                            'DFMEX1' ,'DFMEX2' ,'DFMEY1' ,'DFMEY2',
+                            'DDFMEX1','DDFMEX2','DDFMEY1','DDFMEY2'):
+                    k2=valk.index(fon)
+                    k=k2-nbr-nbc
+                    nomfon=valk[nbr+nbc+nbk/2+k]
+                    sd2=sd_fonction(nomfon) ; sd2.check(checker)
 
 
 class sd_mater(AsBase):

@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 15/04/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF post_dyna_alea_ops Macro  DATE 25/04/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -281,15 +281,16 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #     Cas de tous les indices centraux
 
       elif OPTION!=None :
+         if NUME_VITE_FLUI_present :
+               intespec = intespec.NUME_VITE_FLUI == jvite[0]
+
          if NUME_ORDRE_I_present :
-            imode = list(Set(intespec.NUME_ORDRE_I.values()))
+            imode = list(Set(intespec.NUME_ORDRE_I.not_none_values()))
             l_ind_i=imode
             l_ind_j=imode
             # paramètres fixes de la table
             tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
          else :
-            if NUME_VITE_FLUI_present :
-               intespec = intespec.NUME_VITE_FLUI == jvite[0]
             l_ind_i = intespec.NOEUD_I.values()
             l_ind_j = intespec.NOEUD_J.values()
             if len(l_ind_i) != len(l_ind_j) :
@@ -332,6 +333,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       else :
          l_ind=zip(l_ind_i, l_ind_j )
 
+
       # pour la présentation de la table finale, on stocke le nbre de paramètres "initiaux"
       nbpara0 = len(tabres.para)
 
@@ -364,6 +366,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
              if INFO==2 :
                 aster.affiche('MESSAGE','INDICES :'+str(ind[0])+' - '\
                                                    +str(ind[1])+'\n')
+                                                   
            __fon1=RECU_FONCTION(TABLE        = INTE_SPEC,
                                 NOM_PARA_TABL= 'FONCTION_C',
                                 FILTRE       = mcfact, )

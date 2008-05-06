@@ -1,11 +1,8 @@
-      SUBROUTINE MPPFFN(NMNBN,NMPLAS,NMDPLA,NMDDPL
-     &                 ,NMZEF,NMZEG,NMIERF,NMPROX )
-
+      SUBROUTINE MPPFFN(ZIMAT,NMNBN,NMPLAS,NMDPLA,NMDDPL,
+     &                  NMZEF,NMZEG,NMIERF,NMPROX,NORMM)
         IMPLICIT NONE
-C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,70 +36,46 @@ C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-C---------------------------------------------
-        REAL*8  NMNBN(6)         
-        REAL*8  NMPLAS(2,3)   
-        REAL*8  NMDPLA(2,2)  
-        REAL*8  NMDDPL(2,2)
-        REAL*8  NMZEF        
-        REAL*8  NMZEG         
-        INTEGER NMIERF  
-        INTEGER NMPROX(2)  
+
+      REAL*8  NMNBN(6)         
+      REAL*8  NMPLAS(2,3)   
+      REAL*8  NMDPLA(2,2)  
+      REAL*8  NMDDPL(2,2)
+      REAL*8  NMZEF        
+      REAL*8  NMZEG         
+      INTEGER NMIERF,ZIMAT  
+      INTEGER NMPROX(2)  
 
 C---------------------------------------------
       INTEGER I,TEST,IER
       REAL*8 UMIN,UMAX,AUX
       REAL*8     ZERO 
 
-      REAL*8   NORMN,NORMM       
+      REAL*8   NORMM,R8BID       
       INTEGER  MP1F(2),MP2F(2),DMP1F(2),DMP2F(2),DDMP1F(2),DDMP2F(2)
       CHARACTER*24   CGLR
       INTEGER       IMP1,IMP2,IDMP1,IDMP2,IDDMP1,IDDMP2,INN,INM
+      CHARACTER*8   NOMRES(4)
+      CHARACTER*2   CODRES(4)
+      CHARACTER*16  PHENOM
       DATA       ZERO /1.0D-3/
 
-
-C----- LECTURE DES OBJETS "GLRC"      
-      
-
-      CALL JEMARQ()
-      
-      CGLR = '&&GLRC.MP1FONC'
-      CALL JEVEUO(CGLR,'L',IMP1)      
-      
-      CGLR = '&&GLRC.MP2FONC'
-      CALL JEVEUO(CGLR,'L',IMP2)      
-
-      CGLR = '&&GLRC.NORMM'
-      CALL JEVEUO(CGLR,'L',INM)      
-      
-      DO 15, I = 1,2
-        MP1F(I)   = ZI(IMP1-1   + I) 
-        MP2F(I)   = ZI(IMP2-1   + I)
-C         DMP1F(I)  = ZI(IDMP1-1  + I) 
-C         DMP2F(I)  = ZI(IDMP2-1  + I) 
-C         DDMP1F(I) = ZI(IDDMP1-1 + I) 
-C         DDMP2F(I) = ZI(IDDMP2-1 + I)         
- 15   CONTINUE
- 
-C      NORMN = ZR(INN)
-      NORMM = ZR(INM)
-
+      NOMRES(1) = 'FMEX1'
+      NOMRES(2) = 'FMEX2'
+      NOMRES(3) = 'FMEY1'
+      NOMRES(4) = 'FMEY2'
       NMIERF=0
       DO 20, I = 1,2
-         IF (MP1F(I)  .GT.  0) THEN
-          CALL CDNFON(MP1F(I),NMNBN(I),0,NMPLAS(1,I),IER)
-          NMIERF=NMIERF+IER
-         ENDIF
+        CALL CDNFON(ZIMAT,NOMRES(2*(I-1)+1),NMNBN(I),0,
+     &                NMPLAS(1,I),IER)
+        NMIERF=NMIERF+IER
 
-         IF (MP2F(I)  .GT.  0) THEN
-          CALL CDNFON(MP2F(I),NMNBN(I),0,NMPLAS(2,I),IER)
-          NMIERF=NMIERF+IER
-         ENDIF
+        CALL CDNFON(ZIMAT,NOMRES(2*I),NMNBN(I),0,
+     &               NMPLAS(2,I),IER)
+        NMIERF=NMIERF+IER
  20   CONTINUE
 
       NMZEF = ZERO * (NORMM**2)
       NMZEG = ZERO * NORMM
-
-      CALL JEDEMA()     
 
       END 

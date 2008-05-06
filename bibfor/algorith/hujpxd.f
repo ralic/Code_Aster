@@ -1,7 +1,7 @@
         SUBROUTINE HUJPXD (K, MATER, SIG ,VIN, PROX)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,25 +34,27 @@ C    ---------------------------------------------------------------
         INTEGER      K, NDT, NDI
         INTEGER      IFM, NIV
         REAL*8       MATER(22,2), SIG(6), VIN(*), SEUILD
-        REAL*8       UN, RK, EPSVP, PCR, PA, TOLE
-        REAL*8       DEGR, BETA, B, M, PHI, PCREF
-        REAL*8       SIGD(3), PK, QK, DIST, RH
+        REAL*8       UN, R, EPSVP, PCR, PA, TOLE
+        REAL*8       DEGR, BETA, B, M, PHI, PCREF, PTRAC
+        REAL*8       SIGD(3), P, Q, DIST, RH
         LOGICAL      DEBUG, PROX
         PARAMETER    (UN = 1.D0)
         PARAMETER    (TOLE = 1.D-6)
         PARAMETER    (DEGR = 0.0174532925199D0)
-C       ------------------------------------------------------------
+        
         COMMON /TDIM/   NDT, NDI
         COMMON /MESHUJ/ DEBUG
 
         CALL INFNIV (IFM, NIV)
-        
+
+
 C ==================================================================
 C --- VARIABLES INTERNES -------------------------------------------
 C ==================================================================
         EPSVP = VIN(23)
         RH    = VIN(K-4)
-        
+
+
 C ==================================================================
 C --- CARACTERISTIQUES MATERIAU ------------------------------------
 C ==================================================================
@@ -61,30 +63,34 @@ C ==================================================================
         PHI   = MATER(5, 2)
         PCREF = MATER(7, 2)
         PA    = MATER(8, 2)
+        PTRAC = MATER(21,2)
         PCR   = PCREF*EXP(-BETA*EPSVP)
         M     = SIN(DEGR*PHI)
-        
+
+
 C ==================================================================
 C --- PROJECTION DANS LE PLAN DEVIATEUR K ------------------------
 C ==================================================================
-        CALL HUJPRJ (K-4, SIG, SIGD, PK, QK)
-        IF ((PK/PA) .LE. TOLE) THEN        
-           IF (DEBUG) WRITE (IFM,'(A)')
-     &                'HUJPRX :: LOG(PK/PA) NON DEFINI'
-           PROX = .FALSE.
-           GOTO 999
+        CALL HUJPRJ (K-4, SIG, SIGD, P, Q)
+        IF (((P -PTRAC)/PA) .LE. TOLE) THEN        
+          IF (DEBUG) WRITE (IFM,'(A)')
+     &               'HUJPXD :: LOG(P/PA) NON DEFINI'
+          PROX = .FALSE.
+          GOTO 999
         ENDIF
-        
+
+
 C ==================================================================
 C --- CALCUL DU SEUIL DU MECANISME DEVIATOIRE K ------------------
 C ==================================================================
-        RK = -QK /(M*PK*(UN-B*LOG(PK/PCR)))
-        DIST = ABS(RK-RH)/RH
+        R   = -Q /( M*(P -PTRAC)*(UN-B*LOG((P -PTRAC)/PCR)) )
+        DIST = ABS(R-RH)/RH
 
         IF (DIST .LT. 1.D-5) THEN
           PROX = .TRUE.
         ELSE
           PROX = .FALSE.
-        ENDIF  
+        ENDIF
+        
  999   CONTINUE
        END

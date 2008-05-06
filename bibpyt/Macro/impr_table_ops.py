@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,22 +158,33 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
          'FICHIER'   : nomfich,
       }
 
-      # 4.1. au format AGRAF
-      if FORMAT=='AGRAF':
+      # 4.1. au format TABLEAU
+      if FORMAT=='TABLEAU':
+         # surcharge par les formats de l'utilisateur
+         kargs['dform']={
+            'csep'   : args['SEPARATEUR'],
+            'ccom'   : args['COMMENTAIRE'],
+            'ccpara' : args['COMM_PARA'],
+            'cdeb'   : args['DEBUT_LIGNE'],
+            'cfin'   : args['FIN_LIGNE'],
+         }
+      
+      # 4.2. au format AGRAF
+      elif FORMAT=='AGRAF':
          kargs['dform']={ 'formR' : '%12.5E' }
          kfonc['FORMAT']='TABLEAU'
       
-      # 4.2. au format XMGRACE et dérivés
+      # 4.3. au format XMGRACE et dérivés
       elif FORMAT=='XMGRACE':
          kargs['dform']={ 'formR' : '%.8g' }
          kargs['PILOTE']=args['PILOTE']
          kfonc['PILOTE']=args['PILOTE']
 
-      # 4.3. format spécifié dans les arguments
+      # 4.4. format spécifié dans les arguments
       if args['FORMAT_R']:
          kargs['dform'].update({ 'formR' : fmtF2PY(args['FORMAT_R']) })
 
-      # 4.4. regroupement par paramètre : PAGINATION
+      # 4.5. regroupement par paramètre : PAGINATION
       if args['PAGINATION']:
          l_ppag=args['PAGINATION']
          if not type(l_ppag) in (list, tuple):

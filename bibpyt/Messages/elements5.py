@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF elements5 Messages  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,6 +179,12 @@ cata_msg = {
 
 41 : _("""
      Température négative à la maille :  %(k1)s
+"""),
+
+42 : _("""
+ L'épaisseur definie dans DEFI_GLRC et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
+ Epaisseur dans DEFI_GLRC: %(r1)f
+ Epaisseur dans AFFE_CARA_ELEM: %(r2)f
 """),
 
 }

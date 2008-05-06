@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMUN  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -227,7 +227,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           DIS_GOUJ2E_ELAS =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           PINTO_MENEGOTTO =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           CJS             =SIMP(statut='c',typ='I',defaut=16,into=(16,)),
-          HUJEUX          =SIMP(statut='c',typ='I',defaut=32,into=(32,)),
+          HUJEUX          =SIMP(statut='c',typ='I',defaut=35,into=(35,)),
           CAM_CLAY        =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           BARCELONE       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           LAIGLE          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
@@ -250,7 +250,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           KIT_THHM        =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
           VMIS_ASYM_LINE  =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           BETON_UMLV_FP   =SIMP(statut='c',typ='I',defaut=21,into=(21,)),
-          GLRC_DAMAGE     =SIMP(statut='c',typ='I',defaut=21,into=(21,)),
+          GLRC_DAMAGE     =SIMP(statut='c',typ='I',defaut=19,into=(19,)),
           GLRC_DM         =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           GATT_MONERIE    =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
 
@@ -333,7 +333,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            ZIRC            =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
 
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",
-                             into=("PETIT","PETIT_REAC","SIMO_MIEHE","GREEN_GR","GREEN","COROTATIONNEL","REAC_GEOM")),
+                             into=("PETIT","PETIT_REAC","SIMO_MIEHE","GREEN_GR","GREEN","COROTATIONNEL",
+                                   "REAC_GEOM","EULER_ALMANSI")),
            ALGO_C_PLAN     =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
 #           b_deborst      = BLOC(condition = " ALGO_C_PLAN == 'DEBORST' ",
 #                        fr="Tolérance relative sur la verification des contraintes planes",

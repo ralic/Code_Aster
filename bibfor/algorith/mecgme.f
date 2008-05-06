@@ -3,7 +3,7 @@
      &                  MESUIV)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      NBOUT,NBIN
+      INTEGER      NBOUT,NBIN,SOMME
       PARAMETER    (NBOUT=1, NBIN=15)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
@@ -86,7 +86,7 @@ C
       CHARACTER*16 OPTION,REPVR,REPCT
       CHARACTER*24 CHTIM2
       CHARACTER*24 CHGEOM,CHCARA(15),CHTIME,LIGREL
-      CHARACTER*24 LIGRMO,LIGRCH
+      CHARACTER*24 LIGRMO,LIGRCH,EVOLCH
       INTEGER      IBID,IRET,IERD,IER,I,K,ICHA,INUM
       LOGICAL      LBID,PREM
       INTEGER      JCHAR,JINF,JLME
@@ -96,7 +96,7 @@ C
 C      
       INTEGER NBCHMX
       PARAMETER (NBCHMX=4)
-      INTEGER NBOPT(NBCHMX)
+      INTEGER NBOPT(NBCHMX),TAB(NBCHMX)
       CHARACTER*6 NOMLIG(NBCHMX),NOMPAF(NBCHMX),NOMOPF(NBCHMX)
       CHARACTER*6 NOMPAR(NBCHMX),NOMOPR(NBCHMX)
       DATA NOMLIG/'.ROTAT','.PESAN','.PRESS','.FCO3D'/
@@ -219,13 +219,13 @@ C
           CALL DISMOI('F','TYPE_CHARGE',ZK24(JCHAR+ICHA-1),'CHARGE',
      &                IBID,AFFCHA,IERD)
           IF (NUMCHM.EQ.4) THEN
-
 C ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE)
-
+            SOMME = 0
             LIGREL = LIGRMO
             DO 20 K = 1,NBCHMX
               LCHIN(1) = LIGRCH(1:13)//NOMLIG(K)//'.DESC'
               CALL EXISD('CHAMP_GD',LCHIN(1),IRET)
+              TAB(K)=IRET
               IF (IRET.NE.0) THEN
                 IF ((K.NE.2) .OR. ((REPCT(1:3).EQ.'OUI').OR. (REPVR(1:
      &              3).EQ.'OUI'))) THEN
@@ -242,15 +242,21 @@ C ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE)
                   CALL CODENT(INUM,'D0',LCHOUT(1) (12:14))
 C               POUR UNE MATRICE NON SYMETRIQUE EN COQUE3D (VOIR TE0486)
                   IF (K.EQ.4) LPAOUT(1) = 'PMATUNS'
-
                   CALL CALCUL('S',OPTION,LIGREL,NBOPT(K),LCHIN,LPAIN,1,
      &                        LCHOUT,LPAOUT,'V')
                   CALL REAJRE(MESUIV, LCHOUT(1),'V')
                 END IF
               END IF
+              EVOLCH= NOMCHA//'.CHME.EVOL.CHAR'
+              CALL JEEXIN(EVOLCH,IER)
+              IF((TAB(K).EQ.1).OR.(IER.GT.0)) THEN
+                SOMME = SOMME + 1
+              ENDIF
    20       CONTINUE
-          END IF
-
+           IF (SOMME.EQ.0) THEN
+             CALL U2MESS('F','MECANONLINE2_4') 
+           ENDIF
+         END IF
    30   CONTINUE
       ELSE
 
@@ -258,7 +264,6 @@ C ----- LES MATR_ELEM EXISTENT DEJA, ON REGARDE S'ILS DEPENDENT DE
 C ----- LA GEOMETRIE
 
         LIGREL = LIGRMO
-        
         DO 50 I = 1,NBCHME
           IF (ZK24(JLME-1+I) (10:10).EQ.'G') THEN
             CALL LXLIIS(ZK24(JLME-1+I) (7:8),ICHA,IER)
@@ -288,13 +293,13 @@ C               POUR UNE MATRICE NON SYMETRIQUE EN COQUE3D (VOIR TE0486)
 
                   CALL CALCUL('S',OPTION,LIGREL,NBOPT(K),LCHIN,LPAIN,1,
      &                        LCHOUT,LPAOUT,'V')
-                END IF
-              END IF
+                END IF             
+              END IF  
    40       CONTINUE
-          END IF
+          END IF  
    50   CONTINUE
       END IF
-
+      
    60 CONTINUE
 C
       CALL JEDEMA()

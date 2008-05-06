@@ -1,7 +1,7 @@
         SUBROUTINE HUJMED (K, MATER, VIN, SIG)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,11 +30,12 @@ C         (VARIABLES MEMOIRES + COMPOSANTES DE LA NORMALE A LA SURFACE)
 C   --------------------------------------------------------------------
         INTEGER       NDT, NDI, K, I, J, KP
         REAL*8        DD, BETA, B, M, PCR, RC 
-        REAL*8        SIG(6), PHI, PCREF
+        REAL*8        SIG(6), PHI, PCREF, PTRAC
         REAL*8        VIN(*), TOU(3), P, D12
         REAL*8        MATER(22,2), DEGR, EPSVP, UN
         REAL*8        XK(2), TH(2), SC(2), DEUX, QSC
         LOGICAL       DEBUG
+        
 C ----------------------------------------------------------------------
         COMMON /TDIM/   NDT, NDI
         COMMON /MESHUJ/ DEBUG
@@ -43,11 +44,11 @@ C ----------------------------------------------------------------------
         PARAMETER     (D12  = 0.5D0  )
         PARAMETER     (UN   = 1.0D0  )
         PARAMETER     (DEUX = 2.0D0  )
-        
+
+
 C ==================================================================
 C --- VARIABLES INTERNES -------------------------------------------
 C ==================================================================
-       
         EPSVP = VIN(23)
         
         IF(K.GT.4)THEN 
@@ -55,18 +56,20 @@ C ==================================================================
         ELSE
           RC = VIN(K+4)
         ENDIF  
-        
+
+
 C ==================================================================
 C --- CARACTERISTIQUES MATERIAU ------------------------------------
 C ==================================================================
-       
         BETA  = MATER(2, 2)
         B     = MATER(4, 2)
         PHI   = MATER(5, 2)
         PCREF = MATER(7, 2)
         PCR   = PCREF*EXP(-BETA*EPSVP)
+        PTRAC = MATER(21,2)
         M     = SIN(DEGR*PHI)
-        
+
+
 C ==================================================================
 C --- ON TRAVAILLE AVEC DES INDICES COMPRIS ENTRE 1 ET 3 -----------
 C ==================================================================
@@ -77,19 +80,19 @@ C ==================================================================
           KP=K
         ENDIF
 
+
 C ==================================================================
 C --------------- VARIABLES MEMOIRES -------------------------------
 C ==================================================================
-       
         XK(1) = VIN(4*KP+5)
         XK(2) = VIN(4*KP+6)
         TH(1) = VIN(4*KP+7)
         TH(2) = VIN(4*KP+8)       
 
+
 C ==================================================================
 C --- PROJECTION DANS LE PLAN DEVIATEUR K ------------------------
 C ==================================================================
-
         J = 1
         DO 10 I = 1, NDI
           IF (I .NE. KP) THEN
@@ -99,22 +102,22 @@ C ==================================================================
   10     CONTINUE
         TOU(3) = SIG(NDT+1-KP)
         
-        DD     = D12*( TOU(1)-TOU(2) )       
-        P      = D12*( TOU(1)+TOU(2) )
-        
+        DD= D12*( TOU(1)-TOU(2) )       
+        P = D12*( TOU(1)+TOU(2) )
+        P = P -PTRAC
+
+
 C ==================================================================
 C --- MISE A JOUR DES VARIABLES INTERNES DE MEMOIRE ----------------
 C ==================================================================
 
 C --- ENREGISTREMENT DU TENSEUR DIRECTION DE MEMOIRE
-
         SC(1) = DD-M*P*(UN-B*LOG(P/PCR))*(XK(1)-TH(1)*RC)
         SC(2) = TOU(3)-M*P*(UN-B*LOG(P/PCR))*(XK(2)-TH(2)*RC)
         QSC   = SQRT(SC(1)**2+(SC(2)**2)/DEUX)     
 
         VIN(4*KP+7)=-SC(1)/QSC
         VIN(4*KP+8)=-SC(2)/QSC
-
 
 C --- ENREGISTREMENT DU TENSEUR DEVIATOIRE MEMOIRE
         VIN(4*KP+5)=DD/(M*P*(UN-B*LOG(P/PCR)))

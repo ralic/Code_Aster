@@ -1,4 +1,4 @@
-# MODIF  DATE 25/02/2008   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 05/05/2008   AUTEUR BOYERE E.BOYERE 
 # TITRE SENSIBILITE EFGE_ELNO_DEPL / SIPO_ELNO_DEPL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -314,11 +314,11 @@ TEST_RESU(RESU=(
                    NOM_CMP='VZ',SENSIBILITE=PS_0,
                    VALE=(9.48437E-21),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
-#                _F(RESULTAT=DYT,NUME_ORDRE=20,
-#                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
-#                   CRITERE='ABSOLU',PRECISION=1.E-10,
-#                   NOM_CMP='VZ',SENSIBILITE=PS_1,
-#                   VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
+                _F(RESULTAT=DYT,NUME_ORDRE=20,
+                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   CRITERE='ABSOLU',PRECISION=1.E-10,
+                   NOM_CMP='VZ',SENSIBILITE=PS_1,
+                   VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
@@ -332,11 +332,11 @@ TEST_RESU(RESU=(
                    NOM_CMP='MFY',SENSIBILITE=PS_0,
                    VALE=(1.00054E-08),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
-#                _F(RESULTAT=DYT,NUME_ORDRE=20,
-#                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
-#                   CRITERE='ABSOLU',PRECISION=1.E-10,
-#                   NOM_CMP='MFY',SENSIBILITE=PS_1,
-#                   VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
+                _F(RESULTAT=DYT,NUME_ORDRE=20,
+                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   CRITERE='ABSOLU',PRECISION=1.E-10,
+                   NOM_CMP='MFY',SENSIBILITE=PS_1,
+                   VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
@@ -350,11 +350,11 @@ TEST_RESU(RESU=(
                    NOM_CMP='SVZ',SENSIBILITE=PS_0,
                    VALE=(7.54742E-20),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
-#                _F(RESULTAT=DYT,NUME_ORDRE=20,
-#                   NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
-#                   CRITERE='ABSOLU',PRECISION=1.E-10,
-#                   NOM_CMP='SVZ',SENSIBILITE=PS_1,
-#                   VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
+                _F(RESULTAT=DYT,NUME_ORDRE=20,
+                   NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   CRITERE='ABSOLU',PRECISION=1.E-10,
+                   NOM_CMP='SVZ',SENSIBILITE=PS_1,
+                   VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
@@ -368,12 +368,12 @@ TEST_RESU(RESU=(
                    NOM_CMP='SMFY',SENSIBILITE=PS_0,
                    VALE=(1.59241E-03),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
-#                _F(RESULTAT=DYT,NUME_ORDRE=20,
-#                   NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
-#                   CRITERE='ABSOLU',PRECISION=1.E-10,
-#                   NOM_CMP='SMFY',SENSIBILITE=PS_1,
-#                   VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
-                ),)
+                _F(RESULTAT=DYT,NUME_ORDRE=20,
+                   NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   CRITERE='ABSOLU',PRECISION=1.E-10,
+                   NOM_CMP='SMFY',SENSIBILITE=PS_1,
+                   VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
+               ),)
 
 FIN()
 

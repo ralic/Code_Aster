@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,13 +96,17 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
                    DDL_IMPO=_F(GROUP_NO=('C'), DY=-790.,), );
 
 # ---- METHODE LAGRANGIENNE ----
+
+F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
+F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
+
 CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='POU1',
                               GROUP_MA_ESCL='POU2',
 
                               METHODE='LAGRANGIEN',
-                                  DIST_MAIT=31.75,
-                                  DIST_ESCL=31.75,
+                                  DIST_MAIT=F_DIST_M,
+                                  DIST_ESCL=F_DIST_E,
                                   NORMALE = 'MAIT',
                                   VECT_MAIT = 'VECT_Y',
                                   MAIT_VECT_Y=(0.,0.,-1.,),
@@ -115,7 +119,7 @@ CHPOU=AFFE_CHAR_MECA(MODELE=MODE, INFO=2,
                               GROUP_MA_ESCL='POU2',
 
                               METHODE='LAGRANGIEN',
-                                  DIST_MAIT=31.75,
+                                  DIST_MAIT=F_DIST_M,
                                   DIST_POUTRE='OUI',
                                   CARA_ELEM=DEFI_R,
                                    NORMALE = 'MAIT',

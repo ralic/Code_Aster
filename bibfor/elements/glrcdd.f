@@ -1,11 +1,8 @@
-      SUBROUTINE GLRCDD(MATR,MATI,EP,SURFGP,Q,SIG,EPST,DEPS,DSIG
-     &                 ,ECR,DELAS,DSIDEP)
-     
+      SUBROUTINE GLRCDD(ZIMAT,MAXMP,MINMP,MATR,EP,SURFGP,Q,SIG,
+     &                  EPST,DEPS,DSIG,ECR,DELAS,DSIDEP,NORMM,NORMN)
         IMPLICIT NONE
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      REAL*8   MATR(*)
-      INTEGER  MATI(*)
+      REAL*8   MATR(*),MAXMP(*),MINMP(*),NORMM,NORMN
+      INTEGER  ZIMAT
       REAL*8   EP, SURFGP, Q(2,2), SIG(*), DEPS(*), EPST(*)
       REAL*8   DSIG(*),T1VE(9)
       REAL*8   ECR(*),DSIDEP(6,*),DELAS(6,*)
@@ -39,7 +36,7 @@ C ======================================================================
      &     MF1,MF2,DAM1,DAM2,CUVCUP(3)
 
       INTEGER     I, J, TEST,II
-      REAL*8      DSSP,PQT(3,3),RQ(3,3)
+      REAL*8      DSSP,PQT(3,3),RQ(3,3),RPARA(5)
 
 C     ------------------------------------------------------------
       SAVE  D66, C1, C2,ALPHA, BETA, GAMMA, DMAX1, DMAX2, K1, K2
@@ -132,9 +129,14 @@ C
         CUVCUP(J) = CURORT(J) - ECR(J+3)
  120  CONTINUE
 
-      CALL GLRCAD (DELAS,ALPHA,BETA,GAMMA,K1,K2,DMAX1,DMAX2,DAM1,DAM2
-     &            ,CUVCUP, C1,C2,NBACOR, DEPSOR, DPSPOR
-     &            , DFORTH, DDISS,DSIDEP)
+      RPARA(1) = ALPHA
+      RPARA(2) = BETA
+      RPARA(3) = GAMMA
+      RPARA(4) = K1
+      RPARA(5) = K2
+      CALL GLRCAD (ZIMAT,MAXMP,MINMP,DELAS,RPARA,DMAX1,
+     &           DMAX2,DAM1,DAM2,CUVCUP, C1,C2,NBACOR, DEPSOR, DPSPOR,
+     &           DFORTH, DDISS,DSIDEP,NORMM,NORMN)
 
       T1VE(1) = Q(1,1)*Q(1,1)
       T1VE(4) = Q(2,1)*Q(2,1)

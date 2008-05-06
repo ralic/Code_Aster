@@ -1,0 +1,489 @@
+# MODIF  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# PRESSION DE CONSOLITDATION P0 = 100KPA
+
+
+DEBUT(CODE=_F(NOM='SSNV197D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+
+PRE_GIBI();
+
+# modules mecaniques [kPa]
+K=516.2E6
+G=238.2E6
+# =>
+YOUNG = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+print 'young=',YOUNG,' /// nu=',POISSON
+
+# pression de preconsolidation [en kPa]
+P0=100.E3
+
+
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+MAILLAGE=LIRE_MAILLAGE();
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT         = 'OUI',
+                           PHENOMENE    = 'MECANIQUE',
+                           MODELISATION = '3D'));
+                           
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('DEVANT','DROIT','ARRIERE','GAUCHE','BAS','HAUT','APPUI','COTE')),
+                       INFO=1);
+                       
+
+#***********************************************************************
+#    INCREMENTS DE TEMPS
+#***********************************************************************
+TEMPS0=DEFI_LIST_REEL(DEBUT=-1.,
+                      INTERVALLE=(_F(JUSQU_A = 0., NOMBRE = 1),));
+
+TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A =  1., NOMBRE = 10),
+                                  _F(JUSQU_A =  7., NOMBRE = 60),
+                                  _F(JUSQU_A = 10., NOMBRE = 30)));
+
+#***********************************************************************
+#    MATERIAU : SOL
+#***********************************************************************
+SOL0=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
+                  HUJEUX=_F(N        = 0.4,
+                            BETA     = 24.,
+                            D        = 2.5,
+                            B        = .2,
+                            PHI      = 33.,
+                            ANGDIL   = 33.,
+                            PCO      = -1.E6,
+                            PREF     = -1.E6,
+                            AMON     = 0.008,
+                            ACYC     = 0.0001,
+                            CMON     = 0.2,
+                            CCYC     = 0.1,
+                            RD_ELA   = 0.005,
+                            RI_ELA   = 0.001,
+                            RHYS     = 0.05,
+                            RMOB     = 0.9,
+                            XM       = 1.,
+                            RD_CYC   = 0.005,
+                            RI_CYC   = 0.001,
+                            DILA     = 1.0,));
+
+SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
+                  HUJEUX=_F(N        = 0.4,
+                            BETA     = 24.,
+                            D        = 2.5,
+                            B        = .2,
+                            PHI      = 33.,
+                            ANGDIL   = 33.,
+                            PCO      = -1.E6,
+                            PREF     = -1.E6,
+                            AMON     = 0.008,
+                            ACYC     = 0.0001,
+                            CMON     = 0.2,
+                            CCYC     = 0.1,
+                            RD_ELA   = 0.005,
+                            RI_ELA   = 0.001,
+                            RHYS     = 0.05,
+                            RMOB     = 0.9,
+                            XM       = 1.,
+                            RD_CYC   = 0.005,
+                            RI_CYC   = 0.001,
+                            DILA     = 1.0,));
+
+CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                     AFFE=_F(TOUT='OUI', MATER=SOL0));
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL));
+
+                    
+#***********************************************************************
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
+#***********************************************************************
+CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA='COTE',
+                                   PRES = 1.));
+                                   
+CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA='APPUI',
+                                   PRES = 1.));
+                                    
+CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
+                       FACE_IMPO=_F(GROUP_MA='APPUI',DZ = -1.));
+                        
+DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FACE_IMPO=(_F(GROUP_MA='BAS',DZ = 0.),
+                                 _F(GROUP_MA='GAUCHE',DX = 0.),
+                                 _F(GROUP_MA='DEVANT',DY = 0.)));
+                            
+COEF0=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=(-1.0, 0.0,
+                           0. , P0 ));
+
+COEF3=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=( 0.0, 0.0,
+                          10.0, .2));
+
+
+#***********************************************************************
+#    PRECONSOLIDATION ELASTIQUE JUSQU'A 100KPA
+#***********************************************************************
+U0=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT0,
+                 EXCIT=(_F(CHARGE = CHAR_U1, FONC_MULT = COEF0),
+                        _F(CHARGE = CHAR_U2, FONC_MULT = COEF0),
+                        _F(CHARGE = DEPL_1)),
+                 COMP_INCR=_F(RELATION = 'ELAS'),
+                 NEWTON=_F(MATRICE = 'ELASTIQUE'),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 20),
+                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = 0.));
+
+SIG0=CREA_CHAMP(INFO=1,
+                TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT=U0,
+                NOM_CHAM='SIEF_ELGA',
+                INST=0.0,);
+
+                 
+
+#***********************************************************************
+#    ESSAI TRIAXIAL DRAINE: PASSAGE REPERE GLOBAL -> LOCAL
+#***********************************************************************
+CARAEL=AFFE_CARA_ELEM(MODELE=MODELE,
+                      MASSIF=_F(GROUP_MA ='ECHAN',
+                                ANGL_REP =(0.,45.,0.,),),
+                      INFO = 1,);
+                      
+U1=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM =CARAEL,
+                 EXCIT=(_F(CHARGE      = CHAR_U1, FONC_MULT   = COEF0),
+                        _F(CHARGE      = CHAR_U3,
+                           TYPE_CHARGE ='DIDI',
+                           FONC_MULT   = COEF3),
+                        _F(CHARGE      = DEPL_1)),
+                 ETAT_INIT=_F(SIGM=SIG0,),
+                 COMP_INCR=_F(RELATION = 'HUJEUX',
+                              RESI_INTE_RELA = 1.E-6,
+                              ITER_INTE_PAS = -10),
+                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER=1),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE =_F(LIST_INST=TEMPS1,),              
+                 INCREMENT=_F(LIST_INST = TEMPS1,
+                              SUBD_METHODE='UNIFORME',
+                              SUBD_PAS=10,
+                              SUBD_PAS_MINI=0.00001,
+                              INST_INIT=0.0,
+                              INST_FIN =5.));
+                              
+U1=CALC_ELEM(reuse=U1,
+             MODELE=MODELE,
+             CHAM_MATER=CHMAT,
+             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
+             RESULTAT=U1);
+
+U1=CALC_NO(reuse=U1,
+           CHAM_MATER=CHMAT,
+           OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','EPSI_NOEU_DEPL'),
+           RESULTAT=U1);
+
+
+#-------------------------
+#    TEST_RESU AU POINT C
+#-------------------------
+TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIEF_NOEU_ELGA',
+                                GROUP_NO = 'C',
+                                RESULTAT = U1,
+                                NOM_CHAM = 'SIEF_NOEU_ELGA',
+                                TOUT_CMP = 'OUI',
+                                OPERATION= 'EXTRACTION'));
+                     
+SIGMA_N = FORMULE(NOM_PARA=('SIXX','SIZZ'), VALE='0.5*(SIXX+SIZZ)');
+SIGMA_D = FORMULE(NOM_PARA=('SIXX','SIZZ'), VALE='0.5*(SIXX-SIZZ)');
+
+TAB_EPS=POST_RELEVE_T(ACTION=_F(INTITULE = 'EPSI_NOEU_DEPL',
+                                GROUP_NO = 'C',
+                                RESULTAT = U1,
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                TOUT_CMP = 'OUI',
+                                OPERATION= 'EXTRACTION'));
+
+TAB_SIG=CALC_TABLE(reuse=TAB_SIG,
+                   TABLE=TAB_SIG,
+                   ACTION=(_F(OPERATION='OPER',
+                              FORMULE  =SIGMA_N,
+                              NOM_PARA ='SIGMA_N',),
+                           _F(OPERATION='OPER',
+                              FORMULE  =SIGMA_D,
+                              NOM_PARA ='SIGMA_D',),),);
+
+TAB_VAR=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU_ELGA',
+                                GROUP_NO = 'C',
+                                RESULTAT = U1,
+                                NOM_CHAM = 'VARI_NOEU_ELGA',
+                                TOUT_CMP = 'OUI',
+                                OPERATION= 'EXTRACTION'));
+
+IMPR_TABLE(TABLE=TAB_SIG);
+IMPR_TABLE(TABLE=TAB_EPS);
+IMPR_TABLE(TABLE=TAB_VAR);
+
+
+# TEST DU DEVIATEUR DES CONTRAINTES PAR RAPPORT
+# A UN CALCUL ASTER AVEC UN MAILLAGE TOURNE DE 45 DEGRES
+TEST_TABLE(TABLE    =TAB_SIG,
+           NOM_PARA ='SIGMA_D',
+           VALE     =148396.,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =1.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_SIG,
+           NOM_PARA ='SIGMA_D',
+           VALE     =176513.,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =2.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_SIG,
+           NOM_PARA ='SIGMA_D',
+           VALE     =185554.,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =3.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_SIG,
+           NOM_PARA ='SIGMA_D',
+           VALE     =187681.,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =4.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_SIG,
+           NOM_PARA ='SIGMA_D',
+           VALE     =186804.,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =5.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+
+# TEST DU RAYON DEVIATOIRE MONOTONE PAR RAPPORT
+# A UN CALCUL ASTER AVEC UN MAILLAGE TOURNE DE 45 DEGRES
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V1',
+           VALE     =0.565,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =1.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V1',
+           VALE     =0.630,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =2.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V1',
+           VALE     =0.654,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =3.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V1',
+           VALE     =0.666,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =4.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V1',
+           VALE     =0.671,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =5.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+
+# TEST DU RAYON ISOTROPE MONOTONE PAR RAPPORT
+# A UN CALCUL ASTER AVEC UN MAILLAGE TOURNE DE 45 DEGRES
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V4',
+           VALE     =0.067,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =1.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V4',
+           VALE     =0.074,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =2.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V4',
+           VALE     =0.081,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =3.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V4',
+           VALE     =0.087,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =4.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V4',
+           VALE     =0.093,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =5.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+
+# TEST DE LA DEFORMATION PLASTIQUE VOLUMIQUE PAR RAPPORT
+# A UN CALCUL ASTER AVEC UN MAILLAGE TOURNE DE 45 DEGRES
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V23',
+           VALE     =-0.007401,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =1.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V23',
+           VALE     =-0.006719,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =2.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V23',
+           VALE     =-0.004358,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =3.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V23',
+           VALE     =-0.001451,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =4.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+
+TEST_TABLE(TABLE    =TAB_VAR,
+           NOM_PARA ='V23',
+           VALE     =0.001627,
+           PRECISION=0.01,
+           CRITERE  ='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =5.,
+                     PRECISION=.01,
+                     CRITERE  ='ABSOLU',),);
+           
+FIN();

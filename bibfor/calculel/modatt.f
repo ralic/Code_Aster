@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C DEB-------------------------------------------------------------------
 
 C     JJ = IOPTTE(OPT,TE)
       JJ = ZI(IAOPTT-1+ (TE-1)*LGCO+OPT)
+      CALL ASSERT(JJ.GT.0)
       OPTMOD = IAOPMO + ZI(ILOPMO-1+JJ) - 1
       IF (STATUT.EQ.'IN ') THEN
         MODATT = ZI(OPTMOD-1+3+IPAR)

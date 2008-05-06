@@ -1,7 +1,7 @@
       SUBROUTINE CAUNDF(CODE,OPT,TE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,8 @@ C ----------------------------------------------------------------------
       COMMON /CAII04/IACHII,IACHIK,IACHIX
       COMMON /CAII07/IACHOI,IACHOK
       COMMON /CAII08/IEL
+      INTEGER EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
+      COMMON /CAII19/EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
       INTEGER NBPARA,ISNNEM,INDIK8,INNEM
       CHARACTER*8 NOPARA
       INTEGER NP,IPAR,LGCATA
@@ -63,9 +65,9 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-      INTEGER IUNDF,IISNAN
+      INTEGER IUNDF,IISNAN,ICH,JRSVI,JCRSVI
       REAL*8 RNNEM,R8NNEM
-      CHARACTER*8 KNNEM
+      CHARACTER*8 KNNEM,TYCH
       CHARACTER*24 VALK(3)
 
 C DEB-------------------------------------------------------------------
@@ -86,18 +88,25 @@ C        -- CHAMPS "OUT" :
           IPARG = INDIK8(ZK8(IAOPPA),NOMPAR,1,NPARIO)
           LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
           IF (LGCATA.LE.0) GO TO 10
+          ICH = ZI(IAWLOC-1+7* (IPARG-1)+7)
+          IF (ICH.EQ.0) GOTO 10
 
-
-C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           CALL CHLOET(IPARG,ETENDU,JCELD)
           IF (ETENDU) THEN
+C           -- LE CHAMP LOCAL EST ETENDU :
             LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
           ELSE
             LGGREL = NBELGR*LGCATA
+            TYCH=ZK8(IACHOK-1+2*(ICH-1)+1)
+            IF (TYCH.EQ.'RESL' .AND. EVFINI.EQ.1) THEN
+              JRSVI = ZI(IACHOI-1+3*(ICH-1)+2)
+              JCRSVI = ZI(IACHOI-1+3*(ICH-1)+3)
+              LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+            ENDIF
           END IF
 
           IACHLO = ZI(IAWLOC-1+7* (IPARG-1)+1)
-          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GO TO 10
+          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GOTO 10
           TYPSCA = ZK8(IAWTYP-1+IPARG)
 
           IF (TYPSCA.EQ.'R') THEN
@@ -107,8 +116,6 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'I') THEN
             ZI(IACHLO-1+LGGREL+1) = INNEM
           ELSE
-C         TEST ERREUR PROGRAMMEUR :
-C         TYPE_SCALAIRE NON AUTORISÉ (I/R/C),
             CALL ASSERT(.FALSE.)
           END IF
    10   CONTINUE
@@ -120,7 +127,7 @@ C        -- CHAMPS "IN" :
 
           IPARG = INDIK8(ZK8(IAOPPA),NOMPAR,1,NPARIO)
           LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
-          IF (LGCATA.LE.0) GO TO 20
+          IF (LGCATA.LE.0) GOTO 20
 
 C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           CALL CHLOET(IPARG,ETENDU,JCELD)
@@ -131,7 +138,7 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           END IF
 
           IACHLO = ZI(IAWLOC-1+7* (IPARG-1)+1)
-          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GO TO 20
+          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GOTO 20
           TYPSCA = ZK8(IAWTYP-1+IPARG)
 
           IF (TYPSCA.EQ.'R') THEN
@@ -147,8 +154,6 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'K24') THEN
             ZK24(IACHLO-1+LGGREL+1) = KNNEM
           ELSE
-C         TEST ERREUR PROGRAMMEUR :
-C         TYPE_SCALAIRE NON AUTORISÉ ((I/R/C/K8/K16/K24)
             CALL ASSERT(.FALSE.)
           END IF
    20   CONTINUE
@@ -166,19 +171,26 @@ C        -- CHAMPS "OUT" :
 
           IPARG = INDIK8(ZK8(IAOPPA),NOMPAR,1,NPARIO)
           LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
-          IF (LGCATA.LE.0) GO TO 30
+          IF (LGCATA.LE.0) GOTO 30
+          ICH = ZI(IAWLOC-1+7* (IPARG-1)+7)
+          IF (ICH.EQ.0) GOTO 10
 
-
-C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           CALL CHLOET(IPARG,ETENDU,JCELD)
           IF (ETENDU) THEN
+C           -- LE CHAMP LOCAL EST ETENDU :
             LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
           ELSE
             LGGREL = NBELGR*LGCATA
+            TYCH=ZK8(IACHOK-1+2*(ICH-1)+1)
+            IF (TYCH.EQ.'RESL' .AND. EVFINI.EQ.1) THEN
+              JRSVI = ZI(IACHOI-1+3*(ICH-1)+2)
+              JCRSVI = ZI(IACHOI-1+3*(ICH-1)+3)
+              LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+            ENDIF
           END IF
 
           IACHLO = ZI(IAWLOC-1+7* (IPARG-1)+1)
-          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GO TO 30
+          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GOTO 30
           TYPSCA = ZK8(IAWTYP-1+IPARG)
 
           IF (TYPSCA.EQ.'R') THEN
@@ -189,8 +201,6 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'I') THEN
             IF (ZI(IACHLO-1+LGGREL+1).NE.INNEM) ECRAS=.TRUE.
           ELSE
-C         TEST ERREUR PROGRAMMEUR :
-C         TYPE_SCALAIRE NON AUTORISÉ (I/R/C),
             CALL ASSERT(.FALSE.)
           END IF
 

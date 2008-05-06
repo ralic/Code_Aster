@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 05/05/2008   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -237,7 +237,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                     ITER_GLOB_MAXI=30,
                                     RESI_GLOB_RELA=1.E-6),
                    SOLVEUR=_F(METHODE='MUMPS',
-                                    PCENT_PIVOT=250,
+                                    PCENT_PIVOT=100,
                                     RESI_RELA=-1.),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
@@ -253,7 +253,7 @@ TABLAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                               GROUP_NO='NFISSU',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
-                             NUME_ORDRE=2,
+                             INST=1.0,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',),);
 
@@ -261,7 +261,7 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                               GROUP_NO='SURF',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
-                             NUME_ORDRE=2,
+                             INST=1.0,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',),);
 
@@ -335,7 +335,7 @@ DEP_NFI=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('NFISSU',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=2,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 
@@ -359,7 +359,7 @@ DEP_PPA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPA',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=2,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPA = CALC_TABLE(reuse = DEP_PPA,
@@ -374,7 +374,7 @@ DEP_PPB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPB',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=2,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPB = CALC_TABLE(reuse = DEP_PPB,
@@ -388,9 +388,9 @@ DEP_PPC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPC',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=2,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);                                
+                                OPERATION='EXTRACTION',),);
 DEP_PPC = CALC_TABLE(reuse = DEP_PPC,
                       TABLE = DEP_PPC,
                       ACTION = (_F(OPERATION = 'FILTRE',
@@ -402,7 +402,7 @@ DEP_PPD=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPD',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=2,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPD = CALC_TABLE(reuse = DEP_PPD,
@@ -416,7 +416,7 @@ DEP_PPE=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPE',),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
-                                NUME_ORDRE=2,
+                                INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPE = CALC_TABLE(reuse = DEP_PPE,

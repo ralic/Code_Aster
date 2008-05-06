@@ -2,7 +2,7 @@
      &                  DEPDEL,VECELZ,INSTAM,COMPOR,CARCRI,LIGREZ,VITES,
      &                  ACCEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,15 +71,15 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 NOMCHA,LPAIN(15),PAOUT,K8BID,AFFCHA,KBID,NEWNOM
       CHARACTER*16 OPTION,REPCT,REPVR
       CHARACTER*24 CHGEOM,CHCARA(15),CHTIME,LIGREL,LIGRMO
-      CHARACTER*24 LCHIN(15),CHTIM2,LIGRCH
+      CHARACTER*24 LCHIN(15),CHTIM2,LIGRCH,EVOLCH
       CHARACTER*19 RESUEL,RESUFV(1)
       INTEGER IBID,IRET,NCHAR,ILVE,JCHAR,JINF,K,JLVE,LONLIS,ICHA,NUMCHM
       INTEGER IERD,JLCHIN,IER
       LOGICAL EXIGEO,EXICAR,BIDON
       COMPLEX*16 CBID
-      INTEGER NBCHMX,II
+      INTEGER NBCHMX,II,SOMME
       PARAMETER (NBCHMX=6)
-      INTEGER NBOPT(NBCHMX)
+      INTEGER NBOPT(NBCHMX),TAB(NBCHMX)
       CHARACTER*6 NOMLIG(NBCHMX),NOMPAF(NBCHMX),NOMPAR(NBCHMX)
       CHARACTER*6 NOMOPF(NBCHMX),NOMOPR(NBCHMX)
 
@@ -173,6 +173,7 @@ C     -------------------------------------
      &              AFFCHA,IERD)
 
         IF (NUMCHM.EQ.4) THEN
+          SOMME = 0
           CALL DISMOI('F','EXI_THM_CT',MODELE,'MODELE',IBID,REPCT,IERD)
           CALL DISMOI('F','EXI_THM_VR',MODELE,'MODELE',IBID,REPVR,IERD)
 
@@ -188,9 +189,9 @@ C     -------------------------------------
             ELSE
               SUFFIX = '.DESC'
             END IF
-
             LCHIN(1) = NOMCHA//'.CHME'//NOMLIG(K)//SUFFIX
             CALL EXISD('CHAMP_GD',LCHIN(1),IRET)
+            TAB(K)=IRET
             IF (IRET.NE.0) THEN
               IF (AFFCHA(5:7).EQ.'_FO') THEN
                 OPTION = 'CHAR_MECA_'//NOMOPF(K)
@@ -219,9 +220,16 @@ C     -------------------------------------
               ILVE = ILVE + 1
               CALL REAJRE(VECELE,RESUEL,'V')
             END IF
+            EVOLCH= NOMCHA//'.CHME.EVOL.CHAR'
+            CALL JEEXIN(EVOLCH,IER)
+            IF((TAB(K).EQ.1).OR.(IER.GT.0)) THEN
+               SOMME = SOMME + 1
+            ENDIF
    20     CONTINUE
+          IF (SOMME.EQ.0) THEN
+             CALL U2MESS('F','MECANONLINE2_4') 
+          ENDIF
         END IF
-
 C       --TRAITEMENT DE AFFE_CHAR_MECA/EVOL_CHAR
 C       ----------------------------------------
 C       RESULTATS POSSIBLES

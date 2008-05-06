@@ -1,4 +1,4 @@
-#@ MODIF sd_modele SD  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF sd_modele SD  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 from SD import *
 
 from SD.sd_ligrel    import sd_ligrel
+from SD.sd_maillage  import sd_maillage
 from SD.sd_prof_chno import sd_prof_chno
 from SD.sd_carte     import sd_carte
 from SD.sd_xfem      import sd_modele_xfem
@@ -52,4 +53,10 @@ class sd_modele(AsBase):
         if exi_liel :
             assert exi_maille
             assert exi_noeud
+
+
+    def check_maillage(self,checker) :
+        # on est obligé de checker le maillage pour permettre la creation de la sd_voisinage
+        lgrf=self.MODELE.LGRF.get_stripped()
+        sd2 = sd_maillage(lgrf[0]); sd2.check(checker)
 

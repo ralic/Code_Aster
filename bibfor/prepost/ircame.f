@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 06/05/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -312,7 +312,9 @@ C====
 C 6. LA FIN
 C====
 C
-      WRITE (IFM,*) ' '
+      IF ( NIVINF.GT.1 ) THEN
+          WRITE (IFM,*) ' '
+      ENDIF
 C
       CALL JEDETC('V','&&'//NOMPRO,1)
 C

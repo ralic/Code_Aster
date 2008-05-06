@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,6 +103,8 @@ IMPR_FONCTION=MACRO(nom="IMPR_FONCTION",op=impr_fonction_ops,sd_prod=None,
                                  fr="Séparateur des colonnes du tableau (ex : ' ', ';'...)"),
            COMMENTAIRE     =SIMP(statut='f',typ='TXM',defaut='#',
                                  fr="Caractère indiquant au traceur de fonction que la ligne peut etre ignorée"),
+           COMM_PARA       =SIMP(statut='f',typ='TXM',defaut='',
+                                 fr="Caractère utilisé pour commentariser la ligne des labels de colonnes"),
            DEBUT_LIGNE     =SIMP(statut='f',typ='TXM',defaut='',
                                  fr="Caractère de debut de ligne"),
            FIN_LIGNE       =SIMP(statut='f',typ='TXM',defaut='\n',

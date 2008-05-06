@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -614,8 +614,8 @@ C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
                 CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET)
                 CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET)
                 CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
-                CALL NMHUJ (TYPMOD,  IMATE, COMPOR, CRIT,
-     &                      INSTAM, INSTAP, TM,TP,TREF,EPSM,
+                CALL NMHUJ (TYPMOD, IMATE, COMPOR, CRIT,
+     &                      INSTAM, INSTAP, TM, TP, TREF, ANGMAS, EPSM,
      &                      DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP,
      &                      CODRET)
               ENDIF

@@ -1,10 +1,9 @@
-      SUBROUTINE CDNFON(IFONC,XX,DN,FXX,IER)
+      SUBROUTINE CDNFON(ZIMAT,KFONC,XX,DN,FXX,IER)
 
       IMPLICIT NONE
-C-----------------------------------------------------------------------
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,33 +21,24 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C 
-      
-      INTEGER     IFONC,DN,IER
+      INTEGER     DN,IER,ZIMAT
+      CHARACTER*8 KFONC,KAUX
       REAL*8      XX,FXX
+      CHARACTER*2   CODRES
+      CHARACTER*16  PHENOM
 
-
+      PHENOM = 'GLRC_DAMAGE'
       IER = 0
       IF(DN .EQ. 0) THEN
-        IF(IFONC .LE. 4) THEN
-          CALL CAFONC(IFONC,XX,FXX) 
-        ELSE  
-          IER = 1
-        ENDIF
+        CALL RCVALA(ZIMAT,' ',PHENOM,1,'X ',XX,1,KFONC,FXX,CODRES,'FM')
       ELSEIF(DN .EQ. 1) THEN
-        IF(IFONC .LE. 4) THEN
-          CALL CAFONC(IFONC + 4,XX,FXX) 
-        ELSE  
-          IER = 1
-        ENDIF
+        WRITE (KAUX,'(A1,A7)') 'D',KFONC(1:7)
+        CALL RCVALA(ZIMAT,' ',PHENOM,1,'X ',XX,1,KAUX,FXX,CODRES,'FM')
       ELSEIF(DN .EQ. 2) THEN
-        IF(IFONC .LE. 4) THEN
-          CALL CAFONC(IFONC + 8,XX,FXX) 
-        ELSE  
-          IER = 1
-        ENDIF
+        WRITE (KAUX,'(A2,A6)') 'DD',KFONC(1:6)
+        CALL RCVALA(ZIMAT,' ',PHENOM,1,'X ',XX,1,KAUX,FXX,CODRES,'FM')
       ELSE
         IER = 3
-        
       ENDIF
-        
+
       END 

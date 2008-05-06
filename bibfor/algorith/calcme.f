@@ -1,5 +1,6 @@
         SUBROUTINE CALCME(OPTION,COMPOR,THMC,MECA,IMATE,TYPMOD,CRIT,
-     &                    INSTAM,INSTAP,TREF,NDIM,DIMDEF,DIMCON,NVIMEC,
+     &                    INSTAM,INSTAP,
+     &                    TREF,NDIM,DIMDEF,DIMCON,NVIMEC,
      &                    NVITH,YATE,ADDEME,ADCOME,ADDETE,DEFGEM,CONGEM,
      &                    CONGEP,VINTM,VINTP,ADVIME,ADDEP1,ADDEP2,DSDE,
      &                    DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM,DP1,DP2,
@@ -7,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +83,7 @@ C
       REAL*8  DSDEME(6,6)
       REAL*8  ALPH0,ALPH1,ALPH2,ALPH3,XMT,RDDCDT,RDXMDT
       REAL*8  ALPHAT,ALPHBT,ALPHCT,SY,BB,XM,TM
-      REAL*8  PP,R8BID,ANGMAS(3)
+      REAL*8  PP,R8BID,ANGMA1(3),ANGMAS(7)
       CHARACTER*16 COMPLG(2)
 C ======================================================================
 C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
@@ -197,13 +198,18 @@ C ======================================================================
       IF (MECA.EQ.'HUJEUX') THEN
         MECTRU = .TRUE.
         TINI = T - DT
+        
+        DO 150 I =1, 7
+          ANGMAS(I)=0.D0
+ 150      CONTINUE
+
         CALL NMHUJ(TYPMOD,  IMATE, COMPOR, CRIT,
      &                      INSTAM, INSTAP,
-     &                      TINI,T, TREF,
-     &                      DEFGEM(ADDEME+NDIM),DEPS,
+     &                      TINI, T, TREF, ANGMAS,
+     &                      DEFGEM(ADDEME+NDIM), DEPS,
      &                      CONGEM(ADCOME), VINTM, OPTION,
      &                      CONGEP(ADCOME), VINTP,
-     &                      DSDEME,RETCOM)
+     &                      DSDEME, RETCOM)
       ENDIF
       IF (MECA.EQ.'LAIGLE') THEN
         COMPLG(1) = 'LAIGLE'
@@ -212,7 +218,7 @@ C ======================================================================
         TINI = T - DT
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
      &              INSTAP,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
-     &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMAS,
+     &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMA1,
      &              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'HOEK_BROWN_EFF') THEN
@@ -222,7 +228,7 @@ C ======================================================================
         TINI = T - DT
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
      &              INSTAP,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
-     &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMAS,
+     &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMA1,
      &              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'DRUCK_PRAGER' .OR. MECA.EQ.'DRUCK_PRAG_N_A' ) THEN

@@ -10,7 +10,7 @@
      &                  SECMBR,DEPALG,MEASSE,VEELEM,MEELEM,
      &                  CNFINT,CNDIRI)
 C
-C MODIF ALGORITH  DATE 14/04/2008   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 05/05/2008   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -361,7 +361,7 @@ C
       IF ( NDYNLO(SDDYNA,'HHT_COMPLET')) THEN
         CALL NMIHHT(MODELE,NUMEDD,MATE  ,COMPOR,
      &              CARELE,PARMET,LISCHA,SOLVEU,
-     &              CARCRI,SDDISC,
+     &              CARCRI,
      &              COMREF,ZFON,FONACT,
      &              INSTAM,SDDYNA,SDSENS,
      &              RESOCO,VALMOI,VALPLU,POUGD,

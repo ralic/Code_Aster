@@ -1,0 +1,350 @@
+# MODIF  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# TITRE ETUDE:  ESSAI DE CONSOLIDATION MONOTONE DRAINE (MECA PUR)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#               AVEC LA LOI DE HUJEUX
+# PRESSION DE CONSOLIDATION P0 = 100KPA
+# ON CHERCHE A VALIDER L'ORTHOTROPIE DE LA LOI DE HUJEUX
+# A L'AIDE D'UN CALCUL ELASTIQUE ORTHOTROPE REALISE AVEC ASTER
+# (DEGENERESCENCE DE HUJEUX VERS UNE LOI ELASTIQUE LINEAIRE)
+
+
+DEBUT(CODE=_F(NOM='SSNV204B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+PRE_GIBI();
+
+# modules mecaniques [kPa]
+K=516.2E6
+G=238.2E6
+# =>
+YOUNG  = 9.*K*G /(3.*K+G)
+POISSON= (3.*K-2.*G) /(6.*K+2.*G)
+
+print 'young=',YOUNG,' /// nu=',POISSON
+
+# pression de preconsolidation [en kPa]
+P0=100000.
+
+
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+MAILLAGE=LIRE_MAILLAGE( );
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT         = 'OUI',
+                           PHENOMENE    = 'MECANIQUE',
+                           MODELISATION = '3D'));
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('DEVANT','DROIT','ARRIERE','GAUCHE','BAS','HAUT','APPUI','COTE')),
+                       INFO=1);
+
+
+#***********************************************************************
+#    INCREMENTS DE TEMPS
+#***********************************************************************
+TEMPS0=DEFI_LIST_REEL(DEBUT=-20.,
+                      INTERVALLE=(_F(JUSQU_A = -10., NOMBRE = 1),
+                                  _F(JUSQU_A =  0., NOMBRE = 100)));
+
+
+#***********************************************************************
+#    MATERIAU : SOL
+#***********************************************************************
+SOL0=DEFI_MATERIAU(ELAS_ORTH=_F(E_L = 100*YOUNG,
+                               E_T = 50*YOUNG,
+                               E_N = YOUNG,
+                               NU_LT = POISSON,
+                               NU_TN = POISSON,
+                               NU_LN = POISSON,
+                               G_LT = 50*G,
+                               G_LN = 100*G,
+                               G_TN = G,),);
+                            
+SOL=DEFI_MATERIAU(ELAS_ORTH=_F(E_L = 100*YOUNG,
+                               E_T = 50*YOUNG,
+                               E_N = YOUNG,
+                               NU_LT = POISSON,
+                               NU_TN = POISSON,
+                               NU_LN = POISSON,
+                               G_LT = 50*G,
+                               G_LN = 100*G,
+                               G_TN = G,),
+                  HUJEUX=_F(N      = 0.,
+                            BETA   = 24.,
+                            D      = 100.,
+                            B      = 0.1,
+                            PHI    = 33.,
+                            ANGDIL = 33.,
+                            PCO    = -1.E6,
+                            PREF   = -1.E6,
+                            AMON   = 0.0001,
+                            ACYC   = 0.008,
+                            CMON   = 0.2,
+                            CCYC   = 0.1,
+                            RD_ELA = 1.,
+                            RI_ELA = 1.,
+                            RHYS   = 0.05,
+                            RMOB   = 0.9,
+                            XM     = 1.,
+                            RD_CYC = 0.005,
+                            RI_CYC = 0.001,
+                            DILA   = 1.0,));
+                            
+CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                     AFFE=_F(TOUT='OUI', MATER=SOL0));
+                    
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL));
+                    
+                      
+#***********************************************************************
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
+#***********************************************************************
+CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA='COTE',
+                                   PRES = 1.));
+
+CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA='APPUI',
+                                   PRES = 1.));
+
+DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
+                FACE_IMPO=(_F(GROUP_MA='BAS',DZ = 0.),
+                           _F(GROUP_MA='GAUCHE',DX = 0.),
+                           _F(GROUP_MA='DEVANT',DY = 0.)));
+
+COEF0=DEFI_FONCTION(NOM_PARA   ='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=(-20., 0.0,
+                          -10., P0 ));
+
+#***********************************************************************
+#    PRECONSOLIDATION ELASTIQUE JUSQU'A P0 (100 kPa)
+#***********************************************************************
+U0=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT0,
+                 EXCIT=(_F(CHARGE    = CHAR_U1,
+                           FONC_MULT = COEF0),
+                        _F(CHARGE    = CHAR_U2,
+                           FONC_MULT = COEF0),
+                        _F(CHARGE    = DEPL_1)),
+                 COMP_INCR=_F(RELATION = 'ELAS'),
+                 NEWTON=_F(MATRICE = 'ELASTIQUE'),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 20),
+                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = -10.));
+# ----------- FIN
+
+SIG0=CREA_CHAMP(INFO=1,
+                TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT =U0,
+                NOM_CHAM ='SIEF_ELGA',
+                INST     =-10.0,);
+
+COEF1=DEFI_FONCTION(NOM_PARA   ='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=(-10.0, P0,
+                            0.0, 3*P0));
+
+
+#***********************************************************************
+#    CONSOLIDATION ELASTIQUE (HUJEUX DEGENERE) DRAINE JUSQU'A 300KPA
+#***********************************************************************
+U1=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 EXCIT=(_F(CHARGE = CHAR_U1, FONC_MULT = COEF1),
+                        _F(CHARGE = CHAR_U2, FONC_MULT = COEF1),
+                        _F(CHARGE = DEPL_1)),
+                 ETAT_INIT=_F(SIGM =SIG0,),
+                 COMP_INCR=_F(RELATION = 'HUJEUX',
+                              RESI_INTE_RELA = 1.E-6,
+                              ITER_INTE_PAS  = -10,
+                              ITER_INTE_MAXI = 10),
+                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER=1),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 20),
+                 INCREMENT=_F(LIST_INST    = TEMPS0,
+                              SUBD_METHODE = 'UNIFORME',
+                              SUBD_PAS     = 10,
+                              SUBD_PAS_MINI= 0.0001,
+                              INST_INIT    = -10.0,
+                              INST_FIN     = 0.0));              
+                              
+
+#*******************************************************************************
+#                     POST-TRAITEMENT des RESULTATS
+#*******************************************************************************
+U1=CALC_ELEM(reuse     =U1,
+             MODELE    =MODELE,
+             CHAM_MATER=CHMAT,
+             OPTION    =('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
+             RESULTAT  =U1);
+
+U1=CALC_NO(reuse     =U1,
+           CHAM_MATER=CHMAT,
+           OPTION    =('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','EPSI_NOEU_DEPL'),
+           RESULTAT  =U1);
+
+TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
+                                GROUP_NO='C',
+                                RESULTAT=U1,
+                                NOM_CHAM='SIEF_NOEU_ELGA',
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION'));
+
+TAB_EPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU_DEPL',
+                                GROUP_NO='C',
+                                RESULTAT=U1,
+                                NOM_CHAM='EPSI_NOEU_DEPL',
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION'));
+                                
+TAB_VAR=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU_ELGA',
+                                GROUP_NO='C',
+                                RESULTAT=U1,
+                                NOM_CHAM='VARI_NOEU_ELGA',
+                                NOM_CMP =('V4','V8','V23'),
+                                OPERATION='EXTRACTION'));
+
+IMPR_TABLE(TABLE=TAB_SIG);
+IMPR_TABLE(TABLE=TAB_EPS);
+IMPR_TABLE(TABLE=TAB_VAR);
+
+
+#*******************************************************************************
+#                                  TEST_RESU
+#*******************************************************************************
+
+# TEST DE LA DEFORMATION ELASTIQUE EPSI_XX PAR RAPPORT
+# A UN CALCUL ASTER ELASTIQUE LINEAIRE
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPXX',
+           VALE=-2.58298E-07,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-6.4E-05,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPXX',
+           VALE=-5.16596E-07,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-1.28E-04,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPXX',
+           VALE=-7.74893E-07,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-1.92E-04,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPXX',
+           VALE=-1.03319E-06,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-2.56E-04,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPXX',
+           VALE=-1.29149E-06,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-3.2E-04,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+# TEST DE LA DEFORMATION ELASTIQUE EPSI_YY PAR RAPPORT
+# A UN CALCUL ASTER ELASTIQUE LINEAIRE
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPYY',
+           VALE=-7.10373E-07,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-6.4E-05,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPYY',
+           VALE=-1.42075E-06,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-1.28E-04,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPYY',
+           VALE=-2.13112E-06,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-1.92E-04,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPYY',
+           VALE=-2.84149E-06,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-2.56E-04,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TAB_EPS,
+           NOM_PARA='EPYY',
+           VALE=-3.55187E-06,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='EPZZ',
+                     VALE=-3.2E-04,
+                     PRECISION=1.E-06,
+                     CRITERE='ABSOLU'));
+                                          
+FIN();

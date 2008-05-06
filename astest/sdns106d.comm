@@ -1,0 +1,187 @@
+# MODIF  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# TITRE  : REPONSE TRANSITOIRE D'UNE DALLE MINCE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+#  DETAILS : MODELISATION DKT
+#            Mailles TRIA3
+#            Dynamique explicite
+#            Euler-Almansi
+#            Comportement elastique
+
+DEBUT(CODE=_F(NOM='SDNS106D', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+rho  = 2500.E0 
+EP   = 0.01
+Eyou  = 4.3880E10
+Nupoi = 0.
+
+t1 = 1.0E-4
+tmax = 10.0*t1
+dt = 5.0E-6
+
+pres = 5.E6/100
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='A1A2',),
+                               _F(GROUP_MA='A4A3' ,),
+                               _F(GROUP_MA='A2A4' ,),
+                               _F(GROUP_MA='A3A1' ,),
+                               _F(GROUP_MA='DALLE' ,),
+                               _F(NOM = 'P04',
+                                  OPTION='ENV_SPHERE',
+                                  POINT = (0.4,0.2,),
+                                  RAYON = 0.001,
+                                  PRECISION = 0.0011
+                                  ),
+                             ),);
+
+MOD=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',
+                        ),);
+
+IMPR_RESU(MODELE=MOD,RESU=_F(MAILLAGE=MAIL));
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
+                                      VECT_NORM=(0.,0.,1.),
+                                      GROUP_NO='A1',),
+                   );
+
+MAT=DEFI_MATERIAU(
+                           ELAS = _F(
+                                      E    =  Eyou,   
+                                      NU   =  Nupoi,              
+                                      RHO    = rho,
+                                     ),
+                          );
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(TOUT='OUI',MATER=MAT,),),
+                    );
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MOD,
+                        COQUE=_F(GROUP_MA='MESH',
+                                 EPAIS=EP,
+                                 INER_ROTA = 'OUI',
+                                 ANGL_REP=(0.0,0.0),
+                                ),
+                       );
+
+COND_L=AFFE_CHAR_MECA(MODELE=MOD,
+                        DDL_IMPO=(_F(GROUP_NO='A1',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,
+                                     DRX=0.0,
+                                     DRY=0.0,
+                                     DRZ=0.0,
+                                     ),
+                                  _F(GROUP_NO='A3A1',
+                                     DZ =0.0,
+                                     DX =0.0,
+                                    ),
+                                  _F(GROUP_NO='A2A4',
+                                     DZ =0.0,
+                                     DX =0.0,
+                                    ),
+                                  ),
+                       );
+
+chf0 = DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(
+                            0.0, 1.0,
+                            t1 ,     1.,
+                           ),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                    );
+
+COND_P=AFFE_CHAR_MECA(MODELE=MOD,
+# A remplacer 'force_nodale' par 'force_coque apres la resolution
+# de la fiche 11943. Recalculer aussi la reference (Europlexus).
+#                        FORCE_COQUE=_F(  
+#                                        GROUP_MA = 'DALLE', 
+# #                                       TOUT = 'OUI', 
+#                                        PRES = pres, ),
+                       FORCE_NODALE=_F(  
+                                       GROUP_NO = 'DALLE',
+                                       FZ = -pres, ),
+                     )  
+
+inst1=DEFI_LIST_REEL(
+                     DEBUT=0.0,
+                    INTERVALLE=(
+                          _F(JUSQU_A = tmax,PAS = dt),
+                      ),);
+
+RESU1 = DYNA_NON_LINE( 
+                       MODELE=MOD,
+                       CHAM_MATER= CHMAT,
+                       CARA_ELEM = CARA_ELE,
+                       COMP_INCR=_F(
+                                    RELATION ='ELAS',
+                                    DEFORMATION='EULER_ALMANSI',
+                                   ),
+                       INCREMENT=_F( LIST_INST = inst1,
+                                     PRECISION =1.E-1),
+                       EXCIT=(   
+                                  _F( 
+                                     CHARGE = COND_L, 
+                                     FONC_MULT = chf0,),
+                                  _F( 
+                                     CHARGE = COND_P, 
+                                     FONC_MULT = chf0,
+                                     ),
+                             ),
+                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                FORMULATION='ACCELERATION',),
+                     ARCHIVAGE=_F(LIST_INST=inst1,
+                                  ARCH_ETAT_INIT='OUI',),
+                       MASS_DIAG = 'OUI', 
+                    );
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=RESU1,
+                  GROUP_NO='P04', 
+                  INST=tmax,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE =-3.33318E-02,
+                  PRECISION = (1.E-4,1.0E-4),
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+                _F(RESULTAT=RESU1,
+                  GROUP_NO='P04', 
+                  INST=tmax,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DZ',
+                  VALE =-2.20481E+02,
+                  PRECISION = (1.E-4,1.0E-4),
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+                )                  
+                  );
+FIN();

@@ -1,4 +1,4 @@
-#@ MODIF sd_maillage SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_maillage SD  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,13 @@ from SD.sd_titre import sd_titre
 from SD.sd_cham_no import sd_cham_no
 from SD.sd_carte import sd_carte
 from SD.sd_l_table import sd_l_table
+
+
+class sd_voisinage(AsBase):
+#-------------------------------
+    nomj = SDNom(fin=12)
+    PTVOIS = AsVI()
+    ELVOIS = AsVI()
 
 
 class sd_maillage(sd_titre):
@@ -56,6 +63,9 @@ class sd_maillage(sd_titre):
 
     # si le sd_maillage est linéique (tube_GV) :
     abs_curv  = Facultatif(sd_carte(SDNom(nomj='.ABS_CURV')))
+
+    # Lorsque le sd_maillage sert de support a un sd_modele contenant des volumes finis :
+    VGE  = Facultatif(sd_voisinage())
 
     ADAPTATION = Facultatif(AsVI(lonmax=1, ))
     FORM = Facultatif(AsVK32(SDNom(debut=19), lonmax=2, ))

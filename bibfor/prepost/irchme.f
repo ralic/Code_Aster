@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 06/05/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,15 +139,17 @@ C
      &              LRESU, SAUX08, NOMSYM, NOPASE, CODRET )
 C
       IF ( CODRET.EQ.0 ) THEN
-        WRITE (IFM,11000) SAUX08
-        WRITE (IFM,11001) NOMSYM
+        IF ( NIVINF.GT.1 ) THEN
+           WRITE (IFM,11000) SAUX08
+           WRITE (IFM,11001) NOMSYM
+        ENDIF
         IF ( NOPASE.NE.'        ' ) THEN
           WRITE (IFM,11002) NOPASE
         ENDIF
         IF ( NIVINF.GT.1 ) THEN
           WRITE (IFM,11003) TYPECH
+          WRITE (IFM,11004) NOCHMD
         ENDIF
-        WRITE (IFM,11004) NOCHMD
       ELSE
          CALL U2MESS('A','MED_91')
          CALL U2MESK('A','MED_44',1,CHANOM)
@@ -253,7 +255,6 @@ C
         CALL U2MESK('I','MED_93',1,CHANOM)
         WRITE (IFM,10000)
         CALL UTFLSH (CODRET)
-      ELSE
         WRITE (IFM,10001)
       ENDIF
 C

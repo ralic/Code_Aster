@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,6 +61,8 @@ CH=AFFE_CHAR_MECA(
            _F(  GROUP_NO = 'VSOL',  DX = 0., DY = 0., DZ = 0.),
                                  )
            )
+           
+F_DIST_E=DEFI_CONSTANTE(VALE=0.)
 
 CH2=AFFE_CHAR_MECA(
                    MODELE=MODE,
@@ -73,7 +75,7 @@ CH2=AFFE_CHAR_MECA(
                               E_T            = 1.E16,
                               GROUP_MA_ESCL     = 'FACEINF',
                               GROUP_MA_MAIT     = 'SSOL',
-                              DIST_ESCL         =  0.,
+                              DIST_ESCL         = F_DIST_E,
                              )
                   )
 

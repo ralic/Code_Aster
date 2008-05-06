@@ -1,12 +1,12 @@
-      SUBROUTINE GLRCAD (DELAS,ALPHA,BETA,GAMMA,K1,K2,
-     &                   DMAX1,DMAX2,DAM1,DAM2,CURVCU,
-     &                   C1,C2,NBACKN,DEPS,DEPSP,DF,DDISS,DSIDEP)
+      SUBROUTINE GLRCAD (ZIMAT,MP1,MP2,DELAS,RPARA,DMAX1,DMAX2,
+     &                   DAM1,DAM2,CURVCU,C1,C2,NBACKN,DEPS,DEPSP,
+     &                   DF,DDISS,DSIDEP,NORMM,NORMN)
 
         IMPLICIT  NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,17 +42,16 @@ C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       REAL*8   DELAS(6,6),ALPHA,BETA,GAMMA,K1,K2,DMAX1
-     &      ,DMAX2,CURVCU(3),C1(6,6),C2(6,6),DEPS(6)
+     &      ,DMAX2,CURVCU(3),C1(6,6),C2(6,6),DEPS(6),MP1(*),MP2(*)
 
-      REAL*8   DAM1,DAM2,NBACKN(6)
+      REAL*8   DAM1,DAM2,NBACKN(6),NORMM,NORMN
 
       REAL*8   DEPSP(6),DDISS,DF(6),DSIDEP(6,6)
       REAL*8   DC1(6,6), DC2(6,6), REPS(6), DEPSTE(6),
      &         DDISST, DEPSPT(6),DEPST2(6),ZERODE,
-     &         DTG(6,6),CURCUP(3),MP1(3),MP2(3),DCC1(3,3),DCC2(3,3)
+     &         DTG(6,6),CURCUP(3),DCC1(3,3),DCC2(3,3),RPARA(5)
 
-      INTEGER NDICHO,NCRIT,NCRIT2,IER,CRITNU,IMP1MX,IMP2MI
-
+      INTEGER NDICHO,NCRIT,NCRIT2,IER,CRITNU,IMP1MX,IMP2MI,ZIMAT
       LOGICAL BBOK
       CHARACTER*24    CGLR
 
@@ -76,24 +75,30 @@ C         PROX>0 : NBN DANS ZONE DE CRITIQUE
 
 C---------------------------------------------
 
-      INTEGER   I, J,KK,KKK
+      INTEGER   I, J,KK,KKK,IPARA(4)
       REAL*8    NORRM6,FPLASS,ZERO,DFP(6),DFP2(6)
       REAL*8    DFF(3,3)
       DATA      ZERO /1.0D-3/
 
       CALL JEMARQ()
 
+      ALPHA = RPARA(1)  
+      BETA  = RPARA(2)
+      GAMMA = RPARA(3)
+      K1    = RPARA(4)
+      K2    = RPARA(5)
+      
       ZERODE = ZERO * NORRM6(DEPS)
 
       DO 10, I = 1,6
         NMNBN(I) = NBACKN(I)
  10   CONTINUE
 
-      CALL MPPFFN(NMNBN,NMPLAS,NMDPLA,NMDDPL
+      CALL MPPFFN(ZIMAT,NMNBN,NMPLAS,NMDPLA,NMDDPL
+     &                 ,NMZEF,NMZEG,NMIEF,NMPROX,NORMM)
+      CALL D0MPFN(ZIMAT,NMNBN,NMPLAS,NMDPLA,NMDDPL
      &                 ,NMZEF,NMZEG,NMIEF,NMPROX )
-      CALL D0MPFN(NMNBN,NMPLAS,NMDPLA,NMDDPL
-     &                 ,NMZEF,NMZEG,NMIEF,NMPROX )
-      CALL DDMPFN(NMNBN,NMPLAS,NMDPLA,NMDDPL
+      CALL DDMPFN(ZIMAT,NMNBN,NMPLAS,NMDPLA,NMDDPL
      &                 ,NMZEF,NMZEG,NMIEF,NMPROX )
 
       CALL ASSERT(NMIEF.LE.0)
@@ -149,15 +154,15 @@ C-----------------------------------------------------------------------
  70     CONTINUE
  80   CONTINUE
 
-      NCRIT=CRITNU(NMNBN,NMPLAS,NMDPLA,NMDDPL,NMZEF,NMZEG
-     &            ,NMIEF,NMPROX,DEPSTE,DTG)
+      NCRIT=CRITNU(ZIMAT,NMNBN,NMPLAS,NMDPLA,NMDDPL,NMZEF,NMZEG
+     &            ,NMIEF,NMPROX,DEPSTE,DTG,NORMM)
 
       DO 122, KKK = 1,10000000
         DO 90, J = 1,6
           DEPST2(J) = 0.5D0*DEPSTE(J)
  90     CONTINUE
-        NCRIT2=CRITNU(NMNBN,NMPLAS,NMDPLA,NMDDPL,NMZEF
-     &               ,NMZEG,NMIEF,NMPROX,DEPST2,DTG)
+        NCRIT2=CRITNU(ZIMAT,NMNBN,NMPLAS,NMDPLA,NMDDPL,NMZEF
+     &               ,NMZEG,NMIEF,NMPROX,DEPST2,DTG,NORMM)
 
         NDICHO = NDICHO+1
         IF (NCRIT2 .NE. NCRIT) THEN
@@ -169,9 +174,19 @@ C-----------------------------------------------------------------------
           NEWZFG(1) = NEWZEF
           NEWZFG(2) = NEWZEG
 
-          CALL DNDISS (NMNBN,NMPLAS,NMDPLA,NMDDPL,NMPROX,DEPSTE,NCRIT
-     &                ,NEWNBN,NEWPLA,NEWDPL,NEWDDP,NEWZFG
-     &                ,NEWIEF,NEWPRO,DEPSPT,DDISST,DC1,DC2,DTG,IER)
+          IPARA(1) = ZIMAT
+          IPARA(2) = NCRIT
+C          IPARA(3) = NEWIEF
+C          IPARA(4) = IER
+          CALL DNDISS (IPARA,NMNBN,NMPLAS,NMDPLA,NMDDPL,NMPROX,DEPSTE,
+     &                 NEWNBN,NEWPLA,NEWDPL,NEWDDP,NEWZFG,
+     &                 NEWPRO,DEPSPT,DDISST,DC1,DC2,DTG,
+     &                 NORMM,NORMN)
+          ZIMAT  = IPARA(1)
+          NCRIT  = IPARA(2) 
+          NEWIEF = IPARA(3)
+          IER    = IPARA(4) 
+          
           NEWZEF = NEWZFG(1)
           NEWZEG = NEWZFG(2)
 
@@ -190,9 +205,10 @@ C             WE TRY TO BRING BACK THE MOMENT TO THE YIELDING SURFACE
      &        .OR. FPLASS(NEWNBN,NEWPLA,2)  .GT.  NEWZEF) THEN
 
 
-               CALL BRBAGL (NEWNBN,NEWPLA,NEWDPL,NEWDDP,NEWZEF
+               CALL BRBAGL (ZIMAT,NEWNBN,NEWPLA,NEWDPL,NEWDDP,NEWZEF
      &                 ,NEWZEG,NEWIEF,NEWPRO, DEPSPT,
-     &                  DDISST, DC1,DC2,DTG,BBOK)
+     &                  DDISST, DC1,DC2,DTG,BBOK,NORMM,NORMN)
+
 C                       BRING_BACK IS SUCCESSFUL: THE STEP IS VALID
 
                 IF (BBOK) GOTO 123
@@ -266,18 +282,6 @@ C------------------------------------------------
        DO 240, J = 1,6
          NBACKN(J) = NMNBN(J)
  240   CONTINUE
-
-C ------- MATRICE TANGENTE
-      CGLR = '&&GLRC.MP1'
-      CALL JEVEUO(CGLR,'L',IMP1MX)
-      CGLR = '&&GLRC.MP2'
-      CALL JEVEUO(CGLR,'L',IMP2MI)
-
-      DO 250 I=1,2
-        MP1(I) = ZR(IMP1MX-1 + I)
-        MP2(I) = ZR(IMP2MI-1 + I)
- 250  CONTINUE
-
 
       DO 270 I=1,3
         DO 260 J=1,3

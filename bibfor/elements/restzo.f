@@ -1,10 +1,8 @@
-      FUNCTION RESTZO(NMNBN,BEND)
-
+      FUNCTION RESTZO(ZIMAT,NMNBN,BEND,NORMM,NORMN)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,72 +39,50 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
       INTEGER RESTZO
 C---------------------------------------------
-        REAL*8  NMNBN(6)         
-        REAL*8  NMPLAS(2,3)   
-        REAL*8  NMDPLA(2,2)  
-        REAL*8  NMDDPL(2,2)
-        REAL*8  NMZEF        
-        REAL*8  NMZEG         
-        INTEGER NMIEF  
-        INTEGER NMPROX(2)  
-
+      REAL*8  NMNBN(6)         
+      REAL*8  NMPLAS(2,3)   
+      REAL*8  NMDPLA(2,2)  
+      REAL*8  NMDDPL(2,2)
+      REAL*8  NMZEF        
+      REAL*8  NMZEG         
+      INTEGER NMIEF  
+      INTEGER NMPROX(2)  
 C---------------------------------------------
       INTEGER BEND
 
-      INTEGER I 
+      INTEGER I,ZIMAT 
       
       INTEGER MPFONC(2)
-      REAL*8 DX,DY,DISTFO 
+      REAL*8 DX,DY,DISTFO,R8BID 
 
-      REAL*8     NORMN,NORMM       
-      INTEGER         MP1F(2),MP2F(2)
+      REAL*8     NORMN,NORMM,VALRES(4)       
       CHARACTER*24    CGLR
       INTEGER       IMP1,IMP2,IDMP1,IDMP2,IDDMP1,IDDMP2,INN,INM
+      CHARACTER*8   NOMRES(4),KPFONC(2)
+      CHARACTER*2   CODRES(4)
+      CHARACTER*16  PHENOM
 
-      CALL JEMARQ()
-      
-      CGLR = '&&GLRC.MP1FONC'
-      CALL JEVEUO(CGLR,'L',IMP1)      
-      
-      CGLR = '&&GLRC.MP2FONC'
-      CALL JEVEUO(CGLR,'L',IMP2)      
+      NOMRES(1) = 'FMEX1'
+      NOMRES(2) = 'FMEX2'
+      NOMRES(3) = 'FMEY1'
+      NOMRES(4) = 'FMEY2'
 
-      CGLR = '&&GLRC.NORMN'
-      CALL JEVEUO(CGLR,'L',INN)   
-      
-      CGLR = '&&GLRC.NORMM'
-      CALL JEVEUO(CGLR,'L',INM)      
-      
-      DO 15, I = 1,2
-        MP1F(I)   = ZI(IMP1-1   + I) 
-        MP2F(I)   = ZI(IMP2-1   + I)
- 15   CONTINUE
- 
-      NORMN = ZR(INN)
-      NORMM = ZR(INM)
-      
-      
       RESTZO=0
       IF(BEND .EQ. 1) THEN
          DO 10, I = 1,2
-           MPFONC(I) = MP1F(I)
+           KPFONC(I) = NOMRES(2*(I-1)+1)
  10      CONTINUE    
-
       ELSE
          DO 30, I = 1,2
-           MPFONC(I) = MP2F(I)
+           KPFONC(I) = NOMRES(2*I)
  30      CONTINUE    
-
       ENDIF
 
-      DX=DISTFO(MPFONC(1),NMNBN(1),NMNBN(4),NORMN,NORMM)
-      DY=DISTFO(MPFONC(2),NMNBN(2),NMNBN(5),NORMN,NORMM)
+      DX=DISTFO(ZIMAT,KPFONC(1),NMNBN(1),NMNBN(4),NORMN,NORMM)
+      DY=DISTFO(ZIMAT,KPFONC(2),NMNBN(2),NMNBN(5),NORMN,NORMM)
 
       IF(SQRT(DX**2+DY**2) .LT. 5.0D-2) THEN
          RESTZO=1
       ENDIF
-
-      CALL JEDEMA()     
-
 
       END 
