@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -473,14 +473,16 @@ C           MATRICE EVOLUTIVE TANGENTE/SECANTE
               EXITS = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')
               IF (EXITS) THEN
                  CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TXTS,N1)
-                 IF (TXTS(1:16).EQ.'TANGENTE_SECANTE') THEN
-                   NBVARI = NBVARI + 1
-                   CALL GETVR8(MOCLEF(I),'SEUIL',
-     &                           K,1,1,TSEUIL,IRET)
-                   CALL GETVR8(MOCLEF(I),'AMPLITUDE',
-     &                           K,1,1,TSAMPL,IRET)
-                   CALL GETVR8(MOCLEF(I),'TAUX_RETOUR',
-     &                           K,1,1,TSRETU,IRET)
+                 IF (N1.GT.0) THEN
+                    IF (TXTS(1:16).EQ.'TANGENTE_SECANTE') THEN
+                      NBVARI = NBVARI + 1
+                      CALL GETVR8(MOCLEF(I),'SEUIL',
+     &                            K,1,1,TSEUIL,IRET)
+                      CALL GETVR8(MOCLEF(I),'AMPLITUDE',
+     &                            K,1,1,TSAMPL,IRET)
+                      CALL GETVR8(MOCLEF(I),'TAUX_RETOUR',
+     &                            K,1,1,TSRETU,IRET)
+                    ENDIF
                  ENDIF
               END IF
             ENDIF

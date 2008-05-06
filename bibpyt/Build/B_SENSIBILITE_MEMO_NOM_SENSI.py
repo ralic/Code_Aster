@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ def addto(liste, obj):
 class MEMORISATION_SENSIBILITE:
    """Classe pour la mémorisation des concepts sensibles et leurs dérivées.
    """
-   def __init__(self, jdc=None, debug=True):
+   def __init__(self, jdc=None, debug=False):
       """Initialisation de la structure
       """
       self.jdc = jdc

@@ -1,0 +1,56 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 07/05/2008 - 17:01:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012041 DU 2008-04-27 20:59:21
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.22, de nombreux cas-tests casses dans calcul sur Calibre (g77)
+FONCTIONNALITE
+   Un copier/coller maladroit a cassé de nombreux cas-tests dans calcul (routine caundf.f).
+   Le plantage se produisait bizarrement uniquement avec le compilateur g77.
+   
+   A cette occasion, quelques petites erreurs (déclarations incorrectes, initialisation) sont
+   corrigées dans :
+   - fointa : variable K16 à K19 suite au changement de la sd_fonction
+   - lcmzge : pb avec l'initialisation de TEMP en tant que VARC
+   - nxlect : variable ibid non initialisé lors de l'appel à pslect
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3923      5      5
+ FORTRAN MODIF algorith/lcmzge              courtois M.COURTOIS         483      2      2
+ FORTRAN MODIF algorith/nmdorc              courtois M.COURTOIS         649      3      1
+ FORTRAN MODIF algorith/nxlect              courtois M.COURTOIS         111      2      2
+ FORTRAN MODIF calculel/caundf              courtois M.COURTOIS         225      2      2
+ FORTRAN MODIF utilitai/fointa              courtois M.COURTOIS         216      4      6
+  PYTHON MODIF Build/B_SENSIBILITE_MEMO_NOM_SENSI   courtois M.COURTOIS         377      2      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    7        5984        20      20        +0
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    7        5984        20      20        +0 

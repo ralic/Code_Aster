@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2037,7 +2037,7 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
         char *nomsd, nomsd32[33];
-        char nomob[8];
+        char nomob[8] = "        ";
         double *f;
         INTEGER *l;
         char *kvar;
@@ -2163,7 +2163,7 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
         char *nomsd, *nom, nomsd32[33];
-        char nomob[8];
+        char nomob[8] = "        ";
         double *f;
         INTEGER *l;
         char *kvar;
@@ -2794,8 +2794,8 @@ PyObject *args;
          => retourne la valeur actuelle : 'ABORT' ou 'EXCEPTION'.
 */
       int len=-1;
-      INTEGER lng;
-      char tmp[16+1];
+      INTEGER lng=0;
+      char tmp[16+1] = "                 ";
       char *comport;
       PyObject *res;
 

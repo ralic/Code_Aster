@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,16 +50,14 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER      NPAR(2), INDFCT, JPRO, JPAR, LPARA, NBVN, NBPARA, I
-      INTEGER      NUPAR, NBPT, JVAL, INUME, IER, VALI(4)
+      INTEGER      NUPAR, NBPT, JVAL, INUME, IER
       REAL*8       TAB(4), RPAR, RVAR, EPSI, R8PREM, R8VIDE, VALR(4)
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
       CHARACTER*1  COLI
-      CHARACTER*16 NOMPF(2)
       CHARACTER*19 NOMF
+      CHARACTER*24 NOMPF(2)
 C     ------------------------------------------------------------------
-      INTEGER      IPAR(10), MXPARA, I1, JJDIM, IADZI, IAZK24
-      CHARACTER*1  CBID
-      CHARACTER*16 NOMP(10)
+      INTEGER      IADZI, IAZK24
       CHARACTER*24 VALK(4)
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
@@ -113,7 +111,7 @@ C
         NBPARA = 2
         NOMPF(1) = ZK24(JPRO+2)
         NOMPF(2) = ZK24(JPRO+6)
-        NOMF = ZK24(JPRO+5) 
+        NOMF = ZK24(JPRO+5)
 
       ELSE
         CALL U2MESK('F','CALCULEL6_61',1,ZK24(JPRO))
