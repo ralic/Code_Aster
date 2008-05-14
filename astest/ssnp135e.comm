@@ -1,34 +1,43 @@
-# MODIF  DATE 15/10/2007   AUTEUR ABBAS M.ABBAS 
-# TITRE SIMULATION D'UNE PLAQUE TROUEE EN PLASTICITE AVEC LA METHODE ARLEQUIN - MODELE ARLEQUIN
+# MODIF  DATE 13/05/2008   AUTEUR MEUNIER S.MEUNIER 
+# TITRE SIMULATION D'UNE PLAQUE TROUEE EN PLASTICITE - METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(  CODE=_F(  NOM = 'SSNP135E',NIV_PUB_WEB='INTERNET') );
+DEBUT(CODE=_F(NOM='SSNP135E',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-# MAILLAGE DE LA PLAQUE
+########################
+# 1. Lecture du maillage
+#    de la plaque
+########################
 
 PRE_GMSH(UNITE_GMSH=19,
          UNITE_MAILLAGE=20,);
 
 MAIL1=LIRE_MAILLAGE(UNITE=20,);
 
+########################
+# 2. Lecture du maillage
+#    de la partie trouee
+#    (patch Arlequin)
+########################
 
-# MAILLAGE DU TROU
 PRE_GMSH(UNITE_GMSH=22,
          UNITE_MAILLAGE=21,);
 
@@ -43,11 +52,17 @@ MOD=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='C_PLAN',),);
-# COURBE DE TRACTION
 
-CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',
-                    VALE=(0.004,4.0,0.006,5.0,0.009,5.5,0.02,6.0,),
-                    PROL_DROITE='CONSTANT',);
+###########################
+# 3. DEFINITION DU MATERIAU
+#    EN TRACTION
+###########################
+
+CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.004,4.0,
+                          0.006,5.0,
+                          0.009,5.5,
+                          0.02,6.0,
+                          ),PROL_DROITE='CONSTANT',);
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=1000.0,
                             NU=0.3,),
@@ -56,30 +71,51 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=1000.0,
 CHMATER=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
                               MATER=MATER,),);
-# CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
+
+###########################
+# 4. CONDITIONS AUX LIMITES
+###########################
+
+###
+# A. SYMETRIE (QUART DE PLAQUE)
+###
 
 SYMET=AFFE_CHAR_MECA(MODELE=MOD,
                      FACE_IMPO=(_F(GROUP_MA=('GM1027','GM27',),
                                    DY=0.0,),
                                 _F(GROUP_MA=('GM1029','GM29',),
                                    DX=0.0,),),);
-# TRACTION REPARTIE SUR LE HAUT
+
+###
+# B. TRACTION REPARTIE SUR LE HAUT
+###
 
 EFFORT=AFFE_CHAR_MECA(MODELE=MOD,
                       FORCE_CONTOUR=_F(GROUP_MA='GM26',
                                        FY=1.0,),);
 
+###
+# C. Creation des relations de couplage Arlequin
+#    entre les groupes de mailles
+#    GM11 (maillage fin) et
+#    GM6 (maillage grossier)
+#    Collage sur le modele fin
+###
+
 ARLQ=AFFE_CHAR_MECA(MODELE=MOD,
                     ARLEQUIN=_F(GROUP_MA_1='GM6',
                                 GROUP_MA_2=('GM9','GM11',),
                                 GROUP_MA_COLL='GM11',
+                                COND_LIM=SYMET,
                                 COLLAGE='FIN',
-                                COND_LIM = SYMET,
                                 POIDS_FIN=0.9999,),);
+
 # L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR HAUT
 
-F_DEPL=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,10.0,10.0,),);
+F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           10.0,10.0,
+                           ),);
+
 # DISCRETISATION EN TEMPS
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -90,8 +126,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=5.4,
                                      NOMBRE=5,),),);
 
-
-### CALCUL NON-LINEAIRE
+##################################
+# 5. RESOLUTION DU PB NON-LINEAIRE
+##################################
 
 RESU=STAT_NON_LINE(MODELE=MOD,
                    CHAM_MATER=CHMATER,
@@ -104,16 +141,16 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA=('GM6','GM11',),),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=3.5,                          
-                                ),
-                   NEWTON=_F(REAC_INCR = 1,
-                             REAC_ITER = 1,
-                             MATRICE='TANGENTE',),
+                                INST_FIN=3.5,),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
-
-### POST-TRAITEMENTS CLASSIQUES
+#####################
+# 6. POST-TRAITEMENTS
+#####################
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
@@ -127,252 +164,268 @@ RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION='FORC_NODA',);
 
-# DEPLACEMENTS DU POINT A
+###
+# A.DEPLACEMENTS DU POINT A (BORD DU TROU)
+###
 
-DX_A=POST_RELEVE_T(ACTION=_F(INTITULE='DX_A',
-                             GROUP_NO='GM33',
+DX_A=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='DX_A',
                              RESULTAT=RESU,
                              NOM_CHAM='DEPL',
-                             NOM_CMP='DX',
-                             OPERATION='EXTRACTION',),);
-
+                             GROUP_NO='GM33',
+                             NOM_CMP='DX',),);
 
 #IMPR_TABLE(TABLE=DX_A)
 
 TEST_TABLE(TABLE=DX_A,
-           FILTRE = _F(NOM_PARA='INST',VALE=2.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.5,),
            NOM_PARA='DX',
-           VALE = -2.5415171286325E-02,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
-
+           VALE=-2.5415171286325E-02,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
 
 TEST_TABLE(TABLE=DX_A,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='DX',
-           VALE = -3.4446793017166E-02,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
-           
-TEST_TABLE(TABLE=DX_A,
-           FILTRE = _F(NOM_PARA='INST',VALE=2.50000E+00),
-           NOM_PARA='DX',
-           VALE = -2.5415171286325E-02,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.001,);
-
+           VALE=-3.4446793017166E-02,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
 
 TEST_TABLE(TABLE=DX_A,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.5,),
            NOM_PARA='DX',
-           VALE = -3.4606865864745E-02,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.01,);         
-           
+           VALE=-2.5415171286325E-02,
+           CRITERE='RELATIF',
+           PRECISION=0.001,
+           REFERENCE='AUTRE_ASTER',);
 
-# DEPLACEMENTS DU POINT B
+TEST_TABLE(TABLE=DX_A,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
+           NOM_PARA='DX',
+           VALE=-3.4606865864745E-02,
+           CRITERE='RELATIF',
+           PRECISION=0.01,
+           REFERENCE='AUTRE_ASTER',);
 
-DY_B=POST_RELEVE_T(ACTION=_F(INTITULE='DY_B',
-                             GROUP_NO='GM32',
+###
+# B.DEPLACEMENTS DU POINT B (BORD DU TROU)
+###
+
+DY_B=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='DY_B',
                              RESULTAT=RESU,
                              NOM_CHAM='DEPL',
-                             NOM_CMP='DY',
-                             OPERATION='EXTRACTION',),);
+                             GROUP_NO='GM32',
+                             NOM_CMP='DY',),);
 
 #IMPR_TABLE(TABLE=DY_B)
 
 TEST_TABLE(TABLE=DY_B,
-           FILTRE = _F(NOM_PARA='INST',VALE=2.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.5,),
            NOM_PARA='DY',
-           VALE = 7.7181865030523E-02,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
-
+           VALE=7.7181865030523E-02,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
 
 TEST_TABLE(TABLE=DY_B,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='DY',
-           VALE = 1.1666794741196E-01,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,); 
+           VALE=1.1666794741196E-01,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
 
 TEST_TABLE(TABLE=DY_B,
-           FILTRE = _F(NOM_PARA='INST',VALE=2.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.5,),
            NOM_PARA='DY',
-           VALE = 7.6498982211284E-02,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.01,); 
-
+           VALE=7.6498982211284E-02,
+           CRITERE='RELATIF',
+           PRECISION=0.01,
+           REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=DY_B,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='DY',
-           VALE = 1.1557688703700E-01,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.01,); 
-
-# CONTRAINTES
+           VALE=1.1557688703700E-01,
+           CRITERE='RELATIF',
+           PRECISION=0.01,
+           REFERENCE='AUTRE_ASTER',);
+###
+# C. CONTRAINTES AU BORD DU TROU
+###
 
 CERCLE=INTE_MAIL_2D(MAILLAGE=MAIL,
                     DEFI_CHEMIN=_F(GROUP_MA='GM28',),);
 
-STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
-                               CHEMIN=CERCLE,
+STHETA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='STHETA',
                                RESULTAT=RESU,
                                NOM_CHAM='SIEF_ELNO_ELGA',
                                INST=1.0,
+                               CHEMIN=CERCLE,
                                NOM_CMP=('SIXX','SIYY','SIXY',),
-                               REPERE='POLAIRE',
-                               OPERATION='EXTRACTION',),);
-                               
+                               REPERE='POLAIRE',),);
+
 #IMPR_TABLE(TABLE=STHETA)
 
 TEST_TABLE(TABLE=STHETA,
-           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=1.57017E+01),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=15.7017,),
            NOM_PARA='SIXX',
-           VALE = -1.1666995158918E-01 ,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);                            
-
+           VALE=-1.1666995158918E-01,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);
 
 TEST_TABLE(TABLE=STHETA,
-           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=1.57017E+01),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=15.7017,),
            NOM_PARA='SIXX',
-           VALE = -1.0794845533703E-01 ,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.09,); 
+           VALE=-1.0794845533703E-01,
+           CRITERE='RELATIF',
+           PRECISION=0.09,
+           REFERENCE='AUTRE_ASTER',);
 
-# COURBE SIYY AU POINT A EN FONCTION DU DEPLACEMENT 
+###
+# D. CONTRAINTE SIYY AU POINT A
+###
 
-SYY_A=POST_RELEVE_T(ACTION=_F(INTITULE='SYY_A',
-                              GROUP_NO='GM33',
+SYY_A=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='SYY_A',
                               RESULTAT=RESU,
                               NOM_CHAM='SIEF_NOEU_ELGA',
-                              NOM_CMP='SIYY',
-                              OPERATION='EXTRACTION',),);
+                              GROUP_NO='GM33',
+                              NOM_CMP='SIYY',),);
 
 TEST_TABLE(TABLE=SYY_A,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='SIYY',
-           VALE = 6.2769522007211E+00 ,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
+           VALE=6.2769522007211E+00,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
 
 TEST_TABLE(TABLE=SYY_A,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='SIYY',
-           VALE = 6.4246203319075E+00 ,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.025,);
+           VALE=6.4246203319075E+00,
+           CRITERE='RELATIF',
+           PRECISION=0.025,
+           REFERENCE='AUTRE_ASTER',);
 
 #IMPR_TABLE(TABLE=SYY_A)
 
-# COURBE SIXX AU POINT B EN FONCTION DU DEPLACEMENT 
+###
+# E. CONTRAINTE SIXX AU POINT B
+###
 
-SXX_B=POST_RELEVE_T(ACTION=_F(INTITULE='SXX_B',
-                              GROUP_NO='GM32',
+SXX_B=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='SXX_B',
                               RESULTAT=RESU,
                               NOM_CHAM='SIEF_NOEU_ELGA',
-                              NOM_CMP='SIXX',
-                              OPERATION='EXTRACTION',),);
+                              GROUP_NO='GM32',
+                              NOM_CMP='SIXX',),);
 
 TEST_TABLE(TABLE=SXX_B,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='SIXX',
-           VALE = -3.5733944601687E+00 ,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
+           VALE=-3.5733944601687E+00,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
 
 TEST_TABLE(TABLE=SXX_B,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='SIXX',
-           VALE = -3.4520540472581E+00 ,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.036,);
+           VALE=-3.4520540472581E+00,
+           CRITERE='RELATIF',
+           PRECISION=0.036,
+           REFERENCE='AUTRE_ASTER',);
 
 #IMPR_TABLE(TABLE=SXX_B)
 
-# COURBE FORCE RESULTANTE EN HAUT EN FONCTION DU DEPLACEMENT
-
+###
+# F. FORCE RESULTANTE EN HAUT
+###
 
 HAUT=INTE_MAIL_2D(MAILLAGE=MAIL,
                   DEFI_CHEMIN=_F(GROUP_MA='GM26',),);
 
-F_HAUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
-                               CHEMIN=HAUT,
+F_HAUT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='F_HAUT',
                                RESULTAT=RESU,
                                NOM_CHAM='FORC_NODA',
-                               RESULTANTE=('DX','DY','DZ',),
-                               OPERATION='EXTRACTION',),);
-
+                               CHEMIN=HAUT,
+                               RESULTANTE=('DX','DY','DZ',),),);
 
 TEST_TABLE(TABLE=F_HAUT,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='DX',
-           VALE = -7.7257980876221E-01,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.18,);
-
+           VALE=-7.7257980876221E-01,
+           CRITERE='RELATIF',
+           PRECISION=0.18,
+           REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=F_HAUT,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='DX',
-           VALE = -6.3371311722966E-01,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
-           
-           
+           VALE=-6.3371311722966E-01,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
+
 TEST_TABLE(TABLE=F_HAUT,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='DY',
-           VALE = 3.50000E+02 ,
-           REFERENCE= 'ANALYTIQUE',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);           
-           
+           VALE=350.0,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=F_HAUT,
-           FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
            NOM_PARA='DZ',
-           VALE = 0.0E+0 ,
-           REFERENCE= 'ANALYTIQUE',
-           CRITERE = 'ABSOLU',
-           PRECISION = 1E-8,); 
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1e-08,
+           REFERENCE='ANALYTIQUE',);
 
-
-
-
-# ON CONTINUE AU DELA DE 3.5 PAR PILOTAGE
+#########################################
+# 7. ON POURSUIT LE CALCUL AU DELA DE 3.5
+#    PAR PILOTAGE
+#########################################
 
 INSTFIN = 5.4;
 
-RESU=STAT_NON_LINE(MODELE=MOD,
-                   reuse = RESU,
-                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
+RESU=STAT_NON_LINE(reuse =RESU,
+                   MODELE=MOD,
                    CHAM_MATER=CHMATER,
                    EXCIT=(_F(CHARGE=SYMET,),
                           _F(CHARGE=EFFORT,
@@ -382,14 +435,14 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                                 GROUP_MA='GM9',),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA=('GM11','GM6',),),
+                   ETAT_INIT=_F(EVOL_NOLI=RESU,),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                SUBD_METHODE= 'UNIFORME',
+                                INST_FIN=INSTFIN,
+                                SUBD_METHODE='UNIFORME',
                                 SUBD_PAS=4,
-                                SUBD_PAS_MINI=0.0001,
-                                INST_FIN=INSTFIN,),
+                                SUBD_PAS_MINI=0.0001,),
                    NEWTON=_F(PREDICTION='TANGENTE',
-                              REAC_ITER=1,
-                              ),
+                             REAC_ITER=1,),
                    PILOTAGE=_F(TYPE='DDL_IMPO',
                                COEF_MULT=1.0,
                                GROUP_NO='GM39',
@@ -397,101 +450,110 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    CONVERGENCE=_F(ARRET='OUI',),
                    ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
-### POST-TRAITEMENTS CLASSIQUES
+#####################
+# 8. POST-TRAITEMENTS
+#####################
 
 RESU=CALC_ELEM(reuse =RESU,
-NUME_ORDRE = 24,
                RESULTAT=RESU,
+               NUME_ORDRE=24,
                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','VARI_ELNO_ELGA',),);
 
 RESU=CALC_NO(reuse =RESU,
-NUME_ORDRE = 24,
              RESULTAT=RESU,
+             NUME_ORDRE=24,
              OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM','VARI_NOEU_ELGA',),);
 
+###
+# A. CONTRAINTES AU BORD DU TROU
+###
 
-           
-# CONTRAINTES
-             
-
-STHETA2=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA2',
-                               CHEMIN=CERCLE,
-                               RESULTAT=RESU,
-                               NOM_CHAM='SIEF_ELNO_ELGA',
-                               INST=5.4,
-                               NOM_CMP=('SIXX','SIYY','SIXY',),
-                               REPERE='POLAIRE',
-                               OPERATION='EXTRACTION',),);
-
+STHETA2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='STHETA2',
+                                RESULTAT=RESU,
+                                NOM_CHAM='SIEF_ELNO_ELGA',
+                                INST=5.4,
+                                CHEMIN=CERCLE,
+                                NOM_CMP=('SIXX','SIYY','SIXY',),
+                                REPERE='POLAIRE',),);
 
 TEST_TABLE(TABLE=STHETA2,
-           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=1.56956E+01),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=15.6956,),
            NOM_PARA='SIXX',
-           VALE = -1.6486779955235E+00 ,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-6,);
+           VALE=-1.6486779955235E+00,
+           CRITERE='RELATIF',
+           PRECISION=1e-06,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
 
-# COURBE SIYY AU POINT A EN FONCTION DU DEPLACEMENT 
+###
+# B. CONTRAINTE SIYY AU POINT A
+###
 
-SYY_A2=POST_RELEVE_T(ACTION=_F(INTITULE='SYY_A2',
-                              GROUP_NO='GM33',
-                              RESULTAT=RESU,
-                              NOM_CHAM='SIEF_NOEU_ELGA',
-                              NOM_CMP='SIYY',
-                              OPERATION='EXTRACTION',),);
-
+SYY_A2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SYY_A2',
+                               RESULTAT=RESU,
+                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               GROUP_NO='GM33',
+                               NOM_CMP='SIYY',),);
 
 TEST_TABLE(TABLE=SYY_A2,
-           FILTRE = _F(NOM_PARA='INST',VALE=5.40000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.4,),
            NOM_PARA='SIYY',
-           VALE = 6.3977585932263E+00,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
+           VALE=6.3977585932263E+00,
+           CRITERE='RELATIF',
+           PRECISION=1e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
 
 TEST_TABLE(TABLE=SYY_A2,
-           FILTRE = _F(NOM_PARA='INST',VALE=5.40000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.4,),
            NOM_PARA='SIYY',
-           VALE = 6.6907391833841E+00 ,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.046,);
-           
-# COURBE SIXX AU POINT B EN FONCTION DU DEPLACEMENT 
+           VALE=6.6907391833841E+00,
+           CRITERE='RELATIF',
+           PRECISION=0.046,
+           REFERENCE='AUTRE_ASTER',);
 
-SXX_B2=POST_RELEVE_T(ACTION=_F(INTITULE='SXX_B2',
-                              GROUP_NO='GM32',
-                              RESULTAT=RESU,
-                              NOM_CHAM='SIEF_NOEU_ELGA',
-                              NOM_CMP='SIXX',
-                              OPERATION='EXTRACTION',),);
+###
+# C. CONTRAINTE SIXX AU POINT B
+###
 
-TEST_TABLE(TABLE=SXX_B2,
-           FILTRE = _F(NOM_PARA='INST',VALE=5.40000E+00),
-           NOM_PARA='SIXX',
-           VALE = -6.4555408008187E+00 ,
-           REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.1.14',
-           CRITERE = 'RELATIF',
-           PRECISION = 1E-6,);
+SXX_B2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SXX_B2',
+                               RESULTAT=RESU,
+                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               GROUP_NO='GM32',
+                               NOM_CMP='SIXX',),);
 
 TEST_TABLE(TABLE=SXX_B2,
-           FILTRE = _F(NOM_PARA='INST',VALE=5.40000E+00),
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.4,),
            NOM_PARA='SIXX',
-           VALE = -6.6772484619171E+00 ,
-           REFERENCE= 'AUTRE_ASTER',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.040,);
-           
-# POUR VISUALISER LE ETA_PILOTAGE = F(INST)
+           VALE=-6.4555408008187E+00,
+           CRITERE='RELATIF',
+           PRECISION=1e-06,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.1.14',);
+
+TEST_TABLE(TABLE=SXX_B2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.4,),
+           NOM_PARA='SIXX',
+           VALE=-6.6772484619171E+00,
+           CRITERE='RELATIF',
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER',);
+
+##################################
+# 9. VISUALISATION DU ETA_PILOTAGE
+#    EN FONCTION DE L'INSTANT
+##################################
 
 ETA_PILO=RECU_FONCTION(RESULTAT=RESU,
-                       NOM_PARA_RESU='ETA_PILOTAGE',
-                       TOUT_ORDRE='OUI',);
-
-
+                       TOUT_ORDRE='OUI',
+                       NOM_PARA_RESU='ETA_PILOTAGE',);
 
 FIN();

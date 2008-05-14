@@ -1,4 +1,4 @@
-#@ MODIF meidee_turbulent Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_turbulent Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,9 +28,9 @@ from Tkinter import Checkbutton, Listbox
 
 from Accas import _F
 from Cata.cata import OBSERVATION, DETRUIRE, CO, IMPR_RESU
-from Meidee.meidee_cata import Resultat, InterSpectre
-from Meidee.meidee_cata import nume_ddl_phy, nume_ddl_gene
-from Meidee.meidee_iface import Compteur, CreaTable, MyMenu
+from Meidee.meidee_cata import Resultat, InterSpectre, CreaTable
+from Meidee.meidee_cata import nume_ddl_phy, nume_ddl_gene, CreaTable
+from Meidee.meidee_iface import Compteur, MyMenu
 from Meidee.meidee_iface import MultiList, XmgrManager
 from Meidee.meidee_calcul_turbulent import CalculTurbulent
 from Meidee.modes import SelectionNoeuds, SelectionMailles, sort_compo_key
@@ -106,8 +106,8 @@ class InterfaceTurbulent(Frame):
         box_vr = self.visu_resu(colonne_2)
         box_vr.grid(row=1, sticky='w'+'e'+'n'+'s')
         
-        colonne_1.grid(row=1, column=0, rowspan=1)
-        colonne_2.grid(row=1, column=1, rowspan=1)
+        colonne_1.grid(row=1, column=0, rowspan=3)
+        colonne_2.grid(row=1, column=1, rowspan=1, sticky='n'+'s')
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
 
@@ -315,7 +315,8 @@ class InterfaceTurbulent(Frame):
         self.born_freq = StringVar()
 
         Label(fra, text="Visualisation des résultats",
-              font=("Times","16")).grid(row=0, column=0,columnspan=3)
+              font=("Arial","16")).grid(row=0, column=0,columnspan=3)
+ 
         Label(fra, text="Choix des données à visualiser").grid(row=1,
                                                                column=0,
                                                                columnspan=3)
@@ -444,8 +445,6 @@ class InterfaceTurbulent(Frame):
                                  FILTRE   = get_filtres(grp_no, grp_ma),
                                  MODI_REPERE = get_chgt_repere(grp_no, grp_ma)
                                );
-            IMPR_RESU( UNITE = 39, FORMAT = 'RESULTAT',
-                       RESU = _F( RESULTAT = __OBS ))
         except:
             self.mess.disp_mess("Le concept d'observabilité " \
                                 "n'a pas pu être calculé.")
@@ -783,9 +782,9 @@ def crea_list_no(x,list_in):
 def get_filtres(grp_no, grp_ma):
     filtres = []
     for grp in grp_no:
-        filtres.append(_F(GROUP_NO=grp["NOM"], DDL_ACTIF=grp["DDL"]))
+        filtres.append(_F(GROUP_NO=grp["NOM"], DDL_ACTIF=grp["NOM_CMP"]))
     for grp in grp_ma:
-        filtres.append(_F(GROUP_MA=grp["NOM"], DDL_ACTIF=grp["DDL"]))
+        filtres.append(_F(GROUP_MA=grp["NOM"], DDL_ACTIF=grp["NOM_CMP"]))
     return filtres
 
 def get_chgt_repere(grp_no, grp_ma):
@@ -807,7 +806,7 @@ def update_extraction_ddls(grp_no, grp_ma):
     
     for grp_lst in [grp_no, grp_ma]:
         for grp in grp_lst:
-            for ddl in grp["DDL"]:
+            for ddl in grp["NOM_CMP"]:
                 extraction_ddls.add(ddl)
     
     extraction_ddls = list(extraction_ddls)

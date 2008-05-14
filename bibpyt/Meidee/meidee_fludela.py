@@ -1,4 +1,4 @@
-#@ MODIF meidee_fludela Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_fludela Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,7 +186,7 @@ class InterfaceDisplayModes(Frame):
     calcul et l'entete de chaque colonne permet de préciser quel est le
     résultat à afficher
     """
-    def __init__(self, parent, objects, fludela, mess ):
+    def __init__(self, parent, objects, fludela, mess, rows = 8, cols = 5 ):
         """!Constructeur
 
         \param parent La frame Tkinter.Frame parente
@@ -205,8 +205,8 @@ class InterfaceDisplayModes(Frame):
         Frame.__init__(self, parent)
         self.mess = mess
         self.objects=objects
-        self.rows = 8
-        self.cols = 5
+        self.rows = rows
+        self.cols = cols
         self.fields =  { "      F 1      " : ('freq_eq_a',0),
                          "      F 2      " : ('freq_eq_e',0),
                          "      F 3      " : ('freq_eq_v',0),
@@ -235,9 +235,6 @@ class InterfaceDisplayModes(Frame):
                          " Mint dim mod  " : ("xmi",1),
                          }
 
-
-        Button(self, text="+", command=self.add_line).grid( row=0, column=0 )
-        Button(self, text="-", command=self.rem_line).grid( row=0, column=1 )
         
         frame = Frame(self)
         frame.grid( row=1, column=0, columnspan=4 )
@@ -288,7 +285,7 @@ class InterfaceDisplayModes(Frame):
     def rem_line(self):
         """!Supprime une ligne du tableau des résultats"""
         state = self.save_state()
-        self.rows += 1
+        self.rows -= 1
         self.reinit( state )
 
     def save_state(self):
@@ -395,48 +392,52 @@ class InterfaceChoixModes(Frame):
         self.objects = objects
         self.longeq_obj = longeq
         self.paramphy_obj = paramphy
+        self.fludela = fludela
+        self.parent = parent
+        self.mess = mess
+
         # Choix des écoulements
 
         self.modes_air = StringVar()
-        itm = HLabelledItem( self, "Air :",
+        itm = HLabelledItem( self, "Air                            :",
                              MyMenu,
                              objects.get_resultats_num(),
                              self.modes_air,
                              cmd = self.update
                              )
         self.menu_air = itm.itm
-        itm.grid(row=1,column=0)
+        itm.grid(row=1,column=1,sticky='w')
 
 
         self.modes_eau = StringVar()
-        itm = HLabelledItem( self, "Eau :",
+        itm = HLabelledItem( self, "Eau                           :",
                              MyMenu,
                              objects.get_resultats_num(),
                              self.modes_eau,
                              self.update
                              )
         self.menu_eau = itm.itm
-        itm.grid(row=2,column=0)
+        itm.grid(row=2,column=1,sticky='w')
 
 
 
         self.modes_vit = StringVar()
-        itm = HLabelledItem( self, "Ecoulement :",
+        itm = HLabelledItem( self, "Ecoulement               :",
                              MyMenu,
                              objects.get_resultats_num(),
                              self.modes_vit,
                              cmd = self.update2
                              )
         self.menu_vit = itm.itm
-        itm.grid(row=3,column=0)
+        itm.grid(row=3,column=1,sticky='w')
 
         self.vitesse = StringVar()
-        itm = HLabelledItem( self, "Vitesse :",
+        itm = HLabelledItem( self, "Vitesse                :",
                              Entry,
                              textvariable=self.vitesse )
         self.vitesse_entry = itm.itm
         itm.itm.bind("<Return>", self.change_vitesse )
-        itm.grid(row=3, column=1 )
+        itm.grid(row=3, column=2,sticky='w' )
 
         # Choix des fichiers FIMEN
         self.fimens = {}
@@ -446,34 +447,64 @@ class InterfaceChoixModes(Frame):
         self.menu_fimen = MyMenu( self, self.fimens.keys(),
                                   self.fimen_name )
         self.fimen_name.set("Fichier FIMEN")
-        self.menu_fimen.grid(row=2, column=1)
+        self.menu_fimen.grid(row=2, column=2,sticky='w')
 
         self.methode = StringVar()
-        itm = HLabelledItem(self, "Methode multimodale",
+        itm = HLabelledItem(self, "Methode multimodale :",
                       MyMenu,
                       fludela.methodes_globales, self.methode, self.update )
-        itm.grid(row=4,column=0)
-        Button(self, text="Calculer !", command=self.calcul ).grid(row=5, column=0)
+        itm.grid(row=4,column=1,sticky='w')
+        Button(self, text="Calculer !", command=self.calcul ).grid(row=5, column=1,sticky='w')
 
         # Tableau de données
+        plusmoins1 = Frame(self)
+        Button(plusmoins1, text="+", command=self.add_row ).grid(row=0, column=0)
+        Button(plusmoins1, text="-", command=self.rem_row ).grid(row=1, column=0)
+        plusmoins1.grid(row=8,column=0)
+        plusmoins2 = Frame(self)
+        Button(plusmoins2, text="+", command=self.add_col ).grid(row=0, column=0)
+        Button(plusmoins2, text="-", command=self.rem_col ).grid(row=0, column=1)
+        plusmoins2.grid(row=7,column=1, columnspan = 3)
+        
         self.multi = InterfaceDisplayModes( self, self.objects, fludela, mess )
-        self.multi.grid(row=7,column=0,columnspan=3)
-        self.rowconfigure(7,weight=1)
+        self.multi.grid(row=8,column=1,columnspan=3)
+        self.rowconfigure(8,weight=1)
         
         mac_frame = Frame(self)
         mac_frame.grid( row=6, column=0, columnspan=3)
         
-        Button(mac_frame, text="Mac Air-Eau", command=self.show_mac_air_eau ).grid(row=0, column=0)
-        Button(mac_frame, text="Mac Eau-Ecoulement", command=self.show_mac_eau_ecoul ).grid(row=0, column=1)
-        Button(mac_frame, text="Mac Air-Ecoulement", command=self.show_mac_air_ecoul ).grid(row=0, column=2)
-        Button(self, text="Sauver", command=self.save_calc ).grid(row=8, column=0)
-        Button(self, text="Exporter ", command=self.impr_resu ).grid(row=8, column=1)
+        Button(mac_frame, text="Mac Air-Eau", command=self.show_mac_air_eau ).grid(row=0, column=1)
+        Button(mac_frame, text="Mac Eau-Ecoulement", command=self.show_mac_eau_ecoul ).grid(row=0, column=2)
+        Button(mac_frame, text="Mac Air-Ecoulement", command=self.show_mac_air_ecoul ).grid(row=0, column=3)
+        Button(self, text="Sauver", command=self.save_calc ).grid(row=9, column=0)
+        Button(self, text="Exporter ", command=self.impr_resu ).grid(row=9, column=1)
         self.export_name = StringVar()
-        Entry(self, textvariable=self.export_name).grid(row=8, column=2)
+        Entry(self, textvariable=self.export_name).grid(row=9, column=2)
 
-        self.fludela = fludela
-        self.parent = parent
 
+    def add_row(self):
+        self.change_interface_display_modes(1,0)
+        
+    def add_col(self):
+        self.change_interface_display_modes(0,1)
+
+    def rem_row(self):
+        self.change_interface_display_modes(-1,0)
+
+    def rem_col(self):
+        self.change_interface_display_modes(0,-1)
+
+    def change_interface_display_modes(self,r,c):
+        nb_rows = self.multi.rows + r
+        nb_cols =self.multi.cols + c
+        self.multi.grid_remove()
+        self.multi = InterfaceDisplayModes( self, self.objects, self.fludela,
+                                            self.mess, rows=nb_rows, cols=nb_cols )
+        self.multi.grid(row=8,column=1,columnspan=3)
+        self.update()
+
+        
+        pass
 
     def refresh(self):
 ##        self.objects.recup_objects()
@@ -599,7 +630,7 @@ class InterfaceChoixModes(Frame):
 
     def save_calc(self):
         """!Sauvegarde un résultat de calcul dans un fichier
-            On ne sauve que les paramètres affichés dans l'IHM.
+            Important : on ne sauve que les paramètres affichés dans l'IHM.
         """        
         name = self.vitesse.get()
         self.mess.disp_mess('name = ' + str(name))
@@ -745,11 +776,13 @@ class InterfaceFludela(Frame):
         Label(self, text="MeideeFludela - Fludela").grid(row=0, column=0, sticky='n')
         self.longeq = InterfaceLongeq(self, aster_objects, self.fludela, mess)
         self.param_phys = InterfaceParamPhys(self, self.fludela, mess )
-        self.choix_modes = InterfaceChoixModes(self, aster_objects, self.param_phys, self.longeq, fimens, mess, self.fludela )
+        self.choix_modes = InterfaceChoixModes(self, aster_objects, self.param_phys,
+                                               self.longeq, fimens, mess, self.fludela )
 
         self.longeq.grid( row=1, column=0, sticky='n'+'e'+'w'+'s' )
         self.param_phys.grid( row=2, column=0, sticky='n'+'e'+'w'+'s' )
-        self.choix_modes.grid( row=3, column=0, sticky='n'+'e'+'w'+'s' )
+        self.choix_modes.grid( row=4, column=0, sticky='n'+'e'+'w'+'s' )
+
         ##self.saved_data = {}
 
 

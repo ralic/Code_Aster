@@ -1,4 +1,4 @@
-#@ MODIF meidee_test Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_test Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -209,7 +209,7 @@ def to_dict_lst(groups):
     les degrés de liberté soient dans une liste."""
     res_lst = []
     for grp in groups:
-        rdict = {"GROUP_NO" : grp["GROUP_NO"],
+        rdict = {"NOM" : grp["GROUP_NO"],
                  "NOM_CMP" : list(grp["NOM_CMP"])}
         res_lst.append(rdict)
     return res_lst
@@ -260,6 +260,7 @@ def lance_modif_struct_calcul(macro, meidee_objects,
 
     modif_struct.calcul_mesure_support_corresp()
 
+    modif_struct.set_param_condens({'METHODE':'SVD','EPS':1.0E-5,'REGUL':'NON'})
     modif_struct.calcul_condensation()
     mode_simult = 1
     calc_freq = _F(OPTION='PLUS_PETITE',

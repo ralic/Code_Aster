@@ -1,4 +1,4 @@
-#@ MODIF macro_visu_meidee_ops Macro  DATE 27/03/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_visu_meidee_ops Macro  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,8 +147,10 @@ def create_tab_mess_widgets(tk, UNITE_RESU):
         tk.rowconfigure(1, weight=3)
         tk.rowconfigure(1, weight=1)
     
-    tabs = TabbedWindow(tabsw, ["Correlation", "Modifstruct",
-                                "Fludela","Fluide Turbulent"])
+    tabs = TabbedWindow(tabsw, ["Expansion de modeles",
+                                "Modification structurale",
+                                "MEIDEE mono-modal",
+                                "Identification de chargement"])
 
     tabs.grid(row=0, column=0, sticky='nsew')
     # pack(side='top',expand=1,fill='both')
@@ -231,13 +233,13 @@ def create_interactive_window(macro,
                                get_fimen_files(UNITE_FIMEN), mess, out_fludela)
     turbulent = InterfaceTurbulent(main, objects, mess, out_turbulent)
     
-    tabs.set_tab("Correlation", iface.main)
-    tabs.set_tab("Modifstruct", imodifstruct.main)
-    tabs.set_tab("Fludela", fludela )
-    tabs.set_tab("Fluide Turbulent", turbulent)
+    tabs.set_tab("Expansion de modeles", iface.main)
+    tabs.set_tab("Modification structurale", imodifstruct.main)
+    tabs.set_tab("MEIDEE mono-modal", fludela )
+    tabs.set_tab("Identification de chargement", turbulent)
     
     #tabs.set_current_tab("Modifstruct")
-    tabs.set_current_tab("Fluide Turbulent")
+    tabs.set_current_tab("Identification de chargement")
 
     tk.protocol("WM_DELETE_WINDOW", FermetureCallback(tk, turbulent).apply)
     

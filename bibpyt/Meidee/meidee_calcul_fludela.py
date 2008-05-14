@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_fludela Meidee  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_calcul_fludela Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,9 +162,12 @@ class MeideeFludela:
         param = data[vitesses[0]].keys()
         nb_mod = len(data[vitesses[0]][param[0]])
         for para in param:
+            print "para = ", para
             for ind_mod in range(nb_mod):
+                print "ind_mod = ", ind_mod
                 vale  = []
                 for vit in vitesses:
+                    print "vit = ", vit
                     vale.append(string.atof(vit))
                     vale.append(data[vit][para][ind_mod])
                 _fonc = DEFI_FONCTION( NOM_PARA   = 'ABSC',
@@ -173,13 +176,14 @@ class MeideeFludela:
 
         ind_1 = []
         for para in param:
-            ind_1.append(para*nb_mod)
+            for ind in range(nb_mod):
+                ind_1.append(para)
         ind_1 = tuple(ind_1)
-        ind_2 = tuple(range(nb_mod)*len(param))
+        ind_2 = tuple(range(1,nb_mod+1)*len(param))
         mcfact = []
         mcfact.append(_F(PARA='NOM_PARA',LISTE_K=ind_1, TYPE_K='K16'))
         mcfact.append(_F(PARA='NUME_MODE',LISTE_I=ind_2))
-        mcfact.append(_F(PARA='FONCTION_C', LISTE_K=l_fonc))
+        mcfact.append(_F(PARA='FONCTION', LISTE_K=l_fonc))
 
         # On creee un table dont le nom Aster est objout(compteur)
         CreaTable(mcfact, nom, self.out, self.mess)
@@ -335,8 +339,6 @@ class MeideeFludela:
         self.calc['raid_'+suffix] = Kpy
         self.calc['amor_'+suffix] = Cpy
         self.calc['xsi_'+suffix] = xsi
-
-
 
     def prep_massamor(self):
         """!Prepare les infos pour le calcul"""

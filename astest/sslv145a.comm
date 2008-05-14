@@ -1,37 +1,37 @@
-# MODIF  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
-# TITRE VALIDATION DU RACCORD 3D-COQUE AVEC LA METHODE ARLEQUIN
+# MODIF  DATE 13/05/2008   AUTEUR MEUNIER S.MEUNIER 
+# TITRE VALIDATION DU RACCORD 3D-PLAQUE DKT AVEC LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# RACCORD 3D-COQUE (DKT)
+DEBUT(  CODE=_F(  NOM = 'SSLV145A',NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI') );
 
-DEBUT(  CODE=_F(  NOM = 'SSLV145A',NIV_PUB_WEB='INTERNET') );
-
-
-
-#        GEOMETRIE COMPORTANT UN COUDE
-#     MODELISATION PAR DES ELEMENTS COQUES DKT
-#            PRODUIT PAR SALOME
-#     ----------------------------------------
+##################################
+# 1. GEOMETRIE COMPORTANT UN COUDE
+# => MAILLAGE :
+#      => ELEMENTS PLAQUES DKT
+#      => PRODUIT PAR SALOME
+##################################
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
-#
-# DEFINITION DES ELEMENTS FINIS UTILISES
+
+###########################################
+# 2. DEFINITION DES ELEMENTS FINIS UTILISES
+###########################################
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA=('TUYAU1','TUYAU2','EFOND','ENCAST','SYMEL',),
@@ -40,7 +40,11 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                           _F(GROUP_MA=('COUDE','VOLU1','VOLU2','INTVOL','SYMEV',),
                              PHENOMENE='MECANIQUE',
                              MODELISATION='3D',),),);
-# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
+
+#########################################
+# 3. ORIENTATION DES NORMALES AUX PLAQUES
+#    RENTRANTES DANS LE TUYAU
+#########################################
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
@@ -60,7 +64,10 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU_3D=_F(GROUP_MA='INTVOL',),
                    );
-# DEFINITION DU MATERIAU UTILISE
+
+###################################
+# 4. DEFINITION DU MATERIAU UTILISE
+###################################
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
                             NU=0.3,),);
@@ -68,16 +75,20 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=ACIER,),);
-#
-# CARACTERISTIQUES DES COQUES
+
+#################################
+# 5. CARACTERISTIQUES DES PLAQUES
+#################################
 
 CARA_COQ=AFFE_CARA_ELEM(MODELE=MODMECA,
                         COQUE=_F(GROUP_MA=('TUYAU1','TUYAU2',),
                                  EPAIS=0.02,
                                  ANGL_REP=(0.0,-90.0,),),);
-#
-# DEFINITION DES CONDITIONS AUX LIMITES
+
+##########################################
+# 6. DEFINITION DES CONDITIONS AUX LIMITES
 #    ENCASTREMENT SUR LA SECTION ENCAST
+##########################################
 
 BLOQUAGE=AFFE_CHAR_CINE(MODELE=MODMECA,
                         MECA_IMPO=(_F(GROUP_MA='ENCAST',
@@ -93,10 +104,13 @@ BLOQUAGE=AFFE_CHAR_CINE(MODELE=MODMECA,
                                       DRY=0.0,),
                                    _F(GROUP_MA='SYMEV',
                                       DZ=0.0,),),);
-#
-# DEFINITION DES CHARGEMENTS
+
+###############################################################
+# 7. DEFINITION DES CHARGEMENTS
 #    CHARGEMENT 1 : FY=100KN (FX,FZ,MX,MY,MZ NULS)
 #    CHARGEMENT 2 : PRESSION INTERNE DE 15 MPA ET EFFET DE FOND
+###############################################################
+
 FYTOT = 100000.0;
 
 EPTUB = 0.02;
@@ -111,18 +125,20 @@ RINT = (RMOY - (EPTUB / 2));
 
 SINT = (pi * (RINT * RINT));
 
-#
+####################
 # 2*pi*R*FY = 100 KN
+####################
 
 CHARG1=AFFE_CHAR_MECA(MODELE=MODMECA,
                       FORCE_ARETE=_F(GROUP_MA='EFOND',
                                      FY=FYREP,),);
-#
-# 2*pi*R*FX = piNT * SINT ;
+#########################
+# 2*pi*R*FX = PINT * SINT ;
+#########################
+
 PINT = 15000000.0;
 
 PRES = ((PINT * RINT) / RMOY);
-
 
 CHARG2=AFFE_CHAR_MECA(MODELE=MODMECA,
                       PRES_REP=_F(GROUP_MA='INTVOL',
@@ -170,7 +186,7 @@ DEPL1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              NOM_CMP=('DX','DY','DZ'),
                              OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=DEPL1)                             
+IMPR_TABLE(TABLE=DEPL1)
 
 
 DEPL2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -180,10 +196,12 @@ DEPL2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              NOM_CMP=('DX','DY','DZ'),
                              OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=DEPL2) 
+IMPR_TABLE(TABLE=DEPL2)
 
-### TESTS VALEURS DEPLACEMENTS
-## NON REGRESSION
+###############################
+# 8. TESTS VALEURS DEPLACEMENTS
+#    NON REGRESSION
+###############################
 
 TEST_TABLE(TABLE=DEPL1,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
@@ -192,8 +210,7 @@ TEST_TABLE(TABLE=DEPL1,
            CRITERE= 'ABSOLU',
            PRECISION=1E-8,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-
+           VERSION='8.3.20',);
 
 TEST_TABLE(TABLE=DEPL1,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
@@ -203,7 +220,7 @@ TEST_TABLE(TABLE=DEPL1,
            PRECISION=1E-8,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',);
-           
+
 TEST_TABLE(TABLE=DEPL1,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
            NOM_PARA='DZ',
@@ -211,9 +228,7 @@ TEST_TABLE(TABLE=DEPL1,
            CRITERE= 'ABSOLU',
            PRECISION=1E-8,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',);           
-
-
+           VERSION='8.3.20',);
 
 TEST_TABLE(TABLE=DEPL2,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
@@ -222,8 +237,7 @@ TEST_TABLE(TABLE=DEPL2,
            CRITERE= 'RELATIF',
            PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-
+           VERSION='8.3.20',);
 
 TEST_TABLE(TABLE=DEPL2,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
@@ -233,7 +247,7 @@ TEST_TABLE(TABLE=DEPL2,
            PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',);
-           
+
 TEST_TABLE(TABLE=DEPL2,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
            NOM_PARA='DZ',
@@ -241,11 +255,13 @@ TEST_TABLE(TABLE=DEPL2,
            CRITERE= 'ABSOLU',
            PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-           
-### TESTS VALEURS CONTRAINTES
-## NON REGRESSION
-            
+           VERSION='8.3.20',);
+
+##############################
+# 9. TESTS VALEURS CONTRAINTES
+#    NON REGRESSION
+##############################
+
 SIGM1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              GROUP_NO='A1',
                              RESULTAT=RESU,
@@ -253,7 +269,7 @@ SIGM1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
                              OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=SIGM1)                             
+IMPR_TABLE(TABLE=SIGM1)
 
 TEST_TABLE(TABLE=SIGM1,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
@@ -262,8 +278,8 @@ TEST_TABLE(TABLE=SIGM1,
            CRITERE= 'RELATIF',
            PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-           
+           VERSION='8.3.20',);
+
 TEST_TABLE(TABLE=SIGM1,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
            NOM_PARA='SIYY',
@@ -271,8 +287,8 @@ TEST_TABLE(TABLE=SIGM1,
            CRITERE= 'RELATIF',
            PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-           
+           VERSION='8.3.20',);
+
 TEST_TABLE(TABLE=SIGM1,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
            NOM_PARA='SIXY',
@@ -280,8 +296,8 @@ TEST_TABLE(TABLE=SIGM1,
            CRITERE= 'RELATIF',
            PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-                                 
+           VERSION='8.3.20',);
+
 SIGM2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              GROUP_NO='A2',
                              RESULTAT=RESU,
@@ -289,7 +305,7 @@ SIGM2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
                              OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=SIGM2)                             
+IMPR_TABLE(TABLE=SIGM2)
 
 TEST_TABLE(TABLE=SIGM2,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
@@ -298,8 +314,8 @@ TEST_TABLE(TABLE=SIGM2,
            CRITERE= 'RELATIF',
            PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-           
+           VERSION='8.3.20',);
+
 TEST_TABLE(TABLE=SIGM2,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
            NOM_PARA='SIYY',
@@ -307,8 +323,8 @@ TEST_TABLE(TABLE=SIGM2,
            CRITERE= 'RELATIF',
            PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-           
+           VERSION='8.3.20',);
+
 TEST_TABLE(TABLE=SIGM2,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0),
            NOM_PARA='SIXY',
@@ -316,6 +332,6 @@ TEST_TABLE(TABLE=SIGM2,
            CRITERE= 'RELATIF',
            PRECISION=1E-5,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.20',); 
-                             
+           VERSION='8.3.20',);
+
 FIN();

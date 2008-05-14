@@ -1,5 +1,5 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
-# TITRE SIMULATION D'UNE PLAQUE TROUEE EN ELASTICITE AVEC LA METHODE ARLEQUIN - MODELE ARLEQUIN
+# MODIF  DATE 13/05/2008   AUTEUR MEUNIER S.MEUNIER 
+# TITRE SIMULATION D'UNE PLAQUE TROUEE EN ELASTICITE - METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,24 +17,31 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# ARLEQUIN : RACCORD 2D/2D INCOMPATIBLE.
+#            MAILLAGES DE DENSITES DIFFERENTES
 
 DEBUT(CODE=_F(NOM='SSNP135B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-
-# MAILLAGE PARTIE TROUEE (PATCH ARLEQUIN)
+########################
+# 1. Lecture du maillage
+#    de la partie trouee
+#    (patch Arlequin)
+########################
 
 PRE_GMSH(UNITE_GMSH=19,
          UNITE_MAILLAGE=20,);
+
 MAIL1=LIRE_MAILLAGE(UNITE=20,);
 
-# MAILLAGE PLAQUE
+########################
+# 2. Lecture du maillage
+#    de la plaque
+########################
 
 PRE_GMSH(UNITE_GMSH=22,
          UNITE_MAILLAGE=21,);
+
 MAIL2=LIRE_MAILLAGE(UNITE=21,);
-
-
-# ASSEMBLAGE DES DEUX MAILLAGES
 
 MAIL=ASSE_MAILLAGE(MAILLAGE_1=MAIL1,
                    MAILLAGE_2=MAIL2,
@@ -58,12 +65,20 @@ SYMET=AFFE_CHAR_MECA(MODELE=MOD,
                                    DY=0.0,),
                                 _F(GROUP_MA=('GM1029','GM29',),
                                    DX=0.0,),),);
-F_Y = 1;
 
+F_Y = 1;
 
 EFFORT=AFFE_CHAR_MECA(MODELE=MOD,
                       FORCE_CONTOUR=_F(GROUP_MA='GM26',
                                        FY=F_Y,),);
+
+################################################
+# 3. Creation des relations de couplage Arlequin
+#    entre les groupes de mailles
+#    GM111 (maillage fin) et
+#    GM61 (maillage grossier)
+#    Collage sur le modele fin
+################################################
 
 ARLQ=AFFE_CHAR_MECA(MODELE=MOD,
                     ARLEQUIN=_F(GROUP_MA_1='GM61',
@@ -79,7 +94,9 @@ RESU=MECA_STATIQUE(MODELE=MOD,
                           _F(CHARGE=ARLQ,),),
                    );
 
-#### POST-TRAITEMENT
+####################
+# 4. POST-TRAITEMENT
+####################
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
@@ -89,7 +106,7 @@ RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
 
-# SIGMA THETA AU BORD DU TROU
+# A. SIGMA THETA AU BORD DU TROU
 
 CERCLE=INTE_MAIL_2D(MAILLAGE=MAIL,
                     DEFI_CHEMIN=_F(GROUP_MA='GM28',),);
@@ -102,7 +119,7 @@ STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
                                REPERE='POLAIRE',
                                OPERATION='EXTRACTION',),);
 
-# CONTRAINTES
+# B. CONTRAINTES
 # TROIS COMPARAISONS: ANALYTIQUE, NON-REGRESSION, SANS ARLEQUIN
 
 sigth1 = 3.0
@@ -138,7 +155,6 @@ sigth2 = -1.0
 signr2 = -9.4424095959215E-01
 sigsa2 = -9.66034E-01
 
-
 TEST_TABLE(TABLE=STHETA,
            FILTRE = _F(NOM_PARA='COOR_Y',VALE=1.00000E+01),
            NOM_PARA='SIYY',
@@ -164,8 +180,7 @@ TEST_TABLE(TABLE=STHETA,
            CRITERE = 'RELATIF',
            PRECISION = 0.023,);
 
-
-# DEPLACEMENTS
+# C. DEPLACEMENTS
 # DEUX COMPARAISONS: NON-REGRESSION ET SANS ARLEQUIN
 
 HAUT=INTE_MAIL_2D(MAILLAGE=MAIL,
@@ -177,7 +192,6 @@ DPL_H=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
                                NOM_CHAM='DEPL',
                                NOM_CMP=('DY',),
                                OPERATION='EXTRACTION',),);
-
 
 depsa1 = 1.51067E-01
 depnr1 = 1.5153074197663E-01
@@ -198,7 +212,6 @@ TEST_TABLE(TABLE=DPL_H,
            VERSION  = '8.3.19',
            CRITERE = 'RELATIF',
            PRECISION = 1E-12,);
-
 
 depsa2 = 1.53288E-01
 depnr2 = 1.5325113035196E-01

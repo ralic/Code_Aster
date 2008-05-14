@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 13/05/2008   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ MA1=DEFI_GROUP(reuse =MA1,
                                     );
   
 
-MAT=DEFI_MATERIAU( ELAS=_F(  E = 210000.,  NU = 0.3, RHO = 0.,
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E11,  NU = 0.3, RHO = 0.,
                             ALPHA = 0.))
                             
 MODELEIN=AFFE_MODELE(MAILLAGE=MA1,
@@ -101,7 +101,7 @@ CHAR1=AFFE_CHAR_MECA(INFO=1,
 CHAR2=AFFE_CHAR_MECA(INFO=1,
                       MODELE=MODELEK,
                       PRES_REP=(_F(GROUP_MA='EXTUBE_S',
-                                    PRES=-1.0,), 
+                                    PRES=-1.E6,), 
                       ),   );
                       
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -124,14 +124,6 @@ UTOT1=STAT_NON_LINE(INFO=1,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    );
 
-#MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
-
-#DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
-#                    MODELE=MODELEK,
-#                    NOM_CHAM='DEPL',
-#                    RESULTAT=UTOT1)
-
-
 SIFTH=CALC_G(  RESULTAT=UTOT1,
                   SYME_CHAR='SANS',
                   COMP_ELAS=_F(RELATION='ELAS',),
@@ -141,7 +133,9 @@ SIFTH=CALC_G(  RESULTAT=UTOT1,
                            LISSAGE_G='LEGENDRE',),
                   THETA = _F(R_INF=0.2,
                         R_SUP=0.8,
-                        FISSURE=FISS,),
+                        FISSURE=FISS,
+                        DTAN_ORIG=(0.,1.,0.),
+                        DTAN_EXTR=(-1.,0.,0.),),
                   INFO=1,);
 IMPR_TABLE(TABLE=SIFTH,);
 
@@ -166,21 +160,21 @@ IMPR_TABLE(TABLE=SIFK1,);
 TEST_TABLE(      TABLE=SIFTH,
                    TYPE_TEST='MAX',
                  NOM_PARA='K1_LOCAL',
-                      VALE=1.595E+00,
-                 PRECISION=3.E-1  ,
+                      VALE=1.595E+6,
+                 PRECISION=1.2E-1  ,
                       REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=SIFTH,
                    TYPE_TEST='MIN',
                  NOM_PARA='K1_LOCAL',
-                      VALE=1.595E+00,
-                 PRECISION=5.E-2  ,
+                      VALE=1.595E+6,
+                 PRECISION=3.E-2  ,
                       REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=SIFTH,
                    TYPE_TEST='MIN',
                  NOM_PARA='K1_LOCAL',
-                      VALE=1.53472E+00,
+                      VALE=1.56653508E+06,
                  PRECISION=1.E-3  ,
                       REFERENCE='NON_REGRESSION'      )
 
@@ -190,7 +184,7 @@ TEST_TABLE(      TABLE=SIFK1,
                             _F(NOM_PARA = 'METHODE',
                             VALE_I = 3),),
                  NOM_PARA='K1_MAX',
-                 VALE=1.595E+00,
+                 VALE=1.595E+6,
                  PRECISION=10.E-2  ,
                  REFERENCE='ANALYTIQUE'      )
                  
@@ -200,7 +194,7 @@ TEST_TABLE(      TABLE=SIFK1,
                             _F(NOM_PARA = 'METHODE',
                             VALE_I = 3),),
                  NOM_PARA='K1_MAX',
-                 VALE=1.595E+00,
+                 VALE=1.595E+6,
                  PRECISION=10.E-2  ,
                  REFERENCE='ANALYTIQUE'      )
 

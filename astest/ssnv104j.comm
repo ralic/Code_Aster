@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/05/2008   AUTEUR ABBAS M.ABBAS 
 
 #  TITRE : CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -327,7 +327,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
                    GROUP_NO='HP',
                    VALE=-0.16299,
                    CRITERE='RELATIF',
-                   PRECISION=0.108,
+                   PRECISION=0.109,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=RESU,
                    INST=1.,
@@ -363,7 +363,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
                    GROUP_NO='IP',
                    VALE=-0.62905,
                    CRITERE='RELATIF',
-                   PRECISION=0.0068,
+                   PRECISION=0.007,
                    REFERENCE='AUTRE_ASTER',),),);
 
 

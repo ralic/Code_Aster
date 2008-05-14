@@ -8,7 +8,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/10/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/05/2008   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
       REAL*8 TEMPF,TABS,PR,DELTAV,DELTAG,GAMMAP,R8MIEM,PTIT
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,R,KDCS,SOM,DALPHA
-      REAL*8 AUX,CISA2,RACR,RS
+      REAL*8 AUX,CISA2,RACR,RS,TERME
       INTEGER IFL,IEI,TNS,NS,IS,IU,NBSYS,IRET2,NUECOU
 C     ----------------------------------------------------------------
 
@@ -186,7 +186,6 @@ C         NON LINEARITE
 
              DO 1 IU = 1, NBSYS
                 R=VIND(3*(IU-1)+1)+DAL(IU)
-C                TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
                 TAUMU = TAUMU +  HSR(NUMHSR,IS,IU)*R
                SOM = SOM+R
   1          CONTINUE
@@ -200,24 +199,30 @@ C                TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
              CRIT=TAUEF
 
              IF (TAUEF.GT.0.D0) THEN
-
                AUX= (1.D0-((TAUV-TAUMU)/TAUR)**P)
-
                IF (AUX.LE.0.D0) THEN
                IRET=1
                GOTO 9999
                ENDIF
-
+               
+C              PROTECTION DE l'EXPONENTIELLE
                TABS=TEMPF+273.15D0
-               DGAMMA=GAMMA0*EXP(-DELTAG/K/TABS*
-     &                           AUX**Q)*SGNS*DT
-
+               TERME=-DELTAG/K/TABS*AUX**Q
+               IF (TERME.GT.10.D0) THEN
+                  IRET=1
+                  GOTO 9999
+               ENDIF
+               DGAMMA=GAMMA0*EXP(TERME)*SGNS*DT
                DP=ABS(DGAMMA)
-
-C               DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
-C     &               (BSD+SOM/KDCS-GCB*VIND(3*(IS-1)+1))
-
                DALPHA=ABS(DGAMMA)*(BSD+SOM/KDCS-GCB*RS)
+
+C              LES VALEURS NEGATIVES DE DALPHA (QUI REPRESENTE DR)
+C              SONT INTERDITES (CELA DEVRAIT ETRE DANS LE MODELE)
+C              OU ALORS INTRODUIRE ABS(DALPHA)
+               IF (DALPHA.LT.0.D0) THEN
+                  IRET=1
+                  GOTO 9999
+               ENDIF
                DAL(IS)=DALPHA
 
              ELSE

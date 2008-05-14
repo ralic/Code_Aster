@@ -2,7 +2,7 @@
      &          ITMAX, TOLER, PGL, TOUTMS,DY, YF, VINF,EPSEQ)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/05/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,7 +94,7 @@ C           SIGMA (3,3)
             SI(1,2) = YF(4)/SQRT(2.D0)
             SI(1,3) = YF(5)/SQRT(2.D0)
 
-            SI(2,1) = SI(2,1)
+            SI(2,1) = SI(1,2)
             SI(2,2) = YF(2)
             SI(2,3) = YF(6)/SQRT(2.D0)
       

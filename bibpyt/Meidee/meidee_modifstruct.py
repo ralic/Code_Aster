@@ -1,4 +1,4 @@
-#@ MODIF meidee_modifstruct Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_modifstruct Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ from Meidee.meidee_cata import Resultat
 from Meidee.meidee_iface import MyMenu
 
 from Meidee.modes import ModeFreqList, SelectionNoeuds
-from Meidee.modes import ParamModeIterSimult, ParamModeIterInv
+from Meidee.modes import ParamModeIterSimult, ParamModeIterInv, ParamProjMesuModal
 from Meidee.modes import OptionFrame, MacWindowFrame
 
 from Meidee.meidee_calcul_modifstruct import ModifStruct
@@ -218,13 +218,17 @@ class InterfaceExpansion(Frame):
 
         # menu de selection du groupe de noeuds capteur
         self.capteur = SelectionNoeuds(f, "Noeuds et DDL capteur",
-                                       bg='#90a090', command=self.capteur_changed)
+                                       bg='#90a090',command=self.capteur_changed )
         self.capteur.grid(row=4,column=0,columnspan=2,pady=3)
         
         # menu de selection du groupe de noeuds interface
         self.iface = SelectionNoeuds(f, "Noeuds et DDL interface",
-                                     bg='#9090a0', command=self.iface_changed)
+                                     bg='#9090a0',command=self.iface_changed)
         self.iface.grid(row=5,column=0,columnspan=2,pady=3)
+
+        Button(f,text="Valider", command=self.anything_changed).grid(row=6,
+                                                                     column=1,
+                                                                     sticky = 'e')        
 
 
         # -----------------------------------------------------------------
@@ -303,7 +307,7 @@ class InterfaceExpansion(Frame):
                 continue
             for k in LIME:
                 obj = obj_dict[k.strip()]
-                refe = obj.REFE_RESU.get()
+                refe = obj.RERR.get()
                 modl = refe[0].strip()  # Modele
                 typ = refe[1].strip()   # Type matrice (Masse ou raideur)
                 if typ=="RIGI_MECA" and modl==modsup:
@@ -334,19 +338,27 @@ class InterfaceExpansion(Frame):
         self.anything_changed()
     
     def group_no_capteur_changed(self):
-        self.anything_changed()
+        """modif : on ne fait les calculs qu'une fois qu'on a appuye sur "Valider" """
+        pass
+##        self.anything_changed()
     
     def group_no_iface_changed(self):
-        self.anything_changed()
+        """modif : on ne fait les calculs qu'une fois qu'on a appuye sur "Valider" """
+        pass
+##        self.anything_changed()
     
     def mat_raideur_changed(self):
         self.anything_changed()
     
     def iface_changed(self):
-        self.anything_changed()
+        """modif : on ne fait les calculs qu'une fois qu'on a appuye sur "Valider" """
+        pass
+##        self.anything_changed()
     
     def capteur_changed(self):
-        self.anything_changed()
+        """modif : on ne fait les calculs qu'une fois qu'on a appuye sur "Valider" """
+        pass
+##        self.anything_changed())
 
     def _can_set_modif_struct_para(self):
         """Renvoit  True si tous les paramêtres pour calculer les modes
@@ -415,12 +427,17 @@ class InterfaceExpansion(Frame):
         be = self.modif_struct.base_expansion
         #print be.dump(present=True,size=150)
         #modl = self.root.meidee_objects.get_model(self.modif_struct.support_modele.nom)
-        base_mod = Resultat(be.nom, be, self.root.mess, owned=False)
+        #base_mod = Resultat(self.root.meidee_objects, be.nom,
+        #                    be, self.root.mess, owned=False)
+
+
         IMPR_RESU( UNITE   = _ULGMSH, 
                    FORMAT  = 'GMSH',
-                  # MODELE  = modl,
-                   MODELE  = self.modif_struct.support_modele,
-                   RESU    = _F(RESULTAT=be,),
+                   MODELE  = self.modif_struct.support_modele.obj,
+                   RESU    = _F( RESULTAT=be,
+                                 TYPE_CHAM = 'VECT_3D',
+                                 NOM_CMP = ('DX','DY','DZ')
+                                ),
                    )
         DEFI_FICHIER(ACTION='LIBERER', UNITE=_ULGMSH)
         
@@ -441,7 +458,8 @@ class InterfaceExpansion(Frame):
         IMPR_RESU( UNITE   = _ULGMSH, 
                    FORMAT  = 'GMSH',
                    MODELE  = resu.modele,
-                   RESU    = _F(RESULTAT=resu.obj,),
+                   RESU    = _F(RESULTAT=resu.obj, TYPE_CHAM = 'VECT_3D',
+                                NOM_CMP = ('DX','DY','DZ')),
                    )
         DEFI_FICHIER(ACTION='LIBERER', UNITE=_ULGMSH)
         
@@ -493,6 +511,7 @@ class InterfaceCondensation(Frame):
         self.columnconfigure(1,weight=1)
         self.columnconfigure(2,weight=1)
         self.rowconfigure(1,weight=1)
+        
         # Frame contenant les infos pour la condensation
         # ----------------------------------------------
         f=Frame(self,relief='sunken', borderwidth=1)
@@ -521,41 +540,64 @@ class InterfaceCondensation(Frame):
                                      command=self.view_modes_couples, state='disabled' )
         self.button_display.grid(row=4, column=1, sticky='ew')
 
-        # Frame de parametrage du couplage
-        # --------------------------------
-        f = Frame(self,relief='sunken',borderwidth=1)
-        f.rowconfigure(0,weight=1)
-        f.grid(row=2,column=0,sticky='nsew')
+        # arametres de PROJ_MES_MODAL pour la condensation
 
-        Label(f, text="Calcul modal sur le modèle couplé",
+        Label(f, text=" Paramètres de PROJ_MESU_MODAL",
+              bg='#f0f0f0').grid(row=5,column=0,columnspan=2,sticky='new')
+        
+        self.var_expans_param_frame_visible = IntVar()
+        Checkbutton(f,text="Réglages",
+                    command=self.display_expans_param_frame,
+                    variable=self.var_expans_param_frame_visible,
+                    indicatoron=0).grid(row=6,column=1)
+
+        self.expans_param_frame = frm1 = Toplevel()
+        frm1.rowconfigure(0,weight=1)
+        frm1.columnconfigure(0,weight=1)
+
+        self.param_proj_mesu = ParamProjMesuModal(frm1, "Paramètres de PROJ_MESU_MODAL")
+        self.param_proj_mesu.grid(row=0,column=0,sticky='nsew')
+
+        frm1.protocol("WM_DELETE_WINDOW", self.hide_expans_param_frame)
+        Button(frm1,text="OK",command=self.hide_expans_param_frame).grid(row=1,column=0)
+        frm1.withdraw()
+
+
+        # Frame de parametrage du couplage : calcul modal
+        # -----------------------------------------------
+        f2 = Frame(self,relief='sunken',borderwidth=1)
+        f2.rowconfigure(0,weight=1)
+        f2.grid(row=2,column=0,sticky='nsew')
+
+        Label(f2, text="Calcul modal sur le modèle couplé",
               bg='#f0f0f0').grid(row=0,column=0,columnspan=2,sticky='new')
         
-        Label(f, text="Mode de calcul").grid(row=1,column=0,sticky='w')
+        Label(f2, text="Mode de calcul").grid(row=1,column=0,sticky='w')
         self.var_meth_modes_couple = StringVar()
-        self.menu_meth_modes_couple = MyMenu( f, ['MODE_ITER_SIMULT','MODE_ITER_INV'],
+        self.menu_meth_modes_couple = MyMenu( f2, ['MODE_ITER_SIMULT','MODE_ITER_INV'],
                                               self.var_meth_modes_couple,
                                               self.choix_methode_modes_couple)
         self.menu_meth_modes_couple.grid(row=1,column=1,sticky='ew')
         self.var_meth_modes_couple.set("MODE_ITER_SIMULT")
         self.var_couplage_param_frame_visible = IntVar()
-        Checkbutton(f,text="Réglages",
+        Checkbutton(f2,text="Réglages",
                     command=self.display_couplage_param_frame,
                     variable=self.var_couplage_param_frame_visible,
                     indicatoron=0).grid(row=2,column=1)
 
-        self.couplage_param_frame = frm = Toplevel()
-        frm.rowconfigure(0,weight=1)
-        frm.columnconfigure(0,weight=1)
-        self.param_inv_modes_couple = ParamModeIterInv(frm, "Modele couple")
+        self.couplage_param_frame = frm2 = Toplevel()
+        frm2.rowconfigure(0,weight=1)
+        frm2.columnconfigure(0,weight=1)
+        self.param_inv_modes_couple = ParamModeIterInv(frm2, "Modele couple")
         self.param_inv_modes_couple.grid(row=0,column=0,sticky='nsew')
         self.param_inv_modes_couple.grid_remove()
 
-        self.param_simult_modes_couple = ParamModeIterSimult(frm, "Modele couple")
+        self.param_simult_modes_couple = ParamModeIterSimult(frm2, "Modele couple")
         self.param_simult_modes_couple.grid(row=0,column=0,sticky='nsew')
 
-        frm.protocol("WM_DELETE_WINDOW", self.hide_couplage_param_frame)
-        Button(frm,text="OK",command=self.hide_couplage_param_frame).grid(row=1,column=0)
-        frm.withdraw()
+        frm2.protocol("WM_DELETE_WINDOW", self.hide_couplage_param_frame)
+        Button(frm2,text="OK",command=self.hide_couplage_param_frame).grid(row=1,column=0)
+        frm2.withdraw()
         
 
         #calc_freq = self.param_retroprojection.get_calc_freq()
@@ -578,6 +620,8 @@ class InterfaceCondensation(Frame):
         return
         # Frame pour le calcul de la retroprojection
         # ------------------------------------------
+        """cette partie permet de recalcumer une FRF en donnant
+           une excitation. On s'en servira plus tard """
         f = Frame(self,relief='sunken',borderwidth=1)
         f.grid(row=1,column=2,sticky='nsew')
 
@@ -613,9 +657,20 @@ class InterfaceCondensation(Frame):
         else:
             self.couplage_param_frame.withdraw()
 
+    def display_expans_param_frame(self):
+        state = self.var_expans_param_frame_visible.get()
+        if state:
+            self.expans_param_frame.deiconify()
+        else:
+            self.expans_param_frame.withdraw()
+
     def hide_couplage_param_frame(self):
         self.var_couplage_param_frame_visible.set(0)
         self.couplage_param_frame.withdraw()
+
+    def hide_expans_param_frame(self):
+        self.var_expans_param_frame_visible.set(0)
+        self.expans_param_frame.withdraw()
 
     def choix_methode_modes_couple(self):
         choix = self.var_meth_modes_couple.get()
@@ -710,6 +765,8 @@ class InterfaceCondensation(Frame):
         if not self._can_set_modif_struct_para():
             return
 
+        reso = self.param_proj_mesu.get_resolution()
+        self.modif_struct.set_param_condens(reso)
         self.modif_struct.calcul_condensation()
 
         if self.modif_struct.coupling_method_name=='MODE_ITER_SIMULT':
@@ -754,8 +811,10 @@ class InterfaceCondensation(Frame):
         IMPR_RESU( UNITE   = _ULGMSH, 
                    FORMAT  = 'GMSH',
                    MODELE  = mstruct.x_modlint,
-                   RESU    = ( _F(RESULTAT=mstruct.x_deplint,),
-                               _F(RESULTAT=mstruct.x_deplxint,),
+                   RESU    = ( _F(RESULTAT=mstruct.x_deplint,
+                                  TYPE_CHAM = 'VECT_3D', NOM_CMP = ('DX','DY','DZ')),
+                               _F(RESULTAT=mstruct.x_deplxint,
+                                  TYPE_CHAM = 'VECT_3D', NOM_CMP = ('DX','DY','DZ')),
                                )
                    )
         DEFI_FICHIER(ACTION='LIBERER', UNITE=_ULGMSH)

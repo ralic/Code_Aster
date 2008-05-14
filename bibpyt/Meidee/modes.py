@@ -1,4 +1,4 @@
-#@ MODIF modes Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF modes Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,6 @@
 #
 # La classe ModifStruct permet de gerer les calculs de modification structurale
 # 
-# La classe InterfaceModifStruct dirige les objets graphiques
 
 from Tkinter import *
 
@@ -336,6 +335,67 @@ class ParamModeIterInv(Frame):
             mc['PREC_AJUSTE'] = self.prec_ajuste.get()
         return mc
 
+class ParamProjMesuModal(Frame):
+    """Un panneau pour spécifier les paramètres de résolution
+    de PROJ_MESU_MODAL
+    """
+    
+    def __init__(self, root, title, **kwargs):
+        Frame.__init__(self, root, **kwargs)
+        Label(self, text=title).grid(row=0, column=0, columnspan=1)
+
+
+        self.methode = StringVar()
+        self.eps = DoubleVar()
+        self.regul = DoubleVar()
+        self.regul_meth = StringVar()
+        self.regul_meth.set("NON")
+        self.regul.set(1.0e-5)
+        self.regul.set(0.0)        
+
+        Label(self,text="Option").grid(row=2,column=0)
+        self.opt_option = StringVar()
+
+        self.option = MyMenu(self, ("SVD","LU"),
+                             self.opt_option, self.select_option )
+        self.option.grid(row=2,column=1)
+        self.opt_option.set("SVD")
+        self.opt_panel = None
+        self.select_option()
+
+    def select_option(self, *args):
+        opt = self.opt_option.get()
+        if self.opt_panel:
+            self.opt_panel.destroy()
+        if opt == "SVD":
+            regul_opt = ['NON','NORM_MIN','TIK_RELA']
+            panel = OptionFrame(self, None, [
+                ("eps",Entry,{'textvariable':self.eps}),
+                ("regularisation",MyMenu,{'var':self.regul_meth,
+                                          'options':regul_opt}),
+                ("ponderation",Entry,{'textvariable':self.regul}),
+                ])
+            self.regul_meth.set('NON')
+        elif opt == "LU":
+            panel = Label(self,text="Pas de paramétrage")            
+        else:
+            raise RuntimeError("Unknown option '%s'" % opt)
+        self.opt_panel = panel
+        panel.grid(row=3,column=0,columnspan=2,sticky="WE")
+
+    def get_resolution(self):
+        mc = {}
+        opt = self.opt_option.get()
+        if opt == 'LU':
+            mc['METHODE'] = 'LU'
+        elif opt == 'SVD':
+            mc['METHODE'] = 'SVD'
+            mc['REGUL'] = self.regul_meth.get()
+            if mc['REGUL'] != 'NON':
+                mc['COEF_PONDER'] = self.regul.get()
+
+        return mc
+
 
 class RowDict(dict):
     """Un dictionaire utilisé pour décrire
@@ -550,6 +610,7 @@ class ChgtRepereDialogue(Toplevel):
             self.deiconify()
             self.is_active = False
         else:
+            print "self.row_dict = ", self.row_dict
             self.mess.disp_mess(
                 "Un dialogue pour le groupe '%s' " \
                 "est déjà ouvert. " % self.row_dict["NOM"])
@@ -602,7 +663,7 @@ class GroupNoWidget(Frame):
         """Place les DDL à séléctioner dans la grille.
         Chaque ligne est representée par un dictionaire
         ayant la structure::
-            {"GROUP_NO" : le nom du groupe DDL (optionel),
+            {"NOM" : le nom du groupe DDL (optionel),
              "NOM_CMP" : la liste des DDL à afficher}
 
         :param user_data: la structure de la grille.
@@ -619,14 +680,15 @@ class GroupNoWidget(Frame):
         
         for row_user_dict in user_data:
             row_dict = RowDict(row_user_dict.items())
+            print "row_dict = ", row_dict
             row_widgets = []
             row_ddl_vars = []
 
-            if "GROUP_NO" in row_dict:
-                lab =  Label(self, text=row_dict["GROUP_NO"], **self.kwargs)
+            if "NOM" in row_dict:
+                lab =  Label(self, text=row_dict["NOM"], **self.kwargs)
                 row_widgets.append(lab)
             else:
-                row_dict["GROUP_NO"] = None
+                row_dict["NOM"] = None
 
             for ddl_key in row_dict["NOM_CMP"]:
                 var = IntVar()
@@ -677,7 +739,7 @@ class GroupNoWidget(Frame):
                 if int_widget.get():
                     res.append(ddl_key.strip())
             if res:
-                resdict = {"GROUP_NO" : row_dict["GROUP_NO"],
+                resdict = {"NOM" : row_dict["NOM"],
                            "NOM_CMP" : res}
                 if self.chgt_rep:
                     resdict["CHGT_REP"] = row_dict["CHGT_REP"]
@@ -783,7 +845,7 @@ class _SelectionBase(Frame):
                     ddl_keys.sort(key=sort_compo_key)
                 except TypeError: # version de python < 2.4
                     ddl_keys.sort()
-                data.append({"GROUP_NO": grp, "NOM_CMP" : ddl_keys})
+                data.append({"NOM": grp, "NOM_CMP" : ddl_keys})
         
         self.grp.set_data(data)
    
@@ -834,314 +896,6 @@ class SelectionMailles(_SelectionBase):
 
 
 
-def dumpobj(name, obj):
-    for n in dir(obj):
-        attr = getattr( obj, n )
-        if isinstance(attr, (int,str,unicode,float)):
-            print "%s.%s=%r" % (name,n,attr)
-        else:
-            print "%s.%s=%s" % (name,n,type(attr))
-
-
-def obj_get_name( obj ):
-    if isinstance(obj,str):
-        return obj
-    elif hasattr(obj,'nom'):
-        return obj.nom.strip()
-    return None
-
-
-def retrieve_model_param( modname ):
-    """Renvoie les parametres des macros affectees a un modele
-
-    """
-    #jdc = CONTEXT.get_current_step().jdc
-    jdc = CONTEXT.get_current_step()
-    
-    etapes = []
-
-    for etape in jdc.etapes:
-        if etape.nom not in ('AFFE_MATERIAU', 'AFFE_CARA_ELEM', 'AFFE_CHAR_MECA', 'CALC_MATR_ELEM',
-                             ):
-            continue
-        args = etape.valeur
-        modl = etape.valeur['MODELE']
-        if isinstance(modl,str):
-            modlname = modl
-        else:
-            modlname = modl.nom.strip()
-            #print modl.__class__.__mro__ : (<class 'SD.co_modele.modele_sdaster'>, <class 'Noyau.N_ASSD.ASSD'>, <class 'SD.sd_modele.sd_modele'>, <class 'Noyau.asojb.AsBase'>, <class 'Noyau.basetype.Type'>, <class 'Noyau.basetype.BaseType'>, <type 'object'>)
-##        print etape.nom, modlname
-
-        if modlname != modname:
-            continue
-        etapes.append( (etape.nom, args, etape.sd) )
-    return etapes
-
-def dump_mc( mc, indent="" ):
-    if isinstance( mc, (dict, _F) ):
-        mck = mc.keys()
-        mck.sort()
-        for k in mck:
-            print indent, k, ":"
-            dump_mc( mc[k], indent+" " )
-
-    elif isinstance( mc, (int,float,str,unicode) ):
-        print indent, mc
-    elif hasattr( mc, 'nom' ):
-        print indent, "OBJ(", mc.nom, ")"
-    elif isinstance( mc, (list,tuple) ):
-        print indent, "("
-        for obj in mc:
-            dump_mc( obj, indent+"  " )
-        print indent, ")"
-    else:
-        print indent, repr(mc)
-
-
-def convert_args( mc, concepts ):
-    """convertit un (ensemble) de mot-clefs en remplacant les
-    objets presents dans 'concepts' par les valeurs associees
-    """
-    if isinstance( mc, (dict,_F) ):
-        if isinstance(mc,dict):
-            dest = {}
-        else:
-            dest = _F()
-        for k,v in mc.items():
-            v = convert_args( v, concepts )
-            dest[k] = v
-        return dest
-    elif isinstance( mc, (int,float,str,unicode) ):
-        return mc
-    elif isinstance( mc, ASSD ):
-        if mc.nom in concepts:
-            return concepts[mc.nom]
-        return mc
-    elif isinstance( mc, (list,tuple) ):
-        lst = []
-        for obj in mc:
-            lst.append( convert_args( obj, concepts ) )
-        if isinstance( mc, tuple ):
-            lst = tuple(lst)
-        return lst
-    else:
-        raise NotImplementedError("type non reconnu : %r" % mc)
-    
-
-class CopyModelMeca:
-    """Cette classe tente de recreer un sd_modele et toutes ses
-    caracteristique a partir d'un 'modele'.
-    on peut surcharger chaque etape pour adapter cette creation
-    """
-    def __init__(self):
-        # concepts produits par l'objet qui doivent etre detruits
-        # avant reutilisation
-        self.modele = None
-        self.maillage = None
-        self.nume_lst = []
-        self.mat_rigi = []
-        self.mat_mass = []
-        self.mat_amor = []    
-
-    def reinit(self, modl):
-        """Copie (essaye) un modele"""
-        self.orig_modl = modl
-        self.orig_mail = None
-        self.concepts = {} # mapping nom concepts orig->nouvel obj
-        self.matr_elem = {}  # mapping matr_elem_orig.nom -> option
-
-    def copy(self):
-        self.create_maillage()
-        if self.orig_mail:
-            self.concepts[self.orig_mail.nom] = self.maillage
-        
-        affe_modl = self.retrieve_affe_model( self.orig_modl )
-        self.create_modele( affe_modl )
-        self.concepts[ self.orig_modl.nom ] = self.modele
-
-        # Essaye de reconstruire le modele support+modif en utilisant modlsup comme `modele`
-        etapes = self.retrieve_model_param( self.orig_modl.nom.strip() )
-        self.affe_cara_elem( etapes.get('AFFE_CARA_ELEM', []) )
-        self.affe_materiau( etapes.get('AFFE_MATERIAU',[]) )
-        self.affe_char_meca( etapes.get('AFFE_CHAR_MECA',[]) )
-        self.calc_matr_elem( etapes.get('CALC_MATR_ELEM',[]) )
-        
-        # on recupere les noms de concepts produits par matr_elem pour detecter ceux utilises
-        # par nume_ddl
-        nume_args = self.retrieve_nume_ddl( self.orig_modl.nom, self.matr_elem.keys() )
-        self.nume_ddl( nume_args )
-        nume_names = [ sd.nom for args, sd in nume_args ]
-        asse_matr = self.retrieve_asse_matrice( nume_names )
-        self.asse_matrice( asse_matr )
-        
-        
-    def create_maillage(self):
-        """Creation du maillage"""
-        # version par defaut suppose que self.maillage est initialise
-        assert self.maillage is not None
-
-    def create_modele(self, affe):
-        """Creation du modele"""
-        self.clear_concept( self.modele.obj )
-        affe = convert_args( affe, self.concepts )
-        _MDLCPL = AFFE_MODELE( MAILLAGE=self.maillage,
-                                AFFE=affe )
-        self.modele = _MDLCPL
-
-    def affe_cara_elem(self, cara):
-        # replication des AFFE_CARA_ELEM
-        # ------------------------------
-        for args, sd in cara:
-            args = convert_args( args, self.concepts )
-            _TMP = AFFE_CARA_ELEM( **args )
-            self.concepts[sd.nom] = _TMP
-
-    def affe_materiau(self, mater):
-        # replication des AFFE_MATERIAU
-        # -----------------------------
-        if not mater:
-            raise RuntimeError("Il n'y a pas de AFFE_MATERIAU pour ce modele\n"
-                               "MODELE est un attribut facultatif de AFFE_MATERIAU qui est nécessaire pour cette méthode"
-                               )
-        for args, sd in mater:
-            args = convert_args( args, self.concepts )
-            _TMP = AFFE_MATERIAU( **args )
-            self.concepts[sd.nom] = _TMP
-
-    def affe_char_meca(self, charge):
-        # replication de AFFE_CHAR_MECA
-        # -----------------------------
-        for args, sd in charge:
-            args = convert_args(args, self.concepts)
-            _TMP = AFFE_CHAR_MECA( **args )
-            self.concepts[sd.nom] = _TMP
-
-    def calc_matr_elem(self, matr_elem):
-        for args, sd in matr_elem:
-            args = convert_args(args, self.concepts)
-            _TMP=CALC_MATR_ELEM(**args)
-            self.concepts[sd.nom] = _TMP
-            self.matr_elem[ sd.nom ] = args['OPTION']
-
-    def nume_ddl(self, args_lst):
-        for args, sd in args_lst:
-            args = convert_args( args, self.concepts )
-            _TMP = NUME_DDL(**args)
-            self.concepts[sd.nom] = _TMP
-            self.nume_lst.append( _TMP )
-
-    def asse_matrice(self, args_lst):
-        for args, sd in args_lst:
-            #print "ASSE_MATRICE"
-            #dump_mc( args )
-            mat_elem = args['MATR_ELEM']
-            args = convert_args( args, self.concepts )
-            #dump_mc( args )
-            _TMP = ASSE_MATRICE(**args)
-            self.concepts[sd.nom] = _TMP
-            typ_elem = self.matr_elem.get( mat_elem.nom, None )
-            if typ_elem=='RIGI_MECA':
-                self.mat_rigi.append( _TMP )
-            elif typ_elem=='MASS_MECA':
-                self.mat_mass.append( _TMP )
-            elif typ_elem=='AMOR_MECA':
-                self.mat_amor.append( _TMP )
-
-
-    def retrieve_affe_model( self, modl ):
-        name = modl.nom.strip()
-        jdc = CONTEXT.get_current_step().jdc
-        for etape in jdc.etapes:
-            if not hasattr( etape, 'sd'):
-                continue
-            if not hasattr( etape.sd, 'nom' ):
-                continue
-            if etape.sd.nom == name:
-                cara = etape.valeur.copy()
-                return cara['AFFE']
-
-    def retrieve_model_param( self, modname ):
-        """Renvoie les parametres des macros affectees a un modele
-
-        XXX: le param modele est facultatif dans AFFE_MATERIAU il faut
-        donc rechercher aussi les etapes portant sur le maillage (mais
-        on peut aussi contraindre l'utilisateur a utiliser MODELE=...
-        pour l'instant)
-        """
-        jdc = CONTEXT.get_current_step().jdc
-        etapes = {}
-
-##        print "SELECTION", modname
-
-        for etape in jdc.etapes:
-            if etape.nom not in ('AFFE_MATERIAU', 'AFFE_CARA_ELEM',
-                                 'AFFE_CHAR_MECA', 'CALC_MATR_ELEM',):
-                continue
-            args = etape.valeur
-            modl = etape.valeur.get('MODELE', None)
-            etape_modl_name = obj_get_name( modl )
-
-            if etape_modl_name != modname:
-                continue
-            lst = etapes.setdefault( etape.nom, [] )
-            lst.append( (args.copy(), etape.sd) )
-        return etapes
-
-    def retrieve_nume_ddl( self, modname, noms_matr_elem ):
-        """Renvoie les parametres des macros affectees a un modele
-
-        XXX: le param modele est facultatif dans AFFE_MATERIAU il faut
-        donc rechercher aussi les etapes portant sur le maillage (mais
-        on peut aussi contraindre l'utilisateur a utiliser MODELE=...
-        pour l'instant)
-        """
-        jdc = CONTEXT.get_current_step().jdc
-        nume_ddls = []
-        modname = modname.strip()
-        noms_matr_elem = [ nom.strip() for nom in noms_matr_elem ]
-        for etape in jdc.etapes:
-            if etape.nom != 'NUME_DDL':
-                continue
-            args = etape.valeur
-            modl = etape.valeur.get('MODELE', None)
-            etape_modl_name = obj_get_name( modl )
-            rigi = etape.valeur.get('MATR_RIGI', None)
-            rigi_meca_name = obj_get_name( rigi )
-
-            if etape_modl_name == modname or rigi_meca_name in noms_matr_elem:
-                nume_ddls.append( (args.copy(), etape.sd) )
-        return nume_ddls
-
-    def retrieve_asse_matrice( self, nume_names ):
-        """Renvoie les parametres des macros affectees a un modele
-
-        XXX: le param modele est facultatif dans AFFE_MATERIAU il faut
-        donc rechercher aussi les etapes portant sur le maillage (mais
-        on peut aussi contraindre l'utilisateur a utiliser MODELE=...
-        pour l'instant)
-        """
-        jdc = CONTEXT.get_current_step().jdc
-        asse_matrices = []
-        nume_names = [ name.strip() for name in nume_names ]
-        for etape in jdc.etapes:
-            if etape.nom != 'ASSE_MATRICE':
-                continue
-            args = etape.valeur
-            #print "FOUND ASSE_MATRICE:"
-            #dump_mc( args )
-            numeddl = etape.valeur.get('NUME_DDL', None)
-            nume_ddl_name = obj_get_name( numeddl )
-
-            if nume_ddl_name in nume_names:
-                asse_matrices.append( (args.copy(), etape.sd) )
-        return asse_matrices
-
-    def clear_concept(self, cpt):
-        """!Detruit un concept silencieusement"""
-        if cpt is None:
-            return
-        DETRUIRE(CONCEPT=_F(NOM=cpt),ALARME='NON',INFO=1)
 
 
 class MacWindowFrame(Frame):

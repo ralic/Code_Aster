@@ -1,29 +1,32 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
-# TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE . METHODE ARLEQUIN
+# MODIF  DATE 13/05/2008   AUTEUR MEUNIER S.MEUNIER 
+# TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 # SOUMISE A UNE TRACTION UNIFORME A L'INFINI (MATERIAU HOMOGENE)
+#
+# - METHODE ARLEQUIN
+#
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
+# ARLEQUIN : SUBSTITUTION 2D/2D INCOMPATIBLE.
+#            MAILLAGES DE DENSITES DIFFERENTES
 
-
-DEBUT(CODE=_F(NOM='SSLP313C',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSLP313C',
+              NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI',),);
 
 PRE_GIBI();
 
@@ -58,6 +61,14 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                   FORCE_CONTOUR=_F(GROUP_MA='L12',
                                    FY=1.E8,),);
 
+##################################################
+# 1. Creation des relations de couplage Arlequin
+#    entre les groupes de mailles
+#    couronne et fissure (maillage fin)
+#    et la plaque (maillage grossier)
+#    Collage sur le modele fin
+##################################################
+
 AR=AFFE_CHAR_MECA(MODELE=MO,
                   ARLEQUIN=_F(GROUP_MA_1=('COUR','FISS'),
                               GROUP_MA_2='PLAQ',
@@ -65,17 +76,11 @@ AR=AFFE_CHAR_MECA(MODELE=MO,
                               COLLAGE='GROUP_MA_1',
                               POIDS_1=0.99999,),);
 
-LINST=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
-
-RESU=STAT_NON_LINE(MODELE=MO,
+RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=AR,),
                           _F(CHARGE=BL,),
-                          _F(CHARGE=CH,),),
-                   COMP_ELAS=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=LINST,),);
+                          _F(CHARGE=CH,),),);
 
 FOND1=DEFI_FOND_FISS(MAILLAGE=MA,
                      FOND_FISS=_F(GROUP_NO='P0',),
@@ -132,7 +137,6 @@ TABL_K=POST_K1_K2_K3(MODELISATION='C_PLAN',
                      TABL_DEPL_SUP=DEPH,
                      TABL_DEPL_INF=DEPB,
                      ABSC_CURV_MAXI=7.51E-05,
-                     INST=1.0,
                      VECT_K1=(0.0,1.0,0.0),);
 
 TEST_TABLE(TABLE=GK01,

@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_modifstruct Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_modifstruct Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,13 +23,13 @@
 # La classe ModifStruct permet de gerer les calculs de modification structurale
 # 
 import aster
-from Accas import _F
+from Accas import _F, ASSD
 
 # XXX import done only for mode_meca, should it be removed?
 import Cata.cata
-from Cata.cata import MAC_MODES, MODE_ITER_INV, DEPL_INTERNE
+from Cata.cata import MAC_MODES, MODE_ITER_INV, DEPL_INTERNE, AFFE_CHAR_MECA
 from Cata.cata import MODE_STATIQUE, DEFI_BASE_MODALE, PROJ_MESU_MODAL
-from Cata.cata import MACR_ELEM_STAT, DETRUIRE, NUME_DDL_GENE 
+from Cata.cata import MACR_ELEM_STAT, DETRUIRE, NUME_DDL_GENE, AFFE_MATERIAU
 from Cata.cata import PROJ_MATR_BASE, MODE_ITER_SIMULT, REST_BASE_PHYS
 from Cata.cata import EXTR_MODE, DEFI_MAILLAGE, ASSE_MAILLAGE, AFFE_MODELE
 from Cata.cata import NUME_DDL, CALC_MATR_ELEM, AFFE_CARA_ELEM, CREA_MAILLAGE
@@ -37,77 +37,8 @@ from Cata.cata import PROJ_CHAMP, ASSE_MATRICE
 
 from Meidee.meidee_cata import Resultat
 from Meidee.meidee_calcul_correlation import extract_mac_array
-from Meidee.modes import CopyModelMeca, convert_args
 
 
-class CreateModeleCouple(CopyModelMeca):
-
-    def reinit(self, modl, mail1, mail2):
-        CopyModelMeca.reinit( self, modl )
-        self.mail1 = mail1
-        self.mail2 = mail2
-
-    def create_modele(self, affe):
-        """Creation du modele"""
-        if self.modele:
-            print "DESTRUCTION", self.modele.nom
-        self.clear_concept( self.modele )
-        # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
-        _MDLCPL = AFFE_MODELE( MAILLAGE=self.maillage,
-                                AFFE=affe,
-                                AFFE_SOUS_STRUC=_F( SUPER_MAILLE = 'SUMAIL',
-                                                    PHENOMENE='MECANIQUE',),
-                                )
-        self.modele = _MDLCPL
-
-
-    def create_maillage(self):
-        """Creation du maillage"""
-        self.clear_concept( self.maillage )
-        # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
-        _MLCPL = ASSE_MAILLAGE( MAILLAGE_1=self.mail1,
-                                 MAILLAGE_2=self.mail2,
-                                 OPERATION='SOUS_STR' )
-        self.maillage = _MLCPL
-        self.concepts[self.mail1.nom] = _MLCPL
-
-
-    def nume_ddl(self, args_lst):
-        if len(args_lst)!=1:
-            raise RuntimeError("Plusieurs NUME_DDL, presents, "\
-                               "on ne peut en avoir qu'un")
-        args, sd = args_lst[0]
-        for nume in self.nume_lst:
-            self.clear_concept( nume )
-        self.nume_lst = []
-        args = convert_args( args, self.concepts )
-        _NUMECPL = NUME_DDL(**args)
-        self.concepts[sd.nom] = _NUMECPL
-        self.nume_lst.append( _NUMECPL )
-
-    def asse_matrice(self, args_lst):
-        # cleanup:
-        for c in self.mat_rigi+self.mat_mass+self.mat_amor:
-            self.clear_concept( c )
-        self.mat_rigi = []
-        self.mat_mass = []
-        self.mat_amor = []
-        for args, sd in args_lst:
-            mat_elem = args['MATR_ELEM']
-            typ_elem = self.matr_elem.get( mat_elem.nom, None )
-            args = convert_args( args, self.concepts )
-            if typ_elem=='RIGI_MECA':
-                _RIGIMEC = ASSE_MATRICE(**args)
-                self.mat_rigi.append( _RIGIMEC )
-                self.concepts[sd.nom] = _RIGIMEC
-            elif typ_elem=='MASS_MECA':
-                _MASSMEC = ASSE_MATRICE(**args)
-                self.mat_mass.append( _MASSMEC )
-                self.concepts[sd.nom] = _MASSMEC
-            elif typ_elem=='AMOR_MECA':
-                _AMORMEC = ASSE_MATRICE(**args)
-                self.mat_amor.append( _AMORMEC )
-                self.concepts[sd.nom] = _AMORMEC
 
 
 class ModifStruct:
@@ -152,6 +83,8 @@ class ModifStruct:
         self.cham_mater = None
 
         self.calculated_modes = None
+
+        self.param_condens = None
 
         self.cpl = CreateModeleCouple()
         self.x_modst = None  # pour ES
@@ -261,7 +194,13 @@ class ModifStruct:
         
     def find_modele_couple_from(self, modc_name):
         """Trouve le modele du couplage dans la memoire JEVEUX"""
-        self.modlx = self.meidee_objects.modeles[modc_name] 
+        self.modlx = self.meidee_objects.modeles[modc_name]
+
+    def set_param_condens(self, param):
+        """ parametres de PROJ_MESU_MODAL pour la condensation :
+            {'methode':'SVD'ou'LU','eps':eps,'regul_meth':'NON' ou
+             'TIK_RELA' ou 'NORM_MIN','regul':alpha}"""
+        self.param_condens = param
     
     def set_coupling_method_name(self, cm_name):
         """Place le nom de la methode pour calculer les modes couples"""
@@ -335,8 +274,9 @@ class ModifStruct:
             grpno_tot = self.captor_groups + self.ms_externe_groups
         
         grno = []
+        print "grpno_tot = ", grpno_tot
         for grp in grpno_tot:
-            grno.append( _F(GROUP_NO=grp["GROUP_NO"], AVEC_CMP=grp["NOM_CMP"]) )
+            grno.append( _F(GROUP_NO=grp["NOM"], AVEC_CMP=grp["NOM_CMP"]) )
         return grno 
 
     def calc_base_es(self, opt_grnocapt=None):
@@ -399,8 +339,10 @@ class ModifStruct:
                           'NMAX_FREQ':len(nume_modes_sup),
                           'SEUIL_FREQ':1.E-4 }
 
-        if calc_freq['NMAX_FREQ']==-1:
-            calc_freq['NMAX_FREQ'] = len(nume_modes_sup)
+
+        if calc_freq.has_key('NMAX_FREQ'):
+            if calc_freq['NMAX_FREQ']==-1:
+                calc_freq['NMAX_FREQ'] = len(nume_modes_sup)
             
         _MODGEN = MODE_ITER_SIMULT( MATR_A = _KPROJ,
                                     MATR_B = _MPROJ,
@@ -427,7 +369,7 @@ class ModifStruct:
         return self.nume_modes_sup,self.base_proj,_RESGEN
 
 
-    def condensation(self, nomcham = 'DEPL'):
+    def condensation(self, resolution = None, nomcham = 'DEPL'):
         """Calcul la condensation des modes sur la structure modifiee."""
         modmesu = self.resu_exp
         modlexp = modmesu.modele
@@ -436,7 +378,7 @@ class ModifStruct:
         modes_mesure_retenus = self.modes_ide
         modes_expansion_retenus = self.modes_expansion
         
-        noeuds_interface = [grp["GROUP_NO"] for grp in self.ms_externe_groups]
+        noeuds_interface = [grp["NOM"] for grp in self.ms_externe_groups]
         
         # Reduction des modes mesures
         self.clear_concept( self.x_mide )
@@ -470,8 +412,7 @@ class ModifStruct:
                                      MODELE_MESURE = _F( MODELE = modlexp.obj,
                                                          MESURE = _MIDE,
                                                          NOM_CHAM = nomcham,),
-                                     RESOLUTION = _F( METHODE = 'SVD',
-                                                      EPS = 1.E-5),
+                                     RESOLUTION = self.param_condens
                                    );
         except Exception, err:
             self.mess.disp_mess("Condensation de la mesure: " \
@@ -603,8 +544,7 @@ class ModifStruct:
                                MODELE_MESURE=_F(MODELE=self.resu_exp.modele.obj,
                                                 MESURE=self.modes_retr,
                                                 NOM_CHAM='DEPL',),
-                               RESOLUTION=_F(METHODE='SVD',
-                                             EPS=1.E-5),
+                               RESOLUTION=self.param_condens
                                );
         self.x_projmsint = __PROJMS
 
@@ -656,7 +596,7 @@ class ModifStruct:
         cpl = self.cpl
         kcouple = cpl.mat_rigi[0]
         mcouple = cpl.mat_mass[0]
-        acouple = cpl.mat_amor[0]
+##        acouple = cpl.mat_amor[0]
         
         self.clear_concept( self.modes_couple )
         if mode_simult :
@@ -678,25 +618,6 @@ class ModifStruct:
         __MDRETR=DEPL_INTERNE(DEPL_GLOBAL=_MODCPL,SUPER_MAILLE='SUMAIL')
         self.modes_retr = __MDRETR
 
-    def retroprojection(self, mode_simult, calc_freq, interv, chargement):
-        # Ca vire...
-        I_DEBUT, I_FIN, I_NOMBRE = interv
-        __LIFREQ=DEFI_LIST_REEL(DEBUT=I_DEBUT,
-                                INTERVALLE=_F(JUSQU_A = I_FIN,
-                                              NOMBRE = I_NOMBRE))
-
-        __DYH=DYNA_LINE_HARM( MODELE=cpl.modele,
-                              MATR_MASS=mcouple,
-                              MATR_RIGI=kcouple,
-                              MATR_AMOR=acouple,
-                              LIST_FREQ=__LIFREQ,
-                              TOUT_CHAM='OUI',
-                              EXCIT=(_F(COEF_MULT_C=('RI',1.,0.),
-                                        CHARGE=chargement,),),
-                            )
-        self.clear_concept( self.dyh_retro )
-        __DYHRTR=DEPL_INTERNE(DEPL_GLOBAL=__DYH,SUPER_MAILLE='SUMAIL')
-        self.dyh_retro = __DYHRTR
 
     def calc_base_proj(self, calc_freq=None):
         """Calcule la base d'expansion en fonction de la methode, ES ou LMME"""
@@ -739,7 +660,7 @@ class ModifStruct:
         """Renvoit la force nodale pour la macro: MODE_STATIQUE"""
         force_nodale = []
         for grp in self.captor_groups:
-            force_nodale.append( _F(GROUP_NO=grp["GROUP_NO"],
+            force_nodale.append( _F(GROUP_NO=grp["NOM"],
                                     AVEC_CMP=grp["NOM_CMP"]) )
         return force_nodale
 
@@ -765,5 +686,392 @@ class ModifStruct:
         self.indicateur_choix_base_projection()
 
 
-    
+class CopyModelMeca:
+    """Cette classe tente de recreer un sd_modele et toutes ses
+    caracteristique a partir d'un 'modele'.
+    on peut surcharger chaque etape pour adapter cette creation
+    """
+    def __init__(self):
+        # concepts produits par l'objet qui doivent etre detruits
+        # avant reutilisation
+        self.modele = None
+        self.maillage = None
+        self.nume_lst = []
+        self.mat_rigi = []
+        self.mat_mass = []
+        self.mat_amor = []    
 
+    def reinit(self, modl):
+        """Copie (essaye) un modele"""
+        self.orig_modl = modl
+        self.orig_mail = None
+        self.concepts = {} # mapping nom concepts orig->nouvel obj
+        self.matr_elem = {}  # mapping matr_elem_orig.nom -> option
+
+    def copy(self):
+        self.create_maillage()
+        if self.orig_mail:
+            self.concepts[self.orig_mail.nom] = self.maillage
+        
+        affe_modl = self.retrieve_affe_model( self.orig_modl )
+        self.create_modele( affe_modl )
+        self.concepts[ self.orig_modl.nom ] = self.modele
+
+        # Essaye de reconstruire le modele support+modif en utilisant modlsup comme `modele`
+        etapes = self.retrieve_model_param( self.orig_modl.nom.strip() )
+        self.affe_cara_elem( etapes.get('AFFE_CARA_ELEM', []) )
+        self.affe_materiau( etapes.get('AFFE_MATERIAU',[]) )
+        self.affe_char_meca( etapes.get('AFFE_CHAR_MECA',[]) )
+        self.calc_matr_elem( etapes.get('CALC_MATR_ELEM',[]) )
+        
+        # on recupere les noms de concepts produits par matr_elem pour detecter ceux utilises
+        # par nume_ddl
+        nume_args = self.retrieve_nume_ddl( self.orig_modl.nom, self.matr_elem.keys() )
+        self.nume_ddl( nume_args )
+        nume_names = [ sd.nom for args, sd in nume_args ]
+        asse_matr = self.retrieve_asse_matrice( nume_names )
+        self.asse_matrice( asse_matr )
+        
+        
+    def create_maillage(self):
+        """Creation du maillage"""
+        # version par defaut suppose que self.maillage est initialise
+        assert self.maillage is not None
+
+    def create_modele(self, affe):
+        """Creation du modele"""
+        self.clear_concept( self.modele.obj )
+        affe = convert_args( affe, self.concepts )
+        _MDLCPL = AFFE_MODELE( MAILLAGE=self.maillage,
+                                AFFE=affe )
+        self.modele = _MDLCPL
+
+    def affe_cara_elem(self, cara):
+        # replication des AFFE_CARA_ELEM
+        # ------------------------------
+        for args, sd in cara:
+            args = convert_args( args, self.concepts )
+            _TMP = AFFE_CARA_ELEM( **args )
+            self.concepts[sd.nom] = _TMP
+
+    def affe_materiau(self, mater):
+        # replication des AFFE_MATERIAU
+        # -----------------------------
+        if not mater:
+            raise RuntimeError("Il n'y a pas de AFFE_MATERIAU pour ce modele\n"
+                               "MODELE est un attribut facultatif de AFFE_MATERIAU qui est nécessaire pour cette méthode"
+                               )
+        for args, sd in mater:
+            args = convert_args( args, self.concepts )
+            _TMP = AFFE_MATERIAU( **args )
+            self.concepts[sd.nom] = _TMP
+
+    def affe_char_meca(self, charge):
+        # replication de AFFE_CHAR_MECA
+        # -----------------------------
+        for args, sd in charge:
+            args = convert_args(args, self.concepts)
+            _TMP = AFFE_CHAR_MECA( **args )
+            self.concepts[sd.nom] = _TMP
+
+    def calc_matr_elem(self, matr_elem):
+        for args, sd in matr_elem:
+            args = convert_args(args, self.concepts)
+            _TMP=CALC_MATR_ELEM(**args)
+            self.concepts[sd.nom] = _TMP
+            self.matr_elem[ sd.nom ] = args['OPTION']
+
+    def nume_ddl(self, args_lst):
+        for args, sd in args_lst:
+            args = convert_args( args, self.concepts )
+            _TMP = NUME_DDL(**args)
+            self.concepts[sd.nom] = _TMP
+            self.nume_lst.append( _TMP )
+
+    def asse_matrice(self, args_lst):
+        for args, sd in args_lst:
+            #print "ASSE_MATRICE"
+            #dump_mc( args )
+            mat_elem = args['MATR_ELEM']
+            args = convert_args( args, self.concepts )
+            #dump_mc( args )
+            _TMP = ASSE_MATRICE(**args)
+            self.concepts[sd.nom] = _TMP
+            typ_elem = self.matr_elem.get( mat_elem.nom, None )
+            if typ_elem=='RIGI_MECA':
+                self.mat_rigi.append( _TMP )
+            elif typ_elem=='MASS_MECA':
+                self.mat_mass.append( _TMP )
+            elif typ_elem=='AMOR_MECA':
+                self.mat_amor.append( _TMP )
+
+
+    def retrieve_affe_model( self, modl ):
+        name = modl.nom.strip()
+        jdc = CONTEXT.get_current_step().jdc
+        for etape in jdc.etapes:
+            if not hasattr( etape, 'sd'):
+                continue
+            if not hasattr( etape.sd, 'nom' ):
+                continue
+            if etape.sd.nom == name:
+                cara = etape.valeur.copy()
+                return cara['AFFE']
+
+    def retrieve_model_param( self, modname ):
+        """Renvoie les parametres des macros affectees a un modele
+
+        XXX: le param modele est facultatif dans AFFE_MATERIAU il faut
+        donc rechercher aussi les etapes portant sur le maillage (mais
+        on peut aussi contraindre l'utilisateur a utiliser MODELE=...
+        pour l'instant)
+        """
+        jdc = CONTEXT.get_current_step().jdc
+        etapes = {}
+
+##        print "SELECTION", modname
+
+        for etape in jdc.etapes:
+            if etape.nom not in ('AFFE_MATERIAU', 'AFFE_CARA_ELEM',
+                                 'AFFE_CHAR_MECA', 'CALC_MATR_ELEM',):
+                continue
+            args = etape.valeur
+            modl = etape.valeur.get('MODELE', None)
+            etape_modl_name = obj_get_name( modl )
+
+            if etape_modl_name != modname:
+                continue
+            lst = etapes.setdefault( etape.nom, [] )
+            lst.append( (args.copy(), etape.sd) )
+        return etapes
+
+    def retrieve_nume_ddl( self, modname, noms_matr_elem ):
+        """Renvoie les parametres des macros affectees a un modele
+
+        XXX: le param modele est facultatif dans AFFE_MATERIAU il faut
+        donc rechercher aussi les etapes portant sur le maillage (mais
+        on peut aussi contraindre l'utilisateur a utiliser MODELE=...
+        pour l'instant)
+        """
+        jdc = CONTEXT.get_current_step().jdc
+        nume_ddls = []
+        modname = modname.strip()
+        noms_matr_elem = [ nom.strip() for nom in noms_matr_elem ]
+        for etape in jdc.etapes:
+            if etape.nom != 'NUME_DDL':
+                continue
+            args = etape.valeur
+            modl = etape.valeur.get('MODELE', None)
+            etape_modl_name = obj_get_name( modl )
+            rigi = etape.valeur.get('MATR_RIGI', None)
+            rigi_meca_name = obj_get_name( rigi )
+
+            if etape_modl_name == modname or rigi_meca_name in noms_matr_elem:
+                nume_ddls.append( (args.copy(), etape.sd) )
+        return nume_ddls
+
+    def retrieve_asse_matrice( self, nume_names ):
+        """Renvoie les parametres des macros affectees a un modele
+
+        XXX: le param modele est facultatif dans AFFE_MATERIAU il faut
+        donc rechercher aussi les etapes portant sur le maillage (mais
+        on peut aussi contraindre l'utilisateur a utiliser MODELE=...
+        pour l'instant)
+        """
+        jdc = CONTEXT.get_current_step().jdc
+        asse_matrices = []
+        nume_names = [ name.strip() for name in nume_names ]
+        for etape in jdc.etapes:
+            if etape.nom != 'ASSE_MATRICE':
+                continue
+            args = etape.valeur
+            #print "FOUND ASSE_MATRICE:"
+            #dump_mc( args )
+            numeddl = etape.valeur.get('NUME_DDL', None)
+            nume_ddl_name = obj_get_name( numeddl )
+
+            if nume_ddl_name in nume_names:
+                asse_matrices.append( (args.copy(), etape.sd) )
+        return asse_matrices
+
+    def clear_concept(self, cpt):
+        """!Detruit un concept silencieusement"""
+        if cpt is None:
+            return
+        DETRUIRE(CONCEPT=_F(NOM=cpt),ALARME='NON',INFO=1)    
+
+
+class CreateModeleCouple(CopyModelMeca):
+
+    def reinit(self, modl, mail1, mail2):
+        CopyModelMeca.reinit( self, modl )
+        self.mail1 = mail1
+        self.mail2 = mail2
+
+    def create_modele(self, affe):
+        """Creation du modele"""
+        if self.modele:
+            print "DESTRUCTION", self.modele.nom
+        self.clear_concept( self.modele )
+        # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
+        _MDLCPL = AFFE_MODELE( MAILLAGE=self.maillage,
+                                AFFE=affe,
+                                AFFE_SOUS_STRUC=_F( SUPER_MAILLE = 'SUMAIL',
+                                                    PHENOMENE='MECANIQUE',),
+                                )
+        self.modele = _MDLCPL
+
+
+    def create_maillage(self):
+        """Creation du maillage"""
+        self.clear_concept( self.maillage )
+        # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
+        _MLCPL = ASSE_MAILLAGE( MAILLAGE_1=self.mail1,
+                                 MAILLAGE_2=self.mail2,
+                                 OPERATION='SOUS_STR' )
+        self.maillage = _MLCPL
+        self.concepts[self.mail1.nom] = _MLCPL
+
+
+    def nume_ddl(self, args_lst):
+        if len(args_lst)!=1:
+            raise RuntimeError("Plusieurs NUME_DDL, presents, "\
+                               "on ne peut en avoir qu'un")
+        args, sd = args_lst[0]
+        for nume in self.nume_lst:
+            self.clear_concept( nume )
+        self.nume_lst = []
+        args = convert_args( args, self.concepts )
+        _NUMECPL = NUME_DDL(**args)
+        self.concepts[sd.nom] = _NUMECPL
+        self.nume_lst.append( _NUMECPL )
+
+    def asse_matrice(self, args_lst):
+        # cleanup:
+        for c in self.mat_rigi+self.mat_mass+self.mat_amor:
+            self.clear_concept( c )
+        self.mat_rigi = []
+        self.mat_mass = []
+        self.mat_amor = []
+        for args, sd in args_lst:
+            mat_elem = args['MATR_ELEM']
+            typ_elem = self.matr_elem.get( mat_elem.nom, None )
+            args = convert_args( args, self.concepts )
+            if typ_elem=='RIGI_MECA':
+                _RIGIMEC = ASSE_MATRICE(**args)
+                self.mat_rigi.append( _RIGIMEC )
+                self.concepts[sd.nom] = _RIGIMEC
+            elif typ_elem=='MASS_MECA':
+                _MASSMEC = ASSE_MATRICE(**args)
+                self.mat_mass.append( _MASSMEC )
+                self.concepts[sd.nom] = _MASSMEC
+            elif typ_elem=='AMOR_MECA':
+                _AMORMEC = ASSE_MATRICE(**args)
+                self.mat_amor.append( _AMORMEC )
+
+                self.concepts[sd.nom] = _AMORMEC
+
+
+######################
+#                    #
+# PETITS UTILITAIRES #
+#                    #
+######################
+
+
+def convert_args( mc, concepts ):
+    """convertit un (ensemble) de mot-clefs en remplacant les
+    objets presents dans 'concepts' par les valeurs associees
+    """
+    if isinstance( mc, (dict,_F) ):
+        if isinstance(mc,dict):
+            dest = {}
+        else:
+            dest = _F()
+        for k,v in mc.items():
+            v = convert_args( v, concepts )
+            dest[k] = v
+        return dest
+    elif isinstance( mc, (int,float,str,unicode) ):
+        return mc
+    elif isinstance( mc, ASSD ):
+        if mc.nom in concepts:
+            return concepts[mc.nom]
+        return mc
+    elif isinstance( mc, (list,tuple) ):
+        lst = []
+        for obj in mc:
+            lst.append( convert_args( obj, concepts ) )
+        if isinstance( mc, tuple ):
+            lst = tuple(lst)
+        return lst
+    else:
+        raise NotImplementedError("type non reconnu : %r" % mc)
+
+
+
+def dump_mc( mc, indent="" ):
+    if isinstance( mc, (dict, _F) ):
+        mck = mc.keys()
+        mck.sort()
+        for k in mck:
+            print indent, k, ":"
+            dump_mc( mc[k], indent+" " )
+
+    elif isinstance( mc, (int,float,str,unicode) ):
+        print indent, mc
+    elif hasattr( mc, 'nom' ):
+        print indent, "OBJ(", mc.nom, ")"
+    elif isinstance( mc, (list,tuple) ):
+        print indent, "("
+        for obj in mc:
+            dump_mc( obj, indent+"  " )
+        print indent, ")"
+    else:
+        print indent, repr(mc)
+
+
+def retrieve_model_param( modname ):
+    """Renvoie les parametres des macros affectees a un modele
+
+    """
+    #jdc = CONTEXT.get_current_step().jdc
+    jdc = CONTEXT.get_current_step()
+    
+    etapes = []
+
+    for etape in jdc.etapes:
+        if etape.nom not in ('AFFE_MATERIAU', 'AFFE_CARA_ELEM', 'AFFE_CHAR_MECA', 'CALC_MATR_ELEM',
+                             ):
+            continue
+        args = etape.valeur
+        modl = etape.valeur['MODELE']
+        if isinstance(modl,str):
+            modlname = modl
+        else:
+            modlname = modl.nom.strip()
+            #print modl.__class__.__mro__ : (<class 'SD.co_modele.modele_sdaster'>, <class 'Noyau.N_ASSD.ASSD'>, <class 'SD.sd_modele.sd_modele'>, <class 'Noyau.asojb.AsBase'>, <class 'Noyau.basetype.Type'>, <class 'Noyau.basetype.BaseType'>, <type 'object'>)
+
+        if modlname != modname:
+            continue
+        etapes.append( (etape.nom, args, etape.sd) )
+    return etapes
+
+
+def obj_get_name( obj ):
+    """ utilise par CopyModelMeca """
+    if isinstance(obj,str):
+        return obj
+    elif hasattr(obj,'nom'):
+        return obj.nom.strip()
+    return None
+
+
+def dumpobj(name, obj):
+    """ utilitaire non utilise actuellement """
+    for n in dir(obj):
+        attr = getattr( obj, n )
+        if isinstance(attr, (int,str,unicode,float)):
+            print "%s.%s=%r" % (name,n,attr)
+        else:
+            print "%s.%s=%s" % (name,n,type(attr))

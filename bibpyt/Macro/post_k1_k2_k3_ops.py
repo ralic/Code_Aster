@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 13/05/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -509,6 +509,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      MAILLAGE = args['MAILLAGE']
      DTAN_ORIG = args['DTAN_ORIG']
      DTAN_EXTR = args['DTAN_EXTR']
+     dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
 #Projection du resultat sur le maillage lineaire initial     
      MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
      if MOD==None : UTMESS('F','RUPTURE0_18')
@@ -656,7 +657,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      Pextr = Po - ABSC_CURV_MAXI*VP[i]
      __Tabg = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
                    LIGN_COUPE=_F(NB_POINTS=3,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
-                                  TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
+                                  TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
+                                  DISTANCE_MAX=dmax),);
      tmp=__Tabg.EXTR_TABLE()
      test = getattr(tmp,'H1X').values()
      if test==[None]*3 : 
@@ -679,7 +681,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         else : Pextr = Porig + ABSC_CURV_MAXI*VP[i]*sens
         TSaut[i] = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
                          LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
-                                        TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
+                                        TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
+                                        DISTANCE_MAX=dmax),);
 
      Nbnofo = Nbfond
      if xcont[0] != 0 :  

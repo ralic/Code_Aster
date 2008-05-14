@@ -1,5 +1,5 @@
-# MODIF  DATE 25/02/2008   AUTEUR MEUNIER S.MEUNIER 
-# TITRE PLAQUE FISSUREE 2D EN MODE 1 AVEC METHODE ARLEQUIN - MODELE ARLEQUIN
+# MODIF  DATE 13/05/2008   AUTEUR MEUNIER S.MEUNIER 
+# TITRE PLAQUE FISSUREE 2D EN MODE 1 - METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# ARLEQUIN : SUBSTITUTION 2D/2D INCOMPATIBLE.
+#            MAILLAGES DE DENSITES DIFFERENTES
 
 DEBUT(CODE=_F(NOM='SSLP108B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -49,10 +51,18 @@ BL=AFFE_CHAR_MECA(MODELE=MO,
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   FORCE_CONTOUR=(_F(GROUP_MA='L12',
                                     FY=1.E8,
-                                     FX=1.E8,),
+                                    FX=1.E8,),
                                  _F(GROUP_MA='L34',
                                     FY=-1.E8,
                                     FX=-1.E8,),),);
+
+##################################################
+# 1. Creation des relations de couplage Arlequin
+#    entre les groupes de mailles
+#    couronne et fissure (maillage fin)
+#    et la plaque (maillage grossier)
+#    Collage sur le modele fin
+##################################################
 
 AR=AFFE_CHAR_MECA(MODELE=MO,
                   ARLEQUIN=_F(GROUP_MA_1=('COUR','FISS',),
@@ -61,7 +71,9 @@ AR=AFFE_CHAR_MECA(MODELE=MO,
                               COLLAGE='GROUP_MA_1',
                               POIDS_1=0.99999,),);
 
-### CALCUL STATIQUE
+####################
+# 2. CALCUL STATIQUE
+####################
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -69,7 +81,11 @@ RESU=MECA_STATIQUE(MODELE=MO,
                           _F(CHARGE=BL,),
                           _F(CHARGE=CH,),),);
 
-### POST-TRAITEMENT GENERAL
+############################
+# 3. POST-TRAITEMENT GENERAL
+#    => deplacements
+#    => contraintes
+############################
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
@@ -102,7 +118,10 @@ DEPL_H=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL_H',
                                NOM_CMP='DY',
                                OPERATION='EXTRACTION',),);
 
-### POST-TRAITEMENT MECA. RUPTURE
+############################################
+# 4. POST-TRAITEMENT MECANIQUE DE LA RUPTURE
+#    => calcul de G, K1, K2, G_IRWIN
+############################################
 
 DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -139,8 +158,11 @@ GK02=CALC_G(RESULTAT=RESU,
             OPTION='CALC_K_G',
             INFO=1,);
 
-### TESTS VALEURS DEPLACEMENTS
-## NON REGRESSION
+#########################
+# 5. TESTS NON REGRESSION
+#    => deplacements
+#    => contraintes
+#########################
 
 TEST_TABLE(TABLE=DEPL_H,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=2.30000E-03),
@@ -149,9 +171,6 @@ TEST_TABLE(TABLE=DEPL_H,
            PRECISION=1.3E-8,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);
-
-### TESTS VALEURS CONTRAINTES
-## NON REGRESSION
 
 TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
@@ -177,8 +196,10 @@ TEST_TABLE(TABLE=SIYY_LIG,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);
 
-### TESTS VALEURS CONTRAINTES
-## PAR RAPPORT A CALCUL SANS ARLEQUIN (MODELISATION A)
+##############################################################
+# 6. TESTS PAR RAPPORT A CALCUL SANS ARLEQUIN (MODELISATION A)
+#    => contraintes
+##############################################################
 
 TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
@@ -202,8 +223,10 @@ TEST_TABLE(TABLE=SIYY_LIG,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER');
 
-### TESTS VALEURS MECA. RUPTURE
-## NON-REGRESSION
+#################################################
+# 7. TESTS NON REGRESSION MECANIQUE DE LA RUPTURE
+#    => G, K1, K2, G_IRWIN
+#################################################
 
 TEST_TABLE(TABLE=GK01,
            NOM_PARA='G',
@@ -240,8 +263,10 @@ TEST_TABLE(TABLE=GK02,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);
 
-### TESTS VALEURS MECA. RUPTURE
-## PAR RAPPORT A CALCUL SANS ARLEQUIN (MODELISATION A)
+##############################################################
+# 8. TESTS PAR RAPPORT A CALCUL SANS ARLEQUIN (MODELISATION A)
+#    => G, K1, K2, G_IRWIN
+##############################################################
 
 TEST_TABLE(TABLE=GK01,
            NOM_PARA='G',
@@ -272,15 +297,5 @@ TEST_TABLE(TABLE=GK02,
            VALE=3.63714E+02,
            PRECISION=0.01,
            REFERENCE='AUTRE_ASTER');
-
-
-
-
-
-
-
-
-
-
 
 FIN();

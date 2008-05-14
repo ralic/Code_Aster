@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macro_miss_3d_ops Macro  DATE 13/05/2008   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,6 +57,8 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   #    miss3d=loc_fic+'miss3d'
      
   miss3d=loc_fic+'miss3d'
+ 
+  # miss3d='/aster/logiciels/MISS3D/miss3d.csh-beta-modif'
   
   # if VERSION=='V1_2':
   #    if PARAMETRE != None and PARAMETRE['TYPE']=='BINAIRE':
@@ -83,7 +85,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
             'FICH_RESU_IMPE','FICH_RESU_FORC','TYPE','DREF','ALGO',
             'OFFSET_MAX','OFFSET_NB','SPEC_MAX','SPEC_NB','ISSF',
             'FICH_POST_TRAI','CONTR_NB','CONTR_LISTE','LFREQ_NB',
-            'LFREQ_LISTE']
+            'LFREQ_LISTE','DIRE_ONDE']
   if PARAMETRE != None and PARAMETRE['LFREQ_NB'] != None:
     if len(PARAMETRE['LFREQ_LISTE']) != PARAMETRE['LFREQ_NB']:
       UTMESS('F','MISS0_1')
@@ -91,6 +93,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
     if len(PARAMETRE['CONTR_LISTE']) != 3*PARAMETRE['CONTR_NB']:
       UTMESS('F','MISS0_2')
   
+  pndio = '0'
   dpara = {}
   for cle in l_para:
     if cle in ('SURF', 'ISSF', ):
@@ -102,7 +105,10 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
         dpara[cle] = repr(' '.join([str(s) for s in PARAMETRE[cle]]))
       else:
         dpara[cle] = str(PARAMETRE[cle])
-  
+      if cle in ('DIRE_ONDE', ):
+        pndio = '1'
+        dpara['SURF'] = 'NON'
+        
   EXEC_LOGICIEL(
                 LOGICIEL=miss3d,
                 ARGUMENT=(MODUL2,
@@ -135,6 +141,8 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
                           dpara['LFREQ_LISTE'],
                           dpara['TYPE'], 
                           prfor,
+                          pndio,
+                          dpara['DIRE_ONDE'],
                          ),
                 )
 

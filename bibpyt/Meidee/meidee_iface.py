@@ -1,4 +1,4 @@
-#@ MODIF meidee_iface Meidee  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_iface Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

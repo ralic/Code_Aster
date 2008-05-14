@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 13/05/2008   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,5 +63,6 @@ MACRO_MISS_3D=MACRO(nom="MACRO_MISS_3D",op=macro_miss_3d_ops,
            CONTR_LISTE     =SIMP(statut='f',typ='R',max='**'),
            LFREQ_NB        =SIMP(statut='f',typ='I'),
            LFREQ_LISTE     =SIMP(statut='f',typ='R',max='**'),
+           DIRE_ONDE       =SIMP(statut='f',typ='R',max='**'),
          ),
 )  ;

@@ -1,11 +1,11 @@
       SUBROUTINE GCOUR3 (RESU,NOMA,NOMO,NOMNO,COORN,LNOFF,TRAV1,
      &           TRAV2,TRAV3,CHFOND,GRLT,DIREC,CONNEX,THLAGR,THLAG2,
-     &           NBRE,MILIEU,PAIR,NDIMTE)
+     &           BASFON,NBRE,MILIEU,PAIR,NDIMTE)
        IMPLICIT REAL*8 (A-H,O-Z)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/05/2008   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C        TRAV1  : RINF
 C        TRAV2  : RSUP
 C        THLAGR  : SI PRESENCE DU MOT CLE THETA_LAGRANGE
 C        THLAG2  : SI PRESENCE DU MOT CLE THETA_LAGRANGE_REGU
+C        BASFON  : BASE LOCALE AUX POINTS DU FOND DE FISSURE
 C        NBRE   : DEGRE DES POLYNOMES DE LEGENDRE
 C                     SINON 0
 C        CONNEX: .TRUE.  : FOND DE FISSURE FERME
@@ -83,7 +84,7 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*24      TRAV1,TRAV2,TRAV3,CHFOND,CHAMNO,COORN,NOMNO
-C      CHARACTER*24      COORN,NOMNO
+      CHARACTER*24      BASFON
       CHARACTER*19      CNSGT, GRLT
       CHARACTER*8       CHBID, FISS,RESU, NOMA, NOMO
       CHARACTER*6       KIORD
@@ -91,11 +92,13 @@ C
       INTEGER           LNOFF,IADRT1,IADRT2,IADRT3,ITHETA,IADRCO,JMIN
       INTEGER           IERD,IMODU,NBRE,IRET,NUMA,NDIMTE,JGT,JGN,TMP
       INTEGER           NBNO,IFON,I,IDESC,IREFE,J,JRESU,K,JGTL
+      INTEGER           NORIG,NEXTR,JORIG,JEXTR,JBAS
 C
-      REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1
+      REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1,ZRBID
       REAL*8            XIJ,YIJ,ZIJ,EPS,D, GRTX,GRTY,GRTZ
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,SMIN,XN,YN,ZN
       REAL*8            RII,RSI,ALPHA,VALX,VALY,VALZ,NORM2,R8MAEM
+      REAL*8            GRTX0,GRTY0,GRTZ0,GRTX1,GRTY1,GRTZ1
 C
       LOGICAL           DIREC,THLAGR,MILIEU,CONNEX, DEBUG,THLAG2,PAIR
 C
@@ -114,6 +117,21 @@ C
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,CHBID,IERD)
 
       CALL JEVEUO(CHFOND,'L',IFON)
+      CALL JEVEUO(BASFON,'E',JBAS)
+      
+C          -----------------------
+      CALL GETVR8 ('THETA','DTAN_ORIG',1,1,0,ZRBID,NORIG)
+      IF(NORIG.NE.0) THEN
+        NORIG = -NORIG
+        CALL WKVECT('&&GCOUR3.DTAN_ORIG','V V R8',3,JORIG)
+        CALL GETVR8 ('THETA','DTAN_ORIG',1,1,3,ZR(JORIG),NORIG)
+      ENDIF
+      CALL GETVR8 ('THETA','DTAN_EXTR',1,1,0,ZRBID,NEXTR)
+      IF(NEXTR.NE.0) THEN
+        NEXTR = -NEXTR
+        CALL WKVECT('&&GCOUR3.DTAN_EXTR','V V R8',3,JEXTR)
+        CALL GETVR8 ('THETA','DTAN_EXTR',1,1,3,ZR(JEXTR),NEXTR)
+      ENDIF
 
 C     RÉCUPÉRATION DES GRADIENTS DE LST
       CNSGT='&&GCOUR3.CNSGT'
@@ -284,6 +302,52 @@ C               DISTANCE MN
                     ZR(ITHETA+(I-1)*3+1-1) = (1-ALPHA)*VALX
                     ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
                     ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
+                  ENDIF
+C CORRECTION DE LA DIRECTION A L ORIGINE                  
+                  IF ((JMIN .EQ. 1) .AND. (NORIG.NE.0) ) THEN
+                    GRTX0=ZR(JORIG+1-1)* ZR(IMODU)
+                    GRTY0=ZR(JORIG+2-1)* ZR(IMODU)
+                    GRTZ0=ZR(JORIG+3-1)* ZR(IMODU)
+                    GRTX1=ZR(JBAS+(2-1)*6+4-1)* ZR(IMODU+1)
+                    GRTY1=ZR(JBAS+(2-1)*6+5-1)* ZR(IMODU+1)
+                    GRTZ1=ZR(JBAS+(2-1)*6+6-1)* ZR(IMODU+1)
+                    VALX =((1-SMIN) * GRTX0 + SMIN * GRTX1)
+                    VALY =((1-SMIN) * GRTY0 + SMIN * GRTY1)
+                    VALZ =((1-SMIN) * GRTZ0 + SMIN * GRTZ1)
+                    IF((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
+                      IF (K. EQ. 1) THEN
+                      ENDIF
+                      ZR(ITHETA+(I-1)*3+1-1) = VALX
+                      ZR(ITHETA+(I-1)*3+2-1) = VALY
+                      ZR(ITHETA+(I-1)*3+3-1) = VALZ
+                    ELSE
+                      ZR(ITHETA+(I-1)*3+1-1) = (1-ALPHA)*VALX
+                      ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
+                      ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
+                    ENDIF
+                  ENDIF
+C CORRECTION DE LA DIRECTION A L ETREMITE                  
+                  IF ((JMIN .EQ. (LNOFF-1)) .AND. (NEXTR.NE.0) ) THEN
+                    GRTX0=ZR(JBAS+(LNOFF-1-1)*6+4-1)* ZR(IMODU)
+                    GRTY0=ZR(JBAS+(LNOFF-1-1)*6+5-1)* ZR(IMODU)
+                    GRTZ0=ZR(JBAS+(LNOFF-1-1)*6+6-1)* ZR(IMODU)
+                    GRTX1=ZR(JEXTR+1-1)* ZR(IMODU+1)
+                    GRTY1=ZR(JEXTR+2-1)* ZR(IMODU+1)
+                    GRTZ1=ZR(JEXTR+3-1)* ZR(IMODU+1)
+                    VALX =((1-SMIN) * GRTX0 + SMIN * GRTX1)
+                    VALY =((1-SMIN) * GRTY0 + SMIN * GRTY1)
+                    VALZ =((1-SMIN) * GRTZ0 + SMIN * GRTZ1)
+                    IF((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
+                      IF (K. EQ. 1) THEN
+                      ENDIF                      
+                      ZR(ITHETA+(I-1)*3+1-1) = VALX
+                      ZR(ITHETA+(I-1)*3+2-1) = VALY
+                      ZR(ITHETA+(I-1)*3+3-1) = VALZ
+                    ELSE
+                      ZR(ITHETA+(I-1)*3+1-1) = (1-ALPHA)*VALX
+                      ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
+                      ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
+                    ENDIF
                   ENDIF
                 ENDIF
               ENDIF
