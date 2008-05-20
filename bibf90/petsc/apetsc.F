@@ -1,6 +1,6 @@
       SUBROUTINE APETSC(ACTION,SOLVEZ,MATASZ,VECASZ,SOLUZ,VCINEZ)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETSC PETSC  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF APETSC PETSC  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -50,6 +50,9 @@ C---------------------------------------------------------------
       CHARACTER*19 MATAS,SOLU,VECAS,VCINE
       CHARACTER*19 SOLVEU
       INTEGER*4 ierr
+
+#ifdef _HAVE_PETSC
+
 C================================================================
 #include "include/finclude/petsc.h"
 C================================================================
@@ -146,4 +149,6 @@ C     ----------------------------------------------
 
    10 CONTINUE
       CALL JEDEMA()
+
+#endif
       END

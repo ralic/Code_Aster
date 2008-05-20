@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -324,6 +324,7 @@ class SUPERV:
    def ParLotMixte(self,j):
        """
        """
+       from Noyau.N_JDC    import MemoryErrorMsg
        j.set_par_lot("NON")
        try:
            j.BuildExec()
@@ -339,6 +340,13 @@ class SUPERV:
                open('fort.15', 'a').write(open('ficode', 'r').read())
 
            return ier
+       except MemoryError:
+           self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
+           print ">> JDC.py : DEBUT RAPPORT"
+           self.MESSAGE(MemoryErrorMsg)
+           traceback.print_exc()
+           print ">> JDC.py : FIN RAPPORT"
+           return 1
        except :
            self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
            traceback.print_exc()

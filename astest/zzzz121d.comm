@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -282,7 +282,7 @@ MACR_ADAP_MAIL ( ADAPTATION = 'RAFF_DERA',
 ### Or ce ne n'est fait que plus tard. A creuser ...
 ###                              _F( RESULTAT = RESU_1,
 ###                                  NOM_CHAM   = 'ERRE_ELEM_SIGM',
-###                                  TYPE_CHAM  = 'ELEM_ERREUR',
+###                                  TYPE_CHAM  = 'ELEM_ERRE_R',
 ###                                  NUME_ORDRE = 1,
 ###                                  CHAM_MAJ   = CO("ERRE_1_2") ),
 ###ERRE_1=EXTR_RESU(RESULTAT=RESU_1,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,29 +20,11 @@
 CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
             reentrant='n',fr="Crée un maillage à partir d'un maillage existant",
             UIinfo={"groupes":("Maillage",)},
-         regles=(EXCLUS('ECLA_PG','CREA_MAILLE'),
-                 EXCLUS('ECLA_PG','CREA_GROUP_MA'),
-                 EXCLUS('ECLA_PG','DETR_GROUP_MA'),
-                 EXCLUS('ECLA_PG','MODI_MAILLE'),
-                 EXCLUS('ECLA_PG','LINE_QUAD'),
-                 EXCLUS('ECLA_PG','CREA_FISS'),
-                 EXCLUS('ECLA_PG','COQU_VOLU'),
-                 EXCLUS('LINE_QUAD','MODI_MAILLE'),
-                 EXCLUS('LINE_QUAD','CREA_MAILLE'),
-                 EXCLUS('LINE_QUAD','CREA_GROUP_MA'),
-                 EXCLUS('LINE_QUAD','DETR_GROUP_MA'),
-                 EXCLUS('LINE_QUAD','CREA_FISS'),
-                 EXCLUS('LINE_QUAD','COQU_VOLU'),
-                 EXCLUS('CREA_FISS','MODI_MAILLE'),
-                 EXCLUS('CREA_FISS','CREA_MAILLE'),
-                 EXCLUS('CREA_FISS','CREA_GROUP_MA'),
-                 EXCLUS('CREA_FISS','DETR_GROUP_MA'),
-                 EXCLUS('CREA_FISS','COQU_VOLU'),
-                 EXCLUS('COQU_VOLU','MODI_MAILLE'),
-                 EXCLUS('COQU_VOLU','CREA_MAILLE'),
-                 EXCLUS('COQU_VOLU','CREA_GROUP_MA'),
-                 EXCLUS('COQU_VOLU','DETR_GROUP_MA'),
-                 ),
+         regles=(EXCLUS('COQU_VOLU', 'CREA_FISS', 'CREA_GROUP_MA', 'CREA_MAILLE', 'CREA_POI1',
+                        'DETR_GROUP_MA', 'ECLA_PG', 'HEXA20_27', 'LINE_QUAD', 'MODI_MAILLE',
+                        'QUAD_LINE', 'REPERE','RESTREINT'),),
+
+
 
          # le MAILLAGE est inutile si ECLA_PG
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster ),

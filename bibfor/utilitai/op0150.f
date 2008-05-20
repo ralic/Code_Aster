@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,6 +103,8 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (EDNOEU=3)
       INTEGER EDMAIL
       PARAMETER (EDMAIL=0)
+      INTEGER EDNOMA
+      PARAMETER (EDNOMA=4)
       INTEGER EDNONO
       PARAMETER (EDNONO=-1)
       INTEGER TYPNOE
@@ -764,17 +766,42 @@ C     --------------------------------------------
             CALL MDEXPM(NOFIMD,NOMAMD,EXISTM,NDIM,IRET)
             CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD,
      &              MODNUM, NUANOM, NUMNOA )
-            TYPENT = EDMAIL
+
+            IF(TYPCHA(1:4).EQ.'ELNO')THEN
+              TYPENT = EDNOMA
+            ELSE
+              TYPENT = EDMAIL
+            ENDIF
+
             DO 230,LETYPE = 1,NBTYP
               IAUX = RENUMD(LETYPE)
               TYPGOM = TYPGEO(IAUX)
               CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
+        
               IF (NPAS.NE.0) THEN
                 CALL JEVEUO(PREFIX//'.INST','L',IPAS)
                 CALL JEVEUO(PREFIX//'.NUME','L',INUM)
                 GO TO 240
               END IF
   230       CONTINUE
+
+C           CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
+C           DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
+            IF(TYPCHA(1:4).EQ.'ELNO')THEN
+              TYPENT = EDMAIL
+              CALL U2MESK('A','MED_53',1,NOCHMD)
+              DO 231,LETYPE = 1,NBTYP
+               IAUX = RENUMD(LETYPE)
+               TYPGOM = TYPGEO(IAUX)
+               CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
+               IF (NPAS.NE.0) THEN
+                  CALL JEVEUO(PREFIX//'.INST','L',IPAS)
+                  CALL JEVEUO(PREFIX//'.NUME','L',INUM)
+                  GO TO 240
+               END IF
+  231        CONTINUE
+           END IF
+
           END IF
   240     CONTINUE
 
@@ -817,7 +844,7 @@ C
             ENDIF
 C
             CALL LRCHME ( CHANOM, NOCHMD, K32B,
-     &                    NOMA, TYPCHA, NOMGD,
+     &                    NOMA, TYPCHA, NOMGD, TYPENT,
      &                    NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                    IINST, NUMPT, NUMORD, INST, CRIT, EPSI,
      &                    MFICH, LIGREL, OPTION, PARAM, IRET )

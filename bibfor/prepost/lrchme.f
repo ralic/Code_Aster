@@ -1,12 +1,12 @@
       SUBROUTINE LRCHME ( CHANOM, NOCHMD, NOMAMD,
-     &                    NOMAAS, TYPECH, NOMGD,
+     &                    NOMAAS, TYPECH, NOMGD, TYPENT,
      &                    NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                    IINST, NUMPT,  NUMORD, INST, CRIT, PREC,
      &                    NROFIC, LIGREL, OPTION, PARAM, CODRET )
 C TOLE CRP_21
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,8 @@ C                  SI ' ' : ON SUPPOSE QUE C'EST LE PREMIER MAILLAGE
 C                           DU FICHIER
 C        NOMAAS : NOM ASTER DU MAILLAGE
 C        TYPECH : TYPE DU CHAMP
+C        TYPENT : TYPE D'ENTITE DU CHAMP 
+C                (MED_NOEUD=3,MED_MAILLE=0,MED_NOEUD_MAILLE=4)
 C        NOMGD  : NOM DE LA GRANDEUR ASSOCIEE AU CHAMP
 C        NBCMPV : NOMBRE DE COMPOSANTES VOULUES
 C                 SI NUL, ON LIT LES COMPOSANTES A NOM IDENTIQUE
@@ -68,7 +70,7 @@ C
       CHARACTER*24  OPTION
       CHARACTER*32  NOCHMD, NOMAMD
 C
-      INTEGER NROFIC
+      INTEGER NROFIC, TYPENT
       INTEGER CODRET
       INTEGER NBCMPV
       INTEGER IINST, NUMPT, NUMORD
@@ -91,7 +93,7 @@ C
 C
       IF ( TYPECH(1:2).EQ.'NO' ) THEN
         CALL LRCNME ( CHANOM,  NOCHMD, NOMAMD,
-     &                NOMAAS, NOMGD,
+     &                NOMAAS, NOMGD, TYPENT,
      &                NBCMPV, NCMPVA, NCMPVM,
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
      &                NROFIC, CODRET )
@@ -101,7 +103,7 @@ C
           CALL U2MESS('F','MED_71')
         ENDIF
         CALL LRCEME ( CHANOM,  NOCHMD, TYPECH(1:4), NOMAMD,
-     &                NOMAAS, NOMMOD, NOMGD,
+     &                NOMAAS, NOMMOD, NOMGD, TYPENT,
      &                NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
      &                NROFIC, LIGREL, OPTION, PARAM, CODRET )

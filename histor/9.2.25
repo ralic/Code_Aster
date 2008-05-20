@@ -1,0 +1,1627 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 19/05/2008 - 15:57:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011919 DU 2008-04-04 08:58:45
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.18, le cas-test ssnp503a s'arrete en ERREUR_F sur Rocks.
+FONCTIONNALITE
+   Double bug.
+   
+   1/ Dans calffx, on fait des choses pas très propres en additionant des INTEGER et des REAL
+   pour les SEG2 et SEG3. Visiblement, le comportement dépend du compilo...
+           FF(1)  = 0.5D0*(1-KSI1)
+           FF(2)  = 0.5D0*(1+KSI1)
+   
+           FF(1)  = -0.5D0* (1.D0-KSI1)*KSI1
+           FF(2)  =  0.5D0* (1.D0+KSI1)*KSI1
+           FF(3)  =  1.0D0* (1.D0+KSI1)*(1-KSI1)
+   
+   Remarques: 
+   - CALFFX est une routine générique pour la méthode continue et XFEM. Le bug n'est présent
+   sur les SEG2/3. Il devrait se déclencher aussi pour le contact avec des SEG2 (au hasard,
+   ssnv505f et h ?)
+   - A faire en 8 !
+   
+   2/ Dans xcopco, on prédimensionne les FF à FF(2) alors qu'il faut FF(9) pour utiliser
+   CALFFX -> écrasement possible
+   - C'est du XFEM grands glissements: à ne pas faire en 8
+   
+   NB: ce n'était effectivement pas moi le responsable de la casse, le bug existe depuis
+   toujours.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp503a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011920 DU 2008-04-04 09:07:47
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.18, le cas-test ssnp504a est NOOK sur Rocks.
+FONCTIONNALITE
+   Même bug que 11919 (calffx+xcopco)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp504a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011832 DU 2008-03-12 13:17:30
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   l'alarme algeline_88 devrait xc3xaatre une erreur fatale
+FONCTIONNALITE
+   1/ Contact en pénalisation
+   On détruisait la matrice globale dans algcocp. Ce qui n'a aucun sens. On supprime la ligne
+   dans algocp.f
+   
+   2/ Calcul en DEPL_CALCULE 
+   
+   -> Message normal, on ne calcule PAS de matrice
+   Cas-test non-standard d'utilisation de STAT_NON_LINE:
+   - ARRET = 'NON'
+   - ITER_GLOB_MAXI=0
+   - pas de chargement
+   Double action:
+   1/ Création d'une erreur fatale MECANONLINE5_44 si DEPL_CALCULE et ITER_GLOB_MAXI.NE.0 et
+   ARRET.NE.'NON' 
+   44 : _("""
+   Pour la prédiction de type 'DEPL_CALCULE', il faut obligatoirement:
+    - ITER_GLOB_MAXI = 0
+    - ARRET = 'NON'
+   """),
+   Nécessite de modifier cas-tests pynl01a et ssnv115a
+   Desactivation de l'Alarme "ARRRET='NON' si DEPL_CALCULEE (impact op0070)
+   
+   2/ Débranchement de la vérif "ALGELINE2_88' dans le cas DEPL_CALCULE
+   
+   -> PASSAGE EN ERREUR FATALE D'ALGELINE2_88
+   -> On en profite pour passer des messages d'algorith7 vers mecanonline5 et pour en
+   transformer certains en ASSERT
+   
+   En V8: 
+   - modifier ALGOCP pour supprimer la ligne JEDETC('MATR_ASSE',MAT)
+   - modifier nmdata/nmdocn/nmdomt pour message MECANONLINE5_44
+   - modifier op0070/nmconv/nmresi pour faire passer variable "METHOD"
+   - modifier appel à message ALGELINE2_88 (et le faire passer en FATALE)
+   - modifier cas-tests DEPL_CALCULEE si nécessaire (ARRET='NON' et ITER_GLOB_MAXI=0)
+   - désactivation de l'Alarme "ARRRET='NON' (MECANONLINE2_37) si DEPL_CALCULEE (impact op0070)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp115c,SSNP121c,ssnv104h
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012081 DU 2008-05-09 16:18:27
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.23, les cas-tests ssnv505f et ssnv505h s'arretent en ARRET_<A> sur Bull, Calibre et Rocks.
+FONCTIONNALITE
+   Les deux cas-tests ont été oubliés lors de la résorption de l'option CONTACT dans
+   AFFE_CHAR_MECA_F.
+   Transformer DIST_MAIT/DIST_ESCL en fonctions constantes ne suffit pas pour que les tests
+   passent.
+   
+   Effectivement, dans la méthode continue, on stocke le jeu supplémentaire dans la carte
+   d'entrée des TE. Or, avec la résorption de DIST_MAIT/DIST_ESCL avec valeur constante,
+   l'objet "DEFICO//".JEUSUP" n'est plus rempli et on "oublie" donc ce fameux jeu
+   supplémentaire ce qui empêche la convergence.
+   
+   Correction. 
+   Dans CFDIST: stocker la valeur des fonctions provenant de "DIST_MAIT/DIST_ESCL" dans
+   l'objet DEFICO//".JEUSUP"
+   
+   JEUSUC = DEFICO(1:16)//'.JSUPCO'   
+   CALL JEVEUO(JEUSUC,'E',JJSUP )  
+   
+   JEUF1 = ZK8(JJFO1+IZONE-1)
+   JEUF2 = ZK8(JJFO2+IZONE-1)
+         IF ((JEUF1.NE.' ').OR.(JEUF2.NE.' ')) THEN
+           IF (JEUF1.NE.' ') THEN
+             CALL FOINTE ('F',JEUF1,3,NOMPAR,VALPAR,DIST1,IER)
+           ENDIF
+           IF (JEUF2.NE.' ') THEN
+             CALL FOINTE ('F',JEUF2,3,NOMPAR,VALPAR,DIST2,IER)
+           ENDIF
+           DIST6 = DIST1+DIST2
+           ZR(JJSUP+IZONE-1) = DIST6
+   ENDIF
+   
+   Et, bien sur, corriger la syntaxe !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test lui-m?
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 20/05/2008 - 13:58:55
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011704 DU 2008-02-04 07:56:11
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.7, le cas-test sdll505a est NOOK sur Calibre.
+FONCTIONNALITE
+   Pour régler définitivement le cas du test SDLL505a, exemple d'interaction fluide sur une
+   structure tubulaire qui varie sans cesse d'une machine à l'autre, d'un compilateur à
+   l'autre, d'un OS à l'autre, je propose de modifier légérement le test.
+   Après analyse, André et moi avons pu déterminer la cause de ces variations erratiques :
+   les termes de couplage entre le fluide et la structure sont calculés par projection sur
+   les composantes des modes de la structure restreints à la direction de l'écoulement.
+   Si le mode est perpendiculaire à la structure le calcul perd donc sa pertinence.
+   J'ai déjà demandé à André de mettre en place en garde-fou au cas où un utilisateur fournit
+   à CALC_FLUI_STRU un mode se trouvant dans cette situation (fiche à émettre).
+   Dans le cas du SDLL505a, le problème vient des modes doubles. Si, par malchance,
+   l'algorithme de calcul modal donne pour l'un des deux modes associés, un mode
+   perpendiculaire à l'écoulement, on se retrouve dans le cas indéterminé, d'ou des résultats
+   aléatoires.
+   Pour éviter cette situation, j'ai limité le calcul modal au plan de l'écoulement.
+   J'ai pu vérifier que cela ne change rien aux modes obtenus, ainsi qu'aux post-traitements
+   subséquents, tout en garantissant la stabilité du test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll505a
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012094 DU 2008-05-16 14:07:35
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.24, le cas-test forma11c s'arrete par manque de temps cpu sur Bull.
+FONCTIONNALITE
+   Le test forma11c passe en moyenne en 430s sur la Bull.
+   Or son .para lui autorise 500s.
+   Pour une meilleure marge de sécurité, je propose d'élargir le tps_job à 600s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma11c
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 19/05/2008 - 18:04:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011992 DU 2008-04-16 10:51:38
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   EXEC_LOGICIEL : 2 petites questions
+FONCTIONNALITE
+   Je propose de préciser la doc sur ce que fait EXEC_LOGICIEL/MAILLAGE.
+   
+   1) pourquoi la valeur par défaut EXEC_LOGICIEL/INFO=2 ?
+   
+   On utilise le mot-clé INFO pour rendre bavarde (INFO=2) ou silencieuse (INFO=1)
+   l'exécution du logiciel externe. On utilise le même mot-clé dans LIRE_MAILLAGE...
+   Comme dit dans la doc, EXEC_LOGICIEL/MAILLAGE est surtout destiné aux cas-tests ; cela
+   permet donc d'avoir la trace en cas de soucis.
+   
+   2) pourquoi faut-il que le fichier de données GIBI (UNITE_GEOM) se termine par : OPTI SAUV
+   FORM 'fort.8'
+   
+   Parce que c'est comme çà pour tous les scripts datg qui sont lancés avec le script 'gibi'
+   (qui enrobe l'appel à Gibi dans un sous-répertoire temporaire).
+   La confusion vient de la présence du mot-clé UNITE qui est juste là pour pouvoir récupérer
+   le fichier mgib/msh intermédiaire.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U7.00.01
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011694 DU 2008-01-30 16:53:12
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Plantage sur utprin dans astermodule.c
+FONCTIONNALITE
+   Le problème n'a pas pu être reproduit : une surcharge avec un fortran (77 ou 90) et un
+   include fortran ne soulève pas d'anomalie à l'exécution, le message listant les routines
+   surchargées s'affiche normalement (l'include n'apparait pas).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011947 DU 2008-04-09 06:19:46
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Construire une version sans MUMPS, sans PETSC
+FONCTIONNALITE
+   Pour construire une version avec/sans MUMPS et/ou PETSC, cela devient compliqué, il faut
+   jouer dans le fichier config.txt avec l'option NOBUILD pour compiler ou non les
+   répertoires bibf90/mumps, bibf90/petsc.
+   De plus, cela oblige à avoir les points d'entrée dans fermetur pour satisfaire l'édition
+   de liens.
+   
+   Je propose d'ajouter 2 flags de précompilation : _HAVE_MUMPS et _HAVE_PETSC et d'ajouter
+   les #ifdef/#endif dans les fortrans correspondants :
+   - apetsc.F et apetsr.F
+   - amumpc.F, amumpr.F, amumps.F => je renomme les .f en .F
+   
+   
+   Impact pour les versions existantes : ajouter -D_HAVE_MUMPS et/ou -D_HAVE_PETSC sur les
+   lignes OPTF90_O et OPTF90_D.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   construction d'une version
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011759 DU 2008-02-14 16:55:23
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pb avec sdveri sur machine linux 64 bits
+FONCTIONNALITE
+   En STA9.2, l'activation de sdveri faisait planter de nombreux cas-tests sur les machines
+   x86_64.
+   L'origine est un écrasement lors du passage C-fortran de chaines de caractères.
+   La correction de astermodule.c en 9.2.12 dans les passerelles C-fortran a résolu ce problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   bilan des tests en NEW9
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012093 DU 2008-05-16 14:07:26
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   sslv134b en ARRET_ANORMAL sur Bull
+FONCTIONNALITE
+   Le problème ne se produit que dans un astout sur la Bull (ok en interactif et en batch en
+   mode "étude").
+   
+   Il s'agit en fait un manque de mémoire.
+   
+   - Correction n°1 : on détecte l'erreur et on affiche le message classique :
+   
+   """
+   JDC.py : ERREUR INOPINEE - INTERRUPTION
+   >> JDC.py : DEBUT RAPPORT
+   JDC.py : MemoryError :
+   
+   En général, cette erreur se produit car la mémoire utilisée hors du fortran
+   (jeveux) est importante.
+   
+   Causes possibles :
+   ...
+   """
+   
+   - Correction n°2 : modification des paramètres mémoire du cas-test.
+   Je choisis de passer le test en allocation dynamique (mem_aster=1%).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv134b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 19/05/2008 - 17:53:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011498 DU 2007-11-23 13:02:10
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Utilisation de crea_resu avec des champ de type ELEM_ERREUR
+FONCTIONNALITE
+   Problème :
+   ==========
+   Si l'on veut créer un résultat par la commande CREA_RESU à partie d'un champ typé
+   ELEM_ERREUR (opérande AFFE), le code plante avec le message peu clair :
+    
+       !------------------------------------------------------------------------!
+      ! <F> <ALGORITH2_46>                                                     !
+      !                                                                        !
+      !                                                                        !
+      !  nous traitons les champs de reels et de fonctions: . CHAM_ELEM_ERREUR !
+      !                                                                        !
+      !                                                                        !
+      !                                                                        !
+      ! Cette erreur est fatale. Le code s'arrete.                             !
+      !------------------------------------------------------------------------!
+   
+   Ce message est émis dans la routine crtype.f après un test sur le nom du type du champ que
+   l'on veut créer. On veut vérifier si c'est bien un champ de réel (DEPL_R, SIEF_R, ...) en
+   testant les derniers caractères du nom, c'est à dire '_R'. Or le type ELEM_ERREUR ne
+   correspond pas à la nomenclature "classique" (XXXX_R/C/I/K).
+   
+   Solution :
+   ==========
+   Le type d'un champ d'erreur est renommé de ERREUR à ERRE_R.
+   
+   Nota :
+   ======
+   Cette anomalie se reproduira dès que l'on voudra faire la même opération pour un champ
+   dont le type ne respecte pas la nomenclature (documentation  D2.03.01)
+   
+   Impact sources :
+   ================
+   c_nom_grandeur.capy
+   grandeur_simple__.cata
+   gener_me3d_3.cata
+   gener_me3di3.cata
+   gener_meax_2.cata
+   gener_meaxs2.cata
+   gener_mecpl2.cata
+   gener_medh22.cata
+   gener_medhb2.cata
+   gener_medpl2.cata
+   gener_mepli2.cata
+   gener_mv2d_2.cata
+   gener_mv3d_3.cata
+   gener_th3d_3.cata
+   gener_th3dd3.cata
+   gener_thaxd2.cata
+   gener_thpl_2.cata
+   gener_thpld2.cata
+   meca_hexs8.cata
+   mecpqs4.cata
+   medpqs4.cata
+   medpqs8.cata
+   
+   calc_esti_erre.cata
+   erre_elem_sigm.cata
+   erre_elem_temp_f.cata
+   erre_elem_temp_r.cata
+   erre_elno_elem.cata
+   erre_qizz.cata
+   erre_temps.cata
+   qire_elem_sigm.cata
+   qire_elno_elem.cata
+   tou_ini_elem.cata
+   
+   zzzz121b
+   zzzz121d
+   zzzz161a
+   
+   Impact documentaire :
+   =====================
+   U4.72.04
+   D4.04.02
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.72.04 D4.04.02
+VALIDATION
+   passage cas-tests
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011990 DU 2008-04-15 15:20:45
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   Message PREPOST4_97
+FONCTIONNALITE
+   La correction apportée n'est plus la même.
+   
+   On corrige directement JENONU où on initialise les caractères de la variable de sortie par
+   des blancs ' '.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.2
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   message affichxc3xa9 correctement
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET Sylvie          DATE 19/05/2008 - 17:17:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011388 DU 2007-10-23 08:25:55
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   Problxc3xa8me de pivot nul lors de la "conversion" d'une xc3xa9tude mxc3xa9ca pure xc3xa0 une xc3xa9tude HM
+FONCTIONNALITE
+   En effet, en rajoutant dans le catalogue des comportements
+   THM l'option "RIGI_MECA    -1", on obtient un message clair lorsque 
+   l'utilisateur choisit NEWTON=_F(MATRICE='ELASTIQUE',)
+   
+   On modifie donc ainsi tous les catalogues d'éléments THM en v8 :
+   
+   gener_me3a12.cata gener_meaa11.cata gener_meda11.cata  gener_medhb1.cata
+   gener_me3a13.cata gener_meaa12.cata gener_meda12.cata  gener_medhb2.cata
+   gener_me3a32.cata gener_meaa21.cata gener_meda21.cata
+   gener_me3a33.cata gener_meaa22.cata gener_meda22.cata
+   gener_me3a42.cata gener_meaa31.cata gener_meda31.cata
+   gener_me3a43.cata gener_meaa32.cata gener_meda32.cata
+   gener_me3g32.cata gener_meag31.cata gener_medg31.cata
+   gener_me3g33.cata gener_meag32.cata gener_medg32.cata
+   gener_me3h12.cata gener_meah11.cata gener_medh11.cata
+   gener_me3h13.cata gener_meah12.cata gener_medh12.cata
+   gener_me3h22.cata gener_meah21.cata gener_medh21.cata
+   gener_me3h23.cata gener_meah22.cata gener_medh22.cata
+   gener_me3h32.cata gener_meah31.cata gener_medh31.cata
+   gener_me3h33.cata gener_meah32.cata gener_medh32.cata
+   gener_me3h42.cata gener_meah41.cata gener_medh41.cata
+   gener_me3h43.cata gener_meah42.cata gener_medh42.cata
+   gener_me3h52.cata gener_meah51.cata gener_medh51.cata
+   gener_me3h53.cata gener_meah52.cata gener_medh52.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de tous les cas test THM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 19/05/2008 - 11:40:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012019 DU 2008-04-18 18:11:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.20, le cas-test sdnd105a est NOOK sur Rocks
+FONCTIONNALITE
+   En fait il semble que le petit décalage observé soit lié au hcoix du pas de 
+   temps : l'instant de flambage est défini à un pas de temps près, la solution 
+   analytique étant entre deux pas. Le pas vaut 1.E-3 et on hésite donc entre 0.523 
+   et 0.524.
+   Pour information j'ai relancé le cas-test avec un pas 5 fois plus petit et 
+   j'obtiens cela :
+    OK  TABLE        RELA  2.34E-04 % VALE: 5.2360000000000D-01
+   INST_FLAMB        TOLE     0.100 % REFE: 5.2359877500000D-01
+   
+   Je propose donc de modifier le pas de temps (on n'a pas besoin d'augmenter 
+   l'allocation mémoire ni le temps CPU car on ne dépasse pas 15 secondes de temps 
+   CPU sur les 60 allouées) : de 0 à 1 seconde, le pas qui valait 1.E-3 vaut 2.E-4.
+   Après 1 seconde on reprend le pas d'origine de 1.E-3 s pour limiter le coût de 
+   calcul.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdnd105a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 19/05/2008 - 13:14:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012068 DU 2008-05-07 06:02:57
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Taille mxc3xa9moire spxc3xa9cifixc3xa9e dans les .para sans unitxc3xa9
+FONCTIONNALITE
+   Les fichiers .para ont été modifiés de la façon suivante :
+   
+   sdll123a   tps_job 60  mem_job 32Mo  ncpus 1 liste_test S
+   sdll140a   tps_job 600 mem_job 128Mo ncpus 1 liste_test S
+   sdnd102c   tps_job 120 mem_job 64Mo  ncpus 1 liste_test R
+   sdnd102d   tps_job 300 mem_job 128Mo liste_test S
+   sdnv100a   tps_job 100 mem_job 64Mo  liste_test S 
+   sdnv100b   tps_job 100 mem_job 32Mo  liste_test S 
+   sdnv100c   tps_job 100 mem_job 64Mo  liste_test S 
+   sdnv100d   tps_job 100 mem_job 64Mo  liste_test S 
+   sdnv100e   tps_job 100 mem_job 64Mo  liste_test S
+   sdnv100f   tps_job 400 mem_job 128Mo liste_test S
+   sdnv100g   tps_job 100 mem_job 64Mo  liste_test S 
+   sdnv100h   tps_job 100 mem_job 64Mo  liste_test S
+   sdnv100i   tps_job 100 mem_job 64Mo  liste_test S
+   sdnv100j   tps_job 250 mem_job 128Mo liste_test S
+   ssnv209a   tps_job 200 mem_job 128Mo liste_test S
+   ssnv209b   tps_job 100 mem_job 50Mo  liste_test S
+   ssnv209c   tps_job 150 mem_job 128Mo liste_test S
+   ssnv209d   tps_job 200 mem_job 100Mo liste_test S
+   ssnv209e   tps_job 800 mem_job 800Mo liste_test S
+   ssnv209g   tps_job 400 mem_job 400Mo mem_aster 20 liste_test S
+   
+   Avec ces valeurs, les tests ont été soumis avec succès sur Bull, clpaster (Rocks) et
+   clp50a8 (Calibre 4).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les tests citxc3xa9s dans la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011288 DU 2007-09-27 07:29:03
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   message d'erreur obscur
+FONCTIONNALITE
+   Je n'ai pas réussi à déterminer l'origine de l'erreur peu après l'émission de la fiche. En
+   essayant de nouveau aujourd'hui, la POURSUITE échoue tout de suite en imprimant les
+   messages suivants :
+   
+      !----------------------------------------------------------------!
+      ! <A> <JEVEUX_08>                                                !
+      !                                                                !
+      !                                                                !
+      !  La base  GLOBALE  a été constituée avec la version  9.01.12   !
+      !  et vous utilisez la version  9.02.23                          !
+      !                                                                !
+      !                                                                !
+      !                                                                !
+      ! Ceci est une alarme. Si vous ne comprenez pas le sens de cette !
+      ! alarme, vous pouvez obtenir des résultats inattendus !         !
+      !----------------------------------------------------------------!
+      
+   
+        REOUVERTURE DE LA BASE                  :  GLOBALE
+        CREEE AVEC LA VERSION                   :  9.01.12
+        NOMBRE D'ENREGISTREMENTS UTILISES       :  2719
+        NOMBRE D'ENREGISTREMENTS MAXIMUM        :  15728
+        LONGUEUR D'ENREGISTREMENT (OCTETS)      :  819200
+        NOMBRE D'IDENTIFICATEURS UTILISES       :  3634
+        TAILLE MAXIMUM DU REPERTOIRE            :  4000
+        POURCENTAGE D'UTILISATION DU REPERTOIRE :  90 %
+   
+    Debut de lecture
+   
+    fin de lecture (durée  0.000000  s.) 
+   &ABSENT  &PAS DE CONCEPT  &PAS DE COMMANDE &EXECUTE
+   JDC.py : ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION
+   >> JDC.py : DEBUT RAPPORT
+   CR phase d'initialisation
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      ! Etape  POURSUITE ligne :  1 fichier :  fort.1  impossible d affecter un type au !
+      ! resultat                                                                        !
+      !    File "./Eficas/Cata/ops.py", line 162, in POURSUITE                          !
+      !     self.jdc.restore_pickled_attrs(pickle_context)                              !
+      !    File "./Eficas/Execution/E_JDC.py", line 315, in restore_pickled_attrs       !
+      !     d = context.get('jdc_pickled_attributes', {})                               !
+      !  AttributeError: 'NoneType' object has no attribute 'get'                       !
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   fin CR phase d'initialisation
+   
+   >> JDC.py : FIN RAPPORT
+   JDC.py : ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION
+   >> JDC.py : DEBUT RAPPORT
+   DEBUT CR validation : fort.1
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      ! - Il faut au moins un mot-clé parmi : ('FIN',)                          !
+      ! - L'objet : POURSUITE doit etre suivi d'un objet de la liste : ('FIN',) !
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      ! Etape  POURSUITE ligne :  1 fichier :  fort.1  impossible d affecter un type au !
+      ! resultat                                                                        !
+      !    File "./Eficas/Cata/ops.py", line 162, in POURSUITE                          !
+      !     self.jdc.restore_pickled_attrs(pickle_context)                              !
+      !    File "./Eficas/Execution/E_JDC.py", line 315, in restore_pickled_attrs       !
+      !     d = context.get('jdc_pickled_attributes', {})                               !
+      !  AttributeError: 'NoneType' object has no attribute 'get'                       !
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   FIN CR validation :fort.1
+   
+   >> JDC.py : FIN RAPPORT
+   
+   Je propose de classer sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011978 DU 2008-04-14 08:07:29
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Tps CPU system pour affe_char_meca
+FONCTIONNALITE
+   Je propose de remplacer le message d'information émis à la lecture de la commande
+   DEBUT/POURSUITE lors de la présence du mot clé MEMOIRE=_F(GESTION='COMPACTE',) par une
+   alarme. De compléter ce message :
+   
+   25: _("""
+    Mémoire gestion : "COMPACTE"
+    Ce mode de gestion peut augmenter sensiblement le temps système de certaines commandes,
+    les lectures/écritures sur les bases Jeveux étant beaucoup plus fréquentes
+   """),
+   
+   De plus, on ajoutera une remarque dans la documentation des commandes DEBUT et POURSUITE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.11.01 U4.11.03
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 20/05/2008 - 12:15:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012046 DU 2008-04-29 09:14:03
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : CS
+TITRE
+   POST_ELEM et charges cinxc3xa9matiques
+FONCTIONNALITE
+   Pas de correction en V8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp131a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR markovic     MARKOVIC Damijan       DATE 19/05/2008 - 13:13:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012077 DU 2008-05-09 15:48:19
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW9.2.23, le cas-test sdns106d s'arrete en ERREUR_<F> sur Calibre et Rocks.
+FONCTIONNALITE
+   En NEW9.2.23, suite a la restitution de 11515, le 
+   (nouveau) cas-test sdns106d s'arrete en ERREUR_<F> sur les 
+   machines Calibre et Rocks en "floating point exception".
+   
+   Le probleme est dans le calcul du tenseur d'Euler-Almansi 
+   dans dktnli.f. On faisait une boucle de 1 a NNO (=4) qu'on 
+   remplace avec celle de 1 a NNOEL (obtenu avec elref et =3 
+   pour sdns106d). "Floating point exception" apparait 
+   lorsque l'erreur de programmation fausse les resultats, ce 
+   qui entraine la divergence du calcul (dynamique explicite).
+   
+   Dans la resolution de 11515 on modifiait dxglrc.f de la 
+   meme maniere que dktnli.f, sauf que dans dxglrc.f NNO a la 
+   bonne valeur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdns106d
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012087 DU 2008-05-14 07:47:52
+TYPE express concernant Code_Aster (VERSION 9.3)
+TITRE
+   Ajout d'une carte "responsable" pour le test sdns106d et l'operateur DEFI_GLRC
+FONCTIONNALITE
+   Comme convenu pendant l'EDA du 05/05/08 je serai 
+   responsable du nouveau cas-test ssns106d et de 
+   nouvel operateur DEFI_GLRC.
+   
+   On modifie sdns106d.comm et defi_glrc.capy.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdns106a,sdns106d
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012090 DU 2008-05-15 09:25:23
+TYPE express concernant Code_Aster (VERSION 9.3)
+TITRE
+   Correction des calculs internes du modele GLRC_DM
+FONCTIONNALITE
+   Je propose les modifications au modele GLRC_DM pour 
+   eviter des plantages en "floating point exception", 
+   qui peut apparaitre dans certains cas. 
+   
+   D'une part, GLRC_DM passe par la boucle itérative 
+   interne (dans la routine gldloc.f) meme lorsque ce 
+   n'est pas necessaire, ce qui mene de fois vers une 
+   division par zero. D'autre part, une anomalie 
+   similaire est trouvee pendant la construction de la 
+   matrice tangente; dans le cas ou l'extension 
+   membranaire est nulle et juste une face endommagee, 
+   le systeme 2x2 a inverser dans lcgldm.f peut etre 
+   singulier.
+   
+   On modifie alors gldloc.f et lcgldm.f. 
+   Il y a un leger impact sur la convergence (tests 
+   ssns106a-g) dans le bon sens. Dans ssns106g (GLRC_DM 
+   + VMIS en cisaillement), on evite meme une sous-
+   division du pas de temps.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssns106a-g
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR rose         ROSE Christian         DATE 19/05/2008 - 14:31:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010312 DU 2006-11-27 10:38:29
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   MULT_FRONT et METIS
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le test ssnv505h ne converge pas avec MULT_FRONT/METIS.
+   
+   Analyse:
+   --------
+   Le problème vient de Métis qui ne fait pas correctement son boulot (sur cette géométrie
+   filaire).
+   
+   Solution:
+   ---------
+   Comme il est exclu pour l'instant de se plonger dans la programmation de Métis, la
+   solution à ce problème est de ne pas utiliser Métis pour ce test.
+   
+   Détails :
+   ---------
+   1) On a pu se convaincre que Métis ne créait pas une numérotation valide grâce à une
+   nouvelle routine de vérification (prnchk.f). Le source de cette routine est restitué et
+   son appel (dans mltpre.f) est désactivé par défaut :
+   NIVDBG=.FALSE.
+   IF (NIVDBG) CALL PRNCHK(...) 
+   
+   Cet utilitaire pourra resservir pour les éventuelles prochaines anomalies.
+   
+   2) Une nouvelle version de Metis (5) est disponible, si quelqu'un de courageux veut la
+   tester. Peut-être corrige-t-elle ce bug ?
+   
+   ::Je tâcherai de le faire
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv505h
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 19/05/2008 - 14:31:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011833 DU 2008-03-12 13:43:48
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TMA : CS
+TITRE
+   Segmentation fault sur Calibre/Clpaster avec AFFE_CHAR_CINE
+FONCTIONNALITE
+   Problème:
+   ---------
+   Lorsque l'on bloque avec AFFE_CHAR_CINE des ddls qui n'existent pas dans le modèle, cela
+   se passe très mal ensuite dans les commandes de calcul (par exemple STAT_NON_LINE).
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Le plantage a lieu dans calvci.f car on cherche à bloquer le ddl 0 du noeud 0 (qui
+   n'existe pas).
+   Mais en réalité, le problème vient de la routine chcsur.f (AFFE_CHAR_CINE) :
+   Quand un ddl n'appartient pas au modèle, on ne le stocke pas dans l'objet .AFCI mais on
+   oublie de décrémenter le nombre de blocages.
+                                                                                            
+                           
+   Correction:
+   -----------
+   On modifie chcsur.f pour que .AFCI(1) (=NBLOC) soit correct.
+                                                                                            
+                           
+   Impact documentaire:
+   --------------------
+   Préciser dans D40609 que les objets .AFCI et .AFCV peuvent etre sur-dimensionnés.
+                                                                                            
+                           
+                                                                                            
+                           
+   NEW8:
+   -----
+   On peut reporter la correction suivante en NEW8 :
+   --- F/chcsur.f	2008-05-15 18:55:44.000000000 +0200
+   ***************
+   *** 101,107 ****
+     C
+     C --- ON REMPLIT LES .AFCI .AFCV
+     C
+   -       ZI(JAFCI) = NBLOC
+     C
+           IBLOC = 0
+           IF (TYPE.EQ.'R') THEN
+   --- 101,106 ----
+   ***************
+   *** 152,157 ****
+   --- 151,159 ----
+      142        CONTINUE
+      140     CONTINUE
+           ENDIF
+   +
+   +       ZI(JAFCI) = IBLOC
+     C
+           CALL JEDEMA()
+           END
+                                                                                            
+                           
+                                                                                            
+                           
+   Détail:
+   -------
+   Lorsque que l'utilisateur cherche à bloquer un ddl qui n'existe pas dans le modèle, on
+   l'ignore sans émettre de message d'alarme.
+   Pour plus de sécurité, j'émets maintenant une (nouvelle) erreur fatale (CALCULEL_9)
+   lorsque TOUS les ddls bloqués sont inconnus du modèle car cela conduirait à une charge
+   cinématique vide.
+                                                                                            
+                           
+                                                                                            
+                           
+   9 : _("""
+    Erreur d'utilisation dans AFFE_CHAR_CINE :
+      Aucun des ddls que l'on souhaite bloquer n'appartient au modèle.
+      La charge cinématique produite sera donc vide.
+                                                                                            
+                           
+    Risques & Conseils :
+      Vérifier le nom des ddls portés par les noeuds des éléments de votre modèle.
+   """),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.09
+VALIDATION
+   xc3xa9tude fournie
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012021 DU 2008-04-18 18:20:37
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.20, les cas-tests sensm12a et sensm13a sont NOOK sur Rocks
+FONCTIONNALITE
+   Problème:
+   ----------
+   En version 9.2.20 les test sensm12a et sensm13a sont NOOK sur Rocks
+                                                                                            
+                           
+   Analyse:
+   --------
+   Le problème vient en réalité d'un erreur de programmation introduite en 9.2.14 pour
+   traiter la fiche 11643 (Drucker-Prager en non-associé).
+   Dans un dertain nombre de routines, le tableau MATERF (ou MATER) a été redimensionné (4,2)
+   -> (5,2) mais une routine a été oubliée dans l'évolution : nsdrpr.f.
+                                                                                            
+                           
+   Sur clpaster (en nodebug), cela entraine que PULT est faux dans nsdrpr.f et en cascade,
+   tout devient faux.
+                                                                                            
+                           
+   Correction:
+   -----------
+   nsdrpr.f :
+   46c46
+   <       REAL*8 MATERF(4,2),SE(6),SIIE,SEQ,I1E,DP,PLAS,DPDENO
+   ---
+   >       REAL*8 MATERF(5,2),SE(6),SIIE,SEQ,I1E,DP,PLAS,DPDENO
+                                                                                            
+                           
+   Validation:
+   -----------
+   Passage sur clpaster des 2 tests incriminés.
+                                                                                            
+                           
+   Effort:
+   -------
+   1 jour de "WRITE(6,*)" !!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sensm12a et sensm13a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012052 DU 2008-04-30 08:58:40
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Probleme de conversion tria6 -> tria7
+FONCTIONNALITE
+   Problème:
+   ---------
+   Mathieu Corus a remarqué que sur les machines calibre (claut617, ...) la commande
+   CREA_MAILLAGE / MODI_MAILLE se plantait parfois brutalement.
+   Ce problème n'a lieu qu'en version "no-debug".
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Solution:
+   ---------
+   Il y a effectivement un (double) bug dans la routine op0167.f :
+                                                                                            
+                           
+   1) Vers la ligne 560, on se sert de la variable LGNO mais cette variable n'est calculée
+   que si l'utilisateur a renseigné le mot clé facultatif PREF_NOEUD.
+   2) Si LGNO a été calculé, on se sert de la meme valeur pour tous les nouveaux noeuds alors
+   qu'en principe, LGNO peut dépendre des occurrences de MODI_MAILLE.
+                                                                                            
+                           
+                                                                                            
+                           
+   Validation:
+   -----------
+   Passage de l'étude associée à la fiche sur claut617 en no-debug.
+                                                                                            
+                           
+                                                                                            
+                           
+   NEW8:
+   -----
+   Correction à reporter en version 8 :
+   *** 561,568 ****
+               ENDIF
+     C
+               LGNU=LXLGUT(KNUME)
+   -           IF (LGNU+LGNO.GT.8) CALL U2MESS('F','ALGELINE_16')
+               PRFN1=ZK8(JPR2+INO-NBNOEV-1)
+               NOMG=PRFN1(1:LGNO)//KNUME
+               CALL JEEXIN(JEXNOM(NOMNOE,NOMG),IRET)
+               IF (IRET.EQ.0) THEN
+   --- 557,565 ----
+               ENDIF
+     C
+               LGNU=LXLGUT(KNUME)
+               PRFN1=ZK8(JPR2+INO-NBNOEV-1)
+   +           LGNO=LXLGUT(PRFN1)
+   +           IF (LGNU+LGNO.GT.8) CALL U2MESS('F','ALGELINE_16')
+               NOMG=PRFN1(1:LGNO)//KNUME
+               CALL JEEXIN(JEXNOM(NOMNOE,NOMG),IRET)
+               IF (IRET.EQ.0) THEN
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude fournie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012062 DU 2008-05-05 11:22:02
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   CREA_MAILLAGE et multiples mots-cl?facteurs
+FONCTIONNALITE
+   Problème:
+   ---------
+   Thomas De Soza a remarqué que le catalogue de la commande CREA_MAILLAGE permettait, a
+   priori, de combiner de nombreux mots clés facteurs alors qu'en réalité le fortran n'en
+   traitait qu'un seul !
+                                                                                            
+                           
+   Remarque : la doc U est à l'image du catalogue : elle permet (en théorie) d'enchainer tous
+   les mots clés facteurs (mais sans préciser dans quel ordre ils doivent etre exécutés).
+                                                                                            
+                           
+   Solution:
+   ---------
+   On modifie le catalogue de CREA_MAILLAGE pour interdire l'usage de plusieurs mots clés
+   facteurs :
+            regles=(EXCLUS('COQU_VOLU', 'CREA_FISS', 'CREA_GROUP_MA', 'CREA_MAILLE', 'CREA_POI1',
+                           'DETR_GROUP_MA', 'ECLA_PG', 'HEXA20_27', 'LINE_QUAD', 'MODI_MAILLE',
+                           'QUAD_LINE', 'REPERE','RESTREINT'),),
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Impact documentaire:
+   --------------------
+   U4.23.02 : CREA_MAILLAGE : modifier la syntaxe pour montrer les exclusions mutuelles.
+                                                                                            
+                           
+   Validation:
+   -----------
+   J'ai vérifié (par script) qu'aucun test n'utilisait plusieurs mots clés facteurs différents.
+   Passage de 50 tests CREA_MAILLAGE avec le catalogue modifié.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.23.02
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 19/05/2008 - 15:22:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011769 DU 2008-02-18 08:51:52
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   Version MED 2.3.4 en STA8 et STA9
+FONCTIONNALITE
+   1) Objectif
+   -----------
+   Depuis la verion V2.3.4 de la libraire med, on dispose d'un type d'entite pour les champs
+   aux noeuds par element: MED_NOEUD_MAILLE.
+   L'objectif est d'utiliser ce type dans le source des commandes IMPR_RESU et LIRE_RESU au
+   format med.
+   
+   Avant, Aster considerait les champs med aux noeuds par element (elno) comme des pseudo
+   champs aux points de Gauss par element (elga) dont les points de gauss etaient confondus
+   aux noeuds.
+   Maintenant, on peut considerer les champs elno comme de veritables champs elno grace a ce
+   nouveau type d'entite.
+   
+   Si on doit relire un fichier produit avec une version antérieure de med (ne connaissant
+   pas MED_NOEUD_MAILLE), on émet une alarme et on lit le fichier comme avant (en utilisant
+   le type MED_MAILLE).
+   
+   2) Developpement
+   ----------------
+   2.1) bibfor
+   
+   a) mise a jour de la variable TYPENT qui correspond au type d'entite med.
+   Avant, cette variable pouvait prendre que 2 valeurs: soit 0 pour les champs elementaires
+   (elno,elga), soit 3 pour les champs nodaux (noeu).
+   Maintenant, la variable TYPENT se voit affectee la valeur 4 pour les elno, et 2 pour les elga.
+   
+   impact:ircame.f, ircam1.f, lrcame.f, op0150.f
+   
+   b) Auparavant, le fait de considerer les champs elno comme des elga particuliers
+   necessitait d'ecrire une non-localisation aux points de gauss (MED_GAUSS_ELNO) pour les
+   champs elno.
+   Cette non-localisation permettait aux routines med de ne pas tenir compte des poids et des
+   coordonnees des points de Gauss. 
+   Maintenant, cette localisation est devenue inutile pour les champs elno: 
+   nous avons donc fait passe en argument une chaine vide dans les routines
+   attendant une localisation (cf. doc med routine efchae et variable MED_NOGAUSS).
+   De plus, la construction des vecteurs de poids et de coordonnees des PG 
+   n'avait plus lieu d'etre pour les champs elno.
+   
+   impact: irmpga.f 
+   
+   c) mise a jour des informations med emise dans le .mess:
+   Quelque soit le cham_elem (elno ou elga), on voyait apparaitre des
+   informations specifiques aux elga.
+   Par exemple, on pouvait lire:
+   " CHAMP DE TYPE ELNO    , AVEC,    4 POINTS DE GAUSS ET    1 SOUS-POINTS"
+   Dorenavant, on prend en compte le type de champ avant l'emission de ces messages
+   d'information. Le message ci-dessus devient:
+   " CHAMP DE TYPE ELNO    , AVEC,    4 POINTS  ET    1 SOUS-POINTS"
+   
+   impact: ircmpe.f, ircmpr.f, irmpga.f
+   
+   
+   2.2) astest
+   
+   La validation a ete realisee a partir d'un cas-test maison et du cas-test zzzz162a qui
+   contient deja des IMPR_RESU et LIRE_RESU de champs ELNO au format MED (notamment
+   SIEF_ELNO_ELGA, VARI_ELNO_ELGA).
+   
+   Validation d'IMPR_RESU/FORMAT='MED':
+   Nous avons effectue des 'xmdump' sur les fichiers med produits par la version de reference
+   et la version surchargee, puis nous avons compare les valeurs affichees.
+   
+   Validation de LIRE_RESU/FORMAT='MED':
+   Nous avons introduit les fichiers med produits avec IMPR_RESU dans LIRE_RESU pour generer
+   des sd resultats. Nous avons ensuite effectue des 'diff' sur les fichiers contenant ces
+   resultats pour comparer les valeurs.
+   
+   Pour la non regression, une liste de cas-tests restreinte aux
+   commandes IMPR_RESU/MED, LIRE_RESU/MED a ete passee.
+   => Un cas-test avait ete casse (ssnp115b) car il utilise un fichier med
+   qui a été produit avec une version med antérieure à la version med actuelle.
+   Pour résoudre ce problème, on a considere le type d'entite MED_MAILLE comme
+   MED_NOEUD_MAILLE (+ emission d'une alarme pour avertir l'utilisateur(MED_53)).
+   
+   impact: op0150.f lrcnme.f, lrceme.f, lrchme.f, lrcame.f, op0192.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz162a
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 19/05/2008 - 15:22:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011884 DU 2008-03-27 13:10:15
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   STAT_NON_LINE /RECH_LINEAIRE='MIXTE'
+FONCTIONNALITE
+   La realisation est terminee.
+   Les fichiers sont sur Bull dans /home/rezette/A11884/src.
+   
+   Histor (proposition)
+   ======
+   
+   Anomalies
+   --------
+   
+   1) Pour certaines iterations de Newton, les bornes RHO_MIN et RHO_MAX
+   ne sont pas prises en compte pour la methode MIXTE, car on obtient des valeurs
+   de rho hors de cet intervalle.
+   
+   2) La valeur de rho imprimee dans le tableau ne correspond pas toujours a celle de
+   l'iteration de Newton.
+   Par exemple, dans l'etude fournie, on releve a l'instant de calcul 6.07407E-01
+   pour l'iteration 5 de Newton: un RHO de -3.0  alors que le rho correspondant a l'iteration
+   5 de la recherche lineaire est 243.
+      
+   Explications 
+   ------------
+   
+   1)Si l'on regarde la routine nmreli, on s'apercoit que les paramètres RHOMIN et RHOMAX
+   sont utilises uniquement pour la methode CORDE. En aucun cas, ces paramètres transitent
+   dans la routine nmrebo.f dediee a la methode MIXTE. 
+   Ainsi, pour chaque iteration de Newton, Aster fournissait a l'algorithme de Newton:
+   - soit un rho optimal,
+   - soit un rho correspondant a la dernière iteration de recherche lineaire .
+   
+   2)Le rho optimal (RHOOPT) est initialise a rho dès que X est une solution.
+   Il ne s'agit que d'une initialisation qui a lieu au premiere iteration de la recherche
+   lineaire.
+   rho est optimal lorsque |f(rho)| <= |r.f(0)|, où r=RESI_LINE_RELA(=0.1 par defaut). 
+   Lorsque cette inegalite n'est pas satisfaite a la dernière iteration de la recherche
+   lineaire, on sort de la boucle et on stocke :
+   - la valeur de RHOOPT (= au rho de la première iteration de la recherche lineaire)
+   - le numero de l'iteration de la recherche lineaire, qui correspond dans notre cas a la
+   dernière iteration (=ITER_LINE_MAXI).
+   Ainsi, on obtenait :
+   - d'une part, un rho optimal qui n'en etait pas un
+   - d'autre part, un couple (rho optimal, iteration) dont les elements ne correspondent pas.
+   
+   Corrections
+   -----------
+   On prend en compte RHOMIN et RHOMAX dans nmreli (apres l'appel a nmrebo).
+      
+   1) si le RHO calcule dans nmrebo (optimal ou non) n'est plus compris entre RHOMIN et
+   RHOMAX, alors on quitte la boucle 20 pour stocker l'etat initial, i.e.  on stocke
+   respectivement dans CONV(10) et CONV(11) l'entier correspondant
+   a la première iteration (=1) et le RHO associe.
+   
+   2) si le RHO calcule dans nmrebo n'est pas optimal apres les ITER_LINE_MAX iterations, on
+   ne stocke pas le dernier RHO de la dernière iteration, mais celui de l'etat initial.
+   
+   Exemple avec ITER_LINE_MAXI=5:
+   Dans l'etude fournie, on stocke a l'instant de calcul 6.07407E-01
+   pour l'iteration 6 de Newton, un RHO de -243 (alors que RHO_MIN=-10, 
+   et RHO_MAX=10):
+   
+   Avant:
+   -----------------------------------------------------------------------------
+   | ITER   | RESIDU       |  RESIDU    | ITERATIONS |COEFFICIENT |   OPTION     |
+   | NEWTON | RELATIF      |  ABSOLU    |  RECH. LIN.|RECH. LIN.  |   ASSEMBLAGE |
+   |        |              |            |            |    RHO     |              |
+   -----------------------------------------------------------------------------
+   | 6    X | 5.90803E-03 X|1.24885E+00 |     5      |-2.43000E+02|TANGENTE  
+   
+   Impression des RHO(n) jusqu'a la dernière iteration (car non convergence):
+    n= 0 RHO=  -1.00000000000000        
+    n= 1 RHO=  -3.00000000000000        
+    n= 2 RHO=  -9.00000000000000     
+    n= 3 RHO=  -27.0000000000000     
+    n= 4 RHO=  -81.0000000000000     
+    n= 5 RHO=  -243.000000000000      
+   
+   Après:
+   -----------------------------------------------------------------------------
+   | ITER   | RESIDU       |  RESIDU    | ITERATIONS |COEFFICIENT |   OPTION     |
+   | NEWTON | RELATIF      |  ABSOLU    |  RECH. LIN.|RECH. LIN.  |   ASSEMBLAGE |
+   |        |              |            |            |    RHO     |              |
+   -----------------------------------------------------------------------------
+   | 6    X | 5.90803E-03 X|1.24885E+00 |     1      |-3.00000E+00|TANGENTE  
+   
+   Impression des RHO(n) pour l'iteration 6 :
+    n= 0 RHO=  -1.00000000000000        
+    n= 1 RHO=  -3.00000000000000        
+   
+   
+   Impact: nmrebo.f, nmreli.f
+   
+   Validation
+   ----------
+   etude fournie + liste restreinte
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mikchevitch  MIKCHEVITCH Alexei     DATE 19/05/2008 - 15:22:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011994 DU 2008-04-16 13:17:05
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   Commande pre_ideas
+FONCTIONNALITE
+   La realisation est terminee.
+   Les fichiers sont sur Bull dans /home/rezette/A11994/src
+   
+   Histor (proposition)
+   ======
+   
+   Anomalie
+   --------
+   Code-Aster plantait sur Calibre dans la commande PRE_IDEAS 
+   lors de la lecture du fichier unv.
+   
+   En parcourant le fichier universel, on a releve entre 2 datasets consecutifs: 
+   - un saut de ligne 
+   - une chaine de caracteres
+   
+   Par exemple, entre les datasets 2438 et 2411, il y avait un saut de ligne et
+   une chaine de caracteres "NODES".
+   "
+       -1
+     2438
+       -1
+   
+   NODES
+       -1
+     2411
+         3654         1         1         8
+   2.4999999999999986000E+01 7.250000000000000000E+01 -5.50000000000000930E-01 
+         7786         1         1         8
+   2.9184488177547259000E+01 8.135962262753885500E+01 1.135824182113427300E+01 
+         7787         1         1         8
+   2.9196896441632703000E+01 8.136365431693627700E+01 1.292458481463070000E+01 
+   "
+   etc ...
+   
+   Code-Aster fait appel a la routine READ pour lire les entiers correspondant aux 
+   datasets :  "READ (IUNV,'(I6)',END=9999) DATSET"
+   
+   Lorsqu'on arrive a la fin du dataset 2438 et qu'on s'apprete a passer
+   au dataset suivant, l'instruction READ essaie de lire une chaine de caracteres
+   (="NODE") au lieu d'un integer:
+   
+   -> sur Bull: l'instruction READ renvoie un entier = 0
+     (ainsi, on a dans le .mess l'information suivante: 
+       "ON NE TRAITE PAS LE DATASET:0")
+   
+   -> sur Calibre: l'instruction READ echouait.
+   
+   Correction
+   -----------
+   Nous avons introduit le parametre IOSTAT dans l'instruction READ pour 
+   disposer d'une information sur la lecture (reussite ou echec).
+   Dans le cas d'un echec, on initialise DATASET a 0 de sorte : 
+   - d'imprimer dans le .mess l'information "ON NE TRAITE PAS LE DATASET: 0",
+   - de passer a la lecture suivante.  
+   
+   Impact: presup.f
+   
+   Validation
+   ----------
+   Etude fournie + liste restreinte a la commande PRE_IDEAS (114 cas-tests)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.2
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Etude fournie et cas-tests Pre_Ideas
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF forma11c                       boyere E.BOYERE           175      1      1
+ CASTEST MODIF pynl01a                         abbas M.ABBAS            315      8      2
+ CASTEST MODIF sdll123a                     lefebvre J-P.LEFEBVRE       272      1      1
+ CASTEST MODIF sdll140a                     lefebvre J-P.LEFEBVRE       171      1      1
+ CASTEST MODIF sdll505a                       boyere E.BOYERE           410     12     16
+ CASTEST MODIF sdnd102c                     lefebvre J-P.LEFEBVRE       245      1      1
+ CASTEST MODIF sdnd102d                     lefebvre J-P.LEFEBVRE       240      1      1
+ CASTEST MODIF sdnd105a                      greffet N.GREFFET          211      3      3
+ CASTEST MODIF sdns106d                     markovic D.MARKOVIC         188      2      1
+ CASTEST MODIF sdnv100a                     lefebvre J-P.LEFEBVRE       385      1      1
+ CASTEST MODIF sdnv100b                     lefebvre J-P.LEFEBVRE       282      1      1
+ CASTEST MODIF sdnv100c                     lefebvre J-P.LEFEBVRE       277      1      1
+ CASTEST MODIF sdnv100d                     lefebvre J-P.LEFEBVRE       368      1      1
+ CASTEST MODIF sdnv100e                     lefebvre J-P.LEFEBVRE       373      1      1
+ CASTEST MODIF sdnv100f                     lefebvre J-P.LEFEBVRE       397      1      1
+ CASTEST MODIF sdnv100g                     lefebvre J-P.LEFEBVRE       256      1      1
+ CASTEST MODIF sdnv100h                     lefebvre J-P.LEFEBVRE       249      1      1
+ CASTEST MODIF sdnv100i                     lefebvre J-P.LEFEBVRE       372      1      1
+ CASTEST MODIF sdnv100j                     lefebvre J-P.LEFEBVRE       285      1      1
+ CASTEST MODIF sslv134b                     courtois M.COURTOIS         848      3      2
+ CASTEST MODIF ssnp115c                        abbas M.ABBAS            207     12     15
+ CASTEST MODIF ssnp131a                      mahfouz D.MAHFOUZ          339      9      6
+ CASTEST MODIF ssnv115a                        abbas M.ABBAS            244     12     16
+ CASTEST MODIF ssnv209a                     lefebvre J-P.LEFEBVRE       231      1      1
+ CASTEST MODIF ssnv209b                     lefebvre J-P.LEFEBVRE       512      1      1
+ CASTEST MODIF ssnv209c                     lefebvre J-P.LEFEBVRE       512      1      1
+ CASTEST MODIF ssnv209d                     lefebvre J-P.LEFEBVRE       516      1      1
+ CASTEST MODIF ssnv209e                     lefebvre J-P.LEFEBVRE       512      1      1
+ CASTEST MODIF ssnv209g                     lefebvre J-P.LEFEBVRE       452      1      1
+ CASTEST MODIF ssnv505f                        abbas M.ABBAS            288     10     13
+ CASTEST MODIF ssnv505h                        abbas M.ABBAS            463     11      8
+ CASTEST MODIF zzzz121b                       delmas J.DELMAS           666      2      2
+ CASTEST MODIF zzzz121d                       delmas J.DELMAS           465      2      2
+ CASTEST MODIF zzzz161a                       delmas J.DELMAS           263      2      2
+CATALOGU MODIF compelem/grandeur_simple__     delmas J.DELMAS           741      3      3
+CATALOGU MODIF options/calc_esti_erre         delmas J.DELMAS            36      9      2
+CATALOGU MODIF options/erre_elem_sigm         delmas J.DELMAS            54      3      3
+CATALOGU MODIF options/erre_elem_temp_f       delmas J.DELMAS            36      2      2
+CATALOGU MODIF options/erre_elem_temp_r       delmas J.DELMAS            36      2      2
+CATALOGU MODIF options/erre_elno_elem         delmas J.DELMAS            27      3      3
+CATALOGU MODIF options/erre_qizz              delmas J.DELMAS            37      2      2
+CATALOGU MODIF options/erre_temps             delmas J.DELMAS            36      2      2
+CATALOGU MODIF options/qire_elem_sigm         delmas J.DELMAS            61      2      2
+CATALOGU MODIF options/qire_elno_elem         delmas J.DELMAS            27      3      3
+CATALOGU MODIF options/tou_ini_elem           delmas J.DELMAS            28      2      2
+CATALOGU MODIF typelem/gener_me3a12           granet S.GRANET            63      3      1
+CATALOGU MODIF typelem/gener_me3a13           granet S.GRANET           239      3      1
+CATALOGU MODIF typelem/gener_me3a32           granet S.GRANET            53      3      2
+CATALOGU MODIF typelem/gener_me3a33           granet S.GRANET           198      3      1
+CATALOGU MODIF typelem/gener_me3a42           granet S.GRANET            63      3      1
+CATALOGU MODIF typelem/gener_me3a43           granet S.GRANET           243      3      1
+CATALOGU MODIF typelem/gener_me3a61           granet S.GRANET            55      3      1
+CATALOGU MODIF typelem/gener_me3a62           granet S.GRANET           174      3      1
+CATALOGU MODIF typelem/gener_me3a63           granet S.GRANET            55      3      1
+CATALOGU MODIF typelem/gener_me3a64           granet S.GRANET           177      3      1
+CATALOGU MODIF typelem/gener_me3d_3           delmas J.DELMAS           656      3      3
+CATALOGU MODIF typelem/gener_me3di3           delmas J.DELMAS           233      3      3
+CATALOGU MODIF typelem/gener_me3g32           granet S.GRANET            54      3      1
+CATALOGU MODIF typelem/gener_me3g33           granet S.GRANET           186      3      1
+CATALOGU MODIF typelem/gener_me3h12           granet S.GRANET            64      3      1
+CATALOGU MODIF typelem/gener_me3h13           granet S.GRANET           239      3      1
+CATALOGU MODIF typelem/gener_me3h22           granet S.GRANET            64      3      1
+CATALOGU MODIF typelem/gener_me3h23           granet S.GRANET           233      3      1
+CATALOGU MODIF typelem/gener_me3h32           granet S.GRANET            55      3      1
+CATALOGU MODIF typelem/gener_me3h33           granet S.GRANET           195      3      1
+CATALOGU MODIF typelem/gener_me3h42           granet S.GRANET            63      3      2
+CATALOGU MODIF typelem/gener_me3h43           granet S.GRANET           242      3      1
+CATALOGU MODIF typelem/gener_me3h52           granet S.GRANET            64      3      1
+CATALOGU MODIF typelem/gener_me3h53           granet S.GRANET           236      3      1
+CATALOGU MODIF typelem/gener_meaa11           granet S.GRANET            49      3      1
+CATALOGU MODIF typelem/gener_meaa12           granet S.GRANET           161      3      1
+CATALOGU MODIF typelem/gener_meaa21           granet S.GRANET            54      3      2
+CATALOGU MODIF typelem/gener_meaa22           granet S.GRANET           208      3      1
+CATALOGU MODIF typelem/gener_meaa31           granet S.GRANET            55      3      1
+CATALOGU MODIF typelem/gener_meaa32           granet S.GRANET           208      3      1
+CATALOGU MODIF typelem/gener_meaa61           granet S.GRANET            50      3      1
+CATALOGU MODIF typelem/gener_meaa62           granet S.GRANET           160      3      1
+CATALOGU MODIF typelem/gener_meaa63           granet S.GRANET            50      3      1
+CATALOGU MODIF typelem/gener_meaa64           granet S.GRANET           163      3      1
+CATALOGU MODIF typelem/gener_meag31           granet S.GRANET            49      3      1
+CATALOGU MODIF typelem/gener_meag32           granet S.GRANET           150      3      1
+CATALOGU MODIF typelem/gener_meah11           granet S.GRANET            56      3      1
+CATALOGU MODIF typelem/gener_meah12           granet S.GRANET           218      3      1
+CATALOGU MODIF typelem/gener_meah21           granet S.GRANET            55      3      2
+CATALOGU MODIF typelem/gener_meah22           granet S.GRANET           215      3      1
+CATALOGU MODIF typelem/gener_meah31           granet S.GRANET            50      3      1
+CATALOGU MODIF typelem/gener_meah32           granet S.GRANET           171      3      1
+CATALOGU MODIF typelem/gener_meah41           granet S.GRANET            56      3      1
+CATALOGU MODIF typelem/gener_meah42           granet S.GRANET           226      3      1
+CATALOGU MODIF typelem/gener_meah51           granet S.GRANET            56      3      1
+CATALOGU MODIF typelem/gener_meah52           granet S.GRANET           218      3      1
+CATALOGU MODIF typelem/gener_meax_2           delmas J.DELMAS           586      3      3
+CATALOGU MODIF typelem/gener_meaxs2           delmas J.DELMAS           520      3      3
+CATALOGU MODIF typelem/gener_mecpl2           delmas J.DELMAS           597      3      3
+CATALOGU MODIF typelem/gener_meda11           granet S.GRANET            49      3      1
+CATALOGU MODIF typelem/gener_meda12           granet S.GRANET           161      3      1
+CATALOGU MODIF typelem/gener_meda21           granet S.GRANET            55      3      1
+CATALOGU MODIF typelem/gener_meda22           granet S.GRANET           208      3      1
+CATALOGU MODIF typelem/gener_meda31           granet S.GRANET            55      3      1
+CATALOGU MODIF typelem/gener_meda32           granet S.GRANET           208      3      1
+CATALOGU MODIF typelem/gener_meda61           granet S.GRANET            51      3      1
+CATALOGU MODIF typelem/gener_meda62           granet S.GRANET           160      3      1
+CATALOGU MODIF typelem/gener_meda63           granet S.GRANET            51      3      1
+CATALOGU MODIF typelem/gener_meda64           granet S.GRANET           163      3      1
+CATALOGU MODIF typelem/gener_medg31           granet S.GRANET            49      3      1
+CATALOGU MODIF typelem/gener_medg32           granet S.GRANET           150      3      1
+CATALOGU MODIF typelem/gener_medh11           granet S.GRANET            56      3      1
+CATALOGU MODIF typelem/gener_medh12           granet S.GRANET           218      3      1
+CATALOGU MODIF typelem/gener_medh21           granet S.GRANET            56      3      1
+CATALOGU MODIF typelem/gener_medh22           delmas J.DELMAS           241      6      4
+CATALOGU MODIF typelem/gener_medh31           granet S.GRANET            50      3      1
+CATALOGU MODIF typelem/gener_medh32           granet S.GRANET           171      3      1
+CATALOGU MODIF typelem/gener_medh41           granet S.GRANET            56      3      1
+CATALOGU MODIF typelem/gener_medh42           granet S.GRANET           222      3      1
+CATALOGU MODIF typelem/gener_medh51           granet S.GRANET            56      3      1
+CATALOGU MODIF typelem/gener_medh52           granet S.GRANET           219      3      1
+CATALOGU MODIF typelem/gener_medhb1           granet S.GRANET            55      3      1
+CATALOGU MODIF typelem/gener_medhb2           delmas J.DELMAS           207      5      3
+CATALOGU MODIF typelem/gener_medpl2           delmas J.DELMAS           601      3      3
+CATALOGU MODIF typelem/gener_mepli2           delmas J.DELMAS           221      3      3
+CATALOGU MODIF typelem/gener_mv2d_2           delmas J.DELMAS           284      3      3
+CATALOGU MODIF typelem/gener_mv3d_3           delmas J.DELMAS           322      3      3
+CATALOGU MODIF typelem/gener_th3d_3           delmas J.DELMAS           253      3      3
+CATALOGU MODIF typelem/gener_th3dd3           delmas J.DELMAS           217      3      3
+CATALOGU MODIF typelem/gener_thaxd2           delmas J.DELMAS           233      3      3
+CATALOGU MODIF typelem/gener_thpl_2           delmas J.DELMAS           255      3      3
+CATALOGU MODIF typelem/gener_thpld2           delmas J.DELMAS           234      3      3
+CATALOGU MODIF typelem/meca_hexs8             delmas J.DELMAS           566      3      3
+CATALOGU MODIF typelem/mecpqs4                delmas J.DELMAS           514      3      3
+CATALOGU MODIF typelem/medpqs4                delmas J.DELMAS           523      3      3
+CATALOGU MODIF typelem/medpqs8                delmas J.DELMAS           525      3      3
+CATALOPY MODIF commande/crea_maillage         pellet J.PELLET           151      6     24
+CATALOPY MODIF commande/defi_glrc           markovic D.MARKOVIC          73      2      1
+CATALOPY MODIF commande/post_elem            mahfouz D.MAHFOUZ          446     25     13
+CATALOPY MODIF commun/c_nom_grandeur          delmas J.DELMAS           146      2      2
+     F90 SUPPR mumps/amumpc                 courtois M.COURTOIS        1697      0   1697
+     F90 SUPPR mumps/amumpr                 courtois M.COURTOIS        1743      0   1743
+     F90 SUPPR mumps/amumps                 courtois M.COURTOIS         456      0    456
+     F90 SUPPR recursive/verija             courtois M.COURTOIS         103      0    103
+     F90 SUPPR recursive/verijb             courtois M.COURTOIS         155      0    155
+FORTRAN90 AJOUT mumps/amumpc                 courtois M.COURTOIS        1697   1697      0
+FORTRAN90 AJOUT mumps/amumpr                 courtois M.COURTOIS        1743   1743      0
+FORTRAN90 AJOUT mumps/amumps                 courtois M.COURTOIS         456    456      0
+ FORTRAN AJOUT algeline/prnchk                pellet J.PELLET            50     50      0
+ FORTRAN MODIF algeline/mltpre                pellet J.PELLET           475     12      1
+ FORTRAN MODIF algeline/op0167                pellet J.PELLET           937    385    379
+ FORTRAN MODIF algorith/algocp                 abbas M.ABBAS            368      1      2
+ FORTRAN MODIF algorith/cfdist                 abbas M.ABBAS            174      5      7
+ FORTRAN MODIF algorith/cffrot                 abbas M.ABBAS             97     14     12
+ FORTRAN MODIF algorith/frogdp                 abbas M.ABBAS            650      2      2
+ FORTRAN MODIF algorith/frolgd                 abbas M.ABBAS           1100      2      2
+ FORTRAN MODIF algorith/fropgd                 abbas M.ABBAS            845      2      2
+ FORTRAN MODIF algorith/nmconv                 abbas M.ABBAS            656     15     13
+ FORTRAN MODIF algorith/nmdata                 abbas M.ABBAS            169     10      6
+ FORTRAN MODIF algorith/nmdocn                 abbas M.ABBAS            155     11      7
+ FORTRAN MODIF algorith/nmdomt                 abbas M.ABBAS            157     23     19
+ FORTRAN MODIF algorith/nmreli               rezette C.REZETTE          337     20      4
+ FORTRAN MODIF algorith/nmresi                 abbas M.ABBAS            277     13      7
+ FORTRAN MODIF algorith/nsdrpr                pellet J.PELLET           593      2      2
+ FORTRAN MODIF algorith/op0070                 abbas M.ABBAS            632     12      9
+ FORTRAN MODIF algorith/xcopco                 abbas M.ABBAS            105      2      2
+ FORTRAN MODIF calculel/debcal                pellet J.PELLET           403      4      2
+ FORTRAN MODIF calculel/medome               mahfouz D.MAHFOUZ          209      3      2
+ FORTRAN MODIF calculel/vrcin2                pellet J.PELLET           200     10      2
+ FORTRAN MODIF elements/calffx                 abbas M.ABBAS            112      6      6
+ FORTRAN MODIF elements/dktnli              markovic D.MARKOVIC         540      3      3
+ FORTRAN MODIF elements/gldloc              markovic D.MARKOVIC         188     15      3
+ FORTRAN MODIF elements/lcgldm              markovic D.MARKOVIC         499     27     25
+ FORTRAN MODIF jeveux/jenuno                  delmas J.DELMAS           160      2      1
+ FORTRAN MODIF modelisa/cazocm                 abbas M.ABBAS            326      1      1
+ FORTRAN MODIF modelisa/chcsur                pellet J.PELLET           159      4      2
+ FORTRAN MODIF prepost/ircam1                rezette C.REZETTE          328     13      7
+ FORTRAN MODIF prepost/ircame                rezette C.REZETTE          329      8      2
+ FORTRAN MODIF prepost/ircmpe                rezette C.REZETTE          472     16      5
+ FORTRAN MODIF prepost/ircmpr                rezette C.REZETTE          282      3      3
+ FORTRAN MODIF prepost/ircmva                rezette C.REZETTE          273      6     16
+ FORTRAN MODIF prepost/irmpga                rezette C.REZETTE          320     13      9
+ FORTRAN MODIF prepost/lrcame                rezette C.REZETTE          620      9      7
+ FORTRAN MODIF prepost/lrceme                rezette C.REZETTE          256      6      4
+ FORTRAN MODIF prepost/lrchme                rezette C.REZETTE          123      7      5
+ FORTRAN MODIF prepost/lrcnme                rezette C.REZETTE          162      6      4
+ FORTRAN MODIF stbtrias/presup               rezette C.REZETTE          197      6      3
+ FORTRAN MODIF supervis/ibdbgs              lefebvre J-P.LEFEBVRE       153      2      2
+ FORTRAN MODIF utilitai/op0150               rezette C.REZETTE         1051     29      2
+ FORTRAN MODIF utilitai/op0192               rezette C.REZETTE          313     51      7
+  PYTHON AJOUT Messages/mecanonline5           abbas M.ABBAS             59     59      0
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         469      7      7
+  PYTHON MODIF Execution/E_SUPERV           courtois M.COURTOIS         385      9      1
+  PYTHON MODIF Macro/exec_logiciel_ops      courtois M.COURTOIS         179      6     12
+  PYTHON MODIF Messages/algeline2              abbas M.ABBAS            447      1      1
+  PYTHON MODIF Messages/algeline5             pellet J.PELLET           346     10      1
+  PYTHON MODIF Messages/algorith7              abbas M.ABBAS            305      1     36
+  PYTHON MODIF Messages/calculel2             pellet J.PELLET           304     12      4
+  PYTHON MODIF Messages/calculel              pellet J.PELLET           268     10      1
+  PYTHON MODIF Messages/execlogiciel0       courtois M.COURTOIS          56      2      2
+  PYTHON MODIF Messages/med                  rezette C.REZETTE          480     11      1
+  PYTHON MODIF Messages/supervis            lefebvre J-P.LEFEBVRE       425      3      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    5        4005      4005             +4005
+ MODIF :  187       48990      1293     972      +321
+ SUPPR :    5        4154              4154     -4154
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  197       57149      5298    5126      +172 

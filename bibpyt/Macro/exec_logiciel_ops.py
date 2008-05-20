@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF exec_logiciel_ops Macro  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,13 +89,12 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
       elif dMCF['FORMAT'] == 'SALOME':
          mode_lancement = EXECFILE
          if len(l_args) < 1:
-#                               "LE NOM DU FICHIER MED PRODUIT PAR LE SCRIPT PYTHON.")
             UTMESS('F','EXECLOGICIEL0_1')
          else:
             d_para['fichMED'] = l_args[0]
       
       else:
-         UTMESS('F','EXECLOGICIEL0_2',valk=dMCF['FORMAT'])
+         UTMESS('F', 'EXECLOGICIEL0_2', valk=dMCF['FORMAT'])
 
    
    #----------------------------------------------
@@ -120,28 +119,23 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
          aster.affiche('MESSAGE', output)
       
       if CODE_RETOUR_MAXI >= 0 and iret > CODE_RETOUR_MAXI:
-#                % (CODE_RETOUR_MAXI, iret))
-         UTMESS('F','EXECLOGICIEL0_3',vali=[CODE_RETOUR_MAXI,iret])
+         UTMESS('F', 'EXECLOGICIEL0_3', vali=[CODE_RETOUR_MAXI,iret])
    
    #----------------------------------------------
    # 3b. Exécution d'un fichier Python
    elif mode_lancement == EXECFILE:
       if d_para['prog'] != '':
-         UTMESS('A','EXECLOGICIEL0_4')
+         UTMESS('A', 'EXECLOGICIEL0_4')
       context={}
       try:
          execfile(d_para['fichIN'], context)
       except:
          traceback.print_exc()
          txt = open(d_para['fichIN'], 'r').read()
-#<<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
-#%s
-#<<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
-#""" % txt)
-         UTMESS('F','EXECLOGICIEL0_5',valk=txt)
+         UTMESS('F', 'EXECLOGICIEL0_5', valk=txt)
       
       if not os.path.exists(d_para['fichMED']):
-         UTMESS('F','EXECLOGICIEL0_6',valk=d_para['fichMED'])
+         UTMESS('F', 'EXECLOGICIEL0_6', valk=d_para['fichMED'])
       else:
          # copie fichMED vers fichOUT pour pouvoir le récupérer
          shutil.copyfile(d_para['fichMED'], d_para['fichOUT'])

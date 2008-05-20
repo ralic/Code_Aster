@@ -1,6 +1,6 @@
       SUBROUTINE DEBCAL(NOMOP,LIGREL,NIN,LCHIN,LPAIN,NOUT,LCHOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -155,7 +155,9 @@ C     -------------------------------------------------------------
         IF (MA2.NE.MA) THEN
           VALK(1) = CHIN
           VALK(2) = LIGREL
-          CALL U2MESK('F','CALCULEL2_27', 2 ,VALK)
+          VALK(3) = MA2
+          VALK(4) = MA
+          CALL U2MESK('F','CALCULEL2_27', 4 ,VALK)
         ENDIF
    30 CONTINUE
 

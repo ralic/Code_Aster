@@ -1,7 +1,7 @@
       SUBROUTINE LCGLDM (EPSM,DEPS,VIM,OPTION,SIG,VIP,DSIDEP,
      &             T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,SEUIL,ALF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 19/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +45,7 @@ C       VIP     : VARIABLES INTERNES EN T+
 C       DSIDEP  : MATRICE TANGENTE
 C       D2      : ET DE L AUTRE 
 C ----------------------------------------------------------------------
-      LOGICAL     RIGI, RESI,ELAS,MTG, COUP,ELAS1,ELAS2
+      LOGICAL     RIGI, RESI,ELAS,MTG, COUP,ELAS1,ELAS2,LSING1,LSING2
       INTEGER     NDTOT, K, L, I, J, M, N, P, T(2,2),IRET,KDMAX
       REAL*8      EPS(6),TREPS,SIGEL(3)
       REAL*8      FD1, FD2,DA1,DA2, ENER, TROISK, G
@@ -135,14 +135,12 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
           GI(K) = 1.0D0 - GMC 
         ENDIF      
  50   CONTINUE
- 
       COF1 = 0.5D0*LAMBDA + MU
       COF2 = 0.5D0*LAMBDA*TR2D
       Q2D = 0.25D0*LAMBDA * TR2D*TR2D * GTR2 
      &    + 0.5D0*MU * (EMP(1)*EMP(1)*GI(1) + EMP(2)*EMP(2)*GI(2)) 
       DA1 = VIM(1)
       DA2 = VIM(2)
-
       CALL CEPS33 (LAMBDA,DEUXMU,TR2D,DA1,DA2,GMT,GMC
      &                   ,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
       TREPS  = TR2D + EPS33
@@ -150,7 +148,6 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
       
       QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
       QM2 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
-
 C--------CALCUL DE DA1,DA2,EPS33
        IF (RESI) THEN
 C        CONSTRUCTION DU TOLD :
@@ -163,7 +160,6 @@ C        L'ORDRE DE D1,2 = 1 ET LA PRECISION 1D-8*1D-8 ON A
          CALL GLDLOC(LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,COF2,VIM,
      &                      Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,
      &                      KSI2D,DA1,DA2,KDMAX,TOLD)
-
         IF (DA1.LT.VIM(1)) THEN  
           DA1 = VIM(1) 
         END IF
@@ -186,7 +182,6 @@ C        L'ORDRE DE D1,2 = 1 ET LA PRECISION 1D-8*1D-8 ON A
         ELSE
           VIP(4) = 1.0D0 
         ENDIF
-        
       ELSE
 C   IF NOT RESI ....
         DA1   = VIM(1) 
@@ -206,7 +201,6 @@ C   IF NOT RESI ....
           TR2M = TR2M + EMP(K)*EMP(K)
         ENDIF
  70   CONTINUE
-
       TR2P = TR2P + EPS33*EPS33
       TR2M = TR2M + EPS33*EPS33
       ENP = MU*TR2P
@@ -227,7 +221,6 @@ C   IF NOT RESI ....
         FD1  = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)         
         FD2  = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)          
       ENDIF  
-
 C -- CALCUL DES CONTRAINTES
       LAMBDD = LAMBDA *0.5D0 *(FD1 + FD2)
       DO 80, K=1,2
@@ -240,7 +233,6 @@ C -- CALCUL DES CONTRAINTES
         ENDIF
         DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
  80   CONTINUE
-
       SIGP(1)=LAMBDD*TREPS + DEUMUD(1)*EMP(1)
       SIGP(2)=LAMBDD*TREPS + DEUMUD(2)*EMP(2)
       
@@ -257,7 +249,6 @@ C -- CALCUL DES CONTRAINTES
           SFFT1  =  LAMF*ALF*(1.0D0 - GF1   )
           SFFT2  =  0.0D0
       ENDIF
-
       DO 90, K = 1,2
         IF(EFP(K) .GT. 0.0D0) THEN
            DEMUDF(K) =  DEUMUF*(ALF + GF2*DA2)/(ALF + DA2)
@@ -281,7 +272,6 @@ C -- CALCUL DES CONTRAINTES
           RTEMP=SIGP(I)
           SIG(1)=SIG(1)+VMP(1,I)*VMP(1,I)*RTEMP
           SIG(2)=SIG(2)+VMP(2,I)*VMP(2,I)*RTEMP
-
           SIG(3)=SIG(3)+VMP(1,I)*VMP(2,I)*RTEMP          
 
           RTEMP=SIGF(I)
@@ -289,9 +279,7 @@ C -- CALCUL DES CONTRAINTES
           SIG(5)=SIG(5)+VFP(2,I)*VFP(2,I)*RTEMP
           SIG(6)=SIG(6)+VFP(1,I)*VFP(2,I)*RTEMP          
 1010    CONTINUE
-
       ENDIF
-      
 C -- CALCUL DE LA MATRICE TANGENTE
       IF (RIGI) THEN
         IF (OPTION(11:14).EQ.'ELAS') THEN         
@@ -305,7 +293,6 @@ C -- CALCUL DE LA MATRICE TANGENTE
         ELSE
           CALL R8INIR(36,0.D0,DSIDEP,1)
         ENDIF
-
         IF(TROT .GT. 0.0D0) THEN
           LAMFD  =  LAMF*(ALF + GF2*DA2)/(ALF + DA2)
           DLMFD2 = -LAMF*ALF*(1.0D0 - GF2   )/(ALF + DA2)**2
@@ -335,7 +322,6 @@ C -- CALCUL DE LA MATRICE TANGENTE
              SFF2(K)   =  0.0D0
           ENDIF
  1020   CONTINUE                  
-
         IF(TR2D .GT. 0.0D0) THEN
           FD1  = (1.0D0 + GMT*DA1) / (1.0D0 + DA1)  
           FD2  = (1.0D0 + GMT*DA2) / (1.0D0 + DA2)  
@@ -343,7 +329,6 @@ C -- CALCUL DE LA MATRICE TANGENTE
           FD1  = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)         
           FD2  = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)          
         ENDIF  
-
         LAMBDD = LAMBDA *0.5D0 *(FD1 + FD2)
 
         DO 1030, K=1,2
@@ -356,13 +341,12 @@ C -- CALCUL DE LA MATRICE TANGENTE
           ENDIF
           DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
  1030   CONTINUE
-
         DE33I = -LAMBDA*KSI2D/(DEUXMU  + LAMBDA*KSI2D)
+        
         DO 100 K = 1,2
           DO 110 L = 1,2
             DSPDEP(K,L) = LAMBDD + LAMBDA*KSI2D*DE33I   
             DSPDEP(K+3,L+3) = LAMFD
-
  110      CONTINUE
  100    CONTINUE
         DO 120 K = 1,2
@@ -382,7 +366,6 @@ C -- CALCUL DE LA MATRICE TANGENTE
           DSPDEP(6,6)=(DEMUDF(1)*EFP(1)-DEMUDF(2)*EFP(2))
      &                                    /(EFP(1)-EFP(2))
         ENDIF
-
 C -- CONTRIBUTION DISSIPATIVE
         IF ((.NOT. ELAS).AND.((EN0.GT.0.D0) .OR. 
      &     ((QFF(1) + QFF(2)).GT.0.0D0))) THEN
@@ -430,7 +413,6 @@ C -- CONTRIBUTION DISSIPATIVE
             
             SIGHM(K) = SIGHM(K) + DEUXMU*EMP(K)
           ENDIF
-          
           TREPS  = TR2D + EPS33
           QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
           QM2 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
@@ -449,10 +431,22 @@ C -- CONTRIBUTION DISSIPATIVE
      &          / (1.0D0 + DA1)**2
           B2  = (QDE(K) - QME33* KSIM*LAMBDA/(DEUXMU + KSIM*LAMBDA)) 
      &          / (1.0D0 + DA2)**2
+          LSING1 = ABS(A11) .LT. MAX(1.0D-10*A22,1.0D-14)
+          LSING2 = ABS(A22) .LT. MAX(1.0D-10*A11,1.0D-14)
 
-          D1E(K) = (B1 - A12*B2/A22)/(A11 - A12*A21/A22)
-          D2E(K) = (B2 - A21*D1E(K))/A22
-
+          IF(LSING2 .AND. (.NOT. LSING1)) THEN  
+            D1E(K) = B1/A11
+            D2E(K) = 0.0D0
+          ELSEIF(LSING1 .AND. (.NOT. LSING2)) THEN  
+            D1E(K) = 0.0D0
+            D2E(K) = B2/A22
+          ELSEIF(LSING2 .AND. LSING1) THEN  
+            D1E(K) = 0.0D0
+            D2E(K) = 0.0D0
+          ELSE
+            D1E(K) = (B1 - A12*B2/A22)/(A11 - A12*A21/A22)
+            D2E(K) = (B2 - A21*D1E(K))/A22
+          ENDIF
           SD1(K) = -TREPS*FD1 - EMP(K)*FDI1(K)
           SD2(K) = -TREPS*FD2 - EMP(K)*FDI2(K)
           
@@ -462,10 +456,20 @@ C -- CONTRIBUTION DISSIPATIVE
           B1  = (SFFT1*TROT + SFF1(K)*EFP(K)) / (ALF + DA1)**2
           B2  = (SFFT2*TROT + SFF2(K)*EFP(K)) / (ALF + DA2)**2
 
-          D1K(K) = (B1 - A12*B2/A22)/(A11 - A12*A21/A22)
-          D2K(K) = (B2 - A21*D1K(K))/A22
+          IF(LSING2 .AND. (.NOT. LSING1)) THEN  
+            D1K(K) = B1/A11
+            D2K(K) = 0.0D0
+          ELSEIF(LSING1 .AND. (.NOT. LSING2)) THEN  
+            D1K(K) = 0.0D0
+            D2K(K) = B2/A22
+          ELSEIF(LSING2 .AND. LSING1) THEN  
+            D1K(K) = 0.0D0
+            D2K(K) = 0.0D0
+          ELSE
+            D1K(K) = (B1 - A12*B2/A22)/(A11 - A12*A21/A22)
+            D2K(K) = (B2 - A21*D1K(K))/A22
+          ENDIF
  800    CONTINUE
-          
         DO 910, K=1,2
           DO 900, L=1,2
 C--------MEMBRANE-----------------          
@@ -475,7 +479,6 @@ C--------MEMBRANE-----------------
      &        DSPDEP(L,K) = DSPDEP(L,K) + LAMBDA*KSI2D*DE33D1*D1E(K)
            IF(.NOT. ELAS2)
      &        DSPDEP(L,K) = DSPDEP(L,K) + LAMBDA*KSI2D*DE33D2*D2E(K)
-     
 C--------FLEXION-----------------          
            IF(.NOT. ELAS1)
      &       DSPDEP(L+3,K+3) = DSPDEP(L+3,K+3) + MD1(L)*D1K(K)
@@ -489,7 +492,6 @@ C--------COUPLAGE M-F -----------------
            IF(.NOT. ELAS2) DSPDEP(L+3,K)=DSPDEP(L+3,K) + MD2(L)*D2E(K) 
  900      CONTINUE
  910    CONTINUE
-
 C   NOT ELAS
       END IF 
       CALL TANMGL(T,VMP,VFP,DSPDEP,DSIDEP)

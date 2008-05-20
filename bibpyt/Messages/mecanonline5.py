@@ -1,8 +1,8 @@
-#@ MODIF execlogiciel0 Messages  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline5 Messages  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,37 +20,40 @@
 
 def _(x) : return x
 
-cata_msg={
-1: _("""
-Format Salome, l'argument 1 doit etre 
-le nom du fichier med produit par le script python.
+cata_msg = {
+
+
+21 : _("""
+  -> Critère de convergence est lache !
+  -> Risque & Conseil : La valeur de RESI_GLOB_RELA est supérieure à 10-4.
+     Cela peut nuire à la qualité de la solution. Vous ne vérifiez pas l'équilibre de 
+     manière rigoureuse.
 """),
 
-2: _("""
-On ne sait pas traiter le format %(k1)s
+44 : _("""
+Pour la prédiction de type 'DEPL_CALCULE', il faut obligatoirement:
+ - ITER_GLOB_MAXI = 0
+ - ARRET = 'NON'
 """),
 
-3: _("""
-Code retour incorrect (MAXI %(i1)d) : %(i2)d
+45 : _("""
+Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
 """),
 
-4: _("""
-Le mot-cle logiciel n'est pas utilise avec ce format.
+46 : _("""
+  -> La définition des paramètres RHO_MIN et RHO_EXCL est contradictoire.
+     On choisit de prendre RHO_MIN à RHO_EXCL.
+  -> Risque & Conseil :
+     RHO_MIN ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL
+
 """),
 
-5: _("""
-Erreurs lors de l'execution du fichier ci-dessous :
-<<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
-%(k1)s
-<<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
-"""),
+47 : _("""
+  -> La définition des paramètres RHO_MAX et RHO_EXCL est contradictoire.
+     On choisit de prendre RHO_MAX à -RHO_EXCL.
+  -> Risque & Conseil :
+     RHO_MAX ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL
 
-6: _("""
-Le fichier %(k1)s n'existe pas.
-"""),
-
-7: _("""
-Mode de lancement inconnu : %(k1)s
 """),
 
 }

@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -157,7 +157,7 @@ C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)
-C
+
       DEUX   = 2.D0
       RAC2   = SQRT(DEUX)
       CODRET = 0
@@ -326,14 +326,14 @@ C     -- EULER_ALMANSI - TERMES QUADRATIQUES
         IF(LEUL) THEN
           CALL R8INIR(6,0.D0,BMQ,1)
           DO 145,I = 1,2
-            DO 146,K = 1,NNO
+            DO 146,K = 1,NNOEL
               DO 142,J = 1,2
                 BMQ(I,J) = BMQ(I,J) + BM(I,2*(K-1)+I)*DUM(J,K)
  142          CONTINUE
               BMQ(I,3) = BMQ(I,3) + BM(I,2*(K-1)+I)*DUF(1,K)            
  146        CONTINUE
  145      CONTINUE
- 
+
           DO 150, K = 1,3
             DO 155, I = 1,2
               DEPS(I) = DEPS(I) - 0.5D0*BMQ(I,K)*BMQ(I,K)

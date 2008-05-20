@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR GRANET S.GRANET 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
@@ -191,3 +191,5 @@ OPTION__
                               OUT__  ZVARINO  PVARINR  
     WEIBULL             -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    RIGI_MECA      -1    IN__   XXXXXX   XXXXXX
+                         OUT__  XXXXXX   XXXXXX

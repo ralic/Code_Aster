@@ -1,6 +1,6 @@
       SUBROUTINE JENUNO ( NOMLU , NOMO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,6 +115,7 @@ C
           LNOM   = ISZON ( JISZON + KADM - 1 + ILNOM )
           IDECO = (KADM - 1) * LOIS + IDENOM + LNOM * (NUMEC - 1)
           NK = MIN ( LEN(NOMO) , LNOM )
+          NOMO = ' '
           DO 10 K = 1 , NK
             NOMO(K:K) = K1ZON ( JK1ZON + IDECO + K )
    10     CONTINUE

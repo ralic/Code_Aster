@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,23 +205,19 @@ TEST_RESU(RESU=(
 #  SIMULATION DE L'ANCIENNE FONCTIONNALITE HIST_NON_LINE
 # =======================================================
 
-V=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CM,
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_LINE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                PREDICTION = 'DEPL_CALCULE',
-                EVOL_NOLI = U2),
+V=STAT_NON_LINE(MODELE      = MO,
+                CHAM_MATER  = CM,
+                COMP_INCR   = _F(RELATION = 'VMIS_ISOT_LINE'),
+                INCREMENT   = _F(LIST_INST = L_INST),
+                NEWTON      = _F(PREDICTION = 'DEPL_CALCULE',
+                                 EVOL_NOLI = U2),
 # CHARGE BIDON (ATTENTION: PAS DE CHARGE DE TYPE DIRICHLET)
-                             EXCIT=_F(
-                CHARGE = CH_LIM),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 0,
-# CONVERGENCE BIDON
-                RESI_GLOB_MAXI = 1.)
+                EXCIT       = _F(CHARGE = CH_LIM),
+               ####                      
+               # NE PAS FAIRE D'ITERATIONS   
+               ####                                  
+                CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
+                                ARRET = 'NON'),                
               )
 
 V=CALC_ELEM( reuse=V,

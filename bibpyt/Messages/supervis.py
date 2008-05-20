@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,6 +142,8 @@ cata_msg={
 
 25: _("""
  Mémoire gestion : "COMPACTE"
+ Ce mode de gestion peut augmenter sensiblement le temps système de certaines commandes,
+ les lectures/écritures sur les bases Jeveux étant beaucoup plus fréquentes
 """),
 
 26: _("""

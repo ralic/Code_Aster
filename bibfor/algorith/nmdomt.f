@@ -1,7 +1,7 @@
       SUBROUTINE NMDOMT(METHOD,PARMET,NOMCMD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +37,8 @@ C IN  NOMCMD  : COMMANDE APPELANTE
 C OUT METHOD  : DESCRIPTION DE LA METHODE DE RESOLUTION
 C                 1 : NOM DE LA METHODE NON LINEAIRE : NEWTON
 C                 2 : TYPE DE MATRICE (TANGENTE OU ELASTIQUE)
-C                 3 : (DECHARGE OU RIEN)       --> PAS UTILISE
-C                 4 : (NON , BGFGS OU BROYDEN) --> PAS UTILISE
+C                 3 : -- INUTILISE --
+C                 4 : -- INUTILISE --
 C                 5 : METHODE D'INITIALISATION
 C                 6 : NOM CONCEPT EVOL_NOLI SI PREDICTION 'DEPL_CALCULE'
 C                 7 : METHODE DE RECHERCHE LINEAIRE
@@ -47,7 +47,7 @@ C                 1 : REAC_INCR
 C                 2 : REAC_ITER
 C                 3 : PAS_MINI_ELAS
 C                 4 : REAC_ITER_ELAS
-C             5 - 9 : -- INUTILISES --
+C             5 - 9 : -- INUTILISE --
 C                10 : ITER_LINE_MAXI
 C                11 : RESI_LINE_RELA
 C                12 : ITER_LINE_CRIT
@@ -55,7 +55,7 @@ C                13 : PAS_MINI_CRIT
 C                14 : RHO_MIN
 C                15 : RHO_MAX
 C                16 : RHO_EXCL
-C           17 - 30 : -- INUTILISES --
+C           17 - 30 : -- INUTILISE --
 C
 C ----------------------------------------------------------------------
 C
@@ -76,35 +76,37 @@ C
 C --- INITIALISATIONS
 C      
       METHOD(1) = 'NEWTON'
-      METHOD(3) = 'RIEN'
-      METHOD(4) = 'NON'
       METHOD(7) = 'CORDE'
-
+C
+C --- TYPE ET OPTION MATRICE TANGENTE
+C
       CALL GETVTX('NEWTON','MATRICE',1,1,1,METHOD(2),IRET)
 
       CALL GETVIS('NEWTON','REAC_INCR',1,1,1,REINCR,IRET)
-      IF(REINCR.LT.0) THEN
-        CALL U2MESS('F','ALGORITH7_42')
+      IF (REINCR.LT.0) THEN
+        CALL ASSERT(.FALSE.)
       ELSE
         PARMET(1) = REINCR
       ENDIF
 
       CALL GETVIS('NEWTON','REAC_ITER',1,1,1,REITER,IRET)
       IF(REITER.LT.0) THEN
-        CALL U2MESS('F','ALGORITH7_43')
+        CALL ASSERT(.FALSE.)
       ELSE
         PARMET(2) = REITER
       ENDIF
       CALL GETVIS('NEWTON','REAC_ITER_ELAS',1,1,1,REITER,IRET)
       IF(REITER.LT.0) THEN
-        CALL U2MESS('F','ALGORITH7_44')
+        CALL ASSERT(.FALSE.)
       ELSE
         PARMET(4) = REITER
       ENDIF
 
       CALL GETVR8('NEWTON','PAS_MINI_ELAS',1,1,1,PASMIN,IRET)
       PARMET(3) = PASMIN
-
+C
+C --- TYPE DE PREDICTION
+C
       CALL GETVTX('NEWTON','PREDICTION',1,1,1,METHOD(5),IRET)
       IF (IRET.LE.0) THEN
         METHOD(5) = METHOD(2)
@@ -115,9 +117,11 @@ C
 
       IF (METHOD(5).EQ.'DEPL_CALCULE') THEN
         CALL GETVID('NEWTON','EVOL_NOLI',1,1,1,METHOD(6),IRET)
-        IF (IRET.LE.0) CALL U2MESS('F','ALGORITH7_45')
+        IF (IRET.LE.0) CALL U2MESS('F','MECANONLINE5_45')
       END IF
-
+C
+C --- PARAMETRES RECHERCHE LINEAIRE
+C      
       IF (NOMCMD(1:4).EQ.'DYNA') THEN
         NOCC = 0
       ELSE
@@ -138,13 +142,13 @@ C
         CALL GETVR8('RECH_LINEAIRE','RHO_EXCL',1,1,1,PARMET(16),IRET)
 C   VERIFICATION SUR LES PARAMETRES DE RECHERCHES LINEAIRES
         IF (PARMET(14).GE.-PARMET(16).AND.PARMET(14).LE.PARMET(16)) THEN
-          CALL U2MESS('A','ALGORITH7_46')
-          PARMET(14)=PARMET(16)
+          CALL U2MESS('A','MECANONLINE5_46')
+          PARMET(14) = PARMET(16)
         ENDIF
 
         IF (PARMET(15).GE.-PARMET(16).AND.PARMET(15).LE.PARMET(16)) THEN
-          CALL U2MESS('A','ALGORITH7_47')
-          PARMET(15)=-PARMET(16)
+          CALL U2MESS('A','MECANONLINE5_47')
+          PARMET(15) = -PARMET(16)
         ENDIF
       ELSE
         PARMET(10) = 0

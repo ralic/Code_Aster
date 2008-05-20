@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2008   AUTEUR GREFFET N.GREFFET 
 # TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,7 +132,7 @@ TRAN_GEN=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
 
                       INCREMENT=_F(
                                   INST_INIT = 0.,   INST_FIN = 0.5,
-                                  PAS = 0.001)
+                                  PAS = 0.0002)
                             )
 
 TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
@@ -151,7 +151,7 @@ TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_G
                                  RIGI_NOR_POST_FL = 0.5),
 
                       INCREMENT=_F(
-                                 INST_FIN = 3.,  PAS = 0.001)
+                                 INST_FIN = 1.,  PAS = 0.0002)
                             )
 
 TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,

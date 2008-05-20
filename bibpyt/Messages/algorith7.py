@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith7 Messages  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,12 +86,6 @@ cata_msg = {
  le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s 
 """),
 
-21 : _("""
-  -> Critère de convergence est lache !
-  -> Risque & Conseil : La valeur de RESI_GLOB_RELA est supérieure a 10-4.
-     Cela peut nuire à la qualité de la solution. Vous ne vérifiez pas l'équilibre de manière rigoureuse.
-"""),
-
 22 : _("""
  la charge  %(k1)s  n'est pas mécanique
 """),
@@ -168,35 +162,6 @@ cata_msg = {
 
 41 : _("""
  il y a au moins une charge non mécanique : vérifier le fichier de commandes
-"""),
-
-42 : _("""
-  REAC_INCR négatif
-"""),
-
-43 : _("""
-  REAC_ITER négatif
-"""),
-
-44 : _("""
-  REAC_ITER_ELAS négatif
-"""),
-
-45 : _("""
- il faut préciser un concept EVOL_NOLI en prédiction 'DEPL_CALCULE'
-"""),
-
-46 : _("""
-  -> La définition des paramètres rho_min et rho_excl est contradictoire.
-     On choisit de prendre RHO_MIN à RHO_EXCL.
-  -> Risque & Conseil :
-     RHO_MIN ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL
-
-"""),
-
-47 : _("""
- les valeurs des paramètres RHO_MAX et RHO_EXCL sont contradictoires,
- on prend RHO_MAX à -RHO_EXCL
 """),
 
 48 : _("""

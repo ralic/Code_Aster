@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,7 @@ C     -----------------------------------------------------
       CALL GETVR8('MEMOIRE','TAILLE_BLOC',1,1,1,TBLOC,L)
 
       IF ( MEMOIR(1:8) .EQ. 'COMPACTE') THEN
-         CALL U2MESS('I','SUPERVIS_25')
+         CALL U2MESS('A','SUPERVIS_25')
          CALL JETYPR('DEBUT','XD',ISEG,ITAIL,RVAL)
       ELSE
          CALL JETYPR('DEFAUT','XX',ISEG,ITAIL,RVAL)

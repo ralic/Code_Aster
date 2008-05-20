@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMUN  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ def C_NOM_GRANDEUR() : return  ( #COMMUN#
 "ENER_R",
 "EPSI_F",
 "EPSI_R",
-"ERREUR",
+"ERRE_R",
 "FACY_R",
 "FELECR",
 "FISS_R",

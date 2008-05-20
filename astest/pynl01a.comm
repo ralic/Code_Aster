@@ -1,4 +1,4 @@
-# MODIF  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE INTEGRATION DU COMPORTEMENT VMIS_ISOT_LINE PAR LA COMMANDE CALCUL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -224,7 +224,13 @@ CALC=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LIST,),
                    NEWTON=_F(PREDICTION='DEPL_CALCULE',
                              EVOL_NOLI=PRED,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E12,),);
+               ####                      
+               # NE PAS FAIRE D'ITERATIONS   
+               ####                                  
+                   CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
+                                    ARRET = 'NON'),                   
+                   
+                   );
 
 # ON EXTRAIT LES CHAMPS A TESTER
 SIG_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',

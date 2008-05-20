@@ -1,4 +1,4 @@
-# MODIF  DATE 15/04/2008   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 20/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -295,13 +295,11 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 # CHARGEMENT ET CONDITIONS LIMITES
 # ----------------------------------------------------------------------
 
-COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
-#                        LIAISON_SOLIDE=_F(GROUP_MA='SGOUP'),
-                        DDL_IMPO=(_F(GROUP_NO='LIGBE',
+COND_LIM=AFFE_CHAR_CINE(MODELE=MOD,
+                        MECA_IMPO=(_F(GROUP_NO='LIGBE',
                                      DY=0.0,),
                                   _F(GROUP_NO='PGOUP',
                                      DX=0.0,),),);
-                                                                       
 CHAD=AFFE_CHAR_MECA_F(MODELE=MOD,
                       DDL_IMPO=_F(GROUP_NO='PGOUP',
                                       DY=RAMPD,),);
@@ -331,6 +329,11 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                                ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(METHODE='MULT_FRONT',
                               RENUM='METIS',),);
-
+#
+E_el = POST_ELEM ( RESULTAT = RESU,
+                   CHARGE = (CHAD,COND_LIM,),
+                   TOUT_ORDRE = 'OUI',
+                   ENER_ELAS= _F(GROUP_MA='COPS_1'),
+                   TITRE='Energie Elastique',);
 FIN();
 #

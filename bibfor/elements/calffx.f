@@ -1,7 +1,7 @@
       SUBROUTINE CALFFX(ALIAS ,KSI1  ,KSI2  ,FF    )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,20 +60,20 @@ C
  10   CONTINUE
 C 
       IF (ALIAS(1:3).EQ.'SG2') THEN
-        FF(1)  = 0.5D0*(1-KSI1)
-        FF(2)  = 0.5D0*(1+KSI1)
+        FF(1)  = 0.5D0*(1.D0-KSI1)
+        FF(2)  = 0.5D0*(1.D0+KSI1)
       ELSE IF (ALIAS(1:3).EQ.'SG3') THEN
         FF(1)  = -0.5D0* (1.D0-KSI1)*KSI1
         FF(2)  =  0.5D0* (1.D0+KSI1)*KSI1
-        FF(3)  =  1.0D0* (1.D0+KSI1)*(1-KSI1)
+        FF(3)  =  1.0D0* (1.D0+KSI1)*(1.D0-KSI1)
       ELSE IF (ALIAS(1:3).EQ.'TR3') THEN
         FF(1)  = 0.5D0* (1.D0+KSI2)
         FF(2)  = -0.5D0* (KSI1+KSI2)
         FF(3)  = 0.5D0* (1.D0+KSI1)
       ELSE IF (ALIAS(1:3).EQ.'TR6') THEN
-        FF(1)  = 0.5D0* (1.D+00+KSI2)*KSI2
+        FF(1)  = 0.5D0* (1.D0+KSI2)*KSI2
         FF(2)  = 0.5D0* (KSI1+KSI2)* (KSI1+KSI2+1.D0)
-        FF(3)  = 0.5D0* (1.D+00+KSI1)*KSI1
+        FF(3)  = 0.5D0* (1.D0+KSI1)*KSI1
         FF(4)  = - (1.D0+KSI2)* (KSI1+KSI2)
         FF(5)  = - (1.D0+KSI1)* (KSI1+KSI2)
         FF(6)  = (1.D0+KSI1)* (1.D0+KSI2)

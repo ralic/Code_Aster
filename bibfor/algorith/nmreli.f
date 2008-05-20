@@ -6,7 +6,7 @@
      &                  MEASSE,SDDYNA,LDCCVG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -103,7 +103,7 @@ C
       REAL*8       RHOM  ,RHOOPT, RHO
       REAL*8       F0, FM, F, FOPT, FCVG
       REAL*8       R8MAEM
-      REAL*8       MEM(2,10), PARMUL, RATCVG,SENS
+      REAL*8       MEM(2,10), PARMUL, RATCVG,SENS, RHOPT1
       CHARACTER*8  K8BID
       LOGICAL      OPTI,STITE
       LOGICAL      ISFONC,REAROT
@@ -272,25 +272,41 @@ C
         ENDIF             
 C
 C --- CALCUL DU RHO OPTIMAL
-C        
+C       
         IF (METHOD(7).EQ.'CORDE') THEN
           CALL NMRECH(FM    ,F     ,FOPT  ,FCVG  ,RHOMIN,
      &                RHOMAX,REXM  ,REXP  ,RHOM  ,RHO   ,
      &                RHOOPT,LDCOPT,LDCCVG,OPT   ,ACT   ,     
-     &                OPTI  ,STITE)    
-     
+     &                OPTI  ,STITE) 
+
         ELSEIF (METHOD(7).EQ.'MIXTE') THEN
           CALL NMREBO(F     ,MEM   ,SENS  ,RHO   ,RHOOPT,
      &                LDCOPT,LDCCVG,FOPT  ,FCVG  ,OPT   ,
-     &                ACT   ,OPTI  ,STITE)     
+     &                ACT   ,OPTI  ,  STITE ) 
+          IF(ITERHO.EQ.0)THEN
+             RHOPT1 = RHO
+          ENDIF
+          IF(  RHO.GT.RHOMAX .OR. RHO.LT.RHOMIN)THEN
+            GOTO 90
+          ENDIF      
+
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF  
 
-        IF (STITE) GOTO 100
+
+        IF (STITE)THEN 
+           GOTO 100
+        ENDIF
 
  20   CONTINUE
       ITERHO = ITEMAX
+
+ 90   CONTINUE
+      IF (METHOD(7).EQ.'MIXTE') THEN
+           ITERHO = 1
+           RHOOPT = RHOPT1
+      ENDIF
 C
 C --- STOCKAGE DU RHO OPTIMAL ET DES CHAMPS CORRESPONDANTS
 C

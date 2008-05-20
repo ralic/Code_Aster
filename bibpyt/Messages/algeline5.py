@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline5 Messages  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -301,6 +301,15 @@ cata_msg={
 
 58: _("""
     La masse du modele est nulle. On ne peut normer par rapport a la masse.
+"""),
+59: _("""
+ MULT_FRONT: Erreur dans la renumerotation
+   - Le Super-Noeud : %(i1)d
+   - devrait etre le fils de   %(i2)d
+
+ Risques & conseils :
+   - Vous devriez rencontrer des problèmes lors de la factorisation.
+   - Essayez un autre algorithme pour la renumérotation : 'MD', 'MDA', ...
 """),
 
 59: _("""

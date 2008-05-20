@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/02/2008   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,10 +80,10 @@ MODE_LOCAL__
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     EDURTNO  = DURT_R   ELNO__ IDEN__  (HV       )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EERREURT  = ERREUR  ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
+    EERREURT = ERRE_R   ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
                                         TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1
                                         TERMEC   TERME2   TERME1   )
-    EERRENOT  = ERREUR  ELNO__ IDEN__  (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
+    EERRENOT = ERRE_R   ELNO__ IDEN__  (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
                                         TERMSA   TERMS2   TERMS1   TERMFL   TERMF2   TERMF1
                                         TERMEC   TERME2   TERME1   )
     CGRAINF  = FLUX_F   ELEM__         (FLUX     FLUY     )
@@ -190,13 +190,13 @@ OPTION__
     ERRE_ELEM_TEMP_F    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CSOURCF  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
                                      EVOISIN  PVOISIN
-                              OUT__  EERREURT  PERREUR
+                              OUT__  EERREURT PERREUR
     ERRE_ELEM_TEMP_R    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ESOURCR  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
                                      EVOISIN  PVOISIN
-                              OUT__  EERREURT  PERREUR
-    ERRE_ELNO_ELEM      379   IN__   EERREURT  PERREUR
-                              OUT__  EERRENOT  PERRENO
+                              OUT__  EERREURT PERREUR
+    ERRE_ELNO_ELEM      379   IN__   EERREURT PERREUR
+                              OUT__  EERRENOT PERRENO
     FLUX_ELGA_SENS      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN
                               OUT__  EFLUXPG  PFLUX_R

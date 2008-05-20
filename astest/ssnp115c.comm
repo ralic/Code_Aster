@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE TP2 FORMATION THERMOPLASTICITE. PLAQUE TROUEE EN TRACTION.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,24 +79,21 @@ U1=LIRE_RESU(
           TOUT_ORDRE='OUI'
      )
 
-RESUNL=STAT_NON_LINE(
-                                    MODELE=MO,
-                                CHAM_MATER=CM,
+RESUNL=STAT_NON_LINE(MODELE       = MO,
+                     CHAM_MATER   = CM,
                ####
-               # VEILLER A NE PAS METTE DE CONDIITONX AUX LIMITES
+               # VEILLER A NE PAS METTRE DE CONDITIONS AUX LIMITES
                ####
-                                    EXCIT=_F(  CHARGE = CHBID),
-                         #  EXCIT         :( CHARGE         : CH2
-                         #                   FONC_MULT    : F_DEPL)
-                                COMP_INCR=_F(  RELATION = 'VMIS_ISOT_TRAC'),
-                                        NEWTON=_F(
-                              PREDICTION = 'DEPL_CALCULE',
-                              EVOL_NOLI = U1),
-                                 INCREMENT=_F(  LIST_INST = L_INST),
-                              CONVERGENCE=_F(
-                     # NE PAS FAIRE D'ITERATIONS
-                                           ITER_GLOB_MAXI = 0,
-                                           ARRET = 'NON')
+                      EXCIT       = _F(CHARGE = CHBID),
+                      COMP_INCR   = _F(RELATION = 'VMIS_ISOT_TRAC'),
+                      NEWTON      = _F(PREDICTION = 'DEPL_CALCULE',
+                                      EVOL_NOLI = U1),
+                      INCREMENT   = _F(LIST_INST = L_INST),
+               ####                      
+               # NE PAS FAIRE D'ITERATIONS   
+               ####                                  
+                      CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
+                                       ARRET = 'NON'),
                       )
 
 # CALCUL DES CHAMPS AUX NOEUDS PAR ELEMENT

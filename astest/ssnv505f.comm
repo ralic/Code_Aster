@@ -1,4 +1,4 @@
-# MODIF  DATE 06/05/2008   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,18 +120,19 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
 
 
 # ---- METHODE LAGRANGIENNE ----
+F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
+F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
+
 CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='POU1',
-                              GROUP_MA_ESCL='POU2',
-                              
+                              GROUP_MA_ESCL='POU2',                            
                               METHODE='LAGRANGIEN',
-                              DIST_MAIT=31.75,
-                              DIST_ESCL=31.75,
+                              DIST_MAIT=F_DIST_M,
+                              DIST_ESCL=F_DIST_E,                   
                               FROTTEMENT='COULOMB',
                               COEF_MATR_FROT=1.,
                               VECT_MAIT='VECT_Y',
                               MAIT_VECT_Y=(0.,0.,1.,),
-                              REAC_GEOM='AUTOMATIQUE',
                               COULOMB=0.,
                               
                               ),);
@@ -178,25 +179,21 @@ T_DEP_LA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=T_REA_LA,);
-IMPR_TABLE(TABLE=T_DEP_LA,);
-
 
 #
 # ---- METHODE CONTINUE ----
 #      ________________
 CHCON=AFFE_CHAR_MECA(MODELE=MODE,
-                     CONTACT=_F(#DIST_POUTRE='OUI',
-                                GROUP_MA_MAIT='POU1',
+                     CONTACT=_F(GROUP_MA_MAIT='POU1',
                                 GROUP_MA_ESCL='POU2',
-                                #CARA_ELEM=DEFI_R,
+                                DIST_MAIT=F_DIST_M,
+                                DIST_ESCL=F_DIST_E,                                 
                                 METHODE='CONTINUE',
                                 ITER_GEOM_MAXI = 3,
                                 ITER_CONT_MAXI = 10,
                                 VECT_MAIT='VECT_Y',
                                 MAIT_VECT_Y=(0.,0.,1.,),
-                                DIST_MAIT=31.75,
-                                DIST_ESCL=31.75,),
+                                ),
                      INFO=1);
                               
 UCON=STAT_NON_LINE(MODELE=MODE,

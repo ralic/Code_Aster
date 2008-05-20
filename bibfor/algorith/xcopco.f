@@ -2,7 +2,7 @@
   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      JCSD1,JCSV1,JCSL1
       INTEGER      NDIM,NNO,I,J,IAD
-      REAL*8       FF(2),COOR(4)
+      REAL*8       FF(9),COOR(27)
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()

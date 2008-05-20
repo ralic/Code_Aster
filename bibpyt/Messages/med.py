@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF med Messages  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -289,6 +289,16 @@ cata_msg = {
 
 52 : _("""
   ->  Instant inconnu pour ce champ et ces supports dans le fichier.
+"""),
+
+53 : _("""
+  ->  La version de la lib med utilisée par Code-Aster est plus récente que 
+      celle qui a produit votre fichier med.
+  ->  Conséquence:  On considère les champs aux noeuds par élément 
+      comme des pseudo champs aux points de Gauss. 
+      (On utilise pour la lecture du champ %(k1)s 
+       contenu dans votre fichier med, le type d'entité MED_MAILLE au lieu
+       de MED_NOEUD_MAILLE).
 """),
 
 55 : _("""

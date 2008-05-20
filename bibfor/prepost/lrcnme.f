@@ -1,12 +1,12 @@
       SUBROUTINE LRCNME ( CHANOM, NOCHMD, NOMAMD,
-     &                    NOMAAS, NOMGD,
+     &                    NOMAAS, NOMGD, TYPENT,
      &                    NBCMPV, NCMPVA, NCMPVM,
      &                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
      &                    NROFIC, CODRET )
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,6 +33,8 @@ C        NOCHMD : NOM MED DU CHAMP DANS LE FICHIER
 C        NOMAMD : NOM MED DU MAILLAGE LIE AU CHAMP A LIRE
 C                  SI ' ' : ON SUPPOSE QUE C'EST LE PREMIER MAILLAGE
 C                           DU FICHIER
+C        TYPENT : TYPE D'ENTITE DU CHAMP 
+C                (MED_NOEUD=3,MED_MAILLE=0,MED_NOEUD_MAILLE=4)
 C        NOMAAS : NOM ASTER DU MAILLAGE
 C        NOMGD  : NOM DE LA GRANDEUR ASSOCIEE AU CHAMP
 C        NBCMPV : NOMBRE DE COMPOSANTES VOULUES
@@ -60,7 +62,7 @@ C
       CHARACTER*8 CRIT
       CHARACTER*32 NOCHMD, NOMAMD
 C
-      INTEGER NROFIC
+      INTEGER NROFIC,TYPENT
       INTEGER NBCMPV
       INTEGER IINST, NUMPT, NUMORD
       INTEGER CODRET
@@ -131,7 +133,7 @@ C 2. LECTURE
 C====
 C
       CALL LRCAME ( NROFIC, NOCHMD, NOMAMD, NOMAAS,
-     &              NBNOE,  'NOEU',
+     &              NBNOE,  'NOEU', TYPENT,
      &              UBID, UNBID, UBID, UBID, DEUBID,
      &              NBCMPV, NCMPVA, NCMPVM,
      &              IINST, NUMPT, NUMORD, INST, CRIT, PREC,

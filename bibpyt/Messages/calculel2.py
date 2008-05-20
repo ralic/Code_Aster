@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calculel2 Messages  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,6 +55,12 @@ cata_msg={
  trop de noeuds affectés
 """),
 
+11: _("""
+ Erreur d'utilisation :
+   Le maillage associé au modèle : %(k1)s
+   n'est pas le meme que celui du champ de matériaux : %(k2)s
+"""),
+
 12: _("""
  Le CHAM_NO %(k3)s est vide.
 """),
@@ -89,7 +95,9 @@ cata_msg={
 """),
 
 27: _("""
- le maillage associe au champ: %(k1)s  est different de celui associe au ligrel:  %(k2)s
+ Erreur utilisateur :
+   Le maillage associé au champ: %(k1)s  (%(k3)s)
+   est different de celui associe au ligrel:  %(k2)s  (%(k4)s)
 """),
 
 28: _("""
@@ -97,8 +105,8 @@ cata_msg={
 """),
 
 29: _("""
- la grandeur associee au champ  %(k1)s : %(k2)s  n est pas celle associee
- au parametre  %(k3)s : %(k4)s  (option: %(k5)s
+ la grandeur associée au champ  %(k1)s : %(k2)s
+ n'est pas celle associée au paramètre  %(k3)s : %(k4)s  (option: %(k5)s
 """),
 
 30: _("""

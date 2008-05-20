@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR GRANET S.GRANET 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -60,3 +60,5 @@ OPTION__
     CHAR_MECA_PRES_R    466   IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
 
+    RIGI_MECA      -1    IN__   XXXXXX   XXXXXX
+                         OUT__  XXXXXX   XXXXXX

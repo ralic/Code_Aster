@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF COMPELEM  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -322,7 +322,7 @@ GRANDEUR_SIMPLE__
                     DV22X2   DV22X3   DV23X1   DV23X2   DV23X3   DV31X1   DV31X2   DV31X3
                     DV32X1   DV32X2   DV32X3   DV33X1   DV33X2   DV33X3   PRES     PRES11
                     PRES12   PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33
-<<  ERREUR  : GRANDEUR LIEE A L'ESTIMATEUR D'ERREUR EN RESIDU
+<<  ERRE_R  : GRANDEUR LIEE A L'ESTIMATEUR D'ERREUR EN RESIDU
      Pour chaque élément :
        ERREST : erreur absolue
        NUEST  : erreur relative
@@ -365,7 +365,7 @@ GRANDEUR_SIMPLE__
        ESTERG1  : 1ere ESTimation de l'ERreur Globale (stabilité)
        ESTERG2  : 2eme ESTimation de l'ERreur Globale (dualité)
 >>
-    ERREUR   = R    ERREST   NUEST    SIGCAL   TERMRE   TERMR2   ERTABS   ERTREL   TERMNO
+    ERRE_R   = R    ERREST   NUEST    SIGCAL   TERMRE   TERMR2   ERTABS   ERTREL   TERMNO
                     TERMN2   TERMVO   TERMV2   TERMV1   TERMSA   TERMS2   TERMS1   TERMFL
                     TERMF2   TERMF1   TERMEC   TERME2   TERME1   ERHMME_L ERHMMEDL ERHMHY_L
                     ERHMME_G ERHMMEDG ERHMHY_G ERRETPS  ESTERG1  ESTERG2

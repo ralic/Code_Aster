@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/05/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,6 +102,8 @@ C
       PARAMETER (EDNOEU=3)
       INTEGER EDMAIL
       PARAMETER (EDMAIL=0)
+      INTEGER EDNOMA
+      PARAMETER (EDNOMA=4)
       INTEGER TYPNOE
       PARAMETER (TYPNOE=0)
 C
@@ -269,7 +271,11 @@ C
         IF ( TYGEOM.EQ.TYPNOE ) THEN
           TYPENT = EDNOEU
         ELSE
-          TYPENT = EDMAIL
+            IF(TYPECH.EQ.'ELNO')THEN
+               TYPENT = EDNOMA
+            ELSE          
+               TYPENT = EDMAIL
+            ENDIF
         ENDIF
         NVALEC = ZI(ADCAII+7*NRIMPR-4)
 C
@@ -297,7 +303,7 @@ C
      &                NUMPT, INSTAN, UNIINS, NUMORD,
      &                ADSD, ADSV, ADSL, ADSK, PARTIE,
      &                NCMPVE, NTLCMP, NTNCMP, NTUCMP, NTPROA,
-     &                NBIMPR, ZI(ADCAII), ZK32(ADCAIK),
+     &                NBIMPR, ZI(ADCAII), ZK32(ADCAIK), TYPECH,
      &                NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                CODRET )
 C

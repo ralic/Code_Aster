@@ -5,7 +5,7 @@
       CHARACTER*(*)       CHCINE, CNSZ, MO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,6 @@ C
 C
 C --- ON REMPLIT LES .AFCI .AFCV
 C
-      ZI(JAFCI) = NBLOC
 C
       IBLOC = 0
       IF (TYPE.EQ.'R') THEN
@@ -152,6 +151,9 @@ C
  142        CONTINUE
  140     CONTINUE
       ENDIF
+
+      IF (IBLOC.EQ.0) CALL U2MESS('F','CALCULEL_9')
+      ZI(JAFCI) = IBLOC
 C
       CALL JEDEMA()
       END

@@ -3,11 +3,11 @@
      &                    NUMPT, INSTAN, UNIINS, NUMORD,
      &                    ADSD, ADSV, ADSL, ADSK, PARTIE,
      &                    NCMPVE, NTLCMP, NTNCMP, NTUCMP, NTPROA,
-     &                    NBIMPR, CAIMPI, CAIMPK,
+     &                    NBIMPR, CAIMPI, CAIMPK, TYPECH,
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C                ELEMENTS/NOEUDS POUR LESQUELS LE CHAMP EST DEFINI
 C       NBIMPR : NOMBRE D'IMPRESSIONS
 C         NCAIMI : ENTIERS POUR CHAQUE IMPRESSION
 C                  CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
-C                  CAIMPI(2,I) = NOMBRE DE POINTS DE GAUSS
+C                  CAIMPI(2,I) = NOMBRE DE POINTS (DE GAUSS OU NOEUDS)
 C                  CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
 C                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
 C                  CAIMPI(5,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
@@ -84,7 +84,7 @@ C
       INTEGER TYPENT, TYGEOM
       INTEGER MODNUM(NTYMAX), NUANOM(NTYMAX,*)
 C
-      CHARACTER*8 UNIINS
+      CHARACTER*8 UNIINS, TYPECH
       CHARACTER*8 NOMTYP(*)
       CHARACTER*24 NTLCMP, NTNCMP, NTUCMP, NTPROA
       CHARACTER*32 NOCHMD
@@ -127,6 +127,8 @@ C
       PARAMETER (TYPNOE=0)
       INTEGER EDNOPG
       PARAMETER (EDNOPG=1)
+      INTEGER EDNOMA
+      PARAMETER (EDNOMA=4)
 C
       CHARACTER*8  SAUX08
       CHARACTER*24 NTVALE
@@ -250,9 +252,9 @@ C
           CALL WKVECT ( NTVALE, 'V V R', IAUX, ADVALE )
 C
           CALL IRCMVA ( ZI(ADNUCM), NCMPVE, NCMPRF,
-     &                  NVALEC, NBPG, NBSP, NOLOPG,
+     &                  NVALEC, NBPG, NBSP, 
      &                  ADSV, ADSD, ADSL,ADSK, PARTIE,
-     &                  TYMAST, MODNUM, NUANOM,
+     &                  TYMAST, MODNUM, NUANOM, TYPECH,
      &                  ZR(ADVALE), ZI(ADPROA), IDEB, IFIN )
 C
           ENDIF
@@ -264,10 +266,14 @@ C
           NBREPG = EDNOPG
           IF ( TYGEOM.EQ.TYPNOE ) THEN
             TYPENT = EDNOEU
-          ELSE
-            TYPENT = EDMAIL
+          ELSE 
             IF ( NBPG*NBSP .NE.1 ) THEN
-              NBREPG =  NBPG*NBSP
+                NBREPG =  NBPG*NBSP
+            ENDIF
+            IF(TYPECH.EQ.'ELNO')THEN
+               TYPENT = EDNOMA
+            ELSE
+              TYPENT = EDMAIL
             ENDIF
           ENDIF
 C

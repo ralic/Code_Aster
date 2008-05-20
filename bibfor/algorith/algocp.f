@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCP(DEFICO,RESOCO,LMAT,NOMA,
      &                  RESU,DEPTOT,LREAC,DEPDEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -327,7 +327,6 @@ C --- CREATION DE MAFROT = E_N*AT*A
 C ======================================================================
       NBLIG = NBLIAI
       CALL ATASMO(CM1A,NUMEDD,MAFROT,'V',NBLIG)
-      CALL DETRSD('MATR_ASSE', MAT   )
 C ======================================================================
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
 C ======================================================================

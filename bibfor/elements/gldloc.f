@@ -3,7 +3,7 @@
      &                   DA1,DA2,KDMAX,TOLD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 19/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,6 +58,7 @@ C ----------------------------------------------------------------------
       REAL*8      DM1,DM2,DF1,DF2,DKSI1,DKSI2,QM1,QM2
       REAL*8      RD1,RD2,DR1D,DR2D,DD1,DD2
       INTEGER     I
+      LOGICAL     LCONV1,LCONV2
 
 C ----------------------------------------------------------------------
       QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
@@ -123,8 +124,11 @@ C----CONTRIBUTION DES COURBURES---------
       RD2 = RD2 + QFF(2)/(ALF + DA2)**2 
 
 C-----VERIFIER SI SEUIL EST ATTEINT
-      IF(((RD1 .GT. 0.0D0).AND.(DA1.GE.VIM(1))) 
-     &     .OR. ((RD2 .GT. 0.0D0).AND.(DA2.GE.VIM(2)))) THEN
+      LCONV1 = (ABS(RD1*DA1) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
+      LCONV2 = (ABS(RD2*DA2) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
+
+      IF(((.NOT. LCONV1).AND.(DA1.GE.VIM(1))) 
+     &     .OR. ((.NOT. LCONV2).AND.(DA2.GE.VIM(2)))) THEN
         
           DO 60, I = 1,KDMAX
 
@@ -135,9 +139,17 @@ C-----VERIFIER SI SEUIL EST ATTEINT
      &             - 2.0D0*QM2   /(1.0D0 + DA2)**3
      &             - 2.0D0*QFF(2)/(ALF   + DA2)**3  
 
-             DD1 = - RD1/DR1D
-             DD2 = - RD2/DR2D
-      
+             IF(ABS(DR1D) .LT. 1.0D-14 ) THEN
+               DD1 = 0.0D0
+             ELSE
+               DD1 = - RD1/DR1D
+             ENDIF  
+             IF(ABS(DR2D) .LT. 1.0D-14 ) THEN
+               DD2 = 0.0D0
+             ELSE  
+               DD2 = - RD2/DR2D
+             ENDIF  
+
              IF(( (ABS(DD1*RD1) .LT. TOLD) .OR. 
      &                  ((RD1 .LT. 0.0D0) .AND. (DA1 .LE. VIM(1))) ) 
      &        .AND. 

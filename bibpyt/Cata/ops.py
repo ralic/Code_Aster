@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,10 +159,10 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
      # On supprime du pickle_context les concepts valant None, ca peut 
      # etre le cas des concepts non executés, placés après FIN.
      pickle_context=get_pickled_context()
-     self.jdc.restore_pickled_attrs(pickle_context)
      if pickle_context==None :
         UTMESS('F','SUPERVIS_86')
         return
+     self.jdc.restore_pickled_attrs(pickle_context)
      from Cata.cata  import ASSD,entier
      from Noyau.N_CO import CO
      for elem in pickle_context.keys():
@@ -203,14 +203,14 @@ def get_pickled_context():
        les objets python qui auraient été sauvegardés, sous forme pickled, lors d'une 
        précédente étude. Un fichier pick.1 doit etre présent dans le répertoire de travail
     """
-    if os.path.isfile("pick.1"):
-       file="pick.1"
-    else: return None
+    fpick = 'pick.1'
+    if not os.path.isfile(fpick):
+       return None
    
     # Le fichier pick.1 est présent. On essaie de récupérer les objets python sauvegardés
     context={}
     try:
-       file=open(file,'r')
+       file=open(fpick,'r')
        # Le contexte sauvegardé a été picklé en une seule fois. Il est seulement
        # possible de le récupérer en bloc. Si cette opération echoue, on ne récupère
        # aucun objet.
@@ -218,7 +218,7 @@ def get_pickled_context():
        file.close()
     except:
        # En cas d'erreur on ignore le contenu du fichier
-       # traceback.print_exc()
+       traceback.print_exc()
        return None
 
     return context

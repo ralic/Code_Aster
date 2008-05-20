@@ -2,11 +2,11 @@
      >                    NCMPVE, NUMCMP, EXICMP,
      >                    NBVATO, NBMAEC, LIMAEC, ADSD, ADSL,
      >                    NBIMPR, NCAIMI, NCAIMK,
-     >                    TYEFMA, TYPMAI, TYPGEO, NOMTYP,
+     >                    TYEFMA, TYPMAI, TYPGEO, NOMTYP, TYPECH,
      >                    PROFAS, PROMED, PROREC, NROIMP )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C       NBIMPR : NOMBRE D'IMPRESSIONS
 C       NCAIMI : STRUCTURE ASSOCIEE AU TABLEAU CAIMPI
 C         CAIMPI : ENTIERS POUR CHAQUE IMPRESSION
 C                  CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
-C                  CAIMPI(2,I) = NOMBRE DE POINTS DE GAUSS
+C                  CAIMPI(2,I) = NOMBRE DE POINTS (GAUSS OU NOEUDS)
 C                  CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
 C                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
 C                  CAIMPI(5,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
@@ -88,7 +88,7 @@ C
       INTEGER NROIMP(NBVATO)
 C
       CHARACTER*(*) NOFIMD
-      CHARACTER*8 NOMTYP(*)
+      CHARACTER*8 NOMTYP(*),TYPECH
       CHARACTER*24 NCAIMI, NCAIMK
 C
       LOGICAL EXICMP(NBVATO)
@@ -236,7 +236,7 @@ C
       NBIMPR = 0
 C
       DO 42 , IAUX = 1 , NVAL
-C
+C    
         IMA = PROFAS(IAUX)
         NREFMA = TYEFMA(IMA)
 C
@@ -268,7 +268,7 @@ C
         JAUX = ADCAII+7*NBIMPR-7
 C                  CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
         ZI(JAUX) = NREFMA
-C                  CAIMPI(2,I) = NOMBRE DE POINTS DE GAUSS
+C                  CAIMPI(2,I) = NOMBRE DE POINTS (DE GAUSS OU NOEUDS)
         ZI(JAUX+1) = NBPG
 C                  CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
         ZI(JAUX+2) = NBSP
@@ -433,7 +433,11 @@ C====
 C
       IF ( NIVINF.GT.1 ) THEN
 C
-        WRITE (IFM,8001)
+        IF(TYPECH(1:4).EQ.'ELGA')THEN
+           WRITE (IFM,8001)
+        ELSE
+           WRITE (IFM,8004)
+        ENDIF
 C
         DO 81 , IAUX = 1 , NBIMPR
           JAUX = ADCAII+7*IAUX-7
@@ -453,6 +457,13 @@ C
      >/,4X,65('*'))
  8002 FORMAT(4X,'* ',A8,' *',I11,' *',I15,'    *',I15,'    *')
  8003 FORMAT(4X,65('*'))
+ 8004 FORMAT(
+     >  4X,65('*'),
+     >/,4X,'*  TYPE DE *',22X,'NOMBRE DE',21X,'*',
+     >/,4X,'*  MAILLE  *  VALEURS   *      POINTS       *',
+     >     '   SOUS-POINT(S)   *',
+     >/,4X,65('*'))
+
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'FIN DE '//NOMPRO

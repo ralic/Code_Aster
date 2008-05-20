@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR GRANET S.GRANET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,4 +58,6 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    466   IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
+    RIGI_MECA      -1    IN__   XXXXXX   XXXXXX
+                         OUT__  XXXXXX   XXXXXX
 

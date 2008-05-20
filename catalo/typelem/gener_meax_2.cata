@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,9 +81,9 @@ MODE_LOCAL__
 
     EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
     EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
-    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL
+    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL
                                         TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
-    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL
+    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL
                                         TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )

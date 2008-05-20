@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,SOLVEU,NOMAT,VECAS,SOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETSR PETSC  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF APETSR PETSC  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -39,6 +39,9 @@ C
 C---------------------------------------------------------------
       CHARACTER*(*) ACTION
       CHARACTER*19  VECAS,SOLU,VCINE,SOLVEU,NOMAT
+
+#ifdef _HAVE_PETSC
+
 C================================================================
 #include "include/finclude/petsc.h"
 #include "include/finclude/petscvec.h"
@@ -769,4 +772,5 @@ C     -- ON REACTIVE LA LEVEE D'EXCEPTION
 
       CALL JEDEMA()
 
+#endif
       END

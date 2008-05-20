@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline2 Messages  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

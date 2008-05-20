@@ -2,7 +2,7 @@
      &           RESU,DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -802,7 +802,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE LA MATRICE TANGENTE AVEC FROTTEMENT
 C ======================================================================
-      CALL CFFROT(MAT,MAF1,MAF2,MAFROT)
+      CALL CFFROT(MAF1,MAF2,MAFROT)
 C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================
