@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE  8 MASSES ET 9 RESSORT/AMORTISSEURS SOUS EXCITATION ALEATOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,8 @@
 # ======================================================================
 #
 #**CAS TEST DU VPCS: ENSEMBLE DE MASSES ET RESSORTS*******************#
+#  CALCUL MODAL QUADRATIQUE REEL SYMETRIQUE AVEC TRI_DIAG ET QZ
+#
 #*********************************************************************#
 DEBUT(CODE=_F(NOM='SDLD23A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -105,7 +107,15 @@ FREQ3=MODE_ITER_SIMULT(    MATR_A=MATASSR1,
                                        NMAX_FREQ = 8),
                            VERI_MODE=_F( SEUIL = 1.E-5)
               )
-
+# AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
+FREQZ=MODE_ITER_SIMULT(    MATR_A=MATASSR1,
+                              MATR_B=MATASSM1,
+                              MATR_C=MATASSA1,
+                             METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
+                           CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                                       NMAX_FREQ = 8),
+                           VERI_MODE=_F( SEUIL = 1.E-5)
+              )
 #*********************************************************************#
 # *****LECTURE DE L INTERSPECTRE EXCITATION***************************#
 #*********************************************************************#
@@ -165,6 +175,42 @@ TEST_FONCTION(
                   VALE_PARA = 5.5259,
                   VALE_REFE_C = 0.1059E-5+0.j) )
 
+# POUR QZ
+DYNALEAZ=DYNA_ALEA_MODAL(
+          BASE_MODALE=_F(
+             MODE_MECA = FREQZ,
+             NUME_ORDRE = (1, 2, 3, 4, 5, 6, 7, 8,),
+             AMOR_REDUIT = (0.00868241, 0.01710101, 0.025, 0.03213938,
+                      0.03830222, 0.04331851, 0.04698464, 0.0492404,)),
+           EXCIT=_F(
+             INTE_SPEC = INTEREXC,
+             GRANDEUR = 'EFFO',
+             NUME_ORDRE_I = 1,
+             NUME_ORDRE_J = 1,
+             NOEUD = 'P4',
+             NOM_CMP = 'DX'),
+              REPONSE=_F(
+             FREQ_MIN = 4.5259,
+             FREQ_MAX = 10.,
+             PAS = 1.)
+                              )
+
+INTERREZ=REST_SPEC_PHYS(         MODE_MECA=FREQZ,
+                                   NUME_ORDRE=(1, 2, 3, 4, 5, 6, 7, 8,),
+                               INTE_SPEC_GENE=DYNALEAZ,
+                                     NOM_CHAM='DEPL',
+                                         NOEUD='P4',
+                                      NOM_CMP='DX',
+                                       OPTION='TOUT_TOUT'   )
+
+TEST_FONCTION(
+     TABL_INTSP=_F(  INTE_SPEC = INTERREZ,
+                  NOEUD_I = 'P4',
+                  NOM_CMP_I = 'DX',
+                  NOEUD_J = 'P4',
+                  NOM_CMP_J = 'DX',
+                  VALE_PARA = 5.5259,
+                  VALE_REFE_C = 0.1059E-5+0.j) )
 #
 # PAS PAR DEFAUT
 #
@@ -324,7 +370,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_00',
-                   VALE=2.338953E-07  )
+                   VALE=2.338953E-07 ,REFERENCE='NON_REGRESSION',)
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -332,7 +378,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                 NOM_PARA='LAMBDA_01',
-                   VALE=8.068269E-06   )
+                   VALE=8.068269E-06,REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -340,7 +386,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                 NOM_PARA='LAMBDA_02',
-                   VALE=2.790138E-04    )
+                   VALE=2.790138E-04, REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -348,7 +394,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                 NOM_PARA='LAMBDA_03',
-                   VALE=9.6757609E-03   )
+                   VALE=9.6757609E-03, REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -356,7 +402,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                 NOM_PARA='LAMBDA_04',
-                   VALE=3.368154E-01    )
+                   VALE=3.368154E-01 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -364,7 +410,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='ECART',
-                   VALE=6.839523E-04    )
+                   VALE=6.839523E-04 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -372,7 +418,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='NB_EXTREMA_P_S',
-                   VALE=1.10594439E+01    )
+                   VALE=1.10594439E+01 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -380,7 +426,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='NB_PASS_ZERO_P_S',
-                   VALE=1.09939097E+01    )
+                   VALE=1.09939097E+01  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -388,7 +434,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='FREQ_APPAR',
-                   VALE=5.49695484E+00    )
+                   VALE=5.49695484E+00 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -396,7 +442,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='FACT_IRRE',
-                   VALE=9.94074363E-01    )
+                   VALE=9.94074363E-01 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -404,7 +450,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_06',
-                   VALE=4.173157E+02    )
+                   VALE=4.173157E+02 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -412,7 +458,7 @@ TEST_TABLE(      TABLE=TABREP2,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_08',
-                   VALE=5.600113E+05    )
+                   VALE=5.600113E+05  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -420,7 +466,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_00',
-                   VALE=1.577675E-07    )
+                   VALE=1.577675E-07  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -428,7 +474,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_01',
-                   VALE=5.454702E-06    )
+                   VALE=5.454702E-06  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -436,7 +482,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_02',
-                   VALE=1.892842E-04    )
+                   VALE=1.892842E-04  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -444,7 +490,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_03',
-                   VALE=6.5954298E-03    )
+                   VALE=6.5954298E-03   , REFERENCE='NON_REGRESSION' )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -452,7 +498,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_04',
-                   VALE=2.310876E-01    )
+                   VALE=2.310876E-01  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -460,7 +506,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='ECART',
-                   VALE=5.61725E-04    )
+                   VALE=5.61725E-04   , REFERENCE='NON_REGRESSION' )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -468,7 +514,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='NB_EXTREMA_P_S',
-                   VALE=1.112196E+01    )
+                   VALE=1.112196E+01  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -476,7 +522,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='NB_PASS_ZERO_P_S',
-                   VALE=1.102550E+01    )
+                   VALE=1.102550E+01  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -484,7 +530,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='FACT_IRRE',
-                   VALE=9.913275E-01    )
+                   VALE=9.913275E-01 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -492,7 +538,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='FREQ_APPAR',
-                   VALE=5.512752E+00    )
+                   VALE=5.512752E+00  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -500,7 +546,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_06',
-                   VALE=2.928071E+02    )
+                   VALE=2.928071E+02  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -508,7 +554,7 @@ TEST_TABLE(      TABLE=TABREP3,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_08',
-                   VALE=4.130593E+05    )
+                   VALE=4.130593E+05  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -516,7 +562,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_00',
-                   VALE=1.585041E-07    )
+                   VALE=1.585041E-07  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -524,7 +570,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_01',
-                   VALE=5.480401E-06    )
+                   VALE=5.480401E-06 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -532,7 +578,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_02',
-                   VALE=1.901776E-04    )
+                   VALE=1.901776E-04  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -540,7 +586,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_03',
-                   VALE=6.626419E-03    )
+                   VALE=6.626419E-03  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -548,7 +594,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_04',
-                   VALE=2.3215987E-01    )
+                   VALE=2.3215987E-01 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -556,7 +602,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='ECART',
-                   VALE=5.63035E-04    )
+                   VALE=5.63035E-04  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -564,7 +610,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='NB_EXTREMA_P_S',
-                   VALE=1.1121516E+01    )
+                   VALE=1.1121516E+01  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -572,7 +618,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='NB_PASS_ZERO_P_S',
-                   VALE=1.1025786E+01    )
+                   VALE=1.1025786E+01  , REFERENCE='NON_REGRESSION'  )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -580,7 +626,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='FREQ_APPAR',
-                   VALE=5.512893E+00    )
+                   VALE=5.512893E+00 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -588,7 +634,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='FACT_IRRE',
-                   VALE=9.9139238E-01    )
+                   VALE=9.9139238E-01 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -596,7 +642,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_06',
-                   VALE=2.9407018E+02    )
+                   VALE=2.9407018E+02 , REFERENCE='NON_REGRESSION'   )
 
 TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                  _F(  NOM_PARA = 'NOEUD_I',
@@ -604,7 +650,7 @@ TEST_TABLE(      TABLE=TABREP4,FILTRE=(
                         _F(  NOM_PARA = 'NOEUD_J',
                           VALE_K = 'P4')),
                NOM_PARA='LAMBDA_08',
-                   VALE=4.1440819E+05    )
+                   VALE=4.1440819E+05  , REFERENCE='NON_REGRESSION'  )
 
 FIN( )
 #

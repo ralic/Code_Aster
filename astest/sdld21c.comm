@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@
 # SYSTEME MASSE-RESSORT A 8 DEGRES DE LIBERTE AVEC AMORTISSEMENT
 # VISQUEUX PROPORTIONNEL (ANALYSE MODALE)
 # 9 RESSORTS  8 MASSES  -- K =1.E+5    M =10 --
+# CALCUL MODAL QUADRATIQUE REEL SYMETRIQUE AVEC SORENSEN ET QZ
 #                                                 REF: SFM.VPCS SDLD21 
 # ----------------------------------------------------------------------
 #
@@ -98,10 +99,20 @@ MODES=MODE_ITER_SIMULT(MATR_A=MATASSR,
                                     FREQ=5.0,
                                     NMAX_FREQ=5,
                                     APPROCHE='REEL',),);
+MODESN=NORM_MODE(MODE=MODES,NORME='MASS_GENE')
+
+# AVEC QZ + OPTION='CENTRE' + 'QZ_SIMPLE'
+MODE_QZ1=MODE_ITER_SIMULT(MATR_A=MATASSR,
+                       MATR_B=MATASSM,
+                       MATR_C=MATASSC,
+                       METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
+                       CALC_FREQ=_F(OPTION='CENTRE',
+                                    FREQ=5.0,
+                                    NMAX_FREQ=5,),);
+MODE_QZ1=NORM_MODE(MODE=MODE_QZ1,reuse=MODE_QZ1,NORME='MASS_GENE')
 
 # --------------------------------------------------------------------
 #
-MODESN=NORM_MODE(MODE=MODES,NORME='MASS_GENE')
 
 # --------------------------------------------------------------------
 #
@@ -218,6 +229,129 @@ TEST_RESU(RESU=(_F(RESULTAT=MODESN,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.3.14'),
                 _F(RESULTAT=MODESN,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NUME_ORDRE=5,
+                   VALE_ABS='OUI',
+                   NOEUD='P1',
+                   VALE_C=('RI',5.93243E-03,-5.93243E-03),
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.14'),),)
+# POUR QZ
+TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=5.5271,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   VALE=10.8868,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=3,
+                   PARA='FREQ',
+                   VALE=15.9155,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=4,
+                   PARA='FREQ',
+                   VALE=20.4606,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=5,
+                   PARA='FREQ',
+                   VALE=24.384,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=1,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.00868241,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=2,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.017101,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=3,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.025,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=4,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.0321394,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_QZ1,
+                   NUME_ORDRE=5,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.0383022,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NUME_ORDRE=1,
+                   NOEUD='P1',
+                   VALE_ABS='OUI',
+                   VALE_C=('RI',4.32587E-03,-4.32587E-03),
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.14'),
+                _F(RESULTAT=MODE_QZ1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NUME_ORDRE=2,
+                   NOEUD='P1',
+                   VALE_ABS='OUI',
+                   VALE_C=('RI',-5.79325E-03,5.79325E-03),
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.14'),
+                _F(RESULTAT=MODE_QZ1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NUME_ORDRE=3,
+                   NOEUD='P1',
+#              --- ON TESTE LA VALEUR ABSOLUE (MODULE)
+                   VALE_ABS='OUI',
+                   VALE_C=('RI',6.45598E-03,6.45598E-03),
+#              ---
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.14'),
+                _F(RESULTAT=MODE_QZ1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NUME_ORDRE=4,
+                   VALE_ABS='OUI',
+                   NOEUD='P1',
+                   VALE_C=('RI',6.47558E-03,-6.47558E-03),
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.14'),
+                _F(RESULTAT=MODE_QZ1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    NUME_ORDRE=5,

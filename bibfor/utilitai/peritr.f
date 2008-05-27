@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/05/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -217,9 +217,6 @@ C            OPTION DE CALCUL RICE_TRACEY ---
         LPAOUT(2) = 'PSDRPR'
         CALL CALCUL('S',OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
      &              'V')
-
-C        --- IMPRESSION DU CHAMELEM ---
-        IF (NIV.GT.1 .AND. NR.EQ.0) CALL IRCHAM(CHELEM)
 
         DO 80 IOCC = 1,NBOCC
           CALL GETVTX(OPTION(1:11),'TOUT',IOCC,1,0,K8B,NT)

@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 27/05/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -584,20 +584,21 @@ C              -------------
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 C ---  L ENERGIE TOTAL
 
-              IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
-     &            (COMPT(1:4).NE.'ELAS') .AND.
-     &            (OPTION.NE.'ENER_ELAS')) THEN
+                IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
+     &             (COMPT(1:4).NE.'ELAS') .AND.
+     &             (OPTION.NE.'ENER_ELAS')) THEN
 
 
-                ENERGI = ENERGI + WORK(1)
-              ELSE
-                ENERGI = WORK(1)
-              END IF
+                  ENERGI = ENERGI + WORK(1)
+                ELSE
+                  ENERGI = WORK(1)
+                END IF
 
                 VALER(2) = ENERGI
                 VALEK(1) = NOMMAI
 
               END IF
+
 
 C ---    ECRITURE DE L'INDICATEUR OU DE L'ENERGIE DANS LA TABLE :
 C        ------------------------------------------------------
@@ -663,7 +664,14 @@ C ---          SUR LE MODELE :
 C              -------------
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,1,NUME)
 
-                ENERGI = WORK(1)
+                IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
+     &            (COMPT(1:4).NE.'ELAS') .AND.
+     &            (OPTION.NE.'ENER_ELAS')) THEN
+
+                  ENERGI = ENERGI + WORK(1)
+                ELSE
+                  ENERGI = WORK(1)
+                END IF
 
                 VALER(2) = ENERGI
                 VALEK(1) = NOMMAI

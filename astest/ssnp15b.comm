@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 27/05/2008   AUTEUR MACOCCO K.MACOCCO 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -329,13 +329,21 @@ TEST_RESU(RESU=(
 
 ENER_TOT=POST_ELEM(     RESULTAT=U,
                          TOUT_ORDRE='OUI',
-                        ENER_TOTALE=_F(  TOUT = 'OUI')
+                        ENER_TOTALE=_F(MAILLE='CUBE')
                       )
 
 
 ENER_TO2=POST_ELEM(     RESULTAT=U2,
                          TOUT_ORDRE='OUI',
-                        ENER_TOTALE=_F(  TOUT = 'OUI')
+                        ENER_TOTALE=_F(MAILLE='CUBE')
+                      )
+ENER_TO3=POST_ELEM(     RESULTAT=U2,
+                         TOUT_ORDRE='OUI',
+                        ENER_TOTALE=_F(GROUP_MA='CUBE_G')
+                      )
+ENER_TO4=POST_ELEM(     RESULTAT=U2,
+                         TOUT_ORDRE='OUI',
+                        ENER_TOTALE=_F(TOUT='OUI')
                       )
 
 TEST_RESU(RESU=(
@@ -457,7 +465,9 @@ TEST_RESU(RESU=(
                 NOM_CMP = 'TOTALE',
                 VALE =  9.40794))
               )
-
+#
+# SI ENERGIE CALCULEE SUR UNE MAILLE
+#
 TEST_TABLE(TABLE=ENER_TO2,
           FILTRE=(
                  _F(  NOM_PARA = 'INST',
@@ -488,6 +498,86 @@ TEST_TABLE(TABLE=ENER_TO2,
           VALE= 9.58487  )
 
 TEST_TABLE(TABLE=ENER_TO2,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE =3.0 ),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE=  9.40794 )
+#
+# SI ENERGIE CALCULEE SUR UN GROUPE DE MAILLE
+#
+TEST_TABLE(TABLE=ENER_TO3,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 0.1),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE=1.16403E-03  )
+
+
+TEST_TABLE(TABLE=ENER_TO3,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 0.9),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE= 1.84340  )
+
+
+TEST_TABLE(TABLE=ENER_TO3,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 2.0),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE= 9.58487  )
+
+TEST_TABLE(TABLE=ENER_TO3,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE =3.0 ),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE=  9.40794 )
+#
+# SI ENERGIE CALCULEE SUR TOUT LE MAILLAGE
+#
+TEST_TABLE(TABLE=ENER_TO4,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 0.1),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE=1.16403E-03  )
+
+
+TEST_TABLE(TABLE=ENER_TO4,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 0.9),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE= 1.84340  )
+
+
+TEST_TABLE(TABLE=ENER_TO4,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 2.0),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE= 9.58487  )
+
+TEST_TABLE(TABLE=ENER_TO4,
           FILTRE=(
                  _F(  NOM_PARA = 'INST',
                           VALE =3.0 ),),

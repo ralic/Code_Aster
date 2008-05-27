@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,6 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+
 DEBUT(CODE=_F( NOM = 'SDLX201A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
 # ================================================
@@ -146,6 +147,23 @@ MOD2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         FREQ = 2.E-2,
                                         NMAX_FREQ = 10,))
 
+# AVEC QZ + OPTION 'PLUS_PETITE'/'CENTRE' + 'QZ_SIMPLE'
+MOD1_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                         MATR_B=MASAS,
+                         METHODE='QZ',
+                         CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                                        NMAX_FREQ = 7),
+                         VERI_MODE=_F(  STOP_ERREUR = 'NON',
+                                        SEUIL = 1.5E-2,
+                                        PREC_SHIFT = 0.008)
+                          )
+
+MOD2_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                         MATR_B=MASAS,
+                         METHODE='QZ',
+                         CALC_FREQ=_F(  OPTION = 'CENTRE',
+                                        FREQ = 2.E-2,
+                                        NMAX_FREQ = 10,))
 #       1.2 MODE_ITER_INV:
 #       ---------------------
 
@@ -283,8 +301,13 @@ MOC2=MODE_ITER_INV(   MATR_A=RIGAS2,   MATR_B=MASAS2,
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)),
                VERI_MODE=_F(  STOP_ERREUR = 'NON'))
-
-
+ 
+# AVEC QZ + OPTION 'CENTRE' + 'QZ_EQUI'
+MOC1_QZ=MODE_ITER_SIMULT(  MATR_A=RIGAS2,   MATR_B=MASAS2,
+                    MATR_C=AMORT,INFO=1,
+                 METHODE='QZ',TYPE_QZ='QZ_EQUI',
+                CALC_FREQ=_F( FREQ = (0.1,),OPTION='CENTRE',NMAX_FREQ = 2),
+                VERI_MODE=_F(SEUIL=1.E-05) )
 #-----------------------------------------------------------------------
 
 ENGENDRE_TEST (  CO = (MOD1, MOD2, MOD4, MOD5, MOD6) )
@@ -596,5 +619,52 @@ TEST_RESU(RESU=(
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'))
                        )
 
+# POUR QZ
+TEST_RESU(RESU=(
+                             _F(
+                      RESULTAT = MOD1_QZ,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOD1_QZ,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N21',
+                      VALE = 6.5496238781752E-05,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOD2_QZ,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719801107E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOD2_QZ,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = -1.2297631843005E-01,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOC1_QZ,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 1.0700678025432E-01,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOC1_QZ,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+         VALE_C = 6.5585378196625E-04-2.6191922176450E-10j,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),),)
 FIN()
 #

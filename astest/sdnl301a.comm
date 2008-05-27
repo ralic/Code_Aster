@@ -1,4 +1,4 @@
-# MODIF  DATE 16/01/2008   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 27/05/2008   AUTEUR BOYERE E.BOYERE 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,7 +344,7 @@ TEST_TABLE(TABLE=POST2,
                       VALE_K  = 'N2')),
            NOM_PARA ='RMS_T_TOTAL',
            VALE     =23.4,
-           PRECISION=0.01);
+           PRECISION=0.05);
 
 
 # RESTITUTION SUR BASE PHYSIQUE ET POST-TRAITEMENT

@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 26/05/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,9 +103,6 @@ C     --- CALCUL DE L'OPTION ---
       LCHOUT(1) = CHELEM
 
       CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V')
-
-C     --- IMPRESSION DU CHAMELEM ---
-      IF (NIV.GT.1) CALL IRCHAM(CHELEM)
 
       NSYMX = .FALSE.
       NSYMY = .FALSE.

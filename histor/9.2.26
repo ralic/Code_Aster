@@ -1,0 +1,698 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 27/05/2008 - 23:12:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011972 DU 2008-04-11 20:35:11
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.19, le cas-test feti007a s'arrete en ERREUR_<F> sur Calibre.
+FONCTIONNALITE
+   Pour eviter les variations dans la partition donnée par Scotch (initialisation aléatoire
+   de l'algorithme), on repart d'un état déjà partitionné. Scotch est donc lancé dans le test
+   mais non testé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   feti007a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 26/05/2008 - 18:27:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012075 DU 2008-05-07 15:53:31
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   Correction du solveur modal QZ en quadratique
+FONCTIONNALITE
+   Contexte
+   ---------
+   Calcul modal quadratique avec le nouveau solveur QZ pour
+   faciliter l'integration de CADYRO dans Code_Aster
+   
+   Objectif
+   ---------
+   Deverouiller la portion du perimetre concernant le quadratique
+   qui a ete verouillee en 9.2.21, car la vecteurs propres trans
+   mis de LAPACK à Aster n'etaient pas bons. Les valeurs propres
+   elles etaient correctes.
+   
+   Operateur impacte
+   -----------------
+   MODE_ITER_SIMULT + METHODE='QZ'
+   
+   Details
+   --------
+    * Suite de l'EL11581: extension au quadratique, reel et
+    complexe, sym et non sym.
+    * Bugs dans la transmission et les post-traitements des
+     modes propres entre LAPACK et Aster. Suivant les types de
+     pbs, les méthodes et les options de calcul, il y'a des
+     variantes (routines wp*vec.f) et il ne faut en comprendre
+     toutes les subtilites dans le cas particulier de QZ qui
+     calcule tous les modes, mais n'en transmet que quelque uns
+     à Aster.
+    * Parfois sensibilite a la forme linearisee retenue pour
+     passer d'un pb quad a un pb generalise. On en a testee
+    plusieurs. 2 sont parametrables ds le fortran (vpqzla.f).
+    La forme classique
+        |-K     0   |  - lambda * |C       M |  
+        | 0 alpha*I |             |I alpha*0 | 
+    (avec alpha=moyenne des normes Linf de K, C et M)
+    a ete retenue car elle supporte M non inversible (c'est le
+    cas avec AFFE_CHAR_MECA + DDL_IMPO).
+    Cette forme linearisee est differente de celle retenue pour
+    les autres methodes (TRI_DIAG, SORENSEN), car elle est plus
+    simple a mettre en oeuvre et est conseillee dans le littera
+    ture (papier de F.Tisseur & K.Meerbergen de 2001).
+    * Difficultes a trier, suivant les cas, les valeurs propres
+    complexes pour decider via une heuristique parametrable (sou
+    vent en dur ds les sources du code wp*vec !):
+      - laquelle est reelle,
+      - complexe sans conjugue,
+      - complexe avec conjugue (que l'on va retenir).
+    Suivant les cas tests (et les valeurs founies par les sol
+    veurs modulo les pbs de conditionnement spectraux) on a 
+    des decisions antagonistes a prendre ! C'est un point
+    delicat a parametrer. C'est un peu blinde par des alarmes,
+    info et le diagnostique est facilite pour le developpeur
+    (logical de test, de debug et de verification modal ds 
+     VPQZLA: LTEST, LVERIM, LDEBUG. Il faut les mettre a .TRUE.)
+   
+    * Norme d'erreur parfois mauvaise (0.1 en relatif sur un mode
+    pour SDLL123A). Mais la methode PYTHON 'eigenvectors' ne fait
+   pas mieux ! Sans doute est-ce du a un mauvais conditionnement
+   spectrale du pb. J'ai essaye de "filtrer" les Lagranges de
+   blocage et les ddls physiques associes, mais cela ne marche 
+   pas mieux.
+    
+    Validation (sur la bull)
+    ----------
+    * Enrichissements de 7 cas-tests en modal quadratique reel:
+    
+    cas-test     fonctionnalite   variante     TEST_RESU
+    ----------------------------------------------------
+     SDLD27a      PLUS_PETITE      QZ_SIMPLE   FREQ, AMOR, DEPL
+     SDLD27e      CENTRE           QZ_SIMPLE   FREQ, AMOR, DEPL
+                  TOUT             QZ_EXPERT   FREQ, AMOR, DEPL
+     SDLD21c      CENTRE           QZ_SIMPLE   FREQ, AMOR, DEPL
+     SDLD23a      PLUS_PETITE      QZ_SIMPLE   indirect via
+                                             DYNA_ALEA_MODAL
+     FDLV106a     PLUS_PETITE      QZ_SIMPLE   FREQ, AMOR
+     SDLX201a     PLUS_PETITE      QZ_SIMPLE   FREQ, DEPL
+                  CENTRE           QZ_SIMPLE   FREQ, DEPL
+                  CENTRE           QZ_EQUI     FREQ, DEPL
+     SDLL123a     TOUT             QZ_EQUI     FREQ
+    (gyroscopique, test notamment pour CADYRO)
+   
+   Sources Impactees
+   ------------------
+   F77: op0045.f, vpqzla.f, wp4vec.f
+   PY: algeline5.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.2.21
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.01.02, U4.52.03,V7.15.100,V2.01.313
+VALIDATION
+   informatique, fonctionnelle, non-regression
+NB_JOURS_TRAV  : 13.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 27/05/2008 - 11:43:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012020 DU 2008-04-18 18:12:38
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.20, le cas-test sdnl301a est NOOK sur Rocks
+FONCTIONNALITE
+   Dans la fiche 11560, Marc Kham est intervenu pour stabiliser le test SDNL301a. Il s'agit
+   d'une étude de chocs sur une poutre.
+   Ce genre de calcul est sensible aux conditions initiales et la difficulté est d'estimer la
+   précision des résultats obtenus.
+   Il me semble que Marc, lors de son intervention, s'est montré un peu trop optimiste. En
+   effet, il a raffiné le maillage pour que la méthode de correction par modes statiques
+   donne un meilleur résultat en comparaison aux calculs sans et il a réduit à 1% la
+   tolérance des TEST_RESU du cas qu'il a modifié. En comparaison les autres méthodes
+   tolèrent 5% d'erreur.
+   Or j'ai vérifié, par une petite étude stochastique, que les résultats ne sont fiables qu'à
+   5%. Mettre une tolérance plus faible risque de déclencher à l'avenir des NOOKs.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SDNL301a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011936 DU 2008-04-07 10:55:44
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.18, le cas-test forma11b s'arrete en ERREUR_<F> sur Calibre.
+FONCTIONNALITE
+   Le test forma11b est un exemple de calcul de modes de corps rigide.
+   Cela reste un type de calcul délicat.
+   Suite au changement de bibliothèque mathématique, le test est passé NOOK sur CALIBRE et ROCKS.
+   Cela est dû au fait que la nouvelle librairie mathématique trouve pour le premier mode
+   propre une valeur propre (négative) plus éloignée de zéro que la librairie précédente. Le
+   shift choisi n'est plus alors assez grand pour saisir cette valeur propre et le calcul
+   finit en erreur, soit parce qu'il s'aperçoit qu'il a raté cette valeur propre, soit, plus
+   embêtant, qu'il l'oublie.
+   
+   Pour pallier cette difficulté, il faut rendre le shift utilisé pour capturer les modes de
+   corps rigide plus éloigné encore de zéro.
+   Pour cela on peut jouer sur les paramètres suivants :
+   - SEUIL_FREQ, qui est utilisé pour déterminer les valeurs propres qui sont considérées
+   comme des modes de corps rigide, mais aussi pour chosir comme shift de départ pour le
+   calcul de ces modes de corps rigide. En augmentant ce paramètre on accroît le shift et on
+   attrape tous les modes de corps rigide.
+   - PREC_SHIFT qui représente le pourcentage d'augmentation du shift lorsque l'on tombe sur
+   un mode de corps rigide. En l'augmentant, la shift s'accroît plus vite après chaque échec
+   de factorisation et on arrive à trouver tous les modes.
+   - NMAX_ITER_SHIFT qui est le nombre de tentative de factorisation. Comme à chaque essai
+   manqué, on accroît le shift, plus on autorise de tentatives, plus le shift final est
+   grand, ce qui accroît la chance d'attraper le mode de corps rigide le plus éloigné de zéro.
+   
+   Toutefois on déconseille assez fortement à l'utilisateur de jouer sur ces paramètres. La
+   méthode la plus simple et la plus prudente est probablement de chercher les modes de corps
+   rigides avec la méthode dite de SORENSEN et la méthode par BANDE de fréquence. Cependant
+   il ne faut pas hésiter à mettre une fréquence légérement négative comme valeur inférieure
+   de la bande de fréquence. Ainsi on s'assure de prendre un shift assez grand pour capturer
+   tous les modes de corps rigide.
+   En l'occurence, pour forma11b, on choisit la bande de fréquence (-.1, 2700)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma11b
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 26/05/2008 - 16:40:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012098 DU 2008-05-16 15:31:13
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW9.2.24, le cas-test ssnv504j est NOOK sur Bull, Calibre et Rocks.
+FONCTIONNALITE
+   Objet
+   =====
+   
+   Le cas-test ssnv504j est NOOK suite aux corrections de la fiche 12018.
+   
+   Analyse
+   =======
+   
+   Trois valeurs analytiques sont testées dans ce test. La seconde est dégradée tandis que la
+   troisième est meilleure.
+   Cela s'explique par le fait qu'on ajoute une perturbation (pour éviter un chargement
+   extérieur quasi-nul). L'effet de cette perturbation va en s'atténuant.
+   
+   Correction
+   ==========
+   
+   On ajuste la tolérance sur la seconde valeur (passage à 2%).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv504j
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011494 DU 2007-11-22 16:08:11
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   MN10 - Contact mxc3xa9thode continue et STAT_NON_LINE rxc3xa9entrant
+FONCTIONNALITE
+   Objet
+   =====
+   
+   L'utilisation de la méthode CONTINUE en reprise de calcul pose problème. Dans certains
+   cas, on ne converge plus si on coupe un STAT_NON_LINE en deux, alors que tout se passe
+   bien en un seul.
+   
+   Analyse
+   =======
+   
+   La reprise de calcul n'a jamais marché. En fait on initialise systématiquement (que l'on
+   soit en reprise ou pas) l'état de contact à zéro (sauf si on utilise CONTACT_INIT).
+   Bien que les inconnues de contact (lagranges de contact et semi-multiplicateurs de
+   frottements) sont conservées d'un calcul à un autre, des informations de la SD contact
+   sont perdues (ou plutôt pas utilisées car elles ont pu être modifiées).
+   
+   Correction
+   ==========
+   
+   On émet une alarme si on utilise la méthode CONTINUE en reprise de calcul (reuse) ou avec
+   ETAT_INIT/EVOL_NOLI.
+   Il faudra réfléchir à un moyen de conserver les informations présentes dans la
+   sd_char_contact autrement.
+   
+   Impact : sdnv105c émet des alarmes en plus (seul test à faire de la reprise avec la
+   méthode CONTINUE).
+   
+   A faire en v8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03,U4.01.05
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012123 DU 2008-05-26 11:45:57
+TYPE express concernant Code_Aster (VERSION 8.7)
+TITRE
+   Plantage dans mmmab2 sur Calibre5
+FONCTIONNALITE
+   Objet
+   =====
+   
+   Les test de méthode CONTINUE qui font du contact-frottant plantent sur Calibre 5 dans
+   MMMAB2.f salement en nodebug.
+   
+   Analyse
+   =======
+   
+   Le bug a été trouvé par Jacques et Jean-Pierre. Il se trouve dans la routine MKKVEC
+   appelée (uniquement) par MMMAB2
+   
+   C --- INITIALISATIONS
+   C
+         DO 11 I = 1,3
+           DO 12 J = 1,3
+             MAT(I,J) = 0.D0
+   12      CONTINUE
+           RESU(J) = 0.D0
+   11    CONTINUE
+         THETA = 1.D0
+   
+   On a écrit RESU(J) au lieu de RESU(I). Or à la fin de la boucle sur J, ce dernier vaut
+   J=4, on fait donc RESU(4) = 0.D0, et comme RESU est un argument en entrée, on écrase au delà.
+   
+   A savoir
+   ========
+   
+   Le bug a été découvert grâce à une option bien pratique des compilateurs : l'option "check
+   bounds". Sur le compilateur Intel, elle se présente ainsi :
+   
+   -CB    Performs run-time checks on whether array subscript and substring references are
+   within declared bounds (same as the -check bounds option).
+   
+   Elle permet d'obtenir la remontée suivante :
+   
+   ------------------------------------------------------------------------------------------------------------------------
+    
+   INSTANT DE CALCUL :  1.000000000E+00
+    
+   ------------------------------------------------------------------------------------------------------------------------
+   |     CONTACT    |     CONTACT    |     CONTACT    |   ITERATIONS   |     RESIDU     |   
+    RESIDU     |     OPTION     |
+   |    CONTINU     |    CONTINU     |    CONTINU     |     NEWTON     |     RELATIF    |   
+    ABSOLU     |   ASSEMBLAGE   |
+   |   ITER. GEOM.  |   ITER. FROT.  |   ITER. CONT.  |                | RESI_GLOB_RELA |
+   RESI_GLOB_MAXI |                |
+   ------------------------------------------------------------------------------------------------------------------------
+   forrtl: severe (408): fort: (2): Subscript #1 of the array RESU has value 4 which is
+   greater than the upper bound of 3
+   
+   Image              PC                Routine            Line        Source             
+   asteru_jpl         0000000001F9E956  Unknown               Unknown  Unknown
+   asteru_jpl         0000000001F9DB56  Unknown               Unknown  Unknown
+   asteru_jpl         0000000001F11232  Unknown               Unknown  Unknown
+   asteru_jpl         0000000001EDA0E2  Unknown               Unknown  Unknown
+   asteru_jpl         0000000001ED9068  Unknown               Unknown  Unknown
+   asteru_jpl         00000000004933AE  mkkvec_                    52  mkkvec.f
+   asteru_jpl         0000000000493AD0  mmmab2_                    40  mmmab2_jpl.f
+   asteru_jpl         0000000000E6A639  te0364_                   370  te0364.f
+   asteru_jpl         0000000000910304  te0000_                  1261  te0000.f
+   asteru_jpl         0000000000613998  calcul_                   472  calcul.f
+   asteru_jpl         0000000000EE74A0  mmcmat_                   149  mmcmat.f
+   asteru_jpl         0000000000D9F12F  mmcmem_                    69  mmcmem.f
+   asteru_jpl         00000000009D308F  nmdepl_                   300  nmdepl.f
+   asteru_jpl         00000000007A4EA8  op0070_                   304  op0070.f
+   asteru_jpl         0000000000599772  ex0000_                   258  ex0000.f
+   asteru_jpl         00000000004E6750  execop_                    90  execop.f
+   asteru_jpl         00000000004D26EE  expass_                    82  expass.f
+   asteru_jpl         0000000000499BD7  aster_oper               2635  astermodule.c
+   
+   Correction
+   ==========
+   
+   On remplace RESU(J) par RESU(I) dans MKKVEC.
+   
+   A faire en v8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tous tests m?ode continue
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012116 DU 2008-05-23 12:45:02
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.25, le cas-test mtlp103a s?arrete en ERREUR_<F> sur Bull.
+FONCTIONNALITE
+   En NEW9.2.25, le cas-test mtlp103a s?arrete en ERREUR_<F> sur la machine Bull par manque
+   de temps CPU.
+   
+   ==> On augmente le .para : passage de 200s à 240s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   mtlp103a
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 26/05/2008 - 13:19:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012027 DU 2008-04-23 15:50:04
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Objet JEVEUX inexistant quand INFO=2 dans POST_ELEM
+FONCTIONNALITE
+   INFO=2 dans POST_ELEM provoque un appel à la routine de 
+   IMPR_RESU IRCHAM (impression d'un cham_elem) pour 
+   imprimer un cham_elem intermédiaire qui n'a pas d'intérêt
+   (c'est la table qui compte). De plus cet appel ne peut 
+   pas marcher , il faudrait donc écrire une 2-ème routine
+   IRCHAM.
+   On supprime donc cet appel, qui était présent en plus de 
+   MASS_INER pour les mot-clés ENER_POT, ENER_CIN, 
+   RICE_TRACEY,WEIBULL et CARA_GEOM.
+   On rend le cas-test sdld02e avec INFO=2 pour vérifier 
+   qu'il n'y a plus de plantage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdld02e
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 26/05/2008 - 18:22:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012096 DU 2008-05-16 14:53:46
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   En NEW9.2.24, le cas-test sslv313b s'arrete par manque de temps cpu sur Calibre.
+FONCTIONNALITE
+   Problème
+   ========
+   Le test sslv313b plante depuis la 9.2.10 sur calibre, par manque de temps CPU ; et depuis
+    depuis la 9.2.19 sur clpaster, par manque de mémoire.
+   
+   Le temps d'exécution est en effet très différent d'une machine à l'autre. Par exemple
+   juste pour le STAT_NON_LINE :
+   Bull : 340 s
+   Clp50a8 : 1615 s 
+   
+   Correction
+   ==========
+   Je propose de modifier le .para : 
+   ancien :
+   tps_job 650 mem_job 1500Mo mem_aster 10 ncpus 1 liste_test S
+   nouveau :
+   tps_job 1800 mem_job 1800Mo mem_aster 10 ncpus 1 liste_test S
+   
+   Ca passe sous clpaster en bacth (mais j'ai un doute sur la prise en compte des paramètres
+   mémoire). Je n'ai pas pu vérifier sur Calibre.
+   
+   J'en profite pour modifier un peu le sslv313a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv313
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 26/05/2008 - 11:43:55
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012110 DU 2008-05-22 12:42:41
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Test zzzz108b sous Rocks (clpaster)
+FONCTIONNALITE
+   Ce nouveau cas-test n'avait pas été testé sur clpaster.
+   Malheureusement c'est la machine la plus lente :
+   le temps CPU sur Bull est 210 s., sur Calibre 4.1 il est de 380 s et de 450 s 
+   sur clpaster...
+   On modifie donc le .para pour porter la limite temps CPU à 600 s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz108b
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 27/05/2008 - 13:37:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012045 DU 2008-04-29 08:39:29
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : CS
+TITRE
+   calcul de l'?rgie totale dans POST_ELEM
+FONCTIONNALITE
+   L'énergie totale obtenue via le mot-clé ENER_TOTALE dans 
+   la commande POST_ELEM n'est pas
+   correctement calculée dans le cas où celle-ci est 
+   demandée sur une maille ou plusieurs
+   mailles en renseignant le mot-clé MAILLE. Cela a été mis 
+   en évidence en modifiant le
+   cas-test ssnp15b qui ne contient qu'une seule maille. 
+   Les modifications ont été testées en comparant la somme 
+   des énergies totales des mailles
+   d'un maillage et l'énergie totale de ce maillage.
+   
+   Fortran modifié:
+   peingl.f
+   
+   Cas-test modifié:
+   ssnp15b
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.6.10
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp15b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 26/05/2008 - 11:11:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012120 DU 2008-05-26 06:43:56
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   mumps01a et mumps04a cassxc3xa9s sur calibre5 en 9.2.25
+FONCTIONNALITE
+   plantage sur calibre 5 :
+     mumps01a
+     mumps04a
+                                                                                            
+                           
+   Solution:
+   ---------
+   Dans la routine crsvmu.f, j'avais oublié d'initialiser ICO=0 dans le cas DISTRIBUE_MC.
+   Je corrige mon erreur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   mumps01a et mumps04a
+NB_JOURS_TRAV  : 0.6
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012117 DU 2008-05-23 12:47:29
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.25, les cas-tests ssnv209f, ssnv209h s?arretent en ERREUR_<F> sur Calibre.
+FONCTIONNALITE
+   La syntaxe des fichiers .para de ces 2 tests est incorrecte :
+   
+   "mem_aster 100Mo" ne veut rien dire car mem_aster est le pourcentage de mémoire (de
+   mem_job) donné à JEVEUX (mémoire statique).
+   
+   JPL propose les nouvelles valeurs :
+   ssnv209f : 
+     * tps_job   :  400 -> 400
+     * mem_job   : 1000 ->1000
+     * mem_aster : 20Mo -> 10%
+   ssnv209h : 
+     * tps_job   :  300 -> 600
+     * mem_job   : 2000 -> 800
+     * mem_aster : 20Mo -> 50%
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 26/05/2008 - 11:07:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012109 DU 2008-05-22 09:14:29
+TYPE express concernant Code_Aster (VERSION 3.x)
+TITRE
+   Amelioration du maillage Salome des tests FORMA01
+FONCTIONNALITE
+   On restitue une version améliorée des scripts python des 
+   test forma01 :  forma01[a-d].datg utilisé en
+   formation, qui permet de définir tout le maillage en 
+   script python, comme on le ferait avec Gibi.
+   
+   On n'utilise plus en particulier les références aux 
+   numéros d'objets (Merci Isabelle et Nicolas Geimer)
+   
+   La restitution avant la STA9.3 permet d'avoir un test à 
+   jour pour la formation de l'automne.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma01
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF fdlv106a                      boiteau O.BOITEAU          522     42      5
+ CASTEST MODIF feti007a                       assire A.ASSIRE           292    234    114
+ CASTEST MODIF forma01a                        proix J-M.PROIX          252      1     18
+ CASTEST MODIF forma01b                        proix J-M.PROIX          261      1     18
+ CASTEST MODIF forma01c                        proix J-M.PROIX          331      2     19
+ CASTEST MODIF forma01d                        proix J-M.PROIX          319      1     18
+ CASTEST MODIF forma11b                       boyere E.BOYERE           185      6      7
+ CASTEST MODIF mtlp103a                       desoza T.DESOZA           862      1      1
+ CASTEST MODIF sdld02e                     desroches X.DESROCHES        670      2      2
+ CASTEST MODIF sdld21c                       boiteau O.BOITEAU          365    136      2
+ CASTEST MODIF sdld23a                       boiteau O.BOITEAU          656     84     38
+ CASTEST MODIF sdld27a                       boiteau O.BOITEAU          570    260      6
+ CASTEST MODIF sdld27e                       boiteau O.BOITEAU          642    280      2
+ CASTEST MODIF sdll123a                      boiteau O.BOITEAU          323     55      4
+ CASTEST MODIF sdlx201a                      boiteau O.BOITEAU          670     72      2
+ CASTEST MODIF sdnl301a                       boyere E.BOYERE           421      2      2
+ CASTEST MODIF sensd09b                      boiteau O.BOITEAU          265     75      2
+ CASTEST MODIF sslv313a                      galenne E.GALENNE          272     76      7
+ CASTEST MODIF sslv313b                      galenne E.GALENNE          244      1      1
+ CASTEST MODIF ssnp15b                       macocco K.MACOCCO          747     94      4
+ CASTEST MODIF ssnv209f                       pellet J.PELLET           252      1      1
+ CASTEST MODIF ssnv209h                       pellet J.PELLET           448      1      1
+ CASTEST MODIF ssnv504j                       desoza T.DESOZA           267      2      2
+ CASTEST MODIF zzzz108b                      greffet N.GREFFET          326      1      1
+ FORTRAN MODIF algeline/op0045               boiteau O.BOITEAU         1118     11     19
+ FORTRAN MODIF algeline/vpqzla               boiteau O.BOITEAU          931    315    162
+ FORTRAN MODIF algeline/wp4vec               boiteau O.BOITEAU          323     88     17
+ FORTRAN MODIF algorith/crsvmu                pellet J.PELLET           299      2      1
+ FORTRAN MODIF algorith/mkkvec                desoza T.DESOZA           106      2      2
+ FORTRAN MODIF algorith/nmdoet                desoza T.DESOZA           453     14      2
+ FORTRAN MODIF utilitai/pecage             desroches X.DESROCHES        204      1      4
+ FORTRAN MODIF utilitai/peecin             desroches X.DESROCHES        373      2      9
+ FORTRAN MODIF utilitai/peepot             desroches X.DESROCHES        325      3     10
+ FORTRAN MODIF utilitai/peingl               macocco K.MACOCCO          709      9      1
+ FORTRAN MODIF utilitai/pemain             desroches X.DESROCHES        220      2      4
+ FORTRAN MODIF utilitai/peritr             desroches X.DESROCHES        402      1      4
+ FORTRAN MODIF utilitai/peweib             desroches X.DESROCHES        438      1      4
+  PYTHON MODIF Messages/algeline5            boiteau O.BOITEAU          358     17      5
+  PYTHON MODIF Messages/mecanonline           desoza T.DESOZA           151     16      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   39       16572      1914     522     +1392
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   39       16572      1914     522     +1392 

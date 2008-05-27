@@ -1,4 +1,4 @@
-# MODIF  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/05/2008   AUTEUR GALENNE E.GALENNE 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,6 +127,43 @@ TEST_TABLE( TABLE=KGLOC1,
             VALE= 1.12448E+06,
             PRECISION=0.001      )
 
+RSUP2=6e-3
+RINF2=2e-3
+
+GLOC2=CALC_G(           RESULTAT=CHAMDEPL,
+                        NUME_ORDRE = 1,
+                        LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                          LISSAGE_G='LAGRANGE'),
+                        THETA=_F(FOND_FISS=FISS,
+                                 R_SUP=RSUP2,
+                                 R_INF=RINF2,),
+                    )
+IMPR_TABLE(TABLE=GLOC2);
+TEST_TABLE( TABLE=GLOC2,
+            NOM_PARA='G_LOCAL',
+            FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                            VALE_K = 'N565',      ),
+            REFERENCE='NON_REGRESSION',
+            VALE=  6.26978E+00,
+            PRECISION=0.001      )
+
+KGLOC2=CALC_G(           RESULTAT=CHAMDEPL,
+                        NUME_ORDRE = 1,
+                        OPTION='CALC_K_G',
+                        LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                                   LISSAGE_G='LAGRANGE'),
+                        THETA=_F(FISSURE=FFX,
+                                 R_SUP=RSUP2,
+                                 R_INF=RINF2,),
+                    )
+IMPR_TABLE(TABLE=KGLOC2);
+TEST_TABLE( TABLE=KGLOC2,
+            NOM_PARA='K1_LOCAL',
+            FILTRE=_F(  NOM_PARA = 'NUM_PT',  
+                            VALE_I = 1,      ),
+            REFERENCE='NON_REGRESSION',
+            VALE= 1.07407E+06,
+            PRECISION=0.001      )
 # Calcul avec POST_K1_K2_K3 : la fissure est non-plane, 
 # on ne peut pas calculer automatiquement pour tous les noeuds du fond de fissure
 
@@ -156,15 +193,15 @@ TINF1=POST_RELEVE_T(ACTION=_F(     GROUP_NO='LINF11',
                                     NOM_CHAM='DEPL',TOUT_CMP='OUI',
                                     RESULTAT=CHAMDEPL,
                                     OPERATION='EXTRACTION',) ,) ;
-TABL_K1=POST_K1_K2_K3(  MODELISATION='3D',
+TABL_KA=POST_K1_K2_K3(  MODELISATION='3D',
               MATER=MAT,
               TABL_DEPL_SUP = TSUP1,
               TABL_DEPL_INF = TINF1,
               ABSC_CURV_MAXI = RSUP,
               VECT_K1        = ( 1., 0., 0., ),
            )
-IMPR_TABLE(TABLE=TABL_K1)
-TEST_TABLE( TABLE=TABL_K1,
+IMPR_TABLE(TABLE=TABL_KA)
+TEST_TABLE( TABLE=TABL_KA,
             NOM_PARA='K1_MAX',
             FILTRE=_F(  NOM_PARA = 'METHODE',  
                         VALE_I = 3,      ),
@@ -184,20 +221,52 @@ TINF2=POST_RELEVE_T(ACTION=_F(     GROUP_NO='LINF22',
                                     OPERATION='EXTRACTION',) ,) ;
 K1x = cos(10.*3.14159/180.)                                    
 K1z = sin(10.*3.14159/180.)
-TABL_K2=POST_K1_K2_K3(  MODELISATION='3D',
+TABL_KB=POST_K1_K2_K3(  MODELISATION='3D',
               MATER=MAT,
               TABL_DEPL_SUP = TSUP2,
               TABL_DEPL_INF = TINF2,
               ABSC_CURV_MAXI = RSUP,
               VECT_K1        = ( K1x, 0., K1z, ),
            )
-IMPR_TABLE(TABLE=TABL_K2)
-TEST_TABLE( TABLE=TABL_K2,
+IMPR_TABLE(TABLE=TABL_KB)
+TEST_TABLE( TABLE=TABL_KB,
             NOM_PARA='K1_MAX',
             FILTRE=_F(  NOM_PARA = 'METHODE',  
                         VALE_I = 3,      ),
             REFERENCE='NON_REGRESSION',
             VALE= 1.08826E+06 ,
             PRECISION=0.001      )
+
+TABL_KA2=POST_K1_K2_K3(  MODELISATION='3D',
+              MATER=MAT,
+              TABL_DEPL_SUP = TSUP1,
+              TABL_DEPL_INF = TINF1,
+              ABSC_CURV_MAXI = RSUP2,
+              VECT_K1        = ( 1., 0., 0., ),
+           )
+IMPR_TABLE(TABLE=TABL_KA2)
+TEST_TABLE( TABLE=TABL_KA2,
+            NOM_PARA='K1_MAX',
+            FILTRE=_F(  NOM_PARA = 'METHODE',  
+                        VALE_I = 3,      ),
+            REFERENCE='NON_REGRESSION',
+            VALE= 1.179607E+06,
+            PRECISION=0.001      )
+TABL_KB2=POST_K1_K2_K3(  MODELISATION='3D',
+              MATER=MAT,
+              TABL_DEPL_SUP = TSUP2,
+              TABL_DEPL_INF = TINF2,
+              ABSC_CURV_MAXI = RSUP2,
+              VECT_K1        = ( K1x, 0., K1z, ),
+           )
+IMPR_TABLE(TABLE=TABL_KB2)
+TEST_TABLE( TABLE=TABL_KB2,
+            NOM_PARA='K1_MAX',
+            FILTRE=_F(  NOM_PARA = 'METHODE',  
+                        VALE_I = 3,      ),
+            REFERENCE='NON_REGRESSION',
+            VALE= 1.1086E+06 ,
+            PRECISION=0.001      )            
+
 FIN()
 

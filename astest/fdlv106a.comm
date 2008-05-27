@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL D AMORTISSEMENT AJOUTE EN ECOULEMENT ANNULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@
 
 #                      CALCUL 3D
 
-#                CALCUL MODAL COMPLEXE EN EAU
+#            CALCUL MODAL COMPLEXE EN EAU AVEC TRI_DIAG ET QZ
 
 #                   CAS TEST FDLV106A
 
@@ -369,7 +369,13 @@ MODBIS=MODE_ITER_SIMULT(      MATR_A=RAIDEUR,
 ###CDURAND##             CALC_FREQ=_F(  APPROCHE = 'REEL',
 ###CDURAND##                            FREQ = (0.5,1000.,)),
                                 )
-
+# AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
+MODBISZ=MODE_ITER_SIMULT(     MATR_A=RAIDEUR,
+                              MATR_B=MASSE,
+                              MATR_C=AMORT,
+                              METHODE='QZ',
+                              VERI_MODE=_F( SEUIL = 1.E-2),)
+                                    
 # MODE COMPLEXE A VITESSE CRITIQUE
 
 
@@ -415,7 +421,13 @@ MODCRIT=MODE_ITER_SIMULT(     MATR_A=RAIDCR,
 ###CDURAND##    CALC_FREQ=_F(APPROCHE = 'REEL',
 ###CDURAND##                 FREQ = (0.5,1000.,)),
                                 )
-
+# AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
+MODCRITZ=MODE_ITER_SIMULT(    MATR_A=RAIDCR,
+                              MATR_B=MASSCR,
+                              MATR_C=AMORCR,
+                              METHODE='QZ',
+                              VERI_MODE=_F( SEUIL = 1.E-2),
+                                )
 # MODE COMPLEXE AU FLOTTEMENT
 
 
@@ -460,7 +472,13 @@ MODFLOT=MODE_ITER_SIMULT(     MATR_A=RAIDFL,
 ###CDURAND##           CALC_FREQ=_F(   APPROCHE = 'REEL',
 ###CDURAND##               FREQ = (0.5,1000.,)),
                                  )
-
+# AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
+MODFLOTZ=MODE_ITER_SIMULT(    MATR_A=RAIDFL,
+                              MATR_B=MASSFL,
+                              MATR_C=AMORFL,
+                              METHODE='QZ',
+                              VERI_MODE=_F( SEUIL = 1.E-2),
+                                 )
 TEST_RESU(RESU=(_F( RESULTAT = MODBIS, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
                 NUME_ORDRE = 1,  VALE = 12.5, REFERENCE='ANALYTIQUE',),
@@ -480,6 +498,25 @@ TEST_RESU(RESU=(_F( RESULTAT = MODBIS, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
                 NUME_ORDRE = 1,  VALE = -0.00066, REFERENCE='ANALYTIQUE',))
            )
-
+# POUR QZ
+TEST_RESU(RESU=(_F( RESULTAT = MODBISZ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 12.5, REFERENCE='ANALYTIQUE',),
+          _F( RESULTAT = MODBISZ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 0.00011, REFERENCE='ANALYTIQUE',),
+          _F( RESULTAT = MODCRITZ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 12.5, REFERENCE='ANALYTIQUE',),
+          _F( RESULTAT = MODCRITZ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 0.0000138, REFERENCE='ANALYTIQUE',),
+          _F( RESULTAT = MODFLOTZ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 12.5, REFERENCE='ANALYTIQUE',),
+          _F( RESULTAT = MODFLOTZ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = -0.00066, REFERENCE='ANALYTIQUE',))
+           )
 FIN()
 #

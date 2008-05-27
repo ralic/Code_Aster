@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF mecanonline Messages  DATE 26/05/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,21 @@ cata_msg = {
 
 13 : _("""
  Plusieurs instants correspondent à celui spécifié sous ETAT_INIT
+"""),
+
+14 : _("""
+ Vous utilisez la méthode CONTINUE pour le traitement du contact et faites une reprise de calcul (mot-clé reuse). L'état initial de contact sera
+ non contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
+ Cela peut entraîner des difficultés de convergence en présence de fortes non-linéarités. En présence de frottement, la solution peut bifurquer
+ différemment.
+ 
+ Conseils :
+   Si vous le pouvez, faites votre calcul en une seule fois.
+"""),
+
+15 : _("""
+ Vous utilisez la méthode CONTINUE pour le traitement du contact et définissez un état initial via le mot-clé ETAT_INIT. L'état initial de contact
+ sera non contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
 """),
 
 22 : _("""

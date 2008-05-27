@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 26/05/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ND,NR,NI,IRET,NP,NC,JORD,JINS,JAD,NBORDR,IORD,NUMORD,
      &        IAINST,JNMO,IBID,IE,JREF,NT,NM,NG,NBGRMA,IG,JGR,NBMA,NUME,
      &        IM,LFREQ,NBPARR,NBPARD,NBPAEP,IOCC,JMA,NF,INUME,IFM,NIV,
-     &        IFR,IUNIFI,IER
+     &        IER
       PARAMETER (NBPAEP=2,NBPARR=6,NBPARD=4)
       REAL*8 PREC,XFREQ,R8DEPI,VARPEP(NBPAEP),ALPHA,VALER(3),INST
       REAL*8 R8B,RUNDF,R8VIDE
@@ -75,7 +75,6 @@ C     ------------------------------------------------------------------
 
 C --- RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
-      IFR = IUNIFI('RESULTAT')
 
       BASE = 'V'
       K24B = ' '
@@ -272,12 +271,6 @@ C           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
      &              LIGREL,BASE,CHVARC,CHVREF,K24B,K24B,
      &                  K24B, K24B, K8B, IBID, K24B, IRET )
    30   CONTINUE
-
-C        --- IMPRESSION DU CHAMELEM ---
-        IF (NIV.GT.1) THEN
-          IF (NR.NE.0) WRITE (IFR,1000) OPTIO2,NUMORD,INST
-          CALL IRCHAM(CHELEM)
-        END IF
 
 C        --- ON CALCULE L'ENERGIE TOTALE ---
         CALL PEENCA(CHELEM,NBPAEP,VARPEP,0,IBID)

@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -302,8 +302,6 @@ C     --- METHODE QZ ---
         IF ((TYPEQZ(1:5).EQ.'QZ_QR').AND.((TYPRES(1:10).EQ.'FLAMBEMENT')
      &       .OR.(LC).OR.(.NOT.LKR)))
      &    CALL U2MESS('F','ALGELINE5_60')
-C     --- ON DEBRANCHE PROVISOIREMENT LE QUADRATIQUE AVEC QZ
-        IF (LC) CALL ASSERT(.FALSE.)
       ENDIF
       IF ((OPTIOF.EQ.'TOUT').AND.(.NOT.LQZ))
      &  CALL U2MESS('F','ALGELINE5_65')   
@@ -609,13 +607,8 @@ C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
           CALL WKVECT('&&OP0045.QRLSCALE.WORK','V V R',QRN,ILSCAL)
           CALL WKVECT('&&OP0045.QRRSCALE.WORK','V V R',QRN,IRSCAL)
         ENDIF
-        IF (LKR) THEN
-          IF (LC) THEN
-            CALL WKVECT('&&OP0045.VECT.AUC','V V C',QRN2,LAUC)
-            CALL WKVECT('&&OP0045.QZ.VALPRO','V V C',QRN,LVALPR)
-          ELSE
-            CALL WKVECT('&&OP0045.QZ.VALPRO','V V R',QRN,LVALPR)
-          ENDIF
+        IF (LKR.AND..NOT.LC) THEN
+          CALL WKVECT('&&OP0045.QZ.VALPRO','V V R',QRN,LVALPR)
           CALL WKVECT('&&OP0045.QZ.MATRICEK','V V R',QRN2,IQRN)
           CALL WKVECT('&&OP0045.QZ.MATRICEM','V V R',QRN2,LQRN)
           CALL WKVECT('&&OP0045.QZ.ALPHAR','V V R',QRN,QRAR)
@@ -623,7 +616,9 @@ C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
           CALL WKVECT('&&OP0045.QZ.BETA','V V R',QRN,QRBA)
           CALL WKVECT('&&OP0045.QZ.VL','V V R',QRN,QRVL)
           CALL WKVECT('&&OP0045.QZ.WORK','V V R',QRLWOR,KQRN)
-        ELSE IF (.NOT.LKR) THEN
+        ELSE
+          IF (LC)
+     &      CALL WKVECT('&&OP0045.VECT.AUC','V V C',QRN2,LAUC)
           CALL WKVECT('&&OP0045.QZ.VALPRO','V V C',QRN,LVALPR)
           CALL WKVECT('&&OP0045.QZ.MATRICEK','V V C',QRN2,IQRN)
           CALL WKVECT('&&OP0045.QZ.MATRICEM','V V C',QRN2,LQRN)
@@ -632,9 +627,6 @@ C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
           CALL WKVECT('&&OP0045.QZ.VL','V V C',QRN,QRVL)
           CALL WKVECT('&&OP0045.QZ.WORK','V V C',QRLWOR,KQRN)
           CALL WKVECT('&&OP0045.QZ.WORKR','V V R',QRLWOR,KQRNR)
-        ELSE
-C ---- OPTION ILLICITE
-          CALL ASSERT(.FALSE.)
         ENDIF
         CALL JERAZO('&&OP0045.QZ.MATRICEK',QRN2,1)
         CALL JERAZO('&&OP0045.QZ.MATRICEM',QRN2,1)      
@@ -934,16 +926,16 @@ C     ------------------------------------------------------------------
             ZK24(LRESUK-1+MXRESF+IMET) = 'LANCZOS'
  36       CONTINUE
 
-        ELSE IF ((LQZ).AND.(LKR)) THEN
+        ELSE IF (LQZ) THEN
 C     ------------------------------------------------------------------
-C     -------  QZ PB QUADRATIQUE REEL   --------
+C     -------  QZ PB QUADRATIQUE REEL ET COMPLEXE  --------
 C     ------------------------------------------------------------------
           CALL VPQZLA(TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA,
      &         QRVL, LVEC, KQRN, LVALPR,
-     &         NCONV, OMECOR, KTYP, KQRNR, NEQACT, ILSCAL,  
-     &         IRSCAL, OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI,
-     &         ZI(LPROD), NFREQ, LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA)
-          NFREQ = NCONV / 2
+     &         NCONV, OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL, 
+     &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD),
+     &         NFREQ, LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA)
+          NFREQ=NFREQ/2
           CALL WP4VEC(NFREQ,NCONV,NEQ,SIGMA,
      &           ZC(LVALPR),ZC(LVEC),MXRESF,
      &           ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC))

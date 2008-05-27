@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SENSIBILITE DE MODES PROPRES COMPLEXES D'UNE POUTRE POU_D_E
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,8 +118,20 @@ dft_nu = -ft/(2*(1+sensible[1]))
 MODE=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,
          MATR_C=MATASSC,
          SENSIBILITE=(PS[0],PS[1],),CHAM_MATER=CHMAT,CARA_ELEM=CARELE,
-         CALC_FREQ=_F(OPTION='CENTRE',FREQ=f1,APPROCHE='COMPLEXE',NMAX_FREQ=3),
+         CALC_FREQ=_F(OPTION='CENTRE',FREQ=f1,APPROCHE='REEL',NMAX_FREQ=3),
          VERI_MODE=(_F(STOP_ERREUR='OUI',SEUIL=2.E-5),),
+         )
+
+#IMPR_RESU(FORMAT='RESULTAT',
+#          RESU=(_F(RESULTAT=MODE,),
+#                _F(RESULTAT=MODE,SENSIBILITE=(PS[0],),),
+#                _F(RESULTAT=MODE,SENSIBILITE=(PS[1],),),),)
+
+MODE_QZ=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,
+         MATR_C=MATASSC,METHODE='QZ',
+         SENSIBILITE=(PS[0],PS[1],),CHAM_MATER=CHMAT,CARA_ELEM=CARELE,
+         CALC_FREQ=_F(OPTION='CENTRE',FREQ=f1,NMAX_FREQ=3),
+         VERI_MODE=(_F(STOP_ERREUR='OUI',SEUIL=2.E-4),),
          )
 
 #IMPR_RESU(FORMAT='RESULTAT',
@@ -188,5 +200,66 @@ TEST_RESU(RESU=(
 
           ),)
 
+# POUR QZ
+TEST_RESU(RESU=(
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1, VALE = f1),
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 2, VALE = f2),
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 3, VALE = ft),
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 1, VALE = df1_e),
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 2, VALE = df2_e),
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                SENSIBILITE=PS[0],
+                NUME_ORDRE = 3, VALE = dft_e),
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-15,
+                SENSIBILITE=PS[1],
+                NUME_ORDRE = 1, VALE = df1_nu),
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-15,
+                SENSIBILITE=PS[1],
+                NUME_ORDRE = 2, VALE = df2_nu),
+          _F( RESULTAT=MODE_QZ, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                SENSIBILITE=PS[1],
+                NUME_ORDRE = 3, VALE = dft_nu),
+          _F( RESULTAT=MODE_QZ, REFERENCE='ANALYTIQUE',
+                NOM_CHAM='DEPL',GROUP_NO='MILIEU',NOM_CMP='DZ',
+                CRITERE = 'ABSOLU', PRECISION = 2.E-15,
+                SENSIBILITE=PS[0],
+                VALE_C=0.0+0.0j,
+                NUME_ORDRE = 1, ),
+          _F( RESULTAT=MODE_QZ, REFERENCE='ANALYTIQUE',
+                NOM_CHAM='DEPL',GROUP_NO='MILIEU',NOM_CMP='DRX',
+                CRITERE = 'ABSOLU', PRECISION = 2.E-10,
+                SENSIBILITE=PS[0],
+                VALE_C=0.0+0.0j,
+                NUME_ORDRE = 3, ),
+          _F( RESULTAT=MODE_QZ, REFERENCE='ANALYTIQUE',
+                NOM_CHAM='DEPL',GROUP_NO='MILIEU',NOM_CMP='DZ',
+                CRITERE = 'ABSOLU', PRECISION = 2.E-15,
+                SENSIBILITE=PS[1],
+                VALE_C=0.0+0.0j,
+                NUME_ORDRE = 1, ),
+          _F( RESULTAT=MODE_QZ, REFERENCE='ANALYTIQUE',
+                NOM_CHAM='DEPL',GROUP_NO='MILIEU',NOM_CMP='DRX',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                SENSIBILITE=PS[1],
+                VALE_C=0.0+0.0j,
+                NUME_ORDRE = 3, ),
+
+          ),)
 FIN()
 

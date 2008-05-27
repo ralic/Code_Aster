@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 26/05/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE   EXTRUSION D'UN LOPIN AVEC LE CONTACT GLISSIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -198,7 +198,7 @@ TEST_RESU(RESU=(_F(RESULTAT  =U,
                    NOM_CMP   ='DY',
                    GROUP_NO  ='K',
                    VALE      =20.824999999999999,
-                   PRECISION =1.5E-2,
+                   PRECISION =2.0E-2,
                    REFERENCE ='ANALYTIQUE'),
                 _F(RESULTAT  =U,
                    NUME_ORDRE=3,

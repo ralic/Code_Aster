@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,6 +89,7 @@ def EXTR_MATR(matrrr) :
                                         vecc[varr]=0
                                 ste=limm
                         if (rtt2[2*ii+1]>0) and (ste==limm):
+
                                 for hh in range(0,limm):
                                         if (vecc[hh]==1):
                                                 indint[gg]=ii+hh
@@ -128,7 +129,6 @@ def EXTR_MATR(matrrr) :
                 for ii in range(0,ddlphy):
                         for jj in range(0,ddlphy):
                                 rig11[ii][jj]=matrig[indint[ii]][indint[jj]]
-
                 return rig11
 
 
@@ -176,7 +176,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                  
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
-                        DDL_IMPO=(
+                               DDL_IMPO=(
                                  _F(GROUP_NO=('PALIER_A','PALIER_B'),
                                      DX=0, DY=0, DZ=0,
                                      ),
@@ -207,7 +207,8 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        CALC_FREQ=_F(OPTION='BANDE',
                        FREQ=(3.,3000.)));
 
-                                  
+
+
 IMPR_RESU(MODELE=MODELE,
           FORMAT='GMSH',
           UNITE=37,
@@ -221,6 +222,11 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
                             _F(MATR_ASSE=AMOR, COEF_R=1.,),))
 
 
+MODEQ=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
+                       MATR_B=MASSE,MATR_C=GYOM,METHODE='QZ',TYPE_QZ='QZ_EQUI',
+                       CALC_FREQ=_F(OPTION='TOUT'),
+                       VERI_MODE=_F(SEUIL=0.5),
+                        )
 gyro=EXTR_MATR(GYOM)
 
 masI=inverse(mas)
@@ -228,7 +234,7 @@ HPRIME=zeros((nddl*2,nddl*2),Float)
 HPRIME[0:nddl,0:nddl]=matrixmultiply(gyro,masI)
 HPRIME[0:nddl,nddl:2*nddl]=matrixmultiply(rig,masI)
 HPRIME[nddl:2*nddl,0:nddl]=-identity(nddl)
-
+aster.matfpe(-1)
 print 'valeurs propres primes'
 vprime=eigenvalues(HPRIME)/2./pi
 vpreal=list(vprime.imag)
@@ -241,6 +247,7 @@ for vp in vpreal:
   i=i+1
  j=j+1
  dij=j-i
+aster.matfpe(+1)
 
 
 FREQROT=CREA_TABLE(
@@ -267,6 +274,50 @@ TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=499.575,
            FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 4,),),
            REFERENCE='NON_REGRESSION',)
 
-
+# POUR QZ
+TEST_RESU(RESU=(
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-6,
+                NUME_ORDRE = 1,  VALE = 1.2391535367663E+02, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 1,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-6,
+                NUME_ORDRE = 20,  VALE = 7.9716000041241E+03, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 20,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-6,
+                NUME_ORDRE = 40,  VALE = 2.1163265424323E+04, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 40,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-6,
+                NUME_ORDRE = 60,  VALE = 3.7289789207208E+04, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 60,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-6,
+                NUME_ORDRE = 80,  VALE = 7.4712423094465E+04, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 80,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-6,
+                NUME_ORDRE = 100,  VALE = 1.8639954760765E+05, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 100,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-6,
+                NUME_ORDRE = 107,  VALE = 2.0492518391503E+05, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 107,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+           ),)
 FIN()
 

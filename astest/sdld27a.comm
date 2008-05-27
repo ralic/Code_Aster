@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SYSTEME MASSE-RESSORT AVEC AMORTISSEUR VISQUEUX NONPROPORTIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@
 # VISQUEUX PROPORTIONNEL (CALCUL MODAL)
 # SANS NOEUD EXTREMITES: 9 RESSORTS  8 MASSES
 #                        9 AMORTISSEURS VISQUEUX
+# CALCUL MODAL QUADRATIQUE REEL SYMETRIQUE AVEC TRI_DIAG ET QZ
 #                                                 REF: SFM.VPCS SDLD27
 # ----------------------------------------------------------------------
 
@@ -42,10 +43,12 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=MO,DISCRET=(
                _F( GROUP_MA = 'AMORT_M',CARA = 'A_T_D_L',VALE = ( 50.,0.,0.,)),
                _F( GROUP_MA = 'AMORT_F',CARA = 'A_T_D_L',VALE = ( 25.,0.,0.,))) )
 
-CH=AFFE_CHAR_MECA( MODELE=MO,DDL_IMPO=(
+CH=AFFE_CHAR_MECA( MODELE=MO,
+ DDL_IMPO=(
                    _F( GROUP_NO = 'A_ET_B', DX = 0.,DY = 0.,DZ = 0.),
                             _F( GROUP_NO = 'MASSE',         DY = 0.,DZ = 0.)),
-                   FORCE_NODALE=_F(  NOEUD = 'P4',   FX = 1.)   )
+                   FORCE_NODALE=_F(  NOEUD = 'P4',   FX = 1.)   
+                   )
 
 MELR=CALC_MATR_ELEM(  MODELE=MO,  CHARGE=CH, OPTION='RIGI_MECA',
                         CARA_ELEM=CARELEM  )
@@ -58,6 +61,7 @@ MELC=CALC_MATR_ELEM(  MODELE=MO,  CHARGE=CH, OPTION='AMOR_MECA',
 
 # ----------------------------------------------------------------------
 NUM=NUME_DDL(  MATR_RIGI=MELR )
+IMPR_CO(CONCEPT=_F(NOM=NUM))
 
 MATASSR=ASSE_MATRICE(  MATR_ELEM=MELR,   NUME_DDL=NUM  )
 
@@ -66,14 +70,22 @@ MATASSM=ASSE_MATRICE(  MATR_ELEM=MELM,   NUME_DDL=NUM  )
 MATASSC=ASSE_MATRICE(  MATR_ELEM=MELC,   NUME_DDL=NUM  )
 
 # ----------------------------------------------------------------------
-
-MODE_QUA=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,MATR_C=MATASSC,
+MODE_QUA=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,
+                          MATR_C=MATASSC,
                          METHODE='TRI_DIAG',
-                        CALC_FREQ=_F( OPTION = 'PLUS_PETITE',NMAX_FREQ = 8),
+                        CALC_FREQ=_F(OPTION = 'PLUS_PETITE',NMAX_FREQ = 8),
                           VERI_MODE=_F( SEUIL = 1.E-5))
+IMPR_CO(CONCEPT=_F(NOM=MODE_QUA))
 
 MODE_QUA=NORM_MODE(reuse=MODE_QUA,   MODE=MODE_QUA,   NORME='MASS_GENE' )
 
+# AVEC QZ + OPTION 'PLUS_PETITE' + 'QZ_SIMPLE'
+MODE_QZ=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,MATR_C=MATASSC,
+                         METHODE='QZ',INFO=1,TYPE_QZ='QZ_EQUI',
+                        CALC_FREQ=_F(OPTION = 'PLUS_PETITE',NMAX_FREQ = 8),
+                          VERI_MODE=_F( SEUIL = 1.E-5))
+
+MODE_QZ=NORM_MODE(reuse=MODE_QZ,   MODE=MODE_QZ,   NORME='MASS_GENE' )
 #-----------------------------------------------------------------------
 
 TEST_RESU(RESU=(
@@ -312,5 +324,247 @@ TEST_RESU(RESU=(
 
                        )
 
+# POUR QZ
+TEST_RESU(RESU=(
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1, REFERENCE='NON_REGRESSION',
+                            PARA = 'FREQ',              VALE = 5.53),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,REFERENCE='NON_REGRESSION',
+                            PARA = 'AMOR_REDUIT',VALE = 0.01521),
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,REFERENCE='NON_REGRESSION',
+                            PARA = 'FREQ',              VALE = 10.90),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,REFERENCE='NON_REGRESSION',
+                            PARA = 'AMOR_REDUIT',VALE = 0.02877),
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,REFERENCE='NON_REGRESSION',
+                            PARA = 'FREQ',              VALE = 15.93),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,REFERENCE='NON_REGRESSION',
+                            PARA = 'AMOR_REDUIT',VALE = 0.03960),
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,REFERENCE='NON_REGRESSION',
+                            PARA = 'FREQ',              VALE = 20.45),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4, REFERENCE='NON_REGRESSION',
+                            PRECISION = 2.E-3,
+                            PARA = 'AMOR_REDUIT',VALE = 0.04709),
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,REFERENCE='NON_REGRESSION',
+                            PARA = 'FREQ',              VALE = 24.34),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5, REFERENCE='NON_REGRESSION',
+                            PRECISION = 2.E-3,
+                            PARA = 'AMOR_REDUIT',VALE = 0.05098),
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6, REFERENCE='NON_REGRESSION',
+                            PRECISION = 2.E-3,
+                            PARA = 'FREQ',              VALE = 27.49),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,REFERENCE='NON_REGRESSION',
+                            PRECISION = 2.E-3,
+                            PARA = 'AMOR_REDUIT',VALE = 0.05183),
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,REFERENCE='NON_REGRESSION',
+                            PARA = 'FREQ',              VALE = 29.84),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,REFERENCE='NON_REGRESSION',
+                            PRECISION = 2.E-3,
+                            PARA = 'AMOR_REDUIT',VALE = 0.05115),
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,REFERENCE='NON_REGRESSION',
+                            PARA = 'FREQ',              VALE = 31.29),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8, REFERENCE='NON_REGRESSION',
+                            PRECISION = 2.E-3,
+                            PARA = 'AMOR_REDUIT',VALE = 0.05036),
+
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P1',NOM_CMP = 'DX',VALE_C = 4.07E-03-4.56E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P2',NOM_CMP = 'DX',VALE_C = 7.97E-3-8.28E-3j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P3',NOM_CMP = 'DX',VALE_C = 1.09E-02-1.10E-02j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P4',NOM_CMP = 'DX',VALE_C = 1.25E-02-1.25E-02j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P5',NOM_CMP = 'DX',VALE_C = 1.25E-02-1.24E-02j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P6',NOM_CMP = 'DX',VALE_C = 1.11E-02-1.09E-02j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P7',NOM_CMP = 'DX',VALE_C = 8.24E-03-8.04E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P8',NOM_CMP = 'DX',VALE_C = 4.41E-03-4.25E-03j),
+
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P1',NOM_CMP = 'DX',VALE_C = 5.2451E-03-6.2859E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P2',NOM_CMP = 'DX',VALE_C = 8.8262E-03-8.9661E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P3',NOM_CMP = 'DX',VALE_C = 8.1687E-03-7.5363E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P4',NOM_CMP = 'DX',VALE_C = 3.5966E-03-2.6601E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P5',NOM_CMP = 'DX',VALE_C = -2.6919E-03+3.4247E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P6',NOM_CMP = 'DX',VALE_C = -7.6801E-03+7.9323E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P7',NOM_CMP = 'DX',VALE_C = -8.9786E-03+8.8024E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 2,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P8',NOM_CMP = 'DX',VALE_C = -5.9688E-03+5.6410E-03j),
+
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P1',NOM_CMP = 'DX',VALE_C = 5.9112E-03-7.0457E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P2',NOM_CMP = 'DX',VALE_C = 7.1108E-03-6.0247E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P3',NOM_CMP = 'DX',VALE_C = 1.0003E-03+8.3361E-04j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P4',NOM_CMP = 'DX',VALE_C = -6.0895E-03+6.8264E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P5',NOM_CMP = 'DX',VALE_C = -6.8705E-03+6.1477E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P6',NOM_CMP = 'DX',VALE_C = -5.7895E-04-4.9876E-04j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P7',NOM_CMP = 'DX',VALE_C = 6.2789E-03-6.6279E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 3,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P8',NOM_CMP = 'DX',VALE_C = 6.6438E-03-6.2903E-03j),
+
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P1',NOM_CMP = 'DX',VALE_C = 6.3498E-03-6.8851E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P2',NOM_CMP = 'DX',VALE_C = 3.6471E-03-1.0777E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P3',NOM_CMP = 'DX',VALE_C = -5.1479E-03+6.3346E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P4',NOM_CMP = 'DX',VALE_C = -5.1065E-03+3.5112E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P5',NOM_CMP = 'DX',VALE_C = 3.5636E-03-4.8748E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P6',NOM_CMP = 'DX',VALE_C = 6.0926E-03-5.3642E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P7',NOM_CMP = 'DX',VALE_C = -1.7313E-03+2.7287E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 4,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P8',NOM_CMP = 'DX',VALE_C = -6.5540E-03+6.3885E-03j),
+
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P1',NOM_CMP = 'DX',VALE_C = 6.4149E-03-5.8397E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P2',NOM_CMP = 'DX',VALE_C = -7.2337E-04+3.5573E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P3',NOM_CMP = 'DX',VALE_C = -5.9540E-03+4.6533E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P4',NOM_CMP = 'DX',VALE_C = 3.0569E-03-4.8123E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P5',NOM_CMP = 'DX',VALE_C = 4.6122E-03-3.1716E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P6',NOM_CMP = 'DX',VALE_C = -4.8388E-03+5.6348E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P7',NOM_CMP = 'DX',VALE_C = -2.6059E-03+1.5113E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 5,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P8',NOM_CMP = 'DX',VALE_C = 5.8290E-03-6.0025E-03j),
+
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P1',NOM_CMP = 'DX',VALE_C = -5.7519E-03+4.2040E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P2',NOM_CMP = 'DX',VALE_C = 4.4001E-03-5.8183E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P3',NOM_CMP = 'DX',VALE_C = 1.0876E-03+1.3464E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P4',NOM_CMP = 'DX',VALE_C = -5.4109E-03+4.4264E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P5',NOM_CMP = 'DX',VALE_C = 4.5088E-03-5.4637E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P6',NOM_CMP = 'DX',VALE_C = 6.5690E-04+7.6652E-04j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P7',NOM_CMP = 'DX',VALE_C = -5.1217E-03+4.6694E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 6,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P8',NOM_CMP = 'DX',VALE_C = 4.6649E-03-5.1398E-03j),
+
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P1',NOM_CMP = 'DX',VALE_C = -4.2613E-03+2.5231E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P2',NOM_CMP = 'DX',VALE_C = 5.5554E-03-5.2802E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P3',NOM_CMP = 'DX',VALE_C = -4.3628E-03+5.3641E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P4',NOM_CMP = 'DX',VALE_C = 1.2531E-03-2.7700E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P5',NOM_CMP = 'DX',VALE_C = 2.3713E-03-1.1778E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P6',NOM_CMP = 'DX',VALE_C = -4.9027E-03+4.4962E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P7',NOM_CMP = 'DX',VALE_C = 5.2349E-03-5.5333E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 7,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P8',NOM_CMP = 'DX',VALE_C = -3.2402E-03+3.7864E-03j),
+
+     _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P1',NOM_CMP = 'DX',VALE_C = 2.23E-03-1.14E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P2',NOM_CMP = 'DX',VALE_C = -3.71E-03+2.98E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P3',NOM_CMP = 'DX',VALE_C = 4.75E-03-4.41E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P4',NOM_CMP = 'DX',VALE_C = -5.25E-03+5.27E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P5',NOM_CMP = 'DX',VALE_C = 5.14E-03-5.43E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P6',NOM_CMP = 'DX',VALE_C = -4.44E-03+4.88E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P7',NOM_CMP = 'DX',VALE_C = 3.23E-03-3.69E-03j),
+          _F( RESULTAT = MODE_QZ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+            PRECISION = 1.E-2,REFERENCE='NON_REGRESSION',
+            NOEUD = 'P8',NOM_CMP = 'DX',VALE_C = -1.66E-03+2.01E-03j))
+
+                       )
 FIN()
 #

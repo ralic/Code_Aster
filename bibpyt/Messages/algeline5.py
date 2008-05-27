@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline5 Messages  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -302,6 +302,7 @@ cata_msg={
 58: _("""
     La masse du modele est nulle. On ne peut normer par rapport a la masse.
 """),
+
 59: _("""
  MULT_FRONT: Erreur dans la renumerotation
    - Le Super-Noeud : %(i1)d
@@ -312,9 +313,6 @@ cata_msg={
    - Essayez un autre algorithme pour la renumérotation : 'MD', 'MDA', ...
 """),
 
-59: _("""
-    Méthode QZ dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !
-"""),
 60: _("""
     Méthode QZ dans MODE_ITER_SIMULT: La variante QR ne fonctionne qu'avec une
     matrice B symétrique définie positive ! Donc elle n'accepte pas le flambement,
@@ -333,7 +331,7 @@ cata_msg={
 """),
 63: _("""
     Méthode QZ dans MODE_ITER_SIMULT + OPTION='BANDE': On trouve un nombre de 
-    valeurs propres %(i1)d différent du nombre de valeurs propres détecté
+    valeurs propres %(i1)d différent du nombre de valeurs propres détectées
     dans la bande %(i2)d ! 
 """),
 64: _("""
@@ -342,5 +340,19 @@ cata_msg={
 """),
 65: _("""
     L'option de calcul 'TOUT' n'est licite qu'avec METHODE='QZ'! 
+"""),
+66: _("""
+    Méthode QZ dans MODE_ITER_SIMULT : On souhaite un nombre de valeurs
+    propres %(i1)d supérieur au nombre de valeurs propres détectées %(i2)d ! 
+"""),
+67: _("""
+    Attention on souhaite un nombre de valeurs propres NMAX_FREQ=%(i1)d supérieur
+    au nombre de valeurs propres détectées NCONV=%(i2)d !
+    Pour poursuivre le calcul on impose NMAX_FREQ=NCONV.
+    Sans doute est-ce du à un mauvais tri dans les valeurs propres complexes
+     conjuguées. Contacter l'équipe de développement.
+"""),
+68: _("""
+    Méthode QZ dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !
 """),
 }
