@@ -4,7 +4,7 @@
      &                   TMPCHI,TMPCHF,VEC2ND,CNVABT,CNRESI,RHO,
      &                   ITERHO,PARMER,PARMEI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 03/06/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,19 +56,20 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      LOGICAL      CONVRL,STITE,OPTI
-      INTEGER      I,INDRO,ISNNEM,TEST,ACT,OPT,LICOPT,ITERFI
+      LOGICAL      CONVRL
+      INTEGER      I,INDRO,ISNNEM
       INTEGER      JTEMPM,JTEMPP,JTEMPR,J2ND,JVARE,JBTL,JBTLA
       INTEGER      JCHMP,JFPIP,JCGMP,JTP,JCNRE,JDIRI,JATMU
-      REAL*8       RHOT,F0,F1,VRLMAX,RHO0,PENT
-      REAL*8       RHOF,FFINAL,VALEUR,SENS,RHOEXC,FCVG
-      REAL*8       R8PREM,TESTM,R8BID,MEM(2,10),PARMUL,REXM,REXP
+      REAL*8       RHO0,RHOT,F0,F1,VRLMAX,RHOMIN,RHOMAX
+      REAL*8       RHOF,FFINAL,VALEUR
+      REAL*8       R8PREM,TESTM,R8BID
       CHARACTER*8  KBID
       CHARACTER*16 OPTIOZ
       CHARACTER*24 VEBTLA,VERESI,VARESI,BIDON,VABTLA
       CHARACTER*24 K24BID
       CHARACTER*1  TYPRES
       INTEGER      ITRMAX,K,ITERHO
+      PARAMETER (RHOMIN = -2.D0, RHOMAX = 2.D0)
       DATA TYPRES        /'R'/
       DATA BIDON         /'&&FOMULT.BIDON'/
       DATA VERESI        /'&&VERESI           .RELR'/
@@ -91,34 +92,18 @@ C
 C --- RECHERCHE LINEAIRE (CALCUL DE RHO) SUR L'INCREMENT VTEMPP
 C
       F0 = 0.D0
-      PARMUL = 3
-      RHOEXC = 0.D0
       DO 330 I = 1,LONCH
          F0 = F0 + ZR(JTEMPP+I-1)*( ZR(J2ND+I-1) -
      &                              ZR(JVARE+I-1) - ZR(JBTLA+I-1) )
   330 CONTINUE
-C HYPOTHESE DE L'ALGORITHME MIXTE
-      F0 = -F0
-      IF (F0.LE.0) THEN
-        SENS = 1
-      ELSE
-        SENS = -1
-      ENDIF
-      CALL ZBINIT(SENS*F0,PARMUL,RHOEXC,10,MEM)
-      FCVG = ABS(PARMER(2) * F0)
-
 C
-      PENT = 1.D0
-      RHO = SENS
       RHO0 = 0.D0
-      ACT=1
+      RHO  = 1.D0
       ITRMAX = PARMEI(2)+1
       DO 20 ITERHO=1,ITRMAX
-        
-        ITERFI = ITERHO
-        DO 345 I = 1,LONCH
+         DO 345 I = 1,LONCH
             ZR(JTEMPR+I-1) = ZR(JTEMPM+I-1) + RHO * ZR(JTEMPP+I-1)
-  345   CONTINUE
+  345    CONTINUE
 C
 C --- VECTEURS RESIDUS ELEMENTAIRES - CALCUL ET ASSEMBLAGE
 C
@@ -135,47 +120,44 @@ C
         CALL ASCOVA('D',VABTLA,BIDON,'INST',R8BID,TYPRES,CNVABT)
         CALL JEVEUO (CNVABT(1:19)//'.VALE','L',JBTLA)
 C
-C CALCUL DE F1
-
         F1 = 0.D0
         DO 360 I = 1,LONCH
           F1 = F1 + ZR(JTEMPP+I-1) * ( ZR(J2ND+I-1) -
      &                                 ZR(JVARE+I-1) - ZR(JBTLA+I-1) )
   360   CONTINUE
-C HYPOTHESE DE L'ALGORITHME MIXTE
-        F1 = -F1
-
-C TESTS 
-        IF (ITERHO.EQ.1) THEN
-          IF ((F1-F0)*(RHO-RHO0).LE.0.D0) PENT = -1.D0
-        ELSE
-          IF (((F1-F0)*(RHO-RHO0)*PENT).LT.R8PREM()) THEN
-            CALL U2MESS('A','MECANONLINE_87')
-            RHO = 1.D0
-            ITERFI = 1
-            GOTO 9999
-          ENDIF
-        ENDIF
-        F0 = F1
-        RHO0 = RHO
-
         TESTM = 0.D0
         DO 100 K = 1,LONCH
           TESTM = MAX( TESTM,
      &                 ABS(ZR(J2ND+K-1)-ZR(JVARE+K-1)-ZR(JBTLA+K-1)))
  100    CONTINUE
         IF (TESTM.LT.PARMER(2)) GO TO 9999
-        CALL NMREBO(F1,MEM,SENS,RHO,RHOF,LICOPT,0,FFINAL,FCVG,
-     &             OPT,ACT,OPTI,STITE)    
-        IF (STITE) GOTO 40
 
-
-
- 20   CONTINUE
- 40   CONTINUE
+        IF(ITERHO.EQ.1)THEN
+         FFINAL = F1
+         RHOF = 1.D0
+        ENDIF
+        IF(ABS(F1).LT.ABS(FFINAL))THEN
+         FFINAL=F1
+         RHOF=RHO
+        ENDIF
+        RHOT=RHO
+        IF (ABS(F1-F0).GT.R8PREM()) THEN
+          RHO  = -(F0*RHOT-F1*RHO0)/(F1-F0)
+          IF (RHO.LT.RHOMIN) RHO = RHOMIN
+          IF (RHO.GT.RHOMAX) RHO = RHOMAX
+          IF (ABS(RHO-RHOT).LT.1.D-08) GOTO 40
+        ELSE
+          GOTO 40
+        END IF
+         RHO0= RHOT
+         F0  = F1
+ 20     CONTINUE
+ 40     CONTINUE
+        RHO=RHOF
+        F1=FFINAL
 C
 C-----------------------------------------------------------------------
  9999 CONTINUE
-      ITERHO = ITERFI - 1
+      ITERHO = ITERHO - 1
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 03/06/2008   AUTEUR BODEL C.BODEL 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC MACRO_VISU_MEIDEE (LMME)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,7 +225,7 @@ AASCPL=ASSE_MATRICE(MATR_ELEM=AELCPL,NUME_DDL=NUMCPL);
 
 interactif = 0
 if interactif :
-    MACRO_VISU_MEIDEE( UNITE_RESU = 8,
+    MACRO_VISU_MEIDEE( 
                    INTERACTIF = 'OUI',
                    RESU_MODIFSTRU = _F( MODELE=CO('MODLCPL2'),
                                         MAILLAGE=CO('MAILCPL2'),
@@ -240,7 +240,7 @@ if interactif :
                   );
 
 else :
-    MACRO_VISU_MEIDEE( UNITE_RESU = 8,
+    MACRO_VISU_MEIDEE( 
                    INTERACTIF = 'NON',
                    MODIFSTRUCT = _F( MESURE=MODMESU,
                                      MODELE_SUP=MODLSUP,

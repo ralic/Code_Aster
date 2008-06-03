@@ -1,5 +1,5 @@
 
-# MODIF  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -251,21 +251,21 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_00,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ESTERG1',
                    GROUP_NO='POURTEST',
-                   VALE=9.1804865498067E-31,
+                   VALE=4.5992338175661E-14,
                    CRITERE='ABSOLU',
                    PRECISION=1e-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.13',),
+                   VERSION='9.02.27',),
                 _F(RESULTAT=RESU_00,
                    NUME_ORDRE=2,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ESTERG2',
                    GROUP_NO='POURTEST',
-                   VALE=4.7515091127410E-32,
+                   VALE=4.5252795245170E-14,
                    CRITERE='ABSOLU',
                    PRECISION=1e-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.13',),),);
+                   VERSION='9.02.27',),),);
 #
 # 5. Post-traitement : graphique de la pression et des deplacements
 # 5.1. Un chemin egal au bord GM3
@@ -439,21 +439,21 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_01,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ESTERG1',
                    GROUP_NO='POURTEST',
-                   VALE=6.7911838515752E-31,
+                   VALE=4.1902009269956E-14,
                    CRITERE='ABSOLU',
                    PRECISION=1e-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.13',),
+                   VERSION='9.02.27',),
                 _F(RESULTAT=RESU_01,
                    NUME_ORDRE=2,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ESTERG2',
                    GROUP_NO='POURTEST',
-                   VALE=9.3419615194924E-33,
+                   VALE=4.1201153465910E-14,
                    CRITERE='ABSOLU',
                    PRECISION=1e-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.13',),),);
+                   VERSION='9.02.27',),),);
 #
 # 9. Post-traitement : graphique de la pression et des deplacements
 # 9.1. Un chemin egal au bord GM3

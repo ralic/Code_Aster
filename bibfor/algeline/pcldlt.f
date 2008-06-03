@@ -1,6 +1,6 @@
       SUBROUTINE PCLDLT(MATF,MAT,NIREMP,BAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C IN  K*  BAS    : NOM DE LA BASE SUR LAQUELLE ON CREE MATF 'G' OU 'V'
 C-----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C-----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+      CHARACTER*32 JEXNUM
 C-----------------------------------------------------------------------
 C     COMMUNS   JEVEUX
 C-----------------------------------------------------------------------
@@ -58,8 +58,8 @@ C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       LOGICAL COMPLT
       CHARACTER*1 BASE
-      INTEGER IRET,LREFE,JSMDI,JSMHC,JSMDE,NEQU,NCOEF,NBLC,IBID
-      INTEGER LREFEF,JVALM,IDV,I,NZMAX,JICPD,JICPLX,NIREMP
+      INTEGER IRET,JSMDI,JSMHC,JSMDE,NEQU,NCOEF,NBLC,IBID
+      INTEGER JVALM,IDV,I,NZMAX,JICPD,JICPLX,NIREMP
       INTEGER JICPCX,JSMDI1,JSMHC1,IER,K,JSMDIF,JSMHCF,JVALF,JVECT
       INTEGER JREFA,JREFAF
       REAL*8 DNORM,EPSI
@@ -90,8 +90,8 @@ C         NEQU,NCOEF
 C         + QQUES VERIFS
 C     ------------------------------------------
       CALL JEVEUO(MATAS//'.REFA','L',JREFA)
-      MA = ZK24(JREFA-1+1)
-      NU = ZK24(JREFA-1+2)
+      MA = ZK24(JREFA-1+1)(1:8)
+      NU = ZK24(JREFA-1+2)(1:14)
 
       CALL JEEXIN(NU//'.SMOS.SMDI',IRET)
       IF (IRET.EQ.0) CALL U2MESK('F','ALGELINE3_21',1,MATAS)

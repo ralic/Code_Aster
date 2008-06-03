@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF arlequin Messages  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,10 +92,6 @@ cata_msg={
 
 14: _("""
  La zone de superposition des modèles dans Arlequin ne contient aucune maille !
-"""),
-
-15: _("""
- La question %(k1)s n'existe pas dans la méthode Arlequin
 """),
 
 16: _("""

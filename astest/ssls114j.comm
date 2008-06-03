@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/06/2008   AUTEUR DESROCHES X.DESROCHES 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -226,7 +226,7 @@ CALC_ELEM( reuse= RESF ,RESULTAT= RESF ,                EXCIT=(
                         )
 
 CALC_NO( reuse=RESF,   RESULTAT=RESF,
-                      OPTION='SIGM_NOEU_DEPL'
+                      OPTION=('SIGM_NOEU_DEPL','FORC_NODA'),
                   )
 
 RESFINF=CALC_ELEM(

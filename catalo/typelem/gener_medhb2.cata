@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,8 +76,8 @@ MODE_LOCAL__
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
     E2NEUTR  = NEUT_R   ELEM__         (X1       X2       )
-    EERREUR  = ERRE_R   ELEM__         (ESTERG1  ESTERG2  ERHMME_G ERHMHY_L ERHMHY_G )
-    EERRENO  = ERRE_R   ELNO__ IDEN__  (ESTERG1  ESTERG2  ERHMME_G ERHMHY_L ERHMHY_G )
+    EERREUR  = ERRE_R   ELEM__         (ESTERG1  ESTERG2  ERHMHY_L ERHMME_G ERHMHY_G )
+    EERRENO  = ERRE_R   ELNO__ IDEN__  (ESTERG1  ESTERG2  ERHMHY_L ERHMME_G ERHMHY_G )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     EREFCO   = PREC     ELEM__         (SIGM     FHYDR1   FHYDR2   FTHERM   )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ

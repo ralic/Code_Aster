@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF utilitai5 Messages  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -170,10 +170,9 @@ cata_msg = {
  determination de la localisation des points de gauss
 """),
 
-
-
-
-
+40 : _("""
+ LIRE_RESU ne sait pas lire les structures de données de type %(k1) s
+"""),
 
 41 : _("""
  xous :  %(k1)s  non prevu.

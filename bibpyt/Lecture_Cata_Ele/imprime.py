@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -614,7 +614,7 @@ def imprime_ojb(file,capy):
       for icmp in range(len(lcmp)) :
           ERR.veri_appartient_liste('F',lcmp[icmp],lcmp_gd)
           rangcmp= lcmp_gd.index(lcmp[icmp])
-          if rangcmp < rangav : ERR.mess('A'," CMPS dans un ordre incorrect. "+repr(lcmp)+" type_element: "+note)
+          if rangcmp < rangav : ERR.mess('E'," CMPS dans un ordre incorrect. "+repr(lcmp)+" type_element: "+note)
 
           rangav=rangcmp
           iec= rangcmp / 30
@@ -631,7 +631,7 @@ def imprime_ojb(file,capy):
           nb=nb+len(entete[2])
       return nb
 
-   # retourne le nombre total de "familles locales de PG" référencés dans les type_elem :
+   # retourne le nombre total de "familles locales de PG" référencées dans les type_elem :
    def nb_loc_fpg(capy):
       nb=0
       for cata in capy.te:
@@ -927,7 +927,7 @@ def imprime_ojb(file,capy):
 
        del cata
 
-   #  catalogue des PHENOMENES_MODELISATION :
+   #  catalogue des PHENOMENE_MODELISATION :
    #--------------------------------------------------------
    cata=capy.ph
    ERR.contexte("Examen du catalogue de PHENOMENE_MODELISATION__: ")
@@ -1013,7 +1013,7 @@ def degenerise(capy):
                 nb_te=nb_te+1
                 dicte2[note]='b'
 
-    # on remet les  les TYPE_ELEM__   dans l'ordre alphabétique:
+    # on remet les TYPE_ELEM__   dans l'ordre alphabétique:
     # -----------------------------------------------------------------------------
     likeys= capy.dicte.keys(); likeys.sort(); liste2=[]; dico2={};k=0
     for ke in likeys:
@@ -1048,7 +1048,7 @@ def get_liattr(capy,cata):
                 if tyel==note : trouve=1
 
              if trouve :
-                # pour les type_element appartenant à plusieurs modélisation,
+                # pour les type_element appartenant à plusieurs modélisations,
                 # c'est la dernière modélisation qui impose sa loi (dans quel ordre ?).
                 # si cette loi est embetante, il faut redéfinir l'attribut au niveau du type_element
                 dicattr['ALIAS8']=str(codph)[1:3]+str(codmod)[1:4]+str(codtma)[1:4]

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/06/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE  CONTACT MAILLE TRIA7, MODELISATION COQUE_3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,6 @@ MA2=CREA_MAILLAGE(MAILLAGE=MATRI6,
                   MODI_MAILLE=_F(TOUT='OUI',
                                  OPTION='TRIA6_7',
                                  PREF_NOEUD='NT',),);
-
 
 MO=AFFE_MODELE(MAILLAGE=MA2,
                AFFE=(_F(GROUP_MA=('Q1','Q21',),
@@ -115,9 +114,16 @@ CHA0=AFFE_CHAR_CINE(MODELE=MO,
                                  ),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT='Q1',
+                    CONTACT=_F(SANS_GROUP_NO=(
+                                               'DR1','DR21',
+                                               'DR2','DR22',
+                                               'DR3','DR23',
+                                               'DR4','DR24',
+                                               
+                                                ),
+                               GROUP_MA_MAIT='Q1',
                                GROUP_MA_ESCL='Q21',
-                               REAC_GEOM='SANS',
+                               REAC_GEOM='AUTOMATIQUE',
                                ),
                     INFO=1,);
 
@@ -130,7 +136,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=5,),);
 
 
 RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
@@ -157,7 +163,7 @@ RESU=CALC_NO(reuse =RESU,
              OPTION='SIGM_NOEU_COQU');
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   NUME_ORDRE=5,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='CENTE1',
@@ -166,7 +172,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    PRECISION=0.08,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   NUME_ORDRE=5,
                    NOM_CHAM='SIGM_NOEU_COQU',
                    NOM_CMP='SIYY',
                    GROUP_NO='CENTE1',
@@ -177,43 +183,43 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    ),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   NUME_ORDRE=5,
                    NOM_CHAM='SIGM_NOEU_COQU',
                    NOM_CMP='SIYY',
                    GROUP_NO='A1',
-                   VALE=-2.4007275975594E+09,
+                   VALE=-2.7746886159188E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-7,
+                   PRECISION=0.0001,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.1.22',),
                 _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   NUME_ORDRE=5,
                    NOM_CHAM='SIGM_NOEU_COQU',
                    NOM_CMP='SIYY',
                    GROUP_NO='A3',
-                   VALE=1.2891421428655E+09,
+                   VALE=2.7757639613479E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-7,
+                   PRECISION=0.0001,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.1.22',),
                 _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   NUME_ORDRE=5,
                    NOM_CHAM='SIGM_NOEU_COQU',
                    NOM_CMP='SIYY',
                    GROUP_NO='B1',
-                   VALE=-2.4007275975593E+09,
+                   VALE=-2.7745343350581E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-7,
+                   PRECISION=0.0001,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.1.22',),
                 _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   NUME_ORDRE=5,
                    NOM_CHAM='SIGM_NOEU_COQU',
                    NOM_CMP='SIYY',
                    GROUP_NO='B3',
-                   VALE=1.2891421428654E+09,
+                   VALE=2.7756157594263E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-7,
+                   PRECISION=0.0001,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.1.22',),
                    ),);

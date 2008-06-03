@@ -5,8 +5,7 @@
      &   PRIRAM, ALPHA, NCONV, FLAGE)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -229,11 +228,10 @@ C GESTION DES MODES CONVERGES
           VALI (1) = NCONV
           VALI (2) = NFREQ
           VALI (3) = INFO
-          VALI (4) = I
-          VALI (5) = NBVECT
-          VALI (6) = MAXITR
+          VALI (4) = NBVECT
+          VALI (5) = MAXITR
           VALR = TOLSOR
-        CALL U2MESG('E', 'ALGELINE4_83',0,' ',6,VALI,1,VALR)
+        CALL U2MESG('E', 'ALGELINE4_83',0,' ',5,VALI,1,VALR)
         FLAGE = .TRUE.
       ENDIF
 

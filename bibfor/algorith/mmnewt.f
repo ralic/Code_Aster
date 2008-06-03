@@ -3,7 +3,7 @@
      &                     TAU1  ,TAU2  ,NIVERR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/06/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,7 +74,7 @@ C
       INTEGER      INO,IDIM,ITER
       REAL*8       ZERO
       PARAMETER    (ZERO=0.D0)   
-      REAL*8       DIST
+      REAL*8       DIST,DMIN,R8GAEM,KSI1M,KSI2M      
 C
 C ----------------------------------------------------------------------
 C
@@ -93,7 +93,8 @@ C
       ITER   = 0
       EPSABS = EPSMAX/100.D0
       EPSREL = EPSMAX
-      ITEMAX = 200     
+      ITEMAX = 200  
+      DMIN   = R8GAEM()  
 C
 C --- DEBUT DE LA BOUCLE
 C      
@@ -140,9 +141,9 @@ C
         DO 35 IDIM = 1,NDIM
           VEC1(IDIM) = COORPT(IDIM) - VEC1(IDIM)
  35     CONTINUE     
-        DIST = SQRT(VEC1(1)*VEC1(1)+
-     &              VEC1(2)*VEC1(2)+
-     &              VEC1(3)*VEC1(3))
+        DIST  = SQRT(VEC1(1)*VEC1(1)+
+     &               VEC1(2)*VEC1(2)+
+     &               VEC1(3)*VEC1(3))
 C
 C --- CALCUL DU RESIDU
 C
@@ -211,8 +212,12 @@ C
         KSI1 = KSI1 + DKSI1
         KSI2 = KSI2 + DKSI2     
         ITER = ITER + 1  
+        IF (DIST.LE.DMIN) THEN
+          KSI1M = KSI1
+          KSI2M = KSI2
+        ENDIF
 C
-C --- CALCUL DE LA REFERENCE POUR TEST
+C --- CALCUL DE LA REFERENCE POUR TEST DEPLACEMENTS
 C
         REFE = (KSI1*KSI1+KSI2*KSI2)
         IF (REFE.LE.EPSREL) THEN  
@@ -220,18 +225,23 @@ C
           EPS  = EPSABS
         ELSE            
           EPS  = EPSREL
-        ENDIF
+        ENDIF       
 C
 C --- CALCUL POUR LE TEST DE CONVERGENCE 
 C      
-        TEST = SQRT(DKSI1*DKSI1+DKSI2*DKSI2)/REFE          
+        TEST = SQRT(DKSI1*DKSI1+DKSI2*DKSI2)/REFE   
 C
 C --- EVALUATION DE LA CONVERGENCE
 C       
         IF ((TEST.GT.EPS) .AND. (ITER.LT.ITEMAX)) THEN
           GOTO 20
         ELSEIF ((ITER.GE.ITEMAX).AND.(TEST.GT.EPS)) THEN
-          NIVERR = 1
+          KSI1 = KSI1M
+          KSI2 = KSI2M
+          CALL MMFONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
+     &                KSI2  ,FF    ,DFF   ,DDFF   )          
+          CALL MMTANG(NDIM  ,NNO   ,COORMA,DFF   ,
+     &                TAU1  ,TAU2)            
         ENDIF  
 C
 C --- FIN DE LA BOUCLE
@@ -251,10 +261,7 @@ C
      &                          COORMA(3*(INO-1)+3)
   70    CONTINUE     
         WRITE(6,*) 'KSI : ',KSI1,KSI2
-        WRITE(6,*) 'DKSI: ',DKSI1,DKSI2
-        WRITE(6,*) 'ITER: ',ITER
-        WRITE(6,*) 'TEST: ',SQRT(DKSI1*DKSI1+DKSI2*DKSI2),TEST
-        WRITE(6,*) 'REFE: ',(KSI1*KSI1+KSI2*KSI2),REFE,EPS   
+        WRITE(6,*) 'DKSI: ',DKSI1,DKSI2        
       ENDIF                  
 C      
       END

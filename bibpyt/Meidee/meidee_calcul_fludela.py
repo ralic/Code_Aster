@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_fludela Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_fludela Meidee  DATE 03/06/2008   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,12 +162,9 @@ class MeideeFludela:
         param = data[vitesses[0]].keys()
         nb_mod = len(data[vitesses[0]][param[0]])
         for para in param:
-            print "para = ", para
             for ind_mod in range(nb_mod):
-                print "ind_mod = ", ind_mod
                 vale  = []
                 for vit in vitesses:
-                    print "vit = ", vit
                     vale.append(string.atof(vit))
                     vale.append(data[vit][para][ind_mod])
                 _fonc = DEFI_FONCTION( NOM_PARA   = 'ABSC',

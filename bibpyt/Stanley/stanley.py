@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 31/03/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2877,10 +2877,10 @@ def concept_exists_and_intypes(co, jdc, types, append_to):
    """Ajoute le concept dans la liste 'append_to' si 'co' existe
    (c'est à dire si son étape a été exécutée) et si son type est parmi 'types'.
    """
+
    if jdc.sds_dict.get(co) != None:
       concept = jdc.sds_dict[co]
-      if concept.__class__.__name__ in types:
-#        and getattr(concept.etape, 'executed', 0) == 1:
+      if concept.__class__.__name__ in types and getattr(concept, 'executed', 0) == 1:
          append_to.append(co)
 
 

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       REAL*8    DCI(2,2), CARAT3(*), HFT2(2,6), BCA(2,3), AN(3,9)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,10 @@ C     ------------------------------------------------------------------
       Y(2) = CARAT3(5)
       Y(3) = CARAT3(6)
 C
-      DO 100 K = 1 , 18
-         TA(K,1) = 0.D0
+      DO 100 K = 1 , 6
+        DO 101 J = 1 , 3
+          TA(K,J) = 0.D0
+ 101    CONTINUE
  100  CONTINUE
       TA(1,1) = - 8.D0 * C(1)
       TA(2,3) = - 8.D0 * C(3)

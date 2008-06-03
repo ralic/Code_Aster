@@ -2,7 +2,7 @@
      &                  COEFNO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/06/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -106,10 +106,13 @@ C
           COEFNO(6) = - FF(6)
           COEFNO(7) = - FF(7)
         ELSEIF (NBNOM.EQ.6) THEN           
-          CALL ELRFVF('TR3',KSI,3,FF,IBID)                
+          CALL ELRFVF('TR6',KSI,6,FF,IBID)        
           COEFNO(1) = - FF(1)
           COEFNO(2) = - FF(2)
-          COEFNO(3) = - FF(3)                       
+          COEFNO(3) = - FF(3)
+          COEFNO(4) = - FF(4)
+          COEFNO(5) = - FF(5)
+          COEFNO(6) = - FF(6)                           
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF                               

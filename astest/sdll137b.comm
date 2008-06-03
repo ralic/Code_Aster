@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 03/06/2008   AUTEUR BODEL C.BODEL 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC MACRO_VISU_MEIDEE (ES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,8 +18,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT( CODE = _F( NOM = 'SDLL137B',
+DEBUT( CODE = _F( NOM = 'SDLL137B', 
                   NIV_PUB_WEB='INTERNET'),
+       IMPR_MACRO = 'OUI',
       );
 
 
@@ -223,52 +224,50 @@ AELCPL=CALC_MATR_ELEM(MODELE=MODLCPL,
                       CHAM_MATER=CHMATCPL,
                       CHARGE=CONDLCPL,)
 
-AASCPL=ASSE_MATRICE(MATR_ELEM=AELCPL,NUME_DDL=NUMCPL);
+#AASCPL=ASSE_MATRICE(MATR_ELEM=AELCPL,NUME_DDL=NUMCPL);
 
 interactif = 0
 if interactif :
-    MACRO_VISU_MEIDEE( UNITE_RESU = 8,
-                   INTERACTIF = 'OUI',
-                   RESU_MODIFSTRU = _F( MODELE=CO('MODLCPL2'),
-                                        MAILLAGE=CO('MAILCPL2'),
-                                        MODE_MECA = CO('MODECPL2'),
-                                        RIGI_MECA = CO('KASCPL2'),
-                                        MASS_MECA = CO('MASCPL2'),
-                                        AMOR_MECA = CO('AASCPL2'),
-                                        NUME_DDL = CO('NUMCPL2'),
-                                        PROJ_MESU = CO('PROJMS2'),
-                                        MACR_ELEM = CO('MCELEM2'),
-                                        )
-                  );
+    MACRO_VISU_MEIDEE( 
+                       INTERACTIF = 'OUI',
+                       RESU_MODIFSTRU = _F( MODELE=CO('MODLCPL2'),
+                                            MAILLAGE=CO('MAILCPL2'),
+                                            MODE_MECA = CO('MODECPL2'),
+                                            RIGI_MECA = CO('KASCPL2'),
+                                            MASS_MECA = CO('MASCPL2'),
+                                            AMOR_MECA = CO('AASCPL2'),
+                                            NUME_DDL = CO('NUMCPL2'),
+                                            PROJ_MESU = CO('PROJMS2'),
+                                            MACR_ELEM = CO('MCELEM2'),
+                                           )
+                     );
 
 else :
-    MACRO_VISU_MEIDEE( UNITE_RESU = 8,
-                   INTERACTIF = 'NON',
-                   MODIFSTRUCT = _F( MESURE=MODMESU,
-                                     MODELE_SUP=MODLSUP,
-                                     MATR_RIGI=KASSUP,
-                                     RESOLUTION='ES',
-                                     #RESOLUTION='LMME',MATR_MASS=MASSUP,
-                                     NUME_MODE_MESU=(1,2,3,4,5),
-                                     NUME_MODE_CALCUL=(1,2,3,4,5,6,7,8),
-                                     MAILLE_MODIF = MAILX,
-                                     MODELE_MODIF = MODLCPL,
-                                     ),
-                   GROUP_NO_CAPTEURS  = ( _F(GROUP_NO="CAPTEUR", NOM_CMP = ('DY', 'DZ',),) 
-                                         ),
-                   GROUP_NO_EXTERIEUR = ( _F(GROUP_NO="EXTERNE", NOM_CMP = ('DX','DY','DZ','DRX','DRY', 'DRZ',),)
-                                         ),
-                   RESU_MODIFSTRU = _F( MODELE=CO('MODLCPL2'),
-                                        MAILLAGE=CO('MAILCPL2'),
-                                        MODE_MECA = CO('MODECPL2'),
-                                        RIGI_MECA = CO('KASCPL2'),
-                                        MASS_MECA = CO('MASCPL2'),
-                                        AMOR_MECA = CO('AASCPL2'),
-                                        NUME_DDL = CO('NUMCPL2'),
-                                        PROJ_MESU = CO('PROJMS2'),
-                                        MACR_ELEM = CO('MCELEM2'),
-                                        )
-                  );
+    MACRO_VISU_MEIDEE( 
+                       INTERACTIF = 'NON',
+                       MODIFSTRUCT = _F( MESURE=MODMESU,
+                                         MODELE_SUP=MODLSUP,
+                                         MATR_RIGI=KASSUP,
+                                         RESOLUTION='ES',
+                                         #RESOLUTION='LMME',MATR_MASS=MASSUP,
+                                         NUME_MODE_MESU=(1,2,3,4,5),
+                                         NUME_MODE_CALCUL=(1,2,3,4,5,6,7,8),
+                                         MAILLE_MODIF = MAILX,
+                                         MODELE_MODIF = MODLCPL,
+                                       ),
+                       GROUP_NO_CAPTEURS  = ( _F(GROUP_NO="CAPTEUR", NOM_CMP = ('DY', 'DZ',),)  ),
+                       GROUP_NO_EXTERIEUR = ( _F(GROUP_NO="EXTERNE", NOM_CMP = ('DX','DY','DZ','DRX','DRY', 'DRZ',),)),
+                       RESU_MODIFSTRU = _F( MODELE=CO('MODLCPL2'),
+                                            MAILLAGE=CO('MAILCPL2'),
+                                            MODE_MECA = CO('MODECPL2'),
+                                            RIGI_MECA = CO('KASCPL2'),
+                                            MASS_MECA = CO('MASCPL2'),
+                                            AMOR_MECA = CO('AASCPL2'),
+                                            NUME_DDL = CO('NUMCPL2'),
+                                            PROJ_MESU = CO('PROJMS2'),
+                                            MACR_ELEM = CO('MCELEM2'),
+                                          )
+                      );
 
 
 # La supermaille creee par MACRO_VISU_MEIDEE se nomme SUMAIL

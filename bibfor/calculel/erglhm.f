@@ -5,7 +5,7 @@
       CHARACTER*19 LIGREL,RESUC1
       LOGICAL      PERMAN
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -79,7 +79,7 @@ C
 C     ------------------------------------------------------------------
       DATA LPARTR / 'ERRE_MEC_LOC' ,'ERRE_MEC_LOC_D' ,'ERRE_HYD_LOC',
      &              'ERRE_MEC_GLOB','ERRE_MEC_GLOB_D','ERRE_HYD_GLOB' /
-      DATA LPARST / 'ERRE_MEC'   ,'ERRE_HYD_S'     ,'ERRE_HYD_D' /
+      DATA LPARST / 'ERRE_MEC'     ,'ERRE_HYD_S'     ,'ERRE_HYD_D' /
 C     ------------------------------------------------------------------
 C
 C ----------------------------------------------------------------------
@@ -134,8 +134,8 @@ C ==================================================
 C
       IF (PERMAN) THEN
 C
-        TABERR(1) = TABER2(3)
-        TABERR(2) = TABER2(4)
+        TABERR(1) = TABER2(4)
+        TABERR(2) = TABER2(3)
         TABERR(3) = TABER2(5)
 C
       ELSE

@@ -1,7 +1,7 @@
       FUNCTION ARLGER(NOMARL,NOMDAT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      INFOR = NOMARL(1:8)//'.INFOR'
+      INFOR = NOMARL//'.INFOR'
 C
       CALL JEEXIN(INFOR,IRET)
       IF (IRET.EQ.0) THEN
@@ -100,7 +100,7 @@ C
       ELSE IF (NOMDA1.EQ.'PRECBB') THEN
         ARLGER = ZR(JARLIR+10)
       ELSE
-        CALL U2MESK('F','ARLEQUIN_15',1,NOMDA1)
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL JEDEMA()

@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -596,6 +596,15 @@ C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
 
       ELSE IF (FORM.EQ.'MED') THEN
 C     =============================
+
+        IF ((TYPRES.EQ.'DYNA_TRANS')  .OR.
+     &      (TYPRES.EQ.'DYNA_HARMO')  .OR.
+     &      (TYPRES.EQ.'HARM_GENE')   .OR.
+     &      (TYPRES.EQ.'MODE_MECA')   .OR.
+     &      (TYPRES.EQ.'MODE_MECA_C')) THEN
+          CALL U2MESK('F','UTILITAI5_40',1,TYPRES)
+        ENDIF
+
         DO 260 I = 1,NBNOCH
           OPTION = ' '
           PARAM  = ' '
@@ -610,76 +619,109 @@ C     =============================
      &        (NOCH(1:4).NE.'TEMP')) THEN
             CALL U2MESS('F','UTILITAI2_93')
           END IF
-          IF (NOCH(1:4).EQ.'TEMP') THEN
+          IF (NOCH.EQ.'TEMP') THEN
             NOMGD = 'TEMP_R  '
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:4).EQ.'DEPL') THEN
+          ELSE IF (NOCH.EQ.'DEPL') THEN
             NOMGD = 'DEPL_R  '
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:4).EQ.'VITE') THEN
+          ELSE IF (NOCH.EQ.'VITE') THEN
             NOMGD = 'DEPL_R  '
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:4).EQ.'ACCE') THEN
+          ELSE IF (NOCH.EQ.'ACCE') THEN
             NOMGD = 'DEPL_R  '
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:9).EQ.'SIEF_ELNO') THEN
+          ELSE IF (NOCH.EQ.'SIEF_ELNO') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELNO'
-          ELSE IF (NOCH(1:9).EQ.'SIEF_NOEU') THEN
+            OPTION = 'SIEF_ELNO_ELGA'
+            PARAM  = 'PSIEFNOR'
+          ELSE IF (NOCH.EQ.'SIEF_ELNO_ELGA') THEN
+            NOMGD = 'SIEF_R'
+            TYPCHA = 'ELNO'
+            OPTION = 'SIEF_ELNO_ELGA'
+            PARAM  = 'PSIEFNOR'
+          ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:9).EQ.'SIEF_ELGA') THEN
+          ELSE IF (NOCH.EQ.'SIEF_ELGA') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELGA'
             OPTION = 'RAPH_MECA'
             PARAM  = 'PCONTPR'
-          ELSE IF (NOCH(1:9).EQ.'EPSI_ELNO') THEN
+          ELSE IF (NOCH.EQ.'SIEF_ELGA_DEPL') THEN
+            NOMGD = 'SIEF_R'
+            TYPCHA = 'ELGA'
+            OPTION = 'SIEF_ELGA_DEPL'
+            PARAM  = 'PCONTPR'
+          ELSE IF (NOCH.EQ.'EPSI_ELNO_DEPL') THEN
             NOMGD = 'EPSI_R'
             TYPCHA = 'ELNO'
-          ELSE IF (NOCH(1:9).EQ.'EPSI_NOEU') THEN
+            OPTION ='EPSI_ELNO_DEPL'
+            PARAM='PDEFORR'
+          ELSE IF (NOCH.EQ.'EPSI_ELNO_TUYO') THEN
+            NOMGD = 'EPSI_R'
+            TYPCHA = 'ELNO'
+            OPTION ='EPSI_ELNO_TUYO'
+            PARAM='PDEFONO'
+          ELSE IF (NOCH.EQ.'EPSI_NOEU') THEN
             NOMGD = 'EPSI_R'
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:9).EQ.'EPSI_ELGA') THEN
+          ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
             NOMGD = 'EPSI_R'
             TYPCHA = 'ELGA'
             OPTION = 'EPSI_ELGA_DEPL'
             PARAM  = 'PDEFORR'
-          ELSE IF (NOCH(1:9).EQ.'EPSA_ELNO') THEN
-            NOMGD = 'EPSA_R'
+          ELSE IF (NOCH.EQ.'EPSI_ELGA_DEPL') THEN
+            NOMGD = 'EPSI_R'
+            TYPCHA = 'ELGA'
+            OPTION = 'EPSI_ELGA_DEPL'
+            PARAM  = 'PDEFORR'
+          ELSE IF (NOCH.EQ.'EPSA_ELNO') THEN
+            NOMGD = 'EPSI_R'
             TYPCHA = 'ELNO'
-          ELSE IF (NOCH(1:9).EQ.'EPSA_NOEU') THEN
-            NOMGD = 'EPSA_R'
+            OPTION ='EPSI_ELNO_DEPL'
+            PARAM='PDEFORR'
+          ELSE IF (NOCH.EQ.'EPSA_NOEU') THEN
+            NOMGD = 'EPSI_R'
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:9).EQ.'VARI_ELNO') THEN
+          ELSE IF (NOCH.EQ.'VARI_ELNO') THEN
             NOMGD = 'VARI_R'
             TYPCHA = 'ELNO'
-          ELSE IF (NOCH(1:9).EQ.'VARI_NOEU') THEN
+            OPTION='VARI_ELNO_ELGA'
+            PARAM='PVARINR'
+          ELSE IF (NOCH.EQ.'VARI_ELNO_ELGA') THEN
+            NOMGD = 'VARI_R'
+            TYPCHA = 'ELNO'
+            OPTION='VARI_ELNO_ELGA'
+            PARAM='PVARINR'
+          ELSE IF (NOCH.EQ.'VARI_NOEU') THEN
             NOMGD = 'VARI_R'
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:9).EQ.'VARI_ELGA') THEN
+          ELSE IF (NOCH.EQ.'VARI_ELGA') THEN
             NOMGD = 'VARI_R'
             TYPCHA = 'ELGA'
             OPTION = 'RAPH_MECA'
             PARAM  = 'PVARIPR'
-          ELSE IF (NOCH(1:14).EQ.'EQUI_ELNO_SIGM') THEN
+          ELSE IF (NOCH.EQ.'EQUI_ELNO_SIGM') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELNO'
-          ELSE IF (NOCH(1:14).EQ.'EQUI_NOEU_SIGM') THEN
+          ELSE IF (NOCH.EQ.'EQUI_NOEU_SIGM') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:9).EQ.'EQUI_ELGA') THEN
+          ELSE IF (NOCH.EQ.'EQUI_ELGA') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELGA'
             OPTION = 'EQUI_ELGA_SIGM'
             PARAM  = 'PCONTEQ'
-          ELSE IF (NOCH(1:4).EQ.'PRES') THEN
+          ELSE IF (NOCH.EQ.'PRES') THEN
             NOMGD = 'PRES_R  '
             TYPCHA = 'ELEM'
-          ELSE IF (NOCH(1:4).EQ.'IRRA') THEN
+          ELSE IF (NOCH.EQ.'IRRA') THEN
             NOMGD = 'IRRA_R  '
             TYPCHA = 'NOEU'
-          ELSE IF (NOCH(1:9).EQ.'EPSG_ELGA') THEN
-            NOMGD  = 'EPSI_R  '
+          ELSE IF (NOCH.EQ.'EPSG_ELGA_DEPL') THEN
+            NOMGD  = 'EPSI_R'
             TYPCHA = 'ELGA'
             OPTION = 'EPSG_ELGA_DEPL'
             PARAM  = 'PDEFORR'

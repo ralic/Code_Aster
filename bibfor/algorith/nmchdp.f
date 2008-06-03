@@ -1,7 +1,7 @@
       SUBROUTINE NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
      &DEUXMU,CRIT,SEUIL,VISC,MEMO,DT,RM,QM,KSIM,RP,QP,KSIP,DP,IRET,ITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 02/06/2008   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,13 +148,17 @@ C        -----------------------------
         CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
      &              DEUXMU,VISC,MEMO,RM,RP,QM,QP,KSIM,KSIP,DT,FMAX)
 C
-           IF (FMAX.GE.ZERO) THEN
-             X(2) = DPMAX
-             Y(2) = FMAX
-             GOTO 20
-           ELSE
-             DPMAX = DPMAX*DIX
-           ENDIF
+        IF (ABS(FMAX).LE.PREC) THEN
+           DP = DPMAX
+           ITER=1
+           GOTO 50
+        ELSEIF (FMAX.GT.ZERO) THEN
+           X(2) = DPMAX
+           Y(2) = FMAX
+           GOTO 20
+        ELSE
+          DPMAX = DPMAX*DIX
+        ENDIF
 C
   10    CONTINUE
 C
@@ -174,7 +178,11 @@ C       VERIFICATION QUE DPMAX N'EST PAS TROP GRAND. BRACKETTING
         
         CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
      &              DEUXMU,VISC,MEMO,RM,RP,QM,QP,KSIM,KSIP,DT,FMAX)
-        IF (FMAX.LT.ZERO) THEN
+        IF (ABS(FMAX).LE.PREC) THEN
+           DP = DPMAX
+           ITER=1
+           GOTO 50
+        ELSEIF (FMAX.LT.ZERO) THEN
            DO 31 I = 1, NITER
 C             F(DPMAX) ENCORE POSITIF. ON DIVISE PAR 10          
               DPMAX = DPMAX/DIX

@@ -1,6 +1,6 @@
       SUBROUTINE AFFICH (NOMFIC,TEXTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,20 +25,17 @@ C
       LOGICAL       OUVERT
 C     ----------------------------------------------------------------
       OUVERT = .TRUE.
-C --- ON IMPRIME QUE POUR LE PROCESSEUR MAITRE
-      IF ( GTNPRO() .EQ. 0 ) THEN
-         IFM = IUNIFI (NOMFIC)
+      IFM = IUNIFI (NOMFIC)
 C        LE FICHIER EST-IL OUVERT ?
-         INQUIRE ( UNIT=IFM, OPENED=OUVERT, IOSTAT=IER)
-         IF (IER.EQ.0 .AND. .NOT.OUVERT) THEN
-            CALL ULDEFI(IFM,' ',' ','A','A','O')
-         ENDIF
-C
-         WRITE(IFM,'(A)') TEXTE
-C
-         IF (.NOT. OUVERT) THEN
-            CALL ULDEFI(-IFM, ' ', ' ', 'A', 'A', 'O')
-         ENDIF
-C
+      INQUIRE ( UNIT=IFM, OPENED=OUVERT, IOSTAT=IER)
+      IF (IER.EQ.0 .AND. .NOT.OUVERT) THEN
+         CALL ULDEFI(IFM,' ',' ','A','A','O')
       ENDIF
+C
+      WRITE(IFM,'(A)') TEXTE
+C
+      IF (.NOT. OUVERT) THEN
+         CALL ULDEFI(-IFM, ' ', ' ', 'A', 'A', 'O')
+      ENDIF
+C
       END

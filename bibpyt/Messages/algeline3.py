@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline3 Messages  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,16 +166,6 @@ cata_msg={
  le CHAM_NO :  %(k1)s  n'existe pas
 """),
 
-35: _("""
- la MATR_ASSE  %(k1)s  n'est pas stockée "morse"
-### idem algeline3_21
-"""),
-
-36: _("""
- conflit : une matrice stockée "morse" ne peut avoir qu'un seul bloc
-### idem algeline3_22
-"""),
-
 37: _("""
   GCPC n"est pas prevu pour une matrice complexe
 """),
@@ -237,10 +227,6 @@ cata_msg={
  le tableau B est insuffisamment dimensionné pour l'opération * 
 """),
 
-52: _("""
- augmenter la taille de la pile
-"""),
-
 53: _("""
  toutes les fréquences sont des fréquences de corps rigide
 """),
@@ -263,11 +249,6 @@ cata_msg={
 
 58: _("""
  il y a des valeurs propres très proches
-"""),
-
-59: _("""
- il y a des vp très proches
-### idem algeline3_58
 """),
 
 60: _("""

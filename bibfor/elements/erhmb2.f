@@ -7,7 +7,7 @@
      &                  IADE3 , IAVA3 , NCMPM3, IAPTM3, TM2H1B)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -512,43 +512,63 @@ C
 C
 C 3.3. TERME DE BORD
 C
-      IDEC1 = NBCMP*(INO-1)
+      IDEC1 = NBCMP*(INO-1)+ADSIP+IBID+1
+      IDEC2 = NBCMP*(JNO-1)+ADSIP+IBID+1
 C
-      INTE1 = JAC(1)* ( THETA * FLUXHP(1)+ TA1 * FLUXHM(1)
-     &                - THETA *
-     &                ( SIELNP(IDEC1+ADSIP+IBID+1) * NX(1)
-     &                + SIELNP(IDEC1+ADSIP+IBID+2) * NY(1) )
-     &                - TA1 *
-     &                ( SIELNM(IDEC1+ADSIP+IBID+1) * NX(1)
-     &                + SIELNM(IDEC1+ADSIP+IBID+2) * NY(1) ) )**2
+      IF ( .NOT. PERMAN ) THEN
 C
-      IDEC2 = NBCMP*(JNO-1)
-C
-      INTE2 = JAC(2)* ( THETA * FLUXHP(2)+ TA1 * FLUXHM(2)
-     &                - THETA *
-     &                ( SIELNP(IDEC2+ADSIP+IBID+1) * NX(2)
-     &                + SIELNP(IDEC2+ADSIP+IBID+2) * NY(2) )
-     &                - TA1 *
-     &                ( SIELNM(IDEC2+ADSIP+IBID+1) * NX(2)
-     &                + SIELNM(IDEC2+ADSIP+IBID+2) * NY(2) ) )**2
-C
-      IF (NBNA.EQ.3) THEN
-C
-        IDEC3 = NBCMP*(MNO-1)
-C
-        INTE3 = JAC(3)* ( THETA * FLUXHP(3)+ TA1 * FLUXHM(3)
+        INTE1 = JAC(1)* ( THETA * FLUXHP(1)+ TA1 * FLUXHM(1)
      &                  - THETA *
-     &                  ( SIELNP(IDEC3+ADSIP+IBID+1) * NX(3)
-     &                  + SIELNP(IDEC3+ADSIP+IBID+2) * NY(3) )
+     &                  ( SIELNP(IDEC1)*NX(1)+SIELNP(IDEC1+1)*NY(1) )
      &                  - TA1 *
-     &                  ( SIELNM(IDEC3+ADSIP+IBID+1) * NX(3)
-     &                  + SIELNM(IDEC3+ADSIP+IBID+2) * NY(3) ) )**2
+     &                  ( SIELNM(IDEC1)*NX(1)+SIELNM(IDEC1+1)*NY(1)))**2
 C
-        TM2H1B(3) = TM2H1B(3) + ( INTE1+4.D0*INTE3+INTE2 )/3.D0
+        INTE2 = JAC(2)* ( THETA * FLUXHP(2)+ TA1 * FLUXHM(2)
+     &                  - THETA *
+     &                  ( SIELNP(IDEC2)*NX(2)+SIELNP(IDEC2+1)*NY(2) )
+     &                  - TA1 *
+     &                  ( SIELNM(IDEC2)*NX(2)+SIELNM(IDEC2+1)*NY(2)))**2
+C
+        IF (NBNA.EQ.3) THEN
+C
+          IDEC3 = NBCMP*(MNO-1)+ADSIP+IBID+1
+C
+          INTE3 = JAC(3)* ( THETA * FLUXHP(3)+ TA1 * FLUXHM(3)
+     &                 - THETA *
+     &                 ( SIELNP(IDEC3)*NX(3)+SIELNP(IDEC3+1)*NY(3) )
+     &                 - TA1 *
+     &                 ( SIELNM(IDEC3)*NX(3)+SIELNM(IDEC3+1)*NY(3)))**2
+C
+          TM2H1B(3) = TM2H1B(3) + ( INTE1+4.D0*INTE3+INTE2 )/3.D0
+C
+        ELSE
+C
+          TM2H1B(3) = TM2H1B(3) + ( INTE1+INTE2 )
+C
+        ENDIF
 C
       ELSE
 C
-        TM2H1B(3) = TM2H1B(3) + ( INTE1+INTE2 )
+        INTE1 = JAC(1)* ( FLUXHP(1) -
+     &                  ( SIELNP(IDEC1)*NX(1)+SIELNP(IDEC1+1)*NY(1)))**2
+C
+        INTE2 = JAC(2)* ( FLUXHP(2) -
+     &                  ( SIELNP(IDEC2)*NX(2)+SIELNP(IDEC2+1)*NY(2)))**2
+C
+        IF (NBNA.EQ.3) THEN
+C
+          IDEC3 = NBCMP*(MNO-1)+ADSIP+IBID+1
+C
+          INTE3 = JAC(3)* ( FLUXHP(3) -
+     &                 ( SIELNP(IDEC3)*NX(3)+SIELNP(IDEC3+1)*NY(3)))**2
+C
+          TM2H1B(3) = TM2H1B(3) + ( INTE1+4.D0*INTE3+INTE2 )/3.D0
+C
+        ELSE
+C
+          TM2H1B(3) = TM2H1B(3) + ( INTE1+INTE2 )
+C
+        ENDIF
 C
       ENDIF
 C

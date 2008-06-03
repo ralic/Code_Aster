@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,6 +96,9 @@ class ETAPE:
           self.jdc.memo_sensi.register_sensi()
 
           if (self.modexec == 2) and (self.definition.op_init==None):
+             # marque le concept comme calculé
+             if self.sd:
+               self.sd.executed = 1
              # vérification de la SD produite
              if self.sd and self.jdc.sdveri:
                 # on force la vérif si :

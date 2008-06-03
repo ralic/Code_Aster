@@ -1,4 +1,4 @@
-# MODIF  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 02/06/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE SIMULATION DE L'ESSAI SAFE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,8 +30,8 @@ RESOLUTION = 'TANGENTE'
 TANG_SEC = 'TANGENTE_SECANTE'
 
 SUBD_PAS = 2;
-Nmax = 80;
-Nmaxdb = 15
+Nmax = 100;
+Nmaxdb = 20
 RESI_GLOB_RELA = 1E-7 
 Pas = 1.5E-3
 Tmax = 0.15 

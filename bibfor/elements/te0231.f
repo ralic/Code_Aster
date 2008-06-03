@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 03/06/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,8 +23,7 @@ C ======================================================================
 C .  - FONCTION REALISEE:  CALCUL DES EFFORTS GENERALISES AUX NOEUDS
 C .                                              OU AUX POINTS DE GAUSS
 C .                        COQUE 1D
-C .                        OPTIONS : 'SIEF_ELGA_DEPL  '
-C .                                  'EFGE_ELNO_DEPL  '
+C .                        OPTION : 'EFGE_ELNO_DEPL  '
 C .                        ELEMENT: MECXSE3,METCSE3,METDSE3
 C .  - ARGUMENTS:
 C .      DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -69,11 +68,7 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PCACOQU','L',ICACO)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
-        CALL JEVECH('PEFFORR','E',IEFFOR)
-      ELSE
-        CALL JEVECH('PCONTRR','E',IEFFOR)
-      END IF
+      CALL JEVECH('PEFFORR','E',IEFFOR)
       CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,IRET)
 
       BL2 = '  '

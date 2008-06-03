@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith16 Messages  DATE 02/06/2008   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -254,15 +254,6 @@ cata_msg = {
 
 """),
 
-49 : _("""
- les noeuds des interfaces ne sont pas alignes en vis-a-vis
-  sous-structure 1 -->  %(k1)s
-  interface 1      -->  %(k2)s
-  sous-structure 2 -->  %(k3)s
-  interface 2      -->  %(k4)s
- les noeuds ont ete reordonnes %(k5)s
-
-"""),
 
 50 : _("""
  les deux interfaces ont pas meme nombre de noeuds

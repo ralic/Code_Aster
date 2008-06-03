@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,8 @@ class ASSD(object):
         self.id = self.parent.reg_sd(self)
       else :
         self.id = self.parent.o_register(self)
-      
+      # permet de savoir si le concept a été calculé (1) ou non (0)
+      self.executed = 0
       # initialise la partie "sd"
       super(ASSD, self).__init__(nomj='?&?&?&?&')
       

@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
+%& MODIF COMPELEM  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -330,7 +330,7 @@ GRANDEUR_SIMPLE__
        TERMRE : erreur absolue du résidu de l'équation d'équilibre
        TERMR2 : erreur relative du résidu de l'équation d'équilibre
        ERTABS : xx
-       ERTREL :
+       ERTREL : xx
        TERMNO : erreur absolue des sauts entre les contraintes normales
                 et la force de Neumann
        TERMN2 : erreur relative des sauts entre les contraintes normales
@@ -347,6 +347,8 @@ GRANDEUR_SIMPLE__
        TERMEC : xx
        TERME2 : xx
        TERME1 : xx
+       ESTERG1  : 1ere ESTimation de l'ERreur Globale (stabilité)
+       ESTERG2  : 2eme ESTimation de l'ERreur Globale (dualité)
        ERHMME_L : Erreur en Résidu en espace pour le HM
                   - équation MEcanique - Locale en temps
        ERHMMEDL : Erreur en Résidu en espace pour le HM
@@ -362,13 +364,11 @@ GRANDEUR_SIMPLE__
                   - équation HYdraulique - Globale en temps
                   Pour le stationnaire - indicateur boosté
        ERRETPS  : ERreur en REsidu en TemPS
-       ESTERG1  : 1ere ESTimation de l'ERreur Globale (stabilité)
-       ESTERG2  : 2eme ESTimation de l'ERreur Globale (dualité)
 >>
     ERRE_R   = R    ERREST   NUEST    SIGCAL   TERMRE   TERMR2   ERTABS   ERTREL   TERMNO
                     TERMN2   TERMVO   TERMV2   TERMV1   TERMSA   TERMS2   TERMS1   TERMFL
-                    TERMF2   TERMF1   TERMEC   TERME2   TERME1   ERHMME_L ERHMMEDL ERHMHY_L
-                    ERHMME_G ERHMMEDG ERHMHY_G ERRETPS  ESTERG1  ESTERG2
+                    TERMF2   TERMF1   TERMEC   TERME2   TERME1   ESTERG1  ESTERG2  ERHMME_L
+                    ERHMMEDL ERHMHY_L ERHMME_G ERHMMEDG ERHMHY_G ERRETPS
 <<  FACY_R   : GRANDEUR LIEE A LA FATIGUE A GRAND NOMBRE DE CYCLES SOUS
                CHARGEMENT MULTIAXIAL
        DTAUM1  : PREMIERE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS

@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,9 +135,13 @@ C
 C       ELSE IF (TYCH(1:9).EQ.'ELGA_EQUI_R') THEN
 C          OPTION = 'EQUI_ELGA_SIGM'
 C          PARAM  = 'PCONTEQ'
-C     AUTRE CHAMP ELGA : NON PREVU
       ELSE IF (TYCH(1:4).EQ.'ELGA') THEN
+C        AUTRES CHAMPS ELGA : NON PREVU
          CALL U2MESK('F','UTILITAI2_94',1,TYCH)
+      ELSE
+C        CHAMPS ELNO OU AUTRES :
+         OPTION=' '
+         PARAM=' '
       ENDIF
 C
 C 2.3. ==> NOM DES COMPOSANTES VOULUES
@@ -261,9 +265,9 @@ C
         IF(TYCH(1:4).EQ.'NOEU')THEN
            TYPENT=EDNOEU
         ELSEIF(TYCH(1:4).EQ.'ELNO')THEN
-           
+
 C          DETERMINATION DU TYPE D'ENTITE CAR SELON LA VERSION MED,
-C               TYPENT =4 ('MED_NOEUD_MAILLE') OU 
+C               TYPENT =4 ('MED_NOEUD_MAILLE') OU
 C                      =0 ('MED_MAILLE' POUR LES VERSIONS ANTERIEURES)
 C          NOM DU FICHIER MED
            CALL ULISOG(UNITE, KFIC, SAUX01)
@@ -277,7 +281,7 @@ C          NOM DU FICHIER MED
            CALL EFVELI ( IDFIMD, IMAJ, IMIN, IREL, IRET)
            CALL EFFERM ( IDFIMD, IRET )
 C          ON VERIFIE LA VERSION DU FICHIER A LA VERSION 2.3.3
-           TYPENT=EDNOMA 
+           TYPENT=EDNOMA
            IVER= IMAJ*100 + IMIN*10 + IREL
            IF(IVER.LT.233)THEN
                TYPENT=EDMAIL
@@ -288,7 +292,7 @@ C          ON VERIFIE LA VERSION DU FICHIER A LA VERSION 2.3.3
         ELSE
            TYPENT=EDMAIL
         ENDIF
-           
+
         CALL LRCHME ( CHATMP, NOCHMD, NOMAMD,
      &                NOMAAS, TYCH(1:8), NOMGD, TYPENT,
      &                NBCMPV, NCMPVA, NCMPVM, PROLZ,

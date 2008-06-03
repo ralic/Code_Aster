@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF algeline4 Messages  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -221,11 +221,10 @@ cata_msg = {
 83 : _("""
  nombre de valeurs propres convergées  %(i1)d < nombre de fréquences demandées  %(i2)d
  erreur ARPACK numéro :  %(i3)d
- --> le calcul continue, la prochaine fois %(i4)d
- -->   augmenter DIM_SOUS_ESPACE =  %(i5)d
- -->   ou NMAX_ITER_SOREN =  %(i6)d
+ --> le calcul continue, la prochaine fois
+ -->   augmenter DIM_SOUS_ESPACE =  %(i4)d
+ -->   ou NMAX_ITER_SOREN =  %(i5)d
  -->   ou PREC_SOREN =  %(r1)f
-### idem algeline4_98 ?
 """),
 
 85 : _("""

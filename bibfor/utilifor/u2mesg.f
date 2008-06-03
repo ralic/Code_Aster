@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,11 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
       IDF  = INDEX('EFIDASXZ',CH1(1:1))
-      SUITE = (LEN(CH1) .GT. 1) .AND. (CH1(2:2) .EQ. '+')
+
+      SUITE = .FALSE.
+      IF (LEN(CH1) .GT. 1) THEN
+         IF (CH1(2:2) .EQ. '+') SUITE=.TRUE.
+      ENDIF
 C
 C --- SE PROTEGER DES APPELS RECURSIFS
       IF ( RECURS .EQ. 1234567890 ) THEN
@@ -45,11 +49,11 @@ C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
          CALL JEFINI('ERREUR')
       ENDIF
       RECURS = 1234567890
-      
+
       CALL JEVEMA(IMAAP)
       IF (IMAAP.GE.200) CALL JEFINI('ERREUR')
       CALL JEMARQ()
-      
+
 C     --- COMPORTEMENT EN CAS D'ERREUR <F>
       CALL ONERRF(' ', COMPEX, LOUT)
       LEXC = IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'EXCEPTION'
@@ -63,7 +67,7 @@ C
 C
 C     --- REMONTEE D'ERREUR SI DISPO
       IF ( IDF .EQ. 6 .OR. (IDF .EQ. 2 .AND. .NOT. LEXC )) THEN
-          CALL TRACEB('Liste des appels successifs ' // 
+          CALL TRACEB('Liste des appels successifs ' //
      &                '(option -traceback)',-1)
       ENDIF
 C

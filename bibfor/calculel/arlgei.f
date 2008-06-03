@@ -1,7 +1,7 @@
       INTEGER FUNCTION ARLGEI(NOMARL,NOMDAT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      INFOI = NOMARL(1:8)//'.INFOI'
+      INFOI = NOMARL//'.INFOI'
 C
       CALL JEEXIN(INFOI,IRET)
       IF (IRET.EQ.0) THEN
@@ -98,7 +98,7 @@ C
       ELSE IF (NOMDA1.EQ.'METHOD') THEN
         ARLGEI = ZI(JARLII+10)
       ELSE
-        CALL U2MESK('F','ARLEQUIN_15',1,NOMDA1)
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL JEDEMA()

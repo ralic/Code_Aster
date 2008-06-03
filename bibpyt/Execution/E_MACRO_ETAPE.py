@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
          if ier > 0 :
             # On termine le traitement
-            cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
+            cr.fatal("Erreurs à l'exécution de la macro %s" % self.nom)
             raise EOFError
 
          self.setmode(1)

@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_modifstruct Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_modifstruct Meidee  DATE 03/06/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,11 +229,9 @@ class ModifStruct:
         for name, resu in self.meidee_objects.resultats.items():
             modele_name = aster.getvectjev(name.ljust(19) + '.MODL')
             if not modele_name:
-                print "Modele non trouve pour:", name.strip()
                 continue
             
             modllu = modele_name[0].strip()
-            print "SD_RESU", name, "->", modllu
             
             if modllu == self.support_modele.nom:
                 support_modele = resu.obj
@@ -241,7 +239,6 @@ class ModifStruct:
                 nom_raideur = refd[0].strip()
             
                 if nom_raideur == self.matr_rig.nom:
-                    print "FOUND:", name
                     nom_masse = refd[1].strip()
                     matr_masse = self.meidee_objects.get_matr(nom_masse)
                     
@@ -274,7 +271,6 @@ class ModifStruct:
             grpno_tot = self.captor_groups + self.ms_externe_groups
         
         grno = []
-        print "grpno_tot = ", grpno_tot
         for grp in grpno_tot:
             grno.append( _F(GROUP_NO=grp["NOM"], AVEC_CMP=grp["NOM_CMP"]) )
         return grno 
@@ -455,7 +451,6 @@ class ModifStruct:
 
     def modele_couple(self):
         """Creation du modele couple"""
-        print "CREATION MODELE COUPLE"
         self.cpl.reinit(self.modlx, self.mailx, self.x_mailcond )
         
         try:
@@ -481,7 +476,6 @@ class ModifStruct:
 
     def maillage_iface(self, group_ma_sup):
         """Construit le maillage de l'interface."""
-        print "CREATION MAILLAGE INTERFACE"
         self.clear_concept(self.x_mailint)
         self.group_ma_sup = group_ma_sup
         self.group_ma_int = group_ma = 'IFACE'
@@ -673,14 +667,10 @@ class ModifStruct:
         self.maillage_iface(group_ma_sup='VISUAL')
         
     def calcul_coupling_model_modes(self, mode_simult, calc_freq):
-        print "PROJECTION MODES INTERFACE"
         if "NMAX_FREQ" in calc_freq:
             if calc_freq['NMAX_FREQ'] <= 0:
                 calc_freq['NMAX_FREQ'] == 10 # valeur par defaut
         
-        print "CALC FREQ", repr(calc_freq), type(calc_freq), \
-                           calc_freq.__class__, dir(calc_freq)
-
         self.modes_modele_couple(mode_simult, calc_freq)
 
         self.indicateur_choix_base_projection()
@@ -910,8 +900,6 @@ class CreateModeleCouple(CopyModelMeca):
 
     def create_modele(self, affe):
         """Creation du modele"""
-        if self.modele:
-            print "DESTRUCTION", self.modele.nom
         self.clear_concept( self.modele )
         # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
         _MDLCPL = AFFE_MODELE( MAILLAGE=self.maillage,
@@ -1050,7 +1038,6 @@ def retrieve_model_param( modname ):
             modlname = modl
         else:
             modlname = modl.nom.strip()
-            #print modl.__class__.__mro__ : (<class 'SD.co_modele.modele_sdaster'>, <class 'Noyau.N_ASSD.ASSD'>, <class 'SD.sd_modele.sd_modele'>, <class 'Noyau.asojb.AsBase'>, <class 'Noyau.basetype.Type'>, <class 'Noyau.basetype.BaseType'>, <type 'object'>)
 
         if modlname != modname:
             continue

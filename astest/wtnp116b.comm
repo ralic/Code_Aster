@@ -1,5 +1,5 @@
 
-# MODIF  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,9 +153,6 @@ MODE_00=AFFE_MODELE(MAILLAGE=MAIL_00,
 MAIL_00=MODI_MAILLAGE(reuse =MAIL_00,
                       MAILLAGE=MAIL_00,
                       ORIE_PEAU_2D=_F(GROUP_MA=('GM3','GM2','GM1','GM4',),),);
-###IMPR_RESU(FORMAT='RESULTAT',
-###          RESU=_F(MAILLAGE=MAIL_00,
-###                  IMPR_COOR='OUI',),);
 
 #
 # 3.2. Affectation du materiau sur le maillage
@@ -236,7 +233,6 @@ RESU_00=CALC_NO(reuse =RESU_00,
                 RESULTAT=RESU_00,
                 INST=400000.0,
                 OPTION='ERRE_NOEU_ELEM',);
-###IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=RESU_00,),);
 
 #
 # 4. Tests par rapport aux valeurs de reference
@@ -273,21 +269,21 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_00,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ESTERG1',
                    GROUP_NO='POURTEST',
-                   VALE=4.4117418837166E-13,
+                   VALE=6.6559498309649E-07,
                    CRITERE='ABSOLU',
                    PRECISION=1e-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.13',),
+                   VERSION='9.02.27',),
                 _F(RESULTAT=RESU_00,
                    NUME_ORDRE=2,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ESTERG2',
                    GROUP_NO='POURTEST',
-                   VALE=4.8866803833028E-15,
+                   VALE=7.2760871822674E-08,
                    CRITERE='ABSOLU',
                    PRECISION=1e-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.13',),),);
+                   VERSION='9.02.27',),),);
 #
 # 5. Post-traitement : graphique de la pression et des deplacements
 # 5.1. Un chemin egal au bord GM3
@@ -334,12 +330,6 @@ V_X_00=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 MACR_ADAP_MAIL(MAILLAGE_N=MAIL_00,
                MAILLAGE_NP1=CO('MAIL_01'),
                ADAPTATION='RAFFINEMENT_UNIFORME',);
-###               ADAPTATION='RAFFINEMENT_ZONE',
-###               ZONE=(_F(X_CENTRE = 1.9743,
-###                        Y_CENTRE = 1.9743,
-###                        RAYON   =  0.60,),),);
-###IMPR_RESU(FORMAT='MED',
-###          RESU=_F(MAILLAGE=MAIL_01,),);
 
 #
 # 6.2. Destruction/reconstruction des groupes de noeuds du bord
@@ -367,9 +357,6 @@ MODE_01=AFFE_MODELE(MAILLAGE=MAIL_01,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='D_PLAN_HM_P',),);
-###IMPR_RESU(FORMAT='RESULTAT',
-###          RESU=_F(MAILLAGE=MAIL_01,
-###                  IMPR_COOR='OUI',),);
 
 #
 # 7.2. Affectation du materiau sur le maillage
@@ -436,11 +423,6 @@ RESU_01=CALC_ELEM(reuse =RESU_01,
                   RESULTAT=RESU_01,
                   INST=400000.0,
                   OPTION='SIEF_ELNO_ELGA',);
-
-###IMPR_RESU(RESU=_F(RESULTAT=RESU_00,),);
-
-###IMPR_RESU(RESU=_F(RESULTAT=RESU_01,),);
-#
 #
 # 7.5.2. Indicateurs aux elements et aux noeuds par elements
 
@@ -455,7 +437,6 @@ RESU_01=CALC_NO(reuse =RESU_01,
                 RESULTAT=RESU_01,
                 INST=400000.0,
                 OPTION='ERRE_NOEU_ELEM',);
-#IMPR_RESU(RESU=_F(RESULTAT=RESU_01,),);
 #
 # 8. Tests par rapport aux valeurs de reference
 
@@ -491,21 +472,21 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_01,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ESTERG1',
                    GROUP_NO='POURTEST',
-                   VALE=2.7344710789516E-14,
+                   VALE=1.6519790002101E-07,
                    CRITERE='ABSOLU',
                    PRECISION=1E-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.13',),
+                   VERSION='9.02.27',),
                 _F(RESULTAT=RESU_01,
                    NUME_ORDRE=2,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ESTERG2',
                    GROUP_NO='POURTEST',
-                   VALE=7.5409218288034E-17,
+                   VALE=9.0867580555583E-09,
                    CRITERE='ABSOLU',
                    PRECISION=1E-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.13',),),);
+                   VERSION='9.02.27',),),);
 #
 # 9. Post-traitement : graphique de la pression et des deplacements
 # 9.1. Un chemin egal au bord GM3

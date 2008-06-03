@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 03/06/2008   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,7 +73,7 @@ MACRO_VISU_MEIDEE=MACRO(nom       = 'MACRO_VISU_MEIDEE',
                                                MACR_ELEM=SIMP(statut='f',typ=CO,defaut=None),
                                                PROJ_MESU=SIMP(statut='f',typ=CO,defaut=None),
                                              ),
-                        UNITE_RESU = SIMP( statut='f',typ='I',defaut=6),
+                        UNITE_RESU = SIMP( statut='f',typ='I'),
 
                         b_inter    = BLOC( condition="INTERACTIF=='NON'",
 

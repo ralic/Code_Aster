@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,6 +171,9 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
             # on rattache chaque assd au nouveau jdc courant (en poursuite)
             pickle_context[elem].jdc=self.jdc
             pickle_context[elem].parent=self.jdc
+            # pour que sds_dict soit cohérent avec g_context
+            self.jdc.sds_dict[elem] = pickle_context[elem]
+            assert elem == pickle_context[elem].nom
             # rétablir le parent pour les attributs de la SD
             pickle_context[elem].reparent_sd()
             if elem in self.g_context.keys():
@@ -233,7 +236,8 @@ def POURSUITE_context(self,d):
    # On ajoute directement les concepts dans le contexte du jdc
    # XXX est ce que les concepts ne sont pas ajoutés plusieurs fois ??
    for v in self.g_context.values():
-      if isinstance(v,ASSD) : self.jdc.sds.append(v)
+      if isinstance(v,ASSD) :
+         self.jdc.sds.append(v)
 
 def build_poursuite(self,**args):
    """

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  DSR3 - SANS RENUM / AFFE_CHAR_MECA / SOLVE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -7,168 +7,297 @@
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
 # TEST DE PERFORMANCE ANCIENNEMENT NOMME SSLV130E
-#
 
-DEBUT( CODE=_F(  NOM = 'YYYY104E',NIV_PUB_WEB='INTERNET')  )
+DEBUT(CODE=_F(NOM='YYYY104E',
+              NIV_PUB_WEB='INTERNET',),);
 
-MA=LIRE_MAILLAGE(  
-                         )
+MA=LIRE_MAILLAGE();
 
-MO=AFFE_MODELE(      MAILLAGE=MA, 
-                             AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
-                                                 MODELISATION = '3D')
-                         )
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
 
-MAT=DEFI_MATERIAU(    ELAS=_F(  E = 210000.0,  NU = 0.3)
-                         )
+MAT=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                          NU=0.3,),);
 
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
-                            AFFE=_F(  TOUT = 'OUI',  MATER = MAT)
-                         )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
 
-CHA=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
-                 _F( GROUP_NO = 'SUPY',   DY = 0.),
-                          _F( GROUP_NO = 'APPUI',  DX = 0.),
-                          _F( GROUP_NO = 'SUPZ',   DZ = 0.),
-                          _F( GROUP_NO = 'CHARGE', DX = -1.))
-                         )
+CHA=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=(_F(GROUP_NO='SUPY',
+                                DY=0.,),
+                             _F(GROUP_NO='APPUI',
+                                DX=0.,),
+                             _F(GROUP_NO='SUPZ',
+                                DZ=0.,),
+                             _F(GROUP_NO='CHARGE',
+                                DX=-1.,),),);
 
-MEL=CALC_MATR_ELEM(   MODELE=MO,       CHARGE=CHA,  CHAM_MATER=CHMAT,
-                                           OPTION='RIGI_MECA'
-                         )
-
-#
-
-NU=NUME_DDL(  MATR_RIGI=MEL,  METHODE='GCPC', RENUM='SANS')
-
-MATAS=ASSE_MATRICE(     MATR_ELEM=MEL,  NUME_DDL=NU
-                         )
-
-VEL=CALC_VECT_ELEM(   CHARGE=CHA,     OPTION='CHAR_MECA'
-                         )
-
-VECAS=ASSE_VECTEUR(     VECT_ELEM=VEL,  NUME_DDL=NU
-                         )
-
-KMATAS=FACTORISER(        MATR_ASSE=MATAS
-                         )
-
-DEP=RESOUDRE(          CHAM_NO=VECAS,      MATR=MATAS,
-                            MATR_PREC=KMATAS,
-                            NMAX_ITER=1000,       RESI_RELA=0.95E-07
-                         )
+MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CHARGE=CHA,);
 
 #
+
+NU=NUME_DDL(MATR_RIGI=MEL,
+            METHODE='GCPC',
+            RENUM='SANS',);
+
+MATAS=ASSE_MATRICE(MATR_ELEM=MEL,
+                   NUME_DDL=NU,);
+
+VEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                   CHARGE=CHA,);
+
+VECAS=ASSE_VECTEUR(VECT_ELEM=VEL,
+                   NUME_DDL=NU,);
+
+KMATAS=FACTORISER(MATR_ASSE=MATAS,);
+
+DEP=RESOUDRE(MATR=MATAS,
+             CHAM_NO=VECAS,
+             RESI_RELA=1.e-8,
+             MATR_PREC=KMATAS,
+             NMAX_ITER=1000,
+             INFO=2);
+
 
 RESU=CREA_RESU(OPERATION='AFFE',
-                TYPE_RESU='EVOL_ELAS',
-                NOM_CHAM='DEPL',
-                AFFE=_F(INST=0.,
-                        CHAM_GD=DEP,
-                        ),
-                );
+               TYPE_RESU='EVOL_ELAS',
+               NOM_CHAM='DEPL',
+               AFFE=_F(CHAM_GD=DEP,
+                       INST=0.,),);
 
+RESU=CALC_ELEM(reuse =RESU,
+               MODELE=MO,
+               CHAM_MATER=CHMAT,
+               RESULTAT=RESU,
+               INST=0.,
+               OPTION='SIGM_ELNO_DEPL',);
 
-RESU=CALC_ELEM(reuse=RESU, RESULTAT=RESU,
-                MODELE=MO,
-                INST=0.,
-                CHAM_MATER=CHMAT,
-                OPTION='SIGM_ELNO_DEPL',
-                )
-
-TEST_RESU(CHAM_NO=( 
- _F( CHAM_GD = DEP, NOEUD = 'NO13943', NOM_CMP = 'DX',
-                                    VALE = 0.65855E-03, PRECISION = 0.3E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO13943', NOM_CMP = 'DY',
-                                    VALE = 0.64428E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO13943', NOM_CMP = 'DZ',
-                                    VALE = -0.63926E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO13944', NOM_CMP = 'DX',
-                                    VALE = 0.86831E-03, PRECISION = 0.25E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO13944', NOM_CMP = 'DY',
-                                    VALE = 0.61357E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO13944', NOM_CMP = 'DZ',
-                                    VALE = -0.62244E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15854', NOM_CMP = 'DX',
-                                    VALE = 0.11315E-02, PRECISION = 0.2E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15854', NOM_CMP = 'DY',
-                                    VALE = 0.58735E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15854', NOM_CMP = 'DZ',
-                                    VALE = -0.60645E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15855', NOM_CMP = 'DX',
-                                    VALE = 0.23537E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15855', NOM_CMP = 'DY',
-                                    VALE = 0.43551E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15855', NOM_CMP = 'DZ',
-                                    VALE = -0.45381E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15858', NOM_CMP = 'DX',
-                                    VALE = 0.31725E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15858', NOM_CMP = 'DY', 
-                                    VALE = 0.28244E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15858', NOM_CMP = 'DZ',
-                                    VALE = -0.29278E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15860', NOM_CMP = 'DX', 
-                                    VALE = 0.36759E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15860', NOM_CMP = 'DY',
-                                    VALE = 0.12585E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15860', NOM_CMP = 'DZ',
-                                    VALE = -0.12193E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15862', NOM_CMP = 'DX',
-                                    VALE = 0.38304E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15862', NOM_CMP = 'DY',
-                                    VALE = -0.31278E-02, PRECISION = 0.3E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15862', NOM_CMP = 'DZ',
-                                    VALE = 0.48320E-03, PRECISION = 0.2E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15863', NOM_CMP = 'DX',
-                                    VALE = 0.35835E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15863', NOM_CMP = 'DY', 
-                                    VALE = -0.18953E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15863', NOM_CMP = 'DZ', 
-                                    VALE = 0.21508E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15868', NOM_CMP = 'DX',
-                                    VALE = 0.29512E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15868', NOM_CMP = 'DY', 
-                                    VALE = -0.34851E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15868', NOM_CMP = 'DZ',
-                                    VALE = 0.37679E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15869', NOM_CMP = 'DX',
-                                    VALE = 0.17340E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15869', NOM_CMP = 'DY',
-                                    VALE = -0.50995E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15869', NOM_CMP = 'DZ',
-                                    VALE = 0.49749E-02, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15866', NOM_CMP = 'DX',
-                               VALE = 0.,
-                                 CRITERE = 'ABSOLU',    PRECISION = 1.0E-7),
- _F( CHAM_GD = DEP, NOEUD = 'NO15866', NOM_CMP = 'DY',
-                                    VALE = -0.67226E-01, PRECISION = 0.1E-2),
- _F( CHAM_GD = DEP, NOEUD = 'NO15866', NOM_CMP = 'DZ', 
-                                    VALE = 0.58204E-02, PRECISION = 0.1E-2))
-          )
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP,
+                      NOEUD='NO13943',
+                      NOM_CMP='DX',
+                      VALE=0.00065855,
+                      PRECISION=0.003,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO13943',
+                      NOM_CMP='DY',
+                      VALE=0.064428,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO13943',
+                      NOM_CMP='DZ',
+                      VALE=-0.0063926,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO13944',
+                      NOM_CMP='DX',
+                      VALE=0.00086831,
+                      PRECISION=0.0025,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO13944',
+                      NOM_CMP='DY',
+                      VALE=0.061357,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO13944',
+                      NOM_CMP='DZ',
+                      VALE=-0.0062244,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15854',
+                      NOM_CMP='DX',
+                      VALE=0.0011315,
+                      PRECISION=0.002,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15854',
+                      NOM_CMP='DY',
+                      VALE=0.058735,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15854',
+                      NOM_CMP='DZ',
+                      VALE=-0.0060645,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15855',
+                      NOM_CMP='DX',
+                      VALE=0.0023537,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15855',
+                      NOM_CMP='DY',
+                      VALE=0.043551,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15855',
+                      NOM_CMP='DZ',
+                      VALE=-0.0045381,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15858',
+                      NOM_CMP='DX',
+                      VALE=0.0031725,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15858',
+                      NOM_CMP='DY',
+                      VALE=0.028244,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15858',
+                      NOM_CMP='DZ',
+                      VALE=-0.0029278,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15860',
+                      NOM_CMP='DX',
+                      VALE=0.0036759,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15860',
+                      NOM_CMP='DY',
+                      VALE=0.012585,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15860',
+                      NOM_CMP='DZ',
+                      VALE=-0.0012193,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15862',
+                      NOM_CMP='DX',
+                      VALE=0.0038304,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15862',
+                      NOM_CMP='DY',
+                      VALE=-0.0031278,
+                      PRECISION=0.003,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15862',
+                      NOM_CMP='DZ',
+                      VALE=0.0004832,
+                      PRECISION=0.002,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15863',
+                      NOM_CMP='DX',
+                      VALE=0.0035835,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15863',
+                      NOM_CMP='DY',
+                      VALE=-0.018953,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15863',
+                      NOM_CMP='DZ',
+                      VALE=0.0021508,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15868',
+                      NOM_CMP='DX',
+                      VALE=0.0029512,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15868',
+                      NOM_CMP='DY',
+                      VALE=-0.034851,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15868',
+                      NOM_CMP='DZ',
+                      VALE=0.0037679,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15869',
+                      NOM_CMP='DX',
+                      VALE=0.001734,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15869',
+                      NOM_CMP='DY',
+                      VALE=-0.050995,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15869',
+                      NOM_CMP='DZ',
+                      VALE=0.0049749,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15866',
+                      NOM_CMP='DX',
+                      VALE=0.0,
+                      CRITERE='ABSOLU',
+                      PRECISION=1e-07,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15866',
+                      NOM_CMP='DY',
+                      VALE=-0.067226,
+                      PRECISION=0.001,),
+                   _F(CHAM_GD=DEP,
+                      NOEUD='NO15866',
+                      NOM_CMP='DZ',
+                      VALE=0.0058204,
+                      PRECISION=0.001,),),);
 
 #
 # VALEUR DU TENSEUR DES CONTRAINTES PROVENANT D'UN CALCUL PAR PERMAS
-#
-TEST_RESU(RESU=(  
- _F( RESULTAT = RESU, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
- MAILLE = 'MA4204', NOEUD = 'NO15854', NOM_CMP = 'SIXX',
- VALE = -0.35204E+01, PRECISION = 1.5E-2),
- _F( RESULTAT = RESU, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
- MAILLE = 'MA4204', NOEUD = 'NO15854', NOM_CMP = 'SIXY',
- VALE = -0.18101E+01, PRECISION = 1.5E-2),
- _F( RESULTAT = RESU, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
- MAILLE = 'MA4204', NOEUD = 'NO15854', NOM_CMP = 'SIYY',
- VALE = 0.53914E+02, PRECISION = 0.1E-2),
- _F( RESULTAT = RESU, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
- MAILLE = 'MA4204', NOEUD = 'NO15854', NOM_CMP = 'SIXZ',
- VALE = -0.71500E+00, PRECISION = 3.0E-2),
- _F( RESULTAT = RESU, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
- MAILLE = 'MA4204', NOEUD = 'NO15854', NOM_CMP = 'SIYZ',
- VALE = -0.10373E+01, PRECISION = 0.56E-2),
- _F( RESULTAT = RESU, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
- MAILLE = 'MA4204', NOEUD = 'NO15854', NOM_CMP = 'SIZZ',
-  VALE = -0.10672E+01, PRECISION = 6.5E-2))
-          )
 
-FIN()
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=0.0,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA4204',
+                   NOEUD='NO15854',
+                   VALE=-3.5204,
+                   PRECISION=0.015,),
+                _F(RESULTAT=RESU,
+                   INST=0.0,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXY',
+                   MAILLE='MA4204',
+                   NOEUD='NO15854',
+                   VALE=-1.8101,
+                   PRECISION=0.015,),
+                _F(RESULTAT=RESU,
+                   INST=0.0,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='MA4204',
+                   NOEUD='NO15854',
+                   VALE=53.914,
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESU,
+                   INST=0.0,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXZ',
+                   MAILLE='MA4204',
+                   NOEUD='NO15854',
+                   VALE=-0.715,
+                   PRECISION=0.03,),
+                _F(RESULTAT=RESU,
+                   INST=0.0,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIYZ',
+                   MAILLE='MA4204',
+                   NOEUD='NO15854',
+                   VALE=-1.0373,
+                   PRECISION=0.0056,),
+                _F(RESULTAT=RESU,
+                   INST=0.0,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIZZ',
+                   MAILLE='MA4204',
+                   NOEUD='NO15854',
+                   VALE=-1.0672,
+                   PRECISION=0.065,),),);
+
+FIN();
+
 #
+

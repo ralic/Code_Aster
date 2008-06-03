@@ -3,7 +3,7 @@
      &   PRECDC, METHOD, OMECOR, STURM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -175,7 +175,7 @@ C
             IF(VPINF .GT. R8PREM()) THEN
                TOLE=(ABS(VPMAX2-VPMAX)/VPMAX)
                IF (TOLE .LT. PRECDC) THEN
-                  CALL U2MESS('A','ALGELINE3_59')
+                  CALL U2MESS('A','ALGELINE3_58')
                    VALR = FREQOM(VPMAX2)
                   CALL U2MESG('A', 'ALGELINE4_68',0,' ',0,0,1,VALR)
                   VPMAX = VPMAX * (1.D0 + SIGN(PRECDC,VPMAX))
@@ -183,7 +183,7 @@ C
             ELSE
                TOLE=ABS(VPMAX2-VPMAX)
                IF (TOLE .LT. PRECDC) THEN
-                   CALL U2MESS('A','ALGELINE3_59')
+                   CALL U2MESS('A','ALGELINE3_58')
                    VALR = FREQOM(VPMAX2)
                    CALL U2MESG('A', 'ALGELINE4_68',0,' ',0,0,1,VALR)
                    VPMAX = VPMAX * (1.D0 + SIGN(PRECDC,VPMAX))
