@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 04/06/2008   AUTEUR PROIX J-M.PROIX 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -410,7 +410,7 @@ TEST_RESU(RESU=(
                    NUME_ORDRE=last_iter,
                    NOM_CHAM='INDI_LOCA_ELGA',
                    TYPE_TEST='SOMM',
-                   VALE= 3.1837939417841E+02,
+                   VALE= 3.2428938496903E+02,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),

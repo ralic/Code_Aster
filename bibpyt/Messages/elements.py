@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 06/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+#@ MODIF elements Messages  DATE 04/06/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ cata_msg = {
 """),
 
 33 : _("""
- la convergence locale de la loi GLRC_DM n'est pas atteinte en 1000 itérations :
+ la convergence locale de la loi GLRC_DAMAGE n'est pas atteinte en 1000 itérations :
  XM1 vaut %(r1)f
  XM2 vaut %(r2)f
  YM1 vaut %(r3)f
