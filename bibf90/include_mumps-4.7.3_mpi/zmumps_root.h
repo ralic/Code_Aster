@@ -1,6 +1,6 @@
 !
-!   THIS FILE IS PART OF ZMUMPS VERSION 4.6.4
-!   This Version was built on Thu Jan 11 13:32:35 2007
+!   THIS FILE IS PART OF ZMUMPS VERSION 4.7.3
+!   This Version was built on Fri May  4 15:54:01 2007
 !
 !
 !  This version of ZMUMPS is provided to you free of charge. It is public
@@ -14,7 +14,7 @@
 !  Jacko Koster, Jean-Yves L'Excellent, and Stephane Pralet.
 !
 !  Up-to-date copies of the ZMUMPS package can be obtained
-!  from the Web pages http://www.enseeiht.fr/apo/ZMUMPS/
+!  from the Web pages http://mumps.enseeiht.fr/
 !  or http://graal.ens-lyon.fr/ZMUMPS
 !
 !

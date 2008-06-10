@@ -1,6 +1,6 @@
 !
-!   THIS FILE IS PART OF ZMUMPS VERSION 4.6.4
-!   This Version was built on Thu Jan 11 13:32:35 2007
+!   THIS FILE IS PART OF ZMUMPS VERSION 4.7.3
+!   This Version was built on Fri May  4 15:54:01 2007
 !
 !
 !  This version of ZMUMPS is provided to you free of charge. It is public
@@ -14,7 +14,7 @@
 !  Jacko Koster, Jean-Yves L'Excellent, and Stephane Pralet.
 !
 !  Up-to-date copies of the ZMUMPS package can be obtained
-!  from the Web pages http://www.enseeiht.fr/apo/ZMUMPS/
+!  from the Web pages http://mumps.enseeiht.fr/
 !  or http://graal.ens-lyon.fr/ZMUMPS
 !
 !
@@ -42,7 +42,7 @@
 !   S. Pralet, Hybrid scheduling for the parallel solution of linear
 !   systems. Parallel Computing Vol 32 (2), pp 136-156 (2006).
 !
-!     $Id: zmumps_struc.h,v 1.68 2006/11/16 09:10:12 jylexcel Exp $
+!     $Id: zmumps_struc.h,v 1.72 2007/03/25 19:43:31 jylexcel Exp $
       INCLUDE 'zmumps_root.h'
       TYPE ZMUMPS_STRUC
         SEQUENCE
@@ -111,13 +111,13 @@
 !    -------------
 !       right-hand side and solution
 !    -------------------------------------------------------
-         COMPLEX*16, DIMENSION(:), POINTER :: RHS
+         COMPLEX*16, DIMENSION(:), POINTER :: RHS, REDRHS
          COMPLEX*16, DIMENSION(:), POINTER :: RHS_SPARSE
          COMPLEX*16, DIMENSION(:), POINTER :: SOL_LOC
          INTEGER*4, DIMENSION(:), POINTER :: IRHS_SPARSE
          INTEGER*4, DIMENSION(:), POINTER :: IRHS_PTR
          INTEGER*4, DIMENSION(:), POINTER :: ISOL_LOC
-         INTEGER*4 LRHS, NRHS, NZ_RHS, LSOL_LOC
+         INTEGER*4 LRHS, NRHS, NZ_RHS, LSOL_LOC, LREDRHS
          INTEGER*4 PADDING
 !    ----------------------------
 !    Control parameters,
@@ -126,7 +126,7 @@
          INTEGER*4 ICNTL(40)
          INTEGER*4 INFO(40) 
          INTEGER*4 INFOG(40)
-         DOUBLE PRECISION CNTL(5)
+         DOUBLE PRECISION CNTL(15)
          DOUBLE PRECISION RINFO(20)
          DOUBLE PRECISION RINFOG(20)
 !        Cost (flops) of subtrees on local process
@@ -217,6 +217,9 @@
 	 LOGICAL, DIMENSION(:), POINTER :: I_AM_CAND
 !        For heterogeneous architecture
          INTEGER*4, DIMENSION(:), POINTER :: MEM_DIST
+!        Compressed RHS
+         INTEGER*4, DIMENSION(:),   POINTER :: POSINRHSCOMP
+         COMPLEX*16, DIMENSION(:), POINTER :: RHSCOMP
 !        To save the matrix in a simple format
          CHARACTER(LEN=80) WRITE_PROBLEM
 !   ------------------------
@@ -253,4 +256,6 @@
 !    Array needed to manage additionnal candidate processor 
 !    when using -DNEW_MAPPING
          INTEGER*4, DIMENSION(:,:), POINTER :: SUP_PROC
+!    Version number
+         CHARACTER(LEN=80) VERSION_NUMBER
       END TYPE ZMUMPS_STRUC

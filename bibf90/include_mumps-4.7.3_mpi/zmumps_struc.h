@@ -1,9 +1,9 @@
 !
-!   THIS FILE IS PART OF DMUMPS VERSION 4.7.2
-!   This Version was built on Mon Apr 16 13:49:29 2007
+!   THIS FILE IS PART OF ZMUMPS VERSION 4.7.3
+!   This Version was built on Fri May  4 15:54:01 2007
 !
 !
-!  This version of DMUMPS is provided to you free of charge. It is public
+!  This version of ZMUMPS is provided to you free of charge. It is public
 !  domain, based on public domain software developed during the Esprit IV
 !  European project PARASOL (1996-1999) by CERFACS, ENSEEIHT-IRIT and RAL. 
 !  Since this first public domain version in 1999, the developments are
@@ -13,9 +13,9 @@
 !  Main contributors are Patrick Amestoy, Iain Duff, Abdou Guermouche,
 !  Jacko Koster, Jean-Yves L'Excellent, and Stephane Pralet.
 !
-!  Up-to-date copies of the DMUMPS package can be obtained
+!  Up-to-date copies of the ZMUMPS package can be obtained
 !  from the Web pages http://mumps.enseeiht.fr/
-!  or http://graal.ens-lyon.fr/DMUMPS
+!  or http://graal.ens-lyon.fr/ZMUMPS
 !
 !
 !   THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY
@@ -42,9 +42,9 @@
 !   S. Pralet, Hybrid scheduling for the parallel solution of linear
 !   systems. Parallel Computing Vol 32 (2), pp 136-156 (2006).
 !
-!     $Id: dmumps_struc.h,v 1.72 2007/03/25 19:43:31 jylexcel Exp $
-      INCLUDE 'dmumps_root.h'
-      TYPE DMUMPS_STRUC
+!     $Id: zmumps_struc.h,v 1.72 2007/03/25 19:43:31 jylexcel Exp $
+      INCLUDE 'zmumps_root.h'
+      TYPE ZMUMPS_STRUC
         SEQUENCE
 !
 ! This structure contains all parameters 
@@ -71,9 +71,9 @@
 !    Assembled input matrix : User interface
 !    ----------------------------------------
          INTEGER*4 NZ
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: A
+         COMPLEX*16, DIMENSION(:), POINTER :: A
          INTEGER*4, DIMENSION(:), POINTER :: IRN, JCN
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: COLSCA, ROWSCA
+         COMPLEX*16, DIMENSION(:), POINTER :: COLSCA, ROWSCA
 !
 !        ------------------------------------
 !        Case of distributed assembled matrix
@@ -81,7 +81,7 @@
 !        ------------------------------------
          INTEGER*4 NZ_loc
          INTEGER*4, DIMENSION(:), POINTER :: IRN_loc, JCN_loc
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: A_loc
+         COMPLEX*16, DIMENSION(:), POINTER :: A_loc
 !
 !    ----------------------------------------
 !    Unassembled input matrix: User interface
@@ -89,7 +89,7 @@
          INTEGER*4 NELT
          INTEGER*4, DIMENSION(:), POINTER :: ELTPTR
          INTEGER*4, DIMENSION(:), POINTER :: ELTVAR
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: A_ELT
+         COMPLEX*16, DIMENSION(:), POINTER :: A_ELT
 !
 !    -----------------
 !    MPI Communicator
@@ -111,9 +111,9 @@
 !    -------------
 !       right-hand side and solution
 !    -------------------------------------------------------
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: RHS, REDRHS
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: RHS_SPARSE
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: SOL_LOC
+         COMPLEX*16, DIMENSION(:), POINTER :: RHS, REDRHS
+         COMPLEX*16, DIMENSION(:), POINTER :: RHS_SPARSE
+         COMPLEX*16, DIMENSION(:), POINTER :: SOL_LOC
          INTEGER*4, DIMENSION(:), POINTER :: IRHS_SPARSE
          INTEGER*4, DIMENSION(:), POINTER :: IRHS_PTR
          INTEGER*4, DIMENSION(:), POINTER :: ISOL_LOC
@@ -140,7 +140,7 @@
 ! 
 !    -------------------------------------
 !    Case of distributed matrix on entry:
-!    DMUMPS potentially provides mapping
+!    ZMUMPS potentially provides mapping
 !    -------------------------------------
          INTEGER*4, DIMENSION(:), POINTER :: MAPPING
 !
@@ -148,7 +148,7 @@
 !    Deficiency and null space basis
 !    -------------------------------
          INTEGER*4 Deficiency
-         DOUBLE PRECISION, DIMENSION(:,:), POINTER :: NULL_SPACE
+         COMPLEX*16, DIMENSION(:,:), POINTER :: NULL_SPACE
 !    -----
 !    Schur
 !    -----
@@ -156,8 +156,8 @@
          INTEGER*4 SCHUR_MLOC, SCHUR_NLOC, SCHUR_LLD
          INTEGER*4 SIZE_SCHUR
          INTEGER*4, DIMENSION(:), POINTER :: LISTVAR_SCHUR
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: SCHUR
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: SCHUR_CINTERFACE
+         COMPLEX*16, DIMENSION(:), POINTER :: SCHUR
+         COMPLEX*16, DIMENSION(:), POINTER :: SCHUR_CINTERFACE
 !    -----------
 !    Out-of-core
 !    -----------
@@ -197,7 +197,7 @@
 !           (except the factors) are PTLUST_S and PTRFAC. 
          INTEGER*4, DIMENSION(:), POINTER :: PTLUST_S, PTRFAC
 !        main real working arrays for factorization/solve phases
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: S
+         COMPLEX*16, DIMENSION(:), POINTER :: S
 !        Information on mapping
          INTEGER*4, DIMENSION(:), POINTER :: PROCNODE
          INTEGER*4 nbsa
@@ -205,7 +205,7 @@
 !            -arrowhead format in case of assembled matrix
 !            -element format otherwise
          INTEGER*4, DIMENSION(:), POINTER :: INTARR
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: DBLARR
+         COMPLEX*16, DIMENSION(:), POINTER :: DBLARR
 !         Element entry: internal data
          INTEGER*4 NELT_LOC, LELTVAR, NA_ELT
          INTEGER*4, DIMENSION(:), POINTER :: ELTPROC
@@ -219,13 +219,13 @@
          INTEGER*4, DIMENSION(:), POINTER :: MEM_DIST
 !        Compressed RHS
          INTEGER*4, DIMENSION(:),   POINTER :: POSINRHSCOMP
-         DOUBLE PRECISION, DIMENSION(:), POINTER :: RHSCOMP
+         COMPLEX*16, DIMENSION(:), POINTER :: RHSCOMP
 !        To save the matrix in a simple format
          CHARACTER(LEN=80) WRITE_PROBLEM
 !   ------------------------
 !   Root structure(internal)
 !   ------------------------
-         TYPE (DMUMPS_ROOT_STRUC) :: root
+         TYPE (ZMUMPS_ROOT_STRUC) :: root
 !        For C interface
 !   Instance number used/managed by the C/F77 interface
          INTEGER*4 INSTANCE_NUMBER
@@ -258,4 +258,4 @@
          INTEGER*4, DIMENSION(:,:), POINTER :: SUP_PROC
 !    Version number
          CHARACTER(LEN=80) VERSION_NUMBER
-      END TYPE DMUMPS_STRUC
+      END TYPE ZMUMPS_STRUC

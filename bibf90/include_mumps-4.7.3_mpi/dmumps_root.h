@@ -1,9 +1,9 @@
 !
-!   THIS FILE IS PART OF ZMUMPS VERSION 4.7.2
-!   This Version was built on Mon Apr 16 13:49:29 2007
+!   THIS FILE IS PART OF DMUMPS VERSION 4.7.3
+!   This Version was built on Fri May  4 15:54:01 2007
 !
 !
-!  This version of ZMUMPS is provided to you free of charge. It is public
+!  This version of DMUMPS is provided to you free of charge. It is public
 !  domain, based on public domain software developed during the Esprit IV
 !  European project PARASOL (1996-1999) by CERFACS, ENSEEIHT-IRIT and RAL. 
 !  Since this first public domain version in 1999, the developments are
@@ -13,9 +13,9 @@
 !  Main contributors are Patrick Amestoy, Iain Duff, Abdou Guermouche,
 !  Jacko Koster, Jean-Yves L'Excellent, and Stephane Pralet.
 !
-!  Up-to-date copies of the ZMUMPS package can be obtained
+!  Up-to-date copies of the DMUMPS package can be obtained
 !  from the Web pages http://mumps.enseeiht.fr/
-!  or http://graal.ens-lyon.fr/ZMUMPS
+!  or http://graal.ens-lyon.fr/DMUMPS
 !
 !
 !   THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY
@@ -42,8 +42,8 @@
 !   S. Pralet, Hybrid scheduling for the parallel solution of linear
 !   systems. Parallel Computing Vol 32 (2), pp 136-156 (2006).
 !
-!     $Id: zmumps_root.h,v 1.9 2005/04/18 10:58:44 jylexcel Exp $
-      TYPE ZMUMPS_ROOT_STRUC
+!     $Id: dmumps_root.h,v 1.9 2005/04/18 10:58:44 jylexcel Exp $
+      TYPE DMUMPS_ROOT_STRUC
         SEQUENCE
         INTEGER*4 MBLOCK, NBLOCK, NPROW, NPCOL
         INTEGER*4 MYROW, MYCOL
@@ -56,17 +56,17 @@
         LOGICAL yes, gridinit_done
         INTEGER*4 LPIV
 !       Used to access Schur easily from root structure
-        COMPLEX*16, DIMENSION(:), POINTER :: SCHUR_POINTER
+        DOUBLE PRECISION, DIMENSION(:), POINTER :: SCHUR_POINTER
         INTEGER*4 SCHUR_MLOC, SCHUR_NLOC, SCHUR_LLD
 !
 !      Data for nullspace/QR
 !
-        COMPLEX*16, DIMENSION(:), POINTER :: QR_TAU
+        DOUBLE PRECISION, DIMENSION(:), POINTER :: QR_TAU
 !
 !      Givens rotations
 !
         INTEGER*4 MAXG, GIND
-        COMPLEX*16, DIMENSION(:),POINTER::GROW, GCOS, GSIN
+        DOUBLE PRECISION, DIMENSION(:),POINTER::GROW, GCOS, GSIN
 !
 !      RRRLU data
 !
@@ -74,6 +74,6 @@
         INTEGER*4 ELIND,EUIND,NLUPDATE,NUUPDATE
         INTEGER*4,DIMENSION(:),POINTER::PERM_ROW,PERM_COL
         INTEGER*4,DIMENSION(:),POINTER::ELROW, EUROW, PTREL, PTREU
-        COMPLEX*16, DIMENSION(:), POINTER :: ELELG, EUELG, DL
+        DOUBLE PRECISION, DIMENSION(:), POINTER :: ELELG, EUELG, DL
 !
-      END TYPE ZMUMPS_ROOT_STRUC
+      END TYPE DMUMPS_ROOT_STRUC
