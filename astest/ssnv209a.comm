@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #       CAS_TEST SSNV209A: 2D, ELEMENTS Q4, METHODE CONTINUE
 
-DEBUT( CODE=_F(  NOM = 'SSNV209A',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F(  NOM = 'SSNV209A',NIV_PUB_WEB='INTERNET'),)
 
 #......................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D QUAD4
@@ -53,14 +53,17 @@ MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_2D=(_F(GROUP_MA = 'LPRESV',),
                                _F(GROUP_MA = 'LPRESH',),
-                               _F(GROUP_MA = 'LBLOCX',))
+                               _F(GROUP_MA = 'LBLOCX',),
+                               _F(GROUP_MA = 'LCONTA',),
+                               _F(GROUP_MA = 'LBATI',),
+                               )
                 )
 
 MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
                              NU = 0.2,)
                     )
-MATBAT=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
-                             NU = 0.2,)
+MATBAT=DEFI_MATERIAU(ELAS=_F(E = 1.3E16,
+                             NU = 0.0,)
                     )
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA ='SPLAQ',
@@ -76,15 +79,17 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                    )
 
 def pr(y) :
-   if y<0.0 : return 0.E07
-   if y>0.0 : return  15.E07
-   if y==0.0 : return  0.
+   if y< 1.e-15 : return 0.E07
+   if y> 1.e-15 : return  15.E07
+   if y==1.e-15 : return  0.
 FCTPRES = FORMULE(VALE='pr(Y)',
                   NOM_PARA=('X','Y'),);
 
 CHAF=AFFE_CHAR_MECA_F(MODELE=MO,
                      PRES_REP=_F(GROUP_MA = ('LPRESH','LBLOCX',),
                               PRES=FCTPRES,),);
+
+# ==================================================
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(GROUP_MA_MAIT     = 'LBATI',
                                GROUP_MA_ESCL     = 'LCONTA',
@@ -93,14 +98,14 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                INTEGRATION    = 'NOEUD',
                                CONTACT_INIT   = 'OUI',
                                SEUIL_INIT     = 100.,
-                               COEF_REGU_FROT = 100.0,
-                               COEF_REGU_CONT = 100.0,
+                               COEF_REGU_FROT = 1.0,
+                               COEF_REGU_CONT = 1.0,
                                EXCLUSION_PIV_NUL='OUI',
                                ITER_GEOM_MAXI = 3,
                                ITER_FROT_MAXI = 10,
                                ITER_CONT_MAXI = 30,
                                FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0,)
+                               COULOMB        = 1.,)
                     )
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
@@ -110,9 +115,11 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     )
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 2,)
+                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1,)
                       )
 
+#-----------------------------------------------------------
+#                   RESOLUTION
 #-----------------------------------------------------------
 
 U2M=STAT_NON_LINE(MODELE    = MO,
@@ -126,60 +133,56 @@ U2M=STAT_NON_LINE(MODELE    = MO,
                   NEWTON=_F(REAC_ITER=1),
                   INCREMENT  = _F(LIST_INST = L_INST,),
                   CONVERGENCE= _F(ARRET = 'OUI',
-                                 ITER_GLOB_MAXI = 40,
+                                 ITER_GLOB_MAXI = 50,
                                  RESI_GLOB_RELA = 1.0E-6,),
                   SOLVEUR=_F(METHODE='MUMPS',
-                         PCENT_PIVOT=250,),                  
+                         PCENT_PIVOT=80,),
                )
 
-U2M=CALC_ELEM(reuse=U2M,
-              OPTION=('SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
-              RESULTAT=U2M,
-             )
-
-DEPL2M=CREA_CHAMP(OPERATION='EXTR',
-                  TYPE_CHAM='NOEU_DEPL_R',
-                  NOM_CHAM='DEPL',
-                  RESULTAT=U2M,
-                  INST=1.0
-                )
-
-DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
-                              GROUP_NO='RELEVE',
-                              RESULTAT=U2M,
-                              NOM_CHAM='DEPL',
-                              INST=1.0,
-                              TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION',),);
-                              
-TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
-                              GROUP_NO='RELEVE',
-                              RESULTAT=U2M,
-                              NOM_CHAM='VALE_CONT',
-                              INST=1.0,
-                              TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=DEPLAC,);
-IMPR_TABLE(TABLE=TCONT,);
-
-
-DEP= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
-                                GROUP_NO  = 'NFISSU',
-                                RESULTAT  = U2M,                            
-                                NOM_CHAM  = 'DEPL',
-                                INST      = 1.,
-                                TOUT_CMP  ='OUI',
-                                OPERATION = 'EXTRACTION',),);
-IMPR_TABLE(TABLE=DEP,);
+#----------------------------------------------
+#               TESTS NON- REGRESSION
+#----------------------------------------------
 
 TEST_RESU(RESU=(_F(RESULTAT   = U2M,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'VALE_CONT',
+                   GROUP_NO   = 'PPR',
+                   NOM_CMP    = 'JEU',
+                   VALE       = 0.,
+                   CRITERE    = 'ABSOLU',
+                   PRECISION  = 1.E-12,
+                   REFERENCE  = 'AUTRE_ASTER',
+                   VERSION    = '7.1.11',
+                   ),
+                _F(RESULTAT   = U2M,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'VALE_CONT',
+                   GROUP_NO   = 'PPR',
+                   NOM_CMP    = 'CONT',
+                   VALE       = 1.,
+                   PRECISION  = 1.E-5,
+                   CRITERE    = 'RELATIF',
+                   REFERENCE  = 'AUTRE_ASTER',
+                   VERSION    = '7.1.11',
+                   ),
+                _F(RESULTAT   = U2M,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'VALE_CONT',
+                   GROUP_NO   = 'PPR',
+                   NOM_CMP    = 'RN',
+                   VALE       = 1.0486376884770E+05,
+                   PRECISION  = 1.E-5,
+                   CRITERE    = 'RELATIF',
+                   REFERENCE  = 'AUTRE_ASTER',
+                   VERSION    = '7.1.11',
+                   ),
+                _F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'PPA',
                    NOM_CMP    = 'DX',
-                   VALE       = 2.46973E-05,
-                   PRECISION  = 5.E-2,
+                   VALE       = 2.8459459150097E-05,
+                   PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '7.1.11',
                    ),
@@ -188,8 +191,8 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'PPB',
                    NOM_CMP    = 'DX',
-                   VALE       = 2.33932E-05,
-                   PRECISION  = 5.E-2,
+                   VALE       = 2.7079257212129E-05,
+                   PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '7.1.11',
                    ),
@@ -198,8 +201,8 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'PPC',
                    NOM_CMP    = 'DX',
-                   VALE       = 1.96365E-05,
-                   PRECISION  = 5.E-2,
+                   VALE       = 2.2740276195227E-05,
+                   PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '7.1.11',
                    ),
@@ -208,8 +211,8 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'PPD',
                    NOM_CMP    = 'DX',
-                   VALE       = 1.71444E-05,
-                   PRECISION  = 5.E-2,
+                   VALE       = 1.9727074680515E-05,
+                   PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '7.1.11',
                    ),
@@ -218,14 +221,9 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'PPE',
                    NOM_CMP    = 'DX',
-                   VALE       = 1.34938E-05,
-                   PRECISION  = 5.E-2,
+                   VALE       = 1.5364146641691E-05,
+                   PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '7.1.11',
-                )
-                )
-       )
-
+                   VERSION    = '7.1.11',),),);
 
 FIN()
-#

@@ -1,6 +1,6 @@
       SUBROUTINE VRCIN1(MODELE,CHMAT,CARELE,INST,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C          .LISTE_SD(7*(I-1)+6) : PROLDR
 C               (SI EVOL : TYPE DE PROLONGEMENT A DROITE)
 C          .LISTE_SD(7*(I-1)+7) : FINST (OU ' ')
 C               (SI EVOL : FONCTION DE TRANSFORMATION DU TEMPS)
-C        CODRET (K2) : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE, 
+C        CODRET (K2) : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE,
 C                                            'NO' SINON
 C
 C ----------------------------------------------------------------------
@@ -191,7 +191,7 @@ C     -------------------------------
 C     2.0.1  CREATION DE CESMOD :
 C     ---------------------------
       CESMOD=MODELE//'.VRC.CESMOD'
-      CALL JEEXIN(CESMOD,IRET)
+      CALL EXISD('CHAM_ELEM_S',CESMOD,IRET)
       IF (IRET.EQ.0) THEN
         CELMOD='&&VRCIN1.CELMOD'
         DCELI='&&VRCIN1.DCELI'
@@ -207,7 +207,7 @@ C     ---------------------------
 C     2.0.2  CREATION DE MNOGA :
 C     ---------------------------
       MNOGA = MODELE//'.VRC.MNOGA'
-      CALL JEEXIN(MNOGA,IRET)
+      CALL EXISD('CHAM_ELEM_S',MNOGA,IRET)
       IF (IRET.EQ.0)  CALL MANOPG(LIGRMO,'INIT_VARC','PVARCPR',MNOGA)
 
 

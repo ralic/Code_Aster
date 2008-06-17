@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,16 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+Erreur Utilisateur :
+ En cherchant à projeter 1 noeud sur une maille, l'algorithme de Newton échoue.
+ Le problème vient probablement de la mauvaise qualité de la maille.
+ Maille "coupable" : %(k1)s
+
+Risques & conseils :
+ Vérifiez la maille incriminée (numérotation et géométrie de ses noeuds, ...)
+"""),
 
 2 : _("""
 Erreur Utilisateur :

@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,9 +149,17 @@ Solution :
       Aujourd'hui, cela veut dire : "ne pas utiliser le solveur MUMPS distribué".
 """),
 
+55: _("""
+ Problème d'utilisation du parallélisme :
+   On cherche à faire la combinaison linéaire de plusieurs matrices. Certaines de ces matrices
+   ne sont pas calculées complètement et d'autres le sont. On ne peut donc pas les combiner.
 
-
-
+ Conseils pour l'utilisateur :
+   1) Il faut émettre une demande d'évolution du code pour que le calcul demandé aille à son terme.
+      Aide pour le développeur : Noms de deux matrices incompatibles : %(k1)s  et %(k2)s
+   2) En attendant, il ne faut pas utiliser la "distribution" des structures de donnée.
+      Aujourd'hui, cela veut dire : "ne pas utiliser le solveur MUMPS distribué".
+"""),
 
 
 56: _("""

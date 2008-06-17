@@ -1,12 +1,12 @@
         SUBROUTINE LCPLAS ( FAMI,KPG,KSP,LOI,TOLER, ITMAX, MOD,IMAT,
-     1                      NMAT, MATERD, MATERF, MATCST,NR, NVI,
+     1                      NMAT, MATERD, MATERF,NR, NVI,
      2                      TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
      3                 SIGF, VINF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
      4        ICOMP,IRTETI,THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 17/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT T+DT
 C           EPSD   :  DEFORMATION A T
@@ -66,7 +65,6 @@ C
 C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
-        CHARACTER*3     MATCST
 
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
@@ -91,7 +89,7 @@ C
      1         LOI(1:7) .EQ. 'IRRAD3M '    .OR.
      1         LOI(1:7) .EQ. 'NADAI_B'     ) THEN
          CALL LCPLNL ( FAMI, KPG, KSP, LOI,  TOLER, ITMAX, MOD,
-     1                 IMAT,NMAT, MATERD,MATERF,MATCST,NR, NVI,
+     1                 IMAT,NMAT, MATERD,MATERF,NR, NVI,
      2                 TIMED,TIMEF,DEPS,EPSD,SIGD,VIND,COMP,
      3                 NBCOMM, CPMONO,PGL,TOUTMS,HSR,
      4                 SIGF, VINF, ICOMP, IRTET,DRDY)

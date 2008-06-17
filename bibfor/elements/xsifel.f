@@ -2,7 +2,7 @@
      &                  BASLOC,NNOP,NPG,DEPL,LSN,LST,IDECPG,IGTHET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,7 +92,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMTE
       LOGICAL  LCOUR,GRDEPL
       DATA     ELRESE /'SE2','TR3','TE4'/
-      DATA     FAMI   /'BID','RIGI','XINT'/
+      DATA     FAMI   /'BID','XINT','XINT'/
       DATA     NOMRES /'E','NU','ALPHA'/
 
       CALL JEMARQ()
@@ -124,7 +124,7 @@ C     ADRESSE DES COORD DU SOUS ELT EN QUESTION
 C     SOUS-ELEMENT DE REFERENCE 
       CALL ELREF5(ELRESE(NDIM),FAMI(NDIM),NDIMB,NNO,NNOS,NPGBIS,IPOIDS,
      &            JCOOPG,IVF,IDFDE,JDFD2,JGANO)
-      CALL ASSERT(NPG.EQ.NPGBIS.AND.NDIM.EQ.NDIMB)
+      CALL ASSERT(NDIM.EQ.NDIMB)
 
 C     TEMPERATURE DE REF
       CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,IRET)
@@ -140,7 +140,7 @@ C     ------------------------------------------------------------------
 C     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 C     ------------------------------------------------------------------
 
-      DO 10 KPG=1,NPG
+      DO 10 KPG=1,NPGBIS
 
 C       INITIALISATIONS
         CALL LCINVN(9,0.D0,DTDM)

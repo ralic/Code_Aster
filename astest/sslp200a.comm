@@ -1,4 +1,4 @@
-# MODIF  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -300,7 +300,7 @@ THLIN=THER_LINEAIRE(        MODELE=MOTH,
                            INCREMENT=_F(  LIST_INST = LR1),
                                EXCIT=_F(  CHARGE = CHTHF) )
 
-ENGENDRE_TEST (  CO = THLIN, )
+#ENGENDRE_TEST (  CO = THLIN, )
 
 TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
                      TYPE_TEST = 'SOMM_ABS',
@@ -479,7 +479,7 @@ CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,
                                    'EQUI_ELGA_SIGM', 'EQUI_ELNO_EPSI',
                                    'EQUI_ELGA_EPSI',  ) )
 
-ENGENDRE_TEST (  CO = MSLIN )
+#ENGENDRE_TEST (  CO = MSLIN )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'DEPL',
@@ -698,7 +698,7 @@ CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
                         CRITERE='ABSOLU',
                            INST=11.5   )
 
-ENGENDRE_TEST (  CO = MSLI2, )
+#ENGENDRE_TEST (  CO = MSLI2, )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'DEPL',
@@ -991,8 +991,8 @@ CHAMEL7=CALC_CHAM_ELEM(        MODELE=MO,
                              GROUP_MA='GMA8',
                              OPTION='COOR_ELGA' )
 
-ENGENDRE_TEST (  CO = (CHAMNO1, CHAMNO2 ), )
-ENGENDRE_TEST (  CO = (CHAMEL1,CHAMEL2,CHAMEL3,CHAMEL4,CHAMEL5,CHAMEL6,CHAMEL7 ), )
+#ENGENDRE_TEST (  CO = (CHAMNO1, CHAMNO2 ), )
+#ENGENDRE_TEST (  CO = (CHAMEL1,CHAMEL2,CHAMEL3,CHAMEL4,CHAMEL5,CHAMEL6,CHAMEL7 ), )
 
 TEST_RESU( CHAM_NO=_F(  CHAM_GD = CHAMNO1,
                         TYPE_TEST = 'SOMM_ABS',
@@ -1064,7 +1064,7 @@ TABLE2=POST_ELEM(       RESULTAT=MSLI2,
                                     GROUP_MA = 'GMA8',
                                     MAILLE = ('M44', 'M99',)) )
 
-ENGENDRE_TEST (  CO=(TABLE1,TABLE2), )
+#ENGENDRE_TEST (  CO=(TABLE1,TABLE2), )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='MASSE',
                 TYPE_TEST='SOMM_ABS',
@@ -1245,7 +1245,7 @@ TABLE3=POST_RELEVE_T( ACTION=(   _F(  NOEUD = ( 'N109', 'N110', 'N111',
                                     OPERATION = 'MOYENNE',
                                     MOYE_NOEUD = 'NON')) )
 
-ENGENDRE_TEST (  CO=TABLE3 )
+#ENGENDRE_TEST (  CO=TABLE3 )
 
 TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='DX',
                 TYPE_TEST='SOMM_ABS',
@@ -1306,27 +1306,27 @@ TABLE4=CALC_TABLE(TABLE=TABL4A,
                   ACTION=_F(OPERATION='COMB',TABLE=TABL4B),)
 
 IMPR_TABLE(TABLE=TABLE4)
-ENGENDRE_TEST (  CO=TABLE4 )
+#ENGENDRE_TEST (  CO=TABLE4 )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='DX',
                 TYPE_TEST='SOMM_ABS',
-       REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=3.0037512967626E+01    )
+       REFERENCE='NON_REGRESSION', PRECISION=3.E-10,
+                   VALE=2.8652381679085E+01    )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='DY',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE= 2.4928254412399E+02    )
+                   VALE= 2.4873591614204E+02    )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_1',
                 TYPE_TEST='SOMM',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE=-3.1076859137514E+01      )
+                  VALE=-3.1077412299096E+01      )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_2',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE= 3.1003175231369E+01   )
+                   VALE= 3.1003579766817E+01   )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_2',
                 TYPE_TEST='MAX',
@@ -1364,28 +1364,24 @@ T_M1=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
                             DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE=-3.96574E+00        )
+                REFERENCE='NON_REGRESSION', VALE=-3.9602432470596E+00  )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE= -3.00014E+00       )
+                REFERENCE='NON_REGRESSION', VALE= -3.0001415848995E+00   )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE=-5.59043E+00        )
+                REFERENCE='NON_REGRESSION', VALE= -6.0129745069205E+00    )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE= -3.81432E+00      )
+                REFERENCE='NON_REGRESSION', VALE= -3.8143210178959E+00   )
 
 
 #IMPR_TABLE(TABLE=T_E1);
@@ -1407,28 +1403,24 @@ T_M2=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
                             DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE= 3.12463E+00     )
+                REFERENCE='NON_REGRESSION', VALE= 3.12463E+00     )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE= 4.06679E+00       )
+                REFERENCE='NON_REGRESSION', VALE= 3.7553670887973E+00   )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE=  -8.14087E+00     )
+                REFERENCE='NON_REGRESSION', VALE= -8.4954070494514E+00  )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE= -5.60024E+00     )
+                REFERENCE='NON_REGRESSION', VALE= -5.60024E+00     )
 
 #IMPR_TABLE(TABLE=T_E2);
 
@@ -1449,28 +1441,24 @@ T_M3=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='DEPL',NUME_ORDRE = 2,
                             DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE= -2.59157E+01    )
+                REFERENCE='NON_REGRESSION', VALE= -2.59157E+01    )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE=  -2.08967E+01   )
+                REFERENCE='NON_REGRESSION', VALE= -1.8525195609618E+01 )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE=  3.40084E+01      )
+                REFERENCE='NON_REGRESSION', VALE=  3.2902937682769E+01  )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',
-                     VALE= 6.06629E+01     )
+                REFERENCE='NON_REGRESSION', VALE= 6.06629E+01     )
 
 #IMPR_TABLE(TABLE=T_E3);
 

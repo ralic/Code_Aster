@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/03/2008   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,7 @@ ENTETE__ ELEMENT__ MEAXSE3          MAILLE__ SEG3
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    DDL_MECA = DEPL_R   ELNO__ DIFF__  
+    DDL_MECA = DEPL_R   ELNO__ DIFF__
                                        EN1   (DX        DY)
                                        EN2   ()
     CFISSR   = FISS_R   ELEM__         (XA       YA       XNORM    YNORM    )
@@ -63,9 +63,11 @@ MODE_LOCAL__
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
     CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH)
+    CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
+    EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       )
     E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
     E8NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
@@ -73,13 +75,13 @@ MODE_LOCAL__
     E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18    )
-    
+
     E9NEUTR = NEUT_R   ELEM__          (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9   )
     E30NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18 
-                                        X19      X20      X21      X22      X23      X24 
+                                        X13      X14      X15      X16      X17      X18
+                                        X19      X20      X21      X22      X23      X24
                                         X25      X26      X27      X28      X29      X30 )
 
 VECTEUR__
@@ -89,8 +91,6 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    INIT_VARC             99  IN__   NGEOMER  PGEOMER
-                              OUT__  ZVARCPG  PVARCPR
     CALC_DG              282  IN__   DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  EFORCNO  PFR1D2D  NGEOMER  PGEOMER
                                      EPRESNO  PPRESSR  DDL_MECA PTHETAR  DDL_MECA PVECTTH
                               OUT__  EGTHETA  PGTHETA
@@ -141,6 +141,10 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRSU_R     571  IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
+    INIT_VARC             99  IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
+    NSPG_NBVA            496  IN__   CCOMPO2  PCOMPOR
+                              OUT__  EDCEL_I  PDCEL_I
     RIGI_MECA_PRSU_F     574  IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR
                               OUT__  MMATUUR  PMATUUR

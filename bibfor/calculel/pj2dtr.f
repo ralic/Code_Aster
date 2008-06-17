@@ -1,12 +1,13 @@
-      SUBROUTINE PJ2DTR(CORTR3,CORRES,NUTM2D,ELRF2D)
+      SUBROUTINE PJ2DTR(CORTR3,CORRES,NUTM2D,ELRF2D,GEOM1,GEOM2)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 CORRES,CORTR3
       PARAMETER    (NBTM=6)
       CHARACTER*8 ELRF2D(NBTM),NOTM
       INTEGER NUTM2D(NBTM)
+      REAL*8  GEOM1(*),GEOM2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,9 +54,10 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER        NBNOMX,    NBFAMX
       PARAMETER    ( NBNOMX=27, NBFAMX=20)
-      CHARACTER*8  M1, M2, KB, ELREFA, FAPG(NBFAMX)
+      CHARACTER*8  M1, M2, KB, ELREFA, FAPG(NBFAMX),NOMMAI
       INTEGER      NBPG(NBFAMX), CNQUAD(3,2)
-      REAL*8       CRREFE(3*NBNOMX), KSI, ETA, X(2), FF(NBNOMX)
+      REAL*8  CRREFE(3*NBNOMX), KSI, ETA, X(2)
+      REAL*8  FF(NBNOMX),COOELE(3*NBNOMX)
 C --- DEB --------------------------------------------------------------
 
       CALL JEMARQ()
@@ -78,6 +80,7 @@ C     -----------------------------------------------
       CALL JEVEUO(CORTR3//'.PJEF_NU','L',I1CONU)
       CALL JEVEUO(CORTR3//'.PJEF_CF','L',I1COCF)
       CALL JEVEUO(CORTR3//'.PJEF_TR','L',I1COTR)
+      CALL JEVEUO(CORTR3//'.PJEF_AM','L',I1COAM)
 
       M1=ZK8(I1CONO-1+1)
       M2=ZK8(I1CONO-1+2)
@@ -189,8 +192,28 @@ C         -- SI 2EME TRIANGLE :
            CALL U2MESK('F','ELEMENTS_55',1,ELREFA)
         END IF
 
+
         X(1) = KSI
         X(2) = ETA
+
+C       -- SI ON PEUT AMELIORER LA PRECISION DE X(*) :
+        IF (ZI(I1COAM-1+INO2).EQ.1) THEN
+          DO 72,INO=1,NBNO
+            NUNO = ZI(IACNX1+ ZI(ILCNX1-1+IMA1)-2+INO)
+            DO 73,KDIM=1,NDIM
+              COOELE(NDIM*(INO-1)+KDIM)=GEOM1(3*(NUNO-1)+KDIM)
+73          CONTINUE
+72        CONTINUE
+          CALL REEREG('C',ELREFA,NNO,COOELE,GEOM2(3*(INO2-1)+1),
+     &                NDIM,X,IRET)
+          IF (IRET.NE.0) THEN
+C           -- ON RETABLIT L'ESTIMATION GROSSIERE :
+            X(1) = KSI
+            X(2) = ETA
+            CALL JENUNO(JEXNUM(M1//'.NOMMAI',IMA1),NOMMAI)
+            CALL U2MESK('A','CALCULEL_1',1,NOMMAI)
+          ENDIF
+        ENDIF
 
         CALL ELRFVF ( ELREFA, X, 27, FF, NNO )
 

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/06/2008   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,7 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     EDEULNO  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
+    EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       )
     EDOMGGA  = DOMMAG   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMMAG   ELNO__ IDEN__  (DOMA     )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
@@ -500,7 +501,7 @@ OPTION__
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
-                                     EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
+                                     EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EDEPLPG  PDEPL_R
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R

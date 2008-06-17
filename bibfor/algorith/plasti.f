@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 17/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -367,7 +367,7 @@ C
           ETATF = 'PLASTIC'
 C
           CALL LCPLAS ( FAMI,KPG,KSP,LOI, TOLER, ITMAX, MOD, IMAT, NMAT,
-     1                  MATERD,MATERF, MATCST, NR, NVI,
+     1                  MATERD,MATERF, NR, NVI,
      2                  TIMED,TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF,
      3                  VINF,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
      3          ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY)

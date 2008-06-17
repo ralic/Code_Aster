@@ -1,4 +1,4 @@
-#@ MODIF ascheckers Noyau  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ascheckers Noyau  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,11 @@ class CheckLog(object):
     à la celle de la dernière vérification.
     Si on incrémentait "marq" à chaque étape, on revérifie à chaque fois.
     """
+
     def __init__(self):
         self.msg       = []
         self.names     = {}
+        self.cksums    = {}
         self.optional  = False
         self._marq     = 1
         self._lastmarq = self._marq
@@ -67,6 +69,29 @@ class CheckLog(object):
     def visitOJB(self, obj):
         key = obj.nomj()
         self.names[key] = self._marq
+
+    def checkSumOJB(self, obj, sd, maj='non'):
+        # vérifie que le checksum de obj n'a pas changé
+        # sd : concept qui contient obj
+        # maj='maj', l'opérateur a le droit de modifier ojb
+        if obj.exists :
+            import md5
+            m=md5.new()
+            m.update(str(obj.get()))
+            cksum=m.digest()
+            nom=obj.nomj()
+            if not self.cksums.has_key(nom) :
+                self.cksums[nom]=cksum
+            else :
+                if self.cksums[nom] != cksum :
+                    self.cksums[nom] = cksum
+                    #if maj.strip()=='maj' and nom[0:8].strip()==sd.nomj.nomj[0:8].strip() :
+                    # Remarque : ne pas tester 'maj' premet de résoudre (un peu) le problème
+                    #            posé par la commande DETRUIRE
+                    if nom[0:8].strip()==sd.nomj.nomj[0:8].strip() :
+                        pass
+                    else :
+                        self.err(obj,'Le checksum a changé')
 
     def visitAsBase(self, obj):
         key = (obj.nomj(), obj.__class__.__name__)

@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 17/03/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost Messages  DATE 16/06/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,6 +53,15 @@ cata_msg = {
 
 12 : _("""
  nous ne pouvons pas récupérer la valeur du coefficient de Poisson : NU.
+"""),
+
+13 : _("""
+ Les valeurs non existantes du champ %(k1)s lues sur le maillage donné
+ sont considérées nulles.
+"""),
+
+14 : _("""
+ NUME_DDL a été déterminé à partir de la matrice de masse MATR_B.
 """),
 
 21 : _("""

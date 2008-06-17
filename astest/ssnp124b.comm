@@ -1,28 +1,28 @@
-# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #               AVEC LE MODELE DE TYPE DRUCKER-PRAGER A ECROUISSAGE
 #               NEGATIF PARABOLIQUE POUR UN CONFINEMENT DE 2 MPA
 # ======================================================================
-DEBUT(   CODE=_F( NOM = 'SSNP124B',NIV_PUB_WEB='INTERNET')   )
+DEBUT(   CODE=_F( NOM = 'SSNP124B',NIV_PUB_WEB='INTERNET'), MEMOIRE=_F(DYNAMIQUE=400,))
 
 MAILLAGE = LIRE_MAILLAGE( );
 
@@ -70,7 +70,7 @@ CHAR_UM5 = AFFE_CHAR_MECA( MODELE   = MODELE,
                            PRES_REP = _F(  MAILLE = 'M5',
                                            PRES = 2.0E6)
                         )
-   
+
 DEPL_M2  = AFFE_CHAR_MECA( MODELE   = MODELE,
                            DDL_IMPO = _F(  MAILLE = 'M2',
                                            DY     = 0.)
@@ -84,7 +84,7 @@ DEPL_M5  = AFFE_CHAR_MECA( MODELE   = MODELE,
 DEPL_M4  = AFFE_CHAR_MECA( MODELE   = MODELE,
                            FACE_IMPO= _F(  MAILLE = 'M4',
                                            DY = 1.)
-                         ) 
+                         )
 
 COEF2    = DEFI_FONCTION(  NOM_PARA    = 'INST',
                            PROL_DROITE = 'CONSTANT',
@@ -94,11 +94,11 @@ COEF2    = DEFI_FONCTION(  NOM_PARA    = 'INST',
                         )
 
 TEMPS    = DEFI_LIST_REEL( DEBUT       = 1.,
-                           INTERVALLE  = ( 
+                           INTERVALLE  = (
                                            _F(  JUSQU_A = 2.000, NOMBRE = 100, ),),
                           )
-       
-U2       = STAT_NON_LINE( 
+
+U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
                           MODELE     = MODELE,
                           CHAM_MATER = CHMAT,
                           EXCIT      = (
@@ -118,13 +118,13 @@ U2       = STAT_NON_LINE(
                          ARCHIVAGE   = _F( ARCH_ETAT_INIT ='OUI',),
                          INCREMENT   = _F( LIST_INST      = TEMPS,)
                         )
-       
+
 U2       = CALC_ELEM( reuse      = U2,
                       OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                       RESULTAT   = U2,
                     );
-      
-U2       = CALC_NO( reuse    = U2,     
+
+U2       = CALC_NO( reuse    = U2,
                     RESULTAT = U2,
                     OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
                   )

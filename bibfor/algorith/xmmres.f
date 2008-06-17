@@ -1,7 +1,7 @@
       SUBROUTINE XMMRES(DEFICO,DEPDEL,NUMEDD,MODELE,CNSINR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       CHARACTER*8  DDLC(3),DDLS2(4),DDLS3(6),DDLT2(6),DDLT3(9)
       CHARACTER*19 CHS1,CHS2,CHS3,CHS4,DEPDES,DEPCN,FCONT,FCONTS
       CHARACTER*19 FCTCN,FFROT,FFROTS,FFROCN,LAGCN,LTNO,CH1,CH2,CH3,CH4
-      REAL*8       XYZ(3),COEF,JEU,FF(2)
+      REAL*8       XYZ(3),COEF,JEU,FF(2),MULT
       REAL*8       DDOT,SAUT(3),GLIT(3),P(3,3),N(3),GLI,LAGFRO(3)
       REAL*8       LAGSF,RR,RNXYZ(3),RN,ALPHA,LONGAR,LST,TAU1(3),TAU2(3)
       REAL*8       RNX,RNY,RNZ,RTXYZ(3),RTGX,RTGY,RTGZ,RTAX,RTAY,RTAZ
@@ -288,12 +288,14 @@ C         RECUP DES NUMEROS GLOBAUX DES NOEUDS DE L'ARETE/NOUED SOMMENT
             NSOM = 1
             NOSOM(1) = ZI(JCONX1-1+ZI(JCONX2+IMA-1)+IN-1)
             FF(1)=1.D0
+            MULT=0.5D0
           ELSEIF (IA.NE.0) THEN 
             NSOM = 2
             NOSOM(1)=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+AR(IA,1)-1)
             NOSOM(2)=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+AR(IA,2)-1)
             FF(1) = 1.D0 - ALPHA/LONGAR
             FF(2) = ALPHA/LONGAR
+            MULT=1.0D0
           ENDIF
 
 C         RACINE DE R AU POINT D'INTERSECTION
@@ -306,10 +308,11 @@ C         RACINE DE R AU POINT D'INTERSECTION
 C         RECUP NORMALE, VECTEURS TANGENTS AU POINT D'INTERSECTION
           N(3)=0.D0
           TAU1(3)=0.D0
+          
           DO 130 J=1,NDIM
-            N(J)   =ZR(JCESV4-1+IADB+J)
-            TAU1(J)=ZR(JCESV4-1+IADB+NDIM+J)
-            IF (NDIM.EQ.3) TAU2(J)=ZR(JCESV4-1+IADB+2*NDIM+J)
+            N(J)   =ZR(JCESV4-1+IADB-1+J)
+            TAU1(J)=ZR(JCESV4-1+IADB-1+NDIM+J)
+            IF (NDIM.EQ.3) TAU2(J)=ZR(JCESV4-1+IADB-1+2*NDIM+J)
  130      CONTINUE
 
 C         INDICATEUR DE CONTACT
@@ -340,16 +343,16 @@ C         RNX, RNY, RNZ SONT LES 3 COMPOSANTES DE RNXYZ
           DO 144 J=1,NDIM
             DO 145 K = 1,NSOM
 
-              RNXYZ(J) = RNXYZ(J) + FF(K) * 
+              RNXYZ(J) = RNXYZ(J) + FF(K) * MULT *
      &                   ZR(JCONT-1+3*NDIM*(NOSOM(K)-1)+J)
 C             DDL HEAVISIDE
               IF (ZL(JCONL-1+3*NDIM*(NOSOM(K)-1)+NDIM+1)) THEN
-                RNXYZ(J) = RNXYZ(J) - FF(K) * 
+                RNXYZ(J) = RNXYZ(J) - FF(K) * MULT *
      &                     ZR(JCONT-1+3*NDIM*(NOSOM(K)-1)+NDIM+J)
               ENDIF
 C             DDL ASYMPTOTIQUE
               IF (ZL(JCONL-1+3*NDIM*(NOSOM(K)-1)+2*NDIM+1)) THEN
-                RNXYZ(J) = RNXYZ(J) - FF(K) * RR * 
+                RNXYZ(J) = RNXYZ(J) - FF(K) * RR * MULT *
      &                     ZR(JCONT-1+3*NDIM*(NOSOM(K)-1)+2*NDIM+J)
               ENDIF
  145        CONTINUE
@@ -382,16 +385,16 @@ C         RTAX, RTAY, RTAZ, RTGX, RTGY, RTGZ
 
           DO 161 J=1,NDIM
             DO 162 K = 1,NSOM
-              RTXYZ(J) = RTXYZ(J) + FF(K) * 
+              RTXYZ(J) = RTXYZ(J) + FF(K) * MULT *
      &                   ZR(JFROT-1+3*NDIM*(NOSOM(K)-1)+J)
 C             DDL HEAVISIDE
               IF (ZL(JFROL-1+3*NDIM*(NOSOM(K)-1)+NDIM+1)) THEN
-                RTXYZ(J) = RTXYZ(J) - FF(K) * 
+                RTXYZ(J) = RTXYZ(J) - FF(K) * MULT *
      &                     ZR(JFROT-1+3*NDIM*(NOSOM(K)-1)+NDIM+J)
               ENDIF
 C             DDL ASYMPTOTIQUE
               IF (ZL(JFROL-1+3*NDIM*(NOSOM(K)-1)+2*NDIM+1)) THEN
-                RTXYZ(J) = RTXYZ(J) - FF(K) * RR * 
+                RTXYZ(J) = RTXYZ(J) - FF(K) * RR * MULT *
      &                     ZR(JFROT-1+3*NDIM*(NOSOM(K)-1)+2*NDIM+J)
               ENDIF
  162        CONTINUE

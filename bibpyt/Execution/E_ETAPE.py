@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ class ETAPE:
       Retour : iertot = nombre d erreurs
 
       """
-      
+
       if CONTEXT.debug :
            prbanner(" appel de l operateur %s numero %s " % (self.definition.nom,self.definition.op))
 
@@ -110,7 +110,7 @@ class ETAPE:
                      or (self.parent != self.jdc)
                 self.jdc.sd_checker.force(force)
                 self.jdc.timer.Start('   . sdveri', num=1.15e6)
-                self.jdc.sd_checker = checksd.check(self.jdc.sd_checker, self.sd, l_before)
+                self.jdc.sd_checker = checksd.check(self.jdc.sd_checker, self.sd, l_before, self)
                 self.jdc.timer.Stop('   . sdveri')
              # affichage du texte de la commande
              self.AfficheFinCommande()
@@ -136,7 +136,7 @@ class ETAPE:
          (self.parent.nom=='INCLUDE'         ):
          etiq = ' . ' + etiq
       self.jdc.timer.Start(id(self), name=etiq)
-      
+
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE
       if self.jdc.fico!=None :

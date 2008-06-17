@@ -9,7 +9,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----------------------------------------------------------------
       CHARACTER*1 BASE,BAS2,TYPRES
-      CHARACTER*8 KBID,TYPMAT,KMPIC
+      CHARACTER*8 KBID,TYPMAT,KMPIC,KMPIC1
       CHARACTER*19 MATEMP,MAT1,MATRES,MATI
       CHARACTER*24 VALM, VALK(2)
 C     -----------------------------------------------------------------
@@ -96,13 +96,12 @@ C     -----------------------------------------------------------------
 C     -----------------------------------------------------------------
 
       CALL JEMARQ()
-      MATRES = MATREZ
 
       CALL ASSERT(ELIM.EQ.'ELIM=' .OR. ELIM.EQ.'ELIM1')
 
       MATRES = MATREZ
       MAT1=LIMAT(1)
-      CALL ASSERT(NBCOMB.GT.0)
+      CALL ASSERT(NBCOMB.GE.1)
       CALL JELIRA(MATRES//'.REFA','CLAS',IBID,BASE)
       CALL JELIRA(MATRES//'.VALM','TYPE',IBID,TYPRES)
       CALL JELIRA(MATRES//'.VALM','NMAXOC',NBLOC,KBID)
@@ -146,14 +145,32 @@ C     ------------------------------------------------------------
       CALL JELIRA(MATEMP//'.REFA','CLAS',IBID,BAS2)
 
 
-C --- VERIFI. DE LA COHERENCE DES NUMEROTATIONS DES MATRICES A COMBINER
+C --- VERIF. DE LA COHERENCE MPI DES MATRICES A COMBINER
+C     ----------------------------------------------------
+      CALL DISMOI('F','MPI_COMPLET',MAT1,'MATR_ASSE',IBID,
+     &            KMPIC1,IBID)
+      IF (KMPIC1.EQ.'OUI') THEN
+        ZK24(JREFAR-1+11)='MPI_COMPLET'
+      ELSE
+        ZK24(JREFAR-1+11)='MPI_INCOMPLET'
+      ENDIF
+      DO 19 I = 2,NBCOMB
+        MATI=LIMAT(I)
+        CALL DISMOI('F','MPI_COMPLET',MATI,'MATR_ASSE',IBID,KMPIC,IBID)
+        IF (KMPIC.NE.KMPIC1) THEN
+          VALK(1)=MAT1
+          VALK(2)=MATI
+          CALL U2MESK('F','CALCULEL6_55',2,VALK)
+        ENDIF
+   19 CONTINUE
+
+
+C --- VERIF. DE LA COHERENCE DES NUMEROTATIONS DES MATRICES A COMBINER
 C     ------------------------------------------------------------------
       CALL JEVEUO(MAT1//'.REFA','L',JREFA1)
       IER1 = 0
       DO 20 I = 2,NBCOMB
         MATI=LIMAT(I)
-        CALL DISMOI('F','MPI_COMPLET',MATI,'MATR_ASSE',IBID,KMPIC,IBID)
-        IF (KMPIC.NE.'OUI') CALL U2MESS('F','CALCULEL6_54')
         CALL JEVEUO(MATI//'.REFA','L',JREFAI)
         IF (ZK24(JREFA1-1+2).NE.ZK24(JREFAI-1+2)) IER1 = 1
         IF (ZK24(JREFA1-1+2).NE.ZK24(JREFAI-1+2)) IER1 = 1

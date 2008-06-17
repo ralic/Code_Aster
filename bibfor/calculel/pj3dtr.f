@@ -1,6 +1,6 @@
-      SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,ELRF3D)
+      SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,ELRF3D,GEOM1,GEOM2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C TOLE CRP_20
       CHARACTER*16 CORRES,CORTR3
       CHARACTER*8  ELRF3D(9)
       INTEGER      NUTM3D(9)
+      REAL*8  GEOM1(*),GEOM2(*)
 C ----------------------------------------------------------------------
 C     BUT :
 C       TRANSFORMER CORTR3 EN CORRES EN UTILISANT LES FONC. DE FORME
@@ -30,7 +31,7 @@ C
 C  IN/JXIN   CORTR3   K16 : NOM DU CORRESP_2_MAILLA FAIT AVEC LES TETR4
 C  IN/JXOUT  CORRES   K16 : NOM DU CORRESP_2_MAILLA FINAL
 C  IN        NUTM3D(5) I  : NUMEROS DES 9 TYPES DE MAILLES 3D
-C  IN        ELRF3D(5) K8  : NOMS DES 9 TYPES DE MAILLES 3D
+C  IN        ELRF3D(5) K8 : NOMS DES 9 TYPES DE MAILLES 3D
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -55,8 +56,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER     CNTETR(4,1),CNPENT(4,3),CNHEXA(4,6),CNPYRA(4,2)
       INTEGER     NBPG(NBFAMX)
       REAL*8      KSI,ETA,DZETA,X1,X2,X3
-      REAL*8      CRREFE(3*NBNOMX), X(3), FF(NBNOMX)
-      CHARACTER*8 ELREFA, M1, M2, KB, FAPG(NBFAMX)
+      REAL*8      CRREFE(3*NBNOMX), X(3), FF(NBNOMX),COOELE(3*NBNOMX)
+      CHARACTER*8 ELREFA, M1, M2, KB, FAPG(NBFAMX),NOMMAI
 C --- DEB --------------------------------------------------------------
 
       CALL JEMARQ()
@@ -139,6 +140,7 @@ C     -----------------------------------------------
       CALL JEVEUO(CORTR3//'.PJEF_NU','L',I1CONU)
       CALL JEVEUO(CORTR3//'.PJEF_CF','L',I1COCF)
       CALL JEVEUO(CORTR3//'.PJEF_TR','L',I1COTR)
+      CALL JEVEUO(CORTR3//'.PJEF_AM','L',I1COAM)
 
       M1=ZK8(I1CONO-1+1)
       M2=ZK8(I1CONO-1+2)
@@ -260,6 +262,27 @@ C     -----------------------------------------------------------
         X(1) = KSI
         X(2) = ETA
         X(3) = DZETA
+
+C       -- SI ON PEUT AMELIORER LA PRECISION DE X(*) :
+        IF (ZI(I1COAM-1+INO2).EQ.1) THEN
+          DO 72,INO=1,NBNO
+            NUNO = ZI(IACNX1+ ZI(ILCNX1-1+IMA1)-2+INO)
+            DO 73,KDIM=1,NDIM
+              COOELE(NDIM*(INO-1)+KDIM)=GEOM1(3*(NUNO-1)+KDIM)
+73          CONTINUE
+72        CONTINUE
+          CALL REEREG('C',ELREFA,NNO,COOELE,GEOM2(3*(INO2-1)+1),
+     &                NDIM,X,IRET)
+          IF (IRET.NE.0) THEN
+C           -- ON RETABLIT L'ESTIMATION GROSSIERE :
+            X(1) = KSI
+            X(2) = ETA
+            X(3) = DZETA
+            CALL JENUNO(JEXNUM(M1//'.NOMMAI',IMA1),NOMMAI)
+            CALL U2MESK('A','CALCULEL_1',1,NOMMAI)
+          ENDIF
+        ENDIF
+
 
 C       2.2.2 :
 C       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT KSI,ETA,DZETA:

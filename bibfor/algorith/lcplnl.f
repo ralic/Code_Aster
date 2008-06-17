@@ -1,12 +1,12 @@
         SUBROUTINE LCPLNL ( FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,
-     1                      NMAT, MATERD,MATERF,MATCST,NR, NVI,
+     1                      NMAT, MATERD,MATERF,NR, NVI,
      2                      TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
      3                      COMP,NBCOMM, CPMONO, PGL, TOUTMS,HSR,
      3                      SIGF, VINF, ICOMP, IRTETI,DRDY)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 17/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,6 @@ C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT T+DT
 C           EPSD   :  DEFORMATION A T
@@ -93,7 +92,6 @@ C      DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
 C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
-        CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
@@ -195,7 +193,7 @@ C --    RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 C
         CALL LCEQMN ( NR , DRDY , DRDY1 )
         CALL LCEQVN ( NR ,   R ,   DDY )
-        CALL MGAUSS ( 'NFWP',DRDY1,DDY,NR,NR,1,RBID,IRET )
+        CALL MGAUSS ( 'NCWP',DRDY1,DDY,NR,NR,1,RBID,IRET )
         IF (IRET.NE.0) GOTO 3
 
 C

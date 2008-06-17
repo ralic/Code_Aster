@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 17/06/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,6 @@ C    POUR LES UTILITAIRES DE CALCUL TENSORIEL
       CHARACTER*2 K2BID
       LOGICAL CP,CONVCP
       INTEGER CPL,NVV,IRET,NCPMAX
-      REAL*8  SIGPEQ,SIGNUL,PREC2,PRECR2,DDEZZ
 
       CODRET = 0
       R8BID=R8VIDE()

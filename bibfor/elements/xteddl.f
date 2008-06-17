@@ -3,7 +3,7 @@
      &                  MAT,VECT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,6 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 
       IMPLICIT NONE
-
       INTEGER      NDIM,DDLH,NFE,DDLC,DDLS,NDDL,NNO,NNOS,STANO(*)
       LOGICAL      MATSYM
       CHARACTER*16 OPTION,NOMTE
@@ -72,7 +71,8 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
        INTEGER      JPOS,IER,NNODEP,ISTATU,INO,K,I,J,cpt
        CHARACTER*8  TYENEL
        CHARACTER*19 POSDDL
-       LOGICAL      LCONTX
+       LOGICAL      LCONTX,IELIM
+       REAL*8       R8MAEM,DMAX,DMIN,CODIA
 
 C-------------------------------------------------------------
 
@@ -94,6 +94,9 @@ C     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
       POSDDL = '&&XTEDDL.POSDDL'
       CALL WKVECT(POSDDL,'V V I',NDDL,JPOS)
 
+C     VRAI SI ON ELIMINE LES DDLS D'AU MOINS UN NOEUD
+      IELIM=.FALSE.
+
       DO 100 INO = 1,NNODEP
 
 C       ENRICHISSEMENT DU NOEUD
@@ -113,6 +116,7 @@ C           ON SUPPRIME LES DDLS H
             DO 10 K = 1,NDIM
               ZI(JPOS-1+DDLS*(INO-1)+NDIM+K)=1
    10       CONTINUE
+            IELIM=.TRUE.
           END IF
 
         ELSEIF (TYENEL.EQ.'XT'.OR.TYENEL.EQ.'XTC') THEN
@@ -129,6 +133,7 @@ C           ON SUPPRIME LES DDLS E
             DO 20 K = 1,NFE*NDIM
               ZI(JPOS-1+DDLS*(INO-1)+NDIM+DDLH+K)=1
    20       CONTINUE
+            IELIM=.TRUE.
           END IF
 
         ELSEIF (TYENEL.EQ.'XHT'.OR.TYENEL.EQ.'XHTC') THEN
@@ -145,11 +150,13 @@ C           ON SUPPRIME LES DDLS H
             DO 30 K = 1,NDIM
               ZI(JPOS-1+DDLS*(INO-1)+NDIM+K)=1
    30       CONTINUE
+            IELIM=.TRUE.
           ELSE IF (ISTATU.EQ.1) THEN
 C           ON SUPPRIME LES DDLS E
             DO 40 K = 1,NFE*NDIM
               ZI(JPOS-1+DDLS*(INO-1)+NDIM+DDLH+K)=1
    40       CONTINUE
+            IELIM=.TRUE.
           ELSE IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDLS H ET E
             DO 50 K = 1,NDIM
@@ -158,11 +165,35 @@ C           ON SUPPRIME LES DDLS H ET E
             DO 60 K = 1,NFE*NDIM
               ZI(JPOS-1+DDLS*(INO-1)+NDIM+DDLH+K)=1
    60       CONTINUE
+            IELIM=.TRUE.
           END IF
 
         ENDIF
 
  100  CONTINUE
+
+      IF (IELIM) THEN
+
+C     POUR LES OPTIONS CONCERNANT DES MATRICES :
+C        CALCUL DU COEFFICIENT DIAGONAL POUR
+C        L'ELIMINATION DES DDLS HEAVISIDE
+        IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
+     &           OPTION.EQ.'FULL_MECA'   .OR.
+     &           OPTION.EQ.'RIGI_CONT'   .OR.
+     &           OPTION.EQ.'RIGI_FROT') THEN
+          CALL ASSERT(MATSYM)
+          DMIN=R8MAEM()
+          DMAX=0.D0
+          DO 110 I = 1,NDDL
+            CODIA=MAT((I-1)*I/2+I)
+            IF (ABS(CODIA).GT.DMAX) THEN
+              DMAX=CODIA
+            ELSE IF (ABS(CODIA).LT.DMIN) THEN
+              DMIN=CODIA
+            ENDIF
+ 110      CONTINUE
+          CODIA=(DMAX+DMIN)/2.0D0
+        ENDIF
 
 C     POUR LES OPTIONS CONCERNANT DES MATRICES :
 C        MISE A ZERO DES TERMES HORS DIAGONAUX (I,J)
@@ -171,31 +202,33 @@ C        (ATTENTION AU STOCKAGE SYMETRIQUE)
 C     POUR LES OPTIONS CONCERNANT DES VECTEURS :
 C        MISE A ZERO DES TERMES I
 
-      DO 200 I = 1,NDDL
-        IF (ZI(JPOS-1+I).EQ.0) GOTO 200
-        IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
-     &      OPTION.EQ.'FULL_MECA'   .OR.
-     &      OPTION.EQ.'RIGI_CONT'   .OR.
-     &      OPTION.EQ.'RIGI_FROT') THEN
-          CALL ASSERT(MATSYM)
-          DO 210 J = 1,NDDL
-            IF (J.LT.I)  MAT((I-1)*I/2+J) = 0.D0
-            IF (J.EQ.I)  MAT((I-1)*I/2+J) = 1.D0
-            IF (J.GT.I)  MAT((J-1)*J/2+I) = 0.D0
- 210      CONTINUE
-        ENDIF
-        IF (OPTION.EQ.'RAPH_MECA' .OR.
-     &      OPTION.EQ.'FULL_MECA' .OR.
-     &      OPTION.EQ.'FORC_NODA' .OR.
-     &      OPTION.EQ.'CHAR_MECA_PRES_R' .OR.
-     &      OPTION.EQ.'CHAR_MECA_PRES_F' .OR.
-     &      OPTION.EQ.'CHAR_MECA_FR2D3D' .OR.
-     &      OPTION.EQ.'CHAR_MECA_FR1D2D' .OR.     
-     &      OPTION.EQ.'CHAR_MECA_FF2D3D' .OR.
-     &      OPTION.EQ.'CHAR_MECA_FF1D2D' .OR.
-     &      OPTION.EQ.'CHAR_MECA_CONT' .OR.
-     &      OPTION.EQ.'CHAR_MECA_FROT') VECT(I) = 0.D0
- 200  CONTINUE
+        DO 200 I = 1,NDDL
+          IF (ZI(JPOS-1+I).EQ.0) GOTO 200
+          IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
+     &             OPTION.EQ.'FULL_MECA'   .OR.
+     &             OPTION.EQ.'RIGI_CONT'   .OR.
+     &             OPTION.EQ.'RIGI_FROT') THEN
+            CALL ASSERT(MATSYM)
+            DO 210 J = 1,NDDL
+              IF (J.LT.I)  MAT((I-1)*I/2+J) = 0.D0
+              IF (J.EQ.I)  MAT((I-1)*I/2+J) = CODIA
+              IF (J.GT.I)  MAT((J-1)*J/2+I) = 0.D0
+ 210        CONTINUE
+          ENDIF
+          IF (OPTION.EQ.'RAPH_MECA' .OR.
+     &             OPTION.EQ.'FULL_MECA' .OR.
+     &             OPTION.EQ.'FORC_NODA' .OR.
+     &             OPTION.EQ.'CHAR_MECA_PRES_R' .OR.
+     &             OPTION.EQ.'CHAR_MECA_PRES_F' .OR.
+     &             OPTION.EQ.'CHAR_MECA_FR2D3D' .OR.
+     &             OPTION.EQ.'CHAR_MECA_FR1D2D' .OR.     
+     &             OPTION.EQ.'CHAR_MECA_FF2D3D' .OR.
+     &             OPTION.EQ.'CHAR_MECA_FF1D2D' .OR.
+     &             OPTION.EQ.'CHAR_MECA_CONT' .OR.
+     &             OPTION.EQ.'CHAR_MECA_FROT') VECT(I) = 0.D0
+ 200    CONTINUE
+
+      ENDIF
  
       CALL JEDETR(POSDDL)
 

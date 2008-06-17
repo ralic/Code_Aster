@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,24 +20,19 @@
 #
 #       CAS_TEST SSNV209C: 2D, ELEMENTS Q4, METHODE XFEM
 
-DEBUT( CODE=_F(  NOM = 'SSNV209C',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F(  NOM = 'SSNV209C',NIV_PUB_WEB='INTERNET'),)
 
 #......................................................
-#  CALCUL TEST ELEMENTS FINIS XFEM ET CONTACT 2D QUAD4
-#  ECRASEMENT D UN LOPIN FISSURE AVEC FROTTEMENT
+#  CALCUL TEST ELEMENTS FINIS XFEM ET CONTACT 2D QUA4
+#  PLAQUE EN CONTACT FROTTANT SUR BATI RIGIDE
+#  AVEC XFEM
 #......................................................
 #
 # La fissure passe au milieu des mailles, le decoupage
 # est active.
 #
-# cas test de De Saxce and Feng : exemple no 1, p. 241 
-# G. De Saxce, Z.Q. Feng, The bipotentiel method: a constitutive 
-# approach to design the complete contact law with friction and 
-# improved numerical algorithms, Mathl. Comput. Modelling, vol. 28,
-# no 4-8, pp. 225-245, 1998
-
 #----------------------------------------------
-#                MAILLAGE 
+#                MAILLAGE
 #----------------------------------------------
 
 PRE_GIBI();
@@ -48,57 +43,46 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO= (_F(GROUP_MA='SURF',),
                                     _F(GROUP_MA='LIG1',
-                                          NOM='NLIG1',),
-                                    _F(NOM='BLIG1',
-                                          DIFFE=('NLIG1','P1','P2'),),),
+                                       NOM='NLIG1',),),
                     CREA_GROUP_MA= (_F(OPTION='BANDE',
-                                          NOM='BAND',
-                                          GROUP_NO_CENTRE='P4',
-                                          VECT_NORMALE= (0.,1.),
-                                          DIST=0.031,
-                                          ), 
+                                       NOM='PLAQ',
+                                       GROUP_NO_CENTRE='P4',
+                                       VECT_NORMALE= (0.,1.),
+                                       DIST=0.0399,),
                                     _F(OPTION='BANDE',
-                                          NOM='PLAQ',
-                                          GROUP_NO_CENTRE='P4',
-                                          VECT_NORMALE= (0.,1.),
-                                          DIST=0.0399,
-                                          ),
-                                    _F(OPTION='BANDE',
-                                          NOM='BAT',
-                                          GROUP_NO_CENTRE='P1',
-                                          VECT_NORMALE= (0.,1.),
-                                          DIST=0.00799,
-                                          ),                                                                                                      
-                                    _F(NOM='NPHD',
-                                       INTERSEC = ('BAND','LIG2'),),
-                                    _F(NOM='NPHG',
-                                       INTERSEC = ('BAND','LIG4'),),),
-                     INFO=1);
+                                       NOM='BAT',
+                                       GROUP_NO_CENTRE='P1',
+                                       VECT_NORMALE= (0.,1.),
+                                       DIST=0.0099,),),
+                    INFO=1);
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
                        LINE_QUAD=_F(GROUP_MA=('SURF',),),);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
-                    CREA_GROUP_NO=(_F(NOM='NFISSU',
-                                       OPTION='PLAN',
-                                       POINT=(0.,0.),
-                                       VECT_NORMALE=(0.,1.),
-                                       PRECISION=1E-7),
-                                   ),
+                    CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
+                                      NOM='PPR',
+                                      POINT=(0.03875,0.),
+                                      RAYON=0.000001,
+                                      PRECISION=0.00001,),
+                                   _F(NOM='NFISSU',
+                                      OPTION='PLAN',
+                                      POINT=(0.,0.),
+                                      VECT_NORMALE=(0.,1.),
+                                      PRECISION=5E-4),),
                     INFO=1);
 
 MAILLAG2=MODI_MAILLAGE(reuse=MAILLAG2,
-                 MAILLAGE=MAILLAG2,
-                 ORIE_PEAU_2D=(_F(GROUP_MA = 'LIG2',),
-                               _F(GROUP_MA = 'LIG3',),
-                               _F(GROUP_MA = 'LIG4',),),);
+                       MAILLAGE=MAILLAG2,
+                       ORIE_PEAU_2D=(_F(GROUP_MA = 'LIG2',),
+                                     _F(GROUP_MA = 'LIG3',),
+                                     _F(GROUP_MA = 'LIG4',),),);
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
-  
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('LIG3',),
                               PHENOMENE='MECANIQUE',
@@ -115,28 +99,24 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                            _F(GROUP_MA=('LIG4',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),),
-                              INFO=1);                              
-
-
+                     INFO=1);
 
 # FORME ANALYTIQUE POUR LA FISSURE
- 
+
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y');
 LT=FORMULE(NOM_PARA=('X','Y'),VALE='X-10.');
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     GROUP_MA_ENRI=('SURF'),
-                    INFO=1,
-                    );
+                    INFO=1,);
+
+# MODELE XFEM
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='OUI',                        
-                         INFO=1,
-                         );
-
-
+                         CONTACT='OUI',
+                         INFO=1,);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -145,183 +125,165 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 E=1.3E11
 nu=0.2
 rho=7800.
-MATPLA=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
 
-MATBAT=DEFI_MATERIAU(ELAS=_F(E=1.3E11,NU=0.2),);
+CHABNO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  FISSURE=FISS,
+                  NOM_CHAM='LNNO');
+
+NU_F=DEFI_FONCTION(NOM_PARA='NEUT1',
+                   VALE=(-1.0,0.0,-1.E-9,0.0,1.E-9,nu,1.0,nu));
+
+E_F=DEFI_FONCTION(NOM_PARA='NEUT1',
+                  VALE=(-1.0,1.E16,-1.E-9,1.E16,1.E-9,E,1.0,E));
+
+MATVAR=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('PLAQ'),
-                                MATER=MATPLA,),
+                                MATER=MATVAR,),
                              _F(GROUP_MA=('BAT'),
-                                MATER=MATBAT,),),);
+                                MATER=MATVAR,),),
+                       AFFE_VARC=_F(NOM_VARC='NEUT1',
+                                    CHAMP_GD=CHABNO),);
 
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------
 
-
-CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT      = FISS,
-                                     METHODE        = 'XFEM',
-                                     CONTACT_INIT   = 'OUI',
-                                     FROTTEMENT     = 'COULOMB',
-                                     COULOMB        = 1.,
-                                     ITER_FROT_MAXI = 10,
-                                     INTEGRATION    = 'NOEUD',
-                                     ALGO_LAGR='NON',   
-                                     COEF_REGU_CONT = 100.,
-                                     ITER_CONT_MAXI = 6.,
-                                     COEF_ECHELLE=1, 
-                                     COEF_REGU_FROT = 100.,
-                                    ),
-                          MODELE=MODELEK,
-                          ),                     
+CTXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      CONTACT=_F(FISS_MAIT      = FISS,
+                                 METHODE        = 'XFEM',
+                                 CONTACT_INIT   = 'OUI',
+                                 FROTTEMENT     = 'COULOMB',
+                                 COULOMB        = 1.,
+                                 ITER_FROT_MAXI = 20,
+                                 INTEGRATION    = 'NOEUD',
+                                 ALGO_LAGR      = 'NON',
+                                 COEF_REGU_CONT = 100.,
+                                 ITER_CONT_MAXI = 4,
+                                 COEF_ECHELLE   = 1.,
+                                 COEF_REGU_FROT = 100.,),);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                       CONTACT_XFEM=CTXFEM,);
-                      
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    PROL_GAUCHE='LINEAIRE',
-                    PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,1.0,1.0,)
-                   )
 
+CHCINE=AFFE_CHAR_CINE(MODELE=MODELEK,
+#                     ENCASTREMENT DU BAS
+                      MECA_IMPO=(_F(GROUP_NO='NLIG1',
+                                    DX=0.,
+                                    DY=0.,),),);
 
-CH=AFFE_CHAR_MECA(MODELE=MODELEK,
-                  DDL_IMPO=(
-#                            encastrement du bas
-                             _F(GROUP_NO='NLIG1',
-                                DX=0.,
-                                DY=0.,),),
-                   
-#                 force imposee en A
-                  PRES_REP=(_F(GROUP_MA = 'LIG3', 
-                                 PRES = 5.E07,),
-                           ),);
-
+CHMECA=AFFE_CHAR_MECA(MODELE=MODELEK,
+#                     FORCE IMPOSEE EN A
+                      PRES_REP=(_F(GROUP_MA = 'LIG3',
+                                   PRES = 5.E7,),),);
 
 def pr(y) :
-   if y<0.0 :  return 0.E07
-   if y>0.0 :  return  15.E07
-   if y==0.0:  return  0.
+   if y  < 1e-15:  return 0.E07
+   if y  > 1e-15:  return 15.E7
+   if y == 1e-15:  return 0.
+
 FCTPRES = FORMULE(VALE='pr(Y)',
                   NOM_PARA=('X','Y'),);
 
 CHAF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     PRES_REP=_F(GROUP_MA = ('LIG2','LIG4',),
-                              PRES=FCTPRES,),);
+                      PRES_REP=_F(GROUP_MA = ('LIG2','LIG4',),
+                                  PRES=FCTPRES,),);
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=2,),);
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_GAUCHE='LINEAIRE',
+                    PROL_DROITE='LINEAIRE',
+                    VALE=(0.0,0.0,1.0,1.0,),);
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMA1,              
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CTXFEM,),                                          
-                          _F(CHARGE=CH,
-                             FONC_MULT=RAMPE),                                          
-                          _F(CHARGE=CHAF,
-                             FONC_MULT=RAMPE), 
-                             ),  
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                    GROUP_MA='SURF',),
-                   INCREMENT=_F(
-                                    LIST_INST=L_INS1,
-                                    SUBD_METHODE='UNIFORME',
-                                    SUBD_PAS_MINI=1.E-5,
-                                    INST_FIN=1.0,),
-                   CONVERGENCE=_F(ARRET='OUI',
-                                    ITER_GLOB_MAXI=15,
-                                    RESI_GLOB_RELA=1.E-6),
-                   SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,
-                              RESI_RELA=-1.),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   );
-                   
-#----------------------------------------------
-#                   POST-TRAITEMENT 
-#----------------------------------------------
-#
-
-
-TABLAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                              GROUP_NO='NFISSU',
-                             RESULTAT=UTOT1,
-                             NOM_CHAM='DEPL',
-                             INST=1.0,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',),);
-
-TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                              GROUP_NO='SURF',
-                             RESULTAT=UTOT1,
-                             NOM_CHAM='DEPL',
-                             INST=1.0,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',),);
-
+                    CHAM_MATER=CHAMPMA1,
+                    EXCIT=(_F(CHARGE=CHXFEM,),
+                           _F(CHARGE=CTXFEM,),
+                           _F(CHARGE=CHCINE,),
+                           _F(CHARGE=CHMECA,
+                              FONC_MULT=RAMPE),
+                           _F(CHARGE=CHAF,
+                              FONC_MULT=RAMPE),
+                           ),
+                    COMP_ELAS=_F(RELATION='ELAS',
+                                 GROUP_MA='SURF',
+                                 ),
+                    INCREMENT=_F(LIST_INST=L_INS1,
+                                 INST_FIN=1.0,
+                                 ),
+                    CONVERGENCE=_F(ARRET='OUI',
+                                   ITER_GLOB_MAXI=10,
+                                   RESI_GLOB_RELA=1.E-6,
+                                   ),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               PCENT_PIVOT=80,
+                               RESI_RELA=-1.,
+                               ),
+                    NEWTON=_F(REAC_ITER=1,),
+                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                    );
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                          MODELE        = MODELEK,
-                          )
-   
+                       MODELE        = MODELEK,)
+
 MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
-                     MAILLAGE=MA_XFEM,
-                     CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
-                                       NOM='PPA',
-                                       POINT=(0.,0.),
-                                       RAYON=0.000001,
-                                       PRECISION=0.00001,),
-                                    _F(OPTION='ENV_SPHERE',
-                                       NOM='PPB',
-                                       POINT=(0.00125,0.),
-                                       RAYON=0.000001,
-                                       PRECISION=0.00001,),
-                                    _F(OPTION='ENV_SPHERE',
-                                       NOM='PPC',
-                                       POINT=(0.005,0.),
-                                       RAYON=0.000001,
-                                       PRECISION=0.00001,),
-                                    _F(OPTION='ENV_SPHERE',
-                                       NOM='PPD',
-                                       POINT=(0.0075,0.),
-                                       RAYON=0.000001,
-                                       PRECISION=0.00001,),
-                                    _F(OPTION='ENV_SPHERE',
-                                       NOM='PPE',
-                                       POINT=(0.01125,0.),
-                                       RAYON=0.000001,
-                                       PRECISION=0.00001,),
-                                    _F(NOM='NFISSU',
-                                      OPTION='PLAN',
-                                      POINT=(0.,0.),
-                                      VECT_NORMALE=(0.,1.),
-                                      PRECISION=1.E-6,)),
-                     INFO=1);
-   
+                   MAILLAGE=MA_XFEM,
+                   CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
+                                     NOM='PPA',
+                                     POINT=(0.,0.),
+                                     RAYON=0.000001,
+                                     PRECISION=0.00001,),
+                                  _F(OPTION='ENV_SPHERE',
+                                     NOM='PPB',
+                                     POINT=(0.00125,0.),
+                                     RAYON=0.000001,
+                                     PRECISION=0.00001,),
+                                  _F(OPTION='ENV_SPHERE',
+                                     NOM='PPC',
+                                     POINT=(0.005,0.),
+                                     RAYON=0.000001,
+                                     PRECISION=0.00001,),
+                                  _F(OPTION='ENV_SPHERE',
+                                     NOM='PPD',
+                                     POINT=(0.0075,0.),
+                                     RAYON=0.000001,
+                                     PRECISION=0.00001,),
+                                  _F(OPTION='ENV_SPHERE',
+                                     NOM='PPE',
+                                     POINT=(0.01125,0.),
+                                     RAYON=0.000001,
+                                     PRECISION=0.00001,),
+                                  _F(NOM='NFISSU',
+                                     OPTION='PLAN',
+                                     POINT=(0.,0.),
+                                     VECT_NORMALE=(0.,1.),
+                                     PRECISION=1.E-6,),),
+                   INFO=1);
+
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                        AFFE=_F(TOUT='OUI',
-                                 PHENOMENE='MECANIQUE',
-                                 MODELISATION='D_PLAN',),) 
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='D_PLAN',),)
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                           MAILLAGE_FISS = MA_XFEM,
-                           MODELE        = MODELEK,
-                           MODELE_VISU   = MOD_VISU,
-                           RESULTAT      = UTOT1,
-                           NOM_CHAM      = ('DEPL','SIEF_ELGA'),
-                           )
-
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),)
 
 #----------------------------------------------
 #                   POST RELEVE
@@ -336,20 +298,36 @@ DEP_NFI=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 OPERATION='EXTRACTION',),);
 
 DEP_NFI = CALC_TABLE(reuse = DEP_NFI,
-                      TABLE = DEP_NFI,
-                      ACTION = (_F(OPERATION = 'FILTRE',
+                     TABLE = DEP_NFI,
+                     ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
 
 DEP_NFI = CALC_TABLE(reuse = DEP_NFI,
-                      TABLE = DEP_NFI,
-                      ACTION=_F(OPERATION='TRI',
-                                 NOM_PARA='COOR_X',
-                                 ORDRE='CROISSANT',),);
+                     TABLE = DEP_NFI,
+                     ACTION=_F(OPERATION='TRI',
+                               NOM_PARA='COOR_X',
+                               ORDRE='CROISSANT',),);
 
 IMPR_TABLE(TABLE=DEP_NFI,);
 
+VC_PPR=POST_RELEVE_T(ACTION=_F(INTITULE='VALE_CONT',
+                               GROUP_NO=('PPR',),
+                               RESULTAT=UTOT1,
+                               NOM_CHAM='VALE_CONT',
+                               INST=1.0,
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),);
+
+VC_PPR = CALC_TABLE(reuse = VC_PPR,
+                    TABLE = VC_PPR,
+                    ACTION = (_F(OPERATION = 'FILTRE',
+                                 NOM_PARA  = 'NOEUD',
+                                 CRIT_COMP = 'REGEXP',
+                                 VALE_K    = 'N[^M]',),),);
+
+IMPR_TABLE(TABLE=VC_PPR,);
 
 DEP_PPA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPA',),
@@ -359,12 +337,11 @@ DEP_PPA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPA = CALC_TABLE(reuse = DEP_PPA,
-                      TABLE = DEP_PPA,
-                      ACTION = (_F(OPERATION = 'FILTRE',
+                     TABLE = DEP_PPA,
+                     ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
-
 
 DEP_PPB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPB',),
@@ -374,8 +351,8 @@ DEP_PPB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPB = CALC_TABLE(reuse = DEP_PPB,
-                      TABLE = DEP_PPB,
-                      ACTION = (_F(OPERATION = 'FILTRE',
+                     TABLE = DEP_PPB,
+                     ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
@@ -388,8 +365,8 @@ DEP_PPC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPC = CALC_TABLE(reuse = DEP_PPC,
-                      TABLE = DEP_PPC,
-                      ACTION = (_F(OPERATION = 'FILTRE',
+                     TABLE = DEP_PPC,
+                     ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
@@ -402,8 +379,8 @@ DEP_PPD=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPD = CALC_TABLE(reuse = DEP_PPD,
-                      TABLE = DEP_PPD,
-                      ACTION = (_F(OPERATION = 'FILTRE',
+                     TABLE = DEP_PPD,
+                     ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
@@ -416,12 +393,11 @@ DEP_PPE=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPE = CALC_TABLE(reuse = DEP_PPE,
-                      TABLE = DEP_PPE,
-                      ACTION = (_F(OPERATION = 'FILTRE',
+                     TABLE = DEP_PPE,
+                     ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
-
 
 #----------------------------------------------
 #                   TEST TABLE
@@ -429,26 +405,42 @@ DEP_PPE = CALC_TABLE(reuse = DEP_PPE,
 
 preci=1.e-2;
 
-TEST_TABLE(TABLE=DEP_PPA,
-           NOM_PARA='DX',
+TEST_TABLE(TABLE=VC_PPR,
+           NOM_PARA='JEU',
            TYPE_TEST='MAX',
-           VALE=2.46973E-05,
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=1.e-12,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=VC_PPR,
+           NOM_PARA='RN',
+           TYPE_TEST='MAX',
+           VALE=1.0486376884770E+05,
            CRITERE='RELATIF',
-           PRECISION=preci,
+           PRECISION=1.e-3,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=DEP_PPA,
            NOM_PARA='DX',
-           TYPE_TEST='MIN',
-           VALE=2.46973E-05,
+           TYPE_TEST='MAX',
+           VALE=2.8459439896694E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
-           
+
+TEST_TABLE(TABLE=DEP_PPA,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE=2.8459439896694E-05,
+           CRITERE='RELATIF',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
 TEST_TABLE(TABLE=DEP_PPB,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=2.33932E-05,
+           VALE=2.7079237982465E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
@@ -456,15 +448,15 @@ TEST_TABLE(TABLE=DEP_PPB,
 TEST_TABLE(TABLE=DEP_PPB,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=2.33932E-05,
+           VALE=2.7079237982465E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
-           REFERENCE='AUTRE_ASTER',);            
-           
+           REFERENCE='AUTRE_ASTER',);
+
 TEST_TABLE(TABLE=DEP_PPC,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=1.96365E-05,
+           VALE=2.2740263403974E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
@@ -472,15 +464,15 @@ TEST_TABLE(TABLE=DEP_PPC,
 TEST_TABLE(TABLE=DEP_PPC,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=1.96365E-05,
+           VALE=2.2740263403974E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
-           REFERENCE='AUTRE_ASTER',);                      
+           REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=DEP_PPD,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=1.71444E-05,
+           VALE=1.9727070717204E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
@@ -488,15 +480,15 @@ TEST_TABLE(TABLE=DEP_PPD,
 TEST_TABLE(TABLE=DEP_PPD,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=1.71444E-05,
+           VALE=1.9727070717204E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
-                                
+
 TEST_TABLE(TABLE=DEP_PPE,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=1.34938E-05,
+           VALE=1.5364129019093E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
@@ -504,7 +496,7 @@ TEST_TABLE(TABLE=DEP_PPE,
 TEST_TABLE(TABLE=DEP_PPE,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=1.34938E-05,
+           VALE=1.5364129019093E-05,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);

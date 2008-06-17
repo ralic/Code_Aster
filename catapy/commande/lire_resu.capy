@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 16/06/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -143,6 +143,8 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
            UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
 #           TEST            =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
            NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=l_nom_cham_pas_elga()),
+           PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),
+             fr="Affecte des valeurs nulles la ou le champ n'est pas defini"),
            FORMAT_IDEAS    =FACT(statut='f',max='**',
              regles=(UN_PARMI('POSI_INST','POSI_FREQ'),),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',into=l_nom_cham_pas_elga()),
@@ -158,6 +160,12 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
              POSI_FREQ       =SIMP(statut='f',typ='I',min=2,max=2),
              NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),),
          ),
+             
+         b_mode   =BLOC(condition="((TYPE_RESU=='MODE_MECA')or(TYPE_RESU=='MODE_MECA_C') )and (FORMAT=='IDEAS')",
+             NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),max=1,
+                fr="Utile en dynamique pour pouvoir imposer la numérotation des cham_no."),     
+         ),
+
 # 1-3 ensight :
 # -------------
          b_ensight       =BLOC(condition="FORMAT=='ENSIGHT'",

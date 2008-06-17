@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,6 +117,7 @@ C     -------------------------------------------
         CALL JEDETR(CORRES//'.PJEF_M1')
         CALL JEDETR(CORRES//'.PJEF_CF')
         CALL JEDETR(CORRES//'.PJEF_TR')
+        CALL JEDETR(CORRES//'.PJEF_AM')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'FONCTION') THEN
@@ -257,7 +258,7 @@ C     -----------------------------------
           CALL JEDETR(TABLE//'.TBBA')
         ENDIF
         CALL JEDETR(TABLE//'.TITR')
-       
+
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD(1:5).EQ.'TABLE') THEN

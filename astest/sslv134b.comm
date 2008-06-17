@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,21 +97,21 @@ TEST_TABLE(  TABLE=TB2,
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIXX',
-             VALE=-2.44709E+05,
+             VALE=-2.4471209706301E+05,
              PRECISION=0.00001)
 TEST_TABLE(  TABLE=TB2,
              FILTRE=_F( NOM_PARA = 'ANGLE',
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIYY',
-             VALE=3.65317E+04,
+             VALE= 3.6534668877556E+04,
              PRECISION=0.00001)
 TEST_TABLE(  TABLE=TB2,
              FILTRE=_F( NOM_PARA = 'ANGLE',
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIZZ',
-             VALE=3.54189E+05,
+             VALE= 3.5420343989978E+05,
              PRECISION=0.00001)
 
 TB2L=MACR_LIGN_COUPE( RESULTAT= CHAMDEPL,
@@ -131,21 +131,21 @@ TEST_TABLE(  TABLE=TB2L,
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIXX',
-             VALE=6.830606E+05,
+             VALE= 6.8308472910625E+05,
              PRECISION=0.00001)
 TEST_TABLE(  TABLE=TB2L,
              FILTRE=_F( NOM_PARA = 'ANGLE',
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIYY',
-             VALE=-2.44708904E+05,
+             VALE=-2.4471209706301E+05,
              PRECISION=0.00001)
 TEST_TABLE(  TABLE=TB2L,
              FILTRE=_F( NOM_PARA = 'ANGLE',
                         VALE = 45.),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='SIZZ',
-             VALE=-2.923400946E+05,
+             VALE=-2.9234662032891E+05,
              PRECISION=0.00001)
 
 FISS=DEFI_FOND_FISS(    MAILLAGE=MA,

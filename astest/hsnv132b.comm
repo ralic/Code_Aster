@@ -1,4 +1,4 @@
-# MODIF  DATE 10/03/2008   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -217,7 +217,7 @@ TEST_TABLE(TABLE=SIF,
            NOM_PARA='K1',
            VALE= 9.00331E+06,
            CRITERE='RELATIF',
-           PRECISION=0.01,
+           PRECISION=0.02,
            REFERENCE='AUTRE_ASTER');                      
 
 FIN();

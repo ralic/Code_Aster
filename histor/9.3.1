@@ -1,0 +1,974 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR audebert     AUDEBERT Sylvie        DATE 17/06/2008 - 15:50:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012167 DU 2008-06-05 15:03:39
+TYPE express concernant Code_Aster (VERSION 9.2)
+TITRE
+   Cas-test SDLL112 Analyse sismique d'une chemin?multi-support?(r?nse spectrale)
+FONCTIONNALITE
+   Les fichiers de commandes sdll112a.comm et sdll112b.comm ont été modifiés. Les cas
+   multi-appui sont écrits maintenant avec le mot-clé MULTI_APPUI=CORRELE : quand les
+   excitations sont identiques aux appuis, on retrouve bien les résultats obtenus en
+   mono-appui avec le mot-clé MONO_APPUI=OUI.
+   Les valeurs de référence, quand elles existent, sont celles issues de CASTEM 2000 (non
+   référencées, figurent dans un brouillon de JRL); sinon, on vérifie la non-régression.
+   Les valeurs de référence concernent la modélisation A (3D), cas mono-appui combinaison des
+   réponses modales CQC, avec et sans correction statique, et cas multi-appui excitations
+   identiques aux appuis combinaison CQC.
+   A également été rajouté un 3ième cas de calcul en mono-appui combinaison SRSS des réponses
+   modales : comme on n'est pas sûr de la référence CASTEM, ce cas a été traité en
+   non-régression.
+   Les comparaisons avec les résultats obtenus par CASTEM sont excellentes.
+   Le cas excitation différentes aux appuis, corrélées entre elles, n'a pas de référence : il
+   a été traité en non-régression.
+   La modélisation B (2D plan) n'a pas de référence CASTEM. Les cas sont traités en
+   non-régression.
+   
+   La doc. de validation a été rédigée : V2.O2.112.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V2.02.112
+VALIDATION
+   correction de cas-test
+NB_JOURS_TRAV  : 8.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 17/06/2008 - 10:50:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010793 DU 2007-04-17 15:13:22
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Champ de dxc3xa9placement aux points de Gauss
+FONCTIONNALITE
+   Besoin :
+   ==========
+   De manière générale, l'opération passage noeud==>gauss peut être faite dans la commande
+   CREA_CHAMP, option DISC. Mais cette opération n'était pas activée pour un champ de
+   déplacement (==> type ELGA_DEPL_R).
+   
+   Evolution :
+   ===========
+   Actuellement, on ne peut faire OPERATION='DISC' sans enrichir les catalogues des éléments
+   : choisir le mode local associé à TOU_INI_ELGA/PDEPL_R. Il faut donc compléter les
+   catalogues de tous les elements finis.
+   
+   On limite l'évolution aux éléments faisant des calculs d'erreurs et avec un mode_local
+   DDL_MECA "IDEN". Cela touche donc les éléments pour les modélisations suivantes :
+   - C_PLAN ;
+   - D_PLAN ;
+   - AXIS ;
+   - 3D.
+   
+   Impact :
+   ========
+   tou_ini_elga.cata
+   gener_meax_2.cata
+   gener_meaxs2.cata
+   gener_mecpl2.cata
+   gener_medpl2.cata
+   mecpqs4.cata
+   medpqs4.cata
+   medpqs8.cata
+   gener_me3d_3.cata
+   meca_hexs8.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Test perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012122 DU 2008-05-26 11:12:21
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   AOM pour un post traitement de torseur en AXI - Urgent hxc3xa9las
+FONCTIONNALITE
+   Le problème d'utilisation venait du fait qu'il était impossible d'utiliser un champ ELNO
+   (issu de la projection de champ via PROJ_CHAMP) avec POST_ELEM qui n'accepte que des
+   champs ELGA.
+   
+   Après la projection du résultat du modèle AXIS vers le modèle D_PLAN, on modifie la
+   discrétisation du champ de contraintes par CREA_CHAMP.
+   
+   On perd un peu en précision par rapport à un calcul exact, mais on retrouve à moins de 1%
+   le moment induit par le gradient thermique compte tenu des CL en méca.
+   
+   Fichier joint.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Comparaison valeur fournie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 16/06/2008 - 13:36:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012186 DU 2008-06-11 16:48:20
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Passage du cas-test sdls118a en V1_4 de PROMISS3D
+FONCTIONNALITE
+   Je modifie le cas-test pour qu'il passe avec la V1_4 de PROMISS3D.
+   Dans MACRO_MISS_3D, il suffit de de mettre :
+   MACRO_MISS_3D(...,
+                 VERSION='V1_4',
+                 ...);
+   
+   Comme pour la plupart des autres cas-test miss (cf. fiche 12132) je suis obligé de porter 
+   la mémoire à 1400 Mo au lieu de 1000 Mo dans le .para.
+   Sur ce cas-test très bref l'amélioration des performances de promiss3d V1_4 en temps CPU 
+   est négligeable.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls118a
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 16/06/2008 - 16:33:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012174 DU 2008-06-09 07:27:11
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Problxc3xa8me allocation mxc3xa9moire dynamique
+FONCTIONNALITE
+   L'action principale dans le cadre de cette fiche a consisté à montrer comment utiliser la
+   classe de travaux LSF "urgent" afin d'affecter des ressources de mémoire et de temps
+   supérieures à celles des classes ouvertes en accès libre. Puis à placer le job en machine
+   sur un noeud peu chargé avec le compte d'administration. 
+   Après plusieurs essais, nous avons réussi à faire passer un calcul en un peu plus de 17
+   heures (elapse) et avec 80 Go de mémoire (1283756 noeuds - 2 incréments élastiques). 
+   Le fichier output en pièce jointe contient les impressions associées au passage qui s'est
+   terminé correctement.
+   La base Volatile associée à cette exécution est constituée de 8 fichiers dont 7 de 12Go.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mazet        MAZET Sylvain          DATE 17/06/2008 - 15:19:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012050 DU 2008-04-29 15:23:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : rajouter un test avec un bimateriau (utilisation d'un formule)
+FONCTIONNALITE
+   Cas-test de l'ecrasement du lopin (ssnv128) 
+   pour X-FEM.
+   
+   On modifie le cas 209 en en faisant un cas bi-matériau.
+   Les modélisations restent les mêmes:
+    - méthode continue
+    - 2D triangles
+    - 2D quadrangles
+    - 3D méthode continue
+    - 3D hexaèdres
+   
+   Quelques corrections sont nécéssaires pour passer 
+   ce cas X-FEM avec un bi-materiau: 
+   
+   1) corrections de bugs concernant 
+   les familles de pts de Gauss utilisées
+   pour l'integration de materiaux dépendant
+   d'une variable de commande (te0046.f, xsifel.f)
+   
+   2) Lors de l'élimination des ddls de Heaviside,
+   on mettait 1.0 sur la diagonale. Lorsqu'un des matériau
+   présente un coefficient E de l'ordre de 1.E16, le conditionnement
+   numérique de la matrice est trop mauvais pour qu'il y ait
+   convergence.
+   Solution: on élimine le ddl heaviside en mettant sur la diagonale
+   un coefficient de l'ordre des termes diagonaux de la
+   matrice élémentaire de rigidité (moyenne du min et du max).
+   (xteddl.f)
+   
+   3) Il faut changer une tolérance sur le cas-test hsnv312b
+   (chargement thermique).Dans ce cas, la variable de commande est la 
+   température. 
+   La référence est donnée par le cas hsnv132a.
+   On répare l'intégration sur les sous-éléments XFEM, 
+   ce qui modifie la valeur calculée de K1 (calculée par POST_K1_K2_K3).
+   La tolérance sur le K1 calculé par CALC_G est de 3.5%,
+   elle est de 1% sur le K1 calculé par POST_K1_K2_K3.
+   On passe ici la tolérance sur la valeur de KI (calculée par 
+   POST_K1_K2_K3) de 1 à 2%, cela semble cohérent.
+   
+   4) J'en profite pour fixer des bugs de post-traitement (xmmres.f).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.2
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V06.04.209
+VALIDATION
+   ssnv209
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 17/06/2008 - 12:38:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012165 DU 2008-06-05 12:58:44
+TYPE express concernant Code_Aster (VERSION 9.3)
+TITRE
+   Routine mgauss.f
+FONCTIONNALITE
+   La routine mgauss.f effectue la résolution AX = B. Elle est incorrecte à la ligne 99 car
+   le critère d'arrêt est en 2ème position et non en 3ème dans la chaîne de caractères CARA
+   en argument de mgauss. Le cas de plantage de la méthode
+   
+   < LSTOP = (CARA2(3:3).EQ.'F')
+   
+   est remplacé par
+   
+   > LSTOP = (CARA2(2:2).EQ.'F')
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Rien de particulier
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 16/06/2008 - 16:38:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011841 DU 2008-03-14 12:23:02
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   MUMPS distribuxc3xa9 : encore 8 tests cassxc3xa9s.
+FONCTIONNALITE
+   Problème:
+   ---------
+    8 test STAT_NON_LINE (au moins) ne fonctionnent pas avec Mumps distribué :
+     ssll105d  ssll105e  ssls09c   ssnp121c  ssnp124b
+     ssnv127c  ssnv503g  wtna101a
+                                                                                            
+                           
+   Analyse et correction :
+   -----------------------
+                                                                                            
+                           
+   1) Les 2 tests ssll105d  ssll105e ne peuvent pas utiliser Mumps comme solveur car ils
+   utilisent le mot clé CRIT_FLAMB.
+   Le message d'erreur obtenu est très clair : il faut changer de solveur.
+                                                                                            
+                           
+   2) ssls09c : OK si l'on accepte PCENT_PIVOT=900 ! (Avec 300 Mumps réclame encore !).
+                                                                                            
+                           
+   3) Les tests ssnp124b et wtna101a sont OK (ils se sont réparés tous seuls !).
+                                                                                            
+                           
+   4) Les tests ssnp121c, ssnv127c et ssnv503g se plantent par abscence de convergence.
+        * ssnv127c et ssnv503g : contact avec frottement.
+        * ssnp121c             : contact / methode = penalisation
+                                                                                            
+                           
+      Le problème vient d'un mauvais "blindage" de la routine mtcmbl.f (combinaison de matrices).
+      Après correction de cette routine, les 3 tests s'arretent maintenant avec le message :
+                                                                                            
+                           
+     
+   !---------------------------------------------------------------------------------------------------------
+      ! <F> <CALCULEL6_55>
+      !
+      !  Problème d'utilisation du parallélisme :
+      !    On cherche à faire la combinaison linéaire de plusieurs matrices. Certaines de ces
+   matrices
+      !    ne sont pas calculées complètement et d'autres le sont. On ne peut donc pas les
+   combiner.
+      !
+      !  Conseils pour l'utilisateur :
+      !    1) Il faut émettre une demande d'évolution du code pour que le calcul demandé
+   aille à son terme.
+      !       Aide pour le développeur : Noms de deux matrices incompatibles :
+   &&OP0070.MATASS  et &&OP0070.MAFR
+      !    2) En attendant, il ne faut pas utiliser la "distribution" des structures de donnée.
+      !       Aujourd'hui, cela veut dire : "ne pas utiliser le solveur MUMPS distribué".
+      !
+     
+   !---------------------------------------------------------------------------------------------------------
+                                                                                            
+                           
+   Restitution:
+   ------------
+   1) correction de mtcmbl.f
+   2) Modification des 3 tests :  ssls09c, ssnp124b et wtna101a pour qu'ils utilisent Mumps
+   distribué.
+      (penser à donner les .para à JPL).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage des 8 tests incriminxc3xa9s
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012105 DU 2008-05-20 16:29:10
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Amxc3xa9lioration de la prxc3xa9cision de PROJ_CHAMP
+FONCTIONNALITE
+   Problème:
+   ---------
+                                                                                            
+                           
+   Question de P. Badel : pourquoi ne pas utiliser la routine reereg.f pour améliorer la
+   précision de PROJ_CHAMP ?
+                                                                                            
+                           
+   Réponse :
+   ---------
+   Pourquoi pas en effet ?  On le fait dans les routines pj2dtr.f et pj3dtr.f
+                                                                                            
+                           
+                                                                                            
+                           
+   Validation:
+   -----------
+                                                                                            
+                           
+   Qualité de la projection :
+      Sur le fichier joint avec la fiche : amelioration.doc, on peut constater que l'erreur
+   de projection est divisée par 45.
+                                                                                            
+                           
+   Robustesse :
+      passage de 13 tests PROJ_CHAMP et LIAISON_MAILLE  => ils restent OK
+      passage de tous (ou presque) les tests utilisant PROJ_CHAMP et MACR_LIGN_COUPE
+                                                                                            
+                           
+   Performances :
+      Projection d'un cube : 33 X 33 X 33 =  36 000 HEXA8  (40 000 noeuds) :
+         - maillage gibi + lecture : 86 s
+         - PROJ_CHAMP avant  :  0.36s
+         - PROJ_CHAMP après  :  0.47s
+                                                                                            
+                           
+                                                                                            
+                           
+   Détails :
+   ---------
+   1) On améliore la précision de PROJ_CHAMP pour les maillages 2D et 3D.
+      Pour les maillages de coques et/ou de poutre, il n'y a pas d'amélioration.
+                                                                                            
+                           
+   3) Vu le faible sur-cout de l'amélioration, on la fait systématiquement.
+      L'amélioration n'est pas débrayable.
+      Remarque : Elle peut meme participer à la validation du maillage :
+                 On émet une Alarme lorsque la routine reereg.f ne converge pas :
+        !---------------------------------------------------------------------------------
+        !  <A> CALCULEL_1
+        !
+        ! Erreur Utilisateur :
+        !   En cherchant à projeter 1 noeud sur une maille, l'algorithme de Newton échoue.
+        !   Le problème vient probablement de la mauvaise qualité de la maille.
+        !   Maille "coupable" : %(k1)s
+        !
+        !
+        ! Risques & conseils :
+        !  Vérifiez la maille incriminée (numérotation et géométrie de ses noeuds, ...)
+        !
+        !---------------------------------------------------------------------------------
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   3) Tests NOOK :
+      Certains tests (de non-regression) deviennent NOOK du fait de l'amélioration de PROJ_CHAMP.
+      Je modifie les valeurs de référence.
+        sslp200a
+        sslv134b
+        sslv200a
+        sslv200b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tous les tests PROJ_CHAMP et MACR_LIGN_COUPE
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012126 DU 2008-05-27 07:13:54
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR02 - Violation rxc3xa8gle SD
+FONCTIONNALITE
+   Problème:
+   ---------
+                                                                                            
+                                           
+   Mickael et Thomas se sont apreçus récemment que STAT_NON_LINE modifiait certains objets de
+   la sd char_meca.CONTACT.
+                                                                                            
+                                           
+   Question : Y-a-il d'autres commandes qui modifient leurs arguments "in" ?
+                                                                                            
+                                           
+   Méthodologie de l'analyse :
+   ----------------------------
+   J'ai modifié (chez moi) SDVERI='OUI' pour vérifier que les commandes ne font que produire
+   de nouvelles sd "out" sans modifier les sd "in". Le principe de cette vérification
+   supplémentaire est de stocker le "checksum" des objets JEVEUX que l'on crée, puis de
+   vérifier que ce checksum ne change pas après les commandes utltérieures.
+                                                                                            
+                                           
+   Cette modification de SDVERI se heurte à différentes difficultés que je n'ai pas toutes
+   résolues.
+   Le constat qui est établi plus bas est donc partiel.
+                                                                                            
+                                           
+   Difficultés :
+      - Certains tests sont déjà NOOK SDVERI (avant meme la nouvelle vérification)
+      - Il faut prendre en compte les commandes qui ont le droit de modifier des sd ("reuse")
+      - La commande DETRUIRE permet de recréer une nouvelle SD et donc de modifier le
+   checksum de ses objets.
+                                                                                            
+                                           
+   Ce que j'ai fait :
+      - j'ai instrumenté SDVERI
+      - j'ai choisi une liste de 290 tests SDVERI='OUI' et j'ai fait passé ces tests avec le
+   nouveau SDVERI.
+      - 21 tests ont posé problème.
+      - 4 types de problèmes ont été ainsi détectés
+                                                                                            
+                                           
+                                                                                            
+                                           
+   Problèmes détectés :
+   --------------------
+                                                                                            
+                                           
+   1) DEFI_PART_FETI modifie son maillage d'entrée. Il crée de nouveaux GROUP_MA.
+                                                                                            
+                                           
+   Explication : il s'agit donc d'un enrichissement de la structure de données (sans perte
+   d'information).
+                                                                                            
+                                           
+   mumps01a.mess:   !    produite (ou modifiée) par la commande DEFI_PART_OPS             !
+   mumps01a.mess:   !       Objet : 'MA      .GROUPEMA'    Message : Le checksum a changé !
+                                                                                            
+                                           
+                                                                                            
+                                           
+                                                                                            
+                                           
+   2) STAT_NON_LINE modifie la fonction '&&RDEP' des matériaux qui ont une courbe de traction.
+                                                                                            
+                                           
+   Explication : la fonction &&RDEP est en fait une zone de travail destinée à
+   l'interpolation de la courbe de traction à une température donnée. Elle est allouée dans
+   DEFI_MATERIAU mais utilisée dans STAT_NON_LINE.
+      On pourrait sans doute supprimer cette "glute" en allouant cette courbe sur la base
+   volatile lors de la préparation du matériau codé.
+                                                                                            
+                                           
+   hsnv100a.mess:   !    produite (ou modifiée) par la commande STAT_NON_LINE               
+       !
+   hsnv100a.mess:   !       Objet : 'MAT     .&&RDEP    .PROL'    Message : Le checksum a
+   changé !
+   hsnv100a.mess:   !       Objet : 'MAT     .&&RDEP    .VALE'    Message : Le checksum a
+   changé !
+                                                                                            
+                                           
+                                                                                            
+                                           
+   3) STAT_NON_LINE modifie la sd char_meca.CONTACT :
+                                                                                            
+                                           
+   Explication : là encore, il semble que les objets modifiés sont de simples objets de
+   travail "volatils". Ils pourraient sans doute etre alloués en debut de STAT_NON_LINE (avec
+   le meme nom) sur la base Volatile.
+                                                                                            
+                                           
+   ssnl107b.mess:   !    produite (ou modifiée) par la commande STAT_NON_LINE                   !
+   ssnl107b.mess:   !       Objet : 'CHA     .CONTACT.JSUPCO'    Message : Le checksum a changé !
+   ssnl107b.mess:   !       Objet : 'CHA     .CONTACT.TANINI'    Message : Le checksum a changé !
+   ssnp121m.mess:   !    produite (ou modifiée) par la commande STAT_NON_LINE                   !
+   ssnp121m.mess:   !       Objet : 'CHA2    .CONTACT.JEUCON'    Message : Le checksum a changé !
+   ssnp121m.mess:   !       Objet : 'CHA2    .CONTACT.TABFIN'    Message : Le checksum a changé !
+   ssnv129a.mess:   !    produite (ou modifiée) par la commande STAT_NON_LINE                   !
+   ssnv129a.mess:   !       Objet : 'CHA2    .CONTACT.NDIMCO'    Message : Le checksum a changé !
+   ssnv503a.mess:   !    produite (ou modifiée) par la commande STAT_NON_LINE                   !
+   ssnv503a.mess:   !       Objet : 'CTAC    .CONTACT.COMAFO'    Message : Le checksum a changé !
+   ssnv503a.mess:   !       Objet : 'CTAC    .CONTACT.FROTE'    Message : Le checksum a changé  !
+                                                                                            
+                                           
+                                                                                            
+                                           
+   4) MODE_ITER_SIMULT et PROJ_MATR_BASE semblent modifier certaines SD :
+                                                                                            
+                                           
+   Explication : les commandes ne sont pas coupables. Ce sont les tests zzzz208a (et b) qui
+   modifient les SD entre les commandes Aster via du code "Python".
+                                                                                            
+                                           
+   zzzz208a.mess:   !    produite (ou modifiée) par la commande MODE_ITER_SIMULT            
+       !
+   zzzz208a.mess:   !       Objet : 'KASS               .REFA'    Message : Le checksum a
+   changé !
+   zzzz208a.mess:   !       Objet : 'KASS               .VALM'    Message : Le checksum a
+   changé !
+   zzzz208a.mess:   !       Objet : 'MASS               .REFA'    Message : Le checksum a
+   changé !
+   zzzz208a.mess:   !       Objet : 'MASS               .VALM'    Message : Le checksum a
+   changé !
+   zzzz208a.mess:   !    produite (ou modifiée) par la commande PROJ_MATR_BASE              
+       !
+   zzzz208a.mess:   !       Objet : 'KASC               .REFA'    Message : Le checksum a
+   changé !
+   zzzz208a.mess:   !       Objet : 'KASC               .VALM'    Message : Le checksum a
+   changé !
+   zzzz208a.mess:   !    produite (ou modifiée) par la commande MODE_ITER_SIMULT            
+       !
+   zzzz208a.mess:   !       Objet : 'FDIAGC             .VALE'    Message : Le checksum a
+   changé !
+   zzzz208a.mess:   !       Objet : 'KDIAG              .VALM'    Message : Le checksum a
+   changé !
+   zzzz208a.mess:   !       Objet : 'KDIAGC             .VALM'    Message : Le checksum a
+   changé !
+                                                                                            
+                                           
+                                                                                            
+                                           
+   Que faire maintenant ?
+   ----------------------
+                                                                                            
+                                           
+   - "durcir" SDVERI ?
+      - le problème de DETRUIRE me semble difficile à résoudre proprement
+      - les tests zzzz208a seront toujours SDVERI='NON'
+   - Corriger les 3 problèmes détectés ?
+      - est-ce que cela en vaut la peine, (si c'est bien connu et sans danger) ?
+      - Il faudrait au moins que Thomas et Mickael soient persuadés de l'inoffensivité de la
+   programmation actuelle.
+                                                                                            
+                                           
+                                                                                            
+                                           
+   Proposition de restitution :
+   ----------------------------
+   Pour garder "au chaud" ce petit développement, je propose de restituer :
+     - ascheckers.py : ajout d'une petite méthode checkSumOJB
+     - checksd.py : ajout d'un petit bloc (désactivé) pour vérifier les checksum
+                                                                                            
+                                           
+   Si on veut recommencer l'expérience, il faut :
+     1) modifier ibdbgs.f pour "forcer" SDVERI='OUI' :
+        -------> fichier : ibdbgs.f -------------------------------
+        82a83
+        >       REPONS='OUI' ! AJACOT NON !!
+     2) Activer le bloc "Vérification des checksum" dans checksd.py (fonction check).
+     3) faire un as.tout
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012159 DU 2008-06-04 11:38:30
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   NaN dans les variables de commandes sur les xc3xa9lxc3xa9ments de bords
+FONCTIONNALITE
+   Problème:
+   ---------
+   Si dans le test forma09b, on ajoute au champ de matériaux les 2 variables de commande
+   (HYDR et SECH), le code s'arrete en erreur 'fatale' pendant l'émission du message d'erreur :
+                                                                                            
+                           
+                                                                                            
+                           
+      !-----------------------------------------------------------------------------
+      ! <F> <MECANONLINE2_97>
+      !
+      !
+      !   -> Les variables de commandes initiales induisent des contraintes
+      !      incompatibles :
+      !      l'état initial (avant le premier instant de calcul) est tel que
+      !      les variables de commande (température, hydratation, séchage...)
+      !      conduisent à des contraintes non équilibrées.
+      !
+      !   -> Indications supplémentaires : pour la variable de commande :  TEMP
+      !      et la composante :  TEMP
+      !      Valeur maximum de abs( TEMP - TEMP_REF) : 0.000000 sur la maille : M1
+      !      Valeur minimum de abs( TEMP - TEMP_REF) : 100.000000 sur la maille : M1
+      !
+      !    Erreur numérique (floating point exception).
+      !
+      !
+      !
+      ! Cette erreur est fatale. Le code s'arrete.
+      !-----------------------------------------------------------------------------
+                                                                                            
+                           
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Le problème se produit quand on calcule (SECH - SECH_REF) car sur les éléments de bord
+   (segments), cette variable de commande vaut 'NaN'.
+                                                                                            
+                           
+   La raison de ces NaN est que le catalogue des éléments de bord (gener_medpl1.cata) déclare
+   connaitre les variables de commande (INIT_VARC) mais a oublié de déclarer l'option
+   NSPG_NBVA qui sert à dimensionner les cham_elem "dynamiques" (avec sous-points et
+   multiples VARI).
+                                                                                            
+                           
+   Détail : pour une raison un peu compliqué à expliquer ici, les éléments qui avaient oublié
+   de déclarer NSPG_NBVA dans leur catalogue se retrouvaient néanmoins affectés par 1
+   variable de commande  (la 1ère : 'TEMP' ici) mais en revanche, 'HYDR' et 'SECH' n'étaient
+   pas stockées.
+                                                                                            
+                           
+   Correction:
+   -----------
+   1) j'ajoute un commentaire dans le catalogue de INIT_VARC pour dire qu'il ne faut pas
+   oublier NSPG_NBVA
+   2) je corrige les 2 catalogues incomplets : gener_me3d_2.cata   gener_medpl1.cata
+      je leur ajoute l'option NSPG_NBVA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude fournie
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012160 DU 2008-06-04 11:54:01
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Performances (CPU) des variables de commande xc3xa0 amxc3xa9liorer
+FONCTIONNALITE
+   Problème:
+   ---------
+   Le profiling d'une étude utilisant MECA_STATIQUE + plusieurs pas de temps avec chargement
+   thermique a montré que l'on perdait du temps dans le calcul des varaiables de commande
+   (intant courant + valeurs de référence).
+                                                                                            
+                           
+   Solution:
+   ---------
+   1) dans la routine vrcref.f :
+      On ne recalcule pas le champ de VC de référence si :
+         - il existe déjà
+         - son nom ainsi que les noms des MODELE, CARA_ELEM et CHAM_MATER sont identiques à
+   ceux de l'appel précédent.
+                                                                                            
+                           
+   2) dans la routine vrcin1.f :
+      On avait prévu de ne pas recalculer à chaque fois les SD CESMOD et MNOGA.
+   Malheureusement, on faisait un mauvais test d'existence :
+        EXISD <-> JEEXIN
+      Je corrige cette "faute de frappe".
+                                                                                            
+                           
+   3) dans les routines vectme.f et meacmv.f, les noms du champ de VC de référence étaient
+   différents. Du coup, l'économie que l'on cherchait à faire dans vrcref.f ne fonctionnait
+   pas. Je modifie ces routines pour qu'elles partagent le meme champ (MODELE//'.CHVREF')
+                                                                                            
+                           
+   Gains de performance :
+   ----------------------
+   Pour mon test : 250 000 ddls + 10 pas de temps, le temps CPU de MECA_STATIQUE passe de 275
+   à 216 secondes (-20%).
+                                                                                            
+                           
+                                                                                            
+                           
+   Détails :
+   ---------
+   J'ai vérifié que les économies sont désormais faites dans STAT_NON_LINE et CALC_ELEM.
+   Le gain pour STAT_NON_LINE sera néanmoins plus faible car le calcul du champ de variables
+   de référence était déjà mis "en commun" pour les différents pas de temps.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mikchevitch  MIKCHEVITCH Alexei     DATE 16/06/2008 - 14:34:20
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009913 DU 2006-07-11 12:08:17
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   LIRE_RESU
+FONCTIONNALITE
+   Histor (réalisation)
+   ======
+   
+   Objectif
+   --------
+   Ajouter le mot-cle NUME_DDL pour l'operateur LIRE_RESU au 
+   format IDEAS. On offre ainsi à l'utilisateur le choix de 
+   specifier le NUME_DDL (produit par la commande
+   de même nom) pour des lectures de resultats de type 
+   MODE_MECA.
+   
+   Developpement
+   -------------
+   a) catapy: lire_resu.capy 
+   Ajout du mot-cle NUME_DDL dans lire_resu.capy specifique 
+   au bloc Ideas et aux types de resultat  MODE_MECA et 
+   MODE_MECA_C.
+   
+   b) bibfor: lridea.f 
+   On verifie maintenant la presence du mot-cle NUME_DDL:
+   - si celui-ci est renseigne, alors on l'exploite plutôt 
+   que de recuperer celui associe à la matrice de masse 
+   MATR_B.
+   - si celui-ci n'est pas renseigne, on emet un message 
+   d'information: "NUME_DDL a ete determine a partir de la 
+   matrice de masse MATR_B".
+   
+   Validation
+   ----------
+   - restitution du cas-test sdlv125a :
+   On a ajoute dans les 2 LIRE_RESU existants, le NUME_DDL 
+   produit par la macro commande MACRO_MATR_ASSE et on a 
+   verifie la non regression des resultats.
+   - passage du cas-test sdlv125a avec la surcharge sans 
+   l'ajout de NUME_DDL dans les LIRE_RESU pour verifier 
+   l'emission du message d'information presente ci-dessus.
+   - passage d'une liste restreinte à la commande LIRE_RESU 
+   (44 cas-tests).
+   
+   Impact documentation
+   --------------------
+   U7.02.01
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.3
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.02.01
+VALIDATION
+   Cas-test sdlv128a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009918 DU 2006-07-13 15:20:28
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   LIRE_RESU format IDEAS
+FONCTIONNALITE
+   Histor (réalisation)
+   ======
+   
+   Objectif
+   --------
+   Ajout d'un mot-clé supplémentaire à LIRE_RESU/IDEAS pour 
+   permettre de prolonger le champ par des valeurs nulles là 
+   où il n'est pas défini.
+   
+   Le mot-clé supplémentaire est PROL_ZERO (= 'OUI'/'NON'):
+   - si PROL_ZERO='OUI' : on met les valeurs des composantes 
+   aux noeuds à 0 où le champ n'est pas défini, et on emet 
+   une information dans le .mess du type: " Les valeurs non 
+   existantes du champ TEMP lues sur le maillage donné sont 
+   considérées nulles."
+   - si PROL_ZERO='NON' : on garde le champ tel quel.
+   
+   Remarque: Ce mot-clé est dédié uniquement aux champs aux 
+   noeuds, car pour les champs aux éléments, le champ est 
+   prolongé par 0 par défaut
+   
+   Développement
+   -------------
+   a) catapy: 
+   Ajout du mot-clé PROL_ZERO ( = 'OUI' ou 'NON'(défaut) ) 
+   dans lire_resu.capy spécifique au bloc IDEAS.
+   
+   b) bibfor:
+   Introduction de lignes de code supplémentaires dans 
+   lridea.f  pour prendre en compte le mot-clé PROL_ZERO. Si 
+   PROL_ZERO='OUI', alors les nb_NOEUD*nb_CMP des objets 
+   CHS//'.CNSV' et CHS//'.CNSL' sont initialisés 
+   respectivement à 0. et à True.
+   
+   Validation
+   ----------
+   - cas-tests LIRE_RESU format UNV
+   
+   
+   Impact documentation
+   --------------------
+   U7.02.01
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.3
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.02.01
+VALIDATION
+   Cas-tests LIRE_RESU format UNV
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF hsnv132b                        mazet S.MAZET            223      2      2
+ CASTEST MODIF sdll112a                     audebert S.AUDEBERT         881    253     90
+ CASTEST MODIF sdll112b                     audebert S.AUDEBERT         791    297    107
+ CASTEST MODIF sdls118a                      greffet N.GREFFET          439      2      2
+ CASTEST MODIF sdlv125a                      rezette C.REZETTE          612      3      1
+ CASTEST MODIF sslp200a                       pellet J.PELLET          1469     26     38
+ CASTEST MODIF ssls09c                        pellet J.PELLET           197      3      2
+ CASTEST MODIF sslv134b                       pellet J.PELLET           848      7      7
+ CASTEST MODIF sslv200a                       pellet J.PELLET          1098     22     24
+ CASTEST MODIF sslv200b                       pellet J.PELLET          1050     10     10
+ CASTEST MODIF ssnp124b                       pellet J.PELLET           291      3      3
+ CASTEST MODIF ssnv209a                        mazet S.MAZET            229     68     70
+ CASTEST MODIF ssnv209b                        mazet S.MAZET            504    118    126
+ CASTEST MODIF ssnv209c                        mazet S.MAZET            504    117    125
+ CASTEST MODIF ssnv209d                        mazet S.MAZET            503    113    126
+ CASTEST MODIF ssnv209e                        mazet S.MAZET            504    116    124
+ CASTEST MODIF ssnv209f                        mazet S.MAZET            259     74     67
+ CASTEST MODIF ssnv209g                        mazet S.MAZET            493    143    102
+ CASTEST MODIF ssnv209h                        mazet S.MAZET            425     70     93
+ CASTEST MODIF wtna101a                       pellet J.PELLET           368      6      4
+CATALOGU MODIF options/init_varc              pellet J.PELLET            30      7      3
+CATALOGU MODIF options/nspg_nbva              pellet J.PELLET            30      7      3
+CATALOGU MODIF options/tou_ini_elga           delmas J.DELMAS            37      2      1
+CATALOGU MODIF typelem/gener_me3d_2           pellet J.PELLET           215      5      1
+CATALOGU MODIF typelem/gener_me3d_3           delmas J.DELMAS           657      3      2
+CATALOGU MODIF typelem/gener_meax_2           delmas J.DELMAS           588      3      1
+CATALOGU MODIF typelem/gener_meaxs2           delmas J.DELMAS           521      4      3
+CATALOGU MODIF typelem/gener_mecpl2           delmas J.DELMAS           598      4      3
+CATALOGU MODIF typelem/gener_medpl1           pellet J.PELLET           155      7      3
+CATALOGU MODIF typelem/gener_medpl2           delmas J.DELMAS           602      4      3
+CATALOGU MODIF typelem/meca_hexs8             delmas J.DELMAS           568      3      1
+CATALOGU MODIF typelem/mecpqs4                delmas J.DELMAS           515      3      2
+CATALOGU MODIF typelem/medpqs4                delmas J.DELMAS           524      3      2
+CATALOGU MODIF typelem/medpqs8                delmas J.DELMAS           526      3      2
+CATALOPY MODIF commande/lire_resu            rezette C.REZETTE          216      9      1
+ FORTRAN MODIF algeline/mtcmbl                pellet J.PELLET           248     24      7
+ FORTRAN MODIF algorith/lcplas               meunier S.MEUNIER          128      3      5
+ FORTRAN MODIF algorith/lcplnl               meunier S.MEUNIER          249      3      5
+ FORTRAN MODIF algorith/meacmv                pellet J.PELLET           467      3      2
+ FORTRAN MODIF algorith/nmcomp               meunier S.MEUNIER          792      1      2
+ FORTRAN MODIF algorith/nmpl3d               meunier S.MEUNIER          289      3      3
+ FORTRAN MODIF algorith/plasti               meunier S.MEUNIER          495      2      2
+ FORTRAN MODIF algorith/vectme                pellet J.PELLET           149      3      2
+ FORTRAN MODIF algorith/xmmres                 mazet S.MAZET            484     14     11
+ FORTRAN MODIF calculel/mgauss               meunier S.MEUNIER          285      3      5
+ FORTRAN MODIF calculel/pj2dap                pellet J.PELLET           169      5      4
+ FORTRAN MODIF calculel/pj2dco                pellet J.PELLET           415      4      2
+ FORTRAN MODIF calculel/pj2dtr                pellet J.PELLET           236     27      4
+ FORTRAN MODIF calculel/pj3dap                pellet J.PELLET           178      5      4
+ FORTRAN MODIF calculel/pj3dco                pellet J.PELLET           511      4      2
+ FORTRAN MODIF calculel/pj3dtr                pellet J.PELLET           305     27      4
+ FORTRAN MODIF calculel/pj4dco                pellet J.PELLET           421      3      2
+ FORTRAN MODIF calculel/pjefte                pellet J.PELLET           257     11      1
+ FORTRAN MODIF calculel/vrcin1                pellet J.PELLET           297      3      3
+ FORTRAN MODIF calculel/vrcomp                pellet J.PELLET           247      9      4
+ FORTRAN MODIF calculel/vrcref                pellet J.PELLET           222     23      1
+ FORTRAN MODIF elements/reeref                pellet J.PELLET           222      3      4
+ FORTRAN MODIF elements/reereg                pellet J.PELLET           138     14      3
+ FORTRAN MODIF elements/te0046                 mazet S.MAZET            181      2      2
+ FORTRAN MODIF elements/te0139               meunier S.MEUNIER          254      5      5
+ FORTRAN MODIF elements/xsifel                 mazet S.MAZET            502      4      4
+ FORTRAN MODIF elements/xteddl                 mazet S.MAZET            236     37      4
+ FORTRAN MODIF prepost/lridea                rezette C.REZETTE          590     33      3
+ FORTRAN MODIF utilitai/copisd                pellet J.PELLET           346      3      1
+ FORTRAN MODIF utilitai/detrsd                pellet J.PELLET           623      2      1
+  PYTHON MODIF Execution/checksd              pellet J.PELLET           107     21      3
+  PYTHON MODIF Execution/E_ETAPE              pellet J.PELLET           297      2      2
+  PYTHON MODIF Messages/calculel6             pellet J.PELLET           329     11      3
+  PYTHON MODIF Messages/calculel              pellet J.PELLET           278     11      1
+  PYTHON MODIF Messages/prepost              rezette C.REZETTE          226     10      1
+  PYTHON MODIF Messages/sdveri                pellet J.PELLET            77      5      3
+  PYTHON MODIF Noyau/ascheckers               pellet J.PELLET           136     26      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   72       28856      1889    1270      +619
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   72       28856      1889    1270      +619 

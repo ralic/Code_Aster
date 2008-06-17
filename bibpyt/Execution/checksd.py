@@ -1,4 +1,4 @@
-#@ MODIF checksd Execution  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF checksd Execution  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,6 +25,7 @@
 from sets import Set
 
 from Utilitai.Utmess import UTMESS
+from Noyau.asojb import OJB
 
 # pour utilisation dans eficas
 try:
@@ -39,7 +40,7 @@ def get_list_objects():
     return Set(aster.jeveux_getobjects(' '))
 
 
-def check(checker, sd, l_before):
+def check(checker, sd, l_before, etape):
     """Vérifie la cohérence de la SD produite :
        - type des objets / ceux déclarés dans le catalogue de la SD
        - présence d'objets imprévus dans le catalogue
@@ -56,6 +57,21 @@ def check(checker, sd, l_before):
     # on vérifie le contenu de la SD sur la base de son catalogue
     checker = sd.check(checker)
 
+    # Vérification des "checksum":
+    if 0 :  # A modifier (if 1) si l'on souhaite vérifier que les commandes ne
+            # modifient pas leurs arguments "in" :
+            # On vérifie que le "checksum" des objets qui existaient déjà n'a pas changé:
+            # Remarque : il faut bien le faire sur l_after car c'est checkSumOJB qui
+            #             initialise la valeur pour les objets nouveaux
+            for nom in l_after :
+                if nom[0:1] == '&' : continue  # à cause des objets "&&SYS.*" et du cout des objets "&CATA.*"
+                obj=OJB(nom)
+                if etape.reuse :  # les commandes réentrantes ont le droit de modifier leur concept "reuse" :
+                    if nom[0:8].strip() == sd.nomj.nomj.strip() :
+                        checker.checkSumOJB(obj,sd,'maj')
+                        continue
+                checker.checkSumOJB(obj,sd)
+
     # on imprime les messages d'erreur stockés dans le checker :
     lerreur=[]
     for level, obj, msg in checker.msg:
@@ -63,7 +79,9 @@ def check(checker, sd, l_before):
     lerreur.sort()
     if len(lerreur) > 0 :
         # pour "ouvrir" le message :
-        UTMESS("E+", 'SDVERI_30')
+        nom_concept=sd.nomj.nomj.strip()
+        nom_commande=etape.definition.nom.strip()
+        UTMESS("E+", 'SDVERI_30', valk=(nom_concept,nom_commande))
         for obj, msg in lerreur :
             UTMESS("E+", 'SDVERI_31', valk=(obj, msg))
 
