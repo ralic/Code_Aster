@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+#& MODIF COMMANDE  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                PRESENT_PRESENT('BPEL_ACIER','ELAS'),
                EXCLUS('RCCM','RCCM_FO'),
                EXCLUS('WEIBULL','WEIBULL_FO'),
-               PRESENT_PRESENT('BARCELONE','CAM_CLAY'),
                PRESENT_PRESENT('LAIGLE','ELAS'),
                PRESENT_PRESENT('LETK','ELAS'),
                PRESENT_PRESENT('DRUCK_PRAGER','ELAS'),
@@ -949,9 +948,18 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              KAPA            =SIMP(statut='o',typ='R'),
              M               =SIMP(statut='o',typ='R'),
              PRES_CRIT       =SIMP(statut='o',typ='R'),
-             PA              =SIMP(statut='o',typ='R'),
+             KCAM            =SIMP(statut='f',typ='R',val_min=0.E+0),
+             PTRAC           =SIMP(statut='f',typ='R',val_max=0.E+0),
+               regles=(PRESENT_PRESENT('PTRAC','KCAM',),),
            ),
            BARCELONE      =FACT(statut='f',
+             MU              =SIMP(statut='o',typ='R'),
+             PORO            =SIMP(statut='o',typ='R'),
+             LAMBDA          =SIMP(statut='o',typ='R'),
+             KAPA            =SIMP(statut='o',typ='R'),
+             M               =SIMP(statut='o',typ='R'),
+             PRES_CRIT       =SIMP(statut='o',typ='R'),
+             PA            =SIMP(statut='o',typ='R'),
              R             =SIMP(statut='o',typ='R'),
              BETA          =SIMP(statut='o',typ='R'),
              KC            =SIMP(statut='o',typ='R'),

@@ -4,7 +4,7 @@
      &                   DSIDP1,SIPM,SIPP,RETCOM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,8 +156,10 @@ C
      &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,7,
+         
+         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,13,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+
          MU     = VALRES(2)
          PORO   = VALRES(3)      
          PORO1  = PORO
@@ -166,16 +168,12 @@ C
          M      = VALRES(6)
          PRESCR = VALRES(7)
          PA     = VALRES(8)
-         
-         CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,6,
-     &                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
-
-         R = VALRES(9)
-         BETA = VALRES(10)
-         KC = VALRES(11)
+         R      = VALRES(9)
+         BETA   = VALRES(10)
+         KC     = VALRES(11)
          PC0INI = VALRES(12)
-         KAPAS = VALRES(13)
-         LAMBS = VALRES(14)
+         KAPAS  = VALRES(13)
+         LAMBS  = VALRES(14)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
      &                 NOMRES(15),VALRES(15),CODRET(15), BL2 )
          IF ( CODRET(15) .NE. 'OK' ) THEN

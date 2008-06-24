@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # RESPONSABLE JOUMANA J. EL GHARIB
 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D
@@ -42,19 +42,21 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 
 
 LI1=DEFI_LIST_REEL(DEBUT=0.0,
-                   INTERVALLE=(_F(JUSQU_A=100.0,
-                                  NOMBRE=1,),
+                   INTERVALLE=(_F(JUSQU_A=50.0,
+                                  NOMBRE=10,),
+                               _F(JUSQU_A=100.0,
+                                  NOMBRE=20,),
                                _F(JUSQU_A=600.0,
                                   NOMBRE=5,),
                                _F(JUSQU_A=1000.0,
                                   NOMBRE=4,),
                                _F(JUSQU_A=5000.0,
-                                  NOMBRE=10,),
+                                  NOMBRE=50,),
                                _F(JUSQU_A=8000.0,
                                   NOMBRE=30,),
                                _F(JUSQU_A=9000.0,
-                                  NOMBRE=20,),
-                               _F(JUSQU_A=1.E4,
+                                  NOMBRE=200,),
+                              _F(JUSQU_A=1.E4,
                                   NOMBRE=20,),),);
 
 ############################################
@@ -62,25 +64,20 @@ LI1=DEFI_LIST_REEL(DEBUT=0.0,
 #  CARACTERISTIQUES DU MATERIAU
 #
 
-MATER0=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
-                             NU=0.285),);
 
-
-MATER=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
-                            NU=0.285,
+MATER=DEFI_MATERIAU(ELAS=_F(E=1.E7,
+                            NU=0.3,
                             ALPHA=0.,),
-                CAM_CLAY=_F(MU  = 6.E6,
-                            PORO=0.66,
-                            LAMBDA=0.25,
-                            KAPA=0.05,           
-                            M=0.9,
-                            PRES_CRIT=3.E5,
-                            PA=1.E5,),);
+                CAM_CLAY=_F(MU       = 3.846154E6,
+                            PORO     = 0.5,
+                            LAMBDA   = 0.2,
+                            KAPA     = 0.05,           
+                            M        = 1.02,
+                            PRES_CRIT= 1.E7,
+                            KCAM     = 6.5E6,
+                            PTRAC    = -1.E5),);
 
-CHM0=AFFE_MATERIAU(MAILLAGE=MAIL,
-                  AFFE=_F(TOUT='OUI',
-                          MATER=MATER0,),);
-                          
+                         
 CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
                               MATER=MATER,),);
@@ -90,25 +87,19 @@ CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
 #  CHARGEMENT
 #
 
-PRESS1=DEFI_FONCTION(NOM_PARA='INST',
-                    NOM_RESU='PRESSION',
-                    VALE=
-                    (0.0,0.0,
-                    100.0,100000.0),
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU',);
-
 PRESS2=DEFI_FONCTION(NOM_PARA='INST',
                     NOM_RESU='PRESSION',
                     VALE=
-                    (0.0,0.0,
-                    100.0,100000.0,
-                    600.0,320000.0,
-                    1000.0,350000.0,
-                    5000.0,500000.0,
-                    8000.0,800000.0,
-                    9000.0,600000.0,
-                    10000.0,100000.0),
+                    (0.0,     -100000.0,
+                     50.0,     -50000.0,
+                    100.0,    6000000.0,
+                    600.0,    8000000.0,
+                    1000.0,   9000000.0,
+                    5000.0,   25000000.0,
+                    8000.0,   30000000.0,
+                    9000.0,    6000000.0,
+                    10000.0,   -1.E5,
+                     ),
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='EXCLU',);
 
@@ -125,10 +116,6 @@ CHA0=AFFE_CHAR_MECA(MODELE=MODELE,
                               _F(NOEUD=('NO2','NO4','NO6','NO8'),
                                  DX=0.0,),),);
 
-CHA1=AFFE_CHAR_MECA_F(MODELE=MODELE,
-                      PRES_REP=_F(MAILLE=('HAUT','DROITE','ARRIERE'),
-                                  PRES=PRESS1,),
-                                  VERI_NORM='OUI');
 
 CHA2=AFFE_CHAR_MECA_F(MODELE=MODELE,
                       PRES_REP=_F(MAILLE=('HAUT','DROITE','ARRIERE'),
@@ -136,57 +123,29 @@ CHA2=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                   VERI_NORM='OUI');
 
 ############################################
-
-#  CALCUL ELASTIQUE NECESSAIRE 
-#
-                              
-RESU1=STAT_NON_LINE(MODELE=MODELE,
-                    CHAM_MATER=CHM0,
-                    EXCIT=(_F(CHARGE=CHA0,),
-                           _F(CHARGE=CHA1,),),
-                    COMP_ELAS=_F(RELATION='ELAS',),
-                    INCREMENT=_F(LIST_INST=LI1,
-                                 INST_INIT=0.0,
-                                 INST_FIN=1.E2,),
-                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=10),
-                    SOLVEUR=_F(METHODE='LDLT',),);
-
-############################################
-#
-#  EXTRACTION DES CONTRAINTES
-#
-
-RES1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                OPERATION='EXTR',
-                RESULTAT=RESU1,
-                NOM_CHAM='SIEF_ELGA',
-                INST=100.0,);
-                
-############################################
 #
 #   CHARGE
 #
 
-RESU1=STAT_NON_LINE(reuse=RESU1, 
-                     MODELE=MODELE,
+RESU1=STAT_NON_LINE(MODELE=MODELE,
                       CHAM_MATER=CHM,
                       EXCIT=(_F(CHARGE=CHA0,),
                              _F(CHARGE=CHA2,),),
                       COMP_INCR=_F(RELATION='CAM_CLAY',PARM_THETA=0.57,
                                    ITER_INTE_MAXI=100,
                                    ITER_INTE_PAS=-10,),
-                      ETAT_INIT=_F(SIGM=RES1,),
                       INCREMENT=_F(LIST_INST=LI1,
-                                   INST_INIT=100.0,
-                                   INST_FIN = 8000.,
+                                   INST_INIT=0.0,
+                                   INST_FIN =8000.,
                                     ),
-                      NEWTON=_F(MATRICE='TANGENTE',
+                      NEWTON=_F(#PREDICTION='ELASTIQUE',
+                                MATRICE='TANGENTE',
+                                REAC_ITER=1,
                                 ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=200,
-                                     RESI_GLOB_RELA=1.E-06,),
-                      SOLVEUR=_F(METHODE='LDLT',),);
-                      
+                                     RESI_GLOB_MAXI=1.E-06,),
+                      SOLVEUR=_F(METHODE='LDLT',STOP_SINGULIER='NON'),);
+
 ############################################
 #
 #  DECHARGE 
@@ -203,6 +162,9 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                       ETAT_INIT=_F(EVOL_NOLI=RESU1,),
                       INCREMENT=_F(LIST_INST=LI1,
                                    INST_INIT= 8000.0,
+                                   INST_FIN= 1.E4,
+                                   SUBD_METHODE='EXTRAPOLE',
+                                   SUBD_NIVEAU=5,
                                     ),
                       NEWTON=_F(
                                 PREDICTION='ELASTIQUE',
@@ -210,9 +172,11 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                                 REAC_ITER=1,
                                 ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=200,
-                                     RESI_GLOB_RELA=1.E-06),
-                      SOLVEUR=_F(METHODE='LDLT',),);
-
+                                     RESI_GLOB_RELA=1.E-06,
+                                     #RESI_REFE_RELA=1.0E-3,
+                                     #SIGM_REFE      = 1.0E+6,
+                                     ),
+                      SOLVEUR=_F(METHODE='LDLT'),);
 
 TDEP=(5000.,6500.,7000.,7500.,8000.,8500.,9000.,9500.)
 
@@ -247,7 +211,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=5000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -9.12015E-03,        
+                       VALE = -4.76986E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -257,7 +221,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=6000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -1.015333E-02,        
+                       VALE = -4.984035E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -267,7 +231,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=6500.,  
                        PRECISION = 1.E-5,   
-                       VALE = -1.242118E-02,        
+                       VALE = -5.0861712E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -277,7 +241,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=7000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -1.452090E-02,        
+                       VALE = -5.18527E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -287,7 +251,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=7500.,  
                        PRECISION = 1.E-5,   
-                       VALE = -1.647570E-02,        
+                       VALE = -5.281508E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -297,7 +261,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=8000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -1.830429E-02,        
+                       VALE = -5.375045E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -307,7 +271,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=9000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -1.6674097E-02,        
+                       VALE = -4.051615E-02,        
                      ),
 
                 _F(    RESULTAT = RESU1,    
@@ -317,7 +281,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'EPXX',     
                        INST=10000.,  
                        PRECISION = 1.E-5,   
-                       VALE = -6.520794E-03,        
+                       VALE = -2.2572216E-03,        
                      ),),),
 
 FIN ();

@@ -1,0 +1,143 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB Joumana      DATE 24/06/2008 - 11:20:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012192 DU 2008-06-13 13:16:04
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Modifications de la loi CAM_CLAY
+FONCTIONNALITE
+   (texte corrigé et plus explicite)
+   
+   Des évolutions sont à apporter à la loi CAM_CLAY 
+   dans Code_Aster, dans le but :
+   
+   1.	D?éviter à l?utilisateur l?initialisation 
+   "systématique" du champs de contraintes au démarrage 
+   d?un calcul élastoplastique ou d?effectuer un calcul 
+   élastique au préalable 
+   
+   2.	D?autoriser des contraintes de traction en 
+   décalant le critère d?une certaine valeur de la 
+   contrainte vers les valeurs négatives (convention de 
+   la mécanique des sols contrainte positive en 
+   compression et négative en traction)
+   
+   
+   Au niveau de DEFI_MATERIAU sous le mot clé CAM_CLAY on 
+   fait les modificatins suivantes :
+   
+   1.	 On remplace  le paramètre matériau PA par un 
+   nouveau qui s?appelle KCAM qui représente la 
+   compressibilité initiale du matériau.  Ce paramètre doit 
+   être positif (il sera facultatif avec une valeur min =0)
+   
+   
+   2.	On ajoute un nouveau paramètre matériau qui 
+   s?appelle PTRAC et qui représente la quantité de la 
+   contrainte hydrostatique de traction tolérée ou bien le 
+   décalage de l?ellipse (le critère) vers la gauche sur 
+   l?axe des contraintes hydrostatiques. Ce paramètre doit 
+   être négatif (il sera facultatif avec une valeur max =0) 
+   
+   Il faut faire attention aux vérifications suivantes :
+   
+   *Si Ptrac est donné nul:
+   deux possibilités pour KCAM :
+    *KCAM positif (des contraintes nulles sont permises)
+    *KCAM nul (il faut absolument initialiser les 
+   contraintes ; on retombe dans l'ancienne  configuration de 
+   l'utilisation de cette loi)
+   
+   *Si Ptrac est donné négatif: 
+   une seule possibilité pour KCAM:
+   *KCAM positif comme il faut satisfaire la relation 
+   K0*PTRAC+KCAM>0 il faut donner une valeur positive à KCAM 
+   (on ne peut initialiser les contraintes et mettre KCAM=0)
+   
+   3. Jusqu'à présent pour utiliser la loi de Barcelone, on 
+   faisait appel simultanément aux eux mot clés CAM_CLAY et 
+   BARCELONE sous DEFI_MATERIAU. On fait le changement 
+   suivant: 
+   on met sous le mot clé Barcelone tous les paramètres 
+   CAM_CLAY nécessaires. Il n'y aura  plus à faire appel à 
+   CAM_CLAY sous DEFI_MATERIAU quand on utilise BARCELONE.
+   
+   Les fichiers impactés :
+   nmccam.f
+   nmbarc.f
+   
+   compor1.py
+   
+   defi_materiau.capy
+   
+   ssnv160c
+   ssnv160d
+   ssnv202a
+   ssnp136a
+   wtnv122a
+   wtnv122b
+   wtnv122c
+   wtnv123a
+   wtnv123b
+   wtnv123c
+   wtnv124a
+   wtnv124b
+   wtnv126a
+   wtnv126b
+   wtnv126c
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R7.01.14 U4.43.01 V7.31.122 V7.31.123 V7.31.124 V7.31.126
+VALIDATION
+   ssnv160c ssnv160d ssnv160e wtnv122a wtnv122b wtnv122c wtnv123a wtnv123b wtnv123c wtnv124a wtnv124b wtnv126a wtnv126b wtnv126c
+NB_JOURS_TRAV  : 8.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF ssnp136a                     elgharib J.EL-GHARIB        719      4      2
+ CASTEST MODIF ssnv160c                     elgharib J.EL-GHARIB        287     51     87
+ CASTEST MODIF ssnv160d                     elgharib J.EL-GHARIB        343      4      2
+ CASTEST MODIF ssnv160e                     elgharib J.EL-GHARIB        195      3      2
+ CASTEST MODIF ssnv202a                     elgharib J.EL-GHARIB        333      3      2
+ CASTEST MODIF wtnv122a                     elgharib J.EL-GHARIB        441     13     13
+ CASTEST MODIF wtnv122b                     elgharib J.EL-GHARIB        450      7      7
+ CASTEST MODIF wtnv122c                     elgharib J.EL-GHARIB        450     14     14
+ CASTEST MODIF wtnv123a                     elgharib J.EL-GHARIB        593      4      4
+ CASTEST MODIF wtnv123b                     elgharib J.EL-GHARIB        467      4      4
+ CASTEST MODIF wtnv123c                     elgharib J.EL-GHARIB        832      4      4
+ CASTEST MODIF wtnv123d                     elgharib J.EL-GHARIB        596      4      4
+ CASTEST MODIF wtnv123e                     elgharib J.EL-GHARIB        596      4      4
+ CASTEST MODIF wtnv123f                     elgharib J.EL-GHARIB        365      4      4
+ CASTEST MODIF wtnv124a                     elgharib J.EL-GHARIB        556      4      4
+ CASTEST MODIF wtnv124b                     elgharib J.EL-GHARIB        554      9      9
+ CASTEST MODIF wtnv126a                     elgharib J.EL-GHARIB        851      4      4
+ CASTEST MODIF wtnv126b                     elgharib J.EL-GHARIB        824      4      4
+ CASTEST MODIF wtnv126c                     elgharib J.EL-GHARIB        828      4      4
+CATALOPY MODIF commande/defi_materiau       elgharib J.EL-GHARIB       2868     11      3
+ FORTRAN MODIF algorith/nmbarc              elgharib J.EL-GHARIB       1344      4      6
+ FORTRAN MODIF algorith/nmccam              elgharib J.EL-GHARIB        958    189    191
+  PYTHON MODIF Messages/compor1             elgharib J.EL-GHARIB        245     26      5
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   23       15695       378     383        -5
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   23       15695       378     383        -5 

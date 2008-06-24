@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,14 +88,14 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 7.2E6,    NU = 0.3,
                                      RHO = 2500.,
                                      ALPHA = 1.E-5,
                                    ),
-                    CAM_CLAY=_F(MU=2.76E6,
+                    BARCELONE=_F(MU=2.76E6,
                                 PORO=0.14,
                                 LAMBDA=0.2,
                                 KAPA=0.02,
                                 M=1.,
                                 PRES_CRIT=2.E5,
-                                PA=1.E5,),
-                    BARCELONE=_F(R=0.75,
+                                PA=1.E5,
+                                R=0.75,
                                 BETA=12.5E-6,
                                 KC=0.6,
                                 PC0_INIT=3.E5,

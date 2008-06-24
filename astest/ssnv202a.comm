@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE ETUDE:  ESSAI OEDOMETRIQUE NON-DRAINE (MECA PUR) AVEC LA LOI DE CAMCLAY
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,7 +72,8 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=E,
                               KAPA      = KAPA,
                               M         = M,
                               PRES_CRIT = PCR,
-                              PA        = PATM));
+                              KCAM        = 0.,
+                              PTRAC       =0.));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI', MATER=SOL));

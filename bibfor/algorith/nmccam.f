@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,8 @@ C  TOLE CRP_20
       INTEGER            NDIM,IMATE,RETCOM
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*),OPTION
-      REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TP2,LINE,TREF
-      REAL*8             DEPS(6),PREC,DX,DEUXMU
+      REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TP2,TREF
+      REAL*8             DEPS(6),DEUXMU
       REAL*8             SIGM(6),PCRM(7),SIGP(6),PCRP(7),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE CAM CLAY ELASTOPLASTIQUE POUR LES
@@ -79,37 +79,48 @@ C
       REAL*8      EPXMAX
       PARAMETER   (EPXMAX = 5.D0)
       CHARACTER*8 NOMAIL
-      REAL*8      DEPSTH(6),VALRES(9)
-      REAL*8      LAMBDA,KAPA,PORO,PRESCR,M,PA
-      REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,FONC,MU
-      REAL*8      SIELEQ,SIMOEL,H,A(6),AA(6),SIEQM, TOTO, TOTO1
-      REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),TPLUS(6)
-      REAL*8      SIGPMO,F1,F2,F3,F4,F5,F6,F,FP,COEF,PORO1,PORO2
-      REAL*8      DEPPMO,DELTAP,DELTAS(6),SPARDS,HP,XC,XD
-      REAL*8      XLAM,XA,XU,XG,XH,XE,XF,XV,XI,RAP,CC(6,6),FV(6),FF(6)
-      REAL*8      C(6,6),CT,XB,V0,V0EST,SEUIL,D(3,3),DD(3,3)
-      REAL*8      SIGEL(6),XINF,XSUP,RBID,TOL,TOL1,FFI(6,6),EE(6,6)
+      REAL*8      VALRES(10),VALPAM(3)
+      REAL*8      MU, LAMBDA,KAPA,PORO,PRESCR,M, KCAM, PTRAC
+      REAL*8      COEF,PORO1,PORO2,YOUNG,NU,E0,XK0,XK,FONC
+      REAL*8      DEPSMO,DEPPMO,DEPSEQ
+      REAL*8      SIGMMO,SIGPMO,DELTAP,SIEQM,SIEQP,SIELEQ,SIMOEL,SPARDS
+      REAL*8      KRON(6),DEPSDV(6),DEPSTH(6),SIGMDV(6),SIGPDV(6)
+      REAL*8      DELTAS(6),SIGEL(6),TPLUS(6)
+      REAL*8      A(6),AA(6),FV(6),FF(6)
+      REAL*8      FFI(6,6),EE(6,6),C(6,6),CC(6,6)
       REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6),SS(6,6),TT(6,6)
-      REAL*8      HH(6,6),SES(6,6),SIEQP,GG(6,6),SPS(6,6),HHM(6,6)
+      REAL*8      HH(6,6),SES(6,6),GG(6,6),SPS(6,6),HHM(6,6),IDEN6(6,6)
       REAL*8      D1G(6,6),D1GHHM(6,6),ID2(6,6),DEVHYD(6,6),DEVHYM(6,6)
-      REAL*8      DIFF,DIFF1,DIFF2,XAU
-      REAL*8      FXI1,FXI2,FXI3,FXI,FXS1,FXS2,FXS3,FXS,ZERO,EPS
-      REAL*8      UN,DEUX,TROIS,SIX,UNSDE,IDEN6(6,6), VALM, VALP
-      INTEGER     NDIMSI,SIGNF,SIGNFI,SIGNFS
+      REAL*8      D(3,3),DD(3,3),X(2), Y(2)
+      REAL*8      F1,F2,F3,F4,F5,F6,F,FP
+      REAL*8      F1P, F2P, F3P, F4P      
+      REAL*8      FXI1,FXI2,FXI3,FXI4,FXI
+      REAL*8      H,HP,XC,XD,XLAM,XA,XU,XG,XH,XE,XF,XV,XI,RAP
+      REAL*8      CT,V0,SEUIL,SEUILB
+      REAL*8      XINF,XSUP,RBID
+      REAL*8      DIFF,DIFF2
+      REAL*8      ZERO,UN,DEUX,TROIS,SIX,UNSDE,TOL
+      REAL*8      VALM,VALP
+      REAL*8      XB0, XB1, XB, FXB0, FXB1, FXB
+      INTEGER     NDIMSI,SIGNF,SIGNFI 
       INTEGER     I,K,L,ITER, MATR
       CHARACTER*2 BL2, FB2, CODRET(9)
-      CHARACTER*8 NOMRES(9),NOMPAR(9),TYPE
-      REAL*8      VALPAM(3),EMAX,DEPSEQ
+      CHARACTER*8 NOMRES(10),NOMPAR(10),TYPE
+C ======================================================================
+      REAL*8       VALRM(5)
+      INTEGER      VALIM
+      CHARACTER*10 VALKM(5)
 C ======================================================================
       PARAMETER   ( ZERO   = 0.D0   )
       PARAMETER   ( UN     = 1.D0   )
       PARAMETER   ( DEUX   = 2.D0   )
       PARAMETER   ( TROIS  = 3.D0   )
       PARAMETER   ( SIX    = 6.D0   )
-      PARAMETER   ( UNSDE  = 0.5D0   )
+      PARAMETER   ( UNSDE  = 0.5D0  )
+      
       
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA        TOL/1.D-10/
+      DATA        TOL/1.D-6/
 C DEB ------------------------------------------------------------------
 C
 C     -- 1 INITIALISATIONS :
@@ -130,7 +141,8 @@ C     ---------------------------------------
       NOMRES(5)='LAMBDA'
       NOMRES(6)='M'
       NOMRES(7)='PRES_CRIT'
-      NOMRES(8)='PA'
+      NOMRES(8)='KCAM'
+      NOMRES(9)='PTRAC'
 C
       NOMPAR(1) = 'TEMP'
       VALPAM(1) = TM
@@ -151,7 +163,7 @@ C
              VALRES(1) = 0.D0
              COEF = 0.D0
          ENDIF
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,7,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,8,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          MU     = VALRES(2)
          PORO   = VALRES(3)
@@ -159,7 +171,9 @@ C
          LAMBDA = VALRES(5)
          M      = VALRES(6)
          PRESCR = VALRES(7)
-         PA     = VALRES(8)
+         KCAM   = VALRES(8)
+         PTRAC  = VALRES(9)
+
       ENDIF
       IF (((COMPOR(1)(1:6) .EQ. 'KIT_HM') .OR.
      &     (COMPOR(1)(1:7) .EQ. 'KIT_HHM') .OR.
@@ -172,7 +186,7 @@ C
          IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
          COEF = VALRES(1)*(TP-TREF) - VALRES(1)*(TM-TREF)
  
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,7,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,8,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          MU     = VALRES(2)
          PORO   = VALRES(3)
@@ -181,7 +195,8 @@ C
          LAMBDA = VALRES(5)
          M      = VALRES(6)
          PRESCR = VALRES(7)
-         PA     = VALRES(8)
+         KCAM   = VALRES(8)
+         PTRAC  = VALRES(9)
 
          CALL RCVALA(IMATE,' ','THM_INIT',1,NOMPAR,VALPAM,1,
      &                 NOMRES(3),VALRES(3),CODRET(3), FB2 )
@@ -191,13 +206,16 @@ C
          IF (ABS(DIFF) .GT. TOL) THEN
            CALL U2MESS('F','ALGORITH6_60')
          ELSE
-         PORO=PORO1
+           PORO=PORO1
          ENDIF
       ENDIF
          DEUXMU = DEUX*MU
-         E0=PORO/(1.D0-PORO)
-         XK0 = (1.D0+E0)/KAPA
-         XK= (1.D0+E0)/(LAMBDA-KAPA)
+         E0     = PORO/(1.D0-PORO)
+         XK0    = (1.D0+E0)/KAPA
+         XK     = (1.D0+E0)/(LAMBDA-KAPA)
+         IF ((KCAM.NE.ZERO).AND.(KCAM.LE.(-XK0*PTRAC))) THEN
+             CALL U2MESS('F','COMPOR1_42')
+         ENDIF    
 C
 C     -- 3 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
@@ -223,8 +241,8 @@ C     -------------------------------------------------------------
       DO 116 K =1,3
         SIGMMO = SIGMMO + SIGM(K)
  116  CONTINUE
-      SIGMMO = -SIGMMO /3.D0
-      IF (SIGMMO.LT.(0.99D0*PA)) THEN
+      SIGMMO = -SIGMMO /3.D0 
+      IF (SIGMMO.LT.PTRAC) THEN
            CALL U2MESS('F','ALGORITH6_64')
       ENDIF
       SIELEQ = 0.D0
@@ -233,43 +251,48 @@ C     -------------------------------------------------------------
         SIGMDV(K) = SIGM(K) + SIGMMO * KRON(K)
         SIEQM = SIEQM + SIGMDV(K)**2
         SIGEL(K)  = SIGMDV(K) + DEUXMU * DEPSDV(K)
-        SIELEQ     = SIELEQ + SIGEL(K)**2
+        SIELEQ    = SIELEQ + SIGEL(K)**2
  117  CONTINUE
-      SIELEQ     = SQRT(1.5D0*SIELEQ)
+      SIELEQ   = SQRT(1.5D0*SIELEQ)
       SIEQM    = SQRT(1.5D0*SIEQM)
-      IF ((XK0*DEPSMO).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_1','EXP EXPLOSE A LA MAILLE : ',
-     &                                                       NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      SIMOEL    = SIGMMO*EXP(XK0*DEPSMO)
-      
-C ---- INITIALISATION A T=0
-      IF (PCRM(1).EQ.0.D0)  THEN
 
-        PCRM(1) = PRESCR
-        PCRM(3) = SIMOEL
+         IF (  ((XK0*DEPSMO) .GT. EPXMAX) ) THEN
+            
+           CALL TECAEL(IADZI,IAZK24)
+           VALKM(1) = ZK24(IAZK24-1+3) (1:8)
+           VALRM(1) =  EPXMAX
+           VALKM(2) ='EXP(XK0*DEPSMO) '
+           VALRM(2) = (XK0*DEPSMO)
+           VALKM(3) ='EXP(XK*DEPSMO) '
+           VALRM(3) = (XK*DEPSMO)
+           CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
+           RETCOM = 1
+           GO TO 30
+         ENDIF
+      SIMOEL = SIGMMO*EXP(XK0*DEPSMO)+KCAM/XK0*(EXP(XK0*DEPSMO)-UN)
+
+C ---- INITIALISATION A T=0
+      IF (PCRM(1).EQ. 0.D0)  THEN
+
+        PCRM(1) = PRESCR 
+        PCRM(3) = SIMOEL 
         PCRM(4) = SIELEQ
         PCRM(5) = 0.D0
         PCRM(6) = 0.D0
         PCRM(7) = E0
 
-
 C ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
-        NU = (TROIS*(UN+E0)*SIGMMO-DEUXMU*KAPA)/
-     &      (SIX*(UN+E0)*SIGMMO+DEUXMU*KAPA)
+        NU = (TROIS*((UN+E0)*SIGMMO+KAPA*KCAM)-DEUXMU*KAPA)/
+     &         (SIX*((UN+E0)*SIGMMO+KAPA*KCAM)+DEUXMU*KAPA)
      
-        E = DEUXMU*(UN+NU)
-        
-        
-        IF ((E.LE.ZERO).OR.(NU.LE.ZERO).OR.(NU.GT.UNSDE)) THEN
+        YOUNG = DEUXMU*(UN+NU)
+
+        IF ((YOUNG.LE.ZERO).OR.
+     &      (NU.LE.ZERO).OR.
+     &      (NU.GT.UNSDE)) THEN
           CALL TECAEL(IADZI,IAZK24)
           NOMAIL = ZK24(IAZK24-1+3) (1:8)
-          CALL U2MESK('A','COMPOR1_3',1,NOMAIL)
+          CALL U2MESK('F','COMPOR1_3',1,NOMAIL)
         ENDIF
         
       ENDIF
@@ -277,18 +300,20 @@ C ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
 C
 C     -- 5 CALCUL DU CRITERE :
 C     ----------------------
-      FONC = SIELEQ**2+M*M*SIMOEL*SIMOEL-2.D0*M*M*SIMOEL*PCRM(1)
+        FONC = SIELEQ**2+M*M*(SIMOEL-PTRAC)**2-
+     &              2.D0*M*M*(SIMOEL-PTRAC)*PCRM(1)
+
 C     -- 6  TEST DE PLASTIFICATION ET CALCUL DE PCRP SIGP, SIGPDV :
 C     ------------------------------------------------------------
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
         IF (FONC.LE.0.D0) THEN
 C      -- TRAITEMENT DE L'ELASTICITE
-           PCRP(1) = PCRM(1)
+           PCRP(1) = PCRM(1)  
            PCRP(2) = 0.D0
             DO 118 K=1,NDIMSI
               SIGPDV(K) = SIGEL(K)
-              SIGP(K)   = SIGEL(K)-SIMOEL*KRON(K)
+              SIGP(K)   = SIGEL(K)-SIMOEL*KRON(K) 
  118  CONTINUE
 
            PCRP(3) = SIMOEL
@@ -296,8 +321,7 @@ C      -- TRAITEMENT DE L'ELASTICITE
            PCRP(5) = 0.D0
            PCRP(6) = 0.D0
            
-           IF ( (PCRP(3)/PA) .GT. 1.D-6 .AND.
-     &          (PCRM(3)/PA) .GT. 1.D-6 ) THEN
+           IF ((PCRM(3).NE.ZERO).AND.((PCRP(3)/PCRM(3)).GT.ZERO)) THEN
      
              PCRP(7) = PCRM(7) - KAPA*LOG(PCRP(3)/PCRM(3))
              
@@ -308,235 +332,208 @@ C      -- TRAITEMENT DE L'ELASTICITE
            ENDIF
 
         ELSE
+
 C     -- PLASTIFICATION : CALCUL DE LA DEFORMATION
 C     -- VOLUMIQUE PLASTIQUE : DEPPMO
          PCRP(2) = 1.D0
-       XB = 1.D0/(XK+XK0)*LOG(SIMOEL/PCRM(1))
-       XINF = 0.D0
-       XSUP = XB
+
+         
+         XINF = 0.D0
+         XSUP = 1.D0/(XK+XK0)*LOG((SIMOEL-PTRAC)/PCRM(1))
 
 C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
-       V0 = XINF
-       SEUIL = M**2*PCRM(1)**2
-      IF ((-XK0*V0).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_2','EXP EXPLOSE A LA MAILLE : ',
-     &                                                        NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      IF ((XK*V0).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_3','EXP EXPLOSE A LA MAILLE : ',
-     &                                                        NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      IF ((-2.D0*XK0*V0).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_4','EXP EXPLOSE A LA MAILLE : ',
-     &                                                        NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      IF (((XK-XK0)*V0).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_5','EXP EXPLOSE A LA MAILLE : ',
-     &                                                        NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-       F1 = SIMOEL*EXP(-XK0*V0)
-       F2 = SIMOEL*EXP(-XK0*V0)-2.D0*PCRM(1)*EXP(XK*V0)
-       F3 = SIMOEL*EXP(-XK0*V0)-PCRM(1)*EXP(XK*V0)
-       F = SIELEQ**2+M**2*(1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)**2*F1*F2
-       F4 = (1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)
-       F5 = -2.D0*XK0*SIMOEL**2*EXP(-2.D0*XK0*V0)+
-     &         2.D0*SIMOEL*PCRM(1)*EXP((XK-XK0)*V0)*(XK0-XK)
-       F6 = SIMOEL*(1.D0+V0*XK0)*EXP(-XK0*V0)+
-     &        PCRM(1)*(-1.D0+V0*XK)*EXP(XK*V0)
-       FP = M**2*F4**2*F5+3.D0*DEUXMU*F4*F1*F2*(F6/F3/F3)
+         V0 = XINF
+         SEUIL = M**2*(PCRM(1)-PTRAC)**2
+
+         IF (  ((-XK0*V0) .GT. EPXMAX) .OR.
+     &         ((XK*V0)   .GT. EPXMAX) ) THEN
+            
+           CALL TECAEL(IADZI,IAZK24)
+           VALKM(1) = ZK24(IAZK24-1+3) (1:8)
+           VALRM(1) =  EPXMAX
+           VALKM(2) ='EXP(-XK0*V0) '
+           VALRM(2) = (-XK0*V0)
+           VALKM(3) ='EXP(XK*V0) '
+           VALRM(3) = (XK*V0)
+           CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
+           RETCOM = 1
+           GO TO 30
+         ENDIF
+         
+           F1 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
+           F2 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
+     &           -2.D0*PCRM(1)*EXP(XK*V0)
+           F3 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
+     &           -PCRM(1)*EXP(XK*V0)
+           F4 = (1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)
+           
+           F =SIELEQ**2+M**2*F4**2*F1*F2
+
+           F1P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
+           F2P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
+     &                 -2.D0*XK*PCRM(1)*EXP(XK*V0)
+           F3P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
+     &                      -XK*PCRM(1)*EXP(XK*V0)
+           F4P = 3.D0*DEUXMU/2.D0/(M**2)*(F3-V0*F3P)/F3/F3
+           
+           FP = M**2*F4**2*(F1P*F2 + F1*F2P) +
+     &          2.D0*M**2*F4*F4P*F1*F2
+
 C
-       DO 200 ITER = 1, NINT(CRIT(1))
+           DO 200 ITER = 1, NINT(CRIT(1))
 
 C     --CRITERE DE CONVERGENCE
-       IF ((ABS(F)/SEUIL) . LE. CRIT(3))   GOTO 100
+           IF ((ABS(F)/SEUIL) . LE. CRIT(3))   GOTO 100
 
 C     --CONSTRUCTION DU NOUVEL ITERE
-       V0 = V0-F/FP
-       IF (XSUP.GT.0.D0) THEN
-       IF (V0.LE.XINF .OR. V0.GE.XSUP)  V0 = (XINF+XSUP)/2
-       ELSE
-       IF (V0.LE.XSUP .OR. V0.GE.XINF)  V0 = (XINF+XSUP)/2
-       ENDIF
+           V0 = V0-F/FP
+           IF (XSUP.GT.0.D0) THEN
+             IF (V0.LE.XINF .OR. V0.GE.XSUP)  V0 = (XINF+XSUP)/2
+           ELSE
+             IF (V0.LE.XSUP .OR. V0.GE.XINF)  V0 = (XINF+XSUP)/2
+           ENDIF
 
 C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
 
-      IF ((-XK0*V0).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_6','EXP EXPLOSE A LA MAILLE : ',
-     &                                                        NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      IF ((XK*V0).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_7','EXP EXPLOSE A LA MAILLE : ',
-     &                                                        NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      IF ((-2.D0*XK0*V0).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_8','EXP EXPLOSE A LA MAILLE : ',
-     &                                                        NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      IF (((XK-XK0)*V0).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_9','EXP EXPLOSE A LA MAILLE : ',
-     &                                                        NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-       F1 = SIMOEL*EXP(-XK0*V0)
-       F2 = SIMOEL*EXP(-XK0*V0)-2.D0*PCRM(1)*EXP(XK*V0)
-       F3 = SIMOEL*EXP(-XK0*V0)-PCRM(1)*EXP(XK*V0)
-       F=SIELEQ**2+M**2*(1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)**2*F1*F2
-       IF (F.GT.ZERO) SIGNF =  1
-       IF (F.LT.ZERO) SIGNF = -1
-       F4 = (1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)
-       F5 = -2.D0*XK0*SIMOEL**2*EXP(-2.D0*XK0*V0)+
-     &         2.D0*SIMOEL*PCRM(1)*EXP((XK-XK0)*V0)*(XK0-XK)
-       F6 = SIMOEL*(1.D0+V0*XK0)*EXP(-XK0*V0)+
-     &        PCRM(1)*(-1.D0+V0*XK)*EXP(XK*V0)
-       FP = M**2*F4**2*F5+3.D0*DEUXMU*F4*F1*F2*(F6/F3/F3)
+           IF (  ((-XK0*V0) .GT. EPXMAX) .OR.
+     &           ((XK*V0)   .GT. EPXMAX)  ) THEN
+            
+             CALL TECAEL(IADZI,IAZK24)
+             VALKM(1) = ZK24(IAZK24-1+3) (1:8)
+             VALRM(1) =  EPXMAX
+             VALKM(2) ='EXP(-XK0*V0) '
+             VALRM(2) = (-XK0*V0)
+             VALKM(3) ='EXP(XK*V0) '
+             VALRM(3) = (XK*V0)
+             CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
+             RETCOM = 1
+             GO TO 30
+           ENDIF
+           F1 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
+           F2 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
+     &           -2.D0*PCRM(1)*EXP(XK*V0)
+           F3 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
+     &           -PCRM(1)*EXP(XK*V0)
+           F4 = (1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)
+           
+           F =SIELEQ**2+M**2*F4**2*F1*F2
+
+           IF (F.GT.ZERO) SIGNF =  1
+           IF (F.LT.ZERO) SIGNF = -1
+
+           F1P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
+           F2P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
+     &                 -2.D0*XK*PCRM(1)*EXP(XK*V0)
+           F3P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
+     &                      -XK*PCRM(1)*EXP(XK*V0)
+           F4P = 3.D0*DEUXMU/2.D0/(M**2)*(F3-V0*F3P)/F3/F3
+           
+           FP = M**2*F4**2*(F1P*F2 + F1*F2P) +
+     &          2.D0*M**2*F4*F4P*F1*F2
 
 
+         IF (  ((-XK0*XINF) .GT. EPXMAX) .OR.
+     &         ((XK*XINF)   .GT. EPXMAX)  ) THEN
 
-      IF ((-XK0*XINF).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_10','EXP EXPLOSE A LA MAILLE : ',
-     &                                                         NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      IF ((XK*XINF).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_11','EXP EXPLOSE A LA MAILLE : ',
-     &                                                         NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-       FXI1 = SIMOEL*EXP(-XK0*XINF)
-       FXI2 = SIMOEL*EXP(-XK0*XINF)-2.D0*PCRM(1)*EXP(XK*XINF)
-       FXI3 = SIMOEL*EXP(-XK0*XINF)-PCRM(1)*EXP(XK*XINF)
-       FXI=SIELEQ**2+M**2*(1.D0+3.D0*DEUXMU*XINF/2.D0/M/M/FXI3)**2
-     &    *FXI1*FXI2
-       IF (FXI.GT.ZERO) SIGNFI =  1
-       IF (FXI.LT.ZERO) SIGNFI = -1
+            CALL TECAEL(IADZI,IAZK24)
+            VALKM(1) = ZK24(IAZK24-1+3) (1:8)
+            VALRM(1) =  EPXMAX
+            VALKM(2) ='EXP(-XK0*XINF) '
+            VALRM(2) = (-XK0*XINF)
+            VALKM(3) ='EXP(XK*XINF) '
+            VALRM(3) = (XK*XINF)
+            CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
+            RETCOM = 1
+            GO TO 30
+         ENDIF
 
-       IF ((SIGNF*SIGNFI).LT.ZERO) XSUP = V0
-       IF ((SIGNF*SIGNFI).GT.ZERO) XINF = V0
+          FXI1 = (SIMOEL+KCAM/XK0)*EXP(-XK0*XINF)-KCAM/XK0-PTRAC
+          FXI2 = (SIMOEL+KCAM/XK0)*EXP(-XK0*XINF)-KCAM/XK0-PTRAC
+     &             -2.D0*PCRM(1)*EXP(XK*XINF)
+          FXI3 = (SIMOEL+KCAM/XK0)*EXP(-XK0*XINF)-KCAM/XK0-PTRAC
+     &            -PCRM(1)*EXP(XK*XINF)
+          FXI4 = (1.D0+3.D0*DEUXMU*XINF/2.D0/M/M/FXI3)
+          
+          FXI=SIELEQ**2+M**2*FXI4**2*FXI1*FXI2
+     
+          IF (FXI.GT.ZERO) SIGNFI =  1
+          IF (FXI.LT.ZERO) SIGNFI = -1
+
+          IF ((SIGNF*SIGNFI).LT.ZERO) XSUP = V0
+          IF ((SIGNF*SIGNFI).GT.ZERO) XINF = V0
 
  200  CONTINUE
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_12',
-     &              'ITER_INTE_MAXI INSUFFISANT A LA MAILLE: ',
-     &                                                   NOMAIL
          RETCOM = 1
          GO TO 30
  100  CONTINUE
-      DEPPMO=V0
+          DEPPMO=V0
 C
 C     -- REACTUALISATION DE LA VARIABLE INTERNE
-      IF ((XK*DEPPMO).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_13','EXP EXPLOSE A LA MAILLE : ',
-     &                                                         NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-      IF ((XK0*(DEPSMO-DEPPMO)).GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'NMCCAM_14','EXP EXPLOSE A LA MAILLE : ',
-     &                                                         NOMAIL
-         RETCOM = 1
-         GO TO 30
-      ENDIF
-        PCRP(1) = PCRM(1)*EXP(XK*DEPPMO)
+         IF (  ((XK*DEPPMO) .GT. EPXMAX) .OR.
+     &          (XK0*(DEPSMO-DEPPMO)   .GT. EPXMAX)  ) THEN
+
+            CALL TECAEL(IADZI,IAZK24)
+            VALKM(1) = ZK24(IAZK24-1+3) (1:8)
+            VALRM(1) =  EPXMAX
+            VALKM(2) ='EXP(XK*DEPPMO) '
+            VALRM(2) = (XK*DEPPMO)
+            VALKM(3) ='EXP(XK0*(DEPSMO-DEPPMO)) '
+            VALRM(3) = (XK0*(DEPSMO-DEPPMO))
+            CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
+            RETCOM = 1
+            GO TO 30
+         ENDIF
+
+          
+          PCRP(1) = PCRM(1)*EXP(XK*DEPPMO)
 C     -- REACTUALISATION DES CONTRAINTES
-        SIGPMO = SIGMMO*EXP(XK0*(DEPSMO-DEPPMO))
-       CALL R8INIR(6,0.D0,SIGPDV,1)
-         DO 119 K=1,NDIMSI
-           SIGPDV(K) = SIGEL(K)/(1.D0+(3.D0*DEUXMU/2.D0*DEPPMO)/
-     &                (M*M*(SIGPMO-PCRP(1))))
-           SIGP(K) = SIGPDV(K)-SIGPMO*KRON(K)
+          SIGPMO = (SIGMMO+KCAM/XK0)*EXP(XK0*(DEPSMO-DEPPMO))-KCAM/XK0
+          CALL R8INIR(6,0.D0,SIGPDV,1)
+           DO 119 K=1,NDIMSI
+             SIGPDV(K) = SIGEL(K)/(1.D0+(3.D0*DEUXMU/2.D0*DEPPMO)/
+     &                (M*M*(SIGPMO-PCRP(1)-PTRAC)))
+             SIGP(K) = SIGPDV(K)-SIGPMO*KRON(K)
  119  CONTINUE
- 
- 
-C ---- V(3) :: CONTRAINTE VOLUMIQUE
-      PCRP(3) = SIGPMO
-      
-C ---- V(5) :: DEFORMATION PLASTIQUE VOLUMIQUE      
-      PCRP(5) = PCRM(5) + DEPPMO
 
-C ---- V(4) :: CONTRAINTE EQUIVALENTE
-      SIEQP = 0.0D0
-      DO 440 K = 1, NDIMSI
-        SIEQP = SIEQP + SIGPDV(K)**2.D0
+  
+C ---- V(3) CONTRAINTE VOLUMIQUE
+          PCRP(3) = SIGPMO      
+
+C ---- V(4) CONTRAINTE EQUIVALENTE
+          SIEQP = 0.0D0
+          DO 440 K = 1, NDIMSI
+           SIEQP = SIEQP + SIGPDV(K)**2.D0
  440    CONTINUE
-      PCRP(4) = SQRT(1.5D0*SIEQP)
+          PCRP(4) = SQRT(1.5D0*SIEQP)
 
-C ---- V(6) :: DEFORMATION PLASTIQUE EQUIVALENTE
-      DEPSEQ = 0.0D0
-      DO 450 K = 1, NDIMSI
-        DEPSEQ = DEPSEQ + DEPSDV(K)*DEPSDV(K)
+C ---- V(5) DEFORMATION PLASTIQUE VOLUMIQUE      
+          PCRP(5) = PCRM(5) + DEPPMO
+
+C ---- V(6) DEFORMATION PLASTIQUE EQUIVALENTE
+          DEPSEQ = 0.0D0
+          DO 450 K = 1, NDIMSI
+            DEPSEQ = DEPSEQ + DEPSDV(K)*DEPSDV(K)
  450    CONTINUE
-      DEPSEQ = SQRT(2.D0/3.D0*DEPSEQ)
-      PCRP(6) = PCRM(6) + DEPSEQ
+          DEPSEQ = SQRT(2.D0/3.D0*DEPSEQ)
+          PCRP(6) = PCRM(6) + DEPSEQ
 
 C ---- V(7) :: INDICE DES VIDES
-      IF ( (PCRP(3)/PA) .GT. 1.D-6 .AND. (PCRP(1)/PA) .GT. 1.D-6 .AND.
-     &     (PCRM(3)/PA) .GT. 1.D-6 .AND. (PCRM(1)/PA) .GT. 1.D-6 ) THEN
-     
-        PCRP(7) = PCRM(7) - KAPA * LOG(PCRP(3)/PCRM(3))
+          IF ((PCRM(3).NE.ZERO).AND.
+     &        ((PCRP(3)/PCRM(3)).GT.ZERO).AND.
+     &        ((PCRP(1)/PCRM(1)).GT.ZERO).AND.
+     &        (PCRM(1).NE.ZERO)) THEN
+      
+           PCRP(7) = PCRM(7) - KAPA * LOG(PCRP(3)/PCRM(3))
      &  - (LAMBDA-KAPA) * LOG(PCRP(1)/PCRM(1))
      
-      ELSE
+           ELSE
       
-        PCRP(7) = PCRM(7)
+           PCRP(7) = PCRM(7)
         
-      ENDIF
+          ENDIF
        
-      ENDIF
+        ENDIF
+
       ENDIF
 
 C
@@ -559,7 +556,6 @@ C
             MATR = 0
            END IF
        END IF
-
 C      INITIALISATION DE L'OPERATEUR TANGENT
 C     ---------------------------------------
          DO 125 K=1,6
@@ -573,7 +569,7 @@ C     ---------------------------------------
         IF (MATR .EQ. 0) THEN
           DO 127 K=1,3
             DO 128 L=1,3
-              DSIDEP(K,L) = XK0*SIMOEL-DEUXMU/3.D0
+              DSIDEP(K,L) = XK0*SIMOEL+KCAM-DEUXMU/3.D0
  128  CONTINUE
  127  CONTINUE
             DO 129 K=1,NDIMSI
@@ -593,8 +589,8 @@ C     -- 7.2.1 CALCUL DU MODULE ELASTOPLASTIQUE H
         VALM = VALM + SIGMDV(I)**2
 158   CONTINUE
 
-        H = 4.D0*M**4*SIGMMO*(SIGMMO-PCRM(1))*
-     &  (XK0*(SIGMMO-PCRM(1))+XK*PCRM(1))+DEUXMU*9.D0*VALM
+        H = 4.D0*M**4*(SIGMMO-PTRAC)*(SIGMMO-PTRAC-PCRM(1))*
+     &  (XK0*(SIGMMO-PTRAC-PCRM(1))+XK*PCRM(1))+DEUXMU*9.D0*VALM
 
 
 C     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
@@ -602,7 +598,8 @@ C     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
              A(K) = 0.D0
  160  CONTINUE
           DO 130 K=1,3
-             A(K) = -DEUX*XK0*M*M*SIGMMO*(SIGMMO-PCRM(1))*KRON(K)+
+             A(K)=-DEUX*XK0*M*M*(SIGMMO-PTRAC)*(SIGMMO-PTRAC-PCRM(1))
+     &                                          *KRON(K)+
      &                3.D0*DEUXMU*SIGMDV(K)
  130  CONTINUE
        CALL R8INIR(3,0.D0,AA,1)
@@ -614,7 +611,7 @@ C     -- 7.2.3 CALCUL DES TERMES DE DSIDEP
        CALL R8INIR(NDIMSI*NDIMSI,0.D0,DSIDEP,1)
           DO 132 K=1,3
            DO 133 L=1,3
-             DSIDEP(K,L)=XK0*SIGMMO-DEUXMU/3.D0-A(K)*A(L)/H
+             DSIDEP(K,L)=XK0*(SIGMMO-PTRAC)-DEUXMU/3.D0-A(K)*A(L)/H
  133  CONTINUE
  132  CONTINUE
           DO 134 K=1,3
@@ -646,15 +643,16 @@ C     -- 7.2.1 CALCUL DU MODULE ELASTOPLASTIQUE H
         VALP = VALP + SIGPDV(I)**2
 159   CONTINUE
 
-        H = 4.D0*M**4*SIGPMO*(SIGPMO-PCRP(1))*
-     &  (XK0*(SIGPMO-PCRP(1))+XK*PCRP(1))+DEUXMU*9.D0*VALP
+        H = 4.D0*M**4*(SIGPMO-PTRAC)*(SIGPMO-PTRAC-PCRP(1))*
+     &  (XK0*(SIGPMO-PTRAC-PCRP(1))+XK*PCRP(1))+DEUXMU*9.D0*VALP
     
 C     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
        CALL R8INIR(3,0.D0,A,1)
        CALL R8INIR(3,0.D0,AA,1)
        
           DO 4130 K=1,3
-             A(K) = -DEUX*XK0*M*M*SIGPMO*(SIGPMO-PCRP(1))*KRON(K)+
+             A(K) = -DEUX*XK0*M*M*(SIGPMO-PTRAC)*(SIGPMO-PTRAC-PCRP(1))
+     &                                          *KRON(K)+
      &                3.D0*DEUXMU*SIGPDV(K)
 4130  CONTINUE
 
@@ -666,7 +664,7 @@ C     -- 7.2.3 CALCUL DES TERMES DE DSIDEP
        CALL R8INIR(NDIMSI*NDIMSI,0.D0,DSIDEP,1)
           DO 4132 K=1,3
            DO 4133 L=1,3
-             DSIDEP(K,L)=XK0*SIGPMO-DEUXMU/3.D0-A(K)*A(L)/H
+             DSIDEP(K,L)=XK0*(SIGPMO-PTRAC)-DEUXMU/3.D0-A(K)*A(L)/H
 4133  CONTINUE
 4132  CONTINUE
           DO 4134 K=1,3

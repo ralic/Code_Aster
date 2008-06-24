@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+#@ MODIF compor1 Messages  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,14 +38,16 @@ cata_msg={
              
              *** vérifiez la cohérence des données mécaniques suivantes :
                  E, nu, eO (indice des vides), kapa
-                 (contrainte volumique initiale)
+                 (contrainte volumique initiale) et KCAM la compressibilité 
+                 initiale. Si PTRAC et KCAM sont nuls, il faut initialiser les contraintes 
 
                  il faut notamment vérifier ceci:
                
-                 0. <NU = (3*(1+e0)*P- - 2*kapa*mu)/
-                          (6*(1+e0)*P- + 2*kapa*mu) <= 0.5 
-                          
-                          et E >0 ***
+        NU = (TROIS*((UN+E0)*SIGMMO+KAPA*KCAM)-DEUXMU*KAPA)/
+     &         (SIX*((UN+E0)*SIGMMO+KAPA*KCAM)+DEUXMU*KAPA)
+     
+        E = DEUXMU*(UN+NU)
+ ***
 """),
 
 4: _("""
@@ -221,4 +223,23 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 40: _("""
  HUJELA :: ELAS/ELAS_ORTH :: cas non prévu.
 """),
+
+
+41: _("""
+ CAM_CLAY :: 
+ Pour la maille <%(k1)s> une des exponentielles pose un problème numérique.
+ La subdivision du pas de temps au niveau global est déclanchée.
+ Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
+ Info sur les bornes :
+   Valeur maxi :   <%(r1)E>
+   borne correspondant à <%(k2)s> : <%(r2)E>
+   borne correspondant à <%(k3)s> : <%(r3)E>
+"""),
+
+42: _("""
+ CAM_CLAY ::  Kcam et Ptrac doivent vérifier la relation suivante :
+ 
+              KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/kapa * PTRAC
+"""),
+
 }

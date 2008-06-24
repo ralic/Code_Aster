@@ -1,4 +1,4 @@
-# MODIF  DATE 14/04/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D; AVEC SIMU_POINT_MAT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,8 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
                             KAPA=0.05,           
                             M=0.9,
                             PRES_CRIT=3.E5,
-                            PA=1.E5,),);
+                            KCAM=0.,
+                            PTRAC=0.,),);
 
 ############################################
 

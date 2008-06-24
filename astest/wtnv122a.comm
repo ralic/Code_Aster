@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,7 +71,8 @@ SOL=DEFI_MATERIAU(  ELAS=_F(  E = 7.74E6,
                                 KAPA=0.05,
                                 M=0.9,
                                 PRES_CRIT=3.E5,
-                                PA=1.E5,),
+                                KCAM=0.,
+                                PTRAC=0.,),
                      COMP_THM = 'LIQU_SATU',
                      THM_LIQU=_F(
                                 RHO = 1000.,
@@ -158,9 +159,7 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
 
 TEMPS2=DEFI_LIST_REEL(   DEBUT=1.,INTERVALLE=(
                             _F(  JUSQU_A = 3.,    NOMBRE = 5,  ),
-                            _F(  JUSQU_A = 6.,    NOMBRE = 5,  ),)
-                         )
-TEMPS3=DEFI_LIST_REEL(   DEBUT=6.,INTERVALLE=(
+                            _F(  JUSQU_A = 6.,    NOMBRE = 5,  ),
                             _F(  JUSQU_A = 8.,    NOMBRE = 10,  ),
                             _F(  JUSQU_A = 15.,    NOMBRE = 5,  ),
                             _F(  JUSQU_A = 20.,    NOMBRE = 5,  ),)
@@ -228,6 +227,7 @@ U1=STAT_NON_LINE(reuse=U1,
                      ),
                          INCREMENT=_F(
                 INST_INIT = 1.,
+                INST_FIN=6.,
                 LIST_INST = TEMPS2,
                 ),
                        CONVERGENCE=_F(
@@ -248,7 +248,7 @@ DEP_V=AFFE_CHAR_MECA(    MODELE=MODELE,
 EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
-                         VALE=( 6.0,  -2.56819E-02,
+                         VALE=( 6.0,  -1.01533E-02,
                                 8.0,  -6.53574E-02,
                                 15.0,  -12.53574E-02,
                                 20.0,  -15.53574E-02,),)
@@ -275,7 +275,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 EVOL_NOLI = U1,
                 ),
                          INCREMENT=_F(
-                LIST_INST = TEMPS3,
+                LIST_INST = TEMPS2,
                 INST_INIT = 6.,
                 INST_FIN = 20.,
                 ),
@@ -334,7 +334,7 @@ TEST_RESU(RESU=(
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -2.42076E5,
+                       VALE = -2.420656E5,
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
@@ -343,7 +343,7 @@ TEST_RESU(RESU=(
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -2.413861E5,
+                       VALE = -2.413841E5,
                      ),
 
 # CONTRAINTE SIYY
@@ -372,7 +372,7 @@ TEST_RESU(RESU=(
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -2.420762E5,
+                       VALE = -2.420656E5,
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
@@ -381,7 +381,7 @@ TEST_RESU(RESU=(
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -2.41386E5,
+                       VALE = -2.413841E5,
                      ),
 
 # CONTRAINTE SIZZ
@@ -410,7 +410,7 @@ TEST_RESU(RESU=(
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -5.520462E5,
+                       VALE = -5.520378E5,
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
@@ -419,7 +419,7 @@ TEST_RESU(RESU=(
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = -5.515015E5,
+                       VALE = -5.5149994E5,
                      ),
 
 # PRESSION PRE1
