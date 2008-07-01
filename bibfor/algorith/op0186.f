@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16 ZC,CBID
       COMMON /CVARJE/ZC(1)
       LOGICAL ZL
       COMMON /LVARJE/ZL(1)
@@ -65,14 +65,14 @@ C 0.3. ==> VARIABLES LOCALES
       REAL*8 PARMER(2),TPSTHE(6),DELTAT,TIMET,TIMTDT,TPS1(4),
      &       TPS2(4),TPS3(4),TPEX,PARCRR(2),THETA,KHI,RHO,TESTR,TESTM,
      &       PARA(2),R8VIDE,DIINST,INSTAP
-      REAL*8 RTAB(2),VALR
+      REAL*8 RTAB(2),VALR,RBID
       CHARACTER*1 CREAS,BASE
       CHARACTER*3 KREAS
       CHARACTER*4 TYPCAL
       CHARACTER*8 EVOLSC,SAUX08,NOPASE,MAILLA
       CHARACTER*12 K12BID
       CHARACTER*13 INPSCO
-      CHARACTER*14 SDOBSE       
+      CHARACTER*14 SDOBSE
       CHARACTER*16 TYSD
       CHARACTER*19 INFCHA,SOLVEU,MAPREC, LISCHA,SDDISC,
      &             K19BLA,LISINS
@@ -80,7 +80,7 @@ C 0.3. ==> VARIABLES LOCALES
      &             TMPCHI,TMPCHF,COMPOR,NOMCH,VTEMP,VTEMPM,VTEMPP,
      &             VTEMPR,VEC2ND,VEC2NI,LISOPT,
      &             NUMEDD,MEDIRI,MATASS,CNDIRP,CNCHCI,CRITHE,K24BID,
-     &             CNRESI,VABTLA,VHYDR,VHYDRP,VAPRIN,VAPRMO,CRITER
+     &             CNRESI,VABTLA,VHYDR,VHYDRP,VAPRIN,VAPRMO
       CHARACTER*24 STYPSE, NOOBJ
       CHARACTER*76 FMT,FMT2,FMT3,FMT4
       CHARACTER*85 FMT1
@@ -107,7 +107,7 @@ C ----------------------------------------------------------------------
       DATA FMT3/'(A,16X,A,8X,A,6X,A,3X,A,6X,A,4X,A)'/
       DATA FMT4/'(A,12X,A,2X,A,17X,A,9X,A,4X,A)'/
       DATA SDDISC            /'&&OP0186.PARTPS'/
-      DATA SDOBSE            /'&&OP0186.OBSER'/      
+      DATA SDOBSE            /'&&OP0186.OBSER'/
 C ----------------------------------------------------------------------
 
 C     MESURE DE TEMPS CPU :
@@ -121,7 +121,6 @@ C ----------------------------------------------------------------------
       CALL JEMARQ()
 C               12   345678   90123
       INPSCO = '&&'//NOMPRO//'_PSCO'
-      CRITER = '&&'//NOMPRO//'_RESGRA_GCPC    '
       K19BLA = ' '
 
 C     DETERMINATION DU NOM DE LA SD INFO_CHARGE STOCKEE
@@ -411,7 +410,7 @@ C A = MATASS, B=VEC2ND, SOLUTION=VTEMPM
 
             IF (TYPESE.NE.0) THEN
               CALL RESOUD(MATASS,MAPREC,VEC2ND,SOLVEU,CNCHCI,'V',VTEMPM,
-     &                    CRITER)
+     &                    ' ',0,RBID,CBID)
 
 C ON STOCKE LA SOLUTION VTEMPM DANS VTEMP
               GO TO 40

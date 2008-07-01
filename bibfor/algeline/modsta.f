@@ -7,7 +7,7 @@
       COMPLEX*16        CBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,8 +118,7 @@ C
                   ENDIF
                   ZR(JDDR+ILA1-1) = UN
                   ZR(JDDR+ILA2-1) = UN
-                  CALL MRCONL(LMATF,NEQ,' ',ZR(JDDR),1)
-                  CALL RLDLGG(LMATF,ZR(JDDR),CBID,1)
+                  CALL RESOU2(' ',LMATF,1,ZR(JDDR),CBID)
                   CALL MRMULT('ZERO',LMATM,ZR(JDDR),'R',ZRMOD(1,IMOD),1)
                   CALL JEDETR('&&MODSTA.POSITION_DDR')
                ENDIF
@@ -129,8 +128,7 @@ C
 C
 C     --- RESOLUTION ---
       IF ( IMOD .GT. 0 ) THEN
-         CALL MRCONL(LMATF,NEQ,' ',ZRMOD,IMOD)
-         CALL RLDLGG(LMATF,ZRMOD,CBID,IMOD)
+         CALL RESOU2(' ',LMATF,IMOD,ZRMOD,CBID)
       ENDIF
       CALL JEDEMA()
       END

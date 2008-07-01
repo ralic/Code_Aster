@@ -1,7 +1,7 @@
       SUBROUTINE GCPC(M,IN,IP,AC,INPC,IPPC,ACPC,BF,XP,R,RR,P,IREP,
      &                NITER,EPSI,CRITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,8 +38,7 @@ C    . RR           <--    DIRECTION DE DESCENTE AVANT CONJUGAISON
 C    . P            <--    DIRECTION DE DESCENTE APRES CONJUGAISON
 C    . XP           <-->   VECTEUR SOLUTION
 C    -------------------------------------------------------------------
-C    . ITRGCP        -->  IREP =    ( CONDITIONS INITIALES)
-C                           0  XP INITIAL MIS A ZERO
+C    . IREP          -->    0  XP INITIAL MIS A ZERO
 C                           1  XP INITIAL DONNEE DE GCPC
 C     ----------------- ------------------------------------------------
 C     - PRECAUTIONS D'EMPLOI:  XP PEUT ETRE EVENTUELLEMENT CONFONDU
@@ -55,7 +54,7 @@ C CORPS DU PROGRAMME
 C DECLARATION PARAMETRES D'APPELS
       INTEGER M,IN(M),IP(*),INPC(M),IPPC(*),IREP,NITER
       REAL*8 AC(M),ACPC(M),BF(M),XP(M),R(M),RR(M),P(M),EPSI
-      CHARACTER*24 CRITER
+      CHARACTER*19 CRITER
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -125,16 +124,21 @@ C       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
         IF (NIV.EQ.2) WRITE (IFM,1020) ANORM,EPSIX,EPSI
       END IF
 
-      CALL JEEXIN(CRITER(1:19)//'.CRTI',IRET)
+      CALL JEEXIN(CRITER//'.CRTI',IRET)
       IF (IRET.EQ.0) THEN
-        CALL WKVECT(CRITER(1:19)//'.CRTI','V V I',1,JCRI)
-        CALL WKVECT(CRITER(1:19)//'.CRTR','V V R8',1,JCRR)
-        CALL WKVECT(CRITER(1:19)//'.CRDE','V V K16',2,JCRK)
-        ZK16(JCRK) = 'ITER_GCPC'
-        ZK16(JCRK+1) = 'RESI_GCPC'
+        IF (CRITER.NE.' ') THEN
+          CALL WKVECT(CRITER//'.CRTI','V V I',1,JCRI)
+          CALL WKVECT(CRITER//'.CRTR','V V R8',1,JCRR)
+          CALL WKVECT(CRITER//'.CRDE','V V K16',2,JCRK)
+          ZK16(JCRK) = 'ITER_GCPC'
+          ZK16(JCRK+1) = 'RESI_GCPC'
+        ELSE
+          JCRI=0
+        ENDIF
+      ELSE
+        CALL JEVEUO(CRITER//'.CRTI','E',JCRI)
+        CALL JEVEUO(CRITER//'.CRTR','E',JCRR)
       END IF
-      CALL JEVEUO(CRITER(1:19)//'.CRTI','E',JCRI)
-      CALL JEVEUO(CRITER(1:19)//'.CRTR','E',JCRR)
 
 C ---- ITERATIONS
       ANORMX = ANORM
@@ -196,8 +200,10 @@ C       --- TEST DE CONVERGENCE
         IF (ANORM.LT.EPSIX) THEN
           IF (NIV.EQ.2) WRITE (IFM,1040) ANORXX,ANORM,ANORM/ANORXX
           IF (NIV.EQ.2) WRITE (IFM,1050) ITER
-          ZI(JCRI) = ITER
-          ZR(JCRR) = ANORM
+          IF (JCRI.NE.0) THEN
+            ZI(JCRI) = ITER
+            ZR(JCRR) = ANORM
+          ENDIF
           GO TO 80
         END IF
    70 CONTINUE

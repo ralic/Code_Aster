@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 # TITRE validation du solveur MUMPS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,5 +153,27 @@ RESU10=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                              TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU10,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
+
+
+
+# 5.1 : PETSC + charge_cine :
+# ----------------------------------------------
+RESU20=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
+            EXCIT=( _F(CHARGE = CHARCI3),_F(CHARGE = CHARP)  ),
+            SOLVEUR=_F( METHODE = 'PETSC', RENUM = 'RCMK', VARIANTE = 'CG', ))
+TEST_RESU( RESU=_F(  RESULTAT = RESU20,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
+                  GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=5.e-5 ))
+
+
+# 5.2 : PETSC + charge_cine +charge_dualisee :
+# ----------------------------------------------
+RESU21=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
+            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
+            SOLVEUR=_F( METHODE = 'PETSC', RENUM = 'RCMK', VARIANTE = 'CG', ))
+TEST_RESU( RESU=_F(  RESULTAT = RESU21,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
+                  GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=5.e-5 ))
+
+
+
 FIN();
 

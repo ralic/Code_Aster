@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF OPTIONS  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,6 +33,7 @@ OPTION__
         PCACOQU  CACOQU
         PCACO3D  CACO3D
         PCAGEPO  CAGEPO
+        PCAARPO  CAARPO
         PINSTMR  INST_R
         PINSTPR  INST_R
         PDEPLMR  DEPL_R

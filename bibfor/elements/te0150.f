@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       KENDOG,KDESSI,SECH,HYDR,INSTAN,SECHG(3),HYDRG(3),SREF
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS
       INTEGER      IVF,IDFDX,JGANO
-      INTEGER      ICOMPO,ISDCOM,NBGFMX,IADZI,IAZK24
+      INTEGER      ICOMPO,ISDCOM,NBGFMX,IADZI,IAZK24,ISICOM
 C
       DATA NOMRES / 'E', 'NU' /
 C     ------------------------------------------------------------------
@@ -114,8 +114,9 @@ C    --- APPEL INTEGRATION SUR SECTION
             CALL PMFITX(ZI(LMATER),1,CARSEC,R8BID)
 C    --- RECUPERATION DU MATERIAU TORSION POUR ALPHA
             CALL JEVECH('PCOMPOR','L',ICOMPO)
-            CALL JEVEUO(ZK16(ICOMPO-1+6),'L',ISDCOM)
-            READ(ZK16(ICOMPO-1+7),'(I16)')NBGFMX
+            CALL JEVEUO(ZK16(ICOMPO-1+7),'L',ISDCOM)
+            CALL JEVEUO(ZK16(ICOMPO-1+7)(1:8)//'.CPRI','L',ISICOM)
+            NBGFMX=ZI(ISICOM+2)
             MATERI=ZK16(ISDCOM+6*NBGFMX)(1:8)
          ELSE
             ITYPE=0

@@ -1,11 +1,13 @@
-      SUBROUTINE MERIGE(MODELE,CARA,SIGG,MATEL,NH)
+      SUBROUTINE MERIGE(MODELE,CARA,SIGG,MATEL,BASE,NH)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NH
-      CHARACTER*8 MODELE,CARA,SIGG
+      CHARACTER*1 BASE
+      CHARACTER*8 MODELE,CARA
+      CHARACTER*(*) SIGG
       CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 30/06/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +32,7 @@ C IN  : CARA   : CHAMP DE CARAC_ELEM
 C IN  : SIGG   : CHAMP DE CONTRAINTES AUX POINTS DE GAUSS
 C IN  : NH     : NUMERO DE L'HARMONIQUE DE FOURIER
 C VAR : MATEL  : NOM DU MATEL (N RESUELEM) PRODUIT
+C IN  : BASE   : BASE POUR LA CREATION DE MATEL ('G'/'V')
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -50,9 +53,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*8 LPAIN(10),LPAOUT(1),CHARG
       CHARACTER*16 OPTION
-      CHARACTER*24 LIGRMO,LCHIN(10),LCHOUT(1),CHSIGG
+      CHARACTER*24 LIGRMO,LCHIN(10),LCHOUT(1)
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM
-      LOGICAL EXISIG
 
 
       CALL JEMARQ()
@@ -63,9 +65,7 @@ C     ------------------------------------------------------------------
       CALL MECHAM(OPTION,MODELE,0,CHARG,CARA,NH,CHGEOM,CHCARA,CHHARM,
      &            ICODE)
 
-      CALL MESIGG(SIGG,EXISIG,CHSIGG)
-      CALL ASSERT(EXISIG)
-      CALL MEMARE('G',MATEL,MODELE,' ',CARA,OPTION)
+      CALL MEMARE(BASE,MATEL,MODELE,' ',CARA,OPTION)
 
       LPAOUT(1) = 'PMATUUR'
       LCHOUT(1) = MATEL(1:8)//'.ME001'
@@ -74,7 +74,7 @@ C     ------------------------------------------------------------------
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = CHGEOM
       LPAIN(2) = 'PCONTRR'
-      LCHIN(2) = CHSIGG
+      LCHIN(2) = SIGG
       LPAIN(3) = 'PCAORIE'
       LCHIN(3) = CHCARA(1)
       LPAIN(4) = 'PCADISK'
@@ -84,14 +84,14 @@ C     ------------------------------------------------------------------
       LPAIN(6) = 'PCACOQU'
       LCHIN(6) = CHCARA(7)
       LPAIN(7) = 'PEFFORR'
-      LCHIN(7) = CHSIGG
+      LCHIN(7) = SIGG
       LPAIN(8) = 'PHARMON'
       LCHIN(8) = CHHARM
       LPAIN(9) = 'PNBSP_I'
       LCHIN(9) = CARA(1:8)//'.CANBSP'
       OPTION = 'RIGI_MECA_GE'
-      CALL CALCUL('S',OPTION,LIGRMO,9,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
-      CALL REAJRE(MATEL,LCHOUT(1),'G')
+      CALL CALCUL('S',OPTION,LIGRMO,9,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE)
+      CALL REAJRE(MATEL,LCHOUT(1),BASE)
 
       CALL JEDEMA()
       END

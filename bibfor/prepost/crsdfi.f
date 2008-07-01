@@ -4,7 +4,7 @@
       INTEGER NBNOCH
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -209,7 +209,6 @@ C- NUME_DATASET
             ZI(LFINUM-1+ICH) = 55
 C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+1) = 1
-            ZI(LFIPAR-1+ (ICH-1)*800+200+2) = 4
             ZI(LFIPAR-1+ (ICH-1)*800+200+3) = 3
             ZI(LFIPAR-1+ (ICH-1)*800+200+4) = 8
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
@@ -241,7 +240,6 @@ C- NUME_DATASET
             ZI(LFINUM-1+ICH) = 55
 C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+1) = 1
-            ZI(LFIPAR-1+ (ICH-1)*800+200+2) = 4
             ZI(LFIPAR-1+ (ICH-1)*800+200+3) = 3
             ZI(LFIPAR-1+ (ICH-1)*800+200+4) = 11
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
@@ -274,7 +272,6 @@ C- NUME_DATASET
             ZI(LFINUM-1+ICH) = 55
 C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+1) = 1
-            ZI(LFIPAR-1+ (ICH-1)*800+200+2) = 4
             ZI(LFIPAR-1+ (ICH-1)*800+200+3) = 3
             ZI(LFIPAR-1+ (ICH-1)*800+200+4) = 12
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2

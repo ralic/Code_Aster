@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DES COMMANDES COMB_MATR_ASSE ET CALC_CHAR_CINE (REEL/SYMETRIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,7 +169,7 @@ try :
 except aster.FatalError,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("ALGELINE2_24", str(err))<>None :
+   if re.search("ALGELINE3_41", str(err))<>None :
       is_ok = 1
 
 # TEST_RESU

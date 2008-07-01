@@ -1,11 +1,11 @@
-        SUBROUTINE REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     &                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
-     &                      EPSDT,DEPST,SIGD,VIND, OPT,ELGEOM,ANGMAS,
+        SUBROUTINE REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                      TIMED,TIMEF,CP,NUMLC,TEMPD,TEMPF,TREF,
+     &                      EPSDT,DEPST,SIGD,VIND, OPT,TAMPON,ANGMAS,
      &                      SIGF,VINF,DSDE,RETCOM)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C
 C       - SI CRIT(5) = -N  EN CAS DE NON-CONVERGENCE LOCALE ON EFFECTUE
 C                          UN REDECOUPAGE DU PAS DE TEMPS EN N PALIERS
 C                          L ORDRE D EXECUTION ETANT REMONTE EN ARGUMENT
-C                          DANS REDECE, APPELE PAR NMCOMP AVANT PLASTI
+C                          DANS REDECE, APPELE PAR NMCOMPOR AVANT PLASTI
 C       - SI CRIT(5) = -1,0,1  PAS DE REDECOUPAGE DU PAS DE TEMPS
 C       - SI CRIT(5) = +N  ON EFFECTUE UN REDECOUPAGE DU PAS DE TEMPS
 C                          EN N PALIERS A CHAQUE APPEL DE REDECE
@@ -56,11 +56,11 @@ C       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 C       IN      KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 C       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
 C               TYPMOD  TYPE DE MODELISATION
-C               IMAT    ADRESSE DU MATERIAU CODE
-C               COMP    COMPORTEMENT DE L ELEMENT
-C                       COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
-C                       COMP(2) = NB DE VARIABLES INTERNES
-C                       COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
+C               IMATE    ADRESSE DU MATERIAU CODE
+C               COMPOR    COMPORTEMENT DE L ELEMENT
+C                     COMPOR(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
+C                     COMPOR(2) = NB DE VARIABLES INTERNES
+C                     COMPOR(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
 C               OPT     OPTION DE CALCUL A FAIRE
 C                               'RIGI_MECA_TANG'> DSDE(T)
 C                               'FULL_MECA'     > DSDE(T+DT) , SIG(T+DT)
@@ -69,7 +69,7 @@ C               CRIT    CRITERES  LOCAUX
 C                       CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
 C                                 (ITER_INTE_MAXI == ITECREL)
 C                       CRIT(2) = TYPE DE JACOBIEN A T+DT
-C                                 (TYPE_MATR_COMP == MACOMP)
+C                                 (TYPE_MATR_COMPOR == MACOMPOR)
 C                                 0 = EN VITESSE     > SYMETRIQUE
 C                                 1 = EN INCREMENTAL > NON-SYMETRIQUE
 C                       CRIT(3) = VALEUR DE LA TOLERANCE DE CONVERGENCE
@@ -79,14 +79,11 @@ C                                 REDECOUPAGE LOCAL DU PAS DE TEMPS
 C                                 (ITER_INTE_PAS == ITEDEC)
 C                                 0 = PAS DE REDECOUPAGE
 C                                 N = NOMBRE DE PALIERS
-C               ELGEOM  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
+C               TAMPON  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
 C               TIMED   INSTANT T
 C               TIMEF   INSTANT T+DT
-C               TEMPD   TEMPERATURE A T
-C               TEMPF   TEMPERATURE A T+DT
-C               TREF    TEMPERATURE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -96,19 +93,20 @@ C       OUT     SIGF    CONTRAINTE A T+DT
 C               VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 C               DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 C       ----------------------------------------------------------------
-        INTEGER         IMAT,NDIM,NDT,NDI,NVI,KPG,KSP
+        INTEGER         IMATE,NDIM,NDT,NDI,NVI,KPG,KSP,NUMLC
 C
         REAL*8          CRIT(*), ANGMAS(3)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          ELGEOM(*)
+        REAL*8          TAMPON(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
         REAL*8          DSDE(6,6)
 C
-        CHARACTER*16    COMP(*),     OPT
+        CHARACTER*16    COMPOR(*),     OPT
         CHARACTER*8     TYPMOD(*)
         CHARACTER*(*)   FAMI
+        LOGICAL         CP 
 C
 C       ----------------------------------------------------------------
 C       VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS
@@ -122,7 +120,7 @@ C               SD      CONTRAINTE A T
 C               VD      VARIABLES INTERNES A T    + INDICATEUR ETAT T
 C               DSDELO MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 C               NPAL            NOMBRE DE PALIER POUR LE REDECOUPAGE
-C               ICOMP           COMPTEUR POUR LE REDECOUPAGE DU PAS DE
+C               ICOMP           COMPORTEUR POUR LE REDECOUPAGE DU PAS DE
 C                                    TEMPS
 C               RETURN1 EN CAS DE NON CONVERGENCE LOCALE
 C       ----------------------------------------------------------------
@@ -157,7 +155,9 @@ C       -- POUR LES VARIABLES DE COMMANDE :
 
         IPAL  =  INT(CRIT(5))
         RETCOM=0
-        READ (COMP(2),'(I16)') NVI
+        IRTET=0
+        
+        READ (COMPOR(2),'(I16)') NVI
 C
 C IPAL = 0  1 OU -1 -> PAS DE REDECOUPAGE DU PAS DE TEMPS
 C
@@ -179,17 +179,11 @@ C
            ICOMP = -1
         ENDIF
 C
-        IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
-        CALL PLASBE ( FAMI, KPG ,KSP, TYPMOD, IMAT, COMP, CRIT,
-     &                EPSDT, DEPST, SIGD,
-     &                VIND,  OPT, ELGEOM, SIGF,  VINF,  DSDE,
-     &                ICOMP, NVI,  IRTET)
-        ELSE
-        CALL PLASTI ( FAMI,KPG,KSP, TYPMOD, IMAT,  COMP,  CRIT,
-     &                TIMED, TIMEF, TEMPD, TEMPF, TREF, EPSDT,
-     &                DEPST, SIGD, VIND, OPT, ANGMAS, SIGF,
-     &                VINF, DSDE, ICOMP, NVI, IRTET)
-        ENDIF
+        CALL LC0000 ( FAMI,KPG,KSP, NDIM,TYPMOD, IMATE,COMPOR,CRIT,
+     &                TIMED, TIMEF, EPSDT,DEPST, SIGD, VIND,
+     &                OPT, TAMPON, ANGMAS, CP,NUMLC,TEMPD,TEMPF,TREF,
+     &                SIGF, VINF, DSDE, ICOMP, NVI, IRTET)
+
         IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 C
 C -->   IPAL > 0 --> REDECOUPAGE IMPOSE DU PAS DE TEMPS
@@ -206,12 +200,11 @@ C
  1      CONTINUE
 C
         IF ( NPAL .EQ. 0 ) THEN
-            CALL U2MESS('A','ALGORITH10_34')
            GOTO 2
         ENDIF
 C
         IF ( ICOMP .GT. 3 ) THEN
-            CALL U2MESS('A','ALGORITH10_35')
+           CALL U2MESS('A','ALGORITH10_35')
            GOTO 2
         ENDIF
 C
@@ -226,9 +219,6 @@ C --       INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
                 DELTAT = (TIMEF - TIMED) / NPAL
                 TF = TD + DELTAT
                 TF1=TF
-                TEMD = TEMPD
-                DETEMP = (TEMPF - TEMPD) / NPAL
-                TEMF = TEMD + DETEMP
                 IF ( OPT .EQ. 'RIGI_MECA_TANG'
      &                  .OR. OPT .EQ. 'FULL_MECA' )
      &                  CALL LCINMA ( 0.D0 , DSDE )
@@ -243,8 +233,6 @@ C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
                 TD1=TD
                 TF = TF + DELTAT
                 TF1=TF
-                TEMD = TEMF
-                TEMF = TEMF + DETEMP
                CALL LCSOVE ( EPS     , DEPS    , EPS  )
                 IF ( OPT .NE. 'RIGI_MECA_TANG' ) THEN
                     CALL LCEQVN ( NDT     , SIGF    , SD   )
@@ -253,17 +241,10 @@ C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
             ENDIF
 C
 C
-            IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
-              CALL PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
-     &                      CRIT, EPS, DEPS,
-     &                      SD, VIND, OPT, ELGEOM, SIGF, VINF,
-     &                      DSDELO, ICOMP, NVI, IRTET)
-            ELSE
-              CALL PLASTI ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
-     &                      CRIT, TD, TF, TEMD, TEMF, TREF, EPS,
-     &                      DEPS, SD, VIND, OPT, ANGMAS, SIGF,
-     &                      VINF, DSDELO, ICOMP, NVI, IRTET)
-            ENDIF
+            CALL LC0000 ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                TD, TF, EPS,DEPS, SD, VIND,
+     &                OPT, TAMPON, ANGMAS, CP,NUMLC,TEMPD,TEMPF,TREF,
+     &                SIGF, VINF, DSDELO, ICOMP, NVI, IRTET)
 
             IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 C

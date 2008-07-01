@@ -3,7 +3,7 @@
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,9 +121,6 @@ C     ------------
       NU = ZK24(JREFA-1+2)
       NOMSTO = NU//'.SMOS'
 
-      CALL JEEXIN(NOMSTO//'.SMHC',IER2)
-      CALL ASSERT(IER2.GT.0)
-
 C     -- LMAT+2 :
 C     ------------
       CALL JEVEUO(NOMSTO//'.SMDE','L',JSMDE)
@@ -136,7 +133,6 @@ C     ------------
 C     -- POUR TRAITER LE CAS OU ON A DETRUIT VOLONTAIREMENT LE .VALM
       IF (IRET.GT.0) THEN
         CALL JELIRA(MAT19//'.VALM','TYPE',IBID,KBID)
-
       ELSE
         CALL JELIRA(MAT19//'.UALF','TYPE',IBID,KBID)
       END IF

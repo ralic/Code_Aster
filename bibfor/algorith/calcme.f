@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +60,7 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
-      INTEGER       I,J,NELAS,NRESMA
+      INTEGER       I,J,NELAS,NRESMA,NUMLC
       REAL*8        DEPS(6),DEPSV,T,DT,TINI,P1,P2
       REAL*8        PHI,YOUNG,NU,ALPHA0,PHI0,CRIT(*),INSTAM,INSTAP,TREF
       PARAMETER (NELAS = 4  )
@@ -85,6 +85,7 @@ C
       REAL*8  ALPHAT,ALPHBT,ALPHCT,SY,BB,XM,TM
       REAL*8  PP,R8BID,ANGMA1(3),ANGMAS(7)
       CHARACTER*16 COMPLG(2)
+      LOGICAL         CP 
 C ======================================================================
 C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
       REAL*8  DSIDP1(6),DP1,DP2,SAT,BIOT
@@ -216,8 +217,10 @@ C ======================================================================
         WRITE (COMPLG(2),'(I16)') NVIMEC
         MECTRU = .TRUE.
         TINI = T - DT
+        NUMLC=33
+        CP=.FALSE.
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
-     &              INSTAP,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
+     &          INSTAP,CP,NUMLC,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
      &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMA1,
      &              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
       ENDIF
@@ -226,8 +229,10 @@ C ======================================================================
         WRITE (COMPLG(2),'(I16)') NVIMEC
         MECTRU = .TRUE.
         TINI = T - DT
+        NUMLC=33
+        CP=.FALSE.
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
-     &              INSTAP,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
+     &          INSTAP,CP,NUMLC,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
      &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMA1,
      &              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
       ENDIF

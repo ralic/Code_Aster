@@ -1,0 +1,1616 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 30/06/2008 - 17:11:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011801 DU 2008-02-22 15:53:22
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   fusion meribi.f et merige.f
+FONCTIONNALITE
+   Dans le cadre de cette fiche, on fusionne les routines meribi.f et merige.f étant donné
+   qu'elles sont a peu près semblables.
+   On garde la routine merige.f et on résorbe meribi.f
+   On ajoute un argument 'BASE' pour la création du matr_elem.
+   
+   
+   Routines impactées:
+   merige.f
+   nmcalm.f
+   nmflam.f
+   op0009.f
+   
+   Routines résorbées:
+   mesigg.f
+   meribi.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR corus        CORUS Mathieu          DATE 01/07/2008 - 17:50:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012182 DU 2008-06-11 11:44:00
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   Vecteur de frequence rendu par la FFT de CALC_FONCTION
+FONCTIONNALITE
+   Problemes :
+   
+   Erreur sur le calcul du vecteur de frequence rendu par la FFT de CALC_FONCTION. Pour un
+   echantillon de longueur N points, avec un pas de temps (constant) de dt, le vecteur de
+   frequence associe est 
+   
+   F=(0:(N-1))/(N*dt)
+   
+   et non
+   
+   F=(0:(N-1))/((N-1)*dt)
+   
+   Il y a egalement un probleme de normalisation du vecteur transforme. Ceci est transparent
+   dans le cas d'une utilisation couplee de la transformee directe, puis inverse.
+   
+   D'autre part, la tranformée de Fourier inverse n'etait pas completement correcte, si le
+   nombre de point du vecteur initial est pair.
+   
+   Traitement :
+   
+   La FFT de CALC_FONCTION a ete reecrite pour correspondre à la definition classique de la
+   FFT.
+   
+   La FFT inverse avec option SYME='OUI' a ete reecrite pour correspondre egalement a la
+   definition classique.
+   
+   Dans le cas de la tranformee de Fourier inverse d'un vecteur de longueur N avec l'option
+   SYME = 'NON', On choisi de prolonger par continuite le vecteur pour construire un
+   echantillon de longeur 2*N (et non de longueur 2*N-1 comme c'est classiquement le cas)
+   pour des raison de simplicite de post traitement. 
+   
+   
+   Cas tests : 
+   
+   zzzz100b et miss07b
+   
+   Le cas test zzzz100b a ete remis a jour, et passe sans probleme. Il meriterait cependant
+   qu'on se penche sur une validation plus fiable des fonctionnalites de traitement du
+   signal, les valeurs de references etant des grandeurs non verifiables (issues du meme
+   calcul, dans un autre envoronnement). Elle ne teste que les erreurs "de programmation", et
+   non les erreurs de methode.
+   
+   Le cas test miss07b a egalement ete remis a jour, et passe sans probleme.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.32.04
+VALIDATION
+   zzzz100b, miss07
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 30/06/2008 - 14:33:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012191 DU 2008-06-13 11:43:53
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   THER_LINEAIRE et MACR_ADAP_MAIL
+FONCTIONNALITE
+   Fiche AOM sur utilisation de Homard avec thermique : on ferme la fiche suite aux conseils
+   données par Gérald Nicolas. En particulier sur le maillage de la frontière à suivre :
+   avoir des groupes, qui ne soient pas clos.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 30/06/2008 - 16:55:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011793 DU 2008-02-21 17:17:32
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   POU_C_T : avec STAT_NON_LINE + RELATION=ELAS
+FONCTIONNALITE
+   Les POU_C_T fonctionnent maintenant avec STAT_NON_LINE :
+   |  COMP_ELAS et RELATION=ELAS
+   |  COMP_INCR et RELATION=ELAS, DEFORMATION=PETIT
+   
+   2 nouvelles modélisations basées sur le problème de HOVGAARD ssll01b
+   a) ssll101f :
+     - POU_D_T, POU_C_T
+     - COMP_ELAS=_F(RELATION='ELAS')
+         --> Poids propre
+         --> Champ de température
+         --> Forces Nodales
+       
+   b) ssll101g :
+     - POU_D_T, POU_C_T
+     - COMP_INCR=_F(RELATION='ELAS',DEFORMATION='PETIT')
+         --> Poids propre
+         --> Champ de température
+         --> Forces Nodales
+   
+   
+   Pour le cas test zzzz234a (forces de références) tout était près, les lignes de commandes
+   en commentaires sont supprimées.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.01.101,U3.11.01
+VALIDATION
+   Passage cas tests
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012189 DU 2008-06-13 11:07:38
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MACR_CARA_POUTRE ajout du mot clef FORMAT
+FONCTIONNALITE
+   Ajout du mot clef FORMAT et MAILLAGE à MACR_CARA_POUTRE.
+   Par défaut c'est toujours FORMAT='ASTER', UNITE=20.
+   On peut donc renseigner :
+   - MAILLAGE 
+   - FORMAT et UNITE
+   - laisser les valeurs par défaut
+   
+   Si le maillage de la section droite est au format MED on peut :
+   ** préciser le FORMAT et UNITE
+   TCARS=MACR_CARA_POUTRE(FORMAT='MED',UNITE=unit, ...);
+   ** ou faire
+   mail=LIRE_MAILLAGE(UNITE=22,FORMAT='MED')
+   TCARS=MACR_CARA_POUTRE(MAILLAGE=mail, ...);
+   
+   Si le maillage est au format GIBI :
+   ** comme avant  :
+   PRE_GIBI()                   # maillage out en unite 20 par défaut
+   TCARS=MACR_CARA_POUTRE(...); # maillage in  en unité 20 par défaut
+   ** ou
+   PRE_GIBI()
+   mail=LIRE_MAILLAGE(UNITE=20)
+   TCARS=MACR_CARA_POUTRE(MAILLAGE=mail);
+   
+   Nouveaux mot clefs
+   | MAILLAGE : on peut donner directement le maillage
+   | FORMAT   : c'est soit ASTER soit MED, par défaut ASTER
+   | UNITE    : par défaut c'est 20
+   
+   Avant on avait UNITE_MAILLAGE ==> on change en UNITE pour être homogène avec les autres
+   catalogues
+   
+   Validation dans le cas test ssll107d :
+   Il y a déjà
+   TCAR2=MACR_CARA_POUTRE(UNITE=38,FORMAT='ASTER', ... )
+   
+   Ajout de
+   mail = LIRE_MAILLAGE(UNITE=38,FORMAT='ASTER')
+   TCAR3=MACR_CARA_POUTRE(MAILLAGE=mail, ... )
+   
+   Le maillage MED est fabriqué avec Aster en faisant un IMPR_RESU au format MED de mail
+   IMPR_RESU(FORMAT='MED',UNITE=39,RESU=_F(MAILLAGE=mail))
+   #
+   TCAR4=MACR_CARA_POUTRE(UNITE=39,FORMAT='MED', ... )
+   
+   
+   Impacts :
+   * le catalogue MACR_CARA_POUTRE. Si le maillage n'est pas donné, les mots clefs FORMAT et
+   UNITE sont à renseigner (ou on garde leurs valeurs par défaut).
+   * macr_cara_poutre_ops :
+   Si le maillage est donné
+      __nomlma=CREA_MAILLAGE(MAILLAGE=MAILLAGE)
+   sinon
+      __nomlma=LIRE_MAILLAGE(UNITE=args['UNITE'],FORMAT=args['FORMAT'])
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.42.02
+VALIDATION
+   Passage cas test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012234 DU 2008-06-25 11:05:51
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Discret : COMP_ELAS comportement ELAS
+FONCTIONNALITE
+   Actuellement on ne peut pas faire pour les discrets un COMP_ELAS avec COMPORTEMENT=ELAS
+   alors qu'un COMP_INCR avec COMPORTEMENT=ELAS est possible.
+   
+   Autoriser COMP_ELAS et ELAS, intervention dans la te0047.
+   Ajout de la carte RESPONSABLE
+   
+   Avant
+         IF (ZK16(ICOMPO+3).EQ.'COMP_ELAS') THEN
+            CALL U2MESS('F','ELEMENTS2_90')
+         END IF
+   
+   Maintenant
+         IF ( (ZK16(ICOMPO+3).EQ.'COMP_ELAS').AND.
+        &     (ZK16(ICOMPO).NE.'ELAS') ) THEN
+            CALL U2MESS('F','ELEMENTS2_90')
+         END IF
+   
+   Cas tests de validation dans la fiche 11793. Cf également la fiche 12074, pour plus
+   d'explication
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U3.11.02
+VALIDATION
+   Passage cas test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 30/06/2008 - 16:09:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012152 DU 2008-06-03 08:11:27
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   Harmonisation des donn? viscoplastiques Lemaitre et Vendochab
+FONCTIONNALITE
+   BUT : Harmonisation des données viscoplastiques Lemaitre et 
+   Vendochab.
+   
+   On choisit donc de prendre pour VENDOCHAB les mêmes paramètres 
+   de viscosité que pour
+   LEMAITRE :
+   · N = n,
+   · UN_SUR_K = 1/K , 
+   · UN_SUR_M = 1/m ,
+   
+   et on en profite pour rendre les noms des paramètres plus 
+   proches de la doc :
+   soit :
+             VENDOCHAB       =FACT(statut='f',
+                S_VP            devient S       (0 par défaut)
+                SEDVP1          devient ALPHA_D (0 par défaut)
+                SEDVP2          devient BETA_D (0 par défaut)
+                N_VP            devient N
+                M_VP            devient UN_SUR_M (0 par défaut)
+                K_VP            devient UN_SUR_K
+                R_D             =SIMP(statut='o',typ='R'),
+                A_D             =SIMP(statut='o',typ='R'),
+                K_D             =SIMP(statut='o',typ='R'),
+              ),
+   les suffixes _D permettent d'identifier les paramètres relatifs 
+   à l'endommagement.
+   
+   Les fichiers modifiés sont les suivantes : 
+   Vecmat, rkdvec, nmvecd.f, nmvend.f,defi_materiau.capy
+   
+   et les cas tests modifiés sont :
+   
+   comp001a.comm, comp002d.comm, ssnp101a.comm, ssnv126a.comm, 
+   ssnv126b.comm, ssnv126c.comm,
+   ssnv126d.comm, ssnv183a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.43.01, R5.03.15
+VALIDATION
+   liste restreinte
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 30/06/2008 - 18:10:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012055 DU 2008-04-30 11:35:58
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   Probleme d'ecriture / lecture au format Ideas (UNV dataset 55)
+FONCTIONNALITE
+   Problème:
+   ---------
+                                                                                            
+                           
+   Lorsqu'on fait :
+                                                                                            
+                           
+                                                                                            
+                           
+   # Exort de la base de projection
+                                                                                            
+                           
+   IMPR_RESU(MODELE=Modele,
+             FORMAT='IDEAS',
+             UNITE=31,
+             RESU=_F(
+             MAILLAGE=Mail,
+             RESULTAT=T_exp,
+             NOM_CMP=('DX','DY','DZ'),
+             NOM_CHAM='DEPL',
+                     ),
+            );
+                                                                                            
+                           
+   # Import de cette meme base de projection
+                                                                                            
+                           
+   T=LIRE_RESU(FORMAT='IDEAS',
+               UNITE=31,
+               NOM_CHAM='DEPL',
+               TYPE_RESU='MODE_MECA',
+               MATR_A=Ktot,
+               MATR_B=Mtot,
+               TOUT_ORDRE='OUI',
+               MAILLAGE=Mail,
+              );
+                                                                                            
+                           
+   La commande LIRE_RESU s'arrete en erreur fatale avec le message peu explicite :
+                                                                                            
+                           
+   <F> UTILITAI2_97
+    aucun champ lu
+                                                                                            
+                           
+                                                                                            
+                           
+    Analyse du problème :
+    ---------------------
+    Le problème (pour LIRE_RESU) est de reconnaitre dans les différents DATASET du fichier à
+   lire, les champs que l'on doit stocker sous 'DEPL' dans la sd_mode_meca.
+                                                                                            
+                           
+    Pour cela, la commande cherche (par défaut pour DEPL) :
+      - les DATASET 55
+      - dont la 6ème ligne (RECORD_6) de l'entete contient les nombres :
+            1         4         3         8         2         6
+                                                                                            
+                           
+    Malheureusement, les champs imprimés par IMPR_RESU contiennent des RECORD_6 :
+            1         2         3         0         2         6
+                                                                                            
+                           
+    On voit que 2 "fields" de la ligne sont incorrects pour une relecture automatique :
+       FIELD 2 : Analysis Type
+       FIELD 4 : Specifi Data Type
+                                                                                            
+                           
+    La 1ère erreur (FIELD 2) concerne LIRE_RESU qui ne relit (par défaut) que les champs
+   correspondants à "Analyse Type = Transient". Comme ici, les champs proviennent d'une
+   analyse modale ...
+                                                                                            
+                           
+    La 2ème erreur (FIELD 4) concerne IMPR_RESU : le champ de déplacements (code 8) est
+   imprimé comme "unknown" (code 0) parce que l'utilisateur a utilisé le mot clé NOM_CMP
+   (pour ne garder que DX, DY et DZ).
+                                                                                            
+                           
+                                                                                            
+                           
+   Evolution proposée :
+   --------------------
+   1) Modifications des sources pour permettre de relire un evol_elas (ou un mode_meca) sans
+   utiliser le mot clé FORMAT_IDEAS :
+                                                                                            
+                           
+   * Dans IMPR_RESU (routine ecrtes.f), si l'utilisateur restreint les composantes imprimées
+   (usage du mot clé NOM_CMP), on ne "type" plus le champ "unknown" (RECORD_6/FIELD_4=0) mais
+   on conserve le type : DEPL -> 8, VITE -> 11, ... Sinon, la re-lecture automatique de ces
+   champs devient problématique : l'information DEPL/VITE/SIEF/... est très importante. Il ne
+   faut pas la perdre.
+   * Dans LIRE_RESU, on "dé-serre" la contrainte (par défaut) de lecture des champs de DEPL,
+   VITE et ACCE : on n'exige plus que ces champs soient associés à une analyse "transitoire"
+   (RECORD_6/FIELD_2=4). On accepte maintenant tous les types d'analyse.
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   2) Modifications des sources pour aider l'utilisateur en cas de problème :
+   * On améliore (un peu) le message UTILITAI2_97 : on suggère d'utiliser le mot clé
+   FORMAT_IDEAS.
+   * On écrit une ligne dans le fichier "message" pour chaque champ lu. Cela permet à
+   l'utilisateur d'avoir une idée de ce qui a été lu (sans faire un IMPR_RESU juste derrière
+   la lecture).
+                                                                                            
+                           
+                                                                                            
+                           
+   Validation :
+   ------------
+   J'ai fait passer avec succès 2 petits tests perso faisant :
+                                                                                            
+                           
+   IMPR_RESU(MODELE=MO, FORMAT='IDEAS',  UNITE=31, RESU=_F(RESULTAT=RESU ))
+                                                                                            
+                           
+   T=LIRE_RESU(FORMAT='IDEAS', UNITE=31, TYPE_RESU='XXXX', MODELE=MO,
+         NOM_CHAM=('DEPL',), TOUT_ORDRE='OUI', )
+                                                                                            
+                           
+   Avec XXXX = EVOL_ELAS et MODE_MECA
+                                                                                            
+                           
+                                                                                            
+                           
+   Remarque concernant le format IDEAS :
+   -------------------------------------
+   J'ai voulu aller un peu plus loin dans la validation en essayant de relire également les
+   contraintes :
+                                                                                            
+                           
+   IMPR_RESU(MODELE=MO, FORMAT='IDEAS',  UNITE=31, RESU=_F(RESULTAT=RESU ))
+                                                                                            
+                           
+   T=LIRE_RESU(FORMAT='IDEAS', UNITE=31, TYPE_RESU='EVOL_ELAS', MODELE=MO,
+         NOM_CHAM=('DEPL','SIEF_ELGA_DEPL'), TOUT_ORDRE='OUI', )
+                                                                                            
+                           
+   Et là j'ai "lutté" sans aboutir.
+   Les obstacles sont nombreux et je pense que le format Ideas n'est vraiment pas un bon
+   format pour le stockage sur fichier d'une sd_resultat. Il faut lui préférer le format 'MED'.
+                                                                                            
+                           
+   En effet :
+                                                                                            
+                           
+   1) LIRE_RESU / FORMAT='IDEAS' ne sait pas relire les champs 'ELGA' (DATASET 56)
+   2) 2 des formats de DATASET relus actuellement (55 et 57) sont considérés comme "obsolete".
+   3) Dans les formats 55 et 57, il n'est pas prévu de tocker plus de 6 composantes par
+   noeud. Du coup, IMPR_RESU "scinde" les champs qui ont plus de 6 composantes en plusieurs
+   DATASET. Ce qui fait que leur relecture par LIRE_RESU est impossible. Ce cas de figure est
+   très fréquent. Par exemple : déplacement pour les modélisation THM et "incompressible",
+   efforts pour les modélisations de "coque". On est également icapable de stocker des champs
+   à "sous-points" : contraintes dans les coques, tuyaux et poutres multi-fibres.
+                                                                                            
+                           
+   Impact documentaire :
+   ---------------------
+   U7.05.01 (IMPR_RESU/IDEAS) : dire que le format IDEAS n'est pas un bon format de stockage
+   et qu'il faut lui préférer le format MED. Il est toutefois suffisant pour stocker (et
+   relire) les champs de déplacements "classiques" : DX,DY, ..., DRZ
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.05.01
+VALIDATION
+   test perso
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012181 DU 2008-06-11 11:37:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR01 - IMPR_RESU REDUCTION='OUI'
+FONCTIONNALITE
+   Demande d'évolution:
+   --------------------
+   Cette évolution entre dans le cadre de l'action "faciliter les gros calculs".
+                                                                                            
+                           
+   On suppose que l'utilisateur a fait un calcul sur un gros modèle.
+   La base globale de son calcul est très volumineuse et il veut poursuivre ses
+   post-traitements sur des petits morceaux de sa structure sans avoir à manipuler
+   (compression/décompression/sauvegarde) sa "grosse" base.
+                                                                                            
+                           
+   Supposons que sa structure de données résultat complète s'appelle RESUTOU et que les
+   entités géométriques qui l'intéressent pour ses post-traitements s'appellent MORCEAU1,
+   MORCEAU2, ...
+                                                                                            
+                           
+   Il pourra faire :
+                                                                                            
+                           
+   # sauvegarde de MORECAU1 :
+   IMPR_RESU(FORMAT='MED', UNITE=71,  RESU=_F(MAILLAGE=MATOU,  RESULTAT=RESUTOU,),
+           RESTREINT=_F(MODELE=MOTOU, GROUP_MA=('MORCEAU1')))
+                                                                                            
+                           
+   # sauvegarde de MORECAU2 :
+   IMPR_RESU(FORMAT='MED', UNITE=72,  RESU=_F(MAILLAGE=MATOU,  RESULTAT=RESUTOU,),
+           RESTREINT=_F(MODELE=MOTOU, GROUP_MA=('MORCEAU2')))
+   ...
+                                                                                            
+                           
+   Il récupérera alors dans le (petit) fichier fort.71 un fichier MED contenant le maillage
+   réduit sur MORCEAU1, ainsi que la "réduction" du résultat RESUTOU sur MORCEAU1.
+                                                                                            
+                           
+   Ce fichier peut etre relu en faisant :
+                                                                                            
+                           
+   MAP=LIRE_MAILLAGE(FORMAT='MED',UNITE=71);
+   MOP=AFFE_MODELE(MAILLAGE=MAP, AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE',
+   MODELISATION='D_PLAN') )
+                                                                                            
+                           
+   UP=LIRE_RESU( TYPE_RESU='EVOL_NOLI', FORMAT='MED', UNITE=71, MODELE=MOP,  TOUT_ORDRE='OUI',
+                 FORMAT_MED=(
+                    _F( NOM_CHAM_MED='&REDUIT_DEPL____________________', NOM_CHAM  ='DEPL' ),
+                    _F( NOM_CHAM_MED='&REDUIT_SIEF_ELGA_______________', NOM_CHAM 
+   ='SIEF_ELGA' ),
+                    _F( NOM_CHAM_MED='&REDUIT_SIEF_ELNO_ELGA__________', NOM_CHAM 
+   ='SIEF_ELNO_ELGA' ),
+                    _F( NOM_CHAM_MED='&REDUIT_VARI_ELGA_______________', NOM_CHAM  ='VARI_ELGA',
+                        NOM_CMP=('V1',), NOM_CMP_MED=('V1',), ),
+                 ),)
+   Les post-traitements peuvent alors faits sur le petit evol_noli UP (correspondant à MORCEAU1)
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Evolution de syntaxe proposée :
+   -------------------------------
+   Ajout du mot clé IMPR_RESU/RESTREINT (idem CREA_MAILLAGE/RESTREINT) :
+       RESTREINT   =FACT(statut='f',fr="Restreindre le maillage et les champs imprimés sur un
+   ensemble de mailles",max=1,
+         regles=(AU_MOINS_UN('GROUP_MA','MAILLE',),),
+         GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+         MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+         TOUT_GROUP_MA   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
+         GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+         TOUT_GROUP_NO   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster,fr="Nécessaire s'il y a des
+   cham_elem dans la sd_resultat à imprimer."),
+       ),
+                                                                                            
+                           
+                                                                                            
+                           
+   Explications sur l'utilisation  :
+   ----------------------------------
+     * Contrairement au mot clé RESU/GROUP_MA, le mot clé RESTREINT permet de réduire le
+   maillage à imprimer. Les champs sont évidemment  également réduits et ils s'appuient sur
+   le maillage réduit.
+     * Lorsqu'on utilise RESTREINT :
+        - il faut renseigner obligatoirement GROUP_MA ou MAILLE pour indiquer les mailles que
+   l'on veut conserver.
+        - on peut utiliser les mots clés GROUP_NO, TOUT_GROUP_MA, TOUT_GROUP_NO pour
+   conserver certains GROUPES dans le maillage réduit (voir CREA_MAILLAGE/RESTREINT).
+        - le mot clé MODELE (modele non réduit) est obligatoire si la structure de données à
+   réduire contient des cham_elem.
+        - L'utilisateur n'a le droit qu'à une seule occurence du mot clé facteur RESU
+        - Sous RESU, il doit utiliser les mots clé MAILLAGE et RESULTAT.
+        - Sous RESU, il peut utiliser, s'il le souhaite, les mots clés INST, NUME_ORDRE, ...
+   et NOM_CHAM pour ne pas imprimer tous les numéros d'ordre ni tous les champs.
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Principe de l'implémentation :
+   ------------------------------
+   Dans le fortran d'op0039 (IMPR_RESU) :
+     - on appelle la routine (de CREA_MAILLAGE/RESTREINT) pour réduire le maillage.
+       => création d'une nouvelle sd_maillage "volatile" NOMARE
+     - on ajoute une nouvelle routine qui permet de réduire la structure de donnée sd_resultat.
+       => création d'une nouvelle sd_resultat "volatile"  RESURE
+     - on continue le traitement de op0039 en substituant RESURE et NOMARE aux concepts
+   RESULTAT et MAILLAGE.
+                                                                                            
+                           
+                                                                                            
+                           
+   Validation  :
+   -------------
+   Un nouveau test dédié à cette nouvelle fonctionnalité est introduit zzzz240A :
+   #...........................................................................................
+   # CECI EST UN TEST DE LA FONCTIONNALITE IMPR_RESU / RESTREINT :
+   #  - ON CREE UN EVOL_NOLI U1 SUR UN MAILLAGE MA1
+   #  - ON IMPRIME U1 ET MA1 SUR UN SOUS-ENSEMBLE DES MAILLES DE MA1
+   #  - ON RELIT LE FICHIER ET ON RECUPERE UN EVOL_NOLI U2 SUR UN MAILLAGE MA2 PLUS PETIT
+   #  - ON VERIFIE QUE L'ON PEUT FAIRE QUELQUES POST-TRAITEMENT SUR U2
+   #  - ON VERIFIE QUE LE CONTENU DE U2 EST LE MEME QUE CELUI DE U1 SUR LES MAILLES RETENUES
+   #...........................................................................................
+                                                                                            
+                           
+                                                                                            
+                           
+   Détails :
+   ---------
+   *) Dans le catalogue de CREA_MAILLAGE, il y avait des confusions de "type" :
+   ma(maille)/grma(group_ma).
+      Cette info n'est pas utilisée mais je préfère qu'elle soit juste.
+   *) Dans le catalogue de CREA_MAILLAGE/RESTREINT j'ajoute le mot clé MAILLE (pour plus de
+   souplesse)
+   *) Correction d'une erreur dans extrs3.f qui faisait que rsadpa.f retournait comme
+   argument de sortie "CTYPE", une chaine incomplètement initialisée. Du coup, certains
+   appelants se protégeaient en écrivant : "IF (CTYPE(1:1).EQ.'R')" alors qu'il est plus
+   simple d'écrire "IF (CTYPE.EQ.'R')".
+   *) Je supprime un argument inutilisé de la routine exlima.f
+   *) Je renomme la routine cmrest.f en rdtmai.f pour que son nom commence par "rdt"
+   (réduction) comme ses nouvelles routines "soeurs" :
+      rdtmai.f : réduction d'un maillage
+      rdtres.f : réduction d'une sd_resultat
+      rdtchp.f : réduction d'un champ
+      rdtcns.f : réduction d'un cham_no_s
+      rdtces.f : réduction d'un cham_elem_s
+                                                                                            
+                           
+   Impact documentaire:
+   --------------------
+   U4.23.02 : ajout du mot clé CREA_MAILLAGE/RESTREINT/MAILLE
+   U4.91.01 : ajout du mot clé IMPR_RESU/RESTREINT
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.23.02 U4.91.01
+VALIDATION
+   zzzz240A
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012235 DU 2008-06-25 11:30:42
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   permettre xc3xa0 la routine resoud.f de traiter de simples vecteurs (R/C)
+FONCTIONNALITE
+   Problème :
+   ----------                                                                               
+                                                     
+   Cette fiche express est un pré-requis pour la fiche 9715.
+   Il s'agit de faciliter l'usage de la routine resoud.f dans les opérateurs de dynamique.
+    
+   L'objectif est de permettre d'appeler resoud.f de 2 façons différentes :
+    
+   1) call resoud(0,chsecm,chsolu,rbid,cbid,...)
+      Dans ce cas, chsecm est un champ "second membre" et la routine produite chsolu (champ
+   "solution").
+    
+   2) call resoud(nsolu,' ',' ',rsolu,csolu,...)
+      Dans ce cas, les seconds membres et les solutions sont dans l'argument rsolu (si réel)
+   ou csolu (si complexe). Les arguments rsolu et csolu sont IN/OUT : en entrée ils
+   contiennent les seconds membres et en sortie, ils contiennent les solutions. Remarque :
+   ont peut résoudre plusieurs systèmes d'un seul coup (nsolu > 1).
+                                                                                            
+                                           
+                                                                                            
+                                           
+   Evolution proposée :
+   --------------------
+                                                                                            
+                                           
+   1) On ajoute 3 nouveaux arguments à la routine resoud.f :
+      INTEGER nsecm               : nb seconds membres
+      REAL*8 rsolu(neq,nsecm)     : 2nd membre en entree, solutions en sortie (cas REAL)
+      COMPLEX*16 csolu(neq,nsecm) : 2nd membre en entree, solutions en sortie (cas COMPLEX)
+                                                                                            
+                                           
+      Ces 3 arguments permettent de résoudre les systèmes linéaires sans etre obligé de créer
+   un champ second membre et un champ solution. Ils permettent également de résoudre plus
+   efficacement plusieurs seconds membres (utile pour le contact).
+                                                                                            
+                                           
+   2) La nouvelle possibilité d'appeler resoud.f (avec rsolu, csolu) est testée :
+      - dans la routine nmrldb.f (ancien "RESOUD_CONTACT")
+      - dans la routine majou.f (à la place de resldl.f)
+      - ...
+                                                                                            
+                                           
+   3) On crée une routine "chapeau" (resou2.f) à la nouvelle routine resoud.f pour limiter le
+   nombre des arguments lorsque l'on fait de simples résolutions avec des vecteurs de réels
+   ou complexes.
+                                                                                            
+                                           
+   4) On remplace les appels aux routines de bas niveau (resldl.f et rldlgg.f) par des appels
+   à la routine resou2.f dans les 4 routines suivantes :
+       cricho.f  defsta.f  mdacce.f  modsta.f
+                                                                                            
+                                           
+     Remarques :
+       1) on est obligés de laisser des appels à rldlgg.f dans les routines de
+   contact-frotement suivantes :
+          algocl.f  algoco.f  algocu.f  algogl.f   fro2gd.f  frolgd.f
+          car elles utilisent une "bidouille" infame pour ne résoudre que partiellement avec
+   le seul solveur LDLT.
+       2) On ne peut pas non plus modifier les routines du calcul modal :
+          sspace.f  vp1ite.f  vp2ini.f  vpsor1.f  vpsorc.f  vpsorn.f
+          wp1inv.f  wp2ay1.f  wp2ayc.f  wp2ayl.f  wp2bry.f
+          Olivier Boiteau doit réfléchir (et agir !) pour que l'on puisse utiliser la routine
+   resoud (ou resou2) dans les calculs modaux. Pour l'instant, mes essais se sont heurtés à 2
+   difficultés :
+           2.1) Il semble qu'il ne faille pas remettre à l'échelle les coefficients de
+   Lagrange après la résolution. C'est ce qui est fait par la routine mrconl.f appelée
+   systématiquement par resoud (alors qu'elle n'est pas appelée par rldlgg). Tout se passe
+   comme si le solveur modal marchait mieux avec des multiplicateurs de Lagrange faux !
+                On peut le constater en modifiant vpsorn.f (rldlgg -> resou2) sur le test
+   fdlv105a.
+           2.2) Un autre problème surgit (par exemple dans le test zzzz208a avec modif de
+   vpsorn.f) :
+              Le code s'arrete avec l'erreur ALGELINE3_41 car le problème a des charges
+   cinématiques et on ne lui donne pas la valeur des ddls imposés.
+           Une fiche d'EL (12244) a été émise pour tracer ces 2 problèmes.
+                                                                                            
+                                           
+   5) On supprime les appels (devenus inutiles) à la routine mrconl.f  dans les routines :
+       defsta.f  mdacce.f  modsta.f  nmrldb.f
+                                                                                            
+                                           
+   6) A titre d'exemple (et peut-etre sans intéret ?), on ajoute le mot clé SOLVEUR dans la
+   commande DYNA_TRAN_MODAL.
+      Ce solveur est pris en compte dans les routines cricho.f, mdadap.f et mdacce.f
+      On modifie le test sdnl105a pour qu'il utilise le solveur MUMPS dans DYNA_TRAN_MODAL.
+      Impact documentaire : U4.53.21 : DYNA_TRAN_MODAL : ajout du mot clé SOLVEUR.
+                                                                                            
+                                           
+                                                                                            
+                                           
+   Validation :
+   ------------
+    * Passage sur clpaster et bull d'une liste significative de tests pour la commande
+   RESOUDRE et le mot clé SOLVEUR.
+    * Passage des tests en // sur bull.
+                                                                                            
+                                           
+                                                                                            
+                                           
+   Détails :
+   ---------
+   1) Olivier a fait un gros travail pour découper les routines amump*.f en petits morceaux
+   plus faciles à comprendre et à maintenir.
+   2) Dans la commande RESOUDRE, on supprime le mots clé REPRISE (pour le GCPC) qui n'est
+   jamais utilisé.
+   3) On supprime ACTION="RESOUD_CONTACT" dans AMUMPS (remplacée par "RESOUD").
+   3) L'argument IRET de AMUMPS est maintenant un "pur" argument de sortie
+   4) Les routines mvcon1.f et mvcon2.f ont été remplacées par mrconl.f. On peut les supprimer.
+   5) Je supprime l'argument SUFFI2 de cresol.f qui ne sert à rien
+                                                                                            
+                                           
+   Nombre de jours travaillés :
+    JP : 4
+    OB : 5
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.21
+VALIDATION
+   sdnl105a
+NB_JOURS_TRAV  : 9.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mikchevitch  MIKCHEVITCH Alexei     DATE 30/06/2008 - 18:10:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011776 DU 2008-02-18 15:39:53
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Evolution du format UNV issu de IMPR_RESU (format IDEAS) pour le rendre lisible par SALOME
+FONCTIONNALITE
+   Objectifs:
+   =========
+   Remplacer les datasets 781 (noeuds) et 780 (elements) par 
+   les datasets respectifs 2411 et 2412.
+   
+   Cette évolution a necessité de remplacer les numéros des 
+   datasets actuels (781-> 2411 et 780->2412) et de modifier 
+   les champs associes aux datasets:
+   => pour le dataset 2411: 
+      - ligne 1 champ n°2 (définition du systeme de 
+   coordonnées): mettre la valeur 1 au lieu de 0,
+      - ligne 1 champ n°3 (deplacement du systeme de 
+   coordonnées): mettre la valeur 1 au lieu de 0.
+   => pour le dataset 2412: 
+      - si maille de type "non poutre": 
+          . ligne1 : suppression des champs n°3 et 5 du DS 780
+          . ligne1 champ n°3 du DS 2412(propriété physique du 
+   materiau): mettre 1
+          . ligne1 champ n°2 du DS 2412(code element): 
+            pour les elements 2D, remplacer les codes suivants:
+                 -> 75 par 95 (QUAD8)
+                 -> 71 par 94 (QUAD4)
+                 -> 72 par 92 (TRIA6)
+                 -> 74 par 91 (TRIA3)
+           
+      - si maille de type "poutre": 
+          . ligne1 : suppression des champs n°3 et 5 du DS 780
+          . ligne2 : suppression des champs n°2 et 4 du DS 780
+   
+   De plus, nous avons supprimé les notations "%NOEUDS REAL*8" 
+   et "%ELEMENT" qui suivent respectivement les codes 2411 et 
+   2412.
+   
+   
+   Développement
+   =============
+   bibfor:
+   - irmasu.f:
+   changement des numéros de datasets, modifications des 
+   valeurs des champs et suppressions des champs décrits ci-
+   dessus.
+   - utidea.f:
+   nous avons fait passer la version d'Ideas (VERSIO) dans 
+   cette routine: si VERSIO>=5, alors les codes 71, 72, 74 et 
+   75 sont respectivement remplaces par 94, 92, 91 et 95.
+   - iradhs.f: impacte par la modification de l'appel à 
+   utidea.f
+   - irmail.f, op0159(IMPR_MATRICE), lridea.f, irchml: 
+   impactes par la modification de l'appel à iradhs.f
+   
+   astest:
+   restitution du cas-test zzzz176a: modification des 
+   paramètres du TEST_FICHIER car le fichier de maillage teste 
+   (resultant de l'IMPR_RESU/IDEAS) a evolué suite à cette 
+   réalisation.
+   
+   
+   Validation
+   ==========
+   Relire avec :
+     - Ideas et
+     - SalomeMeca2008.1 (apres suppression des groupes), les 
+   fichiers universels produits par le passage des cas-tests 
+   suivants:
+     . 1D (SEG2) : zzzz176a,
+     . 2D (QUAD4): sdlx100a (ou ssnv101d),
+     . 2D (QUAD8): ttll01b,
+     . 3D (HEXA8): ssnv182a,
+     . 3D (HEXA20): sdll403a,
+   Pour etre complet, nous avons passé le cas-test zzzz206a 
+   après y avoir ajouté 2 IMPR_RESU/IDEAS; un premier apres le 
+   LIRE_MAILLAGE, un second apres le CREA_MAILLAGE/QUAD_LINE. 
+   Ce cas-test a la particularité de traiter tous les types de 
+   mailles, notamment les TETRA10, TRIA6, SEG3, TETRA4, et 
+   TRIA3.  
+   
+   - Passage de la liste restreinte aux commandes 
+   IMPR_RESU/IDEAS et IMPR_MATRICE (23 cas-tests).
+   
+   Documentation
+   =============
+   doc U7.05.01 (IMPR_RESU format IDEAS)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U7.05.01
+VALIDATION
+   Lecture des maillages UNV produits par cas-tests dans Ideas/Salomxc3xa9
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 30/06/2008 - 16:31:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 005661 DU 2001-12-06 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 6.x)
+TITRE
+   MN09 - Creation d'un catalogue de loi de comportement
+FONCTIONNALITE
+   Grâce au travail commun de Mathieu et Samuel, un prototype de catalogue des lois de
+   comportement a été créé ; comme le disait Mickaël, l'idée est d'ajouter un quatrième
+   niveau d'abstraction à Aster (les trois premiers étant le superviseur, JEVEUX et CALCUL).
+   On veut réaliser une "interface" pour la programmation des lois de comportement dans Aster.
+        
+   L'objectif principal est de rendre la programmation des lois de comportement plus
+   modulaire et plus maintenable.   Ceci suppose de simplifier en particulier les routines
+   nmdorc (lecture de c_comp_incr.capy et stockage), et surtout nmcomp, qui est modifée à
+   chaque nouveau comportement, et qui comporte trop de cas particuliers, de messages d'erreur.
+   
+   On raisonne de manière a ce qu'un développeur lambda (ie un mécanicien/physicien qui fait
+   du fortran) ne soit pas obligé de faire plus qu'écrire une routine Fortran et modifier un
+   catalogue simple pour ajouter une nouvelle loi de comportement dans Aster.    
+       
+   Pour cela, on a écrit, pour chaque comportement, un catalogue qui regroupe les
+   informations de manière centralisée:
+   - le numéro de la routine l'intégration lc00xx (en effet, on ne touche plus à nmcomp.
+   Celle-ci appelle systématiquement la routine lc0000, qui, a l'instar de te0000, branche
+   directement sur la routine qui correspond au numéro fourni).
+   - les paramètres matériaux à fournir (mots-clefs dans DEFI_MATERIAU) ; 
+   - les éléments finis supportés (en fait la liste des modélisations possibles) ;
+   - les hypothèses cinématiques (mot-clef DEFORMATION) (on vérifie en particuler la
+   compatibilité de SIMO_MIEHE avec le comportement) ;
+   - les matrices calculables par la loi de comportement (perturbation, verification) ;
+   - le nombre et les noms de variables internes ;  
+   - les variables de commande supportées.
+   
+   Les développements concernent : 
+   - bibpyt/Comportement qui contient pour chaque comportement un catalogue python.
+   - fort contient les routines lc00xx, ainsi que quelques routines modifiées (nmcomp,
+   allégée, qui appelle REDECE, qui elle-meme appelle LC0000). On peut donc avoir le
+   redécoupage local pour tous les comportements sous NMCOMP (sauf SIMO_MIEHE et KIT_DDI,
+   pour éviter la récursivité)
+   - capy contient c_comp_incr, allégé (il n'y a plus que les mots-clés INTO de RELATION) 
+   - C, PY sont des modifs nécessaires pour réaliser l'interface python-fortran.
+   
+   Validation : la liste complète des tests, bien évidemment.
+   
+   Impact utilisateur : AUCUN ! (sauf la possibilité d'activer le découpage local du pas de
+   temps, par ITER_INTE_PAS, pour tous les comportements, sauf SIMO_MIEHE. Attention, le
+   redécoupage local aide à la convergence de l'intégration du comportement, et améliore la
+   précision, mais conduit à une matrice tangente moins efficace).
+   
+   Impact développeur : pour développer une nouvelle loi, il suffira de (voir WIKI) :
+   
+   - créer son catalogue, choisir un numéro de LC
+   - ajouter son nom dans c_comp_incr
+   - créer la routine lc00xx (à partir de l'existant). Si on utilise plasti, on peut
+   directement prendre LC0030. Si on utilise PLASTI (IMPLICITE) + RUNGE_KUTTA_2 (EXPLICITE),
+   on peut prendre LC0032.
+   
+   Par contre, les comportements dont les routines ne sont pas appelées par nmcomp (THM,
+   poutres, barres, discrets) bénéficient bien sûr du catalogue, mais pas (encore) de la
+   généralité des routines LC0000. 
+   
+   Détails des modifications de sources :
+   _______________________________________
+   
+   - ajout de Bibpyt/Comportement :
+   ================================
+   
+   dans cette bibliothèque, chaque comportement a son fichier .py. Il y a 145 comportements
+   actuellement.
+   Celui ci est de la forme (on retrouve les informations de U4.51.11) :
+   
+      nom            = nom de la loi (le meme que sous RELATION) 
+      doc            = """description du comportement (on peut s'étaler, citer ladoc R, etc..""",
+      num_lc         = numéro de loi de comporemetn (appelé par NMCOMP/LC0000)
+      nb_vari        = nombre de variables internes
+      nom_vari       = noms des variables internes,
+      mc_mater       = mot-clés utilisés dans DEFI_MATERIAU (liste des possibles)
+      modelisation   = toutes les modélisations permises pour ce comportement,
+      deformation    = les types de déformations autorisés,
+      nom_varc       = les variables de commandes utilisées,
+      schema         = les schémas d'intégration possibles (implicite, explicite, )
+      type_matr_tang = les types de matrices tangentes possibles,
+      proprietes     = d'autres infos,
+   
+   Exemple :
+   ---------
+   from cata_comportement import LoiComportement
+   loi = LoiComportement(
+      nom            = 'VMIS_ISOT_TRAC',
+      doc = """Loi de plasticité de Von Mises à écrouissage isotrope défini par une courbe de
+   traction affine par morceaux [R5.03.02]""",
+      num_lc         = 1,
+      nb_vari        = 2,
+      nom_vari       = ('DEFPLCUM', 'INDICAT'),
+      mc_mater       = ('ELAS', 'TRACTION'),
+      modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN',
+   '1D','D_PLAN_GRAD_VARI','AXIS_GRAD_VARI','3D_GRAD_VARI'),
+      deformation    = ('PETIT', 'PETIT_REAC', 'GREEN', 'SIMO_MIEHE'),
+      nom_varc       = ('TEMP','SECH','HYDR'),
+      schema         = 'IMPLICITE',
+      type_matr_tang = ('PERTURBATION', 'VERIFICATION', 'TANGENTE_SECANTE'),
+      proprietes     =  None)
+   
+   Cela signifie en particulier que l'essentiel de la doc U4.51.11 pourrait être construite
+   automatiquement à  partir de ces catalogues.
+   
+   - C et PY :
+   ===========
+   Les branchements et la définition des classes "Comportement", réalisés par Mathieu
+   (programmation de haut vol !).
+   
+   En particulier, nous avons 3 routines d'interrogation du catalogue de Lois de
+   Comportement, appelées une seule fois au début de STAT/DYNA_NON_LINE
+   
+   Fonctionnement dans NMDORC : exemple VMIS_ISOT_TRAC + DEBORST
+         1. on construit le comportement rencontré
+            CALL LCCREE(NBKIT, LKIT, COMPOR)
+            ==> comport = catalc.create(*list_kit)
+         
+         2. récupération du numéro de routine et le nbre de variables internes
+            CALL LCINFO(COMPOR, NUMLC, NBVARI)
+            ==> num_lc, nb_vari = catalc.get_info(COMPOR)
+         
+         3. récupère la liste des variables internes
+            CALL LCVARI(COMPOR, NBVARI, LVARI)
+            ==> nom_vari = catalc.get_vari(COMPOR)
+         
+         4. est-ce que VALEUR est un valeur autorisée de PROPRIETE ?
+            CALL LCTEST(COMPOR, PROPRIETE, VALEUR, IRET)
+            ==> iret = catalc.query(COMPOR, PROPRIETE, VALEUR)
+   
+   Actuellement, on n'utilise pas encore les noms des variables internes. Les vérifications,
+   à l'aide de LCTEST, sont :
+   - le type de déformation
+   - le type de matrice tangente
+   - le type de shcéma.
+   La vérifiation des modélisations possibles n'est pas encore activée, ni celle des
+   variables de commandes, ni les mot-clés de DEFI_MATERIAU. Prochainement !
+   
+   
+   
+   - capy :
+   =========
+   
+   suppression des mot-clés indiquant pour chaque comportement le nombre de variables
+   internes. Il ne reste que les mot-clés nécessaires à la vérification syntaxique, c'est à
+   dire la liste des relations possibles et des relation_kit, plus les paramètres de convergence.
+   
+   Ceci est fait dans les catalogues de commandes :
+   
+   calc_g.capy  c_comp_incr.capy  dyna_non_line.capy     macr_aspic_calc.capy  stat_non_line.capy
+   calcul.capy  defi_compor.capy  macr_ascouf_calc.capy  simu_point_mat.capy
+   
+   - fort :
+   ========
+   Les principales modifications concernent :
+   
+   1) au niveau global, (lecture des commandes utilisateur, par exemple au début de
+   STAT_NON_LINE)
+   - NMDORC : la routine a beaucoup maigri, et a été restructurée. 
+   
+     On appelle les routines d'interrogation du catalogue(LCCREE, LCINFO,...). On récupère
+   alors NUMLC et le nombre de variables internes   (augmenté éventuellement des variables
+   internes propres à DEBORST ou SIMO_MIEHE).
+   - a l'instar de NMDORC, on fait les memes modifs dans OP0059 (DEFI_COMPOR) car pour les
+   poutres multifibres,
+     on construit la carte compor à ce niveau et dans AFFE_MATERIAU (RCCOMP)  
+   -on ne modifie pas le contenu de la carte COMPOR passée aux TE, sauf la 6eme composante
+   XXXX1, qui contient le numéro de routine num_lc.  on pourrait éventuellemnt renommer un
+   jour XXXX1 en NUMLC.
+     
+   - il reste des cas particuliers dans NMDORC (qui seront levés petit à petit) :
+     --  les kits stockent des infos supplémentaires dans la carte COMPOR, que l'on garde,
+   bien sur
+     -- les comportements définis par DEFI_COMPOR : on stockait le nom de la sd_compor dans
+   la composante XXXX1. 
+        On le stocke maintenant dans XXXX2. monocristaux : modif de lcmmat et lcmmap car le
+   numéro de LC est 
+        maintenant en position 6 et le nom de sd_compor en 7.
+     -- PMF : les TE 38, 142, 150, 516, 535, 537 et pmfitx sont modifiées pour lire la
+   sd_compor en 7eme position.
+     -- il y a une extraction, en fin de nmdorc, de la carte compor précédemment créée par
+        DEFI_COMPOR / AFFE_MATERIAU. Cette carte vient surcharger la carte COMPOR déinie dans
+   NMDORC.
+        (donc on conserve les données de l'utilisateur pour tous les comportements autres que
+   MULTIFIBRE, 
+        et on prend les données relatives à MULTIFIBRE dans la carte compor issur de
+   DEFI_COMPOR).
+        Au passage, une correction : cette séquence de programmation était appelée par : 
+        IF (COMP(1:8).EQ.'MULTIFIB') THEN...      Or on est sorti de la boucle sur les
+   occurrences de COMP_INCR, donc     
+        COMP ne contient que la dernière occurrence de RELATION. Je remplace par un
+   indicateur EXIPMF, 
+        qui s'allume dès   que l'on rencontre MULTIFIBRE.
+     -- CALC_META appelait NMDORC. On crée une routine spécifique appelée par OP0194 :
+   MTDORC(MODELE,COMPOR,K24BID)
+      -- kit_ddi : nmcoup/nmcpla : à LCCREE et LCINFO pour récupérer le numéro de routine de
+   chaque comportement  
+     -- zmat : on vient lire le numéro d'unité logique en 7eme place au lieu de 6eme
+     -- thermique : on supprime l'appel à NMDORC pour THER_LINEAIRE (inutile). On le laisse
+   pour THER_NON_LINE.
+   
+   
+   1) au niveau local, (c'est à dire sous NMCOMP)
+   - NMCOMP ne fait plus appel que à REDECE, et NMCOUP dans le cas KIT_DDI (pour éviter la
+   récursivité)
+   - REDECE fait appel à la routine de branchemetn LC0000
+   - LC0000 branche directement sur chaque routine LCxxxx. 
+   Il y a actuellement 100 routines LC prévue, dont 39 sont effectives, et les autres dans
+   Fermeture.
+   
+   
+   Conséquence : pour ajouter un nouveau comportement, on n'a plus besoin de toucher NMCOMP,
+   ni REDECE, ni LC0000. Il suffit de créer une routine LC00IJ (ou IJ est le numéro de LC
+   défini dans le catalgoue python du
+   comportement), ou d'utiliser une routine LC existante (cas de PLASTI sous LC0030). Ce
+   branchement
+   automatique n'est mis en oeuvre que dans NMCOMP, c'est à dire seulement pour les
+   modélisations : 
+   '3D', 'AXIS', 'C_PLAN', (et DKT, COQUE_3D, COQUE_1D, TUYAUxx) 'D_PLAN',
+   '*_GRAD_VARI','*_GRAD_EPSI','*_INCO', '*_SI', plus les DEBORST (1D et CPLAN)
+   
+   - améliorations : il reste des cas particuliers qui seront levés petit à petit (fiches
+   d'évolution spécifiques) :
+   ------------------
+   Pour les modélisations qui n'appellent pas nmcomp, il faudra si nécessaire faire cet appel
+   automatique. 
+   Il s'agit de :
+   
+   - la THM, on modifie CALCME car les arguments d'appel à REDECE sont modifiés. On pourrait
+   récupérer aussi NUMLC, pour augmenter le panel de comportements méca utilisables en THM.
+   - les BARRE, GRILLE*, PMF : on pourrait aussi faire un appel générique à REDECE/LC0000.
+   Voir si il y a un besoin.
+   - a plus long terme, on pourrait rationnaliser les appels de comportements des éléments
+   discrets.
+   
+   Dans l'avenir, il faudrait faire l'évolution des MONOCRISTAUX consistant à engranger la
+   sd_compor dans AFFE_MATERIAU, comme les multifibres. 
+   
+   - cata :
+   ==========
+   Comme on stocke le numéro de routine de comportement NUMLC à la sixième place de la carte
+   COMPOR,on ajoute la CMP correspondante (XXXX1) dans les catalogues d'éléments susceptibles
+   d'appeler NMCOMP. Il s'agit de :
+   gener_me3di3.cata
+   gener_me3gi3.cata
+   gener_meagi2.cata
+   gener_mepgi2.cata
+   gener_mepli2.cata
+   gener_mf2fi2.cata
+   
+   
+   - tests :
+   ==========
+   
+   Cette restitution ne doit pas avoir d'impact sur l'utilisateur (hormis le fait que
+   ITER_INTE_PAS est maintenant effectif pour tous les comportements).
+   
+   De fait, plusieurs tests sont modifiés : 
+   
+   En effet on vérifie maintenant que le redécoupage local du pas de temps n'est pas activé
+   avec SIMO_MIEHE (incompatibilité à cause de la décomposition multiplicative des grandes
+   déformations) : on enlève donc ITER_INTE_PAS de cente01a, ssnv501a, ssnv501b, ssnv501c. De
+   plus,l'activation de ITER_INTE_PAS change légèrement les résultats du tests sensm14a. Il
+   suffit donc de retirer ITER_INTE_PAS de ces tests (qui n'était pas activé avant).
+   
+   D'aute part, on supprime des fichiers de commandes des tests ascou16a, 
+   ascou18a, ascou19a, aspic01b les mots-clés (anciennement cachés !) :
+   <                ELAS = 1,
+   <                ELAS_VMIS_LINE = 1,
+   <                ELAS_VMIS_TRAC = 1.
+   
+   Impact doc : en fait D5.04.01 (comment développer un nouveau comportement) est devenu un
+   wiki. Celui -ci sera modifié.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D5.04.01
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssll101f                       flejou J-L.FLEJOU         533    533      0
+ CASTEST AJOUT ssll101g                       flejou J-L.FLEJOU         539    539      0
+ CASTEST AJOUT zzzz240a                       pellet J.PELLET           111    111      0
+ CASTEST MODIF ascou16a                        proix J-M.PROIX          402      3      6
+ CASTEST MODIF ascou18a                        proix J-M.PROIX          292      5     11
+ CASTEST MODIF ascou19a                        proix J-M.PROIX          385      7     16
+ CASTEST MODIF aspic01b                        proix J-M.PROIX          570      1     13
+ CASTEST MODIF cente01a                        proix J-M.PROIX          994      3      5
+ CASTEST MODIF comp001a                      mahfouz D.MAHFOUZ          334      1      1
+ CASTEST MODIF comp002d                      mahfouz D.MAHFOUZ          213     20     20
+ CASTEST MODIF miss07b                         corus M.CORUS            418      7      5
+ CASTEST MODIF mumps01a                       pellet J.PELLET           179     23      1
+ CASTEST MODIF sdnl105a                       pellet J.PELLET           539      2      1
+ CASTEST MODIF sensm14a                        proix J-M.PROIX          795      7      4
+ CASTEST MODIF ssll107d                       flejou J-L.FLEJOU         243     67     30
+ CASTEST MODIF ssll107g                       flejou J-L.FLEJOU         353      3      3
+ CASTEST MODIF ssnp101a                      mahfouz D.MAHFOUZ          266      7      7
+ CASTEST MODIF ssnv112d                       pellet J.PELLET           302      2      2
+ CASTEST MODIF ssnv126a                      mahfouz D.MAHFOUZ          461     15     15
+ CASTEST MODIF ssnv126b                      mahfouz D.MAHFOUZ          326     15     15
+ CASTEST MODIF ssnv126c                      mahfouz D.MAHFOUZ          497     13     13
+ CASTEST MODIF ssnv126d                      mahfouz D.MAHFOUZ          389     13     13
+ CASTEST MODIF ssnv183a                      mahfouz D.MAHFOUZ          559      7      7
+ CASTEST MODIF ssnv501a                        proix J-M.PROIX          402      1      2
+ CASTEST MODIF ssnv501b                        proix J-M.PROIX          349      1      2
+ CASTEST MODIF ssnv501c                        proix J-M.PROIX          408      2      3
+ CASTEST MODIF zzzz100b                        corus M.CORUS            336     23     19
+ CASTEST MODIF zzzz176a                       pellet J.PELLET           167      5      5
+ CASTEST MODIF zzzz213a                       pellet J.PELLET           232      2      2
+ CASTEST MODIF zzzz234a                       flejou J-L.FLEJOU         414      3      6
+CATALOGU MODIF options/full_meca              flejou J-L.FLEJOU          78      2      1
+CATALOGU MODIF options/raph_meca              flejou J-L.FLEJOU          79      2      1
+CATALOGU MODIF options/rigi_meca_tang         flejou J-L.FLEJOU          81      2      1
+CATALOGU MODIF typelem/gener_me3di3            proix J-M.PROIX          233      2      2
+CATALOGU MODIF typelem/gener_me3gi3            proix J-M.PROIX          177      2      2
+CATALOGU MODIF typelem/gener_meagi2            proix J-M.PROIX          172      2      2
+CATALOGU MODIF typelem/gener_mepct1           flejou J-L.FLEJOU         259     24      7
+CATALOGU MODIF typelem/gener_mepgi2            proix J-M.PROIX          172      2      2
+CATALOGU MODIF typelem/gener_mepli2            proix J-M.PROIX          221      2      2
+CATALOGU MODIF typelem/gener_mf2fi2            proix J-M.PROIX          128      8      7
+CATALOPY MODIF commande/calc_g                 proix J-M.PROIX          144      1      8
+CATALOPY MODIF commande/calcul                 proix J-M.PROIX           55      1      7
+CATALOPY MODIF commande/crea_maillage         pellet J.PELLET           153     12     10
+CATALOPY MODIF commande/defi_compor            proix J-M.PROIX          139      1     50
+CATALOPY MODIF commande/defi_materiau        mahfouz D.MAHFOUZ         2868     13     13
+CATALOPY MODIF commande/dyna_non_line          proix J-M.PROIX          384      1      7
+CATALOPY MODIF commande/dyna_tran_modal       pellet J.PELLET           249     41      1
+CATALOPY MODIF commande/impr_resu             pellet J.PELLET           177     12      1
+CATALOPY MODIF commande/macr_ascouf_calc       proix J-M.PROIX          242      1      4
+CATALOPY MODIF commande/macr_aspic_calc        proix J-M.PROIX          254      1      4
+CATALOPY MODIF commande/macr_cara_poutre      flejou J-L.FLEJOU          77     24     11
+CATALOPY MODIF commande/resoudre              pellet J.PELLET            39      1      2
+CATALOPY MODIF commande/simu_point_mat         proix J-M.PROIX          208      1      5
+CATALOPY MODIF commande/stat_non_line          proix J-M.PROIX          366      1      8
+CATALOPY MODIF commun/c_comp_incr              proix J-M.PROIX          249    145    265
+       C MODIF supervis/astermodule            proix J-M.PROIX         4044    146     25
+ FORTRAN AJOUT algeline/resou2                pellet J.PELLET            77     77      0
+ FORTRAN AJOUT algorith/crcmel                 proix J-M.PROIX           84     84      0
+ FORTRAN AJOUT algorith/lc0000                 proix J-M.PROIX          698    698      0
+ FORTRAN AJOUT algorith/lc0001                 proix J-M.PROIX          149    149      0
+ FORTRAN AJOUT algorith/lc0002                 proix J-M.PROIX           82     82      0
+ FORTRAN AJOUT algorith/lc0003                 proix J-M.PROIX           85     85      0
+ FORTRAN AJOUT algorith/lc0004                 proix J-M.PROIX           85     85      0
+ FORTRAN AJOUT algorith/lc0005                 proix J-M.PROIX           84     84      0
+ FORTRAN AJOUT algorith/lc0006                 proix J-M.PROIX          116    116      0
+ FORTRAN AJOUT algorith/lc0007                 proix J-M.PROIX           97     97      0
+ FORTRAN AJOUT algorith/lc0008                 proix J-M.PROIX          106    106      0
+ FORTRAN AJOUT algorith/lc0009                 proix J-M.PROIX           69     69      0
+ FORTRAN AJOUT algorith/lc0010                 proix J-M.PROIX           70     70      0
+ FORTRAN AJOUT algorith/lc0011                 proix J-M.PROIX           70     70      0
+ FORTRAN AJOUT algorith/lc0012                 proix J-M.PROIX           69     69      0
+ FORTRAN AJOUT algorith/lc0013                 proix J-M.PROIX           70     70      0
+ FORTRAN AJOUT algorith/lc0014                 proix J-M.PROIX           70     70      0
+ FORTRAN AJOUT algorith/lc0015                 proix J-M.PROIX          190    190      0
+ FORTRAN AJOUT algorith/lc0016                 proix J-M.PROIX          121    121      0
+ FORTRAN AJOUT algorith/lc0017                 proix J-M.PROIX           34     34      0
+ FORTRAN AJOUT algorith/lc0018                 proix J-M.PROIX           36     36      0
+ FORTRAN AJOUT algorith/lc0019                 proix J-M.PROIX           36     36      0
+ FORTRAN AJOUT algorith/lc0020                 proix J-M.PROIX           37     37      0
+ FORTRAN AJOUT algorith/lc0021                 proix J-M.PROIX           36     36      0
+ FORTRAN AJOUT algorith/lc0022                 proix J-M.PROIX           44     44      0
+ FORTRAN AJOUT algorith/lc0023                 proix J-M.PROIX           45     45      0
+ FORTRAN AJOUT algorith/lc0024                 proix J-M.PROIX           37     37      0
+ FORTRAN AJOUT algorith/lc0025                 proix J-M.PROIX           40     40      0
+ FORTRAN AJOUT algorith/lc0026                 proix J-M.PROIX           45     45      0
+ FORTRAN AJOUT algorith/lc0027                 proix J-M.PROIX           38     38      0
+ FORTRAN AJOUT algorith/lc0028                 proix J-M.PROIX           40     40      0
+ FORTRAN AJOUT algorith/lc0029                 proix J-M.PROIX           36     36      0
+ FORTRAN AJOUT algorith/lc0030                 proix J-M.PROIX           35     35      0
+ FORTRAN AJOUT algorith/lc0031                 proix J-M.PROIX           42     42      0
+ FORTRAN AJOUT algorith/lc0032                 proix J-M.PROIX           43     43      0
+ FORTRAN AJOUT algorith/lc0033                 proix J-M.PROIX           43     43      0
+ FORTRAN AJOUT algorith/lc0034                 proix J-M.PROIX           40     40      0
+ FORTRAN AJOUT algorith/lc0035                 proix J-M.PROIX           40     40      0
+ FORTRAN AJOUT algorith/lc0036                 proix J-M.PROIX           32     32      0
+ FORTRAN AJOUT algorith/lc0037                 proix J-M.PROIX           33     33      0
+ FORTRAN AJOUT algorith/lc0038                 proix J-M.PROIX           31     31      0
+ FORTRAN AJOUT algorith/lc0039                 proix J-M.PROIX           35     35      0
+ FORTRAN AJOUT algorith/mtdorc                 proix J-M.PROIX          150    150      0
+ FORTRAN AJOUT algorith/nmdocp                 proix J-M.PROIX           55     55      0
+ FORTRAN AJOUT algorith/nmdocr                 proix J-M.PROIX          200    200      0
+ FORTRAN AJOUT algorith/nmdogd                 proix J-M.PROIX           48     48      0
+ FORTRAN AJOUT algorith/nmdoki                 proix J-M.PROIX           83     83      0
+ FORTRAN AJOUT algorith/nmdpmf                 proix J-M.PROIX           83     83      0
+ FORTRAN AJOUT calculel/rdtces                pellet J.PELLET           167    167      0
+ FORTRAN AJOUT calculel/rdtchp                pellet J.PELLET           117    117      0
+ FORTRAN AJOUT calculel/rdtcns                pellet J.PELLET           134    134      0
+ FORTRAN AJOUT calculel/rdtmai                pellet J.PELLET           415    415      0
+ FORTRAN AJOUT calculel/rdtres                pellet J.PELLET           211    211      0
+ FORTRAN MODIF algeline/alfeti                pellet J.PELLET          1130     23     12
+ FORTRAN MODIF algeline/gcpc                  pellet J.PELLET           235     16     10
+ FORTRAN MODIF algeline/modsta                pellet J.PELLET           134      3      5
+ FORTRAN MODIF algeline/mtdscr                pellet J.PELLET           197      1      5
+ FORTRAN MODIF algeline/op0014                pellet J.PELLET           216      5      3
+ FORTRAN MODIF algeline/op0015                pellet J.PELLET           107     42    141
+ FORTRAN MODIF algeline/op0167                pellet J.PELLET           937      2      2
+ FORTRAN MODIF algeline/preres                pellet J.PELLET           248      4      4
+ FORTRAN MODIF algeline/resfet                pellet J.PELLET           178     94     28
+ FORTRAN MODIF algeline/resgra                pellet J.PELLET           170     59     85
+ FORTRAN MODIF algeline/resldl                pellet J.PELLET           129     67     71
+ FORTRAN MODIF algeline/resoud                pellet J.PELLET           279    188    167
+ FORTRAN MODIF algorith/algocg                pellet J.PELLET           654      5      5
+ FORTRAN MODIF algorith/calcme                 proix J-M.PROIX          473      9      4
+ FORTRAN MODIF algorith/cfaca1                pellet J.PELLET           342      6      6
+ FORTRAN MODIF algorith/cresol                pellet J.PELLET           201      9     17
+ FORTRAN MODIF algorith/crsvmu                pellet J.PELLET           313     19      5
+ FORTRAN MODIF algorith/cuaca1                pellet J.PELLET           175      4      6
+ FORTRAN MODIF algorith/defsta                pellet J.PELLET           182      2      3
+ FORTRAN MODIF algorith/dlnew0                pellet J.PELLET           393      5      4
+ FORTRAN MODIF algorith/dltali                pellet J.PELLET           252      4      4
+ FORTRAN MODIF algorith/lcejex                 proix J-M.PROIX          214      1      1
+ FORTRAN MODIF algorith/lcmmap                 proix J-M.PROIX          499      8      8
+ FORTRAN MODIF algorith/lcmmat                 proix J-M.PROIX          377      8      5
+ FORTRAN MODIF algorith/majou                 pellet J.PELLET           375      5      3
+ FORTRAN MODIF algorith/mdacce                pellet J.PELLET           131      3     15
+ FORTRAN MODIF algorith/mdadap                pellet J.PELLET           623     16      2
+ FORTRAN MODIF algorith/mdtr74                pellet J.PELLET           730      8      2
+ FORTRAN MODIF algorith/mereso                pellet J.PELLET           263      4      4
+ FORTRAN MODIF algorith/merimo                flejou J-L.FLEJOU         274      2      2
+ FORTRAN MODIF algorith/merimp                flejou J-L.FLEJOU         322      3      1
+ FORTRAN MODIF algorith/mxcacc                pellet J.PELLET           269      4      4
+ FORTRAN MODIF algorith/nmcalm               cnguyen C.NGUYEN           172      3      3
+ FORTRAN MODIF algorith/nmcomp                 proix J-M.PROIX          180     16    628
+ FORTRAN MODIF algorith/nmcoup                 proix J-M.PROIX          189      4      4
+ FORTRAN MODIF algorith/nmcpla                 proix J-M.PROIX          459     18     12
+ FORTRAN MODIF algorith/nmdopi                pellet J.PELLET           285      2      2
+ FORTRAN MODIF algorith/nmdorc                 proix J-M.PROIX          279    123    493
+ FORTRAN MODIF algorith/nmfi2d                 proix J-M.PROIX          156      6      4
+ FORTRAN MODIF algorith/nmflam               cnguyen C.NGUYEN           301      2      2
+ FORTRAN MODIF algorith/nmlect                pellet J.PELLET           106      2      4
+ FORTRAN MODIF algorith/nmreso                pellet J.PELLET           203      6      6
+ FORTRAN MODIF algorith/nmrldb                pellet J.PELLET            66     12     44
+ FORTRAN MODIF algorith/nmthmc                 proix J-M.PROIX          470     33     20
+ FORTRAN MODIF algorith/nmvecd               mahfouz D.MAHFOUZ          298      5      5
+ FORTRAN MODIF algorith/nmvend               mahfouz D.MAHFOUZ          276      4      4
+ FORTRAN MODIF algorith/nmzmat                 proix J-M.PROIX          183      2      2
+ FORTRAN MODIF algorith/ntreso                pellet J.PELLET           248      6      7
+ FORTRAN MODIF algorith/nxlect                 proix J-M.PROIX          113      3      1
+ FORTRAN MODIF algorith/nxnewt                pellet J.PELLET           199      5      4
+ FORTRAN MODIF algorith/nxpred                pellet J.PELLET           170     10      8
+ FORTRAN MODIF algorith/op0060                pellet J.PELLET           668      8      7
+ FORTRAN MODIF algorith/op0074                pellet J.PELLET           106      9      1
+ FORTRAN MODIF algorith/op0152                pellet J.PELLET           453      2      3
+ FORTRAN MODIF algorith/op0186                pellet J.PELLET           672      5      6
+ FORTRAN MODIF algorith/op0199                pellet J.PELLET           218      2      3
+ FORTRAN MODIF algorith/phi152                pellet J.PELLET           260     23     19
+ FORTRAN MODIF algorith/phi199                pellet J.PELLET           276      3      2
+ FORTRAN MODIF algorith/pregcp                pellet J.PELLET           269      4      4
+ FORTRAN MODIF algorith/redece                 proix J-M.PROIX          265     29     48
+ FORTRAN MODIF algorith/rkdvec               mahfouz D.MAHFOUZ          202     14     12
+ FORTRAN MODIF algorith/ssdt74                pellet J.PELLET           361      3      1
+ FORTRAN MODIF algorith/trprot                pellet J.PELLET           561      4      3
+ FORTRAN MODIF algorith/vecmat               mahfouz D.MAHFOUZ          271      9      9
+ FORTRAN MODIF assembla/assmiv                pellet J.PELLET           421     12      4
+ FORTRAN MODIF calculel/eclpgm                pellet J.PELLET           389      3      4
+ FORTRAN MODIF calculel/eclpgr                pellet J.PELLET           349      2      4
+ FORTRAN MODIF calculel/mecalm                pellet J.PELLET          2431      2      2
+ FORTRAN MODIF calculel/medom2                pellet J.PELLET           112      2      2
+ FORTRAN MODIF calculel/merige               cnguyen C.NGUYEN            97     12     12
+ FORTRAN MODIF calculel/nttain                pellet J.PELLET           149      5      4
+ FORTRAN MODIF calculel/op0009               cnguyen C.NGUYEN           188      2      2
+ FORTRAN MODIF calculel/op0038                pellet J.PELLET           160      2      2
+ FORTRAN MODIF calculel/op0171                pellet J.PELLET           393      2      4
+ FORTRAN MODIF calculel/op0175                pellet J.PELLET           550      6      5
+ FORTRAN MODIF calculel/sinoz1                pellet J.PELLET           168      6      4
+ FORTRAN MODIF calculel/thaclm                pellet J.PELLET           868      2      2
+ FORTRAN MODIF elements/dxglrc                 proix J-M.PROIX          452      2      3
+ FORTRAN MODIF elements/nmpoel                flejou J-L.FLEJOU         125     23      5
+ FORTRAN MODIF elements/pmfitx                 proix J-M.PROIX          146      7      4
+ FORTRAN MODIF elements/te0038                 proix J-M.PROIX          439      2      2
+ FORTRAN MODIF elements/te0047                flejou J-L.FLEJOU         961    126     38
+ FORTRAN MODIF elements/te0113                 proix J-M.PROIX          171      2      2
+ FORTRAN MODIF elements/te0142                 proix J-M.PROIX          239      2      2
+ FORTRAN MODIF elements/te0150                 proix J-M.PROIX          466      5      4
+ FORTRAN MODIF elements/te0201                 proix J-M.PROIX          125      8      2
+ FORTRAN MODIF elements/te0247                flejou J-L.FLEJOU         431     71     11
+ FORTRAN MODIF elements/te0516                 proix J-M.PROIX          611      2      2
+ FORTRAN MODIF elements/te0535                 proix J-M.PROIX          353      7      5
+ FORTRAN MODIF elements/te0537                 proix J-M.PROIX          218      6      4
+ FORTRAN MODIF modelisa/exlima                pellet J.PELLET           124     52     66
+ FORTRAN MODIF modelisa/op0059                 proix J-M.PROIX          371     25     30
+ FORTRAN MODIF modelisa/rccomp                 proix J-M.PROIX          134     10      6
+ FORTRAN MODIF prepost/crsdfi                 pellet J.PELLET           484      1      4
+ FORTRAN MODIF prepost/ecrtes                 pellet J.PELLET           262      1      2
+ FORTRAN MODIF prepost/iradhs                 pellet J.PELLET           197      8      5
+ FORTRAN MODIF prepost/irchml                 pellet J.PELLET           341      4      3
+ FORTRAN MODIF prepost/irmail                 pellet J.PELLET           293     10      2
+ FORTRAN MODIF prepost/irmasu                 pellet J.PELLET           332      8     10
+ FORTRAN MODIF prepost/lridea                 pellet J.PELLET           569     16     37
+ FORTRAN MODIF prepost/op0039                 pellet J.PELLET           936     42      8
+ FORTRAN MODIF prepost/op0106                 pellet J.PELLET           811      3      3
+ FORTRAN MODIF prepost/stock                  pellet J.PELLET           175      6      2
+ FORTRAN MODIF soustruc/cricho                pellet J.PELLET           343     23     11
+ FORTRAN MODIF utilitai/copisd                pellet J.PELLET           356     12      2
+ FORTRAN MODIF utilitai/detrsd                pellet J.PELLET           633     15      5
+ FORTRAN MODIF utilitai/extrs3                pellet J.PELLET           100      5      5
+ FORTRAN MODIF utilitai/op0150                pellet J.PELLET          1091      2      4
+ FORTRAN MODIF utilitai/op0159                pellet J.PELLET           186      2      2
+ FORTRAN MODIF utilitai/op0194                 proix J-M.PROIX          129      2      2
+ FORTRAN MODIF utilitai/pecage                pellet J.PELLET           203      3      4
+ FORTRAN MODIF utilitai/peecin                pellet J.PELLET           372      3      4
+ FORTRAN MODIF utilitai/peepot                pellet J.PELLET           324      3      4
+ FORTRAN MODIF utilitai/peingl                pellet J.PELLET           708      3      4
+ FORTRAN MODIF utilitai/pemain                pellet J.PELLET           219      3      4
+ FORTRAN MODIF utilitai/peweib                pellet J.PELLET           437      3      4
+ FORTRAN MODIF utilitai/utidea                pellet J.PELLET            99     27      3
+ FORTRAN SUPPR algeline/cmrest                pellet J.PELLET           391      0    391
+ FORTRAN SUPPR algeline/mvcon1                pellet J.PELLET           126      0    126
+ FORTRAN SUPPR algeline/mvcon2                pellet J.PELLET           126      0    126
+ FORTRAN SUPPR calculel/meribi               cnguyen C.NGUYEN            96      0     96
+ FORTRAN SUPPR calculel/mesigg               cnguyen C.NGUYEN            50      0     50
+       H MODIF include/aster                   proix J-M.PROIX           83      1      1
+       H MODIF include/definition              proix J-M.PROIX          274      9      1
+  PYTHON AJOUT Comportement/acier              proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/arme               proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/asse_corn          proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/barcelone          proix J-M.PROIX           42     42      0
+  PYTHON AJOUT Comportement/beton_double_dp      proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/beton_regle_pr      proix J-M.PROIX           43     43      0
+  PYTHON AJOUT Comportement/beton_umlv_fp      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/cable              proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/cam_clay           proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/cata_comportement      proix J-M.PROIX          473    473      0
+  PYTHON AJOUT Comportement/cjs                proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/corr_acier         proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/czm_exp            proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/czm_exp_reg        proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/czm_lin_reg        proix J-M.PROIX           41     41      0
+  PYTHON AJOUT Comportement/deborst            proix J-M.PROIX           34     34      0
+  PYTHON AJOUT Comportement/dis_bili_elas      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/dis_choc           proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/dis_ecro_cine      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/dis_gouj2e_elas      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/dis_gouj2e_plas      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/dis_gricra         proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/dis_visc           proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/druck_prager       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/druck_prag_n_a      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/elas_hyper         proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/elas_poutre_gr      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/elas               proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/elas_vmis_line      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/elas_vmis_puis      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/elas_vmis_trac      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/endo_fragile       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/endo_isot_beton      proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/endo_orth_beton      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/gatt_monerie       proix J-M.PROIX           42     42      0
+  PYTHON AJOUT Comportement/gaz                proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/glrc_damage        proix J-M.PROIX           43     43      0
+  PYTHON AJOUT Comportement/glrc_dm            proix J-M.PROIX           43     43      0
+  PYTHON AJOUT Comportement/granger_fp_indt      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/granger_fp         proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/granger_fp_v       proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/gran_irra_log      proix J-M.PROIX           41     41      0
+  PYTHON AJOUT Comportement/grille_cine_line      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/grille_isot_line      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/grille_pinto_men      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/hoek_brown_eff      proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/hoek_brown         proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/hoek_brown_tot      proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/hujeux             proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/hydr_endo          proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/hydr               proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/hydr_util          proix J-M.PROIX           45     45      0
+  PYTHON AJOUT Comportement/hydr_vgm           proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/__init__           proix J-M.PROIX           57     57      0
+  PYTHON AJOUT Comportement/irrad3m            proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/joint_ba           proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/kit_ddi            proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/kit_hhm            proix J-M.PROIX           54     54      0
+  PYTHON AJOUT Comportement/kit_hh             proix J-M.PROIX           54     54      0
+  PYTHON AJOUT Comportement/kit_hm             proix J-M.PROIX           54     54      0
+  PYTHON AJOUT Comportement/kit_thhm           proix J-M.PROIX           54     54      0
+  PYTHON AJOUT Comportement/kit_thh            proix J-M.PROIX           54     54      0
+  PYTHON AJOUT Comportement/kit_thm            proix J-M.PROIX           54     54      0
+  PYTHON AJOUT Comportement/kit_thv            proix J-M.PROIX           54     54      0
+  PYTHON AJOUT Comportement/labord_1d          proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/laigle             proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/lemaitre_irra      proix J-M.PROIX           43     43      0
+  PYTHON AJOUT Comportement/lemaitre           proix J-M.PROIX           41     41      0
+  PYTHON AJOUT Comportement/lema_seuil         proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/letk               proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/liqu_ad_gaz_vape      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/liqu_gaz_atm       proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/liqu_gaz           proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/liqu_satu          proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/liqu_vape_gaz      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/liqu_vape          proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/lmarc_irra         proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/lmarc              proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/mazars             proix J-M.PROIX           41     41      0
+  PYTHON AJOUT Comportement/meta_lema_ani      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_cl          proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_cl_pt       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_cl_pt_re      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_cl_re       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_il          proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_il_pt       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_il_pt_re      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_il_re       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_inl         proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_inl_pt      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_inl_pt_re      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_p_inl_re      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_cl          proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_cl_pt       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_cl_pt_re      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_cl_re       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_il          proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_il_pt       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_il_pt_re      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_il_re       proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_inl         proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_inl_pt      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_inl_pt_re      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/meta_v_inl_re      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/monocristal        proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/multifibre         proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/nadai_b            proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/norton_hoff        proix J-M.PROIX           45     45      0
+  PYTHON AJOUT Comportement/pinto_menegotto      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/polycristal        proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/rousselier         proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/rouss_pr           proix J-M.PROIX           41     41      0
+  PYTHON AJOUT Comportement/rouss_visc         proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/rupt_frag          proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/sans               proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/sech_bazant        proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/sech_granger       proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/sech_mensi         proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/sech_nappe         proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/simo_miehe         proix J-M.PROIX           34     34      0
+  PYTHON AJOUT Comportement/ther_hydr          proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/ther_nl            proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/ther               proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/vendochab          proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/vide               proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/visc_cin1_chab      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/visc_cin2_chab      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/visc_cin2_memo      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/visc_irra_log      proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/visc_isot_line      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/visc_isot_trac      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/viscochab          proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/visc_taheri        proix J-M.PROIX           42     42      0
+  PYTHON AJOUT Comportement/vmis_asym_line      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/vmis_cin1_chab      proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/vmis_cin2_chab      proix J-M.PROIX           39     39      0
+  PYTHON AJOUT Comportement/vmis_cin2_memo      proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/vmis_cine_line      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/vmis_ecmi_line      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/vmis_ecmi_trac      proix J-M.PROIX           40     40      0
+  PYTHON AJOUT Comportement/vmis_isot_line      proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/vmis_isot_puis      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/vmis_isot_trac      proix J-M.PROIX           38     38      0
+  PYTHON AJOUT Comportement/vmis_pou_flejou      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/vmis_pou_line      proix J-M.PROIX           36     36      0
+  PYTHON AJOUT Comportement/zirc               proix J-M.PROIX           37     37      0
+  PYTHON AJOUT Comportement/zmat               proix J-M.PROIX           37     37      0
+  PYTHON MODIF Cata/ops                        proix J-M.PROIX          479      7      1
+  PYTHON MODIF Execution/E_JDC                 proix J-M.PROIX          327      2      2
+  PYTHON MODIF Macro/macr_cara_poutre_ops     flejou J-L.FLEJOU         848     10     10
+  PYTHON MODIF Messages/compor1                proix J-M.PROIX          277     33      1
+  PYTHON MODIF Messages/discrets              flejou J-L.FLEJOU         120     70      8
+  PYTHON MODIF Messages/elements5             flejou J-L.FLEJOU         195      6      1
+  PYTHON MODIF Messages/factor                pellet J.PELLET           252     18      1
+  PYTHON MODIF Messages/fermetur               proix J-M.PROIX           87      8      1
+  PYTHON MODIF Messages/prepost6              pellet J.PELLET           126      7      1
+  PYTHON MODIF Messages/utilitai2             pellet J.PELLET           303      9      2
+  PYTHON MODIF SD/sd_cham_mater                proix J-M.PROIX          184      2      2
+  PYTHON MODIF SD/sd_compor                    proix J-M.PROIX          187      1      1
+  PYTHON MODIF Utilitai/t_fonction             corus M.CORUS            716     50     52
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :  203       12286     12286            +12286
+ MODIF :  185       67729      2560    3136      -576
+ SUPPR :    5         789               789      -789
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  393       80804     14846    3925    +10921 

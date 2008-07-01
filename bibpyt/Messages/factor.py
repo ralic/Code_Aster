@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF factor Messages  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,6 +35,23 @@ Matrice non factorisable :
 Matrice non factorisable :
   pivot vraiment nul à la ligne : %(i1)d
 """),
+
+#-----------------------------------------------------------------------------------------------
+12: _("""
+Solveur PETSc :
+  Le solveur PETSc est impossible dans ce contexte.
+Solution :
+  Il faut changer de solveur et émettre une demande d'évolution.
+"""),
+
+#-----------------------------------------------------------------------------------------------
+13: _("""
+Solveur FETI :
+  Le solveur FETI est impossible dans ce contexte.
+Solution :
+  Il faut changer de solveur.
+"""),
+
 
 #-----------------------------------------------------------------------------------------------
 20: _("""

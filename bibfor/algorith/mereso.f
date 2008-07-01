@@ -5,7 +5,7 @@
      &                    ASSMAT, SOLVEU, MATASS, MAPREC,
      &                    BASE, TPS1, TPS2, TPS3, COMPOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C 0.1. ==> ARGUMENTS
       CHARACTER*(*) INPSCO
       CHARACTER*(*) MATE
 
-      REAL*8 PARTPS(*)
+      REAL*8 PARTPS(*),RBID
       REAL*8 TPS1(4), TPS2(4), TPS3(4)
 
 C 0.2. ==> COMMUNS
@@ -80,7 +80,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
+      COMPLEX*16         ZC,CBID
       COMMON  / CVARJE / ZC(1)
       LOGICAL            ZL
       COMMON  / LVARJE / ZL(1)
@@ -190,7 +190,7 @@ C 4. RESOLUTION AVEC VECASS COMME SECOND MEMBRE
 C====
 
       CALL RESOUD ( MATASS, MAPREC, VECASS, SOLVEU, CNCHCI,
-     &              'V', CHSOL, CRITER)
+     &              'V', CHSOL, CRITER,0,RBID,CBID)
 
 C 5.1. ==> NETTOYAGE DU CHAMP CINEMATIQUE CNCHCI QUI EST RECREE A
 C          CHAQUE FOIS

@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF t_fonction Utilitai  DATE 01/07/2008   AUTEUR CORUS M.CORUS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -394,9 +394,9 @@ class t_fonction :
     elif   methode=='COMPLET'  : 
        vale_y=self.vale_y
     vect=FFT.fft(vale_y)
-    pasfreq =1./(pas*(len(vect)-1))
+    pasfreq =1./(pas*(len(vect)))
     vale_x  =[pasfreq*i for i in range(len(vect))]
-    vale_y  =vect*pas
+    vale_y  =vect
     return t_fonction_c(vale_x,vale_y,para)
 
 
@@ -420,6 +420,13 @@ class t_fonction_c(t_fonction) :
 
   def fft(self,methode,syme) :
     """renvoie la transformée de Fourier rapide FFT (sens inverse)
+
+       Dans le cas syme == 'NON', on choisit de renvoyer 
+       un vecteur de longueur 2N, ou N est la longueur du vecteur F de depart,
+       en faisant l'approximation que pour la vraie FFT, F(N+1) est fonction
+       de F(N) et F(N-1).
+       On effectue un prolongement a l'ordre 2 par continuite pour simplifier
+       l'analyse des pas de temps en post traitement
     """
     import FFT
     para=copy.copy(self.para)
@@ -432,60 +439,51 @@ class t_fonction_c(t_fonction) :
         if ecart>1.e-3 :
            raise FonctionError, 'fonction complexe : FFT : la fonction doit etre à pas constant'
     n=int(log(len(self.vale_x))/log(2))
-    if   syme=='OUI' and len(self.vale_x)==2**n :
+    if   syme=='OUI' :
        vale_fonc=self.vale_y
-    elif syme=='NON' and len(self.vale_x)==2**n :
-       vale_fonc=self.vale_y.tolist()
-       vale_fon1=vale_fonc[:]
-       vale_fon1.reverse()
-       vale_fonc=vale_fonc+vale_fon1
-       vale_fonc=array(vale_fonc)
-    elif syme=='NON' and len(self.vale_x)!=2**n and methode=='PROL_ZERO' :
-       vale_fonc=self.vale_y.tolist()+[complex(0.)]*(2**(n+1)-len(self.vale_x))
-       vale_fon1=vale_fonc[:]
-       vale_fon1.reverse()
-       vale_fonc=vale_fonc+vale_fon1
-       vale_fonc=array(vale_fonc)
-    elif syme=='NON' and len(self.vale_x)!=2**n and methode=='TRONCATURE' :
-       vale_fonc=self.vale_y[:2**n]
-       vale_fonc=vale_fonc.tolist()
-       vale_fon1=vale_fonc[:]
-       vale_fon1.reverse()
-       vale_fonc=vale_fonc+vale_fon1
-       vale_fonc=array(vale_fonc)
-    if   syme=='OUI' and methode!='COMPLET' and  len(self.vale_x)!=2**n :
-       raise FonctionError, 'fonction complexe : FFT : syme=OUI et nombre de points<>2**n'
-    if  methode!='COMPLET' :
-       part1=vale_fonc[:len(vale_fonc)/2+1]
-       part2=vale_fonc[1:len(vale_fonc)/2]
-    if methode=='COMPLET' :
-       mil=int(len(self.vale_x)/2)
-       mil2=int((len(self.vale_x)+1)/2)
-       vale_fonc=self.vale_y
-       if syme=='OUI' : 
-          mil=int(len(self.vale_x)/2)
-          mil2=int((len(self.vale_x)+1)/2)
-       elif syme=='NON' : 
-          part2=vale_fonc[1:-1]
-          part2=part2.tolist()
-          part2.reverse()
-          vale_fonc=array(vale_fonc.tolist()+part2)
-          mil=int(len(self.vale_x)/2)*2
-          mil2=int((len(self.vale_x)+1)/2)*2-1
-       part1=vale_fonc[:mil+1]
-       part2=vale_fonc[1:mil2]
-    part2=conjugate(part2)
-    part2=part2.tolist()
-    part2.reverse()
-    vale_fonc=array(part1.tolist()+part2)
+    else :
+       if methode=='PROL_ZERO' :
+          fonc_temp=self.vale_y.tolist()+[complex(0.)]*(2**(n+1)-len(self.vale_x));
+          part1=fonc_temp
+       elif methode=='TRONCATURE' :
+          fonc_temp=self.vale_y[:2**n];
+          part1=fonc_temp.tolist();
+       elif methode=='COMPLET' :
+          fonc_temp=self.vale_y
+          part1=fonc_temp.tolist();
+
+       if remainder(len(part1),2) == 0 :
+          # Si le nombre de point du spectre est pair,
+          # on prolonge en interpolant les 3 dernier points par un polynome de
+          # degre 2, en imposant une tangente horizontale au dernier point (celui
+          # dont on cherche l'ordonnee :
+          # on pose Y=a.w^2+b.w+C , ou Y est la partie reelle de la FFT, et
+          # w la frequence. On connait Y(N-1), Y(N), et on impose dY/dw(N+1)=0
+          # pour la symetrie. On identifie a, b et c, pour calculer Y(N+1)
+          middle=[];
+          middle.append((4*part1[-1].real-part1[len(part1)-2].real)/3);
+          part2=conjugate(fonc_temp[1:len(part1)])
+          part2=part2.tolist();
+          part2.reverse();
+          vale_fonc=array(part1+middle+part2)
+       else :
+          # Si le dernier point est effectivement reel, on reconstruit theoriquement
+          if abs(part1[-1].imag) < abs(part1[-1].real*1e-6) :
+             part1[-1]=part1[-1].real
+          else :
+          # Sinon, on approxime comme dans le cas ou N est pair
+             part1[-1]=(4*part1[len(part1)-2].real-part1[len(part1)-3].real)/3
+          part2=conjugate(fonc_temp[1:len(part1)-1])
+          part2=part2.tolist();
+          part2.reverse();
+          vale_fonc=array(part1+part2)
+
     vect=FFT.inverse_fft(vale_fonc)
     vect=vect.real
-    pasfreq =1./(pas*(len(vect)-1))
+    pasfreq =1./(pas*(len(vect)))
     vale_x  =[pasfreq*i for i in range(len(vect))]
-    pas2    =(1./self.vale_x[-1])*((len(self.vale_x))/float(len(vect)))
-    vale_y  =vect/pas2
+    vale_y  =vect
     return t_fonction(vale_x,vale_y,para)
-
 
 # -----------------------------------------------------------------------------
 class t_nappe :

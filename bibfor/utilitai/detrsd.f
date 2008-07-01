@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,13 +37,14 @@ C          'CHAM_NO_S'    'CHAM_ELEM_S'
 C          'CHAM_NO'      'CHAM_ELEM'  'CARTE'
 C          'CHAMP' (CHAPEAU AUX CHAM_NO/CHAM_ELEM/CARTE/RESUELEM)
 C          'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
-C          'RESULTAT'  'LIGREL'  'NUAGE'  'MAILLAGE'
+C          'RESULTAT'  'LIGREL'  'NUAGE'  'MAILLAGE' 'CRITERE'
 C          (OU ' ' QUAND ON NE CONNAIT PAS LE TYPE).
 C       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A DETRUIRE
 C          NUME_DDL(K14),MATR_ASSE(K19),VECT_ASSE(K19)
 C          CHAMP(K19),MATR_ELEM(K8),VECT_ELEM(K8),VARI_COM(K14)
 C          DEFI_CONT(K16),RESO_CONT(K14),TABLE(K19)
 C          CHAM_NO(K19),CHAM_NO_S(K19),CHAM_ELEM(K19),CHAM_ELEM_S(K19)
+C          CRITERE(K19)
 
 C     RESULTAT:
 C     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CES CONCEPTS.
@@ -51,9 +52,9 @@ C ----------------------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8 ZR,RBID
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16 ZC,CBID
       COMMON /CVARJE/ZC(1)
       LOGICAL ZL
       COMMON /LVARJE/ZL(1)
@@ -120,6 +121,14 @@ C     -------------------------------------------
         CALL JEDETR(CORRES//'.PJEF_AM')
 
 C     ------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'CRITERE') THEN
+C     -----------------------------------
+        K19B = NOMSD
+        CALL JEDETR(K19B//'.CRTI')
+        CALL JEDETR(K19B//'.CRTR')
+        CALL JEDETR(K19B//'.CRDE')
+
+C     ------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'FONCTION') THEN
 C     -----------------------------------
         FNC = NOMSD
@@ -159,6 +168,7 @@ C FETI OR NOT ?
    10     CONTINUE
           CALL JEDETR(K24B)
         END IF
+
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'LIGREL') THEN
 C     ----------------------------------
@@ -288,7 +298,7 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
         IF (IRET.GT.0) THEN
           CALL DISMOI('F','EST_MUMPS',MATAS,'MATR_ASSE',IBID,MUMPS,IBID)
           IF (MUMPS.EQ.'OUI') THEN
-            CALL AMUMPS('DETR_MAT',' ',MATAS,' ',' ',' ',IBID)
+            CALL AMUMPS('DETR_MAT',' ',MATAS,RBID,CBID,' ',0,IBID)
           END IF
 
         END IF

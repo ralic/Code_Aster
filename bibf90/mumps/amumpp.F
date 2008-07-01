@@ -1,0 +1,274 @@
+      SUBROUTINE AMUMPP(OPTION,NBSOL,KXMPS,LDIST,TYPE,IMPR,
+     &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
+      IMPLICIT NONE
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF AMUMPP MUMPS  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+C--------------------------------------------------------------
+C BUT : ROUTINE DE PRE/POST-TRAITEMENT DE LA SOLUTION ET DU
+C       SECOND MEMBRE POUR AMUMPR/C
+C
+C IN  OPTION :   IN   : OPTION D'UTILISATION.
+C IN  NBSOL  :   IN   : NBRE DE SYSTEMES A RESOUDRE
+C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
+C IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
+C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
+C IN  IMPR   :   K4   : FLAG POUR IMPRESSION MATRICE
+C IN  IFMUMP :   IN   : UNITE LOGIQUE POUR IMPRESSION FICHIER
+C IN  ELI2LG :  LOG   : LOGICAL POUR NE LAISSER QU'1 LAGRANGE ACTIF
+C IN/OUT RSOLU :  R   : EN ENTREE : SECONDS MEMBRES REELS
+C                     : EN SORTIE : SOLUTIONS
+C IN/OUT CSOLU :  C   : EN ENTREE : SECONDS MEMBRES COMPLEXES
+C                     : EN SORTIE : SOLUTIONS
+C IN   VCINE :  K19   : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
+C---------------------------------------------------------------
+      INTEGER       OPTION,NBSOL,KXMPS,IFMUMP
+      LOGICAL       LDIST,ELI2LG
+      CHARACTER*1   TYPE
+      CHARACTER*4   IMPR
+      CHARACTER*19  VECAS,VCINE
+      REAL*8 RSOLU(*)
+      COMPLEX*16 CSOLU(*)
+
+#ifdef _HAVE_MUMPS
+
+C============================================================
+      INCLUDE 'mpif.h'
+      INCLUDE 'dmumps_struc.h'
+      INCLUDE 'zmumps_struc.h'
+C============================================================
+      INTEGER    NICNTL
+      PARAMETER (NICNTL=26)
+      INTEGER    NMXINS
+      PARAMETER (NMXINS=5)
+      TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
+      TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
+      TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
+      TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
+      INTEGER      N,NNBSOL,RANG,LMAT,I,IERD,IDVALC,IBID,JVECA2,
+     &             JDELG,K,IFM,NIV
+      INTEGER*4    N4
+      CHARACTER*1  ROUCS(NMXINS),ROUC
+      CHARACTER*4  ETAMS(NMXINS),ETAM
+      CHARACTER*14 NONUS(NMXINS),NONU
+      CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
+      CHARACTER*24 VCIVAL
+      REAL*8       RBID,DDOT
+      COMPLEX*16   CBID
+      COMMON /SMUMPS/ DMPS,ZMPS,NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
+
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8,KCODE
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32, JEXNUM
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C-----------------------------------------------------------------------
+      CALL JEMARQ()
+      CALL INFNIV(IFM,NIV)
+
+C     ------------------------------------------------
+C     INITS
+C     ------------------------------------------------
+      IF (TYPE.EQ.'R') THEN
+        XMPSK=>DMPS(KXMPS)
+        RANG=XMPSK%MYID
+        N=XMPSK%N
+        XMPSK%NRHS=NBSOL
+        XMPSK%LRHS=N
+      ELSE IF (TYPE.EQ.'C') THEN
+        YMPSK=>ZMPS(KXMPS)
+        RANG=YMPSK%MYID
+        N=YMPSK%N
+        YMPSK%NRHS=NBSOL
+        YMPSK%LRHS=N
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      NNBSOL=N*NBSOL
+      N4=NNBSOL
+      NOMAT=NOMATS(KXMPS)
+      NOSOLV=NOSOLS(KXMPS)
+      NONU=NONUS(KXMPS)
+      ETAM=ETAMS(KXMPS)
+
+      VCIVAL=VCINE//'.VALE'
+      CALL MTDSCR(NOMAT)
+      CALL JEVEUO(NOMAT//'.&INT','E',LMAT)
+
+
+      IF (OPTION.EQ.0) THEN
+
+C       ------------------------------------------------
+C        PRETRAITEMENTS ASTER DU/DES SECONDS MEMBRES :
+C       ------------------------------------------------
+
+        IF (((RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
+          IF (RANG.EQ.0) THEN
+            IF (TYPE.EQ.'R') THEN
+              ALLOCATE(XMPSK%RHS(NNBSOL))
+            ELSE
+              ALLOCATE(YMPSK%RHS(NNBSOL))
+            ENDIF
+          ENDIF
+
+C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
+          IF (RANG.EQ.0) THEN
+             IF (TYPE.EQ.'R') THEN
+               CALL MRCONL(LMAT,N,TYPE,RSOLU,NBSOL)
+             ELSE
+               CALL MCCONL(LMAT,N,TYPE,CSOLU,NBSOL)
+             ENDIF
+          ENDIF
+
+C         --- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
+          CALL JEEXIN(VCIVAL,IERD)
+          IF (VCINE.NE.' '.AND.IERD.NE.0) THEN
+            IF (LDIST) THEN
+C             -- POUR NE PAS CUMULER LE CHARGEMENT INITIAL:
+              IF (RANG.NE.0) THEN
+                DO I=1,NNBSOL
+                  IF (TYPE.EQ.'R') THEN
+                    RSOLU(I)=0.D0
+                  ELSE
+                    CSOLU(I)=DCMPLX(0.D0,0.D0)
+                  ENDIF
+                ENDDO
+              ENDIF
+            ENDIF
+            CALL JEVEUO(VCIVAL,'L',IDVALC)
+            CALL JELIRA(VCIVAL,'TYPE',IBID,ROUC)
+            CALL ASSERT(ROUC.EQ.TYPE)
+            IF (TYPE.EQ.'R') THEN
+              DO I=1,NBSOL
+                CALL CSMBGG(LMAT,RSOLU(N*(I-1)+1),ZR(IDVALC),
+     &                    CBID,CBID,TYPE)
+              ENDDO
+            ELSE
+              DO I=1,NBSOL
+                CALL CSMBGG(LMAT,RBID,RBID,CSOLU(N*(I-1)+1),
+     &                    ZC(IDVALC),TYPE)
+              ENDDO
+            ENDIF
+          ENDIF
+
+C         -- REDUCE DU SECOND MEMBRE AU PROC MAITRE
+          IF (LDIST) THEN
+            IF (TYPE.EQ.'R') THEN
+              CALL MPICM1('REDUCE','R',NNBSOL,IBID,RSOLU)
+            ELSEIF (TYPE.EQ.'R') THEN
+              CALL MPICM1('REDUCE','R',2*NNBSOL,IBID,CSOLU)
+            ENDIF
+          ENDIF
+
+C         -- COPIE DE SOLU DANS %RHS:
+          IF (RANG.EQ.0) THEN
+            IF (TYPE.EQ.'R') THEN
+              CALL DCOPY(N4,RSOLU,1,XMPSK%RHS,1)
+            ELSE
+              CALL ZCOPY(N4,CSOLU,1,YMPSK%RHS,1)
+            ENDIF
+
+          ENDIF
+
+C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
+          IF (IMPR.EQ.'OUI') THEN
+            IF (RANG.GT.0) THEN
+              IF (TYPE.EQ.'R') THEN
+                DO K=1,NNBSOL
+                  WRITE(IFMUMP,*) XMPSK%RHS(K)
+                ENDDO
+              ELSE
+                DO K=1,NNBSOL
+                  WRITE(IFMUMP,*) YMPSK%RHS(K)
+                ENDDO
+              ENDIF
+              WRITE(IFMUMP,*) 'MUMPS FIN RHS'
+            ENDIF
+          ENDIF
+        ENDIF
+
+
+      ELSE IF (OPTION.EQ.2) THEN
+
+C       ------------------------------------------------
+C        POST-TRAITEMENTS ASTER DE LA SOLUTION :
+C       ------------------------------------------------
+        IF (RANG.EQ.0) THEN
+          IF (TYPE.EQ.'R') THEN
+            CALL DCOPY(N4,XMPSK%RHS,1,RSOLU,1)
+            DEALLOCATE(XMPSK%RHS)
+          ELSE
+            CALL ZCOPY(N4,YMPSK%RHS,1,CSOLU,1)
+            DEALLOCATE(YMPSK%RHS)
+          ENDIF
+
+          IF (ELI2LG) THEN
+C           -- PRISE EN COMPTE DES LAGRANGES "2" :
+C           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
+C           -- BROADCAST LA SOLUTION APRES
+            CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
+            IF (TYPE.EQ.'R') THEN
+              DO I=1,NBSOL
+                DO K=1,N
+                  IF (ZI(JDELG-1+K).EQ.-2) RSOLU((I-1)*N+K)=0.D0
+                ENDDO
+              ENDDO
+            ELSE
+              DO I=1,NBSOL
+                DO K=1,N
+                  IF (ZI(JDELG-1+K).EQ.-2)
+     &              CSOLU((I-1)*N+K)=DCMPLX(0.D0,0.D0)
+                ENDDO
+              ENDDO
+            ENDIF
+          ENDIF
+
+          IF (TYPE.EQ.'R') THEN
+            CALL MRCONL(LMAT,N,TYPE,RSOLU,NBSOL)
+          ELSE
+            CALL MCCONL(LMAT,N,TYPE,CSOLU,NBSOL)
+          ENDIF
+        ENDIF
+
+C       -- BROADCAST DE SOLU A TOUS LES PROC
+        IF (TYPE.EQ.'R') THEN
+          CALL MPICM1('BCAST','R',NNBSOL,IBID,RSOLU)
+        ELSE
+C         -- EST-CE AUSSI SIMPLE POUR LES COMPLEXES ?
+          CALL MPICM1('BCAST','R',2*NNBSOL,IBID,CSOLU)
+        ENDIF
+
+      ELSE
+C       ------------------------------------------------
+C        MAUVAISE OPTION
+C       ------------------------------------------------
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      CALL JEDEMA()
+#endif
+      END

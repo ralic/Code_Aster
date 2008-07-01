@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,8 @@ C
 C    VENDOCHAB : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
 C                    NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
 C                    MATER(*,1) = E , NU , ALPHA
-C                    MATER(*,2) = S_VP , SEDVP1, SEDVP2
-C                                 N_VP , M_VP  , K_VP
+C                    MATER(*,2) = S , ALPHA_D, BETA_D
+C                                 N , UN_SUR_M , UN_SUR_K
 C                                 R_D  , A_D   , K_D
 C
 C                    VARIABLES INTERNES : EVI,  P , R , DMG, ETAT
@@ -194,12 +194,12 @@ C
           NOMC(1)   = 'E       '
           NOMC(2)   = 'NU      '
           NOMC(3)   = 'ALPHA   '
-          NOMC(4)   = 'S_VP    '
-          NOMC(5)   = 'SEDVP1  '
-          NOMC(6)   = 'SEDVP2  '
-          NOMC(7)   = 'N_VP    '
-          NOMC(8)   = 'M_VP    '
-          NOMC(9)   = 'K_VP    '
+          NOMC(4)   = 'S       '
+          NOMC(5)   = 'ALPHA_D '
+          NOMC(6)   = 'BETA_D  '
+          NOMC(7)   = 'N       '
+          NOMC(8)   = 'UN_SUR_M'
+          NOMC(9)   = 'UN_SUR_K'
           NOMC(10)  = 'R_D     '
           NOMC(11)  = 'A_D     '
           NOMC(12)  = 'K_D     '

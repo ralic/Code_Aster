@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CAVITE 2D CALCUL DE SENSIBILITE (LOI DE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,7 +193,8 @@ RES=STAT_NON_LINE(MODELE=MODEMECA,
                   COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                RESI_INTE_RELA=1E-09,
                                ITER_INTE_MAXI=5,
-                               ITER_INTE_PAS=10,),
+                              # ITER_INTE_PAS=10,
+                               ),
                   INCREMENT=_F(LIST_INST=TEMPS,
                                SUBD_METHODE='UNIFORME',
                                SUBD_PAS=4,
@@ -389,7 +390,8 @@ for i in range(n):
                           COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                        RESI_INTE_RELA=1E-06,
                                        ITER_INTE_MAXI=5,
-                                       ITER_INTE_PAS=10,),
+                                       #ITER_INTE_PAS=10,
+                                       ),
                           INCREMENT=_F(LIST_INST=TEMPS,
                                        SUBD_METHODE='UNIFORME',
                                        SUBD_PAS=4,
@@ -411,7 +413,8 @@ for i in range(n):
                           COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                        RESI_INTE_RELA=1E-06,
                                        ITER_INTE_MAXI=5,
-                                       ITER_INTE_PAS=10,),
+                                      # ITER_INTE_PAS=10,
+                                       ),
                           INCREMENT=_F(LIST_INST=TEMPS,
                                        SUBD_METHODE='UNIFORME',
                                        SUBD_PAS=4,

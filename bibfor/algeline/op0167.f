@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -274,7 +274,7 @@ C ----------------------------------------------------------------------
         IF (NN1.EQ.0) THEN
           CALL U2MESS('F','ALGELINE2_98')
         ENDIF
-        CALL CMREST(NOMAIN,NOMAOU)
+        CALL RDTMAI(NOMAIN,NOMAOU,'G',' ',' ')
 C ---    VERIFICATIONS DU MAILLAGE
         CALL CHCKMA(NOMAOU,NOMCMD,1.0D-03)
         GOTO 350

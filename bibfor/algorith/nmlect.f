@@ -3,7 +3,7 @@
      &                   INERTE, TBGRCA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,6 @@ C                2 : PRESSION
 C                3 : TEMPERATURE
 C ----------------------------------------------------------------------
       INTEGER      IBID, IAUX, IRET
-      CHARACTER*5  SUFFIX
       CHARACTER*16 K16BID, NOMCMD
       CHARACTER*8  K8BLA
 C
@@ -86,8 +85,7 @@ C
 C
 C -- PARAMETRES DONNES APRES LE MOT-CLE FACTEUR SOLVEUR
 C
-      SUFFIX = '     '
-      CALL CRESOL(SOLVEU,SUFFIX)
+      CALL CRESOL(SOLVEU,' ')
 C
 C -- CALCUL EVENTUEL DE L'INDICATEUR D'ERREUR EN TEMPS
 C

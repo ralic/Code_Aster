@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,14 +156,14 @@ N_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,12.2,
                         1025.,10.45,
                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-M_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,10.5,
-                        1000.,9.8,
-                        1025.,9.625,
+M_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,(1.0/10.5),
+                        1000.,(1.0/9.8),
+                        1025.,(1.0/9.625),
                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-K_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,2110.,
-                        1000.,1450.,
-                        1025.,1285.,
+K_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,(1.0/2110.),
+                        1000.,(1.0/1450.),
+                        1025.,(1.0/1285.),
                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 A_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,3191.62,
@@ -194,12 +194,12 @@ ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=F_E,
                                NU=F_NU,
                                TEMP_DEF_ALPHA=100.0,
                                ALPHA=F_ALPHA,),
-                    VENDOCHAB_FO=_F(S_VP=SEUIL,
-                                    SEDVP1=A1,
-                                    SEDVP2=A2,
-                                    N_VP=N_T,
-                                    M_VP=M_T,
-                                    K_VP=K_T,
+                    VENDOCHAB_FO=_F(S=SEUIL,
+                                    ALPHA_D=A1,
+                                    BETA_D=A2,
+                                    N=N_T,
+                                    UN_SUR_M= M_T,
+                                    UN_SUR_K= K_T,
                                     R_D=R_T,
                                     A_D=A_T,
                                     K_D=KD_T,),);
@@ -431,7 +431,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    MAILLE='MA1',
                    NOEUD='N1',
                    VALE=55.5421,
-                   PRECISION=0.01,),
+                   PRECISION=0.1,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=60,
                    NOM_CHAM='VARI_ELNO_ELGA',
@@ -455,7 +455,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    MAILLE='MA1',
                    NOEUD='N1',
                    VALE=0.281316,
-                   PRECISION=0.01,),),);
+                   PRECISION=0.1,),),);
 
 FIN();
 #

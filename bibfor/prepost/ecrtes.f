@@ -9,7 +9,7 @@ C
       LOGICAL           LCMP
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,6 @@ C   --- CHOIX DU TYPE DE RESULTAT ---
       ENDIF
       IF (LCMP) THEN
          DATCAR = 3
-         NUTYPE = 0
       ENDIF
       IF(DATCAR.EQ.1) THEN
          NBCMP = 1

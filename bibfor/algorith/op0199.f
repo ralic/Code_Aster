@@ -3,7 +3,7 @@
       INTEGER             IERR
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,6 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       LOGICAL       VRAI
       CHARACTER*2   MODEL
       CHARACTER*3   ND
-      CHARACTER*5   K5BID
       CHARACTER*8   NOMRES, K8BID, MODMEC, PHIBAR, MOINT, CHAR
       CHARACTER*8   MOFLUI, MA, MATERI, NOMCMP(6), NUMGEN, MODGEN
       CHARACTER*14  NU, NUM, NUGENE
@@ -95,7 +94,7 @@ C
 C
 C --- LECTURE DES PARAMETRES  SOLVEUR
 C
-      CALL CRESOL ( SOLVEU, K5BID )
+      CALL CRESOL (SOLVEU,' ')
 C
       IF ( N4 .NE. 0 )  CALL RCMFMC ( MATERI , MATE )
 C

@@ -1,7 +1,7 @@
       SUBROUTINE NMDOPI(MODELZ,NUMEDD,SDPILO)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,13 +24,13 @@ C
       CHARACTER*(*)      MODELZ
       CHARACTER*24       NUMEDD
       CHARACTER*14       SDPILO
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (STRUCTURES DE DONNEES)
 C
 C CONSTRUCTION DE LA SD PILOTAGE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -79,13 +79,13 @@ C
       REAL*8        COEF, MX, MI, R8VIDE, R8BID, LM(2), R8GAEM
       COMPLEX*16    CBID
       CHARACTER*8   K8BID,NOMA,NOMNOE,NOMDDL,NOMGRP,LBORN(2)
-      CHARACTER*8   MODELE      
+      CHARACTER*8   MODELE
       CHARACTER*24  GRNO, LISCMP, LISDDL, LISEQU, TYPE,PROJ
       CHARACTER*19  CHAPIL, LIGREL, LIGRMO, CARTE, CARTE2
-      INTEGER       IFM,NIV 
-C      
+      INTEGER       IFM,NIV
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
@@ -96,12 +96,12 @@ C
 C -- PAS DE PILOTAGE
 
       CALL GETFAC('PILOTAGE',NOCC)
-      IF (NOCC .EQ. 0) THEN 
+      IF (NOCC .EQ. 0) THEN
         GOTO 9999
       ELSE
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> ... CREATION SD PILOTAGE'
-        ENDIF      
+        ENDIF
       ENDIF
 
 C -- LECTURE DU TYPE ET DE LA ZONE
@@ -153,7 +153,7 @@ C ======================================================================
       IF (TYPE .EQ. 'PRED_ELAS' .OR.
      &    TYPE .EQ. 'DEFORMATION') THEN
 
-        CALL EXLIMA('PILOTAGE','V',MODELE,'&&LIGRPI',LIGREL)
+        CALL EXLIMA('PILOTAGE','V',MODELE,LIGREL)
         ZK24(JPLTK+1) = LIGREL
 
         CARTE  = '&&NMDOPI.TYPEPILO'

@@ -1,21 +1,21 @@
-#@ MODIF elements5 Messages  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+#@ MODIF elements5 Messages  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -23,11 +23,11 @@ def _(x) : return x
 cata_msg = {
 
 2 : _("""
- tuyau : le nombre de couches est limite a  %(i1)d 
+ tuyau : le nombre de couches est limite a  %(i1)d
 """),
 
 3 : _("""
- tuyau : le nombre de secteurs est limite a  %(i1)d 
+ tuyau : le nombre de secteurs est limite a  %(i1)d
 """),
 
 8 : _("""
@@ -45,7 +45,7 @@ cata_msg = {
 """),
 
 16 : _("""
- FONFIS - occurence %(i1)s : les mailles spécifiées ne permettent pas de définir 
+ FONFIS - occurence %(i1)s : les mailles spécifiées ne permettent pas de définir
  une ligne continue.
  Conseil (si opérateur DEFI_FOND_FISS) : vérifier le groupe de maille du fond de fissure.
 """),
@@ -73,15 +73,15 @@ cata_msg = {
 """),
 
 22 : _("""
-   Erreur, le nombre de noeuds d'un element de joint 3D n'est pas correct   
+   Erreur, le nombre de noeuds d'un element de joint 3D n'est pas correct
 """),
 
 23 : _("""
-   Erreur, le nombre de points de Gauss d'un element de joint 3D n'est pas correct   
+   Erreur, le nombre de points de Gauss d'un element de joint 3D n'est pas correct
 """),
 
 24 : _("""
-  le nombre de mailles du modele %(i1)d est différent de la somme des mailles des sous-domaines %(i2)d 
+  le nombre de mailles du modele %(i1)d est différent de la somme des mailles des sous-domaines %(i2)d
 """),
 
 25 : _("""
@@ -89,15 +89,15 @@ cata_msg = {
 """),
 
 28 : _("""
-  le modele comporte %(i1)d mailles de plus que l'ensemble des sous-domaines 
+  le modele comporte %(i1)d mailles de plus que l'ensemble des sous-domaines
 """),
 
 29 : _("""
-  le modele comporte %(i1)d mailles de moins que l'ensemble des sous-domaines 
+  le modele comporte %(i1)d mailles de moins que l'ensemble des sous-domaines
 """),
 
 30 : _("""
- jacobien negatif ou nul : jacobien =  %(r1)f 
+ jacobien negatif ou nul : jacobien =  %(r1)f
 """),
 
 32 : _("""
@@ -105,7 +105,7 @@ cata_msg = {
   FETI! En effet cette dernière méthode est basée sur un vision maille/calcul
   élémentaire et non pas sur une approche globale discrète dont le flot de
   données est plus difficilement dissociable par sous-domaine.
-  Merci, d'activer donc toutes les zones de contact avec ladite méthode. 
+  Merci, d'activer donc toutes les zones de contact avec ladite méthode.
 """),
 
 33 : _("""
@@ -148,33 +148,33 @@ cata_msg = {
 """),
 
 39 : _("""
- echec de la recherche de zero a l'iteration :  %(i1)d 
-  fonction decroissante - pour x=a:  %(r1)f 
-  / fonction(a):  %(r2)f 
-                          et   x=b:  %(r3)f 
-  / fonction(b):  %(r4)f 
+ echec de la recherche de zero a l'iteration :  %(i1)d
+  fonction decroissante - pour x=a:  %(r1)f
+  / fonction(a):  %(r2)f
+                          et   x=b:  %(r3)f
+  / fonction(b):  %(r4)f
 
   fonction x=:  %(r5)f  %(r6)f  %(r7)f  %(r8)f  %(r9)f  %(r10)f %(r11)f %(r12)f %(r13)f %(r14)f
                 %(r15)f %(r16)f %(r17)f %(r18)f %(r19)f %(r20)f %(r21)f %(r22)f %(r23)f %(r24)f
 
   fonction f=:  %(r25)f  %(r26)f  %(r27)f  %(r28)f  %(r29)f  %(r30)f %(r31)f %(r32)f %(r33)f %(r34)f
                 %(r35)f  %(r36)f  %(r37)f  %(r38)f  %(r39)f  %(r40)f %(r41)f %(r42)f %(r43)f %(r44)f
- 
+
 """),
 
 40 : _("""
- echec de la recherche de zero a l'iteration :  %(i1)d 
-  fonction constante    - pour x=a:  %(r1)f 
-  / fonction(a):  %(r2)f 
-                          et   x=b:  %(r3)f 
-  / fonction(b):  %(r4)f 
+ echec de la recherche de zero a l'iteration :  %(i1)d
+  fonction constante    - pour x=a:  %(r1)f
+  / fonction(a):  %(r2)f
+                          et   x=b:  %(r3)f
+  / fonction(b):  %(r4)f
 
   fonction x=:  %(r5)f  %(r6)f  %(r7)f  %(r8)f  %(r9)f  %(r10)f %(r11)f %(r12)f %(r13)f %(r14)f
                 %(r15)f %(r16)f %(r17)f %(r18)f %(r19)f %(r20)f %(r21)f %(r22)f %(r23)f %(r24)f
 
   fonction f=:  %(r25)f  %(r26)f  %(r27)f  %(r28)f  %(r29)f  %(r30)f %(r31)f %(r32)f %(r33)f %(r34)f
                 %(r35)f  %(r36)f  %(r37)f  %(r38)f  %(r39)f  %(r40)f %(r41)f %(r42)f %(r43)f %(r44)f
- 
+
 """),
 
 41 : _("""
@@ -185,6 +185,11 @@ cata_msg = {
  L'épaisseur definie dans DEFI_GLRC et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
  Epaisseur dans DEFI_GLRC: %(r1)f
  Epaisseur dans AFFE_CARA_ELEM: %(r2)f
+"""),
+
+43 : _("""
+Avec l'opérateur STAT_NON_LINE et l'élément de poutre POU_C_T, vous ne pouvez utiliser
+que les mots clés RELATION='ELAS' et  DEFORMATION='PETIT' avec COMP_INCR et COMP_ELAS.
 """),
 
 }

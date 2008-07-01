@@ -1,25 +1,25 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE JMBHH01 J.M.PROIX
 
-def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
+def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                               GROUP_MA,ORIG_INER,**args):
   """
      Ecriture de la macro MACR_CARA_POUTRE
@@ -55,15 +55,15 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
-  # Le concept sortant (de type table_sdaster) est nommé 'nomres' dans 
-  # le contexte de la macro
-  
+  # Le concept sortant (de type table_sdaster) est nommé 'nomres' dans le contexte de la macro
   self.DeclareOut('nomres',self.sd)
-
-#  if GROUP_MA_BORD and GROUP_MA:
-#     if not LIAISON:
-#
-  __nomlma=LIRE_MAILLAGE(UNITE=UNITE_MAILLAGE,)
+  #
+  if ( MAILLAGE != None ):
+      __nomlma=CREA_MAILLAGE(MAILLAGE=MAILLAGE)
+  elif ( args.has_key('UNITE') and args.has_key('FORMAT') ):
+      __nomlma=LIRE_MAILLAGE(UNITE=args['UNITE'],FORMAT=args['FORMAT'])
+  else:
+      assert False, "Erreur dans les options UNITE, FORMAT, MAILLAGE"
 
   __nomamo=AFFE_MODELE(MAILLAGE=__nomlma,
                        AFFE=_F(TOUT='OUI',
@@ -98,7 +98,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 # --- =     OU DU  CENTRE DE TORSION/CISAILLEMENT                      =
 # --- =        DES COEFFICIENTS DE CISAILLEMENT                        =
 # --- =     ET DE L INERTIE DE GAUCHISSEMENT                           =
-# --- =        DU RAYON DE TORSION SUR TOUT LE MAILLAGE 
+# --- =        DU RAYON DE TORSION SUR TOUT LE MAILLAGE
 # --- = ON CREE UN MODELE PLAN 2D THERMIQUE REPRESENTANT LA SECTION    =
 # --- = DE LA POUTRE CAR ON A A RESOUDRE DES E.D.P. AVEC DES LAPLACIENS=
 #     ==================================================================
@@ -118,7 +118,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      __nomlma=DEFI_GROUP(reuse=__nomlma,
                          MAILLAGE=__nomlma,
                          **motscles)
-  
+
 
 
 # --- CREATION D UN MAILLAGE IDENTIQUE AU PREMIER A CECI PRES
@@ -194,7 +194,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
            motscles={}
            motscles['FLUX_REP']=[]
-        
+
            if type(lgmaint)==types.StringType:
               motscles['FLUX_REP']=_F(GROUP_MA=args['GROUP_MA_INTE'],CARA_TORSION=__tbaire)
            else:
@@ -264,7 +264,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
      __tempe2=THER_LINEAIRE(MODELE=__nomoth,
                             CHAM_MATER=__chmath,
-                            EXCIT=_F(CHARGE=__chart2,), 
+                            EXCIT=_F(CHARGE=__chart2,),
                             SOLVEUR=_F(STOP_SINGULIER='NON',),
                            )
 
@@ -305,7 +305,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
      __tempe3=THER_LINEAIRE(MODELE=__nomoth,
                             CHAM_MATER=__chmath,
-                            EXCIT=_F(CHARGE=__chart3,), 
+                            EXCIT=_F(CHARGE=__chart3,),
                             SOLVEUR=_F(STOP_SINGULIER='NON',),
                            )
 
@@ -337,10 +337,10 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      __m1=abs(__flun['TRAC_NOR',3])
      __m2=abs(__flun['TRAC_NOR',4])
      __rtext=max(__m1,__m2)
-     
+
  #    CALCUL DU RAYON DE TORSION : rt
  #    rt = max ( rtext , 2*AIRE(TROU)/L(TROU) )
- 
+
      if args.has_key('GROUP_MA_INTE'):
        if args['GROUP_MA_INTE'] != None :
          if type(args['GROUP_MA_INTE'])==types.StringType :
@@ -363,7 +363,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
              __rtext=__m1
 
      __rt=__rtext
-         
+
 # --- CALCUL DE LA CONSTANTE DE TORSION :
 #     ---------------------------------
 
@@ -380,13 +380,13 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
         else:
            motscles['CARA_POUTRE']=_F(CARA_GEOM=__cageo,
                                     LAPL_PHI=__tempe1,
-                                    RT=__rt,  
+                                    RT=__rt,
                                     TOUT='OUI',
                                     OPTION='CARA_TORSION',      )
      __cator=POST_ELEM(MODELE=__nomoth,
                        CHAM_MATER=__chmath,
                        **motscles  )
- 
+
 
 # --- CALCUL DES COEFFICIENTS DE CISAILLEMENT ET DES COORDONNEES DU
 # --- CENTRE DE CISAILLEMENT/TORSION :
@@ -399,7 +399,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                                       LAPL_PHI_Z=__tempe3,
                                       TOUT='OUI',
                                       OPTION='CARA_CISAILLEMENT',),  )
-     
+
 
 #
 #     ------------------------------------------------------------
@@ -552,7 +552,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                             SOLVEUR=_F(METHODE='LDLT',
                                        RENUM='SANS',
                                        STOP_SINGULIER='NON',),   )
-    
+
 # --- CALCUL DE L INERTIE DE GAUCHISSEMENT :
 #     -------------------------------------
 
@@ -563,7 +563,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                                      TOUT='OUI',
                                      OPTION='CARA_GAUCHI'),  )
 
-     
+
 #
 #     ==================================================================
 # --- = CALCUL DE LA CONSTANTE DE TORSION SUR CHAQUE GROUPE            =
@@ -755,7 +755,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                                CHAM_MATER=__chmath,
                                EXCIT=_F(CHARGE=__chart3, ),
                                SOLVEUR=_F(STOP_SINGULIER='NON',)         )
-        
+
 # --- CALCUL DU RAYON DE TORSION :
 #     --------------------------
 
@@ -804,16 +804,16 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
                                              NOM_CHAM='FLUX_ELNO_TEMP',
                                              TRAC_NOR='OUI',
                                              NOM_CMP=('FLUX','FLUY'),
-                                             OPERATION='MOYENNE'))        
+                                             OPERATION='MOYENNE'))
               __m1=(abs(__flun['TRAC_NOR',3])+abs(__flun['TRAC_NOR',4]))/2.
               if __m1 > __rtext :
                 __rtext=__m1
 
         __rt=__rtext
-                
+
 # --- CALCUL DE LA CONSTANTE DE TORSION :
 #     ---------------------------------
-             
+
         __catp1=POST_ELEM(MODELE=__nomoth,
                           CHAM_MATER=__chmath,
                           CARA_POUTRE=_F(CARA_GEOM=__catp2,

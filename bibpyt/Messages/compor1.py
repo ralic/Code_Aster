@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+#@ MODIF compor1 Messages  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -240,6 +240,38 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
  CAM_CLAY ::  Kcam et Ptrac doivent vérifier la relation suivante :
  
               KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/kapa * PTRAC
+"""),
+
+
+43: _("""
+ Le numero de loi de comportement choisi <%(i1)i> est hors des bornes 1-100
+"""),
+
+
+44: _("""
+ Le type de déformation choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
+"""),
+
+45: _("""
+ Le type de schema de resolution choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
+"""),
+
+46: _("""
+ Le type de matrice tangente choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
+"""),
+
+47: _("""
+ La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modeliser
+ des contraintes planes (ou des coques) avec ce comportement, utiliser ALGO_C_PLAN='DEBORST'
+"""),
+
+48: _("""
+ La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modeliser
+ des contraintes 1D (barres, poutres) avec ce comportement, utiliser ALGO_1D='DEBORST'
+"""),
+
+49: _("""
+ La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
 }

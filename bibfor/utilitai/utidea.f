@@ -1,10 +1,10 @@
-      SUBROUTINE UTIDEA ( NOM , ITYPE )
+      SUBROUTINE UTIDEA ( NOM , ITYPE, VERSIO )
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                      ITYPE
+      INTEGER                      ITYPE, VERSIO
       CHARACTER*(*)       NOM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,19 +37,43 @@ C
       ELSEIF ( NOMMAI .EQ. 'SEG4'    ) THEN
         ITYPE = 21
       ELSEIF ( NOMMAI .EQ. 'TRIA3'   ) THEN
-        ITYPE = 74
+        IF(VERSIO.EQ.5)THEN
+            ITYPE=  91
+        ELSE
+            ITYPE = 74
+        ENDIF
       ELSEIF ( NOMMAI .EQ. 'TRIA6'   ) THEN
-        ITYPE = 72
+        IF(VERSIO.EQ.5)THEN
+            ITYPE=  92
+        ELSE
+            ITYPE = 72
+        ENDIF
       ELSEIF ( NOMMAI .EQ. 'TRIA7'   ) THEN
-        ITYPE = 72
+        IF(VERSIO.EQ.5)THEN
+            ITYPE=  92
+        ELSE
+            ITYPE = 72
+        ENDIF
       ELSEIF ( NOMMAI .EQ. 'TRIA9'   ) THEN
         ITYPE = 73
       ELSEIF ( NOMMAI .EQ. 'QUAD4'   ) THEN
-        ITYPE = 71
+        IF(VERSIO.EQ.5)THEN
+            ITYPE=  94
+        ELSE
+            ITYPE = 71
+        ENDIF
       ELSEIF ( NOMMAI .EQ. 'QUAD8'   ) THEN
-        ITYPE = 75
+        IF(VERSIO.EQ.5)THEN
+            ITYPE=  95
+        ELSE
+            ITYPE = 75
+        ENDIF
       ELSEIF ( NOMMAI .EQ. 'QUAD9'   ) THEN
-        ITYPE = 75
+        IF(VERSIO.EQ.5)THEN
+            ITYPE=  95
+        ELSE
+            ITYPE = 75
+        ENDIF
       ELSEIF ( NOMMAI .EQ. 'QUAD12'  ) THEN
         ITYPE = 76
       ELSEIF ( NOMMAI .EQ. 'TETRA4'  ) THEN

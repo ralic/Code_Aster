@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,6 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
 
          COMP_INCR       =FACT(statut='f',
            RELATION        =SIMP(statut='o',typ='TXM',into=("VMIS_ISOT_TRAC",) ),
-           VMIS_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut= 2,into=( 2 ,) ),
            RESI_INTE_RELA  =SIMP(statut='f',typ='R'
                                 ,defaut= 1.0E-6),
            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
@@ -97,8 +96,6 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
 
          COMP_ELAS       =FACT(statut='f',
            RELATION        =SIMP(statut='o',typ='TXM',into=("ELAS","ELAS_VMIS_TRAC") ),
-           ELAS            =SIMP(statut='c',typ='I',defaut= 1,into=( 1 ,) ),
-           ELAS_VMIS_TRAC  =SIMP(statut='c',typ='I',defaut= 1,into=( 1 ,) ),
            RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
            ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),

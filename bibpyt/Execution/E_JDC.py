@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ class JDC:
    l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro')
    
    # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
-   l_pick_attr = ('memo_sensi',)
+   l_pick_attr = ('memo_sensi', 'catalc')
 
    def Exec(self):
       """

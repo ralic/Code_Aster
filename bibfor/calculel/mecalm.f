@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -209,7 +209,7 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       EXITIM = .FALSE.
       CALL JEEXIN(RESUCO//'           .INST',IRET)
       IF (IRET.NE.0) EXITIM = .TRUE.
-      CALL EXLIMA(' ','V',MODELE,RESUC1,LIGREL)
+      CALL EXLIMA(' ','V',MODELE,LIGREL)
       EXIPOU = .FALSE.
       CALL DISMOI('F','EXI_POUX',LIGREL,'LIGREL',IBID,K8B,IERD)
       IF (K8B(1:3).EQ.'OUI') EXIPOU = .TRUE.

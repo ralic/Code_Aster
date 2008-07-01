@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,16 +124,16 @@ N_T=DEFI_FONCTION(      NOM_PARA='TEMP',
 M_T=DEFI_FONCTION(      NOM_PARA='TEMP',
                             PROL_DROITE='CONSTANT',
                            PROL_GAUCHE='CONSTANT',
-                          VALE=( 900.,    10.5,
-                                 1000.,    9.8,
-                                 1025.,    9.625,       ))
+                          VALE=( 900.,    (1.0/10.5),
+                                 1000.,   (1.0/9.8),
+                                 1025.,   (1.0/9.625),       ))
 
 K_T=DEFI_FONCTION(      NOM_PARA='TEMP',
                             PROL_DROITE='CONSTANT',
                            PROL_GAUCHE='CONSTANT',
-                          VALE=( 900.,     2110.,
-                                 1000.,    1450.,
-                                 1025.,    1285.,       ))
+                          VALE=( 900.,     (1.0/2110.),
+                                 1000.,    (1.0/1450.),
+                                 1025.,    (1.0/1285.),       ))
 
 A_T=DEFI_FONCTION(      NOM_PARA='TEMP',
                             PROL_DROITE='CONSTANT',
@@ -166,12 +166,12 @@ ACIER=DEFI_MATERIAU(      ELAS_FO=_F(    E = F_E,
                                          NU = F_NU,
                                          ALPHA = F_ALPHA, TEMP_DEF_ALPHA=1000.0,),
 
-                         VENDOCHAB_FO=_F(   S_VP = SEUIL,
-                                           SEDVP1 = A1,
-                                           SEDVP2 = A2,
-                                           N_VP = N_T,
-                                           M_VP = M_T,
-                                           K_VP = K_T,
+                         VENDOCHAB_FO=_F(   S = SEUIL,
+                                           ALPHA_D = A1,
+                                           BETA_D = A2,
+                                           N = N_T,
+                                           UN_SUR_M = M_T,
+                                           UN_SUR_K = K_T,
                                            A_D = A_T,
                                            R_D = R_T,
                                            K_D = KD_T))

@@ -3,7 +3,7 @@
      &   HSR,TOUTMS)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -75,7 +75,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ----------------------------------------------------------------
       INTEGER  NMAT, NDT , NDI  , NR , NVI,NBCOMM(NMAT,3),NBVAL,NVINI
-      INTEGER         KPG,KSP
+      INTEGER         KPG,KSP, ICOMPI
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
       REAL*8          HOOK(6,6)
       REAL*8          REPERE(7),XYZ(3),KOOH(6,6)
@@ -87,7 +87,7 @@ C     ----------------------------------------------------------------
       CHARACTER*3     MATCST
       CHARACTER*(*)   FAMI
       CHARACTER*16    COMP(*),NMATER,NECOUL,NECRIS,NECRCI
-      CHARACTER*16    CPMONO(5*NMAT+1),PHENOM,NOMFAM
+      CHARACTER*16    CPMONO(5*NMAT+1),PHENOM,NOMFAM,COMPK,COMPI
       INTEGER I, ICOMPO, IMAT, NBFSYS, IFA,J,DIMTMS
       INTEGER MONO1,NBSYST,IEI,NBSYS, IS, IR, NBHSR
 C     ----------------------------------------------------------------
@@ -114,8 +114,11 @@ C
       CALL R8INIR(2*NMAT, 0.D0, MATERF, 1)
 
       READ (COMP(2),'(I16)') NVI
-      READ (COMP(7),'(I16)') NBFSYS
-      CALL JEVEUO(COMP(6),'L',ICOMPO)
+      COMPK=COMP(7)(1:8)//'.CPRK'
+      COMPI=COMP(7)(1:8)//'.CPRI'
+      CALL JEVEUO(COMPK,'L',ICOMPO)
+      CALL JEVEUO(COMPI,'L',ICOMPI)
+      NBFSYS=ZI(ICOMPI-1+5)
 C     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
 C
       CALL MATROT(ANGMAS,PGL)

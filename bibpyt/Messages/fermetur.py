@@ -1,4 +1,4 @@
-#@ MODIF fermetur Messages  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF fermetur Messages  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,6 +73,13 @@ cata_msg={
 10: _("""
   Erreur :
       le solveur "PETSc" n'est pas installé sur cette machine.
+"""),
+
+
+11: _("""
+  Erreur de programmation :
+      On essaye d'utiliser une routine de comportement (lc00xx)
+      qui n'est pas encore programmée.
 """),
 
 

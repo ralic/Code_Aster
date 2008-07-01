@@ -3,7 +3,7 @@
       IMPLICIT REAL*8(A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
       PARAMETER(NBECMX=10)
       INTEGER ICODLA(NBECMX),ICODGE(NBECMX),RANG,NBPROC,IRET,IFM,NIV,
-     &        IBID,IMUMPS
+     &        IBID,IMUMPS,IFCPU
       CHARACTER*1 BAS
       CHARACTER*8 MA,MO,MO2,NOGDSI,NOGDCO,NOMCAS
       CHARACTER*8 KBID
@@ -96,7 +96,7 @@ C ----------------------------------------------------------------------
       INTEGER ZZCONX,ZZNBNE,ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG,ZZNELS
       INTEGER ZZNEMA,ZZPRNO,IZZPRN
       INTEGER VALI(4)
-      REAL*8 R8MAEM
+      REAL*8 R8MAEM,TEMPS(6)
 
       ZZCONX(IMAIL,J)=ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
 
@@ -161,7 +161,6 @@ C --- DEBUT ------------------------------------------------------------
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 
       CALL INFNIV(IFM,NIV)
-
 C     IFM = IUNIFI('MESSAGE')
 C----------------------------------------------------------------------
 
@@ -190,6 +189,10 @@ C --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE MUMPS DISTRIBUE
         CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
         LMUMPS=.TRUE.
         CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',JNUMSD)
+        IF (NIV.GE.2) THEN
+          CALL UTTCPU(90,'INIT ',6,TEMPS)
+          CALL UTTCPU(90,'DEBUT',6,TEMPS)
+        ENDIF
       ENDIF
 
 C --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
@@ -405,6 +408,11 @@ C     ------------------------
       CALL JEDETR('&&ASSVEC.POSDDL')
       CALL JEDETR('&&ASSVEC.NUMLOC')
 
+      IF (LMUMPS.AND.(NIV.GE.2)) THEN
+        CALL UTTCPU(90,'FIN  ',6,TEMPS)
+        CALL JEVEUO('&MUMPS.INFO.CPU.ASSE','E',IFCPU)
+        ZR(IFCPU+RANG)=ZR(IFCPU+RANG)+TEMPS(5)+TEMPS(6)
+      ENDIF
 C        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
       IF (LMUMPS) CALL MPICM1('MPI_MIN','R',NEQUA,IBID,ZR(JVALE))
 

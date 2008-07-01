@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2727,7 +2727,7 @@ PyObject *args;
 INTEGER DEFS(JDCGET,jdcget,char *attr, int l_attr)
 {
 /*
-   Permet de récupérer la valeur d'un attribut du jdc.
+   Permet de récupérer la valeur entière d'un attribut du jdc.
 */
    PyObject *jdc, *val;
    INTEGER value;
@@ -2757,7 +2757,7 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, int l_attr)
 void DEFSP(JDCSET,jdcset,char *attr, int l_attr, INTEGER *value)
 {
 /*
-   Permet de positionner la valeur d'un attribut du jdc à `value`.
+   Permet de positionner la valeur entière d'un attribut du jdc à `value`.
 */
    PyObject *jdc, *res;
 
@@ -2771,6 +2771,25 @@ void DEFSP(JDCSET,jdcset,char *attr, int l_attr, INTEGER *value)
 
    Py_XDECREF(jdc);
    Py_XDECREF(res);
+}
+
+/* ------------------------------------------------------------------ */
+PyObject* GetJdcAttr(_IN char *attribut)
+{
+/*
+   Retourne un attribut du 'jdc' en tant que PyObject.
+*/
+   PyObject *jdc, *objattr;
+   
+   jdc = PyObject_GetAttrString(commande, "jdc");
+   if (jdc == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+
+   objattr = PyObject_GetAttrString(jdc, attribut);
+   /* traiter l'erreur "objattr == NULL" dans l'appelant */
+   
+   Py_XDECREF(jdc);
+   return objattr;
 }
 
 /* ------------------------------------------------------------------ */
@@ -3459,7 +3478,6 @@ PyObject *args;
 
 /* ------------------------------------------------------------------ */
 /*             Routines d'interface pour la sensibilité               */
-
 void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, int lnosimp,
                             _IN  char *nopase, int lnopase,
                             _OUT char *nocomp, int lnocomp,
@@ -3475,16 +3493,12 @@ void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, int lnosimp,
                      0 -> tout s'est bien passe
                      1 -> le couple (nosimp,nopase) n'est pas renseigne
 */
-   PyObject *jdc, *memo_sensi, *val;
+   PyObject *memo_sensi, *val;
    char *sret = (char*)0;
    int ier, longueur;
    *iret = 0;
 
-   jdc = PyObject_GetAttrString(commande, "jdc");
-   if (jdc == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
-
-   memo_sensi = PyObject_GetAttrString(jdc, "memo_sensi");
+   memo_sensi = GetJdcAttr("memo_sensi");
    if (memo_sensi == NULL)
       MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
 
@@ -3500,7 +3514,6 @@ void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, int lnosimp,
       *iret = 1;
    }
 
-   Py_XDECREF(jdc);
    Py_XDECREF(memo_sensi);
    Py_XDECREF(val);
 }
@@ -3532,15 +3545,11 @@ void DEFSSPSSS(PSGEMC,psgemc, _IN  char *nosimp, int lnosimp,
    Remarque 2 : AVANT limocl, livale et limofa étaient des noms de vecteurs dans ZK80.
                 MAINTENANT ce sont des CHARACTER*80(nbmocl)
 */
-   PyObject *jdc, *memo_sensi;
+   PyObject *memo_sensi;
    PyObject *tup3, *tmocl, *tvale, *tmofa;
    int ichk;
 
-   jdc = PyObject_GetAttrString(commande, "jdc");
-   if (jdc == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
-
-   memo_sensi = PyObject_GetAttrString(jdc, "memo_sensi");
+   memo_sensi = GetJdcAttr("memo_sensi");
    if (memo_sensi == NULL)
       MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
 
@@ -3565,7 +3574,6 @@ void DEFSSPSSS(PSGEMC,psgemc, _IN  char *nosimp, int lnosimp,
       convertxt(*nbmocl, tmofa, limofa, l3);
    }
 
-   Py_XDECREF(jdc);
    Py_XDECREF(memo_sensi);
    Py_XDECREF(tup3);
 }
@@ -3610,15 +3618,11 @@ void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, int lnomsd,
    Remarque 3 : si cette structure de mémorisation est inconnue, on en
                 conclut qu'aucun calcul de sensibilité n'a été demandé.
 */
-   PyObject *jdc, *memo_sensi, *tup2;
+   PyObject *memo_sensi, *tup2;
    PyObject *indic, *result;
    int size_result;
 
-   jdc = PyObject_GetAttrString(commande, "jdc");
-   if (jdc == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
-
-   memo_sensi = PyObject_GetAttrString(jdc, "memo_sensi");
+   memo_sensi = GetJdcAttr("memo_sensi");
    if (memo_sensi == NULL)
       MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
 
@@ -3639,13 +3643,130 @@ void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, int lnomsd,
       convertxt(size_result, result, nostnc, lnostnc);
    }
 
-   Py_XDECREF(jdc);
    Py_XDECREF(memo_sensi);
    Py_XDECREF(tup2);
 }
 
 /* ----------------------   FIN Sensibilité   ----------------------- */
 /* ------------------------------------------------------------------ */
+
+
+/* ------------------------------------------------------------------ */
+/*   Routines d'interface pour le catalogue de loi de comportement    */
+/* ------------------------------------------------------------------ */
+void DEFPSS(LCCREE, lccree, _IN INTEGER *nbkit,
+                            _IN char *lkit, int llkit,
+                            _OUT char *compor, int lcompor)
+{
+/*
+   Créer un assemblage de LC composé des comportements listés dans 'list_kit'
+   et retourne le nom attribué automatiquement à ce comportement.
+      
+      CALL LCCREE(NBKIT, LKIT, COMPOR)
+      ==> comport = catalc.create(*list_kit)
+*/
+   PyObject *catalc, *res, *tup_kit;
+   char *scomp;
+   int lsc;
+   
+   catalc = GetJdcAttr("catalc");
+   /* transforme le tableau de chaines fortran en tuple */
+   tup_kit = MakeTupleString(*nbkit, lkit, llkit, NULL);
+   
+   res = PyObject_CallMethod(catalc, "create", "O", tup_kit);
+   if (res == NULL) {
+      MYABORT("Echec lors de la creation du comportement (lccree/create) !");
+   }
+   
+   scomp = PyString_AsString(res);
+   lsc = strlen(scomp);
+                                                              ASSERT(lsc <= lcompor) ;
+   STRING_FCPY(compor, lcompor, scomp, lsc);
+   
+   Py_XDECREF(res);
+   Py_XDECREF(tup_kit);
+   Py_XDECREF(catalc);
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSPP(LCINFO, lcinfo, _IN char *compor, int lcompor,
+                            _OUT INTEGER *numlc,
+                            _OUT INTEGER *nbvari)
+{
+/*
+   Retourne le numéro de routine et le nbre de variables internes
+      
+      CALL LCINFO(COMPOR, NUMLC, NBVARI)
+      ==> num_lc, nb_vari = catalc.get_info(COMPOR)
+*/
+   PyObject *catalc, *res;
+
+   catalc = GetJdcAttr("catalc");
+   res = PyObject_CallMethod(catalc, "get_info", "s#", compor, lcompor);
+   if (res == NULL) {
+      MYABORT("Echec lors de la recuperation des informations sur le comportement (lcinfo/get_info) !");
+   }
+   
+   *numlc  = PyInt_AsLong(PyTuple_GetItem(res, 0));
+   *nbvari = PyInt_AsLong(PyTuple_GetItem(res, 1));
+
+   Py_XDECREF(res);
+   Py_XDECREF(catalc);
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSPS(LCVARI, lcvari, _IN char *compor, int lcompor,
+                            _IN INTEGER *nbvari,
+                            _OUT char *nomvar, int lnomvar)
+{
+/*
+   Retourne la liste des variables internes
+      
+      CALL LCVARI(COMPOR, NBVARI, LVARI)
+      ==> nom_vari = catalc.get_vari(COMPOR)
+*/
+   PyObject *catalc, *res;
+
+   catalc = GetJdcAttr("catalc");
+   res = PyObject_CallMethod(catalc, "get_vari", "s#", compor, lcompor);
+   if (res == NULL) {
+      MYABORT("Echec lors de la recuperation des noms des variables internes du comportement (lcvari/get_vari) !");
+   }
+   
+   convertxt(*nbvari, res, nomvar, lnomvar);
+
+   Py_XDECREF(res);
+   Py_XDECREF(catalc);
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSSSP(LCTEST, lctest, _IN char *compor, int lcompor,
+                             _IN char *prop, int lprop,
+                             _IN char *valeur, int lvaleur,
+                             _OUT INTEGER *iret)
+{
+/*
+   Est-ce que VALEUR est un valeur autorisée de PROPRIETE ?
+         CALL LCTEST(COMPOR, PROPRIETE, VALEUR, IRET)
+         ==> iret = catalc.query(COMPOR, PROPRIETE, VALEUR)
+*/
+   PyObject *catalc, *res;
+
+   catalc = GetJdcAttr("catalc");
+   res = PyObject_CallMethod(catalc, "query", "s#s#s#", compor, lcompor, prop, lprop, valeur, lvaleur);
+   if (res == NULL) {
+      MYABORT("Echec lors du test d'une propriete du comportement (lctest/query) !");
+   }
+   
+   *iret = PyInt_AsLong(res);
+
+   Py_XDECREF(res);
+   Py_XDECREF(catalc);
+}
+
+/* ----------   FIN catalogue de loi de comportement   -------------- */
+/* ------------------------------------------------------------------ */
+
 
 
 /* ------------------------------------------------------------------ */

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C     OPERATEUR FACTORISER
 C     BUT: - FACTORISE UNE MATRICE ASSEMBLEE EN 2 MATRICES TRIANGULAIRES
 C            (SOLVEUR MUMPS,MULT_FRONT,LDLT), OU
 C          - DETERMINE UNE MATRICE DE PRECONDITIONNEMENT POUR L'ALGO DU
-C            GRADIENT CONJUGUE PRCONDITIONNE (SOLVEUR GCPC) 
+C            GRADIENT CONJUGUE PRCONDITIONNE (SOLVEUR GCPC)
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -52,6 +52,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NPREC,IATFAC,IBDEB,IBFIN,IBID,IER1,IFM,ILDEB,ILFIN
       INTEGER IRET,ISINGU,ISTOP,JADIA,PCPIV,NIREMP
       INTEGER LDTBLO,LFNBLO,NDECI,NEQ,NIV,NPVNEG
+      REAL*8 RBID
+      COMPLEX*16 CBID
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -109,8 +111,8 @@ C
          ZK24(JSLVK-1+2)=KTYPS
          ZK24(JSLVK-1+3)=KTYPR
          ZK24(JSLVK-1+6)=KLAG2
-         CALL AMUMPS('DETR_MAT',' ',MFAC,' ',' ',' ',IRET)
-         CALL AMUMPS('PRERES',SOLVEU,MFAC,' ',' ',' ',IRET)
+         CALL AMUMPS('DETR_MAT',' ',MFAC,RBID,CBID,' ',0,IRET)
+         CALL AMUMPS('PRERES',SOLVEU,MFAC,RBID,CBID,' ',0,IRET)
          IF (IRET.NE.0) CALL U2MESS('F','FACTOR_42')
          GO TO 9999
       END IF

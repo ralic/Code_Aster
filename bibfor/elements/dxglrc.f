@@ -8,7 +8,7 @@
       CHARACTER*16 OPT, NOMTE, COMPOR(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -355,7 +355,7 @@ C         ENDOMMAGEMENT PLUS PLASTICITE
 
             CALL NMCOUP('RIGI',IPG,1,3,K8BID,ZI(IMATE),COMPOR,LBID,
      &                   R8BID,R8BID,R8BID,EPSM,DEPS,SIGM,ECR,OPT,R8BID,
-     &                   SIG,ECRP,DSIDEP,IBID)
+     &                   IBID,SIG,ECRP,DSIDEP,IBID)
 
         ELSE
            VALK = COMPOR(1)
@@ -441,7 +441,6 @@ C
 C     -- ACCUMULATION DES SOUS MATRICES DANS KTAN :
 C     -----------------------------------------------
       IF (MATRIC) THEN
-       
         IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN
           CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,KTAN)
         ELSE IF(NOMTE(1:8).EQ.'MEDKQG4 ') THEN

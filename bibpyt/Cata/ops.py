@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,12 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM):
                IGNORE_ALARM = [IGNORE_ALARM]
             for idmess in IGNORE_ALARM:
                MessageLog.disable_alarm(idmess)
+               
+      # en POURSUITE, conserver le catalogue de comportement picklé
+      if not hasattr(jdc, 'catalc'):
+         from Comportement import catalc
+         jdc.catalc = catalc
+
       jdc.msg_init = True
 
 

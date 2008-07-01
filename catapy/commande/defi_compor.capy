@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,54 +118,6 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                                         "ZMAT",
                                         "GRAN_IRRA_LOG",
                                      ) ),
-          ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          ELAS_HYPER      =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          SANS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          CORR_ACIER      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          VMIS_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          VISC_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          VMIS_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          VISC_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          VMIS_ISOT_PUIS  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          VMIS_ECMI_TRAC  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
-          VMIS_ECMI_LINE  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
-          LABORD_1D       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
-          ENDO_FRAGILE    =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          ENDO_ISOT_BETON =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          ENDO_ORTH_BETON =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
-          BETON_REGLE_PR  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          MAZARS          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
-          RUPT_FRAG       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          VMIS_CINE_LINE  =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
-          VISCOCHAB       =SIMP(statut='c',typ='I',defaut=28,into=(28,)),
-          VMIS_CIN1_CHAB  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
-          VMIS_CIN2_CHAB  =SIMP(statut='c',typ='I',defaut=14,into=(14,)),
-          VISC_CIN1_CHAB  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
-          VISC_CIN2_CHAB  =SIMP(statut='c',typ='I',defaut=14,into=(14,)),
-          VISC_TAHERI     =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
-          ROUSSELIER      =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
-          ROUSS_PR        =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          ROUSS_VISC      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          VMIS_POU_LINE   =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
-          VMIS_POU_FLEJOU =SIMP(statut='c',typ='I',defaut=9 ,into=(9,)),
-          ASSE_CORN       =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
-          ARME            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          NORTON_HOFF     =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          LEMAITRE        =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          VENDOCHAB       =SIMP(statut='c',typ='I',defaut=10,into=(10,)),
-          GRILLE_ISOT_LINE=SIMP(statut='c',typ='I',defaut=4,into=(4,)),
-          DRUCK_PRAGER  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          DRUCK_PRAG_N_A  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          HOEK_BROWN      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          HOEK_BROWN_EFF  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          HOEK_BROWN_TOT  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          GRANGER_FP      =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
-          GRANGER_FP_INDT =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
-          GRANGER_FP_V    =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
-          BETON_DOUBLE_DP =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
-          BETON_UMLV_FP   =SIMP(statut='c',typ='I',defaut=21,into=(21,)),
-          GRAN_IRRA_LOG   =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
-
            RELATION_KIT    =SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
                                  into=(
 # MECA KIT_DDI
@@ -181,7 +133,6 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                                        "NADAI_B",
                                        "BETON_DOUBLE_DP",
                                        ),),
-
 # on pourrait ajouter TOUT_GROUP_FIBRE
 
                                 ) );

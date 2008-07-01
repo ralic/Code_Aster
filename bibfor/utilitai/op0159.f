@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,7 @@ C
      &                          NEL,K8B)
                     CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(JNEM+NEL-1)),
      &                          NOMMAI)
-                    CALL UTIDEA(NOMMAI,ITYPM)
+                    CALL UTIDEA(NOMMAI,ITYPM,VERSIO)
                     NBELET=NBELET+1
                     K=K+1
                     ZI(JNSUP1+K-1)=IMAIL

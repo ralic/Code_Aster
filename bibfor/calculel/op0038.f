@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,7 +83,7 @@ C
       CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,BLAN8,1)
       CALL JEVEUO(KCHA,'E',JCHA)
 
-      CALL EXLIMA(' ','G',MODELE,CHELEM,LIGREL)
+      CALL EXLIMA(' ','G',MODELE,LIGREL)
 
       EXITIM = .FALSE.
       PRESS = ' '

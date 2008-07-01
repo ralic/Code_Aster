@@ -4,7 +4,7 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,8 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER            NBCHOC, INFO, NBMODE,IRIGI,INDIC(NBMODE)
       INTEGER VALI
-      INTEGER            NEQ,NBNLI,NDECI,ISINGU,NPVNEG,IRET, ISTOP,IFAC
+      INTEGER            NEQ,NBNLI,NDECI,ISINGU,ISTOAV,IRET, ISTOP,IFAC
+      INTEGER            JSLVI
       REAL*8             RIGGEN(*),SEUIL,
      &                   PARCHO(NBNLI,*)
       CHARACTER*8        NOECHO(NBNLI,*)
@@ -61,7 +62,8 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       REAL*8 VALR(3)
       REAL*8             FIMPO(NEQ),RFIMPO(NEQ)
       REAL*8             BMODAL(NEQ,NBMODE),SOUP,CEF,TX
-      CHARACTER*24       MARIG
+      CHARACTER*19       MARIG
+      CHARACTER*19 SOLVEU,MATPRE
       CHARACTER*24 VALK
       COMPLEX*16         CBID
       INTEGER I,J,JJ,K,IA,IC,JM,IDDLX,IDDLY,IDDLZ,NUNOE
@@ -88,7 +90,7 @@ C
       NEQCH2 = NEQ*NBCH2
 C
       CALL MTDSCR(MARIG)
-      CALL JEVEUO(MARIG(1:19)//'.&INT','E',IRIGI)
+      CALL JEVEUO(MARIG//'.&INT','E',IRIGI)
 C
       CALL WKVECT('&&CRICHO.EFLOC','V V R',NBMODE,JEFLOC)
       CALL WKVECT('&&CRICHO.RFIMPOX','V V R',NEQCH2,JRFIMP)
@@ -128,29 +130,39 @@ C     CREATION DE FIMPO : FORCE UNITAIRE AU NOEUD DE CHOC (N)
             FIMPO(IDDLY)=PARCHO(I,45)
             FIMPO(IDDLZ)=PARCHO(I,46)
 C
-C     CALCUL DE RFIMPO : K*N
+C           CALCUL DE RFIMPO : K*N
             CALL MRMULT('ZERO',IRIGI,FIMPO,'R',RFIMPO,1)
-C
-C     ISTOP MIS A 2 POUR NE PAS ARRETER L'EXECUTION EN CAS DE MATRICE
-C     SINGULIERE (MODES STATIQUES)
-            ISTOP = 2
+
             IF (IFAC.EQ.0) THEN
-              CALL TLDLGG(ISTOP,IRIGI,1,NEQ,0,NDECI,ISINGU,
-     &                  NPVNEG,IRET)
-                IF (IRET.EQ.2) THEN
-                  CALL U2MESS('A','SOUSTRUC_7')
-                  GOTO 9999
-                ELSE IF (IRET.EQ.1) THEN
-                  CALL U2MESS('A','SOUSTRUC_8')
-                  GOTO 9999
-                ENDIF
+              CALL DISMOI('F','SOLVEUR',MARIG,'MATR_ASSE',IBID,
+     &                    SOLVEU,IBID)
+              CALL ASSERT(SOLVEU.EQ.'&&OP0074.SOLVEUR')
+              MATPRE='&&OP0074.BIDON'
+C
+C             ISTOP MIS A 2 POUR NE PAS ARRETER L'EXECUTION EN CAS
+C             DE MATRICE SINGULIERE (MODES STATIQUES)
+              CALL JEVEUO(SOLVEU//'.SLVI','E',JSLVI)
+              ISTOAV=ZI(JSLVI-1+3)
+              ZI(JSLVI-1+3)=2
+              CALL PRERES(SOLVEU,'V',IRET,MATPRE,MARIG)
+C             -- ON RETABLIT ISTOP
+              ZI(JSLVI-1+3)=ISTOAV
+              IF (IRET.EQ.2) THEN
+                CALL U2MESS('A','SOUSTRUC_7')
+                GOTO 9999
+              ELSE IF (IRET.EQ.1) THEN
+                CALL U2MESS('A','SOUSTRUC_8')
+                GOTO 9999
+              ENDIF
+              IFAC=1
             ENDIF
-C FIMPO : DEFORMEE STATIQUE (K-1*N)
-            CALL RLDLGG(IRIGI,FIMPO,CBID,1)
-C NORMX : NORME K-1*N
+
+C           FIMPO : DEFORMEE STATIQUE (K-1*N)
+            CALL RESOU2(MARIG,0,1,FIMPO,CBID)
+C           NORMX : NORME K-1*N
             NORMX=DDOT(NEQ,FIMPO,1,FIMPO,1)
             ZR(JNORMX-1+ICOLC)=NORMX
-C RFIMPOX : K-1*N (SAUVEGARDE DEFORMEE STATIQUE)
+C           RFIMPOX : K-1*N (SAUVEGARDE DEFORMEE STATIQUE)
             DO 41 K=1,NEQ
               ZR(JRFIMP-1+K+NEQ*(ICOLC-1))=FIMPO(K)
    41       CONTINUE

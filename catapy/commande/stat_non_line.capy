@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,13 +50,6 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
                                  into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS",
                                       "ELAS_POUTRE_GR","CABLE","ELAS_HYPER")),
-           ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-           ELAS_VMIS_TRAC  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-           ELAS_VMIS_LINE  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-           ELAS_VMIS_PUIS  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-           ELAS_HYPER      =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-           ELAS_POUTRE_GR  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-           CABLE           =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GREEN","GREEN_GR",) ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

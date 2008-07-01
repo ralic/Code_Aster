@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,8 +21,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE FLEJOU J-L.FLEJOU
 C TOLE  CRP_20
-
 C     ELEMENTS CONCERNES :  MECA_DIS_TR_L : SUR UNE MAILLE A 2 NOEUDS
 C                           MECA_DIS_T_L  : SUR UNE MAILLE A 2 NOEUDS
 C                           MECA_DIS_TR_N : SUR UNE MAILLE A 1 NOEUD
@@ -68,21 +68,24 @@ C *************** DECLARATION DES VARIABLES LOCALES ********************
       REAL*8 ANG(3),PGL(3,3),KLV(78),KLV2(78),KLV3(144),XD(3)
       REAL*8 UGM(12),UGP(12),DUG(12),COORG(12)
       REAL*8 ULM(12),ULP(12),DUL(12),KTY2,DVL(12),DPE(12),DVE(12)
-      REAL*8 VARMO(7),VARPL(7),IRRAP
-      REAL*8 VARIPC(7)
+      REAL*8 VARMO(7),VARPL(7),VARIPC(7)
+      REAL*8 DTEMPS,TEMPER,IRRAP
+      REAL*8 DDOT,DULY,FOR2,FOR3,PLOUF,TET1,TET2,VARIP,XL,XL0,XL2
+
       INTEGER NBT,NNO,NC,NEQ,IGEOM,ICONTM,IDEPLM,IDEPLP,ICOMPO,LORIEN
       INTEGER I,JDC,IREP,IMAT,IFONO,ICONTP,ILOGIC,IITER,IMATE,IVARIM
       INTEGER IRMETG,ITERAT,IVARIP,NDIM,JCRET
-      INTEGER IADZI, IAZK24
+      INTEGER IADZI,IAZK24
+      INTEGER II,JTP,JTM,IDEPEN,IRET,IRET2,IVITEN,IVITP,JINST
+
       CHARACTER*8 NOMAIL
       CHARACTER*4 FAMI
 
-      REAL*8   ZERO,DTEMPS,TEMPER,MOINS1
-      INTEGER  II,JTP,JTM
+      LOGICAL PREAC
 
-      REAL*8  DDOT,DULY,FOR2,FOR3,PLOUF,TET1,TET2,VARIP,XL,XL0,XL2
-      INTEGER IDEPEN,IRET,IRET2,IVITEN,IVITP,JINST
+      CHARACTER*24 MESSAK(5)
 
+      REAL*8 ZERO,MOINS1
       PARAMETER (ZERO = 0.0D0, MOINS1=-1.0D0)
 C  ===========================================================
 C
@@ -176,11 +179,8 @@ C *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 C ********************* DEBUT DE LA SUBROUTINE *************************
 
       FAMI = 'RIGI'
-
-
 C --- DEFINITIONS DE PARAMETRES : NBT = NOMBRE DE COEFFICIENTS DANS K
 C                                 NEQ = NOMBRE DE DDL EN DEPLACEMENT
-
       OPTION = OPTIOZ
       NOMTE = NOMTEZ
 
@@ -230,32 +230,86 @@ C                                 NEQ = NOMBRE DE DDL EN DEPLACEMENT
          NEQ  = 6
          NDIM = 2
       ELSE
-        CALL U2MESK('F','ELEMENTS2_42',1,NOMTE)
+         MESSAK(1) = NOMTE
+         MESSAK(2) = OPTION
+         MESSAK(3) = '????????'
+         MESSAK(4) = '????????'
+         CALL TECAEL ( IADZI, IAZK24 )
+         MESSAK(5) = ZK24(IAZK24-1+3)
+        CALL U2MESK('F','DISCRETS_9',5,MESSAK)
       END IF
 
 C --- RECUPERATION DES ADRESSES JEVEUX
-
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PCONTMR','L',ICONTM)
       CALL JEVECH('PDEPLMR','L',IDEPLM)
       CALL JEVECH('PDEPLPR','L',IDEPLP)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
-      IF (ZK16(ICOMPO+3).EQ.'COMP_ELAS') THEN
-         CALL U2MESS('F','ELEMENTS2_90')
+C--- RECUPERATION DES INFOS CONCERNANT LES COMPORTEMENTS
+C                       12345678901234
+C     ZK16(ICOMPO)      ELAS
+C                       DIS_GRICRA
+C                       DIS_VISC
+C                       DIS_ECRO_CINE
+C                       DIS_BILI_ELAS
+C                       ASSE_CORN
+C                       ARME
+C                       DIS_CHOC
+C                       DIS_GOUJ2E
+C     ZK16(ICOMPO+1)    NBVAR = READ (ZK16(ICOMPO+1),'(I16)')
+C     ZK16(ICOMPO+2)    PETIT_REAC
+C                       GREEN
+C     ZK16(ICOMPO+3)    COMP_ELAS
+C                       COMP_INCR
+      PREAC = ZK16(ICOMPO+2)(6:10).EQ.'_REAC'
+
+C         OPTION           MATRICE     FORCES
+C      12345678901234      TANGENTE    NODALES
+C      FULL_MECA             OUI        OUI
+C      RAPH_MECA                        OUI
+C      RIGI_MECA_TANG        OUI
+C      RIGI_MECA_ELAS        OUI
+C      FULL_MECA_ELAS        OUI
+
+C     On peut avoir COMP_ELAS et seulement comportement ELAS
+      IF ( (ZK16(ICOMPO+3).EQ.'COMP_ELAS').AND.
+     &     (ZK16(ICOMPO).NE.'ELAS') ) THEN
+         MESSAK(1) = NOMTE
+         MESSAK(2) = OPTION
+         MESSAK(3) = ZK16(ICOMPO+3)
+         MESSAK(4) = ZK16(ICOMPO)
+         CALL TECAEL ( IADZI, IAZK24 )
+         MESSAK(5) = ZK24(IAZK24-1+3)
+         CALL U2MESK('F','DISCRETS_8',5,MESSAK)
       END IF
 
+C     Dans les cas *_ELAS, les comportements qui ont une matrice de
+C     décharge sont : ELAS DIS_GRICRA
+      IF ( (OPTION(10:14).EQ.'_ELAS').AND.
+     &     (ZK16(ICOMPO).NE.'ELAS').AND.
+     &     (ZK16(ICOMPO).NE.'DIS_GRICRA') ) THEN
+         MESSAK(1) = NOMTE
+         MESSAK(2) = OPTION
+         MESSAK(3) = ZK16(ICOMPO+3)
+         MESSAK(4) = ZK16(ICOMPO)
+         CALL TECAEL ( IADZI, IAZK24 )
+         MESSAK(5) = ZK24(IAZK24-1+3)
+         CALL U2MESK('F','DISCRETS_10',5,MESSAK)
+      ENDIF
 
 C ======================================================================
 C   ORIENTATION DE L'ELEMENT ET DEPLACEMENTS DANS LES REPERES G ET L
 C ======================================================================
-
 C --- RECUPERATION DES ORIENTATIONS (ANGLES NAUTIQUES -> VECTEUR ANG)
-
       CALL TECACH ( 'ONN','PCAORIE', 1, LORIEN ,IRET)
       IF ( IRET .NE. 0 ) THEN
+         MESSAK(1) = NOMTE
+         MESSAK(2) = OPTION
+         MESSAK(3) = ZK16(ICOMPO+3)
+         MESSAK(4) = ZK16(ICOMPO)
          CALL TECAEL ( IADZI, IAZK24 )
-         NOMAIL = ZK24(IAZK24-1+3)(1:8)
-         CALL U2MESK('F','DISCRETS_6',1,NOMAIL)
+         MESSAK(5) = ZK24(IAZK24-1+3)
+         CALL U2MESK('F','DISCRETS_6',5,MESSAK)
       ENDIF
       CALL DCOPY ( 3, ZR(LORIEN), 1, ANG, 1 )
 
@@ -264,7 +318,6 @@ C        UGM = DEPLACEMENT PRECEDENT
 C        DUG = INCREMENT DE DEPLACEMENT
 C        UGP = DEPLACEMENT COURANT
 C        XD  = VECTEUR JOIGNANT LES DEUX NOEUDS AU REPOS (NORME XL0)
-
       DO 10 I = 1,NEQ
          UGM(I) = ZR(IDEPLM+I-1)
          DUG(I) = ZR(IDEPLP+I-1)
@@ -278,7 +331,7 @@ C        XD  = VECTEUR JOIGNANT LES DEUX NOEUDS AU REPOS (NORME XL0)
       END IF
 
 C --- CHANGEMENT DE REPERE POUR L'ELEMENT TRANSLATION/ROTATION LIAISON
-      IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
+      IF ( PREAC ) THEN
 C        REACTUALISATION DES POSITIONS DES 2 NOEUDS ET CALCUL
 C        DE LEUR DISTANCE
          DO 20 I = 1,NDIM
@@ -290,10 +343,8 @@ C        DE LEUR DISTANCE
          XL = SQRT(XL2)
       ENDIF
 
-      IF (NOMTE.EQ.'MECA_DIS_TR_L'.AND.
-     &    ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
-C        CALCUL DE L'ANGLE DE VRILLE MOYEN SI ELEMENT DE LONGUEUR NON
-C        NULLE
+      IF (NOMTE.EQ.'MECA_DIS_TR_L'.AND. PREAC ) THEN
+C     ANGLE DE VRILLE MOYEN SI ELEMENT DE LONGUEUR NON NULLE
          TET1=DDOT(3,UGP(4),1,XD,1)
          TET2=DDOT(3,UGP(10),1,XD,1)
          IF (XL.NE.0.D0) THEN
@@ -327,12 +378,6 @@ C        ULP = DEPLACEMENT COURANT      = PLG * UGP
 C ======================================================================
 C                      COMPORTEMENT ELASTIQUE
 C ======================================================================
-
-      IF ((ZK16(ICOMPO).NE.'ELAS').AND.(OPTION(11:14).EQ.'ELAS')
-     &     .AND.(ZK16(ICOMPO).NE.'DIS_GRICRA')) THEN
-         CALL U2MESK('F','ELEMENTS2_91',1,NOMTE)
-      ENDIF
-
       IF (ZK16(ICOMPO).EQ.'ELAS') THEN
 C ------ PARAMETRES EN ENTREE
          CALL JEVECH('PCADISK','L',JDC)
@@ -370,6 +415,7 @@ C --- CALCUL DES EFFORTS GENERALISES ET DES FORCES NODALES
             CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,DUL,ZR(ICONTM),ILOGIC,
      &                PLOUF,PLOUF,ZR(ICONTP),ZR(IFONO),PLOUF,PLOUF)
          END IF
+         GOTO 800
       END IF
 C ======================================================================
 C                  FIN DU COMPORTEMENT ELASTIQUE
@@ -399,7 +445,13 @@ C --- -- RECUPERE TOUS LES PARAMETRES
 
 C --- -- MATRICE EN REPERE GLOBAL ==> IREP = 1
          IF (IREP.EQ.1) THEN
-            CALL U2MESK('F','DISCRETS_5',1,NOMTE)
+            MESSAK(1) = NOMTE
+            MESSAK(2) = OPTION
+            MESSAK(3) = ZK16(ICOMPO+3)
+            MESSAK(4) = ZK16(ICOMPO)
+            CALL TECAEL ( IADZI, IAZK24 )
+            MESSAK(5) = ZK24(IAZK24-1+3)
+            CALL U2MESK('F','DISCRETS_5',5,MESSAK)
          ENDIF
 
 C --- -- LES CARACTERISTIQUES SONT TOUJOURS DANS LE REPERE LOCAL
@@ -452,6 +504,7 @@ C        ET MISE A JOUR DES VARIABLES INTERNES
                ZR(IVARIP+II-1) = VARDNL(II)
 122         CONTINUE
          ENDIF
+         GOTO 800
       ENDIF
 C ======================================================================
 C            FIN COMPORTEMENT VISQUEUX DISCRET_NON_LINE
@@ -481,7 +534,13 @@ C --- -- RECUPERE TOUS LES PARAMETRES
 
 C --- -- MATRICE EN REPERE GLOBAL ==> IREP = 1
          IF (IREP.EQ.1) THEN
-            CALL U2MESK('F','DISCRETS_5',1,NOMTE)
+            MESSAK(1) = NOMTE
+            MESSAK(2) = OPTION
+            MESSAK(3) = ZK16(ICOMPO+3)
+            MESSAK(4) = ZK16(ICOMPO)
+            CALL TECAEL ( IADZI, IAZK24 )
+            MESSAK(5) = ZK24(IAZK24-1+3)
+            CALL U2MESK('F','DISCRETS_5',5,MESSAK)
          ENDIF
 
 C --- -- LES CARACTERISTIQUES SONT TOUJOURS DANS LE REPERE LOCAL
@@ -530,6 +589,7 @@ C        ET MISE A JOUR DES VARIABLES INTERNES
                ZR(IVARIP+II-1) = VARDNL(II)
 123         CONTINUE
          ENDIF
+         GOTO 800
       ENDIF
 C ======================================================================
 C              FIN COMPORTEMENT CINEMATIQUE DISCRET_NON_LINE
@@ -550,7 +610,13 @@ C ------ RECUPERATION DES CARACTERISTIQUES
 
 C --- -- MATRICE EN REPERE GLOBAL ==> IREP = 1
          IF (IREP.EQ.1) THEN
-            CALL U2MESK('F','DISCRETS_5',1,NOMTE)
+            MESSAK(1) = NOMTE
+            MESSAK(2) = OPTION
+            MESSAK(3) = ZK16(ICOMPO+3)
+            MESSAK(4) = ZK16(ICOMPO)
+            CALL TECAEL ( IADZI, IAZK24 )
+            MESSAK(5) = ZK24(IAZK24-1+3)
+            CALL U2MESK('F','DISCRETS_5',5,MESSAK)
          ENDIF
 C --- -- LES CARACTERISTIQUES SONT TOUJOURS DANS LE REPERE LOCAL
 C        ON FAIT SEULEMENT UNE COPIE
@@ -612,6 +678,7 @@ C        ET MISE A JOUR DES VARIABLES INTERNES
                ZR(IVARIP+II-1) = VARDNL(II)
 124         CONTINUE
          ENDIF
+         GOTO 800
       ENDIF
 C ======================================================================
 C              FIN COMPORTEMENT DIS_BILI_ELAS DISCRET_NON_LINE
@@ -654,7 +721,8 @@ C        ET DES VARIABLES INTERNES
                ZR(IVARIP+I-1) = VARIPC(I)
                ZR(IVARIP+I+6) = VARIPC(I)
 25          CONTINUE
-        END IF
+         END IF
+         GOTO 800
       END IF
 C ======================================================================
 C                 FIN DU COMPORTEMENT CORNIERE
@@ -696,6 +764,7 @@ C        ET DES VARIABLES INTERNES
             ZR(IVARIP) = VARIP
             ZR(IVARIP+1) = VARIP
          END IF
+         GOTO 800
       END IF
 C ======================================================================
 C                 FIN DU COMPORTEMENT ARMEMENT
@@ -706,7 +775,13 @@ C  COMPORTEMENT DIS_GRICRA : APPLICATION : LIAISON GRILLE-CRAYON COMBU
 C ======================================================================
       IF (ZK16(ICOMPO).EQ.'DIS_GRICRA') THEN
          IF (NOMTE.NE.'MECA_DIS_TR_L') THEN
-            CALL U2MESS('F','ELEMENTS2_92')
+            MESSAK(1) = NOMTE
+            MESSAK(2) = OPTION
+            MESSAK(3) = ZK16(ICOMPO+3)
+            MESSAK(4) = ZK16(ICOMPO)
+            CALL TECAEL ( IADZI, IAZK24 )
+            MESSAK(5) = ZK24(IAZK24-1+3)
+            CALL U2MESK('F','DISCRETS_11',5,MESSAK)
          ENDIF
 C
          CALL JEVECH('PMATERC','L',IMATE)
@@ -738,6 +813,7 @@ C         ENDIF
             CALL JEVECH('PMATUUR','E',IMAT)
             CALL UTPSLG(NNO,NC,PGL,KLV,ZR(IMAT))
          END IF
+         GOTO 800
       END IF
 C ======================================================================
 C                 FIN DU COMPORTEMENT DIS_GRICRA
@@ -811,6 +887,7 @@ C        ET DES VARIABLES INTERNES
                IF (NNO.EQ.2) ZR(IVARIP+I+6) = VARPL(I)
 70          CONTINUE
          END IF
+         GOTO 800
       END IF
 C ======================================================================
 C                 FIN DU COMPORTEMENT CHOC
@@ -858,12 +935,23 @@ C        SAUF SUIVANT Y LOCAL : ELASTOPLASTIQUE VMIS_ISOT_TRAC
                CALL UT2MLG(NNO,NC,PGL,KLV,ZR(IMAT))
             END IF
          END IF
+         GOTO 800
       END IF
 C ======================================================================
 C                 FIN DU COMPORTEMENT DIS_GOUJON
 C ======================================================================
-C
-80    CONTINUE
+
+C     SI ON PASSE PAR ICI C'EST QU'AUCUN COMPORTEMENT N'EST VALIDE
+      MESSAK(1) = NOMTE
+      MESSAK(2) = OPTION
+      MESSAK(3) = ZK16(ICOMPO+3)
+      MESSAK(4) = ZK16(ICOMPO)
+      CALL TECAEL ( IADZI, IAZK24 )
+      MESSAK(5) = ZK24(IAZK24-1+3)
+      CALL U2MESK('F','DISCRETS_7',5,MESSAK)
+
+C     TOUS LES COMPORTEMENTS PASSE PAR ICI
+800   CONTINUE
       IF ( OPTION(1:9).EQ.'FULL_MECA'  .OR.
      &     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
          CALL JEVECH ( 'PCODRET', 'E', JCRET )

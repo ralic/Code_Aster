@@ -5,7 +5,7 @@
      &                    ETATF, IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,10 +103,10 @@ C     EPSI   = 1.D-15
       SY   = MATE(1,2)
       GN   = MATE(4,2)
       IF (MATE(4,2).LE.0.D0) GOTO 05001
-      GM   = MATE(5,2)
-      IF (MATE(5,2).LE.0.D0) GOTO 05001
-      UNSM = 1.D0/MATE(5,2)
-      GK   = MATE(6,2)
+      GM   = 1.D0/MATE(5,2)
+      IF (GM.LE.0.D0) GOTO 05001
+      UNSM = MATE(5,2)
+      GK   = 1.D0/MATE(6,2)
       GR   = MATE(7,2)
       GA   = MATE(8,2)
       SE = 0.D0

@@ -3,7 +3,7 @@
      &                   DEPS,   SIGM,   VIM,    OPTION, ANGMAS,
      &                   SIGP,   VIP,    DSIDEP, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -108,7 +108,7 @@ C     MODELE=1 EN 3D,2 EN AXIS, 3 EN D_PLAN, 4 EN C_PLAN
       ELSE
         MODELE=4
       ENDIF
-      READ (COMPOR(6),'(I16)') NUNIT
+      READ (COMPOR(7),'(I16)') NUNIT
       READ (COMPOR(2),'(I16)') NVAR
       IF (COMPOR(3).EQ.'COROTATIONNEL') THEN
          NDEF=2

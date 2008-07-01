@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -184,6 +184,7 @@ TRAN_GE1=DYNA_TRAN_MODAL(METHODE='EULER',
                                  RIGI_NOR=1.E+8,),
                          VERI_CHOC=_F(STOP_CRITERE='OUI',
                                       SEUIL=0.2,),
+                         SOLVEUR=_F(METHODE='MUMPS',),
                          INFO=1,);
 
 #

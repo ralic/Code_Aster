@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19 LISARC,NOMSTM,NOMSTK,MASSE
       CHARACTER*24 NUMK24,NUMM24,NUMC24,LISINS,NOMNOE
       CHARACTER*24 VALK(3)
-      CHARACTER*24 MARIG
+      CHARACTER*19 MARIG
       LOGICAL      LAMOR,LFLU,LPSTO
       INTEGER      KREF,ITYPFL,KINST
       INTEGER VALI(3)
@@ -141,8 +141,14 @@ C     --- RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES ---
       BASEMO = ZK24(JREFAM-1+1)(1:8)
       CALL JEVEUO(BASEMO//'           .REFD','L',JDRIF)
       RIGASS = ZK24(JDRIF) (1:8)
+
       MARIG = '&&MDTR74.RIGI'
       CALL COPISD('MATR_ASSE','V',RIGASS,MARIG)
+      CALL JEEXIN(MARIG//'.REFA',IER)
+      IF (IER.EQ.0) CALL WKVECT(MARIG//'.REFA','V V K24',11,JREFA)
+      CALL JEVEUO(MARIG//'.REFA','E',JREFA)
+      ZK24(JREFA-1+7)='&&OP0074.SOLVEUR'
+
       CALL GETTCO(BASEMO,TYPBAS)
       CALL MTDSCR(MASGEN)
       CALL JEVEUO(MASGEN//'           .&INT','L',LMAT)
@@ -596,13 +602,13 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
           VALR (3) = TFEXM
           CALL U2MESG('I+','ALGORITH16_24',0,' ',3,VALI,3,VALR)
           IF (ITRANS.NE.0) THEN
-            VALR(1) = EPS 
+            VALR(1) = EPS
             CALL U2MESG('I+','ALGORITH16_78',0,' ',0,0,1,VALR)
           ENDIF
           IF (ICOUPL.NE.0) THEN
             VALI (1) = NBMP
             CALL U2MESG('I+','ALGORITH16_79',0,' ',1,VALI,0,0.D0)
-          ENDIF             
+          ENDIF
           VALI (1) = IPARCH
           CALL U2MESG('I+','ALGORITH16_25',0,' ',1,VALI,0,0.D0)
         ELSE

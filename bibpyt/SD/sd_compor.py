@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sd_compor SD  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

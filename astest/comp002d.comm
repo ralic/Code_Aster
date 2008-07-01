@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,12 +40,12 @@ POISSON = 0.3
 
 #parametres viscosite
 
-S_VP=0.0  
-SEDVP1=0.0 
-SEDVP2=0.0 
-N_VP=12.0 
-M_VP=9.0  
-K_VP=2110.0
+S=0.0  
+ALPHA_D=0.0 
+BETA_D=0.0 
+N=12.0 
+UN_SUR_M=(1.0/9.0)  
+UN_SUR_K= (1.0/2110.0)
  
 #parametres endommagement
 
@@ -59,18 +59,18 @@ ACIER = [None]*3
 #unite en Pa
 C_Pa = 1.e+6
 YOUNG_Pa = YOUNG * C_Pa
-K_VP_Pa = K_VP * C_Pa;
+UN_SUR_K_Pa = UN_SUR_K * (1.0/C_Pa);
 A_D_Pa  = A_D*C_Pa
 
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON,
                                               ALPHA=11.8e-6),
-                    VENDOCHAB=_F(S_VP  = S_VP,
-                                 SEDVP1= SEDVP1,
-                                 SEDVP2= SEDVP2,
-                                 N_VP  = N_VP,
-                                 M_VP  = M_VP,
-                                 K_VP  = K_VP_Pa, 
+                    VENDOCHAB=_F(S  = S,
+                                 ALPHA_D= ALPHA_D,
+                                 BETA_D= BETA_D,
+                                 N  = N,
+                                 UN_SUR_M  = UN_SUR_M,
+                                 UN_SUR_K  = UN_SUR_K_Pa, 
                                  R_D   = R_D,   
                                  A_D   = A_D_Pa,   
                                  K_D   = K_D,   
@@ -80,12 +80,12 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,
                                               ALPHA=11.8e-6),
-                    VENDOCHAB=_F(S_VP  = S_VP,
-                                 SEDVP1= SEDVP1,
-                                 SEDVP2= SEDVP2,
-                                 N_VP  = N_VP,
-                                 M_VP  = M_VP,
-                                 K_VP  = K_VP, 
+                    VENDOCHAB=_F(S  = S,
+                                 ALPHA_D= ALPHA_D,
+                                 BETA_D= BETA_D,
+                                 N  = N,
+                                 UN_SUR_M  = UN_SUR_M,
+                                 UN_SUR_K  = UN_SUR_K, 
                                  R_D   = R_D,   
                                  A_D   = A_D,   
                                  K_D   = K_D,   

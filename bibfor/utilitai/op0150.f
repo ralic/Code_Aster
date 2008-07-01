@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -957,9 +957,7 @@ C   --------------------------------------------------------
 
        CALL RSORAC(RESU,'LONUTI',IBID,RBID,K8B,CBID,EPSI,CRIT,NBORDR,1,
      &            NBTROU)
-       IF (NBORDR.LE.0) THEN
-         CALL U2MESS('F','UTILITAI2_97')
-       END IF
+       IF (NBORDR.LE.0)  CALL U2MESS('F','UTILITAI2_97')
        CALL WKVECT('&&'//NOMPRO//'.NUME_ORDR','V V I',NBORDR,LORDR)
        CALL RSORAC(RESU,'TOUT_ORDRE',IBID,RBID,K8B,CBID,EPSI,CRIT,
      &            ZI(LORDR),NBORDR,NBTROU)

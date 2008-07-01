@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,178 +28,215 @@ TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='AIRE_M',
-                    VALE=2.60000E-04     )
+                    VALE=2.60000E-04,REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='CDG_X_M',
-                    VALE=5.00000E-03     )
+                    VALE=5.00000E-03,REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='CDG_Y_M',
                  CRITERE='ABSOLU',
-                     VALE=0.             )
+                     VALE=0.   ,REFERENCE='ANALYTIQUE'          )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IX_G_M',
-                    VALE=7.21667E-08     )
+                    VALE=7.21667E-08,REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IY_G_M',
-                    VALE=3.44667E-09     )
+                    VALE=3.44667E-09,REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IXY_G_M',
                  CRITERE='ABSOLU',
                      VALE=0.             )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='AIRE',
                     VALE=5.20000E-04     )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='CDG_X',
                  CRITERE='ABSOLU',
                      VALE=0.             )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='CDG_Y',
                  CRITERE='ABSOLU',
                      VALE=0.             )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IX_G',
                     VALE=1.44333E-07     )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IY_G',
                     VALE=1.98933E-08     )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IXY_G',
                  CRITERE='ABSOLU',
                      VALE=0.             )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                NOM_PARA='IY_PRIN_G',
                     VALE=1.98933E-08     )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                NOM_PARA='IZ_PRIN_G',
                     VALE=1.44333E-07     )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='ALPHA',
                      VALE=90.             )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='Y_MIN',
                     VALE=-2.50000E-02    )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='Y_MAX',
                      VALE=2.50000E-02    )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='Z_MIN',
                     VALE=-1.00000E-02    )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='Z_MAX',
                      VALE=1.00000E-02    )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='R_MAX',
                      VALE=2.6926E-02     )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IX_P',
                      VALE=4.69333E-07     )
 
-TEST_TABLE(     TABLE=TCARS,
+TEST_TABLE(     TABLE=TCARS,REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IY_P',
                      VALE=1.98933E-08     )
 
-TCAR2=MACR_CARA_POUTRE(    UNITE_MAILLAGE=38,
+TCAR2=MACR_CARA_POUTRE(    UNITE=38,FORMAT='ASTER',
                                 GROUP_MA=('GR1', 'GR2',),
                               ORIG_INER=(0.005, 0.,) )
 
-TEST_TABLE(     TABLE=TCAR2,
+TEST_TABLE(     TABLE=TCAR2, REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IX_P',
                      VALE=7.21667E-08  )
 
-TEST_TABLE(     TABLE=TCAR2,
+TEST_TABLE(     TABLE=TCAR2, REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IY_P',
                      VALE=3.44667E-09     )
 
-TEST_TABLE(     TABLE=TCAR2,
+TEST_TABLE(     TABLE=TCAR2, REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR1'),
                 NOM_PARA='IX_P',
                      VALE=3.60833E-08  )
 
-TEST_TABLE(     TABLE=TCAR2,
+TEST_TABLE(     TABLE=TCAR2, REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR1'),
                 NOM_PARA='IY_P',
                      VALE=1.72333E-09    )
 
-TEST_TABLE(     TABLE=TCAR2,
+TEST_TABLE(     TABLE=TCAR2, REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
                 NOM_PARA='IX_P',
                      VALE=3.60833E-08  )
 
-TEST_TABLE(     TABLE=TCAR2,
+TEST_TABLE(     TABLE=TCAR2, REFERENCE='ANALYTIQUE',
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
                 NOM_PARA='IY_P',
                      VALE=1.72333E-09    )
+
+
+# Pareil que TACR2, mais avec le maillage lu avant
+mail = LIRE_MAILLAGE(UNITE=38,FORMAT='ASTER')
+TCAR3=MACR_CARA_POUTRE(MAILLAGE=mail, GROUP_MA=('GR1', 'GR2',), ORIG_INER=(0.005, 0.0,) )
+
+TEST_TABLE(TABLE=TCAR3, FILTRE=_F( NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+           NOM_PARA='IX_P', VALE=7.21667E-08,REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=TCAR3, FILTRE=_F( NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+           NOM_PARA='IY_P', VALE=3.44667E-09,REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=TCAR3, FILTRE=_F( NOM_PARA = 'LIEU', VALE_K = 'GR1'),
+           NOM_PARA='IX_P', VALE=3.60833E-08,REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=TCAR3, FILTRE=_F( NOM_PARA = 'LIEU', VALE_K = 'GR1'),
+           NOM_PARA='IY_P', VALE=1.72333E-09,REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=TCAR3, FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'GR2'),
+           NOM_PARA='IX_P', VALE=3.60833E-08,REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(TABLE=TCAR3, FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'GR2'),
+           NOM_PARA='IY_P', VALE=1.72333E-09,REFERENCE='ANALYTIQUE'  )
+
+# Pareil que TACR2, mais avec le format MED
+IMPR_RESU(FORMAT='MED',UNITE=39,RESU=_F(MAILLAGE=mail))
+#
+TCAR4=MACR_CARA_POUTRE(UNITE=39,FORMAT='MED', GROUP_MA=('GR1', 'GR2',), ORIG_INER=(0.005, 0.0,) )
+
+TEST_TABLE(TABLE=TCAR4, FILTRE=_F( NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+           NOM_PARA='IX_P', VALE=7.21667E-08,REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=TCAR4, FILTRE=_F( NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+           NOM_PARA='IY_P', VALE=3.44667E-09,REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=TCAR4, FILTRE=_F( NOM_PARA = 'LIEU', VALE_K = 'GR1'),
+           NOM_PARA='IX_P', VALE=3.60833E-08,REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=TCAR4, FILTRE=_F( NOM_PARA = 'LIEU', VALE_K = 'GR1'),
+           NOM_PARA='IY_P', VALE=1.72333E-09,REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=TCAR4, FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'GR2'),
+           NOM_PARA='IX_P', VALE=3.60833E-08,REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(TABLE=TCAR4, FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'GR2'),
+           NOM_PARA='IY_P', VALE=1.72333E-09,REFERENCE='ANALYTIQUE'  )
+
 
 FIN()
 #

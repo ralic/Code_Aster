@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,8 @@ C =====================================================================
 C --- BUT : DETERMINER LA COHERENCE DE LA RELATION DE COUPLAGE THM ----
 C =====================================================================
       IMPLICIT      NONE
-      INTEGER       NCOMEL, NBNVI(*), K
+      INTEGER       NCOMEL, K
+      INTEGER NBNVI(4)
       CHARACTER*16  COMP, MOCLEF, COMEL(*)
       CHARACTER*24  MODELE
 C ----------------------------------------------------------------------
@@ -52,13 +53,13 @@ C =====================================================================
 C --- DEFINITION DES DIMENSIONS DES VECTEURS DE POSSIBILITE DES LOIS --
 C =====================================================================
       LOGICAL       LTHMC, LHYDR, LMECA, EXIST, GETEXM, TOUT
-      INTEGER       DMTHMC, DMHYDR, DMMECA, N1, JMAIL, ITYPEL
-      INTEGER       NBMA, IERD, IBID, JNOMA, JMESM
+      INTEGER       DMTHMC, DMHYDR, DMMECA, N1, JMAIL, ITYPEL, I
+      INTEGER       NBMA, IERD, IBID, JNOMA, JMESM, NUMLC
       PARAMETER   ( DMTHMC = 7  )
       PARAMETER   ( DMHYDR = 4  )
       PARAMETER   ( DMMECA = 12 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
-      CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
+      CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA), COMCOD
       CHARACTER*16  THMC, THER, HYDR, MECA, MOCLES(2)
       CHARACTER*8   NOMA, TYPMCL(2)
       CHARACTER*24  MESMAI
@@ -415,43 +416,55 @@ C =====================================================================
             CALL U2MESS('F','ALGORITH8_57')
          ENDIF
       ENDIF
-C =====================================================================
-C --- MISE A JOUR DES RELATIONS DE COMPORTEMENTS ----------------------
-C =====================================================================
-      COMEL(1) = THMC
-      COMEL(2) = THER
-      COMEL(3) = HYDR
-      COMEL(4) = MECA
+C          =========================================================
+C          MISE A JOUR DES RELATIONS DE COMPORTEMENTS --------------
+C          =========================================================
+           COMEL(1) = THMC
+           COMEL(2) = THER
+           COMEL(3) = HYDR
+           COMEL(4) = MECA
+C  RECUPARATION DES NOMBRES DE VARIABLES INTERNES
+
 C ======================================================================
 C --- POUR CHAQUE RELATION DE COMPORTEMENT PRESENTE ON RECUPERE --------
 C --- LE NOMBRE DE VARIABLES INTERNES ASSOCIE A CETTE LOI --------------
 C ======================================================================
 C --- LOI DE COUPLAGE --------------------------------------------------
 C ======================================================================
-      EXIST = GETEXM(MOCLEF,COMEL(1))
-      IF (EXIST) THEN
-         CALL GETVIS(MOCLEF,COMEL(1),K,1,1,NBNVI(1),N1)
+      IF (COMEL(1).NE.' ') THEN
+         CALL LCCREE(1, COMEL(1), COMCOD)
+         CALL LCINFO(COMCOD, NUMLC, NBNVI(1))
+      ELSE
+         NBNVI(1)=0
       ENDIF
 C ======================================================================
 C --- LOI DE THERMIQUE -------------------------------------------------
 C ======================================================================
-      EXIST = GETEXM(MOCLEF,COMEL(2))
-      IF (EXIST) THEN
-         CALL GETVIS(MOCLEF,COMEL(2),K,1,1,NBNVI(2),N1)
+
+      IF (COMEL(2).NE.' ') THEN
+         CALL LCCREE(1, COMEL(2), COMCOD)
+         CALL LCINFO(COMCOD, NUMLC, NBNVI(2))
+      ELSE
+         NBNVI(2)=0
       ENDIF
 C ======================================================================
 C --- LOI HYDRAULIQUE --------------------------------------------------
 C ======================================================================
-      EXIST = GETEXM(MOCLEF,COMEL(3))
-      IF (EXIST) THEN
-         CALL GETVIS(MOCLEF,COMEL(3),K,1,1,NBNVI(3),N1)
+      IF (COMEL(3).NE.' ') THEN
+         CALL LCCREE(1, COMEL(3), COMCOD)
+         CALL LCINFO(COMCOD, NUMLC, NBNVI(3))
+      ELSE
+         NBNVI(3)=0
       ENDIF
 C ======================================================================
 C --- LOI DE MECANIQUE -------------------------------------------------
 C ======================================================================
-      EXIST = GETEXM(MOCLEF,COMEL(4))
-      IF (EXIST) THEN
-         CALL GETVIS(MOCLEF,COMEL(4),K,1,1,NBNVI(4),N1)
+      IF (COMEL(4).NE.' ') THEN
+         CALL LCCREE(1, COMEL(4), COMCOD)
+         CALL LCINFO(COMCOD, NUMLC, NBNVI(4))
+      ELSE
+         NBNVI(4)=0
       ENDIF
 C =====================================================================
+
       END

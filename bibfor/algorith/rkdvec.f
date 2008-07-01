@@ -6,7 +6,7 @@
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRS_505
+C TOLE CRS_506
 C ==================================================================
 C      MODELE VISCOPLASTIQUE A ECROUISSAGE ISOTRROPE COUPLE A DE
 C      L ENDOMMAGEMENT ISOTROPE
@@ -51,7 +53,7 @@ C     ----------------------------------------------------------------
       REAL*8 EVI(6),    ECROU,    DMG
       REAL*8 DEVI(6),DEVCUM,   DECROU,   DDMG
       REAL*8 ZE, TD, VALP(3)
-      REAL*8 SVP, SEDVP1, SEDVP2, NVP, MVP, KVP, RD, AD , KD
+      REAL*8 S, ALPHA_D, BETA_D, N, MVP, KVP, RD, AD , KD
 C     ----------------------------------------------------------------
       PARAMETER(ZE=0.0D0)
       PARAMETER(TD=1.5D0)
@@ -71,12 +73,12 @@ C
 C
 C --    COEFFICIENTS MATERIAU INELASTIQUES
 C
-      SVP    = COEFT(1)
-      SEDVP1 = COEFT(2)
-      SEDVP2 = COEFT(3)
-      NVP    = COEFT(4)
-      MVP    = COEFT(5)
-      KVP    = COEFT(6)
+      S    = COEFT(1)
+      ALPHA_D = COEFT(2)
+      BETA_D = COEFT(3)
+      N    = COEFT(4)
+      MVP    = (1.D0/COEFT(5))
+      KVP    = (1.D0/COEFT(6))
       RD     = COEFT(7)
       AD     = COEFT(8)
 C     ----------------------------------------------------------------
@@ -108,7 +110,7 @@ C
 C----- VARIABLES INTERNES
       TRSIG=(SIGI(1)+SIGI(2)+SIGI(3))
 C----- CALCUL DE GRJ0(SIGI) : MAX DES CONTRAINTES PRINCIPALES
-      IF (SEDVP1.LE.(1.0D-15)) THEN
+      IF (ALPHA_D.LE.(1.0D-15)) THEN
          GRJ0=0.0D0
       ELSE
          CALL CALCJ0(SIGI,GRJ0,VALP)
@@ -125,7 +127,7 @@ C----- CALCUL DE GRJ2(SIGI) : SECOND INVARIANT (SIGEQ DE VON MISES)
    10 CONTINUE
       GRJ2V=SQRT(1.5D0*GRJ2V)
 C----- CALCUL DE SEDVP : CONTRAINTE EQUIVALENTE DE FLUAGE
-      SEDVP=SEDVP1*GRJ0+SEDVP2*GRJ1+(1-SEDVP1-SEDVP2)*GRJ2V
+      SEDVP=ALPHA_D*GRJ0+BETA_D*GRJ1+(1-ALPHA_D-BETA_D)*GRJ2V
 C
 C----- CALCUL DE KD A PARTIR DU MATERIAU CODE
 C
@@ -150,7 +152,7 @@ C
 C
 C----- LA FONCTION SEUIL NE FAIT PAS APPARAITRE D INFLUENCE DE L
 C----- ECROUISSAGE
-      CRITV=GRJ2V-SVP*(1-DMG)
+      CRITV=GRJ2V-S*(1-DMG)
       IF (CRITV.LE.0.0D0) THEN
         DEVCUM=0.0D0
         DECROU=0.0D0
@@ -170,7 +172,7 @@ C------ EQUATION DONNANT LA DERIVEE DE L ECROUISSAGE
 C
         DECROU=CRITV/((1-DMG)*KVP*ECROU**(1/MVP))
         DECROU=MAX(0.D0,DECROU)
-        DECROU=DECROU**NVP
+        DECROU=DECROU**N
 C
 C------ EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 C------ CUMULEE

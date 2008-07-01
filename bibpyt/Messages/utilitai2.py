@@ -1,21 +1,21 @@
-#@ MODIF utilitai2 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai2 Messages  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -43,11 +43,11 @@ cata_msg = {
 """),
 
 10 : _("""
- on n'imprime pas encore de fonction de type " %(k1)s "      desole. 
+ on n'imprime pas encore de fonction de type " %(k1)s "      desole.
 """),
 
 11 : _("""
- on ne sait pas imprimer une fonction de type " %(k1)s "      desole. 
+ on ne sait pas imprimer une fonction de type " %(k1)s "      desole.
 """),
 
 12 : _("""
@@ -67,7 +67,7 @@ cata_msg = {
 """),
 
 17 : _("""
- on ne connait pas ce type d'interpolation:  %(k1)s 
+ on ne connait pas ce type d'interpolation:  %(k1)s
 """),
 
 31 : _("""
@@ -119,7 +119,7 @@ cata_msg = {
 """),
 
 54 : _("""
- la dimension d'espace doit etre <= 3 
+ la dimension d'espace doit etre <= 3
 """),
 
 55 : _("""
@@ -143,7 +143,7 @@ cata_msg = {
 """),
 
 60 : _("""
- methode inconnue :  %(k1)s 
+ methode inconnue :  %(k1)s
 """),
 
 61 : _("""
@@ -159,7 +159,7 @@ cata_msg = {
 """),
 
 64 : _("""
- le ddl :  %(k1)s n'existe pas dans la grandeur :  %(k2)s 
+ le ddl :  %(k1)s n'existe pas dans la grandeur :  %(k2)s
 """),
 
 65 : _("""
@@ -179,11 +179,11 @@ cata_msg = {
 """),
 
 69 : _("""
- nombre de valeurs different  pour "noeud_para" et "vale_y" 
+ nombre de valeurs different  pour "noeud_para" et "vale_y"
 """),
 
 70 : _("""
- il manque des valeurs dans  %(k1)s  ,liste plus petite que  %(k2)s 
+ il manque des valeurs dans  %(k1)s  ,liste plus petite que  %(k2)s
 """),
 
 71 : _("""
@@ -215,7 +215,7 @@ cata_msg = {
 """),
 
 78 : _("""
- fonction incompatible avec  %(k1)s 
+ fonction incompatible avec  %(k1)s
 """),
 
 79 : _("""
@@ -270,7 +270,7 @@ cata_msg = {
 """),
 
 91 : _("""
- element non prevu  %(k1)s 
+ element non prevu  %(k1)s
 """),
 
 93 : _("""
@@ -278,7 +278,7 @@ cata_msg = {
 """),
 
 94 : _("""
- champ non prevu :  %(k1)s 
+ champ non prevu :  %(k1)s
 """),
 
 95 : _("""
@@ -286,7 +286,14 @@ cata_msg = {
 """),
 
 97 : _("""
- aucun champ lu.
+Erreur Utilisateur :
+  On n'a pu lire aucun champ dans le fichier.
+  La structure de données créée est vide.
+
+Risques & Conseils :
+  Si le fichier lu est au format Ideas, et si la commande est LIRE_RESU,
+  le problème vient peut-etre d'une mauvaise utilisation (ou d'une abscence d'utilisation)
+  du mot clé FORMAT_IDEAS. Il faut examiner les "entetes" des DATASET du fichier à lire.
 """),
 
 98 : _("""

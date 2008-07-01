@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 05/05/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,7 +114,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         ELSE
 C    --- RECUPERATION DU MATERIAU TORSION POUR ALPHA
           CALL JEVECH('PCOMPOR','L',ICOMPO)
-          CALL JEVEUO(ZK16(ICOMPO-1+6),'L',ISDCOM)
+          CALL JEVEUO(ZK16(ICOMPO-1+7),'L',ISDCOM)
         ENDIF
       END IF
 

@@ -1,9 +1,9 @@
         SUBROUTINE NMCOUP(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
      &                      TIMED,TIMEF, EPSDT,DEPST,
-     &                      SIGD,VIND,OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
+     &                   SIGD,VIND,OPT,ELGEOM,NUMLC,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM,KPG,KSP,IRET
+        INTEGER         IMAT , NDIM,KPG,KSP,IRET,NUMLC
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF
@@ -127,7 +127,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
            CALL NMCPLA (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      &                      TIMED,TIMEF,
-     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,
+     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,NUMLC,
      &                      SIGF,VINF,DSDE,IRET)
            IF(IRET.EQ.1) GOTO 9999
          ELSE IF (CMP2(1:10) .EQ. 'ENDO_ISOT_BETON' .OR.
@@ -173,7 +173,7 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
      &      CMP2 .EQ. 'VMIS_CINE_LINE') THEN
 
             OPTION(2)(1:16) = CMP2(1:16)
-            
+
             CALL LGDMVM(IMAT,CMP2,EPSDT,DEPST,VIND,OPT,SIGD,
      &                  SIGF,VINF,DSDE)
 

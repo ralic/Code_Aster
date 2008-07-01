@@ -1,4 +1,4 @@
-# MODIF  DATE 10/03/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -364,13 +364,10 @@ TEST_TABLE(TABLE=TB_D_TGD, NOM_PARA='ERREUR', VALE=0.0,
 #IMPR_RESU(RESU=_F(RESULTAT=RE_D_TGD))
 
 
-"""
+
 #-------------------------------------------------------------------------------------
 # 7 --> POU_C_T
 # ---------------
-# ATTENTION  -> Le TYPE_ELEMENT MECA_POU_C_T  ne sait pas encore calculer
-#               L'OPTION:  RIGI_MECA_TANG.
-
 
 MO_C_T = AFFE_MODELE(MAILLAGE=MA,
                      AFFE=_F(GROUP_MA='POUC',PHENOMENE='MECANIQUE',MODELISATION='POU_C_T'),)
@@ -411,7 +408,7 @@ IMPR_TABLE(TABLE=TB_C_T)
 TEST_TABLE(TABLE=TB_C_T, NOM_PARA='ERREUR', VALE=0.0,
            CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
 #IMPR_RESU(RESU=_F(RESULTAT=RE_C_T))
-"""
+
 
 FIN()
 

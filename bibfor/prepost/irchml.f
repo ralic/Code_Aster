@@ -11,7 +11,7 @@ C
      &                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,7 +77,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*1  K1BID, TYPE
       INTEGER      GD, DATE(9), NBACC, JPARA, NUTI, JCELV
-      INTEGER VALI(2)
+      INTEGER VALI(2),VERSIO
       REAL*8       PARA
       CHARACTER*8  NOMMA, NOMGD, NOMEL, NOMNO, CBID
       CHARACTER*16 TSD,NOMSY2
@@ -250,8 +250,9 @@ C ---------------------------------------------------------------------
            ENDIF
          ENDIF
          CALL JEVEUO(NOMMA//'.TYPMAIL','L',JTYPM)
+         CALL GETVIS ( ' ', 'VERSION', 0,1,1, VERSIO, IRET )
          CALL JEEXIN('&IRCHML.PERMUTA',IRET)
-         IF (IRET.EQ.0) CALL IRADHS
+         IF (IRET.EQ.0) CALL IRADHS(VERSIO)
          CALL JEVEUO('&&IRADHS.PERMUTA','L',JPERM)
          CALL JELIRA('&&IRADHS.PERMUTA','LONMAX',LON1,K1BID)
          MAXNOD=ZI(JPERM-1+LON1)

@@ -1,9 +1,9 @@
       SUBROUTINE PHI152(MODEL,OPTION,MATE,PHIBAR,
-     +                  MA,NU,NUM,NBMODE,SOLVEZ,INDICE,TABAD)
+     &                  MA,NU,NUM,NBMODE,SOLVEZ,INDICE,TABAD)
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       INTEGER       IBID,NBVALE,NBREFE,NBDESC,NBMODE,IRET,IERD
       INTEGER       NBMO,ILIRES,J,NBID,IVALK,INDICE,TABAD(5)
       INTEGER       IPHI1,IPHI2,N5,N6,N7,N1,ICOR(2),N2,NDBLE
-      REAL*8        BID,EBID
+      REAL*8        BID,EBID,RBID
       CHARACTER*(*) OPTION,MATE, PHIBAR,SOLVEZ
       CHARACTER*2   MODEL
       CHARACTER*8   K8BID,MODMEC,MAILLA,MAFLUI,MA
@@ -89,11 +89,11 @@ C DES MAILLAGES COMMUNS
       IF (N5.GT.0) THEN
         CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
         CALL RSORAC(MODMEC,'LONUTI',IBID,BID,K8BID,CBID,EBID,'ABSOLU',
-     +             NBMODE,1,NBID)
+     &             NBMODE,1,NBID)
         CALL DISMOI('F','NOM_MAILLA',NOMCHA(1:19),
-     +              'CHAM_NO',IBID,MAILLA,IERD)
+     &              'CHAM_NO',IBID,MAILLA,IERD)
         CALL DISMOI('F','NOM_MAILLA',MOINT,
-     +              'MODELE',IBID,MAFLUI,IERD)
+     &              'MODELE',IBID,MAFLUI,IERD)
           IF (MAFLUI.NE.MAILLA) THEN
            CALL TABCOR(MODEL,MATE,MAILLA,MAFLUI,MOINT,NUM,NDBLE,ICOR)
            CALL MAJOU(MODEL,MODMEC,SOLVEU,
@@ -123,7 +123,7 @@ C
 C----- -RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA
 C
         CALL RSORAC(MODMEC,'LONUTI',IBID,BID,K8BID,CBID,EBID,'ABSOLU',
-     +             NBMODE,1,NBID)
+     &             NBMODE,1,NBID)
 
         CALL WKVECT('&&OP0152.PHI1','V V K24',NBMODE,IPHI1)
         CALL WKVECT('&&OP0152.PHI2','V V K24',NBMODE,IPHI2)
@@ -143,13 +143,14 @@ C======================================================================
            VECSO2 = '&&OP0152.VECSOL2'
 
            CALL CALFLU(NOMCHA,MOFLUI,MATE,NU,VECSO1,NBDESC,NBREFE,
-     +                 NBVALE,'R')
+     &                 NBVALE,'R')
 
            ILIRES = ILIRES + 1
 
 C------------- RESOLUTION  DU LAPLACIEN EN 2D-----------------------
 
-           CALL RESOUD(MA,MAPREC,VECSO1,SOLVEU,' ','V',CHSOL,CRITER)
+           CALL RESOUD(MA,MAPREC,VECSO1,SOLVEU,' ','V',CHSOL,CRITER,0,
+     &                 RBID,CBID)
            CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO1(1:19),.FALSE.)
            CALL JEDETC('V',CHSOL,1)
 
@@ -160,20 +161,21 @@ C
 C------------------------------------------------------------------
           VESTO1='&&OP0152.VEST1'
           CALL PRSTOC(VECSO1,VESTO1,
-     +                 ILIRES,ILIRES,IPHI1,NBVALE,NBREFE,NBDESC)
+     &                 ILIRES,ILIRES,IPHI1,NBVALE,NBREFE,NBDESC)
 C
           IF (OPTION.EQ.'AMOR_AJOU'.OR.OPTION.EQ.'RIGI_AJOU')THEN
 
              CALL CAL2M(NOMCHA(1:19),PHIB24,MOFLUI,MATE,NU,VECSO2,
-     +             NBDESC,NBREFE,NBVALE)
+     &             NBDESC,NBREFE,NBVALE)
 
-             CALL RESOUD(MA,MAPREC,VECSO2,SOLVEU,' ','V',CHSOL,CRITER)
+             CALL RESOUD(MA,MAPREC,VECSO2,SOLVEU,' ','V',CHSOL,CRITER,0,
+     &                   RBID,CBID)
              CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO2(1:19),.FALSE.)
              CALL JEDETC('V',CHSOL,1)
 
              VESTO2='&&OP0152.VEST2'
              CALL PRSTOC(VECSO2,VESTO2,
-     +                 ILIRES,ILIRES,IPHI2,NBVALE,NBREFE,NBDESC)
+     &                 ILIRES,ILIRES,IPHI2,NBVALE,NBREFE,NBDESC)
 
           ENDIF
 
@@ -205,14 +207,15 @@ C================================================================
              VECSO2 = '&&OP0152.VESL2'
 
              CALL CALFLU(CHAMNO,MOFLUI,MATE,NU,VECSO1,
-     +                 NBDESC,NBREFE,NBVALE,'R')
+     &                 NBDESC,NBREFE,NBVALE,'R')
 
              ILIRES = ILIRES + 1
 
 
 C-------------- RESOLUTION  DU LAPLACIEN EN 2D OU 3D-------------
 
-           CALL RESOUD(MA,MAPREC,VECSO1,SOLVEU,' ','V',CHSOL,CRITER)
+           CALL RESOUD(MA,MAPREC,VECSO1,SOLVEU,' ','V',CHSOL,CRITER,0,
+     &                 RBID,CBID)
            CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO1(1:19),.FALSE.)
            CALL JEDETC('V',CHSOL,1)
 
@@ -223,18 +226,19 @@ C-------------POUR CHAQUE CHAMP AUX NOEUDS-----------------------
 
            VESTO1='&&OP0152.VEST1'
            CALL PRSTOC(VECSO1,VESTO1,ILIRES,ILIRES,IPHI1,
-     +                 NBVALE,NBREFE,NBDESC)
+     &                 NBVALE,NBREFE,NBDESC)
 
           IF (OPTION.EQ.'AMOR_AJOU'.OR.OPTION.EQ.'RIGI_AJOU')THEN
              CALL CAL2M(CHAMNO,PHIB24,MOFLUI,MATE,NU,VECSO2,
-     +             NBDESC,NBREFE,NBVALE)
-             CALL RESOUD(MA,MAPREC,VECSO2,SOLVEU,' ','V',CHSOL,CRITER)
+     &             NBDESC,NBREFE,NBVALE)
+             CALL RESOUD(MA,MAPREC,VECSO2,SOLVEU,' ','V',CHSOL,CRITER,0,
+     &                   RBID,CBID)
              CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO2(1:19),.FALSE.)
              CALL JEDETC('V',CHSOL,1)
 
              VESTO2='&&OP0152.VEST2'
              CALL PRSTOC(VECSO2,VESTO2,
-     +                 ILIRES,ILIRES,IPHI2,NBVALE,NBREFE,NBDESC)
+     &                 ILIRES,ILIRES,IPHI2,NBVALE,NBREFE,NBDESC)
           ENDIF
 C
            CALL JEDETC('V',VECSO1,1)

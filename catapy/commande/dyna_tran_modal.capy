@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE BOYERE E.BOYERE
 DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
@@ -22,7 +22,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                         +" par superposition modale ou par sous structuration",
                      reentrant='f',
             UIinfo={"groupes":("Résolution",)},
-      regles=(EXCLUS('AMOR_REDUIT','AMOR_GENE','LIST_AMOR'), 
+      regles=(EXCLUS('AMOR_REDUIT','AMOR_GENE','LIST_AMOR'),
               PRESENT_ABSENT('MODE_STAT','MODE_CORR'),),
          METHODE         =SIMP(statut='f',typ='TXM',defaut="EULER",
                                into=("EULER","NEWMARK","DEVOGE","ADAPT","ITMI") ),
@@ -33,7 +33,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
          LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
          MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc) ),
          MODE_CORR       =SIMP(statut='f',typ=(mult_elas,mode_stat_acce) ,),
-         
+
          ETAT_INIT       =FACT(statut='f',
            regles=(EXCLUS('RESU_GENE','DEPL_INIT_GENE'),
                    EXCLUS('RESU_GENE','VITE_INIT_GENE'),),
@@ -63,11 +63,11 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            LIST_ARCH       =SIMP(statut='f',typ=listis_sdaster ),
            PAS_ARCH        =SIMP(statut='f',typ='I' ),
          ),
-         
+
          NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 20 ),
          RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
          LAMBDA          =SIMP(statut='f',typ='R',defaut= 10. ),
-         
+
          EXCIT           =FACT(statut='f',max='**',
            regles=(UN_PARMI('FONC_MULT','COEF_MULT','ACCE'),
                    PRESENT_PRESENT('ACCE','VITE','DEPL'),
@@ -205,5 +205,45 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            INST_INIT       =SIMP(statut='f',typ='R' ),
            INST_FIN        =SIMP(statut='f',typ='R' ),
          ),
+
+
+         SOLVEUR         =FACT(statut='d', fr="Méthode de résolution des systèmes linéaires",
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="LDLT",into=("LDLT","MUMPS","PETSC") ),
+
+
+           b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
+           ),
+
+           b_ldlt_mult     =BLOC(condition = "METHODE == 'LDLT'",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
+             NPREC           =SIMP(statut='f',typ='I',defaut=8),
+             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           ),
+
+           b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
+             PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
+             ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
+             PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
+                                   into=("CENTRALISE","DISTRIBUE_MC","DISTRIBUE_MD","DISTRIBUE_SD")),
+             PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
+             CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
+             CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
+             ),
+
+           b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la méthode PETSC",
+             VARIANTE        =SIMP(statut='f',typ='TXM',into=("GMRES","BCGS","CR","CG","BICG","CHEBYCHEV",),defaut="GMRES" ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("ILU","SOR","BJACOBI"),defaut="ILU" ),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-8),
+             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
+           ),
+         ),
+
+
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
  )  ;

@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -260,7 +260,7 @@ C INFO. RELATIVE AUX CHARGES
           END IF
           CALL GETVID(' ','MODELE',1,1,1,MODELE,N0)
           IF (N0.NE.0) THEN
-            CALL EXLIMA(' ','V',MODELE,LERES0,LIGREL)
+            CALL EXLIMA(' ','V',MODELE,LIGREL)
           END IF
         END IF
 
@@ -480,7 +480,7 @@ C       ================================================================
                  NBCHAR = 0
                  ICHAR = 1
               END IF
-              CALL EXLIMA(' ','V',MODELE,LERES0,LIGREL)
+              CALL EXLIMA(' ','V',MODELE,LIGREL)
 
               VECHMP = ' '
               VACHMP = ' '

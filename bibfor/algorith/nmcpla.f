@@ -1,11 +1,11 @@
         SUBROUTINE NMCPLA(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      &                      TIMED,TIMEF,
-     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,SIGF,
+     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,NUMLC,SIGF,
      &                      VINF,DSDE,IRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM, KPG,KSP,IRET
+        INTEGER         IMAT , NDIM, KPG,KSP,IRET,NUMLC
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
@@ -117,7 +117,7 @@ C       VARIABLES LOCALES
         INTEGER         NVI2, NN, I,RETCOM, IISNAN
         CHARACTER*2     FB2, CERR(5)
         CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR
-        CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI
+        CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI,COMCOD
         REAL*8          RBID, NU, ANGMAS(3)
         REAL*8          EPSFL(6), EPSFLD(6), EPSFLF(6), DEPSFL(6)
         REAL*8          DEPS(6), KOOH(6,6), VALPAD, VALPAF
@@ -126,22 +126,25 @@ C       VARIABLES LOCALES
         REAL*8          DSIGF(6),HYDRD, HYDRF,SECHD, SECHF, SREF
         REAL*8          EPSELD(6), EPSELF(6),EPSTHE
 C
-        INTEGER         K
-        INTEGER         ITER ,        ITEMAX, IRET1,IRET2,IRET3
-        REAL*8          SIGF2(6)
+        INTEGER         K, NBVAR2
+        INTEGER         ITER ,        ITEMAX, IRET1,IRET2,IRET3,NUMLC2
+        REAL*8          SIGF2(6) , R8BID, R8VIDE
         REAL*8          TMPDMX,       TMPFMX,    EPSTH
         REAL*8          ALPHAD, ALPHAF, BENDOD, BENDOF, KDESSD, KDESSF
 C
-        INTEGER         IADZI, IAZK24
+        INTEGER         IADZI, IAZK24, ICOMP
         CHARACTER*4     CITER
         CHARACTER*8     NOMAIL
         CHARACTER*10    DCV
+        LOGICAL CP
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
 C
 C --- DECODAGE DES COMPORTEMENTS ET VERIFICATIONS
 C
+      R8BID=R8VIDE()
+
       MOD3D   = '3D'
       MODCP   = 'C_PLAN'
       CMP1(1) = COMP(8)
@@ -327,10 +330,13 @@ C
      &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
      &        CMP2(1)(1:7) .EQ. 'NADAI_B'        ) THEN
 C
-              CALL REDECE (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
-     &                     TIMED, TIMEF,   TEMPD,    TEMPF, TREF,
-     &                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,
-     &              ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE,RETCOM)
+         CALL LCCREE(1, CMP2, COMCOD)
+         CALL LCINFO(COMCOD, NUMLC2, NBVAR2)
+         CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
+     &                 TIMED, TIMEF,CP,NUMLC2,R8BID,R8BID,R8BID,
+     &                 EPSDT, DEPS,SIGD, VIND(NN), OPT,
+     &                 ELGEOM,ANGMAS,
+     &                 SIGF, VINF(NN), DSDE,RETCOM)
       ELSE
          CALL U2MESS('F','ALGORITH7_3')
       ENDIF

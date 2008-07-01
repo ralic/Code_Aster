@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C               'RESULTAT'        'NUME_DDL'
 C               'MAILLAGE'        'LIGREL'
 C               'MATR_ASSE_GENE'  'MATR_ASSE'
 C               'PROF_CHNO'       'MATR_ELEM'
-C               'VECT_ELEM'
+C               'VECT_ELEM'       'SOLVEUR'
 C     BASE     : 'G' , 'V' , ... : BASE DE CREATION DE SD2
 C     SD1 (K*) : NOM DE LA SD A DUPPLIQUER
 C     SD2 (K*) : NOM DE LA SD A CREER
@@ -115,6 +115,16 @@ C     -----------------------------------
         IF (IRET.GT.0) CALL COPICH(BAS2,COM1//'.TOUT',COM2//'.TOUT')
 
         CALL JEDUP1(COM1//'.EXISTENCE',BAS2,COM2//'.EXISTENCE')
+
+C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'SOLVEUR') THEN
+C     -----------------------------------
+        K191 = SD1
+        K192 = SD2
+
+        CALL JEDUP1(K191//'.SLVK',BAS2,K192//'.SLVK')
+        CALL JEDUP1(K191//'.SLVI',BAS2,K192//'.SLVI')
+        CALL JEDUP1(K191//'.SLVR',BAS2,K192//'.SLVR')
 
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'FONCTION') THEN

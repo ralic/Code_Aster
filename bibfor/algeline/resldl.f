@@ -1,10 +1,13 @@
-      SUBROUTINE RESLDL(SOLVEU,NOMMAT,VCINE,CHAMNO)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)     NOMMAT,VCINE,CHAMNO
-      CHARACTER*19      NOMMA2
+      SUBROUTINE RESLDL(SOLVEU,NOMMAT,VCINE,NSECM,RSOLU,CSOLU)
+      IMPLICIT NONE
+      CHARACTER*(*) NOMMAT,VCINE
+      INTEGER NSECM
+      REAL*8 RSOLU(*)
+      COMPLEX*16 CSOLU(*)
+
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,26 +23,19 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-C ======================================================================
-C     RESOLUTION EN PLACE DU SYSTEME    "NOMMAT" * X = "CHAMNO"
-C                                       AVEC X = U0 SUR G
-C     ------------------------------------------------------------------
-C     IN  NOMMAT  : CH19 : NOM DE LA MATRICE FACTORISEE
-C     IN  VCINE   : CH8 : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
-C                         ASSOCIE A LA CONTRANITE X = U0 SUR G
-C                         SI IL N'Y A PAS DE CONTRAINTE VCINE =' '
-C     VAR CHAMNO  : CH8 : (EN ENTREE) NOM DU SECOND MEMBRE
-C                     (EN SORTIE) NOM DU SECOND MEMBRE
-C     ------------------------------------------------------------------
-C     REMARQUE: LA VARIABLE  "CHAMNO"  EST EN FAIT INCHANGEE
-C               C'EST "CHAMNO              .VALE" QUI EST ALTERE
-C     ------------------------------------------------------------------
-C     VERIFICATIONS :
-C     1) SI VCINE = ' ' : ERREUR SI LE NOMBRE DE DDLS IMPOSES ELIMINES
-C                         ASSOCIES A LA MATRICE EST /=0
-C     2) SI VCINE/= ' ' : ERREUR SI LE NOMBRE DE DDLS IMPOSES ELIMINES
-C                         ASSOCIES A LA MATRICE EST =0
-C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C BUT : RESOUDRE UN SYSTEME LINEAIRE D'EQUATIONS (REEL OU COMPLEXE)
+C       SOLVEUR = 'LDLT' OU 'MULT_FRONT'
+C-----------------------------------------------------------------------
+C IN/JXIN  K19 SOLVEU : SD_SOLVEUR
+C IN/JXIN  K19 NOMMAT : MATR_ASSE PREMIER MEMBRE DU SYSTEME LINEAIRE
+C IN/JXIN  K*  VCINE  : CHAMP ASSOCIE AUX CHARGES CINEMATIQUES (OU ' ')
+C IN       I   NSECM  :  N : NOMBRE DE SECONDS MEMBRES
+C IN/OUT   R   RSOLU(*,NSECM)  :
+C        EN ENTREE : VECTEUR DE REELS CONTENANT LES SECONDS MEMBRES
+C        EN SORTIE : VECTEUR DE REELS CONTENANT LES SOLUTIONS
+C IN/OUT   C   CSOLU(*,NSECM)  : IDEM RSOLU POUR LES COMPLEXES.
+C-----------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -58,76 +54,76 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
+      CHARACTER*19 NOMMA2
       CHARACTER*8 TYPE,METRES
       CHARACTER*19 VCI19,SOLVEU
-      CHARACTER*24 VALE
-      COMPLEX*16   CBID
-      DATA VALE/'                   .VALE'/
+      REAL*8 RBID
+      COMPLEX*16 CBID
+      INTEGER K,KDEB,IBID,IDVALC,LMAT,NEQ,NIMPO,ISLVK
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      VCI19 = VCINE
+      VCI19=VCINE
       NOMMA2=NOMMAT
 
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
-      METRES = ZK24(ISLVK)
+      METRES=ZK24(ISLVK)
 
       CALL MTDSCR(NOMMA2)
       CALL JEVEUO(NOMMA2(1:19)//'.&INT','E',LMAT)
-      IF (LMAT.EQ.0) THEN
-         CALL U2MESS('F','ALGELINE3_40')
+      IF (LMAT.EQ.0) CALL U2MESS('F','ALGELINE3_40')
+
+      NEQ=ZI(LMAT+2)
+      NIMPO=ZI(LMAT+7)
+      IF (VCI19.EQ.' ') THEN
+        IF (NIMPO.NE.0) CALL U2MESS('F','ALGELINE3_41')
+        IDVALC=0
       ELSE
-        NIMPO = ZI(LMAT+7)
-        IF ( VCI19.EQ.' ')THEN
-          IF (NIMPO.NE.0) CALL U2MESS('F','ALGELINE3_41')
-          IDVALC = 0
-        ELSE
-C
-C- CE TEST EST TEMPORAIREMENT "VIRE" CAR DANS LES COMMANDES GLOBALES
-C- ON ATTRIBUE DES NOMS AUX CHAM_NO DUS AUX CHARGES CINEMATIQUES
-C- ALORS QUE CES DERNIERES PEUVENT NE PAS ETRE DEFINIES
-C
-          CALL JEVEUO(VCI19//'.VALE','L',IDVALC)
-          CALL JELIRA(VCI19//'.VALE','TYPE',IBID,TYPE)
-          IF (((TYPE(1:1).EQ.'R').AND.(ZI(LMAT+3).NE.1)).OR.
-     &       ((TYPE(1:1).EQ.'C').AND.(ZI(LMAT+3).NE.2))) THEN
-            CALL U2MESS('F','ALGELINE3_42')
-          ENDIF
+        CALL JEVEUO(VCI19//'.VALE','L',IDVALC)
+        CALL JELIRA(VCI19//'.VALE','TYPE',IBID,TYPE)
+        IF (((TYPE.EQ.'R').AND.(ZI(LMAT+3).NE.1)) .OR.
+     &      ((TYPE.EQ.'C').AND.(ZI(LMAT+3).NE.2))) THEN
+          CALL U2MESS('F','ALGELINE3_42')
         ENDIF
-        VALE(1:19) = CHAMNO
-        CALL JEVEUO(VALE,'E',LXSOL)
-        CALL JELIRA(VALE,'TYPE',IBID,TYPE)
-        IF (TYPE(1:1).EQ.'R') THEN
-          IF (ZI(LMAT+3).NE.1) THEN
-            CALL U2MESS('F','ALGELINE3_43')
-          ENDIF
-           CALL MRCONL(LMAT,0,'R',ZR(LXSOL),1)
-          IF (IDVALC.NE.0) THEN
-            CALL CSMBGG(LMAT,ZR(LXSOL),ZR(IDVALC),CBID,CBID,'R')
-          ENDIF
-          CALL RLDLG3(METRES,LMAT,ZR(LXSOL),CBID,1)
-C
-C- ON MULTIPLIE LE CHAM_NO SOLUTION PAR LE VECTEUR DE PRECONDTIONNEMENT
-C- DES MULTIPLICATEURS DE LAGRANGE DE MANIERE A AVOIR LES REACTIONS
-C- "JUSTES" (I.E. LES VALEURS DES MULTIPLICATEURS DE LAGRANGE)
-C
-           CALL MRCONL(LMAT,0,'R',ZR(LXSOL),1)
-        ELSEIF (TYPE(1:1).EQ.'C') THEN
-          IF (ZI(LMAT+3).NE.2) THEN
-            CALL U2MESS('F','ALGELINE3_43')
-          ENDIF
-          CALL MCCONL(LMAT,0,'C',ZC(LXSOL),1)
-          IF (IDVALC.NE.0) THEN
-            CALL CSMBGG(LMAT,RBID,RBID,ZC(IDVALC),ZC(LXSOL),'C')
-          ENDIF
-          CALL RLDLG3(METRES,LMAT,RBID,ZC(LXSOL),1)
-C
-C- ON MULTIPLIE LE CHAM_NO SOLUTION PAR LE VECTEUR DE PRECONDTIONNEMENT
-C- DES MULTIPLICATEURS DE LAGRANGE DE MANIERE A AVOIR LES REACTIONS
-C- "JUSTES" (I.E. LES VALEURS DES MULTIPLICATEURS DE LAGRANGE)
-C
-          CALL MCCONL(LMAT,0,'C',ZC(LXSOL),1)
+      ENDIF
+
+      IF (ZI(LMAT+3).EQ.1) THEN
+        TYPE='R'
+      ELSEIF (ZI(LMAT+3).EQ.2) THEN
+        TYPE='C'
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+
+
+
+      IF (TYPE.EQ.'R') THEN
+C     ----------------------------------------
+        CALL MRCONL(LMAT,0,'R',RSOLU,NSECM)
+        IF (IDVALC.NE.0) THEN
+          DO 10,K=1,NSECM
+            KDEB=(K-1)*NEQ+1
+            CALL CSMBGG(LMAT,RSOLU(KDEB),ZR(IDVALC),CBID,CBID,'R')
+   10     CONTINUE
         ENDIF
-      END IF
+        CALL RLDLG3(METRES,LMAT,RSOLU,CBID,NSECM)
+        CALL MRCONL(LMAT,0,'R',RSOLU,NSECM)
+
+
+      ELSEIF (TYPE.EQ.'C') THEN
+C     ----------------------------------------
+        CALL MCCONL(LMAT,0,'C',CSOLU,NSECM)
+        IF (IDVALC.NE.0) THEN
+          DO 20,K=1,NSECM
+            KDEB=(K-1)*NEQ+1
+            CALL CSMBGG(LMAT,RBID,RBID,CSOLU(KDEB),ZC(IDVALC),'C')
+   20     CONTINUE
+        ENDIF
+        CALL RLDLG3(METRES,LMAT,RBID,CSOLU,NSECM)
+        CALL MCCONL(LMAT,0,'C',CSOLU,NSECM)
+      ENDIF
+
+
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/05/2008   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,10 +90,6 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          COMP_ELAS       =FACT(statut='f',
                RELATION        =SIMP(statut='f',typ='TXM',defaut="ELAS",
                                      into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS") ),
-               ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,) ),
-               ELAS_VMIS_LINE  =SIMP(statut='c',typ='I',defaut=1,into=(1,) ),
-               ELAS_VMIS_TRAC  =SIMP(statut='c',typ='I',defaut=1,into=(1,) ),
-               ELAS_VMIS_PUIS  =SIMP(statut='c',typ='I',defaut=1,into=(1,) ),
                DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","GREEN") ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -103,9 +99,6 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          COMP_INCR       =FACT(statut='f',
                RELATION        =SIMP(statut='f',typ='TXM',defaut="ELAS",
                                      into=("ELAS","VMIS_ISOT_TRAC","VMIS_ISOT_LINE","VMIS_CINE_LINE","ELAS_VMIS_PUIS") ),
-               ELAS            =SIMP(statut='f',typ='I',defaut=1,into=(1,) ),
-               VMIS_ISOT_TRAC  =SIMP(statut='f',typ='I',defaut=2,into=(2,) ),
-               VMIS_ISOT_LINE  =SIMP(statut='f',typ='I',defaut=2,into=(2,) ),
                DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","PETIT_REAC") ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

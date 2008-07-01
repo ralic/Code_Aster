@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_mater SD  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_mater SD  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,7 +171,7 @@ class sd_cham_mater(AsBase):
         for kedit in range(n_gd_edit):
             v1=vale[kedit*ncmp_max:(kedit+1)*ncmp_max]
             assert v1[3]=='COMP_INCR'   , v1
-            sd2=sd_compor(v1[5].split('.')[0].strip()) ; sd2.check(checker)
+            sd2=sd_compor(v1[6].split('.')[0].strip()) ; sd2.check(checker)
 
             for x1 in v1[7:] :
                 assert x1=='' , v1

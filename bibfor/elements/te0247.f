@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*(*)     OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 C        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 C        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
+C        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO
 C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -53,6 +54,7 @@ C
       INTEGER IVECTU,ICONTP,ITYPE,NNO,NC,IVARIM,IVARIP,ITEMP,I
       INTEGER JTAB(7),JCRET,KK,LGPG,IRET,IRETM,IRETP,IRET2
       INTEGER NPG,NDIMEL,NNOEL,NNOSEL,IPLOUF
+      INTEGER LX,LRCOU
       PARAMETER    (NNO=2,NC=6,ND=NC*NNO,NK=ND*(ND+1)/2)
       REAL*8       E , NU  , G,    EM,     NUM
       REAL*8       A , XIY , XIZ , ALFAY , ALFAZ , XJX , EZ,  EY
@@ -72,6 +74,9 @@ C GRANDISSEMENT
       CHARACTER*2 K2B(NBCLGR)
 
       REAL*8       PGL(3,3), FL(ND), KLV(NK), KLS(NK), FLC, EFFNOC
+      REAL*8       PGL1(3,3), PGL2(3,3), RAD, ANGARC, ANGS2, TRIGOM
+      REAL*8       ZERO,DEUX
+      REAL*8       XFL, XFLY, XFLZ, ANG
       REAL*8       EFFNOM, TEMPM, TEMPP, U(ND), DU(ND)
       REAL*8       HOEL(7*7),HOTA(7*7),D1B(7*14),WORK(14*7),RG0(14*14)
       REAL*8       XUG(6),UTG(12),XD(3),XL2,TET1,TET2,ALFA1,BETA1,GAMMA
@@ -85,6 +90,10 @@ C GRANDISSEMENT
       DATA NOMGRD / 'GRAN_A' , 'GRAN_B' , 'GRAN_S' /
 C     ------------------------------------------------------------------
 
+
+      ZERO = 0.D0
+      DEUX = 2.D0
+C
       CALL JEVECH ('PGEOMER','L',IGEOM)
       CALL JEVECH ('PCOMPOR','L',ICOMPO)
       CALL JEVECH ('PMATERC','L',IMATE)
@@ -97,15 +106,18 @@ C     ------------------------------------------------------------------
       CALL JEVECH ('PCONTMR','L',ICONTM)
       CALL JEVECH ('PDEPLMR','L',IDEPLM)
 
+      IF (NOMTE.EQ.'MECA_POU_C_T') THEN
+         IF(ZK16(ICOMPO)   .NE. 'ELAS' .OR.
+     &      ZK16(ICOMPO+2) .NE. 'PETIT' ) THEN
+             CALL U2MESS('F','ELEMENTS5_43')
+         ENDIF
+      ENDIF
+
 C ---- LA PRESENCE DU CHAMP DE DEPLACEMENT A L INSTANT T+
 C ---- DEVRAIT ETRE CONDITIONNE  PAR L OPTION (AVEC RIGI_MECA_TANG
 C ---- CA N A PAS DE SENS).
 C ---- CEPENDANT CE CHAMP EST INITIALISE A 0 PAR LA ROUTINE NMMATR.
       CALL JEVECH ('PDEPLPR','L',IDEPLP)
-C
-      IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
-         CALL U2MESS('F','ELEMENTS2_90')
-      ENDIF
 C
 C --- POINT DE GAUSS DE L'ELEMENT
 C
@@ -195,15 +207,42 @@ C        --- CALCUL DES MATRICES ELEMENTAIRES ----
      &                  XL,    XIY,    XIY2, XIZ,   XIZ2,
      &                  XJX,   XJX2,   G,    ALFAY, ALFAY2,
      &                  ALFAZ, ALFAZ2, EY,   EZ,    1)
+
+          ELSE IF ( ITYPE .EQ. 10 ) THEN
+            IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
+C        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
+               CALL JEVECH('PCAARPO','L',LRCOU)
+               RAD = ZR(LRCOU)
+               XFL = ZR(LRCOU+2)
+               XFLY = XFL
+               XFLZ = XFL
+               IF (XFL.EQ.ZERO) THEN
+                  XFLY = ZR(LRCOU+4)
+                  XFLZ = ZR(LRCOU+6)
+               END IF
+               ANGS2 = TRIGOM('ASIN', XL/(DEUX*RAD) )
+               ANG = ANGS2*DEUX
+               XL = RAD*ANG
+               XIY = XIY/XFLY
+               XIZ = XIZ/XFLZ
+               LX = IGEOM - 1
+               XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2 +
+     &                    (ZR(LX+5)-ZR(LX+2))**2 +
+     &                    (ZR(LX+6)-ZR(LX+3))**2 )
+               ANGARC = ZR(LRCOU+1)
+               ANGS2 = TRIGOM('ASIN', XL/(DEUX*RAD) )
+               CALL MATRO2(ZR(IORIEN),ANGARC,ANGS2,PGL1,PGL2)
+               CALL PTKA10(KLV,E,A,XIY,XIZ,XJX,G,ALFAY,ALFAZ,RAD,ANG,1)
+            ENDIF
          ENDIF
 C
          IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION.EQ.'FULL_MECA') THEN
             IF ((ITEMP.NE.0).AND.(NU.NE.NUM)) THEN
                CALL U2MESS('A','ELEMENTS3_59')
             ENDIF
-            CALL NMPOEL(NPG,        KLV,        XL,     NNO, NC,
-     &                  PGL,        ZR(IDEPLP), EPSTHE, E,   EM,
-     &                  ZR(ICONTM), FL,         ZR(ICONTP))
+            CALL NMPOEL(NOMTE, NPG,        KLV,  XL,     NNO, NC,
+     &                  PGL,   PGL1,       PGL2, ZR(IDEPLP), EPSTHE, E,
+     &                  EM,    ZR(ICONTM), FL,   ZR(ICONTP),ANGS2,RAD)
          ENDIF
 C
       ELSEIF ((ZK16(ICOMPO).EQ.'LMARC_IRRA').OR.
@@ -256,9 +295,9 @@ C        --- CALCUL DES MATRICES ELEMENTAIRES ELASTIQUES ----
             CALL U2MESS('A','ELEMENTS3_59')
          ENDIF
 C
-         CALL NMPOEL(NPG,        KLV,        XL,     NNO, NC,
-     &               PGL,        ZR(IDEPLP), EPSTHE, E,   EM,
-     &               ZR(ICONTM), FL,         ZR(ICONTP))
+         CALL NMPOEL(NOMTE,  NPG,        KLV,   XL,          NNO,   NC,
+     &               PGL,    PGL1,       PGL2,  ZR(IDEPLP), EPSTHE, E,
+     &               EM,     ZR(ICONTM), FL,    ZR(ICONTP),ANGS2,RAD)
 C
 C-- CALCUL DE LA MATRICE TANGENTE ET CORRECTION DES TERMES D'ALLONGEMENT
 C-- DES VECTEURS FORCES NODALES ET EFFORTS
@@ -359,11 +398,32 @@ C
 C
 C        --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
 C
+      IF(NOMTE .EQ. 'MECA_POU_C_T' ) THEN
+         CALL JEVECH('PGEOMER','L',LX)
+         LX = LX - 1
+         XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2 +
+     &              (ZR(LX+5)-ZR(LX+2))**2 +
+     &              (ZR(LX+6)-ZR(LX+3))**2 )
+         CALL JEVECH('PCAARPO','L',LRCOU)
+         RAD = ZR(LRCOU)
+         ANGARC = ZR(LRCOU+1)
+         ANGS2 = TRIGOM('ASIN',XL/ (DEUX*RAD))
+         CALL MATRO2(ZR(IORIEN),ANGARC,ANGS2,PGL1,PGL2)
+      ENDIF
       IF ( OPTION.EQ.'RIGI_MECA_TANG'.OR.OPTION.EQ.'FULL_MECA' ) THEN
-         CALL UTPSLG ( NNO, NC, PGL, KLV, ZR(IMATUU) )
+         IF(NOMTE .EQ. 'MECA_POU_C_T' ) THEN
+            CALL CHGREP('LG',PGL1,PGL2, KLV, ZR(IMATUU))
+         ELSE
+            CALL UTPSLG ( NNO, NC, PGL, KLV, ZR(IMATUU) )
+         ENDIF
       ENDIF
       IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION.EQ.'FULL_MECA') THEN
-         CALL UTPVLG ( NNO, NC, PGL, FL, ZR(IVECTU) )
+         IF(NOMTE .EQ. 'MECA_POU_C_T' ) THEN
+            CALL UTPVLG ( 1, 6, PGL1, FL,    ZR(IVECTU) )
+            CALL UTPVLG ( 1, 6, PGL2, FL(7), ZR(IVECTU+6) )
+         ELSE
+            CALL UTPVLG ( NNO, NC, PGL, FL, ZR(IVECTU) )
+         ENDIF
          CALL JEVECH ( 'PCODRET', 'E', JCRET )
          ZI(JCRET) = 0
       ENDIF

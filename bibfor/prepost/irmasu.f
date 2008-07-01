@@ -3,7 +3,7 @@
      &            NOMA,NBGRN,NOGN,NBGRM,NOGM,
      &                  LMASU,NOMAI,NONOE,VERSIO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,7 +137,7 @@ C     --- ECRITURE DES COORDONNEES DES NOEUDS
 C
       WRITE (IFC,'(A)') '    -1'
       IF(VERSIO.EQ.5) THEN
-         WRITE (IFC,'(A)') '   781   %NOEUDS REAL*8'
+         WRITE (IFC,'(A)') '  2411'
       ELSEIF(VERSIO.EQ.4) THEN
          WRITE (IFC,'(A)') '    15   %NOEUDS'
       ENDIF
@@ -145,8 +145,8 @@ C     I : NUMERO DES NOEUDS
 C     J : SYSTEME DE COORDONNEES
 C     K : ""           ""
 C     L : COULEUR
-      J = 0
-      K = 0
+      J = 1
+      K = 1
       L = 11
       NDIM = 3
 C     --- BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE
@@ -174,12 +174,10 @@ C     --- ECRITURE DES CONNECTIVITES
 C
       WRITE (IFC,'(A)') '    -1'
       IF(VERSIO.EQ.5) THEN
-        WRITE (IFC,'(A)') '   780   %ELEMENTS'
+        WRITE (IFC,'(A)') '  2412'
       ELSEIF(VERSIO.EQ.4) THEN
         WRITE (IFC,'(A)') '    71   %ELEMENTS'
       ENDIF
-      IMATB= 1
-      IPHYB= 1
       IMAT = 1
       ICOU = 6+IMAT
       DO 21 IMA = 1,NBMA
@@ -252,14 +250,14 @@ C       - ELEMENTS NON DISPONIBLES DANS IDEAS
             IMAS = IMA
           ENDIF
           IF(VERSIO.EQ.5) THEN
-            WRITE (IFC,FMT='(8I10)') IMAS,ICOD2,IPHYB,IPHY,IMATB,IMAT,
-     &                               ICOU,NNOE
+            IPHY=1
+            WRITE (IFC,FMT='(6I10)') IMAS,ICOD2,IPHY,IMAT,ICOU,NNOE
 C           - ENREGISTREMENT SPECIAL POOUR LES POUTRES
             IF(ICOD2.EQ.21.OR.ICOD2.EQ.22.OR.ICOD2.EQ.23.
      &                     OR.ICOD2.EQ.24) THEN
               INBO = 0
               IOFF = 1
-              WRITE(IFC,FMT='(5I10)') INBO,IOFF,IOFF,IOFF,IOFF
+              WRITE(IFC,FMT='(3I10)') INBO,IOFF,IOFF
             ENDIF
           ELSEIF(VERSIO.EQ.4) THEN
             WRITE (IFC,FMT='(7I10)') IMAS,ICOD1,ICOD2,IPHY,IMAT,

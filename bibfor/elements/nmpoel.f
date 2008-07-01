@@ -1,14 +1,16 @@
-      SUBROUTINE NMPOEL(NPG,  KLV, XL,     NNO, NC,
-     &                  PGL,  UGL, EPSTHE, E,   EM,
-     &                  EFFM, FL,  EFFL)
+      SUBROUTINE NMPOEL(NOMTE, NPG,   KLV,  XL,   NNO,    NC,
+     &                  PGL,   PGL1,  PGL2, UGL,  EPSTHE, E,
+     &                  EM,    EFFM,  FL,   EFFL,ANGS2,RAD)
 C
       IMPLICIT   NONE
+      CHARACTER*(*) NOMTE
       REAL*8 KLV(*),PGL(*),UGL(*),EFFL(*),EFFM(*),FL(*)
+      REAL*8 PGL1(*),PGL2(*),ALONG,ANGS2,RAD
       REAL*8 E,EM,EPSTHE
       INTEGER NNO,NC,NPG
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,11 +32,14 @@ C     POU_D_E OU POU_D_T : COMPORTEMENT ELASTIQUE
 C     CALCUL DE LA MATRICE TANGENTE OPTION FULL_MECA OU RIGI_MECA_TANG
 C     DES FORCES NODALES ET EFFORTS OPTION FULL_MECA OU RAPH_MECA
 C
+C IN  NOMTE  : K   : NOM DE L'ELEMENT
 C IN  NPG    : IS  : NOMBRE DE POINT DE GAUSS
 C IN  KLV    : R8  : MATRICE DE RIGIDITE ELASTIQUE
 C IN  NNO    : IS  : NOMBRE DE NOEUDS
 C IN  NC     : IS  : NOMBRE DE DDL
-C IN  PGL    : R8  : MATRICE DE PASSAGE
+C IN  PGL    : R8  : MATRICE DE PASSAGE POUR POUTRE DROITE
+C IN  PGL1   : R8  : MATRICE DE PASSAGE POUR POUTRE COURBE NOEUD 1
+C IN  PGL2   : R8  : MATRICE DE PASSAGE POUR POUTRE COURBE NOEUD 2
 C IN  UGL    : R8  : DEPLACEMENT EN REPERE GLOBAL
 C IN  ITEMP  : IS  : =0 : PAS DE TEMPERATURE
 C IN  TEMPM  : R8  : TEMPERATURE A L'INSTANT ACTUEL
@@ -53,7 +58,12 @@ C
 
 C
       CALL VECMA (KLV,78,KLC,12)
-      CALL UTPVGL ( NNO, NC, PGL, UGL , UL )
+      IF(NOMTE.NE.'MECA_POU_C_T') THEN
+         CALL UTPVGL ( NNO, NC, PGL, UGL , UL )
+      ELSE
+         CALL UTPVGL ( 1, 6, PGL1, UGL(1) , UL(1) )
+         CALL UTPVGL ( 1, 6, PGL2, UGL(7) , UL(7) )
+      ENDIF
       CALL PMAVEC ('ZERO',12,KLC,UL,FL)
 C
       IF (EPSTHE.NE.0) THEN
@@ -61,8 +71,16 @@ C
             UG(I) = 0.D0
  20      CONTINUE
          IF ( EPSTHE .NE. 0.D0 ) THEN
-            UG(1) = -EPSTHE * XL
-            UG(7) = -UG(1)
+            IF(NOMTE.EQ.'MECA_POU_C_T') THEN
+               ALONG  = 2.D0 * RAD * EPSTHE * SIN(ANGS2)
+               UG(1) = -ALONG * COS(ANGS2)
+               UG(2) =  ALONG * SIN(ANGS2)
+               UG(7) = -UG(1)
+               UG(8) =  UG(2)
+            ELSE
+               UG(1) = -EPSTHE * XL
+               UG(7) = -UG(1)
+            ENDIF
             DO 35 I=1,6
                DO 30 J=1,6
                   FL(I)   = FL(I)   - KLC(I,J)     * UG(J)

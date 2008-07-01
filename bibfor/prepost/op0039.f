@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -44,7 +44,7 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
 C
-      INTEGER NOCC, IOCC, IOC2
+      INTEGER NOCC, IOCC, IOC2, NBREST
       INTEGER VALI
       INTEGER IFC, IFI
       INTEGER VERSIO
@@ -72,19 +72,19 @@ C
       REAL*8 PREC, BORSUP, BORINF, VERSI2, EPS
 C
       LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD,LGMSH,ULEXIS
-      LOGICAL LMAIL,AFAIRE
+      LOGICAL LMAIL,AFAIRE,LREST
 C     ------------------------------------------------------------------
       CHARACTER*1  CECR,K1BID
       CHARACTER*3  INFRES,TOUPAR,TOUCHA,COOR,TMAX,TMIN, SAUX03
       CHARACTER*4  PARTIE
-      CHARACTER*8  MODELE,NOMA,FORM,NOMMA,TABL
-      CHARACTER*8  K8B,RESU,CRIT,TEXTE,NOMAB,TYCHA
+      CHARACTER*8  MODELE,NOMA,FORM,NOMMA,TABL,NOMARE
+      CHARACTER*8  K8B,RESU,CRIT,TEXTE,NOMAB,TYCHA,RESURE
       CHARACTER*8  LERESU,NOPASE,NOMGD
       CHARACTER*16 NOMCMD,K16BID,FORMR,FICH,TYRES
       CHARACTER*19 NOCH19,KNUM,RESU19
       CHARACTER*24 NOMJV
       CHARACTER*24 VALK(2)
-      CHARACTER*24 NORECG
+      CHARACTER*24 NORECG,CORRN,CORRM
       CHARACTER*80 TITRE
 C
 C     ------------------------------------------------------------------
@@ -110,7 +110,7 @@ C
          ENDIF
        ENDIF
   100 CONTINUE
-C
+
 C     -----------------
 C     --- LE MODELE ---
 C     -----------------
@@ -118,7 +118,35 @@ C     -----------------
       MODELE = ' '
       CALL GETVID ( ' ', 'MODELE'  ,1,1,1, MODELE, N )
       IF ( N .NE. 0 ) LMOD= .TRUE.
-C
+
+
+C     ------------------------------------
+C     TRAITEMENT DU MOT CLE "RESTREINT"
+C     ------------------------------------
+      CALL GETFAC('RESTREINT',NBREST)
+      IF (NBREST.NE.0) THEN
+        LREST=.TRUE.
+C       -- ON FABRIQUE :
+C          NOMARE : SD_MAILLAGE "RESTREINT"
+C          RESURE : SD_RESULTAT "RESTREINT"
+        IF (NOCC.NE.1) CALL U2MESS('F','PREPOST6_37')
+        CALL GETVID('RESU','MAILLAGE',1,1,1,NOMA,NM)
+        IF (NM.NE.1) CALL U2MESS('F','PREPOST6_37')
+        NOMARE='&&OP0039'
+        CORRN='&&OP0039.CORRN'
+        CORRM='&&OP0039.CORRM'
+        CALL RDTMAI(NOMA,NOMARE,'V',CORRN,CORRM)
+
+        CALL GETVID('RESU','RESULTAT',1,1,1,RESU,NM)
+        IF (NM.EQ.1) THEN
+          RESURE='&REDUIT_'
+          CALL RDTRES(RESU,RESURE,NOMA,NOMARE,CORRN,CORRM)
+        ENDIF
+      ELSE
+        LREST=.FALSE.
+      ENDIF
+
+
 C     ---------------------------------------------
 C     --- FORMAT, FICHIER ET UNITE D'IMPRESSION ---
 C     ---------------------------------------------
@@ -175,6 +203,7 @@ C
                ENDIF
                DO 202 IOC2 = 1 , NOCC
                  CALL GETVID ( 'RESU', 'RESULTAT', IOC2,1,1, RESU, NR )
+                 IF (LREST) RESU=RESURE
                  IF ( NR .NE. 0 ) CALL RSCRMO ( IOC2, RESU , NOMJV )
  202           CONTINUE
                NUMEMO = NUMEMO + 1
@@ -182,6 +211,7 @@ C
 C
 C           --- MAILLAGE ---
             CALL GETVID ( 'RESU', 'MAILLAGE', IOCC,1,1, NOMA, NM )
+            IF (LREST) NOMA=NOMARE
 C
 C           ---  IMPRESSION DU MAILLAGE -----
             IF ( NM .NE. 0 ) THEN
@@ -212,7 +242,9 @@ C
          LRESU=.FALSE.
          DO 220 IOCC = 1 , NOCC
             CALL GETVID ( 'RESU','MAILLAGE',IOCC,1,1,NOMA,NM )
+            IF (LREST) NOMA=NOMARE
             CALL GETVID ( 'RESU','RESULTAT',IOCC,1,1,RESU,NR )
+            IF (LREST) RESU=RESURE
             CALL GETVID ( 'RESU','CHAM_GD',IOCC,1,1,RESU,NC )
             IF ( NR.NE.0 .OR. NC.NE.0 ) THEN
                LRESU=.TRUE.
@@ -271,13 +303,14 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
          RESU = ' '
          PARTIE = ' '
          CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESU,NR)
+         IF (LREST) RESU=RESURE
          CALL GETVTX('RESU','PARTIE',IOCC,1,1,PARTIE,NP)
          IF(NR.NE.0)THEN
             CALL GETTCO(RESU,TYRES)
-            IF(TYRES(1:10).EQ.'DYNA_HARMO' .OR. 
+            IF(TYRES(1:10).EQ.'DYNA_HARMO' .OR.
      &         TYRES(1:10).EQ.'ACOU_HARMO')THEN
-               IF(FORM(1:4).EQ.'GMSH'  .OR. 
-     &            FORM(1:6).EQ.'CASTEM'.OR. 
+               IF(FORM(1:4).EQ.'GMSH'  .OR.
+     &            FORM(1:6).EQ.'CASTEM'.OR.
      &            FORM(1:3).EQ.'MED'   )THEN
                     IF(NP.EQ.0)
      &                  CALL U2MESS('F','PREPOST3_69')
@@ -332,6 +365,7 @@ C             IMPRIMER QUE LA PARTIE DU MAILLAGE AFFECTEE DANS LE MODELE
          NOMA   = ' '
          NOMAB   = ' '
          CALL GETVID ( 'RESU', 'MAILLAGE', IOCC,1,1, NOMA, NM )
+         IF (LREST) NOMA=NOMARE
 C
 C        --- TEST DE LA COHERENCE DU MAILLAGE ET DU MODELE ---
 C

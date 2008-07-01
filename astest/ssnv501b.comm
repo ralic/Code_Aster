@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -318,7 +318,6 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                                   DEFORMATION='SIMO_MIEHE',
                                   RESI_INTE_RELA=9.9999999999999995E-07,
                                   ITER_INTE_MAXI=20,
-                                  ITER_INTE_PAS=10,
                                   GROUP_MA='FLAN',),
                                _F(RELATION='ELAS',
                                   GROUP_MA='SOLIDE',),),

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,7 +176,7 @@ TEST_TABLE(     TABLE=TCARS,
 
 TCAR2=MACR_CARA_POUTRE(     GROUP_MA_BORD=('LGR1', 'LGR2',),
                                       GROUP_MA=('GR1','GR2',),
-                                UNITE_MAILLAGE=38,
+                                UNITE=38,FORMAT='ASTER',
                                 GROUP_NO=('GN_N64', 'GN_N64',),
                                 LONGUEUR=0.0002,
                                 MATERIAU=MATER,
@@ -323,7 +323,7 @@ TEST_TABLE(     TABLE=TCAR2,
 
 TCAR3=MACR_CARA_POUTRE(     GROUP_MA_BORD='LR1',
                                       GROUP_MA='RECTANG',
-                                UNITE_MAILLAGE=39,
+                                UNITE=39,FORMAT='ASTER',
                                    NOEUD='N64',
                                 LONGUEUR=0.02,
                                 MATERIAU=MATER,

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE ESSAI DE FLUAGE EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,12 +82,12 @@ EPD3=AFFE_MODELE(MAILLAGE=EPROU,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=150000.0,
                             NU=0.3,),
-                    VENDOCHAB=_F(S_VP=0.0,
-                                 SEDVP1=0.0,
-                                 SEDVP2=0.0,
-                                 N_VP=12.0,
-                                 M_VP=9.0,
-                                 K_VP=2110.0,
+                    VENDOCHAB=_F(S=0.0,
+                                 ALPHA_D=0.0,
+                                 BETA_D=0.0,
+                                 N=12.0,
+                                 UN_SUR_M=(1.0/9.0),
+                                 UN_SUR_K=(1.0/2110.0),
                                  R_D=6.3,
                                  A_D=3191.0,
                                  K_D=14.0,),);
