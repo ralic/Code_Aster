@@ -1,7 +1,7 @@
       SUBROUTINE ARLPAR(IOCC,NOMARL,BASE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,12 @@ C
       INTEGER      IFM,NIV
       INTEGER      IBID,N1
 C
+      INTEGER      NI,NR,NK
+      PARAMETER   ( NI = 4 , NR = 4 , NK = 1 )
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+C
       INTEGER      NH
       INTEGER      JARLII,JARLIR
 C
@@ -93,49 +99,27 @@ C
       INTEGER      ULPMAI,METHOD
       PARAMETER   (METHOD = 1)
 C
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLPAR')
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFDBG('ARLEQUIN',IFM,NIV)
 C
-C --- AFFICHAGE
+C --- INFO DBG
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> *** PARAMETRES ARLEQUIN'
-        WRITE(IFM,*) '<ARLEQUIN> ... ECHANTILLONNAGE DE LA FRONTIERE '//
-     &               ' < NHAPP  > : ',NHAPP
-
-        WRITE(IFM,*) '<ARLEQUIN> ... ECHANTILLONNAGE DES INTEGRALES '//
-     &               ' < NHINT  > : ',NHINT
-
-        WRITE(IFM,*) '<ARLEQUIN> ... ARBRE - NOMBRE MAXIMUM DE '//
-     &               'MAILLES DANS UNE FEUILLE '//
-     &               ' < NHAPP  > : ',NHAPP
-
-        WRITE(IFM,*) '<ARLEQUIN> ... ARBRE - NOMBRE DE CANDIDATS '//
-     &               'POUR ETRE L''HYPERPLAN SEPARATEUR'//
-     &               ' < IMAX   > : ',IMAX
-
-        WRITE(IFM,*) '<ARLEQUIN> ... ARBRE - CRITERE GLOBAL DE '//
-     &               'QUALITE DE SEPARATION '//
-     &               ' < GAMMA0 > : ',GAMMA0
-
-        WRITE(IFM,*) '<ARLEQUIN> ... ARBRE - AUTRE CRITERE DE '//
-     &               'QUALITE '//
-     &               ' < GAMMA1 > : ',GAMMA1
-
-        WRITE(IFM,*) '<ARLEQUIN> ... ARBRE - PRECISION RELATIVE POUR '//
-     &               'DECIDER  SI FEUILLE SUR PLAN MEDIATEUR OU NON' //
-     &               ' < PRECAR > : ',PRECAR
-
-        WRITE(IFM,*) '<ARLEQUIN> ... BOITE - PRECISION RELATIVE POUR '//
-     &               'AGRANDIR OU TESTER '//
-     &               ' < PRECBO > : ',PRECBO
-
-        WRITE(IFM,*) '<ARLEQUIN> ... BOITE - ECHANTILLONNAGE FACES '//
-     &               'POUR MISE EN BOITE ELEMENTS QUADRATIQUES '//
-     &               ' < NHQUA  > : ',NHQUA
-      ENDIF
+      VALI(1) = NHAPP
+      VALI(2) = NHINT
+      VALI(3) = IMAX
+      VALI(4) = NHQUA
+C
+      VALR(1) = GAMMA0
+      VALR(2) = GAMMA1
+      VALR(3) = PRECAR
+      VALR(4) = PRECBO
+C
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
 C
 C --- CREATION VECTEURS JEVEUX
 C

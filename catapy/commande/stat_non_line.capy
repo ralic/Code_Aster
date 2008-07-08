@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -188,7 +188,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA'),),
            b_refe_rela    =BLOC(condition = "RESI_REFE_RELA != None",
              regles=(AU_MOINS_UN('SIGM_REFE','EPSI_REFE','FLUX_THER_REFE','FORC_REFE',
-                                  'FLUX_HYD1_REFE','FLUX_HYD2_REFE','VARI_REFE'),),
+                                  'FLUX_HYD1_REFE','FLUX_HYD2_REFE','VARI_REFE','DEPL_REFE'),),
              FORC_REFE       =SIMP(statut='f',typ='R',min=2,max=2,
                 fr="Force et Moment de référence pour les éléments de structure."),
              SIGM_REFE       =SIMP(statut='f',typ='R'),
@@ -197,6 +197,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              FLUX_HYD1_REFE  =SIMP(statut='f',typ='R'),
              FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),
              VARI_REFE       =SIMP(statut='f',typ='R'),
+             DEPL_REFE       =SIMP(statut='f',typ='R'),
            ),
 
 

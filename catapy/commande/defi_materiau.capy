@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+#& MODIF COMMANDE  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2634,8 +2634,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            RUPT_FRAG       =FACT(statut='f',
              GC              =SIMP(statut='o',typ='R'),
              SIGM_C          =SIMP(statut='f',typ='R'),
-             PENA_ADHERENCE  =SIMP(statut='f',typ='R'),
+             PENA_ADHERENCE  =SIMP(statut='f',typ='R',val_min=1.E-12,val_max=1.E+0),
              PENA_CONTACT    =SIMP(statut='f',typ='R',defaut=1.),
+             PENA_LAGR       =SIMP(statut='f',typ='R',defaut=1.0E2,val_min=1.01E+0),
+             RIGI_GLIS       =SIMP(statut='f',typ='R',defaut=1.0E1),             
            ),
            RUPT_FRAG_FO   =FACT(statut='f',
              GC              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),

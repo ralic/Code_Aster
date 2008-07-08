@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 15/04/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF modelisa9 Messages  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -396,5 +396,8 @@ Conseil :
 95 : _("""
      ERREUR: l'auto-spectre est a valeurs négatives
 """),
-
+96 : _("""
+EUROPLEXUS ne gère pas les MAILLES seulement les POINTS.
+Le problème vient de la maille %(k1)s.
+"""),
 }

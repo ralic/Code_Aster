@@ -2,7 +2,7 @@
      &                  TYPMAI,DIME  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,15 @@ C
       CHARACTER*8  CARA
       INTEGER      IRET
       INTEGER      IFM,NIV
+
+      INTEGER      NI,NR,NK
+      PARAMETER   ( NI = 1 , NR = 1 , NK = 1 )
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLNOR')
 C
 C ----------------------------------------------------------------------
 C
@@ -61,10 +70,7 @@ C
       CALL INFNIV(IFM,NIV)
 C
       IF ((CINE(1).EQ.'COQUE   ').OR.(CINE(2).EQ.'COQUE   ')) THEN
-        IF (NIV.GE.2) THEN
-          WRITE(IFM,*) '<ARLEQUIN> CALCUL DES NORMALES '//
-     &               'POUR LES COQUES...'
-        ENDIF
+        CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
         CALL JEEXIN(NORM,IRET)
         IF (IRET.EQ.0) THEN
           CALL GETVID(MOTCLE,'CARA_ELEM',IOCC,1,1,CARA,NOCC)

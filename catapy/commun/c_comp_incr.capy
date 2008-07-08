@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,6 +32,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "CZM_EXP_REG",     # RESP. : LAVERNE J.LAVERNE
                                         "CZM_EXP",         # RESP. : LAVERNE J.LAVERNE
                                         "CZM_LIN_REG",     # RESP. : LAVERNE J.LAVERNE
+                                        "CZM_OUV_MIX",     # RESP. : LAVERNE J.LAVERNE                                        
+                                        "CZM_TAC_MIX",     # RESP. : LAVERNE J.LAVERNE
                                         "DIS_BILI_ELAS",   # RESP. : FLEJOU J.L.FLEJOU
                                         "DIS_CHOC",        # RESP. : DEVESA G.DEVESA
                                         "DIS_ECRO_CINE",   # RESP. : FLEJOU J.L.FLEJOU

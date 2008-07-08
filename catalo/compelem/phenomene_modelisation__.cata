@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -550,6 +550,17 @@ PHENOMENE_MODELISATION__
        MODELISATION__ '3D_JOINT'       DIM__ 3 3   CODE__ '3FI'
               MAILLE__ HEXA8     ELEMENT__ MEFI_HEXA8
               MAILLE__ PENTA6    ELEMENT__ MEFI_PENTA6
+
+       MODELISATION__ 'PLAN_INTERFACE'   DIM__ 2 2   CODE__ 'PEI'
+              MAILLE__ QUAD8     ELEMENT__  EIPLQU8
+
+       MODELISATION__ 'AXIS_INTERFACE'   DIM__ 2 2   CODE__ 'AEI'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ QUAD8     ELEMENT__  EIAXQU8
+
+       MODELISATION__ '3D_INTERFACE'   DIM__ 3 3   CODE__ '3EI'
+              MAILLE__ HEXA20    ELEMENT__ MEEI_HEXA20
+              MAILLE__ PENTA15   ELEMENT__ MEEI_PENTA15
 
        MODELISATION__ 'PLAN_ELDI'     DIM__ 2 2   CODE__ 'PDI'
               ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI

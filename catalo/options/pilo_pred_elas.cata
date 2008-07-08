@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,6 +31,7 @@ OPTION__
         PTYPEPI  PILO_K
         PBORNPI  PILO_R
         PCDTAU   PILO_R
+        PCAMASS  CAMASS
    OUT__
         PCOPILO  PILO_R ELGA__
 

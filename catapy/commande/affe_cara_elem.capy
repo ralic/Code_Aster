@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -537,6 +537,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
             GROUP_NO_CENTRE =SIMP(statut='f',typ=grno),
             NOEUD_CENTRE    =SIMP(statut='f',typ=no),
             COOR_CENTRE     =SIMP(statut='f',typ='R',min=2,max=3),
+            UNITE_EUROPLEXUS=SIMP(statut='f',typ='I'),
          ),
 
 #============================================================================

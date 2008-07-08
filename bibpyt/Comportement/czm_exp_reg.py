@@ -1,4 +1,4 @@
-#@ MODIF czm_exp_reg Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF czm_exp_reg Comportement  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,19 +17,20 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE LAVERNE J.LAVERNE
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CZM_EXP_REG',
-   doc = """Relation de comportement cohésive (Cohesive Zone Model EXPonentielle REGularisée) de type Barenblatt (Cf. [R7.02.11]) modélisant l'ouverture d'une fissure. 
+   doc = """Relation de comportement cohésive (Cohesive Zone Model EXPonentielle REGularisée) (Cf. [R7.02.11]) modélisant l'ouverture d'une fissure. 
    Cette loi est utilisable avec l'élément fini de type joint (Cf. [R3.06.09]) et permet d'introduire une force de cohésion entre les lèvres de la fissure. 
-   L'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03]).""",
+   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03]).""",
    num_lc         = 10,
    nb_vari        = 9,
-   nom_vari       = ('SEUIL_DEP','INDIDISS','INDIENDO','PCENERDI','DISSIP','ENEL_RES','SAUT_N','SAUT_T1','SAUT_T2'),
+   nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP','ENEL_RES','SAUT_N','SAUT_T1','SAUT_T2'),
    mc_mater       = ('RUPT_FRAG'),
-   modelisation   = ('PLAN','AXIS','ELEMJOINT'),
+   modelisation   = ('3D','PLAN','AXIS','ELEMJOINT'),
    deformation    = ('PETIT'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE'),

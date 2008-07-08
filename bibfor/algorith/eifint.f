@@ -1,0 +1,248 @@
+      SUBROUTINE EIFINT(NDIM,AXI,NNO1,NNO2,NPG,WREF,VFF1,VFF2,DFFR2,
+     &  GEOM,ANG,TYPMOD,OPTION,MAT,COMPOR,LGPG,CRIT,INSTAM,INSTAP,
+     &  DDLM,DDLD,IU,IM,VIM,SIGP,VIP,MATR,VECT,CODRET)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE LAVERNE J.LAVERNE
+C TOLE CRP_21
+
+       IMPLICIT NONE
+
+       CHARACTER*8   TYPMOD(*)
+       CHARACTER*16  OPTION, COMPOR(*)
+
+       LOGICAL AXI
+       INTEGER NDIM,NNO1,NNO2,NPG,MAT,LGPG,IU(3,18),IM(3,9)
+       INTEGER CODRET
+       REAL*8  VFF1(NNO1,NPG),VFF2(NNO2,NPG),GEOM(NDIM,NNO2),WREF(NPG)
+       REAL*8  CRIT(*),INSTAM,INSTAP
+       REAL*8  DDLM(2*NNO1*NDIM+NNO2*NDIM),DDLD(2*NNO1*NDIM+NNO2*NDIM)
+       REAL*8  VIM(LGPG,NPG),VIP(LGPG,NPG),VECT(2*NNO1*NDIM+NNO2*NDIM)
+       REAL*8  DFFR2(NDIM-1,NNO2,NPG),ANG(*),SIGP(2*NDIM,NPG),MATR(*)
+C ----------------------------------------------------------------------
+C
+C   RAPH_MECA, RIGI_MECA_* ET FULL_MECA_* POUR L'ELEMENT D'INTERFACE
+C
+C ----------------------------------------------------------------------
+C IN  NDIM    : DIMENSION DE L'ESPACE
+C IN  AXI     : .TRUE. SI AXISYMETRIE
+C IN  NNO1    : NOMBRE DE NOEUDS (FAMILLE U)
+C IN  VFF1    : VALEUR DES FONCTIONS DE FORME (FAMILLE U)
+C IN  IDFF1   : DERIVEES DES FONCTIONS DE FORME DE REFERENCE (FAMILLE U)
+C IN  NNO2    : NOMBRE DE NOEUDS (FAMILLE X)
+C IN  VFF2    : VALEUR DES FONCTIONS DE FORME (FAMILLE X)
+C IN  DFFR2   : DERIVEES DES FONCTIONS DE FORME DE REFERENCE (FAMILLE L)
+C IN  NPG     : NOMBRE DE POINTS DE GAUSS
+C IN  WREF    : POIDS DES POINTS DE GAUSS DE REFERENCE 
+C IN  GEOM    : COORDONNEES DES NOEUDS
+C IN  TYPMOD  : TYPE DE MODELISATION
+C IN  OPTION  : OPTION DE CALCUL
+C IN  MAT     : MATERIAU CODE
+C IN  COMPOR  : COMPORTEMENT
+C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
+C IN  INSTAM  : INSTANT PRECEDENT
+C IN  INSTAP  : INSTANT DE CALCUL
+C IN  DDLM    : DDL A L'INSTANT PRECEDENT
+C IN  DDLD    : INCREMENT DES DDL
+C IN  IU      : DECALAGE D'INDICE POUR ACCEDER AUX DDL DE DEPLACEMENT
+C IN  IM      : DECALAGE D'INDICE POUR ACCEDER AUX DDL DE LAGRANGE
+C IN  SIGM    : CONTRAINTES A L'INSTANT PRECEDENT
+C IN  LGPG    : LONGUEUR DU TABLEAU DES VARIABLES INTERNES
+C IN  VIM     : VARIABLES INTERNES A L'INSTANT PRECEDENT
+C OUT SIGP    : CONTRAINTES DE CAUCHY (RAPH_MECA   ET FULL_MECA_*)
+C OUT VIP     : VARIABLES INTERNES    (RAPH_MECA   ET FULL_MECA_*)
+C OUT MATR    : MATRICE DE RIGIDITE   (RIGI_MECA_* ET FULL_MECA_*)
+C OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
+C OUT CODRET  : CODE RETOUR
+C ----------------------------------------------------------------------
+      LOGICAL RESI,RIGI
+      INTEGER NDDL,G,COD(27),N,I,M,J,K,L,OS,KK
+      REAL*8  RBID,R,MU(3),SU(3),WG,B(3,3,18),DE(3),DDEDT(3,3),T1
+C ----------------------------------------------------------------------
+
+
+C - INITIALISATION
+
+      RESI   = OPTION(1:4).EQ.'FULL' .OR. OPTION(1:4).EQ.'RAPH'
+      RIGI   = OPTION(1:4).EQ.'FULL' .OR. OPTION(1:4).EQ.'RIGI'
+      NDDL   = NNO1*2*NDIM + NNO2*NDIM
+
+      DO 5 G=1,NPG
+        COD(G)=0
+ 5    CONTINUE
+
+      CALL R8INIR(3,0.D0,SU,1)
+      CALL R8INIR(3,0.D0,MU,1)
+      
+      IF (RIGI) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0,MATR,1)
+      IF (RESI) CALL R8INIR(NDDL,0.D0,VECT,1)
+
+
+C - CALCUL POUR CHAQUE POINT DE GAUSS
+
+      DO 1000 G=1,NPG
+
+C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF 
+
+        CALL EICINE(NDIM,AXI,NNO1,NNO2,VFF1(1,G),VFF2(1,G),WREF(G),
+     &              DFFR2(1,1,G),GEOM,ANG,WG,B)
+
+        DO 150 I = 1,NDIM
+          SU(I) = 0.D0
+          DO 160 J = 1,NDIM
+          DO 161 N = 1,2*NNO1
+            SU(I) = SU(I) + B(I,J,N)*(DDLM(IU(J,N))+DDLD(IU(J,N)))
+ 161      CONTINUE
+ 160      CONTINUE
+ 150    CONTINUE
+ 
+        DO 170 I = 1,NDIM
+          MU(I) = 0.D0
+          DO 180 N = 1,NNO2
+            MU(I) = MU(I) + VFF2(N,G)*(DDLM(IM(I,N))+DDLD(IM(I,N)))
+ 180      CONTINUE
+ 170    CONTINUE
+ 
+        
+C      LOI DE COMPORTEMENT
+
+C      CONVENTIONS :
+C       1. MU EST RANGE DANS EPSM(1:3)
+C       2. SU EST RANGE DANS EPSD(1:3)
+C       3. DELTA EST RENVOYE DANS SIGP(1:3)             : DE
+C       4. D(DELTA)/DT EST RENVOYE DANS DSIDEP(1:3,1:3) : DDEDT
+C       5. R (PENALISATION) EST RENVOYE DANS TAMPON(1)  : R
+
+        CALL NMCOMP('RIGI',G,1,NDIM,TYPMOD,MAT,COMPOR,CRIT,
+     &              INSTAM,INSTAP,MU,SU,RBID,VIM(1,G),
+     &              OPTION,RBID,R,
+     &              DE,VIP(1,G),DDEDT,COD(G))
+        IF(COD(G).EQ.1) GOTO 9000
+
+             
+C      FORCE INTERIEURE ET CONTRAINTES DE CAUCHY
+
+        IF (RESI) THEN
+
+C        STOCKAGE DES CONTRAINTES
+          DO 200 I = 1,NDIM
+            SIGP(     I,G) = MU(I) + R*(SU(I)-DE(I))
+            SIGP(NDIM+I,G) = SU(I) - DE(I)
+ 200      CONTINUE
+
+C        VECTEUR FINT:U
+          DO 300 N=1,2*NNO1
+          DO 301 I=1,NDIM
+            KK = IU(I,N)
+            T1 = 0
+            DO 320 K = 1,NDIM
+              T1 = T1 + B(K,I,N)*SIGP(K,G)
+ 320        CONTINUE
+            VECT(KK) = VECT(KK) + WG*T1
+ 301      CONTINUE
+ 300      CONTINUE
+
+C        VECTEUR FINT:M
+          DO 350 N=1,NNO2
+          DO 351 I = 1,NDIM
+            KK = IM(I,N)
+            T1 = VFF2(N,G)*SIGP(NDIM+I,G)
+            VECT(KK) = VECT(KK) + WG*T1
+ 351      CONTINUE
+ 350      CONTINUE
+
+        END IF
+
+
+C - CALCUL DE LA MATRICE DE RIGIDITE 
+C   STOCKAGE TRIANGLE INFERIEUR LIGNE DE DFI/DUJ
+C
+        IF (RIGI) THEN
+
+C        MATRICE K:U(I,N),U(J,M)      
+          DO 500 N = 1,2*NNO1
+          DO 501 I = 1,NDIM
+            OS = ((IU(I,N)-1)*IU(I,N))/2
+            DO 520 M = 1,2*NNO1
+            DO 521 J = 1,NDIM
+              IF (IU(J,M).GT.IU(I,N)) GOTO 522
+              KK = OS+IU(J,M)
+              T1 = 0
+              DO 540 K = 1,NDIM
+                T1 = T1 + B(K,I,N)*B(K,J,M)
+                DO 550 L = 1,NDIM
+                  T1 = T1 - B(K,I,N)*R*DDEDT(K,L)*B(L,J,M)
+ 550            CONTINUE             
+ 540          CONTINUE
+              T1 = T1 * R
+              MATR(KK) = MATR(KK) + WG*T1
+ 522        CONTINUE
+ 521        CONTINUE
+ 520        CONTINUE
+ 501      CONTINUE
+ 500      CONTINUE
+   
+C        MATRICES K:MU(I,N),U(J,M)   
+          DO 600 N = 1,NNO2
+          DO 601 I = 1,NDIM
+            DO 620 M = 1,2*NNO1
+            DO 621 J = 1,NDIM
+              IF (IM(I,N).GE.IU(J,M)) THEN
+                KK = ((IM(I,N)-1)*IM(I,N))/2 + IU(J,M)
+              ELSE
+                KK = ((IU(J,M)-1)*IU(J,M))/2 + IM(I,N)
+              END IF
+              T1 = VFF2(N,G)*B(I,J,M)
+              DO 650 L = 1,NDIM
+                T1 = T1 - VFF2(N,G)*R*DDEDT(I,L)*B(L,J,M)
+ 650          CONTINUE             
+              MATR(KK) = MATR(KK) + WG*T1
+ 621        CONTINUE
+ 620        CONTINUE
+ 601      CONTINUE
+ 600      CONTINUE
+ 
+C        MATRICES K:MU(I,N),MU(J,M)   
+          DO 700 N = 1,NNO2
+          DO 701 I = 1,NDIM
+            OS = ((IM(I,N)-1)*IM(I,N))/2
+            DO 710 M = 1,NNO2
+            DO 711 J = 1,NDIM
+              IF (IM(J,M).GT.IM(I,N)) GOTO 712
+              KK = OS + IM(J,M)
+              T1 = - VFF2(N,G)*DDEDT(I,J)*VFF2(M,G)
+              MATR(KK) = MATR(KK) + WG*T1
+ 712        CONTINUE
+ 711        CONTINUE
+ 710        CONTINUE
+ 701      CONTINUE
+ 700      CONTINUE
+ 
+        END IF
+
+ 1000 CONTINUE
+
+
+C - SYNTHESE DES CODES RETOUR
+
+ 9000 CONTINUE
+      CALL CODERE(COD,NPG,CODRET)      
+      
+      END

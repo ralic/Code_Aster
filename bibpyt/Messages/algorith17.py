@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algorith17 Messages  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,4 +25,11 @@ cata_msg={
  Le processeur de rang %(i1)d ne s'est vu attribuer aucune maille physique
  du modèle!
 """),
+
+2: _("""
+         Comportement %(k1)s non implanté pour l'élément d'interface
+"""),
+3: _("""
+        il manque le déplacement de référence DEPL_REFE  
+"""), 
 }

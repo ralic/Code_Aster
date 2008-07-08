@@ -1,7 +1,7 @@
       FUNCTION ARLFG(NOMBO1,NOMBO2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,15 @@ C
       REAL*8       H1,H2
       INTEGER      IFM,NIV
       CHARACTER*8  K8BID
+
+      INTEGER      NI,NR,NK
+      PARAMETER   ( NI = 1 , NR = 1 , NK = 1 )
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLFG')
 C
 C ----------------------------------------------------------------------
 C
@@ -73,10 +82,7 @@ C
 C
 C --- AFFICHAGES
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> DETECTION AUTOMATIQUE DES FINESSES '//
-     &               'RELATIVES...'
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
 C
 C --- LECTURE DONNEES
 C

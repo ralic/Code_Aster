@@ -10,7 +10,7 @@
      &                  SECMBR,DEPALG,MEASSE,VEELEM,MEELEM,
      &                  CNFINT,CNDIRI)
 C
-C MODIF ALGORITH  DATE 05/05/2008   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -137,6 +137,7 @@ C                             4 : FLUX_HYD2_REFE
 C                             6 : VARI_REFE
 C                             7 : EFFORT
 C                             8 : MOMENT
+C                             9 : DEPL_REFE
 C       IN PARCRI  R8  PARCRI(6) = RESI_CONT_RELA : R8VIDE SI NON ACTIF
 C       IN INERTE K16  DEMANDE SUR L'INDICATEUR TEMPOREL
 C       IN NBPASE  I   NOMBRE DE PARAMETRES SENSIBLES

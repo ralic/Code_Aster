@@ -2,7 +2,7 @@
      &                  NGRMM ,DEGMAX)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 07/07/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C
           ELSEIF (DIMVAR.EQ.2) THEN
             NARE = NARE + (N-1)**2
           ELSEIF (DIMVAR.EQ.3) THEN
-            NARE = NARE + N*(N-1)/2
+            NARE = NARE + N*(N-1)
           ENDIF
         ENDIF
  10   CONTINUE

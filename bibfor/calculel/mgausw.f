@@ -1,41 +1,45 @@
       SUBROUTINE MGAUSW(A,B,DIM,NORDRE,NB,DET,IRET)
 
+      IMPLICIT NONE
+
+      INTEGER     DIM,NB,NORDRE
+      REAL*8      A(DIM,DIM),B(DIM,NB),DET
+      LOGICAL     IRET
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 07/07/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT NONE
 
 C ----------------------------------------------------------------------
 C     RESOLUTION PAR LA METHODE DE GAUSS D'UN SYSTEME LINEAIRE
 C ----------------------------------------------------------------------
 C     VARIABLES D'ENTREE
-C     INTEGER     DIM             : DIMENSION DE A
-C     INTEGER     NORDRE          : ORDRE DE LA MATRICE
-C     INTEGER     NB              : NOMBRE DE SECONDS MEMBRES
 C     REAL*8      A(DIM, DIM)     : MATRICE CARREE PLEINE
 C     REAL*8      B(DIM, NB)      : SECONDS MEMBRES
+C     INTEGER     DIM             : DIMENSION DE A
+C     INTEGER     NORDRE          : RANG DE LA MATRICE
+C     INTEGER     NB              : NOMBRE DE SECONDS MEMBRES
 C     REAL*8      DET             : 0 = PAS DE CALCUL DU DETERMINANT
-C     LOGICAL     IRET            : .TRUE. = TEST SINGULARITE
 C
 C     VARIABLES DE SORTIE
 C     REAL*8      B(DIM, NB)      : A-1 * B
 C     REAL*8      DET             : DETERMINANT DE A (SI DEMANDE)
-C     LOGICAL     IRET            : .FALSE. SI A SINGULIERE (SI DEMANDE)
+C     LOGICAL     IRET            : .FALSE. SI A SINGULIERE
 C
 C ----------------------------------------------------------------------
 C     ATTENTION : LA MATRICE A EST MODIFIEE
@@ -45,17 +49,12 @@ C     PARAMETRE
       REAL*8    CONDMX
       PARAMETER (CONDMX = 1.D16)
 
-C     VARIABLES
-      INTEGER     DIM,NB,NORDRE,I,J,K
-      REAL*8      A(DIM,DIM),B(DIM,NB),DET,C,D,CMIN,CMAX
-      LOGICAL     IRET,FLAG,LDET
-
-C     POUR EVITER QUE L'OPTIMISEUR NE SE PLANTE SUR : CMAX=CMIN
-C     ALORS QUE IRET=.FALSE.
-      C=0.D0
-      CMIN=0.D0
-      CMAX=0.D0
-
+      INTEGER     I,J,K
+      REAL*8      C,D,CMIN,CMAX
+      LOGICAL     FLAG,LDET
+C
+      IRET = .TRUE.
+C
       IF (DET.EQ.0.D0) THEN
         LDET = .FALSE.
       ELSE
@@ -86,25 +85,23 @@ C ----- DETERMINANT
 
 C ----- ESTIMATION GROSSIERE DU CONDITIONNEMENT
 
-        IF (IRET) THEN
-          IF (I .EQ. 1) THEN
+        IF (I .EQ. 1) THEN
+          CMIN = ABS(C)
+          CMAX = CMIN
+        ELSE
+          IF (ABS(C) .LT. CMIN) THEN
             CMIN = ABS(C)
-            CMAX = CMIN
-          ELSE
-            IF (ABS(C) .LT. CMIN) THEN
-              CMIN = ABS(C)
-              IF (CMAX .GT. CONDMX*CMIN) THEN
-                IRET = .FALSE.
-                GOTO 100
-              ENDIF
-              GOTO 30
+            IF (CMAX .GT. CONDMX*CMIN) THEN
+              IRET = .FALSE.
+              GOTO 100
             ENDIF
-            IF (ABS(C) .GT. CMAX) THEN
-              CMAX = ABS(C)
-              IF (CMAX .GT. CONDMX*CMIN) THEN
-                IRET = .FALSE.
-                GOTO 100
-              ENDIF
+            GOTO 30
+          ENDIF
+          IF (ABS(C) .GT. CMAX) THEN
+            CMAX = ABS(C)
+            IF (CMAX .GT. CONDMX*CMIN) THEN
+              IRET = .FALSE.
+              GOTO 100
             ENDIF
           ENDIF
         ENDIF

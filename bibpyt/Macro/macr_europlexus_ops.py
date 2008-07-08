@@ -1,0 +1,1526 @@
+#@ MODIF macr_europlexus_ops Macro  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
+# -*- coding: iso-8859-1 -*-
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+#-----------------------------------------------------------------------   
+#----------------------------- Importation des modules  ----------------
+#-----------------------------------------------------------------------   
+nom_macro = 'macr_europlexus_ops'
+
+debug = 0
+dryrun = False
+
+import types,string
+import os
+import Numeric as N
+import math 
+import copy
+
+from Accas import _F
+import aster
+from Utilitai.Utmess import UTMESS
+from Utilitai.partition import MAIL_PY
+
+#from Cata.cata import INFO_EXEC_ASTER
+#from Cata.cata import DETRUIRE
+#from Cata.cata import IMPR_RESU
+#from Cata.cata import DEFI_FICHIER
+#from Cata.cata import LIRE_RESU
+#from Cata.cata import CREA_MAILLAGE
+#from Cata.cata import DEFI_GROUP
+        
+#----------------------------- Precision ------------------------------- 
+tst = 1.0E-10
+
+#-----------------------------------------------------------------------   
+#----------------------------- Fonctions de calcul vectoriel -----------
+#-----------------------------------------------------------------------   
+
+def norme(u) :
+  return N.sqrt(N.dot(u,u))
+
+def vecteurs_egaux(v1,v2):
+  diff = v1-v2
+  #print 'v1',v1
+  #print 'v2',v2
+  for v in diff:
+    if abs(v) > tst : return False
+  return True  
+
+#-----------------------------------------------------------------------   
+#----------------------------- Operateur de la Macro-commande ----------
+#-----------------------------------------------------------------------   
+
+ 
+def macr_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None,
+# AA                             DIME=None,ECRITURE=None,CALCUL=None,**args):
+                             DIME=None,OBSERVATION=None,RESULTAT=None,COURBE=None,CALCUL=None,**args):
+                             
+  ier=0
+  
+  # On importe les definitions des commandes a utiliser dans la macro
+  # Le nom de la variable doit etre obligatoirement le nom de la commande
+  
+  global INFO_EXEC_ASTER,DETRUIRE,IMPR_RESU,DEFI_FICHIER,LIRE_RESU,CREA_MAILLAGE
+  global DEFI_GROUP,LIRE_MAILLAGE,CREA_TABLE,IMPR_TABLE,AFFE_MODELE,EXEC_LOGICIEL
+  
+  INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
+  DETRUIRE        = self.get_cmd('DETRUIRE')
+  IMPR_RESU       = self.get_cmd('IMPR_RESU')
+  DEFI_FICHIER    = self.get_cmd('DEFI_FICHIER')
+  LIRE_RESU       = self.get_cmd('LIRE_RESU')
+  CREA_MAILLAGE   = self.get_cmd('CREA_MAILLAGE')
+  DEFI_GROUP      = self.get_cmd('DEFI_GROUP')
+  LIRE_MAILLAGE   = self.get_cmd('LIRE_MAILLAGE')
+  CREA_TABLE      = self.get_cmd('CREA_TABLE')
+  IMPR_TABLE      = self.get_cmd('IMPR_TABLE')
+  AFFE_MODELE     = self.get_cmd('AFFE_MODELE')
+  EXEC_LOGICIEL   = self.get_cmd('EXEC_LOGICIEL')
+
+  # Ligne de commande d'Europlexus
+  if args.has_key('LOGICIEL'): EXEC = args['LOGICIEL']
+  else: EXEC = '/home/europlex/EPXD/EUROPLEXUS_GESTION/runepx_d'
+
+  # La macro compte pour 1 dans la numerotation des commandes
+  self.set_icmd(1)
+
+  # classs Europlexus permettant de faire le chainage avec le Code_Aster
+  EPX = EUROPLEXUS(MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,
+# AA                   ECRITURE,CALCUL,REPE='REPE_OUT',EXEC=EXEC)
+                   OBSERVATION,RESULTAT,COURBE,CALCUL,REPE='REPE_OUT',EXEC=EXEC, args=args)
+
+  # Eriture du fichier de commande Europlexus
+  EPX.ecrire_fichier()
+
+  # Si dryrun alors on ne lance pas le calcul Europlexus
+  if dryrun: return ier
+
+  # Lancement du calcul Europlexus
+  EPX.lancer_calcul()
+
+  # Recuperer le resulat Europlexus a l'aide d'un concept aster de type evol_noli
+  fichier_med = 'auto'
+  fichier_pun = 'auto'
+  if debug  : 
+    fichier_med='fort.81'
+    fichier_pun ='fort.85'
+
+  self.DeclareOut('resu',self.sd) # Le concept sortant (de type evol_noli) est nomme 'resu'   
+  global resu # pour que le nom du concept prenne celui defini par l'utilisateur
+  EPX.get_resu(fichier_med=fichier_med)
+
+  #Recuperer les concepts table
+  if COURBE is not None:
+    global table
+    icourbe = 0
+    for fonc in COURBE['TABLE'] :
+      icourbe += 1
+      self.DeclareOut('table',fonc['FONC'])
+      EPX.get_table(icourbe=icourbe,fichier=fichier_pun)
+
+  return ier
+
+#-----------------------------------------------------------------------   
+#----------------------------- class EUROPLEXUS ------------------------
+#-----------------------------------------------------------------------   
+  
+class EUROPLEXUS:
+# AA  def __init__(self,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,ECRITURE,CALCUL,REPE,EXEC,**args):
+  def __init__(self,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,OBSERVATION,RESULTAT,COURBE,CALCUL,REPE,EXEC,**args):
+
+    # Mettre toutes les entrees en attribus
+    self.DIME = DIME
+    self.MODELE = MODELE
+    self.CARA_ELEM = CARA_ELEM
+    self.CHAM_MATER = CHAM_MATER
+    self.FONC_PARASOL = FONC_PARASOL
+    self.EXCIT = EXCIT
+#    self.ECRITURE = ECRITURE
+    self.OBSERVATION = OBSERVATION
+    self.RESULTAT = RESULTAT
+    self.COURBE = COURBE
+    self.CALCUL = CALCUL
+
+    # Repertoire de calcul Europlexus 
+    self.REPE   = REPE 
+    # Commande d'execution de Europlexus
+    self.EXEC   = EXEC
+    
+    if args.has_key('UNITE_COURBE'): self.UNITE_COURBE = args['UNITE_COURBE']
+    else:                            self.UNITE_COURBE = None
+    
+    
+    # Dictionnaire contenant le texte associé au fichier de commande Europlexus
+    self.epx = {}
+    
+    # Concept pour un nouveau maillage si on utilise RIGI_PARASOL ou 
+    # si on regroupe separement les mailles tria3 et quad4
+    self.NEW_MA = None
+    
+    # Nom des fichiers de Europlexus (commande et sorties)
+    self.nom_fichiers = {'COMMANDE' : 'commandes.epx',
+                         'MAILLAGE' : 'maillage_epx',
+                         'MED'      : 'champ.e2m',
+                         'PUN'      : 'courbes.pun',
+                        }
+    
+    # Chemin du repertoire courant ou le calcul Aster est lance
+    self.pwd = os.getcwd() + os.sep                     
+    
+
+  
+#-----------------------------------------------------------------------       
+  def get_unite_libre(self,):
+    
+    _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+    unite=_UL['UNITE_LIBRE',1]
+    DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
+    return(unite)
+    
+     
+#-----------------------------------------------------------------------   
+  def reupere_structure(self,concept,mot_cle=None):
+    
+    try : structure = concept.etape.valeur
+    except : UTMESS('F','PLEXUS_1') 
+        
+    if mot_cle : 
+      if structure.has_key(mot_cle) : return structure[mot_cle]
+      else : return None 
+    return structure
+#-----------------------------------------------------------------------   
+  def get_motcle(self,fact,mot_cle,code_mess='F'):
+    try : 
+      out = fact[mot_cle]
+    except : 
+      out = None
+    if not out is None : return out    
+    if not code_mess is None and code_mess: UTMESS(code_mess,'PLEXUS_2',valk=mot_cle)
+    return None
+
+#-----------------------------------------------------------------------   
+  def get_group_ma(self,fact):
+    group_ma = self.get_motcle(fact,'GROUP_MA',code_mess='F')
+    if types.TypeType(group_ma) == types.StringType : group_ma = (group_ma,)
+    # elif types.TypeType(group_ma) == types.ListType   : group_ma = tupel(group_ma)  
+    return group_ma
+    
+#-----------------------------------------------------------------------   
+  def setlist(self,fact):
+    #print 'types.TypeType(fact)',types.TypeType(fact)
+    if fact is None : return fact
+    if not types.TypeType(fact) in [types.ListType,types.TupleType] : fact= [fact]
+    return fact
+    
+#-----------------------------------------------------------------------   
+  def lire_fichier(self,fichier,) :
+    fd = open(fichier,'r')
+    lignes = fd.readlines()
+    fd.close()
+    valeurs = []
+    commentaires = ['#','%','$','*']
+    for ll in lignes:
+      add = 1
+      for comment in commentaires : 
+        if string.find(ll,comment) != -1 : add = 0;break
+      if add :   
+         data = [val for val in ll.split(None)]
+         valeurs.append(data)
+    return valeurs
+    
+#-----------------------------------------------------------------------   
+  def fichier2dic(self,fichier):
+    valeurs = self.lire_fichier(fichier)
+    dic = {}
+    mot_cle = None
+    for ll in valeurs:
+      if len(ll) > 1 :    
+        for mot in ll :
+          try : 
+            val = float(mot)
+            if not mot_cle is None : dic[mot_cle].append(val)
+          except : 
+            mot_cle = mot
+            dic[mot_cle] = []
+            
+    return dic
+    
+#-----------------------------------------------------------------------   
+  def lire_pun(self,fichier):
+    data  = self.lire_fichier(fichier)
+    icourbe = 0
+    courbes = {}
+    for ligne in data:
+      if ligne[0] in ('VALEURS','VALUES'):
+         icourbe += 1;
+         nb = int(ligne[1])
+         courbes[icourbe] = []
+      else:
+        ligne_vale = [float(val) for val in ligne]
+        courbes[icourbe].append(ligne_vale)
+    return courbes
+    
+#-----------------------------------------------------------------------   
+  def export_DEBUT(self):
+    
+    epx = self.epx
+    
+    # Cle identifiant 
+    MODULE = 'DEBUT'
+    
+    # Entete de la commande Europlexus courante
+    epx[MODULE] = ['*--FICHIER CREE PAR MACR_EUROPLEXUS/Code_Aster']
+    
+    # Texte declarant le debut
+    epx[MODULE].append('TITRE')
+    epx[MODULE].append('ECHO')
+    options = 'TRID NONL'
+# AA    champ_fact = self.ECRITURE['CHAMP']
+    champ_fact = self.RESULTAT
+    if champ_fact is not None : options += ' MEDE'
+    epx[MODULE].append(options)
+    epx[MODULE].append('\n') 
+
+#-----------------------------------------------------------------------   
+  def export_MAILLAGE(self,format='CASTEM'):
+
+    epx = self.epx
+
+    # Cle identifiant 
+    MODULE = 'MAILLAGE'
+
+    # Entete de la commande Europlexus courante
+    epx[MODULE] = ['*--LECTURE MAILLAGE']
+
+    # Recuperer la concept maillage modifie ou initial 
+    if self.NEW_MA is None :
+      concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+    else :
+      concept_maillage = copy.copy(self.NEW_MA) 
+
+    # Ecrire le maillage, qui peut etre a ete enrichi avec des commandes Aster, sous le format souhaite (MED ou CASTEM)
+    unite = self.get_unite_libre()
+
+    # Extensions des formats de maillage 
+    extension = {'CASTEM' : '.mgib', 'MED':'.med'}
+
+    # donner un nom au fichier de maillage parce que le fort.unite peut etre ecrase par d'autre operation d'ecriture
+    nom_fichier = self.REPE + os.sep + self.nom_fichiers['MAILLAGE'] + extension[format]
+    DEFI_FICHIER(UNITE=unite,FICHIER=nom_fichier,ACTION='ASSOCIER')
+    IMPR_RESU(UNITE=unite,
+              FORMAT=format,
+              RESU = _F(MAILLAGE=concept_maillage)
+             )
+    DEFI_FICHIER(UNITE=unite,ACTION='LIBERER');    
+
+    # Ecriture de la commande Europlexus associee
+    fichier_maillage = self.pwd + nom_fichier
+
+    #epx[MODULE].append('OPNF FORMAT 9')
+    epx[MODULE].append('%sL'%format)
+    epx[MODULE].append("'%s'" %fichier_maillage)    
+    #epx[MODULE].append('CASTEM 9 TOUT')
+
+    epx[MODULE].append('\n')    
+
+#-----------------------------------------------------------------------   
+  def export_DIME(self,):
+    epx = self.epx
+
+    # Cle identifiant 
+    MODULE = 'DIME'
+
+    # Entete de la commande Europlexus courante
+    epx[MODULE] = ['*--DIMENSIONNEMENT']
+    epx[MODULE].append('\n')
+
+    # Test si des parametres de dime seront introuduites à l'aide d'un fichier externe 
+    try    : unite_dime = self.DIME['UNITE_DIME']
+    except : unite_dime = None
+
+    # Recuperer le dictionnaire issu du fichier associe à UNITE_DIME (s'il existe)
+    if unite_dime is not None : 
+      fort = 'fort.%i' %unite_dime
+      dic_fichier = self.fichier2dic(fort)
+    else:
+      dic_fichier = {}
+
+    # mettre a jour les cles definis dans le fichier par celles qui sont 
+    # definies directement sous le mot-cle facteur DIME
+    cles = ['Q4GS', 'FORCE', 'PT6L', 'ZONE', 'POUT', 
+            'ECRO', 'APPU', 'BLOQ', 'PRESS', 'PMAT', 
+            'FTAB', 'DKT3', 'DEPL', 'FNOM', 'TABLE', 
+            'LIAI', 'MTTI', 'PT1L','NEPE']
+
+    for cle in cles:
+      try:
+        if self.DIME[cle] is not None : 
+          dic_fichier[cle] = self.DIME[cle]
+      except : pass  
+
+    # Imprimer les mot-cles et leurs dans epx
+    epx[MODULE].append('DIME')
+    for cle in dic_fichier:
+      vale = dic_fichier[cle]
+      st = 5*' ' + cle
+      for v in vale:
+        st += ' %i' %v
+      epx[MODULE].append(st)  
+    epx[MODULE].append('TERM')    
+
+    epx[MODULE].append('\n')
+         
+#-----------------------------------------------------------------------   
+  def export_MODELE(self):
+    
+    epx = self.epx
+    
+    # Cle identifiant 
+    MODULE = 'MODELE'
+    
+    epx[MODULE] = ['*--DEFINITION DE LA GEOMETRIE']
+    
+    # Entete de la commande Europlexus courante
+    epx[MODULE].append('GEOMETRIE')
+    
+    # Recuperer la structure sous le mot_cle facteur AFFE de AFFE_MODELE 
+    affe_modele = self.reupere_structure(self.MODELE,'AFFE')
+    affe_modele = self.setlist(affe_modele)
+    
+ 
+    # Correspondance de modelisation aster/europlexus
+    dic_modele = {'DKT':'DKT3','DKTG':'Q4GS','POU_D_E':'POUT'}
+    
+    # Correspondance de modelisation europlexus/aster
+    dic_modele_epx = {}
+    for cle in dic_modele.keys():
+      dic_modele_epx[dic_modele[cle]] = cle
+
+    # initialisation du dictioannaire qui contient les group_ma en fonction de la modelisation
+    dic_gma = {}
+    for cle in dic_modele.values():
+      dic_gma[cle] = []
+      
+    for affe in affe_modele:
+      modelisation = affe['MODELISATION']
+      phenomene = affe['PHENOMENE']
+      if  phenomene == 'MECANIQUE' and modelisation in dic_modele.keys():
+        if affe.has_key('GROUP_MA') :
+          group_ma = self.get_group_ma(affe)
+          dic_gma[dic_modele[modelisation]].extend(group_ma)
+        else : 
+          UTMESS('F','PLEXUS_3') 
+    
+    # Regrouper separement les mailles tria3 et quad4 de la modilisation DKT (s'il y a lieu)
+    # parce que leurs modilisations dans europlexus sont differentes:
+    #                                                                tria3 : DKT3
+    #                                                                quad4 : Q4GS
+    
+    # Initialisation du dictionnaire contenant les elements du modele de type TRIA3 et QUAD4
+    nom_groups= {'TRIA3':[],'QUAD4':[]}
+    
+    if len(dic_gma['DKT3']) > 0:
+      concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+      class_dkt = DKT(MAILLAGE=concept_maillage,)
+      nom_groups = class_dkt.aster2epx(groups=dic_gma['DKT3'])
+      # mettre a jour les groups de chaque modelisation
+      dic_gma['DKT3'] = nom_groups['TRIA3']
+      dic_gma['Q4GS'].extend(nom_groups['QUAD4'])
+      
+    
+    # liste comportant les modelisations definis dans le module GEOMETRIE
+    # cette liste va servir à determiner les indices des champs stockes dans le fichier med (get_resu)
+    self.modelisations = []
+    # Ecriture sous format europlexus
+    for modelisation in  dic_gma.keys() :
+      len_groups = len(dic_gma[modelisation])
+      if len_groups > 0 :
+        self.modelisations.append(modelisation)
+        epx[MODULE].append(5*' ' + modelisation + 2*' ' + dic_gma[modelisation][0])
+        if len_groups > 1 :
+          for ig in range(1,len_groups) :
+            group_ma = dic_gma[modelisation][ig]
+            epx[MODULE].append((len(modelisation)+5+2)*' ' + group_ma)
+    
+    
+    # Mettre a jour le modele dans le cas ou le maillage a ete modifie pour la seperation de TRIA3 et QUAD4
+    # ce modele va etre utilise dans la lecture du fichier med (get_resu)
+    if len(nom_groups['QUAD4']) == 0 :
+      self.NEW_MODELE = copy.copy(self.MODELE)
+    else :
+      affe_model = []
+      for modelisation in self.modelisations :
+         affe_model.append({'GROUP_MA':dic_gma[modelisation],
+                           'MODELISATION': dic_modele_epx[modelisation],
+                           'PHENOMENE':'MECANIQUE' })
+        
+      __MO = AFFE_MODELE(MAILLAGE = concept_maillage,
+                          AFFE = affe_model,
+                          );
+        
+      self.NEW_MODELE = copy.copy(__MO);
+    
+    # Utiliser dans Ecriture des elements et points du fichier med    
+    self.dic_gma = dic_gma
+    # Il y a une suite dans RIGI_PARSOL
+    
+    #epx[MODULE].append('TERM')
+    #epx[MODULE].append('\n') 
+    
+    
+ #-----------------------------------------------------------------------   
+  def export_CARA_ELEM(self):
+    
+    epx = self.epx
+    
+    # Cle identifiant 
+    MODULE = 'CARA_ELEM'
+
+    # Recuperer la structure du concept sorti de AFFE_CARA_ELEM
+    cara_elem_struc = self.reupere_structure(self.CARA_ELEM)
+
+    epx[MODULE] = ['*--CARACTERISTIQUES DES ELEMENTS DE STRUCTURE']
+
+    # Entete de la commande Europlexus courante
+    epx[MODULE].append('COMPLEMENT')
+
+    # Dictionnaire conteant les donnees associees aux differents elements de structure
+    dic_elem = {}
+    for cle in ['DISCRET','COQUE','POUTRE','RIGI_PARASOL']:
+      if cara_elem_struc.has_key(cle):
+        fact = cara_elem_struc[cle]
+        if fact :
+          dic_elem[cle] = self.setlist(fact)
+     
+    # traduire les masses concentrees si elles existent
+    cle = 'DISCRET'
+    if dic_elem.has_key(cle):
+      epx[MODULE].append('\n') 
+      epx[MODULE].append('*--MASSES AJOUTEES')
+      for elem in dic_elem[cle]:
+        if elem['CARA'] == 'M_T_D_N' :
+          group_ma = self.get_group_ma(elem)
+          vale = elem['VALE']
+          epx[MODULE].append('MASSE  123456 %g' %vale)
+          epx[MODULE].append(7*' ' + 'LECT')
+          for group in group_ma:
+            epx[MODULE].append(11*' '+group)
+          epx[MODULE].append(7*' ' + 'TERM')
+           
+    # traduire les elements coques s'ils existent
+    cle = 'COQUE'
+    if dic_elem.has_key(cle):
+      epx[MODULE].append('\n') 
+      epx[MODULE].append('*--ELEMENTS COQUES')
+      for elem in dic_elem[cle]:       
+        group_ma = self.get_group_ma(elem)
+        epais = elem['EPAIS']
+        st = 'EPAIS  %g  ' %epais
+        #ajouter les group_ma qui ont ete affecte par ces caracteristiques
+        epx[MODULE].append(st+'LECT')
+        for group in group_ma:
+          epx[MODULE].append((len(st)+4)*' '+group)
+        epx[MODULE].append((len(st))*' '+'TERM')
+         
+    # traduire les elements poutres s'ils existent
+    cle = 'POUTRE'
+    if dic_elem.has_key(cle):
+      concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+      #class permettant de calculer et verifier les vecteurs de poutre dans Europlexus
+      class_poutre = POUTRE(MAILLAGE=concept_maillage,CARA_ELEM=self.CARA_ELEM)
+      epx[MODULE].append('\n') 
+      epx[MODULE].append('*--ELEMENTS POUTRES')
+      for elem in dic_elem[cle]:       
+        group_ma = self.get_group_ma(elem)
+        vecteurs = class_poutre.getvecteurs(group_ma,verif='oui')
+        vect_y = vecteurs[group_ma[0]]
+        type_section = elem['SECTION']
+        st = 'GEOP %s ' %type_section
+        if type_section == 'RECTANGLE' :
+          # Correspondance de caracteristique de poutre aster/europlexus
+          dic_corresp = {'HY':'AY','HZ':'AZ'}
+          epx[MODULE].append(st)
+          # ajouter le vecteur definisant l'orientation de la section
+          epx[MODULE].append(len(st)*' ' + 'VX %g' %vect_y[0])
+          epx[MODULE].append(len(st)*' ' + 'VY %g' %vect_y[1])
+          epx[MODULE].append(len(st)*' ' + 'VZ %g' %vect_y[2])
+          # ajouter les caracteristiques de la poutre
+          cara = elem['CARA']
+          vale = elem['VALE']
+          for icar in range(len(cara)):
+            car = cara[icar]
+            val = vale[icar]
+            car_epx = dic_corresp[car]
+            epx[MODULE].append(len(st)*' ' + '%s %g' %(car_epx,val))
+          # ajouter les group_ma qui ont ete affecte par ces caracteristiques
+          epx[MODULE].append(5*' '+'LECT')
+          for group in group_ma:
+            epx[MODULE].append(len(st)*' '+group)
+          epx[MODULE].append(5*' '+'TERM')     
+        else : 
+          UTMESS('A','PLEXUS_4',valk=type_section) 
+      
+    epx[MODULE].append('\n') 
+
+#-----------------------------------------------------------------------   
+  def export_RIGI_PARASOL(self):
+    
+    epx = self.epx
+    
+    # Cle identifiant 
+    MODULE = 'RIGI_PARASOL'
+    
+    # Recuperer la structure du concept sorti de AFFE_CARA_ELEM
+    cara_elem_struc = self.reupere_structure(self.CARA_ELEM)
+    
+    # Recuperer la structure RIGI_PARASOL si elles existe
+    list_rigi_parasol = None
+    if cara_elem_struc.has_key('RIGI_PARASOL'):
+      fact = cara_elem_struc['RIGI_PARASOL']
+      if fact :list_rigi_parasol = self.setlist(fact)
+   
+    # Traduction des fonctions definies dans FONC_PARASOL    
+    dic_fonc_parasol = self.get_FONC_PARASOL(list_rigi_parasol)
+   
+    # traduire les rigi_parasol
+    if list_rigi_parasol :   
+      epx[MODULE] = ['*--SUPPORT ELASTIQUE']
+      # changement de module parce que les supports issus de RIGI_PARASOL  doivent etre imprimes apres les materiaux
+      fichiers_parasol = []
+      cles_oblig = ['UNITE_EUROPLEXUS','GROUP_MA_POI1']
+      for elem in list_rigi_parasol:
+        elem_cara = elem['CARA']
+        if elem_cara == 'K_TR_D_N':
+          for cle_test in cles_oblig:
+            if not elem.has_key(cle_test):
+              UTMESS('F','PLEXUS_5',valk=cle_test) 
+          unite = elem['UNITE_EUROPLEXUS']
+          fichier = 'fort.%i' %unite
+          if fichier not in fichiers_parasol : fichiers_parasol.append(fichier)
+        else :
+          UTMESS('A','PLEXUS_6',valk=elem_cara)
+      # Lecture des valeurs de rigidites generees par aster a partir des rigidites globales definis dans PARA_RIGISOL
+      ressorts = []        
+      for fichier in fichiers_parasol :
+        ressorts.extend(self.lire_fichier(fichier))
+      
+      # Creer un maillage qui, pour chaque noeud de l'interface utilisee dans rigi_parsol, asscocie un group_ma asscie
+      # parce que on n'a pas les memes numeros des noeuds dans Europlexus
+      crea_poi1 = []
+      dic_gma = {}
+      igr = -1
+      # Liste des group_ma associes au noeuds ou le RIGI_PARSOL a ete applique 
+      groups_parasol = []
+      for ressor in ressorts :
+        noeud = ressor[0]
+        if not dic_gma.has_key(noeud):
+          igr += 1
+          group_ma = 'SUP%i' %igr
+          dic_gma[noeud] = group_ma
+          groups_parasol.append(group_ma)
+          crea_poi1.append(_F(NOEUD=noeud,NOM_GROUP_MA=group_ma)) 
+      
+      concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+      
+      __NEW = CREA_MAILLAGE(MAILLAGE=concept_maillage,
+                             CREA_POI1 = crea_poi1,
+                            );
+      self.NEW_MA = copy.copy(__NEW)
+ 
+      # Ecriture sous format europlexus
+      # Indices des composantes
+      indices_comps = {'KX':1,'KY':2,'KZ':3,'KRX':4,'KRY':5,'KRZ':6}
+      for ressor in ressorts :
+        epx[MODULE].append('SUPPORT')
+        # ecriture des composantes et de leurs valeurs associees
+        for comp in indices_comps.keys():
+          vale = ressor[indices_comps[comp]]
+          epx[MODULE].append(3*' ' + '%s %s' %(comp,vale))
+        # caracteristiques des translations et des rotations  
+        for cle_fonc_parasol in dic_fonc_parasol.keys() :
+          epx[MODULE].append(3*' ' + '%s %i' %(cle_fonc_parasol,dic_fonc_parasol[cle_fonc_parasol]) )
+        
+        # ecriture du group_ma associe
+        noeud = ressor[0]
+        group_ma = dic_gma[noeud]
+        epx[MODULE].append(3*' ' + 'LECT %s TERM' %group_ma) 
+    
+      epx[MODULE].append('\n')
+      
+      group_union = 'PARASOL'
+      
+      __NEW = DEFI_GROUP(reuse = __NEW, 
+                MAILLAGE = __NEW,
+                CREA_GROUP_MA = (_F(NOM = group_union,UNION = groups_parasol)),
+                )     
+      
+      # Mettre a jour le module modele qd les ressots existent
+      epx['MODELE'].append(5*' ' + 'APPU  ' + group_union)
+    # Fermer le module modele dans tous les cas 
+    epx['MODELE'].append('TERM')
+    epx['MODELE'].append('\n')
+ 
+#-----------------------------------------------------------------------   
+  def get_FONC_PARASOL(self,list_rigi_parasol) :
+    
+    epx = self.epx
+    
+    MODULE = 'FONC_PARASOL'
+    if list_rigi_parasol is not None :
+      if self.FONC_PARASOL is None : UTMESS('F','PLEXUS_12')
+    else : return None
+    
+    epx[MODULE] = ['*--DEFINITIONS DES FONCTIONS']
+    
+    # Entete de la commande europlexus
+    epx[MODULE].append('FONC')
+    
+    # Cles de FONC_PARASOL dans l'ordre
+    cles = ['NFKT','NFKR']
+    # Dictionnaire faisant la correspondance entre la fonction et son numero europlexus
+    dic_fonc = {} 
+    ifonc = 0
+    for cle in cles:
+      ifonc += 1
+      dic_fonc[cle] = ifonc
+      fonction = self.get_motcle(self.FONC_PARASOL,cle,code_mess='A')    
+      (temps,valeurs) = fonction.Valeurs()
+      # imprimer les valeurs de la table
+      epx[MODULE].append(5*' ' +'NOPA %i TABLE %i' %(ifonc,len(temps)) )
+      for ival in range(len(temps)):
+         epx[MODULE].append(17*' ' +'%g %g' %(temps[ival],valeurs[ival]))   
+    
+    epx[MODULE].append('\n')
+    return dic_fonc
+          
+#-----------------------------------------------------------------------   
+  def export_CHAM_MATER(self): 
+    
+    epx = self.epx
+    
+    # CLe identifiant
+    MODULE = 'CHAM_MATER'
+    
+    epx[MODULE] = ['*--DEFINITION DES MATERIAUX']
+    
+    # Entete de la commande Europlexus courante
+    epx[MODULE].append('MATERIAUX')
+         
+    # Recuperer la structure sous le mot_cle facteur AFFE de AFFE_MATER 
+    affe_mater = self.reupere_structure(self.CHAM_MATER,'AFFE')
+    affe_mater = self.setlist(affe_mater)
+    
+    # Dictionnaire stoquant les caracteristiques mecaniques et les group_ma associe a chaque materiau
+    dic_mater = {}
+    
+    for affe in affe_mater :
+      # Recuperer le concept du materiau defini par DEFI_MATERIAU
+      concept_mater = affe['MATER']
+      # Recuperer le nom du materiau
+      nom_mater = concept_mater.get_name()
+      # Recuperer le group_ma concerne
+      group_ma = self.get_group_ma(affe)
+      if not dic_mater.has_key(nom_mater):
+         dic_mater[nom_mater] = {'GROUP_MA':[]}
+         # Recuperer les caracteristiques elastiques du materiau
+         elas = self.reupere_structure(concept_mater,'ELAS')
+         for car in ['E','RHO','NU']:
+           dic_mater[nom_mater][car] = elas[car]
+      dic_mater[nom_mater]['GROUP_MA'].extend(group_ma)
+      
+    # Impression au format Europlexus
+    dic_corresp = {'E':'YOUNG','NU':'NU','RHO':'RO'}
+    for nom_mater in dic_mater.keys():
+      epx[MODULE].append('*--MATERIAU %s' %nom_mater)
+      # mot cle indicant qu'il s'agit des caracteristiques lineaires du materiau
+      epx[MODULE].append('LINE')
+      for car_aster in dic_corresp.keys():
+        vale    = dic_mater[nom_mater][car_aster]
+        car_epx = dic_corresp[car_aster]
+        epx[MODULE].append('%s %g' %(car_epx,vale))
+      # ajouter les group_ma qui ont ete affecte par ces caracteristiques
+      epx[MODULE].append(3*' '+'LECT')
+      for group in dic_mater[nom_mater]['GROUP_MA']:
+        epx[MODULE].append(7*' '+group)
+      epx[MODULE].append(3*' '+'TERM')
+    
+    epx[MODULE].append('\n')    
+    return epx
+    
+#-----------------------------------------------------------------------   
+  def export_EXCIT(self):
+  
+    epx = self.epx
+    
+    # CLe identifiant
+    MODULE = 'EXCIT'
+    
+    epx[MODULE] = ['*--DEFINITION DES CHARGEMENTS et DES CONDITIONS AUX LIMITES']
+    
+    # Entete de la commande Europlexus courante
+    #epx[MODULE].append('CHARGEMENT')
+    
+    excit_list = self.setlist(self.EXCIT)
+    
+    # Traduction de ddl_impo
+    dic_ddl_impo = {'DX':1,'DY':2,'DZ':3,'DRZ':4,'DRY':5,'DRZ':6}
+    
+    # Initialisation des variables decrivant le chargement et les conditions de blocage
+    CHARGEMENT = []
+    LIAISON   = []
+    
+    for excit in excit_list:
+      concept_charge = excit['CHARGE']
+      pres_rep_list = self.reupere_structure(concept_charge,'PRES_REP')
+      ddl_impo_list = self.reupere_structure(concept_charge,'DDL_IMPO')
+      pres_rep_list = self.setlist(pres_rep_list)
+      ddl_impo_list = self.setlist(ddl_impo_list)
+      # PRES_REP
+      if pres_rep_list :
+        if len(CHARGEMENT) == 0 : CHARGEMENT = ['CHARGEMENT']
+        fonction = self.get_motcle(excit,'FONC_MULT',code_mess='A')
+        if fonction is None:
+          UTMESS('F','PLEXUS_7')
+        (temps,valeurs) = fonction.Valeurs()
+        for pres_rep in  pres_rep_list :
+          pression = pres_rep['PRES']
+          group_ma = self.get_group_ma(pres_rep)
+           
+          CHARGEMENT.append(2*' ' + '1 FACTO 2')
+          CHARGEMENT.append(6*' ' +'PRESS COQU %g' %pression)
+          # ajouter les group_ma qui ont ete affecte par ces caracteristiques
+          CHARGEMENT.append(6*' '+'LECT')
+          for group in group_ma:
+            CHARGEMENT.append(10*' '+group)
+          CHARGEMENT.append(6*' '+'TERM') 
+          # imprimer les valeurs de la table
+          CHARGEMENT.append(6*' ' +'TABLE %i' %len(temps))
+          for ival in range(len(temps)):
+            CHARGEMENT.append(10*' ' +'%g %g' %(temps[ival],valeurs[ival]))
+      # DDL_IMPO
+      #print 'ddl_impo_list',ddl_impo_list
+      if ddl_impo_list :
+        #UTMESS('A','PLEXUS_8')
+        if len(LIAISON) == 0 : LIAISON = ['LIAISON']
+        for ddl_impo in ddl_impo_list:
+          blocage = ''
+          for cle in dic_ddl_impo.keys() :
+            vale = self.get_motcle(ddl_impo,cle,code_mess='None')
+            if vale is not None:
+              if vale != 0 : UTMESS('F','PLEXUS_13')
+              else : 
+                blocage += `dic_ddl_impo[cle]`
+          # recupere les entites geometriques
+          for entite in ['GROUP_MA','GROUP_NO'] :
+            group_ma = self.get_motcle(ddl_impo,entite,code_mess='None')
+            if group_ma is not None : 
+              group_ma = self.setlist(group_ma);break
+          LIAISON.append(' '*2 + 'BLOQ %s' %blocage)
+          # ajouter les group_ma qui ont ete affecte par ces caracteristiques
+          LIAISON.append(6*' '+'LECT')
+          for group in group_ma:
+            LIAISON.append(10*' '+group)
+          LIAISON.append(6*' '+'TERM') 
+            
+      if not ddl_impo_list and not pres_rep_list :
+        UTMESS('F','PLEXUS_9')
+    
+    # Transmettre les commandes a la liste global epx
+    for var in [CHARGEMENT,LIAISON] :
+      if len(var) > 0 :
+        epx[MODULE].append('\n')
+        for ligne in var : epx[MODULE].append(ligne)
+    
+    epx[MODULE].append('\n')    
+
+#-----------------------------------------------------------------------   
+  def Correspondance_champ(self):
+   
+    # Dictionnaire de passage de champs Aster --> Europlexus
+    dic_champ = {'DEPL':'DEPLACEMENT','VITE':'VITESSE','ACCE':'ACCELERATION',
+                 'SIEF_ELGA':'CONTRAINTE','EPSI_ELGA':'EPST','VARI_ELGA':'ECROUISSAGE'}
+    
+    # Dictionnaire de passage de composantes Aster --> Europlexus
+    dic_cmp = {}
+    for cham in ['DEPL','VITE','ACCE'] :
+      dic_cmp[cham] = {'DX' : 1,'DY':2,'DZ':3,'DRX':4,'DRY':5,'DRZ':6}
+    
+    dic_cmp['SIEF_ELGA']  = {'SIXX':1,'SIYY':2,'SIZZ':3,'SIXY':4,'SIXZ':5,'SIYZ':6,}
+    dic_cmp['VARI_ELGA'] = {}
+    for ii in range(1,25):
+      dic_cmp['VARI_ELGA']['V%i'%ii] = ii
+    
+    self.dic_champ = dic_champ  
+    self.dic_cmp = dic_cmp
+        
+    
+#-----------------------------------------------------------------------   
+  def export_ECRITURE(self):
+    
+    epx = self.epx
+    
+    self.Correspondance_champ()
+             
+    # CLe identifiant
+    MODULE = 'ECRITURE'
+
+    dcles_freq = {'FREQ':'PAS_NBRE', 'TFREQ':'PAS_INST'}
+
+    def get_freq(fact):
+      for cle_freq in dcles_freq.keys(): 
+# AA        vale_freq = self.get_motcle(fact,cle_freq,code_mess=None)
+        vale_freq = self.get_motcle(fact,dcles_freq[cle_freq],code_mess=None)
+        if vale_freq is not None : break
+      return cle_freq,vale_freq  
+
+    def string2list(var) :
+      if types.TypeType(var) == types.StringType : var = (var,)
+      return var
+
+
+    epx[MODULE] = ['*--ECRITURES DES RESULTATS']
+
+    # Entete de la commande Europlexus courante
+    epx[MODULE].append('ECRITURE')
+
+
+    # Traitement du mot-cle facteur OBSERVATION (EPX = LISTING)
+# AA    listing_fact = self.ECRITURE['LISTING']
+    listing_fact = self.OBSERVATION
+    nom_cham = string2list(listing_fact['NOM_CHAM'])
+
+    cle_freq_listing, vale_freq_listing = get_freq(listing_fact)
+# AA   cles_entite = ['POINTS','ELEMEMTS']
+    dcles_entite = {'POINTS':'GROUP_NO', 'ELEMEMTS':'GROUP_MA'}
+# AA    dcles_tout   = {'POINTS':'TOUT_GROUP_NO', 'ELEMEMTS':'GROUP_MA'}
+    cles_entite = dcles_entite.keys()
+
+    # Ecriture format Europlexus
+    
+    # Ecriture LISTING
+    st = 2*' '   
+    for cham_aster in nom_cham:
+      cham_epx = self.dic_champ[cham_aster]
+      st +=  '%s ' % cham_epx  
+    st += ' %s %g' % (cle_freq_listing,vale_freq_listing)
+    epx[MODULE].append(st)
+    for cle in cles_entite:
+# AA    for cle in cles_entite :
+# AA      entite_geo = self.get_motcle(listing_fact ,cle, code_mess=None)
+# AA       entite_geo = string2list(entite_geo)
+
+       entite_geo = string2list(listing_fact[dcles_entite[cle]])
+
+       if listing_fact['TOUT_%s' % dcles_entite[cle]] == 'OUI': epx[MODULE].append(2*' ' +'%s TOUS ' % cle)
+       elif entite_geo is None:                                 epx[MODULE].append(2*' ' +'NO%s' % cle)
+       else:
+          epx[MODULE].append(2*' ' +'%s LECT' %cle)
+          for group in entite_geo :
+             epx[MODULE].append(6*' '+group)
+          epx[MODULE].append(2*' '+'TERM') 
+
+#        if entite_geo is None : 
+#           epx[MODULE].append(2*' ' +'NO%s' %cle)
+#        elif  entite_geo[0] == 'TOUS' :
+#          epx[MODULE].append(2*' ' +'%s TOUS ' %cle)
+#        else :
+#           epx[MODULE].append(2*' ' +'%s LECT' %cle)
+#           for group in entite_geo :
+#              epx[MODULE].append(6*' '+group)
+#           epx[MODULE].append(2*' '+'TERM') 
+#           
+
+    # Ecriture FICHIER ALICE UTILISE par le mot-cle facteur COURBE
+# AA    courbe_fact = self.ECRITURE['COURBE']
+    courbe_fact = self.COURBE
+    if courbe_fact is not None :
+
+      dcourbe=[]
+      for j in courbe_fact:
+         dcourbe.append(j.cree_dict_valeurs(j.mc_liste))
+         for i in dcourbe[-1].keys():
+            if dcourbe[-1][i]==None : del dcourbe[-1][i]
+
+      print 'dcourbe=', dcourbe
+
+      cle_freq, vale_freq = get_freq(courbe_fact)
+      epx[MODULE].append(2*' ' + 'FICHIER ALICE TEMPS' + ' %s %g' %(cle_freq,vale_freq))
+
+      # Liste les noeuds a postraiter
+      list_noeuds = []
+
+      # recuperer les mot_cles TABLE
+      print courbe_fact
+      print courbe_fact['NOEUD']
+      sys.exit()
+      tables = self.get_motcle(courbe_fact,'TABLE',code_mess='F')
+      #tables = self.setlist(tables)
+
+      icourbe = 0
+      for table in tables:
+        icourbe += 1
+        noeud = table['NOEUD']
+        list_noeuds.append(noeud)
+      #Ecriture la liste des noeuds sous format epx
+      epx[MODULE].append(4*' ' +'POINTS')
+      epx[MODULE].append(6*' ' +'LECT ')
+      for noeud in list_noeuds :
+        epx[MODULE].append(8*' '+noeud)
+      epx[MODULE].append(6*' '+'TERM')   
+      #Pas besoin d'elements 
+      epx[MODULE].append(4*' ' + 'NOELEMENTS')
+
+    # Ecriture fichier MED representant les champs aux noeuds et aux points de gauss
+    # Traitement du mot-cle facteur RESULTAT
+#    # Traitement du mot-cle facteur CHAMP
+#    champ_fact = self.ECRITURE['CHAMP']
+    champ_fact = self.RESULTAT
+    if champ_fact is not None :
+      cle_freq_champ,vale_freq_champ = get_freq(champ_fact)
+      epx[MODULE].append(2*' ' + 'FICHIER MED')
+      # chemin complet du fichier med
+      fichier_med = self.pwd + self.REPE + os.sep + self.nom_fichiers['MED']
+      epx[MODULE].append(2*' ' + "'%s'" %fichier_med)
+      cle_freq,vale_freq = get_freq(champ_fact)
+      epx[MODULE].append(2*' ' + ' %s %g' %(cle_freq_champ,vale_freq_champ))
+      
+      # groupes de mailles du modele
+      entite_geo = []
+      for model in self.modelisations :
+         entite_geo.extend(self.dic_gma[model])
+      for cle in cles_entite :
+       epx[MODULE].append(2*' ' +'%s LECT' %cle)
+       for group in entite_geo :
+          epx[MODULE].append(6*' '+group)
+       epx[MODULE].append(2*' '+'TERM') 
+    
+    # Une ligne de saut
+    epx[MODULE].append('\n')
+    
+#-----------------------------------------------------------------------   
+
+  def export_POST_COURBE(self):
+
+    # Suite de postraitement permettant d'ecrire des fichiers ASCII 
+    # des grandeurs demandees
+    
+    # Tester si le mot_cle facteur COURBE a ete renseigne
+# AA   courbe_fact = self.ECRITURE['COURBE']
+    courbe_fact = self.COURBE
+    if courbe_fact is None : return
+
+    epx = self.epx
+                 
+    # Cle identifiant
+    MODULE = 'POST_COURBE'
+
+    # Ecriture fort Europlexus
+    # Entete de la commande courante
+    epx[MODULE] = ['SUITE']
+    epx[MODULE].append("'TITRE'")
+    epx[MODULE].append('RESULTAT ALICE TEMPS GARD PSCR')
+#    unite_alit = self.get_motcle(courbe_fact,'UNITE_ALIT',code_mess=None)
+#    print 'unite_alit=', unite_alit
+    if self.UNITE_COURBE: fichier_courbes = os.path.join(self.pwd, 'fort.%s' % str(self.UNITE_COURBE))
+    else:                 fichier_courbes = self.pwd + self.REPE + os.sep + self.nom_fichiers['PUN']
+    epx[MODULE].append("OPNF FORMAT 17 '%s'" %fichier_courbes)
+    epx[MODULE].append("SORTIES GRAPHIQUES AXTEMPS 1. 'TEMPS(s)'")
+
+    # recuperer le mot-cle facteur COURBE
+# AA    courbe_fact = self.ECRITURE['COURBE']
+    courbe_fact = self.COURBE
+    # recuperer les mot_cle TABLE
+    tables = self.get_motcle(courbe_fact,'TABLE',code_mess='F')
+    #tables = self.setlist(tables)
+
+    # Dictionnaire decrivant les legendes des abscisses et ordodonnees des courbes imprimees
+    # et utilisee dans get_tables
+    self.legend_courbes = {}
+    entites_courbe = ['NOEUD','REGION']
+    icourbe = 0
+    for table in tables:
+      icourbe += 1
+      for entite_type in entites_courbe :
+        try : entite = table[entite_type]
+        except : entite = None
+        if entite is not None : break
+        
+      cham_aster = table['NOM_CHAM']
+      cmp_aster = table['NOM_CMP']
+      cham_epx = self.dic_champ[cham_aster]
+      cmp_epx  = self.dic_cmp[cham_aster][cmp_aster]
+      ylabel   = cham_aster + '_' + cmp_aster
+      st = "COURBE %i '%s' %s COMP %i %s LECT %s TERM" % (icourbe,ylabel,cham_epx,cmp_epx,entite_type,entite)
+      epx[MODULE].append(st)
+      epx[MODULE].append("LIST %i AXES 1. '%s'" % (icourbe,ylabel))
+      self.legend_courbes[icourbe] = ['TEMPS',ylabel]
+
+    # Une ligne de saut
+    epx[MODULE].append('\n')
+
+#-----------------------------------------------------------------------   
+  def export_CALCUL(self):
+    
+    epx = self.epx
+    
+    # CLe identifiant
+    MODULE = 'CALCUL'
+
+    # Entete de la commande Europlexus courante
+    epx[MODULE] = ['*--OPTION DE CALCUL']
+    epx[MODULE].append('')
+    type_discr = self.CALCUL['TYPE_DISCRETISATION']
+    
+    epx[MODULE].append('OPTION PAS %s' %type_discr)
+      
+    if  type_discr == 'AUTO':
+      cstab = self.CALCUL['CSTAB']
+      epx[MODULE].append(7*' ' + 'CSTAB %s' %cstab)
+    
+    epx[MODULE].append('\n')
+    epx[MODULE].append('*--LANCEMENT DE CALCUL')
+    epx[MODULE].append('')
+    calcul = 'CALCUL'
+    cles = ['TINI','PASFIX','TFIN','DTMAX','NMAX']
+    for cle in cles:
+      try : calcul += ' %s %g' %(cle,self.CALCUL[cle])
+      except : pass
+    
+    epx[MODULE].append(calcul) 
+    epx[MODULE].append('\n')
+    #epx[MODULE].append('FIN')  
+    
+  
+#-----------------------------------------------------------------------   
+  def ecrire_fichier(self,):
+    
+    fichier = self.REPE + os.sep + self.nom_fichiers['COMMANDE']
+
+    # ordre des modules de definition du modele EPX
+    modules = ['DEBUT','MAILLAGE','DIME','MODELE','CARA_ELEM','FONC_PARASOL','CHAM_MATER','RIGI_PARASOL','EXCIT','ECRITURE','CALCUL','POST_COURBE']
+    
+    #les modules MODELE et RIGI_PARASOL doivent etre executes avant MAILLAGE 
+    # car le maillage peut etre modifie dans ces modules
+    modules_exe = []
+    modules_exe.extend(modules)
+    modules_exe.remove('MAILLAGE') 
+    modules_exe.append('MAILLAGE')
+    
+    # Excecution des differentes modules
+    for module in modules_exe:
+      fct = 'export_%s' %module
+      if hasattr(self,fct) : 
+        eval('self.'+fct+'()')  
+      else :  
+        print 'module %s pas encore developpe' %fct
+    
+    # Ecriture du fichier texte contenant toutes les commandes Europlexus
+    fd = open(fichier,'w')
+    for module in modules :
+      if self.epx.has_key(module) :
+        for ll in self.epx[module]:
+          fd.write('%s\n'%ll)
+    # Fin du fichier de commandes epx      
+    fd.write('FIN')      
+    fd.close()
+
+#-----------------------------------------------------------------------   
+  def get_table(self,icourbe=1,fichier='auto') :
+   
+    global table
+    
+    if not hasattr(self,'courbes'): 
+      if fichier == 'auto' : fichier = self.pwd + self.REPE + os.sep + self.nom_fichiers['PUN']
+      if not os.path.isfile(fichier) : return
+      self.courbes = self.lire_pun(fichier=fichier)
+    
+    if not os.path.isfile(fichier) : return
+     
+    valeurs = N.array(self.courbes[icourbe])
+    para_abscisse = self.legend_courbes[icourbe][0]
+    para_ordonnee = self.legend_courbes[icourbe][1]
+    table = CREA_TABLE( LISTE =(_F(LISTE_R = valeurs[:,0].tolist() , PARA = para_abscisse,),
+                                _F(LISTE_R = valeurs[:,1].tolist() , PARA = para_ordonnee,)
+                                         ),
+                      );
+    
+    if 0 :
+      unite = self.get_unite_libre()
+      unite = 90
+      DEFI_FICHIER(UNITE=unite,ACTION='ASSOCIER'); 
+                                                
+      IMPR_TABLE(UNITE = unite,
+               FORMAT = 'XMGRACE',
+               TABLE = table,
+               LEGENDE_X = para_abscisse,
+               LEGENDE_Y = para_ordonnee,
+               LEGENDE   = 'test'
+           );
+           
+      os.system('xmgrace fort.%i' %unite) 
+    
+      DEFI_FICHIER(UNITE=unite,ACTION='LIBERER'); 
+           
+                  
+#-----------------------------------------------------------------------
+  def get_resu(self,fichier_med='auto'):
+    
+    # Rendre global le resu pour qu'il soit accepte dans self.DeclareOut 
+    global resu
+    
+    if fichier_med == 'auto' : fichier_med = self.REPE + os.sep + self.nom_fichiers['MED'] 
+    
+    print fichier_med
+    if not os.path.isfile(fichier_med) :
+       print "Pas de fichier MED !"
+       return
+        
+    # Format med des champs depl, vite et acce
+    format_med =[_F(NOM_CHAM_MED='CHAMP___DEPLACEMENT___001',
+                    NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),
+                    NOM_CMP_MED=('UX','UY','UZ','RX','RY','RZ'),
+                    NOM_CHAM    ='DEPL' ),
+                 _F(NOM_CHAM_MED='CHAMP___VITESSE___001',
+                    NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),
+                    NOM_CMP_MED=('VX','VY','VZ','RX','RY','RZ'),
+                    NOM_CHAM    ='VITE' ),
+                 _F(NOM_CHAM_MED='CHAMP___ACCELERATION___001',
+                    NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),
+                    NOM_CMP_MED=('GX','GY','GZ','RX','RY','RZ'),
+                    NOM_CHAM    ='ACCE' ),
+                ]    
+
+    # Dicionnaire permettant de faire la correspondance des champs aux pts de gauss entre le med de europlexus et aster
+    dic_cmp_gauss = {}
+    
+    dic_cmp_gauss['CONTRAINTE'] = {'DKT3': {'NOM_CMP'     : ('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
+                                            'NOM_CMP_MED' : ('SIG1','SIG2','SIG3','SIG4','SIG5','SIG6',),},
+                                   'Q4GS': {'NOM_CMP'     : ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
+                                            'NOM_CMP_MED' : ('SIG1','SIG2','SIG3','SIG4','SIG5','SIG6','SIG7','SIG8'),},
+                                   'POUT' : {}        
+                    
+                                   }
+
+
+    dic_cmp_gauss['ECROUISSAGE'] = {'DKT3': {'NOM_CMP'     : ('V1','V2'),
+                                            'NOM_CMP_MED'  : ('VAR1','VAR2'),},
+                                   'Q4GS' : {'NOM_CMP'      : ('V1','V2'),
+                                            'NOM_CMP_MED'  : ('VAR1','VAR2'),},
+                                   'POUT' : {}        
+                        
+                                    }
+                                    
+    # Dictionnaire permettant de traduire le champ epx en med au nom asscie dans aster
+    epx2aster = {'CONTRAINTE':'SIEF_ELGA','ECROUISSAGE':'VARI_ELGA'}
+
+# AA : desactive pour le moment
+#     # Enrichir la liste format_med par les champs aux pts de gauss
+#     imode = 0
+#     print 'self.modelisations',self.modelisations
+#     for modelisation in self.modelisations :
+#       #if modelisation in ['Q4GS','DKT3'] :
+#         imode += 1
+#         numero =  string.replace('%3.i' %imode,' ','0')
+#         for champ in dic_cmp_gauss.keys():
+#           if len(dic_cmp_gauss[champ][modelisation]) > 0 :
+#             nom_cham_med = 'CHAMP___'+ champ + (13-len(champ))*'_' + numero
+#             nom_cham = epx2aster[champ]
+#             nom_cmp = dic_cmp_gauss[champ][modelisation]['NOM_CMP']
+#             nom_cmp_med = dic_cmp_gauss[champ][modelisation]['NOM_CMP_MED']
+#             # ajouer a la list format_med
+#             format_med.append(_F(NOM_CHAM_MED=nom_cham_med,NOM_CMP=nom_cmp,
+#                                NOM_CMP_MED=nom_cmp_med,NOM_CHAM=nom_cham)
+#                            )
+
+    # Lire le fichier med avec les options choisies dans la liste format_med
+    unite = self.get_unite_libre()
+    DEFI_FICHIER(UNITE=unite,ACTION='LIBERER'); 
+    fort = 'fort.%i' %unite
+    if os.path.isfile(fort) : os.remove(fort)
+
+    os.symlink(fichier_med,fort)
+
+    # Regeneration des mots-cles EXCIT passés en argument de la macro
+    dExcit=[]
+    for j in self.EXCIT :
+       dExcit.append(j.cree_dict_valeurs(j.mc_liste))
+       for i in dExcit[-1].keys():
+          if dExcit[-1][i]==None : del dExcit[-1][i]
+
+    resu = LIRE_RESU(TYPE_RESU='EVOL_NOLI',
+#                  VERI_ELGA='NON',
+                  FORMAT='MED',
+                  MODELE=self.NEW_MODELE,
+                  FORMAT_MED=format_med,
+                  UNITE=unite,
+                  CHAM_MATER=self.CHAM_MATER,
+                  CARA_ELEM=self.CARA_ELEM,
+                  TOUT_ORDRE='OUI',
+                  EXCIT=dExcit,
+                  INFO=2,
+                  );
+
+    DEFI_FICHIER(UNITE=unite,ACTION='LIBERER');              
+    os.remove(fort)
+
+#-----------------------------------------------------------------------
+  def lancer_calcul(self,fichier_med='auto'):
+#    os.chdir(self.pwd + self.REPE)
+    fichier_epx = self.nom_fichiers['COMMANDE']
+    cmd = '%s %s' %(self.EXEC,fichier_epx)
+    print 'EXEC',cmd
+#    os.system( cmd )
+
+    from Utilitai.System import ExecCommand
+    comment = "Lancement de la commande :\n%s" % cmd
+    os.chdir(self.pwd + self.REPE)
+    iret, output = ExecCommand(cmd, alt_comment=comment)
+    print output
+
+#     EXEC_LOGICIEL(LOGICIEL=self.EXEC,
+#                   ARGUMENT=fichier_epx,
+#                   INFO=2,
+#                  )
+                  
+
+    os.chdir(self.pwd) 
+    
+#------------------------------------------------------------------------
+#----------------------------- FIN class EUROPLEXUS ---------------------
+#------------------------------------------------------------------------
+
+ 
+#------------------------------------------------------------------------
+#----------------------------- class POUTRE -----------------------------
+#------------------------------------------------------------------------
+
+class POUTRE:
+  def __init__(self,MAILLAGE,CARA_ELEM):
+    
+    # recuperer les infos du maillage sous format python 
+    self.MApyt = MAIL_PY()
+    self.MApyt.FromAster(MAILLAGE)
+    self.CARA_ELEM = CARA_ELEM
+    # un dictionnaire stockant tous orientations definis dans AFF_CARA_ELEM
+    self.dic_gma = self.orientation_cara_elem()
+       
+#------------------------------------------------------------------------
+  def getvecteurs(self,groupes_poutres,verif='non'):
+    vecteurs = {}
+    ig = 0
+    message = 0
+    for gr in groupes_poutres :
+      ig += 1 
+      if not self.dic_gma.has_key(gr): self.dic_gma[gr] = {'ANGL_VRIL':0.0}
+      vecteurs[gr] = self.get_vecty_group_ma(gr)  
+      if verif == 'oui':
+        if ig > 1 :
+          if not vecteurs_egaux(vecteurs[gr],vect_old) : message = 1
+        vect_old = vecteurs[gr]
+    
+    if message : UTMESS('F','PLEXUS_10',valk=groupes_poutres)   
+    
+    return vecteurs   
+  
+#------------------------------------------------------------------------
+  def orientation_cara_elem(self,):
+    
+    dic_gma = {}
+    etapes = self.CARA_ELEM.etape.valeur
+    
+    if not etapes.has_key('ORIENTATION') : return dic_gma
+         
+    orientation = etapes['ORIENTATION']
+    try :
+      test = orientation [0]
+    except :
+      orientation  = [orientation]
+
+    for ll in orientation  :
+      cara = ll['CARA']
+      if cara in ['ANGL_VRIL','ANGL_NAUT','VECT_Y'] : 
+        if ll.has_key('GROUP_MA') :
+          group_ma = ll['GROUP_MA']
+          if types.TypeType(group_ma) == types.StringType : group_ma = (group_ma,) 
+          a = ll['VALE']
+          for gr in group_ma:
+            if not dic_gma.has_key(gr): dic_gma[gr] = {}
+            dic_gma[gr][cara] = a
+    
+    for gr in dic_gma.keys() :
+      if not dic_gma[gr].has_key('VECT_Y'):
+        if not dic_gma[gr].has_key('ANGL_VRIL') : dic_gma[gr]['ANGL_VRIL'] = 0.0
+        if dic_gma[gr].has_key('ANGL_NAUT'):
+          if len(dic_gma[gr]['ANGL_NAUT']) == 2 : 
+            dic_gma[gr]['ANGL_NAUT'] = list(dic_gma[gr]['ANGL_NAUT']) + [dic_gma[gr]['ANGL_VRIL']]
+          
+    return(dic_gma)
+    
+#------------------------------------------------------------------------
+  def get_vecty_group_ma(self,group_ma):
+    
+    #print '*'*10
+    #print 'Test de group_ma',group_ma
+    #print '*'*10
+
+    message = 0
+
+    if self.dic_gma[group_ma].has_key('VECT_Y') : return self.dic_gma[group_ma]['VECT_Y']
+
+    if not self.dic_gma[group_ma].has_key('ANGL_NAUT'):calcul_angle = 1
+    else: calcul_angle = 0
+
+    mailles = self.MApyt.gma[string.rstrip(group_ma)]
+
+    for imaille in range(len(mailles)):
+      maille = mailles[imaille]
+      if calcul_angle:
+        alpha,beta = self.calcul_angles_naut(maille)
+        angl = [alpha,beta,self.dic_gma[group_ma]['ANGL_VRIL']]
+      else:
+        angl = self.dic_gma[group_ma]['ANGL_NAUT']
+
+      vect_y = self.angle2vecty(angl)
+      if imaille > 1 :  
+        if not vecteurs_egaux(vect_y0,vect_y) : message = 1
+      vect_y0 = vect_y   
+
+    self.dic_gma[group_ma]['VECT_Y'] = vect_y 
+
+    if message : 
+      #print 'group_ma',group_ma
+      UTMESS('F','PLEXUS_11',valk=group_ma) 
+
+    return vect_y        
+
+#------------------------------------------------------------------------
+  def angle2vecty(self,angl):
+    #transformer en rd
+    for iangl in range(len(angl)):
+      angl[iangl] = N.pi*angl[iangl]/180. 
+ 
+    cosa = math.cos( angl[0] )
+    sina = math.sin( angl[0] )
+    cosb = math.cos( angl[1] )
+    sinb = math.sin( angl[1] )
+    cosg = math.cos( angl[2] )
+    sing = math.sin( angl[2] )
+    vect = [ sing*sinb*cosa - cosg*sina , cosg*cosa + sing*sinb*sina , sing*cosb ]
+    for ii in range(len(vect)):
+      if abs(vect[ii]) <= tst : vect[ii] = 0.0
+    vect = N.array(vect)
+    vect = vect/norme(vect)
+    return vect
+    
+#------------------------------------------------------------------------
+  def get_coor_nodes_maille(self,maille):
+    node1,node2 = self.MApyt.co[maille]
+    coor1 = self.MApyt.cn[node1]
+    coor2 = self.MApyt.cn[node2]
+    return [coor1,coor2]
+    
+#------------------------------------------------------------------------
+  def calcul_angles_naut(self,maille):
+    
+    # Angles directeurs d'une poutre (nautiques)
+    
+    a,b = self.get_coor_nodes_maille(maille)
+
+    gx = [ b[0]-a[0] , b[1]-a[1] , b[2]-a[2] ]
+   
+    if( (abs(gx[1]) < tst)  and (abs(gx[0]) <= tst) ):
+      alpha = 0.0
+    else:
+      alpha = math.atan2(gx[1],gx[0])
+
+    p  = math.sqrt( gx[0]*gx[0] + gx[1]*gx[1] )
+    if( (abs(gx[2]) < tst ) and (abs(p) <=tst) ):
+      beta = 0.0
+    else:
+      beta  = -math.atan2(gx[2],p)
+    
+    # alpha et Beta en degre
+    alpha = alpha*180./math.pi
+    beta = beta*180./math.pi
+    
+    return alpha,beta
+
+#------------------------------------------------------------------------
+#----------------------------- FIN class POUTRE -------------------------
+#------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------
+#----------------------------- class DKT --------------------------------
+#------------------------------------------------------------------------
+
+class DKT:
+
+  def __init__(self,MAILLAGE):
+   
+    self.MAILLAGE = MAILLAGE
+    # recuperer les infos du maillage sous format python 
+    self.MApyt = MAIL_PY()
+    self.MApyt.FromAster(MAILLAGE)
+  
+  def aster2epx(self,groups):
+    
+    # initialisations du dic contenant les mailles de tria3 et quad4
+    dic_groups = {}
+    for cle in ['TRIA3','QUAD4']:
+      dic_groups[cle] = []
+    # placer les mailles dans le champ associe
+    for gr in groups:
+      mailles = self.MApyt.gma[string.rstrip(gr)]
+      for maille in mailles:
+        code_maille = self.MApyt.tm[maille]
+        type_maille = self.MApyt.nom[code_maille]
+        maille_initiale = string.rstrip(self.MApyt.correspondance_mailles[maille]) 
+        if not maille_initiale in dic_groups[type_maille] :
+          dic_groups[type_maille].append(maille_initiale) 
+        
+    # creer le mot-cle facteur permettant de creer les groupes de mailles associes au TRIA3 et QUAD4
+    crea_group_ma = []
+    # dictionnair contenant les noms des groups qui vont etre creer au besoin
+    nom_groups = {}
+    for cle in dic_groups.keys() :
+      if len(dic_groups[cle]) > 0 :
+        crea_group_ma.append({'MAILLE':dic_groups[cle],'NOM':cle})
+        nom_groups[cle] = [cle]
+      else:
+        nom_groups[cle] = []
+    # ce n'est pas necessaire de creer les group_ma si on n'a pas de quad4
+    if len(dic_groups['QUAD4']) >0:
+      
+      #global DEFI_GROUP
+      
+      DEFI_GROUP(reuse         = self.MAILLAGE,
+                 MAILLAGE      = self.MAILLAGE,
+                 CREA_GROUP_MA = crea_group_ma,
+                );
+       
+    else :
+      # on affecte au TRIA les groupes deja fournis en argument
+      nom_groups['TRIA3'] = groups
+    
+    return nom_groups
+      
+#------------------------------------------------------------------------
+#----------------------------- FIN class DKT ----------------------------
+#------------------------------------------------------------------------

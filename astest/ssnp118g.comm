@@ -1,0 +1,535 @@
+# MODIF  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOIS CZM_OUV_MIX ET CZM_TAC_MIX
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+ 
+DEBUT(CODE=_F(NOM='SSNP118G', NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='NON'))
+
+tfin=10
+nbpas=10
+Gc = 0.9
+Sc = 1.1
+young  = 0.5
+dc = 2*Gc/Sc
+
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+
+                MAILLAGE=MA,
+                VERIF='MAILLE',
+
+                AFFE= (
+                _F(
+                   MAILLE = ('CUBE','DROITE'),
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = 'D_PLAN'
+                     ),
+                 _F(
+                   MAILLE = 'CUBEDEG',
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = 'PLAN_INTERFACE'
+                   )
+                 )
+              )
+
+
+MAT=DEFI_MATERIAU(
+
+     ELAS=_F(
+              E =  young,
+              NU = 0.0),
+     RUPT_FRAG = _F(
+                     GC = Gc,
+                     SIGM_C = Sc,
+                     PENA_LAGR = 100,
+                     RIGI_GLIS = 10,    
+                    )
+            )
+
+
+CM=AFFE_MATERIAU(
+
+               MAILLAGE=MA,
+               AFFE=_F(
+                       TOUT = 'OUI',
+                       MATER = MAT),
+              )
+
+# AFFECTATION DES ANGLES D'EULER : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
+
+ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
+                     MASSIF=(
+           _F(MAILLE='CUBEDEG',ANGL_EULER=(30,0,0)),         
+                                 ));
+
+
+LIAISON=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(MAILLE='GAUCHE2', DX=0, DY=0),
+    )
+  )
+
+
+# CHARGEMENT MODE I PUR
+TRAC_N=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250), 
+    )
+  )
+
+L_INST=DEFI_LIST_REEL(
+
+                     DEBUT   = -1.,
+     INTERVALLE=(
+      _F( JUSQU_A = 0,       NOMBRE = 1 ),
+      _F( JUSQU_A = 0.0001,  NOMBRE = 1 ),
+      _F( JUSQU_A = tfin,     NOMBRE = nbpas ),
+      )
+     )
+
+FCT = DEFI_FONCTION(
+  NOM_PARA = 'INST',
+  VALE     = (-1, 0, 0,  1.E-8),
+  PROL_DROITE = 'LINEAIRE'
+  )
+
+#----------------------------------------------------------------------------------
+# CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_OUV_MIX
+#-----------------------------------------------------------------------------------
+
+U_OUV=STAT_NON_LINE(
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  CARA_ELEM  = ORIEN_FI,
+  EXCIT      = (
+    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = TRAC_N, FONC_MULT = FCT),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_OUV_MIX',  MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',         MAILLE = 'CUBE',),
+          ),
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
+  CONVERGENCE = _F(
+    RESI_REFE_RELA = 1.E-6,
+    SIGM_REFE      = Sc,
+    DEPL_REFE      = dc,
+    ITER_GLOB_MAXI = 5,
+    ),
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+
+U_OUV = STAT_NON_LINE(reuse = U_OUV,
+  ETAT_INIT  = _F(EVOL_NOLI = U_OUV),
+  MODELE = MO,
+  CHAM_MATER = CM,
+  CARA_ELEM  = ORIEN_FI,
+  EXCIT = (
+    _F(CHARGE = LIAISON                 ),
+    _F(CHARGE = TRAC_N , TYPE_CHARGE = 'FIXE_PILO'),
+    ),
+  PILOTAGE   = _F(
+    SELECTION = 'RESIDU',
+    TYPE = 'PRED_ELAS',
+    MAILLE = 'CUBEDEG',
+    COEF_MULT = 10,
+    ETA_PILO_R_MIN = 0.,
+    ),
+  COMP_INCR = (
+    _F(RELATION = 'CZM_OUV_MIX', MAILLE = 'CUBEDEG'),
+    _F(RELATION = 'ELAS',          MAILLE = 'CUBE'),
+    ),
+  INCREMENT = _F(
+    LIST_INST    = L_INST,
+    INST_FIN     = tfin,
+    SUBD_METHODE = 'UNIFORME',
+    SUBD_PAS     = 4,
+    SUBD_NIVEAU  = 5,
+    ),
+  ARCHIVAGE = _F(LIST_INST = L_INST,),
+  CONVERGENCE = _F(
+    RESI_REFE_RELA = 1.E-6,
+    SIGM_REFE      = Sc,
+    DEPL_REFE      = dc,
+    ITER_GLOB_MAXI = 5,
+    ),
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
+  NEWTON  = _F(
+    MATRICE   = 'TANGENTE',
+    REAC_ITER = 1,
+    ),
+  ) 
+
+#----------------------------------------------------------------------------------
+# CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_TAC_MIX
+#-----------------------------------------------------------------------------------
+
+U_TAC=STAT_NON_LINE(
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  CARA_ELEM  = ORIEN_FI,
+  EXCIT      = (
+    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = TRAC_N, FONC_MULT = FCT),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_OUV_MIX',  MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',         MAILLE = 'CUBE',),
+          ),
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
+  CONVERGENCE = _F(
+    RESI_REFE_RELA = 1.E-6,
+    SIGM_REFE      = Sc,
+    DEPL_REFE      = dc,
+    ITER_GLOB_MAXI = 5,
+    ),
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+
+U_TAC = STAT_NON_LINE(reuse = U_TAC,
+  ETAT_INIT  = _F(EVOL_NOLI = U_TAC),
+  MODELE = MO,
+  CHAM_MATER = CM,
+  CARA_ELEM  = ORIEN_FI,
+  EXCIT = (
+    _F(CHARGE = LIAISON                 ),
+    _F(CHARGE = TRAC_N , TYPE_CHARGE = 'FIXE_PILO'),
+    ),
+  PILOTAGE   = _F(
+    SELECTION = 'RESIDU',
+    TYPE = 'PRED_ELAS',
+    MAILLE = 'CUBEDEG',
+    COEF_MULT = 10,
+    ETA_PILO_R_MIN = 0.,
+    ),
+  COMP_INCR = (
+    _F(RELATION = 'CZM_OUV_MIX', MAILLE = 'CUBEDEG'),
+    _F(RELATION = 'ELAS',          MAILLE = 'CUBE'),
+    ),
+  INCREMENT = _F(
+    LIST_INST    = L_INST,
+    INST_FIN     = tfin,
+    SUBD_METHODE = 'UNIFORME',
+    SUBD_PAS     = 4,
+    SUBD_NIVEAU  = 5,
+    ),
+  ARCHIVAGE = _F(LIST_INST = L_INST,),
+  CONVERGENCE = _F(
+    RESI_REFE_RELA = 1.E-6,
+    SIGM_REFE      = Sc,
+    DEPL_REFE      = dc,
+    ITER_GLOB_MAXI = 5,
+    ),
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
+  NEWTON  = _F(
+    MATRICE   = 'TANGENTE',
+    REAC_ITER = 1,
+    ),
+  ) 
+
+
+#---------------------------------------------------------------------------------- 
+# TESTS CALCUL MODE I AVEC LOI CZM_OUV_MIX
+#-----------------------------------------------------------------------------------
+
+
+FDX_OUV=RECU_FONCTION( RESULTAT=U_OUV,
+              NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
+TDX_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FDX_OUV))
+
+
+FETA_OUV=RECU_FONCTION( RESULTAT=U_OUV,
+              NOM_PARA_RESU='ETA_PILOTAGE')
+TETA_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FETA_OUV))
+
+
+TEST_TABLE(TABLE=TDX_OUV,
+           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00,),),
+           NOM_PARA='DX',
+           VALE=1.79523E+00,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TETA_OUV,
+           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00,),),
+           NOM_PARA='ETA_PILO',
+           VALE=8.29181E-01,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_OUV,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'DX',
+      VALE      = 2.16506E-08,
+      GROUP_NO  = 'TOUTSEUL',
+      INST      = 0
+      ),
+    )
+  )
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_OUV,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIXX',
+      VALE      = 7.37899E-01,
+      MAILLE    = 'CUBE',
+      POINT     = 1,
+      INST      = 2.00008E+00,
+      ),
+    )
+  )
+
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_OUV,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIGN',
+      VALE      = 3.47849E-01,
+      MAILLE    = 'CUBEDEG', 
+      POINT     = 1,
+      INST      = 9.00001E+00,
+      ),
+    )
+  )
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_OUV,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'SIGN',
+      VALE      = 3.47849E-01,
+      NOEUD    = 'NS6',
+      INST      = 9.00001E+00,
+      ),
+    )
+  )
+  
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_OUV,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITX',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 8.00002E+00,
+      ),
+    )
+  )
+
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_OUV,
+      NOM_CHAM  = 'VARI_ELGA',
+      NOM_CMP   = 'V1',
+      VALE      = 2.67290E-01,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 3.00007E+00,
+      ),
+    )
+  )
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_OUV,
+      NOM_CHAM  = 'VARI_ELGA',
+      NOM_CMP   = 'V4',
+      VALE      = 7.00003E-01,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 2,
+      INST      = 7.00003E+00,
+      ),
+    )
+  )
+
+
+#---------------------------------------------------------------------------------- 
+# TESTS CALCUL MODE I  AVEC LOI CZM_TAC_MIX
+#-----------------------------------------------------------------------------------
+
+
+FDX_TAC=RECU_FONCTION( RESULTAT=U_TAC,
+              NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
+TDX_TAC=CREA_TABLE(FONCTION=_F(FONCTION=FDX_TAC))
+
+
+FETA_TAC=RECU_FONCTION( RESULTAT=U_TAC,
+              NOM_PARA_RESU='ETA_PILOTAGE')
+TETA_TAC=CREA_TABLE(FONCTION=_F(FONCTION=FETA_TAC))
+
+
+TEST_TABLE(TABLE=TDX_TAC,
+           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00,),),
+           NOM_PARA='DX',
+           VALE=1.79523E+00,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TETA_TAC,
+           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00,),),
+           NOM_PARA='ETA_PILO',
+           VALE=8.29181E-01,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_TAC,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'DX',
+      VALE      = 2.16506E-08,
+      GROUP_NO  = 'TOUTSEUL',
+      INST      = 0
+      ),
+    )
+  )
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_TAC,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIXX',
+      VALE      = 7.37899E-01,
+      MAILLE    = 'CUBE',
+      POINT     = 1,
+      INST      = 2.00008E+00,
+      ),
+    )
+  )
+
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_TAC,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIGN',
+      VALE      = 3.47849E-01,
+      MAILLE    = 'CUBEDEG', 
+      POINT     = 1,
+      INST      = 9.00001E+00,
+      ),
+    )
+  )
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_TAC,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'SIGN',
+      VALE      = 3.47849E-01,
+      NOEUD    = 'NS6',
+      INST      = 9.00001E+00,
+      ),
+    )
+  )
+  
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_TAC,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITX',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 8.00002E+00,
+      ),
+    )
+  )
+
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_TAC,
+      NOM_CHAM  = 'VARI_ELGA',
+      NOM_CMP   = 'V1',
+      VALE      = 2.67290E-01,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 3.00007E+00,
+      ),
+    )
+  )
+
+TEST_RESU(
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_TAC,
+      NOM_CHAM  = 'VARI_ELGA',
+      NOM_CMP   = 'V4',
+      VALE      = 7.00003E-01,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 2,
+      INST      = 7.00003E+00,
+      ),
+    )
+  )
+
+#-----------------------------------------------------------------------------------
+
+IMPR_TABLE(TABLE=TDX_OUV)
+IMPR_TABLE(TABLE=TETA_OUV)
+
+IMPR_RESU(
+  FORMAT   = 'RESULTAT',
+  RESU=_F(   
+          RESULTAT = U_OUV, MAILLE  = 'CUBEDEG',
+    ))
+
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_OUV,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_TAC,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),  
+ 
+FIN()
+

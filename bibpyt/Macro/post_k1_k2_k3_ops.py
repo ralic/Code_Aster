@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 13/05/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/07/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -669,7 +669,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
        sens = -1
      DETRUIRE(CONCEPT=_F(NOM=__Tabg),INFO=1) 
 # Extraction des sauts sur la fissure          
-     TSaut = [None]*Nbfond    
+     TSo = [None]*Nbfond    
      NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
      if NB_NOEUD_COUPE < 3 : 
        UTMESS('A','RUPTURE0_34')
@@ -679,7 +679,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         if i==0 and DTAN_ORIG!=None : Pextr = Porig - ABSC_CURV_MAXI*VP[i]
         elif i==(Nbfond-1) and DTAN_EXTR!=None : Pextr = Porig - ABSC_CURV_MAXI*VP[i]
         else : Pextr = Porig + ABSC_CURV_MAXI*VP[i]*sens
-        TSaut[i] = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
+        TSo[i] = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
                          LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
                                         TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
                                         DISTANCE_MAX=dmax),);
@@ -749,8 +749,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             Ls = [string.ljust(Lnosup[ino][i],8) for i in range(len(Lnosup[ino]))]
             tabsup=tabsup.NOEUD==Ls
       elif FISSURE :
-         tabsup = TSaut[ino].EXTR_TABLE()
-         DETRUIRE(CONCEPT=_F(NOM=TSaut[ino]),INFO=1)
+         tabsup = TSo[ino].EXTR_TABLE()
+         DETRUIRE(CONCEPT=_F(NOM=TSo[ino]),INFO=1)
       else :
          tabsup=TABL_DEPL_SUP.EXTR_TABLE()
          veri_tab(tabsup,TABL_DEPL_SUP.nom,ndim)

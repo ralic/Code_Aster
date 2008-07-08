@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF OPTIONS  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +88,7 @@ OPTION__
                          PLSN    : LEVEL SET NORMALE
                          PLST    : LEVEL SET TANGENTE  
                          PSTANO  : STATUT DES NOEUDS (ENRICHISSEMENT) >>
+        PCAMASS  CAMASS    
+       << CARACTERISTIQUES DE MASSIF >>    
    OUT__
 PVECTUR VDEP_R RESL__
-
-

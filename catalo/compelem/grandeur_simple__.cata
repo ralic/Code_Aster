@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF COMPELEM  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -223,7 +223,7 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
                     H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -237,7 +237,7 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY
 <<  DEPL_R : DEPLACEMENT REEL AUX NOEUDS
        DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
        DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
@@ -268,6 +268,9 @@ GRANDEUR_SIMPLE__
        PRES31  : MULTIPLICATEUR ASSURANT DU3/DX1=V31 DE LA MODELISATION 2ND GRAD
        PRES32  : MULTIPLICATEUR ASSURANT DU3/DX2=V32 DE LA MODELISATION 2ND GRAD
        PRES33  : MULTIPLICATEUR ASSURANT DU3/DX3=V33 DE LA MODELISATION 2ND GRAD
+       SIGN    : EFFORT DE CONTACT NORMAL
+       SITX    : EFFORT DE CONTACT TANGENT DIRECTION 1
+       SITY    : EFFORT DE CONTACT TANGENT DIRECTION 2
        >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
@@ -282,7 +285,7 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY
 <<  DOMMAG   : DOMMAGE
        DOMA     :
        TRIAX    : TAUX DE TRIAXIALITE
@@ -579,7 +582,7 @@ GRANDEUR_SIMPLE__
     PILO_R   = R    A0       A1       A2       A3       ETA
     POSI     = I    POS
     PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM   VARI
-                    EFFORT   MOMENT
+                    EFFORT   MOMENT   DEPL
 <<  PRES_C/_F/_R : PRESSION
     PRES : PRESSION (NORMALE A LA SURFACE).
          SI C EST UN CHARGEMENT: P>0 EST APPLIQUEE SELON L OPPOSE DE LA NORMALE.
@@ -648,7 +651,8 @@ GRANDEUR_SIMPLE__
                     SIG133   SIG211   SIG212   SIG213   SIG221   SIG222   SIG223   SIG231
                     SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
                     SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
-                    DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG
+                    DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y   
+                    CONT_Z
 <<  QXX QXY QYX QYY QZX QZY : CONTRAINTES GENERALISEES
                                POUR ASSUMED STRAIN QUAS4 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
@@ -670,7 +674,8 @@ GRANDEUR_SIMPLE__
                     SIG133   SIG211   SIG212   SIG213   SIG221   SIG222   SIG223   SIG231
                     SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
                     SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
-                    DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG
+                    DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y   
+                    CONT_Z
     SING_R   = R    DEGRE    TAILLE
     SIZZ_R   = R    SIZZ
     SOUR_F   = K8   SOUR     VNOR

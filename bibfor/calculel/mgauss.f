@@ -1,7 +1,7 @@
       SUBROUTINE MGAUSS(CARA,A,B,DIM,NORDRE,NB,DET,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/06/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 07/07/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,6 @@ C                   /'V' : ON VEUT ALLER VITE, ON NE CONTROLE PAS
 C                          LA QUALITE DE LA SOLUTION
 C                   /'W' : ON VEUT ALLER ENCORE PLUS VITE ET UTILISER
 C                          L'ANCIENNE ROUTINE MGAUSS DE G. RATEAU
-C                          (RENOMMEE MGAUSW.F)
 C                    ATTENTION : SI 'W', LA MATRICE A EST MODIFIEE
 
 
@@ -62,10 +61,10 @@ C                   ATTENTION : LE CALCUL DU DETERMINANT PEUT PROVOQUER
 C                                ASSEZ FACILEMENT DES "OVERFLOW"
 
 C  REAL*8      A(DIM, DIM) : MATRICE CARREE PLEINE
-C                            A n'est pas modifiee sauf si cara(3:3)='W'
+C                            A N'EST PAS MODIFIEE SAUF SI CARA(3:3)='W'
 C  REAL*8      B(DIM, NB)  : SECONDS MEMBRES
 C  INTEGER     DIM         : DIMENSION DE A
-C  INTEGER     NORDRE      : ORDRE DE LA MATRICE (NORDRE<DIM)
+C  INTEGER     NORDRE      : RANG DE A (NORDRE <= DIM)
 C  INTEGER     NB          : NOMBRE DE SECONDS MEMBRES
 
 C  VARIABLES DE SORTIE
@@ -122,11 +121,7 @@ C       NRHS : NOMBRE DE COLONNES DE X
         LDX = DIM
 
 C       SAUVEGARDE DE LA MATRICE 'A' DANS UNE MATRICE DE TRAVAIL: 'AA'
-        DO 1 I = 1,DIM
-          DO 2 J = 1,DIM
-            AA(I,J) = A(I,J)
-   2      CONTINUE
-   1    CONTINUE
+        CALL LCEQMN( DIM , A , AA)
 
 C --- RESOLUTION
         CALL DGESVX(FACT,TRANS2,N,NRHS,AA,LDA,AF,LDAF,IPIV4,EQUED,R,C,B,
@@ -144,8 +139,8 @@ C       -- RECOPIE DE X DANS B :
           DET = 1.D0
           DO 25 I = 1,N-1
             INDI = I+1
-            DO 25 J = INDI, N  
-              IF(IPIV4(I).GE.IPIV4(J)) DET = DET*(-1.D0)              
+            DO 25 J = INDI, N
+              IF(IPIV4(I).GE.IPIV4(J)) DET = DET*(-1.D0)
    25     CONTINUE
           DO 30 I = 1,N
             DET = DET*AF(I,I)
@@ -186,7 +181,7 @@ C       ---   RESOLUTION
           DET = 1.D0
           DO 75 I = 1,N-1
             INDI = I+1
-            DO 75 J = INDI, N  
+            DO 75 J = INDI, N
               IF(IPIV4(I).GE.IPIV4(J)) DET = DET*(-1.D0)
    75     CONTINUE
           DO 80 I = 1,N
@@ -211,7 +206,6 @@ C     ---------------------------------------------------------
         ELSE
           DET = 0.D0
         END IF
-        LRET = .TRUE.
         IF (LTRANS) THEN
           CALL MGAUSW(AF,B,DIM,NORDRE,NB,DET,LRET)
         ELSE
@@ -222,7 +216,7 @@ C     ---------------------------------------------------------
       END IF
 
 
-C     -- 5. EN CAS DE PROBLEME : IRET > 0
+C     -- 4. EN CAS DE PROBLEME : IRET > 0
 C     ---------------------------------------
       IF (IRET.GT.0) THEN
         IF (LSTOP) THEN
@@ -245,7 +239,7 @@ C         -- ON CONTINUE
       END IF
 
 
-C     -- 6. IMPRESSIONS (SI LE MOT CLE 'INFO' = 2): RCOND, BERR, FERR
+C     -- 5. IMPRESSIONS (SI LE MOT CLE 'INFO' = 2): RCOND, BERR, FERR
 C     ---------------------------------------------------------------
       IF (CARA2(3:3).EQ.'S') THEN
         CALL INFNIV(IFM,NIV)

@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
+C MODIF MODELISA  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 MODNEM
       CHARACTER*1  K1BID
       CHARACTER*8  NOMNOE, NOGP, NOMMAI
+
+C     EUROPLEXUS
+      CHARACTER*16 K16NOM
+      INTEGER      UIEPLX,ULISOP
+      LOGICAL      LOEPLX
 
       LOGICAL      TRANS
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
@@ -140,6 +145,18 @@ C     RECUPERATION DU NIVEAU D'IMPRESSION
 C     -----------------------------------
       CALL INFNIV(IBID,NIV)
 C
+C     OUVERTURE DES UNITES EUROPLEXUS
+      DO 20 IOC = 1 , NBOCC
+         CALL GETVIS('RIGI_PARASOL','UNITE_EUROPLEXUS',
+     &                IOC,1,1,UIEPLX,IBID)
+         IF ( (IBID.GE.1) .AND. (UIEPLX.GT.0) ) THEN
+C           SI L'UNITE EUROPLEXUS N'EST PAS OUVERTE ==> ON L'OUVRE
+            K16NOM ='                '
+            IF ( ULISOP(UIEPLX,K16NOM) .EQ. 0 )  THEN
+               CALL ULOPEN(UIEPLX,' ',' ','NEW','O')
+            ENDIF
+         ENDIF
+20    CONTINUE
 C
 C     PAR DEFAUT ON EST DANS LE REPERE GLOBAL
       IREP = 1
@@ -155,6 +172,13 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          CALL GETVID('RIGI_PARASOL','GROUP_MA_POI1',IOC,1,1,NOGP,NGP)
          IF ( NGP .EQ. 0 ) THEN
             CALL GETVID('RIGI_PARASOL','GROUP_MA_SEG2',IOC,1,1,NOGP,NGP)
+         ENDIF
+
+         LOEPLX = .FALSE.
+         CALL GETVIS('RIGI_PARASOL','UNITE_EUROPLEXUS',
+     &                IOC,1,1,UIEPLX,IBID)
+         IF ( (IBID.GE.1) .AND. (UIEPLX.GT.0) ) THEN
+            LOEPLX = .TRUE.
          ENDIF
 
          IF ( NREP .NE. 0) THEN
@@ -250,8 +274,9 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
                      ENDIF
  100              CONTINUE
  101              CONTINUE
-                  IF (ITROU.EQ.0) CALL U2MESK('F','MODELISA_18',1,ZK8(IT
-     &BNO+I-1))
+                  IF (ITROU.EQ.0) THEN
+                     CALL U2MESK('F','MODELISA_18',1,ZK8(ITBNO+I-1))
+                  ENDIF
  39            CONTINUE
             ELSEIF (IXNW.EQ.0.AND.NGP.EQ.0) THEN
                CALL U2MESS('F','MODELISA_19')
@@ -327,41 +352,74 @@ C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
                ELSE
                   LOREP  = 5
                ENDIF
-               IF ( TRANS .AND. (NIV .EQ. 2) ) THEN
-                  WRITE(IFR,1005) CAR(NC)(1:LOKM)
-               ELSEIF ( NIV .EQ. 2 ) THEN
-                  WRITE(IFR,1006) CAR(NC)(1:LOKM),
-     &                            RIROT(1),RIROT(2),RIROT(3)
+               IF ( NIV .EQ. 2 ) THEN
+                  IF ( TRANS ) THEN
+                     WRITE(IFR,1005) CAR(NC)(1:LOKM)
+                  ELSE
+                     WRITE(IFR,1006) CAR(NC)(1:LOKM),
+     &                               RIROT(1),RIROT(2),RIROT(3)
+                  ENDIF
                ENDIF
+C ------------ ECRITURE POUR EUROPLEXUS
+               IF ( LOEPLX ) THEN
+                  WRITE(UIEPLX,1020)
+                  WRITE(UIEPLX,1022) ZK8(JDLS),IOC
+                  IF ( TRANS ) THEN
+                     WRITE(UIEPLX,1025) CAR(NC)(1:LOKM)
+                  ELSE
+                     WRITE(UIEPLX,1026) CAR(NC)(1:LOKM),
+     &                                  RIROT(1),RIROT(2),RIROT(3)
+                  ENDIF
+               ENDIF
+C ------------ ECRITURE POUR EUROPLEXUS
+C
                DO 28 I = 1,NBNO
                   IV = 1
                   JD = ITBMP + I - 1
                   JN = ITBNO + I - 1
-                  IF ( NBNOEU .EQ. 1 ) THEN
-                     IF ( TRANS .AND. (NIV .EQ. 2) ) THEN
-                        WRITE(IFR,1010) 'NOEUD',ZK8(JN),
-     &                        CAR(NC)(1:LOKM),
-     &                       (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
-     &                        REPDIS(IREP)(1:LOREP)
-                     ELSEIF ( NIV .EQ. 2 ) THEN
-                        WRITE(IFR,1011) 'NOEUD',ZK8(JN),
-     &                        CAR(NC)(1:LOKM),
-     &                       (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
-     &                        REPDIS(IREP)(1:LOREP)
-                     ENDIF
-                  ELSE
-                     IF ( TRANS .AND. (NIV .EQ. 2) ) THEN
-                        WRITE(IFR,1010) 'MAILLE',ZK8(JD),
-     &                        CAR(NC)(1:LOKM),
-     &                       (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
-     &                        REPDIS(IREP)(1:LOREP)
-                     ELSEIF ( NIV .EQ. 2 ) THEN
-                        WRITE(IFR,1011) 'MAILLE',ZK8(JD),
-     &                        CAR(NC)(1:LOKM),
-     &                       (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
-     &                        REPDIS(IREP)(1:LOREP)
+                  IF ( NIV .EQ. 2 ) THEN
+                     IF ( NBNOEU .EQ. 1 ) THEN
+                        IF ( TRANS ) THEN
+                           WRITE(IFR,1010) 'NOEUD',ZK8(JN),
+     &                           CAR(NC)(1:LOKM),
+     &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
+     &                           REPDIS(IREP)(1:LOREP)
+                        ELSE
+                           WRITE(IFR,1011) 'NOEUD',ZK8(JN),
+     &                           CAR(NC)(1:LOKM),
+     &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
+     &                           REPDIS(IREP)(1:LOREP)
+                        ENDIF
+                     ELSE
+                        IF ( TRANS ) THEN
+                           WRITE(IFR,1010) 'MAILLE',ZK8(JD),
+     &                           CAR(NC)(1:LOKM),
+     &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
+     &                           REPDIS(IREP)(1:LOREP)
+                        ELSE
+                           WRITE(IFR,1011) 'MAILLE',ZK8(JD),
+     &                           CAR(NC)(1:LOKM),
+     &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
+     &                           REPDIS(IREP)(1:LOREP)
+                        ENDIF
                      ENDIF
                   ENDIF
+C --------------- ECRITURE POUR EUROPLEXUS
+                  IF ( LOEPLX ) THEN
+                     IF ( NBNOEU .EQ. 1 ) THEN
+                        IF ( TRANS ) THEN
+                           WRITE(UIEPLX,1030) ZK8(JN),
+     &                                    (ZR(IRGNO+6*I-6+JJ),JJ=0,2)
+                        ELSE
+                           WRITE(UIEPLX,1031) ZK8(JN),
+     &                                    (ZR(IRGNO+6*I-6+JJ),JJ=0,5)
+                        ENDIF
+                     ELSE
+                        CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
+                     ENDIF
+                  ENDIF
+C --------------- ECRITURE POUR EUROPLEXUS
+C
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
                   CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
@@ -380,7 +438,19 @@ C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
             ENDIF
  34      CONTINUE
  30   CONTINUE
-C
+
+C     FERMETURE DES UNITES EUROPLEXUS
+      DO 40 IOC = 1 , NBOCC
+         CALL GETVIS('RIGI_PARASOL','UNITE_EUROPLEXUS',
+     &                IOC,1,1,UIEPLX,IBID)
+         IF ( (IBID.GE.1) .AND. (UIEPLX.GT.0) ) THEN
+C           SI L'UNITE EUROPLEXUS EST OUVERTE ==> ON LA FERME
+            IF ( ULISOP(UIEPLX,K16NOM) .NE. 0 )  THEN
+               CALL ULOPEN(-UIEPLX,' ',' ','NEW','O')
+            ENDIF
+         ENDIF
+40    CONTINUE
+
       IF (IXNW.NE.0) CALL JEDETR(TMPDIS)
       CALL JEDETR('&&TMPDISCRET')
       CALL JEDETR('&&TMPTABNO')
@@ -410,4 +480,17 @@ C
      &       '    VALE=(',3(1X,1PE12.5,','),/,
      &       '          ',3(1X,1PE12.5,','),'),',/,
      &       '    REPERE=''',A,'''),')
+
+
+ 1020 FORMAT('# EUROPLEXUS VERSION 0.1',/,
+     &       '# LES RAIDEURS SONT DANS LE MEME REPERE QUE CELUI'
+     &       ' DONNE SOUS RIGI_PARASOL',/,
+     &       '# NOEUD   KX  KY  KZ  KRX  KRY  KRZ')
+ 1022 FORMAT('# GROUPE DE MAILLE ',A,' OCCURRENCE ',I3)
+ 1025 FORMAT('# PAS DE REPARTITION EN ROTATION POUR DES ',A)
+ 1026 FORMAT('# RAIDEURS DE ROTATION A REPARTIR POUR DES ',A,/,
+     &       '#    KRX:',1PE12.5,'  KRY:',1PE12.5,'  KRZ:',1PE12.5)
+ 1030 FORMAT(A8,3(3X,1PE12.5))
+ 1031 FORMAT(A8,6(3X,1PE12.5))
+
       END

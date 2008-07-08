@@ -2,7 +2,7 @@
      &                  POND2 ,GRFIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,15 @@ C
       INTEGER      ARLFG,NOCC1,NOCC2
       INTEGER      IFM,NIV
       CHARACTER*16 NOMBO1,NOMBO2
+
+      INTEGER      NI,NR,NK
+      PARAMETER   ( NI = 1 , NR = 2 , NK = 1 )
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLLPO')
 C
 C ----------------------------------------------------------------------
 C
@@ -106,11 +115,10 @@ C
       IF (GRFIN.EQ.0) THEN
         GRFIN  = ARLFG(NOMBO1,NOMBO2)
       ENDIF
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> ... GROUPE LE PLUS FIN: ',GRFIN
-        WRITE(IFM,*) '<ARLEQUIN> ... POIDS FIN         : ',POND1
-        WRITE(IFM,*) '<ARLEQUIN> ... POIDS GROSSIER    : ',POND2
-      ENDIF
+      VALI(1)=GRFIN
+      VALR(1)=POND1
+      VALR(2)=POND2
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
 C
       CALL JEDEMA()
       END

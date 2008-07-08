@@ -2,7 +2,7 @@
      &                  CINE  ,DIMVAR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,15 @@ C
       INTEGER      JMAIL,JREPE,JCOMPT,JTE,JGMA,JGROUP,JTYEL
       LOGICAL      ELTOK,ARLELT
       INTEGER      IFM,NIV
+
+      INTEGER      NI,NR,NK
+      PARAMETER   ( NI = 1 , NR = 1 , NK = 2 )
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLVER')
 C
 C ---------------------------------------------------------------------
 C
@@ -180,11 +189,8 @@ C
         DIMVAR = DIMVAR - 1
       ENDIF
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> ... NOMBRE DE MAILLES INITIALES : ',
-     &                NINIT
-        WRITE(IFM,*) '<ARLEQUIN> ... TRI DES MAILLES VALIDES...'
-      ENDIF
+      VALI(1)=NINIT
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
 C
 C --- ALLOCATION .GROUPEMA
 C
@@ -214,14 +220,10 @@ C
       NBGMA = NTOT
       CALL TRI(ZI(JGROUP),ZI(JGROUP),0,NBGMA)
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> ... MODELISATION              : ',
-     &                MODEL
-        WRITE(IFM,*) '<ARLEQUIN> ... CINEMATIQUE               : ',
-     &                CINE
-        WRITE(IFM,*) '<ARLEQUIN> ... NOMBRE DE MAILLES FINALES : ',
-     &                NTOT
-      ENDIF
+      VALI(1)=NTOT
+      VALK(1)=MODEL
+      VALK(2)=CINE
+      CALL ARLDBG(NOMPRO,NIV,IFM,2,NI,VALI,NR,VALR,NK,VALK)
 C
 C --- MENAGE
 C

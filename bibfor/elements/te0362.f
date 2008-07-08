@@ -1,0 +1,89 @@
+      SUBROUTINE TE0362(OPTION,NOMTE)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE LAVERNE J.LAVERNE
+
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
+C     CALCUL DES COORDONNEES DES POINTS DE GAUSS
+C     POUR LES ELEMENTS D'INTERFACE
+C ----------------------------------------------------------------------
+
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      CHARACTER*8 LIELRF(10)
+      INTEGER JGN,NNO,G,IW,IVF,IGEOM,NTROU
+      INTEGER NPG,NNOS,ICOPG,NDIM,IDF,I,N
+
+      REAL*8 COVA(3,3),METR(2,2),JAC,X(3),RBID81(81)
+      REAL*8 WG,DFDX(9),COUR,COSA,SINA,WREF
+C DEB ------------------------------------------------------------------
+
+      CALL ELREF2(NOMTE,2,LIELRF,NTROU)
+      CALL ELREF4(LIELRF(2),'RIGI',NDIM,NNO,NNOS,NPG,IW,IVF,IDF,JGN)
+      NDIM = NDIM + 1
+      
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PCOORPG','E',ICOPG)
+
+      DO 20 G = 1,NPG
+        CALL R8INIR(NDIM,0.D0,X,1)
+        DO 10 N = 1,NNO
+          DO 12 I = 1,NDIM
+            X(I) = X(I) + ZR(IGEOM+NDIM*(N-1)+I-1)*ZR(IVF+(G-1)*NNO+N-1)
+   12     CONTINUE
+   10   CONTINUE
+
+        WREF = ZR(IW+G-1)
+        IF (NDIM.EQ.3) THEN
+          CALL SUBACO(NNO,ZR(IDF+(G-1)*(NDIM-1)*NNO),ZR(IGEOM),COVA)
+          CALL SUMETR(COVA,METR,JAC)
+          WG = WREF*JAC
+        ELSE IF (NDIM.EQ.2) THEN
+          CALL DFDM1D(NNO,WREF,ZR(IDF+(G-1)*(NDIM-1)*NNO),ZR(IGEOM),
+     &              DFDX,COUR,WG,COSA,SINA)
+        END IF
+
+        DO 15 I = 1,NDIM
+          ZR(ICOPG+(NDIM+1)*(G-1)+I-1) = X(I)
+   15   CONTINUE
+        ZR(ICOPG+(NDIM+1)*(G-1)+NDIM) = WG
+        
+   20 CONTINUE
+
+      END

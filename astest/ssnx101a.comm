@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/07/2008   AUTEUR MICHEL S.MICHEL 
 # TITRE PILOTAGE DU CHARGEMENT EN NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,327 +18,312 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-
-
-DEBUT(CODE=_F(NOM='SSNX101A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNX101A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 # AFFECTATION DE LA GEOMETRIE
 
+PRE_GIBI();
 
-PRE_GIBI()
+MA=LIRE_MAILLAGE();
 
-MA=LIRE_MAILLAGE( )
-
-MA=DEFI_GROUP(
-              reuse=MA,
-                    MAILLAGE=MA,
-
-                CREA_GROUP_NO=_F(
-                TOUT_GROUP_MA = 'OUI')
-              )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 # DEFINITION DU COMPORTEMENT DES MATERIAUX
 
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000.,
+                          NU=0.3,
+                          RHO=1.E-6,),);
 
-MAT=DEFI_MATERIAU(
-
-
-                ELAS=_F(
-                E = 200000.,
-                NU = 0.3,
-                RHO = 1.E-6)
-              )
-
-CHMAT=AFFE_MATERIAU(
-
-               MAILLAGE=MA,
-
-                AFFE=_F(
-                TOUT = 'OUI',
-                MATER = MAT)
-              )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
 
 # CHOIX DU TYPE D'ELEMENTS FINIS
 
-
-MO=AFFE_MODELE(
-
-               MAILLAGE=MA,
-
-                AFFE=_F(
-                TOUT = 'OUI',
-                PHENOMENE = 'MECANIQUE',
-                MODELISATION = 'C_PLAN')
-              )
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),);
 
 # DEFINITION DU CHARGEMENT
 
+LIAISON=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=_F(GROUP_NO='ANCRAGE',
+                                   DX=0.,
+                                   DY=0.,),);
 
-LIAISON=AFFE_CHAR_MECA(
+POIDS=AFFE_CHAR_MECA(MODELE=MO,
+                     PESANTEUR=(9810.,0.,-1.,0.,),);
 
-                      MODELE=MO,
-
-                DDL_IMPO=_F(
-                GROUP_NO = 'ANCRAGE',
-                DX = 0.,
-                DY = 0.)
-              )
-
-POIDS=AFFE_CHAR_MECA(
-
-                      MODELE=MO,
-                   PESANTEUR=(9810., 0., -1., 0.,)
-              )
-
-COMPRESS=AFFE_CHAR_MECA(
-
-                      MODELE=MO,
-
-                FORCE_CONTOUR=_F(
-                GROUP_MA = 'LIBRE',
-                FX = -1.)
-              )
+COMPRESS=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_CONTOUR=_F(GROUP_MA='LIBRE',
+                                         FX=-1.,),);
 
 # DISCRETISATION
 
-
-INSTANTS=DEFI_LIST_REEL(
-
-                   DEBUT=0.,INTERVALLE=(
-
-                _F(
-                JUSQU_A = 1.,
-                NOMBRE = 10),
-                _F(
-                JUSQU_A = 2.,
-                NOMBRE = 50))
-              )
+INSTANTS=DEFI_LIST_REEL(DEBUT=0.,
+                        INTERVALLE=(_F(JUSQU_A=1.,
+                                       NOMBRE=10,),
+                                    _F(JUSQU_A=2.,
+                                       NOMBRE=50,),),);
 
 # ON LAISSE LE POIDS PROPRE S'ETABLIR PAR PILOTAGE
 
-
-PHASE_1=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = POIDS,
-                TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS',
-                DEFORMATION = 'GREEN'),
-                         INCREMENT=_F(
-                LIST_INST = INSTANTS),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-11),
-                          PILOTAGE=_F(
-                TYPE = 'DDL_IMPO',
-                GROUP_NO = 'A',
-                NOM_CMP = 'DY',
-                COEF_MULT = -0.1,
-                ETA_PILO_MAX = 1.)
-              )
+PHASE_1=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=(_F(CHARGE=LIAISON,),
+                             _F(CHARGE=POIDS,
+                                TYPE_CHARGE='FIXE_PILO',),),
+                      COMP_ELAS=_F(RELATION='ELAS',
+                                   DEFORMATION='GREEN',),
+                      INCREMENT=_F(LIST_INST=INSTANTS,),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                      PILOTAGE=_F(TYPE='DDL_IMPO',
+                                  COEF_MULT=-0.1,
+                                  ETA_PILO_MAX=1.,
+                                  GROUP_NO='A',
+                                  NOM_CMP='DY',),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
 
 # ON ETABLIT LA COMPRESSION PAR PILOTAGE
 
-
-PHASE_2=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         ETAT_INIT=_F(
-                EVOL_NOLI = PHASE_1),EXCIT=(
-                             _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = POIDS), _F(
-                CHARGE = COMPRESS,
-                TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS',
-                DEFORMATION = 'GREEN'),
-                         INCREMENT=_F(
-                LIST_INST = INSTANTS,
-                INST_INIT = 1.),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-11),
-                          PILOTAGE=_F(
-                TYPE = 'LONG_ARC',
-                SELECTION='ANGL_INCR_DEPL',
-                GROUP_NO = 'POUTRE',
-                COEF_MULT = 2.E-3,
-                NOM_CMP = (
-                  'DX',  'DY',),
-                ETA_PILO_MAX = 407.)
-              )
+PHASE_2=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=(_F(CHARGE=LIAISON,),
+                             _F(CHARGE=POIDS,),
+                             _F(CHARGE=COMPRESS,
+                                TYPE_CHARGE='FIXE_PILO',),),
+                      COMP_ELAS=_F(RELATION='ELAS',
+                                   DEFORMATION='GREEN',),
+                      ETAT_INIT=_F(EVOL_NOLI=PHASE_1,),
+                      INCREMENT=_F(LIST_INST=INSTANTS,
+                                   INST_INIT=1.,),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                      PILOTAGE=_F(TYPE='LONG_ARC',
+                                  COEF_MULT=2.E-3,
+                                  ETA_PILO_MAX=407.,
+                                  SELECTION='ANGL_INCR_DEPL',
+                                  GROUP_NO='POUTRE',
+                                  NOM_CMP=('DX','DY',),),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
 
 # VERIFICATION DES ETATS FINALS
 
+VERIF_1=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=(_F(CHARGE=LIAISON,),
+                             _F(CHARGE=POIDS,),),
+                      COMP_ELAS=_F(RELATION='ELAS',
+                                   DEFORMATION='GREEN',),
+                      ETAT_INIT=_F(EVOL_NOLI=PHASE_1,),
+                      INCREMENT=_F(LIST_INST=INSTANTS,
+                                   INST_INIT=0.,
+                                   INST_FIN=0.1,),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
 
-VERIF_1=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         ETAT_INIT=_F(
-                EVOL_NOLI = PHASE_1),
-                         INCREMENT=_F(
-                LIST_INST = INSTANTS,
-                INST_INIT = 0.,
-                INST_FIN = 0.1),EXCIT=(
-                             _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = POIDS)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS',
-                DEFORMATION = 'GREEN'),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-11)
-              )
+DEPPHA_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=PHASE_1,
+                    NOM_CHAM='DEPL',
+                    NUME_ORDRE=8,);
 
-DEPPHA_1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL',
-              RESULTAT=PHASE_1,
-              NUME_ORDRE=8
-              )
+DEPVER_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=VERIF_1,
+                    NOM_CHAM='DEPL',
+                    NUME_ORDRE=1,);
 
-DEPVER_1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL',
-              RESULTAT=VERIF_1,
-              NUME_ORDRE=1
-              )
-
-DEPDIF_1 = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
-                      OPTION='DEPL',
-                   ASSE=(_F( CHAM_GD=DEPPHA_1,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
-                         _F( CHAM_GD=DEPVER_1,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
-
-NORDIF_1=POST_ELEM(
-
+DEPDIF_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPTION='DEPL',
+                    OPERATION='ASSE',
                     MODELE=MO,
-                CHAM_MATER=CHMAT,
-                   CHAM_GD=DEPDIF_1,
+                    ASSE=(
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEPPHA_1,
+                       CUMUL='OUI',
+                       COEF_R=1.,),
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEPVER_1,
+                       CUMUL='OUI',
+                       COEF_R=-1.,),),);
 
-                ENER_POT=_F(
-                TOUT = 'OUI')
-              )
+NORDIF_1=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CHAM_GD=DEPDIF_1,);
 
-TEST_TABLE(
-                   TABLE=NORDIF_1,
-                NOM_PARA='TOTALE',
+TEST_TABLE(TABLE=NORDIF_1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           NOM_PARA='TOTALE',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1e-10,
+           REFERENCE='AUTRE_ASTER',);
 
-                FILTRE=_F(
-                NOM_PARA = 'LIEU',
-                VALE_K = 'MA'),
-                    VALE=0.,
-               PRECISION=1.E-10,
-                 CRITERE='ABSOLU'
-              )
+COMPR407=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_CONTOUR=_F(GROUP_MA='LIBRE',
+                                         FX=-407.,),);
 
-COMPR407=AFFE_CHAR_MECA(
+VERIF_2=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=(_F(CHARGE=LIAISON,),
+                             _F(CHARGE=POIDS,),
+                             _F(CHARGE=COMPR407,),),
+                      COMP_ELAS=_F(RELATION='ELAS',
+                                   DEFORMATION='GREEN',),
+                      ETAT_INIT=_F(EVOL_NOLI=PHASE_2,),
+                      INCREMENT=_F(LIST_INST=INSTANTS,
+                                   NUME_INST_INIT=0,
+                                   NUME_INST_FIN=1,),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
 
-                      MODELE=MO,
+DEPPHA_2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=PHASE_2,
+                    NOM_CHAM='DEPL',
+                    NUME_ORDRE=13,);
 
-                FORCE_CONTOUR=_F(
-                GROUP_MA = 'LIBRE',
-                FX = -407.)
-              )
+DEPVER_2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=VERIF_2,
+                    NOM_CHAM='DEPL',
+                    NUME_ORDRE=1,);
 
-VERIF_2=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         ETAT_INIT=_F(
-                EVOL_NOLI = PHASE_2),
-                         INCREMENT=_F(
-                LIST_INST = INSTANTS,
-                NUME_INST_INIT = 0,
-                NUME_INST_FIN = 1),EXCIT=(
-                             _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = POIDS), _F(
-                CHARGE = COMPR407)),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS',
-                DEFORMATION = 'GREEN'),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-11)
-              )
-
-DEPPHA_2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL',
-              RESULTAT=PHASE_2,
-              NUME_ORDRE=13
-              )
-
-DEPVER_2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL',
-              RESULTAT=VERIF_2,
-              NUME_ORDRE=1
-              )
-
-DEPDIF_2 = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
-                      OPTION='DEPL',
-                   ASSE=(_F( CHAM_GD=DEPPHA_2,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
-                         _F( CHAM_GD=DEPVER_2,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
-
-NORDIF_2=POST_ELEM(
-
+DEPDIF_2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPTION='DEPL',
+                    OPERATION='ASSE',
                     MODELE=MO,
-                CHAM_MATER=CHMAT,
-                   CHAM_GD=DEPDIF_2,
+                    ASSE=(
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEPPHA_2,
+                       CUMUL='OUI',
+                       COEF_R=1.,),
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEPVER_2,
+                       CUMUL='OUI',
+                       COEF_R=-1.,),),);
 
-                ENER_POT=_F(
-                TOUT = 'OUI')
-              )
+NORDIF_2=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CHAM_GD=DEPDIF_2,);
 
-TEST_TABLE(
-                   TABLE=NORDIF_2,
-                NOM_PARA='TOTALE',
-
-                FILTRE=_F(
-                NOM_PARA = 'LIEU',
-                VALE_K = 'MA'),
-                    VALE=0.,
-               PRECISION=1.E-10,
-                 CRITERE='ABSOLU'
-              )
+TEST_TABLE(TABLE=NORDIF_2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           NOM_PARA='TOTALE',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1e-10,
+           REFERENCE='AUTRE_ASTER',);
 
 # VERIFICATION DE LA CONDITION CINEMATIQUE EN PHASE 1
 
-DEP_MOIN=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL',
-              RESULTAT=PHASE_1,
-              NUME_ORDRE=2
-              )
+DEP_MOIN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=PHASE_1,
+                    NOM_CHAM='DEPL',
+                    NUME_ORDRE=2,);
 
-DEP_PLUS=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL',
-              RESULTAT=PHASE_1,
-              NUME_ORDRE=3
-              )
+DEP_PLUS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=PHASE_1,
+                    NOM_CHAM='DEPL',
+                    NUME_ORDRE=3,);
 
-DEP_DELT = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
-                      OPTION='DEPL',
-                   ASSE=(_F( CHAM_GD=DEP_PLUS,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
-                         _F( CHAM_GD=DEP_MOIN,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
+DEP_DELT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPTION='DEPL',
+                    OPERATION='ASSE',
+                    MODELE=MO,
+                    ASSE=(
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEP_PLUS,
+                       CUMUL='OUI',
+                       COEF_R=1.,),
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEP_MOIN,
+                       CUMUL='OUI',
+                       COEF_R=-1.,),),);
 
-TEST_RESU(
+TEST_RESU(CHAM_NO=_F(CHAM_GD=DEP_DELT,
+                     GROUP_NO='A',
+                     NOM_CMP='DY',
+                     VALE=-1.0,
+                     PRECISION=1e-08,
+                     REFERENCE='ANALYTIQUE',),);
 
-                CHAM_NO=_F(
-                CHAM_GD = DEP_DELT,
-                GROUP_NO = 'A',
-                NOM_CMP = 'DY',
-                VALE = -1.,
-                PRECISION = 1.E-8)
-              )
+# VERIFICATION DE LA POSSIBILITE DE COMBINER RECH_LINEAIRE ET PILOTAGE
+# (NE CONVIENT PAS POUR LA PESANTEUR)
+# ON ETABLIT LA COMPRESSION PAR PILOTAGE COMBINE AVEC LA RECHERCHE LINEAIRE
 
-FIN()
+PHASE_2B=STAT_NON_LINE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F(CHARGE=LIAISON,),
+                              _F(CHARGE=POIDS,),
+                              _F(CHARGE=COMPRESS,
+                                 TYPE_CHARGE='FIXE_PILO',),),
+                       COMP_ELAS=_F(RELATION='ELAS',
+                                    DEFORMATION='GREEN',),
+                       ETAT_INIT=_F(EVOL_NOLI=PHASE_1,),
+                       INCREMENT=_F(LIST_INST=INSTANTS,
+                                    INST_INIT=1.,),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=1,),
+                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                       PILOTAGE=_F(TYPE='LONG_ARC',
+                                   COEF_MULT=2.E-3,
+                                   ETA_PILO_MAX=407.,
+                                   SELECTION='ANGL_INCR_DEPL',
+                                   GROUP_NO='POUTRE',
+                                   NOM_CMP=('DX','DY',),),
+                       CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
+
+DEPPHA2B=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=PHASE_2B,
+                    NOM_CHAM='DEPL',
+                    NUME_ORDRE=13,);
+
+DEPDIF2B=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPTION='DEPL',
+                    OPERATION='ASSE',
+                    MODELE=MO,
+                    ASSE=(
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEPPHA2B,
+                       CUMUL='OUI',
+                       COEF_R=1.,),
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEPVER_2,
+                       CUMUL='OUI',
+                       COEF_R=-1.,),),);
+
+NORDIF2B=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CHAM_GD=DEPDIF2B,);
+
+TEST_TABLE(TABLE=NORDIF2B,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           NOM_PARA='TOTALE',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1e-10,
+           REFERENCE='AUTRE_ASTER',);
+
+FIN();
+
 #
+

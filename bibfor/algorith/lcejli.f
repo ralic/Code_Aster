@@ -2,7 +2,7 @@
      &                  DSIDEP,VIM,VIP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/04/2007   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE LAVERNE J.LAVERNE
 
       IMPLICIT NONE   
       INTEGER MATE,NDIM,KPG,KSP
@@ -167,14 +168,7 @@ C   V7 A V9 : VALEURS DU SAUT
       VIP(1) = KAP
       VIP(2) = DISS
       VIP(3) = CASS
-      
-      IF (CASS.NE.2) THEN    
-        VIP(4) = -(SC*KAP/(2*GC))**2 + SC*KAP/GC
-     &           - 0.5D0*KAP*SC*(1.D0 - KAP/LC)/GC
-      ELSE
-        VIP(4) = 1.D0
-      ENDIF
-      
+      VIP(4) = MIN(1.D0,KAP/LC) 
       VIP(5) = GC*VIP(4)
       
       IF (CASS.NE.2) THEN          

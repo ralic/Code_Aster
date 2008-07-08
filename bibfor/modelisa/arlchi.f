@@ -2,7 +2,7 @@
      &                  TYPMAI,LCARA ,TABCPL,NBCART,CTARLQ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,6 +102,15 @@ C
       CHARACTER*2   CH2
       REAL*8        CNO1(3*NBNOMX),CNO2(3*NBNOMX),R8MAEM
       LOGICAL       LINCL1,LINCL2
+
+      INTEGER      NI,NR,NK
+      PARAMETER   ( NI = 1 , NR = 1 , NK = 1 )
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLCHI')
 C
 C ----------------------------------------------------------------------
 C
@@ -110,9 +119,7 @@ C
 C
 C --- AFFICHAGE
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> *** PREPARATION CHAMPS D''ENTREE...'
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
 C
 C --- INITIALISATIONS
 C
@@ -363,10 +370,7 @@ C
 C
 C --- AFFICHAGE
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> *** FIN DE PREPARATION '//
-     &               'CHAMPS D''ENTREE...'
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,2,NI,VALI,NR,VALR,NK,VALK)
 C
 C --- MENAGE
 C

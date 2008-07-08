@@ -1,4 +1,4 @@
-# MODIF  DATE 18/02/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 07/07/2008   AUTEUR GALENNE E.GALENNE 
 
 DEBUT(CODE=_F(NOM='SDLV123B',
               NIV_PUB_WEB='INTERNET',),);
@@ -152,7 +152,7 @@ GL1=CALC_G(         THETA=_F(FOND_FISS=FF,
                     TOUT_ORDRE='OUI',
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME',
-                    LISSAGE=_F(LISSAGE_THETA='LAGRANGE'),
+                    LISSAGE=_F(LISSAGE_THETA='LAGRANGE',LISSAGE_G='LAGRANGE'),
                   )
 
 GL11=CALC_G(         THETA=_F( DIRECTION=(1.,0.,0.,),
@@ -163,7 +163,8 @@ GL11=CALC_G(         THETA=_F( DIRECTION=(1.,0.,0.,),
                     NUME_ORDRE=50,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME',
-                    LISSAGE=_F(LISSAGE_THETA='LAGRANGE'),
+                    LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                              DEGRE = 2),
                   )
 
 G2=CALC_G(          OPTION='CALC_G_GLOB',

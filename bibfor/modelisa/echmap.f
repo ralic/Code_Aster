@@ -3,7 +3,7 @@
      &                  NOH   ,NNOH)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,6 +79,15 @@ C
       REAL*8      M0(2),W0(9),HQ,HT
       INTEGER     IARE,IPAN,IECH
       INTEGER     IFM,NIV
+
+      INTEGER      NI,NR,NK,NI1,NR2
+      PARAMETER   ( NI = 4 , NR = 3 , NK = 2 , NI1 = 1, NR2 = 2 )
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ECHMAP')
 C
 C ----------------------------------------------------------------------
 C
@@ -87,21 +96,16 @@ C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><ECH> *** ECHANTILLONNAGE '//
-     &                'DE LA FRONTIERE DE LA MAILLE ',NOMMAI
-        WRITE(IFM,*) '<ARLEQUIN><ECH> ... TYPE MAILLE         : ',
-     &                 TYPEMA
-        WRITE(IFM,*) '<ARLEQUIN><ECH> ... NBRE ECHANTILLONS   : ',
-     &                 NECH
-        WRITE(IFM,*) '<ARLEQUIN><ECH> ... DIMENSION  MAILLE   : ',
-     &                 DIME
-        WRITE(IFM,*) '<ARLEQUIN><ECH> ... NBRE SOMMETS MAILLE : ',
-     &                 NSOM
-        WRITE(IFM,*) '<ARLEQUIN><ECH> ... NBRE ARETES  MAILLE : ',
-     &                 NARE
+        VALK(1)=NOMMAI
+        VALK(2)=TYPEMA
+        VALI(1)=NECH
+        VALI(2)=DIME
+        VALI(3)=NSOM
+        VALI(4)=NARE
+        CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
         IF (DIME.EQ.3) THEN
-          WRITE(IFM,*) '<ARLEQUIN><ECH> ... NBRE PANS    MAILLE : ',
-     &                   NPAN
+          VALI(1)=NPAN
+          CALL ARLDBG(NOMPRO,NIV,IFM,2,NI1,VALI,NR,VALR,NK,VALK)
         ENDIF
       ENDIF
 C
@@ -126,10 +130,8 @@ C
 C --- NOMBRE DE SOMMETS+NOMBRE POINTS ECHANTILLONNAGE
 C
       NNOH = NSOM + NARE*(NECH - 1)
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><ECH> ... NBRE DE POINTS '//
-     &               'SUPPL. SUR ARETES  : ',NARE*(NECH - 1)
-      ENDIF
+      VALI(1)=NARE*(NECH - 1)
+      CALL ARLDBG(NOMPRO,NIV,IFM,3,NI1,VALI,NR,VALR,NK,VALK)
 C
 C --- ECHANTILLONNAGE DES ARETES
 C
@@ -229,20 +231,21 @@ C
  60   CONTINUE
 C
       IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><ECH> ... LISTE DES POINTS '
+        CALL ARLDBG(NOMPRO,NIV,IFM,4,NI1,VALI,NR,VALR,NK,VALK)
         DO 300 IECH = 1, NNOH
+          VALI(1)=IECH
           IF (DIME.EQ.2) THEN
-            WRITE(IFM,*) '<ARLEQUIN><ECH> ...... POINT  <',IECH,'>  : ',
-     &        NOH(2*(IECH-1) + 1),
-     &        NOH(2*(IECH-1) + 2)
+            VALR(1)=NOH(2*(IECH-1) + 1)
+            VALR(2)=NOH(2*(IECH-1) + 2)
+            CALL ARLDBG(NOMPRO,NIV,IFM,5,NI1,VALI,NR2,VALR,NK,VALK)
           ELSE
-            WRITE(IFM,*) '<ARLEQUIN><ECH> ...... POINT  <',IECH,'>  : ',
-     &        NOH(3*(IECH-1) + 1),
-     &        NOH(3*(IECH-1) + 2),
-     &        NOH(3*(IECH-1) + 3)
+             VALR(1)=NOH(3*(IECH-1) + 1)
+             VALR(2)=NOH(3*(IECH-1) + 2)
+             VALR(3)=NOH(3*(IECH-1) + 3)
+             CALL ARLDBG(NOMPRO,NIV,IFM,6,NI1,VALI,NR,VALR,NK,VALK)
           ENDIF
  300    CONTINUE
-        WRITE(IFM,*) '<ARLEQUIN><ECH> *** FIN ECHANTILLONNAGE '
+        CALL ARLDBG(NOMPRO,NIV,IFM,7,NI1,VALI,NR,VALR,NK,VALK)
       ENDIF
 
 C

@@ -3,7 +3,7 @@
      &                  NC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,15 @@ C
       REAL*8  R1,R2,R3,R4
       LOGICAL IR
       INTEGER     IFM,NIV
+
+      INTEGER      NII,NR,NK
+      PARAMETER   ( NII = 1 , NR = 1 , NK = 1 )
+      INTEGER      VALI(NII)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='PLINT2')
 C
 C ----------------------------------------------------------------------
 C
@@ -104,16 +113,11 @@ C
 C
 C --- AFFICHAGE
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><INT> *** CALCUL INTERSECTION '//
-     &                'DE DEUX POLYGONES '
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NII,VALI,NR,VALR,NK,VALK)
 C
 C --- 1. NOUVEAUX SOMMETS
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><INT> ... NOUVEAUX SOMMETS ?'
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,2,NII,VALI,NR,VALR,NK,VALK)
       NS0 = NBNO
       DO 20 A1 = 1, NSEG1
 
@@ -214,20 +218,17 @@ C ------- SIGNE DU SOMMET INTERSECTION
 C
       IF (NIV.GE.2) THEN
       IF (NI.EQ.0) THEN
-        WRITE(IFM,*) '<ARLEQUIN><INT> ...... PAS D''INTERSECTIONS '//
-     &               'DETECTEES'
+        CALL ARLDBG(NOMPRO,NIV,IFM,3,NII,VALI,NR,VALR,NK,VALK)
         GOTO 120
       ELSE
-        WRITE(IFM,*) '<ARLEQUIN><INT> ...... ',NI,
-     &               ' INTERSECTIONS DETECTEES'
+        VALI(1)=NI
+        CALL ARLDBG(NOMPRO,NIV,IFM,4,NII,VALI,NR,VALR,NK,VALK)
       ENDIF
       ENDIF
 C
 C --- 2. NOUVELLES ARETES
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><INT> ... CREATION NOUVELLES ARETES'
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,5,NII,VALI,NR,VALR,NK,VALK)
       NA0 = NARE
       DO 50 I = 1, NA0
 
@@ -277,10 +278,7 @@ C ----- PARCOURS DE LA STRUCTURE AI(I) ET DECOUPAGE DES ARETES
 C
 C --- 3. GRAPHE SOMMET - ARETES
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><INT> ... CREATION GRAPHE SOMMET '//
-     &               '-> ARETES'
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,6,NII,VALI,NR,VALR,NK,VALK)
       P0 = NBNO + NCMAX
 
       DO 70 I = 1, NBNO
@@ -346,12 +344,8 @@ C
 
  100  CONTINUE
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><INT> ... NBRE COMPOSANTES CONNEXES: ',
-     &                 NC
-        WRITE(IFM,*) '<ARLEQUIN><INT> *** FIN CALCUL INTERSECTION '//
-     &                'DE DEUX POLYGONES '
-      ENDIF
+      VALI(1)=NC
+      CALL ARLDBG(NOMPRO,NIV,IFM,7,NII,VALI,NR,VALR,NK,VALK)
 C
  120  CONTINUE
 

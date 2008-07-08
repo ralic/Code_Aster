@@ -3,7 +3,7 @@
      &           DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 07/07/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -431,7 +431,7 @@ C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
           CALL HUJTID (MOD, IMAT, SIGD, VIND, DSDE, IRET)
           IF(IRET.EQ.1)GOTO 9999
         ENDIF
-        
+
         CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)
         
       ELSEIF (OPT .EQ. 'FULL_MECA') THEN
@@ -454,18 +454,20 @@ C fin <IF RIGI_MECA_TANG>
 
 C ---> CALCUL DETERMINANT DE LA MATRICE TANGENTE + INDICATEUR 
 C --- RELIE AUX MECANISMES ACTIFS
-      IF (OPT(1:14) .NE. 'RIGI_MECA_TANG') THEN
-      
-        CALL MGAUSS ('NFSD', DSDE, SIGD, 6, 6, 1, DET, IRET)
+      IF (OPT(1:9) .NE. 'RIGI_MECA') THEN
+
         CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)
         
-        IF (IRET.EQ.1) THEN
-          VINF(33) = UN
-          IRET = 0
-        ELSE
-          VINF(33) = DET
+        IF(OPT(1:9).EQ.'FULL_MECA')THEN       
+          CALL MGAUSS ('NCSD', DSDE, SIGD, 6, 6, 1, DET, IRET)
+          IF (IRET.EQ.1) THEN
+            VINF(33) = UN
+            IRET = 0
+          ELSE
+            VINF(33) = DET
+          ENDIF
         ENDIF
-        
+
         VINF(34) = UN
         
         DO 60 I=1,8

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,6 +79,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_GRAD_VARI",    # RESP. : MICHEL S.MICHEL
                                   "3D_XFEM_CONT",    # RESP. : GENIAUT S.GENIAUT
                                   "3D_JOINT",        # RESP. : LAVERNE J.LAVERNE
+                                  "3D_INTERFACE",    # RESP. : LAVERNE J.LAVERNE
                                   "AXIS",            # RESP. : LEFEBVRE J.P.LEFEBVRE
                                   "AXIS_FLUI_STRU",  # RESP. : GREFFET N.GREFFET
                                   "AXIS_FLUIDE",     # RESP. : GREFFET N.GREFFET
@@ -89,6 +90,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
                                   "AXIS_JOINT",      # RESP. : LAVERNE J.LAVERNE
+                                  "AXIS_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
                                   "AXIS_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "BARRE",           # RESP. : FLEJOU J.L.FLEJOU
                                   "2D_BARRE",        # RESP. : FLEJOU J.L.FLEJOU
@@ -109,6 +111,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "D_PLAN_GRAD_VARI",# RESP. : MICHEL S.MICHEL
                                   "D_PLAN_NS",       # RESP. : BADEL P.BADEL
                                   "PLAN_JOINT",      # RESP. : LAVERNE J.LAVERNE
+                                  "PLAN_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
                                   "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "D_PLAN_ABSO",     # RESP. : DEVESA G.DEVESA
                                   "D_PLAN_INCO",     # RESP. : MICHEL S.MICHEL

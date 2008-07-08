@@ -1,7 +1,7 @@
       SUBROUTINE ARLBBS(DIME  ,NOMA  ,NOMB  ,BC    ,LCARA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,15 @@ C
       INTEGER      IFM,NIV
       REAL*8       RMIN,RMAX
       CHARACTER*16 NOMBOA,NOMBOB
+
+      INTEGER      NR,NK,NI,NR5
+      PARAMETER   ( NR = 7 , NK = 1 , NI = 1, NR5 = 5)
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLBBS')
 C
 C ----------------------------------------------------------------------
 C
@@ -78,9 +87,7 @@ C
 C
 C --- CALCUL BOITE DE LA ZONE DE SUPERPOSITION (BS)
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> CALCUL BOITE DE SUPERPOSITION...'
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
       LCARA = 1.D0
       CALL JEVEUO(NOMBOA(1:16)//'.MMGLOB','L',JBOITA)
       CALL JEVEUO(NOMBOB(1:16)//'.MMGLOB','L',JBOITB)
@@ -112,18 +119,18 @@ C
         CALL ASSERT(.FALSE.)
       ENDIF
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> ... X = (',BC(1,1),',',
-     &                                      BC(2,1),')'
-        WRITE(IFM,*) '<ARLEQUIN> ... Y = (',BC(1,2),',',
-     &                                      BC(2,2),')'
-        IF (DIME.EQ.3) THEN
-          WRITE(IFM,*) '<ARLEQUIN> ... Z = (',BC(1,3),',',
-     &                                        BC(2,3),')'
-        ENDIF
-        WRITE(IFM,*) '<ARLEQUIN> LONGUEUR CARACTERISTIQUE POUR '//
-     &               'TERME DE COUPLAGE:',LCARA
-      ENDIF
+      VALR(1)=LCARA
+      VALR(2)=BC(1,1)
+      VALR(3)=BC(2,1)
+      VALR(4)=BC(1,2)
+      VALR(5)=BC(2,2)
+      IF(DIME.EQ.3)THEN
+         VALR(6)=BC(1,3)
+         VALR(7)=BC(2,3)
+         CALL ARLDBG(NOMPRO,NIV,IFM,2,NI,VALI,NR,VALR,NK,VALK)
+      ELSE
+         CALL ARLDBG(NOMPRO,NIV,IFM,3,NI,VALI,NR5,VALR,NK,VALK)
+      ENDIF       
 C
       CALL JEDEMA()
       END

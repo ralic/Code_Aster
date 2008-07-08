@@ -2,7 +2,7 @@
      &                  TYPMAI,NOMBOI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,15 @@ C
       LOGICAL       ISBOX
       REAL*8        ARLGER,PRECBO
       INTEGER       ARLGEI,NHQUA
+
+      INTEGER      NI,NR,NK
+      PARAMETER   ( NI = 3 , NR = 1 , NK = 1 )
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALKK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLBO0')
 C
 C ----------------------------------------------------------------------
 C
@@ -111,11 +120,10 @@ C
           CALL U2MESK('F','ARLEQUIN_11',2,VALK)
         ENDIF
  10   CONTINUE
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> ... BOITES  :',NMA
-        WRITE(IFM,*) '<ARLEQUIN> ... PANS    :',NPAN
-        WRITE(IFM,*) '<ARLEQUIN> ... SOMMETS :',NSOM
-      ENDIF
+      VALI(1)=NMA
+      VALI(2)=NPAN
+      VALI(3)=NSOM
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALKK)
 C
 C --- CREATION SD BOITE
 C

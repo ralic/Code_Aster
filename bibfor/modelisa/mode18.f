@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -104,6 +104,9 @@ C
       ELSEIF ( TYPELE.EQ.'MEFI_HEXA8'   .OR.
      +         TYPELE.EQ.'MEFI_PENTA6'      ) THEN
          TYPEMO = '3D_JOINT'
+      ELSEIF ( TYPELE.EQ.'MEEI_HEXA20'   .OR.
+     +         TYPELE.EQ.'MEEI_PENTA15'      ) THEN
+         TYPEMO = '3D_INTERFACE'
 C
 C --- LES THM ET COMPAGNIE --------------------------------------------
 C
@@ -207,6 +210,9 @@ C
 
       ELSEIF ( TYPELE.EQ.'MFAXQU4' ) THEN
          TYPEMO = 'AXIS_JOINT'
+         
+      ELSEIF ( TYPELE.EQ.'EIAXQU8' ) THEN
+         TYPEMO = 'AXIS_INTERFACE'
       
       ELSEIF ( TYPELE.EQ.'MDAXQU4' ) THEN
          TYPEMO = 'AXIS_ELDI'   
@@ -238,6 +244,9 @@ C
 
       ELSEIF ( TYPELE.EQ.'MFPLQU4' ) THEN
          TYPEMO = 'PLAN_JOINT'
+         
+      ELSEIF ( TYPELE.EQ.'EIPLQU8' ) THEN
+         TYPEMO = 'PLAN_INTERFACE'
          
       ELSEIF ( TYPELE.EQ.'MDDPQU4' ) THEN
          TYPEMO = 'PLAN_ELDI'   

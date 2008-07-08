@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION JOINT 2D LOI CZM_LIN_REG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ MO=AFFE_MODELE(
               )
 
 
-ACIER=DEFI_MATERIAU(
+MAT=DEFI_MATERIAU(
 
      ELAS=_F(
               E =  0.5,
@@ -63,7 +63,7 @@ CM=AFFE_MATERIAU(
                MAILLAGE=MA,
                AFFE=_F(
                        TOUT = 'OUI',
-                       MATER = ACIER),
+                       MATER = MAT),
               )
 
 LIAISON=AFFE_CHAR_MECA(
@@ -73,20 +73,29 @@ LIAISON=AFFE_CHAR_MECA(
     )
   )
 
-TRACTION=AFFE_CHAR_MECA(
+# CHARGEMENT MODE I PUR
+TRAC_1=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250),
+    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250), 
     )
   )
 
+# CHARGEMENT MODE II PUR
+TRAC_2=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+     _F(MAILLE='HAUT', DX=-1.250, DY= 2.16506350946110),   
+     _F(MAILLE='BAS',  DX=-1.250, DY= 2.16506350946110),  
+    )
+  )
 
 L_INST=DEFI_LIST_REEL(
                      DEBUT   = -1.,
      INTERVALLE=(
       _F( JUSQU_A = 0,       NOMBRE = 1 ),
       _F( JUSQU_A = 0.0001,  NOMBRE = 1 ),
-      _F( JUSQU_A = 1.8,     NOMBRE = 18 ),
+      _F( JUSQU_A = 1.7,     NOMBRE = 17 ),
       )
      )
 
@@ -94,7 +103,7 @@ L_INST2=DEFI_LIST_REEL(
 
                      DEBUT   = 0.0001,
      INTERVALLE=(
-      _F( JUSQU_A = 1.8,     NOMBRE = 18 ),
+      _F( JUSQU_A = 1.7,     NOMBRE = 17 ),
       )
      )
 
@@ -105,13 +114,17 @@ FCT = DEFI_FONCTION(
   PROL_DROITE = 'LINEAIRE'
   )
 
+#----------------------------------------------------------------------------------  
+# CALCUL AVEC CHARGEMENT EN MODE I
+#-----------------------------------------------------------------------------------
 
-U=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+U_1=STAT_NON_LINE(
+  SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
     _F(CHARGE = LIAISON , ),
-    _F(CHARGE = TRACTION, FONC_MULT = FCT),
+    _F(CHARGE = TRAC_1, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_LIN_REG',
@@ -124,13 +137,65 @@ U=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
-STAT_NON_LINE(reuse = U, SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
-  ETAT_INIT  = _F(EVOL_NOLI = U),
+STAT_NON_LINE(reuse = U_1,
+  SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+  ETAT_INIT  = _F(EVOL_NOLI = U_1),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
     _F(CHARGE = LIAISON ),
-    _F(CHARGE = TRACTION , TYPE_CHARGE = 'FIXE_PILO'),
+    _F(CHARGE = TRAC_1 , TYPE_CHARGE = 'FIXE_PILO'),
+  ),
+  PILOTAGE   = _F(
+    SELECTION = 'RESIDU',
+    TYPE = 'PRED_ELAS',
+    MAILLE = 'CUBEDEG',
+    COEF_MULT = 1,
+    ETA_PILO_R_MIN = 0.,
+    ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_LIN_REG',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             GROUP_MA = 'G_CUBE',),
+          ),
+  INCREMENT  = _F(LIST_INST = L_INST),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  ARCHIVAGE  = _F(LIST_INST = L_INST2)
+  )
+
+#----------------------------------------------------------------------------------  
+# CALCUL AVEC CHARGEMENT EN MODE II
+#-----------------------------------------------------------------------------------
+
+U_2=STAT_NON_LINE(
+  SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = TRAC_2, FONC_MULT = FCT),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_LIN_REG',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             MAILLE = 'CUBE',),
+          ),
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+STAT_NON_LINE(reuse = U_2,
+  SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+  ETAT_INIT  = _F(EVOL_NOLI = U_2),
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON  , ),
+    _F(CHARGE = TRAC_2 , TYPE_CHARGE = 'FIXE_PILO'),
   ),
   PILOTAGE   = _F(
     SELECTION = 'RESIDU',
@@ -152,37 +217,42 @@ STAT_NON_LINE(reuse = U, SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD')
   )
 
 
-F_DX=RECU_FONCTION( RESULTAT=U,
+
+#---------------------------------------------------------------------------------- 
+# TESTS CALCUL MODE I
+#-----------------------------------------------------------------------------------
+
+F_DX_1=RECU_FONCTION( RESULTAT=U_1,
               NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
-T_DX=CREA_TABLE(FONCTION=_F(FONCTION=F_DX))
-IMPR_TABLE(TABLE=T_DX)
+T_DX_1=CREA_TABLE(FONCTION=_F(FONCTION=F_DX_1))
+IMPR_TABLE(TABLE=T_DX_1)
 
 
-F_ETA=RECU_FONCTION( RESULTAT=U,
+F_ETA_1=RECU_FONCTION( RESULTAT=U_1,
               NOM_PARA_RESU='ETA_PILOTAGE')
-T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA))
-IMPR_TABLE(TABLE=T_ETA)
+T_ETA_1=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA_1))
+IMPR_TABLE(TABLE=T_ETA_1)
 
 
-F_SIGN=RECU_FONCTION( RESULTAT=U, NOM_CHAM = 'SIEF_ELGA',
+F_SIGN_1=RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
           MAILLE  = 'CUBEDEG',POINT=1)
-T_SIGN=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN))
-IMPR_TABLE(TABLE=T_SIGN)
+T_SIGN_1=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_1))
+IMPR_TABLE(TABLE=T_SIGN_1)
 
-TEST_TABLE(TABLE=T_DX,
+TEST_TABLE(TABLE=T_DX_1,
            FILTRE=(_F(NOM_PARA='INST',
                       VALE=1.6,),),
            NOM_PARA='DX',
-           VALE=1.4727931,
+           VALE=1.4720170,
            PRECISION=0.001,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=T_ETA,
+TEST_TABLE(TABLE=T_ETA_1,
            FILTRE=(_F(NOM_PARA='INST',
                       VALE=1.6,),),
            NOM_PARA='ETA_PILO',
-           VALE= 0.680253997,
+           VALE= 6.79895551E-01,
            PRECISION=0.001,
            REFERENCE='ANALYTIQUE',);
 
@@ -190,7 +260,7 @@ TEST_RESU (
   RESU = (
     _F(
       REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U,
+      RESULTAT  = U_1,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DX',
       VALE      = 2.16506E-08,
@@ -204,10 +274,10 @@ TEST_RESU (
   RESU = (
     _F(
       REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U,
+      RESULTAT  = U_1,
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SIXX',
-      VALE      = 9.27592606E-02,
+      VALE      = 9.27629539E-02,
       MAILLE    = 'CUBE',
       POINT     = 1,
       INST      = 1.6,
@@ -220,7 +290,7 @@ TEST_RESU (
   RESU = (
     _F(
       REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U,
+      RESULTAT  = U_1,
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SIGN',
       VALE      = 5.4887555E-01,
@@ -236,7 +306,7 @@ TEST_RESU (
   RESU = (
     _F(
       REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U,
+      RESULTAT  = U_1,
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SITX',
       VALE      = 0.0,
@@ -247,6 +317,70 @@ TEST_RESU (
       ),
     )
   )
+#---------------------------------------------------------------------------------- 
+# TESTS CALCUL MODE II
+#-----------------------------------------------------------------------------------
+
+F_DY_2=RECU_FONCTION( RESULTAT=U_2,
+              NOM_CHAM='DEPL',NOM_CMP='DY',GROUP_NO='TOUTSEUL')
+T_DY_2=CREA_TABLE(FONCTION=_F(FONCTION=F_DY_2))
+IMPR_TABLE(TABLE=T_DY_2)
+
+
+F_ETA_2=RECU_FONCTION( RESULTAT=U_2,
+              NOM_PARA_RESU='ETA_PILOTAGE')
+T_ETA_2=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA_2))
+IMPR_TABLE(TABLE=T_ETA_2)
+
+
+F_SIGN_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
+          NOM_CMP = 'SIGN',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SIGN_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_2))
+IMPR_TABLE(TABLE=T_SIGN_2)
+
+
+F_SITX_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
+          NOM_CMP = 'SITX',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SITX_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_2))
+IMPR_TABLE(TABLE=T_SITX_2)
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_2,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIGN',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.0,
+      ),
+    )
+  )
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_2,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITX',
+      VALE      = 4.3314872E-1,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 2,
+      INST      = 1.2,
+      ),
+    )
+  )
+
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),  
 
 
 FIN()

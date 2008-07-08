@@ -2,7 +2,7 @@
      &                   NBSOL,IRET)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPS MUMPS  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPS MUMPS  DATE 08/07/2008   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -163,8 +163,6 @@ C        Y-A-T-IL ENCORE UNE PLACE LIBRE ?
 4     CONTINUE
       CALL U2MESS('F','FACTOR_60')
 2     CONTINUE
-
-      WRITE(IFM,*)ACTION,KXMPS,MATAS,NU,ROUC,NSMDI
 
 C     2. QUELQUES VERIFICATIONS ET PETITES ACTIONS :
 C     ----------------------------------------------

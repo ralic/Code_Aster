@@ -5,7 +5,7 @@
      &                  TRAVI ,NSEG  ,NFAC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,6 +118,15 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER     IFM,NIV,ISEG,IFAC
+
+      INTEGER      NI,NR,NK,NII,NI3
+      PARAMETER   ( NI = 4 , NR = 1 , NK = 1 , NII = 1, NI3 = 3)
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ECHMCO')
 C
 C ----------------------------------------------------------------------
 C
@@ -130,10 +139,8 @@ C
 C
 C --- AFFICHAGE
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN><ECH> *** CONNECTIVITES '//
-     &                'DE LA FRONTIERE DE LA MAILLE ',NOMMAI
-      ENDIF
+      VALK(1)=NOMMAI
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
 C
 C --- CALCUL DES CONNECTIVITES
 C
@@ -144,17 +151,16 @@ C
         CALL ECHMC2(NSOM               ,NOEARE,NARE   ,NECH ,OFFSOM,
      &              TRAVI(PFS+2*OFFSEG),NSEG)
 C
+        VALI(1)=NSEG
+        CALL ARLDBG(NOMPRO,NIV,IFM,2,NII,VALI,NR,VALR,NK,VALK)
         IF (NIV.GE.2) THEN
-          WRITE(IFM,*) '<ARLEQUIN><ECH> ... ON A DECOUPE EN ',NSEG,
-     &                 ' SEGMENTS'
-          WRITE(IFM,*) '<ARLEQUIN><ECH> ... LISTE DES SEGMENTS '
           DO 300 ISEG = 1, NSEG
-            WRITE(IFM,*) '<ARLEQUIN><ECH> ...... SEGMENT  <',
-     &        ISEG,' > : ',
-     &        TRAVI(PFS+2*(ISEG-1) + 1),
-     &        TRAVI(PFS+2*(ISEG-1) + 2)
+            VALI(1)=ISEG
+            VALI(2)=TRAVI(PFS+2*(ISEG-1) + 1)
+            VALI(3)=TRAVI(PFS+2*(ISEG-1) + 2)
+            CALL ARLDBG(NOMPRO,NIV,IFM,3,NI3,VALI,NR,VALR,NK,VALK)
  300      CONTINUE
-          WRITE(IFM,*) '<ARLEQUIN><ECH> *** FIN ECHANTILLONNAGE '
+          CALL ARLDBG(NOMPRO,NIV,IFM,4,NI,VALI,NR,VALR,NK,VALK)
         ENDIF
 C
       ELSEIF (DIME.EQ.3) THEN
@@ -165,17 +171,15 @@ C --- CHAQUE FACE(PAN) EST DECOUPEE EN NFAC FACETTES FS
 C
         CALL ECHMC3(NSOM  ,NOEARE,NARE         ,NOEPAN,NPAN  ,
      &              NECH  ,OFFSOM,TRAVI(PFS+3*OFFFAC) ,NFAC)
+        VALI(1)=NFAC
+        CALL ARLDBG(NOMPRO,NIV,IFM,5,NII,VALI,NR,VALR,NK,VALK)
         IF (NIV.GE.2) THEN
-          WRITE(IFM,*) '<ARLEQUIN><ECH> ... ON A DECOUPE EN ',NFAC,
-     &                 ' FACETTES'
-          WRITE(IFM,*) '<ARLEQUIN><ECH> ... LISTE DES FACETTES '
           DO 301 IFAC = 1, NFAC
-            WRITE(IFM,*) '<ARLEQUIN><ECH> ...... FACETTE  <',IFAC,
-     &        ' > : ',
-     &        TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 1),
-     &        TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 2),
-     &        TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 3)
-
+            VALI(1)=IFAC
+            VALI(2)=TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 1)
+            VALI(3)=TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 2)
+            VALI(4)=TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 3)
+            CALL ARLDBG(NOMPRO,NIV,IFM,6,NI,VALI,NR,VALR,NK,VALK)
  301      CONTINUE
         ENDIF
 C
@@ -185,9 +189,7 @@ C
      &              TRAVI(PAS+2*OFFARE),
      &              TRAVI(PAF+2*OFFARE),NARE)
 C
-        IF (NIV.GE.2) THEN
-          WRITE(IFM,*) '<ARLEQUIN><ECH> *** FIN CONNECTIVITES '
-        ENDIF
+        CALL ARLDBG(NOMPRO,NIV,IFM,7,NI,VALI,NR,VALR,NK,VALK)
 C
       ELSE
         CALL ASSERT(.FALSE.)

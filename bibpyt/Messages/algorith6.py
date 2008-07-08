@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF algorith6 Messages  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,6 +270,10 @@ cata_msg = {
 
 96 : _("""
  GREEN deformation required for ELAS_HYPER material
+"""),
+
+97 : _("""
+ loi non traitée pour les éléments d'interface : %(k1)s 
 """),
 
 }

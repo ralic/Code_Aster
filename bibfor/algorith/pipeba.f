@@ -1,7 +1,7 @@
       SUBROUTINE PIPEBA(NDIM,MATE, SUP, SUD, VIM, DTAU, COPILO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,8 @@ C ======================================================================
       REAL*8 SUP(NDIM), SUD(NDIM), VIM(*),DTAU, COPILO(2,3)
 C-----------------------------------------------------------------------
 C
-C PILOTAGE PRED_ELAS POUR LA LOI CZM_EXP_REG (ELEMENT DE JOINT 2D ET 3D)
+C PILOTAGE PRED_ELAS POUR LES LOIS COHESIVES CZM_LIN_REG ET CZM_EXP_REG
+C DE L'ELEMENT DE JOINT (2D ET 3D)  
 C
 C-----------------------------------------------------------------------
 

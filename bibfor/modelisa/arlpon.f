@@ -3,7 +3,7 @@
      &                  GRCOL ,POND1 ,POND2 )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,15 @@ C
       CHARACTER*8  CINE(3)
       INTEGER      GRCOL
       REAL*8       POND1,POND2
+
+      INTEGER      NR,NK,NI
+      PARAMETER   ( NR = 1 , NK = 1 , NI = 1)
+      INTEGER      VALI(NI)
+      REAL*8       VALR(NR)
+      CHARACTER*24 VALK(NK)
+
+      CHARACTER*6  NOMPRO
+      PARAMETER   (NOMPRO='ARLPON')
 C
 C ----------------------------------------------------------------------
 C
@@ -85,16 +94,14 @@ C
         CALL ASSERT(.FALSE.)
       ENDIF
 C
-      IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> PONDERATION DES MAILLES...'
-      ENDIF
+      CALL ARLDBG(NOMPRO,NIV,IFM,1,NI,VALI,NR,VALR,NK,VALK)
 C
       CALL ARLPND(MAIL  ,DIME  ,NOMARL,TYPMAI,NOMC  ,
      &            NOMGR1,NOMGR2,POND  ,NORM  ,BC    ,
      &            CINE1 ,CINE2 )
 C
       IF (NIV.GE.2) THEN
-        WRITE(IFM,*) '<ARLEQUIN> VALEURS DES POIDS...'
+        CALL ARLDBG(NOMPRO,NIV,IFM,2,NI,VALI,NR,VALR,NK,VALK)
         CALL ARLIMP(IFM,'PONDERATION',NOMARL)
       ENDIF
 C

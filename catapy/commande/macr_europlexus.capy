@@ -1,0 +1,134 @@
+#& MODIF COMMANDE  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+from Macro.macr_europlexus_ops import macr_europlexus_ops
+
+import types
+
+def macr_europlexus_prod(self,COURBE=None,**args):
+# AA  if ECRITURE['COURBE'] is not None:
+# AA    for fonc in ECRITURE['COURBE']['TABLE'] : 
+#  if COURBE is not None:
+#    for fonc in COURBE['TABLE'] : 
+#      self.type_sdprod(fonc['FONC'],table_sdaster) 
+  return evol_noli
+
+MACR_EUROPLEXUS = MACRO(nom="MACR_EUROPLEXUS",op=macr_europlexus_ops,sd_prod=macr_europlexus_prod,
+        reentrant='n',
+        #UIinfo={"groupes":("Dynamique rapide",)},
+        fr="Chainage Code_Aster-Europlexus",
+
+        LOGICIEL = SIMP(statut='f', typ='TXM', defaut='/home/europlex/EPXD/EUROPLEXUS_GESTION/runepx_d'),
+
+        MODELE     = SIMP(statut='o',typ=modele_sdaster),
+        CARA_ELEM  = SIMP(statut='o',typ=cara_elem),
+
+        FONC_PARASOL = FACT(statut='f',
+           NFKT       = SIMP(statut='o',typ=(fonction_sdaster,)),
+           NFKR       = SIMP(statut='o',typ=(fonction_sdaster,)),
+           ),
+
+
+        CHAM_MATER = SIMP(statut='o',typ=cham_mater),
+
+        EXCIT      = FACT(statut='o',max='**',
+           CHARGE         = SIMP(statut='o',typ=(char_meca,)),
+           FONC_MULT      = SIMP(statut='o',typ=(fonction_sdaster,)),
+          ),
+
+        DIME = FACT(statut='o', regles=(AU_MOINS_UN('UNITE_DIME','Q4GS','FORCE',
+                                                    'PT6L','ZONE','POUT','ECRO',
+                                                    'APPU','BLOQ','PRESS','PMAT',
+                                                    'DKT3','DEPL','FNOM','TABLE','FTAB',
+                                                    'MTTI','NEPE','LIAI',), ),                   
+           UNITE_DIME=SIMP(statut='f',typ='I'),
+
+           Q4GS  = SIMP(statut='f',typ='I'),
+           FORCE = SIMP(statut='f',typ='I'),
+           PT6L  = SIMP(statut='f',typ='I'),
+           ZONE  = SIMP(statut='f',typ='I'),
+           POUT  = SIMP(statut='f',typ='I'),
+           ECRO  = SIMP(statut='f',typ='I'),
+           APPU  = SIMP(statut='f',typ='I'),
+           BLOQ  = SIMP(statut='f',typ='I'),
+           PRESS = SIMP(statut='f',typ='I',min=2,max=2,),
+           PMAT  = SIMP(statut='f',typ='I'),
+           DKT3  = SIMP(statut='f',typ='I'),
+           DEPL  = SIMP(statut='f',typ='I'),
+           FNOM  = SIMP(statut='f',typ='I'),
+           TABLE = SIMP(statut='f',typ='I',min=2,max=2,),
+           FTAB  = SIMP(statut='f',typ='I'),
+           MTTI  = SIMP(statut='f',typ='I'),
+           NEPE  = SIMP(statut='f',typ='I'),
+           LIAI  = SIMP(statut='f',typ='I'),
+             ),
+
+        CALCUL = FACT(statut='o',
+           TYPE_DISCRETISATION  = SIMP(statut='o',typ='TXM',defaut='AUTO',into=('AUTO','UTIL')),
+           TFIN                 = SIMP(statut='o',typ='R'),
+           TINI                 = SIMP(statut='o',typ='R'),
+           NMAX                 = SIMP(statut='f',typ='R'),
+
+           b_auto =BLOC( condition = "TYPE_DISCRETISATION=='AUTO'",
+              CSTAB  = SIMP(statut='o',typ='R',max='**',defaut=0.3),
+              DTMAX  = SIMP(statut='f',typ='R',max='**'),
+                       ),
+
+           b_util =BLOC( condition = "TYPE_DISCRETISATION=='UTIL'",
+              PASFIX   = SIMP(statut='o',typ='R',max='**'),
+                       ),
+           ),
+
+
+        OBSERVATION     =FACT(statut='f',max='**',
+           SUIVI_DDL       = SIMP(statut='o',typ='TXM',defaut="OUI",max=1,into=("OUI","NON")),
+        b_suivi          =BLOC(condition = "SUIVI_DDL == 'OUI' ",
+                               regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',), 
+                                        EXCLUS('PAS_NBRE','PAS_INST',), 
+                                        EXCLUS('GROUP_NO','TOUT_GROUP_NO',), 
+                                        EXCLUS('GROUP_MA','TOUT_GROUP_MA',), ),
+           NOM_CHAM        = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**', defaut = ('DEPL',), 
+                                  into=('DEPL','VITE','ACCE','SIEF_ELGA','EPSI_ELGA','VARI_ELGA'),),
+           PAS_INST        = SIMP(statut='f',typ='R'),
+           PAS_NBRE        = SIMP(statut='f',typ='I'),
+           GROUP_NO        = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           GROUP_MA        = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           TOUT_GROUP_NO   = SIMP(statut='f',typ='TXM',into=('OUI',),),
+           TOUT_GROUP_MA   = SIMP(statut='f',typ='TXM',into=('OUI',),),
+                             ),
+        ),
+
+
+        RESULTAT        =FACT(statut='f', regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
+           PAS_INST     = SIMP(statut='f',typ='R'),
+           PAS_NBRE     = SIMP(statut='f',typ='I'),
+                             ),                
+
+#        UNITE_COURBE = SIMP(statut='f',typ='I'),
+        COURBE  =  FACT(statut='f', regles=(AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
+           UNITE_ALIT = SIMP(statut='f',typ='I'),
+           PAS_INST       = SIMP(statut='f',typ='R'),
+           PAS_NBRE       = SIMP(statut='f',typ='I'),
+# #           FONC       = SIMP(statut='f',typ=CO),
+#            NOM_CHAM   = SIMP(statut='f',typ='TXM',defaut='DEPL'),
+#            NOM_CMP    = SIMP(statut='f',typ='TXM'),
+#            NOEUD      = SIMP(statut='f',typ='TXM',),
+         ),
+
+        ) ;

@@ -1,0 +1,313 @@
+# MODIF  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# TITRE FISSURATION JOINT 2D AXIS SUR ARRACHEMENT, LOI CZM_LIN_REG
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNA115B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'))
+
+tfin = 10
+nbpas = tfin
+nbarch = nbpas
+cmultpilo = 5
+
+PRE_GMSH()
+
+MA  =  LIRE_MAILLAGE()
+
+MA  =  DEFI_GROUP(
+  reuse  = MA, 
+  MAILLAGE = MA, 
+  
+  CREA_GROUP_MA = (
+    _F(NOM = 'HAUT',      GROUP_MA = 'GM1'), 
+    _F(NOM = 'BAS',       GROUP_MA = 'GM3'),
+    _F(NOM = 'DROITE',    GROUP_MA = 'GM4'),     
+    _F(NOM = 'J_G',       GROUP_MA = 'GM5'),
+    _F(NOM = 'J_D',       GROUP_MA = 'GM2'),
+    _F(NOM = 'J_H',       GROUP_MA = 'GM7'),
+    _F(NOM = 'J_B',       GROUP_MA = 'GM6'),
+    _F(NOM = 'MATRICE',   GROUP_MA = 'GM8'),
+    _F(NOM = 'JOINT'   , GROUP_MA = 'GM9'),
+    ), 
+     
+   CREA_GROUP_NO = (
+    _F(NOM = 'HAUT',      GROUP_MA = 'GM1'), 
+    _F(NOM = 'J_H'   ,   GROUP_MA = 'GM7'),
+    _F(NOM = 'JOINT' ,   GROUP_MA = 'GM9'),
+    _F(NOM = 'NO_JHD',   GROUP_MA = 'GM10'),
+    _F(NOM = 'NO_JBD',   GROUP_MA = 'GM11'),
+    _F(NOM = 'NO_JMD',   GROUP_MA = 'GM12'),
+    _F(NOM = 'NO_JHG',   GROUP_MA = 'GM13'),
+    _F(NOM = 'NO_JBG',   GROUP_MA = 'GM14'),
+    _F(
+       NOM = 'GN_J_D',   
+       GROUP_MA = 'GM2',
+       OPTION = 'NOEUD_ORDO',
+       GROUP_NO_ORIG = 'NO_JBD',
+       GROUP_NO_EXTR = 'NO_JHD',),    
+    _F(
+       NOM = 'GN_J_G',   
+       GROUP_MA = 'GM5',
+       OPTION = 'NOEUD_ORDO',
+       GROUP_NO_ORIG = 'NO_JBG',
+       GROUP_NO_EXTR = 'NO_JHG',),     
+    )       
+  )
+
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_FISSURE=_F(GROUP_MA='JOINT'),
+                   INFO=2
+                   )
+            
+
+BETON = DEFI_MATERIAU(
+          ELAS      = _F (
+                          E  = 100 , 
+                          NU = 0.,
+                          ),
+          RUPT_FRAG = _F(
+                          GC = 0.9,
+                          SIGM_C = 3,
+                          PENA_ADHERENCE=0.00001
+                         )          
+     )
+  
+CHMAT = AFFE_MATERIAU(
+          MAILLAGE = MA,
+          AFFE = (
+       _F(
+          GROUP_MA = 'MATRICE',
+          MATER    =  BETON),
+       _F(
+          GROUP_MA = 'JOINT',
+          MATER    = BETON),
+        ))
+
+MO = AFFE_MODELE(
+  MAILLAGE = MA,
+  AFFE = (
+    _F(
+      GROUP_MA     = 'MATRICE', 
+      PHENOMENE    = 'MECANIQUE', 
+      MODELISATION = 'AXIS'
+      ),
+    _F(
+      GROUP_MA     = 'JOINT',
+      PHENOMENE    = 'MECANIQUE', 
+      MODELISATION = 'AXIS_JOINT'
+      ),      
+    )
+  )
+
+FIXE=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(GROUP_MA='DROITE', DX=0., DY=0. ),
+    _F(GROUP_MA='HAUT'  , DX=0.        ),
+    _F(GROUP_MA='BAS'   , DX=0.        ),
+    )
+  )
+
+TRACTION=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(GROUP_MA='J_G',  DX=0. ,DY=1. ),
+    )
+  )
+
+
+INSTANTS = DEFI_LIST_REEL(
+             DEBUT = -1.,
+             INTERVALLE = (
+                 _F(JUSQU_A =  0,       NOMBRE =  1),
+                 _F(JUSQU_A =  tfin,    NOMBRE = nbpas),
+             ))
+
+
+INS_ARCH=DEFI_LIST_REEL(
+             DEBUT = -1.,
+             INTERVALLE = (
+                 _F(JUSQU_A =  0,     NOMBRE =  1),
+                 _F(JUSQU_A =  tfin,  NOMBRE = nbarch),
+             ))
+
+
+     
+FCT = DEFI_FONCTION(
+  NOM_PARA = 'INST',
+  VALE     = (-1,0, 0,0.00001)
+  )
+     
+
+EVOL = STAT_NON_LINE(
+         MODELE = MO,
+         CHAM_MATER = CHMAT,
+         EXCIT = (
+      _F(CHARGE = FIXE),
+      _F(CHARGE = TRACTION, FONC_MULT=FCT)),
+         COMP_INCR = (
+      _F(GROUP_MA = 'MATRICE', RELATION = 'ELAS'),
+      _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_LIN_REG')),
+         INCREMENT = _F(
+                         LIST_INST = INSTANTS, 
+                         INST_FIN  = 0.,
+                         SUBD_METHODE='UNIFORME', SUBD_PAS  = 10,
+                         SUBD_PAS_MINI = 1.E-5),
+       NEWTON  = _F(
+                    MATRICE   = 'TANGENTE',
+                    REAC_ITER = 1,),       
+       CONVERGENCE = _F(ITER_GLOB_MAXI = 10),
+       ARCHIVAGE   = _F(LIST_INST = INS_ARCH)
+    ) 
+
+
+EVOL = STAT_NON_LINE(reuse  = EVOL,
+  ETAT_INIT = _F(EVOL_NOLI = EVOL),
+  MODELE = MO,
+  CHAM_MATER = CHMAT,
+  EXCIT = (
+    _F(CHARGE = FIXE),
+    _F(CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')
+    ),
+  COMP_INCR = (
+    _F(GROUP_MA = 'MATRICE', RELATION = 'ELAS'),
+    _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_LIN_REG'),
+    ),
+  INCREMENT = _F(
+    LIST_INST = INSTANTS,
+    INST_FIN  = tfin,
+    SUBD_METHODE='UNIFORME', SUBD_PAS  = 10,
+    SUBD_PAS_MINI = 1.E-5
+    ),
+  PILOTAGE  = _F (
+    GROUP_MA       = 'JOINT',
+    TYPE           = 'PRED_ELAS',
+    COEF_MULT      = cmultpilo,
+    ETA_PILO_R_MIN = 0,
+    ETA_PILO_MAX   = 2,
+    ETA_PILO_MIN   = 0.00001,
+    PROJ_BORNES    = 'NON'
+    ),
+  NEWTON  = _F(
+    MATRICE   = 'TANGENTE',
+    REAC_ITER = 1,
+    PAS_MINI_ELAS = 1.E-3,
+    ),
+  CONVERGENCE = _F(
+    RESI_GLOB_MAXI = 1.E-4,
+    ITER_GLOB_MAXI = 10,
+    ),
+  ARCHIVAGE =_F(LIST_INST = INS_ARCH)
+  ) 
+
+
+EVOL = CALC_NO(reuse = EVOL,
+  MODELE = MO,
+  CHAM_MATER = CHMAT,
+  RESULTAT = EVOL,
+  OPTION = 'FORC_NODA',
+  GROUP_MA='JOINT'
+  )
+
+# DEPLACEMENT PILOTE
+UPILO = POST_RELEVE_T(
+ ACTION = _F(
+   INTITULE     = 'U_PILOTE',
+   OPERATION    = 'EXTRACTION',   
+   GROUP_NO     = 'NO_JHG',
+   NOM_CHAM     = 'DEPL',
+   NOM_CMP      = 'DY',
+   RESULTAT     =  EVOL,
+   TOUT_ORDRE   = 'OUI',
+    )) 
+
+# FORCE RESULTANTE DANS LA DIRECTION Y, SUR UN RADIAN
+# A MULITPLIER PAR 2PI 
+
+FRES = POST_RELEVE_T(
+ ACTION = _F(
+   INTITULE     = 'F_RESULTANTE',
+   OPERATION    = 'EXTRACTION',   
+   GROUP_NO     = 'GN_J_G',
+   NOM_CHAM     = 'FORC_NODA',
+   RESULTANTE   = ('DX','DY'),
+   RESULTAT     =  EVOL,
+   TOUT_ORDRE   = 'OUI',
+    )) 
+
+
+TEST_TABLE(TABLE=UPILO,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=3.00000E+00,),),
+           NOM_PARA='DY',
+           VALE=2.298338E-01,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=FRES,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=3.00000E+00,),),
+           NOM_PARA='DY',
+           VALE=1.049985E+01,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=UPILO,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=6.00000E+00,),),
+           NOM_PARA='DY',
+           VALE=3.884798E-01,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=FRES,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=6.00000E+00,),),
+           NOM_PARA='DY',
+           VALE=5.999820E+00,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=UPILO,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=8.00000E+00,),),
+           NOM_PARA='DY',
+           VALE=5.28090E-01,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=FRES,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=8.00000E+00,),),
+           NOM_PARA='DY',
+           VALE=2.03974E+00,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+              
+IMPR_TABLE(TABLE = UPILO)   
+IMPR_TABLE(TABLE = FRES)
+
+FIN(FORMAT_HDF='OUI') 
+

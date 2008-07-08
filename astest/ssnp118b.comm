@@ -1,4 +1,4 @@
-# MODIF  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION JOINT 3D : HEXA8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,9 +20,9 @@
 
 DEBUT(CODE=_F( NOM = 'SSNP118B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),)
 
-
 MA=LIRE_MAILLAGE( )
 
+IMPR_RESU(FORMAT  = 'GMSH',RESU=_F(MAILLAGE=MA),UNITE=19)
 
 MO=AFFE_MODELE(
           
@@ -44,7 +44,7 @@ MO=AFFE_MODELE(
               )
               
 
-ACIER=DEFI_MATERIAU(
+MAT=DEFI_MATERIAU(
               
      ELAS=_F( 
               E =  0.5,
@@ -62,7 +62,7 @@ CM=AFFE_MATERIAU(
                MAILLAGE=MA,
                AFFE=_F( 
                        TOUT = 'OUI',
-                       MATER = ACIER),
+                       MATER = MAT),
               )
 
 LIAISON=AFFE_CHAR_MECA(
@@ -84,8 +84,8 @@ TRAC_1=AFFE_CHAR_MECA(
 TRAC_2=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-     _F(MAILLE='HAUT', DX=1.250, DY= -2.16506350946110, DZ=0 ),   
-     _F(MAILLE='BAS',  DX=1.250, DY= -2.16506350946110, DZ=0 ),  
+     _F(MAILLE='HAUT', DX=-1.250, DY= 2.16506350946110, DZ=0 ),   
+     _F(MAILLE='BAS',  DX=-1.250, DY= 2.16506350946110, DZ=0 ),  
     )
   )
 
@@ -93,8 +93,8 @@ TRAC_2=AFFE_CHAR_MECA(
 TRAC_3=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-     _F(MAILLE='AVAN', DX=0.0, DY= 0.0, DZ= -2.5 ),   
-     _F(MAILLE='ARRI', DX=0.0, DY= 0.0, DZ= -2.5 ),   
+     _F(MAILLE='AVAN', DX=0.0, DY= 0.0, DZ= 2.5 ),   
+     _F(MAILLE='ARRI', DX=0.0, DY= 0.0, DZ= 2.5 ),   
     )
   )
 
@@ -593,5 +593,8 @@ TEST_RESU (
     )
   )
 
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_3,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
   
 FIN()

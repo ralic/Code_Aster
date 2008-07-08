@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF rupture0 Messages  DATE 07/07/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -482,8 +482,8 @@ licite avec l'option désirée.
 """), 
 
 84: _("""
-Le degré des polynomes de Legendre doit etre inférieur ou égal au nombre
-de noeuds du fond de fissure lorsque le lissage de G est de type
+Le degré des polynomes de Legendre doit etre inférieur au nombre de noeuds
+du fond de fissure (ici égal à %(i1)i) lorsque le lissage de G est de type
 LEGENDRE et le lissage de THETA de type LAGRANGE.
 """), 
 

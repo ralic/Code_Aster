@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION JOINT 3D : HEXA8 LOI CZM_LIN_REG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,9 +20,9 @@
 
 DEBUT(CODE=_F(NOM='SSNP118E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
-
 MA=LIRE_MAILLAGE( )
 
+IMPR_RESU(RESU=_F(MAILLAGE=MA),FORMAT='GMSH',UNITE=19)
 
 MO=AFFE_MODELE(
 
@@ -44,7 +44,7 @@ MO=AFFE_MODELE(
               )
 
 
-ACIER=DEFI_MATERIAU(
+MAT=DEFI_MATERIAU(
 
      ELAS=_F(
               E =  0.5,
@@ -62,7 +62,7 @@ CM=AFFE_MATERIAU(
                MAILLAGE=MA,
                AFFE=_F(
                        TOUT = 'OUI',
-                       MATER = ACIER),
+                       MATER = MAT),
               )
 
 LIAISON=AFFE_CHAR_MECA(
@@ -84,8 +84,8 @@ TRAC_1=AFFE_CHAR_MECA(
 TRAC_2=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-     _F(MAILLE='HAUT', DX=1.250, DY= -2.16506350946110, DZ=0 ),
-     _F(MAILLE='BAS',  DX=1.250, DY= -2.16506350946110, DZ=0 ),
+     _F(MAILLE='HAUT', DX=-1.250, DY= 2.16506350946110, DZ=0 ),
+     _F(MAILLE='BAS',  DX=-1.250, DY= 2.16506350946110, DZ=0 ),
     )
   )
 
@@ -93,8 +93,8 @@ TRAC_2=AFFE_CHAR_MECA(
 TRAC_3=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-     _F(MAILLE='AVAN', DX=0.0, DY= 0.0, DZ= -2.5 ),
-     _F(MAILLE='ARRI', DX=0.0, DY= 0.0, DZ= -2.5 ),
+     _F(MAILLE='AVAN', DX=0.0, DY= 0.0, DZ= 2.5 ),
+     _F(MAILLE='ARRI', DX=0.0, DY= 0.0, DZ= 2.5 ),
     )
   )
 
@@ -328,7 +328,7 @@ TEST_TABLE(TABLE=T_DX_1,
            FILTRE=(_F(NOM_PARA='INST',
                       VALE=1.6,),),
            NOM_PARA='DX',
-           VALE=1.4727931,
+           VALE=1.4720170,
            PRECISION=0.001,
            REFERENCE='ANALYTIQUE',);
 
@@ -336,7 +336,7 @@ TEST_TABLE(TABLE=T_ETA_1,
            FILTRE=(_F(NOM_PARA='INST',
                       VALE=1.6,),),
            NOM_PARA='ETA_PILO',
-           VALE=0.680253997,
+           VALE=6.79895551E-1,
            PRECISION=0.001,
            REFERENCE='ANALYTIQUE',);
 
@@ -361,7 +361,7 @@ TEST_RESU (
       RESULTAT  = U_1,
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SIXX',
-      VALE      = 9.27592606E-02,
+      VALE      = 9.27629539E-02,
       MAILLE    = 'CUBE',
       POINT     = 4,
       INST      = 1.6,
@@ -583,13 +583,16 @@ TEST_RESU (
       RESULTAT  = U_3,
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SITY',
-      VALE      = 0.29311500,
+      VALE      = 2.931186E-1,
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 1.4,
       ),
     )
   )
-
+  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_3,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
 
 FIN()

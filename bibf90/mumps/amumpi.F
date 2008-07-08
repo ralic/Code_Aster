@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPI MUMPS  DATE 08/07/2008   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -162,10 +162,15 @@ C       ------------------------------------------------
 
 C ---      MESSAGES/ALERTES MUMPS
         ICNTL(1) = IFM
-        ICNTL(2) = IFM
-        ICNTL(3) = IFM
-C ---   ICNTL(4)=1 (ONLY ERROR MSG), 2 (WARNING ET STAT EN +)
-        ICNTL(4) = 2
+        ICNTL(2) = 0
+        ICNTL(3) = 0
+        ICNTL(4) = 1
+        IF (NIV.GE.2) THEN
+           ICNTL(2) = IFM
+           ICNTL(3) = IFM
+C ---      ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS
+           ICNTL(4) = 2
+        ENDIF
 C ---      FORMAT MATRICE
         ICNTL(5) = 0
 C ---      PRETRAITEMENTS (SCALING/PERMUTATION)
@@ -240,7 +245,8 @@ C ---      COMPLEMENT DE SCHUR
         ICNTL(26)=0
 
 C ---     IN_CORE/OUT_OF_CORE
-        ICNTL(22)=1
+C ---     OOC DESACTIVE POUR L'INSTANT
+        ICNTL(22)=0
         ICNTL(23)=0
 
 C --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
