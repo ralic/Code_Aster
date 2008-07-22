@@ -1,7 +1,7 @@
-      SUBROUTINE ZEDGAR (MATOS,TM,TP,DELTAT,ZM,ZP)
+      SUBROUTINE ZEDGAR (MATOS,TM,TP,INSTP,DINST,VIM,VIP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       
       IMPLICIT NONE
       INTEGER  MATOS
-      REAL*8   TM,TP,DELTAT,ZM(3),ZP(3)
+      REAL*8   TM,TP,INSTP,DINST,VIM(4),VIP(4)
       
 C............................................
 C CALCUL PHASE METALLURGIQUE POUR EDGAR 
@@ -29,179 +29,273 @@ C............................................
 C IN   MATOS  : 
 C IN   TM     : TEMPERATURE A L INSTANT MOINS
 C IN   TP     : TEMPERATURE A L INSTANT PLUS
-C IN   DELTAT : PAS DE TEMPS
-C IN   ZM     : PROPORTION DES PHASES A L INSTANT MOINS
-C OUT  ZP     : PROPORTION DES PHASES A L INSTANT PLUS
+C IN   INSTP  : INSTANT MOINS
+C IN   DINST  : INCREMENT DE L INSTANT = INSTP-INSTM
+C IN   VIM    : VARIABLES INTERNES A L INSTANT MOINS
+C OUT  VIP    : VARIABLES INTERNES A L INSTANT PLUS
+C SIGNIFICATION DES VARIABLES INTERNES
+C VI(1) = PROPORTION DE PHASE FROIDE ALPHA PUR
+C VI(2) = PROPORTION DE PHASE ALPHABETA
+C VI(3) = TEMPERATURE
+C VI(4) = TEMPS CORRESPONDANT A LA TEMPERATURE D EQUILIBRE 
+C         SOIT DE DEBUT DE TRANSFORMATION TDEQ
+C         SOIT DE FIN DE TRANSFORMATION TFEQ
+C         CETTE VARIABLE SERT POUR CALCULER LA VITESSE EN TEMPERATURE
+C         (METHODE SECANTE GLISSANTE - CF DOC R40404)
 
-      INTEGER       I,NBPAS
-      REAL*8        TDEQ,N,K,A,M,QSR,AR,BR,TDC,TDR,VALRES(10),EPS
-      REAL*8        ZALPHM,ZBETAM,ZALPHP,ZBETAP,ZBETEQ
-      REAL*8        DZ1,DZ2,DZ3,DZ4
-      REAL*8        DELTA,TPOINT,TEQ,TEMP,TI1,TI2
-      CHARACTER*24 NOMRES(10)
-      CHARACTER*2  CODRET(10)
-      LOGICAL       LREFR
+      INTEGER       TEST,ITER
+      REAL*8        VALRES(12),TDEQ,TFEQ,K,N,T1C,T2C,AC,M,QSR,COEFFC
+      REAL*8        T1R,T2R,AR,BR,TABS,R8T0,TK,TC,TR
+      REAL*8        VITESC,VITESR,DTEMP
+      REAL*8        ZP,ZM,ZEQ,ZINF,ZSUP,G,DG,ZALPHM,ZALPHP
+      REAL*8        ZERO,R8PREM
+      CHARACTER*24 NOMRES(12)
+      CHARACTER*2  CODRET(12)
+      CHARACTER*4  CINE
 
+      
 C 1 - CARACTERISTIQUE MATERIAU
+C 1.1 - MODELE A L EQUILIBRE
 
-      EPS = 1.D-9
       NOMRES(1)='TDEQ'
       NOMRES(2)='K'
       NOMRES(3)='N'
-      NOMRES(4)='AC'
-      NOMRES(5)='M'
-      NOMRES(6)='AR'
-      NOMRES(7)='BR'
-      NOMRES(8)='TDC'
-      NOMRES(9)='TDR'
-      NOMRES(10)='QSR_K'
+
+C 1.2 - MODELE AU CHAUFFAGE
+
+      NOMRES(4)='T1C'
+      NOMRES(5)='T2C'
+      NOMRES(6)='AC'
+      NOMRES(7)='M'
+      NOMRES(8)='QSR_K'
+
+C 1.3 - MODELE AU REFROIDISSEMENT
+
+      NOMRES(9)='T1R'
+      NOMRES(10)='T2R'      
+      NOMRES(11)='AR'
+      NOMRES(12)='BR'
       
-      CALL RCVALA(MATOS,' ','META_ZIRC', 1, 'TEMP', TP, 9, NOMRES,
-     &            VALRES, CODRET, 'FM' )
-
-      CALL RCVALA(MATOS,' ','META_ZIRC', 1, 'TEMP', TP,1, NOMRES(10),
-     &                VALRES(10), CODRET(10), ' ' )
-
-      IF (CODRET(10) .NE. 'OK') VALRES(10)=0.D0
+      CALL RCVALA(MATOS,' ','META_ZIRC',1,'TEMP',TP,12,NOMRES,
+     &            VALRES,CODRET,'FM')
 
       TDEQ = VALRES(1)
-      K=VALRES(2)
-      N= VALRES(3)
-      A=VALRES(4)
-      M=VALRES(5)
-      AR=VALRES(6)
-      BR=VALRES(7)
-      TDC=VALRES(8)
-      TDR=VALRES(9)
-      QSR=VALRES(10)
+      K    = VALRES(2)
+      N    = VALRES(3)
+      T1C  = VALRES(4)
+      T2C  = VALRES(5)
+      AC   = VALRES(6)
+      M    = VALRES(7)
+      QSR  = VALRES(8)
+      T1R  = VALRES(9)
+      T2R  = VALRES(10)
+      AR   = VALRES(11)
+      BR   = VALRES(12)
 
-C 2 - CALCUL DE ZALPHM - ZBETAM - Z BETA EQUIVALENT 
-C     ET VITESSE DE LA TEMPERATURE
-
-      ZALPHM = ZM(1)+ZM(2)
-      ZBETAM = 1.D0-ZALPHM
-
-      IF (TP .LT. TDEQ) THEN
-        ZBETEQ=0.D0
-      ELSE
-        ZBETEQ=K*(TP-TDEQ)
-        ZBETEQ=EXP(-ZBETEQ**N)
-        ZBETEQ=1.D0-ZBETEQ
-      ENDIF
-
-      TPOINT=(TP-TM)/DELTAT
-
-C 3 - DETERMINATION DU SENS DE L'EVOLUTION METALLURGIQUE
+      TABS=R8T0()
+      TK=TP+TABS
+      COEFFC=AC*EXP(-QSR/TK)
       
-      IF ( TPOINT .GT. 0.D0 ) THEN
-        LREFR = .FALSE.
+C 2 - PREPARATION - Z = FRACTION DE PHASE BETA
+C 2.1 - CALCUL DE LA FRACTION DE Z A L INSTANT MOINS
+
+      ZALPHM=VIM(1)+VIM(2)
+      ZM = 1.D0-ZALPHM
+      ZERO=R8PREM()
+
+      IF (ABS(ZM).LE.ZERO) ZM=0.D0
+      IF (ABS(ZALPHM).LE.ZERO) ZM=1.D0
+      IF ((ZM.LE.1.D-05).AND.(TP.LE.TDEQ)) ZM=0.D0
+
+C 2.2 - CALCUL DE LA TEMPERATURE A L EQUILIBRE DE FIN DE TRANSFOR
+C       CORRESPONDANT A 0.99 DE Z
+      
+      TFEQ = LOG(1.D0/0.01D0)
+      TFEQ = TFEQ**(1.D0/N)
+      TFEQ = TFEQ/K
+      TFEQ = TFEQ+TDEQ
+
+C 2.3 - CALCUL DE LA FRACTION DE Z A L EQUILIBRE
+
+      IF (TP .LE. TDEQ) THEN
+        ZEQ=0.D0
+      ELSE
+        ZEQ=K*(TP-TDEQ)
+        ZEQ=EXP(-(ZEQ**N))
+        ZEQ=1.D0-ZEQ
       ENDIF
-      IF ( TPOINT .LT. 0.D0 ) THEN
-        IF ( TP .GT. TDR) THEN
-          LREFR = .FALSE.
+
+C 2.4 - SENS DE L'EVOLUTION METALLURGIQUE
+      
+      IF ((ZM .GT. 0.D0).AND.(ZM .LT. 1.D0)) THEN
+        IF (ZM .LT. ZEQ ) THEN
+          CINE = 'CHAU'
         ELSE
-          LREFR = .TRUE.
+          CINE = 'REFR'
+        ENDIF
+      ELSE
+        IF (ZM .LE. 0.D0) CINE = 'CHAU'
+        IF (ZM .GE. 1.D0) CINE = 'REFR'
+      ENDIF
+
+C 3 - SI ZM=0 OU ZM=1 
+C 3.1 - RECHERCHE DE L INSTANT CORRESPONDANT A TDEQ OU TFEQ
+C       STOCKE DANS VIP(4)
+C 3.2 - PUIS CALCUL DE TC OU TR POUR SAVOIR SI LA TRANSFORMATON DEBUTE
+C       CHAUFFAGE ZM=0 => SI TP > TDEQ : TC=AC(VITESC)**M
+C       AVEC VITESC LA VITESSE AU CHAUFFAGE
+C       ET SI TP <= TC PAS DE TRANSFORMATION => TEST=1
+C       REFROIDISSEMENT ZM=1 => SI TP < TFEQ : TR=AR+BR*LN(VITESR)
+C       AVEC VITESR LA VITESSE AU REFROIDISSEMENT
+C       ET SI TP >= TR PAS DE TRANSFORMATION => TEST=1
+
+C TEST=0 ON INTEGRE LES EQUATIONS D EVOLUTION
+C TEST=1 ZP=1 OU 0
+      
+      TEST=0
+
+C 3 - RECHERCHE DE L INSTANT CORRESPONDANT A TDEQ ET TFEQ
+
+      IF (ZM.EQ.0.D0) THEN 
+        IF ((TDEQ .GE. TM).AND.(TDEQ .LE. TP)) THEN
+          IF (TP.EQ.TM) THEN 
+            VIP(4)=INSTP
+          ELSE
+            DTEMP=TP-TM
+            VIP(4)=INSTP+(DINST/DTEMP)*(TDEQ-TP)        
+          ENDIF
+        ELSE
+          VIP(4)=VIM(4)
+        ENDIF
+
+C 3.1 - CALCUL DE TC
+          
+        IF (TP .GT. TDEQ ) THEN
+          VITESC=(TP-TDEQ)/(INSTP-VIP(4))
+          IF (VITESC.LT.0.D0) THEN
+            TEST=1
+          ELSE
+            IF (VITESC.LT.0.1D0) THEN
+              TC=TDEQ
+            ELSE
+              TC=T1C*(VITESC**T2C)
+            ENDIF
+            IF (TP.LE.TC) TEST=1
+          ENDIF
+        ELSE
+          TEST = 1
         ENDIF
       ENDIF
-      IF ( TPOINT .EQ. 0.D0 ) THEN
-        IF ( TP .GT. TDR) LREFR = .FALSE.
-        IF ( TP .LT. TDC) LREFR = .TRUE.
-        IF ((TP.GE.TDC).AND.( TP.LE.TDR)) THEN
-          IF (ZBETAM .LE. ZBETEQ ) THEN
-            LREFR = .FALSE.
+      
+      IF (ZM.EQ.1.D0) THEN
+
+        IF ((TFEQ .GE. TP).AND.(TFEQ .LE. TM)) THEN
+          IF (TP.EQ.TM) THEN 
+            VIP(4)=INSTP
           ELSE
-            LREFR = .TRUE.
+            DTEMP=TP-TM
+            VIP(4)=INSTP+(DINST/DTEMP)*(TFEQ-TP)
+          ENDIF
+        ELSE
+          VIP(4)=VIM(4)
+        ENDIF
+
+C 3.2 - CALCUL DE TR
+          
+        IF (TP .LT. TFEQ ) THEN
+          VITESR=(TP-TFEQ)/(INSTP-VIP(4))
+          IF (VITESR.GT.0.D0) THEN
+            TEST=1
+          ELSE
+            IF (VITESR.EQ.0.D0) THEN
+              TR=TFEQ
+            ELSE
+              TR=T1R+T2R*LOG(ABS(VITESR))
+              IF (TR.GT.TFEQ) TR=TFEQ
+            ENDIF
+            IF (TP.GE.TR) TEST=1
+          ENDIF
+        ELSE
+          TEST = 1
+        ENDIF          
+      ENDIF
+
+      IF ((ZM.NE.0.D0).AND.(ZM.NE.1.D0)) VIP(4)=VIM(4)
+      
+C 4 - DETERMINSATION DE ZP
+      
+      IF (TEST.EQ.1) THEN
+        IF (ZM.EQ.0.D0) ZP=0.D0
+        IF (ZM.EQ.1.D0) ZP=1.D0
+      ELSE
+
+C 4.1 - CAS PARTICULIER
+        
+        IF (CINE .EQ. 'CHAU') THEN
+          IF (ZEQ.GT.0.99D0) THEN
+            CALL ZEVOLU (CINE,0.99D0,ZM,DINST,TP,K,N,TDEQ,TFEQ,
+     &                   COEFFC,M,AR,BR,G,DG)
+            IF (G.LT.0.D0) THEN
+              ZP=1.D0
+              GOTO 100
+            ENDIF
           ENDIF
         ENDIF
-      ENDIF
-             
-C 4 - DETERMINSATION DE ZBETAP PAR LA METHODE DE RUNGE-KUTTA
-C 4.1 - CONTROLE DE L INCREMENT DE TEMPERATURE
 
-      IF ( ABS(TP-TM) .GT. 5.001D0 ) THEN
+C 4.2 - METODE DE NEWTON AVEC BORNES CONTROLEES
+C 4.2.1 - MINORANT ET MAJORANT
 
-        NBPAS = INT(ABS(TP-TM)/5.D0-0.001D0)+1
-        DELTA = DELTAT/DBLE(NBPAS)        
-        DO 10 I = 1 , NBPAS
-          TI1 = TM+(TP-TM)*DBLE(I-1)/DBLE(NBPAS)
-          TI2 = TM+(TP-TM)*DBLE(I)/DBLE(NBPAS)
-          TPOINT = (TI2-TI1)/DELTA
+        IF (CINE .EQ. 'CHAU') THEN
+          ZINF=ZM
+          ZSUP=ZEQ
+        ELSE
+          ZINF=ZEQ
+          ZSUP=ZM
+        ENDIF
+
+C 4.2.2 - INITIALISATION
+        
+        ZP=ZM
+        IF (ZM.EQ.0.D0) ZP=ZEQ/2.D0
+        IF (ZM.EQ.1.D0) ZP=(ZM+ZEQ)/2.D0
+        
+        CALL ZEVOLU (CINE,ZP,ZM,DINST,TP,K,N,TDEQ,TFEQ,
+     &               COEFFC,M,AR,BR,G,DG)
+
+C 4.2.3 - RESOLUTION PAR UNE METHODE DE NEWTON ENTRE LES BORNES
+
+        DO 10 ITER = 1, 15
+          IF ( ABS(G) .LE. 1.D-06 ) GOTO 100
           
-          ZBETAP=ZBETAM
-          TEMP=TI1
-          CALL TEMPEQ(ZBETAP,TDEQ,K,N,TEQ)
-          CALL ZEVOLU(LREFR,ZBETAP,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ1)
-          DZ1=DZ1*DELTA
+          IF (DG.EQ.0.D0) THEN
+            CALL U2MESS('F','ZEDGAR : DERIVEE NULLE')
+          ENDIF
+          ZP = ZP - G/DG
+          IF (ZP.LE.ZINF .OR. ZP.GE.ZSUP)  ZP=(ZINF+ZSUP)/2.D0
 
-          ZBETAP=ZBETAM+DZ1/2.D0
-          TEMP=TI1+(TI2-TI1)/2.D0
-          CALL TEMPEQ(ZBETAP,TDEQ,K,N,TEQ)
-          CALL ZEVOLU(LREFR,ZBETAP,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ2)
-          DZ2=DZ2*DELTA
+          CALL ZEVOLU (CINE,ZP,ZM,DINST,TP,K,N,TDEQ,TFEQ,
+     &                 COEFFC,M,AR,BR,G,DG)
 
-          ZBETAP=ZBETAM+DZ2/2.D0
-          CALL TEMPEQ(ZBETAP,TDEQ,K,N,TEQ)
-          CALL ZEVOLU(LREFR,ZBETAP,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ3)
-          DZ3=DZ3*DELTA
+          IF (G.GE.0.D0) ZSUP = ZP
+          IF (G.LE.0.D0) ZINF = ZP
 
-          ZBETAP=ZBETAM+DZ3
-          TEMP=TI2
-          CALL TEMPEQ(ZBETAP,TDEQ,K,N,TEQ)
-          CALL ZEVOLU(LREFR,ZBETAP,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ4)
-          DZ4=DZ4*DELTA
-
-          ZBETAP=ZBETAM+(DZ1+2.D0*DZ2+2.D0*DZ3+DZ4)/6.D0
-          ZBETAM=ZBETAP
  10     CONTINUE
-
-      ELSE
-         
-        ZBETAP=ZBETAM
-        TEMP=TM
-        CALL TEMPEQ(ZBETAP,TDEQ,K,N,TEQ)
-        CALL ZEVOLU(LREFR,ZBETAP,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ1)
-        DZ1=DZ1*DELTAT
-
-        ZBETAP=ZBETAM+DZ1/2.D0
-        TEMP=TM+(TP-TM)/2.D0
-        CALL TEMPEQ(ZBETAP,TDEQ,K,N,TEQ)
-        CALL ZEVOLU(LREFR,ZBETAP,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ2)
-        DZ2=DZ2*DELTAT
-
-        ZBETAP=ZBETAM+DZ2/2.D0
-        CALL TEMPEQ(ZBETAP,TDEQ,K,N,TEQ)
-        CALL ZEVOLU(LREFR,ZBETAP,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ3)
-        DZ3=DZ3*DELTAT
-
-        ZBETAP=ZBETAM+DZ3
-        TEMP=TP
-        CALL TEMPEQ(ZBETAP,TDEQ,K,N,TEQ)
-        CALL ZEVOLU(LREFR,ZBETAP,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ4)
-        DZ4=DZ4*DELTAT
-
-        ZBETAP=ZBETAM+(DZ1+2.D0*DZ2+2.D0*DZ3+DZ4)/6.D0
-
+        CALL U2MESS('F','ZEDGAR:ITER_INTE_MAXI INSUFFISANT')
+ 100    CONTINUE
       ENDIF
 
-C 5 - TEST DE COHERENCE
+      VIP(3)=TP
+      ZALPHP=1.D0-ZP
 
-      IF (ZBETAP .LT. EPS) ZBETAP =0.D0
+C 6 - CREATION DES DEUX PHASES      
 
-      IF ((.NOT. LREFR ).AND.(ZBETAP .GT. ZBETEQ)) ZBETAP =ZBETEQ
-      IF ((LREFR ).AND.(ZBETAP .LT. ZBETEQ)) ZBETAP =ZBETEQ
-      IF (ZBETAP .GT. (1.D0-EPS))  ZBETAP = 1.D0
-
-C 6 - CREATION DE TROIS PHASES
+      IF (ZP .GT. 0.1D0) THEN
+        VIP(1) =0.D0
+      ELSE
+        VIP(1)=10.D0*(ZALPHP-0.9D0)*ZALPHP
+      ENDIF
+      IF (VIP(1) .LE. ZERO) VIP(1) =0.D0
+      VIP(2)=ZALPHP-VIP(1)
+      IF (VIP(2) .LE. ZERO) VIP(2) =0.D0
       
-      ZALPHP=1.D0-ZBETAP
-      IF (ZBETAP .GT. 0.1D0) THEN
-        ZP(1) =0.D0
-      ELSE
-        ZP(1)=10.D0*(ZALPHP-0.9D0)*ZALPHP
-      ENDIF
-      IF (ZP(1) .LT. EPS) ZP(1) =0.D0
-      ZP(2)=ZALPHP-ZP(1)
-      IF (ZP(2) .LT. EPS) ZP(2) =0.D0
-      ZP(3)=TP
-
       END

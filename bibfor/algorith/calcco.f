@@ -10,7 +10,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ C ======================================================================
      &                DIMDEF,DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      &                ADVIHY,ADVICO,VIHRHO,VICPHI,ADDEP1,BDCP11,ADDETE,
      &                ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,
-     &                DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM)
+     &                DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE GAZ ----------------------------
 C ======================================================================
@@ -83,7 +83,7 @@ C ======================================================================
      +                  DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      +                  ADVICO,VICPHI,ADDEP1,BDCP11,ADDETE,ADCOTE,
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
-     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM)
+     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_VAPE ----------------------
 C ======================================================================
@@ -93,7 +93,7 @@ C ======================================================================
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,BDCP11,
      +                  ADCP12,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,
      +                  DSDE,EPSV,DEPSV,P1,DP1,T,DT,PHI,PVP,H11,H12,
-     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC)
+     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ------------------
 C ======================================================================
@@ -119,11 +119,14 @@ C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM -------------------
 C ======================================================================
       ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
+C          write (6,*) 'CALCCO_1 - BIOT = ',BIOT
           CALL HMLGAT(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
      +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                  VIHRHO,VICPHI,VICSAT,ADDEP1,BDCP11,ADDETE,
      +                  ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,
-     +                 DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,THMC)
+     +                 DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,THMC,
+     +                 BIOT)
+C          write (6,*) 'CALCCO_2 - BIOT = ',BIOT
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE ---------------
 C ======================================================================
@@ -134,7 +137,7 @@ C ======================================================================
      +                  ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
      +                  DP1,DP2,T,DT,PHI,PAD,PVP,H11,H12,H21,H22,KH,
-     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC)
+     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT)
 C ======================================================================
       ENDIF
 C ======================================================================

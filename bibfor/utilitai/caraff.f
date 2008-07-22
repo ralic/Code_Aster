@@ -5,7 +5,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       GD,IBID,IED,NOCC,NCMPMX,NBTOU,N1
       INTEGER       IAD,JNCMP,JVALV,JMAIL,NBCMP,K,IOCC,NBMAIL,NBVAR
-      REAL*8        RBID
+      REAL*8        RBID,RVID,R8VIDE
       COMPLEX*16    CBID
       CHARACTER*8   K8B, TSCA, TYPMCL(2)
       CHARACTER*16  MOTCLF, MOTCLS(2)
@@ -81,10 +81,11 @@ C
       CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IAD)
 C
       IF (GRAN.EQ.'VAR2_R') THEN
+         RVID=R8VIDE()
          NBCMP = NCMPMX
          DO 10,K = 1,NCMPMX
             ZK8(JNCMP-1+K) = ZK8(IAD-1+K)
-            ZR(JVALV-1+K) = 0.D0
+            ZR(JVALV-1+K) = RVID
    10    CONTINUE
          CALL NOCART( CARTE, 1, ' ', 'NOM', 0, ' ', 0, ' ', NBCMP )
       END IF

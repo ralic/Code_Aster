@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,6 +165,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DY',
                      NUME_MODE = 6,       VALE = 195.0))      )
 
 MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
+                         SOLVEUR=_F(METHODE='MULT_FRONT'),
                           PSEUDO_MODE=(
                                        _F(  AXE = ( 'X',  'Y', )),
                                        _F(  DIRECTION = ( 0., 0., 1., ),

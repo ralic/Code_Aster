@@ -1,7 +1,7 @@
       SUBROUTINE ALRSLT(IOPT,LIGREL,NOUT,LCHOUT,LPAOUT,BASE)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,7 +135,8 @@ C           L'ADRESSE DU .CELV
           ZK8(IACHOK-1+2* (I-1)+1) = 'CHML'
         ELSE
           CALL JEVEUO(NOCHOU//'.DESC','E',ZI(IACHOI-1+3* (I-1)+1))
-          IF (EVFINI.EQ.1) THEN
+          IF (EVFINI.EQ.1.AND.CODE.GT.3) THEN
+            CALL ASSERT(CODE.EQ.5)
             CALL JEVEUO(NOCHOU//'.RSVI','L',ZI(IACHOI-1+3* (I-1)+2))
             CALL JEVEUO(JEXATR(NOCHOU//'.RSVI','LONCUM'),'L',
      &                ZI(IACHOI-1+3* (I-1)+3))

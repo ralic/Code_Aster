@@ -1,21 +1,21 @@
-#@ MODIF algeline3 Messages  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF algeline3 Messages  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -23,19 +23,19 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_MAILLE. 
+ le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_MAILLE.
 """),
 
 2: _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_GROUP_MA. 
+ le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_GROUP_MA.
 """),
 
 3: _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_POI1. 
+ le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_POI1.
 """),
 
 4: _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-cle REPERE. 
+ le mot-clé MAILLAGE est obligatoire avec le mot-cle REPERE.
 """),
 
 5: _("""
@@ -44,7 +44,7 @@ cata_msg={
 """),
 
 6: _("""
- maille non créée  %(k1)s 
+ maille non créée  %(k1)s
 """),
 
 7: _("""
@@ -52,7 +52,7 @@ cata_msg={
 """),
 
 8: _("""
- le mot-cle MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA. 
+ le mot-cle MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA.
 """),
 
 9: _("""
@@ -119,7 +119,10 @@ cata_msg={
 """),
 
 23: _("""
-  le préconditionnement LDLT_INC d'une matrice complexe n'est pas implémenté
+Problème :
+  Le préconditionnement LDLT_INC d'une matrice complexe n'est pas implémenté
+Conseils & solution :
+  Il faut choisir un autre solveur que GCPC
 """),
 
 24: _("""
@@ -127,7 +130,7 @@ cata_msg={
 """),
 
 25: _("""
-  erreur a l'appel de METIS 
+  erreur a l'appel de METIS
 """),
 
 26: _("""
@@ -147,7 +150,7 @@ cata_msg={
 """),
 
 30: _("""
- matrices A et B incompatibles pour l'opération * 
+ matrices A et B incompatibles pour l'opération *
 """),
 
 31: _("""
@@ -224,7 +227,7 @@ cata_msg={
 """),
 
 51: _("""
- le tableau B est insuffisamment dimensionné pour l'opération * 
+ le tableau B est insuffisamment dimensionné pour l'opération *
 """),
 
 53: _("""
@@ -244,11 +247,21 @@ cata_msg={
 """),
 
 57: _("""
- methode QR : problème de convergence 
+ methode QR : problème de convergence
 """),
 
 58: _("""
  il y a des valeurs propres très proches
+"""),
+
+59: _("""
+ Erreur d'utilisation :
+  Le solveur MULT_FRONT est interdit ici car les ddls de la matrice ne sont pas
+  portés par les noeuds d'un maillage.
+  Peut-etre s'agit-il d'une matrice généralisée ?
+
+ Conseil :
+  Il faut changer de solveur
 """),
 
 60: _("""
@@ -300,7 +313,7 @@ cata_msg={
 
 68: _("""
  la matrice de raideur est singulière malgre la strategie de décalage
- (structure avec des modes de corps solide). 
+ (structure avec des modes de corps solide).
 """),
 
 69: _("""
@@ -328,7 +341,7 @@ cata_msg={
 """),
 
 75: _("""
- probleme construction vecteur initial --> si possible diminuer nmax_freq 
+ probleme construction vecteur initial --> si possible diminuer nmax_freq
 """),
 
 76: _("""
@@ -403,11 +416,11 @@ cata_msg={
 """),
 
 93: _("""
- les CHAM_NO  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s 
+ les CHAM_NO  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s
 """),
 
 94: _("""
- le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut etre copié dans le CHAM_NO  %(k3)s  de type  %(k4)s 
+ le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut etre copié dans le CHAM_NO  %(k3)s  de type  %(k4)s
 """),
 
 95: _("""

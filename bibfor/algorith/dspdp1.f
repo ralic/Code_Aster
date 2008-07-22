@@ -1,9 +1,10 @@
-      FUNCTION DSPDP1(SIGNE,BIOT,SAT)
+      FUNCTION DSPDP1(NET,BISHOP,SIGNE,BIOT,SAT)
       IMPLICIT      NONE
       REAL*8        SIGNE,BIOT,SAT,DSPDP1
+      LOGICAL NET,BISHOP
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,6 +25,12 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE LA CONTRAINTE DE PRESSION PAR RAPPORT ----
 C --- A LA PRESSION CAPILLAIRE -----------------------------------------
 C ======================================================================
-      DSPDP1 = SIGNE*BIOT*SAT
+      IF(BISHOP) THEN
+       DSPDP1 = SIGNE*BIOT*SAT
+      ELSE IF(NET) THEN
+       DSPDP1 = 0.D0
+      ELSE
+       CALL U2MESS('F','ALGORITH17_4')
+      ENDIF
 C ======================================================================
       END

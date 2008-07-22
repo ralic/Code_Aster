@@ -3,7 +3,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,7 +162,7 @@ C     ------------------------------------------
           COEFC = LCOEFC(ICHS)
         ELSE
           COEFR = LCOEFR(ICHS)
-          COEFI = NINT(COEFR)
+          IF (TSCA.EQ.'I') COEFI = NINT(COEFR)
         ENDIF
 
         CALL JEVEUO(CNS1//'.CNSD','L',JCN1D)

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    )
-    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB  
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
                                         TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
@@ -128,6 +128,7 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
+    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
@@ -143,7 +144,7 @@ OPTION__
     CHAR_DLAG_MECAST    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX      
+                              OUT__  XXXXXX   XXXXXX
     CHAR_MECA_EPLG_F    296   IN__   CALPHAR  PALPHAR  CEPSINF  PEPSINF  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR
                               OUT__  MVECTDR  PVECTUR
@@ -195,7 +196,7 @@ OPTION__
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  NDEPLAR  PVECTTH
                               OUT__  ECONTNO  PDLSINO
     ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX              
+                              OUT__  XXXXXX   XXXXXX
     ENDO_ELNO_SIGM      511   IN__   ECONTNO  PCONTNO  ECONTPG  PCONTPG  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  ETRIAXS  PTRIAXS
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -210,7 +211,7 @@ OPTION__
     ENER_TOTALE         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  ECONTPG  PCONTPR  NDEPLAR  PDEPLM
                                      NDEPLAR  PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1      
+                              OUT__  EENEDNO  PENERD1
     EPME_ELGA_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EPME_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
@@ -235,17 +236,17 @@ OPTION__
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
     EPSP_ELGA           334   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
-                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CMATERC  PMATERC  
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CMATERC  PMATERC
                                      CTEMPSR  PTEMPSR  ZVARIPG  PVARIGR
                               OUT__  EDEFOPG  PDEFOPL
     EPSP_ELNO           334   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
-                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CMATERC  PMATERC  
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CMATERC  PMATERC
                                      CTEMPSR  PTEMPSR  ZVARIPG  PVARIGR
                               OUT__  EDEFONO  PDEFOPL
-    EPVC_ELGA           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  
+    EPVC_ELGA           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDFVCPG  PDEFOVC
-    EPVC_ELNO           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  
+    EPVC_ELNO           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDFVCNO  PDEFOVC
     EQUI_ELGA_EPME      336   IN__   EDEFOPG  PDEFORR
@@ -268,14 +269,14 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           113   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  
+                                     CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      113   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  
+                                     CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
@@ -289,7 +290,7 @@ OPTION__
                               OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
     INDIC_SEUIL         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NDEPLAR  PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2      
+                              OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
     INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
                               OUT__  EVOISIN  PVOISIN
     MASS_INER           -1    IN__   XXXXXX   XXXXXX
@@ -326,17 +327,17 @@ OPTION__
                               OUT__  ZVARINO  PVARIMO
     RAPH_MECA           113   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  
+                                     CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX      
+                              OUT__  XXXXXX   XXXXXX
     RIGI_MECA_ELAS      113   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  
+                                     CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                                      CITERAT  PITERAT
                                OUT__  MMATUNS  PMATUNS
@@ -348,7 +349,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_TANG      113   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  
+                                     CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                                      CITERAT  PITERAT
                               OUT__  MMATUNS  PMATUNS

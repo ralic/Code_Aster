@@ -1,6 +1,6 @@
       SUBROUTINE ASSDE1(CHAMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +57,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C -DEB------------------------------------------------------------------
       CHAMP2 = CHAMP
 
-      DBG=.FALSE.
       DBG=.TRUE.
+      DBG=.FALSE.
       IF (DBG) CALL CHLICI(CHAMP2,19)
 
 
@@ -74,6 +74,7 @@ C        POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
       CALL JEDETR(CHAMP2//'.NOMA')
       CALL JEDETR(CHAMP2//'.NOLI')
       CALL JEDETR(CHAMP2//'.RESL')
+      CALL JEDETR(CHAMP2//'.RSVI')
       CALL JEDETR(CHAMP2//'.VALV')
       CALL JEDETR(CHAMP2//'.NCMP')
       CALL JEDETR(CHAMP2//'.PTMA')

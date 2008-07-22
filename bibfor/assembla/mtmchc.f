@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS,ACTION
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,6 @@ C----------------------------------------------------------------------
       LOGICAL NONSYM
 C----------------------------------------------------------------------
       CALL JEMARQ()
-      CALL JXVERI(' ',' ')
       MAT = MATAS
 C     CALL CHEKSD('sd_matr_asse',MAT,IRET)
       CALL JEVEUO(MAT//'.REFA','E',JREFA)

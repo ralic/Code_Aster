@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF calculel3 Messages  DATE 21/07/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,11 +191,7 @@ cata_msg = {
 """),
 
 50 : _("""
-  il faut un modèle
-"""),
-
-51 : _("""
- il manque le modèle
+  la commande a besoin d'un nom de modèle
 """),
 
 52 : _("""

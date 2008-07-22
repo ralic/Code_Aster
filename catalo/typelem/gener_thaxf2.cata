@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +36,7 @@ ENTETE__ ELEMENT__ THFOTR6          MAILLE__ TRIA6
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
 
 MODE_LOCAL__
+    ECODRET  = CODE_I   ELEM__         (IRET     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CFTRC    = ADRSJEVN ELEM__         (I1       I2       )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   )
@@ -53,7 +54,7 @@ MODE_LOCAL__
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EPHASIN_ = VAR2_R   ELGA__ RIGI    (V1       V2       V3       V4       V5       )
+    CPHASIN_ = VAR2_R   ELEM__         (V1       V2       V3       V4       V5       )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
 
 VECTEUR__
@@ -63,6 +64,7 @@ MATRICE__
     MMATTTR = MTEM_R DDL_THER DDL_THER
 
 OPTION__
+    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_DLAG_EVOLST    -1    IN__   XXXXXX   XXXXXX
@@ -92,7 +94,7 @@ OPTION__
     DURT_ELNO_META      551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
     ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX        
+                              OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
@@ -122,13 +124,13 @@ OPTION__
     INIT_MAIL_VOIS      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MASS_INER           -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX      
+                              OUT__  XXXXXX   XXXXXX
     MASS_THER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
                               OUT__  EPHASNO_ PPHASNOU
-    META_INIT_ELNO      320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
+    META_INIT_ELNO      320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  CPHASIN_ PPHASIN  DDL_THER PTEMPER
                               OUT__  EPHASNO_ PPHASNOU
     RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

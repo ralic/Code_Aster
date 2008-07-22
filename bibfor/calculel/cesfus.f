@@ -1,7 +1,7 @@
       SUBROUTINE CESFUS(NBCHS,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,BASE,
      & CES3Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -279,7 +279,7 @@ C     ------------------------------------------
           COEFC = LCOEFC(ICHS)
         ELSE
           COEFR = LCOEFR(ICHS)
-          COEFI = NINT(COEFR)
+          IF (TSCA.EQ.'I') COEFI = NINT(COEFR)
         ENDIF
 
         DO 160,ICMP1 = 1,NCMP1

@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/11/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF MODELISA  DATE 21/07/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,8 +125,8 @@ C           PAS DE CISA_2D SUR LES LÈVRES DES FISSURES X-FEM
 
             NFISS = -NFISS
             CALL GETVID(MOTCLF,'FISSURE',IOCC,1,NFISS,FISS , IBID )
-C           RECUPERATION DE TOUTES LES MAILLES X-FEM FISSUREES
-            CALL XTMAFI(NOMA,FISS,NFISS,MESMAI,NBMA)
+C           RECUPERATION DES MAILLES PRINCIPALES X-FEM FISSUREES
+            CALL XTMAFI(NOMA,NDIM,FISS,NFISS,MESMAI,NBMA)
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL NOCART (CARTE,3,K8B,'NOM',NBMA,ZK8(JMA),IBID,' ',NCMP)
             CALL JEDETR ( MESMAI )
@@ -143,6 +143,9 @@ C           RECUPERATION DE TOUTES LES MAILLES X-FEM FISSUREES
          ENDIF
 C
  10   CONTINUE
+
+       CALL IMPRSD('CHAMP',carte,6,'CARTE')
+
 C-----------------------------------------------------------------------
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL D MASSE AJOUTEE SUR MODELE GENERALISE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,7 +173,8 @@ LINT2=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_E,
 #
 BAMO1=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT1,
                                         MODE_MECA = MODES_E,
-                                        NMAX_MODE = 2))
+                                        NMAX_MODE = 2),
+                                        SOLVEUR=_F(METHODE='LDLT'),)
 
 #
 BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT2,

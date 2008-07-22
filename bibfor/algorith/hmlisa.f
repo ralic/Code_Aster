@@ -3,11 +3,11 @@
      &                  ADVIHY,ADVICO,VIHRHO,VICPHI,ADDEP1,ADCP11,
      &                  ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,
      &                  EPSV,DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,
-     &                  RETCOM)
+     &                  RETCOM,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,9 +73,13 @@ C ======================================================================
       REAL*8       RBID50,RBID51
       REAL*8       DP2,SIGNE,DMWDP1,DQDEPS,DQDP,DQDT,DMWDT,DHDT,DHWDP1
       REAL*8       DMDEPV,DSPDP1,APPMAS,SIGMAP,CALOR,ENTEAU,DILEAU
+C
+      LOGICAL NET,BISHOP
+C
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
+      CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      &            RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, 
      &            RBID40,RBID6, RBID7, RBID8,
@@ -194,7 +198,7 @@ C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 C ======================================================================
          IF (YAMEC.EQ.1) THEN
             CONGEP(ADCOME+6)=CONGEP(ADCOME+6)
-     +                                  + SIGMAP(SAT,SIGNE,BIOT,DP2,DP1)
+     +                + SIGMAP(NET,BISHOP,SAT,SIGNE,BIOT,DP2,DP1)
          END IF
 C ======================================================================
 C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
@@ -221,7 +225,7 @@ C ======================================================================
 C --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 C ======================================================================
             DSDE(ADCOME+6,ADDEP1)=DSDE(ADCOME+6,ADDEP1)
-     +                                          + DSPDP1(SIGNE,BIOT,SAT)
+     +                   + DSPDP1(NET,BISHOP,SIGNE,BIOT,SAT)
 C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------

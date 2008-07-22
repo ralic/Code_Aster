@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,10 +71,10 @@ MACRO_MATR_ASSE(
      MODELE=MO,
      CHARGE=IMPE,
      CHAM_MATER=CHM,
-     NUME_DDL=CO("NDDL"),MATR_ASSE=(
-     _F(  MATRICE = CO("MATK"), OPTION = 'RIGI_ACOU'),
-               _F(  MATRICE = CO("MATM"), OPTION = 'MASS_ACOU'),
-               _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU'))
+     NUME_DDL=CO("NDDL"),    SOLVEUR=_F(METHODE='MUMPS',),
+     MATR_ASSE=(_F(  MATRICE = CO("MATK"), OPTION = 'RIGI_ACOU'),
+                _F(  MATRICE = CO("MATM"), OPTION = 'MASS_ACOU'),
+                _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU'))
                 )
 
 #MK = CALC_MATR_ELEM(

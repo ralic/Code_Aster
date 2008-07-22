@@ -1,13 +1,13 @@
-      SUBROUTINE MODSTA(MOTCLE,LMATF,LMATM,NUME,IDDL,COEF,NEQ,
-     &                                                    NBMODE,ZRMOD)
+      SUBROUTINE MODSTA(MOTCLE,MATFAC,MATPRE,SOLVEU,LMATM,NUME,
+     &                  IDDL,COEF,NEQ,NBMODE,ZRMOD)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                  LMATF,LMATM,    IDDL(*),   NEQ,NBMODE
-      REAL*8                                       COEF(*),ZRMOD(NEQ,*)
-      CHARACTER*(*)     MOTCLE,            NUME
+      INTEGER    LMATM,IDDL(*),NEQ,NBMODE
+      REAL*8     COEF(*),ZRMOD(NEQ,*)
+      CHARACTER*(*) MOTCLE,NUME ,MATFAC,MATPRE,SOLVEU
       COMPLEX*16        CBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,8 @@ C     SI MOTCLE = 'ACCD' : CALCUL DE DEFORMEES STATIQUES
 C                                    ( ACCELERATION DDL UNITAIRE )
 C-----------------------------------------------------------------------
 C  IN  : MOTCLE : CALCUL DE MODES CONTRAINTS OU D'ATTACHE
-C  IN  : LMATF  : POINTEUR SUR LA MATRICE DE RAIDEUR FACTORISEE
+C  IN  : MATFAC : MATRICE DE RAIDEUR FACTORISEE
+C  IN  : MATPRE : MATRICE DE PRECONDIONNEMENT POUR LA RAIDEUR (GCPC)
 C  IN  : LMATM  : POINTEUR SUR LE DESCRIPTEUR DE LA MATRICE DE MASSE
 C  IN  : NUME   : NOM DU NUME_DDL
 C  IN  : IDDL   : TABLEAU DES DDL
@@ -118,7 +119,8 @@ C
                   ENDIF
                   ZR(JDDR+ILA1-1) = UN
                   ZR(JDDR+ILA2-1) = UN
-                  CALL RESOU2(' ',LMATF,1,ZR(JDDR),CBID)
+                  CALL RESOUD(MATFAC,MATPRE,' ',SOLVEU,' ',' ',' ',
+     &                  ' ',1,ZR(JDDR),CBID)
                   CALL MRMULT('ZERO',LMATM,ZR(JDDR),'R',ZRMOD(1,IMOD),1)
                   CALL JEDETR('&&MODSTA.POSITION_DDR')
                ENDIF
@@ -128,7 +130,8 @@ C
 C
 C     --- RESOLUTION ---
       IF ( IMOD .GT. 0 ) THEN
-         CALL RESOU2(' ',LMATF,IMOD,ZRMOD,CBID)
+         CALL RESOUD(MATFAC,MATPRE,' ',SOLVEU,' ',' ',' ',
+     &                  ' ',IMOD,ZRMOD,CBID)
       ENDIF
       CALL JEDEMA()
       END

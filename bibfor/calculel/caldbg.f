@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,6 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C DEB-------------------------------------------------------------------
 
       CALL JEMARQ()
-      CALL JXVERI(' ',' ')
       INOU2=INOUT
 
 C     1- POUR FAIRE DU DEBUG PAR COMPARAISON DE 2 VERSIONS:

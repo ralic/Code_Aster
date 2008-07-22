@@ -9,7 +9,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 21/07/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       ITHETA, I, IREFE, IDESC, NUM, IERD, NBEL, NUMA
-      INTEGER       NEC,IBID,JFOND,NUMFON,N1,N2,NDIM,JGT
+      INTEGER       NEC,IBID,JFOND,NUMFON,N1,N2,NDIM,JGT,JGTL
       PARAMETER     (NDIM=2)
       REAL*8        XM, YM, XI, YI, EPS, D, NORME, ALPHA, VALX, VALY
       REAL*8        R8PREM
@@ -165,48 +165,56 @@ C         RÉCUPÉRATION DU GRADIENT DE LST
           CHGRS = '&&GCOU2D.GRLT'
           CALL CNOCNS(GRLT,'V',CHGRS)
           CALL JEVEUO(CHGRS//'.CNSV','L',JGT)
+          CALL JEVEUO(CHGRS//'.CNSL','L',JGTL)
         ENDIF
       ENDIF
 
 C
 C BOUCLE SUR LES AUTRES NOEUDS COURANTS DU MAILLAGE
 C
-
       DO 500 I=1,NBEL
-         IF ( I .NE. NUM ) THEN
-            XM = COOR((I-1)*3+1)
-            YM = COOR((I-1)*3+2)
-            D  = SQRT((XI-XM)*(XI-XM)+(YI-YM)*(YI-YM))
-            ALPHA = (D-RINF)/(RSUP-RINF)
-            IF (.NOT.LDIREC) THEN
+        IF ( I .NE. NUM ) THEN
+          XM = COOR((I-1)*3+1)
+          YM = COOR((I-1)*3+2)
+          D  = SQRT((XI-XM)*(XI-XM)+(YI-YM)*(YI-YM))
+          ALPHA = (D-RINF)/(RSUP-RINF)
+          IF (.NOT.LDIREC) THEN
+C           LE GRANDIENT EST DÉFINI
+            IF (ZL(JGTL-1+NDIM*(I-1)+1)) THEN
               DIR(1) = ZR(JGT-1+NDIM*(I-1)+1)
               DIR(2) = ZR(JGT-1+NDIM*(I-1)+2)
               NORME  = SQRT(DIR(1)**2+DIR(2)**2)
-C             IL SE PEUT QUE EN CERTAINS POINTS, LE GRADIENT SOIT NUL
-C             CES POINTS SONT NORMALEMENT HORS COURONNE THETA
-              IF (NORME.LE.R8PREM()) THEN
-                IF ((ABS(ALPHA-1).GT.EPS).AND.((ALPHA-1).LE.0)) THEN
-                  CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',I),K8B)
-                  CALL U2MESK('F','XFEM_12',1,K8B)
-                ENDIF
-                NORME = 1.D0
-              ENDIF
-              DIR(1) = DIR(1)/NORME
-              DIR(2) = DIR(2)/NORME
-            ENDIF
-            VALX = MODULE*DIR(1)
-            VALY = MODULE*DIR(2)
-            IF ((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
-               ZR(ITHETA+(I-1)*2+1-1) = VALX
-               ZR(ITHETA+(I-1)*2+2-1) = VALY
-            ELSE IF((ABS(ALPHA-1).LE.EPS).OR.((ALPHA-1).GT.0)) THEN
-               ZR(ITHETA+(I-1)*2+1-1) = 0.D0
-               ZR(ITHETA+(I-1)*2+2-1) = 0.D0
             ELSE
-               ZR(ITHETA+(I-1)*2+1-1) = (1-ALPHA)*VALX
-               ZR(ITHETA+(I-1)*2+2-1) = (1-ALPHA)*VALY
+C           LE GRANDIENT N'EST PAS DÉFINI
+              DIR(1) = 0.D0
+              DIR(2) = 0.D0
+              NORME  = 1.D0
             ENDIF
-         ENDIF
+C           IL SE PEUT QUE EN CERTAINS POINTS, LE GRADIENT SOIT NUL
+C           CES POINTS SONT NORMALEMENT HORS COURONNE THETA
+            IF (NORME.LE.R8PREM()) THEN
+              IF ((ABS(ALPHA-1).GT.EPS).AND.((ALPHA-1).LE.0)) THEN
+                CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',I),K8B)
+                CALL U2MESK('F','XFEM_12',1,K8B)
+              ENDIF
+              NORME = 1.D0
+            ENDIF
+            DIR(1) = DIR(1)/NORME
+            DIR(2) = DIR(2)/NORME
+          ENDIF
+          VALX = MODULE*DIR(1)
+          VALY = MODULE*DIR(2)
+          IF ((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
+            ZR(ITHETA+(I-1)*2+1-1) = VALX
+            ZR(ITHETA+(I-1)*2+2-1) = VALY
+          ELSE IF((ABS(ALPHA-1).LE.EPS).OR.((ALPHA-1).GT.0)) THEN
+            ZR(ITHETA+(I-1)*2+1-1) = 0.D0
+            ZR(ITHETA+(I-1)*2+2-1) = 0.D0
+          ELSE
+            ZR(ITHETA+(I-1)*2+1-1) = (1-ALPHA)*VALX
+            ZR(ITHETA+(I-1)*2+2-1) = (1-ALPHA)*VALY
+          ENDIF
+        ENDIF
 500   CONTINUE
 C
       IF (.NOT.LDIREC) CALL DETRSD('CHAM_NO_S',CHGRS)

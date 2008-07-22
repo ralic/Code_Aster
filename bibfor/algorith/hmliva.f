@@ -3,11 +3,11 @@
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,ADCP11,
      +                  ADCP12,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,
      +                  DSDE,EPSV,DEPSV,P1,DP1,T,DT,PHI,PVP,H11,H12,
-     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC)
+     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,10 +78,14 @@ C ======================================================================
       REAL*8       DMVPP1,DMWP1V,DQDEPS,DQVPDP,DQVPDT,DMVPD2,DMWDT2
       REAL*8       DHDT,DHWDP1,DMDEPV,DSIPDT,DSPDLQ,APPMAS,SIGMAP
       REAL*8       CALOR,ENTEAU,ENTGAZ,DILEAU,DILGAZ,MASVOL,R8MAEM
+C
+      LOGICAL NET,BISHOP
+C
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C --- UN PREMIER APPEL A THMRCP POUR RECUPERE SATM --------------------
 C =====================================================================
+      CALL NETBIS(MECA,NET,BISHOP)
       PVP  = VINTM(ADVICO+VICPVP) + PVP0
       PVPM = VINTM(ADVICO+VICPVP) + PVP0
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
@@ -276,7 +280,7 @@ C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 C ======================================================================
          IF (YAMEC.EQ.1) THEN
             CONGEP(ADCOME+6)=CONGEP(ADCOME+6)
-     +                            + SIGMAP(SAT,SIGNE,BIOT,DPVP,DP1-DPVP)
+     +              + SIGMAP(NET,BISHOP,SAT,SIGNE,BIOT,DPVP,DP1-DPVP)
          END IF
 C ======================================================================
 C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------

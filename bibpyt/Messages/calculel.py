@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,17 @@ Risques & conseils :
    Cette erreur intervient lorsque l'on ne définit pas TOUTES les caractéristiques élémentaires
    dans le meme AFFE_CARA_ELEM.
    Pour les commandes de calcul, il ne faut qu'un seul MODELE et qu'un seul CARA_ELEM.
+"""),
+
+7 : _("""
+ Erreur de maillage :
+   La maille %(k1)s de type %(k2)s est trop distordue.
+   Le jacobien de la transformation géométrique n'a pas le meme signe sur tous les
+   points de Gauss.
+
+ Risques & conseils :
+   Le maillage a-t-il été produit par un mailleur ?
+   La connectivité respecte-elle bien la convention Aster ?
 """),
 
 8 : _("""

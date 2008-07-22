@@ -3,7 +3,7 @@
      &                  ACMA,ACSM,REACRE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,6 @@ C DECLARATION VARIABLES LOCALES
 
 C CORPS DU PROGRAMME
       CALL MATFPE(-1)
-      CALL JXVERI('MESSAGE','ALFETI')
 C
       CALL JEMARQ()
 C----------------------------------------------------------------------

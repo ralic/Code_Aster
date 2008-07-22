@@ -1,9 +1,10 @@
-      FUNCTION DSPDP2(BIOT)
+      FUNCTION DSPDP2(NET,BISHOP,BIOT)
       IMPLICIT      NONE
       REAL*8        BIOT,DSPDP2
+      LOGICAL NET,BISHOP
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,6 +25,12 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE LA CONTRAINTE DE PRESSION PAR RAPPORT ----
 C --- A LA PRESSION DE GAZ ---------------------------------------------
 C ======================================================================
-      DSPDP2 = - BIOT
+      IF(BISHOP) THEN
+       DSPDP2 = - BIOT
+      ELSE IF(NET) THEN
+       DSPDP2 = - BIOT
+      ELSE
+       CALL U2MESS('F','ALGORITH17_4')
+      ENDIF
 C ======================================================================
       END

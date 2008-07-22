@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF elements5 Messages  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,6 +190,14 @@ cata_msg = {
 43 : _("""
 Avec l'opérateur STAT_NON_LINE et l'élément de poutre POU_C_T, vous ne pouvez utiliser
 que les mots clés RELATION='ELAS' et  DEFORMATION='PETIT' avec COMP_INCR et COMP_ELAS.
+"""),
+
+44 : _("""
+Erreur utilisateur :
+  L'état métallurgique initial produit par CREA_CHAMP est incomplet.
+Conseil :
+  Pour le Zircaloy, il faut renseigner V1, V2 et V4
+  Pour l'acier, il faut renseigner V1, V2, ..., V5
 """),
 
 }

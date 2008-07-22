@@ -1,9 +1,10 @@
-      FUNCTION SIGMAP(SAT,SIGNE,BIOT,DP2,DP1)
+      FUNCTION SIGMAP(NET,BISHOP,SAT,SIGNE,BIOT,DP2,DP1)
       IMPLICIT      NONE
       REAL*8        SIGNE,SAT,BIOT,DP2,DP1,SIGMAP
+      LOGICAL NET,BISHOP
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,6 +24,12 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 C ======================================================================
-      SIGMAP = BIOT*SAT*SIGNE*DP1 - BIOT*DP2
+      IF(BISHOP) THEN
+       SIGMAP = BIOT*SAT*SIGNE*DP1 - BIOT*DP2
+      ELSE IF(NET) THEN
+       SIGMAP =  - BIOT*DP2
+      ELSE
+       CALL U2MESS('F','ALGORITH17_4')
+      ENDIF
 C ======================================================================
       END

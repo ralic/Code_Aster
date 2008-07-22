@@ -5,7 +5,7 @@
       INTEGER JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 21/07/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL       MA2FF
       CHARACTER*8   TYPMA
       CHARACTER*19  MAI
-
+      CHARACTER*8   NOMAIL
+      REAL*8        MPRIM(3),PMPRIM(3),COS,SIN,VECT(3),NOVE,PRONOR,ANGLE
+      REAL*8        ANGLEM,R8PREM
 
       CALL JEMARQ()
 
@@ -70,7 +72,6 @@ C     DES MAILLES DE FISSURE
         CALL PANBNO(ITYPMA,NBNOTT)
         ZI(JNNOS+IMAFIS-1)=NBNOTT(1)
  5    CONTINUE
-
 C
 C     BOUCLE SUR TOUS LES NOEUDS P DU MAILLAGE
       DO 11 INO=1,NBNO
@@ -198,11 +199,13 @@ C          MISE EN MÉMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
 C      CALCUL DE LST
 C      -------------
         DMIN=R8MAEM()
+        ANGLEM=R8MAEM()
 C
 C       RECHERCHE DU SEGMENT LE PLUS PROCHE : BOUCLE SUR SEG DE FONFIS
         DO 3 ISEFIS=1,NBSEF
 
           NSEABS=ZI(JDLISE-1+(ISEFIS-1)+1)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NSEABS),NOMAIL)
 
           INOSE=1
           NUNOSE(INOSE)=ZI(JCONX1-1+ZI(JCONX2+NSEABS-1)+INOSE-1)
@@ -239,7 +242,7 @@ C             QUI NE SOIT PAS SUR LE FOND
                 AC(I)=C(I)-A(I)
  33           CONTINUE
 
-C             CALCUL DE LA NORMALE à LA MAILLE
+C             CALCUL DE LA NORMALE À LA MAILLE
               CALL PROVEC(AB,AC,VN)
               CALL NORMEV(VN,NORME)
 
@@ -249,19 +252,6 @@ C             CALCUL DE LA NORMALE INTERIEURE AU SEGMENT
               VN(1)=-1.D0*VNT(1)
               VN(2)=-1.D0*VNT(2)
               VN(3)=-1.D0*VNT(3)
-
-C             ON VÉRIFIE QUE CETTE NORMALE EST ORIENTÉE
-C             COMME LA PRÉCENDENTE (À PART POUR LE 1ER SEG!)
-C             MAIS CA DEVRAIT JAMAIS ARRIVER
-              IF (ISEFIS.NE.1) THEN
-                PS=DDOT(3,VN,1,VNREF,1)
-                IF (PS.LT.0.D0) THEN
-                  CALL U2MESS('F','XFEM2_16')
-C                  VN(1)=-1*VN(1)
-C                  VN(2)=-1*VN(2)
-C                  VN(3)=-1*VN(3)
-                ENDIF
-              ENDIF
 
 C             ON GARDE CETTE NORMALE COMME RÉF POUR LE SEG SUIVANT
               VNREF(1)=VN(1)
@@ -273,6 +263,10 @@ C             PROJECTION SUR LE SEGMENT
               PS1=DDOT(3,AB,1,AB,1)
               EPS=PS/PS1
 
+              DO 344 I=1,3
+                MPRIM(I)=A(I)+EPS*AB(I)
+ 344           CONTINUE
+
 C             ON RAMÈNE M SUR LES BORDS S'IL LE FAUT
               IF (EPS.GT.1.D0) EPS=1.D0
               IF (EPS.LT.0.D0) EPS=0.D0
@@ -280,13 +274,37 @@ C             ON RAMÈNE M SUR LES BORDS S'IL LE FAUT
               DO 34 I=1,3
                 M(I)=A(I)+EPS*AB(I)
                 PM(I)=M(I)-P(I)
+                PMPRIM(I)=MPRIM(I)-P(I)
  34           CONTINUE
+
+C              CALCUL DE L'ANGLE (PM,PM') 
+C                  OU M EST LE PROJETÉ RAMENÉ
+C                  ET M' LE PROJETÉ AVANT RAMENAGE
+C              COS A = <U,V> / (||U|| * ||V||)
+C              SIN A = ||U^V|| / (||U|| * ||V||)
+              CALL PROVEC(PM,PMPRIM,VECT)
+              CALL NORMEV(VECT,NOVE)
+              PRONOR = SQRT(PM(1)**2+PM(2)**2+PM(3)**2+
+     &                 PMPRIM(1)**2+PMPRIM(2)**2+PMPRIM(3)**2)
+              IF (PRONOR.NE.0.D0) THEN
+                COS = (PM(1)*PMPRIM(1)+PM(2)*PMPRIM(2)+PM(3)*PMPRIM(3)) 
+     &                                                / PRONOR
+                SIN = NOVE / PRONOR 
+                ANGLE = ATAN2(SIN,COS)
+              ELSE
+                COS = 0.D0
+                SIN = 0.D0
+                ANGLE=0.D0
+              ENDIF
 
 C             CALCUL DE LA DISTANCE PM
               D=PADIST(3,P,M)
+
 C             MISE EN MÉMOIRE DE LSN=PM.N POUR LE SEG LE PLUS PROCHE
-              IF (D.LT.DMIN) THEN
+              IF (     (DMIN-D).GT.R8PREM().OR.
+     &             (ABS(DMIN-D).LE.R8PREM().AND.ANGLE.LT.ANGLEM) ) THEN
                 DMIN=D
+                ANGLEM = ANGLE
                 XLT=DDOT(3,VN,1,PM,1)
               END IF
 

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
+      CHARACTER*32 ZK32,JEXNUM
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER NBGREL,TYPELE,NBPARA,MODATT,DIGDE2,MAX,INDIK8,NBELEM
@@ -75,6 +75,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C DEB-------------------------------------------------------------------
 
       TAILLE = 0
+
       NGREL = NBGREL(LIGREL)
       DO 30 IGR = 1,NGREL
         TE = TYPELE(LIGREL,IGR)
@@ -141,12 +142,13 @@ C             -- CAS DES CHAM_ELEM :
               LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
             ELSE
 C             -- CAS DES RESUELEM :
-              IF (EVFINI.EQ.0) THEN
-                LGGREL = NVAL*NBELGR
-              ELSE
+              LGGREL = NVAL*NBELGR
+              IF (EVFINI.EQ.1) THEN
                 JRSVI = ZI(IACHOI-1+3*(IPAROU-1)+2)
-                JCRSVI = ZI(IACHOI-1+3*(IPAROU-1)+3)
-                LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+                IF (JRSVI.NE.0) THEN
+                  JCRSVI = ZI(IACHOI-1+3*(IPAROU-1)+3)
+                  LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+                ENDIF
               ENDIF
             END IF
             TAILLE = MAX(TAILLE,LGGREL)

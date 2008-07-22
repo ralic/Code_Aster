@@ -1,8 +1,8 @@
-      SUBROUTINE NMTHMC(COMP, MODELE, MOCLEF, K, COMEL, NCOMEL, NBNVI)
+      SUBROUTINE NMTHMC(COMP, MODELZ, MOCLEF, K, COMEL, NCOMEL, NBNVI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C =====================================================================
       INTEGER       NCOMEL, K
       INTEGER NBNVI(4)
       CHARACTER*16  COMP, MOCLEF, COMEL(*)
-      CHARACTER*24  MODELE
+      CHARACTER*(*)  MODELZ
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
@@ -57,11 +57,12 @@ C =====================================================================
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM, NUMLC
       PARAMETER   ( DMTHMC = 7  )
       PARAMETER   ( DMHYDR = 4  )
-      PARAMETER   ( DMMECA = 12 )
+      PARAMETER   ( DMMECA = 13 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
-      CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA), COMCOD
+      CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
+      CHARACTER*16  COMCOD
       CHARACTER*16  THMC, THER, HYDR, MECA, MOCLES(2)
-      CHARACTER*8   NOMA, TYPMCL(2)
+      CHARACTER*8   NOMA, TYPMCL(2),MODELE
       CHARACTER*24  MESMAI
       CHARACTER*24 VALK(2)
 C
@@ -69,10 +70,11 @@ C
 C *********************************************************************
 C --- DEBUT INITIALISATION ------------------------------------------ *
 C *********************************************************************
-      THMC = '        '
-      THER = '        '
-      HYDR = '        '
-      MECA = '        '
+      THMC = ' '
+      THER = ' '
+      HYDR = ' '
+      MECA = ' '
+      MODELE=MODELZ
 C =====================================================================
 C --- PARTIE THMC -----------------------------------------------------
 C =====================================================================
@@ -104,12 +106,13 @@ C =====================================================================
      &              'HOEK_BROWN_TOT'  ,
      &              'MAZARS'          ,
      &              'ENDO_ISOT_BETON' ,
+     &              'ELAS_GONF'         ,
      &              'DRUCK_PRAGER'  /
 C *********************************************************************
 C --- FIN INITIALISATION -------------------------------------------- *
 C *********************************************************************
-      CALL JEVEUO(MODELE(1:8)//'.MAILLE','L',JMAIL)
-      CALL JEVEUO(MODELE(1:8)//'.MODELE    .LGRF','L',JNOMA)
+      CALL JEVEUO(MODELE//'.MAILLE','L',JMAIL)
+      CALL JEVEUO(MODELE//'.MODELE    .LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
 C =====================================================================
 C --- LE COMPORTEMENT DEFINIT EST-IL COHERENT ? -----------------------
@@ -127,7 +130,7 @@ C =====================================================================
       CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF,K,2,MOCLES,
      &           TYPMCL,MESMAI,NBMA)
       IF (NBMA.EQ.0) THEN
-         CALL JELIRA(MODELE(1:8)//'.MAILLE','LONUTI',NBMA,KBID)
+         CALL JELIRA(MODELE//'.MAILLE','LONUTI',NBMA,KBID)
          TOUT=.TRUE.
       ELSE
       CALL JEVEUO(MESMAI,'L',JMESM)

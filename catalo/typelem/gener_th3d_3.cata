@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,6 @@ ENTETE__ ELEMENT__ THER_PYRAM13     MAILLE__ PYRAM13
    OPTION__   DURT_ELNO_META          -1
    OPTION__   META_ELGA_TEMP          -1
    OPTION__   META_ELNO_TEMP          -1
-   OPTION__   META_INIT               -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   ERRE_ELEM_TEMP_R        -2
    OPTION__   ERRE_ELEM_TEMP_F        -2
@@ -61,7 +60,6 @@ ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5
    OPTION__   DURT_ELNO_META          -1
    OPTION__   META_ELGA_TEMP          -1
    OPTION__   META_ELNO_TEMP          -1
-   OPTION__   META_INIT               -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   ERRE_ELEM_TEMP_R        -2
    OPTION__   ERRE_ELEM_TEMP_F        -2
@@ -74,6 +72,7 @@ ENTETE__ ELEMENT__ THER_TETRA4      MAILLE__ TETRA4
    ELREFE__  TR3       GAUSS__  RIGI=COT3   MASS=COT3
 
 MODE_LOCAL__
+    ECODRET  = CODE_I   ELEM__         (IRET     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CFTRC    = ADRSJEVN ELEM__         (I1       I2       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
@@ -110,10 +109,10 @@ MODE_LOCAL__
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
-    CSOURCR  = SOUR_R   ELEM__         (SOUR     ) 
-    NSOURCR  = SOUR_R   ELNO__ IDEN__  (SOUR     ) 
+    CSOURCR  = SOUR_R   ELEM__         (SOUR     )
+    NSOURCR  = SOUR_R   ELNO__ IDEN__  (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EPHASIN_ = VAR2_R   ELGA__ RIGI    (V1       V2       V3       V4       V5       )
+    CPHASIN_ = VAR2_R   ELEM__         (V1       V2       V3       V4       V5       )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
@@ -127,6 +126,7 @@ MATRICE__
     MMATTSR = MTNS_R DDL_THER DDL_THER
 
 OPTION__
+    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_DLAG_EVOLST    -1    IN__   XXXXXX   XXXXXX
@@ -172,7 +172,7 @@ OPTION__
     DURT_ELNO_META      552   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
     ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX        
+                              OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
@@ -206,7 +206,7 @@ OPTION__
     INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX      
+                              OUT__  XXXXXX   XXXXXX
     INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
                               OUT__  EVOISIN  PVOISIN
     MASS_INER           -2    IN__   XXXXXX   XXXXXX
@@ -216,7 +216,7 @@ OPTION__
     META_ELNO_TEMP      64    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
                               OUT__  EPHASNO_ PPHASNOU
-    META_INIT_ELNO      321   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
+    META_INIT_ELNO      321   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  CPHASIN_ PPHASIN  DDL_THER PTEMPER
                               OUT__  EPHASNO_ PPHASNOU
     MTAN_RIGI_MASS      125   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI
                                      CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI
@@ -228,7 +228,7 @@ OPTION__
                                      DDL_THER PTMPCHI
                               OUT__  EHYDRNO  PHYDRPP  MVECTTR  PRESIDU
     RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX      
+                              OUT__  XXXXXX   XXXXXX
     RIGI_THER           51    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
     RIGI_THER_CONV_T    522   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  DDL_THER PTEMPEI

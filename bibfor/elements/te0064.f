@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -44,25 +45,23 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-
-      CHARACTER*16 COMPOR(3)
-      CHARACTER*2 CODE
-      REAL*8 TPG1,TPG0,TPG2,DT10,DT21,ZERO
-      REAL*8 TNO1,TNO0,TNO2
-      REAL*8 METAPG(189),METAZI(81)
-      INTEGER JGANO,NNO,KN,KP,I,J,ITEMPE,ITEMPA,ITEMPS,IADTRC
-      INTEGER IPOIDS,IVF,IMATE,NDIM,JVAL,NPG1,K
-      INTEGER NBHIST,ITEMPI,NBTRC,IADCKM,NNOS,NCMP
-      INTEGER IPFTRC,JFTRC,JTRC,IPHASI,IPHASN,IPHASO,ICOMPO
-      INTEGER MATOS,NBCB1,NBCB2,NBLEXP,IADEXP,IDFDE
-C     ------------------------------------------------------------------
+      CHARACTER*16  COMPOR(3)
+      CHARACTER*2   CODE
+      REAL*8         DT10,DT21,INSTP
+      REAL*8         TNO1,TNO0,TNO2
+      REAL*8         METAAC(189),METAZI(108)
+      INTEGER        JGANO,NNO,KN,I,ITEMPE,ITEMPA,ITEMPS,IADTRC
+      INTEGER        IPOIDS,IVF,IMATE,NDIM,NPG
+      INTEGER        NBHIST,ITEMPI,NBTRC,IADCKM,NNOS
+      INTEGER        IPFTRC,JFTRC,JTRC,IPHASI,IPHASN,ICOMPO
+      INTEGER        MATOS,NBCB1,NBCB2,NBLEXP,IADEXP,IDFDE
 
       CALL JEMARQ()
 
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PTEMPAR','L',ITEMPA)
@@ -70,22 +69,18 @@ C     ------------------------------------------------------------------
       CALL JEVECH('PTEMPIR','L',ITEMPI)
       CALL JEVECH('PTEMPSR','L',ITEMPS)
       CALL JEVECH('PPHASIN','L',IPHASI)
-
       CALL JEVECH('PCOMPOR','L',ICOMPO)
+
       CALL JEVECH('PPHASNOU','E',IPHASN)
-
-
 
       COMPOR(1) = ZK16(ICOMPO)
       MATOS = ZI(IMATE)
 
-
       IF (COMPOR(1).EQ.'ACIER') THEN
-C      ------------------------------
+
         CALL JEVECH('PFTRC','L',IPFTRC)
         JFTRC = ZI(IPFTRC)
         JTRC = ZI(IPFTRC+1)
-
 
         CALL RCADMA(MATOS,'META_ACIER','TRC',IADTRC,CODE,'FM')
 
@@ -97,44 +92,42 @@ C      ------------------------------
         IADEXP = 5 + NBCB1*NBHIST
         IADCKM = 7 + NBCB1*NBHIST + NBCB2*NBLEXP
 
+        DO 10 KN = 1,NNO
+C         -- ATTENTION: ZACIER MODIFIE PARFOIS DT10 ET DT21 :
+          DT10 = ZR(ITEMPS+1)
+          DT21 = ZR(ITEMPS+2)
 
-        DO 40 KN = 1,NNO
           TNO1 = ZR(ITEMPE+KN-1)
           TNO0 = ZR(ITEMPA+KN-1)
           TNO2 = ZR(ITEMPI+KN-1)
-
-          DT10 = ZR(ITEMPS+1)
-          DT21 = ZR(ITEMPS+2)
           CALL ZACIER(MATOS,NBHIST,ZR(JFTRC),ZR(JTRC),ZR(IADTRC+3),
      &                ZR(IADTRC+IADEXP),ZR(IADTRC+IADCKM),NBTRC,TNO0,
-     &                TNO1,TNO2,DT10,DT21,ZR(IPHASI+7* (KN-1)),
-     &                METAPG(1+7* (KN-1)))
+     &                TNO1,TNO2,DT10,DT21,ZR(IPHASI+7*(KN-1)),
+     &                METAAC(1+7*(KN-1)))
 
-          DO 30 J = 1,7
-            ZR(IPHASN+7* (KN-1)+J-1) = METAPG(1+7* (KN-1)+J-1)
-   30     CONTINUE
-   40   CONTINUE
+          DO 20 I = 1,7
+            ZR(IPHASN+7*(KN-1)+I-1) = METAAC(1+7*(KN-1)+I-1)
+   20     CONTINUE
+   10   CONTINUE
 
+      ELSE IF (COMPOR(1)(1:4).EQ.'ZIRC') THEN
 
-      ELSE IF (COMPOR(1) (1:4).EQ.'ZIRC') THEN
-C     ------------------------------------------
-        DO 70 KN = 1,NNO
+        DT10 = ZR(ITEMPS+1)
+        DT21 = ZR(ITEMPS+2)
+        INSTP= ZR(ITEMPS)+DT21
 
+        DO 30 KN = 1,NNO
           TNO1 = ZR(ITEMPE+KN-1)
           TNO2 = ZR(ITEMPI+KN-1)
+          CALL ZEDGAR(MATOS,TNO1,TNO2,INSTP,DT21,
+     &                ZR(IPHASI+4*(KN-1)),METAZI(1+4*(KN-1)))
 
-          DT21 = ZR(ITEMPS+2)
+          DO 40 I = 1,4
+            ZR(IPHASN+4*(KN-1)+I-1) = METAZI(1+4*(KN-1)+I-1)
+   40     CONTINUE
+   30   CONTINUE
 
-          CALL ZEDGAR(MATOS,TNO1,TNO2,DT21,ZR(IPHASI+3* (KN-1)),
-     &                METAZI(1+3* (KN-1)))
-
-          DO 60 J = 1,3
-            ZR(IPHASN+3* (KN-1)+J-1) = METAZI(1+3* (KN-1)+J-1)
-   60     CONTINUE
-   70   CONTINUE
-
-      END IF
-
+      ENDIF
 
       CALL JEDEMA()
       END

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -626,6 +626,15 @@ C     -- POUR LES VOLUMES FINIS, CREATION DU VOISINAGE :
 C     ---------------------------------------------------
       CALL DISMOI('F','EXI_VF',LIGREL,'LIGREL',IBID,EXIVF,IBID)
       IF (EXIVF.EQ.'OUI') CALL CREVGE(NOMA)
+
+
+C     -- ON VERIFIE QUE LA GEOMETRIE DES MAILLES
+C        N'EST PAS TROP CHAHUTEE :
+C     ---------------------------------------------------
+      CALL GETVTX(' ','VERI_JACOBIEN',1,1,1,VERIF,NBV)
+      IF (VERIF(1).EQ.'OUI') CALL CALCUL('C','VERI_JACOBIEN',LIGREL,1,
+     &     NOMA//'.COORDO','PGEOMER',1,'&&OP0018.CODRET','PCODRET','V')
+
 
 
       CALL JEDEMA()

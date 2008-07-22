@@ -1,7 +1,7 @@
       SUBROUTINE PRERES(SOLVEZ,BASE,IRET,MATPRE,MATASS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT/MUMPS/FETI)
 C       OU FABRIQUER UNE MATRICE DE PRECONDITIONNEMENT (GCPC)
 C
-C SOLVEZ (K19) IN : OBJET SOLVEUR
+C SOLVEZ (K19) IN : OBJET SOLVEUR (OU ' ')
 C BASE (K1)    IN : BASE SUR LAQUELLE ON CREE LA MATRICE FACTORISEE
 C                  (OU LA MATRICE DE PRECONDITIONNEMENT)
 C IRET (I)     OUT : CODE_RETOUR :
@@ -78,10 +78,13 @@ C----------------------------------------------------------------------
       MATAS1=MATASS
       MATAS = MATASS
       MAPREC = MATPRE
-      SOLVEU=SOLVEZ
 
+      SOLVEU=SOLVEZ
+      IF (SOLVEU.EQ.' ') CALL DISMOI('F','SOLVEUR',MATAS,'MATR_ASSE',
+     &                               IBID,SOLVEU,IBID)
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
       METRES = ZK24(ISLVK)
+
 C     -- FETI OR NOT FETI :
       LFETI= (METRES(1:4).EQ.'FETI')
 

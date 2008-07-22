@@ -3,7 +3,7 @@
       CHARACTER*(*)      METHOD, RENUM, SOLVE , BAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,12 @@ C
 C
       ZK24(ISLVK-1+1) = METHOD
       ZK24(ISLVK-1+2) = PRECO
-      ZK24(ISLVK-1+3) = ' '
+      IF (METHOD.EQ.'MUMPS') THEN
+        ZK24(ISLVK-1+3) = 'AUTO'
+        ZK24(ISLVK-1+6) = 'OUI'
+      ELSE
+        ZK24(ISLVK-1+3) = ' '
+      ENDIF
       ZK24(ISLVK-1+4) = RENUM
       ZK24(ISLVK-1+5) = SYME
 C

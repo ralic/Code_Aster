@@ -2,11 +2,11 @@
      +                  DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      +                  ADVICO,VICPHI,ADDEP1,ADCP11,ADDETE,ADCOTE,
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
-     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM)
+     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,6 +71,9 @@ C ======================================================================
       REAL*8       CP21,P2,SATM,RHO22,CP11,CP22,M11M
       REAL*8       DMASP2,DQDEPS,DQDP,DQDT,DMWDT,DHDT,DMDEPV,DSPDP2
       REAL*8       APPMAS,SIGMAP,CALOR,ENTGAZ,DILGAZ,MASVOL
+C
+      LOGICAL NET,BISHOP
+C
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C --- DANS LE CALCUL ON LAISSE LES INDICES 11 POUR LE STOCKAGE DES ----
@@ -79,6 +82,7 @@ C --- RAPPORT A LA DOC R7.01.11 ON NOTE LES INDICES 21 POUR LES -------
 C --- VARIABLES DE CALCUL ---------------------------------------------
 C =====================================================================
       EMMAG = .FALSE.
+      CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, RBID6,
      +             RBID44,
@@ -192,7 +196,7 @@ C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 C ======================================================================
          IF (YAMEC.EQ.1) THEN
             CONGEP(ADCOME+6)=CONGEP(ADCOME+6)
-     +                                  + SIGMAP(SAT,SIGNE,BIOT,DP2,DP1)
+     +                + SIGMAP(NET,BISHOP,SAT,SIGNE,BIOT,DP2,DP1)
          END IF
 C ======================================================================
 C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
@@ -212,7 +216,8 @@ C --- CALCUL UNIQUEMENT EN PRESENCE DE MECANIQUE -----------------------
 C ======================================================================
 C --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 C ======================================================================
-            DSDE(ADCOME+6,ADDEP1)=DSDE(ADCOME+6,ADDEP1)+DSPDP2(BIOT)
+       DSDE(ADCOME+6,ADDEP1)=DSDE(ADCOME+6,ADDEP1)+
+     >  DSPDP2(NET,BISHOP,BIOT)
 C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------

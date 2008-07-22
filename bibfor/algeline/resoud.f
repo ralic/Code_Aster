@@ -2,7 +2,7 @@
      &                  CRITER,NSECM,RSOLU,CSOLU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,9 +110,8 @@ C ----------------------------------------------------------------------
       CALL DISMOI('F','MPI_COMPLET',MATR19,'MATR_ASSE',IBID,KMPIC,IBID)
 
 
-      IF (SOLV19.EQ.' ') THEN
-        CALL DISMOI('F','SOLVEUR',MATR19,'MATR_ASSE',IBID,SOLV19,IBID)
-      ENDIF
+      IF (SOLV19.EQ.' ') CALL DISMOI('F','SOLVEUR',MATR19,'MATR_ASSE',
+     &                               IBID,SOLV19,IBID)
       CALL JEVEUO(SOLV19//'.SLVK','L',JSLVK)
       CALL JEVEUO(SOLV19//'.SLVR','L',JSLVR)
       CALL JEVEUO(SOLV19//'.SLVI','L',JSLVI)

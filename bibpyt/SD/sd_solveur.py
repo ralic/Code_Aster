@@ -1,4 +1,4 @@
-#@ MODIF sd_solveur SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_solveur SD  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,5 +25,19 @@ class sd_solveur(AsBase):
     SLVK = AsVK24(SDNom(debut=19), lonmax=11, )
     SLVR = AsVR(SDNom(debut=19), lonmax=4, )
     SLVI = AsVI(SDNom(debut=19), lonmax=6, )
+
+
+    def check_SLVK(self,checker):
+    #---------------------------------------------
+        slvk = self.SLVK.get_stripped()
+        method=slvk[0]
+        if method == 'MUMPS' :
+            assert slvk[1] in ('AUTO', 'SANS'), slvk
+            assert slvk[2] in ('NONSYM', 'SYMGEN', 'SYMDEF', 'AUTO'), slvk
+            assert slvk[3] in ('AMD','AMF','PORD','METIS','QAMD','AUTO'), slvk
+            assert slvk[4] in ('OUI', 'NON'), slvk
+            assert slvk[5] in ('OUI', 'NON'), slvk
+        else :
+            pass
 
 

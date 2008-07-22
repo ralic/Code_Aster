@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -486,6 +486,42 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                 PUIS_PULS       =SIMP(statut='f',typ='I'),
                 TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),),
                                  ),
+
+
+#    Choix du solveur (utilisé actuellement pour estimateur d'erreur ZZ1) :
+     SOLVEUR         =FACT(statut='d', fr="Méthode de résolution des systèmes linéaires",
+     METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("LDLT","MUMPS","MULT_FRONT",) ),
+
+
+       b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
+         RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
+         NPREC           =SIMP(statut='f',typ='I',defaut=8),
+         STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+       ),
+
+       b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
+         RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+         NPREC           =SIMP(statut='f',typ='I',defaut=8),
+         STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+       ),
+
+
+       b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+         TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
+         PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
+         RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
+         ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+         PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
+         RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
+         PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
+                               into=("CENTRALISE","DISTRIBUE_MC","DISTRIBUE_MD","DISTRIBUE_SD")),
+         PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
+         CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
+         CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
+         ),
+     ),
+
+
 
      SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                            fr="Liste des paramètres de sensibilité.",

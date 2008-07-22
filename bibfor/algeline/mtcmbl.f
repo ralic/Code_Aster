@@ -9,7 +9,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -222,12 +222,11 @@ C     ===================
       IF (IER.GT.0) ZK24(JREFA-1+3)='ELIML'
 
 
-
-
 C --- CONSTRUCTION DU DESCRIPTEUR DE LA MATRICE RESULTAT :
 C     ==================================================
       CALL MTDSCR(MATEMP)
       CALL JEVEUO(MATEMP(1:19)//'.&INT','E',LRES)
+
 
 C --- COMBINAISON LINEAIRE DES .CONL DES MATRICES SI NECESSAIRE :
 C     =========================================================
@@ -236,6 +235,11 @@ C     =========================================================
       ELSE
         CALL JEDETR(ZK24(ZI(LRES+1))(1:19)//'.CONL')
       END IF
+
+
+C     -- ON REMET LA MATRICE DANS L'ETAT 'ASSE' :
+      CALL JEVEUO(MATRES//'.REFA','E',JREFAR)
+      ZK24(JREFAR-1+8)='ASSE'
 
       IF (REUTIL) THEN
         CALL COPISD('MATR_ASSE',BASE,MATEMP,MATRES)

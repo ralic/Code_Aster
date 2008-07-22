@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISMTRIBUTE IT AND/OR MODIFY
@@ -50,11 +50,11 @@ C
       CHARACTER*24       NOMRES
       CHARACTER*16       COMPOR(3)
       CHARACTER*2        CODRET
-      REAL*8             TPG0,ZERO,METAPG(63),MS0,ZALPHA,ZBETA
-      REAL*8             TNO0
+      REAL*8             ZERO,METAPG(63),MS0,ZALPHA,ZBETA
+      REAL*8             TNO0,R8VIDE
       INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
-      INTEGER            ICOMPO,KP,J,K,NCMP,KN
-      INTEGER            IMATE,ITEMPE,IPHASI,IPHASO,IPHASN
+      INTEGER            ICOMPO,J,KN
+      INTEGER            IMATE,ITEMPE,IPHASI,IPHASN,NVAL
 C     -----------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -70,18 +70,29 @@ C    ---------------------
 
 C     PARAMETRES EN SORTIE
 C    ----------------------
-
       CALL JEVECH('PPHASNOU','E',IPHASN)
 
       ZERO=0.D0
 
-C     MATERIAU FERRITIQUE
-C    ---------------------
-C
-C
-C ON RECALCUL DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
 
-         IF (COMPOR(1) .EQ. 'ACIER' ) THEN
+C     -- ON VERIFIE QUE LES VALEURS INITIALES SONT BIEN INITIALISEES:
+      IF (COMPOR(1).EQ.'ACIER') THEN
+        NVAL=5
+        DO 10, J=1,NVAL
+          IF (ZR(IPHASI-1+J).EQ.R8VIDE())
+     &        CALL U2MESS('F','ELEMENTS5_44')
+ 10     CONTINUE
+      ELSEIF(COMPOR(1).EQ.'ZIRC') THEN
+         IF (ZR(IPHASI-1+1).EQ.R8VIDE()) CALL U2MESS('F','ELEMENTS5_44')
+         IF (ZR(IPHASI-1+2).EQ.R8VIDE()) CALL U2MESS('F','ELEMENTS5_44')
+         IF (ZR(IPHASI-1+4).EQ.R8VIDE()) CALL U2MESS('F','ELEMENTS5_44')
+      ENDIF
+
+
+      IF (COMPOR(1) .EQ. 'ACIER' ) THEN
+C        MATERIAU FERRITIQUE
+C        ---------------------
+C     ON RECALCULE DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
             NOMRES = 'MS0'
             CALL RCVALA(ZI(IMATE),' ','META_ACIER', 1,'INST',0.D0,1,
      &            NOMRES,MS0,CODRET,'FM' )
@@ -90,7 +101,7 @@ C ON RECALCUL DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
               TNO0 = ZR(ITEMPE+KN-1)
 
               DO 201 J=0,4
-                METAPG(1+7*(KN-1)+J)=ZR(IPHASI+5*(KN-1)+J)
+                METAPG(1+7*(KN-1)+J)=ZR(IPHASI+J)
 201           CONTINUE
 
               METAPG(1+7*(KN-1)+6)=MS0
@@ -101,35 +112,35 @@ C ON RECALCUL DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
  86           CONTINUE
  101        CONTINUE
 
+
          ELSEIF (COMPOR(1)(1:4) .EQ. 'ZIRC' ) THEN
-              TNO0 = ZERO
+
             DO 102 KN=1,NNO
+
               TNO0 = ZR(ITEMPE+KN-1)
 
 C ----------PROPORTION TOTALE DE LA PHASE ALPHA
 
-              METAPG(1+3*(KN-1))=ZR(IPHASI+5*(KN-1))
-              METAPG(1+3*(KN-1)+1)=ZR(IPHASI+5*(KN-1)+1)
-              ZALPHA = METAPG(1+3*(KN-1)) +METAPG(1+3*(KN-1)+1)
+          METAPG(1+4* (KN-1))   = ZR(IPHASI-1+1)
+          METAPG(1+4* (KN-1)+1) = ZR(IPHASI-1+2)
+          METAPG(1+4* (KN-1)+2) = TNO0
+          METAPG(1+4* (KN-1)+3) = ZR(IPHASI-1+4)
+
+          ZALPHA = METAPG(1+4* (KN-1)+1) + METAPG(1+4* (KN-1))
 
 C-----------DECOMPOSITION DE LA PHASE ALPHA POUR LA MECANIQUE
 
-              ZBETA=1-ZALPHA
-              IF (ZBETA .GT. 0.1D0) THEN
-                METAPG(1+3*(KN-1)) =0.D0
-              ELSE
-                METAPG(1+3*(KN-1))= 10*(ZALPHA-0.9D0)*ZALPHA
+          ZBETA=1-ZALPHA
+          IF (ZBETA .GT. 0.1D0) THEN
+            METAPG(1+4*(KN-1)) =0.D0
+          ELSE
+            METAPG(1+4*(KN-1))= 10.D0*(ZALPHA-0.9D0)*ZALPHA
+          ENDIF
+          METAPG(1+4* (KN-1)+1) = ZALPHA - METAPG(1+4* (KN-1))
 
-              ENDIF
-              METAPG(1+3*(KN-1)+1)=ZALPHA-METAPG(1+3*(KN-1))
-C
-
-              METAPG(1+3*(KN-1)+2)=TNO0
-
-              DO 87 J=1,3
-                ZR(IPHASN+3*(KN-1)+J-1)   = METAPG(1+3*(KN-1)+J-1)
-
- 87           CONTINUE
+          DO 87 J=1,4
+            ZR(IPHASN+4*(KN-1)+J-1) = METAPG(1+4*(KN-1)+J-1)
+ 87       CONTINUE
 
  102        CONTINUE
 

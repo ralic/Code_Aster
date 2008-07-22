@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 21/07/2008   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -444,7 +444,7 @@ C
           ELSE IF ((OPTION.EQ.'FORC_NODA') .OR.
      &             (OPTION.EQ.'REAC_NODA')) THEN
             IF (MODELE(1:8).EQ.'&&'//NOMPRO) THEN
-              CALL U2MESS('F','CALCULEL3_51')
+              CALL U2MESS('F','CALCULEL3_50')
             END IF
 C       ================================================================
 

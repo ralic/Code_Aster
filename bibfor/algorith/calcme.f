@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,7 +85,7 @@ C
       REAL*8  ALPHAT,ALPHBT,ALPHCT,SY,BB,XM,TM
       REAL*8  PP,R8BID,ANGMA1(3),ANGMAS(7)
       CHARACTER*16 COMPLG(2)
-      LOGICAL         CP 
+      LOGICAL         CP , YAPRE2
 C ======================================================================
 C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
       REAL*8  DSIDP1(6),DP1,DP2,SAT,BIOT
@@ -122,12 +122,21 @@ C ======================================================================
          NU     = ELAS(2)
          ALPHA0 = ELAS(3)
       ENDIF
-      IF (( MECA.EQ.'DRUCK_PRAGER' ).OR.(MECA.EQ.'LETK')) THEN
+      IF (( MECA.EQ.'DRUCK_PRAGER' ).OR.(MECA.EQ.'LETK').OR.
+     &    (MECA.EQ.'ELAS_GONF')) THEN
          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
      &                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
          NU     = ELAS(2)
          ALPHA0 = ELAS(3)
+      ENDIF
+C ======================================================================
+C --- RECUPERATION OU NON DE LA PRESSION DE GAZ
+C ======================================================================
+      YAPRE2 = .FALSE.
+      IF ((THMC.EQ.'GAZ').OR.(THMC.EQ.'LIQU_VAPE_GAZ').OR.
+     &    (THMC.EQ.'LIQU_GAZ').OR.(THMC.EQ.'LIQU_AD_GAZ_VAPE'))THEN
+                YAPRE2 = .TRUE.
       ENDIF
 C ======================================================================
 C --- CALCUL DES CONTRAINTES -------------------------------------------
@@ -199,7 +208,7 @@ C ======================================================================
       IF (MECA.EQ.'HUJEUX') THEN
         MECTRU = .TRUE.
         TINI = T - DT
-        
+
         DO 150 I =1, 7
           ANGMAS(I)=0.D0
  150      CONTINUE
@@ -364,6 +373,54 @@ C ======================================================================
      &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
  416        CONTINUE
          ENDIF
+        ENDIF
+      ENDIF
+C ======================================================================
+C --- LOI ELAS_GONF ----------------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'ELAS_GONF') THEN
+        TINI = T - DT
+        SIPM=CONGEM(ADCOME+6)
+        SIPP=CONGEP(ADCOME+6)
+C
+        CALL ELAGON(NDIM,IMATE,CRIT,SAT,BIOT,
+     &              TINI,T,ALPHA0,
+     &              DEPS,YOUNG,NU,
+     &              CONGEM(ADCOME),OPTION,
+     &              CONGEP(ADCOME),
+     &              DSDEME,P1,P2,DP1,
+     &              DSIDP1,DSIDP2)
+
+        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
+     &            (OPTION(1:9).EQ.'FULL_MECA')) THEN
+
+            DO 522 I = 1 , 2*NDIM
+              DSDE(ADCOME+I-1,ADDEP1) = DSDE(ADCOME+I-1,ADDEP1)
+     &                      +DSIDP1(I)
+              DO 521 J = 1 , 2*NDIM
+                DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
+  521         CONTINUE
+  522       CONTINUE
+
+            IF (YAPRE2)THEN
+              DO 523 I = 1 , 2*NDIM
+                 DSDE(ADCOME+I-1,ADDEP2) = DSDE(ADCOME+I-1,ADDEP2)
+     &                      +DSIDP2(I)
+  523         CONTINUE
+            ENDIF
+
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
+          IF (YATE.EQ.1) THEN
+            DO 4116 I=1,3
+                  DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
+     >            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+ 4116       CONTINUE
+          ENDIF
         ENDIF
       ENDIF
 C ======================================================================

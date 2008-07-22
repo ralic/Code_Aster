@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,9 +82,12 @@ C ======================================================================
       REAL*8       DMASP1,DMASP2,DMWDP1,DMWDP2,DQDEPS,DQDP,DQDT,DMWDT
       REAL*8       DHDT,DHWDP1,DHWDP2,DSPDP1,DSPDP2,APPMAS,SIGMAP,CALOR
       REAL*8       DMDEPV,ENTEAU,ENTGAZ,DILEAU,DILGAZ,MASVOL
+C
+      LOGICAL NET,BISHOP
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
+      CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +           RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,P1-DP1,
      +           RBID6,
@@ -214,7 +217,7 @@ C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 C ======================================================================
          IF (YAMEC.EQ.1) THEN
             CONGEP(ADCOME+6)=CONGEP(ADCOME+6)
-     +                                  + SIGMAP(SAT,SIGNE,BIOT,DP2,DP1)
+     +                     + SIGMAP(NET,BISHOP,SAT,SIGNE,BIOT,DP2,DP1)
          END IF
 C ======================================================================
 C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
@@ -241,8 +244,9 @@ C ======================================================================
 C --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 C ======================================================================
             DSDE(ADCOME+6,ADDEP1)=DSDE(ADCOME+6,ADDEP1)
-     +                                          + DSPDP1(SIGNE,BIOT,SAT)
-            DSDE(ADCOME+6,ADDEP2)=DSDE(ADCOME+6,ADDEP2)+DSPDP2(BIOT)
+     +                          + DSPDP1(NET,BISHOP,SIGNE,BIOT,SAT)
+            DSDE(ADCOME+6,ADDEP2)=DSDE(ADCOME+6,ADDEP2)
+     +                          +DSPDP2(NET,BISHOP,BIOT)
 C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------

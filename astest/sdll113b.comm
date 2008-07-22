@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -394,8 +394,10 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 ###
 #
 TRANGENE=DYNA_TRAN_MODAL(       MASS_GENE=M_GENE,
-                                  RIGI_GENE=K_GENE,
-                                  AMOR_GENE=A_GENE,
+                                RIGI_GENE=K_GENE,
+                                AMOR_GENE=A_GENE,
+                                SOLVEUR=_F(METHODE='LDLT',),
+
                                      EXCIT=_F( VECT_GENE = F_GENE,
                                             COEF_MULT = 1.),
                                  INCREMENT=_F(  INST_INIT = 0.,

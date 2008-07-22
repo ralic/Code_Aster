@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMUN  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "CZM_EXP_REG",     # RESP. : LAVERNE J.LAVERNE
                                         "CZM_EXP",         # RESP. : LAVERNE J.LAVERNE
                                         "CZM_LIN_REG",     # RESP. : LAVERNE J.LAVERNE
-                                        "CZM_OUV_MIX",     # RESP. : LAVERNE J.LAVERNE                                        
+                                        "CZM_OUV_MIX",     # RESP. : LAVERNE J.LAVERNE
                                         "CZM_TAC_MIX",     # RESP. : LAVERNE J.LAVERNE
                                         "DIS_BILI_ELAS",   # RESP. : FLEJOU J.L.FLEJOU
                                         "DIS_CHOC",        # RESP. : DEVESA G.DEVESA
@@ -43,6 +43,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "DIS_VISC",        # RESP. : FLEJOU J.L.FLEJOU
                                         "DRUCK_PRAGER",    # RESP. : FERNANDES R.FERNANDES
                                         "DRUCK_PRAG_N_A",  # RESP. : FERNANDES R.FERNANDES
+                                        "ELAS_GONF",       # RESP. : GRANET S.GRANET
                                         "ELAS_HYPER",      # RESP. : ABBAS M.ABBAS
                                         "ENDO_FRAGILE",    # RESP. : MICHEL S.MICHEL
                                         "ENDO_ISOT_BETON", # RESP. : MICHEL S.MICHEL
@@ -185,6 +186,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "LETK",
                                        "DRUCK_PRAGER",
                                        "DRUCK_PRAG_N_A",
+                                       "ELAS_GONF",
                                        "HOEK_BROWN_EFF",
                                        "HOEK_BROWN_TOT",
                                        "MAZARS",
@@ -212,16 +214,16 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                RELATION_KIT    =SIMP(statut='o',typ='TXM',max=1,validators=NoRepeat(),
                                  into=("ACIER","ZIRC"),),
                                  ),
-                                       
+
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",
                              into=("PETIT","PETIT_REAC","SIMO_MIEHE","GREEN_GR","GREEN","COROTATIONNEL",
                                    "REAC_GEOM","EULER_ALMANSI")),
-                                   
+
            ALGO_C_PLAN     =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
            RESI_DEBORST  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ALGO_1D         =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
            ITER_MAXI_DEBORST  =SIMP(statut='f',typ='I',defaut= 1),
-           
+
            RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
            b_redec_local      = BLOC(condition = "DEFORMATION in ('PETIT','PETIT_REAC','GREEN')",
@@ -242,10 +244,10 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                  TAUX_RETOUR  =SIMP(statut='f',typ='R',defaut= 0.05 ),
                                 ),
            PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
-           
+
            regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           
+
          ) ;

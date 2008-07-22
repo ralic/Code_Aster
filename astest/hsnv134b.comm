@@ -1,4 +1,4 @@
-# MODIF  DATE 19/02/2008   AUTEUR CANO V.CANO 
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # RESPONSABLE CANO V.CANO
 # TITRE TUBE SOUS PRESSION A TEMPERATURE CONSTANTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,9 +57,9 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
 ZIRCALOY=DEFI_MATERIAU(THER=_F(RHO_CP = 2000000.0, LAMBDA = 9999.9),
                         META_ZIRC=_F(
                                   TDEQ = 809.,   K = 1.135E-2,   N = 2.187,
-                                  TDC = 831.,    QSR_K = 14614.,
-                                  AC = 1.58E-4,  M = 4.7,
-                                  TDR = 949.1,    AR = -5.725,  BR = 0.05))
+                                  T1C = 831. , T2C=0., 
+                                  QSR_K = 14614.,AC = 1.58E-4,  M = 4.7,
+                                  T1R=949.1, T2R=0.,AR = -5.725,  BR = 0.05))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT = 'OUI',MATER = ZIRCALOY))
@@ -92,8 +92,8 @@ PHASINIT=CREA_CHAMP(OPERATION='AFFE',
                     TYPE_CHAM='CART_VAR2_R',
                     MAILLAGE=MAIL,
                     AFFE=_F(TOUT = 'OUI',
-                            NOM_CMP = ('V1', 'V2', 'V3'),
-                            VALE = ( 1.0, 0.0, 20.,)))
+                            NOM_CMP = ('V1', 'V2', 'V3','V4'),
+                            VALE = ( 1.0, 0.0, 20.,0.)))
 
 TEMPE=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',

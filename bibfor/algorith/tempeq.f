@@ -1,7 +1,7 @@
-      SUBROUTINE TEMPEQ(Z,TDEQ,K,N,TEQ)
+      SUBROUTINE TEMPEQ(Z,TDEQ,TFEQ,K,N,TEQ,DVTEQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,29 +20,37 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-      REAL*8   Z,TDEQ,K,N,TEQ
+      REAL*8   Z,TDEQ,TFEQ,K,N,TEQ,DVTEQ
 
+C............................................
+C CALCUL PHASE METALLURGIQUE POUR EDGAR
 C CALCUL DE LA TEMPERTURE EQUIVALENTE
+C............................................
+
 C IN   Z    : PROPORTION DE PHASE BETA
 C IN   TDEQ : TEMPERATURE QUASISTATIQUE DE DEBUT DE TRANSFORMATION
+C IN   TFEQ : TEMPERATURE QUASISTATIQUE DE FIN DE TRANSFORMATION
+C             CORRESPONDANT A 0.99 DE PHASE BETA
 C IN   K    : PARAMETRE MATERIAU
 C IN   N    : PARAMETRE MATERIAU
 C OUT TEQ   : TEMPERATURE EQUIVALENTE
-
-      REAL*8 EPS
-      
-      EPS=1.D-9
-      IF (Z .LT. 0.D0) THEN
-        TEQ=TDEQ
-      ELSEIF (Z .GT. (1.D0-EPS))  THEN
-        TEQ = LOG(1.D0/EPS)
-        TEQ=TEQ**(1.D0/N)
-        TEQ=TEQ/K
-        TEQ=TEQ+TDEQ
-      ELSE
+C OUT DVTEQ : DERIVEE DE TEQ PAR RAPPORT A Z
+  
+      IF ((Z.GE.0.D0).AND.(Z.LE.0.99D0)) THEN
         TEQ = LOG(1.D0/(1.D0-Z))
         TEQ=TEQ**(1.D0/N)
         TEQ=TEQ/K
-        TEQ=TEQ+TDEQ
+        TEQ=TEQ+TDEQ        
+        IF (Z.NE.0.D0) THEN
+          DVTEQ=LOG(1.D0/(1.D0-Z))
+          DVTEQ=DVTEQ**(1.D0/N)
+          DVTEQ=-DVTEQ/(K*N*(1.D0-Z)*LOG(1.D0-Z))
+        ELSE
+         DVTEQ=1000.D0
+        ENDIF
+      ELSE
+        TEQ=TFEQ
+        DVTEQ=1000.D0
       ENDIF
+      
       END

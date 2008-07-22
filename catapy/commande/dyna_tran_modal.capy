@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -208,18 +208,21 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
 
 
          SOLVEUR         =FACT(statut='d', fr="Méthode de résolution des systèmes linéaires",
-         METHODE         =SIMP(statut='f',typ='TXM',defaut="LDLT",into=("LDLT","MUMPS","PETSC") ),
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="LDLT",into=("LDLT","MUMPS","MULT_FRONT",) ),
 
 
            b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
-           ),
-
-           b_ldlt_mult     =BLOC(condition = "METHODE == 'LDLT'",
-                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
              NPREC           =SIMP(statut='f',typ='I',defaut=8),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
+
+           b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+             NPREC           =SIMP(statut='f',typ='I',defaut=8),
+             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           ),
+
 
            b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
              TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
@@ -234,14 +237,6 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
              CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
              CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
              ),
-
-           b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la méthode PETSC",
-             VARIANTE        =SIMP(statut='f',typ='TXM',into=("GMRES","BCGS","CR","CG","BICG","CHEBYCHEV",),defaut="GMRES" ),
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("ILU","SOR","BJACOBI"),defaut="ILU" ),
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-8),
-             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
-           ),
          ),
 
 

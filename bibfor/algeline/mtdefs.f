@@ -3,7 +3,7 @@
       CHARACTER*(*)       MATOUT, MATIN, BASE, TYPC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C     ------------------------------------------------------------------
 C     PRECAUTIONS D'EMPLOI :
 C       1) LA MATRICE "MATOUT" NE DOIT PAS EXISTER
 C       2) LES COEFFICIENTS DE LA MATRICE "MATOUT" NE SONT PAS AFFECTES
+C       3) LA MATRICE MATOUT EST DANS L'ETAT 'ASSE'
 C     ------------------------------------------------------------------
 C
 C
@@ -85,8 +86,8 @@ C     ----------------------------
       DO 10 IVAL=0,NBVAL-1
          ZK24(JREFAO+IVAL) = ZK24(JREFAI+IVAL)
   10  CONTINUE
+      ZK24(JREFAO-1+8) = 'ASSE'
 
-      REFA = NOMIN//'.REFA'
 
 
 C     -- RECOPIE DU .LIME:

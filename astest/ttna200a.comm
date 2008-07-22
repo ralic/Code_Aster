@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE AXIS
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,7 @@ DEBUT(CODE=_F(NOM='TTNA200A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 # ----------------------------------------------------------------------
 MA=LIRE_MAILLAGE(  )
 
-MO=AFFE_MODELE(    MAILLAGE=MA,
+MO=AFFE_MODELE(    MAILLAGE=MA,  VERI_JACOBIEN='OUI',
                         VERIF=('MAILLE', 'NOEUD', ),
                          AFFE=_F(  GROUP_MA = ( 'GMA2', 'GMA3', 'GMA4',
                                                  'GMA5', 'GMA6', 'GMA7', ),
@@ -425,7 +425,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     0.0000000000000E+00  ,
+                      VALE =  0.0000000000000E+00  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3',
                       CRITERE = 'ABSOLU'),
@@ -435,7 +435,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'META_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     1.9297799999999E+03  ,
+                      VALE =  1.9073400000000E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -443,7 +443,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'FLUX_ELGA_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     0.0000000000000E+00  ,
+                      VALE =  0.0000000000000E+00  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3',
                       CRITERE = 'ABSOLU'),
@@ -452,7 +452,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'FLUX_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     0.0000000000000E+00  ,
+                      VALE =  0.0000000000000E+00  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3',
                       CRITERE = 'ABSOLU'),
@@ -461,7 +461,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     5.8568074839413E+02  ,
+                      VALE =  5.8639169957021E+02  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
 
@@ -470,7 +470,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'META_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     3.1480763449365E+03  ,
+                      VALE =  3.1184444590448E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -478,7 +478,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELGA_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     1.1688833102675E+03  ,
+                      VALE =  1.1654254863668E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -486,7 +486,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     1.3109423903412E+03  ,
+                      VALE =  1.3073089407104E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -494,7 +494,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     7.4842202089932E+02  ,
+                      VALE =  7.4920516295954E+02  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
 
@@ -503,7 +503,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'META_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     3.2714201604586E+03  ,
+                      VALE =  3.2382920715913E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -511,7 +511,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'FLUX_ELGA_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     1.1546253878070E+03  ,
+                      VALE =  1.1513201997606E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -519,7 +519,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'FLUX_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     1.2975084172000E+03  ,
+                      VALE =  1.2946662205872E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -527,7 +527,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     5.8182428156586E+02  ,
+                      VALE =  5.8176505322647E+02  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -535,7 +535,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     0.0000000000000E+00  ,
+                      VALE =  0.0000000000000E+00  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3',
                       CRITERE = 'ABSOLU'),
@@ -545,7 +545,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'META_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     1.9297799999999E+03  ,
+                      VALE =  1.9073400000000E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -553,7 +553,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'FLUX_ELGA_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     0.0000000000000E+00  ,
+                      VALE =  0.0000000000000E+00  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3',
                       CRITERE = 'ABSOLU'),
@@ -562,7 +562,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 0,
                       NOM_CHAM = 'FLUX_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     0.0000000000000E+00  ,
+                      VALE =  0.0000000000000E+00  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3',
                       CRITERE = 'ABSOLU'),
@@ -571,7 +571,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     6.4796860937371E+02  ,
+                      VALE =  6.4788993148957E+02  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
 
@@ -580,7 +580,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'META_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     3.1183561266124E+03  ,
+                      VALE =  3.0811420217806E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -588,7 +588,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELGA_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     1.0254920106078E+03  ,
+                      VALE =  1.0232715557842E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'),
                               _F(
@@ -596,7 +596,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =     1.1292229279412E+03  ,
+                      VALE =  1.1268990959487E+03  ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'))
                        )

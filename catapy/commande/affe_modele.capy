@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -247,4 +247,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                        ), ),),
 
          ),
+
+         VERI_JACOBIEN  =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI',
+                              fr ="Vérification de la forme des mailles (jocobiens tous de meme signe).",),
 ) ;

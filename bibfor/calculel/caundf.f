@@ -1,7 +1,7 @@
       SUBROUTINE CAUNDF(CODE,OPT,TE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,8 +100,10 @@ C           -- LE CHAMP LOCAL EST ETENDU :
             TYCH=ZK8(IACHOK-1+2*(ICH-1)+1)
             IF (TYCH.EQ.'RESL' .AND. EVFINI.EQ.1) THEN
               JRSVI = ZI(IACHOI-1+3*(ICH-1)+2)
-              JCRSVI = ZI(IACHOI-1+3*(ICH-1)+3)
-              LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+              IF (JRSVI.NE.0) THEN
+                JCRSVI = ZI(IACHOI-1+3*(ICH-1)+3)
+                LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+              ENDIF
             ENDIF
           END IF
 
@@ -184,8 +186,10 @@ C           -- LE CHAMP LOCAL EST ETENDU :
             TYCH=ZK8(IACHOK-1+2*(ICH-1)+1)
             IF (TYCH.EQ.'RESL' .AND. EVFINI.EQ.1) THEN
               JRSVI = ZI(IACHOI-1+3*(ICH-1)+2)
-              JCRSVI = ZI(IACHOI-1+3*(ICH-1)+3)
-              LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+              IF (JRSVI.NE.0) THEN
+                JCRSVI = ZI(IACHOI-1+3*(ICH-1)+3)
+                LGGREL = ZI(JRSVI-1+ZI(JCRSVI-1+IGR)+NBELGR)-1
+              ENDIF
             ENDIF
           END IF
 

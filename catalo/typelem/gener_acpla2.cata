@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +36,7 @@ ENTETE__ ELEMENT__ ACPLTR6          MAILLE__ TRIA6
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
 
 MODE_LOCAL__
+    ECODRET  = CODE_I   ELEM__         (IRET     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     EDBELNO  = DBEL_R   ELNO__ IDEN__  (DB       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -49,18 +50,19 @@ MATRICE__
     MMATTTC = MPRE_C DDL_ACOU DDL_ACOU
 
 OPTION__
+    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX      
+                              OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX      
+                              OUT__  XXXXXX   XXXXXX
     INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
@@ -82,6 +84,6 @@ OPTION__
     RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_ACOU           176   IN__   NGEOMER  PGEOMER
-                              OUT__  MMATTTC  PMATTTC      
+                              OUT__  MMATTTC  PMATTTC
     WEIBULL             -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

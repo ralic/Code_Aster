@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,15 +92,15 @@ RESU=MECA_STATIQUE(     MODELE=MO,
                                _F( CHARGE = CH2))
                         )
 
-RESU=CALC_ELEM(  reuse=RESU,
-                      TOUT_ORDRE='OUI',
+RESU=CALC_ELEM(  reuse=RESU, TOUT_ORDRE='OUI',
                           OPTION=(
                                   'ERZ1_ELEM_SIGM',
                                   'ERZ2_ELEM_SIGM',
                                   'SIRE_ELNO_DEPL',
                                   'ERRE_ELEM_SIGM',
                                  ),
-                      RESULTAT=RESU
+                      RESULTAT=RESU,
+                      SOLVEUR=_F(METHODE='LDLT'),
                         )
 
 SIGZZ1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',

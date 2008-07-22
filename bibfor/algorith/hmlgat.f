@@ -2,11 +2,12 @@
      +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                  VIHRHO,VICPHI,VICSAT,ADDEP1,ADCP11,ADDETE,
      +                  ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,
-     +                 DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,THMC)
+     +                 DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,THMC,
+     +                 BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,9 +68,14 @@ C ======================================================================
       REAL*8       DP2,SIGNE,DPAD,COEPS,CP21,M11M,RHO22,ALP12,CP12
       REAL*8       DMWDP1,DQDEPS,DQDP,DQDT,DMWDT,DHDT,DHWDP1,DMDEPV
       REAL*8       DSPDP1,APPMAS,SIGMAP,CALOR,ENTEAU,DILEAU,CP22
+C
+      LOGICAL NET,BISHOP
+C
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
+C      write (6,*) 'HMLGAT_1 - BIOT = ',BIOT
+      CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,P1-DP1,
      +             RBID6,RBID7, RBID8, RBID10, RBID11, RHO0,
@@ -80,6 +86,7 @@ C =====================================================================
      +             RBID29, RBID30, RBID31,RBID32, RBID33, RBID34, 
      +             RBID35, RBID36, RBID37,RBID38, RBID39,RBID45,RBID46,
      +             RBID47,RBID48,RBID49,EM,RBID50,RBID51)
+C      write (6,*) 'HMLGAT_2 - BIOT = ',BIOT
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -105,9 +112,11 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
+C      write (6,*) 'HMLGAT_3 - BIOT = ',BIOT
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                           EPSV,DEPSV,EPSVM,MECA)
 
+C      write (6,*) 'HMLGAT_4 - BIOT = ',BIOT
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
@@ -120,12 +129,14 @@ C =====================================================================
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
          ENDIF
+C         write (6,*) 'HMLGAT_5 - BIOT = ',BIOT
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE MASSE VOLUMIQUE DU FLUIDE ------
 C --- SELON FORMULE DOCR ----------------------------------------------
 C =====================================================================
          CALL VIRHOL(NBVARI,VINTM,VINTP,ADVIHY,VIHRHO,RHO110,
      +           DP1,DP2,DPAD,CLIQ,DT,ALPLIQ,SIGNE,RHO11,RHO11M,RETCOM)
+C         write (6,*) 'HMLGAT_6 - BIOT = ',BIOT
 C =====================================================================
 C --- RECUPERATION DE LA VARIABLE INTERNE DE SATURATION ---------------
 C =====================================================================
@@ -149,11 +160,13 @@ C =====================================================================
 C --- CALCUL DES COEFFICIENTS DE DILATATIONS ALPHA SELON FORMULE DOCR -
 C =====================================================================
          ALP11 = DILEAU(SAT,BIOT,PHI,ALPHA0,ALPLIQ)
+C         write (6,*) 'HMLGAT_7 - BIOT = ',BIOT
 C ======================================================================
 C --- CALCUL DE LA CAPACITE CALORIFIQUE SELON FORMULE DOCR -------------
 C ======================================================================
          CALL CAPACA(RHO0,RHO11,RHO12,RHO21,RHO22,SAT,PHI,
      +              CSIGM,CP11,CP12,CP21,CP22,K0,ALPHA0,T,COEPS,RETCOM)
+C         write (6,*) 'HMLGAT_8 - BIOT = ',BIOT
 C =====================================================================
 C --- PROBLEME LORS DU CALCUL DE COEPS --------------------------------
 C =====================================================================
@@ -184,7 +197,8 @@ C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 C ======================================================================
          IF (YAMEC.EQ.1) THEN
             CONGEP(ADCOME+6)=CONGEP(ADCOME+6)
-     +                                  + SIGMAP(SAT,SIGNE,BIOT,DP2,DP1)
+     +                 + SIGMAP(NET,BISHOP,SAT,SIGNE,BIOT,DP2,DP1)
+C         write (6,*) 'HMLGAT_9 - BIOT = ',BIOT
          END IF
 C ======================================================================
 C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
@@ -209,7 +223,8 @@ C ======================================================================
 C --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 C ======================================================================
             DSDE(ADCOME+6,ADDEP1)=DSDE(ADCOME+6,ADDEP1)
-     +                                          + DSPDP1(SIGNE,BIOT,SAT)
+     +                       + DSPDP1(NET,BISHOP,SIGNE,BIOT,SAT)
+C         write (6,*) 'HMLGAT_10 - BIOT = ',BIOT
 C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
@@ -218,6 +233,7 @@ C ======================================================================
                DSDE(ADCP11,ADDEME+NDIM-1+I) =
      +             DSDE(ADCP11,ADDEME+NDIM-1+I) + DMDEPV(RHO11,SAT,BIOT)
  10         CONTINUE
+C            write (6,*) 'HMLGAT_11 - BIOT = ',BIOT
          ENDIF
          IF (YATE. EQ.1) THEN
 C ======================================================================
@@ -244,12 +260,14 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE LA CHALEUR REDUITE Q' --------------------
 C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 C ======================================================================
+C            write (6,*) 'HMLGAT_12 - BIOT = ',BIOT
             IF (YAMEC.EQ.1) THEN
                DO 20 I = 1,3
                   DSDE(ADCOTE,ADDEME+NDIM-1+I) =
      +            DSDE(ADCOTE,ADDEME+NDIM-1+I) + DQDEPS(ALPHA0,K0,T)
    20          CONTINUE
             ENDIF
+C            write (6,*) 'HMLGAT_13 - BIOT = ',BIOT
          ENDIF
 C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
@@ -261,4 +279,5 @@ C ======================================================================
 C =====================================================================
  30   CONTINUE
 C =====================================================================
+C      write (6,*) 'HMLGAT_14 - BIOT = ',BIOT
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -363,14 +363,13 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 ###### CALCULS TRANSITOIRES :
 ###
 #
-TRANGENE=DYNA_TRAN_MODAL(       MASS_GENE=M_GENE,
-                                  RIGI_GENE=K_GENE,
-                                     EXCIT=_F( VECT_GENE = F_GENE,
-                                            COEF_MULT = 1.),
-                                 INCREMENT=_F(  INST_INIT = 0.,
-                                             INST_FIN = 0.0195,
-                                             PAS = 1.E-6),
-                             ARCHIVAGE=_F(  PAS_ARCH = 5)
+TRANGENE=DYNA_TRAN_MODAL( MASS_GENE=M_GENE, RIGI_GENE=K_GENE,
+                          EXCIT=_F( VECT_GENE = F_GENE, COEF_MULT = 1.),
+                          SOLVEUR=_F(METHODE='MUMPS',),
+                          INCREMENT=_F(  INST_INIT = 0.,
+                                       INST_FIN = 0.0195,
+                                       PAS = 1.E-6),
+                          ARCHIVAGE=_F(  PAS_ARCH = 5)
                             )
 
 #

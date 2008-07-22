@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,8 @@ C     ------------------------------------------------------------------
       CHARACTER*8 NOSIMP, NOPASE
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD, CONCEP, ACCES(3)
-      CHARACTER*19 CHAMNO, RAIDE, RAILDL, MASSE, AMOR,NUMEDD
+      CHARACTER*19 CHAMNO,RAIDE,MATFAC,MASSE,AMOR,NUMEDD,MATPRE
+      CHARACTER*19 SOLVEU
       CHARACTER*24  VALE
       CHARACTER*24 VALK
       LOGICAL      DEPLIM, FORCIM, ACCUNI, ACCDDL, DIRECT
@@ -83,7 +84,11 @@ C
             CALL U2MESS('F','ALGELINE2_77')
          ENDIF
       ENDIF
-C
+
+C     -- CREATION DU SOLVEUR :
+      SOLVEU='&&OP0093.SOLVEUR'
+      CALL CRESOL(SOLVEU,' ')
+
 C     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
       CALL EXISD('MATR_ASSE',RAIDE,IBID)
       IF (IBID.NE.0) THEN
@@ -100,16 +105,17 @@ C
       CALL DISMOI('F','NOM_MAILLA'  ,RAIDE,'MATR_ASSE',IBID,NOMMA,IERD)
       CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,NUME ,IERD)
       CALL DISMOI('F','NB_EQUA'     ,RAIDE,'MATR_ASSE',NEQ ,K8B ,IERD)
-      RAILDL = '&&OP0093.MATR_FAC'
+      MATFAC = '&&OP0093.MATFAC'
+      MATPRE = '&&OP0093.MATPRE'
 C
-      CALL MTDEFS(RAILDL,RAIDE,'V',' ')
-      CALL MTCOPY(RAIDE,RAILDL,IRET)
-      CALL MTDSCR(RAILDL)
-      CALL JEVEUO(RAILDL(1:19)//'.&INT','E',LMATR)
-      CALL TLDLGG(1,LMATR,1,NEQ,0,NDECI,ISINGU,NPVNEG,IRET)
+      CALL MTDEFS(MATFAC,RAIDE,'V',' ')
+      CALL MTCOPY(RAIDE,MATFAC,IRET)
+      CALL MTDSCR(MATFAC)
+      CALL JEVEUO(MATFAC(1:19)//'.&INT','E',LMATR)
+      CALL PRERES(SOLVEU,'V',IRET,MATPRE,MATFAC)
       IF (IRET.EQ.2) THEN
                   VALK = RAIDE
-       CALL U2MESG('F', 'ALGELINE4_37',1,VALK,0,0,0,0.D0)
+         CALL U2MESK('F', 'ALGELINE4_37',1,VALK)
       ENDIF
 C
 C
@@ -125,8 +131,8 @@ C                    ---------
             NBMODD = NBMODD + ZI(LDDLD+I)
  10      CONTINUE
          CALL WKVECT('&&OP0093.MODE_STAT_DEPL','V V R',NEQ*NBMODD,LMODD)
-         CALL MODSTA('DEPL',LMATR,IBID,NUME,ZI(LDDLD),R8B,NEQ,
-     &                                                NBMODD,ZR(LMODD))
+         CALL MODSTA('DEPL',MATFAC,MATPRE,SOLVEU,IBID,NUME,ZI(LDDLD),
+     &               R8B,NEQ,NBMODD,ZR(LMODD))
       ENDIF
 C
 C
@@ -142,8 +148,8 @@ C                    ------------
             NBMODF = NBMODF + ZI(LDDLF+I)
  20      CONTINUE
          CALL WKVECT('&&OP0093.MODE_STAT_FORC','V V R',NEQ*NBMODF,LMODF)
-         CALL MODSTA('FORC',LMATR,IBID,NUME,ZI(LDDLF),R8B,NEQ,
-     &                                                NBMODF,ZR(LMODF))
+         CALL MODSTA('FORC',MATFAC,MATPRE,SOLVEU,IBID,NUME,ZI(LDDLF),
+     &               R8B,NEQ,NBMODF,ZR(LMODF))
       ENDIF
 C
 C
@@ -227,8 +233,8 @@ C              --- ON NORME LA DIRECTION ---
 C
          IF ( ACCUNI ) THEN
         CALL WKVECT('&&OP0093.MODE_STAT_ACCU','V V R',NEQ*NBMODA,LMODA)
-            CALL MODSTA('ACCE',LMATR,LMATM,NUME,IBID,ZR(JCOEF),NEQ,
-     &                                                NBMODA,ZR(LMODA))
+            CALL MODSTA('ACCE',MATFAC,MATPRE,SOLVEU,LMATM,NUME,IBID,
+     &                  ZR(JCOEF),NEQ,NBMODA,ZR(LMODA))
          ENDIF
 C
          IF ( NBACC .NE. NBPSMO ) THEN
@@ -241,8 +247,8 @@ C
  24         CONTINUE
 C
          CALL WKVECT('&&OP0093.MODE_STAT_ACCD','V V R',NEQ*NBMOAD,LMOAD)
-           CALL MODSTA('ACCD',LMATR,LMATM,NUME,ZI(LDDAD),R8B,NEQ,
-     &                                                NBMOAD,ZR(LMOAD))
+           CALL MODSTA('ACCD',MATFAC,MATPRE,SOLVEU,LMATM,NUME,ZI(LDDAD),
+     &                 R8B,NEQ,NBMOAD,ZR(LMOAD))
          ENDIF
 C
       ENDIF

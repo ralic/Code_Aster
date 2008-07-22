@@ -9,7 +9,7 @@
       CHARACTER*(*)       NMTAB
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 21/07/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C
       INTEGER       IPAR(2), IREBO, ICHOC, IDEBUT, IFIN, NBPAS,
      +              I, J, IDECH, NBREBO, K
       REAL*8        IMPULS, PARA(5), ZERO, FNMAX, TCHOC, VINIT, DT,
-     +              TFNMAX
+     +              TFNMAX, FNMMO2
       COMPLEX*16    C16B
       CHARACTER*8   K8B
 C ----------------------------------------------------------------------
@@ -141,8 +141,10 @@ C
  10   CONTINUE
 C
       IF ( NBCHOC .NE. 0 ) THEN
-         FNMMOY = FNMMOY / NBCHOC
-         FNMETY = SQRT( FNMETY/NBCHOC - FNMMOY*FNMMOY )
+C      ON PASSE PAR UNE VARIABLE INTERMEDIAIRE FNMMO2
+C      POUR EVITER LES PROBLEMES DE PRECISION
+         FNMMO2 = FNMMOY*FNMMOY
+         FNMETY = SQRT(ABS(FNMETY/NBCHOC-FNMMO2))
       ELSE
          K = K + 1
          WK3(K) = FNMAX

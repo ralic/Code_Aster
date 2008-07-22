@@ -32,7 +32,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,6 +120,7 @@ C
       REAL*8 VALR(3)
       INTEGER VALI(2)
       CHARACTER*8 TRAN
+      CHARACTER*19 MATPRE,MATASM
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       ZERO = 0.D0
@@ -153,7 +154,9 @@ C
         ENDIF
         CALL DCOPY(NEQGEN*NEQGEN,MASGEN,1,ZR(JMASS),1)
       ELSEIF (TYPBAS.EQ.'MODELE_GENE     ') THEN
-        CALL TLDLGG(1,DESCMM,1,0,0,NDECI,ISINGU,NPVNEG,IRET)
+        MATPRE='&&MDEUL1.MATPRE'
+        MATASM=ZK24(ZI(DESCMM+1))
+        CALL PRERES(' ','V',IRET,MATPRE,MATASM)
       ELSE
         CALL WKVECT('&&MDEUL1.MASS','V V R8',NEQGEN,JMASS)
         CALL DCOPY(NEQGEN,MASGEN,1,ZR(JMASS),1)

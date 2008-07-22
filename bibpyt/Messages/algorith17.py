@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF algorith17 Messages  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,5 +31,8 @@ cata_msg={
 """),
 3: _("""
         il manque le déplacement de référence DEPL_REFE  
+"""), 
+4: _("""
+        La formulation n'est ni en contrainte nette ni en bishop  
 """), 
 }

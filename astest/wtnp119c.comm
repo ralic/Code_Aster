@@ -1,0 +1,444 @@
+# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+# TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (PLAN THH2MS)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F(NOM='WTNP119C', NIV_PUB_WEB='INTERNET'))
+
+import sys
+import string
+import os
+from Numeric import  power, exp, sqrt, log, pi
+
+def Pcdesat(PR,SR,n,S) :
+      m=1.-1./n
+      usn=1./n
+      usm=1./m
+      S1=(S-SR)/(1.-SR)
+      PC=PR*((S1**(-usm)-1.e0)**(usn))
+      return(PC)
+
+def Pldehygro(Patm,rhol,hr) :
+     rgaz=8.313
+     Mamolv=0.018
+     Pl=Patm+rhol*(rgaz*303/Mamolv)*log(hr)
+     return(Pl)
+
+def Sipinit_de_S(PR,SR,n,Biot,S,Pg) :
+      Pc=Pcdesat(PR,SR,n,S)
+      Sip=Biot*(S*Pc-Pg)
+      return(Sip)
+def Sipinit_de_Pw(Biot,Pw) :
+      Sip=-Biot*Pw
+      return(Sip)
+def Siefinit(Stot0,Sip0) :
+      Sief=Stot0-Sip0
+      return(Sief)
+def Sipinit_de_Pg(Biot,Pg) :
+      Sip=-Biot*Pg
+      return(Sip)
+def Sinetinit(Stot0,Sip0) :
+      Sinet=Stot0-Sip0
+      return(Sinet)
+
+
+RESI_GLOB_RELA = 1.E-6
+BIOTAGO   = 1.
+EAGO      = 150.E6
+PATM=1.E5
+RHOW0=1000.
+P2THMINIT=10.
+
+#AGO = argile gonflante
+NAGO     =1.61
+PRAGO    =16.E6
+SRAGO    =0.
+SMAXAGO  =0.999
+SATUAGO  =0.99999
+
+SITOTAGO0 = -0.1E6
+SATAGO0   = 0.5
+PCAGO0    = Pcdesat(PRAGO,SRAGO,NAGO,SATAGO0)
+PGAGO0    = PATM-P2THMINIT
+PWAGO0    = PGAGO0+P2THMINIT-PCAGO0
+SIPAGO0   = Sipinit_de_Pg(BIOTAGO,PGAGO0+P2THMINIT)
+SINETAGO0  = Sinetinit(SITOTAGO0,SIPAGO0)
+
+print 'SITOTAGO0 ',  SITOTAGO0
+print 'PWAGO0    ',  PWAGO0
+print 'PGAGO0    ',  PGAGO0
+print 'PCAGO0    ',  PCAGO0
+print 'SATAGO0   ',  SATAGO0
+print 'SIPAGO0   ',  SIPAGO0
+print 'SINETAGO0 ',  SINETAGO0
+#
+#
+#***********************************************************************
+
+
+MAILLAGE=LIRE_MAILLAGE( );
+
+MAILLAGE= DEFI_GROUP(reuse=MAILLAGE,
+                  MAILLAGE=MAILLAGE,
+                  CREA_GROUP_NO=(_F(NOM='NOEUD3',
+                                              NOEUD='N3'),
+                                           _F(NOM='NOEUD4',
+                                              NOEUD='N4'),),),
+
+MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'AXIS_THH2MS',
+                                   ),
+                          );
+################### DEFINITION DU MATERIAU ARGILEUX
+LI1 = DEFI_LIST_REEL ( DEBUT      = 1000.0,
+                       INTERVALLE = (
+                         _F( JUSQU_A = 2.E7 , NOMBRE =  2000 ,),
+                                    ),)
+#
+LI2 = DEFI_LIST_REEL ( DEBUT      = 0.8,
+                       INTERVALLE = (
+                         _F( JUSQU_A = 0.99999999993 , NOMBRE = 2000,),
+                                    ),);
+#
+FICKARG = DEFI_CONSTANTE ( VALE = 3.8475e-5);
+
+#
+FFVPPG = FORMULE(NOM_PARA='PG', VALE='(101000.0/PG)');
+#
+FVPPG = CALC_FONC_INTERP ( FONCTION      =  FFVPPG       ,
+                            LIST_PARA    =  LI1       ,
+                            NOM_PARA     = 'PGAZ'      ,
+                            PROL_GAUCHE  = 'CONSTANT' ,
+                            PROL_DROITE  = 'CONSTANT' ,
+                            INFO         = 2          , );
+#
+FDFVPPG = FORMULE(NOM_PARA='PG', VALE='-101000.0/(PG**2)');
+#
+DFVPPG = CALC_FONC_INTERP ( FONCTION     =  FDFVPPG,
+                            LIST_PARA    =  LI1       ,
+                            NOM_PARA     = 'PGAZ'      ,
+                            PROL_GAUCHE  = 'CONSTANT' ,
+                            PROL_DROITE  = 'CONSTANT' ,
+                            INFO         = 2          , );
+
+FICKWAR=DEFI_CONSTANTE ( VALE = 2.14206E-10);
+
+FFAS  = FORMULE(NOM_PARA='SAT', VALE='SAT');
+FAS   = CALC_FONC_INTERP ( FONCTION     =  FFAS       ,
+                           LIST_PARA    =  LI2       ,
+                           NOM_PARA     = 'SAT'      ,
+                           PROL_GAUCHE  = 'CONSTANT' ,
+                           PROL_DROITE  = 'CONSTANT' ,
+                           INFO         = 2          , );
+#
+HENRYCF = DEFI_CONSTANTE ( VALE = 130509.8);
+ZERO = DEFI_CONSTANTE ( VALE = 0.);
+UN   = DEFI_CONSTANTE ( VALE = 1.);
+VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3  );
+DVISCOL  = DEFI_CONSTANTE ( VALE = 0.0  );
+#
+VISCOH2 = DEFI_CONSTANTE ( VALE = 9.0E-6) ;
+VISCOH20 = DEFI_CONSTANTE ( VALE = 1.0E-5 );
+KINTAGO  = DEFI_CONSTANTE ( VALE = 8.E-21);
+
+FICKAGO = DEFI_CONSTANTE ( VALE = 1.5459e-5);
+FICKWAG=DEFI_CONSTANTE ( VALE = 8.60651E-11);
+
+
+MATAGO=DEFI_MATERIAU(ELAS=_F(
+                                    E   = 150E6,
+                                    NU  = 0.3,
+                                    RHO = 2085.,
+                                    ALPHA       = 1.E-5),
+                     ELAS_GONF = _F(
+                                    BETAM   =   0.1142,
+                                    PREF   =   1.E6,
+                                    ),
+                     COMP_THM = 'LIQU_AD_GAZ_VAPE',
+
+                     THM_LIQU=_F(RHO                    = 1000.0,
+                                 UN_SUR_K               = 5.0E-10,
+                                 ALPHA                  = 1.E-4,
+                                 CP                     = 4180.,
+                                 VISC                   = VISCOLIQ,
+                                 D_VISC_TEMP            = DVISCOL,),
+
+                      THM_GAZ=_F(MASS_MOL                = 0.002,
+                                CP                      = 1000.,
+                                VISC                    = VISCOH2,
+                                D_VISC_TEMP             = ZERO,),
+                        THM_VAPE_GAZ=_F(MASS_MOL        = 0.018,
+                                CP                      = 1870,
+                                VISC                    = VISCOH20,
+                                D_VISC_TEMP             = ZERO,),
+                        THM_AIR_DISS=_F(
+                                CP                      = 1000.,
+                                COEF_HENRY              = HENRYCF
+                                      ),
+
+                     THM_INIT=_F(TEMP           = 303.0,
+                                 PRE1           = 0.0,
+                                 PRE2           = P2THMINIT,
+                                 PORO           = 0.366,
+                                 PRES_VAPE      = 1.5,
+                                  ),
+
+                     THM_DIFFU=_F(R_GAZ                 = 8.313,
+                                  RHO                   = 2200.0,
+                                  CP                    = 1000.0,
+                                  BIOT_COEF             = BIOTAGO,
+                                  PESA_X                = 0.0,
+                                  PESA_Y                = 0.0,
+                                  PESA_Z                = 0.0,
+                                  PERMIN_X              = KINTAGO,
+                                  PERMIN_Y              = KINTAGO,
+                                  PERMIN_Z              = KINTAGO,
+                                 VG_N            = NAGO,
+                                 VG_PR           = PRAGO,
+                                 VG_SR           = SRAGO,
+                                 VG_SMAX         = SMAXAGO,
+                                 VG_SATUR        = SATUAGO,
+
+                                  FICKV_T               = FICKAGO,
+                                                          FICKV_PG              = FVPPG,
+                                                          D_FV_PG               = DFVPPG,
+                                  FICKA_T               = FICKWAG,
+                                  FICKA_S               = FAS,
+                                  LAMB_T                = UN,
+                                  ),);
+
+#######################
+
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI',    MATER = MATAGO,  )
+                          )
+
+DEP_FIX=AFFE_CHAR_MECA(    MODELE=MODELE,
+                           FACE_IMPO=(
+                              _F(  GROUP_MA = 'HAUT',      DY = 0.,   ),
+                              _F(  GROUP_MA = 'DROITE',    DX = 0.,   ),
+                              _F(  GROUP_MA = 'BAS',       DY = 0.,   ),
+                              _F(  GROUP_MA = 'GAUCHE',    DX = 0.,   ),
+
+                              _F(  GROUP_MA = 'HAUT',      TEMP = 0.,   ),
+                              _F(  GROUP_MA = 'DROITE',    TEMP = 0.,   ),
+                              _F(  GROUP_MA = 'BAS',       TEMP = 0.,   ),
+                              _F(  GROUP_MA = 'GAUCHE',    TEMP = 0.,   ),
+                                ),
+                           DDL_IMPO=(
+                             _F(TOUT='OUI',       PRE2= PGAGO0), )
+
+                         ),
+
+DEP_VAR=AFFE_CHAR_MECA(    MODELE=MODELE,
+                           DDL_IMPO=(
+                             _F(TOUT='OUI',       PRE1=1.0), )
+
+                         ),
+
+
+
+DEPINAR=CREA_CHAMP(MAILLAGE=MAILLAGE,
+                     OPERATION='AFFE',
+                     TYPE_CHAM='NOEU_DEPL_R',
+                     AFFE=(
+                     _F(TOUT='OUI', NOM_CMP=('PRE1',),VALE=     PCAGO0,),
+                     _F(TOUT='OUI', NOM_CMP=('PRE2',),VALE=    PGAGO0  ,),
+                     _F(TOUT='OUI', NOM_CMP=('TEMP',),VALE=    0.  ,),
+                        ),
+                );
+
+
+SIGINIT=CREA_CHAMP(     MODELE=MODELE,
+                        OPERATION='AFFE',
+                        TYPE_CHAM='ELGA_SIEF_R',
+                        AFFE=(  _F(     TOUT='OUI',
+                            NOM_CMP=
+                                    (
+                     'SIXX','SIYY','SIZZ',
+                     'SIXY','SIYZ','SIXZ', 'SIP',
+                     'M11','FH11X','FH11Y','ENT11',
+                     'M12','FH12X','FH12Y','ENT12',
+                     'M21','FH21X','FH21Y','ENT21',
+                     'M22','FH22X','FH22Y','ENT22',
+                     'QPRIM','FHTX','FHTY',
+                                    ),
+                            VALE=
+                                 (
+                     SINETAGO0,SINETAGO0,SINETAGO0,
+                     0.0, 0.0, 0.0, SIPAGO0,
+                     0.,0.,0.,0.,
+                     0.,0.,0.,0.,
+                     0.,0.,0.,0.,
+                     0.,0.,0.,0.,
+                     0.,0.,0.,
+                                 ),
+                                        ),
+                                ),
+                  );
+
+
+TEMPS2=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
+                            _F(  JUSQU_A = 1.,   NOMBRE =500 ,  ),
+                         ),
+                         ),
+
+MSTEP=DEFI_FONCTION( NOM_PARA='INST',
+                           PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=(
+                                 0.0,   PCAGO0,
+                                  1.,  -10.E6,
+                       ),
+                );
+
+
+
+#***********************************************************************
+#    CALCUL DE LA SOLUTION
+#***********************************************************************
+
+
+U2=STAT_NON_LINE(
+                                MODELE=MODELE,
+
+                                CHAM_MATER=CHMAT,
+
+
+                                EXCIT=(
+                                        _F( CHARGE = DEP_FIX, ),
+                                        _F( CHARGE = DEP_VAR,FONC_MULT = MSTEP ),
+                ),
+                        COMP_INCR=_F(
+                         RELATION='KIT_THHM',
+                           RELATION_KIT=(
+                                'ELAS_GONF','LIQU_AD_GAZ_VAPE','HYDR_VGM'),
+                         ),
+
+
+
+                ETAT_INIT=_F(SIGM=SIGINIT,DEPL=DEPINAR),
+
+                INCREMENT=_F(LIST_INST = TEMPS2, ),
+
+                NEWTON=_F( MATRICE = 'TANGENTE',REAC_ITER = 1,),
+
+                CONVERGENCE=_F(
+                        ITER_GLOB_MAXI=40,
+                        ARRET='NON',
+                        ITER_GLOB_ELAS=50,
+                        RESI_GLOB_RELA = RESI_GLOB_RELA,
+                ),
+              )
+
+#############################
+# CALCULS ET POST TRAITEMENT
+#############################
+
+U2=CALC_ELEM(reuse =U2,
+                MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                RESULTAT=U2,);
+
+
+U2=CALC_NO(reuse=U2,
+                CHAM_MATER=CHMAT,
+                OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA',),
+                RESULTAT=U2)
+
+
+
+SIG3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='SIEF_NOEU_ELGA',
+                            RESULTAT=U2,
+                            NOM_CHAM='SIEF_NOEU_ELGA',
+                            NOEUD='N3',
+                            NOM_CMP=('SIXX','SIP',),),);
+
+IMPR_TABLE(TABLE=SIG3,
+           TRI=_F(NOM_PARA='INST',
+                  ORDRE='CROISSANT',),
+           NOM_PARA=('INST','SIXX','SIP',),);
+
+
+
+PRES=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='DEPL',
+                            RESULTAT=U2,
+                            NOM_CHAM='DEPL',
+                            NOEUD='N3',
+                            NOM_CMP=('PRE1','PRE2',),),);
+
+IMPR_TABLE(TABLE=PRES,
+           TRI=_F(NOM_PARA='INST',
+                  ORDRE='CROISSANT',),
+           NOM_PARA=('INST','PRE1','PRE2',),);
+
+DEPL=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='DEPL',
+                            RESULTAT=U2,
+                            NOM_CHAM='DEPL',
+                            NOEUD='N3',
+                            NOM_CMP=('DX','DY',),),);
+
+IMPR_TABLE(TABLE=DEPL,
+           TRI=_F(NOM_PARA='INST',
+                  ORDRE='CROISSANT',),
+           NOM_PARA=('INST','DX','DY',),);
+
+
+SAT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='VARI_NOEU_ELGA',
+                            RESULTAT=U2,
+                            NOM_CHAM='VARI_NOEU_ELGA',
+                            NOEUD='N3',
+                            NOM_CMP=('V4',),),);
+
+IMPR_TABLE(TABLE=SAT,
+           TRI=_F(NOM_PARA='INST',
+                  ORDRE='CROISSANT',),
+           NOM_PARA=('INST','V4',),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=U2,
+                  INST=0.7,
+                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CMP='SIXX',
+                  NOEUD='N3',
+                  VALE=-4.56E+04,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,
+                  REFERENCE='NON_REGRESSION',),);
+TEST_RESU(RESU=_F(RESULTAT=U2,
+                  INST=0.8,
+                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CMP='SIXX',
+                  NOEUD='N3',
+                  VALE=-5.67E+06,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,
+                  REFERENCE='NON_REGRESSION',),);
+
+FIN()
+#
+#
+#
+#
