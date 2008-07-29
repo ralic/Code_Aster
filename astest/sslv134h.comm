@@ -1,4 +1,4 @@
-# MODIF  DATE 13/05/2008   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,12 +54,14 @@ MA1=MODI_MAILLAGE(reuse =MA1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),),
                  );
 
+
 # PARAMETRES DE LA FISSURE
 x0 = 8.18
 y0 = 0.
 z0 = 2.05
 ray = 2.
-yi = y0 + ray 
+xi = x0 - ray
+
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     DEFI_FISS=_F(
                                  FORM_FISS      = 'ELLIPSE',
@@ -68,13 +70,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  CENTRE         = (x0, y0, z0),
                                  VECT_X         = (0. , 1. , 0. ),
                                  VECT_Y         = (1., 0. , 0. ),
+                                 COTE_FISS ='IN',
                                  ),
                     GROUP_MA_ENRI='TUBE',
                    # GROUP_MA_ENRI='BLOC',
                     RAYON_ENRI=0.,
-                    ORIE_FOND=_F(PFON_INI  = (x0, yi, z0),
-                                 VECT_ORIE = (0. , 0. , 1. ),
-                                 PT_ORIGIN = (x0, y0, z0),),
                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
@@ -134,8 +134,8 @@ SIFTH=CALC_G(  RESULTAT=UTOT1,
                   THETA = _F(R_INF=0.2,
                         R_SUP=0.8,
                         FISSURE=FISS,
-                        DTAN_ORIG=(0.,1.,0.),
-                        DTAN_EXTR=(-1.,0.,0.),),
+                        DTAN_EXTR=(0.,1.,0.),
+                        DTAN_ORIG=(-1.,0.,0.),),
                   INFO=1,);
 IMPR_TABLE(TABLE=SIFTH,);
 
@@ -147,10 +147,9 @@ SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
                         RESULTAT=UTOT1,
                         ABSC_CURV_MAXI=0.5,
                         VECT_K1=(0., 0., 1.,),
-                        DTAN_ORIG = (0.,1.,0.),
-                        DTAN_EXTR = (-1.,0.,0.),
-                        
-                      )
+                        DTAN_EXTR=(0.,1.,0.),
+                        DTAN_ORIG=(-1.,0.,0.),)
+                      
 IMPR_TABLE(TABLE=SIFK1,);
                     
 #----------------------------------------------------------------------

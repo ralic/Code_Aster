@@ -1,4 +1,4 @@
-# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/07/2008   AUTEUR GRANET S.GRANET 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D HHMS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -266,13 +266,11 @@ SIGINIT=CREA_CHAMP(     MODELE=MODELE,
                      'M11','FH11X','FH11Y','FH11Z',
                      'M12','FH12X','FH12Y','FH12Z',
                      'M21','FH21X','FH21Y','FH21Z',
-                     'M22','FH22X','FH22Y','FH22Z',
                                     ),
                             VALE=
                                  (
                      SINETAGO0,SINETAGO0,SINETAGO0,
                      0.0, 0.0, 0.0, SIPAGO0,
-                     0.,0.,0.,0.,
                      0.,0.,0.,0.,
                      0.,0.,0.,0.,
                      0.,0.,0.,0.,

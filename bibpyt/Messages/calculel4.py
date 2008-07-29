@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,6 +48,15 @@ cata_msg = {
  Erreur de programmation (catalogue des éléments finis) :
  Les éléments finis ayant l'attribut VOLU_FINI='OUI' ne peuvent créer que des
  matrices élémentaires non-symétriques.
+"""),
+
+13 : _("""
+ Erreur d'utilisation (AFFE_MATERIAU/AFFE_VARC) :
+  Le maillage associé au calcul (%(k1)s) est différent de celui associé
+  aux champs (ou evol_xxxx) affectés dans AFFE_MATERIAU/AFFE_VARC (%(k2)s).
+
+ Conseil :
+  Il faut corriger AFFE_MATERIAU.
 """),
 
 
@@ -175,12 +184,13 @@ cata_msg = {
 """),
 
 81 : _("""
- probleme dans le catalogue des grandeurs simples, la grandeur complexe %(k1)s  ne possede pas le
- meme nombre de composantes que son homologue réelle %(k2)s
+ probleme dans le catalogue des grandeurs simples, la grandeur complexe %(k1)s
+ ne possede pas le meme nombre de composantes que son homologue réelle %(k2)s
 """),
 
 82 : _("""
- probleme dans le catalogue des grandeurs simples, la grandeur %(k1)s  ne possede pas les memes champs que son homologue reelle %(k2)s
+ Probleme dans le catalogue des grandeurs simples, la grandeur %(k1)s
+ ne possede pas les memes champs que son homologue reelle %(k2)s
 """),
 
 83 : _("""
@@ -208,12 +218,15 @@ cata_msg = {
 """),
 
 89 : _("""
- erreur: un element du maillage possede tous ses sommets sur une frontiere. il faut au moins un sommet interne.
-Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les trg aient au moins un sommet interieur.
+ Erreur: un element du maillage possede tous ses sommets sur une frontiere.
+ Il faut au moins un sommet interne.
+ Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que
+ tous les trg aient au moins un sommet interieur.
 """),
 
 91 : _("""
- on ne trouve pas de routine te0npq npq doit etre compris entre 1 et 600 ici : npq = %(k1)s
+ On ne trouve pas de routine te0npq.
+ npq doit etre compris entre 1 et 600 ici : npq = %(k1)s
 """),
 
 92 : _("""
@@ -236,7 +249,8 @@ Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les 
 
 96 : _("""
  Erreur de programmation :
- on n'a pas pu extraire toutes les cmps voulues du champ global associe au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
+ on n'a pas pu extraire toutes les cmps voulues du champ global associe
+ au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
 """),
 
 97 : _("""

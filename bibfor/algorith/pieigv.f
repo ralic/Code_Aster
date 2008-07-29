@@ -2,7 +2,7 @@
      &                  EPSPC, EPSDC, ETAMIN,ETAMAX,A0, A1,A2,A3,ETAS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 28/07/2008   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -538,11 +538,5 @@ C Calcul de la solution sur [-ETASUP,XS]
 
 
 9999   CONTINUE
-
-C on "redonne" le vrai EPSD
-      DO 679 K=1,7
-        EPSD(K)=EPSD(K)/EPSNOR
-679   CONTINUE
-
 
       END

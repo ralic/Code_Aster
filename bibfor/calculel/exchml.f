@@ -1,8 +1,8 @@
-      SUBROUTINE EXCHML(IPARG,IMODAT)
+      SUBROUTINE EXCHML(IMODAT,IPARG)
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,10 +25,8 @@ C     ----------
       INTEGER IPARG,IMODAT
 C ----------------------------------------------------------------------
 C     ENTREES:
-C        IGR    : NUMERO DU GREL (COMMON)
 C        IMODAT : MODE LOCAL ATTENDU
 C        IPARG  : NUMERO DU PARAMETRE DANS L'OPTION
-C       (IGR EST RELATIF AU LIGREL SOUS-JACENT A CHIN )
 
 C ----------------------------------------------------------------------
       COMMON /CAII01/IGD,NEC,NCMPMX,IACHIN,IACHLO,IICHIN,IANUEQ,LPRNO,
@@ -38,8 +36,8 @@ C ----------------------------------------------------------------------
       COMMON /CAII04/IACHII,IACHIK,IACHIX
       COMMON /CAII02/IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,
      &       IAOPPA,NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
-      INTEGER IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
-      COMMON /CAII06/IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
+      INTEGER        NBGR,IGR,NBELGR,JCTEAT,LCTEAT,IAWLOC,IAWLO2,IAWTYP
+      COMMON /CAII06/NBGR,IGR,NBELGR,JCTEAT,LCTEAT,IAWLOC,IAWLO2,IAWTYP
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -63,13 +61,13 @@ C     ------------------
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER JCELD,MODE,DEBUGR,LGGREL,IAUX1,IAUX2,IACHLO
+      INTEGER JCELD,MODE,DEBGR2,LGGRE2,IAUX1,IACHLO
       INTEGER ITYPL1,MODLO1,NBPOI1,LGCATA
       INTEGER ITYPL2,MODLO2,NBPOI2
       INTEGER ILOPMO,IAOPMO,ILOPNO,IAOPDS,IAOPPA,NPARIO,NPARIN,IAMLOC
       INTEGER ILMLOC,IADSGD,IEL,IGD,NEC
       INTEGER NCMPMX,IACHIN,IICHIN,IANUEQ,LPRNO,ILCHLO,IACHII
-      INTEGER IACHIK,IACHIX,IAOPTT,LGCO,IAOPNO,IRET
+      INTEGER IACHIK,IACHIX,IAOPTT,LGCO,IAOPNO,IRET,DEBUGR,LGGREL
       INTEGER JEC,NCMP,JAD1,JAD2,JEL,IPT2,K,IPT1,LONG2,DIGDE2,JPARAL
       LOGICAL ETENDU,LPARAL
       CHARACTER*8 TYCH
@@ -89,40 +87,29 @@ C     -------------------------
       CALL ASSERT(TYCH(1:4).EQ.'CHML')
 
       JCELD=ZI(IACHII-1+11*(IICHIN-1)+4)
-      LGGREL=ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
-      DEBUGR=ZI(JCELD-1+ZI(JCELD-1+4+IGR)+8)
+      LGGRE2=ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
+      DEBGR2=ZI(JCELD-1+ZI(JCELD-1+4+IGR)+8)
 
       MODE=ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
-      LONG2=DIGDE2(IMODAT)*NBELGR
+
+      LGCATA=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+2)
+      LGGREL=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+4)
+      DEBUGR=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+5)
+
 
 C     -- SI MODE=0 : IL FAUT METTRE CHAMP_LOC.EXIS A .FALSE.
       IF (MODE.EQ.0) THEN
-        IF (LPARAL) THEN
-          IAUX2=DIGDE2(IMODAT)
-          DO 20 IEL=1,NBELGR
-            IF (ZL(JPARAL-1+IEL)) THEN
-              IAUX1=ILCHLO+(IEL-1)*IAUX2
-              DO 10 K=1,IAUX2
-                ZL(IAUX1-1+K)=.FALSE.
-   10         CONTINUE
-            ENDIF
-   20     CONTINUE
-        ELSE
-          DO 30,K=1,LONG2
-            ZL(ILCHLO-1+K)=.FALSE.
-   30     CONTINUE
-        ENDIF
+        DO 30,K=1,LGGREL
+          ZL(ILCHLO-1+DEBUGR-1+K)=.FALSE.
+   30   CONTINUE
         GOTO 170
-
       ENDIF
 
 
 C     -- SI LE CHAMP A LE MODE ATTENDU : ON RECOPIE
 C     ----------------------------------------------------
       IF (MODE.EQ.IMODAT) THEN
-C       LGGREL EST > LONG2 SI LE CHAMP EST ETENDU :
-        LONG2=LGGREL
-        CALL JACOPO(LONG2,TYPEGD,IACHIN-1+DEBUGR,IACHLO)
+        CALL JACOPO(LGGREL,TYPEGD,IACHIN-1+DEBGR2,IACHLO+DEBUGR-1)
       ELSE
 
 
@@ -145,14 +132,14 @@ C         -- ON VERIFIE QUE LES POINTS NE SONT PAS "DIFF__" :
           CALL ASSERT(NBPOI1.LT.10000)
           CALL ASSERT(NBPOI2.LT.10000)
 
-          CALL ASSERT(LONG2.EQ.(LGGREL/NBPOI1)*NBPOI2)
+          LONG2=DIGDE2(IMODAT)*NBELGR
+          CALL ASSERT(LONG2.EQ.(LGGRE2/NBPOI1)*NBPOI2)
 
 C         -- ON VERIFIE QUE LES CMPS SONT LES MEMES:
 C            (SINON IL FAUDRAIT TRIER ... => A FAIRE (TRIGD) )
           DO 40,JEC=1,NEC
             CALL ASSERT(ZI(MODLO1-1+4+JEC).EQ.ZI(MODLO2-1+4+JEC))
    40     CONTINUE
-          LGCATA=ZI(IAWLOC-1+7*(IPARG-1)+4)
           NCMP=LGCATA/NBPOI2
 
 C         -- CAS "EXPAND" :
@@ -162,9 +149,9 @@ C         ------------------------
               IF (LPARAL) THEN
                 IF (.NOT.ZL(JPARAL-1+JEL))GOTO 60
               ENDIF
-              JAD1=IACHIN-1+DEBUGR+(JEL-1)*NCMP
+              JAD1=IACHIN-1+DEBGR2+(JEL-1)*NCMP
               DO 50,IPT2=1,NBPOI2
-                JAD2=IACHLO+((JEL-1)*NBPOI2+IPT2-1)*NCMP
+                JAD2=IACHLO+DEBUGR-1+((JEL-1)*NBPOI2+IPT2-1)*NCMP
                 CALL JACOPO(NCMP,TYPEGD,JAD1,JAD2)
    50         CONTINUE
    60       CONTINUE
@@ -177,7 +164,7 @@ C         ------------------------
               IF (LPARAL) THEN
                 DO 80 IEL=1,NBELGR
                   IF (ZL(JPARAL-1+IEL)) THEN
-                    IAUX1=IACHLO+(IEL-1)*NCMP
+                    IAUX1=IACHLO+DEBUGR-1+(IEL-1)*NCMP
                     DO 70 K=1,NCMP
                       ZR(IAUX1-1+K)=0.D0
    70               CONTINUE
@@ -185,14 +172,14 @@ C         ------------------------
    80           CONTINUE
               ELSE
                 DO 90,K=1,NBELGR*NCMP
-                  ZR(IACHLO-1+K)=0.D0
+                  ZR(IACHLO+DEBUGR-1-1+K)=0.D0
    90           CONTINUE
               ENDIF
             ELSEIF (TYPEGD.EQ.'C') THEN
               IF (LPARAL) THEN
                 DO 110 IEL=1,NBELGR
                   IF (ZL(JPARAL-1+IEL)) THEN
-                    IAUX1=IACHLO+(IEL-1)*NCMP
+                    IAUX1=IACHLO+DEBUGR-1+(IEL-1)*NCMP
                     DO 100 K=1,NCMP
                       ZC(IAUX1-1+K)=(0.D0,0.D0)
   100               CONTINUE
@@ -200,7 +187,7 @@ C         ------------------------
   110           CONTINUE
               ELSE
                 DO 120,K=1,NBELGR*NCMP
-                  ZC(IACHLO-1+K)=(0.D0,0.D0)
+                  ZC(IACHLO+DEBUGR-1-1+K)=(0.D0,0.D0)
   120           CONTINUE
               ENDIF
             ELSE
@@ -211,9 +198,9 @@ C         ------------------------
               IF (LPARAL) THEN
                 IF (.NOT.ZL(JPARAL-1+JEL))GOTO 150
               ENDIF
-              JAD2=IACHLO+(JEL-1)*NCMP
+              JAD2=IACHLO+DEBUGR-1+(JEL-1)*NCMP
               DO 140,IPT1=1,NBPOI1
-                JAD1=IACHIN-1+DEBUGR+((JEL-1)*NBPOI1+IPT1-1)*NCMP
+                JAD1=IACHIN-1+DEBGR2+((JEL-1)*NBPOI1+IPT1-1)*NCMP
                 DO 130,K=0,NCMP-1
                   IF (TYPEGD.EQ.'R') THEN
                     ZR(JAD2+K)=ZR(JAD2+K)+ZR(JAD1+K)/DBLE(NBPOI1)
@@ -231,8 +218,9 @@ C         -- AUTRES CAS PAS ENCORE PROGRAMMES :
         ENDIF
       ENDIF
 
-      DO 160,K=1,LONG2
-        ZL(ILCHLO-1+K)=.TRUE.
+      DO 160,K=1,LGGREL
+        ZL(ILCHLO-1+DEBUGR-1+K)=.TRUE.
   160 CONTINUE
+
   170 CONTINUE
       END

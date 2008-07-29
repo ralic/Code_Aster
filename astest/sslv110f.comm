@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,12 +55,13 @@ MA1=MODI_MAILLAGE(reuse =MA1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),),
               );
 
+
 # PARAMETRES DE LA FISSURE
 x0 = 290.8
 y0 = 0.
 z0 = 100.1
+yi = y0 - 25. 
 
-yi = y0 + 25. 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     DEFI_FISS=_F(
                                  FORM_FISS      = 'ELLIPSE',
@@ -72,8 +73,8 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  ),
                     GROUP_MA_ENRI='TUBE',
                     ORIE_FOND=_F(PFON_INI  = (x0, yi, z0),
-                                 VECT_ORIE = (0. , 0. , -1. ),
-                                 PT_ORIGIN = (0., 0., 0.),),
+                                 VECT_ORIE = (0. , 0. , 1. ),
+                                 POINT_ORIG = (0., 0., 0.),),
                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
@@ -143,10 +144,8 @@ SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
                         RESULTAT=UTOT1,
                         ABSC_CURV_MAXI=1.5,
                         VECT_K1=(0., 0., 1.,),
-                        DTAN_ORIG = (0.,1.,0.),
-                        DTAN_EXTR = (0.,-1.,0.),
-                        
-                      )
+                        DTAN_EXTR = (0.,1.,0.),
+                        DTAN_ORIG = (0.,-1.,0.),)
                       
 IMPR_TABLE(TABLE = SIFK1,
             FILTRE=_F(NOM_PARA='METHODE',VALE=3,),)

@@ -1,8 +1,9 @@
       SUBROUTINE GMSAST(NFIE, NFIS)
-C TOLE CRS_513
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+      INTEGER NFIE,NFIS
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,20 +20,26 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRS_513
 C
-C  =================================================================
-C  !                                                               !
-C  !   FONCTION : INTERFACE GMSH-->ASTER                           !
-C  !                                                               !
-C  !                                                               !
-C  =================================================================
+C      GMSAST --   INTERFACE GMSH-->ASTER
+C                  OUVERTURE ET LECTURE DU FICHIER GMSH
+C                  ECRITURE DU FICHIER MAILLAGE ASTER
+C
+C   ARGUMENT        E/S  TYPE         ROLE
+C    NFIE           IN    I         UNITE LOGIQUE DU FICHIER GMSH
+C    NFIE           IN    I         UNITE LOGIQUE DU FICHIER GMSH
+C
+C ......................................................................
 C
       CHARACTER*16 K16NOM
       INTEGER      ULISOP
 C
+C ----------------------------------------------------------------------
+C
       K16NOM='                '
       IF ( ULISOP ( NFIE, K16NOM ) .EQ. 0 )  THEN 
-        CALL ULOPEN ( NFIE,' ','GMSH','NEW','O')
+        CALL ULOPEN ( NFIE,' ','GMSH','OLD','O')
       ENDIF 
       IF ( ULISOP ( NFIS, K16NOM ) .EQ. 0 )  THEN 
         CALL ULOPEN ( NFIS,' ','FICHIER-MODELE','NEW','O')
@@ -42,7 +49,7 @@ C
 C
       WRITE(NFIS,*) 'FIN'
       REWIND NFIS
-
+C
       IF ( ULISOP ( NFIE, K16NOM ) .NE. 0 )  THEN 
         CALL ULOPEN ( -NFIE,' ','GMSH','NEW','O')
       ENDIF 

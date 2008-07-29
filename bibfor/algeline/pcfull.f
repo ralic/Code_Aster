@@ -1,21 +1,21 @@
       SUBROUTINE PCFULL(N,ICPL,ICPC,ICPD,ICPLP,ICPCP,IND,LCA,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C                    S.P. PCFULL
@@ -59,7 +59,7 @@ C                ( REUNION DE ICPL ET ICPLP, ICPC ET ICPCP )
 C   NZA        : NOMBRE DE COEFFICIENTS DE LA MATRICE FACTORISEE
 
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT REAL*8(A-H,O-Z)
       INTEGER ICPL(0:N),ICPD(N),ICPC(*)
       INTEGER ICPLP(0:N),ICPCP(*),IND(N)
 
@@ -102,180 +102,163 @@ C=======================================================================
 
 C     INITIALISATION DU TABLEAU INDIC
 C     -------------------------------
-
-      DO 10 I = 1,N
-        IND(I) = 0
+      DO 10 I=1,N
+        IND(I)=0
    10 CONTINUE
-      IC1 = 0
-      IC2 = 0
-      K1 = 1
+      IC1=0
+      IC2=0
+      K1=1
+
 
 C     FACTORISATION LOGIQUE : LIGNE PAR LIGNE
 C     ---------------------------------------
+      DO 50 I=1,N
 
-      DO 50 I = 1,N
-
-C     TEST DE DEPASSEMENT DE DIMENSION (PROTECTION DES TABLEAUX)
-
-        NCREMX = I - ICPC(K1)
+C       TEST DE DEPASSEMENT DE DIMENSION (PROTECTION DES TABLEAUX)
+C       REMARQUE JP : LA FICHE 12292 MONTRE QUE CE TEST EST INSUFFISANT
+C       POUR NE PAS DEBORDER DU TABLEAU ICPCP, J'AI DU AJOUTER UN AUTRE
+C       TEST AVANT ICPCP(IC1)=JJ (VOIR CI-DESSOUS)
+        NCREMX=I-ICPC(K1)
         IF (IC1+NCREMX.GT.LCA) THEN
-C         WRITE (6,107) NIV,LCA,I
-          ISTOP = I
-          GO TO 90
-        END IF
+          ISTOP=I
+          GOTO 90
+        ENDIF
 
-C     MISE A JOUR DU TABLEAU INDIC
-
-        K2 = ICPL(I)
-        DO 20 K = K1,K2
-          J = ICPC(K)
-          IND(J) = I
+C       MISE A JOUR DU TABLEAU INDIC
+        K2=ICPL(I)
+        DO 20 K=K1,K2
+          J=ICPC(K)
+          IND(J)=I
    20   CONTINUE
-        IND(I) = I
+        IND(I)=I
 
-C     RECHERCHE DANS LA LIGNE I DES L(I,J) NON NULS
-
-        DO 40 K = K1,ICPD(I)
-          J = ICPC(K)
-
-C     RECHERCHE DANS LA LIGNE J DES U(J,JJ) NON NULS
-
-          DO 30 L = ICPD(J) + 1,ICPL(J)
-            JJ = ICPC(L)
-
-C     LE COEFFICIENT L(I,JJ) OU U(JJ,I) EXISTE-T-IL ?
-
+C       RECHERCHE DANS LA LIGNE I DES L(I,J) NON NULS
+        DO 40 K=K1,ICPD(I)
+          J=ICPC(K)
+C         RECHERCHE DANS LA LIGNE J DES U(J,JJ) NON NULS
+          DO 30 L=ICPD(J)+1,ICPL(J)
+            JJ=ICPC(L)
+C           LE COEFFICIENT L(I,JJ) OU U(JJ,I) EXISTE-T-IL ?
             IF (IND(JJ).NE.I) THEN
-
-C     NON ==> CREATION D'UN COEFFICIENT DE REMPLISSAGE
-
-              IC1 = IC1 + 1
-
-C     STOCKAGE DE L'INDICE DE COLONNE DU COEFFICIENT LU(I,JJ)
-
-              ICPCP(IC1) = JJ
-
-C     MISE A JOUR DU TABLEAU INDIC
-
-              IND(JJ) = I
-            END IF
+C             NON ==> CREATION D'UN COEFFICIENT DE REMPLISSAGE
+              IC1=IC1+1
+C             STOCKAGE DE L'INDICE DE COLONNE DU COEFFICIENT LU(I,JJ)
+              IF (IC1.GT.LCA) THEN
+                ISTOP=I
+                GOTO 90
+              ENDIF
+              ICPCP(IC1)=JJ
+C             MISE A JOUR DU TABLEAU INDIC
+              IND(JJ)=I
+            ENDIF
    30     CONTINUE
    40   CONTINUE
 
-C     RECLASSEMENT DES INDICES DE COLONNE PAR ORDRE CROISSANT
-
+C       RECLASSEMENT DES INDICES DE COLONNE PAR ORDRE CROISSANT
         CALL PCTRII(ICPCP(IC2+1),IC1-IC2)
 
-C     MISE A JOUR DU POINTEUR ICPLP
-
-        ICPLP(I) = IC1
-        IC2 = IC1
-        K1 = K2 + 1
+C       MISE A JOUR DU POINTEUR ICPLP
+        ICPLP(I)=IC1
+        IC2=IC1
+        K1=K2+1
    50 CONTINUE
-      ICPLP(0) = 0
+      ICPLP(0)=0
+
 
 C     TEST DE DEPASSEMENT DE DIMENSION (PROTECTION DES TABLEAUX)
-
-      K1 = ICPL(N)
-      KP1 = ICPLP(N)
-      NZERO = K1 + KP1
+      K1=ICPL(N)
+      KP1=ICPLP(N)
+      NZERO=K1+KP1
       IF (NZERO.GT.LCA) THEN
-C       WRITE (6,200) NIV,LCA,NZERO
-        IER = NZERO
-        GO TO 140
-      END IF
+        IER=NZERO
+        GOTO 140
+      ENDIF
+
 
 C     CREATION DES TABLEAUX ICPL ET ICPC
 C     POUR LA MATRICE FACTORISEE : REUNION DES TABLEAUX ICPC ET ICPCP
 C     ---------------------------------------------------------------
-
-      K = NZERO
-      DO 80 I = N,1,-1
-        ICPL(I) = K
-        KP2 = ICPLP(I-1)
-        K2 = ICPL(I-1)
+      K=NZERO
+      DO 80 I=N,1,-1
+        ICPL(I)=K
+        KP2=ICPLP(I-1)
+        K2=ICPL(I-1)
    60   CONTINUE
+
         IF (K1.GT.K2) THEN
-C     *****************
-C     LIGNE DE L EN COURS
+C          LIGNE DE L EN COURS
           IF (KP1.GT.KP2) THEN
-C       -------------------
-C       LIGNE DE COEF EN COURS
+C           LIGNE DE COEF EN COURS
             IF (ICPC(K1).LT.ICPCP(KP1)) THEN
-              ICPC(K) = ICPCP(KP1)
-              KP1 = KP1 - 1
+              ICPC(K)=ICPCP(KP1)
+              KP1=KP1-1
             ELSE
-              ICPC(K) = ICPC(K1)
-              K1 = K1 - 1
-            END IF
+              ICPC(K)=ICPC(K1)
+              K1=K1-1
+            ENDIF
+
           ELSE
-C       ----
-C       LIGNE DE COEF FINIE
-            ICPC(K) = ICPC(K1)
-            K1 = K1 - 1
-          END IF
-C       ------
+C           LIGNE DE COEF FINIE
+            ICPC(K)=ICPC(K1)
+            K1=K1-1
+          ENDIF
+
         ELSE
-C     ****
-C     LIGNE DE L FINIE
+C         LIGNE DE L FINIE
           IF (KP1.GT.KP2) THEN
-C       -------------------
-C       LIGNE DE COEF EN COURS
-            ICPC(K) = ICPCP(KP1)
-            KP1 = KP1 - 1
+C           LIGNE DE COEF EN COURS
+            ICPC(K)=ICPCP(KP1)
+            KP1=KP1-1
           ELSE
-C       ----
-            GO TO 70
-          END IF
-C       ------
-        END IF
-C     ******
-        K = K - 1
-        GO TO 60
+            GOTO 70
+          ENDIF
+        ENDIF
+
+        K=K-1
+        GOTO 60
+
    70   CONTINUE
    80 CONTINUE
 
 C     LE NOMBRE DE COEFFICIENTS DE LA MATRICE FACTORISEE
-
 C     NZCA = NZERO
 C     WRITE (6,*) ' FIN DU S-P FILLIN  TAILLE FACTORISEE= ',NZCA
+      GOTO 140
 
-      GO TO 140
-C  DEPASSEMENT DE DIMENSION ON CALCULE IC1= PLACE A AJOUTER
 
    90 CONTINUE
-      DO 130 I = ISTOP,N
-        K2 = ICPL(I)
-        DO 100 K = K1,K2
-          J = ICPC(K)
-          IND(J) = I
+C     DEPASSEMENT DE DIMENSION ON CALCULE IC1= PLACE A AJOUTER
+      DO 130 I=ISTOP,N
+        K2=ICPL(I)
+        DO 100 K=K1,K2
+          J=ICPC(K)
+          IND(J)=I
   100   CONTINUE
-        IND(I) = I
-        DO 120 K = K1,ICPD(I)
-          J = ICPC(K)
-          DO 110 L = ICPD(J) + 1,ICPL(J)
-            JJ = ICPC(L)
-            IF (JJ.GE.I) GO TO 110
+        IND(I)=I
+        DO 120 K=K1,ICPD(I)
+          J=ICPC(K)
+          DO 110 L=ICPD(J)+1,ICPL(J)
+            JJ=ICPC(L)
+            IF (JJ.GE.I)GOTO 110
 
             IF (IND(JJ).NE.I) THEN
-C     NON ==> CREATION D'UN COEFFICIENT DE REMPLISSAGE
-              IC1 = IC1 + 1
-              IND(JJ) = I
-            END IF
+C             NON ==> CREATION D'UN COEFFICIENT DE REMPLISSAGE
+              IC1=IC1+1
+              IND(JJ)=I
+            ENDIF
   110     CONTINUE
   120   CONTINUE
-        K1 = K2 + 1
+        K1=K2+1
   130 CONTINUE
-C NZERO=TAILLE MAT INI.+TAILLE MAT REMPLIE
-      NZERO = ICPL(N) + IC1
-C     WRITE (6,200) NIV,LCA,NZERO
-      IER = NZERO
+
+
+C     NZERO=TAILLE MAT INI. + TAILLE MAT REMPLIE
+      NZERO=ICPL(N)+IC1
+      IER=NZERO
   140 CONTINUE
 
-  107 FORMAT (' NIVEAU',I4,' REMPLISSAGE INTERMEDIAIRE',/,
-     &       'ARRET DES CALCULS PLACE MEMOIRE',I12,
-     &       ' INSUFFISANTE  LIGNE ',I9)
-  200 FORMAT (' NIVEAU',I4,' REMPLISSAGE INTERMEDIAIRE',/,
-     &       'ARRET DES CALCULS PLACE MEMOIRE',I12,
-     &       ' INSUFFISANTE IL FAUT ',I12)
+ 9000 FORMAT (' NIVEAU',I4,' REMPLISSAGE INTERMEDIAIRE',/,'ARRET DES C',
+     &       'ALCULS PLACE MEMOIRE',I12,' INSUFFISANTE  LIGNE ',I9)
+ 9010 FORMAT (' NIVEAU',I4,' REMPLISSAGE INTERMEDIAIRE',/,'ARRET DES C',
+     &       'ALCULS PLACE MEMOIRE',I12,' INSUFFISANTE IL FAUT ',I12)
       END

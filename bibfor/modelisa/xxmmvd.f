@@ -1,7 +1,7 @@
       INTEGER FUNCTION XXMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   ZXCAR,ZXIND
-      PARAMETER (ZXCAR=10,ZXIND=6) 
+      PARAMETER (ZXCAR=11,ZXIND=6) 
       INTEGER   ZXBAS
       PARAMETER (ZXBAS=12)  
       LOGICAL    LVECT                       

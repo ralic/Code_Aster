@@ -1,4 +1,4 @@
-# MODIF  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,6 +52,7 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        ORIE_PEAU_3D=_F(GROUP_MA=('FACE1','FACE2','SINT','SBAS'),),
                        );
 
+
 MODELEIN=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                       AFFE=_F(  GROUP_MA= ('STRUCT','FACE1','FACE2'),
                              PHENOMENE = 'MECANIQUE',
@@ -70,8 +71,8 @@ def ATAN3(x,y) :
    if (x*x+y*y) < 1.e-16 : return 0. 
    else : return atan2(x,y)
 
-LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='sqrt((X-r*cos(ATAN3(Z,X)))**2+(Z-r*sin(ATAN3(Z,X)))**2)*SIGN(r*r-X*X-Z*Z)');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-l_fiss'); 
+#LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='sqrt((X-r*cos(ATAN3(Z,X)))**2+(Z-r*sin(ATAN3(Z,X)))**2)*SIGN(r*r-X*X-Z*Z)');
+#LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-l_fiss'); 
 
 XFONI = r ;
 YFONI = l_fiss;
@@ -86,13 +87,23 @@ YORI  = 0 ;
 ZORI  = 0 ;
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    DEFI_FISS=_F(
+#                   DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                                 FORM_FISS = 'CYLINDRE',
+                                 DEMI_GRAND_AXE = r,
+                                 DEMI_PETIT_AXE = r,
+                                 CENTRE         = (0., l_fiss ,0.),
+                                 VECT_X         = (0., 0. ,1.),
+                                 VECT_Y         = (1., 0. ,0.),
+                                     ),                    
                     GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI= (XFONI, YFONI , ZFONI ),
                                  VECT_ORIE=(XVECT, YVECT , ZVECT ),
-                                 PT_ORIGIN=(XORI , YORI  , ZORI  ),),
+                                 POINT_ORIG=(XORI , YORI  , ZORI  ),),
                     INFO=1,
                     );
+
+
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
  
@@ -108,7 +119,7 @@ STNO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
               
 TAB= POST_RELEVE_T(ACTION=_F(INTITULE='test',
                                             GROUP_NO='FACE2',
-                                           CHAM_GD=STNO,
+                                            CHAM_GD=STNO,
                                             TOUT_CMP='OUI',
                                             OPERATION='EXTRACTION',),);
 
@@ -202,7 +213,7 @@ TEST_TABLE( TABLE=KGLOC1,
                             VALE_I = 1,      ),
             REFERENCE='AUTRE_ASTER',
             VALE= 1.12448E+06,
-            PRECISION=0.05      )
+            PRECISION=0.055     )
 
 TEST_TABLE( TABLE=KGLOC1,
             NOM_PARA='G_LOCAL',
@@ -239,6 +250,6 @@ TEST_TABLE( TABLE=TABL_K,
                      _F(  NOM_PARA = 'PT_FOND',  
                             VALE_I = 1,      ),),
             REFERENCE='NON_REGRESSION',
-            VALE= 1.13174E+06 ,
+            VALE= 1.18752E+06 ,
             PRECISION=0.001     )            
 FIN();

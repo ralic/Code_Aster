@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,8 @@ C ----------------------------------------------------------------------
       COMMON /CAII03/IAMACO,ILMACO,IAMSCO,ILMSCO,IALIEL,ILLIEL
       INTEGER IACHII,IACHIK,IACHIX
       COMMON /CAII04/IACHII,IACHIK,IACHIX
-      INTEGER IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
-      COMMON /CAII06/IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
+      INTEGER        NBGR,IGR,NBELGR,JCTEAT,LCTEAT,IAWLOC,IAWLO2,IAWTYP
+      COMMON /CAII06/NBGR,IGR,NBELGR,JCTEAT,LCTEAT,IAWLOC,IAWLO2,IAWTYP
 
 C     FONCTIONS EXTERNES:
 C     -------------------
@@ -55,7 +55,7 @@ C     ------------------
       INTEGER IMA,INO,NNO,LONG,NUGL,NUM,JPARAL,IRET,IEL
       INTEGER DESC,PRNO1,PRNO2,MODLOC,ITYPLO
       INTEGER DEB1,DEB2,IDG1,IDG2,NBPT,NBPT2,LGCATA,NCMP
-      INTEGER IAUX1,K,IEC
+      INTEGER IAUX1,K,IEC,DEBUGR
       LOGICAL LPARAL
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -99,6 +99,7 @@ C     -------------------------
       NUM=ZI(DESC-1+2)
       MODLOC=IAMLOC-1+ZI(ILMLOC-1+IMODAT)
       ITYPLO=ZI(MODLOC-1+1)
+      DEBUGR=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+5)
 
 
 C     1-  CAS: CHNO -> ELGA :
@@ -154,13 +155,13 @@ C       4.3 SI MOYENN, IL FAUT METTRE A ZERO LE CHAMP LOCAL
 C           (POUR POUVOIR CUMULER)
 C       --------------------------------------------------
         IF (MOYENN) THEN
-          LGCATA=ZI(IAWLOC-1+7*(IPARG-1)+4)
+          LGCATA=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+2)
           NCMP=LGCATA
           IF (TYPEGD.EQ.'R') THEN
             IF (LPARAL) THEN
               DO 20 IEL=1,NBELGR
                 IF (ZL(JPARAL-1+IEL)) THEN
-                  IAUX1=IACHLO+(IEL-1)*NCMP
+                  IAUX1=IACHLO+DEBUGR-1+(IEL-1)*NCMP
                   DO 10 K=1,NCMP
                     ZR(IAUX1-1+K)=0.D0
    10             CONTINUE
@@ -168,14 +169,14 @@ C       --------------------------------------------------
    20         CONTINUE
             ELSE
               DO 30,K=1,NBELGR*NCMP
-                ZR(IACHLO-1+K)=0.D0
+                ZR(IACHLO+DEBUGR-1-1+K)=0.D0
    30         CONTINUE
             ENDIF
           ELSEIF (TYPEGD.EQ.'C') THEN
             IF (LPARAL) THEN
               DO 50 IEL=1,NBELGR
                 IF (ZL(JPARAL-1+IEL)) THEN
-                  IAUX1=IACHLO+(IEL-1)*NCMP
+                  IAUX1=IACHLO+DEBUGR-1+(IEL-1)*NCMP
                   DO 40 K=1,NCMP
                     ZC(IAUX1-1+K)=(0.D0,0.D0)
    40             CONTINUE
@@ -183,7 +184,7 @@ C       --------------------------------------------------
    50         CONTINUE
             ELSE
               DO 60,K=1,NBELGR*NCMP
-                ZC(IACHLO-1+K)=(0.D0,0.D0)
+                ZC(IACHLO+DEBUGR-1-1+K)=(0.D0,0.D0)
    60         CONTINUE
             ENDIF
           ELSE
@@ -197,7 +198,7 @@ C        ---SI C'EST 1 CHAMP A REPRESENTATION CONSTANTE (NUM<0):
 C        -------------------------------------------------------
         IF (NUM.LT.0) THEN
           LONG=-NUM
-          DEB2=1
+          DEB2=DEBUGR
           DO 90,IEL=1,NBELGR
             IMA=NUMAIL(IGR,IEL)
             CALL ASSERT(IMA.NE.0)
@@ -229,7 +230,7 @@ C        --- C'EST 1 CHAMP AVEC PROFIL_NOEUD:
 C        ------------------------------------
           PRNO1=ZI(IACHII-1+11*(IICHIN-1)+8)
           PRNO2=ZI(IACHII-1+11*(IICHIN-1)+9)
-          DEB2=1
+          DEB2=DEBUGR
           DO 110,IEL=1,NBELGR
             IMA=NUMAIL(IGR,IEL)
             CALL ASSERT(IMA.NE.0)
@@ -257,13 +258,13 @@ C        ------------------------------------
 
 
         IF (MOYENN) THEN
-          LGCATA=ZI(IAWLOC-1+7*(IPARG-1)+4)
+          LGCATA=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+2)
           NCMP=LGCATA
           IF (TYPEGD.EQ.'R') THEN
             IF (LPARAL) THEN
               DO 130 IEL=1,NBELGR
                 IF (ZL(JPARAL-1+IEL)) THEN
-                  IAUX1=IACHLO+(IEL-1)*NCMP
+                  IAUX1=IACHLO+DEBUGR-1+(IEL-1)*NCMP
                   DO 120 K=1,NCMP
                     ZR(IAUX1-1+K)=ZR(IAUX1-1+K)/DBLE(NNO)
   120             CONTINUE
@@ -271,14 +272,14 @@ C        ------------------------------------
   130         CONTINUE
             ELSE
               DO 140,K=1,NBELGR*NCMP
-                ZR(IACHLO-1+K)=ZR(IACHLO-1+K)/DBLE(NNO)
+                ZR(IACHLO-1+K)=ZR(IACHLO+DEBUGR-1-1+K)/DBLE(NNO)
   140         CONTINUE
             ENDIF
           ELSEIF (TYPEGD.EQ.'C') THEN
             IF (LPARAL) THEN
               DO 160 IEL=1,NBELGR
                 IF (ZL(JPARAL-1+IEL)) THEN
-                  IAUX1=IACHLO+(IEL-1)*NCMP
+                  IAUX1=IACHLO+DEBUGR-1+(IEL-1)*NCMP
                   DO 150 K=1,NCMP
                     ZC(IAUX1-1+K)=ZC(IAUX1-1+K)/DBLE(NNO)
   150             CONTINUE
@@ -286,7 +287,7 @@ C        ------------------------------------
   160         CONTINUE
             ELSE
               DO 170,K=1,NBELGR*NCMP
-                ZC(IACHLO-1+K)=ZC(IACHLO-1+K)/DBLE(NNO)
+                ZC(IACHLO-1+K)=ZC(IACHLO+DEBUGR-1-1+K)/DBLE(NNO)
   170         CONTINUE
             ENDIF
           ELSE

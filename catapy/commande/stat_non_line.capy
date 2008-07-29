@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 28/07/2008   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -152,7 +152,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            REAC_INCR       =SIMP(statut='f',typ='I',defaut= 1 ),
            PREDICTION      =SIMP(statut='f',typ='TXM',into=("DEPL_CALCULE","TANGENTE","ELASTIQUE","EXTRAPOL") ),
            MATRICE         =SIMP(statut='f',typ='TXM',defaut="TANGENTE",into=("TANGENTE","ELASTIQUE") ),
-           PAS_MINI_ELAS   =SIMP(statut='f',typ='R',defaut=0.0E+0),
+           PAS_MINI_ELAS   =SIMP(statut='f',typ='R',val_min=0.0),
            REAC_ITER       =SIMP(statut='f',typ='I',defaut=0),
            REAC_ITER_ELAS  =SIMP(statut='f',typ='I',defaut=0),
            EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
@@ -211,7 +211,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
          ),
          SOLVEUR         =FACT(statut='d',
            METHODE=SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS","FETI","PETSC") ),
-          
+
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
            ),

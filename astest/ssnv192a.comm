@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,7 +193,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI=(XFONI, YFONI, ZFONI,),
                                  VECT_ORIE=(XVECT, YVECT, ZVECT,),
-                                 PT_ORIGIN=(XORI, YORI, ZORI,),),
+                                 POINT_ORIG=(XORI, YORI, ZORI,),),
                      INFO=1,);
 
 

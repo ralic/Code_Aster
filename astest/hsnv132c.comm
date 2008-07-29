@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,7 +89,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELE,
                     GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI= (0.5 ,0.5 ,0. ),
                                  VECT_ORIE=(0.  ,-1.  ,0. ),
-                                 PT_ORIGIN=(0.  ,0.  ,0. ),),
+                                 POINT_ORIG=(0.  ,0.  ,0. ),),
                     INFO=1,
                     );
 

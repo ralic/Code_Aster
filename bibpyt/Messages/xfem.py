@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 21/04/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,9 @@ cata_msg={
 """),
 
 20: _("""
-     Le mot-clef ORIE_FOND est indispensable en 3D.
+     Le mot-clef ORIE_FOND est indispensable en 3D si vous n'utilisez pas 
+     le catalogue des formes de fissure prédéfinies : FORM_FISS pour définir
+     les level-sets.
 """),
 
 21: _("""

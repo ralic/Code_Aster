@@ -1,6 +1,9 @@
       SUBROUTINE  PREGMS(IGMSH, IMOD)
+      IMPLICIT NONE
+      INTEGER IGMSH, IMOD
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,25 +22,18 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRS_512
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C
 C      PREGMS --   INTERFACE GMSH --> ASTER
 C                  LECTURE DU FICHIER  .GMSH
 C                  ECRITURE DU FICHIER .MAIL
 C
-C.========================= DEBUT DES DECLARATIONS ====================
-C -----  ARGUMENTS
-      INTEGER      IGMSH, IMOD
-C -----  VARIABLES LOCALES
-      PARAMETER (MAXNOD=32, NBTYMA=15)
-      CHARACTER*4  NOD, CT(3), ELM
-      CHARACTER*7  ENDNOD
-      CHARACTER*8  NOMAIL(NBTYMA), RQUOI
-      CHARACTER*12 AUT
-      CHARACTER*14 AUT1
-      INTEGER   NBNOMA(NBTYMA), NUCONN(NBTYMA,MAXNOD)
+C   ARGUMENT        E/S  TYPE         ROLE
+C    IGMSH          IN    I         UNITE LOGIQUE DU FICHIER GMSH
+C    IMOD           IN    I         UNITE LOGIQUE DU FICHIER MAIL
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
 C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -53,9 +49,22 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNOM, JEXNUM
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C.========================= DEBUT DU CODE EXECUTABLE ==================
+C --------- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------
+C
+      CHARACTER*4  CT(3)
+      CHARACTER*8  RQUOI
+      CHARACTER*12 AUT,DEBFIC,FINNOD,DEBELM
+      CHARACTER*14 AUT1
+      INTEGER      I,IMES,IUNIFI,NBMAIL,NBNODE,VERSIO,MAXNOD,NBTYMA
+      INTEGER      VALI(1)
+C
+      PARAMETER    (MAXNOD=32,NBTYMA=15)
+      INTEGER      NBNOMA(NBTYMA),NUCONN(NBTYMA,MAXNOD)
+      CHARACTER*8  NOMAIL(NBTYMA)
+C
+C ----------------------------------------------------------------------
 C
 C ---- INITIALISATIONS
 C      ---------------
@@ -73,9 +82,24 @@ C --- AFFECTATION DE NOMAIL AVEC LE NOM DU TYPE DES ELEMENTS :
 C     ------------------------------------------------------
       CALL INIGMS(NOMAIL,NBNOMA,NUCONN)
 C
-C --- LECTURE EN DEBUT DU FICHIER .GMSH DE $NOD :
+C --- LECTURE EN DEBUT DU FICHIER .GMSH POUR DETERMINER LE FORMAT :
 C     -----------------------------------------
-      READ(IGMSH,'(A4)') NOD
+      READ(IGMSH,*) DEBFIC
+      
+      IF (DEBFIC(1:4).EQ.'$NOD') THEN
+        VERSIO = 1
+      ELSEIF (DEBFIC(1:11).EQ.'$MeshFormat') THEN
+        VERSIO = 2
+        READ(IGMSH,*)
+        READ(IGMSH,*)
+        READ(IGMSH,*)
+      ELSE
+        CALL U2MESS('F','PREPOST6_38')
+      ENDIF
+      
+      CALL U2MESS('I','PREPOST6_39')   
+      VALI(1)=VERSIO
+      CALL U2MESI('I','PREPOST6_40',1,VALI)   
 C
 C --- ECRITURE DU TITRE DANS LE FICHIER .MAIL :
 C     ---------------------------------------
@@ -89,23 +113,37 @@ C     ---------------------------
      +  CT(1)(1:2),'/',CT(2)(1:2),'/',CT(3)
       WRITE(IMOD,'(A)') 'FINSF'
       WRITE(IMOD,'(A)') '%'
-      WRITE(IMES,*) 'ECRITURE DU TITRE'
 C
 C --- LECTURE DES NOEUDS ET DE LEURS COORDONNEES DANS LE FICHIER .GMSH:
 C     ----------------------------------------------------------------
+      WRITE(IMES,*)
+      WRITE(IMES,*) 'LECTURE DES NOEUDS ET DE LEURS COORDONNEES'
       CALL GMLNEU(IGMSH, NBNODE)
 C
 C --- FIN DE LA LECTURE DES NOEUDS :
 C     ----------------------------
-      READ(IGMSH,'(A7)') ENDNOD
+      READ(IGMSH,*) FINNOD
+
+      IF ((FINNOD(1:7).NE.'$ENDNOD') .AND.
+     &    (FINNOD(1:9).NE.'$EndNodes'))  THEN
+        CALL U2MESS('F','PREPOST6_41')
+      ENDIF
 C
 C --- DEBUT DE LA LECTURE DES ELEMENTS DANS LE FICHIER .GMSH :
 C     ------------------------------------------------------
-      READ(IGMSH,'(A4)') ELM
+      WRITE(IMES,*)
+      WRITE(IMES,*) 'LECTURE DES MAILLES'
+      READ(IGMSH,*) DEBELM
+
+      IF ((DEBELM(1:4).NE.'$ELM') .AND.
+     &    (DEBELM(1:9).NE.'$Elements'))  THEN
+        CALL U2MESS('F','PREPOST6_42')
+      ENDIF
+
 C
 C --- LECTURE DES MAILLES ET DES GROUP_MA :
 C     -----------------------------------
-      CALL GMLELT(IGMSH,MAXNOD,NBTYMA,NBMAIL,NBNOMA,NUCONN)
+      CALL GMLELT(IGMSH,MAXNOD,NBTYMA,NBMAIL,NBNOMA,NUCONN,VERSIO)
 C
 C --- ECRITURE DES NOEUDS ET DE LEURS COORDONNEES DANS LE FICHIER .MAIL:
 C     -----------------------------------------------------------------

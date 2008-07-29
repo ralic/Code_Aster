@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF xfem2 Messages  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,38 +115,26 @@ cata_msg = {
      Veuillez revoir la définition des level sets.
 """),
 
-19 : _("""
-  -> Lors de l'orientation des points du fond de fissure, le point du fond de
-     fissure initial (PFON_INI) est trop loin du fond de fissure.
-  -> Risque & Conseil :
-     Le point initial qui en résulte amène surement à une orientation du fond
-     de fissure erronée.
-     Veuillez redéfinir le point du fond de fissure initial (mot clé PFON_INI).
-"""),
-
 20 : _("""
-  -> PFON_INI = PT_ORIGINE
+  -> PFON_INI = POINT_ORIG
   -> Risque & Conseil :
-     Veuillez définir deux points différents pour PFON_INI et PT_ORIGINE.
+     Veuillez définir deux points différents pour PFON_INI et POINT_ORIG.
 """),
 
 21 : _("""
-  -> Problème dans l'orientation du fond de fissure : PT_ORIGIN mal choisi.
+  -> Problème dans l'orientation du fond de fissure : POINT_ORIG mal choisi.
   -> Risque & Conseil : 
-     Veuillez redéfinir PT_ORIGIN.
+     Veuillez redéfinir POINT_ORIG.
 """),
 
 22 : _("""
   -> Tous les points du fond de fissure sont des points de bord.
   -> Risque & Conseil : 
-     Assurez-vous du bon choix des paramètres d'orientation de fissure
-     et de PFON_INI.
+     Assurez-vous du bon choix des paramètres d'orientation de fissure.
 """),
 
 23 : _("""
-  -> PFON_INI semble etre un point de fin de fissure selon l'orientation choisie.
-  -> Risque & Conseil : 
-     Veuillez vous assurez du bon choix de PFON_INI
+  -> PFON_INI semble etre un point mal choisit, on le modifie automatiquement.
 """),
 
 24 : _("""
@@ -160,6 +148,7 @@ cata_msg = {
   -> Risque & Conseil :
      Veuillez redéfinir VECT_ORIE.
 """),
+
 
 39 : _("""
   -> Deux points du fond de fissure sont très proches ou coincident.

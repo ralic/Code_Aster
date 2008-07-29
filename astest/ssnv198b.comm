@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,7 +64,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI= (0. ,ly/2.    ,lz/2. ),
                                  VECT_ORIE=(0. ,0.       ,1.    ),
-                                 PT_ORIGIN=(0. ,ly ,lz/2. ),),
+                                 POINT_ORIG=(0. ,ly ,lz/2. ),),
                     );
 
 

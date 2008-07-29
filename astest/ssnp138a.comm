@@ -1,4 +1,4 @@
-# MODIF  DATE 10/03/2008   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,8 +105,8 @@ def LEVSETTAN(x,y,beta) :
 
 nbcalc = len(alphaf)
 alpha = [None]*nbcalc
-LN = [None]*nbcalc
-LT = [None]*nbcalc
+#LN = [None]*nbcalc
+#LT = [None]*nbcalc
 FISS = [None]*nbcalc
 MODELK = [None]*nbcalc
 CHMA = [None]*nbcalc
@@ -124,12 +124,17 @@ for i in range(nbcalc) :
 #
 # on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
   alpha = str(eval('alphaf[i]*pi/180.'))
-
-  LN[i]=FORMULE(NOM_PARA=('X','Y'),VALE='Y*cos('+alpha+')-X*sin('+alpha+')');
-  LT[i]=FORMULE(NOM_PARA=('X','Y'),VALE='LEVSETTAN(X,Y,'+alpha+')');
+  
+#  LN[i]=FORMULE(NOM_PARA=('X','Y'),VALE='Y*cos('+alpha+')-X*sin('+alpha+')');
+#  LT[i]=FORMULE(NOM_PARA=('X','Y'),VALE='LEVSETTAN(X,Y,'+alpha+')');
 
   FISS[i]=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT[i],FONC_LN=LN[i],),
+#                    DEFI_FISS=_F(FONC_LT=LT[i],FONC_LN=LN[i],),
+                    DEFI_FISS=_F(
+                                 FORM_FISS  = 'SEGMENT',
+                                 PFON_ORIG  = (-A*cos(eval(alpha))/2,-A*sin(eval(alpha))/2, 0.),
+                                 PFON_EXTR  = ( A*cos(eval(alpha))/2, A*sin(eval(alpha))/2, 0.),
+                                 ),
                     GROUP_MA_ENRI='SURF',
                     RAYON_ENRI=A/10.,
                     INFO=1);

@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,7 +185,11 @@ cata_msg={
 """),
 
 51: _("""
- cham_elem etendu a faire ...
+ Erreur :
+   Le code cherche à utiliser dans un calcul élémentaire un cham_elem "étendu" (VARI_R ou sous-points).
+   La programmation de la routine exchml.f ne sait pas encore traiter ce cas.
+ Conseil :
+   Il y a peut-etre lieu d'émettre une demande d'évolution pour traiter ce cas.
 """),
 
 52: _("""

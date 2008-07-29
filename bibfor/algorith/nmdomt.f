@@ -1,7 +1,7 @@
       SUBROUTINE NMDOMT(METHOD,PARMET,NOMCMD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/07/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,13 +23,13 @@ C
       IMPLICIT NONE
       CHARACTER*16 METHOD(*),NOMCMD
       REAL*8       PARMET(*)
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (LECTURE)
 C
 C LECTURE DES DONNEES DE RESOLUTION
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -61,20 +61,20 @@ C ----------------------------------------------------------------------
 C
       INTEGER      IRET, ITMP,REINCR, REITER, NOCC
       REAL*8       PASMIN
-      INTEGER      IFM,NIV 
-C      
+      INTEGER      IFM,NIV
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ... LECTURE DONNEES RESOLUTION' 
+        WRITE (IFM,*) '<MECANONLINE> ... LECTURE DONNEES RESOLUTION'
       ENDIF
 C
 C --- INITIALISATIONS
-C      
+C
       METHOD(1) = 'NEWTON'
       METHOD(7) = 'CORDE'
 C
@@ -103,7 +103,13 @@ C
       ENDIF
 
       CALL GETVR8('NEWTON','PAS_MINI_ELAS',1,1,1,PASMIN,IRET)
-      PARMET(3) = PASMIN
+      IF ( IRET .LE. 0 ) THEN
+C        SI PAS_MINI_ELAS N'EST PAS DONNE. LE DT NE PEUT PAS
+C        ETRE NEGATIF ==> -9999.0
+         PARMET(3) = -9999.0D0
+      ELSE
+         PARMET(3) = PASMIN
+      ENDIF
 C
 C --- TYPE DE PREDICTION
 C
@@ -121,12 +127,12 @@ C
       END IF
 C
 C --- PARAMETRES RECHERCHE LINEAIRE
-C      
+C
       IF (NOMCMD(1:4).EQ.'DYNA') THEN
         NOCC = 0
       ELSE
         CALL GETFAC('RECH_LINEAIRE',NOCC)
-      ENDIF  
+      ENDIF
       IF (NOCC.NE.0) THEN
         CALL GETVTX('RECH_LINEAIRE','METHODE',1,1,1,METHOD(7),IRET)
         CALL GETVR8('RECH_LINEAIRE','RESI_LINE_RELA',1,1,1,PARMET(11),

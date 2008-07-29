@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost6 Messages  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,6 +121,32 @@ cata_msg = {
  Erreur d'utilisation :
    Quand on utilise IMPR_RESU/RESTREINT, il ne faut pas répéter le mot-clé facteur RESU.
    Dans l'unique occurrence de RESU, il faut renseigner le mot clé MAILLAGE.
+"""),
+
+38 : _("""
+ Problème dans la lecture du fichier de maillage GMSH.
+ Le fichier de maillage ne semble pas être un fichier de type GMSH :
+ il manque la balise de début de fichier.
+"""),
+
+39 : _("""
+ <I> Depuis la version 2.2.0 de GMSH il est possible de lire et écrire le format MED.
+     Conseil : Utilisez plutot GMSH avec MED comme format d'entrée et de sortie.
+     
+"""),
+
+40 : _("""
+ <I> Le ficher de maillage GMSH est au format version %(i1)s.
+"""),
+
+41 : _("""
+ Problème dans la lecture du fichier de maillage GMSH.
+ Il manque la balise de fin de la liste de noeud.
+"""),
+
+42 : _("""
+ Problème dans la lecture du fichier de maillage GMSH.
+ Il manque la balise de début de la liste des éléments.
 """),
 
 }

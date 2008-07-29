@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai5 Messages  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,10 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+ Le fichier de nom %(k1)s associé à l'unite logique %(k2)s n'existe pas.
+"""),
 
 2 : _("""
  asin/acos svp

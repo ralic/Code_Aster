@@ -1,8 +1,8 @@
       SUBROUTINE TRIGD(DG1,DEB1,DG2,DEB2,CUMUL,INO,NNO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,10 +59,9 @@ C ----------------------------------------------------------------------
       COMMON /CAKK02/TYPEGD
       CHARACTER*8 TYPEGD
 
-C     VARIABLES LOCALES:
-C     ------------------
-      INTEGER CMP,IND1,IND2
       LOGICAL CHANGE
+      INTEGER CMP,IND1,IND2,ILCHLO
+      INTEGER NEC,NEC2,NECOLD,IACHLO,IACHIN,IICHIN,IANUEQ,LPRNO
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -81,6 +80,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C    -------------------------------------------------------------------
       PARAMETER (NEC2=6)
       INTEGER DG1OLD(NEC2),DG2OLD(NEC2),POSCMP(NEC2*30)
+      INTEGER IEQ,I
       SAVE DG1OLD,DG2OLD,POSCMP,IND2,NECOLD
       DATA DG1OLD/NEC2*0/
       DATA DG2OLD/NEC2*0/

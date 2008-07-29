@@ -1,8 +1,8 @@
-      SUBROUTINE EXRESL(CHIN,IMODAT)
+      SUBROUTINE EXRESL(IMODAT,IPARG,CHIN)
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
-      INTEGER IMODAT
+      INTEGER IMODAT,IPARG
       CHARACTER*19 CHIN
 C ----------------------------------------------------------------------
 C     ENTREES:
@@ -41,8 +41,8 @@ C ----------------------------------------------------------------------
      &       IAOPPA,NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
       INTEGER IACHII,IACHIK,IACHIX
       COMMON /CAII04/IACHII,IACHIK,IACHIX
-      INTEGER IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
-      COMMON /CAII06/IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
+      INTEGER        NBGR,IGR,NBELGR,JCTEAT,LCTEAT,IAWLOC,IAWLO2,IAWTYP
+      COMMON /CAII06/NBGR,IGR,NBELGR,JCTEAT,LCTEAT,IAWLOC,IAWLO2,IAWTYP
 
 C     FONCTIONS EXTERNES:
 C     ------------------
@@ -52,7 +52,7 @@ C     ------------------
 C     VARIABLES LOCALES:
 C     ------------------
       INTEGER DESC,MODE,NCMPEL,IRET,JPARAL,IEL,IAUX1,IAUX2,IAUX0,K
-      INTEGER JRESL
+      INTEGER JRESL,DEBUGR,LGGREL
       LOGICAL LPARAL
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -78,6 +78,9 @@ C     -------------------------
         LPARAL=.FALSE.
       ENDIF
 
+      LGGREL=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+4)
+      DEBUGR=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+5)
+
       DESC=ZI(IACHII-1+11*(IICHIN-1)+4)
 
       MODE=ZI(DESC-1+2+IGR)
@@ -89,33 +92,34 @@ C     -------------------------
 
       CALL ASSERT(MODE.EQ.IMODAT)
       NCMPEL=DIGDE2(MODE)
+      CALL ASSERT(LGGREL.EQ.NCMPEL*NBELGR)
       CALL JEVEUO(JEXNUM(CHIN//'.RESL',IGR),'L',JRESL)
       IF (LPARAL) THEN
         DO 10 IEL=1,NBELGR
           IF (ZL(JPARAL-1+IEL)) THEN
             IAUX0=(IEL-1)*NCMPEL
             IAUX1=JRESL+IAUX0
-            IAUX2=IACHLO+IAUX0
+            IAUX2=IACHLO+DEBUGR-1+IAUX0
             CALL JACOPO(NCMPEL,TYPEGD,IAUX1,IAUX2)
           ENDIF
    10   CONTINUE
       ELSE
-        CALL JACOPO(NCMPEL*NBELGR,TYPEGD,JRESL,IACHLO)
+        CALL JACOPO(LGGREL,TYPEGD,JRESL,IACHLO+DEBUGR-1)
       ENDIF
 
-C     POUR L'INSTANT EXRESL TROUVE TOUJOURS TOUT :
+
       IF (LPARAL) THEN
         DO 30 IEL=1,NBELGR
           IF (ZL(JPARAL-1+IEL)) THEN
-            IAUX1=ILCHLO+(IEL-1)*NCMPEL
+            IAUX1=ILCHLO+DEBUGR-1+(IEL-1)*NCMPEL
             DO 20 K=1,NCMPEL
               ZL(IAUX1-1+K)=.TRUE.
    20       CONTINUE
           ENDIF
    30   CONTINUE
       ELSE
-        DO 40 K=1,NBELGR*NCMPEL
-          ZL(ILCHLO-1+K)=.TRUE.
+        DO 40 K=1,LGGREL
+          ZL(ILCHLO+DEBUGR-1-1+K)=.TRUE.
    40   CONTINUE
       ENDIF
 

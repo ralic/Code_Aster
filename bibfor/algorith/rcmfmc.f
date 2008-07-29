@@ -3,7 +3,7 @@
       CHARACTER*(*) CHMATZ,CHMACZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/04/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     ----------------------------------------------------------
       IF (IRET.GT.0) GOTO 90
 
 
-C     -- MISE A JOUR DU COMON CAII13 POUR RCVARC :
+C     -- MISE A JOUR DU COMON CAII14 POUR RCVARC :
 C     -----------------------------------------------
       CALL JEEXIN(CHMAT//'.CVRCNOM',IRET)
       IF (IRET.NE.0) THEN

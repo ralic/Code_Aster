@@ -1,6 +1,10 @@
       SUBROUTINE  GMEELT(IMOD, NBTYMA, NOMAIL, NBNOMA, NUCONN, NBMAIL)
+      IMPLICIT NONE
+      INTEGER     IMOD, NBTYMA, NBMAIL, NBNOMA(15),NUCONN(15,32)
+      CHARACTER*8 NOMAIL(*)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +21,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C
 C      GMEELT --   ECRITURE DES MAILLES ET DES GROUP_MA VENANT
 C                  D'UN FICHIER .GMSH DANS LE FICHIER .MAIL
@@ -30,19 +32,9 @@ C    NBMAIL         IN    I         NOMBRE TOTAL DE MAILLES
 C    NUCONN         IN    I         PASSAGE DE LA NUMEROTATION DES NDS
 C                                     D'UNE MAILLE : ASTER -> GMSH
 C
-C.========================= DEBUT DES DECLARATIONS ====================
-C -----  ARGUMENTS
-           INTEGER     IMOD, NBTYMA, NBMAIL, NBNOMA(15),NUCONN(15,32)
-           CHARACTER*8 NOMAIL(*)
-C -----  VARIABLES LOCALES
-           INTEGER      NEU2(32), IER
-           CHARACTER*1  PRFNOE, PRFMAI
-           CHARACTER*8  CHGROU, CHTAB(32), CHMAIL, K8BID
-           CHARACTER*12 CHENTI
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
 C
       INTEGER            ZI
-      INTEGER VALI(2)
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -58,8 +50,18 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       CHARACTER*32 JEXNOM, JEXNUM
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C.========================= DEBUT DU CODE EXECUTABLE ==================
+C --------- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------
+C
+      INTEGER      NEU2(32),IER,I,IJ,NTE,IMA,ITYP,NBNO,INUM,NBNOAS
+      INTEGER      IDIV,INO,IREST,K,L,MAXMAI,NUMGRO,JGRMAI,JGR,IMA1
+      INTEGER      INDMAX,VALI(2)
+      INTEGER      JNUMA,JTYPMA,JNBNMA,JNOMA,JNBMAG,JNBTYM,JINDMA
+      CHARACTER*1  PRFNOE,PRFMAI
+      CHARACTER*8  CHGROU,CHTAB(32),CHMAIL,K8BID
+      CHARACTER*12 CHENTI
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
 C
 C --- INITIALISATIONS :
@@ -145,6 +147,7 @@ C
 C
 C --- ECRITURE DES GROUP_MA :
 C     ---------------------
+      IER = 0
       CALL JELIRA('&&PREGMS.INDICE.GROUP_MA','LONUTI',INDMAX,K8BID)
 C
       MAXMAI = 0
@@ -152,67 +155,71 @@ C
         MAXMAI = MAX(MAXMAI,ZI(JNBMAG+I-1))
   50  CONTINUE
 C
-      CALL WKVECT('&&PREGMS.GRMA.MAILLES','V V K8',MAXMAI,JGRMAI)
+C --- SI IL N Y A AU MOINS UN GROUPE :
+C     ------------------------------
+      IF (MAXMAI.NE.0) THEN
 C
-      CHGROU(1:2) = 'GM'
+        CALL WKVECT('&&PREGMS.GRMA.MAILLES','V V K8',MAXMAI,JGRMAI)
+C
+        CHGROU(1:2) = 'GM'
 C
 C --- BOUCLE SUR LES GROUPES DE MAILLES :
 C     ---------------------------------
-      IER = 0
-      DO 60 I = 1, INDMAX
-        NUMGRO = ZI(JINDMA+I-1)
-        IF ( NUMGRO .GE. 1000000 ) THEN
-           IER = IER + 1
-           VALI (1) = NUMGRO
-           VALI (2) = 1000000
-           CALL U2MESG('E', 'PREPOST5_21',0,' ',2,VALI,0,0.D0)
-           GOTO 60
-        ENDIF
-        CALL CODENT(NUMGRO,'G',CHGROU(3:8))
-        WRITE(IMOD,'(A,4X,2A)') 'GROUP_MA','NOM=',CHGROU
-        CALL JEVEUO(JEXNUM('&&PREGMS.LISTE.GROUP_MA',I),'E',JGR)
-        DO 70 K = 1, ZI(JNBMAG+I-1)
-          CALL CODNOP(CHMAIL,PRFMAI,1,1)
-          CALL CODENT(ZI(JGR+K-1),'G',CHMAIL(2:8))
-          ZK8(JGRMAI+K-1) = CHMAIL
-  70    CONTINUE
+        DO 60 I = 1, INDMAX
+          NUMGRO = ZI(JINDMA+I-1)
+          IF ( NUMGRO .GE. 1000000 ) THEN
+             IER = IER + 1
+             VALI (1) = NUMGRO
+             VALI (2) = 1000000
+             CALL U2MESG('E', 'PREPOST5_21',0,' ',2,VALI,0,0.D0)
+             GOTO 60
+          ENDIF
+          CALL CODENT(NUMGRO,'G',CHGROU(3:8))
+          WRITE(IMOD,'(A,4X,2A)') 'GROUP_MA','NOM=',CHGROU
+          CALL JEVEUO(JEXNUM('&&PREGMS.LISTE.GROUP_MA',I),'E',JGR)
+          DO 70 K = 1, ZI(JNBMAG+I-1)
+            CALL CODNOP(CHMAIL,PRFMAI,1,1)
+            CALL CODENT(ZI(JGR+K-1),'G',CHMAIL(2:8))
+            ZK8(JGRMAI+K-1) = CHMAIL
+  70      CONTINUE
 C
 C ---   ECRITURE DES MAILLES DU GROUPE DE MAILLES COURANT :
 C       -------------------------------------------------
-        WRITE(IMOD,'(8(2X,A))') (ZK8(JGRMAI+K-1),K=1,ZI(JNBMAG+I-1))
+          WRITE(IMOD,'(8(2X,A))') (ZK8(JGRMAI+K-1),K=1,ZI(JNBMAG+I-1))
 C
-        WRITE(IMOD,'(A)') 'FINSF'
-        WRITE(IMOD,'(A)') '%'
+          WRITE(IMOD,'(A)') 'FINSF'
+          WRITE(IMOD,'(A)') '%'
 C
 C --- DANS LE CAS D'UN POINT ECRITURE D'UN GROUPNO
 C ---  LE GROUPE DE MAILLE CONTIENT ALORS UNE SEULE MAILLE POI1
 
-        IF (ZI(JNBMAG+I-1).EQ.1) THEN
-           CALL JEVEUO(JEXNUM('&&PREGMS.LISTE.GROUP_MA',I),'E',JGR)
-           IMA1=ZI(JGR)
-           IJ=0
-           DO 80 IMA = 1, NBMAIL
-              INUM = ZI(JNUMA+IMA-1)
-              NBNO = ZI(JNBNMA+IMA-1)
-              IF (INUM.EQ.IMA1) THEN
-                 IF (NBNO.EQ.1) THEN
-                    WRITE(IMOD,'(A,4X,2A)') 'GROUP_NO','NOM=',CHGROU
-                    NEU2(INO) = ZI(JNOMA+IJ)
-                    CALL CODNOP(CHTAB(INO),PRFNOE,1,1)
-                    CALL CODENT(NEU2(INO),'G',CHTAB(INO)(2:8))
-                    WRITE(IMOD,'((2X,A))') CHTAB(INO)
-                    WRITE(IMOD,'(A)') 'FINSF'
-                    WRITE(IMOD,'(A)') '%'
-                    GOTO 90
-                 ENDIF
-              ENDIF
-            IJ = IJ + NBNO
-  80       CONTINUE
-        ENDIF
-  90    CONTINUE
+          IF (ZI(JNBMAG+I-1).EQ.1) THEN
+             CALL JEVEUO(JEXNUM('&&PREGMS.LISTE.GROUP_MA',I),'E',JGR)
+             IMA1=ZI(JGR)
+             IJ=0
+             DO 80 IMA = 1, NBMAIL
+                INUM = ZI(JNUMA+IMA-1)
+                NBNO = ZI(JNBNMA+IMA-1)
+                IF (INUM.EQ.IMA1) THEN
+                   IF (NBNO.EQ.1) THEN
+                      WRITE(IMOD,'(A,4X,2A)') 'GROUP_NO','NOM=',CHGROU
+                      NEU2(INO) = ZI(JNOMA+IJ)
+                      CALL CODNOP(CHTAB(INO),PRFNOE,1,1)
+                      CALL CODENT(NEU2(INO),'G',CHTAB(INO)(2:8))
+                      WRITE(IMOD,'((2X,A))') CHTAB(INO)
+                      WRITE(IMOD,'(A)') 'FINSF'
+                      WRITE(IMOD,'(A)') '%'
+                      GOTO 90
+                   ENDIF
+                ENDIF
+              IJ = IJ + NBNO
+  80         CONTINUE
+          ENDIF
+  90      CONTINUE
 
-  60  CONTINUE
-
+  60    CONTINUE
+C
+      ENDIF
 
       IF ( IER .NE. 0 ) THEN
          CALL U2MESS('F','PREPOST_60')

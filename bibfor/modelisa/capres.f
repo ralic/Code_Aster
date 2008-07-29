@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/07/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,8 +143,6 @@ C           RECUPERATION DES MAILLES PRINCIPALES X-FEM FISSUREES
          ENDIF
 C
  10   CONTINUE
-
-       CALL IMPRSD('CHAMP',carte,6,'CARTE')
 
 C-----------------------------------------------------------------------
       CALL JEDEMA()

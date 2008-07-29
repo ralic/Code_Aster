@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,8 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),);
-
+                    
+                    
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
@@ -57,17 +58,19 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 #                            b = 10.
 a=5.
 b=10.
-LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y');
-
+#LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
+#LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y');
+             
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',
-                    ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 PT_ORIGIN=(0. ,20. ,15. ),),
-                    );
-
+                    INFO=1,
+#                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    DEFI_FISS=_F(
+                                 FORM_FISS = 'DEMI_PLAN',
+                                 PFON      =(0. , 5. ,15.),
+                                 NORMALE   =(0. , 0. , 1.),
+                                 DTAN      =(0. ,-1. , 0.)),
+                    GROUP_MA_ENRI='VOL');
+                   
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);

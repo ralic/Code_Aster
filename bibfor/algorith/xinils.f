@@ -1,13 +1,8 @@
-      SUBROUTINE XINILS(IFM,NOMA,METH,NFONF,NFONG,GEOFIS,A,B,C,COTE,
-     &                                         VECTX,VECTY,CNSLT,CNSLN)
-      IMPLICIT NONE
-      INTEGER       IFM
-      CHARACTER*8   NOMA,METH,NFONF,NFONG,GEOFIS,COTE
-      CHARACTER*19  CNSLT,CNSLN
-      REAL*8        A,B,C(3),VECTX(3),VECTY(3)
+      SUBROUTINE XINILS(IFM,NOMA,METH,NFONF,NFONG,GEOFIS,A,B,NOEUD,COTE,
+     &                                         VECT1,VECT2,CNSLT,CNSLN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/07/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,25 +20,29 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
+C TOLE CRP_20
+C
+      IMPLICIT NONE
+      INTEGER       IFM
+      CHARACTER*8   NOMA,METH,NFONF,NFONG,COTE
+      CHARACTER*16  GEOFIS
+      CHARACTER*19  CNSLT,CNSLN
+      REAL*8        A,B,NOEUD(3),VECT1(3),VECT2(3)
+
+C ----------------------------------------------------------------------
 C                      CALCUL INITIAL DES LEVEL-SETS
 C
-C    ENTREE :
-C              IFM    :   FICHIER D'IMPRESSION
-C              NOMA   :   OBJET MAILLAGE
-C              METH   :   MÉTHODE DE CALUL DES LEVEL-SETS
-C              NFONF  :   NOM DE LA FONCTION LEVEL SET TANGENTE
-C              NFONG  :   NOM DE LA FONCTION LEVEL SET NORMALE
-C              GEOFIS :   GEOMETRIE DE LA FISSURE
-C              A      :   DEMI-GRAND AXE       (POUR FISSURE ELLIPTIQUE)
-C              B      :   DEMI-PETIT AXE       (POUR FISSURE ELLIPTIQUE)
-C              C      :   CENTRE               (POUR FISSURE ELLIPTIQUE)
-C              COTE   :   COTE DE LA FISSURE ('IN' OU 'OUT')
-C              VECTX  :   VECTEUR DU GRAND AXE (POUR FISSURE ELLIPTIQUE)
-C              VECTY  :   VECTEUR DU PETIT AXE (POUR FISSURE ELLIPTIQUE)
-C
-C    SORTIE : 
-C              CNSLN  :   LEVEL-SET NORMALE  (PLAN DE LA FISSURE)
-C              CNSLT  :   LEVEL-SET TANGENTE (TRACE DE LA FISSURE)
+C ENTREE :
+C  IFM    :  FICHIER D'IMPRESSION
+C  NOMA   :  OBJET MAILLAGE
+C  METH   :  MÉTHODE DE CALUL DES LEVEL-SETS
+C  NFONF  :  NOM DE LA FONCTION LEVEL SET TANGENTE
+C  NFONG  :  NOM DE LA FONCTION LEVEL SET NORMALE
+C  GEOFIS :  GEOMETRIE DE LA FISSURE
+C  A,B,NOEUD,COTE,VECT1,VECT2 : QUANTITES DEFINISSANT LA GEO DE LA FISS
+C SORTIE : 
+C      CNSLN  :  LEVEL-SET NORMALE  (PLAN DE LA FISSURE)
+C      CNSLT  :  LEVEL-SET TANGENTE (TRACE DE LA FISSURE)
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -71,8 +70,9 @@ C
       INTEGER       IBID,IRET,ME1,ME2,CLSM
       INTEGER       NBNO,INO,JCOOR,NBMAF,I,J
       INTEGER       JLTSV,JLTSL,JLNSV,JLNSL,AR(12,2)
-      REAL*8        VALPU(3),P3D(3),PLOC(3),VECTZ(3),H
+      REAL*8        VALPU(3),P2D(2),P3D(3),PLOC(3),VECT3(3),H
       REAL*8        NORME,LSNA,LSNB,D,LSTA,LSTB
+      REAL*8        NORI(3),NEXT(3),NMIL(3),VSEG(3),NSEG
       CHARACTER*8   K8BID,NOMPU(3),TYPMA,NOMNO
       CHARACTER*16  K16BID
       CHARACTER*19  MAI
@@ -151,9 +151,16 @@ C-----------------------------------------------------------------------
 C       DANS LE CAS OU ON DONNE LA GEOMETRIE DE LA FISSURE
 C-----------------------------------------------------------------------
 
-        WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 3'  
-
+        WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 3'    
+        
         IF (GEOFIS.EQ.'ELLIPSE') THEN
+           
+C  VECT1  = VECT DU DEMI-GRAND AXE
+C  VECT2  = VECT DU DEMI-PETIT AXE
+C  NOEUD  = CENTRE DE L'ELLIPSE
+C  A      =  DEMI-GRAND AXE       
+C  B      =  DEMI-PETIT AXE       
+C  COTE   =  COTE DE LA FISSURE ('IN' OU 'OUT' DE L'ELLIPSE)
 
           DO 20 INO=1,NBNO
 
@@ -162,23 +169,23 @@ C           COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
               P3D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
  21         CONTINUE
 
-C           BASE LOCALE : (VECTX,VECTY,VECTZ)
-            CALL NORMEV(VECTX,NORME)
-            CALL NORMEV(VECTY,NORME)
-            CALL PROVEC(VECTX,VECTY,VECTZ)
+C           BASE LOCALE : (VECT1,VECT2,VECT3)
+            CALL NORMEV(VECT1,NORME)
+            CALL NORMEV(VECT2,NORME)
+            CALL PROVEC(VECT1,VECT2,VECT3)
 
 C           MATRICE DE PASSAGE LOC-GLOB
             DO 22 I=1,3
-              MAT(1,I)=VECTX(I)
-              MAT(2,I)=VECTY(I)
-              MAT(3,I)=VECTZ(I)
+              MAT(1,I)=VECT1(I)
+              MAT(2,I)=VECT2(I)
+              MAT(3,I)=VECT3(I)
  22         CONTINUE
 
 C           PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
             DO 23 I=1,3
               PLOC(I)=0.D0
               DO 24 J=1,3
-                PLOC(I) = PLOC(I) + MAT(I,J) * (P3D(J)-C(J))
+                PLOC(I) = PLOC(I) + MAT(I,J) * (P3D(J)-NOEUD(J))
  24           CONTINUE
  23         CONTINUE
 
@@ -187,7 +194,7 @@ C           LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
             ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
 C           LEVEL SET TANGENTE CORRESPOND A LA DISTANCE DU POINT
-C           A L'ELLIPSE DANS LE PLAN (VECTX,VECTY)
+C           A L'ELLIPSE DANS LE PLAN (VECT1,VECT2)
             CALL DISELL(PLOC,A,B,H)
 
 C           SI LA FISSURE EST A L'EXTERIEUR DE L'ELLIPSE, ON PREND 
@@ -198,7 +205,288 @@ C           L'OPPOSEE DE H (PAR DEFAUT, LA FISSURE EST A L'INTERIEUR)
             ZL(JLTSL-1+(INO-1)+1)=.TRUE.
 
  20       CONTINUE          
+        
+        ELSEIF (GEOFIS.EQ.'CYLINDRE') THEN
+           
+C  VECT1  = VECT DU DEMI-GRAND AXE
+C  VECT2  = VECT DU DEMI-PETIT AXE
+C  NOEUD  = CENTRE DE L'ELLIPSE
+C  A      =  DEMI-GRAND AXE       
+C  B      =  DEMI-PETIT AXE       
+
+          DO 30 INO=1,NBNO
+
+C           COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
+            DO 31 DIMNO=1, DIMENS
+              P3D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
+ 31         CONTINUE
+
+C           BASE LOCALE : (VECT1,VECT2,VECT3)
+            CALL NORMEV(VECT1,NORME)
+            CALL NORMEV(VECT2,NORME)
+            CALL PROVEC(VECT1,VECT2,VECT3)
+
+C           MATRICE DE PASSAGE LOC-GLOB
+            DO 32 I=1,3
+              MAT(1,I)=VECT1(I)
+              MAT(2,I)=VECT2(I)
+              MAT(3,I)=VECT3(I)
+ 32         CONTINUE
+
+C           PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
+            DO 33 I=1,3
+              PLOC(I)=0.D0
+              DO 34 J=1,3
+                PLOC(I) = PLOC(I) + MAT(I,J) * (P3D(J)-NOEUD(J))
+ 34           CONTINUE
+ 33         CONTINUE
+
+C           LEVEL SET TANGENTE CORRESPOND A LA 3EME COORDONNEE LOCALE
+            ZR(JLTSV-1+(INO-1)+1)= PLOC(3)
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+
+C           LEVEL SET NORMALE CORRESPOND A LA DISTANCE DU POINT
+C           AU CYLINDRE
+            CALL DISELL(PLOC,A,B,H)
+
+            ZR(JLNSV-1+(INO-1)+1)=H
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.
+
+ 30       CONTINUE          
+        
+        ELSEIF (GEOFIS.EQ.'DEMI_PLAN') THEN
+
+
+C  VECT1 = VECT NORMAL AU PLAN DE FISSURE
+C  VECT2 = VECT DANS LE PLAN DE FISSURE  
+C          (NORMALE AU FOND : DIRECTION DE PROPAGATION POTENTIELLE)
+C  NOEUD = NOEUD DU FOND DE FISSURE
+
+          DO 29 INO=1,NBNO
+
+C           COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
+            DO 25 DIMNO=1, DIMENS
+              P3D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
+ 25         CONTINUE
+
+C           BASE LOCALE : (VECT2,VECT3,VECT1)
+            CALL NORMEV(VECT1,NORME)
+            CALL NORMEV(VECT2,NORME)
+            CALL PROVEC(VECT1,VECT2,VECT3)
+
+C           MATRICE DE PASSAGE LOC-GLOB
+            DO 26 I=1,3
+              MAT(1,I)=VECT2(I)
+              MAT(2,I)=VECT3(I)
+              MAT(3,I)=VECT1(I)
+ 26         CONTINUE
+
+C           PROJECTION DU POINT 3D DANS LE REPERE LOCAL
+            DO 27 I=1,3
+              PLOC(I)=0.D0
+              DO 28 J=1,3
+                PLOC(I) = PLOC(I) + MAT(I,J) * (P3D(J)-NOEUD(J))
+ 28           CONTINUE
+ 27         CONTINUE
+
+C           LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
+            ZR(JLNSV-1+(INO-1)+1)= PLOC(3)
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
+
+C           LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
+            ZR(JLTSV-1+(INO-1)+1)= PLOC(1)
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+            
+ 29       CONTINUE          
+         
+        ELSEIF (GEOFIS.EQ.'SEGMENT') THEN
+
+C  VECT1 = NOEUD DU FOND ORIGINE
+C  VECT2 = NOEUD DU FOND EXTREMITE
+
+          DO 100 I=1,3
+            NORI(I) = VECT1(I)
+            NEXT(I) = VECT2(I)
+            NMIL(I) = (NORI(I) + NEXT(I))/2
+            VSEG(I) = NEXT(I)-NORI(I)
+ 100      CONTINUE   
+ 
+          NSEG = SQRT(VSEG(1)**2 + VSEG(2)**2 + VSEG(3)**2)
+
+          DO 50 INO=1,NBNO
+
+C           COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
+            DO 51 DIMNO=1, DIMENS
+              P2D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
+ 51         CONTINUE
+
+            VECT3(1) = 0.D0
+            VECT3(2) = 0.D0
+            VECT3(3) = 1.D0
+            
+C           BASE LOCALE : (VSEG,VECT2)
+            CALL NORMEV(VSEG,NORME)
+            CALL PROVEC(VECT3,VSEG,VECT2)
+
+C           MATRICE DE PASSAGE LOC-GLOB
+            DO 52 I=1,2
+              MAT(1,I)=VSEG(I)
+              MAT(2,I)=VECT2(I)
+ 52         CONTINUE
+
+C           PROJECTION DU POINT 2D DANS LE REPERE LOCAL
+C           POSITIONNE AU CENTRE DU SEGEMENT
+            DO 53 I=1,2
+              PLOC(I)=0.D0
+              DO 54 J=1,2
+                PLOC(I) = PLOC(I) + MAT(I,J) * (P2D(J)-NMIL(J))
+ 54           CONTINUE
+ 53         CONTINUE
+
+C           LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
+            ZR(JLNSV-1+(INO-1)+1)= PLOC(2)
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
+
+C           LEVEL SET TANGENTE EST DEFINIE PAR : 
+            ZR(JLTSV-1+(INO-1)+1)= ABS(PLOC(1)) - NSEG/2
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+            
+ 50       CONTINUE          
+
           
+        ELSEIF (GEOFIS.EQ.'DEMI_DROITE') THEN
+
+C  VECT1 = VECTEUR DIRECTEUR DE LA DEMI DROITE 
+C          DANS LA DIRECTION DE PROPA
+C  NOEUD = NOEUD DU FOND DE FISSURE
+
+          DO 35 INO=1,NBNO
+
+C           COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
+            DO 36 DIMNO=1, DIMENS
+              P2D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
+ 36         CONTINUE
+            
+            VECT3(1) = 0.D0
+            VECT3(2) = 0.D0
+            VECT3(3) = 1.D0
+            
+C           BASE LOCALE : (VECT1,VECT2)
+            CALL NORMEV(VECT1,NORME)
+            CALL PROVEC(VECT3,VECT1,VECT2)
+
+C           MATRICE DE PASSAGE LOC-GLOB
+            DO 37 I=1,2
+              MAT(1,I)=VECT1(I)
+              MAT(2,I)=VECT2(I)
+ 37         CONTINUE
+
+C           PROJECTION DU POINT 2D DANS LE REPERE LOCAL
+            DO 38 I=1,2
+              PLOC(I)=0.D0
+              DO 39 J=1,2
+                PLOC(I) = PLOC(I) + MAT(I,J) * (P2D(J)-NOEUD(J))
+ 39           CONTINUE
+ 38         CONTINUE
+
+C           LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
+            ZR(JLNSV-1+(INO-1)+1)= PLOC(2)
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
+
+C           LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
+            ZR(JLTSV-1+(INO-1)+1)= PLOC(1)
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+            
+ 35       CONTINUE  
+
+
+        ELSEIF (GEOFIS.EQ.'DROITE') THEN
+
+C  VECT1 = VECTEUR DIRECTEUR DE LA  DROITE
+C  NOEUD = UN POINT DE LA DROITE
+
+          DO 40 INO=1,NBNO
+
+C           COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
+            DO 41 DIMNO=1, DIMENS
+              P2D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
+ 41         CONTINUE
+            
+            VECT3(1) = 0.D0
+            VECT3(2) = 0.D0
+            VECT3(3) = 1.D0
+            
+C           BASE LOCALE : (VECT1,VECT2)
+            CALL NORMEV(VECT1,NORME)
+            CALL PROVEC(VECT3,VECT1,VECT2)
+
+C           MATRICE DE PASSAGE LOC-GLOB
+            DO 42 I=1,2
+              MAT(1,I)=VECT1(I)
+              MAT(2,I)=VECT2(I)
+ 42         CONTINUE
+
+C           PROJECTION DU POINT 2D DANS LE REPERE LOCAL
+            DO 43 I=1,2
+              PLOC(I)=0.D0
+              DO 44 J=1,2
+                PLOC(I) = PLOC(I) + MAT(I,J) * (P2D(J)-NOEUD(J))
+ 44           CONTINUE
+ 43         CONTINUE
+
+
+C           LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
+            ZR(JLNSV-1+(INO-1)+1)= PLOC(2)
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
+
+C           LEVEL SET TANGENTE PAS DEFINIE 
+            
+ 40       CONTINUE  
+        
+        ELSEIF  (GEOFIS.EQ.'INCLUSION') THEN
+           
+C  VECT1  = VECT DU DEMI-GRAND AXE
+C  VECT2  = VECT DU DEMI-PETIT AXE
+C  NOEUD  = CENTRE DE L'ELLIPSE
+C  A      =  DEMI-GRAND AXE       
+C  B      =  DEMI-PETIT AXE       
+
+          DO 45 INO=1,NBNO
+
+C           COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
+            DO 46 DIMNO=1, DIMENS
+              P2D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
+ 46         CONTINUE
+
+C           BASE LOCALE : (VECT1,VECT2,VECT3)
+            CALL NORMEV(VECT1,NORME)
+            CALL NORMEV(VECT2,NORME)
+
+C           MATRICE DE PASSAGE LOC-GLOB
+            DO 47 I=1,2
+              MAT(1,I)=VECT1(I)
+              MAT(2,I)=VECT2(I)
+ 47         CONTINUE
+
+C           PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
+            DO 48 I=1,2
+              PLOC(I)=0.D0
+              DO 49 J=1,2
+                PLOC(I) = PLOC(I) + MAT(I,J) * (P2D(J)-NOEUD(J))
+ 49           CONTINUE
+ 48         CONTINUE
+
+C           LEVEL SET NORMALE CORRESPOND A LA DISTANCE DU POINT
+C           AU CYLINDRE
+            CALL DISELL(PLOC,A,B,H)
+
+            ZR(JLNSV-1+(INO-1)+1)=H
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.
+
+C           LEVEL SET TANGENTE PAS DEFINIE 
+
+ 45       CONTINUE          
+                          
         ENDIF
 
       ENDIF     

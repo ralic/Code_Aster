@@ -1,12 +1,12 @@
       SUBROUTINE MESOMM(CHAMP,LONG,VI,VR,VC,NBMAIL,NUMAIL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*) CHAMP
       INTEGER LONG,VI(*),NBMAIL,NUMAIL(*)
       REAL*8 VR(*)
       COMPLEX*16 VC(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,9 @@ C     ------------------------------------------------------------------
       CHARACTER*8 SCAL
       CHARACTER*19 CHAMP2,LIGREL
       LOGICAL FIRST
+      INTEGER I,IACELK,IAVALE,IBID,ICOEF,IDECGR,IEL,IER1,IER2
+      INTEGER IM,INUM,JCELD,JLIGR,K,NBGR,NEL,NUMEL1
+
       CALL JEMARQ()
 
       CHAMP2 = CHAMP

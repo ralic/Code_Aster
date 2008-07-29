@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHIE, NAME, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       CHARACTER*8   K8B
       CHARACTER*4   K4B
       CHARACTER*1   K1ACCE,K1AUT
-      INTEGER       I,K,IERR,IER1,IER2,IFILE
+      INTEGER       I,IERR,IER1,IER2,IFILE
       LOGICAL       V11
 C     ------------------------------------------------------------------
       INTEGER       MXIMPR
@@ -141,6 +141,14 @@ C
           DO 11 I = 1 , NBFILE
             IF ( DDNAME(I) .EQ. NAME16 )  DDNAME(I) = ' '
  11       CONTINUE
+        ENDIF
+        IF (K1ACCE.NE.'N') THEN 
+          INQUIRE ( FILE=NAMELL, EXIST=V11, IOSTAT=IER1)
+          IF (.NOT.V11) THEN
+            VALK(1)=NAMELL
+            VALK(2)=K8B
+            CALL U2MESK('F','UTILITAI5_1',2,VALK)
+          ENDIF
         ENDIF
         INQUIRE ( UNIT=UNIT, OPENED=V11, IOSTAT=IER1)
         IF ( IER1 .EQ. 0 ) THEN

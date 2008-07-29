@@ -1,4 +1,4 @@
-# MODIF  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,7 +126,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     GROUP_MA_ENRI=('VOLU'),
                     ORIE_FOND=_F(PFON_INI=(0.,0.,0.),
                                  VECT_ORIE=(0.,1.,0.),
-                                 PT_ORIGIN=(0.04,0.,0.02),),
+                                 POINT_ORIG=(0.04,0.,0.02),),
                     INFO=1,
                     );
 

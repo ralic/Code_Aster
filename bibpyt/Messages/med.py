@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 03/06/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF med Messages  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ cata_msg = {
   -> Absence de localisation de points de Gauss dans le fichier MED
      pour l'élément de référence %(k1)s.
      On suppose que l'ordre des points de Gauss est celui d'Aster.
-  -> Risque & Conseil:     
+  -> Risque & Conseil :     
      Risque de résultats faux.
 """),
 
@@ -185,10 +185,6 @@ cata_msg = {
 
 29 : _("""
   -> Il manque les mailles !
-"""),
-
-30 : _("""
-  -> Erreur: numéro de groupe = 0
 """),
 
 31 : _("""

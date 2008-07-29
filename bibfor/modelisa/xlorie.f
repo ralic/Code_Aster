@@ -1,7 +1,7 @@
-      SUBROUTINE XLORIE(FISS,NDIM)
+      SUBROUTINE XLORIE(FISS,NDIM,GEOFIS,DGA,NOEUD,VECT1,VECT2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,9 @@ C ======================================================================
 C
       IMPLICIT NONE
       INTEGER     NDIM
+      REAL*8      DGA,DPA,NOEUD(3),VECT1(3),VECT2(3)
       CHARACTER*8 FISS
+      CHARACTER*16 GEOFIS
 C      
 C ----------------------------------------------------------------------
 C
@@ -55,8 +57,9 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      I,IBID,IOCC
+      INTEGER      I,IBID,IOCC,IOCC2
       REAL*8       PFI(3),VOR(3),ORI(3),RAYON,NORME
+      CHARACTER*16 K16BID      
       CHARACTER*24 XCARFO
       INTEGER      JCARAF
       INTEGER      XXMMVD,ZXCAR
@@ -77,27 +80,47 @@ C
       ZR(JCARAF) = RAYON
 C
       CALL GETFAC('ORIE_FOND',IOCC)
+
+C     ORIENTATION AUTOMATIQUE      
       IF (IOCC .EQ. 0) THEN
-        IF (NDIM .EQ. 3) CALL U2MESS('F','XFEM_20')
+      
+        IF (NDIM .EQ. 3) THEN
+          CALL GETVTX('DEFI_FISS','FORM_FISS',1,1,1,K16BID,IOCC2)
+          IF ( IOCC2 .EQ. 0 ) THEN
+            CALL U2MESS('F','XFEM _20')
+          ELSE
+C           CONSTRUCTION AUTO DES DONNEES ORIENTATION DU FOND   
+            CALL XLORIA(ZR(JCARAF+1),GEOFIS,DGA,NOEUD,VECT1,VECT2)
+          ENDIF  
+        ENDIF 
+
+C     ORIENTATION UTILISATEUR     
       ELSEIF (IOCC .EQ. 1) THEN
+      
         IF (NDIM .EQ. 2) CALL U2MESS('F','XFEM_21')
         CALL GETVR8('ORIE_FOND','PFON_INI' ,1,1,3,PFI,IBID)
         CALL GETVR8('ORIE_FOND','VECT_ORIE',1,1,3,VOR,IBID)
-        CALL GETVR8('ORIE_FOND','PT_ORIGIN',1,1,3,ORI,IBID)
-C
-C --- NORMALISATION VECT_ORIE
-C
+        CALL GETVR8('ORIE_FOND','POINT_ORIG',1,1,3,ORI,IBID)
+
+C       NORMALISATION VECT_ORIE
         IF (NDIM .EQ. 3) THEN
           CALL NORMEV(VOR,NORME)
           IF (NORME.LT.1.D-10) CALL U2MESS('F','XFEM2_25')
-        ENDIF         
+        ENDIF   
+         
         DO 100 I = 1,3
           ZR(JCARAF+I)   = VOR(I)
           ZR(JCARAF+3+I) = ORI(I)
-          ZR(JCARAF+6+I) = PFI(I)          
+          ZR(JCARAF+6+I) = PFI(I)
  100    CONTINUE
+ 
+C       INFO SUR ORIENTATION (UTILISATEUR=0, AUTO=1) 
+        ZR(JCARAF+10) = 0.D0
+        
       ELSE
+      
         CALL U2MESS('F','XFEM_22')
+        
       ENDIF      
 C
       CALL JEDEMA()

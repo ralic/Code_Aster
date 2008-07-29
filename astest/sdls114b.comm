@@ -1,4 +1,4 @@
-# MODIF  DATE 02/06/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,7 +156,7 @@ FF2=DEFI_FISS_XFEM(MODELE=MO,
                    GROUP_MA_ENRI='VVOLTOT',
                    ORIE_FOND=_F(PFON_INI=(-0.005, 0.0, 0.0),
                                 VECT_ORIE=(0.0, 1.0, 0.0),
-                                PT_ORIGIN=(0.0, 0.0, 0.0),),
+                                POINT_ORIG=(0.0, 0.0, 0.0),),
                    INFO=1,
                   );
 

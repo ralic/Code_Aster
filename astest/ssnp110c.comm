@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,6 +85,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                       RAYON=(1 / (8.0 * ny)),
                                       PRECISION=(1 / (8.0 * ny)),),),);
 
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=(_F(GROUP_MA='SURFTOT',
                               PHENOMENE='MECANIQUE',
@@ -93,15 +94,15 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),),);
 
-LN = FORMULE(VALE='Y',
-             NOM_PARA=('X','Y',),);
-
-LT = FORMULE(VALE='X',
-             NOM_PARA=('X','Y',),);
+#LN = FORMULE(VALE='Y',NOM_PARA=('X','Y',),);
+#LT = FORMULE(VALE='X',NOM_PARA=('X','Y',),);
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,
-                                 FONC_LN=LN,),
+#                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    DEFI_FISS=_F(
+                                 FORM_FISS = 'DEMI_DROITE',
+                                 PFON      =(0. , 0. ,0.),
+                                 DTAN      =(1. , 0. ,0.)),
                     GROUP_MA_ENRI='SURFTOT',);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
