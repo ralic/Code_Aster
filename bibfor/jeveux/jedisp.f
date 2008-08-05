@@ -1,6 +1,6 @@
       SUBROUTINE JEDISP ( N , TAB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ C ----------------------------------------------------------------------
       LOGICAL          LAMOV
 C DEB ------------------------------------------------------------------
       IF ( LDYN .EQ. 1 ) THEN 
-        TAB(1) = VMXDYN-(MCDYN-LISZON*LOIS)
+        TAB(1) = (VMXDYN-(MCDYN+LISZON*LOIS))/LOIS
         DO 11 K = 2,N
           TAB(K) = 0
   11    CONTINUE

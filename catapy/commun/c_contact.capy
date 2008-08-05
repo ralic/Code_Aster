@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
+#& MODIF COMMUN  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +87,8 @@ def C_CONTACT() : return FACT(statut='f',max='**',
              FISS_ESCL      = SIMP(statut='f',typ=fiss_xfem,max=1),
              SIGN_MAIT      = SIMP(statut='f',typ='TXM',into=("+","-",) ),
              SIGN_ESCL      = SIMP(statut='f',typ='TXM',into=("+","-",) ),
-             INTEGRATION    = SIMP(statut='f',typ='TXM',defaut="FPG4",into=("GAUSS","FPG2","FPG3","FPG4","FPG6","FPG7","NOEUD",) ),
+             INTEGRATION    = SIMP(statut='f',typ='TXM',defaut="FPG4",into=("GAUSS","FPG2","FPG3","FPG4","FPG6",
+                                               "FPG7","NOEUD","SIMPSON","SIMPSON1","NCOTES","NCOTES1","NCOTES2") ),
              COEF_REGU_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
              ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut=30),
              ITER_GEOM_MAXI  =SIMP(statut='f',typ='I',defaut=0),

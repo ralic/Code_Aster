@@ -1,6 +1,6 @@
       SUBROUTINE XMELEL(IIN,NTYMA1,NTYMA2,IORDR,NNDEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,17 +44,17 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER      NBTYP
-      PARAMETER    (NBTYP=2)
-      CHARACTER*8  CPL(NBTYP,2)
+      PARAMETER    (NBTYP=4)
+      CHARACTER*8  CPL(NBTYP,4)
       INTEGER      NPL(NBTYP)
       INTEGER      K
 C
       DATA (CPL(K,1),K=1,NBTYP) /
-     &      'TRIA6','QUAD8'/
+     &      'TRIA6','QUAD8','TRIA6','QUAD8'/
       DATA (CPL(K,2),K=1,NBTYP) /
-     &      'TRIA6','QUAD8'/
+     &      'TRIA6','QUAD8','TRIA6','QUAD8'/
       DATA (NPL(K),K=1,NBTYP) /
-     &      9 ,12 /
+     &      9 ,12 ,9 ,12 /
 C
 C ----------------------------------------------------------------------
 C
@@ -76,7 +76,6 @@ C
       ELSE
         IORDR = 0
       ENDIF
-
       CALL ASSERT(IORDR.NE.0)
 
       END

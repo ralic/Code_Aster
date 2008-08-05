@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+#@ MODIF med Messages  DATE 04/08/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,6 +185,11 @@ cata_msg = {
 
 29 : _("""
   -> Il manque les mailles !
+"""),
+
+30: _("""
+  -> Votre modèle semble etre composé de plusieurs modélisations, les composantes
+     qui n'existent pas pour une partie du modèle ont été mises à zéro.
 """),
 
 31 : _("""

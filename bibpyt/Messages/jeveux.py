@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -211,9 +211,8 @@ cata_msg = {
 """),
 
 42 : _("""
-     Fichier saturé le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
-     il faut relancer le calcul en modifiant le parametre NMAX_ENRE dans DEBUT 
-     ou en passant une taille maximum de base sur la ligne de commande 
+     Fichier saturé, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
+     il faut relancer le calcul en passant une taille maximum de base sur la ligne de commande 
      argument "-max_base" suivi de la valeur en Mo.
 """),
 

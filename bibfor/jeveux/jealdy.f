@@ -1,6 +1,6 @@
       SUBROUTINE JEALDY ( IACT , LGSEG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,7 @@ C     ------------------------------------------------------------------
       INTEGER          MAX
 C     ------------------------------------------------------------------
        
-      IF ( IACT .EQ. 1 ) THEN
+      IF ( IACT .EQ. 1 .AND. LGSEG .GT. 0 ) THEN
          LDYN = 1
          LGDYN = MAX (1,LGSEG) 
       ELSE  

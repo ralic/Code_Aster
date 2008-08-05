@@ -1,4 +1,4 @@
-# MODIF  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,7 +159,7 @@ CTXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  FROTTEMENT     = 'COULOMB',
                                  COULOMB        = 1.,
                                  ITER_FROT_MAXI = 20,
-                                 INTEGRATION    = 'NOEUD',
+                                 INTEGRATION    = 'SIMPSON',
                                  ALGO_LAGR      = 'NON',
                                  COEF_REGU_CONT = 100.,
                                  ITER_CONT_MAXI = 4,
@@ -221,7 +221,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                  INST_FIN=1.0,
                                  ),
                     CONVERGENCE=_F(ARRET='OUI',
-                                   ITER_GLOB_MAXI=10,
+                                   ITER_GLOB_MAXI=40,
                                    RESI_GLOB_RELA=1.E-6,
                                    ),
                     SOLVEUR=_F(METHODE='MUMPS',

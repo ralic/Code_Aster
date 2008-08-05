@@ -1,0 +1,513 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 05/08/2008 - 07:20:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011955 DU 2008-04-10 11:28:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   transmission systxc3xa9matique de -mxmemdy sur la ligne de commande + corection de jedisp.f
+FONCTIONNALITE
+   Dans astk, pour le lancement en batch sur Bull, le paramètre -mxmemdy est maintenant
+   sytématiquement passé sur la ligne de commande lorsqu'il ne figure pas déjà parmi les
+   arguments supplèmentaires fournis par l'utilisateur (champ Arguments). On lui associe
+   alors la valeur correspondant à la différence entre la mémoire affectée au job (champ
+   Mémoire totale) et Mémoire Aster (champ "dont Aster") si le champ est renseigné, sinon on
+   passe la valeur de la mémoire totale.
+   Pour le passage des tests (astout), le paramètre est ajouté sur la ligne de commande.
+   
+   La fonction JEDISP reste en l'état, l'argument du mot clé -mxmemdy étant sytématiquement
+   passé, une seule valeur est renvoyée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   lancement d'xc3xa9tude astk et astout
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012135 DU 2008-05-28 11:52:44
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   AR01 - Messages JEVEUX xc3xa0 amxc3xa9liorer : JEVEUX_42 et SUPERVIS_83
+FONCTIONNALITE
+   Le message JEVEUX_42 est modifié pour ne plus indiquer que la modification de l'argument
+   -max_base. Par ailleurs la valeur par défaut de la taille de la base Jeveux (GLOBALE et
+   VOLATILE) passe de 12 à 50 Go.
+   
+   Le message SUPERVIS_83 est complété par la phrase suivante :
+    Vous pouvez augmenter cette limite en utilisant l'argument "-max_base" sur la ligne
+    de commande suivi d'une valeur en Moctets. 
+   L'unité est corrigée Mo au lieu de Ko.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests personnels
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012238 DU 2008-06-26 11:57:37
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   ssnv112b en version 8
+FONCTIONNALITE
+   Destruction des fichiers non utilisés effectuée en version NEW8 pour les tests forma03b,
+   ssls104b et ssnv112b et en version NEW9 pour le test ssls104b.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma03b, ssls104b et ssnv112b
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012249 DU 2008-06-27 12:21:26
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.2, le cas-test wtnp111b s?arrete en ERREUR_<F> sur Calibre 5 (clau5aaa).
+FONCTIONNALITE
+   En ajoutant  PCENT_PIVOT=20, sous le mot clé SOLVEUR, le test passe sans problème sous
+   Calibre 5 (clau5aaaa), Calibre 4 (clp50a8), Rocks (clpaster) et le seveur centalisé Bull.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   wtnp111b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012290 DU 2008-07-10 12:11:59
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   probleme de memoire dans une boucle avec python
+FONCTIONNALITE
+   Il s'agit d'un problème de placement des objets en mémoire. Même si la boucle python
+   effectue les des appels de commandes identiques au cours des itérations, les objets Jeveux
+   ne sont pas placés toujours de la même façon et on arrive à saturer l'espace mémoire.
+   
+   En utilisant le mot clé MEMOIRE dans la commande DEBUT on arrive à effectuer le calcul
+   jusqu'au bout.
+   Avec une zone mémoire gérée dynamiquement par JEVEUX (Mémoire totale  5000 Mo dont aster
+   500 Mo)                                 
+   
+   DEBUT(PAR_LOT='NON', 
+          MEMOIRE=_F( TYPE_ALLOCATION=4, TAILLE=3000,),
+        );
+   
+   Le calcul s'achève normalement avec les temps suivants :
+    *  . part Superviseur      :     603.50 :       7.39 :     610.89 :     622.80 *
+    *  . part Fortran          :     670.39 :      22.94 :     693.33 :     757.95 *
+    ********************************************************************************
+    * TOTAL_JOB                :    1275.58 :      30.39 :    1305.97 :    1382.48 *
+    ********************************************************************************
+   
+   En mémoire dynamique Jeveux (Mémoire totale  5000 Mo dont aster 500 Mo)
+   DEBUT(PAR_LOT='NON', 
+         MEMOIRE=_F( DYNAMIQUE=100,),
+        );
+   Le calcul s'achève normalement avec les temps suivants :
+    *  . part Superviseur      :     655.17 :      10.44 :     665.60 :     691.10 *
+    *  . part Fortran          :     735.69 :      30.81 :     766.50 :     838.94 *
+    ********************************************************************************
+    * TOTAL_JOB                :    1393.07 :      41.35 :    1434.42 :    1532.32 *
+    ********************************************************************************
+   
+   Je ne constate pas d'anomalie sur cette étude et recommande juste d'utiliser le mot clé
+   MEMOIRE dans la commande DEBUT.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude associxc3xa9e
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mazet        MAZET Sylvain          DATE 05/08/2008 - 18:15:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012242 DU 2008-06-26 15:55:09
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Modification des schxc3xa9mas d'intxc3xa9gration au niveau de la surface de contact des xc3xa9lxc3xa9ments X-FEM
+FONCTIONNALITE
+   Rajout des schémas d'intégration de Newton Cotes et 
+   Simpson pour les termes de contact 
+   des éléments X-FEM 2D 
+   
+   Rajout du schéma d'intégration de  
+   Simpson pour les termes de contact 
+   des éléments X-FEM et 3D. 
+   
+   Mise en conformite dans CONTACT.CARACF entre 
+   les methodes continue et XFEM (voir aussi fiches 11957, 11958).
+   La conformite de CONTACT.CARACF(IZONE,1)
+   est necessaire pour la methode grands glissements.
+   Précedemment, seul INTEGRATION='GAUSS' était fonctionnel 
+   en grands glissements. Voir fiche 11958.
+   
+   Cette évolution permet de disposer des mêmes options 
+   d'intégration que pour la méthode continue.
+   
+   (INTEGRATION='SIMPSON' en 3D
+    INGEGRATION='SIMPSON','SIMPSON1','NCOTES','NCOTES1','NCOTES2' en 2D)
+   
+   Fortran modifié:
+   
+      cazocx.f : conformité avec cazocc.f du stockage 
+              interne pour le type d'integration
+   
+      elraca.f, elraga.f : 
+              ajoute SIMP pour TR3
+              ajoute SIMP SIMP1 COTES COTES2 COTES2 pour SE2
+   
+      mmgauss.f : 
+              ajout des fpg3 et fpg4 pour SEG2
+   
+      te0532,te0533,te0534,te0548 : 
+              conformité de la représentation interne 
+              du type d'integration avec la methode
+              continue
+   
+      xmacon.f : 
+              prise en compte du nombre variable
+              de pts d'integration
+   
+   Catalogues:
+      gener_medpl2_xhc.cata,gener_medpl2_xhtc.cata,
+      gener_medpl2_xtc.cata:
+              activation SIMP1 COTES COTES1 COTES2
+   
+      gener_me_xhc.cata,gener_me_xhtc.cata,
+      gener_me_xtc.cata:
+              activation SIMP
+   
+     type_maille__.cata:
+              ajout familles simp simp1 cotes cotes1 cotes2 pour SE2
+   
+   Commandes:
+      c_contact.capy:
+              ajout valeur admises SIMPSON,SIMPSON1,NCOTES,NCOTES1,NCOTES2
+              sous le mot cle INTEGRATION du mot cle 
+              facteur CONTACT de la commande AFFE_CHAR_MECA.
+   
+   Nouveaux fichiers:
+   
+      xmelin.f : calcul du nb de pts d'integration
+                 (meme role que mmelin)
+   
+   Doc: U4.82.08 DEFI_FISS_XFEM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.08
+VALIDATION
+   test systematique avec ssnv209
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011958 DU 2008-04-11 13:22:36
+TYPE evolution concernant Code_Aster (VERSION 9.3)
+TITRE
+   ssnp504 - Contact-frottant grands glissements X-FEM avec fissures obliques
+FONCTIONNALITE
+   Je propose de restituer sur cette fiche
+   les développements des termes de frottement pour
+   XFEM <<grands glissements>>, en contraintes planes
+   et déplacements plans.
+   
+   Cette fiche est liée à la fiche 11957, qui concerne le cas ssnp503.
+   
+   Pour validation, on augmente les deux cas ssnp503 et ssnp504.
+   Pour chacun de ces cas:
+    - A: ajout d'une modelisation de reference methode continue,
+         d_plan avec frottement
+    - B: modelisation XFEM d_plan
+         (cette modelisation etait
+         la seule precedemment, c'etait la modelisation A)
+         ajout du frottement
+    - C: ajout d'une modelisation de reference methode continue,
+         c_plan avec frottement
+    - D: ajout de la modelisation XFEM c_plan avec frottement
+   
+   ssnp503: contact-frottant en grands glissements
+            avec XFEM pour des fissures horizontales
+   
+   ssnp504: contact-frottant en grands glissements
+            avec XFEM pour des fissures obliques
+   
+   
+   NB: Voir aussi fiche 12242 sur les schemas d'intégration 
+   pour le contact XFEM. L'implémentation grands glissements
+   necessite que le TYP d'integration (tel que
+   stocké dans CONTACT.CARACF(IZONE,1))
+   ait la meme signification en XFEM et en methode continue.
+   Sinon seul INTEGRATION='GAUSS' est utilisable.
+   
+   
+   Fortran modifié:
+   
+      te0366 :          RIGI_CONT et RIGI_FROT, 
+      te0367 :          CHAR_MECA_CONT et _FROT, 
+      xmelel, xmelet  : infos elts de contact xfem gdgliss
+      xmligr :          creation du ligrel pour elts tardifs XFEM
+      nmtble :          appel xtreac
+      xmvef0 :          bug fix (index)
+   
+   Catalogues modifiés
+      gener_medpl2_xhc_xh.cata : option XREACL
+   
+   Nouveaux fichiers
+      xmmab1.f : matr elem cas adherent
+      xmmab2.f : matr elem cas glissant 
+      xmvef1.f : second membre frottement, cas contactant
+      te0588.f : calcul des seuils frottement
+      xtreac.f : reactualisation des seuils de frottement (option xreacl)
+   
+      xreacl.cata : option xreacl
+      gener_mecpl2_xhc_xh.cata : elements de contact c_plan
+   
+   Doc:
+     V6.03.503,V6.03.504 : cas tests
+   
+     R05.03.53 Contact en grands glissements avec XFEM
+   
+     D09.05.06 Mise-en-oeuvre de l'approche <<grands glissement>> 
+               avec XFEM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R05.03.53,D09.05.06,V6.03.503,V6.03.504
+VALIDATION
+   ssnp503, ssnp504
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011957 DU 2008-04-11 13:19:10
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   Test ssnp503 - cas-test de rxc3xa9fxc3xa9rence manquant
+FONCTIONNALITE
+   Restitution de l'implementation
+   des termes de frottement
+   dans l'approche grands glissements avec XFEM,
+   en contraintes planes et en deformations planes.
+   
+   Details dans la fiche 11958
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 04/08/2008 - 11:56:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012138 DU 2008-05-28 16:41:38
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   Problxc3xa8me dans IMPR_RESU format MED
+FONCTIONNALITE
+   Objectif
+   ========
+   Dans certains cas, L'IMPR_RESU au format MED de champs nodaux génère des NaN aux noeuds là
+   où les composantes ne sont pas définies. Par exemple, lorsqu'un modèle contient des
+   éléments volumiques et des éléments de structure, les composantes DRX, DRY et DRZ aux
+   noeuds des éléments volumiques ne sont pas définies. Pourtant MED a besoin de leur
+   attribuer une valeur.  L'objectif de cette fiche est de prolonger les champs nodaux par
+   zéro la où ils ne sont pas definis. Un message est émis dans le .mess pour en informer
+   l'utilisateur.
+   
+   Developpement
+   =============
+   1)bibfor: ircmva.f
+   On vérifie l'absence d'une composante sur un noeud via l'objet .CNSL de la SD cham_no. Si
+   c'est le cas, on impose la valeur nulle en ce noeud et on émet un message d'information.
+   
+   2)bibpyt: med.py
+   On enrichit ce catalogue par un message d'information dédié à ce cas de figure:
+   "Votre modèle semble être composé de plusieurs modélisations, 
+   les composantes qui n'existent pas pour une partie du modèle ont été mises a zero."
+   
+   
+   
+   Validation
+   ==========
+   1) passage de l'étude fournie + vérification de l'absence de NaN dans le .mess
+   
+   2) cas-test maison dans lequel on a crée un champ en forçant DX=1 DY=2 DZ=3 sur tout le
+   maillage et en surchargeant par DRX=4 DRY=5 et DRZ=6 sur les mailles des éléments de
+   structure. On a construit ensuite un resultat de type evol_elas a partir de ce champ pour
+   le fournir a l'IMPR_RESU/MED. On a ajoute ensuite un LIRE_RESU suivi d'un
+   IMPR_RESU/RESULTAT pour vérifier la relecture du fichier med.
+   
+   Résultats:
+   - Le fichier med généré est correct, nous l'avons relu dans SalomeMeca2008 et nous avons
+   valide les resultats affichés.
+   - la commande LIRE_RESU relit correctement le fichier med et les valeurs imprimées sont
+   correctes.
+   
+   3) passage de la liste restreinte
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.05.21
+VALIDATION
+   Cas-tests perso + liste restreinte
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mikchevitch  MIKCHEVITCH Alexei     DATE 04/08/2008 - 11:56:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012233 DU 2008-06-25 06:36:08
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Evolution de IMPR_RESU (UNV) : nouvelle version de DS pour les groupes
+FONCTIONNALITE
+   Ok pour la réalisation
+   
+   Objectif
+   ========
+   Evolution de IMPR_RESU au format IDEAS: 
+   Remplacer le dataset 752 (groupes) par le dataset 2477.
+   
+   Developpement
+   =============
+   a)bibfor: irmasu.f (L271 a L328)
+   - remplacement du nom de DS: 752 => 2477 et suppression 
+   des commentaires apres le DS.
+   - ajout de 2 champs (nuls) pour le 1er enregistrement a 
+   l'emplacement 6 et 7, puis deplacement du champ initial 
+   de l'emplacement 6 a l'emplacement 8.
+   - ajout de 2 entites (nulles) de maillages par ligne pour 
+   l'enregistrement 3 : nous avons ainsi 2 entites par 
+   lignes ou lieu de 4. 
+   
+   Validation
+   ==========
+   - Passage du cas-test ssnv182a dans lequel figure un 
+   IMPR_RESU/IDEAS pour imprimer entre autres un maillage 
+   contenant des groupes de noeuds et des groupes de 
+   mailles, puis verification des donnees ecrites pour le DS 
+   2477.
+   - Lecture du fichier unv genere precedemment sous Ideas
+   (v11) et SalomeMeca(2008.1)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test ssnv182a, relecture dans Ideas/Salome
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT perf001b                     lefebvre J-P.LEFEBVRE        66     66      0
+ CASTEST AJOUT perf001c                     lefebvre J-P.LEFEBVRE        66     66      0
+ CASTEST AJOUT perf002b                     lefebvre J-P.LEFEBVRE        98     98      0
+ CASTEST AJOUT perf003c                     lefebvre J-P.LEFEBVRE        63     63      0
+ CASTEST AJOUT perf004b                     lefebvre J-P.LEFEBVRE        88     88      0
+ CASTEST AJOUT perf004c                     lefebvre J-P.LEFEBVRE        88     88      0
+ CASTEST AJOUT perf004d                     lefebvre J-P.LEFEBVRE        88     88      0
+ CASTEST AJOUT perf005c                     lefebvre J-P.LEFEBVRE       130    130      0
+ CASTEST AJOUT perf006b                     lefebvre J-P.LEFEBVRE       244    244      0
+ CASTEST AJOUT ssnp503b                        mazet S.MAZET            493    493      0
+ CASTEST AJOUT ssnp503c                        mazet S.MAZET            439    439      0
+ CASTEST AJOUT ssnp503d                        mazet S.MAZET            491    491      0
+ CASTEST AJOUT ssnp504b                        mazet S.MAZET            496    496      0
+ CASTEST AJOUT ssnp504c                        mazet S.MAZET            406    406      0
+ CASTEST AJOUT ssnp504d                        mazet S.MAZET            458    458      0
+ CASTEST MODIF ssnp503a                        mazet S.MAZET            396    264    341
+ CASTEST MODIF ssnp504a                        mazet S.MAZET            406    299    386
+ CASTEST MODIF ssnv209b                        mazet S.MAZET            504      4      4
+ CASTEST MODIF ssnv209c                        mazet S.MAZET            504      3      3
+ CASTEST MODIF ssnv209d                        mazet S.MAZET            503      3      3
+ CASTEST MODIF wtnp111b                     lefebvre J-P.LEFEBVRE       175      6      3
+CATALOGU AJOUT typelem/gener_mecpl2_xhc_xh      mazet S.MAZET            127    127      0
+CATALOGU MODIF compelem/type_maille__          mazet S.MAZET            369      8      1
+CATALOGU MODIF options/xreacl                  mazet S.MAZET             32      4      1
+CATALOGU MODIF typelem/gener_medpl2_xhc        mazet S.MAZET            248      3      3
+CATALOGU MODIF typelem/gener_medpl2_xhc_xh      mazet S.MAZET            128     15      3
+CATALOGU MODIF typelem/gener_medpl2_xhtc       mazet S.MAZET            247      3      3
+CATALOGU MODIF typelem/gener_medpl2_xtc        mazet S.MAZET            216      3      3
+CATALOGU MODIF typelem/gener_me_xhc            mazet S.MAZET            333      3      3
+CATALOGU MODIF typelem/gener_me_xhtc           mazet S.MAZET            339      3      3
+CATALOGU MODIF typelem/gener_me_xtc            mazet S.MAZET            341      3      3
+CATALOPY MODIF commun/c_contact                mazet S.MAZET            320      3      2
+       C MODIF utilitai/asterm              lefebvre J-P.LEFEBVRE       420      1      1
+       C MODIF utilitai/envima              lefebvre J-P.LEFEBVRE       183      5      3
+ FORTRAN AJOUT algorith/xmelin                 mazet S.MAZET            136    136      0
+ FORTRAN AJOUT algorith/xmmab1                 mazet S.MAZET            426    426      0
+ FORTRAN AJOUT algorith/xmmab2                 mazet S.MAZET            489    489      0
+ FORTRAN AJOUT algorith/xmvef1                 mazet S.MAZET            143    143      0
+ FORTRAN AJOUT algorith/xtreac                 mazet S.MAZET            147    147      0
+ FORTRAN AJOUT elements/te0588                 mazet S.MAZET            141    141      0
+ FORTRAN MODIF algorith/mmgaus                 mazet S.MAZET           1989     38      2
+ FORTRAN MODIF algorith/nmtble                 mazet S.MAZET            210      8      1
+ FORTRAN MODIF algorith/xmelel                 mazet S.MAZET             81      6      7
+ FORTRAN MODIF algorith/xmelet                 mazet S.MAZET             86      4      3
+ FORTRAN MODIF algorith/xmligr                 mazet S.MAZET            255      4      4
+ FORTRAN MODIF algorith/xmrema                 mazet S.MAZET            302     21      7
+ FORTRAN MODIF algorith/xmvef0                 mazet S.MAZET            112      5      6
+ FORTRAN MODIF elements/elraca                 mazet S.MAZET            950     26      5
+ FORTRAN MODIF elements/elraga                 mazet S.MAZET           1301     87      2
+ FORTRAN MODIF elements/te0366                 mazet S.MAZET            441     88     16
+ FORTRAN MODIF elements/te0367                 mazet S.MAZET            453     43     14
+ FORTRAN MODIF elements/te0532                 mazet S.MAZET            276     20     11
+ FORTRAN MODIF elements/te0533                 mazet S.MAZET            628     20     11
+ FORTRAN MODIF elements/te0534                 mazet S.MAZET            511     20     11
+ FORTRAN MODIF elements/te0548                 mazet S.MAZET            153     21     11
+ FORTRAN MODIF jeveux/jealdy                lefebvre J-P.LEFEBVRE        53      2      2
+ FORTRAN MODIF jeveux/jedisp                lefebvre J-P.LEFEBVRE       103      2      2
+ FORTRAN MODIF modelisa/cazocx                 mazet S.MAZET            232     20     17
+ FORTRAN MODIF modelisa/xmacon                 mazet S.MAZET            268     32     10
+ FORTRAN MODIF prepost/ircmva                rezette C.REZETTE          282     12      3
+ FORTRAN MODIF prepost/irmasu                rezette C.REZETTE          332      6      6
+ FORTRAN MODIF prepost/paqmai               lefebvre J-P.LEFEBVRE       606      2      2
+  PYTHON MODIF Messages/jeveux              lefebvre J-P.LEFEBVRE       299      3      4
+  PYTHON MODIF Messages/med                  rezette C.REZETTE          490      6      1
+  PYTHON MODIF Messages/supervis            lefebvre J-P.LEFEBVRE       427      6      4
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   22        5323      5323             +5323
+ MODIF :   43       16504      1135     931      +204
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   65       21827      6458     931     +5527 

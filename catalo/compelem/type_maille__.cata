@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 22/10/2007   AUTEUR REZETTE C.REZETTE 
+%& MODIF COMPELEM  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,11 @@ MAILLE__ SEG2       2       DIM__  1   CODE__  'SE2'
          FAMILLE__ FPG2        2
          FAMILLE__ FPG3        3
          FAMILLE__ FPG4        4
+         FAMILLE__ SIMP        3
+         FAMILLE__ SIMP1       5
+         FAMILLE__ COTES       4
+         FAMILLE__ COTES1      5
+         FAMILLE__ COTES2      10
    ELREFE__ CABPOU
          FAMILLE__ FPG1        1
    ELREFE__ THCOSE2
@@ -99,6 +104,7 @@ MAILLE__ TRIA3      3       DIM__  2   CODE__  'TR3'
          FAMILLE__ FPG13       13
          FAMILLE__ FPG16       16
          FAMILLE__ XFEM36      36
+         FAMILLE__ SIMP        6
 
 MAILLE__ TRIA33     6       DIM__  2   CODE__  'T33'
    ELREFE__ V_TRIA33
@@ -144,6 +150,7 @@ MAILLE__ QUAD4      4       DIM__  2   CODE__  'QU4'
          FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG9        9
          FAMILLE__ XFEM72      72
+         FAMILLE__ SIMP        9
 
 MAILLE__ QUAD44     8       DIM__  2   CODE__  'Q44'
    ELREFE__ V_QUAD44

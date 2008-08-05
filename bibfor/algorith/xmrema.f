@@ -4,7 +4,7 @@
      &                  T2MIN ,XIMIN ,YIMIN ,PROJIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +29,7 @@ C
       INTEGER      IZONE
       REAL*8       GEOM(3)
       INTEGER      POSMIN
-      REAL*8       JEUMIN
+      REAL*8       JEUMIN,NRESE
       REAL*8       T1MIN(3),T2MIN(3)
       REAL*8       XIMIN,YIMIN
       LOGICAL      PROJIN
@@ -70,7 +70,7 @@ C              TOMBEEE HORS DE LA MAILLE MAITRE (A LA TOLERANCE PRES)
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXATR
+      CHARACTER*32 JEXNUM,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -105,6 +105,7 @@ C
       CHARACTER*8  ALIAS,TYPMA,FFORME
       CHARACTER*19 CHS1
       LOGICAL      LDIST,LDMIN,DIRAPP        
+      INTEGER      JMA,ITYPMA
 C
 C ----------------------------------------------------------------------
 C
@@ -122,10 +123,14 @@ C
       FFORME = 'CONTINUE'
       DIRAPP = .FALSE. 
 C
-C --- ALIAS ET TYPMA VALABLE POUR LE CAS 2D (IL FAUDRA CHANGER POUR 3D)
+C --- ALIAS ET TYPMA VALABLE POUR LE CAS 2D, TRI3TRI6 ET QUA4QUA8
+C     (IL FAUDRA CHANGER POUR 3D)
+C     NB: ON SE BASE SUR LE TYPE DE LA MAILLE MAITRE.
 C
       ALIAS  = 'SG2'
-      TYPMA  = 'QUAD4'   
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',JMA)
+      ITYPMA=ZI(JMA-1+MMAIT)
+      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
 C
 C --- INFOS GENERIQUES POUR L'ALGORITHME D'APPARIEMENT
 C         
@@ -147,8 +152,13 @@ C------SI LE POINT DE CONTACT EST SUR UN ARRÊTE----------------------
 C------SI LE POINT DE CONTACT EST UN NOEUD---------------------------	
       ELSE
         NUNOG=ZI(JCONX1-1+ZI(JCONX2+MMAIT-1)+NMAIT-1)
-C-------attention!!! nbnos est introduit en dur ici pour quad4!!!!!!!!!
-        NBNOS=4
+        IF (TYPMA.EQ.'TRIA6') THEN
+          NBNOS=3
+        ELSE IF (TYPMA.EQ.'QUAD8') THEN
+          NBNOS=4
+        ELSE
+          CALL U2MESS('F','XFEM_27')
+        ENDIF
       ENDIF
 
       ZMESX = CFMMVD('ZMESX')
@@ -275,7 +285,11 @@ C
             ENDIF
  210      CONTINUE
         ENDIF
-
+C
+C --- NORMALISATION DES VECTEURS TANGENTS
+C
+      CALL NORMEV(T1MIN,NRESE)
+      CALL NORMEV(T2MIN,NRESE) 
  100  CONTINUE
 
       IF (.NOT.LDMIN) PROJIN = .FALSE.

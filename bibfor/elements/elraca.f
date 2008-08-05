@@ -8,7 +8,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ELEMENTS  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -548,7 +548,7 @@ C     ------------------------------------------------------------------
         NNOS = 3
         VOL = 1.D0/2.D0
 
-        NBFPG = 12
+        NBFPG = 13
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -561,6 +561,7 @@ C     ------------------------------------------------------------------
         NBPG(10) = 6
         NBPG(11) = 13
         NBPG(12) = 16
+        NBPG(13) = 6
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -574,6 +575,7 @@ C     ------------------------------------------------------------------
         FAPG(10) = 'FPG3NOS'
         FAPG(11) = 'FPG13'
         FAPG(12) = 'FPG16'
+        FAPG(13) = 'SIMP'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -839,13 +841,18 @@ C     ------------------------------------------------------------------
         NNOS = 2
         VOL = 2.D0
 
-        NBFPG = 6
+        NBFPG = 11
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 2
         NBPG(5) = 3
         NBPG(6) = 4
+        NBPG(7) = 3
+        NBPG(8) = 5
+        NBPG(9) = 4
+        NBPG(10) = 5
+        NBPG(11) = 10
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -853,6 +860,12 @@ C     ------------------------------------------------------------------
         FAPG(4) = 'FPG2'
         FAPG(5) = 'FPG3'
         FAPG(6) = 'FPG4'
+        FAPG(7) = 'SIMP'
+        FAPG(8) = 'SIMP1'
+        FAPG(9) = 'COTES'
+        FAPG(10) = 'COTES1'
+        FAPG(11) = 'COTES2'
+
 
         XIN(1) = -1.D0
         XIN(2) = +1.D0
@@ -864,13 +877,15 @@ C     ------------------------------------------------------------------
         NNOS = 2
         VOL = 2.D0
 
-        NBFPG = 6
+        NBFPG = 8
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 2
         NBPG(5) = 3
         NBPG(6) = 4
+        NBPG(7) = 3
+        NBPG(8) = 4
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -878,6 +893,8 @@ C     ------------------------------------------------------------------
         FAPG(4) = 'FPG2'
         FAPG(5) = 'FPG3'
         FAPG(6) = 'FPG4'
+        FAPG(7) = 'SIMP'
+        FAPG(8) = 'COTES'
 
         XIN(1) = -1.D0
         XIN(2) = +1.D0
@@ -890,13 +907,15 @@ C     ------------------------------------------------------------------
         NNOS = 2
         VOL = 2.D0
 
-        NBFPG = 6
+        NBFPG = 8
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 2
         NBPG(5) = 3
         NBPG(6) = 4
+        NBPG(7) = 3
+        NBPG(8) = 4
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -904,6 +923,8 @@ C     ------------------------------------------------------------------
         FAPG(4) = 'FPG2'
         FAPG(5) = 'FPG3'
         FAPG(6) = 'FPG4'
+        FAPG(7) = 'SIMP'
+        FAPG(8) = 'COTES'
 
         XIN(1) = -1.D0
         XIN(2) = +1.D0

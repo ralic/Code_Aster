@@ -1,4 +1,4 @@
-# MODIF  DATE 02/06/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # ======================================================================
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -17,7 +17,6 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-# ======================================================================
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='WTNP111B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
@@ -110,7 +109,11 @@ CHAR1=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                 COEF_MULT=FONCT2,),);
 
 
-MESTAT=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),MODELE=MODELE,
+MESTAT=STAT_NON_LINE(SOLVEUR=_F( METHODE='MUMPS',
+                                 PARALLELISME='DISTRIBUE_MD',
+                                 PCENT_PIVOT=20,
+                                ),
+                     MODELE=MODELE,
                      CHAM_MATER=CHMATO,
                      EXCIT=(_F(CHARGE=CHAR0,),
                             _F(CHARGE=CHAR1,),

@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis Messages  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -374,13 +374,15 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 83: _("""
 
  le nombre d'enregistrements (nmax_enre) et leurs longueurs (long_enre) conduisent a un
-fichier
- dont la taille maximale en octets (%(i1)d) est superieure a limite autorisee :  %(i2)d
+ fichier dont la taille maximale en Moctets (%(i1)d) est superieure a limite autorisee :  %(i2)d
+ 
+ Vous pouvez augmenter cette limite en utilisant l'argument "-max_base" sur la ligne
+ de commande suivi d'une valeur en Moctets. 
 
 """),
 
 84: _("""
- Nom symbolique errone pour un fichier de sortie
+ Nom symbolique errone pour un fichier de s.ortie
  Valeur lue %(k1)s
  - nombre de valeurs attendues %(i2)d
  - valeurs attendues           %(k2)s, %(k3)s

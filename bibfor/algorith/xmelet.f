@@ -3,7 +3,7 @@
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
 C ----------------------------------------------------------------------
 C
 
-      IF (NOMTE.EQ.'CFT6T3XH') THEN
+      IF ((NOMTE.EQ.'MECPT6T3_XH').OR.(NOMTE.EQ.'MEDPT6T3_XH')) THEN
         ESC  = 'TR3'
         ESQ  = 'TRIA6'
         MAIT = 'TR3'
@@ -67,7 +67,8 @@ C
         NDDLC= 12
         NDIM = 2
 
-      ELSE IF (NOMTE.EQ.'CFQ8Q4XH') THEN
+      ELSE IF ((NOMTE.EQ.'MECPQ8Q4_XH').OR.
+     &   (NOMTE.EQ.'MEDPQ8Q4_XH')) THEN
         ESC  = 'QU4'
         ESQ  = 'QUAD8'
         MAIT = 'QU4'

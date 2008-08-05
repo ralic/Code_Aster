@@ -1,10 +1,9 @@
       SUBROUTINE XMVEF0(NDIM,NNC,NNE,NNES,NFAES,IAINES,
-     &                  HPG,FFPC,JACOBI,DEPLE,DEPLME,CFACE,
-     &                  ESQ,TAU1,TAU2,
-     &                  VTMP)     
+     &                  HPG,FFPC,JACOBI,DEPLE,CFACE,
+     &                  ESQ,TAU1,TAU2,VTMP)     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +23,7 @@ C ======================================================================
       IMPLICIT NONE
       INTEGER  NDIM,NNC,NNE,NNES,NFAES,IAINES,CFACE(5,3)
       REAL*8   HPG,FFPC(9),JACOBI  
-      REAL*8   DEPLE(6),DEPLME(6)    
+      REAL*8   DEPLE(6)    
       REAL*8   TAU1(3),TAU2(3)     
       REAL*8   VTMP(81)
       CHARACTER*8  ESQ  
@@ -104,7 +103,7 @@ C
         DO 600 L=1,NDIM-1
           IN=XOULA(CFACE,NFAES,I,IAINES,ESQ)
           CALL XPLMA2(NDIM,NNE,NNES,IN,PL)
-          II = PL+1+L
+          II = PL+L
           VTMP(II)=-JACOBI*HPG*FFPC(I)*TT(L)
   600   CONTINUE
   500 CONTINUE

@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ELEMENTS  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,6 @@ C DEB ------------------------------------------------------------------
 
       ELREFA = ELREFZ
       FAPG   = FAPZ
-
       ZERO   = 0.0D0
       UNQUAR = 0.25D0
       UNDEMI = 0.5D0
@@ -991,6 +990,27 @@ C         FINITE ELEMENT PROCEDURES IN ENGINEERING ANALYSIS, PAGE 280)
           HPG(1) = UN/6.D0
           HPG(2) = UN/6.D0
           HPG(3) = UN/6.D0
+          
+        ELSE IF (FAPG.EQ.'SIMP') THEN
+          XPG(1) = -1.D0
+          YPG(1) = 1.D0
+          XPG(2) = -1.D0
+          YPG(2) = -1.D0
+          XPG(3) = 1.D0
+          YPG(3) = -1.D0  
+          XPG(4) = -1.D0
+          YPG(4) = 0.D0
+          XPG(5) = 0.D0
+          YPG(5) = -1.D0
+          XPG(6) = 0.D0
+          YPG(6) = 0.D0
+          HPG(1) = 2.D0 / 15.D0
+          HPG(2) = 2.D0 / 15.D0
+          HPG(3) = 2.D0 / 15.D0
+          HPG(4) = 8.D0 / 15.D0
+          HPG(5) = 8.D0 / 15.D0
+          HPG(6) = 8.D0 / 15.D0         
+          
         ELSE IF (FAPG.EQ.'FPG3NOS') THEN
 C ------- POUR LES POINTS DE GAUSS -------------------------------------
           XPG(1) = UN/6.D0
@@ -1184,6 +1204,71 @@ C     ------------------------------------------------------------------
           HPG(3) = 0.347854845137454D0
           HPG(4) = HPG(3)
 
+        ELSE IF (FAPG.EQ.'SIMP') THEN
+          XPG(1) = -1.D0
+          XPG(2) = 0.D0
+          XPG(3) = 1.D0
+          HPG(1) = 1.D0 / 3.D0
+          HPG(2) = 4.D0 / 3.D0
+          HPG(3) = 1.D0 / 3.D0
+          
+        ELSE IF (FAPG.EQ.'SIMP1') THEN
+          XPG(1) = -1.D0
+          XPG(2) = -0.5D0
+          XPG(3) = 0.D0
+          XPG(4) = 0.5D0
+          XPG(5) = 1.D0
+          HPG(1) = 1.D0 / 6.D0
+          HPG(2) = 2.D0 / 3.D0
+          HPG(3) = 1.D0 / 3.D0
+          HPG(4) = 2.D0 / 3.D0
+          HPG(5) = 1.D0 / 6.D0
+          
+        
+        ELSE IF (FAPG.EQ.'COTES') THEN
+          XPG(1) = -1.D0
+          XPG(2) = -1.D0/3.D0
+          XPG(3) = 1.D0/3.D0
+          XPG(4) = 1.D0
+          HPG(1) = 1.D0/4.D0
+          HPG(2) = 3.D0/4.D0
+          HPG(3) = 3.D0/4.D0
+          HPG(4) = 1.D0/4.D0
+        
+        ELSE IF (FAPG.EQ.'COTES1') THEN
+          XPG(1) = -1.D0
+          XPG(2) = -1.D0/2.D0
+          XPG(3) = 0.D0
+          XPG(4) = 1.D0/2.D0
+          XPG(5) = 1.D0
+          HPG(1) = 7.D0/45.D0
+          HPG(2) = 32.D0/45.D0
+          HPG(3) = 12.D0/45.D0
+          HPG(4) = 32.D0/45.D0
+          HPG(5) = 7.D0/45.D0
+          
+        ELSE IF (FAPG.EQ.'COTES2') THEN
+          XPG(1) = -1.D0
+          XPG(2) = -7.D0/9.D0
+          XPG(3) = -5.D0/9.D0
+          XPG(4) = -1.D0/3.D0
+          XPG(5) = -1.D0/9.D0
+          XPG(6) = 1.D0/9.D0
+          XPG(7) = 1.D0/3.D0
+          XPG(8) = 5.D0/9.D0
+          XPG(9) = 7.D0/9.D0
+          XPG(10) = 1.D0
+          HPG(1) = 1.D0/12.D0
+          HPG(2) = 1.D0/4.D0
+          HPG(3) = 1.D0/4.D0
+          HPG(4) = 1.D0/6.D0  
+          HPG(5) = 1.D0/4.D0
+          HPG(6) = 1.D0/4.D0
+          HPG(7) = 1.D0/6.D0
+          HPG(8) = 1.D0/4.D0
+          HPG(9) = 1.D0/4.D0
+          HPG(10) = 1.D0/12.D0  
+          
         ELSE
         VALK (1) = ELREFA
         VALK (2) = FAPG

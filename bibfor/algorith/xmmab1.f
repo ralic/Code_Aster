@@ -1,0 +1,426 @@
+      SUBROUTINE XMMAB1 (NDIM,NNE,NNES,NNC,NNM,NFAES,CFACE,
+     &                   HPG,FFPC,FFES,FFMA,JACOBI,IAINES,    
+     &                   LAMBDA,COEFFA,COEFFF,TAU1,TAU2,
+     &                   MPROJ,ESQ,MMAT)
+      IMPLICIT NONE
+      INTEGER  NDIM,NNE,NNES,NNC,NNM,NFAES,IAINES,CFACE(5,3)
+      REAL*8   HPG,FFPC(9),FFES(9),FFMA(9),JACOBI  
+      REAL*8   LAMBDA,COEFFF,COEFFA
+      REAL*8   TAU1(3),TAU2(3),MMAT(81,81),MPROJ(3,3)
+      CHARACTER*8  ESQ
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C TOLE CRP_21
+C
+C ROUTINE APPELLEE PAR : TE0366
+C ----------------------------------------------------------------------
+C
+C CALCUL DE B ET DE BT POUR LE CONTACT METHODE CONTINUE
+C AVEC ADHERENCE
+C
+C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
+C IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
+C IN  NNC    : NOMBRE DE NOEUDS DE CONTACT
+C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
+C IN  NFAES  : NUMERO DE LA FACETTE DE CONTACT ESCLAVE
+C IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
+C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
+C IN  FFPC   : FONCTIONS DE FORME DU PT CONTACT DANS ELC
+C IN  FFES   : FONCTIONS DE FORME DU PT CONTACT DANS ESC
+C IN  FFMA   : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
+C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
+C IN  IAINES : POINTEUR VERS LE VECTEUR DES ARRETES ESCLAVES 
+C              INTERSECTEES
+C IN  LAMBDA : VALEUR DU SEUIL_INIT
+C IN  COEFFA : COEF_REGU_FROT
+C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
+C IN  TAU1   : PREMIERE TANGENTE
+C IN  TAU2   : SECONDE TANGENTE
+C IN  MPROJ  : MATRICE DE L'OPERATEUR DE PROJECTION
+C IN  ESQ    : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
+C I/O MMAT   : MATRICE ELEMENTAIRE DE CONTACT/FROTTEMENT
+C ----------------------------------------------------------------------
+      INTEGER   I, J, K, L, II, JJ, INI, PLI, XOULA
+      REAL*8    E(3,3), A(3,3)
+C ----------------------------------------------------------------------
+C
+C --- INITIALISATIONS
+C
+      DO 300 I = 1,3
+        DO 290 J = 1,3
+          A(I,J)  = 0.D00
+          E(I,J)  = 0.D00
+  290   CONTINUE
+  300 CONTINUE         
+C
+C --- E : C.C
+C
+      DO 360 I = 1,NDIM
+        DO 350 J = 1,NDIM
+          DO 340 K = 1,NDIM
+            E(I,J) = MPROJ(K,I)*MPROJ(K,J) + E(I,J)
+  340     CONTINUE
+  350   CONTINUE
+  360 CONTINUE
+C
+C --- A : T.C
+C
+      DO 4  I = 1,NDIM
+        DO 5  K = 1,NDIM
+          A(1,I) = TAU1(K)*MPROJ(K,I) + A(1,I)
+  5     CONTINUE
+  4   CONTINUE
+      DO 6  I = 1,NDIM
+        DO 7  K = 1,NDIM
+          A(2,I) = TAU2(K)*MPROJ(K,I) + A(2,I)
+  7     CONTINUE
+  6   CONTINUE
+C
+C --------------------- CALCUL DE B ET DE BT--------------------------
+C      
+C --- PREMIERE PARTIE DE B ET BT : PARTIE CONTACT - ESCLAVE "CLASSIQUE"
+C 
+      DO 200 I=1,NNC
+        DO 201 J=1,NNES
+          DO 202 L=1,NDIM-1
+            DO 203 K=1,NDIM
+              INI=XOULA(CFACE,NFAES,I,IAINES,ESQ)
+              CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
+              II = PLI+L
+              JJ = (3*NDIM)*(J-1)+K
+              MMAT(II,JJ) = 
+     &-LAMBDA*COEFFF*HPG*FFPC(I)*FFES(J)*JACOBI*A(L,K)
+              MMAT(JJ,II) = MMAT(II,JJ)
+ 203        CONTINUE
+ 202      CONTINUE
+ 201    CONTINUE
+ 200  CONTINUE
+C
+C --- DEUXIEME PARTIE DE B ET BT : PARTIE CONTACT - ESCLAVE "ENRICHIE"
+C
+      DO 204 I=1,NNC
+        DO 205 J=1,NNES
+          DO 206 L=1,NDIM-1
+            DO 207 K=1,NDIM
+              INI=XOULA(CFACE,NFAES,I,IAINES,ESQ)
+              CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
+              II = PLI+L
+              JJ = (3*NDIM)*(J-1)+NDIM+K
+              MMAT(II,JJ) = 
+     & LAMBDA*COEFFF*HPG*FFPC(I)*FFES(J)*JACOBI*A(L,K)
+              MMAT(JJ,II) = MMAT(II,JJ)     
+ 207        CONTINUE
+ 206      CONTINUE
+ 205    CONTINUE
+ 204  CONTINUE
+C
+C --- TROISIEME PARTIE DE B ET BT : PARTIE CONTACT - MAITRE "CLASSIQUE"
+C 
+      DO 208 I = 1,NNC
+        DO 209 J = 1,NNM
+          DO 210 L=1,NDIM-1
+            DO 211 K = 1,NDIM
+              INI=XOULA(CFACE,NFAES,I,IAINES,ESQ)
+              CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
+              II = PLI+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K
+              MMAT(II,JJ) =
+     & LAMBDA*COEFFF*HPG*FFPC(I)*FFMA(J)*JACOBI*A(L,K)  
+              MMAT(JJ,II) = MMAT(II,JJ)
+ 211        CONTINUE
+ 210      CONTINUE
+ 209    CONTINUE
+ 208  CONTINUE
+C
+C --- QUATRIEME PARTIE DE B ET BT : PARTIE CONTACT - MAITRE "ENRICHIE"
+C
+      DO 212 I = 1,NNC
+        DO 213 J = 1,NNM
+          DO 214 L=1,NDIM-1
+            DO 215 K = 1,NDIM
+              INI=XOULA(CFACE,NFAES,I,IAINES,ESQ)
+              CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
+              II = PLI+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+NDIM+K
+              MMAT(II,JJ) =
+     & LAMBDA*COEFFF*HPG*FFPC(I)*FFMA(J)*JACOBI*A(L,K)  
+              MMAT(JJ,II) = MMAT(II,JJ)
+ 215        CONTINUE
+ 214      CONTINUE
+ 213    CONTINUE
+ 212  CONTINUE
+C
+C --- ON CALCULE LA MATRICE B_U
+C
+C --- PREMIER BLOC DE LA MATRICE [B_U]: PARTIE ESCLAVE ESCLAVE
+C
+C------A) ESCLAVE "CLASSIQUE" - ESCLAVE "CLASSIQUE"
+
+      DO 100 I = 1,NNES
+        DO 101 J = 1,NNES
+          DO 102 K = 1,NDIM
+            DO 103 L = 1,NDIM
+              II = (3*NDIM)*(I-1)+L
+              JJ = (3*NDIM)*(J-1)+K            
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFES(J)*JACOBI*E(L,K)
+  103       CONTINUE
+  102     CONTINUE
+  101   CONTINUE
+  100 CONTINUE
+
+C------B) ESCLAVE "CLASSIQUE" - ESCLAVE "ENRICHIE"
+
+      DO 104 I = 1,NNES
+        DO 105 J = 1,NNES
+          DO 106 K = 1,NDIM
+            DO 107 L = 1,NDIM
+              II = (3*NDIM)*(I-1)+L
+              JJ = (3*NDIM)*(J-1)+NDIM+K            
+              MMAT(II,JJ) =
+     & COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFES(J)*JACOBI*E(L,K)
+  107       CONTINUE
+  106     CONTINUE
+  105   CONTINUE
+  104 CONTINUE
+
+C------C) ESCLAVE "ENRICHIE" - ESCLAVE "CLASSIQUE"
+
+      DO 108 I = 1,NNES
+        DO 109 J = 1,NNES
+          DO 110 K = 1,NDIM
+            DO 111 L = 1,NDIM
+              II = (3*NDIM)*(I-1)+NDIM+L
+              JJ = (3*NDIM)*(J-1)+K            
+              MMAT(II,JJ) =
+     & COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFES(J)*JACOBI*E(L,K)
+  111       CONTINUE
+  110     CONTINUE
+  109   CONTINUE
+  108 CONTINUE
+
+C------D) ESCLAVE "ENRICHIE" - ESCLAVE "ENRICHIE"
+
+      DO 112 I = 1,NNES
+        DO 113 J = 1,NNES
+          DO 114 K = 1,NDIM
+            DO 115 L = 1,NDIM
+              II = (3*NDIM)*(I-1)+NDIM+L
+              JJ = (3*NDIM)*(J-1)+NDIM+K            
+                MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFES(J)*JACOBI*E(L,K)
+  115       CONTINUE
+  114     CONTINUE
+  113   CONTINUE
+  112 CONTINUE     
+C
+C --- DEUXIEME BLOC DE LA MATRICE [B_U] PARTIE ESCLAVE MAITRE
+C ----A) ESCLAVE "CLASSIQUE" - MAITRE "CLASSIQUE"
+
+      DO 116 I = 1,NNES
+        DO 117 J = 1,NNM
+          DO 118 K = 1,NDIM
+            DO 119 L = 1,NDIM
+              II = (3*NDIM)*(I-1)+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K   
+              MMAT(II,JJ) =
+     & COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFMA(J)*JACOBI*E(L,K)
+  119       CONTINUE
+  118     CONTINUE
+  117   CONTINUE
+  116 CONTINUE
+
+C ----B) ESCLAVE "CLASSIQUE" - MAITRE "ENRICHIE"
+
+      DO 120 I = 1,NNES
+        DO 121 J = 1,NNM
+          DO 122 K = 1,NDIM
+            DO 123 L = 1,NDIM
+              II = (3*NDIM)*(I-1)+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
+     &              2*NDIM*(J-1)+NDIM+K   
+              MMAT(II,JJ) =
+     & COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFMA(J)*JACOBI*E(L,K)
+  123       CONTINUE
+  122     CONTINUE
+  121   CONTINUE
+  120 CONTINUE
+
+C ----C) ESCLAVE "ENRICHIE" - MAITRE "CLASSIQUE"
+
+      DO 124 I = 1,NNES
+        DO 125 J = 1,NNM
+          DO 126 K = 1,NDIM
+            DO 127 L = 1,NDIM
+              II = (3*NDIM)*(I-1)+NDIM+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K   
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFMA(J)*JACOBI*E(L,K)
+  127       CONTINUE
+  126     CONTINUE
+  125   CONTINUE
+  124 CONTINUE
+
+C ----D) ESCLAVE "ENRICHIE" - MAITRE "ENRICHIE"
+
+      DO 128 I = 1,NNES
+        DO 129 J = 1,NNM
+          DO 130 K = 1,NDIM
+            DO 131 L = 1,NDIM
+              II = (3*NDIM)*(I-1)+NDIM+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
+     &              2*NDIM*(J-1)+NDIM+K   
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFMA(J)*JACOBI*E(L,K)
+  131       CONTINUE
+  130     CONTINUE
+  129   CONTINUE
+  128 CONTINUE
+C
+C --- TROISIEME BLOC DE LA MATRICE [B_U] PARTIE MAITRE ESCLAVE
+C-----A) MAITRE "CLASSIQUE" - ESCLAVE "CLASSIQUE" 
+
+      DO 132 I = 1,NNM
+        DO 133 J = 1,NNES
+          DO 134 K = 1,NDIM
+            DO 135 L = 1,NDIM
+              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(I-1)+L
+              JJ = (3*NDIM)*(J-1)+K             
+              MMAT(II,JJ) =
+     & COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFES(J)*JACOBI*E(L,K)
+  135       CONTINUE
+  134     CONTINUE
+  133   CONTINUE
+  132 CONTINUE
+
+C-----B) MAITRE "CLASSIQUE" - ESCLAVE "ENRICHIE" 
+
+      DO 136 I = 1,NNM
+        DO 137 J = 1,NNES
+          DO 138 K = 1,NDIM
+            DO 139 L = 1,NDIM
+              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(I-1)+L
+              JJ = (3*NDIM)*(J-1)+NDIM+K             
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFES(J)*JACOBI*E(L,K)
+  139       CONTINUE
+  138     CONTINUE
+  137   CONTINUE
+  136 CONTINUE
+
+C-----C) MAITRE "ENRICHIE" - ESCLAVE "CLASSIQUE" 
+
+      DO 140 I = 1,NNM
+        DO 141 J = 1,NNES
+          DO 142 K = 1,NDIM
+            DO 143 L = 1,NDIM
+              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
+     &              2*NDIM*(I-1)+NDIM+L
+              JJ = (3*NDIM)*(J-1)+K             
+              MMAT(II,JJ) =
+     & COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFES(J)*JACOBI*E(L,K)
+  143       CONTINUE
+  142     CONTINUE
+  141   CONTINUE
+  140 CONTINUE
+
+C-----D) MAITRE "ENRICHIE" - ESCLAVE "ENRICHIE" 
+
+      DO 144 I = 1,NNM
+        DO 145 J = 1,NNES
+          DO 146 K = 1,NDIM
+            DO 147 L = 1,NDIM
+              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
+     &              2*NDIM*(I-1)+NDIM+L
+              JJ = (3*NDIM)*(J-1)+NDIM+K             
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFES(J)*JACOBI*E(L,K)
+  147       CONTINUE
+  146     CONTINUE
+  145   CONTINUE
+  144 CONTINUE
+C
+C --- QUATRIEME BLOC DE LA MATRICE [B_U] PARTIE MAITRE MAITRE
+C ----A) MAITRE "CLASSIQUE" - MAITRE "CLASSIQUE"
+
+      DO 148 I = 1,NNM
+        DO 149 J = 1,NNM
+          DO 150 K = 1,NDIM
+            DO 151 L = 1,NDIM
+              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(I-1)+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFMA(J)*JACOBI*E(L,K)
+      
+  151       CONTINUE
+  150     CONTINUE
+  149   CONTINUE
+  148 CONTINUE
+
+C ----B) MAITRE "CLASSIQUE" - MAITRE "ENRICHIE"      
+
+      DO 152 I = 1,NNM
+        DO 153 J = 1,NNM
+          DO 154 K = 1,NDIM
+            DO 155 L = 1,NDIM
+              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(I-1)+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
+     &              2*NDIM*(J-1)+NDIM+K
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFMA(J)*JACOBI*E(L,K)
+  155       CONTINUE
+  154     CONTINUE
+  153   CONTINUE
+  152 CONTINUE
+
+C ----C) MAITRE "ENRICHIE" - MAITRE "CLASSIQUE"
+
+      DO 156 I = 1,NNM
+        DO 157 J = 1,NNM
+          DO 158 K = 1,NDIM
+            DO 159 L = 1,NDIM
+              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
+     &              2*NDIM*(I-1)+NDIM+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFMA(J)*JACOBI*E(L,K)
+  159       CONTINUE
+  158     CONTINUE
+  157   CONTINUE
+  156 CONTINUE
+
+C ----D) MAITRE "ENRICHIE" - MAITRE "ENRICHIE"
+
+      DO 160 I = 1,NNM
+        DO 161 J = 1,NNM
+          DO 162 K = 1,NDIM
+            DO 163 L = 1,NDIM
+              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
+     &              2*NDIM*(I-1)+NDIM+L
+              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
+     &              2*NDIM*(J-1)+NDIM+K
+              MMAT(II,JJ) =
+     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFMA(J)*JACOBI*E(L,K)
+  163       CONTINUE
+  162     CONTINUE
+  161   CONTINUE
+  160 CONTINUE
+C
+      END

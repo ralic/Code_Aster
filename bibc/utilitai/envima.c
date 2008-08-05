@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF ENVIMA UTILITAI  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -47,7 +47,9 @@ static double R8MIN    = DBL_MIN ;
 static double R8PREC   = DBL_EPSILON ;
 
 /* taille max d'une base */
-static long   ISMFIC   = 12582912;
+static long   ISMFIC   = 50331648;
+/* taille max d'un fichier "extend" */
+static long   ISLFIC   = 12582912;
 
 
 #define  R8_PI   3.1415926535897932384626433832
@@ -91,7 +93,7 @@ INTEGER STDCALL(LOUAEM,louaem)() { return 1; }
  exprimee en kilo (1024) */
 INTEGER STDCALL(LOFIEM,lofiem)() {
 #ifdef _USE_64_BITS
-   return (INTEGER)ISMFIC;
+   return (INTEGER)ISLFIC;
 #else
    return (INTEGER)2000*1024;
 #endif

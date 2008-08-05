@@ -4,7 +4,7 @@
      &                    TYMAST, MODNUM, NUANOM, TYPECH,
      &                    VAL, PROFAS, IDEB, IFIN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 04/08/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,15 +97,16 @@ C
 C
       CHARACTER*8  PART,GD, VALK(2)
       INTEGER IAUX, JAUX, KAUX, ITYPE
-      INTEGER ADSVXX
+      INTEGER ADSVXX,ADSLXX
       INTEGER INO, IMA, NRCMP, NRCMPR, NRPG, NRSP
       INTEGER IFM, NIVINF
 C
-      LOGICAL LOGAUX
+      LOGICAL LOGAUX,LPROLZ
 C
 C====
 C 1. PREALABLES
 C====
+      LPROLZ=.FALSE.
       PART=PARTIE
       GD=ZK8(ADSK-1+2)
       IF (GD(6:6).EQ.'R')THEN 
@@ -163,21 +164,29 @@ C
         DO 21 , NRCMP = 1 , NCMPVE
 C
           ADSVXX = ADSV-1+NUMCMP(NRCMP)-NCMPRF
+          ADSLXX = ADSL-1+NUMCMP(NRCMP)-NCMPRF
           JAUX = 0
           DO 211 , IAUX = IDEB, IFIN
             INO = PROFAS(IAUX)
             JAUX = JAUX + 1
             KAUX = INO*NCMPRF
-            IF(ITYPE.EQ.1)THEN
-               VAL(NRCMP,1,1,JAUX) = ZR(ADSVXX+KAUX)
-            ELSEIF(ITYPE.EQ.2)THEN
-               VAL(NRCMP,1,1,JAUX) = DBLE(ZC(ADSVXX+KAUX))
-            ELSEIF(ITYPE.EQ.3)THEN
-               VAL(NRCMP,1,1,JAUX) = DIMAG(ZC(ADSVXX+KAUX))
+            IF(ZL(ADSLXX+KAUX))THEN
+              IF(ITYPE.EQ.1)THEN
+                 VAL(NRCMP,1,1,JAUX) = ZR(ADSVXX+KAUX)
+              ELSEIF(ITYPE.EQ.2)THEN
+                 VAL(NRCMP,1,1,JAUX) = DBLE(ZC(ADSVXX+KAUX))
+              ELSEIF(ITYPE.EQ.3)THEN
+                 VAL(NRCMP,1,1,JAUX) = DIMAG(ZC(ADSVXX+KAUX))
+              ENDIF
+            ELSE
+              LPROLZ=.TRUE.
+              VAL(NRCMP,1,1,JAUX) = 0.D0
             ENDIF
   211     CONTINUE
 C
    21   CONTINUE
+
+        IF(LPROLZ)CALL U2MESS('I','MED_30')
 C
       ELSE
 C

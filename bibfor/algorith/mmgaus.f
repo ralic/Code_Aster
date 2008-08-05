@@ -1,6 +1,6 @@
       SUBROUTINE MMGAUS(ALIAS,TYPI,NORD,XPG,YPG,HPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1537,7 +1537,7 @@ C
 C
 C POINTS DE GAUSS
 C
-        IF (TYPI .EQ. 2) THEN
+        IF ((TYPI .EQ. 2).OR.(TYPI .EQ. 12)) THEN
           IF (NORD .EQ. 1) THEN
             XPG = -1/SQRT(3.D0)
             YPG = 0.D0
@@ -1548,6 +1548,42 @@ C
             CALL U2MESS('F','ALGORITH6_8')
           END IF
           HPG = 1.D0
+        ELSEIF (TYPI .EQ. 13) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = -0.774596669241483D0
+            YPG = 0.D0
+            HPG = 0.555555555555556D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 0.888888888888889D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 0.774596669241483D0
+            YPG = 0.D0
+            HPG = 0.555555555555556D0
+          ELSE
+            CALL U2MESS('F','ALGORITH6_8')
+          END IF
+        ELSEIF (TYPI .EQ. 14) THEN
+          IF (NORD .EQ. 1) THEN
+            XPG = 0.339981043584856D0
+            YPG = 0.D0
+            HPG = 0.652145154862546D0
+          ELSEIF (NORD .EQ. 2) THEN
+            XPG = -0.339981043584856D0
+            YPG = 0.D0
+            HPG = 0.652145154862546D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 0.861136311594053D0
+            YPG = 0.D0
+            HPG = 0.347854845137454D0
+          ELSEIF (NORD .EQ. 4) THEN
+            XPG = -0.861136311594053D0
+            YPG = 0.D0
+            HPG = 0.347854845137454D0
+          ELSE
+            CALL U2MESS('F','ALGORITH6_8')
+          END IF
 C LES NOEUDS
         ELSEIF (TYPI .EQ. 1) THEN
           IF (NORD .EQ. 1) THEN
