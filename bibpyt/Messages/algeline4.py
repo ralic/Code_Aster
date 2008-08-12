@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF algeline4 Messages  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,10 @@ cata_msg = {
 
 1 : _("""
  Seules les méthodes de résolution LDLT et MULT_FRONT sont autorisées.
+"""),
+
+2 : _("""
+ solveur interne PETSc interdit pour l'instant avec FETI
 """),
 
 3 : _("""

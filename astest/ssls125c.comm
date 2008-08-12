@@ -1,0 +1,154 @@
+# MODIF  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+# TITRE FLAMBAGE D UN CYLINDRE SOUS PRESSION EXTERNE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM='SSLS125C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
+ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='SU0',),
+                               _F(GROUP_MA='SU90',),
+                               _F(GROUP_MA='SUINF',),
+                               _F(GROUP_MA='SUSUP',),),);
+
+
+
+MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='SHB8',),);
+
+
+MAIL=MODI_MAILLAGE(MAILLAGE=MAIL,reuse=MAIL,
+                   ORIE_PEAU_3D=_F(GROUP_MA='SUEXTEXT',),
+                   );
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.0000000000E11,
+                          NU=0.3,),);
+
+CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT,),);
+
+
+CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      DDL_IMPO=(_F(GROUP_MA=('SU0'),
+                                   DY=0.0,),
+                                _F(GROUP_MA='SU90',
+                                   DX=0.0,),
+                                _F(GROUP_MA='SUINF',
+                                   DZ=0.0,),),
+                      PRES_REP=_F(GROUP_MA='SUEXTEXT',
+                                   PRES=1.,),);
+
+##########################################################
+
+###### MATRICE DE RIGIDITE ELEMENTAIRE
+#
+MATR=CALC_MATR_ELEM(MODELE=MODMECA,
+                    CHARGE=CHARGT,
+                    CHAM_MATER=CHM,
+                    OPTION='RIGI_MECA' )
+
+###### MATRICE DE RIGIDITE ASSEMBLEE
+#
+NU=NUME_DDL(MATR_RIGI=MATR)
+MATASS_1=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NU)
+
+###### DEPLACEMENT INITIAL
+#
+
+RESU=MECA_STATIQUE(MODELE=MODMECA,
+                   CHAM_MATER=CHM,
+                   EXCIT=_F(CHARGE=CHARGT,),
+                  );
+
+
+###### ETAT DE CONTRAINTES
+
+SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=RESU, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA_DEPL' ),
+
+###### MATRICE DE RIGIDITE GEOMETRIQUE ELEMENTAIRE
+#
+RIGELG_1=CALC_MATR_ELEM( MODELE=MODMECA,
+                         OPTION='RIGI_GEOM',
+                         SIEF_ELGA=SIGMA_1 )
+
+###### MATRICE DE RIGIDITE GEOMETRIQUE ASSEMBLEE
+#
+RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
+
+##### RESOLUTION DU PROBLEME DE VALEURS PROPRES
+#
+
+MOD_1=MODE_ITER_SIMULT( MATR_A=MATASS_1,
+                        MATR_B=RIGASG_1,
+                        TYPE_RESU='MODE_FLAMB',
+                        CALC_FREQ =_F (OPTION ='PLUS_PETITE',
+                                       NMAX_FREQ = 3,
+                                   #    CHAR_CRIT=(-1000000., 0.),
+                                       ),
+                        )
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=MOD_1, NUME_MODE=1,
+                   PARA='CHAR_CRIT',
+                   VALE=-647176,
+                   REFERENCE='NON_REGRESSION',),
+                 _F(RESULTAT=MOD_1, NUME_MODE=2,
+                   PARA='CHAR_CRIT',
+                   VALE=-287912,
+                   REFERENCE='NON_REGRESSION',),
+                 _F(RESULTAT=MOD_1, NUME_MODE=3,
+                   PARA='CHAR_CRIT',
+                   VALE=-71996,
+                   REFERENCE='NON_REGRESSION',),
+                   ),)
+
+
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=MOD_1, NUME_MODE=1,
+                   PARA='CHAR_CRIT',
+                   VALE=-659340,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                 _F(RESULTAT=MOD_1, NUME_MODE=2,
+                   PARA='CHAR_CRIT',
+                   VALE=-293040,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                 _F(RESULTAT=MOD_1, NUME_MODE=3,
+                   PARA='CHAR_CRIT',
+                   VALE=-73260,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                   ),)
+
+FIN()

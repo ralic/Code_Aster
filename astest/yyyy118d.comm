@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE   SUIVI PERFORMANCE :
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -208,7 +208,7 @@ CLP=AFFE_CHAR_MECA(
                      GROUP_MA = 'PINT',
                      PRES = 1.))
 
-U=STAT_NON_LINE(  INFO=2,
+U=STAT_NON_LINE(  INFO=1,
             MODELE=MOMECA,
             CHAM_MATER=CHM,EXCIT=(
             _F(  CHARGE = CLDEP),
@@ -222,7 +222,12 @@ U=STAT_NON_LINE(  INFO=2,
             CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-5,
                          ITER_GLOB_MAXI = 1,
                          ARRET = 'OUI'),
-            SOLVEUR=_F( METHODE = 'PETSC', RENUM = 'RCMK', VARIANTE = 'CG', )
+            SOLVEUR=_F( METHODE          = 'PETSC',
+                        ALGORITHME       = 'CG',
+                        PRE_COND         = 'LDLT_INC',
+                        NIVE_REMPLISSAGE = 1,
+                        REMPLISSAGE      = 3.0,
+                        RENUM            = 'RCMK', )
                    )
 
 TEST_RESU( RESU=( 

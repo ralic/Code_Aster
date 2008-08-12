@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,12 +41,13 @@ C  NBPGMX, NBFAMX : SE REFERER A ELRACA
 
       CHARACTER*8 ELREFA,FAPG,NOFPG(NBFAMX)
       CHARACTER*24 VALK(2)
-      INTEGER I,NPAR,NPI,IX,IY,IZ,NPX,NPYZ
+      INTEGER I,NPAR,NPI,IX,IY,IZ,NPX,NPYZ,N,NPG,J,CPT
       INTEGER NNO,NNOS,NBFPG,NBPG1(NBFAMX),INO,IFAM,INDIK8
       REAL*8 XPG(NBPGMX),YPG(NBPGMX),ZPG(NBPGMX),HPG(NBPGMX),A(4),H(4)
       REAL*8 ATY(7),ATZ(7),HT(7),U,T
       REAL*8 AA,BB,CC,HH,H1,H2,H3,RAC5,RAC15,A1,B1,B6,C1,C8,D1,D12
-      REAL*8 P1,P2,P3,P4,P5,XXG5(5),PXG5(5),XA,XB
+      REAL*8 P1,P2,P3,P4,P5,XXG5(20),XYG5(20),XZG5(20)
+      REAL*8 PXG5(20),XA,XB,XC,XD
       REAL*8 ZERO,UNQUAR,UNDEMI,UN,DEUX,XNO(3*27),VOL,A2,B2
 C -----  FONCTIONS FORMULES
       T(U) = 2.0D0*U - 1.0D0
@@ -217,6 +218,48 @@ C         IL FAUT MULTIPLIER LES POIDS PAR 4 POUR OBTENIR VOL=8
             HPG(IZ) = PXG5(IZ)*4.D0
    70     CONTINUE
         END IF
+C	
+        IF (FAPG.EQ.'SHB20') THEN
+C --------- FORMULE DE QUADRATURE DE GAUSS A 20 POINTS DANS
+C           L EPAISSEUR POUR LE SHB20
+C Des points de gauss sur la facette 1-2-3:
+C
+          XZG5(1) = -0.906179845938664D0
+          XZG5(2) = -0.538469310105683D0
+          XZG5(3) =  0.D0
+          XZG5(4) =  0.538469310105683D0
+          XZG5(5) =  0.906179845938664D0
+C
+          PXG5(1) =  0.236926885056189D0
+          PXG5(2) =  0.478628670499366D0
+          PXG5(3) =  0.568888888888889D0
+          PXG5(4) =  0.478628670499366D0
+          PXG5(5) =  0.236926885056189D0
+C
+          DO 71 IZ =1,5
+            XXG5(IZ)    = -0.577350269189625D0
+            XXG5(IZ+5)  =  0.577350269189625D0
+            XXG5(IZ+10) =  0.577350269189625D0
+            XXG5(IZ+15) = -0.577350269189625D0
+            XYG5(IZ)    = -0.577350269189625D0
+            XYG5(IZ+5)  = -0.577350269189625D0
+            XYG5(IZ+10) =  0.577350269189625D0
+            XYG5(IZ+15) =  0.577350269189625D0
+            XZG5(IZ+5)  = XZG5(IZ)
+            PXG5(IZ+5)  = PXG5(IZ)
+            XZG5(IZ+10) = XZG5(IZ)
+            PXG5(IZ+10) = PXG5(IZ)
+            XZG5(IZ+15) = XZG5(IZ)
+            PXG5(IZ+15) = PXG5(IZ)
+   71     CONTINUE    
+C
+          DO 72 IZ = 1,20
+            XPG(IZ) = XXG5(IZ)
+            YPG(IZ) = XYG5(IZ)
+            ZPG(IZ) = XZG5(IZ)
+            HPG(IZ) = PXG5(IZ)
+   72     CONTINUE
+        END IF
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15') THEN
@@ -365,6 +408,62 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
             HPG(NPI) = H(IX)*HT(IY)
  80       CONTINUE
  90     CONTINUE
+C
+        IF (FAPG.EQ.'SHB6') THEN
+C --------- FORMULE DE QUADRATURE DE GAUSS A 5 POINTS DANS
+C           L EPAISSEUR POUR LE SHB6, AU CENTRE DE L'ELEMENT
+          XXG5(1) = -0.906179845938664D0
+          XXG5(2) = -0.538469310105683D0
+          XXG5(3) = 0.D0
+          XXG5(4) = 0.538469310105683D0
+          XXG5(5) = 0.906179845938664D0
+
+          PXG5(1) = 0.236926885056189D0
+          PXG5(2) = 0.478628670499366D0
+          PXG5(3) = 0.568888888888889D0
+          PXG5(4) = 0.478628670499366D0
+          PXG5(5) = 0.236926885056189D0
+C         IL FAUT MULTIPLIER LES POIDS PAR 0.5 POUR OBTENIR VOL=1
+          DO 73 IZ = 1,5
+            XPG(IZ) = 0.D0
+            YPG(IZ) = 0.D0
+            ZPG(IZ) = XXG5(IZ)
+            HPG(IZ) = PXG5(IZ)*0.5D0
+   73     CONTINUE
+        END IF
+C
+        IF (FAPG.EQ.'SHB15') THEN
+C --------- FORMULE DE QUADRATURE DE GAUSS A 15 POINTS DANS
+C           L EPAISSEUR POUR LE SHB15
+          DO 74 IZ=1,5
+            XZG5(IZ)    =  0.5D0
+            XYG5(IZ)    =  0.5D0
+            XZG5(IZ+5)  =  0.5D0
+            XYG5(IZ+5)  =  0.D0
+            XZG5(IZ+10) =  0.D0
+            XYG5(IZ+10) =  0.5D0
+   74     CONTINUE
+C 
+          DO 75 IZ=1,3
+            XXG5(5*(IZ-1)+1) = -0.906179845938664D0
+            XXG5(5*(IZ-1)+2) = -0.538469310105683D0
+            XXG5(5*(IZ-1)+3) =  0.D0
+            XXG5(5*(IZ-1)+4) =  0.538469310105683D0
+            XXG5(5*(IZ-1)+5) =  0.906179845938664D0
+C
+            PXG5(5*(IZ-1)+1) =  0.236926885056189D0/6.D0
+            PXG5(5*(IZ-1)+2) =  0.478628670499366D0/6.D0
+            PXG5(5*(IZ-1)+3) =  0.568888888888889D0/6.D0
+            PXG5(5*(IZ-1)+4) =  0.478628670499366D0/6.D0
+            PXG5(5*(IZ-1)+5) =  0.236926885056189D0/6.D0
+   75     CONTINUE
+          DO 76 IZ = 1,15
+            XPG(IZ) = XXG5(IZ)
+            YPG(IZ) = XYG5(IZ)
+            ZPG(IZ) = XZG5(IZ)
+            HPG(IZ) = PXG5(IZ)
+   76     CONTINUE
+        END IF
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10') THEN

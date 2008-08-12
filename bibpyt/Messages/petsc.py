@@ -1,0 +1,102 @@
+#@ MODIF petsc Messages  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+# -*- coding: iso-8859-1 -*-
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+def _(x) : return x
+
+cata_msg = {
+
+1 : _("""
+Solveur PETSc :
+ Erreur à l'initialisation de PETSc. Il y a certainement un problème dans l'installation.
+"""),
+
+2 : _("""
+Solveur PETSc :
+ On ne traite que des matrices réelles avec PETSc.
+"""),
+
+3 : _("""
+Solveur PETSc :
+  Limite atteinte : le solveur PETSc est utilisé par plus de 5 matrices simultanément.
+Solution :
+  Il faut corriger le programme (PARAMETER (NMXINS=5) dans apetsc.F)
+  Contactez l'assistance.
+"""),
+
+4 : _("""
+Solveur PETSc :
+  Le préconditionneur a déjà été calculé, on ne le recalcule pas.
+"""),
+
+5 : _("""
+Solveur PETSc :
+  Le nombre maximum d'itérations de l'algorithme (%(i1)d) a été atteint.
+  Vous pouvez soit augmenter ce chiffre à l'aide du mot-clé NMAX_ITER, soit augmenter RESI_RELA,
+  ou bien utiliser un préconditionneur plus précis, voire changer d'algorithme.
+"""),
+
+6 : _("""
+Solveur PETSc :
+  Le résidu a été multiplié par plus de %(i1)d par rapport au résidu initial : on diverge
+  Vous pouvez utiliser un préconditionneur plus précis, voire changer d'algorithme.
+"""),
+
+7 : _("""
+Solveur PETSc :
+  On a rencontré un 'breakdown', on ne peut plus agrandir l'espace de Krylov, or on n'a pas encore
+  convergé.
+  Il faut changer de préconditionneur ou d'algorithme.
+"""),
+
+8 : _("""
+Solveur PETSc :
+  On a rencontré un 'breakdown' dans l'algorithme BiCG, le résidu initial est orthogonal au résidu
+  initial préconditionné.
+  Il faut changer de préconditionneur ou d'algorithme.
+"""),
+
+9 : _("""
+Solveur PETSc :
+  La matrice du système est non symétrique, or l'algorithme que vous utilisez requiert
+  la symétrie.
+  Changez d'algorithme ou bien utilisez le mot-clé SYME='OUI' pour symétriser la matrice.
+"""),
+
+10 : _("""
+Solveur PETSc :
+  Le préconditionneur construit à partir de la matrice du système n'est défini positif, or l'algorithme
+  que vous utilisez requiert la définie-positivité.
+  Changez d'algorithme.
+"""),
+
+11 : _("""
+Solveur PETSc :
+  La matrice du système n'est pas définie positive, or l'algorithme que vous utilisez requiert
+  la définie-positivité.
+  Changez d'algorithme.
+"""),
+
+12 : _("""
+Solveur PETSc :
+  L'algorithme itératif a rencontré un erreur dont le code retourné par PETSC est : %(i1)d.
+  Consulter le manuel de PETSc pour plus d'informations et prévenez l'assistance.
+"""),
+
+}

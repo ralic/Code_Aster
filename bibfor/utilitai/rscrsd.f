@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF UTILITAI  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,12 +74,12 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ E L A S
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVEL=31,NAEVEL=9)
+      PARAMETER (NPEVEL=28,NAEVEL=9)
       CHARACTER*16 PAEVEL(NPEVEL)
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVNO=45,NAEVNO=9)
+      PARAMETER (NPEVNO=42,NAEVNO=9)
       CHARACTER*16 PAEVNO(NPEVNO)
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
@@ -124,17 +124,22 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ E L A S
 C     ------------------------------------------------------------------
-      DATA PAEVEL/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT',
-     &     'ITER_GCPC','METHODE','RENUM','STOCKAGE',
-     &     'RESI_GCPC','EFFORT_N','MOMENT_MFY','MOMENT_MFZ',
-     &     'DEFO_D_DX_X','DEFO_D_DRY_X','DEFO_D_DRZ_X','EFFORT_D_VY_X',
-     &     'EFFORT_D_VZ_X','MOMENT_D_MT_X','EFFORT_VY','EFFORT_VZ',
-     &     'MOMENT_MT','ERREUR_ABSOLUE','ERREUR_RELATIVE','NORME_SIGMA',
-     &     'TERME_VOLU_ABSO','TERME_VOLU_RELA','TERME_SAUT_ABSO',
-     &     'TERME_SAUT_RELA','TERME_NORM_ABSO','TERME_NORM_RELA'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PAEVEL/
+     & 'INST',            'MODELE',           'CHAMPMAT',
+     & 'CARAELEM',        'EXCIT',            'ITER_GCPC',
+     & 'METHODE',         'RENUM',            'STOCKAGE',
+     & 'RESI_GCPC',       'EFFORT_N',         'MOMENT_MFY',
+     & 'MOMENT_MFZ',      'DEFO_D_DX_X',      'DEFO_D_DRY_X',
+     & 'DEFO_D_DRZ_X',    'EFFORT_D_VY_X',    'EFFORT_D_VZ_X',
+     & 'MOMENT_D_MT_X',   'EFFORT_VY',        'EFFORT_VZ',
+     & 'MOMENT_MT',
+     & 'ERREUR_ERRE',     'ERREUR_ERZ1',      'ERREUR_ERZ2',
+     & 'ERREUR_QIRE',     'ERREUR_QIZ1',      'ERREUR_QIZ2'/
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
+C      '1234567890123456','1234567890123456','1234567890123456',
       DATA PAEVNO/
      & 'INST',            'MODELE',           'CHAMPMAT',
      & 'CARAELEM',        'EXCIT',            'ITER_GLOB',
@@ -144,133 +149,172 @@ C     ------------------------------------------------------------------
      & 'CHAR_CRIT',       'GFUM',             'GFUA',
      & 'GFUML',           'GFUI',             'GFVAG',
      & 'GFVFD',           'GFVAD',            'FREQ',
-     & 'ERREUR_ABSOLUE',  'ERREUR_RELATIVE',  'NORME_SIGMA',
-     & 'TERME_VOLU_ABSO', 'TERME_VOLU_RELA',  'TERME_SAUT_ABSO',
-     & 'TERME_SAUT_RELA', 'TERME_NORM_ABSO',  'TERME_NORM_RELA',
+     & 'ERREUR_ERRE',     'ERREUR_ERZ1',      'ERREUR_ERZ2',
+     & 'ERREUR_QIRE',     'ERREUR_QIZ1',      'ERREUR_QIZ2',
      & 'PARM_THETA',      'ERRE_TPS_LOC',     'ERRE_TPS_GLOB',
      & 'ERRE_MEC_LOC',    'ERRE_MEC_LOC_D',   'ERRE_HYD_LOC',
      & 'ERRE_MEC_GLOB',   'ERRE_MEC_GLOB_D',  'ERRE_HYD_GLOB',
-     & 'ERRE_MEC',        'ERRE_HYD_S',       'ERRE_HYD_D'      /
+     & 'ERRE_MEC',        'ERRE_HYD_S',       'ERRE_HYD_D'/
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
 C     ------------------------------------------------------------------
-      DATA PAEVTH/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT',
-     &     'ITER_GLOB','ITER_LINE','RESI_GLOB_RELA',
-     &     'RESI_GLOB_MAXI','RHO','PARM_THETA','DELTAT'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PAEVTH/
+     & 'INST',            'MODELE',           'CHAMPMAT',
+     & 'CARAELEM',        'EXCIT',            'ITER_GLOB',
+     & 'ITER_LINE',       'RESI_GLOB_RELA',   'RESI_GLOB_MAXI',
+     & 'RHO',             'PARM_THETA',       'DELTAT'/
 C     ------------------------------------------------------------------
 C                          E V O L _ V A R C
 C     ------------------------------------------------------------------
-      DATA PAVARC/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PAVARC/
+     & 'INST',            'MODELE',           'CHAMPMAT',
+     & 'CARAELEM',        'EXCIT'/
 C     ------------------------------------------------------------------
 C                          M O D E _ M E C A
 C     ------------------------------------------------------------------
-      DATA PAMOME/'MODELE','CHAMPMAT','CARAELEM','EXCIT','NORME',
-     &     'NUME_MODE','NUME_DDL','TYPE_DEFO','NOEUD_CMP',
-     &     'FREQ'           , 'OMEGA2'         , 'AMOR_REDUIT'    ,
-     &     'MASS_GENE'      , 'RIGI_GENE'      , 'AMOR_GENE'      ,
-     &     'MASS_EFFE_DX'   , 'MASS_EFFE_DY'   , 'MASS_EFFE_DZ'   ,
-     &     'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',
-     &     'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',
-     &     'COEF_X'         , 'COEF_Y'         , 'COEF_Z'         /
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PAMOME/
+     & 'MODELE',          'CHAMPMAT',         'CARAELEM',
+     & 'EXCIT',           'NORME',            'NUME_MODE',
+     & 'NUME_DDL',        'TYPE_DEFO',        'NOEUD_CMP',
+     & 'FREQ',            'OMEGA2',           'AMOR_REDUIT',
+     & 'MASS_GENE',       'RIGI_GENE',        'AMOR_GENE',
+     & 'MASS_EFFE_DX',    'MASS_EFFE_DY'   ,  'MASS_EFFE_DZ'   ,
+     & 'FACT_PARTICI_DX', 'FACT_PARTICI_DY',  'FACT_PARTICI_DZ',
+     & 'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY',  'MASS_EFFE_UN_DZ',
+     & 'COEF_X',          'COEF_Y',           'COEF_Z'/
 C     ------------------------------------------------------------------
 C                          M O D E _ F L A M B
 C     ------------------------------------------------------------------
-      DATA PAFLAM/'MODELE','CHAMPMAT','CARAELEM','EXCIT',
-     &            'NUME_MODE', 'NORME', 'CHAR_CRIT' /
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PAFLAM/
+     & 'MODELE',          'CHAMPMAT',         'CARAELEM',
+     & 'EXCIT',           'NUME_MODE',        'NORME',
+     & 'CHAR_CRIT'/
 C     ------------------------------------------------------------------
 C                          D Y N A _ T R A N S
 C     ------------------------------------------------------------------
-      DATA PADYTR/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PADYTR/
+     & 'INST',            'MODELE',           'CHAMPMAT',
+     & 'CARAELEM',        'EXCIT'/
 C     ------------------------------------------------------------------
 C                          D Y N A _ H A R M O
 C     ------------------------------------------------------------------
-      DATA PADYHA/'FREQ','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PADYHA/
+     & 'FREQ',            'MODELE',           'CHAMPMAT',
+     & 'CARAELEM',        'EXCIT'/
 C     ------------------------------------------------------------------
 C                          M U L T _ E L A S
 C     ------------------------------------------------------------------
-      DATA PAMUEL/'NOM_CAS','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PAMUEL/
+     & 'NOM_CAS',         'MODELE',           'CHAMPMAT',
+     & 'CARAELEM',        'EXCIT'/
 C     ------------------------------------------------------------------
 C                          A C O U _ H A R M O
 C     ------------------------------------------------------------------
-      DATA PAACHA/'FREQ','MODELE','CHAMPMAT','CARAELEM','EXCIT'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA PAACHA/
+     & 'FREQ',            'MODELE',           'CHAMPMAT',
+     & 'CARAELEM',        'EXCIT'/
 C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      DATA CHMEC1/'DEPL','VITE','ACCE','DEPL_ABSOLU','VITE_ABSOLU',
-     &     'ACCE_ABSOLU','EFGE_ELNO_DEPL','EFGE_NOEU_DEPL',
-     &     'EFGE_ELNO_CART','EFGE_NOEU_CART','EPSI_ELGA_DEPL',
-     &     'EPSI_ELNO_DEPL','EPSI_NOEU_DEPL','EPSI_ELNO_TUYO',
-     &     'SIEF_ELGA','SIEF_ELGA_DEPL','SIEF_ELNO_ELGA',
-     &     'SIEF_NOEU_ELGA','SIEF_ELNO','SIEF_NOEU','SIGM_ELNO_DEPL',
-     &     'SIGM_NOEU_DEPL','EPEQ_ELNO_TUYO','SIEQ_ELNO_TUYO',
-     &     'SIGM_ELNO_CART','SIGM_NOEU_CART','SIGM_NOZ1_ELGA',
-     &     'SIGM_NOZ2_ELGA','SIRE_ELNO_DEPL','SIRE_NOEU_DEPL',
-     &     'SIPO_ELNO_DEPL','SIPO_NOEU_DEPL','EQUI_ELGA_SIGM',
-     &     'EQUI_ELNO_SIGM','EQUI_NOEU_SIGM','EQUI_ELGA_EPSI',
-     &     'EQUI_ELNO_EPSI','EQUI_NOEU_EPSI','SIGM_ELNO_ZAC',
-     &     'EPSP_ELNO_ZAC','VARI_ELGA_ZAC','SIGM_NOEU_ZAC',
-     &     'EPSP_NOEU_ZAC','ALPH0_ELGA_EPSP','ALPHP_ELGA_ALPH0',
-     &     'VARI_NON_LOCAL','LANL_ELGA',
-     &     'ARCO_ELNO_SIGM','ARCO_NOEU_SIGM'/
-
-      DATA CHMEC2/'DEGE_ELNO_DEPL','DEGE_NOEU_DEPL','EPOT_ELEM_DEPL',
-     &     'ECIN_ELEM_DEPL','FORC_NODA','REAC_NODA',
-     &     'ERRE_ELEM_SIGM','ERRE_ELNO_ELEM','ERRE_NOEU_ELEM',
-     &     'ERZ1_ELEM_SIGM','ERZ2_ELEM_SIGM',
-     &     'QIRE_ELEM_SIGM','QIRE_ELNO_ELEM','QIRE_NOEU_ELEM',
-     &     'QIZ1_ELEM_SIGM','QIZ2_ELEM_SIGM',
-     &     'EPSG_ELGA_DEPL','EPSG_ELNO_DEPL',
-     &     'EPSG_NOEU_DEPL','EPSP_ELGA','EPSP_ELNO','EPSP_NOEU',
-     &     'VARI_ELGA','VARI_ELNO','VARI_NOEU','VARI_ELNO_ELGA',
-     &     'VARI_NOEU_ELGA','VARI_ELNO_TUYO','EPSA_ELNO','EPSA_NOEU',
-     &     'COMPORTEMENT','DCHA_ELGA_SIGM','DCHA_ELNO_SIGM',
-     &     'DCHA_NOEU_SIGM','RADI_ELGA_SIGM','RADI_ELNO_SIGM',
-     &     'RADI_NOEU_SIGM','ENDO_ELNO_SIGA','ENDO_ELNO_SINO',
-     &     'ENDO_NOEU_SINO','PRES_DBEL_DEPL','SIGM_ELNO_COQU',
-     &     'EPME_ELNO_DEPL','EPME_ELGA_DEPL','EPMG_ELNO_DEPL',
-     &     'EPMG_ELGA_DEPL','ENEL_ELGA','ENEL_ELNO_ELGA',
-     &     'ENEL_NOEU_ELGA','SIGM_NOEU_COQU','SIGM_ELNO_TUYO',
-     &     'EPMG_NOEU_DEPL','SING_ELEM','SING_ELNO_ELEM'/
-      DATA CHMEC3/'EQUI_ELGA_EPME','EQUI_ELNO_EPME','EQUI_NOEU_EPME',
-     &     'DEDE_ELNO_DLDE','DEDE_NOEU_DLDE','DESI_ELNO_DLSI',
-     &     'DESI_NOEU_DLSI','PMPB_ELGA_SIEF','PMPB_ELNO_SIEF',
-     &     'PMPB_NOEU_SIEF','SIGM_ELNO_SIEF','SIPO_ELNO_SIEF',
-     &     'SIGM_NOEU_SIEF','SIPO_NOEU_SIEF','EPFP_ELNO','EPFP_ELGA',
-     &     'EPFD_ELNO','EPFD_ELGA','EPVC_ELNO','EPVC_ELGA',
-     &     'VALE_CONT','VARI_ELNO_COQU','CRIT_ELNO_RUPT','ETOT_ELGA',
-     &     'ETOT_ELNO_ELGA','ETOT_ELEM','VALE_NCOU_MAXI',
-     &     'MODE_FLAMB','ENDO_ELGA','ENDO_ELNO_ELGA','INDI_LOCA_ELGA',
-     &     'EXTR_ELGA_VARI','EXTR_ELNO_VARI','EXTR_NOEU_VARI',
-     &     'MODE_MECA'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA CHMEC1/
+     & 'DEPL',            'VITE',            'ACCE','DEPL_ABSOLU',
+     & 'VITE_ABSOLU',     'ACCE_ABSOLU',     'EFGE_ELNO_DEPL',
+     & 'EFGE_NOEU_DEPL',  'EFGE_ELNO_CART',  'EFGE_NOEU_CART',
+     & 'EPSI_ELGA_DEPL',  'EPSI_ELNO_DEPL',  'EPSI_NOEU_DEPL',
+     & 'EPSI_ELNO_TUYO',  'SIEF_ELGA',       'SIEF_ELGA_DEPL',
+     & 'SIEF_ELNO_ELGA',  'SIEF_NOEU_ELGA',  'SIEF_ELNO',
+     & 'SIEF_NOEU',       'SIGM_ELNO_DEPL',  'SIGM_NOEU_DEPL',
+     & 'EPEQ_ELNO_TUYO',  'SIEQ_ELNO_TUYO',  'SIGM_ELNO_CART',
+     & 'SIGM_NOEU_CART',  'SIGM_NOZ1_ELGA',  'SIGM_NOZ2_ELGA',
+     & 'SIRE_ELNO_DEPL',  'SIRE_NOEU_DEPL',  'SIPO_ELNO_DEPL',
+     & 'SIPO_NOEU_DEPL',  'EQUI_ELGA_SIGM',  'EQUI_ELNO_SIGM',
+     & 'EQUI_NOEU_SIGM',  'EQUI_ELGA_EPSI',  'EQUI_ELNO_EPSI',
+     & 'EQUI_NOEU_EPSI',  'SIGM_ELNO_ZAC',   'EPSP_ELNO_ZAC',
+     & 'VARI_ELGA_ZAC',   'SIGM_NOEU_ZAC',   'EPSP_NOEU_ZAC',
+     & 'ALPH0_ELGA_EPSP', 'ALPHP_ELGA_ALPH0','VARI_NON_LOCAL',
+     & 'LANL_ELGA',       'ARCO_ELNO_SIGM',  'ARCO_NOEU_SIGM'/
+C
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA CHMEC2/
+     & 'DEGE_ELNO_DEPL',  'DEGE_NOEU_DEPL',  'EPOT_ELEM_DEPL',
+     & 'ECIN_ELEM_DEPL',  'FORC_NODA',       'REAC_NODA',
+     & 'ERRE_ELEM_SIGM',  'ERRE_ELNO_ELEM',  'ERRE_NOEU_ELEM',
+     & 'ERZ1_ELEM_SIGM',  'ERZ2_ELEM_SIGM',  'QIRE_ELEM_SIGM',
+     & 'QIRE_ELNO_ELEM',  'QIRE_NOEU_ELEM',  'QIZ1_ELEM_SIGM',
+     & 'QIZ2_ELEM_SIGM',  'EPSG_ELGA_DEPL',  'EPSG_ELNO_DEPL',
+     & 'EPSG_NOEU_DEPL',  'EPSP_ELGA',       'EPSP_ELNO',
+     & 'EPSP_NOEU',       'VARI_ELGA',       'VARI_ELNO',
+     & 'VARI_NOEU',       'VARI_ELNO_ELGA',  'VARI_NOEU_ELGA',
+     & 'VARI_ELNO_TUYO',  'EPSA_ELNO',       'EPSA_NOEU',
+     & 'COMPORTEMENT',    'DCHA_ELGA_SIGM',  'DCHA_ELNO_SIGM',
+     & 'DCHA_NOEU_SIGM',  'RADI_ELGA_SIGM',  'RADI_ELNO_SIGM',
+     & 'RADI_NOEU_SIGM',  'ENDO_ELNO_SIGA',  'ENDO_ELNO_SINO',
+     & 'ENDO_NOEU_SINO',  'PRES_DBEL_DEPL',  'SIGM_ELNO_COQU',
+     & 'EPME_ELNO_DEPL',  'EPME_ELGA_DEPL',  'EPMG_ELNO_DEPL',
+     & 'EPMG_ELGA_DEPL',  'ENEL_ELGA',       'ENEL_ELNO_ELGA',
+     & 'ENEL_NOEU_ELGA',  'SIGM_NOEU_COQU',  'SIGM_ELNO_TUYO',
+     & 'EPMG_NOEU_DEPL',  'SING_ELEM',       'SING_ELNO_ELEM'/
+C
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA CHMEC3/
+     & 'EQUI_ELGA_EPME',  'EQUI_ELNO_EPME',   'EQUI_NOEU_EPME',
+     & 'DEDE_ELNO_DLDE',  'DEDE_NOEU_DLDE',   'DESI_ELNO_DLSI',
+     & 'DESI_NOEU_DLSI',  'PMPB_ELGA_SIEF',   'PMPB_ELNO_SIEF',
+     & 'PMPB_NOEU_SIEF',  'SIGM_ELNO_SIEF',   'SIPO_ELNO_SIEF',
+     & 'SIGM_NOEU_SIEF',  'SIPO_NOEU_SIEF',   'EPFP_ELNO',
+     & 'EPFP_ELGA',       'EPFD_ELNO',        'EPFD_ELGA',
+     & 'EPVC_ELNO',       'EPVC_ELGA',        'VALE_CONT',
+     & 'VARI_ELNO_COQU',  'CRIT_ELNO_RUPT',   'ETOT_ELGA',
+     & 'ETOT_ELNO_ELGA',  'ETOT_ELEM',        'VALE_NCOU_MAXI',
+     & 'MODE_FLAMB',      'ENDO_ELGA',        'ENDO_ELNO_ELGA',
+     & 'INDI_LOCA_ELGA',  'EXTR_ELGA_VARI',   'EXTR_ELNO_VARI',
+     & 'EXTR_NOEU_VARI',  'MODE_MECA'/
 
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
-      DATA CHTHER/'TEMP','FLUX_ELGA_TEMP','FLUX_ELNO_TEMP',
-     &     'FLUX_NOEU_TEMP','META_ELGA_TEMP','META_ELNO_TEMP',
-     &     'META_NOEU_TEMP','DURT_ELGA_META','DURT_ELNO_META',
-     &     'DURT_NOEU_META','HYDR_ELNO_ELGA','SOUR_ELGA_ELEC',
-     &     'HYDR_NOEU_ELGA','DETE_ELNO_DLTE','DETE_NOEU_DLTE',
-     &     'COMPORTHER','ERRE_ELEM_TEMP','ERRE_ELNO_ELEM',
-     &     'ERRE_NOEU_ELEM'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA CHTHER/
+     & 'TEMP',            'FLUX_ELGA_TEMP',  'FLUX_ELNO_TEMP',
+     & 'FLUX_NOEU_TEMP',  'META_ELGA_TEMP',  'META_ELNO_TEMP',
+     & 'META_NOEU_TEMP',  'DURT_ELGA_META',  'DURT_ELNO_META',
+     & 'DURT_NOEU_META',  'HYDR_ELNO_ELGA',  'SOUR_ELGA_ELEC',
+     & 'HYDR_NOEU_ELGA',  'DETE_ELNO_DLTE',  'DETE_NOEU_DLTE',
+     & 'COMPORTHER',      'ERRE_ELEM_TEMP',  'ERRE_ELNO_ELEM',
+     & 'ERRE_NOEU_ELEM'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------
-      DATA CHVARC/'IRRA','TEMP','HYDR_ELNO_ELGA','HYDR_NOEU_ELGA',
-     &            'EPSA_ELNO','META_ELNO_TEMP'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA CHVARC/
+     & 'IRRA',            'TEMP',            'HYDR_ELNO_ELGA',
+     & 'HYDR_NOEU_ELGA',  'EPSA_ELNO',       'META_ELNO_TEMP'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ A C O U S T I Q U E
 C     ------------------------------------------------------------------
-      DATA CHACOU/'PRES','PRES_ELNO_DBEL','PRES_ELNO_REEL',
-     &     'PRES_ELNO_IMAG','INTE_ELNO_ACTI','INTE_ELNO_REAC',
-     &     'PRES_NOEU_DBEL','PRES_NOEU_REEL','PRES_NOEU_IMAG',
-     &     'INTE_NOEU_ACTI','INTE_NOEU_REAC'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA CHACOU/
+     & 'PRES',            'PRES_ELNO_DBEL',  'PRES_ELNO_REEL',
+     & 'PRES_ELNO_IMAG',  'INTE_ELNO_ACTI',  'INTE_ELNO_REAC',
+     & 'PRES_NOEU_DBEL',  'PRES_NOEU_REEL',  'PRES_NOEU_IMAG',
+     & 'INTE_NOEU_ACTI',  'INTE_NOEU_REAC'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E T A _ R U P T
 C     ------------------------------------------------------------------
-      DATA CHTHET/'THETA','GRAD_NOEU_THETA'/
+C      '1234567890123456','1234567890123456','1234567890123456',
+      DATA CHTHET/
+     & 'THETA',           'GRAD_NOEU_THETA'/
 C     ------------------------------------------------------------------
 
       NOMS2 = NOMSD

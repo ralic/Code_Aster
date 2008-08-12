@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,9 +243,9 @@ C                               ET  "ORIE_NORM_COQUE" :
 C     ---------------------------------------------------------------
         CALL ORILGM(MA)
 C
-C     --- TRAITEMENT DU MOT CLEF  "ORIE_SHB8" :
+C     --- TRAITEMENT DU MOT CLEF  "ORIE_SHB" :
 C     ------------------------------------------
-      CALL GETFAC ( 'ORIE_SHB8', NBOCC )
+      CALL GETFAC ( 'ORIE_SHB', NBOCC )
       IF ( NBOCC .NE. 0 ) THEN
          CALL ORISHB ( MA )
       ENDIF

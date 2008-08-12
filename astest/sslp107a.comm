@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DES ESTIMATEURS D'ERREUR BASES SUR LES RESIDUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -374,24 +374,8 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  PARA='ERREUR_ABSOLUE',
+                  PARA='ERREUR_ERRE',
                   VALE=erreur,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-05,
-                  REFERENCE='SOURCE_EXTERNE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
-                  PARA='ERREUR_RELATIVE',
-                  VALE=errela,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-05,
-                  REFERENCE='SOURCE_EXTERNE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
-                  PARA='NORME_SIGMA',
-                  VALE=norme,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='SOURCE_EXTERNE',),);

@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,IBID,NBSD,IFETS,ILIMPI,IDD,
      &        IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP
       CHARACTER*1 K1BID
-      CHARACTER*8 MAILLA,MUMPS,K8BID
+      CHARACTER*8 MAILLA,METRES,K8BID
       CHARACTER*14 NU,RESOCO,COM
       CHARACTER*16 DEFICO,TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
@@ -293,12 +293,15 @@ C     ------------------------------------------------------------------
 C     ---------------------------------------
         MATAS = NOMSD
 
-C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
+C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS OU PETSC :
         CALL JEEXIN(MATAS//'.REFA',IRET)
         IF (IRET.GT.0) THEN
-          CALL DISMOI('F','EST_MUMPS',MATAS,'MATR_ASSE',IBID,MUMPS,IBID)
-          IF (MUMPS.EQ.'OUI') THEN
+          CALL DISMOI('F','METH_RESO',MATAS,'MATR_ASSE',IBID,METRES
+     &                                                      ,IBID)
+          IF (METRES.EQ.'MUMPS') THEN
             CALL AMUMPS('DETR_MAT',' ',MATAS,RBID,CBID,' ',0,IBID)
+          ELSE IF(METRES.EQ.'PETSC') THEN
+            CALL APETSC('DETR_MAT',' ',MATAS,RBID,' ',0,IBID)
           END IF
 
         END IF

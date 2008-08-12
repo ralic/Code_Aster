@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/05/2008   AUTEUR KHAM M.KHAM 
+#& MODIF COMMANDE  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
             UIinfo={"groupes":("Maillage",)},
       regles=(AU_MOINS_UN('ORIE_FISSURE','DEFORME','EQUE_PIQUA','ORIE_PEAU_2D',
                        'ORIE_PEAU_3D','ORIE_NORM_COQUE','PLAQ_TUBE','MODI_MAILLE',
-                       'TRANSLATION','ROTATION','MODI_BASE','ECHELLE','ORIE_SHB8','SYMETRIE',
+                       'TRANSLATION','ROTATION','MODI_BASE','ECHELLE','ORIE_SHB','SYMETRIE',
                        'ORIE_LIGNE',),
               PRESENT_ABSENT('ORIE_FISSURE','DEFORME','EQUE_PIQUA','ORIE_PEAU_2D',
                        'ORIE_PEAU_3D','ORIE_NORM_COQUE','PLAQ_TUBE','MODI_MAILLE',
@@ -91,7 +91,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
            GROUP_MA_VOLU   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          ),
-         ORIE_SHB8       =FACT(statut='f',max=1,
+         ORIE_SHB       =FACT(statut='f',max=1,
            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
          ),
          ORIE_NORM_COQUE =FACT(statut='f',max='**',

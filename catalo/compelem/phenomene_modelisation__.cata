@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+%& MODIF COMPELEM  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -267,6 +267,13 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA8     ELEMENT__ MECA_SHB8
               MAILLE__ QUAD4     ELEMENT__ MECA_FACE4
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
+              MAILLE__ PENTA6    ELEMENT__ MECA_SHB6
+              MAILLE__ TRIA3     ELEMENT__ MECA_FACE3
+              MAILLE__ PENTA15   ELEMENT__ MECA_SHB15      
+              MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
+              MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
+              MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
+              MAILLE__ HEXA20    ELEMENT__ MECA_SHB20
 
        MODELISATION__ '3D_GRAD_EPSI'     DIM__ 3 3   CODE__ '3DG'
               ATTRIBUT__  NBSIGM=X6

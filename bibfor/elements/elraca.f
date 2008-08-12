@@ -8,7 +8,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,14 +20,12 @@ C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C TOLE CRP_20
-
 C BUT :  RETOURNE LES CARACTERISTIQUES DE L'ELREFA
 C ----------------------------------------------------------------------
 C   IN   ELREFZ : NOM DE L'ELREFA (K8)
@@ -39,15 +37,13 @@ C        FAPG(*): NOMS DES FAMILLES DE POINTS DE GAUSS
 C        NBPG(*): NOMBRE DE POINTS DES FAMILLES DE POINTS DE GAUSS
 C        X(*)   : COORDONNEES DES NOEUDS DE L'ELREFA
 C        VOL    : VOLUME DE L'ELREFA
-
-
 C COMMENTAIRE POUR LES ROUTINES ELRAGA, INMAT4, INMAT5, INMAT6, JNI002
 C ----------------------------------------------------------------------
 C        NBPGMX : NOMBRE DE POINTS DE GAUSS MAX DE L'ELEMENT
 C                 NBPGMX=1000 DU A XFEM         
 C        NBNOMX : NOMBRE DE NOEUDS  MAX DE L'ELEMENT
 C        NBFAMX : NOMBRE DE FAMILLES DE POINTS DE GAUSS MAX DE L'ELEMENT
-
+C
 C   -------------------------------------------------------------------
       CHARACTER*8 ELREFA
       INTEGER I,J
@@ -105,7 +101,7 @@ C     ------------------------------------------------------------------
         NNOS = 8
         VOL = 8.D0
 
-        NBFPG = 6
+        NBFPG = 7
 
         NBPG(1) = NNO
         NBPG(2) = NNOS
@@ -113,6 +109,7 @@ C     ------------------------------------------------------------------
         NBPG(4) = 8
         NBPG(5) = 27
         NBPG(6) = 16
+        NBPG(7) = 20
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -120,6 +117,7 @@ C     ------------------------------------------------------------------
         FAPG(4) = 'FPG8'
         FAPG(5) = 'FPG27'
         FAPG(6) = 'FPG8NOS'
+        FAPG(7) = 'SHB20'
 
         DO 20 I = 1,20
           XIN(I) = -1.D0
@@ -337,7 +335,7 @@ C     ------------------------------------------------------------------
         NNOS = 6
         VOL = 1.D0
 
-        NBFPG = 8
+        NBFPG = 9
 
         NBPG(1) = NNO
         NBPG(2) = NNOS
@@ -347,6 +345,7 @@ C     ------------------------------------------------------------------
         NBPG(6) = 8
         NBPG(7) = 21
         NBPG(8) = 12
+        NBPG(9) = 5
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -356,6 +355,7 @@ C     ------------------------------------------------------------------
         FAPG(6) = 'FPG8'
         FAPG(7) = 'FPG21'
         FAPG(8) = 'FPG6NOS'
+        FAPG(9) = 'SHB6'
 
         DO 60 I = 1,6
           YIN(I) = 0.D0
@@ -377,7 +377,7 @@ C     ------------------------------------------------------------------
         NNOS = 6
         VOL = 1.D0
 
-        NBFPG = 7
+        NBFPG = 8
 
         NBPG(1) = NNO
         NBPG(2) = NNOS
@@ -386,6 +386,7 @@ C     ------------------------------------------------------------------
         NBPG(5) = 8
         NBPG(6) = 21
         NBPG(7) = 12
+        NBPG(8) = 15
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -394,6 +395,7 @@ C     ------------------------------------------------------------------
         FAPG(5) = 'FPG8'
         FAPG(6) = 'FPG21'
         FAPG(7) = 'FPG6NOS'
+        FAPG(8) = 'SHB15'
 
         DO 80 I = 1,15
           XIN(I) = 0.D0

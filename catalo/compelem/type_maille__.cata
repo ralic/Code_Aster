@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+%& MODIF COMPELEM  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -217,6 +217,7 @@ MAILLE__ PENTA6     6       DIM__  3   CODE__  'PE6'
          FAMILLE__ FPG21       21
          FAMILLE__ XFEM72      72
          FAMILLE__ XFEM270     270
+         FAMILLE__ SHB6        5
 
 MAILLE__ PENTA15    15      DIM__  3   CODE__  'P15'
    ELREFE__ P15
@@ -228,6 +229,7 @@ MAILLE__ PENTA15    15      DIM__  3   CODE__  'P15'
          FAMILLE__ FPG8        8
          FAMILLE__ FPG21       21
          FAMILLE__ XFEM270     270
+         FAMILLE__ SHB15       15
 
 MAILLE__ PYRAM5     5       DIM__  3   CODE__  'PY5'
    ELREFE__ PY5
@@ -269,6 +271,7 @@ MAILLE__ HEXA20     20      DIM__  3   CODE__  'H20'
          FAMILLE__ FPG8NOS     16
          FAMILLE__ FPG27       27
          FAMILLE__ XFEM540     540
+         FAMILLE__ SHB20       20
    ELREFE__ POHOH20
          FAMILLE__ FPG27       27
 

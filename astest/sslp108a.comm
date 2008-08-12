@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE FISSURE 2D EN MODE 1 AVEC METHODE ARLEQUIN - MODELE DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -183,7 +183,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  PARA='ERREUR_ABSOLUE',
+                  PARA='ERREUR_ERRE',
                   VALE=6.2749743481852E+04,
                   PRECISION=1E-10,
                   REFERENCE='NON_REGRESSION',

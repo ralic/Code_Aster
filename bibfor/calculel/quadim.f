@@ -1,7 +1,7 @@
-      SUBROUTINE QUADIM(UNIT,QUADRA,NGRMA1,NGRMA2)
+      SUBROUTINE QUADIM(UNIT,ISMED,QUADRA,NGRMA1,NGRMA2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 11/08/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C
       IMPLICIT NONE
       CHARACTER*10  QUADRA
       CHARACTER*10  NGRMA1,NGRMA2
+      LOGICAL       ISMED
       INTEGER       UNIT
 C
 C ----------------------------------------------------------------------
@@ -35,6 +36,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  UNIT   : UNITE D'IMPRESSION
+C IN  ISMED  : VAUT .TRUE. SI ZONE DE COLLAGE EST LA ZONE MEDIATRICE
 C IN  QUADRA : NOM DE LA STRUCTURE DE DONNEES QUADRATURES
 C IN  NGRMA1 : NOM DE LA LISTE DES MAILLES DU PREMIER GROUPE
 C IN  NGRMA2 : NOM DE LA LISTE DES MAILLES DU SECOND GROUPE
@@ -121,9 +123,14 @@ C
      &                'A INTEGRER...'
 C
         DO 70 ICPL = 1 , NCPL
-          IM1  = ZI(JQMAMA+2*(ICPL-1))
-          IM2  = ZI(JQMAMA+2*(ICPL-1)+1)
-          IFAM = ZI(JQMAFA+ICPL-1)
+C
+          IF (ISMED) THEN
+            IM1  = ZI(JQMAMA+2*(ICPL-1))
+            IM2  = ZI(JQMAMA+2*(ICPL-1)+1)
+          ELSE
+            IM1  = ZI(JQMAMA+2*(ICPL-1)+1)
+            IM2  = ZI(JQMAMA+2*(ICPL-1))
+          ENDIF
 C
           NUMMA1 = ZI(JGRMA1+ABS(IM1)-1)
           CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUMMA1),NOMMA1)
@@ -134,6 +141,8 @@ C --- TYPE D'INTEGRATION
 C
           CALL ARLTII(IM1   ,IM2   ,
      &                LINCL1,LINCL2,LINCLU,LSSMAI)
+C
+          IFAM = ZI(JQMAFA+ICPL-1)
 C
           IF (LSSMAI) THEN
             WRITE(UNIT,*) '<QUADRA  > ...... COUPLE (',ICPL,' ): ',
@@ -191,12 +200,18 @@ C
           CALL JELIRA(JEXNUM(QUADRA(1:10)//'.LIMAMA',IFAM),
      &                  'LONMAX',NCPL,K8BID)
           WRITE(UNIT,*) '<QUADRA  > ...... NOMBRE DE COUPLES : ',
-     &                      NCPL/2
+     &                      NCPL
           CALL JEVEUO(JEXNUM(QUADRA(1:10)//'.LIMAMA',IFAM),'L',JQLIMA)
           DO 81 ICPLF = 1, NCPL
             ICPL = ZI(JQLIMA+ICPLF-1)
-            IM1  = ZI(JQMAMA+2*(ICPL-1))
-            IM2  = ZI(JQMAMA+2*(ICPL-1)+1)
+C
+            IF (ISMED) THEN
+              IM1  = ZI(JQMAMA+2*(ICPL-1))
+              IM2  = ZI(JQMAMA+2*(ICPL-1)+1)
+            ELSE
+              IM1  = ZI(JQMAMA+2*(ICPL-1)+1)
+              IM2  = ZI(JQMAMA+2*(ICPL-1))
+            ENDIF
 C
             NUMMA1 = ZI(JGRMA1+ABS(IM1)-1)
             CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUMMA1),NOMMA1)

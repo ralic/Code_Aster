@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ NUME_DDL=OPER(nom="NUME_DDL",op=11,sd_prod=nume_ddl_sdaster,reentrant='n',
          b_modele        =BLOC(condition = "MODELE != None",
            CHARGE     =SIMP(statut='f',validators=NoRepeat(),max='**',typ=(char_meca,char_ther,char_acou, ),),
          ),
-         METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS") ),
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","PETSC","MUMPS") ),
          b_mult_front    =BLOC(condition="METHODE=='MULT_FRONT'",fr="paramètres associés à la méthode multifrontale",
            RENUM           =SIMP(statut='f',typ='TXM',into=("MD","MDA","METIS"),defaut="METIS" ),
          ),
@@ -37,7 +37,7 @@ NUME_DDL=OPER(nom="NUME_DDL",op=11,sd_prod=nume_ddl_sdaster,reentrant='n',
          b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
            RENUM         =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
          ),
-         b_gcpc          =BLOC(condition="METHODE=='GCPC'",fr="paramètres associés à la méthode gradient conjugué",
+         b_gcpc          =BLOC(condition="METHODE=='GCPC' or METHODE=='PETSC'",fr="paramètres associés à la GCPC ou PETSc",
            RENUM           =SIMP(statut='f',typ='TXM',into=("RCMK","SANS"),defaut="RCMK"  ),
          ),
          INFO            =SIMP(statut='f',typ='I',into=(1,2)),

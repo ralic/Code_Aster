@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/08/2008   AUTEUR MEUNIER S.MEUNIER 
 # TITRE POUTRE CONSOLE 3D/PLAQUE
 # VALIDATION DE LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,7 +91,7 @@ ENCAST=AFFE_CHAR_MECA(MODELE=MOD,
 #    Collage sur le modele grossier
 ################################################
 
-ARLQ=AFFE_CHAR_MECA(MODELE=MOD,INFO=2,
+ARLQ=AFFE_CHAR_MECA(MODELE=MOD,INFO=1,
                     ARLEQUIN=_F(GROUP_MA_1='GM1000',
                                 GROUP_MA_2='GM100',
                                 CARA_ELEM=CARA,

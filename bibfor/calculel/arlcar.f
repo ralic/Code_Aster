@@ -1,7 +1,7 @@
       SUBROUTINE ARLCAR(NOMARL,BASE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 11/08/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,41 +28,41 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
 C
-C CREATION DE LA SD PRINCIPALE ARLEQUIN
+C ENRICHISSEMENT DE LA SD PRINCIPALE ARLEQUIN
 C
 C ----------------------------------------------------------------------
 C
 C
-C IN  NOMARL : NOM DE LA SD PRINCIPALE ARLEQUIN
-C IN  BASE   : TYPE DE BASE ('V' OU 'G')
+C I/O  NOMARL : NOM DE LA SD PRINCIPALE ARLEQUIN
+C IN   BASE   : TYPE DE BASE ('V' OU 'G')
+C
+C SD EN SORTIE :
+C ==============
+C
+C .TRAVR : VECTEUR DE TRAVAIL DE TYPE R
+C .TRAVI : VECTEUR DE TRAVAIL DE TYPE I
+C .TRAVL : VECTEUR DE TRAVAIL DE TYPE L
+C .POIDS : NOM DE L'OBJET .POIDS_MAILLE
 C
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      IBID
-      INTEGER      NHAPP,NHINT,NH
-      INTEGER      ARLGEI
+      INTEGER      IBID,NH,ARLGEI
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- LONGUEURS
+C --- PARAMETRE POUR LONGUEUR DU VECTEUR DE TRAVAIL
 C
-      NHAPP = ARLGEI(NOMARL,'NHAPP ')
-      NHINT = ARLGEI(NOMARL,'NHINT ')
-      NH    = MAX(NHAPP,NHINT)**2
+      NH = ARLGEI(NOMARL,'NH    ')
 C
 C --- CREATION VECTEURS JEVEUX
 C
-      CALL WKVECT(NOMARL(1:8)//'.TRAVR',BASE//' V R',12+276*NH,
-     &            IBID )
-      CALL WKVECT(NOMARL(1:8)//'.TRAVI',BASE//' V I',56+1536*NH,
-     &            IBID )
-      CALL WKVECT(NOMARL(1:8)//'.TRAVL',BASE//' V L',24*NH,
-     &            IBID )
-      CALL WKVECT(NOMARL(1:8)//'.POIDS',BASE//' V K24',1,
-     &            IBID )
+      CALL WKVECT(NOMARL(1:8)//'.TRAVR',BASE//' V R'  ,12+276*NH ,IBID)
+      CALL WKVECT(NOMARL(1:8)//'.TRAVI',BASE//' V I'  ,56+1536*NH,IBID)
+      CALL WKVECT(NOMARL(1:8)//'.TRAVL',BASE//' V L'  ,24*NH     ,IBID)
+      CALL WKVECT(NOMARL(1:8)//'.POIDS',BASE//' V K24',1         ,IBID)
 C
       CALL JEDEMA()
       END

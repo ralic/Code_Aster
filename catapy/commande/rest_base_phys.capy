@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 11/08/2008   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,7 @@ def rest_base_phys_prod(RESU_GENE,RESU_PHYS,RESULTAT,**args ):
   if AsType(RESU_GENE) == mode_cycl : return mode_meca
   if AsType(RESU_GENE) == harm_gene : return dyna_harmo
   if AsType(RESU_PHYS) == evol_noli : return dyna_trans
+  if AsType(RESU_PHYS) == dyna_trans     : return dyna_trans
   if AsType(RESULTAT)  == evol_elas      : return evol_elas
   if AsType(RESULTAT)  == evol_noli      : return evol_noli
   if AsType(RESULTAT)  == evol_char      : return evol_char
@@ -51,7 +52,7 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
                                                mode_meca,mode_stat_depl,base_modale) ),
          
          RESU_GENE       =SIMP(statut='f',typ=(tran_gene,mode_gene,mode_cycl,harm_gene) ),
-         RESU_PHYS       =SIMP(statut='f',typ=evol_noli ),
+         RESU_PHYS       =SIMP(statut='f',typ=(evol_noli,dyna_trans) ),
          BASE_MODALE     =SIMP(statut='f',typ=(base_modale,mode_meca) ),
          NUME_DDL        =SIMP(statut='f',typ=nume_ddl_sdaster ),
          MACR_ELEM_DYNA  =SIMP(statut='f',typ=macr_elem_dyna),

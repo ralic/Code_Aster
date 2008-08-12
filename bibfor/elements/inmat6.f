@@ -1,6 +1,6 @@
       SUBROUTINE INMAT6(ELREFA,FAPG,MGANOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,13 +43,13 @@ C DEB ------------------------------------------------------------------
       CALL ASSERT(NNO.LE.NBNOMX)
       CALL ASSERT(NPG.LE.NBPGMX)
 
-C     CAS DU SHB8 NON INVERSIBLE
-      IF (FAPG.EQ.'SHB5') THEN
+C     CAS DU SHB8 ET DU SHB6 NON INVERSIBLE
+      IF (FAPG.EQ.'SHB5'.OR.FAPG.EQ.'SHB6') THEN
         CALL R8INIR(NBNOMX*NBNOMX,0.D0,MGANOS,1)
-        DO 10 I = 1,4
+        DO 10 I = 1,NNOS/2
           MGANOS(1,I) = 1.D0
    10   CONTINUE
-        DO 20 I = 5,8
+        DO 20 I = NNOS/2+1,NNOS
           MGANOS(5,I) = 1.D0
    20   CONTINUE
         ELREF2 = ELREFA
@@ -106,8 +106,7 @@ C     ----------------------------
    50     CONTINUE
    60   CONTINUE
    70 CONTINUE
-
-
+       
 C     CALCUL DE LA MATRICE M-1*P :
 C     ----------------------------
       CALL MGAUSS('NFVP',M,P,NNOS,NNOS,NPG,DET,IRET)

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 11/08/2008   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,8 @@ C     ------------------------------------------------------------------
       TRANGE = NOMIN
       LRPHYS =.FALSE.
       CALL GETTCO(NOMIN,CONCEP)
-      IF (CONCEP(1:9).EQ.'EVOL_NOLI') LRPHYS = .TRUE.
+      IF (CONCEP(1:9).EQ.'EVOL_NOLI'.OR.CONCEP(1:10).EQ.'DYNA_TRANS') 
+     &    LRPHYS = .TRUE.
       IER = 0
 C
 C     --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
@@ -209,7 +210,6 @@ C       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
              ZK8(JNOCMP+2*I-2) = ZK16(LNOCMP)(1:8)
              ZK8(JNOCMP+2*I-1) = ZK16(LNOCMP)(9:16)
   23       CONTINUE
-C           WRITE(6,*) 'NOECMP ',(ZK8(JNOCMP+I-1),I=1,2*NBMODE)
          ENDIF         
          CALL GETVID(' ','NUME_DDL',1,1,1,K8B,IBID)
          IF (IBID.NE.0) THEN
@@ -247,14 +247,11 @@ C           WRITE(6,*) 'NOECMP ',(ZK8(JNOCMP+I-1),I=1,2*NBMODE)
            CALL JEVEUO( KINST, 'L', JINST )
            CALL JEVEUO( KNUME, 'L', JNUME )
          END IF
-C        WRITE(6,*) 'NBINST NBMODE NEQ ',NBINST,NBMODE,NEQ
          IF (NMC.EQ.0) THEN
             CALL JELIRA(TRANGE//'.DGEN','LONMAX',NBSTO,K8B)
             NBINS2 = NBSTO/NBMODE
             IF (NBINST.GT.NBINS2) NBINST = NBINS2
          ENDIF
-C         WRITE(6,*) 'KINST ',(ZR(JINST+I-1),I=1,NBINST)
-C         WRITE(6,*) 'KNUME ',(ZI(JNUME+I-1),I=1,NBINST)
 C     --- CREATION DE LA SD RESULTAT ---
          CALL RSCRSD(NOMRES, TYPRES, NBINST)
 C
@@ -266,7 +263,6 @@ C
            CALL DISMOI('F','NB_EC',NOGDSI,'GRANDEUR',NEC,K8B,IERD)
 
            CALL DISMOI('F','PROF_CHNO',CHAM19,'CHAMP',IBID,NPRNO,IE)
-C           WRITE(6,*) 'MAYA NEC CHAM19 NPRNO ',MAYA,NEC,CHAM19,NPRNO
            NPRNO = NPRNO(1:19)//'.PRNO'          
            CALL JEVEUO(JEXNUM(NPRNO,1),'L',IAPRNO)
          ENDIF
@@ -285,7 +281,7 @@ C           WRITE(6,*) 'MAYA NEC CHAM19 NPRNO ',MAYA,NEC,CHAM19,NPRNO
            ENDIF
            DO 310 IARCH = 1, NBINST
              INUM = ZI(JNUME+IARCH-1)
-C             WRITE(6,*) 'NBINST INUM IARCH ',NBINST,INUM,IARCH
+             IF (CONCEP(1:10).EQ.'DYNA_TRANS') INUM=INUM-1
              IF (NMC.NE.0) THEN
                CALL RSEXCH(NOMIN,CHAMP(I)(1:4),INUM,NOMCHA,IRET)
                NOMCHA = NOMCHA(1:19)//'.VALE'
@@ -465,16 +461,9 @@ C
           ELSE
             NOMCHA(20:24)='.CELV'
           END IF
-          IF (INTERP(1:3).NE.'NON') THEN
-            NOMCHA = NOMCHA(1:19)//'.VALE'
-            IF (IBID.GT.0) THEN
-              NOMCHA(20:24)='.VALE'
-            ELSE
-              NOMCHA(20:24)='.CELV'
-            END IF
-          END IF
-          IF (INTERP(1:3).NE.'NON') THEN
-          ENDIF
+C          IF (INTERP(1:3).NE.'NON') THEN
+C            NOMCHA = NOMCHA(1:19)//'.VALE'
+C          ENDIF
           IF (LEFFOR)
      &     CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
           CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)

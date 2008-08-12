@@ -1,6 +1,6 @@
       SUBROUTINE DSDX3D(LOOP,B,U,DEPS,D,NBN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,28 +43,28 @@ C      AVEC EVENTUELLEMENT LES TERMES DU 2EME  ORDRE
 
       IMPLICIT NONE
 
-      REAL *8 B(3,*),U(3,8),D(*),DEPS(*)
+      INTEGER NBN,LOOP
+      REAL *8 B(3,NBN),U(3,NBN),D(9),DEPS(6)
       REAL *8 B1I,B2I,B3I,U1I,U2I,U3I
       REAL *8 D1,D2,D3,D4,D5,D6,D7,D8,D9
 
-      INTEGER NBN,LOOP
 
       INTEGER I
 
 
       DO 10 I=1,9
-        D(I) = 0D0
+        D(I) = 0.D0
 10    CONTINUE
 
-      D1 = 0
-      D2 = 0
-      D3 = 0
-      D4 = 0
-      D5 = 0
-      D6 = 0
-      D7 = 0
-      D8 = 0
-      D9 = 0
+      D1 = 0.D0
+      D2 = 0.D0
+      D3 = 0.D0
+      D4 = 0.D0
+      D5 = 0.D0
+      D6 = 0.D0
+      D7 = 0.D0
+      D8 = 0.D0
+      D9 = 0.D0
 
       DO  20 I=1,NBN
         B1I = B(1,I)

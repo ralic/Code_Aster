@@ -2,7 +2,7 @@
      &                  DIME  ,MINMAX,PAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 11/08/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,16 +37,16 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  CNOEUD : COORD. NOEUDS DE LA MAILLE
+C               DIM: (DIME,*)   (X1, [Y1, Z1], X2, ...)
 C IN  TYPEMA : TYPE DE MAILLE
 C IN  NOEPAN : NOEUDS DEFINISSANT LES PANS
 C                   ( NOMBRE NOEUDS PAN 1, N1, N2, ...
 C                     ..., NOMBRE NOEUDS PAN 2, ...)
 C                     EN 3D, NB NOEUDS < 0 : TRIANGLE
 C                            NB NOEUDS > 0 : QUADRANGLE
-C IN  CNOEUD : COORD. NOEUDS DE LA MAILLE
-C               DIM: (DIME,*)   (X1, [Y1, Z1], X2, ...)
-C IN  NSOM   : NOMBRE DE SOMMETS DE LA MAILLE
 C IN  NPAN   : NOMBRE DE PANS DE LA MAILLE
+C IN  NSOM   : NOMBRE DE SOMMETS DE LA MAILLE
 C IN  DIME   : DIMENSION DE L'ESPACE
 C OUT MINMAX : BOITE ENGLOBANT LA MAILLE SUIVANT X,Y,[Z]
 C               DIM: (2,DIME)

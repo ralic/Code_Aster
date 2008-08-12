@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 # TITRE  :  MODELISATION D UNE COQUE DOUBLEMENT SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ PRE_GIBI();
 MAIL=LIRE_MAILLAGE();
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
-                   ORIE_SHB8=_F(GROUP_MA='VOL',),
+                   ORIE_SHB=_F(GROUP_MA='VOL',),
                    );
 
 MAIL=DEFI_GROUP(reuse =MAIL,
@@ -308,7 +308,7 @@ TEST_TABLE(       TABLE=PSNL2,
                            VALE_K = 'PSNL2_GAUCHE',      ),
                     VALE=2.00000E+04,
                REFERENCE='ANALYTIQUE',
-               PRECISION=5.E-06,
+               PRECISION=7.E-06,
            )
 
 TEST_TABLE(       TABLE=PSNL2,
@@ -354,7 +354,7 @@ TEST_TABLE(       TABLE=PSNL3,
                   FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL3_GAUCHE',      ),
                     VALE=2.00000E+03,
-                  PRECISION=8.E-06,
+                  PRECISION=9.E-06,
                REFERENCE='ANALYTIQUE',
            )
 
@@ -363,7 +363,7 @@ TEST_TABLE(       TABLE=PSNL3,
                   FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSNL3_DROITE',      ),
                     VALE=-2.00000E+03,
-                  PRECISION=8.E-06,
+                  PRECISION=9.E-06,
                REFERENCE='ANALYTIQUE',
            )
 
@@ -601,7 +601,7 @@ TEST_TABLE(       TABLE=PSL2,
                            VALE_K = 'PSL2_GAUCHE',      ),
                     VALE=2.00000E+04,
                REFERENCE='ANALYTIQUE',
-               PRECISION=5.E-06,
+               PRECISION=6.E-06,
            )
 
 TEST_TABLE(       TABLE=PSL2,
@@ -647,7 +647,7 @@ TEST_TABLE(       TABLE=PSL3,
                   FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL3_GAUCHE',      ),
                     VALE=2.00000E+03,
-                  PRECISION=8.E-06,
+                  PRECISION=9.E-06,
                REFERENCE='ANALYTIQUE',
            )
 
@@ -656,7 +656,7 @@ TEST_TABLE(       TABLE=PSL3,
                   FILTRE=_F(  NOM_PARA = 'INTITULE',
                            VALE_K = 'PSL3_DROITE',      ),
                     VALE=-2.00000E+03,
-                  PRECISION=8.E-06,
+                  PRECISION=9.E-06,
                REFERENCE='ANALYTIQUE',
            )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE FLAMBAGE D UN CYLINDRE SOUS PRESSION EXTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,7 +28,7 @@ PRE_GIBI();
 MAIL=LIRE_MAILLAGE();
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
-ORIE_SHB8=_F(GROUP_MA='GEOTOT'),)
+ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -117,6 +117,22 @@ MOD_1=MODE_ITER_SIMULT( MATR_A=MATASS_1,
                                    #    CHAR_CRIT=(-1000000., 0.),
                                        ),
                         )
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=MOD_1, NUME_MODE=1,
+                   PARA='CHAR_CRIT',
+                   VALE=-673600,
+                   REFERENCE='NON_REGRESSION',),
+                 _F(RESULTAT=MOD_1, NUME_MODE=2,
+                   PARA='CHAR_CRIT',
+                   VALE=-293481,
+                   REFERENCE='NON_REGRESSION',),
+                 _F(RESULTAT=MOD_1, NUME_MODE=3,
+                   PARA='CHAR_CRIT',
+                   VALE=-72492,
+                   REFERENCE='NON_REGRESSION',),
+                   ),)
+
 
 
 TEST_RESU(RESU=(

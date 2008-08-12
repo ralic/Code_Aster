@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,12 +27,15 @@ RESOUDRE=OPER(nom="RESOUDRE",op=15,sd_prod=cham_no_sdaster,reentrant='f',
          CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
          CHAM_CINE       =SIMP(statut='f',typ=cham_no_sdaster),
 
-         # mot-clé commun aux solveurs MUMPS et GCPC:
+         # mot-clé commun aux solveurs MUMPS, GCPC et PETSc:
          RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6),
 
-         # mots-clés pour solver GCPC:
-         MATR_PREC       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r ) ),
+         # mot-clé commun aux solveurs GCPC et PETSc:
          NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
+         MATR_PREC       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r ) ),
+
+         # mots-clés pour solveur PETSc:
+         ALGORITHME      =SIMP(statut='f',typ='TXM',into=("BCGS","BICG","CG","CR","GMRES","TFQMR",),defaut="CG" ),
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),

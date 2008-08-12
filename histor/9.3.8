@@ -1,0 +1,754 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 11/08/2008 - 18:45:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010792 DU 2007-04-17 14:37:19
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Modification du nom des parametres 'estimateurs d'erreur' des sd resultats
+FONCTIONNALITE
+   Problème : 
+   ==========
+   Les valeurs absolues des différents termes de l'erreur globale pour un champ de type
+   ERRE_R en mécanique sont stockées dans des paramètres de la SD resultat. Afin de réduire
+   le nombre de paramètres et d'éviter les confusions, on ne souhaite plus que stocker la
+   valeur absolue de l'erreur globale, avec un paramètre par type d'estimateur.
+   
+   En effet le détail des différents termes n'est d'aucune utilité pour l'utilisateur qui ne
+   veut qu'une erreur "complète". De plus on range des choses différentes dans un objet qui
+   porte le même nom (l'erreur en résidu est différente de celle de la méthode ZZ). Et donc
+   cela rend impossible l'utilisation de ces paramètres quand dans la même structure de
+   données ont venux calculer l'erreur en résidu et l'erreur ZZ par exemple.
+   
+   Solution :
+   ==========
+   On renomme les paramètres avec les noms suivants :
+   'ERREUR_ERRE' pour l'option ERRE_ELEM_SIGM
+   'ERREUR_ERZ1' pour l'option ERZ1_ELEM_SIGM
+   'ERREUR_ERZ2' ...
+   'ERREUR_QIRE' ...
+   'ERREUR_QIZ1' ...
+   'ERREUR_QIZ2' ...
+   
+   Impact :
+   ========
+   rscrsd.f
+   erglme.f
+   
+   sslp107a
+   sslp108a
+   sslv113c
+   sslv113d
+   sslv134d
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Cas-tests testant les param?es erreur
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012375 DU 2008-08-08 08:11:38
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.7, les cas-tests elsa01a, sdns106a, sslp108a, sslp108b, ssnd103a, ssnd103b et ssnp118a s'arretent en erreur_<F> sur Bull et Calibre.
+FONCTIONNALITE
+   Problème :
+   ==========
+   Les tests elsa01a, sdns106a, sslp108a, sslp108b, ssnd103a, ssnd103b et ssnp118a s'arretent
+   en erreur_<F> sur Bull et Calibre5. Il manque de la mémoire. Ce problème semble consécutif
+   à la réstitution de JPL en 9.3.7.
+   
+   Solution :
+   ==========
+   Il semble que les paramètres mémoires étaient un peu juste. Par exemple, le cas test
+   sslp108a n'est plus cassé en ajustant la mémoire à 34Mo à la place de 32 Mo.
+   Etant donné la faible valeur du paramètre mémoire, on se permet de doubler la valeur.
+   
+   Impact :
+   ========
+   *.para des tests
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Tests incrimin?
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 08/08/2008 - 14:07:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009507 DU 2006-03-01 12:28:00
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV08 - Solveur PETSc dans Code_Aster
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   PETSc a été intégré (proprement) à la panoplie de solveurs disponibles dans le code.
+   L'interface existante (maquette) a été réécrite de manière à favoriser la lisibilité comme
+   pour l'interface de MUMPS.
+   
+   PETSc est une boite à outils fournissant un nombre exhaustif de solveurs linéaires
+   itératifs et de préconditionneurs (ce que nous utilisons ici) mais aussi des solveurs non
+   linéaires, des solveurs d'EDO, etc ...
+   Il est développé par un laboratoire du Argonne National Laboratory aux États-Unis.
+   Il est parallélisé MPI.
+   
+   Détail
+   ======
+   
+    ** Algorithmes et préconditionneurs disponibles **
+   
+   On a limité le choix des algorithmes possibles parmi ceux s'étant avérés les plus robustes
+   (cf. H-T62-2008-01464-FR). Le défaut est le gradient conjugué.
+   Parmi les préconditionneurs, on en trouve 3 classiques, le défaut étant la factorisation
+   incomplète.
+   
+   ==> par défaut PETSC = GCPC Aster du point de vue du solveur itératif utilisé.
+   
+    ** PRERES/RESOUD ** 
+   
+   L'interface passe par le mécanisme PRERES/RESOUD et comme pour le GCPC :
+   PRERES = copie de la matrice vers l'espace PETSc, création du préconditionneur (i.e.
+   factorisation incomplète si PRE_COND='ILU')
+   RESOUD = itérations de l'algorithme jusqu'à convergence
+   
+   On a implémenté le cas multiple seconds membres, bien que l'intérêt avec les solveurs
+   itératifs est assez limité.
+   
+   Comme pour MUMPS, on fixe en dur à 5 maxi le nombre d'instances PETSc qui cohabitent.
+   
+    ** Mécanisme des options **
+   
+   PETSc permet le passage d'options par la ligne de commande ou bien un fichier (par défaut
+   ~/.petscrc et petscrc) qui modifient le comportement du code exécuté.
+   On a partiellement interdit l'utilisation de ces options : elles ne sont pas valides pour
+   modifier les objets mais peuvent être utilisées pour afficher le mode verbeux ou le graphisme.
+   
+   Une évolution future devra rendre ceci plus souple.
+   
+    ** Version parallèle **
+   
+   Le code est le même que pour la version séquentielle, il suffit d'activer MPI (pas de flag
+   comme pour MUMPS car toutes les manipulations MPI sont gérées par PETSc).
+   
+   Syntaxe
+   =======
+   
+              b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la
+   méthode PETSC",
+                ALGORITHME     
+   =SIMP(statut='f',typ='TXM',into=("BCGS","BICG","CG","CR","GMRES","TFQMR",),defaut="CG" ),
+                PRE_COND       
+   =SIMP(statut='f',typ='TXM',into=("ILU","JACOBI","SOR"),defaut="ILU" ),
+                b_petsc_ilu     =BLOC(condition = "PRE_COND == 'ILU' ",
+                  NIVE_REMPLISSAGE = SIMP(statut='f',typ='I',defaut= 0 ),
+                  REMPLISSAGE      = SIMP(statut='f',typ='R',defaut= 1.0),
+                ),
+                RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+                RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
+                NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
+              ),
+   
+   
+   Validation
+   ==========
+   
+   Sur le seul cas-test existant YYYY118D (résultat identique au niveau binaire).
+   Sur les cas-tests GCPC.
+   
+   Sources modifiées
+   =================
+   
+   F90
+   (M) : apetsc.F, apetsr.F
+   (A) : apets1.F, apets2.F, apets3.F, apets4.F
+   
+   F77
+   (M) : preres.f, resoud.f, detrsd.f, cresol.f, crsvpe.f
+   
+   PY
+   (M) : algeline4.py
+   (A) : petsc.py
+   
+   CAPY
+   (M) : dyna_line_tran.capy  dyna_non_line.capy  meca_statique.capy  stat_non_line.capy 
+   ther_lineaire.capy  ther_non_line.capy  ther_non_line_mo.capy
+   
+   TEST
+   (M) : yyyy118d
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.50.01
+VALIDATION
+   tests GCPC
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012303 DU 2008-07-16 13:14:19
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   SD VALE_CONT
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   La structure de données VALE_CONT qui est un champ aux noeuds (à 24 composantes) contient
+   des informations sur le contact après résolution. Pour du contact discret, ces
+   informations ne sont portées que par les noeuds esclaves.
+   Or on s'aperçoit que VALE_CONT contient des noeuds qui n'appartiennent pas à la surface
+   esclave (ni à la surface maître d'ailleurs).
+   
+   Analyse
+   =======
+   
+   Le problème se situe dans cfmxr0.f
+   Pour créer le champ aux noeuds VALE_CONT, on crée d'abord un cham_no_s sur tout le
+   maillage. Ce cham_no_s est initialisé par JEUNDF (pour ce qui est des valeurs CNSV et des
+   logiques "d'activation" CNSL).
+   Or juste après la création du cham_no_s, on refait une initialisation (fausse) : on fait
+   comme si le cham_no_s était dimensionné au nombre de noeuds esclaves et on initialise par
+   0 CNSV et par .TRUE. CNSL.
+   
+   Du coup si les Nescl noeuds esclaves sont exactement les Nescl premiers noeuds du
+   maillage, cela ne change rien, sinon, on va par la suite copier dans la SD VALE_CONT des
+   noeuds qui n'ont rien à voir avec le contact
+   
+   Conclusion
+   ==========
+   
+   On supprime l'initialisation dans cfmxr0.f car celle-ci n'est pas nécessaire et on laisse
+   cfresu.f remplir correctement le cham_no_s.
+   
+   Pas d'affichages faux, pas de report en 8 (l'initialisation n'y est pas).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test joint
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012343 DU 2008-07-28 10:34:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pb de filtrage des noeuds en contact avec STA9 (STAT_NON_LINE)
+FONCTIONNALITE
+   Problème sur le filtrage des noeuds en contact : identique fiche 12303.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 12/08/2008 - 18:05:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010614 DU 2007-03-06 16:53:27
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN02 - Elements solides-coques (these de Trinh)
+FONCTIONNALITE
+   Suite à la RTA du 01/07/08 restitution des éléments SHB
+   de la thèse de Trinh.
+   
+   On rappelle qu'on restitue :
+   
+   1) la nouvelle version de l'élément SHB8, version 
+   améliorée et permettant la connection à toutes les lois 
+   de comportement
+   
+   2) l'élément linéaire SHB6, pendant du SHB8 pour les 
+   pentaèdres, qui a fait l'objet d'un gros travail 
+   théorique pour "atténuer" les blocages en cisaillement 
+   et en membrane (méthode ASM).
+   
+   3) les 2 éléments quadratiques SHB20 (hexaèdres) et 
+   SHB15 (pentahèdres)
+   
+   Suite à la RTA, des comparaisons avec les éléments 
+   coques ont été demandées (précision et temps calcul).
+   Les cas-tests Aster SSLS101 (plaque circulaire 
+   simplement posée soumise à une pression uniforme) 
+   et SSLS108 (poutre vrillée sous charges concentrées) ont 
+   fait l'objet d'une étude comparative quant à la qualité 
+   des résultats obtenus.
+   
+   Les comparaisons de temps CPU à précision de résultats 
+   identiques (en particulier SHB quadratique avec coque_3D)
+   ont été faites sur le cas test SSLS104 (coque 
+   cylindrique pincée avec diaphragme) 
+   On peut classer la performance des éléments dans l?ordre 
+   suivant (du moins bon au meilleur): PRI15, HEXA20, 
+   SHB15, coque_3D MEC3TR7H, coque_3D MEC3QU9H et SHB20  
+   Remarque : les deux éléments SHB15 et coque_3D MEC3TR7H  
+   donnent presque la même performance.
+   
+   
+   Mise en oeuvre sur structure réelle : calcul CETIM dans 
+   le cadre de la thèse, ou calcul sur aéroréfrigérant 
+   (projet BILOBA)?
+   
+   Cas-tests : les cas-tests suivants ont été modifiés et 
+   enrichis par les nouveaux éléments :
+   
+   SSLS101 plaque circulaire sous pression uniforme
+   SSLS105 hémisphère pincé
+   SSLS108 poutre vrillée sous charges concentrées
+   SSLS123 sphère sous pression uniforme
+   SSLS124 poutre en flexion
+   SSLS125 flambement d'un cylindre sous pression externe
+   SSNS101 claquage d'un panneau cylindrique
+   SSNS102 flambage d'une coque cylindrique avec raidisseur
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.03.101 V3.03.108 V3.03.124 V3.03.125 V3.03.123 V3.03.105 V6.05.101 V6.05.102 U2.02.01
+VALIDATION
+   SSLS101C SSLS105C SSLS108C SSLS108D SSLS123A SSLS124A SSLS124B SSLS125A SSNS101A SSNS101B SSNS101C SSNS102A
+NB_JOURS_TRAV  : 50.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007273 DU 2003-10-01 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.1)
+TITRE
+   MN02 - suite travaux SHB8
+FONCTIONNALITE
+   Passage version développement corrigé : no
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR devesa       DEVESA Georges         DATE 11/08/2008 - 17:42:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012008 DU 2008-04-18 16:58:07
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   ?lution n?ssaire pour la condensation dynamique avec les op?teurs lin?res DYNA_LINE_HARM et DYNA_LINE_TRAN
+FONCTIONNALITE
+   On peut désormais utiliser les macro-éléments dynamiques comme 
+   modèles de sous-structures avec les opérateurs linéaires 
+   DYNA_LINE_HARM et DYNA_LINE_TRAN en réalisant les évolutions 
+   suivantes :
+   - prise en compte de l'amortissement des sous-structures lors du 
+   calcul élémentaire. Cela nécessite de compléter la routine 
+   MEAMME.
+   - lors de la restitution sur les macro-éléments condensés par 
+   REST_BASE_PHYS mot-clé RESU_PHYS, il faut pouvoir récupérer une 
+   évolution de type DYNA_TRANS, ce qui impacte également les 
+   sources OP0075 et TRAN75 en plus du catalogue de REST_BASE_PHYS. 
+   
+   Suite à l'aval de Ionel, on teste donc ce développement à partir 
+   d'une nouvelle modélisation C du cas test SDLL113 qui permet de 
+   compléter la modélisation SDLL113B qui comparait déjà l'analyse 
+   directe et la sous-structuration dynamique avec DYNA_TRAN_MODAL 
+   sur une structure simple de poutre en traction amortie. Dans le 
+   test SDLL113C, on compare l'analyse directe et la condensation 
+   dynamique par macro-éléments sur une partie du modèle avec 
+   DYNA_LINE_TRAN à partir de la même structure que celle du test 
+   SDLL113B.
+   La validation porte à la fois sur l'égalité parfaite des 
+   résultats entre l'analyse directe et la condensation dynamique 
+   obtenus avec DYNA_LINE_TRAN et aussi sur l'égalité quasi-
+   parfaite de ces résultats avec ceux obtenus dans le test 
+   SDLL113B avec DYNA_TRAN_MODAL pour les analyses directe et par 
+   sous-structuration classique.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.02.113 U4.63.21
+VALIDATION
+   cas test SDLL113C
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 12/08/2008 - 11:47:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011453 DU 2007-11-12 14:18:41
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   tester les HEXA27 avec DNOR
+FONCTIONNALITE
+   -> 2 nouveaux cas-tests a restituer: 
+       - zzzz238a : maillage HEXA20
+       - zzzz238b : maillage HEXA27
+   
+   -> Redaction de la doc V 
+      réf: V1.01.238: "Déplacementx normaux imposés sur des 
+   faces courbes d'héxaédres à 20 et
+   27 noeuds.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.238
+VALIDATION
+   zzzz238a zzzz238b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 11/08/2008 - 17:36:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011772 DU 2008-02-18 13:00:32
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   Arlequin - plantage en info = 2
+FONCTIONNALITE
+   Problème : 
+   ----------
+   
+   Lorsqu'on fait INFO=2 dans un AFFE_CHAR_MECA/ARLEQUIN, on tombe très fréquemment sur le
+   message d'erreur suivant :
+   
+      !----------------------------------------------------!
+      ! <F> <JEVEUX_01>                                    !
+      !                                                    !
+      !                                                    !
+      !   REPERTOIRE DE    799 NOMS NE CONTIENT PAS ****** !
+      !                                                    !
+      !                                                    !
+      !                                                    !
+      ! Cette erreur est fatale. Le code s'arrete.         !
+      !----------------------------------------------------!
+   
+   Ce plantage survient (uniquement en INFO=2) dans quadim.f lorsqu'on imprime la sd quadrature.
+   
+   Solution :
+   ----------
+   Le plantage survient lorsque qu'on cherche à imprimer les couples de mailles que l'on va
+   devoir intégrer. On ne fait pas correctement le tri entre les mailles de la zone
+   médiatrice  et les mailles du groupe à intégrer (1 ou 2).
+   
+   Dans la routine incriminée (quadim.f), on ne va pas lire correctement le tableau
+   QUAD.MAMA, rempli dans arlfam.f. Pour le lire convenablement, on remplace les lignes 124-125 :
+   <          IM1  = ZI(JQMAMA+2*(ICPL-1))
+   <          IM2  = ZI(JQMAMA+2*(ICPL-1)+1)
+   par
+   >          IF (ISMED) THEN
+   >            IM2  = ZI(JQMAMA+2*(ICPL-1)+1)
+   >          ELSE
+   >            IM1  = ZI(JQMAMA+2*(ICPL-1)+1)
+   >            IM2  = ZI(JQMAMA+2*(ICPL-1))
+   >          ENDIF
+   
+   pour être en conformité avec le remplissage du tableau QUAD.MAMA réalisé dans arlfam.f aux
+   lignes 250-256, 273-279 et 292-308.
+   
+   On fait le même remplacement aux lignes 198-199 de quadim.f.
+   
+   Validation :
+   ------------
+   On passe en INFO=2 les 10 tests Arlequin de la base et les 2 tests joints de la fiche 11772.
+   
+   Bonus :
+   -------
+   Au passage, on en profite pour faire un peu de ménage dans les routines Arlequin.
+   
+   quadim.f : la division par 2 à la ligne 194 (NCPL/2) est douteuse, je remplace par NCPL.
+   appaim.f : je détruis à la fin de la routine l'objet temporaire &&APPAIM.LIST. On ne s'en
+   sert plus ensuite. Sinon, en INFO=2, cela posait problème dans sslv145a.
+   inimai.f : l.123. L'objet MAIL.ADAPTATION ne sert à rien. Je le supprime donc.
+   arlfam.f : l.394. l'objet &&arlfam.quadra n'existe pas, aucune raison de le détruire donc.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   10 tests Arlequin de la base + 2 tests perso
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012274 DU 2008-07-07 12:45:49
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   ARLEQUIN : INFO=2 dans AFFE_CHAR_MECA
+FONCTIONNALITE
+   Idem fiche 11772
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   10 tests Arlequin de la base + 2 tests perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011902 DU 2008-04-01 08:32:24
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   Arlequin - collage de plus de 2 patchs
+FONCTIONNALITE
+   Problème :
+   ----------
+   Lorsqu'on impose 2 charges Arlequin dans un même AFFE_CHAR_MECA et qu'on choisit
+   d'imprimer le maillage des zones de collage au format GMSH pour chacune des charges (en
+   utilisant le mot-clef UNITE_GMSH), la commande se plante salement sur une erreur d'accès
+   JEVEUX du type :
+    
+      !  Erreur de programmation :                                   !
+      !                                                              !
+      !  Le nom demandé existe déjà dans la base &&ARL.MA.ADAPTATION !
+     
+   Solution :
+   ----------
+   Le problème se situe dans la routine arlcpl.f lorsqu'on cherche à imprimer le 2ème
+   maillage. Les objets temporaires &&ARLCP2.TABCOR et &&ARLCP2.TABCPL, créés dans arlmai.f,
+   n'ont pas été détruits, sitôt qu'ils ne sont plus utilisés.
+   On les détruit donc en sortie de arlmai.f pour qu'à l'impression du maillage suivant, on
+   puisse les recréer.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Test joint
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdll113c                       devesa G.DEVESA           448    448      0
+ CASTEST AJOUT ssls101d                    desroches X.DESROCHES        390    390      0
+ CASTEST AJOUT ssls101k                    desroches X.DESROCHES        380    380      0
+ CASTEST AJOUT ssls101l                    desroches X.DESROCHES        440    440      0
+ CASTEST AJOUT ssls108e                    desroches X.DESROCHES        131    131      0
+ CASTEST AJOUT ssls108f                    desroches X.DESROCHES        112    112      0
+ CASTEST AJOUT ssls108g                    desroches X.DESROCHES        111    111      0
+ CASTEST AJOUT ssls108h                    desroches X.DESROCHES        112    112      0
+ CASTEST AJOUT ssls123c                    desroches X.DESROCHES         96     96      0
+ CASTEST AJOUT ssls123d                    desroches X.DESROCHES         84     84      0
+ CASTEST AJOUT ssls124c                    desroches X.DESROCHES        303    303      0
+ CASTEST AJOUT ssls124d                    desroches X.DESROCHES        372    372      0
+ CASTEST AJOUT ssls124e                    desroches X.DESROCHES        241    241      0
+ CASTEST AJOUT ssls124f                    desroches X.DESROCHES        372    372      0
+ CASTEST AJOUT ssls124g                    desroches X.DESROCHES        263    263      0
+ CASTEST AJOUT ssls125b                    desroches X.DESROCHES        154    154      0
+ CASTEST AJOUT ssls125c                    desroches X.DESROCHES        154    154      0
+ CASTEST AJOUT ssls125d                    desroches X.DESROCHES        138    138      0
+ CASTEST AJOUT ssns101d                    desroches X.DESROCHES        294    294      0
+ CASTEST AJOUT ssns101e                    desroches X.DESROCHES        294    294      0
+ CASTEST AJOUT ssns101f                    desroches X.DESROCHES        294    294      0
+ CASTEST AJOUT ssns101g                    desroches X.DESROCHES        293    293      0
+ CASTEST AJOUT ssns102b                    desroches X.DESROCHES        312    312      0
+ CASTEST AJOUT zzzz238a                    lebouvier F.LEBOUVIER        139    139      0
+ CASTEST AJOUT zzzz238b                    lebouvier F.LEBOUVIER        160    160      0
+ CASTEST MODIF elsa01a                        delmas J.DELMAS           221      1      1
+ CASTEST MODIF sdls109h                    desroches X.DESROCHES        179      2      2
+ CASTEST MODIF sdns106a                       delmas J.DELMAS           273      1      1
+ CASTEST MODIF sslp104c                      meunier S.MEUNIER          204      2      2
+ CASTEST MODIF sslp107a                       delmas J.DELMAS           383      2     18
+ CASTEST MODIF sslp108a                       delmas J.DELMAS           230      2      2
+ CASTEST MODIF sslp108b                       delmas J.DELMAS           301      1      1
+ CASTEST MODIF ssls101c                    desroches X.DESROCHES        418     15     14
+ CASTEST MODIF ssls105c                    desroches X.DESROCHES         88      4    113
+ CASTEST MODIF ssls108c                    desroches X.DESROCHES        115      3      3
+ CASTEST MODIF ssls108d                    desroches X.DESROCHES        115      3      3
+ CASTEST MODIF ssls123a                    desroches X.DESROCHES         87      2      2
+ CASTEST MODIF ssls124a                    desroches X.DESROCHES        412      6      6
+ CASTEST MODIF ssls124b                    desroches X.DESROCHES        355      6      6
+ CASTEST MODIF ssls125a                    desroches X.DESROCHES        156     18      2
+ CASTEST MODIF ssls129c                    desroches X.DESROCHES        683      8      8
+ CASTEST MODIF sslv113c                       delmas J.DELMAS           176      2     29
+ CASTEST MODIF sslv113d                       delmas J.DELMAS           176      2     29
+ CASTEST MODIF sslv134d                       delmas J.DELMAS          1328      2      2
+ CASTEST MODIF ssnd103a                       delmas J.DELMAS           138      1      1
+ CASTEST MODIF ssnd103b                       delmas J.DELMAS           139      1      1
+ CASTEST MODIF ssnp118a                       delmas J.DELMAS           395      1      1
+ CASTEST MODIF ssns101a                    desroches X.DESROCHES        335    147    193
+ CASTEST MODIF ssns101b                    desroches X.DESROCHES        246     41     56
+ CASTEST MODIF ssns101c                    desroches X.DESROCHES        296    100     88
+ CASTEST MODIF ssns102a                    desroches X.DESROCHES        325     24     17
+ CASTEST MODIF yyyy118d                       desoza T.DESOZA           250      8      3
+CATALOGU MODIF compelem/phenomene_modelisation__  desroches X.DESROCHES       1409      8      1
+CATALOGU MODIF compelem/type_maille__      desroches X.DESROCHES        372      4      1
+CATALOGU MODIF typelem/gener_meshb3        desroches X.DESROCHES        336     23      9
+CATALOPY MODIF commande/calc_forc_ajou        desoza T.DESOZA            99     27      2
+CATALOPY MODIF commande/calc_matr_ajou        desoza T.DESOZA            89     27      2
+CATALOPY MODIF commande/calc_precont          desoza T.DESOZA           176     27      2
+CATALOPY MODIF commande/dyna_line_tran        desoza T.DESOZA           171      8      4
+CATALOPY MODIF commande/dyna_non_line         desoza T.DESOZA           388      8      4
+CATALOPY MODIF commande/factoriser            desoza T.DESOZA            64      7      4
+CATALOPY MODIF commande/macr_ascouf_calc      desoza T.DESOZA           267     27      2
+CATALOPY MODIF commande/macr_aspic_calc       desoza T.DESOZA           279     27      2
+CATALOPY MODIF commande/macro_matr_ajou       desoza T.DESOZA           132     27      2
+CATALOPY MODIF commande/macro_matr_asse       desoza T.DESOZA           112      5      2
+CATALOPY MODIF commande/meca_statique         desoza T.DESOZA           120      9      5
+CATALOPY MODIF commande/mode_statique         desoza T.DESOZA           127     14      2
+CATALOPY MODIF commande/modi_maillage      desroches X.DESROCHES        158      3      3
+CATALOPY MODIF commande/nume_ddl              desoza T.DESOZA            44      3      3
+CATALOPY MODIF commande/resoudre              desoza T.DESOZA            42      7      4
+CATALOPY MODIF commande/rest_base_phys        devesa G.DEVESA            96      3      2
+CATALOPY MODIF commande/stat_non_line         desoza T.DESOZA           371      8      4
+CATALOPY MODIF commande/ther_lineaire         desoza T.DESOZA           127      8      4
+CATALOPY MODIF commande/ther_non_line         desoza T.DESOZA           203      8      4
+CATALOPY MODIF commande/ther_non_line_mo      desoza T.DESOZA            93     25      1
+ FORTRAN AJOUT elements/asbgl1             desroches X.DESROCHES         76     76      0
+ FORTRAN AJOUT elements/asbgl2             desroches X.DESROCHES         76     76      0
+ FORTRAN AJOUT elements/assebg             desroches X.DESROCHES         77     77      0
+ FORTRAN AJOUT elements/depsh6             desroches X.DESROCHES         83     83      0
+ FORTRAN AJOUT elements/idsshb             desroches X.DESROCHES         41     41      0
+ FORTRAN AJOUT elements/klocgl             desroches X.DESROCHES         40     40      0
+ FORTRAN AJOUT elements/oris15             desroches X.DESROCHES         46     46      0
+ FORTRAN AJOUT elements/oris20             desroches X.DESROCHES         48     48      0
+ FORTRAN AJOUT elements/orish6             desroches X.DESROCHES         47     47      0
+ FORTRAN AJOUT elements/rlosh6             desroches X.DESROCHES        128    128      0
+ FORTRAN AJOUT elements/s1calb             desroches X.DESROCHES         83     83      0
+ FORTRAN AJOUT elements/s2calb             desroches X.DESROCHES         78     78      0
+ FORTRAN AJOUT elements/s6calb             desroches X.DESROCHES         86     86      0
+ FORTRAN AJOUT elements/s6ksib             desroches X.DESROCHES         78     78      0
+ FORTRAN AJOUT elements/sh1eps             desroches X.DESROCHES        185    185      0
+ FORTRAN AJOUT elements/sh1for             desroches X.DESROCHES        224    224      0
+ FORTRAN AJOUT elements/sh1ksi             desroches X.DESROCHES        100    100      0
+ FORTRAN AJOUT elements/sh1mek             desroches X.DESROCHES        199    199      0
+ FORTRAN AJOUT elements/sh1rig             desroches X.DESROCHES        315    315      0
+ FORTRAN AJOUT elements/sh1sig             desroches X.DESROCHES        249    249      0
+ FORTRAN AJOUT elements/sh2eps             desroches X.DESROCHES        196    196      0
+ FORTRAN AJOUT elements/sh2for             desroches X.DESROCHES        224    224      0
+ FORTRAN AJOUT elements/sh2ksi             desroches X.DESROCHES        140    140      0
+ FORTRAN AJOUT elements/sh2mek             desroches X.DESROCHES        190    190      0
+ FORTRAN AJOUT elements/sh2rig             desroches X.DESROCHES        318    318      0
+ FORTRAN AJOUT elements/sh2sig             desroches X.DESROCHES        258    258      0
+ FORTRAN AJOUT elements/sh6eps             desroches X.DESROCHES        163    163      0
+ FORTRAN AJOUT elements/sh6for             desroches X.DESROCHES        211    211      0
+ FORTRAN AJOUT elements/sh6ksi             desroches X.DESROCHES         89     89      0
+ FORTRAN AJOUT elements/sh6mek             desroches X.DESROCHES        184    184      0
+ FORTRAN AJOUT elements/sh6rig             desroches X.DESROCHES        574    574      0
+ FORTRAN AJOUT elements/sh6sig             desroches X.DESROCHES        224    224      0
+ FORTRAN AJOUT elements/sh8eps             desroches X.DESROCHES        162    162      0
+ FORTRAN AJOUT elements/sh8for             desroches X.DESROCHES        440    440      0
+ FORTRAN AJOUT elements/sh8mek             desroches X.DESROCHES        186    186      0
+ FORTRAN AJOUT elements/sh8rig             desroches X.DESROCHES        465    465      0
+ FORTRAN AJOUT elements/sh8sig             desroches X.DESROCHES        240    240      0
+ FORTRAN AJOUT elements/te0473             desroches X.DESROCHES        169    169      0
+ FORTRAN AJOUT elements/te0474             desroches X.DESROCHES        162    162      0
+ FORTRAN AJOUT elements/te0477             desroches X.DESROCHES        498    498      0
+ FORTRAN AJOUT elements/te0484             desroches X.DESROCHES        180    180      0
+ FORTRAN AJOUT elements/te0485             desroches X.DESROCHES        233    233      0
+ FORTRAN AJOUT elements/tran63             desroches X.DESROCHES         71     71      0
+ FORTRAN MODIF algeline/crsvpe                desoza T.DESOZA            93     25     26
+ FORTRAN MODIF algeline/op0014                desoza T.DESOZA           242     32      6
+ FORTRAN MODIF algeline/op0015                desoza T.DESOZA           114     14      7
+ FORTRAN MODIF algeline/preres                desoza T.DESOZA           249      4      6
+ FORTRAN MODIF algeline/resoud                desoza T.DESOZA           278     10     10
+ FORTRAN MODIF algorith/cfmxr0                desoza T.DESOZA           218     43     14
+ FORTRAN MODIF algorith/cfmxre                desoza T.DESOZA           130      2      2
+ FORTRAN MODIF algorith/cresol                desoza T.DESOZA           189     14     26
+ FORTRAN MODIF algorith/nminit                desoza T.DESOZA           374      5      5
+ FORTRAN MODIF algorith/nmnoli                desoza T.DESOZA           178      7      7
+ FORTRAN MODIF algorith/op0075                devesa G.DEVESA           312      3      2
+ FORTRAN MODIF algorith/op0154             desroches X.DESROCHES        275      3      3
+ FORTRAN MODIF algorith/tran75                devesa G.DEVESA           624      7     18
+ FORTRAN MODIF assembla/rercmk               meunier S.MEUNIER          395      8     12
+ FORTRAN MODIF calculel/appaim               meunier S.MEUNIER          144      5      1
+ FORTRAN MODIF calculel/arlapf               meunier S.MEUNIER          148      5      5
+ FORTRAN MODIF calculel/arlcar               meunier S.MEUNIER           68     18     18
+ FORTRAN MODIF calculel/arlcou               meunier S.MEUNIER          119     12     10
+ FORTRAN MODIF calculel/arlcvp               meunier S.MEUNIER           88      6      6
+ FORTRAN MODIF calculel/arlgei               meunier S.MEUNIER          101      1      5
+ FORTRAN MODIF calculel/arlger               meunier S.MEUNIER          107      1      1
+ FORTRAN MODIF calculel/arlpar               meunier S.MEUNIER          206     39     56
+ FORTRAN MODIF calculel/boitel               meunier S.MEUNIER          186      4      4
+ FORTRAN MODIF calculel/boite                meunier S.MEUNIER          109      3      3
+ FORTRAN MODIF calculel/boiteq               meunier S.MEUNIER          490      4      4
+ FORTRAN MODIF calculel/cosoli               meunier S.MEUNIER           64      2      2
+ FORTRAN MODIF calculel/erglme                delmas J.DELMAS           237     14     30
+ FORTRAN MODIF calculel/meamme                devesa G.DEVESA           259      7      2
+ FORTRAN MODIF calculel/nopan                meunier S.MEUNIER          579      5      5
+ FORTRAN MODIF calculel/quadim               meunier S.MEUNIER          230     19      4
+ FORTRAN MODIF elements/dsdx3d             desroches X.DESROCHES        115     13     13
+ FORTRAN MODIF elements/elraca             desroches X.DESROCHES        952     11      9
+ FORTRAN MODIF elements/elraga             desroches X.DESROCHES       1400    102      3
+ FORTRAN MODIF elements/inmat6             desroches X.DESROCHES        122      5      6
+ FORTRAN MODIF elements/shbpkc             desroches X.DESROCHES        110      9     10
+ FORTRAN MODIF elements/te0530             desroches X.DESROCHES        552      2      2
+ FORTRAN MODIF modelisa/arlbo0               meunier S.MEUNIER          142      3      2
+ FORTRAN MODIF modelisa/arlboi               meunier S.MEUNIER          100      7      5
+ FORTRAN MODIF modelisa/arlcp2               meunier S.MEUNIER          106      8      7
+ FORTRAN MODIF modelisa/arlcpl               meunier S.MEUNIER          125     33     16
+ FORTRAN MODIF modelisa/arlfam               meunier S.MEUNIER          396      1      3
+ FORTRAN MODIF modelisa/arllec               meunier S.MEUNIER          138      7      7
+ FORTRAN MODIF modelisa/arlmai               meunier S.MEUNIER          441     11     11
+ FORTRAN MODIF modelisa/arlnor               meunier S.MEUNIER           93      4      5
+ FORTRAN MODIF modelisa/arlver               meunier S.MEUNIER          236     11     10
+ FORTRAN MODIF modelisa/boit2d               meunier S.MEUNIER          307      2      2
+ FORTRAN MODIF modelisa/boit3d               meunier S.MEUNIER          349      2      2
+ FORTRAN MODIF modelisa/boitcr               meunier S.MEUNIER          143     13     12
+ FORTRAN MODIF modelisa/caarle               meunier S.MEUNIER          251     39     28
+ FORTRAN MODIF modelisa/orishb             desroches X.DESROCHES        238    117     10
+ FORTRAN MODIF utilitai/detrsd                desoza T.DESOZA           636      8      5
+ FORTRAN MODIF utilitai/dismms                desoza T.DESOZA           173      1      4
+ FORTRAN MODIF utilitai/dismnu                desoza T.DESOZA           143      7      8
+ FORTRAN MODIF utilitai/inimai               meunier S.MEUNIER          157     10     16
+ FORTRAN MODIF utilitai/rscrsd                delmas J.DELMAS           859    134     90
+ FORTRAN SUPPR calculel/arlcbo               meunier S.MEUNIER           48      0     48
+  PYTHON AJOUT Messages/petsc                 desoza T.DESOZA           102    102      0
+  PYTHON MODIF Messages/algeline4             desoza T.DESOZA           285      5      1
+  PYTHON MODIF Messages/factor                desoza T.DESOZA           244      1      9
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   69       14025     14025            +14025
+ MODIF :  107       28918      1606    1269      +337
+ SUPPR :    1          48                48       -48
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  177       42991     15631    1317    +14314 

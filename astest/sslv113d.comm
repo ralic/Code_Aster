@@ -1,4 +1,4 @@
-# MODIF  DATE 04/06/2007   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,38 +166,11 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
-                  PARA='ERREUR_ABSOLUE',
+                  PARA='ERREUR_QIRE',
                   VALE=7.0427741867787E-03,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION',
                   VERSION='8.2.15',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
-                  NUME_ORDRE=1,
-                  PARA='TERME_VOLU_ABSO',
-                  VALE=7.4912309880259E-03,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-05,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
-                  NUME_ORDRE=1,
-                  PARA='TERME_NORM_ABSO',
-                  VALE=0.0000000000000E+00,
-                  CRITERE='ABSOLU',
-                  PRECISION=1e-05,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.0.29',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
-                  NUME_ORDRE=1,
-                  PARA='TERME_SAUT_ABSO',
-                  VALE=2.5649109499592E-03,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-05,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.0.29',),);
 
 FIN();

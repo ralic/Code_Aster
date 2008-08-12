@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2007   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1317,7 +1317,7 @@ TEST_TABLE(TABLE=TABK13A3,
 
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=1,
-                  PARA='ERREUR_ABSOLUE',
+                  PARA='ERREUR_ERRE',
                   VALE=2.4587662830463E+06,
                   PRECISION=1E-10,
                   REFERENCE='NON_REGRESSION',
