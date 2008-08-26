@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline3 Messages  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,4 +74,7 @@ cata_msg = {
  LIAISON_UNILATER et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
+96 : _("""
+ la combinaison : LIAISON_UNILATER et solveur GCPC n'est pas disponible.
+"""),
 }

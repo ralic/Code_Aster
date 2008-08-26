@@ -1,4 +1,4 @@
-# MODIF  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -467,7 +467,7 @@ TEST_TABLE(TABLE    =TAB_VAR,
 TEST_TABLE(TABLE    =TAB_VAR,
            NOM_PARA ='V23',
            VALE     =-0.001451,
-           PRECISION=0.01,
+           PRECISION=0.02,
            CRITERE  ='RELATIF',
            REFERENCE='AUTRE_ASTER',
            FILTRE=_F(NOM_PARA ='INST',
@@ -478,7 +478,7 @@ TEST_TABLE(TABLE    =TAB_VAR,
 TEST_TABLE(TABLE    =TAB_VAR,
            NOM_PARA ='V23',
            VALE     =0.001627,
-           PRECISION=0.01,
+           PRECISION=0.02,
            CRITERE  ='RELATIF',
            REFERENCE='AUTRE_ASTER',
            FILTRE=_F(NOM_PARA ='INST',

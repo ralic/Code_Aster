@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPM(RANG,LDIST,KXMPS,MONIT,IMPR,IFMUMP,ELI2LG,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPM MUMPS  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPM MUMPS  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -69,9 +69,9 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL,LQUALI
+      LOGICAL ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8,KCODE
+      CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32, JEXNUM

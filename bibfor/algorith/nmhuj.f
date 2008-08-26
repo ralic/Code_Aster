@@ -3,7 +3,7 @@
      &           DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,9 +20,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_20
 C  ================================================================
 C  INTEGRATION DE LA LOI DE COMPORTEMENT ELASTO PLASTIQUE DE HUJEUX
-C  AVEC    . 35 VARIABLES INTERNES
+C  AVEC    . 50 VARIABLES INTERNES
 C          . 4 FONCTIONS SEUIL ELASTIQUE DEDOUBLEES AVEC CYCLIQUE
 C
 C  INTEGRATION DES CONTRAINTES           = SIG(T+DT)
@@ -100,8 +101,8 @@ C  PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C  ----------------------------------------------------------------
       INTEGER       IMAT, NDT, NDI, NVI, IRET, IRET1
-      INTEGER       NITER, I, J, K, INC, INCMAX, NDTT
-      REAL*8        CRIT(*), VIND(*), VINF(*), VIND0(35)
+      INTEGER       I, J, K, INC, INCMAX, NDTT
+      REAL*8        CRIT(*), VIND(*), VINF(*), VIND0(50)
       REAL*8        INSTAM, INSTAP, TEMPM, TEMPF, TREF
       REAL*8        EPSD(6), DEPS(6), EPSF(6), DEPS0(6)
       REAL*8        SIGD(6), SIGF(6), DSDE(6,6), SEUIL
@@ -113,8 +114,9 @@ C  ----------------------------------------------------------------
       CHARACTER*8   NOMAIL, MOD, TYPMOD(*)
       CHARACTER*16  COMP(*), OPT
       REAL*8        DEPSTH(6), EPSDTH(6), ALPHA(3)
-      REAL*8        EPSCON, DET, R8PREM, R8VIDE, BID16(6), BID66(6,6)
+      REAL*8        DET, R8PREM, R8VIDE, BID16(6), BID66(6,6)
       REAL*8        MATERF(22,2), I1D, D13, ZERO, UN, DEUX
+      REAL*8        RMOB
       INTEGER       UMESS, IUNIFI, IISNAN
       LOGICAL       DEBUG, CONV, REORIE
       
@@ -129,15 +131,12 @@ C     ----------------------------------------------------------------
       DATA       UN   / 1.0D0 /
       DATA       DEUX / 2.0D0 /
 
+
 C --- DEBUG = .TRUE. : MODE AFFICHAGE ENRICHI
 C      DEBUG = .true.
 
       MOD   = TYPMOD(1)
 
-C      WRITE(6,'(A)')'+++++++++++++++++++++++++++++++++++++++'
-C      WRITE(6,'(A,35(1X,E16.9))')'VIND =',(VIND(I),I=1,35)
-C      WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPS(I),I=1,6)
-C      WRITE(6,'(A,6(1X,E16.9))')'SIGD =',(SIGD(I),I=1,6)
 C ---> RECUPERATION COEF DE LA LOI HUJEUX
 C      (INDEPENDANTS DE LA TEMPERATURE)
 C      NB DE CMP DIRECTES/CISAILLEMENT
@@ -159,9 +158,6 @@ C     REPERE LOCAL DONNE PAR LES ANGLES NAUTIQUES (ANGMAS)
         NDTT = 4
         NDT  = 6          
       ENDIF
-
-      NITER  = 0
-      EPSCON = 0
 
       I1D = ZERO
       DO 10 I = 1, NDI
@@ -291,7 +287,7 @@ C ---> INITIALISATION SEUIL CYCLIQUE SI NUL
       ENDIF
 Caf 14/05/07 Fin
         
-      IF (OPT(1:14).NE.'RIGI_MECA_TANG') CALL LCEQVN (32, VIND, VINF)
+      IF (OPT(1:9).NE.'RIGI_MECA') CALL LCEQVN (50, VIND, VINF)
 
 Caf 30/04/07 debut
 C ---> ETAT ELASTIQUE OU PLASTIQUE A T
@@ -312,8 +308,7 @@ Caf 30/04/07 fin
 C     -------------------------------------------------------------
 C     OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
 C     -------------------------------------------------------------
-      IF (OPT .EQ. 'RAPH_MECA' .OR. OPT .EQ. 'FULL_MECA') THEN
-
+      IF (OPT(1:9).EQ.'RAPH_MECA'.OR.OPT(1:9).EQ.'FULL_MECA')THEN
 
 C ---> INTEGRATION ELASTIQUE SUR DT
         DO 45 I = 1, NDT
@@ -355,8 +350,8 @@ C ----------------------------------------------------
         IF (DEBUG .AND. IRET1.EQ.1)
      &  WRITE(6,'(A)')'NMHUJ :: HUJDP :: PAS DE RESUBDIVISON'
       
-        IF     (INCMAX.GE.10) THEN
-          INCMAX =10
+        IF     (INCMAX.GE.20) THEN
+          INCMAX =20
         ELSEIF (INCMAX.LE.1 ) THEN
           INCMAX =1
         ENDIF
@@ -374,7 +369,7 @@ C ---------------------------------------------
 C CALCUL DE L'ETAT DE CONTRAINTES CORRESPONDANT
 C ---------------------------------------------
         CALL HUJRES(MOD, CRIT, MATERF, NVI, EPSDTH, DEPSR,
-     &       SIGD, VIND, SIGF, VINF, NITER, EPSCON, IRET, ETATF)
+     &       SIGD, VIND, SIGF, VINF, IRET, ETATF)
         IF (IRET.EQ.1) GOTO 9999
 
 C -------------------------------------------
@@ -431,7 +426,7 @@ C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
           CALL HUJTID (MOD, IMAT, SIGD, VIND, DSDE, IRET)
           IF(IRET.EQ.1)GOTO 9999
         ENDIF
-
+        
         CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)
         
       ELSEIF (OPT .EQ. 'FULL_MECA') THEN
@@ -449,16 +444,27 @@ C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
           IF (IRET.EQ.1) GOTO 9999
         ENDIF
 
+      ELSEIF (OPT .EQ. 'FULL_MECA_ELAS') THEN
+
+        CALL LCINMA (ZERO, DSDE)
+        CALL HUJTEL (MOD, MATERF, SIGF, DSDE)
+
+      ELSEIF (OPT .EQ. 'RIGI_MECA_ELAS') THEN
+      
+        CALL LCINMA (ZERO, DSDE)
+        CALL HUJTEL (MOD, MATERF, SIGD, DSDE)
+        CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)
+
       ENDIF
 C fin <IF RIGI_MECA_TANG>
 
 C ---> CALCUL DETERMINANT DE LA MATRICE TANGENTE + INDICATEUR 
 C --- RELIE AUX MECANISMES ACTIFS
       IF (OPT(1:9) .NE. 'RIGI_MECA') THEN
-
+      
         CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)
         
-        IF(OPT(1:9).EQ.'FULL_MECA')THEN       
+        IF(OPT .EQ.'FULL_MECA')THEN       
           CALL MGAUSS ('NCSD', DSDE, SIGD, 6, 6, 1, DET, IRET)
           IF (IRET.EQ.1) THEN
             VINF(33) = UN
@@ -467,7 +473,7 @@ C --- RELIE AUX MECANISMES ACTIFS
             VINF(33) = DET
           ENDIF
         ENDIF
-
+        
         VINF(34) = UN
         
         DO 60 I=1,8
@@ -482,15 +488,32 @@ C --- RELIE AUX MECANISMES ACTIFS
             IF (I.EQ.8) VINF(34)=VINF(34)*19.D0
           ENDIF
  60       CONTINUE
+
       ENDIF
       IF (NDTT.EQ.4) NDT = 4
       
-      IF (OPT .EQ. 'RAPH_MECA' .OR. OPT .EQ. 'FULL_MECA')
+      IF (OPT .EQ. 'RAPH_MECA' .OR. OPT(1:9) .EQ. 'FULL_MECA')
      &CALL HUJORI ('GLOBA', 1, REORIE, ANGMAS, SIGF, BID66)
       
  9999 CONTINUE
         
-      IF (IRET .EQ. 1)
-     &WRITE(6,'(A,I3,A)')'NMHUJ :: IRET =',IRET,' > OUT'   
+C      IF (IRET .EQ. 1)THEN
+C        CALL LCEQVE(SIGD0,SIGF)
+C        CALL LCEQVN (NVI, VIND0, VINF)
+C        IRET = 0
 
+C        IF(OPT .EQ.'FULL_MECA')THEN  
+C ---> CALCUL MATRICE DE RIGIDITE ELASTIQUE
+C          IF (ETATF .EQ. 'ELASTIC')  THEN
+C            CALL HUJTEL (MOD, MATERF, SIGF, DSDE)
+C          ENDIF
+
+C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
+C          IF (ETATF .EQ. 'PLASTIC') THEN
+C            CALL HUJTID (MOD, IMAT, SIGF, VINF, DSDE, IRET)
+C          ENDIF
+          
+C        ENDIF
+C      ENDIF
+ 
       END

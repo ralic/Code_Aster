@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC,RSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETSR PETSC  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETSR PETSC  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -68,8 +68,8 @@
       INTEGER NMXINS
       PARAMETER (NMXINS=5)
 
-      INTEGER   IFM,NIV,NSMDI,NSMHC,NZ,IERD,IBID,NMAXIT,PTSERR
-      INTEGER   JSMDI,LMAT,IDVALC
+      INTEGER   IFM,NIV,NSMDI,IERD,IBID,NMAXIT,PTSERR
+      INTEGER   LMAT,IDVALC
       
       CHARACTER*19 NOMAT,NOSOLV
       CHARACTER*14 NONU
@@ -131,12 +131,7 @@
 !        ----------------------------------------
 
          CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
-         CALL JELIRA(NONU//'.SMOS.SMHC','LONMAX',NSMHC,KBID)
          NEQ=NSMDI
-
-!        DANS PETSc, LES MATRICES SONT STOCKEES NON SYMETRIQUES
-         NZ=ZI(JSMDI-1+NSMDI)
-         CALL ASSERT(NZ.LE.NSMHC)
 
 !        1.3 CREATION DE LA MATRICE PETSc:
 !        --------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -338,17 +338,6 @@ TEST_TABLE(TABLE=TAB_EPSV,
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='EPZZ',
                      VALE=-0.02,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
-
-TEST_TABLE(TABLE=TAB_EPSV,
-           NOM_PARA='TRACE',
-           VALE=-.000488,
-           PRECISION=0.11,
-           CRITERE='RELATIF',
-           REFERENCE='SOURCE_EXTERNE',
-           FILTRE=_F(NOM_PARA='EPZZ',
-                     VALE=-0.05,
                      PRECISION=.00009,
                      CRITERE='ABSOLU'));
 

@@ -1,8 +1,8 @@
         SUBROUTINE HUJRES (MOD, CRIT, MATER, NVI, EPSD, DEPS, SIGD,
-     &             VIND, SIGF, VINF, NITER, EPSCON, IRET, ETATF)
+     &             VIND, SIGF, VINF, IRET, ETATF)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,32 +31,28 @@ C       SIGD   :  CONTRAINTE  A T
 C       VIND   :  VARIABLES INTERNES  A T
 C   VAR SIGF   :  CONTRAINTE A T+DT  (IN -> ELAS, OUT -> PLASTI)
 C   OUT VINF   :  VARIABLES INTERNES A T+DT
-C       NITER  :  NOMBRE D ITERATIONS POUR PLASTICITE
 C                 (CUMUL DECOUPAGE)
 C       NDEC   :  NOMBRE DE DECOUPAGE
-C       EPSCON :  EPSILON A CONVERGENCE
 C       IRET   :  CODE RETOUR DE  L'INTEGRATION DE LA LOI DE HUJEUX
 C                    IRET=0 => PAS DE PROBLEME
 C                    IRET=1 => ECHEC 
 C       ETATF  :  ETAT PLASTIQUE OU ELASTIQUE DU POINT DE GAUSS
 C   ------------------------------------------------------------------
-        INTEGER       NDT, NDI, NVI, NITER, NDEC, IRET
+        INTEGER       NDT, NDI, NVI, NDEC, IRET
         INTEGER       I, K, IFM, NIV, JJ, NSUBD, MAJ
-        INTEGER       NVIMAX, IMPO
-        PARAMETER     (NVIMAX=35)
+        INTEGER       NVIMAX, IMPO, IDEC
+        PARAMETER     (NVIMAX=50)
         REAL*8        EPSD(6), DEPS(6),VINS(NVIMAX)
-        REAL*8        SIGD(6), SIGF(6), PREDIC(6)
+        REAL*8        SIGD(6), SIGF(6), PREDIC(6), PTRAC
         REAL*8        SIGD0(6), DEPS0(6), PREDI0(6)
-        REAL*8        VIND(*), VINF(*), VIND0(NVIMAX), EPSCON
+        REAL*8        VIND(*), VINF(*), VIND0(NVIMAX)
         REAL*8        MATER(22,2), CRIT(*), CRITR(8)
         REAL*8        SEUIL, RF, RD
-        REAL*8        ZERO, VINT(NVIMAX)
+        REAL*8        VINT(NVIMAX)
         LOGICAL       CHGMEC, NOCONV, AREDEC, STOPNC, NEGMUL(8)
         LOGICAL       SUBD, RDCTPS, LOOP, INDMEC(8)
         CHARACTER*8   MOD
         CHARACTER*7   ETATF
-        PARAMETER     (ZERO  = 0.D0)
-        INTEGER       IDEC, NITER0
         LOGICAL       DEBUG
 
         COMMON /TDIM/   NDT, NDI
@@ -66,6 +62,7 @@ C   ------------------------------------------------------------------
 
         LOOP = .FALSE.
 
+        PTRAC  = MATER(21,2)
 
         CALL INFNIV(IFM,NIV)
         
@@ -157,7 +154,6 @@ C   EN TENANT COMPTE DU DECOUPAGE EVENTUEL
           WRITE(IFM,1001) 'NDEC=',NDEC
 
         ENDIF
-C        WRITE(IFM,1001) '""""""" NDEC=',NDEC
 
 C  BOUCLE SUR LES DECOUPAGES
 C  -------------------------
@@ -173,7 +169,6 @@ C --- MISE A JOUR DU COMPTEUR D'ITERATIONS LOCALES
             WRITE(IFM,1001) '%% IDEC=',IDEC
 
           ENDIF
-C          WRITE(IFM,1001) '%%%%%%%%%%%%%%% IDEC=',IDEC
 Caf 18/05/07 Debut      
         MAJ = 0
         CALL LCEQVE(SIGF,PREDIC)
@@ -185,7 +180,6 @@ Caf 18/05/07 Fin
 
 C ---> SAUVEGARDE DES SURFACES DE CHARGE AVANT MODIFICATION
         CALL LCEQVN(NVI,VIND,VINS)
-C       WRITE(6,'(A,10(1X,E16.9))')'MPOT1 --- VIND =',(VIND(I),I=1,35)
 C ---> DEFINITION DU DOMAINE POTENTIEL DE MECANISMES ACTIFS
         CALL HUJPOT(MOD,MATER,VIND,DEPS,SIGD,SIGF,ETATF,
      &              RDCTPS,IRET,AREDEC) 
@@ -212,7 +206,6 @@ C ---> SINON RESOLUTION VIA L'ALGORITHME DE NEWTON
         CALL LCEQVN (NVI, VIND, VINF)
 
  100    CONTINUE
-C       WRITE(6,'(A,10(1X,E16.9))')'MPOT2 --- VIND =',(VIND(I),I=1,35)
 C--->   RESOLUTION EN FONCTION DES MECANISMES ACTIVES
 C       MECANISMES ISOTROPE ET DEVIATOIRE
 C-----------------------------------------------------
@@ -221,15 +214,19 @@ Caf 18/05/07 Debut
 
          CALL HUJMID (MOD, CRIT, MATER, NVI, EPSD, DEPS,
      &     SIGD, SIGF, VIND, VINF, NOCONV, AREDEC, STOPNC,
-     &     NEGMUL, NITER0, EPSCON, IRET, SUBD, LOOP, NSUBD)
-         NITER = NITER + NITER0
+     &     NEGMUL, IRET, SUBD, LOOP, NSUBD)
          
+         DO 49 I = 1, NDI
+           IF(SIGF(I).GT.PTRAC)NOCONV=.TRUE.
+ 49      CONTINUE
+
          IF ((NOCONV .OR. SUBD) .AND. (.NOT. AREDEC)) 
      &               GOTO 500
          IF (NOCONV) THEN
            IRET = 1
            GOTO 9999
          ENDIF         
+         IF(IRET.EQ.1)GOTO 9999
 
 Caf 12/06/07 Debut
 C --- REPRISE A CE NIVEAU SI MECANISME SUPPOSE ELASTIQUE   
@@ -242,7 +239,8 @@ C                  DES MULTIPLICATEURS PLASTIQUES
 C                  DES SEUILS EN DECHARGE
 
          CALL HUJACT(MATER, VIND, VINF, VINS, SIGD, SIGF,
-     &               NEGMUL, CHGMEC, INDMEC)
+     &               NEGMUL, CHGMEC, INDMEC, IRET)
+         IF(IRET.EQ.1)GOTO 9999
 Caf 05/09/2007 Fin
   
 C - SI ON MODIFIE LE DOMAINE POTENTIEL DE MECANISMES ACTIVES : RETOUR
@@ -263,21 +261,12 @@ C --- REINITIALISATION DE SIGF A LA PREDICTION ELASTIQUE PREDIC
 C            CALL LCEQVE (PREDIC, SIGF)
 C --- PREDICTEUR MIS A JOUR TENANT COMPTE DE L'ETAT PRECEDEMMENT OBTENU
             MAJ = MAJ + 1
-            IF(MAJ.LT.5)THEN
+            IF(MAJ.LT.10)THEN
               LOOP = .TRUE.
               CALL LCEQVN (NVI, VIND, VINF)
               GOTO 100
             ELSE      
-              IMPO = 0
-              DO 41 I = 5, 8 
-                IF(INDMEC(I))THEN
-                  VINF(23+I) = ZERO
-                  IMPO = 1
-                ENDIF 
- 41           CONTINUE 
-              IF (IMPO.EQ.1) GOTO 45
-              IRET = 1
-              GOTO 9999      
+              GOTO 45
             ENDIF            
           ENDIF
                  
@@ -300,7 +289,6 @@ C --- APPLICATION DE L'INCREMENT DE DÉFORMATIONS, SUPPOSE ELASTIQUE
         
           IF (DEBUG) WRITE (IFM,'(A)') 'HUJRES :: CAS NON PREVU'
           IRET = 1
-            WRITE (IFM,'(A)') 'HUJRES :: CAS NON PREVU'
             GOTO 9999  
 
         ENDIF
@@ -308,7 +296,7 @@ C --- APPLICATION DE L'INCREMENT DE DÉFORMATIONS, SUPPOSE ELASTIQUE
  
 9999    CONTINUE
 
-2000    FORMAT(A,35(1X,E12.5))
+2000    FORMAT(A,10(1X,E12.5))
 1001    FORMAT(A,I3)
         
         END

@@ -2,7 +2,7 @@
      &                     YD, YF, VIND, R, SIGNE, DRDY, IRET )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -123,7 +123,6 @@ C =====================================================================
       PTRAC  = MATER(21,2)
       PISO   = 1.5D0*MATER(21,2)
 
-
 C =====================================================================
 C --- PREMIER INVARIANT ET AUTRES GRANDEURS UTILES --------------------
 C =====================================================================
@@ -139,17 +138,18 @@ C =====================================================================
  6     CONTINUE
  
       DO 3 I = 1, 9
-            SIGDC(I)=ZERO
+        SIGDC(I)=ZERO
   3   CONTINUE
       
       NBMECA = 0
       DO 4 K = 1, 4
-        IF (INDI(K) .GT. 0) NBMECA = NBMECA + 1
+        IF (INDI(K) .GT. 0) THEN 
+          NBMECA = NBMECA + 1
+        ENDIF
         DLAMBD(K) = ZERO
  4      CONTINUE
  
       DO 5 K = 1, NBMECA
-      
         RC(K) = YF(NDT+1+K)
         CALL HUJDDD('PSI   ', INDI(K), MATER, INDI, YF, VIND,
      &              PSI((K-1)*NDT+1), DPSIDS, IRET)
@@ -200,8 +200,7 @@ Caf 15/05/07 Debut
 Caf 15/05/07 Fin
 C --- CONDITIONNEMENT DE LA MATRICE JACOBIENNE
       CCOND= MATER(1,1)
-      
-      
+
 C =====================================================================
 C --- OPERATEURS DE RIGIDITE ET DE SOUPLESSE (LINEAIRES OU NON LINEA.) 
 C =====================================================================
@@ -337,15 +336,15 @@ C                     (6X6)    (6X6)  (6X6)
 C ------------ FIN I.2.
         CALL LCINMA (ZERO, DLEDS)
         DO 63 I = 1, NDT
-          DLEDS(I,I) = UN /CCOND
+          DLEDS(I,I) = UN
  63       CONTINUE
  
        DO 61 I = 1, NDT
          DO 62 J = 1, NDI
-           DLEDS(I,J) = DLEDS(I,J) - (CTILD(I) - CD2FDS(I,J)) /CCOND
+           DLEDS(I,J) = DLEDS(I,J) - (CTILD(I) - CD2FDS(I,J))
  62        CONTINUE
           DO 61 J = NDI+1, NDT
-            DLEDS(I,J) = DLEDS(I,J) + CD2FDS(I,J) /CCOND
+            DLEDS(I,J) = DLEDS(I,J) + CD2FDS(I,J)
   61        CONTINUE
 
 
@@ -399,11 +398,20 @@ C ---> MECANISME CYCLIQUE DEVIATOIRE
            PS     = 2*SIGDC(3*K-2)*SIGD(1)+SIGDC(3*K)*SIGD(3)
            
 Ckh --- traction
+           DPSI = ZERO
            IF ((P(K)/PREF).GT.TOLE) THEN
-             DPSI =MDIL+PS/2.D0/P(K)/Q(K)
+             IF((-Q(K)/PREF).GT.TOLE)THEN
+               DPSI =MDIL+PS/2.D0/P(K)/Q(K)
+             ELSE
+               DPSI =MDIL
+             ENDIF
            ELSEIF ((P(K)/PREF).LT.-TOLE) THEN
              IF (DEBUG) WRITE(6,'(A)')'HUJJID :: TRACTION CYCLIQUE'
-             DPSI =-PS/2.D0/P(K)/Q(K)
+             IF((-Q(K)/PREF).GT.TOLE)THEN
+               DPSI = MDIL-PS/2.D0/P(K)/Q(K)
+             ELSE
+               DPSI = MDIL
+             ENDIF
            ENDIF
            
            SI = UN
@@ -440,13 +448,14 @@ Ckh --- traction
          ENDIF
          
          CALL LCPRMV (HOOKNL, DELTA, DLEDR1)
-         DO 71 I = 1, NDT
-           DLEDR(I,K) = DLEDR1(I) /CCOND
- 71        CONTINUE
+         DO 76 I = 1, NDT
+           DLEDR(I,K) = DLEDR1(I) /PREF
+ 76      CONTINUE       
+
+ 71   CONTINUE
 Caf 15/05/07 Fin
  
  710  CONTINUE
-
 
 C =====================================================================
 C --- III. CALCUL DE DLEDEVP (6X1) ------------------------------------
@@ -466,7 +475,6 @@ C =====================================================================
            DLEDLA(I,K) = DLEK(I) /CCOND
  91        CONTINUE
 
-     
 C =====================================================================
 C --- V. CALCUL DE DLRDS (NBMECX6) ------------------------------------
 C =====================================================================
@@ -475,7 +483,6 @@ C =====================================================================
           DLRDS(K,I) = ZERO
  100      CONTINUE
 
-
 C =====================================================================
 C --- VI. CALCUL DE DLRDR (NBMECXNBMEC) -------------------------------
 C =====================================================================
@@ -483,7 +490,7 @@ C =====================================================================
         DO 110 L = 1, NBMECA
           DLRDR(K,L) = ZERO
  110    CONTINUE
- 
+
       DO 111 K = 1, NBMECA
         KK = INDI(K)
         IF (KK .LT. 4) THEN
@@ -499,14 +506,14 @@ Caf 15/05/07 Debut
           MUL        = (UN-RC(K))/AD(K)
           DLRDR(K,K) = UN + DEUX*DLAMBD(K)*(MUL
      &  + DKSIDR(K)*(AMON-ACYC)*MUL**DEUX)
-        
+
         ELSEIF (KK .EQ. 8) THEN
           DLRDR(K,K) = UN + DEUX*DLAMBD(K)*(UN-RC(K))/CCYC
-        
+
 Caf 15/05/07 Fin
         ENDIF   
+        DLRDR(K,K) = DLRDR(K,K)*CCOND/PREF
  111    CONTINUE
-
 
 C =====================================================================
 C --- VII. CALCUL DE DLRDLA (NBMECXNBMEC) -----------------------------
@@ -560,7 +567,6 @@ Caf 15/05/07 Fin
         ENDIF
  120    CONTINUE
 
- 
 C =====================================================================
 C --- IX. CALCUL DE DLEVPDS (1X6) -------------------------------------
 C =====================================================================
@@ -638,10 +644,12 @@ Ckh --- traction
  133      CONTINUE
         ENDIF
 Caf 15/05/07 Fin
- 
+        DO 134 I = 1, NDT
+          DLEVDS(I) = DLEVDS(I)/CCOND 
+ 134    CONTINUE
+
  131    CONTINUE
  1310   CONTINUE
-
 
 C =====================================================================
 C --- X. CALCUL DE DLEVPDEVP (1X1) ------------------------------------
@@ -670,7 +678,6 @@ C =====================================================================
            ENDIF  
          ENDIF
  140   CONTINUE
-
 
 C =====================================================================
 C --- XI. CALCUL DE DLEVPDR (1XNBMEC) ---------------------------------
@@ -730,6 +737,7 @@ Ckh --- traction
 Caf 15/05/07 Fin
           
         ENDIF
+        DLEVDR(K) = DLEVDR(K)*CCOND/PREF
  151    CONTINUE
 
 
@@ -796,7 +804,7 @@ C =====================================================================
      &              DFDS, DPSIDS, IRET)
         IF (IRET.EQ.1) GOTO 1000
         DO 171 I = 1, NDT
-          DLFDS(K,I) = DFDS(I) /CCOND
+          DLFDS(K,I) = DFDS(I)
  171      CONTINUE
 
 
@@ -815,11 +823,11 @@ C =====================================================================
         
         IF (KK .LT. 4) THEN
         
-          DLFDR(K,K) = M*PK*( UN-B*LOG(PK/PC) ) /CCOND
+          DLFDR(K,K) = M*PK*( UN-B*LOG(PK/PC) )
           
-        ELSEIF (KK .EQ. 4) THEN
+        ELSEIF ((KK .EQ. 4).OR.(KK.EQ.8)) THEN
         
-          DLFDR(K,K) = D*PC /CCOND
+          DLFDR(K,K) = D*PC
         
 Caf 15/05/07 Debut      
         ELSEIF ((KK .GT. 4) .AND. (KK .LT.8)) THEN
@@ -827,16 +835,13 @@ Caf 15/05/07 Debut
           TH(1) = VIND(4*KK-9)
           TH(2) = VIND(4*KK-8)
           PROD  = SIGDC(3*K-2)*TH(1) + SIGDC(3*K)*TH(2)*D12
-          DLFDR(K,K) = M*PK*( UN-B*LOG(PK/PC) ) /CCOND
+          DLFDR(K,K) = M*PK*( UN-B*LOG(PK/PC) )
      &                 *(UN+PROD/Q(K))
-     
-        ELSEIF (KK .EQ. 8) THEN
-          
-          DLFDR(K,K) = D*PC /CCOND
-          
+         
 Caf 15/05/07 Fin          
           
         ENDIF
+        DLFDR(K,K) = DLFDR(K,K)/PREF
 181     CONTINUE
 
 
@@ -1075,11 +1080,7 @@ C DLFDDY
         ENDIF
         IRET=1
  1000   CONTINUE
-C       WRITE(6,'(A)')'DRDY ='
-C       DO 1233 I=1,9
-C         WRITE(6,'(9(1X,E12.5))')(DRDY(I,J),J=1,9)
-C 1233  CONTINUE
-C        WRITE(6,'(9(1X,E12.5))')(R(J),J=1,9)
+
 C =====================================================================
 C        CALL JEDEMA ()
 C =====================================================================

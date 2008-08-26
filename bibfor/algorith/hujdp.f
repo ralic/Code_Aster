@@ -2,7 +2,7 @@
      &                  VIN, NDEC, IRET)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,7 +60,7 @@ C       ---------------------------------------------------------------
       PCO   = MATER(7,2)
       EPSVP = VIN(23)
       DEPSV = DEPS(1)+DEPS(2)+DEPS(3)       
-      TOLE = 0.1D0
+      TOLE = 0.05D0
 
 
 C ----------------------------------------------------

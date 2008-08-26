@@ -2,7 +2,7 @@
      &                   LQUALI,RDESQ,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPT MUMPS  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -69,10 +69,10 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /CVARJE/ZC(1)
       LOGICAL ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8,KCODE
+      CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32, JEXNUM
+      CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------

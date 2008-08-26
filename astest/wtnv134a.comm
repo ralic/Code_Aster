@@ -1,4 +1,4 @@
-# MODIF  DATE 07/07/2008   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -424,7 +424,7 @@ TEST_TABLE(TABLE=TAB_VAR,
 TEST_TABLE(TABLE=TAB_VAR,
            NOM_PARA='V8',
            VALE=.00189,
-           PRECISION=0.06,
+           PRECISION=0.07,
            CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='INST',
@@ -664,7 +664,8 @@ TAB_VAR2=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU_ELGA',
                                  GROUP_NO = 'C',
                                  RESULTAT = U2,
                                  NOM_CHAM = 'VARI_NOEU_ELGA',
-                                 TOUT_CMP = 'OUI',
+                                 NOM_CMP  = ('V1','V2','V3','V4','V5','V6',
+                                            'V7','V8','V23'),
                                  OPERATION= 'EXTRACTION'));
 
 IMPR_TABLE(TABLE=TAB_SIG2);
@@ -817,7 +818,7 @@ TEST_TABLE(TABLE    =TAB_VAR2,
 TEST_TABLE(TABLE    =TAB_VAR2,
            NOM_PARA ='V23',
            VALE     =-2.11E-04,
-           PRECISION=0.1,
+           PRECISION=0.15,
            CRITERE  ='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA ='INST',

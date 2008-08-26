@@ -1,7 +1,7 @@
         SUBROUTINE HUJPXD (K, MATER, SIG ,VIN, PROX)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,7 +39,7 @@ C    ---------------------------------------------------------------
         REAL*8       SIGD(3), P, Q, DIST, RH
         LOGICAL      DEBUG, PROX
         PARAMETER    (UN = 1.D0)
-        PARAMETER    (TOLE = 1.D-6)
+        PARAMETER    (TOLE = 1.D-7)
         PARAMETER    (DEGR = 0.0174532925199D0)
         
         COMMON /TDIM/   NDT, NDI
@@ -84,13 +84,22 @@ C ==================================================================
 C --- CALCUL DU SEUIL DU MECANISME DEVIATOIRE K ------------------
 C ==================================================================
         R   = -Q /( M*(P -PTRAC)*(UN-B*LOG((P -PTRAC)/PCR)) )
-        DIST = ABS(R-RH)/RH
+        DIST = ABS(R-RH)
 
-        IF (DIST .LT. 1.D-5) THEN
+        IF (DIST .LT. TOLE) THEN
           PROX = .TRUE.
         ELSE
           PROX = .FALSE.
         ENDIF
-        
+
+C ==================================================================
+C --- SEUIL CYCLIQUE ELASTIQUE  + TANGENT AU SEUIL MONOTONE --------
+C ==================================================================
+       R = SQRT(VIN(4*K-11)**2+(VIN(4*K-10)**2)/2.D0)
+       DIST = ABS(R-RH)
+       IF((DIST .LT. TOLE).AND.(VIN(K).EQ.MATER(18,2)))THEN
+         PROX = .TRUE.
+       ENDIF
+       
  999   CONTINUE
        END

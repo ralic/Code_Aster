@@ -1,7 +1,7 @@
-        SUBROUTINE HUJDRC (K, MATER, SIG , VIN, PSM, PST)
+        SUBROUTINE HUJDRC (K,MATER,SIG,VIN,PSM,PST,DIST,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,13 +31,15 @@ C
 C   OUT PSM    : PRODUIT SCALAIRE ENTRE LA NORME DU SEUIL ET LE VECTEUR
 C                DEFINI PAR LE RAYON MOBILISE ET LE CENTRE DU SEUIL
 C       PST    : PRODUIT SCALAIRE ENTRE LA NORME DE LA SURFACE ET DR
+C       SEUIL  : SEUIL DE LA SURFACE DE CHARGE ANTERIEURE 
 C   -------------------------------------------------------------------
-        INTEGER NDT, NDI, I, K
+        INTEGER NDT, NDI, I, K, IRET
         REAL*8  MATER(22,2), SIG(6), VIN(*)
         REAL*8  B, PCO, BETA, PC, EPSVPM, PTRAC
         REAL*8  UN, ZERO, AEXP, EXPTOL, R8MAEM
         REAL*8  P, Q, M, PHI, DEGR, SIGD(3), PSM, REFM(2)
         REAL*8  POSF(3), REF(2), NORM(2), PST, TOLE
+        REAL*8  DIST, RMEM
        
         PARAMETER     ( DEGR  = 0.0174532925199D0 )
        
@@ -63,7 +65,7 @@ C   -------------------------------------------------------------------
         
         CALL HUJPRJ(K,SIG,SIGD,P,Q)
         
-        P =P -PTRAC
+        P = P -PTRAC
         
         DO 5 I = 1, 3
           IF(Q.GT.TOLE)THEN
@@ -81,4 +83,21 @@ C   -------------------------------------------------------------------
 
         PST = 2.D0*NORM(1)*(POSF(1)-REF(1))+NORM(2)*(POSF(3)-REF(2))
         PSM = 2.D0*NORM(1)*(POSF(1)-REFM(1))+NORM(2)*(POSF(3)-REFM(2))
+
+        Q  = SQRT(SIGD(1)**2 + (SIGD(3)**2)/2.D0)
+        
+C --- ON TESTE SI LA SURFACE ANTERIEURE N'EST PAS LA SURFACE MONOTONE
+       
+        RMEM = REF(1)**2+(REF(2)**2)/2.D0
+        IF(RMEM.GT.ZERO)THEN
+          RMEM = SQRT(RMEM)
+        ELSE
+          IRET = 1
+          GOTO 100
+        ENDIF
+        
+        DIST = SQRT((POSF(1)-REF(1))**2+((POSF(3)-REF(2))**2)/2)
+        DIST = DIST/RMEM
+
+ 100    CONTINUE
         END

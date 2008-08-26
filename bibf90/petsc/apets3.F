@@ -1,7 +1,7 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS3 PETSC  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS3 PETSC  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -106,8 +106,8 @@
       fillp=FILLIN
 
 !     ----- RECUPERE LE RANG DU PROCESSUS
-      CALL MPI_COMM_RANK(PETSC_COMM_WORLD, rang, ierr)
-      CALL MPI_COMM_SIZE(PETSC_COMM_WORLD, size, ierr)
+      CALL MPI_COMM_RANK(PETSC_COMM_WORLD, rang, ier)
+      CALL MPI_COMM_SIZE(PETSC_COMM_WORLD, size, ier)
       
       IF (size.GT.1) THEN
          IF (ACTION.NE.'RESOUD') GOTO 999

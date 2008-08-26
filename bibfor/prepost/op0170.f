@@ -3,7 +3,7 @@
       INTEGER             IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 25/08/2008   AUTEUR ZENTNER I.ZENTNER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,18 +72,18 @@ C
 C
       IF ( NBTAB .NE. 0 ) THEN
         CALL GETVID ( ' ', 'TABL_POST_ALEA', 1,1,1, TABLE, N1 )
-        CALL TBEXP2(TABLE,'GRANDEUR')
+C        CALL TBEXP2(TABLE,'GRANDEUR')
         CALL TBEXP2(TABLE,'LAMBDA_00')
         CALL TBEXP2(TABLE,'LAMBDA_02')
         CALL TBEXP2(TABLE,'LAMBDA_04')
-        CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
-     &                'GRANDEUR', K8B, IBID, R8B, C16B, K8B, IRET )
-        IF ( IRET.NE.0 .AND. IRET.NE.3 )
-     &                CALL U2MESS('F','MODELISA2_89')
-        IF ( K8B .NE. 'DSP_SIPO' .OR. K8B .NE. 'DSP_SIGM' .OR.
-     &       K8B .NE. 'DSP_EFGE'  ) THEN
-              CALL U2MESS('A','PREPOST4_16')
-        ENDIF
+C        CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
+C     &                'GRANDEUR', K8B, IBID, R8B, C16B, K8B, IRET )
+C        IF ( IRET.NE.0 .AND. IRET.NE.3 )
+C     &                CALL U2MESS('F','MODELISA2_89')
+C        IF ( K8B .NE. 'DSP_SIPO' .OR. K8B .NE. 'DSP_SIGM' .OR.
+C     &       K8B .NE. 'DSP_EFGE'  ) THEN
+C              CALL U2MESS('A','PREPOST4_16')
+C        ENDIF
         NOMOB1 = '&&OP0170.LAMBDA_0'
         CALL TBEXVE ( TABLE, 'LAMBDA_00', NOMOB1, 'V', NBL0, K8B )
         CALL JEVEUO ( NOMOB1, 'L', INBL0 )

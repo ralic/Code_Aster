@@ -6,7 +6,7 @@
       CHARACTER*16 OPTION
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C =====================================================================
       INTEGER    I,J,IBID1,IBID2,IBID3,JGANPG,JGANSO
       INTEGER    NDIM,NNO,NNOS,NPG,NDIM2,NNO2,NNOS2,NPG2
       INTEGER    NVMAX,NPGMAX,NNOSMA,DIMMAX,NNOMAX
-      PARAMETER (NVMAX  = 40)
+      PARAMETER (NVMAX  = 60)
       PARAMETER (NPGMAX = 8 )
       PARAMETER (NNOSMA = 8 )
       PARAMETER (DIMMAX = 31)

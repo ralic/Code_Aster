@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,9 @@ R_ELA_ISO = .01      ;   # on desactive le mecanisme isotrope
 
 vari_1        = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,
                 ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
-vari_2        = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO];
+vari_2        = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,
+                ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO];
+vari_3        = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,];
 vari_cart_cc = [-PCO/2,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
 
 list_no_later_dro = ['N46','N47','N48','N49','N50','N51','N52','N53',
@@ -383,7 +385,7 @@ list_noeu_haut=list_no_later_dro[:2]
 for n in range(1,nbcouche-1):
 
     DETRUIRE(CONCEPT=_F(NOM=('CHLAT','PHAUT','INIDEP','INISIG','SIEF',
-                             'INIVAC','CART1','CART2','CART_C')));
+                             'INIVAC','CART1','CART2','CART3','CART_C')));
 
     n_couche = n+2
     print ' > n_couche          =',n_couche
@@ -464,8 +466,18 @@ for n in range(1,nbcouche-1):
                    PROL_ZERO='OUI',
                    AFFE=_F(GROUP_MA=list_group_ma[n+1],
                            NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
-                                     'X12','X13','X14','X15','X16','X17',),
+                                     'X12','X13','X14','X15','X16','X17','X18','X19','X20'),
                            VALE    =vari_2));
+
+    CART3 = CREA_CHAMP(INFO = 1,
+                   TYPE_CHAM='ELGA_NEUT_R',
+                   OPERATION='AFFE',
+                   MODELE=MOD[n],
+                   PROL_ZERO='OUI',
+                   AFFE=_F(GROUP_MA=list_group_ma[n+1],
+                           NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
+                                     'X12',),
+                           VALE    =vari_3));
 
     INIVAR=CREA_CHAMP(INFO=1,
                       TYPE_CHAM='ELGA_VARI_R',
@@ -487,9 +499,17 @@ for n in range(1,nbcouche-1):
                             _F(GROUP_MA=list_group_ma[n+1],
                                CHAM_GD=CART2,
                                NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
-                                     'X12','X13','X14','X15','X16','X17',),
-                               NOM_CMP_RESU=('V21','V22','V23','V24','V25','V26','V27','V28',
-                                             'V29','V30','V31','V32','V33','V34','V35','V36','V37'),
+                                     'X12','X13','X14','X15','X16','X17','X18','X19','X20',),
+                               NOM_CMP_RESU=('V21','V22','V23','V24','V25','V26','V27','V28','V29','V30',
+                                             'V31','V32','V33','V34','V35','V36','V37','V38','V39','V40'),
+                               CUMUL='OUI',
+                               COEF_R=1.0),
+                            _F(GROUP_MA=list_group_ma[n+1],
+                               CHAM_GD=CART3,
+                               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12',),
+                                     
+                               NOM_CMP_RESU=('V41','V42','V43','V44','V45','V46','V47','V48',
+                                             'V49','V50','V51','V52'),
                                CUMUL='OUI',
                                COEF_R=1.0),
                                ));

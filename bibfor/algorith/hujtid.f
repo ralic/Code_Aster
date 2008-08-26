@@ -1,7 +1,7 @@
         SUBROUTINE HUJTID (MOD, IMAT, SIGR, VIN, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -379,6 +379,9 @@ Caf 04/06/07 Debut
            B3(K) = M*PK*(UN-BHUJ*LOG(PK/PC))*
      &             (UN+PROD/Q(K))*(UN-RC(K))**DEUX /AD(K) 
               
+           IF(ABS(PROD/Q(K)+UN).LT.TOLE)B3(K) = M*PK*2.D0*
+     &       (UN-BHUJ*LOG(PK/PC))*(UN-RC(K))**DEUX /AD(K) 
+
          ELSEIF (KK .EQ. 8) THEN
            
            B3(K) = DHUJ*PC*(UN-RC(K))**DEUX /CCYC   
@@ -387,10 +390,8 @@ Caf 04/06/07 Fin
          ENDIF
          
          IF ((ABS(B3(K)).LT.TOLE) .AND. (RC(K).NE.UN)) THEN
-           IRET = 1
-           WRITE(6,'(A,I2,A,F12.5)')
-     &     'HUJTID :: IRET =',IRET,' ; B3 =',B3(K)
-           GOTO 1000
+C           WRITE(6,'(A,I2,A,F12.5)')
+C     &     'HUJTID :: KK =',KK,' ; B3 =',B3(K)
          ENDIF
  43      CONTINUE    
 C ------------ FIN I.3.

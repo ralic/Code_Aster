@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPP MUMPS  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPP MUMPS  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -41,7 +41,7 @@ C---------------------------------------------------------------
       LOGICAL       LDIST,ELI2LG
       CHARACTER*1   TYPE
       CHARACTER*4   IMPR
-      CHARACTER*19  VECAS,VCINE
+      CHARACTER*19  VCINE
       REAL*8 RSOLU(*)
       COMPLEX*16 CSOLU(*)
 
@@ -60,7 +60,7 @@ C============================================================
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
       TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
-      INTEGER      N,NNBSOL,RANG,LMAT,I,IERD,IDVALC,IBID,JVECA2,
+      INTEGER      N,NNBSOL,RANG,LMAT,I,IERD,IDVALC,IBID,
      &             JDELG,K,IFM,NIV
       INTEGER*4    N4
       CHARACTER*1  ROUCS(NMXINS),ROUC
@@ -68,7 +68,7 @@ C============================================================
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 VCIVAL
-      REAL*8       RBID,DDOT
+      REAL*8       RBID
       COMPLEX*16   CBID
       COMMON /SMUMPS/ DMPS,ZMPS,NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
 
@@ -81,10 +81,10 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /CVARJE/ZC(1)
       LOGICAL ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8,KCODE
+      CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32, JEXNUM
+      CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------

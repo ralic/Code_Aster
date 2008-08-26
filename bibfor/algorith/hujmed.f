@@ -1,7 +1,7 @@
         SUBROUTINE HUJMED (K, MATER, VIN, SIG)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -110,6 +110,13 @@ C ==================================================================
 C ==================================================================
 C --- MISE A JOUR DES VARIABLES INTERNES DE MEMOIRE ----------------
 C ==================================================================
+
+C --- ENREGISTREMENT DE LA SURFACE DE CHARGE CYCLIQUE PRECEDENTE
+        VIN(5*KP+31) = VIN(4*KP+5)
+        VIN(5*KP+32) = VIN(4*KP+6)
+        VIN(5*KP+33) = VIN(4*KP+7)
+        VIN(5*KP+34) = VIN(4*KP+8)
+        VIN(5*KP+35) = RC
 
 C --- ENREGISTREMENT DU TENSEUR DIRECTION DE MEMOIRE
         SC(1) = DD-M*P*(UN-B*LOG(P/PCR))*(XK(1)-TH(1)*RC)

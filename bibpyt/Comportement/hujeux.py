@@ -1,4 +1,4 @@
-#@ MODIF hujeux Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF hujeux Comportement  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,8 +27,8 @@ loi = LoiComportement(
    Ce modèle est un modèle multi-critères qui comporte un mécanisme élastique non linéaire, trois mécanismes plastiques déviatoires et un mécanisme plastique isotrope. 
    Pour faciliter l'intégration de ce modèle, on peut utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS)""",
    num_lc         = 34,
-   nb_vari        = 35,
-   nom_vari       = ('FECRDVM1','FECRDVM2','FECRDVM3','FECRISM1','FECRDVC1','FECRDVC2','FECRDVC3','FECRISC1','HIS9','HIS10','HIS11','HIS12','HIS13','HIS14','HIS15','HIS16','HIS17','HIS18','HIS19','HIS20','HIS21','HIS22','DPVOLEQ','INDETAM1','INDETAM1','INDETAM1','INDETAM1','INDETAM2','INDETAM3','INDETAC1','INDETAC2','INDETAC3','CRITHILL','HIS34','HIS35'),
+   nb_vari        = 50,
+   nom_vari       = ('FECRDVM1','FECRDVM2','FECRDVM3','FECRISM1','FECRDVC1','FECRDVC2','FECRDVC3','FECRISC1','HIS9','HIS10','HIS11','HIS12','HIS13','HIS14','HIS15','HIS16','HIS17','HIS18','HIS19','HIS20','HIS21','HIS22','DPVOLEQ','INDETAM1','INDETAM1','INDETAM1','INDETAM1','INDETAM2','INDETAM3','INDETAC1','INDETAC2','CRITHILL','INDETAC3','HIS34','HIS35','XHYZ1','XHYZ2','THYZ1','THYZ2','RHYZ','XHXZ1','XHXZ2','THXZ1','THXZ2','RHXZ','XHXY1','XHXY2','THXY1','THXY2','RHYZ'),
    mc_mater       = ('ELAS', 'HUJEUX'),
    modelisation   = ('3D', 'THM'),
    deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),

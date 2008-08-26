@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF factor Messages  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,12 +122,6 @@ Conseil :
       le support de ce renuméroteur. Dans le doute, RENUM='AUTO' permet
       de laisser MUMPS faire le meilleur choix.
  """),
-#-----------------------------------------------------------------------------------------------
-51: _("""
-Solveur MUMPS interdit ici.
-Causes possibles :
-  - frottement pénalisé ou lagrangien (si MUMPS distribué parallèle)
-"""),
 
 #-----------------------------------------------------------------------------------------------
 52: _("""
@@ -152,7 +146,8 @@ Solveur MUMPS :
 
 Solution :
   Il faut augmenter la mémoire accessible à Mumps (et autres programmes hors fortran d'Aster).
-  Pour cela, il faut diminuer la mémoire donnée à JEVEUX (ASTK : case "dont Aster (Mo)").
+  Pour cela, il faut diminuer la mémoire donnée à JEVEUX (ASTK : case "dont Aster (Mo)") ou bien
+  augmenter la mémoire totale (ASTK : case "Mémoire totale (Mo))".
 """),
 
 #-----------------------------------------------------------------------------------------------
@@ -182,14 +177,6 @@ Solveur MUMPS :
   Erreur acceptable : %(r2)g   (RESI_RELA)
 Solution :
   On peut augmenter la valeur du mot clé SOLVEUR/RESI_RELA.
-"""),
-
-#-----------------------------------------------------------------------------------------------
-58: _("""
-Solveur MUMPS :
-  La matrice est numériquement singulière.
-Solution :
-  Peut être un problème de modélisation (blocages redondants...)
 """),
 
 #-----------------------------------------------------------------------------------------------
@@ -238,6 +225,30 @@ Conseils: Pour optimiser l'équilibrage de votre calcul, vous pouvez essayer
         - d'enlever du modèle les mailles qui ne participent pas au calcul,
         - utiliser l'option 'DISTRIBUE_SD' au lieu de 'DISTRIBUE_MAILLE' ou 'CENTRALISE',
         - diminuer le nombre de processeurs utilisés.
+"""),
+
+#-----------------------------------------------------------------------------------------------
+
+64: _("""
+Solveur MUMPS :
+  Le solveur Mumps manque de mémoire lors de la phase d'analyse de la matrice.
+
+Solution :
+  Il faut augmenter la mémoire accessible à Mumps (et autres programmes hors fortran d'Aster).
+  Pour cela, il faut diminuer la mémoire donnée à JEVEUX (ASTK : case "dont Aster (Mo)") ou bien
+  augmenter la mémoire totale (ASTK : case "Mémoire totale (Mo))".
+"""),
+
+#-----------------------------------------------------------------------------------------------
+
+65: _("""
+Solveur MUMPS :
+  Mumps ne peut pas factoriser la matrice à cause d'un dépassement d'entiers.
+
+Solution :
+  Si vous utilisez la version séquentielle, alors il vous faut passer à la version parallèle.
+  Si vous utilisez déjà la version parallèle, alors il faut augmenter le nombre de processeurs
+  alloués au calcul.
 """),
 
 #-----------------------------------------------------------------------------------------------

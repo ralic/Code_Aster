@@ -1,9 +1,9 @@
         SUBROUTINE HUJMID ( MOD, CRIT, MATER, NVI, EPSD, DEPS,
      &  SIGD, SIGF, VIND, VINF, NOCONV, AREDEC, STOPNC, 
-     &  NEGMUL, NITER, EPSCON, IRET, SUBD, LOOP, NDEC0 )
+     &  NEGMUL, IRET, SUBD, LOOP, NDEC0 )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,14 +39,12 @@ C VAR  SIGF    :  CONTRAINTE  A T+DT
 C      VINF    :  VARIABLES INTERNES  A T+DT
 C      NOCONV   =.TRUE.  NON CONVERGENCE
 C      NEGMUL   =.TRUE.  MULTIPLICATEUR NEGATIF
-C      NITER   :  NOMBRE D ITERATIONS A CONVERGENCE
-C      EPSCON  :  VALEUR ERR FINALE
 C      SUBD     =.TRUE. SUBDIVISION DU A (DR/R) < CRIT
 C      NDEC0   :  NOMBRE D'INCREMENTS DE SUBDIVISION LIE A SUBD
 C      IRET    :  CODE RETOUR
 C   -------------------------------------------------------------------
 C TOLE CRP_20
-        INTEGER   NDT, NDI, NVI, NR, NMOD, NITER, IRET
+        INTEGER   NDT, NDI, NVI, NR, NMOD, IRET
         INTEGER   I, J, K, KK, ITER, INDI(4), NDEC0, NDEC
         INTEGER   NITIMP, NBMECA
         INTEGER   UMESS, IUNIFI, IFM, NIV
@@ -63,7 +61,7 @@ C TOLE CRP_20
 
         REAL*8    EPSD(6), DEPS(6), I1F, DEUX
         REAL*8    SIGD(6), SIGF(6), GD(6)
-        REAL*8    VIND(*), VINF(*), EPSCON
+        REAL*8    VIND(*), VINF(*)
         REAL*8    CRIT(*), MATER(22,2)
         REAL*8    R(NMOD), DRDY(NMOD,NMOD)
         REAL*8    DDY(NMOD), DY(NMOD), YD(NMOD), YF(NMOD)
@@ -74,7 +72,7 @@ C TOLE CRP_20
         
         REAL*8    RELAX(ESSMAX+1), ROTAGD(ESSMAX+1), NOR1(7), NOR2(7)
         REAL*8    ERIMP(NITIMP,4)
-        REAL*8    R8PREM
+        REAL*8    R8PREM, PTRAC
        
         CHARACTER*8 MOD
 
@@ -87,6 +85,8 @@ C      NR = NDT(SIG)+ 1(EVP)+ NBMECA(R)+ NBMEC(DLAMB)
         UMESS  = IUNIFI('MESSAGE')
         CALL INFNIV(IFM,NIV)
         NOCONV = .FALSE.
+
+        PTRAC = MATER(21,2)
 
 Caf 30/04/07 debut
         NBMECA = 0
@@ -101,7 +101,7 @@ Caf 30/04/07 debut
 Caf 30/04/07 fin
 
 C ---> MISE A ZERO DES DATAS
-        DO 10 I = 1, NR
+        DO 10 I = 1, NMOD
           DDY(I) = ZERO
           DY(I)  = ZERO
           YD(I)  = ZERO
@@ -136,9 +136,8 @@ Caf 30/04/07 debut
             
           ENDIF
  16       CONTINUE
-          
-C         WRITE(6,'(A,4(1X,I3))')'INDI =',(INDI(I),I=1,4)
- 
+
+         
 Caf 30/04/07 fin
          I1F = (SIGF(1) + SIGF(2) + SIGF(3))/3
          IF(LOOP)THEN
@@ -153,12 +152,14 @@ Caf 30/04/07 fin
 
 C ---> INITIALISATION : DY : CALCUL DE LA SOLUTION D ESSAI INITIALE 
 C      (SOLUTION EXPLICITE)
-C       WRITE(6,*)'DSIG =',(DSIG(I),I=1,6)
         CALL HUJIID (MOD, MATER, INDI, DEPS, I1F, YD, VIND, DY,
-     &                LOOP, DSIG)
+     &                LOOP, DSIG, IRET)
+
 C ---> INCREMENTATION DE YF = YD + DY
         CALL LCSOVN (NR, YD, DY, YF)
 
+        IF(IRET.EQ.1)GOTO 9999
+        
         IF (DEBUG) THEN
 
         WRITE (IFM,'(A)') '------------------------------------------'
@@ -167,7 +168,7 @@ C ---> INCREMENTATION DE YF = YD + DY
         WRITE (IFM,1000) '  > ESSAI :: YF=',(YF(I),I=1,NR)
       
         ENDIF
-C       WRITE (IFM,1000) '  > ESSAI :: YF=',(YF(I),I=1,NR)
+
 C----------------------------------------------------------
 C ---> BOUCLE SUR LES ITERATIONS DE NEWTON
 C----------------------------------------------------------
@@ -175,7 +176,6 @@ C----------------------------------------------------------
  100    CONTINUE
 
         ITER = ITER + 1
-C        WRITE(6,*)'ITER =',ITER
         DO 50 I = 1, NR
           R(I) = ZERO
           DO 60 J = 1, NR
@@ -192,14 +192,20 @@ C      ET CALCUL DU JACOBIEN DU SYSTEME A T+DT : DRDY(DY)
 
 C ---> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
         CALL LCEQVN (NR, R, DDY)
-        CALL MGAUSS ('NFVP', DRDY, DDY, NMOD, NR, 1, DET, IRET)
-        IF (IRET.EQ.1) THEN
-          WRITE(6,'(A,I3)')'MGAUSS --- IRET =',IRET
-          GOTO 9999
-        ENDIF
+        CALL MGAUSS ('NCVP', DRDY, DDY, NMOD, NR, 1, DET, IRET)
+        IF (IRET.EQ.1) GOTO 9999
         RELAX(1) = UN
         ESSAI    = 1
 
+C --- DIMENSIONNEMENT DES CONTRAINTES
+        DO 41 I = 1, NDT
+          DDY(I) = DDY(I)*MATER(1,1)
+ 41     CONTINUE
+        DO 43 I = 1, NBMECA
+          DDY(NDT+1+I) = DDY(NDT+1+I)*MATER(1,1)/MATER(8,2)
+ 43     CONTINUE
+
+C --- MISE A JOUR DU VECTEUR SOLUTION
         DO 42 I = 1, NR
           DY(I) = DY(I) + DDY(I)
           YF(I) = YD(I) + DY(I)
@@ -214,13 +220,14 @@ C ---> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
           WRITE(IFM,1000) '     YF =',(YF(I),I=1,NR)
           
         ENDIF
-C       WRITE(IFM,1000) '     YF =',(YF(I),I=1,NR)
-C       WRITE(IFM,1000) '     R =',(R(I),I=1,NR)  
+
+         DO 44 I = 1, NDI
+           IF(YF(I).GT.PTRAC)GOTO 9999
+ 44      CONTINUE
+
 C ---> 2) ERREUR = RESIDU
         CALL LCNRVN (NR, R, ERR)
         
-C       WRITE(6,'(A,E12.5)')'ERR =',ERR
-         
         IF (ITER .LE. NITIMP) THEN
           ERIMP(ITER,1) = ERR
           ERIMP(ITER,2) = RELAX(ESSAI)
@@ -248,42 +255,38 @@ C ----  NON CONVERVENCE: ITERATION MAXI ATTEINTE  ----
      &                   ERIMP, EPSD, DEPS, SIGD, VIND)
            ELSE
              IRET = 1
-             WRITE(6,'(A,I3)')
-     &       'HUJMID :: NB ITERATIONS MAXI -> IRET =',IRET
              GOTO 9999
            ENDIF
           
         ENDIF
  200    CONTINUE
  
+C ---------------------------------------------------
+C --- CONTROLE DES RESULTATS OBTENUS APRES RESOLUTION 
+C     DU SYSTEME NON LINEAIRE LOCAL
+C ---------------------------------------------------
 
 C ---- VERIFICATION DES MULTIPLICATEURS PLASTIQUES
-        MAXI = ZERO
+        MAXI = ABS(CRIT(3))
         DO 205 K = 1, NBMECA
           IF(YF(NDT+1+NBMECA+K).GT.MAXI) 
      &      MAXI = YF(NDT+1+NBMECA+K)
  205    CONTINUE
+
         DO 210 K = 1, NBMECA
-C          WRITE(6,'(A,15(1X,E12.5))')'YF =',(YF(I),I=1,15)
-          IF(MAXI.NE.ZERO)THEN 
-            RATIO = YF(NDT+1+NBMECA+K)/MAXI
-          ELSE
-            RATIO = - UN
-          ENDIF
-          IF ((RATIO .LT. (-CRIT(3))).AND.(MAXI.GE.CRIT(3)))THEN 
+          RATIO = YF(NDT+1+NBMECA+K)/MAXI
+          IF (RATIO .LT. (-ABS(CRIT(3))))THEN 
             NEGMUL(INDI(K)) = .TRUE.
           ENDIF
  210    CONTINUE    
-        NITER  = ITER
-        EPSCON = ERR
-        
         
 C ---> MISE A JOUR DES CONTRAINTES ET VARIABLES INTERNES
         CALL LCEQVN (NDT, YF, SIGF)
-C        IF(NBMECA.EQ.1)WRITE(6,'(A,E16.9)')'HUJMID --- LAMBDA =',YF(9)
+
 Caf 15/05/07 Debut
         VINF(23) = YF(NDT+1)
 Caf 15/05/07 Fin        
+
         DO 250 K = 1, NBMECA
           KK       = INDI(K)
           IF (YF(NDT+1+K) .GT. VIND(KK)) THEN
@@ -309,8 +312,10 @@ C     SI DR/R > TOLE ---> SUBD = .TRUE.
                 ACYC   = MATER(9,2)
                 AMON   = MATER(10,2)
                 CALL HUJKSI ('KSI   ',MATER,YF(NDT+1+K),KSI,IRET)
-                IF(IRET.EQ.1)WRITE(6,'(A,E16.9)')'HUJKSI --- R =',
+                IF(IRET.EQ.1)THEN
+                  IF(DEBUG) WRITE(6,'(A,E16.9)')'HUJKSI --- R =',
      &                                           YF(NDT+1+K)
+                ENDIF
                 IF(INDI(K).LT.4)THEN
                   AD     = ACYC+KSI*(AMON-ACYC)
                 ELSE

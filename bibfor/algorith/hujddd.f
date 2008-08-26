@@ -2,7 +2,7 @@
      &                      VEC, MAT, IRET)
          IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -252,6 +252,7 @@ C ====================================================================
         IF (AEXP .GE. EXPTOL) CALL U2MESS('F', 'COMPOR1_7')
         P      = (SIGF(1)+SIGF(2)+SIGF(3))*D13
       ENDIF
+      IF (K .EQ. 4) P = (SIGF(1)+SIGF(2)+SIGF(3))*D13
 Caf 09/05/07 Fin
 
 

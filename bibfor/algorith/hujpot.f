@@ -2,7 +2,7 @@
      &                   ETATF, RDCTPS, IRET, AREDEC)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -288,8 +288,8 @@ C **************************
             ELSE
               VIND(23+INDI(I)) = - UN
               IF(INDI(I).LT.4)THEN
-                VIND(I+4) = MATER(18,2)
                 CALL HUJMED(INDI(I), MATER, VIND, SIGD)
+                VIND(I+4) = MATER(18,2)
                 CALL HUJCDC(INDI(I), MATER, SIGE, VIND, SEUIL)
               ELSEIF(INDI(I).EQ.4)THEN
                 CALL HUJMEI(VIND)
@@ -332,8 +332,8 @@ C **************************
               VIND(23+INDI(I)) = UN
             ELSE
               IF(INDI(I).LT.8)THEN
-                VIND(I+4) = MATER(18,2)
                 CALL HUJMED(INDI(I), MATER, VIND, SIGD)
+                VIND(I+4) = MATER(18,2)
                 CALL HUJCDC(INDI(I)-4, MATER, SIGE, VIND, SEUIL)
               ELSE
                 CALL HUJMEI(VIND)
@@ -370,8 +370,8 @@ C **************************
               SEUIL = ZERO
               IF(INDI(I).LT.8)THEN
                 IF(VIND(I+4).NE.MATER(18,2))THEN 
-                  VIND(I+4) = MATER(18,2)
                   CALL HUJMED(INDI(I), MATER, VIND, SIGD)
+                  VIND(I+4) = MATER(18,2)
                   CALL HUJCDC(INDI(I)-4, MATER, SIGE, VIND, SEUIL)
                 ENDIF
               ELSE
