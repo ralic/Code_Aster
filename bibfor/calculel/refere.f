@@ -2,7 +2,7 @@
      &                  ITEMAX,IFORM ,M0    ,IRET  ,F1)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/07/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 01/09/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C
 C ROUTINE ARLEQUIN
 C
 C COORDONNEES PARAMETRIQUES D'UN POINT DANS LA MAILLE DE REFERENCE
-C A PARTIR DE SES COORDONNES REELLES
+C A PARTIR DE SES COORDONNEES REELLES
 C
 C
 C ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ C OUT F1     : FONCTIONS DE FORME EN CE POINT (W1,W2,...) SI IFORM
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      ITER,IDIME,ISING,NNO
+      INTEGER      ITER,IDIME,ISING,NNO,IER
       REAL*8       DET,D,R,M1(3),F(3),F0(27),DF(3,3),DF0(3,27),DM(3)
 C
 C ----------------------------------------------------------------------
@@ -95,9 +95,8 @@ C ----- RESIDU ET NORME DU RESIDU
 
 C --- FONCTIONS DE FORME AU POINT M0 DANS LA MAILLE
         CALL FORME0(M1,TYPEMA,F0,NNO)
-        CALL MMPROD(NO    ,DIME,0,DIME,0,NNO,
-     &              F0    ,NNO ,0,0   ,1,
-     &              F)
+        CALL PRMAVE(0,NO,DIME,DIME,NNO,F0,NNO,F,DIME,IER)
+        IF ( IER.NE.0 ) CALL U2MESS('F','ALGORITH_71')
 
         ITER = ITER + 1
         R    = 0.D0

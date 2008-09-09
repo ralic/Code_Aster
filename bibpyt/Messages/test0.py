@@ -1,4 +1,4 @@
-#@ MODIF test0 Messages  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test0 Messages  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,6 +48,33 @@ TEST_FICHIER impossible, fichier inexistant : %(k1)s
    | md5sum des textes | %(k1)-32s | %(k2)-32s |
    -------------------------------------------------------------------------------------------
 
+"""),
+
+5 : _("""
+
+   -------------------------------------------------------------------------------------------
+      Fichier de configuration                    : %(k1)s
+      Identifiant pour la mesure des performances : %(k2)s
+   -------------------------------------------------------------------------------------------
+
+"""),
+
+7 : _("""
+La commande '%(k1)s' n'a pas été exécutée %(i1)d fois.
+"""),
+
+8 : _("""
+- soit PRECISION contient une seule valeur, et alors, celle-ci sera utilisée
+  pour toutes les machines,
+- soit PRECISION contient autant de valeurs qu'il y a de MACHINEs.
+"""),
+
+9 : _("""Les temps de référence ne sont pas connus pour l'identifiant '%(k1)s'.
+On utilise les valeurs de '%(k2)s'.
+"""),
+
+10 : _("""
+Les listes fournies aux mots-clefs MACHINE et VALE doivent avoir le meme cardinal.
 """),
 
 }

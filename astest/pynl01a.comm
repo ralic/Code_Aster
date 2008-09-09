@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/09/2008   AUTEUR TARDIEU N.TARDIEU 
 # TITRE INTEGRATION DU COMPORTEMENT VMIS_ISOT_LINE PAR LA COMMANDE CALCUL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,14 +133,11 @@ CHAR_EL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
 CHAR=ASSE_VECTEUR(VECT_ELEM=CHAR_EL,
                   NUME_DDL=NU,);
 
-
-
 MATAS=ASSE_MATRICE(MATR_ELEM=M_EL,
                    NUME_DDL=NU,);
 
 MATAS=FACTORISER(reuse =MATAS,
                 MATR_ASSE=MATAS,);
-
 
 DU=RESOUDRE(MATR=MATAS,
              CHAM_NO=CHAR,);
@@ -167,13 +164,11 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
             COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
             INFO=2,);
 
-
 MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='MATR_ELEM'),)
-
 
 SIGM=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  TABLE=CONT,
@@ -202,6 +197,16 @@ CODE=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                            VALE_K='CODE_RETOUR'),)
                 
 
+MATAS2=ASSE_MATRICE(MATR_ELEM=MATR,
+                    NUME_DDL=NU,);
+
+
+MATAS2=FACTORISER(reuse =MATAS2,
+                MATR_ASSE=MATAS2,);
+
+
+DX=RESOUDRE(MATR=MATAS2,
+            CHAM_NO=CHAR,);
 
 #=========================================================
 #          DETERMINATION DE LA REFERENCE
@@ -224,9 +229,9 @@ CALC=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LIST,),
                    NEWTON=_F(PREDICTION='DEPL_CALCULE',
                              EVOL_NOLI=PRED,),
-               ####                      
-               # NE PAS FAIRE D'ITERATIONS   
-               ####                                  
+                   ####                      
+                   # NE PAS FAIRE D'ITERATIONS   
+                   ####                                  
                    CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
                                     ARRET = 'NON'),                   
                    

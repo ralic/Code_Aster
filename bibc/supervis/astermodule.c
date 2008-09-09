@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX */
+/* MODIF astermodule supervis  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3403,11 +3403,11 @@ DEFSSPS(JELIRA,jelira, char* base, int base_len, char*dest, int dest_len,
 static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
 {
 	char *nomobj, *attr;
-	char charval[33];
+	char charval[34];
 	INTEGER intval = 0;
 	
-	memset( charval, ' ', 32 );
-	charval[32]=0;
+	memset( charval, ' ', 33 );
+	charval[33]=0;
 	if (!PyArg_ParseTuple(args, "ss",&nomobj,&attr))
 		return NULL;
 	CALL_JELIRA( nomobj, attr, &intval, charval );

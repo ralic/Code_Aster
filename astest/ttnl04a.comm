@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 01/09/2008   AUTEUR DURAND C.DURAND 
 # TITRE THERMIQUE AVEC FLUX NON LINEAIRE EN TRANSITOIRE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -300,8 +300,6 @@ LPAS=DEFI_LIST_REEL(          DEBUT=0.,INTERVALLE=(
 
 TEMPE=THER_NON_LINE(         MODELE=MOTH,
                              INCREMENT=_F(  LIST_INST = LPAS,
-                                           SUBD_METHODE='UNIFORME',
-                                           SUBD_PAS = 10,SUBD_NIVEAU=3,
                                            NUME_INST_FIN = 32),
                              CHAM_MATER=IMAT,EXCIT=(
                                 _F(  CHARGE = CHTH1),
@@ -309,7 +307,7 @@ TEMPE=THER_NON_LINE(         MODELE=MOTH,
                                         FONC_MULT = FMUL)),
                              ETAT_INIT=_F(  VALE = 20.),
                              CONVERGENCE=_F(  RESI_GLOB_MAXI = 1.E-5,
-                                           ITER_GLOB_MAXI=6),
+                                           ITER_GLOB_MAXI=7),
                              NEWTON=_F(  REAC_ITER = 1),
                              ARCHIVAGE=_F(LIST_INST=LPAS,),
 

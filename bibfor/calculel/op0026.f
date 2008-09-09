@@ -1,7 +1,7 @@
       SUBROUTINE OP0026(IER   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 09/09/2008   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,8 +59,8 @@ C
       INTEGER         ZFON  
       PARAMETER      (ZFON    = 19 )        
 C-----------------------------------------------------------------------
-      INTEGER         N1,NIV,IFM,NBOPT,ITERAT,NUMEOR,I
-      INTEGER         IRET,KNINDI,IBID,NUORD,NBPASE,JLINST
+      INTEGER         N1,NIV,IFM,NBOPT,ITERAT,NUMEOR,I,NLUTI
+      INTEGER         IRET,KNINDI,IBID,NUORD,NBPASE,JLINST,JRELR
       REAL*8          RBID,INSTAM,INSTAP,CONST(2)
       COMPLEX*16      CBID
       CHARACTER*1     TYPCST(2),TYPECH(2),TYPRES
@@ -199,9 +199,11 @@ C ======================================================================
 C --- PREPARATION DES ARGUMENTS DE CALCUL
 C ======================================================================
 
-C
-C --- VARIABLES CHAPEAUX
-C
+C     AGGLOMERATION DES VARIABLES CHAPEAUX
+C     -------------------------------------
+C     A NOTER : MEDIRI EST ICI UN OBJET BIDON, TOUTES LES MATRICES 
+C     -------   DE "LAGRANGE" SONT EN FAIT AJOUTÉES DANS L'OBJET MERIGI
+C               DANS L'APPEL À MEDIME AVEC OPTION 'CUMUL'
       CALL AGGLOM(DEPMOI,SIGMOI,VARMOI,COMMOI,K24BLA, 
      &            K24BLA,K24BLA,K24BLA,4     ,VALMOI)
       CALL AGGLOM(DEPPLU,SIGPLU,VARPLU,COMPLU,K24BLA, 
@@ -211,9 +213,9 @@ C
       MEELEM(1)  = MERIGI 
       MEELEM(2)  = MEDIRI       
       VEELEM(1)  = VEFINT   
-C
-C --- CALCUL MERIGI ET VEFINT
-C       
+
+C     CALCUL DE LA CONTRIBUTION DES DDL PHYSIQUES (MERIGI ET VEFINT)
+C     ---------------------------------------------------------------
       ITERAT=1
      
       CALL MERIMO('G'   ,MODELE,CARELE,MATE  ,K24BID,
@@ -224,8 +226,9 @@ C
 
 C     CALCUL DE LA CONTRIBUTION DES "LAGRANGE"
 C     ----------------------------------------
-      CALL MEDIME(MODELE,LISCHA,MEDIRI)
+      CALL MEDIME('G','CUMU',MODELE,LISCHA,MERIGI)
 
+  
 
 C ======================================================================
 C --- ECRITURE DES RESULTATS DANS UNE TABLE

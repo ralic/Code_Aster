@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,9 +67,9 @@ C     ------------------------------------
       CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,NOFPG,NBPG1,XNO,VOL)
       IFAM = INDIK8(NOFPG,FAPG,1,NBFPG)
       IF ( IFAM .LE. 0 ) THEN
-        VALK (1) = ELREFA
-        VALK (2) = FAPG
-         CALL U2MESG('F', 'ELEMENTS4_84',2,VALK,0,0,0,0.D0)
+         VALK (1) = ELREFA
+         VALK (2) = FAPG
+         CALL U2MESK('F', 'ELEMENTS4_84',2,VALK)
       ENDIF
       NBPG = NBPG1(IFAM)
       CALL ASSERT((NDIM.GE.0).AND.(NDIM.LE.3))
@@ -181,22 +181,8 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.GE.2) YPG(INO+8) = XNO(NDIM* (INO-1)+2)
              IF (NDIM.EQ.3) ZPG(INO+8) = XNO(NDIM* (INO-1)+3)
  300      CONTINUE
-        ENDIF
 
-        NPI = 0
-        DO 60 IX = 1,NPAR
-          DO 50 IY = 1,NPAR
-            DO 40 IZ = 1,NPAR
-              NPI = NPI + 1
-              XPG(NPI) = A(IX)
-              YPG(NPI) = A(IY)
-              ZPG(NPI) = A(IZ)
-              HPG(NPI) = H(IX)*H(IY)*H(IZ)
-   40       CONTINUE
-   50     CONTINUE
-   60   CONTINUE
-
-        IF (FAPG.EQ.'SHB5') THEN
+        ELSE IF (FAPG.EQ.'SHB5') THEN
 C --------- FORMULE DE QUADRATURE DE GAUSS A 5 POINTS DANS
 C           L EPAISSEUR POUR LE SHB8, AU CENTRE DE L'ELEMENT
           XXG5(1) = -0.906179845938664D0
@@ -217,9 +203,9 @@ C         IL FAUT MULTIPLIER LES POIDS PAR 4 POUR OBTENIR VOL=8
             ZPG(IZ) = XXG5(IZ)
             HPG(IZ) = PXG5(IZ)*4.D0
    70     CONTINUE
-        END IF
+          GOTO 170
 C	
-        IF (FAPG.EQ.'SHB20') THEN
+        ELSE IF (FAPG.EQ.'SHB20') THEN
 C --------- FORMULE DE QUADRATURE DE GAUSS A 20 POINTS DANS
 C           L EPAISSEUR POUR LE SHB20
 C Des points de gauss sur la facette 1-2-3:
@@ -259,7 +245,27 @@ C
             ZPG(IZ) = XZG5(IZ)
             HPG(IZ) = PXG5(IZ)
    72     CONTINUE
-        END IF
+          GOTO 170
+
+        ELSE
+          VALK (1) = ELREFA
+          VALK (2) = FAPG
+          CALL U2MESK('F', 'ELEMENTS4_84',2,VALK)
+        ENDIF
+
+C       TRAITEMENT POUR FAPG NON SHB
+        NPI = 0
+        DO 60 IX = 1,NPAR
+          DO 50 IY = 1,NPAR
+            DO 40 IZ = 1,NPAR
+              NPI = NPI + 1
+              XPG(NPI) = A(IX)
+              YPG(NPI) = A(IY)
+              ZPG(NPI) = A(IZ)
+              HPG(NPI) = H(IX)*H(IY)*H(IZ)
+   40       CONTINUE
+   50     CONTINUE
+   60   CONTINUE
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15') THEN
@@ -396,20 +402,8 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.GE.2) YPG(INO+6) = XNO(NDIM* (INO-1)+2)
              IF (NDIM.EQ.3) ZPG(INO+6) = XNO(NDIM* (INO-1)+3)
  280      CONTINUE
-        END IF
-
-        NPI = 0
-        DO 90 IX = 1,NPX
-          DO 80 IY = 1,NPYZ
-            NPI = NPI + 1
-            XPG(NPI) = A(IX)
-            YPG(NPI) = ATY(IY)
-            ZPG(NPI) = ATZ(IY)
-            HPG(NPI) = H(IX)*HT(IY)
- 80       CONTINUE
- 90     CONTINUE
 C
-        IF (FAPG.EQ.'SHB6') THEN
+        ELSE IF (FAPG.EQ.'SHB6') THEN
 C --------- FORMULE DE QUADRATURE DE GAUSS A 5 POINTS DANS
 C           L EPAISSEUR POUR LE SHB6, AU CENTRE DE L'ELEMENT
           XXG5(1) = -0.906179845938664D0
@@ -430,9 +424,9 @@ C         IL FAUT MULTIPLIER LES POIDS PAR 0.5 POUR OBTENIR VOL=1
             ZPG(IZ) = XXG5(IZ)
             HPG(IZ) = PXG5(IZ)*0.5D0
    73     CONTINUE
-        END IF
+          GOTO 170
 C
-        IF (FAPG.EQ.'SHB15') THEN
+        ELSE IF (FAPG.EQ.'SHB15') THEN
 C --------- FORMULE DE QUADRATURE DE GAUSS A 15 POINTS DANS
 C           L EPAISSEUR POUR LE SHB15
           DO 74 IZ=1,5
@@ -463,8 +457,26 @@ C
             ZPG(IZ) = XZG5(IZ)
             HPG(IZ) = PXG5(IZ)
    76     CONTINUE
+          GOTO 170
+
+        ELSE
+          VALK (1) = ELREFA
+          VALK (2) = FAPG
+          CALL U2MESK('F', 'ELEMENTS4_84',2,VALK)
         END IF
 
+C       TRAITEMENT POUR LES FAPG NON SHB
+        NPI = 0
+        DO 90 IX = 1,NPX
+          DO 80 IY = 1,NPYZ
+            NPI = NPI + 1
+            XPG(NPI) = A(IX)
+            YPG(NPI) = ATY(IY)
+            ZPG(NPI) = ATZ(IY)
+            HPG(NPI) = H(IX)*HT(IY)
+ 80       CONTINUE
+ 90     CONTINUE
+C
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10') THEN
 
@@ -849,7 +861,9 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.EQ.3) ZPG(INO+5) = XNO(NDIM* (INO-1)+3)
  240      CONTINUE
         ELSE
-          CALL ASSERT(.FALSE.)
+          VALK (1) = ELREFA
+          VALK (2) = FAPG
+          CALL U2MESK('F', 'ELEMENTS4_84',2,VALK)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1131,9 +1145,9 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.EQ.3) ZPG(INO+3) = XNO(NDIM* (INO-1)+3)
  220      CONTINUE
         ELSE
-        VALK (1) = ELREFA
-        VALK (2) = FAPG
-          CALL U2MESG('F', 'ELEMENTS4_84',2,VALK,0,0,0,0.D0)
+          VALK (1) = ELREFA
+          VALK (2) = FAPG
+          CALL U2MESK('F', 'ELEMENTS4_84',2,VALK)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1270,9 +1284,9 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
           HPG(8) =   0.444444444444444D0    
           HPG(8) =   1.777777777777777D0        
         ELSE
-        VALK (1) = ELREFA
-        VALK (2) = FAPG
-          CALL U2MESG('F', 'ELEMENTS4_84',2,VALK,0,0,0,0.D0)
+          VALK (1) = ELREFA
+          VALK (2) = FAPG
+          CALL U2MESK('F', 'ELEMENTS4_84',2, VALK)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1369,9 +1383,9 @@ C     ------------------------------------------------------------------
           HPG(10) = 1.D0/12.D0  
           
         ELSE
-        VALK (1) = ELREFA
-        VALK (2) = FAPG
-          CALL U2MESG('F', 'ELEMENTS4_84',2,VALK,0,0,0,0.D0)
+          VALK (1) = ELREFA
+          VALK (2) = FAPG
+          CALL U2MESK('F', 'ELEMENTS4_84',2,VALK)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1381,10 +1395,7 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
       ELSE
-        VALK (1) = ELREFA
-        CALL U2MESG('F', 'ELEMENTS4_88',1,VALK,0,0,0,0.D0)
-        CALL ASSERT(.FALSE.)
-
+        CALL U2MESK('F', 'ELEMENTS4_88',1, ELREFA)
       END IF
 
 

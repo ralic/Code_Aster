@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ class MESSAGE_LOGGER:
 
 # -----------------------------------------------------------------------------
    def build_dict_args(self, valk, vali, valr):
-      """Construit le dictionnaire de formattage du message.
+      """Construit le dictionnaire de formatage du message.
       """
       # homogénéisation : uniquement des tuples + strip des chaines de caractères
       valk, vali, valr = map(force_enum, (valk, vali, valr))
@@ -182,18 +182,28 @@ class MESSAGE_LOGGER:
             'id_message'    : '',
             'corps_message' : """Erreur de programmation.
 Le message %s n'a pas pu etre formaté correctement.
+Arguments :
+   entiers : %s
+   réels   : %s
+   chaines : %s
 --------------------------------------------------------------------------
 %s
 Exception : %s
 --------------------------------------------------------------------------
 
 %s""" \
-      % (idmess, ''.join(traceback.format_tb(sys.exc_traceback)), msg, contacter_assistance),
+      % (idmess, vali, valr, valk, ''.join(traceback.format_tb(sys.exc_traceback)), msg, contacter_assistance),
             'context_info'  : '',
          }
       # limite la longueur des ligness
       dictmess['corps_message'] = cut_long_lines(dictmess['corps_message'], MAXLENGTH)
       return dictmess
+
+# -----------------------------------------------------------------------------
+   def GetText(self, *args, **kwargs):
+      """Retourne le texte du message pret a etre imprime.
+      """
+      return self.format_message(self.get_message(*args, **kwargs))
 
 # -----------------------------------------------------------------------------
    def init_buffer(self):

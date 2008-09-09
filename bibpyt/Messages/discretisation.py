@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF discretisation Messages  DATE 01/09/2008   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,9 +45,18 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
  augmentez ITER_GLOB_MAXI
 """),
 
+8 : _("""
+ Vous faites un calcul de thermique sans résolution stationnaire et sans
+ non plus de résolution transitoire.
+
+ Conseils :
+   Renseignez la discrétisation temporelle par le mot clé INCREMENT
+"""),
 
 86 : _("""
-Il n'y a aucun instant de calcul ('LIST_INST' absent).
+Il n'y a aucun pas de calcul temporel.
+En mécanique, 'LIST_INST' est absent.
+En thermique, 'LIST_INST' est absent ou un singleton.
 """),
 
 87 : _("""

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 01/09/2008   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_INCO",       # RESP. : MICHEL S.MICHEL
                                   "AXIS_INCO_GD",    # RESP. : MICHEL S.MICHEL
-                                  "AXIS_NS",         # RESP. : BADEL P.BADEL
                                   "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
                                   "AXIS_JOINT",      # RESP. : LAVERNE J.LAVERNE
@@ -96,7 +95,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "2D_BARRE",        # RESP. : FLEJOU J.L.FLEJOU
                                   "C_PLAN",          # RESP. : LEFEBVRE J.P.LEFEBVRE
                                   "C_PLAN_XFEM_CONT",# RESP. : GENIAUT S.GENIAUT
-                                  "C_PLAN_NS",       # RESP. : BADEL P.BADEL
                                   "C_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
                                   "C_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
                                   "CABLE",           # RESP. : FLEJOU J.L.FLEJOU
@@ -109,7 +107,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "D_PLAN_XFEM_CONT",# RESP. : GENIAUT S.GENIAUT
                                   "D_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
                                   "D_PLAN_GRAD_VARI",# RESP. : MICHEL S.MICHEL
-                                  "D_PLAN_NS",       # RESP. : BADEL P.BADEL
                                   "PLAN_JOINT",      # RESP. : LAVERNE J.LAVERNE
                                   "PLAN_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
                                   "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
@@ -249,5 +246,5 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
          ),
 
          VERI_JACOBIEN  =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI',
-                              fr ="Vérification de la forme des mailles (jocobiens tous de meme signe).",),
+                              fr ="Vérification de la forme des mailles (jacobiens tous de meme signe).",),
 ) ;

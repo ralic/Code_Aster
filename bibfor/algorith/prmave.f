@@ -1,67 +1,88 @@
       SUBROUTINE PRMAVE(IPR,AMAT,NA,NA1,NA2,BVEC,NB1,CVEC,NC1,IER)
 C
-C ********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/09/98   AUTEUR KXBADNG F.BEAUD 
+C MODIF ALGORITH  DATE 01/09/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ********************************************************************
-C DESCRIPTION : PRODUIT  MATRICE VECTEUR
-C ------------      C = A * B  
-C
-C ****************** DECLARATION DES VARIABLES ***********************
 C
       IMPLICIT NONE
-C
-C ARGUMENTS
-C ---------
       INTEGER NA
       INTEGER NA1, NA2, NB1, NC1,IPR, IER
-      REAL*8  AMAT(NA,*),BVEC(*),CVEC(*)    
+      REAL*8  AMAT(NA,*),BVEC(*),CVEC(*)
 C
-C VARIABLES LOCALES
-C -----------------
+C ----------------------------------------------------------------------
+C
+C ROUTINE UTILITAIRE
+C
+C PRODUIT  MATRICE VECTEUR : C = A * B
+C
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  IPR      : =  0 => C = A * B
+C                <> 0 => C = C + A * B
+C IN  AMAT     : MATRICE A
+C IN  NA       : NOMBRE DE LIGNES DE AMAT
+C IN  NA1      : NOMBRE DE LIGNES UTILISEES DANS AMAT
+C                POUR LA MULTIPLICATION
+C IN  NA2      : NOMBRE DE COLONNES UTILISEES DANS AMAT
+C                POUR LA MULTIPLICATION
+C IN  BVEC     : VECTEUR B
+C IN  NB1      : NOMBRE DE LIGNES UTILISEES DANS B
+C                POUR LA MULTIPLICATION
+C OUT CVEC     : VECTEUR RESULTAT C
+C IN  NC1      : NOMBRE DE LIGNES DE C
+C IN  IER      : CODE RETOUR : = 0 => TOUT S'EST BIEN PASSE
+C                              > 0 => CA S'EST MAL PASSE
+C
+C
+C ----------------------------------------------------------------------
+C
       INTEGER I, J
 C
-C ****************** DEBUT DU CODE EXECUTABLE ************************
+C ----------------------------------------------------------------------
 C
       IER=0
 C
-        IF(NA2.NE.NB1) THEN
-          IER = IER + 1
-        ENDIF
-        IF(NC1.NE.NA1) THEN
-          IER = IER + 1
-        ENDIF
+      IF(NA2.NE.NB1) THEN
+        IER = IER + 1
+      ENDIF
 C
-        IF (IER .EQ. 0) THEN
+      IF(NC1.NE.NA1) THEN
+        IER = IER + 1
+      ENDIF
 C
-         IF (IPR .EQ. 0) THEN
-        DO 10 I=1,NA1
+      IF (IER .EQ. 0) THEN
+C
+        IF (IPR .EQ. 0) THEN
+C
+          DO 10 I=1,NA1
             CVEC(I)=0.0D0
- 10     CONTINUE
-         ENDIF
-C
-        DO 100 I=1,NA1
-          DO 200 J=1,NA2
-            CVEC(I)=CVEC(I)+AMAT(I,J)*BVEC(J)
- 200      CONTINUE
- 100    CONTINUE
+ 10       CONTINUE
 C
         ENDIF
+C
+        DO 20 I=1,NA1
+          DO 30 J=1,NA2
+            CVEC(I)=CVEC(I)+AMAT(I,J)*BVEC(J)
+ 30      CONTINUE
+ 20    CONTINUE
+C
+      ENDIF
 C
       END

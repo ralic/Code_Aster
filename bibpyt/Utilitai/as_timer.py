@@ -1,4 +1,4 @@
-#@ MODIF as_timer Utilitai  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF as_timer Utilitai  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,12 +17,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 
 """
    Definition of ASTER_TIMER class.
 """
 
-__revision__ = "$Id: as_timer.py 3125 2007-11-22 11:39:50Z courtois $"
+__revision__ = "$Id: as_timer.py 3312 2008-06-06 12:42:58Z courtois $"
 
 # ----- differ messages translation
 def _(mesg):
@@ -152,6 +153,16 @@ class ASTER_TIMER:
          })
 
 #-------------------------------------------------------------------------------
+   def Add(self, timer, cpu_dt=0., sys_dt=0., to_total=False):
+      """Add dt values (hidden to os.times, for example under mpirun) to a timer.
+      """
+      if self.timers.get(timer) is not None:
+         self.timers[timer]['cpu_dt'] += cpu_dt
+         self.timers[timer]['sys_dt'] += sys_dt
+      if to_total and timer != self.total_key:
+         self.Add(self.total_key, cpu_dt, sys_dt)
+      
+#-------------------------------------------------------------------------------
    def Stop(self, timer, hide=None):
       """Stop a timer
       """
@@ -202,6 +213,14 @@ class ASTER_TIMER:
       return self.StopAndGet(self.total_key)
 
 #-------------------------------------------------------------------------------
+   def getsortedtimers(self):
+      """Return timers list sorted by timer number.
+      """
+      lnum = [[timer['num'], timer] for timer in self.timers.values() if timer['hide'] is not True]
+      lnum.sort()
+      return lnum
+
+#-------------------------------------------------------------------------------
    def StopAll(self):
       """Stop all timers
       """
@@ -223,15 +242,14 @@ class ASTER_TIMER:
       labels = self.fmtstr % self.d_labels
       out = ['']
       # get timers list and sort by 'num'
-      lnum = [[val['num'], timer] for timer, val in self.timers.items() if val['hide'] is not True]
-      lnum.sort()
+      lnum = self.getsortedtimers()
       if lnum:
          out.append(self.sepa)
          if self.add_total and labels:
             out.append(labels)
             out.append(self.sepa)
       for num, timer in lnum:
-         d_info = self.timers[timer].copy()
+         d_info = timer.copy()
          d_info['cpu_sys'] = d_info['cpu_dt'] + d_info['sys_dt']
          if self.add_total and num == self.MaxNumTimer and len(lnum)>1:
             out.append(self.sepa)

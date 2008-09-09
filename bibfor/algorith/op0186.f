@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 01/09/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -236,14 +236,6 @@ C --- RECUPERATION DU PAS DE TEMPS ET DES PARAMETRES DE RESOLUTION
             KHI=0.D0
           ENDIF
         ELSE
-          IF ((DININS(SDDISC,NUMORD-1)-DININS(SDDISC,NUMORD)).GT.1) THEN
-            CALL DIDECO(SDDISC, NUMORD, CRITHE(1:19), -1 , IRET)
-            IF (IRET.EQ.0) THEN
-              GOTO 210
-            ELSE
-              CALL U2MESS('F','MECANONLINE2_36')
-            ENDIF
-          ENDIF
           INSTAP = DIINST(SDDISC, NUMORD)
           DELTAT = INSTAP-DIINST(SDDISC, NUMORD-1)
           THETA=PARMER(1)
@@ -505,20 +497,6 @@ C SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
             IF (ITEMAX .AND. .NOT.CONVER) THEN
               WRITE (IFM,FMT1)
               CALL NMIMPR('IMPR','ERREUR','ITER_MAXI',0.D0,0)
-              IF (.NOT.LOSTAT) THEN
-                CALL DIDECO(SDDISC, NUMORD, CRITHE(1:19), 2, IRET)
-                IF (IRET.EQ.0)  THEN
-                  CALL UTTCPU (2,'FIN',4,TPS2)
-                  CALL UTTCPU (1,'FIN',4,TPS1)
-C        IMPRESSION TEMPS
-                  VALR = TPS1(3) - TPEX
-                  CALL NMIMPR('    ','TPS_PAS',' ',VALR,0)
-C        TEMPS RESTANT SUFFISANT ?
-                  FINTPS = TPS1(4) .GT. 0.90D0*TPS1(1)
-                  IF (FINTPS) GOTO 500
-                  GOTO 200
-                ENDIF
-              ENDIF
             ENDIF
             CALL UTTCPU(2,'FIN',4,TPS2)
             IF ((.NOT.CONVER) .AND. (.NOT.ITEMAX)) THEN
@@ -615,7 +593,7 @@ C --- TEMPS DISPONIBLE POUR CONTINUER ?
           WRITE (IFM,'(/)')
           TPEX = TPS1(3)
           IF (TPS1(4).GT.0.48D0*TPS1(1)) THEN
-            K12BID = 'pas de temps'
+            K12BID = 'PAS DE TEMPS'
             ITAB(1) = NUMORD
             RTAB(1) = TPS2(4)
             RTAB(2) = TPS2(1)

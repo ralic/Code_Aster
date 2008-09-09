@@ -2,7 +2,7 @@
      &                  PAN   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/08/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 01/09/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,7 +183,8 @@ C ----------- MAX
 C --------- MAJORATION EXTREMA POUR PAN
 
             DO 70 J = 1, NPAN
-            CALL MMPROD(PAN(1,J),1,0,1,0,3,CNOEUD,3,0,NOEPAN(P0),NNO,W0)
+              CALL MMPROD(PAN(1,J),1,0,1,0,3,CNOEUD,3,0,
+     &                    NOEPAN(P0),NNO,W0)
               CALL FORME2(XRMIN(1,J),TYPEMA,W20,NNO,NC)
               CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
               S = R(J) - HT2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))

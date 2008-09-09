@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 21/04/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,6 @@
 # ======================================================================
 from Accas import _F
 import string
-from Utilitai.Utmess import  UTMESS
 
 def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNITE_RESU_FORC,
                        NB_FREQ, PAS, UNITE_RESU_IMPE, TYPE, MATR_GENE ,INFO,
@@ -40,6 +39,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
    abs = Num.absolute
    conj = Num.conjugate
    from Utilitai.Table import Table
+   from Utilitai.Utmess import  UTMESS
 
    def get_group_coord(group):
       """Retourne les coordonnees des noeuds du groupe 'group'
