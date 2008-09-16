@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF main utilitai  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF main utilitai  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -43,6 +43,9 @@ INTEGER DEFP(MEMJVX, memjvx, double *);
 
 INTEGER DEFP(MEJVDY, mejvdy, double *);
 #define CALL_MEJVDY(a) CALLP(MEJVDY, mejvdy, a)
+
+INTEGER DEFP(MEJVST, mejvst, double *);
+#define CALL_MEJVST(a) CALLP(MEJVST, mejvst, a)
 
 INTEGER DEFPPS(REPMAT, repmat, INTEGER *, INTEGER *, char *, int);
 #define CALL_REPMAT(a, b, c) CALLPPS(REPMAT, repmat, a, b, c)
@@ -274,6 +277,15 @@ void asterm(long argc, char** argv)
 			*argv++;
 			mxmem=(double) atof(*argv);
 			cerr=CALL_MEJVDY(&mxmem);
+		}
+		/*
+   ** Maximum memoire statique JEVEUX
+   */
+		if (strcmp(*argv,"-memjeveux_stat") == 0) {
+			double mxmemst;
+			*argv++;
+			mxmemst=(double) atof(*argv);
+			cerr=CALL_MEJVST(&mxmemst);
 		}
 		/*
    ** Type parcours de la segmentation Memoire JEVEUX

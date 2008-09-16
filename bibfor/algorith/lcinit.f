@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,9 +61,6 @@ C TOLE CRP_21
 C       ----------------------------------------------------------------
 C
          
-C         IF     ( LOI(1:8) .EQ. 'ROUSS_PR' ) THEN
-C        CALL RSLINI(TYPESS,ESSAI,MOD,IMAT,NMAT,MATERF,TEMPD,YD,DEPS,DY)
-C
       IF ( LOI(1:5) .EQ. 'LMARC' ) THEN
          CALL LMAINI(TYPESS,ESSAI,MOD,NMAT,MATERF,
      1                TIMED,TIMEF,YD,DEPS,DY)
@@ -82,6 +79,12 @@ C
       ELSEIF     ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
          CALL IRRINI(FAMI,KPG,KSP,TYPESS,ESSAI,MOD,NMAT,MATERF,YD,
      &               DEPS,DY)
+      ELSE
+C        SOLUTION INITIALE = ZERO
+         CALL LCINVN ( NR  , 0.D0 , DY )
+         IF(MOD(1:6).EQ.'C_PLAN')THEN
+            DEPS(3) = 0.D0
+         ENDIF
       ENDIF
 C
       END

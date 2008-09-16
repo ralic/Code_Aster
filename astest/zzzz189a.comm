@@ -1,4 +1,4 @@
-# MODIF  DATE 23/07/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON       
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -233,7 +233,8 @@ RESU=STAT_NON_LINE(MODELE=MODEL,
                           _F( CHARGE = FORCE),
                           ),
                    COMP_INCR=_F(RELATION = 'ELAS',
-                               ALGO_1D='DEBORST'),
+                              # ALGO_1D='DEBORST'
+                               ),
                    INCREMENT=_F(LIST_INST = TEMPS1)
               );
 
@@ -266,7 +267,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    _F(RESULTAT=RESU,
                       NOM_CHAM='DEPL',
                       NOEUD='NO700',
-                      VALE=4.4873398127688E-06,
+                      VALE=4.4873444446107E-06,
                       PRECISION=1.E-6,
                       NOM_CMP='DX',
                       INST=1.,
@@ -274,7 +275,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    _F(RESULTAT=RESU,
                       NOM_CHAM='DEPL',
                       NOEUD='NO700',
-                      VALE=3.3210448836551E-05,
+                      VALE=3.3210482596565E-05,
                       PRECISION=1.E-6,
                       NOM_CMP='DY',
                       INST=1.,

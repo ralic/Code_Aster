@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -130,8 +130,11 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 
                b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
-                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max= 1.,
-                                  fr="precision demandee pour calculer la carte de taille des elements"),),
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
+                                  fr="precision demandee pour calculer la carte de taille des elements"),
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERRE_ELEM_SIGM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                                                              "QIRE_ELEM_SIGM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",),
+                                   fr="choix de l'estimateur d'erreur"),),
 
                EXCIT           =FACT(statut='f',max='**',
                                      fr="Charges contenant les températures, les efforts répartis pour les poutres...",
@@ -269,8 +272,11 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 
                b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
-                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max=1.,
-                                  fr="precision demandee pour calculer la carte de taille des elements" ),),
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
+                                  fr="precision demandee pour calculer la carte de taille des elements" ),
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERRE_ELEM_SIGM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                                                              "QIRE_ELEM_SIGM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",),
+                                   fr="choix de l'estimateur d'erreur"),),
 
                EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                      CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
@@ -324,8 +330,11 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 
                b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
-                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max=1.,
-                                  fr="precision demandee pour calculer la carte de taille des elements" ),),
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
+                                  fr="precision demandee pour calculer la carte de taille des elements" ),
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERRE_ELEM_SIGM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                                                              "QIRE_ELEM_SIGM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",),
+                                   fr="choix de l'estimateur d'erreur"),),
 
 
                b_extr = BLOC( condition = "OPTION in ('EXTR_ELNO_VARI','EXTR_ELGA_VARI')",
@@ -435,8 +444,11 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 
                b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
-                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max=1.,
-                                  fr="precision demandee pour calculer la carte de taille des elements" ),),
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
+                                  fr="precision demandee pour calculer la carte de taille des elements" ),
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERRE_ELEM_SIGM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                                                              "QIRE_ELEM_SIGM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",),
+                                   fr="choix de l'estimateur d'erreur"),),
 
                b_indic = BLOC( condition ="OPTION in ('DCHA_ELNO_SIGM','DCHA_ELGA_SIGM','RADI_ELNO_SIGM','RADI_ELGA_SIGM') or\
                                             (type(OPTION)==type(()) and 'DCHA_ELNO_SIGM' in OPTION) or\

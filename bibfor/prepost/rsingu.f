@@ -1,0 +1,189 @@
+      SUBROUTINE RSINGU(NDIM,NELEM,NBR,NALPHA,DEGRE,PREC,
+     &                  ERREUR,ALPHA,TYPES,RE)
+      IMPLICIT NONE
+      INTEGER NDIM,NELEM,NBR(NELEM),NALPHA,DEGRE
+      REAL*8  PREC,ERREUR(NELEM),ALPHA(NELEM),RE(NELEM)
+      CHARACTER*16 TYPES
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C     BUT:
+C         CALCUL DU RAPPORT ENTRE L ANCIENNE ET LA NOUVELLE TAILLE
+C         OPTION : 'SING_ELEM'
+C
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   NELEM         : NOMBRE D ELEMENTS FINIS
+C IN   NBR(NELEM)    : NOMBRE DE COMPOSANTES A STOCKER PAR EF
+C      3 SI EF SURFACIQUES EN 2D OU VOLUMIQUES EN 3D
+C      0 SINON
+C IN   NALPHA        : NOMBRE DE CPE PAR ELEMENT DIFFERENTS
+C                      1 PAR DEFAUT SI PAS DE SINGULARITE
+C IN   DEGRE         : DEGRE DES EF 1 EF P1 2 POUR EF P2
+C IN   PREC          : % DE L ERREUR TOTALE SOUHAITE POUR CALCULER
+C                      LA NOUVELLE CARTE DE TAILLE DES EF
+C IN   ERREUR(NELEM) : ERREUR DE CHAQUE EF
+C IN   ALPHA(NELEM)  : DEGRE DE LA SINGULARITE PAR ELEMENT
+C
+C      SORTIE :
+C-------------
+C OUT  RE(NELEM)     : RAPPORT ENTRE ANCIENNE ET NOUVELLE TAILLE
+C
+C ......................................................................
+C
+      INTEGER INEL,ITER
+      REAL*8  ERRTOT,PREC0,CUMM,ORDRE,AE(NELEM),BE(NELEM)
+      REAL*8  D,MU,FONC,DFONC
+      LOGICAL LQI
+C
+C 0 - ERREUR EN NORME DE L ENERGIE OU EN QUANTITE D INTERET
+C
+      LQI = .FALSE.
+      IF (TYPES(1:2).EQ.'QI') LQI = .TRUE.
+C
+C 1 - CALCUL DE L ERREUR TOTALE
+C
+      ERRTOT=0.D0
+      DO 10 INEL=1,NELEM
+        ERRTOT=ERRTOT+ERREUR(INEL)**2
+C ------POUR L ERREUR EN QUANTITE D INTERET QUI PEUT ETRE NEGATIVE
+        ERREUR(INEL)=ABS(ERREUR(INEL))
+ 10   CONTINUE
+      ERRTOT=SQRT(ERRTOT)
+C
+C 2 - CALCUL DE RE
+C
+      ORDRE=DEGRE
+      D=NDIM
+      PREC0=PREC*ERRTOT
+C
+C 2.1 - CAS OU AUCUN ELEMENT N EST SINGULIER
+C
+      IF (NALPHA.EQ.1) THEN
+C
+        CUMM=0.D0
+C
+        DO 20 INEL=1,NELEM
+          IF (NBR(INEL).EQ.3) THEN
+            IF (LQI) THEN
+              CUMM=CUMM+(ERREUR(INEL)**(D/(2.D0*ORDRE+D)))
+            ELSE  
+              CUMM=CUMM+(ERREUR(INEL)**(2.D0*D/(2.D0*ORDRE+D)))
+            ENDIF
+          ENDIF
+  20    CONTINUE
+C  
+        CUMM=CUMM**(1.D0/(2.D0*ORDRE))
+C
+        DO 30 INEL=1,NELEM
+          IF (NBR(INEL).EQ.3) THEN
+            IF (LQI) THEN
+              RE(INEL)=ERREUR(INEL)**(1.D0/(2.D0*ORDRE+D))
+              RE(INEL)=1.D0/(RE(INEL)*CUMM)
+              RE(INEL)=(PREC0**(1.D0/ORDRE))*RE(INEL)
+            ELSE 
+              RE(INEL)=ERREUR(INEL)**(2.D0/(2.D0*ORDRE+D))
+              RE(INEL)=1.D0/(RE(INEL)*CUMM)
+              RE(INEL)=(PREC0**(1.D0/2.D0*ORDRE))*RE(INEL)
+            ENDIF
+          ENDIF
+  30    CONTINUE
+C
+C 2.2 - CAS OU CERTAINS ELEMENTS SONT SINGULIERS
+C 2.2.1 - CALCUL DES COEFFICIENTS AE ET BE POUR SIMPLIFIER EXPRESSION
+C
+      ELSE
+        MU=0.D0
+        DO 40 INEL=1,NELEM
+          IF (NBR(INEL).EQ.3) THEN
+            AE(INEL)=2.D0*ALPHA(INEL)/(2.D0*ALPHA(INEL)+D)
+            IF (LQI) THEN
+              BE(INEL)=ERREUR(INEL)**(D/(2.D0*ALPHA(INEL)))
+            ELSE
+              BE(INEL)=ERREUR(INEL)**(D/ALPHA(INEL))
+            ENDIF
+            BE(INEL)=D*BE(INEL)/(2.D0*ALPHA(INEL))
+            BE(INEL)=BE(INEL)**AE(INEL)
+            MU=MU+(ERREUR(INEL)**(2.D0*ORDRE/(2.D0*ORDRE+D)))
+          ENDIF
+ 40     CONTINUE
+C
+C 2.2.2 - RECHERCHE DU LAGRANGIEN MU PAR MEHODE DE NEWTON
+C         OU DICHOTOMIE
+C
+        MU=MU/(PREC0**2.D0)
+        MU=MU**((2.D0*ORDRE+D)/(2.D0*ORDRE))
+        MU=D*MU/(2.D0*ORDRE)
+        ITER=1
+C
+ 70     CONTINUE
+C
+        IF (ITER.LE.15) THEN
+          IF (LQI) THEN
+            FONC=-PREC0
+          ELSE
+            FONC=-(PREC0**2.D0)
+          ENDIF
+          DFONC=0.D0
+          DO 50 INEL=1,NELEM
+            IF (NBR(INEL).EQ.3) THEN
+              FONC=FONC+BE(INEL)/(MU**AE(INEL))
+              DFONC=DFONC-AE(INEL)*BE(INEL)/(MU**(AE(INEL)+1.D0))
+            ENDIF
+ 50       CONTINUE
+C
+          IF (ABS(FONC).LE.1.D-06) GOTO 60
+          IF (FONC.GE.0.D0) THEN
+            MU=MU-FONC/DFONC
+            ITER=ITER+1
+            GOTO 70
+          ELSE
+            MU=MU/2.D0
+            ITER=ITER+1
+            GOTO 70
+          ENDIF
+C
+ 60     CONTINUE
+C
+        DO 80 INEL=1,NELEM
+          IF (NBR(INEL).EQ.3) THEN
+            IF (LQI) THEN
+              RE(INEL)=D/(2.D0*MU*ALPHA(INEL)*ERREUR(INEL))
+            ELSE
+              RE(INEL)=D/(2.D0*MU*ALPHA(INEL)*(ERREUR(INEL)**2.D0))
+            ENDIF   
+            RE(INEL)=RE(INEL)**(1.D0/(2.D0*ALPHA(INEL)+D))
+          ENDIF
+ 80     CONTINUE
+C
+        ELSE
+C
+          CALL U2MESS('F','CALCULEL3_99')
+C
+        ENDIF
+C
+
+      ENDIF
+C
+      END

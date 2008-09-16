@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -400,6 +400,8 @@ C
 C
       ZR(IERR+7)=ERREST
 C
+      ZR(IERR+9)=HE
+C      
       CALL JEDEMA()
 C
       END

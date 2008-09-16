@@ -4,7 +4,7 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,7 @@ C Orthonormalisation par rapport a la matrice
      &                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
       ENDIF
 C
-      CALL RSCRSD(NOMRES,'BASE_MODALE',NBMODE)
+      CALL RSCRSD('G',NOMRES,'BASE_MODALE',NBMODE)
 C
       CALL JEEXIN(NOMRES//'           .UTIL',IRET)
       IF (IRET.NE.0) CALL JEDETR(NOMRES//'           .UTIL')

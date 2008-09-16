@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+%& MODIF COMPELEM  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -18,39 +18,45 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
 GRANDEUR_SIMPLE__
-<<  ABSC_R : ABSCISSE CURVILIGNE SUR UN MAILLAGE FILAIRE>>
-    ABSC_R   = R    ABSC     ABSC1    ABSC2
+<<  ABSC_R : ABSCISSE CURVILIGNE SUR UN MAILLAGE FILAIRE  >>
+       ABSC_R   = R    ABSC     ABSC1    ABSC2
 
-<<  ADRSJEVE : I1 : ADRESSE JEVEUX (DANS ZI) D UN MATERIAU CODE>>
-    ADRSJEVE = I    I1
+<<  ADRSJEVE : I1 : ADRESSE JEVEUX (DANS ZI) D UN MATERIAU CODE  >>
+       ADRSJEVE = I    I1
 
     ADRSJEVN = I    I1       I2       I3       I4       I5
 <<  CAARPO : CARACTERISTIQUES DES ELEMENTS DE POUTRE COURBE
-                RCOURB : RAYON DE COURBURE
-                ORIE_ARC : TROISIEME ANGLE NAUTIQUE DEFINISSANT LE PLAN DE L ARC
-                C_FLEX, I_SIGM : COEFFICIENT DE FLEXIBILITE ET INDICE DE
-                CONTRAINTES DANS LES DIRECTIONS Y ET Z
-                C_FLEX_Y, I_SIGM_Y : COEFFICIENT DE FLEXIBILITE ET INDICE DE
-                CONTRAINTES DANS LA DIRECTION Y
-                C_FLEX_Y, I_SIGM_Y : COEFFICIENT DE FLEXIBILITE ET INDICE DE
-                CONTRAINTES DANS LA DIRECTION Z
-                 >>
+       RCOURB : RAYON DE COURBURE
+       ORIE_ARC : TROISIEME ANGLE NAUTIQUE DEFINISSANT LE PLAN DE L ARC
+       C_FLEX, I_SIGM : COEFFICIENT DE FLEXIBILITE ET INDICE DE
+       CONTRAINTES DANS LES DIRECTIONS Y ET Z
+       C_FLEX_Y, I_SIGM_Y : COEFFICIENT DE FLEXIBILITE ET INDICE DE
+       CONTRAINTES DANS LA DIRECTION Y
+       C_FLEX_Y, I_SIGM_Y : COEFFICIENT DE FLEXIBILITE ET INDICE DE
+       CONTRAINTES DANS LA DIRECTION Z
+>>
     CAARPO   = R    RCOURB   ORIE_ARC C_FLEX   I_SIGM   C_FLEX_Y I_SIGM_Y C_FLEX_Z I_SIGM_Z
+
 <<  CACABL : CARACTERISTIQUES DES ELEMENTS DE CABLE :
-                SECT : AIRE DE LA SECTION
-                TENS : TENSION INITIALE >>
+       SECT : AIRE DE LA SECTION
+       TENS : TENSION INITIALE
+>>
     CACABL   = R    SECT     TENS
 
 <<  CACOQU : CARACTERISTIQUES DES ELEMENTS DE COQUE :
-                EP : EPAISSEUR
-                EXCENT : EXCENTREMENT DU FEUILLET MOYEN >>
+       EP : EPAISSEUR
+       EXCENT : EXCENTREMENT DU FEUILLET MOYEN
+>>
     CACOQU   = R    EP       SECT_L   C        ALPHA    BETA     KAPPA    C_METR   X
                     Y        Z        PAS_T    PAS_N    COEF_ECH K_DRL    K_DRT    K_DRN
                     KT_DL    KT_DT    KT_DN    KT_DRL   KT_DRT   KT_DRN   KN_DL    KN_DT
                     KN_DN    KN_DRL   KN_DRT   KN_DRN   DIST_N   CTOR     EXCENT   INERTIE
+
 <<  CACO3D : UNE "CARACTERISTIQUE" DES ELEMENTS DE COQUE_3D :
-                CRF : COEFFICIENT DE ROTATION FICTIVE >>
+       CRF : COEFFICIENT DE ROTATION FICTIVE
+>>
     CACO3D   = R    CRF
+
     CADISA   = R    A1       A2       A3       A4       A5       A6       A7       A8
                     A9       A10      A11      A12      A13      A14      A15      A16
                     A17      A18      A19      A20      A21      A22      A23      A24
@@ -63,9 +69,10 @@ GRANDEUR_SIMPLE__
                     A73      A74      A75      A76      A77      A78      REPA
 
 <<  CADISK : MATRICE DE RIGIDITE DES ELEMENTS DISCRETS (MODELISATION='DIS_XXXX')
-        K1,K2,...K78 : COEFFICIENTS DE LA MATRICE DE RIGIDITE
-        REPK :  TYPE DU REPERE (=1 REPERE GLOBAL, =2 REPERE LOCAL)
-        ETA : COEFFICIENT DE L AMORTISSEMENT HYSTERETIQUE >>
+       K1,K2,...K78 : COEFFICIENTS DE LA MATRICE DE RIGIDITE
+       REPK :  TYPE DU REPERE (=1 REPERE GLOBAL, =2 REPERE LOCAL)
+       ETA : COEFFICIENT DE L AMORTISSEMENT HYSTERETIQUE
+>>
     CADISK   = R    K1       K2       K3       K4       K5       K6       K7       K8
                     K9       K10      K11      K12      K13      K14      K15      K16
                     K17      K18      K19      K20      K21      K22      K23      K24
@@ -76,6 +83,7 @@ GRANDEUR_SIMPLE__
                     K57      K58      K59      K60      K61      K62      K63      K64
                     K65      K66      K67      K68      K69      K70      K71      K72
                     K73      K74      K75      K76      K77      K78      REPK     ETA
+
     CADISM   = R    M1       M2       M3       M4       M5       M6       M7       M8
                     M9       M10      M11      M12      M13      M14      M15      M16
                     M17      M18      M19      M20      M21      M22      M23      M24
@@ -86,60 +94,69 @@ GRANDEUR_SIMPLE__
                     M57      M58      M59      M60      M61      M62      M63      M64
                     M65      M66      M67      M68      M69      M70      M71      M72
                     M73      M74      M75      M76      M77      M78      REPM
+
     CAFI_R   = R    XG       YG       AIRE
+
 <<  CAGEBA : CARACTERISTIQUES DES SECTIONS DE BARRE CERCLE OU RECTANGLE :
-               HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
-               EPAISSEUR SUIVANT Y AUX NOEUDS 1 ET 2
-               HZ1, EPZ1, HZ2, EPZ2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
-               EPAISSEUR SUIVANT Z AUX NOEUDS 1 ET 2
-               R1, EP1, R2, EP2 : RAYON EXTERNE  ET EPAISSEUR DE LA SECTION
-               CIRCULAIRE AUX NOEUDS 1 ET 2
-               TSEC : TYPE DE SECTION
-               >>
+       HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
+       EPAISSEUR SUIVANT Y AUX NOEUDS 1 ET 2
+       HZ1, EPZ1, HZ2, EPZ2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
+       EPAISSEUR SUIVANT Z AUX NOEUDS 1 ET 2
+       R1, EP1, R2, EP2 : RAYON EXTERNE  ET EPAISSEUR DE LA SECTION
+       CIRCULAIRE AUX NOEUDS 1 ET 2
+       TSEC : TYPE DE SECTION
+>>
     CAGEBA   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
                     R1       EP1      R2       EP2      TSEC
+
 <<  CAGEPO : CARACTERISTIQUES DES SECTIONS DE POUTRE CERCLE OU RECTANGLE :
-               HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
-               EPAISSEUR SUIVANT Y AUX NOEUDS 1 ET 2
-               HZ1, EPZ1, HZ2, EPZ2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
-               EPAISSEUR SUIVANT Z AUX NOEUDS 1 ET 2
-               R1, EP1, R2, EP2 : RAYON EXTERNE  ET EPAISSEUR DE LA SECTION
-               CIRCULAIRE AUX NOEUDS 1 ET 2
-               TSEC : TYPE DE SECTION
-               >>
+       HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
+       EPAISSEUR SUIVANT Y AUX NOEUDS 1 ET 2
+       HZ1, EPZ1, HZ2, EPZ2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
+       EPAISSEUR SUIVANT Z AUX NOEUDS 1 ET 2
+       R1, EP1, R2, EP2 : RAYON EXTERNE  ET EPAISSEUR DE LA SECTION
+       CIRCULAIRE AUX NOEUDS 1 ET 2
+       TSEC : TYPE DE SECTION
+>>
     CAGEPO   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
                     R1       EP1      R2       EP2      TSEC
-<<  CAGEBA : AIRE DE LA SECTION DE BARRE >>
+
+<<  CAGEBA : AIRE DE LA SECTION DE BARRE  >>
     CAGNBA   = R    A1
 
 <<  CAGNPO : CARACTERISTIQUES GEOMETRIQUES D UNE SECTION DE POUTRE
-        A1  : AIRE DE LA SECTION (NOEUD 1)
-        IY1 : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A GZ (NOEUD 1)
-        IZ1 : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A GY (NOEUD 1)
-        AY1 : COEFFICIENT DE CISAILLEMENT DANS LA DIRECTION GY (NOEUD 1)
-        ...
-        TVAR : TYPE DE SECTION : CONSTANTE OU VARIABLE (LE LONG DE GX) >>
+       A1  : AIRE DE LA SECTION (NOEUD 1)
+       IY1 : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A GZ (NOEUD 1)
+       IZ1 : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A GY (NOEUD 1)
+       AY1 : COEFFICIENT DE CISAILLEMENT DANS LA DIRECTION GY (NOEUD 1)
+       ...
+       TVAR : TYPE DE SECTION : CONSTANTE OU VARIABLE (LE LONG DE GX)
+>>
     CAGNPO   = R    A1       IY1      IZ1      AY1      AZ1      EY1      EZ1      JX1
                     RY1      RZ1      RT1      AI1      JG1      IYR21    IZR21    A2
                     IY2      IZ2      AY2      AZ2      EY2      EZ2      JX2      RY2
                     RZ2      RT2      AI2      JG2      IYR22    IZR22    TVAR
+
     CAMASS   = R    C        ALPHA    BETA     KAPPA    X        Y        Z
+
 <<  CAORIE : ORIENTATION DES REPERES LOCAUX DES POUTRES ET TUYAUX
-             ALPHA    BETA     GAMMA  : 3 angles nautiques pour la maille SEG2
-             (ou le 1er noeud d une maille SEG3 ou SEG4)
-             ALPHA2    BETA2     GAMMA2  : 3 angles nautiques pour le 2eme
-             noeud d une maille SEG3 ou SEG4
-             ALPHA3    BETA3     GAMMA3  : 3 angles nautiques pour le 3eme
-             noeud d une maille SEG3 ou SEG4
-             ALPHA4    BETA4     GAMMA4  : 3 angles nautiques pour le 4eme
-             noeud d une maille SEG3
-             ICOUDE    DN1N2     RCOURB ANGCOU ANGZZK  : caracteristiques
-              d un tuyau courbe
-                   >>
+       ALPHA     BETA      GAMMA  : 3 angles nautiques pour la maille SEG2
+       (ou le 1er noeud d une maille SEG3 ou SEG4)
+       ALPHA2    BETA2     GAMMA2  : 3 angles nautiques pour le 2eme
+       noeud d une maille SEG3 ou SEG4
+       ALPHA3    BETA3     GAMMA3  : 3 angles nautiques pour le 3eme
+       noeud d une maille SEG3 ou SEG4
+       ALPHA4    BETA4     GAMMA4  : 3 angles nautiques pour le 4eme
+       noeud d une maille SEG3
+       ICOUDE    DN1N2     RCOURB      ANGCOU      ANGZZK  : caracteristiques
+        d un tuyau courbe
+>>
     CAORIE   = R    ALPHA    BETA     GAMMA    ALPHA2   BETA2    GAMMA2   ALPHA3   BETA3
                     GAMMA3   ALPHA4   BETA4    GAMMA4   ICOUDE   DN1N2    RCOURB   ANGCOU
                     ANGZZK
+
     CAPOUF   = R    B_T      B_N      B_TN     A_FLUI   A_CELL   COEF_ECH
+
 <<  CARCRI : PARAMETRES  DE CONVERGENCE POUR STAT_NON_LINE
        ITECREL = NB ITERATIONS MAXI A CONVERGENCE (ITER_INTE_MAXI == ITECREL)
        MACOMP   = TYPE DE JACOBIEN A T+DT (TYPE_MATR_COMP == MACOMP)
@@ -161,38 +178,45 @@ GRANDEUR_SIMPLE__
 >>
     CARCRI   = R    ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC PERTURB
                     TOLDEBO ITEDEBO TSSEUIL TSAMPL TSRETOUR
+
     CASECT   = K8   NOM
+
     CHLI_R   = R    CHLI1    CHLI2    CHLI3    CHAR0
+
     CODE_I   = I    IRET
+
     COEH_F   = K8   H        H_INF    H_SUP
+
     COEH_R   = R    H        H_INF    H_SUP
+
 <<  COMPOR : PARAMETRES  DE CONVERGENCE POUR STAT_NON_LINE
-           RELCOM : NOM DE LA RELATION DE COMPORTEMENT
-           NBVARI : NOMBRE DE VARIABLES INTERNES ASSOCIEES A LA RELATION
-           DEFORM : TYPE DE DEFORMATION PETIT, GREEN, SIMO_MIEHE, GREEN_GR
-           INCELA : COMP_ELAS ou COMP_INCR
-           C_PLAN : TYPE DE CONTRAINTES PLANES : DEBORST OU ANALYTIQUE
-           KIT*   : POUR LES RELATIONS KIT
-           NVI_C  : NOMBRE DE VAR INT ASSOCIEES A LA RELATION DE COUPLAGE
-           NVI_T  : NOMBRE DE VAR INT ASSOCIEES A LA RELATION THERMIQUE
-           NVI_H  : NOMBRE DE VAR INT ASSOCIEES A LA RELATION HYDRAULIQUE
-           NVI_M  : NOMBRE DE VAR INT ASSOCIEES A LA RELATION MECANIQUE
- >>
+          RELCOM : NOM DE LA RELATION DE COMPORTEMENT
+          NBVARI : NOMBRE DE VARIABLES INTERNES ASSOCIEES A LA RELATION
+          DEFORM : TYPE DE DEFORMATION PETIT, GREEN, SIMO_MIEHE, GREEN_GR
+          INCELA : COMP_ELAS ou COMP_INCR
+          C_PLAN : TYPE DE CONTRAINTES PLANES : DEBORST OU ANALYTIQUE
+          KIT*   : POUR LES RELATIONS KIT
+          NVI_C  : NOMBRE DE VAR INT ASSOCIEES A LA RELATION DE COUPLAGE
+          NVI_T  : NOMBRE DE VAR INT ASSOCIEES A LA RELATION THERMIQUE
+          NVI_H  : NOMBRE DE VAR INT ASSOCIEES A LA RELATION HYDRAULIQUE
+          NVI_M  : NOMBRE DE VAR INT ASSOCIEES A LA RELATION MECANIQUE
+>>
     COMPOR   = K16  RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1  XXXX2   KIT1
                     KIT2     KIT3     KIT4     KIT5     KIT6     KIT7     KIT8     KIT9
                     NVI_C    NVI_T    NVI_H    NVI_M
-<<  CORR : CORROSION
->>
+
+<<  CORR : CORROSION  >>
     CORR_R   = R    CORR
 
 <<  CRRU_R: CRITERES DE RUPTURE DANS LES COUCHES (POST-TRAITEMENT)
-        SIGL :  CONTRAINTE SUIVANT LA 1ERE DIR ORTHOTROPIE
-        SIGT :  CONTRAINTE SUIVANT LA 2EME DIR ORTHOTROPIE
-        SIGLT :  CONTRAINTE DE CISAILLEMENT
-        CRIL  : CRITERE DE RUPTURE SUIVANT LA 1ERE DIR ORTHOTROPIE
-        CRIT :  CRITERE DE RUPTURE SUIVANT LA 2NDE DIR ORTHOTROPIE
-        CRILT : CRITERE DE RUPTURE EN CISAILLEMENT SUIVANT LT
-        CRITH : CRITERE DE TSAI-HILL >>
+       SIGL :  CONTRAINTE SUIVANT LA 1ERE DIR ORTHOTROPIE
+       SIGT :  CONTRAINTE SUIVANT LA 2EME DIR ORTHOTROPIE
+       SIGLT :  CONTRAINTE DE CISAILLEMENT
+       CRIL  : CRITERE DE RUPTURE SUIVANT LA 1ERE DIR ORTHOTROPIE
+       CRIT :  CRITERE DE RUPTURE SUIVANT LA 2NDE DIR ORTHOTROPIE
+       CRILT : CRITERE DE RUPTURE EN CISAILLEMENT SUIVANT LT
+       CRITH : CRITERE DE TSAI-HILL
+>>
     CRRU_R   = R    SIGL  SIGT  SIGLT  CRIL     CRIT   CRILT    CRITH
     DBEL_R   = R    DB
     DCEL_I   = I    NPG_DYN  NCMP_DYN
@@ -201,6 +225,7 @@ GRANDEUR_SIMPLE__
     DDLI_R   = R    C
     DDLM_C   = C    A1       A2       A3       B1       B2       B3
     DDLM_R   = R    A1       A2       A3       B1       B2       B3
+
 %
 %   COMPOSANTES IDENTIQUES POUR LES DEPL_x
 %
@@ -209,7 +234,8 @@ GRANDEUR_SIMPLE__
        DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
        D1 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D1X,D1Y,D1Z)
        D2 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D2X,D2Y,D2Z)
-       D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z) >>
+       D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z)
+>>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
                     H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -224,6 +250,7 @@ GRANDEUR_SIMPLE__
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
                     PRES31   PRES32   PRES33   SIGN     SITX     SITY
+
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
                     H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -238,6 +265,7 @@ GRANDEUR_SIMPLE__
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
                     PRES31   PRES32   PRES33   SIGN     SITX     SITY
+
 <<  DEPL_R : DEPLACEMENT REEL AUX NOEUDS
        DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
        DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
@@ -271,7 +299,7 @@ GRANDEUR_SIMPLE__
        SIGN    : EFFORT DE CONTACT NORMAL
        SITX    : EFFORT DE CONTACT TANGENT DIRECTION 1
        SITY    : EFFORT DE CONTACT TANGENT DIRECTION 2
-       >>
+>>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
                     H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -286,19 +314,23 @@ GRANDEUR_SIMPLE__
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
                     PRES31   PRES32   PRES33   SIGN     SITX     SITY
+
 <<  DOMMAG   : DOMMAGE
        DOMA     :
        TRIAX    : TAUX DE TRIAXIALITE
        SI_ENDO  : CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT
        COENDO   : CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT NORMALISEE
        DOM_LEM  : ENDOMMAGEMENT DE LEMAITRE
-       D_CUMULE : ENDOMMAGEMENT DE LEMAITRE  CUMULE >>
+       D_CUMULE : ENDOMMAGEMENT DE LEMAITRE  CUMULE
+>>
     DOMMAG   = R    DOMA     TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE
 
     DURT_R   = R    HV
+
     ENER_R   = R    TOTALE   TRAC_COM TORSION  MEMBRANE FLEXION  FLEX_Y   FLEX_Z   PLAN_XY
                     PLAN_XZ  DX       DY       DZ       DRX      DRY      DRZ
     EPSI_F   = K8   EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ
+
     EPSI_R   = R    EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     EXX      EYY
                     EXY      KXX      KYY      KXY      EPX      GAXY     GAXZ     GAT
                     KY       KZ       GAX      GAY      INVA_2   PRIN_1   PRIN_2   PRIN_3
@@ -312,6 +344,7 @@ GRANDEUR_SIMPLE__
                     DV22X2   DV22X3   DV23X1   DV23X2   DV23X3   DV31X1   DV31X2   DV31X3
                     DV32X1   DV32X2   DV32X3   DV33X1   DV33X2   DV33X3   PRES     PRES11
                     PRES12   PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33
+
     EPSI_C   = C    EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     EXX      EYY
                     EXY      KXX      KYY      KXY      EPX      GAXY     GAXZ     GAT
                     KY       KZ       GAX      GAY      INVA_2   PRIN_1   PRIN_2   PRIN_3
@@ -325,31 +358,32 @@ GRANDEUR_SIMPLE__
                     DV22X2   DV22X3   DV23X1   DV23X2   DV23X3   DV31X1   DV31X2   DV31X3
                     DV32X1   DV32X2   DV32X3   DV33X1   DV33X2   DV33X3   PRES     PRES11
                     PRES12   PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33
+
 <<  ERRE_R  : GRANDEUR LIEE A L'ESTIMATEUR D'ERREUR EN RESIDU
      Pour chaque élément :
-       ERREST : erreur absolue
-       NUEST  : erreur relative
-       SIGCAL : norme du tenseur des contraintes
-       TERMRE : erreur absolue du résidu de l'équation d'équilibre
-       TERMR2 : erreur relative du résidu de l'équation d'équilibre
-       ERTABS : xx
-       ERTREL : xx
-       TERMNO : erreur absolue des sauts entre les contraintes normales
-                et la force de Neumann
-       TERMN2 : erreur relative des sauts entre les contraintes normales
-                et la force de Neumann
-       TERMVO : xx
-       TERMV2 : xx
-       TERMV1 : xx
-       TERMSA : erreur absolue des sauts de contraintes sur chaque bord
-       TERMS2 : erreur relative des sauts de contraintes sur chaque bord
-       TERMS1 : xx
-       TERMFL : xx
-       TERMF2 : xx
-       TERMF1 : xx
-       TERMEC : xx
-       TERME2 : xx
-       TERME1 : xx
+       ERREST   : erreur absolue
+       NUEST    : erreur relative
+       SIGCAL   : norme du tenseur des contraintes
+       TERMRE   : erreur absolue du résidu de l'équation d'équilibre
+       TERMR2   : erreur relative du résidu de l'équation d'équilibre
+       ERTABS   : erreur absolue pour la thermique
+       ERTREL   : erreur relative pour la thermique
+       TERMNO   : erreur absolue des sauts entre les contraintes normales
+                  et la force de Neumann
+       TERMN2   : erreur relative des sauts entre les contraintes normales
+                  et la force de Neumann
+       TERMVO   : xx
+       TERMV2   : xx
+       TERMV1   : xx
+       TERMSA   : erreur absolue des sauts de contraintes sur chaque bord
+       TERMS2   : erreur relative des sauts de contraintes sur chaque bord
+       TERMS1   : xx
+       TERMFL   : xx
+       TERMF2   : xx
+       TERMF1   : xx
+       TERMEC   : xx
+       TERME2   : xx
+       TERME1   : xx
        ESTERG1  : 1ere ESTimation de l'ERreur Globale (stabilité)
        ESTERG2  : 2eme ESTimation de l'ERreur Globale (dualité)
        ERHMME_L : Erreur en Résidu en espace pour le HM
@@ -367,81 +401,90 @@ GRANDEUR_SIMPLE__
                   - équation HYdraulique - Globale en temps
                   Pour le stationnaire - indicateur boosté
        ERRETPS  : ERreur en REsidu en TemPS
+       TAILLE   : taille des mailles selon la définition de la routine uthk.f
 >>
     ERRE_R   = R    ERREST   NUEST    SIGCAL   TERMRE   TERMR2   ERTABS   ERTREL   TERMNO
                     TERMN2   TERMVO   TERMV2   TERMV1   TERMSA   TERMS2   TERMS1   TERMFL
                     TERMF2   TERMF1   TERMEC   TERME2   TERME1   ESTERG1  ESTERG2  ERHMME_L
-                    ERHMMEDL ERHMHY_L ERHMME_G ERHMMEDG ERHMHY_G ERRETPS
+                    ERHMMEDL ERHMHY_L ERHMME_G ERHMMEDG ERHMHY_G ERRETPS  TAILLE
+
 <<  FACY_R   : GRANDEUR LIEE A LA FATIGUE A GRAND NOMBRE DE CYCLES SOUS
                CHARGEMENT MULTIAXIAL
-       DTAUM1  : PREMIERE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS
-                 LE PLAN CRITIQUE
-       VNM1X   : COMPOSANTE X DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM1
-       VNM1Y   : COMPOSANTE Y DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM1
-       VNM1Z   : COMPOSANTE Z DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM1
-       SINMAX1 : CONTRAINTE MAXIMALE NORMALE AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM1
-       SINMOY1 : CONTRAINTE MOYENNE NORMALE AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM1
-       EPNMAX1 : DEFORMATION MAXIMALE NORMALE AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM1
-       EPNMOY1 : DEFORMATION MOYENNE NORMALE AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM1
+       DTAUM1  : PREMIERE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS 
+                   LE PLAN CRITIQUE
+       
+       VNM1X   : COMPOSANTE X DU VECTEUR NORMAL AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM1
+       VNM1Y   : COMPOSANTE Y DU VECTEUR NORMAL AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM1
+       VNM1Z   : COMPOSANTE Z DU VECTEUR NORMAL AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM1
+       SINMAX1 : CONTRAINTE MAXIMALE NORMALE AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM1
+       SINMOY1 : CONTRAINTE MOYENNE NORMALE AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM1
+       EPNMAX1 : DEFORMATION MAXIMALE NORMALE AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM1
+       EPNMOY1 : DEFORMATION MOYENNE NORMALE AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM1
        SIGEQ1  : CONTRAINTE EQUIVALENTE ASSOCIEE A DTAUM1,
-       NBRUP1  : NOMBRE DE CYCLES AVANT RUPTURE (FONCTION DE SIGEQ1 ET D UNE
-                 COURBE DE WOHLER)
+       NBRUP1  : NOMBRE DE CYCLES AVANT RUPTURE (FONCTION DE SIGEQ1 ET 
+                   D UNE COURBE DE WOHLER)
        ENDO1   : ENDOMMAGEMENT ASSOCIE A NBRUP1 (ENDO1=1/NBRUP1)
-       DTAUM2  : SECONDE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS
-                  LE PLAN CRITIQUE
-       VNM2X   : COMPOSANTE X DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM2
-       VNM2Y   : COMPOSANTE Y DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM2
-       VNM2Z   : COMPOSANTE Z DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM2
-       SINMAX2 : CONTRAINTE MAXIMALE NORMALE AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM2
-       SINMOY2 : CONTRAINTE MOYENNE NORMALE AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM2
-       EPNMAX2 : DEFORMATION MAXIMALE NORMALE AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM2
-       EPNMOY2 : DEFORMATION MOYENNE NORMALE AU PLAN CRITIQUE CORRESPONDANT
-                 A DTAUM2
+       DTAUM2  : SECONDE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS 
+                   LE PLAN CRITIQUE
+       VNM2X   : COMPOSANTE X DU VECTEUR NORMAL AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM2
+       VNM2Y   : COMPOSANTE Y DU VECTEUR NORMAL AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM2
+       VNM2Z   : COMPOSANTE Z DU VECTEUR NORMAL AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM2
+       SINMAX2 : CONTRAINTE MAXIMALE NORMALE AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM2
+       SINMOY2 : CONTRAINTE MOYENNE NORMALE AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM2
+       EPNMAX2 : DEFORMATION MAXIMALE NORMALE AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM2
+       EPNMOY2 : DEFORMATION MOYENNE NORMALE AU PLAN CRITIQUE 
+                   CORRESPONDANT A DTAUM2
        SIGEQ2  : CONTRAINTE EQUIVALENTE ASSOCIEE A DTAUM2,
-       NBRUP2  : NOMBRE DE CYCLES AVANT RUPTURE (FONCTION DE SIGEQ2 ET D UNE
-                 COURBE DE WOHLER)
+       NBRUP2  : NOMBRE DE CYCLES AVANT RUPTURE 
+                  (FONCTION DE SIGEQ2 ET D UNE COURBE DE WOHLER)
        ENDO2   : ENDOMMAGEMENT ASSOCIE A NBRUP2 (ENDO2=1/NBRUP2)
-       VMIS    : MESURE D'AMPLITUDE DE CONTRAINTE SELON LE CRITERE
-                 DE VON MISES
-       TRESCA  : MESURE D'AMPLITUDE DE CONTRAINTE SELON LE CRITERE
-                 DE TRESCA >>
+       VMIS    : MESURE D'AMPLITUDE DE CONTRAINTE SELON LE CRITERE DE VON MISES
+       TRESCA  : MESURE D'AMPLITUDE DE CONTRAINTE SELON LE CRITERE DE TRESCA
+>>
     FACY_R   = R    DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1  EPNMAX1  EPNMOY1
                     SIGEQ1   NBRUP1   ENDO1    DTAUM2   VNM2X    VNM2Y    VNM2Z    SINMAX2
                     SINMOY2  EPNMAX2  EPNMOY2  SIGEQ2   NBRUP2   ENDO2    VMIS     TRESCA
+
     FELECR   = R    X1       Y1       Z1       X2       Y2       Z2       CODE
+
     FISS_R   = R    XA       YA       XNORM    YNORM
+
     FLAPLA   = K24  NOMAIL   NOGEOM
+
 <<  FLUN_F : FLUX THERMIQUE FONCTION
        FLUN : FLUX NORMAL
        FLUN_INF : FLUX NORMAL EN PEAU INF
        FLUN_SUP : FLUX NORMAL EN PEAU SUP
 >>
     FLUN_F   = K8   FLUN     FLUN_INF FLUN_SUP
+
 <<  FLUN_R : FLUX THERMIQUE REEL
        FLUN : FLUX NORMAL
        FLUN_INF : FLUX NORMAL EN PEAU INF
        FLUN_SUP : FLUX NORMAL EN PEAU SUP
 >>
     FLUN_R   = R    FLUN     FLUN_INF FLUN_SUP
+
 <<  FLUN_F : FLUX THERMIQUE FONCTION
        FLUX : FLUX SUIVANT X
        FLUY : FLUX SUIVANT Y
        FLUZ : FLUX SUIVANT Z
 >>
     FLUX_F   = K8   FLUX     FLUY     FLUZ
+
 <<  FLUN_R : FLUX THERMIQUE REEL
        FLUX : FLUX SUIVANT X
        FLUY : FLUX SUIVANT Y
@@ -467,75 +510,89 @@ GRANDEUR_SIMPLE__
     IMPE_C   = C    IMPE
     IMPE_F   = K8   IMPE
     IMPE_R   = R    IMPE
+
 <<  IND_LOCA : INDICATEUR DE LOCALISATION
         INDICE : INDICATEUR DE CONTACT
         DIR1   : PREMIERE DIRECTION DE LOCALISATION
         DIR2   : DEUXIEME DIRECTION DE LOCALISATION
         DIR3   : TROISIEME DIRECTION DE LOCALISATION
-        DIR4   : QUATRIEME DIRECTION DE LOCALISATION >>
+        DIR4   : QUATRIEME DIRECTION DE LOCALISATION
+>>
     IND_LOCA   = R   INDICE    DIR1     DIR2     DIR3    DIR4
+
 <<  INFC_R : INFORMATIONS RELATIVES AU CONTACT
-        CONT   : INDICATEUR DE CONTACT
-        JEU    : JEU ENTRE LE NOEUD ESCLAVE ET LA MAILLE MAITRE ASSOCIEE
-        RN     : MULTIPLICATEUR DE LAGRANGE ET NORME DE RN
-        RNX    : COMPOSANTE X DU VECTEUR DE FORCE DUES AU CONTACT
-        RNY    : COMPOSANTE Y DU VECTEUR DE FORCE DUES AU CONTACT
-        RNZ    : COMPOSANTE Z DU VECTEUR DE FORCE DUES AU CONTACT
-        GLIX   : NORME DU DEPLACEMENT TANGENT EN X POUR CHAQUE LIAISON
-        GLIY   : NORME DU DEPLACEMENT TANGENT EN Y POUR CHAQUE LIAISON
-        GLI    : NORME DU DEPLACEMENT TANGENT POUR CHAQUE LIAISON
-        RTAX   : COMPOSANTE X DES FORCES DES NOEUDS ADHERENTS
-        RTAY   : COMPOSANTE Y DES FORCES DES NOEUDS ADHERENTS
-        RTAZ   : COMPOSANTE Z DES FORCES DES NOEUDS ADHERENTS
-        RTGX   : COMPOSANTE X DES FORCES DES NOEUDS GLISSANTS
-        RTGY   : COMPOSANTE Y DES FORCES DES NOEUDS GLISSANTS
-        RTGZ   : COMPOSANTE Z DES FORCES DES NOEUDS GLISSANTS
-        RX     : COMPOSANTE X DE LA SOMME RN RTG ET RTA
-        RY     : COMPOSANTE Y DE LA SOMME RN RTG ET RTA
-        RZ     : COMPOSANTE Z DE LA SOMME RN RTG ET RTA
-        R      : NORME DE R_TOT
-        HN     : PROFONDEUR USURE
-        I      : PERCUSSION POUR DYNA_NON_LINE
-        IX     : COMPOSANTE X DE LA PERCUSSION
-        IY     : COMPOSANTE Y DE LA PERCUSSION
-        IZ     : COMPOSANTE Z DE LA PERCUSSION
-        PT_X   : COORDONNEE SUIANT X DU POINT DE CONTACT
-        PT_Y   : COORDONNEE SUIANT Y DU POINT DE CONTACT
-        PT_Z   : COORDONNEE SUIANT Z DU POINT DE CONTACT
-        >>
+       CONT   : INDICATEUR DE CONTACT
+       JEU    : JEU ENTRE LE NOEUD ESCLAVE ET LA MAILLE MAITRE ASSOCIEE
+       RN     : MULTIPLICATEUR DE LAGRANGE ET NORME DE RN
+       RNX    : COMPOSANTE X DU VECTEUR DE FORCE DUES AU CONTACT
+       RNY    : COMPOSANTE Y DU VECTEUR DE FORCE DUES AU CONTACT
+       RNZ    : COMPOSANTE Z DU VECTEUR DE FORCE DUES AU CONTACT
+       GLIX   : NORME DU DEPLACEMENT TANGENT EN X POUR CHAQUE LIAISON
+       GLIY   : NORME DU DEPLACEMENT TANGENT EN Y POUR CHAQUE LIAISON
+       GLI    : NORME DU DEPLACEMENT TANGENT POUR CHAQUE LIAISON
+       RTAX   : COMPOSANTE X DES FORCES DES NOEUDS ADHERENTS
+       RTAY   : COMPOSANTE Y DES FORCES DES NOEUDS ADHERENTS
+       RTAZ   : COMPOSANTE Z DES FORCES DES NOEUDS ADHERENTS
+       RTGX   : COMPOSANTE X DES FORCES DES NOEUDS GLISSANTS
+       RTGY   : COMPOSANTE Y DES FORCES DES NOEUDS GLISSANTS
+       RTGZ   : COMPOSANTE Z DES FORCES DES NOEUDS GLISSANTS
+       RX     : COMPOSANTE X DE LA SOMME RN RTG ET RTA
+       RY     : COMPOSANTE Y DE LA SOMME RN RTG ET RTA
+       RZ     : COMPOSANTE Z DE LA SOMME RN RTG ET RTA
+       R      : NORME DE R_TOT
+       HN     : PROFONDEUR USURE
+       I      : PERCUSSION POUR DYNA_NON_LINE
+       IX     : COMPOSANTE X DE LA PERCUSSION
+       IY     : COMPOSANTE Y DE LA PERCUSSION
+       IZ     : COMPOSANTE Z DE LA PERCUSSION
+       PT_X   : COORDONNEE SUIANT X DU POINT DE CONTACT
+       PT_Y   : COORDONNEE SUIANT Y DU POINT DE CONTACT
+       PT_Z   : COORDONNEE SUIANT Z DU POINT DE CONTACT
+>>
     INFC_R   = R    CONT     JEU      RN       RNX      RNY      RNZ
                     GLIX     GLIY     GLI
                     RTAX     RTAY     RTAZ
                     RTGX     RTGY     RTGZ
                     RX       RY       RZ       R
                     HN       I        IX       IY       IZ       PT_X     PT_Y     PT_Z
+
     INST_R   = R    INST     DELTAT   THETA    KHI      R        RHO
+
     INTE_R   = R    INTX     INTY     INTZ
+
     IRRA_R   = R    IRRA
+
     J        = R    JINT     JEXT     JTH      JAX      JPR
+
     LISTMA   = K16  LISTMA   TRANS
+
     MASS_R   = R    M        CDGX     CDGY     CDGZ     IXX      IYY      IZZ      IXY
                     IXZ      IYZ      IXR2     IYR2
+
     MATE_F   = K8   MATE
+
     SPMA_R   = R    MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX  NPCOUMIN NPCOUMAX
                     NPSECMIN NPSECMAX
 %
 %   COMPOSANTES CARACTERISTIQUES DES ELEMENTS A SOUS-POINTS
 %
 <<  NBSP_I : CARACTERISTIQUES DES SOUS-POINTS :
-                COQ_NCOU : NOMBRE DE COUCHES (COQUE)
-                GRI_NCOU : NOMBRE DE COUCHES (GRILLE)
-                TUY_NCOU : NOMBRE DE COUCHES (TUYAU)
-                TUY_NSEC : NOMBRE DE SECTEURS (TUYAU)
-                NBGRFI : NOMBRE DE GROUPES DE FIBRES (POUTRE MULTI-FIBRE)
-                NUG* : NUMEROS DES GROUPES DE FIBRES (DE 1 A 10)>>
+       COQ_NCOU : NOMBRE DE COUCHES (COQUE)
+       GRI_NCOU : NOMBRE DE COUCHES (GRILLE)
+       TUY_NCOU : NOMBRE DE COUCHES (TUYAU)
+       TUY_NSEC : NOMBRE DE SECTEURS (TUYAU)
+       NBGRFI : NOMBRE DE GROUPES DE FIBRES (POUTRE MULTI-FIBRE)
+       NUG* : NUMEROS DES GROUPES DE FIBRES (DE 1 A 10)
+>>
     NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC  NBGRFI    NUG1
                     NUG2     NUG3     NUG4     NUG5     NUG6     NUG7     NUG8    NUG9
                     NUG10
+
     NEUT_F   = K8   X1       X2       X3       X4       X5       X6       X7       X8
                     X9       X10      X11      X12      X13      X14      X15      X16
                     X17      X18      X19      X20      X21      X22      X23      X24
                     X25      X26      X27      X28      X29      X30
+
     NEUT_I   = I    X1       X2       X3       X4       X5       X6       X7       X8
                     X9       X10      X11      X12      X13      X14      X15      X16
                     X17      X18      X19      X20      X21      X22      X23      X24
@@ -552,15 +609,19 @@ GRANDEUR_SIMPLE__
                     X105     X106     X107     X108     X109     X110     X111     X112
                     X113     X114     X115     X116     X117     X118     X119     X120
                     X121     X122     X123     X124     X125     X126     X127     X128
+
     NEUT_K8 = K8    Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
                     Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
                     Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
+
     NEUT_K16 = K16  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
                     Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
                     Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
+
     NEUT_K24 = K24  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
                     Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
                     Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
+
     NEUT_R   = R    X1       X2       X3       X4       X5       X6       X7       X8
                     X9       X10      X11      X12      X13      X14      X15      X16
                     X17      X18      X19      X20      X21      X22      X23      X24
@@ -573,65 +634,88 @@ GRANDEUR_SIMPLE__
                     X73      X74      X75      X76      X77      X78      X79      X80
                     X81      X82      X83      X84      X85      X86      X87      X88
                     X89      X90
+
     NUMC_I   = I    NUMC     ORDO     ANGL
+
     NUMMOD   = I    NUM
+
     ONDE_F   = K8   PRES
+
     ONDE_R   = R    PRES
+
     PESA_R   = R    G        AG       BG       CG
+
     PILO_K   = K16  TYPE
+
     PILO_R   = R    A0       A1       A2       A3       ETA
+
     POSI     = I    POS
+
     PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM   VARI
                     EFFORT   MOMENT   DEPL
+
 <<  PRES_C/_F/_R : PRESSION
-    PRES : PRESSION (NORMALE A LA SURFACE).
+        PRES : PRESSION (NORMALE A LA SURFACE).
          SI C EST UN CHARGEMENT: P>0 EST APPLIQUEE SELON L OPPOSE DE LA NORMALE.
-    CISA : CISAILLEMENT SELON LA DIRECTION ORTHOGONALE A LA NORMALE
-           (N A DE SENS QU EN 2D) >>
+        CISA : CISAILLEMENT SELON LA DIRECTION ORTHOGONALE A LA NORMALE
+           (N A DE SENS QU EN 2D)
+>>
     PRES_C   = C    PRES     CISA     VX       VY       VZ       LAGR
+
     PRES_F   = K8   PRES     CISA
+
     PRES_R   = R    PRES     CISA     VX       VY       VZ       LAGR
 
     RAYO_F   = K8   SIGMA    EPSIL    TPINF
+
     RAYO_R   = R    SIGMA    EPSIL    TPINF
 
 <<  RCCM_R : GRANDEURS POUR LE RCCM B3600
-    C1 : VALEUR INDICE DE CONTRAINTES
-    C2 : VALEUR INDICE DE CONTRAINTES
-    C3 : VALEUR INDICE DE CONTRAINTES
-    K1 : VALEUR INDICE DE CONTRAINTES
-    K2 : VALEUR INDICE DE CONTRAINTES
-    K3 : VALEUR INDICE DE CONTRAINTES
-    TYPE : TYPE DE MAILLE
-    E : MODULE D ELASTICITE A TEMPERATURE DE CALCUL
-    E_AMBI : MODULE D ELASTICITE A TEMPERATURE AMBIANTE
-    NU : COEFFICIENT DE POISSON A TEMPERATURE AMBIANTE
-    ALPHA : COEFFICIENT DE DILATATION  A TEMPERATURE AMBIANTE
-    E_REFE : MODULE D YOUNG DE REFERENCE
-    SM : CONTRAINTE EQUIVALENTE ADMISSIBLE DU MATERIAU
-    M_KE : CONSTANTE DU MATERIAU
-    N_KE : CONSTANTE DU MATERIAU
-    IY : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A Y
-    IZ : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A Z
-    D : DIAMETRE DE LA TUYAUTERIE
-    EP : EPAISSEUR DE LA TUYAUTERIE
-    SN : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
-    SALT : AMPLITUDE DE CONTRAINTE
-    U_TOTAL : FACTEUR D USAGE
-    TYPEKE : TYPE DE CALCUL DE KE : SOIT KE_MECA, SOIT KE_MIXTE
-     >>
+       C1 : VALEUR INDICE DE CONTRAINTES
+       C2 : VALEUR INDICE DE CONTRAINTES
+       C3 : VALEUR INDICE DE CONTRAINTES
+       K1 : VALEUR INDICE DE CONTRAINTES
+       K2 : VALEUR INDICE DE CONTRAINTES
+       K3 : VALEUR INDICE DE CONTRAINTES
+       TYPE : TYPE DE MAILLE
+       E : MODULE D ELASTICITE A TEMPERATURE DE CALCUL
+       E_AMBI : MODULE D ELASTICITE A TEMPERATURE AMBIANTE
+       NU : COEFFICIENT DE POISSON A TEMPERATURE AMBIANTE
+       ALPHA : COEFFICIENT DE DILATATION  A TEMPERATURE AMBIANTE
+       E_REFE : MODULE D YOUNG DE REFERENCE
+       SM : CONTRAINTE EQUIVALENTE ADMISSIBLE DU MATERIAU
+       M_KE : CONSTANTE DU MATERIAU
+       N_KE : CONSTANTE DU MATERIAU
+       IY : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A Y
+       IZ : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A Z
+       D : DIAMETRE DE LA TUYAUTERIE
+       EP : EPAISSEUR DE LA TUYAUTERIE
+       SN : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
+       SALT : AMPLITUDE DE CONTRAINTE
+       U_TOTAL : FACTEUR D USAGE
+       TYPEKE : TYPE DE CALCUL DE KE : SOIT KE_MECA, SOIT KE_MIXTE
+>>
     RCCM_R   = R    C1     C2       C3       K1       K2       K3       TYPE
                     E      E_AMBI   NU       ALPHA    E_REFE   SM       M_KE
                     N_KE   IY       IZ       D        EP
                     SN     SN_3SM   SALT     U_TOTAL  TYPEKE
+
 <<  RCCM_K : GRANDEURS POUR LE RCCM B3600
-    TB_TEMP : TABLE DE RELEVE DE TEMPERATURE
-    TB_MOYE : TABLE DE RELEVE DE MOYENNE  >>
+       TB_TEMP : TABLE DE RELEVE DE TEMPERATURE
+       TB_MOYE : TABLE DE RELEVE DE MOYENNE
+>>
     RCCM_K   = K24   TB_TEMP  TB_MOYE
+
     RICE_TRA = R    TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ
+
     ROTA_R   = R    OME      AR       BR       CR       X        Y        Z
+
     SECTION  = R    AIRE     XG       YG       ALPHA    IX       IY       XC       YC
                     CF
+
+<<  QXX QXY QYX QYY QZX QZY : 
+      CONTRAINTES GENERALISEES POUR ASSUMED STRAIN QUAS4 :
+>>
     SIEF_C   = C    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
                     VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
                     MXX      MYY      MXY      QX       QY       FX       FY       FZ
@@ -651,10 +735,9 @@ GRANDEUR_SIMPLE__
                     SIG133   SIG211   SIG212   SIG213   SIG221   SIG222   SIG223   SIG231
                     SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
                     SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
-                    DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y   
+                    DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
                     CONT_Z
-<<  QXX QXY QYX QYY QZX QZY : CONTRAINTES GENERALISEES
-                               POUR ASSUMED STRAIN QUAS4 >>
+
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
                     VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
                     MXX      MYY      MXY      QX       QY       FX       FY       FZ
@@ -676,21 +759,32 @@ GRANDEUR_SIMPLE__
                     SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
                     DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y   
                     CONT_Z
-    SING_R   = R    DEGRE    TAILLE
+
+<<  SING_R : GRANDEURS LIEE AU CALCUL DE CARTE DE TAILLE
+       DEGRE : ordre de la singularité
+       RAPPORT : rapport de modification de taille
+       TAILLE : nouvelle taille des éléments >>
+    SING_R   = R    DEGRE    RAPPORT  TAILLE
+
     SIZZ_R   = R    SIZZ
+
     SOUR_F   = K8   SOUR     VNOR
+
     SOUR_R   = R    SOUR     VNOR
+
     STAOUDYN = R    STAOUDYN ALFNMK   DELNMK
 %
 %   COMPOSANTES IDENTIQUES POUR LES TEMP_x
 %
     TEMP_C   = C    TEMP     TEMP_INF TEMP_SUP LAGR
+
 <<  TEMP_R : TEMPERATURE FONCTION
        TEMP : TEMPERATURE
        TEMP_INF : TEMPERATURE EN PEAU INF (COQUES)
        TEMP_SUP : TEMPERATURE EN PEAU SUP (COQUES)
 >>
     TEMP_F   = K8   TEMP     TEMP_INF TEMP_SUP LAGR
+
 <<  TEMP_R : TEMPERATURE REELLE
        TEMP : TEMPERATURE
        TEMP_INF : TEMPERATURE EN PEAU INF (COQUES)
@@ -712,13 +806,20 @@ GRANDEUR_SIMPLE__
                     V81      V82      V83      V84      V85      V86      V87      V88
                     V89      V90      V91      V92      V93      V94      V95      V96
                     V97      V98      V99      V100
+
     VARI_R   = R    VARI
+
     VENTCX_F = K8   FCXP
+
     VNOR_C   = C    VNOR
+
     VNOR_F   = K8   VNOR
+
     VOISIN   = I    V0       V1       V2       V3       V4       V5       V6       T0
                     T1       T2       T3       T4       T5       T6
+
     WEIBULL  = R    DSIGWB
+
 <<  XCONTAC : CONTACT AVEC X-FEM
        RHON   : COEF_REGU_CONT
        MU     : COEFFICIENT DE FROTTEMENT DE COULOMB
@@ -729,6 +830,7 @@ GRANDEUR_SIMPLE__
        COECH  : COEFFICIENT DE MISE A L'ECHELLE DES PRESSIONS DE CONTACT
 >>
     XCONTAC  = R    RHON     MU       RHOTK     INTEG    COECH
+
 GRANDEUR_ELEMENTAIRE__
    MDEP_C 2 DEPL_C   DEPL_C   MS
    MDEP_R 2 DEPL_R   DEPL_R   MS

@@ -1,7 +1,7 @@
       SUBROUTINE OP0171 (IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -374,7 +374,7 @@ C ======================================================================
 C                   STOCKAGE DU RESULTAT
 C ======================================================================
 C
-          CALL RSCRSD(RESULT,'EVOL_THER',1)
+          CALL RSCRSD('G',RESULT,'EVOL_THER',1)
           CALL RSEXCH(RESULT,'TEMP',0,NOMCH,IRET)
           CALL RSADPA(RESULT,'E',1,'INST',0,0,JINST,K8BID)
           ZR(JINST) = 0.D0

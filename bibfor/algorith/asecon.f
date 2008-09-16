@@ -7,7 +7,7 @@ C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      +             IOCC, IORDR, IORST, IRET, JABS, JAUX, JCAS, JCUM,
      +             JDIR, JLIN, JNO, JORD, JQUA, JREP, JSTA, JTYP,
      +             JVALE, JVAL1, LNOD, NBMODE, NBNO, NBOC, NBTROU,
-     +             NCAS, NDEP, NUCAS, NUME      
+     +             NCAS, NDEP, NUCAS, NUME
       REAL*8       R8B,R8VIDE,EPSMAC,XXX,XX1,XX2,XX3
       COMPLEX*16   CBID
       LOGICAL      COMDIR
@@ -88,7 +88,7 @@ C
       CALL GETRES(K8B,CONCEP,NOMCMD)
 C     --- CREATION DE LA STRUCTURE D'ACCUEIL ---
       CALL RSEXIS(RESU,IER)
-      IF (IER.EQ.0) CALL RSCRSD(RESU,CONCEP,NBMODE)
+      IF (IER.EQ.0) CALL RSCRSD('G',RESU,CONCEP,NBMODE)
       NOMS2 = NOMSY
       IF (NOMSY(1:4).EQ.'VITE') NOMS2 = 'DEPL'
 C
@@ -123,7 +123,7 @@ C
         ELSE
           VALK (1) = NOMSY
           VALK (2) = CHAMP
-          CALL U2MESG('F','SEISME_25',2,VALK,1,IOCC,0,0.D0) 
+          CALL U2MESG('F','SEISME_25',2,VALK,1,IOCC,0,0.D0)
         ENDIF
         VALE(1:19) = CHAMP
         CALL JEEXIN(VALE(1:19)//'.VALE',IBID)

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,8 +27,8 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
-    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC
+                                        PERTURB  TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR  )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
@@ -56,14 +56,14 @@ MODE_LOCAL__
                                         VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
                                         VECT_3_Y VECT_3_Z )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
-    EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
+    EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR   )
+    EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR   )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
-                                        TERMN2   TERMSA   TERMS2   )
-    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
-                                        TERMN2   TERMSA   TERMS2   )
+    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
+                                        TERMN2   TERMSA   TERMS2   TAILLE   )
+    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
+                                        TERMN2   TERMSA   TERMS2   TAILLE   )
     EFACY_R  = FACY_R   ELGA__ RIGI    (DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1
                                         EPNMAX1  EPNMOY1  SIGEQ1   NBRUP1   ENDO1    DTAUM2
                                         VNM2X    VNM2Y    VNM2Z    SINMAX2  SINMOY2  EPNMAX2
@@ -90,7 +90,7 @@ MODE_LOCAL__
                                         X25      X26      X27      X28      X29      X30      )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     E9NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9      )
+                                        X7       X8       X9       )
     E36NEUTI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18
@@ -159,24 +159,27 @@ MODE_LOCAL__
                                         Z        )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    ECONTPG  = SIEF_R   ELGA__ RIGI     (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ N VY
-                            VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
-                            MXX      MYY      MXY      QX       QY       FX       FY       FZ
-                            MX       MY       MZ       SIGN     SITX     SITY     SITZ     VMIS
-                            TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  SN       SVY      SVZ
-                            SMT      SMFY     SMFZ     TRIAX    SI_ENDO  MASF     ENTR     DISS
-                            FLHX     FLHY     FLHZ     FLUX     FLUY     FLUZ     PM       PMPB
-                            SIP      M11      FH11X    FH11Y    FH11Z    ENT11    M12      FH12X
-                            FH12Y    FH12Z    ENT12    M21      FH21X    FH21Y    FH21Z    ENT21
-                            M22      FH22X    FH22Y    FH22Z    ENT22    QPRIM    )
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
+                                        N        VY       VZ       MT       MFY      MFZ
+                                        BX       NXX      NYY      NXY      MXX      MYY
+                                        MXY      QX       QY       FX       FY       FZ
+                                        MX       MY       MZ       SIGN     SITX     SITY
+                                        SITZ     VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3
+                                        VMIS_SG  SN       SVY      SVZ      SMT      SMFY
+                                        SMFZ     TRIAX    SI_ENDO  MASF     ENTR     DISS
+                                        FLHX     FLHY     FLHZ     FLUX     FLUY     FLUZ
+                                        PM       PMPB     SIP      M11      FH11X    FH11Y
+                                        FH11Z    ENT11    M12      FH12X    FH12Y    FH12Z
+                                        ENT12    M21      FH21X    FH21Y    FH21Z    ENT21
+                                        M22      FH22X    FH22Y    FH22Z    ENT22    QPRIM    )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z TRSIG    )
     ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  TRSIG )
-    ESINGUL  = SING_R   ELEM__         (DEGRE    TAILLE   )
-    ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE    TAILLE   )
+    ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
+    ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )

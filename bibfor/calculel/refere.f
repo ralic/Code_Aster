@@ -2,7 +2,7 @@
      &                  ITEMAX,IFORM ,M0    ,IRET  ,F1)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/09/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C
       IMPLICIT NONE
       CHARACTER*8  TYPEMA
       INTEGER      DIME,ITEMAX
-      REAL*8       M(*),NO(DIME,*),M0(*),F1(*)
+      REAL*8       M(DIME),NO(DIME,*),M0(DIME),F1(*)
       REAL*8       PREC
       LOGICAL      IRET,IFORM
 C
@@ -39,7 +39,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  M      : POINT SUR MAILLE DE REFERENCE (X,[Y],[Z])
+C IN  M      : POINT SUR MAILLE DE REFERENCE (X,Y,[Z])
 C IN  NO     : COORDONNEES DES NOEUDS DE LA MAILLE
 C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  TYPEMA : TYPE DE LA MAILLE

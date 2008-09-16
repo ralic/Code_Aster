@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,13 +41,13 @@ C  NBPGMX, NBFAMX : SE REFERER A ELRACA
 
       CHARACTER*8 ELREFA,FAPG,NOFPG(NBFAMX)
       CHARACTER*24 VALK(2)
-      INTEGER I,NPAR,NPI,IX,IY,IZ,NPX,NPYZ,N,NPG,J,CPT
+      INTEGER I,NPAR,NPI,IX,IY,IZ,NPX,NPYZ
       INTEGER NNO,NNOS,NBFPG,NBPG1(NBFAMX),INO,IFAM,INDIK8
       REAL*8 XPG(NBPGMX),YPG(NBPGMX),ZPG(NBPGMX),HPG(NBPGMX),A(4),H(4)
       REAL*8 ATY(7),ATZ(7),HT(7),U,T
       REAL*8 AA,BB,CC,HH,H1,H2,H3,RAC5,RAC15,A1,B1,B6,C1,C8,D1,D12
       REAL*8 P1,P2,P3,P4,P5,XXG5(20),XYG5(20),XZG5(20)
-      REAL*8 PXG5(20),XA,XB,XC,XD
+      REAL*8 PXG5(20),XA,XB
       REAL*8 ZERO,UNQUAR,UNDEMI,UN,DEUX,XNO(3*27),VOL,A2,B2
 C -----  FONCTIONS FORMULES
       T(U) = 2.0D0*U - 1.0D0
@@ -156,9 +156,9 @@ C           DIRECTION ( ORDRE 5 )
 C --------- FORMULE DE QUADRATURE DE GAUSS A 4 POINTS DANS CHAQUE
 C           DIRECTION ( ORDRE 7 )
           NPAR = 4
-          A(1) = -0.339981043584856D0
+          A(1) = 0.339981043584856D0
           A(2) = -A(1)
-          A(3) = -0.861136311594053D0
+          A(3) = 0.861136311594053D0
           A(4) = -A(3)
           H(1) = 0.652145154862546D0
           H(2) = H(1)
@@ -204,7 +204,7 @@ C         IL FAUT MULTIPLIER LES POIDS PAR 4 POUR OBTENIR VOL=8
             HPG(IZ) = PXG5(IZ)*4.D0
    70     CONTINUE
           GOTO 170
-C	
+C
         ELSE IF (FAPG.EQ.'SHB20') THEN
 C --------- FORMULE DE QUADRATURE DE GAUSS A 20 POINTS DANS
 C           L EPAISSEUR POUR LE SHB20
@@ -237,7 +237,7 @@ C
             PXG5(IZ+10) = PXG5(IZ)
             XZG5(IZ+15) = XZG5(IZ)
             PXG5(IZ+15) = PXG5(IZ)
-   71     CONTINUE    
+   71     CONTINUE
 C
           DO 72 IZ = 1,20
             XPG(IZ) = XXG5(IZ)
@@ -266,7 +266,6 @@ C       TRAITEMENT POUR FAPG NON SHB
    40       CONTINUE
    50     CONTINUE
    60   CONTINUE
-
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15') THEN
 
@@ -437,7 +436,7 @@ C           L EPAISSEUR POUR LE SHB15
             XZG5(IZ+10) =  0.D0
             XYG5(IZ+10) =  0.5D0
    74     CONTINUE
-C 
+C
           DO 75 IZ=1,3
             XXG5(5*(IZ-1)+1) = -0.906179845938664D0
             XXG5(5*(IZ-1)+2) = -0.538469310105683D0
@@ -992,7 +991,7 @@ C     ------------------------------------------------------------------
           HPG(12) = P3
         ELSEIF (FAPG.EQ.'FPG13') THEN
 
-C         FORMULE A 13 POINTS : ORDRE 7  (CF BATHE : 
+C         FORMULE A 13 POINTS : ORDRE 7  (CF BATHE :
 C         FINITE ELEMENT PROCEDURES IN ENGINEERING ANALYSIS, PAGE 280)
 
           XPG(1) = 0.0651301029022D0
@@ -1092,7 +1091,7 @@ C         FINITE ELEMENT PROCEDURES IN ENGINEERING ANALYSIS, PAGE 280)
           HPG(14) = P5
           HPG(15) = P5
           HPG(16) = P5
-  
+
         ELSE IF (FAPG.EQ.'COT3') THEN
           XPG(1) = UNDEMI
           YPG(1) = UNDEMI
@@ -1103,14 +1102,14 @@ C         FINITE ELEMENT PROCEDURES IN ENGINEERING ANALYSIS, PAGE 280)
           HPG(1) = UN/6.D0
           HPG(2) = UN/6.D0
           HPG(3) = UN/6.D0
-          
+
         ELSE IF (FAPG.EQ.'SIMP') THEN
           XPG(1) = -1.D0
           YPG(1) = 1.D0
           XPG(2) = -1.D0
           YPG(2) = -1.D0
           XPG(3) = 1.D0
-          YPG(3) = -1.D0  
+          YPG(3) = -1.D0
           XPG(4) = -1.D0
           YPG(4) = 0.D0
           XPG(5) = 0.D0
@@ -1122,8 +1121,8 @@ C         FINITE ELEMENT PROCEDURES IN ENGINEERING ANALYSIS, PAGE 280)
           HPG(3) = 2.D0 / 15.D0
           HPG(4) = 8.D0 / 15.D0
           HPG(5) = 8.D0 / 15.D0
-          HPG(6) = 8.D0 / 15.D0         
-          
+          HPG(6) = 8.D0 / 15.D0
+
         ELSE IF (FAPG.EQ.'FPG3NOS') THEN
 C ------- POUR LES POINTS DE GAUSS -------------------------------------
           XPG(1) = UN/6.D0
@@ -1249,7 +1248,7 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.GE.2) YPG(INO+4) = XNO(NDIM* (INO-1)+2)
              IF (NDIM.EQ.3) ZPG(INO+4) = XNO(NDIM* (INO-1)+3)
  200      CONTINUE
- 
+
         ELSEIF (FAPG.EQ.'ARLQ8') THEN
           CALL ASSERT(NBPG.EQ.NNO)
           DO 201,INO = 1,NNO
@@ -1257,7 +1256,7 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
             IF (NDIM.GE.1) XPG(INO) = XNO(NDIM* (INO-1)+1)
             IF (NDIM.GE.2) YPG(INO) = XNO(NDIM* (INO-1)+2)
             IF (NDIM.EQ.3) ZPG(INO) = XNO(NDIM* (INO-1)+3)
-  201     CONTINUE        
+  201     CONTINUE
           HPG(1) = - 0.333333333333333D0
           HPG(2) = - 0.333333333333333D0
           HPG(3) = - 0.333333333333333D0
@@ -1273,7 +1272,7 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
             IF (NDIM.GE.1) XPG(INO) = XNO(NDIM* (INO-1)+1)
             IF (NDIM.GE.2) YPG(INO) = XNO(NDIM* (INO-1)+2)
             IF (NDIM.EQ.3) ZPG(INO) = XNO(NDIM* (INO-1)+3)
-  202     CONTINUE        
+  202     CONTINUE
           HPG(1) =   0.111111111111111D0
           HPG(2) =   0.111111111111111D0
           HPG(3) =   0.111111111111111D0
@@ -1281,8 +1280,8 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
           HPG(5) =   0.444444444444444D0
           HPG(6) =   0.444444444444444D0
           HPG(7) =   0.444444444444444D0
-          HPG(8) =   0.444444444444444D0    
-          HPG(8) =   1.777777777777777D0        
+          HPG(8) =   0.444444444444444D0
+          HPG(8) =   1.777777777777777D0
         ELSE
           VALK (1) = ELREFA
           VALK (2) = FAPG
@@ -1324,7 +1323,7 @@ C     ------------------------------------------------------------------
           HPG(1) = 1.D0 / 3.D0
           HPG(2) = 4.D0 / 3.D0
           HPG(3) = 1.D0 / 3.D0
-          
+
         ELSE IF (FAPG.EQ.'SIMP1') THEN
           XPG(1) = -1.D0
           XPG(2) = -0.5D0
@@ -1336,8 +1335,8 @@ C     ------------------------------------------------------------------
           HPG(3) = 1.D0 / 3.D0
           HPG(4) = 2.D0 / 3.D0
           HPG(5) = 1.D0 / 6.D0
-          
-        
+
+
         ELSE IF (FAPG.EQ.'COTES') THEN
           XPG(1) = -1.D0
           XPG(2) = -1.D0/3.D0
@@ -1347,7 +1346,7 @@ C     ------------------------------------------------------------------
           HPG(2) = 3.D0/4.D0
           HPG(3) = 3.D0/4.D0
           HPG(4) = 1.D0/4.D0
-        
+
         ELSE IF (FAPG.EQ.'COTES1') THEN
           XPG(1) = -1.D0
           XPG(2) = -1.D0/2.D0
@@ -1359,7 +1358,7 @@ C     ------------------------------------------------------------------
           HPG(3) = 12.D0/45.D0
           HPG(4) = 32.D0/45.D0
           HPG(5) = 7.D0/45.D0
-          
+
         ELSE IF (FAPG.EQ.'COTES2') THEN
           XPG(1) = -1.D0
           XPG(2) = -7.D0/9.D0
@@ -1374,14 +1373,14 @@ C     ------------------------------------------------------------------
           HPG(1) = 1.D0/12.D0
           HPG(2) = 1.D0/4.D0
           HPG(3) = 1.D0/4.D0
-          HPG(4) = 1.D0/6.D0  
+          HPG(4) = 1.D0/6.D0
           HPG(5) = 1.D0/4.D0
           HPG(6) = 1.D0/4.D0
           HPG(7) = 1.D0/6.D0
           HPG(8) = 1.D0/4.D0
           HPG(9) = 1.D0/4.D0
-          HPG(10) = 1.D0/12.D0  
-          
+          HPG(10) = 1.D0/12.D0
+
         ELSE
           VALK (1) = ELREFA
           VALK (2) = FAPG
@@ -1398,7 +1397,6 @@ C     ------------------------------------------------------------------
         CALL U2MESK('F', 'ELEMENTS4_88',1, ELREFA)
       END IF
 
-
   170 CONTINUE
 C     ------------------------------------------------------------------
       DO 180 I = 1,NBPG
@@ -1407,5 +1405,4 @@ C     ------------------------------------------------------------------
         IF (NDIM.GE.2) COOPG(NDIM* (I-1)+2) = YPG(I)
         IF (NDIM.EQ.3) COOPG(NDIM* (I-1)+3) = ZPG(I)
   180 CONTINUE
-
       END

@@ -1,7 +1,7 @@
       SUBROUTINE OP0101 ( IER )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,6 @@ C --- CREATION DU .AFCK:
 C     REMARQUE :
 C      - ON AFFECTE UN 'TYPE' A LA CHARGE CINEMATIQUE (ACFK(2))
 C        MAIS ON LE MODIFIE PARFOIS DANS CHARCI.
-C        PARFOIS :  '_FO' -> '_FT'
 C        PARFOIS :  '_RE' -> '_FT'  (EVOL_IMPO)
 
       IF (PHENO.EQ.'MECA') THEN
@@ -85,7 +84,7 @@ C        PARFOIS :  '_RE' -> '_FT'  (EVOL_IMPO)
            ZK8(JAFCK-1+1)='CIME_RE'
            CALL CHARCI(CHCINE,'MECA_IMPO',MO,'R')
          ELSE
-           ZK8(JAFCK-1+1)='CIME_FO'
+           ZK8(JAFCK-1+1)='CIME_FT'
            CALL CHARCI(CHCINE,'MECA_IMPO',MO,'F')
          ENDIF
       ELSE IF (PHENO.EQ.'THER') THEN
@@ -93,10 +92,11 @@ C        PARFOIS :  '_RE' -> '_FT'  (EVOL_IMPO)
            ZK8(JAFCK-1+1)='CITH_RE'
            CALL CHARCI(CHCINE,'THER_IMPO',MO,'R')
          ELSE
-           ZK8(JAFCK-1+1)='CITH_FO'
+           ZK8(JAFCK-1+1)='CITH_FT'
            CALL CHARCI(CHCINE,'THER_IMPO',MO,'F')
          ENDIF
       ELSE IF (PHENO.EQ.'ACOU') THEN
+         CALL ASSERT (.NOT.CINEF)
          ZK8(JAFCK-1+1)='CIAC_CX'
          CALL CHARCI(CHCINE,'ACOU_IMPO',MO,'C')
       ELSE

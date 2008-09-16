@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME EN GRILLE_EXCENTRE QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,7 +231,7 @@ RESU=DYNA_NON_LINE(MODELE=LEMOD,
                              FONC_MULT=FMULT,),
                           _F(CHARGE=CHAR2,),),
                    COMP_INCR=_F(RELATION='ELAS',
-                                ALGO_1D='DEBORST',
+                               # ALGO_1D='DEBORST',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=LINST,
                                 SUBD_METHODE='UNIFORME',

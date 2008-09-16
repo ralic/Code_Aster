@@ -16,7 +16,7 @@
       COMPLEX *16   VECTC(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C IN  MODES    : K8  : NOM UTILISATEUR DU CONCEPT MODAL PRODUIT
 C IN  KTYP     : K1  : TYPE DE LA MATRICE DE RAIDEUR
 C IN  TYPCON   : K16 : TYPE DE LA STRUCTURE DE DONNEES PRODUITE
 C IN  KNEGA    : K8  : VALEUR DU MOT-CLE NUME_MODE_NEGA
-C IN  LRAIDEUR : IS  : DESCRIPTEUR DE LA MATRICE DE "RAIDEUR"
+C IN  LRAIDE   : IS  : DESCRIPTEUR DE LA MATRICE DE "RAIDEUR"
 C IN  LMASSE   : IS  : DESCRIPTEUR DE LA MATRICE DE "MASSE"
 C IN  LAMOR    : IS  : DESCRIPTEUR DE LA MATRICE DE "AMORTISSEMENT"
 C IN  MXRESF   : IS  : PARAMETRE DE DIMENSIONNEMENT DE RESUR
@@ -56,12 +56,31 @@ C IN/OUT VECTC : C   : VECTEURS PROPRES COMPLEXES
 C OUT RESUR    : R   : STRUTURE DE DONNEES RESULTAT CONTENANT TOUS LES
 C                      PARAMETRES MODAUX
 C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+
       INTEGER    INEG, LXLGUT, IPREC, IRET, ILGCON
       REAL*8     RBID
       COMPLEX*16 ZBID
-C     ------------------------------------------------------------------
+      LOGICAL    LNS
 C     ------------------------------------------------------------------
 C
+      CALL JEMARQ()
+
 C     --- PRISE EN COMPTE DES MODES NEGATIFS ?
       INEG = +1
       IF (KNEGA.EQ.'OUI') INEG = -1
@@ -70,14 +89,21 @@ C     --- PREPARATION AU STOCKAGE DANS LA STRUCTURE DE DONNEES ---
       ILGCON = LXLGUT(TYPCON)
       IF ( TYPCON(ILGCON-1:ILGCON) .EQ. '_C' ) ILGCON = ILGCON -2
       CALL RSEXIS(MODES,IRET)
-      IF ( IRET .EQ. 0 ) CALL RSCRSD(MODES,TYPCON(:ILGCON),NFREQ)
+      IF ( IRET .EQ. 0 ) CALL RSCRSD('G',MODES,TYPCON(:ILGCON),NFREQ)
       IPREC = 0
+      
+C     --- MATRICE K ET/OU M NON SYMETRIQUE(S)
+      IF (ZI(LRAIDE+4)*ZI(LMASSE+4).EQ.0) THEN
+        LNS=.TRUE.
+      ELSE
+        LNS=.FALSE.
+      ENDIF
 C
 C     --- NORMALISATION ET CALCUL DES PARAMETRES MODAUX ---
 C     -----------------------------------------------------
 C
-      IF (( LAMOR .EQ. 0 ).AND.(KTYP.EQ.'R')) THEN
-C
+      IF (( LAMOR .EQ. 0 ).AND.((KTYP.EQ.'R').AND.(.NOT.LNS))) THEN
+C --- GENERALISE MODES REELS
 C        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
          CALL VPNORX(NFREQ,NEQ,DLAGR,VECTR,RESUK)
 C
@@ -99,8 +125,8 @@ C        - STOCKAGE DES VECTEURS PROPRES ---
      +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA, MOD45,
      +                 RESUI, RESUR, RESUK, IPREC )
 C
-      ELSE IF (( LAMOR .EQ. 0 ).AND.(KTYP.EQ.'C')) THEN
-C
+      ELSE IF (( LAMOR .EQ. 0 ).AND.((KTYP.EQ.'C').OR.LNS)) THEN
+C --- GENERALISE MODES COMPLEXES
 C        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
          CALL WPNORX(NFREQ,NEQ,DLAGR,VECTC,RESUK)
 
@@ -124,7 +150,7 @@ C        - STOCKAGE DES VECTEURS PROPRES ---
      +                 RESUI, RESUR, RESUK, IPREC )
 C
       ELSE IF (( LAMOR .NE. 0 ).AND.(KTYP.EQ.'R')) THEN
-C
+C --- QUADRATIQUE MODES COMPLEXES AVEC K REELLE
 C        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
          CALL WPNORX(NFREQ,NEQ,DLAGR,VECTC,RESUK)
 C
@@ -143,7 +169,8 @@ C        - STOCKAGE DES VECTEURS PROPRES ---
      +                 MXRESF, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
      +                 RESUI, RESUR, RESUK, IPREC )
       ELSE IF (( LAMOR .NE. 0 ).AND.(KTYP.EQ.'C')) THEN
-C
+          IF (LNS) CALL ASSERT(.FALSE.)
+C --- QUADRATIQUE MODES COMPLEXES AVEC K COMPLEXE
 C        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
          CALL WPNORX(NFREQ,NEQ,DLAGR,VECTC,RESUK)
 C
@@ -163,4 +190,5 @@ C        - STOCKAGE DES VECTEURS PROPRES ---
      +                 RESUI, RESUR, RESUK, IPREC )
       ENDIF
 C     ------------------------------------------------------------------
+      CALL JEDEMA()
       END

@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE PELLET J.PELLET
 MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
@@ -63,7 +63,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
          DEFORME         =FACT(statut='f',
            OPTION          =SIMP(statut='o',typ='TXM',into=("TRAN","TRAN_APPUI") ),
            DEPL            =SIMP(statut='o',typ=cham_no_sdaster ),
-        b_deform        =BLOC(condition = "OPTION=='TRAN_APPUI'", 
+        b_deform        =BLOC(condition = "OPTION=='TRAN_APPUI'",
            GROUP_NO_APPUI = SIMP(statut='o',typ=grno,validators=NoRepeat(),max='**' ),
            GROUP_NO_STRU  = SIMP(statut='o',typ=grno,validators=NoRepeat(),max='**' ),),
          ),
@@ -95,22 +95,22 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
          ),
          ORIE_NORM_COQUE =FACT(statut='f',max='**',
-           regles=(EXCLUS('NOEUD','GROUP_NO'),
-                   PRESENT_PRESENT('NOEUD','VECT_NORM'),
-                   PRESENT_PRESENT('GROUP_NO','VECT_NORM'),),
            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
            VECT_NORM       =SIMP(statut='f',typ='R',max=3),
-           NOEUD           =SIMP(statut='f',typ=no),
-           GROUP_NO        =SIMP(statut='f',typ=grno),
+           b_vect_norm     =BLOC(condition = "VECT_NORM != None",
+             regles=UN_PARMI('NOEUD','GROUP_NO'),
+             NOEUD           =SIMP(statut='f',typ=no),
+             GROUP_NO        =SIMP(statut='f',typ=grno),
+           ),
          ),
          ORIE_LIGNE =FACT(statut='f',max='**',
-           regles=(EXCLUS('NOEUD','GROUP_NO'),
-                   PRESENT_PRESENT('NOEUD','VECT_TANG'),
-                   PRESENT_PRESENT('GROUP_NO','VECT_TANG'),),
            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
            VECT_TANG       =SIMP(statut='f',typ='R',max=3),
-           NOEUD           =SIMP(statut='f',typ=no),
-           GROUP_NO        =SIMP(statut='f',typ=grno),
+           b_vect_tang     =BLOC(condition = "VECT_TANG != None",
+             regles=UN_PARMI('NOEUD','GROUP_NO'),
+             NOEUD           =SIMP(statut='f',typ=no),
+             GROUP_NO        =SIMP(statut='f',typ=grno),
+           ),
          ),
          PLAQ_TUBE       =FACT(statut='f',
            DEXT            =SIMP(statut='o',typ='R' ),
@@ -136,7 +136,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
            VECT_X          =SIMP(statut='o',typ='R',min=2,max=3),
            VECT_Y          =SIMP(statut='f',typ='R',min=2,max=3),
          ),
-         ECHELLE         =SIMP(statut='f',typ='R',),        
+         ECHELLE         =SIMP(statut='f',typ='R',),
          TRANSLATION     =SIMP(statut='f',typ='R',min=2,max=3),
          ROTATION        =FACT(statut='f',max='**',
            POIN_1           =SIMP(statut='o',typ='R',min=2,max=3),

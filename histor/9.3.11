@@ -1,0 +1,2344 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 15/09/2008 - 13:49:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012151 DU 2008-06-03 07:35:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   macr_lign_coupe en thermique : alarmes
+FONCTIONNALITE
+   Dans certaines macros, on (le développeur de la macro) sait que certaines alarmes peuvent
+   apparaitre. On souhaite masquer ces alarmes à l'utilisateur (parce qu'il n'y peut rien).
+   
+   - Dans DEBUT, l'utilisateur peut déjà faire IGNORE_ALARM='MODELISA5_53'.
+   A la fin du calcul, on affiche alors :
+   (*) MODELISA5_53           émise    1 fois (éventuellement 0 fois)
+   + par exemple
+   ... CALCULEL2_63           émise    12 fois
+   
+   
+   On offre 2 fonctions aux développeurs :
+   from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
+   
+   usage:
+   ... debut de la macro (éventuellement selon l'utilisation de certains mots-clés
+   MasquerAlarme('XXXXX_99')
+   ... corps de la macro
+   ... avant de sortir de la macro ET SI ON EST PASSE PAR MasquerAlarme
+   RetablirAlarme('XXXXX_99')
+   
+   
+   On active ce mécanisme dans MACR_LIGN_COUPE pour les alarmes 'CALCULEL2_63',
+   'CALCULEL2_64', 'MODELISA5_53'.
+   tplv07a passe maintenant sans émettre d'alarme.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tplv07a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012411 DU 2008-08-29 13:20:24
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.9, le cas-test ssns101e s'arrete par manque temps CPU sur Calibre 4.
+FONCTIONNALITE
+   Test SHB8 récemment modifié.
+   On passe le .para de 500 à 600 s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssns101e sur clp50a8
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012473 DU 2008-09-11 17:00:36
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.10, le cas-test ascou19a s'arrete en ARRET_<A> sur Rocks
+FONCTIONNALITE
+   Pb d'allocation mémoire en raison du passage simultané des cas-tests : "sans suite"
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test sur clpaster
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 15/09/2008 - 14:15:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011673 DU 2008-01-25 16:23:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Dxc3xa9finition de matxc3xa9riaux aux noeuds ou aux points de Gauss
+FONCTIONNALITE
+   Contexte : 
+   ----------
+   
+   Ce demande est faite par MMC-T25 dans le cadre du projet BILOBA.
+   Interlocuteur MMC : Charles TOUTLEMONDE
+   Une thèse va être lancée début octobre 2008 sur l'utilisation de X-FEM pour représenter
+   des interfaces dans le béton.
+   La définition de matériaux multiples sur un élément fini est nécessaire.
+   
+   
+   
+   Problème :
+   ----------
+   
+   Dans le cadre de l'extention de X-FEM à la représentation d'interfaces entre matériaux
+   (inclusion), un
+   élément fini va être amené à avoir des caractéristiques matériaux différentes de part et
+   d'autre de la level set. On souhaite pouvoir traiter les cas de multi-inclusions, avec
+   soit le même matériau dans les inclusions, soit des matériaux différents.
+   
+   
+   Solution : 
+   ----------
+   
+   Après de nombreuses réflexions, cette évolution est en fait déjà possible sans aucune
+   surcharge.
+   Le cas test ssnv209b (écrasement d'un lopin sur un bati rigide) traite ce cas.
+   La solution consiste à extraite le cham_no de la level set normale (une pour chaque
+   inclusion).
+   Puis définir une formule qui renvoi la valeur du module d'Young (+ une pour chaque
+   caractéristique matériau), dont le paramètre est une variable de commande de type NEUT1,
+   qui représente LSN. L'affection de NEUT1 à LSN est fait dans AFFE_MATERIAU, avec AFFE_VARC
+   (voir exemple dans le cas test ssnv209b).
+   
+   Dans le cas de plusieurs inclusions :
+   
+   1) si toutes les inclusions ont le meme matériau :
+   1.a) les inclusions sont définies par une seule level set (donc un seul DEFI_FISS_XFEM),
+   c'est ce qui est fait pour le moment dans la maquette UMLV, La level set est le min des
+   distances à toutes les inclusions. on extrait alors la LSN comme expliqué ci-dessus, puis
+   on procède de même que pour une inclusion.
+   
+   1.b) chaque inclusion est définie par une level set, (donc autant de DEFI_FISS_XFEM que
+   d'inclusions) : on extrait les LSN de chaque inclusion, puis on crée un cham_no qui est le
+   min de ces LSN (par des CREA_CHAMP). Rq : On aurait pu aussi envisager d'extraire le
+   cham_no des level sets fusionnées de la sd_modele. Ensuite, on procède comme le cas à une LSN.
+   
+   2) si les inclusions ont des matériaux différents : 
+   
+   on utilise une variable de commande par LSN. Attention, dans AFFE_MATERIAU, il ne faut pas
+   oublier de signaler que la composante de  la 2ème variable de commande s'appelle 'X1'.
+   L'exemple ci-dessus montre le cas de 2 inclusions :
+   
+   FISS1 = DEFI_FISS_XFEM(....)
+   FISS2 = DEFI_FISS_XFEM(....)
+   
+   CHINCL1 = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAMP='NOEU_NEUT_R', NOM_CHAM='LNNO',
+   FISSURE=FISS1)
+   CHINCL2 = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAMP='NOEU_NEUT_R', NOM_CHAM='LNNO',
+   FISSURE=FISS2)                                                                             
+                                                              
+   def fonc_E(incl1,incl2):
+     if incl1 > 0. :
+        return Young(inclusion1)
+     elif incl2 > 0. :  
+        return Young(inclusion2)
+     else :
+        return Young(pate)
+                                     
+   EF = FORMULE(NOM_PARA=('NEUT1','NEUT2'),VALE='fonc_E(NEUT1,NEUT2)')                      
+                                                                 
+   MATER = DEFI_MATERIAU (ELAS_FO=_F(E=EF, ...))
+   
+   CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+   ....................AFFE=_F(TOUT= 'OUI', MATER= MATER),
+   ....................AFFE_VARC=(_F(NOM_VARC='NEUT1', CHAMP_GD=CHINCL1),
+   ..............................._F(NOM_VARC='NEUT2', CHAMP_GD=CHINCL2),),
+   ....................VARC_NEUT2=_F(CMP_GD='X1'),                
+                     )
+   
+   impact :
+   ssnv209b.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv209b
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012154 DU 2008-06-04 06:51:48
+TYPE anomalie concernant Code_Aster (VERSION 9.4)
+TITRE
+   xfem quadratique
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Lorsqu'on utilise des mailles TETRA10 avec X-FEM, on plante dans STAT_NON_LINE avec le
+   message suivant :
+   !-----------------------------------------------------------------!
+   ! <F> <CALCULEL4_94>                                              !
+   !                                                                 !
+   !                                                                 !
+   !  l'attribut:  XFEM  n'existe pas pour le type:  MECA_XT_TETRA10 !
+   !                                                                 !
+   !-----------------------------------------------------------------!
+   
+   
+   
+   Solution :
+   ----------
+   
+   Effectivement, lors de l'ajout des attributs X-FEM aux catalogues des elements X-FEM, j'ai
+   oublié de mettre l'attribut aux éléments de type MECA_XT_TETRA10.
+   
+   Cependant, malgré cette correction, un bug se produit, vicieux.
+   
+   Ce bug apparait dans la routine xteddl.f : sur un TETRA10 (M4903), de type Crack-tip, on
+   trouve un noeud (milieu) de type Heaviside. Cela est bizarre, et n'avait pas été prévu.
+   En fait, le statut des maille est basé sur le statut des noeuds sommets, car je pensais
+   que le statut des noeuds milieux était forcément comme celui des noeuds sommets. Or ce
+   raisonnement est faux. Dans le cas suivant :
+   
+   Ce TETRA10 ne contient pas le fond de fissure, mais tous ces noeuds sommets sont connectés
+   à des mailles contenant le fond de fissure : donc les 4 sommets du TETRA10 sont des noeuds
+   Crack-tip. Mais un noeud milieu est un noeud Heaviside (son support est effectivement
+   entièrement coupé). Puisque le statut de la maille n'est basé que sur celui des noeuds
+   sommets, cette maille devient Crack-tip
+   Mais elle possède un noeud milieu Heaviside.
+   
+   La solution consiste à ce que le statut des mailles soit basé sur le statut de TOUS les
+   noeuds de la maille.
+   
+   Dans notre cas, la maille sera alors un maille mixte Heaviside-CrackTip.
+   
+   Il faut aussi modifier le critère d'un maille de Fond : 
+   avant, une maille est une maille de fond si tous ses noeuds somments sont CrackTip, 
+   maintenant, une maille est une maille de fond si tous ses noeuds sont CrackTip.
+   
+   impact : xenrch.f + gener_me_xt.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tous les tests X-FEM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012400 DU 2008-08-28 13:35:46
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   BUG X-FEM : fissure elliptique trxc3xa8s allongxc3xa9e
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Le calcul de la distance à une ellipse très allongée (a = 215 et b = 20) par la routine
+   disell.f plante.
+   En effet, ce calcul itératif de la distance en certaines noeuds ne permet pas d'obtenir la
+   précision voulue en 10 itétations.
+   
+   
+   Solution : 
+   ----------
+   
+   On augmente le paramètre NITMX de 10 à 100.
+   
+   Pas de risque de RESU_FAUX car on s'arrêtait proprement en echec de convergence.
+   
+   impact : disell.f
+   
+   On en profite aussi pour modifier la précision d'ajout des points d'intersection
+   fissure/arete. Pour des mailles un peu applaties (DP/DM = 1e-4), le critère d'élimination
+   des doublons actuel : (longar*1e-3) n'est pas suffisant, le nouveau critère est (longar*1e-6).
+   impact : xajpin.f
+   
+   validation : étude du GSS de Fessenheim.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etudes GSS
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012403 DU 2008-08-28 15:50:55
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   XFEM : bg manque l'attribut X-FEM pour les elements MECA_XT_TETRA10
+FONCTIONNALITE
+   L'attribut X-FEM pour les elements MECA_XT_TETRA10 est manquant.
+   
+   On le rajoute
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude GSS
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012460 DU 2008-09-09 13:18:38
+TYPE express concernant Code_Aster (VERSION 9.3)
+TITRE
+   POST_K1_K2_K3 : choisir le numxc3xa9ro du fond de fissure X-FEM
+FONCTIONNALITE
+   Problème : 
+   ----------
+   
+   Pour l'instant, POST_K1_K2_K3 calcule les K sur tous les points de tous les fonds de
+   fissure X-FEM. On souhaite pouvoir choisir le fond de fissure, comme dans CALC_G.
+   
+   Solution :
+   ----------
+   
+   On rajoute un nouveau mot-clé : NUME_FOND dans POST_K1_K2_K3 (défaut NUME_FOND=1).
+   
+   ************************************************************
+   Attention : le comportement de POST_K1_K2_K3 avec X-FEM change : avant, POST_K1_K2_K3
+   calculait sur tous les points de tous les fonds, maintenant par défaut, il ne calcule que
+   sur le 1er fond.
+   ************************************************************
+   
+   On valide par le test ssnv192 : fissure rectangulaire dans une plaque 2D : 2 fonds de
+   fissures.
+   On rajoute doncc 2 appels à POST_K1_K2_K3 (un par fond de fissure). La précision est moins
+   bonne qu'avec CALC_G (12% contre 3%) car on n'a pas utilisé l'enrichissement X-FEM sur
+   plusieurs couches.
+   
+   Cette évolution permet d'utiliser la répartition uniforme de n points (fiche 12433).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05, V6.04.192
+VALIDATION
+   ssnv192a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012433 DU 2008-09-02 15:38:32
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : rxc3xa9partition uniforme des points du fond pour le post-traitement avec CALC_G/POST_K1_K2_K3
+FONCTIONNALITE
+   Contexte
+   --------
+   Jusqu'à présent, les points du fond d'une fissure définie avec X-FEM sont les points
+   d'intersection de l'iso-zéro des level set avec les bords des mailles. Cette hypothèse
+   peut poser deux problèmes en post-traitement :
+   - avec CALC_G : les points peuvent être répartis le long du fond de manière très
+   irrégulière, ce qui conduit à des résultats non exploitables si on utilise un lissage de
+   type LAGRANGE (avec LEGENDRE en revanche, ça n'a pas d'importance) ;
+   - avec POST_K1_K2_K3 : dès que le maillage est fin, le nombre de points retenus peut être
+   très élevé ce qui conduit fréquemment à des difficultés dans la macro-commande (temps de
+   calcul ou mémoire)...
+   
+   Evolution souhaitable
+   ---------------------
+   Il faudrait laisser à l'utilisateur la possibilité de ne faire le post-traitement en
+   mécanique de la rupture que sur un nombre imposé de points NB_POINT_FOND, équirépartis le
+   long du fond de fissure.
+   Cette solution a été testée au cours d'un stage, et donne des résultats plutôt
+   encourageants. A terme, on pourra définir une valeur par défaut pour ce paramètre, mais on
+   n'a pas le retour d'expérience suffisant pour le faire tout de suite.
+   
+   Détais
+   ------
+   Il semble naturel de mettre cette nouvelle fonctionnalité au niveau des opérateurs de
+   post-traitement (et non dans DEFI_FISS_XFEM comme cela avait été fait pendant le stage).
+   Les développements à réaliser sont alors de deux natures différentes :
+   - dans CALC_G : définition du nouveau fond en fortran (routine à appeler dans op0100)
+   - dans POST_K1_K2_K3 : définition des nouveaux points du fond en python
+   
+   Réalisation : projet ANODE (Samuel Géniaut / Erwan Galenne)
+   
+   Solution :
+   ----------
+   
+   on rajoute un nouveau mot-clé dans CALC_G/THETA et dans POST_K1_K2_K3 : NB_POINT_FOND.
+   si ce motc-lé n'est pas présent, alors on ne fait rien.
+   si ce mot-clé est présent, alors on récupère la liste des points du fond à traiter, et la
+   modifie en répartissant NB_POINT_FOND uniformément (par rapport à l'abscisse curviligne).
+   
+   Remarque :
+   cette évolution dans POST_K1_K2_K3 a nécessité une auter évolution, celle de pouvoir
+   choisir le numéro du fond de fissure à traiter (mot-clé NUME_FOND), comme ce quil était
+   déjà fait dans CALC_G (fiche 12460).
+   
+   
+   
+   
+   validation : sslv134h (fissure circulaire en milieu infini)
+   on rajoute un CALC_G avec lissage de Lagrange : fortes oscillations
+   on rajoute un CALC_G avec lissage de Lagrange + NB_POINT_FOND = 24 : réduction des
+   oscillations
+   on rajoute un CALC_G avec lissage de Lagrange + NB_POINT_FOND = 10 : quasiment plus
+   d'oscillations
+   on rajoute un CALC_G avec lissage de Legendre + NB_POINT_FOND = 24 : pas de changement ds
+   résultats
+   on rajoute un POST_K avec NB_POINT_FOND = 10 : pas de changement ds résultats
+   Cet ajout de POST_K a permis de déceller un bug dû à la récente restitution sur
+   l'orientation automatique du fond de fissure. Suite à cette restitution, le sens de
+   parcours du fond de fissure a changé. Mais la modification des DTAN_ORIG et DTAN_EXTR
+   n'avait pas été faite. Du coup, avec les mauvaises tangentes, POST_K plantait.
+   
+   On en profite pour passer en mémoire dynamique.
+   
+   
+   impact :
+   calc_g.capy
+   post_k1_k2_k3.capy
+   op00100.f xrecff.f (nouvelle routine)
+   post_k1_k2_k3_ops.py
+   rupture1.py
+   sslv134h.comm
+   sslv134h.para
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.04.034, V6.04.192
+VALIDATION
+   sslv134h, ssnv192a
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012463 DU 2008-09-10 06:58:21
+TYPE express concernant Code_Aster (VERSION 9.3)
+TITRE
+   X-FEM : divers petits bugs
+FONCTIONNALITE
+   Le stage de Sam Cuvilliez sur l'estimation d'erreur avec X-FEM a permis de découvrir
+   quelques "petits" bugs X-FEM :
+   
+   1) problème dans la recherche des points du fond de fissure : dans xptfon.f, on recherche
+   les iso-zéros des 2 level sets par projection sur les faces des éléments. c'est le meme
+   algorihtme que celui utilisé dans le contact. Pour savoir si le projeté n'est pas en
+   dehors de la face triangulaire, on vérifie si les 3 coordonnées eps1, eps2, eps3 sont
+   comprises entre 0 et 1. Le test numérique actuel est :
+               IF (-PREC.LE.EPS1.AND.EPS1.LE.1.D0+PREC.AND.
+        &          -PREC.LE.EPS2.AND.EPS2.LE.1.D0+PREC.AND.
+        &          -PREC.LE.EPS3.AND.EPS3.LE.1.D0+PREC) THEN
+   avec PREC = R8PREM().
+   
+   La précision actuelle est trop sévère, car EPS1,2,3 sont les résultats de calculs non
+   triviaux (opérations sur les mineurs de la matrice de la transfomation), donc les erreurs
+   numériques s'acculument. On choisit arbitrairement PREC = 100.D0 * R8PREM().
+   (a défaut de comprendre comment les erreurs s'accumulent).
+   
+   impact : xptfon.f
+   
+   2) problème dans le sous-découpage des éléments X-FEM : dans xdecou.f on rajoute des
+   points à la liste d'intersection avec la routine xajpin.f, mais on passait un mauvais
+   argument.
+   
+   impact : xdecou.f, xdecov.f
+   
+   3) problème dans la création des de la connectivité des sous-éléments : dans xdecov.f pour
+   le cas 2D où on a 2 points d'intersection dont dont sur un somment et un sur une arete du
+   sous-élément, on oubliait que le 1er point d'intersection était un sommet.
+   
+   impact : xdecov.f
+   
+   
+   Remarque : Pas de risque de RESU_FAUX : on plantait à chaque fois dans un call assert
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests X-FEM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 16/09/2008 - 16:39:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012321 DU 2008-07-18 11:09:32
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.4, le cas-test ssnp131a s?arrete en ERREUR_<F> sur Cal5.
+FONCTIONNALITE
+   En version 9.3.9 le test ssnp131a s'exécute normalement. La fiche est sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp131a
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012322 DU 2008-07-18 11:12:26
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.4, le cas-test wtnp111b s?arrete par manque de mxc3xa9moire sur Cal5.
+FONCTIONNALITE
+   En version 9.3.9 le test wtnp111b s'exécute normalement. La fiche est sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   wtnp111b
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012225 DU 2008-06-20 14:18:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.2, le cas-test comp002a s?arrete en Abormal Abort sur Calibre 4 (clp50a8).
+FONCTIONNALITE
+   En version NEW9.3.9 le test comp002a s'exécute normalement sur clpaster (Rocks) et clp50a8
+   (Calibre 4). La fiche est classée sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   comp002a
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011976 DU 2008-04-14 06:51:41
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR01 - prxc3xa9dire (a posteriori !) la mxc3xa9moire minimale nxc3xa9cessaire pour un calcul
+FONCTIONNALITE
+   BUt de la fiche : donner la taille mémoire minimale nécessaire pour rejouer une étude donnée.
+   
+   La taille cumulée des segments de valeurs utilisés (marqués U L en lecture ou U D en
+   Mo et la taille maximum sont actualisées en permanence dans le gestionnaire de
+   mémoire Jeveux. Les valeurs sont stockées en "mots entiers" dans le COMMON /STATJE/ 
+   SVUSE,SMXUSE.
+   
+   Elles sont accessibles à tout moment à l'aide de la routine JEVEUX 
+         SUBROUTINE JEINFO(RVAL)
+         REAL*8           RVAL(5)      
+   
+   RVAL(1) = taille en Mo cumulée utisée
+   RVAL(2) = taille en Mo maximum utilisée au cours de l'exécution
+   RVAL(3) = TAILLE EN MO CUMULEE ALLOUEE DYNAMIQUEMENT
+   RVAL(4) = TAILLE EN MO MAXIMUM ALLOUEE DYNAMIQUEMENT
+   RVAL(5) = LIMITE MAXIMALE POUR L'ALLOCATION DYNAMIQUE
+   
+   Cette routine est appelée dans la routine le superviseur E_ETAPE.py pour imprimer en Mo les 
+   valeurs à la fin de chaque commande.
+     
+       #  FIN COMMANDE NO : 0003   DUREE TOTALE:        0.25s (SYST:        0.00s)
+       #  ---------------------------------------------------------------------------
+   
+       #  USAGE DE LA MEMOIRE JEVEUX
+       #     - MEMOIRE DYNAMIQUE CONSOMMEE :        18.00 Mo (MAXIMUM ATTEINT :        20.65 Mo) 
+       #     - MEMOIRE UTILISEE            :         7.55 Mo (MAXIMUM ATTEINT :        16.13 Mo) 
+   
+   Ce message indique à la fin de chaque commande : 
+    - le cumul de la mémoire allouée dynamiquement et le maximum atteint au cours de
+   l'exécution, 
+    - la mémoire utilisée, c'est à dire la mémoire associée aux objets JEVEUX encore utilisés
+   (accès en écriture ou en lecture) et le maximum atteint au cours de l'exécution. Cette
+   valeur correspond au minimum nécessaire pour faire passer l'étude.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests personnels + yyyy104a
+NB_JOURS_TRAV  : 7.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012462 DU 2008-09-09 15:04:42
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Mesure de temps fausse par le superviseur depuis le 8/9/8
+FONCTIONNALITE
+   Les différents exécutables en mode optimisé ont été reconstruits après recompilation de la
+   version de python déposée sous /aster/local/
+   Les versions NEW9,STA9,OLD9,NEW8,STA8,OLD8 et STA7 de l'exécutable asteru ont été modifiées.
+   Les anciennes versions sont conservées et renommées asteru_120809 pour le moment.
+   Le script utilisé a été fourni par Mathieu, il est déposé sous /aster/agla/outils/alamain.py.
+   Les versions en mode debug , mpi , zmat et prof en NEW8 et NEW9 seront actualisées lors
+   des prochaines mises à jour des versions de développement.
+   
+   [aster@aster3 ~]$ . /aster/agla/tool/init_intel-10.0.026.sh  
+   [aster@aster3 ~]$ /aster/NEW9/asteru -c 'import os, time; print os.times(); time.sleep(3);
+   print os.times()'
+   (0.02, 0.0, 0.0, 0.0, 43288190.590000004)
+   (0.02, 0.0, 0.0, 0.0, 43288193.590000004)
+   [aster@aster3 ~]$
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ligne de commande fournie dans la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012177 DU 2008-06-10 13:00:14
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR01 - mxc3xa9moire dynamique par dxc3xa9faut
+FONCTIONNALITE
+   But de la fiche : passer par défaut en mémoire Jeveux dynamique. 
+   
+   Les catalogues des commandes DEBUT et POURSUITE sont modifiés pour mettre par défaut le
+   mot clé DYNAMIQUE=1 sous le mot clé facteur MEMOIRE=_F.
+   La totalité des objets jeveux sera alors allouée en dynamique, y compris les objets système.
+   Ainsi, les fichiers de commande des tests n'ont pas besoin d'être modifiés pour basculer
+   en mémoire dynamique, toutefois on conserve les fichiers de commandes qui utilisent le mot
+   clé MEMOIRE pour continuer à valider les autres types d'allocation.
+   
+   Les tests utilisant des modes de gestion particuliers de la mémoire JEVEUX statique sont
+   conservés en ajoutant MEMOIRE=_F(DYNAMIQUE=0 , ... 
+   
+   ascou21a.com0:      MEMOIRE=_F(TYPE_ALLOCATION=4,TAILLE=2000000,PARTITION=0.8),)
+   forma04b.comm:      MEMOIRE=_F(TYPE_ALLOCATION=3, TAILLE = 8000,)
+   ssnv156a.comm:      MEMOIRE=_F(TYPE_ALLOCATION = 4,TAILLE=50000,PARTITION=0.8)
+   ssnv166c.comm:      MEMOIRE=_F(TYPE_ALLOCATION = 4, TAILLE = 500000, PARTITION = 0.7,) 
+   ssnv185n.comm:      MEMOIRE=_F(GESTION = 'COMPACTE',
+   yyyy108a.comm:      MEMOIRE=_F(TYPE_ALLOCATION = 2)
+   yyyy108e.comm:      MEMOIRE=_F(GESTION='COMPACTE')
+   yyyy108p.comm:      MEMOIRE=_F(TYPE_ALLOCATION=4, TAILLE=2000, PARTITION=0.85), 
+   yyyy118c.comm:      MEMOIRE=_F(GESTION = 'COMPACTE')
+   
+   
+   La mémoire Jeveux statique est allouée par défaut à 1 Mo, cette valeur est modifiable sur
+   la ligne de commande de l'exécutable :  memjeveux_stat 128  (par exemple pour l'affecter à
+   128Mo).
+   La mémoire dynamique est limitée par les valeurs spécifiées dans astk (Mémoire totale et
+   dont Aster).
+   Un certain nombre de fichiers .para associés aux tests sont modifiés pour ajuster les
+   valeurs de ces deux paramètres et les adapter au passage en mémoire dynamique.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complxc3xa8te
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 15/09/2008 - 14:17:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012418 DU 2008-09-01 16:15:30
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   ARLEQUIN - bug sslp104b en quadratique
+FONCTIONNALITE
+   Problème :
+   ----------
+   On cherche à passer en quadratique le test Arlequin sslp104b comprenant des mailles
+   hexaèdres. On s'arrête alors en erreur fatale dans le AFFE_CHAR_MECA Arlequin
+   
+   ! <F> <ELEMENTS4_84>                                !
+   !  famille non disponible élément de référence  HE8 !
+   !  famille  FPG64                                   !
+   !                                                   !
+   
+   Solution :
+   ----------
+   La famille FPG64 n'est effectivement pas prévue pour les hexaèdres dans elraca.f. On la
+   rajoute donc.
+   
+   On est ensuite arrêté dans la routine intinc.f lorsqu'on cherche à projeter un point de
+   Gauss d'une maille (par exemple du modèle fin) sur une autre maille (par exemple) du
+   modèle grossier.
+   L'algorithme de Newton diverge alors et le calcul s'arrête. On se rend compte que la
+   famille de 64 points de Gauss est mal définie dans elraga.f. Les coordonnées des points de
+   Gauss sont incorrectes. On les corrige donc en étendant la formule FPG4 en 1d.
+   
+   Remarques :
+   -----------
+   1. J'en profite pour faire un peu de ménage (simplification de quelques sources et
+   diminution du nombre de sources)
+   2. Je blinde la définition du poids dans le fichier de commandes en vérifiant que
+   l'utilisateur donne bien un poids compris entre 0 et 1.
+   3. J'active le cas de maillages avec hexaèdres quadratiques (hexa20) et je pose la
+   question : peut-on activer les TRIA7 et les QUAD9 ?
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Test joint
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012410 DU 2008-08-29 13:17:43
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW9.3.9, le cas-test ssnp135e s'arrete en ERREUR_<F> sur Calibre 4.
+FONCTIONNALITE
+   Problème :
+   ----------
+   En NEW9.3.9, le cas-test ssnp135e s'arrete en ERREUR_<F> sur la machine Calibre 4 en
+   version nodebug dans STAT_NON_LINE.
+      
+      !---------------------------------------------------------------------!
+      ! <F> <CALCULEL2_25>                                                  !
+      !                                                                     !
+      !                                                                     !
+      !  le ligrel :  SYMET   .CHME.LIGRE  ne contient pas d elements finis !
+      !                                                                     !
+      !                                                                     !
+      !                                                                     !
+      ! Cette erreur est fatale. Le code s'arrete.                          !
+      !---------------------------------------------------------------------!
+   
+   Solution :
+   ----------
+   Je n'avais absolument aucune idée d'où cela pouvait venir ! La réponse a été trouvée très
+   rapidement grâce un peu à Mathieu (regarder SYMET dans le AFFE_CHAR_MECA Arlequin) et
+   aussi beaucoup avec Valgrind, qui renvoie 5 fois le message suivant
+   ==21449==    by 0x81095ED: jedetr_ (jedetr.f:73)
+   ==21449==    by 0x811FD90: arlcpl_ (arlcpl.f:121)
+   ==21449==    by 0x80EFDBF: arlcou_ (arlcou.f:103)
+   Le problème était en fait la destruction de 2 SD (tabcor et tabcpl) qui n'était pas
+   forcément créées. Elles ne le sont que si l'on cherche à imprimer le maillage de la zone
+   de collage. Je les détruis donc à bon escient et le test passe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp135e
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 16/09/2008 - 13:38:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010987 DU 2007-06-18 13:03:50
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Evolution et amxc3xa9lioration de l'option SING_ELEM
+FONCTIONNALITE
+   Contexte :
+   ==========
+   L'option SING_ELEM de CALC_ELEM permet de produire une carte de valeur de singularité
+   élémentaire et une carte de rapport de taille pour une précision donnée. Pour calculer la
+   carte de singularité, le calcul préalable de l'option ETOT_ELEM est nécessaire. Pour
+   calculer la carte de taille, le calcul préalable d'une option d'estimateur d'erreur en
+   norme de l'énergie est nécessaire.
+   
+   Fonctionnalités :
+   =================
+   -*On crée une nouvelle composante au champ de sortie : la nouvelle taille des éléments.
+   Avant on avait : DEGRE TAILLE (en réalité dans la composante TAILLE c'est un rapport de
+   modification de taille).
+   Maintenant on a : DEGRE RAPPORT TAILLE.
+   Cette composante est directement utilisable par un mailleur (GMSH en l'occurence) pour
+   créer un nouveau maillage.
+   On a ajouté également une composante du champ d'erreur : TAILLE qui est la taille des
+   mailles (au sens de la routine UTHK) sur le maillage actuel.
+   
+   -*On ajoute deux tests en 3D avec des TRIA6 (ssnp130d) et des TET10 (ssnp130f).
+   Ceci permet de couvrir totalement l'option.
+   
+   -*On permet le choix explicite de l'utilisateur du champ d'erreur qu'il souhaite utiliser.
+   Pour cela on ajoute dans la bloc conditionnel dans le catalogue de CALC_ELEM le mot clé
+   facultatif TYPE_ESTI.
+   Le système de choix par défaut selon la disponibilité des champs d'erreur dans la SD
+   résultat est conservé.
+   
+   -*On étend l'utilisation de cette commande aux estimateurs d'erreur en quantités d'intérêt
+   (option QIRE_ELEM_SIGM, QIZ1_ELEM_SIGM et QIZ2_ELEM_SIGM). 
+   
+   -*On permet la visualisation du champ SING_ELEM et SING_ELNO_ELEM dans STANLEY.
+   
+   Impacts :
+   =========
+   mecalm.f singum.f singue.f dsingu.f rsingu.f tsingu.f ssingu.f
+   te0291.f te0292.f te0368.f te0375.f te0377.f te0378.f
+   
+   gener_me3d_3.cata gener_me3di3.cata gener_meax_2.cata
+   gener_meaxs2.cata gener_mecpl2.cata gener_medpl2.cata
+   gener_mepli2.cata gener_mv2d_2.cata gener_mv3d_3.cata
+   meca_hexs8.cata   mecpqs4.cata      medpqs4.cata
+   medpqs8.cata
+   
+   prepost4.py calculel3.py
+   
+   calc_elem.capy
+   
+   cata_champs.py
+   
+   grandeur_simple__.cata
+   
+   ssnp130a ssnp130b ssnp130c ssnp130d ssnp130e
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.81.01, R4.10.04
+VALIDATION
+   Cas-tests + cas-tests de la base
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 16/09/2008 - 13:38:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012092 DU 2008-05-15 15:29:13
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN07 - Changement syntaxe AFFE_CHAR_*
+FONCTIONNALITE
+   Evolution souhaitée :
+   ---------------------
+   L'expérience semble montrer que les charges cinématiques sont souvent plus "efficaces"
+   (moins couteuses en CPU) que les charges "dualisées".
+    
+   Pour favoriser l'usage des charges cinématiques sans changer les habitudes des
+   utilisateurs, l'idée est d'ajouter dans les commandes AFFE_CHAR_XXXX_YY le mot clé
+   METHODE='ELIMINATION'/'DUALISATION'.
+    
+   Si METHODE='ELIMINATION', les conditions de Dirichlet "simples" (U=U0) sont éliminées (au
+   lieu d'etre dualisées).
+                                                                                            
+                           
+   METHODE='DUALISATION' est le comportement actuel.
+   METHODE='ELIMINATION' serait (à terme) la valeur par défaut.
+    
+   Cette évolution est donc une évolution de "confort" : tout se passe comme si on remplace
+   un AFFE_CHAR_MECA par un AFFE_CHAR_CINE.
+    
+   Tentative de développement :
+   ----------------------------
+   Comme les routines d'affectation des charges dualisées sont communes à AFFE_CHAR_MECA,
+   AFFE_CHAR_THER et AFFE_CHAR_ACOU, j'ai ajouté dans toutes les commandes
+   AFFE_CHAR_MECA/THER/ACOU le mot clé METHODE='ELIMINATION'/'DUALISATION'.
+    
+   Une fois le développement terminé, j'ai lancé une liste de 195 tests assez variés :
+      * 110 tests sont restés OK et 85 se sont plantés.
+      * sur les 110 tests OK :
+        * 21 sont restés OK parce qu'ils n'utilisent pas de charges dualisées !!
+        * 89 ont basculé de charge dualisée -> charge éliminée avec succès :
+          epicu01a  mumps01a  sensm02a  ssll107a  sslv110c  tplp301a  wtnl100e
+          erreu01a  sdll14a   sensm03a  ssll11f   sslv130a  tplp301b  wtnp107a
+          fdll200a  sensd02a  sensm04a  sslp101f  sslv306a  tplp302a  wtnp118a
+          forma01a  sensd03a  sensm05a  sslp107a  sslx100a  tpls101a  wtnv111c
+          forma01c  sensd07a  sensm06a  ssls09a   ssnl122a  tplv06a   zzzz120b
+          forma03a  sensd08b  sensm06b  ssls100i  ssnp124b  tplv101a  zzzz121b
+          hplp101b  sensd09a  sensm07a  ssls111a  ssns107c  tplv101b  zzzz191a
+          hsna100a  sensd09d  sensm11a  ssls111b  ssnv158c  tplv105a  zzzz219a
+          hsna100b  sensd10a  sensm12a  ssls117a  ssnv173c  tplv106a  zzzz223a
+          hsna100c  sensd10b  sensm15a  ssls117b  ssnv196b  ttll01b   zzzz227a
+          hsna100d  sensd10c  sensm15b  ssls119d  szlz110a  ttll301a  zzzz230a
+          hsna100e  sensd10d  shll101b  ssls122c  tpll01a   ttnl03a
+          hsnv132c  sensd11b  ssll102d  ssls130b  tpll01b   ttnl03b
+    
+   Problèmes rencontrés :
+   -----------------------
+   Si on regarde de plus près les 85 tests cassés, on constate 13 problèmes différents :
+    
+       * PB1) feti n'accepte pas les char_cine  (ALGORITH_16) (ex : feti003a).
+    
+       * PB2) THER_NON_LINE ne prend pas en compte les char_cine :
+         l'algorithme ne converge pas et les tests s'arretent (MECANONLINE_85, DVP_2,
+   FONCT0_19/20) :
+            - tpna300  tpna300b  tpna300c  tpna300d  tpnl300a  tpnl300b ...  (MECANONLINE_85)
+            - hsna102a,b,e (DVP_2)
+            - hsna102c,d (FONCT0_19/20)
+    
+       * PB3) DYNA_LINE_TRAN ne prend pas en compte les char_cine :
+         => plantage ALGELINE3_41
+         Ex : sensd09c, sensd06a
+    
+       * PB4) DYNA_LINE_HARM ne prend pas en compte les char_cine :
+         => résultas FAUX : sensd01a
+    
+       * PB5) Commande RESOUDRE (ALGELINE3_41) (ex : tpls100b, mumps03a, ...) :
+          Dans l'opérateur RESOUDRE, la prise en compte des charges cinématiques (second
+   membre) se fait au travers d'un mot clé dédié (CHAM_CINE). Cela oblige l'utilisateur à
+   utiliser la commande CALC_CHAR_CINE.
+          Mais on ne peut pas appeler la commande CALC_CAR_CINE en sous-terrain car si les
+   valeurs imposées sont des fonctions du temps, il faut connaitre l'instant (mot clé
+   CALC_CHAR_CINE/INST).
+          Ce problème concerne aussi les macros appelant RESOUDRE (MACRO_ELAS_MULT)
+    
+       * PB6) Certains tests STAT_NON_LINE n'ont pas d'autre chargement que des DDL_IMPO
+           => Si on utilise RESI_GLOB_RELA (cas général), on ne converge pas :
+   (MECANONLINE_83 ou DVP_2) :
+           Ex : mumps02a  ssnd101b  ssnv124b  wtnp111b
+                sensm08a  ssnp122a  wtnp110a  zzzz237b
+                ssnv172a
+         Pour résoudre ce problème, j'ai essayé une "ruse" :  on garde un minimum de
+   relations dualisées (5) (routine elimdi.f)
+         Mais ca ne semble pas suffire pour le test wtnp111b
+         Remarque : ce problème a déjà été identifié et est tracé par la fiche 11307.
+    
+       * PB7) MODE_ITER_SIMULT :
+          * Pb quadratique : sensd09d et sensd08a  (ALGELINE5_15)
+          * Pb factorisation d'Arnoldi : sensd11d  (ALGELINE5_23)
+    
+       * PB8) certains tests deviennent NOOK :
+           - GRAVE : THER_NON_LINE_MO converge vers une fausse solution :
+             tplv102a
+           - GRAVE : les calculs de sensibilité sont faux :
+              hpla101a,b et hplp100b
+              sensm01a
+              senst01a, 02a, 03a, 04a
+           - GRAVE : les calculs DYNA_LINE_HARM sont faux :
+              sensd01a
+           - PAS GRAVE : les TEST_RESU portent sur des SOMM_ABS (différence probablement due
+   aux Lagrange) :
+             sslv200b et sslp201b
+    
+       * PB9) Cas test de sensibilité cassé :
+         * sensm09a : UTILITAI7_99
+    
+       * PB10) ssnv185e manque de mémoire pour pivoter (MUMPS) (FACTOR_53)
+    
+       * PB11) Manque de temps CPU : wtna110d
+    
+       * PB12) ssll117f se plante avec AFFE_CHAR_CINE (fiche 12355 en voie de résolution)
+    
+       * PB13) ttll01b :  AFFE_CHAR_THER_F/TEMP_IMPO/EVOL_THER :
+             => on crée des fonctions de noms > k8 => objet .AFCV devrait etre K24
+             Ce problème sera résolu avec la fiche 12358  (résorption de
+   AFFE_CHAR_THER_F/TEMP_IMPO/EVOL_THER)
+                                                                                            
+                           
+   Impact documentaire :
+   ---------------------
+    D4.06.13 :
+    .RLSU(irela) :
+       1 : la relation est à prendre en compte
+       0 : la relation est un doublon : il ne faut pas la prendre en compte
+       2 : la relation doit etre éliminée (METHODE='ELIMINATION') : il ne faut pas la prendre
+   en compte
+                                                                                            
+                           
+    D4.06.12 :
+    .INFC (INFO_CHARGE) :  pour Dirichlet
+     Remarques sur l'actuel :
+      code = 4 : force suiveuse ???
+      code = 5 : FIXE_PILOT ??
+      code = -1, -2, -3 : sd_char_cine mais on ne se sert que du fait que code < 0
+                                                                                            
+                           
+     Après l'évolution :
+      * Une charge qui contient à la fois des relations dualisées et éliminées conserve son
+   code > 0
+      Pour ne pas oublier de charges cinématiques, il faut donc maintenant se méfier et
+   regarder un peu plus loin que code < 0
+      * Une charge de code 0 peut aussi contenir une sd_char_cine
+                                                                                            
+                           
+    D4.06.20 :
+    .RECC V K8 dans sd_matr_elem :
+     On stocke dans ce nouveau vecteur le nom des charges utilisées.
+     Cet objet n'existe que si le sd_matr_elem a été produit par la commande CALC_MATR_ELEM.
+     Ces charges peuvent maintenant contenir des sd_char_cine et il faut pouvoir y accéder
+   lors de l'assemblage.
+                                                                                            
+                           
+    D4.06.04 : sd_charge (meca/ther/acou) :
+     Noter que la sd_charge peut maintenant contenir une sd_char_cine de nom nomchar.ELIM
+                                                                                            
+                           
+    
+   Conclusion / restitution :
+   --------------------------
+   Cette évolution a permis de tester la robustesse des charges cinématiques dans Code_Aster.
+   Celle-ci n'est pas encore fameuse et 13 problèmes différents ont été observés.
+   Le mot clé AFFE_CHAR_XXXX / METHODE='ELIMINATION' n'est donc pas encore à mettre entre
+   toutes les mains !
+   Il peut meme conduire à des résultats faux si on utilise les commandes  THER_NON_LINE_MO
+   ou DYNA_LINE_HARM.
+                                                                                            
+                           
+   Je propose de restituer l'évolution du fortran tout en la "bloquant" dans les catalogues :
+      - le mot-clé METHODE est "caché" pour ne pas apparaitre dans les fichiers .mess
+      - le mot-clé METHODE n'a qu'une valeur possible : 'DUALISATION'
+                                                                                            
+                           
+   Lorsque l'on voudra mesurer les progrès de robustesse des charges cinématiques, on pourra
+   toujours rétablir la fonctionnalité en ne modifiant que les catalogues des commandes (sans
+   modifier les cas tests) :
+                                                                                            
+                           
+   <<   METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les
+   températures imposées",
+   <<                         into=('DUALISATION'),defaut='DUALISATION'),
+                                                                                            
+                           
+   >>   METHODE         =SIMP(statut='f',typ='TXM',fr="Stratégie de résolution pour les
+   températures imposées",
+   >>                         into=('DUALISATION','ELIMINATION'),defaut='ELIMINATION'),
+                                                                                            
+                           
+   Une nouvelle fiche (12475) a été émise pour tracer la suite de ce chantier
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.13  D4.06.12  D4.06.04  D4.06.20
+VALIDATION
+   200 tests dont 85 cassxc3xa9s !
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012147 DU 2008-06-02 14:02:03
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Commun Jeveux normalisxc3xa9 - le faire en include
+FONCTIONNALITE
+   Depuis ma dernière intervention (10 juin), ni Mathieu, ni Jean-Pierre ne se sont
+   manifestés pour modifier les scripts de l'agla et d'ASTK afin de prendre en compte les
+   directives de pré-compilation "#include". Et je les comprends très bien !!
+   
+   Je propose donc de classer cette fiche "sans suite" au regard du rapport "effort de
+   développement" / "gains attendus".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 16/09/2008 - 13:38:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012240 DU 2008-06-26 15:04:16
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Bugs potentiels xc3xa0 l'appel des routines MRMULT/MCMULT
+FONCTIONNALITE
+   Contexte
+   ----------
+   En travaillant sur l'extension du périmètre du solveur modal 
+   QZ au non symétrique, j'ai trouvé des bugs potentiels ds les routines 
+   MRMULT/MCMULT.f.
+   Ces routines effectuent le produit d'une matrice A (au format 
+   MORSE) par un vecteur X (ou un ensemble de vecteurs):
+                   A * X  --> Y
+   X,Y réels si MRMULT, complexes si MCMULT.
+   
+   Fonctionnalités impactées
+   --------------------------
+   A priori toutes, mais plutôt utilisé en dynamique (MRMULT appelé 116 fois 
+   et MCMULT 56).
+   
+   Détails
+   --------
+   Ces routines semblent a priori accepter tous les types de matrices 
+   A: réelles, complexes et hermitiennes (type résorbé récemment), 
+   structurellement symétriques ou non.
+   Elles proposent un paramètre TYPVEC qui type les vecteurs input/output X/Y
+   
+   En fait:
+    - TYPVEC n'est pas utilisé, on décide du type par l'appel a 
+   MRMULT (X,Y reels) ou MCMULT (complexes),
+    - X et Y sont forcément du même type et des vecteurs 
+   distincts,
+    - Le cas des matrices hermitiennes est a enlever (type résorbé),
+    
+    - X reel et A reelle    ---> Ok en sym et non sym
+    - X reel et A complexe  ---> resultat faux (on ne prend que 
+   la partie réelle du produit en sym; si A non sym on fait 
+   comme si A est sym).
+    - X complexe et A reelle   --> resultat faux en non sym
+    - X complexe et A complexe --> resultat faux en non sym
+   
+   Corrections apportées
+   ----------------------
+    - Entêtes des routines corrigées et clarifiees,
+    - Corrections des cas non sym.
+    - CALL ASSERT(.FALSE.) si X reel et A complexe,
+    - Resorbtion du cas hermitien.
+    - Routines devenues inutiles: mrmmvc.f, mcmmvz.f, mrmmvz.f
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 5.0.1
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.1
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012241 DU 2008-06-26 15:31:52
+TYPE evolution concernant Code_Aster (VERSION 10.1)
+TITRE
+   Extension du pxc3xa9rimxc3xa8tre du solveur modal QZ au non symxc3xa9trique
+FONCTIONNALITE
+   Contexte
+   --------
+   Integration de CADYRO ds Code_Aster
+   
+   Objectif
+   --------
+   Fournir un solveur modal pour resoudre des pbs modaux 
+   generalises et quadratiques avec des matrices non symétriques.
+   
+   Operateur impacte
+   ------------------
+   MODE_ITER_SIMULT, pas de changement de syntaxe pour 
+   l'utilisateur.
+   
+   Perimetre
+   ---------
+   Méthodes QZ et SORENSEN étendues aux pbs généralisés et aux 
+   quadratiques avec matrices K, M et C réelles (K peut être
+   complexe) symétriques ou non.
+   Seules restrictions:
+      - en quadratique: pas de matrice K complexe (pas de cas-
+   test).
+    --> limitation informatique: il faut completer les dev/tests.
+   
+      - en quadratique: avec SORENSEN les trois approches sont
+   disponibles (COMPLEXE, REEL et IMAG) mais la seconde (par
+   défaut) parait la plus efficace.
+    --> pb du centrage du shift autour de la zone d'interet.
+   Comme on ne retient que les valeurs propres
+   conjuguées, si on ne trouve qu'une des 2 valeurs, on ne les
+   retient pas. Donc, suivant l'efficacité de la transformation
+   spectrale de ces approches, on ne trouve pas forcément tout
+   les couples et le nbre de modes fournis à l'utilisateur peut
+   être inférieur à celui souhaité.
+   A mon avis: tant que K est réelle, on se prend tout seul les 
+   pieds ds le tapis. Il faudrait changer les algos de tri. Dès 
+   qu'une valeur propres est complexe et que son mode est 
+   correct au sens du couplage parties haute/basse, on devrait 
+   le garder. Ainsi les résultats seraient plus homogènes entre 
+   les méthodes.
+   Il n'en reste pas moins qu'il faut continuer a améliorer ces
+   techniques de shift (entre autres choses, cf. EL)
+   
+   Rappel:  
+    - QZ adapte aux petits cas (centaines ddls) dont on cherche 
+   une grosse partie du spectre avec une bonne precision. 
+   Matrice plutot pleine si possible (contingence LAPACK).
+     - SORENSEN et  TRI_DIAG: taille quelconque, on cherche une 
+   partie du spectre.
+     - JACOBI: Idem avec taille moyenne (10 000 ddl).
+   
+   Details
+   -------
+    * On etend le perimetre du nouveau solveur QZ (EL11581) et 
+   du solveur par defaut, SORENSEN, au non symetrique. Desormais 
+   le perimetre de MODE_ITER_SIMULT est plus etendu que celui de 
+   MODE_ITER_INV et comprend, pour ces
+   deux methodes:
+      - matrices M (et C en quad) reelles,
+      - matrice K reelle ou complexe,
+      - matrices K, M (et C en quad) symetriques ou non.
+   
+    * En plus:
+     - amelioration de la variante QZ_EQUI; affichage des
+   erreurs directes sur les valeurs propres si INFO=2 
+   (complementaire des erreurs inverses affichees par defaut).
+     -On debranche les reortho de vecteurs propres inutiles des
+    qu'on manipule des valeurs propres complexes (non sym,
+    quadratique, K complexe).
+     - Dans les memes cas on debranche une factorisation de la
+    matrice dynamique (cout CPU en n3) inutile avec QZ.
+     - Correction affichage ds ARPACK (pas de mise a zero).
+     
+     !!! Ce petit chantier logiciel a permis de debusquer des
+    bugs ds des fonctionnalites connexes au modal (cf. AL12240
+    AL12432,AL12476) !!!
+   
+   Validation
+   ----------
+      - non regression sur les 15 cas-tests deja restitues avec
+    QZ.
+      - SDLL123b: introduction d'un cas-test avec K et M non sym
+    en generalise et quadratique. 
+     Cas-test purement informatique alter-geo de sdll123a en
+     attendant des modelisations non symetriques pour construire
+    K et M.
+     Pour l'instant je joue sur la modelisation 'MECA_GYRO' qui
+    produit des matrices d'amortissement non sym et les
+     combinent (via COMB_MATR_ASSE) aux matrices K et M sym pour
+    obtenir de nouvelles matrices K1 et M1 non sym.
+    Ds ce cas-test, je compare les solutions de QZ, SORENSEN (3
+    approches) et PYTHON/LAPACK. Il est instrumente pour jouer
+    sur le defaut de sym et sur la technique de reduction
+    lineaire pour passer d'Aster a Python.
+   
+   Sources modifiees
+   -----------------
+   dnaupd.f, nmop45.f, op0044.f, op0045.f, rectfc.f, vpermc.f,
+    vpfopc.f,vppara.f, vpqzla.f, vpsorc.f, vpwecf.f, wp4vec.f,
+    wpfopc.f, wpfopr.f, wpnorx.f, wpsorc.f, wpsorn.f znaupd.f,
+    wp2vec.f, wp3vec.f
+    algeline.py algeline2.py algeline5.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.52.03,R5.01.01,R5.01.02,V2.02.123
+VALIDATION
+   informatique, fonctionnelle, non-regression
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 16/09/2008 - 13:39:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012278 DU 2008-07-08 07:43:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Calcul du module avec CREA_CHAMP / COMB_CHAM_NO
+FONCTIONNALITE
+   Problème :
+   ---------
+   Avec CREA_CHAMP, on peut extraire d'un champ complexe sa partie réelle et sa partie
+   imaginaire, mais on ne peut pas calculer le module (ou la phase) de ses composantes complexes.
+                                                                                            
+                           
+   Evolution proposée :
+   --------------------
+   Comme pour la commande CALC_FONCTION / EXTRACTION,
+   le mot clé CREA_CHAMP/PARTIE accepte maintenant 4 valeurs :
+     'REEL'   -> partie réelle
+     'IMAG'   -> partie imaginaire
+     'MODULE' -> module (=valeur absolue)
+     'PHASE'  -> phase (en dégrés)
+                                                                                            
+                           
+   Validation :
+   ------------
+   On modifie le test sdld313d pour tester les 2 nouvelles possibilités.
+                                                                                            
+                           
+   Impact_documentaire :
+   ---------------------
+   U4.72.04 (CREA_CHAMP) :
+     Ajouter :
+     PARTIE='MODULE' -> module (=valeur absolue)
+     PARTIE='PHASE'  -> phase (en dégrés)
+                                                                                            
+                           
+   Détails :
+   ---------
+   1) La commande COMB_CHAM_NO n'existe plus et ne peut donc plus évoluer ...
+   2) Pour restreindre le champ produit sur un sous-ensemble des noeuds, on peut toujours
+   utiliser CREA_CHAMP/OPERATION='ASSE'
+   3) L'essentiel du temps de développement a été consommé pour compléter la routine cnsimp.f
+   afin qu'elle puisse imprimer les champs complexes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.72.04
+VALIDATION
+   sdld313d
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012302 DU 2008-07-16 10:38:12
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   MODI_MAILLAGE
+FONCTIONNALITE
+   Problème:
+   ---------
+   Si l'on utilise MODI_MAILLAGE / ORIE_NORM_COQUE / VECT_NORM et que l'on oublie le mot clé
+   NOEUD (ou GROUP_NO),
+   Le fortran nous arrete avec un message mal formaté alors que l'on pourrait etre arreté
+   plus tot lors de l'analyse syntaxique.
+                                                                                            
+                           
+   Solution:
+   ---------
+   On modifie le catalogue de MODI_MAILLAGE pour y ajouter un "bloc" si VECT_NORM.
+                                                                                            
+                           
+   Détails:
+   --------
+   On fait la meme correction pour MODI_MAILLAGE / ORIE_LIGNE
+   
+   A reporter en NEW8 :
+   --------------------
+   98,100d97
+   <            regles=(EXCLUS('NOEUD','GROUP_NO'),
+   <                    PRESENT_PRESENT('NOEUD','VECT_NORM'),
+   <                    PRESENT_PRESENT('GROUP_NO','VECT_NORM'),),
+   102a100,101
+   >            b_vect_norm     =BLOC(condition = "VECT_NORM != None",
+   >              regles=UN_PARMI('NOEUD','GROUP_NO'),
+   105a105
+   >          ),
+   107,109d106
+   <            regles=(EXCLUS('NOEUD','GROUP_NO'),
+   <                    PRESENT_PRESENT('NOEUD','VECT_TANG'),
+   <                    PRESENT_PRESENT('GROUP_NO','VECT_TANG'),),
+   111a109,110
+   >            b_vect_tang     =BLOC(condition = "VECT_TANG != None",
+   >              regles=UN_PARMI('NOEUD','GROUP_NO'),
+   114a114
+   >          ),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012324 DU 2008-07-22 06:09:28
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   MODE_STATIQUE + SOLVEUR=GCPC => rxc3xa9sultats faux
+FONCTIONNALITE
+   Problème:
+   ---------
+   Si on passe le test sdll131a (commande MODE_STATIQUE) avec le solveur GCPC, ce test
+   devient NOOK :
+   500% d'erreur sur certains moments de torsion !!
+                                                                                            
+                           
+   Analyse:
+   ---------
+   Thomas De Soza a remarqué que la programmation du solveur GCPC n'est pas en cause. En
+   effet, le problème est le meme (résultats très faux) avec le solveur PETSC.
+                                                                                            
+                           
+   C'est un problème de solveur itératif : la valeur du résidu par défaut (1.e-6) est
+   insuffisante.
+   Avec RESI_RELA=1.e-8, le test redevient OK (avec GCPC et PETSC).
+                                                                                            
+                           
+   Thomas a eu ensuite la drole d'idée d'essayer LDLT/RCMK : le test est alors fortement NOOK.
+                                                                                            
+                           
+   J'ai essayé de "creuser" un peu ce dernier problème (résultats faux avec 'RCMK') :
+     - Je me suis aperçu que la "fausseté" apparaissait après la commande COMB_SISM_MODAL
+   alors que les arguments dentrée de cette commande semblaient corrects (commandes
+   MODE_ITER_SIMULT et MODE_STATIQUE correctes). J'ai donc émis une fiche (12456) concernant
+   COMB_SISM_MODAL.
+     - Par curiosité, je me suis ensuite demandé si la numérotation des noeuds du maillage
+   (donnée par RCMK) pouvait etre à l'origine du problème. J'ai modifié le fichier .mail pour
+   ordonner les noeuds (COOR_3D) comme le fait l'algorithme RCMK et là, c'est
+   MODE_ITER_SIMULT qui s'est mis à "dérailler" !! J'ai alors émis une fiche (12455)
+   concernant MODE_ITER_SIMULT.
+                                                                                            
+                           
+   Conclusion:
+   -----------
+   Le problème initial (suspicion de MODE_STATIQUE/GCPC) est sans objet : pour obtenir des
+   résultats OK, il suffit de resserrer RESI_RELA=1.E-8.
+                                                                                            
+                           
+   En revanche, la renumérotion des noeuds obtenue par RCMK semble poser 2 problèmes
+   distincts (MODE_ITER_SIMULT et COMB_SISM_MODAL). 2 fiches d'AL (12455 et 12456) ont été
+   émises pour ces problèmes ; mais ces 2 problèmes sont-ils vraiment indépendants ?
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essais perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012344 DU 2008-07-28 11:08:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   les test vfin001a se plante sur Rocks si VERI_JACOBIEN='OUI'
+FONCTIONNALITE
+   Problème:
+   ---------
+   Dans le test vfin001a, si on active AFFE_MODELE/VERI_JACOBIEN='OUI' sur clpaster, le code
+   s'arrete en erreur fatale.
+                                                                                            
+                    
+   Analyse et Solution :
+   ---------------------
+   Clément Chavant a également détecté un problème du meme type pour l'option NSPG_NBVA.
+   Le bug a été introduit (par moi) lors de ma dernière restitution pour les volumes finis.
+   Les 2 routines bugguées sont jevech.f et tecac2.f :
+   J'avais oublié que les champs "out" d'une option n'étaient pas toujours des resuelem !!
+                                                                                            
+                    
+   Validation:
+   -----------
+   Les test vfin001a devient OK sur clpaster avec VERI_JACOBIEN='OUI' en debug et en no-debug
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   vfin001a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012346 DU 2008-07-29 08:33:08
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   bug dans la commande CALCUL (op0026) si COMP_ELAS
+FONCTIONNALITE
+   Problème:
+    ---------
+    Si dans le test pynl01a, on remplace  COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+    par COMP_ELAS=_F(RELATION='ELAS',), on se plante avec le message :
+    
+      !--------------------------------------------------------------------------------!
+      ! <E> <CALCULEL_42>                                                              !
+      !                                                                                !
+      !  Erreur Programmeur:                                                           !
+      !  Incohérence fortran/catalogue                                                 !
+      !  TYPE_ELEMENT :  MECA_HEXA8                                                    !
+      !  OPTION       :  FULL_MECA                                                     !
+      !  La routine texxxx.f correspondant au calcul élémentaire ci-dessus est bugguée !
+      !  Elle écrit en dehors de la zone allouée au paramètre (OUT) PCODRET.           !
+      !                                                                                !
+      ! Cette erreur sera suivie d'une erreur fatale.                                  !
+      !--------------------------------------------------------------------------------!
+                                                                                            
+                                     
+                                                                                            
+                                     
+   Analyse :
+   ---------
+   En réalité, le message d'erreur concernant le paramètre PCODRET est accompagné du meme
+   message pour PVARIPR et c'est celui-là qui est significatif : je pense que l'écrasement
+   concernant PVARIPR est tel qu'il écrase aussi PCODRET. Il n'y a rien à reprocher à PCODRET.
+                                                                                            
+                                     
+   La question est : "pourquoi y-a-t-il écrasement pour PVARIPR ?"
+                                                                                            
+                                     
+   La réponse est :
+     - Le fichier de commande est incorrect : dans la commande CALCUL, on impose
+   RELATION='ELAS' (1 seule variable interne) mais on fournit un champ de variables internes
+   "initiales" (VARI=VARIP) qui a été initialisé avec 2 variables 'V1' et 'V2'.
+     - dans la routine te0039.f, le nombre de variables internes est récupéré sur le champ
+   "-" (=> 2) et l'initialisation de PVARIP (par DCOPY) écrit donc au delà de ce qui est
+   permis. Ce qui entraine le message d'erreur CALCULEL_42.
+     - Dans la commande STAT_NON_LINE, une routine (vrcomp.f) a été développée pour vérifier
+   la cohérence du nombre de variables internes entre les instants "-" et "+".
+   Malheureusement, cette routine appelée par nmdoet.f n'est pas appelée par la commande
+   CALCUL. L'erreur de modélisation n'est donc pas détectée proprement.
+                                                                                            
+                                     
+                                                                                            
+                                     
+   Conclusion :
+   ------------
+   L'erreur est une erreur d'utilisation. Je classe la fiche "sans suite".
+   Nicolas (ou Mickael ou Samuel ...) émettra éventuellement une fiche d'évolution pour
+   blinder CALCUL.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012350 DU 2008-07-29 14:21:43
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   bug CALC_MATR_ELEM si pas de modele
+FONCTIONNALITE
+   Problème:
+   ---------                                                                                
+                                
+   Samuel a remarqué que contrairement à ce que dit la doc U, la commande CALC_MATR_ELEM ne
+   permet pas de calculer les matrices élémentaires corresponfdant aux seuls éléments de
+   Lagrange (charges dualisées).                                                            
+                               
+                           
+   Si on tente :
+   KEL2=CALC_MATR_ELEM( CHARGE=BLOQ, OPTION='RIGI_MECA' )
+                                                                                            
+                        
+   Le code s'arrete en erreur <F>atale dans medome.f.                                       
+                                                                          
+                                                                                            
+                      
+   Analyse :
+   ---------
+   Comme Samuel, j'ai essayé de corriger CALC_MATR_ELEM pour pouvoir faire le calcul ci-dessus.
+   J'ai du adapter légèrement les 3 routines : medome.f, merime.f et memare.f               
+                                                                            
+                           
+   Avec ces 3 corrections, on peut calculer KEL2 mais lorsque l'on tente d'assembler KEL2
+   dans une matr_asse qui ne contiendrait que la rigidité des éléments de Lagrange, on est
+   arreté à nouveau dans la routine assmam.f !!
+                                                                                            
+                         
+   On constate donc que ce genre de calcul (bien que soit-disant possible dans la doc U) n'a
+   jamais été mis en oeuvreréellement.
+                                                                                            
+                        
+   Conclusion :
+   ------------
+   Plutot que de modifier les routines de CALC_MATR_ELEM et celles de ASSE_MATRICE pour
+   pouvoir assembler la matrice des seuls éléments de Lagrange, je préfère, comme le suggère
+   C. Durand, rendre obligatoire le mot clé MODELE. Cela simplifie l'architecture du code.  
+                                                                                         
+                           
+   Et lorsque l'utilisateur a besoin de la matrice des éléments de Lagrange, (ce qui est un
+   besoin nouveau apparemment), on peut toujours faire (astuce de Samuel) une "soustraction"
+   des matrices :                                                                           
+                
+                           
+   KEL1=CALC_MATR_ELEM( MODELE=STRUCTUR, CHAM_MATER=MATER, CHARGE=BLOQ, OPTION='RIGI_MECA' )
+   KEL2=CALC_MATR_ELEM( MODELE=STRUCTUR, CHAM_MATER=MATER,              OPTION='RIGI_MECA' )
+                                                                                            
+                         
+   NUMERO=NUME_DDL( MATR_RIGI=KEL1 )
+                                                                                            
+                         
+   KAS1=ASSE_MATRICE(MATR_ELEM=KEL1, NUME_DDL=NUMERO )
+   KAS2=ASSE_MATRICE(MATR_ELEM=KEL2, NUME_DDL=NUMERO )
+                                                                                            
+                        
+   KAS3=COMB_MATR_ASSE( COMB_R=(
+                  _F(  MATR_ASSE = KAS1, COEF_R = 1.),
+                  _F(  MATR_ASSE = KAS2, COEF_R = -1.),
+                            ))
+                                                                                            
+                         
+   Restitution :
+   -------------
+   1) Modification de calc_matr_elem.capy : MODELE obligatoire
+   2) Blindage du fortran (modele obligatoire) : modifier les commentaires + ASSERT
+   3) Impact documentaire : U4.61.01 (CALC_MATR_ELEM) :
+         - MODELE obligatoire
+         - supprimer le paragraphe expliquant que l'on peut calculer la rigidité sur les
+   seuls éléments de Lagrange.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.61.01
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012358 DU 2008-07-30 16:25:20
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   AFFE_CHAR_THER_F / TEMP_IMPO / EVOL_THER xc3xa0 rxc3xa9sorber
+FONCTIONNALITE
+   Suggestion:
+   -----------
+     Le mot clé AFFE_CHAR_THER_F / TEMP_IMPO / EVOL_THER peut être résorbé car la meme
+   fonctionnalité est théoriquement possible avec AFFE_CHAR_CINE / EVOL_IMPO (en plus efficace).
+                                                                                            
+                           
+                                                                                            
+                           
+   Evolution:
+   -----------
+   1) On complète le développement de AFFE_CHAR_CINE / EVOL_IMPO pour qu'il fonctionne aussi
+   en thermique :
+     - petit complément dans charci.f
+     - mise à jour de SD/sd_char_cine.py
+   2) On supprime AFFE_CHAR_THER_F / TEMP_IMPO / EVOL_THER des catalologues et fortran
+   3) Cas tests : on modifie le seul test qui utilisait AFFE_CHAR_THER_F / TEMP_IMPO /
+   EVOL_THER : ttll01b
+                                                                                            
+                           
+   Impact Documentaire :
+   ---------------------
+   U4.44.01 : AFFE_CHAR_THER_F : suppression de AFFE_CHAR_THER_F / TEMP_IMPO / EVOL_THER
+   U4.44.03 : AFFE_CHAR_CINE : dire que EVOL_IMPO marche aussi pour les evol_ther
+   D4.06.09 : sd_char_cine :
+                - suppression de  AFCK(6:7)='FO'
+                - AFCK(3) != ' ' possible pour CITH
+                                                                                            
+                           
+   Validation :
+   ------------
+   Le test ttll01b teste maintenant AFFE_CHAR_CINE / EVOL_IMPO pour la thermique
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01 U4.44.03 D4.06.09
+VALIDATION
+   ttll01b
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012402 DU 2008-08-28 14:15:18
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   IMPR_RESU au format MED avec option RESTREINT
+FONCTIONNALITE
+   Problème :
+   ----------
+   L'étude jointe à la fiche utilise IMPR_RESU / RESTREINT. Elle s'arrete brutalement par un
+   ASSERT dans la routine uteref.f (ligne 167).
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Le problème concerne l'impression des cham_elem ELGA au format MED (routine irchme.f).
+   Cette routine a besoin du nom du modèle associé aux cham_elem qu'elle imprime.
+   Pour cela, elle récupère le nom du modèle dans la sd_resultat (paramètre MODELE).
+                                                                                            
+                           
+   Dans le développement que j'ai fait pour IMPR_RESU / RESTREINT, je n'ai pas fait attention
+   aux paramètres de la sd_resultat temporaire réduite '&&REDUIT' : je recopie
+   systématiquement ceux de la SD à réduire dans ceux de la SD réduite. En particulier, le
+   paramètre MODELE est recopié.
+                                                                                            
+                           
+   Du coup, la routine irchme.f récupère pour les champs réduits le modèle initial. Elle
+   transmet alors l'objet MODELE//'.MAILLE' aux routines d'impression au format MED. La
+   routine ircmpe.f en déduit des betises : le type d'élément de la ième maille du maillage
+   réduit est celui de la ième maille du maillage initial ! ce qui est souvent faux. D'où le
+   plantage observé.
+                                                                                            
+                           
+   Correction :
+   ------------
+   Routine rdtres.f : lors de la recopie des paramètres de la SD à réduire dans ls SD réduite :
+      1.1 : je ne recopie pas les paramètres CHAMPMAT, CARAELEM et EXCIT
+      1.2 : pour le paramètre MODELE, j'écris le nom d'un modèle temporaire "réduit". En
+   réalité, je ne crée que l'objet .MAILLE de la sd_modele.
+                                                                                            
+                           
+                                                                                            
+                           
+   Validation :
+   ------------
+   1) l'étude de l'utilisateur va jusqu'au bout.
+   2) zzzz240a : j'ai vérifié qu'après la correction, IMPR_RESU / RESTREINT faisait bien son
+   boulot : on retrouve bien les bons champs sur les bonnes mailles après la "réduction".
+                                                                                            
+                           
+    Mais pour faire cette validation "visuelle", j'ai du utiliser le format 'RESULTAT'
+   (ASCII) au lieu du format 'MED' (binaire). Et comme le format MED est semble-t-il le seul
+   à utiliser l'objet coupable (MODELE.MAILLE), cet essai ne fait que vérifier que je n'ai
+   rien cassé pour le formar 'RESULTAT'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 16/09/2008 - 13:39:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012432 DU 2008-09-02 14:42:13
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Bug dans le test de vxc3xa9rification en modal avec valeurs propres complexes
+FONCTIONNALITE
+   Contexte
+   ----------
+   En travaillant sur l'extension du périmètre du solveur modal 
+   QZ/Sorensen au non symétrique, j'ai trouvé des bugs potentiels ds les
+   routines VPERMC.F et WPERMO.F
+   Ces routines calculent la norme d'erreur a l'issu du calcul modal pour
+   toutes les methodes (QZ, Sorensen, TRI_DIAG, JACOBI, Puissance...). 
+      - VPERMC.F pour le generalise avec modes complexes (ds le perimetre
+        actuel matrice de raideur K complexe, et avec l'EL12241 en non sym).
+      - WPERMO.F pour le quadratique (avec l'EL12241 non sym)
+   
+   Fonctionnalités impactées
+   --------------------------
+   MODE_ITER_SIMULT/MODE_ITER_INV en generalise complexe et en quadratique,
+   en v8 et en v9.
+   
+   Détails
+   --------
+   Ces routines ont besoin de recalculer les valeurs propres (Re(lambda),Im
+   (lambda)) a partir de donnees annexes: 
+    - pour VPERMC: Re(f) et Im(f)/(2*Re(f))   (on prend toutes les valeurs)
+    - pour WPERMO: Im(lambda) et -Re(lambda)/abs(lambda)  (on ne prend que
+                          les complexes conjuguées avec Im(lambda)>0)
+   Rappel de notation:lambda=(2*pi*f)**2.
+   
+   En fait il semble que VPERMC reconstuise (Re(lambda),abs(Im(lambda)))
+                         WPERMO             (-abs(Re(lambda)),Im(lambda)))
+   L'erreur se produisait donc:
+      - generalise complexe avec Im(lambda)<0 
+      - quadratique avec Re(lambda)>0
+   On corrige donc les formules et cela améliore notablement les normes 
+   d'erreurs des cas-tests sensd09b et sdll123a (erreurs 100 fois plus 
+   faibles).
+   
+   On corrige en v8 et en v9.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 5.0.1
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.1
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 16/09/2008 - 13:39:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012466 DU 2008-09-10 12:37:37
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pb si on utilise IMPR_RESU / RESTREINT 2 fois dans la mxc3xaame xc3xa9tude
+FONCTIONNALITE
+   Problème :
+   ----------
+   On ne peut pas appeler plusieurs fois IMPR_RESU / RESTREINT dans la même étude.
+   
+   Analyse :
+   ---------
+   Pendant la commande IMPR_RESU / RESTREINT, on construit une structure de donnée
+   sd_resultat temporaire (de nom '&&REDUIT'). C'est cette SD "réduite" que l'on imprime.
+   
+   Normalement cette SD devrait être construite sur la base volatile mais comme la routine de
+   création des sd_resultat (rscrsd.f) n'a pas d'argument "BASE", cette SD était toujours
+   construite dans la base globale. Ceci explique le message d'erreur fatale.
+   
+   Correction :
+   ------------
+   1) On ajoute l'argument "BASE" aux 3 routines : rscrsd.f, utacce.f et utpara.f
+   2) On modifie les 53 appelants de rscrsd.f : tous utilisent BASE='G' sauf rdtres.f qui
+   utilise BASE='V'.
+   
+   Validation :
+   ------------
+   1 essai perso en modifiant zzzz240a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 16/09/2008 - 13:39:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012476 DU 2008-09-12 16:36:50
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Bug potentiel en modal quadratique (routines wp*vec)
+FONCTIONNALITE
+   En modal quadratique, une fois les valeurs propres et les 
+   vecteurs propres exhumés par le solveur (TRI_DIAG, SORENSEN ou
+   QZ) on va les trier pour
+      - ne retenir que les complexes conjuguées (on élimine les 
+   réelles et les non conjuguées avec message d'alarme)
+      - ne prendre des 2 conjuguées, que celles à partie
+       imaginaire >0
+      - ne retenir que celles qui verifient le couplage
+      (partie haute, partie basse) du vecteur propre.
+   
+   Pour faire cela, chaque méthode utilise sa propre routine
+   (pour des raisons historiques et d'input/output différents):
+    -wp2vec pour TRI_DIAG,
+    -wp3vec pour SORENSEN APPROCHE REELLE ET IMAGINAIRE,
+    -wp4vec pour SORENSEN APPROCHE COMPLEXE et QZ.
+   Ces routines utilisaient:
+    - des algorithmes de tri différents et buggés,
+    - avec des paramètres en dur.
+   Nous avons tout homogénéisés par le haut (algo on espère moins
+   buggé et plus stable, avec paramètres remontés au niveau des
+    variables).
+   Les différents messages ont été aussi homogénéisés.
+   Bref, lorsque les différents solveurs modaux donnent les memes
+   resultats à ces routines... elles se comportent
+   maintenant de la meme manière pour:
+     - les affichages dans le .mess et les alarmes éventuelles.
+     - le remplissage des structures de données de la base
+      globale.
+   
+   Ce problème a pu se voir au niveau des cas-tests:
+     - on a éliminé des modes que l'on aurait du garder,
+     - on a sur-estimer leur norme d'erreur.
+   Je l'ai vérifié sur un cas transmis par Irmela en symétrique,
+   non symétrique structurel et en valeur numérique.
+   Détails:
+     - J'en ai profité pour nettoyer les routines et les passer
+     en IMPLICIT NONE.
+    - Je n'ai pas fait le travail avec WP5VEC qui concerne le
+    quadratique avec matrice K complexe (non exploité 
+    actuellement).
+    - Il faut faire la manip en V8.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 5.0.1
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.1
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 16/09/2008 - 07:53:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012255 DU 2008-06-30 13:13:09
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR09 - Simplifier et poursuivre les vxc3xa9rifications lixc3xa9es au catalogue de lois de comportement
+FONCTIONNALITE
+   Suite à la réalisation du catalogue de lois de comportement (fiche 5661), ou l'on a défini
+   pour chaque comportement un catalogue python contenant des informations sur les
+   modélisations supportées, les matériaux utilisés, etc... , il restait quelques
+   vérifications à poursuivre :
+   
+   - l'existence des matériaux (utilisés par chaque comportement) : on ne vérifie rien de
+   plus que ce qui est fait dans RCVALA / RCVALB : le message d'erreur est clair.
+   
+   - la vérification des variables de commande : pour ce qui concerne les coefficients
+   matériau dépendant des variables de commandes, c'est aussi géré correctement par RCVALA /
+   RCVALB.
+   Pour les déformations dues aux variables de commandes (température, séchage,
+   hydratation..) l'existence est plus ou moins testée dans les routines de comportement...
+   
+   - il reste la vérification des modélisations compatibles avec les lois : il s'agit de
+   tester que le TYPMOD (3D, C_PLAN, 1D, AXIS, D_PLAN) utilisé est compatible avec la loi.
+   Pour faire cette vérification au niveau global, et non pas local, on utilise l'idée de
+   Jacques :
+   
+   * on ajoute l'attribut TYPMOD dans le catalogue phenomene_modelisation, par exemple
+   TYPMOD=C_PLAN,pour toutes les modélisations où cela a un sens ;
+   
+   * au début de STAT_NON_LINE (dans nmdorc), pour chaque occurrence de COMP_INCR /
+   COMP_ELAS, on boucle sur les mailles sur lesquelles on a affecté un comportement, puis on
+   interroge le catalogue PHENOMENE_MODELISATION. (teattr et lteatt.f). Il suffit alors de
+   vérifier (par LCTEST) si le le TYPMOD associé à la modélisation fait partie de la liste
+   des possibles dans le catalogue du comportement.
+   
+   * avantage pour le développeur de lois de comportement : il n'a plus à faire de tests (par
+   exemple sur C_PLAN).
+   
+   * avantages pour l'utilisateur : il est prévenu des incompatibilités. De plus, dans les
+   cas C_PLAN et 1D, si le comportements n'est pas programmé pour ces modélisations, alors on
+   active automatiquement DEBORST (et on émet une alarme).
+   
+   * enfin, pour éviter de s'arrêter au niveau élémentaire avec un message plutôt orienté
+   développeurs, si jamais un comporement n'est pas défini sur une maille, on affecte
+   COMP_INCR=ELAS, en émettant une alarme.
+   
+   Validation : liste complète.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012111 DU 2008-05-22 14:43:11
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pb de convergence d'un calcul de contact avec une loi de Chaboche a un parametre cinematique
+FONCTIONNALITE
+   Avec le comportement de Chaboche, en prenant des éléments intégrés 
+   normalement (AXIS et non AXIS_SI) et en utilisant une matrice 
+   élastique, le calcul va jusqu'au bout avec 
+   REAC_GEOM='AUTOMATIQUE'. La convergence est très lente (4650s) et 
+   nécessite entre 500 et 1000 itérations. 
+   
+   Avec un comportement VMIS_ECMI_LINE identifié à la fois sur les 
+   essais cycliques et sur la courbe de traction d'un essai de 
+   traction, le calcul est beaucoup plus rapide (320s) et les 
+   résultats sont très proches.
+   
+   Pour l'étude du projet Fuite GV, on utilisera donc cette loi de 
+   comportement.
+   
+   Ceci clot cette fiche, par contre le problème de convergence du 
+   contact avec réactualisation géométrique pour certains 
+   comportements reste inexpliqué. Il fera l'objet d'un autre fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012458 DU 2008-09-09 08:34:30
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Modification de l'intxc3xa9gration implicite du comportement Kocks-Rauch
+FONCTIONNALITE
+   Il s'agit de modifier la façon d'intégrer (en implicite, donc dans PLASTI) le modèle de
+   Kocks-Rauch afin de réduire le coût CPU.
+   
+   Le principe de la modification consiste en un changement de variable : on intègre
+   maintenant sur la densité de dislocation pour chaque ssytème de glissemnt, au lieu de la
+   déformation plastique cumulée. Cela permet d'obtenir un système totalement implicite. Les
+   gains CPU attendus sont de l'ordre d'un facteur 2 à 5, voir plus suivant les cas. Ceci est
+   important pour les calculs qui seront effectués dans la plate-forme PERFECT.
+   
+   Un ordre d'idée : sur un agrégat à 10 grains, le calcul jusqu'à 20% de déformation prenait
+   13000s environ, et il en prend maintenant 2900s.
+   
+   La doc R5.03.11 est modifiée en conséquence (jointe à la fiche).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.11C
+VALIDATION
+   ssnv172a
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012416 DU 2008-09-01 16:05:13
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.9, le cas-test perfe03a s'arrete par manque de mxc3xa9moire sur Bull.
+FONCTIONNALITE
+   Anomalie : en NEW9.3.9, le cas-test perfe03a s'arretait par manque de mémoire sur la
+   machine Bull. Le message d'erreur dans le fichier .mess est le suivant:
+   --------------------------------------------------------------------------------
+   ---- SEGMENTATION MEMOIRE
+   ----  LIMITE MEMOIRE DYNAMIQUE, IMPOSEE ATTEINTE
+   
+   Pour éviter le plantage mémoire, j'ajoute le mot-clé "mem_aster 1" dans le .para.
+   
+   De plus, pour que ce test valide vraiment les calculs effectués dans la plate-forme
+   PERFECT, j'active le fichier perfe03a.com1. Celui-ci teste un pros-traitement spécifique
+   (Sub Modelling) et nécessite d'être en PAR_LOT='NON', ce qui provoque un message :
+   
+   (F/U-206): err 4 sur les Verifications supplementaires des cas-tests
+   
+   Les opérations nécessitant PAR_LOT='NON' sont des récupérations de valeurs dans des tables : :
+           MDIF=POST_ELEM(MINMAX=_F(MODELE=MODEL2,NOM_CMP='V79',TOUT='OUI',CHAM_GD=DIF))
+   maxdif2=MDIF['MAX_V79',1]                
+   ma_dif2=MDIF['MA_MAX_V79',1]        
+   pg_dif2=MDIF['PT_MAX_V79',1]                
+   
+   et les instants calculés :
+   dico = RESUV2.LIST_VARI_ACCES()
+   NBNUM  = dico['NUME_ORDRE'][-1]
+   instants   = dico['INST']
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perfe03a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012377 DU 2008-08-08 08:18:18
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.7, le cas-test perfe03a s'arrete en erreur_<F> sur Bull.
+FONCTIONNALITE
+   déjà résolu par la fiche 12416
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perfe03a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT utilitai/mejvst              lefebvre J-P.LEFEBVRE        37     37      0
+ CASTEST AJOUT sdll123b                       pellet J.PELLET           508    508      0
+ CASTEST AJOUT ssnp130e                       pellet J.PELLET           194    194      0
+ CASTEST AJOUT ssnp130f                       pellet J.PELLET           193    193      0
+ CASTEST MODIF adlv301a                     lefebvre J-P.LEFEBVRE       158      1      1
+ CASTEST MODIF ascou05a                        proix J-M.PROIX          200      1      1
+ CASTEST MODIF ascou16a                     lefebvre J-P.LEFEBVRE       402      1      1
+ CASTEST MODIF ascou19a                     lefebvre J-P.LEFEBVRE       385      1      1
+ CASTEST MODIF ascou20a                     lefebvre J-P.LEFEBVRE        81      1      1
+ CASTEST MODIF ascou21a                     lefebvre J-P.LEFEBVRE        91      4      2
+ CASTEST MODIF comp002a                     courtois M.COURTOIS         287      1      1
+ CASTEST MODIF forma04b                     lefebvre J-P.LEFEBVRE       363      1      1
+ CASTEST MODIF perf001a                     lefebvre J-P.LEFEBVRE        66      1      1
+ CASTEST MODIF perf002a                     lefebvre J-P.LEFEBVRE        98      1      1
+ CASTEST MODIF perf003a                     lefebvre J-P.LEFEBVRE        63      1      1
+ CASTEST MODIF perf003b                     lefebvre J-P.LEFEBVRE        63      1      1
+ CASTEST MODIF perf004a                     lefebvre J-P.LEFEBVRE        88      1      1
+ CASTEST MODIF perf005a                     lefebvre J-P.LEFEBVRE       130      1      1
+ CASTEST MODIF perf005b                     lefebvre J-P.LEFEBVRE       130      1      1
+ CASTEST MODIF perf006a                     lefebvre J-P.LEFEBVRE       244      1      1
+ CASTEST MODIF perfe01a                        proix J-M.PROIX          386      1      1
+ CASTEST MODIF perfe03a                        proix J-M.PROIX          335     75    212
+ CASTEST MODIF sdld313d                       pellet J.PELLET           337     39     26
+ CASTEST MODIF sdnd104a                     lefebvre J-P.LEFEBVRE       639      1      1
+ CASTEST MODIF sdns106b                        proix J-M.PROIX          425      2      2
+ CASTEST MODIF sdns106c                        proix J-M.PROIX          425      2      2
+ CASTEST MODIF ssls09c                      lefebvre J-P.LEFEBVRE       197      1      1
+ CASTEST MODIF sslv134b                     lefebvre J-P.LEFEBVRE       848      1      1
+ CASTEST MODIF sslv134h                      geniaut S.GENIAUT          344    158     15
+ CASTEST MODIF sslv313b                     lefebvre J-P.LEFEBVRE       255      1      1
+ CASTEST MODIF ssnp130a                       pellet J.PELLET           313     86     43
+ CASTEST MODIF ssnp130b                       pellet J.PELLET           302     49     16
+ CASTEST MODIF ssnp130c                       pellet J.PELLET           261     48     16
+ CASTEST MODIF ssnp130d                       pellet J.PELLET           281     44     12
+ CASTEST MODIF ssnp138a                      geniaut S.GENIAUT          337     12      7
+ CASTEST MODIF ssns101e                     courtois M.COURTOIS         294      1      1
+ CASTEST MODIF ssnv112a                     lefebvre J-P.LEFEBVRE       208      1      1
+ CASTEST MODIF ssnv156a                     lefebvre J-P.LEFEBVRE       342      3      2
+ CASTEST MODIF ssnv166b                     lefebvre J-P.LEFEBVRE       436      1      1
+ CASTEST MODIF ssnv166c                     lefebvre J-P.LEFEBVRE       302      3      2
+ CASTEST MODIF ssnv171b                        proix J-M.PROIX          310      1      1
+ CASTEST MODIF ssnv171c                        proix J-M.PROIX          420      1      1
+ CASTEST MODIF ssnv172a                        proix J-M.PROIX         1127      1      1
+ CASTEST MODIF ssnv172b                        proix J-M.PROIX          197      1      1
+ CASTEST MODIF ssnv185n                     lefebvre J-P.LEFEBVRE       388      4      2
+ CASTEST MODIF ssnv192a                      geniaut S.GENIAUT          473     62      1
+ CASTEST MODIF ssnv194a                        proix J-M.PROIX          217      1      1
+ CASTEST MODIF ssnv194b                        proix J-M.PROIX          203      1      1
+ CASTEST MODIF ssnv209b                      geniaut S.GENIAUT          516     18      6
+ CASTEST MODIF ssnv503e                     lefebvre J-P.LEFEBVRE       562      1      1
+ CASTEST MODIF ssnv503f                     lefebvre J-P.LEFEBVRE       543      1      1
+ CASTEST MODIF ttll01b                        pellet J.PELLET           224     17      9
+ CASTEST MODIF vfin001a                       pellet J.PELLET            59      2      2
+ CASTEST MODIF yyyy108a                     lefebvre J-P.LEFEBVRE        82      2      2
+ CASTEST MODIF yyyy108e                     lefebvre J-P.LEFEBVRE        89      4      2
+ CASTEST MODIF yyyy108p                     lefebvre J-P.LEFEBVRE        94      4      2
+ CASTEST MODIF yyyy118a                     lefebvre J-P.LEFEBVRE       220      3      2
+ CASTEST MODIF yyyy118c                     lefebvre J-P.LEFEBVRE       207      2      2
+ CASTEST MODIF yyyy118d                     lefebvre J-P.LEFEBVRE       250      1      1
+ CASTEST MODIF zzzz175a                     lefebvre J-P.LEFEBVRE       622      1      1
+ CASTEST MODIF zzzz189a                        proix J-M.PROIX          295      5      4
+ CASTEST MODIF zzzz189b                        proix J-M.PROIX          151      3      2
+CATALOGU MODIF compelem/grandeur_simple__     pellet J.PELLET           848    169     67
+CATALOGU MODIF compelem/phenomene_modelisation__      proix J-M.PROIX         1429     85     65
+CATALOGU MODIF typelem/gener_me3d_3           pellet J.PELLET           658      7      7
+CATALOGU MODIF typelem/gener_me3di3           pellet J.PELLET           232      9     11
+CATALOGU MODIF typelem/gener_meax_2           pellet J.PELLET           587      9     11
+CATALOGU MODIF typelem/gener_mecpl2           pellet J.PELLET           599      7      7
+CATALOGU MODIF typelem/gener_medpl2           pellet J.PELLET           603      7      7
+CATALOGU MODIF typelem/gener_mepli2           pellet J.PELLET           220      9     11
+CATALOGU MODIF typelem/gener_me_xt           geniaut S.GENIAUT          304      2      1
+CATALOGU MODIF typelem/gener_mv2d_2           pellet J.PELLET           283      9     11
+CATALOGU MODIF typelem/gener_mv3d_3           pellet J.PELLET           321      9     11
+CATALOGU MODIF typelem/meca_hexs8             pellet J.PELLET           572     19     16
+CATALOGU MODIF typelem/mecpqs4                pellet J.PELLET           518     19     17
+CATALOGU MODIF typelem/medpqs4                pellet J.PELLET           527     19     17
+CATALOGU MODIF typelem/medpqs8                pellet J.PELLET           529     19     17
+CATALOPY MODIF commande/affe_char_acou        pellet J.PELLET            63      4      1
+CATALOPY MODIF commande/affe_char_meca_c      pellet J.PELLET            82      4      1
+CATALOPY MODIF commande/affe_char_meca_f      pellet J.PELLET           487      4      1
+CATALOPY MODIF commande/affe_char_meca        pellet J.PELLET           816      4      1
+CATALOPY MODIF commande/affe_char_ther_f      pellet J.PELLET           194      2      4
+CATALOPY MODIF commande/affe_char_ther        pellet J.PELLET           208      4      1
+CATALOPY MODIF commande/calc_elem             pellet J.PELLET           543     21      9
+CATALOPY MODIF commande/calc_g               geniaut S.GENIAUT          146      3      1
+CATALOPY MODIF commande/calc_matr_elem        pellet J.PELLET           166      3     27
+CATALOPY MODIF commande/crea_champ            pellet J.PELLET           194      2      2
+CATALOPY MODIF commande/debut               lefebvre J-P.LEFEBVRE        96      3      3
+CATALOPY MODIF commande/macr_europlexus     lefebvre J-P.LEFEBVRE       134      2      2
+CATALOPY MODIF commande/modi_maillage         pellet J.PELLET           158      7      7
+CATALOPY MODIF commande/post_k1_k2_k3        geniaut S.GENIAUT           84      3      1
+CATALOPY MODIF commande/poursuite           lefebvre J-P.LEFEBVRE        90      3      3
+       C MODIF supervis/astermodule         lefebvre J-P.LEFEBVRE      4071     29      2
+       C MODIF utilitai/asterm              lefebvre J-P.LEFEBVRE       432     13      1
+ FORTRAN AJOUT algorith/lcafyd                 proix J-M.PROIX           61     61      0
+ FORTRAN AJOUT algorith/lcmmkr                 proix J-M.PROIX          146    146      0
+ FORTRAN AJOUT algorith/lcplnf                 proix J-M.PROIX           58     58      0
+ FORTRAN AJOUT algorith/nmdocc                 proix J-M.PROIX          246    246      0
+ FORTRAN AJOUT algorith/nmdofu                 proix J-M.PROIX           75     75      0
+ FORTRAN AJOUT algorith/nmdovm                 proix J-M.PROIX          178    178      0
+ FORTRAN AJOUT algorith/xrecff               geniaut S.GENIAUT          140    140      0
+ FORTRAN AJOUT jeveux/jeinfo                lefebvre J-P.LEFEBVRE        40     40      0
+ FORTRAN AJOUT jeveux/jjlidy                lefebvre J-P.LEFEBVRE        61     61      0
+ FORTRAN AJOUT modelisa/elimdi                pellet J.PELLET           260    260      0
+ FORTRAN AJOUT prepost/rsingu                 pellet J.PELLET           189    189      0
+ FORTRAN MODIF algeline/dnaupd                pellet J.PELLET           666      7      1
+ FORTRAN MODIF algeline/mcmmvc                pellet J.PELLET           105     20      7
+ FORTRAN MODIF algeline/mcmmvr                pellet J.PELLET           105     24     11
+ FORTRAN MODIF algeline/mcmult                pellet J.PELLET            97     10     22
+ FORTRAN MODIF algeline/mrmult                pellet J.PELLET            97      9     23
+ FORTRAN MODIF algeline/nmop45                pellet J.PELLET           435      3      3
+ FORTRAN MODIF algeline/op0037                pellet J.PELLET           644      2      2
+ FORTRAN MODIF algeline/op0044                pellet J.PELLET           768      3      3
+ FORTRAN MODIF algeline/op0045                pellet J.PELLET          1162     88     44
+ FORTRAN MODIF algeline/op0093                pellet J.PELLET           512      2      2
+ FORTRAN MODIF algeline/op0161                pellet J.PELLET           111      2      2
+ FORTRAN MODIF algeline/op0168                pellet J.PELLET           472      2      2
+ FORTRAN MODIF algeline/rectfc                pellet J.PELLET            97     11      3
+ FORTRAN MODIF algeline/vpermc                pellet J.PELLET           137      8     10
+ FORTRAN MODIF algeline/vpfopc                pellet J.PELLET           107     11      3
+ FORTRAN MODIF algeline/vppara                pellet J.PELLET           194     38     10
+ FORTRAN MODIF algeline/vpqzla                pellet J.PELLET          1106    472    297
+ FORTRAN MODIF algeline/vpsorc                pellet J.PELLET           340      6      6
+ FORTRAN MODIF algeline/vpwecf                pellet J.PELLET           431      9      8
+ FORTRAN MODIF algeline/wp2vec                pellet J.PELLET           378    102     25
+ FORTRAN MODIF algeline/wp3vec                pellet J.PELLET           381     98     30
+ FORTRAN MODIF algeline/wp4vec                pellet J.PELLET           331     31     23
+ FORTRAN MODIF algeline/wpermo                pellet J.PELLET           140      4      3
+ FORTRAN MODIF algeline/wpfopc                pellet J.PELLET           116     10      2
+ FORTRAN MODIF algeline/wpfopr                pellet J.PELLET           157      9      2
+ FORTRAN MODIF algeline/wpnorx                pellet J.PELLET            56      4      2
+ FORTRAN MODIF algeline/wpsorc                pellet J.PELLET           384      7      6
+ FORTRAN MODIF algeline/wpsorn                pellet J.PELLET           413      5      4
+ FORTRAN MODIF algeline/znaupd                pellet J.PELLET           674      7      1
+ FORTRAN MODIF algorith/ascavc                pellet J.PELLET           158     33     31
+ FORTRAN MODIF algorith/ascima                pellet J.PELLET           121     16      4
+ FORTRAN MODIF algorith/asecon                pellet J.PELLET           272      2      2
+ FORTRAN MODIF algorith/asstoc                pellet J.PELLET           215      2      2
+ FORTRAN MODIF algorith/clas99                pellet J.PELLET           158      2      2
+ FORTRAN MODIF algorith/crasse                pellet J.PELLET           121      2      2
+ FORTRAN MODIF algorith/crcmel                 proix J-M.PROIX          119     55     20
+ FORTRAN MODIF algorith/crprol                pellet J.PELLET           288      2      2
+ FORTRAN MODIF algorith/crtype                pellet J.PELLET           416      2      2
+ FORTRAN MODIF algorith/crvrc1                pellet J.PELLET           120      2      2
+ FORTRAN MODIF algorith/crvrc2                pellet J.PELLET           113      2      2
+ FORTRAN MODIF algorith/diag99                pellet J.PELLET           241      2      2
+ FORTRAN MODIF algorith/disell               geniaut S.GENIAUT          205      3      3
+ FORTRAN MODIF algorith/dltcrr                pellet J.PELLET           162      2      2
+ FORTRAN MODIF algorith/excygl                pellet J.PELLET           114      2      2
+ FORTRAN MODIF algorith/harm75                pellet J.PELLET           249      2      2
+ FORTRAN MODIF algorith/lcdpec                 proix J-M.PROIX          132     20     22
+ FORTRAN MODIF algorith/lcelas                 proix J-M.PROIX           64      7     14
+ FORTRAN MODIF algorith/lcinit                 proix J-M.PROIX           90      7      4
+ FORTRAN MODIF algorith/lcjacb                 proix J-M.PROIX           86      4      5
+ FORTRAN MODIF algorith/lcjela                 proix J-M.PROIX           57      5     10
+ FORTRAN MODIF algorith/lcmmcv                 proix J-M.PROIX          135     63     33
+ FORTRAN MODIF algorith/lcmmfe                 proix J-M.PROIX          157     15    100
+ FORTRAN MODIF algorith/lcmmja                 proix J-M.PROIX          284     88     62
+ FORTRAN MODIF algorith/lcmmjf                 proix J-M.PROIX          261     89     79
+ FORTRAN MODIF algorith/lcmmjp                 proix J-M.PROIX          158      2      2
+ FORTRAN MODIF algorith/lcmmon                 proix J-M.PROIX          173      5      4
+ FORTRAN MODIF algorith/lcmmop                 proix J-M.PROIX          339      5      4
+ FORTRAN MODIF algorith/lcmmre                 proix J-M.PROIX          202     33     34
+ FORTRAN MODIF algorith/lcmmvx                 proix J-M.PROIX          126      9      7
+ FORTRAN MODIF algorith/lcplas                 proix J-M.PROIX          129     19     18
+ FORTRAN MODIF algorith/lcplnl                 proix J-M.PROIX          242     29     36
+ FORTRAN MODIF algorith/lcresi                 proix J-M.PROIX           85      9      9
+ FORTRAN MODIF algorith/lect58                pellet J.PELLET           467      2      2
+ FORTRAN MODIF algorith/modiba                pellet J.PELLET           248      2      2
+ FORTRAN MODIF algorith/mptran                pellet J.PELLET           398      3      3
+ FORTRAN MODIF algorith/nmco1d                 proix J-M.PROIX          147     21      7
+ FORTRAN MODIF algorith/nmcvci                pellet J.PELLET           135     17      5
+ FORTRAN MODIF algorith/nmdocp                 proix J-M.PROIX           55      3      3
+ FORTRAN MODIF algorith/nmdocr                 proix J-M.PROIX          241     69     28
+ FORTRAN MODIF algorith/nmdorc                 proix J-M.PROIX          125     35    189
+ FORTRAN MODIF algorith/nmnoli                pellet J.PELLET           178      2      2
+ FORTRAN MODIF algorith/op0191                pellet J.PELLET           183      2      2
+ FORTRAN MODIF algorith/orth99                pellet J.PELLET           196      2      2
+ FORTRAN MODIF algorith/recbec                pellet J.PELLET           337      2      2
+ FORTRAN MODIF algorith/recygl                pellet J.PELLET           165      2      2
+ FORTRAN MODIF algorith/regeec                pellet J.PELLET           219      2      2
+ FORTRAN MODIF algorith/regegl                pellet J.PELLET           323      2      2
+ FORTRAN MODIF algorith/regene                pellet J.PELLET           312      2      2
+ FORTRAN MODIF algorith/rehaec                pellet J.PELLET           284      2      2
+ FORTRAN MODIF algorith/rehagl                pellet J.PELLET           333      2      2
+ FORTRAN MODIF algorith/remnec                pellet J.PELLET           344      2      2
+ FORTRAN MODIF algorith/retrec                pellet J.PELLET           316      2      2
+ FORTRAN MODIF algorith/retrgl                pellet J.PELLET           408      2      2
+ FORTRAN MODIF algorith/ritz99                pellet J.PELLET           255      3      3
+ FORTRAN MODIF algorith/semoco                pellet J.PELLET           415      2      2
+ FORTRAN MODIF algorith/semore                pellet J.PELLET           466      2      2
+ FORTRAN MODIF algorith/tran75                pellet J.PELLET           624      3      3
+ FORTRAN MODIF algorith/xajpin               geniaut S.GENIAUT           99      2      3
+ FORTRAN MODIF algorith/xdecou               geniaut S.GENIAUT          190      4      4
+ FORTRAN MODIF algorith/xdecov               geniaut S.GENIAUT          468      5      3
+ FORTRAN MODIF algorith/xenrch               geniaut S.GENIAUT          499      7      7
+ FORTRAN MODIF algorith/xptfon               geniaut S.GENIAUT          243      8      5
+ FORTRAN MODIF assembla/asmatr                pellet J.PELLET           184      5      5
+ FORTRAN MODIF assembla/asmchc                pellet J.PELLET           313      2      2
+ FORTRAN MODIF assembla/op0012                pellet J.PELLET           123     41      6
+ FORTRAN MODIF calculel/arlapf               meunier S.MEUNIER          153      8      3
+ FORTRAN MODIF calculel/arlbsp               meunier S.MEUNIER           90     10      3
+ FORTRAN MODIF calculel/arlt2r               meunier S.MEUNIER           65      4      2
+ FORTRAN MODIF calculel/calvci                pellet J.PELLET           258      2      2
+ FORTRAN MODIF calculel/celces                 proix J-M.PROIX          381      5      1
+ FORTRAN MODIF calculel/celver                pellet J.PELLET           160     45      6
+ FORTRAN MODIF calculel/cescel                 proix J-M.PROIX          639      7      1
+ FORTRAN MODIF calculel/cesfus                pellet J.PELLET           393     14      4
+ FORTRAN MODIF calculel/cnsimp                pellet J.PELLET           188     38      8
+ FORTRAN MODIF calculel/eclpgr                pellet J.PELLET           349      2      2
+ FORTRAN MODIF calculel/jevech                pellet J.PELLET           186      3      1
+ FORTRAN MODIF calculel/mecalm                pellet J.PELLET          2458     45     18
+ FORTRAN MODIF calculel/medome                pellet J.PELLET           210      2      1
+ FORTRAN MODIF calculel/merime                pellet J.PELLET           190      3      2
+ FORTRAN MODIF calculel/op0009                pellet J.PELLET           199     15      4
+ FORTRAN MODIF calculel/op0054                pellet J.PELLET           271      2      2
+ FORTRAN MODIF calculel/op0100               geniaut S.GENIAUT         1027      3     13
+ FORTRAN MODIF calculel/op0171                pellet J.PELLET           393      2      2
+ FORTRAN MODIF calculel/op0175                pellet J.PELLET           550      2      2
+ FORTRAN MODIF calculel/pjefpr                pellet J.PELLET           281      2      2
+ FORTRAN MODIF calculel/rdtres                pellet J.PELLET           240     37      8
+ FORTRAN MODIF calculel/refere               meunier S.MEUNIER          151      3      3
+ FORTRAN MODIF calculel/tecac2                pellet J.PELLET           364      3      1
+ FORTRAN MODIF calculel/thaclm                pellet J.PELLET           868      3      3
+ FORTRAN MODIF elements/elraca               meunier S.MEUNIER          953      5      4
+ FORTRAN MODIF elements/elraga               meunier S.MEUNIER         1408      5      8
+ FORTRAN MODIF elements/inmat4               meunier S.MEUNIER          113      2     19
+ FORTRAN MODIF elements/inmat6               meunier S.MEUNIER          122      2      2
+ FORTRAN MODIF elements/te0291                pellet J.PELLET           137      9      3
+ FORTRAN MODIF elements/te0292                pellet J.PELLET           167      7      3
+ FORTRAN MODIF elements/te0368                pellet J.PELLET           607      3      1
+ FORTRAN MODIF elements/te0375                pellet J.PELLET           486      3      1
+ FORTRAN MODIF elements/te0377                pellet J.PELLET           322      3      1
+ FORTRAN MODIF elements/te0378                pellet J.PELLET           407      3      1
+ FORTRAN MODIF elements/te0431                 proix J-M.PROIX          490      2      3
+ FORTRAN MODIF jeveux/jedebu                lefebvre J-P.LEFEBVRE       282      8      4
+ FORTRAN MODIF jeveux/jedema                lefebvre J-P.LEFEBVRE       135      5      1
+ FORTRAN MODIF jeveux/jedetc                lefebvre J-P.LEFEBVRE       218      5     31
+ FORTRAN MODIF jeveux/jedetr                lefebvre J-P.LEFEBVRE       246      7     29
+ FORTRAN MODIF jeveux/jedetv                lefebvre J-P.LEFEBVRE       212      6     32
+ FORTRAN MODIF jeveux/jefini                lefebvre J-P.LEFEBVRE       140      3      9
+ FORTRAN MODIF jeveux/jeimpm                lefebvre J-P.LEFEBVRE       229     33      7
+ FORTRAN MODIF jeveux/jeimpr                lefebvre J-P.LEFEBVRE       102      3      3
+ FORTRAN MODIF jeveux/jelibf                lefebvre J-P.LEFEBVRE       355     21     43
+ FORTRAN MODIF jeveux/jelihd                lefebvre J-P.LEFEBVRE       592      3      5
+ FORTRAN MODIF jeveux/jemarq                lefebvre J-P.LEFEBVRE       101      9      8
+ FORTRAN MODIF jeveux/jerecu                lefebvre J-P.LEFEBVRE       178      6      8
+ FORTRAN MODIF jeveux/jetass                lefebvre J-P.LEFEBVRE       253      2      8
+ FORTRAN MODIF jeveux/jjalls                lefebvre J-P.LEFEBVRE       512      3      3
+ FORTRAN MODIF jeveux/jjarep                lefebvre J-P.LEFEBVRE       280      8     10
+ FORTRAN MODIF jeveux/jjecrs                lefebvre J-P.LEFEBVRE       133     12      9
+ FORTRAN MODIF jeveux/jjhrsv                lefebvre J-P.LEFEBVRE        91      7      8
+ FORTRAN MODIF jeveux/jjldyn                lefebvre J-P.LEFEBVRE       183      3      3
+ FORTRAN MODIF jeveux/jjlibp                lefebvre J-P.LEFEBVRE       124      7      1
+ FORTRAN MODIF jeveux/jjlide                lefebvre J-P.LEFEBVRE       567     14     15
+ FORTRAN MODIF jeveux/jjlihd                lefebvre J-P.LEFEBVRE       162      6      8
+ FORTRAN MODIF jeveux/jxcopy                lefebvre J-P.LEFEBVRE       132      6      8
+ FORTRAN MODIF modelisa/aflrch                pellet J.PELLET           363    177    212
+ FORTRAN MODIF modelisa/alligr                pellet J.PELLET           132     13     23
+ FORTRAN MODIF modelisa/arlcp1               meunier S.MEUNIER          437     22     11
+ FORTRAN MODIF modelisa/arlcpl               meunier S.MEUNIER          124      4      4
+ FORTRAN MODIF modelisa/arllpo               meunier S.MEUNIER          136     13      1
+ FORTRAN MODIF modelisa/caarle               meunier S.MEUNIER          283     32      5
+ FORTRAN MODIF modelisa/caddli                pellet J.PELLET           318      4     36
+ FORTRAN MODIF modelisa/charci                pellet J.PELLET           270     11      6
+ FORTRAN MODIF modelisa/intinc               meunier S.MEUNIER          179      3      3
+ FORTRAN MODIF modelisa/op0101                pellet J.PELLET           110      4      4
+ FORTRAN MODIF modelisa/ordlrl                pellet J.PELLET           373    176    186
+ FORTRAN MODIF prepost/dsingu                 pellet J.PELLET           111     54     32
+ FORTRAN MODIF prepost/dvolu3                 pellet J.PELLET           231      1      3
+ FORTRAN MODIF prepost/extrs2                 pellet J.PELLET           139      2      2
+ FORTRAN MODIF prepost/ircmpr                 pellet J.PELLET           282      2      2
+ FORTRAN MODIF prepost/irmail                meunier S.MEUNIER          295      4      2
+ FORTRAN MODIF prepost/op0163                 pellet J.PELLET           236      2      2
+ FORTRAN MODIF prepost/op0176                 pellet J.PELLET           208      2      2
+ FORTRAN MODIF prepost/op0196                 pellet J.PELLET           189      2      2
+ FORTRAN MODIF prepost/singue                 pellet J.PELLET           202     96     61
+ FORTRAN MODIF prepost/singum                 pellet J.PELLET           563     49     43
+ FORTRAN MODIF prepost/ssingu                 pellet J.PELLET           135     53     39
+ FORTRAN MODIF prepost/tsingu                 pellet J.PELLET            58     32    115
+ FORTRAN MODIF supervis/ib0mai              lefebvre J-P.LEFEBVRE        98     18     22
+ FORTRAN MODIF utilitai/arldbg               meunier S.MEUNIER          429      2      2
+ FORTRAN MODIF utilitai/chreco                pellet J.PELLET           125     11      3
+ FORTRAN MODIF utilitai/op0150                pellet J.PELLET          1091      2      2
+ FORTRAN MODIF utilitai/op0184                pellet J.PELLET           417      2      2
+ FORTRAN MODIF utilitai/op0195                pellet J.PELLET           278     16      3
+ FORTRAN MODIF utilitai/rscrsd                pellet J.PELLET           857    268    270
+ FORTRAN MODIF utilitai/utacce                pellet J.PELLET            98     10      9
+ FORTRAN MODIF utilitai/utcrre                pellet J.PELLET            91      2      2
+ FORTRAN MODIF utilitai/utpara                pellet J.PELLET            70      4      3
+ FORTRAN SUPPR calculel/arlcab               meunier S.MEUNIER           59      0     59
+ FORTRAN SUPPR calculel/arlfc0               meunier S.MEUNIER           71      0     71
+ FORTRAN SUPPR calculel/arlsui               meunier S.MEUNIER           83      0     83
+ FORTRAN SUPPR modelisa/arlchr               meunier S.MEUNIER           82      0     82
+ FORTRAN SUPPR modelisa/arlfil               meunier S.MEUNIER           81      0     81
+  PYTHON MODIF Comportement/czm_exp            proix J-M.PROIX           37      2      2
+  PYTHON MODIF Comportement/endo_isot_beton      proix J-M.PROIX           39      2      2
+  PYTHON MODIF Comportement/granger_fp_indt      proix J-M.PROIX           38      2      2
+  PYTHON MODIF Comportement/granger_fp         proix J-M.PROIX           37      2      2
+  PYTHON MODIF Comportement/granger_fp_v       proix J-M.PROIX           37      2      2
+  PYTHON MODIF Comportement/grille_cine_line      proix J-M.PROIX           36      2      2
+  PYTHON MODIF Comportement/grille_isot_line      proix J-M.PROIX           36      2      2
+  PYTHON MODIF Comportement/grille_pinto_men      proix J-M.PROIX           36      2      2
+  PYTHON MODIF Comportement/hujeux             proix J-M.PROIX           40      2      2
+  PYTHON MODIF Comportement/joint_ba           proix J-M.PROIX           40      1      1
+  PYTHON MODIF Comportement/kit_ddi            proix J-M.PROIX           37      1      1
+  PYTHON MODIF Comportement/multifibre         proix J-M.PROIX           37      2      2
+  PYTHON MODIF Comportement/pinto_menegotto      proix J-M.PROIX           36      2      2
+  PYTHON MODIF Comportement/sans               proix J-M.PROIX           37      2      2
+  PYTHON MODIF Comportement/simo_miehe         proix J-M.PROIX           34      2      2
+  PYTHON MODIF Comportement/vmis_asym_line      proix J-M.PROIX           36      2      2
+  PYTHON MODIF Execution/E_ETAPE            lefebvre J-P.LEFEBVRE       304      8      1
+  PYTHON MODIF Macro/macr_lign_coupe_ops    courtois M.COURTOIS         954     10      2
+  PYTHON MODIF Macro/post_k1_k2_k3_ops       geniaut S.GENIAUT         1262     91     21
+  PYTHON MODIF Messages/algeline2             pellet J.PELLET           449      4      2
+  PYTHON MODIF Messages/algeline5             pellet J.PELLET           378     25      5
+  PYTHON MODIF Messages/algeline              pellet J.PELLET           428      1      4
+  PYTHON MODIF Messages/arlequin             meunier S.MEUNIER          189      6      1
+  PYTHON MODIF Messages/calculel3             pellet J.PELLET           373     49     11
+  PYTHON MODIF Messages/calculel4             pellet J.PELLET           280     11      1
+  PYTHON MODIF Messages/calculel              pellet J.PELLET           303     15      1
+  PYTHON MODIF Messages/compor1                proix J-M.PROIX          297     23      3
+  PYTHON MODIF Messages/prepost4              pellet J.PELLET           269      1      9
+  PYTHON MODIF Messages/prepost               pellet J.PELLET           222      1      5
+  PYTHON MODIF Messages/rupture1             geniaut S.GENIAUT          239      7      1
+  PYTHON MODIF Messages/xfem                 geniaut S.GENIAUT          193      9      1
+  PYTHON MODIF SD/sd_char_acou                pellet J.PELLET            39      5      1
+  PYTHON MODIF SD/sd_char_cine                pellet J.PELLET           103     14     10
+  PYTHON MODIF SD/sd_char_meca                pellet J.PELLET           112      3      1
+  PYTHON MODIF SD/sd_char_ther                pellet J.PELLET            72      3      1
+  PYTHON MODIF SD/sd_matr_elem                pellet J.PELLET            63      2      1
+  PYTHON MODIF Stanley/cata_champs            pellet J.PELLET           233     10      3
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         622     34      8
+  PYTHON MODIF Validation/V_UN_PARMI          pellet J.PELLET            52      2      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   15        2386      2386             +2386
+ MODIF :  314       96720      4937    3793     +1144
+ SUPPR :    5         376               376      -376
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  334       99482      7323    4169     +3154 

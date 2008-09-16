@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF arlequin Messages  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,6 +94,11 @@ cata_msg={
  La zone de superposition des modèles dans Arlequin ne contient aucune maille !
 """),
 
+15: _("""
+ Le poids de chaque modèle doit etre compris entre 0 et 1.
+ Vous avez défini un poids de <%(r1)s>.
+"""),
+
 16: _("""
  Pb d'assemblage pour le couple de mailles %(i1)d et %(i2)d
 """),
@@ -177,7 +182,7 @@ Vous pouvez réduire ce risque en raffinant le maillage ou en utilisant des maill
 
 
 99 : _("""
- On a rencontré un problème dans la routine <%(k1)s>. 
+ On a rencontré un problème dans la routine <%(k1)s>.
  - Erreur avancée : contacter le support
 """),
 

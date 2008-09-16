@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,13 +73,13 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
                                  statut='f',typ='TXM',into=('TEST',)),
          ),
 
-         MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='f',min=1,max=1,
+         MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='d',min=1,max=1,
            GESTION         =SIMP(statut='f',typ='TXM',into=('COMPACTE','RAPIDE'),defaut='RAPIDE'),
            TYPE_ALLOCATION =SIMP(statut='f',typ='I',into=(1,2,3,4),defaut=1),
            TAILLE          =SIMP(statut='f',typ='I'),
            TAILLE_BLOC     =SIMP(statut='f',typ='R',defaut=800.),
            PARTITION       =SIMP(statut='f',typ='R'),
-           DYNAMIQUE       =SIMP(statut='f',typ='I'),
+           DYNAMIQUE       =SIMP(statut='f',typ='I',defaut=1),
          ),
  
          RESERVE_CPU     =FACT(fr="reserve de temps pour terminer une execution",statut='d',max=1,

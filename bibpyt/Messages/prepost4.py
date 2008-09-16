@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost4 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,14 +193,6 @@ cata_msg = {
 
 77 : _("""
  nom_cham:  %(k1)s  interdit.
-"""),
-
-78 : _("""
- methode non programmee pour les hexa, penta et pyram
-"""),
-
-79 : _("""
- probleme de convergence pour calculer la nouvelle carte de taille
 """),
 
 82 : _("""

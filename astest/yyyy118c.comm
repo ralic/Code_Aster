@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE   SUIVI PERFORMANCE :
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -10,7 +10,7 @@
 #--------------------------------------------------------
 
 DEBUT(CODE=_F( NOM = 'YYYY118C',NIV_PUB_WEB='INTRANET'),
-MEMOIRE=_F( GESTION = 'COMPACTE')
+MEMOIRE=_F( GESTION = 'COMPACTE', DYNAMIQUE=0),
 )
 
 PRE_IDEAS()

@@ -1,7 +1,7 @@
       SUBROUTINE NMCVCI(CHARGE,INFOCH,FOMULT,NUMEDD,DEPMOI,
      &           INSTAP,CNCINE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/02/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,10 @@ C       DE DEPLACEMENT.
 C----------------------------------------------------------------------
       CHARACTER*24 CHARGE, INFOCH, FOMULT,NUMEDD,DEPMOI,CNCINE
       CHARACTER*24 L2CNCI(2),CNCINM,CNCINP
+      CHARACTER*8 CHAR1
       REAL*8 INSTAP, COEFR(2)
-      INTEGER JDLCI,NEQ,IEQ,NEQ2,JCNCIM,IRET,J1,IDINFO,ICHAR
+      INTEGER JDLCI,NEQ,IEQ,NEQ2,JCNCIM,IRET,J1,JINFC,ICHAR
+      INTEGER NBCHAR, IEXI,JLCHAR
       CHARACTER*1 KBID ,TYPCH(2)
       LOGICAL LVCINE
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -68,11 +70,21 @@ C     --------------------------------------
 
 C     -- Y-A-T-IL DES CHARGES CINEMATIQUES ?
 C     -----------------------------------------------------------------
-      CALL JEVEUO(INFOCH,'L',IDINFO)
       LVCINE=.FALSE.
-      DO 10 ICHAR = 1,ZI(IDINFO)
-        IF (ZI(IDINFO+ICHAR).LT.0) LVCINE=.TRUE.
+      CALL JEVEUO(INFOCH,'L',JINFC)
+      DO 10 ICHAR = 1,ZI(JINFC)
+        IF (ZI(JINFC+ICHAR).LT.0) LVCINE=.TRUE.
    10 CONTINUE
+
+C     -- Y-A-T-IL DES CHARGES CONTENANT DES CHARGES CINEMATIQUES ?
+C     -----------------------------------------------------------------
+      CALL JEVEUO(CHARGE,'L',JLCHAR)
+      CALL JELIRA(CHARGE,'LONMAX',NBCHAR,KBID)
+      DO 11 ICHAR = 1,NBCHAR
+        CHAR1=ZK24(JLCHAR-1+ICHAR)
+        CALL JEEXIN(CHAR1//'.ELIM      .AFCK',IEXI)
+        IF (IEXI.GT.0) LVCINE=.TRUE.
+   11 CONTINUE
 
 C     -- S'IL N'Y A PAS DE CHARGES CINEMATIQUES, IL N'Y A RIEN A FAIRE:
 C     -----------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # METHODE X-FEM (FISSURE NON MAILLEE)
 
-DEBUT(   CODE=_F( NOM = 'SSLV134H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(   CODE=_F( NOM = 'SSLV134H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),MEMOIRE=_F(DYNAMIQUE=1))
 
 PRE_GIBI();
 MA1=LIRE_MAILLAGE(INFO=1,);
@@ -54,14 +54,14 @@ MA1=MODI_MAILLAGE(reuse =MA1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),),
                  );
 
-
 # PARAMETRES DE LA FISSURE
 x0 = 8.18
 y0 = 0.
 z0 = 2.05
 ray = 2.
-xi = x0 - ray
 
+# avec l'orientation automatique du fond de fissure
+# on tourne dans l'autre sans, il faudra changer les DTAN_ORIG....
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     DEFI_FISS=_F(
                                  FORM_FISS      = 'ELLIPSE',
@@ -70,11 +70,8 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  CENTRE         = (x0, y0, z0),
                                  VECT_X         = (0. , 1. , 0. ),
                                  VECT_Y         = (1., 0. , 0. ),
-                                 COTE_FISS ='IN',
                                  ),
                     GROUP_MA_ENRI='TUBE',
-                   # GROUP_MA_ENRI='BLOC',
-                    RAYON_ENRI=0.,
                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
@@ -122,22 +119,96 @@ UTOT1=STAT_NON_LINE(INFO=1,
                                 GROUP_MA='TUBE',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   );
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50));
 
-SIFTH=CALC_G(  RESULTAT=UTOT1,
+
+
+#----------------------------------------------------------------------
+#                       POST-TRAITEMENT DE K1
+#----------------------------------------------------------------------
+
+# LISSAGE LEGENDRE
+SIFTH1=CALC_G( RESULTAT=UTOT1,
+               SYME_CHAR='SANS',
+               COMP_ELAS=_F(RELATION='ELAS',),
+               OPTION='CALC_K_G',
+               LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                            DEGRE = 5,
+                            LISSAGE_G='LEGENDRE',),
+               THETA = _F(R_INF=0.2,
+                          R_SUP=0.8,
+                          FISSURE=FISS,
+                          DTAN_EXTR=(0.,1.,0.),
+                          DTAN_ORIG=(-1.,0.,0.),),
+               INFO=1,);
+
+IMPR_TABLE(TABLE=SIFTH1,);
+
+# LISSAGE LEGENDRE + REPARTITION UNIFORME DE 24 POINTS
+SIFTH2=CALC_G(    RESULTAT=UTOT1,
                   SYME_CHAR='SANS',
                   COMP_ELAS=_F(RELATION='ELAS',),
                   OPTION='CALC_K_G',
                   LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
-                           DEGRE = 5,
-                           LISSAGE_G='LEGENDRE',),
+                               DEGRE = 5,
+                               LISSAGE_G='LEGENDRE',),
                   THETA = _F(R_INF=0.2,
-                        R_SUP=0.8,
-                        FISSURE=FISS,
-                        DTAN_EXTR=(0.,1.,0.),
-                        DTAN_ORIG=(-1.,0.,0.),),
+                             R_SUP=0.8,
+                             FISSURE=FISS,
+                             NB_POINT_FOND = 24,
+                             DTAN_EXTR=(0.,1.,0.),
+                             DTAN_ORIG=(-1.,0.,0.),),
                   INFO=1,);
-IMPR_TABLE(TABLE=SIFTH,);
+IMPR_TABLE(TABLE=SIFTH2,);
+
+# LISSAGE LAGRANGE
+SIFTH3=CALC_G(  RESULTAT=UTOT1,
+                SYME_CHAR='SANS',
+                COMP_ELAS=_F(RELATION='ELAS',),
+                OPTION='CALC_K_G',
+                LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                             LISSAGE_G='LAGRANGE',),
+                THETA = _F(R_INF=0.2,
+                           R_SUP=0.8,
+                           FISSURE=FISS,
+                           DTAN_EXTR=(0.,1.,0.),
+                           DTAN_ORIG=(-1.,0.,0.),),
+                INFO=1,);
+IMPR_TABLE(TABLE=SIFTH3,);
+
+# LISSAGE LAGRANGE + REPARTITION UNIFORME DE 24 POINTS
+SIFTH4=CALC_G(  RESULTAT=UTOT1,
+                SYME_CHAR='SANS',
+                COMP_ELAS=_F(RELATION='ELAS',),
+                OPTION='CALC_K_G',
+                LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                             LISSAGE_G='LAGRANGE',),
+                THETA = _F(R_INF=0.2,
+                           R_SUP=0.8,
+                           FISSURE=FISS,
+                           NB_POINT_FOND = 24,
+                           DTAN_EXTR=(0.,1.,0.),
+                           DTAN_ORIG=(-1.,0.,0.),),
+                INFO=1,);
+IMPR_TABLE(TABLE=SIFTH4,);
+
+# LISSAGE LAGRANGE + REPARTITION UNIFORME DE 10 POINTS
+SIFTH5=CALC_G(  RESULTAT=UTOT1,
+                SYME_CHAR='SANS',
+                COMP_ELAS=_F(RELATION='ELAS',),
+                OPTION='CALC_K_G',
+                LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                             LISSAGE_G='LAGRANGE',),
+                THETA = _F(R_INF=0.2,
+                           R_SUP=0.8,
+                           FISSURE=FISS,
+                           NB_POINT_FOND = 10,
+                           DTAN_EXTR=(0.,1.,0.),
+                           DTAN_ORIG=(-1.,0.,0.),),
+                INFO=1,);
+IMPR_TABLE(TABLE=SIFTH5,);
+
+
 
 SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
                         FISSURE=FISS,
@@ -147,36 +218,95 @@ SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
                         RESULTAT=UTOT1,
                         ABSC_CURV_MAXI=0.5,
                         VECT_K1=(0., 0., 1.,),
-                        DTAN_EXTR=(0.,1.,0.),
-                        DTAN_ORIG=(-1.,0.,0.),)
-                      
+                        DTAN_EXTR = (0.,1.,0.),
+                        DTAN_ORIG = (-1.,0.,0.),
+                        
+                      )
 IMPR_TABLE(TABLE=SIFK1,);
+
+
+SIFK2=POST_K1_K2_K3(  MODELISATION='3D',
+                        FISSURE=FISS,
+                        NB_POINT_FOND = 10,
+                        INFO=1,
+                        MAILLAGE=MA1,
+                        MATER=MAT,
+                        RESULTAT=UTOT1,
+                        ABSC_CURV_MAXI=0.5,
+                        VECT_K1=(0., 0., 1.,),
+                        DTAN_EXTR = (0.,1.,0.),
+                        DTAN_ORIG = (-1.,0.,0.),
+                        
+                      )
+IMPR_TABLE(TABLE=SIFK2,);
+
                     
 #----------------------------------------------------------------------
 #              TEST DE K1 EN 1 POINT
 #----------------------------------------------------------------------
 
-TEST_TABLE(      TABLE=SIFTH,
+# TEST DU LISSAGE LEGENDRE
+TEST_TABLE(      TABLE=SIFTH1,
                    TYPE_TEST='MAX',
                  NOM_PARA='K1_LOCAL',
                       VALE=1.595E+6,
                  PRECISION=1.2E-1  ,
                       REFERENCE='ANALYTIQUE'      )
 
-TEST_TABLE(      TABLE=SIFTH,
+TEST_TABLE(      TABLE=SIFTH1,
                    TYPE_TEST='MIN',
                  NOM_PARA='K1_LOCAL',
                       VALE=1.595E+6,
                  PRECISION=3.E-2  ,
                       REFERENCE='ANALYTIQUE'      )
 
-TEST_TABLE(      TABLE=SIFTH,
+TEST_TABLE(      TABLE=SIFTH1,
                    TYPE_TEST='MIN',
                  NOM_PARA='K1_LOCAL',
                       VALE=1.56653508E+06,
                  PRECISION=1.E-3  ,
                       REFERENCE='NON_REGRESSION'      )
 
+# TEST DU LISSAGE LEGENDRE + REPARTITION UNIFORME DE 24 POINTS
+TEST_TABLE(      TABLE=SIFTH2,
+                 TYPE_TEST='MAX',
+                 NOM_PARA='K1_LOCAL',
+                 VALE=1.595E+6,
+                 PRECISION=0.18,
+                 REFERENCE='ANALYTIQUE'      )
+
+TEST_TABLE(      TABLE=SIFTH2,
+                 TYPE_TEST='MIN',
+                 NOM_PARA='K1_LOCAL',
+                 VALE=1.595E+6,
+                 PRECISION=0.04 ,
+                 REFERENCE='ANALYTIQUE'      )
+
+# TEST DU LISSAGE LAGRANGE : OSCILLATIONS
+TEST_TABLE(      TABLE=SIFTH3,
+                 TYPE_TEST='MAX',
+                 NOM_PARA='K1_LOCAL',
+                 VALE=2.7194886717768E+06 ,
+                 PRECISION=1.E-10  ,
+                 REFERENCE='NON_REGRESSION'      )
+
+# TEST DU LISSAGE LAGRANGE + REPARTITION UNIFORME DE 24 POINTS : OSCILLATIONS MOINDRES
+TEST_TABLE(      TABLE=SIFTH4,
+                 TYPE_TEST='MAX',
+                 NOM_PARA='K1_LOCAL',
+                 VALE=2.0299520043718E+06,
+                 PRECISION=2.E-7  ,
+                 REFERENCE='NON_REGRESSION'      )
+
+# TEST DU LISSAGE LAGRANGE + REPARTITION UNIFORME DE 10 POINTS : PLUS D'OSCILLATIONS
+TEST_TABLE(      TABLE=SIFTH5,
+                 FILTRE=_F(NOM_PARA = 'NUM_PT', VALE_I = 5), 
+                 NOM_PARA='K1_LOCAL',
+                 VALE=1.595E+6,
+                 PRECISION=0.06 ,
+                 REFERENCE='ANALYTIQUE'      )
+
+# TEST DE POST_K1_K2_K3
 TEST_TABLE(      TABLE=SIFK1,
                  FILTRE=(_F(  NOM_PARA = 'PT_FOND',
                             VALE_I = 1), 
@@ -196,6 +326,19 @@ TEST_TABLE(      TABLE=SIFK1,
                  VALE=1.595E+6,
                  PRECISION=10.E-2  ,
                  REFERENCE='ANALYTIQUE'      )
+
+
+TEST_TABLE(      TABLE=SIFK2,
+                 FILTRE=(_F(  NOM_PARA = 'PT_FOND',
+                            VALE_I = 5), 
+                            _F(NOM_PARA = 'METHODE',
+                            VALE_I = 3),),
+                 NOM_PARA='K1_MAX',
+                 VALE=1.595E+6,
+                 PRECISION=10.E-2  ,
+                 REFERENCE='ANALYTIQUE'      )
+                 
+
 
 FIN();
 

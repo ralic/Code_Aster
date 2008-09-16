@@ -8,7 +8,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C TOLE CRP_20
 C BUT :  RETOURNE LES CARACTERISTIQUES DE L'ELREFA
 C ----------------------------------------------------------------------
 C   IN   ELREFZ : NOM DE L'ELREFA (K8)
-C   OUT  NDIM   : DIMENSION TOPOLOGIQUE : 1/2/3
+C   OUT  NDIM   : DIMENSION TOPOLOGIQUE : 0/1/2/3
 C        NNO    : NOMBRE DE NOEUDS
 C        NNOS   : NOMBRE DE NOEUDS SOMMETS
 C        NBFPG  : NOMBRE DE FAMILLE DE POINTS DE GAUSS
@@ -40,8 +40,8 @@ C        VOL    : VOLUME DE L'ELREFA
 C COMMENTAIRE POUR LES ROUTINES ELRAGA, INMAT4, INMAT5, INMAT6, JNI002
 C ----------------------------------------------------------------------
 C        NBPGMX : NOMBRE DE POINTS DE GAUSS MAX DE L'ELEMENT
-C                 NBPGMX=1000 DU A XFEM         
-C        NBNOMX : NOMBRE DE NOEUDS  MAX DE L'ELEMENT
+C                 NBPGMX=1000 DU A XFEM
+C        NBNOMX : NOMBRE DE NOEUDS MAX DE L'ELEMENT
 C        NBFAMX : NOMBRE DE FAMILLES DE POINTS DE GAUSS MAX DE L'ELEMENT
 C
 C   -------------------------------------------------------------------
@@ -101,7 +101,7 @@ C     ------------------------------------------------------------------
         NNOS = 8
         VOL = 8.D0
 
-        NBFPG = 7
+        NBFPG = 8
 
         NBPG(1) = NNO
         NBPG(2) = NNOS
@@ -110,6 +110,7 @@ C     ------------------------------------------------------------------
         NBPG(5) = 27
         NBPG(6) = 16
         NBPG(7) = 20
+        NBPG(8) = 64
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -118,6 +119,7 @@ C     ------------------------------------------------------------------
         FAPG(5) = 'FPG27'
         FAPG(6) = 'FPG8NOS'
         FAPG(7) = 'SHB20'
+        FAPG(8) = 'FPG64'
 
         DO 20 I = 1,20
           XIN(I) = -1.D0
@@ -948,5 +950,4 @@ C     ------------------------------------------------------------------
           X(NDIM*I+3) = ZIN(I+1)
         END IF
   200 CONTINUE
-
       END

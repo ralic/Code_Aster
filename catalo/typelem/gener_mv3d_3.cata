@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,8 +51,8 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
-    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC
+                                        PERTURB  TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR  )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
@@ -81,10 +81,10 @@ MODE_LOCAL__
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL
-                                        TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
-    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL
-                                        TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
+    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
+                                        TERMN2   TERMSA   TERMS2   TAILLE   )
+    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
+                                        TERMN2   TERMSA   TERMS2   TAILLE   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
@@ -130,10 +130,8 @@ MODE_LOCAL__
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     DISS)
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     DISS)
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
-
-    ESINGUL  = SING_R   ELEM__         (DEGRE   TAILLE   )
-    ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   TAILLE   )
-
+    ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
+    ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
     CPENALI  = VALO_R   ELEM__         (VALEUR   )
     EGVALO_R = VALO_R   ELGA__ RIGI    (VALEUR   GRAD_X   GRAD_Y   GRAD_Z   )
     DDL_NLOC = VANL_R   ELNO__ DIFF__

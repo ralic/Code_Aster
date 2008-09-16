@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPR ( CUNIT , CLAS , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C DEB ------------------------------------------------------------------
              IF ( MOD(J,25) .EQ. 1 ) THEN
                 WRITE ( JULIST , '(/,A,A/)' )
      &      ' NUM  ------------- NOM ---------------- G T L- --LONG---'
-     +      ,' -LOTY- -IADD- ----KADM---- --------KDYN--------'
+     +      ,' -LOTY- -IADD- --------KADM------- --------KDYN-------'
              ENDIF
              CGENR = GENR(JGENR(I)+J)
              CTYPE = TYPE(JTYPE(I)+J)
@@ -97,6 +97,6 @@ C DEB ------------------------------------------------------------------
         ENDIF
    10 CONTINUE
  9999 CONTINUE
- 1001 FORMAT(I5,1X,A,'  -',2(A,'-'),I2,1X,I8,1X,I7,I7,I12,I20)
+ 1001 FORMAT(I5,1X,A,'  -',2(A,'-'),I2,1X,I8,1X,I7,I7,I20,I20)
 C FIN ------------------------------------------------------------------
       END

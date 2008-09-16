@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 21/07/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF calculel3 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,7 @@ cata_msg = {
 """),
 
 7 : _("""
- calcul de  %(k1)s  impossible.
+ Calcul de  %(k1)s  impossible.
 """),
 
 8 : _("""
@@ -59,13 +59,13 @@ cata_msg = {
 """),
 
 9 : _("""
- le champ  SIGM_ELNO_DEPL est absent :
- on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
+ Le champ  SIGM_ELNO_DEPL est absent :
+ on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
 """),
 
 10 : _("""
- le champ  SIGM_ELNO_COQU est absent :
- on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
+ Le champ  SIGM_ELNO_COQU est absent :
+ on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
 """),
 
 11 : _("""
@@ -73,19 +73,26 @@ cata_msg = {
 """),
 
 12 : _("""
- le mot cle PREC_ERR est obligatoire avec l'option SING_ELEM
+ Le mot clé PREC_ERR est OBLIGATOIRE avec l'option SING_ELEM.
+ Il faut renseigner le mot clé PREC_ERR avec une valeur comprise entre 0 et 1.
 """),
 
 13 : _("""
- le mot cle PREC_ERR doit etre strictement superieur à zéro et inférieur ou egal à 1
+ Le mot clé PREC_ERR doit etre strictement positif.
 """),
 
 14 : _("""
- pas d indicateur d erreur- on ne calcule pas l'option sing_elem
+ Il n'y a pas de champ d'estimateur d'erreur dans la structure de donnée résultat.
+ On ne calcule pas l'option SING_ELEM.
+ Le calcul préalable d'un estimateur d'erreur est OBLIGATOIRE pour le calcul de cette option.
+"""),
+
+15: _("""
+ Par défaut on utilise l'estimateur en résidu ERRE_ELEM_SIGM.
 """),
 
 16 : _("""
- par défaut on utilise ERZ2_ELEM_SIGM
+ Par défaut on utilise l'estimateur basé sur les contraintes lissées version 2 ERZ2_ELEM_SIGM.
 """),
 
 17 : _("""
@@ -109,15 +116,25 @@ cata_msg = {
 """),
 
 22 : _("""
-  option inexistante: %(k1)s
+  L'option %(k1)s est inexistante.
 """),
 
 23 : _("""
  option :  %(k1)s
 """),
 
+24: _("""
+ <I> L'estimateur que vous avez choisi pour le calcul de l'option SING_ELEM est %(k1)s.
+"""),
+
 25 : _("""
  calcul non disponible
+"""),
+
+26: _("""
+ L'estimateur %(k1)s que vous avez choisi pour le calcul de l'option SING_ELEM
+ n'existe pas dans la structure de donnée résultat %(k2)s.
+ L'option SING_ELEM n'est pas calculée.
 """),
 
 27 : _("""
@@ -126,6 +143,13 @@ cata_msg = {
 
 28 : _("""
  type de champ inconnu
+"""),
+
+29 : _("""
+ Il n'y a pas de champ d'énergie dans la structure de donnée résultat.
+ On ne calcule pas l'option SING_ELEM.
+ Le calcul préalable de l'option  EPOT_ELEM_DEPL ou ETOT_ELEM est OBLIGATOIRE
+ pour le calcul de cette option.
 """),
 
 30 : _("""
@@ -150,6 +174,10 @@ cata_msg = {
 
 35 : _("""
  le modèle doit contenir des éléments finis ou des sous-structures.
+"""),
+
+36 : _("""
+ A cause des alarmes précédentes, l'option SING_ELEM n'est pas calculée.
 """),
 
 38 : _("""
@@ -331,5 +359,15 @@ cata_msg = {
     Cette erreur peut venir d'une mauvaise utilisation du mot clé
     PROJ_CHAMP/DISTANCE_MAX
 """),
+
+98 : _("""
+ Le calcul de carte de taille et de détection de singularité n'est pas
+ programmé en 3D pour les éléments de type HEXA, PENTA et PYRAM.
+"""),
+
+99 : _("""
+ Problème de convergence pour calculer la nouvelle carte de taille.
+"""),
+
 
 }

@@ -1,4 +1,4 @@
-#@ MODIF granger_fp_indt Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF granger_fp_indt Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    nb_vari        = 55,
    nom_vari       = ('VG1','VG2','VG3','VG4','VG5','VG6','VG7','VG8','VG9','VG10','VG11','VG12','VG13','VG14','VG15','VG16','VG17','VG18','VG19','VG20','VG21','VG22','VG23','VG24','VG25','VG26','VG27','VG28','VG29','VG30','VG31','VG32','VG33','VG34','VG35','VG36','VG37','VG38','VG39','VG40','VG41','VG42','VG43','VG44','VG45','VG46','VG47','VG48','VG49','VG50','VG51','VG52','VG53','VG54','VG55'),
    mc_mater       = ('ELAS', 'V_GRANGER_FP'),
-   modelisation   = ('3D', 'AXIS', 'D_PLAN'),
+   modelisation   = ('3D', 'AXIS', 'D_PLAN','C_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    schema         = ('IMPLICITE',),

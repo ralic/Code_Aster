@@ -1,6 +1,6 @@
       SUBROUTINE JETASS ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,10 +72,6 @@ C
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
      +                 DN2(N)
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
      +               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -248,9 +244,7 @@ C
           NBLUTI(IC) = KLIB-1
         ENDIF
         IF (IADYN .NE. 0 ) THEN
-          MCDYN = MCDYN - LGBL
-          MLDYN = MLDYN + LGBL
-          CALL HPDEALLC (IADYN, NBFREE, IBID)
+          CALL JJLIDY ( IADYN , IADITP )
         ELSE IF (IADITP .NE. 0) THEN
           CALL JJLIBP (IADITP)
         ENDIF

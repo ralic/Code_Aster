@@ -1,4 +1,4 @@
-#@ MODIF grille_pinto_men Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF grille_pinto_men Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    num_lc         = 9999,
    nb_vari        = 16,
    nom_vari       = ('EPSRN-1','EPSRN','SIGRN','EPSM+V5','DEPS-TH','CYCL','KHI','INDIFLAM','VIDE','VIDE','VIDE','VIDE','VIDE','VIDE','VIDE','VIDE',),
-   modelisation   = ('GRILLE_MEMBRANE','GRILLE_EXCENTRE'),
+   modelisation   = ('GRILLE_MEMBRANE','GRILLE_EXCENTRE','1D'),
    deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE'),

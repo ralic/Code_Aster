@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C     COMMANDE :  POST_ZAC
 C        METHODE ZARKA-CASIER
@@ -149,7 +149,7 @@ C     =============================================================
 C     (1) RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C     =============================================================
       CALL GETRES(RESULT,CONCEP,K16BID)
-      CALL RSCRSD(RESULT,'MULT_ELAS',NBRES)
+      CALL RSCRSD('G',RESULT,'MULT_ELAS',NBRES)
       CALL GETVID(' ','EVOL_NOLI',1,1,1,RESUEP,N0)
       CALL GETVID(' ','EVOL_ELAS',1,1,1,RESUEL,N1)
 C   LISTE D'INSTANTS DE L'EVOL_ELAS

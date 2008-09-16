@@ -1,6 +1,6 @@
       SUBROUTINE JJECRS ( IADMI , ICLAS , IDOS , IDCO , CUS , IMARQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,10 +45,8 @@ C ----------------------------------------------------------------------
 C ---                  ISTAT(1)->X , (2)->U , (3)->A , (4)->D
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C ----------------------------------------------------------------------
       INTEGER          ISTA1,ISTA2,IS,KTEMPO(2),IB
 C DEB ------------------------------------------------------------------
@@ -64,13 +62,19 @@ C
           ISZON(JISZON+IADMI-2) = IDOS
           ISZON(IS-3)   = IDCO
           ISZON(IS-2)   = ICLAS
+          SVUSE = SVUSE + (ISZON(JISZON+IADMI-4) - IADMI + 4)
+          SMXUSE = MAX(SMXUSE,SVUSE)
         ENDIF
         ISZON(IS-4) = ISTAT(4)
 C
 C --- ACCES EN LECTURE : 1/ XD ET UD PASSENT A UD
-C                        2/ XX, XA ET UD PASSENT A UA
+C                        2/ XX ET XA PASSENT A UA
 C
       ELSE IF ( CUS .EQ. 'L' ) THEN
+        IF ( ISTA1 .EQ. ISTAT(1) ) THEN
+          SVUSE = SVUSE + (ISZON(JISZON+IADMI-4) - IADMI + 4)
+          SMXUSE = MAX(SMXUSE,SVUSE)
+        ENDIF
         IF ( ISTA2 .EQ. ISTAT(4) ) THEN
           ISZON(JISZON+IADMI-1) = ISTAT(2)
         ELSE
@@ -94,13 +98,12 @@ C
      +                   KTEMPO(1) ,KTEMPO(2))
             ISZON(JISZON+KTEMPO(1)-1) = ISTAT(2)
             ISZON(JISZON+ISZON(JISZON+KTEMPO(1)-4)-4) = ISTAT(4)
+            SVUSE = SVUSE + (ISZON(JISZON+KTEMPO(1)-4) - KTEMPO(1) + 4)
             DO 100 K=1,LSI
               ISZON(JISZON+KTEMPO(1)+K-1) = ISZON(JISZON+KDESMA(1)+K-1)
  100        CONTINUE
             IF ( KDESMA(2) .NE. 0) THEN 
-              MCDYN = MCDYN - (LGD/2)*LOIS
-              MLDYN = MLDYN + (LGD/2)*LOIS
-              CALL HPDEALLC (KDESMA(2), NBFREE, IBID)
+              CALL JJLIDY ( KDESMA(2) , KDESMA(1) )
             ELSE IF (KDESMA(1) .NE. 0) THEN
               CALL JJLIBP (KDESMA(1))
             ENDIF  

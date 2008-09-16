@@ -4,7 +4,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -644,6 +644,12 @@ C        | VERSION NUMBER & VERSION DATE  |
 C        %--------------------------------%
        WRITE(LOGFIL,1000)
        WRITE(LOGFIL,1100) MXITER, NOPX, NBX, NRORTH, NITREF, NRSTRT
+       MXITER=0
+       NOPX=0
+       NBX=0
+       NRORTH=0
+       NITREF=0
+       NRSTRT=0
        WRITE(LOGFIL,*)
  1000  FORMAT (//,
      &      5X, '=============================================',/

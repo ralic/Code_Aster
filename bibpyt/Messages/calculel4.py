@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,16 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+ Erreur utilisateur :
+   Le cham_elem %(k1)s a des valeurs indéfinies.
+ Conseils :
+   * Si le problème concerne la commande CREA_CHAMP :
+     1) Vous devriez imprimer le contenu du champ créé pour vérifications (INFO=2)
+     2) Vous devriez peut-etre utiliser le mot clé PROL_ZERO='OUI'
+
+"""),
 
 8 : _("""
  le resultat  %(k1)s  n'existe pas

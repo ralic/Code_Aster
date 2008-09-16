@@ -1,6 +1,6 @@
       SUBROUTINE JJLIBP ( IADMI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 31/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,8 @@ C ----------------------------------------------------------------------
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C ----------------------------------------------------------------------
       CHARACTER*75     CMESS
 C DEB ------------------------------------------------------------------
@@ -66,6 +68,10 @@ C DEB ------------------------------------------------------------------
 C
       IET = ISZON(JISZON+IETSV)
       IST = ISZON(JISZON+ISTSV)
+      IF ( IET .EQ. ISTAT(2) ) THEN
+        SVUSE = SVUSE - (ISZON(JISZON+IADMI-4)-IADMI+4)  
+        SMXUSE = MAX(SMXUSE,SVUSE)
+      ENDIF
       IF ( IET .NE. ISTAT(1) .OR. IST .NE. ISTAT(1) ) THEN
         IF ( ISZON(JISZON+IFSP) .NE. 0 ) THEN
           ISTSP = ISZON(JISZON+IFSP-3)

@@ -10,7 +10,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ C                          DE MERIME...  PROSPER YOUP-LA-BOUM!
 C     CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE MECA
 
 C ----------------------------------------------------------------------
-C IN  : MODELZ : NOM DU MODELE  (PAS OBLIGATOIRE)
+C IN  : MODELZ : NOM DU MODELE
 C IN  : NCHAR  : NOMBRE DE CHARGES
 C IN  : LCHAR  : LISTE DES CHARGES
 C IN  : MATE   : CARTE DE MATERIAU
@@ -74,6 +74,7 @@ C     ------------------------------------------------------------------
 
       CALL JEMARQ()
       MODELE = MODELZ
+      CALL ASSERT(MODELE.NE.' ')
       CARA = CARAZ
       MATEL = MATELZ
       BASE = BASEZ

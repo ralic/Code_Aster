@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,12 +247,14 @@ for i in range(nbcalc) :
               PRECISION=K1REF/1000.,
               REFERENCE='ANALYTIQUE',);
 
+  # K1 SUR LE 2EME FOND
   PK[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
                      MAILLAGE=MAILLAGE,
                      MATER=ACIER,
                      FISSURE = FISS[i],
+                     NUME_FOND = 2,
                      INFO =2,
-                    ABSC_CURV_MAXI = RS[0],
+                     ABSC_CURV_MAXI = RS[0],
                      RESULTAT  = UTOT1[i],
                     )
 
@@ -264,8 +266,9 @@ for i in range(nbcalc) :
               CRITERE='RELATIF',
               PRECISION=0.15,
               REFERENCE='ANALYTIQUE',
-              FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
-                            VALE_I = 2,      ),
+              FILTRE=( 
+#                        _F(  NOM_PARA = 'PT_FOND',  
+#                             VALE_I = 1,      ),
                        _F(  NOM_PARA = 'METHODE',  
                             VALE_I = 3,      ),     ),);
   if K2REF != 0. :
@@ -275,8 +278,9 @@ for i in range(nbcalc) :
               CRITERE='RELATIF',
               PRECISION=0.16,
               REFERENCE='ANALYTIQUE',
-              FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
-                            VALE_I = 2,      ),
+              FILTRE=(
+#                        _F(  NOM_PARA = 'PT_FOND',  
+#                             VALE_I = 1,      ),
                        _F(  NOM_PARA = 'METHODE',  
                             VALE_I = 3,      ),     ),);
   
@@ -287,8 +291,9 @@ for i in range(nbcalc) :
               CRITERE='ABSOLU',
               PRECISION=K1REF/1000.,
               REFERENCE='ANALYTIQUE',
-              FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
-                            VALE_I = 2,      ),
+              FILTRE=(
+#                        _F(  NOM_PARA = 'PT_FOND',  
+#                             VALE_I = 1,      ),
                        _F(  NOM_PARA = 'METHODE',  
                             VALE_I = 3,      ),     ),);
   

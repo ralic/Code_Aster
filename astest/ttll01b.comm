@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # TITRE CHOC THERMIQUE SUR UN MUR INFINI QUAD8 - TEMP_INIT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,17 +129,27 @@ TEST_RESU(CHAM_NO=(
 # LE RESULTAT DOIT ETRE LE MEME.
 # ----------------------------------------------------------------------
 
-
 CHTH2=AFFE_CHAR_THER_F(MODELE=MOTH,TEMP_IMPO=(
           _F( GROUP_NO = 'GRNM14', TEMP = TIMPVAR),
-          _F( GROUP_MA = 'GRMA12', NOEUD = ('N67','N68','N69',),
-                     EVOL_THER = TEMPE))
+        # _F( GROUP_MA = 'GRMA12', NOEUD = ('N67','N68','N69',), EVOL_THER = TEMPE),
+          )
          )
 
-TEMPE2=THER_LINEAIRE(        MODELE=MOTH,
+TIMP=PROJ_CHAMP(RESULTAT=TEMPE,METHODE='ELEM',  MODELE_1=MOTH,MODELE_2=MOTH, NOM_CHAM='TEMP',
+                VIS_A_VIS=_F(TOUT_1   =  'OUI',
+                             NOEUD_2 = ('N41','N42','N102', # NOEUDS DE GRMA12
+                                        'N67','N68','N69',) ,
+                             CAS_FIGURE='2D'))
+
+CHTH3=AFFE_CHAR_CINE(MODELE=MOTH, EVOL_IMPO=TIMP)
+
+
+
+
+TEMPE2=THER_LINEAIRE(        MODELE=MOTH,   CHAM_MATER=CHMAT,
            ETAT_INIT=_F( CHAM_NO = TEMP0),
-          INCREMENT=_F( LIST_INST = LR8, NUME_INST_FIN = 29),
-             CHAM_MATER=CHMAT, EXCIT=_F( CHARGE = CHTH2)
+           INCREMENT=_F( LIST_INST = LR8, NUME_INST_FIN = 29),
+            EXCIT=_F( CHARGE = CHTH2)
              )
 
 TEST_RESU(RESU=(
@@ -153,13 +163,11 @@ _F( RESULTAT = TEMPE2,  INST = 0.1,  NOM_CHAM = 'TEMP',
 # TEST DE IMPR_RESU
 #----------------------------------------------------------
 
-IMPR_RESU( FORMAT = 'IDEAS',  UNITE = 37,
-           RESU=_F( RESULTAT = TEMPE ),)
+IMPR_RESU( FORMAT = 'IDEAS',  UNITE = 37, RESU=_F( RESULTAT = TEMPE ),)
 
 #----------------------------------------------------------
 # TEST DE LIRE_RESU
 #----------------------------------------------------------
-
 
 TEMPEE=LIRE_RESU(       MODELE=MOTH,
                              UNITE=37,

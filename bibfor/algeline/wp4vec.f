@@ -1,15 +1,15 @@
       SUBROUTINE WP4VEC (NBFREQ,NBVECT,NEQ,SHIFT,
      +                   VP,VECP,MXRESF,
      +                   RESUFI,RESUFR,LAGR,VAUC)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER       NBFREQ,NBVECT,NEQ,LAGR(*),
-     &              RESUFI(MXRESF,*),MXRESF
+      IMPLICIT NONE
+      INTEGER       MXRESF,NEQ
+      INTEGER       NBFREQ,NBVECT,LAGR(*),RESUFI(MXRESF,*)
       COMPLEX*16    VECP(NEQ,*),SHIFT,VAUC(2*NEQ,*),VP(*)
       REAL*8        RESUFR(MXRESF,*)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,11 +62,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
       REAL*8     A,B,AM,OM,NMABP,NMABM,PREC,R8PREM,C,SEUILP,
-     &           SEUILR,C1,C2,VALR(5),AUXRJ,AUXIJ,AUXRK,AUXIK,A1,A2,B1,
-     &           B2,D
+     &           SEUILR,C1,C2,AUXRJ,AUXIJ,AUXRK,AUXIK,A1,A2,B1,
+     &           B2,D,SEUILC,RBID
       INTEGER    I,J,K,AV1,AV2,IADIND,NBREEL,NBCMPP,NBCMPC,NBFRGA,
-     &           VALI(5),IFM,NIV
+     &           VALI(5),IFM,NIV,NBFR
       LOGICAL    TROUVE,LCONJ
+      CHARACTER*1 KMSG
+
 C     -----------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
@@ -99,6 +101,8 @@ C     SI IM(VP)<SEUILR, VP EST CONSIDEREE COMME REELLE
 C     SI MAX(DELTA_RELATIF RE(VPJ-VPK), IDEM MIN(PARTIE REELLE,IMAG), 
 C     VPK = CONJUGEE DE VPJ
       SEUILP=1.D-6
+C     SEUIL POUR LE COUPLAGE HAUT-BAS DES VECTEURS PROPRES
+      SEUILC=1.D-4
       CALL WKVECT('&&WP4VEC.INDIC.PART.VP','V V I',NBVECT,IADIND)
       DO 1 J = 1, NBVECT
          ZI(IADIND + J-1) = -2
@@ -141,21 +145,23 @@ C     VPK = CONJUGEE DE VPJ
                   ELSE
                     B=B1/B2
                   ENDIF
-                  D=MIN(A,B)
-                  D=MAX(D,C)
+                  D=A+B
+                  D=MIN(D,C)
                   IF (D.LT.SEUILP) THEN
                     LCONJ=.TRUE.
                   ELSE
                     LCONJ=.FALSE.
                   ENDIF
 C POUR DEBUG
-C                  IF (J.EQ.3) THEN
+C                  IF (ABS(AUXIJ-3108*6.28D0).LT.100.d0) THEN
+C                  IF (J.EQ.19) THEN
 C                   WRITE(IFM,*)'J/K/A/B/C/D ',J,K,A,B,C,D
-C                   WRITE(IFM,*)'VPJ/VPK',AUXRJ,AUXIJ,AUXRK,AUXIK
-C                 ENDIF
+C                   WRITE(IFM,*)'LCONJ/VPJ/VPK',LCONJ,AUXRJ,AUXIJ,
+C     &                         AUXRK,AUXIK
+C                  ENDIF
 C FIN DEBUG
                   IF ((ZI(IADIND+K-1).EQ.-2).AND.LCONJ.AND.
-     &                (AUXIJ*AUXIK.LT.0.D0)) THEN
+     &                (AUXIJ*AUXIK.LE.0.D0)) THEN
                       TROUVE = .TRUE.
                       NBCMPC = NBCMPC + 1
 C                 PB ALGORITHMIQUE, SANS DOUTE DES SEUILS A MODIFIER
@@ -230,6 +236,8 @@ C --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
          ENDIF
 44     CONTINUE
        NBFRGA=K-1
+C NBRE DE VP RECOMPACTEES
+       NBFR=K-1
 
 C
 C     ---------- FIN DE PARTITION TEST ET ELIMINATION -----------------
@@ -238,10 +246,10 @@ C
 C --- 2. CALCUL DES SOLUTIONS PROPRES DU PB QUADRATIQUE ---
       CALL WKVECT('&&WP4VEC.VEC.AUX.C1','V V C',NEQ,AV1)
       CALL WKVECT('&&WP4VEC.VEC.AUX.C2','V V C',NEQ,AV2)
-      DO 10 J = 1, NBFRGA
+      DO 10 J = 1, NBFR
        IF (ZI(IADIND + J-1).GT.0) THEN
          CALL WPTEST(LAGR,VAUC(1,J),VAUC(NEQ+1,J),VP(J),NEQ,NMABP)
-         IF (NMABP.GT.1.D-5) THEN
+         IF (NMABP.GT.SEUILC) THEN
             ZI(IADIND + J-1)=0
             NBFRGA=NBFRGA-1
          ENDIF
@@ -251,7 +259,7 @@ C --- 2. CALCUL DES SOLUTIONS PROPRES DU PB QUADRATIQUE ---
 
 C --- 1.3. ELIMINATION DES VALEURS FAUSSES -- RECOMPACTAGE --
       K = 1
-      DO 4 J = 1, NBFRGA
+      DO 4 J = 1, NBFR
          IF ( ZI(IADIND + J-1) .GT. 0 ) THEN
             IF ( K .NE. J ) THEN
                VP(K) = VP(J)
@@ -280,21 +288,21 @@ C --- 3. SELECTION DES VALEURS PROPRES (PB QUADRATIQUE)
          ENDIF
 20    CONTINUE
 
-C
-C --- 4. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
-C      CALL WPORDC(1,SHIFT,VP,VECP,NBFRGA,NEQ)
-C      CALL WPORDC(0,SHIFT,VP,VECP,NBFRGA,NEQ)
-C
-C --- 5. PREPARATION DE RESUFR
+C --- 4. PREPARATION DE RESUFR
 
        IF (NBFREQ.GT.NBFRGA) THEN
          VALI(1)=NBFREQ
          VALI(2)=NBFRGA
-         CALL U2MESG('A','ALGELINE5_67',0,' ',2,VALI,0,VALR)
          NBFREQ=NBFRGA
+         IF (NBFREQ.EQ.0) THEN
+           KMSG='F'
+         ELSE
+           KMSG='A'
+         ENDIF
+         CALL U2MESG(KMSG,'ALGELINE5_67',0,' ',2,VALI,0,RBID)
        ENDIF  
 
-C --- 4. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
+C --- 5. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
 C          - TRI DANS LE SPECTRE : SUIVANT ABS(SHIFT - VPQ)
       CALL WPORDC(1,SHIFT,VP,VECP,NBFRGA,NEQ)
 C          - TRI DE PRESNTATION  : SUIVANT IM(VPQ) - IM(SHIFT)

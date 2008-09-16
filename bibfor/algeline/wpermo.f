@@ -6,7 +6,7 @@
       REAL*8            FR(*),AM(*),OMECOR,ERNORM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C     ------------------------------------------------------------------
       CHARACTER*14 NUME
       REAL*8       ANORM1, ANORM2, XSEUIL
       REAL*8 VALR
-      REAL*8       DEPI, R8DEPI
+      REAL*8       DEPI, R8DEPI, ISIG
       COMPLEX*16   FREQ, FREQ2
 C     ------------------------------------------------------------------
 C
@@ -98,7 +98,8 @@ C
           CALL U2MESG('A', 'ALGELINE4_74',2,VALK,0,0,1,VALR)
         ELSE
           FRI = FREQOM(FR(I))*DEPI
-          AMI = -ABS(AMI*FRI)/SQRT(1.D0-AMI*AMI)
+          ISIG=-SIGN(1.D0,AMI)
+          AMI = ISIG*ABS(AMI*FRI)/SQRT(1.D0-AMI*AMI)
           FREQ = DCMPLX( AMI, FRI)
           FREQ2 = FREQ*FREQ
           CALL MCMULT('ZERO',LRAIDE,VECP(IVEC),'C',ZC(IAUX1),1)

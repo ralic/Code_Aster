@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF cata_champs Stanley  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,10 +161,17 @@ class CATA_CHAMPS :
 # indicateurs d erreur    
     self('ERRE_ELEM_SIGM', 'ELEM',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en résidu par élément")
     self('ERRE_ELNO_ELEM', 'ELNO',['ERRE_ELEM_SIGM'],            "Indicateurs d'erreur en résidu aux noeuds par élément")
-    self('QIRE_ELEM_SIGM', 'ELEM',[],                            "Indicateurs d'erreur en résidu par élément")
-    self('QIRE_ELNO_ELEM', 'ELNO',['QIRE_ELEM_SIGM'],            "Indicateurs d'erreur en résidu aux noeuds par élément")
+    self('QIRE_ELEM_SIGM', 'ELEM',[],                            "Indicateurs d'erreur en quantités d'intéret en résidu par élément")
+    self('QIRE_ELNO_ELEM', 'ELNO',['QIRE_ELEM_SIGM'],            "Indicateurs d'erreur en quantités d'intéret en résidu aux noeuds par élément")
+    self('SIGM_NOZ1_ELGA', 'ELEM',['SIEF_ELGA','SIEF_ELGA_DEPL'],"Champ de contraintes lissées Zhu-Zienkiewicz 1 aux noeuds")
+    self('SIGM_NOZ2_ELGA', 'ELEM',['SIEF_ELGA','SIEF_ELGA_DEPL'],"Champ de contraintes lissées Zhu-Zienkiewicz 2 aux noeuds")
     self('ERZ1_ELEM_SIGM', 'ELEM',['DEPL'],                      "Indicateurs d'erreur Zhu-Zienkiewicz 1 par élément")
     self('ERZ2_ELEM_SIGM', 'ELEM',['DEPL'],                      "Indicateurs d'erreur Zhu-Zienkiewicz 2 par élément")
+    self('QIZ1_ELEM_SIGM', 'ELEM',[],                            "Indicateurs d'erreur en quantités d'intéret Zhu-Zienkiewicz 1 par élément")
+    self('QIZ2_ELEM_SIGM', 'ELEM',[],                            "Indicateurs d'erreur en quantités d'intéret Zhu-Zienkiewicz 2 par élément")
+    self('SING_ELEM'     , 'ELEM',[],                            "Carte de singularité et de taille par élément")
+    self('SING_ELNO_ELEM', 'ELNO',['SING_ELEM'],                 "Carte de singularité et de taille aux noeuds par élément")
+    self('SING_NOEU_ELEM', 'NOEU',['SING_ELNO_ELEM'],            "Carte de singularité et de taille aux noeuds")
 
     self('FORC_NODA'     , 'NOEU',['SIEF_ELGA'],                 "Forces nodales")
     self('VALE_CONT'     , 'NOEU',[],                            "Informations sur l'etat de contact")

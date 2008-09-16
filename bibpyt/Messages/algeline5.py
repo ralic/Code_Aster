@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline5 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -315,8 +315,9 @@ cata_msg={
 
 60: _("""
     Méthode QZ dans MODE_ITER_SIMULT: La variante QR ne fonctionne qu'avec une
-    matrice B symétrique définie positive ! Donc elle n'accepte pas le flambement,
-    les Lagranges d'AFFE_CHAR_MECA, une matrice de rigidité complexe ou les
+    matrice A symétrique réelle et B symétrique réelle définie positive ! 
+    Donc elle n'accepte pas le flambement, les Lagranges d'AFFE_CHAR_MECA, 
+    une matrice de rigidité/de masse complexe ou non symétrique, ainsi que les
     problèmes modaux quadratiques.
 """),
 61: _("""
@@ -349,10 +350,29 @@ cata_msg={
     Attention on souhaite un nombre de valeurs propres NMAX_FREQ=%(i1)d supérieur
     au nombre de valeurs propres détectées NCONV=%(i2)d !
     Pour poursuivre le calcul on impose NMAX_FREQ=NCONV.
-    Sans doute est-ce du à un mauvais tri dans les valeurs propres complexes
-     conjuguées. Contacter l'équipe de développement.
+    Sans doute est-ce du, soit:
+     -à un mauvais tri dans les valeurs propres complexes conjuguées.
+      Contacter l'équipe de développement.
+     -à une mauvaise convergence de la méthode. Regarder les paramètres permettant
+      d'améliorer celle-ci.
+     -à une action incomplète du shift. En diminuant la valeur de l'option CENTRE
+      (FREQ) et en augmentant le nombre de valeurs propres retenues (NMAX_FREQ) on
+      peut souvent capter tous les couples (lambda,conjg(lambda)) souhaités.
+      Sinon utiliser METHODE='QZ' pour les problèmes de petites tailles (<500 ddls).
 """),
 68: _("""
     Méthode QZ dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !
+"""),
+69: _("""
+    Matrices de raideur, de masse et/ou d'amortissement non symétrique(s) dans
+    MODE_ITER_SIMULT. Pour l'instant, seules les méthodes QZ et SORENSEN 
+    acceptent ce type de matrice.
+    La méthode QZ est à réserver aux petits problèmes modaux (centaines de ddls)
+    dont on souhaite connaitre une grosse partie du spectre.
+"""),
+70: _("""
+    Matrices de  raideur, de masse et/ou d'amortissement non symétrique(s) dans
+    MODE_ITER_SIMULT avec,une matrice de raideur complexe. 
+    Pour l'instant, ce cas n'a pas été pris en compte.
 """),
 }

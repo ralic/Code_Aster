@@ -1,4 +1,4 @@
-#@ MODIF vmis_asym_line Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_asym_line Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    num_lc         = 9999,
    nb_vari        = 4,
    nom_vari       = ('EPSPEQTR','INDIPLTR','EPSPEQCP','INDIPLCP'),
-   modelisation   = ('BARRE'),
+   modelisation   = ('BARRE','1D'),
    deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE'),

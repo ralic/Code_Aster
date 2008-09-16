@@ -2,7 +2,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,15 +39,6 @@ C       ----------------------------------------------------------------
      1         LOI(1:10) .EQ. 'ROUSS_VISC'     ) THEN
          CALL RSLPLI ( 'ISOTROPE' , MOD , MATER , DSDE , NMAT, VIN )
 C
-      ELSEIF ( LOI(1:5)  .EQ. 'LMARC'       .OR.
-     1         LOI(1:9)  .EQ. 'VISCOCHAB'   .OR.
-     1         LOI(1:7)  .EQ. 'NADAI_B'     .OR.
-     1         LOI(1:10)  .EQ. 'HOEK_BROWN' .OR.
-     1         LOI(1:14)  .EQ. 'HOEK_BROWN_EFF' .OR.
-     1         LOI(1:7)  .EQ. 'IRRAD3M'     .OR.
-     1         LOI(1:6)  .EQ. 'LAIGLE'           ) THEN
-         CALL LCOPLI ( 'ISOTROPE' , MOD , MATER(1,1) , DSDE )
-         
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
 
          IF (MATER(NMAT,1).EQ.0) THEN
@@ -55,8 +46,12 @@ C
          ELSEIF (MATER(NMAT,1).EQ.1) THEN
              CALL LCOPLI ( 'ORTHOTRO' , MOD , MATER(1,1) , DSDE )
          ENDIF
-             
-             
+         
+C    CAS GENERAL : ELASTICITE LINEAIRE ISOTROPE OU ANISOTROPE
+      ELSE
+      
+         CALL LCOPLI ( 'ISOTROPE' , MOD , MATER(1,1) , DSDE )
+         
       ENDIF
 C
       END

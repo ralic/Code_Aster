@@ -1,6 +1,6 @@
       SUBROUTINE CNSIMP(CNSZ,UNITE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8 MA,NOMGD,NOMNO
       CHARACTER*3 TSCA
       CHARACTER*19 CNS
-      CHARACTER*40 FMT
+      CHARACTER*40 FMT1,FMT2
       LOGICAL EXICMP
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -85,23 +85,36 @@ C     ------------------------------------------------------------
         GO TO 30
    20   CONTINUE
         NCMPU = NCMPU + 1
+        CALL ASSERT(NCMPU.LE.997)
         LICMPU(NCMPU) = K
    30 CONTINUE
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      CALL ASSERT((TSCA.EQ.'R').OR.(TSCA.EQ.'K8').OR.(TSCA.EQ.'I'))
+      CALL ASSERT((TSCA.EQ.'R').OR.(TSCA.EQ.'K8')
+     &            .OR.(TSCA.EQ.'I').OR.(TSCA.EQ.'C'))
+
 
 C     1- ALLOCATION D'UN TABLEAU DE K16 QUI CONTIENDRA LES VALEURS
 C         D'UNE LIGNE A ECRIRE
 C     ------------------------------------------------------------
-      CALL WKVECT('&&CNSIMP.LVALEURS','V V K16',NCMPU,JLVAL)
+      IF (TSCA.NE.'C') THEN
+        CALL WKVECT('&&CNSIMP.LVALEURS','V V K16',NCMPU,JLVAL)
+      ELSE
+        CALL WKVECT('&&CNSIMP.LVALEURS','V V K16',2*NCMPU,JLVAL)
+      ENDIF
 
 
 C     2- FORMAT DES LIGNES :
 C     ----------------------
-      FMT = '(A12,XXX(''|'',A12))'
-      CALL ASSERT(NCMPU.LE.997)
-      CALL CODENT(NCMPU,'D',FMT(6:8))
+      IF (TSCA.NE.'C') THEN
+        FMT1 = '(A12,XXX(''|'',A12))'
+        FMT2 = '(A12,XXX(''|'',A12))'
+      ELSE
+        FMT1 = '(A12,XXX(''|'',A25))'
+        FMT2 = '(A12,XXX(''|'',A12,'' '',A12))'
+      ENDIF
+      CALL CODENT(NCMPU,'D',FMT1(6:8))
+      CALL CODENT(NCMPU,'D',FMT2(6:8))
 
 
 C     3- ECRITURE DE L'ENTETE DU CHAMP :
@@ -109,7 +122,7 @@ C     ---------------------------------------
       WRITE (UNITE,*) ' '
       WRITE (UNITE,*) ' GRANDEUR: ',NOMGD
       WRITE (UNITE,*) ' '
-      WRITE (UNITE,FMT) 'NOEUD', (ZK8(JCNSC-1+LICMPU(IK)),IK=1,NCMPU)
+      WRITE (UNITE,FMT1) 'NOEUD', (ZK8(JCNSC-1+LICMPU(IK)),IK=1,NCMPU)
 
 
 C     4- ECRITURE DES VALEURS :
@@ -141,15 +154,32 @@ C       -- ON MET LES VALEURS NON AFFECTEES A " " :
             ELSE IF (TSCA.EQ.'K8') THEN
               WRITE (ZK16(JLVAL-1+K),'(A8,A8)') ZK8(JCNSV-1+
      &          (INO-1)*NCMP+K),' '
+            ELSE IF (TSCA.EQ.'C') THEN
+              WRITE (ZK16(JLVAL-1+2*(K-1)+1),'(E12.5,A4)')
+     &          DBLE(ZC(JCNSV-1+(INO-1)*NCMP+K)),' '
+              WRITE (ZK16(JLVAL-1+2*(K-1)+2),'(E12.5,A4)')
+     &          DIMAG(ZC(JCNSV-1+(INO-1)*NCMP+K)),' '
             ELSE IF (TSCA.EQ.'I') THEN
               WRITE (ZK16(JLVAL-1+K),'(I12,A4)') ZI(JCNSV-1+
      &          (INO-1)*NCMP+K),' '
             END IF
           ELSE
-            WRITE (ZK16(JLVAL-1+K),'(A16)') ' '
+            IF(TSCA.NE.'C') THEN
+              WRITE (ZK16(JLVAL-1+K),'(A16)') ' '
+            ELSE
+              WRITE (ZK16(JLVAL-1+2*(K-1)+1),'(A16)') ' '
+              WRITE (ZK16(JLVAL-1+2*(K-1)+2),'(A16)') ' '
+            ENDIF
           END IF
    60   CONTINUE
-        WRITE (UNITE,FMT) NOMNO, (ZK16(JLVAL-1+LICMPU(IK)),IK=1,NCMPU)
+        IF(TSCA.NE.'C') THEN
+          WRITE (UNITE,FMT2) NOMNO,
+     &            (ZK16(JLVAL-1+LICMPU(IK)),IK=1,NCMPU)
+        ELSE
+          WRITE (UNITE,FMT2) NOMNO,
+     &            (ZK16(JLVAL-1+2*(LICMPU(IK)-1)+1),
+     &             ZK16(JLVAL-1+2*(LICMPU(IK)-1)+2),IK=1,NCMPU)
+        ENDIF
 
    70 CONTINUE
 

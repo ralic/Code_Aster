@@ -1,7 +1,8 @@
-      SUBROUTINE ORDLRL (LIGRCZ, LISREZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE ORDLRL(CHARGE,LISREL,NOMGD)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      CHARACTER*(*)      LIGRCZ,LISREZ
+      CHARACTER*19 LISREL
+      CHARACTER*8 CHARGE,NOMGD
 C -----------------------------------------------------------------
 C     MISE A JOUR DE L'OBJET DE TYPE  LISTE_RELA ET DE NOM
 C     LISREL  :
@@ -31,151 +33,136 @@ C                     INDICE DANS LISREL)
 C -----------------------------------------------------------------
 C     L'OBJET LISREL DOIT OBLIGATOIREMENT EXISTER
 C -----------------------------------------------------------------
-C  LIGRCZ        - IN    - K19  - : NOM DU LIGREL DE CHARGE
-C                - JXIN  -      -
-C -----------------------------------------------------------------
-C  LISREZ        - IN    - K19  - : NOM DE LA LISTE_RELA
-C                - JXVAR -      -
+C  CHARGE        - IN/JXIN    - K8  - : NOM DE LA SD_CHARGE
+C  LISREL        - IN/JXVAR   - K19  - : NOM DE LA LISTE_RELA
 C -------------------------------------------------------
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE /ZK8(1),ZK16(1),ZK24(1),ZK32(1), ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ------
 C
 C --------- VARIABLES LOCALES ---------------------------
-      CHARACTER*19       LIGRCH,LISREL
       CHARACTER*24 VALK(2)
-      PARAMETER    (NMOCL = 300)
-      COMPLEX*16    COPROC, RAPCOC
-      CHARACTER*4   TYPCOE
-      CHARACTER*8   NOMNOE, KBID, NOMG
-      CHARACTER*8   NOMA, MOD, CMP, NOMCMP(NMOCL)
-      CHARACTER*9   NOMTE
-      CHARACTER*19  LIGRMO
-      INTEGER       DG
+      INTEGER NMOCL
+      PARAMETER(NMOCL=300)
+      COMPLEX*16 COPROC,RAPCOC
+      CHARACTER*4 TYPCOE
+      CHARACTER*8 NOMNOE,KBID
+      CHARACTER*8 NOMA,MOD,CMP,NOMCMP(NMOCL)
+      CHARACTER*19 LIGRMO
       INTEGER VALI(2)
-      LOGICAL       EXISDG
+      LOGICAL EXISDG
       CHARACTER*1 K1BID
 C --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
+      REAL*8 COPROR,DIFREL,EPS1,EPS2,EPSREL,R8GAEM,R8PREM,RAPCOE,COEMAX
+      INTEGER I,IBID,ICMP,ICOMP,IDCOMA,IDDL,IDDL1,IDDL2,IDECA1,IDECA2
+      INTEGER  IDECAL,IER,IERD,IN,INDIK8,INDMAX,INO
+      INTEGER INOCC,INOM,INOREL,IPNTR1,IPNTR2,IPNTRL,IRELA,IRELA1,IRELA2
+      INTEGER JNOMA,JPRNM,JRLCO,JRLCO1,JRLCO2,JRLCOC,JRLCOF,JRLCOR,JRLDD
+      INTEGER JRLNO,IDNOE1,IDNOE2,IDNOEU,JRLNR,JRLNT,JRLPO,JRLSU,JRLTC
+      INTEGER NBCMP,NBEC,NBRELA,NBTEMA,NBTER1,NBTER2,NBTERM
+      INTEGER NDDLA
 C
       CALL JEMARQ()
-      LISREL=LISREZ
-      LIGRCH=LIGRCZ
 
-C --- INITIALISATION ---
-      EPS1 = 1.D2*R8PREM()
-      EPS2 = 1.D0/R8GAEM()
-C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
-C
-      CALL DISMOI('F','NOM_MODELE',LIGRCH(1:8),'CHARGE',IBID,MOD,IER)
-C
-C ---  LIGREL DU MODELE ---
-C
-      LIGRMO = MOD(1:8)//'.MODELE'
-C
-C --- MAILLAGE ASSOCIE AU MODELE ---
-C
+      EPS1=1.D2*R8PREM()
+      EPS2=1.D0/R8GAEM()
+
+
+      CALL DISMOI('F','NOM_MODELE',CHARGE,'CHARGE',IBID,MOD,IER)
+      LIGRMO=MOD(1:8)//'.MODELE'
       CALL JEVEUO(LIGRMO//'.LGRF','L',JNOMA)
-      NOMA = ZK8(JNOMA)
-C
-C --- RECUPERATION DES NOMS DES DDLS   ---
-C
-      IF (LIGRCH(12:13).EQ.'TH')  THEN
-        NOMG = 'TEMP_R'
-      ELSE IF (LIGRCH(12:13).EQ.'ME')  THEN
-        NOMG = 'DEPL_R'
-      ELSE IF (LIGRCH(12:13).EQ.'AC')  THEN
-        NOMG = 'PRES_C'
-      ENDIF
-      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMG),'L',INOM)
-      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K1BID)
-      NDDLA = NBCMP-1
+      NOMA=ZK8(JNOMA)
+
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',INOM)
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',NBCMP,K1BID)
+      NDDLA=NBCMP-1
       IF (NDDLA.GT.NMOCL) THEN
-                 VALI (1) = NMOCL
-                 VALI (2) = NDDLA
-        CALL U2MESG('F', 'MODELISA8_29',0,' ',2,VALI,0,0.D0)
+        VALI(1)=NMOCL
+        VALI(2)=NDDLA
+        CALL U2MESG('F','MODELISA8_29',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
-      DO 1 I=1,NBCMP
+      DO 10 I=1,NBCMP
         NOMCMP(I)=ZK8(INOM-1+I)
- 1    CONTINUE
-      CALL DISMOI('F','NB_EC',NOMG,'GRANDEUR',NBEC,KBID,IERD)
+   10 CONTINUE
+      CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NBEC,KBID,IERD)
 C
 C --- ACCES A L'OBJET .PRNM ---
 C
       IF (NBEC.GT.10) THEN
-         CALL U2MESS('F','MODELISA_94')
+        CALL U2MESS('F','MODELISA_94')
       ELSE
-         CALL JEVEUO (LIGRMO//'.PRNM','L',JPRNM)
-      END IF
+        CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
+      ENDIF
 C
 C --- ACCES AUX COMPOSANTES DE LA LISTE_RELA
 C
-      CALL JEVEUO(LISREL//'.RLCO','L',IDCOE)
-      CALL JEVEUO(LISREL//'.RLDD','L',IDL)
-      CALL JEVEUO(LISREL//'.RLNO','L',IDNOE)
-      CALL JEVEUO(LISREL//'.RLNT','L',IDTERM)
-      CALL JEVEUO(LISREL//'.RLPO','L',IDPOIN)
-      CALL JEVEUO(LISREL//'.RLSU','E',IDSURC)
-      CALL JEVEUO(LISREL//'.RLTC','L',IDTYCO)
+      CALL JEVEUO(LISREL//'.RLCO','L',JRLCO)
+      CALL JEVEUO(LISREL//'.RLDD','L',JRLDD)
+      CALL JEVEUO(LISREL//'.RLNO','L',JRLNO)
+      CALL JEVEUO(LISREL//'.RLNT','L',JRLNT)
+      CALL JEVEUO(LISREL//'.RLPO','L',JRLPO)
+      CALL JEVEUO(LISREL//'.RLSU','E',JRLSU)
+      CALL JEVEUO(LISREL//'.RLTC','L',JRLTC)
 C
 C --- TYPE DE VALEUR DES COEFFICIENTS DES RELATIONS ---
 C
-      TYPCOE = ZK8(IDTYCO)(1:4)
+      TYPCOE=ZK8(JRLTC)(1:4)
 C
 C --- NOMBRE DE RELATIONS DE LA LISTE_RELA
 C
-      CALL JEVEUO(LISREL//'.RLNR','L',IDNBRE)
-      NBRELA = ZI(IDNBRE)
+      CALL JEVEUO(LISREL//'.RLNR','L',JRLNR)
+      NBRELA=ZI(JRLNR)
 C
 C --- NOMBRE DE TERMES  MAX IMPLIQUES DANS UNE RELATION
 C
-      NBTEMA = 0
-      DO 10 IRELA = 1,NBRELA
+      NBTEMA=0
+      DO 20 IRELA=1,NBRELA
 C ---          NOMBRE DE TERMES DE LA RELATION       ---
-         IF (NBTEMA.LT.ZI(IDTERM+IRELA-1)) NBTEMA = ZI(IDTERM+IRELA-1)
-  10  CONTINUE
+        IF (NBTEMA.LT.ZI(JRLNT+IRELA-1))NBTEMA=ZI(JRLNT+IRELA-1)
+   20 CONTINUE
 C
 C --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 C --- L'INDICE DU PLUS GRAND COEFFICIENT EN VALEUR ABSOLUE
 C --- (MODULE) D'UNE RELATION
 C
-      CALL WKVECT ('&&ORDLRL.COEFMAX','V V I',NBRELA,IDCOMA)
+      CALL WKVECT('&&ORDLRL.COEFMAX','V V I',NBRELA,IDCOMA)
 C
 C --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 C --- LES NUMEROS DES NOEUDS D'UNE RELATION
 C
-      CALL WKVECT ('&&ORDLRL.NOEUD_RELA','V V I',NBTEMA,INOREL)
+      CALL WKVECT('&&ORDLRL.NOEUD_RELA','V V I',NBTEMA,INOREL)
 C
 C --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 C --- LE NOMBRE D'OCCURENCES DE CHAQUE NOEUD APPRAISSANT
 C --- DANS UNE RELATION
 C
-      CALL WKVECT ('&&ORDLRL.NOEUD_OCC','V V I',NBTEMA,INOCC)
+      CALL WKVECT('&&ORDLRL.NOEUD_OCC','V V I',NBTEMA,INOCC)
 C
 C --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 C --- LES COEFFICIENTS REELS D'UNE RELATION
 C
-      CALL WKVECT ('&&ORDLRL.COEF_R','V V R',NBTEMA,IDCOER)
+      CALL WKVECT('&&ORDLRL.COEF_R','V V R',NBTEMA,JRLCOR)
 C
 C --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 C --- LES COEFFICIENTS COMPLEXES D'UNE RELATION
 C
-      CALL WKVECT ('&&ORDLRL.COEF_C','V V C',NBTEMA,IDCOEC)
+      CALL WKVECT('&&ORDLRL.COEF_C','V V C',NBTEMA,JRLCOC)
 C
 C --- REARRANGEMENT DES TABLEAUX DES NOEUDS, DES DDLS ET DES
 C --- COEFFICIENTS DE LA RELATION SELON L'ORDRE CROISSANT
@@ -183,201 +170,204 @@ C --- DES NOEUDS ET DES DDLS POUR UN NOEUD DONNE
 C
 C --- BOUCLE SUR LES RELATIONS DE LA LISTE_RELA
 C
-      DO 20 IRELA = 1,NBRELA
-         IPNTRL = ZI(IDPOIN+IRELA-1)
-         NBTERM = ZI(IDTERM+IRELA-1)
-         IDECAL = IPNTRL - NBTERM
-         IDCOEF = IDCOE + IDECAL
-         IDNOEU = IDNOE + IDECAL
-         IDDL   = IDL   + IDECAL
+      DO 100 IRELA=1,NBRELA
+        IPNTRL=ZI(JRLPO+IRELA-1)
+        NBTERM=ZI(JRLNT+IRELA-1)
+        IDECAL=IPNTRL-NBTERM
+        JRLCOF=JRLCO+IDECAL
+        IDNOEU=JRLNO+IDECAL
+        IDDL=JRLDD+IDECAL
 C
-         IF (TYPCOE.EQ.'COMP') THEN
-             DO 30 INO = 1,NBTERM
-               ZC(IDCOEC+INO-1) = ZC(IDCOEF+INO-1)
- 30          CONTINUE
-         ELSE
-             DO 40 INO = 1,NBTERM
-               ZR(IDCOER+INO-1) = ZR(IDCOEF+INO-1)
- 40          CONTINUE
-         ENDIF
+        IF (TYPCOE.EQ.'COMP') THEN
+          DO 30 INO=1,NBTERM
+            ZC(JRLCOC+INO-1)=ZC(JRLCOF+INO-1)
+   30     CONTINUE
+        ELSE
+          DO 40 INO=1,NBTERM
+            ZR(JRLCOR+INO-1)=ZR(JRLCOF+INO-1)
+   40     CONTINUE
+        ENDIF
 C
 C ---          BOUCLE SUR LE NOMBRE DE NOEUDS LIES PAR ---
 C ---          LA RELATION                             ---
 C
-         DO 50 INO = 1,NBTERM
-C ---                 NOM DU NOEUD              ---
-               NOMNOE = ZK8(IDNOEU+INO-1)
-C ---                 NUMERO DU NOEUD              ---
-               CALL JENONU(JEXNOM(NOMA//'.NOMNOE',NOMNOE),IN)
+        DO 50 INO=1,NBTERM
+          NOMNOE=ZK8(IDNOEU+INO-1)
+          CALL JENONU(JEXNOM(NOMA//'.NOMNOE',NOMNOE),IN)
 C
-               ZI(INOREL+INO-1) = IN
+          ZI(INOREL+INO-1)=IN
 C
-               CMP = ZK8(IDDL+INO-1)
-               ICMP = INDIK8(NOMCMP,CMP,1,NBCMP)
-               IF (.NOT.EXISDG(ZI(JPRNM-1+(IN-1)*NBEC+1),ICMP)) THEN
-                 VALK (1) = CMP
-                 VALK (2) = NOMNOE
-                 CALL U2MESG('F', 'MODELISA8_30',2,VALK,0,0,0,0.D0)
-               ENDIF
- 50      CONTINUE
+          CMP=ZK8(IDDL+INO-1)
+          ICMP=INDIK8(NOMCMP,CMP,1,NBCMP)
+          IF (.NOT.EXISDG(ZI(JPRNM-1+(IN-1)*NBEC+1),ICMP)) THEN
+            VALK(1)=CMP
+            VALK(2)=NOMNOE
+            CALL U2MESG('F','MODELISA8_30',2,VALK,0,0,0,0.D0)
+          ENDIF
+   50   CONTINUE
+
+
+C       -- REARRANGEMENT DES TABLEAUX DE LA RELATION SELON
+C       L'ORDRE CROISSANT DES NOEUDS ET L'ORDRE
+C       CROISSANT DES DDLS POUR UN NOEUD DONNE
+        CALL ORDREL(ZI(INOREL),ZK8(IDNOEU),ZK8(IDDL),ZR(JRLCOR),
+     &              ZC(JRLCOC),ZI(INOCC),NBTERM,ZK8(INOM),NDDLA)
+
+C       -- REAFFECTATION DU TABLEAU DES COEFFICIENTS
+        IF (TYPCOE.EQ.'COMP') THEN
+          DO 60 INO=1,NBTERM
+            ZC(JRLCOF+INO-1)=ZC(JRLCOC+INO-1)
+   60     CONTINUE
+        ELSE
+          DO 70 INO=1,NBTERM
+            ZR(JRLCOF+INO-1)=ZR(JRLCOR+INO-1)
+   70     CONTINUE
+        ENDIF
 C
-C ---          REARRANGEMENT DES TABLEAUX DE LA RELATION SELON
-C ---           L'ORDRE CROISSANT DES NOEUDS ET L'ORDRE
-C ---           CROISSANT DES DDLS POUR UN NOEUD DONNE
-C
-         CALL ORDREL(ZI(INOREL), ZK8(IDNOEU), ZK8(IDDL), ZR(IDCOER),
-     &               ZC(IDCOEC), ZI(INOCC), NBTERM, ZK8(INOM), NDDLA)
-C
-C ---         REAFFECTATION DU TABLEAU DES COEFFICIENTS
-C
-         IF (TYPCOE.EQ.'COMP') THEN
-             DO 60 INO = 1,NBTERM
-                ZC(IDCOEF+INO-1) = ZC(IDCOEC+INO-1)
- 60          CONTINUE
-         ELSE
-             DO 70 INO = 1,NBTERM
-               ZR(IDCOEF+INO-1) = ZR(IDCOER+INO-1)
- 70          CONTINUE
-         ENDIF
-C
-         COEMAX = 0.0D0
-         IF (TYPCOE.EQ.'COMP') THEN
-             DO 80 INO = 1,NBTERM
-                IF (ABS(ZC(IDCOEC+INO-1)).GT.COEMAX) THEN
-                    COEMAX = ABS(ZC(IDCOEC+INO-1))
-                    INDMAX = INO
-                ENDIF
- 80          CONTINUE
-         ELSE
-             DO 90 INO = 1,NBTERM
-                IF (ABS(ZR(IDCOER+INO-1)).GT.COEMAX) THEN
-                    COEMAX = ABS(ZR(IDCOER+INO-1))
-                    INDMAX = INO
-                ENDIF
- 90          CONTINUE
-         ENDIF
-         ZI(IDCOMA+IRELA-1) = INDMAX
+        COEMAX=0.0D0
+        IF (TYPCOE.EQ.'COMP') THEN
+          DO 80 INO=1,NBTERM
+            IF (ABS(ZC(JRLCOC+INO-1)).GT.COEMAX) THEN
+              COEMAX=ABS(ZC(JRLCOC+INO-1))
+              INDMAX=INO
+            ENDIF
+   80     CONTINUE
+        ELSE
+          DO 90 INO=1,NBTERM
+            IF (ABS(ZR(JRLCOR+INO-1)).GT.COEMAX) THEN
+              COEMAX=ABS(ZR(JRLCOR+INO-1))
+              INDMAX=INO
+            ENDIF
+   90     CONTINUE
+        ENDIF
+        ZI(IDCOMA+IRELA-1)=INDMAX
 C --- FIN DE LA BOUCLE SUR LES RELATIONS  ---
- 20   CONTINUE
+  100 CONTINUE
 C
 C --- IDENTIFICATION DES RELATIONS REDONDANTES ---
 C
-      DO 100 IRELA1 = NBRELA,2,-1
-         IPNTR1 = ZI(IDPOIN+IRELA1-1)
-         NBTER1 = ZI(IDTERM+IRELA1-1)
-         IDECA1 = IPNTR1 - NBTER1
-         IDCOE1 = IDCOE + IDECA1
-         IDNOE1 = IDNOE + IDECA1
-         IDDL1  = IDL   + IDECA1
+      DO 170 IRELA1=NBRELA,2,-1
+        IPNTR1=ZI(JRLPO+IRELA1-1)
+        NBTER1=ZI(JRLNT+IRELA1-1)
+        IDECA1=IPNTR1-NBTER1
+        JRLCO1=JRLCO+IDECA1
+        IDNOE1=JRLNO+IDECA1
+        IDDL1=JRLDD+IDECA1
 C
-         INDMAX = ZI(IDCOMA+IRELA1-1)
+        INDMAX=ZI(IDCOMA+IRELA1-1)
 C
-         IF (TYPCOE.EQ.'COMP') THEN
-            IF (ABS(ZC(IDCOE1+INDMAX-1)).LT.EPS2) THEN
-                CALL U2MESS('F','MODELISA5_92')
-            ENDIF
-         ELSE
-            IF (ABS(ZR(IDCOE1+INDMAX-1)).LT.EPS2) THEN
-                CALL U2MESS('F','MODELISA5_92')
-            ENDIF
-         ENDIF
+        IF (TYPCOE.EQ.'COMP') THEN
+          IF (ABS(ZC(JRLCO1+INDMAX-1)).LT.EPS2) THEN
+            CALL U2MESS('F','MODELISA5_92')
+          ENDIF
+        ELSE
+          IF (ABS(ZR(JRLCO1+INDMAX-1)).LT.EPS2) THEN
+            CALL U2MESS('F','MODELISA5_92')
+          ENDIF
+        ENDIF
 C
 C ---          COMPARAISON DE LA RELATION COURANTE      ---
 C ---          AVEC LES RELATIONS RESTANTES             ---
 C ---          CAS COMPLEXE                             ---
 C
-         IF (TYPCOE.EQ.'COMP') THEN
-           DO 110 IRELA2 = IRELA1-1,1,-1
-            IPNTR2 = ZI(IDPOIN+IRELA2-1)
-            NBTER2 = ZI(IDTERM+IRELA2-1)
-            IDECA2 = IPNTR2 - NBTER2
-            IDCOE2 = IDCOE + IDECA2
-            IDNOE2 = IDNOE + IDECA2
-            IDDL2  = IDL   + IDECA2
+        IF (TYPCOE.EQ.'COMP') THEN
+          DO 130 IRELA2=IRELA1-1,1,-1
+            IPNTR2=ZI(JRLPO+IRELA2-1)
+            NBTER2=ZI(JRLNT+IRELA2-1)
+            IDECA2=IPNTR2-NBTER2
+            JRLCO2=JRLCO+IDECA2
+            IDNOE2=JRLNO+IDECA2
+            IDDL2=JRLDD+IDECA2
 C
-            COPROC = ZC(IDCOE2+INDMAX-1)/ZC(IDCOE1+INDMAX-1)
+            COPROC=ZC(JRLCO2+INDMAX-1)/ZC(JRLCO1+INDMAX-1)
 C
             IF (NBTER1.EQ.NBTER2) THEN
-               ICOMP = 0
-               DO 120 INO = 1, NBTER1
-                  IF (ZK8(IDNOE1+INO-1).EQ.ZK8(IDNOE2+INO-1)) THEN
-                       IF (ZK8(IDDL1+INO-1).EQ.ZK8(IDDL2+INO-1)) THEN
-                           RAPCOC = COPROC*ZC(IDCOE1+INO-1)
-                           EPSREL = EPS1*ABS(ZC(IDCOE1+INO-1))
-                           DIFREL = ABS(ZC(IDCOE2+INO-1)-RAPCOC)
-                           IF (DIFREL.LE.EPSREL) GOTO 120
-                           ICOMP =1
-                           GOTO 121
-                       ELSE
-                           ICOMP = 1
-                           GOTO 121
-                       ENDIF
+              ICOMP=0
+              DO 110 INO=1,NBTER1
+                IF (ZK8(IDNOE1+INO-1).EQ.ZK8(IDNOE2+INO-1)) THEN
+                  IF (ZK8(IDDL1+INO-1).EQ.ZK8(IDDL2+INO-1)) THEN
+                    RAPCOC=COPROC*ZC(JRLCO1+INO-1)
+                    EPSREL=EPS1*ABS(ZC(JRLCO1+INO-1))
+                    DIFREL=ABS(ZC(JRLCO2+INO-1)-RAPCOC)
+                    IF (DIFREL.LE.EPSREL)GOTO 110
+                    ICOMP=1
+                    GOTO 120
+
                   ELSE
-                    ICOMP = 1
-                    GOTO 121
+                    ICOMP=1
+                    GOTO 120
+
                   ENDIF
- 120              CONTINUE
- 121              CONTINUE
+                ELSE
+                  ICOMP=1
+                  GOTO 120
+
+                ENDIF
+  110         CONTINUE
+  120         CONTINUE
 C
-                  IF (ICOMP.EQ.0) THEN
-                      ZI(IDSURC+IRELA2-1) = 1
-                  ENDIF
-               ENDIF
+              IF (ICOMP.EQ.0) THEN
+                ZI(JRLSU+IRELA2-1)=1
+              ENDIF
+            ENDIF
 C ---        FIN DE LA BOUCLE SUR LES RELATIONS  IRELA2 ---
- 110      CONTINUE
+  130     CONTINUE
 C
 C ---          CAS REEL                             ---
 C
-         ELSE
-           DO 130 IRELA2 = IRELA1-1,1,-1
-            IPNTR2 = ZI(IDPOIN+IRELA2-1)
-            NBTER2 = ZI(IDTERM+IRELA2-1)
-            IDECA2 = IPNTR2 - NBTER2
-            IDCOE2 = IDCOE + IDECA2
-            IDNOE2 = IDNOE + IDECA2
-            IDDL2  = IDL   + IDECA2
+        ELSE
+          DO 160 IRELA2=IRELA1-1,1,-1
+            IPNTR2=ZI(JRLPO+IRELA2-1)
+            NBTER2=ZI(JRLNT+IRELA2-1)
+            IDECA2=IPNTR2-NBTER2
+            JRLCO2=JRLCO+IDECA2
+            IDNOE2=JRLNO+IDECA2
+            IDDL2=JRLDD+IDECA2
 C
-            COPROR = ZR(IDCOE2+INDMAX-1)/ZR(IDCOE1+INDMAX-1)
+            COPROR=ZR(JRLCO2+INDMAX-1)/ZR(JRLCO1+INDMAX-1)
 C
             IF (NBTER1.EQ.NBTER2) THEN
-               ICOMP = 0
-               DO 140 INO = 1, NBTER1
-                   IF (ZK8(IDNOE1+INO-1).EQ.ZK8(IDNOE2+INO-1)) THEN
-                     IF (ZK8(IDDL1+INO-1).EQ.ZK8(IDDL2+INO-1)) THEN
-                           RAPCOE = COPROR*ZR(IDCOE1+INO-1)
-                           EPSREL = EPS1*ABS(ZR(IDCOE1+INO-1))
-                           DIFREL = ABS(ZR(IDCOE2+INO-1)-RAPCOE)
-                           IF (DIFREL.LE.EPSREL) GOTO 140
-                           ICOMP = 1
-                           GOTO 141
-                     ELSE
-                           ICOMP = 1
-                           GOTO 141
-                     ENDIF
-                   ELSE
-                     ICOMP = 1
-                     GOTO 141
-                   ENDIF
- 140               CONTINUE
- 141               CONTINUE
-C
-                  IF (ICOMP.EQ.0) THEN
-                      ZI(IDSURC+IRELA2-1) = 1
+              ICOMP=0
+              DO 140 INO=1,NBTER1
+                IF (ZK8(IDNOE1+INO-1).EQ.ZK8(IDNOE2+INO-1)) THEN
+                  IF (ZK8(IDDL1+INO-1).EQ.ZK8(IDDL2+INO-1)) THEN
+                    RAPCOE=COPROR*ZR(JRLCO1+INO-1)
+                    EPSREL=EPS1*ABS(ZR(JRLCO1+INO-1))
+                    DIFREL=ABS(ZR(JRLCO2+INO-1)-RAPCOE)
+                    IF (DIFREL.LE.EPSREL)GOTO 140
+                    ICOMP=1
+                    GOTO 150
+
+                  ELSE
+                    ICOMP=1
+                    GOTO 150
+
                   ENDIF
-               ENDIF
+                ELSE
+                  ICOMP=1
+                  GOTO 150
+
+                ENDIF
+  140         CONTINUE
+  150         CONTINUE
+C
+              IF (ICOMP.EQ.0) THEN
+                ZI(JRLSU+IRELA2-1)=1
+              ENDIF
+            ENDIF
 C ---        FIN DE LA BOUCLE SUR LES RELATIONS  IRELA2 ---
- 130      CONTINUE
-         ENDIF
+  160     CONTINUE
+        ENDIF
 C ---  FIN DE LA BOUCLE SUR LES RELATIONS  IRELA1 ---
- 100   CONTINUE
+  170 CONTINUE
 C
 C ---  MENAGE  ---
 C
-      CALL JEDETR ('&&ORDLRL.NOEUD_RELA')
-      CALL JEDETR ('&&ORDLRL.NOEUD_OCC')
-      CALL JEDETR ('&&ORDLRL.COEFMAX')
-      CALL JEDETR ('&&ORDLRL.COEF_R')
-      CALL JEDETR ('&&ORDLRL.COEF_C')
+      CALL JEDETR('&&ORDLRL.NOEUD_RELA')
+      CALL JEDETR('&&ORDLRL.NOEUD_OCC')
+      CALL JEDETR('&&ORDLRL.COEFMAX')
+      CALL JEDETR('&&ORDLRL.COEF_R')
+      CALL JEDETR('&&ORDLRL.COEF_C')
 C
       CALL JEDEMA()
       END

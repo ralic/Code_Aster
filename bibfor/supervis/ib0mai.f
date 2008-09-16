@@ -3,7 +3,7 @@
       INTEGER                      IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C      0   SINON
 C     ------------------------------------------------------------------
       CHARACTER*16 NOMCMD(2)
       CHARACTER*8  NOMF
-      INTEGER      LG(2), UNMEGA, IADZON
+      INTEGER      LG(2), UNMEGA, IADZON, VALI(2)
       LOGICAL      LERMEM
       LOGICAL      LMEMEX
 C
@@ -41,14 +41,16 @@ C     RESTRICTION POUR UNE TAILLE MEMOIRE JEVEUX EXACTE
       LOIS = LOISEM()
       LERMEM = .FALSE.
       FNTMEM = -1.0D0
-
-      MEMDEM = MEMJVX ( FNTMEM )
+      MEMDEM = MEJVST ( FNTMEM ) / LOIS 
+      WRITE(6,'(/,1X,A)') 'PARAMETRES DE LA GESTION MEMOIRE JEVEUX  '
+      WRITE(6,'(1X,A)')   '======================================='
       IF ( MEMDEM .GT. 0 ) THEN
          FNTMEM = MEMDEM * 1.0D0/ UNMEGA
-         WRITE(6,'(1X,A,I14,A,F12.3,A)') 'MEMOIRE IMPOSEE POUR JEVEUX: '
-     &          ,MEMDEM*LOIS,' OCTETS (',FNTMEM*LOIS,' MEGAOCTETS)'
+         WRITE(6,'(1X,A,I14,A,F12.3,A)') 
+     &           'LIMITE MEMOIRE STATIQUE       : ',
+     &            MEMDEM*LOIS,' OCTETS (',FNTMEM*LOIS,' Mo)'
          IMEMO  = MEMDIS (MEMDEM, IADZON, LMO, 0)
-         WRITE(6,'(1X,A,I14,A)') 'MEMOIRE DONNEE PAR "MEMDIS": ',
+         WRITE(6,'(1X,A,I14,A)') 'MEMOIRE DISPONIBLE            : ',
      &             IMEMO*LOIS,' OCTETS'
          IF ( MEMDEM .LE. IMEMO ) THEN
             IMEMO = MEMDEM
@@ -56,18 +58,12 @@ C     RESTRICTION POUR UNE TAILLE MEMOIRE JEVEUX EXACTE
             LERMEM = .TRUE.
          ENDIF
       ELSE
-         MAXMEM = MEMJOB() * UNMEGA
-         IMEMO  = MEMDIS( MAXMEM, IADZON, LMO, 1)
-         WRITE(6,'(1X,A,I12,A,I6,A)') 'MEMOIRE DONNEE PAR "MEMDIS": ',
-     &         IMEMO*LOIS,' OCTETS (MAX POUR LE JOB=',
-     &         (MAXMEM*LOIS)/UNMEGA,' MEGAOCTETS)'
-         IF (.NOT. LMEMEX(0)) THEN
-            IMEMO  =  MAX ( INT(0.75D0 * IMEMO)  , IMEMO - UNMEGA )
-         ENDIF
+         IMEMO = UNMEGA
       ENDIF
       FNTMEM = IMEMO * 1.0D0 / UNMEGA
-      WRITE(6,'(1X,A,I14,A,F12.3,A)') 'MEMOIRE PRISE              : ',
-     &      IMEMO*LOIS,' OCTETS (',FNTMEM*LOIS,' MEGAOCTETS)'
+      WRITE(6,'(1X,A,I14,A,F12.3,A)') 
+     &        'MEMOIRE PRISE                 : ',
+     &         IMEMO*LOIS,' OCTETS (',FNTMEM*LOIS,' Mo)'
 C
 C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
       INTDBG = -1
@@ -77,22 +73,22 @@ C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
          IDEBUG = 0
       ENDIF
       VDY = -1.0D0
-      MXDYN = MEJVDY ( VDY )
+      MXDYN =  MEMJVX (VDY) - IMEMO
       IF ( MXDYN .GT. 0 ) THEN
-        WRITE(6,'(1X,A,I14,A,F12.3,A)') 'LIMITE MEMOIRE DYNAMIQUE   : ',
-     &      MXDYN*LOIS,' OCTETS (',MXDYN*LOIS*1.D0/UNMEGA,' MEGAOCTETS)'
+        WRITE(6,'(1X,A,I14,A,F12.3,A)') 
+     &          'LIMITE MEMOIRE DYNAMIQUE      : ',
+     &           MXDYN*LOIS,' OCTETS (',MXDYN*LOIS*1.D0/UNMEGA,' Mo)'
       ENDIF
       CALL JEDEBU(4,IMEMO,MXDYN,IADZON,LMO,'MESSAGE','VIGILE',IDEBUG )
+      WRITE(6,'(1X,A)')   '======================================='
 C
 C     --- ALLOCATION D'UNE BASE DE DONNEES DUMMY ---
       NOMF = 'LDUMMY'
       CALL JEINIF( 'DUMMY','DETRUIT',NOMF,'L', 250 , 100, 1 )
 C
-C-----------------AY------------------------
       CALL ULDEFI(6,' ','MESSAGE','A','N','N')
       CALL ULDEFI(9,' ','ERREUR' ,'A','N','N')
       CALL UTINIT(2, 80, 1)
-C-----------------AY------------------------
 
       IF ( LERMEM ) CALL U2MESI('F','SUPERVIS_11',1,INT(FNTMEM*LOIS))
 

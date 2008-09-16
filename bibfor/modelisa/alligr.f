@@ -6,7 +6,7 @@
       CHARACTER*(*)                                 LIGRCZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,16 +25,17 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     ALLOUER LE LIGREL DE CHARGE  CORRESPONDANT AUX MOTS-CLE:
-C       FORCE_NODALE                                      EN MECANIQUE
-C       ECHANGE_PAROI                                     EN THERMIQUE
+C       FORCE_NODALE       EN MECANIQUE
+C       ECHANGE_PAROI      EN THERMIQUE
+C
+C REMARQUE : LA DUALISATION DES CL POURRA ENRICHIR ULTERIEUREMENT CE
+C            LIGREL (OU LE CREER). VOIR AFLRCH.F
 C
 C IN  : CHAR   : NOM UTILISATEUR DE LA CHARGE
 C IN  : OPER   : NOM DE LA COMMANDE (AFFE_CHAR_XXXX)
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : FONREE : FONC OU REEL SUIVANT L'OPERATEUR
 C OUT : LIGRCZ : NOM DU LIGREL DE CHARGE
-C OUT : NBTOUT : TABLEAU CONTENANT LES NOMBRE TOTAUX DE NOEUDS, GROUPES.
-C                10 ENTIERS PAR MOT-CLE: DDL_IMPO, FORCE_NODALE,...
 C ----------------------------------------------------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
@@ -68,16 +69,14 @@ C
       LONEMA = 0
       NBGREL = 0
       NBMATA = 0
-C
+
       MOCLES(1) = 'GROUP_NO'
       MOCLES(2) = 'NOEUD'
       TYPMCL(1) = 'GROUP_NO'
       TYPMCL(2) = 'NOEUD'
-C
+
       IF (OPER(1:14).EQ.'AFFE_CHAR_MECA') THEN
-C
          IF ( FONREE .NE. 'COMP' ) THEN
-C
             MOCLEF = 'FORCE_NODALE'
             CALL GETFAC ( MOCLEF , NFONO )
             IF ( NFONO .NE. 0 ) THEN
@@ -87,13 +86,11 @@ C
                NBGREL = NBGREL + NBET
                NBMATA = NBMATA + NBET
             ENDIF
-C
          ENDIF
-C
          LIGRCH = CHAR//'.CHME.LIGRE'
-C
+
+
       ELSEIF (OPER(1:14).EQ.'AFFE_CHAR_THER') THEN
-C
          CALL GETFAC ( 'ECHANGE_PAROI', NECHP )
          IF ( NECHP .NE. 0 ) THEN
             CALL LIGECP ( NOMA, NBT1, LLIG, LNEMA, NGREL )
@@ -102,17 +99,15 @@ C
             NBGREL = NBGREL + NGREL
             NBMATA = NBMATA + NBT1(3)
          ENDIF
-C
          LIGRCH = CHAR//'.CHTH.LIGRE'
-C
+
+
       ELSEIF (OPER(1:14).EQ.'AFFE_CHAR_ACOU') THEN
-C
          LIGRCH = CHAR//'.CHAC.LIGRE'
-C
       ENDIF
-C
+
+
 C     --- CREATION DU LIGREL DE CHARGE SI NECESSAIRE ---
-C
       NTOT = NFONO + NECHP
       IF (NTOT .NE. 0) THEN
          NBGREL = MAX(NBGREL,1)
@@ -120,23 +115,18 @@ C
      &                'VARIABLE',NBGREL)
          LONLIG = MAX(LONLIG,1)
          CALL JEECRA (LIGRCH//'.LIEL', 'LONT', LONLIG, ' ')
-C
          NBMATA = MAX(NBMATA,1)
          CALL JECREC (LIGRCH//'.NEMA', 'G V I', 'NU', 'CONTIG',
      +                                              'VARIABLE', NBMATA)
          LONEMA = MAX(LONEMA,1)
          CALL JEECRA (LIGRCH//'.NEMA', 'LONT', LONEMA, ' ')
-C
          CALL WKVECT (LIGRCH//'.LGRF', 'G V K8',1, JNOMA)
          ZK8(JNOMA) = NOMA
-C
          CALL WKVECT (LIGRCH//'.NBNO', 'G V I',1,IDNBNO)
          ZI(IDNBNO) = 0
-C
          CALL WKVECT(LIGRCH//'.LGNS','G V I',2*LONEMA,IDLGNS)
-C
       ENDIF
       LIGRCZ = LIGRCH
-C
+
       CALL JEDEMA()
       END

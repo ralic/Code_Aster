@@ -1,4 +1,4 @@
-#@ MODIF sd_matr_elem SD  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF sd_matr_elem SD  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,8 +29,9 @@ class sd_matr_elem(AsBase):
     nomj = SDNom(fin=19)
     RERR = AsVK24(lonmax=5, )
     RELR = Facultatif(AsVK24())
+    RECC = Facultatif(AsVK8())
     TITR = AsVK80(SDNom(debut=19), optional=True)
-    
+
     # indirection par RELR :
     def check_matr_elem_i_RELR(self, checker):
         if not self.RELR.exists : return

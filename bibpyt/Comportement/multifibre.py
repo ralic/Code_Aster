@@ -1,4 +1,4 @@
-#@ MODIF multifibre Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF multifibre Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ loi = LoiComportement(
    nb_vari        = 0,
    nom_vari       = None,
    mc_mater       = None,
-   modelisation   = ('POU_D_EM','POU_D_TGM'),
+   modelisation   = ('1D','POU_D_EM','POU_D_TGM'),
    deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'REAC_GEOM'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    schema         = ('IMPLICITE',),

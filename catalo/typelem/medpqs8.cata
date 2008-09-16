@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,8 +28,8 @@ MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    )
-    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC
+                                        PERTURB  TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR  )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
@@ -59,10 +59,10 @@ MODE_LOCAL__
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
     EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
-    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL
-                                        TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
-    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL
-                                        TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
+    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
+                                        TERMN2   TERMSA   TERMS2   TAILLE   )
+    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
+                                        TERMN2   TERMSA   TERMS2   TAILLE   )
     CFISSR   = FISS_R   ELEM__         (XA       YA       XNORM    YNORM    )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
@@ -81,9 +81,11 @@ MODE_LOCAL__
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18
+                                        X19      X20      X21      X22      X23      X24
+                                        X25      X26      X27      X28      X29      X30      )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CREFERI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12      )
@@ -91,9 +93,11 @@ MODE_LOCAL__
     CCONSTR  = NEUT_R   ELEM__         (X1       )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     CALPHAR  = NEUT_R   ELEM__         (X1       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18
+                                        X19      X20      X21      X22      X23      X24
+                                        X25      X26      X27      X28      X29      X30      )
     EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
@@ -116,10 +120,8 @@ MODE_LOCAL__
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
-
-    ESINGUL  = SING_R   ELEM__         (DEGRE   TAILLE   )
-    ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   TAILLE   )
-
+    ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
+    ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )

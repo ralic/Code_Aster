@@ -1,6 +1,6 @@
       SUBROUTINE CELCES(CELZ,BASEZ,CESZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -310,6 +310,10 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
                       ZL(JCESV-1+IAD) = ZL(JCELV-1+IEQ)
                     ELSE IF (TSCA.EQ.'K8') THEN
                       ZK8(JCESV-1+IAD) = ZK8(JCELV-1+IEQ)
+                    ELSE IF (TSCA.EQ.'K16') THEN
+                      ZK16(JCESV-1+IAD) = ZK16(JCELV-1+IEQ)
+                    ELSE IF (TSCA.EQ.'K24') THEN
+                      ZK24(JCESV-1+IAD) = ZK24(JCELV-1+IEQ)
                     ELSE
                       CALL ASSERT(.FALSE.)
                     END IF

@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C      DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
         REAL*8          R(NR),        DRDY(NR,NR), RINI(NR)
         REAL*8          DRDY1(NR,NR)
         REAL*8          DDY(NDT+NVI),DY(NDT+NVI),YD(NDT+NVI),YF(NDT+NVI)
-        REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
+        REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2), DT
         REAL*8          TIMED, TIMEF
 C
         CHARACTER*8     MOD
@@ -100,7 +100,6 @@ C       ----------------------------------------------------------------
 
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
-        REAL*8          EPSEQ
         REAL*8          TOUTMS(5,24,6),HSR(5,24,24)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 
@@ -109,6 +108,7 @@ C
 C --    INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
 C
         ESSAI = 1.D-5
+        DT=TIMEF-TIMED
 
 C       DIMENSION DYNAMIQUE DE YD,YF,DY,R,DDY
         DO 100  I = 1 , NR
@@ -124,19 +124,14 @@ C       DIMENSION DYNAMIQUE DE YD,YF,DY,R,DDY
 
 C       ----------------------------------------------------------------
 C
-C --    INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
+C --    AFFECTATION DE YD = ( SIGD , VIND , (EPSD(3)) )
 C
         CALL LCEQVN ( NDT  ,  SIGD , YD )
         IRTETI = 0
 
-        IF (NBCOMM(NMAT,1).EQ.1) THEN
-           NS=(NVI-8)/3
-           DO 102 I=1,NS
-              YD(NDT+I)=VIND(6+3*(I-1)+2)
- 102     CONTINUE
-        ELSE
-           CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
-        ENDIF
+C       CHOIX DES VALEURS DE VIND A AFFECTER A YD
+        CALL LCAFYD(MATERF,NBCOMM,NMAT,NVI,VIND,YD)
+        
         IF(MOD(1:6).EQ.'C_PLAN') YD (NR) = EPSD(3)
 C
 C       RESOLUTION ITERATIVE PAR NEWTON DE R(DY) = 0
@@ -148,9 +143,9 @@ C
         TYPESS = -1
         INTG   = 0
 
-C
- 2              CONTINUE
-C
+
+ 2      CONTINUE
+
 C --    CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
 C
         CALL LCINIT ( FAMI,KPG,KSP,LOI,TYPESS,ESSAI,MOD,NMAT,
@@ -160,56 +155,59 @@ C
      &                VIND,SIGD)
 
         ITER = 0
-C
-C
+
  1      CONTINUE
-        ITER = ITER + 1
-C
-C --    INCREMENTATION DE  YF = YD + DY
-C
-        CALL LCSOVN ( NR , YD , DY , YF )
-C
-C --    CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
-C
-        CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
-     &                COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
-     &    ITMAX, TOLER,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R,IRET )
-        IF (IRET.NE.0) GOTO 3
+ 
+C       ITERATIONS DE NEWTON 
 
-C     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
-        IF(ITER.EQ.1) THEN
-           CALL LCEQVN ( NR ,   R ,   RINI )
-        ENDIF
+            ITER = ITER + 1
 C
-C --    CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
+C --        INCREMENTATION DE  YF = YD + DY
 C
-        CALL LCJACB ( FAMI,KPG,KSP,LOI,MOD,IMAT, NMAT, MATERF,
-     &                TIMED,TIMEF,YF,DEPS,
-     3    ITMAX,TOLER, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
-     &                  EPSD,  DY,    DRDY, IRET )
-        IF (IRET.NE.0) GOTO 3
+            CALL LCSOVN ( NR , YD , DY , YF )
 C
-C --    RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
+C --        CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
 C
-        CALL LCEQMN ( NR , DRDY , DRDY1 )
-        CALL LCEQVN ( NR ,   R ,   DDY )
-        CALL MGAUSS ( 'NCWP',DRDY1,DDY,NR,NR,1,RBID,IRET )
-        IF (IRET.NE.0) GOTO 3
+            CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
+     &                    COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &        ITMAX, TOLER,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R,IRET )
+            IF (IRET.NE.0) GOTO 3
 
+C           SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
+            IF(ITER.EQ.1) THEN
+               CALL LCEQVN ( NR ,   R ,   RINI )
+            ENDIF
 C
-C --    REACTUALISATION DE DY = DY + DDY
+C --        CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
 C
-        CALL LCSOVN ( NR , DDY , DY , DY )
-
-        IF ( MOD(1:6).EQ.'C_PLAN' ) DEPS(3) = DY(NR)
+            CALL LCJACB ( FAMI,KPG,KSP,LOI,MOD,IMAT, NMAT, MATERF,
+     &                    TIMED,TIMEF,YF,DEPS,ITMAX,TOLER,COMP,NBCOMM,
+     &                    CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &                    EPSD,  DY,    DRDY, IRET )
+            IF (IRET.NE.0) GOTO 3
+C
+C --        RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
+C
+            CALL LCEQMN ( NR , DRDY , DRDY1 )
+            CALL LCEQVN ( NR ,   R ,   DDY )
+            CALL MGAUSS ( 'NCWP',DRDY1,DDY,NR,NR,1,RBID,IRET )
+            IF (IRET.NE.0) GOTO 3
 
 C
-C --    VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
+C --        REACTUALISATION DE DY = DY + DDY
 C
-        CALL LCCONV( LOI,    DY,   DDY, NR, ITMAX, TOLER, ITER, INTG,
-     &               NMAT, MATERF, NBCOMM, R, RINI, TYPESS, ESSAI,
-     &               ICOMP, IRTET)
-        IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
+            CALL LCSOVN ( NR , DDY , DY , DY )
+
+            IF ( MOD(1:6).EQ.'C_PLAN' ) DEPS(3) = DY(NR)
+
+C
+C --        VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
+C
+            CALL LCCONV( LOI,DY,DDY,NR,ITMAX,TOLER,ITER,INTG,
+     &                   NMAT,MATERF,NBCOMM,R,RINI,TYPESS,ESSAI,
+     &                   ICOMP,IRTET)
+     
+            IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
 
 C
 C --    CONVERGENCE > INCREMENTATION DE  YF = YD + DY
@@ -220,28 +218,23 @@ C --    MISE A JOUR DE SIGF , VINF
 C
         CALL LCEQVN ( NDT ,   YF(1)     , SIGF )
         CALL LCEQVN ( NVI-1 , YF(NDT+1) , VINF )
-C
-
-        IF ( LOI(1:7) .EQ. 'NADAI_B' ) THEN
-           DO 10  I = 3 , NVI-1
-              VIND ( I ) = 0.D0
-   10      CONTINUE
-        ENDIF
+        
         VINF (NVI) = 1.D0
-C
-C --   DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
-C
-        IF (LOI(1:8).EQ.'MONOCRIS') THEN
-           CALL LCDPEC(VIND,NBCOMM,NMAT,NDT,CPMONO,MATERF,
-     &       ITER,NVI,ITMAX, TOLER,PGL, TOUTMS,DY, YF, VINF,EPSEQ )
-        ENDIF
-C
+
+C       POST -TRAITEMENTS POUR DES LOIS PARTICULIERES        
+        CALL LCPLNF ( LOI, VIND,NBCOMM,NMAT,CPMONO,MATERF,
+     &   ITER,NVI,ITMAX, TOLER,PGL, TOUTMS,HSR,DT,DY,YF,VINF)
+
+C       CONVERGENCE
         IRTETI = 0
         GOTO 9999
+        
+C       NON CONVERGENCE, OU PB => REDECOUPAGE LOCAL DU PAS DE TEMPS
  3      CONTINUE
         IRTETI = 1
         GOTO 9999
-C
+        
+C       NON CONVERGENCE, DEMANDE DE REDECOUPAGE GLOBAL DU PAS DE TEMPS
  4      CONTINUE
         IRTETI = 2
 

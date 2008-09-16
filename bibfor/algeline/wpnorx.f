@@ -5,7 +5,7 @@
       CHARACTER*(*)                                  RESUFK(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/05/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,10 +30,12 @@ C IN  NEQ    : I : TAILLE  DES MODES
 C VAR VECP   : C : MATRICE DES MODES
 C IN  EXCLUS : I : TABLE   DES DDL EXCLUS (0 <=> EXCLUS)
 C     ------------------------------------------------------------------
-      INTEGER   IMODE, IEQ
+      INTEGER    IMODE, IEQ
       COMPLEX*16 NORMX, ZERO
+      REAL*8     R8MIEM,PREC
 C     ------------------------------------------------------------------
 C
+      PREC=R8MIEM()*10.D0
       ZERO = DCMPLX(0.0D0,0.0D0)
       DO 100 IMODE = 1, NBMODE
           NORMX = ZERO
@@ -42,7 +44,7 @@ C
                 NORMX = VECP(IEQ,IMODE)
              ENDIF
   110     CONTINUE
-          IF ( ABS(NORMX) .NE. ZERO ) THEN
+          IF ( ABS(NORMX) .GT. PREC ) THEN
              NORMX = 1.D0 / NORMX
              DO 120 IEQ = 1, NEQ
                 VECP(IEQ,IMODE) = VECP(IEQ,IMODE) * NORMX

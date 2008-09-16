@@ -1,15 +1,14 @@
-        SUBROUTINE LCMMJF( FAMI,KPG,KSP,TAUS,COEFT,MATERF,IFA,NMAT,
+        SUBROUTINE LCMMJF( TAUS,COEFT,MATERF,IFA,NMAT,
      &    NBCOMM,DT,NECOUL,IS,IR,NBSYS,VIND,DY,HSR,RP,ALPHAP,DALPHA,
-     &    GAMMAP,DGAMMA,SGNR,DFDTAU,DFDAL,DFDR,IRET)
+     &    GAMMAP,DGAMMA,SGNR,DGDTAU,DGDAL,DFDR,IRET)
         IMPLICIT NONE
-        INTEGER KPG,KSP,IFA,NMAT,NBCOMM(NMAT,3),NUMHSR
+        INTEGER IFA,NMAT,NBCOMM(NMAT,3),NUMHSR
         REAL*8 TAUS,COEFT(NMAT),RP,DT,ALPHAP,DALPHA,GAMMAP,DGAMMA
-        REAL*8 DFDTAU,DFDAL,DFDR,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT)
-        CHARACTER*(*) FAMI
+        REAL*8 DGDTAU,DGDAL,DFDR,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT)
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 22/10/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,10 +29,7 @@ C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C  CALCUL DES DERIVEES DES VARIABLES INTERNES DES LOIS MONOCRISTALLINES
 C  POUR LA LOI D'ECOULEMENT
-C       IN  FAMI    :  FAMILLE DU POINT DE GAUSS
-C           KPG     :  POINT DE GAUSS
-C           KSP     :  SOUS-POINT DE GAUSS
-C           TAUS    :  SCISSION REDUITE
+C       IN  TAUS    :  SCISSION REDUITE
 C           COEFT   :  PARAMETRES MATERIAU
 C           IFA     :  NUMERO DE FAMILLE
 C           NBCOMM  :  NOMBRE DE COEF MATERIAU PAR FAMILLE
@@ -44,15 +40,16 @@ C           DALPHA  :  DALPHA ENTRE T ET T+DT ITERATION COURANTE
 C           GAMMAP  :  GAMMA (GLISSEMENT) A T+DT
 C           DALPHA  :  DGAMMA ENTRE T ET T+DT ITERATION COURANTE
 C     OUT:
-C           DFDTAU  :  dF/dTau
-C           DFDAL   :  dF/dAlpha
-C           DFDR    :  dF/dR
+C           DGDTAU  :  dF/dTau
+C           DGDAL   :  dF/dAlpha  (particulier pour KR)
+C           DFDR    :  dF/dR (ou dhs/dalphar pour KR)
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
       REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,TAUMU,TAUV,GM,PM,CC
-      REAL*8 SGNR,PR,DRDPR,DELTAV,DELTAG,SGNS,R8MIEM,AUX
+      REAL*8 SGNR,PR,DRDPR,DELTAV,DELTG0,SGNS,R8MIEM,AUX,ALPHAS
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS,R,INT1,INT2,INT3,DFDTMU
-      REAL*8 DTMUDR,SOM,DRDGAM,CISA2, RR
+      REAL*8 DTMUDR,SOM,DRDGAM,CISA2, RR,DELTGG,TERME,PETITG,CS
+      REAL*8 DTEDTO,DGGDTO,DTEDAL,DGGDAL,DELTSR,DHDAL,PETITH
 
       INTEGER IFL,NS, IS, NBSYS,IU,IR,IRET,NUECOU,NULHSR,IRET2
 C     ----------------------------------------------------------------
@@ -76,13 +73,13 @@ C      IF (NECOUL.EQ.'ECOU_VISC1') THEN
 C         dF/dTau
 
           IF (CRIT.GT.0.D0) THEN
-             DFDTAU=(N*DT/(K**N))*(CRIT**(N-1))
+             DGDTAU=(N*DT/(K**N))*(CRIT**(N-1))
           ELSE
-             DFDTAU=0.D0
+             DGDTAU=0.D0
           ENDIF
 
-C         DFDAL
-          DFDAL=-C*DFDTAU
+C         DGDAL
+          DGDAL=-C*DGDTAU
 
 C         DFDR
           IF (ABS(FTAU).LE.R8MIEM()) THEN
@@ -90,7 +87,7 @@ C         DFDR
           ELSE
              SGNS=FTAU/ABS(FTAU)
           ENDIF
-          DFDR=-SGNS*DFDTAU
+          DFDR=-SGNS*DGDTAU
 
 C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
       ELSEIF (NUECOU.EQ.2) THEN
@@ -111,16 +108,16 @@ C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
           ENDIF
 
           IF (CRIT.GT.0.D0) THEN
-             DFDTAU=(N*DT/(K**N))*(CRIT**(N-1))
+             DGDTAU=(N*DT/(K**N))*(CRIT**(N-1))
           ELSE
-             DFDTAU=0.D0
+             DGDTAU=0.D0
           ENDIF
 
-C         DFDAL
-          DFDAL=(-C*SGNS+D*ALPHAP*DALPHA)*DFDTAU*SGNS
+C         DGDAL
+          DGDAL=(-C*SGNS+D*ALPHAP*DALPHA)*DGDTAU*SGNS
 
 C         DFDR
-          DFDR=-SGNS*DFDTAU
+          DFDR=-SGNS*DGDTAU
 
 
 C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
@@ -130,7 +127,7 @@ C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
           TAUMU  =COEFT(IFL+2)
           GAMMA0 =COEFT(IFL+3)
           DELTAV =COEFT(IFL+4)
-          DELTAG =COEFT(IFL+5)
+          DELTG0 =COEFT(IFL+5)
           TPERD  =COEFT(IFL+6)
           CRIT=ABS(TAUS)-TAUMU
           IF (ABS(TAUS).LE.R8MIEM()) THEN
@@ -140,27 +137,41 @@ C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
           ENDIF
           
           IF (CRIT.LT.0.D0) THEN
-             DFDTAU=0.D0
+             DGDTAU=0.D0
           ELSE
                TABS=TPERD+273.15D0
-               DFDTAU=GAMMA0*DELTAV*K*TABS*EXP(-DELTAG/K/TABS)
+               DGDTAU=GAMMA0*DELTAV*K*TABS*EXP(-DELTG0/K/TABS)
      &                *EXP(DELTAV/K/TABS*CRIT-1.D0)*(DELTAV/K/TABS*CRIT)
           ENDIF
 
-C         DFDAL
-          DFDAL=0.D0
+C         DGDAL
+          DGDAL=0.D0
 
 C         DFDR
           DFDR=0.D0
 
 
       ELSEIF (NUECOU.EQ.4) THEN
-          
+C             MATRICE JACOBIENNE DU SYSTEME :
+C  R1 = D-1*SIGMA - (D_M-1*SIGMA_M)-(DEPS-DEPS_TH)+Somme(ms*Gamma_s)=0
+C  R2 = dALPHA - g(Taus,alphas)*h(alphas)
+C avec Gamma_s=g(Taus,alphas)*sgn(taus)
+C
+C ON VEUT CALCULER :
+C         dg(taus,alphas)/dtaus          
+          DGDTAU=0.D0
+C         dg(taus,alphas)/dalphar          
+          DGDAL=0.D0
+C         dh(alphas)/dalphar          
+          DHDAL=0.D0
+C         DFDR=DHDAL
+          DFDR=0.D0
+                
           K         =COEFT(IFL+1)
           TAUR      =COEFT(IFL+2)
           TAU0      =COEFT(IFL+3)
           GAMMA0    =COEFT(IFL+4)
-          DELTAG    =COEFT(IFL+5)
+          DELTG0    =COEFT(IFL+5)
           BSD       =COEFT(IFL+6)
           GCB       =COEFT(IFL+7)
           KDCS      =COEFT(IFL+8)
@@ -173,79 +184,78 @@ C         DFDR
           ELSE
              CISA2 = (MATERF(36)/2.D0)**2
           ENDIF
-
           TAUV=ABS(TAUS)-TAU0
-
           IF (ABS(TAUS).LE.R8MIEM()) THEN
              SGNS=1.D0
           ELSE
              SGNS=(TAUS)/ABS(TAUS)
           ENDIF
-
           IF (TAUV.GT.0.D0) THEN
-
              SOM    = 0.D0
              TAUMU  = 0.D0
-             DTMUDR = 0.D0
-             DFDAL  = 0.D0
-
+             DGDAL  = 0.D0
              DO 1 IU = 1, NBSYS
-               R     = VIND(3*(IU-1)+1)
-               TAUMU = TAUMU +  HSR(NUMHSR,IS,IU)*R
+               ALPHA = VIND(3*(IU-1)+1)+DY(IU)
+C              PARTIE POSITIVE DE ALPHA
+               IF (ALPHA.GT.0.D0) THEN
+                  TAUMU = TAUMU +  HSR(NUMHSR,IS,IU)*ALPHA
+                  IF (IU.NE.IS) SOM = SOM+ALPHA
+               ENDIF
  1           CONTINUE
-
+             ALPHAS= VIND(3*(IS-1)+1)+DY(IS)
+             SOM=SQRT(SOM)
              TAUMU = CISA2 * TAUMU/TAUV
-
              TAUEF = TAUV-TAUMU
-
              IF (TAUEF.GT.0.D0) THEN
-
-                AUX= (1.D0-((TAUV-TAUMU)/TAUR)**P)
+                AUX= (1.D0-(TAUEF/TAUR)**P)
                 IF (AUX.LE.0.D0)  THEN
+C                   print *,'attention, lcmmjf,AUX=',AUX
                    IRET=1
                    GOTO 9999
                 ENDIF
-
-               INT1 = (1.D0-((TAUV-TAUMU)/TAUR)**P)**(Q-1)
-               INT2 = ((TAUV-TAUMU)/TAUR)**(P-1)
-               INT3 = 1.D0+TAUMU/TAUV
-
                TABS=TPERD+273.15D0
-               DFDTAU = DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
-     &         EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
-     &             *INT1*INT2*INT3
-
-               DFDTMU = -DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
-     &         EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
-     &         *INT1*INT2*SGNS
-
-               IF(IR.NE.0) THEN
-                 RR  = VIND(3*(IR-1)+1)
-                 DO 2 IU = 1, NBSYS
-                    R  = VIND(3*(IU-1)+1)
-                    SOM    = SOM  + R
-  2              CONTINUE
-                 SOM    = SOM  - RR
-                 SOM = SQRT(SOM)
-C
-                 DTMUDR = CISA2 * HSR(NUMHSR,IS,IR)/TAUV
-
-                 DRDGAM = SGNR/(1.D0+GCB*ABS(DGAMMA))**2*
-     &                  (BSD+SOM/KDCS-GCB*VIND(3*(IR-1)+1))
-
-                 DFDAL = DFDTMU*DTMUDR*DRDGAM
+C              PROTECTION DE l'EXPONENTIELLE
+               DELTGG=DELTG0*(AUX**Q)
+               TERME=-DELTGG/K/TABS
+               IF (TERME.GT.10.D0) THEN
+                  IRET=1
+C                  print *,'attention, lcmmjf,TERME=',TERME
+                  GOTO 9999
                ENDIF
-             ELSE
-                DFDTAU=0.D0
-                DFDAL=0.D0
+C              CALCUL DE dg/dtau
+               PETITG=GAMMA0*EXP(TERME)*DT
+               PETITH=BSD+SOM/KDCS-GCB*ALPHAS
+               IF (PETITH.LT.0.D0) PETITH=0.D0
+               CS=-(P*Q*DELTG0/TAUR)
+               CS=CS*(AUX**(Q-1.D0))*(TAUEF/TAUR)**(P-1.D0)
+               DTEDTO=SGNS*(1.D0+TAUMU/TAUV)
+               DGGDTO=CS*DTEDTO
+               DGDTAU =-PETITG*SGNS*DGGDTO/K/TABS
+               
+               IF (IR.NE.0) THEN
+C                  CALCUL DE dgs/dalphar
+                   DTEDAL=-CISA2/TAUV*HSR(NUMHSR,IS,IR)
+                   DGGDAL=CS*DTEDAL
+                   DGDAL=-PETITG/K/TABS*DGGDAL
+ 
+C                  CALCUL DE dhs/dalphar
+                   DELTSR=0.D0
+                   IF (IR.EQ.IS) DELTSR=1.D0
+                   
+                   IF (PETITH.GT.0.D0) THEN
+                      IF (SOM.GT.0.D0) THEN
+                         DHDAL=(1-DELTSR)/SOM/2.D0/KDCS-GCB*DELTSR
+                      ENDIF
+                   ELSE
+                      DHDAL=0.D0
+                   ENDIF
+                   DFDR=DHDAL
+               ELSE
+                   DFDR=PETITH
+               ENDIF
              ENDIF
-          ELSE
-             DFDTAU=0.D0
-             DFDAL=0.D0
           ENDIF
 
-C         DFDR
-          DFDR=0.D0
       ENDIF
 9999  CONTINUE
       END

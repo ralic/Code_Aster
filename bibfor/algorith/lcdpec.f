@@ -1,8 +1,8 @@
         SUBROUTINE LCDPEC(VIND,NBCOMM,NMAT,NDT,CPMONO,MATERF,ITER,NVI,
-     &          ITMAX, TOLER, PGL, TOUTMS,DY, YF, VINF,EPSEQ)
+     &          ITMAX, TOLER, PGL, TOUTMS,HSR, DT, DY, YF, VINF,EPSEQ)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/05/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,20 +28,15 @@ C     ----------------------------------------------------------------
       INTEGER  NUV1,NUVI,MONO1,ITER,NVI,IRET,IFL,IU
       REAL*8   VIND(*),VINF(*),DVIN(6),DY(*),YF(*),MATERF(NMAT*2)
       REAL*8   LCNRTE, EPSEQ,PGL(3,3),D,MS(6),NG(3),DGAMMA,DP,DALPHA
-      REAL*8   ALPHAM,DEVI(6),TOUTMS(5,24,6),TOLER
-      REAL*8   BSD,GCB,KDCS, RACR,SOM, AUX,DAL
-C JOUM      
+      REAL*8   ALPHAM,DEVI(6),TOUTMS(5,24,6),TOLER,HSR(5,24,24)
+      REAL*8   BSD,GCB,KDCS, RACR,SOM, AUX, TAUS,CISA2
+      REAL*8   CRIT, SGNS, DT
       INTEGER  J
       REAL*8   SI(3,3)
       REAL*8   SING(3)
       REAL*8   SICL, P
-C JOUM      
       CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,NECRCI,NECOUL
-      COMMON/KRDAL/DAL(24)
 C
-
-C      MONO1=NBCOMM(NMAT,1)
-      
 C     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES      
       CALL R8INIR(6, 0.D0, DEVI, 1)                        
       NBFSYS=NBCOMM(NMAT,2)                                
@@ -61,33 +56,36 @@ C     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES
  101        CONTINUE                                       
             NUVI=NUVI+3                                           
             NUV1=NUV1+1                                           
-            DGAMMA=DY(NUV1)                                       
-            DP=ABS(DGAMMA)                                        
-            ALPHAM=VIND(NUVI-2) 
             
             IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
-                DALPHA=DAL(IS)
+              TAUS=0.D0
+              DO 102 I=1,6
+                 TAUS=TAUS+YF(I)*MS(I)
+ 102           CONTINUE
+              IF (MATERF(NMAT).EQ.0) THEN
+                 CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
+              ELSE
+                 CISA2 = (MATERF(36)/2.D0)**2
+              ENDIF
+              CALL LCMMKR(TAUS,MATERF(NMAT+1),CISA2,IFA,NMAT,NBCOMM,IS,
+     &           NBSYS,HSR,VIND(7),DY(NUV1),DT,
+     &           DALPHA,DGAMMA,DP,CRIT,SGNS,IRET)
             ELSE
-C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA  
-            CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,   
+               DGAMMA=DY(NUV1)                                       
+               DP=ABS(DGAMMA)                                        
+C              ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA  
+               ALPHAM=VIND(NUVI-2)
+               CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
      &                ITMAX, TOLER,ALPHAM,DGAMMA,DALPHA, IRET)
-            
             ENDIF
-
-
             DO 19 I=1,6                                           
                DEVI(I)=DEVI(I)+MS(I)*DGAMMA                       
  19         CONTINUE                                              
- 
             VINF(NUVI-2)=VIND(NUVI-2)+DALPHA                      
             VINF(NUVI-1)=VIND(NUVI-1)+DGAMMA                      
             VINF(NUVI ) =VIND(NUVI)+DP
-       
-C           faire call lcmmsg(NOMFAM,NBSYS,IS,PGL,MS,N) Ns(3)       
 C           calcul du max de Ns.(SIGMA.Ns)
-C            
             CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG) 
-
 C           SIGMA (3,3)
 
             SI(1,1) = YF(1)

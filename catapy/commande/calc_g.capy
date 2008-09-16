@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,9 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
            FISSURE         =SIMP(statut='f',typ=fiss_xfem,max=1),
            DTAN_ORIG       =SIMP(statut='f',typ='R',max='**'),
            DTAN_EXTR       =SIMP(statut='f',typ='R',max='**'),
+           NB_POINT_FOND   =SIMP(statut='f',typ='I',val_min=2),
            regles=(EXCLUS('FOND_FISS','FISSURE'),
+                 EXCLUS('FOND_FISS','NB_POINT_FOND'),
                  EXCLUS('FOND_FISS','DTAN_ORIG'),
                  EXCLUS('FOND_FISS','DTAN_EXTR'),),
           b_theta        =BLOC(condition="THETA == None",fr="calcul de theta",

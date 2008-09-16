@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF E_ETAPE Execution  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -211,8 +211,15 @@ class ETAPE:
          decalage="  "  # blancs au debut de chaque ligne affichee
          echo_mess=[decalage]
          if avec_temps:
+            rval = aster.jeinfo()
+            echo_mem = """%s  #  USAGE DE LA MEMOIRE JEVEUX""" % (decalage)
+            echo_mem += os.linesep +"""%s  #     - MEMOIRE DYNAMIQUE CONSOMMEE : %12.2f Mo (MAXIMUM ATTEINT : %12.2f Mo) """ % (decalage, rval[2],rval[4])
+            echo_mem += os.linesep +"""%s  #     - MEMOIRE UTILISEE            : %12.2f Mo (MAXIMUM ATTEINT : %12.2f Mo) """ % (decalage, rval[0],rval[1])
+            echo_mem += os.linesep 
+            
             echo_fin = "%s  #  FIN COMMANDE NO : %04d   DUREE TOTALE:%12.2fs (SYST:%12.2fs)" \
                % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst)
+            echo_mess.append(echo_mem)
          else :
             echo_fin = "%s  #  FIN COMMANDE : %s" % (decalage, self.nom)
          echo_mess.append(echo_fin)

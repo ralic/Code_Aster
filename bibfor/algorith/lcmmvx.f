@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,16 +52,16 @@ C     ----------------------------------------------------------------
       CHARACTER*8     MOD
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*16 NOMFAM,NMATER,NECOUL,NECRIS
-      COMMON/KRDAL/DAL(24)
 C
       NBFSYS=NBCOMM(NMAT,2)
       CALL R8INIR(NVI,0.D0, DY, 1)
-      CALL R8INIR(24,0.D0, DAL, 1)
 
       SEUIL=-1.D0
       DT=1.D0
 C     NSFV : debut de la famille IFA dans les variables internes
       NSFV=6
+C     NSFA : debut de la famille IFA dans DY et YD, YF
+      NSFA=6
       DO 6 IFA=1,NBFSYS
 
          NOMFAM=CPMONO(5*(IFA-1)+1)
@@ -96,14 +96,15 @@ C
                IEXP=0
                IF (IS.EQ.1) IEXP=1
                CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &           IS,NBSYS,VIN(NSFV+1),DY,HSR,IEXP,EXPBP,RP)
+     &           IS,NBSYS,VIN(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RP)
             ENDIF             
 C
 C           ECOULEMENT VISCOPLASTIQUE
 C
-            CALL LCMMFE(FAMI,KPG,KSP,TAUS,MATERF(NMAT+1),MATERF,IFA,
-     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIN(NSFV+1),DY,RP,ALPHAM,
-     &      GAMMAM,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET,DAL)
+            CALL LCMMFE( TAUS,MATERF(NMAT+1),MATERF,IFA,
+     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIN(NSFV+1),DY(NSFA+1),
+     &      RP,ALPHAM,GAMMAM,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
+     
      
            IF (IRET.GT.0) THEN
               DP=1.D0
@@ -117,6 +118,7 @@ C
 
  7     CONTINUE
 
+        NSFA=NSFA+NBSYS
         NSFV=NSFV+3*NBSYS
 
 

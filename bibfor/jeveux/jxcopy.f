@@ -5,7 +5,7 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,10 +60,8 @@ C
      &                 DN2(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C     ------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      NOMBA1,NOMBA2,NOM
@@ -94,6 +92,8 @@ C
       CALL JJALLS(LGBL1,0,' ','I',LOIS,'INIT',ITP,JITP,IADITP,IADYN)
       ISZON(JISZON+IADITP-1) = ISTAT(1)
       ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
+      SVUSE = SVUSE + (ISZON(JISZON+IADITP-4) - IADITP + 4)
+      SMXUSE = MAX(SMXUSE,SVUSE)
       DO 50  K=1,(NBLUTI(ICI)-1)/NBENRG(ICI)
         CALL JXOUVR(ICO,K+1)
         IEXT(ICO) = IEXT(ICO) + 1
@@ -117,9 +117,7 @@ C
       CALL JXFERM (ICI)
       CALL JXFERM (ICO)
       IF ( IADYN .NE. 0 ) THEN
-        MCDYN = MCDYN - LGBL1
-        MLDYN = MLDYN + LGBL1
-        CALL HPDEALLC (IADYN , NBFREE , IBID)
+        CALL JJLIDY ( IADYN , IADITP )
       ELSE IF ( IADITP .NE. 0 ) THEN
         CALL JJLIBP (IADITP)
       ENDIF

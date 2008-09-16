@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, LZON, MXZON, IADZON, LMO, CMES, CVIG,IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ C ----------------------------------------------------------------------
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
-      INTEGER          LFIC,MFIC
+      INTEGER          LFIC,MFIC  
       COMMON /FENVJE/  LFIC,MFIC
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
@@ -118,6 +118,8 @@ C ----------------------------------------------------------------------
       COMMON /XDYNJE/  ICDYN , MXLTOT
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C --------------------------------- ------------------------------------
       INTEGER          MXLICI , IPREM  , INIT
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM, LOUAEM
@@ -137,6 +139,8 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       ELSE
          MFIC = VAL*1024
       ENDIF
+      WRITE(6,'(/,1X,A,F12.2,A)') 'LIMITE TAILLE DES BASES       : '    
+     &      ,MFIC/(1024*1024.0D0),'   Go '
       LBIS = LBISEM()
       LOR8 = LOR8EM()
       LOC8 = LOC8EM()
@@ -154,6 +158,8 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       NBFREE = 0
       ICDYN  = 0
       MXLTOT = 0
+      SVUSE  = 16
+      SMXUSE = SVUSE
 C -----------------  NOMBRE DE BASES -----------------------------------
       NBFIC = MIN ( NBFI , N , LEN(CLASSE) )
       CALL ASSERT ( NBFIC .GT. 0 .AND. NBFIC .EQ. NBFI)
@@ -177,13 +183,11 @@ C -----------------  ZONE MEMOIRE  -------------------------------------
       ENDIF
       VMXDYN = MXZON*LOIS
       IF ( MXZON .EQ. 0 ) THEN
-        VMXDYN = ISMAEM() 
+        VMXDYN = 1024
       ENDIF     
       CALL JXALLM ( IADZON, ISZON , LISZON , JISZON )
       LK1ZON = LISZON * LOIS
       JK1ZON = JISZON * LOIS
-      MCDYN  = MCDYN + LISZON*LOIS
-      MXDYN  = MAX(MXDYN,MCDYN)
       ISZON(JISZON + 1 )         = 0
       ISZON(JISZON + 2 )         = 0
       ISZON(JISZON + 3 )         = 0

@@ -1,14 +1,16 @@
       SUBROUTINE WPFOPC( LMASSE, LAMOR, LRAIDE, FMIN,
-     &                   SIGMA, MATOPA, RAIDE, NPREC)
+     &                   SIGMA, MATOPA, RAIDE, NPREC, LQZ)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       MATOPA, RAIDE
       INTEGER             LMASSE, LAMOR, LRAIDE
       REAL*8              FMIN
       COMPLEX*16          SIGMA
+      LOGICAL             LQZ
+
 C     -----------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +33,8 @@ C     DANS LE CAS QUADRATIQUE COMPLEXE
 C     ------------------------------------------------------------------
 C OUT LDYNAM  : IS : POINTEUR SUR LA FACTORISEE DE LA MATRICE DYNAMIQUE
 C                    INDUITE PAR L'OPTION
+C OUT SIGMA   : C16: SHIFT
+C IN  LQZ     : METHODE QZ OU NON
 C     ------------------------------------------------------------------
 C
 C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
@@ -84,6 +88,9 @@ C
 
       ASHIFT = - (ASHIFT*FSHIFT)/SQRT(1.D0-ASHIFT*ASHIFT)
       SIGMA = DCMPLX(ASHIFT,FSHIFT)
+
+C --- POUR QZ CALCUL DE LA MATRICE SHIFTEE ET DE SA FACTORISEE INUTILE
+      IF (LQZ) GOTO 999
 C
 C     --- DECALAGE COMPLEXE ---
       CALL MTDEFS(MATOPA,RAIDE,'V','C')
@@ -104,5 +111,6 @@ C     --- FACTORISATION DES MATRICES ---
 C
       CALL TLDLGG(1,LMATRA,1,0,NPREC,NDECI,ISINGU,NPVNEG,IERX)
 C
+  999 CONTINUE
       CALL JEDEMA()
       END

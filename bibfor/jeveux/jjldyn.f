@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,7 +134,7 @@ C
                     MCDYN = MCDYN - LSV
                     MLDYN = MLDYN + LSV
                     CALL HPDEALLC ( IADYOC , NBFREE , IBID )
-C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL
+C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
                     LTOT = LTOT + IL
                     ISZON(JISZON + IBIADM - 1 +2*K-1) = 0
                     ISZON(JISZON + IBIADM - 1 +2*K  ) = 0
@@ -169,7 +169,7 @@ C
                 MCDYN = MCDYN - LSV
                 MLDYN = MLDYN + LSV
                 CALL HPDEALLC ( IADYN , NBFREE , IBID )
-C               write(6,*) ' OS ',NOM32,' lg =',IL
+C               write(6,*) ' OS ',NOM32,' lg =',IL,LSV
                 LTOT = LTOT + IL
                 IADM(JIADM(IC)+2*J-1) = 0 
                 IADM(JIADM(IC)+2*J  ) = 0

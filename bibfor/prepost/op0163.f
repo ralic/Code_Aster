@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,7 +168,7 @@ C     ----- RECUPERATION TYPE DE RESULTAT ---
      &             J=NBMODD+1,NBMODE),I=1,NBINST)
  9998 CONTINUE
       IARCH = 0
-      CALL RSCRSD(NOMRES,TYPRES,NBINST)
+      CALL RSCRSD('G',NOMRES,TYPRES,NBINST)
       IF (TYPRES.EQ.'DYNA_HARMO') THEN
         CALL VTCREM(CHAMN1,MATRM,'V','R')
         CALL VTCREM(CHAMN2,MATRM,'V','R')

@@ -5,7 +5,7 @@
       REAL*8        NEWPT(3),LONGAR,AL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,6 @@ C ----------------------------------------------------------------------
       CALL JEVEUO(NOMA//'.DIME','L',JDIM)
       NDIM=ZI(JDIM-1+6)
 
-
 C     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
       DEJA = .FALSE.
 
@@ -78,7 +77,7 @@ C     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
         DO 99 J = 1, NDIM
          P(J) = ZR(JLIST-1+NDIM*(I-1)+J)
  99     CONTINUE
-        IF (PADIST(NDIM,P,NEWPT) .LT. (LONGAR*1.D-3)) DEJA = .TRUE.
+        IF (PADIST(NDIM,P,NEWPT) .LT. (LONGAR*1.D-6)) DEJA = .TRUE.
  100  CONTINUE
 
       IF (.NOT. DEJA) THEN

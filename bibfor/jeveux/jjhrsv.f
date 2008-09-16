@@ -1,6 +1,6 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,13 +37,12 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
+C ----------------------------------------------------------------------
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C ----------------------------------------------------------------------
       INTEGER          IRET,JADR,KADM,NBV,K,LONOI,LTYPI,IBID
       INTEGER          HDFTSD,HDFRSV,HDFCLD,IR,KITAB,ICONV,IADYN
@@ -61,6 +60,8 @@ C DEB ------------------------------------------------------------------
           CALL JJALLS(LONOI,0,'V',TYPEI,LOIS,'INIT',ZI,JADR,KADM,IADYN)
           ISZON(JISZON+KADM-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+KADM-4)-4) = ISTAT(4)
+          SVUSE = SVUSE + (ISZON(JISZON+KADM-4) - KADM + 4)
+          SMXUSE = MAX(SMXUSE,SVUSE)
           IR = ISZON(JISZON + KADM - 3 )
           KITAB = JK1ZON+(KADM-1)*LOIS+IR+1
           IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
@@ -68,9 +69,7 @@ C DEB ------------------------------------------------------------------
             ISZON(JISZON+IADMI-1+K)=ISZON(JISZON+KADM-1+K)
  1        CONTINUE
           IF (IADYN .NE. 0) THEN
-            MCDYN = MCDYN - LONOI
-            MLDYN = MLDYN + LONOI
-            CALL HPDEALLC (IADYN, NBFREE, IBID)
+            CALL JJLIDY ( KADM , IADYN )
           ELSE IF (KADM .NE. 0) THEN
             CALL JJLIBP (KADM)
           ENDIF

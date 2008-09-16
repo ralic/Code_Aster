@@ -1,7 +1,7 @@
       SUBROUTINE OP0012(IER)
 C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,11 +26,13 @@ C======================================================================
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      CHARACTER*8 NU,MATAS
+      CHARACTER*8 NU,MATAS,CHARGE,KBID
       CHARACTER*16 TYPM,OPER
+      CHARACTER*19 MATEL
       CHARACTER*24 LCHCI,LMATEL
       CHARACTER*72 KBIDON
-      INTEGER ITYSCA,NBCHC,NBMAT,JLIMAT,JLCHCI,IBID
+      INTEGER ITYSCA,NBCHC,NBMAT,JLIMAT,JLCHCI,IBID,K,J,NBCHAR
+      INTEGER JRECC,ICO,IEXI
 C-----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -63,13 +65,46 @@ C---- RECUPERATION DES MATRICES ELEMENTAIRES ---
       CALL WKVECT(LMATEL,'V V K24',NBMAT,JLIMAT)
       CALL GETVID(' ','MATR_ELEM',0,1,NBMAT,ZK24(JLIMAT),IBID)
 
+
 C---- RECUPERATION DES CHARGES CINEMATIQUES ---
+      LCHCI='&&OP0012.LCHARCINE'
       CALL GETVID(' ','CHAR_CINE',0,1,0,KBIDON,NBCHC)
       NBCHC = -NBCHC
-      LCHCI='&&OP0012.LCHARCINE'
+C     -- LES SD_CHAR_XXX PEUVENT CONTENIR UNE SD_CHAR_CINE :
+      DO 1, K=1,NBMAT
+        MATEL=ZK24(JLIMAT-1+K)
+        CALL ASSERT(ZK24(JLIMAT-1+K)(9:24).EQ.' ')
+        CALL JEEXIN(MATEL//'.RECC',IEXI)
+        IF (IEXI.GT.0) THEN
+          CALL JEVEUO(MATEL//'.RECC','L',JRECC)
+          CALL JELIRA(MATEL//'.RECC','LONMAX',NBCHAR,KBID)
+          DO 2, J=1,NBCHAR
+            CHARGE=ZK8(JRECC-1+J)
+            CALL JEEXIN(CHARGE//'.ELIM      .AFCK',IEXI)
+            IF (IEXI.GT.0) NBCHC=NBCHC+1
+ 2        CONTINUE
+        ENDIF
+ 1    CONTINUE
+
       IF (NBCHC.GT.0) THEN
-        CALL WKVECT(LCHCI,'V V K8',NBCHC,JLCHCI)
-        CALL GETVID(' ','CHAR_CINE',0,1,NBCHC,ZK8(JLCHCI),IBID)
+        CALL WKVECT(LCHCI,'V V K24',NBCHC,JLCHCI)
+        CALL GETVID(' ','CHAR_CINE',0,1,NBCHC,ZK24(JLCHCI),ICO)
+        DO 3, K=1,NBMAT
+          MATEL=ZK24(JLIMAT-1+K)
+          CALL JEEXIN(MATEL//'.RECC',IEXI)
+          IF (IEXI.GT.0) THEN
+            CALL JEVEUO(MATEL//'.RECC','L',JRECC)
+            CALL JELIRA(MATEL//'.RECC','LONMAX',NBCHAR,KBID)
+            DO 4, J=1,NBCHAR
+              CHARGE=ZK8(JRECC-1+J)
+              CALL JEEXIN(CHARGE//'.ELIM      .AFCK',IEXI)
+              IF (IEXI.GT.0) THEN
+                ICO=ICO+1
+                ZK24(JLCHCI-1+ICO)=CHARGE//'.ELIM'
+              ENDIF
+ 4          CONTINUE
+          ENDIF
+ 3      CONTINUE
       END IF
 
 

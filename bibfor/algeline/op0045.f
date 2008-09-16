@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C VARIABLES LOCALES
      &             NITJAC,NNFREQ,NPREC,N1,NSTOC,NCONV,IEXIN,LWORKR,LAUR,
      &             QRN,QRLWOR,IQRN,LQRN,QRAR,QRAI,QRBA,QRVL,KQRN,
      &             QRN2,ILSCAL,IRSCAL,LAUC,LAUL,IHCOL,IADIA,IFIN,
-     &             IDEB,J,JBID
+     &             IDEB,J,JBID,ICSCAL,IVSCAL,IISCAL,IBSCAL
       REAL*8       PRORTO,OMEGA2,FMIN,FMAX,RAUX,ALPHA,TOLSOR,
      &             UNDF,R8VIDE,FREQOM,R8PREM,OMEMIN,OMEMAX,OMESHI,
      &             OMECOR,FCORIG,PRECDC,SEUIL,VPINF,PRECSH,TOL,VPMAX,
@@ -92,7 +92,7 @@ C VARIABLES LOCALES
       CHARACTER*19 MASSE,RAIDE,AMOR,MATPSC,MATOPA,VECRIG,NUMEDD
       CHARACTER*24 CBORFR,CBORCR,VALK(2),NOPARA(NBPARA)
       CHARACTER*32 JEXNUM
-      LOGICAL      STURM,FLAGE,LQZ,LKR,LC,LTESTQ
+      LOGICAL      STURM,FLAGE,LQZ,LKR,LC,LTESTQ,LNS,LNSC,LNSK,LNSM
 
 C     ------------------------------------------------------------------
       DATA CBORFR / '&&OP0045.BORNE.FREQ.USR ' /
@@ -295,6 +295,8 @@ C     --- MATRICE K COMPLEXE ---
      &    CALL U2MESS('F','ALGELINE2_69')
         IF (OPTIOF.EQ.'BANDE') CALL U2MESS('F','ALGELINE2_66')
         IF (ZR(LBORFR).EQ.0.D0) CALL U2MESS('F','ALGELINE2_70')
+        IF (MODRIG.EQ.'MODE_RIGIDE') CALL U2MESS('F','ALGELINE2_68')
+        IF (TYPRES.NE.'DYNAMIQUE') CALL U2MESS('F','ALGELINE2_46')
       ENDIF
 
 C     --- METHODE QZ ---
@@ -332,29 +334,43 @@ C     --- VERIFICATION DES "REFE" ---
         ENDIF
       ENDIF
 
-C     ------------------------------------------------------------------
-C     ---------------  DDLS LAGRANGE ET DDLS BLOQUES   -----------------
-C     ------------------------------------------------------------------
-
 C     --- DESCRIPTEUR DES MATRICES ---
+      LNSK=.FALSE.
+      LNSM=.FALSE.
+      LNSC=.FALSE.
       CALL MTDSCR(MASSE)
       CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMASSE)
+      IF (ZI(LMASSE+4).EQ.0) LNSM=.TRUE.
       CALL MTDSCR(RAIDE)
       CALL JEVEUO(RAIDE(1:19)//'.&INT','E',LRAIDE)
+      IF (ZI(LRAIDE+4).EQ.0) LNSK=.TRUE.
       IF (LC) THEN
         CALL MTDSCR(AMOR)
         CALL JEVEUO(AMOR(1:19)//'.&INT','E',LAMOR)
+        IF (ZI(LAMOR+4).EQ.0) LNSC=.TRUE.
       ELSE
         LAMOR=0
       ENDIF
 
-C     --- NOMBRE D'EQUATIONS ---
-      NEQ = ZI(LRAIDE+2)
+C     --- MATRICE K ET/OU M ET OU C NON SYMETRIQUE(S)
+      IF (LNSC.OR.LNSK.OR.LNSM) THEN
+        LNS=.TRUE.
+        IF ((.NOT.LQZ).AND.(METHOD.NE.'SORENSEN'))
+     &    CALL U2MESS('F','ALGELINE5_69')
+        IF (.NOT.LKR) CALL U2MESS('F','ALGELINE5_70')
+        IF (OPTIOF.EQ.'BANDE') CALL U2MESS('F','ALGELINE2_66')
+        IF (MODRIG.EQ.'MODE_RIGIDE') CALL U2MESS('F','ALGELINE2_68')
+        IF (TYPRES.NE.'DYNAMIQUE') CALL U2MESS('F','ALGELINE2_46')
+      ELSE
+        LNS=.FALSE.
+      ENDIF
       
 C     ------------------------------------------------------------------
 C     ----------- DDL : LAGRANGE, BLOQUE PAR AFFE_CHAR_CINE  -----------
 C     ------------------------------------------------------------------
 
+C     --- NOMBRE D'EQUATIONS ---
+      NEQ = ZI(LRAIDE+2)
       CALL WKVECT('&&OP0045.POSITION.DDL','V V I',NEQ*MXDDL,LDDL)
       CALL WKVECT('&&OP0045.DDL.BLOQ.CINE','V V I',NEQ,LPROD)
       CALL VPDDL(RAIDE, MASSE, NEQ, NBLAGR, NBCINE, NEQACT, ZI(LDDL),
@@ -364,7 +380,7 @@ C     ------------------------------------------------------------------
 C       -- TRAITEMENTS PARTICULIERS PROPRES A QZ
       IF (LQZ) THEN
         IF (OPTIOF(1:4).EQ.'TOUT') NFREQ = NEQACT
-        IF ((TYPEQZ(1:5).EQ.'QZ_QR').AND.(NBLAGR.NE.0))
+        IF ((TYPEQZ(1:5).EQ.'QZ_QR').AND.((NBLAGR.NE.0).OR.LNS))
      &    CALL U2MESS('F','ALGELINE5_60')
       ENDIF     
 C     ------------------------------------------------------------------
@@ -418,10 +434,17 @@ C     ------------------------------------------------------------------
       MATOPA = '&&OP0045.DYN_FAC_C '
       OMESHI=0.D0
       SIGMA=(0.D0,0.D0)
-      NPIVOT=0      
+      NPIVOT=0
+C --- DETERMINATION D'INFO POUR LE TEST DE STURM ET LES POSITIONS
+C     MODALES + CONSTRUCTION DE LA MATRICE DYNAMIQUE/ SA FACTORISEE
+C --- AVEC QZ, UTILE QUE POUR GENERALISE REEL SYMETRIQUE
+C     DANS LES AUTRES CAS (VPFOPC,WPFOPR,WPFOPC) ON SORT DES LE CALCUL
+C     DU SHIFT SIGMA
+      LMTPSC= 0
+      LMATRA=0      
       IF (.NOT.LC) THEN
-C     --- PROBLEME GENERALISE REEL ---
-        IF (LKR) THEN
+C     --- PROBLEME GENERALISE REEL SYMETRIQUE ---
+        IF ((LKR).AND.(.NOT.LNS)) THEN
           CALL MTDEFS(MATPSC,RAIDE,'V','R')
           CALL MTDEFS(MATOPA,RAIDE,'V','R')
           CALL MTDSCR(MATPSC)
@@ -436,38 +459,43 @@ C     --- PROBLEME GENERALISE REEL ---
               CALL UTEXCP(24,'MODAL_1')
             ELSE
               NFREQ = 1
-              CALL RSCRSD ( MODES , TYPCON , NFREQ )
+              CALL RSCRSD('G', MODES , TYPCON , NFREQ )
               GOTO 999
             ENDIF
           ENDIF
           CALL VPSHIF(LRAIDE,OMESHI,LMASSE,LMTPSC)
         ELSE
-C     --- PROBLEME GENERALISE COMPLEXE ---
+C     --- PROBLEME GENERALISE COMPLEXE OU REEL NON SYM ---
           CALL VPFOPC(LMASSE,LRAIDE,FMIN,SIGMA,
-     &                MATOPA,RAIDE,NPREC)
-          CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
+     &                MATOPA,RAIDE,NPREC,LQZ)
+          IF (.NOT.LQZ)
+     &      CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
         ENDIF
         
       ELSE
 
-C     --- PROBLEME QUADRATIQUE REEL ---
+C     --- PROBLEME QUADRATIQUE REEL SYM OU NON SYM---
         IF (LKR) THEN
           CALL WPFOPR(LMASSE,LAMOR,LRAIDE,APPR,FMIN,SIGMA,
-     &                MATOPA,MATPSC,RAIDE,NPREC)
-          CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
-          CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
-          IF (IEXIN .EQ. 0) THEN
-            LMTPSC = 0
-          ELSE
-            CALL JEVEUO(MATPSC(1:19)//'.&INT','L',LMTPSC)
+     &                MATOPA,MATPSC,RAIDE,NPREC,LQZ)
+          IF (.NOT.LQZ) THEN
+            CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
+            CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
+            IF (IEXIN .EQ. 0) THEN
+              LMTPSC = 0
+            ELSE
+              CALL JEVEUO(MATPSC(1:19)//'.&INT','L',LMTPSC)
+            ENDIF
           ENDIF
         ELSE
-C     --- PROBLEME QUADRATIQUE COMPLEXE ---
+C     --- PROBLEME QUADRATIQUE COMPLEXE SYM ---
           CALL WPFOPC(LMASSE,LAMOR,LRAIDE,FMIN,SIGMA,
-     &                MATOPA,RAIDE,NPREC)
-          CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
-          CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
-          LMTPSC = 0
+     &                MATOPA,RAIDE,NPREC,LQZ)
+          IF (.NOT.LQZ) THEN
+            CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
+            CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
+            LMTPSC = 0
+          ENDIF
         ENDIF
       ENDIF
       
@@ -575,7 +603,7 @@ C     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF ---
   22  CONTINUE
 
 C     --- CAS GENERALISE REEL ---
-      IF ((LKR).AND.(.NOT.LC)) THEN
+      IF ((LKR).AND.(.NOT.LC).AND.(.NOT.LNS)) THEN
         CALL WKVECT('&&OP0045.VECTEUR_PROPRE','V V R',NEQ*NBVECT,LVEC)
       ELSE
 C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
@@ -606,8 +634,12 @@ C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
         IF (TYPEQZ(1:7).EQ.'QZ_EQUI') THEN
           CALL WKVECT('&&OP0045.QRLSCALE.WORK','V V R',QRN,ILSCAL)
           CALL WKVECT('&&OP0045.QRRSCALE.WORK','V V R',QRN,IRSCAL)
+          CALL WKVECT('&&OP0045.QRRCONDE.WORK','V V R',QRN,ICSCAL)
+          CALL WKVECT('&&OP0045.QRRCONDV.WORK','V V R',QRN,IVSCAL)
+          CALL WKVECT('&&OP0045.QRI.WORK','V V I',QRN+6,IISCAL)
+          CALL WKVECT('&&OP0045.QRB.WORK','V V L',QRN,IBSCAL)
         ENDIF
-        IF (LKR.AND..NOT.LC) THEN
+        IF ((LKR).AND.(.NOT.LC).AND.(.NOT.LNS)) THEN
           CALL WKVECT('&&OP0045.QZ.VALPRO','V V R',QRN,LVALPR)
           CALL WKVECT('&&OP0045.QZ.MATRICEK','V V R',QRN2,IQRN)
           CALL WKVECT('&&OP0045.QZ.MATRICEM','V V R',QRN2,LQRN)
@@ -634,7 +666,7 @@ C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
         LONWL = 3*NBVECT**2+6*NBVECT
         CALL WKVECT('&&OP0045.SELECT','V V L',NBVECT,LSELEC)
 C     --- CAS REEL GENERALISE ---
-        IF (LKR.AND.(.NOT.LC)) THEN
+        IF (LKR.AND.(.NOT.LC).AND.(.NOT.LNS)) THEN
           CALL WKVECT('&&OP0045.RESID','V V R',NEQ,LRESID)
           CALL WKVECT('&&OP0045.VECT.WORKD','V V R',3*NEQ,LWORKD)
           CALL WKVECT('&&OP0045.VECT.WORKL','V V R',LONWL,LWORKL)
@@ -642,7 +674,7 @@ C     --- CAS REEL GENERALISE ---
           CALL WKVECT('&&OP0045.VAL.PRO','V V R',2*(NFREQ+1),LDSOR)
           CALL WKVECT('&&OP0045.VECT.AUX','V V R',NEQ,LAUX)
 C     --- CAS COMPLEXE GENERALISE ---
-        ELSE IF ((.NOT.LKR).AND.(.NOT.LC)) THEN
+        ELSE IF ((.NOT.LC).AND.(LNS.OR..NOT.LKR)) THEN
           CALL WKVECT('&&OP0045.RESID','V V C',NEQ,LRESID)
           CALL WKVECT('&&OP0045.VECT.WORKD','V V C',3*NEQ,LWORKD)
           CALL WKVECT('&&OP0045.VECT.WORKL','V V C',LONWL,LWORKL)
@@ -699,6 +731,7 @@ C ---- OPTION ILLICITE
 C TEST POUR SIMULER LE PB GENERALISE KU=LAMBDA*MU VIA LES CHEMINS
 C INFORMATIQUE DU PB QUADRATIQUE. ON POSE C=-M ET M=0
 C OBJECTIF: VALIDER LE QUADRATIQUE INFORMATIQUEMENT
+C PERIMETRE: UNIQUEMENT EN SYMETRIQUE
       IF ((LTESTQ).AND.(LC)) THEN
         CALL JEVEUO(JEXNUM(AMOR(1:19)//'.VALM',1),'L',IBID)
         CALL JEVEUO(JEXNUM(MASSE(1:19)//'.VALM',1),'L',JBID)
@@ -728,9 +761,9 @@ C     ---------------------  PROBLEME GENERALISE   ---------------------
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
-        IF ((METHOD(1:8).EQ.'SORENSEN').AND.(LKR)) THEN
+        IF ((METHOD(1:8).EQ.'SORENSEN').AND.(LKR).AND.(.NOT.LNS)) THEN
 C     ------------------------------------------------------------------
-C     -------  SORENSEN PB GENERALISE REEL   --------
+C     -------  SORENSEN PB GENERALISE REEL SYMETRIQUE  --------
 C     ------------------------------------------------------------------
           CALL VPSORN (LMASSE, LMATRA, NEQ, NBVECT, NFREQ, TOLSOR,
      &         ZR(LVEC), ZR(LRESID), ZR(LWORKD), ZR(LWORKL), LONWL,
@@ -758,9 +791,9 @@ C     ------------------------------------------------------------------
  38         CONTINUE
           ENDIF
           
-        ELSE IF ((METHOD(1:8).EQ.'SORENSEN').AND.(.NOT.LKR)) THEN
+        ELSE IF ((METHOD(1:8).EQ.'SORENSEN').AND.(LNS.OR..NOT.LKR)) THEN
 C     ------------------------------------------------------------------
-C     -------  SORENSEN PB GENERALISEE COMPLEXE   --------
+C     -------  SORENSEN PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 C     ------------------------------------------------------------------
           CALL VPSORC (LMASSE, LMATRA, NEQ, NBVECT, NFREQ, TOLSOR,
      &       ZC(LVEC), ZC(LRESID), ZC(LWORKD), ZC(LWORKL), LONWL,
@@ -779,15 +812,16 @@ C     ------------------------------------------------------------------
             ZK24(LRESUK-1+  MXRESF+IMET) = 'SORENSEN'
  377      CONTINUE
        
-        ELSE IF ((LQZ).AND.(LKR)) THEN
+        ELSE IF ((LQZ).AND.(LKR).AND.(.NOT.LNS)) THEN
 C     ------------------------------------------------------------------
-C     -------  QZ PB GENERALISE REEL   --------
+C     -------  QZ PB GENERALISE REEL SYMETRIQUE  --------
 C     ------------------------------------------------------------------
           CALL VPQZLA(TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA,
      &         QRVL, LVEC, KQRN, LVALPR, NCONV,
      &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL, 
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
-     &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA)
+     &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
+     &         IISCAL, IBSCAL)
           CALL RECTFR(NCONV, NCONV, OMESHI, NPIVOT, NBLAGR,
      &         ZR(LVALPR), NFREQ, ZI(LRESUI), ZR(LRESUR), NFREQ)
           CALL VPBOST(TYPRES, NCONV, NCONV, OMESHI, ZR(LVALPR),
@@ -809,20 +843,24 @@ C     ------------------------------------------------------------------
   126         CONTINUE
           ENDIF
 
-        ELSE IF ((LQZ).AND.(.NOT.LKR)) THEN
+        ELSE IF ((LQZ).AND.((.NOT.LKR).OR.(LNS))) THEN
 C     ------------------------------------------------------------------
-C     -------  QZ PB GENERALISE COMPLEXE   --------
+C     -------  QZ PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 C     ------------------------------------------------------------------
           CALL VPQZLA(TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA,
      &         QRVL, LVEC, KQRN, LVALPR, NCONV,
      &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL, 
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
-     &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA)
+     &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
+     &         IISCAL, IBSCAL)
           NPIVOT = NBLAGR
+
           CALL RECTFC(NCONV, NCONV, SIGMA, NPIVOT, NBLAGR,
      &         ZC(LVALPR), NFREQ, ZI(LRESUI), ZR(LRESUR), NFREQ)
+
           CALL VPBOSC(TYPRES, NCONV, NCONV, SIGMA, ZC(LVALPR),
      &         NFREQ, VPINF, VPMAX, PRECDC, METHOD, OMECOR, STURM)
+
           DO 127 IMET = 1,NCONV
             ZI(LRESUI-1+  MXRESF+IMET) = 0
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
@@ -928,13 +966,14 @@ C     ------------------------------------------------------------------
 
         ELSE IF (LQZ) THEN
 C     ------------------------------------------------------------------
-C     -------  QZ PB QUADRATIQUE REEL ET COMPLEXE  --------
+C     -------  QZ PB QUADRATIQUE REEL ET COMPLEXE, SYM OU NON  --------
 C     ------------------------------------------------------------------
           CALL VPQZLA(TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA,
      &         QRVL, LVEC, KQRN, LVALPR,
      &         NCONV, OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL, 
-     &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD),
-     &         NFREQ, LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA)
+     &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
+     &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
+     &         IISCAL, IBSCAL)
           NFREQ=NFREQ/2
           CALL WP4VEC(NFREQ,NCONV,NEQ,SIGMA,
      &           ZC(LVALPR),ZC(LVEC),MXRESF,
@@ -948,8 +987,8 @@ C     ------------------------------------------------------------------
           IF (LKR) THEN
             IF ((APPR.EQ.'R').OR.(APPR.EQ.'I')) THEN
 C     ------------------------------------------------------------------
-C     -------  SORENSEN PB QUADRATIQUE REEL   --------
-C     -------  APPROCHE REELLE OU IMAGINAIRE  --------
+C     -------  SORENSEN PB QUADRATIQUE REEL  SYM  --------
+C     -------  APPROCHE REELLE OU IMAGINAIRE      --------
 C     ------------------------------------------------------------------
               CALL WPSORN (APPR, LMASSE, LAMOR, LMATRA,
      &           NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZR(LRESID),
@@ -964,8 +1003,8 @@ C     ------------------------------------------------------------------
      &          ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC))
             ELSE
 C     ------------------------------------------------------------------
-C     -------  SORENSEN PB QUADRATIQUE REEL   --------
-C     -------  APPROCHE COMPLEXE              --------
+C     -------  SORENSEN PB QUADRATIQUE REEL,SYM OU NON   --------
+C     -------  APPROCHE COMPLEXE                         --------
 C     ------------------------------------------------------------------
               CALL WPSORC (LMASSE, LAMOR, LMATRA,
      &           NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZC(LRESID),
@@ -985,9 +1024,10 @@ C     ------------------------------------------------------------------
  378        CONTINUE
           ELSE
 C     ------------------------------------------------------------------
-C     -------  SORENSEN PB QUADRATIQUE COMPLEXE   --------
-C     -------  APPROCHE COMPLEXE                  --------
+C     -------  SORENSEN PB QUADRATIQUE COMPLEXE SYM  --------
+C     -------  APPROCHE COMPLEXE                     --------
 C     ------------------------------------------------------------------
+            IF (LNS) CALL ASSERT(.FALSE.)
             CALL WPSORC (LMASSE, LAMOR, LMATRA,
      &         NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZC(LRESID),
      &         ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR),
@@ -1015,6 +1055,7 @@ C     ------------------------------------------------------------------
 C     --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
       MFREQ = NCONV
       IF (OPTIOF.EQ.'BANDE') THEN
+        IF (LC.OR.LNS.OR..NOT.LKR) CALL ASSERT(.FALSE.)
         DO 110 IFREQ = MFREQ - 1,0
           IF (ZR(LRESUR+MXRESF+IFREQ).GT.OMEMAX .OR.
      &      ZR(LRESUR+MXRESF+IFREQ).LT.OMEMIN )
@@ -1034,7 +1075,7 @@ C     --- POSITION MODALE NEGATIVE DES MODES INTERDITE
       KNEGA = 'NON'
       NPARR = NBPARR
       IF (TYPCON.EQ.'MODE_ACOU') NPARR = 7
-      IF ((.NOT.LC).AND.(LKR)) THEN
+      IF ((.NOT.LC).AND.(LKR).AND.(.NOT.LNS)) THEN
         CALL VPPARA(MODES,TYPCON,KNEGA,LRAIDE,LMASSE,LAMOR,
      &              MXRESF,NEQ,NCONV,OMECOR,ZI(LDDL),ZI(LPROD),
      &              ZR(LVEC),CBID, NBPARI, NPARR, NBPARK, NOPARA,'    ',
@@ -1045,10 +1086,9 @@ C     --- POSITION MODALE NEGATIVE DES MODES INTERDITE
      &              RBID,ZC(LVEC), NBPARI, NPARR, NBPARK, NOPARA,'    ',
      &              ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK),KTYP)
       ENDIF
-
 C     --- IMPRESSIONS LIEES A LA METHODE ---
       CALL VPWECF (' ', TYPRES, NCONV, MXRESF, ZI(LRESUI), ZR(LRESUR),
-     &  ZK24(LRESUK), LAMOR,KTYP)
+     &  ZK24(LRESUK), LAMOR,KTYP,LNS)
       CALL TITRE
 
 C     ------------------------------------------------------------------
@@ -1069,7 +1109,8 @@ C     ------------------------------------------------------------------
         OPTIOV = ' '
       ELSE
         OPTIOV = OPTIOF
-        IF ((LC).OR.(.NOT.LKR)) THEN
+        IF ((LC).OR.(.NOT.LKR).OR.(LNS)) THEN
+C --- POUR DEBRANCHER LE TEST DE STURM DANS VPCNTL
           OPTIOV = ' '
           CALL U2MESS('I','ALGELINE2_73')
         ENDIF
@@ -1095,6 +1136,9 @@ C     ----------- CALCUL DE SENSIBILITE                   --------------
 C     ------------------------------------------------------------------
       CALL GETVID(' ','SENSIBILITE',1,IERD,1,K8BID,IRET)
       IF (IRET.NE.0) THEN
+C --- MATRICES NON SYMETRIQUES SANS DOUTE HORS DU PERIMETRE
+C     DE LA SENSIBILITE
+        IF (LNS) CALL ASSERT(.FALSE.)
         IF ((LKR).AND.(.NOT.LC)) THEN
           CALL SEMORE(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NCONV,
      &            ZR(LRESUR),ZR(LVEC),

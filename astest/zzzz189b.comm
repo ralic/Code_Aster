@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE ORIENTATION CIRCONFERENTIELLE DE GRILLES D'ARMATURES PAR AFFE_CARA_ELEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,7 +99,8 @@ RESU=STAT_NON_LINE(MODELE=MODEL,
                    EXCIT=(_F(CHARGE=CHARGE,),
                           _F(CHARGE=FORCE,),),
                    COMP_INCR=_F(RELATION='ELAS',
-                                ALGO_1D='DEBORST',),
+                               # ALGO_1D='DEBORST',
+                                ),
                    INCREMENT=_F(LIST_INST=TEMPS1,),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,

@@ -4,7 +4,7 @@
       CHARACTER*1         TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C     -- CAS DE EVOL_IMPO : ON IMPOSE TOUS LES DDLS DU 1ER CHAMP
 C     ------------------------------------------------------------
       EVOIM=' '
       IF (NOC.EQ.0) THEN
-        CALL ASSERT(MFAC.EQ.'MECA_IMPO')
+        CALL ASSERT(MFAC.EQ.'MECA_IMPO'.OR.MFAC.EQ.'THER_IMPO')
         CALL GETVID(' ','EVOL_IMPO',1,1,1,EVOIM,N1)
         CALL ASSERT(N1.EQ.1)
 
@@ -103,7 +103,11 @@ C       -- C'EST LE CHAMP DU 1ER NUMERO D'ORDRE QUI IMPOSE SA LOI:
         CALL RSORAC (EVOIM,'PREMIER',IBID,RBID,K8B,CBID,0.D0,
      &               'ABSOLU',IORD,1,IRET)
         CALL ASSERT(IRET.EQ.1)
-        CALL RSEXCH(EVOIM,'DEPL',IORD,DEPLA,IRET)
+        IF (MFAC.EQ.'MECA_IMPO') THEN
+          CALL RSEXCH(EVOIM,'DEPL',IORD,DEPLA,IRET)
+        ELSE
+          CALL RSEXCH(EVOIM,'TEMP',IORD,DEPLA,IRET)
+        ENDIF
         CALL ASSERT(IRET.EQ.0)
         CALL CNOCNS(DEPLA,'V',CNS)
         GOTO 200
@@ -246,11 +250,12 @@ C
 
  100  CONTINUE
  200  CONTINUE
-C
-C --- IMPRESSION
-C
-      TITRE = '******* IMPRESSION DU CHAMP DES DEGRES IMPOSES *******'
-      IF ( NIV .EQ. 2 ) CALL IMPRSD ( 'CHAMP_S', CNS, IFM, TITRE )
+
+
+      IF (( NIV.GE.2).AND.(EVOIM.EQ.' ')) THEN
+        TITRE = '******* IMPRESSION DU CHAMP DES DEGRES IMPOSES *******'
+        CALL IMPRSD ( 'CHAMP_S', CNS, IFM, TITRE )
+      ENDIF
 
 
 C --- CREATION DE LA SD AFFE_CHAR_CINE

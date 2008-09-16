@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPM ( CUNIT , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,12 +70,16 @@ C ----------------------------------------------------------------------
      +               IDLONO = 8 , IDLUTI = 9  ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       CHARACTER*32     NOM32
+      CHARACTER*8      NOM8
       CHARACTER*1      CLA,CGENR
       INTEGER          ICL , K
+      REAL*8           VUSTA,VUDYN
 C DEB ------------------------------------------------------------------
 C
       JULIST = IUNIFI ( CUNIT )
       IF ( JULIST .EQ. 0 ) GOTO 9999
+      VUSTA = 0.D0
+      VUDYN = 0.D0
       WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
       WRITE (JULIST,'(A,/,2A)' ) '---- SEGMENTATION MEMOIRE',
      +                   '---- ',CMESS(1:MIN(72,LEN(CMESS)))
@@ -125,6 +129,9 @@ C
             IDCO = 0
             NOM32 = '<<<<         LIBRE          >>>>'
           ENDIF
+          IF ( ISD .EQ. 2 ) THEN  
+            VUSTA = VUSTA + (IS - ID)
+          ENDIF
           WRITE(JULIST,
      +        '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
      +        'I12,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
@@ -166,38 +173,57 @@ C
      +        '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
      +        'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
      +        CLA,IDCO,J,IM,IADYN,KSTAT(ISD:ISD),IL,KSTAT(ISF:ISF),NOM32
+            IF ( ISD .EQ. 2 ) THEN  
+              VUDYN = VUDYN + ISZON(JISZON+IDM) - IDM + 1
+            ENDIF
           ENDIF
-          IF (CGENR .EQ. 'X') THEN
-            CALL JJVERN (NOM32 , 0 , IRET)
-            CALL JJALLC (IC , J , 'L' , IBACOL)
+          IF (CGENR .EQ. 'X' .AND. IADMI .NE. 0) THEN
+            NOM32  = RNOM(JRNOM(IC)+J)(1:24)                
+            IBACOL = IADMI
             IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
             IXMARQ = ISZON ( JISZON + IBACOL + IDMARQ )
             NMAX   = ISZON ( JISZON + IBACOL + IVNMAX )
             IF (IXIADM .GT. 0) THEN
               IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
               IBMARQ = IADM ( JIADM(IC) + 2*IXMARQ-1 )
-              DO 210 K=1,NMAX
-                IADMOC = ISZON(JISZON + IBIADM - 1 +2*K-1)
-                IADYOC = ISZON(JISZON + IBIADM - 1 +2*K  )
-                IF (IADYOC .NE. 0) THEN
-                   IDM   = IADMOC - 4
-                   IM = ISZON(JISZON + IBMARQ - 1 + 2*K)
-                   IL = ISZON(JISZON+IDM) - 8 - IDM
-                   ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
-                   ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
-                   WRITE(JULIST,
+              IF (IBIADM .NE. 0) THEN         
+                DO 210 K=1,NMAX
+                  IADMOC = ISZON(JISZON + IBIADM - 1 +2*K-1)
+                  IADYOC = ISZON(JISZON + IBIADM - 1 +2*K  )
+                  IF (IADYOC .NE. 0) THEN
+                    IDM   = IADMOC - 4
+                    IM = ISZON(JISZON + IBMARQ - 1 + 2*K-1)
+                    IL = ISZON(JISZON+IDM) - 8 - IDM
+                    ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
+                    ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4)/ISSTAT
+                    WRITE(NOM8,'(I8)') K
+                    NOM32  = RNOM(JRNOM(IC)+J)(1:24)//NOM8
+                    WRITE(JULIST,
      +              '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
      +              'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
      +              CLA,J,K,IM,IADYOC,KSTAT(ISD:ISD),IL,
      +              KSTAT(ISF:ISF),NOM32
-                ENDIF
- 210          CONTINUE
+                    IF ( ISD .EQ. 2 ) THEN  
+                      VUDYN = VUDYN + ISZON(JISZON+IDM) - IDM + 1
+                    ENDIF
+                  ENDIF
+ 210            CONTINUE
+              ENDIF
             ENDIF
-            CALL JJLIDE ('JEIMPO' , NOM32(1:24) , 2)
           ENDIF
  205    CONTINUE
  200  CONTINUE
       CALL JXVERI(CUNIT , CMESS)  
+      WRITE(JULIST,*) '  '
+      WRITE(JULIST,*) ' CUMUL DES LONGUEURS DES SEGMENTS UTILISES UA/UD'
+      WRITE(JULIST,60) ' ALLOCATION STATIQUE  :',VUSTA*LOIS/(1024*1024),
+     +                ' Mo'
+      WRITE(JULIST,60) ' ALLOCATION DYNAMIQUE :',VUDYN*LOIS/(1024*1024),
+     +                ' Mo'
+      WRITE(JULIST,60) ' ALLOCATION TOTALE    :',(VUSTA+VUDYN)*LOIS
+     +                /(1024*1024),' Mo',(VUSTA+VUDYN)*LOIS,' o '
+      
+ 60   FORMAT(A,2(1PE12.2,A3))
  9999 CONTINUE
 C FIN ------------------------------------------------------------------
       END

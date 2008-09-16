@@ -1,6 +1,6 @@
       SUBROUTINE JJLIDE ( NOMAP , NOMLU , ITYPE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,10 +63,8 @@ C ----------------------------------------------------------------------
       COMMON /UNDFJE/  LUNDEF,IDEBUG
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
@@ -191,10 +189,13 @@ C
           CALL JJALLS( NNN,0,'V','I',LOIS,'INIT',IT,JIT,IADIT,IADY1)
           ISZON(JISZON+IADIT-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+IADIT-4)-4) = ISTAT(4)
+          SVUSE = SVUSE + NALLOC * NPARM + 9
           CALL JJALLS( NNN ,0,'V','I',LOIS,'INIT',KT,KIT,IASIG,IADY2)
           ISZON(JISZON+IASIG-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+IASIG-4)-4) = ISTAT(4)
+          SVUSE = SVUSE + NALLOC * NPARM + 9
           ITRECH = ITROLD
+          SMXUSE = MAX(SMXUSE,SVUSE)
 C --------OBJETS DE COLLECTION
 C
           IF ( NMAX .NE. 0 ) THEN
@@ -506,7 +507,11 @@ C
               ISZON( IT(JIT+KK+IIMAR)+1 ) = 0
             ENDIF
           ENDIF
-          IF (LXU) ISZON(JISZON+IADMI-1) = ISTAT(1)
+          IF (LXU) THEN 
+             ISZON(JISZON+IADMI-1) = ISTAT(1)
+             SVUSE = SVUSE - (ISZON(JISZON+IADMI-4) - IADMI+4)
+             SMXUSE = MAX(SMXUSE,SVUSE)
+          ENDIF   
           IF (LAD) THEN
             IS                   = ISZON(JISZON+IADMI-4)
             ISZON(JISZON+IS-4)   = ISTAT(3)
@@ -534,9 +539,7 @@ C
         IF ( LDATE ) DATE ( IT(JIT+KK+ IDATE) ) = DATEI
         IF ( LLIBP ) THEN
           IF ( IDYNI .NE. 0 ) THEN
-            MCDYN = MCDYN - LONOI
-            MLDYN = MLDYN + LONOI
-            CALL HPDEALLC ( IDYNI , NBFREE , IBID )
+            CALL JJLIDY ( IDYNI , IADMI )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
           ENDIF
@@ -551,16 +554,12 @@ C
   100 CONTINUE
   101 CONTINUE
       IF ( IADY1 .NE. 0 ) THEN
-        MCDYN = MCDYN - NNN
-        MLDYN = MLDYN + NNN
-        CALL HPDEALLC (IADY1, NBFREE, IBID)
+        CALL JJLIDY ( IADY1 , IADIT )
       ELSE IF ( IADIT .NE. 0 ) THEN 
         CALL JJLIBP ( IADIT )
       ENDIF
       IF ( IADY2 .NE. 0 ) THEN
-        MCDYN = MCDYN - NNN
-        MLDYN = MLDYN + NNN
-        CALL HPDEALLC (IADY2, NBFREE, IBID)
+        CALL JJLIDY ( IADY2 , IASIG )
       ELSE IF ( IASIG .NE. 0 ) THEN 
         CALL JJLIBP ( IASIG )
       ENDIF

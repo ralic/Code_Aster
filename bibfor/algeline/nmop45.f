@@ -2,7 +2,7 @@
      &                  NFREQ ,BANDE ,MOD45 ,MODES)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C
       CHARACTER*19 MATPSC,MATOPA,NUMEDD
       INTEGER      LDSOR,LVEC,NEQ
       CHARACTER*24 NOPARA(NBPARA)
-      LOGICAL STURM,FLAGE
+      LOGICAL STURM,FLAGE,LBID
 C     ------------------------------------------------------------------
       DATA  NOPARA /
      &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
@@ -417,7 +417,7 @@ C     --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
 
       IF (NIV.GE.2) THEN
         CALL VPWECF(' ',TYPRES,NCONV,MXRESF,ZI(LRESUI),ZR(LRESUR),
-     &              ZK24(LRESUK),LAMOR,KTYP)
+     &              ZK24(LRESUK),LAMOR,KTYP,LBID)
       END IF
 
 

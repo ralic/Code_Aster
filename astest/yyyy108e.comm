@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  CTJ25 - SANS RENUM / AFFE_CHAR_MECA / SOLVE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,9 @@
 # MODELISATION 3D  POINTS   F'=NO2958   B5'=NO2974
 #======================================================================
 
-DEBUT(CODE=_F(NOM='YYYY108E', NIV_PUB_WEB='INTERNET'), MEMOIRE=_F(GESTION='COMPACTE'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='YYYY108E', NIV_PUB_WEB='INTERNET'), 
+      MEMOIRE=_F(GESTION='COMPACTE', DYNAMIQUE=0), 
+      DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(
                          )

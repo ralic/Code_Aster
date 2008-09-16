@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -262,16 +262,36 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 
 47: _("""
  La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modeliser
- des contraintes planes (ou des coques) avec ce comportement, utiliser ALGO_C_PLAN='DEBORST'
+ des contraintes planes (ou des coques) avec ce comportement, on utilise ALGO_C_PLAN='DEBORST'
 """),
 
 48: _("""
  La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modeliser
- des contraintes 1D (barres, poutres) avec ce comportement, utiliser ALGO_1D='DEBORST'
+ des contraintes 1D (barres, poutres) avec ce comportement, on utilise ALGO_1D='DEBORST'
 """),
 
 49: _("""
  La modelisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
+
+50: _("""
+ Aucun comportement n'est défini sur la maille <%(k1)s>. Code_Aster a défini par défaut
+  COMP_INCR='ELAS', DEFORMATION='PETIT'.
+"""),
+
+51: _("""
+ La commande <%(k1)s> n'est pas prévue dans le traitement des mot-clé COMP_INCR / COMP_ELAS.
+"""),
+
+52: _("""
+ La modelisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modeliser
+ des contraintes planes (ou des coques) avec ce comportement, il est inutile d'utiliser ALGO_C_PLAN='DEBORST'
+"""),
+
+53: _("""
+ La modelisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modeliser
+ des contraintes 1D (barres, poutres) avec ce comportement, il est inutile d'utiliser ALGO_1D='DEBORST'
+"""),
+
 
 }

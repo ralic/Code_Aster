@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -280,7 +280,7 @@ C     --- NOMBRE DE VARIABLES INTERNES A LIRE ---
 
 C     --- CREATION DE LA STRUCTURE DE DONNEES RESULTAT ---
 
-      CALL RSCRSD(RESU,TYPRES,NBORDR)
+      CALL RSCRSD('G',RESU,TYPRES,NBORDR)
 
 C- ON VERIFIE SI LE CHAMP DEMANDE EST COMPATIBLE AVEC LE TYPE DE RESUTAT
 
@@ -819,7 +819,7 @@ C     --------------------------------------------
               IAUX = RENUMD(LETYPE)
               TYPGOM = TYPGEO(IAUX)
               CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
-        
+
               IF (NPAS.NE.0) THEN
                 CALL JEVEUO(PREFIX//'.INST','L',IPAS)
                 CALL JEVEUO(PREFIX//'.NUME','L',INUM)

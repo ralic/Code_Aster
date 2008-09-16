@@ -1,4 +1,4 @@
-# MODIF  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,11 +131,22 @@ CHABNO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   FISSURE=FISS,
                   NOM_CHAM='LNNO');
 
-NU_F=DEFI_FONCTION(NOM_PARA='NEUT1',
-                   VALE=(-1.0,0.0,-1.E-9,0.0,1.E-9,nu,1.0,nu));
+#NU_F=DEFI_FONCTION(NOM_PARA='NEUT1',
+#                   VALE=(-1.0,0.0,-1.E-9,0.0,1.E-9,nu,1.0,nu));
 
-E_F=DEFI_FONCTION(NOM_PARA='NEUT1',
-                  VALE=(-1.0,1.E16,-1.E-9,1.E16,1.E-9,E,1.0,E));
+#E_F=DEFI_FONCTION(NOM_PARA='NEUT1',
+#                  VALE=(-1.0,1.E16,-1.E-9,1.E16,1.E-9,E,1.0,E));
+
+def EF(x) : 
+   if x<0. : return 1.E16 
+   if x>0. : return E
+
+def NF(x) : 
+   if x<0. : return 0. 
+   if x>0. : return nu
+
+E_F = FORMULE(NOM_PARA=('NEUT1'),VALE='EF(NEUT1)');
+NU_F= FORMULE(NOM_PARA=('NEUT1'),VALE='NF(NEUT1)');
 
 MATVAR=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=rho));
 
@@ -146,7 +157,8 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                              _F(GROUP_MA=('BAT'),
                                 MATER=MATVAR,),),
                        AFFE_VARC=_F(NOM_VARC='NEUT1',
-                                    CHAMP_GD=CHABNO),);
+                                    CHAMP_GD=CHABNO),
+                     );
 
 #----------------------------------------------
 #                   CHARGEMENTS

@@ -3,7 +3,7 @@
 C RESPONSABLE JMBHH01 J.M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,57 +47,87 @@ C       ----------------------------------------------------------------
         REAL*8          TOLER,  DDY(NR), DY(NR), R(NR),RINI(NR)
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
-        REAL*8          ERRDY(NR), ERRR(NR)
-C        REAL*8          TER(100)
-C        SAVE            TER
+        REAL*8          ERRDY(NR), ERRR(NR),E1,E2,E1INI,E2INI,R8PREM
         INTEGER         NBCOMM(NMAT,3)
 C       ----------------------------------------------------------------
 C
-C -   EVALUATION  DE L'ERREUR ABSOLUE EN RESIDU (DEFORMATIONS)
-C
+C -   EVALUATION  DE L'ERREUR  EN RESIDU (DEFORMATIONS)
       
-      ERRR(1)=0.D0                               
-      DO 100 I = 1,NR                            
-         ERRR(1) = MAX(ERRR(1), ABS(R(I)))       
- 100  CONTINUE                                   
+C     TYP  : TYPE D'ERREUR A CALCULER
+C          0 =  MAX | DDY /DY |     < EPS 
+C          1 = || DDY || / || DY || < EPS non si termes d'ordres /=
+C          2 = || DDYi / DYi ||     < EPS
+C      CALL LCVERR ( RINI, R, 6, 1, ERRR  )
 
-C       ERRDY(1)=0.D0                              
-C       DO 101 I = NDT+1,NR                        
-C          ERRDY(1) = MAX(ERRDY(1), ABS(DY(I)))    
-C  101  CONTINUE                                   
+      E1=0.D0
+      E2=0.D0
+      E1INI=0.D0
+      E2INI=0.D0
+      DO 101 I = 1,6                            
+         E1 = MAX(E1, ABS(R(I)))       
+         E1INI = MAX(E1INI, ABS(RINI(I)))       
+ 101  CONTINUE
+                                
+      ERRR(1)=E1
+      IF (E1INI.GT.R8PREM()) THEN
+         ERRR(1)=E1/E1INI
+      ENDIF
+      
+      DO 102 I = 7,NR                            
+         E2 = MAX(E2, ABS(R(I)))       
+         E2INI = MAX(E2INI, ABS(RINI(I)))       
+ 102  CONTINUE
 
- 
-C      TER(ITER) = ERRR(1)
+      ERRR(2)=E2
+      IF (E2INI.GT.R8PREM()) THEN
+         ERRR(2)=E2/E2INI
+      ENDIF
+      
+C     MAX DES 6 PREMIERS TERMES ET DES SUIVANTS     
+      ERRR(1)=MAX(ERRR(1),ERRR(2))
 
-C -         ITER < ITMAX
-C           ------------
+C     ERREUR SUR LA SOLUTION
 
+      ERRDY(1)=0.D0                              
+      ERRDY(3)=0.D0                              
+      DO 103 I = 1,6                       
+         ERRDY(1) = MAX(ERRDY(1), ABS(DDY(I)))    
+         ERRDY(3) = MAX(ERRDY(3), ABS(DY(I)))    
+  103 CONTINUE
+      IF (ERRDY(3).GT.R8PREM()) THEN                                  
+          ERRDY(1)=ERRDY(1)/ERRDY(3)
+      ENDIF
+      ERRDY(2)=0.D0                              
+      ERRDY(4)=0.D0                              
+      DO 104 I = NDT+1,NR                        
+         ERRDY(2) = MAX(ERRDY(2), ABS(DDY(I)))    
+         ERRDY(4) = MAX(ERRDY(3), ABS(DY(I)))    
+  104 CONTINUE
+      IF (ERRDY(4).GT.R8PREM()) THEN                                  
+          ERRDY(2)=ERRDY(2)/ERRDY(4)
+      ENDIF
+          
+C     MAX DES 6 PREMIERS TERMES ET DES SUIVANTS     
+      ERRDY(1)=MAX(ERRDY(1),ERRDY(2))
+      
+      
+      
       IF ( ITER .LE. ITMAX ) THEN
-C
 C -             CONVERGENCE
-C
           IF ( ERRR(1) .LE. TOLER ) THEN
              IRTETI = 0
              GOTO 9999
           ENDIF
-C
+          IF ( ERRDY(1) .LE. TOLER ) THEN
+             IRTETI = 0
+             GOTO 9999
+          ENDIF
+          
 C -     NON CONVERGENCE ITERATION SUIVANTE
-C
-C          IF((ITER.GE.15).AND.(ITMAX.GE.15)) THEN
-C             IF ((TER(ITER) .LT. TER(ITER-1)).AND.
-C     1           (TER(ITER-1) .LT. TER(ITER-2))   ) THEN
-C                IRTETI = 1
-C                GOTO 9999
-C             ELSE 
-C                IRTETI = 3
-C                GOTO 9999             
-C             ENDIF
-C          ELSE
-               IRTETI = 1
-               GOTO 9999             
-C          ENDIF
-C
+          IRTETI = 1
+          GOTO 9999                       
       ELSE
+C -     NB ITERATION MAXIMUM ATTEINT SANS CONVERGENCE
          IRTETI=3
       ENDIF
 C

@@ -1,4 +1,4 @@
-#@ MODIF hujeux Comportement  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+#@ MODIF hujeux Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    nb_vari        = 50,
    nom_vari       = ('FECRDVM1','FECRDVM2','FECRDVM3','FECRISM1','FECRDVC1','FECRDVC2','FECRDVC3','FECRISC1','HIS9','HIS10','HIS11','HIS12','HIS13','HIS14','HIS15','HIS16','HIS17','HIS18','HIS19','HIS20','HIS21','HIS22','DPVOLEQ','INDETAM1','INDETAM1','INDETAM1','INDETAM1','INDETAM2','INDETAM3','INDETAC1','INDETAC2','CRITHILL','INDETAC3','HIS34','HIS35','XHYZ1','XHYZ2','THYZ1','THYZ2','RHYZ','XHXZ1','XHXZ2','THXZ1','THXZ2','RHXZ','XHXY1','XHXY2','THXY1','THXY2','RHYZ'),
    mc_mater       = ('ELAS', 'HUJEUX'),
-   modelisation   = ('3D', 'THM'),
+   modelisation   = ('3D', 'THM', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
    nom_varc       = ('TEMP',),
    schema         = ('IMPLICITE',),

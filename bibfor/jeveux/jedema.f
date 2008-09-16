@@ -1,7 +1,7 @@
       SUBROUTINE JEDEMA
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,8 @@ C
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C ----------------------------------------------------------------------
       INTEGER          K,IADMI,IDEB,IFIN,IDOS,IDCO,IC,IS
       CHARACTER *8     KSUF
@@ -118,6 +120,8 @@ C
               IMARQ ( JMARQ(IC)+2*IDOS   ) = 0
               ISZON(JISZON+IADMI-1 ) = ISTAT(1)
               ISZON(JISZON+KDESMA(1)+K) = 0
+              SVUSE = SVUSE - (ISZON(JISZON+IADMI-4) - IADMI+4)
+              SMXUSE = MAX(SMXUSE,SVUSE)
             ENDIF
           ENDIF
         ENDIF

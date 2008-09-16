@@ -1,6 +1,6 @@
       SUBROUTINE ASCIMA (INFCHA,NU,MATASS,CUMUL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,9 +56,9 @@ C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       CHARACTER*4 CUMUL
-      CHARACTER*8 KBID
+      CHARACTER*8 KBID,CHARGE
       CHARACTER*19 INFCH2
-      INTEGER IRET,IRET1,IRET2,IRET3,ICH,NCHARG,JLCHA,JINFC,JLCHCI
+      INTEGER IRET,IRET1,IRET2,IRET3,ICH,NCHARG,JLCHA,JINFC,JLCHCI,IER
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -83,9 +83,21 @@ C     -- CAS SD_INFCHA :
 
         NCHCI = 0
         DO 1 ICH = 1,NCHARG
+
+C         -- CAS DES SD_CHAR_CINE :
           IF (ZI(JINFC+ICH).LT.0) THEN
             NCHCI = NCHCI+1
             ZK24(JLCHCI-1+NCHCI) = ZK24(JLCHA-1+ICH)
+
+C         -- CAS DES SD_CHAR_MECA POUVANT CONTENIR UNE SD_CHAR_CINE :
+          ELSEIF (ZI(JINFC+ICH).GE.0) THEN
+            CALL ASSERT(ZK24(JLCHA-1+ICH)(9:24).EQ.' ')
+            CHARGE=ZK24(JLCHA-1+ICH)
+            CALL JEEXIN(CHARGE//'.ELIM      .AFCK',IER)
+            IF (IER.GT.0) THEN
+              NCHCI = NCHCI+1
+              ZK24(JLCHCI-1+NCHCI) = CHARGE//'.ELIM'
+            ENDIF
           ENDIF
 1       CONTINUE
         IF ( NCHCI.EQ.0 ) GOTO 9999
@@ -96,7 +108,7 @@ C     -- CAS LISTE DE CHARGES CINEMATIQUES :
       ELSE
         CALL JEVEUO(INFCHA,'L',JLCHCI)
         CALL JELIRA(INFCHA,'LONMAX',NCHCI,KBID)
-        CALL ASSCHC(MATASS,NCHCI,ZK8(JLCHCI),NU,CUMUL)
+        CALL ASSCHC(MATASS,NCHCI,ZK24(JLCHCI),NU,CUMUL)
       ENDIF
 
 

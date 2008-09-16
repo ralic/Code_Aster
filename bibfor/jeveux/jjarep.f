@@ -1,6 +1,6 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,11 @@ C ----------------------------------------------------------------------
       INTEGER          IGENR,ITYPE,IDOCU,IORIG,IRNOM(4)
       EQUIVALENCE      (IGENR,GENR),(ITYPE,TYPE),
      &                 (IDOCU,DOCU),(IORIG,ORIG),(IRNOM,RNOM)
+      CHARACTER*1      K1ZON
+      COMMON /KZONJE/  K1ZON(8)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
+      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
@@ -58,17 +63,13 @@ C
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C ----------------------------------------------------------------------
       CHARACTER *32    CLEL,CLE
       CHARACTER *4     Z
       INTEGER          JCOD,KADHC,JNOM,KADNO,LOREP,IADRS(20),KAT(20)
       INTEGER          LGNOM,NUTI,LSO(20),IMQ(2),IADDI(2),KDY(20),IBID
       PARAMETER       (NBATT=12,NBTOT=NBATT+2,LGNOM=32)
-      INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT),LGL(NBTOT)
+      INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT)
       DATA NUMATT,Z   /2,3,4,5,6,8,9,10,11,12,16,7,13,20,'INIT'/
 C DEB ------------------------------------------------------------------
       IPGCA = IPGC
@@ -143,7 +144,6 @@ C
       DO 200 K=1,NBTOT
         KL = NUMATT(K)
         LONOI = LONO(JLONO(IC)+KL)*LTYP(JLTYP(IC)+KL)
-        LGL(K) = LONOI
         IF ( IADD(JIADD(IC)+2*KL-1) .GT. 0 ) THEN
           CALL JXLIBD ( 0 , KL , IC ,IADD(JIADD(IC)+2*KL-1) , LONOI )
           IADD(JIADD(IC)+2*KL-1) = 0
@@ -221,9 +221,7 @@ C
  315  CONTINUE
       DO 320 I = 1,NBTOT
         IF (IDY(I) .NE. 0) THEN
-          MCDYN = MCDYN - LGL(I)
-          MLDYN = MLDYN + LGL(I)
-          CALL HPDEALLC (IDY(I),NBFREE,IBID)
+          CALL JJLIDY ( IDY(I) , IDM(I) )
         ELSE IF (IDM(I) .NE. 0) THEN
           CALL JJLIBP (IDM(I))
         ENDIF

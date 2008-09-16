@@ -1,9 +1,9 @@
-        SUBROUTINE LCMMRE ( FAMI,KPG,KSP,MOD, NMAT, MATERD, MATERF,
+        SUBROUTINE LCMMRE ( TYPMOD, NMAT, MATERD, MATERF,
      3      COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR, NR, NVI,VIND,
      1       ITMAX, TOLER, TIMED, TIMEF,YD ,YF,DEPS, DY, R, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,15 +24,15 @@ C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C       ----------------------------------------------------------------
 C     MONOCRISTAL  : CALCUL DES TERMES DU SYSTEME NL A RESOUDRE = R(DY)
-C                  DY =  DSIG DEPSVP (DALPHAS DGAMMAS DPS) PAR SYSTEME
-C                  Y  = SIG EPSVP (ALPHAS GAMMAS PS) PAR SYSTEME
-C                  R  = ( S    E  A   G  P    )
+C                  VARINT =  DEPSVP (DALPHAS DGAMMAS DPS) PAR SYSTEME
+C                  DY =  DSIG (DGAMMAS PAR SYSTEME)
+C                  Y  =  SIG   (GAMMAS  PAR SYSTEME)
+C                  R  = ( R1  R2   )
+C  CAS PARTICULEIR : POUR KOCKS-RAUCH, DY = DSIG  DRs s=1,Ns
+C  KOCKS-RAUCH, VARINT = DEPSVP (DRS DGAMMAS DPS) PAR SYSTEME
 C  ATTENTION IL FAUT CALCULER -R
 C
-C     IN  FAMI   :  FAMILLE DU POINT DE GAUSS
-C         KPG    :  POINT DE GAUSS
-C         KSP    :  SOUS-POINT DE GAUSS
-C         MOD    :  TYPE DE MODELISATION
+C     IN  TYPMOD    :  TYPE DE MODELISATION
 C         NMAT   :  DIMENSION MATER
 C         MATERD :  COEFFICIENTS MATERIAU A T
 C         MATERF :  COEFFICIENTS MATERIAU A T+DT
@@ -58,7 +58,7 @@ C         NR     :  DIMENSION DECLAREE DRDY
 C     OUT R      :  RESIDU DU SYSTEME NL A T + DT
 C         IRET   :  CODE RETOUR
 C     ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT, NR, NVI, NSFV, IRET,KPG,KSP
+      INTEGER         NDT , NDI , NMAT, NR, NVI, NSFV, IRET
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,NBSYS,IS,IV,IR,ITMAX,IEXP
 C
       REAL*8          DKOOH(6,6), FKOOH(6,6),TIMED, TIMEF
@@ -70,9 +70,7 @@ C
       REAL*8          R(NR),DY(NR),YD(NR),YF(NR),TOLER
       REAL*8          TOUTMS(5,24,6), HSR(5,24,24)
 C
-      CHARACTER*8     MOD
-      CHARACTER*(*)   FAMI
-
+      CHARACTER*8     TYPMOD
       INTEGER         NBCOMM(NMAT,3),MONO1,IEC,IEI,NSFA,IFL,NUECOU
       REAL*8          PGL(3,3),D,R0,Q,B,N,K,C,DGAMM1,ABSDGA,ALPHAM,H
       REAL*8          CRIT,ALPHAP,SGNS,GAMMAP,EXPBP(24)
@@ -80,7 +78,6 @@ C
       CHARACTER*16 NOMFAM,NECOUL,NECRIS,NECRCI
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
-      COMMON/KRDAL/DAL(24)
 C     ----------------------------------------------------------------
 C
       DT=TIMEF-TIMED
@@ -120,15 +117,15 @@ C           TAU      : SCISSION REDUITE TAU=SIG:MS
             DO 10 I=1,6
                TAUS=TAUS+SIGF(I)*MS(I)
  10         CONTINUE
-
-            DGAMM1=DY(NSFA+IS)
+            
             NUVI=NSFV+3*(IS-1)
-            ALPHAM=VIND(NUVI+1)
 
 C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA
-
 C            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
             IF (NUECOU.NE.4) THEN
+
+                DGAMM1=DY(NSFA+IS)
+                ALPHAM=VIND(NUVI+1)
 
                 CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
      &            ITMAX, TOLER,ALPHAM,DGAMM1,DALPHA, IRET)
@@ -142,6 +139,13 @@ C               ECROUISSAGE ISOTROPE : CALCUL DE R(P)
                 CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
      &            IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RP)
      
+                GAMMAP=YD(NSFA+IS)+DGAMM1
+
+C            IF (NECOUL.ES.'KOCKS_RAUCH') THEN
+            ELSEIF (NUECOU.EQ.4) THEN
+C           POUR KOCKS-RAUCH ALPHA représente la variable principale
+               ALPHAP=YD(NSFA+IS)+DY(NSFA+IS)
+               GAMMAP=VIND(NUVI+2)
             ENDIF
             
 C           ECOULEMENT VISCOPLASTIQUE
@@ -150,28 +154,23 @@ C           ET L'EXPLICITE (NMVPRK-GERPAS-RK21CO-RDIF01)
 C           CAS IMPLCITE : IL FAUT PRENDRE EN COMPTE DT
 C           CAS EXPLICITE : IL NE LE FAUT PAS (C'EST FAIT PAR RDIF01)
 C
-            GAMMAP=YD(NSFA+IS)+DGAMM1
-
-            
-C            IF (NECOUL.ES.'KOCKS_RAUCH') THEN
-            IF (NUECOU.EQ.4) THEN
-             ALPHAP=ALPHAM
-            ENDIF
-            
-            CALL LCMMFE( FAMI,KPG,KSP,TAUS,MATERF(NMAT+1),MATERF(1),IFA,
-     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),RP,
-     &      ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET,DAL)
+            CALL LCMMFE( TAUS,MATERF(NMAT+1),MATERF(1),IFA,
+     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),
+     &      RP,ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
+     
             IF (IRET.GT.0) GOTO 9999
 
-C             IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
-C              ALPHAP=ALPHAM+DALPHA
-C             ENDIF
+C            IF (NECOUL.ES.'KOCKS_RAUCH') THEN
+            IF (NUECOU.EQ.4) THEN
+C              POUR KOCKS-RAUCH ALPHA représente la variable principale
+               R(NSFA+IS)=-(DY(NSFA+IS)-DALPHA)
+            ELSE
+               R(NSFA+IS)=-(DGAMM1-DGAMMA)
+            ENDIF
 
             DO 9 ITENS=1,6
                DEVI(ITENS)=DEVI(ITENS)+MS(ITENS)*DGAMMA
   9         CONTINUE
-
-            R(NSFA+IS)=-(DGAMM1-DGAMMA)
 
   7     CONTINUE
 
@@ -186,11 +185,11 @@ C                 -1                     -1
 C -   HOOKF, HOOKD , DFDS , EPSEF = HOOKD  SIGD + DEPS - DEPSP
 C
       IF (MATERF(NMAT).EQ.0) THEN
-         CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERD(1) , DKOOH )
-         CALL LCOPIL  ( 'ISOTROPE' , MOD , MATERF(1) , FKOOH )
+         CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERD(1) , DKOOH )
+         CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERF(1) , FKOOH )
       ELSEIF (MATERF(NMAT).EQ.1) THEN
-         CALL LCOPIL  ( 'ORTHOTRO' , MOD , MATERD(1) , DKOOH )
-         CALL LCOPIL  ( 'ORTHOTRO' , MOD , MATERF(1) , FKOOH )
+         CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERD(1) , DKOOH )
+         CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERF(1) , FKOOH )
       ENDIF
       CALL LCPRMV ( DKOOH,   SIGD  , EPSED )
       CALL LCDIVE ( DEPS ,   DEVI  , DEPSE )

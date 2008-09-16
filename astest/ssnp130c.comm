@@ -1,5 +1,4 @@
-# RESPONSABLE ADBHHVV V.CANO
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (QUAD4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE ADBHHVV V.CANO
 # TEST V6.03.130
 # CHARGEMENT EN PRESSION
 # MAILLAGE : QUAD4
@@ -74,15 +74,11 @@ DEPLA=STAT_NON_LINE(MODELE=MO,
                     INCREMENT=_F(LIST_INST=L_INST,),);
 
 DEPLA=CALC_ELEM(reuse =DEPLA,
-                MODELE=MO,
-                CHAM_MATER=CHMAT,
                 RESULTAT=DEPLA,
                 INST=1.,
                 PREC_ERR=0.8,
-                OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM','ETOT_ELEM',
-                        'SING_ELEM','SING_ELNO_ELEM'),
-                EXCIT=(_F(CHARGE=CHP,FONC_MULT=F_INST,),
-                       _F(CHARGE=CHCL,),),);
+                OPTION=('SIEF_ELNO_ELGA','ERZ1_ELEM_SIGM','ETOT_ELEM',
+                        'SING_ELEM','SING_ELNO_ELEM'),);
 
 # TEST DE SING_ELEM VALEUR MAX ET MIN DES 2 COMPOSANTES
 
@@ -107,21 +103,39 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELEM',
+                   NOM_CMP='RAPPORT',
+                   TYPE_TEST='MAX',
+                   VALE=2.17,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=DEPLA,
+                   INST=1.0,
+                   NOM_CHAM='SING_ELEM',
+                   NOM_CMP='RAPPORT',
+                   TYPE_TEST='MIN',
+                   VALE=0.167,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=DEPLA,
+                   INST=1.0,
+                   NOM_CHAM='SING_ELEM',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MAX',
-                   VALE=2.11,
+                   VALE=4.59,
                    CRITERE='RELATIF',
-                   PRECISION=0.03,
+                   PRECISION=0.02,
                    REFERENCE='NON_REGRESSION',),
                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELEM',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MIN',
-                   VALE=0.15,
+                   VALE=0.2,
                    CRITERE='RELATIF',
-                   PRECISION=0.03,
-                   REFERENCE='NON_REGRESSION',),),);
+                   PRECISION=0.02,
+                   REFERENCE='NON_REGRESSION',),),); 
 
 # TEST DE SING_ELEM VALEUR PARTICULIERE EN POINTE DE FISSURE
 # LES MAILLES CHOISIES SONT AU VOISINAGE DE LA FISSURE
@@ -210,20 +224,38 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CMP='RAPPORT',
+                   TYPE_TEST='MAX',
+                   VALE=2.17,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=DEPLA,
+                   INST=1.0,
+                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CMP='RAPPORT',
+                   TYPE_TEST='MIN',
+                   VALE=0.167,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   REFERENCE='NON_REGRESSION',),
+               _F(RESULTAT=DEPLA,
+                   INST=1.0,
+                   NOM_CHAM='SING_ELNO_ELEM',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MAX',
-                   VALE=2.11,
+                   VALE=4.59,
                    CRITERE='RELATIF',
-                   PRECISION=0.03,
+                   PRECISION=0.02,
                    REFERENCE='NON_REGRESSION',),
                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELNO_ELEM',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MIN',
-                   VALE=0.15,
+                   VALE=0.205,
                    CRITERE='RELATIF',
-                   PRECISION=0.03,
+                   PRECISION=0.02,
                    REFERENCE='NON_REGRESSION',),),);
 
 FIN();

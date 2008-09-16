@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C
       CALL TBUTNU ( MOTFAC, 1, KNUM, NBINST, TABLE, PREC, CRIT )
       CALL JEVEUO ( KNUM, 'L', JINST )
 C
-      CALL RSCRSD ( RESU, TYPRES, NBINST )
+      CALL RSCRSD('G', RESU, TYPRES, NBINST )
 C
       TABCOR = '&&RS1D3D.COORMA'
       TABVAL = '&&RS1D3D.VALTEM'

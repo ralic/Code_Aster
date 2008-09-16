@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 15/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -602,7 +602,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   from Noyau.N_utils import AsType
   import aster,math
   from Utilitai.UniteAster import UniteAster
-  from Utilitai.Utmess import  UTMESS
+  from Utilitai.Utmess import  UTMESS, MasquerAlarme, RetablirAlarme
   ier=0
 
   # On importe les definitions des commandes a utiliser dans la macro
@@ -617,6 +617,11 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
+
+  # 
+  MasquerAlarme('CALCULEL2_63')
+  MasquerAlarme('CALCULEL2_64')
+  MasquerAlarme('MODELISA5_53')
 
   mcORDR={}
 
@@ -943,4 +948,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   nomres=CREA_TABLE(**dprod)
 
+  RetablirAlarme('CALCULEL2_63')
+  RetablirAlarme('CALCULEL2_64')
+  RetablirAlarme('MODELISA5_53')
   return ier

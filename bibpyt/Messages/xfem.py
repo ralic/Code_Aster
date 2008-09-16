@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF xfem Messages  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,14 @@ cata_msg={
      (ou écarter les fissures). 
 """),
 
+2: _("""
+  -> Le calcul de la distance d'un noued à l'ellipse n'a pas convergé 
+     avec le nombre d'itérations maximal fixé (10). Cela est dû à une
+     ellipse très allongée.
+  -> Conseil:
+     Contacter les développeur.
+     Dans la mesure du possible, définissez une ellipse moins allongée.
+"""),
 
 
 3: _("""

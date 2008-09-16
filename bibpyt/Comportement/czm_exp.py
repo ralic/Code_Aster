@@ -1,4 +1,4 @@
-#@ MODIF czm_exp Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF czm_exp Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ loi = LoiComportement(
    nb_vari        = 7,
    nom_vari       = ('SAUT_N', 'SAUT_T1', 'SEUIL_DEP','INDIENDO', 'PCENERDI', 'SIGM_N','SIGM_T1'),
    mc_mater       = ('RUPT_FRAG'),
-   modelisation   = ('PLAN_ELDI','AXIS_ELDI'),
+   modelisation   = ('3D','PLAN','AXIS','ELEMJOIN'),
    deformation    = ('PETIT'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE'),

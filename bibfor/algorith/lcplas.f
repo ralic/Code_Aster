@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,11 @@ C       ----------------------------------------------------------------
 C
       IRTETI = 0
       DELTAT = TIMEF - TIMED
-C
+      
+C       ----------------------------------------------------------------
+C       CAS PARTICULIERS
+C       ----------------------------------------------------------------
+
       IF     ( LOI(1:8).EQ. 'ROUSS_PR' .OR.
      1         LOI(1:10) .EQ. 'ROUSS_VISC'    ) THEN
          CALL LCROUS (FAMI,KPG,KSP, TOLER, ITMAX, IMAT, NMAT,
@@ -83,19 +87,6 @@ C
      2                LOI, DELTAT,  SIGF, VINF, IRTET )
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
 C
-      ELSEIF ( LOI(1:5) .EQ. 'LMARC'       .OR.
-     1         LOI(1:9) .EQ. 'VISCOCHAB'   .OR.
-     1         LOI(1:8) .EQ. 'MONOCRIS'    .OR.
-     1         LOI(1:7) .EQ. 'IRRAD3M '    .OR.
-     1         LOI(1:7) .EQ. 'NADAI_B'     ) THEN
-         CALL LCPLNL ( FAMI, KPG, KSP, LOI,  TOLER, ITMAX, MOD,
-     1                 IMAT,NMAT, MATERD,MATERF,NR, NVI,
-     2                 TIMED,TIMEF,DEPS,EPSD,SIGD,VIND,COMP,
-     3                 NBCOMM, CPMONO,PGL,TOUTMS,HSR,
-     4                 SIGF, VINF, ICOMP, IRTET,DRDY)
-         IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
-CC
-
       ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN'       ).OR.
      1         ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN
          CALL LCHOBR ( TOLER, ITMAX, MOD, NMAT, MATERF, NR, NVI,
@@ -109,20 +100,30 @@ C
      2                 VINF, DEVG, DEVGII, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
 C
+C       ----------------------------------------------------------------
+C       CAS GENERAL : RESOLUTION PAR NEWTON
+C       ----------------------------------------------------------------
       ELSE
-         CALL LCPLLI (MOD,NMAT,NR,NVI,EPSD,SIGD,VIND,SIGF,VINF)
+         CALL LCPLNL ( FAMI, KPG, KSP, LOI,  TOLER, ITMAX, MOD,
+     1                 IMAT,NMAT, MATERD,MATERF,NR, NVI,
+     2                 TIMED,TIMEF,DEPS,EPSD,SIGD,VIND,COMP,
+     3                 NBCOMM, CPMONO,PGL,TOUTMS,HSR,
+     4                 SIGF, VINF, ICOMP, IRTET,DRDY)
+         IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
+
       ENDIF
-C
+C     CONVERGENCE OK
       IRTETI = 0
       GOTO 9999
 C
  1    CONTINUE
+C     PB INTEGRATION ou ITMAX ATTEINT : redecoupage local puis global
       IRTETI = 1
       GOTO 9999
 C
 2     CONTINUE
+C     ITMAX ATTEINT : redecoupage du pas de temps global
       IRTETI = 2
-      GO TO 9999
 C
- 9999   CONTINUE
-        END
+ 9999 CONTINUE
+      END

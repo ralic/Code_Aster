@@ -1,0 +1,140 @@
+      SUBROUTINE XRECFF(FISS,CHFOND,LNOFF)
+      IMPLICIT NONE
+
+      INTEGER       LNOFF
+      CHARACTER*8   FISS
+      CHARACTER*24  CHFOND
+
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
+C
+C       RECUPERATION DE LA LISTE DES POINTS DU FOND DE FISSURE
+C       SUR LEQUEL ON VA EFFECTUER LE CALCUL 
+C 
+C  IN   :   FISS: ADRESSE DU VECTEUR DES COORDONNEES DES POINTS DU
+C                  FOND DE FISSURE
+C  OUT :  CHFOND
+C  OUT :  LNOFF
+C
+C
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      INTEGER  IFF,IFOMUL,NUMFON,IBID,IDEPFI,IARRFI,IFON
+
+      INTEGER  I,J,K,NFONU,JFONU
+      REAL*8   SMAX,S,X,Y,Z,S1,S2,XYZ1,XYZ2
+      CHARACTER*24  TEMP
+C ----------------------------------------------------------------------
+
+      CALL JEMARQ()
+
+C     LISTE DES POINTS DES FONDS DE FISSURES
+      CALL JEVEUO(FISS//'.FONDFISS','L',IFF)
+
+C     LISTE DES FONDS MULTIPLES
+      CALL JEVEUO(FISS//'.FONDMULT','L',IFOMUL)
+
+C     NUMERO DU FOND A TRAITER
+      CALL GETVIS('THETA','NUME_FOND',1,1,1,NUMFON,IBID)
+
+      IDEPFI=ZI(IFOMUL-1+2*(NUMFON-1)+1)
+      IARRFI=ZI(IFOMUL-1+2*(NUMFON-1)+2)
+      LNOFF=IARRFI-IDEPFI+1
+
+C     CREATION D'UN FOND TEMPORAIRE
+      TEMP = '&&XREFF.FONFIS_TEMP'
+      CALL WKVECT(TEMP,'V V R',LNOFF*4,IFON)
+        DO 15 I=1,LNOFF
+          DO 16 J=1,4
+            ZR(IFON-1+4*(I-1)+J)=ZR(IFF-1+4*(I+(IDEPFI-1)-1)+J)
+ 16       CONTINUE
+ 15     CONTINUE
+
+C     DOIT-ON PRENDRE UNE REPARTITION UNIFORME ?
+      CALL GETVIS('THETA','NB_POINT_FOND',1,1,1,NFONU,IBID)
+      IF (IBID.EQ.0) NFONU = 0
+
+      IF (NFONU.GT.0) THEN
+C       SI OUI : MODIFICATION DE LA LISTE DES POINTS DU FOND
+
+        CALL ASSERT(NFONU.GE.2)
+
+C       CREATION DU FOND MODIFIE
+        CALL WKVECT(CHFOND,'V V R',4*NFONU,JFONU)
+
+C       ON CALCULE LES COORDONNEES DES NOUVEAUX POINTS DU FOND
+
+C       1ER ET DERNIER POINT
+        DO 101 J=1,4
+          ZR(JFONU-1+4*(    1-1)+J)=ZR(IFON-1+4*(    1-1)+J)
+          ZR(JFONU-1+4*(NFONU-1)+J)=ZR(IFON-1+4*(LNOFF-1)+J)
+ 101    CONTINUE
+
+C       ABSCISSE CURVILIGNE DES NOUVEAUX POINTS
+        SMAX = ZR(IFON-1+4*(LNOFF-1)+4)
+        DO 102 I=2,NFONU-1
+          S = (I-1)*SMAX/(NFONU-1) 
+          DO 103 K = 1,LNOFF
+            IF (ZR(IFON-1+4*(K-1)+4).GT.S) GOTO 110
+ 103      CONTINUE
+ 110      CONTINUE
+C         ON INTERPOLE LES COORD ENTRE CELLES DU SEGMENT [K-1,K]
+          S1 = ZR(IFON-1+4*(K-1-1)+4)
+          S2 = ZR(IFON-1+4*(  K-1)+4)
+          DO 111 J=1,3
+            XYZ1 = ZR(IFON-1+4*(K-1-1)+J)
+            XYZ2 = ZR(IFON-1+4*(  K-1)+J)
+            ZR(JFONU-1+4*(I-1)+J) =  XYZ1 + (XYZ2-XYZ1)*(S-S1)/(S2-S1)
+ 111      CONTINUE
+          ZR(JFONU-1+4*(I-1)+4) = S
+ 102    CONTINUE
+
+C       ON ECRASE LNOFF
+        LNOFF = NFONU
+      
+      ELSE
+
+C       SI NON : ON RECOPIE TELLE QUELLE LA LISTE DES POINTS DU FOND
+        CALL WKVECT(CHFOND,'V V R',LNOFF*4,JFONU)
+        CALL JEDUPO(TEMP,'V',CHFOND,.FALSE.)
+
+      ENDIF
+
+      CALL JEDETR(TEMP)
+
+      CALL JEDEMA()
+      END

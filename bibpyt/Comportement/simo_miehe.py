@@ -1,4 +1,4 @@
-#@ MODIF simo_miehe Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simo_miehe Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    num_lc         = 9999,
    nb_vari        = 6,
    nom_vari       = ('SM1','SM2','SM3','SM4','SM5','SM6'),
-   modelisation   = None,
+   modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = 'SIMO_MIEHE',
    nom_varc       = None,
    proprietes     = (),

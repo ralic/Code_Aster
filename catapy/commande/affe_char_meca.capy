@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,6 +38,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                                typ=evol_char ),
 
          PESANTEUR       =SIMP(statut='f',typ='R',fr="Champ de pesanteur",min=4,max=4),
+         METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les déplacements imposés",
+                               into=('DUALISATION',),defaut='DUALISATION',),
+                               # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
          ROTATION        =SIMP(statut='f',typ='R',fr="Champ de rotation", min=4,max=4),
          b_rotation      =BLOC ( condition = "ROTATION != None",
            CENTRE          =SIMP(statut='f',typ='R',defaut=(0.,0.,0.),max=3),),
@@ -416,7 +419,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
          CONTACT         = C_CONTACT(),
 #
 # FORCES
-#         
+#
          FORCE_NODALE    =FACT(statut='f',fr="Applique à des noeuds des forces nodales",max='**',
            regles=(AU_MOINS_UN('GROUP_NO','NOEUD'),
                    AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ' ),),

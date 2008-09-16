@@ -1,6 +1,6 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
-      INTEGER NMOCL,IEVOL
+      INTEGER NMOCL
       INTEGER VALI(2)
       PARAMETER (NMOCL=300)
       INTEGER DDLIMP(NMOCL),NDDLI,N,NMCL,I,J,NDDLA,IBID
@@ -66,7 +66,7 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
       CHARACTER*1 K1BID
       CHARACTER*3 TYMOCL(NMOCL)
-      CHARACTER*8 MOD,NOMA,K8BID,EVOTH
+      CHARACTER*8 MOD,NOMA,K8BID
       CHARACTER*8 NOMN,VALIMF(NMOCL),DDL
       CHARACTER*16 MOTCLE(NMOCL),MOTCL2(5),TYMOC2(5)
       CHARACTER*19 LIGRMO,LISREL,NOMFON
@@ -98,7 +98,7 @@ C-------------------------------------------------------------
       CALL GETFAC(MOTFAC,NDDLI)
       IF (NDDLI.EQ.0) GO TO 110
 
-C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
+C --- MODELE ASSOCIE A LA CHARGE ---
       CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MOD,IER)
       LIGRMO = MOD(1:8)//'.MODELE'
 
@@ -240,19 +240,6 @@ C        ---------------------------------------------------
 
 C        3.3- AFFECTATION DES RELATIONS LINEAIRES :
 C        ----------------------------------------------
-C       -- ON VERIFIE QUE SI EVOL_THER, IL EST EMPLOYE SEUL :
-        IEVOL = 0
-        IF (NOMCMD.EQ.'AFFE_CHAR_THER_F') THEN
-          CALL GETVID('TEMP_IMPO','EVOL_THER',I,1,1,EVOTH,IEVOL)
-          IF (IEVOL.EQ.1) THEN
-            DO 70 J = 1,NDDLA
-              CALL GETVID(MOTFAC,MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
-              IF (DDLIMP(J).NE.0) CALL U2MESK('F','MODELISA2_44',1,MOTCL
-     &E(J))
-   70       CONTINUE
-          END IF
-        END IF
-
         CALL WKVECT('&&CADDLI.ICOMPT','V V I',MAX(NDDLA,1),JCOMPT)
         DO 90 K = 1,NBNO
           INO = ZI(IALINO-1+K)
@@ -301,30 +288,11 @@ C---  GESTION DU MOT-CLEF "LIAISON"
             END IF
    80     CONTINUE
 
-C         -- CAS EVOL_THER/DDL (POUR AFFE_CHAR_THER_F):
-C         ---------------------------------------------
-          IF (IEVOL.EQ.1) THEN
-
-C           DETERMINATION DU NOM DE LA SD CACHEE FONCTION
-            NOOBJ ='12345678.FONC.0    .PROL'
-            CALL GNOMSD(NOOBJ,15,19)
-            NOMFON=NOOBJ(1:19)
-
-            DDL = 'TEMP'
-            CALL FOCRR1(NOMFON,EVOTH,'G','TEMP',' ',NOMN,DDL,0,0)
-            COEFR = 1.D0
-            CALL AFRELA(COEFR,CBID,DDL,NOMN,0,RBID,1,RBID,CBID,NOMFON,
-     &                  'REEL','FONC','12',0.D0,LISREL)
-
-C         -- AUTRES CAS:
-C         ---------------
-          ELSE
             CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
      &                  ZI(JPRNM-1+ (INO-1)*NBEC+1),NDDLA,FONREE,NOMN,
      &                  INO,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,NBEC,
      &                  ZR(JDIREC+3*(INO-1)),0,MOD,LISREL,
      &                  ZK8(INOM),NBCMP,ZI(JCOMPT))
-          END IF
    90   CONTINUE
 
 C       -- IL NE FAUT PAS GRONDER L'UTILISATEUR SI 'ENCASTRE' :

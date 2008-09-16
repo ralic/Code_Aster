@@ -12,7 +12,7 @@ C       POUR GAGNER EN TEMPS CPU
         CHARACTER*(*)  FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -252,9 +252,10 @@ C              CAS EXPLICITE : IL NE LE FAUT PAS (VITESSES)
 C              D'OU :
                DT=1.D0
 C
-               CALL LCMMFE(FAMI,KPG,KSP, TAUS,COEFT,COEL,INDFA,NMAT,
-     &         NBCOMM,NECOUL,IS,NBSYS,VINI(DECAL+1),DY(1),RP,VIS(1),
-     &         VIS(2),DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET ,DY)
+            CALL LCMMFE( TAUS,COEFT,COEL,INDFA,
+     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VINI(DECAL+1),DY(1),
+     &      RP,VIS(1),VIS(2),DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
+     
      
                IF (DP.GT.0.D0) THEN
 C
@@ -263,7 +264,7 @@ C
 C                  IF (NECOUL.NE.'KOCKS_RAUCH') THEN
                   IF (NUECOU.NE.4) THEN
                       CALL LCMMFC( COEFT,INDFA,NMAT,NBCOMM,NECRCI,
-     &                         ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
+     &                     ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
                       IF (IRET.NE.0) GOTO 9999
                   ENDIF
 C                 DEVG designe ici DEPSVPG

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3398,7 +3398,6 @@ static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
 DEFSSPS(JELIRA,jelira, char* base, int base_len, char*dest, int dest_len,
                        INTEGER* nmax, char* res, int res_len );
 
-
 /* ------------------------------------------------------------------ */
 static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
 {
@@ -3442,6 +3441,33 @@ static PyObject *jeveux_exists( PyObject* self, PyObject* args)
 		Py_INCREF( Py_True );
 		return Py_True;
 	}
+}
+
+/* ---------------------------------------------------------------------- */
+void DEFP(JEINFO, jeinfo, double *);
+#define CALL_JEINFO(a) CALLP(JEINFO,jeinfo,a)
+
+static char jeinfo_doc[] =
+"Interface d'appel à la routine fortran JEINFO.\n";
+
+static PyObject * aster_jeinfo(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+   double *rval;
+   int i, longueur=5;
+   PyObject *tup;
+
+   rval = (double *)malloc((longueur)*sizeof(double));
+   CALL_JEINFO(rval);
+   
+   tup = PyTuple_New( longueur ) ;
+   for(i=0; i < longueur; i++) {
+      PyTuple_SetItem( tup, i, PyFloat_FromDouble( rval[i] )) ;
+   }
+   free((char *)rval);
+   
+   return tup;
 }
 
 /* ------------------------------------------------------------------ */
@@ -3850,6 +3876,7 @@ static PyMethodDef aster_methods[] = {
                 {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
                 {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
                 {"jeveux_exists", jeveux_exists,     METH_VARARGS},
+                {"jeinfo",       aster_jeinfo,       METH_VARARGS, jeinfo_doc},
                 {"get_nom_concept_unique", aster_gcncon, METH_VARARGS},
                 {NULL,                NULL}/* sentinel */
 };

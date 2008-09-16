@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  CTJ25 SANS RENUM / AFFE_CHAR_MECA / MECA_STAT(LDLT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 #======================================================================
 
 DEBUT( CODE=_F(  NOM = 'YYYY108A',NIV_PUB_WEB='INTERNET'), 
-           MEMOIRE=_F(  TYPE_ALLOCATION = 2)
+           MEMOIRE=_F(  TYPE_ALLOCATION = 2, DYNAMIQUE=0)
         )
 
 MA=LIRE_MAILLAGE(  

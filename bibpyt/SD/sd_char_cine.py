@@ -1,4 +1,4 @@
-#@ MODIF sd_char_cine SD  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_char_cine SD  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,27 +38,30 @@ class sd_char_cine(AsBase):
         return self.AFCK.exists
 
 
-    def u_veri1(self):   # retourne (CIME/CITH/CIAC, RE/CX/FO/FT)
+    def u_veri1(self):   # retourne (CIME/CITH/CIAC, RE/CX/FT)
     #---------------------------------------------------------------
+        if not self.exists() : return
         afck=self.AFCK.get()
         l1=afck[0].strip().split('_') ; assert len(l1)==2 , afck
         phen, tsca= l1[0], l1[1]
         assert phen in ('CIME', 'CITH', 'CIAC'), afck
-        assert tsca in ('RE', 'CX', 'FO', 'FT'), tsca
+        assert tsca in ('RE', 'CX', 'FT'), tsca
         return phen, tsca
 
 
     def check_AFCK(self,checker):
     #---------------------------------------------
+        if not self.exists() : return
         phen, tsca = self.u_veri1()
         afck=self.AFCK.get()
         nomo=afck[1].strip()
         sd2=sd_modele(nomo); sd2.check(checker)
-        if afck[2].strip() != '' : assert phen=='CIME' and tsca=='FT', afck
+        if afck[2].strip() != '' : assert (phen=='CIME' or phen=='CITH') and tsca=='FT', afck
 
 
     def check_AFCI(self,checker):
     #---------------------------------------------
+        if not self.exists() : return
         phen, tsca = self.u_veri1()
         afci=self.AFCI.get()
         nbloc=afci[0]
@@ -73,6 +76,7 @@ class sd_char_cine(AsBase):
 
     def check_AFCV(self,checker):
     #-------------------------------------------------
+        if not self.exists() : return
         phen, tsca = self.u_veri1()
         afci=self.AFCI.get()
         nbloc=afci[0]
@@ -85,14 +89,14 @@ class sd_char_cine(AsBase):
             assert self.AFCV.lonmax == nbloc , (nbloc,self.AFCV.lonmax)
 
             if tsca == 'RE' :
-                assert tsca2=='R', tsca2
-            if tsca in ('FO', 'FT') :
-                assert tsca2=='K' , tsca2  # champ de fonctions
-            if tsca=='CX' :
-                assert tsca2=='C', tsca2
+                assert tsca2=='R', tsca2  # champ de réels
+            if tsca == 'FT' :
+                assert tsca2=='K', tsca2  # champ de fonctions
+            if tsca == 'CX' :
+                assert tsca2=='C', tsca2  # champ de complexes
 
             # vérification des fonctions :
-            if tsca in ( 'FO', 'FT')  :  # 'FO' : fonction ; 'FT' : il existe une fonction de 'INST'
+            if tsca == 'FT'  :
                 afcv  = self.AFCV.get()
                 for fonc in afcv :
                     sd2=sd_fonction(fonc); sd2.check(checker)

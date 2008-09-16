@@ -1,4 +1,4 @@
-#@ MODIF grille_isot_line Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF grille_isot_line Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    num_lc         = 9999,
    nb_vari        = 4,
    nom_vari       = ('EPSPEQ','INDIPLAS','VIDE','VIDE'),
-   modelisation   = ('GRILLE_MEMBRANE','GRILLE_EXCENTRE'),
+   modelisation   = ('GRILLE_MEMBRANE','GRILLE_EXCENTRE','1D'),
    deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE'),

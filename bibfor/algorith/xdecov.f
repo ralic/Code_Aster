@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/03/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,10 +138,12 @@ C           2 ELEMENTS
             NSE=2
             CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
 C           101 et 102 les 2 points d'intersection
-            CNSE(1,1)=101
+C            CNSE(1,1)=101
+            CNSE(1,1)=ZR(JAINT-1+4*(NPTS-1)+2)
             CNSE(1,2)=102
             CNSE(1,3)=CONNEC(IT,AR(A2,1))
-            CNSE(2,1)=101
+C            CNSE(2,1)=101
+            CNSE(2,1)=ZR(JAINT-1+4*(NPTS-1)+2)
             CNSE(2,2)=102
             CNSE(2,3)=CONNEC(IT,AR(A2,2))
           ELSE

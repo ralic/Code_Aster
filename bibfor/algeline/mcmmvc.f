@@ -6,7 +6,7 @@
       COMPLEX*16                   VECT(NEQ,NBVECT), XSOL(NEQ,NBVECT)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,8 @@ C     ------------------------------------------------------------------
 C                   MULTIPLICATION MATRICE PAR N VECTEURS
 C         XSOL(1..NEQ,1..NBVECT) = MATRICE  * VECT(1..NEQ,1..NBVECT)
 C     ------------------------------------------------------------------
-C     VERSION : LES ENTITES SONT COMPLEXES
-C             : LA MATRICE EST SYMETRIQUE STOCKEE MORSE
+C     VERSION : LA MATRICE EST COMPLEXE SYMETRIQUE OU NON (MORSE)
+C             : LES VECTEURS SONT COMPLEXES
 C     ------------------------------------------------------------------
 C
 C
@@ -50,9 +50,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       COMPLEX*16    CZERO
+      CHARACTER*1   KBID
       CHARACTER*19  NOM19
       CHARACTER*24  VALM
       CHARACTER*32  JEXNUM
+      INTEGER       NBLOC,LMAT,LMAT1,JCOL
+      LOGICAL       NONSYM
 C     ------------------------------------------------------------------
 C
 C
@@ -60,6 +63,9 @@ C
       CALL JEMARQ()
       NOM19 = NOMMAT
       VALM  = NOM19//'.VALM'
+      CALL JELIRA(VALM,'NMAXOC',NBLOC,KBID)
+      CALL ASSERT(NBLOC.EQ.1 .OR. NBLOC.EQ.2)
+      NONSYM = (NBLOC.EQ.2)
       CZERO = DCMPLX(0.D0,0.D0)
       IF ( CUMUL .EQ. 'ZERO' ) THEN
          DO 10 I= 1, NBVECT
@@ -69,7 +75,14 @@ C
  10      CONTINUE
       ENDIF
 C
-      CALL JEVEUO(JEXNUM(VALM,1),'L',LMAT)
+C     -- VALM(1) : AU DESSUS DE LA DIAGONALE
+      CALL JEVEUO(JEXNUM(VALM,1),'L',LMAT) 
+      IF (NONSYM) THEN
+C        -- VALM(2) : AU DESSOUS DE LA DIAGONALE
+        CALL JEVEUO(JEXNUM(VALM,2),'L',LMAT1)
+      ELSE
+        LMAT1=LMAT
+      ENDIF
       DO 30 NV= 1, NBVECT
 C
 C---- PREMIERE LIGNE
@@ -77,16 +90,16 @@ C---- PREMIERE LIGNE
 C
 C---- LIGNES SUIVANTES
          DO 40 I = 2 , NEQ
-            KDEB = ADIA(I-1)+1
-            KFIN = ADIA(I)-1
+           KDEB = ADIA(I-1)+1
+           KFIN = ADIA(I)-1
 CCDIR$ IVDEP
-            DO 50 KI = KDEB , KFIN
-               XSOL(HCOL(KI),NV) =XSOL(HCOL(KI),NV)
-     +                                        + ZC(LMAT-1+KI)*VECT(I,NV)
-               XSOL(I,NV) =XSOL(I,NV) + ZC(LMAT-1+KI)*VECT(HCOL(KI),NV)
- 50         CONTINUE
-            XSOL(I,NV) =XSOL(I,NV) + ZC(LMAT+KFIN)*VECT(I,NV)
- 40      CONTINUE
+           DO 50 KI = KDEB , KFIN
+             JCOL=HCOL(KI)
+             XSOL(JCOL,NV)=XSOL(JCOL,NV)+ZC(LMAT-1+KI)*VECT(I,NV)
+             XSOL(I,NV)   =XSOL(I,NV)   +ZC(LMAT1-1+KI)*VECT(JCOL,NV)
+ 50        CONTINUE
+           XSOL(I,NV)=XSOL(I,NV)+ZC(LMAT+KFIN)*VECT(I,NV)
+ 40     CONTINUE
  30   CONTINUE
       CALL JEDEMA()
       END

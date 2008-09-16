@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -149,7 +149,7 @@ C     -----------------------------------------
         ZI(JCCLL-1+3*(IELIM-1)+3)=DECIEL
         DECIEL=DECIEL+NTERM
  13   CONTINUE
-      NCCVA=DECIEL
+      NCCVA=MAX(DECIEL,1)
 
 
 C     -- RECUPERATION DE .VALM

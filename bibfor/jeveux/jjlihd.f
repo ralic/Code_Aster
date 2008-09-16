@@ -1,7 +1,7 @@
       SUBROUTINE JJLIHD (IDTS,NBVAL,LONOI,GENRI,TYPEI,LTYPI,
      &                   IC,IDO,IDC,IMARQ,IADMI,IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,10 +72,8 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       INTEGER*4          ZI4
       COMMON  / I4VAJE / ZI4(1)
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       CHARACTER*1      TYPEB
       INTEGER          HDFRSV,HDFTSD,ICONV,IADYN,KDYN
@@ -130,6 +128,8 @@ C DEB ------------------------------------------------------------------
           CALL JJALLS(LON,IC,'V',TYPEI,LOIS,'INIT',ZI,JADR,KADM,KDYN)
           ISZON(JISZON+KADM-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+KADM-4)-4) = ISTAT(4)
+          SVUSE = SVUSE + (ISZON(JISZON+KADM-4) - KADM + 4)
+          SMXUSE = MAX(SMXUSE,SVUSE)
           IR = ISZON(JISZON + KADM - 3 )
           KITAB = JK1ZON+(KADM-1)*LOIS+IR+1
           IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
@@ -137,9 +137,7 @@ C DEB ------------------------------------------------------------------
             ISZON(JISZON+IADMI-1+K)=ISZON(JISZON+KADM-1+K)
  1        CONTINUE
           IF ( KDYN .NE. 0 ) THEN
-            MCDYN = MCDYN - LON
-            MLDYN = MLDYN + LON
-            CALL HPDEALLC ( KDYN , NBFREE , IBID )
+            CALL JJLIDY ( KDYN , KADM )
           ELSE  IF ( KADM .NE. 0 ) THEN
             CALL JJLIBP (KADM)
           ENDIF  

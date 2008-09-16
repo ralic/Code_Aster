@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/08/2008   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     ------------------------------------------------------------------
       TRANGE = NOMIN
       LRPHYS =.FALSE.
       CALL GETTCO(NOMIN,CONCEP)
-      IF (CONCEP(1:9).EQ.'EVOL_NOLI'.OR.CONCEP(1:10).EQ.'DYNA_TRANS') 
+      IF (CONCEP(1:9).EQ.'EVOL_NOLI'.OR.CONCEP(1:10).EQ.'DYNA_TRANS')
      &    LRPHYS = .TRUE.
       IER = 0
 C
@@ -190,12 +190,12 @@ C
            NBMDYN = NBMODE-NBMDEF
            CALL JEVEUO(MACREL//'.DESM','L',IADESM)
            NBNDYN = ZI(IADESM+1)-NBNOE
-           IF (NBNDYN.NE.0) THEN 
+           IF (NBNDYN.NE.0) THEN
              NEC = NBMDYN/NBNDYN
            ELSE
              NEC = 0
            ENDIF
-C       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES 
+C       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
            CALL WKVECT('&&TRAN75.NOECMP','V V K8',2*NBMODE,JNOCMP)
            CALL JEVEUO(MACREL//'.LINO','L',IACONX)
            DO 21 I=1,NBNDYN
@@ -210,7 +210,7 @@ C       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
              ZK8(JNOCMP+2*I-2) = ZK16(LNOCMP)(1:8)
              ZK8(JNOCMP+2*I-1) = ZK16(LNOCMP)(9:16)
   23       CONTINUE
-         ENDIF         
+         ENDIF
          CALL GETVID(' ','NUME_DDL',1,1,1,K8B,IBID)
          IF (IBID.NE.0) THEN
            CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
@@ -253,7 +253,7 @@ C       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
             IF (NBINST.GT.NBINS2) NBINST = NBINS2
          ENDIF
 C     --- CREATION DE LA SD RESULTAT ---
-         CALL RSCRSD(NOMRES, TYPRES, NBINST)
+         CALL RSCRSD('G',NOMRES, TYPRES, NBINST)
 C
          IF (NMC.NE.0) THEN
            CALL WKVECT('&&TRAN75.RESTR','V V R',NBMODE,JRESTR)
@@ -263,7 +263,7 @@ C
            CALL DISMOI('F','NB_EC',NOGDSI,'GRANDEUR',NEC,K8B,IERD)
 
            CALL DISMOI('F','PROF_CHNO',CHAM19,'CHAMP',IBID,NPRNO,IE)
-           NPRNO = NPRNO(1:19)//'.PRNO'          
+           NPRNO = NPRNO(1:19)//'.PRNO'
            CALL JEVEUO(JEXNUM(NPRNO,1),'L',IAPRNO)
          ENDIF
          DO 300 I = 1 , NBCHAM
@@ -296,9 +296,9 @@ C
                  IF (ZK8(JNOCMP+2*IM-1).EQ.'DRY') ICMP = 5
                  IF (ZK8(JNOCMP+2*IM-1).EQ.'DRZ') ICMP = 6
                  IDDL = ZI(IAPRNO-1+(NEC+2)*(INOE-1)+1)
-                 ZR(JRESTR+IM-1) = ZR(IVALE+IDDL-1+ICMP-1) 
+                 ZR(JRESTR+IM-1) = ZR(IVALE+IDDL-1+ICMP-1)
   24           CONTINUE
-             ENDIF             
+             ENDIF
              CALL RSEXCH(NOMRES,CHAMP(I)(1:4),IARCH,CHAMNO,IRET)
              CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
              CALL JEVEUO(CHAMNO(1:19)//'.VALE','E',LDNEW)
@@ -361,7 +361,7 @@ C
          OBJVE2 = '&&TRAN75.NOM_CMP     '
          OBJVE3 = '&&TRAN75.NB_NEQ      '
          OBJVE4 = '&&TRAN75.NUME_DDL    '
-         CALL RBPH02 ( MAILLA, NUMDDL, NOMGD, NEQ, NBNOEU, OBJVE1, 
+         CALL RBPH02 ( MAILLA, NUMDDL, NOMGD, NEQ, NBNOEU, OBJVE1,
      &                    NCMP, OBJVE2, OBJVE3, OBJVE4 )
          CALL JEVEUO ( OBJVE1, 'L', INUMNO )
          CALL JEVEUO ( OBJVE2, 'L', INOCMP )
@@ -418,7 +418,7 @@ C
       END IF
 C
 C     --- CREATION DE LA SD RESULTAT ---
-      CALL RSCRSD ( NOMRES, TYPRES, NBINST )
+      CALL RSCRSD('G', NOMRES, TYPRES, NBINST )
 C
 C     --- RESTITUTION SUR LA BASE REELLE ---
 C

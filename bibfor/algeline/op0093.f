@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -256,7 +256,7 @@ C
       NBMODE = NBMODD + NBMODF + NBMODA + NBMOAD
 C
 C     --- STOKAGE DES MODES ----
-      CALL RSCRSD(RESU,CONCEP,NBMODE)
+      CALL RSCRSD('G',RESU,CONCEP,NBMODE)
       IMODE = 0
       IF ( DEPLIM ) THEN
          DO 50 IEQ = 1,NEQ

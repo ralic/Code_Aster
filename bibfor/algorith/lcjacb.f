@@ -5,7 +5,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,10 +75,9 @@ C
      1                  YF,  DY,   NR,  DRDY )
 C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
-         CALL LCMMJA ( FAMI,KPG,KSP, MOD, NMAT, MATERF,
-     1  TIMED, TIMEF,
-     2  ITMAX,TOLER,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
-     3                  YF,  DY,   DRDY, IRET )
+         CALL LCMMJA ( MOD, NMAT, MATERF,TIMED, TIMEF,
+     &  ITMAX,TOLER,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &                  YF,  DY,   DRDY, IRET )
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
          CALL IRRJAC ( FAMI,KPG,KSP,MOD, NMAT, MATERF,
      1                  YF,  DY,   NR,  DRDY )

@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,6 +172,20 @@ Risques & conseils :
 34 : _("""
  le calcul de l'option :  %(k1)s
  n'est possible pour aucun des types d'éléments du LIGREL.
+"""),
+
+35 : _("""
+ Erreur utilisateur :
+  On essaye de fusionner 2 cham_elem mais ils n'ont pas le meme nombre
+  "points" (noeuds ou points de Gauss) pour la maille numéro : %(i1)d.
+  Nombres de points :  %(i2)d et %(i3)d
+"""),
+
+36 : _("""
+ Erreur utilisateur :
+  On essaye de fusionner 2 cham_elem mais ils n'ont pas le meme nombre
+  de "sous-points" (fibres, couches, ...) pour la maille numéro : %(i1)d.
+  Nombres de sous-points :  %(i2)d et %(i3)d
 """),
 
 37 : _("""

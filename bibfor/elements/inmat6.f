@@ -1,6 +1,6 @@
       SUBROUTINE INMAT6(ELREFA,FAPG,MGANOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,12 +29,12 @@ C----------------------------------------------------------------------
       INTEGER      I,KP,KDIM,LN,J,LM,NPG,IRET
       REAL*8       XNO(3*NBNOMX), VOL, FF(NBNOMX), M(NBPGMX*NBNOMX)
       REAL*8       P(NBPGMX*NBNOMX), MGANOS(NBPGMX,NBNOMX)
-      REAL*8       XPG(3*NBNOMX), POIPG(NBPGMX), XG(3), DET
+      REAL*8       XPG(3*NBPGMX), POIPG(NBPGMX), XG(3), DET
       CHARACTER*8  NOFPG(NBFAMX), ELREFA, ELREF2, FAPG
       LOGICAL SINGU
 
 C     NBPGMX, NBNOMX, NBFAMX SE REFERER A ELRACA
-      
+
 C DEB ------------------------------------------------------------------
 
       CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,NOFPG,NBPG,XNO,VOL)
@@ -106,7 +106,7 @@ C     ----------------------------
    50     CONTINUE
    60   CONTINUE
    70 CONTINUE
-       
+
 C     CALCUL DE LA MATRICE M-1*P :
 C     ----------------------------
       CALL MGAUSS('NFVP',M,P,NNOS,NNOS,NPG,DET,IRET)

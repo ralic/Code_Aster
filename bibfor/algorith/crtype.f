@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C ----------------------------------------------------------------------
       CALL GETVTX(' ','TYPE_RESU',1,1,1,TYPRES,N1)
 
       CALL JEEXIN(RESU//'           .DESC',IRET)
-      IF (IRET.EQ.0) CALL RSCRSD(RESU,TYPRES,100)
+      IF (IRET.EQ.0) CALL RSCRSD('G',RESU,TYPRES,100)
 
       LNCAS = .FALSE.
       IF (TYPRES.EQ.'MULT_ELAS' .OR. TYPRES.EQ.'FOURIER_ELAS' .OR.

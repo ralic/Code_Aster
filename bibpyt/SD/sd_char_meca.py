@@ -1,4 +1,4 @@
-#@ MODIF sd_char_meca SD  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_char_meca SD  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,7 @@ from SD.sd_ligrel import sd_ligrel
 from SD.sd_carte import sd_carte
 from SD.sd_char_unilate import sd_char_unilate
 from SD.sd_char_contact import sd_char_contact
+from SD.sd_char_cine import sd_char_cine
 
 
 class sd_char_gf_xx(AsBase):
@@ -96,6 +97,7 @@ class sd_char_meca(AsBase):
     TYPE            = AsVK8(lonmax=1)
 
     CHME = Facultatif(sd_char_chme())
+    ELIM = Facultatif(sd_char_cine())
 
     UNILATE = Facultatif(sd_char_unilate())
     CONTACT = Facultatif(sd_char_contact())

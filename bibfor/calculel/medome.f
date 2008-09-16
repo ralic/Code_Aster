@@ -7,7 +7,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,6 +108,7 @@ C
       ELSE
 
         CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
+        CALL ASSERT(N1.NE.0)
 
         CALL GETVID(' ','CARA_ELEM' ,0,1,1,CARA  ,N2)
         CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8B,IE)
@@ -163,7 +164,7 @@ C        --- VERIFICATION DU TYPE DE CHARGEMENT ---
            DO 20 I = 1,NCHA
              CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA-1+I),'CHARGE',IBID,
      &                  K8B,IE)
-             IF ((K8B(1:4).NE.'MECA') .AND. (K8B(1:4).NE.'CIME').AND. 
+             IF ((K8B(1:4).NE.'MECA') .AND. (K8B(1:4).NE.'CIME').AND.
      &           (K8B(1:4).NE.'THER'). AND. (K8B(1:4).NE.'ACOU')) THEN
                IER = IER + 1
                CALL U2MESS('E','CALCULEL3_43')

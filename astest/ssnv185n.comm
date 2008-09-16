@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,8 +23,10 @@ DEBUT(CODE    = _F(NOM='SSNV185N',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       MEMOIRE = _F( GESTION = 'COMPACTE',
                      TYPE_ALLOCATION = 4,
                      TAILLE = 500000,
-                     PARTITION = 0.7,),)
-
+                     PARTITION = 0.7,
+                     DYNAMIQUE=0 ),
+     )
+ 
 #----------------------------------------------
 #                MAILLAGE : hexa_5_31_51.mgib
 #----------------------------------------------

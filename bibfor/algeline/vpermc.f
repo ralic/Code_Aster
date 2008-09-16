@@ -7,7 +7,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,14 +67,13 @@ C
 C     ------------------------------------------------------------------
       REAL*8       XSEUIL
       REAL*8 VALR
-      REAL*8       DEPI, R8DEPI,AMI,FRI,FREQOM
-      COMPLEX*16   FREQ, FREQ2,ANORM1, ANORM2
+      REAL*8       AMI,FRI,FREQOM
+      COMPLEX*16   FREQ2,ANORM1, ANORM2
       INTEGER      IAUX1,IAUX2,IAUX4,I,J,IVEC,NEQ
                                 
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      DEPI   = R8DEPI()
       XSEUIL = OMECOR
       NEQ    = ZI(LMASSE+2)
 C
@@ -91,6 +90,7 @@ C
  10     CONTINUE
 C
         AMI = AM(I)
+        FRI = FR(I)
         IF ( ABS(AMI) .EQ. 1.D0) THEN
           ERNORM(I)= 1.D+70
           VALK (1) = ' '
@@ -98,12 +98,10 @@ C
           VALR = 1.0D70
           CALL U2MESG('A', 'ALGELINE4_74',2,VALK,0,0,1,VALR)
         ELSE
-          FRI = FREQOM(FR(I))*DEPI
-          AMI = SQRT(AMI * FRI *FRI * 2)
-          FREQ = DCMPLX( FRI, AMI)
-          FREQ2 = DCMPLX(DBLE(FREQ)*DBLE(FREQ),DIMAG(FREQ)*DIMAG(FREQ))
+          FREQ2=DCMPLX(FRI,AMI*FRI*2.D0)
           CALL MCMULT('ZERO',LRAIDE,VECP(IVEC),'C',ZC(IAUX1),1)
           CALL MCMULT('ZERO',LMASSE,VECP(IVEC),'C',ZC(IAUX2),1)
+         
           DO 2 J = 0, NEQ-1
             ZC(IAUX2+J)=ZC(IAUX1+J)-FREQ2*ZC(IAUX2+J)
  2        CONTINUE
@@ -117,14 +115,14 @@ C           --- ON PREND LA NORME EUCLIDIENNE ---
               ANORM2 = ANORM2 +
      +             (DCONJG(ZC(IAUX2+J))*ZC(IAUX2+J))*EXCL(J+1)
  3        CONTINUE
-          IF ( ABS(FREQ) .GT. XSEUIL ) THEN
+          IF ( ABS(FREQ2) .GT. XSEUIL ) THEN
             IF (  ANORM1 .NE. DCMPLX(0.D0,0.D0) ) THEN
               ERNORM(I)= SQRT( ABS(ANORM2 / ANORM1) )
             ELSE
               ERNORM(I)= 1.D+70
             ENDIF
           ELSE
-            ERNORM(I) = ABS(FREQ) * SQRT( ABS(ANORM2) )
+            ERNORM(I) = ABS(FREQ2) * SQRT( ABS(ANORM2) )
           ENDIF
 C
         ENDIF

@@ -1,7 +1,7 @@
       SUBROUTINE OP0044(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C VARIABLES LOCALES
       CHARACTER*24 CBORNE, WORK(5), CAMOR, CFREQ, NOPARA(NBPARA)
       CHARACTER*24 VALK(2)
       COMPLEX*16 CBID, DCMPLX
-      LOGICAL STURM
+      LOGICAL STURM,LBID
       CHARACTER*1 KTYP
 C     ------------------------------------------------------------------
       DATA ZAM     / 0.01D0 , 0.02D0 , 0.03D0 /
@@ -706,7 +706,7 @@ C     POSITION MODALE NEGATIVE DES MODES INTERDITE
 
 C     --- IMPRESSION PROPRE A LA METHODE ----
       CALL VPWECF ( OPTIOF, TYPRES,NBMOD, MXRESF, ZI(LRESUI),
-     &              ZR(LRESUR), ZK24(LRESUK), LAMOR,KTYP)
+     &              ZR(LRESUR), ZK24(LRESUK), LAMOR,KTYP,LBID)
 
       CALL TITRE
 

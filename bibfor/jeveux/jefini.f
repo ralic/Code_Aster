@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,16 +79,12 @@ C     -------------  LIBERATION FICHIER --------------------------------
    10   CONTINUE
 C       -----------  DESALLOCATION GESTION DES MARQUES -----------------
         IF ( KDESMA(2) .NE. 0) THEN
-          MCDYN = MCDYN - LGD*LOIS
-          MLDYN = MLDYN + LGD*LOIS
-          CALL HPDEALLC (KDESMA(2), NBFREE, IBID)
+          CALL JJLIDY (KDESMA(2), KDESMA(1))
         ELSE IF (KDESMA(1) .NE. 0) THEN
           CALL JJLIBP (KDESMA(1))
         ENDIF  
         IF ( KPOSMA(2) .NE. 0) THEN
-          MCDYN = MCDYN - LGP*LOIS
-          MLDYN = MLDYN + LGP*LOIS
-          CALL HPDEALLC (KPOSMA(2), NBFREE, IBID)
+          CALL JJLIDY (KPOSMA(2), KPOSMA(1))
         ELSE IF (KPOSMA(1) .NE. 0) THEN
           CALL JJLIBP (KPOSMA(1))
         ENDIF  
@@ -120,8 +116,6 @@ C
             WRITE(IFM,*) '  STATISTIQUES CONCERNANT L'''
      &                 //'ALLOCATION DYNAMIQUE :' 
             WRITE(IFM,*) '    TAILLE CUMULEE MAXIMUM ',VALI(1),' Mo,' 
-            WRITE(IFM,*) '    DONT ',VALI(2),' Mo POUR LA ZONE'    
-     &                 //' GEREE PAR JEVEUX.' 
             WRITE(IFM,*) '    TAILLE CUMULEE LIBEREE ',VALI(5),' Mo.' 
             WRITE(IFM,*) '    NOMBRE TOTAL D''ALLOCATIONS  :',    
      &                 VALI(3),'.' 

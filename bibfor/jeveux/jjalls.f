@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,13 +126,13 @@ C
         LSIC = LSI + 9
  50     CONTINUE
         ILDYNA = ILDYNA+1
-        IF ( MCDYN+(LSIC-LISZON)*LOIS .GT. VMXDYN ) THEN 
+        IF ( MCDYN+LSIC*LOIS .GT. VMXDYN ) THEN 
           IF ( ILDYNA .GT. 1 ) THEN
             CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
      &                  //' IMPOSEE ATTEINTE')
             IVAL(1)=LSIC*LOIS
             IVAL(2)=VMXDYN
-            IVAL(3)=MCDYN-(LISZON*LOIS)
+            IVAL(3)=MCDYN
             IVAL(4)=LTOT*LOIS
             CALL U2MESI('S','JEVEUX_62',4,IVAL)
           ELSE

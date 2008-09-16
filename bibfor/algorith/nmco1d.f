@@ -4,7 +4,7 @@
      &                  SIGM, VIM,
      &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,16 +68,17 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      LOGICAL       CINE,ISOT,PINTO,PCTNZR,COM1D
+      LOGICAL       CINE,ISOT,PINTO,PCTNZR,COM1D,ELAS
       REAL*8        E,ET,SIGY
       INTEGER       NVARPI
       PARAMETER    ( NVARPI=8)
-      INTEGER       NCSTPM
+      INTEGER       NCSTPM,IRET
       PARAMETER     (NCSTPM=13)
       REAL*8        CSTPM(NCSTPM)
-      REAL*8        EM,EP,R8VIDE
+      REAL*8        EM,EP,R8VIDE,DEPSTH
       CHARACTER*2   CODRES
 
+      ELAS = .FALSE.
       ISOT = .FALSE.
       CINE = .FALSE.
       PINTO = .FALSE.
@@ -90,6 +91,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
           CINE = .TRUE.
       ELSE IF ( COMPOR(1)(1:16) .EQ. 'GRILLE_PINTO_MEN') THEN
           PINTO = .TRUE.
+      ELSE IF ( COMPOR(1)(1:4) .EQ. 'ELAS') THEN
+          ELAS = .TRUE.
       ELSE
           COM1D=.TRUE.
           IF ((COMPOR(5)(1:7).NE.'DEBORST').AND.
@@ -99,8 +102,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       ENDIF
 
       IF (.NOT.COM1D) THEN
-          CALL NMMABA (IMATE,COMPOR,E,ET,SIGY,
-     &             NCSTPM,CSTPM)
 C --- CARACTERISTIQUES ELASTIQUES A TMOINS
 
         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
@@ -112,13 +113,24 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
      &              1,'E',EP,CODRES,'FM')
       ENDIF
 
-
       IF (ISOT) THEN
         CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &            DEPS,VIM,OPTION,COMPOR,' ',SIGP,VIP,DSIDEP)
       ELSE IF (CINE) THEN
         CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &            DEPS,VIM,OPTION,' ',SIGP,VIP,DSIDEP)
+      ELSE IF (ELAS) THEN
+      
+        IF (OPTION.EQ.'FULL_MECA'.OR.
+     &      OPTION.EQ.'RIGI_MECA_TANG') THEN
+           DSIDEP = EP
+        ENDIF
+        IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION.EQ.'FULL_MECA') THEN
+           VIP(1) = 0.D0
+           CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
+           SIGP = EP* (SIGM/EM+DEPS-DEPSTH)
+        ENDIF
+        
       ELSE IF (COM1D) THEN
 
         CALL COMP1D(FAMI,KPG,KSP,OPTION,
@@ -126,6 +138,8 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
      &              ANGMAS,
      &              VIM,VIP,SIGP,DSIDEP,CODRET)
       ELSE IF (PINTO) THEN
+          CALL NMMABA (IMATE,COMPOR,E,ET,SIGY,
+     &             NCSTPM,CSTPM)
         CALL NM1DPM(FAMI,KPG,KSP,IMATE,OPTION,NVARPI,NCSTPM,CSTPM,
      &              SIGM,VIM,DEPS,VIP,SIGP,DSIDEP)
       ENDIF

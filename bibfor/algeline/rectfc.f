@@ -8,7 +8,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,8 +42,12 @@ C     IN  : NFREQ   : PREMIERE DIMENSION DU TABLEAU RESUFR
 C     ------------------------------------------------------------------
       INTEGER      INEG, IP, IM, IN, IVEC, IFREQ
       COMPLEX*16   OM
+      REAL*8       R8MIEM,PREC
 C     ------------------------------------------------------------------
-C
+C     INITS
+C     PRECISION MACHINE COMME DANS ARPACK
+      PREC=(R8MIEM()*0.5D0)**(2.0D+0/3.0D+0)
+
 C     ------------------------------------------------------------------
 C     --------  RECTIFICATION DES FREQUENCES DUE AU SHIFT  -------------
 C     --------     DETERMINATION DE LA POSITION MODALE     -------------
@@ -63,13 +67,17 @@ C
          ENDIF
 C
          OM =  OM - OMESHI
-         IF (DBLE(OM).LT.0.0D0) THEN
+         IF (DBLE(OM).LT.0.D0) THEN
               INEG = INEG + 1
          ENDIF
          IF (IVEC.LE.NBMODE) THEN
             RESUFI(IVEC,1) = NPIVOT+IN
             RESUFR(IVEC,2) = DBLE(OM)
-            RESUFR(IVEC,3) = (DIMAG(OM) / DBLE(OM)) /2.D0
+            IF (ABS(DBLE(OM)).LT.PREC) THEN
+              RESUFR(IVEC,3) = 1.D+70
+            ELSE
+              RESUFR(IVEC,3) = (DIMAG(OM) / DBLE(OM)) /2.D0
+            ENDIF
          ENDIF
    10 CONTINUE
       IF ( INEG .EQ. NBVECT ) THEN

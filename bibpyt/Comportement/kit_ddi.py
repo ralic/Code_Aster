@@ -1,4 +1,4 @@
-#@ MODIF kit_ddi Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF kit_ddi Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

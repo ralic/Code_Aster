@@ -3,7 +3,7 @@
      &   IPARAM, IPNTR, WORKD, WORKL, LWORKL, INFO, NEQACT, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/01/2006   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -637,6 +637,12 @@ C        %--------------------------------%
        WRITE(LOGFIL,1000)
        WRITE(LOGFIL,1100) MXITER, NOPX, NBX, NRORTH, NITREF, NRSTRT
        WRITE(LOGFIL,*)
+       MXITER=0
+       NOPX=0
+       NBX=0
+       NRORTH=0
+       NITREF=0
+       NRSTRT=0
  1000  FORMAT (//,
      &      5X, '=============================================',/
      &      5X, '=       METHODE DE SORENSEN (CODE ARPACK)   =',/

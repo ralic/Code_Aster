@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 15/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,8 +61,9 @@ class MESSAGE_LOGGER:
       # compteur des alarmes émises { 'id_alarm' : count }
       self.count_alarm = {}
       
-      # alarmes à ignorer
+      # alarmes à ignorer, à masquer (on ne les compte pas temporairement)
       self._ignored_alarm = {}
+      self._hidden_alarm  = {}
       
       # on prépare le dictionnaire des valeurs par défaut des arguments (dicarg) :
       self.default_args = {}
@@ -274,21 +275,26 @@ Exception : %s
       self.init_buffer()
 
 # -----------------------------------------------------------------------------
-   def disable_alarm(self, idmess):
+   def disable_alarm(self, idmess, hide=False):
       """Ignore l'alarme "idmess".
       """
-      self._ignored_alarm[idmess] = self._ignored_alarm.get(idmess, 0) + 1
-#      print 'Ignorer %s (%d)' % (idmess, self._ignored_alarm[idmess])
+      if hide:
+         self._hidden_alarm[idmess] = self._hidden_alarm.get(idmess, 0) + 1
+      else:
+         self._ignored_alarm[idmess] = self._ignored_alarm.get(idmess, 0) + 1
       
-   def reset_alarm(self, idmess):
+   def reset_alarm(self, idmess, hide=False):
       """Réactive l'alarme "idmess".
       """
-      self._ignored_alarm[idmess] = min(self._ignored_alarm.get(idmess, 0) - 1, 0)
+      if hide:
+         self._hidden_alarm[idmess] = min(self._hidden_alarm.get(idmess, 0) - 1, 0)
+      else:
+         self._ignored_alarm[idmess] = min(self._ignored_alarm.get(idmess, 0) - 1, 0)
 
    def is_alarm_disabled(self, idmess):
       """Doit-on ignorer l'alarme "idmess" ?
       """
-      return self._ignored_alarm.get(idmess, 0) > 0
+      return self._ignored_alarm.get(idmess, 0) + self._hidden_alarm.get(idmess, 0) > 0
 
    def info_alarm(self, only_ignored=False):
       """Fournit les infos sur les alarmes activées.
@@ -304,14 +310,16 @@ Exception : %s
       dictmess = self.get_message('I', 'SUPERVIS_89')
       self.add_to_buffer(dictmess)
       # occurrences
+      ieff = 0
       for idmess in l_alarm:
          mark = ' '
+         ieff += 1
          if self._ignored_alarm.get(idmess) is not None:
             mark = '(*)'
          dictmess = self.get_message('I', 'SUPERVIS_90', valk=(mark, idmess),
                                      vali=self.count_alarm.get(idmess, 0))
          self.add_to_buffer(dictmess)
-      if len(l_alarm) == 0:
+      if ieff == 0:
          dictmess = self.get_message('I', 'SUPERVIS_92')
          self.add_to_buffer(dictmess)
       # fermeture
@@ -331,8 +339,9 @@ Exception : %s
          self.erreur_E = False
       elif code == 'A':
          idmess = self.get_current_id()
-         # nombre d'occurrence de cette alarme
-         self.count_alarm[idmess] = self.count_alarm.get(idmess, 0) + 1
+         # nombre d'occurrence de cette alarme (sauf si cachee)
+         if self._hidden_alarm.get(idmess, 0) == 0:
+            self.count_alarm[idmess] = self.count_alarm.get(idmess, 0) + 1
          
          if self.is_alarm_disabled(idmess) or self.count_alarm[idmess] > nmax_alarm:
             # ignorer l'alarme ou count_alarm > max, on vide le buffer
@@ -592,5 +601,22 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=()):
          + puis exception ou abort en fonction du niveau d'erreur.
    """
    MessageLog(code, idmess, valk, vali, valr, exception=True)
+
+# -----------------------------------------------------------------------------
+def MasquerAlarme(idmess):
+   """Masque une alarme : ni affichee, ni comptee.
+   Utilisation dans les macros :
+      MasquerAlarme(XXX)  au debut de la macro
+      RetablirAlarme(XXX) a la fin de la macro
+   Comme il s'agit d'un compteur qui est incremente puis decremente, il est
+   imperatif qu'il y ait autant d'appel a MasquerAlarme qu'a RetablirAlarme.
+   """
+   MessageLog.disable_alarm(idmess, hide=True)
+
+# -----------------------------------------------------------------------------
+def RetablirAlarme(idmess):
+   """Retablit l'etat initial pour l'alarme 'idmess'.
+   """
+   MessageLog.reset_alarm(idmess, hide=True)
 
 

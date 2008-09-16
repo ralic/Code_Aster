@@ -8,7 +8,7 @@
       CHARACTER*19  CNSLT,CNSLN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF ALGORITH  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
       INTEGER         JGT,JBAS,JGN,K
       REAL*8          LSTA,LSNA,LSTB,LSNB,LSTC,LSNC,L(2,2),DETL,LL(2,2)
       REAL*8          R8PREM,EPS1,EPS2,A(3),B(3),C(3),M(3),P(3),PADIST
-      REAL*8          R8B,EPS3
+      REAL*8          R8B,EPS3,PREC
       REAL*8          G1A,G1B,G1C,G2A,G2B,G2C
       REAL*8          DIRT(3*NXPTFF),DIRN(3*NXPTFF)
       COMPLEX*16      C16B
@@ -82,6 +82,9 @@ C
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
+
+C     PRÉCISION :
+      PREC=100.D0*R8PREM()
 
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
@@ -170,9 +173,9 @@ C       BOUCLE SUR LES FACES TRIANGULAIRES
               M(I)=A(I)+EPS1*(B(I)-A(I))+EPS2*(C(I)-A(I))
  411        CONTINUE
 C           ON CONTINUE SSI M EST DANS LE TRIANGLE
-            IF (-R8PREM().LE.EPS1.AND.EPS1.LE.1.D0+R8PREM().AND.
-     &          -R8PREM().LE.EPS2.AND.EPS2.LE.1.D0+R8PREM().AND.
-     &          -R8PREM().LE.EPS3.AND.EPS3.LE.1.D0+R8PREM()) THEN
+            IF (-PREC.LE.EPS1.AND.EPS1.LE.1.D0+PREC.AND.
+     &          -PREC.LE.EPS2.AND.EPS2.LE.1.D0+PREC.AND.
+     &          -PREC.LE.EPS3.AND.EPS3.LE.1.D0+PREC) THEN
 C             VÉRIFICATION SI CE POINT A DÉJÀ ÉTÉ TROUVÉ
               DEJA=.FALSE.
                DO 412 J=1,IN

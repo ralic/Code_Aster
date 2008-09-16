@@ -1,8 +1,9 @@
-      SUBROUTINE CRCMEL(NBMO1,MOCLEF,COMPOR,NOMA,NCMPMA,NOMCMP,IRET)
+      SUBROUTINE CRCMEL(NBMO1,MOCLEF,COMPOR,CES2,MODELE,NCMPMA,NOMCMP,
+     &                  NT)
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,19 +20,27 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C     CREATION D'UNE CARTE DE COMPOREMENT ELAS SUR TOUT LE MAILLAGE
+C     CREATION D'UNE CARTE DE COMPORTEMENT ELAS SUR TOUT LE MAILLAGE
 C
-C IN   NBMO1   : NOMBRE de mots cles facteurs (COMP_ELAS / COMP_INCR)
-C IN   MOCLEF  : mots cles facteurs
-C OUT  IRET    : 0 si on n'a rien fait, 1 si si on a créé la carte
-C ----------------------------------------------------------------------
+C IN   NBMO1  :  NOMBRE de mots cles facteurs (COMP_ELAS / COMP_INCR)
+C IN MOCLEF   : LISTE DES MOTS-CLES (COMP_INCR / COMP_ELAS)
+C OUT COMPOR  :  CARTE DE COMPORTEMENT CREEE
+C OUT CES2    :  CHAMELEM SIMPLE ISSU DE COMPOR, DEFINIR SUR LES 
+C                ELEMENTS QUI CALCULENT FULL_MECA
+C IN MODELE   : LE MODELE
+C IN NCMPMA   : NOMBRE DE CMP DE LA GRANDEUR COMPOR
+C IN NOMCMP   : NOMS DES CMP DE LA GRANDEUR COMPOR
+C OUT NT      : NOMBRE D'OCCURRENCES DE COMP_INCR / COMP_ELAS
+C ---------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER IRET,NBMO1,I,NT,N1,NCMPMA,IBID
+      INTEGER IRET,NBMO1,I,NT,N1,NCMPMA,IBID,IREPE
       CHARACTER*16 VALCMP(NCMPMA),MOCLEF(2)
       CHARACTER*8  NOMGRD,NOMCMP(NCMPMA),NOMA
       CHARACTER*19 COMPOR
+      CHARACTER*24 MODELE,LIGREL
       REAL*8 RBID  
       COMPLEX*16   CBID
+      CHARACTER*19 CES1,CES2,CEL1
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER        ZI
       COMMON /IVARJE/ZI(1)
@@ -54,31 +63,57 @@ C ----------------------------------------------------------------------
       
       CALL JEMARQ()
 C    -----------------------------------------------------------
-C     UTILISE EN PARTICULIER POUR LA COMMANDE CALC_G
-C     SI AUCUN DES DEUX COMPORTEMENTS COMP_ELAS ET COMP_INCR N'EST
-C     SPECIFIE PAR L'UTILISATEUR, ON CREE UNE CARTE PAR DEFAUT
+C     ON CREE UNE CARTE PAR DEFAUT, CONSTANTE SUR TOUT LE MAILLAGE
 C     AVEC LES CARACTERISTIQUES SUIVANTES :
-C          COMP_ELAS ( RELATION    : ELAS
+C          COMP_INCR ( RELATION    : ELAS
 C                      DEFORMATION : PETIT
 C                      TOUT        : OUI)
-      IRET=0
+      VALCMP(1) = 'ELAS'
+      VALCMP(2) = '1'
+      VALCMP(3) = 'PETIT'
+      VALCMP(4) = 'COMP_INCR'
+      VALCMP(5) = 'ANALYTIQUE'
+      WRITE (VALCMP(6),'(I16)') 1
+      DO 20 I=7,NCMPMA
+         VALCMP(I) = ' '
+   20 CONTINUE
+
       NT=0
       DO 10 I=1,NBMO1
          CALL GETFAC(MOCLEF(I),N1)
          NT=MAX(NT,N1)
    10 CONTINUE      
       IF (NT.EQ.0) THEN
-        VALCMP(1) = 'ELAS'
-        VALCMP(2) = '1'
-        VALCMP(3) = 'PETIT'
-        VALCMP(4) = 'COMP_ELAS'
-        VALCMP(5) = '??'
-        VALCMP(6) = '0'
-        VALCMP(7) = '0'
-        CALL MECACT('V',COMPOR,'MAILLA',NOMA,NOMGRD,NCMPMA,NOMCMP,
-     &              IBID,RBID,CBID,VALCMP)
-        IRET=1
+C        UTILISE EN PARTICULIER POUR LA COMMANDE CALC_G :
+C        SI AUCUN DES DEUX COMPORTEMENTS COMP_ELAS ET COMP_INCR N'EST
+C        SPECIFIE PAR L'UTILISATEUR,      IRET=1
+C        DANS CE CAS ON CHOISIT COMP_ELAS
+        VALCMP(4) = 'COMP_ELAS'      
       END IF
-
+      
+      CALL DISMOI('I','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMA,IRET)
+      CALL MECACT('V',COMPOR,'MAILLA',NOMA,NOMGRD,NCMPMA,NOMCMP,
+     &              IBID,RBID,CBID,VALCMP)
+C
+C ======================================================================
+C    ETAPE UTILE POUR LES VERIFICATIONS DE COHERENCE
+C    CREATION D'UN CHAM_ELEM ASSOCIE A LA CARTE COMPO1 DEFINI SEULEMENT
+C    SUR LES MAILLES SACHANT CALCULER FULL_MECA
+C ======================================================================
+     
+      IF (NT.NE.0) THEN
+          LIGREL = MODELE(1:8)//'.MODELE    .LIEL'      
+          CALL JEVEUO(LIGREL(1:19)//'.REPE','L',IREPE)
+          CES1='&&NMDOCO.CES1'
+          CES2='&&NMDOCO.CES2'
+          CEL1='&&NMDOCO.CEL1'
+          CALL CARCES(COMPOR,'ELEM',' ','V',CES1,IBID)
+          CALL CESCEL(CES1,LIGREL,'FULL_MECA','PCOMPOR',
+     &                'OUI',IBID,'V',CEL1,'A',IBID)
+C         ON RECUPERE UN CHAM_ELEM DEFINI SEULEMENT SUR LES ELEMENTS
+C         QUI SAVENT CALCULER FULL_MECA
+          CALL CELCES(CEL1,'V',CES2)
+      ENDIF
+      
       CALL JEDEMA()
       END

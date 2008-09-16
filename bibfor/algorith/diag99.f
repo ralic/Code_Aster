@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -149,7 +149,7 @@ C
      +              ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
 C
       NBORD = NBMODE + NBSTAT
-      CALL RSCRSD(NOMRES,'BASE_MODALE',NBORD)
+      CALL RSCRSD('G',NOMRES,'BASE_MODALE',NBORD)
 C
       CALL JEEXIN(NOMRES//'           .UTIL',IRET)
       IF (IRET.NE.0) CALL JEDETR(NOMRES//'           .UTIL')

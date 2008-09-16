@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF rupture1 Messages  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,5 +229,11 @@ défini par VECT_K1.
 -> Risque et Conseil :
 La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure, 
 donc orthogonale au VECT_K1 fourni. Vérifier les données.
+"""),
+
+38: _("""
+La fissure contient %(i1)d fond(s) et le calcul est demandé pour le fond numéro %(i2)d.
+-> Risque et Conseil :
+Vérifier le paramètre défini sous le mot clé NUME_FOND de POST_K1_K2_K3.
 """),
 }

@@ -1,6 +1,6 @@
       SUBROUTINE CELVER(CELZ,TYPVER,ARRET,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,8 @@ C TYPVER  IN       K*  : TYPE DE VERIFICATION A EFFECTUER
 C     /'NBSPT_1'    : LES ELEMENTS DU CHAM_ELEM N'ONT QU'1 SOUS-POINT
 C     /'NBVARI_CST' : POUR UN CHAM_ELEM(VARI_R), ON VERIFIE QUE
 C                     TOUS LES ELEMENTS ONT LE MEME NOMBRE DE CMPS
+C     /'PAS_NAN'    : IL N'Y A PAS DE VALEURS "NAN" DANS LE CHAMP
+C                     (VOIR CESCEL.F POUR LA DEFINITION DE "NAN")
 
 C ARRET   IN   K* :  /'STOP' : ON ARRET LE CODE EN ERREUR FATALE
 C                    /'COOL' : ON LAISSE PASSER MAIS ON REND IRET=1
@@ -56,9 +58,11 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
+      CHARACTER*8 KNAN,KBID,TSCA,NOMGD
       CHARACTER*19 CEL
       INTEGER JCELD,KK,MXSPT,IGR,NGREL,NEL,IEL,IPREM,NCDYN,NCDYN1
-      INTEGER IMOLO
+      INTEGER IMOLO,INAN,IISNAN,NB1,K,ISNNEM,IBID,JCELV
+      LOGICAL LNAN
 
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -93,11 +97,7 @@ C     --------------------------------
                 END IF
               END IF
             END IF
-
-
-
    10     CONTINUE
-
    20   CONTINUE
 
 
@@ -107,6 +107,45 @@ C     --------------------------------
         IF (MXSPT.GT.1) THEN
           IF (ARRET.NE.'COOL') THEN
             CALL U2MESK('F','CALCULEL_49',1,CEL)
+          ELSE
+            IRET = 1
+          END IF
+        END IF
+
+
+      ELSE IF (TYPVER.EQ.'PAS_NAN') THEN
+C     --------------------------------
+        CALL DISMOI('F','NOM_GD',CEL,'CHAMP',IBID,NOMGD,IBID)
+        CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
+        CALL JEVEUO(CEL//'.CELV','L',JCELV)
+        CALL JELIRA(CEL//'.CELV','LONMAX',NB1,KBID)
+        LNAN=.FALSE.
+        INAN = ISNNEM()
+        KNAN = '????????'
+
+        IF (TSCA.EQ.'R') THEN
+          DO 80,K = 1,NB1
+            IF (IISNAN(ZR(JCELV-1+K)).EQ.1) LNAN=.TRUE.
+   80     CONTINUE
+        ELSEIF (TSCA.EQ.'C') THEN
+          DO 81,K = 1,NB1
+            IF (IISNAN(DBLE(ZC(JCELV-1+K))).EQ.1) LNAN=.TRUE.
+   81     CONTINUE
+        ELSEIF (TSCA.EQ.'I') THEN
+          DO 82,K = 1,NB1
+            IF (ZI(JCELV-1+K).EQ.INAN) LNAN=.TRUE.
+   82     CONTINUE
+        ELSEIF (TSCA.EQ.'K8') THEN
+          DO 83,K = 1,NB1
+            IF (ZK8(JCELV-1+K).EQ.KNAN) LNAN=.TRUE.
+   83     CONTINUE
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+
+        IF (LNAN) THEN
+          IF (ARRET.NE.'COOL') THEN
+            CALL U2MESK('F','CALCULEL4_1',1,CEL)
           ELSE
             IRET = 1
           END IF

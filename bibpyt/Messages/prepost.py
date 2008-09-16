@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 16/06/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,10 +67,6 @@ cata_msg = {
 21 : _("""
  Intersection Droite / Cercle
  pas d'intersection trouvée
-"""),
-
-27 : _("""
- volume négatif
 """),
 
 28 : _("""

@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 30/06/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------
@@ -43,11 +43,12 @@ C     ------------------------------------------------------------------
       CHARACTER*1 BASE
       CHARACTER*4 CTYP
       CHARACTER*8 K8B,MODELE,CARA,SIGG,NOMCMP(6),BLAN8
-      CHARACTER*8 RIGI8,MASS8,MATEZ
+      CHARACTER*8 RIGI8,MASS8,KBID
       CHARACTER*16 TYPE,OPER,SUROPT
       CHARACTER*19 KCHA,MATEL,RIGIEL,MASSEL
       CHARACTER*24 TIME2,MATE,SDTHET,THETA,COMPOR
       LOGICAL EXITIM
+      INTEGER NCHAR, N1, JRECC
       COMPLEX*16 C16B
       DATA NOMCMP/'INST    ','DELTAT  ','THETA   ','KHI     ',
      &     'R       ','RHO     '/
@@ -58,8 +59,7 @@ C DEB ------------------------------------------------------------------
 
       BASE = 'G'
 
-      CALL GETRES(MATEZ,TYPE,OPER)
-      MATEL=MATEZ
+      CALL GETRES(MATEL,TYPE,OPER)
       BLAN8  = '        '
       RIGI8 = ' '
       MASS8 = ' '
@@ -168,6 +168,17 @@ C        COMPOR = ' '
       GO TO 20
 
    20 CONTINUE
+
+
+C     -- CREATION DE L'OBJET .RECC :
+C     ------------------------------
+      CALL GETVID(' ','CHARGE',0,1,0,KBID,N1)
+      IF (N1.LT.0) THEN
+        NCHAR=-N1
+        CALL WKVECT(MATEL//'.RECC','G V K8',NCHAR,JRECC)
+        CALL GETVID(' ','CHARGE',0,1,NCHAR,ZK8(JRECC),N1)
+      ENDIF
+
 
       CALL JEDETC(' ','&MEAMAC2           .RELR',1)
       CALL JEDETC(' ','&MEAMAC2           .RERR',1)

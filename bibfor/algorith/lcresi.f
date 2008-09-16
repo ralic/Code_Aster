@@ -1,4 +1,4 @@
-        SUBROUTINE LCRESI( FAMI, KPG, KSP, LOI, MOD, IMAT, NMAT,
+        SUBROUTINE LCRESI( FAMI, KPG, KSP, LOI, TYPMOD, IMAT, NMAT,
      3                     MATERD, MATERF, COMP, NBCOMM, CPMONO,
      1                     PGL,TOUTMS,HSR, NR, NVI,VIND,ITMAX, TOLER,
      &   TIMED, TIMEF, YD,YF, DEPS, EPSD, DY, R, IRET )
@@ -6,7 +6,7 @@
 C TOLE CRP_21
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C       IN  FAMI   :  FAMILLE DU POINT DE GAUSS
 C           KPG    :  POINT DE GAUSS
 C           KSP    :  SOUS-POINT DE GAUSS
 C           LOI    :  MODELE DE COMPORTEMENT
-C           MOD    :  TYPE DE MODELISATION
+C           TYPMOD    :  TYPE DE MODELISATION
 C           IMAT   :  NOM DU MATERIAU
 C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
@@ -49,7 +49,7 @@ C
         REAL*8          R(*) , YD(*) ,  YF(*), DY(*)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TIMED, TIMEF
-        CHARACTER*8     MOD
+        CHARACTER*8     TYPMOD
         CHARACTER*16    LOI
         REAL*8 TOUTMS(5,24,6), HSR(5,24,24)
         CHARACTER*(*)   FAMI
@@ -62,23 +62,23 @@ C       ----------------------------------------------------------------
 
       IRET=0
       IF ( LOI(1:5) .EQ. 'LMARC' ) THEN
-         CALL LMARES ( MOD, NMAT, MATERD, MATERF,
+         CALL LMARES ( TYPMOD, NMAT, MATERD, MATERF,
      1                 TIMED, TIMEF, YD,  YF,     DEPS,   DY,     R )
 C
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
-         CALL CVMRES ( MOD,   NMAT, MATERD, MATERF,
+         CALL CVMRES ( TYPMOD,   NMAT, MATERD, MATERF,
      1                 TIMED, TIMEF, YD,  YF,  EPSD,  DEPS,  DY,  R )
 C
       ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
-         CALL INSRES ( MOD, NMAT, MATERD, MATERF,
+         CALL INSRES ( TYPMOD, NMAT, MATERD, MATERF,
      1                 YD,   YF,   DEPS,   DY,     R )
 
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
-         CALL LCMMRE ( FAMI,KPG,KSP,MOD, NMAT, MATERD, MATERF,
+         CALL LCMMRE ( TYPMOD, NMAT, MATERD, MATERF,
      3          COMP,NBCOMM, CPMONO, PGL, TOUTMS,HSR,NR, NVI,VIND,
      1  ITMAX, TOLER, TIMED, TIMEF,  YD,   YF,   DEPS,   DY,  R, IRET)
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
-         CALL IRRRES ( FAMI, KPG, KSP, MOD,   NMAT, MATERD,MATERF,
+         CALL IRRRES ( FAMI, KPG, KSP, TYPMOD,   NMAT, MATERD,MATERF,
      1                 YD,  YF,  DEPS,  DY,  R )
       ENDIF
 C

@@ -1,8 +1,8 @@
       SUBROUTINE VPWECF (OPTION,TYPRES,NFREQ,MXFREQ,RESUFI,RESUFR,
-     +                   RESUFK,LAMOR,KTYP)
+     +                   RESUFK,LAMOR,KTYP,LNS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C PARAMETRES D'APPEL
       REAL*8            RESUFR(MXFREQ,*)
       CHARACTER*(*)     OPTION, RESUFK(MXFREQ,*),TYPRES
       CHARACTER*1       KTYP
+      LOGICAL           LNS
 
 C VARIABLES LOCALES
       INTEGER      IFM,IFREQ,IRESO,ITERB,ITERJ,ITERQ,ITERA,INDF,ISNNEM,
@@ -99,7 +100,7 @@ C     ------------------------------------------------------------------
         WRITE(IFM,7777)
 
       ELSEIF ( RESUFK(NFREQ,2) .EQ. 'SORENSEN' ) THEN
-        IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+        IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R').AND.(.NOT.LNS)) THEN
           IF (TYPRES .EQ. 'DYNAMIQUE') THEN
             WRITE(IFM,2200)
           ELSE
@@ -116,7 +117,7 @@ C     ------------------------------------------------------------------
           IRESO = RESUFI(IFREQ,1)
           FFF   = RESUFR(IFREQ,1)
           CHA   = RESUFR(IFREQ,2)
-          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R').AND.(.NOT.LNS)) THEN
             AM  = RESUFR(IFREQ,4)
             ERRMOY = ERRMOY + ABS(AM)
           ELSE
@@ -124,7 +125,7 @@ C     ------------------------------------------------------------------
             ERC = RESUFR(IFREQ,4)
             ERRMOY = ERRMOY + ABS(ERC)
           ENDIF
-          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R').AND.(.NOT.LNS)) THEN
             IF (TYPRES .EQ. 'DYNAMIQUE') THEN
               WRITE(IFM,2210) IRESO,FFF,AM
             ELSE
@@ -143,7 +144,7 @@ C     ------------------------------------------------------------------
          
       ELSEIF ( RESUFK(NFREQ,2)(1:2) .EQ. 'QZ' ) THEN
         STRAUX='ALGORITHME '//RESUFK(NFREQ,2)(1:16)
-        IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+        IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R').AND.(.NOT.LNS)) THEN
           IF (TYPRES .EQ. 'DYNAMIQUE') THEN
             WRITE(IFM,3200)STRAUX
           ELSE
@@ -160,7 +161,7 @@ C     ------------------------------------------------------------------
           IRESO = RESUFI(IFREQ,1)
           FFF   = RESUFR(IFREQ,1)
           CHA   = RESUFR(IFREQ,2)
-          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R').AND.(.NOT.LNS)) THEN
             AM  = RESUFR(IFREQ,4)
             ERRMOY = ERRMOY + ABS(AM)
           ELSE
@@ -168,7 +169,7 @@ C     ------------------------------------------------------------------
             ERC = RESUFR(IFREQ,4)
             ERRMOY = ERRMOY + ABS(ERC)
           ENDIF
-          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R')) THEN
+          IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R').AND.(.NOT.LNS)) THEN
             IF (TYPRES .EQ. 'DYNAMIQUE') THEN
               WRITE(IFM,3210) IRESO,FFF,AM
             ELSE

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,7 @@ C     -----------------------------------------------------------------
       CHARACTER*3 PROL0
       CHARACTER*4 TYCHR
       CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,NOMGD2,NOMPAR,MA2,NOPAR2,TA
+      CHARACTER*8 TSCA
       CHARACTER*16 TYCHR1,OPERA,OPTIO2,TYPCO,OPTION
       CHARACTER*19 LIGREL,CARTEM,CELMOD,PRCHN1,CNS1,CH1,PRCHN2,CHIN
       CHARACTER*8 NU1
@@ -88,7 +89,12 @@ C     ------------------------------------------------------------------
       CALL GETVTX(' ','TYPE_CHAM',0,1,1,TYCHR1,IB)
       TYCHR = TYCHR1(1:4)
       NOMGD = TYCHR1(6:13)
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IB,TSCA,IB)
+
+      PROL0=' '
       CALL GETVTX(' ','PROL_ZERO',0,1,1,PROL0,IB)
+C     IF ((PROL0.EQ.'NON').AND.(TSCA.EQ.'R')) PROL0='NAN'
+
       CALL GETVTX(' ','OPTION',0,1,1,OPTION,N1)
       IF (N1.EQ.0) OPTION = ' '
 
@@ -247,15 +253,22 @@ C --------------------------------------------------------------
       ENDIF
 
 
+C 5.  VERIFICATION PROL_ZERO :
+C ----------------------------------------------
+      IF ((TYCHR(1:2).EQ.'EL').AND.(PROL0.EQ.'NAN')) THEN
+        CALL CELVER(CHOU,'PAS_NAN','COOL',IRET)
+        IF (IRET.NE.0) CALL U2MESK('A','CALCULEL4_1',1,CHOU)
+      ENDIF
 
-C 5.  SI INFO:2    ON IMPRIME LE CHAMP RESULTAT :
+
+C 6.  SI INFO:2    ON IMPRIME LE CHAMP RESULTAT :
 C ----------------------------------------------
       IF (NIV.EQ.2) CALL IMPRSD('CHAMP',CHOU,IFM,
      &                      'CHAMP RESULTAT DE LA COMMANDE CREA_CHAMP :'
      &                          )
 
 
-C 6.  AJOUT DU TITRE :
+C 7.  AJOUT DU TITRE :
 C -----------------------------------------------------
       CALL TITRE()
 

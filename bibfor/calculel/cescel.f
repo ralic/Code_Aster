@@ -1,7 +1,7 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROLZ,NNCP,BASEZ,CELZ,
      &                  KSTOP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -468,6 +468,12 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
 
                     ELSEIF (TSCA.EQ.'K8') THEN
                       ZK8(JCELV-1+IEQ) = ZK8(JCESV-1+IAD)
+
+                    ELSEIF (TSCA.EQ.'K16') THEN
+                      ZK16(JCELV-1+IEQ) = ZK16(JCESV-1+IAD)
+
+                    ELSEIF (TSCA.EQ.'K24') THEN
+                      ZK24(JCELV-1+IEQ) = ZK24(JCESV-1+IAD)
 
                     ELSE
                       CALL ASSERT(.FALSE.)

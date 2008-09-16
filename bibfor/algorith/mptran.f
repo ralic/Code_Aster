@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -286,7 +286,7 @@ C SECOND MEMBRE REEL
      &              LFONCT, ZR(JDEP))
 C
 C On cree une sd de type mode_gene
-           CALL RSCRSD (NOMRES, 'MODE_GENE', NBABS )
+           CALL RSCRSD('G',NOMRES, 'MODE_GENE', NBABS )
 C On remplie la sd de type mode_gene a partir de la base d'expansion
            CALL MDALLR(NOMMES,NOMRES, NOMBAS,NBMODE,NBABS,ZR(JDEP),
      &                 CBID,ZCMPLX)
@@ -313,7 +313,7 @@ C SECOND MEMBRE COMPLEXE
      &                  ZR(LRED), ZC(LMESU), ZR(LCOEF), ZR(LABS),
      &                  LFONCT, ZC(JDEP), ZC(JVIT), ZC(JACC))
 C On cree une sd de type mode_gene
-           CALL RSCRSD (NOMRES, 'MODE_GENE', NBABS )
+           CALL RSCRSD('G',NOMRES, 'MODE_GENE', NBABS )
 C On remplie la sd de type mode_gene a partir de la base d'expansion
            CALL MDALLR(NOMMES, NOMRES, NOMBAS,NBMODE,NBABS,RBID,
      &                 ZC(JDEP),ZCMPLX)

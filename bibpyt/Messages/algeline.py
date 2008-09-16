@@ -1,4 +1,4 @@
-#@ MODIF algeline Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF algeline Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -293,9 +293,6 @@ cata_msg={
  coefficient de type non prévu
 """),
 
-67: _("""
- caract. de matrice non prevue
-"""),
 
 68: _("""
  la zone d excitation du fluide, de nom  %(k1)s , est reduite a un point.
