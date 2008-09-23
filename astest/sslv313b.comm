@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 22/09/2008   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,9 +20,8 @@
 # MODELISATION B : FISSURE NON MAILLEE
 
 
-DEBUT(CODE=_F( NOM = 'SSLV313B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',
+DEBUT(CODE=_F( NOM = 'SSLV313B',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',
                MEMOIRE=_F( DYNAMIQUE=1,),);
-# PAR_LOT='NON' NECESSAIRE TANT QU ON NE PEUT PAS APPLIQUER DNOR=0 SUR LES ELEMENTS XFEM
 
 #---------------------------------------------
 # description de la FISSURE
@@ -108,31 +107,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
  
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
-
-
-# STOCKAGE DANS UNE LISTE LES NOEUDS X_FEM APPARTENANT AU GROUPE REPCYCLI
-#  Dans le but de les extraire de la condition FACE_IMPO
-STNO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-              OPERATION='EXTR',
-              NOM_CHAM='STNOR',
-              FISSURE=FISS,);
-              
-TAB= POST_RELEVE_T(ACTION=_F(INTITULE='test',
-                                            GROUP_NO='FACE2',
-                                            CHAM_GD=STNO,
-                                            TOUT_CMP='OUI',
-                                            OPERATION='EXTRACTION',),);
-
-tab2=TAB.EXTR_TABLE()
-
-numno = tab2['NOEUD'].values()['NOEUD']
-nbno =  len(numno)
-valx =  tab2['X1'].values()['X1']
-Listno = []
-for i in range(0,nbno) :                                          
-  if valx[i] > 0. :
-    Listno.append(numno[i])
-print Listno
+ 
 #----------------------------------------------
 #    DEFINITIONS ET AFFECTATIONS DES MATERIAUX
 #----------------------------------------------
@@ -164,11 +139,10 @@ CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
 #  Conditions avec liaisons unilaterales (type DZ=cste)
 SYMETRI = AFFE_CHAR_MECA(MODELE=MODELEK,
                       DDL_IMPO=(
-                                _F(GROUP_NO = 'LH',DY=0.0,),
+                                _F(GROUP_NO = 'LH',   DY=0.0,),
                                 _F(GROUP_NO = 'FACE1',DZ=0.0,),
                                ),
                       FACE_IMPO=_F(GROUP_MA= 'FACE2',
-                                    SANS_NOEUD=Listno,
                                     DNOR=0.0,),
                       );
                       
@@ -199,12 +173,13 @@ RINF=2e-3
 KGLOC1=CALC_G(           RESULTAT=CHAMDEPL,
                         NUME_ORDRE = 1,
                         OPTION='CALC_K_G',
-                        LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                          LISSAGE_G='LAGRANGE'),
+                        LISSAGE=_F(LISSAGE_THETA ='LAGRANGE',
+                                   LISSAGE_G     ='LAGRANGE'),
                         THETA=_F(FISSURE=FISS,
                                  R_SUP=RSUP,
                                  R_INF=RINF,),
                     )
+                    
 IMPR_TABLE(TABLE=KGLOC1);
 
 TEST_TABLE( TABLE=KGLOC1,
@@ -221,7 +196,7 @@ TEST_TABLE( TABLE=KGLOC1,
                             VALE_I = 1,      ),
             REFERENCE='AUTRE_ASTER',
             VALE= 6.31937E+00,
-            PRECISION=0.08      )            
+            PRECISION=0.02      )            
             
 TABL_K=POST_K1_K2_K3(  MODELISATION='3D',
               MAILLAGE=MAILLAGE,
@@ -241,7 +216,7 @@ TEST_TABLE( TABLE=TABL_K,
                             VALE_I = 1,      ),),
             REFERENCE='AUTRE_ASTER',
             VALE= 1.15799E+06 ,
-            PRECISION=0.05     )
+            PRECISION=0.03     )
 
 TEST_TABLE( TABLE=TABL_K,
             NOM_PARA='K1_MAX',
@@ -250,6 +225,7 @@ TEST_TABLE( TABLE=TABL_K,
                      _F(  NOM_PARA = 'PT_FOND',  
                             VALE_I = 1,      ),),
             REFERENCE='NON_REGRESSION',
-            VALE= 1.18752E+06 ,
+            VALE= 1.17806E+06 ,
             PRECISION=0.001     )            
+
 FIN();

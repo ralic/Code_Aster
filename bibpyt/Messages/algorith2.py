@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,10 +133,6 @@ cata_msg = {
 
 33 : _("""
  pas de maille de référence trouvée
-"""),
-
-34 : _("""
- STOP_SINGULIER = DECOUPE nécessite la subdivision automatique du pas de temps (SUBD_PAS)
 """),
 
 35 : _("""

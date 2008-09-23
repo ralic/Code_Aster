@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,6 +175,10 @@ cata_msg = {
 
 80 : _("""
  on traite les TRIA7 QUAD9 en oubliant le noeud centre
+"""),
+
+83: _("""
+ Certaines composantes selectionnées ne font pas partie du LIGREL
 """),
 
 84 : _("""

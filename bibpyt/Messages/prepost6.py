@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost6 Messages  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,14 @@
 def _(x) : return x
 
 cata_msg = {
+
+2 : _("""
+ -> le nombre de mailles de votre maillage (%(i1)d) est supérieur 
+    à la limite de 9 999 999.
+ -> Risque & Conseil : veuillez vérifier le script gibi qui vous a permis
+    de générer le fichier mgib.
+"""),
+
 
 3 : _("""
  le volume differe du volume use mais le nombre d'iteration

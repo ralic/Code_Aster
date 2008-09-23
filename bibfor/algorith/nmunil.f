@@ -1,8 +1,8 @@
-      SUBROUTINE NMUNIL(NOMA,DEPPLU,DEPDEL,DDEPLA,MATASS,
-     &                  DEFICU,RESOCU,CNCINE,ITERAT,INST)
+      SUBROUTINE NMUNIL(NOMA  ,DEPPLU,DEPDEL,DDEPLA,MATASS,
+     &                  DEFICU,RESOCU,CNCINE,ITERAT,INST  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,24 +19,26 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
       CHARACTER*24 DEPPLU
-      CHARACTER*24 DEPDEL
-      CHARACTER*24 DDEPLA
+      CHARACTER*19 DEPDEL,DDEPLA,CNCINE
       CHARACTER*24 DEFICU
       CHARACTER*24 RESOCU
-      CHARACTER*24 CNCINE
       CHARACTER*19 MATASS
       INTEGER      ITERAT
       REAL*8       INST
+C      
+C ----------------------------------------------------------------------
 C
-C ======================================================================
-C ROUTINE APPELEE PAR : NMDEPL
-C ======================================================================
+C ROUTINE LIAISON_UNILATER
 C
 C TRAITEMENT DES CONDITIONS UNILATERALES (SAUF CONTACT MECANIQUE)
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
@@ -76,7 +78,6 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C ----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 C
 C --- ALGORITHME
@@ -102,13 +103,13 @@ C
         CALL CUPREP(NEQ,DEFICU,RESOCU,DEPPLU,INST)
       ENDIF
 C
-C --- CHOIX DE L'ALGO DE CONTACT/FROTTEMENT
+C --- CHOIX DE L'ALGO DE RESOLUTION
 C
       IF (IMETH.EQ.0) THEN
-        CALL ALGOCU(DEFICU,RESOCU,LMAT,LDSCON,NOMA,CNCINE,DDEPLA,
-     &              DEPPLU)
+        CALL ALGOCU(DEFICU,RESOCU,LMAT  ,LDSCON,NOMA  ,
+     &              CNCINE,DDEPLA,DEPPLU)
       ELSE
-        CALL U2MESS('F','ALGORITH8_58')
+        CALL ASSERT(.FALSE.)
       ENDIF
 
 

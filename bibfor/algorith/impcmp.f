@@ -1,7 +1,7 @@
       SUBROUTINE IMPCMP(ICMP,NUMEDD,CHAINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,12 +23,15 @@ C
       INTEGER      ICMP
       CHARACTER*24 NUMEDD
       CHARACTER*16 CHAINE
+C 
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : NMCONV
-C ----------------------------------------------------------------------
+C ROUTINE MECA_NON_LINE (AFFICHAGE - UTILITAIRE)
 C
 C RETOURNE UNE CHAINE FORMATEE K16 POUR LES INFOS SUR UNE COMPOSANTE
+C      
+C ----------------------------------------------------------------------
+C      
 C
 C IN  ICMP   : NUMERO DE L'EQUATION
 C IN  NUMEDD : NUMEROTATION NUME_DDL

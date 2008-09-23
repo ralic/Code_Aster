@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -314,12 +314,12 @@ cata_msg = {
  il y a plusieurs parametres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
-89 : _("""
- les charges ne s'appuient pas toutes sur le même modèle.
+88: _("""
+ Les charges ne s'appuie pas sur le MODELE fourni.
 """),
 
-90 : _("""
- le champ de THETA est inexistant dans la structure de données  %(k1)s  de type THETA_GEOM .
+89 : _("""
+ les charges ne s'appuient pas toutes sur le même modèle.
 """),
 
 91 : _("""

@@ -1,0 +1,171 @@
+      SUBROUTINE NMACFI(FONACT,SDDYNA,VEASSE,CNFFDO,CNDFDO)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*19 CNFFDO,CNDFDO
+      CHARACTER*19 VEASSE(*)
+      LOGICAL      FONACT(*)
+      CHARACTER*19 SDDYNA
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME)
+C
+C CALCUL DU VECTEUR DES CHARGEMENTS CONSTANTS POUR L'ACCELERATION 
+C INITIALE
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
+C IN  SDDYNA : SD DYNAMIQUE 
+C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE  
+C OUT CNFFDO : VECT_ASSE DE TOUTES LES FORCES FIXES DONNES
+C OUT CNDFDO : VECT_ASSE DE TOUS LES DEPLACEMENTS FIXES DONNES
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+
+      INTEGER      IFM,NIV   
+      INTEGER      IFDO
+      INTEGER      N
+      CHARACTER*19 CNFIXE(20)
+      REAL*8       COFIXE(20)  
+      CHARACTER*19 CNFEDO,CNDIDO
+      CHARACTER*19 NMCHEX,CNCINE,CNDIDI,CNSSTR,CNSSTF
+      LOGICAL      ISFONC,LDIDI
+      LOGICAL      LMACR,LSSTF
+C 
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ...... CALCUL CHARGEMENT FIXE' 
+      ENDIF
+C
+C --- FONCTIONNALITES ACTIVEES
+C       
+      LDIDI  = ISFONC(FONACT,'DIDI') 
+      LMACR  = ISFONC(FONACT,'MACR_ELEM_STAT')   
+      LSSTF  = ISFONC(FONACT,'SOUS_STRUC')      
+C
+C --- INITIALISATIONS
+C
+      IFDO   = 0       
+      CALL VTZERO(CNFFDO)
+      CALL VTZERO(CNDFDO)         
+C
+C --- DEPLACEMENTS DONNES (Y COMPRIS DIDI SI NECESSAIRE)
+C
+      CNDIDO       = NMCHEX(VEASSE,'VEASSE','CNDIDO')    
+      IFDO         = IFDO+1 
+      CNFIXE(IFDO) = CNDIDO
+      COFIXE(IFDO) = 1.D0
+
+      IF (LDIDI) THEN
+        CNDIDI       = NMCHEX(VEASSE,'VEASSE','CNDIDI')
+        IFDO         = IFDO+1 
+        CNFIXE(IFDO) = CNDIDI
+        COFIXE(IFDO) = 1.D0
+      ENDIF   
+C      
+C --- CONDITIONS CINEMATIQUES IMPOSEES           
+C   
+      CNCINE       = NMCHEX(VEASSE,'VEASSE','CNCINE') 
+      IFDO         = IFDO+1 
+      CNFIXE(IFDO) = CNCINE
+      COFIXE(IFDO) = 1.D0        
+C
+C --- VECTEUR RESULTANT DEPLACEMENT FIXE
+C       
+      DO 17 N = 1,IFDO
+        CALL VTAXPY(COFIXE(N),CNFIXE(N),CNDFDO)  
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ......... DEPL. FIXE' 
+          WRITE (IFM,*) '<MECANONLINE> .........  ',N,' - COEF: ',
+     &                   COFIXE(N)
+          CALL NMDEBG('VECT',CNFIXE(N),IFM)
+        ENDIF         
+ 17   CONTINUE      
+C      
+      IFDO   = 0               
+C
+C --- FORCES DONNEES
+C
+      CNFEDO       = NMCHEX(VEASSE,'VEASSE','CNFEDO')
+      IFDO         = IFDO+1 
+      CNFIXE(IFDO) = CNFEDO
+      COFIXE(IFDO) = 1.D0     
+C
+C --- FORCES ISSUES DES MACRO-ELEMENTS STATIQUES
+C      
+      IF (LMACR) THEN
+        CNSSTR       = NMCHEX(VEASSE,'VEASSE','CNSSTR') 
+        IFDO         = IFDO+1 
+        CNFIXE(IFDO) = CNSSTR
+        COFIXE(IFDO) = -1.D0      
+      ENDIF  
+C        
+C --- FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION 
+C      
+      IF (LSSTF) THEN
+        CNSSTF       = NMCHEX(VEASSE,'VEASSE','CNSSTF') 
+        IFDO         = IFDO+1 
+        CNFIXE(IFDO) = CNSSTF
+        COFIXE(IFDO) = 1.D0     
+      ENDIF                               
+C
+C --- VECTEUR RESULTANT FORCE FIXE
+C       
+      DO 10 N = 1,IFDO
+        CALL VTAXPY(COFIXE(N),CNFIXE(N),CNFFDO)  
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ......... FORC. FIXE' 
+          WRITE (IFM,*) '<MECANONLINE> .........  ',N,' - COEF: ',
+     &                 COFIXE(N)
+          CALL NMDEBG('VECT',CNFIXE(N),IFM)
+        ENDIF            
+ 10   CONTINUE          
+C
+      CALL JEDEMA()
+      END

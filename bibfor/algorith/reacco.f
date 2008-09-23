@@ -1,7 +1,7 @@
       SUBROUTINE REACCO(PREMIE,DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
       INTEGER      CFMMVD,ZREAC,CFDISI,IZONE,NZOCO
       CHARACTER*24 APREAC
       INTEGER      JREAC 
-      INTEGER      IAPPA,IPROJ,IREAC
+      INTEGER      IAPPA
 C
 C ----------------------------------------------------------------------
 C
@@ -74,8 +74,6 @@ C
 C    
       DO 10 IZONE = 1,NZOCO
         IAPPA = CFDISI(DEFICO,'APPARIEMENT',IZONE)
-        IPROJ = CFDISI(DEFICO,'PROJECTION' ,IZONE)
-        IREAC = CFDISI(DEFICO,'REAC_GEOM'  ,IZONE)
         IF (PREMIE) THEN
           ZI(JREAC+ZREAC*(IZONE-1)+0) = 1
         ELSE
@@ -85,12 +83,6 @@ C
      &                           ABS(ZI(JREAC+ZREAC*(IZONE-1)+0))
           ENDIF
         END IF
-C
-        ZI(JREAC+ZREAC*(IZONE-1)+2) = IPROJ
-C
-        IF ((IREAC.EQ.0).AND.(IPROJ.GT.0)) THEN 
-          ZI(JREAC+ZREAC*(IZONE-1)+2) = -ZI(JREAC+ZREAC*(IZONE-1)+2)
-        ENDIF
  10   CONTINUE
 
 C

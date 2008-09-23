@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,8 +32,6 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
            regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                    EXCLUS('NUME_INST_FIN','INST_FIN'),),
            LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-           EVOLUTION       =SIMP(statut='f',typ='TXM',defaut="CHRONOLOGIQUE",
-                                 into=("CHRONOLOGIQUE","RETROGRADE","SANS",) ),
            NUME_INST_INIT  =SIMP(statut='f',typ='I'),
            INST_INIT       =SIMP(statut='f',typ='R'),
            NUME_INST_FIN   =SIMP(statut='f',typ='I'),
@@ -102,9 +100,9 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
              b_petsc_ilu     =BLOC(condition = "PRE_COND == 'LDLT_INC' ",
                NIVE_REMPLISSAGE = SIMP(statut='f',typ='I',defaut= 0 ),
                REMPLISSAGE      = SIMP(statut='f',typ='R',defaut= 1.0),
-             ),
+             ),            
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
            ),
          ),

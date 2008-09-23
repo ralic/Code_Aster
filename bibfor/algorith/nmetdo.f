@@ -1,7 +1,7 @@
-      SUBROUTINE NMETDO (INERTE, CMD)
+      SUBROUTINE NMETDO(NOMCMD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,8 +22,7 @@ C NON-LINEAIRE MECANIQUE - ERREUR EN TEMPS - DONNEES
 C *            *           *         *       **
 C
       IMPLICIT NONE
-      CHARACTER*16  INERTE
-      CHARACTER*16  CMD
+      CHARACTER*16  NOMCMD
 C ----------------------------------------------------------------------
 C
 C COMMANDE STAT_NON_LINE : POUR CALCUL DE L'INDICATEUR D'ERREUR
@@ -33,8 +32,7 @@ C                          COMPORTEMENT MECANIQUE ELASTIQUE
 C
 C ----------------------------------------------------------------------
 
-C     IN   CMD    : NOM DE LA COMMANDE
-C     OUT  INERTE : FLAG CALCUL INDICATEUR D'ERREUR TEMPORELLE
+C     IN   NOMCMD    : NOM DE LA COMMANDE
 C
       INTEGER      NBOCC,N1,N2,DIMAKI,II,JJ,K
 C DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
@@ -42,7 +40,7 @@ C DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
 C
       INTEGER      IAUX,JAUX,LXLGUT
       LOGICAL      ELLISQ
-      CHARACTER*16 CHAINE
+      CHARACTER*16 CHAINE,INERTE
       CHARACTER*16 COMP1,COMEL(DIMAKI),ARGII,ARGJJ
 C ----------------------------------------------------------------------
 C
@@ -55,7 +53,7 @@ C
 C               1234567890123456
       INERTE = 'NON             '
 C
-      IF ( CMD(1:13).EQ.'STAT_NON_LINE' ) THEN
+      IF ( NOMCMD(1:13).EQ.'STAT_NON_LINE' ) THEN
         CALL GETFAC('INCREMENT',N1)
 C
         IF (N1.GT.0) THEN
@@ -79,7 +77,7 @@ C
 C
 C 2.1 ==> ON VERIFIE QUE LE MOT-CLEF COMP_INCR EST RENSEIGNE
 C
-            IF (CMD(1:4).EQ.'STAT') THEN
+            IF (NOMCMD(1:4).EQ.'STAT') THEN
 C
               CALL GETFAC('COMP_INCR',NBOCC)
 C

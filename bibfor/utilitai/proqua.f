@@ -1,6 +1,7 @@
-      SUBROUTINE PROQUA (QUAT1,QUAT2)
+      SUBROUTINE PROQUA(QUAT1 ,QUAT2 ,QUAT3 )
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,26 +19,37 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-C FONCTION: CALCULE LE PRODUIT DES QUATERNIONS QUAT1 PAR QUAT2 ET MET LE
-C           RESULTAT DANS QUAT2.
+       IMPLICIT NONE
+       REAL*8   QUAT1(4),QUAT2(4),QUAT3(4)
+C 
+C ----------------------------------------------------------------------
 C
-C     IN  : QUAT1     : QUATERNION
-C           QUAT2     : QUATERNION
+C ROUTINE UTILITAIRE (QUATERNION)
 C
-C     OUT : QUAT2     : QUATERNION
+C CALCULE LE PRODUIT DES QUATERNIONS QUAT1 PAR QUAT2 ET MET LE
+C  RESULTAT DANS QUAT3
+C      
+C ----------------------------------------------------------------------
+C 
+C       
+C IN  QUAT1  : PREMIER QUATERNION
+C IN  QUAT2  : SECOND QUATERNION
+C OUT QUAT3  : RESULTAT DU PRODUIT DES DEUX QUATRERNIONS
+
+C
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
-      REAL*8 QUAT1(4),QUAT2(4),QUAT3(4)
 C
-      CALL PROVEC (QUAT1,QUAT2,   QUAT3)
-      PROSCA=DDOT(3,QUAT1,1,QUAT2,1)
+      REAL*8  PROSCA,DDOT
+      INTEGER I
+C
+C ------------------------------------------------------------------
+C
+      CALL PROVEC(QUAT1,QUAT2,QUAT3)
+      PROSCA   = DDOT(3,QUAT1,1,QUAT2,1)
       QUAT3(4) = QUAT1(4) * QUAT2(4) - PROSCA
       DO 1 I=1,3
-      QUAT3(I) = QUAT3(I) + QUAT1(4)*QUAT2(I) + QUAT2(4)*QUAT1(I)
+        QUAT3(I) = QUAT3(I) + QUAT1(4)*QUAT2(I) + QUAT2(4)*QUAT1(I)
     1 CONTINUE
-C
-      DO 2 I=1,4
-      QUAT2(I) = QUAT3(I)
-    2 CONTINUE
+
  9999 CONTINUE
       END

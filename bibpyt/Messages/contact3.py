@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@ La direction d'appariement fixe données par le vecteur DIRE_APPA est nulle !
 
 16 : _("""
 Contact méthode continue.
-La méthode d'intégration est GAUSS, le champ VALE_CONT n'est pas créé.
+La méthode d'intégration n'est pas NOEUD, le champ VALE_CONT n'est pas créé.
 """),
 
 17 : _("""
@@ -77,11 +77,6 @@ sur la maille %(k1)s,
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
-24 : _("""
-Il y a plus de trois noeuds exclus sur la maille esclave  %(k1)s  par l'option SANS_GROUP_NO ou SANS_NOEUD.
-Supprimer directement la maille esclave de la définition de la surface.
-"""),
-
 25 : _("""
 L'élément porté par la maille esclave %(k1)s n'est pas du bon type pour un fond de fissure, elle est de type  %(k2)s 
 """),
@@ -97,6 +92,10 @@ Le vecteur normal est nul au niveau de la maille %(k1)s.
 28 : _("""
 Le statut du contact a changé %(i1)d fois au point de contact numéro %(i2)d sur la maille esclave %(k1)s
 Présence de flip-flop. 
+"""),
+
+29 : _("""
+Nom de la maille : %(k1)s 
 """),
 
 30 : _("""

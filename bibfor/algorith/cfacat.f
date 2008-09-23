@@ -1,9 +1,9 @@
-       SUBROUTINE CFACAT(NDIM,INDIC,NBLIAC,AJLIAI,SPLIAI,
-     &                  LLF,LLF1,LLF2,INDFAC,NESMAX,
-     &                  DEFICO,RESOCO,LMAT,CINE,NBLIAI,XJVMAX)
-C ======================================================================
+       SUBROUTINE CFACAT(NDIM  ,INDIC ,NBLIAC,AJLIAI,SPLIAI,
+     &                   LLF   ,LLF1  ,LLF2  ,INDFAC,NESMAX,
+     &                   DEFICO,RESOCO,LMAT  ,NBLIAI,XJVMAX)
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,20 +20,22 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
        IMPLICIT      NONE
-       INTEGER       NDIM, INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1
-       INTEGER       LLF2, INDFAC, NESMAX, LMAT, NBLIAI
+       INTEGER       NBLIAI,NBLIAC,LLF,LLF1,LLF2
+       INTEGER       NDIM  ,INDIC ,AJLIAI, SPLIAI
+       INTEGER       INDFAC,NESMAX,LMAT
        REAL*8        XJVMAX
-       CHARACTER*24  DEFICO,RESOCO,CINE
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/FRO2GD/FROLGD/FROPGD
+       CHARACTER*24  DEFICO,RESOCO
+C      
 C ----------------------------------------------------------------------
 C
-C  ROUTINE MERE POUR LE CALCUL DE ACM1AT
-C  PERMETTANT DE POINTER SUR LES ROUTINES DE CALCUL ADAPTE
-C  SELON QUE L'ON AJOUTE OU RETIRE DES LIAISONS
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
+C
+C ROUTINE MERE POUR LE CALCUL DE A.C-1.AT
+C
+C ----------------------------------------------------------------------
 C
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
@@ -59,19 +61,18 @@ C               SECONDE DIRECTION (EN 3D)
 C I/O INDFAC : INDICE DE DEBUT DE LA FACTORISATION
 C I/O INDIC  : +1 ON A RAJOUTE UNE LIAISON
 C              -1 ON A ENLEVE UNE LIAISON
-C ======================================================================
-       CALL JEMARQ ()
-C ======================================================================
-C --- TEST SUR L'ETAT DE LA MATRICE A CALCULER -------------------------
-C ======================================================================
+C      
+C ----------------------------------------------------------------------
+C
        IF (INDIC.NE.-1) THEN
-          CALL CFACA1(NDIM, NBLIAC, AJLIAI, LLF, LLF1, LLF2, NESMAX,
-     +                               DEFICO,RESOCO, LMAT, NBLIAI)
+         CALL CFACA1(NDIM  ,NBLIAC,AJLIAI,LLF   ,LLF1  , 
+     &               LLF2  ,NESMAX,DEFICO,RESOCO,LMAT  ,
+     &               NBLIAI)
        ENDIF
-       CALL CFACA2(NDIM, NBLIAC, SPLIAI, LLF, LLF1, LLF2, INDFAC,
-     +                             NESMAX, RESOCO, LMAT, NBLIAI, XJVMAX)
-C ======================================================================
+       CALL CFACA2(NDIM  ,NBLIAC,SPLIAI,LLF   ,LLF1  ,
+     &             LLF2  ,INDFAC,NESMAX,RESOCO,LMAT  , 
+     &             NBLIAI,XJVMAX)
+C  
        INDIC = 1
-       CALL JEDEMA ()
-C ======================================================================
+C
        END

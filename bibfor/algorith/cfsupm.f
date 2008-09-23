@@ -2,7 +2,7 @@
      &                  POSSUP,TYPSUP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,6 @@ C               -3 : PROJECTION HORS DE LA MAILLE INTERDITE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -71,11 +70,11 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      CFMMVD,ZAPME,ZAPPA
       INTEGER      IFM,NIV
-      INTEGER      NUMSUP,NUMAPP,POSAPP
+      INTEGER      POSAPP
       CHARACTER*8  NOMSUP,NOMAPP,VALK(2)
-      INTEGER      JDIM  ,JMACO ,JNOCO ,JAPMEM,JAPPAR
-      CHARACTER*24 NDIMCO,CONTMA,CONTNO,APMEMO,APPARI
-      INTEGER      IBID
+      INTEGER      JDIM  ,JAPMEM,JAPPAR
+      CHARACTER*24 NDIMCO,APMEMO,APPARI
+      INTEGER      IBID,CODRET
       REAL*8       R8BID
 C      
 C ----------------------------------------------------------------------
@@ -86,14 +85,10 @@ C
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C
       APMEMO = RESOCO(1:14)//'.APMEMO'
-      APPARI = RESOCO(1:14)//'.APPARI'
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'      
+      APPARI = RESOCO(1:14)//'.APPARI'      
       NDIMCO = DEFICO(1:16)//'.NDIMCO'     
       CALL JEVEUO(APMEMO,'E',JAPMEM)
-      CALL JEVEUO(APPARI,'E',JAPPAR)
-      CALL JEVEUO(CONTNO,'L',JNOCO )
-      CALL JEVEUO(CONTMA,'L',JMACO )      
+      CALL JEVEUO(APPARI,'E',JAPPAR)   
       CALL JEVEUO(NDIMCO,'E',JDIM  )       
 C      
       ZAPME = CFMMVD('ZAPME')
@@ -110,14 +105,30 @@ C
 C
 C --- AFFICHAGE
 C
-      IF (NIV.GE.2) THEN
-        NUMSUP = ZI(JNOCO+POSSUP-1)
-        CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUMSUP),NOMSUP)
-          
+      IF (NIV.GE.2) THEN        
+        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSSUP,NOMSUP,
+     &              CODRET)
+        IF (CODRET.LT.0) THEN
+          NOMSUP = 'ERREUR'
+        ENDIF
         IF (TYPSUP.EQ.-3) THEN
           POSAPP = ZI(JAPPAR+ZAPPA*(IESCL-1)+2)
-          NUMAPP = ZI(JMACO+POSAPP-1)
-          CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUMAPP),NOMAPP)
+          
+          IF (POSAPP.LT.0) THEN
+            CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSAPP,NOMAPP,
+     &                  CODRET)
+            IF (CODRET.LT.0) THEN
+              NOMAPP = 'ERREUR'
+            ENDIF
+          ELSEIF (POSAPP.GT.0) THEN
+            CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSAPP,NOMAPP,
+     &                  CODRET)
+            IF (CODRET.LT.0) THEN
+              NOMAPP = 'ERREUR'
+            ENDIF  
+          ELSE
+            NOMAPP = 'ERREUR'
+          ENDIF  
           VALK(1) = NOMSUP
           VALK(2) = NOMAPP        
           CALL CFIMPD(IFM,NIV,'CFSUPM',1, 

@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF indicateur Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,14 +63,6 @@ Probleme sur les charges. Consulter la documentation
 
 11 : _("""
 Impossible de récupérer les paramètres temporels.
-"""),
-
-18 : _("""
-Impossible de récupérer la porosité
-"""),
-
-19 : _("""
-Impossible de récupérer le coefficient de Poisson
 """),
 
 20 : _("""

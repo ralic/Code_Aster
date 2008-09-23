@@ -1,8 +1,9 @@
-      SUBROUTINE CFACA2(NDIM, NBLIAC, SPLIAI, LLF, LLF1, LLF2, INDFAC,
-     +                             NESMAX, RESOCO, LMAT, NBLIAI, XJVMAX)
-C ======================================================================
+      SUBROUTINE CFACA2(NDIM  ,NBLIAC,SPLIAI,LLF   ,LLF1  ,
+     &                  LLF2  ,INDFAC,NESMAX,RESOCO,LMAT  , 
+     &                  NBLIAI,XJVMAX)
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,22 +20,49 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_20
-      IMPLICIT      NONE
-      INTEGER       NDIM, NBLIAC, SPLIAI, LLF, LLF1, LLF2, INDFAC
-      INTEGER       NESMAX, LMAT, NBLIAI
-      REAL*8        XJVMAX
-      CHARACTER*24  RESOCO
-C ======================================================================
+C
+      IMPLICIT     NONE
+      INTEGER      NBLIAI,NBLIAC,LLF,LLF1,LLF2      
+      INTEGER      SPLIAI,INDFAC
+      INTEGER      NDIM  ,NESMAX
+      INTEGER      LMAT
+      REAL*8       XJVMAX
+      CHARACTER*24 RESOCO
+C        
 C ----------------------------------------------------------------------
-C --- CALCUL DE -A.C-1.AT (REDUITE AUX LIAISONS ACTIVES) ---------------
-C --- STOCKAGE DE LA MOITIE UNIQUEMENT (PROBLEME SYMETRIQUE) -----------
+C
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION - A.C-1.AT)
+C
+C CALCUL DE -A.C-1.AT (REDUITE AUX LIAISONS ACTIVES)
+C STOCKAGE DE LA MOITIE UNIQUEMENT (PROBLEME SYMETRIQUE)
+C
 C ----------------------------------------------------------------------
-C ======================================================================
-C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-C ======================================================================
-      CHARACTER*32       JEXNUM , JEXNOM
+C
+C
+C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  RESOCO : SD DE RESOLUTION DU CONTACT
+C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
+C IN  NBLIAI : NOMBRE DE LIAISONS DE CONTACT POSSIBLES
+C IN  NBLIAC : NOMBRE DE LIAISONS ACTIVES
+C I/O XJVMAX : VALEUR DU PIVOT MAX
+C I/O SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
+C IN  NESMAX : NOMBRE MAX DE NOEUDS ESCLAVES
+C              (SERT A DECALER LES POINTEURS POUR LE FROTTEMENT 3D)
+C IN  LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX
+C               DIRECTIONS SIMULTANEES (EN 3D)
+C IN  LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
+C               PREMIERE DIRECTION (EN 3D)
+C IN  LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
+C               SECONDE DIRECTION (EN 3D)
+C I/O INDFAC : INDICE DE DEBUT DE LA FACTORISATION
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32       JEXNUM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -49,20 +77,30 @@ C ======================================================================
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C ======================================================================
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C ======================================================================
-      INTEGER       JAPPTR, JAPDDL, JLIAC, JAPCOE, JAPCOF, JCM1A, JDECAL
-      INTEGER       NBDDL, JVA, JVALE, JVECC, DEKLAG, NEQ, POSIT
-      INTEGER       ILIAC, JJ, LLIAC, LLJAC, JSCIB, II, DERCOL, BLOC
-      INTEGER       JSCBL,JOUV,JSCDE,NBBLOC
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER       JDECAL
+      INTEGER       NBDDL, JVA, JVALE, DEKLAG, NEQ, POSIT
+      INTEGER       ILIAC, JJ, LLIAC, LLJAC, II, DERCOL, BLOC
+      INTEGER       NBBLOC
       REAL*8        VAL
       CHARACTER*2   TYPEF0
-      CHARACTER*19  LIAC, CM1A, MATR, CONVEC, STOC, OUVERT
-      CHARACTER*24  APPOIN, APDDL, APCOEF, APCOFR
-C ======================================================================
-      CALL JEMARQ ()
-C ======================================================================
+      CHARACTER*19  LIAC  ,CM1A  ,CONVEC
+      INTEGER       JLIAC ,JCM1A ,JVECC
+      CHARACTER*19  STOC
+      INTEGER       JSCBL,JSCIB,JSCDE
+      CHARACTER*19  OUVERT,MATR
+      INTEGER       JOUV
+      CHARACTER*24  APPOIN,APDDL ,APCOEF,APCOFR
+      INTEGER       JAPPTR,JAPDDL,JAPCOE,JAPCOF
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C 
+C --- RECUPERATION D'OBJETS JEVEUX
+C 
       CM1A   = RESOCO(1:14)//'.CM1A'
       APPOIN = RESOCO(1:14)//'.APPOIN'
       APDDL  = RESOCO(1:14)//'.APDDL'
@@ -72,10 +110,7 @@ C ======================================================================
       MATR   = RESOCO(1:14)//'.MATR'
       CONVEC = RESOCO(1:14)//'.CONVEC'
       STOC   = RESOCO(1:14)//'.SLCS'
-
-C ======================================================================
-C ----------------------------------------------------------------------
-C ======================================================================
+C
       CALL JEVEUO (APPOIN,'L',JAPPTR)
       CALL JEVEUO (APDDL, 'L',JAPDDL)
       CALL JEVEUO (LIAC,  'L',JLIAC )
@@ -91,13 +126,13 @@ C ======================================================================
           ENDIF
         ENDIF
       ENDIF
-      CALL JEVEUO (CONVEC,'L',JVECC )
-      CALL JEVEUO (STOC//'.SCIB','L',JSCIB)
-      CALL JEVEUO (STOC//'.SCBL','L',JSCBL)
-      CALL JEVEUO (STOC//'.SCDE','L',JSCDE)
-C ======================================================================
-C --- INITIALISATIONS --------------------------------------------------
-C ======================================================================
+      CALL JEVEUO(CONVEC,'L',JVECC )
+      CALL JEVEUO(STOC//'.SCIB','L',JSCIB)
+      CALL JEVEUO(STOC//'.SCBL','L',JSCBL)
+      CALL JEVEUO(STOC//'.SCDE','L',JSCDE)
+C 
+C --- INITIALISATIONS 
+C 
       TYPEF0 = 'F0'
       NEQ    = ZI(LMAT+2)
       DEKLAG = 0

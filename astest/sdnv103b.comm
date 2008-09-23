@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,8 +117,8 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                 ),
                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 FORMULATION='DEPLACEMENT',
-                                ALPHA = 0.49,   # Beta
-                                DELTA = 0.9  ), # Gamma
+                                BETA = 0.49,   # Beta
+                                GAMMA = 0.9  ), # Gamma
                   NEWTON=_F(   REAC_INCR=1,
                                 MATRICE='TANGENTE',
                                 REAC_ITER=1,),

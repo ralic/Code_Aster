@@ -1,4 +1,4 @@
-# MODIF  DATE 14/04/2008   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,8 +57,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                 _F(  JUSQU_A = 20,     PAS = pasdt),
                 ),);
 # 
-LIAISON=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=(
+LIAISON=AFFE_CHAR_CINE(MODELE=MO,
+                       MECA_IMPO=(
                 _F( GROUP_NO = 'A',  DX=0., DY=0., DZ=0. , ),
                 _F( GROUP_NO = 'B',  DX=0., DY=0.,),
                 ),);
@@ -80,7 +80,7 @@ FSIN=CALC_FONC_INTERP(         FONCTION=SINOMEGT,
 #
 tfin = 1.
 #
-#  Solution obtenue avec schema NEWMARK
+#  Solution obtenue avec schema NEWMARK - DEPLACEMENT
 #
 REPNEW=DYNA_NON_LINE( 
                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
@@ -99,6 +99,50 @@ REPNEW=DYNA_NON_LINE(
                                 ITER_GLOB_MAXI = 10),
                  ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
             );
+            
+#
+#  Solution obtenue avec schema NEWMARK - ACCELERATION
+#
+REPACC=DYNA_NON_LINE( 
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='ACCELERATION',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,
+                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
+            );            
+
+#
+#  Solution obtenue avec schema THETA-VITESSE
+#
+REPVIT=DYNA_NON_LINE( 
+                SCHEMA_TEMPS=_F(SCHEMA='THETA_METHODE',
+                               THETA=0.5,
+                               FORMULATION='VITESSE',),
+                MODELE=MO,
+                  CARA_ELEM = CARA_ELE,
+                CHAM_MATER=CHMAT,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                     _F( CHARGE = TRACTION, FONC_MULT = FSIN),
+                    ),
+                COMP_INCR=_F(RELATION = 'ELAS'),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,
+                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI = 10.,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
+            );   
+            
 #
 #  Solution obtenue avec schema HHT MODI_EQUI='NON'
 #
@@ -203,6 +247,121 @@ REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 10),
             );
+            
+            
+TEST_RESU(RESU=(            
+                _F(RESULTAT=REPACC,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=0.010804500210685,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACC,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.004067177949539,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACC,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.013026189840935,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACC,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=-4.647918136289064,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACC,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=2.374868231956595,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPACC,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=5.579336777301602,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ), ),);
+                              
+
+TEST_RESU(RESU=(            
+                _F(RESULTAT=REPVIT,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=0.010804500210685,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPVIT,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.004067177949539,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPVIT,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   VALE=-0.013026189840935,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPVIT,
+                   INST=0.5,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=-4.647918136289064,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPVIT,
+                   INST=0.7,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=2.374868231956595,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ),
+                _F(RESULTAT=REPVIT,
+                   INST=1.,
+                   GROUP_NO = 'B',
+                   NOM_CHAM = 'ACCE',
+                   NOM_CMP = 'DZ',
+                   VALE=5.579336777301602,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=(1.E-3,1.E-7,),
+                   ), ),);
+                            
 
 #
 #  Les valeurs de references sont obtenues avec Matlab R2006b

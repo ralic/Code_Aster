@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,13 +63,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER       IRET, IRES, I, NBTU, JLTN1, JLTN2
+      INTEGER       IRET, I, NBTU, JLTN1, JLTN2
       CHARACTER*1   BAS2
       CHARACTER*8   K8B, MAIL1, MAIL2
       CHARACTER*14  COM1, COM2, NU1, NU2
       CHARACTER*16  TYP2SD, CORR1, CORR2
       CHARACTER*19  CH1, CH2, SDR1, K191, K192
-      CHARACTER*24  O1, O2, NOMSD
 
 C DEB-------------------------------------------------------------------
 
@@ -224,7 +223,7 @@ C     ---------------------------------------------
         K191 = SD1
         K192 = SD2
         CALL JEDUP1(K191//'.CCID',BAS2,K192//'.CCID')
-        CALL JEDUP1(K191//'.CCJJ',BAS2,K192//'.CCJJ')
+        CALL JEDUP1(K191//'.CCII',BAS2,K192//'.CCII')
         CALL JEDUP1(K191//'.CCLL',BAS2,K192//'.CCLL')
         CALL JEDUP1(K191//'.CCVA',BAS2,K192//'.CCVA')
         CALL JEDUP1(K191//'.CONL',BAS2,K192//'.CONL')

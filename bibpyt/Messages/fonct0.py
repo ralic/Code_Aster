@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
+#@ MODIF fonct0 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -300,6 +300,15 @@ Les abscisses de la fonction %(k1)s ne sont pas décroissantes.
 
 47 : _("""
 Les abscisses de la fonction %(k1)s ne sont pas strictement décroissantes.
+"""),
+
+48 : _("""
+La fonction ou formule ne doit avoir qu'une ou deux variables.
+"""),
+
+49 : ("""
+La nappe ou formule a deux paramètres. Il faut renseigner le mot-clé NOM_PARA_FONC
+et soit VALE_PARA_FONC, soit LIST_PARA_FONC.
 """),
 
 50 : _("""

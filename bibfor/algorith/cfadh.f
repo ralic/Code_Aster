@@ -1,9 +1,9 @@
-       SUBROUTINE CFADH(RESOCO,DEFICO,NOMA,NDIM,
-     &                  INDIC,NBLIAC,NBLIAI,AJLIAI,SPLIAI,
-     &                  LLF,LLF1,LLF2)
-C ======================================================================
+       SUBROUTINE CFADH (RESOCO,DEFICO,NOMA  ,NDIM  ,INDIC ,
+     &                   NBLIAC,NBLIAI,AJLIAI,SPLIAI,LLF   ,
+     &                   LLF1  ,LLF2  )
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,30 +20,27 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*24 RESOCO
-      CHARACTER*24 DEFICO
+      CHARACTER*24 RESOCO,DEFICO
       CHARACTER*8  NOMA
       INTEGER      NDIM
       INTEGER      INDIC
-      INTEGER      NBLIAC
-      INTEGER      AJLIAI
-      INTEGER      SPLIAI
-      INTEGER      LLF
-      INTEGER      LLF1
-      INTEGER      LLF2
-      INTEGER      NBLIAI
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : FRO2GD/FROLGD
+      INTEGER      AJLIAI,SPLIAI,NBLIAI
+      INTEGER      NBLIAC,LLF,LLF1,LLF2
+C      
 C ----------------------------------------------------------------------
 C
-C  VERIFICATION QUE LES LIAISONS SONT BIEN ADHERENTES
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
+C
+C VERIFICATION QUE LES LIAISONS SONT BIEN ADHERENTES
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-C                'E': RESOCO(1:14)//'.MU'
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C OUT INDIC  :+1 ON A RAJOUTE UNE LIAISON
@@ -91,8 +88,8 @@ C
       CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2, TYPLIA
       CHARACTER*19 LIAC,CONVEC,MU
       INTEGER      JLIAC,JVECC,JMU
-      CHARACTER*24 APPARI,CONTNO,CONTMA,FROTE
-      INTEGER      JAPPAR,JNOCO,JMACO,IFRO
+      CHARACTER*24 FROTE
+      INTEGER      IFRO
       INTEGER      IFM,NIV
 C
 C ----------------------------------------------------------------------
@@ -102,16 +99,10 @@ C
 C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
-      APPARI = RESOCO(1:14)//'.APPARI'
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
       LIAC   = RESOCO(1:14)//'.LIAC'
       CONVEC = RESOCO(1:14)//'.CONVEC'
       MU     = RESOCO(1:14)//'.MU'
       FROTE  = DEFICO(1:16)//'.FROTE'
-      CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(CONTMA,'L',JMACO)
-      CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(LIAC,  'L',JLIAC )
       CALL JEVEUO(CONVEC,'L',JVECC )
       CALL JEVEUO(MU,    'E',JMU   )
@@ -244,16 +235,16 @@ C ======================================================================
  20     CONTINUE
         IF ((COMPTS+COMPTU+COMPTV).NE.0) THEN
           DO 60 JJ  = 1, COMPTS+COMPTU+COMPTV
-             II     = COMPTS + COMPTU + COMPTV - JJ + 1
-             POSIT  = ZI(JSPLF0-1+II)
-             LIAISO = ZI(JLIAC-1+POSIT)
-             TYPLIA = ZK8(JVECC-1+POSIT)
-             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
-     &             LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
-             IF (NIV.GE.2) THEN
-              CALL CFIMP2(IFM,NOMA,LIAISO,TYPLIA,TYPESP,'GLI',0.D0,
-     &                    JAPPAR,JNOCO,JMACO)
-             ENDIF
+            II     = COMPTS + COMPTU + COMPTV - JJ + 1
+            POSIT  = ZI(JSPLF0-1+II)
+            LIAISO = ZI(JLIAC-1+POSIT)
+            TYPLIA = ZK8(JVECC-1+POSIT)
+            CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
+     &            LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
+            IF (NIV.GE.2) THEN
+              CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LIAISO,
+     &                    TYPLIA,TYPESP,'GLI' ,0.D0)
+            ENDIF
  60       CONTINUE
           DO 70 JJ = 1, LLF
              ZR(JMU-1+NBLIAC+LLF+JJ) =
@@ -318,12 +309,12 @@ C ======================================================================
           POSIT  = ZI(JSPLF0-1+II)
           LIAISO = ZI(JLIAC-1+POSIT)
           TYPLIA = ZK8(JVECC-1+POSIT)
-               CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
-     &                  LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
-               IF (NIV.GE.2) THEN
-                CALL CFIMP2(IFM,NOMA,LIAISO,'F3',TYPESP,'GLI',0.D0,
-     &                      JAPPAR,JNOCO,JMACO)
-               ENDIF
+          CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
+     &             LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
+          IF (NIV.GE.2) THEN
+            CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LIAISO,
+     &                  'F3'  ,TYPESP,'GLI' ,0.D0)
+          ENDIF
  160    CONTINUE
       ENDIF
       CALL JEDETR('&&CFADH.SUPLF0')

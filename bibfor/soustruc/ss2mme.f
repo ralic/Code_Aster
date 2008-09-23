@@ -1,6 +1,7 @@
-      SUBROUTINE SS2MME(MO,VECEL,BASE)
+      SUBROUTINE SS2MME(NOMO  ,MOTFAZ,VESSTR,BASE)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF SOUSTRUC  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,142 +18,151 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C
-C     ARGUMENTS:
-C     ----------
-      CHARACTER*8 MO
-      CHARACTER*19 VECEL
-      CHARACTER*1 BASE
-C ----------------------------------------------------------------------
-C     BUT: TRAITER LE MOT-CLEF SOUS_STRUC DE LA COMMANDE
-C          CALC_VECT_ELEM.
-C
-C
-C     IN:     MO : NOM DU MODELE
-C          VECEL : NOM DU VECT_ELEM
-C
-C     OUT: VECEL EST (EVENTUELLEMENT) ENRICHI DE L'OBJET .RELC
-C
+      IMPLICIT NONE
+      CHARACTER*8   NOMO
+      CHARACTER*19  VESSTR
+      CHARACTER*1   BASE
+      CHARACTER*(*) MOTFAZ
+C      
 C ----------------------------------------------------------------------
 C
-C     FONCTIONS EXTERNES:
-C     -------------------
+C PREPARER LE VECT_ELEM DANS LE CAS DE SOUS-STRUCTURES
 C
-C     VARIABLES LOCALES:
-C     ------------------
-      CHARACTER*8 MA ,KBID ,NOSMA,NOMCAS,NOMACR
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C      
+C ----------------------------------------------------------------------
+C
+C IN  NOMO   : NOM DU MODELE
+C IN  MOTFAC : MOT-CLEF FACTEUR DECRIVANT LES SOUS-STRUCTURES
+C IN  BASE   : BASE DE CREATION DU VECT_ELEM
+C I/O VESSTR : NOM DU VECT_ELEM
+C                OUT : VESSTR EST (EVENTUELLEMENT) ENRICHI DE 
+C                L'OBJET .RELC
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
       REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
       COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
       LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-C
+      CHARACTER*8  NOMA  ,K8BID ,NOSMA ,NOMCAS,NOMACR
+      INTEGER      NBSSA ,NBSMA ,N1    ,N2    ,NBOC
+      INTEGER      IAREFR,IALMAI,IALSCH,IMAS  ,IASSSA,IAMACR
+      INTEGER      IER0  ,IOC   ,I     ,IBID  ,IERD  ,IRET
+      CHARACTER*16 MOTFAC,VALK(2)     
+C      
+C ----------------------------------------------------------------------
+C      
       CALL JEMARQ()
-      CALL GETFAC('SOUS_STRUC',NBOC)
+C      
+      MOTFAC = MOTFAZ
+      CALL GETFAC(MOTFAC,NBOC  )
       IF (NBOC.EQ.0) GO TO 9999
 C
-      CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IERD)
-      CALL DISMOI('F','NB_SS_ACTI',MO,'MODELE',NBSSA,KBID,IERD)
-      CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
+C --- INITIALISATIONS
+C
+      CALL DISMOI('F','NOM_MAILLA'  ,NOMO,'MODELE',IBID ,NOMA,IERD)
+      CALL DISMOI('F','NB_SS_ACTI'  ,NOMO,'MODELE',NBSSA,K8BID,IERD)
+      CALL DISMOI('F','NB_SM_MAILLA',NOMO,'MODELE',NBSMA,K8BID,IERD)
 C
       IF (NBSSA.EQ.0) THEN
         CALL U2MESS('F','SOUSTRUC_24')
       END IF
 C
-      CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
-      CALL JEVEUO(MA//'.NOMACR','L',IAMACR)
+      CALL JEVEUO(NOMO//'.MODELE    .SSSA','L',IASSSA)
+      CALL JEVEUO(NOMA//'.NOMACR','L',IAMACR)
 C
-      CALL JEVEUO(VECEL//'.RERR','E',IAREFR)
+      CALL JEVEUO(VESSTR(1:19)//'.RERR','E',IAREFR)
       ZK24(IAREFR-1+3)='OUI_SOUS_STRUC'
 C
-      CALL JECREC(VECEL//'.RELC',BASE//' V I','NO','CONTIG',
+      CALL JECREC(VESSTR(1:19)//'.RELC',BASE//' V I','NO','CONTIG',
      &             'CONSTANT',NBOC)
-      CALL JEECRA(VECEL//'.RELC','LONMAX',NBSMA,KBID)
-C
+      CALL JEECRA(VESSTR(1:19)//'.RELC','LONMAX',NBSMA,K8BID)
 C
       CALL WKVECT('&&SS2MME.LMAI','V V K8',NBSMA,IALMAI)
 C
-C     -- BOUCLE SUR LES CAS_DE_CHARGE:
-C     --------------------------------
-      IER0=0
-      DO 10, IOC= 1,NBOC
+C --- BOUCLE SUR LES CAS_DE_CHARGE
+C 
+      IER0   = 0
+      DO 10 IOC= 1,NBOC
 C
-        CALL GETVTX('SOUS_STRUC','CAS_CHARGE',IOC,1,1,NOMCAS,N1)
-        CALL JECROC(JEXNOM(VECEL//'.RELC',NOMCAS))
-        CALL JEVEUO(JEXNOM(VECEL//'.RELC',NOMCAS),'E',IALSCH)
+        CALL GETVTX(MOTFAC,'CAS_CHARGE',IOC,1,1,NOMCAS,N1)
+        CALL JECROC(JEXNOM(VESSTR(1:19)//'.RELC',NOMCAS))
+        CALL JEVEUO(JEXNOM(VESSTR(1:19)//'.RELC',NOMCAS),'E',IALSCH)
 C
-C       -- CAS : TOUT: 'OUI' :
-C       ----------------------
-        CALL GETVTX('SOUS_STRUC','TOUT',IOC,1,1,KBID,N1)
+C       -- CAS : TOUT: 'OUI' 
+C       
+        CALL GETVTX(MOTFAC,'TOUT',IOC   ,1     ,1     ,
+     &              K8BID ,N1)
         IF (N1.EQ.1) THEN
-          DO 1, I=1,NBSMA
+          DO 1 I=1,NBSMA
             IF (ZI(IASSSA-1+I).EQ.1) ZI(IALSCH-1+I)=1
  1        CONTINUE
           GO TO 5
         END IF
 C
 C       -- CAS : MAILLE: L_MAIL
-C       -----------------------
-        CALL GETVID('SOUS_STRUC','SUPER_MAILLE',
-     &             IOC,1,0,KBID,N2)
-        IF (-N2.GT.NBSMA) CALL U2MESS('F','SOUSTRUC_25')
-        CALL GETVID('SOUS_STRUC','SUPER_MAILLE',
-     &             IOC,1,NBSMA,ZK8(IALMAI),N2)
-        DO 2, I=1,N2
-          NOSMA=ZK8(IALMAI-1+I)
-          CALL JENONU(JEXNOM(MA//'.SUPMAIL',NOSMA),IMAS)
+C       
+        CALL GETVID(MOTFAC,'SUPER_MAILLE',IOC   ,1     ,0     ,
+     &              K8BID ,N2)
+        IF (-N2.GT.NBSMA) THEN
+          CALL U2MESS('F','SOUSTRUC_25')
+        ELSE  
+          CALL GETVID(MOTFAC,'SUPER_MAILLE',IOC   ,1     ,NBSMA  ,
+     &                ZK8(IALMAI),N2)
+        ENDIF
+        DO 2 I=1,N2
+          NOSMA  = ZK8(IALMAI-1+I)
+          CALL JENONU(JEXNOM(NOMA//'.SUPMAIL',NOSMA),IMAS)
           IF (IMAS.EQ.0) THEN
-             VALK(1) = NOSMA
-             VALK(2) = MA
-             CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
+            VALK(1) = NOSMA
+            VALK(2) = NOMA
+            CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
           ELSE
             ZI(IALSCH-1+IMAS)=1
           END IF
  2      CONTINUE
 C
-C
-C       -- ON VERIFIE QUE LES VECTEURS ELEMENTAIRES SONT CALCULES:
-C       ----------------------------------------------------------
+C       -- ON VERIFIE QUE LES VECTEURS ELEMENTAIRES SONT CALCULES
+C 
  5      CONTINUE
-        DO 3, I=1,NBSMA
-          IF (ZI(IALSCH-1+I).EQ.0) GO TO 3
-          CALL JENUNO(JEXNUM(MA//'.SUPMAIL',I),NOSMA)
-          IF (ZI(IASSSA-1+I).NE.1) CALL U2MESK('F','SOUSTRUC_27',1,NOSMA
-     &)
+        DO 3 I=1,NBSMA
+          IF (ZI(IALSCH-1+I).NE.0) THEN 
+            CALL JENUNO(JEXNUM(NOMA//'.SUPMAIL',I),NOSMA)
+            IF (ZI(IASSSA-1+I).NE.1) THEN
+              CALL U2MESK('F','SOUSTRUC_27',1,NOSMA)
+            ENDIF  
 C
-          NOMACR= ZK8(IAMACR-1+I)
-          CALL JEEXIN(JEXNOM(NOMACR//'.LICA',NOMCAS),IRET)
-          IF (IRET.EQ.0) THEN
-            IER0=1
-             VALK(1) = NOSMA
-             VALK(2) = NOMCAS
-             CALL U2MESK('E','SOUSTRUC_28', 2 ,VALK)
-          END IF
+            NOMACR = ZK8(IAMACR-1+I)
+            CALL JEEXIN(JEXNOM(NOMACR//'.LICA',NOMCAS),IRET)
+            IF (IRET.EQ.0) THEN
+               IER0    = 1
+               VALK(1) = NOSMA
+               VALK(2) = NOMCAS
+               CALL U2MESK('E','SOUSTRUC_28', 2 ,VALK)
+            END IF
+          ENDIF
  3      CONTINUE
 C
  10   CONTINUE
 C
       IF (IER0.EQ.1) CALL U2MESS('F','SOUSTRUC_29')
 C
-      CALL JEEXIN('&&SS2MME.LMAI',IRET)
-      IF (IRET.GT.0) CALL JEDETR('&&SS2MME.LMAI')
-C
+      CALL JEDETR('&&SS2MME.LMAI')
 C
  9999 CONTINUE
       CALL JEDEMA()

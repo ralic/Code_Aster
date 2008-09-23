@@ -1,7 +1,7 @@
       SUBROUTINE CFITER(RESOCO,ACCES,TYPOPE,VALI,VALR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,38 +26,35 @@ C
       CHARACTER*4  TYPOPE
       INTEGER      VALI
       REAL*8       VALR
-
+C      
+C ----------------------------------------------------------------------
 C
-C ======================================================================
-C ROUTINE APPELEE PAR : ALGOCO/ALGOCL/ALGCP/ALGOGL/NMCONV/FRO2GD...
-C ======================================================================
+C ROUTINE CONTACT (METHODES DISCRETES - UTILITAIRE)
+C
+C MISE A JOUR DU VECTEUR DIAGNOSTIC
+C
+C ----------------------------------------------------------------------
+C
 C
 C MISE A JOUR DU VECTEUR DIAGNOSTIC
 C
 C IN  RESOCO  : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  ACCES   : TYPE D'ACCES
-C                'L':    LECTURE DONNEE
-C                'E':    ECRITURE DONNEE
+C                'I': INITIALISATION
+C                'L': LECTURE DONNEE
+C                'E': ECRITURE DONNEE
 C IN  TYPOPE  : OPERATION SUR LE VECTEUR DIAGNOSTIC
-C                    !!! IMPORTANT !!!
-C               QUAND ON ECRIT UNE INFO POUR L'ITERATION DE NEWTON
-C               ON MET A JOUR SIMULTANEMENT L'INFO POUR LE
-C               PAS DE TEMPS ET POUR LE STAT_NON_LINE EN AJOUTANT
-C               LA VALEUR DONNEE POUR L'ITERATION A CE QUI EST DEJA
-C               STOCKEE POUR LE PAS DE TEMPS ET LE STAT_NON_LINE
-C                'ITER': NOMBRE D'ITERATIONS SUR ITERATION DE NEWTON
-C                         COURANTE
-C                        (+ MAJ PAS DE TEMPS + MAJ STAT_NON_LINE)
-C                'ITEP': NOMBRE D'ITERATIONS SUR PAS DE TEMPS COURANT
-C                'ITES': NOMBRE D'ITERATIONS SUR STAT_NON_LINE COURANT
-C                'TIMG': TEMPS GEOM SUR ITERATION DE NEWTON COURANTE
-C                        (+ MAJ PAS DE TEMPS + MAJ STAT_NON_LINE)
-C                'TIMA': TEMPS ALGO SUR ITERATION DE NEWTON COURANTE
-C                        (+ MAJ PAS DE TEMPS + MAJ STAT_NON_LINE)
-C                'TIPG': TEMPS GEOM SUR PAS DE TEMPS COURANT
-C                'TIPA': TEMPS ALGO SUR PAS DE TEMPS COURANT
-C                'TISG': TEMPS GEOM SUR STAT_NON_LINE COURANT
-C                'TISA': TEMPS ALGO SUR STAT_NON_LINE COURANT
+C                'CONT' - COMPTEUR BOUCLE CONTACT
+C                  'CONC' - CUMULE SUR PAS DE TEMPS
+C                'GEOM' - COMPTEUR BOUCLE GEOMETRIE
+C                'FROT' - COMPTEUR BOUCLE FROTTEMENT
+C                'LIAC' - COMPTEUR LIAISONS DE CONTACT
+C                'LIAF' - COMPTEUR LIAISONS DE FROTTEMENT
+C                'TIMA' - TEMPS ALGORITHME DE RESOLUTION
+C                'TIMG' - TEMPS ALGORITHME D'APPARIEMENT GEOMETRIQUE
+
+
+
 C I/O  VALI   : VALEUR ENTIERE A LIRE OU ECRIRE
 C I/O  VALR   : VALEUR REELLE A LIRE OU ECRIRE
 C
@@ -80,74 +77,73 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
+
+      INTEGER      ZDIAG
+      PARAMETER    (ZDIAG=10)
       CHARACTER*24 DIAGI,DIAGT
       INTEGER      JDIAGI,JDIAGT
-      INTEGER      IER
+      INTEGER      I
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- ACCES OBJETS
+C      
       DIAGI  = RESOCO(1:14)//'.DIAG.ITER'
       DIAGT  = RESOCO(1:14)//'.DIAG.TIME'
-
-      CALL JEEXIN(DIAGI,IER)
-      CALL ASSERT(IER.NE.0)
-
-
-      CALL JEVEUO(DIAGI,ACCES,JDIAGI)
-      CALL JEVEUO(DIAGT,ACCES,JDIAGT)
+      CALL JEVEUO(DIAGI,'E',JDIAGI)
+      CALL JEVEUO(DIAGT,'E',JDIAGT)
 C
 C ---
-C
-      IF (ACCES.EQ.'E') THEN
-        IF (TYPOPE.EQ.'ITER') THEN
-          ZI(JDIAGI-1+1) = VALI
-          ZI(JDIAGI-1+2) = ZI(JDIAGI-1+2)+VALI
-          ZI(JDIAGI-1+3) = ZI(JDIAGI-1+3)+VALI
-        ELSE IF (TYPOPE.EQ.'ITEP') THEN
+C  
+      IF (ACCES.EQ.'I') THEN
+        DO 10 I = 1,ZDIAG
+          ZI(JDIAGI-1+I) = 0
+          ZR(JDIAGT-1+I) = 0.D0
+  10    CONTINUE                          
+      ELSEIF (ACCES.EQ.'E') THEN
+        IF (TYPOPE.EQ.'CONT') THEN
+          ZI(JDIAGI-1+1) = ZI(JDIAGI-1+1)+VALI 
+          ZI(JDIAGI-1+6) = VALI       
+        ELSE IF (TYPOPE.EQ.'LIAC') THEN
           ZI(JDIAGI-1+2) = VALI
-        ELSE IF (TYPOPE.EQ.'ITES') THEN
-          ZI(JDIAGI-1+3) = VALI
+        ELSE IF (TYPOPE.EQ.'LIAF') THEN
+          ZI(JDIAGI-1+3) = VALI                  
+        ELSE IF (TYPOPE.EQ.'GEOM') THEN
+          ZI(JDIAGI-1+4) = ZI(JDIAGI-1+4)+VALI   
+        ELSE IF (TYPOPE.EQ.'FROT') THEN
+          ZI(JDIAGI-1+5) = ZI(JDIAGI-1+5)+VALI    
+          
         ELSE IF (TYPOPE.EQ.'TIMA') THEN
-          ZR(JDIAGT-1+1) = VALR
-          ZR(JDIAGT-1+3) = ZR(JDIAGT-1+3) + VALR
-          ZR(JDIAGT-1+5) = ZR(JDIAGT-1+5) + VALR
+          ZR(JDIAGT-1+1) = ZR(JDIAGT-1+1)+VALR
         ELSE IF (TYPOPE.EQ.'TIMG') THEN
-          ZR(JDIAGT-1+2) = VALR
-          ZR(JDIAGT-1+4) = ZR(JDIAGT-1+4) + VALR
-          ZR(JDIAGT-1+6) = ZR(JDIAGT-1+6) + VALR
-        ELSE IF (TYPOPE.EQ.'TIPA') THEN
-          ZR(JDIAGT-1+3) = VALR
-        ELSE IF (TYPOPE.EQ.'TIPG') THEN
-          ZR(JDIAGT-1+4) = VALR
-        ELSE IF (TYPOPE.EQ.'TISA') THEN
-          ZR(JDIAGT-1+5) = VALR
-        ELSE IF (TYPOPE.EQ.'TISG') THEN
-          ZR(JDIAGT-1+6) = VALR
+          ZR(JDIAGT-1+2) = ZR(JDIAGT-1+2)+VALR          
+                                
         ELSE
-           CALL ASSERT(.FALSE.)
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSE IF (ACCES.EQ.'L') THEN
-        IF (TYPOPE.EQ.'ITER') THEN
-          VALI = ZI(JDIAGI-1+1)
-        ELSE IF (TYPOPE.EQ.'ITEP') THEN
-          VALI = ZI(JDIAGI-1+2)
-        ELSE IF (TYPOPE.EQ.'ITES') THEN
-          VALI = ZI(JDIAGI-1+3)
+        IF (TYPOPE.EQ.'CONT') THEN
+          VALI = ZI(JDIAGI-1+6) 
+        ELSE IF (TYPOPE.EQ.'LIAC') THEN
+          VALI = ZI(JDIAGI-1+2) 
+        ELSE IF (TYPOPE.EQ.'LIAF') THEN
+          VALI = ZI(JDIAGI-1+3)          
+        ELSE IF (TYPOPE.EQ.'GEOM') THEN
+          VALI = ZI(JDIAGI-1+4)  
+        ELSE IF (TYPOPE.EQ.'FROT') THEN
+          VALI = ZI(JDIAGI-1+5)                      
+        ELSE IF (TYPOPE.EQ.'CONC') THEN
+          VALI = ZI(JDIAGI-1+1) 
+                                               
         ELSE IF (TYPOPE.EQ.'TIMA') THEN
           VALR = ZR(JDIAGT-1+1)
         ELSE IF (TYPOPE.EQ.'TIMG') THEN
           VALR = ZR(JDIAGT-1+2)
-        ELSE IF (TYPOPE.EQ.'TIAP') THEN
-          VALR = ZR(JDIAGT-1+3)
-        ELSE IF (TYPOPE.EQ.'TIGP') THEN
-          VALR = ZR(JDIAGT-1+4)
-        ELSE IF (TYPOPE.EQ.'TIAS') THEN
-          VALR = ZR(JDIAGT-1+5)
-        ELSE IF (TYPOPE.EQ.'TIGS') THEN
-          VALR = ZR(JDIAGT-1+6)
+                   
         ELSE
-           CALL ASSERT(.FALSE.)
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSE
         CALL ASSERT(.FALSE.)

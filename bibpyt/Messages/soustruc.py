@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF soustruc Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -321,10 +321,6 @@ cata_msg={
 
 71: _("""
  nombre de noeuds internes : 0
-"""),
-
-72: _("""
- indicateur de diagonalité de la matrice spectrale : %(r1)f 
 """),
 
 73: _("""

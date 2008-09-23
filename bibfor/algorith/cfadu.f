@@ -1,8 +1,8 @@
-      SUBROUTINE CFADU(RESOCO,DEPDEL,NEQ,NDIM,NBLIAC,LLF,
-     &                 LLF1,LLF2,NESMAX)
-C ======================================================================
+      SUBROUTINE CFADU (RESOCO,DEPDEL,NEQ   ,NDIM  ,NBLIAC,
+     &                  LLF   ,LLF1  ,LLF2  ,NESMAX)
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,23 +19,23 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
-       IMPLICIT     NONE
-       INTEGER      NEQ
-       INTEGER      NDIM
-       INTEGER      NBLIAC
-       INTEGER      LLF
-       INTEGER      LLF1
-       INTEGER      LLF2
-       INTEGER      NESMAX
-       CHARACTER*24 RESOCO
-       CHARACTER*24 DEPDEL
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/FRO2GD/FROLGD/FROPGD
+       IMPLICIT      NONE
+       INTEGER       NEQ,NDIM
+       INTEGER       NBLIAC,LLF,LLF1,LLF2
+       INTEGER       NESMAX
+       CHARACTER*24  RESOCO
+       CHARACTER*(*) DEPDEL
+C      
 C ----------------------------------------------------------------------
 C
-C  ROUTINE MERE POUR LE CALCUL DU SECOND MEMBRE
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
+C
+C ROUTINE MERE POUR LE CALCUL DU SECOND MEMBRE
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C                'E': RESOCO(1:14)//'.MU'
@@ -81,9 +81,11 @@ C
       INTEGER       JLIAC,JMU,JDELT0
       CHARACTER*24  APPOIN,APDDL,APCOEF,APCOFR,APJEU
       INTEGER       JAPPTR,JAPDDL,JAPCOE,JAPCOF,JAPJEU
-C ======================================================================
+C      
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ ()
-C ======================================================================
+C 
       APPOIN = RESOCO(1:14)//'.APPOIN'
       APDDL  = RESOCO(1:14)//'.APDDL'
       LIAC   = RESOCO(1:14)//'.LIAC'
@@ -92,14 +94,14 @@ C ======================================================================
       APJEU  = RESOCO(1:14)//'.APJEU'
       MU     = RESOCO(1:14)//'.MU'
       DELT0  = RESOCO(1:14)//'.DEL0'
-C ======================================================================
-      CALL JEVEUO (APPOIN,'L',JAPPTR)
-      CALL JEVEUO (APDDL, 'L',JAPDDL)
-      CALL JEVEUO (LIAC,  'L',JLIAC )
-      CALL JEVEUO (APCOEF,'L',JAPCOE)
-      CALL JEVEUO (APJEU, 'L',JAPJEU)
-      CALL JEVEUO (DELT0, 'L',JDELT0)
-      CALL JEVEUO (MU,    'E',JMU   )
+C
+      CALL JEVEUO(APPOIN,'L',JAPPTR)
+      CALL JEVEUO(APDDL, 'L',JAPDDL)
+      CALL JEVEUO(LIAC,  'L',JLIAC )
+      CALL JEVEUO(APCOEF,'L',JAPCOE)
+      CALL JEVEUO(APJEU, 'L',JAPJEU)
+      CALL JEVEUO(DELT0, 'L',JDELT0)
+      CALL JEVEUO(MU,    'E',JMU   )
       IF ((LLF+LLF1+LLF2).NE.0) THEN
          CALL JEVEUO (DEPDEL(1:19)//'.VALE', 'L', JDEPDE)
          CALL JEVEUO (APCOFR,'L',JAPCOF)

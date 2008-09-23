@@ -1,0 +1,156 @@
+      SUBROUTINE NMASCO(FONACT,DEFICO,VEASSE,CNCONT)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      LOGICAL       FONACT(*)   
+      CHARACTER*24  DEFICO
+      CHARACTER*19  VEASSE(*)
+      CHARACTER*19  CNCONT      
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME - CALCUL)
+C
+C CONSTRUCTION DU VECTEUR DES FORCES VARIABLES LIEES AU CONTACT
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
+C IN  DEFICO : SD DEFINITION CONTACT
+C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
+C OUT CNCONT : VECT_ASSE DES CONTRIBUTIONS DE CONTACT/FROTTEMENT (C/F)
+C               C/F METHODE CONTINUE
+C               C/F METHODE XFEM
+C               C/F METHODE XFEM GRDS GLIS.
+C               F   METHODE DISCRETE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C 
+      LOGICAL      ISFONC,LCTCC,LCTFD,LXFCM,LTFCM,LCTFC
+      CHARACTER*24 K24BLA,K24BID
+      INTEGER      IBID,IFDO,N,TYPALC
+      CHARACTER*19 VECT(20)
+      REAL*8       COEF(20)      
+      REAL*8       R8BID
+      CHARACTER*19 NMCHEX,CNCTDF,CNCTCC,CNCTCF,CNXFEC,CNXFEF
+      CHARACTER*19 CNXFTC,CNXFTF
+C 
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      K24BLA = ' '
+      IFDO   = 0    
+      CALL VTZERO(CNCONT)   
+C
+C --- FONCTIONNALITES ACTIVEES
+C     
+      LCTCC  = ISFONC(FONACT,'CONT_CONTINU') 
+      LCTFC  = ISFONC(FONACT,'FROT_CONTINU')
+      LCTFD  = ISFONC(FONACT,'FROT_DISCRET')    
+      LXFCM  = ISFONC(FONACT,'CONT_XFEM') 
+      LTFCM = .FALSE.
+      IF (LXFCM) THEN
+        CALL MMINFP(0    ,DEFICO,K24BLA,'XFEM_GG',
+     &              IBID ,R8BID ,K24BID,LTFCM)
+      ENDIF 
+      CALL CFDISC(DEFICO,' ',TYPALC,IBID,IBID,IBID)
+C
+C --- FORCES DE FROTTEMENT DISCRET
+C
+      IF ((LCTFD).OR.(ABS(TYPALC).EQ.1)) THEN
+        CNCTDF     = NMCHEX(VEASSE,'VEASSE','CNCTDF') 
+        IFDO       = IFDO + 1 
+        COEF(IFDO) = 1.D0   
+        VECT(IFDO) = CNCTDF
+      ENDIF                    
+C
+C --- FORCES DE CONTACT/FROTTEMENT METHODE CONTINUE
+C
+       IF ((LCTCC.AND.(.NOT.LXFCM))) THEN
+         CNCTCC     = NMCHEX(VEASSE,'VEASSE','CNCTCC')  
+         IFDO       = IFDO + 1 
+         COEF(IFDO) = 1.D0   
+         VECT(IFDO) = CNCTCC 
+       ENDIF  
+       IF ((LCTFC.AND.(.NOT.LXFCM))) THEN    
+         CNCTCF     = NMCHEX(VEASSE,'VEASSE','CNCTCF')  
+         IFDO       = IFDO + 1 
+         COEF(IFDO) = 1.D0   
+         VECT(IFDO) = CNCTCF                    
+       ENDIF
+C
+C --- FORCES DE CONTACT/FROTTEMENT XFEM
+C
+       IF (LXFCM) THEN
+         CNXFEC     = NMCHEX(VEASSE,'VEASSE','CNXFEC')         
+         IFDO       = IFDO + 1 
+         COEF(IFDO) = 1.D0   
+         VECT(IFDO) = CNXFEC   
+         CNXFEF     = NMCHEX(VEASSE,'VEASSE','CNXFEF')  
+         IFDO       = IFDO + 1 
+         COEF(IFDO) = 1.D0   
+         VECT(IFDO) = CNXFEF            
+       ENDIF       
+
+C
+C --- FORCES DE CONTACT/FROTTEMENT XFEM GRANDS GLISSEMENTS
+C
+       IF (LTFCM) THEN       
+         CNXFTC     = NMCHEX(VEASSE,'VEASSE','CNXFTC')  
+         IFDO       = IFDO + 1 
+         COEF(IFDO) = 1.D0   
+         VECT(IFDO) = CNXFTC   
+         CNXFTF     = NMCHEX(VEASSE,'VEASSE','CNXFTF')  
+         IFDO       = IFDO + 1 
+         COEF(IFDO) = 1.D0   
+         VECT(IFDO) = CNXFTF 
+       ENDIF                       
+C
+C --- VECTEUR RESULTANT 
+C       
+      DO 10 N = 1,IFDO
+        CALL VTAXPY(COEF(N),VECT(N),CNCONT)   
+ 10   CONTINUE       
+C
+      CALL JEDEMA()
+      END

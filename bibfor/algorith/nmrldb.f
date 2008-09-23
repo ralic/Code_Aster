@@ -1,7 +1,7 @@
-      SUBROUTINE NMRLDB(LMAT,RESU,NBSM,CHCINE)
+      SUBROUTINE NMRLDB(LMAT,RESU,NBSM,CNCINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,21 +20,25 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      INTEGER LMAT,NBSM
-      REAL*8 RESU(*)
-      CHARACTER*24 CHCINE
+      INTEGER      LMAT,NBSM
+      REAL*8       RESU(*)
+      CHARACTER*19 CNCINE
+C      
 C ----------------------------------------------------------------------
-C     CALCUL DE RESU = MAT-1(RESU,CHCINE)
-C     NON LINEAIRE
 C
-C IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE
-C IN CHCINE   : NOM DU CHCINE.VALE
-C VAR RESU    : .VALE DU CHAM_NO RESULTAT EN OUT , SMB EN IN
-C-----------------------------------------------------------------------
+C ROUTINE CONTACT
+C
+C ROUTINE DE CALCUL DE RESU = MAT-1(RESU,CNCINE)  NON LINEAIRE
+C 
+C ----------------------------------------------------------------------
+C      
+C
+C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE
+C IN  CNCINE : NOM DU CHARGEMENT CINEMATIQUE
+C I/O RESU   : .VALE DU CHAM_NO RESULTAT EN OUT , SMB EN IN
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -49,18 +53,23 @@ C
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C----------------------------------------------------------------------
-C     VARIABLES LOCALES
-C----------------------------------------------------------------------
-      CHARACTER*8 KBID
+C 
+C ----------------------------------------------------------------------
+C
       CHARACTER*19 SOLVEU,MATR
-      COMPLEX*16 CBID
-C----------------------------------------------------------------------
-      SOLVEU='&&OP0070.SOLVEUR'
+      COMPLEX*16   C16BID
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()      
+C
+      SOLVEU = '&&OP0070.SOLVEUR'
+      MATR   = ZK24(ZI(LMAT+1))
 
-      MATR = ZK24(ZI(LMAT+1))
-
-      CALL RESOUD(MATR,' ',' ',SOLVEU,CHCINE,'V',' ',' ',NBSM,RESU,CBID)
-
+      CALL RESOUD(MATR  ,' ',' ',SOLVEU,CNCINE,
+     &            'V'   ,' ',' ',NBSM  ,RESU  ,
+     &            C16BID)
+C 
+      CALL JEDEMA()
 
       END

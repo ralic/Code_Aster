@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE LA COMMANDE CREA_CHAMP/OPERATION='EVAL'
 #                                 CREA_CHAMP/OPERATION='DISC'
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,7 +178,7 @@ UBID=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CHMAT,
        NEWTON=_F(  MATRICE = 'ELASTIQUE'),
        CONVERGENCE=_F( ARRET = 'NON',  # pour continuer sans convergence
                 ITER_GLOB_MAXI = 1),
-      INCREMENT=_F( LIST_INST = TEMPS1),
+      INCREMENT=_F( LIST_INST = TEMPS1,SUBD_METHODE='AUCUNE'),
               )
 
 # 3.1.2 recuperation d'un champ de variables internes  "modele"

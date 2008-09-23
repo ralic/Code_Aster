@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ OPTION__
         PEPSINR  EPSI_R
         PVITESS  DEPL_R
         PACCELE  DEPL_R
+        PCONTGR  SIEF_R
    OUT__
 PGTHETA G ELEM__
 

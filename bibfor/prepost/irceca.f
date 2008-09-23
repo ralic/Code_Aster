@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -345,7 +345,7 @@ C
             ENDIF
             JMOD = IMODEL+ZI(ILONG-1+MODE)-1
             NEC = NBEC (ZI(JMOD-1+2))
-            IF (NEC .GT. 10) CALL U2MESS('F','PREPOST_78')
+            CALL ASSERT(NEC .LE. 10)
             CALL DGMODE ( MODE,IMODEL, ILONG, NEC, TABEC )
             IAD=CELD(CELD(4+IGREL)+8)
             NSCAL = DIGDEL(MODE)

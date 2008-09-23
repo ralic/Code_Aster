@@ -1,7 +1,7 @@
       SUBROUTINE DIDECO(SDDISC,NUMINS,SDCRIT,FDECUP,RETOUR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/07/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,9 +26,12 @@ C
 C
 C ----------------------------------------------------------------------
 C
-C ROUTINE MECA_NON_LINE (ALGORITHME) : DECOUPAGE DU PAS DE TEMPS
+C ROUTINE MECA_NON_LINE (ALGORITHME)
+C
+C DECOUPAGE DU PAS DE TEMPS
 C
 C ----------------------------------------------------------------------
+C
 C
 C IN  SDDISC : SD DISCRETISATION
 C IN  NUMINS : NUMERO D'INSTANTS
@@ -37,10 +40,11 @@ C IN  FDECUP : FORCE LA SUBDIVISION
 C                 -1 = APPEL AU DEBUT D'OP0070
 C                  1 = FORCE LA SUBDIVISION
 C OUT RETOUR : CODE RETOUR
-C                  0 = LA SUBDIVISION C'EST BIEN PASSEE
+C                  0 = LA SUBDIVISION S'EST BIEN PASSEE
 C                  1 = SUBDIVISION NON DEMANDE
 C                  2 = FINESSE MAXIMALE ATTEINTE : SUBDIVISION INTERDITE
 C                  3 = ON AUTORISE DES ITERATIONS EN PLUS
+C
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -61,96 +65,89 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      REAL*8 ZERO,UN,DEUX
-      PARAMETER ( ZERO=0.0D0, UN=1.0D0, DEUX=2.0D0)
-C
-      INTEGER      NBNIVO, NBIGNO, I, NBVAL
-      INTEGER      ITERAT, JCRR, IRET, NBITER, DININS, NBFIN, REGRES
-      INTEGER      FREARC, NBRPAS, INSPAS, NBTEMP, NBINI, LGTEMP, LGINI
-      REAL*8       PASMIN, RATIO, INSTAM, INSTAP, INST, INCINS, DELTAT
-      REAL*8       XXBB, DIINST
-      REAL*8       GLBREL, GLBMAX, ERRREL, ERRMAX
-      CHARACTER*8  K8BID
+      INTEGER      NBITER,NBNIVO,NBIGNO, NBFIN
+      INTEGER      ITERAT,IRET
+      INTEGER      DININS
+      INTEGER      FREARC,NBRPAS
+      REAL*8       PASMIN,RATIO,INSTAM,INSTAP,DELTAT
+      REAL*8       DIINST
       CHARACTER*16 METHOD
-      REAL*8       XX,SX,SX2,SY,SYX,XN,XA0,XA1,XDET
-      REAL*8       CIBLEN, CIBLE, XXITER
-      INTEGER      DECAL, DEPART, LENIVO
+      REAL*8       MXITER
+      INTEGER      DEPART,LENIVO
       LOGICAL      LEXTRA
       REAL*8       VALRM(4)
       INTEGER      VALIM(2)
       CHARACTER*40 VALKM(1)
-      CHARACTER*24 TPSMET,TPSDII,TPSERR,TPSDIT,TPSDIN,TPSDIA
-      INTEGER      JMETH ,JINFO ,JERRE ,JTEMPS,JNIVTP,JARCH
-C
+      CHARACTER*24 TPSMET,TPSDII,TPSERR
+      INTEGER      JMETH ,JINFO ,JERRE ,JCRR
+C      
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
+C    
 C --- INITIALISATIONS
+C
       RETOUR = 0
 C
 C --- ACCES SD LISTE D'INSTANTS
-      TPSMET = SDDISC(1:19)//'.METH'
+C    
+      TPSMET = SDDISC(1:19)//'.METH'  
       TPSDII = SDDISC(1:19)//'.DIIR'
-      TPSERR = SDDISC(1:19)//'.ERRE'
-      TPSDIT = SDDISC(1:19)//'.DITR'
-      TPSDIN = SDDISC(1:19)//'.DINI'
-      TPSDIA = SDDISC(1:19)//'.DIAL'
-      CALL JEVEUO(TPSMET,'L',JMETH )
-      CALL JEVEUO(TPSDII,'L',JINFO )
-      CALL JEVEUO(TPSERR,'E',JERRE )
-      CALL JEVEUO(TPSDIT,'E',JTEMPS)
-      CALL JEVEUO(TPSDIN,'E',JNIVTP)
-      CALL JEVEUO(TPSDIA,'E',JARCH )
+      TPSERR = SDDISC(1:19)//'.ERRE' 
+      CALL JEVEUO(TPSMET,'L',JMETH )  
+      CALL JEVEUO(TPSDII,'L',JINFO )  
+      CALL JEVEUO(TPSERR,'L',JERRE )          
 C
 C --- NOM DE LA METHODE DE SUBDIVISION
+C      
       METHOD = ZK16(JMETH)
 C
 C --- PAS DE SUBDIVISION AUTORISEE: ON SORT
+C      
       IF (METHOD(1:6) .EQ. 'AUCUNE' ) THEN
-         RETOUR = 1
-         GOTO 9999
+        RETOUR = 1
+        GOTO 9999
       ENDIF
 C
 C --- ERREUR DES CRITERES DE CONVERGENCE :  +O = ITERAT
+C
       CALL JEEXIN(SDCRIT(1:19)//'.CRTR',IRET)
       IF (IRET.NE.0) THEN
-         CALL JEVEUO(SDCRIT(1:19)//'.CRTR','L',JCRR)
-         ITERAT = NINT(ZR(JCRR))
+        CALL JEVEUO(SDCRIT(1:19)//'.CRTR','L',JCRR)
+        ITERAT = NINT(ZR(JCRR))
       ELSE
-         RETOUR = 1
-         GOTO 9999
+        RETOUR = 1
+        GOTO 9999
       ENDIF
 C
 C --- CRITERES NBITER = MAX(ITER_GLOB_MAXI,ITER_GLOB_ELAS)
+C
       NBITER = NINT(ZR(JERRE+1))
       IF (NBITER .EQ. 0) THEN
-         RETOUR = 1
-         GOTO 9999
+        RETOUR = 1
+        GOTO 9999
       ENDIF
 C
 C --- LECTURE DES INFOS SUR LE PAS DE TEMPS
+C
       INSTAM = DIINST(SDDISC,NUMINS-1)
       INSTAP = DIINST(SDDISC,NUMINS)
       DELTAT = INSTAP-INSTAM
 C
 C --- LECTURE DES INFOS SUR LES CONVERGENCES : CF NMCRSU
-      XXITER = ZR(JERRE + 3)
-      GLBREL = ZR(JERRE + 4)
-      GLBMAX = ZR(JERRE + 5)
-C     SI REGRES=1 REGRESSION SUR GLBREL
-C              =2 REGRESSION SUR GLBMAX
-C              =3 REGRESSION SUR GLBREL ET GLBMAX
-      REGRES = NINT(ZR(JERRE + 6))
+C
+      MXITER = ZR(JERRE + 3) 
 C
 C --- ARGUMENTS DE LA SUBDIVISION
-C        ZR(JINFO-1 + 2) <===> 'FREQUENCE ARCHIVAGE'
-C        ZR(JINFO-1 + 3) <===> 'SUBD_PAS'
-C        ZR(JINFO-1 + 4) <===> 'SUBD_PAS_MINI'
-C        ZR(JINFO-1 + 5) <===> 'SUBD_COEF_PAS_1'
-C        ZR(JINFO-1 + 6) <===> 'SUBD_NIVEAU'
-C        ZR(JINFO-1 + 7) <===> 'SUBD_ITER_IGNO'
-C        ZR(JINFO-1 + 8) <===> 'SUBD_ITER_FIN'
+C
+C     ZR(JINFO-1 + 2) <===> 'FREQUENCE ARCHIVAGE'
+C     ZR(JINFO-1 + 3) <===> 'SUBD_PAS'
+C     ZR(JINFO-1 + 4) <===> 'SUBD_PAS_MINI'
+C     ZR(JINFO-1 + 5) <===> 'SUBD_COEF_PAS_1'
+C     ZR(JINFO-1 + 6) <===> 'SUBD_NIVEAU'
+C     ZR(JINFO-1 + 7) <===> 'SUBD_ITER_IGNO'
+C     ZR(JINFO-1 + 8) <===> 'SUBD_ITER_FIN'
+C
       FREARC = NINT(ZR(JINFO-1+2))
       NBRPAS = NINT(ZR(JINFO-1+3))
       PASMIN =      ZR(JINFO-1+4)
@@ -161,320 +158,110 @@ C        ZR(JINFO-1 + 8) <===> 'SUBD_ITER_FIN'
       LENIVO = DININS(SDDISC,NUMINS)
 C
 C --- NIVEAU MAXIMUM DE REDECOUPAGE ATTEINT
+C
       IF (( NBNIVO .GT. 1 ).AND.(LENIVO.GT.NBNIVO) ) THEN
-         VALIM(1) = LENIVO
-         VALIM(2) = NBNIVO
-         CALL U2MESI('I','SUBDIVISE_12',2,VALIM)
-         RETOUR = 2
-         GOTO 9999
+        VALIM(1) = LENIVO
+        VALIM(2) = NBNIVO
+        CALL U2MESI('I','SUBDIVISE_12',2,VALIM)
+        RETOUR = 2
+        GOTO 9999
       ENDIF
 C
 C --- TAILLE DE PAS MINIMALE ATTEINTE AVANT LA NOUVELLE SUBDIVISION
+C    
       IF (DELTAT .LT. PASMIN) THEN
-         VALKM(1) = 'Avant la nouvelle subdivision'
-         CALL U2MESK('I','SUBDIVISE_13',1,VALKM)
-         VALKM(1) = METHOD
-         VALIM(1) = LENIVO-1
-         VALRM(1) = DELTAT
-         VALRM(2) = PASMIN
-         CALL U2MESG('I','SUBDIVISE_15',1,VALKM,1,VALIM,2,VALRM)
-         RETOUR = 2
-         GOTO 9999
+        VALKM(1) = 'Avant la nouvelle subdivision'
+        CALL U2MESK('I','SUBDIVISE_13',1,VALKM)
+        VALKM(1) = METHOD
+        VALIM(1) = LENIVO-1
+        VALRM(1) = DELTAT
+        VALRM(2) = PASMIN
+        CALL U2MESG('I','SUBDIVISE_15',1,VALKM,1,VALIM,2,VALRM)
+        RETOUR = 2
+        GOTO 9999
       END IF
 C
 C --- ON DEPASSE ITER_GLOB_MAXI OU ITER_GLOB_ELAS
-      IF (ITERAT .GT. XXITER) THEN
-         IF ( METHOD(1:7) .EQ. 'EXTRAP_' ) THEN
-            METHOD = 'AUCUNE'
-            RATIO  = 24.0D0/((3.0D0*NBRPAS+UN)**2 - UN)
-         ELSE
-            METHOD = 'AUCUNE'
-            RATIO  = UN
-         ENDIF
-         VALIM(1) = NBRPAS
-         VALIM(2) = LENIVO
-         VALRM(1) = RATIO
-         VALRM(2) = DELTAT
-         CALL U2MESG('I','SUBDIVISE_10',0,VALKM,2,VALIM,2,VALRM)
-         GOTO 8888
+C
+      IF (ITERAT .GT. MXITER) THEN
+        IF ( METHOD(1:7) .EQ. 'EXTRAP_' ) THEN
+          METHOD = 'AUCUNE'
+          RATIO  = 24.0D0/((3.0D0*NBRPAS+1.D0)**2 - 1.D0)
+        ELSE
+          METHOD = 'AUCUNE'
+          RATIO  = 1.D0
+        ENDIF
+        VALIM(1) = NBRPAS
+        VALIM(2) = LENIVO
+        VALRM(1) = RATIO
+        VALRM(2) = DELTAT
+        CALL U2MESG('I','SUBDIVISE_10',0,VALKM,2,VALIM,2,VALRM)
+        GOTO 8888
       ENDIF
 C
 C --- DANS LE CAS OU L'ON A SUBDIVISE ET QUE L'ON A PLUSIEURS NIVEAUX
 C --- DE DIFFERENCE AVEC LE PAS SUIVANT. CELA CORRESPOND AU 1ER APPEL
 C --- A DIDECO DANS OP0070 (DEBUT DU PAS DE TEMPS)
-      IF ((FDECUP .EQ. -1).AND.(METHOD(1:8).NE.'UNIFORME')) THEN
-         METHOD = 'AUCUNE'
-         RATIO  = UN
-         GOTO 8888
-      ENDIF
 C
+      IF ((FDECUP .EQ. -1).AND.(METHOD(1:8).NE.'UNIFORME')) THEN
+        METHOD = 'AUCUNE'
+        RATIO  = 1.D0
+        GOTO 8888
+      ENDIF
+C      
 C --- FORCE LA SUBDIVISION
+C
       IF ( FDECUP .EQ. 1 ) THEN
-         METHOD   = 'AUCUNE'
-         RATIO    = UN
-         VALIM(1) = NBRPAS
-         VALIM(2) = LENIVO
-         VALRM(1) = RATIO
-         VALRM(2) = DELTAT
-         CALL U2MESG('I','SUBDIVISE_14',0,VALKM,2,VALIM,2,VALRM)
-         GOTO 8888
+        METHOD   = 'AUCUNE'
+        RATIO    = 1.D0
+        VALIM(1) = NBRPAS
+        VALIM(2) = LENIVO
+        VALRM(1) = RATIO
+        VALRM(2) = DELTAT
+        CALL U2MESG('I','SUBDIVISE_14',0,VALKM,2,VALIM,2,VALRM)
+        GOTO 8888
       ENDIF
 C
 C --- SI LA METHODE UTILISE L'EXTRAPOLATION
 C --- ON NE L'ACTIVE QUE SI SUBD_ITER_IGNO/SUBD_ITER_FIN OK
+C
       LEXTRA = .FALSE.
       IF (     (METHOD(1:11).EQ.'EXTRAP_IGNO').AND.
      &         ((NBIGNO+3).LE.ITERAT) ) THEN
-         LEXTRA = .TRUE.
-         DEPART = NBIGNO
+        LEXTRA = .TRUE.
+        DEPART = NBIGNO
       ELSEIF ( (METHOD(1:10).EQ.'EXTRAP_FIN').AND.
      &         ((NBFIN+3).LE.ITERAT) ) THEN
-         LEXTRA = .TRUE.
-         DEPART = ITERAT - NBFIN
+        LEXTRA = .TRUE.
+        DEPART = ITERAT - NBFIN
       ENDIF
-C
-C --- SI ON RECHERCHE UNE DIVERGENCE ET QUE LA METHODE
-C --- N'UTILISE PAS L'EXTRAPOLATION
-C --- OU QUE L'ON PEUT PAS ENCORE L'UTILISER ON SORT
-      RETOUR = 0
-C
-C --- SI LA METHODE UTILISE L'EXTRAPOLATION
-      IF (LEXTRA) THEN
-         NBVAL = NINT(ZR(JERRE))
-C
-C --- REGRESSION SUR : GLOB_RELA ou GLOB_MAXI ?
-         ERRREL = ZR(JERRE + NBVAL + ITERAT*2 )
-         ERRMAX = ZR(JERRE + NBVAL + ITERAT*2 + 1 )
-C        SI REGRES=3 ON DOIT FAIRE LA REGRESSION SUR LES 2, MAIS ON
-C        COMMENCE PAR LA FAIRE SUR GLOB_RELA
-C        SI ERRREL > GLBREL ON MET REGRES=1 POUR FAIRE LA REGRESSION
-C           SUR GLOB_RELA
-C        SI ERRMAX > GLBMAX ON MET REGRES=2 POUR FAIRE LA REGRESSION
-C           SUR GLOB_MAXI
-         IF  ( REGRES .EQ. 3 ) THEN
-            REGRES = 0
-            IF      ( ERRREL .GT. GLBREL ) THEN
-               REGRES = 1
-            ELSE IF ( ERRMAX .GT. GLBMAX ) THEN
-               REGRES = 2
-            ENDIF
-         ENDIF
-         IF      ( REGRES .EQ. 1 ) THEN
-            DECAL = 0
-            CIBLE = GLBREL
-         ELSE IF ( REGRES .EQ. 2 ) THEN
-            DECAL = 1
-            CIBLE = GLBMAX
-         ENDIF
-C        LES CRITERES D'ERREUR SONT OK, MAIS PAS DETECTE DANS LE
-C        STAT_NON_LINE. CELA PEUT SE PRODUIRE QUAND IL Y A DU CONTACT
-C        AVEC DE LA REACTUALISATION GEOMETRIQUE. ON SORT SANS FAIRE
-C        DE SUBDIVISION.
-         IF ( REGRES .EQ. 0 ) THEN
-            VALRM(1) = ERRREL
-            VALRM(2) = GLBREL
-            VALRM(3) = ERRMAX
-            VALRM(4) = GLBMAX
-            VALIM(1) = ITERAT
-            CALL U2MESG('I','SUBDIVISE_9',0,VALKM,1,VALIM,4,VALRM)
-            RETOUR = 0
-            GOTO 9999
-         ENDIF
-C
-C ------ CALCUL DE LA REGRESSION
-         SX  = ZERO
-         SY  = ZERO
-         SX2 = ZERO
-         SYX = ZERO
-         XN  = ZERO
-         DO 110, I = DEPART, ITERAT
-            XX   = LOG( ZR(JERRE+NBVAL+I*2+DECAL) )
-C           ON DONNE UN POIDS DOUBLE AU 3 DERNIERS POINTS CELA REVIENT
-C           A AJOUTER DES POINTS => MEILLEURE EXTRAPOLATION
-            IF ( I .GT. ITERAT - 3 ) THEN
-               XN   = XN  + DEUX
-               SX   = SX  + DEUX*XX
-               SY   = SY  + DEUX*I
-               SX2  = SX2 + DEUX*(XX**2)
-               SYX  = SYX + DEUX*XX*I
-            ELSE
-               XN   = XN  + UN
-               SX   = SX  + XX
-               SY   = SY  + I
-               SX2  = SX2 + XX**2
-               SYX  = SYX + XX*I
-            ENDIF
-110      CONTINUE
-         XDET   = -SX**2 + SX2*XN
-         XA0    =  SX2*SY - SX*SYX
-         XA1    = -(SX*SY) + SYX*XN
-         CIBLEN = (XA0 + XA1*LOG(CIBLE) )/XDET
-C
-C        LA METHODE TROUVE UN NOMBRE D'ITERATION < LIMITE ITERATION
-C        CELA SE PRODUIT SI ON DONNE ITER_GLOB_MAXI ET ITER_GLOB_ELAS.
-C        SI ITER_GLOB_ELAS EST < ITER_GLOB_MAXI ALORS L'EXTRAPOLATION
-C        QUI EST FAITE LORS DE ITER_GLOB_ELAS PEUT DONNER UN NOMBRE
-C        ENTRE CES 2 VALEURS.
-C        ON COMPARE PAR RAPPORT AU MIN DES 2 VALEURS ITER_GLOB
-C        IL FAUT FAIRE ATTENTION AUX ARRONDIS PAR SECURITE AJOUT 20%
-         IF ( (CIBLEN*1.20D0) .LT. ZR(JERRE+2) ) THEN
-            RATIO  = 24.0D0/((3.0D0*NBRPAS+UN)**2 - UN)
-            VALIM(1) = NBRPAS
-            VALIM(2) = LENIVO
-            VALRM(1) = RATIO
-            VALRM(2) = DELTAT
-            VALRM(3) = CIBLEN
-            VALRM(4) = ZR(JERRE+2)
-            IF ( REGRES .EQ. 1 ) THEN
-               VALKM(1) = 'RESI_GLOB_RELA'
-            ELSE
-               VALKM(1) = 'RESI_GLOB_MAXI'
-            ENDIF
-            CALL U2MESG('I','SUBDIVISE_11',1,VALKM,2,VALIM,4,VALRM)
-            GOTO 8888
-         ENDIF
-
-         VALIM(1) = CIBLEN
-         VALIM(2) = NINT(XXITER)
-         CALL U2MESI('I','SUBDIVISE_16',2,VALIM)
-         IF ( CIBLEN .LT. XXITER ) THEN
-            IF ( CIBLEN .LE. ITERAT ) THEN
-               VALIM(1) = ITERAT
-               CALL U2MESI('I','SUBDIVISE_17',1,VALIM)
-            ENDIF
-            RETOUR = 3
-            GOTO 9999
-         ELSE
-C           CALCUL DU RATIO POUR ATTEINDRE LA CIBLE
-            IF ( (CIBLEN-XXITER) .LE. (-10.0D0*XA1/XDET) ) THEN
-               RATIO = EXP( (CIBLEN-XXITER)*XDET/XA1 )
-            ELSE
-               RATIO = EXP( -10.0D0 )
-            ENDIF
-            RATIO = 0.48485D0*RATIO
-            XXBB = ( -UN + (UN+24.0D0/RATIO)**0.5D0 )/3.0D0
-            IF ( XXBB .LT. 2.0D0 ) THEN
-               NBRPAS = 2
-               RATIO  = 0.50D0
-            ELSE
-               NBRPAS = NINT( XXBB )
-            ENDIF
-            VALIM(1) = NBRPAS
-            VALIM(2) = LENIVO
-            VALRM(1) = RATIO
-            VALRM(2) = DELTAT
-            CALL U2MESG('I','SUBDIVISE_18',0,VALKM,2,VALIM,2,VALRM)
-         ENDIF
+      
+      IF (LEXTRA) THEN      
+        CALL NMDCEX(SDDISC,ITERAT,DELTAT,LENIVO,DEPART,
+     &              NBRPAS,RATIO ,RETOUR)
       ENDIF
-
-C ====================================
-C     RATIO ET NBRPAS SONT CONNUS
+      IF (RETOUR.EQ.3) GOTO 9999
+C
 8888  CONTINUE
-C ====================================
-
+C
+C --- SUBDIVISION
+C
       CALL NMIMPR('IMPR','SUBDIVISE',' ',0.D0,NBRPAS)
-
-C ======================================================================
-C                    TRAITEMENT DE LA LISTE D'INSTANTS
-C ======================================================================
-      INSPAS = NBRPAS - 1
-C --- ALLONGEMENT DE LA LISTE D'INSTANTS
-      CALL JELIRA(TPSDIT,'LONMAX',LGINI,K8BID)
-      LGTEMP = LGINI + INSPAS
-      CALL JUVECA(TPSDIT,LGTEMP)
-      CALL JUVECA(TPSDIN,LGTEMP)
-      CALL JEVEUO(TPSDIT,'E',JTEMPS)
-      CALL JEVEUO(TPSDIN,'E',JNIVTP)
-
-      NBINI  = LGINI  - 1
-      NBTEMP = LGTEMP - 1
-
-C --- INSERTION DES INSTANTS SUPPLEMENTAIRES
-      IF (METHOD(1:7) .EQ. 'EXTRAP_')THEN
-C ---    RECOPIE DE LA PARTIE HAUTE DE LA LISTE
-         DO 12 I = NBINI, NUMINS, -1
-            ZR(JTEMPS+I+INSPAS) = ZR(JTEMPS+I)
-            ZI(JNIVTP+I+INSPAS) = ZI(JNIVTP+I)
-12       CONTINUE
-         INCINS = DELTAT
-         INST   = INSTAM
-         DO 14 I = NUMINS, NUMINS+INSPAS-1
-C        PRISE EN COMPTE DU FAIT QUE :
-C           LE Ième    PAS (I<=NbPas/2) EST AFFECTE DE RATIO*I
-C           LES AUTRES PAS SONT             AFFECTE DE RATIO*NbPAs/2
-            IF ( (I-NUMINS+1) .LE. NBRPAS*0.5D0 ) THEN
-               INST = INST + INCINS*RATIO*(I-NUMINS+1)
-            ELSE
-               INST = INST + INCINS*RATIO*NBRPAS*0.5D0
-            ENDIF
-            ZR(JTEMPS+I) = INST
-            ZI(JNIVTP+I) = ZI(JNIVTP+NUMINS+INSPAS)+1
-14       CONTINUE
-      ELSE
-C        METHODES
-C           SIMPLE     : INITIALEMENT IMPLANTEE
-         INCINS = (INSTAP - INSTAM) / (RATIO + NBRPAS - 1)
-         INST   = INSTAM
-         IF ( INCINS .LT. PASMIN ) THEN
-            VALKM(1) = 'Pendant la nouvelle subdivision'
-            CALL U2MESK('I','SUBDIVISE_13',1,VALKM)
-            VALKM(1) = METHOD
-            VALIM(1) = LENIVO-1
-            VALRM(1) = INCINS*RATIO
-            VALRM(2) = PASMIN
-            CALL U2MESG('I','SUBDIVISE_15',1,VALKM,1,VALIM,2,VALRM)
-            RETOUR = 2
-            GOTO 9999
-         END IF
-C ---    RECOPIE DE LA PARTIE HAUTE DE LA LISTE
-         DO 22 I = NBINI, NUMINS, -1
-            ZR(JTEMPS+I+INSPAS) = ZR(JTEMPS+I)
-            ZI(JNIVTP+I+INSPAS) = ZI(JNIVTP+I)
-22       CONTINUE
-         DO 24 I = NUMINS, NUMINS+INSPAS-1
-C           LE PREMIER PAS EST AFFECTE D'UN RATIO
-            IF (I .EQ. NUMINS) THEN
-               INST = INST + INCINS*RATIO
-            ELSE
-               INST = INST + INCINS
-            ENDIF
-            ZR(JTEMPS+I) = INST
-            ZI(JNIVTP+I) = ZI(JNIVTP+NUMINS+INSPAS)+1
-24       CONTINUE
-         IF ( METHOD(1:6) .NE. 'AUCUNE' ) THEN
-            ZI(JNIVTP+NUMINS+INSPAS)=ZI(JNIVTP+NUMINS+INSPAS)+1
-         ENDIF
+C
+C --- EXTENSION DE LA LISTE D'INSTANTS
+C
+      CALL NMDCEI(SDDISC,METHOD,NUMINS,INSTAM,DELTAT,
+     &            LENIVO,PASMIN,NBRPAS,RATIO ,RETOUR)
+      IF (RETOUR.EQ.2) THEN
+        GOTO 9999
       ENDIF
-
-C ======================================================================
-C                           LISTE D'ARCHIVAGE
-C ======================================================================
-
-C --- ALLONGEMENT DE LA LISTE D'ARCHIVAGE
-      CALL JUVECA(TPSDIA,LGTEMP)
-      CALL JEVEUO(TPSDIA,'E',JARCH)
-
-C --- AUCUN ARCHIVAGE SUPPLEMENTAIRE SI PAS_ARCH == 0
-      IF (FREARC .EQ. 0) THEN
-C        RECOPIE DE LA PARTIE HAUTE
-         DO 30 I = NBINI, NUMINS, -1
-            ZL(JARCH+I+INSPAS) = ZL(JARCH+I)
-30       CONTINUE
-C        MISE A .FALSE. DES NOUVEAUX INSTANTS
-         DO 40 I = NUMINS, NUMINS+INSPAS-1
-            ZL(JARCH+I) = .FALSE.
-40       CONTINUE
-
-C -- ON RECONSTRUIT LA LISTE D'ARCHIVAGE SI PAS_ARCH <> 0
-      ELSE
-         DO 50 I = 0, NBTEMP
-            ZL(JARCH+I) = .FALSE.
-50       CONTINUE
-         DO 60 I = FREARC, NBTEMP, FREARC
-            ZL(JARCH+I) = .TRUE.
-60       CONTINUE
-      END IF
-
+C
+C --- EXTENSION DE LA LISTE D'ARCHIVAGE
+C   
+      CALL NMDCEA(SDDISC,NUMINS,NBRPAS,FREARC)
+C
 9999  CONTINUE
+C
       CALL JEDEMA()
+
       END

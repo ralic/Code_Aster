@@ -1,6 +1,6 @@
       SUBROUTINE CONORI(MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -360,8 +360,8 @@ C     ------------------------------------------------------------------
         LFACE=LFACE0
         IF (LOMOD0) LOMODI=.TRUE.
         IF (LOREO0) LOREOR=.TRUE.
-        IF ((LOMOD0.OR.LOREO0).AND.NBMAC.EQ.2) CALL U2MESS('F','ALGORITH
-     &2_32')
+        IF (NBMAC.EQ.2)
+     &     CALL ASSERT(.NOT.(LOMOD0 .OR. LOREO0))
       ENDIF
 
 C     ==================================================================

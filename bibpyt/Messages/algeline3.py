@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline3 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,11 +177,6 @@ Conseils & solution :
  pas de matrice de préconditionnement : on s'arrete
 """),
 
-39: _("""
-  le CHAM_NO : %(k1)s  n'existe pas
-  Reprise impossible ==> initialisation par le vecteur nul
-"""),
-
 40: _("""
  erreur : LMAT est nul
 """),
@@ -192,10 +187,6 @@ Conseils & solution :
 
 42: _("""
   la matrice et le vecteur cinématique ne contiennent pas des valeurs de meme type
-"""),
-
-43: _("""
- la matrice et le second membre ne contiennent pas des valeurs de meme type
 """),
 
 44: _("""

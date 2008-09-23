@@ -1,9 +1,9 @@
-      SUBROUTINE CFNEG(RESOCO,DEFICO,NOMA,NDIM,
-     &                 INDIC,NBLIAI,NBLIAC,AJLIAI,SPLIAI,
-     &                 LLF,LLF1,LLF2)
-C ======================================================================
+      SUBROUTINE CFNEG (RESOCO,DEFICO,NOMA  ,NDIM  ,INDIC ,
+     &                  NBLIAI,NBLIAC,AJLIAI,SPLIAI,LLF   ,
+     &                  LLF1  ,LLF2)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,27 +20,25 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*24 RESOCO
-      CHARACTER*24 DEFICO
+      CHARACTER*24 RESOCO,DEFICO
       CHARACTER*8  NOMA
       INTEGER      NDIM
       INTEGER      INDIC
-      INTEGER      NBLIAC
-      INTEGER      AJLIAI
-      INTEGER      SPLIAI
-      INTEGER      LLF
-      INTEGER      LLF1
-      INTEGER      LLF2
-      INTEGER      NBLIAI
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCL/FRO2GD/FROLGD/FROPGD
+      INTEGER      AJLIAI,SPLIAI,NBLIAI
+      INTEGER      NBLIAC,LLF,LLF1,LLF2
+C      
 C ----------------------------------------------------------------------
 C
-C  VERIFICATION QUE LES MULTIPLICATEURS DE LAGRANGE SONT A VALEURS
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
+C
+C VERIFICATION QUE LES MULTIPLICATEURS DE LAGRANGE SONT A VALEURS
 C   POSITIVES (PRESSION DE CONTACT POSITIVE)
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
@@ -96,8 +94,6 @@ C
       CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2
       CHARACTER*19 LIAC,MU,CONVEC
       INTEGER      JLIAC,JMU,JVECC
-      CHARACTER*24 APPARI,CONTNO,CONTMA
-      INTEGER      JAPPAR,JNOCO,JMACO
 C
 C ======================================================================
 C
@@ -110,16 +106,10 @@ C
 C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
-      APPARI = RESOCO(1:14)//'.APPARI'
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
       LIAC   = RESOCO(1:14)//'.LIAC'
       CONVEC = RESOCO(1:14)//'.CONVEC'
       MU     = RESOCO(1:14)//'.MU'
 C ======================================================================
-      CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(CONTMA,'L',JMACO)
-      CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(LIAC,  'E',JLIAC )
       CALL JEVEUO(CONVEC,'E',JVECC)
       CALL JEVEUO(MU,    'E',JMU   )
@@ -272,8 +262,8 @@ C ======================================================================
          CALL CFTABL( INDIC, NBLIAC, AJLIAI, SPLIAI, LLF,
      &                 LLF1, LLF2, RESOCO, TYPESP, POSIT, LLIAC, TYPEC0)
          IF (NIV.GE.2) THEN
-            CALL CFIMP2(IFM,NOMA,LLIAC,TYPEC0,TYPESP,'NEG',LAMBDA,
-     &                  JAPPAR,JNOCO,JMACO)
+           CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
+     &                 TYPEC0,TYPESP,'NEG' ,LAMBDA)
          ENDIF
  111  CONTINUE
 C ======================================================================
@@ -284,7 +274,7 @@ C ======================================================================
       IF (LLF.NE.0) THEN
          IF (DEKLF0.NE.0) THEN
             DO 200 ILIAC = 1, ZI(JSPLF0-1+1) - 1
-               JSTO = JSTO + 1
+               JSTO = JSTO + 1 
                ZR(JMU-1+JSTO) = ZR(JMU-1+NBLIAC+DEKLN+ILIAC)
  200        CONTINUE
             DO 210 ILIAC = 1, DEKLF0 - 1

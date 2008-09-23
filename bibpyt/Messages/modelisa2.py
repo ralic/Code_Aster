@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,10 +162,6 @@ Risque & Conseil:
 
 43: _("""
  deux mailles poi1 interdit
-"""),
-
-44: _("""
- le mot clef evol_ther est incompatible avec: %(k1)s
 """),
 
 45: _("""

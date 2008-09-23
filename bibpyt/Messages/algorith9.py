@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith9 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,10 +98,6 @@ cata_msg = {
 
 30 : _("""
  argument en double pour "NOM_CHAM"
-"""),
-
-31 : _("""
- pour l'instant, on ne peut pas dériver sur base modale dans DYNA_LINE_HARM 
 """),
 
 34 : _("""

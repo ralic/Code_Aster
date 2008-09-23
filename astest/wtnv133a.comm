@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -239,7 +239,7 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
 #***********************************************************************
 #    ESSAI TRIAXIAL NON DRAINE
 #***********************************************************************
-U1=STAT_NON_LINE(MODELE=MODELE,
+U1=STAT_NON_LINE(MODELE=MODELE,INFO=1,
                  CHAM_MATER=CHMAT,
                  EXCIT=(_F(CHARGE     = CHAR_U1,
                            FONC_MULT  = COEF1),
@@ -256,6 +256,9 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE   = 'TANGENTE',
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                TYPE='PLATEAU',
+                                PLATEAU_ITER = 3,
+                                PLATEAU_RELA = 1E-2,
                                 ITER_GLOB_MAXI = 20),
                  ARCHIVAGE=_F(LIST_INST    = TEMPS1,),
                  INCREMENT=_F(LIST_INST    = TEMPS1,
@@ -263,8 +266,9 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                               SUBD_PAS     = 10,
                               SUBD_PAS_MINI= 0.0001,
                               INST_INIT    = 0.0,
-                              INST_FIN     = 10.));
-
+                              
+                              INST_FIN     = 10.,
+                              ));
 
 #-------------------------
 #    TEST_RESU AU POINT C

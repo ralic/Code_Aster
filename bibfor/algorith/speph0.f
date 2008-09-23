@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ALGORITH  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -260,7 +260,7 @@ C --- INTERSPECTRES OU AUTOSPECTRES UNIQUEMENT ---
 
       CALL TBLIVA(TABLE,0,K8B,IBID,R8B,C16B,K8B,K8B,R8B,'OPTION',K8B,
      &            IBID,R8B,C16B,K8B,IRET)
-      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_88')
+      CALL ASSERT(IRET.EQ.0)
 
       INTDON = .TRUE.
       IF (K8B(1:4).EQ.'DIAG') INTDON = .FALSE.

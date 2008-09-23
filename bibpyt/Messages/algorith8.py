@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF algorith8 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,9 +54,6 @@ cata_msg = {
  F=0 : pas converge
 """),
 
-19 : _("""
- trop d'amortissements modaux
-"""),
 
 20 : _("""
  La définition du repère d'orthotropie a été mal faite.
@@ -65,10 +62,6 @@ cata_msg = {
 
 22 : _("""
  type d'élément incompatible avec une loi élastique anisotrope
-"""),
-
-23 : _("""
- dénominateur nul dans le calcul de ETA_PILOTAGE
 """),
 
 24 : _("""
@@ -85,10 +78,6 @@ cata_msg = {
 
 28 : _("""
  prédiction par extrapolation impossible : pas de temps nul
-"""),
-
-29 : _("""
- ITER_LINE_MAXI doit etre inférieur à 1000
 """),
 
 31 : _("""
@@ -191,10 +180,6 @@ cata_msg = {
  Loi de mécanique incompatible avec une modélisation THHM
 """),
 
-58 : _("""
- Méthode de condition unilatéral non implantée
-"""),
-
 61 : _("""
  Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
 """),
@@ -230,13 +215,6 @@ Les combinaisons possibles sont :
    comportement %(k3)s et matériau %(k4)s et %(k5)s
 """),
 
-84 : _("""
- comportement de fluage sous irradiation inconnu
-"""),
-
-85 : _("""
- definition multiple du comportement pour un élément de poutre
-"""),
 
 86 : _("""
  porosité strictement nulle( cas non traité)

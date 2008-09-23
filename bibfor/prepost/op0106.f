@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/07/2008   AUTEUR NISTOR I.NISTOR 
+C MODIF PREPOST  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -613,9 +613,9 @@ C --- CHARGES SUIVEUSE (TYPE_CHARGE: 'SUIV')
 
                 CALL DETRSD('CHAMP_GD',BIDON)
                 CALL VTCREB(BIDON,NUME,'G','R',NEQ)
-                CALL VECGME(MODELE,CARAC,MATER,CHARGE,INFOCH,PARTPS,
-     &                      CHDEPL,BIDON,VECGMP,PARTPS,COMPOR,K24BID,
-     &                      LIGREL,CHVIVE,CHACVE)
+                CALL VECGME(MODELE,CARAC,MATER,CHARGE,INFOCH,
+     &                      PARTPS,CHDEPL,BIDON,VECGMP,PARTPS,
+     &                      COMPOR,K24BID,LIGREL,CHVIVE)
                 CALL ASASVE(VECGMP,NUME,'R',VACGMP)
                 CALL ASCOVA('D',VACGMP,FOMULT,'INST',TIME,'R',CNCGMP)
 

@@ -1,7 +1,7 @@
       SUBROUTINE TE0027(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -419,13 +419,23 @@ C -  CONTRAINTES LAGRANGIENNES (SIGL),ENERGIE LIBRE ET DERIVEE / T
             SIGL(I) = ZR(ISIGM+NCMP* (KP-1)+I-1)
             SIGL(I+3) = ZR(ISIGM+NCMP* (KP-1)+I-1+3)*RAC2
   430     CONTINUE
+
         ELSE
+
           CRIT(1) = 300
           CRIT(2) = 0.D0
           CRIT(3) = 1.D-3
           CALL NMELNL(FAMI,KP,1,'+',NDIM,TYPMOD,ZI(IMATE),COMPOR,CRIT,
      &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI,LPIPO,RPIPO,
      &                T1PIPO,T2PIPO,T3PIPO)
+          CALL TECACH('NNN','PCONTGR',1,ISIGM,IRET)
+          IF(IRET.EQ.0)THEN
+            CALL JEVECH('PCONTGR','L',ISIGM) 
+            DO 401 I = 1,3
+              SIGL(I) = ZR(ISIGM+NCMP* (KP-1)+I-1)
+              SIGL(I+3) = ZR(ISIGM+NCMP* (KP-1)+I-1+3)*RAC2
+  401       CONTINUE
+          ENDIF
         END IF
         DIVT = DTDM(1,1) + DTDM(2,2) + DTDM(3,3)
 

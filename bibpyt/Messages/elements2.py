@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,14 +247,6 @@ cata_msg = {
 
 90 : _("""
  COMP_ELAS non valide
-"""),
-
-91 : _("""
- " %(k1)s " matrice de decharge non developpee
-"""),
-
-92 : _("""
- la loi DIS_GRICRA doit etre utilisée avec des éléments du type MECA_DIS_TR_L : élément SEG2 + modelisation DIS_TR
 """),
 
 95 : _("""

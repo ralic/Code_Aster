@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE RECTANGULAIRE FINIE SOUMISE A FLEXION CISAILLANTE - EX SSNP310
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -710,6 +710,98 @@ TEST_TABLE(TABLE=G_0_5,
            VALE=3.5182239283614E+02,
            PRECISION=0.001,
            REFERENCE='AUTRE_ASTER',)
+
+# ======================================================================
+# VALIDATION 2D DE "CALCUL_CONTRAINTE":
+
+G_0BIS=CALC_G( THETA=_F(THETA=THETA0),
+            RESULTAT=CHAMDEP,
+            TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+            COMP_ELAS=_F(CALCUL_CONTRAINTE='NON',RELATION='ELAS_VMIS_LINE',),
+            );
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 1),
+           NOM_PARA='G',
+           VALE=3.5947962514067E+00,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 2),
+           NOM_PARA='G',
+           VALE=1.4470868422635E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 3),
+           NOM_PARA='G',
+           VALE=3.2883208951196E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 4),
+           NOM_PARA='G',
+           VALE=5.9422747569594E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 5),
+           NOM_PARA='G',
+           VALE=9.4500399710622E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 6),
+           NOM_PARA='G',
+           VALE=1.3498261114276E+02,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 7),
+           NOM_PARA='G',
+           VALE=1.7895209819449E+02,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 8),
+           NOM_PARA='G',
+           VALE=2.2623585323115E+02,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 9),
+           NOM_PARA='G',
+           VALE=2.7647167518089E+02,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=G_0BIS,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 10),
+           NOM_PARA='G',
+           VALE=3.2960677792299E+02,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION',)
+
+# ======================================================================
+
 
             
 FIN()

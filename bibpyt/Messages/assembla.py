@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF assembla Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,10 +28,6 @@ cata_msg = {
     de matrice non-symétrique.
 
   Conseil : Changer de solveur
-"""),
-
-4 : _("""
-  on ne peut assembler que des matrices réelles ou complexes
 """),
 
 5 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,7 +131,7 @@ U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
            COMP_ELAS   =_F( RELATION = 'ELAS',),
            INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),
            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT',
-                           ALPHA = ALF, DELTA = DEL),
+                           BETA = ALF, GAMMA = DEL),
            NEWTON      =_F( MATRICE = 'TANGENTE',  REAC_ITER = 1),
            CONVERGENCE =_F(ITER_GLOB_MAXI = 20),
            INFO = 1,
@@ -259,18 +259,18 @@ TEST_RESU( RESU=(_F(  RESULTAT = U,
                      NUME_ORDRE = 20,
                      NOEUD = 'N5',
                      REFERENCE = 'NON_REGRESSION',
-                     PRECISION = 1.E-3,
+                     PRECISION = 1.E-8,
                      NOM_CHAM = 'DEPL',
                      NOM_CMP = 'DZ',
-                     VALE = -1.903E-3,),
+                     VALE = -2.0E-3,),
                 _F(  RESULTAT = U,
                      NUME_ORDRE = 40,
                      NOEUD = 'N100',
                      REFERENCE = 'NON_REGRESSION',
-                     PRECISION = 1.E-3,
+                     PRECISION = 1.E-8,
                      NOM_CHAM = 'DEPL',
                      NOM_CMP = 'DZ',
-                     VALE = -3.800E-3,),  
+                     VALE = -3.9811244121288E-03,),  
                      ),)
 
 

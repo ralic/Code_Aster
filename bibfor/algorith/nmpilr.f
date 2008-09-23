@@ -1,7 +1,7 @@
-      SUBROUTINE NMPILR(NEQ   ,CNFINT,CNDIRI,CNFEXT,RESIDU)
+      SUBROUTINE NMPILR(NUMEDD,VEASSE,RESIDU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,8 +21,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NEQ
-      CHARACTER*19 CNFEXT,CNFINT,CNDIRI
+      CHARACTER*24 NUMEDD
+      CHARACTER*19 VEASSE(*)
       REAL*8       RESIDU
 C 
 C ----------------------------------------------------------------------
@@ -34,10 +34,8 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  NEQ    : NOMBRE D'EQUATIONS
-C IN  CNFINT : VECTEUR ASSEMBLE DES FORCES INTERIEURES    
-C IN  CNDIRI : VECTEUR ASSEMBLE DES REACTIONS D'APPUI
-C IN  CNFEXT : VECTEUR ASSEMBLE DES FORCES EXTERIEURS
+C IN  NUMEDD : NOM DU NUME_DDL
+C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE 
 C OUT RESIDU : NORME MAX DU RESIDU D'EQUILIBRE
 C                MAX(CNFINT+CNDIRI-CNFEXT)
 C
@@ -61,6 +59,9 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      J,JFINT,JFEXT,JDIRI
+      CHARACTER*19 NMCHEX,CNFEXT,CNFINT,CNDIRI 
+      INTEGER      NEQ,IRET
+      CHARACTER*8  K8BID     
       INTEGER      IFM,NIV     
 C 
 C ----------------------------------------------------------------------
@@ -68,11 +69,19 @@ C
       CALL JEMARQ()
       CALL INFDBG('PILOTAGE',IFM,NIV)
 C
+C --- DECOMPACTION VARIABLES CHAPEAUX
+C      
+      CNDIRI = NMCHEX(VEASSE,'VEASSE','CNDIRI')
+      CNFINT = NMCHEX(VEASSE,'VEASSE','CNFINT')  
+      CNFEXT = NMCHEX(VEASSE,'VEASSE','CNFEXT')           
+C
 C --- INITIALISATIONS
 C
       CALL JEVEUO(CNFINT(1:19)//'.VALE','L',JFINT)
       CALL JEVEUO(CNDIRI(1:19)//'.VALE','L',JDIRI)          
-      CALL JEVEUO(CNFEXT(1:19)//'.VALE','L',JFEXT)
+      CALL JEVEUO(CNFEXT(1:19)//'.VALE','L',JFEXT)           
+C      
+      CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)      
       RESIDU = 0.D0
 C     
 C --- CALCUL
@@ -81,7 +90,7 @@ C
         RESIDU = MAX(RESIDU,ABS( ZR(JFINT+J-1)+
      &                           ZR(JDIRI+J-1)- 
      &                           ZR(JFEXT+J-1)) )
-  10  CONTINUE
+  10  CONTINUE  
 C
       CALL JEDEMA()
       END

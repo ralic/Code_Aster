@@ -1,7 +1,7 @@
       SUBROUTINE IMPFOK(MESSAG,LONG,UNITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,12 +23,15 @@ C
       CHARACTER*(*) MESSAG
       INTEGER       LONG
       INTEGER       UNITE
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR :
+C 
 C ----------------------------------------------------------------------
 C
-C CREATION D'UNE CHAINE FORMATEE DANS UN CHAINE
+C ROUTINE MECA_NON_LINE (AFFICHAGE - UTILITAIRE)
+C
+C CREATION D'UNE CHAINE FORMATEE DANS UNE CHAINE
+C      
+C ----------------------------------------------------------------------
+C      
 C
 C IN  MESSAG : CHAINE A FORMATER
 C IN  LONG   : LONGUEUR DE FORMATAGE DE LA CHAINE

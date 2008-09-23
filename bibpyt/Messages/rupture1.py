@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture1 Messages  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -236,4 +236,44 @@ La fissure contient %(i1)d fond(s) et le calcul est demandé pour le fond numéro 
 -> Risque et Conseil :
 Vérifier le paramètre défini sous le mot clé NUME_FOND de POST_K1_K2_K3.
 """),
+
+39: _("""
+La récupération des contraintes à partir de la SD Résultat 
+en présence d'un état initial n'est pas permise.
+-> Risque et Conseil :
+Veuillez demander le calcul des contraintes (CALCUL_CONTRAINTE='OUI')
+"""),
+
+40: _("""
+Seules les options CALC_G et CALC_G_GLOB sont autorisées pour ne pas
+à recalculer les contraintes.
+-> Risque et Conseil :
+Veuillez demander le calcul des contraintes (CALCUL_CONTRAINTE='OUI')
+"""),
+
+41: _("""
+On recalcule donc les champs de contraintes et d'énergie
+comme si vous aviez renseigné CALCUL_CONTRAINTE='OUI'.
+"""),
+
+42: _("""
+ Lois de comportement différentes pour la maille %(k3)s :
+ - loi de comportement extraite de la SD Résultat   : %(k1)s
+ - loi de comportement fournie à l'opérateur CALC_G : %(k2)s
+
+--> Risques & conseils :
+On doit généralement utiliser la meme loi de comportement entre le calcul et le
+post-traitement. On peut utiliser deux comportements différents, mais alors
+l'utilisateur doit etre vigilant sur l'interprétation des résultats(cf.U2.05.01).
+Si plusieurs comportements sont définis sur la structure, le comportement à
+indiquer dans CALC_G est celui du matériau dans lequel la fissure se développe.
+Dans ce cas, ce message d'alarme est quand meme émis mais le résultat est bien cohérent.
+Un post-traitement élastique non-linéaire d'un calcul élastoplastique est
+admissible, si le chargement est radial et monotone. La comparaison du G calculé
+à partir des contraintes issues de STAT_NON_LINE (option CALC_CONTRAINTE='NON')
+ou à partir des contraintes recalculées avec la loi de comportement 
+(CALC_CONTRAINTES='OUI') peut fournir une indication sur le respect de ces
+hypothèses.
+"""),
+
 }

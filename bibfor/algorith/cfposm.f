@@ -1,0 +1,128 @@
+      SUBROUTINE CFPOSM(NOMA  ,DEFICO,TYPENT,NBRENT,POSENT,
+     &                  NUMENT,CODRET)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*8  NOMA
+      CHARACTER*24 DEFICO
+      INTEGER      NBRENT
+      CHARACTER*4  TYPENT      
+      INTEGER      POSENT(NBRENT)
+      INTEGER      NUMENT(NBRENT)
+      INTEGER      CODRET 
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (TOUTES METHODES - UTILITAIRE)
+C
+C DONNE LE NUMERO ABSOLU DE L'ENTITE A PARTIR DE SON NUMERO
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  POSENT : POSITION DE L'ENTITE DANS LES SD CONTACT
+C IN  TYPENT : TYPE D'ENTITE
+C                <MAIL>  MAILLE
+C                <NOEU>  NOEUD
+C IN  NBRENT : NOMBRE D'ENTITES DONT ON VEUX LE NUMERO
+C OUT NUMENT : NUMRO ABSOLU DE L'ENTITE DANS LE MAILLAGE
+C OUT CODRET : CODE RETOUR
+C                -1 ERREUR     
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      POSMAI,POSNOE
+      CHARACTER*24 CONTNO,CONTMA
+      INTEGER      JNOCO,JMACO
+      INTEGER      NBMAXM,NBMAXN
+      CHARACTER*8  K8BID
+      INTEGER      IENT
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ () 
+C
+C --- INITIALISATIONS
+C
+      CODRET = 0        
+C
+C --- ACCES SD CONTACT
+C
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      CONTMA = DEFICO(1:16)//'.MAILCO'
+      CALL JEVEUO(CONTNO,'L',JNOCO)
+      CALL JEVEUO(CONTMA,'L',JMACO)
+      CALL JELIRA(CONTMA,'LONMAX',NBMAXM,K8BID)
+      CALL JELIRA(CONTNO,'LONMAX',NBMAXN,K8BID)       
+C
+C --- PREPARATION DES CHAINES POUR LES NOMS
+C
+      DO 10 IENT = 1,NBRENT    
+        IF (TYPENT.EQ.'MAIL') THEN
+          POSMAI = POSENT(IENT)
+          IF ((POSMAI.GT.NBMAXM).OR.(POSMAI.LE.0)) THEN
+            NUMENT(IENT) = -1
+            CODRET = -1
+            GOTO 999
+          ELSE
+            NUMENT(IENT) = ZI(JMACO+POSMAI-1)
+          ENDIF
+        ELSE IF (TYPENT.EQ.'NOEU') THEN      
+          POSNOE = ABS(POSENT(IENT))
+          IF ((POSNOE.GT.NBMAXN).OR.(POSNOE.LE.0)) THEN
+            NUMENT(IENT) = -1
+            CODRET = -1
+            GOTO 999
+          ELSE
+            NUMENT(IENT) = ZI(JNOCO+POSNOE-1)
+          ENDIF  
+        ELSE 
+          CODRET = -1
+          NUMENT(IENT) = -1
+          GOTO 999
+        ENDIF
+  10  CONTINUE  
+C
+  999 CONTINUE    
+C
+      CALL JEDEMA()
+C
+      END

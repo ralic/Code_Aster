@@ -1,8 +1,9 @@
-      SUBROUTINE ELPIV2(XJVMAX,NDIM,INDIC,NBLIAC,AJLIAI,SPLIAI,
-     &                  LLF,LLF1,LLF2,NOMA,DEFICO,RESOCO)
-C ======================================================================
+      SUBROUTINE ELPIV2(XJVMAX,NDIM  ,INDIC ,NBLIAC,AJLIAI,
+     &                  SPLIAI,LLF   ,LLF1  ,LLF2  ,NOMA  ,
+     &                  DEFICO,RESOCO)
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,25 +20,25 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT     NONE
       INTEGER      NDIM
       INTEGER      INDIC
-      INTEGER      NBLIAC
-      INTEGER      AJLIAI
-      INTEGER      SPLIAI
-      INTEGER      LLF
-      INTEGER      LLF1
-      INTEGER      LLF2
+      INTEGER      NBLIAC,LLF,LLF1,LLF2
+      INTEGER      AJLIAI,SPLIAI
       REAL*8       XJVMAX
       CHARACTER*8  NOMA
-      CHARACTER*24 RESOCO
-      CHARACTER*24 DEFICO
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : FRO2GD/FROLGD
+      CHARACTER*24 RESOCO,DEFICO
+C      
 C ----------------------------------------------------------------------
 C
-C  ELIMINATION DES PIVOTS NULS DANS LA MATRICE DE CONTACT/FROTTEMENT
+C ROUTINE CONTACT (METHODES DISCRETES - UTILITAIRE)
+C
+C ELIMINATION DES PIVOTS NULS DANS LA MATRICE DE CONTACT/FROTTEMENT
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  XJVMAX : VALEUR DU PIVOT MAX
 C IN  NDIM   : DIMENSION DU PROBLEME
@@ -92,33 +93,30 @@ C
       CHARACTER*2   TYPEC0, TYPEF0, TYPEF1, TYPEF2
       CHARACTER*19  LIAC,LIOT,MATR,STOC,OUVERT
       INTEGER       JLIAC,JLIOT,JVALE,ISCIB,II,DERCOL,BLOC,JSCBL
-      CHARACTER*24  APPARI,CONTNO,CONTMA
-      INTEGER       JAPPAR,JNOCO,JMACO
-C ======================================================================
+      CHARACTER*24  APPARI
+      INTEGER       JAPPAR
+C
+C ----------------------------------------------------------------------
+C
       CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
-C ======================================================================
+C 
 C --- LECTURE DES STRUCTURES DE DONNEES
-C ======================================================================
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
+C 
       APPARI = RESOCO(1:14)//'.APPARI'
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
       MATR   = RESOCO(1:14)//'.MATR'
       STOC   = RESOCO(1:14)//'.SLCS'
-C ======================================================================
-      CALL JEVEUO(CONTNO,'L',JNOCO )
       CALL JEVEUO(APPARI,'L',JAPPAR)
-      CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(LIAC  ,'E',JLIAC )
       CALL JEVEUO(LIOT  ,'E',JLIOT )
-      CALL JEVEUO (STOC//'.SCIB','L',ISCIB)
-      CALL JEVEUO (STOC//'.SCBL','L',JSCBL)
-      CALL JEVEUO (STOC//'.SCDE','L',JSCDE)
-C ======================================================================
-C --- INITIALISATION DES VARIABLES
-C ======================================================================
+      CALL JEVEUO(STOC//'.SCIB','L',ISCIB)
+      CALL JEVEUO(STOC//'.SCBL','L',JSCBL)
+      CALL JEVEUO(STOC//'.SCDE','L',JSCDE)
+C 
+C --- INITIALISATIONS
+C 
       NBBLOC = ZI(JSCDE-1+3)
       NBLIAI = ZI(JAPPAR )
       IBID   = 0
@@ -187,8 +185,8 @@ C --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT
 C ======================================================================
          CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      &               RESOCO,TYPESP,ILIAC,LLIAC,TYPEC0)
-         CALL CFIMP2(IFM,NOMA,LLIAC,TYPEC0,TYPESP,'PIV',0.D0,
-     &               JAPPAR,JNOCO,JMACO)
+         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
+     &               TYPEC0,TYPESP,'PIV' ,0.D0)
          GOTO 100
  2000    CONTINUE
 C ======================================================================
@@ -253,9 +251,8 @@ C ======================================================================
                   POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
                   CALL CFTABL(IBID,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      &                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF1)
-
-                  CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF2,TYPESP,'PIV',0.D0,
-     &               JAPPAR,JNOCO,JMACO)
+                  CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
+     &                        TYPEF2,TYPESP,'PIV' ,0.D0)
                   GOTO 100
                ENDIF
             ELSE
@@ -274,8 +271,8 @@ C ======================================================================
                   POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
                   CALL CFTABL(IBID,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      +                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF2)
-                  CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF1,TYPESP,'PIV',0.D0,
-     &               JAPPAR,JNOCO,JMACO)
+                  CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
+     &                        TYPEF1,TYPESP,'PIV' ,0.D0)
                   GOTO 100
                ELSE
 C ======================================================================
@@ -325,8 +322,8 @@ C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
             CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +                             RESOCO, TYPESP, ILIAC, LLIAC, TYPEF0)
-            CALL CFIMP2(IFM,NOMA,LLIAC,'F3',TYPESP,'PIV',0.D0,
-     &                  JAPPAR,JNOCO,JMACO)
+            CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
+     &                  'F3'  ,TYPESP,'PIV' ,0.D0)
             GOTO 100
          ENDIF
  3000    CONTINUE
@@ -366,8 +363,8 @@ C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
          CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +               RESOCO, TYPESP, ILIAC, LLIAC, TYPEF1)
-         CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF1,TYPESP,'PIV',0.D0,
-     &               JAPPAR,JNOCO,JMACO)
+         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
+     &               TYPEF1,TYPESP,'PIV' ,0.D0)
          GOTO 100
  4000    CONTINUE
 C ======================================================================
@@ -406,8 +403,8 @@ C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 C ======================================================================
          CALL CFTABL(INDIC, NBLIAC, AJLIAI, SPLIAI, LLF, LLF1, LLF2,
      +               RESOCO, TYPESP, ILIAC, LLIAC, TYPEF2)
-         CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF2,TYPESP,'PIV',0.D0,
-     &               JAPPAR,JNOCO,JMACO)
+         CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
+     &               TYPEF2,TYPESP,'PIV' ,0.D0)
          GOTO 100
 C ======================================================================
  90   CONTINUE

@@ -9,7 +9,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,17 +82,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----------------------------------------------------------------
       CHARACTER*1 BASE,BAS2,TYPRES
       CHARACTER*8 KBID,TYPMAT,KMPIC,KMPIC1
       CHARACTER*19 MATEMP,MAT1,MATRES,MATI
-      CHARACTER*24 VALM, VALK(2)
+      CHARACTER*24 VALK(2)
 C     -----------------------------------------------------------------
       INTEGER JREFAR,JREFA1,JREFAI,IER,IBID,IDLIMA,IER1
-      INTEGER I,LRES,NBLOC,JREFA,LGBLOC,IBLOC,IAD1,IAD2
-      LOGICAL REUTIL,SYMR,SYMI,IDENOB,CHGSYM
+      INTEGER I,LRES,NBLOC,JREFA,LGBLOC
+      LOGICAL REUTIL,SYMR,SYMI,IDENOB
 C     -----------------------------------------------------------------
 
       CALL JEMARQ()
@@ -216,7 +215,7 @@ C     ===================
       CALL JEDETR(MATEMP//'.CCID')
       CALL JEDETR(MATEMP//'.CCVA')
       CALL JEDETR(MATEMP//'.CCLL')
-      CALL JEDETR(MATEMP//'.CCJJ')
+      CALL JEDETR(MATEMP//'.CCII')
       CALL JEDUP1(MAT1//'.CCID',BAS2,MATEMP//'.CCID')
       CALL JEEXIN(MATEMP//'.CCID',IER)
       IF (IER.GT.0) ZK24(JREFA-1+3)='ELIML'

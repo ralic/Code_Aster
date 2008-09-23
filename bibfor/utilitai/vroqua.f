@@ -1,6 +1,7 @@
-      SUBROUTINE VROQUA (TETA,   QUAT)
+      SUBROUTINE VROQUA(THETA ,QUATER)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,31 +19,45 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-C FONCTION: CALCULE LE QUATERNION QUAT CORRESPONDANT AU VECTEUR-ROTATION
-C           TETA.
+       IMPLICIT NONE
+       REAL*8   QUATER(4),THETA(3)
+C 
+C ----------------------------------------------------------------------
 C
-C     IN  : TETA      : VECTEUR-ROTATION
+C ROUTINE UTILITAIRE (QUATERNION)
 C
-C     OUT : QUAT      : QUATERNION
-C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
-      REAL*8 TETA(3),QUAT(4)
+C CALCULE LE QUATERNION CORRESPONDANT AU VECTEUR-ROTATION THETA
+C      
+C ----------------------------------------------------------------------
+C 
+C       
+C OUT QUATER : QUATERNION
+C IN  THETA  : VECTEUR ROTATION
+C      
+C ----------------------------------------------------------------------
 C
-      EPSIL = 1.D-4
-      DEMI  = 5.D-1
-      UN    = 1.D0
+      REAL*8   EPSIL,DEMI,UN
+      REAL*8   DDOT
+      REAL*8   ANGLE,COEF,PROSCA
+      INTEGER  I
+C      
+C ----------------------------------------------------------------------
 C
-      PROSCA=DDOT(3,TETA,1,TETA,1)
-      ANGLE = DEMI * SQRT(PROSCA)
-      QUAT(4) = COS(ANGLE)
+      EPSIL  = 1.D-4
+      DEMI   = 5.D-1
+      UN     = 1.D0
+C
+      PROSCA    = DDOT(3,THETA,1,THETA,1)
+      ANGLE     = DEMI * SQRT(PROSCA)
+      QUATER(4) = COS(ANGLE)
       IF (ANGLE.GT.EPSIL) THEN
-         COEF = DEMI * SIN(ANGLE) / ANGLE
+        COEF = DEMI * SIN(ANGLE) / ANGLE
       ELSE
-         COEF = UN - ANGLE**2/6.D0
-         COEF = DEMI * COEF
+        COEF = UN - ANGLE**2/6.D0
+        COEF = DEMI * COEF
       ENDIF
       DO 1 I=1,3
-         QUAT(I) = COEF * TETA(I)
+        QUATER(I) = COEF * THETA(I)
 1     CONTINUE
 C
  9999 CONTINUE

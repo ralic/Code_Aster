@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF utilitai7 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,14 +43,6 @@ cata_msg={
     MAILLE : %(k1)s 
     NUME_MAXI : %(i1)d 
     NUME_CMP demandé : %(i2)d 
-"""),
-
-6: _("""
-  Le schéma d'intégration temporelle %(k1)s et le paramètre %(k2)s sont incompatibles.
-"""),
-
-7: _("""
-  Le paramètre %(k1)s ne fait pas parti des choix possibles.
 """),
 
 8: _("""

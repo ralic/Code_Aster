@@ -1,8 +1,7 @@
       SUBROUTINE CFSANS(DEFICO,RESOCO,NOMA,JCNSVR)
-
-
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,20 +18,22 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT     NONE
-
-      CHARACTER*24 DEFICO
-      CHARACTER*24 RESOCO
+      CHARACTER*24 DEFICO,RESOCO
       CHARACTER*8  NOMA
       INTEGER      JCNSVR
+C      
+C ----------------------------------------------------------------------
 C
-C ======================================================================
-C ROUTINE APPELEE PAR : CFRESU
-C ======================================================================
+C ROUTINE CONTACT (METHODE DISCRETE - AFFICHAGE)
 C
-C TRAITEMENT DU CAS DE CONTACT SANS CALCUL:
+C TRAITEMENT DU CAS DE CONTACT SANS CALCUL (METHODE VERIF)
 C  AFFICHAGE DES INTERPENETRATIONS ET ARRET OU ALARME
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
@@ -41,7 +42,6 @@ C IN  JCNSVR : POINTEUR CHAM_NO_S POUR L'ARCHIVAGE DU CONTACT
 C
 C ------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -60,10 +60,11 @@ C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C
       INTEGER      CFMMVD,CFDISI,ZAPPA,ZRESU
-      CHARACTER*24 CONTNO,CONTMA,APPARI
-      INTEGER      JNOCO,JMACO,JAPPAR
-      CHARACTER*8  NOMESC,NOMMAI
-      INTEGER      POSESC,NUMESC,POSMAI,NUMMAI
+      CHARACTER*24 APPARI
+      INTEGER      JAPPAR
+      CHARACTER*8  NOMMAI,NOMNOE
+      INTEGER      POSMAI,CODRET
+      INTEGER      POSNOE,NUMNOE
       INTEGER      IZONE,INTERP
       INTEGER      NESCL,NBLIAI,ILIAI
       INTEGER      IFM,NIV
@@ -74,24 +75,18 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
-
+C
+C --- INITIALISATIONS
+C
       IZONE = 1
-
-C ======================================================================
+C 
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C ======================================================================
-      APPARI = RESOCO(1:14)//'.APPARI'
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
-C ======================================================================
-
+C
       CALL JEVEUO(APPARI,'L',JAPPAR)
-      CALL JEVEUO(CONTNO,'L',JNOCO )
-      CALL JEVEUO(CONTMA,'L',JMACO )
       ZAPPA = CFMMVD('ZAPPA')
       ZRESU = CFMMVD('ZRESU')
 C      
-C -- ALARME OU ERREUR ?
+C --- ALARME OU ERREUR ?
 C
       IF (CFDISI(DEFICO,'STOP_INTERP',IZONE).EQ.1) THEN
         ARRET = .TRUE.
@@ -107,36 +102,60 @@ C --- JEU MINIMUM POUR DECLARER INTERPENETRATION
 
       DO 120 ILIAI = 1,NBLIAI
 C
-C --- RECHERCHE CONNECTIVITE
+C --- REPERAGE DE L'ESCLAVE
 C
-        POSESC = ZI(JAPPAR+ZAPPA*(ILIAI-1)+1)
-        NUMESC = ZI(JNOCO+POSESC-1)
-
-        CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMESC),NOMESC)
+        POSNOE = ZI(JAPPAR+ZAPPA*(ILIAI-1)+1)     
+C
+C --- NOM DU NOEUD ESCLAVE
+C      
+        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMNOE,
+     &              CODRET)       
+        IF (CODRET.LT.0) THEN
+          CALL ASSERT(.FALSE.)
+        ENDIF  
+C
+C --- NUMERO ABSOLU DU NOEUD ESCLAVE
+C                
+        CALL CFPOSM(NOMA  ,DEFICO,'NOEU',1     ,POSNOE,
+     &              NUMNOE,CODRET)  
+        IF (CODRET.LT.0) THEN
+          CALL ASSERT(.FALSE.)
+        ENDIF                    
+C      
+C --- REPERAGE DU MAITRE
+C
         POSMAI = ZI(JAPPAR+ZAPPA*(ILIAI-1)+2)
 C
-C --- PREPARATION DES CHAINES POUR LES NOMS
+C --- NOM DU MAITRE
 C
-        IF (POSMAI.GT.0) THEN
-          NUMMAI = ZI(JMACO+POSMAI-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMMAI)
-        ELSE IF (POSMAI.LT.0) THEN
-          NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
-        END IF
+        IF (POSMAI.LT.0) THEN
+          CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSMAI,NOMMAI,
+     &              CODRET)
+          IF (CODRET.LT.0) THEN
+            CALL ASSERT(.FALSE.)  
+          ENDIF         
+        ELSEIF (POSMAI.GT.0) THEN
+          CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSMAI,NOMMAI,
+     &                CODRET)
+          IF (CODRET.LT.0) THEN
+            CALL ASSERT(.FALSE.)  
+          ENDIF    
+        ELSE  
+          CALL ASSERT(.FALSE.)               
+        ENDIF 
 C
 C --- VALEUR DU JEU
 C
-        JEU = ZR(JCNSVR-1+ (NUMESC-1)*ZRESU+2 )
+        JEU = ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+2 )
         IF (JEU.GE.JEUREF .AND. NIV.GE.2) THEN
-          WRITE (IFM,2000) ' DU  NOEUD <',NOMESC,'> AVEC <',NOMMAI,
+          WRITE (IFM,2000) ' DU  NOEUD <',NOMNOE,'> AVEC <',NOMMAI,
      &                     '> * JEU:',JEU
         ENDIF
         IF (JEU.LT.JEUREF) THEN
           INTERP = INTERP+1
-          WRITE (IFM,2001) ' DU  NOEUD <',NOMESC,'> AVEC <',NOMMAI,
+          WRITE (IFM,2001) ' DU  NOEUD <',NOMNOE,'> AVEC <',NOMMAI,
      &                     '> * JEU:',JEU
-          ZR(JCNSVR-1+ (NUMESC-1)*ZRESU +1) = 1.0D0
+          ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU +1) = 1.0D0
         ENDIF
 
  120  CONTINUE

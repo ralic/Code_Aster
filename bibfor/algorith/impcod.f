@@ -1,7 +1,7 @@
-      SUBROUTINE IMPCOD(COLONN,ICOD)
+      SUBROUTINE IMPCOD(COLONN,ICOD  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,15 +19,18 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C
-      IMPLICIT NONE
+      IMPLICIT     NONE
       INTEGER      ICOD
       CHARACTER*9  COLONN
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : IMPINI
-C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (AFFICHAGE - UTILITAIRE)
 C
 C RETOURNE LE CODE INTERNE D'UNE COLONNE DU TABLEAU DE CONVERGENCE
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  COLONN : NOM DE REFERENCE DE LA COLONNE
 C                (VOIR LISTE DANS DATA MOTCLE)
@@ -59,19 +62,18 @@ C
       DATA MOTCLE(15)       / 'MATR_ASSE'/
       DATA MOTCLE(16)       / 'ITER_DEBO'/
       DATA MOTCLE(17)       / 'CTCD_ITER'/
-      DATA MOTCLE(18)       / 'CTCD_INFO'/
-      DATA MOTCLE(19)       / 'CTCD_GEOM'/
-      DATA MOTCLE(20)       / 'CTCD_NOEU'/
-      DATA MOTCLE(23)       / 'CTCC_CONT'/
-      DATA MOTCLE(22)       / 'CTCC_FROT'/
-      DATA MOTCLE(21)       / 'CTCC_GEOM'/
-      DATA MOTCLE(24)       / 'SUIV_1'/
-      DATA MOTCLE(25)       / 'SUIV_2'/
-      DATA MOTCLE(26)       / 'SUIV_3'/
-      DATA MOTCLE(27)       / 'SUIV_4'/
-      DATA MOTCLE(28)       / 'ITER_FETI'/
+      DATA MOTCLE(18)       / 'CTCD_GEOM'/
+      DATA MOTCLE(19)       / 'CTCD_NOEU'/
+      DATA MOTCLE(20)       / 'BOUC_GEOM'/
+      DATA MOTCLE(21)       / 'BOUC_FROT'/
+      DATA MOTCLE(22)       / 'BOUC_CONT'/
+      DATA MOTCLE(23)       / 'SUIV_1'/
+      DATA MOTCLE(24)       / 'SUIV_2'/
+      DATA MOTCLE(25)       / 'SUIV_3'/
+      DATA MOTCLE(26)       / 'SUIV_4'/
+      DATA MOTCLE(27)       / 'ITER_FETI'/
+      DATA MOTCLE(28)       / '&&&&&&'/
       DATA MOTCLE(29)       / '&&&&&&'/
-      DATA MOTCLE(30)       / '&&&&&&'/
 C
 C ----------------------------------------------------------------------
 C

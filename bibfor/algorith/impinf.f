@@ -1,9 +1,8 @@
-      SUBROUTINE IMPINF(SDIMPR,
-     &                  IMPMAX,COLMAX,LIGMAX,TITMAX,COLUTI,LIGUTI,
-     &                  AFFDEF,UNIT,LARMAX)
+      SUBROUTINE IMPINF(SDIMPZ,IMPMAX,COLMAX,LIGMAX,TITMAX,
+     &                  COLUTI,LIGUTI,AFFDEF,UNIT  ,LARMAX)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,23 +21,19 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      CHARACTER*14 SDIMPR
-      INTEGER      IMPMAX
-      INTEGER      COLMAX
-      INTEGER      LIGMAX
-      INTEGER      TITMAX
-      INTEGER      COLUTI
-      INTEGER      LIGUTI
-      INTEGER      AFFDEF
-      INTEGER      UNIT
-      INTEGER      LARMAX
-
+      CHARACTER*(*) SDIMPZ
+      INTEGER       IMPMAX,COLMAX,LIGMAX,TITMAX
+      INTEGER       COLUTI,LIGUTI
+      INTEGER       AFFDEF,UNIT,LARMAX
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR :
-C ----------------------------------------------------------------------
+C ROUTINE MECA_NON_LINE (AFFICHAGE - UTILITAIRE)
 C
 C RETOURNE DIVERSES INFOS SUR LA SD AFFICHAGE
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  SDIMPR : SD AFFICHAGE DES COLONNES
 C OUT IMPMAX : NOMBRE D'INFOS DANS LE VECTEUR SDIMPR(1:14)//'INFO'
@@ -75,12 +70,16 @@ C
       INTEGER      JIMPIN
       CHARACTER*24 IMPIN
       INTEGER      IER
+      CHARACTER*14 SDIMPR
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-
-      IMPIN = SDIMPR//'INFO'
+C
+C --- ACCES SD
+C
+      SDIMPR = SDIMPZ
+      IMPIN  = SDIMPR//'INFO'
       CALL JEEXIN(IMPIN,IER)
 
       IF (IER.EQ.0) THEN

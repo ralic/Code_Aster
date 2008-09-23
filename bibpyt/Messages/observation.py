@@ -1,4 +1,4 @@
-#@ MODIF observation Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF observation Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,7 @@ cata_msg = {
 """),
 
 45 : _("""
- le champ absolu n'est accessible qu'en présence de modes statiques
+Les champs de type absolu ne sont accessibles qu'en présence de modes statiques
 """),
 
 49 : _("""

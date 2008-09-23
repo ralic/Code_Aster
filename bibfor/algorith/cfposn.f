@@ -1,7 +1,7 @@
       SUBROUTINE CFPOSN(NOMA  ,DEFICO,POSMAM,POSNSM,NBNOM )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,44 +61,32 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      JDECNO,INO,I
-      CHARACTER*24 CONTMA,PNOMA,NOMACO
-      INTEGER      JMACO,JPONO,JNOMA
+      INTEGER      NBNMAX
+      PARAMETER   (NBNMAX = 9)
+C
+      INTEGER      INO,IBID
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C      
-C --- RECUPERATION DE QUELQUES DONNEES      
-C
-      CONTMA = DEFICO(1:16)//'.MAILCO'
-      PNOMA  = DEFICO(1:16)//'.PNOMACO'
-      NOMACO = DEFICO(1:16)//'.NOMACO'
-C
-      CALL JEVEUO(CONTMA,'L',JMACO)
-      CALL JEVEUO(PNOMA, 'L',JPONO)
-      CALL JEVEUO(NOMACO,'L',JNOMA)
 C
 C --- INITIALISATIONS
 C
-      DO 6 I = 1,9
-        POSNSM(I) = 0
- 6    CONTINUE            
+      DO 6 INO = 1,NBNMAX
+        POSNSM(INO) = 0
+ 6    CONTINUE        
 C
 C --- NOMBRE DE NOEUDS
 C
-      NBNOM  = ZI(JPONO+POSMAM) - ZI(JPONO+POSMAM-1)
-      IF (NBNOM.GT.9) THEN
+      CALL CFNBEN(NOMA  ,DEFICO,POSMAM,'MAIL',NBNOM ,
+     &            IBID  )
+      IF (NBNOM.GT.NBNMAX) THEN
         CALL ASSERT(.FALSE.)
       ENDIF  
 C
 C --- INDICE DANS CONTMA DES NOEUDS DE LA MAILLE MAITRE
 C
-      JDECNO = ZI(JPONO+POSMAM-1)
-      DO 60 INO = 1,NBNOM
-        POSNSM(INO) = ZI(JNOMA+JDECNO+INO-1)
- 60   CONTINUE
+      CALL CFNUMN(NOMA  ,DEFICO,POSMAM,NBNOM ,POSNSM)
 C
       CALL JEDEMA()
-C ----------------------------------------------------------------------
       END

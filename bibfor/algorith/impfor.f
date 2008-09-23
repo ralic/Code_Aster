@@ -1,7 +1,7 @@
       SUBROUTINE IMPFOR(UNITE,LONG,PREC,VALR,CHAINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,12 +25,15 @@ C
       INTEGER       PREC
       REAL*8        VALR
       CHARACTER*(*) CHAINE
+C 
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR :
-C ----------------------------------------------------------------------
+C ROUTINE MECA_NON_LINE (AFFICHAGE - UTILITAIRE)
 C
 C IMPRESSION D'UN REEL SUR UNE UNITE LOGICIELLE
+C      
+C ----------------------------------------------------------------------
+C      
 C
 C IN  UNITE  : UNITE LOGICIELLE D'IMPRESSION
 C IN  LONG   : LONGUEUR D'AFFICHAGE DU NOMBRE

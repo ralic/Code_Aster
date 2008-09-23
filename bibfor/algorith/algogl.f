@@ -1,7 +1,7 @@
-      SUBROUTINE ALGOGL(DEFICO,RESOCO,MATASS,LMAT,LDSCON,NOMA,CINE,
-     &                  RESU,DEPTOT,LICCVG)
+      SUBROUTINE ALGOGL(DEFICO,RESOCO,MATASS,LMAT  ,LDSCON,
+     &                  NOMA  ,RESU  ,DEPTOT,CTCCVG)
 C
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2005 IFP - MARTIN GUITTON         WWW.CODE-ASTER.ORG
@@ -25,22 +25,22 @@ C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
       CHARACTER*19 MATASS
-      CHARACTER*24 DEFICO
-      CHARACTER*24 RESOCO
-      CHARACTER*24 CINE
-      CHARACTER*24 RESU
+      CHARACTER*24 DEFICO,RESOCO
+      CHARACTER*19 RESU
       CHARACTER*24 DEPTOT
-      INTEGER      LMAT
-      INTEGER      LDSCON
-      INTEGER      LICCVG(5)
-C ======================================================================
-C ROUTINE APPELEE PAR : CFALGO
-C ======================================================================
+      INTEGER      LMAT,LDSCON
+      INTEGER      CTCCVG(2)
+C      
+C ----------------------------------------------------------------------
 C
-C ALGO GLISSIERE
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
 C
 C ALGO. POUR CONTACT    : CONTRAINTES TOUTES ACTIVES CAR GLISSIERE
 C ALGO. POUR FROTTEMENT : SANS
+C ALGO GLISSIERE
+C
+C ----------------------------------------------------------------------
+C
 C
 C RESOLUTION DE : C.DU + AT.MU  = F
 C                 A(U+DU)      <= E (= POUR LES LIAISONS ACTIVES)
@@ -59,31 +59,20 @@ C
 C      F = ( L - QT.SIG - BT.LAM  ) AU COURS D'UNE ITERATION DE NEWTON
 C          (           0          )
 C
-C IN  DEFICO  : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
-C IN  RESOCO  : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-C                'E':  RESOCO(1:14)//'.APJEU'
-C                'E':  RESOCO(1:14)//'.LIAC'
-C                'E':  RESOCO(1:14)//'.LIOT'
-C                'E':  RESOCO(1:14)//'.MU'
-C                'E':  RESOCO(1:14)//'.DEL0'
-C                'E':  RESOCO(1:14)//'.DELT'
-C                'E':  RESOCO(1:14)//'.COCO'
-C                'E':  RESOCO(1:14)//'.CM1A'
-C IN MATASS   : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
-C IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
-C IN  LDSCON  : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
-C IN  NOMA    : NOM DU MAILLAGE
-C IN  CINE    : CHAM_NO CINEMATIQUE
-C IN  DEPTOT  : DEPLACEMENT TOTAL OBTENU A L'ISSUE DE L'ITERATION
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
+C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
+C IN  LDSCON : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  DEPTOT : DEPLACEMENT TOTAL OBTENU A L'ISSUE DE L'ITERATION
 C               DE NEWTON PRECEDENTE
-C VAR RESU    : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
+C VAR RESU   : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
-C OUT LICCVG  : CODES RETOURS D'ERREUR
-C                       (1) PILOTAGE
-C                       (2) LOI DE COMPORTEMENT
-C                       (3) CONTACT/FROTTEMENT: NOMBRE MAXI D'ITERATIONS
-C                       (4) CONTACT/FROTTEMENT: MATRICE SINGULIERE
+C OUT CTCCVG : CODES RETOURS D'ERREUR DU COTNACT
+C                (1) NOMBRE MAXI D'ITERATIONS
+C                (2) MATRICE SINGULIERE
 C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
 C
@@ -111,21 +100,21 @@ C
       INTEGER      IBID
       LOGICAL      TROUAC,DELPOS,LELPIV,CFEXCL
       INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,IZONE
-      INTEGER      II,KK,ITER,ILIAC,NEQMAX,IALARM
+      INTEGER      ILIAI,KK,ITER,ILIAC,NEQMAX,IALARM
       INTEGER      JRESU,JDEPP
       INTEGER      INDIC,LLMIN
       INTEGER      JDECAL,LLF,LLF1,LLF2
       INTEGER      INDFAC,AJLIAI,SPLIAI,POSIT,SPAVAN
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBDDL,NDIM,NESMAX
       REAL*8       R8MAEM,AJEU,RHO,RHORHO,AADELT,VAL,R8PREM
-      REAL*8       XJVMAX,X1,ALJEU
+      REAL*8       XJVMAX,X1,ALJEU,R8BID
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       CHARACTER*24 MACONT
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,NOZOCO
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JZOCO
-      CHARACTER*24 CONTNO,CONTMA,TOLECO,APMEMO
-      INTEGER      JNOCO,JMACO,JTOLE,JAPMEM
+      CHARACTER*24 TOLECO,APMEMO
+      INTEGER      JTOLE,JAPMEM
       CHARACTER*19 LIAC,MU,DELT0,DELTA,COCO,LIOT,ATMU
       INTEGER      JLIAC,JMU,JDELT0,JDELTA,JCOCO,JLIOT,JATMU
       CHARACTER*19 SOLVEU
@@ -157,8 +146,6 @@ C ======================================================================
 C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
       NOZOCO = DEFICO(1:16)//'.NOZOCO'
       APPARI = RESOCO(1:14)//'.APPARI'
       APPOIN = RESOCO(1:14)//'.APPOIN'
@@ -179,8 +166,6 @@ C ======================================================================
 C ======================================================================
       CALL JEVEUO(COCO,'E',JCOCO)
       CALL JEVEUO(NOZOCO,'L',JZOCO)
-      CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(APPOIN,'L',JAPPTR)
       CALL JEVEUO(APCOEF,'L',JAPCOE)
@@ -286,29 +271,29 @@ C ======================================================================
       IALARM = 0
       IF (NBLIAC.EQ.0) THEN
         ZI(JLIOT+4*NBLIAI) = 0
-        DO 30 II = 1,NBLIAI
-          JDECAL = ZI(JAPPTR+II-1)
-          NBDDL = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
+        DO 30 ILIAI = 1,NBLIAI
+          JDECAL = ZI(JAPPTR+ILIAI-1)
+          NBDDL = ZI(JAPPTR+ILIAI) - ZI(JAPPTR+ILIAI-1)
           CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
      &                ZR(JDELT0),VAL)
 
-          IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
-            AJEU = ZR(JAPJEU+II-1) - VAL
+          IF (.NOT.CFEXCL(JAPPAR,JAPMEM,ILIAI)) THEN
+            AJEU = ZR(JAPJEU+ILIAI-1) - VAL
             IF (AJEU.GT.ALJEU) THEN
               IALARM = IALARM+1
               IF (IALARM.EQ.1) THEN
                 CALL U2MESS('A','CONTACT_9')
               ENDIF
-              CALL CFIMP2(IFM,NOMA,II,TYPEC0,'N','ALJ',AJEU,
-     &                    JAPPAR,JNOCO,JMACO)
+              CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,ILIAI,
+     &                    TYPEC0,'N'   ,'ALJ' ,AJEU  )
             ENDIF
             INDIC = 0
             POSIT = NBLIAC + 1
             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
-     &                  RESOCO,TYPEAJ,POSIT,II,TYPEC0)
+     &                  RESOCO,TYPEAJ,POSIT,ILIAI,TYPEC0)
             IF (NIV.GE.2) THEN
-             CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',AJEU,
-     &                  JAPPAR,JNOCO,JMACO)
+              CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,ILIAI,
+     &                    TYPEC0,TYPEAJ,'ALG' ,AJEU  )
             ENDIF
           ENDIF
    30   CONTINUE
@@ -355,20 +340,18 @@ C
       IF (NBLIAC.NE.0) THEN
 C --- PAR LDLT OU MULT_FRONT
 C
-       SPAVAN = SPLIAI
+        SPAVAN = SPLIAI
 C
 C --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE (A PARTIR DE INDFAC)
 C
-       CALL CFACAT(NDIM,INDIC,NBLIAC,AJLIAI,SPLIAI,0,0,0,
-     &             INDFAC,NESMAX,DEFICO,RESOCO,LMAT,CINE,NBLIAI,
-     &             XJVMAX)
-C ======================================================================
-C ---
+        CALL CFACAT(NDIM  ,INDIC ,NBLIAC,AJLIAI,SPLIAI,
+     &              LLF   ,LLF1  ,LLF2  ,INDFAC,NESMAX,
+     &              DEFICO,RESOCO,LMAT  ,NBLIAI,XJVMAX)
+C 
 C --- ELIMINATION DES PIVOTS NULS
-C ---
-C ======================================================================
-        CALL ELPIV1(XJVMAX, INDIC, NBLIAC, AJLIAI, SPLIAI, SPAVAN,
-     &              NOMA, DEFICO, RESOCO)
+C 
+        CALL ELPIV1(XJVMAX,INDIC ,NBLIAC,AJLIAI,SPLIAI, 
+     &              SPAVAN,NOMA  ,DEFICO,RESOCO)
 C
 C --- ON A SUPPRIME UNE LIAISON
 C
@@ -403,7 +386,7 @@ C
 C --- LA MATRICE DE CONTACT EST-ELLE SINGULIERE ?
 C
           IF (IER.GT.ISTO) THEN
-            LICCVG(4) = 1
+            CTCCVG(2) = 1
             GO TO 999
           END IF
         END IF
@@ -435,8 +418,8 @@ C ======================================================================
 C
 C ======================================================================
 C ---
-C --- CALCUL DE RHO = MIN ( (E(DEPTOT) - A.RESU)II / (A.DELTA)II) )
-C --- SUR LES LIAISONS NON ACTIVES DE NUMERO II
+C --- CALCUL DE RHO = MIN ( (E(DEPTOT) - A.RESU)ILIAI / (A.DELTA)ILIAI))
+C --- SUR LES LIAISONS NON ACTIVES DE NUMERO ILIAI
 C ---
 C ======================================================================
 C
@@ -452,25 +435,25 @@ C ======================================================================
 C ======================================================================
 C -- S'IL Y A DES LIAISONS NON ACTIVES : CALCUL DE RHO
 C ======================================================================
-        DO 112 II = 1,NBLIAI
+        DO 112 ILIAI = 1,NBLIAI
           TROUAC = .FALSE.
 C ======================================================================
-C -- LA LIAISON II EST-ELLE ACTIVE ? (-> TROUAC)
+C -- LA LIAISON ILIAI EST-ELLE ACTIVE ? (-> TROUAC)
 C ======================================================================
           DO 90 ILIAC = 1,NBLIAC
-            IF (ZI(JLIAC-1+ILIAC).EQ.II) TROUAC = .TRUE.
+            IF (ZI(JLIAC-1+ILIAC).EQ.ILIAI) TROUAC = .TRUE.
    90     CONTINUE
 C ======================================================================
-C -- CALCUL DE A.DELTA SI LA LIAISON II N'EST PAS ACTIVE
+C -- CALCUL DE A.DELTA SI LA LIAISON ILIAI N'EST PAS ACTIVE
 C ======================================================================
           IF (.NOT.TROUAC) THEN
-            JDECAL = ZI(JAPPTR+II-1)
-            NBDDL = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
+            JDECAL = ZI(JAPPTR+ILIAI-1)
+            NBDDL = ZI(JAPPTR+ILIAI) - ZI(JAPPTR+ILIAI-1)
             CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
      &                  ZR(JDELTA),AADELT)
 C ======================================================================
-C -- SI A.DELTA EST POSITIF POUR II : CALCUL DE E(DEPTOT) - A.RESU
-C -- RHO = MIN ( ( E(DEPTOT) - A.RESU )II / (A.DELTA)II )
+C -- SI A.DELTA EST POSITIF POUR ILIAI : CALCUL DE E(DEPTOT) - A.RESU
+C -- RHO = MIN ( ( E(DEPTOT) - A.RESU )ILIAI / (A.DELTA)ILIAI )
 C -- ON STOCKE DANS LLMIN LE NUMERO DE LA LIAISON REALISANT LE
 C -- MINIMUM (CE SERA LA LIAISON LA PLUS VIOLEE)
 C ======================================================================
@@ -478,7 +461,7 @@ C ======================================================================
 C ======================================================================
 C -- ON NE PREND PAS EN COMPTE UNE LIAISON A PIVOT NUL
 C ======================================================================
-               CALL CFELPV(II,TYPEC0,RESOCO,NBLIAI,LELPIV)
+               CALL CFELPV(ILIAI,TYPEC0,RESOCO,NBLIAI,LELPIV)
                IF (LELPIV) THEN
                  GOTO 112
                ENDIF
@@ -488,19 +471,19 @@ C ======================================================================
               DELPOS = .TRUE.
               CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
      &                    ZR(JRESU),VAL)
-              IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
-                AJEU = ZR(JAPJEU+II-1) - VAL
+              IF (.NOT.CFEXCL(JAPPAR,JAPMEM,ILIAI)) THEN
+                AJEU = ZR(JAPJEU+ILIAI-1) - VAL
                 AJEU = AJEU/AADELT
                 IF (AJEU.LT.RHO) THEN
                   RHO = AJEU
-                  LLMIN = II
+                  LLMIN = ILIAI
                 ENDIF
               ENDIF
             ENDIF
           ENDIF
   112   CONTINUE
 C ======================================================================
-C -- SI TOUS LES (A.DELTA)II SONT NEGATIFS : RHO = 1
+C -- SI TOUS LES (A.DELTA)ILIAI SONT NEGATIFS : RHO = 1
 C ======================================================================
         IF (.NOT.DELPOS) THEN
           RHO = 1.0D0
@@ -526,8 +509,8 @@ C ======================================================================
         CALL CFTABL( INDIC, NBLIAC, AJLIAI, SPLIAI, LLF,LLF1,LLF2,
      &               RESOCO, TYPEAJ, POSIT, LLMIN, TYPEC0)
          IF (NIV.GE.2) THEN
-            CALL CFIMP2(IFM,NOMA,LLMIN,TYPEC0,TYPEAJ,'ALG',
-     &                  ZR(JAPJEU-1+LLMIN),JAPPAR,JNOCO,JMACO)
+           CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLMIN,
+     &                 TYPEC0,TYPEAJ,'ALG' ,ZR(JAPJEU-1+LLMIN))
          END IF
       ELSE
 C ======================================================================
@@ -551,7 +534,7 @@ C ======================================================================
 C --- A-T-ON DEPASSE LE NOMBRE D'ITERATIONS DE CONTACT AUTORISE ?
 C ======================================================================
       IF (ITER.GT.ITEMAX+1) THEN
-        LICCVG(3) = 1
+        CTCCVG(1) = 1
         GO TO 999
       END IF
 
@@ -574,11 +557,15 @@ C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================
 C --- VALEUR DES VARIABLES DE CONVERGENCE
-      LICCVG(3) = 0
-      LICCVG(4) = 0
+      CTCCVG(1) = 0
+      CTCCVG(2) = 0
 
       ZI(JCOCO+2) = NBLIAC
-
+C 
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC 
+C 
+      CALL CFITER(RESOCO,'E','CONT',ITER  ,R8BID)
+      CALL CFITER(RESOCO,'E','LIAC',NBLIAC,R8BID)
 C ======================================================================
 C --- CALCUL DU JEU FINAL
 C ======================================================================

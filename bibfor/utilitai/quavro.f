@@ -1,6 +1,7 @@
-      SUBROUTINE QUAVRO (TETA,   QUAT)
+      SUBROUTINE QUAVRO(QUATER,THETA )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,38 +20,54 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
 C
-C FONCTION: CALCULE LE VECTEUR-ROTATION TETA CORRESPONDANT AU QUATERNION
-C           QUAT.
+       IMPLICIT NONE
+       REAL*8   QUATER(4),THETA(3)
+C 
+C ----------------------------------------------------------------------
 C
-C     IN  : QUAT      : QUATERNION
+C ROUTINE UTILITAIRE (QUATERNION)
 C
-C     OUT : TETA      : VECTEUR-ROTATION
-C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
-      REAL*8 QUAT(4),TETA(3),RESTE
+C CALCULE LE VECTEUR-ROTATION THETA CORRESPONDANT AU QUATERNION
+C QUATER
+C      
+C ----------------------------------------------------------------------
+C 
+C       
+C IN  QUATER : QUATERNION
+C OUT THETA  : VECTEUR ROTATION
+C      
+C ----------------------------------------------------------------------
 C
-      ZERO  = 0.D0
-      EPSIL = R8PREM( )**2
-      DEUX  = 2.D0
+      REAL*8  RESTE,ZERO,EPSIL,DEUX,COEF
+      REAL*8  PI,R8PREM
+      REAL*8  DDOT
+      REAL*8  PROSCA,ANORX
+      INTEGER I
+C      
+C ----------------------------------------------------------------------
+CC
+      ZERO   = 0.D0
+      EPSIL  = R8PREM( )**2
+      DEUX   = 2.D0
       PI = 3.14159265D0
 C
-      PROSCA=DDOT(3,QUAT,1,QUAT,1)
-      ANORX = SQRT(PROSCA)
-      IF(ANORX.GT.1.D0) ANORX = 1.D0
+      PROSCA = DDOT(3,QUATER,1,QUATER,1)
+      ANORX  = SQRT(PROSCA)
+      IF (ANORX.GT.1.D0) ANORX = 1.D0
       IF (ANORX.LT.EPSIL) THEN
-         DO 1 I=1,3
-         TETA(I) = ZERO
-1        CONTINUE
-         GOTO 9999
+        DO 1 I=1,3
+          THETA(I) = ZERO
+1       CONTINUE
+        GOTO 9999
       ENDIF
       RESTE = ASIN(ANORX)
 C
-      IF(QUAT(4).LT.ZERO) RESTE = PI - RESTE
+      IF (QUATER(4).LT.ZERO) RESTE = PI - RESTE
 C
       COEF = DEUX*RESTE/ANORX
 C
       DO 10 I=1,3
-         TETA(I) = COEF * QUAT(I)
-10     CONTINUE
+        THETA(I) = COEF * QUATER(I)
+10    CONTINUE
  9999 CONTINUE
       END

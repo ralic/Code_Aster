@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost4 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,10 +64,6 @@ cata_msg = {
 
 15 : _("""
  probleme extraction pour la table  %(k1)s
-"""),
-
-16 : _("""
- attention : le calcul du dommage n'a de sens que pour des dsp en contraintes
 """),
 
 17 : _("""

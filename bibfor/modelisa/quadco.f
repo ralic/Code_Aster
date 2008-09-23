@@ -1,8 +1,7 @@
-      SUBROUTINE QUADCO(CHAR,MOTFAC,NZOCP,
-     &                  INDQUA)
+      SUBROUTINE QUADCO(CHAR  ,MOTFAC,NZOCO ,INDQUA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +20,10 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C
-      IMPLICIT      NONE
+      IMPLICIT     NONE
       CHARACTER*8  CHAR
       CHARACTER*16 MOTFAC
-      INTEGER      NZOCP
+      INTEGER      NZOCO
       INTEGER      INDQUA
 C      
 C ----------------------------------------------------------------------
@@ -43,7 +42,7 @@ C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-C IN  NZOCP  : NOMBRE DE ZONES DE CONTACT PRINCIPALES
+C IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
 C OUT INDQUA : VAUT 0 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
 C                     A PART
 C              VAUT 1 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
@@ -69,6 +68,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      IZONE,FORM,METH 
+      CHARACTER*24 DEFICO
       CHARACTER*24 FORMCO,METHCO
       INTEGER      JFORM,JMETH
       INTEGER      CFMMVD,ZMETH          
@@ -76,11 +76,15 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      DEFICO = CHAR(1:8)//'.CONTACT'        
 C 
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C 
-      FORMCO = CHAR(1:8)//'.CONTACT.FORMCO'  
-      METHCO = CHAR(1:8)//'.CONTACT.METHCO'           
+      FORMCO = DEFICO(1:16)//'.FORMCO'  
+      METHCO = DEFICO(1:16)//'.METHCO'           
       CALL JEVEUO(FORMCO,'L',JFORM) 
       CALL JEVEUO(METHCO,'L',JMETH)
 C
@@ -90,7 +94,7 @@ C --- INITIALISATIONS
 C      
       INDQUA = 0
 C
-      DO 2 IZONE = 1,NZOCP
+      DO 2 IZONE = 1,NZOCO
         FORM   = ZI(JFORM-1+IZONE)
         METH   = ZI(JMETH+ZMETH*(IZONE-1)+6)
         IF (FORM.EQ.1) THEN     

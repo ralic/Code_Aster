@@ -2,7 +2,7 @@
      &                  IREP  ,RREP  ,KREP  ,LREP   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IZONE,IRET
+      INTEGER      IZONE,IRET,NBZONE
       INTEGER      CFMMVD,ZCMCF,ZMETH,ZTOLE,ZECPD,ZEXCL,ZDIRN
       CHARACTER*24 CARACF,DIRNOR,METHCO,ECPDON
       INTEGER      JCMCF,JDIRNO,JMETH,JECPD
@@ -146,11 +146,22 @@ C
 C
       ELSEIF (QUESTI.EQ.'EXCLUSION_PIV_NUL') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
-        IF (ZR(JCMCF+ZCMCF*(IZONE-1)+22) .EQ. 0.D0) THEN
-          LREP(1) = .FALSE.
-        ELSE
-          LREP(1) = .TRUE.
-        ENDIF
+        NBZONE  = NINT(ZR(JCMCF))
+        LREP(1) = .FALSE.
+        IF (IZ.EQ.0) THEN
+          DO 9 IZONE=1,NBZONE        
+            IF (ZR(JCMCF+ZCMCF*(IZONE-1)+22) .NE. 0.D0) THEN
+              LREP(1) = .TRUE.
+              GOTO 99
+            ENDIF
+   9      CONTINUE    
+        ELSE 
+          IF (ZR(JCMCF+ZCMCF*(IZONE-1)+22) .EQ. 0.D0) THEN
+            LREP(1) = .FALSE.
+          ELSE
+            LREP(1) = .TRUE.
+          ENDIF
+        ENDIF         
 C
       ELSEIF (QUESTI.EQ.'DIST_POUTRE') THEN
         CALL JEVEUO(NDIMCO,'L',JDIM  )
@@ -198,12 +209,23 @@ C
 C
       ELSEIF (QUESTI.EQ.'FROTTEMENT') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
-        IREP(1) = NINT(ZR(JCMCF+5))
-        IF (IREP(1).EQ.1) THEN
-          LREP(1) = .FALSE.
-        ELSE
+        NBZONE  = NINT(ZR(JCMCF))
+        IREP(1) = 0
+        LREP(1) = .FALSE.
+        DO 10 IZONE=1,NBZONE
+          IREP(1) = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+5))
+          IF (IREP(1).EQ.3) THEN
+            LREP(1) = .TRUE.
+            GOTO 99
+          ENDIF
+  10    CONTINUE
+       ELSEIF (QUESTI.EQ.'FROTTEMENT_ZONE') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF)
+        LREP(1) = .FALSE.
+        IREP(1) = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+5))
+        IF (IREP(1).EQ.3) THEN
           LREP(1) = .TRUE.
-        ENDIF
+        ENDIF     
 C
       ELSEIF (QUESTI.EQ.'SANS_GROUP_NO') THEN
         CALL JEVEUO(CARACF,'L',JCMCF) 
@@ -252,10 +274,10 @@ C
       ELSEIF (QUESTI.EQ.'TOLE_PROJ_EXT') THEN
         CALL JEVEUO(TOLECO,'L',JTOLE)
         RREP(1) = ZR(JTOLE+ZTOLE*(IZONE-1))
-C
+C        
       ELSEIF (QUESTI.EQ.'TOLE_APPA') THEN
         CALL JEVEUO(TOLECO,'L',JTOLE)
-        RREP(1) = ZR(JTOLE+ZTOLE*(IZONE-1)+6)        
+        RREP(1) = ZR(JTOLE+ZTOLE*(IZONE-1)+6)                
 C
       ELSEIF (QUESTI.EQ.'FLIP_FLOP_IMAX') THEN
         IREP(1) = 20
@@ -423,6 +445,15 @@ C
           LREP(1) = .FALSE.
         ENDIF
 C
+      ELSEIF (QUESTI.EQ.'XFEM_GG') THEN 
+        CALL JEVEUO(ECPDON,'L',JECPD)
+         IREP(1) = ZI(JECPD+4)
+         IF (IREP(1).GT.0) THEN
+           LREP(1) = .TRUE.
+         ELSE
+           LREP(1) = .FALSE.
+         ENDIF      
+C
       ELSE
         WRITE(6,*) '   NUM. ZONE    : <',IZONE  ,'>'
         WRITE(6,*) '   QUESTION     : <',QUESTI ,'>'
@@ -430,7 +461,9 @@ C
         WRITE(6,*) '   REPONSE  - R : <',RREP(1),'>'
         WRITE(6,*) '   REPONSE  - L : <',LREP(1),'>'            
         CALL ASSERT(.FALSE.)
-      ENDIF      
+      ENDIF  
+C
+ 99   CONTINUE          
 C
       CALL JEDEMA()
       END

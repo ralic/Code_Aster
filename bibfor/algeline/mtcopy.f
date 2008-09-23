@@ -1,9 +1,10 @@
       SUBROUTINE MTCOPY(MATIN,MATOUT,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) MATIN,MATOUT
+      INTEGER       IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,10 +53,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
-      INTEGER LMATOU,LMATIN
+      INTEGER LMATOU,LMATIN,NIMPOU
       REAL*8 UN
       CHARACTER*8 NOMDDL
-      CHARACTER*19 MATI19,MATO19,KBID
+      CHARACTER*19 MATI19,MATO19
       CHARACTER*24 NMATOU,NMATIN
       CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
@@ -87,6 +88,7 @@ C
         IF (NIMPOU.NE.0) THEN
           CALL JEDETR(MATO19//'.CCID')
           CALL JEDETR(MATO19//'.CCLL')
+          CALL JEDETR(MATO19//'.CCII')
           CALL JEDETR(MATO19//'.CCVA')
           ZI(LMATOU+7) = 0
           ZI(LMATOU+15) = 0

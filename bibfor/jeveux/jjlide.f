@@ -1,6 +1,6 @@
       SUBROUTINE JJLIDE ( NOMAP , NOMLU , ITYPE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,8 @@ C ----------------------------------------------------------------------
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       REAL *8          SVUSE,SMXUSE   
       COMMON /STATJE/  SVUSE,SMXUSE  
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE 
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
@@ -181,8 +183,11 @@ C
             NALLOC = NALLOC + NMAX
           ENDIF
 C
-C --------TOUTE FORME DE COLLECTION
+C ------- TOUTE FORME DE COLLECTION 
+C ---     ALLOCATION EN MEMOIRE STATIQUE DES OBJETS DE TRAVAIL
 C
+          LDYNOL = LDYN
+          LDYN   = 0
           ITROLD = ITRECH
           ITRECH = 2
           NNN =  NALLOC * NPARM * LOIS
@@ -195,6 +200,7 @@ C
           ISZON(JISZON+ISZON(JISZON+IASIG-4)-4) = ISTAT(4)
           SVUSE = SVUSE + NALLOC * NPARM + 9
           ITRECH = ITROLD
+          LDYN   = LDYNOL
           SMXUSE = MAX(SMXUSE,SVUSE)
 C --------OBJETS DE COLLECTION
 C

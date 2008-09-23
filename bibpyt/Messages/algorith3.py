@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 21/04/2008   AUTEUR GREFFET N.GREFFET 
+#@ MODIF algorith3 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,21 +22,11 @@ def _(x) : return x
 
 cata_msg = {
 
-7 : _("""
- Etant donné la présence du mot clé AMOR_ALPHA et / ou AMOR_BETA, 
- on va assembler la matrice d'amortissement globale de Rayleigh, 
- même si ces coefficients sont tous les deux nuls.
- Cette opération engendre un surcoût de calcul.
-"""),
 
 8 : _("""
  élément non traité
 """),
 
-9 : _("""
- utiliser la formulation en déplacement avec un schéma NEWMARK, HHT ou THETA_METHODE,
- ou la formulation en accéleration avec un schéma DIFF_CENT ou TCHAMWA.
-"""),
 
 10 : _("""
   -> Contact avec DYNA_TRAN_MODAL : Il y a interpénétration d'une valeur supérieure à (DIST_MAIT + DIST_ESCL).

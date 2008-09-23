@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+#@ MODIF algorith10 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,11 +80,6 @@ cata_msg = {
 
 33 : _("""
  il n y a pas de mode statique calculé pour le couple noeud-cmp ci dessus
-"""),
-
-34 : _("""
- redécoupage demandé après non convergence locale
- redécoupage global
 """),
 
 35 : _("""
@@ -264,10 +259,6 @@ cata_msg = {
 
 88 : _("""
  COMP_ELAS non implanté
-"""),
-
-89 : _("""
- Z est négatif (phase métallurgique)
 """),
 
 90 : _("""

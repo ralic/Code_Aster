@@ -1,8 +1,7 @@
-      SUBROUTINE NMSSSV(MODELZ,MATE  ,CARELE,NUMEDD,LISCHA,
-     &                  INSTAN,VEELEM,MEELEM,MEASSE,VECTOR)
+      SUBROUTINE NMSSSV(MODELZ,MATE  ,CARELE,LISCHA,VESSTF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,17 +23,14 @@ C TOLE CRP_21
 C
       IMPLICIT NONE
       CHARACTER*(*) MODELZ 
-      CHARACTER*24  MATE,CARELE,NUMEDD            
-      CHARACTER*19  MEASSE(8),LISCHA           
-      CHARACTER*19  MEELEM(8),VEELEM(30)
-      CHARACTER*24  VECTOR 
-      REAL*8        INSTAN
+      CHARACTER*24  MATE,CARELE                 
+      CHARACTER*19  VESSTF,LISCHA
 C 
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (CALCUL - SOUS-STRUCTURATION)
 C
-C CALCUL DU VECTEUR 
+C CALCUL DU VECTEUR CHARGEMENT SUR MACRO-ELEMENTS
 C      
 C ----------------------------------------------------------------------
 C
@@ -60,8 +56,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C  
       CHARACTER*8  MODELE   
-      CHARACTER*19 VESSTR
-      CHARACTER*24 CNSSTR,FOMUL2  
+      CHARACTER*24 FOMUL2 
       INTEGER      IRET             
 C      
 C ----------------------------------------------------------------------
@@ -71,9 +66,7 @@ C
 C --- INITIALISATIONS
 C     
       MODELE = MODELZ 
-      CNSSTR = '&&CNSSTR'  
-      VESSTR = VEELEM(17)  
-      FOMUL2 = LISCHA(1:19)//'.FCSS'          
+      FOMUL2 = LISCHA(1:19)//'.FCSS'      
 C
 C --- CALCUL
 C
@@ -81,17 +74,11 @@ C
       IF (IRET.EQ.0) THEN
         CALL ASSERT(.FALSE.)
       ELSE
-        CALL EXISD('CHAMP',CNSSTR(1:19),IRET)
-        IF (IRET.EQ.0) THEN
-          CALL MEMARE('V',VESSTR,MODELE,MATE  ,CARELE(1:8),
-     &                'CHAR_MECA')
-          CALL JEDETR(VESSTR//'.RELC')
-          CALL SS2MME(MODELE(1:8),VESSTR,'V')
-        END IF
+        CALL MEMARE('V',VESSTF,MODELE,MATE  ,CARELE(1:8),
+     &              'CHAR_MECA')
+        CALL JEDETR(VESSTF//'.RELC')
+        CALL SS2MME(MODELE(1:8),'SOUS_STRUC',VESSTF,'V')
       ENDIF
-      CALL ASSVSS('V',CNSSTR,VESSTR,NUMEDD,' ','ZERO',1,FOMUL2,
-     &            INSTAN)
-      CALL VTAXPY(1.D0,CNSSTR,VECTOR)
 C
       CALL JEDEMA()      
 C

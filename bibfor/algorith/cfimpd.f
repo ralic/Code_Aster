@@ -2,7 +2,7 @@
      &                  VALI  ,VALR  ,VALK  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -83,15 +83,6 @@ C
       ELSEIF (SUBAPP.EQ.'RECHME') THEN
         IF (IMESG.EQ.1) THEN
           CALL U2MESI('I','CONTACTDEBG_14',1,VALI)
-        ELSE
-          CALL U2MESS('I','CONTACTDEBG_99')
-        ENDIF 
-
-      ELSEIF (SUBAPP.EQ.'NMCOFR') THEN
-        IF (IMESG.EQ.2) THEN
-          CALL U2MESR('I','CONTACTDEBG_20',1,VALR)   
-        ELSEIF (IMESG.EQ.3) THEN
-          CALL U2MESR('I','CONTACTDEBG_21',1,VALR)           
         ELSE
           CALL U2MESS('I','CONTACTDEBG_99')
         ENDIF         

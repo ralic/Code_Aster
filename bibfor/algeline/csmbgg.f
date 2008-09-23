@@ -6,7 +6,7 @@
       CHARACTER*(*) TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,10 +56,6 @@ C VAR VSMB  SCA : VECTEUR SECOND MEMBRE
 C IN  VCINE SCA : VECTEUR DE CHARGEMENT CINEMATIQUE ( LE U0 DE U = U0
 C                 SUR G AVEC VCINE = 0 EN DEHORS DE G )
 C-----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C-----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C-----------------------------------------------------------------------
 C     COMMUNS JEVEUX
 C-----------------------------------------------------------------------
       INTEGER ZI
@@ -79,15 +75,16 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C-----------------------------------------------------------------------
-      INTEGER NEQ,NIMPO,JCCLL,JCCJJ
+      INTEGER NEQ,NIMPO,JCCLL,JCCII
 C-----------------------------------------------------------------------
 C     DEBUT
+      CALL JEMARQ()
 C-----------------------------------------------------------------------
       NEQ = ZI(LMAT+2)
       NIMPO = ZI(LMAT+7)
       IF (NIMPO.EQ.0) GO TO 10
       CALL JEVEUO(ZK24(ZI(LMAT+1))(1:19)//'.CCLL','L',JCCLL)
-      CALL JEVEUO(ZK24(ZI(LMAT+1))(1:19)//'.CCJJ','L',JCCJJ)
+      CALL JEVEUO(ZK24(ZI(LMAT+1))(1:19)//'.CCII','L',JCCII)
 
 C     ------------------------------------------------------------------
 
@@ -95,16 +92,18 @@ C     ------------------------------------------------------------------
 
 C        --- SYSTEME REEL:
         CALL ASSERT(TYPE.EQ.'R')
-        CALL CSMBR8(ZK24(ZI(LMAT+1)),ZI(JCCLL),ZI(JCCJJ),NEQ,
+        CALL CSMBR8(ZK24(ZI(LMAT+1)),ZI(JCCLL),ZI(JCCII),NEQ,
      &              VCINE,VSMB)
 
       ELSE IF (ZI(LMAT+3).EQ.2) THEN
 
 C        --- SYSTEME COMPLEXE:
         CALL ASSERT(TYPE.EQ.'C')
-        CALL CSMBC8(ZK24(ZI(LMAT+1)),ZI(JCCLL),ZI(JCCJJ),NEQ,
+        CALL CSMBC8(ZK24(ZI(LMAT+1)),ZI(JCCLL),ZI(JCCII),NEQ,
      &              CVCINE,CVSMB)
       END IF
 
    10 CONTINUE
+
+      CALL JEDEMA()
       END

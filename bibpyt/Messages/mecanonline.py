@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 26/05/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,10 +49,23 @@ cata_msg = {
  sera non contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
 """),
 
+
 22 : _("""
  L'etat initial n'appartient pas à un EVOL_NOLI :
  on suppose qu'on part d'un état a vitesses nulles
 """),
+
+23 : _("""
+ Le calcul de l'accélération initiale a ignoré les chargements de type:
+ - ONDE_PLANE
+ - LAPLACE
+ - GRAPPE_FLUIDE
+"""),
+
+24 : _("""
+ L'etat initial n'a pas d'accéleration donnée.
+ On la calcule.
+ """),
 
 43 : _("""
  Contact et pilotage sont des fonctionnalités incompatibles
@@ -74,6 +87,12 @@ cata_msg = {
 
  Conseils :
    Avez-vous bien affecté une masse sur tous les éléments ?
+"""),
+
+70 : _("""
+ Vous utilisez un schéma explicite avec projection modale.
+ L'accélération initiale a été mise à zéro (elle est recalculée lors
+ de la phase de prédiction).
 """),
 
 77 : _("""
@@ -140,12 +159,10 @@ cata_msg = {
     Erreur dans la gestion des erreurs. Contactez les développeurs.
 """),
 
-87 : _("""
-    Recherche linéaire non favorable. Rho forcé à 1.
-"""),
 
 88 : _("""
     Echec lors de l'interpolation de la variable de commande.
 """),
+
 
 }

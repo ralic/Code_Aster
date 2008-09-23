@@ -1,6 +1,6 @@
       SUBROUTINE JJLIDY ( IADYN , IADMI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C ----------------------------------------------------------------------
       INTEGER          IET,IBID,LGS
 C DEB ------------------------------------------------------------------
       IET = ISZON(JISZON+IADMI-1)
-      LGS = ISZON(JISZON+IADMI-4) - IADMI + 4 
+      LGS = ISZON(JISZON+IADMI-4) - IADMI + 5 
       IF ( IET .EQ. ISTAT(2) ) THEN
         SVUSE = SVUSE - LGS
         CALL ASSERT ( LGS .GT. 0) 

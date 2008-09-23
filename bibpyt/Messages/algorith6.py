@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF algorith6 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -218,18 +218,6 @@ cata_msg = {
  utiliser ALGO_1D="DEBORST" sous COMP_INCR pour le comportement  %(k1)s 
 """),
 
-82 : _("""
- integration explicite du comportement non programmée
-"""),
-
-84 : _("""
- loi non traitée pour les éléments de joint : %(k1)s 
-"""),
-
-85 : _("""
- intégration explicite impossible
-"""),
-
 86 : _("""
  erreur de programmation 1
 """),
@@ -242,38 +230,12 @@ cata_msg = {
  erreur dans le type de comportement
 """),
 
-89 : _("""
- erreur de programmation 2
-"""),
-
-90 : _("""
- pas de C_PLAN pour VMIS_CINE
- utiliser C_PLAN_DEBORST
-"""),
-
-91 : _("""
- pas de c_plan pour VMIS_CIN1
- utiliser C_PLAN_DEBORST
-"""),
-
 92 : _("""
  pas de contraintes planes
 """),
 
-93 : _("""
- integration du comportement POLY_CFC uniquement explicite
-"""),
-
-95 : _("""
- intégration implicite du comportement non programmée
-"""),
-
 96 : _("""
  GREEN deformation required for ELAS_HYPER material
-"""),
-
-97 : _("""
- loi non traitée pour les éléments d'interface : %(k1)s 
 """),
 
 }

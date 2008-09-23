@@ -2,7 +2,7 @@
      &                  CHTNZ,VAPRIZ,VAPRMZ,LOSTAT,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -589,9 +589,8 @@ C====
             IRETP = 0
             CALL EXISD('CHAMP_GD',LCHINE,IRETE)
             CALL EXISD('CHAMP_GD',LCHIN(5),IRETH)
-            IF (((IRETH.EQ.0).AND. (IRETE.NE.0)) .OR.
-     &          ((IRETE.EQ.0).AND. (IRETH.NE.0))) CALL U2MESS('F','CALCU
-     &LEL4_75')
+            CALL ASSERT(IRETH.NE.0 .OR. IRETE.EQ.0)
+            CALL ASSERT(IRETE.NE.0 .OR. IRETH.EQ.0)
             IF (IRETE.EQ.0) CALL EXISD('CHAMP_GD',LCHINP,IRETP)
 
 C====

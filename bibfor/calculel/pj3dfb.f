@@ -5,7 +5,7 @@
       CHARACTER*(*) MAILLZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -281,8 +281,7 @@ C     -------------------------------------------------------
      &          (R-1)*NX*NY+ (Q-1)*NX+P) + 1
               IPOSI = ZI(IABTLC-1+ (R-1)*NX*NY+ (Q-1)*NX+P) +
      &                ZI(IABTNB-1+ (R-1)*NX*NY+ (Q-1)*NX+P)
-              IF ((IPOSI.LT.1) .OR. (IPOSI.GT.LONT)) CALL U2MESS('F','AL
-     &GORITH_19')
+              CALL ASSERT((IPOSI.GE.1) .AND. (IPOSI.LE.LONT))
               ZI(IABTCO-1+IPOSI) = I
   100       CONTINUE
   110     CONTINUE

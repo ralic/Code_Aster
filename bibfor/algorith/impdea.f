@@ -1,7 +1,7 @@
-      SUBROUTINE IMPDEA(ZDEF,COLONN,JIMCOL,ICOL)
+      SUBROUTINE IMPDEA(ZDEF  ,COLONN,JIMCOL,ICOL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,18 +19,20 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-      IMPLICIT NONE
-
+      IMPLICIT     NONE
       INTEGER      ZDEF
       CHARACTER*9  COLONN
       INTEGER      JIMCOL
       INTEGER      ICOL
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : IMPDEF
-C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (AFFICHAGE - ACCES SD)
 C
 C DEFINITION DES COLONNES ACTIVEES
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  ZDEF   : NOMBRE MAXI DE COLONNES DISPONIBLES POUR L'AFFICHAGE
 C IN  COLONN : CODE COLONNE A ACTIVER (VOIR IMPCOD)

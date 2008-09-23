@@ -1,0 +1,135 @@
+      SUBROUTINE MECGM2(LISCHA,INSTAN,MESUIV)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*19 MESUIV,LISCHA
+      REAL*8       INSTAN
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
+C
+C CALCUL DE LA LISTE DES COEFFICIENTS POUR MATR_ELEM CHARGEMENTS
+C SUIVEURS
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  LISCHA : SD LISTE_CHARGES
+C IN  INSTAN : INSTANT COURANT
+C I/O MESUIV : MATR_ELEM SUIVEUR
+C               OUT - MESUIV(1:15)//'.COEF'
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      NBCHME,NCHAR
+      INTEGER      IRET,ICHAR,ICHA,IER
+      INTEGER      JMEC
+      CHARACTER*8  K8BID   
+      LOGICAL      FCT    
+      CHARACTER*24 LICOEF,FOMULT 
+      INTEGER      JLICOE,JFONCT
+      REAL*8       VALRES            
+C      
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()     
+C
+C --- INITIALISATIONS
+C      
+      FOMULT = LISCHA(1:19)//'.FCHA'
+      LICOEF = MESUIV(1:15)//'.COEF'
+C
+C --- NOMBRE DE CHARGEMENTS SUIVEURS
+C
+      CALL JEEXIN(MESUIV(1:19)//'.RELR',IRET)
+      IF ( IRET .NE. 0 ) THEN
+        CALL JELIRA(MESUIV(1:19)//'.RELR','LONUTI',NBCHME,K8BID)
+        IF ( NBCHME .EQ. 0 ) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE
+          CALL JEVEUO(MESUIV(1:19)//'.RELR','L',JMEC)
+          IF ( ZK24(JMEC)(7:8) .EQ. '00' ) THEN
+            CALL ASSERT(.FALSE.)
+          ENDIF  
+        ENDIF
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF 
+C
+C --- ACCES AUX FONCTIONS MULTIPLICATRICES
+C
+      CALL JEEXIN(FOMULT,IRET)
+      IF ( IRET .EQ. 0 ) THEN
+        FCT    = .FALSE.
+      ELSE
+        FCT    = .TRUE.
+        CALL JELIRA(FOMULT,'LONMAX',NCHAR,K8BID)
+        IF ( NCHAR .EQ. 0 ) THEN
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        CALL JEVEUO(FOMULT,'L',JFONCT)
+      ENDIF
+C
+C --- CREATION SD COEF
+C
+      CALL JEDETR(LICOEF)
+      CALL WKVECT(LICOEF,'V V R',NBCHME,JLICOE)
+      DO 1 ICHAR = 1,NBCHME
+        IF ( FCT ) THEN
+C
+C ------- ON RECUPERE LE NUMERO DE LA CHARGE ICHA STOCKEE DANS LE NOM
+C ------- DU VECTEUR ASSEMBLE
+C
+          CALL LXLIIS(ZK24(JMEC+ICHAR-1)(7:8),ICHA,IER)
+          IF ( ICHA .GT. 0 ) THEN
+            CALL FOINTE('F ',ZK24(JFONCT+ICHA-1)(1:8),1,'INST',INSTAN,
+     &                  VALRES,IER)
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+        ELSE
+          VALRES = 1.D0
+        ENDIF
+        ZR(JLICOE+ICHAR-1)  = VALRES
+ 1    CONTINUE 
+C
+      CALL JEDEMA()        
+C
+      END

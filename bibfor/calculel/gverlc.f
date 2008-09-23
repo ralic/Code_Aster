@@ -1,6 +1,6 @@
       SUBROUTINE GVERLC(RESUCO,COMPOR,IORD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -96,7 +96,7 @@ C     ET QUE LA LOI DE COMPORTEMENT EST 'ELAS'.
                VALK(1)='ELAS'
                VALK(2)=ZK16(JCALV+IADC-1)
                VALK(3)=NOMAIL
-               CALL U2MESK('A','CALCULEL6_78',3,VALK)
+               CALL U2MESK('A','RUPTURE1_42',3,VALK)
                GOTO 9999
              ENDIF
            ENDIF
@@ -130,7 +130,7 @@ C
                VALK(1)=ZK16(JRESV+IADR-1)
                VALK(2)=ZK16(JCALV+IADC-1)
                VALK(3)=NOMAIL
-               CALL U2MESK('A','CALCULEL6_78',3,VALK)
+               CALL U2MESK('A','RUPTURE1_42',3,VALK)
                GOTO 9999
              ENDIF
 

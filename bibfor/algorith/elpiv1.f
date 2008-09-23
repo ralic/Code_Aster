@@ -1,7 +1,8 @@
-      SUBROUTINE ELPIV1(XJVMAX,INDIC,NBLIAC,AJLIAI,SPLIAI,SPAVAN,
-     &                  NOMA,DEFICO,RESOCO)
+      SUBROUTINE ELPIV1(XJVMAX,INDIC ,NBLIAC,AJLIAI,SPLIAI,
+     &                  SPAVAN,NOMA  ,DEFICO,RESOCO)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,22 +19,25 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
-      CHARACTER*24 RESOCO
-      CHARACTER*24 DEFICO
+      CHARACTER*24 RESOCO,DEFICO
       REAL*8       XJVMAX
       INTEGER      NBLIAC
       INTEGER      INDIC
-      INTEGER      AJLIAI
-      INTEGER      SPLIAI
+      INTEGER      AJLIAI,SPLIAI
       INTEGER      SPAVAN
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/FROPGD
+C      
 C ----------------------------------------------------------------------
 C
-C  ELIMINATION DES PIVOTS NULS DANS LA MATRICE DE CONTACT
+C ROUTINE CONTACT (METHODES DISCRETES - UTILITAIRE)
+C
+C ELIMINATION DES PIVOTS NULS DANS LA MATRICE DE CONTACT
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  XJVMAX : VALEUR DU PIVOT MAX
 C OUT INDIC  : +1 ON A RAJOUTE UNE LIAISON
@@ -74,10 +78,11 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*1  TYPESP
       CHARACTER*2  TYPEC0
+      CHARACTER*24 APPARI
+      INTEGER      JAPPAR     
       CHARACTER*19 LIAC, LIOT, MATR, STOC,OUVERT
       INTEGER      JLIAC,JLIOT,JVALE,JVA,JSCDE,JOUV
-      CHARACTER*24 APPARI,CONTNO,CONTMA
-      INTEGER      JAPPAR,JNOCO,JMACO,NBBLOC
+      INTEGER      NBBLOC
       REAL*8       COPMAX
       INTEGER      KK1,KK2,KK1F,KK2F,LLF,LLF1,LLF2
       INTEGER      NBOTE,PIVOT,NBLIAI,LLIAC, II
@@ -87,28 +92,23 @@ C ----------------------------------------------------------------------
 C
       CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
-C ======================================================================
+C 
 C --- LECTURE DES STRUCTURES DE DONNEES
-C ======================================================================
+C 
       APPARI = RESOCO(1:14)//'.APPARI'
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
-      LIAC = RESOCO(1:14)//'.LIAC'
-      LIOT = RESOCO(1:14)//'.LIOT'
-      MATR = RESOCO(1:14)//'.MATR'
+      LIAC   = RESOCO(1:14)//'.LIAC'
+      LIOT   = RESOCO(1:14)//'.LIOT'
+      MATR   = RESOCO(1:14)//'.MATR'
       STOC   = RESOCO(1:14)//'.SLCS'
-C ======================================================================
-      CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(LIAC,'E',JLIAC)
       CALL JEVEUO(LIOT,'E',JLIOT)
-      CALL JEVEUO (STOC//'.SCIB','L',ISCIB)
-      CALL JEVEUO (STOC//'.SCBL','L',JSCBL)
-      CALL JEVEUO (STOC//'.SCDE','L',JSCDE)
-C ======================================================================
-C --- INITIALISATION DES VARIABLES
-C ======================================================================
+      CALL JEVEUO(STOC//'.SCIB','L',ISCIB)
+      CALL JEVEUO(STOC//'.SCBL','L',JSCBL)
+      CALL JEVEUO(STOC//'.SCDE','L',JSCDE)
+C 
+C --- INITIALISATIONS
+C 
       NBLIAI = ZI(JAPPAR)
       TYPESP = 'S'
       TYPEC0 = 'C0'
@@ -117,8 +117,8 @@ C ======================================================================
       LLF    = 0
       LLF1   = 0
       LLF2   = 0
-      NBBLOC=ZI(JSCDE-1+3)
-      OUVERT='&&ELPIV2.TRAV'
+      NBBLOC = ZI(JSCDE-1+3)
+      OUVERT = '&&ELPIV2.TRAV'
       CALL WKVECT (OUVERT,'V V L',NBBLOC,JOUV)
 C
         DO 10 KK1=SPAVAN+1,NBLIAC
@@ -159,8 +159,8 @@ C
 
             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      &                  RESOCO,TYPESP,KK1,LLIAC,TYPEC0)
-            CALL CFIMP2(IFM,NOMA,LLIAC,TYPEC0,TYPESP,'PIV',0.D0,
-     &                  JAPPAR,JNOCO,JMACO)
+            CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLIAC,
+     &                  TYPEC0,TYPESP,'PIV' ,0.D0)
             GOTO 40
           ENDIF
  10     CONTINUE

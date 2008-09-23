@@ -1,7 +1,7 @@
       SUBROUTINE OP0026(IER   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF CALCULEL  DATE 09/09/2008   AUTEUR TARDIEU N.TARDIEU 
+C MODIF CALCULEL  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,10 +57,11 @@ C
       CHARACTER*24    VK(NBPAR)   
 C
       INTEGER         ZFON  
-      PARAMETER      (ZFON    = 19 )        
+      PARAMETER      (ZFON    = 22 )        
 C-----------------------------------------------------------------------
-      INTEGER         N1,NIV,IFM,NBOPT,ITERAT,NUMEOR,I,NLUTI
-      INTEGER         IRET,KNINDI,IBID,NUORD,NBPASE,JLINST,JRELR
+      INTEGER         N1,NBOPT,ITERAT,NUMEOR,I,IBID
+      INTEGER         NIV,IFM
+      INTEGER         IRET,KNINDI,NUORD,NBPASE,JLINST
       REAL*8          RBID,INSTAM,INSTAP,CONST(2)
       COMPLEX*16      CBID
       CHARACTER*1     TYPCST(2),TYPECH(2),TYPRES
@@ -74,11 +75,12 @@ C-----------------------------------------------------------------------
       CHARACTER*24    DEPDEL,MATE,CARELE,COMPOR,CARCRI,INPSCO
       CHARACTER*24    DEPPLU,SIGPLU,VARPLU,COMMOI,MODELE,DEPMOI
       CHARACTER*24    COMPLU, CODERE
-      CHARACTER*24    VALMOI(8),VALPLU(8),DEPALG(8)
+      CHARACTER*24    VALMOI(8),VALPLU(8)
       CHARACTER*24    SIGMOI,VARMOI,NOMCH(2),CHPRES,DEPMO1
       CHARACTER*24    K24BLA,K24BID
-      CHARACTER*19    MEELEM(8),VEELEM(30)      
-      LOGICAL         TABRET(0:10),FONACT(19)
+      CHARACTER*19    SOLALG(30)   
+      CHARACTER*19    MEELEM(20),VEELEM(30)   
+      LOGICAL         TABRET(0:10),FONACT(ZFON)
 C-----------------------------------------------------------------------
       DATA LISCHA     /'&&OP0026.LISCHA'/
       DATA CARELE     /'&&OP0026.CARELE'/
@@ -199,36 +201,35 @@ C ======================================================================
 C --- PREPARATION DES ARGUMENTS DE CALCUL
 C ======================================================================
 
-C     AGGLOMERATION DES VARIABLES CHAPEAUX
-C     -------------------------------------
+C
+C --- VARIABLES CHAPEAUX
 C     A NOTER : MEDIRI EST ICI UN OBJET BIDON, TOUTES LES MATRICES 
 C     -------   DE "LAGRANGE" SONT EN FAIT AJOUTÉES DANS L'OBJET MERIGI
 C               DANS L'APPEL À MEDIME AVEC OPTION 'CUMUL'
+C
       CALL AGGLOM(DEPMOI,SIGMOI,VARMOI,COMMOI,K24BLA, 
      &            K24BLA,K24BLA,K24BLA,4     ,VALMOI)
       CALL AGGLOM(DEPPLU,SIGPLU,VARPLU,COMPLU,K24BLA, 
-     &            K24BLA,K24BLA,K24BLA,4     ,VALPLU)
-      CALL AGGLOM(K24BLA,DEPDEL,K24BLA,K24BLA,K24BLA,
-     &            K24BLA,K24BLA,K24BLA,5     ,DEPALG)   
-      MEELEM(1)  = MERIGI 
-      MEELEM(2)  = MEDIRI       
-      VEELEM(1)  = VEFINT   
-
-C     CALCUL DE LA CONTRIBUTION DES DDL PHYSIQUES (MERIGI ET VEFINT)
-C     ---------------------------------------------------------------
+     &            K24BLA,K24BLA,K24BLA,4     ,VALPLU) 
+      SOLALG(2) = DEPDEL     
+      MEELEM(1) = MERIGI 
+      MEELEM(2) = MEDIRI       
+      VEELEM(1) = VEFINT   
+C
+C --- CALCUL DE LA CONTRIBUTION DES DDL PHYSIQUES (MERIGI ET VEFINT)
+C       
       ITERAT=1
      
       CALL MERIMO('G'   ,MODELE,CARELE,MATE  ,K24BID,
      &            COMPOR,LISCHA,CARCRI,ITERAT,FONACT,
-     &            K19BLA,VALMOI,VALPLU,K24BID,DEPALG,
+     &            K19BLA,VALMOI,VALPLU,K24BID,SOLALG,
      &            MEELEM,VEELEM,OPTION,TABRET,CODERE)
 
-
-C     CALCUL DE LA CONTRIBUTION DES "LAGRANGE"
-C     ----------------------------------------
+C
+C --- CALCUL DE LA CONTRIBUTION DES "LAGRANGE"
+C 
       CALL MEDIME('G','CUMU',MODELE,LISCHA,MERIGI)
 
-  
 
 C ======================================================================
 C --- ECRITURE DES RESULTATS DANS UNE TABLE

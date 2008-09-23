@@ -1,6 +1,6 @@
       SUBROUTINE JEDISP ( N , TAB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,16 +52,20 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       LOGICAL          LAMOV
 C DEB ------------------------------------------------------------------
-      IF ( LDYN .EQ. 1 ) THEN 
-        TAB(1) = (VMXDYN-(MCDYN+LISZON*LOIS))/LOIS
-        DO 11 K = 2,N
-          TAB(K) = 0
-  11    CONTINUE
-        GOTO 200
-      ENDIF     
       DO 1 K = 1,N
          TAB(K) = 0
  1    CONTINUE
+      IDEB = 1         
+C
+C --- ON DONNE LA VALEUR ASSOCIEE A LA MEMOIRE DYNAMIQUE DISPONIBLE
+C
+      IF ( LDYN .EQ. 1 ) THEN 
+        TAB(1) = (VMXDYN-MCDYN)/LOIS
+        IDEB = 2
+      ENDIF     
+C
+C --- ON PARCOURT LA SEGMENTATION MEMOIRE (MEMOIRE STATIQUE) 
+C
       IZ = 1
       IF (IDFR .GT .0) IZ=2
       ID  = IDINIT(IZ)
@@ -85,7 +89,7 @@ C DEB ------------------------------------------------------------------
       IF ( LAMOV ) THEN
          LAMOV  = .FALSE.
          MAPLAC = ID - IDA - 8
-         DO 100 K = 1,N
+         DO 100 K = IDEB,N
             IF ( MAPLAC .GT. TAB(K) ) THEN
                DO 101 L = N,K+1,-1
                   TAB(L) = TAB(L-1)
@@ -98,6 +102,5 @@ C DEB ------------------------------------------------------------------
       ENDIF
       ID  = IS
       IF ( IS .NE. 0 ) GOTO 140
- 200  CONTINUE     
 C FIN-------------------------------------------------------------------
       END

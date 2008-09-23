@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C ----------------------------------------------------------------------
       CALL GETFAC('HEXA20_27',NBMOMA)
       IF (NBMOMA.GT.0) THEN
         IF (NN1.EQ.0) THEN
-          CALL U2MESS('F','MAILLAGE_14')
+          CALL U2MESS('F','MAIL0_14')
         ENDIF
         CALL GETVTX('HEXA20_27','PREF_NOEUD',1,1,1,PREFIX,N1)
         CALL GETVIS('HEXA20_27','PREF_NUME',1,1,1,NDINIT,N1)
@@ -155,9 +155,9 @@ C ----------------------------------------------------------------------
      &              MOTCLE,NOMJV,NBMA)
         CALL JEVEUO(NOMJV,'L',JLIMA)
         CALL JEEXIN(NOMAIN//'.NOMACR',IRET)
-        IF (IRET.NE.0) CALL U2MESS('F','MAILLAGE_12')
+        IF (IRET.NE.0) CALL U2MESS('F','MAIL0_12')
         CALL JEEXIN(NOMAIN//'.ABS_CURV',IRET)
-        IF (IRET.NE.0) CALL U2MESS('F','MAILLAGE_13')
+        IF (IRET.NE.0) CALL U2MESS('F','MAIL0_13')
 
         CALL CM2027(NOMAIN,NOMAOU,NBMA,ZI(JLIMA),PREFIX,NDINIT)
 

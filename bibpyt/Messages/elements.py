@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 04/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF elements Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -202,11 +202,6 @@ cata_msg = {
 
 46 : _("""
  nombre de couches négatif ou nul
-"""),
-
-47 : _("""
- pas d'excentrement avec FORC_NODA
- maille  : %(k1)s
 """),
 
 48 : _("""

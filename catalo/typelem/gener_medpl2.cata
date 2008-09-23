@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -253,13 +253,13 @@ OPTION__
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR
-                                     ZVARINO  PVARIPR  DDL_MECA PVITESS
+                                     ZVARINO  PVARIPR  DDL_MECA PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F            96    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                                     DDL_MECA PTHETAR  ZVARINO  PVARIPR  DDL_MECA PVITESS
+                                     DDL_MECA PTHETAR  ZVARINO  PVARIPR  DDL_MECA PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            299   IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR

@@ -1,7 +1,7 @@
       LOGICAL FUNCTION NDYNLO(SDDYNA,CHAINE)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,6 +65,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*24 TSCH ,LOSD
       INTEGER      JTSCH,JLOSD
+      INTEGER      NDYNIN
 C
 C ----------------------------------------------------------------------
 C
@@ -106,49 +107,99 @@ C
       CALL JEVEUO(LOSD,'L',JLOSD)
 C
       IF (CHAINE(1:8).EQ.'STATIQUE')THEN
-        NDYNLO =.FALSE.
-      ELSEIF(CHAINE(1:9).EQ.'DIFF_CENT')THEN
-        IF(ZK16(JTSCH+7-1)(1:12).EQ.'DIFF_CENTREE')NDYNLO=.TRUE.
-      ELSE IF(CHAINE(1:7).EQ.'TCHAMWA')THEN
-        IF(ZK16(JTSCH+8-1)(1:7).EQ.'TCHAMWA')NDYNLO=.TRUE.
-      ELSE IF(CHAINE(1:7).EQ.'NEWMARK')THEN
-        IF(ZK16(JTSCH+2-1)(1:7).EQ.'NEWMARK')NDYNLO=.TRUE.
-      ELSE IF(CHAINE(1:13).EQ.'THETA_METHODE')THEN
-        IF(ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE')NDYNLO=.TRUE.
-      ELSE IF(CHAINE(1:11).EQ.'HHT_COMPLET')THEN
-        IF(ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET')NDYNLO=.TRUE.
-      ELSE IF(CHAINE(1:3).EQ.'HHT')THEN
-        IF(ZK16(JTSCH+3-1)(1:3).EQ.'HHT')NDYNLO=.TRUE.
-      ELSE IF(CHAINE(1:9).EQ.'IMPLICITE')THEN
-          IF(ZK16(JTSCH+2-1)(1:7) .EQ.'NEWMARK'       .OR.
-     &       ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE' .OR.
-     &       ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET'   .OR.
-     &       ZK16(JTSCH+3-1)(1:3).EQ.'HHT') NDYNLO=.TRUE.
-      ELSE IF(CHAINE(1:9).EQ.'EXPLICITE')THEN
-           IF(ZK16(JTSCH+7-1)(1:12).EQ.'DIFF_CENTREE' .OR.
-     &        ZK16(JTSCH+8-1)(1:7) .EQ.'TCHAMWA')NDYNLO=.TRUE.
-      ELSE IF(CHAINE(1:9).EQ.'MAT_AMORT')THEN 
-          NDYNLO=ZL(JLOSD+1-1)
-      ELSE IF(CHAINE(1:11).EQ.'MULTI_APPUI')THEN
-          NDYNLO=ZL(JLOSD+2-1)
-      ELSE IF(CHAINE(1:10).EQ.'AMOR_MODAL')THEN
-          NDYNLO=ZL(JLOSD+3-1)
+        NDYNLO = .FALSE.
+      ELSEIF (CHAINE(1:9).EQ.'DIFF_CENT') THEN
+        IF (ZK16(JTSCH+7-1)(1:12).EQ.'DIFF_CENTREE') THEN
+          NDYNLO = .TRUE.
+        ENDIF  
+      ELSEIF( CHAINE(1:7).EQ.'TCHAMWA') THEN
+        IF (ZK16(JTSCH+8-1)(1:7).EQ.'TCHAMWA') THEN
+          NDYNLO = .TRUE.
+        ENDIF  
+      ELSEIF (CHAINE(1:7).EQ.'NEWMARK') THEN
+        IF (ZK16(JTSCH+2-1)(1:7).EQ.'NEWMARK') THEN
+          NDYNLO = .TRUE.
+        ENDIF  
+      ELSEIF (CHAINE(1:13).EQ.'THETA_METHODE') THEN
+        IF (ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE') THEN
+          NDYNLO = .TRUE.
+        ENDIF  
+      ELSEIF (CHAINE(1:11).EQ.'HHT_COMPLET') THEN
+        IF (ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET') THEN
+          NDYNLO = .TRUE.
+        ENDIF  
+      ELSEIF(CHAINE(1:3).EQ.'HHT') THEN
+        IF (ZK16(JTSCH+3-1)(1:3).EQ.'HHT') THEN
+          NDYNLO = .TRUE.
+        ENDIF  
+      ELSE IF (CHAINE(1:9).EQ.'IMPLICITE') THEN
+        IF (ZK16(JTSCH+2-1)(1:7) .EQ.'NEWMARK'       .OR.
+     &      ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE' .OR.
+     &      ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET'   .OR.
+     &      ZK16(JTSCH+3-1)(1:3).EQ.'HHT') THEN
+          NDYNLO = .TRUE.
+        ENDIF  
+      ELSE IF (CHAINE(1:9).EQ.'EXPLICITE') THEN
+        IF (ZK16(JTSCH+7-1)(1:12).EQ.'DIFF_CENTREE' .OR.
+     &      ZK16(JTSCH+8-1)(1:7) .EQ.'TCHAMWA') THEN
+          NDYNLO = .TRUE.
+        ENDIF  
+
+C     
+     
+      ELSE IF (CHAINE(1:9).EQ.'MAT_AMORT') THEN 
+        NDYNLO = ZL(JLOSD+1-1)
+      ELSE IF (CHAINE(1:11).EQ.'MULTI_APPUI')THEN
+        NDYNLO = ZL(JLOSD+2-1)
+      ELSE IF (CHAINE(1:10).EQ.'AMOR_MODAL')THEN
+        NDYNLO = ZL(JLOSD+3-1)
       ELSE IF(CHAINE(1:9).EQ.'MASS_DIAG')THEN
-          NDYNLO=ZL(JLOSD+4-1)
-      ELSE IF(CHAINE(1:10).EQ.'PROJ_MODAL')THEN
-          NDYNLO=ZL(JLOSD+5-1)
-      ELSE IF(CHAINE(1:9 ).EQ.'IMPE_ABSO')THEN
-          NDYNLO=ZL(JLOSD+6-1)
+        NDYNLO = ZL(JLOSD+4-1)
+      ELSE IF (CHAINE(1:10).EQ.'PROJ_MODAL')THEN
+        NDYNLO = ZL(JLOSD+5-1)
+      ELSE IF (CHAINE(1:9 ).EQ.'IMPE_ABSO')THEN
+        NDYNLO = ZL(JLOSD+6-1)
       ELSE IF(CHAINE(1:10).EQ.'ONDE_PLANE')THEN
-          NDYNLO=ZL(JLOSD+7-1)
+        NDYNLO = ZL(JLOSD+7-1)
       ELSE IF(CHAINE(1:12).EQ.'FORCE_FLUIDE')THEN
-          NDYNLO=ZL(JLOSD+8-1)                                       
+        NDYNLO = ZL(JLOSD+8-1)                                       
       ELSE IF(CHAINE(1:9).EQ.'EXPL_GENE')THEN
-          NDYNLO=ZL(JLOSD+9-1)  
-      ELSE IF(CHAINE(1:6).EQ.'FOPREC')THEN
-          NDYNLO=ZL(JLOSD+10-1) 
+        NDYNLO = ZL(JLOSD+9-1)  
       ELSE IF(CHAINE(1:6).EQ.'NREAVI')THEN
-          NDYNLO=ZL(JLOSD+12-1)                            
+        NDYNLO = ZL(JLOSD+12-1)          
+      ELSEIF (CHAINE(1:11).EQ.'FORMUL_DEPL') THEN
+        IF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.1) THEN
+          NDYNLO = .TRUE.
+        ELSE
+          NDYNLO = .FALSE.
+        ENDIF
+      ELSEIF (CHAINE(1:11).EQ.'FORMUL_VITE') THEN
+        IF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2) THEN
+          NDYNLO = .TRUE.
+        ELSE
+          NDYNLO = .FALSE.
+        ENDIF        
+      ELSEIF (CHAINE(1:11).EQ.'FORMUL_ACCE') THEN
+        IF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.3) THEN
+          NDYNLO = .TRUE.
+        ELSE
+          NDYNLO = .FALSE.
+        ENDIF            
+      ELSE IF (CHAINE.EQ.'MULTI_PAS') THEN
+        IF ((ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET')) THEN
+          NDYNLO = .TRUE.
+          GOTO 9999
+        ELSE
+          NDYNLO = .FALSE.
+        ENDIF
+        
+        IF ((NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2).AND.
+     &      ( ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE')) THEN
+          NDYNLO = .TRUE.
+        ELSE
+          NDYNLO = .FALSE.
+        ENDIF          
+                                                  
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
+#@ MODIF postrccm Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,10 +72,6 @@ cata_msg={
 
 10: _("""
  materiau non défini, maille %(k1)s 
-"""),
-
-11: _("""
- un seul "NB_CYCL_SEISME"
 """),
 
 12: _("""

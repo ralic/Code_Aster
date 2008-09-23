@@ -1,7 +1,7 @@
       SUBROUTINE NMTIME(PHASEZ,TIMEZ ,SDTIME,VALL  ,VALR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,13 +37,11 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  PHASE  : TYPE D'ACTION
-C                'CREA'  CREATION DE LA SD TIMER
 C                'INIT'  INITIALISATION DU TIMER
 C                'DEBUT' LANCEMENT DU TIMER
 C                'FIN'   ARRET DU TIMER
 C                'MES'   CALCUL DES CRITERES D'ARRET SUR TEMPS
 C                'VAL'   RECUPERE VALEUR DU TEMPS
-C                'LONG'  TEMPS PASSE DANS DERNIERE PAS/NEWTON/ARCHIVE
 C IN  TIMER  : NOM DU TIMER
 C                'PAS'   TIMER POUR UN PAS DE TEMPS
 C                'ITE'   TIMER POUR UNE ITERATION DE NEWTON
@@ -72,13 +70,19 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      ITPAS,ITITE,ITARC
-      PARAMETER    (ITPAS=1,ITITE=2,ITARC=3)
+      INTEGER      NBINFR,NBINFI
+      PARAMETER    (NBINFR=15,NBINFI=15)
+      INTEGER      ITPAS,ITITE,ITARC,ITTMP
+      PARAMETER    (ITPAS=1,ITITE=2,ITARC=3,ITTMP=4)
 C
-      CHARACTER*24 TIMPAS,TIMITE,TIMARC,TIMINF
-      INTEGER      JTPAS,JTITE,JTARC,JTINF  
+      CHARACTER*24 TIMPAS,TIMITE,TIMARC,TIMVAL,TIMTMP,TIMDEB
+      INTEGER      JTPAS,JTITE,JTARC,JTVAL,JTTMP,JTDEB     
+
+      CHARACTER*24 TIMINR,TIMINI
+      INTEGER      JTINFR,JTINFI                   
       CHARACTER*3  TIMER 
-      CHARACTER*5  PHASE
+      CHARACTER*16 PHASE
+      INTEGER      INBR
       INTEGER      IFM,NIV 
 C      
 C ----------------------------------------------------------------------
@@ -87,70 +91,99 @@ C
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C    
 C --- INITIALISATIONS
-C
-      TIMPAS = SDTIME(1:19)//'.TPAS'
-      TIMITE = SDTIME(1:19)//'.TITE'
-      TIMARC = SDTIME(1:19)//'.TARC'
-      TIMINF = SDTIME(1:19)//'.INFO'
+C              
       TIMER  = TIMEZ  
       PHASE  = PHASEZ   
       VALL   = .FALSE.
       VALR   = 0.D0
 C
-      IF (PHASE.EQ.'CREA') THEN
-        IF (NIV.GE.2) THEN
-          WRITE (IFM,*) '<MECANONLINE> ... CREATION SD TIMER'
-        ENDIF
-        CALL WKVECT(TIMPAS,'V V R',4,JTPAS)
-        CALL WKVECT(TIMITE,'V V R',4,JTITE)
-        CALL WKVECT(TIMARC,'V V R',4,JTARC)
-        CALL WKVECT(TIMINF,'V V R',6,JTINF)
-        GOTO 999
-      ELSE
-        CALL JEVEUO(TIMPAS,'E',JTPAS)
-        CALL JEVEUO(TIMITE,'E',JTITE)
-        CALL JEVEUO(TIMARC,'E',JTARC)
-        CALL JEVEUO(TIMINF,'E',JTINF)      
-      ENDIF  
+C --- ACCES SD TIMER
+C
+      TIMTMP = SDTIME(1:19)//'.TEMP'
+      TIMPAS = SDTIME(1:19)//'.TPAS'
+      TIMITE = SDTIME(1:19)//'.TITE'
+      TIMARC = SDTIME(1:19)//'.TARC'
+      TIMVAL = SDTIME(1:19)//'.TVAL'
+      TIMDEB = SDTIME(1:19)//'.TDEB' 
+      TIMINR = SDTIME(1:19)//'.TINR'       
+      TIMINI = SDTIME(1:19)//'.TINI'        
+ 
+      CALL JEVEUO(TIMPAS,'E',JTPAS)
+      CALL JEVEUO(TIMITE,'E',JTITE)
+      CALL JEVEUO(TIMARC,'E',JTARC)
+      CALL JEVEUO(TIMVAL,'E',JTVAL)  
+      CALL JEVEUO(TIMDEB,'E',JTDEB)        
+      CALL JEVEUO(TIMTMP,'E',JTTMP)         
+      CALL JEVEUO(TIMINR,'E',JTINFR)        
+      CALL JEVEUO(TIMINI,'E',JTINFI)                   
 C            
       IF (PHASE.EQ.'INIT') THEN
-        CALL UTTCPU(ITPAS,'INIT',4,ZR(JTPAS))
-        ZR(JTINF+1-1) = ZR(JTPAS+3-1)
-        CALL UTTCPU(ITITE,'INIT',4,ZR(JTITE))
-        ZR(JTINF+2-1) = ZR(JTITE+3-1)
-        CALL UTTCPU(ITARC,'INIT',4,ZR(JTARC))  
-        ZR(JTINF+3-1) = ZR(JTARC+3-1)    
+        IF (TIMER.EQ.'ALL') THEN
+          CALL UTTCPU(ITPAS,'INIT',4,ZR(JTPAS))
+          ZR(JTDEB+1-1) = ZR(JTPAS+3-1)
+          CALL UTTCPU(ITITE,'INIT',4,ZR(JTITE))
+          ZR(JTDEB+2-1) = ZR(JTITE+3-1)
+          CALL UTTCPU(ITARC,'INIT',4,ZR(JTARC))  
+          ZR(JTDEB+3-1) = ZR(JTARC+3-1)            
+        ELSEIF (TIMER.EQ.'PAS') THEN
+          CALL UTTCPU(ITPAS,'INIT',4,ZR(JTPAS))
+          ZR(JTDEB+1-1) = ZR(JTPAS+3-1)    
+        ELSEIF (TIMER.EQ.'ITE') THEN
+          CALL UTTCPU(ITITE,'INIT',4,ZR(JTITE))
+          ZR(JTDEB+2-1) = ZR(JTITE+3-1)
+        ELSEIF (TIMER.EQ.'ARC') THEN
+          CALL UTTCPU(ITARC,'INIT',4,ZR(JTARC))
+          ZR(JTDEB+3-1) = ZR(JTARC+3-1) 
+        ELSEIF (TIMER.EQ.'TMP') THEN
+          CALL UTTCPU(ITTMP,'INIT',4,ZR(JTTMP))
+          ZR(JTDEB+4-1) = ZR(JTTMP+3-1)
+        ELSEIF (TIMER.EQ.'STA') THEN
+          DO 10 INBR = 1,NBINFI
+            ZI(JTINFI+INBR-1) = 0
+  10      CONTINUE
+          DO 11 INBR = 1,NBINFR
+            ZR(JTINFR+INBR-1) = 0.D0
+  11      CONTINUE                      
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF   
       ELSEIF (PHASE.EQ.'DEBUT') THEN
         IF (TIMER.EQ.'PAS') THEN
-          CALL UTTCPU(ITPAS,'DEBUT',4,ZR(JTPAS))      
+          CALL UTTCPU(ITPAS,'DEBUT',4,ZR(JTPAS)) 
         ELSEIF (TIMER.EQ.'ITE') THEN
           CALL UTTCPU(ITITE,'DEBUT',4,ZR(JTITE))
         ELSEIF (TIMER.EQ.'ARC') THEN
           CALL UTTCPU(ITARC,'DEBUT',4,ZR(JTARC))
+        ELSEIF (TIMER.EQ.'TMP') THEN
+          CALL UTTCPU(ITTMP,'DEBUT',4,ZR(JTTMP))                    
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF             
-
       ELSEIF (PHASE.EQ.'FIN') THEN
         IF (TIMER.EQ.'PAS') THEN
           CALL UTTCPU(ITPAS,'FIN',4,ZR(JTPAS))
-          VALR = ZR(JTPAS+3-1) - ZR(JTINF+1-1)
-          ZR(JTINF+4-1) = VALR
-          ZR(JTINF+1-1) = ZR(JTPAS+3-1)
+          VALR = ZR(JTPAS+3-1) - ZR(JTDEB+1-1)
+          ZR(JTVAL+1-1) = VALR
+          ZR(JTDEB+1-1) = ZR(JTPAS+3-1)
         ELSEIF (TIMER.EQ.'ITE') THEN
           CALL UTTCPU(ITITE,'FIN',4,ZR(JTITE))
-          VALR = ZR(JTITE+3-1) - ZR(JTINF+2-1)
-          ZR(JTINF+5-1) = VALR
-          ZR(JTINF+2-1) = ZR(JTITE+3-1)
+          VALR = ZR(JTITE+3-1) - ZR(JTDEB+2-1)
+          ZR(JTVAL+2-1) = VALR
+          ZR(JTDEB+2-1) = ZR(JTITE+3-1)
+          ZI(JTINFI+6-1) = ZI(JTINFI+6-1)+1
         ELSEIF (TIMER.EQ.'ARC') THEN
           CALL UTTCPU(ITARC,'FIN',4,ZR(JTARC))
-          VALR = ZR(JTARC+3-1) - ZR(JTINF+3-1)
-          ZR(JTINF+6-1) = VALR
-          ZR(JTINF+3-1) = ZR(JTARC+3-1)
+          VALR = ZR(JTARC+3-1) - ZR(JTDEB+3-1)
+          ZR(JTVAL+3-1) = VALR
+          ZR(JTDEB+3-1) = ZR(JTARC+3-1)
+        ELSEIF (TIMER.EQ.'TMP') THEN
+          CALL UTTCPU(ITTMP,'FIN',4,ZR(JTTMP))
+          VALR = ZR(JTTMP+3-1) - ZR(JTDEB+4-1) 
+          ZR(JTVAL+4-1) = VALR
+          ZR(JTDEB+4-1) = ZR(JTTMP+3-1)                          
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF 
-        
+        ENDIF     
       ELSEIF (PHASE.EQ.'MES') THEN  
         IF (TIMER.EQ.'ITE') THEN
           IF ((2.D0*ZR(JTITE+4-1)).LE.
@@ -164,33 +197,91 @@ C
             VALL = .TRUE.
           ELSE
             VALL = .FALSE.
-          ENDIF  
+          ENDIF
         ELSE
           CALL ASSERT(.FALSE.)  
         ENDIF     
       ELSEIF (PHASE.EQ.'VAL') THEN
-        IF (TIMER.EQ.'ITE') THEN
-          VALR = ZR(JTITE+4-1)
-        ELSEIF (TIMER.EQ.'PAS') THEN
-          VALR = ZR(JTPAS+4-1)  
+        IF (TIMER.EQ.'PAS') THEN
+          VALR = ZR(JTVAL+1-1)      
+        ELSEIF (TIMER.EQ.'ITE') THEN
+          VALR = ZR(JTVAL+2-1) 
         ELSEIF (TIMER.EQ.'ARC') THEN
-          VALR = ZR(JTARC+4-1)     
+          VALR = ZR(JTVAL+3-1)
+        ELSEIF (TIMER.EQ.'TMP') THEN
+          VALR = ZR(JTVAL+4-1)                        
         ELSEIF (TIMER.EQ.'RES') THEN
           VALR = ZR(JTITE+1-1)          
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF 
-      ELSEIF (PHASE.EQ.'LONG') THEN
-        IF (TIMER.EQ.'ITE') THEN
-          VALR = ZR(JTINF+5-1)
-        ELSEIF (TIMER.EQ.'PAS') THEN
-          VALR = ZR(JTINF+4-1)
-        ELSEIF (TIMER.EQ.'ARC') THEN
-          VALR = ZR(JTINF+6-1)           
+        ENDIF
+      ELSEIF (PHASE.EQ.'IFI') THEN
+        IF (TIMER.EQ.'FCS') THEN
+          VALR = ZI(JTINFI+1-1)      
+        ELSEIF (TIMER.EQ.'FCN') THEN
+          VALR = ZI(JTINFI+2-1) 
+        ELSEIF (TIMER.EQ.'INT') THEN
+          VALR = ZI(JTINFI+3-1)
+        ELSEIF (TIMER.EQ.'RES') THEN
+          VALR = ZI(JTINFI+4-1)                       
+        ELSEIF (TIMER.EQ.'MAT') THEN
+          VALR = ZI(JTINFI+5-1)
+        ELSEIF (TIMER.EQ.'ITE') THEN
+          VALR = ZI(JTINFI+6-1)
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF                        
-      ELSE
+        ENDIF   
+      ELSEIF (PHASE.EQ.'IFR') THEN
+        IF (TIMER.EQ.'FCS') THEN
+          VALR = ZR(JTINFR+1-1)      
+        ELSEIF (TIMER.EQ.'FCN') THEN
+          VALR = ZR(JTINFR+2-1) 
+        ELSEIF (TIMER.EQ.'INT') THEN
+          VALR = ZR(JTINFR+3-1)
+        ELSEIF (TIMER.EQ.'RES') THEN
+          VALR = ZR(JTINFR+4-1)                       
+        ELSEIF (TIMER.EQ.'MAT') THEN
+          VALR = ZR(JTINFR+5-1)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF         
+          
+      ELSEIF (PHASE.EQ.'FACT_SYMB') THEN
+        IF (TIMER.EQ.'TMP') THEN
+          ZR(JTINFR+1-1) = ZR(JTINFR+1-1)+ZR(JTVAL+4-1)  
+          ZI(JTINFI+1-1) = ZI(JTINFI+1-1)+1
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF   
+      ELSEIF (PHASE.EQ.'FACT_NUME') THEN
+        IF (TIMER.EQ.'TMP') THEN
+          ZR(JTINFR+2-1) = ZR(JTINFR+2-1)+ZR(JTVAL+4-1) 
+          ZI(JTINFI+2-1) = ZI(JTINFI+2-1)+1
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF  
+      ELSEIF (PHASE.EQ.'FORC_INTE') THEN
+        IF (TIMER.EQ.'TMP') THEN
+          ZR(JTINFR+3-1) = ZR(JTINFR+3-1)+ZR(JTVAL+4-1) 
+          ZI(JTINFI+3-1) = ZI(JTINFI+3-1)+1
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF 
+      ELSEIF (PHASE.EQ.'RESOL') THEN
+        IF (TIMER.EQ.'TMP') THEN
+          ZR(JTINFR+4-1) = ZR(JTINFR+4-1)+ZR(JTVAL+4-1) 
+          ZI(JTINFI+4-1) = ZI(JTINFI+4-1)+1
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF 
+      ELSEIF (PHASE.EQ.'CALC_MATR') THEN
+        IF (TIMER.EQ.'TMP') THEN
+          ZR(JTINFR+5-1) = ZR(JTINFR+5-1)+ZR(JTVAL+4-1) 
+          ZI(JTINFI+5-1) = ZI(JTINFI+5-1)+1
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF 
+       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
 C

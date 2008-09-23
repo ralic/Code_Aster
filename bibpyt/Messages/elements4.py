@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF elements4 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,10 +68,6 @@ cata_msg = {
 
 17 : _("""
  seuls comportements autorises :"elas" et "vmis_isot_trac"
-"""),
-
-23 : _("""
- comp_incr non disponible pour les elements enrichis avec x-fem.
 """),
 
 31 : _("""
@@ -204,6 +200,9 @@ cata_msg = {
   La normale à l'élément et le vecteur obtenu à partir du mot-clé ANGL_REP sont colinéaires.
 """),
 
+67: _("""
+Le module d'Young est nul.
+"""),
 
 68 : _("""
  Nombre d'itérations internes insuffisant.

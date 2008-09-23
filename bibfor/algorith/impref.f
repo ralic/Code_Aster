@@ -1,8 +1,7 @@
-      SUBROUTINE IMPREF(ICOD,SDSUIV,
-     &                  TITRE,FORMA)
+      SUBROUTINE IMPREF(ICOD  ,SDSUIV,TITRE ,FORMA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,10 +28,14 @@ C
       INTEGER      FORMA
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : IMPINI
-C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (AFFICHAGE - ACCES SD)
 C
 C RETOURNE LES INFOS PAR DEFAUT D'UNE COLONNE DU TABLEAU DE CONVERGENCE
+C
+C ----------------------------------------------------------------------
+C
+C 
 C  - LE TITRE DE LA COLONNE (SUR 3 LIGNES)
 C  - LE TYPE DE LA COLONNE
 C
@@ -152,82 +155,76 @@ C
       DATA FORCOL(17) /1/
 
 
-      DATA (TITCOL(J,18),J=1,3)/ '     CONTACT    ',
-     &                           '    DISCRET     ',
-     &                           '     STATUT     '/
-      DATA FORCOL(18) /3/
+      DATA (TITCOL(J,18),J=1,3)/ '    REAC GEOM   ',
+     &                           '    MAXIMUM     ',
+     &                           '                '/
+      DATA FORCOL(18) /2/
 
 
       DATA (TITCOL(J,19),J=1,3)/ '    REAC GEOM   ',
      &                           '    MAXIMUM     ',
-     &                           '                '/
-      DATA FORCOL(19) /2/
-
-
-      DATA (TITCOL(J,20),J=1,3)/ '    REAC GEOM   ',
-     &                           '    MAXIMUM     ',
      &                           '    AU POINT    '/
-      DATA FORCOL(20) /3/
+      DATA FORCOL(19) /3/
+
+
+      DATA (TITCOL(J,20),J=1,3)/ '     CONTACT    ',
+     &                           '                ',
+     &                           '   ITER. GEOM.  '/
+      DATA FORCOL(20) /1/
 
 
       DATA (TITCOL(J,21),J=1,3)/ '     CONTACT    ',
      &                           '    CONTINU     ',
-     &                           '   ITER. GEOM.  '/
+     &                           '   ITER. FROT.  '/
       DATA FORCOL(21) /1/
 
 
       DATA (TITCOL(J,22),J=1,3)/ '     CONTACT    ',
      &                           '    CONTINU     ',
-     &                           '   ITER. FROT.  '/
+     &                           '   ITER. CONT.  '/
       DATA FORCOL(22) /1/
 
 
-      DATA (TITCOL(J,23),J=1,3)/ '     CONTACT    ',
-     &                           '    CONTINU     ',
-     &                           '   ITER. CONT.  '/
-      DATA FORCOL(23) /1/
-
-
-      DATA (TITCOL(J,24),J=1,3)/ '&1              ',
+      DATA (TITCOL(J,23),J=1,3)/ '&1              ',
      &                           '                ',
      &                           '                '/
+      DATA FORCOL(23) /2/
+
+
+      DATA (TITCOL(J,24),J=1,3)/ '&2              ',
+     &'                ',
+     &'                '/
       DATA FORCOL(24) /2/
 
 
-      DATA (TITCOL(J,25),J=1,3)/ '&2              ',
+      DATA (TITCOL(J,25),J=1,3)/ '&3              ',
      &'                ',
      &'                '/
       DATA FORCOL(25) /2/
 
 
-      DATA (TITCOL(J,26),J=1,3)/ '&3              ',
+      DATA (TITCOL(J,26),J=1,3)/ '&4              ',
      &'                ',
      &'                '/
       DATA FORCOL(26) /2/
 
 
-      DATA (TITCOL(J,27),J=1,3)/ '&4              ',
-     &'                ',
-     &'                '/
-      DATA FORCOL(27) /2/
-
-
-      DATA (TITCOL(J,28),J=1,3)/ '   ITERATIONS   ',
+      DATA (TITCOL(J,27),J=1,3)/ '   ITERATIONS   ',
      &                           '     FETI       ',
      &                           '                '/
-      DATA FORCOL(28) /1/
+      DATA FORCOL(27) /1/
+
+
+      DATA (TITCOL(J,28),J=1,3)/ '&&&&&&&&&&&&&&&&',
+     &'                ',
+     &'                '/
+      DATA FORCOL(28) /2/
 
 
       DATA (TITCOL(J,29),J=1,3)/ '&&&&&&&&&&&&&&&&',
      &'                ',
      &'                '/
       DATA FORCOL(29) /2/
-
-
-      DATA (TITCOL(J,30),J=1,3)/ '&&&&&&&&&&&&&&&&',
-     &'                ',
-     &'                '/
-      DATA FORCOL(30) /2/
 
 C
 C ----------------------------------------------------------------------
@@ -239,7 +236,7 @@ C
       IF (ZDEF.NE.30) THEN
        CALL ASSERT(.FALSE.)
       ENDIF
-      IF ((ICOD.LE.0).OR.(ICOD.GT.28)) THEN
+      IF ((ICOD.LE.0).OR.(ICOD.GT.29)) THEN
         WRITE(6,*) 'ICOD:',ICOD
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -247,10 +244,9 @@ C
       FORMA    = FORCOL(ICOD)
 
 
-      IF ((ICOD.GE.24).AND.(ICOD.LE.27)) THEN
-        ISUIV = (ICOD-23)
-        CALL SUIIMP(SDSUIV,ISUIV,ZTIT,
-     &              TITRE)
+      IF ((ICOD.GE.23).AND.(ICOD.LE.26)) THEN
+        ISUIV = (ICOD-22)
+        CALL SUIIMP(SDSUIV,ISUIV ,ZTIT  ,TITRE )
       ELSE
         DO 10 J = 1,ZTIT
           TITRE(J) = TITCOL(J,ICOD)

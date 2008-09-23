@@ -1,8 +1,8 @@
-      SUBROUTINE IMPPRE(MOTFAC,IOCC,
-     &                  LONGR,PRECR,LONGI,LONGK)
+      SUBROUTINE IMPPRE(MOTFAC,IOCC  ,LONGR ,PRECR ,LONGI ,
+     &                  LONGK )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,11 +29,14 @@ C
       INTEGER      LONGK
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : 
-C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (AFFICHAGE - LECTURE)
 C
 C RECUPERATION DES PRECISIONS POUR AFFICHAGE DES COLONNES DANS LE
 C TABLEAU DE CONVERGENCE
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN MOTFAC : MOT-CLEF FACTEUR AFFICHAGE
 C IN IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR AFFICHAGE
@@ -92,8 +95,6 @@ C
       ENDIF
 
   999 CONTINUE
-C
-C ---
 C
       CALL JEDEMA()
 

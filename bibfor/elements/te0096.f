@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -782,6 +782,7 @@ C EN PLASTICITE
             SIGL(I)= ZR(ISIGM+NCMP*(KP-1)+I-1)
 435       CONTINUE
           SIGL(4)= ZR(ISIGM+NCMP*(KP-1)+3)*RAC2
+
         ELSE
 
 C EN ELASTICITE
@@ -793,6 +794,15 @@ C ET DE CELLE DE L'ENERGIE LIBRE (DENERG).
           CALL NMELNL(FAMI,KP,1,'+',NDIM,TYPMOD,MATCOD,COMPOR,CRIT,
      &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI,DERIVL,
      &                TEMSEG,DEPS,DENERG,DSIGL)
+
+          CALL TECACH('NNN','PCONTGR',1,ISIGM,IRET)
+          IF(IRET.EQ.0)THEN
+             CALL JEVECH('PCONTGR','L',ISIGM) 
+             DO 401 I = 1,3
+               SIGL(I)= ZR(ISIGM+NCMP*(KP-1)+I-1)
+401          CONTINUE
+             SIGL(4)= ZR(ISIGM+NCMP*(KP-1)+3)*RAC2
+          ENDIF
         ENDIF
 
 C =======================================================

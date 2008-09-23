@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,7 +169,7 @@ evol=DYNA_NON_LINE(MODELE=MODELE,
                    INCREMENT=_F(LIST_INST=TEMPLI,),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 FORMULATION='DEPLACEMENT',
-                                ALPHA=0.25,DELTA=0.5,),
+                                BETA=0.25,GAMMA=0.5,),
                    NEWTON=_F(PREDICTION='TANGENTE',
                              MATRICE='TANGENTE',REAC_ITER=1),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,

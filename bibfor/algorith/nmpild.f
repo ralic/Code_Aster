@@ -1,8 +1,8 @@
-      SUBROUTINE NMPILD(NEQ   ,DEPALG,LPILO ,LRELI ,ETA   ,
-     &                  ITERAT,RHO   ,OFFSET)
+      SUBROUTINE NMPILD(FONACT,NUMEDD,SDDYNA,SOLALG,LPILO ,
+     &                  LRELI ,ETA   ,ITERAT,RHO   ,OFFSET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,9 +22,11 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NEQ,ITERAT
+      LOGICAL      FONACT(*)
+      INTEGER      ITERAT
       LOGICAL      LPILO,LRELI
-      CHARACTER*24 DEPALG(8)
+      CHARACTER*24 NUMEDD
+      CHARACTER*19 SOLALG(*),SDDYNA
       REAL*8       ETA,RHO,OFFSET
 C 
 C ----------------------------------------------------------------------
@@ -35,11 +37,11 @@ C AJUSTEMENT DE LA DIRECTION DE DESCENTE
 C      
 C ----------------------------------------------------------------------
 C
-C DEPL_CORR = RHO * DEPL_PRED(1) + (ETA-OFFSET) * DEPL_PRED(2)
-C
-C IN  NEQ    : NOMBRE D'EQUATIONS
+C IN  NUMEDD : NOM DU NUME_DDL
+C IN  FONACT : FONCTIONNALITES ACTIVEES
 C IN  ITERAT : NUMERO ITERATION DE NEWTON
-C IN  DEPALG : VARIABLE CHAPEAU POUR DEPLACEMENTS  
+C IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
+C IN  SDDYNA : SD DYNAMIQUE
 C IN  LPILO  : PILOTAGE ACTIVE
 C IN  LRELI  : RECHERCHE LINEAIRE ACTIVEE 
 C IN  ETA    : PARAMETRE DE PILOTAGE
@@ -65,9 +67,13 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      I,JU0,JU1,JDDEPL
-      CHARACTER*24 K24BID
-      CHARACTER*24 DDEPLA,DEPPRE(2)
+      INTEGER      IRET,NEQ
+      CHARACTER*8  K8BID
+      CHARACTER*19 NMCHEX
+      CHARACTER*19 DDEPLA,DEPPR1,DEPPR2
+      CHARACTER*19 DVITLA,VITPR1,VITPR2
+      CHARACTER*19 DACCLA,ACCPR1,ACCPR2
+      LOGICAL      NDYNLO,LDYNA     
       INTEGER      IFM,NIV     
 C 
 C ----------------------------------------------------------------------
@@ -75,23 +81,39 @@ C
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
+C --- FONCTIONNALITES ACTIVEES
+C 
+      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')     
+C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ... AJUSTEMENT DIRECTION DE '//
+        WRITE (IFM,*) '<MECANONLINE> AJUSTEMENT DIRECTION DE '//
      &                'DESCENTE'  
-      ENDIF      
+      ENDIF  
+      CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
 C
 C --- DECOMPACTION VARIABLES CHAPEAUX
 C       
-      CALL DESAGG(DEPALG,DDEPLA,K24BID,K24BID,DEPPRE(1),
-     &            DEPPRE(2),K24BID,K24BID,K24BID)      
+      DDEPLA = NMCHEX(SOLALG,'SOLALG','DDEPLA')
+      DEPPR1 = NMCHEX(SOLALG,'SOLALG','DEPPR1')
+      DEPPR2 = NMCHEX(SOLALG,'SOLALG','DEPPR2') 
+      DVITLA = NMCHEX(SOLALG,'SOLALG','DVITLA')
+      VITPR1 = NMCHEX(SOLALG,'SOLALG','VITPR1')
+      VITPR2 = NMCHEX(SOLALG,'SOLALG','VITPR2')
+      DACCLA = NMCHEX(SOLALG,'SOLALG','DACCLA')
+      ACCPR1 = NMCHEX(SOLALG,'SOLALG','ACCPR1')
+      ACCPR2 = NMCHEX(SOLALG,'SOLALG','ACCPR2')                       
 C
       IF ((.NOT.LRELI).OR.(ITERAT.EQ.0)) THEN
         IF (LPILO) THEN
           GOTO 888
         ELSE     
-          CALL COPISD('CHAMP_GD','V',DEPPRE(1),DDEPLA)
+          CALL COPISD('CHAMP_GD','V',DEPPR1,DDEPLA)
+          IF (LDYNA) THEN  
+            CALL COPISD('CHAMP_GD','V',VITPR1,DVITLA)
+            CALL COPISD('CHAMP_GD','V',ACCPR1,DACCLA)
+          ENDIF                
           GOTO 999
         ENDIF
       ELSE 
@@ -105,31 +127,46 @@ C
 C --- MISE A JOUR AVEC PILOTAGE
 C
  888  CONTINUE
-C
-C --- INITIALISATIONS
-C
-      CALL JEVEUO(DEPPRE(1)(1:19)//'.VALE','L',JU0)
-      CALL JEVEUO(DEPPRE(2)(1:19)//'.VALE','L',JU1)
-      CALL JEVEUO(DDEPLA(1:19)   //'.VALE','E',JDDEPL)
 C     
-C --- CALCUL
+C --- CALCUL DE LA DIRECTION DE DESCENTE
 C
-      DO 10 I = 1, NEQ
-        ZR(JDDEPL+I-1) = RHO * ZR(JU0+I-1) + (ETA-OFFSET) * ZR(JU1+I-1)
- 10   CONTINUE
+      CALL NMPILK(DEPPR1,DEPPR2,DDEPLA,NEQ   ,ETA,
+     &            RHO   ,OFFSET)
+      IF (LDYNA) THEN 
+        CALL NMPILK(VITPR1,VITPR2,DVITLA,NEQ   ,ETA,
+     &              RHO   ,OFFSET)      
+        CALL NMPILK(ACCPR1,ACCPR2,DACCLA,NEQ   ,ETA,
+     &              RHO   ,OFFSET)      
+      ENDIF
 C
   999 CONTINUE
 C 
+C --- AFFICHAGE
+C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... RHO    : ',RHO
         WRITE (IFM,*) '<MECANONLINE> ... ETA    : ',ETA
         WRITE (IFM,*) '<MECANONLINE> ... OFFSET : ',OFFSET
         WRITE (IFM,*) '<MECANONLINE> ... DEPL. PRED. (1) : '        
-        CALL NMDEBG('VECT',DEPPRE(1),IFM   )
+        CALL NMDEBG('VECT',DEPPR1,IFM   )
         WRITE (IFM,*) '<MECANONLINE> ... DEPL. PRED. (2) : '        
-        CALL NMDEBG('VECT',DEPPRE(2),IFM   )        
+        CALL NMDEBG('VECT',DEPPR2,IFM   )        
         WRITE (IFM,*) '<MECANONLINE> ... DEPL. SOLU.     : '        
-        CALL NMDEBG('VECT',DDEPLA,IFM   )        
+        CALL NMDEBG('VECT',DDEPLA,IFM   )
+        IF (LDYNA) THEN
+          WRITE (IFM,*) '<MECANONLINE> ... VITE. PRED. (1) : '        
+          CALL NMDEBG('VECT',VITPR1,IFM   )
+          WRITE (IFM,*) '<MECANONLINE> ... VITE. PRED. (2) : '        
+          CALL NMDEBG('VECT',VITPR2,IFM   )        
+          WRITE (IFM,*) '<MECANONLINE> ... VITE. SOLU.     : '        
+          CALL NMDEBG('VECT',DVITLA,IFM   )        
+          WRITE (IFM,*) '<MECANONLINE> ... ACCE. PRED. (1) : '        
+          CALL NMDEBG('VECT',ACCPR1,IFM   )
+          WRITE (IFM,*) '<MECANONLINE> ... ACCE. PRED. (2) : '        
+          CALL NMDEBG('VECT',ACCPR2,IFM   )        
+          WRITE (IFM,*) '<MECANONLINE> ... ACCE. SOLU.     : '        
+          CALL NMDEBG('VECT',DACCLA,IFM   )        
+        ENDIF                
       ENDIF 
 C
       CALL JEDEMA()

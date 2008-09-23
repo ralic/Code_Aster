@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C          'NUME_DDL'     'PROF_CHNO'    'MLTF'
 C          'MATR_ASSE'    'VECT_ASSE'    'MATR_ASSE_GENE'
 C          'MATR_ELEM'    'VECT_ELEM'
 C          'VARI_COM'     'FONCTION' (POUR LES FONCTIONS OU NAPPES)
-C          'TABLE_SDASTER' 'TABLE_CONTAINER' 'DEFI_CONT'    'RESO_CONT'
+C          'TABLE_SDASTER' 'TABLE_CONTAINER' 
 C          'SOLVEUR'      'CORRESP_2_MAILLA'
 C          'CHAM_NO_S'    'CHAM_ELEM_S'
 C          'CHAM_NO'      'CHAM_ELEM'  'CARTE'
@@ -70,8 +70,8 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &        IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP
       CHARACTER*1 K1BID
       CHARACTER*8 MAILLA,METRES,K8BID
-      CHARACTER*14 NU,RESOCO,COM
-      CHARACTER*16 DEFICO,TYP2SD,CORRES
+      CHARACTER*14 NU,COM
+      CHARACTER*16 TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
       CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19B,MATEL
       CHARACTER*24 K24B,TYPOBJ,KNOMSD
@@ -307,7 +307,7 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS OU PETSC :
         END IF
 
         CALL JEDETR(MATAS//'.CCID')
-        CALL JEDETR(MATAS//'.CCJJ')
+        CALL JEDETR(MATAS//'.CCII')
         CALL JEDETR(MATAS//'.CCLL')
         CALL JEDETR(MATAS//'.CCVA')
         CALL JEDETR(MATAS//'.CONL')
@@ -562,62 +562,6 @@ C     ---------------------------------------
    60   CONTINUE
         CALL JEDETR(MATEL//'.RELR')
         CALL JEDETR(MATEL//'.RELC')
-
-C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'DEFI_CONT') THEN
-C     ------------------------------------
-        DEFICO = NOMSD
-        CALL JEDETR(DEFICO//'.METHCO')
-        CALL JEDETR(DEFICO//'.PZONECO')
-        CALL JEDETR(DEFICO//'.MAILCO')
-        CALL JEDETR(DEFICO//'.PSUMACO')
-        CALL JEDETR(DEFICO//'.MANOCO')
-        CALL JEDETR(DEFICO//'.PMANOCO')
-        CALL JEDETR(DEFICO//'.MAMACO')
-        CALL JEDETR(DEFICO//'.PMAMACO')
-        CALL JEDETR(DEFICO//'.NOEUCO')
-        CALL JEDETR(DEFICO//'.PSUNOCO')
-        CALL JEDETR(DEFICO//'.NOMACO')
-        CALL JEDETR(DEFICO//'.PNOMACO')
-        CALL JEDETR(DEFICO//'.NDIMCO')
-        CALL JEDETR(DEFICO//'.DDLCO')
-        CALL JEDETR(DEFICO//'.MAESCL')
-        CALL JEDETR(DEFICO//'.TABFIN')
-        CALL JEDETR(DEFICO//'.CARACF')
-        CALL JEDETR(DEFICO//'.ECPDON')
-C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'RESO_CONT') THEN
-C     ------------------------------------
-        RESOCO = NOMSD
-        CALL JEDETR(RESOCO//'.APPARI')
-        CALL JEDETR(RESOCO//'.APMEMO')
-        CALL JEDETR(RESOCO//'.APPOIN')
-        CALL JEDETR(RESOCO//'.NORINI')
-        CALL JEDETR(RESOCO//'.NORMCO')
-        CALL JEDETR(RESOCO//'.TANGCO')
-        CALL JEDETR(RESOCO//'.APNOEU')
-        CALL JEDETR(RESOCO//'.APDDL')
-        CALL JEDETR(RESOCO//'.APCOEF')
-        CALL JEDETR(RESOCO//'.APCOFR')
-        CALL JEDETR(RESOCO//'.APJEU')
-        CALL JEDETR(RESOCO//'.APJEFX')
-        CALL JEDETR(RESOCO//'.APJEFY')
-        CALL JEDETR(RESOCO//'.APREAC')
-        CALL JEDETR(RESOCO//'.COCO')
-        CALL JEDETR(RESOCO//'.LIAC')
-        CALL JEDETR(RESOCO//'.LIOT')
-        CALL JEDETR(RESOCO//'.MU')
-        CALL JEDETR(RESOCO//'.COEFMU')
-        CALL JEDETR(RESOCO//'.ATMU')
-        CALL JEDETR(RESOCO//'.AFMU')
-        CALL JEDETR(RESOCO//'.DEL0')
-        CALL JEDETR(RESOCO//'.DELT')
-        CALL JEDETR(RESOCO//'.CM1A')
-        CALL JEDETR(RESOCO//'.CM2A')
-        CALL JEDETR(RESOCO//'.CM3A')
-
-        CALL DETRS2('MATR_ASSE',RESOCO//'.MATR')
-        CALL DETRS2('STOCKAGE',RESOCO//'.SLCS')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'RESULTAT') THEN

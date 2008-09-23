@@ -1,16 +1,16 @@
       SUBROUTINE XDDLIM(MODELE,MOTCLE,NOMCMP,NBCMP,NOMN,INO,VALIMR,
-     &                  VALIMC,VALIMF,PRNM,FONREE,ICOMPT,LISREL)
+     &                  VALIMC,VALIMF,PRNM,FONREE,ICOMPT,LISREL,
+     &                  NDIM,DIRECT)
       IMPLICIT NONE
 
-      INTEGER      INO,ICOMPT,NBCMP,PRNM(*)
-      REAL*8       VALIMR
+      INTEGER      INO,ICOMPT,NBCMP,PRNM(*),NDIM
+      REAL*8       VALIMR,DIRECT(3)
       CHARACTER*4  FONREE
-      CHARACTER*8  MODELE,NOMN,VALIMF,NOMCMP(*)
-      CHARACTER*16 MOTCLE
+      CHARACTER*8  MODELE,NOMN,VALIMF,NOMCMP(*),MOTCLE
       CHARACTER*19 LISREL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 22/09/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,10 +28,11 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
-
 C
 C      TRAITEMENT DE DDL_IMPO SUR UN NOEUD X-FEM
-C             (POUR LES MOT CLE DX, DY ,DZ)
+C             (POUR MOTCLE = DX, DY ,DZ)
+C      TRAINTEMENT DE FACE_IMPO SUR UN NOEUD X-FEM
+C             (POUR DNOR OU DTAN : MOTCLE = DEPL )
 C
 C IN  MODELE : NOM DE L'OBJET MODELE ASSOCIE AU LIGREL DE CHARGE
 C IN  MOTCLE : NOM DE LA COMPOSANTE DU DEPLACEMENT A IMPOSER
@@ -42,6 +43,7 @@ C IN  VALIMC : VALEUR DE BLOCAGE SUR CE DDL (FONREE = 'COMP')
 C IN  VALIMF : VALEUR DE BLOCAGE SUR CE DDL (FONREE = 'FONC')
 C IN  PRNM   : DESCRIPTEUR GRANDEUR SUR LE NOEUD INO
 C IN  FONREE : AFFE_CHAR_XXXX OU AFFE_CHAR_XXXX_F
+C IN  NDIM
 
 C IN/OUT     
 C     ICOMPT : "COMPTEUR" DES DDLS AFFECTES REELLEMENT
@@ -66,15 +68,17 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER     IER,STANO,JSTANO,JLSN,JLST,NREL,I,NTERM,IREL,DIMENS(6)
-      INTEGER     ICMP,INDIK8
-      REAL*8      LSN,LST,R,THETA(2),R8PI,HE(2),T,COEF(6),SIGN
+      INTEGER     NBXCMP
+      PARAMETER  (NBXCMP=18)
+      INTEGER     IER,STANO,JSTANO,JLSN,JLST,NREL
+      INTEGER     ICMP,INDIK8,I,J,NTERM,IREL,DIMENS(NBXCMP)
+      REAL*8      LSN,LST,R,THETA(2),R8PI,HE(2),T,COEF(NBXCMP),SIGN
       REAL*8      RBID
-      CHARACTER*8 DDL(6),NOEUD(6),VALK(2)
+      CHARACTER*8 DDL(NBXCMP),NOEUD(NBXCMP),VALK(2),AXES(3)
       CHARACTER*19 CH1,CH2,CH3
       COMPLEX*16  CBID,VALIMC
       LOGICAL     EXISDG
-      DATA        DIMENS/0,0,0,0,0,0/
+      DATA        AXES /'X','Y','Z'/
 
 C ----------------------------------------------------------------------
 C
@@ -85,8 +89,9 @@ C      LES NOEUDS ET SUR LES DDLS BLOQUES N'EST PAS OPTIMAL DU POINT
 C      DE VUE DES PERFORMANCES, MAIS A PRIORI, CA NE DEVRAIT PAS ETRE
 C      POUR BEAUCOUP DE NOEUDS
 
-C     ON NE TRAITE QUE LES MOT CLE DX DY OU DZ
-      IF (MOTCLE.NE.'DX'.AND.MOTCLE.NE.'DY'.AND.MOTCLE.NE.'DZ') GOTO 999
+C     ON NE TRAITE QUE LES MOTS CLE DX, DY, DZ, OU DEPL
+      IF (MOTCLE.NE.'DX'.AND.MOTCLE.NE.'DY'.AND.MOTCLE.NE.'DZ'
+     &    .AND.MOTCLE(1:8).NE.'DEPL    ' ) GOTO 999
 
 C     ON NE TRAITE QUE LES NOEUDS X-FEM 
       ICMP = INDIK8(NOMCMP,'DCX',1,NBCMP)
@@ -131,8 +136,9 @@ C     SINON                   : 1 RELATION
 
       CALL ASSERT(FONREE.EQ.'REEL')
 
-      DO 5 I=1,6
-        NOEUD(I)=NOMN
+      DO 5 I=1,NBXCMP
+        DIMENS(I)= 0.D0
+        NOEUD(I) = NOMN
  5    CONTINUE
 
 C     BOUCLE SUR LES RELATIONS
@@ -142,29 +148,70 @@ C       CALCUL DES COORDONNÉES POLAIRES DU NOEUD (R,T)
         R = SQRT(LSN**2+LST**2)
         T = THETA(IREL)
 
-C       COEFFICIENTS ET DDLS DE LA RELATION
-        DDL(1) = 'DC'//MOTCLE(2:2)
-        COEF(1)=1.D0
-        I = 1
-        IF (STANO.EQ.1.OR.STANO.EQ.3) THEN 
-          I = I+1
-          DDL(I) = 'H1'//MOTCLE(2:2)
-          COEF(I)=HE(IREL)
+C       CAS FACE_IMPO DNOR OU DTAN
+        IF (MOTCLE(1:8).EQ.'DEPL    ') THEN
+          
+          I = 0
+          DO 20 J = 1, NDIM
+      
+C           COEFFICIENTS ET DDLS DE LA RELATION
+            I = I+1
+            DDL(I) = 'DC'//AXES(J)
+            COEF(I)=DIRECT(J)
+      
+            IF (STANO.EQ.1.OR.STANO.EQ.3) THEN 
+              I = I+1
+              DDL(I) = 'H1'//AXES(J)
+              COEF(I)=HE(IREL)*DIRECT(J)
+            ENDIF
+      
+            IF (STANO.EQ.2.OR.STANO.EQ.3) THEN 
+              I = I+1
+              DDL(I) = 'E1'//AXES(J)
+              COEF(I)=SQRT(R)*SIN(T/2.D0)*DIRECT(J)
+              I = I+1
+              DDL(I) = 'E2'//AXES(J)
+              COEF(I)=SQRT(R)*COS(T/2.D0)*DIRECT(J)
+              I = I+1
+              DDL(I) = 'E3'//AXES(J)
+              COEF(I)=SQRT(R)*SIN(T/2.D0)*SIN(T)*DIRECT(J)
+              I = I+1
+              DDL(I) = 'E4'//AXES(J)
+              COEF(I)=SQRT(R)*COS(T/2.D0)*SIN(T)*DIRECT(J)
+            ENDIF
+            
+ 20       CONTINUE        
+
+C       CAS DDL_IMPO DX DY DZ        
+        ELSEIF (MOTCLE.EQ.'DX'.OR.MOTCLE.EQ.'DY'.OR.MOTCLE.EQ.'DZ') THEN
+
+C         COEFFICIENTS ET DDLS DE LA RELATION
+          DDL(1) = 'DC'//MOTCLE(2:2)
+          COEF(1)=1.D0
+          I = 1
+          IF (STANO.EQ.1.OR.STANO.EQ.3) THEN 
+            I = I+1
+            DDL(I) = 'H1'//MOTCLE(2:2)
+            COEF(I)=HE(IREL)
+          ENDIF
+          IF (STANO.EQ.2.OR.STANO.EQ.3) THEN 
+            I = I+1
+            DDL(I) = 'E1'//MOTCLE(2:2)
+            COEF(I)=SQRT(R)*SIN(T/2.D0)
+            I = I+1
+            DDL(I) = 'E2'//MOTCLE(2:2)
+            COEF(I)=SQRT(R)*COS(T/2.D0)
+            I = I+1
+            DDL(I) = 'E3'//MOTCLE(2:2)
+            COEF(I)=SQRT(R)*SIN(T/2.D0)*SIN(T)
+            I = I+1
+            DDL(I) = 'E4'//MOTCLE(2:2)
+            COEF(I)=SQRT(R)*COS(T/2.D0)*SIN(T)
+          ENDIF
+        
+        
         ENDIF
-        IF (STANO.EQ.2.OR.STANO.EQ.3) THEN 
-          I = I+1
-          DDL(I) = 'E1'//MOTCLE(2:2)
-          COEF(I)=SQRT(R)*SIN(T/2.D0)
-          I = I+1
-          DDL(I) = 'E2'//MOTCLE(2:2)
-          COEF(I)=SQRT(R)*COS(T/2.D0)
-          I = I+1
-          DDL(I) = 'E3'//MOTCLE(2:2)
-          COEF(I)=SQRT(R)*SIN(T/2.D0)*SIN(T)
-          I = I+1
-          DDL(I) = 'E4'//MOTCLE(2:2)
-          COEF(I)=SQRT(R)*COS(T/2.D0)*SIN(T)
-        ENDIF
+               
         NTERM = I
 
         CALL AFRELA(COEF,CBID,DDL,NOEUD,DIMENS,RBID,NTERM,VALIMR,VALIMC,
@@ -172,9 +219,6 @@ C       COEFFICIENTS ET DDLS DE LA RELATION
 
  10   CONTINUE
 
-      VALK(1)=MOTCLE(1:8)
-      VALK(2)=NOMN
-      CALL U2MESG('I','XFEM_6',2,VALK,0,0,1,VALIMR)
       ICOMPT = ICOMPT + 1
 
       CALL JEDETR('&&XDDLIM.CHS1')

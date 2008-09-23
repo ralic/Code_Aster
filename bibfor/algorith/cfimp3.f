@@ -1,8 +1,8 @@
-      SUBROUTINE CFIMP3(DEFICO,RESOCO,NOMA,IFM,NUMORD,INSTAP,NBLIAI,
-     &                  NBLIAC,JCNSVR)
+      SUBROUTINE CFIMP3(DEFICO,RESOCO,NOMA  ,IFM   ,NUMORD,
+     &                  INSTAP,NBLIAI,NBLIAC,JCNSVR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*24 DEFICO
-      CHARACTER*24 RESOCO
+      CHARACTER*24 DEFICO,RESOCO
       INTEGER      IFM
       INTEGER      NUMORD
       INTEGER      NBLIAI
@@ -53,7 +52,6 @@ C IN  JCNSVR : POINTEUR SUR OBJET CHAM_NO VALE_CONT
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -72,64 +70,97 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      CFMMVD,ZAPPA,ZRESU
-      INTEGER      II,POSESC,NUMESC,NUMMAI,POSMAI
-      CHARACTER*8  NOMESC,NOMMAI
+      INTEGER      ILIAI,POSNOE,POSMAI
+      CHARACTER*8  NOMNOE,NOMMAI,NOMENT
+      INTEGER      CODRET,NUMNOE    
       CHARACTER*4  TYPE2
-      CHARACTER*24 APPARI,CONTNO,CONTMA,APJEU
-      INTEGER      JAPPAR,JNOCO,JMACO,JAPJEU
+      CHARACTER*24 APPARI,APJEU
+      INTEGER      JAPPAR,JAPJEU
       REAL*8       RN,R,COE,PROD,VARC,AJEUFT
 C
 C ----------------------------------------------------------------------
 C
-
+      CALL JEMARQ ()
+C
+C --- ACCES SD CONTACT
+C
       APPARI = RESOCO(1:14)//'.APPARI'
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
       APJEU  = RESOCO(1:14)//'.APJEU'
-
       CALL JEVEUO(APPARI,'L',JAPPAR)
-      CALL JEVEUO(CONTNO,'L',JNOCO )
-      CALL JEVEUO(CONTMA,'L',JMACO )
       CALL JEVEUO(APJEU, 'L',JAPJEU)
-
+      ZAPPA  = CFMMVD('ZAPPA')
+      ZRESU  = CFMMVD('ZRESU')
+C
+C --- PREMIERS AFFICHAGES      
+C  
       WRITE(IFM,1000)
       WRITE(IFM,1001) NUMORD
       WRITE(IFM,1002) INSTAP
       WRITE(IFM,1003) NBLIAI
       WRITE(IFM,1004) NBLIAC
-      
-      ZRESU = CFMMVD('ZRESU')
-      ZAPPA = CFMMVD('ZAPPA')
-
-      DO 120 II = 1,NBLIAI
 C
-C --- RECHERCHE CONNECTIVITE
+C --- BOUCLE SUR LES LIAISONS
 C
-        POSESC = ZI(JAPPAR+ZAPPA*(II-1)+1)
-        NUMESC = ZI(JNOCO+POSESC-1)
-        CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMESC),NOMESC)
-        POSMAI = ZI(JAPPAR+ZAPPA* (II-1)+2)
+      DO 120 ILIAI = 1,NBLIAI
 C
-C --- PREPARATION DES CHAINES POUR LES NOMS
+C --- REPERAGE DE L'ESCLAVE
 C
-        TYPE2 = '    '
-        IF (POSMAI.GT.0) THEN
-          TYPE2 ='/EL '
-          NUMMAI = ZI(JMACO+POSMAI-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMMAI)
-        ELSE IF (POSMAI.LT.0) THEN
-          TYPE2 ='/ND '
-          NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
+        POSNOE = ZI(JAPPAR+ZAPPA*(ILIAI-1)+1)
+C
+C --- NOM DU NOEUD ESCLAVE
+C      
+        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMENT,
+     &              CODRET)       
+        IF (CODRET.GE.0) THEN
+          NOMNOE = NOMENT
         ELSE
+          NOMNOE = 'ERREUR'
+        ENDIF        
+C
+C --- NUMERO ABSOLU DU NOEUD ESCLAVE
+C                
+        CALL CFPOSM(NOMA  ,DEFICO,'NOEU',1     ,POSNOE,
+     &              NUMNOE,CODRET)  
+        IF (CODRET.LT.0) THEN
+          WRITE (IFM,2002)
+          GOTO 999 
+        ENDIF    
+C
+C --- REPERAGE DU MAITRE
+C
+        POSMAI = ZI(JAPPAR+ZAPPA*(ILIAI-1)+2)        
+C
+C --- NOM ET TYPE DU MAITRE
+C
+        IF (POSMAI.LT.0) THEN
+          CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSMAI,NOMENT,
+     &              CODRET)
+          IF (CODRET.LT.0) THEN
+            TYPE2  = ' '
+            NOMMAI = 'ERREUR'          
+          ELSE   
+            TYPE2  = '/ND '
+            NOMMAI = NOMENT   
+          ENDIF         
+        ELSEIF (POSMAI.GT.0) THEN
+          CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSMAI,NOMENT,
+     &                CODRET)
+          IF (CODRET.LT.0) THEN
+            TYPE2  = ' '
+            NOMMAI = 'ERREUR'          
+          ELSE
+            TYPE2  = '/EL '
+            NOMMAI = NOMENT   
+          ENDIF    
+        ELSE  
           TYPE2  = ' NON'
-          NOMMAI = ' APPARIE'
-        END IF
+          NOMMAI = ' APPARIE'               
+        ENDIF 
 C
 C --- VALEURS
 C
-        RN = ZR(JCNSVR-1+ (NUMESC-1)*ZRESU+3 )
-        R  = ZR(JCNSVR-1+ (NUMESC-1)*ZRESU+19)
+        RN = ZR(JCNSVR-1+(NUMNOE-1)*ZRESU+3 )
+        R  = ZR(JCNSVR-1+(NUMNOE-1)*ZRESU+19)
 
         COE = 0.0D0
         IF ( RN.NE.0.D0 ) THEN
@@ -137,22 +168,24 @@ C
           COE = PROD/RN
         ENDIF
 
-        VARC   = ZR(JCNSVR-1+ (NUMESC-1)*ZRESU+1 )
-        AJEUFT = ZR(JCNSVR-1+ (NUMESC-1)*ZRESU+9 )
+        VARC   = ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+1 )
+        AJEUFT = ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+9 )
         IF (VARC.NE.0.0D0) THEN
-          WRITE (IFM,2000) II,' (ND ',NOMESC,TYPE2,NOMMAI,
-     &                     ') * JEU:',ZR(JAPJEU+II-1),' * RN:',RN,
+          WRITE (IFM,2000) ILIAI,' (ND ',NOMNOE,TYPE2,NOMMAI,
+     &                     ') * JEU:',ZR(JAPJEU+ILIAI-1),' * RN:',RN,
      &                     ' * GLI:',AJEUFT,' * R:',R,
      &                     ' * RT/RN:',COE
         ELSE
-          WRITE (IFM,2001) II,' (   ',NOMESC,TYPE2,NOMMAI,
-     &                     ') * JEU:',ZR(JAPJEU+II-1),' * RN:',RN,
+          WRITE (IFM,2001) ILIAI,' (   ',NOMNOE,TYPE2,NOMMAI,
+     &                     ') * JEU:',ZR(JAPJEU+ILIAI-1),' * RN:',RN,
      &                     ' * GLI:',AJEUFT,' * R:',R,
      &                     ' * RT/RN:',COE
         ENDIF
  120  CONTINUE
 
-
+ 999  CONTINUE
+ 
+      
 1000  FORMAT (' <CONTACT> LISTE DES LIAISONS DE CONTACT')
 1001  FORMAT (' <CONTACT>   NUMERO D''ORDRE  : ',I6)
 1002  FORMAT (' <CONTACT>   INSTANT          : ',1PE12.5)
@@ -166,5 +199,7 @@ C
      &        A8,1PE12.5,A6,1PE12.5,
      &        A7,1PE12.5,A5,1PE12.5,
      &        A9,1PE12.5)
-
+2002  FORMAT (' <CONTACT>   * LIAISON INCONNUE ')     
+C
+      CALL JEDEMA()
       END

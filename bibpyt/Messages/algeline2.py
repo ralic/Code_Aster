@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,30 +120,6 @@ cata_msg = {
 
 21 : _("""
  L'argument de "BLOC_FIN" doit etre strictement positif
-"""),
-
-22 : _("""
- La numérotation des inconnues est incohérente entre la matrice et le second membre.
-"""),
-
-23 : _("""
-  %(k1)s  et  %(k2)s  n'ont pas le meme domaine de définition.
-"""),
-
-24 : _("""
- La matrice a des ddls eliminés. il faut utiliser le mot clé CHAM_CINE.
-"""),
-
-25 : _("""
- La matrice et le second membre sont de type différent.
-"""),
-
-26 : _("""
- le second membre et le champ cinématique sont de type différent.
-"""),
-
-27 : _("""
- la matrice est d'un type inconnu de l'opérateur.
 """),
 
 28 : _("""

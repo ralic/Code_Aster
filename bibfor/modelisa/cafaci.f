@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/07/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 22/09/2008   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1,MESNO3
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
-      LOGICAL     EXISDG,LXFEM
+      LOGICAL EXISDG,LXFEM
 
       CALL JEMARQ()
       CALL GETFAC('FACE_IMPO',NFACI)
@@ -332,21 +332,25 @@ C   ----------------------
           DO 120 INO = 1,NBNO
             IN = ZI(JLINU+INO-1)
 
-C           NOEUDS X-FEM ?
+C           TEST SI NOEUDS X-FEM
             LXFEM = .FALSE.   
             ICMPX = INDIK8(ZK8(INOM),'DCX',1,NBCMP)
             IF (EXISDG(ZI(JPRNM-1+(IN-1)*NBEC+1),ICMPX)) LXFEM=.TRUE.
-
+            
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
+            
             IF (DDLIMP(NDDLA+1).NE.0) THEN
               DO 100 IDIM = 1,NDIM
                 DIRECT(IDIM) = ZR(JNORM-1+NDIM* (INO-1)+IDIM)
   100         CONTINUE
 
               IF (LXFEM) THEN
-                CALL XDNOR(MOD,DDL,ZK8(INOM),NBCMP,NDIM,DIRECT,
-     &                     ZI(JPRNM-1+(IN-1)*NBEC+1),NOMNOE,IN,
-     &                     VALIMR(NDDLA+1),FONREE,LISREL)
+                                  
+                 CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
+     &                       VALIMR(NDDLA+1),VALIMC(J),VALIMF(J),
+     &                       ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
+     &                       IBID,LISREL,NDIM,DIRECT)
+     
               ELSE
                 CALL AFRELA(COEF,COEFC,DDL,NOMNOE,NDIM,DIRECT,1,
      &                      VALIMR(NDDLA+1),VALIMC(NDDLA+1),
@@ -354,14 +358,19 @@ C           NOEUDS X-FEM ?
      &                      LISREL)
               ENDIF
             END IF
+            
             IF (DDLIMP(NDDLA+2).NE.0) THEN
               DO 110 IDIM = 1,NDIM
                 DIRECT(IDIM) = ZR(JTANG-1+NDIM* (INO-1)+IDIM)
   110         CONTINUE
+  
               IF (LXFEM) THEN
-                CALL XDNOR(MOD,DDL,ZK8(INOM),NBCMP,NDIM,DIRECT,
-     &                     ZI(JPRNM-1+(IN-1)*NBEC+1),NOMNOE,IN,
-     &                     VALIMR(NDDLA+2),FONREE,LISREL)
+              
+                 CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
+     &                       VALIMR(NDDLA+2),VALIMC(J),VALIMF(J),
+     &                       ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
+     &                       IBID,LISREL,NDIM,DIRECT)
+              
               ELSE
                 CALL AFRELA(COEF,COEFC,DDL,NOMNOE,NDIM,DIRECT,1,
      &                      VALIMR(NDDLA+2),VALIMC(NDDLA+2),
@@ -369,6 +378,7 @@ C           NOEUDS X-FEM ?
      &                      LISREL)
               ENDIF
             END IF
+            
   120     CONTINUE
 
 C      ***************************************************

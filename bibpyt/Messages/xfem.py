@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 22/09/2008   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,10 +53,6 @@ cata_msg={
   -> Risque & Conseil:
      Veuillez rajouter les mots clés CONTACT manquants 
      dans DEFI_FISS_XFEM.
-"""),
-
-6: _("""
-     DDL_IMPO sur un noeud X-FEM : %(k1)s =  %(r1)f au noeud %(k2)s
 """),
 
 7: _("""
@@ -127,12 +123,6 @@ cata_msg={
      Le modèle doit etre 2D ou 3D et ne pas comporter de sous-structures.
 """),
 
-20: _("""
-     Le mot-clef ORIE_FOND est indispensable en 3D si vous n'utilisez pas 
-     le catalogue des formes de fissure prédéfinies : FORM_FISS pour définir
-     les level-sets.
-"""),
-
 21: _("""
      Le mot-clef ORIE_FOND n'est pas nécessaire en 2D.
 """),
@@ -145,11 +135,6 @@ cata_msg={
   -> Erreur dans le choix de la méthode de calcul des level-sets
   -> Risque & Conseil :
      Veuillez renseignez FONC_LT/LN ou GROUP_MA_FISS/FOND.
-"""),
-
-25: _("""
-     Le frottement n'est pas pris en compte pour l'approche 
-     <<Grands glissements avec XFEM>>.
 """),
 
 26: _("""

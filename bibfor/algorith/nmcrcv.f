@@ -1,7 +1,7 @@
       SUBROUTINE NMCRCV(SDCRIT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,12 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER JCRR,JCRK
+      INTEGER      NRESI
+      PARAMETER    (NRESI=3)
+C
+      INTEGER JCRR,JCRK,JCRP
+      REAL*8  R8MAEM
+      INTEGER IRESI
 C
 C ----------------------------------------------------------------------
 C
@@ -67,8 +72,8 @@ C
 C
 C --- CREATION
 C
-      CALL WKVECT(SDCRIT(1:19)//'.CRTR','V V R8' ,8,JCRR)
-      CALL WKVECT(SDCRIT(1:19)//'.CRDE','V V K16',8,JCRK)
+      CALL WKVECT(SDCRIT(1:19)//'.CRTR','V V R8' ,8      ,JCRR)
+      CALL WKVECT(SDCRIT(1:19)//'.CRDE','V V K16',8      ,JCRK)
       ZK16(JCRK+1-1) = 'ITER_GLOB'
       ZK16(JCRK+2-1) = 'ITER_LINE'
       ZK16(JCRK+3-1) = 'RESI_GLOB_RELA'
@@ -77,6 +82,16 @@ C
       ZK16(JCRK+6-1) = 'CHAR_MINI'
       ZK16(JCRK+7-1) = 'RESI_GLOB_MOINS'
       ZK16(JCRK+8-1) = 'RESI_REFE'
+C     
+C --- SD POUR TYPE DE CONVERGENCE EN PLATEAU
+C  
+      CALL WKVECT(SDCRIT(1:19)//'.PLAT','V V R8' ,4*NRESI,JCRP) 
+      DO 15 IRESI = 1,NRESI
+        ZR(JCRP+4*(IRESI-1)+1-1) = R8MAEM()
+        ZR(JCRP+4*(IRESI-1)+2-1) = -R8MAEM() 
+        ZR(JCRP+4*(IRESI-1)+3-1) = 0.D0
+        ZR(JCRP+4*(IRESI-1)+4-1) = 0.D0
+ 15   CONTINUE    
 C
       CALL JEDEMA()
 

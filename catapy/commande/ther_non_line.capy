@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/09/2008   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,8 +48,6 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
            regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                    EXCLUS('NUME_INST_FIN','INST_FIN'),),
            LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-           EVOLUTION       =SIMP(statut='f',typ='TXM',defaut="CHRONOLOGIQUE",
-                                 into=("CHRONOLOGIQUE","RETROGRADE","SANS",) ),
            NUME_INST_INIT  =SIMP(statut='f',typ='I'),
            INST_INIT       =SIMP(statut='f',typ='R'),
            NUME_INST_FIN   =SIMP(statut='f',typ='I'),
@@ -69,7 +67,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
            INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
          ),
          NEWTON          =FACT(statut='d',
-           REAC_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
+           REAC_ITER       =SIMP(statut='f',typ='I',defaut= 0 ,val_min=0),
            RESI_LINE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
            ITER_LINE_MAXI  =SIMP(statut='f',typ='I',defaut= 0 ),
          ),
@@ -124,7 +122,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
                REMPLISSAGE      = SIMP(statut='f',typ='R',defaut= 1.0),
              ),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
            ),
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),

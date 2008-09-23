@@ -1,9 +1,9 @@
-      SUBROUTINE FROGDP(DEFICO,RESOCO,LMAT,LDSCON,NOMA,RESU,
-     &                  DEPTOT,ITERAT,LREAC,CONV,DEPDEL)
-C ======================================================================
+      SUBROUTINE FROGDP(DEFICO,RESOCO,LMAT  ,LDSCON,NOMA  ,
+     &                  RESU  ,DEPTOT,RESIGR,REAPRE,DEPDEL,
+     &                  CTCFIX)
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
-C TOLE CRP_20
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,27 +20,27 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C TOLE CRP_20
+C
       IMPLICIT     NONE
-      LOGICAL      LREAC(4)
-      REAL*8       CONV(*)
+      REAL*8       RESIGR
       CHARACTER*8  NOMA
-      CHARACTER*24 DEFICO
-      CHARACTER*24 RESOCO
-      CHARACTER*24 RESU
+      CHARACTER*24 DEFICO,RESOCO
+      CHARACTER*19 RESU,DEPDEL  
       CHARACTER*24 DEPTOT
-      CHARACTER*24 DEPDEL
-      INTEGER      LMAT
-      INTEGER      LDSCON
-      INTEGER      ITERAT
+      LOGICAL      REAPRE,CTCFIX
+      INTEGER      LMAT,LDSCON
+C      
+C ----------------------------------------------------------------------
 C
-C ======================================================================
-C ROUTINE APPELEE PAR : CFALGO
-C ======================================================================
-C
-C ALGO DE CONTACT
+C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
 C
 C ALGO. POUR CONTACT	: PENALISATION
 C ALGO. POUR FROTTEMENT : PENALISATION
+C
+C ----------------------------------------------------------------------
+C
 C
 C RESO. DE : C.DU + KC ACT.AC.DU + KG AGT.AG.DU = F - KG AGT.AG (E-U)
 C            AC. (U+DU)      <= E  (= POUR LES LIAISONS ACTIVES)
@@ -73,26 +73,7 @@ C VAR RESU   : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
-C OUT LICCVG : CODES RETOURS D'ERREUR
-C                       (1) PILOTAGE
-C                       (2) LOI DE COMPORTEMENT
-C                       (3) CONTACT/FROTTEMENT: NOMBRE MAXI D'ITERATIONS
-C                       (4) CONTACT/FROTTEMENT: MATRICE SINGULIERE
-C IN  LREAC  : ETAT DU CONTACT
-C              (1) = TRUE  SI REACTUALISATION A FAIRE
-C              (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
-C              (3) = TRUE  SI METHODE CONTINUE
-C              (4) = TRUE  SI MODELISATION DU CONTACT
-C IN  CONV   : INFORMATIONS SUR LA CONVERGENCE DU CALCUL
-C                     1 - RESI_DUAL_ABSO      (LAGRANGIEN AUGMENTE)
-C                     2 - RESI_PRIM_ABSO      (LAGRANGIEN AUGMENTE)
-C                     3 - NOMBRE D'ITERATIONS DUAL (LAGRANGIEN AUGMENTE)
-C                     4 - NUMERO ITERATION BFGS (LAGRANGIEN AUGMENTE)
-C                    10 - NOMBRE D'ITERATIONS (RECHERCHE LINEAIRE)
-C                    11 - RHO                 (RECHERCHE LINEAIRE)
-C                    20 - RESI_GLOB_RELA
-C                    21 - RESI_GLOB_MAXI
-C
+C IN  RESIGR : RESI_GLOB_RELA
 C ON UTILISE UNIQUEMENT LE VECTEUR AFMU CAR LES DONNEES DE ATMU SONT
 C NECESSAIRE POUR LE CALCUL DE LA MATRICE TANGENTE QUI SE FAIT
 C A L'AIDE DU VECTEUR AFMU
@@ -127,7 +108,7 @@ C
       INTEGER      JAPCOF,JAFMU,LMAF1,JCM1A,JCM3A,IFRO,ITER
       INTEGER      JDIM,NESMAX,LLF,LLF1,LLF2,AJLIAI,SPLIAI,INDIC,POSIT
       REAL*8       AJEUFX,AJEUFY,XF,XX,XK,XMU,VAL,XMU1,XMU2
-      REAL*8       BETA,RESIGR,VAL1,VAL2,R8BID
+      REAL*8       BETA,VAL1,VAL2,R8BID
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       CHARACTER*14 NUMEDD
@@ -254,7 +235,6 @@ C ======================================================================
       NESCL  = ZI(JAPPAR)
       NESMAX = ZI(JDIM+8)
       NBLIAI = NESCL
-      RESIGR = CONV(20)
       NEQ    = ZI(LMAT+2)
       ITER   = 0
       LLF    = 0
@@ -301,7 +281,7 @@ C --- RECUPERATION DES JEUX NEGATIFS ET CREATION DU SECOND
 C --- MEMBRE ATMU = -E_N*AT*JEU
 C ======================================================================
 C
-      IF (ITERAT.EQ.0) THEN
+      IF (REAPRE) THEN
          DO 10 II = 1,NBLIAI
             ZR(JMU-1+  NBLIAI+II) = 0.D0
             ZR(JMU-1+2*NBLIAI+II) = 0.D0
@@ -619,7 +599,7 @@ C ======================================================================
  999  CONTINUE
 C --- ATTENTE POINT FIXE
       IF ( NBLIAC.NE.NBLCIN ) THEN
-        LREAC(2) = .TRUE.
+        CTCFIX = .TRUE.
       ENDIF
       ZI(JCOCO+2) = NBLIAC
 C ======================================================================
@@ -632,10 +612,11 @@ C ======================================================================
       END IF
 C
  9999 CONTINUE
-C ======================================================================
-C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
-C ======================================================================
-      CALL CFITER(RESOCO,'E','ITER',ITER,R8BID)
+C 
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC 
+C
+      CALL CFITER(RESOCO,'E','CONT',ITER  ,R8BID)
+      CALL CFITER(RESOCO,'E','LIAC',NBLIAC,R8BID)
 C
       CALL JEDEMA ()
 C

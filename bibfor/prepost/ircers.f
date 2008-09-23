@@ -13,7 +13,7 @@ C
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -257,8 +257,8 @@ C             SOMME DES COMPOSANTES SELECTIONNEES PAR GREL
 C             NOMBRE DE COMPOSANTES SELECTIONNEES PRESENTES
 C             DANS LE GREL
               ZI(INBCG+IGREL-1)=NCMPG
-              IF(IGREL.EQ.NBGREL .AND. K.LT.NBCMP) CALL U2MESS('F','PREP
-     &OST_83')
+              IF(IGREL.EQ.NBGREL .AND. K.LT.NBCMP) 
+     &            CALL U2MESS('F','PREPOST_83')
               NCMPP=0
               DO 906 I=1,NCMPMX
                  IF (EXISDG(ZI(IAEC),I)) THEN

@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,10 +59,6 @@ Contact methode GCP. Le pas d'avancement est negatif ; risque de comportement ha
 Contact liaison glissiere. Des noeuds se décollent plus que la valeur d'ALARME_JEU:
 """),
 
-11 : _("""
-Le vecteur tangent défini par VECT_Y est colinéaire au vecteur normal.
-"""),
-
 13 : _("""
 La normale que vous avez prédéfinie (VECT_* = 'FIXE') sur le noeud %(k1)s est colinéaire à la tangente à la maille.
 """),
@@ -93,14 +89,27 @@ Vous devez utilisez l'option NORMALE:
 - ou VECT_Y: qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
 """),
 
+75 : _("""
+Contact méthodes discrètes. Un POI1 ne peut pas etre une maille maitre.
+"""),
 
 83 : _("""
 Il y a plusieurs charges contenant des conditions de contact.
 """),
 
 84 : _("""
+Le modèle mélangent des mailles avec des modélisations de dimensions 
+différentes (2D avec 3D ou macro-éléments).
+A ce moment du fichier de commande, on ne peut dire si ce mélange sera
+compatible avec le contact.
+
+"""),
+
+85 : _("""
+L'alarme CONTACT_84 se transforment en erreur fatale !
 Il ne faut pas que les surfaces de contact mélangent des mailles affectées d'une modélisations planes (D_PLAN, C_PLAN ou AXI)
 avec des mailles affectées d'une modélisation 3D. 
+
 """),
 
 88 : _("""
@@ -123,6 +132,10 @@ Contact méthode continue. Pour l'option SANS_GROUP_NO_FR, il faut que le frottem
 
 97 : _("""
 Contact méthode continue. Pour l'option SANS_GROUP_NO et SANS_GROUP_NO_FR, l'intégration aux noeuds est obligatoire.
+"""),
+
+98 : _("""
+Contact méthode continue. Pour l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL', l'intégration aux noeuds est obligatoire.
 """),
 
 }

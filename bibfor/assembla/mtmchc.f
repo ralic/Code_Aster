@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS,ACTION
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,12 +25,12 @@ C OBJET :
 C        TRAITEMENT DES CHARGES CINEMATIQUES DANS UNE MATRICE ASSEMBLEE
 C        SI ACTION='ELIMF' :
 C            - ON UTILISE .CCID POUR :
-C                CALCULER .CCVA, .CCLL, .CCJJ
+C                CALCULER .CCVA, .CCLL, .CCII
 C                MODIFIER .VALM
 C        SI ACTION='ELIML' :
 C            - ON UTILISE .CCVA POUR :
 C                RETABLIR (EN PARTIE SEULEMENT) .VALM
-C                DETRUIRE .CCVA, .CCLL, .CCJJ
+C                DETRUIRE .CCVA, .CCLL, .CCII
 C-----------------------------------------------------------------------
 C VAR  MATAS   K*19    : NOM DE LA MATR_ASSE
 C IN   ACTION  K*5     : /'ELIMF' /'ELIML'
@@ -54,10 +54,10 @@ C----------------------------------------------------------------------
       CHARACTER*8 KBID
       CHARACTER*14 NU
       CHARACTER*19 MAT,NOMSTO
-      INTEGER TYPMAT,IELIM,JELIM,KDEB,KFIN,KKELI
+      INTEGER TYPMAT,IELIM,JELIM,KDEB,KFIN,KKELI,ILIG,JCOL
       INTEGER JSMHC,JSMDI,JVALM,JVALM2,JCCVA,JCCLL,NELIM
-      INTEGER JREFA,JNEQU,IEQ,K,JEQ,DECIEL,NEQ,IER
-      INTEGER IRET,NBLOCM,JCCJJ,JREMP,DECJEL,IREMP,JCCID,KETA
+      INTEGER JREFA,JNEQU,IEQ,K,DECIEL,NEQ,IER
+      INTEGER IRET,NBLOCM,JREMP,DECJEL,IREMP,JCCID,KETA
       LOGICAL NONSYM
 C----------------------------------------------------------------------
       CALL JEMARQ()
@@ -87,7 +87,6 @@ C        TRAITEMENT CI-DESSOUS
       CALL JEVEUO(MAT//'.CCVA','L',JCCVA)
       CALL JEVEUO(MAT//'.CCLL','L',JCCLL)
       CALL JEVEUO(MAT//'.CCID','L',JCCID)
-      CALL JEVEUO(MAT//'.CCJJ','E',JCCJJ)
 
 
 
@@ -142,70 +141,44 @@ C     -- RECOPIE DE .CCVA DANS .VALM :
 C     -----------------------------------------
       CALL WKVECT('&&MTMCHC.REMPLIS','V V I',NELIM,JREMP)
       KFIN=0
-      DO 121 IEQ = 1,NEQ
+      DO 121 JCOL = 1,NEQ
         KDEB = KFIN + 1
-        KFIN = ZI(JSMDI-1+IEQ)
-        IELIM = ZI(KKELI-1+IEQ)
+        KFIN = ZI(JSMDI-1+JCOL)
+        JELIM = ZI(KKELI-1+JCOL)
 
-        IF (IELIM.NE.0) THEN
-          DECIEL=ZI(JCCLL-1+3*(IELIM-1)+3)
+        IF (JELIM.NE.0) THEN
+          DECIEL=ZI(JCCLL-1+3*(JELIM-1)+3)
           DO 111, K=KDEB, KFIN - 1
-            JEQ = ZI(JSMHC-1+K)
-            JELIM = ZI(KKELI-1+JEQ)
-            IF (JELIM.EQ.0) THEN
-               ZI(JREMP-1+IELIM)=ZI(JREMP-1+IELIM)+1
-               IREMP=ZI(JREMP-1+IELIM)
-               ZI(JCCJJ-1+DECIEL+IREMP)=JEQ
+            ILIG = ZI(JSMHC-1+K)
+            IELIM = ZI(KKELI-1+ILIG)
+            IF (IELIM.EQ.0) THEN
+               ZI(JREMP-1+JELIM)=ZI(JREMP-1+JELIM)+1
+               IREMP=ZI(JREMP-1+JELIM)
                IF (TYPMAT.EQ.1) THEN
-                 IF (NONSYM) THEN
-                   IF (JEQ.GE.IEQ) THEN
-                     ZR(JVALM-1+K)=ZR(JCCVA-1+DECIEL+IREMP)
-                   ELSE
-                     ZR(JVALM2-1+K)=ZR(JCCVA-1+DECIEL+IREMP)
-                   ENDIF
-                 ELSE
-                   ZR(JVALM-1+K)=ZR(JCCVA-1+DECIEL+IREMP)
-                 ENDIF
+                 ZR(JVALM-1+K)=ZR(JCCVA-1+DECIEL+IREMP)
                ELSE
-                 IF (NONSYM) THEN
-                   IF (JEQ.GE.IEQ) THEN
-                     ZC(JVALM-1+K)=ZC(JCCVA-1+DECIEL+IREMP)
-                   ELSE
-                     ZC(JVALM2-1+K)=ZC(JCCVA-1+DECIEL+IREMP)
-                   ENDIF
-                 ELSE
-                   ZC(JVALM-1+K)=ZC(JCCVA-1+DECIEL+IREMP)
-                 ENDIF
+                 ZC(JVALM-1+K)=ZC(JCCVA-1+DECIEL+IREMP)
                ENDIF
             ENDIF
   111     CONTINUE
 
         ELSE
           DO 112 K = KDEB,KFIN - 1
-            JEQ = ZI(JSMHC-1+K)
-            JELIM = ZI(KKELI-1+JEQ)
-            DECJEL=ZI(JCCLL-1+3*(JELIM-1)+3)
-            IF (JELIM.NE.0) THEN
-               ZI(JREMP-1+JELIM)=ZI(JREMP-1+JELIM)+1
-               IREMP=ZI(JREMP-1+JELIM)
-               ZI(JCCJJ-1+DECJEL+IREMP)=IEQ
+            ILIG = ZI(JSMHC-1+K)
+            IELIM = ZI(KKELI-1+ILIG)
+            DECJEL=ZI(JCCLL-1+3*(IELIM-1)+3)
+            IF (IELIM.NE.0) THEN
+               ZI(JREMP-1+IELIM)=ZI(JREMP-1+IELIM)+1
+               IREMP=ZI(JREMP-1+IELIM)
                IF (TYPMAT.EQ.1) THEN
                  IF (NONSYM) THEN
-                   IF (JEQ.GE.IEQ) THEN
-                     ZR(JVALM-1+K)=ZR(JCCVA-1+DECJEL+IREMP)
-                   ELSE
-                     ZR(JVALM2-1+K)=ZR(JCCVA-1+DECJEL+IREMP)
-                   ENDIF
+                   ZR(JVALM2-1+K)=ZR(JCCVA-1+DECJEL+IREMP)
                  ELSE
                    ZR(JVALM-1+K)=ZR(JCCVA-1+DECJEL+IREMP)
                  ENDIF
                ELSE
                  IF (NONSYM) THEN
-                   IF (JEQ.GE.IEQ) THEN
-                     ZC(JVALM-1+K)=ZC(JCCVA-1+DECJEL+IREMP)
-                   ELSE
-                     ZC(JVALM2-1+K)=ZC(JCCVA-1+DECJEL+IREMP)
-                   ENDIF
+                   ZC(JVALM2-1+K)=ZC(JCCVA-1+DECJEL+IREMP)
                  ELSE
                    ZC(JVALM-1+K)=ZC(JCCVA-1+DECJEL+IREMP)
                  ENDIF
@@ -220,7 +193,7 @@ C     -----------------------------------------
       ZK24(JREFA-1+3)='ELIML'
       CALL JEDETR(MAT//'.CCVA')
       CALL JEDETR(MAT//'.CCLL')
-      CALL JEDETR(MAT//'.CCJJ')
+      CALL JEDETR(MAT//'.CCII')
       CALL JEDETR('&&MTMCHC.REMPLIS')
       CALL JEDETR('&&MTMCHC.ELIM')
 

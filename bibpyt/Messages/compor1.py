@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,11 +102,6 @@ Arret suite à l'échec de l'intégration de la loi de comportement.
 
 14: _("""
  HUJTID :: erreur dans le calcul de la matrice tangente
-"""),
-
-15: _("""
- NMCOMP :: la loi élastique n'est plus disponible directement avec SIMO_MIEHE : utilisez 
-VMIS_ISOT_LINE avec un SY grand
 """),
 
 16 : _("""

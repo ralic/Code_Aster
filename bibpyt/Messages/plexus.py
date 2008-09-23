@@ -1,4 +1,4 @@
-#@ MODIF plexus Messages  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF plexus Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,8 +37,6 @@ cata_msg = {
 """),
 
 7 : _("Le mot-cle FONC_MULT est obligatoire pour le chargement de type PRES_REP"),
-
-8 : _("Le mot-cle DDL_IMPO n'est pas encore pris en compte dans AFFE_CHAR_MECA"),
 
 9 : _("Il faut avoir au moins un des mots-cles DDL_IMPO et PRES_REP dans AFFE_CHAR_MECA"),
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,6 +92,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          COMP_ELAS       =FACT(statut='f',
                RELATION        =SIMP(statut='f',typ='TXM',defaut="ELAS",
                                      into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS") ),
+               CALCUL_CONTRAINTE =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
                DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","GREEN") ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

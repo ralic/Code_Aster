@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 01/09/2008   AUTEUR DURAND C.DURAND 
+#@ MODIF discretisation Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,21 +63,12 @@ En thermique, 'LIST_INST' est absent ou un singleton.
 La liste d'instants n'est pas croissante.
 """),
 
-88 : _("""
-Vous tentez d'accéder à l'instant initial ou final, alors que vous
-n'avez pas une évolution ordonnée (EVOLUTION='SANS')
-"""),
-
 89 : _("""
 Instant initial introuvable dans la liste d'instants (LIST_INST).
 """),
 
 90 : _("""
 Instant final introuvable dans la liste d'instants (LIST_INST).
-"""),
-
-91 : _("""
- NUME_INST_INIT plus petit que NUME_INST_FIN avec EVOLUTION: 'RETROGRADE'
 """),
 
 92 : _("""

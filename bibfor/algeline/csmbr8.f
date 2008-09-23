@@ -1,11 +1,11 @@
-      SUBROUTINE CSMBR8(NOMMAT,CCLL,CCJJ,NEQ,VCINE,VSMB)
+      SUBROUTINE CSMBR8(NOMMAT,CCLL,CCII,NEQ,VCINE,VSMB)
       IMPLICIT NONE
       CHARACTER*(*) NOMMAT
       REAL*8 VSMB(*),VCINE(*)
-      INTEGER CCLL(*),CCJJ(*),NEQ
+      INTEGER CCLL(*),CCII(*),NEQ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C C.F. EXPLICATIONS DANS LA ROUTINE CSMBGG
 C-----------------------------------------------------------------------
 C IN  NOMMAT K19 : NOM DE LA MATR_ASSE
 C IN  CCLL   I(*): TABLEAU .CCLL DE LA MATRICE
-C IN  CCJJ   I(*): TABLEAU .CCJJ DE LA MATRICE
+C IN  CCII   I(*): TABLEAU .CCII DE LA MATRICE
 C IN  NEQ    I   : NOMBRE D'EQUATIONS
 C VAR VSMB   R(*): VECTEUR SECOND MEMBRE
 C IN  VCINE  R(*): VECTEUR DE CHARGEMENT CINEMATIQUE ( LE U0 DE U = U0
@@ -78,7 +78,7 @@ C-----------------------------------------------------------------------
         COEF = VCINE(IEQ)
         IF (COEF.NE.0.D0) THEN
           DO 10 KTERM = 1,NTERM
-            J=CCJJ(DECIEL+KTERM)
+            J=CCII(DECIEL+KTERM)
             VSMB(J) = VSMB(J) - COEF*ZR(JCCVA-1+DECIEL+KTERM)
    10     CONTINUE
         END IF

@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements3 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,10 +21,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-9 : _("""
- erreur calcul de coen
-"""),
 
 10 : _("""
  on ne peut pas affecter la modelisation "axis_diag" aux elements de l'axe

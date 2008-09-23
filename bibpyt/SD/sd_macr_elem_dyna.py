@@ -1,4 +1,4 @@
-#@ MODIF sd_macr_elem_dyna SD  DATE 24/09/2007   AUTEUR DEVESA G.DEVESA 
+#@ MODIF sd_macr_elem_dyna SD  DATE 22/09/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ class sd_macr_elem_dyna_m(AsBase):
     nomj = SDNom(fin=18)
     DESC = AsVI   (SDNom(nomj='_DESC'),lonmax=3)
     REFE = AsVK24 (SDNom(nomj='_REFE'),lonmax=2)
-    VALE = AsVR   (SDNom(nomj='_VALE'))
+    VALE = AsObject (SDNom(nomj='_VALE'),type=Parmi('C','R',),) 
 
     def check_macr_elem_dyna_m_1(self,checker):
         vale=self.VALE.get()

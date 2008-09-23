@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF xfem2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,12 +101,6 @@ cata_msg = {
   -> Point de FOND_FISS sans maille de surface rattachée.
   -> Risque & Conseil:
      Veuillez revoir la définition des level sets.
-"""),
-
-16 : _("""
-  -> Problème dans l'orientation des normales a fond_fiss.
-  -> Risque & Conseil: 
-     Veuillez vérifier la continuité des mailles de FOND_FISS
 """),
 
 17 : _("""

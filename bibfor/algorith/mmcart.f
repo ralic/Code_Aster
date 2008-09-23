@@ -1,7 +1,8 @@
-      SUBROUTINE MMCART(NOMA  ,DEFICO,RESOCO,INST  )
+      SUBROUTINE MMCART(NOMA  ,DEFICO,RESOCO,SDDISC,SDDYNA,
+     &                  NUMINS)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +24,8 @@ C
       IMPLICIT NONE
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO        
-      REAL*8       INST(*)       
+      CHARACTER*19 SDDISC,SDDYNA
+      INTEGER      NUMINS       
 C      
 C ----------------------------------------------------------------------
 C
@@ -126,7 +128,10 @@ C
       CHARACTER*2  CH2
       CHARACTER*8  KBID
       CHARACTER*19 LIGRCF,CARTCF
-      INTEGER      IFM,NIV      
+      INTEGER      IFM,NIV  
+      REAL*8       DIINST,INSTAM,INSTAP,DELTAT
+      LOGICAL      NDYNLO,LDYNA,LTHETA
+      REAL*8       NDYNRE,GAMMA,BETA ,THETA   
 C
 C ----------------------------------------------------------------------
 C
@@ -160,6 +165,11 @@ C
       ZTABF = CFMMVD('ZTABF')
       ZCMCF = CFMMVD('ZCMCF')
       ZECPD = CFMMVD('ZECPD') 
+C
+C --- FONCTIONNALITES ACTIVEES
+C      
+      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')
+      LTHETA = NDYNLO(SDDYNA,'THETA_METHODE')
 C      
 C --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT    
 C
@@ -171,13 +181,27 @@ C
 C
 C --- INITIALISATIONS
 C
-      NTPC = NINT(ZR(JTABF-1+1))                      
+      NTPC   = NINT(ZR(JTABF-1+1))
+      INSTAM = DIINST(SDDISC,NUMINS-1)
+      INSTAP = DIINST(SDDISC,NUMINS)
+      DELTAT = INSTAP-INSTAM
+      BETA   = 0.D0
+      GAMMA  = 0.D0
+      THETA  = 0.D0
+      IF (LDYNA) THEN
+        IF (LTHETA) THEN
+          THETA  = NDYNRE(SDDYNA,'THETA')
+        ELSE
+          BETA   = NDYNRE(SDDYNA,'BETA')
+          GAMMA  = NDYNRE(SDDYNA,'GAMMA')   
+        ENDIF   
+      ENDIF                    
 C
 C --- DESTRUCTION DE LA CARTE SI ELLE EXISTE
 C 
       CALL DETRSD('CARTE',CARTCF)    
 C
-C -- CREATION DE LA CARTE
+C --- CREATION DE LA CARTE
 C
       CALL ALCART('V',CARTCF,NOMA,'NEUT_R')
       CALL JEVEUO(CARTCF//'.NCMP','E',JNCMP)
@@ -189,7 +213,7 @@ C
 C
 C --- REMPLISSAGE DE LA CARTE 
 C     
-      DO 110,IPC = 1,NTPC
+      DO 110 IPC = 1,NTPC
         IZONE = NINT(ZR(JTABF+ZTABF*(IPC-1)+15))      
         ZR(JVALV-1+1)  = ZR(JTABF+ZTABF*(IPC-1)+3)
         ZR(JVALV-1+2)  = ZR(JTABF+ZTABF*(IPC-1)+4)
@@ -210,7 +234,7 @@ C
         ZR(JVALV-1+17) = ZR(JTABF+ZTABF*(IPC-1)+22)
         ZR(JVALV-1+18) = ZI(JECPD+ZECPD*(IZONE-1)+1)
         ZR(JVALV-1+19) = ZR(JTABF+ZTABF*(IPC-1)+16)
-        ZR(JVALV-1+20) = INST(2)
+        ZR(JVALV-1+20) = DELTAT
         ZR(JVALV-1+21) = ZI(JECPD+ZECPD*(IZONE-1)+6)
         ZR(JVALV-1+22) = ZR(JTABF+ZTABF*(IPC-1)+17)
         ZR(JVALV-1+23) = ZR(JTABF+ZTABF*(IPC-1)+18)
@@ -221,8 +245,12 @@ C
         ZR(JVALV-1+28) = ZR(JCMCF+ZCMCF*(IZONE-1)+8)
         ZR(JVALV-1+29) = ZR(JCMCF+ZCMCF*(IZONE-1)+9)
         ZR(JVALV-1+30) = ZR(JCMCF+ZCMCF*(IZONE-1)+10)
-        ZR(JVALV-1+31) = INST(4)
-        ZR(JVALV-1+32) = INST(5)
+        IF (LTHETA) THEN
+          ZR(JVALV-1+31) = THETA
+        ELSE  
+          ZR(JVALV-1+31) = BETA
+        ENDIF  
+        ZR(JVALV-1+32) = GAMMA
         ZR(JVALV-1+33) = ZR(JJSUP+IZONE-1)+ZR(JJPOU+IZONE-1)+
      &                   ZR(JJCOQ+IZONE-1)
         ZR(JVALV-1+34) = ZR(JTABF+ZTABF*(IPC-1)+23)

@@ -1,13 +1,9 @@
-      SUBROUTINE NMGRFL ( NUMEDD, CHGRFL, DEPMOI, DEPDEL, VITPLU,
-     &                    ACCPLU, DT, CNFEDO)
-      IMPLICIT NONE
-      REAL*8         DT
-      CHARACTER*24   NUMEDD, CHGRFL , DEPMOI, DEPDEL, VITPLU, ACCPLU
-      CHARACTER*24   CNFEDO
-C ----------------------------------------------------------------------
+      SUBROUTINE NMGRFL(NUMEDD,SDDYNA,DEPMOI,DEPDEL,VITESS,
+     &                  ACCELE,DT    ,CNGRFL)
+
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
-C TOLE CRP_20
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,9 +20,23 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C
-C BUT : CALCUL DES FORCES FLUIDES NON LINEAIRES S'EXERCANT SUR LES
-C       GRAPPES LORS DE LA CHUTE DE CELLES-CI
+      IMPLICIT NONE
+      REAL*8       DT
+      CHARACTER*24 NUMEDD,DEPMOI, DEPDEL, VITESS, ACCELE
+      CHARACTER*24 CNGRFL
+      CHARACTER*19 SDDYNA
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (CALCUL)
+C
+C CALCUL DES FORCES FLUIDES NON LINEAIRES S'EXERCANT SUR LES
+C GRAPPES LORS DE LA CHUTE DE CELLES-CI
+C      
+C ----------------------------------------------------------------------
+C 
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    NUMEDD         IN    K24       NUME_DDL
@@ -35,14 +45,14 @@ C                                   POUR LE CALCUL DES FORCES FLUIDES
 C                                   S'EXERCANT SUR LA GRAPPE
 C    DEPMOI         IN    K24       DEPLACEMENT A L'INSTANT PRECEDENT
 C    DEPDEL         IN    K24       INCREMENT DE DEPLACEMENT
-C    VITPLU         IN    K24       VITESSES A L'INSTANT COURANT
-C    ACCPLU         IN    K24       ACCELERATIONS A L'INSTANT COURANT
+C    VITESS         IN    K24       VITESSES A L'INSTANT COURANT
+C    ACCELE         IN    K24       ACCELERATIONS A L'INSTANT COURANT
 C    DT             IN    R         PAS DE TEMPS
 C    IT             IN    I         NUMERO D'ITERATION
-C    CNFEDO        VAR    K24       VECTEUR ASSEMBLE DU CHARGEMENT
+C    CNGRFL        VAR    K24       VECTEUR ASSEMBLE DU CHARGEMENT
 C                                   DU AUX FORCES FLUIDES
 C
-C.========================= DEBUT DES DECLARATIONS ====================
+C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       INTEGER            ZI
@@ -64,7 +74,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      NBNO, NLILI, K, I, II, IT, NDIM, IER, IVA1, IVA2
-      INTEGER VALI(2)
+      INTEGER      VALI(2)
       INTEGER      IDDEPD, IDEPMO, IAPRNO, JIFL, JFFL, IDIM, NEC
       INTEGER      IVAL, INO, INO1, INO2, IDVALE, IDVITE, IDACCE
       INTEGER      IZONE, IPNOEU, IDNOEU
@@ -74,7 +84,7 @@ C
       INTEGER      IARCH, IPLAQ, IFMEC, IFTG, ICDG, IIMPF, IIMPN
       INTEGER      IMIL, DISTND
       REAL*8       FPMEC, FFMEC, FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2
-      REAL*8 VALR(4)
+      REAL*8       VALR(4)
       REAL*8       FRTG2, ZERO, Z, DZ, D2Z, MA, G, VDIR(3)
       REAL*8       XA12, XA1, XA2, COTE, Z1, Z2, AA12, AA1, AA2
       REAL*8       LDOME, LGDC, HGC, LCHUT, ZMAX, Z0, ZM1
@@ -84,16 +94,20 @@ C
       LOGICAL      LDIGC
       CHARACTER*8  K8BID, NOMGD
       CHARACTER*24 NOLILI, CHGRF2
+      CHARACTER*24 NDYNKK,CHGRFL
       REAL*8       PCMAX, PRESCR,P0
       INTEGER      I23
-
-C.========================= DEBUT DU CODE EXECUTABLE ==================
+C      
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      ZERO  = 0.0D0
-      NOMGD = 'DEPL_R'
-      LDIGC = .FALSE.
+C --- INIT
+C
+      ZERO   = 0.D0
+      NOMGD  = 'DEPL_R'
+      LDIGC  = .FALSE.
+      CHGRFL = NDYNKK(SDDYNA,'CHGRFL')             
 C
       CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,K8BID,IER)
 
@@ -164,11 +178,11 @@ C     ----------------------------------------------------------
 C
 C --- RECUPERATION DU CHAMP DE VITESSE :
 C     --------------------------------
-      CALL JEVEUO(VITPLU(1:19)//'.VALE','L',IDVITE)
+      CALL JEVEUO(VITESS(1:19)//'.VALE','L',IDVITE)
 C
 C --- RECUPERATION DU CHAMP D'ACCELERATION :
 C     ------------------------------------
-      CALL JEVEUO(ACCPLU(1:19)//'.VALE','L',IDACCE)
+      CALL JEVEUO(ACCELE(1:19)//'.VALE','L',IDACCE)
 C
 C --- DIMENSION DU PROBLEME :
 C     ---------------------
@@ -328,7 +342,7 @@ C
 C
 C --- AFFECTATION DU VECTEUR DE CHARGEMENT :
 C     ====================================
-      CALL JEVEUO (CNFEDO(1:19)//'.VALE','E',IDVALE)
+      CALL JEVEUO (CNGRFL(1:19)//'.VALE','E',IDVALE)
 C
       MA = ZR(JFFL-1+I8+2)
       G  = ZR(JFFL-1+I8+3)

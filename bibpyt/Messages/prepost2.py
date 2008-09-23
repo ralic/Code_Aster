@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,10 +32,6 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 
 4 : _("""
  erreur programmation
-"""),
-
-18 : _("""
- la programmation ne permet pas plus de 150 cmps.
 """),
 
 19 : _("""

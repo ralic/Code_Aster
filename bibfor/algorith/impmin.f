@@ -1,8 +1,8 @@
-      SUBROUTINE IMPMIN(SDIMPR,IMPTMP,FONACT,INFCMP,NBSUIV,
+      SUBROUTINE IMPMIN(SDIMPZ,IMPTMZ,FONACT,INFCMP,NBSUIV,
      &                  ZTIT  ,ZDEF  ,MOTFAC,IOCC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,15 +22,14 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*14 SDIMPR
-      CHARACTER*14 IMPTMP
-      LOGICAL      FONACT(*)
-      INTEGER      INFCMP(4)
-      INTEGER      NBSUIV
-      INTEGER      ZTIT
-      INTEGER      ZDEF
-      CHARACTER*16 MOTFAC
-      INTEGER      IOCC
+      CHARACTER*(*) SDIMPZ,IMPTMZ
+      LOGICAL       FONACT(*)
+      INTEGER       INFCMP(4)
+      INTEGER       NBSUIV
+      INTEGER       ZTIT
+      INTEGER       ZDEF
+      CHARACTER*16  MOTFAC
+      INTEGER       IOCC
 C
 C ----------------------------------------------------------------------
 C
@@ -85,11 +84,17 @@ C
       INTEGER      LONGR,PRECR,LONGI,LONGK
       INTEGER      NBCOL,JIMCOL
       CHARACTER*24 SDSUIV
-      INTEGER      JIMPSU      
+      INTEGER      JIMPSU   
+      CHARACTER*14 SDIMPR,IMPTMP   
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- INIT
+C
+      IMPTMP = IMPTMZ
+      SDIMPR = SDIMPZ
 C
 C --- NOM DE LA SD POUR LE SUIVI
 C
@@ -107,19 +112,17 @@ C
 C
 C --- RECUPERATION DES PRECISIONS 
 C
-      CALL IMPPRE(MOTFAC,IOCC,
-     &            LONGR,PRECR,LONGI,LONGK)
+      CALL IMPPRE(MOTFAC,IOCC  ,LONGR ,PRECR ,LONGI ,
+     &            LONGK )
 C
 C --- ACTIVATION DES COLONNES
 C
       DO 45 ICOL = 1,NBCOL
         IBID = 0
         ICOD = ZI(JIMCOL-1+ICOL)
-        CALL IMPREF(ICOD,SDSUIV,
-     &              TITCOL,FORCOL)
-        CALL IMPSDA(SDIMPR,'AJOU',IBID,
-     &              ICOD,TITCOL,FORCOL,
-     &              LONGR,PRECR,LONGI,LONGK)
+        CALL IMPREF(ICOD  ,SDSUIV,TITCOL,FORCOL)
+        CALL IMPSDA(SDIMPR,'AJOU',IBID  ,ICOD  ,TITCOL,
+     &              FORCOL,LONGR ,PRECR ,LONGI ,LONGK )
   45  CONTINUE
 C
       CALL JEDETR('&&IMPMIN.COL')

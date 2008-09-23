@@ -1,8 +1,8 @@
-      SUBROUTINE CFIMP2(IFM,NOMA,ILIAI,TYPLIA,TYPOPE,TYPEOU,JEU,
-     &                  JAPPAR,JNOCO,JMACO)
+      SUBROUTINE CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,ILIAI ,
+     &                  TYPLIA,TYPOPE,TYPEOU,JEU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,14 +24,12 @@ C
       IMPLICIT     NONE
       INTEGER      IFM
       CHARACTER*8  NOMA
+      CHARACTER*24 DEFICO,RESOCO      
       INTEGER      ILIAI
       CHARACTER*2  TYPLIA
       CHARACTER*1  TYPOPE
       CHARACTER*3  TYPEOU
       REAL*8       JEU
-      INTEGER      JAPPAR
-      INTEGER      JNOCO
-      INTEGER      JMACO
 C      
 C ----------------------------------------------------------------------
 C
@@ -42,7 +40,8 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  ILIAI  : NUMERO DE LA LIAISON (INDICE DANS LE TABLEAU GLOBAL DE
 C              TOUTE LES LIAISONS POSSIBLES -APPARIEES-)
@@ -69,14 +68,10 @@ C                'SIN' : AFFICHAGE DE LA LIAISON PROVOQUANT UNE MATRICE
 C                         DE CONTACT SINGULIERE
 C                'AGC' : ALARME LORSQUE LE NOMBRE D'ITERATIONS MAX
 C                         DU GCP EST DEPASSE
-C IN  JAPPAR : POINTEUR VERS RESOCO(1:14)//'.APPARI'
-C IN  JNOCO  : POINTEUR VERS DEFICO(1:16)//'.NOEUCO'
-C IN  JMACO  : POINTEUR VERS DEFICO(1:16)//'.MAILCO'
 C IN  JEU    : JEU DE LA LIAISON OU LAMBDA DANS LE CAS 'PRE'
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -94,44 +89,83 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
+      CHARACTER*24 APPARI
+      INTEGER      JAPPAR
       INTEGER      CFMMVD,ZAPPA
-      INTEGER      POSESC,NUMESC,NUMMAI,POSMAI
-      CHARACTER*8  NOMESC,NOMMAI
+      INTEGER      POSNOE,POSMAI
+      CHARACTER*8  NOMENT,NOMNOE,NOMMAI
+      INTEGER      CODRET
       CHARACTER*40 CHAIAC
       CHARACTER*10 TYPLI
       CHARACTER*4  TYPE2
 C
 C ----------------------------------------------------------------------
 C
-C --- REPERAGE DE L'ESCLAVE
+      CALL JEMARQ ()
+C
+C --- ACCES SD CONTACT
+C
+      APPARI = RESOCO(1:14)//'.APPARI'
+      CALL JEVEUO(APPARI,'L',JAPPAR)
       ZAPPA  = CFMMVD('ZAPPA')
-      POSESC = ZI(JAPPAR+ZAPPA*(ILIAI-1)+1)
-      NUMESC = ZI(JNOCO+POSESC-1)
-      CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMESC),NOMESC)
+C
+C --- REPERAGE DE L'ESCLAVE
+C
+      POSNOE = ZI(JAPPAR+ZAPPA*(ILIAI-1)+1)
+C
+C --- NOM DU NOEUD ESCLAVE
+C
+      CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMENT,
+     &            CODRET)        
+      IF (CODRET.EQ.-1) THEN
+        NOMNOE = 'ERREUR'
+      ELSE  
+        NOMNOE = NOMENT
+      ENDIF           
+C      
 C --- REPERAGE DU MAITRE
+C
       POSMAI = ZI(JAPPAR+ZAPPA*(ILIAI-1)+2)
-  
-C --- PREPARATION DES CHAINES POUR LES NOMS
-      TYPE2 = '    '
-      IF (POSMAI.GT.0) THEN
-        TYPE2 ='/EL '
-        NUMMAI = ZI(JMACO+POSMAI-1)
-        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMMAI)
-      ELSE IF (POSMAI.LT.0) THEN   
-        TYPE2 ='/ND '
-        NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
-        CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
-      ELSE 
+C
+C --- NOM ET TYPE DU MAITRE
+C
+      IF (POSMAI.LT.0) THEN
+        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSMAI,NOMENT,
+     &              CODRET)
+        IF (CODRET.LT.0) THEN
+          TYPE2  = ' '
+          NOMMAI = 'ERREUR'          
+        ELSE   
+          TYPE2  = '/ND '
+          NOMMAI = NOMENT   
+        ENDIF         
+      ELSEIF (POSMAI.GT.0) THEN
+        CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSMAI,NOMENT,
+     &              CODRET)
+        IF (CODRET.LT.0) THEN
+          TYPE2  = ' '
+          NOMMAI = 'ERREUR'          
+        ELSE
+          TYPE2  = '/EL '
+          NOMMAI = NOMENT   
+        ENDIF    
+      ELSE  
         TYPE2  = ' NON'
-        NOMMAI = ' APPARIE'
-      END IF
-
+        NOMMAI = ' APPARIE'               
+      ENDIF         
+C
+C --- ETAT DE LA LIAISON
+C
       IF (TYPOPE.EQ.'A') THEN
         CHAIAC = ' ACTIVEE       (JEU:'
       ELSE IF (TYPOPE.EQ.'S') THEN
         CHAIAC = ' DESACTIVEE    (JEU:'
+      ELSE
+        CHAIAC = ' INCONNUE      (JEU:'        
       ENDIF
-      
+C
+C --- TYPE DE LA LIAISON
+C      
       IF (TYPLIA.EQ.'C0') THEN
         TYPLI = 'CONTACT   '
       ELSE IF (TYPLIA.EQ.'F0') THEN
@@ -142,45 +176,48 @@ C --- PREPARATION DES CHAINES POUR LES NOMS
         TYPLI = 'FROT. 2   '
       ELSE IF (TYPLIA.EQ.'F3') THEN
         TYPLI = 'FROT.     '
+      ELSE
+        TYPLI = 'ERREUR'  
       ENDIF
-
-
+C
+C --- AFFICHAGE LIAISON
+C
       IF (TYPEOU.EQ.'ALG') THEN
-        WRITE (IFM,1000) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
      &                   CHAIAC,JEU,',TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'PRE') THEN
         CHAIAC = ' PRES. NEGATIVE (MU:'
-        WRITE (IFM,1000) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
      &                   CHAIAC,JEU,',TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'PIV') THEN
         CHAIAC = ' PIVOT NUL         ('
-        WRITE (IFM,1001) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'GLI') THEN
         CHAIAC = ' GLISSANTE - SUPP. ('
-        WRITE (IFM,1001) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'ADH') THEN
         CHAIAC = ' ADHERENTE - ADD.  ('
-        WRITE (IFM,1001) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'ALJ') THEN
         CHAIAC = ' DECOLLE DU JEU     '
-        WRITE (IFM,1002) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1002) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
      &                   CHAIAC,JEU
       ELSE IF (TYPEOU.EQ.'SIN') THEN
         CHAIAC = ' PIVOT NUL         ('
-        WRITE (IFM,1001) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'AGC') THEN
         CHAIAC = ') PRESENTE UNE INTERPENETRATION : JEU='
-        WRITE (IFM,1003) ILIAI,' (NOEUD ',NOMESC,
+        WRITE (IFM,1003) ILIAI,' (NOEUD ',NOMNOE,
      &                   CHAIAC, JEU
       ENDIF
 
@@ -192,6 +229,7 @@ C --- PREPARATION DES CHAINES POUR LES NOMS
      &         A7,A10,A1)
  1002 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A8,A4,A8,A3,A20,E10.3)
  1003 FORMAT (' <CONTACT> <> LA LIAISON ',I5,A8,A8,A38,E10.3)
-
-
+C
+      CALL JEDEMA()     
+C      
       END

@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai2 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,14 +158,6 @@ cata_msg = {
  la composante relcom n'a pas ete affectee pour la grandeur compor
 """),
 
-64 : _("""
- le ddl :  %(k1)s n'existe pas dans la grandeur :  %(k2)s
-"""),
-
-65 : _("""
- incompatibilite sur la description des ddls de la grandeur
-"""),
-
 66 : _("""
  pas assez de valeurs dans la liste.
 """),
@@ -224,10 +216,6 @@ cata_msg = {
 
 80 : _("""
  un seul nume_ordre !!!
-"""),
-
-82 : _("""
- la fonction ne doit avoir qu'une ou deux variables
 """),
 
 83 : _("""

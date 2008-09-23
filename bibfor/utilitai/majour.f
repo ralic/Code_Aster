@@ -2,7 +2,7 @@
      &                  COEF  ,CHAMAJ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,8 +55,8 @@ C OUT CHAMAJ : CHAM_NO MIS A JOUR
 C      
 C ----------------------------------------------------------------------
 C
-      INTEGER IRAN(3),I,ICOMP,IC
-      REAL*8 TETA(3),DELTET(3),QUATER(4),DELQUA(4)
+      INTEGER IRAN(3),I,ICOMP
+      REAL*8  THETA(3),DELDET(3)
 C      
 C ----------------------------------------------------------------------
 C
@@ -69,20 +69,14 @@ C
         DO 20 I=1,NEQ
           IF (INDRO(I).EQ.0) THEN
             CHAMAJ(I)     = CHAINI(I) + COEF*CHADEL(I)
-          ELSE IF (INDRO(I).EQ.1) THEN
+          ELSE IF (INDRO(I).EQ.1) THEN     
             ICOMP         = ICOMP + 1
             IRAN(ICOMP)   = I
-            TETA  (ICOMP) = CHAINI(I)
-            DELTET(ICOMP) = COEF*CHADEL(I)
+            THETA(ICOMP)  = CHAINI(I)
+            DELDET(ICOMP) = COEF*CHADEL(I)
             IF (ICOMP.EQ.3) THEN
               ICOMP = 0
-              CALL VROQUA(TETA  ,QUATER)
-              CALL VROQUA(DELTET,DELQUA)
-              CALL PROQUA(DELQUA,QUATER)
-              CALL QUAVRO(TETA  ,QUATER)
-              DO 15 IC=1,3
-                CHAMAJ(IRAN(IC)) = TETA (IC)
-15            CONTINUE
+              CALL NMGROT(IRAN  ,DELDET,THETA ,CHAMAJ)
             ENDIF
           ELSE
             CALL ASSERT(.FALSE.)

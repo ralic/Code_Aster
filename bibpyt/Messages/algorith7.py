@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith7 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,10 +82,6 @@ cata_msg = {
   le concept EVOL_CHAR :  %(k1)s  ne contient aucun champ de type EVOL_CHAR.
 """),
 
-20 : _("""
- le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s 
-"""),
-
 22 : _("""
  la charge  %(k1)s  n'est pas mécanique
 """),
@@ -164,6 +160,7 @@ cata_msg = {
  il y a au moins une charge non mécanique : vérifier le fichier de commandes
 """),
 
+
 48 : _("""
  ETA_PILO_MAX doit etre inférieur a ETA_PILO_R_MAX
 """),
@@ -208,10 +205,6 @@ cata_msg = {
  1D ou C_PLAN ?
 """),
 
-59 : _("""
- liste RELATION_KIT trop
-### trop quoi ?
-"""),
 
 60 : _("""
   -> Le critère de convergence pour intégrer le comportement 'RESI_INTE_RELA'

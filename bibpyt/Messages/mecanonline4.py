@@ -1,4 +1,4 @@
-#@ MODIF mecanonline4 Messages  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline4 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,5 +81,10 @@ Le format est trop grand pour la largeur max. d'une colonne (16)
  dans le concept EVOL_NOLI de nom <%(k1)s>
 """),
 
+47 : _(""" 
+ Le concept EVOL_NOLI de nom <%(k1)s> n'est pas issu précédemment d'un calcul
+ de type 'PROJ_MODAL'.
+ On  suppose qu'on part d'un champ de déplacements/vitesses/accélérations généralisées nulles.
+"""),
 
 }

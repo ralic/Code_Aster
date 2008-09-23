@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF algorith11 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -192,11 +192,6 @@ cata_msg = {
 
 83 : _("""
  Arret par manque de temps CPU.
-"""),
-
-85 : _("""
- On veut affecter un comportement %(k1)s avec la relation %(k2)s
- sur une maille deja affectée par un autre comportement %(k3)s %(k4)s
 """),
 
 86 : _("""

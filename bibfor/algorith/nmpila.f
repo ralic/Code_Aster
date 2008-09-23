@@ -1,8 +1,8 @@
-      SUBROUTINE NMPILA(NEQ   ,DU    ,DU0   ,DU1   ,C     ,
-     &                  DTAU  ,NBEFFE,ETA   ,PILCVG)
+      SUBROUTINE NMPILA(NUMEDD,SDPILO,DTAU  ,DEPDEL,DDEPL0,
+     &                  DDEPL1,NBEFFE,ETA   ,PILCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,87 +22,123 @@ C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER  NEQ, PILCVG, NBEFFE
-      REAL*8   DU(NEQ), DU0(NEQ), DU1(NEQ)
-      REAL*8   C(NEQ), DTAU, ETA(2)
+      INTEGER      PILCVG,NBEFFE
+      CHARACTER*14 SDPILO
+      CHARACTER*24 NUMEDD
+      CHARACTER*19 DDEPL0,DDEPL1,DEPDEL     
+      REAL*8       DTAU, ETA(2)
 C 
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE - CALCUL DE ETA)
 C
-C PILOTAGE PAR LONGUEUR D'ARC
+C RESOLUTION DE L'EQUATION DE PILOTAGE PAR LONGUEUR D'ARC
 C      
 C ----------------------------------------------------------------------
 C
 C
-C IN  NEQ    : NOMBRE DE DEGRES DE LIBERTE
-C IN  DU     : INCREMENT DE DEPLACEMENT (DEPDEL.VALE)
-C IN  DU0    : CORRECTION DE DEPLACEMENT POUR CHARGEMENT CONSTANT
-C IN  DU1    : CORRECTION DE DEPLACEMENT POUR CHARGEMENT PILOTE
-C IN  C      : COEFFICIENT DU PRODUIT SCALAIRE
+C IN  NUMEDD : NUME_DDL
+C IN  SDPILO : SD PILOTAGE
+C IN  DEPDEL : INCREMENT DE DEPLACEMENT DEPUIS DEBUT PAS DE TEMPS
+C IN  DDEPL0 : INCREMENT DE DEPLACEMENT K-1.F_DONNE
+C IN  DDEPL1 : INCREMENT DE DEPLACEMENT K-1.F_PILO
 C IN  DTAU   : SECOND MEMBRE DE L'EQUATION DE PILOTAGE
 C OUT NBEFFE : NOMBRE DE SOLUTIONS EFFECTIVES
 C OUT ETA    : ETA_PILOTAGE
 C OUT PILCVG : CODE RETOUR (0 = OK, 1 = PAS DE SOLUTION)
 C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
+C
+      INTEGER      I, NRAC
+      REAL*8       R0, R1, R2, DTAU2, RAC(2)
+      INTEGER      JDEP0,JDEP1,JDEPDE,JCOEF
+      INTEGER      NEQ,IRET
+      CHARACTER*8  K8BID      
+      INTEGER      IFM,NIV      
+C
 C ----------------------------------------------------------------------
 C
-      INTEGER I, NRAC
-      REAL*8  R0, R1, R2, DTAU2, RAC(2)
-      INTEGER IFM,NIV      
-C
-C ----------------------------------------------------------------------
-C
+      CALL JEMARQ()
       CALL INFDBG('PILOTAGE',IFM,NIV)
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<PILOTAGE> ...... PILOTAGE PAR LONGUEUR D''ARC'
+      ENDIF 
 C
 C --- INITIALISATIONS
 C
-      PILCVG = 0
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<PILOTAGE> ...... PILOTAGE PAR LONGUEUR D''ARC'
-      ENDIF      
-C
-C --- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
-C
+      PILCVG = 0 
       DTAU2 = DTAU**2
       R0    = - DTAU2
       R1    = 0.D0
       R2    = 0.D0
+      CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
+C
+C --- ACCES OBJETS JEVEUX
+C
+      CALL JEVEUO(DDEPL0(1:19)//'.VALE','L',JDEP0)
+      CALL JEVEUO(DDEPL1(1:19)//'.VALE','L',JDEP1)
+      CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
+      CALL JEVEUO(SDPILO(1:14)//'.PLCR.VALE','L',JCOEF)
+C
+C --- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
+C
       DO 10 I = 1, NEQ
-        R0 = R0 + C(I) * (DU(I)+DU0(I))**2
-        R1 = R1 + C(I) * (DU(I)+DU0(I))*DU1(I)
-        R2 = R2 + C(I) *  DU1(I)**2
+        R0 = R0 + ZR(JCOEF+I-1) * 
+     &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))**2
+        R1 = R1 + ZR(JCOEF+I-1) * 
+     &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))*ZR(JDEP1+I-1)
+        R2 = R2 + ZR(JCOEF+I-1) *
+     &       ZR(JDEP1+I-1) * ZR(JDEP1+I-1)
  10   CONTINUE
       R1 = 2.D0*R1
       IF (R2.EQ.0) THEN
-        CALL U2MESS('F','ALGORITH8_23')
+        CALL ASSERT(.FALSE.)
       ENDIF 
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<PILOTAGE> ...... EQUATION X+BX+C: ',
-     &                R1/R2,R0/R2
+        WRITE (IFM,*) '<PILOTAGE> ...... EQUATION X+BX+C: ',R1/R2,R0/R2
       ENDIF          
 C
-C --- RESOLUTION DE L'EQUATION
+C --- RESOLUTION DE L'EQUATION DE DEGRE DEUX
 C
       CALL ZEROP2(R1/R2,R0/R2,RAC,NRAC)
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<PILOTAGE> ...... PILOTAGE PAR LONGUEUR D''ARC'
-        WRITE (IFM,*) '<PILOTAGE> ...... SOLUTIONS: ',NRAC,RAC
-      ENDIF     
-C    PAS DE RACINE -> ON MINIMISE LA CONTRAINTE (CONV. INTERDITE)
+C         
       IF (NRAC.EQ.0) THEN
         PILCVG    = 1
-        GOTO 9999
-C    RACINE DOUBLE
       ELSE IF (NRAC.EQ.1) THEN
         NBEFFE    = 1
         ETA(1)    = RAC(1)
-C    DEUX RACINES
       ELSE
         NBEFFE    = 2
         ETA(1)    = RAC(1)
         ETA(2)    = RAC(2)
       END IF
-
- 9999 CONTINUE
+C
+C --- AFFICHAGE
+C      
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<PILOTAGE> ...... SOLUTIONS: ',NRAC,RAC
+      ENDIF        
+C
+      CALL JEDEMA()      
+C
       END

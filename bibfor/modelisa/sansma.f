@@ -2,7 +2,7 @@
      &                  MOTGRZ,MOTZ   ,SANSMZ,PSANZ ,NUMSUR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,14 +81,16 @@ C
       INTEGER      NUMMA,NUELIM,IELIM
       INTEGER      NBMA,NBSURF,NBELIM,JELIM,JTRAV
       CHARACTER*16 MOTGR,MOT
-      LOGICAL      LEXCL      
+      LOGICAL      LEXCL  
+      CHARACTER*24 DEFICO    
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C 
+C
 C --- INITIALISATIONS
-C 
+C
+      DEFICO = CHAR(1:8)//'.CONTACT'
       MOTGR  = MOTGRZ       
       MOT    = MOTZ
       SANS   = SANSMZ
@@ -96,9 +98,9 @@ C
 C 
 C --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
 C     
-      PZONE  = CHAR(1:8)//'.CONTACT.PZONECO'
-      PSURMA = CHAR(1:8)//'.CONTACT.PSUMACO'
-      CONTMA = CHAR(1:8)//'.CONTACT.MAILCO'      
+      PZONE  = DEFICO(1:16)//'.PZONECO'
+      PSURMA = DEFICO(1:16)//'.PSUMACO'
+      CONTMA = DEFICO(1:16)//'.MAILCO'      
 C
       CALL JEVEUO(PZONE ,'L',JZONE)
       CALL JEVEUO(PSURMA,'L',JSUMA)

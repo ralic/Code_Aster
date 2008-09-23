@@ -1,5 +1,5 @@
 
-# MODIF  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,7 +137,7 @@ U=DYNA_NON_LINE(MODELE=MODE,
                              INST_INIT=0.0,),
                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 FORMULATION='DEPLACEMENT',
-                                ALPHA=ALF,DELTA=DEL,),
+                                BETA=ALF,GAMMA=DEL,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 SOLVEUR=_F(SYME='OUI',
