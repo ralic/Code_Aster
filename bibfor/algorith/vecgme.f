@@ -2,7 +2,7 @@
      &                  INSTAP,DEPMOI,DEPDEL,VECELZ,INSTAM,
      &                  COMPOR,CARCRI,LIGREZ,VITES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -212,12 +212,7 @@ C     -------------------------------------
               IF (NOMLIG(K).EQ.'.VEASS') THEN
                 CALL JEVEUO(LCHIN(1),'L',JLCHIN)
                 CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),RESUEL)
-              ELSE
-                  CALL DBGCAL(OPTION,6     ,
-     &              NBOPT(K),LPAIN ,LCHIN ,
-     &              1     ,RESUEL,PAOUT)              
-              
-              
+              ELSE    
                 CALL CALCUL('S',OPTION,LIGREL,NBOPT(K),LCHIN,LPAIN,1,
      &                      RESUEL,PAOUT,'V')
               END IF

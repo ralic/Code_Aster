@@ -1,7 +1,7 @@
       SUBROUTINE LCGLDM (EPSM,DEPS,VIM,OPTION,SIG,VIP,DSIDEP,
      &             T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,SEUIL,ALF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -110,7 +110,7 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
       IF(TR2D .GT. 0.0D0) THEN
         GTR2 = 1.0D0 - GMT 
       ELSE
-        GTR2 = 1.0D0 - GMC 
+        GTR2 = 1.0D0 
       ENDIF
       QFF(1) = 0.0D0
       QFF(2) = 0.0D0
@@ -132,11 +132,11 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
         IF(EMP(K) .GT. 0.0D0) THEN
           GI(K) = 1.0D0 - GMT 
         ELSE
-          GI(K) = 1.0D0 - GMC 
+          GI(K) = 1.0D0 
         ENDIF      
  50   CONTINUE
-      COF1 = 0.5D0*LAMBDA + MU
-      COF2 = 0.5D0*LAMBDA*TR2D
+      COF1 = 0.5D0*LAMBDA*GTR2 + MU
+      COF2 = 0.5D0*LAMBDA*TR2D * GTR2
       Q2D = 0.25D0*LAMBDA * TR2D*TR2D * GTR2 
      &    + 0.5D0*MU * (EMP(1)*EMP(1)*GI(1) + EMP(2)*EMP(2)*GI(2)) 
       DA1 = VIM(1)
@@ -390,7 +390,7 @@ C -- CONTRIBUTION DISSIPATIVE
         ELSE
           KSIM = 0.5D0*( (1.0D0+GMC*DA1)/(1.0D0+DA1) 
      &                 + (1.0D0+GMC*DA2)/(1.0D0+DA2)) 
-          GM   = 1.0D0-GMC 
+          GM   = 1.0D0 
           
           FD1  = (1.0D0-GMC) / ((1.0D0+DA1)*(1.0D0+DA1)) *0.5D0*LAMBDA 
           FD2  = (1.0D0-GMC) / ((1.0D0+DA2)*(1.0D0+DA2)) *0.5D0*LAMBDA 

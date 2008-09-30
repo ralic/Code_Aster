@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MLNUMP utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MLNUMP utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,13 +21,12 @@
 
 int STDCALL(MLNUMP, mlnump)()
 {
+    INTEGER nump;
 #if defined _USE_OPENMP
     extern int omp_get_thread_num();
-    int nump;
-    nump= omp_get_thread_num()+1 ;
+    nump= (INTEGER)omp_get_thread_num()+1 ;
     return(nump);
 #else
-    int nump;
     nump=1;
     return(nump);
 #endif

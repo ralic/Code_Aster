@@ -1,7 +1,7 @@
       SUBROUTINE LGDMVM(IMATE,COMPOR,EPSM,DEPS,VIM,OPTION,SIGM,
      &                  SIG,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,11 @@ C -- OPTION
 
 C-----NOMBRE DE VARIABLES INTERNES DU MODELE, SANS CELLE POUR
 C-----LA CONTRAINTE PLANE
-      NVV  = 17
+      IF (COMPOR(1:14) .EQ. 'VMIS_CINE_LINE') THEN
+       NVV  = 17
+      ELSE IF (COMPOR(1:10) .EQ. 'VMIS_ISOT_') THEN
+       NVV  = 12
+      ENDIF  
 
 C-----TOLERANCE POUR LA CONTRAINTE HORS PLAN
       CRITCP = 1.0D-6
@@ -155,7 +159,7 @@ C-----INITIALISATION DES VARIABLES DEPS^(-P), EPS^(-P) ET EMDA
       CALL R8INIR(6,0.D0,DEMP,1)
       DO 200, I = 1,6
         DDEMP(I) = DEPS(I)
-        EMMP(I)  = VIM(11 + I)
+        EMMP(I)  = VIM(NVV-6 + I)
         EMDA(I)  = EMMP(I) - EMEL(I)
         EMPL(I)  = EPSM(I) - EMDA(I)
  200  CONTINUE
@@ -228,7 +232,7 @@ C---------VMIS_CINE_LINE--------------------
      &                   OPTION,SIG2DP,VIP(5),TAN3D)
 
 C---------VMIS_ISOT_LINE--------------------
-          ELSEIF (COMPOR(1:14) .EQ. 'VMIS_ISOT_LINE') THEN
+          ELSEIF (COMPOR (1:14) .EQ. 'VMIS_ISOT_LINE') THEN
 C     --    POUR POUVOIR UTILISER NMISOT
 C           TYPMOD(1) = 'C_PLAN  '
             TYPMOD(1) = '3D  '
@@ -396,7 +400,7 @@ C-----FIN DE BOUCLE INTERNE
 
       DO 660 J = 1,6
         SIG(J)      = SIGPD(J)
-        VIP(11 + J) = EMMP(J) + DEMP(J)
+        VIP(NVV-6 + J) = EMMP(J) + DEMP(J)
  660  CONTINUE
 
 

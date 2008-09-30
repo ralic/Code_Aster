@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF STRMOV UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF STRMOV UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,7 +19,7 @@
 #include <string.h>
 #include "aster.h"
 
-void DEFSPPPP(STRMOV, strmov, char *src,  int len_src,
+void DEFSPPPP(STRMOV, strmov, char *src,  STRING_SIZE len_src,
                               INTEGER *isb, INTEGER *num, void *dest, INTEGER *idb)
 {
     memcpy((char *)dest+*idb-1, src+*isb-1, *num);

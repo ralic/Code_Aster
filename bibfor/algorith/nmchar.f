@@ -6,7 +6,7 @@
      &                  MEASSE,VEASSE,SDSENS,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -160,8 +160,7 @@ C
 C 
 C --- CHARGEMENTS FIXES PENDANT LE PAS DE TEMPS (ON EST EN PREDICTION)
 C 
-      IF (MODE.EQ.'FIXE') THEN
-     
+      IF (MODE.EQ.'FIXE') THEN   
 C
 C --- DEPLACEMENTS IMPOSES DONNES 
 C                           
@@ -278,8 +277,15 @@ C
 C --- FORCES IMPEDANCES
 C   
           IF (LIMPE) THEN
-            CALL NMCVEC('AJOU','CNIMPE',' ',.TRUE.,.TRUE.,
-     &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)   
+            IF (PHASE.EQ.'PREDICTION') THEN
+              CALL NMCVEC('AJOU','CNIMPP',' ',.TRUE.,.TRUE.,
+     &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)            
+            ELSEIF (PHASE.EQ.'CORRECTION') THEN    
+              CALL NMCVEC('AJOU','CNIMPC',' ',.TRUE.,.TRUE.,
+     &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)          
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF             
           ENDIF 
         ENDIF
 C
@@ -304,20 +310,18 @@ C
 C --- FORCES DE CONTACT/FROTTEMENT XFEM
 C
         IF (LXFCM) THEN
-          CALL NMCVEC('AJOU','CNXFEC',' ',.TRUE.,.TRUE.,
-     &                 NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
-          CALL NMCVEC('AJOU','CNXFEF',' ',.TRUE.,.TRUE.,
-     &                NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
+          IF (LTFCM) THEN
+            CALL NMCVEC('AJOU','CNXFTC',' ',.TRUE.,.TRUE.,
+     &                   NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
+            CALL NMCVEC('AJOU','CNXFTF',' ',.TRUE.,.TRUE.,
+     &                   NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)            
+          ELSE
+            CALL NMCVEC('AJOU','CNXFEC',' ',.TRUE.,.TRUE.,
+     &                   NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
+            CALL NMCVEC('AJOU','CNXFEF',' ',.TRUE.,.TRUE.,
+     &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)  
+          ENDIF      
         ENDIF       
-C
-C --- FORCES DE CONTACT/FROTTEMENT XFEM GRANDS GLISSEMENTS
-C
-        IF (LTFCM) THEN
-          CALL NMCVEC('AJOU','CNXFTC',' ',.TRUE.,.TRUE.,
-     &                 NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
-          CALL NMCVEC('AJOU','CNXFTF',' ',.TRUE.,.TRUE.,
-     &                 NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
-        ENDIF 
 C
 C --- FORCES ISSUES DES MACRO-ELEMENTS 
 C --- VECT_ASSE(MACR_ELEM) = MATR_ASSE(MACR_ELEM) * VECT_DEPL
@@ -360,21 +364,19 @@ C
 C 
 C --- FORCES DE CONTACT/FROTTEMENT XFEM
 C
-       IF (LXFCM) THEN
-         CALL NMCVEC('AJOU','CNXFEC',' ',.TRUE.,.TRUE.,
-     &                NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
-         CALL NMCVEC('AJOU','CNXFEF',' ',.TRUE.,.TRUE.,
-     &                NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
-       ENDIF       
-C
-C --- FORCES DE CONTACT/FROTTEMENT XFEM GRANDS GLISSEMENTS
-C
-       IF (LTFCM) THEN
-         CALL NMCVEC('AJOU','CNXFTC',' ',.TRUE.,.TRUE.,
-     &                NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
-         CALL NMCVEC('AJOU','CNXFTF',' ',.TRUE.,.TRUE.,
-     &                NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
-       ENDIF 
+        IF (LXFCM) THEN
+          IF (LTFCM) THEN
+            CALL NMCVEC('AJOU','CNXFTC',' ',.TRUE.,.TRUE.,
+     &                   NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
+            CALL NMCVEC('AJOU','CNXFTF',' ',.TRUE.,.TRUE.,
+     &                   NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)            
+          ELSE
+            CALL NMCVEC('AJOU','CNXFEC',' ',.TRUE.,.TRUE.,
+     &                   NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)        
+            CALL NMCVEC('AJOU','CNXFEF',' ',.TRUE.,.TRUE.,
+     &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)  
+          ENDIF      
+        ENDIF          
 C
 C --- FORCES ISSUES DES MACRO-ELEMENTS 
 C --- VECT_ASSE(MACR_ELEM) = MATR_ASSE(MACR_ELEM) * VECT_DEPL
@@ -443,7 +445,7 @@ C
 C --- FORCES IMPEDANCES
 C   
         IF (LIMPE) THEN
-          CALL NMCVEC('AJOU','CNIMPE',' ',.TRUE.,.TRUE.,
+          CALL NMCVEC('AJOU','CNIMPP',' ',.TRUE.,.TRUE.,
      &                NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)   
         ENDIF 
 C

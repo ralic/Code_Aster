@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1233,7 +1233,7 @@ C    ------------------------------------------------------------------
               ENDIF
             ENDIF
 
-            CALL GETVID(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
+            CALL GETVTX(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
             IF (IRETER.GT.0) THEN
               CALL U2MESK('I','CALCULEL3_24',1,TYPES)
             ENDIF
@@ -1328,7 +1328,7 @@ C 3.2 - TRANSFORMATION DE CES DEUX CARTES EN CHAM_ELEM_S
 
               CHERRS='&&'//NOMPRO//'.ERRE'
 
-              IF (IRET5.EQ.0) THEN
+              IF ((IRETER.GT.0) .AND. (IRET5.EQ.0)) THEN
                 CALL CELCES(CHERR4(1:19),'V',CHERRS)
               ELSE IF (IRET1.EQ.0) THEN
                 CALL CELCES(CHERR1(1:19),'V',CHERRS)
@@ -2234,11 +2234,17 @@ C ---- VERIF SENSIBILITE FIN
               CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
 
+              CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
+              CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHVARI,
+     &                    OPTION,IRET)
+              IF (IRET.GT.0) CHVARI = ' '
+              CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
+     
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
      &                    CHTEMP,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),' ',ZERO,
      &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,CHVARC,
-     &                    CHVREF,K24B,COMPOR,CHTESE,CHDESE,NOPASE,
+     &                    CHVREF,CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                    TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 432
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')

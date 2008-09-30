@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,63 +55,31 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
                                       GROUP_NO='A1',),
                    );
 
-MA5=CREA_MAILLAGE(MAILLAGE=MAIL,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER2L',
+MA=CREA_MAILLAGE(MAILLAGE=MAIL,
+                  CREA_GROUP_MA=(
+                                 _F(NOM = 'ACIER2L',
                                    PREF_MAILLE = 'A2L',
                                    GROUP_MA = 'DALLE',),
-                 )
-
-
-MA4=CREA_MAILLAGE(MAILLAGE=MA5,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER1T',
+                                 _F(NOM = 'ACIER1T',
                                    PREF_MAILLE = 'A1T',
                                    GROUP_MA = 'DALLE',),
-                 )
-
-
-DETRUIRE(CONCEPT = _F(NOM = MA5))
-
-MA3=CREA_MAILLAGE(MAILLAGE=MA4,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER2T',
+                                 _F(NOM = 'ACIER2T',
                                    PREF_MAILLE = 'A2T',
-                                   GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM = MA4))
-
-
-MA2=CREA_MAILLAGE(MAILLAGE=MA3,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER1L',
+                                   GROUP_MA = 'DALLE',), 
+                                 _F(NOM = 'ACIER1L',
                                    PREF_MAILLE = 'A1L',
-                                   GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM = MA3))
-
-MA1=CREA_MAILLAGE(MAILLAGE=MA2,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER1',
+                                   GROUP_MA = 'DALLE',), 
+                                 _F(NOM = 'ACIER1',
                                    PREF_MAILLE = 'A1',
                                    GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM =MA2))
-
-MA0=CREA_MAILLAGE(MAILLAGE=MA1,
-                  CREA_GROUP_MA=_F(NOM = 'DALLE_G',
+                                 _F(NOM = 'DALLE_G',
                                    PREF_MAILLE = 'G',
                                    GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM = MA1))
-
-
-MA=CREA_MAILLAGE(MAILLAGE=MA0,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER2',
+                                 _F(NOM = 'ACIER2',
                                    PREF_MAILLE = 'A2',
                                    GROUP_MA = 'DALLE',),
+                                ),   
                  )
-
-DETRUIRE(CONCEPT = _F(NOM = MA0))
 
 MO=AFFE_MODELE(INFO=1,
                  MAILLAGE=MA,
@@ -319,7 +287,6 @@ RESU1 = STAT_NON_LINE(
                                     ALGO_1D='ANALYTIQUE',
                                     ITER_INTE_MAXI=10,
                                     RELATION='ENDO_ISOT_BETON',
-#                                    ALGO_C_PLAN='ANALYTIQUE',
                                     ALGO_C_PLAN='DEBORST',
                                     DEFORMATION='PETIT'),
                                  _F(RESO_INTE='IMPLICITE',
@@ -374,7 +341,7 @@ RESU_G = STAT_NON_LINE(
                       CARA_ELEM = CAEL_G,
                       COMP_INCR=_F(
                                    RELATION ='KIT_DDI',
-                                   RELATION_KIT = ('GLRC_DM','VMIS_CINE_LINE'),
+                                   RELATION_KIT = ('GLRC_DM','VMIS_ISOT_LINE'),
                                   ),
                       INCREMENT=_F( LIST_INST = inst1,
                                     PRECISION =1.E-1,
@@ -489,7 +456,7 @@ TEST_TABLE(TABLE=D_FYA4,
 TEST_TABLE(TABLE=TFYA4_G0,
            FILTRE=_F(NOM_PARA='INST',VALE=t1,),
            NOM_PARA='DY',
-           VALE = 3.507341E+03,
+           VALE = 3.17911E+03,
            CRITERE = 'RELATIF',
            PRECISION = 1.E-4,
            REFERENCE='NON_REGRESSION',)
@@ -497,10 +464,9 @@ TEST_TABLE(TABLE=TFYA4_G0,
 TEST_TABLE(TABLE=D_DXA4,
            FILTRE=_F(NOM_PARA='INST',VALE=t2,),
            NOM_PARA='DX_DXG',
-           VALE = 0.0,
-           CRITERE = 'ABSOLU',
-           PRECISION = 25.0E-2,
-           REFERENCE='AUTRE_ASTER',)
+           VALE = -2.52955E-01,
+           PRECISION = 1.0E-4,
+           REFERENCE='NON_REGRESSION',)
 
 TEST_TABLE(TABLE=D_FYA4,
            FILTRE=_F(NOM_PARA='INST',VALE=t2,),
@@ -513,7 +479,7 @@ TEST_TABLE(TABLE=D_FYA4,
 TEST_TABLE(TABLE=TFYA4_G0,
            FILTRE=_F(NOM_PARA='INST',VALE=t2,),
            NOM_PARA='DY',
-           VALE = -2.6881189E+03,
+           VALE = -2.89607E+03,
            CRITERE = 'RELATIF',
            PRECISION = 1.E-4,
            REFERENCE='NON_REGRESSION',)
@@ -521,7 +487,7 @@ TEST_TABLE(TABLE=TFYA4_G0,
 TEST_TABLE(TABLE=TFYA4_G0,
            FILTRE=_F(NOM_PARA='INST',VALE=t3,),
            NOM_PARA='DY',
-           VALE = 7.8224750E+01,
+           VALE = 3.07974E+01,
            CRITERE = 'RELATIF',
            PRECISION = 1.E-4,
            REFERENCE='NON_REGRESSION',)

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,6 +103,14 @@ C
          MAT( 1) = XMAS * 2.D0
          MAT( 7) = XMAS
          MAT(10) = XMAS * 2.D0
+C
+      ELSE IF ( (OPTION.EQ.'MASS_MECA_DIAG') .OR.
+     &          (OPTION.EQ.'MASS_MECA_EXPLI')) THEN
+         CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'RHO',RHO,
+     &               CODRES,'FM')
+         XMAS = RHO * A * XL / 2.D0
+         MAT( 1) = XMAS
+         MAT(10) = XMAS
 C
       ELSE
          CH16 = OPTION

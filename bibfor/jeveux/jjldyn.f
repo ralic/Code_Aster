@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,8 +63,6 @@ C
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      INTEGER          IRECUR
-      COMMON /LDYNJE/  IRECUR
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      +               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -79,13 +77,7 @@ C ----------------------------------------------------------------------
 C
 C     ON LISTE LES OBJETS ALLOUES DYNAMIQUEMENT EN BALAYANT
 C     L'ENSEMBLE DES OBJETS, EN COMMENCANT PAR LA BASE VOLATILE
-C 
-      IF ( IRECUR .NE. 0 ) GOTO 100 
-C
-C     LE MECANISME DE RECUPERARION DE MEMOIRE EST MIS EN OEUVRE 
-C     SI LA VARIABLE IRECUR EST NULLE.
-C
-C
+C  
       ICDYN = ICDYN+1
       LTOT = 0
       NCLA1 = 1
@@ -151,9 +143,7 @@ C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
                 ENDIF  
  210          CONTINUE  
             ENDIF
-            IRECUR = 999
             CALL JJLIDE ('JEIMPO' , NOM32(1:24) , 2)
-            IRECUR = 0
             GOTO 205
           ELSE IF ( NOM32(25:32) .EQ. ' ' ) THEN 
             IF (IADYN .NE. 0) THEN

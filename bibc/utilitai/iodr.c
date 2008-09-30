@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF IODR utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF IODR utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -88,7 +88,7 @@ void strcpyF2C (char *cname, char *fname)
 }
 
 
-void DEFSPPPP(OPENDR, opendr, char *dfname, int len_dfname, INTEGER *indx, INTEGER *lgti,
+void DEFSPPPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname, INTEGER *indx, INTEGER *lgti,
                          INTEGER *indic, INTEGER *ierr)
 {
     long iu,nbread;
@@ -122,7 +122,7 @@ void DEFSPPPP(OPENDR, opendr, char *dfname, int len_dfname, INTEGER *indx, INTEG
     }
 }
 
-void DEFSP(CLOSDR, closdr, char *dfname, int len_dfname, INTEGER *ierr)
+void DEFSP(CLOSDR, closdr, char *dfname, STRING_SIZE len_dfname, INTEGER *ierr)
 {
     long iu;
     char fname[24];
@@ -143,7 +143,7 @@ void DEFSP(CLOSDR, closdr, char *dfname, int len_dfname, INTEGER *ierr)
     }
 }
 
-void DEFSPPPP(READDR, readdr, char *dfname, int len_dfname, void *buf,
+void DEFSPPPP(READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
                               INTEGER *nbytes, INTEGER *irec, INTEGER *ierr)
 {
     long offset;
@@ -175,7 +175,7 @@ void DEFSPPPP(READDR, readdr, char *dfname, int len_dfname, void *buf,
 
 }
 
-void DEFSPPPPPP(WRITDR, writdr, char *dfname, int len_dfname, void *buf,
+void DEFSPPPPPP(WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
             INTEGER *nbytes, INTEGER *irec, INTEGER *indic, INTEGER *s, INTEGER *ierr)
 {
     long offset;

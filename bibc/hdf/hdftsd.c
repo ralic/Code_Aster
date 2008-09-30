@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftsd hdf  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdftsd hdf  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,7 +31,7 @@
 #include "hdf5.h"
 #define FALSE   0
 
-INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, int lt, INTEGER *ltype, INTEGER *lv)
+INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, STRING_SIZE lt, INTEGER *ltype, INTEGER *lv)
 {
   hid_t id,datatype,class,dataspace;
   hsize_t dims_out[1];

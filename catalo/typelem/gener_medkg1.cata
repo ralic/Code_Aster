@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,8 @@ MODE_LOCAL__
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     EENECNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
+    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION   )
+    EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION   )
     CEPSINR  = EPSI_R   ELEM__         (EXX      EYY      EXY      KXX      KYY      KXY      )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
@@ -69,6 +71,7 @@ MODE_LOCAL__
                                         QX       QY       )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+    CITERAT  = NEUT_R   ELEM__         (X1       )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -131,8 +134,18 @@ OPTION__
                                      ZVARCPG  PVARCRR
                               OUT__  EEFGENOR PEFFORR
                                      EEFGENOC PEFFORC
-    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    ENEL_ELGA           412   IN__   ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR
+                                     ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
+                              OUT__  EENEDPG  PENERDR
+    ENEL_ELNO_ELGA      412   IN__   ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR
+                                     ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
+                              OUT__  EENEDNN  PENERDR
+    ENER_ELAS           412   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
+                                     CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
+                              OUT__  EENEDNO  PENERD1
     ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX     
     EPOT_ELEM_DEPL      409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -149,11 +162,18 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I   
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    FULL_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    FULL_MECA_ELAS      409   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
+                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
+                                     CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCMR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     CITERAT  PITERAT
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
+                                     MVECTUR  PVECTUR
+%    FULL_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
+%                              OUT__  XXXXXX   XXXXXX
     INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
@@ -187,7 +207,7 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I  
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -196,8 +216,14 @@ OPTION__
     RIGI_MECA           409   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    RIGI_MECA_ELAS      409   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
+                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
+                                     CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCMR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     CITERAT  PITERAT
+                              OUT__  MMATUUR  PMATUUR
+%     RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
+%                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
@@ -208,7 +234,7 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I  
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
+                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_DEPL      33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I  

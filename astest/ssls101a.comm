@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -532,6 +532,102 @@ TEST_RESU(RESU=(
               CRITERE = 'RELATIF',  PRECISION = 1.2E-2, REFERENCE = 'NON_REGRESSION',
               NOEUD = 'E',          NOM_CMP = 'DZ',    VALE = -489.727))
           )
+#--------------------------------------------------------------------
+U3=CALC_NO(reuse = U3,
+               OPTION='FORC_NODA',
+               PRECISION=1.E-3,
+               RESULTAT=U3,
+               MODELE=MODEL,
+               CHAM_MATER=CHMAT,
+               );
+
+U3 =CALC_ELEM( reuse      = U3,
+              OPTION     = (
+                            'ENEL_ELGA',
+                            'ENEL_ELNO_ELGA',
+              ),
+              RESULTAT   = U3,
+              MODELE=MODEL,
+              CARA_ELEM = CARELEM,
+              )
+
+TRAV = POST_ELEM(
+  RESULTAT = U3,
+  TRAV_EXT = _F(),
+  )
+
+ENER_P = POST_ELEM(
+  RESULTAT = RESU,
+  ENER_POT = _F(TOUT = 'OUI'),
+  )
+
+ENER_E = POST_ELEM(
+  RESULTAT = U3,
+  MODELE=MODEL,
+  ENER_ELAS = _F(TOUT = 'OUI'),
+  )
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = U3, NUME_ORDRE = 4, NOM_CHAM = 'ENEL_ELNO_ELGA',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-5, REFERENCE = 'NON_REGRESSION',
+              MAILLE = 'M1', NOEUD = 'N2',NOM_CMP = 'TOTALE',    VALE = 9.19036E+01),
+            _F(  RESULTAT = U3, NUME_ORDRE = 4, NOM_CHAM = 'ENEL_ELNO_ELGA',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-5, REFERENCE = 'NON_REGRESSION',
+              MAILLE = 'M1', NOEUD = 'N2',NOM_CMP = 'FLEXION',    VALE = 9.19036E+01),
+            _F(  RESULTAT = U3, NUME_ORDRE = 4, NOM_CHAM = 'ENEL_ELGA',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-5, REFERENCE = 'NON_REGRESSION',
+              MAILLE = 'M1', POINT = 1,NOM_CMP = 'TOTALE',    VALE = 7.50740E+01),
+            _F(  RESULTAT = U3, NUME_ORDRE = 4, NOM_CHAM = 'ENEL_ELGA',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-5, REFERENCE = 'NON_REGRESSION',
+              MAILLE = 'M1', POINT = 1,NOM_CMP = 'FLEXION',    VALE = 7.50740E+01),
+            _F(  RESULTAT = U3, NUME_ORDRE = 4, NOM_CHAM = 'ENEL_ELGA',
+              CRITERE = 'ABSOLU',  PRECISION = 1.E-14, REFERENCE = 'ANALYTIQUE',
+              MAILLE = 'M1', POINT = 1,NOM_CMP = 'MEMBRANE',    VALE = 0.0),
+            _F(  RESULTAT = U3, NUME_ORDRE = 4, NOM_CHAM = 'ENEL_ELNO_ELGA',
+              CRITERE = 'ABSOLU',  PRECISION = 1.E-14, REFERENCE = 'ANALYTIQUE',
+              MAILLE = 'M1', NOEUD = 'N2',NOM_CMP = 'MEMBRANE',    VALE = 0.0),
+             )
+           )
+
+TEST_TABLE(       TABLE = ENER_E,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = 1.0),
+                          ),
+                NOM_PARA='TOTALE',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=1.22265E+02);
+
+TEST_TABLE(       TABLE = ENER_E,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = 1.0),
+                          ),
+                NOM_PARA='FLEXION',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=1.22265E+02);
+
+TEST_TABLE(       TABLE = ENER_P,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = 0.0),
+                          ),
+                NOM_PARA='TOTALE',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=1.22265E+02);
+
+TEST_TABLE(       TABLE = TRAV,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = 1.0),
+                          ),
+                NOM_PARA='TRAV_ELAS',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=1.22265E+02);
 
 FIN()
 #

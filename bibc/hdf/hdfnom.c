@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfnom hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfnom hdf  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,11 +29,12 @@
 /-----------------------------------------------------------------------------*/
 #include "hdf5.h"
 
-INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, int ln, char *nom, int lnm)
+INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, STRING_SIZE ln, char *nom, STRING_SIZE lnm)
 {
   hid_t idfic;
-  char *nomg, *pnomdts, *pnom;   
-  int k,l,ind,indx,ll;
+  char *nomg, *pnomdts, *pnom;
+  STRING_SIZE k, ll;
+  int l,ind,indx;
   long nbobj=0;
   void *malloc(size_t size);
   
@@ -56,9 +57,9 @@ INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, int ln, char *nom, int
     ind =k;
     indx = H5Giterate(idfic, nomg, &ind, indiceName, pnomdts);
     ll=strlen(pnomdts);
-    for (l=0;l<ll;l++)
+    for (l=0;l<(int)ll;l++)
       *(pnom+l) = *(pnomdts+l);
-    for (l=ll;l<lnm;l++)
+    for (l=ll;l<(int)lnm;l++)
       *(pnom+l) = ' ';
     pnom=pnom+lnm;
   }

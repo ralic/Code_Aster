@@ -3,7 +3,7 @@
      &                  MAXREL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -204,9 +204,7 @@ C --- CONVERGENCE GLOBALE
 C
       DO 20 IRESI = 1,NRESI
         CVNEWT = CVNEWT.AND.CONVOK(IRESI) 
-  20  CONTINUE 
-
-              
+  20  CONTINUE               
 C
       CALL JEDEMA()
       END

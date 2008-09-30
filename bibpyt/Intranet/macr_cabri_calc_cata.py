@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_calc_cata Intranet  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_cabri_calc_cata Intranet  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,9 +116,7 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       INCREMENT = FACT(statut='f',
                         regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                                 EXCLUS('NUME_INST_FIN','INST_FIN'),),
-                        LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
-                        EVOLUTION       =SIMP(statut='f',typ='TXM',defaut="CHRONOLOGIQUE",
-                                 into=("CHRONOLOGIQUE",) ),                                 
+                        LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),                                 
                         NUME_INST_INIT  =SIMP(statut='f',typ='I'),
                         INST_INIT       =SIMP(statut='f',typ='R'),
                         NUME_INST_FIN   =SIMP(statut='f',typ='I'),

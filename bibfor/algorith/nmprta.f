@@ -6,7 +6,7 @@
      &                  RESOCO,RESOCU,SDDYNA,SDSENS,MEELEM,
      &                  MEASSE,VEELEM,VEASSE)
 C
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,7 +114,7 @@ C
       CHARACTER*19 NMCHEX,CNCINE,CNDONN,CNPILO
       INTEGER      LDCCVG,FACCVG  
       REAL*8       R8BID
-      LOGICAL      LBID      
+      LOGICAL      LBID,NDYNLO,LSTAT,LIMPL 
       INTEGER      IFM,NIV
 C
 C ----------------------------------------------------------------------
@@ -127,6 +127,11 @@ C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> PREDICTION TYPE EULER' 
       ENDIF
+C
+C --- FONCTIONNALITES ACTIVEES
+C
+      LSTAT  = NDYNLO(SDDYNA,'STATIQUE')
+      LIMPL  = NDYNLO(SDDYNA,'IMPLICITE')            
 C
 C --- INITIALISATIONS
 C
@@ -143,8 +148,10 @@ C
       CNCINE = NMCHEX(VEASSE,'VEASSE','CNCINE') 
 C
 C --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
-C      
-      CALL NMDEP0('ON ',SOLALG)
+C     
+      IF (LSTAT.OR.LIMPL) THEN 
+        CALL NMDEP0('ON ',SOLALG)
+      ENDIF      
 C
 C --- CALCUL DE LA MATRICE GLOBALE
 C  
@@ -173,6 +180,12 @@ C
      &            SDDYNA,VALMOI,VALPLU,POUGD ,SOLALG,
      &            VEELEM,VEASSE,SDTIME,LDCCVG,CODERE,
      &            CNPILO,CNDONN)
+C
+C --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
+C     
+      IF (LSTAT.OR.LIMPL) THEN 
+        CALL NMDEP0('OFF',SOLALG)
+      ENDIF       
 C     
       IF (LDCCVG.EQ.1) GOTO 9999
 C
@@ -191,11 +204,7 @@ C
 C --- RECOPIE CODE RETOUR ERREURS      
 C
       LICCVG(2) = LDCCVG
-      LICCVG(5) = FACCVG 
-C
-C --- REMISE INCREMENT DE DEPLACEMENT 
-C      
-      CALL NMDEP0('OFF',SOLALG)           
+      LICCVG(5) = FACCVG           
 C      
       CALL JEDEMA()
       END

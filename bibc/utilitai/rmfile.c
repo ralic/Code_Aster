@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF RMFILE UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF RMFILE UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -28,7 +28,7 @@ extern int errno;
 #include "aster.h"
 
 
-void DEFS(RMFILE, rmfile, char *nom1, int lnom1)
+void DEFS(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1)
 {
    char nomcmd[85];char *ncmd;
    long i,l,ldeb,num;

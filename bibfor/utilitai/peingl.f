@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,8 +138,8 @@ C -----  VARIABLES LOCALES
      &        NBIN,NT,NM,NG,IBID,NBGRMA,JGR,IG,NBMA,JAD,NBMAIL,JMA,IM,
      &        IOCC,NUME,IFM,NIV,NBOUT,NUMORM,IDESC,NGDMAX,NCMPMX,IVALE,
      &        IPTMA,IGD,IDEBGD,DG,IMA,ICONEX,NBNO,NEC,IVARI
-      PARAMETER (NBPARR=5)
-      REAL*8 WORK(2),INDIC1,VOLUME,INST,VALER(2),ZERO,PREC,R8PREM,ENERGI
+      PARAMETER (NBPARR=7)
+      REAL*8 WORK(3),INDIC1,VOLUME,INST,VALER(4),ZERO,PREC,R8PREM,ENERGI
       COMPLEX*16 C16B
       CHARACTER*2 CODRET
       CHARACTER*8 RESUL,CRIT,NOMA,NOMMAI,VALEK(2),KIORDM
@@ -155,7 +155,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*24 CHSIGM,CHDEPM,CHBID
       LOGICAL EXISDG
 
-      DATA TYPARR/'I','R','K8','K8','R'/
+      DATA TYPARR/'I','R','K8','K8','R','R','R'/
       DATA CHVARC,CHVREF /'&&PEINGL.CHVARC','&&PEINGL.CHVARC.REF'/
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 
@@ -172,6 +172,8 @@ C     ---------------
       NOPARR(5) = OPTION
       IF (OPTION(1:4).EQ.'ENER') THEN
         NOPARR(5) = 'TOTALE'
+        NOPARR(6) = 'MEMBRANE'
+        NOPARR(7) = 'FLEXION'
       END IF
       ENERGI = ZERO
 
@@ -427,7 +429,11 @@ C      --------------------------------
         LCHIN(7) = CHVARC
         LPAIN(8) = 'PVARCRR'
         LCHIN(8) = CHVREF
-        NBIN = 8
+        LPAIN(9) = 'PCACOQU'
+        LCHIN(9) = CHCARA(7)
+        LPAIN(10) = 'PNBSP_I'
+        LCHIN(10) = CARA//'.CANBSP'
+        NBIN = 10
         IF (OPTION.EQ.'ENER_TOTALE') THEN
           IF (IORD.GT.1) THEN
             LPAIN(9) = 'PCONTMR'
@@ -500,7 +506,11 @@ C         -------------------------------------------
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
+              IF(OPTION.EQ.'ENER_ELAS') THEN 
+                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
+              ELSE
+                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)      
+              ENDIF  
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 C ---  L ENERGIE TOTAL
               IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
@@ -512,6 +522,8 @@ C ---  L ENERGIE TOTAL
               END IF
 
               VALER(2) = ENERGI
+              VALER(3) = WORK(2)
+              VALER(4) = WORK(3)
               VALEK(1) = NOMA
               VALEK(2) = 'TOUT'
 
@@ -578,7 +590,11 @@ C          -------------------------------------------
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,NBMA,ZI(JAD))
+              IF(OPTION.EQ.'ENER_ELAS') THEN 
+                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
+              ELSE
+                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)       
+              ENDIF  
 
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 C ---  L ENERGIE TOTAL
@@ -594,6 +610,8 @@ C ---  L ENERGIE TOTAL
                 END IF
 
                 VALER(2) = ENERGI
+                VALER(3) = WORK(2)
+                VALER(4) = WORK(3)
                 VALEK(1) = NOMMAI
 
               END IF
@@ -661,7 +679,11 @@ C          -------------------------------------------
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,1,NUME)
+              IF(OPTION.EQ.'ENER_ELAS') THEN 
+                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
+              ELSE
+                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)       
+              ENDIF  
 
                 IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
      &            (COMPT(1:4).NE.'ELAS') .AND.
@@ -673,6 +695,9 @@ C              -------------
                 END IF
 
                 VALER(2) = ENERGI
+                VALER(3) = WORK(2)
+                VALER(4) = WORK(3)
+                
                 VALEK(1) = NOMMAI
 
               END IF

@@ -4,7 +4,7 @@
      &                  VALMOI,VALPLU,SOLALG,LNOPRE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -100,17 +100,24 @@ C
       INTEGER      MMITGO,MMITCA,MMITFR
       CHARACTER*24 K24BLA,K24BID
       REAL*8       R8BID
-      INTEGER      IBID
+      INTEGER      IBID,IRET
       LOGICAL      ISFONC,LCTFC,LCTCC,LCTCD,LXFCM,LTFCM
       LOGICAL      PREMIE       
 C
 C ----------------------------------------------------------------------
 C 
-      CALL JEMARQ()     
-      NOMO   = MODELE  
-      PREMIE = (NUMINS.EQ.1).AND.(NIVEAU.EQ.4 )
+      CALL JEMARQ()    
+C
+C --- INITIALISATIONS
+C       
+      NOMO   = MODELE     
       LNOPRE = .FALSE.
-      K24BLA = ' '             
+      K24BLA = ' '          
+C
+C --- PREMIER INSTANT ?
+C
+      CALL DIBCLE(SDDISC,'PREMIE','L',IRET  )
+      PREMIE = IRET.EQ.0
 C     
       IF (NIVEAU.LT.0) THEN 
         GOTO 9999

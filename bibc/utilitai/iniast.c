@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF iniast utilitai  DATE 13/02/2007   AUTEUR PELLET J.PELLET */
+/* MODIF iniast utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -24,7 +24,7 @@
 #include "aster.h"
 
 extern void STDCALL(ERRLIC, errlic)();
-extern void DEFPPPSP(VERSIO, versio, INTEGER *, INTEGER *, INTEGER *, char *, int, INTEGER *);
+extern void DEFPPPSP(VERSIO, versio, INTEGER *, INTEGER *, INTEGER *, char *, STRING_SIZE, INTEGER *);
 #define CALL_VERSIO(a,b,c,d,e) CALLPPPSP(VERSIO,versio,a,b,c,d,e)
 extern void DEFP(DATE, date, INTEGER *v);
 #define CALL_DATE(a) CALLP(DATE,date,a)

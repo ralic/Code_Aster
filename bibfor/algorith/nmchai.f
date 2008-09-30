@@ -1,7 +1,7 @@
       INTEGER FUNCTION NMCHAI(TYCHAP,TYVARI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -118,7 +118,7 @@ C
           NMCHAI = 10
         ELSEIF (TYVARI.EQ.'CNFSDO') THEN
           NMCHAI = 11
-        ELSEIF (TYVARI.EQ.'CNIMPE') THEN
+        ELSEIF (TYVARI.EQ.'CNIMPP') THEN
           NMCHAI = 12
         ELSEIF (TYVARI.EQ.'CNMSME') THEN
           NMCHAI = 13
@@ -143,7 +143,9 @@ C
         ELSEIF (TYVARI.EQ.'CNVCF1') THEN
           NMCHAI = 23
         ELSEIF (TYVARI.EQ.'CNVCF0') THEN
-          NMCHAI = 24                                  
+          NMCHAI = 24
+        ELSEIF (TYVARI.EQ.'CNIMPC') THEN
+          NMCHAI = 25                                            
         ELSE    
           CALL ASSERT(.FALSE.)
         ENDIF      
@@ -170,7 +172,7 @@ C
           NMCHAI = 10
         ELSEIF (TYVARI.EQ.'CNFSDO') THEN
           NMCHAI = 11
-        ELSEIF (TYVARI.EQ.'CNIMPE') THEN
+        ELSEIF (TYVARI.EQ.'CNIMPP') THEN
           NMCHAI = 12
         ELSEIF (TYVARI.EQ.'CNMSME') THEN
           NMCHAI = 13
@@ -218,6 +220,8 @@ C
           NMCHAI = 35    
         ELSEIF (TYVARI.EQ.'CNFEXT') THEN
           NMCHAI = 36  
+        ELSEIF (TYVARI.EQ.'CNIMPC') THEN
+          NMCHAI = 37          
         ELSE    
           CALL ASSERT(.FALSE.)
         ENDIF 

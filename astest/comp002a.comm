@@ -1,4 +1,4 @@
-# MODIF  DATE 15/09/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/09/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE TEST FLUAGE EN 3D LEMAITRE, UTILISANT SIMU_PONT_MAT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,9 +137,6 @@ for i in range(Ncal):
 
 # Test de la matrice tangente sur le calcul le plus fin
 
-RESU2=[None]*Ncal
-R_SI2=[None]*len(ch_param)
-
 i=Ncal-1
 N = N_pas[i]                 
 imat = P_imat[i]             
@@ -182,13 +179,20 @@ TEST_TABLE(TABLE=DIFF_MAT,
            REFERENCE='ANALYTIQUE',);     
 
 
+#FIN()
+
 
 ##################################################################
 # avec THETA=0.5
 ##################################################################
 
-DETRUIRE ( CONCEPT = _F (NOM = RESU,),)
-DETRUIRE ( CONCEPT = _F (NOM = R_SI,),)
+for i in range(Ncal):
+ DETRUIRE ( CONCEPT = _F (NOM = RESU[i],),)
+for i in range(len(ch_param)):
+ DETRUIRE ( CONCEPT = _F (NOM = R_SI[i],),)
+
+RESU=[None]*Ncal
+R_SI=[None]*len(ch_param)
 
 
 #Boucle sur l'ensemble des calculs
@@ -235,7 +239,6 @@ TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
 for i in range(Ncal):
         IMPR_TABLE(TABLE=R_SI[i])
         
-
 
 
 

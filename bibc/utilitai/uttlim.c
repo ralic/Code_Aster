@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTLIM UTILITAI  DATE 15/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF UTTLIM UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,22 +31,22 @@ extern char g_tpmax[];
 
 #include "aster.h"
 
-void DEFP(UTTLIM, uttlim, double *t_lim)
+void DEFP(UTTLIM, uttlim, DOUBLE *t_lim)
 {
    long long itpm;
-   double tmax;
+   DOUBLE tmax;
 #ifdef _USE_RLIMIT
    struct rlimit rlp;
 #endif
-   tmax = ((double) LONG_MAX)/2;
+   tmax = ((DOUBLE) LONG_MAX)/2;
    if (strlen(g_tpmax) > 0) {
       sscanf(g_tpmax,"%Ld",&itpm);
-      *t_lim = (double)itpm;
+      *t_lim = (DOUBLE)itpm;
    }
    else {
 #ifdef _USE_RLIMIT
       getrlimit(RLIMIT_CPU,&rlp);
-      *t_lim = (double)rlp.rlim_max;
+      *t_lim = (DOUBLE)rlp.rlim_max;
 #else
       *t_lim = tmax;
 #endif

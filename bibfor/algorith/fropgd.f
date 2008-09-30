@@ -1,9 +1,9 @@
       SUBROUTINE FROPGD(DEFICO,RESOCO,LMAT  ,LDSCON,NOMA  ,
-     &                  RESU  ,DEPTOT,RESIGR,REAGEO,REAPRE,
-     &                  DEPDEL,CTCCVG,CTCFIX)
+     &                  RESU  ,RESIGR,REAGEO,REAPRE,DEPDEL,
+     &                  CTCCVG,CTCFIX)
 C   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*19 RESU,DEPDEL
-      CHARACTER*24 DEPTOT
       INTEGER      CTCCVG(2)
 C      
 C ----------------------------------------------------------------------
@@ -70,14 +69,13 @@ C IN  RESOCO  : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
 C IN  LDSCON  : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
 C IN  NOMA    : NOM DU MAILLAGE
-C IN  DEPTOT  : DEPLACEMENT TOTAL OBTENU A L'ISSUE DE L'ITERATION
-C               DE NEWTON PRECEDENTE
 C IN  REAGEO : VAUT .TRUE. SI REACTUALISATION GEOMETRIQUE
 C IN  REAPRE : VAUT .TRUE. SI PREMIERE BOUCLE GEOMETRIQUE ET PREMIERE
 C               ITERATION (PREDICTION)
 C OUT CTCFIX : .TRUE.  SI ATTENTE POINT FIXE CONTACT
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
-C VAR RESU   : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
+C VAR RESU   : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS L'ITERATION
+C              DE NEWTON PRECEDENTE
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
 C IN  RESIGR : RESI_GLOB_RELA
@@ -126,7 +124,7 @@ C
       CHARACTER*2  TYPEC0
       CHARACTER*14 NUMEDD
       CHARACTER*19 MAT,MAF2,MAFROT
-      INTEGER      JRESU,JDEPDE,JDEPP
+      INTEGER      JRESU,JDEPDE
       CHARACTER*19 AFMU,MAF1,CM2A,CM3A
       INTEGER      JAFMU,LMAF1,JCM2A,JCM3A
       CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,COCO,LIOT
@@ -211,7 +209,6 @@ C ======================================================================
       CALL JEVEUO(DELT0,'E',JDELT0)
       CALL JEVEUO(DELTA,'E',JDELTA)
       CALL JEVEUO(RESU(1:19)//'.VALE','E',JRESU)
-      CALL JEVEUO(DEPTOT(1:19)//'.VALE','L',JDEPP)
       CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
       CALL JEVEUO(FROTE,'L',IFRO)
       CALL JEVEUO(PENAL,'L',IPENA)
@@ -422,8 +419,7 @@ C ======================================================================
            IF(NIV.GE.2) THEN
              WRITE(IFM,*)'<CONTACT> <> FACTORISATION MATRICE CONTACT '
            ENDIF
-           CALL TLDLG3 ('LDLT',' ',2,LDSCON,INDFAC,NBLIAC,0,NDECI,
-     &                   ISINGU,NPVNEG,IER)
+           CALL TLDLGG(2,LDSCON,INDFAC,NBLIAC,0,NDECI,ISINGU,NPVNEG,IER)
            INDFAC = NBLIAC + 1
 C
 C --- LA MATRICE DE CONTACT EST-ELLE SINGULIERE ?
@@ -450,7 +446,7 @@ C --- DE 1 A NBLIAC
 C ======================================================================
         NEQMAX = ZI(LDSCON+2)
         ZI(LDSCON+2) = NBLIAC
-        CALL RLDLG3('LDLT',LDSCON,ZR(JMU),CBID,1)
+        CALL RLDLGG(LDSCON,ZR(JMU),CBID,1)
         ZI(LDSCON+2) = NEQMAX
 C ======================================================================
 C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU
@@ -580,7 +576,6 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DU DEPLACEMENT FINAL
 C ======================================================================
-  230 CONTINUE
       DO 240 ILIAI = 1,NEQ
         ZR(JRESU-1+ILIAI) = ZR(JRESU-1+ILIAI) + ZR(JDELTA-1+ILIAI)
         ZR(JDELTA-1+ILIAI) = ZR(JDEPDE-1+ILIAI) + ZR(JDELTA-1+ILIAI)
@@ -700,7 +695,7 @@ C --- A LA LIAISON
 C ======================================================================
 C --- CALCUL DE KF STOCKE DANS MAF1 = CM2AT*CM2A
 C ======================================================================
-      NBLIG = NBLIAI*NDIM
+      NBLIG = NBLIAI*(NDIM-1)
       CALL ATASMO(CM2A,NUMEDD,MAF1,'V',NBLIG)
 C ======================================================================
 C --- CREATION DU VECTEUR DE CISAILLEMENT (PARTIE SYMETRIQUE DE KFR)

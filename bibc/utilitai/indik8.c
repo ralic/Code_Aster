@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF INDIK8 UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF INDIK8 UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 
-INTEGER DEFSSPP(INDIK8, indik8, char *lstmot, int llm, char *mot, int lm, INTEGER *n, INTEGER *nmot)
+INTEGER DEFSSPP(INDIK8, indik8, char *lstmot, STRING_SIZE llm, char *mot, STRING_SIZE lm, INTEGER *n, INTEGER *nmot)
 {
 	long i,j=0;
 	char *p,m[8];

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -369,7 +369,6 @@ DEP=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                                DEFORMATION='PETIT',
                                GROUP_MA=('E_COR','E_CHA','E_PLA','E_ECR','E_GOU','E_JOI','E_RON','E_STE',),),
                   INCREMENT=_F(LIST_INST=LR3,
-                               EVOLUTION='CHRONOLOGIQUE',
                                INST_FIN=1.0,
                                PRECISION=1.E-3,),
                   NEWTON=_F(REAC_INCR=1,
@@ -414,7 +413,6 @@ DEP=STAT_NON_LINE(reuse =DEP,
                   PRECISION=1.E-3,
                   CRITERE='RELATIF',),
                   INCREMENT=_F(LIST_INST=LR3,
-                               EVOLUTION='CHRONOLOGIQUE',
                                INST_FIN=180.0,
                                PRECISION=1.E-3,),
                   NEWTON=_F(REAC_INCR=1,

@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,6 +96,8 @@ C ----------------------------------------------------------------------
 C
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE 
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
 C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*4      Z
@@ -159,6 +161,15 @@ C
       NOMOS  = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
       NOMCO  = '$$$$$$$$$$$$$$$$$$$$$$$$'
       NOMOC  = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+
+C --- ON INTERDIT L'APPEL A JJLDYN LORS DE L'ALLOCATION 
+C --- DYNAMIQUE  (ET LES APPELS RECURSIFS)
+C
+      LDYNOL = LDYN
+      IF ( LDYN .EQ. 1 ) THEN  
+        LDYN   = 2
+      ENDIF
+
       IF ( KSTIN .EQ. 'DEBUT   ' .OR. KSTIN .EQ. 'DUMMY   ') THEN
         NREMAX(IC) = NREP
         NREUTI(IC) = 0
@@ -467,7 +478,7 @@ C
         CALL JJECRS (KAT(2),IC,2,0,'E',IMARQ(JMARQ(IC)+2*2-1))
 C
         CALL JXLIRO ( IC , KAT( 2) , IADADD  , 2*LON )
-C	
+C       
         LON2 = 3*NBLMA2 * LOIS
         CALL JJALLS(LON2,IC,'V','I',LOIS,Z,IUSADI,IADRS,KAT(14),KDY(14))
         DO 231 L=1,NBLMA2
@@ -573,6 +584,7 @@ C
         ENDIF
       ENDIF
 C
+      LDYN = LDYNOL
       IPGC = IPGCA
 C FIN ------------------------------------------------------------------
       END

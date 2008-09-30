@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements Messages  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -321,6 +321,10 @@ cata_msg = {
 
 87 : _("""
  bad definition of MP1 and MP2
+"""),
+
+88 : _("""
+ Option %(k1)s n'est pas disponible pour l'élément %(k2)s et la loi de comportement %(k3)s
 """),
 
 90 : _("""

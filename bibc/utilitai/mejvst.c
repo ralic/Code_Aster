@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF mejvst utilitai  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF mejvst utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include "aster.h" 
 
-INTEGER DEFP(MEJVST, mejvst, double *val)
+INTEGER DEFP(MEJVST, mejvst, DOUBLE *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** de la limite maximum de memoire statique geree par JEVEUX
@@ -30,7 +30,7 @@ INTEGER DEFP(MEJVST, mejvst, double *val)
 {
    static INTEGER MXMEM_STA_JEVEUX=1048576;
    if (*val > 0) {
-      MXMEM_STA_JEVEUX=(long)((*val)*1024*1024);
+      MXMEM_STA_JEVEUX=(INTEGER)((INTEGER)(*val)*1024*1024);
    }
 
    return MXMEM_STA_JEVEUX;

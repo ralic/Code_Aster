@@ -1,7 +1,7 @@
       SUBROUTINE MLTPOS(NBSN,PARENT,FILS,FRERE,PILE,LFRONT,SEQ,FLAG,
      +                  ESTIM,U,W,TAB,LISTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF UTILIFOR  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ C TOLE CRP_6
       INTEGER U(NBSN),W(NBSN),TAB(NBSN),LISTE(NBSN)
 C
       INTEGER INIT,FILSI,ND,IQ,MD,M,I,K,SNI,ITEMP,LP,Q1,Q2,SN
-      INTEGER INTMAX
+      INTEGER BLIMAX
 C-----------------------------------------------------------------------
 C     CALCUL DES TABLEAUX U ET W (VOIR NOTES RESP. DE  ASHCRAFT ET YANG)
 C
@@ -58,7 +58,7 @@ C FIN DO WHILE
               DO 130 K = 1,M
                   TAB(K) = TAB(K) + W(LISTE(K))
   130         CONTINUE
-              Q2 = TAB(INTMAX(M,TAB,1))
+              Q2 = TAB(BLIMAX(M,TAB,1))
               DO 140 I = 1,M
                   Q1 = Q1 + U(LISTE(I))
   140         CONTINUE

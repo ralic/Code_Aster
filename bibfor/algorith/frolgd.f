@@ -1,9 +1,9 @@
       SUBROUTINE FROLGD(DEFICO,RESOCO,LMAT  ,LDSCON,NOMA  ,
-     &                  RESU  ,DEPTOT,RESIGR,REAGEO,REAPRE,
-     &                  DEPDEL,CTCCVG)
+     &                  RESU  ,RESIGR,REAGEO,REAPRE,DEPDEL,
+     &                  CTCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,6 @@ C
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*19 RESU,DEPDEL
-      CHARACTER*24 DEPTOT
       INTEGER      CTCCVG(2)
 C      
 C ----------------------------------------------------------------------
@@ -72,13 +71,12 @@ C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
 C IN  LDSCON : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  DEPTOT : DEPLACEMENT TOTAL OBTENU A L'ISSUE DE L'ITERATION
-C               DE NEWTON PRECEDENTE
 C IN  REAGEO : VAUT .TRUE. SI REACTUALISATION GEOMETRIQUE
 C IN  REAPRE : VAUT .TRUE. SI PREMIERE BOUCLE GEOMETRIQUE ET PREMIERE
 C               ITERATION (PREDICTION)
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
-C VAR RESU   : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
+C VAR RESU   : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS L'ITERATION
+C              DE NEWTON PRECEDENTE
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
 C IN  RESIGR : RESI_GLOB_RELA
@@ -112,7 +110,7 @@ C
       INTEGER      JJC,JDEPDE,LLF,JDIM,NESMAX,LFMIN
       INTEGER      IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,LFMIN2
       INTEGER      ILIAI,JJ,KK,LL,IZONE,ILIAC,NUMIN
-      INTEGER      JRESU,JDEPP,JMU,JATMU
+      INTEGER      JRESU,JMU,JATMU
       INTEGER      JDELT0,JDELTA,JLIAC,JCOCO
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBDDL,NDIM,NEQMAX
       INTEGER      LLIAC,LLJAC,JDECAL,INDIC
@@ -208,7 +206,6 @@ C
       CALL JEVEUO(DELT0, 'E',JDELT0)
       CALL JEVEUO(DELTA, 'E',JDELTA)
       CALL JEVEUO(RESU(1:19)//'.VALE'  ,'E',JRESU)
-      CALL JEVEUO(DEPTOT(1:19)//'.VALE','E',JDEPP)
       CALL JEVEUO(DEPDEL(1:19)//'.VALE', 'L', JDEPDE)
       CALL JEVEUO(FROTE,'L',IFRO)
       CALL JEVEUO(COMAFO,'L',ICOMA)
@@ -820,11 +817,12 @@ C --- CALCUL DES FORCES DE CONTACT (AT.MU)
 C ======================================================================
       CALL CFATMU(NEQ,NESMAX,NDIM,NBLIAC,1,LLF,LLF1,LLF2,RESOCO)
 C
- 9999 CONTINUE
 C ======================================================================
 C --- AFFECTATION DE A LIGNE PAR LIGNE (A PARTIR DE IDEBUT)
 C ======================================================================
       DO 200 ILIAI = 1, NBLIAI
+         CALL JEVEUO ( JEXNUM(CM2A,ILIAI       ), 'E', JCM2A1 )
+         CALL JEVEUO ( JEXNUM(CM2A,ILIAI+NBLIAI), 'E', JCM2A2 )
          TROUAC = .TRUE.
 C ======================================================================
 C --- MISE A ZERO DE LA COLONNE
@@ -842,8 +840,6 @@ C ======================================================================
             ENDIF
  203     CONTINUE
          IF (TROUAC) THEN
-            CALL JEVEUO ( JEXNUM(CM2A,ILIAI       ), 'E', JCM2A1 )
-            CALL JEVEUO ( JEXNUM(CM2A,ILIAI+NBLIAI), 'E', JCM2A2 )
             DO 2192 LL = 1, NEQ
                ZR(JCM2A1-1+LL) = 0.0D0
                ZR(JCM2A2-1+LL) = 0.0D0
@@ -866,7 +862,6 @@ C ======================================================================
 
             CALL CFELPV(LLIAC, TYPEF1, RESOCO, NBLIAI, GLISS1)
             IF (.NOT.GLISS1) THEN
-               CALL JEVEUO ( JEXNUM(CM2A,ILIAI), 'E', JCM2A1 )
                DO 209 LL = 1, NEQ
                   ZR(JCM2A1-1+LL) = 0.0D0
  209           CONTINUE
@@ -881,7 +876,6 @@ C ======================================================================
 
             CALL CFELPV(LLIAC, TYPEF2, RESOCO, NBLIAI, GLISS2)
             IF (.NOT.GLISS2) THEN
-               CALL JEVEUO ( JEXNUM(CM2A,ILIAI+NBLIAI), 'E', JCM2A2 )
                DO 219 LL = 1, NEQ
                   ZR(JCM2A2-1+LL) = 0.0D0
  219           CONTINUE
@@ -899,23 +893,19 @@ C ======================================================================
             IF (.NOT.GLISS1) THEN
                CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL),
      &                                     ZI(JAPDDL+JDECAL),ZR(JCM2A1))
-               CALL JELIBE(JEXNUM(CM2A,ILIAI       ))
             ENDIF
             IF (.NOT.GLISS2) THEN
                CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                                     ZI(JAPDDL+JDECAL),ZR(JCM2A2))
-               CALL JELIBE(JEXNUM(CM2A,ILIAI+NBLIAI))
             ENDIF
          ELSE
-            CALL JEVEUO ( JEXNUM(CM2A,ILIAI       ), 'E', JCM2A1 )
-            CALL JEVEUO ( JEXNUM(CM2A,ILIAI+NBLIAI), 'E', JCM2A2 )
             DO 2091 LL = 1, NEQ
                ZR(JCM2A1-1+LL) = 0.0D0
                ZR(JCM2A2-1+LL) = 0.0D0
  2091       CONTINUE
-            CALL JELIBE(JEXNUM(CM2A,ILIAI       ))
-            CALL JELIBE(JEXNUM(CM2A,ILIAI+NBLIAI))
          ENDIF
+         CALL JELIBE(JEXNUM(CM2A,ILIAI       ))
+         CALL JELIBE(JEXNUM(CM2A,ILIAI+NBLIAI))
  200  CONTINUE
 C ======================================================================
 C --- CREATION DE LA MATRICE ATA

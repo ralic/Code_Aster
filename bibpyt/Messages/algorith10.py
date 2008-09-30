@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith10 Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -268,10 +268,6 @@ cata_msg = {
 
 91 : _("""
  problème dans la définition de la saturation
-"""),
-
-92 : _("""
- échec dans élimination temps
 """),
 
 93 : _("""

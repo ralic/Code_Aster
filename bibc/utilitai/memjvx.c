@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMJVX utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MEMJVX utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include "aster.h"
 
-INTEGER DEFP(MEMJVX, memjvx, double *val)
+INTEGER DEFP(MEMJVX, memjvx, DOUBLE *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** d'allocation d'une zone de memoire exacte JEVEUX
@@ -31,7 +31,7 @@ INTEGER DEFP(MEMJVX, memjvx, double *val)
 {
    static INTEGER MEM_JEVEUX=0;
    if (*val >= 0) {
-      MEM_JEVEUX=(long)((*val)*1024*1024);
+      MEM_JEVEUX=(INTEGER)((INTEGER)(*val)*1024*1024);
    }
    
    return MEM_JEVEUX;

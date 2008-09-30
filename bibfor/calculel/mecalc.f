@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -232,6 +232,7 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           LPAOUT(1) = 'PDESINO'
         ELSE IF (OPTIO2.EQ.'ENEL_ELGA' .OR.
      &           OPTIO2.EQ.'ENEL_ELNO_ELGA') THEN
+          LPAIN(1) = 'PDEPLAR'
           LPAOUT(1) = 'PENERDR'
         ELSE IF (OPTIO2.EQ.'EQUI_ELNO_SIGM' .OR.
      &           OPTIO2.EQ.'EQUI_ELGA_SIGM' .OR.

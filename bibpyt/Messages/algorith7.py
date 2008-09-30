@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith7 Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,6 +80,10 @@ cata_msg = {
 
 16 : _("""
   le concept EVOL_CHAR :  %(k1)s  ne contient aucun champ de type EVOL_CHAR.
+"""),
+
+20 : _("""
+ le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s 
 """),
 
 22 : _("""

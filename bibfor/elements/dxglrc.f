@@ -8,7 +8,7 @@
       CHARACTER*16 OPT, NOMTE, COMPOR(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -133,7 +133,7 @@ C     ------------------
       INTEGER  TSHEAR, ICARA
       REAL*8   EPST(6), EP, SURFGP, SIG(6),DSIG(8),ECR(21),ECRP(21)
       REAL*8   EPSM(6),MVAL(50),QSI,ETA
-      INTEGER  MENT(50),ICPG,ICPV,NVINT,T(2,2),IBID
+      INTEGER  MENT(50),ICPG,ICPV,T(2,2),IBID
       REAL*8   LAMBDA,DEUXMU,DEUMUF,LAMF,GT,GC,GF,SEUIL,ALPHA
       LOGICAL  LEUL
       CHARACTER*8  K8BID,MATK(10)
@@ -302,9 +302,7 @@ C     -- EULER_ALMANSI - TERMES QUADRATIQUES
 
         IF (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') THEN
 
-          NVINT = 21
-          
-          DO 75, I = 1,NVINT
+          DO 75, I = 1,NBVAR
             ECR(I)     = ZR(IVARIM-1 + ICPV + I)
  75       CONTINUE
 
@@ -319,7 +317,7 @@ C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
             DSIG(3 + I) = DSIG(3 + I) * EP*EP / 6.D0
  78       CONTINUE
 
-          DO 80, I = 1,NVINT
+          DO 80, I = 1,NBVAR
             ECRP(I) = ECR(I)
  80       CONTINUE
 
@@ -329,9 +327,7 @@ C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
 
         ELSEIF (COMPOR(1)(1:7).EQ. 'GLRC_DM') THEN
 
-          NVINT = 4 
-
-          DO 8510, I = 1,NVINT
+          DO 8510, I = 1,NBVAR
             ECR(I)     = ZR(IVARIM-1 + ICPV + I)        
  8510     CONTINUE
 
@@ -347,9 +343,7 @@ C         ENDOMMAGEMENT SEULEMENT
         ELSEIF (COMPOR(1)(1:7).EQ. 'KIT_DDI') THEN
 C         ENDOMMAGEMENT PLUS PLASTICITE
 
-          NVINT = 21 
-
-          DO 8515, I = 1,NVINT
+          DO 8515, I = 1,NBVAR
             ECR(I)     = ZR(IVARIM-1 + ICPV + I)        
  8515     CONTINUE
 
@@ -362,7 +356,7 @@ C         ENDOMMAGEMENT PLUS PLASTICITE
            CALL U2MESG('F', 'ELEMENTS4_79',1,VALK,0,0,0,0.D0)
         ENDIF
 
-        DO 8520, I = 1,NVINT
+        DO 8520, I = 1,NBVAR
           ZR(IVARIP-1 + ICPV + I) = ECRP(I)        
  8520   CONTINUE
  

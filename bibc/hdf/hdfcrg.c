@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcrg hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfcrg hdf  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,11 +29,11 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, int lp, char *nomgr, int ln)
+INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp, char *nomgr, STRING_SIZE ln)
 {
   hid_t  idgrp,idfic;     
   char *nomd;
-  int k,lg2;
+  STRING_SIZE k,lg2;
   long iret=-1;
   void *malloc(size_t size);
     

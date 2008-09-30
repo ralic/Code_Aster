@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MUMMPI UTILITAI  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU */
+/* MODIF MUMMPI UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2007  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,19 +21,19 @@
 
 
 void DEFPPPSPP(MUMMPI, mummpi,
-                   INTEGER *optmpi, INTEGER *ifm, INTEGER *niv, char *ach24, int lach124,
+                   INTEGER *optmpi, INTEGER *ifm, INTEGER *niv, char *ach24, STRING_SIZE lach124,
                    INTEGER *argi1, INTEGER *argi2)
 
 {
 #if defined _USE_MPI_MUMPS
-   void DEFPPPSPP(MUMAM, mumam, INTEGER *, INTEGER *, INTEGER *, char *, int,
+   void DEFPPPSPP(MUMAM, mumam, INTEGER *, INTEGER *, INTEGER *, char *, STRING_SIZE,
                   INTEGER *, INTEGER *);
    #define CALL_MUMAM(a,b,c,d,e,f) CALLPPPSPP(MUMAM,mumam,a,b,c,d,e,f)
 
    CALL_MUMAM(optmpi, ifm, niv, ach24, argi1, argi2);
 
 #else
-   void DEFPPPSPP(MUMSM, mumsm, INTEGER *, INTEGER *, INTEGER *, char *, int, 
+   void DEFPPPSPP(MUMSM, mumsm, INTEGER *, INTEGER *, INTEGER *, char *, STRING_SIZE, 
                   INTEGER *, INTEGER *);
    #define CALL_MUMSM(a,b,c,d,e,f) CALLPPPSPP(MUMSM,mumsm,a,b,c,d,e,f)
 

@@ -2,7 +2,7 @@
      &                  LISCHA,MATRIG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -115,25 +115,23 @@ C
 C
 C --- MATR_ELEM DE CONTACT/FROTTEMENT XFEM
 C
-       IF (LXFCM) THEN 
-         MEXFEC        = NMCHEX(MEELEM,'MEELEM','MEXFEC') 
-         NBMAT         = NBMAT + 1  
-         TLIMAT(NBMAT) = MEXFEC   
-         MEXFEF        = NMCHEX(MEELEM,'MEELEM','MEXFEF')  
-         NBMAT         = NBMAT + 1  
-         TLIMAT(NBMAT) = MEXFEF            
-       ENDIF       
-C
-C --- MATR_ELEM DE CONTACT/FROTTEMENT XFEM GRANDS GLISSEMENTS
-C
-       IF (LTFCM) THEN       
-         MEXFTC        = NMCHEX(MEELEM,'MEELEM','MEXFTC')  
-         NBMAT         = NBMAT + 1   
-         TLIMAT(NBMAT) = MEXFTC   
-         MEXFTF        = NMCHEX(MEELEM,'MEELEM','MEXFTF')  
-         NBMAT         = NBMAT + 1  
-         TLIMAT(NBMAT) = MEXFTF 
-       ENDIF 
+       IF (LXFCM) THEN       
+         IF (LTFCM) THEN       
+           MEXFTC        = NMCHEX(MEELEM,'MEELEM','MEXFTC')  
+           NBMAT         = NBMAT + 1   
+           TLIMAT(NBMAT) = MEXFTC   
+           MEXFTF        = NMCHEX(MEELEM,'MEELEM','MEXFTF')  
+           NBMAT         = NBMAT + 1  
+           TLIMAT(NBMAT) = MEXFTF
+         ELSE 
+           MEXFEC        = NMCHEX(MEELEM,'MEELEM','MEXFEC') 
+           NBMAT         = NBMAT + 1  
+           TLIMAT(NBMAT) = MEXFEC   
+           MEXFEF        = NMCHEX(MEELEM,'MEELEM','MEXFEF')  
+           NBMAT         = NBMAT + 1  
+           TLIMAT(NBMAT) = MEXFEF           
+         ENDIF 
+       ENDIF  
 C
        IF (NBMAT.GT.8) THEN
          CALL ASSERT(.FALSE.)

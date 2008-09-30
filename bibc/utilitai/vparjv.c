@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF VPARJV utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF VPARJV utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,7 @@
 /* ------------------------------------------------------------------ */
 #include "aster.h"
 
-double DEFP(VPARJV, vparjv, double *val)
+double DEFP(VPARJV, vparjv, DOUBLE *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur de taille 
 ** de partition memoire JEVEUX
@@ -28,7 +28,7 @@ double DEFP(VPARJV, vparjv, double *val)
 **        si >= 0 positionne l'indicateur 
 */
 {
-   static double PART_JEVEUX=0.90;
+   static DOUBLE PART_JEVEUX=0.90;
    if (*val >= 0.0) {
       PART_JEVEUX=*val;
    }

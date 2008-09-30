@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfwsv hdf  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,13 +31,14 @@
 #include <hdf5.h>
 #include <stdlib.h>
 
-INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, int lg, char *nomdts, int ln, char *type, int lt, INTEGER *ltype, char *sv, int toto, INTEGER *lsv)
+INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, char *nomdts, STRING_SIZE ln, char *type, STRING_SIZE lt, INTEGER *ltype, char *sv, STRING_SIZE toto, INTEGER *lsv)
 {
   hid_t idfic,datatype,dataspace,dataset,type_id;
   herr_t iret;
   hsize_t dimsf[1];
-  int istat,k,lg2,lmot;
+  int istat,lg2,lmot;
   char *nomd,*vtype,*mot,*pmot;
+  STRING_SIZE k;
   void *malloc(size_t size);
   
   idfic=(hid_t) *idf;

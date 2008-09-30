@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX */
+/* MODIF aster include  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,6 +20,7 @@
 #ifndef ASTER_H
 #define ASTER_H
 
+#include <string.h>
 #include "aster_depend.h"
 #include "definition.h"
 
@@ -41,7 +42,7 @@
 
 /* Fonction retournant PI en R8 */
 #define R8PI() F_FUNC(R8PI,r8pi)()
-extern double STDCALL(R8PI,r8pi)();
+extern DOUBLE STDCALL(R8PI,r8pi)();
 
 /* pour representer les logical sur toutes les stations */
 /* FORTRAN_TRUE = -1 sur HP-UX avec l'option de compilation +DAportable +apollo */

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,12 +89,6 @@ cata_msg = {
    Avez-vous bien affecté une masse sur tous les éléments ?
 """),
 
-70 : _("""
- Vous utilisez un schéma explicite avec projection modale.
- L'accélération initiale a été mise à zéro (elle est recalculée lors
- de la phase de prédiction).
-"""),
-
 77 : _("""
  Vous faites une reprise de calcul avec PILOTAGE en longueur d'arc et avec l'option ANGL_INCR_DEPL mais il n'y pas assez d'informations dans
  la structure de donnees resultats. Il vous faut en effet au moins les deux derniers champs déplacements solutions.
@@ -158,11 +152,5 @@ cata_msg = {
 86 : _("""
     Erreur dans la gestion des erreurs. Contactez les développeurs.
 """),
-
-
-88 : _("""
-    Echec lors de l'interpolation de la variable de commande.
-"""),
-
 
 }

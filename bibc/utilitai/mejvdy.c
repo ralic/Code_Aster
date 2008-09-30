@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEJVDY utilitai  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF MEJVDY utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2007  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include "aster.h" 
 
-INTEGER DEFP(MEJVDY, mejvdy, double *val)
+INTEGER DEFP(MEJVDY, mejvdy, DOUBLE *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** de la limite maximum de memoire dynamique geree par JEVEUX
@@ -29,7 +29,7 @@ INTEGER DEFP(MEJVDY, mejvdy, double *val)
 {
    static INTEGER MXMEM_DYN_JEVEUX=0;
    if (*val > 0) {
-      MXMEM_DYN_JEVEUX=(long)((*val)*1024*1024);
+      MXMEM_DYN_JEVEUX=(INTEGER)((INTEGER)(*val)*1024*1024);
    }
 
    return MXMEM_DYN_JEVEUX;

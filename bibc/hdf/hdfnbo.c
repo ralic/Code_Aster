@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfnbo hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfnbo hdf  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,11 +29,12 @@
 /-----------------------------------------------------------------------------*/
 #include "hdf5.h"
 
-INTEGER DEFPS(HDFNBO, hdfnbo, INTEGER *idf, char *nomgr, int ln)
+INTEGER DEFPS(HDFNBO, hdfnbo, INTEGER *idf, char *nomgr, STRING_SIZE ln)
 {
   hid_t idfic;
   char *nomg;
-  int k,idx ;
+  STRING_SIZE k;
+  int idx ;
   long nbobj=0;
   void *malloc(size_t size);
   

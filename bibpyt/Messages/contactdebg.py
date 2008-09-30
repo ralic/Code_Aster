@@ -1,4 +1,4 @@
-#@ MODIF contactdebg Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contactdebg Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,14 +100,6 @@ cata_msg={
 
 19: _("""
  <CONTACT_2> Fin du traitement des conditions de contact. 
-"""),
-
-20: _("""
- <CONTACT_2> Temps CPU passe dans la geometrie : %(r1)g secondes. 
-"""),
-
-21: _("""
- <CONTACT_2> Temps CPU passe dans l'algorithme : %(r1)g secondes. 
 """),
 
 22: _("""

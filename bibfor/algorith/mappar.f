@@ -1,7 +1,7 @@
       SUBROUTINE MAPPAR(PREMIE,NOMA  ,NUMEDD,DEFICO,RESOCO)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> ... REACTUALISATION DES DEPLACEMENTS' 
       ENDIF      
-      CALL VTGPLD(OLDGEO,1.D0,DEPGEO,'V',NEWGEO)
+      CALL VTGPLD(OLDGEO,1.D0,DEPGEO,'V',NEWGEO)            
 C
 C --- GESTION AUTOMATIQUE DES RELATIONS REDONDANTES     
 C  
@@ -157,7 +157,7 @@ C
 C --- CALCUL DES NORMALES/TANGENTES EN CHAQUE NOEUD (SI NECESSAIRE)
 C     
       CALL CFCALN(NOMA  ,DEFICO,RESOCO,NEWGEO,'CONTINUE',
-     &            ITEMAX,EPSMAX)
+     &            ITEMAX,EPSMAX)  
 C    
 C --- BOUCLE SUR LES MAILLES ESCLAVES
 C
@@ -211,7 +211,7 @@ C
           CALL MMELTY(NOMA  ,NUMMAE,ALIAS ,IBID  ,IBID  ) 
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF                      
+        ENDIF                   
 C
 C --- ON TESTE SI LA MAILLE EST UNE MAILLE DE FISSURE
 C --- GROUP_MA_FOND OU MAILLE_FOND
@@ -231,24 +231,27 @@ C
 C
 C --- APPARIEMENT - BOUCLE SUR LES POINTS DE CONTACT
 C              
-        DO 10 IPC = 1,NBPC        
+        DO 10 IPC = 1,NBPC                
 C
 C --- COORDONNEES DANS ELEMENT DE REFERENCE ET POIDS DU POINT DE CONTACT
 C
           CALL MMGAUS(ALIAS ,TYCO  ,IPC   ,KSIPC1,KSIPC2,
-     &                WPC)
+     &                WPC)    
 C
 C --- CALCUL DES COORDONNEES REELLES DU POINT DE CONTACT          
 C 
           CALL MCOPCO(NOMA  ,NEWGEO,NUMMAE,KSIPC1,KSIPC2,
-     &                COORPC)
+     &                COORPC)  
 C
 C --- RECHERCHE DU NOEUD MAITRE LE PLUS PROCHE DU POINT DE CONTACT
 C
           CALL MMREND(DEFICO,NEWGEO,ISURFM,COORPC,TOLEAP,
-     &                DIRAPP,DIR   ,POSNOM)
+     &                DIRAPP,DIR   ,POSNOM)       
+     
           IF (POSNOM.EQ.0) THEN
             PROJIN = .FALSE.
+            LAPPAR = .TRUE.
+            NUMMAM = 0
             GOTO 123
           ENDIF
 C
@@ -271,15 +274,16 @@ C
      &                POSMAM,NUMMAM,TYCO  ,IPC   ,KSIPC1,
      &                KSIPC2,KSI1  ,KSI2  ,TAU1M ,TAU2M ,
      &                EXNOEC,EXNOEF,NBEXFR,NDEXFR,TAU1  ,
-     &                TAU2) 
-  123     CONTINUE  
+     &                TAU2)      
+ 
 C
 C --- INDICATEUR NOUVEL APPARIEMENT
 C
           OLDMAM = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+2))
           IF (OLDMAM.NE.NUMMAM ) THEN
             LAPPAR = .TRUE.  
-          ENDIF  
+          ENDIF 
+  123     CONTINUE            
 C          
 C --- STOCKAGE DES VALEURS DANS LA CARTE (VOIR MMCART)
 C   

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF ENVIMA UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -42,19 +42,19 @@ static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
 
 /* entier max, réel max, réel min, précision en réel */
 static long   ISMAX    = LONG_MAX ;
-static double R8MAX    = DBL_MAX ;
-static double R8MIN    = DBL_MIN ;
-static double R8PREC   = DBL_EPSILON ;
+static DOUBLE R8MAX    = DBL_MAX ;
+static DOUBLE R8MIN    = DBL_MIN ;
+static DOUBLE R8PREC   = DBL_EPSILON ;
 
 /* taille max d'une base */
-static long   ISMFIC   = 50331648;
+static INTEGER   ISMFIC   = 50331648;
 /* taille max d'un fichier "extend" */
-static long   ISLFIC   = 12582912;
+static INTEGER   ISLFIC   = 12582912;
 
 
 #define  R8_PI   3.1415926535897932384626433832
 #define  R8_T0   273.15
-#define  R8GAME (sqrt(R8MAX*((double)1.-R8PREC)))
+#define  R8GAME (sqrt(R8MAX*((DOUBLE)1.-R8PREC)))
 
 
 /* ---------------------- fonctions renvoyant un  LOGICAL (int)  */
@@ -120,64 +120,64 @@ INTEGER STDCALL(IEMAEM,iemaem)() { return 1024; }
 /* reste du Cray : -8189 */
 INTEGER STDCALL(IEMIEM,iemiem)() { return -1021; }
 
-/* ---------------------- fonctions renvoyant un REAL*8 (double) */
+/* ---------------------- fonctions renvoyant un REAL*8 (DOUBLE) */
 /* --------------------- Plus petit increment relatif B**-T */
-double STDCALL(RMIREM,rmirem)() { return pow(2,-53); }
+DOUBLE STDCALL(RMIREM,rmirem)() { return pow(2,-53); }
 
 /* -------------------- Plus grand increment relatif B**(1-T) */
 /* cette valeur est normalment identique a R8PREM             */
-double STDCALL(RMAREM,rmarem)() { return pow(2,-52); }
+DOUBLE STDCALL(RMAREM,rmarem)() { return pow(2,-52); }
 
 /* --------------------------- Plus petite valeur B**(EMIN-1) */
 /* cette valeur est normalment identique a R8MIEM             */
-double STDCALL(RMINEM,rminem)() { return pow(2,-1022); }
+DOUBLE STDCALL(RMINEM,rminem)() { return pow(2,-1022); }
 
 /* --------------- Plus grande valeur B**(EMAX-1) * (1-B**-T) */
 /* cette valeur est normalment identique a R8MAEM             */
-double STDCALL(RMAXEM,rmaxem)() { return pow(2,1023)*(1.-pow(2,-53)); }
+DOUBLE STDCALL(RMAXEM,rmaxem)() { return pow(2,1023)*(1.-pow(2,-53)); }
 
 /* ---------------------REEL NOT.A.NUMBER (IEEE) OU UNDEF (CRAY) */
-double STDCALL(R8NNEM,r8nnem)() { return *(double*)R8UND; }
+DOUBLE STDCALL(R8NNEM,r8nnem)() { return *(DOUBLE*)R8UND; }
 
 /* -------------------------------------- VALEUR MAXIMALE REELLE */
-double STDCALL(R8MAEM,r8maem)() { return R8MAX; }
+DOUBLE STDCALL(R8MAEM,r8maem)() { return R8MAX; }
 
 /* -------------------------------------- VALEUR MINIMALE REELLE */
-double STDCALL(R8MIEM,r8miem)() { return R8MIN; }
+DOUBLE STDCALL(R8MIEM,r8miem)() { return R8MIN; }
 
 /* ----------------------------  REEL A BOUCHER LES CASES (R8MAX)*/
-double STDCALL(R8VIDE,r8vide)() { return R8MAX; }
+DOUBLE STDCALL(R8VIDE,r8vide)() { return R8MAX; }
 
 /* -----------------------------------------  BASE DE NUMERATION */
-double STDCALL(R8BAEM,r8baem)() { return (double)2.; }
+DOUBLE STDCALL(R8BAEM,r8baem)() { return (DOUBLE)2.; }
 
 /* -----------------------------------------  PRECISION RELATIVE */
-double STDCALL(R8PREM,r8prem)() { return R8PREC; }
+DOUBLE STDCALL(R8PREM,r8prem)() { return R8PREC; }
 
 
 /* ----------------------------------  GAMME D"UTILISATION RELLE */
-double STDCALL(R8GAEM,r8gaem)() { return (double)R8GAME; }
+DOUBLE STDCALL(R8GAEM,r8gaem)() { return (DOUBLE)R8GAME; }
 
 
 /* ----------- fonctions renvoyant des valeurs reelles diverses */
 /* ------------------------------------------ VALXEM ZERO ABSOLU*/
-double STDCALL(R8T0,r8t0)() { return (double)R8_T0; }
+DOUBLE STDCALL(R8T0,r8t0)() { return (DOUBLE)R8_T0; }
 
 /* --------------------------------------------------- VALXEM PI*/
-double STDCALL(R8PI,r8pi)() { return (double)R8_PI; }
+DOUBLE STDCALL(R8PI,r8pi)() { return (DOUBLE)R8_PI; }
 
 /* -------------------------------------------------- VALXEM 2PI*/
-double STDCALL(R8DEPI,r8depi)() { return (double)((double)2.*(double)R8_PI); }
+DOUBLE STDCALL(R8DEPI,r8depi)() { return (DOUBLE)((DOUBLE)2.*(DOUBLE)R8_PI); }
 
 /* ------------------------------------------------- VALXEM DGRD*/
-double STDCALL(R8DGRD,r8dgrd)() { return (double)((double)R8_PI/(double)180.); }
+DOUBLE STDCALL(R8DGRD,r8dgrd)() { return (DOUBLE)((DOUBLE)R8_PI/(DOUBLE)180.); }
 
 /* ------------------------------------------------- VALXEM RDDG*/
-double STDCALL(R8RDDG,r8rddg)() { return (double)((double)180./(double)R8_PI); }
+DOUBLE STDCALL(R8RDDG,r8rddg)() { return (DOUBLE)((DOUBLE)180./(DOUBLE)R8_PI); }
 
 /* ------------------------------------ LONGUEUR de BLOC pour MULT_FRONT */
 INTEGER STDCALL(LLBLOC,llbloc)() { return OPT_TAILLE_BLOC_MULT_FRONT; }
 
 /* ----------------------------------------  Pour tester un NaN */
 /* on fait un chapeau (iisnan) à la fonction C isnan  pour éviter le conflit avec la fonction intrinsèque (logique) isnan de fortran 95 */
-INTEGER DEFP(IISNAN, iisnan, double *x) { return isnan(*x); }
+INTEGER DEFP(IISNAN, iisnan, DOUBLE *x) { return isnan(*x); }

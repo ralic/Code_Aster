@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF GTENV UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF GTENV UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,7 +21,7 @@
 #include <string.h>
 #include "aster.h"
 
-INTEGER DEFSS(GTENV, gtenv, char *name, int lname, char *value, int lvalue)
+INTEGER DEFSS(GTENV, gtenv, char *name, STRING_SIZE lname, char *value, STRING_SIZE lvalue)
 {
    void *malloc(size_t size);
    long code,lval,i,lmin;

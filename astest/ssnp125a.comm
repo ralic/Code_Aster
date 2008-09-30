@@ -1,4 +1,4 @@
-# MODIF  DATE 04/06/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -347,7 +347,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR1',
                    MAILLE='M1',
                    POINT=1,
-                   VALE=-3.26464E+01,
+                   VALE=-3.26792E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -368,7 +368,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR2',
                    MAILLE='M1',
                    POINT=2,
-                   VALE=3.21957E+01,
+                   VALE=3.22241E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -389,7 +389,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR3',
                    MAILLE='M1',
                    POINT=3,
-                   VALE=2.1828598324828E+01,
+                   VALE=2.1907730575755E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -410,7 +410,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR4',
                    MAILLE='M1',
                    POINT=4,
-                   VALE=-1.7634715751513E+01,
+                   VALE=-1.7786902032268E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -482,7 +482,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR1',
                    MAILLE='M11',
                    POINT=1,
-                   VALE=3.35164E+01,
+                   VALE=3.3499042149949E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),

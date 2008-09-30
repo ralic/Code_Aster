@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF definition include  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX */
+/* MODIF definition include  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,13 +31,14 @@
  * puis : CALL_SUB(a,b,c)
  * Pour définir une fonction C de nom SUB avec un argument string et 2 arguments autres,
  * appelable depuis le fortran, faire:
- * void DEFSPP(SUB,sub,char * nomobj,int lnom,double *d,INTEGER *i)
+ * void DEFSPP(SUB, sub, char * nomobj, STRING_SIZE lnom, DOUBLE *d, INTEGER *i)
  * {
  * }
  * ici, lnom est l'entier qui indique la longueur de la chaine Fortran nomobj
  * Les macros définies ici ne servent qu'à former le nom de la fonction et à
  * mettre les arguments dans le bon ordre. On utilise l'ordre _WIN32 comme
- * base (pointeur char suivi d'un int) et on reordonne pour les autres compilateurs.
+ * base (pointeur char suivi de la longueur) et on reordonne pour les autres compilateurs.
+ * STRING_SIZE est le type retourné par strlen.
  */
 
 /* Operateur de concatenation */
@@ -143,6 +144,8 @@
 #define CALLSSPPPSP(UN,LN,a,b,c,d,e,f,g)                       F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b),strlen(f))
 #define DEFSSSSPPS(UN,LN,a,la,b,lb,c,lc,d,ld,e,f,g,lg)               STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lb,lc,ld,lg)
 #define CALLSSSSPPS(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b),strlen(c),strlen(d),strlen(g))
+#define DEFSSSSPSP(UN,LN,a,la,b,lb,c,lc,d,ld,e,f,lf,g)               STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lb,lc,ld,lf)
+#define CALLSSSSPSP(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b),strlen(c),strlen(d),strlen(f))
 #define DEFSPPPPPPS(UN,LN,a,la,b,c,d,e,f,g,h,lh)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,lh)
 #define CALLSPPPPPPS(UN,LN,a,b,c,d,e,f,g,h)                    F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(h))
 #define DEFSPPPPPSS(UN,LN,a,la,b,c,d,e,f,g,lg,h,lh)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,lg,lh)
@@ -244,6 +247,8 @@
 #define CALLSSPPPSP(UN,LN,a,b,c,d,e,f,g)                       F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e,f,strlen(f),g)
 #define DEFSSSSPPS(UN,LN,a,la,b,lb,c,lc,d,ld,e,f,g,lg)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e,f,g,lg)
 #define CALLSSSSPPS(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,strlen(d),e,f,g,strlen(g))
+#define DEFSSSSPSP(UN,LN,a,la,b,lb,c,lc,d,ld,e,f,lf,g)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e,f,lf,g)
+#define CALLSSSSPSP(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,strlen(d),e,f,strlen(f),g)
 #define DEFSPPPPPPS(UN,LN,a,la,b,c,d,e,f,g,h,lh)               STDCALL(UN,LN)(a,la,b,c,d,e,f,g,h,lh)
 #define CALLSPPPPPPS(UN,LN,a,b,c,d,e,f,g,h)                    F_FUNC(UN,LN)(a,strlen(a),b,c,d,e,f,g,h,strlen(h))
 #define DEFSPPPPPSS(UN,LN,a,la,b,c,d,e,f,g,lg,h,lh)               STDCALL(UN,LN)(a,la,b,c,d,e,f,g,lg,h,lh)

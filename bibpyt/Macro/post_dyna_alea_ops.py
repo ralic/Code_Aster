@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 25/04/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF post_dyna_alea_ops Macro  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,12 +63,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER       IRET, I, NBTU, JLTN1, JLTN2
+      INTEGER       IRET, I, NBTU, JLTN1, JLTN2,IDD,NBSD,ILIMPI
       CHARACTER*1   BAS2
       CHARACTER*8   K8B, MAIL1, MAIL2
       CHARACTER*14  COM1, COM2, NU1, NU2
       CHARACTER*16  TYP2SD, CORR1, CORR2
       CHARACTER*19  CH1, CH2, SDR1, K191, K192
+      CHARACTER*24  MASFE1,MASFE2
+      INTEGER       IFETM1,IFETM2
+      LOGICAL       LFETI
+      
 
 C DEB-------------------------------------------------------------------
 
@@ -235,6 +239,35 @@ C     ---------------------------------------------
         CALL JEDUP1(K191//'.VALF',BAS2,K192//'.VALF')
         CALL JEDUP1(K191//'.WALF',BAS2,K192//'.WALF')
         CALL JEDUP1(K191//'.VALM',BAS2,K192//'.VALM')
+        
+C FETI OR NOT ?
+        MASFE1 = K191//'.FETM'
+        CALL JEEXIN(MASFE1,IRET)
+        IF (IRET.GT.0) THEN
+          LFETI = .TRUE.
+        ELSE
+          LFETI = .FALSE.
+        END IF
+
+        IF (LFETI) THEN
+          MASFE2 = K192//'.FETM'
+          CALL JEDUP1(MASFE1,BAS2,MASFE2)
+          CALL JEDUP1(K191//'.FETF',BAS2,K192//'.FETF')
+          CALL JEDUP1(K191//'.FETP',BAS2,K192//'.FETP')          
+          CALL JEDUP1(K191//'.FETR',BAS2,K192//'.FETR')
+
+          CALL JELIRA(MASFE1,'LONMAX',NBSD,K8B)
+          CALL JEVEUO(MASFE1,'L',IFETM1)
+          CALL JEVEUO(MASFE2,'L',IFETM2)
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
+          DO 30 IDD = 1,NBSD
+            IF (ZI(ILIMPI+IDD).EQ.1) THEN
+              ZK24(IFETM2+IDD-1) = ZK24(IFETM1+IDD-1)
+            END IF
+   30     CONTINUE
+
+        END IF        
+        
 
 C --------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'TABLE') THEN

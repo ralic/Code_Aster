@@ -1,7 +1,7 @@
-      SUBROUTINE NMASCO(FONACT,DEFICO,VEASSE,CNCONT)
+      SUBROUTINE NMASCO(TYPVEC,FONACT,DEFICO,VEASSE,CNCONT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
+      CHARACTER*6   TYPVEC
       LOGICAL       FONACT(*)   
       CHARACTER*24  DEFICO
       CHARACTER*19  VEASSE(*)
@@ -35,6 +36,9 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  TYPVEC : TYPE DE VECTEUR APPELANT
+C                'CNFINT' - FORCES INTERNES
+C                'CNDIRI' - REACTIONS D'APPUI
 C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 C IN  DEFICO : SD DEFINITION CONTACT
 C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
@@ -97,15 +101,18 @@ C
 C
 C --- FORCES DE FROTTEMENT DISCRET
 C
-      IF ((LCTFD).OR.(ABS(TYPALC).EQ.1)) THEN
-        CNCTDF     = NMCHEX(VEASSE,'VEASSE','CNCTDF') 
-        IFDO       = IFDO + 1 
-        COEF(IFDO) = 1.D0   
-        VECT(IFDO) = CNCTDF
-      ENDIF                    
+      IF (TYPVEC.EQ.'CNDIRI') THEN
+        IF ((LCTFD).OR.(ABS(TYPALC).EQ.1)) THEN
+          CNCTDF     = NMCHEX(VEASSE,'VEASSE','CNCTDF') 
+          IFDO       = IFDO + 1 
+          COEF(IFDO) = 1.D0   
+          VECT(IFDO) = CNCTDF
+        ENDIF 
+      ENDIF                     
 C
 C --- FORCES DE CONTACT/FROTTEMENT METHODE CONTINUE
 C
+      IF (TYPVEC.EQ.'CNFINT') THEN
        IF ((LCTCC.AND.(.NOT.LXFCM))) THEN
          CNCTCC     = NMCHEX(VEASSE,'VEASSE','CNCTCC')  
          IFDO       = IFDO + 1 
@@ -144,7 +151,8 @@ C
          IFDO       = IFDO + 1 
          COEF(IFDO) = 1.D0   
          VECT(IFDO) = CNXFTF 
-       ENDIF                       
+        ENDIF  
+      ENDIF                      
 C
 C --- VECTEUR RESULTANT 
 C       

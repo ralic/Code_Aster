@@ -1,0 +1,1354 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 29/09/2008 - 18:00:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012523 DU 2008-09-24 11:13:58
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-tests XFEM cassxc3xa9s aprxc3xa8s 9.3.12
+FONCTIONNALITE
+   Cas-tests s'arretant avec l'erreur
+   
+   ssnp110d.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnp503b.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnp503d.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnp504b.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnp504d.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv182a.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv182b.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv182c.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv182d.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv182e.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv182f.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv185g.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv186a.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv186b.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv186c.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv186d.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv186e.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv186f.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv186g.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv186h.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv195b.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv195c.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv201a.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv209b.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv209c.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv209d.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv209e.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv209g.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   ssnv209h.mess:   !      Objet JEVEUX inexistant dans les bases ouvertes :
+   >&&OP0070.RESOC.NUDD< !
+   
+   XFEM+contact
+   Erreur provenant de la non-distinction entre méthode continue et méthodeXFEm+continue au
+   niveaus de boucles de STAT_NON_LINE.
+   L'objet  >&&OP0070.RESOC.NUDD< est créée dans CFMXME
+   
+   If fallait remplacer:
+         IF (LCTCC.AND.(.NOT.LXFCM)) THEN
+   par
+         IF (LCTCC) THEN
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-tests eux-memes
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012524 DU 2008-09-24 11:17:36
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-tests Contact cassxc3xa9s aprxc3xa8s 9.3.12
+FONCTIONNALITE
+   Les cas-test avec contact en pénalisation 
+   sdnv100f.mess
+   sdnv100j.mess
+   sdnv103a.mess
+   sdnv103b.mess
+   sdnv103c.mess
+   ssnv128b.mess
+   ssnv128c.mess
+   ssnv128f.mess
+   ssnv128i.mess
+   
+   Sont cassés (NOOK, ARRET_ANORMAL) suite à une erreur dans la prise en compte de la matrice
+   de frottement
+   En effet, la matrice de frottement doit être ajoutés seuelemnt en correction et non en
+   prédiction
+   Correction sur nmmatr.f
+   
+   IF (LCTCD.AND.(PHASE.EQ.'CORRECTION')) THEN
+    CALL NMASFR(DEFICO,RESOCO,MATASS)
+   ENDIF      
+   
+   au lieu de
+   IF (LCTCD) THEN
+    CALL NMASFR(DEFICO,RESOCO,MATASS)
+   ENDIF
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-tests eux-memes
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012525 DU 2008-09-24 11:28:05
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-tests FETI cassxc3xa9s aprxc3xa8s 9.3.12
+FONCTIONNALITE
+   Les cas-tests FETI sont cassés après la mise à jour en 9.3.12.
+   
+   feti001b.mess  feti002b.mess  feti003d.mess  feti004b.mess  feti005b.mess  feti008a.mess 
+   feti008b.mess  feti009a.mess  feti010a.mess
+   
+   
+   En effet, le calcul de la matrice de resolution dans MECA_NON_LINE a changé de nature.
+   Avant, on se contentait en statique d'un ASMATR sur les MATR_ELEM de rigidité. Dans ce
+   cas, FETI est bien pris en compte au niveau des SD nécessaires.
+   Désormais par souci de modularité (pour séparer le calcul des MATR_ELEM, leur assemblage
+   en MATR_ASSE puis leur combinaison en MATASS de resolution gloable), on recopie la matrice
+   de rigidité dans la matrice assemblée par un "COPISD".
+   Malheureusement, le COPISD n'est pas complet dans le cas de FETI, on le voit par
+   comparaison avec DETRSD par exemple.
+   
+   On met à jour COPISD pour copier tous les objets necessaires pour FETI:
+   
+           MASFE1 = K191//'.FETM'
+           CALL JEEXIN(MASFE1,IRET)
+           IF (IRET.GT.0) THEN
+             LFETI = .TRUE.
+           ELSE
+             LFETI = .FALSE.
+           END IF
+   
+           IF (LFETI) THEN
+             MASFE2 = K192//'.FETM'
+             CALL JEDUP1(MASFE1,BAS2,MASFE2)
+             CALL JEDUP1(K191//'.FETF',BAS2,K192//'.FETF')
+             CALL JEDUP1(K191//'.FETP',BAS2,K192//'.FETP')          
+             CALL JEDUP1(K191//'.FETR',BAS2,K192//'.FETR')
+   
+             CALL JELIRA(MASFE1,'LONMAX',NBSD,K8B)
+             CALL JEVEUO(MASFE1,'L',IFETM1)
+             CALL JEVEUO(MASFE2,'L',IFETM2)
+             CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
+             DO 30 IDD = 1,NBSD
+               IF (ZI(ILIMPI+IDD).EQ.1) THEN
+                 ZK24(IFETM2+IDD-1) = ZK24(IFETM1+IDD-1)
+               END IF
+      30     CONTINUE
+   
+           END IF
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-tests FETI
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012528 DU 2008-09-24 14:34:21
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-tests EXPLICITE cassxc3xa9s depuis 9.3.12
+FONCTIONNALITE
+   Des cas-tests en dynamisue explicite sont cassés.
+   Le bug est commun pour les cas sdnd102d, sdns106a et sdns106d.
+   Dans la routine nmprta (qui calcule les éléments de la prediction: MATRICE et seconds
+   membres), on remettait à zéro l'incrément de déplacement cumulé (routine NMDEP0) avant le
+   calcul.
+   
+   Cette remise à zéro n'est indispensable qu'en statique lorsqu'on calcul le vecteur des
+   forces nodales.
+   En dynamique on calcule les forces internes (à la place des forces nodales) par une
+   prédiction à partir d'une estimation de l'accélération initiale.
+   En explicite, il n'y a pas de correction: si la prédiction est fausse, le résultat est faux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-tests eux-memes
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012535 DU 2008-09-25 15:27:11
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-test contact COQUE_3D cassxc3xa9s en 9.3.12
+FONCTIONNALITE
+   Les cas tests
+   ssnv129b
+   ssnv129v
+   ssnv505a
+   ont été cassés en 9.3.12.
+   Raison: les élements cOQUE_3D ne comportent pas de DX/DY/DZ sur les noeuds milieux
+   (QUAD9/TRIA7)
+   Lors d ela résolution du contact, on plante donc (prudemment !) dans CFCRSD.
+   A l'origine, les noeuds milieux étaient exclus au niveau d'AFFE_CHAR_MECA
+   
+   Comme on utilise désormais RELIEM  (à la place des routines dédiées), on n'a pas pu
+   exclure les noeuds milieux.
+   C'est chose faite, par enrichissement d'une routine existante dans le contact (ELIMCO).
+   Cette routine s'occupait d'éliminer les doublons (MAILLES/NOEUDS) dans les surfaces de
+   contact (ce qui est désormais inutile avec RELIEM qui fait l'opération tout seul)
+   Désormais, ELIMCO exclue les noeuds milieux des COQUE_3D.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Cas-tests eux-memes
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 30/09/2008 - 21:36:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012542 DU 2008-09-26 09:32:31
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Passage de chaines de caract?s C/Fortran
+FONCTIONNALITE
+   Régulièrement, on tombe sur des erreurs lors du passage de chaines de caractères du C vers
+   le fortran ou l'inverse.
+   
+   Jusqu'ici, la chaine est définie en C par un couple (char *, int).
+   Or si on regarde la définition de strlen, on voit qu'il retourne un "size_t" et non un "int".
+   
+   En 32 bits, sizeof(int) = sizeof(long) = sizeof(size_t).
+   En 64 bits, sizeof(int) = 4, sizeof(long) = sizeof(size_t) = 8, ce qui peut expliquer le
+   pb sur une plate-forme x86_64.
+   
+   Dans aster_depend.h, je définis un nouveau type STRING_SIZE afin qu'il n'y ait qu'un
+   endroit à modifier.
+   Visiblement, sur ia64, size_t ne fonctionne pas. En attendant de faire plus de tests, je
+   mets :
+   STRING_SIZE = size_t en 32 bits
+   STRING_SIZE = int en 64 bits
+   ==> il faudra sans doute distinguer i64 et x86_64, voire sur un autre critère.
+   
+   
+   J'en profite également pour définir un type DOUBLE (=double) correspondant aux REAL*8 du
+   fortran.
+   
+   On effectue également cette modif dans l'ensemble des utilitaires C (une 40aine de fichiers).
+   
+   
+   Je glisse aussi l'ajout d'un utilitaire pour les macros :
+   
+   Interface d'appel à la routine fortran DISMOI.
+   .   usage: iret, repi, repk = aster.dismoi(codmes, question, concept, type_concept)
+   ..     codmes       :'F','E','A','I',...
+   ..     question     : texte de la question
+   ..     concept      : nom du concept
+   ..     type_concept : type du concept
+   .   Retourne :
+   ..     iret         : 0 si ok, 1 en cas d'erreur
+   ..     repi         : réponse entière
+   ..     repk         : réponse de type chaine de caractères
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR rose         ROSE Christian         DATE 30/09/2008 - 21:36:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012345 DU 2008-07-28 16:55:28
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Plantage MECA_STATIQUE (Ecrasement mxc3xa9moire - STA8+STA9)
+FONCTIONNALITE
+   La version 5 de metis a été testée, on retrouve le pb en question.
+   
+   Une recherche plus poussée montre que metis produit (sur ce castest) des mauvais Super-noeuds.
+   (un SN est un regroupement de noeuds ayant les mêmes voisins, donc les mêmes propriétés
+   d'élimination).
+   Ce cas ainsi que celui de la fiche 12503 ont des elements 1D (faible connectivité) et les
+   mauvais SN produits sont des regroupements de 2 nds seulement.
+   Ne pouvant trouver l'erreur, il me semble préférable d'inhiber la création des SN de moins
+   de 2 noeuds.(qui n'apportent aucun gain en temps de calcul).
+   Ainsi pour ce cas les SN sont identiques à l'unique noeud qui les compose et le résultat
+   est bon.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   RRA008
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012503 DU 2008-09-18 13:31:27
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Bug de METIS lors de la renumxc3xa9rotation pour l'ordre changxc3xa9e des noeuds dans le fichier .mail
+FONCTIONNALITE
+   La correction de la fiche 12345 corrige aussi ce pb:
+   La version 5 de metis a été testée, on retrouve le pb en question.
+   
+   Une recherche plus poussée montre que metis produit (sur le castest 12345 ) des mauvais
+   Super-noeuds.
+   (un SN est un regroupement de noeuds ayant les mêmes voisins, donc les mêmes propriétés
+   d'élimination).
+   Ce cas ainsi que celui de la fiche 12503 ont des elements 1D (faible connectivité) et les
+   mauvais SN produits sont des regroupements de 2 nds seulement.
+   Ne pouvant trouver l'erreur, il me semble préférable d'inhiber la création des SN de moins
+   de 2 noeuds.(qui n'apportent aucun gain en temps de calcul).
+   Ainsi pour ce cas les SN sont identiques à l'unique noeud qui les compose et le résultat
+   de cete fiche est bon.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll131a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 29/09/2008 - 17:43:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012392 DU 2008-08-25 11:56:33
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.8, les cas-tests sdnv104e, ssnv128a s'arretent par manque de memoire
+FONCTIONNALITE
+   En NEW9.3.8, les cas-tests sdnv104e, ssnv128a et ssnv128m s'arretent par manque de mémoire.
+   
+   ssnv128m a été corrigé par la restitution sur la méthode 'CONTINUE' en 9.3.9
+   ssnv128a et sdnv104e avaient besoin d'un peu plus de mémoire (une poignée de Mo) pour
+   passer (en mémoire statique). Le passage par défaut à JEVEUX dynamique en 9.3.11 a mis en
+   évidence un plantage dans sdnv104 quand la mémoire n'est pas assez suffisante en cours de
+   calcul. La mémoire a été passée de 64Mo à 256Mo en 9.3.12 ce qui a eu pour effet de rendre
+   les tests OK.
+   
+   La fiche 12506 corrige un bug dans les méthodes de contact où les gros objets (des
+   matrices essentiellement) étaient créées trop grosses ou bien dimensionnées par le max, la
+   consommation mémoire de tous les tests de contact/frottement devrait donc diminuer.
+   Cependant il reste des erreurs (liées à JEVEUX dynamique) que je préfère mettre dans une
+   nouvelle fiche.
+   
+   Les .para des tests ssnv128a, sdnv104[abce] sont repassés à leur valeur d'origine.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv128a,sdnv104
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012506 DU 2008-09-18 16:07:23
+TYPE evolution concernant Code_Aster (VERSION 9.4)
+TITRE
+   Contact m?ode PENALISATION sans frottement ==> base volatile ?rme
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Les algorithmes des méthodes de contact/frottement discrètes font appel à de gros objets
+   (essentiellement des matrices carrées ou triangulaires, pleines ou creuses) pour résoudre
+   les relations de contact. Jusqu'à maintenant ces objets étaient mal dimensionnés voire
+   créés à tort.
+   C'est ainsi que Jean-Luc s'est aperçu que la méthode 'PENALISATION' pour le traitement du
+   contact (seul) provoque des épanchements anormaux sur la base volatile alors qu'elle n'est
+   censée utiliser qu'une seule matrice creuse qui vient compléter la matrice de rigidité. En
+   effet même avec une taille max_base à 80 Go, on échoue toujours dans cfcrma.f à la
+   création d'un objet volumineux ...
+   
+   Analyse
+   =======
+   
+   Ceci est complètement contraire à la croyance populaire, car la solution consistant à
+   régulariser les conditions de contact-frottement n'entraîne a priori qu'une modification
+   de la matrice tangente (pour faire simple, on ajoute à la rigidité tangente une
+   contribution plus ou moins complexe en At.A, A matrice des *relations* de contact).
+   Or l'objet que l'on échoue à créer est la matrice de contact (le complément de schur,
+   A.C-1.At) qui est une matrice pleine de dimension le nombre de liaisons en contact (fois
+   un facteur 1,2 ou 3 selon que l'on est en contact ou en contact/frottement(2D ou 3D)).
+   
+   Cette matrice n'intervient que si on dualise les conditions de contact/frottement.
+   Par ailleurs, d'autres matrices temporaires (CM1A, CM2A, CM3A) interviennent dans les
+   calculs et l'on en a pas besoin tout le temps.
+   
+   En réalisant un bilan de ce qui est fait actuellement et ce dont on a réellement besoin,
+   le constat est le suivant.
+   
+   * En méthode 'PENALISATION' (en contact et éventuellement en frottement), on crée la
+   matrice de contact à tort.
+   * En méthode 'LAGRANGIEN' avec frottement en 2D, on crée les objets CM2A et CM3A à tort.
+   * Dans à peu près tous les cas avec frottement, les objets CM1A, CM2A et CM3A étaient
+   dimensionnés à leur longueur max alors que celle-ci n'est atteinte que dans deux situations.
+   * La matrice de contact quand on en a besoin est mal dimensionnée (trop grande) si elle ne
+   rentre pas dans un bloc de taille 800Kmots (le défaut fixé dans DEBUT). C'est à dire si sa
+   dimension excède 1280.
+   
+   Enfin, la façon dont sont créés les objets du contact (dans des collections JEVEUX) n'est
+   pas optimale selon Jacques et Jean-Pierre.
+   En effet, on fait :
+   JECREC
+   JEECRA
+   Boucle sur le nombre d'objets
+      JECROC
+      JEVEUO <== provoque la recherche d'une place en mémoire
+      JELIBE <== autorise la libération
+   
+   En pratique cela signifie que l'on fait beaucoup d'E/S inutilement (puisque que l'on ne
+   modifie même pas les objets) alors que si on faisait le JEVEUO au moment où on va
+   effectivement utiliser l'objet, on tirerait beaucoup plus partie de la localité espace/temps.
+   Le seul intérêt est de s'arrêter avant le début du calcul si on n'a pas assez de mémoire
+   (ou plutôt de disque avec des objets aussi grands) mais cela n'est pas justifié.
+   
+   Impacts après application
+   =========================
+   
+   Ces modifications provoquent des erreurs dans certains tests car les routines qui
+   décrivent les algorithmes de contact (algoXX et froXYZ) prennent parfois en argument des
+   objets dont elles n'ont pas besoin. On fait donc le ménage.
+   Par ailleurs la routine frolgd.f qui traite le contact/frottement Lagrangien en 3D,
+   remplit partiellement une des matrices, de sorte que, la routine atasmo.f qui calcul At.A
+   plante car une partie est non initialisée. On fait donc en sorte que tous les termes de la
+   matrice sont initialisés.
+   Enfin le fait que l'on n'initialise plus la matrice de contact (complément de Schur) par
+   un JEVEUO/JELIBE, provoque un plantage dans LDLT (diagav.f) car on essaye d'accéder à la
+   totalité de la matrice (qui n'est que partiellement remplie). Avec l'accord de Jacques, je
+   modifie diagav.f (qui stocke la diagonale avant factorisation) pour n'accéder qu'aux
+   termes de la matrice dont on demande explicitement la factorisation.
+   
+   Gains
+   =====
+   
+   On n'a pas pu exhiber de gains mémoire flagrant sur la base de cas-tests de performances
+   car le plus gros cas de contact ne fait pas intervenir suffisamment de noeuds (moins de
+   1280 noeuds). Quand aux cas-tests de frottement, ils ne sont pas significatifs.
+   
+   Conclusion
+   ==========
+   
+   On corrige les routines de création des gros objets ci-dessus :
+   
+   (M) cfcrsd.f, cfcrma.f
+   
+   ainsi qu'une erreur dans cfdisc : on attribuait les mauvais paramètres à la méthode de
+   pénalisation pour le contact et le frottement. Il n'est pas clair quel impact cela peut
+   avoir sur les résultats.
+   
+   (M) cfdisc.f
+   
+   Les algorithmes de contact/frottement sont modifiés :
+   
+   (M) algocg.f  algocl.f  algoco.f  algocp.f  algogl.f  cfalgo.f fro2gd.f  frogdp.f 
+   frolgd.f  fropgd.f  nmcofr.f
+   
+   Petit impact sur LDLT :
+   
+   (M) diagav.f, tldlg2.f, tldlg3.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011665 DU 2008-01-22 16:54:41
+TYPE aide utilisation concernant Code_Aster (VERSION 8.2)
+TITRE
+   STAT_NON_LINE - CONTACT / Pb de convergence
+FONCTIONNALITE
+   AOM Projet GVScope
+   ==================
+   
+   L'objectif de cette fiche était de traiter de manière performante des études de contact
+   (uniquement dans un premier temps) mettant en jeu plusieurs milliers de noeuds. Il s'agit
+   du (double) contact entre une plaque entretoise avec trou quadrifolié et un tube 3D.
+   
+   Le calcul réalisé par Alexei allait à son terme mais ne lui donnait pas satisfaction. En
+   effet la solution trouvée du point de vue contact était un contact plaque-tube effectif en
+   seulement quelques points (une dizaine). Cette solution (juste du point de vue du solveur
+   en ce sens qu'elle équilibre forces externes, dont contact, et forces internes) n'est pas
+   physique et produit des contraintes ponctuelles aberrantes.
+   
+   L'analyse a montré que les méthodes discrètes résolvant exactement les relations de
+   contact ('CONTRAINTE','LAGRANGIEN') ne pouvaient donner que cette solution (non physique).
+   L'échappatoire est d'utiliser un solveur approché comme 'GCP' (ou 'PENALISATION') qui ne
+   résout qu'à une précision près : pour 'GCP' c'est l'interpénétration tolérée (en unité
+   maillage).
+   La méthode 'CONTINUE' était trop lente à l'époque mais les améliorations récentes
+   remettent peut être en cause cette conclusion.
+   
+   J'ai préconisé aussi de diminuer la taille du modèle aussi bien en DDLs physiques que de
+   contact car quand bien même les méthodes habituelles "marcheraient", elles coûteraient
+   beaucoup trop cher en temps calcul.
+   
+   
+   Conclusion
+   ==========
+   
+   Les modifications proposées n'ont pas pu être apportées car la précision de résolution du
+   contact est primordiale, quand à la taille du modèle on ne peut pas la diminuer non plus.
+   Le seul espoir réside donc dans la méthode 'CONTINUE'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U2.04.04
+VALIDATION
+   xc3xa9tude
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fournier     FOURNIER Isabelle      DATE 30/09/2008 - 13:52:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011105 DU 2007-07-16 11:15:14
+TYPE anomalie concernant Eficas (VERSION 1.7)
+TITRE
+   Modification  impossible du browser pdf dans EFICAS
+FONCTIONNALITE
+   Eficas 1.14 : Le lecteur pdf peut être modifié au cours de la session en 
+   version TK et en version QT.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011619 DU 2008-01-09 09:19:09
+TYPE anomalie concernant Salome (VERSION )
+TITRE
+   PAL 650 : Version MED sous Salomxc3xa9
+FONCTIONNALITE
+   Salome-Meca2008.2 : Les labels des versions MED pour l'export sont corrigées.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011659 DU 2008-01-21 15:22:08
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 659 : Anomalie VISU de EQUI_ELNO_SIGM
+FONCTIONNALITE
+   Salome4.1.3 : La visualisation des champs ELNO est implémentée
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010746 DU 2007-04-03 12:09:27
+TYPE evolution concernant Eficas (VERSION )
+TITRE
+   Eficas : Cohxc3xa9rence entrxc3xa9e de selection entre Salome et Eficas
+FONCTIONNALITE
+   Réalisée en version QT Eficas 1.14 : Homogénéisation avec Salome de la 
+   sélection des groupes
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010754 DU 2007-04-05 06:57:37
+TYPE anomalie concernant Eficas (VERSION 1.10)
+TITRE
+   Eficas : Selection pour mot-clxc3xa9s de type Group_ma ou Group_no
+FONCTIONNALITE
+   Dans Eficas 1.14, pour tous les mot-clés de type Group_ma ou 
+   Group_no, on peut sélectionner via Salome. On a ajouté les mots-clés 
+   attendant une seule occurence et non une liste comme UNION.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011711 DU 2008-02-06 08:29:39
+TYPE anomalie concernant Salome (VERSION )
+TITRE
+   PAL 667 - PAL 663 : Mauvais export MED d?un modxc3xa8le 1D
+FONCTIONNALITE
+   Fiche PAL 663/667 résolues en Salome 4.1.3
+   -le maillage est sauvegardé en 1D s'il n'est que selon l'axe X
+   -le maillage est sauvegardé en 2D s'il est dans le plan Oxy
+   -Dans tous les autres cas il est sauvegardé en 3D.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011847 DU 2008-03-17 09:34:48
+TYPE anomalie concernant Eficas (VERSION 1.7)
+TITRE
+   Version dev EficasQT du 21/02/08: Prise en compte des rxc3xa9els
+FONCTIONNALITE
+   Les paramètres réels dans la version QT 1.14 sont correctement gérés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012054 DU 2008-04-30 10:50:44
+TYPE anomalie concernant Salome (VERSION )
+TITRE
+   PAL 715 : Import nom groupes UNV par Salome
+FONCTIONNALITE
+   Fiche PAL 715 résolue en Salome4.1.3 : l'import unv de SMESH des groupes 
+   n'ajoute plus un caractère en fin de nom de groupe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 30/09/2008 - 14:05:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012537 DU 2008-09-25 19:20:50
+TYPE express concernant Code_Aster (VERSION 9.4)
+TITRE
+   tests perf004c, sslv313b, ssnv185b en version NEW9.3.12
+FONCTIONNALITE
+   La dernière correction en 9.3.11 dans Jeveux pour éviter les appels récursifs au mécanisme
+   de libération de la mémoire dynamique se révèle peu pratique pour l'utilisateur. En effet
+   j'avais choisi d'allouer certains objets de travail en mémoire "statique" ce qui oblige
+   dans certains cas à modifier la valeur par défaut fixée à 1 Mo. Je reviens sur cette
+   correction et met en place un mécanisme qui évite les appels récursifs (à JJLDYN), ainsi
+   dans le cas où l'allocation échoue l'utilisateur pourra relancer en modifiant uniquement
+   les paramètres mémoire accessible directement sous astk.
+   On modifie les .para des tests sdls112a et ssnp136a qui deviennent trop juste avec cette
+   correction.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perf004c, sslv313b, ssnv185b,c,d
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR markovic     MARKOVIC Damijan       DATE 30/09/2008 - 16:42:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012441 DU 2008-09-03 09:29:03
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Anomalie dans KIT_DDI (GLRC_DM + VMIS_ISOT)
+FONCTIONNALITE
+   Il y a un boggue dans la manipulation des tableaux locaux 
+   concernant le nombre de variables internes. L'erreur se 
+   produit en couplant GLRC_DM avec VMIS_ISOT_LINE. En 
+   principe, dans KIT_DDI avec GLRC_DM, jusqu'a  present on 
+   ne testait que VMIS_CINE_LINE (ssns106f et g), bien qu'on 
+   permettait VMIS_ISOT_(LINE et TRAC).
+   
+   On corrige LGDMVM.F et DXGLRC.F, puis on remplace 
+   VMIS_CINE_LINE par VMIS_ISOT_LINE dans SSNS106G.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssns106g
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012527 DU 2008-09-24 14:06:03
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Anomalies dans la resolution du modele GLRC_DM
+FONCTIONNALITE
+   J'ai trouve trois anomalies concernant GLRC_DM et de 
+   natures tres differentes.
+   
+   
+   1) Les formules de la transformation des parametres 
+   d'entree (notamment SYT et SFT) aux parametres de calculs 
+   (cosnstantes seuils) ne sont pas correctes. On corrige la 
+   routine CRGDM.F
+   
+   2) La partie energetique du seuil n'est pas calculee 
+   correctement non-plus. En general, les resultats sont 
+   (legerement) faux. Routine LCGLDM.F
+   
+   3) La verification du critere de convergence de la 
+   resolution interne est erronee. L'erreur ne se manifeste 
+   que dans les cas particuliers (impact sur les valeurs 
+   testees dans les cas-test <0.1%). En plus de conduire aux 
+   resultats (legerement) faux, l'erreur peut rendre un 
+   calcul non-convergent, notamment sur les etudes plus 
+   consequentes (l'erreur a ete trouvee en simulant la 
+   maquette SMART). Routine GLDLOC.F
+   
+   
+   Routines concernees : CRGDM.F, LCGLDM.F et GLDLOC.F
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 8.4
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssns106e
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012435 DU 2008-09-02 17:46:03
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Divergence du calcul dans le test sdls115a
+FONCTIONNALITE
+   Sans être cassé le teste sdls115a subit une divergence du 
+   calcul due au schéma explicite (seulement dans une sur 
+   trois dyna_non_line utilisées).
+   
+   En principe, le test ne valide que la partie membranaire 
+   de la déformation, or la divergence ne se manifeste que 
+   sur la partie de flexion (DRX, DRY, DRZ, DZ). La 
+   divergence est sans doute due au mauvais conditionnement 
+   de la matrice de masse (MASS_DIAG = 'NON'), qui elle doit 
+   être due à la composante DRZ (et oui encore celle-là !!). 
+   (Evidemement, le pas de temps respecte la condition de 
+   stabilité proposée par le code.)
+   
+   Le même type de problèmme a été déjà rencontré et reglé 
+   par les fiches 9952 et 11692, mais uniquement pour la 
+   matrice de masse diagonale, ce qui a donné naissance à 
+   l'option MASS_MECA_EXPLI en plus de l'option 
+   MASS_DIAG_EXPLI. Par ailleurs, pour les schémas 
+   explicites on a tendance d'utiliser la matrice diagonale.
+   
+   Pour sdls115a, c'est simple, on met MASS_DIAG = 'OUI' et 
+   puis ça marche....en augmentant la tolérance (référence 
+   est analytique), car les matrices de masse diagonale 
+   réduisent la précision, notamment pour des maillages 
+   grossiers (9 mailles dans sdls115a).
+   
+   Par contre, en générale, avec MASS_DIAG = 'NON' on peut 
+   avoir des résultats faux en explicite avec les DKT. Le 
+   test sdls115a est gentil, car il ne couple pas 
+   l'extension membranaire avec la flexion, donc il passait.
+   
+   
+   Modification : MASS_DIAG = 'NON' -> MASS_DIAG = 'OUI' 
+   dans SDLS115A (dynamique quasi-1D). Ce qui necessite une 
+   legere augmentation des tolerances (reference est 
+   analytique). On rajoute egalement un test sur la partie 
+   flexion (celle qui divergeait) a travers l'energie 
+   elastique (voir 12397).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.01
+VALIDATION
+   sdls115a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012442 DU 2008-09-03 09:42:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Calculer MASS_MECA_DIAG et MASS_MECA_EXPLI pour les BARRE
+FONCTIONNALITE
+   Dans le projet SAGA-2 on veut faire de la dynamique 
+   explicite avec les cables de précontrainte (travail du 
+   stage de Matthieu Comby). Comme l'option MASS_DIAG='OUI' 
+   n'est pas possible avec les cables (modélisation BARRE) 
+   on travaille avec MASS_DIAG='NON', ce qui rend 
+   malheureusement le calcul divergent. On soupçone cette 
+   divergence d'être étroitemment liée avec l'anomalie 
+   décrite dans 12435.
+   
+   Pour pouvoir mener les calculs avec MASS_DIAG = 'OUI', on 
+   propose de programmer les options MASS_MECA_DIAG et 
+   MASS_MECA_EXPLI pour les BARRE.
+   
+   Impact :
+   fortran
+   TE0513.F 
+   
+   catalogues
+   elements
+   GENER_MEBAR1.CATA
+   
+   options
+   MASS_MECA_DIAG.CATA et MASS_MECA_EXPLI.CATA
+   pour rajouter le parametre PCAGNBA, specifique pour les 
+   barres.
+   
+   Nouveau test
+   SDLS115B
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.03.115
+VALIDATION
+   sdls115b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012397 DU 2008-08-27 08:28:49
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Ajout des options ENEL_(ELNO_)ELGA et ENER_ELAS pour DKT/DKTG
+FONCTIONNALITE
+   Pour les applications en dynamique non-lineaire transitoire 
+   (projet OMERSI) on a besoin de post-traiter les quantites 
+   energetiques du type energie elastique et energie dissipee,
+   afin de mieux valider et identifier les parametres de nos 
+   modeles.
+   
+   Dans les applications cibles on se sert principalement des 
+   elements DKT,DKTG,GRILLE_MEMBRANE et des modeles 
+   ENDO_ISOT_BETON (EIB dans la suite), GLRC_DM et VMIS_.
+   
+   Comme une premiere etape on propose dans cette fiche de 
+   programmer les options ENEL_ELGA, ENEL_ELNO_ELGA (appelees 
+   sous CALC_ELEM) et ENER_ELAS (appelee sous POST_ELEM) pour 
+   les elements DKT et DKTG. 
+   
+   Desormais, les options ENEL_ELGA, ENEL_ELNO_ELGA et 
+   ENER_ELAS sont disponibles pour les elements DKT et DKTG et 
+   les relations ENDO_ISOT_BETON, ENDO_ORTHO_BETON, MAZARS, 
+   GLRC_DM, GLRC_DAMAGE et KIT_DDI (GLRC_DM + VMIS_). Elles 
+   permettent de calculer 3 composantes de l'energie 
+   elastique : TOTALE, MEMBRANE et FLEXION.
+   
+   Impact code :
+   
+   Catalogues elements 
+   GENER_MEDKT2.CATA, GENER_MEDKG1.CATA
+   
+   Catalogue options (pour rajouter les nouvelles parametres 
+   lies aux coques, PCACOQU, etc.)
+   ENEL_ELGA.CATA, ENEL_ELNO_ELGA.CATA, ENER_ELAS.CATA
+   
+   Fortran
+   MECALC.F, MECALM.F et PEINGL.F (pour remplir les champs 
+   correspondant aux nouveaux parametres)
+   
+   TE0412.F - nouvelle routine TE qui fait tout.
+   
+   Tests
+   SSLS101A - DKT avec ELAS
+   SDLS115A - DKT avec ELAS en dynamique
+   SSNS106A - DKT avec ENDO_ISOT_BETON et DKTG avec GLRC_DM en 
+   membrane
+   SSNS106B - DKT avec ENDO_ISOT_BETON et DKTG avec GLRC_DM en 
+   flexion
+   SSNS106F - DKTG avec KIT_DDI (GLRC_DM + VMIS_CINE_LINE)
+   
+   MAZARS et ENDO_ORTH_BETON ne sont pas testes mais on passe 
+   par les memes lignes de fortran que ENDO_ISOT_BETON.
+   
+   On prevoit de valider GLRC_DAMAGE avec SDNS106A, mais la 
+   restitution en 9.3.13 est empechee car le test est casse en 
+   9.3.12.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01, U4.81.22, V3.03.101, V2.03.115, V6.05.106
+VALIDATION
+   ssls101a,sdls115a,ssns106a,ssns106b,ssns106f
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 30/09/2008 - 16:42:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012533 DU 2008-09-25 11:21:46
+TYPE express concernant Code_Aster (VERSION 9.3)
+TITRE
+   Cas-tests ssnp130e et ssnp130f cass?sur Bull
+FONCTIONNALITE
+   Problème :
+   ==========
+   Introduit en 9.3.12 suite à la fiche sur l'évolution de SING_ELEM.
+   Une variable qui, dans certains cas est non initialisée, est testée. Manque de chance,
+   parfois la "non initialisation" produit la bonne valeur pour rentrer dans le test et on
+   plante car on cherche à récupérer un objet qui n'existe pas.
+   
+   Solution :
+   ==========
+   On blinde le test en ajoutant une condition pour être certain qu'on se retrouvera dans la
+   situation où l'objet que l'on veut récupérer existe bien.
+   
+   L. 1331
+   <    IF ((IRETER.GT.0).AND.(IRET5.EQ.0)) THEN
+   >    IF (IRET5.EQ.0) THEN
+   
+   L. 1236
+   <     CALL GETVID(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
+   >     CALL GETVTX(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
+   
+   Impact :
+   ========
+   mecalm.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Cas-tests incrimin?
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 29/09/2008 - 14:09:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012507 DU 2008-09-19 07:56:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Test comp002a en version NEW9.3.11
+FONCTIONNALITE
+   c'est le seul test COMPxxx qui appelle deux fois l'ensemble de la 
+   procédure : un fois pour PARM_THETA=1, puis une fois pour 
+   PARM_THETA=0.5 (deux en un !)
+   
+   Or le fichier de commandes était buggué :
+   
+   premier test avec parm_theta=1 :
+   
+   RESU=[None]*Ncal
+   R_SI=[None]*len(ch_param)
+   ..
+   puis tous les appels en boucle à SIMU_POINT_MAT, TEST_RESU, etc...
+   
+   ensuite, bizarrement :
+   DETRUIRE ( CONCEPT = _F (NOM = RESU,),)
+   DETRUIRE ( CONCEPT = _F (NOM = R_SI,),)
+   
+   et on attaque les SIMU_POINT_MAT avec THETA=0.5, mais en réécrivant 
+   dans RESU !!!
+   
+   for i in range(Ncal):
+           ...
+           RESU[i]=SIMU_POINT_MAT(
+   On n'écrivait sûrement pas au bon endroit. D'autre part, que fait 
+   DETRUIRE dans ce cas ?
+   
+   On peut corriger de la façon suivante (pour THETA=0.5) :
+   for i in range(Ncal):
+    DETRUIRE ( CONCEPT = _F (NOM = RESU[i],),)
+   for i in range(len(ch_param)):
+    DETRUIRE ( CONCEPT = _F (NOM = R_SI[i],),)
+   RESU=[None]*Ncal
+   R_SI=[None]*len(ch_param)
+   
+   et là le test est OK
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   comp002a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012258 DU 2008-07-01 09:33:33
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   test comp002a : erreur en mxc3xa9moire dynamique
+FONCTIONNALITE
+   résolu par la fiche 12507.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdls115b                     markovic D.MARKOVIC         213    213      0
+ CASTEST MODIF ascou01a                        abbas M.ABBAS            328      1      1
+ CASTEST MODIF ascou04a                        abbas M.ABBAS            377      1      1
+ CASTEST MODIF ascou07a                        abbas M.ABBAS            233      1      1
+ CASTEST MODIF ascou08a                        abbas M.ABBAS            304      1      1
+ CASTEST MODIF ascou09a                        abbas M.ABBAS            264      1      1
+ CASTEST MODIF ascou16a                        abbas M.ABBAS            402      1      1
+ CASTEST MODIF ascou18a                        abbas M.ABBAS            292      1      1
+ CASTEST MODIF ascou19a                        abbas M.ABBAS            385      1      1
+ CASTEST MODIF aspic01a                        abbas M.ABBAS            194      1      1
+ CASTEST MODIF aspic01b                        abbas M.ABBAS            569      1      1
+ CASTEST MODIF aspic02a                        abbas M.ABBAS            218      1      1
+ CASTEST MODIF aspic07a                        abbas M.ABBAS            193      1      1
+ CASTEST MODIF cabri02b                        abbas M.ABBAS            415      1      1
+ CASTEST MODIF comp002a                        proix J-M.PROIX          290     10      7
+ CASTEST MODIF fdlv111b                        abbas M.ABBAS            244      1      1
+ CASTEST MODIF feti001b                        abbas M.ABBAS            276      1      1
+ CASTEST MODIF feti002b                        abbas M.ABBAS            285      1      1
+ CASTEST MODIF feti003d                        abbas M.ABBAS            286      1      1
+ CASTEST MODIF feti004b                        abbas M.ABBAS            278      1      1
+ CASTEST MODIF feti005b                        abbas M.ABBAS            288      1      1
+ CASTEST MODIF sdls112a                     lefebvre J-P.LEFEBVRE       419      1      1
+ CASTEST MODIF sdls115a                     markovic D.MARKOVIC         429    138     24
+ CASTEST MODIF sdls116a                        abbas M.ABBAS            163      1      1
+ CASTEST MODIF sdlv121b                        abbas M.ABBAS            284      1      1
+ CASTEST MODIF sdnd102b                        abbas M.ABBAS            468      1      1
+ CASTEST MODIF sdnd102c                        abbas M.ABBAS            245      1      1
+ CASTEST MODIF sdnd102d                        abbas M.ABBAS            240      1      1
+ CASTEST MODIF sdnl103a                        abbas M.ABBAS            195      1      1
+ CASTEST MODIF sdnl111e                        abbas M.ABBAS            179      1      1
+ CASTEST MODIF sdns106a                        abbas M.ABBAS            273      1      1
+ CASTEST MODIF sdns106d                        abbas M.ABBAS            188      1      1
+ CASTEST MODIF sdnv100f                        abbas M.ABBAS            397      1      1
+ CASTEST MODIF sdnv100j                        abbas M.ABBAS            286      1      1
+ CASTEST MODIF sdnv103b                        abbas M.ABBAS            403      1      1
+ CASTEST MODIF sdnv104a                       desoza T.DESOZA           223      1      1
+ CASTEST MODIF sdnv104b                       desoza T.DESOZA           208      1      1
+ CASTEST MODIF sdnv104c                       desoza T.DESOZA           247      1      1
+ CASTEST MODIF ssls101a                     markovic D.MARKOVIC         633     97      1
+ CASTEST MODIF ssna115b                        abbas M.ABBAS            253      3      1
+ CASTEST MODIF ssnl133a                        abbas M.ABBAS            273      2      1
+ CASTEST MODIF ssnp110d                        abbas M.ABBAS            318      1      1
+ CASTEST MODIF ssnp115c                        abbas M.ABBAS            207      1      1
+ CASTEST MODIF ssnp121d                        abbas M.ABBAS            244      1      1
+ CASTEST MODIF ssnp125a                        abbas M.ABBAS            491      6      6
+ CASTEST MODIF ssnp125b                        abbas M.ABBAS            420      2      2
+ CASTEST MODIF ssnp130e                        abbas M.ABBAS            194      1      1
+ CASTEST MODIF ssnp130f                        abbas M.ABBAS            193      1      1
+ CASTEST MODIF ssnp133a                        abbas M.ABBAS            411      2      1
+ CASTEST MODIF ssnp136a                     lefebvre J-P.LEFEBVRE       719      1      1
+ CASTEST MODIF ssnp503b                        abbas M.ABBAS            493      1      1
+ CASTEST MODIF ssnp503d                        abbas M.ABBAS            491      1      1
+ CASTEST MODIF ssnp504b                        abbas M.ABBAS            496      1      1
+ CASTEST MODIF ssnp504d                        abbas M.ABBAS            458      1      1
+ CASTEST MODIF ssns106a                     markovic D.MARKOVIC         744    312     71
+ CASTEST MODIF ssns106b                     markovic D.MARKOVIC         733    298     61
+ CASTEST MODIF ssns106c                     markovic D.MARKOVIC         829     32     69
+ CASTEST MODIF ssns106d                     markovic D.MARKOVIC         524      9      2
+ CASTEST MODIF ssns106e                     markovic D.MARKOVIC         464     13     13
+ CASTEST MODIF ssns106f                     markovic D.MARKOVIC         735    317     89
+ CASTEST MODIF ssns106g                     markovic D.MARKOVIC         496     18     52
+ CASTEST MODIF ssnv128b                        abbas M.ABBAS            430      1      1
+ CASTEST MODIF ssnv128c                        abbas M.ABBAS            430      1      1
+ CASTEST MODIF ssnv129b                        abbas M.ABBAS            215      1      1
+ CASTEST MODIF ssnv129c                        abbas M.ABBAS            227      5      5
+ CASTEST MODIF ssnv157c                        abbas M.ABBAS            133      2      1
+ CASTEST MODIF ssnv182b                        abbas M.ABBAS            286      1      1
+ CASTEST MODIF ssnv182c                        abbas M.ABBAS            233      1      1
+ CASTEST MODIF ssnv182d                        abbas M.ABBAS            230      1      1
+ CASTEST MODIF ssnv182e                        abbas M.ABBAS            216      1      1
+ CASTEST MODIF ssnv182f                        abbas M.ABBAS            223      1      1
+ CASTEST MODIF ssnv186a                        abbas M.ABBAS            200      1      1
+ CASTEST MODIF ssnv186b                        abbas M.ABBAS            231      1      1
+ CASTEST MODIF ssnv186c                        abbas M.ABBAS            202      1      1
+ CASTEST MODIF ssnv186d                        abbas M.ABBAS            199      1      1
+ CASTEST MODIF ssnv186e                        abbas M.ABBAS            194      1      1
+ CASTEST MODIF ssnv186f                        abbas M.ABBAS            203      1      1
+ CASTEST MODIF ssnv186g                        abbas M.ABBAS            211      1      1
+ CASTEST MODIF ssnv186h                        abbas M.ABBAS            215      1      1
+ CASTEST MODIF ssnv195b                        abbas M.ABBAS            336      1      1
+ CASTEST MODIF ssnv195c                        abbas M.ABBAS            480      1      1
+ CASTEST MODIF ssnv201a                        abbas M.ABBAS            396      1      1
+ CASTEST MODIF ssnv206a                        abbas M.ABBAS            325      1      1
+ CASTEST MODIF ssnv209b                        abbas M.ABBAS            516      1      1
+ CASTEST MODIF ssnv209c                        abbas M.ABBAS            504      1      1
+ CASTEST MODIF ssnv209d                        abbas M.ABBAS            503      1      1
+ CASTEST MODIF ssnv209e                        abbas M.ABBAS            504      1      1
+ CASTEST MODIF ssnv209g                        abbas M.ABBAS            493      1      1
+ CASTEST MODIF ssnv209h                        abbas M.ABBAS            425      1      1
+ CASTEST MODIF ssnv504a                        abbas M.ABBAS            305      1      1
+ CASTEST MODIF ssnv505a                        abbas M.ABBAS            225      1      1
+ CASTEST MODIF wtnl100e                        abbas M.ABBAS            230      1      1
+ CASTEST MODIF yyyy106b                        abbas M.ABBAS            651      1      3
+ CASTEST MODIF zzzz231a                        abbas M.ABBAS            177      1      1
+CATALOGU MODIF options/enel_elga            markovic D.MARKOVIC          49     11      1
+CATALOGU MODIF options/enel_elno_elga       markovic D.MARKOVIC          49     11      1
+CATALOGU MODIF options/ener_elas            markovic D.MARKOVIC          34      3      1
+CATALOGU MODIF options/mass_meca_diag       markovic D.MARKOVIC          47      2      1
+CATALOGU MODIF options/mass_meca_expli      markovic D.MARKOVIC          54      2      1
+CATALOGU MODIF typelem/gener_mebar1         markovic D.MARKOVIC         229      5      3
+CATALOGU MODIF typelem/gener_medkg1         markovic D.MARKOVIC         260     36     10
+CATALOGU MODIF typelem/gener_medkt2         markovic D.MARKOVIC         364     15      3
+       C MODIF hdf/hdfcrf                   courtois M.COURTOIS          52      3      3
+       C MODIF hdf/hdfcrg                   courtois M.COURTOIS          60      3      3
+       C MODIF hdf/hdfnbo                   courtois M.COURTOIS          67      4      3
+       C MODIF hdf/hdfnom                   courtois M.COURTOIS          78      6      5
+       C MODIF hdf/hdfopd                   courtois M.COURTOIS          61      3      3
+       C MODIF hdf/hdfopf                   courtois M.COURTOIS          49      3      3
+       C MODIF hdf/hdfopg                   courtois M.COURTOIS          56      3      3
+       C MODIF hdf/hdfrat                   courtois M.COURTOIS          64      4      3
+       C MODIF hdf/hdftsd                   courtois M.COURTOIS          63      2      2
+       C MODIF hdf/hdftyp                   courtois M.COURTOIS          94      4      3
+       C MODIF hdf/hdfwat                   courtois M.COURTOIS          67      4      3
+       C MODIF hdf/hdfwsv                   courtois M.COURTOIS         122      4      3
+       C MODIF supervis/astermodule         courtois M.COURTOIS        4130    229    170
+       C MODIF utilitai/aplext              courtois M.COURTOIS         199      2      2
+       C MODIF utilitai/asterm              courtois M.COURTOIS         432     11     11
+       C MODIF utilitai/cpfile              courtois M.COURTOIS          89      2      2
+       C MODIF utilitai/envima              courtois M.COURTOIS         183     25     25
+       C MODIF utilitai/erfcam              courtois M.COURTOIS          34      5      5
+       C MODIF utilitai/fetmpi              courtois M.COURTOIS          44      8      5
+       C MODIF utilitai/gtenv               courtois M.COURTOIS          52      2      2
+       C MODIF utilitai/indik8              courtois M.COURTOIS          55      2      2
+       C MODIF utilitai/iniast              courtois M.COURTOIS          60      2      2
+       C MODIF utilitai/iodr                courtois M.COURTOIS         209      5      5
+       C MODIF utilitai/maxbas              courtois M.COURTOIS          37      3      3
+       C MODIF utilitai/mejvdy              courtois M.COURTOIS          36      3      3
+       C MODIF utilitai/mejvst              courtois M.COURTOIS          37      3      3
+       C MODIF utilitai/memdis              courtois M.COURTOIS          55      2      2
+       C MODIF utilitai/memjob              courtois M.COURTOIS          41      3      3
+       C MODIF utilitai/memjvx              courtois M.COURTOIS          38      3      3
+       C MODIF utilitai/mlnbpr              courtois M.COURTOIS          35      4      5
+       C MODIF utilitai/mlnump              courtois M.COURTOIS          34      3      4
+       C MODIF utilitai/modsig              courtois M.COURTOIS         140      2      2
+       C MODIF utilitai/mpicm1              courtois M.COURTOIS          37      5      5
+       C MODIF utilitai/mummpi              courtois M.COURTOIS          43      4      4
+       C MODIF utilitai/rmfile              courtois M.COURTOIS          75      2      2
+       C MODIF utilitai/strmov              courtois M.COURTOIS          26      2      2
+       C MODIF utilitai/uttcsm              courtois M.COURTOIS          61      6      6
+       C MODIF utilitai/uttlim              courtois M.COURTOIS          57      6      6
+       C MODIF utilitai/uttrst              courtois M.COURTOIS          35      5      5
+       C MODIF utilitai/vparjv              courtois M.COURTOIS          36      3      3
+ FORTRAN AJOUT algorith/dibcle                 abbas M.ABBAS            103    103      0
+ FORTRAN AJOUT algorith/nmadir                 abbas M.ABBAS            114    114      0
+ FORTRAN AJOUT elements/te0412              markovic D.MARKOVIC         306    306      0
+ FORTRAN AJOUT modelisa/cflecq                 abbas M.ABBAS            182    182      0
+ FORTRAN AJOUT modelisa/cflema                 abbas M.ABBAS            132    132      0
+ FORTRAN AJOUT modelisa/cfleno                 abbas M.ABBAS            132    132      0
+ FORTRAN AJOUT modelisa/cfmema                 abbas M.ABBAS            106    106      0
+ FORTRAN AJOUT modelisa/cfmeno                 abbas M.ABBAS            106    106      0
+ FORTRAN MODIF algeline/diagav                desoza T.DESOZA           166      7      6
+ FORTRAN MODIF algeline/tldlg2                desoza T.DESOZA           485      3      4
+ FORTRAN MODIF algeline/tldlg3                desoza T.DESOZA           358      8      8
+ FORTRAN MODIF algorith/accel0                 abbas M.ABBAS            178      1      1
+ FORTRAN MODIF algorith/algocg                desoza T.DESOZA           643      1      3
+ FORTRAN MODIF algorith/algocl                desoza T.DESOZA           599      6     14
+ FORTRAN MODIF algorith/algoco                desoza T.DESOZA           614      5     10
+ FORTRAN MODIF algorith/algocp                desoza T.DESOZA           360      5      8
+ FORTRAN MODIF algorith/algogl                desoza T.DESOZA           592      5     10
+ FORTRAN MODIF algorith/ascoma                 abbas M.ABBAS            108      4      4
+ FORTRAN MODIF algorith/asmari                 abbas M.ABBAS            146      9     11
+ FORTRAN MODIF algorith/cfalgo                desoza T.DESOZA           178     19     24
+ FORTRAN MODIF algorith/cfconv                 abbas M.ABBAS            236      1      1
+ FORTRAN MODIF algorith/cfcrma                desoza T.DESOZA           254     39     27
+ FORTRAN MODIF algorith/cfcrsd                desoza T.DESOZA           402     43     24
+ FORTRAN MODIF algorith/cfdisc                desoza T.DESOZA           228      3      3
+ FORTRAN MODIF algorith/cfmxme                 abbas M.ABBAS            221      3      4
+ FORTRAN MODIF algorith/cfsans                 abbas M.ABBAS            184      2      1
+ FORTRAN MODIF algorith/fro2gd                desoza T.DESOZA           745      5      9
+ FORTRAN MODIF algorith/frogdp                desoza T.DESOZA           622      8     17
+ FORTRAN MODIF algorith/frolgd                desoza T.DESOZA          1070      9     19
+ FORTRAN MODIF algorith/fropgd                desoza T.DESOZA           822      9     14
+ FORTRAN MODIF algorith/majdva                 abbas M.ABBAS            151     24     15
+ FORTRAN MODIF algorith/mappar                 abbas M.ABBAS            413      6      2
+ FORTRAN MODIF algorith/mmconv                 abbas M.ABBAS            196      1      1
+ FORTRAN MODIF algorith/mmligr                 abbas M.ABBAS            245      1      1
+ FORTRAN MODIF algorith/mmtanr                 abbas M.ABBAS            178      2      2
+ FORTRAN MODIF algorith/ndassp                 abbas M.ABBAS            199      6      2
+ FORTRAN MODIF algorith/ndgrot                 abbas M.ABBAS            194     30      9
+ FORTRAN MODIF algorith/ndlect                 abbas M.ABBAS            456     39     38
+ FORTRAN MODIF algorith/ndmuap                 abbas M.ABBAS            157      2      2
+ FORTRAN MODIF algorith/ndnpas                 abbas M.ABBAS            499      2      2
+ FORTRAN MODIF algorith/ndpred                 abbas M.ABBAS            223     15      7
+ FORTRAN MODIF algorith/nmaint                 abbas M.ABBAS            120      2      2
+ FORTRAN MODIF algorith/nmasco                 abbas M.ABBAS            164     10      2
+ FORTRAN MODIF algorith/nmasfr                 abbas M.ABBAS            117      5      5
+ FORTRAN MODIF algorith/nmassd                 abbas M.ABBAS            160     25      5
+ FORTRAN MODIF algorith/nmassi                 abbas M.ABBAS            156      1      1
+ FORTRAN MODIF algorith/nmassv                 abbas M.ABBAS            358      7      2
+ FORTRAN MODIF algorith/nmassx                 abbas M.ABBAS            186      4      6
+ FORTRAN MODIF algorith/nmasva                 abbas M.ABBAS            186      8      2
+ FORTRAN MODIF algorith/nmbudi                 abbas M.ABBAS             94      1      1
+ FORTRAN MODIF algorith/nmcalv                 abbas M.ABBAS            349      7      3
+ FORTRAN MODIF algorith/nmcere                 abbas M.ABBAS            221      4      2
+ FORTRAN MODIF algorith/nmchai                 abbas M.ABBAS            270      7      3
+ FORTRAN MODIF algorith/nmchap                 abbas M.ABBAS            354     13      7
+ FORTRAN MODIF algorith/nmchar                 abbas M.ABBAS            465     22     20
+ FORTRAN MODIF algorith/nmchfi                 abbas M.ABBAS            148      6      7
+ FORTRAN MODIF algorith/nmchoi                 abbas M.ABBAS            131      4      5
+ FORTRAN MODIF algorith/nmchrm                 abbas M.ABBAS            224     11      6
+ FORTRAN MODIF algorith/nmcofr                desoza T.DESOZA           174      3      3
+ FORTRAN MODIF algorith/nmcoma                 abbas M.ABBAS            270      6      7
+ FORTRAN MODIF algorith/nmconv                 abbas M.ABBAS            472     37     20
+ FORTRAN MODIF algorith/nmcore                 abbas M.ABBAS            210      1      3
+ FORTRAN MODIF algorith/nmcrch                 abbas M.ABBAS            433     19      3
+ FORTRAN MODIF algorith/nmcrli                 abbas M.ABBAS            294     13      4
+ FORTRAN MODIF algorith/nmdeco                 abbas M.ABBAS            134      2      1
+ FORTRAN MODIF algorith/nmdepl                 abbas M.ABBAS            329     23     47
+ FORTRAN MODIF algorith/nmdiri                 abbas M.ABBAS            112     45     13
+ FORTRAN MODIF algorith/nmetca                 abbas M.ABBAS            248      1      4
+ FORTRAN MODIF algorith/nmflam                 abbas M.ABBAS            221      7      3
+ FORTRAN MODIF algorith/nmgrot                 abbas M.ABBAS             92      1      1
+ FORTRAN MODIF algorith/nmible                 abbas M.ABBAS            208     10      3
+ FORTRAN MODIF algorith/nminit                 abbas M.ABBAS            267     10      2
+ FORTRAN MODIF algorith/nmmajc                 abbas M.ABBAS            225      5      1
+ FORTRAN MODIF algorith/nmmaji                 abbas M.ABBAS            104      1      1
+ FORTRAN MODIF algorith/nmmatr                 abbas M.ABBAS            205      2      2
+ FORTRAN MODIF algorith/nmmuap                 abbas M.ABBAS            149      2      2
+ FORTRAN MODIF algorith/nmpost                 abbas M.ABBAS            183      3      1
+ FORTRAN MODIF algorith/nmprac                 abbas M.ABBAS            185      3      1
+ FORTRAN MODIF algorith/nmprde                 abbas M.ABBAS            217      4      2
+ FORTRAN MODIF algorith/nmprma                 abbas M.ABBAS            254      6      7
+ FORTRAN MODIF algorith/nmprta                 abbas M.ABBAS            210     15      6
+ FORTRAN MODIF algorith/nmrelp                 abbas M.ABBAS            365      4      3
+ FORTRAN MODIF algorith/nmrenu                 abbas M.ABBAS            130      2      2
+ FORTRAN MODIF algorith/nmtble                 abbas M.ABBAS            240     10      6
+ FORTRAN MODIF algorith/op0070                 abbas M.ABBAS            537      7      1
+ FORTRAN MODIF algorith/vecgme                 abbas M.ABBAS            253      1      6
+ FORTRAN MODIF calculel/mecalc              markovic D.MARKOVIC         538      2      1
+ FORTRAN MODIF calculel/mecalm              markovic D.MARKOVIC        2464     10      4
+ FORTRAN MODIF elements/crgdm               markovic D.MARKOVIC         131      6      5
+ FORTRAN MODIF elements/dxglrc              markovic D.MARKOVIC         446      7     13
+ FORTRAN MODIF elements/gldloc              markovic D.MARKOVIC         192     13      9
+ FORTRAN MODIF elements/lcgldm              markovic D.MARKOVIC         499      6      6
+ FORTRAN MODIF elements/lgdmvm              markovic D.MARKOVIC         465      8      4
+ FORTRAN MODIF elements/te0153              markovic D.MARKOVIC         144      9      1
+ FORTRAN MODIF jeveux/jedebu                lefebvre J-P.LEFEBVRE       282      1      4
+ FORTRAN MODIF jeveux/jeinif                lefebvre J-P.LEFEBVRE       590     13      1
+ FORTRAN MODIF jeveux/jjalls                lefebvre J-P.LEFEBVRE       513      5      4
+ FORTRAN MODIF jeveux/jjarep                lefebvre J-P.LEFEBVRE       291     10      9
+ FORTRAN MODIF jeveux/jjldyn                lefebvre J-P.LEFEBVRE       187      1     11
+ FORTRAN MODIF jeveux/jjlide                lefebvre J-P.LEFEBVRE       576      6      3
+ FORTRAN MODIF modelisa/elimco                 abbas M.ABBAS            151     58    208
+ FORTRAN MODIF modelisa/limaco                 abbas M.ABBAS            194      3      3
+ FORTRAN MODIF utilifor/mltpos              courtois M.COURTOIS         174      3      3
+ FORTRAN MODIF utilitai/copisd                 abbas M.ABBAS            388     35      2
+ FORTRAN MODIF utilitai/peingl              markovic D.MARKOVIC         733     32      7
+       H MODIF include/aster                courtois M.COURTOIS          84      3      2
+       H MODIF include/aster_depend         courtois M.COURTOIS         148      5      1
+       H MODIF include/definition           courtois M.COURTOIS         279      8      3
+  PYTHON MODIF Comportement/endo_isot_beton   markovic D.MARKOVIC          39      2      2
+  PYTHON MODIF Intranet/macr_cabri_calc_cata      abbas M.ABBAS            188      1      3
+  PYTHON MODIF Intranet/macro_bascule_schema_cata      abbas M.ABBAS            438      1      5
+  PYTHON MODIF Macro/post_dyna_alea_ops        abbas M.ABBAS            428      1      1
+  PYTHON MODIF Messages/algorith10          courtois M.COURTOIS         302      1      5
+  PYTHON MODIF Messages/algorith7           courtois M.COURTOIS         302      5      1
+  PYTHON MODIF Messages/archivage           courtois M.COURTOIS          33      1      5
+  PYTHON MODIF Messages/contactdebg         courtois M.COURTOIS         118      1      9
+  PYTHON MODIF Messages/elements            markovic D.MARKOVIC         337      5      1
+  PYTHON MODIF Messages/jeveux              lefebvre J-P.LEFEBVRE       303      7      3
+  PYTHON MODIF Messages/mecanonline4        courtois M.COURTOIS          84      1      7
+  PYTHON MODIF Messages/mecanonline         courtois M.COURTOIS         156      1     13
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    9        1394      1394             +1394
+ MODIF :  253       75107      2796    1730     +1066
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  262       76501      4190    1730     +2460 

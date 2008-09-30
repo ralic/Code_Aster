@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MLNBPR utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MLNBPR utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,15 +21,14 @@
 /* ------------------------------------------------------------------ */
 #include "aster.h"
 
-int STDCALL(MLNBPR, mlnbpr)()
+INTEGER STDCALL(MLNBPR, mlnbpr)()
 {
+    INTEGER nump;
 #ifdef _USE_OPENMP
     extern int omp_get_max_threads();
-    int nump;
-    nump= omp_get_max_threads() ;
+    nump= (INTEGER)omp_get_max_threads() ;
     return(nump);
 #else
-    int nump;
     nump=1;
     return(nump);
 #endif

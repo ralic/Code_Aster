@@ -1,6 +1,6 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,8 +63,8 @@ C
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          IRECUR
-      COMMON /LDYNJE/  IRECUR
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE 
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
 C ----------------------------------------------------------------------
       CHARACTER *32    CLEL,CLE
       CHARACTER *4     Z
@@ -80,12 +80,13 @@ C DEB ------------------------------------------------------------------
       KAT (17)= 0
       KDY (17)= 0
 C
-C --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEAU REPERTOIRE
+C --- ON INTERDIT L'APPEL A JJLDYN LORS DE L'ALLOCATION 
+C --- DYNAMIQUE  (ET LES APPELS RECURSIFS)
 C
-C
-C --- ON DEBRAYE LE MECANISME DE LIBERATION DE PLACE MEMOIRE
-C
-      IRECUR = 999
+      LDYNOL = LDYN
+      IF ( LDYN .EQ. 1 ) THEN  
+        LDYN   = 2
+      ENDIF
 C
 C --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEAU REPERTOIRE
 C
@@ -100,7 +101,6 @@ C
         RNOM( JNOM - 1 + I ) = '?'
  60   CONTINUE
       NUTI = 0
-      IRECUR = 0
 C
 C --- REMPLISSAGE DU REPERTOIRE DE NOM
 C
@@ -285,6 +285,7 @@ C
  330  CONTINUE
       CARA(JCARA(IC)+6) = IADD(JIADD(IC) + 2*2-1  )
       CARA(JCARA(IC)+7) = IADD(JIADD(IC) + 2*2    )
+      LDYN = LDYNOL
       IPGC = IPGCA
 C FIN ------------------------------------------------------------------
       END

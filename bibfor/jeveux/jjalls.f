@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,6 +86,7 @@ C ----------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       LXA = .NOT. ( IDXAXD(1) .EQ. IDINIT(1) )
       LXD = LXA
+      LTOT  = 0
       JITAB = 0
       IADMI = 0
       IADYN = 0
@@ -122,7 +123,7 @@ C     SA LONGUEUR EST SUPERIEURE A LGDYN
 C
       IESSAI = 0
       ILDYNA = 0
-      IF ( LDYN .EQ. 1 .AND. LSI .GE. LGDYN ) THEN
+      IF ( (LDYN .EQ. 1 .OR. LDYN.EQ. 2).AND. LSI.GE.LGDYN ) THEN
         LSIC = LSI + 9
  50     CONTINUE
         ILDYNA = ILDYNA+1
@@ -136,7 +137,7 @@ C
             IVAL(4)=LTOT*LOIS
             CALL U2MESI('S','JEVEUX_62',4,IVAL)
           ELSE
-            CALL JJLDYN(LTOT)
+            IF ( LDYN .EQ. 1 ) CALL JJLDYN(LTOT)
             GOTO 50
           ENDIF
         ENDIF
@@ -159,7 +160,7 @@ C
             IVAL(2)=LTOT*LOIS
             CALL U2MESI('S','JEVEUX_60',2,IVAL)
           ELSE
-            CALL JJLDYN(LTOT)
+            IF ( LDYN .EQ. 1 ) CALL JJLDYN(LTOT)
             GOTO 50
           ENDIF  
         ENDIF

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwat hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfwat hdf  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,12 +31,13 @@
 /-----------------------------------------------------------------------------*/
 #include "hdf5.h"
 
-INTEGER DEFPSPS(HDFWAT, hdfwat, INTEGER *iddat, char *nomat, int ln, INTEGER *nbv, char *valat, int lv)
+INTEGER DEFPSPS(HDFWAT, hdfwat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INTEGER *nbv, char *valat, STRING_SIZE lv)
 {
   hid_t ida,aid,aty,att;  
   herr_t ret,retc; 
   hsize_t dimsf[1];
-  int k,rank=1;
+  int rank=1;
+  STRING_SIZE k;
   long iret=-1;
   char *nom;
   void *malloc(size_t size); 

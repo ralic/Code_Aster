@@ -2,7 +2,7 @@
      &                  CNVADO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -148,7 +148,13 @@ C
           COVARI(IFDO) = -1.D0*COEEQU
         ENDIF 
         IF (LIMPE) THEN
-          CNIMPE = NMCHEX(VEASSE,'VEASSE','CNIMPE')
+          IF (PHASE.EQ.'PRED') THEN
+            CNIMPE = NMCHEX(VEASSE,'VEASSE','CNIMPP')
+          ELSEIF (PHASE.EQ.'CORR') THEN  
+            CNIMPE = NMCHEX(VEASSE,'VEASSE','CNIMPC')
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF        
           IFDO         = IFDO+1 
           CNVARI(IFDO) = CNIMPE
           COVARI(IFDO) = -1.D0*COEEQU

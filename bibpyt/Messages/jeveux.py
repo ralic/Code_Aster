@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,8 +162,12 @@ cata_msg = {
 
 32 : _("""
      Erreur allocation de segment de mémoire de longueur %(i1)d (entiers).
-     Mémoire allouée insuffisante. Fermeture des bases (glob.*) sur erreur
-     Il faut relancer le calcul en augmentant la limite mémoire.
+     Mémoire allouée insuffisante. Il est impossible de trouver un espace
+     de longueur suffisante dans la segmentation mémoire. Cette erreur 
+     concerne la mémoire dite "statique".
+     Fermeture des bases (glob.*) sur erreur
+     Il faut relancer le calcul en augmentant la limite mémoire (paramètre 
+     -memjeveux_stat sur la ligne de commande). 
 """),
 
 33 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/04/2008   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,12 +137,6 @@ chf1  = CALC_FONC_INTERP (
                           PROL_DROITE = 'CONSTANT',
                           PROL_GAUCHE = 'CONSTANT',
                           )
-IMPR_CO(
-         CONCEPT = _F(
-                     NOM = 'chf1'
-                    )
-        )
-
 NN1  = int(TMAX/DT)
 
 VIT_INI = CREA_CHAMP(MAILLAGE=MAIL,
@@ -170,7 +164,7 @@ RESU1 = DYNA_NON_LINE(
                        MODELE=MOD1,
                        CHAM_MATER= CHMAT,
                        CARA_ELEM = CELE1,
-                       MASS_DIAG='NON',
+                       MASS_DIAG='OUI',
                        COMP_INCR=_F(
                                     RELATION ='ELAS',     ),
                        INCREMENT=_F( LIST_INST = INST1,
@@ -190,21 +184,6 @@ RESU1 = DYNA_NON_LINE(
                                        NOEUD='N1',SUIVI_DDL='NON'),),
                      );
 
-
-
-
-IMPR_RESU(MODELE = MOD1,
-          FORMAT = 'RESULTAT',
-          RESU = (_F(
-                     MAILLAGE = MAIL,
-                     RESULTAT = RESU1,
-                     NOEUD    = 'N2',
-                     NOM_CHAM = (
-                                 'DEPL',
-                                 'VITE',
-                                 'ACCE',
-                                ) ,
-           ),),);
 # Calcul implicite HHT complet faiblement amorti
 # On veut retrouver le resultat precedent
 # On interdit les iterations pour bien valider HHT complet et Rayleigh
@@ -287,7 +266,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE = UXRES,
-                  PRECISION = 5.E-4,
+                  PRECISION = 5.E-3,
                   REFERENCE='ANALYTIQUE',
                   ),
                _F(RESULTAT=RESU2,
@@ -311,5 +290,140 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                   REFERENCE='NON_REGRESSION',
                   ),
                   ),);
+#--------------------------------------------------------------------
+RESU1=CALC_NO(reuse = RESU1,
+               OPTION='FORC_NODA',
+               PRECISION=1.E-3,
+               RESULTAT=RESU1,
+               MODELE=MOD1,
+               CHAM_MATER=CHMAT,
+               );
+
+RESU1 =CALC_ELEM( reuse      = RESU1,
+              OPTION     = (
+                            'DEGE_ELNO_DEPL',
+                            'SIEF_ELNO_ELGA',
+                            'ENEL_ELGA',
+                            'ENEL_ELNO_ELGA',
+              ),
+              RESULTAT   = RESU1,
+              MODELE=MOD1,
+              CARA_ELEM = CELE1,
+              )
+
+TRAV = POST_ELEM(
+  RESULTAT = RESU1,
+  TRAV_EXT = _F(),
+  )
+
+ENER = POST_ELEM(
+  RESULTAT = RESU1,
+  ENER_ELAS = _F(GROUP_MA = 'DALLE'),
+  )
+
+EXX = Q0*K*cos(K*LONG)*sin(FREQ*TMAX)
+
+SXX = EY * EXX
+
+print 'EXX = ',EXX
+print 'SXX = ',SXX
+
+
+EXX = Q0*K*cos(K*LONG)*sin(FREQ*TMAX)
+NXX = EY * EXX * EP
+ENEL = 0.5*EXX*NXX
+TEST_RESU(RESU=(
+                _F(RESULTAT=RESU1,
+                  NOEUD='N2',
+                  MAILLE='M1',
+                  INST=1.2E-3,
+                  NOM_CHAM='DEGE_ELNO_DEPL',
+                  NOM_CMP='EXX',
+                  VALE = EXX,
+                  PRECISION = 5.E-2,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+                _F(RESULTAT=RESU1,
+                  NOEUD='N2',
+                  MAILLE='M1',
+                  INST=1.2E-3,
+                  NOM_CHAM='SIEF_ELNO_ELGA',
+                  NOM_CMP='NXX',
+                  VALE = NXX,
+                  PRECISION = 5.E-2,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+                _F(RESULTAT=RESU1,
+                  NOEUD='N2',
+                  MAILLE='M1',
+                  INST=1.2E-3,
+                  NOM_CHAM='ENEL_ELNO_ELGA',
+                  NOM_CMP='TOTALE',
+                  VALE = ENEL,
+                  PRECISION = 1.E-1,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+                _F(RESULTAT=RESU1,
+                  NOEUD='N2',
+                  MAILLE='M1',
+                  INST=1.2E-3,
+                  NOM_CHAM='ENEL_ELNO_ELGA',
+                  NOM_CMP='MEMBRANE',
+                  VALE = ENEL,
+                  PRECISION = 1.E-1,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+                _F(RESULTAT=RESU1,
+                  MAILLE='M1',
+                  POINT = 2,
+                  INST=1.2E-3,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='TOTALE',
+                  VALE = ENEL,
+                  PRECISION = 1.E-1,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+                _F(RESULTAT=RESU1,
+                  MAILLE='M1',
+                  POINT = 2,
+                  INST=1.2E-3,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='FLEXION',
+                  VALE = 0.0,
+                  CRITERE = 'ABSOLU',
+                  PRECISION = 1.E-13,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+                  ),);
+
+TEST_TABLE(       TABLE = ENER,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = 1.2E-3,),
+                          ),
+                NOM_PARA='TOTALE',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=2.73220);
+
+TEST_TABLE(       TABLE = ENER,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = 1.2E-3,),
+                          ),
+                NOM_PARA='MEMBRANE',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=2.73220);
+
+TEST_TABLE(       TABLE = TRAV,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = 1.2E-3,),
+                          ),
+                NOM_PARA='TRAV_ELAS',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=2.73220);
 
 FIN();

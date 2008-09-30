@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMDIS UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MEMDIS UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -51,5 +51,5 @@ INTEGER DEFPPPP(MEMDIS, memdis, INTEGER *L, INTEGER **iadm, INTEGER *taille_mo, 
       *iadm = retour;
       *taille_mo = (long) (dim*sizeof(long));
       }
-   return ( dim ) ;
+   return (INTEGER)( dim ) ;
 }

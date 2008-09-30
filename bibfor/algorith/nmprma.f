@@ -6,7 +6,7 @@
      &                  MAPREC,MATASS,CODERE,FACCVG,LDCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_21
 C
-      IMPLICIT NONE    
+      IMPLICIT NONE 
       REAL*8        PARMET(*)
       CHARACTER*16  METHOD(*)
       LOGICAL       FONACT(*)
@@ -114,7 +114,7 @@ C
       LOGICAL      REASMA,RENUME
       LOGICAL      LDYNA,LAMOR,LSUIV,LCRIGI,LCFINT
       LOGICAL      NDYNLO,ISFONC
-      LOGICAL      LBID,PREMIE
+      LOGICAL      LBID
       REAL*8       R8BID
       CHARACTER*16 METCOR,METPRE   
       CHARACTER*16 OPTRIG,OPTAMO 
@@ -149,15 +149,14 @@ C
      &            LCALME,LASSME)        
       FACCVG = 0
       LDCCVG = 0
-      PREMIE = NUMINS.EQ.1
       ITERAT = 0
 C
 C --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 C 
       CALL NMCHRM('PREDICTION',
      &            PARMET,METHOD,FONACT,SDDISC,SDDYNA,
-     &            NUMINS,PREMIE,ITERAT,DEFICO,METPRE,
-     &            METCOR,REASMA)    
+     &            NUMINS,ITERAT,DEFICO,METPRE,METCOR,
+     &            REASMA)    
 C
 C --- RE-CREATION DU NUME_DDL OU PAS
 C
@@ -167,8 +166,8 @@ C
 C --- OPTION DE CALCUL POUR MERIMO
 C 
       CALL NMCHOI('PREDICTION',
-     &            PREMIE,SDDYNA,METPRE,METCOR,REASMA,
-     &            OPTRIG,LCRIGI,LCFINT )
+     &            SDDYNA,METPRE,METCOR,REASMA,OPTRIG,
+     &            LCRIGI,LCFINT )
       IF (LCFINT) THEN
         CALL ASSERT(.FALSE.)
       ENDIF

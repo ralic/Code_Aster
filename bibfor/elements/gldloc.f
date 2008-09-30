@@ -3,7 +3,7 @@
      &                   DA1,DA2,KDMAX,TOLD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,7 +56,7 @@ C       ELAS2   : .TRUE. SI DA2 == VIM(2)
 C ----------------------------------------------------------------------
 
       REAL*8      DM1,DM2,DF1,DF2,DKSI1,DKSI2,QM1,QM2
-      REAL*8      RD1,RD2,DR1D,DR2D,DD1,DD2
+      REAL*8      RD1,RD2,DR1D,DR2D,DD1,DD2,DAREF
       INTEGER     I
       LOGICAL     LCONV1,LCONV2
 
@@ -123,12 +123,16 @@ C----CONTRIBUTION DES COURBURES---------
       RD1 = RD1 + QFF(1)/(ALF + DA1)**2 
       RD2 = RD2 + QFF(2)/(ALF + DA2)**2 
 
+      DAREF = MAX(DA1,DA2)
+      DAREF = MAX(DAREF,1.0D-6)
 C-----VERIFIER SI SEUIL EST ATTEINT
-      LCONV1 = (ABS(RD1*DA1) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
-      LCONV2 = (ABS(RD2*DA2) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
+C      LCONV1 = (ABS(RD1*DA1) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
+C      LCONV2 = (ABS(RD2*DA2) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
+      LCONV1 = (ABS(RD1*DAREF) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
+      LCONV2 = (ABS(RD2*DAREF) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
 
-      IF(((.NOT. LCONV1).AND.(DA1.GE.VIM(1))) 
-     &     .OR. ((.NOT. LCONV2).AND.(DA2.GE.VIM(2)))) THEN
+      IF((.NOT. LCONV1 .AND. DA1.GE.VIM(1)) 
+     &     .OR. ( .NOT. LCONV2 .AND. DA2.GE.VIM(2) )) THEN
         
           DO 60, I = 1,KDMAX
 
@@ -151,10 +155,10 @@ C-----VERIFIER SI SEUIL EST ATTEINT
              ENDIF  
 
              IF(( (ABS(DD1*RD1) .LT. TOLD) .OR. 
-     &                  ((RD1 .LT. 0.0D0) .AND. (DA1 .LE. VIM(1))) ) 
+     &           ( (RD1 .LT. 0.0D0 .AND. DA1 .LE. VIM(1))) ) 
      &        .AND. 
-     &            (ABS(DD2*RD2) .LT. TOLD) .OR. 
-     &                  ((RD2 .LT. 0.0D0) .AND. (DA2 .LE. VIM(2))) ) 
+     &           ( (ABS(DD2*RD2) .LT. TOLD) .OR. 
+     &           ( (RD2 .LT. 0.0D0 .AND. DA2 .LE. VIM(2))) ) ) 
      &          GOTO 61   
       
              DA1 = DA1 + DD1

@@ -1,4 +1,4 @@
-#@ MODIF endo_isot_beton Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF endo_isot_beton Comportement  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nb_vari        = 2,
    nom_vari       = ('ENDO', 'INDICAT'),
    mc_mater       = ('ELAS', 'BETON_ECRO_LINE', 'NON_LOCAL'),
-   modelisation   = ('3D', 'AXIS', 'D_PLAN','GRADVARI','GRADEPSI','C_PLAN'),
+   modelisation   = ('3D', 'AXIS', 'D_PLAN','GRADVARI','GRADEPSI'),
    deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    schema         = ('IMPLICITE',),

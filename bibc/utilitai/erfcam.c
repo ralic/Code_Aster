@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ERFCAM UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF ERFCAM UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,14 +20,14 @@
 #include <math.h>
 #include "aster.h"
 
-double DEFP(ERFCAM, erfcam, double *x)
+double DEFP(ERFCAM, erfcam, DOUBLE *x)
 {
-  double y;
+  DOUBLE y;
 #ifdef _POSIX
-  y = erfc(*x);
+  y = (DOUBLE)erfc(*x);
   return(y);
 #else
-  extern double STDCALL(ERFCFO,erfcfo)(double *z);
+  extern DOUBLE STDCALL(ERFCFO,erfcfo)(DOUBLE *);
   y = ERFCFO(x);
   return(y);
 #endif

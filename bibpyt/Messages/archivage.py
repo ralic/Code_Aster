@@ -1,4 +1,4 @@
-#@ MODIF archivage Messages  DATE 11/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF archivage Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,10 +21,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-95 : _("""
-Accès par instant sans évolution ordonnée interdit (ARCHIVAGE)
-"""),
 
 97 : _("""
 L'archivage va écraser des instants déjà calculés (ARCHIVAGE)

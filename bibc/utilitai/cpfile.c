@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF CPFILE UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF CPFILE UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include "aster.h"
 
-void DEFSSS(CPFILE, cpfile, char *action, int la, char *nom1, int lnom1, char *nom2, int lnom2)
+void DEFSSS(CPFILE, cpfile, char *action, STRING_SIZE la, char *nom1, STRING_SIZE lnom1, char *nom2, STRING_SIZE lnom2)
 {
    char nomcmd[165];char *ncmd;
    long i,l,ldeb,num;

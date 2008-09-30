@@ -7,7 +7,7 @@
      &                  MAXREL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      LOGICAL      LCTCD,LCTCV,LCTCC,LTABL,LEXPL
+      LOGICAL      LCTCD,LCTCV,LCTCC,LTABL,LEXPL,LCTCG
       LOGICAL      ISFONC,NDYNLO
       INTEGER      IBID,IRET,MMITGO
       REAL*8       R8VIDE,R8BID,PASMIN
@@ -189,7 +189,8 @@ C
       LCTCD  = ISFONC(FONACT,'CONT_DISCRET')
       LCTCV  = ISFONC(FONACT,'CONT_VERIF')
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU') 
-      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')     
+      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
+      LCTCG  = ISFONC(FONACT,'CONT_GEOM')
 C
 C --- ACCES SDIMPR
 C
@@ -224,7 +225,24 @@ C
 C --- ERREUR SUR CONTACT DISCRET - MATRICE CONTACT SINGULIERE
 C
       ECHCON(2) = LICCVG(4) .NE. 0
-      CALL NMERGE('SET','CC2',ECHCON(2),SDERRO)       
+      CALL NMERGE('SET','CC2',ECHCON(2),SDERRO)  
+C
+C --- EXAMEN DU NOMBRE D'ITERATIONS
+C
+      PASMIN = PARMET(3)
+      IF (ABS(INSTAP-INSTAM) .LT. PASMIN) THEN
+        ITEMAX = ITERAT .GE. PARCRI(5)
+      ELSE
+        ITEMAX = ITERAT .GE. PARCRI(1)
+      ENDIF   
+C
+C --- LE PILOTAGE A ATTEINT LES BORNES
+C
+      IF (LICCVG(1) .EQ. -1) THEN
+        FINPAS = .TRUE.
+      ELSE
+        FINPAS = .FALSE.
+      END IF              
 C
 C --- ERREUR OU PAS
 C
@@ -290,24 +308,7 @@ C
 C    EXAMEN DE LA CONVERGENCE
 C
 C ======================================================================
-C
-C --- LE PILOTAGE A ATTEINT LES BORNES
-C
-      IF (LICCVG(1) .EQ. -1) THEN
-        CALL IMPSDM(SDIMPR,'PILO_PARA','B')
-        FINPAS  = .TRUE.
-      ELSE
-        CALL IMPSDM(SDIMPR,'PILO_PARA',' ')
-      END IF
-C
-C --- EXAMEN DU NOMBRE D'ITERATIONS
-C
-      PASMIN = PARMET(3)
-      IF (ABS(INSTAP-INSTAM) .LT. PASMIN) THEN
-        ITEMAX = ITERAT .GE. PARCRI(5)
-      ELSE
-        ITEMAX = ITERAT .GE. PARCRI(1)
-      ENDIF
+
 C
 C --- VERIFICATION DES CRITERES D'ARRET SUR RESIDUS
 C       
@@ -321,7 +322,15 @@ C
         CALL IMPSDM(SDIMPR,'ITER_NEWT',' ')
       ELSE
         CALL IMPSDM(SDIMPR,'ITER_NEWT','X')
-      ENDIF      
+      ENDIF 
+C
+C --- LE PILOTAGE A ATTEINT LES BORNES
+C
+      IF (FINPAS) THEN
+        CALL IMPSDM(SDIMPR,'PILO_PARA','B')
+      ELSE
+        CALL IMPSDM(SDIMPR,'PILO_PARA',' ')
+      END IF           
 C 
 C --- CONVERGENCE ADAPTEE AU CONTACT DISCRET
 C 
@@ -357,7 +366,11 @@ C
           CALL IMPSDR(SDIMPR,'CTCD_NOEU',' ',R8BID   ,IBID)
           CALL IMPSDR(SDIMPR,'CTCD_GEOM',' ',R8VIDE(),IBID) 
           CTCCVG = .FALSE.           
-        ENDIF           
+        ENDIF    
+        IF (.NOT.LCTCG) THEN  
+          CALL IMPSDR(SDIMPR,'CTCD_NOEU',' ',R8BID   ,IBID)
+          CALL IMPSDR(SDIMPR,'CTCD_GEOM',' ',R8VIDE(),IBID)         
+        ENDIF    
       ELSE 
         CTCCVG = .TRUE.         
       ENDIF
@@ -393,14 +406,18 @@ C
           IF (CTCFIX) THEN
             LTABL = .TRUE.
           ELSE
-            LTABL = .FALSE.         
-            IF (.NOT.CTCGEO) THEN   
-              CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)    
-              CALL NMIMPR('IMPR','LIGNE    ',' ',0.D0,0)  
+            IF (LCTCG) THEN
+              LTABL = .FALSE.         
+              IF (.NOT.CTCGEO) THEN   
+                CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)    
+                CALL NMIMPR('IMPR','LIGNE    ',' ',0.D0,0)  
+              ELSE
+                CALL MMBOUC(RESOCO,'GEOM','INCR',MMITGO)
+                CALL NMIMPR('IMPR','BCL_GEOME',' ',0.D0,MMITGO) 
+              ENDIF
             ELSE
-              CALL MMBOUC(RESOCO,'GEOM','INCR',MMITGO)
-              CALL NMIMPR('IMPR','BCL_GEOME',' ',0.D0,MMITGO) 
-            ENDIF                
+              LTABL = .TRUE.
+            ENDIF                  
           ENDIF 
          
         ELSE

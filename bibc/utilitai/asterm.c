@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF main utilitai  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF main utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -47,16 +47,16 @@ INTEGER DEFP(MEJVDY, mejvdy, double *);
 INTEGER DEFP(MEJVST, mejvst, double *);
 #define CALL_MEJVST(a) CALLP(MEJVST, mejvst, a)
 
-INTEGER DEFPPS(REPMAT, repmat, INTEGER *, INTEGER *, char *, int);
+INTEGER DEFPPS(REPMAT, repmat, INTEGER *, INTEGER *, char *, STRING_SIZE);
 #define CALL_REPMAT(a, b, c) CALLPPS(REPMAT, repmat, a, b, c)
 
-INTEGER DEFPPS(REPOUT, repout, INTEGER *, INTEGER *, char *, int);
+INTEGER DEFPPS(REPOUT, repout, INTEGER *, INTEGER *, char *, STRING_SIZE);
 #define CALL_REPOUT(a, b, c) CALLPPS(REPOUT, repout, a, b, c)
 
-INTEGER DEFPPS(REPDEX, repdex, INTEGER *, INTEGER *, char *, int);
+INTEGER DEFPPS(REPDEX, repdex, INTEGER *, INTEGER *, char *, STRING_SIZE);
 #define CALL_REPDEX(a, b, c) CALLPPS(REPDEX, repdex, a, b, c)
 
-void DEFPSSS(NODNAM, nodnam, INTEGER *, char *, int, char *, int, char *, int);
+void DEFPSSS(NODNAM, nodnam, INTEGER *, char *, STRING_SIZE, char *, STRING_SIZE, char *, STRING_SIZE);
 #define CALL_NODNAM(a, b, c, d) CALLPSSS(NODNAM, nodnam, a, b, c, d)
 
 INTEGER DEFP(ISINTE, isinte, INTEGER *);
@@ -71,10 +71,10 @@ INTEGER DEFP(IVERIF, iverif, INTEGER *);
 INTEGER DEFP(ISDBGJ, isdbgj, INTEGER *);
 #define CALL_ISDBGJ(a) CALLP(ISDBGJ, isdbgj, a)
 
-void DEFPS(ORIGIN, origin, INTEGER *, char *, int);
+void DEFPS(ORIGIN, origin, INTEGER *, char *, STRING_SIZE);
 #define CALL_ORIGIN(a, b) CALLPS(ORIGIN, origin, a, b)
 
-void DEFPPPSP(VERSIO, versio, INTEGER *, INTEGER *, INTEGER *, char *, int, INTEGER *);
+void DEFPPPSP(VERSIO, versio, INTEGER *, INTEGER *, INTEGER *, char *, STRING_SIZE, INTEGER *);
 #define CALL_VERSIO(a, b, c, d, e) CALLPPPSP(VERSIO, versio, a, b, c, d, e)
 
 INTEGER DEFP(SEGJVX, segjvx, INTEGER *);
@@ -83,14 +83,14 @@ INTEGER DEFP(SEGJVX, segjvx, INTEGER *);
 INTEGER DEFP(LSEGJV, lsegjv, INTEGER *);
 #define CALL_LSEGJV(a) CALLP(LSEGJV, lsegjv, a)
 
-double DEFP(VPARJV, vparjv, double *);
+double DEFP(VPARJV, vparjv, DOUBLE *);
 #define CALL_VPARJV(a) CALLP(VPARJV, vparjv, a)
 
-double DEFP(MAXBAS, maxbas, double *);
+double DEFP(MAXBAS, maxbas, DOUBLE *);
 #define CALL_MAXBAS(a) CALLP(MAXBAS, maxbas, a)
 
 
-void strmaju(char *namin, char *namaj, int l)
+void strmaju(char *namin, char *namaj, STRING_SIZE l)
 { 
 	int iin, jjn;
 	char *p,*q;
@@ -108,7 +108,7 @@ void strmaju(char *namin, char *namaj, int l)
 	*q='\0';
 }
 
-void strcpBS(char *namin, char *namaj , int l , long *ll)
+void strcpBS(char *namin, char *namaj , STRING_SIZE l , long *ll)
 { 
 	int iin, jjn;
 	char *p,*q;

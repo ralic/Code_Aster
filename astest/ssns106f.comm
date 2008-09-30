@@ -1,8 +1,8 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,10 +30,11 @@ DEBUT(CODE=_F(NOM='SSNS106F', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 PRE_GIBI();
 
 EP = 0.1
-DEP0 = 5.E-4
+DEP0 = 3.E-3
 t1 = 1.0
-t2 = 2*t1
-dt = 0.03
+t2 = 2.0
+tmax = 2.04
+dt = 0.0085
 fx = 5E5
 
 MAIL=LIRE_MAILLAGE();
@@ -53,60 +54,31 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
                                       GROUP_NO='A1',),
                    );
 
-MA5=CREA_MAILLAGE(MAILLAGE=MAIL,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER2L',
+MA=CREA_MAILLAGE(MAILLAGE=MAIL,
+                  CREA_GROUP_MA=(
+                                 _F(NOM = 'ACIER2L',
                                    PREF_MAILLE = 'A2L',
                                    GROUP_MA = 'DALLE',),
-                 )
-MA4=CREA_MAILLAGE(MAILLAGE=MA5,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER1T',
+                                 _F(NOM = 'ACIER1T',
                                    PREF_MAILLE = 'A1T',
                                    GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM = MA5))
-
-MA3=CREA_MAILLAGE(MAILLAGE=MA4,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER2T',
+                                 _F(NOM = 'ACIER2T',
                                    PREF_MAILLE = 'A2T',
-                                   GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM = MA4))
-
-MA2=CREA_MAILLAGE(MAILLAGE=MA3,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER1L',
+                                   GROUP_MA = 'DALLE',), 
+                                 _F(NOM = 'ACIER1L',
                                    PREF_MAILLE = 'A1L',
-                                   GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM = MA3))
-
-MA1=CREA_MAILLAGE(MAILLAGE=MA2,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER1',
+                                   GROUP_MA = 'DALLE',), 
+                                 _F(NOM = 'ACIER1',
                                    PREF_MAILLE = 'A1',
                                    GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM =MA2))
-
-MA0=CREA_MAILLAGE(MAILLAGE=MA1,
-                  CREA_GROUP_MA=_F(NOM = 'DALLE_G',
+                                 _F(NOM = 'DALLE_G',
                                    PREF_MAILLE = 'G',
                                    GROUP_MA = 'DALLE',),
-                 )
-
-DETRUIRE(CONCEPT = _F(NOM = MA1))
-
-
-MA=CREA_MAILLAGE(MAILLAGE=MA0,
-                  CREA_GROUP_MA=_F(NOM = 'ACIER2',
+                                 _F(NOM = 'ACIER2',
                                    PREF_MAILLE = 'A2',
                                    GROUP_MA = 'DALLE',),
+                                ),   
                  )
-
-DETRUIRE(CONCEPT = _F(NOM = MA0))
-
 MO=AFFE_MODELE(INFO=1,
                  MAILLAGE=MA,
                  AFFE=(
@@ -147,7 +119,8 @@ BETON_E=DEFI_MATERIAU(
                                RHO=2500)),
                        BETON_ECRO_LINE=_F(
                        SYT = 3.4E6,
-                       D_SIGM_EPSI = -0.20*E)
+                       D_SIGM_EPSI = -0.20*E
+                       )
                )
 
 ACIER = DEFI_MATERIAU(INFO=1,
@@ -156,30 +129,25 @@ ACIER = DEFI_MATERIAU(INFO=1,
                                 NU=0.2,
                                 RHO=7800.0,
                                 AMOR_BETA=2.6476993459625175)),
-                       ECRO_LINE=(_F(
-                                     SY=5.0E7,
-                                     D_SIGM_EPSI= 3.0*E
-                                     )
-                                 ),
+                         ECRO_LINE =_F(D_SIGM_EPSI=300.0E6,
+                                       SY=570.0E6,),
                        );
 
-EGM =5.275E10
-EGF = EGM*1.35
-NUF = 0.0933
+EGM =3.57E10
 
 MAT_G = DEFI_MATERIAU(
                       ELAS  =_F(
                                  E = EGM,
-                                 NU=  0.125,
+                                 NU=  0.18,
                               ),
                      GLRC_DM =_F(
-                                        GAMMA_T = 0.225,
-                                        GAMMA_F = 0.32,
-                                        SYT     = 4.85E5,
-                                        SYF     = 9.6E3,
+                                         GAMMA_T = 0.1,
+                                         GAMMA_F = 0.1,
+                                        SYT     = 3.7E5,
+                                        SYF     = 5.0E3,
                                        ),
-                     ECRO_LINE=_F(  D_SIGM_EPSI = EGM*0.05,
-                                    SY = 7.5E6)
+                     ECRO_LINE=_F(  D_SIGM_EPSI = EGM*0.1,
+                                    SY = 4.5E6)
                                           )
 
 MATER=AFFE_MATERIAU( MAILLAGE=MA,
@@ -208,7 +176,7 @@ CAEL=AFFE_CARA_ELEM(INFO=1,
                       COQUE=(
                              _F(EPAIS=EP,
                                 GROUP_MA='DALLE',
-                                COQUE_NCOU=11,
+                                COQUE_NCOU=1,
                                 INER_ROTA = 'OUI',
                                 ANGL_REP=(0.0,0.0,),
                                 MODI_METRIQUE='NON')),
@@ -216,26 +184,26 @@ CAEL=AFFE_CARA_ELEM(INFO=1,
                        GRILLE=(
                               _F(
                                  GROUP_MA='ACIER1L',
-                                 SECTION=5.0E-3,
+                                 SECTION=8.0E-4,
                                  EXCENTREMENT = -EP*0.4,
                                  ANGL_REP=(0,0,),
                                  GRILLE_NCOU=1,
                                  COEF_RIGI_DRZ=1.E-10),
                               _F(
                                  GROUP_MA='ACIER1T',
-                                 SECTION=5.0E-3,
+                                 SECTION=8.0E-4,
                                  EXCENTREMENT = -EP*0.4,
                                  ANGL_REP=(90,0,),
                                  GRILLE_NCOU=1,
                                  COEF_RIGI_DRZ=1.E-10),
                               _F(GROUP_MA='ACIER2L',
-                                 SECTION=5.0E-3,
+                                 SECTION=8.0E-4,
                                  EXCENTREMENT = EP*0.4,
                                  ANGL_REP=(0,0,),
                                  GRILLE_NCOU=1,
                                  COEF_RIGI_DRZ=1.E-10),
                               _F(GROUP_MA='ACIER2T',
-                                 SECTION=5.0E-3,
+                                 SECTION=8.0E-4,
                                  EXCENTREMENT = EP*0.4,
                                  ANGL_REP=(90,0,),
                                  GRILLE_NCOU=1,
@@ -267,7 +235,31 @@ COND_0 = AFFE_CHAR_MECA(MODELE=MO,
                                   ),
                        )
 
+COND_0G = AFFE_CHAR_MECA(MODELE=MO_G,
+                        DDL_IMPO=(_F(GROUP_NO='A1',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,
+                                     DRX=0.0,
+                                     DRY=0.0,
+                                     DRZ=0.0,
+                                     ),
+                                 _F(GROUP_MA='A3A1',
+                                     DX=0.0,
+                                     DRY=0.0,
+                                      ),
+                                  ),
+                       )
+
 COND_1 = AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(
+                                 _F(GROUP_MA='A2A4',
+                                      DX=DEP0,
+                                      ),
+                                 ),
+                       );
+
+COND_1G = AFFE_CHAR_MECA(MODELE=MO_G,
                        DDL_IMPO=(
                                  _F(GROUP_MA='A2A4',
                                       DX=DEP0,
@@ -280,12 +272,13 @@ chf1 = DEFI_FONCTION(NOM_PARA='INST',
                            t1 ,     1.,
                            t2 ,    0.,
                            ),
-                     PROL_DROITE='CONSTANT',
+                     PROL_DROITE='LINEAIRE',
                      PROL_GAUCHE='CONSTANT',
                     );
 
 inst1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
-                          _F(JUSQU_A = t2,PAS = dt),
+                          _F(JUSQU_A = t1,PAS = dt),
+                          _F(JUSQU_A = tmax,PAS = 5*dt),
                       ),);
 
 RESU1 = STAT_NON_LINE(
@@ -314,7 +307,7 @@ RESU1 = STAT_NON_LINE(
                                               'ACIER1T','ACIER2T'),
                                     RESI_INTE_RELA=1.0E-06,
                                     ITER_INTE_PAS=0,
-                                    ALGO_1D='ANALYTIQUE',
+                                    ALGO_1D='DEBORST',
                                     ITER_INTE_MAXI=10,
                                     RELATION='GRILLE_ISOT_LINE',
                                     ALGO_C_PLAN='ANALYTIQUE',
@@ -364,9 +357,9 @@ RESU_G = STAT_NON_LINE(
                                     PRECISION =1.E-1,
                                   ),
                       EXCIT=(
-                             _F( CHARGE = COND_0,
+                             _F( CHARGE = COND_0G,
                                     FONC_MULT = chf1 ),
-                             _F( CHARGE = COND_1,
+                             _F( CHARGE = COND_1G,
                                     FONC_MULT = chf1 ),
                             ),
                      );
@@ -451,57 +444,292 @@ D_FXA4 = CALC_TABLE(TABLE = TFXA4_G2,
 DETRUIRE(CONCEPT = _F(NOM =TDYA4_G2))
 DETRUIRE(CONCEPT = _F(NOM =TFXA4_G2))
 
-tt = 1.5E-4/DEP0
+ttel = 2*dt
+tten = 10*dt
 # TRACTION - PHASE ELASTIQUE
 TEST_TABLE(TABLE=D_DYA4,
-           FILTRE=_F(NOM_PARA='INST',VALE=tt/2.0,),
+           FILTRE=_F(NOM_PARA='INST',VALE=ttel,),
            NOM_PARA='DY_DYG',
            VALE = 0.0,
            CRITERE = 'ABSOLU',
-           PRECISION = 0.5E-2,
+           PRECISION = 2.E-2,
            REFERENCE='AUTRE_ASTER',)
 
+TEST_TABLE(TABLE=D_DYA4,
+           FILTRE=_F(NOM_PARA='INST',VALE=ttel,),
+           NOM_PARA='DY_DYG',
+           VALE = 1.44237E-02,
+           PRECISION = 1.E-4,
+           REFERENCE='NON_REGRESSION',)
+
 TEST_TABLE(TABLE=D_FXA4,
-           FILTRE=_F(NOM_PARA='INST',VALE=tt/2.0,),
+           FILTRE=_F(NOM_PARA='INST',VALE=ttel,),
            NOM_PARA='DX_DXG',
            VALE = 0.0,
            CRITERE = 'ABSOLU',
-           PRECISION = 2.0E-3,
+           PRECISION = 5.0E-3,
            REFERENCE='AUTRE_ASTER',)
 
 # TRACTION - PHASE ENDOMMAGEMENT
 TEST_TABLE(TABLE=D_DYA4,
-           FILTRE=_F(NOM_PARA='INST',VALE=tt,),
+           FILTRE=_F(NOM_PARA='INST',VALE=tten,),
            NOM_PARA='DY_DYG',
-           VALE = 0.0,
-           CRITERE = 'ABSOLU',
-           PRECISION = 30.E-2,
-           REFERENCE='AUTRE_ASTER',)
+           VALE = -4.91307E-01,
+           PRECISION = 1.E-4,
+           REFERENCE='NON_REGRESSION',)
 
 TEST_TABLE(TABLE=D_FXA4,
-           FILTRE=_F(NOM_PARA='INST',VALE=tt,),
+           FILTRE=_F(NOM_PARA='INST',VALE=tten,),
            NOM_PARA='DX_DXG',
-           VALE = 0.0,
-           CRITERE = 'ABSOLU',
-           PRECISION = 2.E-3,
-           REFERENCE='AUTRE_ASTER',)
+           VALE = -3.65967E-01,
+           PRECISION = 1.E-4,
+           REFERENCE='NON_REGRESSION',)
 
 # TRACTION - PHASE PLASTICITE + ENDOMMAGEMENT
 TEST_TABLE(TABLE=D_FXA4,
-           FILTRE=_F(NOM_PARA='INST',VALE=0.99,),
+           FILTRE=_F(NOM_PARA='INST',VALE=t1,),
            NOM_PARA='DX_DXG',
            VALE = 0.0,
            CRITERE = 'ABSOLU',
-           PRECISION = 5.E-3,
+           PRECISION = 10.E-2,
            REFERENCE='AUTRE_ASTER',)
+
+TEST_TABLE(TABLE=D_FXA4,
+           FILTRE=_F(NOM_PARA='INST',VALE=t1,),
+           NOM_PARA='DX_DXG',
+           VALE = -7.50181E-02,
+           PRECISION = 1.E-4,
+           REFERENCE='NON_REGRESSION',)
 
 # DECHARGE
 TEST_TABLE(TABLE=TFXA4_G0,
-           FILTRE=_F(NOM_PARA='INST',VALE=t2,),
+           FILTRE=_F(NOM_PARA='INST',VALE=tmax,),
            NOM_PARA='DX',
-           VALE = -1.7801E+05,
+           VALE = -1.11050E+05,
            CRITERE = 'RELATIF',
            PRECISION = 1.E-4,
            REFERENCE='NON_REGRESSION',)
+#--------------------------------------------------------------------
+               
+RESU_G=CALC_NO(reuse = RESU_G,
+               OPTION='FORC_NODA',
+               PRECISION=1.E-3,
+               RESULTAT=RESU_G,
+               MODELE=MO_G,
+               CHAM_MATER=MATER,
+               GROUP_MA = 'DALLE_G',
+               );
+               
+RESU1 =CALC_ELEM( reuse      = RESU1,
+              OPTION     = (
+                            'SIEF_ELNO_ELGA',
+                            'VARI_ELNO_ELGA',
+                             'ENEL_ELGA',
+                             'ENEL_ELNO_ELGA',
+              ),
+               GROUP_MA = 'DALLE',
+              RESULTAT   = RESU1,
+              MODELE=MO,
+              CARA_ELEM = CAEL,
+              )
+               
+RESU1 =CALC_ELEM( reuse      = RESU1,
+              OPTION     = (
+                            'SIEF_ELNO_ELGA',
+                            'VARI_ELNO_ELGA',
+              ),
+              GROUP_MA=('ACIER1L','ACIER2L',
+                        'ACIER1T','ACIER2T'),
+              RESULTAT   = RESU1,
+              MODELE=MO,
+              CARA_ELEM = CAEL,
+              )
+               
+RESU_G =CALC_ELEM( reuse      = RESU_G,
+              OPTION     = (
+                            'DEGE_ELNO_DEPL',
+                            'SIEF_ELNO_ELGA',
+                            'VARI_ELNO_ELGA',
+                             'ENEL_ELGA',
+                             'ENEL_ELNO_ELGA',
+              ),
+              GROUP_MA = 'DALLE_G',
+              RESULTAT   = RESU_G,
+              MODELE=MO_G,
+              CARA_ELEM = CAEL_G,
+              )
+
+TRAV_G = POST_ELEM(
+  RESULTAT = RESU_G,
+  TRAV_EXT = _F(),
+  )
+
+ENER_G = POST_ELEM(
+  RESULTAT = RESU_G,
+  ENER_ELAS = _F(GROUP_MA = 'DALLE_G'),
+  )
+
+ENEL_G  = 4.642785
+ENEL_G2 = 5.569427E+01
+ENEL_G3 = 8.151048E+02
+TEST_RESU(RESU=(
+#---------MULTI-COUCHES, EIB------------------------------
+#---------GLRC_DM------------------------------
+                _F(RESULTAT=RESU_G,
+                  NOEUD='N2',
+                  MAILLE='GM1',
+                  INST=ttel,
+                  NOM_CHAM='ENEL_ELNO_ELGA',
+                  NOM_CMP='TOTALE',
+                  VALE = ENEL_G,
+                  PRECISION = 1.E-5,
+                  REFERENCE='AUTRE_ASTER',
+                  ),
+                _F(RESULTAT=RESU_G,
+                  NOEUD='N2',
+                  MAILLE='GM1',
+                  INST=ttel,
+                  NOM_CHAM='ENEL_ELNO_ELGA',
+                  NOM_CMP='MEMBRANE',
+                  VALE = ENEL_G,
+                  PRECISION = 1.E-5,
+                  REFERENCE='AUTRE_ASTER',
+                  ),
+                _F(RESULTAT=RESU_G,
+                  MAILLE='GM1',
+                  POINT = 2,
+                  INST=ttel,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='TOTALE',
+                  VALE = ENEL_G,
+                  PRECISION = 1.E-5,
+                  REFERENCE='AUTRE_ASTER',
+                  ),
+                _F(RESULTAT=RESU_G,
+                  MAILLE='GM1',
+                  POINT = 2,
+                  INST=ttel,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='FLEXION',
+                  VALE = 0.0,
+                  CRITERE = 'ABSOLU',
+                  PRECISION = 1.E-13,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+
+                _F(RESULTAT=RESU_G,
+                  NOEUD='N2',
+                  MAILLE='GM1',
+                  INST=tten,
+                  NOM_CHAM='ENEL_ELNO_ELGA',
+                  NOM_CMP='TOTALE',
+                  VALE = ENEL_G2,
+                  PRECISION = 1.E-5,
+                  REFERENCE='AUTRE_ASTER',
+                  ),
+                _F(RESULTAT=RESU_G,
+                  MAILLE='GM1',
+                  POINT = 2,
+                  INST=tten,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='TOTALE',
+                  VALE = ENEL_G2,
+                  PRECISION = 1.E-5,
+                  REFERENCE='AUTRE_ASTER',
+                  ),
+                _F(RESULTAT=RESU_G,
+                  MAILLE='GM1',
+                  POINT = 2,
+                  INST=tten,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='FLEXION',
+                  VALE = 0.0,
+                  CRITERE = 'ABSOLU',
+                  PRECISION = 1.E-13,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+
+                _F(RESULTAT=RESU_G,
+                  NOEUD='N2',
+                  MAILLE='GM1',
+                  INST=t1,
+                  NOM_CHAM='ENEL_ELNO_ELGA',
+                  NOM_CMP='TOTALE',
+                  VALE = ENEL_G3,
+                  PRECISION = 1.E-5,
+                  REFERENCE='AUTRE_ASTER',
+                  ),
+                _F(RESULTAT=RESU_G,
+                  MAILLE='GM1',
+                  POINT = 2,
+                  INST=t1,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='TOTALE',
+                  VALE = ENEL_G3,
+                  PRECISION = 1.E-5,
+                  REFERENCE='AUTRE_ASTER',
+                  ),
+                _F(RESULTAT=RESU_G,
+                  MAILLE='GM1',
+                  POINT = 2,
+                  INST=t1,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='FLEXION',
+                  VALE = 0.0,
+                  CRITERE = 'ABSOLU',
+                  PRECISION = 1.E-13,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+                  ),);
+                   
+TEST_TABLE(       TABLE = ENER_G,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = ttel,),
+                          ),
+                NOM_PARA='TOTALE',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=ENEL_G);
+
+TEST_TABLE(       TABLE = TRAV_G,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = ttel,),
+                          ),
+                NOM_PARA='TRAV_ELAS',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=ENEL_G);
+                   
+TEST_TABLE(       TABLE = ENER_G,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = tten,),
+                          ),
+                NOM_PARA='TOTALE',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=ENEL_G2);
+
+TEST_TABLE(       TABLE = TRAV_G,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = tten,),
+                          ),
+                NOM_PARA='TRAV_ELAS',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=ENEL_G2);
+                   
+TEST_TABLE(       TABLE = ENER_G,
+                  FILTRE=(
+                         _F(  NOM_PARA = 'INST',
+                              VALE = t1,),
+                          ),
+                NOM_PARA='TOTALE',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=1.E-5,
+                    VALE=ENEL_G3);
 
 FIN();

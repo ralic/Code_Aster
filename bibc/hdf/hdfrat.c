@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrat hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfrat hdf  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -30,11 +30,12 @@
 /-----------------------------------------------------------------------------*/
 #include "hdf5.h"
 
-INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, int ln, INTEGER *nbv, char *valat, int lv)
+INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INTEGER *nbv, char *valat, STRING_SIZE lv)
 {
   hid_t ida,attr,atyp,aspa;  
   herr_t ret;
-  int k,rank;
+  STRING_SIZE k;
+  int rank;
   long iret=-1,lt;
   hsize_t sdim[1]; 
   char *nom;

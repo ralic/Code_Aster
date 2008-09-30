@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcrf hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfcrf hdf  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -27,10 +27,10 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-INTEGER DEFS(HDFCRF, hdfcrf, char *nomfic, int ln)
+INTEGER DEFS(HDFCRF, hdfcrf, char *nomfic, STRING_SIZE ln)
 {
   hid_t idfic; 
-  int k;
+  STRING_SIZE k;
   long iret;
   char *nomf;
   void *malloc(size_t size);

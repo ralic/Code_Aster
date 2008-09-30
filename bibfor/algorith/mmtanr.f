@@ -6,7 +6,7 @@
      &                  TAU2)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -135,7 +135,7 @@ C
       IF (TYCO.EQ.1) THEN
         CALL CFNBEN(NOMA  ,DEFICO,POSMAE,'MAIL',NBNOE ,
      &              JDECNO)
-        IF (IPC.LE.NBNOE) THEN
+        IF (IPC.GT.0) THEN
           POSNOE = ZI(JNOMA+JDECNO+IPC-1)
         ELSE
           CALL ASSERT(.FALSE.)

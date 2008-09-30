@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MAXBAS utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MAXBAS utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include "aster.h"
 
-double DEFP(MAXBAS, maxbas, double *val)
+double DEFP(MAXBAS, maxbas, DOUBLE *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** fixant la taille maximale de base en mega-octets
@@ -29,7 +29,7 @@ double DEFP(MAXBAS, maxbas, double *val)
 **        si >= 0 positionne l'indicateur par une valeur en Mo
 */
 {
-   static double TAILLE_BASE=0.0;
+   static DOUBLE TAILLE_BASE=0.0;
    if (*val >= 0.) {
       TAILLE_BASE=*val;
    }

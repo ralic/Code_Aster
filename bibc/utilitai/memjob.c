@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF memjob utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF memjob utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,9 +33,9 @@ INTEGER STDCALL(MEMJOB, memjob)()
    int imem;
    if ( strlen(g_memory) != '\0' ) {
         sscanf(g_memory,"%d",&imem);
-        return ((long) imem );
+        return ((INTEGER) imem );
    } 
    else {
-        return( 16 );
+        return( (INTEGER)16 );
    }
 }

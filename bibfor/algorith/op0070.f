@@ -1,7 +1,7 @@
       SUBROUTINE OP0070(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C
 C --- NIVEAUX DE BOUCLE
 C      
       INTEGER      NIVEAU,NUMINS,ITERAT
+      INTEGER      INCRUN
 C
       REAL*8       ETA   ,R8BID 
 C
@@ -163,7 +164,8 @@ C
 C
 C --- PREMIER INSTANT
 C
-      NUMINS = 1     
+      NUMINS = 1 
+      INCRUN = 1    
 C
 C --- QUELQUES FONCTIONNALITES ACTIVEES
 C
@@ -239,7 +241,11 @@ C
      &            NUMINS,VALMOI,VALPLU,POUGD ,SOLALG,
      &            LICCVG,MATASS,MAPREC,DEFICO,RESOCO,
      &            RESOCU,SDDYNA,CODERE,MEELEM,MEASSE,
-     &            VEELEM,VEASSE)    
+     &            VEELEM,VEASSE)  
+C
+C --- PREMIER INSTANT PASSE
+C
+      CALL DIBCLE(SDDISC,'PREMIE','E',INCRUN)       
 C
 C ======================================================================
 C     BOUCLE SUR LES ITERATIONS DE NEWTON

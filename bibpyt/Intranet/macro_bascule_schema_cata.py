@@ -1,4 +1,4 @@
-#@ MODIF macro_bascule_schema_cata Intranet  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_bascule_schema_cata Intranet  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -285,8 +285,6 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                        regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                                EXCLUS('NUME_INST_FIN','INST_FIN'),),
                        LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-                       EVOLUTION       =SIMP(statut='f',typ='TXM',defaut="CHRONOLOGIQUE",
-                                             into=("CHRONOLOGIQUE","RETROGRADE","SANS",) ),
                        NUME_INST_INIT  =SIMP(statut='f',typ='I'),
                        INST_INIT       =SIMP(statut='f',typ='R'),
                        NUME_INST_FIN   =SIMP(statut='f',typ='I'),
@@ -339,8 +337,6 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                        regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                                EXCLUS('NUME_INST_FIN','INST_FIN'),),
                        LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-                       EVOLUTION       =SIMP(statut='f',typ='TXM',defaut="CHRONOLOGIQUE",
-                                             into=("CHRONOLOGIQUE","RETROGRADE","SANS",) ),
                        NUME_INST_INIT  =SIMP(statut='f',typ='I'),
                        INST_INIT       =SIMP(statut='f',typ='R'),
                        NUME_INST_FIN   =SIMP(statut='f',typ='I'),

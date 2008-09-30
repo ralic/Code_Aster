@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF modsig utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF modsig utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -55,7 +55,7 @@
   void hanfpe(int sig);
 #endif
 
-void DEFPS(MODSIG, modsig, INTEGER *enable, char *TypeErreur, int lte)
+void DEFPS(MODSIG, modsig, INTEGER *enable, char *TypeErreur, STRING_SIZE lte)
 {
 #if defined SOLARIS
    static int valsig[3];

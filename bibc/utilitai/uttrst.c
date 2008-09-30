@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------- */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTRST UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTRST UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,13 +21,13 @@
 /* temps(sec) total restant pour ce processus              */
 #include "aster.h"
 
-void DEFP(UTTLIM, uttlim, double *);
-void DEFP(UTTCSM, uttcsm, double *);
+void DEFP(UTTLIM, uttlim, DOUBLE *);
+void DEFP(UTTCSM, uttcsm, DOUBLE *);
 
 
-void DEFP(UTTRST, uttrst, double *t_rst)
+void DEFP(UTTRST, uttrst, DOUBLE *t_rst)
 {
-  double t_csm[2] , t_lim;
+  DOUBLE t_csm[2] , t_lim;
   uttcsm_ (t_csm);
   uttlim_ (&t_lim);
   *t_rst = t_lim - t_csm[0] - t_csm[1];

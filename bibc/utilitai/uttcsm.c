@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF UTTCSM UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -45,17 +45,17 @@
 #endif
 
 
-void DEFP(UTTCSM, uttcsm, double *t_csm)
+void DEFP(UTTCSM, uttcsm, DOUBLE *t_csm)
 {
 #ifdef _POSIX
    struct tms temps;
    times (&temps);
-   t_csm[0]=(double)temps.tms_utime/(double)CLOCKS_PER_SEC_VALUE;
-   t_csm[1]=(double)temps.tms_stime/(double)CLOCKS_PER_SEC_VALUE;
+   t_csm[0]=(DOUBLE)temps.tms_utime/(DOUBLE)CLOCKS_PER_SEC_VALUE;
+   t_csm[1]=(DOUBLE)temps.tms_stime/(DOUBLE)CLOCKS_PER_SEC_VALUE;
 
 #else
-   t_csm[0]=(double)clock()/CLOCKS_PER_SEC_VALUE;
-   t_csm[1]=(double)0.;
+   t_csm[0]=(DOUBLE)clock()/CLOCKS_PER_SEC_VALUE;
+   t_csm[1]=(DOUBLE)0.;
 
 #endif
 }
