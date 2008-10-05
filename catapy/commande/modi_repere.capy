@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,8 +38,11 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='n'
          LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
          LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
 
-         PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+         b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+         b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+             PRECISION       =SIMP(statut='o',typ='R',),),
 
          MODI_CHAM       =FACT(statut='o',max='**',
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

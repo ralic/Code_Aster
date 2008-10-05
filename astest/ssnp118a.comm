@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURATION JOINT 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,7 +290,7 @@ TEST_RESU (
       VALE      = 4.49911E-02,
       MAILLE    = 'CUBE',
       POINT     = 1,
-      INST      = 2.20004,
+      INST      = 2.200045,
       ),
     )
   )
@@ -306,7 +306,7 @@ TEST_RESU (
       VALE      = 1.56379E-01,
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
-      INST      = 1.70006,
+      INST      = 1.7000575,
       ),
     )
   )
@@ -323,7 +323,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
-      INST      = 1.80005,
+      INST      = 1.800055,
       ),
     )
   )
@@ -368,7 +368,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
-      INST      = 1.80005,
+      INST      = 1.800055,
       ),
     )
   )
@@ -384,7 +384,7 @@ TEST_RESU (
       VALE      = 1.56379E-01,
       MAILLE    = 'CUBEDEG',
       POINT     = 2,
-      INST      = 1.70006,
+      INST      = 1.7000575,
       ),
     )
   )

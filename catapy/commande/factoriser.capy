@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,8 @@ FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
          PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
          PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
          ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-
+         OUT_OF_CORE  =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+         
          # mots clés pour solveur GCPC et PETSc :
          PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","JACOBI","SOR"),defaut="LDLT_INC" ),
          b_petsc_ilu     =BLOC(condition = "PRE_COND == 'LDLT_INC' ",

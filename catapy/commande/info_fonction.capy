@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,8 +36,11 @@ INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_foncti
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster ),
            INST_INIT       =SIMP(statut='f',typ='R',fr="Instant initial définissant le début du signal" ),
            INST_FIN        =SIMP(statut='f',typ='R',fr="Instant final définissant la fin du signal" ),
-           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3,val_min=0.E+0 ),
+           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
+           b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,val_min=0.E+0),),
+           b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+              PRECISION       =SIMP(statut='o',typ='R'),),
          ),
          NOCI_SEISME     =FACT(statut='f',
            regles=(UN_PARMI('FONCTION','SPEC_OSCI',),),
@@ -67,8 +70,11 @@ INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_foncti
            BORNE_INF       =SIMP(statut='f',typ='R',defaut= 0.05E+0 ),
            BORNE_SUP       =SIMP(statut='f',typ='R',defaut= 0.95E+0 ),
            b_acce_reel     =BLOC(condition="(INST_INIT != None)or(INST_FIN != None)or(FREQ_INIT != None)or(FREQ_FIN != None)",
-             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,val_min=0.E+0),
-             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+                  CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
+                  b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                      PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,val_min=0.E+0),),
+                  b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                      PRECISION       =SIMP(statut='o',typ='R'),),
            ),
          ),
          MAX             =FACT(statut='f',fr="Extrémas locaux d'une fonction",
@@ -82,8 +88,11 @@ INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_foncti
             FONCTION      =SIMP(statut='o',typ=fonction_sdaster),
             INST_INIT     =SIMP(statut='f',typ='R',fr="Instant initial définissant le début du signal" ),
             INST_FIN      =SIMP(statut='f',typ='R',fr="Instant final définissant la fin du signal" ),
-            CRITERE       =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-            PRECISION     =SIMP(statut='f',typ='R',defaut= 1.E-3,val_min=0.E+0 ),
+            CRITERE       =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
+            b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,val_min=0.E+0),),
+            b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                PRECISION       =SIMP(statut='o',typ='R'),),
          ),     
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )

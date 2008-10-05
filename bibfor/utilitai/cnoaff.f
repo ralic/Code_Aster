@@ -1,8 +1,10 @@
       SUBROUTINE CNOAFF ( NOMA, GRAN, BASE, CNO )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+      CHARACTER*1 BASE
+      CHARACTER*8 GRAN,NOMA,CNO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,11 +24,18 @@ C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C TOLE CRP_20
 
-C BUT :     COMMANDES :     AFFE_CHAM_NO + CREA_CHAMP/OPERATION:'AFFE'
+C     COMMANDE   :  CREA_CHAMP/OPERATION:'AFFE', TYPE DE CHAMP : 'NOEU'
+C
+C     BUT : CREER UN CHAMP AU NOEUD PAR AFFECTATION
+C
+C     IN     : NOMA (K8) : NOM DU MAILLAGE
+C              GRAN (K8) : NOM DE LA GRANDEUR DU CHAMP A CONSTRUIRE
+C              BASE (K1) : VOLATILE ('V') OU GLOBALE ('G')
+C              CNO  (K8) : NOM DU CHAMP A CONSTRUIRE
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -43,76 +52,152 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      INTEGER      NBEC,GD
-      INTEGER VALI
+      INTEGER      NUMGD,IAV,INUME,IBID,IERD,ICHNO,NOCC,JCMPT,NBCMPT
+      INTEGER      IOCC,NBCMP,NBVAR,NBVAI,NBVAC,NBVAK,NBVA,VALI,JCMP
+      INTEGER      I,IRET,NCMP,JTMP,INDIK8,NCMPMX,JCMPMX,JCNSV,JCNSL
+      INTEGER      NBNO,NBTOU,NBNOE,JLNO,JVAL,ICMP,J,INO,JREF,NT,NBVAL
       REAL*8       RBID
-      REAL*8 VALR
-      LOGICAL      FCT
-      CHARACTER*1  K1BID,BASE
-      CHARACTER*2  TYPVAL
-      CHARACTER*2  TSCA
-      CHARACTER*8  RESU,NOMA,KBID,GRAN,NOMGD,NOMN,NOCHNO,NOGDSI,CNO,
-     +             TYPMCL(4)
+      COMPLEX*16   CBID
+      CHARACTER*1  TSCA
+      CHARACTER*3  PROL0
+      CHARACTER*8  K8B,NOMGD,NOGDSI,NOCHNO,KBID,TYPMCL(4)
       CHARACTER*14 NONUME
-      CHARACTER*16 TYPE,OPER,TYPCO, MOTCLF, MOTCLE(4)
-      CHARACTER*24 NOMNOE,REFE,VALE,NUEQ,CHAMNO,PRCHNO,MESNOE
-      CHARACTER*24 VALK(2)
+      CHARACTER*16 MOTCLE(4)
+      CHARACTER*19 CNOS,CHOUT
+      CHARACTER*24 VALK(2),MESNOE,MESCMP,PRCHNO,REFE
 C
-      DATA REFE/'                   .REFE'/
-      DATA VALE/'                   .VALE'/
-      DATA NUEQ/'                   .NUEQ'/
-      DATA CHAMNO/'                        '/
-      DATA PRCHNO/'                        '/
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-
-C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
-      CALL GETRES(RESU,TYPE,OPER)
-      RESU = CNO
-
-      IF (OPER.EQ.'AFFE_CHAM_NO') THEN
-        CALL GETVID(' ','CHAM_NO_AFFE',1,1,0,KBID,NBV)
-        IF (NBV.NE.0) THEN
-          CALL AFFEN0(IBID)
-          GO TO 190
+C
+C
+C --- 1. RECUPERATION
+C     ===============
+C
+C     RECUP : COMPOSANTES DE LA GRANDEUR
+      CALL JENONU(JEXNOM('&CATA.GD.NOMGD',GRAN),NUMGD)
+      IF (NUMGD.EQ.0) THEN
+        VALK (1) = GRAN
+        CALL U2MESG('F', 'UTILITAI6_1',1,VALK,0,0,0,0.D0)
+      ELSE
+        CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',JCMPMX)
+        CALL JEVEUO(JEXATR('&CATA.GD.NOMCMP','LONCUM'),'L',IAV)
+        NCMPMX = ZI(IAV+NUMGD) - ZI(IAV+NUMGD-1)
+      END IF
+C
+C
+C --- 2. VERIFICATIONS 
+C     =================
+C
+C  -- NUME_DDL :
+C     VERIFICATION QUE LA GRANDEUR ASSOCIEE AU NUME_DDL
+C     EST LA MEME QUE CELLE DE LA COMMANDE
+      CALL GETVID(' ','NUME_DDL',0,1,0,K8B,INUME)
+      IF (INUME.NE.0) THEN
+        CALL GETVID(' ','NUME_DDL',0,1,1,NONUME,INUME)
+        CALL DISMOI('F','NOM_GD',NONUME,'NUME_DDL',IBID,NOMGD,IERD)
+        CALL DISMOI('F','NOM_GD_SI',NOMGD,'GRANDEUR',IBID,NOGDSI,IERD)
+        IF (NOGDSI.NE.GRAN) THEN
+          VALK (1) = NOGDSI
+          VALK (2) = GRAN
+          CALL U2MESG('F', 'UTILITAI6_5',2,VALK,0,0,0,0.D0)
         END IF
       END IF
-
-      FCT = .FALSE.
-
-      CALL DISMOI('F','NB_EC',GRAN,'GRANDEUR',NEC,KBID,IE)
-      CALL DISMOI('F','TYPE_SCA',GRAN,'GRANDEUR',IBID,TSCA,IE)
-      CALL JENONU(JEXNOM('&CATA.GD.NOMGD',GRAN),NUMGD)
-
-      IF (NUMGD.EQ.0) THEN
-                  VALK (1) = GRAN
-        CALL U2MESG('F', 'UTILITAI6_1',1,VALK,0,0,0,0.D0)
-
-      ELSE
-        CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',IACMP)
-        CALL JEVEUO(JEXATR('&CATA.GD.NOMCMP','LONCUM'),'L',IAV)
-        NBCOMP = ZI(IAV+NUMGD) - ZI(IAV+NUMGD-1)
+C
+C  -- CHAM_NO :
+C     VERIFICATION QUE LA GRANDEUR ASSOCIEE AU PROFIL
+C     DU CHAM_NO EST LA MEME QUE CELLE DE LA COMMANDE
+      CALL GETVID(' ','CHAM_NO',0,1,0,K8B,ICHNO)
+      IF (ICHNO.NE.0) THEN
+        CALL GETVID(' ','CHAM_NO',0,1,1,NOCHNO,ICHNO)
+        CALL DISMOI('F','NOM_GD',NOCHNO,'CHAM_NO',IBID,NOMGD,IERD)
+        CALL DISMOI('F','NOM_GD_SI',NOMGD,'GRANDEUR',IBID,NOGDSI,IERD)
+        IF (NOGDSI.NE.GRAN) THEN
+          VALK (1) = NOGDSI
+          VALK (2) = GRAN
+          CALL U2MESG('F', 'UTILITAI6_5',2,VALK,0,0,0,0.D0)
+        END IF
       END IF
+C
+C  -- DANS LE MOT-CLE FACTEUR AFFE
+C     ----------------------------
+      CALL GETFAC ( 'AFFE', NOCC )
+      DO 20 IOCC = 1,NOCC
+        CALL GETVTX ( 'AFFE','NOM_CMP' , IOCC,1,0, KBID, NBCMP )
+        CALL GETVR8 ( 'AFFE','VALE'    , IOCC,1,0, RBID, NBVAR )
+        CALL GETVIS ( 'AFFE','VALE_I'  , IOCC,1,0, IBID, NBVAI )
+        CALL GETVC8 ( 'AFFE','VALE_C'  , IOCC,1,0, CBID, NBVAC )
+        CALL GETVID ( 'AFFE','VALE_F'  , IOCC,1,0, KBID, NBVAK )
 
-C --- NUME_DDL
+C       => VERIF : NOMBRE DE COMPOSANTES = NOMBRE DE VALEURS
+        NBVA=NBVAR+NBVAI+NBVAC+NBVAK
+        IF(NBCMP.NE.NBVA)THEN
+          VALI = IOCC
+          CALL U2MESG('F', 'UTILITAI6_3',0,' ',1,VALI,0,0.D0)
+        END IF
 
-      INUME = 0
-      CALL GETVID(' ','NUME_DDL',0,1,1,NONUME,INUME)
+C       => VERIF : COMPOSANTES FOURNIES INCLUSES DANS LA LISTE DES
+C       COMPOSANTES DE LA GRANDEUR
+        NBCMP=-NBCMP
+        CALL ASSERT(NBCMP.GT.0)
+        CALL WKVECT('&&CNOAFF.LISTE_COMP','V V K8',NBCMP,JCMP)
+        CALL GETVTX('AFFE','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),NBCMP)
+        DO 21 I = 1,NBCMP
+          CALL VERICP(ZK8(JCMPMX),ZK8(JCMP+I-1),NCMPMX,IRET)
+          IF (IRET.NE.0) THEN
+                  VALI = IOCC
+                  VALK (1) = GRAN
+                  VALK (2) = ZK8(JCMP+I-1)
+            CALL U2MESG('F', 'UTILITAI6_4',2,VALK,1,VALI,0,0.D0)
+          END IF
+   21   CONTINUE
+        CALL JEDETR('&&CNOAFF.LISTE_COMP')
 
-C --- CHAM_NO
-
-      ICHNO = 0
-      NBV = 0
-      CALL GETVID(' ','CHAM_NO',0,1,1,NOCHNO,NBV)
-      IF (NBV.GT.0) THEN
-        ICHNO = 1
-      ENDIF
-
-C --- AFFE
-
+ 20   CONTINUE
+C
+C
+C --- 3. PREPARATION AVANT LA CREATION DU CHAMP
+C     =========================================
+C
+C  -- COMPOSANTES CONCERNEES : ZK8(JCMPT)
+C     ----------------------
+      MESCMP = '&&CNOAFF.MES_CMP'
+      CALL WKVECT(MESCMP,'V V K8',NCMPMX,JCMPT)
+      DO 30 IOCC = 1 , NOCC
+        CALL GETVTX ( 'AFFE', 'NOM_CMP', IOCC,1,0, KBID, NCMP )
+        NCMP=-NCMP
+        CALL WKVECT('&&CNOAFF.TMP','V V K8',NCMP,JTMP)
+        CALL GETVTX ( 'AFFE', 'NOM_CMP', IOCC,1,NCMP,ZK8(JTMP),NCMP)
+        IF(IOCC.EQ.1)THEN
+          DO 31 I=1,NCMP
+             ZK8(JCMPT+I-1)=ZK8(JTMP+I-1)
+ 31       CONTINUE
+          NT=NCMP
+        ELSE
+           DO 32 I=1,NCMP
+              J=INDIK8(ZK8(JCMPT),ZK8(JTMP+I-1),1,NT)
+              IF(J.EQ.0)THEN
+                ZK8(JCMPT+NT)=ZK8(JTMP+I-1)
+                NT=NT+1
+              ENDIF
+ 32        CONTINUE
+        ENDIF
+        CALL JEDETR('&&CNOAFF.TMP')
+ 30   CONTINUE
+      NBCMPT=NT
+C
+C
+C --- 4. CREATION DU CHAMP
+C     =====================
+C
+      CNOS='&&CNOAFF.CNOS'
+      CALL CNSCRE(NOMA,GRAN,NBCMPT,ZK8(JCMPT),'V',CNOS)
+C
+C
+C --- 5. REMPLISSAGE DU CHAMP
+C     =======================
+C
       MESNOE = '&&CNOAFF.MES_NOEUDS'
-      MOTCLF = 'AFFE'
       MOTCLE(1) = 'NOEUD'
       MOTCLE(2) = 'GROUP_NO'
       MOTCLE(3) = 'MAILLE'
@@ -121,338 +206,149 @@ C --- AFFE
       TYPMCL(2) = 'GROUP_NO'
       TYPMCL(3) = 'MAILLE'
       TYPMCL(4) = 'GROUP_MA'
+
+      CALL JEVEUO(CNOS//'.CNSV','E',JCNSV)
+      CALL JEVEUO(CNOS//'.CNSL','E',JCNSL)
+
+      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
+      CALL DISMOI('F','TYPE_SCA',GRAN,'GRANDEUR',IBID,TSCA,IRET)
+      
+      DO 50 IOCC = 1,NOCC
 C
-      NOMNOE = NOMA//'.NOMNOE'
-C
-      CALL GETFAC ( MOTCLF, NOCC )
-C
-C    VERIFICATIONS DANS LE MOT-CLE FACTEUR AFFE
-C    __________________________________________
-
-      DO 20 IOCC = 1 , NOCC
-C
-        CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,1,0, KBID, NBCMP )
-C
-        CALL GETVR8 ( MOTCLF,'VALE'    , IOCC,1,0, RBID, NBVAR )
-C
-        CALL GETVID ( MOTCLF,'VALE_F'  , IOCC,1,0, KBID, NBFCT )
-C
-        IF (NBFCT.NE.0) THEN
-          FCT = .TRUE.
-          IF (TSCA.NE.'K8') THEN
-                  VALK (1) = GRAN
-            CALL U2MESG('F', 'UTILITAI6_2',1,VALK,0,0,0,0.D0)
-          END IF
-        END IF
-C
-        NBCMP = -NBCMP
-        NBVAR = MAX(-NBVAR,-NBFCT)
-C
-        IF (NBVAR.GT.NBCMP) THEN
-                  VALI = IOCC
-          CALL U2MESG('F', 'UTILITAI6_3',0,' ',1,VALI,0,0.D0)
-        END IF
-C
-        IF (NBCMP.NE.0) THEN
-          CALL WKVECT('&&CNOAFF.LISTE_COMP','V V K8',NBCMP,JCMP)
-          CALL GETVTX(MOTCLF,'NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),NBCMP)
-          DO 10 I = 1,NBCMP
-            CALL VERICP(ZK8(IACMP),ZK8(JCMP+I-1),NBCOMP,IRET)
-            IF (IRET.NE.0) THEN
-                  VALI = IOCC
-                  VALK (1) = GRAN
-                  VALK (2) = ZK8(JCMP+I-1)
-              CALL U2MESG('F', 'UTILITAI6_4',2,VALK,1,VALI,0,0.D0)
-            END IF
-   10     CONTINUE
-          CALL JEDETR('&&CNOAFF.LISTE_COMP')
-        END IF
-C
-   20 CONTINUE
-
-C-----------------------------------------------------------------------
-
-      IF (INUME.EQ.1) THEN
-
-C ---   VERIFICATION QUE LA GRANDEUR ASSOCIEE AU NUME_DDL
-C ---   EST LA MEME QUE CELLE DE LA COMMANDE
-
-        CALL DISMOI('F','NOM_GD',NONUME,'NUME_DDL',IBID,NOMGD,IERD)
-        CALL DISMOI('F','NOM_GD_SI',NOMGD,'GRANDEUR',IBID,NOGDSI,IERD)
-        IF (NOGDSI.NE.GRAN) THEN
-                  VALK (1) = NOGDSI
-                  VALK (2) = GRAN
-          CALL U2MESG('F', 'UTILITAI6_5',2,VALK,0,0,0,0.D0)
-        END IF
-      END IF
-
-      CALL JELIRA ( NOMNOE, 'NOMMAX', NBNOEU, K1BID )
-      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',GRAN),'L',IACMP)
-
-C    AFFE DU CHAMP AUX NOEUDS
-C    -------------------------------
-
-C    ALLOCATION DE 4 OBJETS INTERMEDIAIRES SERVANT AUX CALCULS
-C    DE .PRNO ET .VALE
-
-
-C    ALLOCATION DU VECTEUR (K8) CONTENANT LES NOMS DES NOEUDS
-
-      CALL WKVECT('&&CNOAFF.NOMS_NOEUDS','V V K8',NBNOEU,JNNO)
-
-C    ALLOCATION DU TABLEAU DES VALEURS DES COMPOSANTES DES NOEUDS
-C    DIM NBNOEU * NBCOMP
-
-      IF (FCT) THEN
-        CALL WKVECT('&&CNOAFF.VALCOMPNO','V V K8',NBNOEU*NBCOMP,JVAL)
-      ELSE
-        CALL WKVECT('&&CNOAFF.VALCOMPNO','V V R' ,NBNOEU*NBCOMP,JVAL)
-      END IF
-
-C    ALLOCATION DU VECTEUR (IS) CONTENANT LE NOMBRE DES COMPOSANTES
-C    AFFECTEES PAR NOEUD
-
-      CALL WKVECT('&&CNOAFF.NBCOMP_AFFE','V V I',NBNOEU,JNBCA)
-
-C    ALLOCATION DU VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR
-C    PAR NOEUD
-
-      CALL WKVECT('&&CNOAFF.DESC_NOEUD','V V I',NEC*NBNOEU,JDESC)
-
-C   BOUCLE SUR LES OCCURRENCES DE AFFE
-
-      DO 120 IOCC = 1,NOCC
-C
-         NBNOE = 0
-C
-         CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,1,0, KBID, NBCMP )
-         CALL GETVR8 ( MOTCLF, 'VALE'   , IOCC,1,0, RBID, NBVAL )
-         CALL GETVID ( MOTCLF, 'VALE_F' , IOCC,1,0, KBID, NBFCT )
-C
-         CALL GETVTX ( MOTCLF, 'TOUT'   , IOCC,1,1, KBID, NBTOU )
-C
-         IF ( NBTOU .EQ. 0 ) THEN
-C
-            CALL RELIEM(' ', NOMA, 'NO_NOEUD', MOTCLF, IOCC, 4,
-     +                                  MOTCLE, TYPMCL, MESNOE, NBNOE )
-            CALL JEVEUO ( MESNOE, 'L', JLNO )
-
+C  --    NOEUDS CONCERNES
+C        ----------------
+         CALL GETVTX ( 'AFFE', 'TOUT', IOCC,1,1, KBID, NBTOU )
+         IF ( NBTOU .NE. 0 ) THEN
+           NBNOE=NBNO
+           CALL JEDETR(MESNOE)
+           CALL WKVECT(MESNOE,'V V I',NBNOE,JLNO)
+           DO 51 I=1,NBNOE
+             ZI(JLNO+I-1)=I
+ 51        CONTINUE
+         ELSE
+           CALL RELIEM(' ', NOMA, 'NU_NOEUD', 'AFFE', IOCC, 4,
+     &                 MOTCLE, TYPMCL, MESNOE, NBNOE )
+           CALL JEVEUO ( MESNOE, 'L', JLNO )
          ENDIF
 C
-         NBCMP = -NBCMP
-         NBVAL = -NBVAL
-         NBFCT = -NBFCT
+C  --    COMPOSANTES CONCERNEES
+C        ----------------------
+         CALL GETVTX ( 'AFFE', 'NOM_CMP', IOCC,1,0, KBID, NCMP )
+         NCMP=-NCMP
+         CALL JEDETR('&&CNOAFF.CMP_IOCC')
+         CALL WKVECT('&&CNOAFF.CMP_IOCC','V V K8',NCMP,JCMP)
+         CALL GETVTX ( 'AFFE', 'NOM_CMP', IOCC,1,NCMP,ZK8(JCMP),NCMP)
 C
-         CALL WKVECT ( '&&CNOAFF.LISTE_COMP', 'V V K8', NBCMP, JCMP )
-         CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,1,NBCMP,ZK8(JCMP),NBCMP)
+C  --    VALEURS
+C        -------
+         CALL GETVR8 ( 'AFFE', 'VALE'   , IOCC,1,0, RBID, NBVAR )
+         CALL GETVID ( 'AFFE', 'VALE_F' , IOCC,1,0, KBID, NBVAK )
+         CALL GETVIS ( 'AFFE', 'VALE_I' , IOCC,1,0, IBID, NBVAI )
+         CALL GETVC8 ( 'AFFE', 'VALE_C' , IOCC,1,0, CBID, NBVAC )
 
-         IF ( FCT ) THEN
-            CALL WKVECT('&&CNOAFF.LISTE_VAL','V V K8',NBCMP,JFCT)
-            IF ( NBFCT .NE. 0  ) THEN
-              CALL GETVID(MOTCLF,'VALE_F',IOCC,1,NBFCT,ZK8(JFCT),NBFCT)
-            ENDIF
+C  --    REMPLISSAGE DES OBJETS .CNSL ET .CNSV
+C        -------------------------------------
 
-C  PROLONGEMENT DANS LE CAS D'UNE MEME FONCTION POUR TTES LES CMP
+C   -    TYPE "R" :
+         IF(NBVAR.NE.0)THEN
+            CALL ASSERT(TSCA.EQ.'R')
+            NBVAR=-NBVAR
+            CALL JEDETR('&&CNOAFF.VAL_IOCC')
+            CALL WKVECT('&&CNOAFF.VAL_IOCC','V V R',NBVAR,JVAL)
+            CALL GETVR8 ( 'AFFE','VALE',IOCC,1,NBVAR,ZR(JVAL),NBVAR)
+            DO 52 I=1,NCMP
+               ICMP=INDIK8(ZK8(JCMPT),ZK8(JCMP+I-1),1,NBCMPT)
+               CALL ASSERT(ICMP.GT.0)
+               DO 53 J=1,NBNOE
+                 INO=ZI(JLNO+J-1)
+                 ZR(JCNSV+NBCMPT*(INO-1)+ICMP-1)=ZR(JVAL+I-1)
+                 ZL(JCNSL+NBCMPT*(INO-1)+ICMP-1)=.TRUE.
+ 53            CONTINUE
+ 52         CONTINUE
+            CALL JEDETR('&&CNOAFF.VAL_IOCC')
 
-            IF (NBCMP.GT.NBFCT) THEN
-               DO 60 ICMP = NBFCT+1,NBCMP
-                  ZK8(JFCT-1+ICMP) = ZK8(JFCT+NBFCT-1)
-                  VALK (1) = ZK8(JFCT+NBFCT-1)
-                  VALK (2) = ZK8(JCMP+ICMP-1)
-                  CALL U2MESG('A', 'UTILITAI6_6',2,VALK,0,0,0,0.D0)
-   60          CONTINUE
-            END IF
-         ELSE
-           CALL WKVECT('&&CNOAFF.LISTE_VAL','V V R',NBCMP,JVALR)
-           IF ( NBVAL .NE. 0 ) THEN
-             CALL GETVR8(MOTCLF,'VALE'  ,IOCC,1,NBVAL,ZR(JVALR),NBVAL)
-           ENDIF
+C   -    TYPE "I" :
+         ELSEIF(NBVAI.NE.0)THEN
+            CALL ASSERT(TSCA.EQ.'I')
+            NBVAI=-NBVAI
+            CALL JEDETR('&&CNOAFF.VAL_IOCC')
+            CALL WKVECT('&&CNOAFF.VAL_IOCC','V V I',NBVAI,JVAL)
+            CALL GETVIS ( 'AFFE','VALE_I', IOCC,1,NBVAI,ZI(JVAL),NBVAL)
+            DO 54 I=1,NCMP
+               ICMP=INDIK8(ZK8(JCMPT),ZK8(JCMP+I-1),1,NBCMPT)
+               CALL ASSERT(ICMP.GT.0)
+               DO 55 J=1,NBNOE
+                 INO=ZI(JLNO+J-1)
+                 ZI(JCNSV+NBCMPT*(INO-1)+ICMP-1)=ZI(JVAL+I-1)
+                 ZL(JCNSL+NBCMPT*(INO-1)+ICMP-1)=.TRUE.
+ 55            CONTINUE
+ 54         CONTINUE
+            CALL JEDETR('&&CNOAFF.VAL_IOCC')
 
-C  PROLONGEMENT DANS LE CAS D'UNE MEME VALEUR POUR TTES LES CMP
+C   -    TYPE "C" :
+         ELSEIF(NBVAC.NE.0)THEN
+            CALL ASSERT(TSCA.EQ.'C')
+            NBVAC=-NBVAC
+            CALL JEDETR('&&CNOAFF.VAL_IOCC')
+            CALL WKVECT('&&CNOAFF.VAL_IOCC','V V C',NBVAC,JVAL)
+            CALL GETVC8 ( 'AFFE','VALE_C', IOCC,1,NBVAC,ZC(JVAL),NBVAC)
+            DO 56 I=1,NCMP
+               ICMP=INDIK8(ZK8(JCMPT),ZK8(JCMP+I-1),1,NBCMPT)
+               CALL ASSERT(ICMP.GT.0)
+               DO 57 J=1,NBNOE
+                 INO=ZI(JLNO+J-1)
+                 ZC(JCNSV+NBCMPT*(INO-1)+ICMP-1)=ZC(JVAL+I-1)
+                 ZL(JCNSL+NBCMPT*(INO-1)+ICMP-1)=.TRUE.
+ 57            CONTINUE
+ 56         CONTINUE
+            CALL JEDETR('&&CNOAFF.VAL_IOCC')
 
-           IF (NBCMP.GT.NBVAL) THEN
-              DO 70 ICMP = NBVAL+1,NBCMP
-                 ZR(JVALR-1+ICMP) = ZR(JVALR+NBVAL-1)
-                  VALR = ZR(JVALR+NBVAL-1)
-                  VALK (1) = ZK8(JCMP+ICMP-1)
-                 CALL U2MESG('A', 'UTILITAI6_7',1,VALK,0,0,1,VALR)
-   70         CONTINUE
-           END IF
-        END IF
+C   -    TYPE "F" :
+         ELSEIF(NBVAK.NE.0)THEN
+            CALL ASSERT(TSCA.EQ.'K')
+            NBVAK=-NBVAK
+            CALL JEDETR('&&CNOAFF.VAL_IOCC')
+            CALL WKVECT('&&CNOAFF.VAL_IOCC','V V K8',NBVAK,JVAL)
+            CALL GETVID( 'AFFE','VALE_F', IOCC,1,NBVAK,ZK8(JVAL),NBVAK)
+            DO 58 I=1,NCMP
+               ICMP=INDIK8(ZK8(JCMPT),ZK8(JCMP+I-1),1,NBCMPT)
+               CALL ASSERT(ICMP.GT.0)
+               DO 59 J=1,NBNOE
+                 INO=ZI(JLNO+J-1)
+                 ZK8(JCNSV+NBCMPT*(INO-1)+ICMP-1)=ZK8(JVAL+I-1)
+                 ZL(JCNSL+NBCMPT*(INO-1)+ICMP-1)=.TRUE.
+ 59            CONTINUE
+ 58         CONTINUE
+            CALL JEDETR('&&CNOAFF.VAL_IOCC')
+         ENDIF
 
-C        CAS D'UNE AFFE SUR TOUS LES NOEUDS (MOT-CLE TOUT)
-C        -----------------------------------------
-
-        IF ( NBTOU .NE. 0 ) THEN
-          DO 80 INO = 1,NBNOEU
-            CALL JENUNO(JEXNUM(NOMNOE,INO),NOMN)
-            ZK8(JNNO+INO-1) = NOMN
-            IF (FCT) THEN
-              CALL AFFENO(IOCC,INO,ZK8(JCMP),NBCMP,ZK8(IACMP),NBCOMP,
-     &                    RBID,ZK8(JFCT),ZI(JDESC),RBID,ZK8(JVAL),
-     &                    'K',NEC)
-            ELSE
-              CALL AFFENO(IOCC,INO,ZK8(JCMP),NBCMP,ZK8(IACMP),NBCOMP,
-     &                    ZR(JVALR),KBID,ZI(JDESC),ZR(JVAL),KBID,
-     &                    'R',NEC)
-            END IF
-   80     CONTINUE
-        END IF
+ 50   CONTINUE
 C
-        IF (NBNOE.NE.0) THEN
-          DO 110 II = 1,NBNOE
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JLNO-1+II)),INO)
-            ZK8(JNNO+INO-1) = ZK8(JLNO+II-1)
-            IF (FCT) THEN
-              CALL AFFENO(IOCC,INO,ZK8(JCMP),NBCMP,ZK8(IACMP),NBCOMP,
-     &                    RBID,ZK8(JFCT),ZI(JDESC),RBID,ZK8(JVAL),
-     &                    'K',NEC)
-            ELSE
-              CALL AFFENO(IOCC,INO,ZK8(JCMP),NBCMP,ZK8(IACMP),NBCOMP,
-     &                    ZR(JVALR),KBID,ZI(JDESC),ZR(JVAL),KBID,
-     &                    'R',NEC)
-            END IF
-  110     CONTINUE
-          CALL JEDETR ( MESNOE )
-        END IF
-
-        CALL JEDETR ( '&&CNOAFF.LISTE_VAL' )
-        CALL JEDETR ( '&&CNOAFF.LISTE_COMP')
-
-C    FIN DE BOUCLE SUR LES OCCURRENCES DE AFFE
-
-  120 CONTINUE
-
-C  CALCUL DU NOMBRE TOTAL DE CMP AFFECTEES (SOMMEES SUR LES NOEUDS)
-
-      LONVAL = 0
-      DO 140 INO = 1,NBNOEU
-        ICOMP = 0
-        DO 130 IC = 1,NBCOMP
-          IEC = (IC-1)/30 + 1
-          JJ = IC - 30* (IEC-1)
-          II = 2**JJ
-          NN = IAND(ZI(JDESC+ (INO-1)*NEC+IEC-1),II)
-          IF (NN.GT.0) THEN
-            ICOMP = ICOMP + 1
-          END IF
-  130   CONTINUE
-        ZI(JNBCA-1+INO) = ICOMP
-        LONVAL = LONVAL + ICOMP
-  140 CONTINUE
-
-      IF (FCT) THEN
-        TYPVAL = 'K8'
+C
+C --- 5. PASSAGE DU CHAMP SIMPLE AU CHAMP CLASSIQUE
+C     =============================================
+C
+      IF (INUME.EQ.1) THEN
+        PRCHNO = NONUME//'.NUME'
+        PROL0='OUI'
+      ELSE IF (ICHNO.EQ.1) THEN
+        REFE= NOCHNO//'           .REFE'
+        CALL JEVEUO(REFE,'L',JREF)
+        PRCHNO = ZK24(JREF+1)
+        PROL0='OUI'
       ELSE
-        TYPVAL = 'R'
+        PRCHNO=' '
+        CALL GETVTX(' ','PROL_ZERO',0,1,1,PROL0,IBID)
       END IF
 
-      IF (INUME.EQ.0 .AND. ICHNO.EQ.0) THEN
-
-C        CAS OU LE PROF_CHNO EST A CONSTRUIRE
-C        ************************************
-
-        CALL AFCHNO(RESU,BASE,GRAN,NOMA,NBNOEU,ZI(JNBCA),ZI(JDESC),
-     &              LONVAL,TYPVAL,ZR(JVAL),ZC(JVAL),ZK8(JVAL))
-      ELSE
-
-C        CAS D'UN PROF_CHNO RECUPERE A PARTIR DE NUME_DDL OU CHNO
-C        ********************************************************
-
-        IF (INUME.EQ.1) THEN
-          PRCHNO = NONUME//'.NUME'
-          CALL DISMOI('F','NB_EQUA',NONUME,'NUME_DDL',NEQ,KBID,IERD)
-        ELSE IF (ICHNO.EQ.1) THEN
-          REFE(1:8) = NOCHNO
-          CALL JEVEUO(REFE,'L',JREF)
-          PRCHNO = ZK24(JREF+1)
-          CALL DISMOI('F','NB_EQUA',NOCHNO,'CHAM_NO',NEQ,KBID,IERD)
-        END IF
-
-C        --- CREATION DU CHAMNO ---
-
-        CALL CRCHNO(RESU,PRCHNO,GRAN,NOMA,BASE,TYPVAL,NBNOEU,NEQ)
-        CHAMNO(1:8) = RESU
-        CALL JEVEUO(CHAMNO(1:19)//'.DESC','L',IADESC)
-        GD = ZI(IADESC)
-
-C        --- AFFE DU .VALE DE L'OBJET CHAMNO ---
-
-        VALE(1:8) = RESU
-        CALL JEVEUO(VALE,'E',LVALE)
-        NUEQ(1:19) = PRCHNO(1:19)
-        CALL JEVEUO(NUEQ,'E',LNUEQ)
-        CALL JEVEUO(PRCHNO(1:19)//'.PRNO','L',LPRNOI)
-        NEC = NBEC(GD)
-        NEC2 = NEC + 2
-
-        IF (FCT) THEN
-          DO 160 INO = 1,NBNOEU
-            I1 = ZI(LPRNOI-1+ (INO-1)*NEC2+1) + LNUEQ - 1
-            DO 150 IC = 1,NBCOMP
-              IEC = (IC-1)/30 + 1
-              JJ = IC - 30* (IEC-1)
-              II = 2**JJ
-              NN = IAND(ZI(JDESC+ (INO-1)*NEC+IEC-1),II)
-              NNI = IAND(ZI(LPRNOI-1+ (INO-1)*NEC2+2+IEC),II)
-C     SI LA COMPOSANTE EST AFFECTEE DANS LA COMMANDE
-              IF (NN.GT.0) THEN
-C     SI LA COMPOSANTE FIGURE DANS LE PROF_CHNO
-                IF (NNI.GT.0) THEN
-                  ZK8(LVALE-1+ZI(I1)) = ZK8(JVAL+ (INO-1)*NBCOMP-1+IC)
-                  I1 = I1 + 1
-                ELSE
-                  VALK (1) = NOMN
-                  VALK (2) = ZK8(IACMP-1+IC)
-                  CALL U2MESG('F', 'UTILITAI6_8',2,VALK,0,0,0,0.D0)
-                END IF
-              ELSE
-C     LA COMPOSANTE N'EST PAS AFFECTEE DANS LA COMMANDE
-                IF (NNI.GT.0) THEN
-                  I1 = I1 + 1
-                END IF
-              END IF
-  150       CONTINUE
-  160     CONTINUE
-        ELSE
-          DO 180 INO = 1,NBNOEU
-            I1 = ZI(LPRNOI-1+ (INO-1)*NEC2+1) + LNUEQ - 1
-            DO 170 IC = 1,NBCOMP
-              IEC = (IC-1)/30 + 1
-              JJ = IC - 30* (IEC-1)
-              II = 2**JJ
-              NN = IAND(ZI(JDESC+ (INO-1)*NEC+IEC-1),II)
-              NNI = IAND(ZI(LPRNOI-1+ (INO-1)*NEC2+2+IEC),II)
-C     SI LA COMPOSANTE EST AFFECTEE DANS LA COMMANDE
-              IF (NN.GT.0) THEN
-C     SI LA COMPOSANTE FIGURE DANS LE PROF_CHNO
-                IF (NNI.GT.0) THEN
-                  ZR(LVALE-1+ZI(I1)) = ZR(JVAL+ (INO-1)*NBCOMP-1+IC)
-                  I1 = I1 + 1
-                ELSE
-                  VALK (1) = NOMN
-                  VALK (2) = ZK8(IACMP-1+IC)
-                  CALL U2MESG('F', 'UTILITAI6_8',2,VALK,0,0,0,0.D0)
-                END IF
-              ELSE
-C     LA COMPOSANTE N'EST PAS AFFECTEE DANS LA COMMANDE
-                IF (NNI.GT.0) THEN
-                  I1 = I1 + 1
-                END IF
-              END IF
-  170       CONTINUE
-  180     CONTINUE
-        END IF
-        LONVAL = NEQ
-      END IF
-
-      CALL JEDETR('&&CNOAFF.NOMS_NOEUDS')
-      CALL JEDETR('&&CNOAFF.VALCOMPNO')
-      CALL JEDETR('&&CNOAFF.NBCOMP_AFFE')
-      CALL JEDETR('&&CNOAFF.DESC_NOEUD')
-
-  190 CONTINUE
-  999 FORMAT (5X,I4,12X,A4,12X,A5)
+      CALL CNSCNO(CNOS,PRCHNO,PROL0,BASE,CNO,'F',IRET)
+C
+C
+C --- 6. FIN
+C     =======
+C
+      CALL JEDETR(MESCMP)
+      CALL JEDETR(CNOS)
 
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,8 @@
 #   MODELISATION A : CUBE HEXA8 / 210131 DDLs / 8090562 NNZ
 #   ON TESTE LES DIFFERENTES VARIANTES DE MUMPS (CENTRALISEE/DISTRIBUEE
 #   PAR MAILLE ET PAR SOUS-DOMAINES, EN INFLUANT SUR L'EQUILIBRAGE
-#   DE CHARGE VIA LES MOT-CLES CHARGE_PROC0_MA/SD).
+#   DE CHARGE VIA LES MOT-CLES CHARGE_PROC0_MA/SD ET SUR LE CARACTERE
+#   IN_CORE/OUT_OF_CORE).
 #   WARNING: EN PARALLELE, PAS PLUS DE 21 PROC SINON MODIFIER LE NOMBRE
 #   DE SOUS-DOMAINES (NB_PART ET DIST_PROC0 DU 3.1/3.2).
 #   PARALLELE: VALEUR CONSEILLEE 8 PROCS
@@ -110,7 +111,8 @@ MECAC=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='CENTRALISE'
+                                PARALLELISME='CENTRALISE',
+                                OUT_OF_CORE='OUI',
                                 ),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAC,
@@ -147,6 +149,7 @@ MECAD1=MECA_STATIQUE(INFO=niv_info,
                                 PCENT_PIVOT=mem_pivot,
                                 PARALLELISME='DISTRIBUE_MD',
                                 CHARGE_PROC0_MA=0,
+                                OUT_OF_CORE='NON',
                                 ),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD1,
@@ -183,6 +186,7 @@ MECAD2=MECA_STATIQUE(INFO=niv_info,
                                 PCENT_PIVOT=mem_pivot,
                                 PARALLELISME='DISTRIBUE_MD',
                                 CHARGE_PROC0_MA=70,
+                                OUT_OF_CORE='OUI',
                                 ),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD2,
@@ -225,6 +229,7 @@ MECAD3=MECA_STATIQUE(INFO=niv_info,
                                 PARALLELISME='DISTRIBUE_SD',
                                 CHARGE_PROC0_SD=0,
                                 PARTITION=SDFETI,
+                                OUT_OF_CORE='NON',
                                 ),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD3,
@@ -262,6 +267,7 @@ MECAD4=MECA_STATIQUE(INFO=niv_info,
                                 PARALLELISME='DISTRIBUE_SD',
                                 CHARGE_PROC0_SD=2,
                                 PARTITION=SDFETI,
+                                OUT_OF_CORE='OUI',
                                 ),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD4,

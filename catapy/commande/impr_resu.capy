@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,8 +112,11 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
              LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
 
              b_acce_reel     =BLOC(condition="(FREQ != None)or(LIST_FREQ != None)or(INST != None)or(LIST_INST != None)",
-               PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3),
-               CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+                CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+                b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                     PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+                b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                     PRECISION       =SIMP(statut='o',typ='R',),),
              ),
            ),
 ###

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -179,12 +179,18 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
       b_precision = BLOC(condition="(INST != None)",
                          fr="Choix de la précision du choix de l'instant",
                          ang="Selection for instant choice",
-        PRECISION = SIMP(statut='f',typ='R',defaut=1.0E-3,
-                         fr="Précision sur le choix de l'instant associé",
-                         ang="Accuracy over instant choice" ),
-        CRITERE   = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
-                         fr="Critère de précision sur le choix de l'instant associé",
-                         ang="Accuracy criterium over instant choice" ),
+
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),
+                              fr="Critère de précision sur le choix de l'instant associé",
+                              ang="Accuracy criterium over instant choice"),
+             b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,
+                                  fr="Précision sur le choix de l'instant associé",
+                                  ang="Accuracy over instant choice"),),
+             b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                 PRECISION       =SIMP(statut='o',typ='R',
+                                  fr="Précision sur le choix de l'instant associé",
+                                  ang="Accuracy over instant choice"),),
       ),
 #
     ),
@@ -456,13 +462,17 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                          fr="Choix de la précision du choix de l'instant",
                          ang="Selection for instant choice",
 #
-        PRECISION = SIMP(statut='f',typ='R',defaut=1.0E-3,
-                         fr="Précision sur le choix de l'instant associé",
-                         ang="Accuracy over instant choice" ),
-#
-        CRITERE = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
-                       fr="Critère de précision sur le choix de l'instant associé",
-                       ang="Accuracy criterium over instant choice" ),
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),
+                              fr="Critère de précision sur le choix de l'instant associé",
+                              ang="Accuracy criterium over instant choice"),
+             b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,
+                                  fr="Précision sur le choix de l'instant associé",
+                                  ang="Accuracy over instant choice"),),
+             b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                 PRECISION       =SIMP(statut='o',typ='R',
+                                  fr="Précision sur le choix de l'instant associé",
+                                  ang="Accuracy over instant choice"),),
 #
       ),
 #

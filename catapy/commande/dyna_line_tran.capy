@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,8 +51,11 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
              NUME_INIT       =SIMP(statut='f',typ='I' ),
              INST_INIT       =SIMP(statut='f',typ='R' ),
              b_inst_init     =BLOC(condition = "INST_INIT != None",
-               PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
                CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+               b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+               b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                   PRECISION       =SIMP(statut='o',typ='R',),),
              ),
            ),
            DEPL_INIT       =SIMP(statut='f',typ=cham_no_sdaster),
@@ -119,6 +122,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
              PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",into=("CENTRALISE","CENTRALISE")),
+             OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
              ),
 
            b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la méthode PETSC",

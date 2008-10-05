@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE   
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -197,6 +197,7 @@ DYNHASS=CALC_ELEM(reuse =DYNHASS,
                RESULTAT=DYNHASS,
                TOUT_ORDRE='OUI',
                CRITERE='ABSOLU',
+               PRECISION=1.E-3,
                OPTION=(
                         'SIEF_ELGA_DEPL',
                         'SIEF_ELNO_ELGA',

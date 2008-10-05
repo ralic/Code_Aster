@@ -3,7 +3,7 @@
       CHARACTER*(*)       MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,7 @@ C
       NP = -NP
       IF (NP.EQ.0) THEN
          EPSI = 0.001D0
-         PREC = 0.001D0
+         PREC = 1.D-6
       ELSE IF (NP.EQ.1) THEN
          CALL GETVR8 ( MCF, 'PRECISION', IOCC,1,1, EPSI, NP )
          PREC = EPSI

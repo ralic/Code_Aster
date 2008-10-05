@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE LA COMMANDE  CREA_CHAMP/ASSE ET CREA_CHAMP/EXTR/TABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,6 +57,63 @@ CALC_ELEM( reuse=SOLPL,
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLPL,
               )
+
+
+#================================================================
+#  VALIDATION :CREA_CHAMP/AFFE, TYPE_CHAM='NOEU_XXXX_X'
+#================================================================
+
+# A : CHAM_NO_DEPL_R :
+# ------------------
+
+ACH01=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
+    MAILLAGE=MA,
+    AFFE=(_F( TOUT  = 'OUI', NOM_CMP='DY', VALE=0.5),
+          _F( NOEUD = ('A4','A2','A3',), NOM_CMP = ('DX','DZ',), VALE = (1.,3.,)),
+          _F( NOEUD = ('A2',), NOM_CMP = ('DY','DZ',), VALE = (8.,2.,)),),
+    )
+
+ACH02=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
+    CHAM_NO=ACH01,PROL_ZERO='OUI',MODELE=MO,
+    AFFE=(_F( NOEUD=('A2','A1'), NOM_CMP=('DY'), VALE=(3.),),),
+    )
+
+# B : CHAM_NO_NEUT_I :
+# ------------------
+
+ACH03=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_I',
+    MAILLAGE=MA,
+    AFFE=(_F( TOUT  = 'OUI', NOM_CMP=('X15','X120'), VALE_I=(1,2),),
+          _F( NOEUD = ('A2',), NOM_CMP = ('X2'), VALE_I =3 ),),
+    )
+
+# C : CHAM_NO_NEUT_F :
+# ------------------
+
+FORM = FORMULE(NOM_PARA=('X','Y'),VALE='2.*X +3.*Y +5.')
+ACH04=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F',
+      MAILLAGE=MA,
+      AFFE=_F( NOEUD = ('A2','A3',), NOM_CMP = ('X1',), VALE_F = (FORM,),),
+    )
+
+# D : CHAM_NO_DEPL_C :
+# ------------------
+
+ACH05=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_C',
+    MAILLAGE=MA,
+    AFFE=_F( NOEUD = ('A4','A2','A3',), NOM_CMP = ('DY','DX'), 
+             VALE_C = (('RI',1.0,0.5,),('RI',0.0,1.0,)))
+    )
+
+TEST_RESU(CHAM_NO=(
+  _F( CHAM_GD = ACH01,  NOEUD = 'A2',  NOM_CMP = 'DY',
+      PRECISION = 1.E-12, VALE = 8.E0, REFERENCE = 'NON_REGRESSION'),
+  _F( CHAM_GD = ACH02,  NOEUD = 'A2',  NOM_CMP = 'DY',
+      PRECISION = 1.E-12, VALE = 3.E0, REFERENCE = 'NON_REGRESSION'),
+  _F( CHAM_GD = ACH05,  NOEUD = 'A2',  NOM_CMP = 'DY',
+      PRECISION = 1.E-12, VALE_C = ('RI',1.0,0.5,), 
+      REFERENCE = 'NON_REGRESSION'))
+)
 
 #================================================================
 #  VALIDATION :CREA_CHAMP/ASSE

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURATION JOINT 3D : PENTA6
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -368,7 +368,7 @@ TEST_RESU (
       VALE      = 4.49911E-02,
       MAILLE    = 'PRISM',
       POINT     = 1,
-      INST      = 2.20004,
+      INST      = 2.200045,
       ),
     )
   )
@@ -384,7 +384,7 @@ TEST_RESU (
       VALE      = 1.56379E-01,
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.70006,
+      INST      = 1.7000575,
       ),
     )
   )
@@ -401,7 +401,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.80005,
+      INST      = 1.800055,
       ),
     )
   )
@@ -417,7 +417,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.80005,
+      INST      = 1.800055,
       ),
     )
   )
@@ -470,7 +470,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.80005,
+      INST      = 1.800055,
       ),
     )
   )
@@ -486,7 +486,7 @@ TEST_RESU (
       VALE      = 1.56379E-01,
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.70006,
+      INST      = 1.7000575,
       ),
     )
   )
@@ -504,7 +504,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.80005,
+      INST      = 1.800055,
       ),
     )
   )
@@ -558,7 +558,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.10007,
+      INST      = 1.1000725,
       ),
     )
   )
@@ -575,7 +575,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.10007,
+      INST      = 1.1000725,
       ),
     )
   )
@@ -590,7 +590,7 @@ TEST_RESU (
       VALE      = 1.56379E-01,
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.70006,
+      INST      = 1.7000575,
       ),
     )
   )

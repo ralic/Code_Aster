@@ -1,4 +1,4 @@
-# MODIF  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURATION JOINT 3D : PENTA6 LOI CZM_LIN_REG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -369,7 +369,7 @@ TEST_RESU (
       VALE      = 9.27629539E-02,
       MAILLE    = 'PRISM',
       POINT     = 1,
-      INST      = 1.6,
+      INST      = 1.6000059,
       ),
     )
   )
@@ -385,7 +385,7 @@ TEST_RESU (
       VALE      = 5.4887556E-01,
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.0,
+      INST      = 1.000041,
       ),
     )
   )
@@ -402,7 +402,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 0.4,
+      INST      = 0.4000765,
       ),
     )
   )
@@ -418,7 +418,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 0.5,
+      INST      = 0.5000706,
       ),
     )
   )
@@ -472,7 +472,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.0,
+      INST      = 1.000041,
       ),
     )
   )
@@ -488,7 +488,7 @@ TEST_RESU (
       VALE      = 0.43314616,
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.2,
+      INST      = 1.200029,
       ),
     )
   )
@@ -506,7 +506,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.4,
+      INST      = 1.4000176,
       ),
     )
   )
@@ -560,7 +560,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.0,
+      INST      = 1.000041,
       ),
     )
   )
@@ -577,7 +577,7 @@ TEST_RESU (
       CRITERE   = 'ABSOLU',
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.2,
+      INST      = 1.200029,
       ),
     )
   )
@@ -592,7 +592,7 @@ TEST_RESU (
       VALE      = 2.931186E-1,
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
-      INST      = 1.4,
+      INST      = 1.4000176,
       ),
     )
   )

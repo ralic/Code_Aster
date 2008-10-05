@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE ECHANGE_PAROI EN THERMIQUE NON LINEAIRE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,6 +153,7 @@ TSTAT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='EXTR',
                  RESULTAT=RESUTHER,
                  NOM_CHAM='TEMP',
+                 PRECISION=1.E-3,
                  INST=1.45E-05,);
 #
 

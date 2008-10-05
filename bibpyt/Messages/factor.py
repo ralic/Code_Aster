@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF factor Messages  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -252,4 +252,18 @@ Solution :
 """),
 
 #-----------------------------------------------------------------------------------------------
+
+66: _("""
+Solveur MUMPS :
+  Echec de la factorisation OUT-OF-CORE de MUMPS.
+  Consulter les  messages délivrés  par MUMPS.
+Conseil: Augmenter  le nombre de processeurs utilisés.
+        
+"""),
+
+
+
+
+
+
 }

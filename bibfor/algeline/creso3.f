@@ -1,7 +1,7 @@
       SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,
-     &           KLAG2,EPS,ISTOP,KDISZ,SDFETZ)
+     &           KLAG2,EPS,ISTOP,KDISZ,SDFETZ,KOOC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*) SOLVEZ
-      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,KDISZ,SDFETZ
+      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,KDISZ,SDFETZ,KOOC
       INTEGER PCPIVZ ,ISTOP
       REAL*8 EPS
 C ----------------------------------------------------------
@@ -46,6 +46,8 @@ C                  1 : STOP_SINGULIER=NON
 C IN K  KDISZ     : PARAMETRE DE MUMPS PARALLELE: CENTRA/DISTRI
 C IN K  SDFETZ    : NOM DE LA SD_FETI DECRIVANT LA DISTRIBUTION DES
 C                   DONNEES SI KDISZ='DISTRI'
+C IN K KOOC  :  TRAITEMENT OUT_OF_CORE DES PHASES DE FACT + RESOL
+C               DE MUMPS : /OUI/NON (PAR DEFAUT NON)
 C ----------------------------------------------------------
 C RESPONSABLE VABHHTS J.PELLET
 
@@ -122,6 +124,14 @@ C     PARALLELISME :
 C     ------------
       IF (KDIS.EQ.' ') KDIS='CENTRALISE'
 
+C     OUT-OF-CORE  :  
+C     -----------
+      IF (KOOC.EQ.' ') KOOC='NON'
+
+
+
+
+
 C     CREATION DE LA SD ET STOCKAGE DES VALEURS OBTENUES :
 C     ---------------------------------------------------
       CALL WKVECT(SOLVEU//'.SLVK','V V K24',11,ISLVK)
@@ -136,7 +146,7 @@ C     ---------------------------------------------------
       ZK24(ISLVK-1+6) = KLAG2
       ZK24(ISLVK-1+7) = KDIS
       ZK24(ISLVK-1+8) = SDFETI
-
+      ZK24(ISLVK-1+9) = KOOC
       ZI(ISLVI-1+1) = -9999
       ZI(ISLVI-1+2) = PCPIV
       ZI(ISLVI-1+3) = ISTOP

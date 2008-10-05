@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE ARRACHEMENT D'UNE ARMATURE RIGIDE AVEC DES ELEMENTS A DISCONTINUITE (EN AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -286,7 +286,7 @@ TEST_RESU(RESU=(
                        MAILLE ='MJ38',
                        NOM_CHAM = 'VARI_ELGA',
                        NOM_CMP = 'V7',
-                       INST = 1.93334E+01,
+                       INST = 1.933337E+01,
                        VALE = 1.28483E-01,
                      ),
                 _F(    RESULTAT = EVOL,

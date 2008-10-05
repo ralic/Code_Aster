@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -282,6 +282,7 @@ TEMP0=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 FORMAT='MED',
                 MAILLAGE=MAIL,
                 UNITE=70,
+                PRECISION=1.E-3,
                 FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
                                  NOM_CHAM    ='TEMP',),
                 INST=(85.,73.33,),);
@@ -297,11 +298,11 @@ TEST_RESU ( RESU=(
                          VALE       = 8.50000E+01       ),
                    _F(  RESULTAT   = TEMP0,
                          NOM_CHAM   = 'TEMP',
-                         INST       = 7.33330E+01,
+                         INST       = 7.332999999E+01,
                          REFERENCE  = 'AUTRE_ASTER',
                          NOEUD     = 'N1',
                          NOM_CMP    = 'TEMP',
-                         VALE       = 7.33330E+01       ),
+                         VALE       = 7.3333333E+01       ),
                     ),)
 
 

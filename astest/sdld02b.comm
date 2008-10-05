@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,7 +109,7 @@ LFREQ=DEFI_LIST_REEL(   DEBUT=5.5274,
 # --------------------------------------------------------------------
 
 MODE1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT=FREQ,
+                  RESULTAT=FREQ, PRECISION=1.E-3,
                     # FREQ: 5.527   # NUMERO_MODE: 1
                        FREQ=5.5274,    CRITERE='ABSOLU',
                       NOM_CHAM='DEPL'   )

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
            INST_INIT       =SIMP(statut='f',typ='R'),
            NUME_INST_FIN   =SIMP(statut='f',typ='I'),
            INST_FIN        =SIMP(statut='f',typ='R'),
-           PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
+           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),
            # DEBUT DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS
            SUBD_METHODE    =SIMP( statut='f',typ='TXM',
               into =("AUCUNE","UNIFORME","EXTRAPOLE"),
@@ -119,7 +119,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
      LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),                                                 
      INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
      PAS_ARCH        =SIMP(statut='f',typ='I' ),
-     PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3),
+     PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6),
      ARCH_ETAT_INIT  =SIMP(statut='f',typ='TXM',into=("OUI",)),
      NUME_INIT       =SIMP(statut='f',typ='I'),
      DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),

@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF utilitai6 Messages  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,12 +28,6 @@ cata_msg = {
  grandeur %(k1)s
 """),
 
-2 : _("""
-
- incoherence dans les donnees:  on cherche a creer un champ de valeurs fonctions  alors que la grandeur n''est pas de type fonction
- grandeur de la commande :  %(k1)s
-"""),
-
 3 : _("""
 
  la liste de composantes et la liste  des valeurs n'ont pas la même dimension
@@ -52,21 +46,6 @@ cata_msg = {
  le nume_ddl en entree ne s'appuie  pas sur la même grandeur que celle de la commande
  grandeur associee au nume_ddl %(k1)s
  grandeur de la commande :  %(k2)s
-"""),
-
-6 : _("""
- on a affecte la fonction  %(k1)s  pour la composante  %(k2)s
-"""),
-
-7 : _("""
- on a affecte la valeur  %(r1)f  pour la composante  %(k1)s
-"""),
-
-8 : _("""
-
- on cherche a affecter sur un noeud une  composante qui n'est pas dans le profil  noeud d'entree
- noeud : %(k1)s
- composante : %(k2)s
 """),
 
 11 : _("""

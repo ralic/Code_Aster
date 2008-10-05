@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,8 +40,11 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            RESU_GENE       =SIMP(statut='f',typ=tran_gene ),
            b_resu_gene     =BLOC(condition = "RESU_GENE != None",
              INST_INIT       =SIMP(statut='f',typ='R' ),
-             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
-             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+             b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+             b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                PRECISION       =SIMP(statut='o',typ='R',),),
            ),
            DEPL_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene ),
            VITE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene ),
@@ -236,6 +239,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
              PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
              CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
              CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
+             OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
              ),
          ),
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,9 +44,11 @@ IMPR_GENE=PROC(nom="IMPR_GENE",op= 157,
            LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
            TOUT_MODE       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
-           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",
-                                   into=("RELATIF","ABSOLU") ),
+           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+           b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+           b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+              PRECISION       =SIMP(statut='o',typ='R',),),
            TOUT_CMP_GENE   =SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
            NUME_CMP_GENE   =SIMP(statut='f',typ='I',max='**'),
            TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI","NON") ),

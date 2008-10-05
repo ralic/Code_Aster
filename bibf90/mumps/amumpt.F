@@ -2,7 +2,7 @@
      &                   LQUALI,RDESQ,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
+!& MODIF AMUMPT MUMPS  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -33,9 +33,10 @@ C IN  LQUALI :  LOG   : LOGICAL EN CAS DE CRITERE DE QUALITE
 C IN  RDESQ  :  R8    : PARAMETRE POUR LE DESEQUILIBRAGE MAX
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 C---------------------------------------------------------------
-      INTEGER      OPTION,MONIT(9),RANG,NBPROC,KXMPS
+ 
+      INTEGER      OPTION,MONIT(12),RANG,NBPROC,KXMPS
       CHARACTER*1  TYPE
-      CHARACTER*24 KMONIT(9)
+      CHARACTER*24 KMONIT(12)
       REAL*8       TEMPS(6),RDESQ
       LOGICAL      LQUALI
 
@@ -56,7 +57,7 @@ C============================================================
       CHARACTER*1  ROUCS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS)
       CHARACTER*14 NONUS(NMXINS)
-      CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
+      CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),KTEMP
       REAL*8       RMONIT(18),RAUX,VALR(2),RINFOG(100)
       COMMON /SMUMPS/ DMPS,ZMPS,NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
 
@@ -89,6 +90,9 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         N=XMPSK%N
         INFO(9)=XMPSK%INFO(9)
         INFO(10)=XMPSK%INFO(10)
+        INFO(15)=XMPSK%INFO(15)
+        INFO(16)=XMPSK%INFO(16)
+        INFO(17)=XMPSK%INFO(17)
         RINFOG(7)=XMPSK%RINFOG(7)
         RINFOG(9)=XMPSK%RINFOG(9)
         RINFOG(10)=XMPSK%RINFOG(10)
@@ -97,6 +101,9 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         N=YMPSK%N
         INFO(9)=YMPSK%INFO(9)
         INFO(10)=YMPSK%INFO(10)
+        INFO(15)=YMPSK%INFO(15)
+        INFO(16)=YMPSK%INFO(16)
+        INFO(17)=YMPSK%INFO(17)
         RINFOG(7)=YMPSK%RINFOG(7)
         RINFOG(9)=YMPSK%RINFOG(9)
         RINFOG(10)=YMPSK%RINFOG(10)
@@ -124,6 +131,9 @@ C       ------------------------------------------------
           KMONIT(7)='&MUMPS.INFO.CPU.ASSE'
           KMONIT(8)='&MUMPS.INFO.CPU.SOLV'
           KMONIT(9)='&MUMPS.NB.MAILLE'
+          KMONIT(10)='&MUMPS.INFO.MEM.EIC'
+          KMONIT(11)='&MUMPS.INFO.MEM.EOC'
+          KMONIT(12)='&MUMPS.INFO.MEM.USE'
           CALL JEVEUO(KMONIT(1),'E',MONIT(1))
           CALL JEVEUO(KMONIT(2),'E',MONIT(2))
           CALL JEVEUO(KMONIT(3),'E',MONIT(3))
@@ -133,7 +143,9 @@ C       ------------------------------------------------
           CALL JEVEUO(KMONIT(7),'E',MONIT(7))
           CALL JEVEUO(KMONIT(8),'E',MONIT(8))
           CALL JEVEUO(KMONIT(9),'E',MONIT(9))
-
+          CALL JEVEUO(KMONIT(10),'E',MONIT(10))
+          CALL JEVEUO(KMONIT(11),'E',MONIT(11))
+          CALL JEVEUO(KMONIT(12),'E',MONIT(12))
         ELSE IF (OPTION.EQ.2) THEN
           CALL UTTCPU(70,'INIT ',6,TEMPS)
           CALL UTTCPU(70,'DEBUT',6,TEMPS)
@@ -141,6 +153,8 @@ C       ------------------------------------------------
         ELSE IF (OPTION.EQ.4) THEN
           CALL UTTCPU(70,'FIN  ',6,TEMPS)
           ZR(MONIT(4)+RANG)=TEMPS(5)+TEMPS(6)
+          ZI(MONIT(10)+RANG)=INFO(15)
+          ZI(MONIT(11)+RANG)=INFO(17)
           CALL UTTCPU(70,'INIT ',6,TEMPS)
           CALL UTTCPU(70,'DEBUT',6,TEMPS)
 
@@ -148,6 +162,7 @@ C       ------------------------------------------------
           CALL UTTCPU(70,'FIN  ',6,TEMPS)
           ZR(MONIT(5)+RANG)=TEMPS(5)+TEMPS(6)
           ZI(MONIT(2)+RANG)=INFO(9)+INFO(10)
+          ZI(MONIT(12)+RANG)=INFO(16)
           CALL MUMMPI(4,IFM,NIV,KMONIT(1),NBPROC,IBID)
           CALL MUMMPI(4,IFM,NIV,KMONIT(2),NBPROC,IBID)
 
@@ -167,6 +182,9 @@ C -- COMMUNICATION DES DONNEES DU MONITORING
            CALL MUMMPI(4,IFM,NIV,KMONIT(6),NBPROC,IBID)
            CALL MUMMPI(4,IFM,NIV,KMONIT(7),NBPROC,IBID)
            CALL MUMMPI(4,IFM,NIV,KMONIT(8),NBPROC,IBID)
+           CALL MUMMPI(4,IFM,NIV,KMONIT(10),NBPROC,IBID)
+           CALL MUMMPI(4,IFM,NIV,KMONIT(11),NBPROC,IBID)
+           CALL MUMMPI(4,IFM,NIV,KMONIT(12),NBPROC,IBID)
 C -- AFFICHAGE
            IF (RANG.EQ.0) THEN
              WRITE(IFM,*)
@@ -251,6 +269,68 @@ C -- AFFICHAGE
                ENDDO
              ENDIF
   998        CONTINUE
+C            MONITORING MEMOIRE             
+             IF (DMPS(KXMPS)%ICNTL(22).EQ. 0) THEN 
+                 KTEMP='IN-CORE'
+              ELSE 
+                 KTEMP='OUT-OF-CORE'
+              END IF
+              WRITE(IFM,*)' MEMOIRE RAM ESTIMEE ET REQUISE 
+     &             PAR MUMPS EN MO(FAC_NUM + RESOL)'
+            
+              WRITE(IFM,*)'RANG ASTER : '//
+     &             'ESTIM IN-CORE | ESTIM OUT-OF-CORE | RESOL. '//KTEMP  
+             
+C            POUR LE CALCUL DES MOYENNES            
+             RMONIT(1)=0.0
+             RMONIT(2)=0.0
+             RMONIT(3)=0.0
+C            POUR LE CALCUL DES MAX
+             RMONIT(4)=ZI(MONIT(10))
+             RMONIT(5)=ZI(MONIT(11))
+             RMONIT(6)=ZI(MONIT(12))
+C            POUR LES CALCULS DES MIN
+             RMONIT(7)=ZI(MONIT(10))
+             RMONIT(8)=ZI(MONIT(11))
+             RMONIT(9)=ZI(MONIT(12))
+             DO K=0,NBPROC-1
+                WRITE(IFM,1001) K,ZI(MONIT(10)+K),ZI(MONIT(11)+K),
+     &               ZI(MONIT(11)+K)
+                RMONIT(1)=RMONIT(1)+ZI(MONIT(10)+K)
+                RMONIT(2)=RMONIT(2)+ZI(MONIT(11)+K)
+                RMONIT(3)=RMONIT(3)+ZI(MONIT(12)+K)
+                IF (RMONIT(4) .GT. ZI(MONIT(10)+K))
+     &               RMONIT(4)=ZI(MONIT(10)+K)
+                IF (RMONIT(5) .GT. ZI(MONIT(11)+K))
+     &               RMONIT(5)=ZI(MONIT(11)+K)  
+                IF (RMONIT(6) .GT. ZI(MONIT(12)+K))
+     &               RMONIT(6)=ZI(MONIT(12)+K)
+                IF (RMONIT(7) .LT. ZI(MONIT(10)+K))
+     &               RMONIT(7)=ZI(MONIT(10)+K)
+                IF (RMONIT(8) .LT. ZI(MONIT(11)+K))
+     &               RMONIT(8)=ZI(MONIT(11)+K)  
+                IF (RMONIT(9) .LT. ZI(MONIT(12)+K))
+     &               RMONIT(9)=ZI(MONIT(12)+K)
+                
+             ENDDO
+             RMONIT(1)=RMONIT(1)/NBPROC
+             RMONIT(2)=RMONIT(2)/NBPROC
+             RMONIT(3)=RMONIT(3)/NBPROC
+             WRITE(IFM,*)'------------------------------------------'//
+     &            '-----------------------------------'
+             WRITE(IFM,1007) RMONIT(1),RMONIT(2),RMONIT(3)
+             WRITE(IFM,*)'------------------------------------------'//
+     &            '-----------------------------------'
+   
+             WRITE(IFM,1008) RMONIT(4),RMONIT(5),RMONIT(6)
+             WRITE(IFM,*)'------------------------------------------'//
+     &            '-----------------------------------'
+         
+             WRITE(IFM,1009) RMONIT(7),RMONIT(8),RMONIT(9)
+             WRITE(IFM,*)'------------------------------------------'//
+     &            '-----------------------------------'
+                   
+      
              WRITE(IFM,*)'*********************************************'
      &                  //'*********************************'
  1001        FORMAT(' N ',I4,' :    ',I12,'    ',I12,'    ',I12)
@@ -264,6 +344,10 @@ C -- AFFICHAGE
  1006        FORMAT('        :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
      &              1PD10.2,' ',1PD10.2,' ',1PD10.2)
            ENDIF
+
+ 1007      FORMAT('MOYENNE :',1PD10.2,' ',1PD10.2,' ',1PD10.2)
+ 1008      FORMAT('MINIMUM :',1PD10.2,' ',1PD10.2,' ',1PD10.2)
+ 1009      FORMAT('MAXIMUM :',1PD10.2,' ',1PD10.2,' ',1PD10.2)
 C ON REINITIALISE LES VECTEURS DE MONITORING POUR L'EVENTUELLE
 C RESOLUTION SUIVANTE (SURTOUT POUR MONIT(6) ET MONIT(7)
            DO I=1,NBPROC
@@ -273,8 +357,11 @@ C RESOLUTION SUIVANTE (SURTOUT POUR MONIT(6) ET MONIT(7)
              ZR(MONIT(6)+I-1)=0.D0
              ZR(MONIT(7)+I-1)=0.D0
              ZR(MONIT(8)+I-1)=0.D0
+             ZI(MONIT(10)+I-1)=0
+             ZI(MONIT(11)+I-1)=0
+             ZI(MONIT(12)+I-1)=0             
            ENDDO
-
+       
         ELSE
 C --- OPTION IMPREVUE
           CALL ASSERT(.FALSE.)
