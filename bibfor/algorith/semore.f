@@ -5,7 +5,7 @@
 
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -322,8 +322,7 @@ C PAS DE CHARGEMENT DE NEUMANN DANS LES CALCULS MODAUX
           ENDIF
 
           IF (.NOT.SECAL) THEN
-            CALL U2MESI('A','SENSIBILITE_1', 1 , TYPESE)
-            CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
+            CALL U2MESI('F','SENSIBILITE_1', 1 , TYPESE)
           ENDIF
 
           DO 124 IEQ = 1,NEQ

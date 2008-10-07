@@ -1,21 +1,21 @@
-#@ MODIF utilitai6 Messages  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF utilitai6 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -23,29 +23,25 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
-
- la grandeur introduite en opérande  ne figure pas dans le catalogue des grandeurs
- grandeur %(k1)s
+ La grandeur fournie : %(k1)s ne figure pas dans le catalogue des grandeurs
 """),
 
 3 : _("""
-
- la liste de composantes et la liste  des valeurs n'ont pas la même dimension
- occurence de affe numero  %(i1)d
+ la liste de composantes et la liste des valeurs n'ont pas la même dimension
+ occurence de AFFE numéro  %(i1)d
 """),
 
 4 : _("""
  une composante n'appartient pas à la grandeur
- occurence de affe numero  %(i1)d
+ occurence de AFFE numéro  %(i1)d
  grandeur   :  %(k1)s
  composante :  %(k2)s
 """),
 
 5 : _("""
-
- le nume_ddl en entree ne s'appuie  pas sur la même grandeur que celle de la commande
- grandeur associee au nume_ddl %(k1)s
- grandeur de la commande :  %(k2)s
+ le NUME_DDL en entrée ne s'appuie pas sur la même grandeur que celle de la commande
+ grandeur associee au NUME_DDL : %(k1)s
+ grandeur de la commande       :  %(k2)s
 """),
 
 11 : _("""
@@ -55,95 +51,96 @@ cata_msg = {
 """),
 
 12 : _("""
- variable inconnue: variable :  %(k1)s  pour le resultat :  %(k2)s
+ variable inconnue:  %(k1)s  pour le résultat :  %(k2)s
 """),
 
 13 : _("""
- probleme rencontre lors de la recherche de la variable :  %(k1)s
+ problème rencontré lors de la recherche de la variable :  %(k1)s
          debut :  %(k2)s
            fin :  %(k3)s
 """),
 
 14 : _("""
- interpolation non permise. valeur a interpoler: %(r1)f
-     borne inferieure: %(r2)f
-     borne superieure: %(r3)f
+ interpolation non permise
+ valeur à interpoler : %(r1)f
+ borne inferieure    : %(r2)f
+ borne superieure    : %(r3)f
 """),
 
 15 : _("""
- il faut donner :   - une maille ou un GROUP_MA %(k1)s
-    - un noeud ou un GROUP_NO ou un point. %(k2)s
+ il faut donner :
+    - une MAILLE ou un GROUP_MA
+    - un NOEUD ou un GROUP_NO ou un point
 """),
 
 16 : _("""
- interpolation impossible instant a interpoler:  %(r1)f
+ interpolation impossible
+ instant à interpoler:  %(r1)f
 """),
 
 17 : _("""
- interpolation impossible  instant a interpoler:  %(r1)f
-  borne inferieure:  %(r2)f
+ interpolation impossible
+ instant à interpoler:  %(r1)f
+ borne inférieure    :  %(r2)f
 """),
 
 18 : _("""
- interpolation impossible  instant a interpoler:  %(r1)f  borne superieure: %(r2)f
+ interpolation impossible
+ instant à interpoler:  %(r1)f
+ borne supérieure    : %(r2)f
 """),
 
 19 : _("""
- cham_no inexistant pour l''acces %(k1)s sur le resultat %(k2)s
- pour le nume_ordre %(i1)d
- instant a interpoler %(r1)f
+ CHAM_NO inexistant pour l'accès %(k1)s sur le résultat %(k2)s
+ pour le NUME_ORDRE %(i1)d
+ instant à interpoler %(r1)f
 """),
 
 25 : _("""
- cham_elem inexistant pour l''acces %(k1)s sur le resultat %(k2)s
- pour le nume_ordre %(i1)d
- instant a interpoler %(r1)f
+ CHAM_ELEM inexistant pour l'accès %(k1)s sur le résultat %(k2)s
+ pour le NUME_ORDRE %(i1)d
+ instant à interpoler %(r1)f
 """),
-
-27 : _("""
- il sera tronque:  %(k1)s
-"""),
-
-
-
-
 
 37 : _("""
- erreur  la fonction  %(k1)s  a  %(i1)d
-  arguments, le maximum exploitable est  %(i2)d
+ la fonction  %(k1)s  a  %(i1)d arguments
+ le maximum exploitable est  %(i2)d
 """),
 
 38 : _("""
- il y a   %(i1)d  parametre(s) identique(s) dans la  %(k1)s
- definition de la nappe. %(k2)s
+ il y a  %(i1)d paramètre(s) identique(s) dans la définition de la nappe
 """),
 
 39 : _("""
- erreur dans les données   interface de type :  %(k1)s  non valable %(k2)s
+ erreur dans les données
+ interface de type :  %(k1)s  non valable
 """),
 
 40 : _("""
- erreur dans les données, on ne retrouve pas le noeud  %(k1)s
-  dans la numerotation %(k2)s
+ erreur dans les données
+ on ne retrouve pas le noeud  %(k1)s dans la numerotation
 """),
 
 41 : _("""
- erreur dans les données   le noeud :  %(k1)s
-  n''appartient pas au maillage  %(k2)s
+ erreur dans les données
+ le noeud :  %(k1)s n'appartient pas au maillage  %(k2)s
 """),
 
 44 : _("""
- trop d'amortissements modaux   nombre d'amortissements :  %(i1)d
-    nombre de modes :  %(i2)d
+ trop d'amortissements modaux
+ nombre d'amortissements :  %(i1)d
+ nombre de modes         :  %(i2)d
 """),
 
 47 : _("""
- erreur dans la recherche du noeud      nom du noeud :  %(k1)s
-    nom du maillage :  %(k2)s
+ erreur dans la recherche du noeud
+ nom du noeud    :  %(k1)s
+ nom du maillage :  %(k2)s
 """),
 
 48 : _("""
- methode de newton exposant de la loi   = %(r1)f
+ methode de newton
+ exposant de la loi   = %(r1)f
  nombre d''iterations = %(i1)d
  residu fonction = %(r2)f
  residu f/df = %(r3)f
@@ -151,29 +148,28 @@ cata_msg = {
 """),
 
 51 : _("""
- pas de champ correspondant  à l'instant demandé.
- resultat  %(k1)s , acces "INST_INIT" : %(r1)f
+ pas de champ correspondant à l'instant demandé.
+ resultat  %(k1)s
+ accès "INST_INIT" : %(r1)f
 """),
 
 52 : _("""
- plusieurs champs correspondant  a l'instant demande.
+ plusieurs champs correspondant à l'instant demandé
  resultat  %(k1)s
  acces "INST_INIT" : %(r1)f
  nombre : %(i1)d
 """),
 
 53 : _("""
-
- le premier instant de rupture  n'est pas dans la liste des instants de calcul
+ le premier instant de rupture n'est pas dans la liste des instants de calcul
  premier instant de rupture =  %(r1)f
- premier instant de calcul =  %(r2)f
+ premier instant de calcul  =  %(r2)f
 """),
 
 54 : _("""
-
- le dernier instant de rupture  n''est pas dans la liste des instants de calcul
+ le dernier instant de rupture n'est pas dans la liste des instants de calcul
  dernier instant de rupture =  %(r1)f
- dernier instant de calcul =  %(r2)f
+ dernier instant de calcul  =  %(r2)f
 """),
 
 55 : _("""
@@ -184,7 +180,8 @@ cata_msg = {
 """),
 
 56 : _("""
- statistiques recalage :nombre d'iterations = %(i1)d
+ statistiques recalage :
+ nombre d'iterations  = %(i1)d
  convergence atteinte = %(r1)f
 """),
 
@@ -222,45 +219,42 @@ cata_msg = {
 """),
 
 68 : _("""
- type de numérotation non connue numérotation: %(k1)s
-"""),
-
-71 : _("""
- il faut donner :   - une maille ou un GROUP_MA %(k1)s
-    - un noeud, un GROUP_NO ou un point %(k2)s
+ type de numérotation non connue
+ numérotation: %(k1)s
 """),
 
 72 : _("""
- trop de mailles dans le GROUP_MA  maille utilisée:  %(k1)s
+ trop de mailles dans le GROUP_MA
+ maille utilisée:  %(k1)s
 """),
 
 77 : _("""
-Concept résultat %(k1)s : le numéro d'ordre %(i1)d est inconnu.
+Concept résultat %(k1)s :
+le numéro d'ordre %(i1)d est inconnu.
 """),
 
 78 : _("""
-Concept résultat %(k1)s : le numéro d'archivage %(i1)d est supérieur au max %(i2)d.
+Concept résultat %(k1)s :
+le numéro d'archivage %(i1)d est supérieur au max %(i2)d.
 """),
 
 79 : _("""
-Concept résultat %(k1)s : le numéro de rangement %(i1)d est supérieur au max %(i2)d.
+Concept résultat %(k1)s :
+le numéro de rangement %(i1)d est supérieur au max %(i2)d.
 """),
 
 80 : _("""
-Concept résultat %(k1)s : la variable %(k2)s est inconnue pour le type %(k3)s.
-"""),
-
-81 : _("""
- parametre inconnu: parametre :  %(k1)s  pour le resultat :  %(k2)s
+Concept résultat %(k1)s :
+la variable %(k2)s est inconnue pour le type %(k3)s.
 """),
 
 82 : _("""
- pas de champs trouve pour la frequence  %(r1)f
+ pas de champ trouvé pour la fréquence  %(r1)f
 """),
 
 83 : _("""
- plusieurs champs trouves pour la frequence  %(r1)f
- nombre de champs trouves  %(i1)d
+ plusieurs champs trouvés pour la fréquence  %(r1)f
+ nombre de champs trouvés  : %(i1)d
 """),
 
 84 : _("""
@@ -268,24 +262,27 @@ Concept résultat %(k1)s : la variable %(k2)s est inconnue pour le type %(k3)s.
 """),
 
 89 : _("""
- erreur dans les données, le paramètre  %(k1)s n'existe pas
+ erreur dans les données
+ le paramètre  %(k1)s n'existe pas
 """),
 
 90 : _("""
- erreur dans les donnees, le paramètre %(k1)s n'est pas trouvé 
+ erreur dans les données
+ le paramètre %(k1)s n'est pas trouvé
 """),
 
 93 : _("""
  le paramètre  %(k1)s n'existe pas dans la table %(k2)s
- .il est necessaire. %(k3)s
- veuillez consulter la documentaion  de la commande. %(k4)s
+ il est nécessaire
+ veuillez consulter la documentation de la commande
 """),
 
 99 : _("""
  erreur dans les données
- parametre :  %(k1)s   plusieurs valeurs trouvees %(k2)s
- pour le parametre  %(k3)s
- et le parametre  %(k4)s
+ paramètre :  %(k1)s
+ plusieurs valeurs trouvees
+ pour le paramètre : %(k3)s
+ et le paramètre   : %(k4)s
 """),
 
 }

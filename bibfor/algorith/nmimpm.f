@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C
       INTEGER          POS,POSFIN,POSMAR
       INTEGER          I,K,ICOL,IBID
       INTEGER          UNIBID,R8LONG,R8PREC
-      CHARACTER*24     SDIMPR,ARG24,ARG24B
+      CHARACTER*24     SDIMPR,ARG24
       CHARACTER*16     ARG16,K16BID,OPTASS
       CHARACTER*9      NATURE
       CHARACTER*1      MARQ
@@ -126,7 +126,7 @@ C
       SAVE             LIGMAX,TITMAX,NBCOL
       CHARACTER*24     IMPCNT,IMPCNL,IMPCNV,IMPCNA
       INTEGER          JIMPCT,JIMPCL,JIMPCV,JIMPCA
-      REAL*8           TPSMOY,TPSTOT
+      REAL*8           TPSTOT
       DATA SDIMPR      /'&&OP0070.IMPR.          '/
 C
 C ----------------------------------------------------------------------
@@ -382,81 +382,52 @@ C
           
           TPSTOT = ARGR(3)
           TPSNBR = ARGI(3)
-          IF (TPSNBR.EQ.0) THEN
-            TPSMOY = TPSTOT
-          ELSE
-            TPSMOY = TPSTOT/TPSNBR
-          ENDIF
-          CALL IMPFOT(UNITM,TPSMOY,ARG24B)
           CALL IMPFOT(UNITM,TPSTOT,ARG24)
-          WRITE(UNITM,668) ARG24,TPSNBR,ARG24B 
+          WRITE(UNITM,668) ARG24,TPSNBR
 
           TPSTOT = ARGR(4)
           TPSNBR = ARGI(4)
-          IF (TPSNBR.EQ.0) THEN
-            TPSMOY = TPSTOT
-          ELSE
-            TPSMOY = TPSTOT/TPSNBR
-          ENDIF
-          CALL IMPFOT(UNITM,TPSMOY,ARG24B)
           CALL IMPFOT(UNITM,TPSTOT,ARG24)
-          WRITE(UNITM,669) ARG24,TPSNBR,ARG24B  
+          WRITE(UNITM,669) ARG24,TPSNBR
   
           TPSTOT = ARGR(5)
           TPSNBR = ARGI(5)
-          IF (TPSNBR.EQ.0) THEN
-            TPSMOY = TPSTOT
-          ELSE
-            TPSMOY = TPSTOT/TPSNBR
-          ENDIF
-          CALL IMPFOT(UNITM,TPSMOY,ARG24B)
           CALL IMPFOT(UNITM,TPSTOT,ARG24)
-          WRITE(UNITM,670) ARG24,TPSNBR,ARG24B 
+          WRITE(UNITM,670) ARG24,TPSNBR
           
           TPSTOT = ARGR(6)
           TPSNBR = ARGI(6)
-          IF (TPSNBR.EQ.0) THEN
-            TPSMOY = TPSTOT
-          ELSE
-            TPSMOY = TPSTOT/TPSNBR
-          ENDIF
-          CALL IMPFOT(UNITM,TPSMOY,ARG24B)
           CALL IMPFOT(UNITM,TPSTOT,ARG24)
-          WRITE(UNITM,671) ARG24,TPSNBR,ARG24B 
+          WRITE(UNITM,671) ARG24,TPSNBR
 
-          TPSTOT = ARGR(7)
-          TPSNBR = ARGI(7)
-          IF (TPSNBR.EQ.0) THEN
-            TPSMOY = TPSTOT
-          ELSE
-            TPSMOY = TPSTOT/TPSNBR
-          ENDIF
-          CALL IMPFOT(UNITM,TPSMOY,ARG24B)
-          CALL IMPFOT(UNITM,TPSTOT,ARG24)
-          WRITE(UNITM,672) ARG24,TPSNBR,ARG24B                      
+          IF (ARGI(7).NE.0) THEN
+            CALL IMPFOT(UNITM,ARGR(7),ARG24)
+           WRITE(UNITM,672) ARG24,ARGI(7)            
+          
+          ENDIF                   
           
           CALL IMPFOT(UNITM,ARGR(15),ARG24)
-          WRITE(UNITM,800) ARG24           
+          WRITE(UNITM,673) ARG24           
           
           WRITE(UNITM,*)
                                     
         ENDIF
  660    FORMAT ('TEMPS CPU CONSOMME DANS CE PAS DE TEMPS : ',(A24))
- 661    FORMAT (1P,3X,'TEMPS MOY. ITER.  : ',(A24),' - NBRE: ',I5) 
- 667    FORMAT (1P,3X,'TEMPS ARCHIVAGE   : ',
-     &           (A24))
- 668    FORMAT (1P,3X,'TEMPS FACT. SYMB. : ',(A24),' - NBRE: ',I5,
-     &          ' - TPS. MOY.: ',(A24))
- 669    FORMAT (1P,3X,'TEMPS FACT. NUME. : ',(A24),' - NBRE: ',I5,
-     &          ' - TPS. MOY.: ',(A24))
- 670    FORMAT (1P,3X,'TEMPS FORC. INTE. : ',(A24),' - NBRE: ',I5,
-     &          ' - TPS. MOY.: ',(A24))
- 671    FORMAT (1P,3X,'TEMPS RESO. SYST. : ',(A24),' - NBRE: ',I5,
-     &          ' - TPS. MOY.: ',(A24))
- 672    FORMAT (1P,3X,'TEMPS CALC. MATR. : ',(A24),' - NBRE: ',I5,
-     &          ' - TPS. MOY.: ',(A24))
-         
- 800    FORMAT (1P,3X,'TEMPS AUTRES OPER.: ',
+ 661    FORMAT (1P,3X,'TEMPS PAR ITERATION DE NEWTON  : ',
+     &          (A24),' - NBRE NEWT.: ',I5) 
+ 667    FORMAT (1P,3X,'TEMPS ARCHIVAGE                : ',
+     &          (A24))
+ 668    FORMAT (1P,3X,'TEMPS CREATION NUMEROTATION    : ',
+     &          (A24),' - NBRE NUME.: ',I5)
+ 669    FORMAT (1P,3X,'TEMPS FACTORISATION MATRICE    : ',
+     &          (A24),' - NBRE FACT.: ',I5)
+ 670    FORMAT (1P,3X,'TEMPS INTEGRATION COMPORTEMENT : ',
+     &          (A24),' - NBRE INTE.: ',I5)
+ 671    FORMAT (1P,3X,'TEMPS RESOLUTION K.U = F       : ',
+     &          (A24),' - NBRE RESO.: ',I5)
+ 672    FORMAT (1P,3X,'TEMPS RESOLUTION CONTACT       : ',
+     &          (A24),' - NBRE ITER.: ',I5) 
+ 673    FORMAT (1P,3X,'TEMPS AUTRES OPERATIONS        : ',
      &           (A24))       
 C 
 C --- STAT. CONTACT DISCRET SUR UN PAS DE TEMPS
@@ -482,9 +453,9 @@ C
  768    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE REAC. GEOM     : ',I8)
  769    FORMAT (1P,3X,'NOMBRE FINAL DE LIAISONS DE CONTACT   : ',I8) 
  770    FORMAT (1P,3X,'NOMBRE FINAL DE LIAISONS DE FROTTEMENT: ',I8)  
- 771    FORMAT (1P,3X,'TEMPS TOTAL APPARIEMENT : ',
+ 771    FORMAT (1P,3X,'TEMPS TOTAL APPARIEMENT               : ',
      &           (A24))
- 772    FORMAT (1P,3X,'TEMPS TOTAL RESOLUTION  : ',
+ 772    FORMAT (1P,3X,'TEMPS TOTAL RESOLUTION                : ',
      &           (A24)) 
 C 
 C --- STAT. CONTACT CONTINU SUR UN PAS DE TEMPS
@@ -502,6 +473,84 @@ C
  781    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT      : ',I8) 
  782    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE FROTTEMENT   : ',I8)
  783    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE REAC. GEOM   : ',I8) 
+
+C
+C --- TEMPS PASSE DANS UN PAS DE TEMPS
+C        
+      ELSE IF (NATURE .EQ. 'TPS_FIN') THEN
+        IF (UNITM.EQ.MESS) THEN
+          WRITE(UNITM,*)
+          CALL IMPFOK(LIGNE,LARGE,UNITM)
+          WRITE(UNITM,800)
+          CALL IMPFOK(LIGNE,LARGE,UNITM) 
+          
+                   
+          WRITE(UNITM,801) ARGI(11)
+          WRITE(UNITM,802) ARGI(5)
+          IF ((ARGI(6)).NE.0) THEN
+            WRITE(UNITM,803) ARGI(6)          
+          ENDIF
+          IF ((ARGI(7)).NE.0) THEN
+            WRITE(UNITM,804) ARGI(7)          
+          ENDIF
+          IF ((ARGI(9)).NE.0) THEN
+            WRITE(UNITM,805) ARGI(9) 
+            WRITE(UNITM,806) ARGI(8) 
+            IF ((ARGI(10)).NE.0) THEN
+              WRITE(UNITM,807) ARGI(10)             
+            ENDIF                     
+          ENDIF    
+          
+          WRITE(UNITM,808) ARGI(1)    
+          WRITE(UNITM,809) ARGI(2)
+          WRITE(UNITM,810) ARGI(3)
+          WRITE(UNITM,811) ARGI(4)  
+          
+          CALL IMPFOT(UNITM,ARGR(1),ARG24)
+          WRITE(UNITM,820) ARG24
+          CALL IMPFOT(UNITM,ARGR(2),ARG24)
+          WRITE(UNITM,821) ARG24
+          CALL IMPFOT(UNITM,ARGR(3),ARG24)
+          WRITE(UNITM,822) ARG24
+          CALL IMPFOT(UNITM,ARGR(4),ARG24)
+          WRITE(UNITM,823) ARG24  
+          
+          IF ((ARGI(9)).NE.0) THEN
+            CALL IMPFOT(UNITM,ARGR(5),ARG24)
+            WRITE(UNITM,825) ARG24 
+            CALL IMPFOT(UNITM,ARGR(6),ARG24)
+            WRITE(UNITM,824) ARG24             
+          ENDIF                                   
+
+          CALL IMPFOK(LIGNE,LARGE,UNITM)   
+        ENDIF
+ 800    FORMAT ('STATISTIQUES SUR LE TRANSITOIRE ')
+ 801    FORMAT (1P,3X,'NOMBRE DE PAS DE TEMPS                  : ',I6) 
+ 802    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE NEWTON           : ',I6)
+ 803    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE RECH.LINE        : ',I6)
+ 804    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE FETI             : ',I6) 
+ 805    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (ALGO)   : ',I6)
+ 806    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (GEOM)   : ',I6)
+ 807    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (FROT)   : ',I6)
+ 808    FORMAT (1P,3X,'NOMBRE DE CREATION DE NUMEROTATION      : ',I6)
+ 809    FORMAT (1P,3X,'NOMBRE DE FACTORISATION DE MATRICE      : ',I6)
+ 810    FORMAT (1P,3X,'NOMBRE D''INTEGRATION DE COMPORTEMENT    : ',I6)
+ 811    FORMAT (1P,3X,'NOMBRE DE RESOLUTION K.U = F            : ',I6)
+  
+ 
+ 820    FORMAT (1P,3X,'TEMPS POUR CREATION NUMEROTATION        : ',
+     &          (A24))
+ 821    FORMAT (1P,3X,'TEMPS POUR FACTORISATION MATRICE        : ',
+     &          (A24))
+ 822    FORMAT (1P,3X,'TEMPS POUR INTEGRATION COMPORTEMENT     : ',
+     &          (A24)) 
+ 823    FORMAT (1P,3X,'TEMPS POUR RESOLUTION K.U = F           : ',
+     &          (A24)) 
+ 824    FORMAT (1P,3X,'TEMPS POUR CONTACT (ALGORITHME)         : ',
+     &          (A24))
+ 825    FORMAT (1P,3X,'TEMPS POUR CONTACT (APPARIEMENT)        : ',
+     &          (A24))
+      
 C
 C --- ERREUR
 C

@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements2 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,18 +160,6 @@ cata_msg = {
  la matrice gyroscopique n'est pas disponible pour l'élément %(k1)s
 """),
 
-67 : _("""
- option non traitee
-"""),
-
-69 : _("""
- relation de comportement non traite
-"""),
-
-70 : _("""
- option non valide
-"""),
-
 71 : _("""
  comp_elas non programme pour les modelisations dkt. il faut utiliser comp_incr.
 """),
@@ -233,10 +221,6 @@ cata_msg = {
  non prevu pour les sections generales
 """),
 
-87 : _("""
- " %(k1)s "    : option non traitee
-"""),
-
 88 : _("""
  element discret " %(k1)s " inconnu.
 """),
@@ -247,10 +231,6 @@ cata_msg = {
 
 90 : _("""
  COMP_ELAS non valide
-"""),
-
-95 : _("""
- option de calcul invalide
 """),
 
 }

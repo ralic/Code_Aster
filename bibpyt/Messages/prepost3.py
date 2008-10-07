@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost3 Messages  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -195,6 +195,19 @@ cata_msg = {
 
 95 : _("""
  pour le paramètre donné on n'a pas trouvé la fonction.
+"""),
+
+96 : _("""
+ l'option FORC_NODA_NONL doit être appelée seule
+"""),
+
+97 : _("""
+ avec l'option FORC_NODA_NONL il faut que le résultat de la commande 
+ soit différent de l'argument "RESULTAT" :  %(k1)s 
+"""),
+
+98 : _("""
+ l'option FORC_NODA_NONL doit être calculée sur un résultat DYNA_TRANS
 """),
 
 }

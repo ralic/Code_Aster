@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +65,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            REAC_VITE       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
          PROJ_MODAL      =FACT(statut='f',max='**',
-           MODE_MECA       =SIMP(statut='o',typ=mode_meca),
+           MODE_MECA       =SIMP(statut='o',typ=(mode_meca,base_modale)),
            NB_MODE         =SIMP(statut='f',typ='I',defaut= 9999 ),
            regles=(PRESENT_PRESENT('MASS_GENE','RIGI_GENE'),),
            MASS_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),

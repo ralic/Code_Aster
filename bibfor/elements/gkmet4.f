@@ -8,7 +8,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,7 +53,9 @@ C
       REAL*8       S1,S2,DELTA,S3,SN2,SN1,SN
       REAL*8       GTHI(NNOFF),K1TH(NNOFF),K2TH(NNOFF),K3TH(NNOFF)
       REAL*8       GS(NDIMTE),K1S(NDIMTE),K2S(NDIMTE),K3S(NDIMTE)
-      REAL*8       BETAS(NNOFF)
+      REAL*8       BETAS(NNOFF),GIS(NNOFF)
+      REAL*8       G1TH(NNOFF),G2TH(NNOFF),G3TH(NNOFF)
+      REAL*8       G1S(NNOFF),G2S(NNOFF),G3S(NNOFF)
       CHARACTER*24 LISSG,VECT,MATR
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
@@ -86,10 +88,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 10    CONTINUE
       DO 11 I=1,NDIMTE
         ZR(IADABS-1+(I-1)+1)=ZR(IFON-1+4*(I-1)+4)
-        GTHI(I)=ZR(IADRGK-1+(I-1)*5+1)
-        K1TH(I)=ZR(IADRGK-1+(I-1)*5+2)
-        K2TH(I)=ZR(IADRGK-1+(I-1)*5+3)
-        K3TH(I)=ZR(IADRGK-1+(I-1)*5+4)
+        GTHI(I)=ZR(IADRGK-1+(I-1)*8+1)
+        K1TH(I)=ZR(IADRGK-1+(I-1)*8+5)
+        K2TH(I)=ZR(IADRGK-1+(I-1)*8+6)
+        K3TH(I)=ZR(IADRGK-1+(I-1)*8+7)
+        G1TH(I)=ZR(IADRGK-1+(I-1)*8+2)
+        G2TH(I)=ZR(IADRGK-1+(I-1)*8+3)
+        G3TH(I)=ZR(IADRGK-1+(I-1)*8+4)
 11    CONTINUE
       
       NUM = 5
@@ -156,6 +161,14 @@ C     SYSTEME LINEAIRE:  MATR*K2S = K2TH
 
 C     SYSTEME LINEAIRE:  MATR*K3S = K3TH
       CALL GSYSTE(MATR,NDIMTE,NDIMTE,K3TH,K3S)
+      
+C       SYSTEMES LINEAIRES POUR GIRWIN
+      CALL GSYSTE(MATR,NDIMTE,NDIMTE,G1TH,G1S)
+      CALL GSYSTE(MATR,NDIMTE,NDIMTE,G2TH,G2S)
+      CALL GSYSTE(MATR,NDIMTE,NDIMTE,G3TH,G3S)
+      DO 50 I=1,NDIMTE
+        GIS(I)=G1S(I)*G1S(I) + G2S(I)*G2S(I) +G3S(I)*G3S(I)
+ 50   CONTINUE
 
 C     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
       DO 80 I=1,NDIMTE
@@ -169,34 +182,39 @@ C     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
         ZR(IADGKS-1+2)=K1S(1)
         ZR(IADGKS-1+3)=K2S(1)
         ZR(IADGKS-1+4)=K3S(1)
-        ZR(IADGKS-1+5)=BETAS(1)
-        ZR(IADGKS-1+(NNOFF-1)*5+1)=GS(NDIMTE)
-        ZR(IADGKS-1+(NNOFF-1)*5+2)=K1S(NDIMTE)
-        ZR(IADGKS-1+(NNOFF-1)*5+3)=K2S(NDIMTE)
-        ZR(IADGKS-1+(NNOFF-1)*5+4)=K3S(NDIMTE)
-        ZR(IADGKS-1+(NNOFF-1)*5+5)=BETAS(NDIMTE)
+        ZR(IADGKS-1+5)=GIS(1)
+        ZR(IADGKS-1+6)=BETAS(1)
+        ZR(IADGKS-1+(NNOFF-1)*6+1)=GS(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+2)=K1S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+3)=K2S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+4)=K3S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+5)=GIS(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+6)=BETAS(NDIMTE)
 
       ELSE
        DO 60 I=1,NDIMTE-1
          NN = 2*I-1
-         ZR(IADGKS-1+(NN-1)*5+1)=GS(I)
-         ZR(IADGKS-1+(NN-1)*5+2)=K1S(I)
-         ZR(IADGKS-1+(NN-1)*5+3)=K2S(I)
-         ZR(IADGKS-1+(NN-1)*5+4)=K3S(I)
-         ZR(IADGKS-1+(NN-1)*5+5)=BETAS(I)
+         ZR(IADGKS-1+(NN-1)*6+1)=GS(I)
+         ZR(IADGKS-1+(NN-1)*6+2)=K1S(I)
+         ZR(IADGKS-1+(NN-1)*6+3)=K2S(I)
+         ZR(IADGKS-1+(NN-1)*6+4)=K3S(I)
+         ZR(IADGKS-1+(NN-1)*6+5)=GIS(I)
+         ZR(IADGKS-1+(NN-1)*6+6)=BETAS(I)
          S1 = ZR(IADABS+NN-1)
          S2 = ZR(IADABS+NN-1+1)
          S3 = ZR(IADABS+NN-1+2)
 
-         ZR(IADGKS-1+(NN-1+1)*5+1)=GS(I)+(S2-S1)*
+         ZR(IADGKS-1+(NN-1+1)*6+1)=GS(I)+(S2-S1)*
      &                         (GS(I+1)-GS(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*5+2)=K1S(I)+(S2-S1)*
+         ZR(IADGKS-1+(NN-1+1)*6+2)=K1S(I)+(S2-S1)*
      &                        (K1S(I+1)-K1S(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*5+3)=K2S(I)+(S2-S1)*
+         ZR(IADGKS-1+(NN-1+1)*6+3)=K2S(I)+(S2-S1)*
      &                        (K2S(I+1)-K2S(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*5+4)=K3S(I)+(S2-S1)*
+         ZR(IADGKS-1+(NN-1+1)*6+4)=K3S(I)+(S2-S1)*
      &                      (K3S(I+1)-K3S(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*5+5)=BETAS(I)+(S2-S1)*
+         ZR(IADGKS-1+(NN-1+1)*6+5)=GIS(I)+(S2-S1)*
+     &                      (GIS(I+1)-GIS(I))/(S3-S1)
+         ZR(IADGKS-1+(NN-1+1)*6+6)=BETAS(I)+(S2-S1)*
      &                      (BETAS(I+1)-BETAS(I))/(S3-S1)
 60     CONTINUE
 
@@ -205,22 +223,25 @@ C     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
         S1 = ZR(IADABS+NN-1)
         S2 = ZR(IADABS+NN-1+1)
         S3 = ZR(IADABS+NN-1+2)
-        ZR(IADGKS-1+(NNOFF-1)*5+1)=ZR(IADGKS-1+(NNOFF-2)*5+1)+ (S3-S2)*
-     &   (ZR(IADGKS-1+(NNOFF-3)*5+1)-ZR(IADGKS-1+(NNOFF-2)*5+1))/(S1-S2)
-        ZR(IADGKS-1+(NNOFF-1)*5+2)=ZR(IADGKS-1+(NNOFF-2)*5+2)+ (S3-S2)*
-     &   (ZR(IADGKS-1+(NNOFF-3)*5+2)-ZR(IADGKS-1+(NNOFF-2)*5+2))/(S1-S2)
-        ZR(IADGKS-1+(NNOFF-1)*5+3)=ZR(IADGKS-1+(NNOFF-2)*5+3)+ (S3-S2)*
-     &   (ZR(IADGKS-1+(NNOFF-3)*5+3)-ZR(IADGKS-1+(NNOFF-2)*5+3))/(S1-S2)
-        ZR(IADGKS-1+(NNOFF-1)*5+4)=ZR(IADGKS-1+(NNOFF-2)*5+4)+ (S3-S2)*
-     &   (ZR(IADGKS-1+(NNOFF-3)*5+4)-ZR(IADGKS-1+(NNOFF-2)*5+4))/(S1-S2)
-        ZR(IADGKS-1+(NNOFF-1)*5+5)=ZR(IADGKS-1+(NNOFF-2)*5+5)+ (S3-S2)*
-     &   (ZR(IADGKS-1+(NNOFF-3)*5+5)-ZR(IADGKS-1+(NNOFF-2)*5+5))/(S1-S2)
+        ZR(IADGKS-1+(NNOFF-1)*6+1)=ZR(IADGKS-1+(NNOFF-2)*6+1)+ (S3-S2)*
+     &   (ZR(IADGKS-1+(NNOFF-3)*6+1)-ZR(IADGKS-1+(NNOFF-2)*6+1))/(S1-S2)
+        ZR(IADGKS-1+(NNOFF-1)*6+2)=ZR(IADGKS-1+(NNOFF-2)*6+2)+ (S3-S2)*
+     &   (ZR(IADGKS-1+(NNOFF-3)*6+2)-ZR(IADGKS-1+(NNOFF-2)*6+2))/(S1-S2)
+        ZR(IADGKS-1+(NNOFF-1)*6+3)=ZR(IADGKS-1+(NNOFF-2)*6+3)+ (S3-S2)*
+     &   (ZR(IADGKS-1+(NNOFF-3)*6+3)-ZR(IADGKS-1+(NNOFF-2)*6+3))/(S1-S2)
+        ZR(IADGKS-1+(NNOFF-1)*6+4)=ZR(IADGKS-1+(NNOFF-2)*6+4)+ (S3-S2)*
+     &   (ZR(IADGKS-1+(NNOFF-3)*6+4)-ZR(IADGKS-1+(NNOFF-2)*6+4))/(S1-S2)
+        ZR(IADGKS-1+(NNOFF-1)*6+5)=ZR(IADGKS-1+(NNOFF-2)*6+5)+ (S3-S2)*
+     &   (ZR(IADGKS-1+(NNOFF-3)*6+5)-ZR(IADGKS-1+(NNOFF-2)*6+5))/(S1-S2)
+        ZR(IADGKS-1+(NNOFF-1)*6+6)=ZR(IADGKS-1+(NNOFF-2)*6+6)+ (S3-S2)*
+     &   (ZR(IADGKS-1+(NNOFF-3)*6+6)-ZR(IADGKS-1+(NNOFF-2)*6+6))/(S1-S2)
        ELSE
-        ZR(IADGKS-1+(NNOFF-1)*5+1)=GS(NDIMTE)
-        ZR(IADGKS-1+(NNOFF-1)*5+2)=K1S(NDIMTE)
-        ZR(IADGKS-1+(NNOFF-1)*5+3)=K2S(NDIMTE)
-        ZR(IADGKS-1+(NNOFF-1)*5+4)=K3S(NDIMTE)
-        ZR(IADGKS-1+(NNOFF-1)*5+5)=BETAS(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+1)=GS(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+2)=K1S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+3)=K2S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+4)=K3S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+5)=GIS(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*6+6)=BETAS(NDIMTE)
        ENDIF
       ENDIF
  

@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,7 +134,8 @@ C       ------------------------------------------------
      &        'ELNO')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
 
         ELSEIF (TYCHR.EQ.'ELEM') THEN
-          CALL U2MESS('F','UTILITAI_30')
+          IF ((TYCH2.NE.'CART') .AND. (TYCH2.NE.
+     &        'ELEM')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
 
         ELSE
           CALL ASSERT(.FALSE.)
@@ -264,27 +265,7 @@ C       ----------------------------------------------------
 C       4.4 FUSION DU CHAMP REDUIT AVEC LE CHAMP RESULTAT :
 C       ----------------------------------------------------
         IF (IOCC.EQ.1) THEN
-          IF ((NOMGD.EQ.'VARI_R') .AND. (TYCHR(1:2).EQ.'EL')) THEN
-C           -- POUR CONSERVER LE NOMBRE DE VARIABLES INTERNES DU
-C              CHAMP "MODELE" :
-            CESRAZ = '&&CHPASS.CESRAZ'
-            CALL COPISD('CHAM_ELEM_S','V',CESMOD,CESRAZ)
-            CALL CHSRAZ(CESRAZ)
-            LICHS(1) = CESRAZ
-            LICHS(2) = CHS2
-            LCUMUL(1) = .FALSE.
-            LCUMUL(2) = .FALSE.
-            LCOEFR(1) = 1.D0
-            LCOEFR(2) = COEFR
-            LCOEFC(1) = 1.D0
-            LCOEFC(2) = COEFC
-            CALL CHSFUS(2,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,'V',CHS3)
-            CALL DETRSD('CHAM_ELEM_S',CESRAZ)
-
-          ELSE
-            CALL CHSFUS(1,CHS2,.FALSE.,COEFR,COEFC,LCOC,'V',CHS3)
-          ENDIF
-
+          CALL CHSFUS(1,CHS2,.FALSE.,COEFR,COEFC,LCOC,'V',CHS3)
         ELSE
           LICHS(1) = CHS3
           LICHS(2) = CHS2
@@ -300,7 +281,6 @@ C              CHAMP "MODELE" :
         CALL JEDETR('&&CHPASS.LICMP')
         CALL JEDETR('&&CHPASS.LICMP2')
    20 CONTINUE
-
 
 C     5 TRANSFORMATION DU CHAMP_S EN CHAMP :
 C     ----------------------------------------------------

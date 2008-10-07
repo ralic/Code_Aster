@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai7 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,15 +23,19 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- Erreur dans les données, le paramètre %(k1)s n'existe pas dans la table %(k2)s 
+  Erreur dans les données
+  le paramètre %(k1)s n'existe pas dans la table %(k2)s 
 """),
 
 2: _("""
-  Erreur dans les données, pas de tri sur les complexes, paramètre:  %(k1)s 
+  Erreur dans les données
+  pas de tri sur les complexes
+  paramètre:  %(k1)s 
 """),
 
 3: _("""
-  Erreur dans les données, on n'a pas trouvé de ligne dans la table %(k1)s pour le paramètre %(k2)s
+  Erreur dans les données
+  on n'a pas trouvé de ligne dans la table %(k1)s pour le paramètre %(k2)s
 """),
 
 4: _("""
@@ -40,8 +44,8 @@ cata_msg={
 
 5: _("""
   Le numéro de la composante (pour VARI_R) est trop grand.
-    MAILLE : %(k1)s 
-    NUME_MAXI : %(i1)d 
+    MAILLE           : %(k1)s 
+    NUME_MAXI        : %(i1)d 
     NUME_CMP demandé : %(i2)d 
 """),
 
@@ -61,14 +65,10 @@ cata_msg={
 
 11: _("""
   Erreur dans les données, problème lors du traitement du mot clé facteur FILTRE
-  
+
   -> Risque & Conseil :
    soit le paramètre n'existe pas
    soit aucune ligne ne correspond au paramètre donné
-"""),
-
-99: _("""
-  Arret dans le programme %(k1)s.
 """),
 
 }

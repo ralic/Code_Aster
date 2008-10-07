@@ -14,7 +14,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,THLAG2,PAIR,LMELAS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
       INTEGER      NNOFF,NUM,INCR,NRES,NSIG,NDEP
       INTEGER      NDEG,IERD,INIT,GPMI(2)
       INTEGER      IADGKI,IADABS,IFM,NIV
-      REAL*8       GKTHI(5),GPMR(7)
+      REAL*8       GKTHI(8),GPMR(8)
       COMPLEX*16   CBID
       LOGICAL      EXIGEO,FONC,EPSI
       CHARACTER*1  K1BID
@@ -178,15 +178,13 @@ C - TRAITEMENT DES CHARGES
         PA2D3D = 'PFF2D3D'
         PAPRES = 'PPRESSF'
         PEPSIN = 'PEPSINF'
-        IF (OPTION.EQ.'CALC_K_G') THEN
-          OPTI = 'CALC_K_G_F'
-        END IF
+        OPTI = 'CALC_K_G_F'
       ELSE
         PAVOLU = 'PFRVOLU'
         PA2D3D = 'PFR2D3D'
         PAPRES = 'PPRESSR'
         PEPSIN = 'PEPSINR'
-        OPTI = OPTION
+        OPTI = 'CALC_K_G'
       END IF
 C
 C --- RECUPERATION DES DONNEES XFEM (TOPOSE)
@@ -212,7 +210,7 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
         NDIMTE = NDEG + 1
       END IF
 
-      CALL WKVECT('&&CAKG3D.VALG','V V R8',NDIMTE*5,IADRGK)
+      CALL WKVECT('&&CAKG3D.VALG','V V R8',NDIMTE*8,IADRGK)
       CALL JEVEUO(THETAI,'L',JRESU)
 
       DO 20 I = 1,NDIMTE
@@ -320,10 +318,10 @@ C        END IF
      &              'V')
 
 C     BUT :  FAIRE LA "SOMME" D'UN CHAM_ELEM
-        CALL MESOMM(CHGTHI,5,IBID,GKTHI,CBID,0,IBID)
+        CALL MESOMM(CHGTHI,8,IBID,GKTHI,CBID,0,IBID)
 
-        DO 29 J=1,4
-          ZR(IADRGK-1+(I-1)*5+J) = GKTHI(J)
+        DO 29 J=1,7
+          ZR(IADRGK-1+(I-1)*8+J) = GKTHI(J)
  29     CONTINUE
 
  20   CONTINUE
@@ -335,7 +333,7 @@ C- DEUXIEME METHODE : G_LEGENDRE ET THETA_LAGRANGE
 C- TROISIEME METHODE: G_LAGRANGE ET THETA_LAGRANGE
 C    (OU G_LAGRANGE_NO_NO ET THETA_LAGRANGE)
 
-      CALL WKVECT('&&CAKG3D.VALGK_S','V V R8',NNOFF*5,IADGKS)
+      CALL WKVECT('&&CAKG3D.VALGK_S','V V R8',NNOFF*6,IADGKS)
       IF (GLAGR.OR.THLAG2) THEN
         CALL WKVECT('&&CAKG3D.VALGKI','V V R8',NNOFF*5,IADGKI)
       ELSE
@@ -368,7 +366,7 @@ C         CALL GMETH2(NDEG,NNOFF,CHFOND,IADRGK,IADGKS,IADGKI,ABSCUR,NUM)
 C- SYMETRIE DU CHARGEMENT ET IMPRESSION DES RESULTATS
 
       IF (SYMECH.NE.'SANS') THEN
-        DO 30 I = 1,NNOFF*5
+        DO 30 I = 1,NNOFF*6
           ZR(IADGKS+I-1) = 2.D0*ZR(IADGKS+I-1)
    30   CONTINUE
       END IF
@@ -385,11 +383,12 @@ C- IMPRESSION ET ECRITURE DANS TABLE(S) DE G(S), K1(S), K2(S) et K3(S)
             GPMI(1)=IORD
             GPMI(2)=I
             GPMR(1) = ZR(IADABS-1+I)
-            GPMR(2) = ZR(IADGKS-1+5*(I-1)+2)
-            GPMR(3) = ZR(IADGKS-1+5*(I-1)+3)
-            GPMR(4) = ZR(IADGKS-1+5*(I-1)+4)
-            GPMR(5) = ZR(IADGKS-1+5*(I-1)+1)
-            GPMR(6) = ZR(IADGKS-1+5*(I-1)+5)
+            GPMR(2) = ZR(IADGKS-1+6*(I-1)+2)
+            GPMR(3) = ZR(IADGKS-1+6*(I-1)+3)
+            GPMR(4) = ZR(IADGKS-1+6*(I-1)+4)
+            GPMR(5) = ZR(IADGKS-1+6*(I-1)+1)
+            GPMR(6) = ZR(IADGKS-1+6*(I-1)+6)
+            GPMR(7) = ZR(IADGKS-1+6*(I-1)+5)
             CALL TBAJLI(RESULT,NBPRUP,NOPRUP,GPMI,GPMR,CBID,NOMCAS,0)
  39     CONTINUE
       ELSE
@@ -398,11 +397,12 @@ C- IMPRESSION ET ECRITURE DANS TABLE(S) DE G(S), K1(S), K2(S) et K3(S)
             GPMI(2)=I
             GPMR(1) = TIME
             GPMR(2) = ZR(IADABS-1+I)
-            GPMR(3) = ZR(IADGKS-1+5*(I-1)+2)
-            GPMR(4) = ZR(IADGKS-1+5*(I-1)+3)
-            GPMR(5) = ZR(IADGKS-1+5*(I-1)+4)
-            GPMR(6) = ZR(IADGKS-1+5*(I-1)+1)
-            GPMR(7) = ZR(IADGKS-1+5*(I-1)+5)
+            GPMR(3) = ZR(IADGKS-1+6*(I-1)+2)
+            GPMR(4) = ZR(IADGKS-1+6*(I-1)+3)
+            GPMR(5) = ZR(IADGKS-1+6*(I-1)+4)
+            GPMR(6) = ZR(IADGKS-1+6*(I-1)+1)
+            GPMR(7) = ZR(IADGKS-1+6*(I-1)+6)
+            GPMR(8) = ZR(IADGKS-1+6*(I-1)+5)
             CALL TBAJLI(RESULT,NBPRUP,NOPRUP,GPMI,GPMR,CBID,K1BID,0)
  40     CONTINUE
       ENDIF

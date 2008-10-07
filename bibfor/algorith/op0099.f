@@ -1,7 +1,7 @@
       SUBROUTINE OP0099 (IER)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C=====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C-----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------------
 C
       CHARACTER*8  NOMRES
       CHARACTER*16 NOMOPE,NOMCON
-      CHARACTER*19 SOLVEU
+      CHARACTER*19 SOLVEU,RESU19
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -113,9 +113,19 @@ C
 
         CALL ORTH99(NOMRES)
       ENDIF
-C
+
+
+
+C     -- UNE PETITE "GLUTE" EN ATTENDANT L'EVOLUTION 12583
+C        IL FAUDRA ENSUITE SUPPRIMER CE BLOC.
+      RESU19=NOMRES
+      CALL RSLIPA(NOMRES,'NOEUD_CMP','&&OP0099.NOEU',IBID,IBID)
+      CALL JEDUPO('&&OP0099.NOEU', 'G', RESU19//'.NOEU', .FALSE.)
+
+
+
+
 C --- IMPRESSION SUR FICHIER
-C
       IF (NIV.GT.1) CALL IMBAMO(NOMRES,IFM)
 C
       END

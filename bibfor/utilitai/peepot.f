@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,7 +139,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
         CALL JEVEUO(KNUM,'L',JORD)
 C        --- ON RECUPERE LES INSTANTS ---
         CALL WKVECT(KINS,'V V R',NBORDR,JINS)
-        CALL JEEXIN(RESUL//'           .INST',IRET)
+        CALL JENONU(JEXNOM(RESUL//'           .NOVA','INST'),IRET)
         IF (IRET.NE.0) THEN
           EXITIM = .TRUE.
           DO 10 IORD = 1,NBORDR
@@ -148,7 +148,7 @@ C        --- ON RECUPERE LES INSTANTS ---
             ZR(JINS+IORD-1) = ZR(IAINST)
    10     CONTINUE
         ELSE
-          CALL JEEXIN(RESUL//'           .FREQ',IRET)
+          CALL JENONU(JEXNOM(RESUL//'           .NOVA','FREQ'),IRET)
           IF (IRET.NE.0) THEN
             DO 20 IORD = 1,NBORDR
               NUMORD = ZI(JORD+IORD-1)

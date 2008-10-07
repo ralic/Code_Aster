@@ -5,7 +5,7 @@
       CHARACTER*8       LNOCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,8 @@ C
         CALL JEVEUO ( NOMNU//'.DEEQ', 'L', JDEEQ )
         CALL JELIRA ( NOMNU//'.DEEQ', 'LONMAX', NLEQ, K8B )
         NLEQ = NLEQ / 2
-        IF( NLEQ .NE. NEQ ) CALL U2MESS('F','UTILITAI4_6')
+C       VERIFICATION DE LA COMPATIBILITE DU NB D EQUATIONS
+        CALL ASSERT( NLEQ .EQ. NEQ )
         DO 40 IEQ = 1 , NEQ
            NUMNO = ZI(JDEEQ+2*IEQ-1)
            DO 42 J = 1 , NBCMP

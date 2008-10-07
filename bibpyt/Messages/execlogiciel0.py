@@ -1,4 +1,4 @@
-#@ MODIF execlogiciel0 Messages  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF execlogiciel0 Messages  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,36 +21,56 @@
 def _(x) : return x
 
 cata_msg={
-1: _("""
+1 : _("""
 Format Salome, l'argument 1 doit etre 
 le nom du fichier med produit par le script python.
 """),
 
-2: _("""
+2 : _("""
 On ne sait pas traiter le format %(k1)s
 """),
 
-3: _("""
+3 : _("""
 Code retour incorrect (MAXI %(i1)d) : %(i2)d
+
 """),
 
-4: _("""
+4 : _("""
 Le mot-cle logiciel n'est pas utilise avec ce format.
 """),
 
-5: _("""
+5 : _("""
 Erreurs lors de l'execution du fichier ci-dessous :
 <<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
 %(k1)s
 <<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
 """),
 
-6: _("""
+6 : _("""
 Le fichier %(k1)s n'existe pas.
 """),
 
-7: _("""
+7 : _("""
 Mode de lancement inconnu : %(k1)s
 """),
+
+8 : _("""
+----------------------------------------------------------------------------------
+ Commande :
+   %(k1)s
+"""),
+
+9 : _("""
+----- Sortie standard (stdout) ---------------------------------------------------
+%(k1)s
+----- fin stdout -----------------------------------------------------------------
+"""),
+
+10 : _("""
+----- Sortie erreur standard (stderr) --------------------------------------------
+%(k1)s
+----- fin stderr -----------------------------------------------------------------
+"""),
+
 
 }

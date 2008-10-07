@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -114,7 +114,7 @@ C
       CHARACTER*2 BL2, FB2, CODRET(3)
       CHARACTER*8 NOMRES(3)
       CHARACTER*8 NOMPAR(3),TYPE
-      REAL*8      VALPAM(3),VALPAP(3),RESU
+      REAL*8      VALPAM(3),VALPAP(3),RESU,VALRM(2),R8MIEM
       REAL*8      BENDOM,BENDOP,KDESSM,KDESSP
       REAL*8      PHI,RAUG,B
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -240,7 +240,13 @@ C     ---------------------------------------
      &                          2,NOMRES,VALRES,CODRET, FB2 )
           DSDE=VALRES(1)
           SIGY=VALRES(2)
-          RPRIM    = DSDE*E/(E-DSDE)
+          IF ((E-DSDE).LT.R8MIEM()) THEN
+             VALRM(1)=DSDE
+             VALRM(2)=E
+             CALL U2MESG('F','COMPOR1_54',0,FB2,0,IBID,2,VALRM)
+          ELSE
+             RPRIM    = DSDE*E/(E-DSDE)
+          ENDIF
           RP       = RPRIM*VIM(1)+SIGY
         ELSEIF (COMPOR(1)(10:14) .EQ. '_PUIS') THEN
           NOMRES(1)='SY'

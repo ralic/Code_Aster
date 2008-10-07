@@ -1,4 +1,4 @@
-#@ MODIF ascheckers Noyau  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF ascheckers Noyau  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,6 +53,7 @@ class CheckLog(object):
         self._marq     = 1
         self._lastmarq = self._marq
         self._debug    = False
+        self._profond  = False # True pour forcer des vérifications plus profondes
 
     def log(self, level, obj, msg ):
         if obj :

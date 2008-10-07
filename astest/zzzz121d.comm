@@ -1,4 +1,5 @@
-# MODIF  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
+
+# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,410 +57,477 @@
 #
 #   Remarque : les groupes GNP10, GNP12 et GNP13 sont equivalents
 #              aux groupes GNP10, GNP12 et GNP13 de sslv111a.
-#
-DEBUT(CODE=_F(NOM='ZZZZ121D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+DEBUT(CODE=_F(NOM='ZZZZ121D',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 #
 # 0. Formules invariantes
 # 0.1. ==> Chargements sur les bords
-#
-F1 = FORMULE(NOM_PARA='Y',VALE='''
+
+F1 = FORMULE(VALE=
+"""
 1.-(1.5*cos(2.*atan2(Y,4.))+cos(4.*atan2(Y,4.))) /(16.+Y*Y)
                             +(3.*cos(4.*atan2(Y,4.)))/(2.*(16.+Y*Y)**2)
-              ''')
+              """,
+             NOM_PARA='Y',);
 
-F2 = FORMULE(NOM_PARA='Y',VALE='''
+F2 = FORMULE(VALE=
+"""
 -(0.5*sin(2.*atan2(Y,4.))+sin(4.*atan2(Y,4.))) /(16.+Y*Y)
                              +(3.*sin(4.*atan2(Y,4.)))/(2.*(16.+Y*Y)**2)
-              ''')
+              """,
+             NOM_PARA='Y',);
 
-F3 = FORMULE(NOM_PARA='X',VALE='''
+F3 = FORMULE(VALE=
+"""
 -(0.5*sin(2.*atan2(4.,X))+sin(4.*atan2(4.,X))) /(16.+X*X)
                              +(3.*sin(4.*atan2(4.,X)))/(2.*(16.+X*X)**2)
-              ''')
+              """,
+             NOM_PARA='X',);
 
-F4 = FORMULE(NOM_PARA='X',VALE='''
+F4 = FORMULE(VALE=
+"""
 -(0.5*cos(2.*atan2(4.,X))-cos(4.*atan2(4.,X))) /(16.+X*X)
                              -(3.*cos(4.*atan2(4.,X)))/(2.*(16.+X*X)**2)
-              ''')
+              """,
+             NOM_PARA='X',);
 #
 # 0.2. ==> Resultats analytiques au point de coordonnees polaires(R,TH)
-#
-SIXX = FORMULE(NOM_PARA=('R','TH'),VALE='''
+
+SIXX = FORMULE(VALE="""
 1.-(1.5*cos(2.*TH)+cos(4.*TH)) /(R*R)
           +(1.5*cos(4.*TH))/(R**4)
-       ''')
+       """,
+               NOM_PARA=('R','TH',),);
 
-SIYY = FORMULE(NOM_PARA=('R','TH'),VALE='''
+SIYY = FORMULE(VALE="""
 -(0.5*cos(2.*TH)-cos(4.*TH)) /(R*R)
           -(1.5*cos(4.*TH))/(R**4)
-              ''')
+              """,
+               NOM_PARA=('R','TH',),);
 
-SIXY = FORMULE(NOM_PARA=('R','TH'),VALE='''
+SIXY = FORMULE(VALE="""
 -(0.5*sin(2.*TH)+sin(4.*TH)) /(R*R)
           +(1.5*sin(4.*TH))/(R**4)
-              ''')
-
+              """,
+               NOM_PARA=('R','TH',),);
 #
 # 1. Definition du materiau
-#
-MATER1 = DEFI_MATERIAU(
-           ELAS=_F(  E = 180000., NU = 0.30, ALPHA = 15.E-6, RHO = 7700.,  ) )
+
+MATER1=DEFI_MATERIAU(ELAS=_F(E=180000.,
+                             NU=0.30,
+                             RHO=7700.,
+                             ALPHA=15.E-6,),);
 #
 # 2. Lecture des maillages
 #
 # 2.1. L'arc interne
+
+ARC=LIRE_MAILLAGE(UNITE=19,
+                  FORMAT='MED',
+                  NOM_MED='ARC',
+                  INFO_MED=1,
+                  INFO=1,);
+#
 #      On imprime ce maillage pour utilisation dans le cas-test homard sfr_mix_2d_zzzz121d_d1
-#
-ARC = LIRE_MAILLAGE ( UNITE = 19,
-                      INFO_MED = 1,
-                      INFO = 1,
-                      FORMAT = 'MED',
-                      NOM_MED = 'ARC',);
-#
-###IMPR_RESU ( FORMAT='MED', RESU = _F( MAILLAGE = ARC ), );
+##IMPR_RESU(
+##FORMAT='MED',
+##UNITE=79,
+##
+##RESU=_F(MAILLAGE=ARC,),
+##);
+
 #
 # 2.2. Lecture du maillage de calcul
-#
-M_0 = LIRE_MAILLAGE ( UNITE = 21,
-                      INFO_MED = 1,
-                      INFO = 1,
-                      FORMAT = 'MED',
-                      NOM_MED = 'M_0',);
+
+M_0=LIRE_MAILLAGE(UNITE=21,
+                  FORMAT='MED',
+                  NOM_MED='M_0',
+                  INFO_MED=1,
+                  INFO=1,);
 #
 # 3. Calcul sur le maillage 0
 #
 # 3.1. Mise en place du materiau
-#
-MATE_0 = AFFE_MATERIAU( MAILLAGE=M_0,
-                          AFFE=( _F(  TOUT = 'OUI',  MATER = MATER1, ) )
-                        )
+
+MATE_0=AFFE_MATERIAU(MAILLAGE=M_0,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER1,),);
 #
 # 3.2. Le modele et orientation des mailles de bord
+
+MODE_0=AFFE_MODELE(MAILLAGE=M_0,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
 #
-MODE_0 = AFFE_MODELE ( MAILLAGE = M_0,
-                       AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'C_PLAN' ))
-#
-M_0 = MODI_MAILLAGE ( reuse=M_0, MAILLAGE = M_0,
-                      ORIE_PEAU_2D=_F(  GROUP_MA = ('GMP1', 'GMP2', 'GMP3', 'GMP4', 'GMP5'),  )
-                    )
+
+M_0=MODI_MAILLAGE(reuse =M_0,
+                  MAILLAGE=M_0,
+                  ORIE_PEAU_2D=_F(GROUP_MA=('GMP1','GMP2','GMP3','GMP4','GMP5',),),);
 #
 # 3.3. Chargement
 # 3.3.1. Les bords de symetrie
-#
-CH1_0 = AFFE_CHAR_MECA ( MODELE = MODE_0,
-                         FACE_IMPO=( _F( GROUP_MA = 'GMP1', DY = 0.),
-                                     _F( GROUP_MA = 'GMP4', DX = 0.))
-                       )
+
+CH1_0=AFFE_CHAR_MECA(MODELE=MODE_0,
+                     FACE_IMPO=(_F(GROUP_MA='GMP1',
+                                   DY=0.,),
+                                _F(GROUP_MA='GMP4',
+                                   DX=0.,),),);
 #
 # 3.3.2. Les tractions
-#
-CH2_0 = AFFE_CHAR_MECA_F ( MODELE = MODE_0,
-                           FORCE_CONTOUR=( _F( GROUP_MA = 'GMP2', FX = F1, FY = F2),
-                                           _F( GROUP_MA = 'GMP3', FX = F3, FY = F4))
-                         )
+
+CH2_0=AFFE_CHAR_MECA_F(MODELE=MODE_0,
+                       FORCE_CONTOUR=(_F(GROUP_MA='GMP2',
+                                         FX=F1,
+                                         FY=F2,),
+                                      _F(GROUP_MA='GMP3',
+                                         FX=F3,
+                                         FY=F4,),),);
 #
 # 3.4. Resolution
-#
-RESU_0 = MECA_STATIQUE ( MODELE = MODE_0,
-                         CHAM_MATER = MATE_0,
-                         EXCIT = ( _F( CHARGE = CH1_0 ),
-                                   _F( CHARGE = CH2_0 ) )
-                       )
+
+RESU_0=MECA_STATIQUE(MODELE=MODE_0,
+                     CHAM_MATER=MATE_0,
+                     EXCIT=(_F(CHARGE=CH1_0,),
+                            _F(CHARGE=CH2_0,),),);
 #
 # 3.5. Calcul de l'indicateur d'erreur
-#
-RESU_0 = CALC_ELEM ( reuse=RESU_0, RESULTAT = RESU_0,
-                     MODELE = MODE_0,
-                     CHAM_MATER = MATE_0,
-                     EXCIT = ( _F( CHARGE = CH1_0 ),
-                               _F( CHARGE = CH2_0 ) ),
-                     OPTION = ( 'SIGM_ELNO_DEPL',
-                                'ERRE_ELEM_SIGM', ),
-                    )
+
+RESU_0=CALC_ELEM(reuse =RESU_0,
+                 MODELE=MODE_0,
+                 CHAM_MATER=MATE_0,
+                 RESULTAT=RESU_0,
+                 OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
+                 EXCIT=(
+                 _F(CHARGE=CH1_0,),
+                 _F(CHARGE=CH2_0,),),);
 #
 # 3.6. Calcul de la contrainte a comparer
-#
-CALC_NO( reuse=RESU_0 ,RESULTAT= RESU_0 , OPTION='SIGM_NOEU_DEPL' )
+
+RESU_0=CALC_NO(reuse =RESU_0,
+               RESULTAT=RESU_0,
+               OPTION='SIGM_NOEU_DEPL',);
 #
 # 3.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 0
-#
-###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESU_0, ) ) ;
+##IMPR_RESU(
+##FORMAT='MED',
+##UNITE=80,
+##
+##RESU=_F(RESULTAT=RESU_0,),
+##);
+
 #
 # 4. Adaptation du maillage de 0 vers 1
-#
-MACR_ADAP_MAIL ( ADAPTATION = 'RAFFINEMENT',
-                 MAILLAGE_N = M_0,
-                 MAILLAGE_NP1 = CO("M_1"),
-                 RESULTAT_N = RESU_0,
-                 INDICATEUR = 'ERRE_ELEM_SIGM',
-                 NOM_CMP_INDICA = 'ERREST' ,
-                 CRIT_RAFF_PE = 0.05,
-                 MAILLAGE_FRONTIERE = ARC,
-                 QUALITE='OUI',
-                 INTERPENETRATION = 'OUI',
-                 CONNEXITE = 'OUI',
-                 TAILLE = 'OUI'
-                )
+
+MACR_ADAP_MAIL(MAILLAGE_N=M_0,
+               MAILLAGE_NP1=CO('M_1'),
+               ADAPTATION='RAFFINEMENT',
+               RESULTAT_N=RESU_0,
+               INDICATEUR='ERRE_ELEM_SIGM',
+               NOM_CMP_INDICA='ERREST',
+               CRIT_RAFF_PE=0.05,
+               MAILLAGE_FRONTIERE=ARC,
+               QUALITE='OUI',
+               CONNEXITE='OUI',
+               TAILLE='OUI',
+               INTERPENETRATION='OUI',);
 #
 # 5. Calcul sur le maillage 1
 #
 # 5.1. Mise en place du materiau
-#
-MATE_1 = AFFE_MATERIAU( MAILLAGE=M_1,
-                          AFFE=( _F(  TOUT = 'OUI',  MATER = MATER1, ) )
-                        )
+
+MATE_1=AFFE_MATERIAU(MAILLAGE=M_1,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER1,),);
 #
 # 5.2. Le modele
-#
-MODE_1 = AFFE_MODELE ( MAILLAGE = M_1,
-                       AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'C_PLAN' ))
+
+MODE_1=AFFE_MODELE(MAILLAGE=M_1,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
 #
 # 5.3. Chargement
 # 5.3.1. Les bords de symetrie
-#
-CH1_1 = AFFE_CHAR_MECA ( MODELE = MODE_1,
-                         FACE_IMPO=( _F( GROUP_MA = 'GMP1', DY = 0.),
-                                     _F( GROUP_MA = 'GMP4', DX = 0.))
-                       )
+
+CH1_1=AFFE_CHAR_MECA(MODELE=MODE_1,
+                     FACE_IMPO=(_F(GROUP_MA='GMP1',
+                                   DY=0.,),
+                                _F(GROUP_MA='GMP4',
+                                   DX=0.,),),);
 #
 # 5.3.2. Les tractions
-#
-CH2_1 = AFFE_CHAR_MECA_F ( MODELE = MODE_1,
-                           FORCE_CONTOUR=( _F( GROUP_MA = 'GMP2', FX = F1, FY = F2),
-                                           _F( GROUP_MA = 'GMP3', FX = F3, FY = F4))
-                         )
+
+CH2_1=AFFE_CHAR_MECA_F(MODELE=MODE_1,
+                       FORCE_CONTOUR=(_F(GROUP_MA='GMP2',
+                                         FX=F1,
+                                         FY=F2,),
+                                      _F(GROUP_MA='GMP3',
+                                         FX=F3,
+                                         FY=F4,),),);
 #
 # 5.4. Resolution
-#
-RESU_1 = MECA_STATIQUE ( MODELE = MODE_1,
-                         CHAM_MATER = MATE_1,
-                         EXCIT = ( _F( CHARGE = CH1_1 ),
-                                   _F( CHARGE = CH2_1 ) )
-                       )
+
+RESU_1=MECA_STATIQUE(MODELE=MODE_1,
+                     CHAM_MATER=MATE_1,
+                     EXCIT=(_F(CHARGE=CH1_1,),
+                            _F(CHARGE=CH2_1,),),);
 #
 # 5.5. Calcul de l'indicateur d'erreur
-#
-RESU_1 = CALC_ELEM ( reuse=RESU_1, RESULTAT = RESU_1,
-                     MODELE = MODE_1,
-                     CHAM_MATER = MATE_1,
-                     EXCIT = ( _F( CHARGE = CH1_1 ),
-                               _F( CHARGE = CH2_1 ) ),
-                     OPTION = ( 'SIGM_ELNO_DEPL',
-                                'ERRE_ELEM_SIGM', ),
-                    )
+
+RESU_1=CALC_ELEM(reuse =RESU_1,
+                 MODELE=MODE_1,
+                 CHAM_MATER=MATE_1,
+                 RESULTAT=RESU_1,
+                 OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
+                 EXCIT=(
+                 _F(CHARGE=CH1_1,),
+                 _F(CHARGE=CH2_1,),),);
 #
 # 5.6. Calcul de la contrainte a comparer
-#
-CALC_NO( reuse=RESU_1 ,RESULTAT= RESU_1 , OPTION='SIGM_NOEU_DEPL' )
+
+RESU_1=CALC_NO(reuse =RESU_1,
+               RESULTAT=RESU_1,
+               OPTION='SIGM_NOEU_DEPL',);
 #
 # 5.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 1
-#
-###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESU_1, ) ) ;
+##IMPR_RESU(
+##FORMAT='MED',
+##UNITE=81,
+##
+##RESU=_F(RESULTAT=RESU_1,),
+##);
+
 #
 # 6. Adaptation du maillage de 1 vers 2
 #    On en profite pour tester des mises a jour de champs aux noeuds et aux elements
 #    a un moment complique : des triangles deviennent des quadrangles et reciproquement.
-#
-MACR_ADAP_MAIL ( ADAPTATION = 'RAFF_DERA',
-                 MAILLAGE_N = M_1,
-                 MAILLAGE_NP1 = CO("M_2"),
-                 RESULTAT_N = RESU_1,
-                 INDICATEUR = 'ERRE_ELEM_SIGM',
-                 NOM_CMP_INDICA = 'ERREST' ,
-                 CRIT_RAFF_PE = 0.10,
-                 CRIT_DERA_PE = 0.20,
-                 MAILLAGE_FRONTIERE = ARC,
-                 QUALITE='OUI',
-                 MAJ_CHAM = ( _F( RESULTAT = RESU_1,
-                                  NOM_CHAM   = 'DEPL',
-                                  TYPE_CHAM  = 'NOEU_DEPL_R',
-                                  NUME_ORDRE = 1,
-                                  CHAM_MAJ   = CO("DEPL_1_2") ),
-                            ),
-                )
-### On est bloque pour un champ constant par element car le LIRE_CHAMP demande a ce qu'un modele
-### soit defini sur le maillage
-### Or ce ne n'est fait que plus tard. A creuser ...
-###                              _F( RESULTAT = RESU_1,
-###                                  NOM_CHAM   = 'ERRE_ELEM_SIGM',
-###                                  TYPE_CHAM  = 'ELEM_ERRE_R',
-###                                  NUME_ORDRE = 1,
-###                                  CHAM_MAJ   = CO("ERRE_1_2") ),
-###ERRE_1=EXTR_RESU(RESULTAT=RESU_1,
-###                 ARCHIVAGE=_F(NOM_CHAM='ERRE_ELEM_SIGM',NUME_ORDRE=1,),);
-###IMPR_RESU(RESU=_F(RESULTAT=RESU_1,
-###                  NOM_CHAM='ERRE_ELEM_SIGM',),);
-###IMPR_RESU(RESU=_F(RESULTAT=ERRE_1,),);
-###IMPR_RESU(RESU=_F(CHAM_GD=ERRE_1_2,),);
+
+MACR_ADAP_MAIL(MAILLAGE_N=M_1,
+               MAILLAGE_NP1=CO('M_2'),
+               ADAPTATION='RAFF_DERA',
+               RESULTAT_N=RESU_1,
+               INDICATEUR='ERRE_ELEM_SIGM',
+               NOM_CMP_INDICA='ERREST',
+               CRIT_RAFF_PE=0.6,
+               CRIT_DERA_PE=0.2,
+               MAILLAGE_FRONTIERE=ARC,
+               MAJ_CHAM=_F(CHAM_MAJ=CO('DEPL_1_2'),
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           RESULTAT=RESU_1,
+                           NOM_CHAM='DEPL',
+                           NUME_ORDRE=1,),
+               QUALITE='OUI',);
 #
 # 7. Calcul sur le maillage 2
 #
 # 7.1. Mise en place du materiau
-#
-MATE_2 = AFFE_MATERIAU( MAILLAGE=M_2,
-                          AFFE=( _F(  TOUT = 'OUI',  MATER = MATER1, ) )
-                        )
+
+MATE_2=AFFE_MATERIAU(MAILLAGE=M_2,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER1,),);
 #
 # 7.2. Le modele
-#
-MODE_2 = AFFE_MODELE ( MAILLAGE = M_2,
-                       AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'C_PLAN' ))
+
+MODE_2=AFFE_MODELE(MAILLAGE=M_2,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
 #
 # 7.3. Chargement
 # 7.3.1. Les bords de symetrie
-#
-CH1_2 = AFFE_CHAR_MECA ( MODELE = MODE_2,
-                         FACE_IMPO=( _F( GROUP_MA = 'GMP1', DY = 0.),
-                                     _F( GROUP_MA = 'GMP4', DX = 0.))
-                       )
+
+CH1_2=AFFE_CHAR_MECA(MODELE=MODE_2,
+                     FACE_IMPO=(_F(GROUP_MA='GMP1',
+                                   DY=0.,),
+                                _F(GROUP_MA='GMP4',
+                                   DX=0.,),),);
 #
 # 7.3.2. Les tractions
-#
-CH2_2 = AFFE_CHAR_MECA_F ( MODELE = MODE_2,
-                           FORCE_CONTOUR=( _F( GROUP_MA = 'GMP2', FX = F1, FY = F2),
-                                           _F( GROUP_MA = 'GMP3', FX = F3, FY = F4))
-                         )
+
+CH2_2=AFFE_CHAR_MECA_F(MODELE=MODE_2,
+                       FORCE_CONTOUR=(_F(GROUP_MA='GMP2',
+                                         FX=F1,
+                                         FY=F2,),
+                                      _F(GROUP_MA='GMP3',
+                                         FX=F3,
+                                         FY=F4,),),);
 #
 # 7.4. Resolution
-#
-RESU_2 = MECA_STATIQUE ( MODELE = MODE_2,
-                         CHAM_MATER = MATE_2,
-                         EXCIT = ( _F( CHARGE = CH1_2 ),
-                                   _F( CHARGE = CH2_2 ) )
-                       )
+
+RESU_2=MECA_STATIQUE(MODELE=MODE_2,
+                     CHAM_MATER=MATE_2,
+                     EXCIT=(_F(CHARGE=CH1_2,),
+                            _F(CHARGE=CH2_2,),),);
 #
 # 7.5. Calcul des contraintes
-#
-RESU_2 = CALC_ELEM ( reuse=RESU_2, RESULTAT = RESU_2,
-                     MODELE = MODE_2,
-                     CHAM_MATER = MATE_2,
-                     EXCIT = ( _F( CHARGE = CH1_2 ),
-                               _F( CHARGE = CH2_2 ) ),
-                     OPTION = ( 'SIGM_ELNO_DEPL',
-                                'ERRE_ELEM_SIGM', ),
-                    )
+
+RESU_2=CALC_ELEM(reuse =RESU_2,
+                 MODELE=MODE_2,
+                 CHAM_MATER=MATE_2,
+                 RESULTAT=RESU_2,
+                 OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
+                 EXCIT=(
+                 _F(CHARGE=CH1_2,),
+                 _F(CHARGE=CH2_2,),),);
 #
 # 7.6. Calcul de la contrainte a comparer
-#
-CALC_NO( reuse=RESU_2 ,RESULTAT= RESU_2 , OPTION='SIGM_NOEU_DEPL' )
+
+RESU_2=CALC_NO(reuse =RESU_2,
+               RESULTAT=RESU_2,
+               OPTION='SIGM_NOEU_DEPL',);
 #
 # 7.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 2
-#
-###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESU_2, ) ) ;
+##IMPR_RESU(
+##FORMAT='MED',
+##UNITE=82,
+##
+##RESU=_F(RESULTAT=RESU_2,),
+##);
+
 #
 # 8. Adaptation du maillage de 2 vers 3
-#
-MACR_ADAP_MAIL ( ADAPTATION = 'RAFF_DERA',
-                 MAILLAGE_N = M_2,
-                 MAILLAGE_NP1 = CO("M_3"),
-                 RESULTAT_N = RESU_2,
-                 INDICATEUR = 'ERRE_ELEM_SIGM',
-                 NOM_CMP_INDICA = 'ERREST' ,
-                 CRIT_RAFF_PE = 0.03,
-                 CRIT_DERA_PE = 0.20,
-                 MAILLAGE_FRONTIERE = ARC,
-                 QUALITE='OUI',
-               )
+
+MACR_ADAP_MAIL(MAILLAGE_N=M_2,
+               MAILLAGE_NP1=CO('M_3'),
+               ADAPTATION='RAFF_DERA',
+               RESULTAT_N=RESU_2,
+               INDICATEUR='ERRE_ELEM_SIGM',
+               NOM_CMP_INDICA='ERREST',
+               CRIT_RAFF_PE=0.01,
+               CRIT_DERA_PE=0.8,
+               MAILLAGE_FRONTIERE=ARC,
+               QUALITE='OUI',);
 #
 # 9. Calcul sur le maillage 3
 #
 # 9.1. Mise en place du materiau
-#
-MATE_3 = AFFE_MATERIAU( MAILLAGE=M_3,
-                          AFFE=( _F(  TOUT = 'OUI',  MATER = MATER1, ) )
-                      )
+
+MATE_3=AFFE_MATERIAU(MAILLAGE=M_3,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER1,),);
 #
 # 9.2. Le modele
-#
-MODE_3 = AFFE_MODELE ( MAILLAGE = M_3,
-                       AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'C_PLAN' ))
+
+MODE_3=AFFE_MODELE(MAILLAGE=M_3,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
 #
 # 9.3. Chargement
 # 9.3.1. Les bords de symetrie
-#
-CH1_3 = AFFE_CHAR_MECA ( MODELE = MODE_3,
-                         FACE_IMPO=( _F( GROUP_MA = 'GMP1', DY = 0.),
-                                     _F( GROUP_MA = 'GMP4', DX = 0.))
-                       )
+
+CH1_3=AFFE_CHAR_MECA(MODELE=MODE_3,
+                     FACE_IMPO=(_F(GROUP_MA='GMP1',
+                                   DY=0.,),
+                                _F(GROUP_MA='GMP4',
+                                   DX=0.,),),);
 #
 # 9.3.2. Les tractions
-#
-CH2_3 = AFFE_CHAR_MECA_F ( MODELE = MODE_3,
-                           FORCE_CONTOUR=( _F( GROUP_MA = 'GMP2', FX = F1, FY = F2),
-                                           _F( GROUP_MA = 'GMP3', FX = F3, FY = F4))
-                         )
+
+CH2_3=AFFE_CHAR_MECA_F(MODELE=MODE_3,
+                       FORCE_CONTOUR=(_F(GROUP_MA='GMP2',
+                                         FX=F1,
+                                         FY=F2,),
+                                      _F(GROUP_MA='GMP3',
+                                         FX=F3,
+                                         FY=F4,),),);
 #
 # 9.4. Resolution
-#
-RESU_3 = MECA_STATIQUE ( MODELE = MODE_3,
-                         CHAM_MATER = MATE_3,
-                         EXCIT = ( _F( CHARGE = CH1_3 ),
-                                   _F( CHARGE = CH2_3 ) )
-                       )
+
+RESU_3=MECA_STATIQUE(MODELE=MODE_3,
+                     CHAM_MATER=MATE_3,
+                     EXCIT=(_F(CHARGE=CH1_3,),
+                            _F(CHARGE=CH2_3,),),);
 #
 # 9.5. Calcul des contraintes
-#
-RESU_3 = CALC_ELEM ( reuse=RESU_3, RESULTAT = RESU_3,
-                     MODELE = MODE_3,
-                     CHAM_MATER = MATE_3,
-                     EXCIT = ( _F( CHARGE = CH1_3 ),
-                               _F( CHARGE = CH2_3 ) ),
-                     OPTION = ( 'SIGM_ELNO_DEPL', ),
-                   )
+
+RESU_3=CALC_ELEM(reuse =RESU_3,
+                 MODELE=MODE_3,
+                 CHAM_MATER=MATE_3,
+                 RESULTAT=RESU_3,
+                 OPTION='SIGM_ELNO_DEPL',
+                 EXCIT=(
+                 _F(CHARGE=CH1_3,),
+                 _F(CHARGE=CH2_3,),),);
 #
 # 9.6. Calcul de la contrainte a comparer
-#
-CALC_NO( reuse=RESU_3 ,RESULTAT= RESU_3 , OPTION='SIGM_NOEU_DEPL' )
-#
-# 9.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 3
-#
-###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESU_3, ) ) ;
-#
-###IMPR_RESU(RESU=_F(RESULTAT=RESU_3,
-###                  NOM_CHAM='DEPL',
-###                  FORM_TABL='OUI',
-###                  GROUP_NO=('GNP10', 'GNP12', 'GNP13',),
-###                  IMPR_COOR='OUI',),);
+
+RESU_3=CALC_NO(reuse =RESU_3,
+               RESULTAT=RESU_3,
+               OPTION='SIGM_NOEU_DEPL',);
 #
 # N. Tests de non regression
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
+                     GROUP_NO='GNP21',
+                     NOM_CMP='DX',
+                     VALE=7.733e-06,
+                     CRITERE='RELATIF',
+                     PRECISION=1e-06,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='7.03.18',),
+          RESU=(_F(RESULTAT=RESU_1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='GNP20',
+                   VALE=0.8364656,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.03.18',),
+                _F(RESULTAT=RESU_2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='GNP20',
+                   VALE=0.5020733,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.02.28',),
+                _F(RESULTAT=RESU_3,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='GNP20',
+                   VALE=SIXX(1.0,(pi / 6.0),),
+                   CRITERE='ABSOLU',
+                   PRECISION=0.52,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='GNP21',
+                   VALE=1.576383,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.03.18',),
+                _F(RESULTAT=RESU_2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='GNP21',
+                   VALE=1.593207,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.02.28',),
+                _F(RESULTAT=RESU_3,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='GNP21',
+                   VALE=SIXX(1.0,(pi / 3.0),),
+                   CRITERE='RELATIF',
+                   PRECISION=0.3,
+                   REFERENCE='ANALYTIQUE',),),);
 #
 
-val1=SIXX(1.,pi/6.)
-val2=SIXX(1.,pi/3.)
-TEST_RESU ( RESU = (
-            _F( RESULTAT = RESU_1, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
-             CRITERE = 'RELATIF',     PRECISION = 1.E-6,
-             GROUP_NO = 'GNP20', NOM_CMP = 'SIXX', VALE = 8.364656E-01,
-             REFERENCE = 'NON_REGRESSION', VERSION = '7.03.18' ),
-            _F( RESULTAT = RESU_2, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
-             CRITERE = 'RELATIF',     PRECISION = 1.E-6,
-             GROUP_NO = 'GNP20', NOM_CMP = 'SIXX', VALE = 5.125268E-01,
-             REFERENCE = 'NON_REGRESSION', VERSION = '7.03.18' ),
-            _F( RESULTAT = RESU_3, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',     PRECISION = 0.52,
-             GROUP_NO = 'GNP20', NOM_CMP = 'SIXX', VALE = val1,
-             REFERENCE = 'ANALYTIQUE'),
-            _F( RESULTAT = RESU_1, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
-             CRITERE = 'RELATIF',     PRECISION = 1.E-6,
-             GROUP_NO = 'GNP21', NOM_CMP = 'SIXX', VALE = 1.576383E+00,
-             REFERENCE = 'NON_REGRESSION', VERSION = '7.03.18' ),
-            _F( RESULTAT = RESU_2, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
-             CRITERE = 'RELATIF',     PRECISION = 1.E-6,
-             GROUP_NO = 'GNP21', NOM_CMP = 'SIXX', VALE = 1.911567E+00,
-             REFERENCE = 'NON_REGRESSION', VERSION = '7.03.18' ),
-            _F( RESULTAT = RESU_3, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
-             CRITERE = 'RELATIF',     PRECISION = 2.E-1,
-             GROUP_NO = 'GNP21', NOM_CMP = 'SIXX', VALE = val2,
-             REFERENCE = 'ANALYTIQUE'),
-                   ),
-            CHAM_NO = (
-            _F( CHAM_GD = DEPL_1_2,
-             CRITERE = 'RELATIF',     PRECISION = 1.E-6,
-             GROUP_NO = 'GNP21', NOM_CMP = 'DX', VALE = 7.73300E-06,
-             REFERENCE = 'NON_REGRESSION', VERSION = '7.03.18' ),
-                      )
-          )
-#
-FIN( )
-#
+FIN();
 #

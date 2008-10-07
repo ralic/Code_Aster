@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai2 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,15 +23,15 @@ def _(x) : return x
 cata_msg = {
 
 4 : _("""
- probleme pour recuperer les variables d'acces
+ problème pour récupérer les variables d'accès
 """),
 
 5 : _("""
- on ne traite que des variables d'acces reelles
+ on ne traite que des variables d'accès réelles
 """),
 
 6 : _("""
- on ne traite que des parametres reels
+ on ne traite que des paramètres réels
 """),
 
 7 : _("""
@@ -51,7 +51,7 @@ cata_msg = {
 """),
 
 12 : _("""
- interpolation sur parametres non permise
+ interpolation sur paramètres non permise
 """),
 
 13 : _("""
@@ -111,7 +111,7 @@ cata_msg = {
 """),
 
 52 : _("""
- ajout de l'option "sief_elga_depl", les charges sont-elles correctes ?
+ ajout de l'option "SIEF_ELGA_DEPL", les charges sont-elles correctes ?
 """),
 
 53 : _("""
@@ -231,7 +231,7 @@ cata_msg = {
 """),
 
 86 : _("""
- le nombre de champs a lire est superieur a 100
+ le nombre de champs à lire est supérieur a 100
 """),
 
 87 : _("""
@@ -246,11 +246,11 @@ cata_msg = {
 """),
 
 88 : _("""
-  le mot cle modele est obligatoire pour un champ de type cham_elem
+  le mot clé MODELE est obligatoire pour un champ de type CHAM_ELEM
 """),
 
 89 : _("""
-  le format ensight n'accepte que le champ pres
+  le format ENSIGHT n'accepte que le champ PRES
 """),
 
 90 : _("""

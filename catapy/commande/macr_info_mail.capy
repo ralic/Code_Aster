@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,12 +27,12 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
 #
 # 1. Le niveau d'information
 #
-  INFO = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+  INFO = SIMP(statut='f',typ='I',defaut=1,into=(1,2,3,4)),
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V8_11",
-                        into=("V8_11", "V8_N", "V8_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_4",
+                        into=("V9_4", "V9_N", "V9_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -59,9 +59,9 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
                       fr="Information complémentaire sur la frontière",
                       ang="Further information about boundary",
 #
-    GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                    fr="Groupes de mailles définissant la frontière",
-                    ang="Mesh groups which define the boundary" ),
+    GROUP_MA_FRONT = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+                          fr="Groupes de mailles définissant la frontière",
+                          ang="Mesh groups which define the boundary" ),
 #
                     ) ,
 #

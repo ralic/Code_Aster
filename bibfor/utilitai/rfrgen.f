@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,8 @@ C
          IF ( (N1+N2) .NE. 0 ) THEN
             CALL RFMGE1 ( TRANGE )
          ELSE
-            CALL RFMGE2 ( TRANGE )
+CCC  FONCTIONNALITE NON DEVELOPPEE
+            CALL ASSERT(.FALSE.)
          ENDIF
          GOTO 9999
       ELSEIF ( TYSD .EQ. 'HARM_GENE' ) THEN

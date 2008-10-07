@@ -6,7 +6,7 @@ C     PARAMETRE SENSIBLE - TYPE DE SENSIBILITE - SOUS-TYPE
 C     *         *          **                    *    *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,8 +74,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'PSTYST' )
 C
       CHARACTER*80 VALK(3)
 C
@@ -154,8 +152,7 @@ C
                     VALK(1) = ZK80(ADVALE+IAUX-1)
                     VALK(2) = STYPSE(1:LG1)
                     VALK(3) = COREFE(JAUX)
-                    CALL U2MESK('A','SENSIBILITE_96',3 ,VALK)
-                    CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
+                    CALL U2MESK('F','SENSIBILITE_96',3 ,VALK)
                   ENDIF
                 ENDIF
               ENDIF

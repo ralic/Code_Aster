@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -395,9 +395,10 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         if NB_NOEUD_COUPE < 3 : 
           UTMESS('A','RUPTURE0_17')
           NB_NOEUD_COUPE = 5
-        MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
-        if MOD==None : UTMESS('F','RUPTURE0_18')
-        MODEL = self.jdc.sds_dict[MOD[0].rstrip()]
+        iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
+        n_modele=n_modele.rstrip()
+        if len(n_modele)==0 : UTMESS('F','RUPTURE0_18')
+        MODEL = self.jdc.sds_dict[n_modele]
         dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
         for i in range(Nbf1):
           Porig = array(d_coorf[Lnf1[i]] )
@@ -555,9 +556,10 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      DTAN_EXTR = args['DTAN_EXTR']
      dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
 #Projection du resultat sur le maillage lineaire initial     
-     MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
-     if MOD==None : UTMESS('F','RUPTURE0_18')
-     MODEL = self.jdc.sds_dict[MOD[0].rstrip()]
+     iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
+     n_modele=n_modele.rstrip()
+     if len(n_modele)==0 : UTMESS('F','RUPTURE0_18')
+     MODEL = self.jdc.sds_dict[n_modele]
      xcont = MODEL.xfem.XFEM_CONT.get()
      if xcont[0] == 0 :
        __RESX = RESULTAT
@@ -739,21 +741,24 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
        sens = -1
      DETRUIRE(CONCEPT=_F(NOM=__Tabg),INFO=1) 
 # Extraction des sauts sur la fissure          
-     TSo = [None]*Nbfond    
      NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
      if NB_NOEUD_COUPE < 3 : 
        UTMESS('A','RUPTURE0_34')
        NB_NOEUD_COUPE = 5
+     mcfact=[]
      for i in range(Nbfond):
         Porig = array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
         if i==0 and DTAN_ORIG!=None : Pextr = Porig - ABSC_CURV_MAXI*VP[i]
         elif i==(Nbfond-1) and DTAN_EXTR!=None : Pextr = Porig - ABSC_CURV_MAXI*VP[i]
         else : Pextr = Porig + ABSC_CURV_MAXI*VP[i]*sens
-        TSo[i] = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
-                         LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
-                                        TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
-                                        DISTANCE_MAX=dmax),);
+        mcfact.append(_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
+                          TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
+                          DISTANCE_MAX=dmax),)
+     TSo = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
+                         LIGN_COUPE=mcfact);
 
+     TTSo = TSo.EXTR_TABLE()
+     DETRUIRE(CONCEPT=_F(NOM=TSo),INFO=1) 
      Nbnofo = Nbfond
      if xcont[0] != 0 :  
        DETRUIRE(CONCEPT=_F(NOM=__MODLINE),INFO=1) 
@@ -819,8 +824,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             Ls = [string.ljust(Lnosup[ino][i],8) for i in range(len(Lnosup[ino]))]
             tabsup=tabsup.NOEUD==Ls
       elif FISSURE :
-         tabsup = TSo[ino].EXTR_TABLE()
-         DETRUIRE(CONCEPT=_F(NOM=TSo[ino]),INFO=1)
+         tabsup = TTSo.INTITULE=='l.coupe%i'%(ino+1)
       else :
          tabsup=TABL_DEPL_SUP.EXTR_TABLE()
          veri_tab(tabsup,TABL_DEPL_SUP.nom,ndim)

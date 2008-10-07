@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -213,7 +213,7 @@ C --- RECUPERATION DES INSTANTS CORRESPONDANT AUX NUMEROS D'ORDRE :
 C     -----------------------------------------------------------
       KINS = '&&PEINGL.INSTANT'
       CALL WKVECT(KINS,'V V R',NBORDR,JINS)
-      CALL JEEXIN(RESUL//'           .INST',IRET)
+      CALL JENONU(JEXNOM(RESUL//'           .NOVA','INST'),IRET)
       IF (IRET.NE.0) THEN
         DO 10 IORD = 1,NBORDR
           NUMORD = ZI(JORD+IORD-1)
@@ -506,11 +506,11 @@ C         -------------------------------------------
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_ELAS') THEN 
+              IF(OPTION.EQ.'ENER_ELAS') THEN
                 CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
               ELSE
-                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)      
-              ENDIF  
+                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
+              ENDIF
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 C ---  L ENERGIE TOTAL
               IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
@@ -590,11 +590,11 @@ C          -------------------------------------------
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_ELAS') THEN 
+              IF(OPTION.EQ.'ENER_ELAS') THEN
                 CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
               ELSE
-                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)       
-              ENDIF  
+                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
+              ENDIF
 
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 C ---  L ENERGIE TOTAL
@@ -679,11 +679,11 @@ C          -------------------------------------------
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_ELAS') THEN 
+              IF(OPTION.EQ.'ENER_ELAS') THEN
                 CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
               ELSE
-                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)       
-              ENDIF  
+                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
+              ENDIF
 
                 IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
      &            (COMPT(1:4).NE.'ELAS') .AND.
@@ -697,7 +697,7 @@ C              -------------
                 VALER(2) = ENERGI
                 VALER(3) = WORK(2)
                 VALER(4) = WORK(3)
-                
+
                 VALEK(1) = NOMMAI
 
               END IF

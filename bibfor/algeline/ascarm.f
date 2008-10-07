@@ -1,16 +1,17 @@
       SUBROUTINE ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ, NBMODE,
      +                    VECMOD, PARMOD, ID, REASUP, SPECTR, REPMOD,
-     +                    CORFRE, AMORT )
+     +                    CORFRE, AMORT, MUAPDE, TCOSUP, IM )
       IMPLICIT  NONE
-      INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID
+      INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID,
+     +                  TCOSUP(NBSUP,*), IM
       REAL*8            VECMOD(NEQ,*), SPECTR(*), AMORT(*)
-      REAL*8            PARMOD(NBMODE,*), REPMOD(NBMODE,NBSUP,NEQ,*)
+      REAL*8            PARMOD(NBMODE,*), REPMOD(NBSUP,NEQ,*)
       REAL*8            REASUP(NBSUP,NBMODE,*)
       CHARACTER*16      NOMSY
-      LOGICAL           MONOAP, CORFRE
+      LOGICAL           MONOAP, CORFRE, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGELINE  DATE 06/10/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +47,8 @@ C OUT : REPMOD : VECTEUR DES REPONSES MODALES
 C IN  : CORFRE : = .TRUE.  , CORRECTION DES FREQUENCES
 C IN  : AMORT  : VECTEUR DES AMORTISSEMENTS MODAUX
 C     ------------------------------------------------------------------
-      INTEGER   IM, IN, IS, IND
-      REAL*8    UN, XAMO, OMEGA, OMEGA2, XXM, XXX
+      INTEGER   IN, IS, IND
+      REAL*8    UN, XAMO, OMEGA, OMEGA2, XXM, XXX, YYY
 C     ------------------------------------------------------------------
 C
       UN = 1.D0
@@ -55,7 +56,6 @@ C
 C     --- CAS DU MONO-APPUI ---
 C
       IF ( MONOAP ) THEN
-         DO 10 IM = 1,NBMODE
             OMEGA = SQRT(PARMOD(IM,1))
             XAMO  = AMORT(IM)
             IF ( CORFRE ) OMEGA = OMEGA * SQRT( UN - XAMO*XAMO )
@@ -65,14 +65,12 @@ C
             IF (NOMSY(1:4).EQ.'VITE') XXX = XXX * OMEGA
             IF (NOMSY(1:4).EQ.'ACCE') XXX = XXX * OMEGA2
             DO 12 IN = 1,NEQ
-               REPMOD(IM,NBSUP,IN,ID) = XXX * VECMOD(IN,IM)
+               REPMOD(NBSUP,IN,ID) = XXX * VECMOD(IN,IM)
  12         CONTINUE
- 10      CONTINUE
 C
 C     --- CAS DU MULTI-APPUI ---
 C
       ELSE
-         DO 20 IM = 1,NBMODE
             OMEGA = SQRT(PARMOD(IM,1))
             XAMO  = AMORT(IM)
             IF ( CORFRE ) OMEGA = OMEGA * SQRT( UN - XAMO*XAMO )
@@ -84,10 +82,35 @@ C
                IND = ID + 3*(IM-1) + 3*NBMODE*(IS-1)
                XXX = REASUP(IS,IM,ID) * XXM * SPECTR(IND)
                DO 24 IN = 1,NEQ
-                  REPMOD(IM,IS,IN,ID) = XXX * VECMOD(IN,IM)
+                  REPMOD(IS,IN,ID) = XXX * VECMOD(IN,IM)
  24            CONTINUE
  22         CONTINUE
- 20      CONTINUE
+      ENDIF
+C
+C --- CAS DECORRELE : ON RECOMBINE LES SUPPORTS 
+C
+      IF ( .NOT.MUAPDE ) THEN
+         DO 100 IN = 1,NEQ
+            YYY=0.D0
+            DO 110 IS = 1,NSUPP(ID)
+               IF (TCOSUP(IS,ID).EQ.1) THEN
+C              --- COMBINAISON QUADRATIQUE ---
+                     XXX = REPMOD(IS,IN,ID)
+                     YYY=YYY+SQRT(XXX*XXX)
+C
+               ELSEIF (TCOSUP(IS,ID).EQ.2) THEN
+C              --- COMBINAISON LINEAIRE ---
+                     XXX = REPMOD(IS,IN,ID)
+                     YYY=YYY+XXX
+C
+               ELSE
+C              --- COMBINAISON VALEUR ABSOLUE ---
+                     XXX = ABS( REPMOD(IS,IN,ID) )
+                     YYY=YYY+XXX
+               ENDIF
+ 110        CONTINUE
+            REPMOD(1,IN,ID) = YYY
+ 100     CONTINUE
       ENDIF
 C
       END

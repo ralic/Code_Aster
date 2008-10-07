@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*(*)       NOMTA, PARA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C IN  : NOMTA  : NOM DE LA STRUCTURE "TABLE".
 C IN  : PARA   : PARAMETRE A CHERCHER
 C ----------------------------------------------------------------------
       CHARACTER*4 TYPPAR
-      CHARACTER*24 VALK(4)
+      CHARACTER*24 VALK(2)
       LOGICAL  EXIST
 C DEB------------------------------------------------------------------
 C
@@ -37,9 +37,7 @@ C
       IF(.NOT.EXIST)THEN
         VALK (1) = PARA
         VALK (2) = NOMTA
-        VALK (3) = ' '
-        VALK (4) = ' '
-        CALL U2MESG('F', 'UTILITAI6_93',4,VALK,0,0,0,0.D0)
+        CALL U2MESG('F', 'UTILITAI6_93',2,VALK,0,0,0,0.D0)
       ENDIF
 C  
       CALL JEDEMA()

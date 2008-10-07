@@ -1,4 +1,4 @@
-#@ MODIF System Utilitai  DATE 08/01/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF System Utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# RESPONSABLE COURTOIS M.COURTOIS
 
 """Ce module définit la classe `SYSTEM` et la fonction `ExecCommand`
 qui est présente uniquement pour commodité pour les Macros.
@@ -140,7 +141,8 @@ class SYSTEM:
 
 #-------------------------------------------------------------------------------
    def Shell(self, cmd, bg=False, verbose=None, follow_output=False,
-                   alt_comment=None, interact=False):
+             alt_comment=None, interact=False,
+             capturestderr=True, separated_stderr=False):
       """Execute a command shell
          cmd      : command
          bg       : put command in background if True
@@ -156,6 +158,8 @@ class SYSTEM:
       """
       if not alt_comment:
          alt_comment = cmd
+      if not capturestderr:
+         separated_stderr = False
       if verbose == None:
          verbose = self.verbose
       if bg:
@@ -176,25 +180,45 @@ class SYSTEM:
          return _exitcode(iret), ''
       # use popen to manipulate stdout/stderr
       output = []
-      p = popen2.Popen4(cmd)
+      error  = []
+      if separated_stderr or not capturestderr:
+         p = popen2.Popen3(cmd, capturestderr=capturestderr)
+      else:
+         p = popen2.Popen4(cmd)
       p.tochild.close()
       if not bg:
          if not follow_output:
             output = p.fromchild.readlines()
+            if separated_stderr:
+               error = p.childerr.readlines()
          else:
             while p.poll() == -1:
                output.append(p.fromchild.readline())
                # \n already here...
                self._print(output[-1], term='')
+               if separated_stderr:
+                  error.append(p.childerr.readline())
+                  self._print(error[-1], term='')
             # to be sure to empty the buffer
             end = p.fromchild.readlines()
             self._print(''.join(end))
             output.extend(end)
-         iret = _exitcode(p.wait())
+            if separated_stderr:
+               end = p.childerr.readlines()
+               self._print(''.join(end))
+               error.extend(end)
+         try:
+            iret = _exitcode(p.wait())
+         except OSError, e:
+            self._print("OSError = %s" % str(e))
+            iret = 4
       else:
          iret = 0
       p.fromchild.close()
       output = ''.join(output)
+      if separated_stderr:
+         p.childerr.close()
+         error = ''.join(error)
 
       # repeat header message
       if follow_output:
@@ -207,6 +231,8 @@ class SYSTEM:
          iret = p.pid
          if verbose:
             self._print(_('Process ID : '), iret)
+      if separated_stderr:
+         return iret, output, error
       return iret, output
 
 #-------------------------------------------------------------------------------

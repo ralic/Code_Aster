@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # ---------------------------------------------------------------------
 # TITRE VERIFICATION GARDES-FOUS S'IL MANQUE DES VARIABLES DE COMMANDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,7 +28,7 @@ DEBUT(CODE=_F(NOM='ERREU02A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F
 import re
 fmt_raison='-'*80+"""
 
-   Exception erreur_Fatale interceptee
+   Exception interceptee
    Raison : %s
 
 """+'-'*80+'\n'
@@ -132,7 +132,7 @@ CM1A=AFFE_MATERIAU(MAILLAGE=M,
 is_ok = 0
 try :
     U1A=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CM1A, EXCIT=_F(CHARGE=CH1,), INST = 1800.)
-except aster.FatalError,err:
+except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("CALCULEL6_56", str(err))<>None :
@@ -155,7 +155,7 @@ CM1B=AFFE_MATERIAU(MAILLAGE=M,
 is_ok = 0
 try :
     U1B=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CM1B, EXCIT=_F(CHARGE=CH1,), INST = 1800.)
-except aster.FatalError,err:
+except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("CALCULEL6_1", str(err))<>None :
@@ -179,7 +179,7 @@ CM2A=AFFE_MATERIAU(MAILLAGE=M,
 is_ok = 0
 try :
     U2A=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CM2A, EXCIT=_F(CHARGE=CH1,), INST = 1800.)
-except  aster.FatalError,err:
+except  aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("CALCULEL6_62", str(err))<>None :
@@ -203,7 +203,7 @@ CM2B=AFFE_MATERIAU(MAILLAGE=M,
 is_ok = 0
 try :
     U2B=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CM2B, EXCIT=_F(CHARGE=CH1,), INST = 1800.)
-except  aster.FatalError,err:
+except  aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("CALCULEL6_56", str(err))<>None :
@@ -227,7 +227,7 @@ CM2C=AFFE_MATERIAU(MAILLAGE=M,
 is_ok = 0
 try :
     U2C=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CM2C, EXCIT=_F(CHARGE=CH1,), INST = 1800.)
-except  aster.FatalError,err:
+except  aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("CALCULEL6_62", str(err))<>None :
@@ -251,7 +251,7 @@ CM2D=AFFE_MATERIAU(MAILLAGE=M,
 is_ok = 0
 try :
     U2D=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CM2D, EXCIT=_F(CHARGE=CH1,), INST = 1800.)
-except  aster.FatalError,err:
+except  aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("CALCULEL6_1", str(err))<>None :

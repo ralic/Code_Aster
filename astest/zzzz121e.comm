@@ -1,0 +1,273 @@
+
+# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
+# TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE GNICOLAS G.NICOLAS
+# Attention : Ceci est un test de non regression et non pas d'evaluation
+# de l'adaptation de maillage.
+# . Cas d'un parallelepipede decoupe en 9 hexaedres, en degre 1
+#
+#                29            30            31           32
+#                  ---------------------------------------.
+#                 /            /            /            /.
+#                /            /            /            / .
+#             25----------------------------------------  .
+#              /            /            /            /.  .
+#             /            /            /            / .  .
+#          21----------------------------------------  .  .
+#           /            /            /            /.  .  .
+#          /            /            /            / .  .  .16
+#       17---------------------------------------.  .  . /
+#         .            .            .            .  .  ./
+#         .            .            .            .  .  .12
+#         .            .            .            .  . /
+#         .            .            .            .  ./
+#         .            .            .            .  .8
+#         .            .            .            . /
+#         .            .            .            ./
+#         ---------------------------------------.
+#         1            2            3            4      
+#
+# NOMBRE DE NOEUDS : 32
+#
+# NOMBRE DE MAILLES : 39
+#                   QUAD4 : 30
+#                   HEXA8 :  9
+#
+# NOMBRE DE GROUPES DE NOEUDS : 2
+#                   B : NO4(6.,0.,0.)
+#                   A : NO32(6.,6.,2.)
+#
+# NOMBRE DE GROUPES DE MAILLES : 5
+#                   X_0     : 3  les quadrangles de la face x=0
+#                   X_MAX   : 3  les quadrangles de la face x=6
+#                   Z_MI_MA : 18 les quadrangles de la face inferieure, z=0,
+#                                et de la face superieure, z=2
+#                   Y_MI_MA : 6  les quadrangles de la face avant, y=0, et
+#                                de la face arriere, y=6
+#                   VOLUME  : 9  les hexaedres du volume
+#
+# . La face x=0 est encastree
+# . On appuie, vers l'interieur, sur la face x=6
+# . On est en presence de gravite
+# Remarque : la gravite est inclinee par rapport aux axes pour casser la
+#            symetrie du probleme. Cela permet d'assurer un extremum unique
+#            pour l'indicateur d'erreur et donc une selection identique de
+#            la maille a raffiner, quelle que soit la machine d'execution
+#
+# . Information
+# . 2 adaptations avec des variantes
+
+DEBUT(CODE=_F(NOM='ZZZZ121E',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),
+      DEBUG=_F(SDVERI='OUI',),);
+#
+# 1. DEFINITION DU MATERIAU
+
+MATER2=DEFI_MATERIAU(ELAS=_F(E=220000.,
+                             NU=0.33,
+                             RHO=8300.,
+                             ALPHA=16.E-6,),);
+#
+#
+# 2. LECTURE DU MAILLAGE ET TEST DE LA MACRO SUR L'INFORMATION
+
+M00=LIRE_MAILLAGE(FORMAT='MED',
+                  NOM_MED='3x3___________________________00',);
+#
+
+MACR_INFO_MAIL(MAILLAGE=M00,
+               NOMBRE='OUI',
+               QUALITE='OUI',
+               CONNEXITE='OUI',
+               TAILLE='OUI',
+               INTERPENETRATION='OUI',);
+#
+# 3. CALCUL SUR LE MAILLAGE 00
+# 3.1. MODELE MECANIQUE
+
+MODE00=AFFE_MODELE(MAILLAGE=M00,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+M00=MODI_MAILLAGE(reuse =M00,
+                  MAILLAGE=M00,
+                  ORIE_PEAU_3D=_F(GROUP_MA=('X_0','X_MAX','Y_MI_MA','Z_MI_MA',),),);
+#
+# 3.2. MISE EN PLACE DU MATERIAU
+
+MATE00=AFFE_MATERIAU(MAILLAGE=M00,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER2,),);
+#
+# 3.3. CHARGEMENTS
+G = 9.81;
+
+PRE = -300000.0;
+
+#
+
+CHAR00=AFFE_CHAR_MECA(MODELE=MODE00,
+                      PESANTEUR=(G,4.,6.,-1.,),
+                      FACE_IMPO=_F(GROUP_MA='X_0',
+                                   DX=0.,
+                                   DY=0.,
+                                   DZ=0.,),
+                      PRES_REP=_F(GROUP_MA='X_MAX',
+                                  PRES=PRE,),);
+#
+# 3.4. RESOLUTION
+
+RESU00=MECA_STATIQUE(MODELE=MODE00,
+                     CHAM_MATER=MATE00,
+                     EXCIT=_F(CHARGE=CHAR00,),);
+#
+# 3.5. INDICATEUR D'ERREUR
+
+RESU00=CALC_ELEM(reuse =RESU00,
+                 RESULTAT=RESU00,
+                 OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM',),);
+#
+# 3.6. IMPRESSION
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(RESULTAT=RESU00,),
+##);
+
+#
+# 4. ADAPTATION DU MAILLAGE DE 00 VERS 01 SELON L'INDICATEUR D'ERREUR
+
+MACR_ADAP_MAIL(MAILLAGE_N=M00,
+               MAILLAGE_NP1=CO('M01'),
+               ADAPTATION='RAFFINEMENT',
+               RESULTAT_N=RESU00,
+               INDICATEUR='ERRE_ELEM_SIGM',
+               NOM_CMP_INDICA='ERREST',
+               CRIT_RAFF_PE=0.1,
+               QUALITE='OUI',
+               CONNEXITE='OUI',
+               TAILLE='OUI',
+               INTERPENETRATION='OUI',);
+#
+# 5. CALCUL SUR LE MAILLAGE 01
+# 5.1. MODELE MECANIQUE
+
+MODE01=AFFE_MODELE(MAILLAGE=M01,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+#
+# 5.2. MISE EN PLACE DES MATERIAUX
+
+MATE01=AFFE_MATERIAU(MAILLAGE=M01,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER2,),);
+#
+# 5.3. CHARGEMENTS
+
+CHAR01=AFFE_CHAR_MECA(MODELE=MODE01,
+                      PESANTEUR=(G,4.,6.,-1.,),
+                      FACE_IMPO=_F(GROUP_MA='X_0',
+                                   DX=0.,
+                                   DY=0.,
+                                   DZ=0.,),
+                      PRES_REP=_F(GROUP_MA='X_MAX',
+                                  PRES=PRE,),);
+#
+# 5.4. RESOLUTION
+
+RESU01=MECA_STATIQUE(MODELE=MODE01,
+                     CHAM_MATER=MATE01,
+                     EXCIT=_F(CHARGE=CHAR01,),);
+#
+# 5.5. IMPRESSION
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(RESULTAT=RESU01,),
+##);
+
+#
+# 7. ADAPTATION DU MAILLAGE DE 01 VERS 02
+#    . RAFFINEMENT SELON UNE ZONE
+
+MACR_ADAP_MAIL(MAILLAGE_N=M01,
+               MAILLAGE_NP1=CO('M02'),
+               ADAPTATION='RAFFINEMENT_ZONE',
+               ZONE=_F(X_MINI=-0.01,
+                       X_MAXI=2.01,
+                       Y_MINI=-0.01,
+                       Y_MAXI=4.01,
+                       Z_MINI=-0.01,
+                       Z_MAXI=1.01,),
+               QUALITE='OUI',);
+#
+# 8. CALCUL SUR LE MAILLAGE 02
+# 8.1. MODELE MECANIQUE
+
+MODE02=AFFE_MODELE(MAILLAGE=M02,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+#
+# 8.2. MISE EN PLACE DES MATERIAUX
+
+MATE02=AFFE_MATERIAU(MAILLAGE=M02,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER2,),);
+#
+# 8.3. CHARGEMENTS
+
+CHAR02=AFFE_CHAR_MECA(MODELE=MODE02,
+                      PESANTEUR=(G,4.,6.,-1.,),
+                      FACE_IMPO=_F(GROUP_MA='X_0',
+                                   DX=0.,
+                                   DY=0.,
+                                   DZ=0.,),
+                      PRES_REP=_F(GROUP_MA='X_MAX',
+                                  PRES=PRE,),);
+#
+# 8.4. RESOLUTION
+
+RESU02=MECA_STATIQUE(MODELE=MODE02,
+                     CHAM_MATER=MATE02,
+                     EXCIT=_F(CHARGE=CHAR02,),);
+# 8.5. IMPRESSION
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(RESULTAT=RESU02,),
+##);
+
+
+TEST_RESU(RESU=_F(RESULTAT=RESU02,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='A',
+                  VALE=-19.8173561,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-08,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='9.02.23',),);
+
+FIN();

@@ -2,7 +2,7 @@
      &                  NUMEDD,SDSENS,SDPILO,SDDYNA,VALMOI,
      &                  SOLALG,LACC0 ,INSTIN)
 C
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -203,8 +203,7 @@ C
             IF ( IRET.NE.0 ) THEN
               VALK(1) = EVOL
               VALK(2) = NOPASE//'                '
-              CALL U2MESK('A','SENSIBILITE_3', 2 ,VALK)
-              CALL U2MESK('F','UTILITAI7_99', 1 ,'NMDOET')
+              CALL U2MESK('F','SENSIBILITE_3', 2 ,VALK)
             ENDIF
             STRUCT = RESUID
           ELSE

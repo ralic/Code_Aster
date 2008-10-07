@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,6 +18,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+#-------------------------------------------------------------------
+# REMARQUE GENERALE : IL FAUDRA FAIRE EVOLUER CE CAS-TEST POUR QU'IL
+#                     PRENNE EN COMPTE LE SUIVI DES FRONTIERES COURBES
+#                     AU COURS DE L'ADAPTATION (CF ZZZZ175A)
 #-------------------------------------------------------------------
 #                 CORRIGE TP INDICATEUR-REMAILLAGE N 2 (FORMAT NEW6)
 #                         CULASSE FISSUREE EN THERMO-MECANIQUE
@@ -104,13 +108,7 @@ F_INST=DEFI_FONCTION(NOM_PARA='INST',
 # LECTURE MAILLAGES THERMIQUE ET MECANIQUE                    
 num_calc=0   
 MAT[num_calc]=LIRE_MAILLAGE();
-MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
-                 MAILLAGE=MAT[num_calc],
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 MAM[num_calc]=LIRE_MAILLAGE(UNITE=21);
-MAM[num_calc]=DEFI_GROUP(reuse =MAM[num_calc],
-                 MAILLAGE=MAM[num_calc],
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
                  
 #-------------------------------------------------------------------
 # BOUCLE PYTHON INDICATEUR D'ERREUR/REMAILLAGE
@@ -202,11 +200,13 @@ for num_calc in range(0,nb_calc1) :
                        AFFE_VARC=_F( TOUT='OUI',EVOL=TEMP2[num_calc],VALE_REF=0.,
                                       NOM_VARC='TEMP',NOM_CHAM='TEMP',),)
 
-# CL D'ENCASTREMENT + ETIREMENT REPARTIE                                 
+# ENCASTREMENT SUR LES DEUX COINS DE L'AXE X=0, REPERES PAR CHACUNE DES DEUX
+# MAILLES-POINTS : GM39 (X=0,Y=0) ET GM40 (X=0,Y=20)
    CLIMM[num_calc]=AFFE_CHAR_MECA(
              MODELE=MOM[num_calc],
-             DDL_IMPO=(_F(GROUP_NO='GM39',DX=0.0,DY=0.0),
-                       _F(GROUP_NO='GM40',DX=0.0,DY=0.0),),);        
+             FACE_IMPO=(_F(GROUP_MA='GM39',DX=0.0,DY=0.0),
+                        _F(GROUP_MA='GM40',DX=0.0,DY=0.0),),);        
+# ETIREMENT REPARTI SUR LE BORD DROIT (X=55)                             
    CHM[num_calc]=AFFE_CHAR_MECA(MODELE=MOM[num_calc],
                  PRES_REP=(_F(GROUP_MA='GM34',
                               PRES=-1.E-1,),),);
@@ -297,6 +297,11 @@ for num_calc in range(0,nb_calc1) :
    print 'CONVERGENCE DE L ENERGIE = ',energie_vs_raff_NUM[:num_calc1]
    print '**************'
    print 'ERREUR EN ENERGIE = ',erenergie_vs_raff_NUM[:num_calc1]
+#
+   
+# IMPRESSION MED DES RESULATS
+###   IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=TEMP[num_calc],),);
+###   IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=DEPLA[num_calc],),);
 
 # POUR NE PAS REMAILLER A LA DERNIERE ITERATION  
    if num_calc == nb_calc :
@@ -355,10 +360,10 @@ ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
 ERREEN2=FORMULE(VALE='eren2*1.',NOM_PARA='BIDON')
 TEST_FONCTION(VALEUR=(
     _F(FONCTION=ERREEN0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=1.0077761341151E+01,REFERENCE='NON_REGRESSION',
+       VALE_REFE=1.00777613410E+01,REFERENCE='NON_REGRESSION',
        VERSION = '9.00.13'),
-    _F(FONCTION=ERREEN2,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=4.5867099706591E-01,REFERENCE='NON_REGRESSION',
-       VERSION = '9.00.13')))                       
+    _F(FONCTION=ERREEN2,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
+       VALE_REFE=4.59925838E-01,REFERENCE='NON_REGRESSION',
+       VERSION = '9.02.15')))                       
 
 FIN();

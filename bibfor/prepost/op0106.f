@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,14 +66,15 @@ C 0.3. ==> VARIABLES LOCALES
      &        IRET1,IRET2,J,JCGMP,JCHMP,JDDL,JDDR,JFO,JFONO,JFPIP,JINFC,
      &        JNMO,JNOCH,JOPT,JORDR,JRE,JRENO,LACCE,LDEPL,LMAT,LONC2,
      &        LONCH,LREF,LTRAV,LVAFON,N0,N2,NBCHAR,NBDDL,NBOPT,
-     &        NBORDR,NC,NEQ,NH,NP,NBMA,JMAI,N3,N4,NBNO,JNOE, II
+     &        NBORDR,NC,NEQ,NH,NP,NBMA,JMAI,N3,N4,NBNO,JNOE, II,
+     &        LTPS,LTPS2,JREF
       REAL*8 TIME,OMEGA2,PREC,COEF(3),PARTPS(3),ETAN
       CHARACTER*2  CODRET
       CHARACTER*4  TYPCAL
-      CHARACTER*8  K8BID,RESUC1,CTYP,CRIT,NOMCMP(3),NOPASE,NOMA
+      CHARACTER*8  K8BID,CTYP,CRIT,NOMCMP(3),NOPASE,NOMA,MATERI
       CHARACTER*13 INPSCO
-      CHARACTER*16 OPTION,OPTIO2,TYSD,TYPE,OPER,TYPMCL(4),MOTCLE(4)
-      CHARACTER*19 LERES0,RESUCO,KNUM,INFCHA,LIGREL
+      CHARACTER*16 OPTION,OPTIO2,TYSD,TYPE,OPER,TYPMCL(4),MOTCLE(4),MCL
+      CHARACTER*19 LERES0,RESUCO,KNUM,INFCHA,LIGREL,RESUC1
       CHARACTER*19 CHDEP2,CHAMS0,CHAMS1,PRFCHN
       CHARACTER*24 CHAMNO,NUME,VFONO,VAFONO,SIGMA,CHDEPL
       CHARACTER*24 MODELE,MATER,CARAC,CHARGE,FOMULT,INFOCH
@@ -81,10 +82,22 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*24 VECGMP,VACGMP,CNCGMP,BIDON,CHVARC
       CHARACTER*24 K24BID,CHELEM,CHACCE,VRENO,VARENO
       CHARACTER*24 COMPOR,CHVIVE,CHACVE,MESMAI,MESNOE
-      CHARACTER*24 NORECG,VAPRIN,STYPSE,NOOJB, K24B,VALK(3)
+      CHARACTER*24 NORECG,VAPRIN,STYPSE,NOOJB, K24B,VALK(3),NUMREF
       CHARACTER*8 KIORD
 
-      LOGICAL EXITIM, LBID
+      LOGICAL EXITIM, LBID, LFNONL
+      INTEGER NCMPMA,DIMAKI,DIMANV
+C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
+      PARAMETER (DIMAKI=9)
+C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
+      PARAMETER (DIMANV=4)
+      PARAMETER (NCMPMA=7+DIMAKI+DIMANV)
+      CHARACTER*8  NMCMP2(NCMPMA)
+      
+      DATA NMCMP2/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',
+     &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',
+     &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',
+     &     'KIT9    ', 'NVI_C   ', 'NVI_T   ', 'NVI_H   ', 'NVI_M   '/
 C     ------------------------------------------------------------------
       DATA INFCHA/'&&INFCHA.INFCHA'/
       DATA NOMCMP/'DX','DY','DZ'/
@@ -104,11 +117,33 @@ C     ------------------------------------------------------------------
 
       CALL GETRES(RESUC1,TYPE,OPER)
       CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,N0)
+      CALL GETVTX(' ','OPTION',1,1,0,OPTION,N2)
+      NBOPT = -N2
+      CALL WKVECT('&&'//NOMPRO//'.OPTION','V V K16',NBOPT,JOPT)
+      CALL GETVTX(' ','OPTION',1,1,NBOPT,ZK16(JOPT),N2)
+      LFNONL = .FALSE.
+      DO 5 IOPT = 1,NBOPT
+        OPTION = ZK16(JOPT+IOPT-1)
+        IF (OPTION.EQ.'FORC_NODA_NONL') THEN
+          LFNONL = .TRUE.
+          GO TO 6
+        END IF
+    5 CONTINUE
+    6 CONTINUE    
 
-      IF (RESUC1.NE.RESUCO(1:8)) THEN
-        VALK(1)=RESUC1
-        VALK(2)=RESUCO
-        CALL U2MESK('F','PREPOST3_79', 2 ,VALK)
+      IF (LFNONL) THEN
+        IF (NBOPT.GT.1) CALL U2MESS('F','PREPOST3_96')      
+        IF (RESUC1.EQ.RESUCO(1:8)) THEN
+          VALK(1)=RESUC1
+          CALL U2MESK('F','PREPOST3_97',1 ,VALK)
+        END IF      
+        IF (TYPE.NE.'DYNA_TRANS') CALL U2MESS('F','PREPOST3_98')
+      ELSE
+        IF (RESUC1.NE.RESUCO(1:8)) THEN
+          VALK(1)=RESUC1
+          VALK(2)=RESUCO
+          CALL U2MESK('F','PREPOST3_79', 2 ,VALK)
+        END IF      
       END IF
 
       CALL GETTCO(RESUCO(1:8),TYSD)
@@ -129,10 +164,6 @@ C              12   345678
       CALL PSRESE(' ',IBID,IAUX,RESUCO,JAUX,NBPASS,NORECG,IRET)
       CALL JEVEUO(NORECG,'L',ADRECG)
 C=======================================================================
-      CALL GETVTX(' ','OPTION',1,1,0,OPTION,N2)
-      NBOPT = -N2
-      CALL WKVECT('&&'//NOMPRO//'.OPTION','V V K16',NBOPT,JOPT)
-      CALL GETVTX(' ','OPTION',1,1,NBOPT,ZK16(JOPT),N2)
 
       CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
       CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
@@ -228,12 +259,25 @@ C   SUPPRESSION DE LA LIGNE SUIVANTE
 C          MODELE = '&&'//NOMPRO
           MODELE = ' '
           NUORD  = ZI(JORDR)
-          IF (TYPE.EQ.'EVOL_THER') THEN
-            CALL NTDOTH(MODELE,MATER,CARAC,K24B,LBID,LBID,INFCHA,
-     &                    NBPASE,INPSCO,RESUC1,NUORD)
+          IF (ZK16(JOPT).EQ.'FORC_NODA_NONL') THEN
+            CALL RSCRSD('G',RESUC1,TYPE,NBORDR)
+            CALL GETVID ( ' ', 'MODELE', 1,1,1, MODELE, N0 )
+            CALL GETVID ( ' ', 'CHAM_MATER', 1,1,1, MATERI, N0 )
+            IF (N0.NE.0) THEN
+              CALL RCMFMC(MATERI,MATER)
+            ELSE
+              MATER = ' '
+            ENDIF
+            CARAC = ' '
+            CALL GETVID ( ' ', 'CARA_ELEM', 1,1,1, CARAC, N0 )
           ELSE
-            CALL NMDOME(MODELE,MATER,CARAC,INFCHA,NBPASE,INPSCO,
-     &                RESUC1,NUORD)
+            IF (TYPE.EQ.'EVOL_THER') THEN
+              CALL NTDOTH(MODELE,MATER,CARAC,K24B,LBID,LBID,INFCHA,
+     &                    NBPASE,INPSCO,RESUC1(1:8),NUORD)
+            ELSE
+              CALL NMDOME(MODELE,MATER,CARAC,INFCHA,NBPASE,INPSCO,
+     &                    RESUC1(1:8),NUORD)
+            ENDIF
           ENDIF
 
 C INFO. RELATIVE AUX CHARGES
@@ -347,12 +391,12 @@ C============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
           OPTION = ZK16(JOPT+IOPT-1)
 
 C VERIFICATION DE LA COMPATIBILITE AVEC LA DERIVATION
-
-          CALL VESECN(OPER,OPTION,NOPASE,TYPESE,IRET)
-          IF (IRET.NE.0) THEN
-            GO TO 240
-          END IF
-
+          IF (OPTION.NE.'FORC_NODA_NONL') THEN
+            CALL VESECN(OPER,OPTION,NOPASE,TYPESE,IRET)
+            IF (IRET.NE.0) THEN
+              GO TO 240
+            END IF
+          ENDIF
           TIME = 0.D0
 
 C  POUR THM ET TANT QUE LE NETTOYAGE N A PAS ETE FAIT
@@ -441,23 +485,29 @@ C
   100       CONTINUE
 
 
-          ELSE IF ((OPTION.EQ.'FORC_NODA') .OR.
+          ELSE IF ((OPTION(1:9).EQ.'FORC_NODA') .OR.
      &             (OPTION.EQ.'REAC_NODA')) THEN
             IF (MODELE(1:8).EQ.'&&'//NOMPRO) THEN
               CALL U2MESS('F','CALCULEL3_50')
             END IF
 C       ================================================================
 
+            IF (OPTION.EQ.'FORC_NODA_NONL') THEN
+              NUMREF = ' '
+              CALL WKVECT(RESUC1//'.REFD','G V K24',3,JREF)
+              CALL JEVEUO(LERES0//'.REFD','L',LREF)
+              ZK24(JREF) = ZK24(LREF)
+              ZK24(JREF+1) = ZK24(LREF+1)
+              ZK24(JREF+2) = ZK24(LREF+2)
+              CALL JELIBE(RESUC1//'.REFD')
+              IF (ZK24(JREF).NE.' ') THEN
+                CALL DISMOI('F','NOM_NUME_DDL',ZK24(JREF),'MATR_ASSE',
+     &                      IBID,NUMREF,IRET)
+              ENDIF
+            END IF
             DO 230 I = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+I-1)
-              IF (TYPE.EQ.'EVOL_THER') THEN
-                CALL NTDOTH(MODELE,MATER,CARAC,K24B,LBID,LBID,INFCHA,
-     &                      NBPASE,INPSCO,RESUCO(1:8),IORDR)
-              ELSE
-                CALL NMDOME(MODELE,MATER,CARAC,INFCHA,NBPASE,INPSCO,
-     &                      RESUCO(1:8),IORDR)
-              ENDIF
               FOMULT = INFCHA//'.FCHA'
               CHARGE = INFCHA//'.LCHA'
               INFOCH = INFCHA//'.INFC'
@@ -502,13 +552,16 @@ C       ================================================================
               CALL RSEXCH(LERES0,'SIEF_ELGA',IORDR,SIGMA,IRET)
               IF (IRET.NE.0) THEN
                 CALL RSEXCH(LERES0,'SIEF_ELGA_DEPL',IORDR,SIGMA,IRET2)
-                IF (IRET2.NE.0) THEN
-                CALL CODENT(IORDR,'G',KIORD)
-                VALK(1)=KIORD
-                VALK(2)=OPTION
-                CALL U2MESK('A','PREPOST5_2',2,VALK)
+                IF (IRET2.NE.0.AND.OPTION.NE.'FORC_NODA_NONL') THEN
+                  CALL CODENT(IORDR,'G',KIORD)
+                  VALK(1)=KIORD
+                  VALK(2)=OPTION
+                  CALL U2MESK('A','PREPOST5_2',2,VALK)
                   GO TO 229
                 END IF
+                IF (IRET2.NE.0.AND.OPTION.EQ.'FORC_NODA_NONL') THEN
+                  SIGMA = ' '
+                ENDIF
               END IF
 
               CALL RSEXCH(LERES0,'DEPL',IORDR,CHDEPL,IRET)
@@ -534,6 +587,9 @@ C             -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
               CALL GNOMSD ( NOOJB,10,14)
               NUME=NOOJB(1:14)
               CALL NUMECN(MODELE,CHDEPL,NUME)
+              IF (OPTION.EQ.'FORC_NODA_NONL'.AND.NUMREF.NE.' ') THEN
+                NUME = NUMREF(1:14)//'.NUME'
+              ENDIF
 
               CALL RSEXCH(LERES0,'VITE',IORDR,CHVIVE,IRET)
               IF (IRET.EQ.0) THEN
@@ -558,17 +614,33 @@ C             -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
               CALL VRCINS(MODELE,MATER,CARAC,TIME,CHVARC(1:19),CODRET)
 
 C           --- CALCUL DES VECTEURS ELEMENTAIRES ---
-              CALL RSEXCH(LERES0,'COMPORTEMENT',IORDR,COMPOR,IRET1)
+              IF (OPTION.NE.'FORC_NODA_NONL') THEN
+                CALL RSEXCH(LERES0,'COMPORTEMENT',IORDR,COMPOR,IRET1)
+              ELSE
+                IF (I.EQ.1) THEN
+                  COMPOR = '&&OP0106.COMPOR'
+                  MCL = 'COMP_INCR'
+                  CALL NMDOCC(COMPOR(1:19),MODELE,1,MCL,NMCMP2,
+     &                        NCMPMA,.TRUE.)
+                END IF              
+              END IF
               FNOEVO = .FALSE.
               CALL VEFNME(MODELE,SIGMA,CARAC,CHDEPL,CHDEP2,VFONO,MATER,
      &                    COMPOR,NH,FNOEVO,PARTPS,K24BID,CHVARC,LIGREL,
-     &                    INFCHA)
+     &                    INFCHA,OPTION)
 
 C           --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
               CALL ASASVE(VFONO,NUME,'R',VAFONO)
 
 C           --- CREATION DE LA STRUCTURE CHAM_NO ---
-              CALL RSEXCH(LERES0,OPTION,IORDR,CHAMNO,IRET)
+              IF (OPTION.EQ.'FORC_NODA_NONL') THEN
+                CALL RSEXCH(RESUC1,'DEPL',IORDR,CHAMNO,IRET)
+                CALL RSADPA(RESUC1,'E',1,'INST',IORDR,0,LTPS2,K8BID)
+                CALL RSADPA(LERES0,'L',1,'INST',IORDR,0,LTPS,K8BID)
+                ZR(LTPS2) = ZR(LTPS)
+              ELSE
+                CALL RSEXCH(LERES0,OPTION,IORDR,CHAMNO,IRET)
+              ENDIF
               CALL JEEXIN(CHAMNO(1:19)//'.REFE',IRET)
               IF (IRET.NE.0) THEN
                 CALL CODENT(IORDR,'G',KIORD)
@@ -588,7 +660,7 @@ C           --- REMPLISSAGE DE L'OBJET .VALE DU CHAM_NO ---
               CALL JELIRA(CHAMNO(1:19)//'.VALE','LONMAX',LONCH,K8BID)
 
 C           --- STOCKAGE DES FORCES NODALES ---
-              IF (OPTION.EQ.'FORC_NODA') THEN
+              IF (OPTION(1:9).EQ.'FORC_NODA') THEN
                 DO 110 J = 0,LONCH - 1
                   ZR(JNOCH+J) = ZR(JFONO+J)
   110           CONTINUE
@@ -768,7 +840,19 @@ C               --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
               END IF
 
   220         CONTINUE
-              CALL RSNOCH(LERES0,OPTION,IORDR,' ')
+C
+              IF (OPTION.EQ.'FORC_NODA_NONL') THEN
+                CALL RSNOCH(RESUC1,'DEPL',IORDR,' ')
+              ELSE
+                CALL RSNOCH(LERES0,OPTION,IORDR,' ')
+              ENDIF
+              IF (TYPE.EQ.'EVOL_THER') THEN
+                CALL NTDOTH(MODELE,MATER,CARAC,K24B,LBID,LBID,INFCHA,
+     &                      NBPASE,INPSCO,RESUC1(1:8),IORDR)
+              ELSE
+                CALL NMDOME(MODELE,MATER,CARAC,INFCHA,NBPASE,INPSCO,
+     &                      RESUC1(1:8),IORDR)
+              ENDIF
               CALL DETRSD('CHAMP_GD','&&'//NOMPRO//'.SIEF')
               CALL DETRSD('VECT_ELEM',VFONO(1:8))
               CALL DETRSD('VECT_ELEM',VRENO(1:8))

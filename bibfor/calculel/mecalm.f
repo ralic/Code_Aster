@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,7 +63,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*8    ZK8
       CHARACTER*16          ZK16
       CHARACTER*24                  ZK24
-      CHARACTER*32                          ZK32
+      CHARACTER*32                          ZK32,JEXNOM
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
@@ -207,7 +207,7 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       END IF
       CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID,LIGRMO,IERD)
       EXITIM = .FALSE.
-      CALL JEEXIN(RESUCO//'           .INST',IRET)
+      CALL JENONU(JEXNOM(RESUCO//'           .NOVA','INST'),IRET)
       IF (IRET.NE.0) EXITIM = .TRUE.
       CALL EXLIMA(' ','V',MODELE,LIGREL)
       EXIPOU = .FALSE.
@@ -1285,7 +1285,7 @@ C 3 - BOUCLE SUR LES INSTANTS DEMANDES
 
               IF (IRETER.GT.0) THEN
                 CALL RSEXCH(RESUCO,TYPES,IORDR,CHERR4,IRET5)
-                
+
                 IF (IRET5.GT.0) THEN
                   VALKM(1)=TYPES
                   VALKM(2)=RESUCO
@@ -2239,7 +2239,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    OPTION,IRET)
               IF (IRET.GT.0) CHVARI = ' '
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-     
+
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
      &                    CHTEMP,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),' ',ZERO,

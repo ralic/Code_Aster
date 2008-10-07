@@ -8,7 +8,7 @@
      &                  VALMOI,VALPLU,POUGD ,SOLALG,MEASSE,
      &                  VEELEM,MEELEM,VEASSE)
 C
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

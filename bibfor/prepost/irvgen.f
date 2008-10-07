@@ -5,7 +5,7 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,11 +101,14 @@ C
             CALL RSADPA(MODE,'L',1,'FREQ',IMODE,0,JFREQ,K8B)
             IF ( LHIST ) THEN
                BASMOD = MODE
-               CALL JEVEUO(BASMOD//'.TYPE','L',JTYPE)
-               CALL JEVEUO(BASMOD//'.NOEU','L',JNOEU)
-               TYPMOD = ZK16(JTYPE+IMODE-1)(1:9)
-               NOEU   = ZK16(JNOEU+IMODE-1)(1:8)
-               CMP    = ZK16(JNOEU+IMODE-1)(9:16)
+               CALL JEVEUO(BASMOD//'.ORDR','L',JORDR)
+               CALL RSADPA(BASMOD,'L',1,'TYPE_DEFO',
+     &                     ZI(JORDR-1+IMODE),0,JPARA,K8B)
+               TYPMOD = ZK16(JPARA)(1:9)
+               CALL RSADPA(BASMOD,'L',1,'NOEUD_CMP',
+     &                     ZI(JORDR-1+IMODE),0,JPARA,K8B)
+               NOEU   = ZK16(JPARA)(1:8)
+               CMP    = ZK16(JPARA)(9:16)
                IF ( TYPVAL(1:1).EQ. 'R' ) THEN
                  WRITE(IFI,1012) IM, ZR(JVALE+I-1), MODE,
      &                           TYPMOD, ZR(JFREQ), NOEU, CMP
@@ -143,8 +146,7 @@ C             NBMODE = ZI(JDESC+1)
           ELSEIF ( TYPREM .EQ. 'BASE_MODALE' ) THEN
              LBASE = .TRUE.
              BASMOD = MODE
-             CALL JEVEUO(BASMOD//'.TYPE','L',JTYPE)
-             CALL JEVEUO(BASMOD//'.NOEU','L',JNOEU)
+             CALL JEVEUO(BASMOD//'.ORDR','L',JORDR)
              CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
           ELSEIF ( TYPREM(1:9) .EQ. 'MODE_STAT' ) THEN
              TYPMOD = '  PROPRE  '
@@ -189,9 +191,13 @@ C             NBMODE = ZI(JDESC+1)
              ENDIF
              IF ( LHIST ) THEN
                IF ( LBASE ) THEN
-                 TYPMOD = ZK16(JTYPE+I-1)(1:9)
-                 NOEU   = ZK16(JNOEU+I-1)(1:8)
-                 CMP    = ZK16(JNOEU+I-1)(9:16)
+                 CALL RSADPA(BASMOD,'L',1,'TYPE_DEFO',
+     &                      ZI(JORDR-1+I),0,JPARA,K8B)
+                 TYPMOD = ZK16(JPARA)(1:9)
+                 CALL RSADPA(BASMOD,'L',1,'NOEUD_CMP',
+     &                     ZI(JORDR-1+I),0,JPARA,K8B)
+                 NOEU   = ZK16(JPARA)(1:8)
+                 CMP    = ZK16(JPARA)(9:16)
                ENDIF
                IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
                  IF ( TYPVAL(1:1).EQ. 'R' ) THEN

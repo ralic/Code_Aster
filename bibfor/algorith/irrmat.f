@@ -2,7 +2,7 @@
      &                    MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -214,7 +214,7 @@ C              VALEURS INITIALES
                VALRM(10) = 1.0D0 - COEFFA*EXP(PE-EU)
                VALRM(11) = 1.0D0 - COEFFA
                VALRM(12) = FE
-               CALL U2MESG('F','IRRAD3M_1',1,VALKM,1,VALIM,12,VALRM)
+               CALL U2MESG('F','COMPOR1_55',1,VALKM,1,VALIM,12,VALRM)
             ENDIF
             IF ( F1*F0 .GT. 0.0D0 ) THEN
                F0 = F1
@@ -297,10 +297,10 @@ C     L'IRRADIATION NE PEUT PAS DECROITRE
       IF ( IRRAD .GT. IRRAF*1.00001D0 ) THEN
          VALRM(1) = TEMPD
          VALRM(2) = TEMPF
-         CALL U2MESR('I','IRRAD3M_3',2,VALRM)
+         CALL U2MESR('I','COMPOR1_57',2,VALRM)
          VALRM(1) = IRRAD
          VALRM(2) = IRRAF
-         CALL U2MESR('I','IRRAD3M_2',2,VALRM)
+         CALL U2MESR('I','COMPOR1_56',2,VALRM)
       ENDIF
       IF ( IRRAD .GT. IRRAF ) THEN
          IRRAF = IRRAD
@@ -398,7 +398,7 @@ C              VALEURS INITIALES
                VALRM(10) = 1.0D0 - COEFFA*EXP(PE-EU)
                VALRM(11) = 1.0D0 - COEFFA
                VALRM(12) = FE
-               CALL U2MESG('F','IRRAD3M_1',1,VALKM,1,VALIM,12,VALRM)
+               CALL U2MESG('F','COMPOR1_55',1,VALKM,1,VALIM,12,VALRM)
             ENDIF
             IF ( F1*F0 .GT. 0.0D0 ) THEN
                F0 = F1

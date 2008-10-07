@@ -1,7 +1,7 @@
       SUBROUTINE JJLIHD (IDTS,NBVAL,LONOI,GENRI,TYPEI,LTYPI,
      &                   IC,IDO,IDC,IMARQ,IADMI,IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,7 +119,7 @@ C DEB ------------------------------------------------------------------
         CALL JJALLS(LONOI,IC,GENRI,TYPEI,LTYPI,'INIT',IZL,JADR,IADMI,
      &              IADYN)
       ENDIF
-      CALL JJECRS (IADMI,IC,IDO,IDC,'E',IMARQ)
+      CALL JJECRS (IADMI,IADYN,IC,IDO,IDC,'E',IMARQ)
       IF ( TYPEI .EQ. 'I' ) THEN
         ICONV = 1
         IRET = HDFTSD(IDTS,TYPEB,LTYPB,IBID)
@@ -129,6 +129,7 @@ C DEB ------------------------------------------------------------------
           ISZON(JISZON+KADM-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+KADM-4)-4) = ISTAT(4)
           SVUSE = SVUSE + (ISZON(JISZON+KADM-4) - KADM + 4)
+          IF (KDYN .NE. 0) SVUSE = SVUSE + 1
           SMXUSE = MAX(SMXUSE,SVUSE)
           IR = ISZON(JISZON + KADM - 3 )
           KITAB = JK1ZON+(KADM-1)*LOIS+IR+1

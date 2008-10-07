@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,27 +50,23 @@ C ----------------------------------------------------------------------
      &        NEWORL,JTACHG,JTACHV,JORDRG,I,J,K,JORDRV,NBAC,NBPA,NBPARA,
      &        JPA,IPARA,ILEN,ILOTY,JPARAV,JPARA,IATAVA,NBPR,NEWNBT
       REAL*8 RUNDEF,R8VIDE
+      INTEGER N1, N2, KK,IER1
       LOGICAL DEJFAI
       CHARACTER*4 TYPE,TYPACC
       CHARACTER*24 VALK(2)
-      CHARACTER*5 NOMOBJ
+      CHARACTER*24 NOMOBJ
       CHARACTER*8 K8B
       CHARACTER*16 NOPARA
-      CHARACTER*19 NOMD2,NOMT2,NOMPAR
+      CHARACTER*19 NOMD2,NOMPAR
 C ----------------------------------------------------------------------
       CALL JEMARQ()
       NOMD2 = NOMSD
-      NOMT2 = '&&RSAGSD'
       RUNDEF = R8VIDE()
       IUNDEF = ISNNEM()
 
-      IF (ILONG.LT.0) THEN
-        CALL U2MESS('F','UTILITAI4_29')
-      END IF
+      IF (ILONG.LT.0) CALL U2MESS('F','UTILITAI4_29')
       CALL JEEXIN(NOMD2//'.DESC',IRET)
-      IF (IRET.EQ.0) THEN
-        CALL U2MESK('F','UTILITAI_40',1,NOMD2)
-      END IF
+      IF (IRET.EQ.0) CALL U2MESK('F','UTILITAI_40',1,NOMD2)
 
       CALL JELIRA(NOMD2//'.DESC','NOMMAX',NBCHAM,K8B)
       CALL JELIRA(NOMD2//'.ORDR','LONMAX',NBORDR,K8B)
@@ -80,25 +76,23 @@ C ----------------------------------------------------------------------
       ELSE
         NEWNB = ILONG
       END IF
+      CALL ASSERT(NEWNB.GT.NBORDR)
       NEWORD = MIN(NEWNB,NBORDR)
       NEWORL = MIN(NEWNB,NBORLU)
+
+
+C    -- LE .DESC, .NOVA, .TAVA ---
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-C                  --- LE .DESC, .NOVA, .TAVA ---
-
-C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 C     CES OBJETS NE SONT PAS MODIFIES
 
-C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-C                   --- LE .TACH ET LE .ORDR ---
 
+C     -- LE .TACH ET LE .ORDR ---
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       CALL JEVEUO(NOMD2//'.TACH','L',JTACHG)
-      CALL WKVECT(NOMT2//'.TACH','V V K24',NEWORD*NBCHAM,JTACHV)
+      CALL WKVECT('&&RSAGSD.TACH','V V K24',NEWORD*NBCHAM,JTACHV)
       CALL JEVEUO(NOMD2//'.ORDR','L',JORDRG)
-      CALL WKVECT(NOMT2//'.ORDR','V V I',NEWORL,JORDRV)
+      CALL WKVECT('&&RSAGSD.ORDR','V V I',MAX(NEWORL,1),JORDRV)
       DO 10 I = 0,NEWORL - 1
         ZI(JORDRV+I) = ZI(JORDRG+I)
    10 CONTINUE
@@ -129,122 +123,99 @@ C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    60   CONTINUE
    70 CONTINUE
 
-      CALL JEDETR(NOMT2//'.TACH')
-      CALL JEDETR(NOMT2//'.ORDR')
+      CALL JEDETR('&&RSAGSD.TACH')
+      CALL JEDETR('&&RSAGSD.ORDR')
+
+
+
+C     -- LES PARAMETRES :
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-C              --- LES VARIABLES ET PARAMETRES D'ACCES ---
 
-C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      NOMPAR = '&&RSAGSD.NOMS_PARA '
-      CALL RSNOPA(NOMSD,2,NOMPAR,NBAC,NBPA)
-      NBPARA = NBAC + NBPA
-      CALL JEVEUO(NOMPAR,'L',JPA)
+      NOMOBJ=NOMD2//'.RSPR'
+      CALL JEEXIN(NOMOBJ,IER1)
+      IF (IER1.GT.0) THEN
+        CALL JELIRA(NOMOBJ,'LONMAX',N1,K8B)
+        N2=N1/NBORDR
+        CALL ASSERT(N1.EQ.N2*NBORDR)
+        CALL JUVECA(NOMOBJ,N2*NEWNB)
+        CALL JEVEUO(NOMOBJ,'E',JPARA)
+        DO 1, KK=N2*NBORDR+1, N2*NEWNB
+          ZR(JPARA-1+KK)=RUNDEF
+ 1      CONTINUE
+      ENDIF
 
-C     --- RECHERCHE DU NOMBRE DE PARAMETRES REELS AFIN DE
-C                                    DIMENSIONNER LE .PARA ---
 
-      NBPR = 0
-      DO 80 J = 1,NBPARA
-        NOPARA = ZK16(JPA+J-1)
-        CALL JENONU(JEXNOM(NOMD2//'.NOVA',NOPARA),IPARA)
-        IF (IPARA.EQ.0) THEN
-          VALK (1) = NOPARA
-          VALK (2) = NOMD2
-          CALL U2MESG('F', 'UTILITAI6_81',2,VALK,0,0,0,0.D0)
-        END IF
-        CALL JEVEUO(JEXNUM(NOMD2//'.TAVA',IPARA),'L',IATAVA)
-        NOMOBJ = ZK8(IATAVA-1+1) (1:5)
-        TYPACC = ZK8(IATAVA-1+4) (1:4)
-        CALL JELIRA(NOMD2//NOMOBJ,'TYPE',IBID,TYPE(1:1))
-        IF (TYPACC.EQ.'PARA' .AND. TYPE(1:1).EQ.'R') THEN
-          NBPR = NBPR + 1
-        END IF
-   80 CONTINUE
-      NBPR = MAX(1,NBPR)
+      NOMOBJ=NOMD2//'.RSPC'
+      CALL JEEXIN(NOMOBJ,IER1)
+      IF (IER1.GT.0) THEN
+        CALL JELIRA(NOMOBJ,'LONMAX',N1,K8B)
+        N2=N1/NBORDR
+        CALL JUVECA(NOMOBJ,N2*NEWNB)
+        CALL JEVEUO(NOMOBJ,'E',JPARA)
+        DO 2, KK=N2*NBORDR+1, N2*NEWNB
+          ZC(JPARA-1+KK) = DCMPLX(RUNDEF,RUNDEF)
+ 2      CONTINUE
+      ENDIF
 
-      DEJFAI = .FALSE.
-      DO 190 J = 1,NBPARA
-        NOPARA = ZK16(JPA+J-1)
-        CALL JENONU(JEXNOM(NOMD2//'.NOVA',NOPARA),IPARA)
 
-        CALL JEVEUO(JEXNUM(NOMD2//'.TAVA',IPARA),'L',IATAVA)
-        NOMOBJ = ZK8(IATAVA-1+1) (1:5)
-        TYPACC = ZK8(IATAVA-1+4) (1:4)
+      NOMOBJ=NOMD2//'.RSPI'
+      CALL JEEXIN(NOMOBJ,IER1)
+      IF (IER1.GT.0) THEN
+        CALL JELIRA(NOMOBJ,'LONMAX',N1,K8B)
+        N2=N1/NBORDR
+        CALL JUVECA(NOMOBJ,N2*NEWNB)
+        CALL JEVEUO(NOMOBJ,'E',JPARA)
+        DO 3, KK=N2*NBORDR+1, N2*NEWNB
+          ZI(JPARA-1+KK)=IUNDEF
+ 3      CONTINUE
+      ENDIF
 
-        CALL JELIRA(NOMD2//NOMOBJ,'TYPE',IBID,TYPE(1:1))
-        ILEN = LEN(TYPE) - 1
-        IF (TYPE(1:1).EQ.'K' .AND. ILEN.GT.0) THEN
-          CALL JELIRA(NOMD2//NOMOBJ,'LTYP',ILOTY,K8B)
-          CALL CODENT(ILOTY,'G',K8B)
-          TYPE = TYPE(1:1)//K8B(1:ILEN)
-        END IF
 
-        NEWNBT = NEWNB
-        IF (TYPACC.EQ.'PARA' .AND. TYPE(1:1).EQ.'R') THEN
-          IF (DEJFAI) GO TO 190
-          DEJFAI = .TRUE.
-          NOMOBJ = '.PARA'
-          NEWNBT = NBPR*NEWNB
-        END IF
-        CALL JEDUPO(NOMD2//NOMOBJ,'V',NOMT2//NOMOBJ,.FALSE.)
-        CALL JELIRA(NOMT2//NOMOBJ,'LONMAX',NBORDR,K8B)
-        CALL JEVEUO(NOMT2//NOMOBJ,'L',JPARAV)
-        CALL JEDETR(NOMD2//NOMOBJ)
+      NOMOBJ=NOMD2//'.RSP8'
+      CALL JEEXIN(NOMOBJ,IER1)
+      IF (IER1.GT.0) THEN
+        CALL JELIRA(NOMOBJ,'LONMAX',N1,K8B)
+        N2=N1/NBORDR
+        CALL JUVECA(NOMOBJ,N2*NEWNB)
+      ENDIF
 
-        IF (TYPE(1:1).EQ.'I') THEN
-          CALL WKVECT(NOMD2//NOMOBJ,'G V I',NEWNBT,JPARA)
-          DO 90 I = 0,NBORDR - 1
-            ZI(JPARA+I) = ZI(JPARAV+I)
-   90     CONTINUE
-          DO 100 I = NBORDR,NEWNBT - 1
-            ZI(JPARA+I) = IUNDEF
-  100     CONTINUE
-        ELSE IF (TYPE(1:1).EQ.'R') THEN
-          CALL WKVECT(NOMD2//NOMOBJ,'G V R',NEWNBT,JPARA)
-          DO 110 I = 0,NBORDR - 1
-            ZR(JPARA+I) = ZR(JPARAV+I)
-  110     CONTINUE
-          DO 120 I = NBORDR,NEWNBT - 1
-            ZR(JPARA+I) = RUNDEF
-  120     CONTINUE
-        ELSE IF (TYPE(1:1).EQ.'C') THEN
-          CALL WKVECT(NOMD2//NOMOBJ,'G V C',NEWNBT,JPARA)
-          DO 130 I = 0,NBORDR - 1
-            ZC(JPARA+I) = ZC(JPARAV+I)
-  130     CONTINUE
-        ELSE IF (TYPE(1:3).EQ.'K80') THEN
-          CALL WKVECT(NOMD2//NOMOBJ,'G V K80',NEWNBT,JPARA)
-          DO 140 I = 0,NBORDR - 1
-            ZK80(JPARA+I) = ZK80(JPARAV+I)
-  140     CONTINUE
-        ELSE IF (TYPE(1:3).EQ.'K32') THEN
-          CALL WKVECT(NOMD2//NOMOBJ,'G V K32',NEWNBT,JPARA)
-          DO 150 I = 0,NBORDR - 1
-            ZK32(JPARA+I) = ZK32(JPARAV+I)
-  150     CONTINUE
-        ELSE IF (TYPE(1:3).EQ.'K24') THEN
-          CALL WKVECT(NOMD2//NOMOBJ,'G V K24',NEWNBT,JPARA)
-          DO 160 I = 0,NBORDR - 1
-            ZK24(JPARA+I) = ZK24(JPARAV+I)
-  160     CONTINUE
-        ELSE IF (TYPE(1:3).EQ.'K16') THEN
-          CALL WKVECT(NOMD2//NOMOBJ,'G V K16',NEWNBT,JPARA)
-          DO 170 I = 0,NBORDR - 1
-            ZK16(JPARA+I) = ZK16(JPARAV+I)
-  170     CONTINUE
-        ELSE IF (TYPE(1:2).EQ.'K8') THEN
-          CALL WKVECT(NOMD2//NOMOBJ,'G V K8',NEWNBT,JPARA)
-          DO 180 I = 0,NBORDR - 1
-            ZK8(JPARA+I) = ZK8(JPARAV+I)
-  180     CONTINUE
-        END IF
 
-        CALL JEDETR(NOMT2//NOMOBJ)
+      NOMOBJ=NOMD2//'.RS16'
+      CALL JEEXIN(NOMOBJ,IER1)
+      IF (IER1.GT.0) THEN
+        CALL JELIRA(NOMOBJ,'LONMAX',N1,K8B)
+        N2=N1/NBORDR
+        CALL JUVECA(NOMOBJ,N2*NEWNB)
+      ENDIF
 
-  190 CONTINUE
 
-      CALL JEDETR(NOMPAR)
+      NOMOBJ=NOMD2//'.RS24'
+      CALL JEEXIN(NOMOBJ,IER1)
+      IF (IER1.GT.0) THEN
+        CALL JELIRA(NOMOBJ,'LONMAX',N1,K8B)
+        N2=N1/NBORDR
+        CALL JUVECA(NOMOBJ,N2*NEWNB)
+      ENDIF
+
+
+      NOMOBJ=NOMD2//'.RS32'
+      CALL JEEXIN(NOMOBJ,IER1)
+      IF (IER1.GT.0) THEN
+        CALL JELIRA(NOMOBJ,'LONMAX',N1,K8B)
+        N2=N1/NBORDR
+        CALL JUVECA(NOMOBJ,N2*NEWNB)
+      ENDIF
+
+
+      NOMOBJ=NOMD2//'.RS80'
+      CALL JEEXIN(NOMOBJ,IER1)
+      IF (IER1.GT.0) THEN
+        CALL JELIRA(NOMOBJ,'LONMAX',N1,K8B)
+        N2=N1/NBORDR
+        CALL JUVECA(NOMOBJ,N2*NEWNB)
+      ENDIF
+
 
       CALL JEDEMA()
       END

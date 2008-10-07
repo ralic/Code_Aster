@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_resultat SD  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,6 +38,8 @@ class sd_resultat(sd_titre):
     ORDR = AsVI(SDNom(debut=19), )
     DESC = AsObject(SDNom(debut=19), genr='N', xous='S', type='K', ltyp=16, )
 
+    NOEU = Facultatif(AsVK16(SDNom(debut=19)))  # en attendant la correction de EL 12583
+
     # la déclaration suivante simplifie la fonction check_resultat_i_char
     CHAR = Facultatif(AsVK24(SDNom(debut=19),))
 
@@ -73,8 +75,8 @@ class sd_resultat(sd_titre):
                            ltyp=Parmi(4,8,16,24),) ; sd2.check(checker)
 
 
-    # indirection vers les sd_l_charges stockées comme paramètres dans l'objet .CHAR :
-    def check_resultat_i_CHAR(self, checker):
+    # indirection vers les sd_l_charges stockées comme paramètres sous le nom EXCIT :
+    def check_resultat_i_EXCIT(self, checker):
         lnom = self.CHAR.get()
         if not lnom: return
         S1=Set()
@@ -130,8 +132,8 @@ class sd_resultat(sd_titre):
             sdu_compare(sd2,checker,len(sd2.get()),'==',npara*nbmax_ordr,'Incohérence LONMAX / LONMAX(.ORDR)')
 
 
-    # vérification que les variables d'accès sont bien différentes :
-    def check_ACCES(self, checker):
+    # vérifications supplémentaires :
+    def check_veri1(self, checker):
         ordr = self.ORDR.get()
         nova = self.NOVA.get()
         tava = self.TAVA.get()
@@ -142,18 +144,20 @@ class sd_resultat(sd_titre):
 
         # objets trouvés dans .TAVA
         for knova in tava.keys():
-            nova1=nova[knova-1]
+            nova1=nova[knova-1].strip()
             suffix=tava[knova][0][:5]
             if not suffix.strip(): continue
 
             nupara=int(tava[knova][1])
             nbpara=int(tava[knova][2])
+            assert nupara <= nbpara, (nupara, nbpara)
             acces=tava[knova][3].strip()
             assert acces in ('PARA','ACCES') , acces
+
+            # on vérifie que les variables d'accès sont toutes différentes :
             if acces == 'ACCES' :
                 # pour l'instant, on ne vérifie que 'INST' car 'FREQ', 'NUME_MODE', 'NOEUD_CMP' ne semblent pas tous différents ...
-                if nova1.strip() != 'INST' : continue
-                sdu_compare(tava,checker,nupara,'<=',nbpara,'nupara <= nbpara')
+                if nova1 != 'INST' : continue
 
                 nom=self.nomj()[:19]+suffix
                 sd2 = AsObject(SDNom(nomj=nom,debut=0),)
@@ -163,5 +167,17 @@ class sd_resultat(sd_titre):
                     seq.append(vect[k*nbpara+nupara-1])
 
                 sdu_tous_differents(sd2,checker,seq,nova1)
+
+            # on vérifie les éventuelles sd_l_charge (EXCIT) :
+            if nova1=="EXCIT" :
+                nom=self.nomj()[:19]+suffix
+                sd2 = AsObject(SDNom(nomj=nom,debut=0),)
+                vect=sd2.get()
+                S1=Set()
+                for k in range(nbuti_ordr) :
+                    S1.add(vect[k*nbpara+nupara-1])
+                for nom in S1 :
+                    if nom.strip() != '' :
+                       sd2 = sd_l_charges(nomj=nom); sd2.check(checker)
 
 

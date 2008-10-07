@@ -1,7 +1,7 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROLZ,NNCP,BASEZ,CELZ,
      &                  KSTOP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL ZL,DBG
       COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
@@ -87,29 +87,32 @@ C---- COMMUNS NORMALISES  JEVEUX
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER ICMP,NEC,JCESK,JCESD,JCESV,JCESL,GD
-      INTEGER IBID,JNUCM2,JNUCM1,JCESC
+      INTEGER IBID,JNUCM2,JNUCM1,JCESC,I
       INTEGER NCMPMX,NCMP1,JCMPGD,ICMP1,K,IOPT,IADG
       INTEGER JCELV,INDIK8,NEQ,NBVCES,JCOPI,NBVCOP,NBVACO
       INTEGER IGR,IEL,IALIEL,ILLIEL,JCELD,NBGR,IMOLO,JMOLO
       INTEGER NBPT,ICO,IPT,NUMA,IAD,IEQ,NUMAIL,NBELEM,IAD2
       INTEGER JDCELD,JDCELL,JDCELV,IMA,NBMA,NBSPT,ISPT,ICMPMX
       INTEGER ADIEL,JLPT,JLCUPT,LGCATA,NCDYN,CUMU,NBEL,NPTMX
-      INTEGER NBSP,NBCMP,ISP,NBPT2
+      INTEGER NBSP,NBCMP,ISP,NBPT2,VALI(2),ISNNEM,INAN
       LOGICAL EXISDG,DIFF,PROL,PROL2
       CHARACTER*1 BASE,KBID
       CHARACTER*8 MA,NOMGD,NOMCMP,NOMPAR,NOMMA,LICMP(2),NOPAR2
-      CHARACTER*3 TSCA
+      CHARACTER*3 TSCA,KNAN
       CHARACTER*4 TYPCES
       CHARACTER*16 OPTION
       CHARACTER*19 CES,CEL,LIGREL,DCEL
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
-      CHARACTER*24 VALK(4),MESSAG
+      CHARACTER*24 VALK(5),MESSAG
       CHARACTER*3 PROL0
-      REAL*8 R8NNEM
+      REAL*8 R8NNEM,RNAN
 
       NUMAIL(IGR,IEL) = ZI(IALIEL-1+ZI(ILLIEL+IGR-1)+IEL-1)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+
+      DBG=.TRUE.
+      DBG=.FALSE.
 
       BASE = BASEZ
       CES = CESZ
@@ -118,7 +121,13 @@ C     ------------------------------------------------------------------
       NOMPAR = NOMPAZ
       LIGREL = LIGREZ
       PROL0 = PROLZ
+
+      DO 1, I=1,3
+        VALK(I)=' '
+ 1    CONTINUE
       VALK(4) = CEL
+      VALK(5) = CES
+
 
 
 C     PROL : AUTORISATION DE PROLONGER (MEME UNE CMP ISOLEE)
@@ -277,21 +286,16 @@ C       -- NBRE DE CMPS "DYNAMIQUES" (POUR VARI_R) :
           NBPT = ZI(JCESD-1+5+4* (IMA-1)+1)
           NBSP = ZI(JCESD-1+5+4* (IMA-1)+2)
           NBCMP = ZI(JCESD-1+5+4* (IMA-1)+3)
-          IF (PROL0.EQ.'NAN') THEN
-            ICMPMX = NCMPMX
-
-          ELSE
-            ICMPMX = 0
-            DO 60,ICMP1 = 1,NBCMP
-              ICMP = ZI(JNUCM1-1+ICMP1)
-              DO 50,IPT = 1,NBPT
-                DO 40,ISP = 1,NBSP
-                  CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP1,IAD2)
-                  IF (IAD2.GT.0) ICMPMX = ICMP
-   40           CONTINUE
-   50         CONTINUE
-   60       CONTINUE
-          ENDIF
+          ICMPMX = 0
+          DO 60,ICMP1 = 1,NBCMP
+            ICMP = ZI(JNUCM1-1+ICMP1)
+            DO 50,IPT = 1,NBPT
+              DO 40,ISP = 1,NBSP
+                CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP1,IAD2)
+                IF (IAD2.GT.0) ICMPMX = ICMP
+   40         CONTINUE
+   50       CONTINUE
+   60     CONTINUE
           ZI(JDCELV-1-IAD) = ICMPMX
 
         ELSE
@@ -325,10 +329,31 @@ C     ===================================================
 C     3.0 ON INITIALISE CELV AVEC "NAN" SI NECESSAIRE :
 C     -------------------------------------------------
       IF (PROL0.EQ.'NAN') THEN
-        CALL ASSERT(TSCA.EQ.'R')
-        DO 80,IEQ = 1,NEQ
-          ZR(JCELV-1+IEQ) = R8NNEM()
-   80   CONTINUE
+        RNAN = R8NNEM()
+        INAN = ISNNEM()
+        KNAN = '???'
+        IF (TSCA.EQ.'R') THEN
+          DO 80,IEQ = 1,NEQ
+            ZR(JCELV-1+IEQ) = RNAN
+   80     CONTINUE
+        ELSEIF (TSCA.EQ.'C') THEN
+          DO 81,IEQ = 1,NEQ
+            ZC(JCELV-1+IEQ) = DCMPLX(RNAN,RNAN)
+   81     CONTINUE
+        ELSEIF (TSCA.EQ.'I') THEN
+          DO 82,IEQ = 1,NEQ
+            ZI(JCELV-1+IEQ) = INAN
+   82     CONTINUE
+        ELSEIF (TSCA.EQ.'K8') THEN
+          DO 83,IEQ = 1,NEQ
+            ZK8(JCELV-1+IEQ) = KNAN
+   83     CONTINUE
+        ELSEIF (TSCA.EQ.'K24') THEN
+          DO 84,IEQ = 1,NEQ
+            ZK24(JCELV-1+IEQ) = KNAN
+   84     CONTINUE
+          CALL ASSERT(.FALSE.)
+        ENDIF
       ENDIF
 
 
@@ -423,6 +448,8 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                       CALL JENUNO(JEXNUM(MA//'.NOMMAI',NUMA),NOMMA)
                       VALK(1) = NOMMA
                       VALK(2) = NOMGD
+                      VALI(1)=NBPT
+                      VALI(2)=NBPT2
                       MESSAG = 'CALCULEL_57'
                       GOTO 240
 
@@ -529,6 +556,8 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                 CALL JENUNO(JEXNUM(MA//'.NOMMAI',NUMA),NOMMA)
                 VALK(1) = NOMMA
                 VALK(2) = NOMGD
+                VALI(1)=NBPT
+                VALI(2)=NBPT2
                 MESSAG = 'CALCULEL_57'
                 GOTO 240
 
@@ -619,7 +648,7 @@ C     ---------------------
       ELSEIF (MESSAG.EQ.'CALCULEL_56') THEN
         CALL U2MESK(KSTOP,'CALCULEL_56',4,VALK)
       ELSEIF (MESSAG.EQ.'CALCULEL_57') THEN
-        CALL U2MESK(KSTOP,'CALCULEL_57',4,VALK)
+        CALL U2MESG(KSTOP,'CALCULEL_57',5,VALK,2,VALI,0,0.D0)
       ELSEIF (MESSAG.EQ.'CALCULEL_58') THEN
         CALL U2MESK(KSTOP,'CALCULEL_58',4,VALK)
       ELSE
@@ -627,7 +656,13 @@ C     ---------------------
       ENDIF
 
 
+
   250 CONTINUE
+      IF (DBG) THEN
+        CALL CHEKSD(CEL,'SD_CHAM_ELEM',IRET)
+        CALL ASSERT(IRET.EQ.0)
+      ENDIF
+
       CALL DETRSD('CHAM_ELEM_S',DCEL)
       CALL JEDETR('&&CESCEL.COPI')
       CALL JEDETR('&&CESCEL.NUCM1')

@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF asojb Noyau  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,10 +75,10 @@ class AsBase(Type):
                     try :
                         v( checker )
                     except :
-                        UTMESS("E", 'SDVERI_45')  # AJACOT NON
-                        print 40*'-'
-                        traceback.print_exc(file=sys.stdout)
-                        print self
+                        mess=60*'-'+'\n'
+                        mess=mess+'Erreur SDVERI_45 (Attention : vérification incomplète)'+'\n'
+                        mess=mess.join(traceback.format_tb(sys.exc_traceback))
+                        checker.err(self,mess)
 
         checker.optional = optional
         return checker

@@ -1,9 +1,9 @@
       SUBROUTINE MODCOQ(BASE,NUOR,NBM,MATER1,MATER2,NOMA,NOMGRP,IAXE,
-     &                  KEC,GEOM,VICOQ,TORCO,TCOEF)
+     &                  KEC,GEOM,VICOQ,TORCO,TCOEF,IFREBA)
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -244,8 +244,6 @@ C
       WRITE(IFM,500)
       WRITE(IFM,*)
 C
-      FREQBA = BASE//'           .FREQ'
-      CALL JEVEUO(FREQBA,'L',IFREBA)
 C
       DO 40 IMOD = 1,NBM
 C

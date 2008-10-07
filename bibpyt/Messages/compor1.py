@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -287,6 +287,53 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
  La modelisation choisie <%(k1)s> est disponible pour le comportement <%(k2)s>. Pour modeliser
  des contraintes 1D (barres, poutres) avec ce comportement, il est inutile d'utiliser ALGO_1D='DEBORST'
 """),
+
+54: _("""
+ ECRO_LINE : la pente d'écrouissage H et/ou le module d'Young E ne sont pas compatibles :
+             H doit être strictement inférieur à E. Ici H=<%(r1)E>, et E=<%(r2)E>.
+             Pour modéliser de l'elasticité linéaire, il suffit de choisir SY grand, et H < E.
+"""),
+
+55: _("""
+La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvée de solution pour
+le nombre d'itération donné <%(i1)d>.\n
+Info pour le debug
+   Borne 0                 : <%(r1).15E>
+   Borne 1                 : <%(r2).15E>
+   Puissance N             : <%(r3).15E>
+   Pas pour la recherche   : <%(r4).15E>
+   RM                      : <%(r5).15E>
+   EU                      : <%(r6).15E>
+   R02                     : <%(r7).15E>
+   Précision demandée      : <%(r8).15E>
+Valeurs initiales
+   N0                      : <%(r9).15E>
+   Borne 0                 : <%(r10).15E>
+   Borne 1                 : <%(r11).15E>
+   Borne E                 : <%(r12).15E>
+"""),
+
+56: _("""
+L'irradiation diminue au cours du temps. C'EST PHYSIQUEMENT IMPOSSIBLE.
+Grandeurs au point de Gauss :
+   Irradiation a t- : <%(r1).15E>
+   Irradiation a t+ : <%(r2).15E>
+"""),
+
+57: _("""
+Pour info
+   Température a t- : <%(r1)E>
+   Température a t+ : <%(r2)E>
+"""),
+
+58: _("""
+Le franchissement du seuil de fluage ne se fait pas dans la tolérence donnée dans DEFI_MATERIAU
+pour la loi IRRAD3M, par le mot clef TOLER_ET.
+   Tolérence sur le franchissement du seuil : <%(r1)E>
+   Erreur sur le franchissement du seuil    : <%(r2)E>
+La subdivision du pas de temps au niveau global est déclanchée.
+Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
+""")
 
 
 }

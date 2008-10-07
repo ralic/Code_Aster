@@ -1,7 +1,7 @@
       SUBROUTINE TE0277(OPTION,NOMTE)
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,9 +101,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
         NOMPAR(2) = 'Y'
         NOMPAR(3) = 'INST'
         CALL FOINTE('A',ZK8(IHECHP),3,NOMPAR,VALPAR,HECHP,ICODE)
-        IF (ICODE.NE.0) THEN
-          CALL U2MESS('F','ELEMENTS3_21')
-        END IF
+        CALL ASSERT (ICODE.EQ.0)
 CCDIR$ IVDEP
         DO 20 I = 1,NNO
           LI = IVF + (KP-1)*NNO + I - 1

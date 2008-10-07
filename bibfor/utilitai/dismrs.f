@@ -1,6 +1,6 @@
       SUBROUTINE DISMRS(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C     ----------
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES
       CHARACTER*32 REPK
-      CHARACTER*8 NOMOB
+      CHARACTER*19 NOMOB
       CHARACTER*(*) NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C     IN:
@@ -49,7 +49,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
-      LOGICAL ZL
+      LOGICAL ZL,DIVERS
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24,OBJDES
@@ -60,20 +60,22 @@ C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*24 VALK(2)
       CHARACTER*8 K8BID
       CHARACTER*19 NOMCH
-C
-C
-C
+
+
+
       CALL JEMARQ()
       NOMOB = NOMOBZ
-      REPK  = REPKZ
-C
+      REPI  = 0
+      REPK  = ' '
+
+
       IF (QUESTI.EQ.'TYPE_RESU') THEN
 C         ---------------------
-         CALL JEEXIN(NOMOB//'           .DESC',IBID)
+         CALL JEEXIN(NOMOB//'.DESC',IBID)
          IF (IBID.GT.0) THEN
-           OBJDES=NOMOB//'           .DESC'
+           OBJDES=NOMOB//'.DESC'
          ELSE
-           OBJDES=NOMOB//'           .CELD'
+           OBJDES=NOMOB//'.CELD'
          END IF
 C
          CALL JELIRA ( OBJDES, 'GENR', IBID, K8BID )
@@ -90,12 +92,44 @@ C
          ELSE
             REPK = 'CHAMP'
          ENDIF
-C
+
+
+
+      ELSE IF  ((QUESTI.EQ.'NOM_MODELE').OR.
+     &         (QUESTI.EQ.'MODELE').OR.
+     &         (QUESTI.EQ.'CHAM_MATER').OR.
+     &         (QUESTI.EQ.'CARA_ELEM')) THEN
+C     ------------------------------------------
+        IF  ((QUESTI.EQ.'NOM_MODELE').OR.
+     &       (QUESTI.EQ.'MODELE')) THEN
+          CALL RSLIPA(NOMOB,'MODELE','&&DISMRS.LIPAR',JLIPAR,N1)
+        ELSEIF  (QUESTI.EQ.'CARA_ELEM') THEN
+          CALL RSLIPA(NOMOB,'CARAELEM','&&DISMRS.LIPAR',JLIPAR,N1)
+        ELSEIF  (QUESTI.EQ.'CHAM_MATER')THEN
+          CALL RSLIPA(NOMOB,'CHAMPMAT','&&DISMRS.LIPAR',JLIPAR,N1)
+        ENDIF
+        CALL ASSERT(N1.GE.1)
+        REPK=' '
+        ICO=0
+        DO 10, K=1,N1
+          IF (ZK8(JLIPAR-1+K).NE.' ') THEN
+            IF (ZK8(JLIPAR-1+K).NE.REPK) THEN
+              ICO=ICO+1
+              REPK=ZK8(JLIPAR-1+K)
+            ENDIF
+          ENDIF
+10      CONTINUE
+        IF (ICO.EQ.0) REPK='#AUCUN'
+        IF (ICO.GT.1) REPK='#PLUSIEURS'
+        CALL JEDETR('&&DISMRS.LIPAR')
+
+
+
       ELSE IF  (QUESTI.EQ.'NOM_MAILLA') THEN
-C               ----------------------
-         CALL JELIRA(JEXNUM(NOMOB//'           .TACH',1),
+C     ------------------------------------------
+         CALL JELIRA(JEXNUM(NOMOB//'.TACH',1),
      &                                         'LONMAX',NBCH,K8BID)
-         CALL JEVEUO(JEXNUM(NOMOB//'           .TACH',1),'L',IATACH)
+         CALL JEVEUO(JEXNUM(NOMOB//'.TACH',1),'L',IATACH)
          DO 1, I=1,NBCH
            NOMCH=ZK24(IATACH-1+I)(1:19)
            IF(NOMCH(1:1).NE.' ') THEN
@@ -105,11 +139,11 @@ C               ----------------------
  1       CONTINUE
 C
 C        -- SINON ON PARCOURT TOUS LES CHAMPS DU RESULTAT :
-         CALL JELIRA(NOMOB//'           .TACH','NMAXOC',NBSY,K8BID)
+         CALL JELIRA(NOMOB//'.TACH','NMAXOC',NBSY,K8BID)
          DO 2, J=2,NBSY
-           CALL JELIRA(JEXNUM(NOMOB//'           .TACH',J),
+           CALL JELIRA(JEXNUM(NOMOB//'.TACH',J),
      &                                           'LONMAX',NBCH,K8BID)
-           CALL JEVEUO(JEXNUM(NOMOB//'           .TACH',J),'L',IATACH)
+           CALL JEVEUO(JEXNUM(NOMOB//'.TACH',J),'L',IATACH)
            DO 3, I=1,NBCH
              NOMCH=ZK24(IATACH-1+I)(1:19)
              IF(NOMCH(1:1).NE.' ') THEN
@@ -121,10 +155,12 @@ C        -- SINON ON PARCOURT TOUS LES CHAMPS DU RESULTAT :
          CALL U2MESS(CODMES,'UTILITAI_69')
          IERD=1
 
+
+
       ELSE IF ( (QUESTI.EQ.'NB_CHAMP_MAX')
      &     .OR. (QUESTI.EQ.'NB_CHAMP_UTI')) THEN
-C               ------------------------
-         CALL JELIRA(NOMOB//'           .DESC','GENR',IBID,K8BID)
+C     ------------------------------------------
+         CALL JELIRA(NOMOB//'.DESC','GENR',IBID,K8BID)
          IF (K8BID(1:1).EQ.'N') THEN
             CALL DISMRC(CODMES,QUESTI,NOMOB,REPI,REPK,IERD)
          ELSE

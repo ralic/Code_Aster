@@ -1,7 +1,7 @@
       SUBROUTINE JEDEMA
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,11 +116,13 @@ C
               NOMOS  = D24
               CALL JJLIDE ('JELIBE',RNOM(JRNOM(IC)+IDOS)(1:24),1)
             ELSE
+              IADYN = IADM(JIADM(IC)+2*IDOS)
               IMARQ ( JMARQ(IC)+2*IDOS-1 ) = 0
               IMARQ ( JMARQ(IC)+2*IDOS   ) = 0
               ISZON(JISZON+IADMI-1 ) = ISTAT(1)
               ISZON(JISZON+KDESMA(1)+K) = 0
               SVUSE = SVUSE - (ISZON(JISZON+IADMI-4) - IADMI+4)
+              IF (IADYN .NE. 0) SVUSE = SVUSE - 1
               SMXUSE = MAX(SMXUSE,SVUSE)
             ENDIF
           ENDIF

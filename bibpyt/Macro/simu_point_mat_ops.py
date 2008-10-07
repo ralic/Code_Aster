@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 07/10/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -485,6 +485,7 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,REC
   if   etatinit == 1  : 
 
       __EVOL = STAT_NON_LINE(
+        INFO = INFO,
         MODELE = __MO, 
         CHAM_MATER = __CHMAT,
         ETAT_INIT=init_dico,
@@ -494,6 +495,7 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,REC
   else:  
 
       __EVOL = STAT_NON_LINE(
+        INFO = INFO,
         MODELE = __MO, 
         CHAM_MATER = __CHMAT, 
         EXCIT = l_char,**motscles)

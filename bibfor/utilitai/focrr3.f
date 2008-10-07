@@ -6,7 +6,7 @@
       CHARACTER*19        NOMFON, RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBORDR, IRET, KORDR, NP, NC, LPRO, LFON, LVAR,
-     &             IORDR, LACCE, ILON, LXLGUT, NBACC, NBPAR, IAD1, IAD2
+     &             IORDR, LACCE, LXLGUT, NBACC, NBPAR, IAD1, IAD2
       REAL*8       EPSI
       CHARACTER*8  K8B, CRIT, TYPE
       CHARACTER*24 VALK
@@ -65,12 +65,6 @@ C     --- RECUPERATION DES NUME_ORDRE FOURNIS PAR L'UTILISATEUR ---
 C
       CALL RSUTN1 ( RESU, NOPARA, ' ', 1, KNUME, NBORDR )
       CALL JEVEUO ( KNUME, 'L', KORDR )
-C
-      ILON = LXLGUT( NOPARA )
-      IF ( ILON .GT. 16 ) THEN
-         VALK = NOPARA(1:16)
-         CALL U2MESG('A', 'UTILITAI6_27',1,VALK,0,0,0,0.D0)
-      ENDIF
 C
 C     --- RECUPERATION DE LA VARIABLE D'ACCES ---
 C

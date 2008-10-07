@@ -1,15 +1,23 @@
       SUBROUTINE ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ, NBMODE,
-     +                    REPMOD, AMORT, MODAL, ID, TEMPS, RECMOD, TABS)
+     +                    REPMO1, REPMO2, AMORT, MODAL, ID, TEMPS, 
+     +                    RECMOD, TABS, NOMSY, VECMOD, REASUP, SPECTR,
+     +                    CORFRE, MUAPDE, TCOSUP)
+
       IMPLICIT  NONE
-      INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID
-      REAL*8            REPMOD(NBMODE,NBSUP,NEQ,*), AMORT(*)
+      INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID,
+     +                  TCOSUP(NBSUP,*)
+      REAL*8            VECMOD(NEQ,*), SPECTR(*)
+      REAL*8            REPMO1(NBSUP,NEQ,*), AMORT(*)
+      REAL*8            REPMO2(NBSUP,NEQ,*)
+      REAL*8            REASUP(NBSUP,NBMODE,*)
       REAL*8            MODAL(NBMODE,*), TABS(NBSUP,*)
       REAL*8            TEMPS, RECMOD(NBSUP,NEQ,*)
       CHARACTER*(*)     TYPCMO
-      LOGICAL           MONOAP
+      CHARACTER*16      NOMSY
+      LOGICAL           MONOAP, CORFRE, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGELINE  DATE 06/10/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +34,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_21
 C     ------------------------------------------------------------------
 C     COMMANDE : COMB_SISM_MODAL
 C        RECOMBINAISON DES REPONSES MODALES
@@ -57,8 +66,7 @@ C
       QUATRE = 4.D0
       HUIT   = 8.D0
 C
-C
-      IF (MONOAP) THEN 
+      IF (MONOAP.OR.(.NOT.MUAPDE)) THEN 
 CCC         NSUP=NBSUP
          NSUP=1
       ELSE
@@ -73,14 +81,19 @@ C
 C
 C     --- COMBINAISON EN VALEURS ABSOLUES ---
       IF (TYPCMO(1:3).EQ.'ABS') THEN
-         DO 4 IS = 1,NSUP 
-            DO 5 IM = 1,NBMODE
+C
+         DO 5 IM = 1,NBMODE
+            CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                    NBMODE, VECMOD, MODAL, ID, REASUP,
+     +                    SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
+     +                    TCOSUP, IM)
+            DO 4 IS = 1,NSUP 
                DO 6 IN = 1,NEQ
-                  XXX = REPMOD(IM,IS,IN,ID)
+                  XXX = REPMO1(IS,IN,ID)
                   RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + ABS(XXX)
  6             CONTINUE
- 5          CONTINUE
- 4       CONTINUE
+ 4          CONTINUE
+ 5       CONTINUE
          DO 7 IS = 1,NSUP      
             DO 8 IN = 1,NEQ
                RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) * RECMOD(IS,IN,ID)
@@ -94,9 +107,13 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
          IM = IM + 1
          IF (IM.LE.NBMODE) THEN
             IM1 = IM
-            DO 41 IS = 1,NSUP      
+            CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                    NBMODE, VECMOD, MODAL, ID, REASUP,
+     +                    SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
+     +                    TCOSUP, IM1)
+            DO 41 IS = 1,NSUP
                DO 42 IN = 1,NEQ
-                  TABS(IS,IN) = ABS(REPMOD(IM1,IS,IN,ID))  
+                  TABS(IS,IN) = ABS(REPMO1(IS,IN,ID))  
  42            CONTINUE                                 
  41         CONTINUE
  52         CONTINUE
@@ -110,9 +127,13 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
                   IF (ABS(TEST).LE.0.10D0) THEN
                      II = 1
                      IM = IM + 1
+              CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                      NBMODE, VECMOD, MODAL, ID, REASUP,
+     +                      SPECTR, REPMO2, CORFRE, AMORT, MUAPDE,
+     +                      TCOSUP, IM2)
                      DO 45 IS = 1,NSUP      
                         DO 46 IN = 1,NEQ
-                           XXX = ABS(REPMOD(IM2,IS,IN,ID))
+                           XXX = ABS(REPMO2(IS,IN,ID))
                            TABS(IS,IN)= TABS(IS,IN)  + XXX
  46                     CONTINUE
  45                  CONTINUE
@@ -135,14 +156,18 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
       ELSE
 C
 C     --- COMBINAISON QUADRATIQUE SIMPLE ---
-      DO 10 IS = 1,NSUP      
-         DO 11 IM = 1,NBMODE
+      DO 11 IM = 1,NBMODE
+         CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                 NBMODE, VECMOD, MODAL, ID, REASUP,
+     +                 SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
+     +                 TCOSUP, IM)
+         DO 10 IS = 1,NSUP      
             DO 12 IN = 1,NEQ
-               XXX = REPMOD(IM,IS,IN,ID)            
+               XXX = REPMO1(IS,IN,ID)            
                RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + ( XXX * XXX )
  12         CONTINUE
- 11      CONTINUE
- 10   CONTINUE
+ 10      CONTINUE
+ 11   CONTINUE
 C
 C     --- CQC AVEC FORMULE DE DER-KIUREGHIAN ---
       IF (TYPCMO(1:3).EQ.'CQC') THEN
@@ -162,10 +187,18 @@ C     --- CQC AVEC FORMULE DE DER-KIUREGHIAN ---
                XDE = (W12-W22)*(W12-W22) + B1W1*B2W2*(W12+W22)*QUATRE
      +                                   + (B12+B22)*W12*W22*QUATRE
                XXX = XNU / XDE
+               CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                       NBMODE, VECMOD, MODAL, ID, REASUP,
+     +                       SPECTR, REPMO1, CORFRE, AMORT, MUAPDE ,
+     +                       TCOSUP, IM1)
+               CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                       NBMODE, VECMOD, MODAL, ID, REASUP,
+     +                       SPECTR, REPMO2, CORFRE, AMORT, MUAPDE ,
+     +                       TCOSUP, IM2)
                DO 21 IS = 1,NSUP      
                   DO 24 IN = 1,NEQ
-                     XX1 = REPMOD(IM1,IS,IN,ID)
-                     XX2 = REPMOD(IM2,IS,IN,ID)
+                     XX1 = REPMO1(IS,IN,ID)
+                     XX2 = REPMO2(IS,IN,ID)
                      RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) 
      +                                + (DEUX*XX1*XX2*XXX)
  24               CONTINUE
@@ -189,10 +222,18 @@ C     --- DSC AVEC FORMULE DE ROSENBLUETH ---
                BP2W2 = BP2 * W2      
                XDE = ( WP1-WP2 ) / ( BP1W1 + BP2W2 )
                XXX = UN / ( UN + (XDE*XDE) )
+               CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                       NBMODE, VECMOD, MODAL, ID, REASUP,
+     +                       SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
+     +                       TCOSUP, IM1)
+               CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                       NBMODE, VECMOD, MODAL, ID, REASUP,
+     +                       SPECTR, REPMO2, CORFRE, AMORT, MUAPDE,
+     +                       TCOSUP, IM2)
                DO 32 IS = 1,NSUP      
                   DO 34 IN = 1,NEQ
-                     XX1 = REPMOD(IM1,IS,IN,ID)
-                     XX2 = REPMOD(IM2,IS,IN,ID)
+                     XX1 = REPMO1(IS,IN,ID)
+                     XX2 = REPMO2(IS,IN,ID)
                      RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) 
      +                                + (DEUX*XX1*XX2*XXX)
  34               CONTINUE

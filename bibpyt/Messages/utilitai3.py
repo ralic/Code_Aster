@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai3 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,19 +23,16 @@ def _(x) : return x
 cata_msg = {
 
 2 : _("""
- l utilisation de cette commande n est legitime que si la configuration etudiee est du type "faisceau_trans"
-"""),
-
-3 : _("""
- erreur dvp_1
+ l'utilisation de cette commande n'est légitime que si
+ la configuration étudiée est du type "FAISCEAU_TRANS"
 """),
 
 4 : _("""
- le nom d'un parametre ne peut pas depasser 16 caracteres
+ le nom d'un paramètre ne peut pas dépasser 16 caractères
 """),
 
 5 : _("""
- le parametre  %(k1)s  n 'existe pas
+ le paramètre  %(k1)s  n'existe pas
 """),
 
 6 : _("""
@@ -171,27 +168,16 @@ cata_msg = {
 """),
 
 40 : _("""
- impossibilite, la maille  %(k1)s  doit etre de type "seg2" ou "seg3"et elle est de type :  %(k2)s 
-"""),
-
-41 : _("""
- nbma different de nbel
+ impossibilité : la maille  %(k1)s  doit etre de type "SEG2" ou "SEG3"
+ et elle est de type :  %(k2)s 
 """),
 
 42 : _("""
- le contour n est pas ferme
+ le contour dont on doit calculer l'aire n'est pas fermé
 """),
 
 43 : _("""
  le mot-clé "reuse" n'existe que pour l'opération "ASSE"
-"""),
-
-44 : _("""
- nbma different de nbe
-"""),
-
-45 : _("""
- nj2 different de nj0
 """),
 
 46 : _("""
@@ -255,31 +241,22 @@ cata_msg = {
 """),
 
 61 : _("""
- l'option  %(k1)s n'est pas admise apres le mot-facteur "cara_poutre".
+ l'option  %(k1)s n'est pas admise apres le mot-facteur "CARA_POUTRE".
 """),
 
 62 : _("""
- il faut donner le nom d'un resultat de type evol_ther apres le mot-cle lapl_phi du mot-facteur "cara_poutre".
+ il faut donner le nom d'un résultat de type EVOL_THER
+ après le mot-clé LAPL_PHI du mot-facteur "CARA_POUTRE".
 """),
 
 63 : _("""
- il faut donner le nom d'un resultat de type evol_ther apres le mot-cle lapl_phi_y du mot-facteur "cara_poutre".
+ il faut donner le nom d'un resultat de type EVOL_THER
+ apres le mot-cle LAPL_PHI_Y du mot-facteur "CARA_POUTRE".
 """),
 
 64 : _("""
- il faut donner le nom d'un resultat de type evol_ther apres le mot-cle lapl_phi_z du mot-facteur "cara_poutre".
-"""),
-
-65 : _("""
- y a un bug 12
-"""),
-
-66 : _("""
- y a un bug 13
-"""),
-
-67 : _("""
- y a un bug 14
+ il faut donner le nom d'un resultat de type EVOL_THER
+ apres le mot-cle LAPL_PHI_Z du mot-facteur "CARA_POUTRE".
 """),
 
 68 : _("""
@@ -287,15 +264,15 @@ cata_msg = {
 """),
 
 69 : _("""
- champ de vitesse donne.
+ champ de vitesse donné
 """),
 
 70 : _("""
- champ de deplacement donne.
+ champ de déplacement donné
 """),
 
 71 : _("""
- option masse coherente.
+ option masse cohérente.
 """),
 
 72 : _("""

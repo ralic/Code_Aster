@@ -1,8 +1,9 @@
       SUBROUTINE VEFNME(MODELE,SIGMA ,CARAZ ,DEPMOI,DEPDEL,
      &                  VECELZ,MATCOD,COMPOR,NH    ,FNOEVO,
-     &                  PARTPS,CARCRI,CHVARC,LIGREZ,LISCHA)
+     &                  PARTPS,CARCRI,CHVARC,LIGREZ,LISCHA,
+     &                  OPTION)
 C
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +29,7 @@ C
       CHARACTER*(*) MODELE,LIGREZ,LISCHA
       CHARACTER*(*) SIGMA,CARAZ,DEPMOI,DEPDEL,VECELZ
       CHARACTER*(*) MATCOD,COMPOR,CARCRI,CHVARC
+      CHARACTER*16  OPTION      
       INTEGER       NH 
 C 
 C ----------------------------------------------------------------------
@@ -87,6 +89,7 @@ C
       CHARACTER*19 NUMHAR,TPSMOI,TPSPLU
       CHARACTER*19 CHGEOM,CHCARA(15),VECELE
       CHARACTER*24 CHPESA
+      CHARACTER*16 OPTIO2 
       LOGICAL      LBID
       INTEGER      IRET,IBID,IED,NCHAR,JCHAR,IER
       REAL*8       INSTM,INSTP,RBID
@@ -94,7 +97,6 @@ C
       CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
       LOGICAL      DEBUG
       INTEGER      IFMDBG,NIVDBG       
-      CHARACTER*16 OPTION      
 C      
 C ----------------------------------------------------------------------
 C
@@ -111,7 +113,8 @@ C
       TPSMOI = '&&VEFNME.CH_INSTAM'
       TPSPLU = '&&VEFNME.CH_INSTAP'
       K8BLA  = ' '
-      OPTION = 'FORC_NODA'
+      OPTIO2 = OPTION
+      IF (OPTION.NE.'FORC_NODA_NONL') OPTIO2 = 'FORC_NODA'
       IF (NIVDBG.GE.2) THEN
         DEBUG  = .TRUE.
       ELSE
@@ -263,11 +266,11 @@ C
 C
 C --- APPEL A CALCUL
 C      
-      CALL CALCUL('S',OPTION,LIGREL,NBIN ,LCHIN ,LPAIN ,
+      CALL CALCUL('S',OPTIO2,LIGREL,NBIN ,LCHIN ,LPAIN ,
      &                       NBOUT,LCHOUT,LPAOUT,'V')
 C
       IF (DEBUG) THEN
-        CALL DBGCAL(OPTION,IFMDBG,
+        CALL DBGCAL(OPTIO2,IFMDBG,
      &              NBIN  ,LPAIN ,LCHIN ,
      &              NBOUT ,LPAOUT,LCHOUT)
       ENDIF 

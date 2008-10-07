@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF E_ETAPE Execution  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,25 +140,23 @@ class ETAPE:
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE
       if self.jdc.fico!=None :
-        ficode=open('ficode', 'a')
         v=genpy.genpy(defaut='avec',simp='into')
         self.accept(v)
         chaine = ' %-10s%-20s' % (self.jdc.fico, self.nom)
         for mc in v.args.keys():
             if type(v.args[mc]) in (str, unicode):
-              chainec = '%s %-20s%-20s%-20s\n' % (chaine, '--', mc, v.args[mc])
-              ficode.write(chainec)
+              chainec = '%s %-20s%-20s%-20s' % (chaine, '--', mc, v.args[mc])
+              aster.affiche('CODE', chainec)
             elif type(v.args[mc]) == list:
               for mcs in v.args[mc]:
                  for mcf in mcs.keys():
-                  chainec = '%s%-20s%-20s%s\n' % (chaine, mc, mcf, mcs[mcf])
-                  ficode.write(chainec)
+                  chainec = '%s %-20s%-20s%s' % (chaine, mc, mcf, mcs[mcf])
+                  aster.affiche('CODE', chainec)
             elif type(v.args[mc]) == dict:
                 mcs = v.args[mc]
                 for mcf in mcs.keys():
-                  chainec = '%s%-20s%-20s%s\n' % (chaine, mc, mcf, mcs[mcf])
-                  ficode.write(chainec)
-        ficode.close()
+                  chainec = '%s %-20s%-20s%s' % (chaine, mc, mcf, mcs[mcf])
+                  aster.affiche('CODE', chainec)
 
       if (not isinstance(self.parent,MACRO_ETAPE)) or \
          (self.parent.nom=='INCLUDE'             ) or \

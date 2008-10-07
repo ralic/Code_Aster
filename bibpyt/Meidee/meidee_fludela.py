@@ -1,4 +1,4 @@
-#@ MODIF meidee_fludela Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_fludela Meidee  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -615,7 +615,7 @@ class InterfaceChoixModes(Frame):
         try:
             __MAC = MAC_MODES( BASE_1=res_1.obj,
                                BASE_2=res_2.obj )
-        except aster.FatalError:
+        except aster.error:
             self.mess.disp_mess("!! Calcul de MAC impossible : bases incompatibles !!")
             UTMESS('A','MEIDEE0_3')
             return

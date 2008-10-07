@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,11 +27,11 @@ cata_msg = {
 """),
 
 2 : _("""
- pour l'option "indic_ener", les seules relations admises sont "vmis_isot_line" et "vmis_isot_trac" .
+ pour l'option INDIC_ENER, les seules relations admises sont "vmis_isot_line" et "vmis_isot_trac" .
 """),
 
 3 : _("""
- pour l'option "indic_seuil", les seules relations admises sont "vmis_isot_line", "vmis_isot_trac"  et "vmis_cine_line" .
+ pour l'option INDIC_SEUIL, les seules relations admises sont "vmis_isot_line", "vmis_isot_trac"  et "vmis_cine_line" .
 """),
 
 6 : _("""
@@ -39,7 +39,7 @@ cata_msg = {
 """),
 
 7 : _("""
- pas de contraintes dans pcontgp
+ pas de contraintes dans PCONTGP
 """),
 
 8 : _("""
@@ -209,15 +209,15 @@ Le module d'Young est nul.
 """),
 
 69 : _("""
- ! pb récuperation donnée matériau dans thm_liqu %(k1)s !
+ pb récuperation donnée matériau dans thm_liqu %(k1)s
 """),
 
 70 : _("""
- ! pb récupération donnée matériau dans thm_init %(k1)s !
+ pb récupération donnée matériau dans thm_init %(k1)s
 """),
 
 71 : _("""
- ! pb récupération données matériau dans elas %(k1)s !
+ pb récupération données matériau dans elas %(k1)s
 """),
 
 72 : _("""
@@ -243,11 +243,11 @@ Le module d'Young est nul.
 
 77 : _("""
  numero de couche  %(i1)d
-  trop grand par rapport au nombre de couches autorisé pour la maille  %(k1)s
+ trop grand par rapport au nombre de couches autorisé pour la maille  %(k1)s
 """),
 
 78 : _("""
- ! pb recuperation donnée matériau dans thm_diffu %(k1)s !
+ pb recuperation donnée matériau dans thm_diffu %(k1)s
 """),
 
 79 : _("""
@@ -255,13 +255,13 @@ Le module d'Young est nul.
 """),
 
 80 : _("""
-
- attention : l élément de plaque quad4 défini sur la maille : %(k1)s n est pas plan et peut conduire a des résultats faux.
-  distance au plan :  %(r1)f
+  L'élément de plaque QUAD4 défini sur la maille : %(k1)s
+  n'est pas plan et peut conduire a des résultats faux
+  Distance au plan :  %(r1)f
 """),
 
 81 : _("""
- manque le paramètre  %(k1)s pour la maille  %(k2)s
+ Il manque le paramètre  %(k1)s pour la maille  %(k2)s
 """),
 
 84 : _("""
@@ -270,25 +270,25 @@ Le module d'Young est nul.
 """),
 
 88 : _("""
- elrefe non disponible élément de référence  %(k1)s
+ ELREFE non disponible élément de référence  %(k1)s
 """),
 
 90 : _("""
- elrefe mal programme maille  %(k1)s  type  %(k2)s  nb noeuds  %(i1)d
+ ELREFE mal programme maille  %(k1)s  type  %(k2)s  nb noeuds  %(i1)d
  nb noeuds pour le gano  %(i2)d
 """),
 
 91 : _("""
- ! le calcul de cet estimateur !! ne tient pas compte d'éventuelles ! %(i1)d
- ! conditions limites non linéaires   ! %(i2)d
+ Le calcul de cet estimateur ne tient pas compte d'éventuelles
+ conditions limites non linéaires
 """),
 
 92 : _("""
- la pression doit etre nulle pour la maille  %(k1)s
+ la pression doit être nulle pour la maille  %(k1)s
 """),
 
 98 : _("""
- la contrainte equivalente est nulle pour la maille  %(k1)s
+ la contrainte équivalente est nulle pour la maille  %(k1)s
 """),
 
 }

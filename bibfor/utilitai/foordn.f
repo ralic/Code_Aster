@@ -5,7 +5,7 @@
       CHARACTER*(*)               VECNOM(NE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,6 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       REAL*8       X
       CHARACTER*24 C
-      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
 C     --- RANGEMENT EN ORDRE CROISSANT ---
@@ -103,9 +102,7 @@ C     --- SUPPRESSION DES DOUBLONS ---
       IF ( NE .NE. NS ) THEN
       K = NE - NS
       VALI = K
-      VALK (1) = ' '
-      VALK (2) = ' '
-      CALL U2MESG('F', 'UTILITAI6_38',2,VALK,1,VALI,0,0.D0)
+      CALL U2MESG('F', 'UTILITAI6_38',0,' ',1,VALI,0,0.D0)
       ENDIF
 C
       CALL JEDEMA()

@@ -1,21 +1,21 @@
-#@ MODIF E_Global Execution  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF E_Global Execution  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # RESPONSABLE MCOURTOI M.COURTOIS
@@ -33,6 +33,7 @@
 # MessageLog est l'objet qui gère l'impression des messages
 # (appelé par astermodule.c)
 from Utilitai.Utmess import MessageLog
+import aster
 
 # ------------------------------------------------------------------------
 def checksd(nomsd, typesd):
@@ -47,7 +48,7 @@ def checksd(nomsd, typesd):
    from Utilitai.Utmess import UTMESS
    nomsd  = nomsd.strip()
    typesd = typesd.lower().strip()
-   
+
    # import
    iret = 4
    try:
@@ -55,7 +56,7 @@ def checksd(nomsd, typesd):
    except ImportError, msg:
       UTMESS('F', 'SDVERI_1', valk=typesd)
       return iret
-   
+
    # on récupère la classe typesd
    clas = getattr(sd_module, typesd, None)
    if clas:
@@ -66,6 +67,11 @@ def checksd(nomsd, typesd):
          iret = 1
       else:
          iret = 0
-   
+
+   # on imprime les messages d'erreur (level=0):
+   for level, obj, msg in chk.msg:
+        if level == 0 :
+            aster.affiche('MESSAGE',repr(obj)+msg)
+
    return iret
 

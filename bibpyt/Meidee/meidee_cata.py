@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_cata Meidee  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,13 +144,13 @@ class Resultat:
     def get_modele(self):
         """Recherche le modele associe au resultat"""
         if not self.modele:
-            modele_name = aster.getvectjev( self.nom.ljust(19) + '.MODL')
-            if not modele_name:
-                pass
-            elif len(modele_name[0].strip()) > 0 :
-                self.modele_name = modele_name[0].strip()
-                self.modele = self.objects.modeles[self.modele_name]
-                return
+            if aster.jeveux_exists(self.nom.ljust(19)+'.NOVA'):
+                iret,ibid,modele_name = aster.dismoi('F','MODELE',self.nom,'RESULTAT')
+                modele_name=modele_name.rstrip()
+                if modele_name[0:1] != "#" :
+                    self.modele_name = modele_name
+                    self.modele = self.objects.modeles[self.modele_name]
+                    return
 
         # Si cela ne marche pas, on passe par le maillage
         if not self.modele:
@@ -170,7 +170,7 @@ class Resultat:
         self.mess.disp_mess( ( ".mass" + self.mass_name ) )
         self.mess.disp_mess( ( ".kass" + self.kass_name ) )
         self.mess.disp_mess( ( " " ) )
-   
+
     def get_modes(self):
         """!récupère les numéros et fréquences des modes
         d'un concept mode_meca"""
@@ -178,9 +178,9 @@ class Resultat:
         __freq  = RECU_TABLE(CO=self.obj,
                              NOM_PARA='FREQ',);
         afreq  = __freq.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
-        
+
         resu = [afreq]
-        
+
         return self._get_modes_data(resu)
 
     def _get_modes_data(self, resu):
@@ -200,7 +200,7 @@ class Resultat:
 
         __raid  = RECU_TABLE(CO=self.obj,
                              NOM_PARA='RIGI_GENE',);
-        
+
         tables_data = [
             ('AMOR_REDUIT', __axsi),
             ('MASS_GENE', __mass),
@@ -208,11 +208,11 @@ class Resultat:
             ('AMOR_GENE', __amge),
             ('RIGI_GENE', __raid)
             ]
-        
+
         for nom, table in tables_data:
             try:
                 resu_array = table.EXTR_TABLE().Array('NUME_ORDRE', nom)
-            
+
             except TypeError:
                 pass
                 resu_array = Numeric.ones(resu[0].shape, Numeric.Float)
@@ -224,17 +224,21 @@ class Resultat:
 ##                self.mess.disp_mess(" ")
 
             resu.append(resu_array)
-        
+
         return resu
-    
+
     def get_modes_stat(self):
-        """!récupère les num'eros et directions des modes d'un concept mode_stat"""
+        """!récupère les numeros et directions des modes d'un concept mode_stat"""
 
         nomno = self.nom.ljust(19)+".ORDR        "
         numemo = aster.getvectjev( nomno.ljust(32) )
 
-        nomno = self.nom.ljust(19)+".NOEU        "
-        resu = aster.getvectjev( nomno.ljust(32) )
+        # après l'EL 12583 : on pourra basculer :
+        if 0 :
+           resu=self.obj.LIST_VARI_ACCES()['NOEUD_CMP']
+        else :
+           nomno = self.nom.ljust(19)+".NOEU"
+           resu = aster.getvectjev( nomno.ljust(32) )
 
         return numemo,resu
 
@@ -270,9 +274,9 @@ class Resultat:
             for ddl in self.nume_phy:
                 defo.append(champ[ddl])
             matrice.append(defo)
-            
+
         matrice = transpose(array(matrice))
-        
+
         return matrice
 
 
@@ -398,7 +402,7 @@ class InterSpectre:
         except KeyError:
             # Cas où la table_sdaster n'est pas une tabl_intsp
             pass # TODO : faire en sorte que cette table ne soit pas visible
-            
+
 
     def make_inte_spec(self, titre, paras_out):
         """
@@ -506,7 +510,7 @@ class InterSpectre:
         self.set_model(resu)
         self.nume_phy, self.nume_mat, bid = nume_ddl_phy(resu, extract_ddl)
         nb_mes = len(self.nume_phy)
-        
+
         # il doit y avoir coherence de longueur entre taille de l'inter-spectre et le nombre de DDL du resu
         if nb_mes*(nb_mes+1)/2 != len(nom_fonc):
             nb_mes_intsp = 0.5*(-1+Numeric.sqrt(1+8*len(nom_fonc)))
@@ -515,7 +519,7 @@ class InterSpectre:
                                 + str(int(nb_mes_intsp)))
             self.mess.disp_mess(" ")
             raise TypeError
-        
+
         self.matr_inte_spec = Numeric.zeros((nb_freq, nb_mes, nb_mes),
                                              Numeric.Complex)
 
@@ -537,9 +541,9 @@ class InterSpectre:
             numi  = tabl_py['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
             numj  = tabl_py['NUME_ORDRE_J'].values()['NUME_ORDRE_J']
             coupl_ddl.append((numi,numj))
-            isnume = 0 
+            isnume = 0
 
-        
+
         try:
             # Methode de recherche rapide des fonctions
             ctx = CONTEXT.get_current_step().jdc.sds_dict
@@ -564,13 +568,13 @@ class InterSpectre:
                 ind_l = nume.index(coupl_ddl[ind_coupl][0])
                 ind_c = nume.index(coupl_ddl[ind_coupl][1])
             except ValueError:
-                
+
                 raise TypeError
             for ind_freq in range(nb_freq):
                 self.matr_inte_spec[ind_freq,ind_l,ind_c] = fonc_py[ind_coupl].vale_y[ind_freq]
                 if ind_l != ind_c:
                     self.matr_inte_spec[ind_freq,ind_c,ind_l] = Numeric.conjugate(self.matr_inte_spec[ind_freq,ind_l,ind_c])
-                    
+
 
 
     def extr_freq(self):
@@ -639,7 +643,7 @@ class Modele:
 ##            print "pas de Nume_ddl trouve pour le modele", self.nom
             ## TODO : creation automatique d'un nume_ddl pour les resu exp
             ## avec des caras bidons.
-        
+
 
     def make_nume(self):
         """Fabrication d'un nume ddl pour des modeles experimentaux
@@ -647,7 +651,7 @@ class Modele:
         """
         ## TODO : ce n'est pas tres simple : il faut aller chercher les modelisations
         ## de AFFE_MODELE, et associer les bons cara_elem : BARRE, DIS_T, DIS_TR...
-        pass            
+        pass
 
     def set_extraction_ddl(self, ddls):
         self.extraction_ddl = ddls
@@ -744,7 +748,7 @@ class MeideeObjects:
         self.mess.disp_mess( ("Maillages" + self.maillages ) )
         self.mess.disp_mess( ("Masses" + self.masses ) )
         self.mess.disp_mess( ("Resultats" ) )
-        self.mess.disp_mess( ( " " ) ) 
+        self.mess.disp_mess( ( " " ) )
         for v in self.resultats.values():
             v.show()
 
@@ -854,8 +858,8 @@ class MeideeObjects:
                 DETRUIRE(CONCEPT = _F(NOM = obj), INFO=1)
                 liste = liste + ", " + obj
             self.weakref = []
-            self.mess.disp_mess("Destruction des objects temporaires " + liste) 
-        
+            self.mess.disp_mess("Destruction des objects temporaires " + liste)
+
 
 
 ##############################################################################
@@ -867,7 +871,7 @@ class MeideeObjects:
 def compt_cmp(champ, ddl_test):
     """! Permet de compter le nombre de composantes
     d'un champ aux noeuds.
-    
+
     :param ddl_test: un degré de liberté existant pour le champ."""
 
     nbval = len(aster.getvectjev(champ.nom.ljust(19) + '.VALE'))
@@ -891,7 +895,7 @@ def tra_comp(nume):
     tmp = nume.split('_')
     numno = int(tmp[0][1:])
     ddlno = tmp[1]
-    
+
     return numno + _DDL_CONV[ddlno]
 
 
@@ -910,9 +914,9 @@ def set_extraction_ddl(resu, ddls):
                                'DDL_ACTIF':grp['DDL_ACTIF']})
 
     return extraction_ddl, all_ddls
-    
 
-def crea_champ(resu, ind_mod, all_ddls): 
+
+def crea_champ(resu, ind_mod, all_ddls):
     """!Extrait les champs de deplacement d'une sd_resultat aster
         a partir des DDL de mesure pour un mode donne.
         Ces DDL sont identiques a ceux de la macro OBSERVATION
@@ -925,7 +929,7 @@ def crea_champ(resu, ind_mod, all_ddls):
                           NOM_CHAM = 'DEPL',
                           NUME_ORDRE = ind_mod,
                         );
-    
+
     champ = {}
     for ddl_key in all_ddls:
         champ_comp = __CHANO.EXTR_COMP(ddl_key, [], 1)
@@ -935,7 +939,7 @@ def crea_champ(resu, ind_mod, all_ddls):
             champ['N' + str(noeud[ind]) + '_' + ddl_key] = vale[ind]
 
     DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),), INFO=1,)
-    
+
     return champ
 
 
@@ -982,12 +986,12 @@ def nume_ddl_gene(resu, extract_mode = None):
 
 
 def find_no(maya,mcsimp):
-    """ mcsimp est de la forme : 
+    """ mcsimp est de la forme :
         {'GROUP_MA': ('CAPTEUR1','CAPTEUR2'), 'DDL_ACTIF': ('DX', 'DRZ')}
         ou {'GROUP_NO': 'CAPTEUR1', 'DDL_ACTIF': ('DX', 'DRZ')}
     """
 
-    
+
     if mcsimp.has_key('GROUP_NO') and type(mcsimp['GROUP_NO']) != list :
         mcsimp['GROUP_NO'] = [mcsimp['GROUP_NO']]
     if mcsimp.has_key('GROUP_MA') and type(mcsimp['GROUP_MA']) != list :
@@ -1003,7 +1007,7 @@ def find_no(maya,mcsimp):
                 nomnoe = maya.NOMNOE.get()[ind_no]
                 if nomnoe not in list_no :
                     list_no.append(nomnoe)
-        
+
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA']:
             list_nu_ma = list(Numeric.array(maya.GROUPEMA.get()
@@ -1014,7 +1018,7 @@ def find_no(maya,mcsimp):
                 for ind_no in maya.CONNEX.get()[nu_ma +1 ]:
                     nomnoe = maya.NOMNOE.get()[ind_no - 1]
                     if nomnoe not in list_no:
-                        list_no.append(nomnoe) 
+                        list_no.append(nomnoe)
 
     return list_no
 
@@ -1027,15 +1031,15 @@ def CreaTable(mcfact, titre, paras_out, mess):
     DeclareOut = paras_out["DeclareOut"]
     compteur = paras_out["ComptTable"]
     paras_out["ComptTable"] = paras_out["ComptTable"] + 1
-    
+
     if paras_out["ComptTable"] > len(paras_out["TablesOut"]):
         mess.disp_mess("!! Il n'y a plus de noms de concepts     !!")
         mess.disp_mess("!! disponibles pour sortir des résultats !!")
         mess.disp_mess(" ")
         return
-    
+
     DeclareOut('__TAB', TablesOut[compteur])
-    
+
     __TAB = CREA_TABLE(LISTE=mcfact,
                        TITRE = titre,
                        TYPE_TABLE=TypeTable)

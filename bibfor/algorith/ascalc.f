@@ -11,7 +11,7 @@
       LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,9 +83,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       IBID, ID, IOPT, IRET, JCREP, JDIR, JMOD, JREP, 
+      INTEGER       IBID, ID, IOPT, IRET, JCREP, JDIR, JMOD, JREP1, 
      &              JTABS, JVAL, NBMODE, NBOPT, NBPARA, NBPARI, NBPARK,
-     &              NBPARR, NBSUP, NDEPL, NEQ, JREP2, N2SUP
+     &              NBPARR, NBSUP, NDEPL, NEQ, JREP2
       PARAMETER     ( NBPARA = 5 )
       REAL*8        TEMPS
       LOGICAL       PRIM, SECON, GLOB
@@ -93,7 +93,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   K8B, NUME
       CHARACTER*16  NOMSY, NOMSY2, NOPARA(NBPARA)
       CHARACTER*19  KVEC, KVAL
-      CHARACTER*24  KVE1, KVE2, KVE3, KVE4, KVE5
+      CHARACTER*24  KVX1, KVX2, KVE2, KVE3, KVE4
 C
       DATA  NOPARA /        'OMEGA2'          , 'MASS_GENE'       ,
      +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ'  /
@@ -102,11 +102,11 @@ C
       CALL JEMARQ()
       KVEC = '&&ASCALC.VAL_PROPRE'
       KVAL = '&&ASCALC.GRAN_MODAL'
-      KVE1 = '&&ASCALC.REP_MOD'
+      KVX1 = '&&ASCALC.REP_MO1'
+      KVX2 = '&&ASCALC.REP_MO2'
       KVE2 = '&&ASCALC.C_REP_MOD'
       KVE3 = '&&ASCALC.REP_DIR' 
       KVE4 = '&&ASCALC.TABS'   
-      KVE5 = '&&ASCALC.CORRELE'   
       CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,NUME,IRET)
 C
       CALL GETFAC ( 'COMB_DEPL_APPUI', NDEPL )
@@ -131,14 +131,11 @@ C     --- BOUCLE SUR LES OPTIONS DE CALCUL "NOMSY" ---
      +                 NEQ, NBMODE, CTYP, NBPARI, NBPARR, NBPARK )
          CALL JEVEUO(KVEC,'L',JMOD)
          CALL JEVEUO(KVAL,'L',JVAL)
-         CALL WKVECT(KVE1, 'V V R',3*NEQ*NBMODE*NBSUP,JREP )
-         CALL WKVECT(KVE2, 'V V R',       3*NEQ*NBSUP,JCREP)
-         CALL WKVECT(KVE3, 'V V R',             3*NEQ,JDIR )
-         CALL WKVECT(KVE4, 'V V R',         NBSUP*NEQ,JTABS)
-         IF ( .NOT. MUAPDE ) THEN
-            N2SUP = 1
-            CALL WKVECT(KVE5, 'V V R',3*NEQ*NBMODE*NBSUP,JREP2 )
-         ENDIF
+         CALL WKVECT(KVX1, 'V V R', 3*NEQ*NBSUP,JREP1)
+         CALL WKVECT(KVX2, 'V V R', 3*NEQ*NBSUP,JREP2)
+         CALL WKVECT(KVE2, 'V V R', 3*NEQ*NBSUP,JCREP)
+         CALL WKVECT(KVE3, 'V V R',       3*NEQ,JDIR )
+         CALL WKVECT(KVE4, 'V V R',   NBSUP*NEQ,JTABS)
 C
 C        ---------------------------------------------------------------
 C                        REPONSE PRIMAIRE OU GLOBAL
@@ -150,21 +147,12 @@ C        --- BOUCLE SUR LES DIRECTIONS ----
 C
 C              --- CALCUL DES REPONSE MODALES ---
 C
-               CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
-     +                       NBMODE, ZR(JMOD), ZR(JVAL), ID, REASUP,
-     +                       SPECTR, ZR(JREP), CORFRE, AMORT  )
-C
-C
 C              --- COMBINAISON DES REPONSES MODALES ---
-               IF ( MUAPDE ) THEN
-                  CALL ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ, 
-     +                          NBMODE, ZR(JREP), AMORT, ZR(JVAL), ID,
-     +                          TEMPS, ZR(JCREP), ZR(JTABS) )
-               ELSE
-                  CALL ASCORC ( TYPCMO, NBSUP,N2SUP,NSUPP, NEQ, TCOSUP,
-     +                          NBMODE, ZR(JREP), AMORT, ZR(JVAL), ID,
-     +                          TEMPS, ZR(JCREP), ZR(JTABS), ZR(JREP2) )
-               ENDIF
+               CALL ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ, 
+     +                       NBMODE, ZR(JREP1), ZR(JREP2), AMORT, 
+     +                       ZR(JVAL), ID, TEMPS, ZR(JCREP), ZR(JTABS),
+     +                       NOMSY, ZR(JMOD), REASUP, SPECTR, CORFRE,
+     +                       MUAPDE, TCOSUP)
 C
 C              --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
@@ -219,11 +207,11 @@ C
 C
          CALL JEDETR ( KVEC )
          CALL JEDETR ( KVAL )
-         CALL JEDETR ( KVE1 )
+         CALL JEDETR ( KVX1 )
+         CALL JEDETR ( KVX2 )
          CALL JEDETR ( KVE2 )
          CALL JEDETR ( KVE3 )
          CALL JEDETR ( KVE4 )
-         IF ( .NOT. MUAPDE ) CALL JEDETR ( KVE5 )
 
  10   CONTINUE
 C

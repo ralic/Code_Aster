@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,6 +18,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+#-------------------------------------------------------------------
+# REMARQUE GENERALE : IL FAUDRA FAIRE EVOLUER CE CAS-TEST POUR QU'IL
+#                     PRENNE EN COMPTE LE SUIVI DES FRONTIERES COURBES
+#                     AU COURS DE L'ADAPTATION (CF ZZZZ175A)
 #-------------------------------------------------------------------
 #                 CORRIGE TP INDICATEUR-REMAILLAGE N 2 (FORMAT NEW6)
 #                         CULASSE FISSUREE EN THERMO-MECANIQUE
@@ -108,9 +112,6 @@ ACIER_T=DEFI_MATERIAU(THER=_F(LAMBDA = 33.5,RHO_CP=526.E4))
 # LECTURE ET INFO MAILLAGE THERMIQUE                     
 num_calc=0   
 MAT[num_calc]=LIRE_MAILLAGE(INFO=2, );
-MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
-                 MAILLAGE=MAT[num_calc],
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 MACR_INFO_MAIL(MAILLAGE=MAT[num_calc],
         QUALITE='OUI',
         INTERPENETRATION='OUI',
@@ -169,6 +170,13 @@ for num_calc in range(0,nb_calc1) :
                               'ERRE_ELNO_ELEM',)
                      ),);
    DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
+# IMPRESSION FORMAT MED POUR SALOME
+###   IMPR_RESU(MODELE=MOT[num_calc],FORMAT='MED',
+###            RESU=_F(MAILLAGE=MAT[num_calc],
+###                    RESULTAT=TEMP[num_calc],
+###                    NOM_CHAM=('TEMP','FLUX_ELNO_TEMP',
+###                              'ERRE_ELNO_ELEM',)
+###                     ),);
 
 # AFFICHAGE GIBI INTERACTIF TEMP + FLUX + INDICATEURS EN RESIDU 
 #   os.system('sed s/numcalc/'+str(num_calc)+'/g /home/boiteau/ASTER/TP_INDIC/TP21/post1.dgibi > post1.dgibi')
@@ -180,6 +188,16 @@ for num_calc in range(0,nb_calc1) :
                      ENER_POT=_F(TOUT='OUI',),);
 
 # CALCUL DE LA TEMPERATURE MOYENNE SUR LE CARRE INTERNE
+# ATTENTION : TANT QUE LA FICHE 11865 N'EST PAS RESOLUE, ON NE PEUT PAS PRENDRE
+#             LA MOYENNE SUR LE BORD DU CARRE, IDENTIFIE PAR LE GROUP_MA GM35.
+#             IL FAUT DONC PASSER PAR LE GROUPE DES NOEUDS ASSOCIES. MAIS SI ON CREAIT
+#             CE GROUPE AU TOUT DEBUT, COMME IL RESTERA INVARIANT AU FIL DES ADAPTATIONS,
+#             ON FERAIT LA MOYENNE SUR LES NOEUDS DU MAILLAGE ZERO ET NON PAS SUR LE
+#             VERITABLE BORD. IL FAUT DONC CREER LE GROUPE ICI ET LE DETRUIRE APRES USAGE.
+   MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
+                    MAILLAGE=MAT[num_calc],
+                    CREA_GROUP_NO=_F(GROUP_MA='GM35',),);
+
    TMOYEN[num_calc] = POST_RELEVE_T(
           ACTION=_F(INTITULE='TMOYEN',
                  GROUP_NO='GM35',
@@ -188,6 +206,10 @@ for num_calc in range(0,nb_calc1) :
                  NOM_CHAM='TEMP',
                  RESULTANTE=('TEMP'),            
                  OPERATION='MOYENNE',),)
+
+   MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
+                    MAILLAGE=MAT[num_calc],
+                    DETR_GROUP_NO=_F(NOM='GM35',),);
                                                 
 # IMPRESSION DES TABLES PRECEDENTES DANS LE .RESU
    IMPR_TABLE(TABLE=ENERT[num_calc])
@@ -305,9 +327,9 @@ TEST_FONCTION(VALEUR=(
        VALE_REFE=9.2181911966178E-01,REFERENCE='NON_REGRESSION'),
     _F(FONCTION=ERREEN0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
        VALE_REFE=4.9181945496292E-01,REFERENCE='NON_REGRESSION'),
-    _F(FONCTION=ERRETM4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=2.70330263E-01,REFERENCE='NON_REGRESSION',VERSION = '8.3.19'),
-    _F(FONCTION=ERREEN4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=2.56234600E-02,REFERENCE='NON_REGRESSION',VERSION = '8.3.19')))   
+    _F(FONCTION=ERRETM4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
+       VALE_REFE=4.34881059E+02,REFERENCE='NON_REGRESSION',VERSION = '9.2.15'),
+    _F(FONCTION=ERREEN4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
+       VALE_REFE=3.25886535E-02,REFERENCE='NON_REGRESSION',VERSION = '9.2.15')))   
                          
 FIN();

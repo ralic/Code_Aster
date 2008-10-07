@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -501,7 +501,7 @@ GRANDEUR_SIMPLE__
     FREQ_R   = R    FREQ
     FTHM_F   = K8   PFLU1    PFLU2    PTHER
     FTHM_R   = R    PFLU1    PFLU2    PTHER
-    G        = R    GTHETA   FIC1     FIC2     K1       K2       K3       BETA
+    G        = R    GTHETA   FIC1     FIC2     FIC3   K1       K2       K3       BETA
     GEOM_R   = R    X        Y        Z        W
     G_DEPL_R = R    D_DX_X   D_DX_Y   D_DX_Z   D_DY_X   D_DY_Y   D_DY_Z   D_DZ_X   D_DZ_Y
                     D_DZ_Z

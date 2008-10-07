@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_k_trans_ops Macro  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,7 +113,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
   if F3D : 
     n_mode = max((__kgtheta.EXTR_TABLE())['NUME_MODE'].values()['NUME_MODE'])
     nbno = max((__kgtheta.EXTR_TABLE())['NUM_PT'].values()['NUM_PT'])
-    labsc = (__kgtheta.EXTR_TABLE())['ABS_CURV'].values()['ABS_CURV'][0:nbno]
+    labsc = (__kgtheta.EXTR_TABLE())['ABSC_CURV'].values()['ABSC_CURV'][0:nbno]
       
   if nmodtr != n_mode : 
       n_mode = min(nmodtr,n_mode)
@@ -229,7 +229,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
    tabout = CREA_TABLE(LISTE = (_F(LISTE_I =lo, PARA = 'NUME_ORDRE'),
                            _F(LISTE_R =li, PARA = 'INST'),
                            _F(LISTE_I =range(nbno)*nbarch, PARA ='NUM_PT' ),
-                           _F(LISTE_R =labsc*nbarch, PARA = 'ABS_CURV'),
+                           _F(LISTE_R =labsc*nbarch, PARA = 'ABSC_CURV'),
                            _F(LISTE_R =K1t, PARA = k1),
                            _F(LISTE_R =K2t, PARA = k2),
                            _F(LISTE_R =K3t, PARA = k3),),

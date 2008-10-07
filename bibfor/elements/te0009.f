@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/10/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,6 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
-
       IF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
          NC   = 6
       ELSE
@@ -76,11 +75,9 @@ C     I : LIGNE ; J : COLONNE
                 ZR(JDM-1+NC*(J-1) + I) = VXX
                 ZR(JDM-1+NC*(I-1) + J) =-VXX
       ELSE
-         CALL U2MESK('F','ELEMENTS2_87',1,OPTION)
+CC OPTION DE CALCUL INVALIDE
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
-
-
       CALL JEDEMA()
-
       END

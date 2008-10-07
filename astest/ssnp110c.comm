@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,11 +42,11 @@ ly = 50.0;
 
 
 # nb element suivant la largeur
-nx = 18.0;
+nx = 25.0;
 
 
 # nb element suivant la hauteur
-ny = 31.0;
+ny = 71.0;
 
 
 # longueur de la fissure
@@ -56,8 +56,8 @@ a = 6;
 #----------------------------------------
 # tailles des elements suivant x et y
 hy = (ly / ny);
-
 hx = (lx / nx);
+hh = sqrt(hy**2+hx**2)
 
 
 # creation des noeuds servant a bloquer les modes rigides
@@ -244,7 +244,7 @@ TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DY',
            VALE=-(DEPREF),
            CRITERE='RELATIF',
-           PRECISION=0.04,
+           PRECISION=0.02,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABDEP,
@@ -252,8 +252,123 @@ TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DY',
            VALE=DEPREF,
            CRITERE='RELATIF',
-           PRECISION=0.04,
+           PRECISION=0.02,
            REFERENCE='AUTRE_ASTER',);
+
+#------------------------------------------------------------------------
+# CALCUL DU TAUX DE RESTITUTION DE L ENERGIE G
+#------------------------------------------------------------------------
+G_0=CALC_G( THETA=_F(FISSURE=FISS,
+                                   R_INF = 1*hh,
+                                   R_SUP = 4*hh,
+                                     DIRECTION=(1., 0., 0.,),),
+            RESULTAT=UTOT1,
+            TOUT_ORDRE='OUI',
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
+            );
+
+IMPR_TABLE(TABLE=G_0,);
+
+
+LISTG = (10, 20,30,40,50);
+G_1=CALC_G( THETA=_F(FISSURE=FISS,
+                                   R_INF = 2*hh,
+                                   R_SUP = 6*hh,
+                                     DIRECTION=(1., 0., 0.,),),
+            RESULTAT=UTOT1,
+            NUME_ORDRE=LISTG,
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
+            );
+
+IMPR_TABLE(TABLE=G_1,);
+
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 10),
+           NOM_PARA='G',
+           VALE=3.2908090218925E+00,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 20),
+           NOM_PARA='G',
+           VALE=1.3603188101422E+01,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 30),
+           NOM_PARA='G',
+           VALE=3.1970374749380E+01,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 40),
+           NOM_PARA='G',
+           VALE=5.8993613915841E+01,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+
+TEST_TABLE(TABLE=G_0,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 50),
+           NOM_PARA='G',
+           VALE=9.1415076304037E+01,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER',  )
+       
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 10),
+           NOM_PARA='G',
+           VALE=3.2908090218925E+00,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 20),
+           NOM_PARA='G',
+           VALE=1.3603188101422E+01,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 30),
+           NOM_PARA='G',
+           VALE=3.1970374749380E+01,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 40),
+           NOM_PARA='G',
+           VALE=5.8993613915841E+01,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 50),
+           NOM_PARA='G',
+           VALE=9.1415076304037E+01,
+           PRECISION=0.04,
+           REFERENCE='AUTRE_ASTER', )
+           
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 50),
+           NOM_PARA='G',
+           VALE=8.94016307693017E+01,
+           PRECISION=0.001,
+           REFERENCE='NON_REGRESSION', )
 
 FIN();
 

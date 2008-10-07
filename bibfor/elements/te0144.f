@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,8 +79,8 @@ C
       IF ( OPTION .EQ. 'SIEF_ELGA_DEPL' ) THEN
          CALL JEVECH('PCONTRR','E',JEFFO)
       ELSE
-         CH16 = OPTION
-         CALL U2MESK('F','ELEMENTS3_27',1,CH16)
+C OPTION NON PROGRAMMEE
+         CALL ASSERT(.FALSE.)
       ENDIF
 C
 C --- POINT DE GAUSS DE L'ELEMENT

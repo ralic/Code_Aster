@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis Messages  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -308,11 +308,11 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
 69: _("""
-   %(k1)s   %(k2)s   %(k3)s   %(k4)s
+   Destruction du concept '%(k1)s'.
 """),
 
 70: _("""
-   %(k1)s   %(k2)s   %(k3)s   %(k4)s   %(k5)s
+   Validation du concept '%(k1)s'.
 """),
 
 71: _("""

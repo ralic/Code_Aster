@@ -3,7 +3,7 @@
      &                  SDDYNA,VALMOI,VALPLU,POUGD ,SOLALG,
      &                  MERIGI,VEFINT,OPTIOZ,TABRET,CODERE)
 C 
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -239,7 +239,6 @@ C
         LCHOUT(3) = VEFINT(1:15)//'.R01'
       ENDIF
       IF (CODINT) THEN
-        CALL GCNCON('.',CODERE)
         LPAOUT(6) = 'PCODRET'
         LCHOUT(6) = CODERE 
       ENDIF         

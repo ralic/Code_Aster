@@ -1,0 +1,290 @@
+      SUBROUTINE CFLEQ8(NOMA  ,DEFICO,NSUCO,NNOCO0,LISTNO,
+     &                  POINSN,NNOCO ,NNOQUA)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*8  NOMA
+      INTEGER      NSUCO
+      INTEGER      NNOCO0,NNOCO
+      CHARACTER*24 DEFICO
+      CHARACTER*24 LISTNO
+      CHARACTER*24 POINSN
+      INTEGER      NNOQUA
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES )
+C
+C CREATION D'UNE LISTE DES NOEUDS MILIEUX DES ARETES POUR LES MAILLES 
+C QUADRATIQUES
+C      
+C ----------------------------------------------------------------------
+C
+C 
+C IN  DEFICO : NOM SD CONTACT DEFINITION
+C IN  NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
+C IN  NNOCO0 : NOMBRE TOTAL DE NOEUDS DES SURFACES
+C OUT POINSN : POINTEUR MISE A JOUR POUR PSURNO
+C OUT LISTNO : LISTE DES NOEUDS RESTANTES (LONGUEUR NNOCO
+C OUT NNOCO  : NOMBRE DE NOEUDS AU FINAL 
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32 JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*24 CONTNO,CONTMA
+      INTEGER      JNOCO,JMACO
+      INTEGER      JINDNO,JELINO
+      INTEGER      JDECNO,JNO,JDECQU,JDECMA
+      INTEGER      ISUCO,INO,K,IMA,NUTYP,INOQUA,INOQTO
+      INTEGER      INO1,INO2
+      INTEGER      ELIMNO,NBMA,NBNO,NBNOQ
+      INTEGER      IATYMA,ITYPMA,JDES
+      INTEGER      NUMMAI
+      CHARACTER*8  NOMTM,NOMMAI
+      CHARACTER*24 PNOQUA,CONOQU
+      INTEGER      JNOQUA,JNOQU
+      INTEGER      NBNOMI,INDEX
+      INTEGER      NOMILI(3,4)
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()    
+C 
+C --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+C 
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      CONTMA = DEFICO(1:16)//'.MAILCO'
+      CALL JEVEUO(CONTMA,'L',JMACO)      
+      CALL JEVEUO(CONTNO,'L',JNOCO)
+C    
+C --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
+C
+      CALL WKVECT('&&CFLEQ8.INDINO','V V I',NNOCO  ,JINDNO)
+      CALL WKVECT(POINSN,'V V I',NSUCO+1,JELINO)          
+C
+C --- INITIALISATIONS
+C 
+      NNOQUA = 0
+      INDEX  = 0
+      ELIMNO = 0
+      CALL JEVEUO(NOMA(1:8)//'.TYPMAIL','L',IATYMA)             
+C
+C --- DECOMPTE DES NOEUDS MILIEUX POUR CHAQUE SURFACE
+C 
+      DO 110 ISUCO = 1,NSUCO
+      
+        CALL CFNBSF(DEFICO,ISUCO ,'MAIL',NBMA  ,JDECMA)
+              
+        DO 90 IMA = 1,NBMA 
+
+C         --- NUMERO MAILLE COURANTE
+            
+          NUMMAI = ZI(JMACO+JDECMA+IMA-1)
+
+C         --- TYPE MAILLE COURANTE
+          
+          ITYPMA = IATYMA - 1 + NUMMAI
+          NUTYP  = ZI(ITYPMA)       
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),NOMTM)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMMAI)
+          
+          IF  (NOMTM(1:5).EQ.'QUAD9') THEN 
+            NBNOMI    = 0                       
+          ELSEIF  (NOMTM(1:5).EQ.'TRIA7') THEN 
+            NBNOMI    = 0
+          ELSEIF  (NOMTM(1:5).EQ.'QUAD8') THEN 
+            NBNOMI    = 4    
+          ELSEIF  (NOMTM(1:5).EQ.'TRIA6') THEN 
+            NBNOMI    = 0                
+          ELSE
+            NBNOMI = 0         
+          ENDIF          
+
+          NNOQUA = NNOQUA + NBNOMI
+
+   90   CONTINUE
+  110 CONTINUE
+C
+C --- PAS DE QUAD8
+C
+      IF (NNOQUA.EQ.0) THEN
+        GOTO 999
+      ENDIF  
+C
+C --- CREATION DES DEUX VECTEURS
+C
+      PNOQUA = DEFICO(1:16)//'.PNOEUQU'
+      CONOQU = DEFICO(1:16)//'.NOEUQU'
+      CALL WKVECT(PNOQUA,'G V I',NSUCO+1,JNOQUA)
+      CALL WKVECT(CONOQU,'G V I',3*NNOQUA,JNOQU)
+C
+C --- REMPLISSAGE DES DEUX VECTEURS
+C
+      DO 111 ISUCO = 1,NSUCO
+      
+        CALL CFNBSF(DEFICO,ISUCO ,'MAIL',NBMA  ,JDECMA)  
+        INOQTO = 0       
+            
+        DO 91 IMA = 1,NBMA 
+
+C         --- NUMERO MAILLE COURANTE
+            
+          NUMMAI = ZI(JMACO+JDECMA+IMA-1)
+
+C         --- TYPE MAILLE COURANTE
+          
+          ITYPMA = IATYMA - 1 + NUMMAI
+          NUTYP  = ZI(ITYPMA)       
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),NOMTM)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMMAI)
+
+C         --- CONNECTIVITE MAILLE COURANTE
+
+          CALL JEVEUO(JEXNUM(NOMA(1:8)//'.CONNEX',NUMMAI),'L',JDES)
+          
+          IF  (NOMTM(1:5).EQ.'QUAD8') THEN 
+            NBNOMI    = 4
+            NOMILI(1,1) = ZI(JDES+5-1)
+            NOMILI(1,2) = ZI(JDES+6-1)
+            NOMILI(1,3) = ZI(JDES+7-1)
+            NOMILI(1,4) = ZI(JDES+8-1)        
+            NOMILI(2,1) = ZI(JDES+1-1)
+            NOMILI(2,2) = ZI(JDES+2-1)
+            NOMILI(2,3) = ZI(JDES+3-1)
+            NOMILI(2,4) = ZI(JDES+4-1) 
+            NOMILI(3,1) = ZI(JDES+2-1)
+            NOMILI(3,2) = ZI(JDES+3-1)
+            NOMILI(3,3) = ZI(JDES+4-1)
+            NOMILI(3,4) = ZI(JDES+1-1)                    
+          ELSE
+            NBNOMI = 0         
+          ENDIF 
+          
+
+C         --- TABLEAU DES NOEUDS MILIEUX
+
+          IF  (NOMTM(1:5).EQ.'QUAD8') THEN
+            DO 92 INOQUA = 1,NBNOMI 
+              ZI(JNOQU+INDEX+3*(INOQUA-1)+1-1) = NOMILI(1,INOQUA)   
+              ZI(JNOQU+INDEX+3*(INOQUA-1)+2-1) = NOMILI(2,INOQUA) 
+              ZI(JNOQU+INDEX+3*(INOQUA-1)+3-1) = NOMILI(3,INOQUA)
+   92       CONTINUE
+            INDEX = INDEX + 3*NBNOMI   
+            INOQTO = INOQTO + NBNOMI
+          ENDIF   
+   91   CONTINUE
+
+C       --- MISE A JOUR POINTEUR
+   
+        ZI(JNOQUA+ISUCO) = ZI(JNOQUA+ISUCO-1)+3*INOQTO  
+        
+  111 CONTINUE
+  
+  
+C
+C --- ELIMINATION DES NOEUDS MILIEUX DES ARETES DES QUAD8
+C
+      DO 113 ISUCO = 1,NSUCO
+      
+        CALL CFNBSF(DEFICO,ISUCO ,'MAIL',NBMA  ,JDECMA)
+        ZI(JELINO+ISUCO) = ZI(JELINO+ISUCO-1)
+              
+        DO 93 IMA = 1,NBMA 
+
+C         --- NUMERO MAILLE COURANTE
+            
+          NUMMAI = ZI(JMACO+JDECMA+IMA-1)
+
+C         --- TYPE MAILLE COURANTE
+          
+          ITYPMA = IATYMA - 1 + NUMMAI
+          NUTYP  = ZI(ITYPMA)       
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),NOMTM)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMMAI)
+                  
+C         --- ELIMINATION DES NOEUDS MILIEUX DES ARETES DES QUAD8
+
+          IF (NOMTM(1:5).EQ.'QUAD8') THEN 
+            CALL CFNBSF(DEFICO,ISUCO ,'NOQU',NBNOQ ,JDECQU)
+            CALL CFNBSF(DEFICO,ISUCO ,'NOEU',NBNO  ,JDECNO)
+            NBNOQ = NBNOQ/3                     
+            DO 20 INOQUA = 1,NBNOQ
+              INO1 = ZI(JNOQU+JDECQU+3*(INOQUA-1)+1-1)        
+              DO 10 INO = 1,NBNO
+                INO2 = ZI(JNOCO+JDECNO+INO-1)
+
+                IF (INO1.EQ.INO2) THEN
+                  IF (ZI(JINDNO+JDECNO+INO-1).EQ.0) THEN
+                      ZI(JINDNO+JDECNO+INO-1) = 1
+                      ZI(JELINO+ISUCO)        = ZI(JELINO+ISUCO) +1
+                      ELIMNO                  = ELIMNO + 1 
+                  ENDIF  
+                ENDIF
+   10         CONTINUE
+   20       CONTINUE       
+          ENDIF
+   93   CONTINUE
+
+  113 CONTINUE 
+C
+C --- RECOPIE DES NOEUDS NON ELIMINES DANS TABLEAU DE TRAVAIL
+C     
+      NNOCO  = NNOCO0 - ELIMNO
+      CALL WKVECT(LISTNO,'V V I',NNOCO,JNO)
+C
+C --- TRAITEMENT DES NOEUDS MILIEUX DES ARETES DES QUAD8
+C
+      K = 0
+      DO 120 INO = 1,NNOCO0
+        INO1 =ZI(JNOCO+INO-1)  
+        IF (ZI(JINDNO+INO-1).EQ.0) THEN
+          K = K + 1
+          ZI(JNO+K-1) = ZI(JNOCO+INO-1)          
+        ENDIF
+  120 CONTINUE
+      CALL ASSERT(K.EQ.NNOCO)
+C
+  999 CONTINUE
+C
+C --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
+C
+      CALL JEDETR('&&CFLEQ8.INDINO')   
+C
+      CALL JEDEMA()
+      END

@@ -20,7 +20,7 @@ C ======================================================================
       INTEGER             IFR, NPARIM
       CHARACTER*(*)       TABLE, FORMAR, LIPAIM(*)
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRS_602
 C      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
 C ----------------------------------------------------------------------
@@ -464,10 +464,9 @@ C
                IDEB = IFIN + 2
             ELSE
                VALKK (1) = INPAR
-               VALKK (2) = ' '
-               VALKK (3) = LIPACR(1)
-               VALKK (4) = LIPACR(2)
-               CALL U2MESG('F', 'UTILITAI6_99',4,VALKK,0,0,0,0.D0)
+               VALKK (2) = LIPACR(1)
+               VALKK (3) = LIPACR(2)
+               CALL U2MESG('F', 'UTILITAI6_99',3,VALKK,0,0,0,0.D0)
             ENDIF
  420     CONTINUE
 C

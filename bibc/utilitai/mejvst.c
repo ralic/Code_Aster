@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF mejvst utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF mejvst utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -30,7 +30,7 @@ INTEGER DEFP(MEJVST, mejvst, DOUBLE *val)
 {
    static INTEGER MXMEM_STA_JEVEUX=1048576;
    if (*val > 0) {
-      MXMEM_STA_JEVEUX=(INTEGER)((INTEGER)(*val)*1024*1024);
+      MXMEM_STA_JEVEUX=(INTEGER)((*val)*1024.*1024.);
    }
 
    return MXMEM_STA_JEVEUX;

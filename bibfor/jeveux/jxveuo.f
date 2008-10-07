@@ -1,6 +1,6 @@
       SUBROUTINE JXVEUO (CEL , ITAB , INAT , JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,7 +174,7 @@ C
           ENDIF
           IADM( JIADM(IC) + 2*IXDESO-1 ) = IADMI
           IADM( JIADM(IC) + 2*IXDESO   ) = IADYN
-          CALL JJECRS (IADMI,IC,IXDESO,0,CEL,
+          CALL JJECRS (IADMI,IADYN,IC,IXDESO,0,CEL,
      &                 IMARQ(JMARQ(IC)+2*IXDESO-1))
         ENDIF
       GOTO 99
@@ -247,14 +247,14 @@ C
         ISZON ( JISZON + IBIADM - 1 + 2*IDATOC   ) = IADYN
         ISZON ( JISZON + IBIADD - 1 + 2*IDATOC-1 ) = IADDI(1)
         ISZON ( JISZON + IBIADD - 1 + 2*IDATOC   ) = IADDI(2)
-        CALL JJECRS (IADMI, IC, IDOS, IDCO, CEL,
+        CALL JJECRS (IADMI, IADYN, IC, IDOS, IDCO, CEL,
      &               ISZON (JISZON+IBMARQ-1+2*IDATOC-1))
       ELSE
         IADM( JIADM(IC) + 2*IXDESO-1 ) = IADMI
         IADM( JIADM(IC) + 2*IXDESO   ) = IADYN
         IADD( JIADD(IC) + 2*IXDESO-1 ) = IADDI(1)
         IADD( JIADD(IC) + 2*IXDESO   ) = IADDI(2)
-        CALL JJECRS (IADMI,IC,IDOS,0,CEL,IMARQ(JMARQ(IC)+2*IDOS-1) )
+        CALL JJECRS(IADMI,IADYN,IC,IDOS,0,CEL,IMARQ(JMARQ(IC)+2*IDOS-1))
       ENDIF
 C FIN ------------------------------------------------------------------
       END

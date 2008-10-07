@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 % RESPONSABLE VABHHTS J.PELLET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -18,7 +18,11 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 % ======================================================================
 SYME_MTNS_R
-<< SYMETRISATION DES MATRICES DE TEMP_R>>
+<< SYMETRISATION DES MATRICES DE TEMP_R
+   Remarque :
+     Il ne faut ajouter cette option que dans le catalogue des éléments
+     qui calculent des matrices non-symétriques.
+>>
 OPTION__
    IN__
         PNOSYM   MTNS_R          << MATRICE NON-SYMETRIQUE DE TEMP_R A SYMETRISER>>

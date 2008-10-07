@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,6 +31,7 @@ C     'REFE_FORC_NODA'
 C     'SIGM_ELNO_CART'
 C     'CHAR_MECA_EPSI_R'
 C     'PMPB_ELGA_SIEF'
+C     'FORC_NODA_NONL'
 C IN NOMTE     : K16 : NOM DU TYPE ELEMENT
 C     'MECA_DIS_T_N'    : DISCRET
 C     'MECA_DIS_T_L'    : DISCRET
@@ -80,11 +81,15 @@ C     ------------------------------------------------------------------
       REAL*8   FSS(14),PM(3),PMPB(3),NORM(3),MY(3),MZ(3),R12XIY,A12
       REAL*8   RAD,ANGARC,ANGS2
       REAL*8   CARSEC(6), R8BID
+      REAL*8   UGP(12),DUG(12),KLV(78),DULY,FOR2,FOR3,PLOUF
+      REAL*8   ULP(12),DUL(12),KTY2,DVL(12),DPE(12),DVE(12)
+      REAL*8   SIM(12),SIP(12),FONO(12),VARMO(7),VARPL(7)
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
       INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN,IADZI,IAZK24,IREFCO
       INTEGER  NEQ1,IPLOUF,NPG
+      INTEGER  IGEOM,IDEPLM,IDEPLP,ICOMPO,NBT,JDC,IREP,IFONO,ILOGIC
       LOGICAL  AUNOEU
 
       PARAMETER (ZERO=0.0D0, DEUX=2.0D0, UN=1.0D0)
@@ -130,22 +135,26 @@ C     ------------------------------------------------------------------
          NC    = 6
          NEQ   = 12
          NDIM  = 3
+         NBT   = 78
       ELSE IF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
          NNO   = 1
          NC    = 6
          NEQ   = 6
          NDIM  = 3
+         NBT   = 21
       ELSE IF (NOMTE.EQ.'MECA_DIS_T_L') THEN
          IELEM = 1
          NNO   = 2
          NC    = 3
          NEQ   = 6
          NDIM  = 3
+         NBT   = 21
       ELSE IF (NOMTE.EQ.'MECA_DIS_T_N') THEN
          NNO   = 1
          NC    = 3
          NEQ   = 3
          NDIM  = 3
+         NBT   = 6
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_L') THEN
          IELEM = 1
          NNO   = 2
@@ -533,6 +542,7 @@ C              --- CALCUL DES FORCES INDUITES ---
 110            CONTINUE
             END IF
          ELSE
+            IF (OPTION.EQ.'FORC_NODA_NONL') GOTO 800
             CH16 = OPTION
             CALL U2MESK('F','ELEMENTS2_47',1,CH16)
          END IF
@@ -607,5 +617,87 @@ C           --- COORDONNEES DES NOEUDS
             END IF
          END IF
       END IF
+800   CONTINUE      
+      IF (OPTION.EQ.'FORC_NODA_NONL') THEN
+        CALL JEVECH('PGEOMER','L',IGEOM)
+        CALL JEVECH('PDEPLMR','L',IDEPLM)
+        CALL JEVECH('PDEPLPR','L',IDEPLP)
+        CALL JEVECH('PCOMPOR','L',ICOMPO)
+        CALL JEVECH('PMATERC','L',LMATER)
+        IF (NOMTE(1:10).EQ.'MECA_DIS_T') THEN
+C ---    PARAMETRES EN ENTREE
+          CALL JEVECH('PCAORIE','L',LORIEN)
+          CALL MATROT(ZR(LORIEN),PGL)
+C --- DEPLACEMENTS DANS LE REPERE GLOBAL
+C        UGM = DEPLACEMENT PRECEDENT
+C        DUG = INCREMENT DE DEPLACEMENT
+C        UGP = DEPLACEMENT COURANT
+          DO 300 I = 1,NEQ
+            DUG(I) = ZR(IDEPLP+I-1)
+            UGP(I) = ZR(IDEPLM+I-1) + DUG(I)
+300       CONTINUE
+
+C --- DEPLACEMENTS DANS LE REPERE LOCAL
+C        ULM = DEPLACEMENT PRECEDENT    = PLG * UGM
+C        DUL = INCREMENT DE DEPLACEMENT = PLG * DUG
+C        ULP = DEPLACEMENT COURANT      = PLG * UGP
+          IF (NDIM.EQ.3) THEN
+            CALL UTPVGL(NNO,NC,PGL,DUG,DUL)
+            CALL UTPVGL(NNO,NC,PGL,UGP,ULP)
+          ELSE IF (NDIM.EQ.2) THEN
+            CALL UT2VGL(NNO,NC,PGL,DUG,DUL)
+            CALL UT2VGL(NNO,NC,PGL,UGP,ULP)
+          END IF
+          CALL JEVECH('PCADISK','L',JDC)
+          IREP = NINT(ZR(JDC+NBT))
+          CALL DCOPY(NBT,ZR(JDC),1,KLV,1)
+          IF (IREP.EQ.1) THEN
+            CALL UTPSGL(NNO,NC,PGL,ZR(JDC),KLV)
+          END IF
+          IF (ZK16(ICOMPO).EQ.'DIS_CHOC') THEN
+            DO 301 I = 1,7
+              VARMO(I) = 0.D0
+301         CONTINUE
+            DO 401 I = 1,12
+              DVL(I) = 0.D0
+              DPE(I) = 0.D0
+              DVE(I) = 0.D0
+401         CONTINUE
+C ---    RELATION DE COMPORTEMENT DE CHOC
+C ---    CALCUL DES FORCES NODALES
+C        
+            CALL JEVECH('PVECTUR','E',IFONO)
+C
+            DO 501 I = 1,NEQ
+              ZR(IFONO+I-1) = 0.D0
+              SIM(I) = 0.D0
+501         CONTINUE
+
+            ILOGIC = 0
+            PLOUF = 0.D0
+            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,ULP,SIM,ILOGIC,
+     &                  PLOUF,PLOUF,SIP,FONO,PLOUF,PLOUF)
+         
+            CALL DICHOC(NBT,NEQ,NNO,NC,ZI(LMATER),DUL,ULP,ZR(IGEOM),PGL,
+     &                  KLV,KTY2,DULY,DVL,DPE,DVE,FOR2,FOR3,VARMO,VARPL)
+C
+            ILOGIC = 2
+
+            CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,ULP,SIM,ILOGIC,
+     &                  KTY2,DULY,SIP,ZR(IFONO),FOR2,FOR3)     
+            DO 601 I = 1,NEQ
+              ZR(IFONO+I-1) = ZR(IFONO+I-1)-FONO(I)
+601         CONTINUE
+            IF (NNO.EQ.2) THEN
+              DO 602 I = 1,NC
+                ZR(IFONO+I-1) = 0.D0
+602           CONTINUE
+            ENDIF
+            
+          END IF
+C --     FIN DU COMPORTEMENT CHOC           
+        END IF 
+C --     FIN DES MECA_DIS_T        
+      ENDIF
       CALL JEDEMA()
       END

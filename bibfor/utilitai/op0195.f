@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL ZL,DBG
       COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
@@ -54,6 +54,9 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
+
+      DBG=.TRUE.
+      DBG=.FALSE.
 
 
 C 1- CALCUL DE:
@@ -93,7 +96,7 @@ C     ------------------------------------------------------------------
 
       PROL0=' '
       CALL GETVTX(' ','PROL_ZERO',0,1,1,PROL0,IB)
-C     IF ((PROL0.EQ.'NON').AND.(TSCA.EQ.'R')) PROL0='NAN'
+      IF ((PROL0.EQ.'NON').AND.(TSCA.EQ.'R')) PROL0='NAN'
 
       CALL GETVTX(' ','OPTION',0,1,1,OPTION,N1)
       IF (N1.EQ.0) OPTION = ' '
@@ -253,12 +256,9 @@ C --------------------------------------------------------------
       ENDIF
 
 
-C 5.  VERIFICATION PROL_ZERO :
-C ----------------------------------------------
-      IF ((TYCHR(1:2).EQ.'EL').AND.(PROL0.EQ.'NAN')) THEN
-        CALL CELVER(CHOU,'PAS_NAN','COOL',IRET)
-        IF (IRET.NE.0) CALL U2MESK('A','CALCULEL4_1',1,CHOU)
-      ENDIF
+C 5.  AJOUT DU TITRE :
+C -----------------------------------------------------
+      CALL TITRE()
 
 
 C 6.  SI INFO:2    ON IMPRIME LE CHAMP RESULTAT :
@@ -268,9 +268,15 @@ C ----------------------------------------------
      &                          )
 
 
-C 7.  AJOUT DU TITRE :
-C -----------------------------------------------------
-      CALL TITRE()
+C 7.  VERIFICATION PROL_ZERO='NON' POUR LES CHAM_ELEM :
+C ------------------------------------------------------
+      IF ((TYCHR(1:2).EQ.'EL').AND.(PROL0.EQ.'NAN')) THEN
+        CALL CELVER(CHOU,'PAS_NAN','STOP',IRET)
+      ENDIF
+      IF (DBG .AND. TYCHR(1:2).EQ.'EL') THEN
+        CALL CHEKSD(CHOU,'SD_CHAM_ELEM',IRET)
+        CALL ASSERT(IRET.EQ.0)
+      ENDIF
 
 C
       CALL JEDEMA()

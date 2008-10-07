@@ -6,7 +6,7 @@ C     PARAMETRES SENSIBLES - TYPE DE SENSIBILITE
 C     *          *           **      **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C
       DO 122 , IAUX = 1 , NBTYPA
         CALL U2MESK('A','SENSIBILITE_73', 1, TYPARF(IAUX) )
   122 CONTINUE
-      CALL U2MESK('F', 'UTILITAI7_99', 1 ,NOMPRO)
+      CALL ASSERT(.FALSE.)
 C
   121 CONTINUE
 C

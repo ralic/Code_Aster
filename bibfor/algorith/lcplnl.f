@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,8 +101,8 @@ C       ----------------------------------------------------------------
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
         REAL*8          TOUTMS(5,24,6),HSR(5,24,24)
+        CHARACTER*4     CARGAU
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
-
 C       ----------------------------------------------------------------
 C
 C --    INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
@@ -129,8 +129,11 @@ C
         CALL LCEQVN ( NDT  ,  SIGD , YD )
         IRTETI = 0
 
-C       CHOIX DES VALEURS DE VIND A AFFECTER A YD
-        CALL LCAFYD(MATERF,NBCOMM,NMAT,NVI,VIND,YD)
+C     CHOIX DES VALEURS DE VIND A AFFECTER A YD
+      CALL LCAFYD(MATERF,NBCOMM,NMAT,NVI,VIND,YD)
+        
+C     CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS          
+      CALL LCCAGA(LOI,CARGAU)
         
         IF(MOD(1:6).EQ.'C_PLAN') YD (NR) = EPSD(3)
 C
@@ -161,7 +164,7 @@ C
 C       ITERATIONS DE NEWTON 
 
             ITER = ITER + 1
-C
+
 C --        INCREMENTATION DE  YF = YD + DY
 C
             CALL LCSOVN ( NR , YD , DY , YF )
@@ -190,9 +193,8 @@ C --        RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 C
             CALL LCEQMN ( NR , DRDY , DRDY1 )
             CALL LCEQVN ( NR ,   R ,   DDY )
-            CALL MGAUSS ( 'NCWP',DRDY1,DDY,NR,NR,1,RBID,IRET )
+            CALL MGAUSS ( CARGAU,DRDY1,DDY,NR,NR,1,RBID,IRET )
             IF (IRET.NE.0) GOTO 3
-
 C
 C --        REACTUALISATION DE DY = DY + DDY
 C
@@ -207,6 +209,8 @@ C
      &                   NMAT,MATERF,NBCOMM,R,RINI,TYPESS,ESSAI,
      &                   ICOMP,IRTET)
      
+            
+            
             IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
 
 C
@@ -222,8 +226,8 @@ C
         VINF (NVI) = 1.D0
 
 C       POST -TRAITEMENTS POUR DES LOIS PARTICULIERES        
-        CALL LCPLNF ( LOI, VIND,NBCOMM,NMAT,CPMONO,MATERF,
-     &   ITER,NVI,ITMAX, TOLER,PGL, TOUTMS,HSR,DT,DY,YF,VINF)
+        CALL LCPLNF ( LOI, VIND,NBCOMM,NMAT,CPMONO,MATERF,ITER,NVI,
+     &                ITMAX, TOLER,PGL, TOUTMS,HSR,DT,DY,YF,VINF)
 
 C       CONVERGENCE
         IRTETI = 0

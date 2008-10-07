@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMJVX utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF MEMJVX utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,7 +31,7 @@ INTEGER DEFP(MEMJVX, memjvx, DOUBLE *val)
 {
    static INTEGER MEM_JEVEUX=0;
    if (*val >= 0) {
-      MEM_JEVEUX=(INTEGER)((INTEGER)(*val)*1024*1024);
+      MEM_JEVEUX=(INTEGER)((*val)*1024.*1024.);
    }
    
    return MEM_JEVEUX;

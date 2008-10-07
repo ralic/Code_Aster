@@ -11,7 +11,7 @@
       CHARACTER*8       TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      &             TYPPYR, TYPPRI, TYPHEX
       INTEGER       JCOOR, JCONX, JPOIN, JPARA, IAD
       CHARACTER*8   TYCH, NOMA, K8B, NOMAOU,VALK(2)
-      CHARACTER*19  NOCH19
+      CHARACTER*19  NOCH19,NOCO19
 C
 C     --- TABLEAU DE DECOUPAGE
       INTEGER    NTYELE
@@ -115,19 +115,24 @@ C --- RECUPERATION DES INSTANTS, FREQUENCES, ...
 C
       CALL WKVECT ( '&&IRGMSH.PARA' , 'V V R', MAX(1,NBORDR), JPARA  )
       IF ( LRESU ) THEN
-         CALL JEEXIN ( NOMCON(1:8)//'           .INST', IRET )
+         NOCO19=NOMCON
+
+C        -- DANS UN EVOL_NOLI, IL PEUT EXISTER INST ET FREQ.
+C           ON PREFERE INST :
+         CALL JENONU(JEXNOM(NOCO19//'.NOVA','INST'),IRET)
          IF ( IRET .NE. 0 ) THEN
             DO 20 IOR = 1 , NBORDR
                CALL RSADPA(NOMCON,'L',1,'INST',ORDR(IOR),0,IAD,K8B)
                ZR(JPARA+IOR-1) = ZR(IAD)
  20         CONTINUE
-         ENDIF
-         CALL JEEXIN ( NOMCON(1:8)//'           .FREQ', IRET )
+         ELSE
+           CALL JENONU(JEXNOM(NOCO19//'.NOVA','FREQ'),IRET)
          IF ( IRET .NE. 0 ) THEN
             DO 22 IOR = 1 , NBORDR
                CALL RSADPA(NOMCON,'L',1,'FREQ',ORDR(IOR),0,IAD,K8B)
                ZR(JPARA+IOR-1) = ZR(IAD)
  22         CONTINUE
+         ENDIF
          ENDIF
       ELSE
          ZR(JPARA) = 0.D0

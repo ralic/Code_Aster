@@ -3,7 +3,7 @@
       CHARACTER*8         MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -215,13 +215,11 @@ C
          IF ( ZK8(JTYPE+IM) .NE. 'MNEAL   ' ) THEN
             IER = IER + 1
             VALK (1) = ZK8(JTYPE+IM)
-            VALK (2) = K8B
-            CALL U2MESG('E', 'UTILITAI6_39',2,VALK,0,0,0,0.D0)
+            CALL U2MESG('E', 'UTILITAI6_39',1,VALK,0,0,0,0.D0)
          ENDIF
  100  CONTINUE
       CALL ASSERT ( IER .EQ. 0 )
-      CALL JEVEUO ( BAMO//'.TYPE' , 'L' , JTYPE )
-      CALL JELIRA ( BAMO//'.TYPE' , 'LONMAX' , NBM , K8B )
+      CALL RSLIPA(BAMO,'TYPE_DEFO','&&IREDCA.LITDEF',JTYPE,NBM)
       NBMODE = 0
       DO 102 IM = 0 , NBM-1
          IF ( ZK16(JTYPE+IM)(1:6) .EQ. 'PROPRE' ) NBMODE = NBMODE + 1
@@ -241,9 +239,8 @@ C
             CALL POSDDL ('NUME_DDL', NUMDDL, NONOEU, CMP, NUNOE,NUDDL)
             IF ( NUNOE .EQ. 0 ) THEN
                IER = IER + 1
-            VALK (1) = NONOEU
-            VALK (2) = K8B
-               CALL U2MESG('E', 'UTILITAI6_40',2,VALK,0,0,0,0.D0)
+               VALK (1) = NONOEU
+               CALL U2MESG('E', 'UTILITAI6_40',1,VALK,0,0,0,0.D0)
                GOTO 104
             ENDIF
             IF ( NUDDL .EQ. 0 ) THEN
@@ -263,7 +260,7 @@ C
       IF ( NBSTAT .EQ. 0 ) GOTO 200
       CALL WKVECT ( '&&IREDCA.NODDL_CRAY', 'V V I', 2*NBSTAT, JNODDL )
       CALL WKVECT ( '&&IREDCA.NODDL_IEEE', 'V V I', 2*NBSTAT, JNODDE )
-      CALL JEVEUO ( BAMO//'.NOEU' , 'L' , JNOEB )
+      CALL RSLIPA(BAMO,'NOEUD_CMP','&&IREDCA.LINOEU',JNOEB,NBM)
       IER = 0
       INO = 0
       DO 110 IM = NBMODE+1 , NBM
@@ -526,6 +523,8 @@ CS
  1100 FORMAT(I6)
  1200 FORMAT(G14.7)
 CS
+      CALL JEDETR ( '&&IREDCA.LITDEF' )
+      CALL JEDETR ( '&&IREDCA.LINOEU' )
       CALL JEDETR ( '&&IREDCA.NUME_CADYRO' )
       CALL JEDETR ( NOMVE1 )
       CALL JEDETR ( NOMVE2 )

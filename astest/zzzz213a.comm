@@ -1,4 +1,4 @@
-# MODIF  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DES COMMANDES COMB_MATR_ASSE ET CALC_CHAR_CINE (REEL/SYMETRIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,7 +147,7 @@ is_ok = 0
 try :
     XXXX=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas21a, COEF_R = 1.),
                                    _F(  MATR_ASSE = matas22b, COEF_R = 1.)))
-except aster.FatalError,err:
+except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("ALGELINE2_28", str(err))<>None :
@@ -166,7 +166,7 @@ is_ok = 0
 try :
     XXXX=RESOUDRE( MATR = k11, CHAM_NO= vecas11 )
 
-except aster.FatalError,err:
+except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("ALGELINE3_41", str(err))<>None :
@@ -189,7 +189,7 @@ try :
       XXXX=COMB_MATR_ASSE( COMB_R=(  _F(  MATR_ASSE = matas33a, COEF_R = 1.),
                                         _F(  MATR_ASSE = matas33b, COEF_R = 1.)))
 
-except aster.FatalError,err:
+except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("ALGELINE2_10", str(err))<>None :
@@ -214,7 +214,7 @@ try :
      k34 = FACTORISER(MATR_ASSE=matas34);
      u34=RESOUDRE( MATR = k34, CHAM_NO= vecas34 , CHAM_CINE= vcine34 )
 
-except aster.FatalError,err:
+except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("ALGELINE_32", str(err))<>None :

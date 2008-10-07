@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C          'NUME_DDL'     'PROF_CHNO'    'MLTF'
 C          'MATR_ASSE'    'VECT_ASSE'    'MATR_ASSE_GENE'
 C          'MATR_ELEM'    'VECT_ELEM'
 C          'VARI_COM'     'FONCTION' (POUR LES FONCTIONS OU NAPPES)
-C          'TABLE_SDASTER' 'TABLE_CONTAINER' 
+C          'TABLE_SDASTER' 'TABLE_CONTAINER'
 C          'SOLVEUR'      'CORRESP_2_MAILLA'
 C          'CHAM_NO_S'    'CHAM_ELEM_S'
 C          'CHAM_NO'      'CHAM_ELEM'  'CARTE'
@@ -72,7 +72,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8 MAILLA,METRES,K8BID
       CHARACTER*14 NU,COM
       CHARACTER*16 TYP2SD,CORRES
-      CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
+      CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC,RESU
       CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19B,MATEL
       CHARACTER*24 K24B,TYPOBJ,KNOMSD
       LOGICAL LFETI
@@ -566,9 +566,21 @@ C     ---------------------------------------
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'RESULTAT') THEN
 C     -----------------------------------
-        CNS = NOMSD
-        CALL JEEXIN(CNS//'.DESC',IRET)
-        IF (IRET.GT.0) CALL RSDLSD(NOMSD)
+        RESU = NOMSD
+        CALL JEDETR(RESU//'.DESC')
+        CALL JEDETR(RESU//'.TACH')
+        CALL JEDETR(RESU//'.TAVA')
+        CALL JEDETR(RESU//'.NOVA')
+        CALL JEDETR(RESU//'.ORDR')
+        CALL JEDETR(RESU//'.REFD')
+        CALL JEDETR(RESU//'.RSPR')
+        CALL JEDETR(RESU//'.RSPC')
+        CALL JEDETR(RESU//'.RSPI')
+        CALL JEDETR(RESU//'.RSP8')
+        CALL JEDETR(RESU//'.RS16')
+        CALL JEDETR(RESU//'.RS24')
+        CALL JEDETR(RESU//'.RS32')
+        CALL JEDETR(RESU//'.RS80')
 
 C     ------------------------------------------------------------------
       ELSE

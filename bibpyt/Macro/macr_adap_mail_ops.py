@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,6 +80,16 @@ def macr_adap_mail_ops ( self,
 #        dico["NOM_MED"]      = o ; string ; Nom MED du champ
 #        dico["SENSIBILITE"]  = f ; string ; Nom du paramètre sensible associé
 #
+#  5. Signification de INFO
+#     INFO = 1 : aucun message
+#     INFO = 2 : les messages des commandes annexes (DEFI_FICHIER, IMPR_RESU, LIRE_MAILLAGE, LIRE_CHAMP)
+#     INFO = 3 : aucun message pour les commandes annexes
+#                1er niveau de message pour l'exécution de HOMARD
+#     INFO = 4 : aucun message pour les commandes annexes
+#                2nd niveau de message pour l'exécution de HOMARD
+#
+#     Important : EXEC_LOGICIEL necessite INFO au moins egal à 2 pour imprimer les messages
+#
   from Accas import _F
   from Macro import creation_donnees_homard 
   from Utilitai.Utmess     import UTMESS
@@ -132,6 +142,13 @@ def macr_adap_mail_ops ( self,
   dico_indi = {}
 #
   LISTE_ADAPTATION_LIBRE = ("RAFF_DERA" , "RAFFINEMENT" , "DERAFFINEMENT")
+#
+  if ( INFO == 2 ) :
+    infomail = "OUI"
+    infocomm = 2
+  else :
+    infomail = "NON"
+    infocomm = 1
 #
 #====================================================================
 # 2. Décodage des arguments de la macro-commande
@@ -442,11 +459,6 @@ def macr_adap_mail_ops ( self,
 #
 #  Chacune de ces écritures est optionnelle selon le contexte.
 #
-  if ( INFO > 1 ) :
-    infomail = "OUI"
-  else :
-    infomail = "NON"
-#
 # 4.1. ==> Noms des fichiers d'ASTER vers HOMARD et éventuellement de HOMARD vers ASTER
 #          Remarque : aujourd'hui, les écritures ou les lectures au format MED se font obligatoirement sur
 #                     un fichier de nom fort.n, placé dans le répertoire de calcul
@@ -469,7 +481,7 @@ def macr_adap_mail_ops ( self,
   DEFI_FICHIER ( ACTION= "ASSOCIER",
                  UNITE = unite_fichier_aster_vers_homard,
                  TYPE = "LIBRE",
-                 INFO = INFO )
+                 INFO = infocomm )
 #
 # 4.3. Le(s) maillage(s)
 # Le maillage de calcul et l'éventuel maillage de la frontiere sont écrits
@@ -487,7 +499,7 @@ def macr_adap_mail_ops ( self,
       motscfa["RESU"] = _F( INFO_MAILLAGE=infomail,
                           **motscsi )
 #
-      IMPR_RESU ( INFO = INFO, 
+      IMPR_RESU ( INFO = infocomm, 
                   FORMAT ='MED', UNITE = unite_fichier_aster_vers_homard,
                   **motscfa )
 #
@@ -597,7 +609,7 @@ def macr_adap_mail_ops ( self,
                       )
 #gn    print ".. motscfa = ",motscfa
 #
-    IMPR_RESU ( INFO = INFO, 
+    IMPR_RESU ( INFO = infocomm, 
                 FORMAT ='MED', UNITE = unite_fichier_aster_vers_homard,
                 **motscfa )
 #
@@ -688,7 +700,7 @@ def macr_adap_mail_ops ( self,
 # 5.6. ==> Appel de la fonction de création
 #
   donnees_homard = creation_donnees_homard.creation_donnees_homard ( self.nom, args, dico_configuration )
-  if ( INFO > 1 ) :
+  if ( INFO >= 4 ) :
     donnees_homard.quel_mode ( )
   fic_homard_niter, fic_homard_niterp1 = donnees_homard.creation_configuration ( )
   donnees_homard.ecrire_fichier_configuration ( )
@@ -701,7 +713,7 @@ def macr_adap_mail_ops ( self,
 #
 #gn  print "Répertoire ",Rep_Calc_HOMARD_global
 #gn  os.system("ls -la "+Rep_Calc_HOMARD_global)
-  if ( INFO > 1 ) :
+  if ( INFO >= 4 ) :
     l_aux = ["HOMARD.Donnees" , "HOMARD.Configuration"]
   else :
     l_aux = [ ]
@@ -728,12 +740,15 @@ def macr_adap_mail_ops ( self,
 #
 #
 #gn  print "\.. Debut de 6."
+#gn  os.system("cp " + Rep_Calc_HOMARD_global + "/../fort.17* $HOME/aster")
+#gn  os.system("cp " + Rep_Calc_HOMARD_global + "/HOMARD.Configuration $HOME/aster/HOMARD.Configuration"+str(niter))
 #gn  fichier_aster_vers_homard_2 = os.path.join("/tmp" , "fort." + str(unite_fichier_aster_vers_homard))
 #gn  shutil.copyfile(fichier_aster_vers_homard, fichier_aster_vers_homard_2)
 #
+  iaux = INFO
   EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_HOMARD_global, # nom du repertoire
                               VERSION_HOMARD,         # version de homard
-                              str(INFO),              # niveau d information
+                              str(iaux),              # niveau d information
                               Nom_Fichier_Donnees,    # fichier de données HOMARD
                               str(version_perso),     # version personnelle de homard ?
                              ),
@@ -774,7 +789,7 @@ def macr_adap_mail_ops ( self,
         maillage_a_lire = LIRE_MAILLAGE ( UNITE = unite_fichier_homard_vers_aster,
                                        FORMAT = "MED",
                                        NOM_MED = dico["NOM_MED"],
-                                       VERI_MAIL = _F(VERIF="NON"), INFO_MED = INFO, INFO = INFO )
+                                       VERI_MAIL = _F(VERIF="NON"), INFO_MED = infocomm, INFO = infocomm )
 #gn        print "MAILLAGE = ",maillage_a_lire
 #gn        print "NOM_MED = ",dico["NOM_MED"]
         if ( dico["Type_Maillage"] == "MAILLAGE_NP1" ) :
@@ -803,7 +818,7 @@ def macr_adap_mail_ops ( self,
         champ_maj = LIRE_CHAMP ( UNITE = unite_fichier_homard_vers_aster, FORMAT = "MED",
                                  MAILLAGE = maillage_np1, NOM_MAIL_MED=maillage_np1_nom_med,
                                  NOM_MED = dico["NOM_MED"], NOM_CMP_IDEM = "OUI", TYPE_CHAM = dico["TYPE_CHAM"],
-                                 INFO = INFO, **motscsi )
+                                 INFO = infocomm, **motscsi )
 #
 #====================================================================
 # 8. Menage des fichiers devenus inutiles
@@ -821,10 +836,11 @@ def macr_adap_mail_ops ( self,
     liste_aux.append(fichier_homard_vers_aster)
     fic = os.path.join(Rep_Calc_HOMARD_global, fic_homard_niterp1)
     liste_aux_bis.append(fic)
+#gn  os.system("cp " + Rep_Calc_HOMARD_global + "/* $HOME/aster")
 #
   for fic in liste_aux :
     if fic not in liste_aux_bis :
-      if ( INFO > 1 ) :
+      if ( INFO >= 3 ) :
         print "Destruction du fichier ", fic
       if os.path.isfile(fic) :
         try :
@@ -837,14 +853,14 @@ def macr_adap_mail_ops ( self,
 #gn  print "Répertoire ",Rep_Calc_ASTER
 #gn  os.system("ls -la "+Rep_Calc_ASTER)
 #gn  print os.listdir(Rep_Calc_HOMARD_global)
-#gn  print "glop :", Rep_Calc_HOMARD_global
 #
 #====================================================================
 #  C'est fini !
 #====================================================================
 #
-#gn  if ( mode_homard == "ADAP" ) :
-#gn    import time
-#gn    time.sleep(3600)
+###  if ( mode_homard == "ADAP" and niter == 3 ) :
+###  if ( niter == 2 ) :
+###    import time
+###    time.sleep(3600)
 #
   return

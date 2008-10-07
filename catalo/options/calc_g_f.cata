@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
+%& MODIF OPTIONS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,19 @@ OPTION__
         PVITESS  DEPL_R
         PACCELE  DEPL_R
         PCONTGR  SIEF_R
+        PFISSR   FISS_R     
+        PBASLOR  NEUT_R
+        PCOURB   NEUT_R
+        PPINTTO  NEUT_R
+        PCNSETO  NEUT_I
+        PHEAVTO  NEUT_I
+        PLONCHA  NEUT_I
+        PLSN     NEUT_R
+        PLST     NEUT_R
+        PPINTER  NEUT_R
+        PAINTER  NEUT_R
+        PCFACE   NEUT_I
+        PLONGCO  NEUT_I
    OUT__
 PGTHETA G ELEM__
 

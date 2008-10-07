@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,9 +40,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8   NOMRES, BASEMO, CRIT, MODEFL, TYPFLU, K8BID, FORMAR
+      CHARACTER*8   KBID
       CHARACTER*16  TYPRES, NOMCMD, NOMCH(1)
       CHARACTER*19  BASEFL
-      CHARACTER*24  FREQI, NUMOI, NUMO, VITE, REFEFL, FSIC, FSVI
+      CHARACTER*24  NUMOI, NUMO, VITE, REFEFL, FSIC, FSVI
       LOGICAL       NEWRES, LNUOR, LAMOR, LAMORU, NOCOPL, NUMOK
       COMPLEX*16    CBID
 C     ------------------------------------------------------------------
@@ -128,10 +129,15 @@ C-----2.3.ERREUR FATALE SI TOUS LES MODES NON COUPLES SONT RETENUS
 C         (MOT-CLE <NUME_ORDRE> NON UTILISE) ET NOMBRE D'ARGUMENTS
 C         INVALIDE POUR LE MOT-CLE <AMOR_REDUIT>
 C
-      FREQI = BASEMO//'           .FREQ'
-      CALL JELIRA(FREQI,'LONUTI',NBMODE,K8BID)
+      CALL JELIRA(BASEMO//'           .ORDR','LONUTI',NBMODE,K8BID)
+      CALL JEVEUO(BASEMO//'           .ORDR','L',JORDR)
+
+
+C--------------------------------------------------------------------
       NUMO = BASEFL//'.NUMO'
       CALL JELIRA(NUMO,'LONUTI',NBMFL,K8BID)
+      CALL JEVEUO(NUMO,'L',INUMO)
+
       NBMOD2 = NBMODE - NBMFL
       IF (.NOT.LNUOR .AND. LAMOR .AND. NBAMO1.NE.NBMOD2) THEN
         CALL U2MESS('F','ALGORITH9_60')
@@ -144,9 +150,8 @@ C       (MODES NON PERTURBES + MODES PRIS EN COMPTE POUR LE COUPLAGE)
 C       LE CAS ECHEANT ON CREE UNE LISTE D'AMORTISSEMENTS REDUITS QUI
 C       SERONT AFFECTES AUX MODES NON PERTURBES
 C
-      CALL JEVEUO(NUMO,'L',INUMO)
-      NUMOI = BASEMO//'           .NUMO'
-      CALL JEVEUO(NUMOI,'L',INUMOI)
+C     NUMOI = BASEMO//'           .NUMO'
+C     CALL JEVEUO(NUMOI,'L',INUMOI)
 C
 C-----3.1.SI ON CREE UN NOUVEAU CONCEPT DE TYPE MODE_MECA EN SORTIE
 C
@@ -177,7 +182,9 @@ C
   11        CONTINUE
   12        CONTINUE
             DO 13 K = 1,NBMODE
-              IF (ZI(INUMOI+K-1).EQ.NUMODE) THEN
+              CALL RSADPA(BASEMO,'L',1,'NUME_MODE',ZI(JORDR-1+K),0,
+     &                   JPARA,KBID)
+              IF (ZI(JPARA).EQ.NUMODE) THEN
                 NUMOK = .TRUE.
                 GOTO 14
               ENDIF
@@ -239,7 +246,9 @@ C
             CALL WKVECT('&&OP0149.TEMP.NUOR','V V I',NBNUOR,INUOR)
             CALL WKVECT('&&OP0149.TEMP.AMOR','V V I',NBNUOR,IAMOR)
             DO 30 I = 1,NBNUOR
-              ZI(INUOR+I-1) = ZI(INUMOI+I-1)
+              CALL RSADPA(BASEMO,'L',1,'NUME_MODE',ZI(JORDR-1+I),0,
+     &                    JPARA,KBID)
+              ZI(INUOR+I-1) = ZI(JPARA)
   30        CONTINUE
             IDEC = 0
             DO 31 I = 1,NBNUOR
@@ -284,7 +293,9 @@ C
         CALL WKVECT('&&OP0149.TEMP.NUOR','V V I',NBNUOR,INUOR)
         CALL WKVECT('&&OP0149.TEMP.AMOR','V V I',NBNUOR,IAMOR)
         DO 50 I = 1,NBNUOR
-          ZI(INUOR+I-1) = ZI(INUMOI+I-1)
+          CALL RSADPA(BASEMO,'L',1,'NUME_MODE',ZI(JORDR-1+I),0,
+     &                JPARA,KBID)
+          ZI(INUOR+I-1) = ZI(JPARA)
   50    CONTINUE
         IF ((LNUOR.AND.LAMOR) .OR. (LNUOR.AND.LAMORU)) THEN
           DO 51 I = 1,NBNUO1
@@ -299,7 +310,9 @@ C
   52        CONTINUE
   53        CONTINUE
             DO 54 K = 1,NBMODE
-              IF (ZI(INUMOI+K-1).EQ.NUMODE) THEN
+              CALL RSADPA(BASEMO,'L',1,'NUME_MODE',ZI(JORDR-1+K),0,
+     &                    JPARA,KBID)
+              IF (ZI(JPARA).EQ.NUMODE) THEN
                 NUMOK = .TRUE.
                 GOTO 55
               ENDIF

@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/05/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C     IL FAUT FAIRE LE CALCUL SUR TOUT LE MODELE
         CALL JEVEUO(KNUM,'L',JORD)
 C        --- ON RECUPERE LES INSTANTS ---
         CALL WKVECT(KINS,'V V R',NBORDR,JINS)
-        CALL JEEXIN(RESUL//'           .INST',IRET)
+        CALL JENONU(JEXNOM(RESUL//'           .NOVA','INST'),IRET)
         IF (IRET.NE.0) THEN
           DO 20 IORD = 1,NBORDR
             NUMORD = ZI(JORD+IORD-1)

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,6 +83,10 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
            DIRECTION       =SIMP(statut='f',typ='R',max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+         ),
+         EXCIT_RESU      =FACT(statut='f',max='**',
+           RESULTAT        =SIMP(statut='o',typ=dyna_trans ),
+           COEF_MULT       =SIMP(statut='o',typ='R' ),
          ),
          AMOR_MODAL      =FACT(statut='f',
            MODE_MECA       =SIMP(statut='f',typ=mode_meca ),

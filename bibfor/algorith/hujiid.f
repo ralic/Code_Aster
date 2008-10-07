@@ -2,7 +2,7 @@
      &                   LOOP, DSIG, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -215,6 +215,10 @@ Caf 09/05/07 Fin
         DO 3 K = 1, 24
           PSI(K) = ZERO
   3       CONTINUE
+  
+        DO 6 K = 1, 4
+          PE(K) = ZERO
+  6       CONTINUE  
 
         DO 5 K = 1, NBMECA
         

@@ -4,7 +4,7 @@
       INTEGER                    IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,7 +201,7 @@ C                     IIFIN = 1
                      VALK (2) = 'CONCEPT.'
                      VALK (3) = 'TYPE DU CONCEPT.'
                      VALK (4) = 'SERA  CREE  PAR '
-      CALL U2MESG(CODE2,'SUPERVIS_69',4,VALK,0,0,0,0.D0)
+      CALL U2MESG(CODE2,'SUPERVIS_65',4,VALK,0,0,0,0.D0)
                      CALL UTSAUT()
                   ENDIF
                ENDIF
@@ -219,7 +219,7 @@ C
                   VALK (3) = ZK80(LGRESU+JCMD)( 9:24)
                   VALK (4) = ZK80(LGRESU+JCMD)(25:40)
                   VALK (5) = ZK80(LGRESU+JCMD)(41:48)
-      CALL U2MESG(CODE2,'SUPERVIS_70',5,VALK,0,0,0,0.D0)
+      CALL U2MESG(CODE2,'SUPERVIS_66',5,VALK,0,0,0,0.D0)
                ENDIF
             ELSEIF(ZK80(LGRESU+JCMD)(25:40) .EQ. 'FIN' ) THEN
                GOTO 201

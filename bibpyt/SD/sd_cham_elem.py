@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_elem SD  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_elem SD  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,5 +45,49 @@ class sd_cham_elem(sd_titre):
         assert celk[4] in ('','INF','MOY','SUP') , celk
         assert celk[5] != '' , celk
         assert celk[6] in ('MPI_COMPLET','MPI_INCOMPLET') , celk
+
+    def check_2(self, checker):
+        if not checker._profond : return
+        if not self.exists() : return
+        celd=self.CELD.get()
+        assert celd[0] > 0 , celd
+        ngrel= celd[1]
+        assert ngrel > 0 , celd
+        mxsp = celd[2]
+        assert mxsp > 0 , celd
+        mxcmp = celd[3]
+        lvari = mxcmp > 0
+        for kgrel in range(ngrel) :
+            debugr= celd[4+kgrel]-1
+            nbel  = celd[debugr+1]
+            modelo= celd[debugr+2]
+            lgcata= celd[debugr+3]
+            lggrel= celd[debugr+4]
+
+            assert nbel > 0 , (nbel,kgrel)
+            assert modelo >= 0 , (modelo,kgrel)
+            if modelo == 0 :
+                assert lgcata == 0 , (lgcata,kgrel)
+                assert lggrel == 0 , (lggrel,kgrel)
+                continue
+
+            assert lgcata > 0 , (lgcata,kgrel)
+            assert lggrel > 0 , (lggrel,kgrel)
+            assert lggrel >= nbel*lgcata , (lggrel,kgrel,nbel,lgcata)
+
+
+            for iel in range(nbel) :
+                nbsp  =celd[debugr+4+4*iel+1]
+                ncdyn =celd[debugr+4+4*iel+2]
+                lgchel=celd[debugr+4+4*iel+3]
+                adiel =celd[debugr+4+4*iel+4]
+                assert nbsp > 0 , (nbsp,kgrel,iel)
+                if lvari :
+                   assert ncdyn > 0 , (ncdyn,kgrel,iel)
+                   assert lgchel == lgcata*nbsp*ncdyn , (lgchel,lgcata,nbsp,ncdyn,kgrel,iel)
+                else :
+                   assert ncdyn == 0 , (ncdyn,kgrel,iel)
+                   assert lgchel == lgcata*nbsp , (lgchel,lgcata,nbsp,kgrel,iel)
+                assert adiel > 0 , (adiel,kgrel,iel)
 
 

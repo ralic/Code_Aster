@@ -2,7 +2,7 @@
      &             VIND, SIGF, VINF, IRET, ETATF)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C   ------------------------------------------------------------------
         REAL*8        SEUIL, RF, RD
         REAL*8        VINT(NVIMAX)
         LOGICAL       CHGMEC, NOCONV, AREDEC, STOPNC, NEGMUL(8)
-        LOGICAL       SUBD, RDCTPS, LOOP, INDMEC(8)
+        LOGICAL       SUBD, RDCTPS, LOOP
         CHARACTER*8   MOD
         CHARACTER*7   ETATF
         LOGICAL       DEBUG
@@ -239,7 +239,7 @@ C                  DES MULTIPLICATEURS PLASTIQUES
 C                  DES SEUILS EN DECHARGE
 
          CALL HUJACT(MATER, VIND, VINF, VINS, SIGD, SIGF,
-     &               NEGMUL, CHGMEC, INDMEC, IRET)
+     &               NEGMUL, CHGMEC, IRET)
          IF(IRET.EQ.1)GOTO 9999
 Caf 05/09/2007 Fin
   

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='ZZZZ107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NOM='ZZZZ107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
+      ERREUR=_F(ERREUR_F='EXCEPTION'),
       PAR_LOT='NON')
 
 # REMARQUE : LE TRAITEMENT DES EXCEPTIONS N'A DE SENS QU'EN PAR_LOT='NON'
@@ -29,9 +31,6 @@ DEBUT(CODE=_F(NOM='ZZZZ107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(
 # CE CAS TEST EST IDENTIQUE A SSNL102A. IL SERT A VALIDER
 # LA LEVEE D EXCEPTION PAR UTEXCP(numero) DANS LE FORTRAN
 
-#
-# PRECAUTION : Eviter d'utiliser aster.error,
-#              preferer l'utilisation des exceptions particularisees.
 #
 # NE JAMAIS FAIRE DE 'except:' SANS PRECISER QUELLE EXCEPTION
 #
@@ -48,10 +47,6 @@ is_ok = 0
 try:
    raise aster.error, \
       """CAS 1 : declencher error car l'exception n'est pas particularisee."""
-
-except aster.FatalError,err:
-   print "Exception FatalError interceptee"
-   print "Raison : " + str(err)
 
 except aster.NonConvergenceError,err:
    print "Exception NonConvergence interceptee"
@@ -181,7 +176,7 @@ aster.onFatalError('EXCEPTION')
 print fmt % aster.onFatalError()
 try:
    ma=LIRE_MAILLAGE(UNITE=999)   # unite invalide
-except aster.FatalError, msg:
+except aster.error, msg:
    is_ok = 1
    print """
    Message emis lors de l'erreur dans LIRE_MAILLAGE :

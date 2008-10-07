@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 15/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -618,7 +618,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
-  # 
+  #
   MasquerAlarme('CALCULEL2_63')
   MasquerAlarme('CALCULEL2_64')
   MasquerAlarme('MODELISA5_53')
@@ -640,8 +640,8 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
       mcORDR['TOUT_ORDRE']='OUI'
 
     nomresu=RESULTAT.nom
-    l_modele=aster.getvectjev(nomresu.ljust(19)+'.MODL')
-    n_modele=string.strip(l_modele[0])
+    iret,ibid,n_modele = aster.dismoi('F','MODELE',nomresu,'RESULTAT')
+    n_modele=n_modele.strip()
     if n_modele=='' :
       if MODELE==None:
         UTMESS('F','POST0_9',valk=nomresu)

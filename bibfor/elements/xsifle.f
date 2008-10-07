@@ -4,7 +4,7 @@
      &                  OPTION,IGTHET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,7 +39,7 @@ C                          SUR LES LEVRES DES FISSURES X-FEM
 C
 
 
-C OUT IGTHET  : G, K1, K2, K3
+C OUT IGTHET  : G (OPTION CALC_G) ET K1, K2, K3 (SI OPTION CALC_K_G)
 
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -200,7 +200,7 @@ C       -----------------------------------------------
 
         CALL LCINVN(3*2,0.D0,FORREP)
 
-        IF (OPTION.EQ.'CALC_K_G') THEN
+        IF ((OPTION.EQ.'CALC_K_G') .OR. (OPTION.EQ.'CALC_G')) THEN
 
 C         CALCUL DE LA PRESSION AUX POINTS DE GAUSS
           PRES = 0.D0
@@ -223,7 +223,8 @@ C         CALCUL DE LA PRESSION AUX POINTS DE GAUSS
              FORREP(2,2) = FORREP(2,2)+ CISA * (-ND(1))
           ENDIF
 
-        ELSEIF (OPTION.EQ.'CALC_K_G_F') THEN
+        ELSEIF ((OPTION.EQ.'CALC_K_G_F') .OR. 
+     &                    (OPTION.EQ.'CALC_G_F'))THEN
 
 C         VALEUR DE LA PRESSION
           XG(NDIM+1) = ZR(ITEMPS)
@@ -300,24 +301,24 @@ C           DDL ENRICHIS EN FOND DE FISSURE
 C         --------------------------------
 C         4) CALCUL DES CHAMPS AUXILIAIRES
 C         --------------------------------
-
+          IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
 C         CHAMPS AUXILIARES DANS LA BASE LOCALE : U1L,U2L,U3L
-          CALL LCINVN(9,0.D0,RB9)
-          CALL CHAUXI(NDIM,MU,KA,-LST,ANGL(ILEV),RB9,.FALSE.,
+            CALL LCINVN(9,0.D0,RB9)
+            CALL CHAUXI(NDIM,MU,KA,-LST,ANGL(ILEV),RB9,.FALSE.,
      &                RB,RB9,RB9,RB9,U1L,U2L,U3L)
 
 C         CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3
-          CALL LCINVN(NDIM,0.D0,U1)
-          CALL LCINVN(NDIM,0.D0,U2)
-          CALL LCINVN(NDIM,0.D0,U3)
-          DO 510 I=1,NDIM
-            DO 511 J=1,NDIM
-              U1(I) = U1(I) + P(I,J) * U1L(J)
-              U2(I) = U2(I) + P(I,J) * U2L(J)   
-              IF (NDIM.EQ.3) U3(I) = U3(I) + P(I,J) * U3L(J) 
- 511        CONTINUE
- 510      CONTINUE
-
+            CALL LCINVN(NDIM,0.D0,U1)
+            CALL LCINVN(NDIM,0.D0,U2)
+            CALL LCINVN(NDIM,0.D0,U3)
+            DO 510 I=1,NDIM
+              DO 511 J=1,NDIM
+                U1(I) = U1(I) + P(I,J) * U1L(J)
+                U2(I) = U2(I) + P(I,J) * U2L(J)   
+                IF (NDIM.EQ.3) U3(I) = U3(I) + P(I,J) * U3L(J) 
+ 511          CONTINUE
+ 510        CONTINUE
+          ENDIF
 C         -----------------------------------------
 C         5) CALCUL DE 'DFOR' =  D(PRES)/DI . THETA
 C         -----------------------------------------
@@ -328,11 +329,16 @@ C         -----------------------------------------
           DO 400 I=1,NDIM
             DO 410 J=1,NDIM
                DO 411 INO=1,NNOP
-                 IF (OPTION.EQ.'CALC_K_G')   DPREDI(I,J) = DPREDI(I,J) +
+                 IF ((OPTION.EQ.'CALC_K_G') 
+     &               .OR. (OPTION.EQ.'CALC_G')) THEN   
+                         DPREDI(I,J) = DPREDI(I,J) +
      &         HE(ILEV) * DFDI(INO,J) * ZR(IPRES-1+INO) * ND(I)
-
-                 IF (OPTION.EQ.'CALC_K_G_F') DPREDI(I,J) = DPREDI(I,J) +
+                 ENDIF
+                 IF ((OPTION.EQ.'CALC_K_G_F') 
+     &               .OR. (OPTION.EQ.'CALC_G_F')) THEN   
+                         DPREDI(I,J) = DPREDI(I,J) +
      &              HE(ILEV) * DFDI(INO,J) * PRESN(INO) * ND(I)
+                 ENDIF
  411          CONTINUE
  410        CONTINUE
  400      CONTINUE
@@ -352,16 +358,22 @@ C         -----------------------------------
           
           DO 520 J = 1,NDIM
             G  =  G + (FORREP(J,ILEV) * DIVT + DFOR(J)) * DEPLA(J)
-            K1 = K1 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U1(J)
-            K2 = K2 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U2(J)
-            K3 = K3 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U3(J)
+            IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
+              K1 = K1 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U1(J)
+              K2 = K2 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U2(J)
+              K3 = K3 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U3(J)
+            ENDIF
  520      CONTINUE
 
-          ZR(IGTHET)   = ZR(IGTHET)   + G  * JAC * MULT                
-          ZR(IGTHET+1) = ZR(IGTHET+1) + K1 * JAC * MULT * COEFF  * 0.5D0
-          ZR(IGTHET+2) = ZR(IGTHET+2) + K2 * JAC * MULT * COEFF  * 0.5D0
-          ZR(IGTHET+3) = ZR(IGTHET+3) + K3 * JAC * MULT * COEFF3 * 0.5D0
- 
+          ZR(IGTHET)   = ZR(IGTHET)   + G  * JAC * MULT    
+          IF (OPTION(1:8).EQ.'CALC_K_G')  THEN            
+            ZR(IGTHET+1)=ZR(IGTHET+1)+ K1*JAC*MULT*SQRT(COEFF)*0.5D0
+            ZR(IGTHET+2)=ZR(IGTHET+2)+ K2*JAC*MULT*SQRT(COEFF)*0.5D0
+            ZR(IGTHET+3)=ZR(IGTHET+3)+ K3*JAC*MULT*SQRT(COEFF3)*0.5D0
+            ZR(IGTHET+4) = ZR(IGTHET+4) +K1 * JAC * MULT * COEFF *0.5D0
+            ZR(IGTHET+5) = ZR(IGTHET+5) +K2 * JAC * MULT * COEFF *0.5D0
+            ZR(IGTHET+6) = ZR(IGTHET+6) +K3 * JAC * MULT * COEFF3*0.5D0
+          ENDIF
  300    CONTINUE
 C       FIN DE BOUCLE SUR LES DEUX LEVRES
 

@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements3 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,79 +37,66 @@ cata_msg = {
 """),
 
 12 : _("""
- e, nu, alpha dependent de la temperature,                         tgu differente de tgv
+ Calcul de G bilinéaire
+ E, NU, ALPHA dépendent de la temperature
+ Les champs de température (TGU et TGV) sont différents
 """),
 
 16 : _("""
- comportement: %(k1)s non implante
+ Comportement: %(k1)s non implanté
 """),
 
 17 : _("""
- le materiau  %(k1)s  n'est pas connu. seuls sont admis les materiaux  'ther', 'ther_coqmu' et 'ther_coque' pour les coques thermiques .
+ Le matériau  %(k1)s  n'est pas connu
+ Seuls sont admis les matériaux  'THER' et 'THER_COQUE' pour les coques thermiques
 """),
 
 18 : _("""
- le materiau  %(k1)s  n'est pas connu. seuls sont admis les materiaux  'ther' et 'ther_coqmu' pour le calcul des flux pour les coques thermiques .
+ Le matériau  %(k1)s  n'est pas connu
+ Seuls sont admis les materiaux  'THER' et 'THER_COQUE' pour le calcul des flux pour les coques thermiques
 """),
 
 19 : _("""
- l'option  %(k1)s  n'est disponible qu'avec des elements tetra ou hexa. or, la maille  %(k2)s  est de type  %(k3)s .
+ L'option  %(k1)s  n'est disponible qu'avec des éléments TETRA ou HEXA
+ Or, la maille  %(k2)s  est de type  %(k3)s .
 """),
 
 20 : _("""
- la maille  %(k1)s  ne repond pas au critere geometrique sur les mailles hexa : les cotes opposes doivent etre paralleles
-"""),
-
-21 : _("""
- erreur lors de l appel a fointe
-"""),
-
-22 : _("""
- erreur dans le calcul de coef_f
+ La maille  %(k1)s  ne répond pas au critère géometrique sur les mailles HEXA :
+ Les cotés opposés doivent être parallèles
 """),
 
 25 : _("""
- calcul de sensibilite :  actuellement, on ne derive que les : pou_d_e
+ Calcul de sensibilité :
+ Actuellement, on ne dérive que les POU_D_E
 """),
 
 26 : _("""
- mauvaise definition des caracteristiques de la section
-"""),
-
-27 : _("""
- l'option  " %(k1)s "  n'est pas programmee
+ Mauvaise définition des caractéristiques de la section
 """),
 
 28 : _("""
- rigidite geometrique non definie pour les elements courbes.
+ Rigidité géométrique non définie pour les éléments courbes
 """),
 
 29 : _("""
- force elementaire electrique non definie pourles elements courbes.
+ Force élémentaire électrique non définie pour les éléments courbes
 """),
 
 30 : _("""
- section non tubulaire pour mass_flui_stru
+ Section non tubulaire pour MASS_FLUI_STRU
 """),
 
 31 : _("""
- pas de valeur utilisateur pour rho
-"""),
-
-32 : _("""
- " %(k1)s "  nom d'option inconnu.
-"""),
-
-33 : _("""
- option non disponible
+ Pas de valeur utilisateur pour RHO
 """),
 
 34 : _("""
- seules les forces suiveuses de type vent definies par un evol_char sont autorisees
+ Seules les forces suiveuses de type vent définies par un evol_char sont autorisées
 """),
 
 35 : _("""
- un champ de vitesse de vent est impose sans donner un cx dependant de la vitesse sur une des barres.
+ Un champ de vitesse de vent est imposé sans donner un CX dépendant de la vitesse sur une des barres
 """),
 
 36 : _("""
@@ -117,11 +104,11 @@ cata_msg = {
 """),
 
 37 : _("""
-  relation :  %(k1)s  non implantee sur les cables
+  Relation :  %(k1)s  non implantée sur les cables
 """),
 
 38 : _("""
-  deformation :  %(k1)s  non implantee sur les cables
+  Déformation :  %(k1)s  non implantée sur les cables
 """),
 
 39 : _("""
@@ -192,7 +179,7 @@ cata_msg = {
 """),
 
 60 : _("""
- noeuds confondus pour un element de poutre
+ Noeuds confondus pour un élément de poutre
 """),
 
 61 : _("""
@@ -200,39 +187,30 @@ cata_msg = {
 """),
 
 62 : _("""
- noeuds confondus pour un element de barre
+ Noeuds confondus pour un élément de barre
 """),
 
 63 : _("""
- ne pas utiliser ther_lineaire avec des elements de fourier mais les cmdes developpees
-"""),
-
-64 : _("""
- erreur dans le calcul de coeh_f
-"""),
-
-66 : _("""
- option  %(k1)s  inattendue
+ ne pas utiliser THER_LINEAIRE avec des éléments de fourier mais les cmdes developpees
 """),
 
 67 : _("""
- element degenere:revoir le maillage
-"""),
-
-73 : _("""
- option de calcul non valide
+ Elément dégénéré : 
+ revoir le maillage
 """),
 
 74 : _("""
- pour l'option "rice_tracey", la relation " %(k1)s " n'est pas admise
+ pour l'option "RICE_TRACEY", la relation " %(k1)s " n'est pas admise
 """),
 
 75 : _("""
- le materiau  %(k1)s  n'est pas autorise pour calculer les deformations plastiques : seuls les materiaux isotropes sont traites en plasticite.
+ le matériau %(k1)s  n'est pas autorisé pour calculer les deformations plastiques :
+ seuls les matériaux isotropes sont traités en plasticité
 """),
 
 76 : _("""
- couplage fluage/fissuration : la loi beton_double_dp ne peut etre couplee qu avec une loi de fluage de granger.
+ couplage fluage/fissuration :
+ la loi BETON_DOUBLE_DP ne peut etre couplée qu'avec une loi de fluage de GRANGER
 """),
 
 77 : _("""
@@ -246,27 +224,15 @@ cata_msg = {
 """),
 
 78 : _("""
-  la reactualisation de la geometrie (deformation : petit_reac sous le mot cle comp_incr) est deconseillee pour les elements pou_d_tg  .
-"""),
-
-79 : _("""
- tableau sous dimensionne (dvlp)
+  la réactualisation de la géometrie (déformation : PETIT_REAC sous le mot cle COMP_INCR) est deconseillée pour les éléments POU_D_TG
 """),
 
 80 : _("""
  situation de contact impossible
 """),
 
-82 : _("""
- vecteur sous dimensionne (dvlp)
-"""),
-
-83 : _("""
- dimension incorrecte (dvlp)
-"""),
-
 84 : _("""
- type maille inconnu
+ type de maille inconnu
 """),
 
 85 : _("""
@@ -278,19 +244,11 @@ cata_msg = {
 """),
 
 87 : _("""
- rcvala ne trouve pas rho, qui est necessaire en dynamique
-"""),
-
-89 : _("""
- developpement non realise
-"""),
-
-90 : _("""
- option:  %(k1)s  non implante
+ RCVALA ne trouve pas RHO, qui est nécessaire en dynamique
 """),
 
 91 : _("""
-  calcul de la masse non implante pour les elements coque_3d en grandes rotations, deformation : green_gr
+  calcul de la masse non implanté pour les éléments COQUE_3D en grandes rotations, deformation : GREEN_GR
 """),
 
 92 : _("""
@@ -298,7 +256,8 @@ cata_msg = {
 """),
 
 93 : _("""
-  deformation :  %(k1)s  non implantee sur les elements coque_3d en grandes rotations.   deformation : green_gr obligatoirement 
+  déformation :  %(k1)s  non implantée sur les éléments COQUE_3D en grandes rotations
+  déformation : GREEN_GR obligatoirement 
 """),
 
 94 : _("""
@@ -318,11 +277,11 @@ cata_msg = {
 """),
 
 98 : _("""
- comportement coeur homogeneise inexistant
+ comportement coeur homogénéise inexistant
 """),
 
 99 : _("""
-  : seule les poutres a sections constantes sont admises !
+  : seule les poutres à sections constantes sont admises !
 """),
 
 }

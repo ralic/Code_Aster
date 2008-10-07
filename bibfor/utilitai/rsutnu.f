@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,6 +103,8 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
         CALL RSORAC(RESU,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,IORD,1,
      &              IBID)
         DO 40 IACC = 1,NBACC
+          IF (.NOT.GETEXM(MOTCLE,ZK16(JPARA-1+IACC))) GOTO 40
+
           CTYP = '    '
           CALL RSADPA(RESU,'L',1,ZK16(JPARA-1+IACC),IORD,1,IAD,CTYP)
           IF (CTYP(1:1).EQ.'I') THEN
@@ -113,6 +115,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
             CALL GETVTX(MOTCLE,ZK16(JPARA-1+IACC),IOCC,1,0,K8BID,N2)
             IF (ZK16(JPARA-1+IACC) (1:9).EQ.'NOEUD_CMP') N2 = N2/2
           END IF
+
           IF (N2.NE.0) THEN
             CALL RSORAC(RESU,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,NBORDT,
      &                  1,IBID)

@@ -1,0 +1,307 @@
+# MODIF  DATE 07/10/2008   AUTEUR GENIAUT S.GENIAUT 
+# RESPONSABLE GENIAUT S.GENIAUT
+# TITRE  TEST LOI DE COMPORTEMENT 3D  VISCOCHAB
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# VISCOPLASTIQUE modele Chaboche
+#......................................................................
+
+
+from Utilitai.veri_matr_tang import VERI_MATR_TANG
+
+DEBUT(CODE=_F(NOM='COMP002I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IMPR_MACRO='NON');
+
+#parametres vitesse de sollicitation
+vitesse = 1.e-5
+
+t_0 = 5.e-2/(8.0*vitesse)
+
+# liste d'archivage
+temps_ar=DEFI_LIST_REEL( VALE =[t_0*i for i in range(9)],)
+
+
+YOUNG = 200000.0;
+POISSON = 0.3;
+#parametres viscosite
+Minv = 0.0
+Kinv= 3.2841e-4
+Kv=1./Kinv
+
+N = 11
+# parametres loi de chaboche
+SY = 437.0;
+Rinf = 758.0;
+Qzer   = 758.0-437.;
+Qinf   = Qzer + 100.;
+b = 2.3;
+C1inf = 63767.0/2.0
+C2inf = 63767.0/2.0
+Gam1 = 341.0
+Gam2 = 341.0
+# def des materiaux
+ACIER = [None]*3
+#unite en Pa
+C_Pa = 1.e+6
+YOUNG_Pa = YOUNG * C_Pa
+SY_Pa    = SY * C_Pa;
+Rinf_Pa  = Rinf * C_Pa;
+Qzer_Pa  = Qzer * C_Pa;
+Qinf_Pa  = Qinf * C_Pa;
+C1inf_Pa = C1inf * C_Pa;
+C2inf_Pa = C2inf * C_Pa;
+Kinv_Pa  = Kinv / C_Pa;
+Kv_Pa    = Kv * C_Pa;
+
+# unite en Pa
+ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
+                               NU=POISSON,
+                               ALPHA=11.8e-6),
+                       LEMAITRE =_F( N = N,UN_SUR_K = Kinv_Pa ,UN_SUR_M = Minv),
+                       CIN2_CHAB=_F(R_I = Rinf_Pa,
+                                    R_0 = SY_Pa,
+                                    B  = b,
+                                    C1_I  = C1inf_Pa,
+                                    C2_I  = C2inf_Pa,
+                                    G1_0  = Gam1,
+                                    G2_0  = Gam2,
+                                    ),
+                    VISCOCHAB=_F(
+                                 # ecrouissage isotrope
+                                 K=SY_Pa,
+                                 B=b,
+                                 # memoire
+                                 ETA=0.5,
+                                 MU=10.,
+                                 Q_M=Qinf_Pa,
+                                 Q_0=Qzer_Pa,
+                                 QR_0=0.,
+                                 # ecrouissage cinematique
+                                 C1=C1inf_Pa,
+                                 C2=C2inf_Pa,
+                                 G1_0=Gam1,
+                                 G2_0=Gam2,
+                                 
+                                 # viscosite
+                                 K_0=Kv_Pa ,
+                                 N=N,
+                                 
+                                 # restauration
+                                 M_R=1.,
+                                 G_R=0.,
+                                 # ecoulement terme en exp
+                                 A_K=1.,
+                                 A_R=1.,
+                                 ALP=0.,
+                                 # terme Burlet
+                                 D2=1.,
+                                 D1=1.,
+                                 # restauration cinematique
+                                 M_1=1.,
+                                 M_2=1.,
+                                 G_X1=0,
+                                 G_X2=0.,
+                                 # modif de gamma
+                                 A_I=1.,
+                                 ),
+                                 );
+# unite en MPa
+ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                               NU=POISSON,
+                               ALPHA=11.8e-6),
+                       LEMAITRE=_F( N = N,UN_SUR_K = Kinv ,UN_SUR_M = Minv),
+                       CIN2_CHAB=_F(R_I = Rinf,
+                                    R_0 = SY,
+                                    B  = b,
+                                    C1_I  = C1inf,
+                                    C2_I  = C2inf,
+                                    G1_0  = Gam1,
+                                    G2_0  = Gam2,
+                                 ),
+                    VISCOCHAB=_F(
+                                 # ecrouissage isotrope
+                                 K=SY,
+                                 B=b,
+                                 # memoire
+                                 ETA=0.5,
+                                 MU=10.,
+                                 Q_M=Qinf,
+                                 Q_0=Qzer,
+                                 QR_0=0.,
+                                 # ecrouissage cinematique
+                                 C1=C1inf,
+                                 C2=C2inf,
+                                 G1_0=Gam1,
+                                 G2_0=Gam2,
+                                 
+                                 # viscosite
+                                 K_0=Kv ,
+                                 N=N,
+                                 
+                                 # restauration
+                                 M_R=1.,
+                                 G_R=0.,
+                                 # ecoulement terme en exp
+                                 A_K=1.,
+                                 A_R=1.,
+                                 ALP=0.,
+                                 # terme Burlet
+                                 D2=1.,
+                                 D1=1.,
+                                 # restauration cinematique
+                                 M_1=1.,
+                                 M_2=1.,
+                                 G_X1=0,
+                                 G_X2=0.,
+                                 # modif de gamma
+                                 A_I=1.,
+                                 ),
+                                 
+                                 );
+
+compor='VISCOCHAB'
+
+INCLUDE(UNITE=92)
+
+#Discretisation du calcul
+# 10 calculs en tout : changement d'unite, thermique, symetrie, rotation, N1, N5, ... , N3125
+N_pas = 4*[1] + [1, 5, 25, 125, 625, 3125]
+N_cas = len(N_pas)
+
+label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
+prec_ecart=3*[1.E-10]+ [1.]  + [3.] + [0.8] +(N_cas-4)*[11.E-2]   
+prec_tgt=1.e-3
+
+ch_param=['V13','VMIS','TRACE','V16','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',]
+ch_param2=['V13','VMIS','TRACE','V16']
+
+# nombre de calculs a effectuer
+Ncal = 7
+
+RESU=[None]*Ncal
+R_SI=[None]*len(ch_param)
+TMP_S=[None]
+
+
+#pointeur materiau [0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+P_imat = [0] + [1] + (N_cas-2)*[1]
+
+# pointeur deformation [0, 0, 1, 2, 0, 0, 0, 0, 0, 0]
+# 0 : ref
+# 1 : sym
+# 2 : rot
+P_idef = 2*[0] + [1] + [2] + (N_cas-4)*[0]
+
+#pointeur Option thermique ['NON', 'OUI', 'NON', 'NON', 'NON', 'NON', 'NON', 'NON', 'NON', 'NON']
+P_opt_ther = ["NON", "OUI"] + (N_cas-2)*["NON"]
+
+# conditions du calcul thermique
+(inst_th, temp_th) = (3.0*t_0, 100.)
+
+#Boucle sur l'ensemble des calculs
+for i in range(Ncal):
+
+   N = N_pas[i]
+   imat = P_imat[i]
+   idef = P_idef[i]
+   eps_imp = V_EPS[idef]
+   opt_ther = P_opt_ther[i]
+   temps=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=1.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+
+   # Resout le pb a deformation imposee
+   RESU[i]=SIMU_POINT_MAT(
+                          COMP_INCR   =_F(RELATION=compor,ITER_INTE_MAXI=1500),
+                          NEWTON      =_F(MATRICE='TANGENTE',REAC_ITER=1),
+                          CONVERGENCE =_F(ITER_GLOB_MAXI=10,),
+                          MATER       = ACIER[imat],  
+                          ARCHIVAGE   =_F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                          INCREMENT   =_F(LIST_INST=temps,
+                                          SUBD_METHODE='EXTRAPOLE',
+                                          SUBD_NIVEAU=10,
+                                          SUBD_PAS=10,),
+                          EPSI_IMPOSE =_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
+                                          EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
+                         INFO=1);
+
+   R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
+
+   DETRUIRE ( CONCEPT = _F (NOM = temps,),)
+        
+
+# TEST_RESU sur les erreurs relatives 
+prec_zero=[1.E-10, 0.01, 0.01, 0.01]
+
+TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
+                
+for i in range(Ncal):
+   IMPR_TABLE(TABLE=R_SI[i])
+        
+
+
+# Test de la matrice tangente sur le calcul le plus fin
+
+i=Ncal-1
+N = N_pas[i]                 
+imat = P_imat[i]             
+idef = P_idef[i]             
+eps_imp = V_EPS[idef]   
+opt_ther = P_opt_ther[i]     
+Linst=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+
+RESU_TGT=SIMU_POINT_MAT(
+                        COMP_INCR=_F(RELATION=compor, 
+                                     ITER_INTE_MAXI=100,               
+                                     TYPE_MATR_TANG='VERIFICATION',
+                                     VALE_PERT_RELA=1.E-5,
+                                    ),
+                        NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                        CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                        MATER      = ACIER[1],  
+                        INCREMENT=_F(LIST_INST=Linst,),
+                        EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
+                                       EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
+                        );
+
+DIFF_MAT=VERI_MATR_TANG()
+
+IMPR_TABLE(TABLE=DIFF_MAT)
+
+TEST_TABLE(TABLE=DIFF_MAT,
+           NOM_PARA='MAT_DIFF',
+           TYPE_TEST='MAX',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=prec_tgt,
+           REFERENCE='ANALYTIQUE',);     
+
+FIN()

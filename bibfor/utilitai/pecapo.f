@@ -4,7 +4,7 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -299,13 +299,13 @@ C       CAS OU IL FAUT FAIRE UN CUMUL DANS LE MAILLAGE COMPLET
 
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
      &             R8B, 'ALPHA', K8B, IBID, ALPHEQ, C16B, K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','UTILITAI3_65')
+          CALL ASSERT ( IRET .EQ. 0 )
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
      &             R8B, 'CDG_X', K8B, IBID, XGEQ, C16B, K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','UTILITAI3_66')
+          CALL ASSERT ( IRET .EQ. 0 )
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
      &             R8B, 'CDG_Y', K8B, IBID, YGEQ, C16B, K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','UTILITAI3_67')
+          CALL ASSERT ( IRET .EQ. 0 )
 C
 C         VECTEUR GEQ-GI DANS LE REPERE GLOBAL
 C

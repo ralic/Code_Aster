@@ -1,7 +1,7 @@
       SUBROUTINE OP0012(IER)
 C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,13 @@ C======================================================================
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      CHARACTER*8 NU,MATAS,CHARGE,KBID
+      CHARACTER*8 NU,MATAS,CHARGE,KBID,SYME,SYM2
       CHARACTER*16 TYPM,OPER
-      CHARACTER*19 MATEL
+      CHARACTER*19 MATEL,SOLVEU
       CHARACTER*24 LCHCI,LMATEL
       CHARACTER*72 KBIDON
       INTEGER ITYSCA,NBCHC,NBMAT,JLIMAT,JLCHCI,IBID,K,J,NBCHAR
-      INTEGER JRECC,ICO,IEXI
+      INTEGER JRECC,ICO,IEXI,IRET,ISLVK,ILIMAT
 C-----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -110,10 +110,27 @@ C     -- LES SD_CHAR_XXX PEUVENT CONTENIR UNE SD_CHAR_CINE :
 
 C---- MOT CLE : NUME_DDL
       CALL GETVID(' ','NUME_DDL',0,1,1,NU,IBID)
-
-C---- ASSEMBLAGE PROPREMENT DIT
-      CALL ASMATR(NBMAT,ZK24(JLIMAT),' ',NU,' ',
-     &            LCHCI,'ZERO','G',ITYSCA,MATAS)
+      
+C---- ASSEMBLAGE PROPREMENT DIT      
+      SYME = ' '
+      CALL GETVTX(' ','SYME',1,1,1,SYME,IBID)
+      IF (SYME.EQ.'OUI') THEN
+        CALL DISMOI('F','SOLVEUR',NU,'NUME_DDL',IBID,SOLVEU,IRET)
+        CALL JEVEUO(SOLVEU(1:19)//'.SLVK','E',ISLVK)
+        SYM2   = ZK24(ISLVK+5-1)(1:8)
+        ZK24(ISLVK+5-1)='OUI'                
+        CALL ASMATR(NBMAT,ZK24(JLIMAT),' ',NU,SOLVEU,
+     &              LCHCI,'ZERO','G',ITYSCA,MATAS)
+        ZK24(ISLVK+5-1)=SYM2(1:3)
+        CALL JEVEUO(MATAS//'           .LIME','E',ILIMAT)
+        DO 5, K=1,NBMAT
+          ZK24(ILIMAT-1+K)=ZK24(JLIMAT-1+K)
+ 5      CONTINUE                          
+      ELSE      
+        CALL ASMATR(NBMAT,ZK24(JLIMAT),' ',NU,' ',
+     &              LCHCI,'ZERO','G',ITYSCA,MATAS)
+     
+      ENDIF
 
 C     -- MENAGE :
       CALL JEDETR(LCHCI)

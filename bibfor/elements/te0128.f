@@ -1,6 +1,6 @@
       SUBROUTINE TE0128 ( OPTION,NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,9 +118,7 @@ C
         VALPAR(4) = ZR(ITEMPS)
         IF     (OPTION(11:14).EQ.'COEF') THEN
            CALL FOINTE('A',ZK8(IECH),4,NOMPAR,VALPAR,ECHNP1,IER)
-           IF ( IER .NE. 0 ) THEN
-             CALL U2MESS('F','ELEMENTS3_21')
-           ENDIF
+           CALL ASSERT ( IER .EQ. 0 )
            DO 104 I=1,NNO
              ZR(IVERES+I-1) = ZR(IVERES+I-1) + JAC* THETA*
      &                        ZR(IPOIDS+IPG-1)* ZR(IVF+LDEC+I-1)*
@@ -128,13 +126,9 @@ C
  104       CONTINUE
         ELSEIF (OPTION(11:14).EQ.'RAYO') THEN
            CALL FOINTE('A',ZK8(IRAY),4,NOMPAR,VALPAR,SIGMA,IER)
-           IF ( IER .NE. 0 ) THEN
-             CALL U2MESS('F','ELEMENTS3_21')
-           ENDIF
+           CALL ASSERT ( IER .EQ. 0 )
            CALL FOINTE('A',ZK8(IRAY+1),4,NOMPAR,VALPAR,EPSIL,IER)
-           IF ( IER .NE. 0 ) THEN
-             CALL U2MESS('F','ELEMENTS3_21')
-           ENDIF
+           CALL ASSERT ( IER .EQ. 0 )
            DO 105 I=1,NNO
              ZR(IVERES+I-1) = ZR(IVERES+I-1) + JAC* THETA*
      &                        ZR(IPOIDS+IPG-1)* ZR(IVF+LDEC+I-1)*

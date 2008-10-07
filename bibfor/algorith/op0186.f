@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -346,16 +346,14 @@ C     LOIS SECH_GRANGER ET SECH_NAPPE
                   CALL RSINCH(EVOLSC,'TEMP','INST',TIMET,TMPCHI,
      &                        'CONSTANT','CONSTANT',1,BASE,ICORET)
                   IF (ICORET.GE.10) THEN
-                    CALL U2MESG('A', 'ALGORITH8_94', 1, EVOLSC,
+                    CALL U2MESG('F', 'ALGORITH8_94', 1, EVOLSC,
      &                           1, ICORET, 1, TIMET)
-                    CALL U2MESK('F', 'UTILITAI7_99', 1, NOMPRO)
                   END IF
                   CALL RSINCH(EVOLSC,'TEMP','INST',TIMTDT,TMPCHF,
      &                        'CONSTANT','CONSTANT',1,BASE,ICORET)
                   IF (ICORET.GE.10) THEN
-                    CALL U2MESG('A', 'ALGORITH8_94', 1, EVOLSC,
+                    CALL U2MESG('F', 'ALGORITH8_94', 1, EVOLSC,
      &                           1, ICORET, 1, TIMTDT)
-                    CALL U2MESK('F', 'UTILITAI7_99', 1, NOMPRO)
                   END IF
                 ELSE
                   CALL U2MESK('F','ALGORITH8_99',1,EVOLSC)

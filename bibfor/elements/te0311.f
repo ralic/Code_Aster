@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -439,9 +439,12 @@ C
       K3 = TCLA3 * COEFF3
 C
       ZR(IGTHET) = G
-      ZR(IGTHET+1) = K1
-      ZR(IGTHET+2) = K2
-      ZR(IGTHET+3) = K3
+      ZR(IGTHET+1) = TCLA1 * SQRT(COEFF)
+      ZR(IGTHET+2) = TCLA2 * SQRT(COEFF)
+      ZR(IGTHET+3) = TCLA3 * SQRT(COEFF3)
+      ZR(IGTHET+4) = K1
+      ZR(IGTHET+5) = K2
+      ZR(IGTHET+6) = K3
 C
       CALL JEDEMA
       END

@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/05/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
+      CHARACTER*32 ZK32,JEXNOM
       CHARACTER*80 ZK80
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -167,18 +167,22 @@ C
       IF ( CODRET.EQ.0 ) THEN
 C
       IF ( LRESU ) THEN
-         CALL JEEXIN ( NORESU(1:8)//'           .INST', IRET )
+         INSTAN=999.999D0
+C        -- DANS UN EVOL_NOLI, IL PEUT EXISTER INST ET FREQ.
+C           ON PREFERE INST :
+         CALL JENONU(JEXNOM(NORESU//'           .NOVA','INST'),IRET)
          IF ( IRET.NE.0 ) THEN
            CALL RSADPA ( NORESU, 'L', 1, 'INST', NUMORD, 0, IAUX,
      &                   SAUX08 )
            INSTAN = ZR(IAUX)
-         ENDIF
-         CALL JEEXIN ( NORESU(1:8)//'           .FREQ', IRET )
+         ELSE
+           CALL JENONU(JEXNOM(NORESU//'           .NOVA','FREQ'),IRET)
          IF ( IRET.NE.0 ) THEN
            CALL RSADPA ( NORESU, 'L', 1, 'FREQ', NUMORD, 0, IAUX,
      &                   SAUX08 )
            INSTAN = ZR(IAUX)
          ENDIF
+        ENDIF
         NUMPT = NUMORD
         UNIINS = '_'
 C

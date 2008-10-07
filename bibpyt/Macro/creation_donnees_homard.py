@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF creation_donnees_homard Macro  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 """
 Cette classe crée le fichier de configuration permettant de lancer HOMARD depuis Code_Aster.
 """
-__revision__ = "V1.3"
+__revision__ = "V1.4"
 __all__ = [ ]
  
 import os
@@ -181,8 +181,8 @@ class creation_donnees_homard:
 #     5. Les entrées/sorties au format HOMARD
 #
       if self.mode_homard == "ADAP" :
-        self.fic_homard_niter   = "M_" + self.str_niter   + ".hom"
-        self.fic_homard_niterp1 = "M_" + self.str_niterp1 + ".hom"
+        self.fic_homard_niter   = "M_" + self.str_niter   + ".hom.med"
+        self.fic_homard_niterp1 = "M_" + self.str_niterp1 + ".hom.med"
       else :
         self.fic_homard_niter = None
         self.fic_homard_niterp1 = None
@@ -367,7 +367,7 @@ class creation_donnees_homard:
 #
 #     3. Les fichiers externes
 #
-      self.ecrire_ligne_configuration_0("Les fichiers au format MED")
+      self.ecrire_ligne_configuration_0("Les fichiers de Code_Aster, au format MED")
       self.ecrire_ligne_configuration_2("CCNoMN__", self.CCNoMN__)
       self.ecrire_ligne_configuration_2("CCMaiN__", self.dico_configuration["Fichier_ASTER_vers_HOMARD"])
       if self.mode_homard == "ADAP" :
@@ -379,7 +379,7 @@ class creation_donnees_homard:
 #
 #     4. Les fichiers HOMARD
 #
-      self.ecrire_ligne_configuration_0("Les fichiers au format HOMARD")
+      self.ecrire_ligne_configuration_0("Les fichiers de HOMARD, au format MED")
       if self.mode_homard == "ADAP" :
         self.ecrire_ligne_configuration_3("HOMaiN__", "M_"+self.str_niter  , self.fic_homard_niter )
         self.ecrire_ligne_configuration_3("HOMaiNP1", "M_"+self.str_niterp1, self.fic_homard_niterp1)

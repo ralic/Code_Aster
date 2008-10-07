@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -383,7 +383,8 @@ C     ------------------------------------------------------
    80     CONTINUE
    90   CONTINUE
       ELSE
-        CALL U2MESS('E','ELEMENTS2_67')
+CC OPTION DE CALCUL INVALIDE
+        CALL ASSERT(.FALSE.)
       END IF
 C
       CODRET = 0

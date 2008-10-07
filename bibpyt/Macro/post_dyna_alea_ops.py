@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF post_dyna_alea_ops Macro  DATE 06/10/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,9 +59,13 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #---------algorithme d'optimisation pour le  maximum de vraisemblance
    def vrais(x):
       am=x[0]
-      assert am >0.000, 'optimize.py: am negatif'
       beta=x[1]
-      assert am >0.000, 'optimize.py: beta negatif'
+#       assert am >0.000, 'optimize.py: beta negatif'
+#       assert am >0.000, 'optimize.py: am negatif'
+      if am <=0.000:
+          am=0.01
+      if beta <=0.000:
+          beta=0.001          
       res=1.0
       for k in range(Nbval):
          ai=liste_indic[k]
@@ -143,11 +147,10 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       mcfact.append(_F(PARA= 'PARA_NOCI' ,LISTE_R =liste_a  ))
       mcfact.append(_F(PARA= 'PFA' ,LISTE_R = lpfa ))
 
-   #print 'fractiles a calculer par bootstrap : ', FRAGILITE['FRACTILE']
-
 
       # si calcul de fractiles (intervalles de confiance) par bootstrap
 
+      x0 = xopt
       if FRAGILITE['FRACTILE']!= None :
          if INFO==2 :
             texte='FRACTILES A CALCULER PAR BOOTSTRAP '+ str(FRAGILITE['FRACTILE']) +'\n'
@@ -177,7 +180,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
             if INFO==2 :
                texte1='BOOTSTRAP TIRAGE '+ str(kb+1)
                texte2='  PARAMETRES Am, beta ESTIMES : '+str(xopt)+'\n'
-               aster.affiche('MESSAGE',texte1) #print 'bootstrap tirage', kb+1, ', -  parametres Am, beta estimes: ', xopt
+               aster.affiche('MESSAGE',texte1) 
                aster.affiche('MESSAGE',texte2)
             vecval=(Numeric.log(vec_a/xopt[0]))/xopt[1]
             for m in range(Nba):

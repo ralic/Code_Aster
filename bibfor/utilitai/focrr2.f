@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*1 TYPE
       CHARACTER*24 VALK(2)
-      CHARACTER*8 K8B,NOMA,NOGD,NOMOBJ,NOMACC
+      CHARACTER*8 K8B,NOMA,NOGD,NOMACC
       CHARACTER*16 NOMCMD,TYPCON,TYPCHA,TYPRES
       CHARACTER*19 LISTR,PROFCH,PROFC2,CH1,CH2
       REAL*8 DIMAG
@@ -78,7 +78,7 @@ C     ------------------------------------------------------------------
       CALL GETVID(' ','LIST_FREQ',1,1,0,K8B,N4)
 
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
-        NOMACC = 'FREQ    '
+        NOMACC = 'FREQ'
         IF (N1+N2.NE.0) THEN
           CALL U2MESS('F','UTILITAI_95')
         END IF
@@ -97,7 +97,7 @@ C     ------------------------------------------------------------------
           CALL JELIRA(LISTR//'.VALE','LONMAX',NBINST,K8B)
         END IF
       ELSE
-        NOMACC = 'INST    '
+        NOMACC = 'INST'
         IF (N3+N4.NE.0) THEN
           CALL U2MESS('F','UTILITAI_96')
         END IF
@@ -141,14 +141,12 @@ C     --- REMPLISSAGE DU .PROL ---
       CALL JENONU(JEXNOM(RESU//'.NOVA',NOMACC),IACCES)
       CALL ASSERT(IACCES.NE.0)
       CALL JEVEUO(JEXNUM(RESU//'.TAVA',IACCES),'L',IATAVA)
-      NOMOBJ = ZK8(IATAVA-1+1)
-      CALL JEVEUO(RESU//NOMOBJ,'L',KINST)
-      CALL DISMOI('F','NB_CHAMP_MAX',RESU,'RESULTAT',NBORDR,K8B,IERD)
+
+      CALL RSLIPA(RESU,NOMACC,'&&FOCRR2.LIR8',JLIR8,NBORDR)
+
 
 C     -- ON REPERE QUELS SONT LES CHAMPS EXISTANT REELLEMENT:
-      CALL JECREO('&&FOCRR2.LEXI','V V L')
-      CALL JEECRA('&&FOCRR2.LEXI','LONMAX',NBORDR,K8B)
-      CALL JEVEUO('&&FOCRR2.LEXI','E',IALEXI)
+      CALL WKVECT('&&FOCRR2.LEXI','V V L',NBORDR,IALEXI)
       CALL JENONU(JEXNOM(RESU//'.DESC',NOMCHA),IBID)
       CALL JEVEUO(JEXNUM(RESU//'.TACH',IBID),'L',IATACH)
       DO 10 I = 1,NBORDR
@@ -160,7 +158,7 @@ C     -- ON REPERE QUELS SONT LES CHAMPS EXISTANT REELLEMENT:
    10 CONTINUE
 
       RVAL = ZR(JINST)
-      CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,IPOSIT)
+      CALL RSBARY(ZR(JLIR8),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,IPOSIT)
       CALL RSUTRO(RESU,I1,IP1,IERR1)
       CALL RSEXCH(RESU,NOMCHA,IP1,CH1,IERD)
       CALL DISMOI('F','TYPE_SUPERVIS',CH1,'CHAMP',IBID,TYPCHA,IERD)
@@ -186,7 +184,7 @@ C               ----- EXTRACTION SUR UN "CHAM_NO" -----
           CALL JEMARQ()
 
           RVAL = ZR(JINST+IORDR)
-          CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
+          CALL RSBARY(ZR(JLIR8),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
      &                IPOSIT)
           IF (IPOSIT.EQ.-2) THEN
             VALR (1) = RVAL
@@ -196,21 +194,21 @@ C           -- PROLONGEMENT A GAUCHE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.-1) THEN
             VALR (1) = RVAL
-            VALR (2) = ZR(KINST)
+            VALR (2) = ZR(JLIR8)
             CALL U2MESG('F', 'UTILITAI6_17',0,' ',0,0,2,VALR)
 
 C           -- PROLONGEMENT A DROITE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.1) THEN
             VALR (1) = RVAL
-            VALR (2) = ZR(KINST+NBORDR-1)
+            VALR (2) = ZR(JLIR8+NBORDR-1)
             CALL U2MESG('F', 'UTILITAI6_18',0,' ',0,0,2,VALR)
           END IF
 
           CALL RSUTRO(RESU,I1,IP1,IERR1)
           CALL RSUTRO(RESU,I2,IP2,IERR2)
           CALL ASSERT(IERR1+IERR2.LE.0)
-          RBASE = ZR(KINST-1+I2) - ZR(KINST-1+I1)
+          RBASE = ZR(JLIR8-1+I2) - ZR(JLIR8-1+I1)
 
           CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
           CALL RSEXCH(RESU,NOMCHA,IP2,CH2,L2)
@@ -252,8 +250,8 @@ C           -------------------------
             ZR(LFON+IORDR) = ZR(LVAL1+IDDL1-1)
             GO TO 22
           END IF
-          R1 = (ZR(KINST-1+I2)-RVAL)/RBASE
-          R2 = (RVAL-ZR(KINST-1+I1))/RBASE
+          R1 = (ZR(JLIR8-1+I2)-RVAL)/RBASE
+          R2 = (RVAL-ZR(JLIR8-1+I1))/RBASE
 
           CALL DISMOI('F','PROF_CHNO',CH2,'CHAM_NO',IBID,PROFC2,IE)
           IF (PROFC2.NE.PROFCH) THEN
@@ -292,9 +290,7 @@ C        -------------------------------------------------------------
         NVERI2 = NOEUD .EQ. ' '
         NVERI3 = NPOINT .EQ. 0
         IF (NVERI1 .OR. (NVERI2.AND.NVERI3)) THEN
-            VALK (1) = K8B
-            VALK (2) = K8B
-        CALL U2MESG('F', 'UTILITAI6_15',2,VALK,0,0,0,0.D0)
+          CALL U2MESS('F', 'UTILITAI6_15')
         END IF
         CALL DISMOI('F','NOM_MAILLA',CH1,'CHAM_ELEM',IBID,NOMA,IE)
         CALL DISMOI('F','NOM_GD',CH1,'CHAM_ELEM',IBID,NOGD,IE)
@@ -305,7 +301,7 @@ C        -------------------------------------------------------------
           CALL JEMARQ()
 
           RVAL = ZR(JINST+IORDR)
-          CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
+          CALL RSBARY(ZR(JLIR8),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
      &                IPOSIT)
           IF (IPOSIT.EQ.-2) THEN
             VALR (1) = RVAL
@@ -315,21 +311,21 @@ C           -- PROLONGEMENT A GAUCHE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.-1) THEN
             VALR (1) = RVAL
-            VALR (2) = ZR(KINST)
+            VALR (2) = ZR(JLIR8)
             CALL U2MESG('F', 'UTILITAI6_17',0,' ',0,0,2,VALR)
 
 C           -- PROLONGEMENT A DROITE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.1) THEN
             VALR (1) = RVAL
-            VALR (2) = ZR(KINST+NBORDR-1)
+            VALR (2) = ZR(JLIR8+NBORDR-1)
             CALL U2MESG('F', 'UTILITAI6_18',0,' ',0,0,2,VALR)
           END IF
 
           CALL RSUTRO(RESU,I1,IP1,IERR1)
           CALL RSUTRO(RESU,I2,IP2,IERR2)
           CALL ASSERT(IERR1+IERR2.LE.0)
-          RBASE = ZR(KINST-1+I2) - ZR(KINST-1+I1)
+          RBASE = ZR(JLIR8-1+I2) - ZR(JLIR8-1+I1)
 
           CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
           CALL RSEXCH(RESU,NOMCHA,IP2,CH2,L2)
@@ -363,8 +359,8 @@ C           -------------------------
             END IF
             GO TO 32
           END IF
-          R1 = (ZR(KINST-1+I2)-RVAL)/RBASE
-          R2 = (RVAL-ZR(KINST-1+I1))/RBASE
+          R1 = (ZR(JLIR8-1+I2)-RVAL)/RBASE
+          R2 = (RVAL-ZR(JLIR8-1+I1))/RBASE
 
           CALL UTCH19(CH1,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,TYPE,
      &                VALR1,VALC1,IRET)
@@ -389,6 +385,7 @@ C           -------------------------
       END IF
 
       CALL JEDETR('&&FOCRR2.LEXI')
+      CALL JEDETR('&&FOCRR2.LIR8')
       CALL JEDETC('V ','&&FOCRR2',1)
    40 CONTINUE
       CALL JEDEMA()

@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C ----------------------------
 
 C    NOMBRE DE PARAMETRES
       CALL GETVTX ( ' ', 'NOM_PARA', 0,1,0, K16B, NBPARA )
-      IF (NBPARA.EQ.0) CALL U2MESS('F','UTILITAI3_3')
+      CALL ASSERT(NBPARA.NE.0)
       NBPARA = -NBPARA
 
 

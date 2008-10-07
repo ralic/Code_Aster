@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,8 @@ C       POUR LE CALCUL DES CARA_GEOM DE SECTION DE POUTRE RHO=1
          RHO=1.D0
          CALL JEVECH('PCARAGE','E',LCASTR)
       ELSE
-           CALL U2MESK('F','ELEMENTS3_66',1,OPTION)
+C          OPTION DE CALCUL NON VALIDE
+           CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL JEVECH('PGEOMER','L',IGEOM)

@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calculel6 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,10 +129,15 @@ Solution :
 """),
 
 53: _("""
+ Erreur utilisateur :
+   On cherche à "poursuivre" un calcul non linéaire mais les variables internes de l'état
+   initial ne sont pas compatibles avec le comportement choisi pour la suite du calcul.
+   Pour la maille  : %(k1)s
+     Nombre de variables pour l'état initial         :  %(i1)d
+     Nombre de variables attendu par le comportement :  %(i2)d
 
- variables internes initiales :  pas le nombre de composantes voulu par le comportement  pour la maille  nomail
-  attendu par le comportement :  %(i1)d
-  trouve sur la maille :  %(i2)d
+ Risques & conseils :
+   Vérifier que vous n'avez pas changé de relation de comportement (mot clé RELATION).
 """),
 
 54: _("""

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,6 +70,10 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
          b_modele_vect =BLOC(condition = " VECT_ASSE != None ",
                        MODELE    =SIMP(statut='f',typ=modele_sdaster ),
                        ),
+         EXCIT_RESU      =FACT(statut='f',max='**',
+           RESULTAT        =SIMP(statut='o',typ=(dyna_harmo,harm_gene)),
+           COEF_MULT_C     =SIMP(statut='o',typ='C' ),
+         ),
          b_matr_gene =BLOC(condition = "AsType(MATR_MASS) in (matr_asse_gene_r,)",
                            fr="Methode de resolution matrice generalisee",
           SOLVEUR         =FACT(statut='d',

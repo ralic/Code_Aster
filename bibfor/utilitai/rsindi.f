@@ -1,14 +1,14 @@
-      SUBROUTINE RSINDI(TYSCA,IAOBJ,JORDR,IVAL,RVAL,KVAL,CVAL,EPSI,CRIT,
-     &                  NBORDR,NBTROU,NUTROU,NDIM)
+      SUBROUTINE RSINDI(TYSCA,IAOBJ,PAOBJ,JORDR,IVAL,RVAL,KVAL,CVAL,
+     &                  EPSI,CRIT,NBORDR,NBTROU,NUTROU,NDIM)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER NBORDR,NBTROU,NUTROU(*),NDIM,IVAL
+      INTEGER NBORDR,NBTROU,NUTROU(*),NDIM,IVAL,PAOBJ
       REAL*8 RVAL,EPSI
       CHARACTER*4 TYSCA
       CHARACTER*(*) KVAL,CRIT
       COMPLEX*16 CVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,8 @@ C                    OU   ABS(V-VR).LE.ABS(EPSI)    EN ABSOLU
 C ----------------------------------------------------------------------
 C IN  : TYSCA  : R8 OU C16 OU I8 OU K8,  K16, K24, K32, K80
 C IN  : IAOBJ  : ADRESSE DE LA TABLE DANS ZI, ZR OU ZC
+C IN  : PAOBJ  : "PAS" dU parcours de l'objet :
+C                 ZX(IAOBJ),ZX(IAOBJ+1*PAOBJ),,ZX(IAOBJ+2*PAOBJ), ...
 C IN  : JORDR  : ADRESSE DU .ORDR DU RESULTAT
 C IN  : IVAL   : VALEUR CHECHEE SI ENTIERE.
 C IN  : RVAL   : VALEUR CHECHEE SI REELLE.
@@ -76,13 +78,13 @@ C     ------------------------------------------------------------------
       IF (TYSCA(1:1).EQ.'R') THEN
         DO 10 I = 1,NBORDR
           IF (CRIT2(1:4).EQ.'RELA') THEN
-            IF (ABS(ZR(IAOBJ-1+I)-RVAL).LE.ABS(EPSI*RVAL)) THEN
+            IF (ABS(ZR(IAOBJ+(I-1)*PAOBJ)-RVAL).LE.ABS(EPSI*RVAL)) THEN
               TROUVE = .TRUE.
             ELSE
               TROUVE = .FALSE.
             END IF
           ELSE IF (CRIT2(1:4).EQ.'ABSO') THEN
-            IF (ABS(ZR(IAOBJ-1+I)-RVAL).LE.ABS(EPSI)) THEN
+            IF (ABS(ZR(IAOBJ+(I-1)*PAOBJ)-RVAL).LE.ABS(EPSI)) THEN
               TROUVE = .TRUE.
             ELSE
               TROUVE = .FALSE.
@@ -101,7 +103,7 @@ C     ------------------------------------------------------------------
    10   CONTINUE
       ELSE IF (TYSCA(1:1).EQ.'I') THEN
         DO 20 I = 1,NBORDR
-          IF (ZI(IAOBJ-1+I).EQ.IVAL) THEN
+          IF (ZI(IAOBJ+(I-1)*PAOBJ).EQ.IVAL) THEN
             NBTROU = NBTROU + 1
             IF (NBTROU.LE.NDIM) THEN
               NUTROU(NBTROU) = ZI(JORDR+I-1)
@@ -112,7 +114,7 @@ C     ------------------------------------------------------------------
    20   CONTINUE
       ELSE IF (TYSCA.EQ.'K8  ') THEN
         DO 30 I = 1,NBORDR
-          IF (ZK8(IAOBJ-1+I).EQ.KVAL) THEN
+          IF (ZK8(IAOBJ+(I-1)*PAOBJ).EQ.KVAL) THEN
             NBTROU = NBTROU + 1
             IF (NBTROU.LE.NDIM) THEN
               NUTROU(NBTROU) = ZI(JORDR+I-1)
@@ -123,7 +125,7 @@ C     ------------------------------------------------------------------
    30   CONTINUE
       ELSE IF (TYSCA.EQ.'K16 ') THEN
         DO 40 I = 1,NBORDR
-          IF (ZK16(IAOBJ-1+I).EQ.KVAL) THEN
+          IF (ZK16(IAOBJ+(I-1)*PAOBJ).EQ.KVAL) THEN
             NBTROU = NBTROU + 1
             IF (NBTROU.LE.NDIM) THEN
               NUTROU(NBTROU) = ZI(JORDR+I-1)
@@ -134,7 +136,7 @@ C     ------------------------------------------------------------------
    40   CONTINUE
       ELSE IF (TYSCA.EQ.'K24 ') THEN
         DO 50 I = 1,NBORDR
-          IF (ZK24(IAOBJ-1+I).EQ.KVAL) THEN
+          IF (ZK24(IAOBJ+(I-1)*PAOBJ).EQ.KVAL) THEN
             NBTROU = NBTROU + 1
             IF (NBTROU.LE.NDIM) THEN
               NUTROU(NBTROU) = ZI(JORDR+I-1)
@@ -145,7 +147,7 @@ C     ------------------------------------------------------------------
    50   CONTINUE
       ELSE IF (TYSCA.EQ.'K32 ') THEN
         DO 60 I = 1,NBORDR
-          IF (ZK32(IAOBJ-1+I).EQ.KVAL) THEN
+          IF (ZK32(IAOBJ+(I-1)*PAOBJ).EQ.KVAL) THEN
             NBTROU = NBTROU + 1
             IF (NBTROU.LE.NDIM) THEN
               NUTROU(NBTROU) = ZI(JORDR+I-1)
@@ -156,7 +158,7 @@ C     ------------------------------------------------------------------
    60   CONTINUE
       ELSE IF (TYSCA.EQ.'K80 ') THEN
         DO 70 I = 1,NBORDR
-          IF (ZK80(IAOBJ-1+I).EQ.KVAL) THEN
+          IF (ZK80(IAOBJ+(I-1)*PAOBJ).EQ.KVAL) THEN
             NBTROU = NBTROU + 1
             IF (NBTROU.LE.NDIM) THEN
               NUTROU(NBTROU) = ZI(JORDR+I-1)
@@ -168,13 +170,13 @@ C     ------------------------------------------------------------------
       ELSE IF (TYSCA(1:1).EQ.'C') THEN
         DO 80 I = 1,NBORDR
           IF (CRIT2(1:4).EQ.'RELA') THEN
-            IF (ABS(ZC(IAOBJ-1+I)-CVAL).LE.ABS(EPSI*CVAL)) THEN
+            IF (ABS(ZC(IAOBJ+(I-1)*PAOBJ)-CVAL).LE.ABS(EPSI*CVAL)) THEN
               TROUVE = .TRUE.
             ELSE
               TROUVE = .FALSE.
             END IF
           ELSE IF (CRIT2(1:4).EQ.'ABSO') THEN
-            IF (ABS(ZC(IAOBJ-1+I)-CVAL).LE.ABS(EPSI)) THEN
+            IF (ABS(ZC(IAOBJ+(I-1)*PAOBJ)-CVAL).LE.ABS(EPSI)) THEN
               TROUVE = .TRUE.
             ELSE
               TROUVE = .FALSE.

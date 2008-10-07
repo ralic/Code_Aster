@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ C     ------------------------------------------------------------------
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD, CONCEP, ACCES(3)
       CHARACTER*19 CHAMNO,RAIDE,MATFAC,MASSE,AMOR,NUMEDD,MATPRE
-      CHARACTER*19 SOLVEU
+      CHARACTER*19 SOLVEU,RESU19
       CHARACTER*24  VALE
       CHARACTER*24 VALK
       LOGICAL      DEPLIM, FORCIM, ACCUNI, ACCDDL, DIRECT
@@ -507,6 +507,16 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
      &                 IBID, IBID, K8B, .FALSE., R8B, .FALSE., R8B,
      &                 .FALSE.,.FALSE., FORMAR,LMOD,NIVE,VERSIO)
       ENDIF
+
+
+C     -- UNE PETITE "GLUTE" EN ATTENDANT L'EVOLUTION 12583
+C        IL FAUDRA ENSUITE SUPPRIMER CE BLOC.
+      RESU19=RESU
+      CALL RSLIPA(RESU,'NOEUD_CMP','&&OP0093.NOEU',IBID,IBID)
+      CALL JEDUPO('&&OP0093.NOEU', 'G', RESU19//'.NOEU', .FALSE.)
+
+
+
 C     ------------------------------------------------------------------
       CALL JEDEMA()
       END

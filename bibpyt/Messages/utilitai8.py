@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai8 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -227,20 +227,16 @@ Conseil:
   Reserrer la précision avec le mot clé PRECISION
 """),
 
-60 : _("""
- Erreur dans les données pour le champ  %(k1)s
-"""),
-
 61 : _("""
- Aucun noeud ne supporte
+ Erreur dans les données pour le champ  %(k1)s
+ Aucun noeud ne supporte les composantes 
+ %(k2)s, %(k3)s, %(k4)s, %(k5)s, ...
 """),
 
 62 : _("""
- Aucune maille ne supporte
-"""),
-
-63 : _("""
-  les composantes  %(k1)s, %(k2)s, %(k3)s, %(k4)s, ...
+ Erreur dans les données pour le champ  %(k1)s
+ Aucune maille ne supporte les composantes
+ %(k2)s, %(k3)s, %(k4)s, %(k5)s, ...
 """),
 
 }

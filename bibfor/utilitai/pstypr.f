@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - TYPE DE SENSIBILITE - RECUPERATION
 C     *          *           ***                   *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,8 +69,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'PSTYPR' )
 C
       INTEGER NBPSCO
       INTEGER VALI(2)
@@ -194,8 +192,7 @@ C
             VALK(1) = ' '
             VALK(2) = TYPEPS(1:LGTYPS)
             VALK(3) = ZK80(ADTSKK)(1:LGTYPS)
-            CALL U2MESK('A','SENSIBILITE_96',3 ,VALK)
-            CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
+            CALL U2MESK('F','SENSIBILITE_96',3 ,VALK)
           ENDIF
         ENDIF
 C

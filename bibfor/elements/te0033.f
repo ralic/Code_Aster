@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,8 @@ C
      &    OPTION.NE.'SIGM_ELNO_DEPL  ' .AND.
      &    OPTION.NE.'EPSI_ELNO_DEPL  ' .AND.
      &    OPTION.NE.'DEGE_ELNO_DEPL  ') THEN
-        CALL U2MESS('F','ELEMENTS2_67')
+CC OPTION DE CALCUL INVALIDE
+        CALL ASSERT(.FALSE.)
       END IF
       ZERO   = 0.0D0
 

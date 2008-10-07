@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF observation_ops Macro  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,29 +108,33 @@ def observation_ops(self,
 
     # cham_mater et cara_elem pour le resultat a projeter
     jdc = CONTEXT.get_current_step().jdc
-    nom_cara_elem = aster.getvectjev( RESULTAT.nom.ljust(19) +
-                                      '.CARA        ' )[0].strip()
-    if len(nom_cara_elem) > 0 :
-##        nom_cara_elem = nom_cara_elem[0].strip()
-        cara_elem = jdc.sds_dict[nom_cara_elem]
+    iret,ibid,nom_cara_elem = aster.dismoi('F','CARA_ELEM',RESULTAT.nom,'RESULTAT')
+    if len(nom_cara_elem) > 0    :
+        assert nom_cara_elem != "#PLUSIEURS" , nom_cara_elem
+        if nom_cara_elem == "#AUCUN" :
+            cara_elem = None
+        else :
+            cara_elem = jdc.sds_dict[nom_cara_elem]
     else:
         cara_elem = None
-    
-    nom_cham_mater = aster.getvectjev( RESULTAT.nom.ljust(19) +
-                                       '.MATE        ' )[0].strip()
+
+    iret,ibid,nom_cham_mater = aster.dismoi('F','CHAM_MATER',RESULTAT.nom,'RESULTAT')
     if len(nom_cham_mater) > 0 :
-##        nom_cham_mater = nom_cham_mater[0].strip()
-        cham_mater = jdc.sds_dict[nom_cham_mater]
+        assert nom_cham_mater != "#PLUSIEURS" , nom_cham_mater
+        if nom_cham_mater == "#AUCUN" :
+            cham_mater = None
+        else :
+            cham_mater = jdc.sds_dict[nom_cham_mater]
     else:
         cham_mater = None
 
     # recuperation du maillage associe au modele experimental
-    _maillag = aster.getvectjev( MODELE_2.nom.ljust(8) + '.MODELE    .LGRF        ' )
+    _maillag = aster.getvectjev( MODELE_2.nom.ljust(8) + '.MODELE    .LGRF' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
     mayaexp = jdc.sds_dict[maillage]
 
-    _maillag = aster.getvectjev( MODELE_1.nom.ljust(8) + '.MODELE    .LGRF        ' )
+    _maillag = aster.getvectjev( MODELE_1.nom.ljust(8) + '.MODELE    .LGRF' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
     mayanum = jdc.sds_dict[maillage]
@@ -325,7 +329,7 @@ def crea_normale(self, modele_1, modele_2,
     from Accas import _F
     # recherche du maillage associe au modele numerique
     nom_modele_num = modele_1.nom
-    _maillag = aster.getvectjev( nom_modele_num.ljust(8) + '.MODELE    .LGRF        ' )
+    _maillag = aster.getvectjev( nom_modele_num.ljust(8) + '.MODELE    .LGRF' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
     mayanum = jdc.sds_dict[maillage]
@@ -366,7 +370,7 @@ def crea_normale(self, modele_1, modele_2,
         affe_dct["CHAM_MATER"] = cham_mater
     if cara_elem is not None:
         affe_dct["CARA_ELEM"] = cara_elem
-    
+
     __norm3 = CREA_RESU( OPERATION = 'AFFE',
                          TYPE_RESU = 'EVOL_ELAS',
                          NOM_CHAM  = 'DEPL',

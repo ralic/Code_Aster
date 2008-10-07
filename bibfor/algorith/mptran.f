@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,13 +56,13 @@ C
       CHARACTER*8   NOMRES,NOMBAS,NOMMES
       CHARACTER*24  VRANGE,VNOEUD,BASEPR
       CHARACTER*32  JEXNUM
-      INTEGER       NBMESU,NBMODE
+      INTEGER       NBMESU,NBMODE,JPARA,IEXI
 C
       CHARACTER*1   TYPVAL
       CHARACTER*8   K8BID,K8B,SCAL,SCALAI,KCMP,KREG
       CHARACTER*8   MODELE,CHMAT,CARAEL
       CHARACTER*16  NOMCMD,TYPRES,K16BID,NOMCHA,TYPBA
-      CHARACTER*19  CHS,CHAMNO
+      CHARACTER*19  CHS,CHAMNO,SD2
 
       CHARACTER*24  VABS,VMES
 
@@ -322,32 +322,54 @@ C On remplie la sd de type mode_gene a partir de la base d'expansion
         ENDIF
 C
       ENDIF
-C
-C REMPLISSAGE DES OBJETS MANQUANTS
-C
+
+
+C     -- REMPLISSAGE DE L'OBJET .ORDR :
       CALL JEVEUO (NOMRES//'           .ORDR', 'E', JORDR)
-      IF (TYPRES(1:9).NE.'TRAN_GENE') THEN
-        CALL JEVEUO (NOMRES//'           .FREQ', 'E', JABS)
-        IF (TYPRES(1:9).EQ.'MODE_GENE') THEN
-          CALL JEVEUO (NOMRES//'           .NUMO', 'E', JNUMO)
-        ENDIF
-      ELSE
-        CALL JEVEUO (NOMRES//'           .INST', 'E', JABS)
-      ENDIF
-C
       DO 400 I = 1 , NBABS
-        ZR(JABS-1 + I) = ZR(LABS-1 + I)
         IF (TYPRES(1:9).EQ.'MODE_GENE') THEN
-          ZI(JNUMO-1 + I) = I
           ZI(JORDR-1 + I) = I
         ELSE
           ZI(JORDR-1 + I) = I - 1
         ENDIF
  400  CONTINUE
-C
-C
+
+
+C     -- REMPLISSAGE DE L'OBJET .NUMO :
+      IF (TYPRES(1:9).EQ.'MODE_GENE') THEN
+        DO 401 I = 1 , NBABS
+          CALL RSADPA(NOMRES,'E',1,'NUME_MODE',ZI(JORDR-1+I),0,
+     &                JPARA,K8B)
+          ZI(JPARA) = I
+ 401    CONTINUE
+      ENDIF
+
+
+C     -- REMPLISSAGE DE "FREQ/INST" :
+      IF (TYPRES(1:9).EQ.'TRAN_GENE') THEN
+        CALL JEVEUO (NOMRES//'           .INST', 'E', JABS)
+      ELSE
+        CALL JEEXIN (NOMRES//'           .FREQ',IEXI)
+        IF (IEXI.GT.0) THEN
+          CALL JEVEUO (NOMRES//'           .FREQ', 'E', JABS)
+        ENDIF
+      ENDIF
+      DO 402 I = 1 , NBABS
+        IF (TYPRES(1:9).EQ.'TRAN_GENE') THEN
+          ZR(JABS-1+I) = ZR(LABS-1+I)
+        ELSE
+          IF (IEXI.GT.0) THEN
+            ZR(JABS-1+I) = ZR(LABS-1+I)
+          ELSE
+            CALL RSADPA(NOMRES,'E',1,'FREQ',ZI(JORDR-1+I),0,
+     &                  JPARA,K8B)
+            ZR(JPARA) = ZR(LABS-1 + I)
+          ENDIF
+        ENDIF
+ 402  CONTINUE
+
+
 C --- STOCKAGE
-C
       IF (TYPRES(1:9).EQ.'MODE_GENE') THEN
         CALL JEVEUO(NOMRES//'           .ORDR','L',JORD)
         CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
@@ -356,22 +378,25 @@ C
         IF(TYPBA(1:11).EQ.'BASE_MODALE')THEN
          IF(ZK24(JRAID)(1:8).EQ.'        ')THEN
              CALL JEVEUO(JEXNUM(NOMBAS//'           .TACH',1),'L',JBASM)
-             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .MODL','L',JMODL)
-             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .MATE','L',JMATE)
-             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .CARA','L',JCARA)
-             MODELE=ZK8(JMODL)
-             CHMAT =ZK8(JMATE)
-             CARAEL=ZK8(JCARA)
+             SD2=ZK24(JBASM)(1:8)
+             CALL RSADPA(SD2,'L',1,'MODELE',1,0,JPARA,K8B)
+             MODELE=ZK8(JPARA)
+             CALL RSADPA(SD2,'L',1,'CHAMPMAT',1,0,JPARA,K8B)
+             CHMAT=ZK8(JPARA)
+             CALL RSADPA(SD2,'L',1,'CARAELEM',1,0,JPARA,K8B)
+             CARAEL=ZK8(JPARA)
              GOTO 44
           ENDIF
         ENDIF
-C POUR LES BASES TYPE MODE_MECA SANS REFERENCE
+
+C       -- POUR LES BASES TYPE MODE_MECA SANS REFERENCE
         IF(ZK24(JRAID)(1:8).EQ.'        ') THEN
           MODELE='        '
           CHMAT ='        '
           CARAEL='        '
           GOTO 44
         ENDIF
+
         CALL DISMOI('F','NOM_MODELE',ZK24(JRAID)(1:8),'MATR_ASSE',
      &     IBID,MODELE,IRET)
         CALL DISMOI('F','CHAM_MATER',ZK24(JRAID)(1:8),'MATR_ASSE',
@@ -379,15 +404,18 @@ C POUR LES BASES TYPE MODE_MECA SANS REFERENCE
         CALL DISMOI('F','CARA_ELEM',ZK24(JRAID)(1:8),'MATR_ASSE',
      &     IBID,CARAEL,IRET)
  44     CONTINUE
-        CALL JEVEUO(NOMRES//'           .MODL','E',JMODL)
-        CALL JEVEUO(NOMRES//'           .MATE','E',JMATE)
-        CALL JEVEUO(NOMRES//'           .CARA','E',JCARA)
+
+
         DO  43 I=1,NBORD
-          ZK8(JMODL+I-1)=MODELE
-          ZK8(JMATE+I-1)=CHMAT
-          ZK8(JCARA+I-1)=CARAEL
+          CALL RSADPA(NOMRES,'E',1,'MODELE',ZI(JORDR-1+I),0,JPARA,K8B)
+          ZK8(JPARA)=MODELE
+          CALL RSADPA(NOMRES,'E',1,'CHAMPMAT',ZI(JORDR-1+I),0,JPARA,K8B)
+          ZK8(JPARA)=CHMAT
+          CALL RSADPA(NOMRES,'E',1,'CARAELEM',ZI(JORDR-1+I),0,JPARA,K8B)
+          ZK8(JPARA)=CARAEL
  43     CONTINUE
       ENDIF
+
 
       CALL JEDETR (VABS)
       CALL JEDETR (VMES)

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUR TESTER DES EMISSIONS DE MESSAGES D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NOM='ERREU01A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F
 import re
 fmt_raison='-'*80+"""
 
-   Exception erreur_Fatale interceptee
+   Exception interceptee
    Raison : %s
 
 """+'-'*80+'\n'
@@ -72,7 +72,7 @@ try :
                         CARA_ELEM=CARBA,
                         EXCIT=_F(CHARGE=CH2),
                         INST=1.)
-except aster.FatalError,err:
+except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("CALCULEL_30", str(err))<>None :
@@ -100,7 +100,7 @@ try :
                         CARA_ELEM=CARBA,
                         EXCIT=_F(CHARGE=CH1),
                         INST=1.)
-except aster.FatalError,err:
+except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
    if re.search("FACTOR_21", str(err))<>None :

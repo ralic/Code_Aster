@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,8 +225,6 @@ class SUPERV:
 
       if j.par_lot == 'NON':
          print "FIN EXECUTION"
-         if j.fico!=None :
-            open('fort.15', 'a').write(open('ficode', 'r').read())
          return ier
 
       # Verification de la validite du jeu de commande
@@ -312,9 +310,7 @@ class SUPERV:
             self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
             return 1
       except EOFError:
-         if j.fico!=None :
-            open('fort.15', 'a').write(open('ficode', 'r').read())
-         return 0
+          return 0
       except :
          self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
          traceback.print_exc()
@@ -335,9 +331,6 @@ class SUPERV:
                print ">> JDC.py : DEBUT RAPPORT"
                print j.cr
                print ">> JDC.py : FIN RAPPORT"
-
-           if j.fico!=None :
-               open('fort.15', 'a').write(open('ficode', 'r').read())
 
            return ier
        except MemoryError:

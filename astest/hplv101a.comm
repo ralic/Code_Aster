@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - CONT. PLANES - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,      NU = 0.3, ALPHA = 0.),
                           THER=_F(  LAMBDA = 1.0,   RHO_CP = 0.0) )
 
 MAT2=DEFI_MATERIAU(      ELAS=_F( E = 1.0,  NU = 0.3),
-           ECRO_LINE=_F( D_SIGM_EPSI = 200., SY = 10000.) )
+           ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 10000.) )
 
 MAILL=LIRE_MAILLAGE(   )
 

@@ -6,7 +6,7 @@ C     COMMANDE:  THER_LINEAIRE & THER_NON_LINE
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,8 +154,7 @@ C
      &                  STYPSE )
         ELSE
 
-          CALL U2MESK('A', 'SENSIBILITE_9', 1, NOPASE)
-          CALL U2MESK('F', 'UTILITAI7_99', 1 ,NOMPRO)
+          CALL U2MESK('F', 'SENSIBILITE_9', 1, NOPASE)
 
         ENDIF
 

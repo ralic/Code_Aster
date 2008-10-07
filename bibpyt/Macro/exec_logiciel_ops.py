@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 19/05/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF exec_logiciel_ops Macro  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+# RESPONSABLE COURTOIS M.COURTOIS
 
 import os.path
 import traceback
@@ -112,14 +114,18 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
    if mode_lancement == CMD_EXTERNE:
       scmd = cmd % d_para
       comment = "Lancement de la commande :\n%s" % scmd
-      iret, output = ExecCommand(scmd,
-                                 alt_comment=comment)
-      # écrire l'output dans le .mess si demandé
-      if INFO == 2:
-         aster.affiche('MESSAGE', output)
+      iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False,
+                                        capturestderr=True, separated_stderr=True)
+      erreur = CODE_RETOUR_MAXI >= 0 and iret > CODE_RETOUR_MAXI
       
-      if CODE_RETOUR_MAXI >= 0 and iret > CODE_RETOUR_MAXI:
-         UTMESS('F', 'EXECLOGICIEL0_3', vali=[CODE_RETOUR_MAXI,iret])
+      # écrire l'output dans le .mess si demandé
+      if INFO == 2 or erreur:
+         UTMESS('I', 'EXECLOGICIEL0_8',  valk=scmd, print_as='E')
+         UTMESS('I', 'EXECLOGICIEL0_9',  valk=output)
+         UTMESS('I', 'EXECLOGICIEL0_10', valk=error, print_as='E')
+      
+      if erreur:
+         UTMESS('F', 'EXECLOGICIEL0_3', vali=[CODE_RETOUR_MAXI, iret])
    
    #----------------------------------------------
    # 3b. Exécution d'un fichier Python

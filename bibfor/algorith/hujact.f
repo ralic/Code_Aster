@@ -1,8 +1,8 @@
-        SUBROUTINE HUJACT (MATER, VIND, VINF, VINS, SIGD, SIGF,
-     &                     NEGMUL, CHGMEC, INDMEC, IRET)
+      SUBROUTINE HUJACT (MATER, VIND, VINF, VINS, SIGD, SIGF,
+     &                     NEGMUL, CHGMEC, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,12 +36,12 @@ C       CHGMEC   = .TRUE. SI MODIFICATION DU DOMAINE POTENTIEL
 C                            DES MECANISMES ACTIFS
 C   ------------------------------------------------------------------
         INTEGER       NDT, NDI, I, J, MONO, IRET 
-        REAL*8        TOLE, SIGD(6),SIGF(6)
+        REAL*8        TOLE, SIGD(6),SIGF(6),TOLE2
         REAL*8        VIND(*), VINF(*), VINS(50), VINT(50)
         REAL*8        MATER(22,2), UN, ZERO 
         REAL*8        I1F, I1D, PCREF, PSF, PSM
         REAL*8        SEUIL, RD, RF
-        LOGICAL       DEBUG, CHGMEC, NEGMUL(8), PROX, INDMEC(8) 
+        LOGICAL       DEBUG, CHGMEC, NEGMUL(8), PROX 
 C --------------------------------------------------------------------
         COMMON /TDIM/   NDT, NDI
         COMMON /MESHUJ/ DEBUG
@@ -49,16 +49,12 @@ C --------------------------------------------------------------------
         PARAMETER     (TOLE = 1.D-7)
         PARAMETER     (UN   = 1.D0)
         PARAMETER     (ZERO = 0.D0)
+        PARAMETER     (TOLE2 = 1.D-12)
         
 C ===================================================================
 C -------------- DETERMINATION DES CRITERES ACTIFS A T+DT -----------
 C ===================================================================
-C        WRITE(6,'(A,8(1X,L1))')'NEGMUL =',(NEGMUL(I),I=1,8)
-C        WRITE(6,'(A,6(1X,E16.9))')'SIGF =',(SIGF(I),I=1,6)
-C        WRITE(6,'(A,10(1X,E16.9))')'1 --- VINF =',(VINF(I),I=1,50)
-        DO 20 I = 1, 8
-          INDMEC(I) = .FALSE.
-  20    CONTINUE
+
         DO 30 I = 1, 50
           VINT(I) = VIND(I)
   30    CONTINUE
@@ -71,7 +67,6 @@ C ====================================================================
             IF(NEGMUL(I))THEN
               CHGMEC     = .TRUE.
               NEGMUL(I)  = .FALSE.
-              INDMEC(I)  = .TRUE.
               IF(I.LT.4)THEN
                 IF(VIND(I).EQ.MATER(13,2))THEN
                   VIND(23+I) = ZERO
@@ -128,7 +123,6 @@ C ************************
               IF(SEUIL.GT.TOLE)THEN
                 CHGMEC      = .TRUE.
                 VIND(23+I)  = UN
-                INDMEC(I)   = .TRUE.
                 VIND(4*I+5) = ZERO
                 VIND(4*I+6) = ZERO
                 VIND(4*I+7) = ZERO
@@ -147,7 +141,6 @@ C ******************************
                 CHGMEC    = .TRUE.
                 VIND(27)  = UN
                 MONO      = 1
-                INDMEC(I) = .TRUE.
               ENDIF
               IF(MONO.NE.1)THEN
                 CALL HUJRMO(MATER, SIGD , VIND, RD)
@@ -157,7 +150,6 @@ C ******************************
                   CALL HUJMEI(VIND)
                   VIND(8)   = MATER(19,2)
                   CHGMEC    = .TRUE.
-                  INDMEC(I) = .TRUE.
                 ENDIF
               ENDIF
               GOTO 40
@@ -175,7 +167,6 @@ C ***********************************************
               CHGMEC      = .TRUE.
               NEGMUL(I+4) = .FALSE.
               VIND(27+I)  = ZERO
-              INDMEC(I+4) = .TRUE.
               GOTO 40   
             ENDIF
                  
@@ -192,7 +183,6 @@ C *************************************
               CHGMEC = .TRUE.
               VIND(27+I) = ZERO
               VIND(23+I) = UN   
-              INDMEC(I)  = .TRUE.
               IF(I.LT.4)THEN
                 VIND(4*I+5) = ZERO
                 VIND(4*I+6) = ZERO
@@ -210,67 +200,81 @@ C ************************************
 C --- VERIFICATION DES POINTS TANGENTS
 C ************************************
             IF ((I.LT.4).AND.(VINF(27+I).EQ.UN))THEN
-              CALL HUJDRC(I, MATER, SIGF, VINF, PSM, PSF,SEUIL,IRET)
+              CALL HUJDRC(I,MATER,SIGF,VINF,PSM,PSF,
+     &                    SEUIL,IRET)
 
               IF(IRET.EQ.1)GOTO 999
 
-              IF((SEUIL .LE. 1.D-4).AND.(PSM.GT.TOLE))THEN
+              IF((SEUIL .LE. TOLE2).AND.(PSM.GT.TOLE))THEN
 
-                CHGMEC = .TRUE.
-                INDMEC(I+4)  = .TRUE.          
-                IF((VIND(5*I+31).NE.ZERO).OR.
-     &             (VIND(5*I+32).NE.ZERO).OR. 
-     &             (VIND(5*I+33).NE.ZERO).OR. 
-     &             (VIND(5*I+34).NE.ZERO))THEN 
+              CHGMEC = .TRUE.
+             IF((VIND(5*I+31).NE.ZERO).OR.
+     &           (VIND(5*I+32).NE.ZERO).OR. 
+     &           (VIND(5*I+33).NE.ZERO).OR. 
+     &           (VIND(5*I+34).NE.ZERO))THEN 
 
-                  VIND(4*I+5)  = VIND(5*I+31)
-                  VIND(4*I+6)  = VIND(5*I+32)
-                  VIND(4*I+7)  = VIND(5*I+33)
-                  VIND(4*I+8)  = VIND(5*I+34)
-                  VIND(4+I)    = VIND(5*I+35)
+                VIND(4*I+5)  = VIND(5*I+31)
+                VIND(4*I+6)  = VIND(5*I+32)
+                VIND(4*I+7)  = VIND(5*I+33)
+                VIND(4*I+8)  = VIND(5*I+34)
+                VIND(4+I)    = VIND(5*I+35)
 
-                ELSE
-       
-                  VIND(4*I+5)  = ZERO
-                  VIND(4*I+6)  = ZERO
-                  VIND(4*I+7)  = ZERO
-                  VIND(4*I+8)  = ZERO
-                  VIND(27+I)   = ZERO
-                  VIND(23+I)   = UN                  
+              ELSE
+    
+                VIND(4*I+5)  = ZERO
+                VIND(4*I+6)  = ZERO
+                VIND(4*I+7)  = ZERO
+                VIND(4*I+8)  = ZERO
+                VIND(27+I)   = ZERO
+                VIND(23+I)   = UN                  
 
-                ENDIF
+              ENDIF
 
                 VIND(5*I+31) = ZERO
                 VIND(5*I+32) = ZERO
                 VIND(5*I+33) = ZERO
                 VIND(5*I+34) = ZERO
                 VIND(5*I+35) = MATER(18,2)
+
                 GOTO 40
 
+              ELSEIF((PSM.GT.TOLE).AND.(SEUIL.GE.TOLE2))THEN
+                CHGMEC = .TRUE.     
+C --- ENREGISTREMENT SURFACE ACTUELLE
+                VIND(5*I+31) = VIND(4*I+5)
+                VIND(5*I+32) = VIND(4*I+6)
+                VIND(5*I+33) = VIND(4*I+7)
+                VIND(5*I+34) = VIND(4*I+8)
+                VIND(5*I+35) = VIND(4+I)
+C --- MODIFICATION SURFACE
+                VIND(4*I+5) = VIND(4*I+5)-2*VIND(I+4)*VIND(4*I+7)
+                VIND(4*I+6) = VIND(4*I+6)-2*VIND(I+4)*VIND(4*I+8)
+                VIND(4*I+7) =-VIND(4*I+7)
+                VIND(4*I+8) =-VIND(4*I+8)
+                GOTO 40
               ENDIF
             ENDIF
 
 C ***********************************************************
 C --- EMPECHE L INTERSECTION DES CERCLES CYCLIQUE ET MONOTONE
 C ***********************************************************
-            IF ((I.LT.4).AND.(VINF(27+I).EQ.UN))THEN
-              IF((VINF(I+4).GT.VINF(5*I+35)).AND.
-     &           (VINF(5*I+35).NE.MATER(18,2))) THEN
-                CHGMEC = .TRUE.
-                INDMEC(I+4)  = .TRUE.          
-                VIND(4*I+5)  = VIND(5*I+31)
-                VIND(4*I+6)  = VIND(5*I+32)
-                VIND(4*I+7)  = VIND(5*I+33)
-                VIND(4*I+8)  = VIND(5*I+34)
-                VIND(4+I)    = VIND(5*I+35)                
-                VIND(5*I+31) = ZERO
-                VIND(5*I+32) = ZERO
-                VIND(5*I+33) = ZERO
-                VIND(5*I+34) = ZERO
-                VIND(5*I+35) = MATER(18,2)
-              GOTO 40
-              ENDIF
-            ENDIF
+C          IF ((I.LT.4).AND.(VINF(27+I).EQ.UN))THEN
+C            IF((VINF(I+4).GT.VINF(5*I+35)).AND.
+C     &         (VINF(5*I+35).NE.MATER(18,2))) THEN
+C              CHGMEC = .TRUE.   
+C              VIND(4*I+5)  = VIND(5*I+31)
+C              VIND(4*I+6)  = VIND(5*I+32)
+C              VIND(4*I+7)  = VIND(5*I+33)
+C              VIND(4*I+8)  = VIND(5*I+34)
+C              VIND(4+I)    = VIND(5*I+35)                
+C              VIND(5*I+31) = ZERO
+C              VIND(5*I+32) = ZERO
+C              VIND(5*I+33) = ZERO
+C              VIND(5*I+34) = ZERO
+C              VIND(5*I+35) = MATER(18,2)
+C            GOTO 40
+C            ENDIF
+C          ENDIF
 
 C ****************************************
 C --- MECANISME CYCLIQUE SUPPOSE ELASTIQUE
@@ -285,14 +289,13 @@ C ------------------------
                 IF (SEUIL.GT.TOLE)THEN
                   CHGMEC      = .TRUE. 
                   VIND(27+I)  = UN
-                  INDMEC(I+4) = .TRUE.
                 ENDIF
                 IF(((VINS(4*I+5).NE.VIND(4*I+5)).AND.
      &             (VINS(4*I+5).NE.ZERO)).OR.
      &             ((VINS(4*I+6).NE.VIND(4*I+6)).AND.
      &             (VINS(4*I+6).NE.ZERO)))THEN
-
-                  CALL HUJDRC(I,MATER,SIGF,VINF,PSM,PSF,SEUIL,IRET)
+                  CALL HUJDRC(I,MATER,SIGF,VINF,PSM,PSF,
+     &                        SEUIL,IRET)
                   IF(IRET.EQ.1)GOTO 999
 
                   IF(PSF.GT.ZERO)THEN
@@ -304,7 +307,6 @@ C ------------------------
                     CALL HUJCDC(I, MATER, SIGF, VINF, SEUIL)
                     IF(SEUIL.GT.TOLE)THEN
                       CHGMEC      = .TRUE.
-                      INDMEC(I+4) = .TRUE.
                       VIND(4*I+5) = VINS(4*I+5)
                       VIND(4*I+6) = VINS(4*I+6)
                       VIND(4*I+7) = VINS(4*I+7)
@@ -318,7 +320,8 @@ C ------------------------
      &                 ((VINS(4*I+6).NE.VIND(4*I+6)).AND.
      &                 (VINS(4*I+6).EQ.ZERO)))THEN
 
-                  CALL HUJDRC(I,MATER,SIGF,VINF,PSM,PSF,SEUIL,IRET)
+                  CALL HUJDRC(I,MATER,SIGF,VINF,PSM,PSF,
+     &                        SEUIL,IRET)
                   IF(IRET.EQ.1)GOTO 999
 
                   IF(PSF.GT.TOLE)THEN
@@ -330,7 +333,6 @@ C ------------------------
                     VINF(23+I)  = UN
                     VINF(27+I)  = ZERO
                     CHGMEC      = .FALSE.
-                    INDMEC(I+4) = .FALSE.
                   ENDIF
                 ELSE
                   IF(VIND(4+I).NE.MATER(18,2))THEN
@@ -351,7 +353,6 @@ C ------------------------------
                   IF (SEUIL.GT.TOLE)THEN
                     CHGMEC      = .TRUE. 
                     VIND(31)    = UN
-                    INDMEC(I+4) = .TRUE.
                   ELSE
                     VINF(21) = VINS(21)
                     VINF(22) = VINS(22)
@@ -363,7 +364,6 @@ C ------------------------------
                   IF (SEUIL.GT.TOLE)THEN
                     CHGMEC      = .TRUE. 
                     VIND(31)    = UN
-                    INDMEC(I+4) = .TRUE.
                   ELSE
                     VINF(21) = VINS(21)
                     VINF(22) = VINS(22)
@@ -383,7 +383,6 @@ C ------------------------------
                     ENDIF
                     IF(SEUIL.GT.TOLE)THEN
                       CHGMEC      = .TRUE.
-                      INDMEC(I+4) = .TRUE.
                       VIND(21)    = VINS(21)
                       VIND(22)    = VINS(22)
                       VIND(8)     = VINS(8)
@@ -396,7 +395,6 @@ C ------------------------------
                     CALL HUJCIC(MATER, SIGF, VINT, SEUIL)
                     IF(SEUIL.GT.TOLE)THEN
                       CHGMEC      = .TRUE.
-                      INDMEC(I+4) = .TRUE.
                       VIND(21)    = VINT(21)
                       VIND(22)    = VINT(22)
                       VIND(8)     = VINT(8)
@@ -411,7 +409,6 @@ C ------------------------------
                     CALL HUJCIC(MATER, SIGF, VINF, SEUIL)
                     IF(SEUIL.GT.TOLE)THEN
                       CHGMEC      = .TRUE.
-                      INDMEC(I+4) = .TRUE.
                       VIND(21)    = VINS(21)
                       VIND(22)    = VINS(22)
                       VIND(8)     = VINS(8)
@@ -424,7 +421,6 @@ C ------------------------------
                     CALL HUJCIC(MATER, SIGF, VINT, SEUIL)
                     IF(SEUIL.GT.TOLE)THEN
                       CHGMEC      = .TRUE.
-                      INDMEC(I+4) = .TRUE.
                       VIND(21)    = VINT(21)
                       VIND(22)    = VINT(22)
                       VIND(8)     = VINT(8)
@@ -438,7 +434,6 @@ C ------------------------------
           ENDIF
 
   40    CONTINUE
-C        WRITE(6,'(A,10(1X,E16.9))')'2 --- VINF =',(VINF(I),I=1,50)
  999    CONTINUE
 1001    FORMAT(A,I3)    
 2000    FORMAT(A,28(1X,E12.5)) 

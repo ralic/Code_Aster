@@ -4,7 +4,7 @@
      &                  INPSCO,VHYDR ,SDOBSE,MAILLA,CRITHE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/09/2008   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,8 +81,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C 0.3. ==> VARIABLES LOCALES
 
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'NTINIT' )
       INTEGER      NEQ,IRET,IERR,NRPASE,INITPR,IAUX,JAUX,IBID
       INTEGER      NIV,IFM
       LOGICAL      LLIN
@@ -94,9 +92,9 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*24 VALK(2)
       INTEGER      NUMINI
       REAL*8       INSTAM
-C      
-      DATA SDSUIV            /'&&NTINIT.SUIVI'/         
-      
+C
+      DATA SDSUIV            /'&&NTINIT.SUIVI'/
+
 C ---------------------------------------------------------------------
 
 C====
@@ -197,8 +195,7 @@ C VRAI STATIONNAIRE (.NOT.LOSTAT) OU IL Y'A RIEN A FAIRE
             IF ( IRET.NE.0 ) THEN
               VALK(1) = RESUIN
               VALK(2) = NOPASE//'                '
-              CALL U2MESK('A','SENSIBILITE_3', 2 ,VALK)
-              CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
+              CALL U2MESK('F','SENSIBILITE_3', 2 ,VALK)
             ENDIF
           ENDIF
 
@@ -234,7 +231,7 @@ C EN NON-LINEAIRE, RECOPIE DU CHAMP D'HYDRATATION
       IF (.NOT.LLIN) THEN
         CALL COPISD('CHAMP_GD','V',HYDRIN,VHYDR)
       ENDIF
-      
+
 C 3.4. ==> LISTE DES INSTANTS DE CALCUL ET DIVERS COMPTEURS
 
       CALL TIINIT(MAILLA,RESULT(1:8),INSTAM,LOSTAT,SDDISC,

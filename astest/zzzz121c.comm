@@ -1,4 +1,4 @@
-# MODIF  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -469,8 +469,8 @@ TEST_RESU(RESU=(
        _F(  RESULTAT = RETHTROI,   NUME_ORDRE = 2,
             NOM_CHAM = 'TEMP',      GROUP_NO = 'OPPOSE',
             CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'TEMP',       VALE = 3.094154101E+02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '9.01.23'  ))
+            NOM_CMP = 'TEMP',       VALE = 3.030801408E+02,
+            REFERENCE = 'NON_REGRESSION', VERSION = '9.02.15'  ))
           )
 #
 FIN( )

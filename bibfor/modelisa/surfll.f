@@ -1,0 +1,197 @@
+      SUBROUTINE SURFLL(DEFICO,NOMA  ,IFM   ,NZOCO ,NMACO ,
+     &                  NNOCO ,NNOQUA)
+C      
+C RESPONSABLE ABBAS M.ABBAS
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C 
+      IMPLICIT NONE
+      CHARACTER*24 DEFICO
+      CHARACTER*8 NOMA
+      INTEGER     IFM
+      INTEGER     NMACO,NNOCO,NNOQUA,NZOCO
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODES MAILLEES - AFFICHAGE DONNEES)
+C
+C LISTE DES MAILLES ET DES NOEUDS
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  IFM    : UNITE D'IMPRESSION
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32 JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      NBMAIL,NBNOEU
+      INTEGER      IZONE,ISUCO,IMA,INO
+      INTEGER      NBMA,NBNO
+      INTEGER      JDECMA,JDECNO,JNOMMA,JNOMNO
+      INTEGER      NUMMA ,NUMNO
+C      
+      CHARACTER*8  CHAIN1,CHAIN2
+      CHARACTER*24 NOEUMA,MAILMA
+C
+      CHARACTER*24 PSURMA,PSURNO,CONTMA,CONTNO,PZONE
+      INTEGER      JSUMA ,JSUNO ,JMACO ,JNOCO ,JZONE      
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ          
+C
+C --- ACCES SD DU MAILLAGE
+C
+      MAILMA = NOMA(1:8)//'.NOMMAI'
+      NOEUMA = NOMA(1:8)//'.NOMNOE'                 
+C   
+C --- COMMUNS AVEC FORM. MAILLEES (DISCRET ET CONTINUE MAIS PAS XFEM)
+C   
+      PZONE  = DEFICO(1:16)//'.PZONECO' 
+      PSURMA = DEFICO(1:16)//'.PSUMACO'
+      PSURNO = DEFICO(1:16)//'.PSUNOCO'
+      CONTMA = DEFICO(1:16)//'.MAILCO'
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+C
+      CALL JEVEUO(PZONE, 'L',JZONE)  
+      CALL JEVEUO(PSURMA,'L',JSUMA)
+      CALL JEVEUO(PSURNO,'L',JSUNO) 
+      CALL JEVEUO(CONTMA,'L',JMACO)
+      CALL JEVEUO(CONTNO,'L',JNOCO)                 
+C
+C --- CREATION VECTEURS TEMPORAIRES
+C      
+      CALL WKVECT('&&SURFLL.TRAVMA','V V K8',NMACO,JNOMMA)
+      CALL WKVECT('&&SURFLL.TRAVNO','V V K8',NNOCO,JNOMNO)
+C 
+C --- IMPRESSIONS GLOBALES (TOUTES ZONES)
+C 
+C         
+      WRITE (IFM,*)      
+      WRITE (IFM,*) '<CONTACT> INFOS SUR LES SURFACES MAILLEES '
+      WRITE (IFM,*)
+
+      DO 10 IZONE = 1,NZOCO
+
+        WRITE (IFM,*) '<CONTACT> ZONE : ',IZONE
+C     
+        NBMAIL = ZI(JSUMA+ZI(JZONE+IZONE))-ZI(JSUMA+ZI(JZONE+IZONE-1))
+        WRITE (IFM,*) '<CONTACT> ... NOMBRE DE MAILLES          : ',
+     &                  NBMAIL
+C     
+        NBNOEU = ZI(JSUNO+ZI(JZONE+IZONE))-ZI(JSUNO+ZI(JZONE+IZONE-1))
+        WRITE (IFM,*) '<CONTACT> ... NOMBRE DE NOEUDS           : ',
+     &                  NBNOEU
+C
+        WRITE (IFM,*) '<CONTACT> ...... SURFACE MAITRE '
+        CALL CFZONE(DEFICO,IZONE ,'MAIT',ISUCO)  
+        CALL CFNBSF(DEFICO,ISUCO ,'MAIL',NBMA  ,JDECMA)  
+        CALL CFNBSF(DEFICO,ISUCO ,'NOEU',NBNO  ,JDECNO)      
+C                     
+        IF (NBMA .LE. 1) THEN 
+          CHAIN1 = ' MAILLE '
+        ELSE
+          CHAIN1 = ' MAILLES'
+        ENDIF  
+        IF (NBNO .LE. 1) THEN
+          CHAIN2 = ' NOEUD  '
+        ELSE
+          CHAIN2 = ' NOEUDS '
+        ENDIF 
+C           
+        WRITE (IFM,1035) NBMA, CHAIN1,' ET ',NBNO,CHAIN2
+C          
+        DO 30 IMA = 1,NBMA
+          NUMMA = ZI(JMACO+JDECMA+IMA-1)
+          CALL JENUNO(JEXNUM(MAILMA,NUMMA),ZK8(JNOMMA+IMA-1))
+ 30     CONTINUE
+        WRITE (IFM,1040) '     LISTE DES MAILLES : '
+        WRITE (IFM,1050) (ZK8(JNOMMA+IMA-1), IMA = 1,NBMA)
+C          
+        DO 40 INO = 1,NBNO
+          NUMNO = ZI(JNOCO+JDECNO+INO-1)
+          CALL JENUNO(JEXNUM(NOEUMA,NUMNO),ZK8(JNOMNO+INO-1))
+ 40     CONTINUE
+        WRITE (IFM,1040) '     LISTE DES NOEUDS  : '
+        WRITE (IFM,1050) (ZK8(JNOMNO+INO-1), INO = 1,NBNO)          
+C
+        WRITE (IFM,*) '<CONTACT> ...... SURFACE ESCLAVE '   
+        CALL CFZONE(DEFICO,IZONE ,'ESCL',ISUCO)        
+        CALL CFNBSF(DEFICO,ISUCO ,'MAIL',NBMA  ,JDECMA)  
+        CALL CFNBSF(DEFICO,ISUCO ,'NOEU',NBNO  ,JDECNO)      
+C                     
+        IF (NBMA .LE. 1) THEN 
+          CHAIN1 = ' MAILLE '
+        ELSE
+          CHAIN1 = ' MAILLES'
+        ENDIF  
+        IF (NBNO .LE. 1) THEN
+          CHAIN2 = ' NOEUD  '
+        ELSE
+          CHAIN2 = ' NOEUDS '
+        ENDIF 
+C         
+        WRITE (IFM,1035) NBMA, CHAIN1,' ET ',NBNO,CHAIN2
+C        
+        DO 31 IMA = 1,NBMA
+          NUMMA = ZI(JMACO+JDECMA+IMA-1)
+          CALL JENUNO(JEXNUM(MAILMA,NUMMA),ZK8(JNOMMA+IMA-1))
+ 31     CONTINUE
+        WRITE (IFM,1040) '     LISTE DES MAILLES : '
+        WRITE (IFM,1050) (ZK8(JNOMMA+IMA-1), IMA = 1,NBMA)
+C        
+        DO 41 INO = 1,NBNO
+          NUMNO = ZI(JNOCO+JDECNO+INO-1)
+          CALL JENUNO(JEXNUM(NOEUMA,NUMNO),ZK8(JNOMNO+INO-1))
+ 41     CONTINUE
+        WRITE (IFM,1040) '     LISTE DES NOEUDS  : '
+        WRITE (IFM,1050) (ZK8(JNOMNO+INO-1), INO = 1,NBNO)     
+ 10   CONTINUE
+C
+ 1035 FORMAT (' <CONTACT> ...... ',I5,A8,A4,I5,A8)
+ 1040 FORMAT (' <CONTACT> ...... ',A25)       
+ 1050 FORMAT ((' <CONTACT> ...... ',17X,4(A8,1X)))       
+C 
+C --- MENAGE
+C
+      CALL JEDETR('&&SURFLL.TRAVMA')
+      CALL JEDETR('&&SURFLL.TRAVNO')
+
+      CALL JEDEMA
+      END

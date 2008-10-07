@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,6 +116,7 @@ C
           ENDIF
         ENDIF
       ENDIF
+      CALL ASSERT(LOIS.NE.0)
       LSI = LSO / LOIS
 C
 C     LE SEGMENT DE VALEURS EST ALLOUE DYNAMIQUEMENT SI LDYN=1 ET SI
@@ -129,8 +130,10 @@ C
         ILDYNA = ILDYNA+1
         IF ( MCDYN+LSIC*LOIS .GT. VMXDYN ) THEN 
           IF ( ILDYNA .GT. 1 ) THEN
-            CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
-     &                  //' IMPOSEE ATTEINTE')
+            IF (LDYN .EQ. 1) THEN 
+               CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
+     &                     //' IMPOSEE ATTEINTE')
+            ENDIF
             IVAL(1)=LSIC*LOIS
             IVAL(2)=VMXDYN
             IVAL(3)=MCDYN
@@ -154,8 +157,10 @@ C
           NBDYN  = NBDYN + 1
         ELSE 
           IF ( IESSAI .GT. 1 ) THEN
-            CALL JEIMPM ( 'MESSAGE',' MEMOIRE INSUFFISANTE,'
-     &                  //' ALLOCATION IMPOSSIBLE')
+            IF (LDYN .EQ. 1) THEN 
+              CALL JEIMPM ( 'MESSAGE',' MEMOIRE INSUFFISANTE,'
+     &                    //' ALLOCATION IMPOSSIBLE')
+            ENDIF
             IVAL(1)=LSIC*LOIS
             IVAL(2)=LTOT*LOIS
             CALL U2MESI('S','JEVEUX_60',2,IVAL)

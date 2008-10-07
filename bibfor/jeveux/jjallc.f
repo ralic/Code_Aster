@@ -1,6 +1,6 @@
       SUBROUTINE JJALLC ( ICLASI , IDATCI , CEL , IBACOL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C
       LTYPI  = LTYP ( JLTYP(IC) + ID )
       LONOI  = LONO ( JLONO(IC) + ID ) * LTYPI
       IADMI  = IADM ( JIADM(IC) + 2*ID-1 )
+      IADYN  = IADM ( JIADM(IC) + 2*ID   )
       IADDI(1) = IADD ( JIADD(IC) + 2*ID-1 )
       IADDI(2) = IADD ( JIADD(IC) + 2*ID   )
 C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
@@ -111,7 +112,7 @@ C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
         ENDIF
       ENDIF
       IBACOL = IADMI
-      CALL JJECRS (IADMI, IC, ID, 0, CEL, IMARQ(JMARQ(IC)+2*ID-1) )
+      CALL JJECRS (IADMI, IADYN,IC, ID, 0, CEL, IMARQ(JMARQ(IC)+2*ID-1))
  100  CONTINUE
 C
       DO 20 K = 2,IDNUM
@@ -126,6 +127,7 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
             CALL U2MESK('F','JEVEUX_26',1,RNOM(JRNOM(IC)+IX))
           ENDIF
           IADMI  = IADM ( JIADM(IC) + 2*IX-1 )
+          IADYN  = IADM ( JIADM(IC) + 2*IX  )
           IADDI(1) = IADD ( JIADD(IC) + 2*IX-1 )
           IADDI(2) = IADD ( JIADD(IC) + 2*IX   )
           IF ( IADMI .NE. 0 ) THEN
@@ -161,7 +163,7 @@ C --------- MISE EN MEMOIRE SANS LECTURE DISQUE
      &         .AND.  RNOM(JRNOM(IC)+IX)(25:26) .NE. '$$'    ) THEN
             IPGC   = -1
           ENDIF
-          CALL JJECRS (IADMI, IC, IX, 0, CEL, IMARQ(JMARQ(IC)+2*IX-1))
+          CALL JJECRS (IADMI,IADYN,IC,IX,0,CEL,IMARQ(JMARQ(IC)+2*IX-1))
           IPGC = IPGCEX
         ENDIF
  20   CONTINUE
@@ -172,8 +174,9 @@ C
       LONOI  = LONO ( JLONO(IC) + IX ) * LTYPI
       IF ( LONOI .GT. 0 ) THEN
         IADMI  = IADM ( JIADM(IC) + 2*IX-1 )
+        IADYN  = IADM ( JIADM(IC) + 2*IX  )
         IF ( IADMI .NE. 0 ) THEN
-          CALL JJECRS (IADMI, IC, IX, 0, CEL, IMARQ(JMARQ(IC)+2*IX-1))
+          CALL JJECRS (IADMI,IADYN,IC,IX,0,CEL,IMARQ(JMARQ(IC)+2*IX-1))
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

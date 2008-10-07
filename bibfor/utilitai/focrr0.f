@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -165,9 +165,7 @@ C        -------------------------------------------------------------
         NVERI2 = NOEUD .EQ. ' '
         NVERI3 = NPOINT .EQ. 0
         IF (NVERI1 .OR. (NVERI2.AND.NVERI3)) THEN
-        VALK (1) = K8B
-        VALK (2) = K8B
-        CALL U2MESG('F', 'UTILITAI6_15',2,VALK,0,0,0,0.D0)
+          CALL U2MESS('F', 'UTILITAI6_15')
         END IF
         CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAM_ELEM',IBID,NOMA,IE)
         CALL DISMOI('F','NOM_GD',CHAM19,'CHAM_ELEM',IBID,NOGD,IE)

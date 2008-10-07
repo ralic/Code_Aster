@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -167,7 +167,7 @@ C        --- DANS LA COMMANDE POST_ELEM                          ---
         CALL WKVECT(KINS,'V V R',NBORDR,JINS)
 C            CAS D'UN CALCUL MODAL
 C        --- ON RECUPERE LES FREQUENCES ---
-        CALL JEEXIN(RESUL//'           .FREQ',IRET)
+        CALL JENONU(JEXNOM(RESUL//'           .NOVA','FREQ'),IRET)
         IF (IRET.NE.0) THEN
           DO 10 IORD = 1,NBORDR
             NUMORD = ZI(JORD+IORD-1)
@@ -177,7 +177,7 @@ C        --- ON RECUPERE LES FREQUENCES ---
         END IF
 C            CAS CALCUL TRANSITOIRE
 C            RECUPERATION DES INSTANTS
-        CALL JEEXIN(RESUL//'           .INST',IRET)
+        CALL JENONU(JEXNOM(RESUL//'           .NOVA','INST'),IRET)
         IF (IRET.NE.0) THEN
           EXITIM = .TRUE.
           DO 20 IORD = 1,NBORDR

@@ -1,7 +1,8 @@
-      SUBROUTINE NMSTAT(FONACT,SDTIME,RESOCO)
+      SUBROUTINE NMSTAT(PHASEZ,FONACT,SDTIME,SDDYNA,SDDISC,
+     &                  NUMINS,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,8 +22,11 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*24 SDTIME,RESOCO
-      LOGICAL      FONACT(*)   
+      CHARACTER*(*) PHASEZ
+      CHARACTER*24  SDTIME,RESOCO
+      CHARACTER*19  SDDYNA,SDDISC
+      LOGICAL       FONACT(*)   
+      INTEGER       NUMINS
 C
 C ----------------------------------------------------------------------
 C
@@ -33,7 +37,12 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  PHASE  : TYPE DE STATISTIQUES
+C               'PAS' - PAS DE TEMPS COURANT
+C               'FIN' - STATISTIQUES FINALES
 C IN  SDTIME : SD TIME
+C IN  SDDISC : SD DISCRETISATION
+C IN  SDDYNA : SD DYNAMIQUE
 C IN  RESOCO : SD RESOLUTION DU CONTACT
 C IN  FONACT : FONCTIONNALITES ACTIVES
 C
@@ -60,13 +69,15 @@ C
       LOGICAL      LBID
       INTEGER      IBID
       REAL*8       R8BID
-      REAL*8       TPSCOG,TPSCOA,TPSITE  
+      REAL*8       TPSCOG,TPSCOA,TPSITE,TPSCTC 
       INTEGER      CTCCIT,CTCCLA,CTCCLF,CTCGEO,ITERAT,CTCFRO
       REAL*8       TPSPAS,TPSARC,TPSRST
-      REAL*8       TPSFCS,TPSFCN,TPSINT,TPSRES,TPSMAT
-      INTEGER      NBRFCS,NBRFCN,NBRINT,NBRRES,NBRMAT           
+      REAL*8       TPSFCS,TPSFCN,TPSINT,TPSRES
+      INTEGER      NBRFCS,NBRFCN,NBRINT,NBRRES        
       REAL*8       VALR(15)  
-      INTEGER      VALI(15)        
+      INTEGER      VALI(15)  
+      CHARACTER*3  PHASE   
+      LOGICAL      NDYNLO,LEXPL,LIMPL
 C      
 C ----------------------------------------------------------------------
 C
@@ -78,6 +89,8 @@ C
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
       LCTCV  = ISFONC(FONACT,'CONT_VERIF')
       LCONT  = ISFONC(FONACT,'CONTACT')
+      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
+      LIMPL  = NDYNLO(SDDYNA,'IMPLICITE')      
       TPSCOA = 0.D0
       TPSCOG = 0.D0
       TPSARC = 0.D0
@@ -85,7 +98,8 @@ C
       CTCCLA = 0
       CTCCLF = 0
       CTCGEO = 0   
-      CTCFRO = 0                    
+      CTCFRO = 0 
+      PHASE  = PHASEZ                   
 C
 C --- TEMPS PASSES DANS MECA_NON_LINE
 C
@@ -96,11 +110,10 @@ C
       CALL NMTIME('IFR','FCN',SDTIME,LBID  ,TPSFCN)
       CALL NMTIME('IFR','INT',SDTIME,LBID  ,TPSINT)
       CALL NMTIME('IFR','RES',SDTIME,LBID  ,TPSRES)
-      CALL NMTIME('IFR','MAT',SDTIME,LBID  ,TPSMAT)
 C
 C --- COMPTEURS D'OPERATIONS
 C
-      CALL NMTIME('IFI','FCS',SDTIME,LBID  ,R8BID )
+      CALL NMTIME('IFI','FCS',SDTIME,LBID  ,R8BID)
       NBRFCS = NINT(R8BID)
       CALL NMTIME('IFI','FCN',SDTIME,LBID  ,R8BID)
       NBRFCN = NINT(R8BID)      
@@ -108,67 +121,159 @@ C
       NBRINT = NINT(R8BID)
       CALL NMTIME('IFI','RES',SDTIME,LBID  ,R8BID)
       NBRRES = NINT(R8BID)
-      CALL NMTIME('IFI','MAT',SDTIME,LBID  ,R8BID)
-      NBRMAT = NINT(R8BID)
       CALL NMTIME('IFI','ITE',SDTIME,LBID  ,R8BID)
-      ITERAT = NINT(R8BID)      
-C
-C --- TEMPS RESTANT SUR PAS DE TEMPS
-C
-      TPSRST = TPSPAS-TPSARC-TPSFCN-TPSFCS-
-     &         TPSINT-TPSRES-TPSMAT
-C
-C --- AFFICHAGE DES TEMPS
-C
-      VALR(1)  = TPSPAS
-      VALR(2)  = TPSARC
-      VALR(3)  = TPSFCS
-      VALR(4)  = TPSFCN
-      VALR(5)  = TPSINT  
-      VALR(6)  = TPSRES
-      VALR(7)  = TPSMAT
-      VALR(8)  = TPSITE      
-      VALR(15) = TPSRST
-C      
-      VALI(3) = NBRFCS
-      VALI(4) = NBRFCN
-      VALI(5) = NBRINT
-      VALI(6) = NBRRES
-      VALI(7) = NBRMAT
-      VALI(8) = ITERAT
-      CALL NMIMPR('    ','TPS_PAS',' ',VALR,VALI)        
-C
-C --- STAT POUR CONTACT DISCRET
-C        
+      ITERAT = NINT(R8BID)  
+      
       IF ((LCTCD).AND.(.NOT.LCTCV)) THEN
         CALL CFITER(RESOCO,'L','TIMG',IBID  ,TPSCOG)
-        CALL CFITER(RESOCO,'L','TIMA',IBID  ,TPSCOA)    
-        VALR(1) = TPSCOG
-        VALR(2) = TPSCOA
+        CALL CFITER(RESOCO,'L','TIMA',IBID  ,TPSCOA)
+        TPSCTC = TPSCOG + TPSCOA
         CALL CFITER(RESOCO,'L','CONC',CTCCIT,R8BID )
         CALL MMBOUC(RESOCO,'GEOM','READ',CTCGEO)          
         CALL CFITER(RESOCO,'L','LIAC',CTCCLA,R8BID )
         CALL CFITER(RESOCO,'L','LIAF',CTCCLF,R8BID )
-        VALI(1) = CTCCIT 
-        VALI(2) = CTCGEO    
-        VALI(3) = CTCCLA
-        VALI(4) = CTCCLF
-        CALL NMIMPR('    ','STAT_CTCD',' ',VALR,VALI)   
-        CALL MMBOUC(RESOCO,'GEOM','INIT',IBID)     
-      ENDIF
-C
-C --- STAT POUR CONTACT CONTINU
-C      
-      IF (LCTCC) THEN  
+      ELSEIF (LCTCC) THEN  
         CALL CFITER(RESOCO,'L','CONC',CTCCIT,R8BID )
         CALL MMBOUC(RESOCO,'GEOM','READ',CTCGEO)     
         CALL CFITER(RESOCO,'L','FROT',CTCFRO,R8BID )
         VALI(1) = CTCCIT 
         VALI(3) = CTCGEO    
-        VALI(2) = CTCFRO
-        CALL NMIMPR('    ','STAT_CTCC',' ',R8BID,VALI)      
-        CALL MMBOUC(RESOCO,'GEOM','INIT',IBID)  
-      ENDIF
+        VALI(2) = CTCFRO 
+      ELSE
+        TPSCTC = 0.D0 
+        CTCCIT = 0         
+      ENDIF 
+      
+      
+      
+      IF (PHASE.EQ.'PAS') THEN
+C
+C --- SI DYNAMIQUE, ON RETIRE LA FACTORISATION POUR ACCE_INIT
+C      
+        IF ((LIMPL).AND.(NUMINS.EQ.2)) THEN
+          IF (NBRFCN.NE.0) THEN
+            TPSFCN = TPSFCN - TPSFCN/NBRFCN
+            NBRFCN = NBRFCN - 1 
+          ENDIF  
+        ENDIF                         
+C
+C --- TEMPS RESTANT SUR PAS DE TEMPS
+C
+        TPSRST = TPSPAS-TPSFCN-TPSFCS-
+     &           TPSINT-TPSRES-TPSCTC
+C
+C --- CREATION NUME_DDL EN DEHORS DU PREMIER PAS DE TEMPS
+C     
+        IF (NUMINS.EQ.2) THEN
+          IF (NBRFCS.NE.0) THEN
+            TPSRST = TPSRST + TPSFCS/NBRFCS 
+          ENDIF  
+        ENDIF
+C
+C --- AFFICHAGE DES TEMPS
+C
+        VALR(1)  = TPSPAS
+        VALR(2)  = TPSARC
+        VALR(3)  = TPSFCS
+        VALR(4)  = TPSFCN
+        VALR(5)  = TPSINT  
+        VALR(6)  = TPSRES
+        VALR(7)  = TPSCTC
+        VALR(8)  = TPSITE      
+        VALR(15) = TPSRST
+C      
+        VALI(3) = NBRFCS
+        VALI(4) = NBRFCN
+        VALI(5) = NBRINT
+        VALI(6) = NBRRES
+        VALI(7) = CTCCIT
+        VALI(8) = ITERAT
+        IF (.NOT.LEXPL) THEN
+          CALL NMIMPR('    ','TPS_PAS',' ',VALR,VALI)  
+        ENDIF          
+C
+C --- STAT POUR CONTACT DISCRET
+C        
+        IF ((LCTCD).AND.(.NOT.LCTCV)) THEN   
+          VALR(1) = TPSCOG
+          VALR(2) = TPSCOA
+          VALI(1) = CTCCIT 
+          VALI(2) = CTCGEO    
+          VALI(3) = CTCCLA
+          VALI(4) = CTCCLF
+          CALL NMIMPR('    ','STAT_CTCD',' ',VALR,VALI)  
+          CALL NMTIME('SFR','CTG',SDTIME,LBID  ,TPSCOG)  
+          CALL NMTIME('SFR','CTA',SDTIME,LBID  ,TPSCOA) 
+          R8BID  = DBLE(CTCCIT)
+          CALL NMTIME('SFI','CTA',SDTIME,LBID  ,R8BID )
+          R8BID  = DBLE(CTCGEO)
+          CALL NMTIME('SFI','CTG',SDTIME,LBID  ,R8BID )
+          CALL MMBOUC(RESOCO,'GEOM','INIT',IBID)     
+        ENDIF
+C
+C --- STAT POUR CONTACT CONTINU
+C      
+        IF (LCTCC) THEN  
+          VALI(1) = CTCCIT 
+          VALI(3) = CTCGEO    
+          VALI(2) = CTCFRO
+          CALL NMIMPR('    ','STAT_CTCC',' ',R8BID,VALI)  
+          R8BID  = DBLE(CTCCIT)
+          CALL NMTIME('SFI','CTA',SDTIME,LBID  ,R8BID )
+          R8BID  = DBLE(CTCGEO)
+          CALL NMTIME('SFI','CTG',SDTIME,LBID  ,R8BID )
+          R8BID  = DBLE(CTCFRO)
+          CALL NMTIME('SFI','CTF',SDTIME,LBID  ,R8BID )
+          CALL MMBOUC(RESOCO,'GEOM','INIT',IBID)  
+        ENDIF      
+C
+C --- PREPARATION STAT POUR TOUT LE STAT_NON_LINE
+C      
+        CALL NMTIME('STAT',' ',SDTIME,LBID  ,R8BID)      
+C
+C --- AFFICHAGE STAT POUR TOUT LE STAT_NON_LIN
+C
+      ELSEIF (PHASE.EQ.'FIN') THEN
+        CALL NMTIME('IFI','CU1',SDTIME,LBID  ,R8BID)
+        VALI(1) = NINT(R8BID)
+        CALL NMTIME('IFI','CU2',SDTIME,LBID  ,R8BID)
+        VALI(2) = NINT(R8BID)
+        CALL NMTIME('IFI','CU3',SDTIME,LBID  ,R8BID)
+        VALI(3) = NINT(R8BID)
+        CALL NMTIME('IFI','CU4',SDTIME,LBID  ,R8BID)
+        VALI(4) = NINT(R8BID)
+        CALL NMTIME('IFI','CU5',SDTIME,LBID  ,R8BID)
+        VALI(5) = NINT(R8BID)
+        CALL NMTIME('IFI','CU6',SDTIME,LBID  ,R8BID)
+        VALI(6) = NINT(R8BID)
+        CALL NMTIME('IFI','CU7',SDTIME,LBID  ,R8BID)
+        VALI(7) = NINT(R8BID)
+        CALL NMTIME('IFI','CU8',SDTIME,LBID  ,R8BID)
+        VALI(8) = NINT(R8BID)
+        CALL NMTIME('IFI','CU9',SDTIME,LBID  ,R8BID)
+        VALI(9) = NINT(R8BID)
+        CALL NMTIME('IFI','C10',SDTIME,LBID  ,R8BID)
+        VALI(10) = NINT(R8BID)
+        CALL NMTIME('IFI','C11',SDTIME,LBID  ,R8BID)
+        VALI(11) = NINT(R8BID)
+
+        CALL NMTIME('IFR','CU1',SDTIME,LBID  ,R8BID)
+        VALR(1) = R8BID
+        CALL NMTIME('IFR','CU2',SDTIME,LBID  ,R8BID)
+        VALR(2) = R8BID
+        CALL NMTIME('IFR','CU3',SDTIME,LBID  ,R8BID)
+        VALR(3) = R8BID        
+        CALL NMTIME('IFR','CU4',SDTIME,LBID  ,R8BID)
+        VALR(4) = R8BID
+        CALL NMTIME('IFR','CU5',SDTIME,LBID  ,R8BID)
+        VALR(5) = R8BID
+        CALL NMTIME('IFR','CU6',SDTIME,LBID  ,R8BID)
+        VALR(6) = R8BID 
+
+        CALL NMIMPR('    ','TPS_FIN',' ',VALR,VALI)
+      ELSE
+        CALL ASSERT(.FALSE.)                                         
+      ENDIF 
 C
 C --- REINITIALISATION STAT
 C
@@ -178,9 +283,7 @@ C --- REINITIALISATION POUR CONTACT
 C      
       IF (LCONT) THEN
         CALL CFITER(RESOCO,'I','    ',IBID,R8BID )
-      ENDIF
-      
-      
+      ENDIF            
 C
       CALL JEDEMA()
       END

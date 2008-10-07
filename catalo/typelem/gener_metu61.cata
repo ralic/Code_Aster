@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +94,6 @@ VECTEUR__
 MATRICE__
     MMATUUC = MDEP_C NDEPLAC NDEPLAC
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
-    MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
@@ -262,8 +261,6 @@ OPTION__
                               OUT__  ESIGMNOR PSIGNOD
     SIPO_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
-                              OUT__  MMATUUR  PSYM
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENBSP_I  PNBSP_I
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER

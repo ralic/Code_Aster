@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1258,13 +1258,12 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
 
 
 /* ------------------------------------------------------------------ */
-void DEFPS(GETVLI,getvli,_OUT INTEGER *unite , _OUT char *cas , _IN STRING_SIZE lcas )
+void DEFS(GETVLI,getvli, _OUT char *cas , _IN STRING_SIZE lcas )
 {
         /*
         Cette fonction est destinee a etre utilisee pour le fichier "*.code" (fort.15)
         */
                                                         ASSERT(NomCas!=(char*)0) ;
-        *unite = 15 ;
         CSTRING_FCPY(cas,lcas,NomCas);
         return ;
 }
@@ -1426,7 +1425,6 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return ;
 }
-
 
 /* ------------------------------------------------------------------ */
 void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
@@ -2738,14 +2736,22 @@ static PyObject * aster_affich(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        char *texte;
-        char *nomfic;
+      char *texte;
+      char *nomfic;
 
-        if (!PyArg_ParseTuple(args, "ss:affiche",&nomfic,&texte)) return NULL;
-        CALL_AFFICH (nomfic,texte);
+      if (!PyArg_ParseTuple(args, "ss:affiche",&nomfic,&texte)) return NULL;
+      if (jeveux_status == 1) {
+         CALL_AFFICH (nomfic,texte);
+      } else {
+         /*
+            soit on est avant DEBUT et c'est certainement un message d'erreur,
+            soit on est après FIN et ce sont les messages de cloture.
+          */
+         fprintf(stdout, "\n %s\n", texte);
+      }
 
-        Py_INCREF( Py_None ) ;
-        return Py_None;
+      Py_INCREF( Py_None ) ;
+      return Py_None;
 }
 
 /* ------------------------------------------------------------------ */
@@ -2837,24 +2843,26 @@ PyObject *args;
    aster.onFatalError()
          => retourne la valeur actuelle : 'ABORT' ou 'EXCEPTION'.
 */
-      int len=-1;
+      int len;
       INTEGER lng=0;
       char tmp[16+1] = "                 ";
       char *comport;
       PyObject *res;
 
+      len = -1;
       if (!PyArg_ParseTuple(args, "|s#:onFatalError",&comport ,&len)) return NULL;
-      if (len == -1) {
+      if (len == -1 || len == 0) {
             CALL_ONERRF(" ", tmp, &lng);
             res = PyString_FromStringAndSize(tmp, (int)lng);
 
-      } else if (strcmp(comport,"ABORT")==0 || strcmp(comport, "EXCEPTION")==0) {
+      } else if (strcmp(comport,"ABORT")==0 || strcmp(comport, "EXCEPTION")==0 || strcmp(comport, "EXCEPTION+VALID")==0 || strcmp(comport, "INIT")==0) {
             CALL_ONERRF(comport, tmp, &lng);
             Py_INCREF( Py_None ) ;
             res = Py_None;
 
       } else {
-            MYABORT("Seules ABORT et EXCEPTION sont des valeurs valides.");
+            printf("ERREUR : '%s' n'est pas une valeur autorisée.\n", comport);
+            MYABORT("Argument incorrect dans onFatalError.");
       }
       return res;
 }

@@ -3,7 +3,7 @@
      +                  IDEFO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,7 +53,8 @@ C ======================================================================
 C ======================================================================
       IF (OPTION.EQ.'EPSI_ELNO_DEPL'.OR.
      +    OPTION.EQ.'CHAR_MECA_PESA_R') THEN
-         CALL U2MESS('F','ELEMENTS3_33')
+C OPTION NON PROGRAMMEE
+          CALL ASSERT(.FALSE.)
       ENDIF
 C ======================================================================
 C --- RECUPERATION DES CHAMPS D'ENTREE DE L'ELEMENT --------------------

@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,7 +180,8 @@ C
      &                        ITAB,JTAB,IADMI,IADYN)
                   IADM(JIADM(IC)+2*ID-1) = IADMI
                   IADM(JIADM(IC)+2*ID  ) = IADYN
-                  CALL JJECRS(IADMI,IC,ID,0,'E',IMARQ(JMARQ(IC)+2*ID-1))
+                  CALL JJECRS(IADMI,IADYN,IC,ID,0,'E',
+     &                              IMARQ(JMARQ(IC)+2*ID-1))
                   NHC = JJPREM(IVAL)
                   JITAB = JISZON + IADMI - 1
                   ISZON(JITAB + ILOREP ) = NHC

@@ -1,6 +1,6 @@
       SUBROUTINE TE0137(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,9 +116,7 @@ C BOUCLE SUR LES SOUS-ELEMENTS
           VALPAR(3) = ZR(ITEMPS)
           IF (OPTION(11:14).EQ.'COEF') THEN
             CALL FOINTE('A',ZK8(IECH),3,NOMPAR,VALPAR,COENP1,ICODE)
-            IF (ICODE.NE.0) THEN
-              CALL U2MESS('F','ELEMENTS3_21')
-            END IF
+            CALL ASSERT (ICODE.EQ.0)
             DO 50 I = 1,NNO
               LI = IVF + (KP-1)*NNO + I - 1
               VECTT(C(ISE,I)) = VECTT(C(ISE,I)) +
@@ -126,13 +124,9 @@ C BOUCLE SUR LES SOUS-ELEMENTS
    50       CONTINUE
           ELSE IF (OPTION(11:14).EQ.'RAYO') THEN
             CALL FOINTE('A',ZK8(IRAY),4,NOMPAR,VALPAR,SIGMA,IER)
-            IF (IER.NE.0) THEN
-              CALL U2MESS('F','ELEMENTS3_21')
-            END IF
+            CALL ASSERT (IER.EQ.0)
             CALL FOINTE('A',ZK8(IRAY+1),4,NOMPAR,VALPAR,EPSIL,IER)
-            IF (IER.NE.0) THEN
-              CALL U2MESS('F','ELEMENTS3_21')
-            END IF
+            CALL ASSERT (IER.EQ.0)
             DO 60 I = 1,NNO
               LI = IVF + (KP-1)*NNO + I - 1
               VECTT(C(ISE,I)) = VECTT(C(ISE,I)) +

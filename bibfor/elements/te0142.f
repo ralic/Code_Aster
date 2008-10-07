@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -232,8 +232,8 @@ C
            CALL POSIPR(NOMTE,EFGE,ZR(JEFFO))
         ENDIF
       ELSE
-         CH16 = OPTION
-         CALL U2MESK('F','ELEMENTS3_27',1,CH16)
+C OPTION NON PROGRAMMEE
+        CALL ASSERT(.FALSE.)
       END IF
 
       END

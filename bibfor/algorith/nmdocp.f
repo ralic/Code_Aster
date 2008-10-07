@@ -9,7 +9,7 @@ C RESPONSABLE PROIX J-M.PROIX
       
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,6 +36,7 @@ C IN/OUT  LCOMEL  : NOMS DES COMPORTEMENTS ELEMENTAIRES
 C OUT     TXCP    : TYPE DE CONTRAINTES PLANES : ANALYTIQUE OU DEBORST
 C ----------------------------------------------------------------------
 
+      TX1D='ANALYTIQUE'      
       TXCP='ANALYTIQUE'      
       EXICP = GETEXM(MOCLEF,'ALGO_C_PLAN')
       EXI1D = GETEXM(MOCLEF,'ALGO_1D')

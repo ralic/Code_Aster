@@ -1,4 +1,4 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF B_MACRO_ETAPE Build  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,17 +117,17 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
             ier=self.codex.opsexe(self,self.icmd,-1,-self.definition.op)
 
          if ier:
-            self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
+            self.cr.fatal("Erreur dans la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
 
       except AsException,e:
          ier=1
-         self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+str(e))
+         self.cr.fatal("Erreur dans la macro "+self.nom+'\n'+str(e))
       except (EOFError,self.jdc.UserError):
          raise
       except:
          ier=1
          l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
-         self.cr.fatal("impossible de construire la macro "+self.nom+'\n'+string.join(l))
+         self.cr.fatal("Erreur dans la macro "+self.nom+'\n'+string.join(l))
 
       return ier
 

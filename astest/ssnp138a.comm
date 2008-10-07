@@ -1,4 +1,4 @@
-# MODIF  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,6 +117,7 @@ PK = [None]*nbcalc
 nbc=len(RI)
 SIF_1 = [None]*(nbc*nbcalc)
 SIF_2 = [None]*(nbc*nbcalc)
+TG_1 = [None]*(nbc*nbcalc)
 
 for i in range(nbcalc) :
 #
@@ -180,6 +181,7 @@ for i in range(nbcalc) :
   fab=1.0+0.128*(A/W)-0.288*(A/W)**2+1.525*(A/W)**3
   K1REF=-PRES*sqrt(pi*A/2.)*fab*cos(eval(alpha))**2
   K2REF=-PRES*sqrt(pi*A/2.)*fab*cos(eval(alpha))*sin(eval(alpha))
+  GREF = (1-nu**2)/E*(K1REF**2+K2REF**2)
 
   for j in range(0,nbc) :
     k = i*nbc + j
@@ -201,8 +203,18 @@ for i in range(nbcalc) :
                             R_SUP=RS[j],),
                    INFO=2);
 
+    TG_1[k]=CALC_G(RESULTAT=UTOT1[i],
+                   SYME_CHAR='SANS',
+                   OPTION='CALC_G',
+                   THETA=_F(FISSURE=FISS[i],
+                            NUME_FOND=1,
+                            R_INF=RI[j],
+                            R_SUP=RS[j],),
+                   INFO=2);
+                   
     IMPR_TABLE(TABLE=SIF_1[k],);
     IMPR_TABLE(TABLE=SIF_2[k],);
+    IMPR_TABLE(TABLE=TG_1[k],);
 
     TEST_TABLE(TABLE=SIF_1[k],
               NOM_PARA='K1',
@@ -214,6 +226,13 @@ for i in range(nbcalc) :
     TEST_TABLE(TABLE=SIF_2[k],
               NOM_PARA='K1',
               VALE=K1REF,
+              CRITERE='RELATIF',
+              PRECISION=0.02,
+              REFERENCE='ANALYTIQUE',);
+              
+    TEST_TABLE(TABLE=TG_1[k],
+              NOM_PARA='G',
+              VALE=GREF,
               CRITERE='RELATIF',
               PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);

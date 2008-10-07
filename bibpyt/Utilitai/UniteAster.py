@@ -1,4 +1,4 @@
-#@ MODIF UniteAster Utilitai  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF UniteAster Utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,10 +18,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# RESPONSABLE COURTOIS M.COURTOIS
+
 import types
 
 import aster
-from Cata.cata import _F, DEFI_FICHIER, INFO_EXEC_ASTER, DETRUIRE
+#from Cata.cata import _F, DEFI_FICHIER, INFO_EXEC_ASTER, DETRUIRE
+from Cata.cata import _F
+from Cata.cata import DEFI_FICHIER
+from Cata.cata import INFO_EXEC_ASTER
+from Cata.cata import DETRUIRE
 
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
@@ -82,7 +88,7 @@ class UniteAster:
       else:
          message = "Etat de l'unité inconnu : %s" % self.infos[unit]['etat']
          print __tab.EXTR_TABLE()
-         raise aster.FatalError,"<F> <UniteAster._setinfo> %s" % message
+         raise aster.error,"<F> <UniteAster._setinfo> %s" % message
       self.infos[unit]['nom'] = nomfich
       #print 'DEBUG infos[unit] = ', self.infos[unit]
       DETRUIRE(CONCEPT=_F(NOM=__tab),INFO=1)
@@ -102,7 +108,7 @@ class UniteAster:
       if self.infos.has_key(unit):
          message = "Cette unité est déjà affectée au fichier %s" % \
             self.infos[unit]['nom']
-         raise aster.FatalError,"<F> <UniteAster.Libre> %s" % message
+         raise aster.error,"<F> <UniteAster.Libre> %s" % message
 
       DEFI_FICHIER(ACTION=action, UNITE=unit , FICHIER=nom.strip())
       self.infos[unit] = {}
@@ -149,7 +155,7 @@ class UniteAster:
       new = kargs.get('etat')
       if not new in ['R', 'F', 'O']:
          message = "Nouvel état de l'unité incorrect : %s" % new
-         raise aster.FatalError,"<F> <UniteAster.Etat> %s" % message
+         raise aster.error,"<F> <UniteAster.Etat> %s" % message
 
       if self.infos[unit]['etat'] == new:
          pass

@@ -4,7 +4,7 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     --- LIRE LE NOM DU DEMON DE MINUIT ---
          ILIGD = ILIGD + 1
          IF ( ILIGD .LE. NBTITR )  GOTO 1
       ELSEIF( ICLASS .NE. 3 ) THEN
-         CALL U2MESS('E','UTILITAI4_90')
+CCC      DEMON INCORRECT
          CALL SNDBG(IUNIFI('MESSAGE'),ICLASS,IVAL,RVAL,CVAL)
          CGEN = ' '
          IGEN = 0
@@ -103,7 +103,7 @@ C
           GOTO( 10,  20,  30,  40,  50,  60,  70,  80,  90, 100,
      &         110, 120, 130, 140, 150, 160, 170, 180, 190, 200 ) IPLACE
 C
-               CALL U2MESS('A','UTILITAI4_91')
+CCC      DEMON INCORRECT
           GOTO 9000
 C
 C        --- DATE ---
@@ -398,9 +398,9 @@ C                 K80
                   WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK80(IAD)
                   IGEN = IGEN+ILG+1
                ELSE IF (CTYPE(1:1).EQ.'C') THEN
-                   CALL U2MESS('A','UTILITAI4_92')
+                   CALL ASSERT(.FALSE.)
                ELSE
-                   CALL U2MESS('A','UTILITAI4_93')
+                   CALL ASSERT(.FALSE.)
                ENDIF
   191       CONTINUE
             CALL JEDETR('&&TITREB.NOM_ACCE')
@@ -414,7 +414,7 @@ C        --- VALEUR PARAMETRE ---
             DO 210 IUTI = 1,2
                CALL JEEXIN(PARA(IUTI),IRET)
                IF (IRET.EQ.0) THEN
-                 CALL U2MESK('A','UTILITAI4_94',1,PARA(1))
+CCC   CONCEPT INEXISTANT
                  GOTO 210
                ENDIF
                CALL JELIRA(PARA(IUTI),'TYPE',IVAL,CVAL)

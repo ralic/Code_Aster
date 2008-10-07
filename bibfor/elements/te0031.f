@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -403,7 +403,8 @@ C        ------------------------------------------------------
    90    CONTINUE
       ELSE
 
-         CALL U2MESS('F','ELEMENTS2_67')
+CC OPTION DE CALCUL INVALIDE
+        CALL ASSERT(.FALSE.)
       END IF
 C
       IF ( OPTION(1:9).EQ.'FULL_MECA'  .OR.

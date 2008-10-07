@@ -7,7 +7,7 @@
      &                  MATGEO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/10/2008   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,8 +59,8 @@ C IN  MOD45  : TYPE DE CALCUL DE MODES PROPRES
 C              'VIBR'     MODES VIBRATOIRES
 C              'FLAM'     MODES DE FLAMBEMENT  
 C IN  DEFO   : TYPE DE DEFORMATIONS
-C                0        PETITES DEFORMATIONS (PAS DE MATR. GEOM.)
-C                1        GRANDES DEFORMATIONS (MATR. GEOM.)
+C                0        PETITES DEFORMATIONS (MATR. GEOM.)
+C                1        GRANDES DEFORMATIONS (PAS DE MATR. GEOM.)
 C IN  MODELE : MODELE
 C IN  NUMEDD : NUME_DDL
 C IN  MATE   : CHAMP MATERIAU
@@ -110,7 +110,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       LOGICAL      REASMA
-      LOGICAL      LCRIGI,LCFINT
+      LOGICAL      LCRIGI,LCFINT,LMACR
       LOGICAL      NDYNLO,LAMOR,LDYNA
       LOGICAL      ISFONC,LXFCM,LCTCC,LSUIV,LCTCD
       CHARACTER*16 OPTRIG,OPTAMO
@@ -126,7 +126,7 @@ C
       CHARACTER*6  LTYPMA(20)
       CHARACTER*16 LOPTME(20),LOPTMA(20)
       LOGICAL      LASSME(20),LCALME(20) 
-      INTEGER      IFM,NIV                            
+      INTEGER      IFM,NIV
 C      
 C ----------------------------------------------------------------------
 C
@@ -143,7 +143,7 @@ C --- INITIALISATIONS
 C
       CALL NMCMAT('INIT',' ',' ',' ',.FALSE.,
      &            .FALSE.,NBMATR,LTYPMA,LOPTME,LOPTMA,
-     &            LCALME,LASSME) 
+     &            LCALME,LASSME)
       CODERE = '&&NMFLMA.CODERE'  
       NOMDDL = ' '           
 C
@@ -155,6 +155,7 @@ C
       LXFCM  = ISFONC(FONACT,'CONT_XFEM')
       LAMOR  = NDYNLO(SDDYNA,'MAT_AMORT')
       LSUIV  = ISFONC(FONACT,'FORCE_SUIVEUSE') 
+      LMACR  = ISFONC(FONACT,'MACR_ELEM_STAT')
 C
 C --- DECOMPACTION DES VARIABLES CHAPEAUX
 C 
@@ -201,10 +202,11 @@ C
 C --- A RECALCULER
 C
       LCRIGI = REASMA
-      LCFINT = .FALSE.                    
+      LCFINT = .FALSE.
 C
 C --- CALCUL DES MATR-ELEM DE RIGIDITE 
 C
+      
       IF (LCRIGI) THEN
         CALL NMCMAT('AJOU','MERIGI',OPTRIG,' ',.TRUE.,
      &              REASMA,NBMATR,LTYPMA,LOPTME,LOPTMA,
@@ -237,7 +239,15 @@ C
      &                .FALSE.,NBMATR,LTYPMA,LOPTME,LOPTMA,
      &                LCALME,LASSME)         
         ENDIF
-      ENDIF  
+      ENDIF
+C
+C --- CALCUL DES MATR-ELEM DES SOUS-STRUCTURES 
+C
+      IF (LMACR) THEN
+        CALL NMCMAT('AJOU','MESSTR',' ',' ',.TRUE.,
+     &              .FALSE.,NBMATR,LTYPMA,LOPTME,LOPTMA,
+     &              LCALME,LASSME)     
+      ENDIF
 C
 C --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 C

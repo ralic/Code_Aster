@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -192,7 +192,8 @@ C        POUR LE CAS DU VENT
          CALL TECACH('NNN','PVITER',1,LFORC,IRET)
          IF ( LFORC .NE. 0 ) THEN
            IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
-             CALL U2MESS('F','ELEMENTS3_33')
+C OPTION NON PROGRAMMEE
+             CALL ASSERT(.FALSE.)
             ENDIF
            NORMAL = .TRUE.
            OKVENT = .TRUE.

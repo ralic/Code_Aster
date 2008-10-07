@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -227,8 +227,8 @@ C
             ZR(JEFFO+1) = FLR(4)
 C
          ELSE
-            CH16 = OPTION
-            CALL U2MESK('F','ELEMENTS3_32',1,CH16)
+C OPTION NON PROGRAMMEE
+            CALL ASSERT(.FALSE.)
          ENDIF
       ENDIF
 C

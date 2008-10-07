@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF TYPELEM  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,6 +89,9 @@ OPTION__
                               OUT__  EENERDR  PENERDR
     FORC_NODA           39    IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR
                               OUT__  MVECTUR  PVECTUR
+    FORC_NODA_NONL      39    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+                              OUT__  MVECTUR  PVECTUR    
     FULL_MECA           47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  CMATERC  PMATERC

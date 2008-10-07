@@ -3,7 +3,7 @@
       INTEGER                      IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,11 +27,9 @@ C      1   PROCEDURE "DEBUT" ET "POURSUITE" NON TROUVEES
 C      2   ERREUR(S) DANS LA COMMANDE  "DEBUT" OU "POURSUITE"
 C      0   SINON
 C     ------------------------------------------------------------------
-      CHARACTER*16 NOMCMD(2)
       CHARACTER*8  NOMF
-      INTEGER      LG(2), UNMEGA, IADZON, VALI(2)
+      INTEGER      UNMEGA, IADZON
       LOGICAL      LERMEM
-      LOGICAL      LMEMEX
 C
 C     --- MEMOIRE POUR LE GESTIONNAIRE D'OBJET ---
       UNMEGA = 1 024 * 1 024
@@ -73,12 +71,10 @@ C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
          IDEBUG = 0
       ENDIF
       VDY = -1.0D0
-      MXDYN =  MEMJVX (VDY) - IMEMO
-      IF ( MXDYN .GT. 0 ) THEN
-        WRITE(6,'(1X,A,I14,A,F12.3,A)') 
+      MXDYN =  MAX(0, MEMJVX (VDY) - IMEMO)
+      WRITE(6,'(1X,A,I14,A,F12.3,A)')
      &          'LIMITE MEMOIRE DYNAMIQUE      : ',
      &           MXDYN*LOIS,' OCTETS (',MXDYN*LOIS*1.D0/UNMEGA,' Mo)'
-      ENDIF
       CALL JEDEBU(4,IMEMO,MXDYN,IADZON,LMO,'MESSAGE','VIGILE',IDEBUG )
       WRITE(6,'(1X,A)')   '======================================='
 C
@@ -88,6 +84,7 @@ C     --- ALLOCATION D'UNE BASE DE DONNEES DUMMY ---
 C
       CALL ULDEFI(6,' ','MESSAGE','A','N','N')
       CALL ULDEFI(9,' ','ERREUR' ,'A','N','N')
+      CALL ULDEFI(15,' ','CODE' ,'A','N','N')
       CALL UTINIT(2, 80, 1)
 
       IF ( LERMEM ) CALL U2MESI('F','SUPERVIS_11',1,INT(FNTMEM*LOIS))

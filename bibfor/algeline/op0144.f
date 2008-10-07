@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C
       CALCUL(2)=.FALSE.
       IF (NBNO.EQ.0) THEN
         TMODE = .TRUE.
-        NUMOI = NOMBM//'           .NUMO'
+        NUMOI = NOMBM//'           .ORDR'
         CALL JELIRA(NUMOI,'LONUTI',NBNO,K8B)
         CALL ASSERT(NBAM.EQ.0 .OR. ABS(NBAM).EQ.NBNO)
       ELSE

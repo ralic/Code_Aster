@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai5 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,9 +290,8 @@ cata_msg = {
 """),
 
 97 : _("""
- le type de champ  %(k1)s n''est pas accepte.  %(k2)s 
- veuillez consulter la %(k3)s 
- doc u correspondante %(k4)s 
+ le type de champ  %(k1)s n'est pas accepté
+ veuillez consulter la doc U correspondante
 """),
 
 }

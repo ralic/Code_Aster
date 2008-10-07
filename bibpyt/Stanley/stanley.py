@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley Stanley  DATE 06/10/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,6 +162,21 @@ class PARAMETRES :
 
     # Initialisation des parametres
     self.dparam, self.dliste_section, self.aide = self.Initialise_dparam()
+
+    # Si Stanley est lance depuis Salome, on fixe le numero du port Corba
+    if __salome__: 
+       try:
+          largs = sys.argv
+          i = largs.index('-ORBInitRef')
+          ns = largs[i+1]
+          machine_salome      = ns.split(':')[-2]
+          machine_salome_port = ns.split(':')[-1]
+          self.dparam['machine_salome']['val']      = machine_salome
+          self.dparam['machine_salome_port']['val'] = machine_salome_port
+          print "Salome detecte, on fixe a : %s:%s" % (machine_salome, machine_salome_port)
+       except Exception,e:
+          print "Salome non detecte..."
+          #print e
 
     # Parametres utilises par la suite dans Stanley
     self.para = self.Initialise_para(self.dparam)
@@ -863,9 +878,6 @@ class ETAT_GEOM:
     except aster.error,err:
       UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
       return None
-    except aster.FatalError,err:
-      UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
-      return None
     except Exception,err:
       UTMESS('A','STANLEY_5',valk=[str(err)])
       return None
@@ -1099,8 +1111,6 @@ class ETAT_RESU:
       try:
         cata[nom_cham].Evalue(self.contexte, numeros, options)
       except aster.error,err:
-        UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
-      except aster.FatalError,err:
         UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
       except Exception,err:
         UTMESS('A','STANLEY_5',valk=[str(err)])
@@ -2054,8 +2064,6 @@ class DRIVER :
                           )
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [], 2)
-    except aster.FatalError,err:
-      return self.erreur.Remonte_Erreur(err, [], 2)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [], 2, texte)
@@ -2075,8 +2083,6 @@ class DRIVER :
                            )
 
     except aster.error,err:
-      return self.erreur.Remonte_Erreur(err, [__MO_P], 2)
-    except aster.FatalError,err:
       return self.erreur.Remonte_Erreur(err, [__MO_P], 2)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
@@ -2131,8 +2137,6 @@ class DRIVER :
                             )
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [], 2)
-    except aster.FatalError,err:
-      return self.erreur.Remonte_Erreur(err, [], 2)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [], 2, texte)
@@ -2156,8 +2160,6 @@ class DRIVER :
         ECLA_PG     = para,)
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [__MA_G], 2)
-    except aster.FatalError,err:
-      return self.erreur.Remonte_Erreur(err, [__MA_G], 2)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [__MA_G], 2, texte)
@@ -2177,8 +2179,6 @@ class DRIVER :
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = pmod,))
         except aster.error,err:
-          return self.erreur.Remonte_Erreur(err, [__MA_G, __RESU_G], 2)
-        except aster.FatalError,err:
           return self.erreur.Remonte_Erreur(err, [__MA_G, __RESU_G], 2)
         except Exception,err:
           texte = "Cette action n'est pas realisable.\n"+str(err)
@@ -2269,94 +2269,6 @@ class DRIVER_ISOVALEURS(DRIVER):
     if 'TOUT_CMP' not in selection.nom_cmp :
       para['NOM_CMP'] = tuple(selection.nom_cmp)
 
-    # Cas particulier de la deformee
-#     if 'DEPL' in selection.nom_cham:
-#        if 'TOUT_CMP' in selection.nom_cmp:
-#           if   selection.geom[0] in ['VOLUME']:  ndim = 3
-#           elif selection.geom[0] in ['SURFACE']: ndim = 2
-#           else:
-#              # sinon on a choisi TOUT_MAILLAGE
-#              dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
-#              if   '3' in str(dim): ndim = 3
-#              elif '2' in str(dim): ndim = 2
-#              elif '1' in str(dim): ndim = 1
-# 
-# 
-#           if   ndim==3:
-#              para['TYPE_CHAM'] = 'VECT_3D'
-#              para['NOM_CMP'] = ('DX', 'DY', 'DZ')
-#           elif ndim==2:
-#              para['TYPE_CHAM'] = 'VECT_2D'
-#              para['NOM_CMP'] = ('DX', 'DY')
-#           else:
-#              para['TYPE_CHAM'] = 'SCALAIRE'
-#              para['NOM_CMP'] = tuple(selection.liste_cmp)
-# 
-#        else:
-#           para['NOM_CMP'] = tuple(selection.nom_cmp)
-#           para['TYPE_CHAM'] = 'SCALAIRE'
-
-#     # Cas particulier de la deformee
-#     if 'TOUT_CMP' in selection.nom_cmp:
-#        if   selection.geom[0] in ['VOLUME']:  ndim = 3
-#        elif selection.geom[0] in ['SURFACE']: ndim = 2
-#        else:
-#           # sinon on a choisi TOUT_MAILLAGE
-#           dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
-#           if   '3' in str(dim): ndim = 3
-#           elif '2' in str(dim): ndim = 2
-#           elif '1' in str(dim): ndim = 1
-# 
-#        if   ndim==3: dpara1 = { 'TYPE_CHAM': 'VECT_3D',  'NOM_CMP': ('DX', 'DY', 'DZ') }
-#        elif ndim==2: dpara1 = { 'TYPE_CHAM': 'VECT_2D',  'NOM_CMP': ('DX', 'DY') }
-#        else:         dpara1 = { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.liste_cmp) }
-# 
-#     else:
-#        dpara1 = { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.nom_cmp) }
-# 
-#     print 'dpara1=', dpara1
-
-
-    # Cas particulier de la deformee
-    if   selection.geom[0] in ['VOLUME']:  ndim = 3
-    elif selection.geom[0] in ['SURFACE']: ndim = 2
-    else:
-       # sinon on a choisi TOUT_MAILLAGE
-       dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
-       if   '3' in str(dim): ndim = 3
-       elif '2' in str(dim): ndim = 2
-       elif '1' in str(dim): ndim = 1
-    if   ndim==3: dpara1 = { 'TYPE_CHAM': 'VECT_3D',  'NOM_CMP': ('DX', 'DY', 'DZ') }
-    elif ndim==2: dpara1 = { 'TYPE_CHAM': 'VECT_2D',  'NOM_CMP': ('DX', 'DY') }
-    else:         dpara1 = { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.liste_cmp) }
-
-    # Si on a choisi le champ DEPL
-    if 'DEPL' in selection.nom_cham:
-       if 'TOUT_CMP' in selection.nom_cmp:
-          para.update( dpara1 )
-       else:
-          para.update( { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.nom_cmp) } )
-
-
-    # Options supplementaires du IMPR_RESU pour la SENSIBILITE
-    if contexte.para_sensi:
-      para['SENSIBILITE'] = contexte.para_sensi
-
-    # Options supplementaires du IMPR_RESU pour le tracé sur deformée
-    if options.has_key( 'case_sur_deformee' ):
-      if options['case_sur_deformee'] == 1:
-        if selection.nom_cham != 'DEPL':
-          if type_champ in ['ELGA', 'ELEM']:
-             UTMESS('A','STANLEY_33')
-          else:
-             UTMESS('I','STANLEY_34')
-             if selection.nom_cham != 'DEPL':
-                para1 = _F(RESULTAT   = contexte.resultat,
-                           NOM_CHAM   = 'DEPL',
-                           NUME_ORDRE = selection.numeros,)
-                para1.update( dpara1 )
-                para = [ para, para1 ]
-
     return para
 
 
@@ -2394,33 +2306,78 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
     # Parametres de la commande IMPR_RESU
     para = self.Options_Impr_Resu(contexte, selection, options)
 
+    # Mise a jour specifiques des mot-cles pour Gmsh
+    # Si on a choisi le champ DEPL
+
+    if 'DEPL' in selection.nom_cham:
+       if 'TOUT_CMP' in selection.nom_cmp:
+          if   selection.geom[0] in ['VOLUME']:  ndim = 3
+          elif selection.geom[0] in ['SURFACE']: ndim = 2
+          else:
+             # sinon on a choisi TOUT_MAILLAGE
+             dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
+             if   '3' in str(dim): ndim = 3
+             elif '2' in str(dim): ndim = 2
+             elif '1' in str(dim): ndim = 1
+          if   ndim==3: dpara1 = { 'TYPE_CHAM': 'VECT_3D',  'NOM_CMP': ('DX', 'DY', 'DZ') }
+          elif ndim==2: dpara1 = { 'TYPE_CHAM': 'VECT_2D',  'NOM_CMP': ('DX', 'DY') }
+          else:         dpara1 = { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.liste_cmp) }
+
+          para.update( dpara1 )
+       else:
+          para.update( { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.nom_cmp) } )
+
+
+    # Options supplementaires du IMPR_RESU pour le trace sur deformee
+    if options.has_key( 'case_sur_deformee' ):
+      if options['case_sur_deformee'] == 1:
+        if selection.nom_cham != 'DEPL':
+          if type_champ in ['ELGA', 'ELEM']:
+             UTMESS('A','STANLEY_33')
+          else:
+             UTMESS('I','STANLEY_34')
+             if selection.nom_cham != 'DEPL':
+                para1 = _F(RESULTAT   = contexte.resultat,
+                           NOM_CHAM   = 'DEPL',
+                           NUME_ORDRE = selection.numeros,)
+
+
+                dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
+                if   '3' in str(dim): ndim = 3
+                elif '2' in str(dim): ndim = 2
+                elif '1' in str(dim): ndim = 1
+                if   ndim==3: dpara1 = { 'TYPE_CHAM': 'VECT_3D',  'NOM_CMP': ('DX', 'DY', 'DZ') }
+                elif ndim==2: dpara1 = { 'TYPE_CHAM': 'VECT_2D',  'NOM_CMP': ('DX', 'DY') }
+                else:         dpara1 = { 'TYPE_CHAM': 'SCALAIRE', 'NOM_CMP': tuple(selection.liste_cmp) }
+
+                para1.update( dpara1 )
+                para = [ para, para1 ]
+
+
     # Tracé au format GMSH
     DEFI_FICHIER(UNITE = 33, INFO=1)
-    IMPR_RESU( UNITE   = ul, 
+#    IMPR_RESU( UNITE   = ul, 
+#                 FORMAT  = 'GMSH',
+#                 VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
+#                 RESU    = para,
+#               )
+
+    try:
+      IMPR_RESU( UNITE   = ul, 
                  FORMAT  = 'GMSH',
                  VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
                  RESU    = para,
                )
-
-#     try:
-#       IMPR_RESU( UNITE   = ul, 
-#                  FORMAT  = 'GMSH',
-#                  VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
-#                  RESU    = para,
-#                )
-#     except aster.error,err:
-#       self.erreur.Remonte_Erreur(err, [], 0)
-#       DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
-#       return
-#     except aster.FatalError,err:
-#       self.erreur.Remonte_Erreur(err, [], 0)
-#       DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
-#       return
-#     except Exception,err:
-#       texte = "Cette action n'est pas realisable.\n"+str(err)
-#       self.erreur.Remonte_Erreur(err, [], 0, texte)
-#       DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
-#       return
+    except aster.error,err:
+      self.erreur.Remonte_Erreur(err, [], 0)
+      DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+      return
+      return
+    except Exception,err:
+      texte = "Cette action n'est pas realisable.\n"+str(err)
+      self.erreur.Remonte_Erreur(err, [], 0, texte)
+      DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
+      return
 
     DEFI_FICHIER(ACTION='LIBERER', UNITE=ul, INFO=1)
 
@@ -2481,15 +2438,31 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
     # Parametres de la commande IMPR_RESU
     para = self.Options_Impr_Resu(contexte, selection, options)
 
+    # Mise a jour specifiques des mot-cles pour Med
+    # Si on a choisi le champ DEPL
+    if 'DEPL' in selection.nom_cham:
+       if 'TOUT_CMP' in selection.nom_cmp:
+          if   selection.geom[0] in ['VOLUME']:  ndim = 3
+          elif selection.geom[0] in ['SURFACE']: ndim = 2
+          else:
+             # sinon on a choisi TOUT_MAILLAGE
+             dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
+             if   '3' in str(dim): ndim = 3
+             elif '2' in str(dim): ndim = 2
+             elif '1' in str(dim): ndim = 1
+          if   ndim==3: dpara1 = { 'NOM_CMP': ('DX', 'DY', 'DZ') }
+          elif ndim==2: dpara1 = { 'NOM_CMP': ('DX', 'DY') }
+          else:         dpara1 = { 'NOM_CMP': tuple(selection.liste_cmp) }
+
+          para.update( dpara1 )
+       else:
+          para.update( { 'NOM_CMP': tuple(selection.nom_cmp) } )
+
     try:
         IMPR_RESU(  FORMAT = 'MED',
                     UNITE  = ul,
                     RESU   = para )                        
     except aster.error,err:
-        self.erreur.Remonte_Erreur(err, [], 0)
-        DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
-        return
-    except aster.FatalError,err:
         self.erreur.Remonte_Erreur(err, [], 0)
         DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
         return
@@ -2584,8 +2557,6 @@ class DRIVER_COURBES(DRIVER) :
           STNTBLGR = POST_RELEVE_T(ACTION = para)
         except aster.error,err:
           return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
-        except aster.FatalError,err:
-          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
         except Exception,err:
           texte = "Cette action n'est pas realisable.\n"+str(err)
           return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
@@ -2628,8 +2599,6 @@ class DRIVER_COURBES(DRIVER) :
         try:
           STNTBLGR = POST_RELEVE_T(ACTION = para)
         except aster.error,err:
-          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
-        except aster.FatalError,err:
           return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
         except Exception,err:
           texte = "Cette action n'est pas realisable.\n"+str(err)
@@ -2800,8 +2769,6 @@ class DRIVER_SUP_GMSH(DRIVER) :
       ma = mesh.LIRE_GMSH(UNITE_GMSH=_UL[0],UNITE_MAILLAGE=_UL[1])
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [ma], 1)
-    except aster.FatalError,err:
-      return self.erreur.Remonte_Erreur(err, [ma], 1)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [ma], 1, texte)
@@ -2812,8 +2779,6 @@ class DRIVER_SUP_GMSH(DRIVER) :
     try:
       _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma,)
     except aster.error,err:
-      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
-    except aster.FatalError,err:
       return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
@@ -2848,8 +2813,6 @@ class DRIVER_SUP_GMSH(DRIVER) :
       ma = mesh.LIRE_GMSH(UNITE_GMSH=_UL[0],UNITE_MAILLAGE=_UL[1])
     except aster.error,err:
       return self.erreur.Remonte_Erreur(err, [ma], 1)
-    except aster.FatalError,err:
-      return self.erreur.Remonte_Erreur(err, [ma], 1)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [ma], 1, texte)
@@ -2859,8 +2822,6 @@ class DRIVER_SUP_GMSH(DRIVER) :
     try:
       _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma,)
     except aster.error,err:
-      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
-    except aster.FatalError,err:
       return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)

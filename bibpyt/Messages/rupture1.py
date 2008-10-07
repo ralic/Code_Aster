@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF rupture1 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -276,4 +276,11 @@ ou à partir des contraintes recalculées avec la loi de comportement
 hypothèses.
 """),
 
+43: _("""
+Le calcul de G avec une modélisation X-FEM n'est pas possible avec une loi de comportement
+élastoplastique.
+--> Risques & conseils :
+Remplacer si possible le comportement élastoplastique (COMP_INCR) par un comportement
+élastique non linéaire (COMP_ELAS).
+"""),
 }

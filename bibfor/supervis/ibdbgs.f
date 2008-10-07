@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/05/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,31 +48,35 @@ C     ----- DEBUT COMMON DE DEBUG JEVEUX
 
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
-      CHARACTER*16 CBID,MEMOIR, CMPIN, CMPOUT
-      INTEGER SEGJVX,LSEGJV, LOUT,L,NCODE,IVAL
+      CHARACTER*16 MEMOIR
+      INTEGER SEGJVX,LSEGJV,L,NCODE,IVAL
       REAL*8 VPARJV
 C
 C     --- OPTIONS PAR DEFAUT ---
       CALL JEMARQ()
-      REPONS = 'NON'
       MEMOIR = 'RAPIDE'
       TBLOC=800.D0
 
+C     MOT-CLE CODE PRESENT ?
+      CALL GETFAC('CODE',NCODE)
+
 C     -- DEBUG / JXVERI :
 C     -----------------------------------------------------
+      REPONS = 'NON'
       CALL GETVTX('DEBUG','JXVERI',1,1,1,REPONS,L)
-      IF ( REPONS .EQ. 'OUI') THEN
-         CALL U2MESS('I','SUPERVIS_23')
-C        LE "FLAG" JXVERI=OUI EST POSTIONNE DANS LE JDC
-C        VOIR ROUTINE EXPASS.F
+      IF (L.EQ.0) THEN
+         IF ( REPONS .EQ. 'OUI') THEN
+            CALL U2MESS('I','SUPERVIS_23')
+C           LE "FLAG" JXVERI=OUI EST POSTIONNE DANS LE JDC
+C           VOIR ROUTINE EXPASS.F
+         ENDIF
       ENDIF
-
 
 C     -- DEBUG / SDVERI :
 C     -----------------------------------------------------
+      REPONS = 'NON'
       CALL GETVTX('DEBUG','SDVERI',1,1,1,REPONS,L)
       IF (L.EQ.0) THEN
-        CALL GETFAC('CODE',NCODE)
         IF (NCODE.GT.0) THEN
 C          UN JOUR, ON METTRA 'OUI' PAR DEFAUT ...
            REPONS='NON'
@@ -91,6 +95,7 @@ C          UN JOUR, ON METTRA 'OUI' PAR DEFAUT ...
 
 C     -- DEBUG / JEVEUX :
 C     -----------------------------------------------------
+      REPONS = 'NON'
       CALL GETVTX('DEBUG','JEVEUX',1,1,1,REPONS,L)
       CALL ASSERT ( REPONS.EQ.'OUI' .OR. REPONS.EQ.'NON')
       IF ( REPONS .EQ. 'OUI') THEN
@@ -101,18 +106,11 @@ C     -----------------------------------------------------
 
 C     -- DEBUG / ENVIMA :
 C     -----------------------------------------------------
+      REPONS = 'NON'
       CALL GETVTX('DEBUG','ENVIMA',1,1,1,REPONS,L)
       IF ( REPONS .EQ. 'TES' ) THEN
          IFI = IUNIFI ( 'RESULTAT' )
          CALL IMPVEM  ( IFI )
-      ENDIF
-
-C     -- ERREUR / ERREUR_F :
-C     -----------------------------------------------------
-      CMPIN='ABORT'
-      CALL GETVTX('ERREUR','ERREUR_F',1,1,1,CMPIN, L)
-      IF(L.EQ.1)THEN
-         CALL ONERRF(CMPIN, CMPOUT, LOUT)
       ENDIF
 
 C     -- MEMOIRE / GESTION ...  :

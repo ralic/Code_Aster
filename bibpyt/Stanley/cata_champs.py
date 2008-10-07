@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF cata_champs Stanley  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,8 +60,6 @@ class CHAMP :
       apply(CALC_NO,(),para)
     except aster.error,err:
       UTMESS('A','STANLEY_4',valk=[str(err)])
-    except aster.FatalError,err:
-      UTMESS('A','STANLEY_4',valk=[str(err)])
     except Exception,err:
       UTMESS('A','STANLEY_5',valk=[str(err)])
 
@@ -92,8 +90,6 @@ class CHAMP :
     try:
       apply(CALC_ELEM,(),para)
     except aster.error,err:
-      UTMESS('A','STANLEY_4',valk=[str(err)])
-    except aster.FatalError,err:
       UTMESS('A','STANLEY_4',valk=[str(err)])
     except Exception,err:
       UTMESS('A','STANLEY_5',valk=[str(err)])

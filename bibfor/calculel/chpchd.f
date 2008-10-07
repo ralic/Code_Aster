@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -223,6 +223,20 @@ C     ----------------------------------------------------------------
         CALL DETRSD('CHAM_ELEM_S',CES1)
         CALL DETRSD('CHAM_ELEM_S',CES2)
         CALL JEDETR('&&CHPCHD.CELFPG')
+
+
+      ELSEIF (CAS.EQ.'NOEU->ELEM') THEN
+C     ----------------------------------------------------------------
+        CNS1 = '&&CHPCHD.CNS1'
+        CES1 = '&&CHPCHD.CES1'
+
+        CALL CNOCNS(CHIN,'V',CNS1)
+        CALL CNSCES(CNS1,'ELEM',CESMOD,' ','V',CES1)
+        CALL DETRSD('CHAM_NO_S',CNS1)
+
+        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
+     &              IBID)
+        CALL DETRSD('CHAM_ELEM_S',CES1)
 
 
       ELSE

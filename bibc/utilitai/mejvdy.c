@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEJVDY utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF MEJVDY utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2007  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,7 +29,7 @@ INTEGER DEFP(MEJVDY, mejvdy, DOUBLE *val)
 {
    static INTEGER MXMEM_DYN_JEVEUX=0;
    if (*val > 0) {
-      MXMEM_DYN_JEVEUX=(INTEGER)((INTEGER)(*val)*1024*1024);
+      MXMEM_DYN_JEVEUX=(INTEGER)((*val)*1024.*1024.);
    }
 
    return MXMEM_DYN_JEVEUX;

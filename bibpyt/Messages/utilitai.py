@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF utilitai Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,13 @@ def _(x) : return x
 
 cata_msg = {
 
+# a traduire en francais par JP
 1 : _("""
  le nombre de grels du ligrel du modele est nul.
 """),
 
 2 : _("""
- il ne faut pas demander 'tr' derriere cara si le type d'element discret ne prend pas en compte la rotation
+ il ne faut pas demander 'TR' derrière cara si le type d'élément discret ne prend pas en compte la rotation
 """),
 
 3 : _("""
@@ -35,7 +36,7 @@ cata_msg = {
 """),
 
 4 : _("""
-  %(k1)s  n'est pas une option reconnu.
+  %(k1)s  n'est pas une option reconnue
 """),
 
 5 : _("""
@@ -43,7 +44,7 @@ cata_msg = {
 """),
 
 6 : _("""
- axe non colineaire a v1v2
+ axe non colineaire à v1v2
 """),
 
 7 : _("""
@@ -99,10 +100,10 @@ cata_msg = {
  on ne traite que des "CHAM_NO" ou des "CHAM_ELEM".
 """),
 
-
-
-
-
+22: _("""
+ la programmation prévoit que les entiers sont codés sur plus de 32 bits
+ ce qui n'est pas le cas sur votre machine
+"""),
 
 23 : _("""
  on ne trouve aucun champ.
@@ -130,10 +131,6 @@ cata_msg = {
 
 29 : _("""
  champ non-assemblable en CHAM_ELEM (ELGA):  %(k1)s
-"""),
-
-30 : _("""
- Pour l'operation "ASSE", la commande ne permet pas de créer de champs CHAM_ELEM/ELEM
 """),
 
 31 : _("""

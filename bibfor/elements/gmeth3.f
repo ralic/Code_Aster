@@ -1,7 +1,7 @@
       SUBROUTINE GMETH3(MODELE,NNOFF,NORMFF,FOND,
-     &                 GTHI,MILIEU,GS,OBJCUR,GI,NUM)
+     &                 GTHI,MILIEU,GS,OBJCUR,GI,NUM,GXFEM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +21,10 @@ C ======================================================================
       IMPLICIT NONE
 C
       INTEGER         NNOFF,NUM
-      REAL*8          GTHI(1),GS(1),GI(1)
+      REAL*8          GTHI(1),GS(1),GI(1),OBJCUR(*)
       CHARACTER*8     MODELE
-      CHARACTER*24    NORMFF,FOND,OBJCUR
-      LOGICAL         MILIEU
+      CHARACTER*24    NORMFF,FOND
+      LOGICAL         MILIEU,GXFEM
 C
 C ......................................................................
 C      METHODE THETA-LAGRANGE ET G-LAGRANGE POUR LE CALCUL DE G(S)
@@ -38,11 +38,11 @@ C     FOND     --> NOMS DES NOEUDS DU FOND DE FISSURE
 C     GTHI     --> VALEURS DE G POUR LES CHAMPS THETAI
 C     MILIEU   --> .TRUE.  : ELEMENT QUADRATIQUE
 C                  .FALSE. : ELEMENT LINEAIRE
+C     OBJCUR  --> ABSCISSES CURVILIGNES S
 C
 C  SORTIE
 C
 C      GS      --> VALEUR DE G(S)
-C      OBJCUR  --> ABSCISSES CURVILIGNES S
 C      GI      --> VALEUR DE GI
 C      NUM     --> 3 (LAGRANGE-LAGRANGE)
 C              --> 4 (NOEUD-NOEUD)
@@ -67,13 +67,13 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER      IADABS,I,KK,IADNOR,IADRNO,IADRMA,IADRCO
-      INTEGER      IMATR,IVECT,IBID,IER,J
+      INTEGER      IMATR,IVECT,IBID,IER,J,IFON
 C
       REAL*8       DELTA,S1,S2,S3,XL
 C
       CHARACTER*8  NOMA1
       CHARACTER*24 OBJ1,NOMNO,COORN,VECT,MATR,LISSG
-      CHARACTER*24 INTERP,TYPE
+      CHARACTER*24 INTERP,TYPE,CHFOND
 C
       LOGICAL      CONNEX
 C
@@ -84,19 +84,12 @@ C CONNEX = TRUE
 C
       CALL JEVEUO (NORMFF,'L',IADNOR)
       CALL JEVEUO (FOND,'L',IADRNO)
-      IF (ZK8(IADRNO+1-1).EQ.ZK8(IADRNO+NNOFF-1)) THEN
+      IF ((ZK8(IADRNO+1-1).EQ.ZK8(IADRNO+NNOFF-1))
+     &       .AND.  (.NOT. GXFEM)) THEN
         CONNEX = .TRUE.
       ELSE
         CONNEX = .FALSE.
       ENDIF
-      OBJ1 = MODELE//'.MODELE    .LGRF'
-      CALL JEVEUO(OBJ1,'L',IADRMA)
-      NOMA1 = ZK8(IADRMA)
-      NOMNO = NOMA1//'.NOMNOE'
-      COORN = NOMA1//'.COORDO    .VALE'
-      CALL JEVEUO(COORN,'L',IADRCO)
-      CALL GABSCU(NNOFF,COORN,NOMNO,FOND,XL,OBJCUR)
-      CALL JEVEUO (OBJCUR,'L',IADABS)
 C
       CALL GETVTX('LISSAGE', 'LISSAGE_G',1,1,1,LISSG,IBID)
 C
@@ -107,8 +100,8 @@ C
 C
         IF (MILIEU) THEN
           DO 10 I=1,NNOFF-2,2
-            S1 = ZR(IADABS+I-1)
-            S3 = ZR(IADABS+I+1)
+            S1 = OBJCUR(I)
+            S3 = OBJCUR(I+2)
             DELTA = (S3-S1)/6.D0
             ZR(IVECT+I  -1)= ZR(IVECT+I-1) + DELTA
             ZR(IVECT+I+1-1)= 4.D0*DELTA
@@ -120,8 +113,8 @@ C
           ENDIF
         ELSE
           DO 20 I=1,NNOFF-1
-            S1 = ZR(IADABS+I  -1)
-            S2 = ZR(IADABS+I+1-1)
+            S1 = OBJCUR(I)
+            S2 = OBJCUR(I+1)
             DELTA = (S2-S1)/3.D0
             ZR(IVECT+I  -1)= ZR(IVECT+I-1) + DELTA
             ZR(IVECT+I+1-1)= 2.D0*DELTA
@@ -142,9 +135,8 @@ C
 C
         IF (MILIEU) THEN
           DO 100 I=1,NNOFF-2,2
-            S1 = ZR(IADABS+I-1)
-            S2 = ZR(IADABS+I  )
-            S3 = ZR(IADABS+I+1)
+            S1 = OBJCUR(I)
+            S3 = OBJCUR(I+2)
             DELTA = (S3-S1)/30.D0
 C
             KK = IMATR+(I-1  )*NNOFF+I-1
@@ -163,16 +155,16 @@ C
           IF (CONNEX) THEN
             KK = IMATR+(1-1  )*NNOFF+1-1
             ZR(KK )= ZR(KK) + 5.D0*DELTA
-            S1 = ZR(IADABS+1-1)
-            S3 = ZR(IADABS+1+1)
+            S1 = OBJCUR(1)
+            S3 = OBJCUR(3)
             DELTA = (S3-S1)/30.D0
             KK = IMATR+(NNOFF-1)*NNOFF+NNOFF-1
             ZR(KK )= ZR(KK) + 5.D0*DELTA
           ENDIF
         ELSE
           DO 120 I=1,NNOFF-1
-            S1 = ZR(IADABS+I-1)
-            S2 = ZR(IADABS+I  )
+            S1 = OBJCUR(I)
+            S2 = OBJCUR(I+1)
             DELTA = (S2-S1)/6.D0
 C
             KK = IMATR+(I-1  )*NNOFF+I-1
@@ -185,8 +177,8 @@ C
           IF (CONNEX) THEN
             KK = IMATR+(1-1  )*NNOFF+1-1
             ZR(KK )= ZR(KK) + 3.D0*DELTA
-            S1 = ZR(IADABS+1-1)
-            S3 = ZR(IADABS+1+1)
+            S1 = OBJCUR(1)
+            S3 = OBJCUR(3)
             DELTA = (S3-S1)/6.D0
             KK = IMATR+(NNOFF-1)*NNOFF+NNOFF-1
             ZR(KK )= ZR(KK) + 3.D0*DELTA

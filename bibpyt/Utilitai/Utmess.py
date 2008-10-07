@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 15/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ class MESSAGE_LOGGER:
 
 # -----------------------------------------------------------------------------
    def print_message(self, code, idmess, valk=(), vali=(), valr=(),
-                     exception=False):
+                     exception=False, print_as=None):
       """Appelé par la routine fortran U2MESG ou à la fonction python UTMESS
       pour afficher un message.
       L'impression de ce message est différée si le `code` est suivi d'un "+".
@@ -89,6 +89,7 @@ class MESSAGE_LOGGER:
          idmess : identificateur du message
          valk, vali, valr : liste des chaines, entiers ou réels.
       Si exception==True, on lève une exception en cas d'erreur.
+      'print_as' : cf. print_buffer_content.
       """
       # récupération du texte du message
       dictmess = self.get_message(code, idmess, valk, vali, valr)
@@ -102,14 +103,10 @@ class MESSAGE_LOGGER:
          self.update_counter()
          
          # on imprime le message en attente
-         self.print_buffer_content()
+         self.print_buffer_content(print_as)
 
-         if exception:
-            reason = ' <EXCEPTION LEVEE> %s' % idmess
-            if code[0] == 'S':
-               raise aster.error, reason
-            elif code[0] == 'F':
-               raise aster.FatalError, reason
+         if exception and code[0] in ('S', 'F'):
+            raise aster.error, ' <EXCEPTION LEVEE> %s' % idmess
       
       return None
 
@@ -241,12 +238,14 @@ Exception : %s
       return self._buffer[0]['id_message']
 
 # -----------------------------------------------------------------------------
-   def print_buffer_content(self):
+   def print_buffer_content(self, print_as=None):
       """Extrait l'ensemble des messages du buffer dans un dictionnaire unique,
       imprime le message, et vide le buffer pour le message suivant.
          - code : celui du message le plus grave (cf. dgrav)
          - id   : celui du premier message qui est affiché
          - corps : concaténation de tous les messages.
+      'print'_as permet d'imprimer un message sur des fichiers autres que les fichiers
+      habituels de 'code'. Par ex, imprimer un message d'info sur 'ERREUR'.
       """
       if len(self._buffer) < 1:
          return None
@@ -265,7 +264,7 @@ Exception : %s
       dglob['context_info'] = ''.join(dglob['liste_context'])
       
       # liste des unités d'impression en fonction du type de message
-      l_unit = self.list_unit(dglob['code'], dglob['id_message'])
+      l_unit = self.list_unit(print_as or dglob['code'], dglob['id_message'])
       
       # texte final et impression
       txt = self.format_message(dglob)
@@ -325,7 +324,7 @@ Exception : %s
       # fermeture
       dictmess = self.get_message('I', 'SUPERVIS_91')
       self.add_to_buffer(dictmess)
-      self.print_buffer_content()
+      self.print_buffer_content(print_as='A')
 
 # -----------------------------------------------------------------------------
    def update_counter(self):
@@ -478,9 +477,6 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       }
       d['F'] = d['S'] = d['Z'] = d['E']
       d['X'] = d['A']
-      # exceptions pour quelques messages particuliers
-      if idmess == 'SUPERVIS_89':
-         code = 'A'
       return d.get(code, d['F'])
 
 # -----------------------------------------------------------------------------
@@ -584,7 +580,7 @@ MessageLog = MESSAGE_LOGGER()
 
 
 # -----------------------------------------------------------------------------
-def UTMESS(code, idmess, valk=(), vali=(), valr=()):
+def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None):
    """Utilitaire analogue à la routine fortran U2MESS/U2MESG avec les arguments
    optionnels.
       code   : 'A', 'E', 'S', 'F', 'I'
@@ -600,7 +596,7 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=()):
          + appel à MessageLog
          + puis exception ou abort en fonction du niveau d'erreur.
    """
-   MessageLog(code, idmess, valk, vali, valr, exception=True)
+   MessageLog(code, idmess, valk, vali, valr, exception=True, print_as=print_as)
 
 # -----------------------------------------------------------------------------
 def MasquerAlarme(idmess):

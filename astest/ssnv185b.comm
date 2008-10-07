@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,6 +139,7 @@ else :
 
 nbc=len(RI)
 SIF = [None]*nbc
+GLO = [None]*nbc
 
 for i in range(0,nbc) :
 
@@ -154,11 +155,24 @@ for i in range(0,nbc) :
                  INFO=1,);
 
    IMPR_TABLE(TABLE=SIF[i],);
+   GLO[i]=CALC_G(RESULTAT=UTOT1,
+                 SYME_CHAR='SANS',
+                 COMP_ELAS=_F(RELATION='ELAS',),
+                 OPTION='CALC_G',
+                 THETA=_F(FISSURE=FISS,
+                          R_INF=RI[i],
+                          R_SUP=RS[i],),
+                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                            LISSAGE_G='LAGRANGE',),
+                 INFO=1,);
+
+   IMPR_TABLE(TABLE=GLO[i],);
 
 # SOLUTION ANALYTIQUE (chaboche p.53)
 coef=(pi*a)/(2.*b)
 fab=sqrt(tan(coef)/coef)*(0.752+0.37*(1.-sin(coef))**3+2.02*a/b)/cos(coef)
 K1REF=-PRES*sqrt(pi*a)*fab
+GREF = (1-nu**2)/E*K1REF**2
 
 if a==2 :
    prec = 0.003
@@ -181,6 +195,81 @@ for i in range(0,nbc) :
               CRITERE='RELATIF',
               PRECISION=prec,
               REFERENCE='ANALYTIQUE',);
+              
+   TEST_TABLE(TABLE=SIF[i],
+              NOM_PARA='G_IRWIN',
+              TYPE_TEST='MAX',
+              VALE=GREF,
+              CRITERE='RELATIF',
+              PRECISION=2.5*prec,
+              REFERENCE='ANALYTIQUE',);
+
+   TEST_TABLE(TABLE=SIF[i],
+              NOM_PARA='G_IRWIN',
+              TYPE_TEST='MIN',
+              VALE=GREF,
+              CRITERE='RELATIF',
+              PRECISION=2.5*prec,
+              REFERENCE='ANALYTIQUE',);
+
+GLeg=CALC_G(RESULTAT=UTOT1,
+                 SYME_CHAR='SANS',
+                 COMP_ELAS=_F(RELATION='ELAS',),
+                 OPTION='CALC_G',
+                 THETA=_F(FISSURE=FISS,
+                          R_INF=RI[0],
+                          R_SUP=RS[0],),
+                 INFO=1,
+                 LISSAGE=_F(LISSAGE_THETA='LEGENDRE',
+                            LISSAGE_G='LEGENDRE',
+                            DEGRE =1,),);
+
+IMPR_TABLE(TABLE=GLeg,);   
+ 
+TEST_TABLE(TABLE=GLeg,
+           NOM_PARA='G_LOCAL',
+           TYPE_TEST='MAX',
+           VALE=GREF,
+           CRITERE='RELATIF',
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=GLeg,
+           NOM_PARA='G_LOCAL',
+           TYPE_TEST='MIN',
+           VALE=GREF,
+           CRITERE='RELATIF',
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
+           
+GLagr=CALC_G(RESULTAT=UTOT1,
+                 SYME_CHAR='SANS',
+                 COMP_ELAS=_F(RELATION='ELAS',),
+                 OPTION='CALC_G',
+                 THETA=_F(FISSURE=FISS,
+                          R_INF=RI[0],
+                          R_SUP=RS[0],),
+                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                            LISSAGE_G='LAGRANGE',),
+                 INFO=1,);
+
+IMPR_TABLE(TABLE=GLagr,);         
+
+TEST_TABLE(TABLE=GLagr,
+           NOM_PARA='G_LOCAL',
+           TYPE_TEST='MAX',
+           VALE=GREF,
+           CRITERE='RELATIF',
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=GLagr,
+           NOM_PARA='G_LOCAL',
+           TYPE_TEST='MIN',
+           VALE=GREF,
+           CRITERE='RELATIF',
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS AVEC POST_K1_K2_K3
 #------------------------------------------------------------------------

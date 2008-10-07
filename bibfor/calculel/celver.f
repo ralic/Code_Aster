@@ -1,6 +1,6 @@
       SUBROUTINE CELVER(CELZ,TYPVER,ARRET,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,8 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      CHARACTER*8 KNAN,KBID,TSCA,NOMGD
+      CHARACTER*8 KBID,TSCA,NOMGD
+      CHARACTER*3 KNAN
       CHARACTER*19 CEL
       INTEGER JCELD,KK,MXSPT,IGR,NGREL,NEL,IEL,IPREM,NCDYN,NCDYN1
       INTEGER IMOLO,INAN,IISNAN,NB1,K,ISNNEM,IBID,JCELV
@@ -121,7 +122,7 @@ C     --------------------------------
         CALL JELIRA(CEL//'.CELV','LONMAX',NB1,KBID)
         LNAN=.FALSE.
         INAN = ISNNEM()
-        KNAN = '????????'
+        KNAN = '???'
 
         IF (TSCA.EQ.'R') THEN
           DO 80,K = 1,NB1
@@ -139,6 +140,10 @@ C     --------------------------------
           DO 83,K = 1,NB1
             IF (ZK8(JCELV-1+K).EQ.KNAN) LNAN=.TRUE.
    83     CONTINUE
+        ELSEIF (TSCA.EQ.'K24') THEN
+          DO 84,K = 1,NB1
+            IF (ZK24(JCELV-1+K).EQ.KNAN) LNAN=.TRUE.
+   84     CONTINUE
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

@@ -4,7 +4,7 @@
       CHARACTER*19 RESU,KINST,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,15 +75,6 @@ C     ------------------------------------------------------------------
       CALL GETVR8(MOTCLE,'PRECISION',IOCC,1,1,EPSI,N)
       CALL GETVTX(MOTCLE,'CRITERE',IOCC,1,1,CRIT,N)
 
-      CALL JEEXIN(RESU//'.INST',IRET)
-      IF (IRET.EQ.0) THEN
-        IER = IER + 1
-        CALL U2MESS('E','UTILITAI4_48')
-        GO TO 100
-      END IF
-      CALL JEVEUO(RESU//'.INST','L',LINST)
-      CALL JELIRA(RESU//'.INST','LONMAX',NBI,K8B)
-
       CALL JEEXIN(RESU//'.ORDR',IRET)
       IF (IRET.EQ.0) THEN
         NBORDR = NBI
@@ -95,6 +86,15 @@ C     ------------------------------------------------------------------
         CALL JEVEUO(RESU//'.ORDR','L',JORDR)
         CALL JELIRA(RESU//'.ORDR','LONMAX',NBORDR,K8B)
       END IF
+
+C     -- CETTE ROUTINE SERT A DES SD != TRAN_GENE
+      CALL JEEXIN(RESU//'.INST',IER1)
+      IF (IER1.GT.0) THEN
+        CALL JEVEUO(RESU//'.INST','L',LINST)
+        CALL JELIRA(RESU//'.INST','LONMAX',NBI,K8B)
+      ELSE
+        CALL RSLIPA(RESU,'INST','&&RSTRAN.LIINST',LINST,NBI)
+      ENDIF
 
 C     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
 
@@ -145,7 +145,7 @@ C     --- RECHERCHE A PARTIR D'UN INSTANT ---
           ZR(JINST+I) = TUSR
           GO TO 70
         END IF
-        CALL RSINDI(TYPE,LINST,JORDR,IVAL,TUSR,KVAL,CVAL,EPSI,CRIT,
+        CALL RSINDI(TYPE,LINST,1,JORDR,IVAL,TUSR,KVAL,CVAL,EPSI,CRIT,
      &              NBORDR,NBTROU,NUTROU,1)
         IF (NBTROU.EQ.0) THEN
           IER = IER + 110
@@ -185,6 +185,7 @@ C     --- PAR DEFAUT ---
       CALL JEDETR('&&RSTRAN.ORDR')
       CALL JEDETR('&&RSTRAN.NUME')
       CALL JEDETR('&&RSTRAN.INSTANTS')
+      CALL JEDETR('&&RSTRAN.LIINST')
 
       CALL JEDEMA()
       END

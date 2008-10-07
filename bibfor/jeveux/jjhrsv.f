@@ -1,6 +1,6 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C DEB ------------------------------------------------------------------
           ISZON(JISZON+KADM-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+KADM-4)-4) = ISTAT(4)
           SVUSE = SVUSE + (ISZON(JISZON+KADM-4) - KADM + 4)
+          IF (IADYN .NE. 0) SVUSE = SVUSE + 1
           SMXUSE = MAX(SMXUSE,SVUSE)
           IR = ISZON(JISZON + KADM - 3 )
           KITAB = JK1ZON+(KADM-1)*LOIS+IR+1

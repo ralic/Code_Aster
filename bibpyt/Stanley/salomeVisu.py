@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 15/11/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF salomeVisu Stanley  DATE 06/10/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,11 +37,12 @@ except:
 
 
 # Type de visualisation
-ScalarMap       = 'ScalarMap'          
-DeformedShape   = 'DeformedShape' 
-IsoSurfaces     = 'IsoSurfaces'
-CutPlanes       = 'CutPlanes'
-Plot2D          = 'Plot2D'
+ScalarMap           = 'ScalarMap'          
+DeformedShape       = 'DeformedShape' 
+IsoSurfaces         = 'IsoSurfaces'
+CutPlanes           = 'CutPlanes'
+Plot2D              = 'Plot2D'
+GaussPointsOnField  = 'GaussPointsOnField'
 
 
 # =========================================================================
@@ -276,9 +277,12 @@ class ISOVALEURS( VISU ):
         DeformedShape
         """
         nom_champ = cata[selection.nom_cham].nom
+        nom_type  = cata[selection.nom_cham].type
         
         if nom_champ == 'DEPL' and selection.nom_cmp[0] == 'TOUT_CMP': 
             result = DeformedShape
+        elif nom_type == 'ELGA':
+            result = GaussPointsOnField
         else: 
             result = ScalarMap        
         #result = [ ScalarMap, DeformedShape, IsoSurfaces, CutPlanes,  Plot2D]
@@ -324,15 +328,20 @@ class ISOVALEURS( VISU ):
         if not ok:
             raise _("Erreur lecture fichier MED :") + medFilePath
 
+        # title: nom du champ
+        title = cata[self.selection.nom_cham].nom 
+        
         if visuType == ScalarMap: # CS_pbruno :attention par defaut on trace le module du champs 
-            ok = salomeVisu.ScalarMap( medInfo.fieldName, medInfo.iteration, "ScalarMapTitle")
+            ok = salomeVisu.ScalarMap( medInfo.fieldName, medInfo.iteration, title)
         elif visuType== DeformedShape:
-            ok = salomeVisu.DeformedShape( medInfo.fieldName, medInfo.iteration, "DeformedShapeTitle")
+            ok = salomeVisu.DeformedShape( medInfo.fieldName, medInfo.iteration, title)
         elif visuType== IsoSurfaces:
-            ok = salomeVisu.IsoSurfaces( medInfo.fieldName, medInfo.iteration, "IsoSurfacesTitle")
+            ok = salomeVisu.IsoSurfaces( medInfo.fieldName, medInfo.iteration, title)
         elif visuType== CutPlanes:            
             planePositions =[-14.97,-10, -5.6, -4.8, -4,-3.2,-2.4,-1.6,-0.8, 0.0]
-            ok = salomeVisu.DisplayCutPlanes( medInfo.fieldName, medInfo.iteration,  "CutPlanesTitle", Visu.XY, 0.,0., planePositions )
+            ok = salomeVisu.DisplayCutPlanes( medInfo.fieldName, medInfo.iteration,  title, Visu.XY, 0.,0., planePositions )
+        elif visuType== GaussPointsOnField:
+            ok = salomeVisu.GaussPointsOnField( medInfo.fieldName, medInfo.iteration, title)
         else:
             raise _("Erreur type de visualisation non supporté")
 
@@ -465,7 +474,6 @@ class COURBES( VISU ):
         elif self.selection.geom[0] == 'CHEMIN' :                    
             tableTitle ='_%s_%s_sur_%s'%( self.selection.nom_cham, self.selection.nom_cmp, 'ABSC_CURV ' + self.selection.geom[1][0])
         tableTitle += ' '+self.selection.nom_va+' : ' + str( self.selection.vale_va )
-                            
         ok = salomeVisu.XYPlot2( self.l_courbes, tableTitle )
         if not ok:
             raise 'erreur visualisation PLOT2D dans SALOME'                

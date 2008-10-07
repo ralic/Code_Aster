@@ -4,7 +4,7 @@
       REAL*8          FTRC((3*NBHIST),3), TRC((3*NBHIST),5), X(5), DZ(4)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +39,9 @@ C
       CALL RSLSVD( 6, 6, 6, A(1,1), S(1), U(1,1), V(1,1),
      &            1 ,B(1), EPSMAC, IFAIL, WORK(1) )
 C
-      IF ( IFAIL .NE. 0 ) THEN
-         CALL U2MESS('F','UTILIFOR_7')
-      ENDIF
+C     PROBLEME DANS LA RESOLUTION DU SYSTEME SOUS CONTRAINT VSRSRR
+      CALL ASSERT(IFAIL .EQ. 0)
+C
       DO 10 I = 1 , 6
          ALEMB(I) = B(I)
  10   CONTINUE

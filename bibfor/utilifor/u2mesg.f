@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILIFOR  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C     ------------------------------------------------------------------
       CHARACTER*132    K132B
       CHARACTER *16    COMPEX
       CHARACTER *8     NOMRES, K8B
-      LOGICAL          LEXC, SUITE
+      LOGICAL          LERROR, LVALID, LABORT, SUITE
       INTEGER          LOUT,IDF,I,LL,LC,ICMD,IMAAP,LXLGUT
 C     ------------------------------------------------------------------
       SAVE             RECURS
@@ -37,13 +37,21 @@ C     ------------------------------------------------------------------
 C     --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
       IDF  = INDEX('EFIDASXZ',CH1(1:1))
 
+C --- ERREUR = F, S, Z
+      LERROR = IDF.EQ.2 .OR. IDF.EQ.6 .OR. IDF.EQ.8
+
       SUITE = .FALSE.
       IF (LEN(CH1) .GT. 1) THEN
          IF (CH1(2:2) .EQ. '+') SUITE=.TRUE.
       ENDIF
 C
 C --- SE PROTEGER DES APPELS RECURSIFS
+      IF ( RECURS .EQ. 1234567891 ) THEN
+         CALL JEFINI('ERREUR')
+      ENDIF
+      
       IF ( RECURS .EQ. 1234567890 ) THEN
+         RECURS = 1234567891
 C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
          CALL UTPRIN('F', 'SUPERVIS_55', 0, VALK, 0, VALI, 0, VALR)
          CALL JEFINI('ERREUR')
@@ -54,44 +62,58 @@ C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
       IF (IMAAP.GE.200) CALL JEFINI('ERREUR')
       CALL JEMARQ()
 
-C     --- COMPORTEMENT EN CAS D'ERREUR <F>
+C     --- COMPORTEMENT EN CAS D'ERREUR
       CALL ONERRF(' ', COMPEX, LOUT)
-      LEXC = IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'EXCEPTION'
-C     --- SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP/UTDEXC
-      IF ( IDF.NE.8 ) THEN
-C        ASTER.ERROR DANS ASTERMODULE.C
-         NEXCEP = 21
-      ENDIF
+
+C         DOIT-ON VALIDER LE CONCEPT ?
+      LVALID = (IDF.EQ.6 .OR. IDF.EQ.8)
+     &    .OR. (IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'EXCEPTION+VALID')
+C         DOIT-ON S'ARRETER BRUTALEMENT (POUR DEBUG) ?
+      LABORT = LERROR .AND. COMPEX(1:LOUT).EQ.'ABORT'
 C
       CALL UTPRIN(CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C
 C     --- REMONTEE D'ERREUR SI DISPO
-      IF ( IDF .EQ. 6 .OR. (IDF .EQ. 2 .AND. .NOT. LEXC )) THEN
+      IF ( LABORT ) THEN
           CALL TRACEB('Liste des appels successifs ' //
-     &                '(option -traceback)',-1)
+     &                '(option -traceback)', -1)
       ENDIF
-C
-      IF (LEXC) THEN
-C     -- SI L'UTILISATEUR L'A DEMANDE, ON LEVE L'EXCEPTION FATALERROR
-C        AU LIEU D'ARRETER BRUTALEMENT LE CODE (ABORT).
-         NEXCEP=20
-      ENDIF
-C
+
 C --- EN CAS DE MESSAGE AVEC SUITE, PAS D'ARRET, PAS D'EXCEPTION
       IF ( .NOT. SUITE ) THEN
 C
-         IF ( IDF.EQ.6 .OR. IDF.EQ.8 .OR. LEXC ) THEN
-C        -- SI UNE EXCEPTION EST LEVEE
-            IF (LEXC) THEN
-C              ON DETRUIT LE CONCEPT EN CAS D'ERREUR <F> AVEC EXCEPTION
-               CALL GETRES(NOMRES,K8B,K8B)
+C     -- ABORT SUR ERREUR <F> "ORDINAIRE"
+         IF ( LABORT ) THEN
+C           CALL JXVERI('ERREUR',' ')
+            CALL JEFINI('ERREUR')
+
+C     -- LEVEE D'UNE EXCEPTION
+         ELSEIF ( LERROR ) THEN
+
+C        -- QUELLE EXCEPTION ?
+C           SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP
+            IF ( IDF.NE.8 ) THEN
+C           SINON ON APPELLE ASTER.ERROR
+               NEXCEP = 21
+            ENDIF
+C
+C           NOM DU CONCEPT COURANT
+            CALL GETRES(NOMRES, K8B, K8B)
+
+C           LE CONCEPT EST REPUTE VALIDE :
+C              - SI ERREUR <S> OU EXCEPTION
+C              - SI ERREUR <F> MAIS LA COMMANDE A DIT "EXCEPTION+VALID"
+            IF ( LVALID) THEN
+               CALL UTPRIN('I', 'SUPERVIS_70', 1,NOMRES,0,VALI,0,VALR)
+               CALL GCUOPR(2, ICMD)
+
+C           SINON LE CONCEPT COURANT EST DETRUIT
+            ELSE
+               CALL UTPRIN('I', 'SUPERVIS_69', 1,NOMRES,0,VALI,0,VALR)
                LC = LXLGUT(NOMRES)
                IF (LC .GT. 0) THEN
                   CALL JEDETC(' ', NOMRES(1:LC), 1)
                ENDIF
-            ELSE
-C              ON VALIDE LE CONCEPT EN CAS D'ERREUR <S>
-               CALL GCUOPR(2, ICMD)
             ENDIF
 
 C           -- MENAGE SUR LA BASE VOLATILE
@@ -108,10 +130,6 @@ C           ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
             K132B= ' <EXCEPTION LEVEE> '//IDMESS(1:LL)
             RECURS = 0
             CALL UEXCEP(NEXCEP,K132B)
-         ELSEIF ( IDF .EQ. 2 ) THEN
-C        -- ABORT SUR ERREUR <F> "ORDINAIRE"
-C           CALL JXVERI('ERREUR',' ')
-            CALL JEFINI('ERREUR')
          ENDIF
 C
       ENDIF

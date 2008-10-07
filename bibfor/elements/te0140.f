@@ -1,6 +1,6 @@
       SUBROUTINE TE0140(OPTION,NOMTE)
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +88,8 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       ELSE IF (OPTION(1:14).EQ.'RIGI_FLUI_STRU') THEN
          OPTI = 'ELAS_FLUI'
       ELSE
-         CALL U2MESK('F','ELEMENTS3_27',1,OPTION)
+C OPTION NON PROGRAMMEE
+         CALL ASSERT(.FALSE.)
       END IF
       IF ( NOMTE.NE.'MECA_POU_D_TG' .AND.
      &     NOMTE.NE.'MECA_POU_D_TGM') THEN

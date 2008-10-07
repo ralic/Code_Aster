@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,7 +172,8 @@ C =====================================================================
      &                                  ZR(IVARIP-1+(KPG-1)*NBVARI+1), 
      &                                  DSDE, ICODE)
             ELSE
-               CALL U2MESS('F','ELEMENTS2_69')
+CC RELATION DE COMPORTEMENT INVALIDE
+               CALL ASSERT(.FALSE.)
             ENDIF
 C =====================================================================
 C --- CALCUL DU TENSEUR ACOUSTIQUE ------------------------------------
@@ -187,7 +188,8 @@ C =====================================================================
  20         CONTINUE
  10      CONTINUE
       ELSE
-         CALL U2MESS('F','ELEMENTS2_70')
+CC OPTION DE CALCUL INVALIDE
+        CALL ASSERT(.FALSE.)
       END IF
 C =====================================================================
       END

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+%& MODIF TYPELEM  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ ENTETE__ ELEMENT__ MECA_XTC_HEXA8       MAILLE__ HEXA20
    ELREFE__  HE8       GAUSS__  RIGI=FPG8    NOEU=NOEU   XFEM=XFEM540   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
    ELREFE__  H20       GAUSS__  NOEU=NOEU
    ELREFE__  TE4       GAUSS__  XINT=FPG15   NOEU=NOEU
-   ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6   FPG7=FPG7   XCON=FPG12 SIMP=SIMP
+   ELREFE__  TR3       GAUSS__  GAUSS=FPG12 FPG4=FPG4    NOEU=NOEU   FPG6=FPG6   FPG7=FPG7   XCON=FPG12 SIMP=SIMP
    ATTRIBUT__  XFEM=XTC
    ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8
@@ -170,7 +170,9 @@ MODE_LOCAL__
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
                                         X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
                                         X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
-    EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       BETA     )
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3      
+                                        K1    K2   K3   BETA     )
+    EGTHETA  = G        ELEM__         (GTHETA         )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     EREFCO   = PREC     ELEM__         (SIGM     )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
@@ -211,6 +213,19 @@ OPTION__
                                      E18NEUTR PPINTER  E24NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONGCO
                                      CTEMPSR  PTEMPSR
                               OUT__  EKTHETA  PGTHETA
+    CALC_G              288   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
+                                     CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
+                                     E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  EPRESNO  PPRESSR
+                                     E18NEUTR PPINTER  E24NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONGCO
+                              OUT__  EGTHETA  PGTHETA
+    CALC_G_F            288   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
+                                     CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
+                                     E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CPRESSF  PPRESSF
+                                     E18NEUTR PPINTER  E24NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONGCO
+                                     CTEMPSR  PTEMPSR
+                              OUT__  EGTHETA  PGTHETA
     CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CFL_XFEM            118   IN__   NGEOMER  PGEOMER  N1NEUT_R  PVTNO

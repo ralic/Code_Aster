@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE CANTILEVER MULTI-FIBRES : FORCE PONCTUELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,5 +344,61 @@ _F( RESULTAT = STNL,  NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELNO_ELGA',
     MAILLE = 'E00200', NOEUD='I00200',REFERENCE='NON_REGRESSION',
     NOM_CMP  = 'SIMIN', VALE =-306.905E+06, PRECISION = 2.0E-04),
 ) )
+
+#----------------------------------------------------------------------
+# POUR VERIFIER QUE L'ON PEUT REMETTRE A ZERO LES CHAMPS
+# SUR CERTAINES MAILLES DU MODELE (BESOIN DU PROJET MADRAS)
+#----------------------------------------------------------------------
+
+U1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R', INFO=1,
+                   NOM_CHAM='DEPL', RESULTAT=STNL,  INST=2. )
+
+
+U2 = CREA_CHAMP ( OPERATION = 'ASSE' , MODELE = MO , TYPE_CHAM = 'NOEU_DEPL_R' , INFO=1,
+                    ASSE = (_F ( TOUT = 'OUI' ,      CHAM_GD = U1 ,  COEF_R=1.E0),
+                            _F ( MAILLE = 'E00203' , CHAM_GD = U1 ,  COEF_R=0.E0),
+                                ) , )
+
+SIG1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R', INFO=1,
+                   NOM_CHAM='SIEF_ELGA', RESULTAT=STNL,  INST=2. )
+
+
+SIG2 = CREA_CHAMP ( OPERATION = 'ASSE' , MODELE = MO , TYPE_CHAM = 'ELGA_SIEF_R' , INFO=1,
+                    ASSE = (_F ( TOUT = 'OUI' ,      CHAM_GD = SIG1 ,  COEF_R=1.E0),
+                            _F ( MAILLE = 'E00203' , CHAM_GD = SIG1 ,  COEF_R=0.E0),
+                                ) , )
+
+
+VAR1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R', INFO=1,
+                   NOM_CHAM='VARI_ELGA', RESULTAT=STNL,  INST=2. )
+
+VAR2 = CREA_CHAMP ( OPERATION = 'ASSE' , MODELE = MO , TYPE_CHAM = 'ELGA_VARI_R' , INFO=1,
+                    ASSE = (_F ( TOUT = 'OUI' ,      CHAM_GD = VAR1 ,  COEF_R=1.E0),
+                            _F ( MAILLE = 'E00200' , CHAM_GD = VAR1 ,  COEF_R=0.E0),
+                                ) , )
+
+
+TEST_RESU(
+CHAM_NO=(
+  _F( CHAM_GD = U2, NOEUD = 'I00201',   REFERENCE='NON_REGRESSION',
+      NOM_CMP  = 'DZ', VALE = -1.3291728398379E-02 , PRECISION = 1.0E-03),
+  _F( CHAM_GD = U2, NOEUD = 'I00203',   REFERENCE='ANALYTIQUE',
+      NOM_CMP  = 'DZ', VALE =0.0 , CRITERE='ABSOLU', PRECISION = 1.0E-10),
+ ),
+CHAM_ELEM=(
+  _F( CHAM_GD = SIG2, MAILLE = 'E00204', POINT = 2, SOUS_POINT=12, REFERENCE='NON_REGRESSION',
+      NOM_CMP  = 'SIXX', VALE =-1.245714286E+07 , PRECISION = 2.0E-04),
+  _F( CHAM_GD = SIG2, MAILLE = 'E00203', POINT = 2, SOUS_POINT=12, REFERENCE='ANALYTIQUE',
+      NOM_CMP  = 'SIXX', VALE =0.0 , CRITERE='ABSOLU', PRECISION = 1.0E-10),
+
+  _F( CHAM_GD = VAR2, MAILLE = 'E00201', POINT = 3, SOUS_POINT=36, REFERENCE='NON_REGRESSION',
+      NOM_CMP  = 'V1', VALE =2.3572054987126E-04 , PRECISION = 2.0E-04),
+  _F( CHAM_GD = VAR2, MAILLE = 'E00203', POINT = 2, SOUS_POINT=12, REFERENCE='ANALYTIQUE',
+      NOM_CMP  = 'V1', VALE =0.0 , CRITERE='ABSOLU', PRECISION = 1.0E-10),
+ ),
+)
+#----------------------------------------------------------------------
+
+
 
 FIN()

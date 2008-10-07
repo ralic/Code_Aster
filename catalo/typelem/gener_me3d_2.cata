@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,7 +85,8 @@ MODE_LOCAL__
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       BETA  )
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3      
+                                        K1    K2   K3   BETA     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       )

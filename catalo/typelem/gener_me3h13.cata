@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -201,7 +201,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
-    PAS_COURANT         -1    IN__   XXXXXX   XXXXXX
+    PAS_COURANT         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RAPH_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
@@ -236,5 +236,5 @@ OPTION__
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    RIGI_MECA      -1    IN__   XXXXXX   XXXXXX
+    RIGI_MECA      -2    IN__   XXXXXX   XXXXXX
                          OUT__  XXXXXX   XXXXXX

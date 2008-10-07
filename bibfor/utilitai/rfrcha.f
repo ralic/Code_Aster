@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,9 +118,7 @@ C     -----------------------------------
 C ---  VERIFICATION DE LA PRESENCE DES MOTS CLE GROUP_MA (OU MAILLE)
 C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
           IF (NVERI1.EQ.0 .OR. NVERI2.EQ.0) THEN
-              VALK (1) = K8B
-              VALK (2) = K8B
-            CALL U2MESG('F', 'UTILITAI6_71',2,VALK,0,0,0,0.D0)
+            CALL U2MESS('F', 'UTILITAI6_15')
           END IF
           IF (NGM.NE.0) THEN
             CALL UTNONO(' ',NOMA,'MAILLE',NOGMA,MAILLE,IRET)
