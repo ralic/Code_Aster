@@ -1,6 +1,5 @@
-#@ MODIF calculel6 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -315,6 +314,10 @@ Solution :
  ce problème peut être du a l'utilisation du mot cle TOUT='OUI'.
  on peut vérifier le champ produit avec info=2
 
+"""),
+
+79: _("""
+ Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM 
 """),
 
 }

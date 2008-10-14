@@ -8,7 +8,7 @@
       REAL*8              PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,9 @@ C    REORIE         IN    L       INDIQUE SI L'ON DOIT APPELER ORIEMA
 C    PREC           IN    R       PRECISION
 C    MAILVO         IN    I       SI ORIE_PEAU_3D ("GROUP_MA_VOLU")
 C                                   = LISTE DES MAILLES VOLUMIQUES
+C                                     UTILES A LA REORIENTATION
+C                                 SI ORIE_PEAU_2D ("GROUP_MA_SURF")
+C                                   = LISTE DES MAILLES SURFACIQUES
 C                                     UTILES A LA REORIENTATION
 C                                 SINON: MAILVO N'EST PAS UTILISE
 C    NBMAVO         IN    I       NB DE MAILLES DE MAILVO 

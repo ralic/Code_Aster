@@ -1,4 +1,4 @@
-#@ MODIF N_MCSIMP Noyau  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCSIMP Noyau  DATE 13/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,7 +88,13 @@ class MCSIMP(N_OBJECT.OBJECT):
           Cette valeur est utilisée lors de la création d'un contexte 
           d'évaluation d'expressions à l'aide d'un interpréteur Python
       """
-      return self.valeur
+      v = self.valeur
+      # Singleton : on retourne l'element
+      # Permet aussi d'ignorer l'erreur : concept=COMMANDE(),
+      # ou 'concept' est un tuple de longueur 1 a cause de la virgule.
+      if type(v) in (list, tuple) and len(v) == 1:
+         v = v[0]
+      return v
 
    def get_val(self):
       """

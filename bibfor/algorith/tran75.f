@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,6 +169,12 @@ C
          BASEM2 = BASEMO
 C
       ELSEIF ( MODE .EQ. BLANC .AND. LRPHYS) THEN
+      
+         IF (CONCEP(1:9).EQ.'EVOL_NOLI') THEN
+           CALL NOLI75(NOMRES,TRANGE)
+         
+         ELSE
+      
          CALL GETVID (' ','MACR_ELEM_DYNA',1,1,1,MACREL,NMC)
          IF (NMC.NE.0) THEN
            CALL JEVEUO(MACREL//'.MAEL_REFE','L',IADREF)
@@ -324,6 +330,7 @@ C
          ZK24(LREFE+4) = ZK24(IADRIF+4)
          ZK24(LREFE+5) = ZK24(IADRIF+5)
          CALL JELIBE(KREFE//'.REFD')
+         ENDIF
          GOTO 9999
       ELSE
 C         --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION

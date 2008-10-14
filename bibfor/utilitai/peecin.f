@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -267,7 +267,7 @@ C           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
         CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASD,K24B,K24B,K24B,ALPHA,CALPHA,K24B,K24B,CHELEM,
-     &              LIGREL,BASE,CHVARC,CHVREF,K24B,K24B,
+     &              K24B,LIGREL,BASE,CHVARC,CHVREF,K24B,K24B,
      &                  K24B, K24B, K8B, IBID, K24B, IRET )
    30   CONTINUE
 
@@ -358,10 +358,6 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
    72   CONTINUE
         CALL JEDEMA()
    70 CONTINUE
-
- 1000 FORMAT (1P,' ------>',/,
-     &       ' CHAMP PAR ELEMENT AUX NOEUDS DE NOM SYMBOLIQUE ',A16,/,
-     &       ' NUMERO D''ORDRE: ',I7,'  INST: ',E12.5)
 
    80 CONTINUE
       CALL JEDETR(KNUM)

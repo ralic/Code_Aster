@@ -1,6 +1,6 @@
       SUBROUTINE TE0134 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER            NNO,KP,NNOS,NPG2,I,J,IJ,K,ITEMPS,IFON(3)
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            ICOMP, ISECHI, ISECHF,ITEMPI,IMATTT,NDIM,JGANO
+      LOGICAL            LTEATT
 C DEB ------------------------------------------------------------------
       CALL ELREF1(ELREFE)
       IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
@@ -96,7 +97,7 @@ C          ISECHI ET ISECHF SONT FICTIFS
             TPG    = TPG    + ZR(ITEMPI+I-1)   *ZR(IVF+K+I-1)
             TPSEC  = TPSEC  + ZR(ISECHF+I-1)   *ZR(IVF+K+I-1)
 202       CONTINUE
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+          IF (LTEATT(' ','AXIS','OUI')) POIDS = POIDS*R
           CALL RCDIFF(ZI(IMATE), ZK16(ICOMP), TPSEC, TPG, DIFF )
 C
           IJ = IMATTT - 1
@@ -124,7 +125,7 @@ C
             R      = R      + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)
             TPGI   = TPGI   + ZR(ITEMPI+I-1)   *ZR(IVF+K+I-1)
 102       CONTINUE
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+          IF ( LTEATT(' ','AXIS','OUI')) POIDS = POIDS*R
           CALL RCFODE (IFON(2),TPGI,LAMBDA,R8BID)
           CALL RCFODE (IFON(1),TPGI,R8BID, RHOCP)
 C

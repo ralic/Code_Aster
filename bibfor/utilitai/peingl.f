@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -591,9 +591,9 @@ C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
               IF(OPTION.EQ.'ENER_ELAS') THEN
-                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
+                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,NBMA,ZI(JAD))
               ELSE
-                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
+                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,NBMA,ZI(JAD))
               ENDIF
 
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
@@ -680,9 +680,9 @@ C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
               IF(OPTION.EQ.'ENER_ELAS') THEN
-                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
+                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,1,NUME)
               ELSE
-                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
+                CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,1,NUME)
               ENDIF
 
                 IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.

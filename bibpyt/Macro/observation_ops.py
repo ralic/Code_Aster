@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF observation_ops Macro  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,21 +110,21 @@ def observation_ops(self,
     jdc = CONTEXT.get_current_step().jdc
     iret,ibid,nom_cara_elem = aster.dismoi('F','CARA_ELEM',RESULTAT.nom,'RESULTAT')
     if len(nom_cara_elem) > 0    :
-        assert nom_cara_elem != "#PLUSIEURS" , nom_cara_elem
-        if nom_cara_elem == "#AUCUN" :
+        assert nom_cara_elem.strip() != "#PLUSIEURS" , nom_cara_elem
+        if nom_cara_elem.strip() == "#AUCUN" :
             cara_elem = None
         else :
-            cara_elem = jdc.sds_dict[nom_cara_elem]
+            cara_elem = jdc.sds_dict[nom_cara_elem.strip()]
     else:
         cara_elem = None
 
     iret,ibid,nom_cham_mater = aster.dismoi('F','CHAM_MATER',RESULTAT.nom,'RESULTAT')
     if len(nom_cham_mater) > 0 :
-        assert nom_cham_mater != "#PLUSIEURS" , nom_cham_mater
-        if nom_cham_mater == "#AUCUN" :
+        assert nom_cham_mater.strip() != "#PLUSIEURS" , nom_cham_mater
+        if nom_cham_mater.strip() == "#AUCUN" :
             cham_mater = None
         else :
-            cham_mater = jdc.sds_dict[nom_cham_mater]
+            cham_mater = jdc.sds_dict[nom_cham_mater.strip()]
     else:
         cham_mater = None
 

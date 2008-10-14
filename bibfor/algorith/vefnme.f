@@ -3,7 +3,7 @@
      &                  PARTPS,CARCRI,CHVARC,LIGREZ,LISCHA,
      &                  OPTION)
 C
-C MODIF ALGORITH  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -212,7 +212,7 @@ C
 C
 C --- CADRE X-FEM
 C
-      CALL JEEXIN(MODELE(1:8)//'.FISS',IER)
+      CALL EXIXFE(MODELE,IER)
       IF (IER.NE.0) THEN
         PINTTO =MODELE(1:8)//'.TOPOSE.PIN'
         CNSETO =MODELE(1:8)//'.TOPOSE.CNS'

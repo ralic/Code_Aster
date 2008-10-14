@@ -4,7 +4,7 @@
       CHARACTER*19 RESU,KINST,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,18 +75,6 @@ C     ------------------------------------------------------------------
       CALL GETVR8(MOTCLE,'PRECISION',IOCC,1,1,EPSI,N)
       CALL GETVTX(MOTCLE,'CRITERE',IOCC,1,1,CRIT,N)
 
-      CALL JEEXIN(RESU//'.ORDR',IRET)
-      IF (IRET.EQ.0) THEN
-        NBORDR = NBI
-        CALL WKVECT('&&RSTRAN.ORDR','V V I',NBI,JORDR)
-        DO 10 I = 1,NBI
-          ZI(JORDR+I-1) = I
-   10   CONTINUE
-      ELSE
-        CALL JEVEUO(RESU//'.ORDR','L',JORDR)
-        CALL JELIRA(RESU//'.ORDR','LONMAX',NBORDR,K8B)
-      END IF
-
 C     -- CETTE ROUTINE SERT A DES SD != TRAN_GENE
       CALL JEEXIN(RESU//'.INST',IER1)
       IF (IER1.GT.0) THEN
@@ -95,6 +83,19 @@ C     -- CETTE ROUTINE SERT A DES SD != TRAN_GENE
       ELSE
         CALL RSLIPA(RESU,'INST','&&RSTRAN.LIINST',LINST,NBI)
       ENDIF
+
+      CALL JEEXIN(RESU//'.ORDR',IRET)
+      IF (IRET.EQ.0) THEN
+        CALL ASSERT(.FALSE.)
+        CALL WKVECT('&&RSTRAN.ORDR','V V I',NBI,JORDR)
+        DO 10 I = 1,NBI
+          ZI(JORDR+I-1) = I
+   10   CONTINUE
+      ELSE
+        CALL JEVEUO(RESU//'.ORDR','L',JORDR)
+        CALL JELIRA(RESU//'.ORDR','LONUTI',NBI2,K8B)
+        CALL ASSERT(NBI.EQ.NBI2)
+      END IF
 
 C     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
 
@@ -106,7 +107,7 @@ C     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
         CALL WKVECT('&&RSTRAN.NUME','V V I',NBINST,JBID)
         CALL GETVIS(MOTCLE,'NUME_ORDRE',IOCC,1,NBINST,ZI(JBID),NNO)
         DO 40 I = 0,NBINST - 1
-          DO 20 IORD = 0,NBORDR - 1
+          DO 20 IORD = 0,NBI - 1
             IF (ZI(JBID+I).EQ.ZI(JORDR+IORD)) GO TO 30
    20     CONTINUE
           IER = IER + 110
@@ -146,7 +147,7 @@ C     --- RECHERCHE A PARTIR D'UN INSTANT ---
           GO TO 70
         END IF
         CALL RSINDI(TYPE,LINST,1,JORDR,IVAL,TUSR,KVAL,CVAL,EPSI,CRIT,
-     &              NBORDR,NBTROU,NUTROU,1)
+     &              NBI,NBTROU,NUTROU,1)
         IF (NBTROU.EQ.0) THEN
           IER = IER + 110
           VALR = TUSR
@@ -159,7 +160,7 @@ C     --- RECHERCHE A PARTIR D'UN INSTANT ---
           CALL U2MESG('F','UTILITAI8_19',0,' ',1,VALI,1,VALR)
           GO TO 70
         END IF
-        DO 50 IORD = 0,NBORDR - 1
+        DO 50 IORD = 0,NBI - 1
           IF (NUTROU.EQ.ZI(JORDR+IORD)) GO TO 60
    50   CONTINUE
    60   CONTINUE

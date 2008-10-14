@@ -1,7 +1,7 @@
       SUBROUTINE TE0518(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,6 +35,8 @@ C ......................................................................
       INTEGER IDDLM,IDDLD,IDDL0,IDDL1,ICOMPO,IRET
 
       CHARACTER*16 NOMELT
+      LOGICAL LTEATT
+
       COMMON /FFAUTO/ NOMELT
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -69,7 +71,7 @@ C - TYPE DE MODELISATION
 
       IF (NOMTE(1:5).EQ.'MVCA_') THEN
         TYPMOD(1) = '3D      '
-      ELSE IF (NOMTE(3:4).EQ.'AX') THEN
+      ELSE IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
       ELSE IF (NOMTE(3:4).EQ.'CP') THEN
         TYPMOD(1) = 'C_PLAN  '

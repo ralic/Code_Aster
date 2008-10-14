@@ -1,7 +1,7 @@
       SUBROUTINE MAPPAR(PREMIE,NOMA  ,NUMEDD,DEFICO,RESOCO)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -274,7 +274,7 @@ C
      &                POSMAM,NUMMAM,TYCO  ,IPC   ,KSIPC1,
      &                KSIPC2,KSI1  ,KSI2  ,TAU1M ,TAU2M ,
      &                EXNOEC,EXNOEF,NBEXFR,NDEXFR,TAU1  ,
-     &                TAU2)      
+     &                TAU2  ,ALIAS)      
  
 C
 C --- INDICATEUR NOUVEL APPARIEMENT

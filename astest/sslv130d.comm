@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -780,11 +780,11 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL2,
                   NOM_CMP='NUEST',
                   MAILLE='M2',
                   POINT=1,
-                  VALE=0.0485747403309,
+                  VALE=6.4600e-5,
                   CRITERE='RELATIF',
                   PRECISION=0.0001,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
+                  VERSION='9.3.15',),);
 
 TEST_RESU(RESU=_F(RESULTAT=EVOL2,
                   INST=1.0,
@@ -792,10 +792,10 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL2,
                   NOM_CMP='ERREST',
                   MAILLE='M2',
                   GROUP_NO='A',
-                  VALE=8.80116136608e-05,
+                  VALE=1.1705e-07,
                   CRITERE='RELATIF',
                   PRECISION=0.0001,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
+                  VERSION='9.3.15',),);
 
 FIN();

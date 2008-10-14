@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C
       REAL*8         R8BID,CEL, DFDX(9),DFDY(9),POIDS,R
       CHARACTER*2    CODRET
       COMPLEX*16     VALRES
+      LOGICAL        LTEATT
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
@@ -65,7 +66,7 @@ C
       DO 101 KP=1,NPG
          K = (KP-1)*NNO
          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-         IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+         IF ( LTEATT(' ','AXIS','OUI') ) THEN
             R = 0.D0
             DO 102 I=1,NNO
                R = R + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)

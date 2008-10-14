@@ -1,14 +1,13 @@
       SUBROUTINE DMATHL(ORDI,EPI,EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,ICOU,
-     &                  INDITH,GRILLE,T2EV,T2VE,T1VE)
+     &                  INDITH,T2EV,T2VE,T1VE)
       IMPLICIT   NONE
       INTEGER NNO,MULTIC,INDITH,ICOU
       REAL*8 DF(3,3),DM(3,3),DMF(3,3)
       REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
       REAL*8 ORDI,EPI,EPAIS,CTOR
-      LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +28,6 @@ C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE COEFFCIENTS THERMOELASTIQUES DE FLEXION,
 C     MEMBRANE, COUPLAGE MEMBRANE-FLEXION POUR UN MATERIAU ISOTROPE OU
 C     MULTICOUCHE
-C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
 C     OUT MULTIC :
 C        1 POUR UN MATERIAU MULTICOUCHE SANS COUPLAGE MEMBRANE-FLEXION
 C        2 POUR UN MATERIAU MULTICOUCHE AVEC COUPLAGE MEMBRANE-FLEXION
@@ -227,52 +225,21 @@ C        ------ MATERIAU ISOTROPE ------------------------------------
         NU = VALRES(2)
         ALPHAT = VALRES(3)
         YOUNG = YOUNG*ALPHAT
-C        ------------------------------------------------------------
-        IF (GRILLE) THEN
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE - GRILLES -
-          YOUNG1 = YOUNG
-          YOUNG2 = 0.D0
-          CTOR = ZR(JCOQU+4)
-          DH(1,1) = YOUNG1
-          DH(2,2) = YOUNG2
-          DH(3,3) = YOUNG1*CTOR
-
-C   MATRICE PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
-
-          CALL GRIROT(ALPHA,BETA,PGL,ROT,C,S)
-
-C   PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
-
-          CALL UTBTAB('ZERO',3,3,DH,ROT,XAB1,DH)
-
-C        --- CALCUL DES MATRICES DE RIGIDITE EN MEMBRANE ET FLEXION --
-
-          CDF = EPAIS*EPAIS*EPAIS/12.D0
-          DO 50 J = 1,3
-            DO 40 I = 1,3
-              DM(I,J) = DH(I,J)*EPAIS
-C              DF(I,J) = DH(I,J)*CDF
-C              PAS DE RIGI FLEXION PROPRE
-              DF(I,J) = 0.D0
-   40       CONTINUE
-   50     CONTINUE
-        ELSE
-
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
-          CDF = YOUNG*EPAIS*EPAIS*EPAIS/12.D0/ (1.D0-NU*NU)
-          DF(1,1) = CDF
-          DF(1,2) = CDF*NU
-          DF(2,1) = DF(1,2)
-          DF(2,2) = DF(1,1)
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
-          CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
-          DM(1,1) = CDM
-          DM(1,2) = CDM*NU
-          DM(2,1) = DM(1,2)
-          DM(2,2) = DM(1,1)
-
-        END IF
+C      ------------------------------------------------------------
+C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
+        CDF = YOUNG*EPAIS*EPAIS*EPAIS/12.D0/ (1.D0-NU*NU)
+        DF(1,1) = CDF
+        DF(1,2) = CDF*NU
+        DF(2,1) = DF(1,2)
+        DF(2,2) = DF(1,1)
+C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
+        CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
+        DM(1,1) = CDM
+        DM(1,2) = CDM*NU
+        DM(2,1) = DM(1,2)
+        DM(2,2) = DM(1,1)
 C        ---------------------------------------------------------------
+
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         MULTIC = 0
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
@@ -288,8 +255,6 @@ C        ---------------------------------------------------------------
           CALL U2MESS('F','CALCULEL_15')
         END IF
         ALPHAT = VALRES(11)
-        CALL ASSERT(.NOT.GRILLE)
-
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
         DM(1,1) = VALRES(1)*ALPHAT
         DM(1,2) = VALRES(2)*ALPHAT

@@ -1,0 +1,452 @@
+      SUBROUTINE TE0382(OPTION,NOMTE)
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE DELMAS J.DELMAS
+C
+C     BUT:
+C         CALCUL DE L'INDICATEUR D'ERREUR SUR UN ELEMENT 2D
+C         POUR L'ELEMENT XFEM COURANT AVEC LA METHODE 
+C         DES RESIDUS EXPLICITES.
+C         OPTION : 'ERRE_ELEM_SIGM'
+C
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   OPTION : OPTION DE CALCUL
+C IN   NOMTE  : NOM DU TYPE ELEMENT
+C
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
+      CHARACTER*32 JEXNUM 
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C      
+      INTEGER NBNASE,NBNAMX
+C     SOUS-ELEMENTS TOUJOURS LINEAIRES => ON A TOUJOURS NBNASE=2 
+      PARAMETER (NBNASE=2)
+C     ON DIMENSIONE LES VECTEURS POUR LE NBRE MAX DE NOEUDS PAR ARRETE
+C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
+      PARAMETER (NBNAMX=3)
+      
+      INTEGER NPGP,NPG,NNOP,NNOSP,NNO,TYPV,IPOIDP,IVFP,IDFDE
+      INTEGER ISIGNO,IGEOM,IBID,IERR,IMATE,IVOIS
+      INTEGER NBS,NBCMP,ITAB(7),NDIM,JGANO,JCOORS,IRET,IDFSE
+      INTEGER JTIME,NIV,IREF1,IREF2,INP
+      INTEGER JVOCLA,INO,NBSIGM,NBNAPA
+      INTEGER JPINTT,JCNSET,JLONCH,JVOXSE,JSIGSE
+      INTEGER NIT,NSE,IT,ISE,CPT,IN,J,IADZI,IAZK24
+      
+      REAL*8 HE,HSE,HF,R8BID,COEFF
+      REAL*8 SG11(NBNAMX),SG22(NBNAMX),SG12(NBNAMX),JAC(NBNAMX)
+      REAL*8 NX(NBNAMX),NY(NBNAMX),TX(NBNAMX),TY(NBNAMX)
+      REAL*8 CHX(NBNAMX),CHY(NBNAMX)
+      REAL*8 INST,INTE,ORIEN
+      REAL*8 SIG11(NBNAMX),SIG22(NBNAMX),SIG12(NBNAMX)
+      REAL*8 TVOL,TVOLSE,TBOR,E,NU,VALRES(2),R8TMP
+      
+      CHARACTER*2 CODRET(1),NOEU
+      CHARACTER*8 TYPEMA,TYPMAV,ELRESE(3),FAMI(3),ELREFP,NOMRES(2)
+      CHARACTER*16 PHENOM,BLAN16,NOMTSE
+      CHARACTER*24 COORSE
+      
+      LOGICAL NRJ
+      
+      DATA    ELRESE /'SE2','TR3','TE4'/
+      DATA    FAMI   /'BID','XINT','XINT'/
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+      CALL ELREF1(ELREFP)
+C
+      CALL TECAEL(IADZI,IAZK24)
+C      
+C     !!! ATTENTION !!! LA VALEUR DE NOMTSE EST UTILISEE POUR DEFINIR
+C     LE "TYPE" DU SOUS-ELEMENT AFIN DE CALCULER SA TAILLE AVEC LA 
+C     ROUTINE UTHK(), DANS LAQUELLE UN TEST EST REALISE SUR NOMTSE(5:6)
+C     2D => SOUS ELEMENTS SONT DES TRIANGLES
+C             0123456789012345
+      BLAN16='                '
+      NOMTSE=BLAN16
+C                   123456 
+      NOMTSE(1:6)= '    TR'
+C
+C --- ELEMENT PARENT DE REFERENCE : RECUP DE NNO, NPG ET IDFDE 
+C
+      CALL ELREF4(' ','RIGI',NDIM,NNOP,NNOSP,NPGP,IPOIDP,IVFP,IDFDE,
+     &            JGANO)
+C
+C --- SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IDFSE 
+C
+      CALL ELREF4(ELRESE(NDIM),FAMI(NDIM),IBID,NNO,IBID,NPG,
+     &     IBID,IBID,IDFSE,IBID)
+C
+C --- RECUPERATION DES CHAMPS IN "CLASSIQUES" 
+C
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PMATERC','L',IMATE)
+      CALL JEVECH('PVOISIN','L',JVOCLA)
+      CALL JEVECH('PTEMPSR','L',JTIME)
+      CALL JEVECH('PFORCE','L',IREF1)
+      CALL JEVECH('PPRESS','L',IREF2)
+      CALL TECACH('OOO','PCONTNO',3,ITAB,IRET)
+      INST=ZR(JTIME-1+1)
+      ISIGNO=ITAB(1)
+      NBCMP=NBSIGM()
+C
+C --- RECUPERATION DES CHAMPS IN "XFEM"
+C
+      CALL JEVECH('PPINTTO','L',JPINTT)
+      CALL JEVECH('PCNSETO','L',JCNSET)
+      CALL JEVECH('PLONCHA','L',JLONCH) 
+      CALL JEVECH('PCVOISX','L',JVOXSE)
+      CALL JEVECH('PSIEFSER','L',JSIGSE)
+C
+C --- RECUPERATION DU CHAMP OUT 
+C
+      CALL JEVECH('PERREUR','E',IERR)
+C     
+C ----------------------------------------------------------------------
+C ----------------------------- PREALABLES -----------------------------
+C ----------------------------------------------------------------------
+C
+C --- INITIALISATION DES TERMES VOLUMIQUE ET DE BORD
+C
+      TVOL=0.D0
+      TBOR=0.D0
+C
+C --- CALCUL DU DIAMETRE DE L'ELEMENT PARENT 
+C
+      NIV=1 
+      CALL UTHK(NOMTE,IGEOM,HE,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
+C     
+C --- FORCES VOLUMIQUES (N'EXISTENT PAS ENCORE POUR XFEM)
+C
+C      CALL R8INIR(2,0.D0,FPES,1)
+C
+C      CALL TECACH('ONN','PPESANR',1,IP,IRET)
+C      CALL TECACH('ONN','PROTATR',1,IR,IRET)
+C      CALL TECACH('ONN','PFRVOLU',1,IFVOL,IRET)
+C      
+CC     FORCES DE ROTA -> CALL RESROT "PAR SOUS ELEMENTS"      
+CC     FORCES VOLU    -> AUX PG PAR SOUS ELEMENTS
+CC     
+C      IF (IFVOL.NE.0) THEN
+C	CALL JEVECH('PFRVOLU','L',IFOR)
+C      END IF
+C      IF (IR.NE.0) THEN
+C	CALL JEVECH('PROTATR','L',IROT)
+C      END IF
+C      
+C      IF (IP.NE.0) THEN
+C	CALL RCCOMA (ZI(IMATE),'ELAS',PHENOM,CODRET)
+C	CALL RCVALA (ZI(IMATE),' ',PHENOM,1,' ',R8BID,1,'RHO',
+C     &  	     RHO,CODRET,'FM')	  
+CC	RECUPERATION ET CALCUL DE LA FORCE DE PESANTEUR 
+C	IF (IP.NE.0) THEN
+C	  CALL JEVECH('PPESANR','L',IPES)
+C	  FPX=RHO*ZR(IPES)*ZR(IPES+1)
+C	  FPY=RHO*ZR(IPES)*ZR(IPES+2)
+C	ENDIF		    
+C      ENDIF
+C
+C ----------------------------------------------------------------------
+C ------------ BOUCLE SUR LES COTES DE L'ELEMENT PARENT : --------------
+C ------------ CALCUL DU TERME DE BORD SUR CHAQUE COTE    --------------
+C ----------------------------------------------------------------------
+C     
+C     NBS : NOMBRE DE NOEUDS SOMMETS PAR ARRETE POUR L'ELEMENT PARENT
+      TYPEMA=ZK24(IAZK24-1+3+NNOP+3)      
+      IF(TYPEMA(1:4).EQ.'TRIA')THEN
+        NBS=3
+      ELSE
+        NBS=4
+      ENDIF
+C     
+C     NBNAPA : NBRE DE NOEUDS PAR ARRETE POUR L'ELEMENT PARENT
+      NOEU=TYPEMA(5:5)
+      IF (NOEU.EQ.'6'.OR.NOEU.EQ.'8'.OR.NOEU.EQ.'9') THEN
+        NBNAPA=3
+      ELSE
+        NBNAPA=2
+      ENDIF      
+C
+C --- CALCUL L'ORIENTATION DE LA MAILLE
+C
+      CALL UTJAC(.TRUE.,IGEOM,1,IDFDE,0,IBID,NNOP,ORIEN)
+C
+C --- BOUCLE SUR LES COTES DU PARENT
+C
+      DO 100 INP=1,NBS
+C
+C ----- TYPE DU DU VOISIN  
+C
+        TYPV=ZI(JVOCLA+7+INP)
+        IF (TYPV.NE.0) THEN
+C
+C ------- CALCUL DE : NORMALE, TANGENTE, ET JACOBIEN
+C
+          CALL CALNOR('2D',INP,IBID,IBID,NBS,NBNAPA,IBID,IGEOM,IBID,
+     &                 IBID,IBID,ORIEN,HF,JAC,NX,NY,R8BID,TX,TY)
+C
+C ------- RECUPERATION DU TYPE DE LA MAILLE VOISINE
+C
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TYPV),TYPMAV)
+C
+C ------- SI L'ARRETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
+C
+          IF (TYPMAV(1:4).EQ.'TRIA'.OR.
+     &        TYPMAV(1:4).EQ.'QUAD') THEN
+C
+C --------- CALCUL DU SAUT DE CONTRAINTES 
+C
+            CALL ERMES2(INP,TYPEMA,TYPMAV,IREF1,JVOCLA,ISIGNO,
+     &                  NBCMP,SG11,SG22,SG12)
+C
+C --------- CALCUL DE L'INTEGRALE SUR LE BORD
+C
+            CALL R8INIR(NBNAMX,0.D0,CHX,1)
+            CALL R8INIR(NBNAMX,0.D0,CHY,1)            
+            CALL INTENC(NBNAPA,JAC,CHX,CHY,SG11,SG22,SG12,NX,NY,INTE)
+C
+C --------- ACTUALISATION DU TERME DE BORD 
+C                       
+            TBOR=TBOR+0.5D0*INTE*HF
+C
+C ------- SI L'ARRETE EST SUR LA FRONTIERE DE LA STRUCTURE...
+C
+          ELSE IF (TYPMAV(1:2).EQ.'SE') THEN
+C     
+C --------- CALCUL DES EFFORTS SURFACIQUES ET CONTRAINTES SI NEUMANN,
+C --------- SINON -> EFFORTS=0 (ERMEB2)     
+C     
+            CALL ERMEB2(INP,IREF1,IREF2,JVOCLA,IGEOM,ISIGNO,TYPEMA,
+     &                  NBCMP,INST,NX,NY,TX,TY,SIG11,SIG22,SIG12,
+     &                  CHX,CHY)
+C     
+C --------- CALCUL DE L'INTEGRALE DE BORD
+C     
+            CALL INTENC(NBNAPA,JAC,CHX,CHY,SIG11,SIG22,SIG12,NX,NY,INTE)
+C     
+C --------- ACTUALISATION DU TERME DE BORD 
+C     
+            TBOR=TBOR+INTE*HF
+C     
+          END IF
+C     
+        END IF
+C     
+ 100  CONTINUE
+C     
+C ----------------------------------------------------------------------
+C ---------- FIN BOUCLE SUR LES COTES DE L'ELEMENT PARENT  -------------
+C ----------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C ------------------- BOUCLE SUR LES SOUS ELEMENTS ---------------------
+C ----------------------------------------------------------------------
+C
+C --- INITIALISATION DU N° DE SS-ELEMENT COURANT
+C
+      CPT=0
+C     
+C --- RECUPERATION DU DECOUPAGE EN NIT SIMPLEXES 
+C
+      NIT=ZI(JLONCH-1+1)
+C 
+C --- BOUCLE SUR LES NIT SIMPLEXES
+C
+      DO 300 IT=1,NIT
+C
+C ----- RECUPERATION DU DECOUPAGE EN NSE SOUS-ELEMENTS
+C
+        NSE=ZI(JLONCH-1+1+IT)
+C        
+C ----- BOUCLE SUR LES NSE SOUS-ELEMENTS
+C
+        DO 310 ISE=1,NSE
+C
+          CPT=CPT+1
+C
+C ------- CALCUL DES COORDONNEES DES NOEUDS ET ECRITURE DANS ZR()
+C
+          COORSE='&&TE0288.COORSE'
+          CALL WKVECT(COORSE,'V V R',NDIM*(NNO),JCOORS)
+C
+C ------- BOUCLE SUR LES 3 SOMMETS DU SOUS-ELEMENT                    
+C
+          DO 311 IN=1,NNO
+            INO=ZI(JCNSET-1+(NDIM+1)*(CPT-1)+IN)
+            DO 312 J=1,NDIM 
+              IF (INO.LT.1000) THEN
+C             IL S'AGIT D'UN NOEUD DE L'ELT PARENT
+                ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &               ZR(IGEOM-1+NDIM*(INO-1)+J)
+              ELSE
+C             IL S'AGIT D'UN POINT D'INTERSECTION
+                ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &               ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
+              ENDIF
+ 312        CONTINUE
+ 311      CONTINUE          
+C
+C ------- CALCUL DE LA TAILLE DU SOUS-ELEMENT
+C         
+          CALL UTHK(NOMTSE,JCOORS,HSE,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
+C
+C ------- CALCUL DE L'ORIENTATION DU SOUS-ELEMENT
+C
+          CALL UTJAC(.TRUE.,JCOORS,1,IDFSE,0,IBID,NNO,ORIEN)
+C          
+C ------------------- CALCUL DU TERME VOLUMIQUE -----------------------
+C     
+          TVOLSE=0.D0
+          CALL XRMEV2(CPT,NPG,NDIM,JSIGSE,COORSE,TVOLSE) 
+C         
+          TVOL=TVOL+TVOLSE*HSE**2
+C     
+C ----------------------------------------------------------------------
+C --------------- BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
+C ----------------------------------------------------------------------
+C         
+          DO 314 IN=1,NNO
+C     
+            IVOIS=ZI(JVOXSE-1+(NNO)*(CPT-1)+IN)
+C     
+C --------- PRESENCE OU NON D'UN VOISIN DE L'AUTRE COTE DE L'ARETE
+C
+            IF(IVOIS.NE.0) THEN
+C
+C ----------- CALCUL DE NORMALES, TANGENTES ET JACOBIENS 
+C
+              CALL CALNOR( '2D',IN,IBID,IBID,NNO,NBNASE,IBID,JCOORS,
+     &                     IBID,IBID,IBID,ORIEN,HF,JAC,NX,NY,R8BID,
+     &                     TX,TY)                    
+C
+C ----------- CALCUL DU SAUT DE CONTRAINTES AUX NOEUDS S-E/VOISIN 
+C ----------- (EQUIVALENT XFEM DE ERMES2)
+C
+              CALL XRMES2(NDIM,NBNASE,CPT,IN,IVOIS,JSIGSE,NNO,NBCMP,
+     &                    JCNSET,SG11,SG22,SG12)
+C              
+C ----------- CALCUL DE L'INTEGRALE SUR L'ARETE
+C
+              CALL R8INIR(NBNASE,0.D0,CHX,1)
+              CALL R8INIR(NBNASE,0.D0,CHY,1)
+C             ATTENTION, NBNASE=2 ALORS QUE DS INTENC TOUS LES ARGUMENTS
+C             D'ENTREE SONT DIMENSIONNES A 3, MAIS CA NA POSE PAS DE PB
+              CALL INTENC(NBNASE,JAC,CHX,CHY,SG11,SG22,SG12,NX,NY,INTE)
+C     
+C ----------- ACTUALISATION DU TERME DE BORD 
+C            
+              TBOR=TBOR+0.5D0*INTE*HF
+C
+            END IF
+C            
+ 314      CONTINUE
+C
+C ----------------------------------------------------------------------
+C ----------- FIN BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
+C ----------------------------------------------------------------------
+C          
+          CALL JEDETR(COORSE)
+          
+ 310    CONTINUE       
+        
+ 300  CONTINUE
+C     
+C ----------------------------------------------------------------------
+C ------------------ FIN BOUCLE SUR LES SOUS ELEMENTS  -----------------
+C ----------------------------------------------------------------------
+C
+C     ATTENTION, NBNAPA=2 EN LINEAIRE, NBNAPA=3 EN QUADRATIQUE
+C
+      IF (NBNAPA.EQ.3) THEN
+        COEFF=SQRT(96.D0)
+      ELSE
+        COEFF=SQRT(24.D0)
+      ENDIF
+      
+      NRJ=.TRUE.
+C     NRJ=.FALSE.
+
+      IF (NRJ) THEN
+
+        NOMRES(1)='E'
+        NOMRES(2)='NU'
+        CALL RCCOMA (ZI(IMATE),'ELAS',PHENOM,CODRET)
+        CALL RCVALA (ZI(IMATE),' ',PHENOM,1,' ',R8BID,2,NOMRES,
+     &               VALRES,CODRET,'FM')
+        E =VALRES(1)
+        NU=VALRES(2)
+
+        IF (NBNAPA.EQ.3) THEN
+          COEFF=SQRT(96.D0*E/(1-NU))
+        ELSE
+          COEFF=SQRT(24.D0*E/(1-NU))
+        ENDIF
+        
+        R8TMP=SQRT(TVOL+TBOR)/COEFF
+        ZR(IERR-1+1)=R8TMP
+        ZR(IERR-1+2)=R8TMP**2
+        ZR(IERR-1+3)=TVOL
+        ZR(IERR-1+4)=TBOR
+
+      ELSE
+        R8TMP=(SQRT(TVOL)+SQRT(TBOR))/COEFF
+        ZR(IERR-1+1)=R8TMP
+        ZR(IERR-1+2)=R8TMP**2
+      END IF
+
+
+C      ZR(IERR-1+2)=0.D0
+C      ZR(IERR-1+3)=0.D0
+C      ZR(IERR-1+4)=0.D0
+      ZR(IERR-1+5)=0.D0
+      ZR(IERR-1+6)=0.D0
+      ZR(IERR-1+7)=0.D0
+      ZR(IERR-1+8)=0.D0
+      ZR(IERR-1+9)=0.D0
+      ZR(IERR-1+10)=HE
+      CALL JEDEMA()
+            
+      END

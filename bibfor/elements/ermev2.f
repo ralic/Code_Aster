@@ -1,8 +1,12 @@
-      SUBROUTINE ERMEV2(NOMTE,NNO,IPG,IGEOM,IVF,ISIG,NBCMP,DFDX,DFDY,
-     &                  POIDS,POIAXI,
-     &                  DSX,DSY,NORME)
+      SUBROUTINE ERMEV2(NNO,IGEOM,FF,ISIG,NBCMP,DFDX,DFDY,
+     &                  POIDS,POIAXI,DSX,DSY,NORME)
+      IMPLICIT NONE
+      INTEGER NNO,IGEOM,ISIG,NBCMP
+      INTEGER POIAXI
+      REAL*8  FF(NNO),DFDX(9),DFDY(9),POIDS,DSX,DSY,NORME
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,15 +23,16 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C =====================================================================
+C ======================================================================
 C  ERREUR EN MECANIQUE - TERME VOLUMIQUE - DIMENSION 2
 C  **        **                *                     *
-C =====================================================================
+C ======================================================================
 C
 C     BUT:
 C         PREMIER TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE :
 C         CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA EN UN POINT
-C         DE GAUSS EN 2D.
+C         DE GAUSS EN 2D. UTILISE POUR UN ELEMENT "CLASSIQUE" OU UN 
+C         SOUS-ELEMENT ISSU DU DECOUPAGE X-FEM
 C
 C
 C     ARGUMENTS:
@@ -35,11 +40,10 @@ C     ----------
 C
 C      ENTREE :
 C-------------
-C IN   NOMTE  : NOM DU TYPE_MAILLE
 C IN   NNO    : NOMBRE DE NOEUDS DU TYPE_MAILLE
-C IN   IPG    : NUMERO DU POINT DE GAUSS
 C IN   IGEOM  : ADRESSE DANS ZR DU TABLEAU DES COORDONNEES
-C IN   IVF    : ADRESSE DANS ZR DU TABLEAU DES FONCTIONS DE FORME
+C IN   FF     : TABLEAU DES VALEURS DES FONCTIONS DE FORME AU POINT DE 
+C               GAUSS COURANT
 C IN   ISIG   : ADRESSE DANS ZR DU TABLEAU DES CONTRAINTES AUX NOEUDS
 C IN   NBCMP  : NOMBRE DE COMPOSANTES
 C IN   DFDX   : DERIVEES DES FONCTIONS DE FORME / X
@@ -60,15 +64,11 @@ C     ENTREE ET SORTIE :
 C----------------------
 C IN/OUT   POIDS  : NE SERT QU'A ETRE MULTIPLIE PAR LE RAYON DANS LE
 C                   CAS DES MODELISATIONS AXI
+C
 C ......................................................................
-      IMPLICIT NONE
-      INTEGER NNO,IPG,IGEOM,IVF,ISIG,NBCMP
-      INTEGER POIAXI
-      REAL*8  DFDX(9),DFDY(9),POIDS,DSX,DSY,NORME
-      CHARACTER*16 NOMTE
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-
+C
       INTEGER        ZI
       COMMON /IVARJE/ZI(1)
       REAL*8         ZR
@@ -83,14 +83,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
+C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-
-      INTEGER I,K
+C
+      INTEGER I
 
       REAL*8 DSIG11,DSIG12,DSIG22,DSIG21,SPG11,SPG22,SPG33,SPG12
       REAL*8 R,SIG11,SIG22,SIG33,SIG12,R8PREM
-
+      LOGICAL LTEATT
+C
 C ----------------------------------------------------------------------
 C
       DSIG11=0.D0
@@ -107,12 +108,11 @@ C====
 C 1. MODELISATION AXI
 C====
 C
-      IF (NOMTE(3:4).EQ.'AX') THEN
+      IF (LTEATT(' ','AXIS','OUI')) THEN
 C
         R=0.D0
         DO 10 I=1,NNO
-          K=(IPG-1)*NNO
-          R=R+ZR(IGEOM-1+2*(I-1)+1)*ZR(IVF+K+I-1)
+          R=R+ZR(IGEOM-1+2*(I-1)+1)*FF(I)
 C
           SIG11=ZR(ISIG-1+NBCMP*(I-1)+1)
           SIG22=ZR(ISIG-1+NBCMP*(I-1)+2)
@@ -124,10 +124,10 @@ C
           DSIG22=DSIG22+SIG22*DFDY(I)
           DSIG21=DSIG21+SIG12*DFDX(I)
 C
-          SPG11=SPG11+SIG11*ZR(IVF+K+I-1)
-          SPG22=SPG22+SIG22*ZR(IVF+K+I-1)
-          SPG33=SPG33+SIG33*ZR(IVF+K+I-1)
-          SPG12=SPG12+SIG12*ZR(IVF+K+I-1)
+          SPG11=SPG11+SIG11*FF(I)
+          SPG22=SPG22+SIG22*FF(I)
+          SPG33=SPG33+SIG33*FF(I)
+          SPG12=SPG12+SIG12*FF(I)
 C
   10    CONTINUE
 C
@@ -147,7 +147,6 @@ C
       ELSE
 C
         DO 20 I=1,NNO
-          K=(IPG-1)*NNO
           SIG11=ZR(ISIG-1+NBCMP*(I-1)+1)
           SIG22=ZR(ISIG-1+NBCMP*(I-1)+2)
           SIG33=ZR(ISIG-1+NBCMP*(I-1)+3)
@@ -158,10 +157,10 @@ C
           DSIG22=DSIG22+SIG22*DFDY(I)
           DSIG21=DSIG21+SIG12*DFDX(I)
 C
-          SPG11=SPG11+SIG11*ZR(IVF+K+I-1)
-          SPG22=SPG22+SIG22*ZR(IVF+K+I-1)
-          SPG33=SPG33+SIG33*ZR(IVF+K+I-1)
-          SPG12=SPG12+SIG12*ZR(IVF+K+I-1)
+          SPG11=SPG11+SIG11*FF(I)
+          SPG22=SPG22+SIG22*FF(I)
+          SPG33=SPG33+SIG33*FF(I)
+          SPG12=SPG12+SIG12*FF(I)
 C
   20    CONTINUE
 C

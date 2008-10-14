@@ -1,6 +1,6 @@
       SUBROUTINE DXSIGT(NOMTE,XYZL,PGL,IC,INIV,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C ======================================================================
       CHARACTER*16 NOMTE
       REAL*8 XYZL(3,1),PGL(3,1)
       REAL*8 SIGT(1)
-      LOGICAL GRILLE,LTEATT
 C     ------------------------------------------------------------------
 C --- CONTRAINTES PLANES D'ORIGINE THERMIQUE AUX NOEUDS
 C --- POUR LES ELEMENTS COQUES A FACETTES PLANES :
@@ -79,7 +78,6 @@ C     -----------------
       CALL RCVARC(' ','TEMP','REF','NOEU',1,1,TREF,IRET1)
       IF(IRET1.EQ.0) THEN
       IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
-     &    NOMTE(1:8).EQ.'MEGRDKT'  .OR.
      &    NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
 
          NNO = 3
@@ -94,24 +92,15 @@ C     -----------------
          CALL U2MESK('F','ELEMENTS_14',1,NOMTE(1:8))
       END IF
 
-      GRILLE= LTEATT(' ','GRILLE','OUI')
-      IF (GRILLE) THEN
-        DO 1 INO=1,NNO
-          CALL RCVARC(' ','TEMP','+','NOEU',INO,1,TINF(INO),IRET2)
-          TMOY(INO)=TINF(INO)
-          TSUP(INO)=TINF(INO)
-1       CONTINUE
-      ELSE
-        CALL JEVECH('PNBSP_I','L',JCOU)
-        NBCOU=ZI(JCOU)
-        IMOY=(3*NBCOU+1)/2
-        DO 5 INO=1,NNO
-          CALL RCVARC(' ','TEMP','+','NOEU',INO,1,TINF(INO),IRET2)
-          CALL RCVARC(' ','TEMP','+','NOEU',INO,IMOY,TMOY(INO),IRET3)
-          CALL RCVARC(' ','TEMP','+','NOEU',INO,3*NBCOU,TSUP(INO),IRET4)
-          IRET5 = IRET5 + IRET2+IRET3+IRET4
-5       CONTINUE
-      ENDIF
+      CALL JEVECH('PNBSP_I','L',JCOU)
+      NBCOU=ZI(JCOU)
+      IMOY=(3*NBCOU+1)/2
+      DO 5 INO=1,NNO
+        CALL RCVARC(' ','TEMP','+','NOEU',INO,1,TINF(INO),IRET2)
+        CALL RCVARC(' ','TEMP','+','NOEU',INO,IMOY,TMOY(INO),IRET3)
+        CALL RCVARC(' ','TEMP','+','NOEU',INO,3*NBCOU,TSUP(INO),IRET4)
+        IRET5 = IRET5 + IRET2+IRET3+IRET4
+5     CONTINUE
  
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
@@ -137,7 +126,7 @@ C --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 C     ----------------------------------------------------
 
         CALL DMATHL(ORDI,EPI,EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,IC,
-     &              INDITH,GRILLE,T2EV,T2VE,T1VE)
+     &              INDITH,T2EV,T2VE,T1VE)
         IF (INDITH.EQ.-1) GO TO 20
 
         IF (IRET5.EQ.0) THEN 

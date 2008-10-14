@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,7 +138,11 @@ C
             IVAL(2)=VMXDYN
             IVAL(3)=MCDYN
             IVAL(4)=LTOT*LOIS
-            CALL U2MESI('S','JEVEUX_62',4,IVAL)
+            IF (LDYN .EQ. 1) THEN 
+              CALL U2MESI('S','JEVEUX_62',4,IVAL)
+            ELSE 
+              CALL U2MESI('S','JEVEUX_63',3,IVAL)
+            ENDIF      
           ELSE
             IF ( LDYN .EQ. 1 ) CALL JJLDYN(LTOT)
             GOTO 50

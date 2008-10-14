@@ -1,6 +1,6 @@
       SUBROUTINE TE0077 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       INTEGER            NDIM,NNO,NNOS,KP,NPG,I,J,K,IJ,ITEMPS,IMATTT
       INTEGER            C(6,9),ISE,NSE,NNOP2,NPG2,IPOID2,IVF2,IDFDE2
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE,JGANO
+      LOGICAL            LTEATT
 C
       CALL ELREF1(ELREFE)
       IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
@@ -87,7 +88,7 @@ C
         DO 101 KP=1,NPG
           K=(KP-1)*NNO
           CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
-          IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+          IF ( LTEATT(' ','AXIS','OUI') ) THEN
              R = 0.D0
              DO 102 I=1,NNO
                R = R + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)
@@ -125,7 +126,7 @@ C BOUCLE SUR LES SOUS-ELEMENTS
            DO 201 KP=1,NPG2
              K=(KP-1)*NNO
              CALL DFDM2D ( NNO,KP,IPOID2,IDFDE2,COORSE,DFDX,DFDY,POIDS )
-             IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+             IF ( LTEATT(' ','AXIS','OUI') ) THEN
                 R = 0.D0
                 DO 202 I=1,NNO
                   R = R + COORSE(2*(I-1)+1)*ZR(IVF2+K+I-1)

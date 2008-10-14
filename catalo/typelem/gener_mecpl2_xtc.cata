@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,6 @@ MODE_LOCAL__
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
                                         KIT6     KIT7     KIT8     KIT9     )
-    CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH)
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
@@ -100,7 +99,9 @@ MODE_LOCAL__
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
+    CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
+    EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       )
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
@@ -152,6 +153,22 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FF3D3D    440   IN__   CFORCEF  PFF3D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  STANO_I  PSTANO
+                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_FR3D3D    440   IN__   EFORCER  PFR3D3D  NGEOMER  PGEOMER  NFORCER  PNFORCER STANO_I  PSTANO
+                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_PESA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  STANO_I  PSTANO
+                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_ROTA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CROTATR  PROTATR  STANO_I  PSTANO
+                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MVECTUR  PVECTUR
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC

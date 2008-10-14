@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,16 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),),
     ),
     GROUP_MA_ENRI         =SIMP(statut='o',typ=grma,max=01),
-    RAYON_ENRI            =SIMP(statut='f',typ='R',defaut=0.E+0),
+    TYPE_ENRI_FOND        =SIMP(statut='f',typ='TXM',into=("TOPOLOGIQUE","GEOMETRIQUE"),defaut="TOPOLOGIQUE" ),
+      b_enri_geom         =BLOC(condition = "TYPE_ENRI_FOND == 'GEOMETRIQUE' ",fr="Paramètres de l enrichissement geometrique",
+           RAYON_ENRI     =SIMP(statut='f',typ='R',val_min=0.E+0),
+
+        b_enri_couches    =BLOC(condition = "(RAYON_ENRI == None) ",fr="Paramètres de l enrichissement à n couches",
+           NB_COUCHES     =SIMP(statut='f',typ='I',defaut=4,val_min=1),
+                          ),
+                        
+                          ),
+
     ORIE_FOND             =FACT(statut='f',max=01,
       PFON_INI            =SIMP(statut='o',typ='R',max=03),
       VECT_ORIE           =SIMP(statut='o',typ='R',max=03),

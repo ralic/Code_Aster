@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            KD1,KD2,IJ1,IJ2,NDDL,NVEC,IACCE,IVECT,NDIM
       INTEGER            IVITE,IFREQ,IECIN
+      LOGICAL            LTEATT
 C ......................................................................
 C
       CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFDE,JGANO)
@@ -77,7 +78,7 @@ C
       DO 10 KP=1,NPG2
          K = (KP-1)*NNO
          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-         IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+         IF ( LTEATT(' ','AXIS','OUI') ) THEN
             R = 0.0D0
             DO 20 I=1,NNO
                R = R + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)

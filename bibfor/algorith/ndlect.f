@@ -1,7 +1,7 @@
       SUBROUTINE NDLECT(MODELE,MATE  ,LISCHA,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,10 +62,12 @@ C
       PARAMETER     (UNDEMI = 0.5D0,UN   = 1.D0)
       PARAMETER     (QUATRE = 4.D0 )
 C      
-      INTEGER       NBMODE,NMODAM,NREAVI,NONDP
+      INTEGER       NMODAM,NREAVI,NONDP
+      INTEGER       NBMODS,NBMODA,NBMODP
       INTEGER       IRET,IBID,IRET2,I
       INTEGER       JCHAR,JINF
-      INTEGER       N1,N2,NCHAR,NBMG,NRV,NBEXCI
+      INTEGER       N1,N2,NCHAR,NBMG,NRV
+      INTEGER       NBEXCI,NBGENE
       CHARACTER*24  TSCH ,PSCH ,LOSD ,NOSD ,TFOR ,MUAP    
       INTEGER       JTSCH,JPSCH,JLOSD,JNOSD,JTFOR,JMUAP
       CHARACTER*24  TCHA ,NCHA ,VEOL ,VAOL
@@ -110,9 +112,9 @@ C
       DATA VEONDP,VELAPL    /'&&NDLECT.VEONDP','&&NDLECT.VELAPL'/
       DATA VESSTF           /'&&NDLECT.VESSTF'/
 C
-      DATA DEPENT  /'&&OP0070.DEPENT'/      
-      DATA VITENT  /'&&OP0070.VITENT'/      
-      DATA ACCENT  /'&&OP0070.ACCENT'/               
+      DATA DEPENT           /'&&OP0070.DEPENT'/      
+      DATA VITENT           /'&&OP0070.VITENT'/      
+      DATA ACCENT           /'&&OP0070.ACCENT'/               
 C
 C ----------------------------------------------------------------------
 C
@@ -273,6 +275,8 @@ C --- NOMBRE DE CHARGEMENTS
 C      
       CALL GETFAC('EXCIT',NBEXCI)
       ZI(JNCHA+1-1)   = NBEXCI
+      CALL GETFAC('EXCIT_GENE',NBGENE)
+      ZI(JNCHA+3-1)   = NBGENE
 C
 C --- TEST DE LA PRESENCE DE CHARGES DE TYPE 'ONDE_PLANE'
 C
@@ -299,8 +303,7 @@ C
           ENDIF
   10    CONTINUE
       ENDIF
-      ZK24(JTCHA+2-1) = CHGRFL    
-C           
+      ZK24(JTCHA+2-1) = CHGRFL              
 C
 C --- VECTEURS DE DEPL/VITE/ACCE D'ENTRAINEMENT
 C --- MULTI-APPUI OU IMPE_ABSO OU DIS_CHOC
@@ -330,9 +333,10 @@ C
         IF (IRET.GT.0)THEN
           ZL(JLOSD+5-1)   = .TRUE.
           ZK24(JNOSD+3-1) = SDDYNA(1:15)//'.PRM'
-          CALL MXMOAM(SDDYNA)
+          CALL MXMOAM(SDDYNA,NBMODP)
           CALL GETVID('PROJ_MODAL','MASS_GENE',1,1,1,K8BID,NBMG)
-          ZL(JLOSD+9-1)   = NBMG.NE.0          
+          ZL(JLOSD+9-1)   = NBMG.NE.0  
+          ZI(JNCHA+5-1)   = NBMODP        
         ENDIF  
       ENDIF          
 C
@@ -376,8 +380,8 @@ C
 C
 C --- MODE MULTI-APPUI
 C
-      CALL GETVID(' ','MODE_STAT',1,1,1,K8BID,NBMODE)   
-      LMUAP = NBMODE.GT.0    
+      CALL GETVID(' ','MODE_STAT',1,1,1,K8BID,NBMODS)   
+      LMUAP = NBMODS.GT.0    
       IF (LMUAP) THEN
         CALL NMMUAP(SDDYNA)
       END IF
@@ -389,7 +393,7 @@ C
       LAMMO = NMODAM.GT.0
       IF (LAMMO) THEN
         SDAMMO          = SDDYNA(1:15)//'.AMO'      
-        CALL NMMOAM(SDAMMO)
+        CALL NMMOAM(SDAMMO,NBMODA)
         NREAVI          = 0
 C        
 C --- REACTUALISATION DE L'AMORT A CHAQUE ITERATION ?
@@ -399,10 +403,12 @@ C
       ELSE
         SDAMMO          = ' '
         NREAVI          = 0
+        NBMODA          = 0
       END IF
       ZL(JLOSD+3-1)   = LAMMO
       ZL(JLOSD+12-1)  = NREAVI.GT.0
-      ZK24(JNOSD+2-1) = SDAMMO      
+      ZK24(JNOSD+2-1) = SDAMMO  
+      ZI(JNCHA+4-1)   = NBMODA   
 C  
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... '//

@@ -1,10 +1,9 @@
-      SUBROUTINE DKTEDG ( XYZL, OPTION, PGL, DEPL, EDGL, MULTIC, GRILLE)
+      SUBROUTINE DKTEDG ( XYZL, OPTION, PGL, DEPL, EDGL, MULTIC)
       IMPLICIT   NONE
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), EDGL(*)
-      LOGICAL       GRILLE
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +27,6 @@ C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
 C     IN  OPTION : NOM DE L'OPTION DE CALCUL
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
 C     IN  DEPL   : DEPLACEMENTS
-C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
-C          3 POUR UN MATERIAU ORTHOTROPE (MEGRDKT / MEGRDKQ)
 C     OUT EDGL   : EFFORTS OU DEFORMATIONS GENERALISES AUX NOEUDS DANS
 C                  LE REPERE INTRINSEQUE A L'ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -73,10 +70,6 @@ C
       END IF
 C
       DISTN = 0.D0
-      IF (GRILLE) THEN
-        CALL JEVECH('PCACOQU','L',JCOQU)
-        DISTN = ZR(JCOQU+3)
-      END IF
 C
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
@@ -84,7 +77,7 @@ C
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
       CALL GTRIA3 ( XYZL, CARAT3 )
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,GRILLE,
+      CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
      +                                         ELASCO,T2EV,T2VE,T1VE)
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 20 J = 1,3
@@ -105,16 +98,10 @@ C     ------ CALCUL DE LA MATRICE BM -----------------------------------
           BDM(I) = BDM(I) + BM(I,J)*DEPM(J)
    40   CONTINUE
    50 CONTINUE
-      IF (GRILLE) THEN
-        DO 60 I = 1,2
-          VT(I) = 0.D0
-   60   CONTINUE
-      ELSE
 C     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
-        CALL DSXHFT ( DF, CARAT3(9), HFT2 )
+      CALL DSXHFT ( DF, CARAT3(9), HFT2 )
 C     ------ VT = HFT2.TKT.DEPF ---------------------------------------
-        CALL DKTTXY ( CARAT3(16), CARAT3(13), HFT2, DEPF, VT )
-      END IF
+      CALL DKTTXY ( CARAT3(16), CARAT3(13), HFT2, DEPF, VT )
       IF (OPTION(1:4).EQ.'DEGE') THEN
         DO 110 IE = 1,NE
           QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
@@ -143,18 +130,16 @@ C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
           EDGL(8+8* (IE-1)) = DCIS(2)/2.D0
   110   CONTINUE
       ELSE
-        IF (.NOT.GRILLE) THEN
-          DO 120 K = 1,3
+        DO 120 K = 1,3
             VM(K) = 0.D0
             VFM(K) = 0.D0
-  120     CONTINUE
-          DO 140 I = 1,3
-            DO 130 J = 1,3
-              VM(I) = VM(I) + DM(I,J)*BDM(J)
-              VFM(I) = VFM(I) + DMF(I,J)*BDM(J)
-  130       CONTINUE
-  140     CONTINUE
-        END IF
+  120   CONTINUE
+        DO 140 I = 1,3
+          DO 130 J = 1,3
+            VM(I) = VM(I) + DM(I,J)*BDM(J)
+            VFM(I) = VFM(I) + DMF(I,J)*BDM(J)
+  130     CONTINUE
+  140   CONTINUE
         DO 250 IE = 1,NE
           QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
           ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
@@ -171,32 +156,16 @@ C           ------ VF = DF.BF.DEPF , VMF = DMF.BF.DEPF ----------------
               BDF(I) = BDF(I) + BF(I,J)*DEPF(J)
   160       CONTINUE
   170     CONTINUE
-          IF (GRILLE) THEN
-            DO 180 I = 1,3
-              EPS(I) = BDM(I) + DISTN*BDF(I)
-  180       CONTINUE
-            DO 200 I = 1,3
-              DO 190 J = 1,3
-                VMF(I) = VMF(I) + DM(I,J)*EPS(J)
-                 VF(I) =  VF(I) + DF(I,J)*BDF(J)
-  190         CONTINUE
-  200       CONTINUE
-            DO 210 I = 1,3
-              EDGL(I+  8*(IE-1)) = VMF(I)
-              EDGL(I+3+8*(IE-1)) =  VF(I)
-  210       CONTINUE
-          ELSE
-            DO 230 I = 1,3
-              DO 220 J = 1,3
-                 VF(I) =  VF(I) +  DF(I,J)*BDF(J)
-                VMF(I) = VMF(I) + DMF(I,J)*BDF(J)
-  220         CONTINUE
-  230       CONTINUE
-            DO 240 I = 1,3
-              EDGL(I+  8*(IE-1)) = VM(I) + VMF(I)
-              EDGL(I+3+8*(IE-1)) = VF(I) + VFM(I)
-  240       CONTINUE
-          END IF
+          DO 230 I = 1,3
+            DO 220 J = 1,3
+              VF(I) =  VF(I) +  DF(I,J)*BDF(J)
+              VMF(I) = VMF(I) + DMF(I,J)*BDF(J)
+  220       CONTINUE
+  230     CONTINUE
+          DO 240 I = 1,3
+            EDGL(I+  8*(IE-1)) = VM(I) + VMF(I)
+            EDGL(I+3+8*(IE-1)) = VF(I) + VFM(I)
+  240     CONTINUE
           EDGL(7+8*(IE-1)) = VT(1)
           EDGL(8+8*(IE-1)) = VT(2)
   250   CONTINUE

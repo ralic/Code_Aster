@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       CHARACTER*2        CODRET
       CHARACTER*8        ELREFE
       CHARACTER*16       PHENOM
+      LOGICAL            LTEATT
 C     ------------------------------------------------------------------
 C
       CALL ELREF1(ELREFE)
@@ -108,7 +109,7 @@ C     --- BOUCLE SUR LES POINTS DE GAUSS ---
       DO 100 KP = 1,NPG
          K = (KP-1) * NNO
          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
-         IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+         IF ( LTEATT(' ','AXIS','OUI') ) THEN
             R = ZERO
             DO 102 I = 1,NNO
                 R = R + ZR(IGEOM-2+2*I)*ZR(IVF+K+I-1)
@@ -135,7 +136,7 @@ C           --- INERTIE ---
  104     CONTINUE
  100  CONTINUE
 C
-      IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+         IF ( LTEATT(' ','AXIS','OUI') ) THEN
          XG = ZERO
          YG = ZR(LCASTR+2) / VOLUME
          ZR(LCASTR)   = DEPI * VOLUME * RHO

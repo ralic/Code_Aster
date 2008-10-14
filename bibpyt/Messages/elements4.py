@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF elements4 Messages  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,10 +92,6 @@ cata_msg = {
 
 36 : _("""
  pr() sous-dimensionne
-"""),
-
-37 : _("""
- nive_couche ne peut etre que "moy"
 """),
 
 38 : _("""

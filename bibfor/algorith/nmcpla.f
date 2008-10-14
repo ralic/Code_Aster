@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,13 +172,9 @@ C
       IF (CMP2(1)(1:5) .EQ. 'ELAS '            .OR.
      &    CMP2(1)(1:9) .EQ. 'VMIS_ISOT'        .OR.
      &    CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE' ) THEN
-          IF ( TYPMOD(2)(1:7) .EQ. 'MEGRDKT') THEN
-              CALL U2MESK('F','ALGORITH4_50',1,CMP2(1))
-          ELSE
-            IF (CMP2(1)(1:5) .EQ. 'ELAS ')          NVI2 = 1
-            IF (CMP2(1)(1:9) .EQ. 'VMIS_ISOT')      NVI2 = 2
-            IF (CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE') NVI2 = 2
-         ENDIF
+          IF (CMP2(1)(1:5) .EQ. 'ELAS ')          NVI2 = 1
+          IF (CMP2(1)(1:9) .EQ. 'VMIS_ISOT')      NVI2 = 2
+          IF (CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE') NVI2 = 2
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
      &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.

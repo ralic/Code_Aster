@@ -3,7 +3,7 @@
       REAL*8        XYZL(3,1),PGL(3,1),SIGT(1)
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8   DF(3,3),DM(3,3),DMF(3,3)
       REAL*8   TMOYPG,TSUPPG,TINFPG
       REAL*8   N(4),T2EV(4),T2VE(4),T1VE(9)
-      LOGICAL GRILLE,LTEATT
       CHARACTER*2   CODRET(56)
       CHARACTER*4   FAMI
       CHARACTER*10  PHENOM
@@ -78,8 +77,6 @@ C     ------------------------------------------
 C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
 C --- DE L'EPAISSEUR DE LA COQUE
 C     --------------------------
-
-      GRILLE= LTEATT(' ','GRILLE','OUI')
 C
       CALL JEVECH('PCACOQU','L',JCARA)
       EPAIS = ZR(JCARA)
@@ -92,21 +89,14 @@ C --- MEMBRANE, MEMBRANE-FLEXION
 C     ----------------------------------------------------
 
       CALL DXMATH('RIGI',EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,INDITH,
-     &                               GRILLE,T2EV,T2VE,T1VE,NPG)
+     &                               T2EV,T2VE,T1VE,NPG)
       IF (INDITH.EQ.-1) GO TO 30
 
-C SI ON EST SUR UNE GRILLE ON RECUPERE LA TEMPERATURE MOYENNE SUR LA
-C PREMIERE COUCHE ( CAR ELLE EST CONSTANTE SUR L EPAISSEUR )
-      IF (GRILLE) THEN
-        NBCOU=1
-        IPG=1
-        NPGH=1
-      ELSE
-        CALL JEVECH('PNBSP_I','L',JCOU)
-        NBCOU=ZI(JCOU)
-        IPG=(3*NBCOU+1)/2
-        NPGH=3
-      ENDIF
+      CALL JEVECH('PNBSP_I','L',JCOU)
+      NBCOU=ZI(JCOU)
+      IPG=(3*NBCOU+1)/2
+      NPGH=3
+
 C --- BOUCLE SUR LES POINTS D'INTEGRATION
 C     -----------------------------------
       DO 20 IGAU = 1,NPG

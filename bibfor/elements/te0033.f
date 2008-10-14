@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +58,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        DEPGR(24), DEPGI(24), SIGMRL(32), SIGMIL(32)
       REAL*8        EFFGT(32), SIGTOT(24)
       REAL*8        T2EV(4), T2VE(4), T1VE(9)
-      LOGICAL       GRILLE,LTEATT
+      LOGICAL       LTEATT
       CHARACTER*2   CODRET,VAL
       CHARACTER*4   FAMI
       CHARACTER*8   NOMPU(2),NOMRES
@@ -82,8 +82,6 @@ CC OPTION DE CALCUL INVALIDE
         CALL ASSERT(.FALSE.)
       END IF
       ZERO   = 0.0D0
-
-      GRILLE= LTEATT(' ','GRILLE','OUI')
 
       DO 10 I = 1,32
         EFFGT(I) = ZERO
@@ -147,10 +145,9 @@ C               ----------------------------
         INIV = ZI(JNUMCO+1)
 
         IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     &      NOMTE(1:8).EQ.'MEDKTG3 ' .OR.
-     &      NOMTE(1:8).EQ.'MEGRDKT ') THEN
+     &      NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
           CALL DKTCOD(XYZL,OPTION,PGL,IC,INIV,DEPL,SIGTOT,
-     &                MULTIC,GRILLE)
+     &                MULTIC)
         ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ') THEN
           CALL DSTCOD(XYZL,OPTION,PGL,IC,INIV,DEPL,SIGTOT)
         ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 '.OR.
@@ -188,10 +185,7 @@ C
            IF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
      &          NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
               CALL DKTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM),
-     &                    MULTIC,GRILLE)
-           ELSE IF (NOMTE(1:8).EQ.'MEGRDKT ' ) THEN
-              CALL DKTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,1,DEPL,ZR(JSIGM),
-     &                    MULTIC,GRILLE)
+     &                    MULTIC)
            ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
               CALL DSTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
      &                    ZR(JSIGM),NPG)
@@ -212,11 +206,7 @@ C
 C       EXCEPTION POUR LES MULTICOUCHES COMPÖSITES : ON STOCKE DANS UNE
 C       SEULE COUCHE LES CONTRAINTES HOMOGENEISEES
 C
-            IF ((.NOT.GRILLE)) THEN
-               EXCEN = ZR(JCARA+5-1)
-            ELSE
-               EXCEN = ZR(JCARA+4-1)
-            ENDIF
+            EXCEN = ZR(JCARA+5-1)
             CALL JEVECH('PNBSP_I','L',JNBSPI)
             NBCOU = ZI(JNBSPI)
             IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
@@ -303,10 +293,8 @@ C               ----------------------------
 
 
         IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     &      NOMTE(1:8).EQ.'MEGRDKT ' .OR.
-     &      NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
-          CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFGT,MULTIC,GRILLE)
-
+     &     NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
+          CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFGT,MULTIC)
         ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
           CALL DSTEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
         ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.

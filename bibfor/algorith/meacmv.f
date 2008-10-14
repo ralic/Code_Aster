@@ -5,7 +5,7 @@
      &                    TYPESE, STYPSE, NOPASE, VAPRIN, REPRIN,
      &                    BASE, TPS1, TPS2, TPS3, COMPOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -205,7 +205,7 @@ C          SIMPLIFIER LA PROGRAMMATION.
      &                  K24BID, K24BID,CHTIME, BLAN24, CHHARM,
      &                  CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
      &                  TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
-     &                  CHAMEL, LIGRMO, BASE, CHVARC, CHVREF,
+     &                  CHAMEL, K24BID, LIGRMO, BASE, CHVARC, CHVREF,
      &                  K24BID, K24BID,
      &                  K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
 
@@ -213,7 +213,7 @@ C          SIMPLIFIER LA PROGRAMMATION.
      &                  K24BID, K24BID,CHTIME, BLAN24, CHHARM,
      &                  CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
      &                  TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
-     &                  CHAMEL, LIGRMO, BASE, CHVARC, CHVREF,
+     &                  CHAMEL, K24BID, LIGRMO, BASE, CHVARC, CHVREF,
      &                  K24BID, K24BID,
      &                  K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
 

@@ -1,7 +1,6 @@
-      SUBROUTINE DKTRIG(NOMTE,XYZL,OPTION,PGL,RIG,ENER,MULTIC,GRILLE)
+      SUBROUTINE DKTRIG(NOMTE,XYZL,OPTION,PGL,RIG,ENER,MULTIC)
       IMPLICIT  NONE
       REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
-      LOGICAL       GRILLE
       CHARACTER*16  OPTION , NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,14 +20,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
 C     IN  OPTION : OPTION RIGI_MECA, RIGI_MECA_SENS* OU EPOT_ELEM_DEPL
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL/LOCAL
-C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
 C     OUT RIG    : MATRICE DE RIGIDITE
 C     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM_DEPL)
 C     ------------------------------------------------------------------
@@ -50,7 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  MULTIC, I, INT, JCOQU, JDEPG
-      REAL*8   WGT,AIRE,DISTN,WGT0
+      REAL*8   WGT,AIRE
       REAL*8   DM(9),DF(9),DMF(9),DF2(9),DMF2(9),DC(4),DCI(4)
       REAL*8   DMC(3,2),DFC(3,2)
       REAL*8   BF(3,9),BM(3,6)
@@ -66,13 +64,7 @@ C
      +                                         IVF,IDFDX,IDFD2,JGANO)
 C
       CALL JEVECH('PCACOQU','L',JCOQU)
-C
-      IF ( GRILLE ) THEN
-         DISTN = ZR(JCOQU+3)
-         CTOR = ZR(JCOQU+4)
-      ELSE
-         CTOR = ZR(JCOQU+3)
-      ENDIF
+      CTOR = ZR(JCOQU+3)
 C
 C     ------ MISE A ZERO DES MATRICES : FLEX ET MEFL -------------------
       CALL R8INIR(81,0.D0,FLEX,1)
@@ -85,7 +77,7 @@ C
 C     CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION
 C     MEMBRANE ET CISAILLEMENT INVERSEE
       CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                    GRILLE,ELASCO,T2EV,T2VE,T1VE)
+     +                                    ELASCO,T2EV,T2VE,T1VE)
 C     ------------------------------------------------------------------
 C     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
 C     ------------------------------------------------------------------
@@ -120,16 +112,6 @@ C        ----- CALCUL DU PRODUIT BMT.DMF.BF ------------------------
           CALL UTCTAB('CUMU',3,9,6,DMF2,BF,BM,XAB1,MEFL)
         END IF
 C
-        IF ( GRILLE ) THEN
-          WGT0 = DISTN*DISTN*WGT
-          CALL DCOPY(9,DM,1,DF2,1)
-          CALL DSCAL(9,WGT0,DF2,1)
-          CALL UTBTAB('CUMU',3,9,DF2,BF,XAB1,FLEX)
-          WGT0 = DISTN*WGT
-          CALL DCOPY(9,DM,1,DMF2,1)
-          CALL DSCAL(9,WGT0,DMF2,1)
-          CALL UTCTAB('CUMU',3,9,6,DMF2,BF,BM,XAB1,MEFL)
-        END IF
    10 CONTINUE
 C
       IF ( OPTION.EQ.'RIGI_MECA'      .OR.

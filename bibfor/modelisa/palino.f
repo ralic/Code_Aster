@@ -1,10 +1,10 @@
       SUBROUTINE PALINO(NOMAZ,MCFACT,MCGRNO,MCNO,IOCC,NOML)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)     NOMAZ,MCFACT,MCGRNO,MCNO     ,NOML
       INTEGER                                   IOCC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-C BUT : LECTURE DE LA LISTE DE NOEUDS DESCRITS PAR LA SEQUENCE :
+C BUT : LECTURE DE LA LISTE DE NOEUDS DECRITS PAR LA SEQUENCE :
 C       MCFAC : ( MCGRNO : LISTE DE GROUP_NO ,
 C                 MCNO   : LISTE DE NOEUD   , ....)
 C       CREATION D'UN OBJET DE NOM : NOML  OJB V V I DIM=NBNO+1
@@ -51,110 +51,35 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER      NGR,NNO,IBID
-      CHARACTER*8  K8BID,NOMA
-      CHARACTER*16 MCF,MCGN,MCN
-      CHARACTER*24 LISTE,LNO,LGRNO,LDGRNO,NOMAGR,NOMANO
-      CHARACTER*24 VALK(4)
-C --- DEBUT
+      CHARACTER*8  NOMA
+      CHARACTER*16 MCF,TYMOCL(2),LIMOCL(2)
+      CHARACTER*24 LISTE1
+      INTEGER J1, J2, N1, K,IMA,JTYMA
+
       CALL JEMARQ()
       NOMA = NOMAZ
       MCF = MCFACT
-      MCGN = MCGRNO
-      MCN = MCNO
-      NOMANO = NOMA//'.NOMNOE'
-      NOMAGR = NOMA//'.GROUPENO'
-      LISTE = NOML
-      CALL JEEXIN(LISTE,IRET)
-      IF (IRET.NE.0) CALL JEDETR(LISTE)
-      LGRNO = '&&PALINO.LISTEGRNO'
-      LDGRNO = '&&PALINO.DIMGRNO'
-      LNO   = '&&PALINO.LISTENO'
-      NBNOGR = 0
-      CALL GETVID(MCF,MCGN,IOCC,1,0,K8BID,NGR)
-      IER = 0
-      IF (NGR.LT.0) THEN
-        NGR = -NGR
-        CALL WKVECT(LGRNO,'V V K8',NGR,IGRNO)
-        CALL WKVECT(LDGRNO,'V V I',NGR,IDN)
-        CALL GETVID(MCF,MCGN,IOCC,1,NGR,ZK8(IGRNO),IBID)
-        DO 1 I = 1,NGR
-          CALL JENONU(JEXNOM(NOMAGR,ZK8(IGRNO-1+I)),IRET)
-          IF (IRET .EQ. 0) THEN
-             VALK(1) = MCF
-             VALK(2) = MCGN
-             VALK(3) = ZK8(IGRNO-1+I)
-             VALK(4) = NOMA
-             CALL U2MESK('E','MODELISA6_13', 4 ,VALK)
-            IER = IER + 1
-          ELSE
-            CALL JELIRA(JEXNOM(NOMAGR,ZK8(IGRNO-1+I)),'LONMAX',N,K8BID)
-            ZI(IDN-1+I) = N
-            NBNOGR = NBNOGR+N
-          ENDIF
-1       CONTINUE
+      TYMOCL(1)='GROUP_NO'
+      LIMOCL(1)= MCGRNO
+      TYMOCL(2)='NOEUD'
+      LIMOCL(2)= MCNO
+
+      LISTE1='&&PALINO.LISTE'
+
+      CALL RELIEM(' ',NOMA,'NU_NOEUD',MCF,IOCC,2,LIMOCL,TYMOCL,
+     &                  LISTE1,N1)
+      CALL JEDETR(NOML)
+      CALL WKVECT(NOML,'V V I',N1+1,J2)
+      ZI(J2)=N1
+      IF (N1.GT.0) THEN
+        CALL JEVEUO(LISTE1,'L',J1)
+        DO 1, K=1,N1
+           ZI(J2+K)=ZI(J1-1+K)
+ 1      CONTINUE
       ENDIF
-      IF (IER.NE.0) THEN
-         VALK(1) = MCF
-         VALK(2) = MCGN
-         CALL U2MESK('F','MODELISA6_14', 2 ,VALK)
-      ENDIF
-      LNO   = '&&PALINO.LISTENO'
-      CALL GETVID(MCF,MCN,IOCC,1,0,K8BID,NNO)
-      NNO = -NNO
-      NBNO = NBNOGR+NNO
-      CALL WKVECT(LISTE,'V V I',NBNO+1,ILISTE)
-      ZI(ILISTE) = NBNO
-      IF (NBNO.EQ.0) GOTO 999
-      INO = 0
-      IF (NBNOGR.GT.0) THEN
-        DO 2 I = 1,NGR
-          CALL JEVEUO(JEXNOM(NOMAGR,ZK8(IGRNO-1+I)),'L',JGR)
-          DO 3 J = 1,ZI(IDN+I-1)
-            INO = INO +1
-            NUNO = ZI(JGR-1+J)
-            ZI(ILISTE+INO) = NUNO
-3         CONTINUE
-2       CONTINUE
-        CALL JEDETR(LGRNO)
-        CALL JEDETR(LDGRNO)
-      ENDIF
-      IF (NNO.GT.0) THEN
-        CALL WKVECT(LNO,'V V K8',NNO,ILNO)
-        CALL GETVID(MCF,MCN,IOCC,1,NNO,ZK8(ILNO),IBID)
-        DO 4 J = 1,NNO
-          INO = INO +1
-          CALL JENONU(JEXNOM(NOMANO,ZK8(ILNO+J-1)),NUNO)
-          IF (NUNO.EQ.0) THEN
-            IER = IER + 1
-            CALL U2MESK('E','MODELISA6_16',1,ZK8(ILNO))
-          ENDIF
-          ZI(ILISTE+INO) = NUNO
-4       CONTINUE
-        CALL JEDETR(LNO)
-      ENDIF
-      IF (IER.NE.0) THEN
-        VALK(1) = MCF
-        VALK(2) = MCN
-        CALL U2MESK('F','MODELISA6_14', 2 ,VALK)
-      ENDIF
-C
-C --- ON ELIMINE LES REPETITIONS DE NOEUDS
-C
-      L = 0
-      DO 5 I = 1, NBNO
-        L = L + 1
-        DO 6 J = 1, L-1
-          IF (ZI(ILISTE+J).EQ.ZI(ILISTE+I)) THEN
-            L = L-1
-            GOTO 5
-          ENDIF
-6       CONTINUE
-        ZI(ILISTE+L) = ZI(ILISTE+I)
-5     CONTINUE
-      ZI(ILISTE) = L
-999   CONTINUE
+
+
+      CALL JEDETR(LISTE1)
       CALL JEDEMA()
       END

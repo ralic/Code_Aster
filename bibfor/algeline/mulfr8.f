@@ -7,7 +7,7 @@
       LOGICAL PILMEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2007   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -209,6 +209,11 @@ C    -- SUR LES MACHINES I4, ON MODIFIE IT() POUR PARLER EN R8 :
 C     ON RESERVE LES PLACES DONT ON AURA BESOIN DANS LA FACTORISATION
 C     (NOMPR1 ET NOMPR2) AVANT D'ALLOUER LES POINTEURS ENTIERS,
 C     AFIN QU ILS NE SE PLACENT PAS AU MILIEU DUNE GRANDE ZONE.
+C ######################################################################
+C ### GLUTE
+      PILMEM=.TRUE.
+C ### GLUTE
+C ######################################################################
       IF(PILMEM) THEN
 C     ON ALLOUE LA PILE
          IF (NIV.EQ.2)       WRITE (IFM,*) ' => PILE TOUT EN MEMOIRE '

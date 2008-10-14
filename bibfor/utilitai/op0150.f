@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -490,8 +490,7 @@ C  REMPLISSAGE DU .VALE DU CHAM_ELEM DE PRES_R
               IF (NOMTE.EQ.'MECA_FACE3' .OR. NOMTE.EQ.'MECA_FACE4' .OR.
      &            NOMTE.EQ.'MECA_FACE6' .OR. NOMTE.EQ.'MECA_FACE8' .OR.
      &            NOMTE.EQ.'MECA_FACE9' .OR. NOMTE.EQ.'MEQ4QU4' .OR.
-     &            NOMTE.EQ.'MEDSQU4' .OR. NOMTE.EQ.'MEDSTR3' .OR.
-     &            NOMTE.EQ.'MEGRDKT') THEN
+     &            NOMTE.EQ.'MEDSQU4' .OR. NOMTE.EQ.'MEDSTR3' ) THEN
                 NBELGR = NBELEM(LIGRMO,IGR)
                 CALL JEVEUO(JEXNUM(NOLIEL,IGR),'L',LIEL)
                 DO 140 IEL = 1,NBELGR

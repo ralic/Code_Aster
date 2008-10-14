@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -297,6 +297,15 @@ cata_msg = {
  une zone mémoire de longueur %(i1)d (octets), on dépasse la limite maximum 
  fixée à %(i2)d (octets) et on occupe déjà %(i3)d (octets).
  La dernière opération de libération mémoire a permis de récupérer %(i4)d (octets). 
+
+"""),
+
+63 : _("""
+ Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer 
+ une zone mémoire de longueur %(i1)d (octets), on dépasse la limite maximum 
+ fixée à %(i2)d (octets) et on occupe déjà %(i3)d (octets).
+ Le mécanisme de libération mémoire n'a pas pu être mis en oeuvre dans cette 
+ configuration. 
 
 """),
 

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 06/05/2008   AUTEUR KHAM M.KHAM 
+C MODIF MODELISA  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -54,7 +54,7 @@ C -----  VARIABLES LOCALES
      &              JNOMA, JJJ, JGRO, N1, N2, N3, NOEUD, IOCC, NGV,
      &              IER, NDIM, IGR, NG, NBMAIL, NORIT, NORIEN, NTRAIT,
      &              JJV,NBMAVO, JMAVO, NBMATO, IMA, NBMAVI, JMAVI, K,
-     &              ZERO, JGV, NCF3
+     &              JGV, NCF3, NGS, JGS, NBMASU, JMASU
       REAL*8        VECT(3), R8B, PREC, ARMIN
       COMPLEX*16    CBID
       LOGICAL       REORIE, ORIVEC
@@ -73,7 +73,6 @@ C --- INITIALISATIONS :
 C     ---------------
 C
       NORIT  = 0
-      ZERO   = 0
       REORIE = .TRUE.
 C
       MOFA2D = 'ORIE_PEAU_2D'
@@ -140,6 +139,49 @@ C
          CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA',
      &                                     IOCC, 1, NG, ZK8(JJJ), NG )
+C        PRESENCE DE GROUP_MA_SURF ?
+C        ---------------------------
+         CALL GETVID(MOFA2D,'GROUP_MA_SURF',IOCC, 1, 0,K8B, NGS )
+         IF(NGS.NE.0)THEN
+           NGS = -NGS
+           CALL WKVECT ( '&&ORILGM.WORK2', 'V V K8', NGS, JGS )
+           CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA_SURF',
+     &                                     IOCC, 1, NGS, ZK8(JGS), NGS )
+           CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMATO,
+     &                 K8B,IRET)
+           CALL WKVECT ('&&ORILGM.WORK3','V V I', NBMATO, JJV )
+           DO 101 IMA = 1, NBMATO
+              ZI(JJV+IMA-1)=0
+ 101       CONTINUE
+           DO 102 IGR = 1, NGS
+             GMAT = ZK8(JGS+IGR-1)
+             CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAVI, K8B )
+             CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JMAVI )
+             DO 103 IMA=1,NBMAVI
+                ZI(JJV+ZI(JMAVI+IMA-1)-1)=1
+ 103         CONTINUE
+ 102       CONTINUE
+C          NOMBRE DE MAILLES 'VOLUMIQUES' (SANS DOUBLON) : NBMASU
+           NBMASU=0
+           DO 104 IMA = 1, NBMATO
+             NBMASU=NBMASU+ZI(JJV+IMA-1)
+ 104       CONTINUE
+C          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMASU)
+           CALL WKVECT('&&ORILGM.GROUP_MA_SURF','V V I',NBMASU,JMASU)
+           K=0
+           DO 105 IMA = 1, NBMATO
+             IF(ZI(JJV+IMA-1).EQ.1) THEN
+                   K=K+1
+                   ZI(JMASU+K-1)=IMA
+             ENDIF
+ 105       CONTINUE
+           CALL JEDETR('&&ORILGM.WORK3')
+           CALL JEDETR('&&ORILGM.WORK2')
+         ELSE
+           NBMASU=0
+           CALL WKVECT('&&ORILGM.GROUP_MA_SURF','V V I',1,JMASU)
+         ENDIF
+C
          DO 110 IGR = 1, NG
             GMAT = ZK8(JJJ+IGR-1)
             CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL, K8B )
@@ -147,12 +189,13 @@ C
             WRITE(IFM,1000) GMAT, NBMAIL
             NORIEN=0
             CALL ORILMA ( NOMA, NDIM,  ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
-     &                    REORIE, PREC, ZERO, IBID )
+     &                    REORIE, PREC, NBMASU, ZI(JMASU) )
             NORIT = NORIT + NORIEN
             WRITE(IFM,1100) NORIEN
             IF (NTRAIT.NE.0) WRITE(IFM,1110) NTRAIT
  110     CONTINUE
          CALL JEDETR ( '&&ORILGM.WORK' )
+         CALL JEDETR('&&ORILGM.GROUP_MA_SURF')
  100  CONTINUE
 C
 C --- TRAITEMENT DE 'ORIE_PEAU_3D' :

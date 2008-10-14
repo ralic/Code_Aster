@@ -1,6 +1,6 @@
        SUBROUTINE TE0299(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/12/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
       INTEGER  IGEOM,ITHET,IROTA,IPESA,IFIC,IDEPL,IRET
       INTEGER  IMATE,IFORC,IFORF,IFOND,ITEMPS,K,I,J,KK,L,NDIM
 C
-      LOGICAL  FONC,AXI
+      LOGICAL  FONC,AXI,LTEATT
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -74,6 +74,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
+
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CALL JEMARQ()
@@ -84,7 +85,7 @@ C
 C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
 C
       AXI = .FALSE.
-      IF ( NOMTE(3:4) .EQ. 'AX')  AXI = .TRUE.
+      IF ( LTEATT(' ','AXIS','OUI'))  AXI = .TRUE.
       GUV1   = 0.D0
       GUV2   = 0.D0
       GUV3   = 0.D0
@@ -242,7 +243,7 @@ C
         NU    = VALRES(2)
         CFORM  = (1.D0+NU)/(SQRT(DEPI)*E)
         C3 = E/(2.D0*(1.D0+NU))
-        IF ( NOMTE(3:4) .EQ. 'DP'.OR. NOMTE(3:4) .EQ. 'AX' ) THEN
+        IF ( NOMTE(3:4) .EQ. 'DP'.OR. LTEATT(' ','AXIS','OUI') ) THEN
           C1 = E*(1.D0-NU)/((1.D0+NU)*(1.D0-2.D0*NU))
           C2 = NU/(1.D0-NU)*C1
           CK = 3.D0-4.D0*NU

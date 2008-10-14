@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPM ( CUNIT , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,13 +73,15 @@ C ----------------------------------------------------------------------
       CHARACTER*8      NOM8
       CHARACTER*1      CLA,CGENR
       INTEGER          ICL , K
-      REAL*8           VUSTA,VUDYN
+      REAL*8           VUSTA,VUDYN,VXSTA,VXDYN
 C DEB ------------------------------------------------------------------
 C
       JULIST = IUNIFI ( CUNIT )
       IF ( JULIST .EQ. 0 ) GOTO 9999
       VUSTA = 0.D0
       VUDYN = 0.D0
+      VXSTA = 0.D0
+      VXDYN = 0.D0
       WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
       WRITE (JULIST,'(A,/,2A)' ) '---- SEGMENTATION MEMOIRE',
      +                   '---- ',CMESS(1:MIN(72,LEN(CMESS)))
@@ -131,6 +133,8 @@ C
           ENDIF
           IF ( ISD .EQ. 2 ) THEN  
             VUSTA = VUSTA + (IS - ID)
+          ELSE
+            VXSTA = VXSTA + (IS - ID)
           ENDIF
           WRITE(JULIST,
      +        '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
@@ -161,6 +165,7 @@ C
           IADYN = IADM(JIADM(IC)+2*J  )
           CGENR = GENR(JGENR(IC)+J)
           NOM32 = RNOM(JRNOM(IC)+J)
+          IF ( NOM32 .EQ. ' ' .OR. NOM32 .EQ. '?' ) GOTO 205
           IF (IADYN .NE. 0) THEN
             IDM   = IADMI - 4
             IM = IMARQ(JMARQ(IC)+2*J-1)
@@ -175,6 +180,8 @@ C
      +        CLA,IDCO,J,IM,IADYN,KSTAT(ISD:ISD),IL,KSTAT(ISF:ISF),NOM32
             IF ( ISD .EQ. 2 ) THEN  
               VUDYN = VUDYN + ISZON(JISZON+IDM) - IDM + 1
+            ELSE
+              VXDYN = VXDYN + ISZON(JISZON+IDM) - IDM + 1     
             ENDIF
           ENDIF
           IF (CGENR .EQ. 'X' .AND. IADMI .NE. 0) THEN
@@ -205,6 +212,8 @@ C
      +              KSTAT(ISF:ISF),NOM32
                     IF ( ISD .EQ. 2 ) THEN  
                       VUDYN = VUDYN + ISZON(JISZON+IDM) - IDM + 1
+                    ELSE
+                      VXDYN = VXDYN + ISZON(JISZON+IDM) - IDM + 1     
                     ENDIF
                   ENDIF
  210            CONTINUE
@@ -222,7 +231,20 @@ C
      +                ' Mo'
       WRITE(JULIST,60) ' ALLOCATION TOTALE    :',(VUSTA+VUDYN)*LOIS
      +                /(1024*1024),' Mo',(VUSTA+VUDYN)*LOIS,' o '
-      
+      WRITE(JULIST,*) '  '
+      WRITE(JULIST,*) ' CUMUL DES LONGUEURS DES SEGMENTS DECHARGEABLES'
+     +                //' XA/XD'
+      WRITE(JULIST,60) ' ALLOCATION STATIQUE  :',VXSTA*LOIS/(1024*1024),
+     +                ' Mo'
+      WRITE(JULIST,60) ' ALLOCATION DYNAMIQUE :',VXDYN*LOIS/(1024*1024),
+     +                ' Mo'
+      WRITE(JULIST,60) ' ALLOCATION TOTALE    :',(VXSTA+VXDYN)*LOIS
+     +                /(1024*1024),' Mo',(VXSTA+VXDYN)*LOIS,' o '
+      WRITE(JULIST,*) '  '
+      WRITE(JULIST,60) ' ESPACE MEMOIRE JEVEUX OCCUPE    :',
+     +  (VUSTA+VUDYN+VXSTA+VXDYN)*LOIS/(1024*1024),' Mo',
+     +  (VUSTA+VUDYN+VXSTA+VXDYN)*LOIS,' o '
+     
  60   FORMAT(A,2(1PE12.2,A3))
  9999 CONTINUE
 C FIN ------------------------------------------------------------------

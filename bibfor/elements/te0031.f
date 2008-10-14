@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +65,7 @@ C
       INTEGER      JMATE,JGEOM,JMATR,JENER,I,JCARA
       INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP, N1, NI, N2
       INTEGER      ICOU, NBCOU,JNBSPI, IRET1, VALI(2)
-      LOGICAL      GRILLE, LCOELA
+      LOGICAL      LCOELA
       CHARACTER*2  CODRE2(33),CODRE1,VAL
       CHARACTER*3  NUM
       CHARACTER*8  NOMRES
@@ -144,10 +144,6 @@ C       ----------------------------------
         ENDIF
       ENDIF
 C
-
-      GRILLE = .FALSE.
-      IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
-C
       IF ( OPTION.NE.'VARI_ELNO_ELGA' ) THEN
          CALL JEVECH('PGEOMER','L',JGEOM)
          IF (NNO.EQ.3) THEN
@@ -164,8 +160,8 @@ C
      &     OPTION.EQ.'EPOT_ELEM_DEPL' ) THEN
 C     --------------------------------------
 C
-        IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
-          CALL DKTRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,GRILLE)
+        IF (NOMTE.EQ.'MEDKTR3') THEN
+          CALL DKTRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER,MULTIC)
         ELSE IF (NOMTE.EQ.'MEDSTR3') THEN
           CALL DSTRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         ELSE IF (NOMTE.EQ.'MEDKQU4') THEN
@@ -231,8 +227,8 @@ C
      &         OPTION.EQ.'M_GAMMA'        .OR.
      &         OPTION.EQ.'ECIN_ELEM_DEPL' ) THEN
 C     ------------------------------------------
-        IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
-          CALL DKTMAS ( XYZL, OPTION, PGL, MATLOC, ENER, MULTIC, GRILLE)
+        IF (NOMTE.EQ.'MEDKTR3') THEN
+          CALL DKTMAS ( XYZL, OPTION, PGL, MATLOC, ENER, MULTIC)
         ELSE IF (NOMTE.EQ.'MEDSTR3') THEN
           CALL DSTMAS ( XYZL, OPTION, PGL, MATLOC, ENER )
         ELSE IF (NOMTE.EQ.'MEDKQU4') THEN
@@ -322,7 +318,7 @@ C
         CALL UTPVGL(NNO,6,PGL,ZR(JDEPM),UML)
         CALL UTPVGL(NNO,6,PGL,ZR(JDEPR),DUL)
 C
-        IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
+        IF (NOMTE.EQ.'MEDKTR3') THEN
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
      &                    MATLOC, PGL, CODRET )

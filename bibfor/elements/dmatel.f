@@ -1,14 +1,13 @@
       SUBROUTINE DMATEL(FAMI,DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,
-     &                  GRILLE,T2EV,T2VE,T1VE,NPG)
+     &                  T2EV,T2VE,T1VE,NPG)
       IMPLICIT   NONE
       INTEGER NNO,MULTIC,ICOU,NPG
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
       REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
-      LOGICAL GRILLE
       CHARACTER*4 FAMI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +29,6 @@ C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
 C     MEMBRANE-FLEXION ET CISAILLEMENT POUR UN MATERIAU ISOTROPE OU
 C     MULTICOUCHE
-C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
 C     OUT MULTIC :
 C        1 POUR UN MATERIAU MULTICOUCHE SANS COUPLAGE MEMBRANE-FLEXION
 C        2 POUR UN MATERIAU MULTICOUCHE AVEC COUPLAGE MEMBRANE-FLEXION
@@ -260,11 +258,7 @@ CCC          MULTIC     =  2
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
-      IF (GRILLE) THEN
-        NPGH=1
-      ELSE
-        NPGH=3
-      ENDIF
+      NPGH=3
       CALL JEVECH('PNBSP_I','L',JCOU)
       CALL MOYTEM(FAMI,NPG,NPGH*ZI(JCOU),'+',VALPAR,IRET)
       NBPAR = 1
@@ -279,78 +273,41 @@ C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 C        ------ MATERIAU ISOTROPE --------------------------------------
         YOUNG = VALRES(1)
         NU = VALRES(2)
+        KCIS = 5.D0/6.D0
+C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
+        CDF = YOUNG*EPAIS*EPAIS*EPAIS/12.D0/ (1.D0-NU*NU)
+        DO 60 K = 1,9
+          DF(K,1) = 0.D0
+          DMF(K,1) = 0.D0
+   60   CONTINUE
+        DF(1,1) = CDF
+        DF(1,2) = CDF*NU
+        DF(2,1) = DF(1,2)
+        DF(2,2) = DF(1,1)
+        DF(3,3) = CDF* (1.D0-NU)/2.D0
+C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
+        CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
+        DO 70 K = 1,9
+          DM(K,1) = 0.D0
+   70   CONTINUE
+        DM(1,1) = CDM
+        DM(1,2) = CDM*NU
+        DM(2,1) = DM(1,2)
+        DM(2,2) = DM(1,1)
+        DM(3,3) = CDM* (1.D0-NU)/2.D0
+C      --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
+        GCIS = YOUNG/2.D0/ (1.D0+NU)
+        CDC = GCIS*KCIS*EPAIS
+        DC(1,1) = CDC
+        DC(2,2) = DC(1,1)
+        DC(1,2) = 0.D0
+        DC(2,1) = 0.D0
+C      --- CALCUL DE SON INVERSE ------------------------------------
+        DCI(1,1) = 1/CDC
+        DCI(2,2) = DCI(1,1)
+        DCI(1,2) = 0.D0
+        DCI(2,1) = 0.D0
 
-        IF (GRILLE) THEN
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
-          YOUNG1 = YOUNG
-          YOUNG2 = 0.D0
-          CTOR = ZR(JCOQU+4)
-
-          CALL R8INIR(9,0.D0,DH,1)
-          CALL R8INIR(9,0.D0,DMF,1)
-          CALL R8INIR(4,0.D0,DC,1)
-          CALL R8INIR(4,0.D0,DCI,1)
-          DH(1,1) = YOUNG1
-          DH(2,2) = YOUNG2
-          DH(3,3) = YOUNG1*CTOR
-
-C   MATRICE PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
-
-          CALL GRIROT(ALPHA,BETA,PGL,ROT,C,S)
-
-C   PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
-
-          CALL UTBTAB('ZERO',3,3,DH,ROT,XAB1,DH)
-
-C        --- CALCUL DES MATRICES DE RIGIDITE EN MEMBRANE ET FLEXION --
-
-          CDF = EPAIS*EPAIS*EPAIS/12.D0
-          DO 50 J = 1,3
-            DO 40 I = 1,3
-              DM(I,J) = DH(I,J)*EPAIS
-C              DF(I,J) = DH(I,J)*CDF
-C             PAS DE RIGIDITE DE FLEXION PROPRE
-              DF(I,J) = 0.D0
-   40       CONTINUE
-   50     CONTINUE
-        ELSE
-
-          KCIS = 5.D0/6.D0
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
-          CDF = YOUNG*EPAIS*EPAIS*EPAIS/12.D0/ (1.D0-NU*NU)
-          DO 60 K = 1,9
-            DF(K,1) = 0.D0
-            DMF(K,1) = 0.D0
-   60     CONTINUE
-          DF(1,1) = CDF
-          DF(1,2) = CDF*NU
-          DF(2,1) = DF(1,2)
-          DF(2,2) = DF(1,1)
-          DF(3,3) = CDF* (1.D0-NU)/2.D0
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
-          CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
-          DO 70 K = 1,9
-            DM(K,1) = 0.D0
-   70     CONTINUE
-          DM(1,1) = CDM
-          DM(1,2) = CDM*NU
-          DM(2,1) = DM(1,2)
-          DM(2,2) = DM(1,1)
-          DM(3,3) = CDM* (1.D0-NU)/2.D0
-C        --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
-          GCIS = YOUNG/2.D0/ (1.D0+NU)
-          CDC = GCIS*KCIS*EPAIS
-          DC(1,1) = CDC
-          DC(2,2) = DC(1,1)
-          DC(1,2) = 0.D0
-          DC(2,1) = 0.D0
-C        --- CALCUL DE SON INVERSE ------------------------------------
-          DCI(1,1) = 1/CDC
-          DCI(2,2) = DCI(1,1)
-          DCI(1,2) = 0.D0
-          DCI(2,1) = 0.D0
-
-        END IF
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
@@ -358,8 +315,6 @@ C        --- CALCUL DE SON INVERSE ------------------------------------
 
         IF (ELASCO.EQ.1) THEN
           MULTIC = 0
-          CALL ASSERT(.NOT.GRILLE)
-
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
           DM(1,1) = VALRES(1)
           DM(1,2) = VALRES(2)

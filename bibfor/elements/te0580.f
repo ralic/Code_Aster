@@ -1,7 +1,7 @@
       SUBROUTINE TE0580 ( OPTION, NOMTE )
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER    NORDO,JTAB(7)
       INTEGER    JVARN,JVARI,NCMP,INO
       REAL*8     VPG(24),VNO(24),PGL(3,3),T2EV(4), T2VE(4), T1VE(9)
-      LOGICAL    GRILLE
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
@@ -57,13 +56,7 @@ C
       IF (ICOU.LE.0 .OR. ICOU.GT.NBCOU)
      &                 CALL U2MESS('F','ELEMENTS3_95')
       NORDO = ZI(JNUMC+1)
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        IF (NORDO.NE.0)
-     &    CALL U2MESS('F','ELEMENTS4_37')
-        NUSP = ICOU
-      ELSE
-        NUSP = 3*(ICOU-1) + NORDO +2
-      END IF
+      NUSP = 3*(ICOU-1) + NORDO +2
 C
       IF (OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
 C                          --------------

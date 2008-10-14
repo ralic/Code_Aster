@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPR ( CUNIT , CLAS , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,18 +69,18 @@ C DEB ------------------------------------------------------------------
       DO 10 I = NCLA1 , NCLA2
         CLASI = CLASSE(I:I)
         IF ( CLASI .NE. ' ' ) THEN
-          WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
+          WRITE (JULIST,'(4A)' ) ('---------------------',K=1,4)
           WRITE (JULIST,'(2A)' )
-     &          '----     CATALOGUE CLASSE ',CLASI     ,
-     &          '----    ', CMESS(1:MIN(72,LEN(CMESS)))
-          WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
+     &          '------     CATALOGUE CLASSE ',CLASI     ,
+     &          '------    ', CMESS(1:MIN(72,LEN(CMESS)))
+          WRITE (JULIST,'(4A)' ) ('---------------------',K=1,4)
            DO 5 J = 1 , NREMAX(I)
              CRNOM = RNOM(JRNOM(I)+J)
              IF ( CRNOM(1:1) .EQ. '?' ) GOTO 5
              IF ( MOD(J,25) .EQ. 1 ) THEN
                 WRITE ( JULIST , '(/,A,A/)' )
-     &      ' NUM  ------------- NOM ---------------- G T L- --LONG---'
-     +      ,' -LOTY- -IADD- --------KADM------- --------KDYN-------'
+     &      '--- NUM  -------------- NOM ---------------- G T L- --LONG'
+     +      ,'--- -LOTY- -IADD- --------KADM------- --------KDYN-------'
              ENDIF
              CGENR = GENR(JGENR(I)+J)
              CTYPE = TYPE(JTYPE(I)+J)
@@ -97,6 +97,6 @@ C DEB ------------------------------------------------------------------
         ENDIF
    10 CONTINUE
  9999 CONTINUE
- 1001 FORMAT(I5,1X,A,'  -',2(A,'-'),I2,1X,I8,1X,I7,I7,I20,I20)
+ 1001 FORMAT(I8,2X,A,'  -',2(A,'-'),I2,1X,I8,1X,I7,I7,I20,I20)
 C FIN ------------------------------------------------------------------
       END

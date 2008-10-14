@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,7 +59,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),);
 
 # ANGLES D INCLINAISON DE LA FISSURE (EN DEGRES)
 alphaf = [0., 15., 30., 45., 60.] ;
-#alphaf = [15.] ;
+#alphaf = [0.] ;
 
 # DEFINITION DES COURONNES POUR LE CALCUL DES SIF
 RI=[0.1*A,   eps]
@@ -137,7 +137,8 @@ for i in range(nbcalc) :
                                  PFON_EXTR  = ( A*cos(eval(alpha))/2, A*sin(eval(alpha))/2, 0.),
                                  ),
                     GROUP_MA_ENRI='SURF',
-                    RAYON_ENRI=A/10.,
+                    TYPE_ENRI_FOND='GEOMETRIQUE',
+                    NB_COUCHES=3,
                     INFO=1);
 
   MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i],INFO=1,);
@@ -348,9 +349,9 @@ RES_XFEM=CALC_NO(reuse =RES_XFEM,
                  RESULTAT=RES_XFEM,
                  OPTION=('EQUI_NOEU_SIGM'));
 
-#IMPR_RESU(FORMAT='IDEAS',RESU=(_F(MAILLAGE=MA_XFEM,RESULTAT=RES_XFEM,NOM_CHAM='DEPL',NOM_CMP=('DX','DY')),
-#                              _F(RESULTAT=RES_XFEM,NOM_CHAM='EQUI_NOEU_SIGM',NOM_CMP='VMIS'),
-#                               ),  );
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(MAILLAGE=MA_XFEM,RESULTAT=RES_XFEM,NOM_CHAM='DEPL',NOM_CMP=('DX','DY')),
+                              _F(RESULTAT=RES_XFEM,NOM_CHAM='EQUI_NOEU_SIGM',NOM_CMP='VMIS'),
+                               ),  );
 
 
 FIN();

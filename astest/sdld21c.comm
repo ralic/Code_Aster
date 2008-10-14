@@ -1,4 +1,4 @@
-# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 14/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,8 @@
 #CAS_TEST__:SDLD21C
 #
 
-DEBUT(CODE=_F(NOM='SDLD21C', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SDLD21C', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+              IMPR_MACRO='OUI')
 
 MA=LIRE_MAILLAGE();
 
@@ -102,13 +103,19 @@ MODES=MODE_ITER_SIMULT(MATR_A=MATASSR,
 MODESN=NORM_MODE(MODE=MODES,NORME='MASS_GENE')
 
 # AVEC QZ + OPTION='CENTRE' + 'QZ_SIMPLE'
-MODE_QZ1=MODE_ITER_SIMULT(MATR_A=MATASSR,
-                       MATR_B=MATASSM,
-                       MATR_C=MATASSC,
-                       METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=5.0,
-                                    NMAX_FREQ=5,),);
+
+MODE_QZ1=CALC_MODAL(MODELE=MO,
+                 CHAM_MATER=CHMATER,
+                 CARA_ELEM=CARELEM,
+                 AMORTISEMENT='OUI',
+                 CHARGE=CH,
+                 METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
+                 CALC_FREQ=_F(OPTION='CENTRE',
+                              FREQ=5.0,
+                              NMAX_FREQ =5,
+                ),);
+
+
 MODE_QZ1=NORM_MODE(MODE=MODE_QZ1,reuse=MODE_QZ1,NORME='MASS_GENE')
 
 # --------------------------------------------------------------------

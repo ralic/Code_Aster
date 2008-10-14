@@ -1,6 +1,6 @@
       SUBROUTINE TE0376 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C
       INTEGER            NNO,KP,I,K,IDEPL,ICONT
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            NPG1,NNOS,NCMP,NBV,NDIM,JGANO,IRET
+      LOGICAL            LTEATT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -182,7 +183,7 @@ C
            AL3 = EPSTHE(3)
 C
         ENDIF
-        IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+        IF ( LTEATT(' ','AXIS','OUI')) THEN
            IF ( X .NE. 0.D0 ) THEN
               EPS(3) = EPS(3) / X
            ELSE

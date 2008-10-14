@@ -1,7 +1,7 @@
       SUBROUTINE IMPFOT(UNITE,TIME,CHAINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,23 +45,41 @@ C
 C ----------------------------------------------------------------------
 C
       IF (TIME.LT.60.0D0) THEN
-        WRITE(CHAINE,10) TIME
+        IF (SECOND.LT.0.D0) THEN
+          SECOND = 0.D0
+        ENDIF 
+        WRITE(CHAINE,10) SECOND
       ELSE 
         IF (TIME.LE.3600.D0) THEN
           MINUT  = NINT(TIME/60)
+          IF (MINUT.LT.0) THEN
+            MINUT = 0
+          ENDIF
           SECOND = ABS(TIME - (MINUT*60))
+          IF (SECOND.LT.0.D0) THEN
+            SECOND = 0.D0
+          ENDIF          
           WRITE(CHAINE,20) MINUT,SECOND
         ELSE
           HEURE  = NINT(TIME/3600)
+          IF (HEURE.LT.0) THEN
+            HEURE = 0
+          ENDIF
           MINUT  = NINT((TIME - (HEURE*3600))/60)
+          IF (MINUT.LT.0) THEN
+            MINUT = 0
+          ENDIF
           SECOND = ABS(TIME - (HEURE*3600) - (MINUT*60))
+          IF (SECOND.LT.0.D0) THEN
+            SECOND = 0.D0
+          ENDIF 
           WRITE(CHAINE,30) HEURE,MINUT,SECOND
         ENDIF  
       ENDIF
 
- 10   FORMAT (F6.3,' S')
- 20   FORMAT (I2,' M ',F6.3,' S') 
- 30   FORMAT (I8,' H ',I2,' M ',F6.3,' S') 
+ 10   FORMAT (F6.3,' s')
+ 20   FORMAT (I2,' m ',F6.3,' s') 
+ 30   FORMAT (I8,' h ',I2,' m ',F6.3,' s') 
  
 
       END

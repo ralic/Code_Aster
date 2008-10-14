@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,7 +119,7 @@ C        ------------------------
         CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASS,K24B,ZK8(JCHA),K24B,COEF,CCOEF,K24B,K24B,
-     &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
+     &              CHELEM,K24B,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
      &              K24B,K8BID,IBID,K24B,IRET)
 
       ELSE IF (OPTION.EQ.'SOUR_ELGA_ELEC') THEN
@@ -129,7 +129,7 @@ C        ------------------------
         CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASS,K24B,ZK8(JCHA),K24B,COEF,CCOEF,K24B,K24B,
-     &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
+     &              CHELEM,K24B,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
      &              K24B,K8BID,IBID,K24B,IRET)
 
 C        -- OPTION POINTS DE GAUSS :

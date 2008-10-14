@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C RESPONSABLE DELMAS J.DELMAS
 C
 C     BUT:
 C         CALCUL DE L'INDICATEUR D'ERREUR SUR UN ELEMENT 2D
@@ -34,9 +35,6 @@ C      ENTREE :
 C-------------
 C IN   OPTION : OPTION DE CALCUL
 C IN   NOMTE  : NOM DU TYPE ELEMENT
-C
-C      SORTIE :
-C-------------
 C
 C ......................................................................
 C
@@ -63,7 +61,7 @@ C
       INTEGER IGEOM,IBID,IAD,IFOR,IERR,IPES,IROT,IMATE,IVOIS
       INTEGER NBS,NBNA,NBCMP,ITAB(7),NDIM,JGANO,IRET
       INTEGER JTIME,NIV,IP,IR,IREF1,IREF2
-      INTEGER IATYMA,INO,IAUX
+      INTEGER IATYMA,INO,IAUX,IADPG
 
       REAL*8 DFDX(9),DFDY(9),HE,HF,POIDS,FORX,FORY,FPX,FPY
       REAL*8 FRX(9),FRY(9),RHO,NOR,NORSIG,R8BID
@@ -72,9 +70,10 @@ C
       REAL*8 NX(3),NY(3),TX(3),TY(3),CHX(3),CHY(3),ORIEN
       REAL*8 INST,INTE
       REAL*8 SIG11(3),SIG22(3),SIG12(3),DSX,DSY
-      
+      REAL*8 E,NU,VALRES(2)
+
       CHARACTER*2 CODRET(1),FORM,FORMV,NOEU
-      CHARACTER*8 TYPEMA,TYPMAV,TOTO
+      CHARACTER*8 TYPEMA,TYPMAV,TYPNOR,NOMRES(2)
       CHARACTER*16 PHENOM
 C
 C ----------------------------------------------------------------------
@@ -82,9 +81,9 @@ C
       CALL JEMARQ()
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      CALL ELREF1(TOTO)
 C
       CALL JEVECH ('PGEOMER','L',IGEOM)
+      CALL JEVECH ('PMATERC','L',IMATE)
       CALL TECACH ('OOO','PCONTNO',3,ITAB,IRET)
       CALL JEVECH ('PFRVOLU','L',IFOR)
       CALL JEVECH ('PERREUR','E',IERR)
@@ -92,17 +91,23 @@ C
       INST=ZR(JTIME-1+1)
       IAD=ITAB(1)
       NBCMP=ITAB(2)/NNO
-
+C
+C ----------------------------------------------------------------------
+C ----- NORME CALCULEE : SEMI-H1 (H1) ou ENERGIE (NRJ) -----------------
+C ----------------------------------------------------------------------
+C
+      TYPNOR='NRJ'         
+C
 C ----------------------------------------------------------------------
 C ---------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------------
 C ----------------------------------------------------------------------
 C
-C ----- CALCUL DU DIAMETRE DE L'ELEMENT --------
+C ----- CALCUL DU DIAMETRE DE L'ELEMENT --------------------------------
 C
       NIV=1 
       CALL UTHK(NOMTE,IGEOM,HE,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
 C
-C ----- CALCUL DES FORCES DE PESANTEUR ET DE ROTATION ---------------
+C ----- CALCUL DES FORCES DE PESANTEUR ET DE ROTATION ------------------
 C ------- INITIALISATION DES FORCES ------------------------------------
 C
       FPX=0.D0
@@ -114,6 +119,7 @@ C ------- TEST D'EXISTENCE DES CARTES DE PESA ET ROTA ------------------
 C
       CALL TECACH('ONN','PPESANR',1,IP,IRET)
       CALL TECACH('ONN','PROTATR',1,IR,IRET)
+C
       IF (IP.NE.0.OR.IR.NE.0) THEN
          CALL JEVECH ('PMATERC','L',IMATE)
          CALL RCCOMA (ZI(IMATE),'ELAS',PHENOM,CODRET)
@@ -153,8 +159,9 @@ C
 C
 C ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA --------------
 C
-        IBID = 1
-        CALL ERMEV2(NOMTE,NNO,IPG,IGEOM,IVF,IAD,NBCMP,DFDX,DFDY,
+        IADPG=IVF+(IPG-1)*NNO
+        IBID=1
+        CALL ERMEV2(NNO,IGEOM,ZR(IADPG),IAD,NBCMP,DFDX,DFDY,
      &              POIDS,IBID,
      &              DSX,DSY,NOR)
 C
@@ -166,14 +173,20 @@ C
 C ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE GAUSS -----------
 C
         TER1=TER1+((FORX+DSX)**2+(FORY+DSY)**2)*POIDS
-C
+C     
 C ------- CALCUL DE LA NORME DE SIGMA SUR L'ELEMENT --------------------
 C
         NORSIG=NORSIG+NOR*POIDS
 C
   10  CONTINUE
 C
-      TER1=HE*SQRT(TER1)
+      IF (TYPNOR.EQ.'H1') THEN
+C       NORME H1
+        TER1=HE*SQRT(TER1)
+      ELSE IF (TYPNOR.EQ.'NRJ') THEN
+C       NORME EN ENERGIE
+        TER1=(HE**2)*(SQRT(TER1))**2
+      ENDIF
 C     
 C ----------------------------------------------------------------------
 C ------------ FIN DU CALCUL DU PREMIER TERME DE L'ERREUR --------------
@@ -248,7 +261,13 @@ C
 C
 C ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE NEWTON-COTES ----
 C
-            TER2=TER2+0.5D0*SQRT(HF)*SQRT(INTE)
+            IF (TYPNOR.EQ.'H1') THEN
+C             NORME H1
+              TER2=TER2+0.5D0*SQRT(HF)*SQRT(INTE)
+            ELSE IF (TYPNOR.EQ.'NRJ') THEN
+C             NORME EN ENERGIE
+              TER2=TER2+0.5D0*HF*(SQRT(INTE))**2
+            ENDIF
 C
 C ----------------------------------------------------------------------
 C --------------- CALCUL DU TROISIEME TERME DE L'ERREUR ----------------
@@ -267,7 +286,13 @@ C
 C
 C ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE NEWTON-COTES ----
 C
-            TER3=TER3+SQRT(HF)*SQRT(INTE)
+            IF (TYPNOR.EQ.'H1') THEN
+C             NORME H1
+              TER3=TER3+SQRT(HF)*SQRT(INTE)
+            ELSE IF (TYPNOR.EQ.'NRJ') THEN
+C             NORME EN ENERGIE
+              TER3=TER3+HF*(SQRT(INTE))**2
+            ENDIF
 C
         ENDIF
 C
@@ -283,37 +308,85 @@ C ----------------------------------------------------------------------
 C ------------ MISE EN MEMOIRE DES DIFFERENTS TERMES DE IERR -----------
 C ----------------------------------------------------------------------
 C
-      IF (NBNA.EQ.3) THEN
-        COEFF=SQRT(96.D0)
+      IF (TYPNOR.EQ.'H1') THEN
+C        
+        IF (NBNA.EQ.3) THEN
+          COEFF=SQRT(96.D0)
         ELSE
-        COEFF=SQRT(24.D0)
+          COEFF=SQRT(24.D0)
+        ENDIF
+C
+C      NORME H1
+        ERREST=(TER1+TER2+TER3)/COEFF
+        SIGCAL=SQRT(NORSIG)
+        NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
+C
+        ZR(IERR)=ERREST
+        ZR(IERR+1)=NUEST
+        ZR(IERR+2)=SIGCAL
+C
+        ERREST=TER1/COEFF
+        NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
+C
+        ZR(IERR+3)=ERREST
+        ZR(IERR+4)=NUEST
+C
+        ERREST=TER3/COEFF
+        NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
+C
+        ZR(IERR+5)=ERREST
+        ZR(IERR+6)=NUEST
+C
+        ERREST=TER2/COEFF
+        NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
+C
+        ZR(IERR+7)=ERREST
+        ZR(IERR+8)=NUEST
+C      
+      ELSE IF (TYPNOR.EQ.'NRJ') THEN
+C
+        NOMRES(1)='E'
+        NOMRES(2)='NU'
+        CALL RCCOMA (ZI(IMATE),'ELAS',PHENOM,CODRET)
+        CALL RCVALA (ZI(IMATE),' ',PHENOM,1,' ',R8BID,2,NOMRES,
+     &               VALRES,CODRET,'FM')
+        E =VALRES(1)
+        NU=VALRES(2)
+C
+        IF (NBNA.EQ.3) THEN
+          COEFF=SQRT(96.D0*E/(1-NU))
+        ELSE
+          COEFF=SQRT(24.D0*E/(1-NU))
+        ENDIF
+C
+C      NORME EN ENERGIE
+        ERREST=SQRT(TER1+TER2+TER3)/COEFF
+        SIGCAL=SQRT(NORSIG)
+        NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
+C
+        ZR(IERR)=ERREST
+        ZR(IERR+1)=NUEST
+        ZR(IERR+2)=SIGCAL
+C
+        ERREST=SQRT(TER1)/COEFF
+        NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
+C
+        ZR(IERR+3)=ERREST
+        ZR(IERR+4)=NUEST
+C
+        ERREST=SQRT(TER3)/COEFF
+        NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
+C
+        ZR(IERR+5)=ERREST
+        ZR(IERR+6)=NUEST
+C
+        ERREST=SQRT(TER2)/COEFF
+        NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
+C
+        ZR(IERR+7)=ERREST
+        ZR(IERR+8)=NUEST
+C
       ENDIF
-C
-      ERREST=(TER1+TER2+TER3)/COEFF
-      SIGCAL=SQRT(NORSIG)
-      NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
-C
-      ZR(IERR)=ERREST
-      ZR(IERR+1)=NUEST
-      ZR(IERR+2)=SIGCAL
-C
-      ERREST=TER1/COEFF
-      NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
-C
-      ZR(IERR+3)=ERREST
-      ZR(IERR+4)=NUEST
-C
-      ERREST=TER3/COEFF
-      NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
-C
-      ZR(IERR+5)=ERREST
-      ZR(IERR+6)=NUEST
-C
-      ERREST=TER2/COEFF
-      NUEST=100.D0*SQRT(ERREST**2/(ERREST**2+NORSIG))
-C
-      ZR(IERR+7)=ERREST
-      ZR(IERR+8)=NUEST
 C
       ZR(IERR+9)=HE
 C      

@@ -1,7 +1,7 @@
       SUBROUTINE MMNORM(NDIM,TAU1,TAU2,NORM,NOOR)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,12 @@ C
 C
 C ----------------------------------------------------------------------
 C
+      REAL*8 R8PREM
 
+C
+C ----------------------------------------------------------------------
+C      
+      NOOR   = R8PREM()
       IF (NDIM.EQ.2) THEN
         NORM(1) = -TAU1(2)
         NORM(2) = TAU1(1)

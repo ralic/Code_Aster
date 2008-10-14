@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 14/10/2008   AUTEUR PROIX J-M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,13 @@ MODE_LOCAL__
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIGN     SITX     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+    EGINST_R = INST_R   ELGA__ RIGI    (INST     )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       )
+    ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
+    ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -121,7 +128,11 @@ OPTION__
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
+                              OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R EGGEOP_R PGEOM_R  EGINST_R PINST_R  
+                                     EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R 
+    TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
+                              OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R
+                                     ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELNO_ELGA      122   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -2    IN__   XXXXXX   XXXXXX

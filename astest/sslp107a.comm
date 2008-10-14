@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DES ESTIMATEURS D'ERREUR BASES SUR LES RESIDUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,6 +98,11 @@ ny[1,2]=0.
 #
 fx=1.
 fy=0.
+#
+# Definition du materiaux
+#
+e=2.
+nu=0.3
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # Corps du programme
@@ -126,7 +131,7 @@ print ""
 
 # Boucle sur les elements
 nbel = 2
-coef = 1./sqrt(24)
+coef = sqrt((1.-nu)/(24*e))
 erreur = 0.
 norme = 0.
 for i in range(nbel) :
@@ -210,8 +215,8 @@ for i in range(nbel) :
 #
     norsig[i] = sqrt((spg11**2 + spg22**2 + spg33**2 + spg12**2) * jacob * poids)
     print "Element(",i+1,"),             norme de sigma =",norsig[i]
-    terme1[i] = coef * he * ((forx + dsx)**2 + (fory + dsy)**2) * jacob * poids
-    print "Element(",i+1,"),  valeur absolue du terme 1 =",terme1[i]
+    terme1[i] = he**2 * (((forx + dsx)**2 + (fory + dsy)**2) * jacob * poids)**2
+    print "Element(",i+1,"),  valeur absolue du terme 1 =",coef*terme1[i]
     relatif[i,0] = 100. * sqrt( terme1[i]**2 / ( terme1[i]**2 + norsig[i]**2 ) )
     print "Element(",i+1,"), valeur relative du terme 1 =",relatif[i,0],"%"
 #
@@ -247,8 +252,8 @@ for i in range(nbel) :
 #
 # Integration de Newton-Cotes sur deux points
 #
-    terme2[i] = terme2[i] + coef * 1./2. * sqrt(hf[i,bord-1]) * sqrt(inte)
-    print "Element(",i+1,"),  valeur absolue du terme 2 =",terme2[i]
+    terme2[i] = terme2[i] + 1./2. * hf[i,bord-1] * (sqrt(inte))**2
+    print "Element(",i+1,"),  valeur absolue du terme 2 =",coef*terme2[i]
     relatif[i,1] = 100. * sqrt( terme2[i]**2 / ( terme2[i]**2 + norsig[i]**2 ) )
     print "Element(",i+1,"), valeur relative du terme 2 =",relatif[i,1],"%"
 #
@@ -273,8 +278,8 @@ for i in range(nbel) :
 #
 # Integration de Newton-Cotes sur deux points
 #
-    terme3[i] = terme3[i] + coef * sqrt(hf[i,listbord-1]) * sqrt(inte)
-    print "Element(",i+1,"),  valeur absolue du terme 3 =",terme3[i]
+    terme3[i] = terme3[i] + hf[i,listbord-1] * (sqrt(inte))**2
+    print "Element(",i+1,"),  valeur absolue du terme 3 =",coef*terme3[i]
     relatif[i,2] = 100. * sqrt( terme3[i]**2 / ( terme3[i]**2 + norsig[i]**2 ) )
     print "Element(",i+1,"), valeur relative du terme 3 =",relatif[i,2],"%"
 #
@@ -282,7 +287,7 @@ for i in range(nbel) :
 # Calcul de l'erreur par element
 # ----------------------------------------------------------------------
 #
-    terme[i] = terme1[i] + terme2[i] + terme3[i]
+    terme[i] = coef*sqrt(terme1[i] + terme2[i] + terme3[i])
     print "Element(",i+1,"),  valeur absolue de l'erreur =",terme[i]
     relatif[i,3] = 100. * sqrt( terme[i]**2 / ( terme[i]**2 + norsig[i]**2 ) )
     print "Element(",i+1,"), valeur relative de l'erreur =",relatif[i,3],"%"

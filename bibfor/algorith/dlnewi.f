@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM
+      CHARACTER*32 JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO = 'DLNEWI')
@@ -185,7 +185,7 @@ C N: SAISIE DES DONNEES AMOR_MODAL
 C    (  MOT CLE FACTEUR: AMOR_MODAL  )
       CALL GETFAC('AMOR_MODAL',NMODAM)
       IF (NMODAM.NE.0) THEN
-        CALL NMMOAM(K24AMO)
+        CALL NMMOAM(K24AMO,IBID)
         VALMOD=K24AMO(1:19)//'.VALM'
         BASMOD=K24AMO(1:19)//'.BASM'
       END IF

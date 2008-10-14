@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION, NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C
       REAL*8        VALPAR(NBRES)
       REAL*8        DFDX(9),DFDY(9),POIDS,R,Z,TX,TY
       CHARACTER*8   NOMPAR(NBRES)
+      LOGICAL       LTEATT
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -73,7 +74,7 @@ C
           R = R + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
           Z = Z + ZR(IGEOM+2*I-1)*ZR(IVF+K+I-1)
 102     CONTINUE
-        IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+        IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
         VALPAR(1) = R
         VALPAR(2) = Z
         CALL FOINTE('FM',ZK8(IFR2D  ),3,NOMPAR,VALPAR,TX,ICODE)

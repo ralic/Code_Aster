@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 19/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,6 @@ C     IN  XYZL : COORDONNEES DES NOEUDS
 C     IN  UL   : DEPLACEMENT A L'INSTANT T "-"
 C     IN  DUL  : INCREMENT DE DEPLACEMENT
 C     IN  PGL  : MATRICE DE PASSAGE GLOBAL - LOCAL ELEMENT
-C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
 C     OUT KTAN : MATRICE DE RIGIDITE TANGENTE
 C                    SI 'FULL_MECA' OU 'RIGI_MECA_TANG'
 C     OUT BTSIG: DIV (SIGMA)
@@ -68,7 +67,7 @@ CCC      PARAMETER (NNO=4)  POUR LES DKQ
       INTEGER    NNO
       PARAMETER (NNO=4)
 C            NNO:    NOMBRE DE NOEUDS DE L'ELEMENT
-      REAL*8   DISTN, DISTN2, POIDS2, ROT(9), DH(9), ANGMAS(3)
+      REAL*8   DISTN, DISTN2, ROT(9), DH(9), ANGMAS(3)
 C
 C --------- VARIABLES LOCALES :
 C  -- GENERALITES :
@@ -150,7 +149,7 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
       REAL*8    CTOR,COEHSD
       REAL*8    LC,JACGAU,BMAT(6,18)
       REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3,D4,D2,D5,D6
-      LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ,LTEATT,LEUL
+      LOGICAL   VECTEU,MATRIC,TEMPNO,DKT,DKQ,LTEATT,LEUL
       CHARACTER*24 NOMELE
       CHARACTER*39 MESS
 C     ------------------------------------------------------------------
@@ -170,11 +169,8 @@ C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 C     --------------------------------------------------------
       DKT    = .FALSE.
       DKQ    = .FALSE.
-      GRILLE= LTEATT(' ','GRILLE','OUI')
 
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        CALL ASSERT(GRILLE)
-      ELSEIF (NOMTE(1:8).EQ.'MEDKTR3 ') THEN
+      IF (NOMTE(1:8).EQ.'MEDKTR3 ') THEN
         DKT = .TRUE.
       ELSEIF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
         DKQ = .TRUE.
@@ -217,14 +213,8 @@ C       -- POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP :
 C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
       H = ZR(ICACOQ)
-      IF (.NOT.GRILLE) THEN
-         DISTN = ZR(ICACOQ+4)
-      ENDIF
-      IF ( GRILLE ) THEN
-         DISTN = ZR(ICACOQ+3)
-         CALL GTRIA3(XYZL,CARA)
-         CTOR  = ZR(ICACOQ+4)
-      ELSEIF ( DKT ) THEN
+      DISTN = ZR(ICACOQ+4)
+      IF ( DKT ) THEN
          CALL GTRIA3(XYZL,CARA)
          CTOR = ZR(ICACOQ+3)
       ELSEIF ( DKQ ) THEN
@@ -263,13 +253,7 @@ C     --------------------------------------------
 C     -- POUR POUVOIR UTILISER NMCOMP
       TYPMOD(1) = 'C_PLAN  '
       TYPMOD(2) = '        '
-      IF ( GRILLE ) THEN
-        TYPMOD(2) = 'MEGRDKT '
-        NPGH = 1
-        COEF = DEUX
-      ELSE
-        NPGH = 3
-      END IF
+      NPGH = 3
 
 C     CONTRAINTE 2D : SIXX,SIYY,SIZZ,SQRT(2)*SIXY
       NBCON = 6
@@ -282,11 +266,7 @@ C     NBCOU : NOMBRE DE COUCHES
       IF (NBCOU.LE.0) CALL U2MESK('F','ELEMENTS_36',1,ZK16(ICOMPO-1+6))
 
       HIC = H/NBCOU
-      IF (GRILLE) THEN
-        ZMIN = -H/DEUX + HIC/DEUX + DISTN
-      ELSE
-        ZMIN = -H/DEUX + DISTN
-      END IF
+      ZMIN = -H/DEUX + DISTN
       IF (VECTEU) THEN
         NDIMV=NPG*NBSP*NBVAR
         CALL JEVECH('PVARIMP','L',IVARIX)
@@ -355,12 +335,8 @@ C       ------------------------------------------------------
 C       -- COTE DES POINTS D'INTEGRATION
 C       --------------------------------
             IF (IGAUH.EQ.1) THEN
-              IF (GRILLE) THEN
-                ZIC = ZMIN + (ICOU-1)*HIC
-              ELSE
-                ZIC = ZMIN + (ICOU-1)*HIC
-                COEF = 1.D0/3.D0
-              END IF
+              ZIC = ZMIN + (ICOU-1)*HIC
+              COEF = 1.D0/3.D0
             ELSE IF (IGAUH.EQ.2) THEN
               ZIC = ZMIN + HIC/DEUX + (ICOU-1)*HIC
               COEF = 4.D0/3.D0
@@ -387,33 +363,21 @@ C         --------------------------
 
 C         -- APPEL A NMCOMP POUR RESOUDRE LE PB SUR LA COUCHE :
 C         -----------------------------------------------------
-            IF ( GRILLE ) THEN
-C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
-               CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
-               CALL NMGRIL('RIGI',IPG,KSP,ZI(IMATE),TYPMOD,
-     &                     ZK16(ICOMPO),OPT,EPS2D,DEPS2D,
-     &                     ANGMAS,
-     &                     ZR(ICONTM+ICPG),ZR(IVARIM+IVPG),
-     &               ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
-            ELSE
-               DO 1 J=1,4
+            DO 1 J=1,4
                SIGM(J)=ZR(ICONTM+ICPG-1+J)
-  1            CONTINUE
-               SIGM(4)=SIGM(4)*RAC2
+  1         CONTINUE
+            SIGM(4)=SIGM(4)*RAC2
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
-               CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
-               CALL NMCOMP('RIGI',IPG,KSP,2,TYPMOD,ZI(IMATE),
-     &                ZK16(ICOMPO),ZR(ICARCR),INSTM,INSTP,
+            CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
+            CALL NMCOMP('RIGI',IPG,KSP,2,TYPMOD,ZI(IMATE),
+     &                  ZK16(ICOMPO),ZR(ICARCR),INSTM,INSTP,
      &                  EPS2D,DEPS2D,
      &                  SIGM,ZR(IVARIM+IVPG),
      &                  OPT,
      &                  ANGMAS,
      &                  LC,
      &                  ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
-            ENDIF
-
 
 C            DIVISION DE LA CONTRAINTE DE CISAILLEMENT PAR SQRT(2)
 C            POUR STOCKER LA VALEUR REELLE
@@ -435,17 +399,9 @@ C         ------------------------------------------------------------
               N(1) = N(1) + COEHSD*ZR(ICONTP+ICPG-1+1)
               N(2) = N(2) + COEHSD*ZR(ICONTP+ICPG-1+2)
               N(3) = N(3) + COEHSD*ZR(ICONTP+ICPG-1+4)
-            IF (GRILLE) THEN
-C             LES SEULS MOMENTS SONT DUS A L'EXCENTREMENT
-C             PAS DE RIGIDITE DE FLEXION PROPRE
-              M(1) = M(1) + ZIC*HIC*ZR(ICONTP+ICPG-1+1)
-              M(2) = M(2) + ZIC*HIC*ZR(ICONTP+ICPG-1+2)
-              M(3) = M(3) + ZIC*HIC*ZR(ICONTP+ICPG-1+4)
-            ELSE
               M(1) = M(1) + COEHSD*ZIC*ZR(ICONTP+ICPG-1+1) 
               M(2) = M(2) + COEHSD*ZIC*ZR(ICONTP+ICPG-1+2) 
               M(3) = M(3) + COEHSD*ZIC*ZR(ICONTP+ICPG-1+4) 
-            END IF
             END IF
 
 C         -- CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
@@ -461,19 +417,11 @@ C           -- ON EXTRAIT DE DSIDEP LA SOUS-MATRICE INTERESSANTE D2D:
               D2D(7) = DSIDEP(4,1)/RAC2
               D2D(8) = DSIDEP(4,2)/RAC2
               D2D(9) = DSIDEP(4,4)/DEUX
-              IF (GRILLE) THEN
-                DO 50,K = 1,9
-                  DM(K) = DM(K) + HIC*POIDS*D2D(K)
-C                 SANS EXCENTREMENT, PAS DE FLEXION PROPRE
-                  DF(K) = 0.D0
-   50           CONTINUE
-              ELSE
-                DO 60,K = 1,9
-                   DM(K) =  DM(K) + COEF*HIC/DEUX*POIDS*D2D(K)
-                  DMF(K) = DMF(K) + COEF*HIC/DEUX*POIDS*ZIC*D2D(K)
-                   DF(K) =  DF(K) + COEF*HIC/DEUX*POIDS*ZIC*ZIC*D2D(K)
-   60           CONTINUE
-              END IF
+              DO 60,K = 1,9
+                DM(K) =  DM(K) + COEF*HIC/DEUX*POIDS*D2D(K)
+                DMF(K) = DMF(K) + COEF*HIC/DEUX*POIDS*ZIC*D2D(K)
+                DF(K) =  DF(K) + COEF*HIC/DEUX*POIDS*ZIC*ZIC*D2D(K)
+   60         CONTINUE
             END IF
    70     CONTINUE
    80   CONTINUE
@@ -513,14 +461,6 @@ C         ------------
 
 C         -- COUPLAGE:
 C         ------------
-          IF (GRILLE) THEN
-            POIDS2 = DISTN*DISTN
-            CALL DCOPY(9,DM,1,DM2,1)
-            CALL DSCAL(9,POIDS2,DM2,1)
-            CALL UTBTAB('CUMU',3,3*NNOEL,DM2,BF,WORK,FLEX)
-            CALL DCOPY(9,DM,1,DMF,1)
-            CALL DSCAL(9,DISTN,DMF,1)
-          END IF
           CALL UTCTAB('CUMU',3,3*NNOEL,2*NNOEL,DMF,BF,BM,WORK,MEFL)
         END IF
 
@@ -530,7 +470,7 @@ C       -- FIN BOUCLE SUR LES POINTS DE GAUSS
 C     -- ACCUMULATION DES SOUS MATRICES DANS KTAN :
 C     -----------------------------------------------
       IF (MATRIC) THEN
-        IF (DKT .OR. GRILLE) THEN
+        IF (DKT) THEN
           CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,KTAN)
         ELSE
           CALL DXQLOC(FLEX,MEMB,MEFL,CTOR,KTAN)

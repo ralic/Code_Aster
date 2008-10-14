@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,35 +65,17 @@ CHCAS1=AFFE_CHAR_MECA(MODELE=MO,
                                   DRZ=0.0,),);
 # ---- CAS2: PLAQUE LIBRE-LIBRE   ==>   PAS DE CHCAS2
 #-------------------------------------------------------------------
-# ------ CAS1
+# -CALCUL MODAL POUR CAS1 AVEC LE MACRO CALC_MODAL
 
-MACRO_MATR_ASSE(MODELE=MO,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARELEM,
-                CHARGE=CHCAS1,
-                NUME_DDL=CO('NUM'),
-                MATR_ASSE=(_F(MATRICE=CO('MATASSR1'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MATASSM1'),
-                              OPTION='MASS_MECA',),),);
-# ------ CAS2
-
-MACRO_MATR_ASSE(MODELE=MO,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARELEM,
-                NUME_DDL=CO('NUM2'),
-                MATR_ASSE=(_F(MATRICE=CO('MATASSR2'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MATASSM2'),
-                              OPTION='MASS_MECA',),),);
-#====================================================================
-#                CALCUL MODAL
-#--------- CAS1
-
-MODE1=MODE_ITER_SIMULT(MATR_A=MATASSR1,
-                       MATR_B=MATASSM1,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(8.0,140.0,),),);
+MODE1=CALC_MODAL(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=CARELEM,
+                       CHARGE=CHCAS1,
+                       METHODE='TRI_DIAG',
+                       CALC_FREQ=_F(OPTION='CENTRE',
+                                    FREQ=100.0,
+                                    NMAX_FREQ = 20,
+                                    ),);
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE1,
                    NUME_ORDRE=1,
@@ -137,7 +119,18 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE1,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),),);
-#--------- CAS2
+
+# _CAS2: CALCUL MODAL EN 2 PAS, MACRO_MATR_ASSE + MODE_ITER_SIMULT
+
+MACRO_MATR_ASSE(MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                NUME_DDL=CO('NUM2'),
+                MATR_ASSE=(_F(MATRICE=CO('MATASSR2'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATASSM2'),
+                              OPTION='MASS_MECA',),),);
+
 
 MODE2=MODE_ITER_SIMULT(MATR_A=MATASSR2,
                        MATR_B=MATASSM2,

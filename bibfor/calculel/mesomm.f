@@ -6,7 +6,7 @@
       COMPLEX*16 VC(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C     -- ON MET A ZERO LE VECTEUR "VSCAL":
 C     ------------------------------------
       CALL ASSERT(LONGT.LE.LONG)
 
-      DO 20,I = 1,LONGT
+      DO 20,I = 1,LONG
         IF (SCAL(1:1).EQ.'I') THEN
           VI(I) = 0
         ELSE IF (SCAL(1:1).EQ.'R') THEN

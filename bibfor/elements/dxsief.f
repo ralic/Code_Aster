@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C --------------------------------------------------------------------
       INTEGER  NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG, IRET,
      &         IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8), JTREF, NBPAR
-      REAL*8   DISTN, ROT(9), DH(9), D(4,4), REPERE(7), INST
+      REAL*8   ROT(9), DH(9), D(4,4), REPERE(7), INST
       REAL*8   C,S,PI,PHI,EPSL(4),R8PI
       REAL*8   HIC, H, ZMIN,ZIC, VALPU(2), TINF, TMOY, TSUP,TREF
       REAL*8   ZERO, DEUX, SIG, C1, C2, C3
@@ -61,7 +61,7 @@ C --------------------------------------------------------------------
       REAL*8   EPS2D(6), KHI(3), DEPF(12), DEPM(8)
       REAL*8   BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
       REAL*8   CARAT3(21),CARAQ4(25),QSI,ETA,JACOB(5)
-      LOGICAL      TEMPNO, GRILLE, DKT, DKQ ,LTEATT
+      LOGICAL      TEMPNO, DKT, DKQ ,LTEATT
       CHARACTER*2  CODRET
       CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR(2)
@@ -76,10 +76,8 @@ C
 C
       DKT    = .FALSE.
       DKQ    = .FALSE.
-      GRILLE= LTEATT(' ','GRILLE','OUI')
 
-      IF (GRILLE) THEN
-      ELSEIF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
+      IF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
      &         NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
         DKT = .TRUE.
       ELSEIF ( NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
@@ -104,18 +102,7 @@ C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
       CALL JEVECH ( 'PCACOQU', 'L', ICACOQ )
       H = ZR(ICACOQ)
-      DISTN = ZERO
-      IF ( GRILLE ) THEN
-         CALL GTRIA3(XYZL,CARAT3)
-         DISTN = ZR(ICACOQ+3)
-         CALL GRDMAT(ICACOQ,MATER,PGL,DH,ROT)
-         ALPH = ZR(ICACOQ+1) * R8DGRD()
-         BETA  = ZR(ICACOQ+2) * R8DGRD()
-         CALL GRIROT ( ALPH , BETA ,PGL , ROT, C, S )
-         PI = R8PI()
-         PHI= 0.D0
-         IF(ABS(C).GT.1.D-14) PHI= (ATAN2(S,C)*180.D0/PI)-90.D0
-      ELSEIF ( DKT ) THEN
+      IF ( DKT ) THEN
          CALL GTRIA3(XYZL,CARAT3)
       ELSEIF ( DKQ ) THEN
          CALL GQUAD4(XYZL,CARAQ4)
@@ -139,11 +126,7 @@ C     -------------------------------------------------
         DEPF(3+3*(INO-1)) = -DEPL(2+2+6*(INO-1))
  20   CONTINUE
 
-      IF ( GRILLE ) THEN
-        NPGH = 1
-      ELSE
-        NPGH = 3
-      END IF
+      NPGH = 3
 C
       CALL JEVECH('PNBSP_I','L',JNBSPI)
       NBCON = 6
@@ -151,11 +134,7 @@ C
       IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
 C
       HIC = H/NBCOU
-      IF (GRILLE) THEN
-        ZMIN = -H/DEUX + HIC/DEUX + DISTN
-      ELSE
-        ZMIN = -H/DEUX + DISTN
-      END IF
+      ZMIN = -H/DEUX
 
 C --- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     ---------------------------------------------
@@ -213,44 +192,20 @@ C         ----------------------------------------------------
             EPSTH(2) = EPSTH(1)
             EPSTH(3) = ZERO
             EPSTH(4) = ZERO
-            IF (GRILLE) THEN
-C
-C              DEFORMATIONS  REPERE LOCAL
-C
-               EPSG(1)=EPS2D(1)-EPSTH(1)
-               EPSG(2)=EPS2D(2)-EPSTH(2)
-               EPSG(3)=EPS2D(4)
-               CALL INSDRF(EPSG,PHI,EPSL)
-               CALL RCVALB(FAMI,IPG,IGAUH,'+',MATER,' ','ELAS',0,' ',
-     &                     0.D0,1,'E',E,CODRET,'FM')
-               SIGL(1)=E*EPSL(1)
-               SIGL(2)=E*EPSL(2)
-               SIGL(3)=0.D0
-C
-C
-               SIGL(2) = 0.D0
-               CALL R8INIR(4,0.D0,SIGP,1)
-               CALL INSCRG ( SIGL , PHI , SIGP)
-               SIGMA(ICPG+1)=SIGP(1)
-               SIGMA(ICPG+2)=SIGP(2)
-               SIGMA(ICPG+3)=0.D0
-               SIGMA(ICPG+4)=SIGP(3)
-            ELSE
 
-C              -- CALCUL DE LA MATRICE DE HOOKE
-C              --------------------------------
-               CALL DMATCP ( 'RIGI',MATER, INST,'+',IPG,IGAUH,REPERE,D )
+C           -- CALCUL DE LA MATRICE DE HOOKE
+C           --------------------------------
+            CALL DMATCP ( 'RIGI',MATER, INST,'+',IPG,IGAUH,REPERE,D )
 
-C              -- CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT
-C              ---------------------------------------------------------
-               DO 130 I = 1, 4
-                  SIG = ZERO
-                  DO 132 J = 1, 4
-                     SIG = SIG + (EPS2D(J)-EPSTH(J))*D(I,J)
- 132              CONTINUE
-                  SIGMA(ICPG+I) = SIG
- 130           CONTINUE
-            ENDIF
+C           -- CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT
+C           ---------------------------------------------------------
+            DO 130 I = 1, 4
+               SIG = ZERO
+               DO 132 J = 1, 4
+                  SIG = SIG + (EPS2D(J)-EPSTH(J))*D(I,J)
+ 132           CONTINUE
+               SIGMA(ICPG+I) = SIG
+ 130        CONTINUE
  120      CONTINUE
  110    CONTINUE
 

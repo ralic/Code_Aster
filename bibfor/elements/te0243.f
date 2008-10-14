@@ -1,6 +1,6 @@
       SUBROUTINE TE0243 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER            ICOMP,ITEMPI,IVERES,JGANO,IPOID2,NPG2
       INTEGER            C(6,9),ISE,NSE,NNOP2,IVF2,IDFDE2
       INTEGER            ISECHI,ISECHF
+      LOGICAL            LTEATT
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
 C
@@ -146,7 +147,7 @@ C --------------
 C
           CALL RCFODE (IFON(2),TPG,LAMBDA,R8BID)
 C
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+          IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
 CDIR$ IVDEP
           DO 105 I=1,NNO
              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS *
@@ -172,7 +173,7 @@ C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
             TPG    = TPG  + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF2+K+I-1)
 402       CONTINUE
           CALL RCFODE (IFON(1),TPG,BETA,  R8BID)
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+          IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
 C
           DO 404 I=1,NNO
              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS *
@@ -198,7 +199,7 @@ C
             TPSEC  = TPSEC  + ZR(ISECHF-1+C(ISE,I)) *ZR(IVF+K+I-1)
 201       CONTINUE
           CALL RCDIFF(ZI(IMATE), ZK16(ICOMP), TPSEC,  TPG,  DIFF )
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+          IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
 C
           DO 202 I=1,NNO
              K=(KP-1)*NNO
@@ -218,7 +219,7 @@ C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
             R      = R      + COORSE(2*(I-1)+1)     *ZR(IVF2+K+I-1)
             TPG    = TPG    + ZR(ITEMPI-1+C(ISE,I)) *ZR(IVF2+K+I-1)
 301       CONTINUE
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+          IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
 C
           DO 302 I=1,NNO
              K=(KP-1)*NNO

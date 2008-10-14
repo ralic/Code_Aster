@@ -2,7 +2,7 @@
      &                  NUMEDD,SDSENS,SDPILO,SDDYNA,VALMOI,
      &                  SOLALG,LACC0 ,INSTIN)
 C
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,7 +93,7 @@ C
       CHARACTER*24 SENSNB
       INTEGER      JSENSN 
       LOGICAL      ISFONC,LPILO,LPIARC,LCTCC
-      LOGICAL      NDYNLO,LDYNA
+      LOGICAL      NDYNLO,LDYNA,LEXGE,LGRFL
       INTEGER      IFM,NIV
 C      
 C ----------------------------------------------------------------------
@@ -121,7 +121,9 @@ C --- FONCTIONNALITES ACTIVEES
 C
       LPILO  = ISFONC(FONACT,'PILOTAGE')
       LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')  
-      LCTCC  = ISFONC(FONACT,'CONT_CONTINU')    
+      LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
+      LEXGE  = NDYNLO(SDDYNA,'EXPL_GENE')
+      LGRFL  = NDYNLO(SDDYNA,'FORCE_FLUIDE')          
 C   
 C --- EXTRACTION VARIABLES CHAPEAUX
 C       
@@ -447,8 +449,18 @@ C
 C --- CHARGEMENT GRAPPE FLUIDE
 C
       IF (LDYNA) THEN
-        CALL NMGRIN(NUMEDD,SDDYNA,VALMOI,NUME  )        
-      ENDIF  
+        IF (LGRFL) THEN
+          CALL NMGRIN(NUMEDD,SDDYNA,VALMOI,NUME  )  
+        ENDIF        
+      ENDIF 
+C
+C --- PROJECTION MODALE EN EXPLICITE
+C
+      IF (LDYNA) THEN
+        IF (LEXGE) THEN
+          CALL NDLOAM(SDDYNA,RESULT,EVONOL,NUME  )
+        ENDIF
+      ENDIF
 C    
       CALL JEDEMA()
       END

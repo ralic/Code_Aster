@@ -3,7 +3,7 @@
      &                  NOPASZ,TYPESE,STYPSE,VECELZ)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -364,7 +364,7 @@ C               LA CARTE QUI EST DANS MATE
                 END IF
 
 C               POUR LES ELEMENTS DE BORD X-FEM
-                CALL JEEXIN(MODELE(1:8)//'.FISS',IER)
+                CALL EXIXFE(MODELE,IER)
 
                 IF (IER.NE.0) THEN
                   LPAIN(NCHIN + 1) = 'PPINTTO'

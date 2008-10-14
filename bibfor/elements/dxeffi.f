@@ -5,7 +5,7 @@
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/02/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,6 @@ C
      &         CDF, KHI(3), N(3), M(3), BF(3,9), MG(3), DH(9), DMF(9),
      &         UF(3,3), UL(6,3), ROT(9)
       REAL*8   QSI, ETA, CARAT3(21)
-      LOGICAL  GRILLE
       CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
 C
@@ -66,17 +65,7 @@ C
 C
 C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 C     --------------------------------------------------------
-      GRILLE = .FALSE.
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-         GRILLE = .TRUE.
-         CALL JEVECH ( 'PDEPLPR', 'L', JDEPL )
-         CALL UTPVGL ( NNO, 6, PGL, ZR(JDEPL), UL )
-         DO 10,INO = 1,NNO
-            UF(1,INO) =  UL(3,INO)
-            UF(2,INO) =  UL(5,INO)
-            UF(3,INO) = -UL(4,INO)
- 10      CONTINUE
-      ELSEIF (NOMTE(1:8).NE.'MEDKTR3 ' .AND.
+      IF (NOMTE(1:8).NE.'MEDKTR3 ' .AND.
      &        NOMTE(1:8).NE.'MEDSTR3 ' .AND.
      &        NOMTE(1:8).NE.'MEDKQU4 ' .AND.
      &        NOMTE(1:8).NE.'MEDSQU4 ' .AND.
@@ -94,19 +83,9 @@ C     ---------------------------
       CALL JEVECH ( 'PCACOQU', 'L', ICACOQ )
       H = ZR(ICACOQ)
       HIC = H/NBCOU
-      IF ( GRILLE ) THEN
-         CALL JEVECH('PMATERC','L',IMATE)
-         NPGH = 1
-         DISTN = ZR(ICACOQ+3)
-         COEF = DEUX
-         ZMIN = -H/DEUX + HIC/DEUX + DISTN
-         CALL GTRIA3 ( XYZL, CARAT3 )
-         CALL GRDMAT(ICACOQ,ZI(IMATE),PGL,DH,ROT)
-      ELSE
-         NPGH = 3
-         DISTN = ZR(ICACOQ+4)
-         ZMIN = -H/DEUX + DISTN
-      END IF
+      NPGH = 3
+      DISTN = ZR(ICACOQ+4)
+      ZMIN = -H/DEUX + DISTN
 
       CALL R8INIR ( 32, ZERO, EFFINT, 1 )
 
@@ -117,24 +96,13 @@ C     -------------------------------------------------
          CALL R8INIR ( 3, ZERO, N, 1 )
          CALL R8INIR ( 3, ZERO, M, 1 )
 
-         IF ( GRILLE ) THEN
-           QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
-           ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
-           CALL DKTBF  ( QSI, ETA, CARAT3, BF )
-           CALL PMRVEC ( 'ZERO', 3, 3*NNO, BF, UF, KHI )
-         END IF
-
          DO 110, ICOU = 1,NBCOU
             DO 120, IGAUH = 1,NPGH
                ICPG = NBCON*NPGH*NBCOU*(IPG-1) + NBCON*NPGH*(ICOU-1) +
      &                                           NBCON*(IGAUH-1)
                IF (IGAUH.EQ.1) THEN
-                  IF ( GRILLE ) THEN
-                     ZIC = ZMIN + (ICOU-1)*HIC
-                  ELSE
-                     ZIC = ZMIN + (ICOU-1)*HIC
-                     COEF = 1.D0/3.D0
-                  END IF
+                  ZIC = ZMIN + (ICOU-1)*HIC
+                  COEF = 1.D0/3.D0
                ELSE IF (IGAUH.EQ.2) THEN
                   ZIC = ZMIN + HIC/2.D0 + (ICOU-1)*HIC
                   COEF = 4.D0/3.D0
@@ -149,17 +117,9 @@ C         ------------------------------------------------------------
                N(1) = N(1) + COEHSD*CONT(ICPG+1)
                N(2) = N(2) + COEHSD*CONT(ICPG+2)
                N(3) = N(3) + COEHSD*CONT(ICPG+4)
-               IF (GRILLE) THEN
-C                LES SEULS MOMENTS SONT DUS A L'EXCENTREMENT
-C                PAS DE RIGIDITE DE FLEXION PROPRE
-                 M(1) = M(1) + ZIC*HIC*CONT(ICPG+1)
-                 M(2) = M(2) + ZIC*HIC*CONT(ICPG+2)
-                 M(3) = M(3) + ZIC*HIC*CONT(ICPG+4)
-               ELSE
-                 M(1) = M(1) + COEHSD*ZIC*CONT(ICPG+1) 
-                 M(2) = M(2) + COEHSD*ZIC*CONT(ICPG+2) 
-                 M(3) = M(3) + COEHSD*ZIC*CONT(ICPG+4) 
-               END IF
+               M(1) = M(1) + COEHSD*ZIC*CONT(ICPG+1) 
+               M(2) = M(2) + COEHSD*ZIC*CONT(ICPG+2) 
+               M(3) = M(3) + COEHSD*ZIC*CONT(ICPG+4) 
  120        CONTINUE
  110     CONTINUE
 C

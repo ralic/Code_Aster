@@ -1,4 +1,4 @@
-# MODIF  DATE 02/06/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 14/10/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE SIMULATION DE L'ESSAI SAFE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,8 @@ TANG_SEC = 'TANGENTE_SECANTE'
 
 SUBD_PAS = 2;
 Nmax = 100;
-Nmaxdb = 20
+#Nmaxdb = 20
+Nmaxdb = 40
 RESI_GLOB_RELA = 1E-7 
 Pas = 1.5E-3
 Tmax = 0.15 

@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
       CHARACTER*8   LERES0, NOPASE, MODEL2
       CHARACTER*16  TYPRES, NOMCMD
       CHARACTER*19  RESUOU, CHAM1, CHAM2, NUAGE1, NUAGE2,METHOD
-      CHARACTER*19  LMA, LNO, LMA1, LNO1, LMA2, LNO2
+      CHARACTER*19  LNO, LNO1, LNO2
       CHARACTER*19  LERES1
       CHARACTER*24 NORECG
       CHARACTER*24 VALK(2)
@@ -182,13 +182,11 @@ C
 C
             DO 100 IOC = 1 , NBOCC
 C
-              LMA1 = '&&LISTE_MA_1'
-              LNO1 = '&&LISTE_NO_1'
-              CALL UTNUAV ( NOMA1, 1, IOC, LMA1, LNO1 )
+              LNO1 = '&&OP0166.LNO1'
+              CALL UTNUAV ( NOMA1, 1, IOC, LNO1 )
 C
-              LMA2 = '&&LISTE_MA_2'
-              LNO2 = '&&LISTE_NO_2'
-              CALL UTNUAV ( NOMA2, 2, IOC, LMA2, LNO2 )
+              LNO2 = '&&OP0166.LNO2'
+              CALL UTNUAV ( NOMA2, 2, IOC, LNO2 )
 C
               NUAGE1 = '&&NUAGE1'
               NUAGE2 = '&&NUAGE2'
@@ -197,12 +195,12 @@ C
 C
               CALL PRONUA ( METHOD , NUAGE1 , NUAGE2 )
 C
-              CALL NUACHP ( NUAGE2 , LMA2 , LNO2 , LERES1 )
+              CALL NUACHP ( NUAGE2 , LNO2 , LERES1 )
 C
               CALL DETRSD ( 'NUAGE', NUAGE1 )
               CALL DETRSD ( 'NUAGE', NUAGE2 )
-              CALL JEDETC ( 'V' , '&&LISTE_' , 1 )
-C
+              CALL JEDETR('&&OP0166.LNO1')
+              CALL JEDETR('&&OP0166.LNO2')
  100       CONTINUE
 C
          ELSE
@@ -221,7 +219,6 @@ C
  22            CONTINUE
             ENDIF
 C
-            LMA = ' '
             LNO = ' '
             NUAGE1 = '&&NUAGE1'
             NUAGE2 = '&&NUAGE2'
@@ -230,7 +227,7 @@ C
 C
             CALL PRONUA ( METHOD , NUAGE1 , NUAGE2 )
 C
-            CALL NUACHP ( NUAGE2 , LMA , LNO , LERES1 )
+            CALL NUACHP ( NUAGE2 , LNO , LERES1 )
 C
             CALL DETRSD ( 'NUAGE', NUAGE1 )
             CALL DETRSD ( 'NUAGE', NUAGE2 )

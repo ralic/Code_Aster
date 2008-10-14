@@ -3,7 +3,7 @@
       REAL*8              XYZL(3,1), PGL(3,1), DEPL(1), EFFG(1)
       CHARACTER*16        NOMTE,OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,16 +35,12 @@ C     IN  DEPL(1)      : VECTEUR DES DEPLACEMENTS AUX NOEUDS
 C     OUT EFFG(1)      : EFFORTS  GENERALISES D'ORIGINE MECANIQUE
 C                        AUX POINTS DE CALCUL
 C     ------------------------------------------------------------------
-      LOGICAL GRILLE
       INTEGER MULTIC
 C     ------------------------------------------------------------------
 C
-      GRILLE = .FALSE.
-      IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
-C
-      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEGRDKT ' .OR.
+      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
      &    NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
-        CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFG,MULTIC,GRILLE)
+        CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFG,MULTIC)
 C
       ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ') THEN
         CALL DSTEDG(XYZL,OPTION,PGL,DEPL,EFFG)

@@ -1,6 +1,6 @@
       SUBROUTINE TE0421 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C
       REAL*8             NU12,NU21,NU13,NU31,NU23,NU32,G12
       INTEGER            NNO,KP,K,NPG,I,ITEMPS,IVECTU,IRET
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      LOGICAL            LTEATT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -190,7 +191,7 @@ C
            A23=0.D0
         ENDIF
 C
-        IF ( NOMTE(3:4) .EQ. 'AX') THEN
+        IF ( LTEATT(' ','AXIS','OUI')) THEN
            POIDS = POIDS*R
            IF (R .NE. 0.D0) THEN
              DO 103 I=1,NNO

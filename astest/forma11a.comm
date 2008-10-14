@@ -1,4 +1,4 @@
-# MODIF  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 14/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE TP ANALYSE MODALE TPAM1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,8 @@
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM='FORMA11A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='FORMA11A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+              IMPR_MACRO='OUI')
 
 # LECTURE ET INFO MAILLAGE
 MA=LIRE_MAILLAGE(INFO=2,VERI_MAIL=_F());
@@ -80,7 +81,26 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                                DRY=0.0,
                                DRZ=0.0,),);
 
+#--------------------------------------------------------------------
+# ANALYSE MODALE
+# QUESTION 1: CALCUL SUR LES 10 OU 11 PLUS PETITES FREQUENCES
+
+# ON LANCE LE CALCUL MODAL AVEC UNE SEULE COMMANDE, CALC_MODAL.
+FREQ_0=CALC_MODAL(MODELE=MO,
+                  CHAM_MATER=CHMAT,
+                  CARA_ELEM=CARELEM,
+                  CHARGE=CH1,
+                  METHODE='TRI_DIAG',
+#                 METHODE='SORENSEN',
+                  CALC_FREQ=_F(OPTION='PLUS_PETITE',
+#                              NMAX_FREQ=10,
+                               NMAX_FREQ=11,
+         ),);
+ 
+
+#------- ON TESTE LA METHODE QZ ------------------------------------
 # CALCULS DES MATRICES DE MASSE ET DE RIGIDITE
+
 MELR1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MO,
                      CHAM_MATER=CHMAT,
@@ -97,19 +117,9 @@ MATASSR1=ASSE_MATRICE(MATR_ELEM=MELR1,
 MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,
                       NUME_DDL=NUM1,);
 
-#--------------------------------------------------------------------
-# ANALYSE MODALE
-# QUESTION 1: CALCUL SUR LES 10 OU 11 PLUS PETITES FREQUENCES
-FREQ_0=MODE_ITER_SIMULT(MATR_A=MATASSR1,
-                        MATR_B=MATASSM1,
-                        METHODE='TRI_DIAG',
-#                        METHODE='SORENSEN',
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-#                                     NMAX_FREQ=10,
-                                      NMAX_FREQ=11,
-         ),);
+# CALCUL DES MODES AVEC MODE_ITER_SIMULT
 
-# ON TESTE LA METHODE QZ
+
 FREQ_01=MODE_ITER_SIMULT(MATR_A=MATASSR1,
                         MATR_B=MATASSM1,
                         METHODE='QZ',

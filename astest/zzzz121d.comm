@@ -1,5 +1,4 @@
-
-# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -484,11 +483,11 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
                    NOM_CHAM='SIGM_NOEU_DEPL',
                    NOM_CMP='SIXX',
                    GROUP_NO='GNP20',
-                   VALE=0.5020733,
+                   VALE=0.502292,
                    CRITERE='RELATIF',
                    PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.28',),
+                   VERSION='9.03.15',),
                 _F(RESULTAT=RESU_3,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_NOEU_DEPL',
@@ -513,11 +512,11 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
                    NOM_CHAM='SIGM_NOEU_DEPL',
                    NOM_CMP='SIXX',
                    GROUP_NO='GNP21',
-                   VALE=1.593207,
+                   VALE=1.5903923,
                    CRITERE='RELATIF',
                    PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.28',),
+                   VERSION='9.03.15',),
                 _F(RESULTAT=RESU_3,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_NOEU_DEPL',

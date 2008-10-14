@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,6 +82,7 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+ly/2.');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',
+                    TYPE_ENRI_FOND='GEOMETRIQUE',
                     RAYON_ENRI=2.,
                     ORIE_FOND=_F(PFON_INI= (0. ,ly/2.    ,lz/2. ),
                                  VECT_ORIE=(0. ,0.       ,1.    ),

@@ -1,7 +1,7 @@
       SUBROUTINE CFDISC(DEFICZ,RESOCZ,TYPALC,TYPALF,FROT3D,MATTAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,27 +201,24 @@ C
 C --- DETECTION SI LIAISONS ACTIVES DE CONTACT OU FROTTEMENT
 C
       IF (RESOCO(1:1).NE.' ') THEN
-        CALL JEEXIN ( RESOCO(1:14)//'.APREAC', ICONTA )
-        IF ( ICONTA .NE. 0 ) THEN
-          COCO = RESOCO(1:14)//'.COCO'
-          CALL JEEXIN(COCO,ICONTA)
-          IF ( ICONTA .EQ. 0 ) THEN
-            GOTO 10
-          ENDIF
+        COCO = RESOCO(1:14)//'.COCO'
+        CALL JEEXIN(COCO,ICONTA)
+        IF ( ICONTA .EQ. 0 ) THEN
+          GOTO 10
+        ENDIF
 
-          CALL JEVEUO(COCO,'L',JCOCO)
-          NBLIAC = ZI(JCOCO+2)
-          LLF    = ZI(JCOCO+5)
+        CALL JEVEUO(COCO,'L',JCOCO)
+        NBLIAC = ZI(JCOCO+2)
+        LLF    = ZI(JCOCO+5)
 
-          IF (NBLIAC.NE.0) THEN
-            TYPALC = ABS(TYPALC)
-          ENDIF
-          IF (LLF.NE.0) THEN
-            TYPALF = ABS(TYPALF)
-          ENDIF
+        IF (NBLIAC.NE.0) THEN
+          TYPALC = ABS(TYPALC)
+        ENDIF
+        IF (LLF.NE.0) THEN
+          TYPALF = ABS(TYPALF)
+        ENDIF
 
-        END IF
-      ENDIF
+      END IF
 
    10 CONTINUE
 

@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 22/09/2008   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF xfem Messages  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,6 +53,26 @@ cata_msg={
   -> Risque & Conseil:
      Veuillez rajouter les mots clés CONTACT manquants 
      dans DEFI_FISS_XFEM.
+"""),
+
+5: _("""
+  -> Attention, vous avez défini un enrichissement géométrique sur %(i1)d
+     couches d'éléments autour du fond de fissure. 
+  -> Risque :
+     Au delà de 7 couches, il y a des risques de pivots nuls lors de la 
+     résolution dans STAT_NON_LINE.
+  -> Conseils :
+     Pour éviter ces risques de pivots nuls, il est conseillé de ne pas 
+     dépasser NB_COUCHES = 7.
+     Vous pouvez aussi laisser NB_COUCHES = %(i1)d, mais il pourra s'avérer
+     nécessaire d'augmenter le nombre maximales de décimales perdues dans 
+     STAT_NON_LINE (mot-clé NPREC de SOLVEUR pour les méthodes LDLT, MULT_FRONT
+     ou FETI.
+"""),
+
+6: _("""
+  -> Le rayon d'enrichissement RAYON_ENRI doit être un réel strictement 
+     supérieur à 0.
 """),
 
 7: _("""
@@ -116,6 +136,10 @@ cata_msg={
        doit etre 3D_XFEM_CONT ou C_PLAN_XFEM_CONT ou D_PLAN_XFEM_CONT.
      - Si le contact n'est pas défini sur les lèvres de la fissure,
        la modélisation doit etre 3D ou C_PLAN ou D_PLAN'.
+"""),
+
+17: _("""
+     il ne faut qu'un mot-clé parmi RAYON_ENRI et NB_COUCHES.
 """),
 
 18: _("""

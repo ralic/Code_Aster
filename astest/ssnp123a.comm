@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -170,8 +170,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='M20',
                NOM_CMP = 'NUEST',
-               VALE = 9.0997286393828E-01,
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.25'),
+               VALE = 1.7025E-03,
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.3.15'),
              ),
             );
 
@@ -184,8 +184,8 @@ TEST_RESU(RESU=(
                NOEUD= 'N6',
                MAILLE='M20',
                NOM_CMP = 'ERREST',
-               VALE = 2.2534342602869E-01,
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.25'),
+               VALE = 4.2158E-04,
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.3.15'),
              ),
             );
 #--------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,9 @@ C     BASE   : BASE DE CREATION
 C     NOMOB1 : NOM DE L' OJB A CREER
 C     MAILVO : SI ORIE_PEAU_3D ("GROUP_MA_VOLU"):
 C                  = LISTE DES MAILLES VOLUMIQUES
+C                    UTILES A LA REORIENTATION
+C              SI ORIE_PEAU_2D ("GROUP_MA_SURF"):
+C                  = LISTE DES MAILLES SURFACIQUES
 C                    UTILES A LA REORIENTATION
 C              SINON: MAILVO N'EST PAS UTILISE
 C     NBMAVO : NB DE MAILLES DE MAILVO 
@@ -118,9 +121,7 @@ C     -----------------
          DO 80 INO = 1,NNOE
             LISNOE(INO) = ZI(P1-1+ZI(P2+NUMA-1)+INO-1)
   80     CONTINUE
-
          NBMAT = ZI(P4+IMA+1-1) - ZI(P4+IMA-1)
-
          NBM = 0
          DO 10 I = 1, NBMAT
             IM2 = ZI(P3+ZI(P4+IMA-1)-1+I-1)

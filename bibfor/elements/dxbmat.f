@@ -4,7 +4,7 @@
       REAL*8       XYZL(3,1) , PGL(3,1), BMAT(8,1), JACGAU, CARA(*)
       CHARACTER*16 NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C                         COURANT
 C     OUT BMAT(6,1)     : MATRICE (B) AU POINT D'INTEGRATION COURANT
 C     ------------------------------------------------------------------
 C
-      IF(NOMTE(1:8).EQ.'MEDKTR3 '.OR.NOMTE(1:8).EQ.'MEGRDKT '.OR.
+      IF(NOMTE(1:8).EQ.'MEDKTR3 '.OR.
      &   NOMTE(1:9).EQ.'MEDKTG3 ') THEN
           CALL DKTB ( CARA, IGAU, JACGAU, BMAT )
 C

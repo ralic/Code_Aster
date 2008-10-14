@@ -1,10 +1,10 @@
       SUBROUTINE DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     &                  GRILLE,ELASCQ,T2EV,T2VE,T1VE)
+     &                  ELASCQ,T2EV,T2VE,T1VE)
       IMPLICIT   NONE
       INTEGER NNO,MULTIC
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
-      LOGICAL GRILLE,ELASCQ
+      LOGICAL ELASCQ
       CHARACTER*4 FAMI
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,13 +24,12 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
 C     MEMBRANE-FLEXION ET CISAILLEMENT POUR UN MATERIAU ISOTROPE OU
 C     MULTICOUCHE
-C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
 C     OUT MULTIC :
 C        1 POUR UN MATERIAU MULTICOUCHE SANS COUPLAGE MEMBRANE-FLEXION
 C        2 POUR UN MATERIAU MULTICOUCHE AVEC COUPLAGE MEMBRANE-FLEXION
@@ -96,18 +95,13 @@ C
       ALPHA = ZR(JCOQU+1)*R8DGRD()
       BETA  = ZR(JCOQU+2)*R8DGRD()
       EXCENT= ZR(JCOQU+4)
-      IF (GRILLE) THEN
-        NCOU=1
-        NPGH=1
+      CALL TECACH('NNN','PNBSP_I',1,JCOU,IRET)
+      IF (IRET.EQ.0 ) THEN
+        NCOU=ZI(JCOU)
+        NPGH=3
       ELSE
-        CALL TECACH('NNN','PNBSP_I',1,JCOU,IRET)
-        IF (IRET.EQ.0 ) THEN
-          NCOU=ZI(JCOU)
-          NPGH=3
-        ELSE
-          NPGH=1
-          NCOU=1
-        ENDIF
+        NPGH=1
+        NCOU=1
       ENDIF
       DX = COS(BETA)*COS(ALPHA)
       DY = COS(BETA)*SIN(ALPHA)
@@ -331,120 +325,83 @@ C LE CALCUL EFFECTIF DU SECOND MEMBRE FERA PAR APPEL A VECHDE
         END IF
 
         MULTIC = 0
+        KCIS = 5.D0/6.D0
 
-        IF (GRILLE) THEN
-          CALL JEVECH('PCACOQU','L',ICACOQ)
-          CTOR  = ZR(ICACOQ+4)
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
-          YOUNG1 = YOUNG
-          YOUNG2 = 0.D0
-          CALL R8INIR(9,0.D0, DH,1)
-          CALL R8INIR(9,0.D0,DMF,1)
-          CALL R8INIR(4,0.D0, DC,1)
-          CALL R8INIR(4,0.D0,DCI,1)
-          DH(1,1) = YOUNG1
-          DH(2,2) = YOUNG2
-          DH(3,3) = YOUNG1*CTOR
-
-C   MATRICE PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
-
-          CALL GRIROT(ALPHA,BETA,PGL,ROT,C,S)
-
-C   PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
-
-          CALL UTBTAB('ZERO',3,3,DH,ROT,XAB1,DH)
-
-C        --- CALCUL DES MATRICES DE RIGIDITE EN MEMBRANE ET FLEXION --
-
-          CDF = EPAIS*EPAIS*EPAIS/12.D0
-          DO 40 J = 1,3
-            DO 30 I = 1,3
-              DM(I,J) = DH(I,J)*EPAIS
-C              DF(I,J) = DH(I,J)*CDF
-C              SUPPRESSION DE LA RIGIDITE DE FLEXION PROPRE
-              DF(I,J) = 0.D0
-   30       CONTINUE
-   40     CONTINUE
-        ELSE
-
-          KCIS = 5.D0/6.D0
-
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
-          CDF = YOUNG*EPAIS*EPAIS*EPAIS/12.D0/ (1.D0-NU*NU)
-          DO 50 K = 1,9
-             DF(K,1) = 0.D0
-            DMF(K,1) = 0.D0
-   50     CONTINUE
-          DF(1,1) = CDF
-          DF(1,2) = CDF*NU
+C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
+        CDF = YOUNG*EPAIS*EPAIS*EPAIS/12.D0/ (1.D0-NU*NU)
+        DO 50 K = 1,9
+           DF(K,1) = 0.D0
+          DMF(K,1) = 0.D0
+   50   CONTINUE
+        DF(1,1) = CDF
+        DF(1,2) = CDF*NU
+        DF(2,1) = DF(1,2)
+        DF(2,2) = DF(1,1)
+        DF(3,3) = CDF* (1.D0-NU)/2.D0
+        IF(DERIVE(1:2).EQ.'NU') THEN
+          DF(1,1) = DF(1,1)*2.D0*NU/(1.D0-NU*NU)
+          DF(1,2) = DF(1,2)*(1.D0+NU*NU)/(NU*(1.D0-NU*NU))
           DF(2,1) = DF(1,2)
           DF(2,2) = DF(1,1)
-          DF(3,3) = CDF* (1.D0-NU)/2.D0
-          IF(DERIVE(1:2).EQ.'NU') THEN
-            DF(1,1) = DF(1,1)*2.D0*NU/(1.D0-NU*NU)
-            DF(1,2) = DF(1,2)*(1.D0+NU*NU)/(NU*(1.D0-NU*NU))
-            DF(2,1) = DF(1,2)
-            DF(2,2) = DF(1,1)
-            DF(3,3) = -DF(3,3)/(1.D0+NU)
-          ELSE IF(DERIVE(1:2).EQ.'EP') THEN
-            DO 51 I = 1,3
-            DO 51 J = 1,3
-              DF(I,J) = DF(I,J)*3.D0/EPAIS
-   51       CONTINUE
-          ENDIF
-C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
-          CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
-          DO 60 K = 1,9
-            DM(K,1) = 0.D0
-   60     CONTINUE
-          DM(1,1) = CDM
-          DM(1,2) = CDM*NU
+          DF(3,3) = -DF(3,3)/(1.D0+NU)
+        ELSE IF(DERIVE(1:2).EQ.'EP') THEN
+          DO 51 I = 1,3
+          DO 51 J = 1,3
+            DF(I,J) = DF(I,J)*3.D0/EPAIS
+   51     CONTINUE
+        ENDIF
+C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
+        CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
+        DO 60 K = 1,9
+          DM(K,1) = 0.D0
+   60   CONTINUE
+        DM(1,1) = CDM
+        DM(1,2) = CDM*NU
+        DM(2,1) = DM(1,2)
+        DM(2,2) = DM(1,1)
+        DM(3,3) = CDM* (1.D0-NU)/2.D0
+        IF(DERIVE(1:2).EQ.'NU') THEN
+          DM(1,1) = DM(1,1)*2.D0*NU/(1.D0-NU*NU)
+          DM(1,2) = DM(1,2)*(1.D0+NU*NU)/(NU*(1.D0-NU*NU))
           DM(2,1) = DM(1,2)
           DM(2,2) = DM(1,1)
-          DM(3,3) = CDM* (1.D0-NU)/2.D0
-          IF(DERIVE(1:2).EQ.'NU') THEN
-            DM(1,1) = DM(1,1)*2.D0*NU/(1.D0-NU*NU)
-            DM(1,2) = DM(1,2)*(1.D0+NU*NU)/(NU*(1.D0-NU*NU))
-            DM(2,1) = DM(1,2)
-            DM(2,2) = DM(1,1)
-            DM(3,3) = -DM(3,3)/(1.D0+NU)
-          ELSE IF(DERIVE(1:2).EQ.'EP') THEN
-            DO 52 I = 1,3
-            DO 52 J = 1,3
-              DM(I,J) = DM(I,J)/EPAIS
-   52       CONTINUE
-          ENDIF
-C        --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
-          GCIS = YOUNG/2.D0/ (1.D0+NU)
-          CDC = GCIS*KCIS*EPAIS
-          DC(1,1) = CDC
+          DM(3,3) = -DM(3,3)/(1.D0+NU)
+        ELSE IF(DERIVE(1:2).EQ.'EP') THEN
+          DO 52 I = 1,3
+          DO 52 J = 1,3
+            DM(I,J) = DM(I,J)/EPAIS
+   52     CONTINUE
+        ENDIF
+C      --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
+        GCIS = YOUNG/2.D0/ (1.D0+NU)
+        CDC = GCIS*KCIS*EPAIS
+        DC(1,1) = CDC
+        DC(2,2) = DC(1,1)
+        DC(1,2) = 0.D0
+        DC(2,1) = 0.D0
+        IF(DERIVE(1:2).EQ.'NU') THEN
+          DC(1,1) = -DC(1,1)/(1.D0+NU)
           DC(2,2) = DC(1,1)
-          DC(1,2) = 0.D0
-          DC(2,1) = 0.D0
-          IF(DERIVE(1:2).EQ.'NU') THEN
-            DC(1,1) = -DC(1,1)/(1.D0+NU)
-            DC(2,2) = DC(1,1)
-          ELSE IF(DERIVE(1:2).EQ.'EP') THEN
-            DO 53 I = 1,3
-            DO 53 J = 1,3
-              DC(I,J) = DC(I,J)/EPAIS
-   53       CONTINUE
-          ENDIF
-C        --- CALCUL DE SON INVERSE ------------------------------------
-          DCI(1,1) = 1.D0/DC(1,1)
-          DCI(2,2) = DCI(1,1)
-          DCI(1,2) = 0.D0
-          DCI(2,1) = 0.D0
-C        --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------
-C        --- ET REACTUALISATION DE LA MATRICE DE FLEXION       --------
-C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
-          DO 70 I = 1, 3
-          DO 70 J = 1, 3
-            DMF(I,J) =                  EXCENT*DM(I,J)
-            DF (I,J) = DF(I,J) + EXCENT*EXCENT*DM(I,J)
-  70      CONTINUE
+        ELSE IF(DERIVE(1:2).EQ.'EP') THEN
+          DO 53 I = 1,3
+          DO 53 J = 1,3
+            DC(I,J) = DC(I,J)/EPAIS
+   53     CONTINUE
+        ENDIF
+C      --- CALCUL DE SON INVERSE ------------------------------------
+        DCI(1,1) = 1.D0/DC(1,1)
+        DCI(2,2) = DCI(1,1)
+        DCI(1,2) = 0.D0
+        DCI(2,1) = 0.D0
+C      --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------
+C      --- ET REACTUALISATION DE LA MATRICE DE FLEXION       --------
+C      --- DANS LE CAS D'UN EXCENTREMENT                     --------
+        DO 70 I = 1, 3
+        DO 70 J = 1, 3
+          DMF(I,J) =                  EXCENT*DM(I,J)
+          DF (I,J) = DF(I,J) + EXCENT*EXCENT*DM(I,J)
+  70    CONTINUE
 
-        END IF
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
@@ -452,7 +409,6 @@ C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
      &              NOMRES,VALRES,CODRET,'FM')
         IF (ELASCO.EQ.1) THEN
           MULTIC = 0
-          CALL ASSERT(.NOT.GRILLE)
 
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
           DM(1,1) = VALRES(1)

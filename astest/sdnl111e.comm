@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,7 @@ TEST_RESU(
                   GROUP_NO = 'N1',
                   NOM_CMP = 'DZ',
                   VALE = -1.05E-4,
-                  PRECISION = (0.05, 1.E-7),
+                  PRECISION = (0.0001, 1.E-7),
                   REFERENCE='ANALYTIQUE',
                   CRITERE = 'RELATIF'),
             _F(
@@ -137,7 +137,7 @@ TEST_RESU(
                   GROUP_NO = 'N1',
                   NOM_CMP = 'DZ',
                   VALE = -1.55E-4,
-                  PRECISION = (0.05, 1.E-7),
+                  PRECISION = (0.003, 1.E-7),
                   REFERENCE='ANALYTIQUE',
                   CRITERE = 'RELATIF'),
             _F(
@@ -147,7 +147,7 @@ TEST_RESU(
                   GROUP_NO = 'N1',
                   NOM_CMP = 'DZ',
                   VALE = -5.54E-5,
-                  PRECISION = (0.05, 1.E-7),
+                  PRECISION = (0.002, 1.E-7),
                   REFERENCE='ANALYTIQUE',
                   CRITERE = 'RELATIF'),
             _F(
@@ -157,7 +157,7 @@ TEST_RESU(
                   GROUP_NO = 'N1',
                   NOM_CMP = 'DZ',
                   VALE = 9.92E-5,
-                  PRECISION = (0.05, 1.E-7),
+                  PRECISION = (0.06, 1.E-7),
                   REFERENCE='ANALYTIQUE',
                   CRITERE = 'RELATIF'),
             _F(
@@ -167,7 +167,7 @@ TEST_RESU(
                   GROUP_NO = 'N1',
                   NOM_CMP = 'DZ',
                   VALE = 2.99E-4,
-                  PRECISION = (0.05, 1.E-7),
+                  PRECISION = (0.02, 1.E-7),
                   REFERENCE='ANALYTIQUE',
                   CRITERE = 'RELATIF'),
                   ),)

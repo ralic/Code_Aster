@@ -1,7 +1,7 @@
       SUBROUTINE TE0599 ( OPTION , NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
       INTEGER            ITHETA
 C
       LOGICAL THTNUL
-      LOGICAL AXI
+      LOGICAL AXI,LTEATT
       CHARACTER*8        ELREFE
 C     -----------------------------------------------------------------
 C====
@@ -120,11 +120,8 @@ C 2.1. ==> FIN DES INITIALISATIONS
 C
       CALL JEVECH('PSOURCR','L',ISOUR)
 C
-      IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
-        AXI = .TRUE.
-      ELSE
-        AXI = .FALSE.
-      ENDIF
+      AXI = .FALSE.
+      IF ( LTEATT(' ','AXIS','OUI')) AXI = .TRUE.
 C
 
 C BOUCLE SUR LES SOUS-ELEMENTS

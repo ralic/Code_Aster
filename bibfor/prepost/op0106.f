@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+C MODIF PREPOST  DATE 13/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,6 +158,7 @@ C -- SENSIBILITE : NOMBRE DE PASSAGES
 C              12   345678
       K8BID = '&&'//NOMPRO
       IAUX = 1
+      IBID = 1
       CALL PSLECT(' ',IBID,K8BID,RESUCO,IAUX,NBPASE,INPSCO,IRET)
       IAUX = 1
       JAUX = 1

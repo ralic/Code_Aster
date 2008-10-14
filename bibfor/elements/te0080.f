@@ -1,6 +1,6 @@
       SUBROUTINE TE0080 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C
       CHARACTER*8        NOMPAR(NBRES), ELREFE
       REAL*8             VALPAR(NBRES),DFDX(9),DFDY(9),POIDS,R,Z,SOUR
       REAL*8             COORSE(18),VECTT(9),THETA,SOUN,SOUNP1
+      LOGICAL            LTEATT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -91,7 +92,7 @@ C
             R = R + COORSE(2*(I-1)+1) * ZR(IVF+K+I-1)
             Z = Z + COORSE(2*(I-1)+2) * ZR(IVF+K+I-1)
 102       CONTINUE
-          IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+          IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
           VALPAR(1) = R
           VALPAR(2) = Z
           VALPAR(3) = ZR(ITEMPS)

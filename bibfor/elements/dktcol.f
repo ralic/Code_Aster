@@ -1,13 +1,12 @@
       SUBROUTINE DKTCOL ( FAMI,XYZL, OPTION, PGL, ICOU, INIV, DEPL,
-     +                    CDL, MULTIC, GRILLE )
+     +                    CDL, MULTIC )
       IMPLICIT  NONE
       INTEGER       ICOU, INIV, MULTIC
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
-      LOGICAL       GRILLE
       CHARACTER*16  OPTION
       CHARACTER*4   FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,8 +32,6 @@ C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
 C     IN  ICOU   : NUMERO DE LA COUCHE
 C     IN  INIV   : NIVEAU DANS LA COUCHE (-1:INF , 0:MOY , 1:SUP)
 C     IN  DEPL   : DEPLACEMENTS
-C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
-C          3 POUR UN MATERIAU ORTHOTROPE (MEGRDKT / MEGRDKQ)
 C     OUT CDL    : CONTRAINTES OU DEFORMATIONS AUX NOEUDS DANS LE REPERE
 C                  INTRINSEQUE A L'ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -55,7 +52,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER       NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG
-      REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,DISTN,EXCEN
+      REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,EXCEN
       REAL*8        DEPF(9),DEPM(6),VT(2),LAMBDA(4)
       REAL*8        DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
       REAL*8        H(3,3),D1I(2,2),D2I(2,4),BF(3,9),BM(3,6)
@@ -85,22 +82,16 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
       CALL GTRIA3 ( XYZL, CARAT3 )
 
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DMATEL(FAMI,DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,GRILLE,T2EV,
+      CALL DMATEL(FAMI,DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,T2EV,
      +                                                 T2VE,T1VE,NPG)
 
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
-      IF (MULTIC.EQ.0 .OR. GRILLE) THEN
+      IF (MULTIC.EQ.0) THEN
 
         CALL JEVECH('PCACOQU','L',JCACO)
         EPAIS = ZR(JCACO)
         X3I = 0.D0
-        IF (GRILLE) X3I = ZR(JCACO+3)
-        IF ((.NOT.GRILLE)) THEN
-           EXCEN = ZR(JCACO+5-1)
-        ELSE
-           EXCEN = ZR(JCACO+4-1)
-        ENDIF
-
+        EXCEN = ZR(JCACO+5-1)
         IF (INIV.LT.0) THEN
           X3I = X3I - EPAIS/DEUX + EXCEN
         ELSE IF (INIV.GT.0) THEN
@@ -138,19 +129,10 @@ C     ------ SM = BM.DEPM ----------------------------------------------
    50   CONTINUE
    60 CONTINUE
 
-      IF (GRILLE) THEN
-        DO 70 I = 1,2
-          VT(I) = 0.D0
-   70   CONTINUE
-      ELSE
-
 C     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
-        CALL DSXHFT ( DF, CARAT3(9), HFT2 )
+      CALL DSXHFT ( DF, CARAT3(9), HFT2 )
 C     ------ VT = HFT2.TKT.DEPF ---------------------------------------
-        CALL DKTTXY ( CARAT3(16), CARAT3(13), HFT2, DEPF, VT )
-
-      END IF
-
+      CALL DKTTXY ( CARAT3(16), CARAT3(13), HFT2, DEPF, VT )
 
       IF (OPTION(1:4).EQ.'EPSI') THEN
 C         ---------------------
@@ -192,7 +174,7 @@ C        ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
         CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
         CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
 
-        IF (MULTIC.GT.0 .AND. (.NOT.GRILLE)) THEN
+        IF (MULTIC.GT.0) THEN
 C           ------- CALCUL DU PRODUIT HL.T2 ---------------------------
           CALL DSXHLT ( DF, CARAT3(9), HLT2 )
 C           ------ LAMBDA = HLT2.TKT.DEPF -----------------------------
@@ -241,16 +223,14 @@ C        ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
         CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
         CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
 
-        DISTN = 0.D0
         IF (MULTIC.EQ.0) THEN
           CALL JEVECH ( 'PCACOQU', 'L', JCACO )
           EPAIS = ZR(JCACO)
-          IF (GRILLE) DISTN = ZR(JCACO+3)
         ELSE
           CALL JEVECH ( 'PMATERC', 'L', JMATE )
         ENDIF
 
-        IF (MULTIC.GT.0 .AND. (.NOT.GRILLE)) THEN
+        IF (MULTIC.GT.0) THEN
 C           ------- CALCUL DU PRODUIT HL.T2 ---------------------------
           CALL DSXHLT ( DF, CARAT3(9), HLT2 )
 C           ------ LAMBDA = HLT2.TKT.DEPF -----------------------------
@@ -278,7 +258,6 @@ C           ------ SF = BF.DEPF ---------------------------------------
 
           DO 320 IC = 1 , ICOU
 
-            DISTN = 0.D0
             IF (MULTIC.NE.0) THEN
               CALL CODENT ( IC, 'G', NUM )
               CALL CODENT (  1, 'G', VAL )
@@ -287,11 +266,7 @@ C           ------ SF = BF.DEPF ---------------------------------------
      +                      1, NOMRES, EPAIS, CODRET, 'FM' )
             END IF
             HIC  =  EPAIS/ICOU
-            IF (GRILLE) THEN
-              ZMIN = -EPAIS/DEUX + HIC/DEUX + DISTN
-            ELSE
-              ZMIN = -EPAIS/DEUX
-            END IF
+            ZMIN = -EPAIS/DEUX
 
             DO 330, IG = 1 , INIV
 

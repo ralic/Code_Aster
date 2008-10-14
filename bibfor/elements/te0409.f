@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -166,7 +166,7 @@ C
 C     ---------------------------------------------------------------
 C
         IF (NOMTE.EQ.'MEDKTG3') THEN
-          CALL DKTRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,.FALSE.)
+          CALL DKTRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER,MULTIC)
         ELSE IF (NOMTE.EQ.'MEDKQG4') THEN
           CALL DKQRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         END IF
@@ -188,7 +188,7 @@ C
      &         OPTION.EQ.'ECIN_ELEM_DEPL') THEN
 C     --------------------------------------
         IF (NOMTE.EQ.'MEDKTG3') THEN
-          CALL DKTMAS(XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,.FALSE.)
+          CALL DKTMAS(XYZL,OPTION,PGL,MATLOC,ENER,MULTIC)
         ELSE IF (NOMTE.EQ.'MEDKQG4') THEN
           CALL DKQMAS(XYZL,OPTION,PGL,MATLOC,ENER)
         END IF

@@ -1,6 +1,6 @@
       SUBROUTINE AFFICH (NOMFIC,TEXTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 02/06/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 13/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,19 +23,30 @@ C
       CHARACTER*(*) NOMFIC
       INTEGER       IFM, IUNIFI, GTNPRO, IER
       LOGICAL       OUVERT
+      INTEGER       ISJVUP
 C     ----------------------------------------------------------------
       OUVERT = .TRUE.
       IFM = IUNIFI (NOMFIC)
+C
+C --- SI JEVEUX N'EST PAS DISPONIBLE (PAS INITIALISE OU FERME)
+C     ON SE CONTENTE DU WRITE BRUT
+C
+      IF ( ISJVUP() .EQ. 0 ) THEN
+C
+         WRITE(IFM,'(A)') TEXTE
+C
+      ELSE
 C        LE FICHIER EST-IL OUVERT ?
-      INQUIRE ( UNIT=IFM, OPENED=OUVERT, IOSTAT=IER)
-      IF (IER.EQ.0 .AND. .NOT.OUVERT) THEN
-         CALL ULDEFI(IFM,' ',' ','A','A','O')
-      ENDIF
+         INQUIRE ( UNIT=IFM, OPENED=OUVERT, IOSTAT=IER)
+         IF (IER.EQ.0 .AND. .NOT.OUVERT) THEN
+            CALL ULDEFI(IFM,' ',' ','A','A','O')
+         ENDIF
 C
-      WRITE(IFM,'(A)') TEXTE
+         WRITE(IFM,'(A)') TEXTE
 C
-      IF (.NOT. OUVERT) THEN
-         CALL ULDEFI(-IFM, ' ', ' ', 'A', 'A', 'O')
+         IF (.NOT. OUVERT) THEN
+            CALL ULDEFI(-IFM, ' ', ' ', 'A', 'A', 'O')
+         ENDIF
       ENDIF
 C
       END

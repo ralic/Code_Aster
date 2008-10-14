@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -289,6 +289,6 @@ ETA_PILO=RECU_FONCTION(RESULTAT=RESUPILO,
 TEST_FONCTION(VALEUR=( _F(FONCTION=ETA_PILO,
                          NOM_PARA='INST',
                          VALE_PARA=1.6,
-                         VALE_REFE=5.66,
+                         VALE_REFE=5.67,
                          REFERENCE='NON_REGRESSION',),),);
 FIN();

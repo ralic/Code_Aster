@@ -1,6 +1,6 @@
       SUBROUTINE TE0092 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C
       REAL*8             SXX,SXY,SYY
       INTEGER            NNO,KP,K,NPG,II,JJ,I,J,IMATUU,KD1,KD2,IJ1,IJ2
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,ICONTR,KC
+      LOGICAL            LTEATT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -61,7 +62,7 @@ C
 C
       AXIS=ZERO
       R   =UN
-      IF ( NOMTE(3:4) .EQ. 'AX' ) AXIS=UN
+      IF ( LTEATT(' ','AXIS','OUI') ) AXIS=UN
 C
       DO 101 KP=1,NPG
         K=(KP-1)*NNO

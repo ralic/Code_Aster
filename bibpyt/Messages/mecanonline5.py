@@ -1,5 +1,22 @@
-#@ MODIF mecanonline5 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline5 Messages  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
 
 def _(x) : return x
 
@@ -46,9 +63,8 @@ en accélération est possible
  Pour un schéma de type THETA, seule les formulations en vitesse et en déplacement sont possibles
 """),
 
-
 19 : _("""
-Il y plus d'amortissements modaux (AMOR_MODAL) que de modes.
+Il y a plus d'amortissements modaux (AMOR_MODAL) que de modes.
 """),
 
 20 : _("""
@@ -98,6 +114,36 @@ Les poutres en grandes rotations POU_D_T_GD et POU_D_TGM sont interdits.
 28 : _("""
 Dynamique non-linéaire
 La méthode XFEM n'est pas possible.
+"""),
+
+
+29 : _("""
+Vous faites de la projection modale PROJ_MODAL en explicite.
+Il y a %(i1)d  modes dans la structure MODE_MECA.
+Le nombre de modes (mot-clef NB_MODE dans PROJ_MODAL) vaut %(i2)d.
+On prend donc %(i3)d modes.
+"""),
+
+30 : _("""
+Vous faites de l'amortissement modal (réduit ou non).
+Il y a %(i1)d  modes dans la structure MODE_MECA.
+Le nombre de modes (mot-clef NB_MODE dans AMOR_MODAL) vaut %(i2)d.
+On prend donc %(i3)d modes.
+"""),
+
+31 : _("""
+Vous faites de la projection modale PROJ_MODAL en explicite en reprise.
+Il n'y a pas de modes stockés lors du calcul précédent.
+On part donc de depl/vite/acce généralisés nuls.
+"""),
+
+
+32 : _("""
+La SD evol_noli utilisée dans REST_BASE_PHYS ne contient pas les 
+champs généralisés.
+Verifiez qu'il s'agit du meme concept que celui utilisé dans le DYNA_NON_LINE, 
+option PROJ_MODAL et que l'archivage a été fait (mot-clef ARCHIVAGE de DYNA_NON_LINE)
+
 """),
 
 44 : _("""

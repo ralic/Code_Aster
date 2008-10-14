@@ -6,7 +6,7 @@
       CHARACTER*16       NOMTE, OPTION
       CHARACTER*4        FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,12 +56,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       MULTIC, JMATE
-      LOGICAL       GRILLE,LTEATT
       CHARACTER*2   CODRET(56)
       CHARACTER*10  PHENOM
 C     ------------------------------------------------------------------
-
-      GRILLE= LTEATT(' ','GRILLE','OUI')
 
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
@@ -69,10 +66,9 @@ C     ------------------------------------------------------------------
       IF ((PHENOM.EQ.'ELAS') .OR. (PHENOM.EQ.'ELAS_COQMU').OR.
      & (PHENOM.EQ.'ELAS_COQUE')) THEN
 
-        IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEGRDKT '.OR.
+        IF (NOMTE(1:8).EQ.'MEDKTR3 '.OR.
      &      NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
-          CALL DKTCOL(FAMI,XYZL,OPTION,PGL,IC,INIV,DEPL,SIGM,MULTIC,
-     &                GRILLE)
+          CALL DKTCOL(FAMI,XYZL,OPTION,PGL,IC,INIV,DEPL,SIGM,MULTIC)
         ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ') THEN
           CALL DSTCOL(FAMI,XYZL,OPTION,PGL,IC,INIV,DEPL,SIGM,NPG)
         ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.

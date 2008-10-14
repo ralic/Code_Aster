@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     ----------------------------------------------------
       CALL JEVECH('PGEOMER','L',JGEOM)
 C
       IF (NOMTE.EQ.'MEDKTR3 ' .OR. NOMTE.EQ.'MEDSTR3 ' .OR.
-     &    NOMTE.EQ.'MEGRDKT'  .OR. NOMTE.EQ.'MEDKTG3 ') THEN
+     &    NOMTE.EQ.'MEDKTG3 ') THEN
          NNO = 3
          CALL DXTPGL(ZR(JGEOM),PGL)
       ELSE IF (NOMTE.EQ.'MEDKQU4 ' .OR.

@@ -1,7 +1,7 @@
       SUBROUTINE TE0295(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,9 +127,13 @@ C RECUPERATION CHARGE, MATER...
         CALL JEVECH('PTEMPSR','L',ITEMPS)
         NOMPAR(1) = 'X'
         NOMPAR(2) = 'Y'
-        NOMPAR(3) = 'Z'
-        NOMPAR(4) = 'INST'
-        VALPAR(4) = ZR(ITEMPS)
+        VALPAR(NDIM+1) = ZR(ITEMPS)
+        IF (NDIM.EQ.2) THEN
+          NOMPAR(3) = 'INST'
+        ELSEIF (NDIM.EQ.3) THEN
+          NOMPAR(3) = 'Z'
+          NOMPAR(4) = 'INST'
+        ENDIF        
         CALL TECACH('ONN','PEPSINF',1,IEPSR,IRET)
       ELSE
         FONC =.FALSE.
@@ -184,7 +188,8 @@ C
  30       CONTINUE
           DO 40 J = 1,NDIM
             KK = NDIM*(I-1) + J
-            CALL FOINTE('FM',ZK8(IFORF+J-1),3,NOMPAR,VALPAR,FNO(KK),IER)
+            CALL FOINTE('FM',ZK8(IFORF+J-1),NDIM+1,NOMPAR,VALPAR,
+     &                                               FNO(KK),IER)
  40       CONTINUE
  50     CONTINUE
       ELSE

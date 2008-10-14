@@ -1,6 +1,6 @@
       SUBROUTINE TE0242 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER            ICOMP,ITEMPI,IMATTT,JGANO,IPOID2,NPG2
       INTEGER            C(6,9),ISE,NSE,NNOP2,IVF2,IDFDE2
       INTEGER            ISECHF,ISECHI
+      LOGICAL            LTEATT
 C DEB ------------------------------------------------------------------
       CALL ELREF1(ELREFE)
       IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
@@ -129,7 +130,7 @@ C ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
               R      = R      + COORSE(2*(I-1)+1)     * ZR(IVF+K+I-1)
               TPGI   = TPGI   + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF+K+I-1)
 102         CONTINUE
-            IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+            IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
             CALL RCFODE (IFON(2),TPGI,LAMBDA,R8BID)
 C
             IJ = IMATTT - 1
@@ -159,7 +160,7 @@ C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
               R      = R      + COORSE(2*(I-1)+1)     * ZR(IVF2+K+I-1)
               TPGI   = TPGI   + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF2+K+I-1)
 402         CONTINUE
-            IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+            IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
             CALL RCFODE (IFON(1),TPGI,R8BID, RHOCP)
 C
             IJ = IMATTT - 1
@@ -189,7 +190,7 @@ C ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
               TPG    = TPG    + ZR(ITEMPI-1+C(ISE,I)) *ZR(IVF+K+I-1)
               TPSEC  = TPSEC  + ZR(ISECHF-1+C(ISE,I)) *ZR(IVF+K+I-1)
 201         CONTINUE
-            IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+            IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
             CALL RCDIFF(ZI(IMATE), ZK16(ICOMP), TPSEC, TPG, DIFF )
 C
             IJ = IMATTT - 1
@@ -217,7 +218,7 @@ C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
             DO 302 I=1,NNO
               R      = R      + COORSE(2*(I-1)+1)     *ZR(IVF2+K+I-1)
 302         CONTINUE
-            IF ( NOMTE(3:4) .EQ. 'AX' ) POIDS = POIDS*R
+            IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
 C
             IJ = IMATTT - 1
             DO 303 I=1,NNO

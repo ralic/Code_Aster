@@ -3,7 +3,7 @@
      &                  POUGD ,SOLALG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -95,7 +95,7 @@ C
       REAL*8       COERIG,COEAMO,COEMAS
       REAL*8       COEEXT,COEINT,COEEQU,COEEX2  
       INTEGER      IRET,IMODE
-      INTEGER      NEQ,NBMODE
+      INTEGER      NEQ,NBMODP
       REAL*8       COEFD(3),COEFV(3),COEFA(3)         
       REAL*8       COEDEP,COEVIT,COEACC
       REAL*8       COERMA,COERAM,COERRI
@@ -468,30 +468,35 @@ C --- INITIALISATION DES DEPL. GENERALISES SI PROJECTION MODALE
 C
       IF (LEXGE) THEN
         SDPRMO = NDYNKK(SDDYNA,'PROJ_MODAL') 
-        DEPGEM = SDPRMO(1:14)//'.DGEN'
-        VITGEM = SDPRMO(1:14)//'.VGEN'
-        ACCGEM = SDPRMO(1:14)//'.AGEN'         
-        DEPGEP = SDPRMO(1:14)//'.DGEN'
+        DEPGEM = SDPRMO(1:14)//'.DGEM'
+        VITGEM = SDPRMO(1:14)//'.VGEM'
+        ACCGEM = SDPRMO(1:14)//'.AGEM'         
+        DEPGEP = SDPRMO(1:14)//'.DGEP'
         VITGEP = SDPRMO(1:14)//'.VGEP'
-        ACCGEP = SDPRMO(1:14)//'.AGEP'               
-        CALL JELIRA(DEPGEM,'LONUTI',NBMODE,K8BID)   
+        ACCGEP = SDPRMO(1:14)//'.AGEP'   
+        NBMODP = NDYNIN(SDDYNA,'NBRE_MODE_PROJ')              
         CALL JEVEUO(ACCGEM,'E',JACCGM)
         CALL JEVEUO(ACCGEP,'E',JACCGP)
         CALL JEVEUO(VITGEM,'E',JVITGM)
         CALL JEVEUO(VITGEP,'E',JVITGP)
         CALL JEVEUO(DEPGEM,'E',JDEPGM)
         CALL JEVEUO(DEPGEP,'E',JDEPGP)          
-        CALL DCOPY(NBMODE,ZR(JDEPGM),1,ZR(JDEPGP),1)
-        CALL DCOPY(NBMODE,ZR(JVITGM),1,ZR(JVITGP),1)
-        CALL DCOPY(NBMODE,ZR(JACCGM),1,ZR(JACCGP),1)                
+        CALL DCOPY(NBMODP,ZR(JDEPGM),1,ZR(JDEPGP),1)
+        CALL DCOPY(NBMODP,ZR(JVITGM),1,ZR(JVITGP),1)
+        CALL DCOPY(NBMODP,ZR(JACCGM),1,ZR(JACCGP),1)                
 C
 C --- PREDICTION DEPLACEMENT GENERALISE
 C              
-        DO 54 IMODE = 1,NBMODE
+        DO 54 IMODE = 1,NBMODP
           ZR(JDEPGP+IMODE-1) = ZR(JDEPGM+IMODE-1) 
-     &                    + COEFD(1)*ZR(JVITGM+IMODE-1)
-     &                    + COEFD(2)*ZR(JACCGM+IMODE-1)
+     &                    + COEFD(2)*ZR(JVITGM+IMODE-1)
+     &                    + COEFD(3)*ZR(JACCGM+IMODE-1)
    54   CONTINUE
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... PRED. DEPL. GENE'
+          CALL NMDEBG('VECT',DEPGEP,IFM)                                
+        ENDIF  
+C
       ENDIF    
 C    
       CALL JEDEMA()

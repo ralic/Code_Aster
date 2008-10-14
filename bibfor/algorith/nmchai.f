@@ -1,7 +1,7 @@
       INTEGER FUNCTION NMCHAI(TYCHAP,TYVARI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -145,7 +145,9 @@ C
         ELSEIF (TYVARI.EQ.'CNVCF0') THEN
           NMCHAI = 24
         ELSEIF (TYVARI.EQ.'CNIMPC') THEN
-          NMCHAI = 25                                            
+          NMCHAI = 25  
+        ELSEIF (TYVARI.EQ.'CNUSUR') THEN
+          NMCHAI = 26
         ELSE    
           CALL ASSERT(.FALSE.)
         ENDIF      
@@ -221,7 +223,9 @@ C
         ELSEIF (TYVARI.EQ.'CNFEXT') THEN
           NMCHAI = 36  
         ELSEIF (TYVARI.EQ.'CNIMPC') THEN
-          NMCHAI = 37          
+          NMCHAI = 37 
+        ELSEIF (TYVARI.EQ.'CNUSUR') THEN
+          NMCHAI = 38                     
         ELSE    
           CALL ASSERT(.FALSE.)
         ENDIF 

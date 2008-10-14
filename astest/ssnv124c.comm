@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DE CHARGE LIMITE EN AXI - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,10 +85,6 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MULT_FRONT',
                               RENUM='MDA',),);
 
-RESU=CALC_ELEM(reuse =RESU,
-               RESULTAT=RESU,
-               OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
-
 ECHL=POST_ELEM(CHAR_LIMITE=_F(),
                RESULTAT=RESU,);
 #--------------------------------------------------------------
@@ -103,33 +99,5 @@ TEST_TABLE(TABLE=ECHL,
            NOM_PARA='CHAR_LIMI_ESTIM',
            VALE=8.5545,
            PRECISION=0.02,);
-#--------------------------------------------------------------------------------
-#
-#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-#--------------------------------------------------------------------------------
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  INST=1.69897,
-                  NOM_CHAM='ERRE_ELEM_SIGM',
-                  NOM_CMP='NUEST',
-                  MAILLE='M41',
-                  POINT=1,
-                  VALE=9.87426561489,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  INST=1.69897,
-                  NOM_CHAM='ERRE_ELNO_ELEM',
-                  NOM_CMP='ERREST',
-                  MAILLE='M41',
-                  NOEUD='N1',
-                  VALE=0.356675365955,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
 
 FIN();

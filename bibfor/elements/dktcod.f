@@ -1,12 +1,11 @@
       SUBROUTINE DKTCOD ( XYZL, OPTION, PGL, ICOU, INIV, DEPL,
-     +                    CDL, MULTIC, GRILLE )
+     +                    CDL, MULTIC )
       IMPLICIT NONE
       INTEGER       ICOU, INIV
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
-      LOGICAL       GRILLE
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,8 +31,6 @@ C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
 C     IN  ICOU   : NUMERO DE LA COUCHE
 C     IN  INIV   : NIVEAU DANS LA COUCHE (-1:INF , 0:MOY , 1:SUP)
 C     IN  DEPL   : DEPLACEMENTS
-C     IN  GRILLE : .TRUE. => ELEMENT DE GRILLE (MEGRDKT)
-C          3 POUR UN MATERIAU ORTHOTROPE (MEGRDKT / MEGRDKQ)
 C     OUT CDL    : CONTRAINTES OU DEFORMATIONS AUX NOEUDS DANS LE REPERE
 C                  INTRINSEQUE A L'ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -85,7 +82,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
       CALL GTRIA3 ( XYZL, CARAT3 )
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
 
-      CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,GRILLE,
+      CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
      +                                         ELASCO,T2EV,T2VE,T1VE)
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
 
@@ -94,9 +91,6 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         CALL JEVECH('PCACOQU','L',JCACO)
         EPAIS = ZR(JCACO)
         X3I = 0.D0
-
-        IF (GRILLE) X3I = ZR(JCACO+3)
-
         IF (INIV.LT.0) THEN
           X3I = X3I - EPAIS/2.D0
         ELSE IF (INIV.GT.0) THEN
@@ -134,19 +128,10 @@ C     ------ SM = BM.DEPM ----------------------------------------------
    50   CONTINUE
    60 CONTINUE
 
-      IF (GRILLE) THEN
-        DO 70 I = 1,2
-          VT(I) = 0.D0
-   70   CONTINUE
-      ELSE
-
 C     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
-        CALL DSXHFT ( DF, CARAT3(9), HFT2 )
+      CALL DSXHFT ( DF, CARAT3(9), HFT2 )
 C     ------ VT = HFT2.TKT.DEPF ---------------------------------------
-        CALL DKTTXY ( CARAT3(16), CARAT3(13), HFT2, DEPF, VT )
-
-      END IF
-
+      CALL DKTTXY ( CARAT3(16), CARAT3(13), HFT2, DEPF, VT )
 
       IF (OPTION(1:4).EQ.'EPSI') THEN
 C         ---------------------

@@ -1,21 +1,21 @@
-#@ MODIF modelisa6 Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF modelisa6 Messages  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -31,7 +31,7 @@ cata_msg = {
 """),
 
 3 : _("""
- on ne trouve pas de noeud assez près du noeud  %(k1)s 
+ on ne trouve pas de noeud assez près du noeud  %(k1)s
 """),
 
 4 : _("""
@@ -59,7 +59,7 @@ cata_msg = {
 """),
 
 10 : _("""
- la maille  %(k1)s  ne fait pas partie du maillage  %(k2)s 
+ la maille  %(k1)s  ne fait pas partie du maillage  %(k2)s
 """),
 
 11 : _("""
@@ -70,21 +70,8 @@ cata_msg = {
  PREF_MAILLE est trop long
 """),
 
-13 : _("""
- sous  %(k1)s  : (  %(k2)s  le groupe  %(k3)s ne fait pas partie du maillage :  %(k4)s 
-"""),
 
-14 : _("""
- sous  %(k1)s  : (  %(k2)s  arrêt sur erreur(s) utilisateur.
-"""),
 
-15 : _("""
- sous  %(k1)s  : (  %(k2)s  : la maille  %(k3)s ne fait pas partie du maillage :  %(k4)s 
-"""),
-
-16 : _("""
- le noeuds :  %(k1)s  ne fait pas partie du maillage
-"""),
 
 17 : _("""
  la maille  %(k1)s  du group_ma  %(k2)s donne apres le mot cle  %(k3)s n'a pas un type géométrique autorisé
@@ -95,11 +82,11 @@ cata_msg = {
 """),
 
 19 : _("""
-  mot cle non admis : %(k1)s  les mots-clés admissibles sont :  %(k2)s  ou  %(k3)s  ou  %(k4)s  ou  %(k5)s  ou  %(k6)s  ou  %(k7)s  ou  %(k8)s ou  %(k9)s 
+  mot cle non admis : %(k1)s  les mots-clés admissibles sont :  %(k2)s  ou  %(k3)s  ou  %(k4)s  ou  %(k5)s  ou  %(k6)s  ou  %(k7)s  ou  %(k8)s ou  %(k9)s
 """),
 
 20 : _("""
- ce type de maille n'est pas encore traité :  %(k1)s 
+ ce type de maille n'est pas encore traité :  %(k1)s
 """),
 
 21 : _("""
@@ -139,7 +126,7 @@ cata_msg = {
 """),
 
 37 : _("""
- la maille à laquelle appartient le noeud  %(k1)s  doit etre de type SEG3 
+ la maille à laquelle appartient le noeud  %(k1)s  doit etre de type SEG3
 """),
 
 38 : _("""
@@ -163,19 +150,19 @@ cata_msg = {
 """),
 
 43 : _("""
- il ne faut donner q'un seul noeud dans le GROUP_NO :  %(k1)s 
+ il ne faut donner q'un seul noeud dans le GROUP_NO :  %(k1)s
 """),
 
 44 : _("""
- impossibilité, le noeud  %(k1)s porte le ddl de rotation  %(k2)s 
+ impossibilité, le noeud  %(k1)s porte le ddl de rotation  %(k2)s
 """),
 
 45 : _("""
- impossibilité, le noeud poutre  %(k1)s  devrait porter le ddl  %(k2)s 
+ impossibilité, le noeud poutre  %(k1)s  devrait porter le ddl  %(k2)s
 """),
 
 46 : _("""
- impossibilité, la surface de raccord du massif est nulle 
+ impossibilité, la surface de raccord du massif est nulle
 """),
 
 47 : _("""
@@ -183,7 +170,7 @@ cata_msg = {
 """),
 
 48 : _("""
- il faut indiquer le mot-cle 'NOEUD_2' ou 'GROUP_NO_2' après le mot-facteur  %(k1)s  pour l'option  %(k2)s 
+ il faut indiquer le mot-cle 'NOEUD_2' ou 'GROUP_NO_2' après le mot-facteur  %(k1)s  pour l'option  %(k2)s
 """),
 
 49 : _("""
@@ -207,11 +194,11 @@ cata_msg = {
 """),
 
 54 : _("""
- impossibilité, le noeud  %(k1)s ne porte pas le ddl de rotation  %(k2)s 
+ impossibilité, le noeud  %(k1)s ne porte pas le ddl de rotation  %(k2)s
 """),
 
 55 : _("""
- impossibilité, la surface de raccord de la coque est nulle 
+ impossibilité, la surface de raccord de la coque est nulle
 """),
 
 56 : _("""
@@ -231,7 +218,7 @@ cata_msg = {
 """),
 
 60 : _("""
-  Le prolongement à droite étant exclu pour la fonction %(k1)s, 
+  Le prolongement à droite étant exclu pour la fonction %(k1)s,
   il n'est pas possible d'extrapoler la fonction R(p) en p = %(r1)f.
 """),
 
@@ -240,11 +227,11 @@ cata_msg = {
 """),
 
 63 : _("""
- objet  %(k1)s .materiau.nomrc non trouve 
+ objet  %(k1)s .materiau.nomrc non trouve
 """),
 
 64 : _("""
- type sd non traité:  %(k1)s 
+ type sd non traité:  %(k1)s
 """),
 
 69 : _("""
@@ -252,15 +239,15 @@ cata_msg = {
 """),
 
 70 : _("""
- erreur lors de la définition de la courbe de traction, il manque le paramètre : %(k1)s 
+ erreur lors de la définition de la courbe de traction, il manque le paramètre : %(k1)s
 """),
 
 71 : _("""
- erreur lors de la définition de la courbe de traction : %(k1)s  nb de points < 2  ! 
+ erreur lors de la définition de la courbe de traction : %(k1)s  nb de points < 2  !
 """),
 
 72 : _("""
- erreur lors de la définition de la courbe de traction : %(k1)s  nb de points < 1  ! 
+ erreur lors de la définition de la courbe de traction : %(k1)s  nb de points < 1  !
 """),
 
 73 : _("""
@@ -268,15 +255,15 @@ cata_msg = {
 """),
 
 74 : _("""
- erreur lors de la définition de la nappe des courbes de traction: nb de points < 2 ! 
+ erreur lors de la définition de la nappe des courbes de traction: nb de points < 2 !
 """),
 
 75 : _("""
- erreur lors de la définition de la nappe des courbes de traction:  %(k1)s  nb de points < 1 ! 
+ erreur lors de la définition de la nappe des courbes de traction:  %(k1)s  nb de points < 1 !
 """),
 
 76 : _("""
-  erreur lors de la définition de la courbe de traction: fonction ou nappe ! 
+  erreur lors de la définition de la courbe de traction: fonction ou nappe !
 """),
 
 80 : _("""
@@ -312,19 +299,19 @@ cata_msg = {
 """),
 
 88 : _("""
- fonction constante interdite pour la courbe de traction %(k1)s 
+ fonction constante interdite pour la courbe de traction %(k1)s
 """),
 
 89 : _("""
- prolongement à gauche EXCLU pour la courbe  %(k1)s 
+ prolongement à gauche EXCLU pour la courbe  %(k1)s
 """),
 
 90 : _("""
- prolongement à droite EXCLU pour la courbe  %(k1)s 
+ prolongement à droite EXCLU pour la courbe  %(k1)s
 """),
 
 91 : _("""
- concept de type :  %(k1)s  interdit pour la courbe de traction %(k2)s 
+ concept de type :  %(k1)s  interdit pour la courbe de traction %(k2)s
 """),
 
 92 : _("""
@@ -336,7 +323,7 @@ cata_msg = {
 """),
 
 94 : _("""
- nb param. > 30 materiau  %(k1)s 
+ nb param. > 30 materiau  %(k1)s
 """),
 
 95 : _("""
@@ -344,7 +331,7 @@ cata_msg = {
 """),
 
 96 : _("""
- les mailles imprimées ci-dessus n'appartiennent pas au modèle et pourtant elles ont ete affectées dans le mot-clé facteur : %(k1)s 
+ les mailles imprimées ci-dessus n'appartiennent pas au modèle et pourtant elles ont ete affectées dans le mot-clé facteur : %(k1)s
 """),
 
 97 : _("""

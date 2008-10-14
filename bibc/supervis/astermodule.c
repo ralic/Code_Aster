@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 13/10/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -174,6 +174,15 @@ static PyObject *static_module  = (PyObject*)0 ;
    trace des commandes lors de l'appel a debut ou poursuite. On ne connait
    pas encore NomCas qui sera initialise lors de l'appel a RecupNomCas */
 static char *NomCas          = "        ";
+
+/* ------------------------------------------------------------------ */
+INTEGER STDCALL(ISJVUP, isjvup)()
+{
+   /* "is jeveux up ?" : retourne 1 si jeveux est démarré/initialisé, sinon 0. */
+   return (INTEGER)jeveux_status;
+}
+#define CALL_ISJVUP() STDCALL(ISJVUP, isjvup)()
+
 
 /* ------------------------------------------------------------------ */
 void STDCALL(XFINI,xfini)(_IN INTEGER *code)
@@ -832,7 +841,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
 
 
 /* ------------------------------------------------------------------ */
-FORTRAN_LOGICAL DEFSS( GETEXM ,getexm, _IN char *motfac,_IN STRING_SIZE lfac,
+FORTRAN_LOGICAL DEFSS( GETEXM, getexm, _IN char *motfac,_IN STRING_SIZE lfac,
                                        _IN char *motcle,_IN STRING_SIZE lcle)
 {
         /*
@@ -2740,15 +2749,7 @@ PyObject *args;
       char *nomfic;
 
       if (!PyArg_ParseTuple(args, "ss:affiche",&nomfic,&texte)) return NULL;
-      if (jeveux_status == 1) {
-         CALL_AFFICH (nomfic,texte);
-      } else {
-         /*
-            soit on est avant DEBUT et c'est certainement un message d'erreur,
-            soit on est après FIN et ce sont les messages de cloture.
-          */
-         fprintf(stdout, "\n %s\n", texte);
-      }
+      CALL_AFFICH (nomfic,texte);
 
       Py_INCREF( Py_None ) ;
       return Py_None;
@@ -2966,7 +2967,7 @@ PyObject *args;
    if (!PyArg_ParseTuple(args, "s", &type)) return NULL;
    BLANK(result, 8);
    result[8] = '\0';
-   if (jeveux_status == 1) {
+   if (CALL_ISJVUP() == 1) {
       CALL_GCNCON (type, result);
    }
    res= PyString_FromStringAndSize(result,FindLength(result,8));

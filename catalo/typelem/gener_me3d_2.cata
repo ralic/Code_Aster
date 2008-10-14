@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 14/10/2008   AUTEUR PROIX J-M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,6 +104,17 @@ MODE_LOCAL__
     E9NEUTR = NEUT_R   ELEM__          (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9        )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18
+                                        X19      X20      X21      X22      X23      X24
+                                        X25      X26      X27      X28      X29      X30      )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18
+                                        X19      X20      X21      X22      X23      X24
+                                        X25      X26      X27      X28      X29      X30      )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -212,5 +223,7 @@ OPTION__
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
+    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R 
 %    TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
 %                              OUT__  E18NEUI  PCNSETO  E6NEUTI PHEAVTO  E9NEUTI  PLONCHA  E9NEUTR PPINTTO

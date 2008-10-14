@@ -2,7 +2,7 @@
      &                  DEPDEL,CTCFIX)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,9 +109,9 @@ C
       INTEGER      NESCL,NBLIAI,NEQ,NBLIAC,AJLIAI,SPLIAI,INDIC
       INTEGER      NBDDL,NBLCIN,NBLIG,LLF,LLF1,LLF2
       CHARACTER*19 MAFROT
-      INTEGER      IBID,ILIAI,IER,KK,ITER
+      INTEGER      IBID,ILIAI,IER,IRET,KK,ITER
       CHARACTER*19 MAT
-      CHARACTER*14 NUMEDD
+      CHARACTER*14 NUMEDD,NUMEDF
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       INTEGER      JRESU,JDEPDE
@@ -316,6 +316,17 @@ C ======================================================================
 C ======================================================================
 C --- CREATION DE MAFROT = E_N*AT*A
 C ======================================================================
+C
+C --- DESTRUCTION ANCIENNE MATRICE MAFROT
+C
+      CALL EXISD('MATR_ASSE',MAFROT,IRET)
+      IF (IRET.NE.0) THEN
+         CALL DISMOI('F','NOM_NUME_DDL',MAFROT,'MATR_ASSE',IBID,NUMEDF,
+     &                                                          IER)
+         CALL DETRSD('NUME_DDL' ,NUMEDF)
+         CALL DETRSD('MATR_ASSE',MAFROT)
+      ENDIF
+C
       NBLIG = NBLIAI
       CALL ATASMO(CM1A,NUMEDD,MAFROT,'V',NBLIG)
 C ======================================================================

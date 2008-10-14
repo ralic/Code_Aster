@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
       REAL*8             MATINE(6), XXI, YYI, XYI, R8BID
       CHARACTER*2        CODRET(NBRES)
       CHARACTER*8        NOMRES(NBRES)
+      LOGICAL            LTEATT
 C     ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFDE,JGANO)
@@ -88,7 +89,7 @@ C     --- BOUCLE SUR LES POINTS DE GAUSS ---
       DO 100 KP = 1,NPG2
          K = (KP-1) * NNO
          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-         IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+         IF ( LTEATT(' ','AXIS','OUI') ) THEN
             R = ZERO
             DO 102 I = 1,NNO
                 R = R + ZR(IGEOM-2+2*I)*ZR(IVF+K+I-1)
@@ -115,7 +116,7 @@ C           --- INERTIE ---
  104     CONTINUE
  100  CONTINUE
 C
-      IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+      IF ( LTEATT(' ','AXIS','OUI') ) THEN
          YG = ZR(LCASTR+2) / VOLUME
          ZR(LCASTR)   = DEPI * VOLUME * RHO
          ZR(LCASTR+3) = YG

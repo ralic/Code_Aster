@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,7 +152,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                              NOEUD      = 'N10',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.435E+06,
+                   VALE       = -1.4333618606279E+06,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '8.3.23',

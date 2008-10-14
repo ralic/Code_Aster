@@ -3,10 +3,10 @@
      &                  POSMAM,NUMMAM,TYCO  ,IPC   ,KSIPC1,
      &                  KSIPC2,KSI1  ,KSI2  ,TAU1M ,TAU2M ,
      &                  EXNOEC,EXNOEF,NBEXFR,NDEXFR,TAU1  ,
-     &                  TAU2)
+     &                  TAU2  ,ALIAS)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +28,7 @@ C TOLE CRP_21
 C
       IMPLICIT NONE
       LOGICAL       LISSS,LPIVAU,LFROTT
-      CHARACTER*8   NOMA
+      CHARACTER*8   NOMA,ALIAS
       INTEGER       NEQ,NDIMG
       INTEGER       POSMAM,POSMAE,IZONE,NUMMAM
       REAL*8        KSI1,KSI2
@@ -133,12 +133,17 @@ C
 C --- NOEUD ESCLAVE SI INTEGRATION AUX NOEUDS
 C
       IF (TYCO.EQ.1) THEN
-        CALL CFNBEN(NOMA  ,DEFICO,POSMAE,'MAIL',NBNOE ,
-     &              JDECNO)
-        IF (IPC.GT.0) THEN
-          POSNOE = ZI(JNOMA+JDECNO+IPC-1)
+C       GLUTE POUR QUAD8 POUR LEQUEL NBNOE=8<NBPC=9
+        IF (ALIAS.EQ.'QU8') THEN
+          POSNOE = -1
         ELSE
-          CALL ASSERT(.FALSE.)
+          CALL CFNBEN(NOMA  ,DEFICO,POSMAE,'MAIL',NBNOE ,
+     &                JDECNO)
+          IF (IPC.LE.NBNOE) THEN
+            POSNOE = ZI(JNOMA+JDECNO+IPC-1)
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
         ENDIF
       ELSE
         POSNOE = 0  

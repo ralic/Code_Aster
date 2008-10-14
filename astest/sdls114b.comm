@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -283,7 +283,7 @@ KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                               LISSAGE_THETA='LAGRANGE',
                               LISSAGE_G='LAGRANGE', ),);
                               
-IMPR_TABLE(TABLE=KT1,TRI=_F(NOM_PARA=('ABS_CURV','INST'),ORDRE='CROISSANT'),)
+IMPR_TABLE(TABLE=KT1,TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 TEST_TABLE(TABLE=KT1,
            NOM_PARA='K1_LOCAL',
            FILTRE=(_F(NOM_PARA = 'INST',
@@ -301,7 +301,7 @@ KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                   K_MODAL = _F(TABL_K_MODA =GLMO1,
                               FISSURE=FF2,),);
                               
-IMPR_TABLE(TABLE=KT2,TRI=_F(NOM_PARA=('ABS_CURV','INST'),ORDRE='CROISSANT'),)
+IMPR_TABLE(TABLE=KT2,TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 TEST_TABLE(TABLE=KT2,
            NOM_PARA='K1_LOCAL',
            FILTRE=(_F(NOM_PARA = 'INST',

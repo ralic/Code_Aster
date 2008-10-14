@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C                                            2*NNO     2*NNO
       CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(3),NOMPAR(3),ELREFE
 
-      LOGICAL FONC,AXI
+      LOGICAL FONC,AXI,LTEATT
 C.......................................................................
 
       CALL ELREF1(ELREFE)
@@ -78,7 +78,7 @@ C.......................................................................
       EPS = R8PREM()
       DEPI = R8DEPI()
       AXI = .FALSE.
-      IF ( NOMTE(3:4) .EQ. 'AX')  AXI = .TRUE.
+      IF ( LTEATT(' ','AXIS','OUI'))  AXI = .TRUE.
 
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDK,JGANO)

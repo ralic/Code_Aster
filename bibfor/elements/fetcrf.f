@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1539,7 +1539,7 @@ C ON DETERMINE LE NOMBRE DE DDL DUS AU CONTACT SANS LES DDLS
 C PHYSIQUES DEJA COMPTES
                       DDLM=0
                       K=0
-                      IF (.NOT.LPAIRE) THEN
+                      IF (LPAIRE) THEN
                         DO 569 L=1,LFETB
                           IF (ABS(ZI(IFETB+2*(L-1))).EQ.JJ) THEN
                             IF (L.EQ.1) THEN

@@ -1,9 +1,9 @@
-      SUBROUTINE NUACHP ( NUAGE, LMA, LNO, CHPT )
+      SUBROUTINE NUACHP ( NUAGE, LNO, CHPT )
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       NUAGE, LMA, LNO, CHPT
+      CHARACTER*(*)       NUAGE, LNO, CHPT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C ======================================================================
 C     PASSAGE D'UNE SD NUAGE A UNE SD CHAM_GD
 C
 C IN  NUAGE  : NOM DE LA SD NUAGE ALLOUEE
-C IN  LMA    : LISTE DES MAILLES A PRENDRE EN COMPTE
 C IN  LNO    : LISTE DES NOEUDS A PRENDRE EN COMPTE
 C VAR CHPT   : NOM DE LA SD CHAM_GD (CHPT A ETE CREE)
 C     ------------------------------------------------------------------
@@ -35,8 +34,6 @@ C
 C
       IF ( TYPE .EQ. 'NOEU' ) THEN
          CALL NUACNO ( NUAGE, LNO, CHPT )
-      ELSEIF ( TYPE(1:2) .EQ. 'EL' ) THEN
-         CALL NUACEL ( NUAGE, LMA, LNO, CHPT )
       ELSE
          CALL U2MESS('F','CALCULEL_17')
       ENDIF

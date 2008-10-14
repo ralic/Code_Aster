@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,16 +180,16 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    NOM_CMP='NUEST',
                    MAILLE='M4',
                    POINT=1,
-                   VALE=0.00821849892076,
+                   VALE=1.3962314817742e-8,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.2.15',),
+                   VERSION='9.3.15',),
                 _F(RESULTAT=DEF,
                    NUME_ORDRE=1,
                    NOM_CHAM='ERRE_ELNO_ELEM',
                    NOM_CMP='ERREST',
                    MAILLE='M4',
                    NOEUD='N51',
-                   VALE=0.726261102623,
+                   VALE=1.2338367648692e-6,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.2.15',),),);
 

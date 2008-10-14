@@ -2,11 +2,10 @@
      &                    NCHAR , JCHA  , KCHA  , CTYP  ,
      &                    TBGRCA, RESUCO, RESUC1, LERES1,
      &                    NOMA  , MODELE, LIGRMO, MATE  , CARA,
-     &                    TYPESE, CODRET )
-C
-C TOLE CRP_20
+     &                    TYPESE, NPASS,  CODRET )
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ----------------------------------------------------------------------
 C COMMANDE DE CALC_ELEM SPECIFIQUE AUX INDICATEURS D'ERREUR
@@ -44,6 +44,7 @@ C IN  LIGRMO : LISTE DES GROUPES DU MODELE
 C IN  MATE   : NOM DU CHAMP MATERIAU
 C IN  CARA   : NOM DU CHAMP DES CARACTERISTIQUES ELEMENTAIRES
 C IN  TYPESE : TYPE DE SENSIBILITE
+C IN/OUT     : NPASS  : NOMBRE DE PASSAGE DANS LA ROUTINE MEDOM2.F
 C OUT CODRET : CODE DE RETOUR AVEC 0 SI TOUT VA BIEN
 C              1 : ERREUR LIEE A LA SENSIBILITE
 C              2 : PROBLEMES DE DONNEES
@@ -55,7 +56,7 @@ C
 C     --- ARGUMENTS ---
 
       INTEGER NBORDR, JORDR, NCHAR, JCHA
-      INTEGER TYPESE
+      INTEGER TYPESE, NPASS
       INTEGER CODRET
       REAL*8      TBGRCA(3)
       CHARACTER*4 CTYP
@@ -89,13 +90,13 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'MECA01' )
 
-      INTEGER NPASS, IORDR,JFIN,JAUX,TABIDO(5)
+      INTEGER IORDR,JFIN,JAUX,TABIDO(5)
       INTEGER N1, N2, NP, ND, NCHARP, NCHARD, JCHAP, JCHAD
-      INTEGER IRET, IRET1, IERD,IAD
+      INTEGER IRET, IRET1, IERD,IAD,IFISS
       INTEGER IAINST
       INTEGER IAUX, IBID
       INTEGER VALI
-      INTEGER LXLGUT
+      INTEGER LXLGUT, IRXFEM
 
       REAL*8 RBID,RUNDF,R8VIDE,THETA,DELTAT
       REAL*8 TIME, ERP, ERD, S, LONGC, PRESC
@@ -110,21 +111,21 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 CHS
       CHARACTER*24 CHDEPP, CHSGPN, CHSGDN
       CHARACTER*24 CHSIG , CHSIGP, CHSIGD, CHSIGN
-      CHARACTER*24 CHSIGM , CHDEPM, CHERRM
+      CHARACTER*24 CHSIGM , CHDEPM, CHERRM, CHSIGX
       CHARACTER*24 CHCARA(15), CHELEM, CHTIME
       CHARACTER*24 CHERRE, CHERRN
       CHARACTER*24 LIGRCH, LIGRCP, LIGRCD, LIGREL
-      CHARACTER*24 CHVOIS
+      CHARACTER*24 CHVOIS,CVOISX
       CHARACTER*24 VALK(2)
 
       COMPLEX*16 CBID, VALC
 
       LOGICAL EXICAR
-      LOGICAL YATHM,PERMAN
+      LOGICAL YAXFEM,YATHM,PERMAN
 C
-C====
+C=======================================================================
 C 1. PREALABLES
-C====
+C=======================================================================
 C
       CODRET = 0
       RUNDF  = R8VIDE()
@@ -158,12 +159,13 @@ C               12   345678   9012345678901234
       KCHAD  = '&&'//NOMPRO//'.CHARGESD  '
       CHSIGP = BLAN24
       CHSIGD = BLAN24
+      CHSIGX = BLAN24
       NCHARP = 0
       NCHARD = 0
 C
-C====
+C=======================================================================
 C 2. OPTION "ERRE_ELEM_SIGM"
-C====
+C=======================================================================
 C
       IF ( OPTION.EQ.'ERRE_ELEM_SIGM' ) THEN
 C
@@ -178,9 +180,12 @@ C ---- VERIFICATION DU PERIMETRE D'UTILISATION
 C
 C--- RECHERCHE DES VOISINS
 C--- (CHGEOM RECHERCHE A PARTIR DU MODELE ET PAS DES CHARGES)
-        CALL RESLO2(MODELE,LIGRMO,ZK8(JCHA),CHVOIS,TABIDO)
+        CALL RESLO2(MODELE,LIGRMO,ZK8(JCHA),CHVOIS,CVOISX,TABIDO)
 C --- EST-CE DE LA THM ?
         CALL EXITHM ( MODELE, YATHM, PERMAN )
+C --- EST-CE DU XFEM ?
+        CALL EXIXFE(MODELE, IRXFEM)
+        IF (IRXFEM.NE.0) YAXFEM=.TRUE.
 C
 C --- POUR DE LA THM EN TRANSITOIRE, ON DEVRA RECUPERER LES INFORMATIONS
 C     DU PAS DE TEMPS PRECEDENT
@@ -288,6 +293,12 @@ C--- ARCHIVAGE DU NOM DU CHAMP DE CONTRAINTES
 C
  30       CONTINUE
 C
+C--- RECUPERATION DU CHAMP DE CONTRAINTES AUX NOEUDS PAR SOUS
+C    ELEMENT (OPTION 'SIEF_SENO_SEGA'), CAS X-FEM UNIQUEMENT 
+          IF ( YAXFEM ) THEN
+            CALL RSEXC2(1,1,RESUCO,'SIEF_SENO_SEGA',IORDR,CHSIGX,
+     &                  OPTION,IRET)
+          END IF 
 C ---------------------------------------------------------------------
 C 2.2.4 ==> POUR DE LA THM : ON RECUPERE ...
 C ---------------------------------------------------------------------
@@ -363,10 +374,10 @@ C            POUR LE NUMERO D'ORDRE IORDR
 
 C 2.2.8. ==> CALCULE L'ESTIMATEUR D'ERREUR EN RESIDU LOCAL
 C
-          CALL RESLOC(MODELE   , LIGRMO, YATHM , TBGRCA,
-     &                PERMAN   , CHTIME, MATE  ,
-     &                CHSIGM   , CHSIGP, CHDEPM, CHDEPP, CHERRM,
-     &                ZK8(JCHA), NCHAR , TABIDO, CHVOIS, CHELEM)
+          CALL RESLOC( MODELE, LIGRMO, YAXFEM, YATHM , TBGRCA, PERMAN,
+     &                 CHTIME, MATE  , CHSIGM, CHSIGP, CHSIGX, CHDEPM,
+     &                 CHDEPP, CHERRM, ZK8(JCHA),NCHAR , TABIDO, CHVOIS,
+     &                 CVOISX, CHELEM )
 
 C 2.2.9. ==> VERIFIE L'EXISTENCE DU CHAMP CHELEM
           CALL EXISD('CHAMP_GD',CHELEM,IRET)
@@ -392,9 +403,9 @@ C
 C
  10   CONTINUE
 C
-C====
+C=======================================================================
 C 3. OPTION "ERRE_ELNO_ELEM"
-C====
+C=======================================================================
 C
       ELSE IF ( OPTION.EQ.'ERRE_ELNO_ELEM' ) THEN
 C
@@ -417,9 +428,9 @@ C
 C
  11     CONTINUE
 C
-C====
+C=======================================================================
 C 4. OPTION "QIRE_ELEM_SIGM"
-C====
+C=======================================================================
 C
       ELSE IF ( OPTION.EQ.'QIRE_ELEM_SIGM' ) THEN
 
@@ -429,7 +440,7 @@ C 4.1.1. ==> RECUPERE LES NOMS DES SD RESULTAT
         CALL GETVID(' ','RESU_DUAL',1,1,1,RESUD,ND)
 
 C 4.1.2. ==> RECHERCHE DES VOISINS
-        CALL RESLO2(MODELE,LIGRMO,ZK8(JCHA),CHVOIS,TABIDO)
+        CALL RESLO2(MODELE,LIGRMO,ZK8(JCHA),CHVOIS,CVOISX,TABIDO)
 C 4.1.3. ==>  RECUPERE LES NOMS SYMBOLIQUES DES TABLES
         TABP=' '
         TABD=' '
@@ -548,9 +559,9 @@ C
 C
    12   CONTINUE
 C
-C====
+C=======================================================================
 C 5. OPTION "QIRE_ELNO_ELEM"
-C====
+C=======================================================================
 C
       ELSE IF ( OPTION.EQ.'QIRE_ELNO_ELEM' ) THEN
 C
@@ -572,9 +583,9 @@ C
 C
  13     CONTINUE
 C
-C====
+C=======================================================================
 C 6. OPTIONS "QIZ1_ELEM_SIGM" ET "QIZ2_ELEM_SIGM"
-C====
+C=======================================================================
 C
       ELSE IF ( OPTION.EQ.'QIZ1_ELEM_SIGM' .OR.
      &          OPTION.EQ.'QIZ2_ELEM_SIGM' ) THEN
@@ -647,9 +658,9 @@ C
 C
  14     CONTINUE
 C
-C====
+C=======================================================================
 C 7. OPTIONS "ERZ1_ELEM_SIGM" ET "ERZ2_ELEM_SIGM"
-C====
+C=======================================================================
 C
       ELSE IF ( OPTION.EQ.'ERZ1_ELEM_SIGM' .OR.
      &          OPTION.EQ.'ERZ2_ELEM_SIGM' ) THEN
@@ -689,9 +700,9 @@ C
 C
  15     CONTINUE
 C
-C====
+C=======================================================================
 C N. OPTION NE CORRESPONDANT PAS AUX INDICATEURS D'ERREUR
-C====
+C=======================================================================
 C
       ELSE
 C

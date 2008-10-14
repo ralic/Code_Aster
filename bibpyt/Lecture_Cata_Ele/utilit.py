@@ -1,4 +1,4 @@
-#@ MODIF utilit Lecture_Cata_Ele  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF utilit Lecture_Cata_Ele  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -620,7 +620,10 @@ def detruire_cata(capy,unigest) :
    for (nom,type) in liste_cata_detr :
       ierr=0
 
-      if type=="COMMANDE" : pass
+      if type in ("COMMANDE","COMMUN","ENTETE") :
+         # ce ne sont pas des catalogues d'éléments, on ne fait rien :
+         ierr=-1
+         pass
 
       elif type=="OPTIONS" :
          dico=capy.dicop ; catas=capy.op
@@ -647,11 +650,15 @@ def detruire_cata(capy,unigest) :
                   if numav > num : dico[nom2]=numav-1
             else :  ierr=1
 
-      else: ierr=1
+      else:
+          assert type=="COMPELEM", type
+          ierr=1
 
 
       if ierr == 1 :
          ERR.mess('E',"Le catalogue: "+nom+" de type: "+type+" ne peut pas etre détruit.")
+      elif ierr == -1 :
+         pass
       else :
          ERR.mess('I',"Le catalogue: "+nom+" de type: "+type+" a été détruit.")
 

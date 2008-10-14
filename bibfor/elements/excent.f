@@ -1,6 +1,6 @@
       SUBROUTINE EXCENT ( OPTION, NOMTE, NNO, TENS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,6 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER  IPLAN,JCARA,JPLAN
-      LOGICAL GRILLE
       REAL*8   DIST,EPAIS,EXCEN,UNDEMI,ZERO
 C
       ZERO   = 0.0D0
@@ -57,21 +56,11 @@ C
       DIST   = ZERO
       IPLAN  = 0
 C
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
-      ELSE
-        GRILLE = .FALSE.
-      END IF
-C
       IF (OPTION(1:9).EQ.'EFGE_ELNO') THEN
          CALL JEVECH('PCACOQU','L',JCARA)
          CALL JEVECH('PFREQR ','L',JPLAN)
          EPAIS  = ZR(JCARA)
-         IF ((.NOT.GRILLE)) THEN
-            EXCEN = ZR(JCARA+5-1)
-         ELSE
-            EXCEN = ZR(JCARA+4-1)
-         ENDIF
+         EXCEN = ZR(JCARA+5-1)
          IPLAN  = NINT(ZR(JPLAN))
       ENDIF
 C

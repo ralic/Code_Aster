@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF sd_xfem SD  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ class sd_fiss_xfem(AsBase):
     FONDFISS        = Facultatif(AsVR())
     BASEFOND        = Facultatif(AsVR())
     FONDMULT        = Facultatif(AsVI())
-    CARAFOND        = AsVR(lonmax=11,)
+    CARAFOND        = AsVR(lonmax=12,)
 
 # I.2) objets relatifs à l'enrichissement
 

@@ -1,0 +1,211 @@
+# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+# TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV185O',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
+
+#----------------------------------------------
+#             MAILLAGE : hexa_cla_5_30_50.mgib
+#----------------------------------------------
+
+PRE_GIBI();
+
+MAILLAGE=LIRE_MAILLAGE(INFO=1,VERI_MAIL=_F(VERIF='NON'),);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=(_F(GROUP_MA='LEVSUP',),
+                                   _F(GROUP_MA='LEVINF',),
+                                   _F(GROUP_MA='FONFIS',),
+                                   _F(GROUP_MA='VOL',),
+                                   _F(DIFFE=('LEVSUP','FONFIS'),NOM='LEVS',),
+                                   _F(DIFFE=('LEVINF','FONFIS'),NOM='LEVI',),
+                                   _F(DIFFE=('VOL','LEVSUP','LEVINF'),NOM='VOLB',),                    
+                                    ),);
+
+#----------------------------------------------
+#                   MODELE 
+#----------------------------------------------
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(GROUP_MA=('VOLSUP','VOLINF','LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('LEVSUP','LEVINF','SURFSUP','SURFINF'),),
+                       );
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+E=205000.E6
+nu=0.
+rho=7800
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+
+CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       MODELE=MODELEIN,
+                       AFFE=(_F(GROUP_MA=('VOLSUP','VOLINF','LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),
+                                MATER=ACIER,
+                                ),
+                             ),);
+
+#----------------------------------------------
+#                   CHARGEMENTS 
+#----------------------------------------------
+
+# ENCASTREMENT 
+CH1=AFFE_CHAR_MECA(
+  MODELE=MODELEIN,
+  FACE_IMPO=(_F(GROUP_MA=('SURFSUP'),DX=0.0,DY=0.0,DZ=0.0))          
+  );
+  
+# FORCE VOLUMIQUE                  
+CH2 = AFFE_CHAR_MECA(
+  MODELE = MODELEIN, 
+  FORCE_INTERNE = (_F(TOUT='OUI',FX=0,FY=0,FZ=-78000))
+  );
+  
+# PESANTEUR                  
+CH3 = AFFE_CHAR_MECA(
+  MODELE = MODELEIN,
+  PESANTEUR=(10,0.,0.,-1.)
+  );
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+L_INS=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+                    
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEIN,
+                   CHAM_MATER=CHAMPMA,              
+                   EXCIT=(_F(CHARGE=CH1,),
+                          _F(CHARGE=CH2,),),
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA=('VOLSUP','VOLINF',),),
+                   INCREMENT=_F(LIST_INST=L_INS,INST_FIN=1.0,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+UTOT2=STAT_NON_LINE(MODELE=MODELEIN,
+                   CHAM_MATER=CHAMPMA,              
+                   EXCIT=(_F(CHARGE=CH1,),
+                          _F(CHARGE=CH3,),),
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA=('VOLSUP','VOLINF',),),
+                   INCREMENT=_F(LIST_INST=L_INS,INST_FIN=1.0,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
+#------------------------------------------------------------------------
+
+LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+5.');
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    GROUP_MA_ENRI='VOL',
+                    ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
+                                 VECT_ORIE=(0. ,0. ,1. ),
+                                 POINT_ORIG=(0. ,20. ,15. ),),
+                    );
+
+# TEST AVEC PLUSIEURS COURONNES
+RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
+RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
+
+nbc=len(RI)
+SIF1 = [None]*nbc
+SIF2 = [None]*nbc
+
+for i in range(0,nbc) :
+   
+   SIF1[i]=CALC_G(RESULTAT=UTOT1,
+                  SYME_CHAR='SANS',
+                  COMP_ELAS=_F(RELATION='ELAS',),
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                               LISSAGE_G='LAGRANGE',),
+                  THETA=_F(R_INF=RI[i],
+                           R_SUP=RS[i],
+                           FISSURE=FISS,),
+                  INFO=1,);
+
+   IMPR_TABLE(TABLE=SIF1[i],);
+
+   SIF2[i]=CALC_G(RESULTAT=UTOT2,
+                  SYME_CHAR='SANS',
+                  COMP_ELAS=_F(RELATION='ELAS',),
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                               LISSAGE_G='LAGRANGE',),
+                  THETA=_F(R_INF=RI[i],
+                           R_SUP=RS[i],
+                  FISSURE=FISS,),
+                  INFO=1,);
+
+   IMPR_TABLE(TABLE=SIF2[i],);
+
+
+# TESTS DE NON REGRESSION
+for i in range(0,nbc) :
+   TEST_TABLE(TABLE=SIF1[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MAX',               
+              VALE=1.23E+07,
+              CRITERE='RELATIF',
+              PRECISION=0.003,
+              REFERENCE='NON_REGRESSION',);
+
+   TEST_TABLE(TABLE=SIF1[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MIN',               
+              VALE=1.23E+07,
+              CRITERE='RELATIF',
+              PRECISION=0.003,
+              REFERENCE='NON_REGRESSION',);
+              
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MAX',               
+              VALE=1.23E+07,
+              CRITERE='RELATIF',
+              PRECISION=0.003,
+              REFERENCE='NON_REGRESSION',);
+
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='K1_LOCAL',
+              TYPE_TEST='MIN',               
+              VALE=1.23E+07,
+              CRITERE='RELATIF',
+              PRECISION=0.003,
+              REFERENCE='NON_REGRESSION',);           
+
+
+#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=UTOT1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')));
+
+
+FIN();
+

@@ -1,6 +1,6 @@
       SUBROUTINE TE0561 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C ----------------------------------------------------------------------
       INTEGER            NNO,KP,I,K,IDEPLP,IDEPLE,IALPHA
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            NPG,NNOS,ICONTP,JGANO,NDIM,IRET,IRET1
+      LOGICAL            LTEATT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -120,7 +121,7 @@ C
 C
           IDPG = (KP-1)*NCMP
 C
-          IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+          IF ( LTEATT(' ','AXIS','OUI') ) THEN
             IF ( X .NE. 0.D0 ) THEN
               EPSP(3) = EPSP(3) / X
               EPSE(3) = EPSE(3) / X

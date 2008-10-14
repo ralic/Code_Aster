@@ -1,6 +1,6 @@
       SUBROUTINE TE0598 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C
      &                   NPG2,IPOID2,IVF2,IDFDE2
 C
       LOGICAL THTNUL
-      LOGICAL AXI
+      LOGICAL AXI,LTEATT
       LOGICAL TRANSI
       LOGICAL ANISO, GLOBAL
 C     -----------------------------------------------------------------
@@ -175,7 +175,7 @@ C
 C
 C 2.1. ==> 2D PLAN OU AXI ?
 C
-      IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+      IF ( LTEATT(' ','AXIS','OUI') ) THEN
         AXI = .TRUE.
       ELSE
         AXI = .FALSE.

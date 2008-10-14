@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,6 +136,14 @@ Contact méthode continue. Pour l'option SANS_GROUP_NO et SANS_GROUP_NO_FR, l'int
 
 98 : _("""
 Contact méthode continue. Pour l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL', l'intégration aux noeuds est obligatoire.
+"""),
+
+99 : _("""
+Contact méthode continue. Vos surfaces de contact esclaves comportent des QUAD8 et vous avez demandé l'option NORMALE = 'MAIT_ESCL' ou NORMALE = 'ESCL'
+L'intégration au noeuds est incompatible avec cette option.
+
+Conseils : utilisez un autre schéma d'intégration ou bien des QUAD9.
+
 """),
 
 }

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,8 @@ C
       CHARACTER*8        NOMRES(NBRES)
       CHARACTER*4        FAMI
       CHARACTER*2        CODRET(NBRES)
+
+      LOGICAL            LTEATT
 C ......................................................................
 C
       FAMI = 'RIGI'
@@ -99,7 +101,7 @@ C
         CALL RCVALB(FAMI,KP,1,'+',MATER,' ','ELAS',0,' ',0.D0,
      &              2,NOMRES,VALRES, CODRET, 'FM' )
 C
-        IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+        IF ( LTEATT(' ','AXIS','OUI') ) THEN
            POIDS = POIDS*R
            C1 = VALRES(1)/(1.D0 + VALRES(2))
            C2 = (1.D0 - VALRES(2))/(1.D0 - 2.D0*VALRES(2))

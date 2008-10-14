@@ -1,6 +1,6 @@
       SUBROUTINE TE0564 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       INTEGER            ICONTZ,IDEFOZ,IALPHS
 CC      EXTERNAL           NORSIG
       REAL*8             SIGMIN(6),SIGMAX(6),DELTA(6)
+      LOGICAL            LTEATT
 C
 C
       DATA  ZERO  /0.D0/
@@ -123,7 +124,7 @@ C
           R    = R    +  ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
           TPG  = TPG  +  ZR(ITEMPE+I-1) *ZR(IVF+K+I-1)
  120     CONTINUE
-        IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+        IF ( LTEATT(' ','AXIS','OUI')) THEN
            IF ( R .NE. 0.D0 ) THEN
              EPS(3) = EPS(3) / R
            ELSE

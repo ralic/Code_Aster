@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMUN  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,6 +154,7 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "SIEF_ELNO_ELGA",
                         "SIEF_NOEU",
                         "SIEF_NOEU_ELGA",
+                        "SIEF_SENO_SEGA",
                         "SIEQ_ELNO_TUYO",
                         "SIGM_ELNO_CART",
                         "SIGM_ELNO_COQU",

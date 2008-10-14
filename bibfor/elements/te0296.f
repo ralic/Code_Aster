@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,8 @@ C
 C
       CHARACTER*8        NOMRES(NBRES), NOMPAR(3)
       CHARACTER*2        CODRET(NBRES)
+
+      LOGICAL            LTEATT
 C ......................................................................
       DATA  ZERO , UN , DEUX / 0.0D0, 1.0D0, 2.0D0 /
 C ......................................................................
@@ -119,7 +121,7 @@ C
      +                0,'TEMP',ZERO,2,NOMRES,
      +                VALRES, CODRET, 'FM' )
 C
-        IF ( NOMTE(3:4).EQ. 'AX' )  THEN
+        IF ( LTEATT(' ','AXIS','OUI') )  THEN
            C1=VALRES(1)/(UN+VALRES(2))
            C2=(UN-VALRES(2))/(UN-DEUX*VALRES(2))
            C3=VALRES(2)/(UN-DEUX*VALRES(2))

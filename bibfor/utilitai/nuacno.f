@@ -3,7 +3,7 @@
       CHARACTER*(*)       NUAGE, LNO, CHNO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,8 +71,8 @@ C
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NP,K8B,IE)
 C
       IF ( KLNO .NE. ' ' ) THEN
-         CALL JELIRA ( KLNO//'.LSNO', 'LONUTI', NP, K8B )
-         CALL JEVEUO ( KLNO//'.LSNO', 'L', JLNO)
+         CALL JELIRA ( KLNO, 'LONUTI', NP, K8B )
+         CALL JEVEUO ( KLNO, 'L', JLNO)
       ELSE
          CALL WKVECT ( '&&NUACNO.NOEUD', 'V V I', NP, JLNO )
          DO 10 I = 1 , NP

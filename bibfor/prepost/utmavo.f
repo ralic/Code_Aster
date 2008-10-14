@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/02/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,9 @@ C     NOMZ   : NOM DE L' OJB A CREER
 C     MAILVO : SI ORIE_PEAU_3D ("GROUP_MA_VOLU"):
 C                  = LISTE DES MAILLES VOLUMIQUES
 C                    UTILES A LA REORIENTATION
+C              SI ORIE_PEAU_2D ("GROUP_MA_SURF"):
+C                  = LISTE DES MAILLES SURFACIQUES
+C                    UTILES A LA REORIENTATION
 C              SINON: MAILVO N'EST PAS UTILISE
 C     NBMAVO : NB DE MAILLES DE MAILVO 
 C
@@ -69,7 +72,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       IBID,NARE,NUMA,NBNO,NBMAT,INO,NUNO,P1,P2,IRET
-      INTEGER       I,J,K,JMAIL,NBMAN,ADRMA,ADRVLC,ACNCIN,IMA
+      INTEGER       I,J,K,JMAIL,NBMAN,ADRMA,ADRVLC,ACNCIN,IMA,II
       INTEGER       ADRA,IAD,JTR1(1000), JTR2, IDTYMA, NUTYMA, IEXINV
       CHARACTER*8   K8B, TYPE
       CHARACTER*24  NOM, NCNINV
@@ -117,7 +120,12 @@ CCC      CALL WKVECT ( '&&UTMAVO.TRAV1', 'V V I', 1000, JTR1 )
             NBMAN = ZI(ADRVLC+NUNO+1-1) - ZI(ADRVLC+NUNO-1)
             ADRA  = ZI(ADRVLC+NUNO-1)
             DO 120 J = 1 , NBMAN
-               IMA = ZI(ACNCIN+ADRA-1+J-1)
+               II = ZI(ACNCIN+ADRA-1+J-1)
+               IF(NBMAVO.EQ.0)THEN
+                 IMA=II
+               ELSE
+                 IMA=MAILVO(II)
+               ENDIF
                IF ( IMA .EQ. NUMA ) GOTO 120
                NUTYMA = ZI(IDTYMA+IMA-1)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPE)
@@ -181,7 +189,12 @@ C
             NBMAN = ZI(ADRVLC+NUNO+1-1) - ZI(ADRVLC+NUNO-1)
             ADRA  = ZI(ADRVLC+NUNO-1)
             DO 220 J = 1 , NBMAN
-               IMA = ZI(ACNCIN+ADRA-1+J-1)
+               II = ZI(ACNCIN+ADRA-1+J-1)
+               IF(NBMAVO.EQ.0)THEN
+                 IMA=II
+               ELSE
+                 IMA=MAILVO(II)
+               ENDIF
                IF ( IMA .EQ. NUMA ) GOTO 220
                NUTYMA = ZI(IDTYMA+IMA-1)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPE)

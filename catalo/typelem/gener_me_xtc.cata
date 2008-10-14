@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -185,7 +185,9 @@ MODE_LOCAL__
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
+    EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       FZ       )
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        Z        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
@@ -205,13 +207,14 @@ OPTION__
                                      E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  EPRESNO  PPRESSR
                                      E18NEUTR PPINTER  E24NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONGCO
+                                     NFORCER  PFRVOLU  CPESANR  PPESANR  CROTATR  PROTATR  
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
                                      CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CPRESSF  PPRESSF
                                      E18NEUTR PPINTER  E24NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONGCO
-                                     CTEMPSR  PTEMPSR
+                                     CTEMPSR  PTEMPSR  CFORCEF  PFFVOLU  CPESANR  PPESANR  CROTATR  PROTATR 
                               OUT__  EKTHETA  PGTHETA
     CALC_G              288   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
                                      CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
@@ -232,6 +235,22 @@ OPTION__
                               OUT__  E1NEUTR  PLONCAR  E1NEUTR  PCFLVT
     CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FF3D3D    440   IN__   CFORCEF  PFF3D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  STANO_I  PSTANO
+                                     E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E9NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_FR3D3D    440   IN__   EFORCER  PFR3D3D  NGEOMER  PGEOMER  NFORCER  PNFORCER STANO_I  PSTANO
+                                     E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E9NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_PESA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  STANO_I  PSTANO  
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     E33NEUTR PPINTTO  E128NEUI PCNSETO  
+                                     E36NEUTI PHEAVTO  E9NEUTI  PLONCHA
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_ROTA_R    441   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     CROTATR  PROTATR  STANO_I  PSTANO   N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E9NEUTI  PLONCHA
+                              OUT__  MVECTUR  PVECTUR
     CHAR_MECA_CONT      534   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     E18NEUTR PPINTER  E24NEUTR PAINTER
                                      E15NEUTI PCFACE   E2NEUTI  PLONCHA  E54NEUTR PBASECO  E1NEUTR  PSEUIL

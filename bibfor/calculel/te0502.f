@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
       INTEGER            ITEMPI,IFON(3),IVITE,IGEOM,IMATE
       INTEGER            IAD,NBVF,JVALF,IDIM,JDIM
       INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
+      LOGICAL            LTEATT
 C DEB ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -102,7 +103,7 @@ C
         K=(KP-1)*NNO
         CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
 C
-        IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+        IF ( LTEATT(' ','AXIS','OUI') ) THEN
            R = 0.D0
            DO 40 I=1,NNO
              R = R + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)

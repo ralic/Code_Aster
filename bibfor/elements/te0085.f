@@ -1,6 +1,6 @@
       SUBROUTINE TE0085 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C
       REAL*8             DFDX(9),DFDY(9),POIDS,RX
       INTEGER            NNO,KP,K,NPG,I,IVECTU,IPESA
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      LOGICAL            LTEATT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -65,7 +66,7 @@ C
          K = NNO*(KP-1)
          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
          POIDS = POIDS * RHO * ZR(IPESA)
-         IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+         IF ( LTEATT(' ','AXIS','OUI') ) THEN
            RX= 0.D0
            DO 102 I=1,NNO
              RX= RX+ ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)

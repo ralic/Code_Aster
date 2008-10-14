@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +90,13 @@ C
           IADYN = IADM(JIADM(IC)+2*J  )
           CGENR = GENR(JGENR(IC)+J)
           NOM32 = RNOM(JRNOM(IC)+J)
-          IF (CGENR .EQ. 'X') THEN
+C
+C    ISD DESIGNE LE STATUT DE LA COLLECTION 
+C        =U ON PASSE PAR LES ROUTINES HABITUELLES (JJALLC, JJLIDE)
+C        =X ON TRAITE DIRECTEMENT 
+C
+          ISDC  = ISZON(JISZON + IADMI - 1) / ISSTAT
+          IF (CGENR .EQ. 'X' .AND. ISDC .EQ. 2) THEN  
             CALL JJVERN (NOM32 , 0 , IRET)
             CALL JJALLC (IC , J , 'L' , IBACOL)
             IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
@@ -145,7 +151,8 @@ C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
             ENDIF
             CALL JJLIDE ('JEIMPO' , NOM32(1:24) , 2)
             GOTO 205
-          ELSE IF ( NOM32(25:32) .EQ. ' ' ) THEN 
+C          ELSE IF ( NOM32(25:32) .EQ. ' ' ) THEN 
+          ELSE 
             IF (IADYN .NE. 0) THEN
               IDM   = IADMI - 4 
               ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
@@ -181,7 +188,5 @@ C               write(6,*) ' OS ',NOM32,' lg =',IL,LSV
  205    CONTINUE
  200  CONTINUE
       MXLTOT=MXLTOT+(LTOT*LOIS)/(1024*1024)
-C
- 100  CONTINUE
 C
       END

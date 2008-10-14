@@ -6,7 +6,7 @@
      &                  MEASSE,VEASSE,SDSENS,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -303,7 +303,11 @@ C
         IF (LCTFC) THEN
           IF (.NOT.LXFCM) THEN                      
             CALL NMCVEC('AJOU','CNCTCF',' ',.TRUE.,.TRUE.,
-     &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)   
+     &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE) 
+            IF (PHASE.EQ.'CORRECTION') THEN
+              CALL NMCVEC('AJOU','CNUSUR',' ',.TRUE.,.FALSE.,
+     &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE) 
+            ENDIF  
           ENDIF     
         ENDIF
 C 
