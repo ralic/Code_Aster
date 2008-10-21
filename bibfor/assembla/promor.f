@@ -4,7 +4,7 @@
       CHARACTER*1 BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 20/10/2008   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -434,8 +434,13 @@ C     -- CREATION ET REMPLISSAGE DE .SMDE
       CALL JEDETR('&&PROMOR.ANCIEN.LM   ')
 
       IF (NIV.GE.1) THEN
-        WRITE (IFM,*)'--- NOMBRE DE COEFFICIENTS NON NULS DANS LA '//
-     &    'MATRICE : ',NCOEF
+        WRITE(IFM,'(A72,I12)')' --- TAILLE DU PROFIL MORSE DE LA '//
+     &                  'TRIANGULAIRE SUPERIEURE (FORMAT SCR): ',NCOEF
+        WRITE(IFM,'(A38)')' --- DONC LA TAILLE DE LA MATRICE EST:'
+        WRITE(IFM,'(A28,I12)')' --- EN SYMETRIQUE     NNZ= ',NCOEF
+        WRITE(IFM,'(A28,I12)')' --- EN NON SYMETRIQUE NNZ= ',
+     &                        2*NCOEF-NEQU
+        WRITE(IFM,*)
       ENDIF
 
       IF (LFETI) CALL INFBAV()

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE TP ANALYSE SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -349,7 +349,7 @@ GSCR=DYNA_TRAN_MODAL(
 #--------------------------------------------------------------
 # RESTITUTION GLOBALE DU CHAMP DE DEPLACEMENT RELATIF A CHAQUE INSTANT 
 # DE LA LISTE L_RECU
-RGSCR=REST_BASE_PHYS(  
+RGSCR=REST_GENE_PHYS(  
                RESU_GENE=GSCR,
                INTERPOL='LIN',   
                LIST_INST=L_RECU,
@@ -533,7 +533,7 @@ GSCA=DYNA_TRAN_MODAL(
 # RESTITUTION GRANDEURS ABSOLUES
 #-------------------------------
 
-RGSCA=REST_BASE_PHYS(  
+RGSCA=REST_GENE_PHYS(  
                RESU_GENE=GSCA,
                INTERPOL='LIN',   
                LIST_INST=L_RECU,
@@ -612,7 +612,7 @@ IMPR_TABLE(
 
 # DEPLACEMENTS
 
-RGSCR2=REST_BASE_PHYS(  
+RGSCR2=REST_GENE_PHYS(  
                RESU_GENE=GSCA,
                INTERPOL='LIN',   
                LIST_INST=L_RECU,

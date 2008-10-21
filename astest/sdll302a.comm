@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TEMPORELLE D'UNE POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -274,7 +274,7 @@ REPBASE1=DYNA_TRAN_MODAL(      METHODE='DEVOGE',
 #
 # PROJECTION DANS LA BASE PHYSIQUE DES DEPLACEMENTS ABSOLUS
 #
-REP_LIN1=REST_BASE_PHYS(     RESU_GENE=REPBASE1,
+REP_LIN1=REST_GENE_PHYS(     RESU_GENE=REPBASE1,
                                   NOM_CHAM='DEPL',
                                 MULT_APPUI='OUI'
                             )

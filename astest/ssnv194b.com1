@@ -1,0 +1,32 @@
+POURSUITE(CODE=_F(NOM='SSNV194B'),);
+
+# recuperation des contraintes et deformations viscoplastiques par phase
+
+NB_GRAINS=10
+
+
+EVPG1=[None]*NB_GRAINS
+SIGG1=[None]*NB_GRAINS
+
+NVIS=787
+NVIE=7
+NUMCMP=3
+
+for IP in range (NB_GRAINS):
+  VEVPG ='V'+str(NVIE+78*IP+NUMCMP)
+  VSIGG ='V'+str(NVIS+ 6*IP+NUMCMP)
+  EVPG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VEVPG,MAILLE='MA1',POINT=1);
+  SIGG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VSIGG,MAILLE='MA1',POINT=1);
+
+
+motcles = {}
+motcles['COURBE'] = []			 
+for IP in range (NB_GRAINS):
+   motcles['COURBE'].append(_F(FONC_X=EVPG1[IP], FONC_Y=SIGG1[IP]))
+
+IMPR_FONCTION(FORMAT ='XMGRACE',
+UNITE = 24, 
+**motcles);
+
+FIN () ;
+

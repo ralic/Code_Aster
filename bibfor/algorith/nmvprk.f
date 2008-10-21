@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/10/2008   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -311,25 +311,8 @@ C
       CALL LCINMA(0.D0,DSDE)
 
       IF ((LOI(1:8).EQ.'MONOCRIS').OR.(LOI(1:8).EQ.'POLYCRIS')) THEN
-
-         CALL LCDPEQ ( VIND , VINF, EPSEQ)
-         
-         IF (LOI(1:8).EQ.'MONOCRIS') THEN
-
-            VINF (NVI-1) = VIND (NVI-1) + EPSEQ
-           
-         ELSEIF (LOI(1:8).EQ.'POLYCRIS') THEN
-
-            VINF (7) = VIND (7) + EPSEQ
-
-         ENDIF
-
-         IF (EPSEQ.EQ.0.D0) THEN
-            VINF (NVI) = 0.D0
-         ELSE
-            VINF (NVI) = 1.D0
-         ENDIF
-
+         CALL LCDPEQ (VIND, VINF,LOI,NBCOMM,CPMONO,NMAT,NVI,SIGI,
+     &  COTHE,COEFF)
       ENDIF
 
       IF (LOI(1:9).EQ.'VENDOCHAB') THEN

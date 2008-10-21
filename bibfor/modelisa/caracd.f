@@ -1,7 +1,7 @@
       SUBROUTINE CARACD(CHAR  ,NZOCO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,8 +56,8 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      CFMMVD,ZCONV,ZCARF
-      CHARACTER*24 CARFRO,CONVCO,SANSNQ
-      INTEGER      JCARF,JCONV,JSANSN    
+      CHARACTER*24 CARFRO,CONVCO
+      INTEGER      JCARF,JCONV    
 C
 C ----------------------------------------------------------------------
 C
@@ -66,13 +66,11 @@ C
 C --- NOMS SDS
 C  
       CARFRO = CHAR(1:8)//'.CONTACT.CARFRO'
-      CONVCO = CHAR(1:8)//'.CONTACT.CONVCO'
-      SANSNQ = CHAR(1:8)//'.CONTACT.SANSNQ'      
+      CONVCO = CHAR(1:8)//'.CONTACT.CONVCO'     
 C
       ZCONV = CFMMVD('ZCONV')      
       ZCARF = CFMMVD('ZCARF')                  
 C
-      CALL WKVECT(SANSNQ,'G V I' ,NZOCO        ,JSANSN)
       CALL WKVECT(CONVCO,'G V I' ,ZCONV*NZOCO  ,JCONV )     
       CALL WKVECT(CARFRO,'G V R' ,ZCARF*NZOCO+1,JCARF )
 C

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF config supervis  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF python supervis  DATE 20/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* RESPONSABLE                                 D6BHHJP J.P.LEFEBVRE   */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */

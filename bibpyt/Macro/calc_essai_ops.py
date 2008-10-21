@@ -1,8 +1,8 @@
-#@ MODIF macro_visu_meidee_ops Macro  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF calc_essai_ops Macro  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,29 +18,31 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-## \package macro_visu_meidee_ops Implémentation de la macro MACRO_VISU_MEIDEE
+## \package calc_essai_ops Implémentation de la macro CALC_ESSAI
 #
-# Ce module contient la partie controle de la macro MACRO_VISU_MEIDEE
+# Ce module contient la partie controle de la macro CALC_ESSAI
 # l'implémetation de cette macro se trouve dans les modules
 # meidee_help, meidee_mac, meidee_massamor, meidee_turbulent
 # on utilise aussi une librairie de support
 # pour la gestion de l'interface graphique dans meidee_iface
 
 
-def macro_visu_meidee_ops( self,
-                           INTERACTIF         = None,
-                           UNITE_FIMEN        = None,
-                           UNITE_RESU         = None,
-                           EXPANSION          = None,
-                           FLUIDE_ELASTIQUE   = None,
-                           TURBULENT          = None,
-                           MODIFSTRUCT        = None,
-                           GROUP_NO_CAPTEURS  = None,
-                           GROUP_NO_EXTERIEUR = None,
-                           RESU_FLUDELA       = None,
-                           RESU_TURBULENT     = None,
-                           RESU_MODIFSTRU     = None,
-                           **args):
+def calc_essai_ops( self,
+                    INTERACTIF          = None,
+                    UNITE_FIMEN         = None,
+                    UNITE_RESU          = None,
+                    EXPANSION           = None,
+                    MEIDEE_FLUDELA      = None,
+                    MEIDEE_TURBULENT    = None,
+                    IDENTIFICATION      = None,
+                    MODIFSTRUCT         = None,
+                    GROUP_NO_CAPTEURS   = None,
+                    GROUP_NO_EXTERIEUR  = None,
+                    RESU_FLUDELA        = None,
+                    RESU_TURBULENT      = None,
+                    RESU_IDENTIFICATION = None,
+                    RESU_MODIFSTRU      = None,
+                    **args):
     import aster
     from Meidee.meidee_cata import MeideeObjects
     ier = 0
@@ -62,15 +64,15 @@ def macro_visu_meidee_ops( self,
         out_modifstru = RESU_MODIFSTRU[0] # max=1 dans le capy
 
 
-    if not RESU_TURBULENT:
-        RESU_TURBULENT = []
+    if not RESU_IDENTIFICATION:
+        RESU_IDENTIFICATION = []
     else:
-        for res in RESU_TURBULENT:
+        for res in RESU_IDENTIFICATION:
             table_fonction.append(res['TABLE'])
-    out_turbulent = {"DeclareOut" : self.DeclareOut,
-                     "TypeTables" : 'TABLE_FONCTION',
-                     "ComptTable" : 0,
-                     "TablesOut"  : table_fonction}
+    out_identification = {"DeclareOut" : self.DeclareOut,
+                          "TypeTables" : 'TABLE_FONCTION',
+                          "ComptTable" : 0,
+                          "TablesOut"  : table_fonction}
 
     if not RESU_FLUDELA:
         RESU_FLUDELA = []
@@ -82,6 +84,14 @@ def macro_visu_meidee_ops( self,
                    "ComptTable" : 0,
                    "TablesOut" : table}
 
+    if not RESU_TURBULENT:
+        RESU_TURBULENT = []
+    else:
+        for res in RESU_TURBULENT:
+            table.append(res['FONCTION'])
+    out_meideeturb = {"DeclareOut" : self.DeclareOut,
+                      "FoncOut" : table}
+        
     
     # Mode interactif : ouverture d'une fenetre Tk
     if INTERACTIF == "OUI":
@@ -89,7 +99,8 @@ def macro_visu_meidee_ops( self,
                                   UNITE_FIMEN,
                                   UNITE_RESU,
                                   out_fludela,
-                                  out_turbulent,
+                                  out_meideeturb,
+                                  out_identification,
                                   out_modifstru)
     else:
         from Meidee.meidee_calcul import MessageBox
@@ -103,12 +114,14 @@ def macro_visu_meidee_ops( self,
         TestMeidee(self,
                    mess,
                    out_fludela,
-                   out_turbulent,
+                   out_meideeturb,
+                   out_identification,
                    out_modifstru,
                    objects,
                    EXPANSION,
-                   FLUIDE_ELASTIQUE,
-                   TURBULENT,
+                   MEIDEE_FLUDELA,
+                   MEIDEE_TURBULENT,
+                   IDENTIFICATION,
                    MODIFSTRUCT,
                    GROUP_NO_CAPTEURS,
                    GROUP_NO_EXTERIEUR              
@@ -149,8 +162,10 @@ def create_tab_mess_widgets(tk, UNITE_RESU):
     
     tabs = TabbedWindow(tabsw, ["Expansion de modeles",
                                 "Modification structurale",
-                                "MEIDEE mono-modal",
-                                "Identification de chargement"])
+                                "MEIDEE mono-modal fludela",
+                                "MEIDEE mono-modal turbulent",
+                                "Identification de chargement",
+                                "Parametres de visualisation"])
 
     tabs.grid(row=0, column=0, sticky='nsew')
     # pack(side='top',expand=1,fill='both')
@@ -194,7 +209,8 @@ class FermetureCallback:
 
     def apply(self):
         """Enlève les fichiers temporaires de Xmgrace"""
-        self.turbulent.xmgr_manager.fermer()
+        if self.turbulent.param_visu.logiciel_courbes is not None:
+            self.turbulent.param_visu.logiciel_courbes.fermer()
         self.main_tk.quit()
 
 
@@ -202,7 +218,8 @@ def create_interactive_window(macro,
                               UNITE_FIMEN,
                               UNITE_RESU,
                               out_fludela,
-                              out_turbulent,
+                              out_meideeturb,
+                              out_identification,
                               out_modifstru):
     """Construit la fenêtre interactive comprenant une table pour 
     les 4 domaines de Meidee."""
@@ -211,8 +228,9 @@ def create_interactive_window(macro,
     from Meidee.meidee_cata import MeideeObjects
     from Meidee.meidee_correlation import InterfaceCorrelation
     from Meidee.meidee_modifstruct import InterfaceModifStruct
-    from Meidee.meidee_fludela import InterfaceFludela
+    from Meidee.meidee_fludela import InterfaceFludela, InterfaceTurbMonomod
     from Meidee.meidee_turbulent import InterfaceTurbulent
+    from Meidee.meidee_parametres import InterfaceParametres
     
     # fenetre principale
     tk = Tk()
@@ -226,20 +244,25 @@ def create_interactive_window(macro,
     objects = MeideeObjects(macro, mess)
     tabs.set_objects(objects)
     
-    iface = InterfaceCorrelation(main, objects, macro, mess)
+    param_visu = InterfaceParametres(main, mess)
+    
+    iface = InterfaceCorrelation(main, objects, macro, mess, param_visu)
     imodifstruct = InterfaceModifStruct(main, objects, macro,
-                                        mess, out_modifstru)
-    fludela = InterfaceFludela(main, objects,
-                               get_fimen_files(UNITE_FIMEN), mess, out_fludela)
-    turbulent = InterfaceTurbulent(main, objects, mess, out_turbulent)
+                                        mess, out_modifstru, param_visu)
+    fludelamonomod = InterfaceFludela(main, objects,
+                                      get_fimen_files(UNITE_FIMEN), mess, out_fludela, param_visu)
+    turbmonomod = InterfaceTurbMonomod(main, objects,get_fimen_files(UNITE_FIMEN) ,mess, out_meideeturb, param_visu)
+    turbulent = InterfaceTurbulent(main, objects, mess, out_identification, param_visu)
     
     tabs.set_tab("Expansion de modeles", iface.main)
     tabs.set_tab("Modification structurale", imodifstruct.main)
-    tabs.set_tab("MEIDEE mono-modal", fludela )
+    tabs.set_tab("MEIDEE mono-modal fludela", fludelamonomod )
+    tabs.set_tab("MEIDEE mono-modal turbulent", turbmonomod )
     tabs.set_tab("Identification de chargement", turbulent)
+    tabs.set_tab("Parametres de visualisation", param_visu)
     
     #tabs.set_current_tab("Modifstruct")
-    tabs.set_current_tab("Identification de chargement")
+    tabs.set_current_tab("Expansion de modeles")
 
     tk.protocol("WM_DELETE_WINDOW", FermetureCallback(tk, turbulent).apply)
     

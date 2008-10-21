@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SOLLICITATION SISMIQUE DE CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1083,7 +1083,7 @@ modgen=MODE_ITER_SIMULT(MATR_A=RIGIGEN, MATR_B=MASSGEN,
                          );
                          
                          
-RESPHY=REST_BASE_PHYS(    RESU_GENE=modgen,
+RESPHY=REST_GENE_PHYS(    RESU_GENE=modgen,
                           NOM_CHAM='DEPL',
                           TOUT_ORDRE='OUI'
                                         );

@@ -1,4 +1,4 @@
-#@ MODIF soustruc2 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF soustruc2 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,16 @@ cata_msg={
 
 3: _("""
  
+"""),
+
+4: _("""
+ mot-clef "AMOR_MECA" interdit :
+ il est deja calcule.
+"""),
+
+5: _("""
+ mot-clef "AMOR_MECA" interdit :
+ le resultat :  %(k1)s  existe deja.
 """),
 
 }

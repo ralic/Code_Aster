@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
              R_SUP           =SIMP(statut='f',typ='R'),
              MODULE          =SIMP(statut='f',typ='R',defaut=1.),
              DIRE_THETA      =SIMP(statut='f',typ=cham_no_sdaster ),
-             DIRECTION       =SIMP(statut='f',typ='R',max='**'),
+             DIRECTION       =SIMP(statut='f',typ='R',max=3,min=3),
              R_INF_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),             
              MODULE_FO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),

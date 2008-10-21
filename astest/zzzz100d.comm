@@ -1,6 +1,7 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # RESPONSABLE ZENTNER I.ZENTNER
 # TITRE CALCUL DES INDICES DE NOCIVITE D'UN SEISME
+# zzzz100d.para = tps_job 120 mem_job 50Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

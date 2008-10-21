@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE PLAQUE ANNULAIRE ENCASTREE SUR UN MOYEU (MAC NEAL)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,11 +120,13 @@ SQUEL1=DEFI_SQUELETTE(  CYCLIQUE    =_F(MODE_CYCL=MODCYC),
                              SECTEUR=_F( TOUT = 'OUI'))
 
 #
-MODSE2=REST_BASE_PHYS(  RESU_GENE=MODCYC,
+MODSE2=REST_SOUS_STRUC(  RESU_GENE=MODCYC,
+# modif Ionel
+#                              RESULTAT=MODCYC,
                               SECTEUR=2 )
 
 #
-MODGL1=REST_BASE_PHYS(  RESU_GENE=MODCYC,
+MODGL1=REST_SOUS_STRUC(  RESU_GENE=MODCYC,
                             SQUELETTE=SQUEL1)
 
 #

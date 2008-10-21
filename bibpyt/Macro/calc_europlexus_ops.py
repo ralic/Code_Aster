@@ -1,4 +1,4 @@
-#@ MODIF macr_europlexus_ops Macro  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_europlexus_ops Macro  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,13 +17,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE ASSIRE A.ASSIRE
 
 #-----------------------------------------------------------------------   
 #----------------------------- Importation des modules  ----------------
 #-----------------------------------------------------------------------   
-nom_macro = 'macr_europlexus_ops'
-
-debug = 0
+debug = False
 dryrun = False
 
 import types,string
@@ -31,20 +30,16 @@ import os
 import Numeric as N
 import math 
 import copy
+import sets
 
-from Accas import _F
-import aster
-from Utilitai.Utmess import UTMESS
-from Utilitai.partition import MAIL_PY
-
-#from Cata.cata import INFO_EXEC_ASTER
-#from Cata.cata import DETRUIRE
-#from Cata.cata import IMPR_RESU
-#from Cata.cata import DEFI_FICHIER
-#from Cata.cata import LIRE_RESU
-#from Cata.cata import CREA_MAILLAGE
-#from Cata.cata import DEFI_GROUP
-        
+# Protection pour Eficas
+try:
+   import aster
+   from Accas import _F
+   from Utilitai.partition import MAIL_PY
+except:
+  pass
+      
 #----------------------------- Precision ------------------------------- 
 tst = 1.0E-10
 
@@ -68,17 +63,23 @@ def vecteurs_egaux(v1,v2):
 #-----------------------------------------------------------------------   
 
  
-def macr_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None,
-# AA                             DIME=None,ECRITURE=None,CALCUL=None,**args):
-                             DIME=None,OBSERVATION=None,RESULTAT=None,COURBE=None,CALCUL=None,**args):
-                             
+def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None,
+                             DIME=None,OBSERVATION=None,ARCHIVAGE=None,COURBE=None,
+                             CALCUL=None,DOMAINES=None,INTERFACES=None,INFO=1,**args):
+        
+#   import aster
+#   from Accas import _F
+
   ier=0
-  
+  # La macro compte pour 1 dans la numerotation des commandes
+  self.set_icmd(1)
+
   # On importe les definitions des commandes a utiliser dans la macro
   # Le nom de la variable doit etre obligatoirement le nom de la commande
   
-  global INFO_EXEC_ASTER,DETRUIRE,IMPR_RESU,DEFI_FICHIER,LIRE_RESU,CREA_MAILLAGE
+  global _F,INFO_EXEC_ASTER,DETRUIRE,IMPR_RESU,DEFI_FICHIER,LIRE_RESU,CREA_MAILLAGE
   global DEFI_GROUP,LIRE_MAILLAGE,CREA_TABLE,IMPR_TABLE,AFFE_MODELE,EXEC_LOGICIEL
+  global LIRE_CHAMP,CREA_CHAMP,CREA_RESU,FORMULE
   
   INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
   DETRUIRE        = self.get_cmd('DETRUIRE')
@@ -92,18 +93,36 @@ def macr_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   IMPR_TABLE      = self.get_cmd('IMPR_TABLE')
   AFFE_MODELE     = self.get_cmd('AFFE_MODELE')
   EXEC_LOGICIEL   = self.get_cmd('EXEC_LOGICIEL')
+  LIRE_CHAMP      = self.get_cmd('LIRE_CHAMP')
+  CREA_CHAMP      = self.get_cmd('CREA_CHAMP')
+  CREA_RESU       = self.get_cmd('CREA_RESU')
+  FORMULE         = self.get_cmd('FORMULE')
+
+  # Pour la gestion des Exceptions
+  prev_onFatalError = aster.onFatalError()
+  aster.onFatalError('EXCEPTION')
+
+  # Pour masquer certaines alarmes
+  from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
+  MasquerAlarme('MED_1')
+
 
   # Ligne de commande d'Europlexus
   if args.has_key('LOGICIEL'): EXEC = args['LOGICIEL']
   else: EXEC = '/home/europlex/EPXD/EUROPLEXUS_GESTION/runepx_d'
-
+  if debug: print 'args_keys : %s'%args.keys()
+  if args.has_key('PAS_NBRE_COURBE') :
+     if debug: print 'PAS NBRE COURBE = ok (%s)'%args['PAS_NBRE_COURBE']
+  else :
+     if debug: print 'PAS NBRE COURBE = nook'
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
   # classs Europlexus permettant de faire le chainage avec le Code_Aster
   EPX = EUROPLEXUS(MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,
 # AA                   ECRITURE,CALCUL,REPE='REPE_OUT',EXEC=EXEC)
-                   OBSERVATION,RESULTAT,COURBE,CALCUL,REPE='REPE_OUT',EXEC=EXEC, args=args)
+                   OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,
+                   REPE='REPE_OUT',EXEC=EXEC, INFO=INFO, args=args)
 
   # Eriture du fichier de commande Europlexus
   EPX.ecrire_fichier()
@@ -117,9 +136,9 @@ def macr_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   # Recuperer le resulat Europlexus a l'aide d'un concept aster de type evol_noli
   fichier_med = 'auto'
   fichier_pun = 'auto'
-  if debug  : 
-    fichier_med='fort.81'
-    fichier_pun ='fort.85'
+#  if debug  : 
+#    fichier_med='fort.81'
+#    fichier_pun ='fort.85'
 
   self.DeclareOut('resu',self.sd) # Le concept sortant (de type evol_noli) est nomme 'resu'   
   global resu # pour que le nom du concept prenne celui defini par l'utilisateur
@@ -128,23 +147,32 @@ def macr_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   #Recuperer les concepts table
   if COURBE is not None:
     global table
-    icourbe = 0
-    for fonc in COURBE['TABLE'] :
-      icourbe += 1
-      self.DeclareOut('table',fonc['FONC'])
-      EPX.get_table(icourbe=icourbe,fichier=fichier_pun)
+    # icourbe = 0
+    # for fonc in COURBE['TABLE'] :
+      # icourbe += 1
+    self.DeclareOut('table',args['TABLE_COURBE'])
+    EPX.get_table()
+      # EPX.get_table(icourbe=icourbe,fichier=fichier_pun)
+
+
+  # Pour la gestion des Exceptions
+  aster.onFatalError(prev_onFatalError)
+
+  # Pour la gestion des alarmes
+  RetablirAlarme('MED_1')
 
   return ier
 
 #-----------------------------------------------------------------------   
 #----------------------------- class EUROPLEXUS ------------------------
 #-----------------------------------------------------------------------   
-  
+
 class EUROPLEXUS:
 # AA  def __init__(self,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,ECRITURE,CALCUL,REPE,EXEC,**args):
-  def __init__(self,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,OBSERVATION,RESULTAT,COURBE,CALCUL,REPE,EXEC,**args):
+  def __init__(self,MODELE,CARA_ELEM,CHAM_MATER,FONC_PARASOL,EXCIT,DIME,OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,REPE,EXEC,INFO,args):
 
-    # Mettre toutes les entrees en attribus
+    if debug: print 'args_key %s'%args.keys()
+    # Mettre toutes les entrees en attributs
     self.DIME = DIME
     self.MODELE = MODELE
     self.CARA_ELEM = CARA_ELEM
@@ -153,9 +181,12 @@ class EUROPLEXUS:
     self.EXCIT = EXCIT
 #    self.ECRITURE = ECRITURE
     self.OBSERVATION = OBSERVATION
-    self.RESULTAT = RESULTAT
+    self.ARCHIVAGE = ARCHIVAGE
     self.COURBE = COURBE
     self.CALCUL = CALCUL
+    self.DOMAINES = DOMAINES
+    self.INTERFACES = INTERFACES
+    self.INFO = INFO
 
     # Repertoire de calcul Europlexus 
     self.REPE   = REPE 
@@ -165,9 +196,18 @@ class EUROPLEXUS:
     if args.has_key('UNITE_COURBE'): self.UNITE_COURBE = args['UNITE_COURBE']
     else:                            self.UNITE_COURBE = None
     
-    
+    if args.has_key('PAS_INST_COURBE'): self.PAS_INST_COURBE = args['PAS_INST_COURBE']
+    else:                            self.PAS_INST_COURBE = None
+   
+    if args.has_key('PAS_NBRE_COURBE'): self.PAS_NBRE_COURBE = args['PAS_NBRE_COURBE']
+    else:                            self.PAS_NBRE_COURBE = None
+
+    if args.has_key('TABLE_COURBE'): self.TABLE_COURBE = args['TABLE_COURBE']
+    else:                            self.TABLE_COURBE = None
     # Dictionnaire contenant le texte associé au fichier de commande Europlexus
     self.epx = {}
+    
+    if debug: print 'pas nbre courbe = %s'%self.PAS_NBRE_COURBE
     
     # Concept pour un nouveau maillage si on utilise RIGI_PARASOL ou 
     # si on regroupe separement les mailles tria3 et quad4
@@ -176,6 +216,7 @@ class EUROPLEXUS:
     # Nom des fichiers de Europlexus (commande et sorties)
     self.nom_fichiers = {'COMMANDE' : 'commandes.epx',
                          'MAILLAGE' : 'maillage_epx',
+                         'ALIT'     : 'champ.alit',
                          'MED'      : 'champ.e2m',
                          'PUN'      : 'courbes.pun',
                         }
@@ -187,7 +228,7 @@ class EUROPLEXUS:
   
 #-----------------------------------------------------------------------       
   def get_unite_libre(self,):
-    
+
     _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
     unite=_UL['UNITE_LIBRE',1]
     DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
@@ -196,10 +237,10 @@ class EUROPLEXUS:
      
 #-----------------------------------------------------------------------   
   def reupere_structure(self,concept,mot_cle=None):
-    
+
     try : structure = concept.etape.valeur
     except : UTMESS('F','PLEXUS_1') 
-        
+
     if mot_cle : 
       if structure.has_key(mot_cle) : return structure[mot_cle]
       else : return None 
@@ -222,6 +263,14 @@ class EUROPLEXUS:
     return group_ma
     
 #-----------------------------------------------------------------------   
+  def get_group_ma_f(self,fact):
+    group_ma = self.get_motcle(fact,'GROUP_MA',None)
+    if types.TypeType(group_ma) == types.StringType : group_ma = (group_ma,)
+    # elif types.TypeType(group_ma) == types.ListType   : group_ma = tupel(group_ma) 
+    if not group_ma : group_ma=[]
+    return group_ma
+    
+#-----------------------------------------------------------------------   
   def setlist(self,fact):
     #print 'types.TypeType(fact)',types.TypeType(fact)
     if fact is None : return fact
@@ -229,7 +278,7 @@ class EUROPLEXUS:
     return fact
     
 #-----------------------------------------------------------------------   
-  def lire_fichier(self,fichier,) :
+  def lire_fichier(self,fichier,):
     fd = open(fichier,'r')
     lignes = fd.readlines()
     fd.close()
@@ -263,10 +312,12 @@ class EUROPLEXUS:
     
 #-----------------------------------------------------------------------   
   def lire_pun(self,fichier):
+    if debug: print 'lire_pun : fichier = %s'%fichier
     data  = self.lire_fichier(fichier)
     icourbe = 0
     courbes = {}
     for ligne in data:
+      if debug: print 'lire_pun : %s'%ligne
       if ligne[0] in ('VALEURS','VALUES'):
          icourbe += 1;
          nb = int(ligne[1])
@@ -274,6 +325,8 @@ class EUROPLEXUS:
       else:
         ligne_vale = [float(val) for val in ligne]
         courbes[icourbe].append(ligne_vale)
+    for courbe in courbes :
+        courbes[courbe]=N.transpose(N.array(courbes[courbe]))
     return courbes
     
 #-----------------------------------------------------------------------   
@@ -285,14 +338,14 @@ class EUROPLEXUS:
     MODULE = 'DEBUT'
     
     # Entete de la commande Europlexus courante
-    epx[MODULE] = ['*--FICHIER CREE PAR MACR_EUROPLEXUS/Code_Aster']
+    epx[MODULE] = ['*--FICHIER CREE PAR CALC_EUROPLEXUS/Code_Aster']
     
     # Texte declarant le debut
     epx[MODULE].append('TITRE')
     epx[MODULE].append('ECHO')
     options = 'TRID NONL'
 # AA    champ_fact = self.ECRITURE['CHAMP']
-    champ_fact = self.RESULTAT
+    champ_fact = self.ARCHIVAGE
     if champ_fact is not None : options += ' MEDE'
     epx[MODULE].append(options)
     epx[MODULE].append('\n') 
@@ -333,8 +386,8 @@ class EUROPLEXUS:
     fichier_maillage = self.pwd + nom_fichier
 
     #epx[MODULE].append('OPNF FORMAT 9')
-    epx[MODULE].append('%sL'%format)
-    epx[MODULE].append("'%s'" %fichier_maillage)    
+    epx[MODULE].append('%s '%format)
+    epx[MODULE].append("'%s' TOUT" %fichier_maillage)    
     #epx[MODULE].append('CASTEM 9 TOUT')
 
     epx[MODULE].append('\n')    
@@ -439,6 +492,7 @@ class EUROPLEXUS:
       concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
       class_dkt = DKT(MAILLAGE=concept_maillage,)
       nom_groups = class_dkt.aster2epx(groups=dic_gma['DKT3'])
+      if debug: print 'nom_groups = %s'%nom_groups
       # mettre a jour les groups de chaque modelisation
       dic_gma['DKT3'] = nom_groups['TRIA3']
       dic_gma['Q4GS'].extend(nom_groups['QUAD4'])
@@ -457,7 +511,8 @@ class EUROPLEXUS:
           for ig in range(1,len_groups) :
             group_ma = dic_gma[modelisation][ig]
             epx[MODULE].append((len(modelisation)+5+2)*' ' + group_ma)
-    
+
+                
     
     # Mettre a jour le modele dans le cas ou le maillage a ete modifie pour la seperation de TRIA3 et QUAD4
     # ce modele va etre utilise dans la lecture du fichier med (get_resu)
@@ -510,6 +565,7 @@ class EUROPLEXUS:
      
     # traduire les masses concentrees si elles existent
     cle = 'DISCRET'
+    self.discretParasol = {}
     if dic_elem.has_key(cle):
       epx[MODULE].append('\n') 
       epx[MODULE].append('*--MASSES AJOUTEES')
@@ -522,21 +578,40 @@ class EUROPLEXUS:
           for group in group_ma:
             epx[MODULE].append(11*' '+group)
           epx[MODULE].append(7*' ' + 'TERM')
+        if elem['CARA'] == 'K_TR_D_N' :
+          group_ma = self.get_group_ma(elem)
+          vale     = elem['VALE']
+          for gma in group_ma :
+            self.discretParasol[gma] = vale
            
     # traduire les elements coques s'ils existent
     cle = 'COQUE'
+    self.dicOrthotropie={}
+    self.listEpais=[]
+    self.listEpais2=[]
     if dic_elem.has_key(cle):
       epx[MODULE].append('\n') 
       epx[MODULE].append('*--ELEMENTS COQUES')
-      for elem in dic_elem[cle]:       
+      for elem in dic_elem[cle]:
+#        print elem     
         group_ma = self.get_group_ma(elem)
         epais = elem['EPAIS']
+        if self.ARCHIVAGE['CONT_GENER'] == 'OUI' :
+            self.listEpais.append({'VALE' : epais, 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X21'})
+            self.listEpais2.append({'VALE' : epais**2/6., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X22'})
+        else :
+            self.listEpais.append({'VALE' : 1., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X21'})
+            self.listEpais2.append({'VALE' : 1., 'GROUP_MA' : group_ma, 'NOM_CMP' : 'X22'})
         st = 'EPAIS  %g  ' %epais
         #ajouter les group_ma qui ont ete affecte par ces caracteristiques
         epx[MODULE].append(st+'LECT')
         for group in group_ma:
           epx[MODULE].append((len(st)+4)*' '+group)
         epx[MODULE].append((len(st))*' '+'TERM')
+        if elem.has_key('VECTEUR'):
+# AA       if elem['VECTEUR'] :
+            for group in group_ma :
+                self.dicOrthotropie[group] = elem['VECTEUR']
          
     # traduire les elements poutres s'ils existent
     cle = 'POUTRE'
@@ -548,7 +623,7 @@ class EUROPLEXUS:
       epx[MODULE].append('*--ELEMENTS POUTRES')
       for elem in dic_elem[cle]:       
         group_ma = self.get_group_ma(elem)
-        vecteurs = class_poutre.getvecteurs(group_ma,verif='oui')
+        vecteurs = class_poutre.getvecteurs(group_ma,verif='non')
         vect_y = vecteurs[group_ma[0]]
         type_section = elem['SECTION']
         st = 'GEOP %s ' %type_section
@@ -580,12 +655,15 @@ class EUROPLEXUS:
 
 #-----------------------------------------------------------------------   
   def export_RIGI_PARASOL(self):
-    
+
     epx = self.epx
     
     # Cle identifiant 
     MODULE = 'RIGI_PARASOL'
-    
+    concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+    self.MApyt = MAIL_PY()
+    self.MApyt.FromAster(concept_maillage)
+
     # Recuperer la structure du concept sorti de AFFE_CARA_ELEM
     cara_elem_struc = self.reupere_structure(self.CARA_ELEM)
     
@@ -596,30 +674,58 @@ class EUROPLEXUS:
       if fact :list_rigi_parasol = self.setlist(fact)
    
     # Traduction des fonctions definies dans FONC_PARASOL    
-    dic_fonc_parasol = self.get_FONC_PARASOL(list_rigi_parasol)
+    #dic_fonc_parasol = self.get_FONC_PARASOL(list_rigi_parasol)
+    dic_fonc_parasol = self.get_FONC_PARASOL()
+    epx[MODULE] = ['*--SUPPORT ELASTIQUE']
+   
+    # si l'utilisateur a lui meme fourni des GROUP_MA de discrets : on commence par la
+    gmaParasol=self.get_group_ma_f(self.FONC_PARASOL)
+    group_union = ''
+    for gma in gmaParasol :
+        if gma not in self.discretParasol :
+            if debug: print gma
+            if debug: print self.discretParasol.keys()
+            raise 'Discret non defini'
+        vale = self.discretParasol[gma]
+        epx[MODULE].append('SUPPORT')
+        epx[MODULE].append(6*' '+'KX %g  KY %g  KZ %g'%(vale[0],vale[1],vale[2]))
+        epx[MODULE].append(6*' '+'KRX %g KRY %g KRZ %g'%(vale[3],vale[4],vale[5]))       
+        for cle_fonc_parasol in dic_fonc_parasol.keys() :
+          epx[MODULE].append(6*' ' + '%s %i' %(cle_fonc_parasol,dic_fonc_parasol[cle_fonc_parasol]) )
+        epx[MODULE].append(6*' '+'LECT %s TERM'%gma)
+        group_union += '%s '%gma
+    if len(gmaParasol) > 0 :
+        epx['MODELE'].append(5*' ' + 'APPU  ' + group_union)
+
+    # concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+    # DEFI_GROUP(reuse         = concept_maillage,
+                 # MAILLAGE      = concept_maillage,
+                 # CREA_GROUP_NO = _F(GROUP_MA = gmaParasol),
+                # );
+        
+   
    
     # traduire les rigi_parasol
     if list_rigi_parasol :   
-      epx[MODULE] = ['*--SUPPORT ELASTIQUE']
       # changement de module parce que les supports issus de RIGI_PARASOL  doivent etre imprimes apres les materiaux
-      fichiers_parasol = []
-      cles_oblig = ['UNITE_EUROPLEXUS','GROUP_MA_POI1']
-      for elem in list_rigi_parasol:
-        elem_cara = elem['CARA']
-        if elem_cara == 'K_TR_D_N':
-          for cle_test in cles_oblig:
-            if not elem.has_key(cle_test):
-              UTMESS('F','PLEXUS_5',valk=cle_test) 
-          unite = elem['UNITE_EUROPLEXUS']
-          fichier = 'fort.%i' %unite
-          if fichier not in fichiers_parasol : fichiers_parasol.append(fichier)
-        else :
-          UTMESS('A','PLEXUS_6',valk=elem_cara)
+      # fichiers_parasol = []
+      # cles_oblig = ['UNITE_EUROPLEXUS','GROUP_MA_POI1']
+      # for elem in list_rigi_parasol:
+        # elem_cara = elem['CARA']
+        # if elem_cara == 'K_TR_D_N':
+          # for cle_test in cles_oblig:
+            # if not elem.has_key(cle_test):
+              # pass
+          # unite = elem['UNITE_EUROPLEXUS']
+          # fichier = 'fort.%i' %unite
+          # if fichier not in fichiers_parasol : fichiers_parasol.append(fichier)
+        # else :
+        #   pass
       # Lecture des valeurs de rigidites generees par aster a partir des rigidites globales definis dans PARA_RIGISOL
-      ressorts = []        
-      for fichier in fichiers_parasol :
-        ressorts.extend(self.lire_fichier(fichier))
-      
+      # ressorts = []        
+      # for fichier in fichiers_parasol :
+        # ressorts.extend(self.lire_fichier(fichier))
+      ressorts = self.CARA_ELEM.toEPX()
       # Creer un maillage qui, pour chaque noeud de l'interface utilisee dans rigi_parsol, asscocie un group_ma asscie
       # parce que on n'a pas les memes numeros des noeuds dans Europlexus
       crea_poi1 = []
@@ -627,8 +733,9 @@ class EUROPLEXUS:
       igr = -1
       # Liste des group_ma associes au noeuds ou le RIGI_PARSOL a ete applique 
       groups_parasol = []
-      for ressor in ressorts :
-        noeud = ressor[0]
+      
+      for noeud in ressorts.keys() :
+        # noeud = ressor[0]
         if not dic_gma.has_key(noeud):
           igr += 1
           group_ma = 'SUP%i' %igr
@@ -636,7 +743,34 @@ class EUROPLEXUS:
           groups_parasol.append(group_ma)
           crea_poi1.append(_F(NOEUD=noeud,NOM_GROUP_MA=group_ma)) 
       
-      concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+      # ATTENTION : a deplacer
+      # crea_maillage a faire de facon centraliser pour RIGI_PARASOL et le POST-TRAITEMENT ailleurs
+      courbe_fact = self.COURBE
+      if courbe_fact is None: courbe_fact = []
+      lnoeuds=sets.Set([])
+      lmailles=sets.Set([])
+      dicma=[]
+      for courbe in courbe_fact :
+        if courbe['GROUP_NO'] != None :
+            noeuds = courbe['GROUP_NO']
+            if type(noeuds) == tuple :
+                for el in noeuds :
+                    lnoeuds.add(el)
+            else :
+                lnoeuds.add(noeuds)
+        if courbe['GROUP_MA'] != None :
+            mailles = courbe['GROUP_MA']
+            if type(mailles) == tuple :
+                for el in mailles :
+                    lmailles.add(el)
+            else :
+                lmailles.add(mailles)
+      for maille in lmailles :
+        dicma.append({'NOM' : maille, 'MAILLE' : maille})
+
+      for no in lnoeuds :
+        if not self.MApyt.gno.has_key(no) :
+            crea_poi1.append(_F(NOEUD=no,NOM_GROUP_MA=no)) 
       
       __NEW = CREA_MAILLAGE(MAILLAGE=concept_maillage,
                              CREA_POI1 = crea_poi1,
@@ -646,45 +780,87 @@ class EUROPLEXUS:
       # Ecriture sous format europlexus
       # Indices des composantes
       indices_comps = {'KX':1,'KY':2,'KZ':3,'KRX':4,'KRY':5,'KRZ':6}
-      for ressor in ressorts :
+      for noeud in ressorts :
+        valeurs = ressorts[noeud]
         epx[MODULE].append('SUPPORT')
         # ecriture des composantes et de leurs valeurs associees
         for comp in indices_comps.keys():
-          vale = ressor[indices_comps[comp]]
+          if debug: print len(valeurs),indices_comps[comp]-1          
+          vale = valeurs[indices_comps[comp]-1]
           epx[MODULE].append(3*' ' + '%s %s' %(comp,vale))
         # caracteristiques des translations et des rotations  
         for cle_fonc_parasol in dic_fonc_parasol.keys() :
           epx[MODULE].append(3*' ' + '%s %i' %(cle_fonc_parasol,dic_fonc_parasol[cle_fonc_parasol]) )
         
         # ecriture du group_ma associe
-        noeud = ressor[0]
+        # noeud = ressor[0]
         group_ma = dic_gma[noeud]
         epx[MODULE].append(3*' ' + 'LECT %s TERM' %group_ma) 
     
       epx[MODULE].append('\n')
       
       group_union = 'PARASOL'
-      
+      dicma.append({'NOM' : group_union, 'UNION' : groups_parasol})
       __NEW = DEFI_GROUP(reuse = __NEW, 
                 MAILLAGE = __NEW,
-                CREA_GROUP_MA = (_F(NOM = group_union,UNION = groups_parasol)),
+                CREA_GROUP_MA = dicma
                 )     
       
       # Mettre a jour le module modele qd les ressots existent
       epx['MODELE'].append(5*' ' + 'APPU  ' + group_union)
     # Fermer le module modele dans tous les cas 
+    self.multidomaine = 0
+    listInterfaces = self.INTERFACES
+    self.gmaInterfaces=[]
+    if listInterfaces :
+        i=0
+        self.multidomaine = 1
+        for interface in listInterfaces :
+            Lgma1 = self.setlist(interface['GROUP_MA_1'])
+            Lgma2 = self.setlist(interface['GROUP_MA_2'])
+            self.gmaInterfaces.extend(Lgma1)
+            self.gmaInterfaces.extend(Lgma2)
+            for gma in Lgma1 :
+                if i==0 :
+                    epx['MODELE'].append(5*' ' + 'CL3L' + 2*' ' + gma)
+                else :
+                    epx['MODELE'].append(11*' ' + gma)
+            for gma in Lgma2 :
+                    epx['MODELE'].append(11*' ' + gma)
+            i+=1
     epx['MODELE'].append('TERM')
     epx['MODELE'].append('\n')
+
+    if self.gmaInterfaces :
+        epx['CHAM_MATER'].append('FANTOME 0. LECT')
+        for gma in self.gmaInterfaces :
+            epx['CHAM_MATER'].append(15*' '+'%s'%gma)
+        epx['CHAM_MATER'].append('           TERM')
+    epx['CHAM_MATER'].append('\n')   
+    
+    
+    # DEFINITION REPERES ORTHOTROPIE QUI DOIT ETRE APRES LES SUPPORTS
+    for gma in self.gmaGLRC :
+        if gma not in self.dicOrthotropie :
+            raise "Erreur : %s non affecte par un repere d'orthotropie : ajouter le mot-cle 'VECTEUR' dans AFFE_CARA_ELEM"%gma
+        vale = self.dicOrthotropie[gma]
+        epx[MODULE].append('COMP ORTS %g %g %g'%(vale[0],vale[1],vale[2]))
+        epx[MODULE].append(3*' '+'LECT')
+        epx[MODULE].append(7*' '+'%s'%gma)
+        epx[MODULE].append(3*' '+'TERM')
+        epx[MODULE].append(3*' '+'TERM')
+ 
+    epx[MODULE].append('\n') 
  
 #-----------------------------------------------------------------------   
-  def get_FONC_PARASOL(self,list_rigi_parasol) :
+  def get_FONC_PARASOL(self,list_rigi_parasol=None) :
     
     epx = self.epx
     
     MODULE = 'FONC_PARASOL'
     if list_rigi_parasol is not None :
       if self.FONC_PARASOL is None : UTMESS('F','PLEXUS_12')
-    else : return None
+    # else : return None
     
     epx[MODULE] = ['*--DEFINITIONS DES FONCTIONS']
     
@@ -695,7 +871,15 @@ class EUROPLEXUS:
     cles = ['NFKT','NFKR']
     # Dictionnaire faisant la correspondance entre la fonction et son numero europlexus
     dic_fonc = {} 
-    ifonc = 0
+    try : 
+        ifonc = self.ifonc
+        if debug: print 'self.ifonc = %s'%ifonc
+    except : 
+        self.ifonc=0
+        ifonc = self.ifonc     
+        if debug: print 'ifonc = %s'%ifonc
+    if epx.has_key('FONC_MATER') :
+        epx[MODULE].extend(epx['FONC_MATER'])
     for cle in cles:
       ifonc += 1
       dic_fonc[cle] = ifonc
@@ -705,7 +889,8 @@ class EUROPLEXUS:
       epx[MODULE].append(5*' ' +'NOPA %i TABLE %i' %(ifonc,len(temps)) )
       for ival in range(len(temps)):
          epx[MODULE].append(17*' ' +'%g %g' %(temps[ival],valeurs[ival]))   
-    
+    self.ifonc = ifonc
+    self.dic_fonc = dic_fonc
     epx[MODULE].append('\n')
     return dic_fonc
           
@@ -728,7 +913,11 @@ class EUROPLEXUS:
     
     # Dictionnaire stoquant les caracteristiques mecaniques et les group_ma associe a chaque materiau
     dic_mater = {}
-    
+    typMat = {}
+    # GLRC impose de définir l'orientation : on stocke dans gmaGLRC les GMA dont il faudra retrouver l'orientation dans MODI_MAILLAGE/ORIE_NORM_COQUE
+    self.gmaGLRC = []
+    epx['FONC_MATER'] = []
+    ref_fonc=[]
     for affe in affe_mater :
       # Recuperer le concept du materiau defini par DEFI_MATERIAU
       concept_mater = affe['MATER']
@@ -736,31 +925,206 @@ class EUROPLEXUS:
       nom_mater = concept_mater.get_name()
       # Recuperer le group_ma concerne
       group_ma = self.get_group_ma(affe)
+      if debug: print 'type(group_ma) = %s'%type(group_ma)
       if not dic_mater.has_key(nom_mater):
          dic_mater[nom_mater] = {'GROUP_MA':[]}
          # Recuperer les caracteristiques elastiques du materiau
          elas = self.reupere_structure(concept_mater,'ELAS')
-         for car in ['E','RHO','NU']:
-           dic_mater[nom_mater][car] = elas[car]
+         if elas :
+            typMat[nom_mater] = 'ELAS'
+            for car in ['E','RHO','NU']:
+              dic_mater[nom_mater][car] = elas[car]
+         beton = self.reupere_structure(concept_mater,'BETON')
+         if beton  :
+            typMat[nom_mater] = 'GLRC'
+            self.gmaGLRC.extend(group_ma)
+            dic_mater[nom_mater]['LINER']=[]
+            dic_mater[nom_mater]['NAPPE']=[]
+            materBeton = beton['MATER']
+            elasBeton = self.reupere_structure(materBeton,'ELAS')
+            dic_mater[nom_mater]['BETON']={}
+            for car in ['E','RHO','NU']:
+              dic_mater[nom_mater]['BETON'][car] = self.get_motcle(elasBeton,car)
+            for car in ['AMOR_ALPHA','AMOR_BETA']:
+              dic_mater[nom_mater]['BETON'][car] = self.get_motcle(elasBeton,car,None)
+            ecroBeton = self.reupere_structure(materBeton,'BETON_ECRO_LINE')
+            for car in ['SYT','SYC']:
+              dic_mater[nom_mater]['BETON'][car] = ecroBeton[car]
+            for car in ['EPAIS','GAMMA','QP1','QP2','C1N1','C1N2','C1N3','C2N1','C2N2','C2N3','C1M1','C1M2','C1M3','C2M1','C2M2','C2M3'] :
+              dic_mater[nom_mater]['BETON'][car] = self.get_motcle(beton,car)
+            for car in ['OMT','EAT','BT1','BT2'] :
+              dic_mater[nom_mater]['BETON'][car] = self.get_motcle(beton,car,None)
+            for car in ['MP1X','MP1Y','MP2X','MP2Y'] :
+              car_temp = self.get_motcle(beton,car,None)
+              if debug: print 'type(car_temp) = %s'%type(car_temp)
+              dic_mater[nom_mater]['BETON'][car] = None
+              if car_temp :
+                  if type(car_temp) == float :
+                    dic_mater[nom_mater]['BETON'][car] = car_temp
+                  else :
+                    if debug: print dir(car_temp)
+                    try : 
+                        ifonc = self.ifonc
+                    except : 
+                        self.ifonc=0
+                        ifonc = self.ifonc     
+                    ifonc += 1
+                    val = car_temp.Valeurs()
+                    x = val[:len(val):2]
+                    y = val[1:len(val):2]
+                    # imprimer les valeurs de la table
+                    epx['FONC_MATER'].append(5*' ' +'%i LSQU 2 TABLE %i' %(ifonc,len(x)) )
+                    for ival in range(len(x)):
+                       epx['FONC_MATER'].append(17*' ' +'%g %g' %(x[ival],y[ival]))   
+                    dic_mater[nom_mater]['BETON'][car] = 'FONC %i'%ifonc
+                    self.ifonc=ifonc
+                
+         
+         cable = self.reupere_structure(concept_mater,'CABLE_PREC')
+         if cable  :
+            materCable = cable['MATER']
+            elasCable = self.reupere_structure(materCable,'ELAS')
+            ecroCable = self.reupere_structure(materCable,'ECRO_LINE')
+            dic_mater[nom_mater]['CABLE']={}
+            for car in ['E','NU']:
+              dic_mater[nom_mater]['CABLE'][car] = elasCable[car]           
+            for car in ['SY']:
+              dic_mater[nom_mater]['CABLE'][car] = ecroCable[car]
+            for car in ['OMX','OMY','RX','RY','PREX','PREY'] :
+              dic_mater[nom_mater]['CABLE'][car] = cable[car]
+         Lnappes = self.setlist(self.reupere_structure(concept_mater,'NAPPE'))
+         if Lnappes  :
+            for nappe in Lnappes :
+                dic_tmp = {}
+                materNappe = nappe['MATER']
+                elasNappe = self.reupere_structure(materNappe,'ELAS')
+                ecroNappe = self.reupere_structure(materNappe,'ECRO_LINE')
+                for car in ['E','NU']:
+                  dic_tmp[car] = elasNappe[car]           
+                for car in ['SY']:
+                  dic_tmp[car] = ecroNappe[car]
+                for car in ['OMX','OMY','RX','RY'] :
+                  dic_tmp[car] = nappe[car]
+                dic_mater[nom_mater]['NAPPE'].append(dic_tmp)
+         Lliners = self.setlist(self.reupere_structure(concept_mater,'LINER'))
+         if Lliners :
+            for liner in Lliners :
+                dic_tmp = {}
+                materLiner = liner['MATER']
+                elasLiner = self.reupere_structure(materLiner,'ELAS')
+                ecroLiner = self.reupere_structure(materLiner,'ECRO_LINE')
+                for car in ['E','NU']:
+                  dic_tmp[car] = elasLiner[car]           
+                for car in ['SY']:
+                  dic_tmp[car] = ecroLiner[car]
+                for car in ['OML','RLR'] :
+                  dic_tmp[car] = liner[car]
+                dic_mater[nom_mater]['LINER'].append(dic_tmp)
+                
+
+      if debug: print 'MATER = %s \n type = %s \n dic = %s'%(nom_mater,typMat, dic_mater[nom_mater])
       dic_mater[nom_mater]['GROUP_MA'].extend(group_ma)
       
+      # if gmaGLRC :
+          # concept_maillage = self.reupere_structure(self.MODELE,'MAILLAGE')
+          # if debug: print 'ETAPES MAILLAGES'
+          # if debug: print dir(concept_maillage)
+          # if debug: print concept_maillage.executed
+          # if debug: print concept_maillage.etape
+          # if debug: print dir(concept_maillage.etape)
+          # if debug: print concept_maillage.etape.get_liste_etapes()
+          # if debug: print concept_maillage.etape.valeur
+        
+      
     # Impression au format Europlexus
-    dic_corresp = {'E':'YOUNG','NU':'NU','RHO':'RO'}
+    
     for nom_mater in dic_mater.keys():
       epx[MODULE].append('*--MATERIAU %s' %nom_mater)
       # mot cle indicant qu'il s'agit des caracteristiques lineaires du materiau
-      epx[MODULE].append('LINE')
-      for car_aster in dic_corresp.keys():
-        vale    = dic_mater[nom_mater][car_aster]
-        car_epx = dic_corresp[car_aster]
-        epx[MODULE].append('%s %g' %(car_epx,vale))
-      # ajouter les group_ma qui ont ete affecte par ces caracteristiques
+      if typMat[nom_mater] == 'ELAS' :
+          dic_corresp = {'E':'YOUNG','NU':'NU','RHO':'RO'}
+          epx[MODULE].append('LINE')
+          for car_aster in dic_corresp.keys():
+            vale    = dic_mater[nom_mater][car_aster]
+            car_epx = dic_corresp[car_aster]
+            epx[MODULE].append('%s %g' %(car_epx,vale))
+      else : #GLRC
+        dic_corres1 = {'RHO':'RO','EPAIS':'H','E':'EB','NU':'NUB'}
+        dic_corresNapp = {'E' : 'EA','SY':'FY','OMX':'OMX','OMY':'OMY','RX':'RX','RY':'RY','FS':'FS'}
+        dic_corresPrec = {'E' : 'EA','SY':'FY','OMX':'OMX','OMY':'OMY','RX':'RX','RY':'RY'}
+        dic_corresLinr = {'E' : 'EA','SY':'FY','OML':'OMLR','NU':'NULR','RLR':'RLR'}
+        dic_corres2 = {'OMT' : 'OMT','EAT':'EAT','BT1':'BT1','BT2':'BT2','SYT' : 'FT','GAMMA':'GAMM','QP1':'QP1','QP2':'QP2','C1N1':'C1N1','C1N2':'C1N2','C1N3':'C1N3','C2N1':'C2N1','C2N2':'C2N2','C2N3':'C2N3','C1M1':'C1M1','C1M2':'C1M2','C1M3':'C1M3','C2M1':'C2M1','C2M2':'C2M2','C2M3':'C2M3','SYC':'FC'}
+        dic_corres2b = {'MP1X':'MP1X','MP2X':'MP2X','MP1Y':'MP1Y','MP2Y':'MP2Y',}
+        dic_corres3 = {'PREX' : 'PREX', 'PREY' : 'PREY'}
+        dic_corres4 = {'AMOR_ALPHA':'KRAY','AMOR_BETA':'MRAY'}
+        epx[MODULE].append('GLRC DAMA')
+        for car_aster in dic_corres1.keys():
+            vale    = dic_mater[nom_mater]['BETON'][car_aster]
+            car_epx = dic_corres1[car_aster]
+            if vale is not None :
+                epx[MODULE].append('%s %g' %(car_epx,vale))
+        nlit = len(dic_mater[nom_mater]['NAPPE'])+len(dic_mater[nom_mater]['LINER'])
+        if dic_mater[nom_mater].has_key('CABLE') : 
+            nlit+=1
+        if nlit :
+            epx[MODULE].append('%s %g' %('NLIT',nlit))
+        for nappe in dic_mater[nom_mater]['NAPPE'] :
+            epx[MODULE].append('NAPP')
+            for car_aster in dic_corresNapp.keys():
+                if nappe.has_key(car_aster) :
+                    vale    = nappe[car_aster]
+                    car_epx = dic_corresNapp[car_aster]
+                    if vale is not None:
+                        epx[MODULE].append('%s %g' %(car_epx,vale))
+        if dic_mater[nom_mater].has_key('CABLE') : 
+            epx[MODULE].append('PREC')
+            for car_aster in dic_corresPrec.keys():
+                vale    = dic_mater[nom_mater]['CABLE'][car_aster]
+                car_epx = dic_corresPrec[car_aster]
+                if vale is not None :
+                    epx[MODULE].append('%s %g' %(car_epx,vale))
+        for liner in dic_mater[nom_mater]['LINER'] :
+            epx[MODULE].append('LINR')
+            for car_aster in dic_corresLinr.keys():
+                vale    = liner[car_aster]
+                car_epx = dic_corresLinr[car_aster]
+                if vale is not None :
+                    epx[MODULE].append('%s %g' %(car_epx,vale))
+        for car_aster in dic_corres2.keys():
+            vale    = dic_mater[nom_mater]['BETON'][car_aster]
+            car_epx = dic_corres2[car_aster]
+            if vale is not None :
+                if type(vale) == float :
+                    epx[MODULE].append('%s %g' %(car_epx,vale))
+                else :
+                    epx[MODULE].append('%s %s' %(car_epx,vale))
+        for car_aster in dic_corres2b.keys():
+            vale    = dic_mater[nom_mater]['BETON'][car_aster]
+            car_epx = dic_corres2b[car_aster]
+            if vale is not None :
+                if type(vale) == float :
+                    epx[MODULE].append('%s %g' %(car_epx,vale))
+                else :
+                    epx[MODULE].append('%s %s' %(car_epx,vale))
+        if dic_mater[nom_mater].has_key('CABLE') : 
+            for car_aster in dic_corres3.keys():
+                vale    = dic_mater[nom_mater]['CABLE'][car_aster]
+                car_epx = dic_corres3[car_aster]
+                if vale is not None :
+                    epx[MODULE].append('%s %g' %(car_epx,vale))
+        for car_aster in dic_corres4.keys():
+            vale    = dic_mater[nom_mater]['BETON'][car_aster]
+            car_epx = dic_corres4[car_aster]
+            if vale is not None :
+                epx[MODULE].append('%s %g' %(car_epx,vale))
+      
+          # ajouter les group_ma qui ont ete affecte par ces caracteristiques
       epx[MODULE].append(3*' '+'LECT')
       for group in dic_mater[nom_mater]['GROUP_MA']:
         epx[MODULE].append(7*' '+group)
       epx[MODULE].append(3*' '+'TERM')
+
     
-    epx[MODULE].append('\n')    
     return epx
     
 #-----------------------------------------------------------------------   
@@ -814,7 +1178,7 @@ class EUROPLEXUS:
           for ival in range(len(temps)):
             CHARGEMENT.append(10*' ' +'%g %g' %(temps[ival],valeurs[ival]))
       # DDL_IMPO
-      #print 'ddl_impo_list',ddl_impo_list
+      #if debug: print 'ddl_impo_list',ddl_impo_list
       if ddl_impo_list :
         #UTMESS('A','PLEXUS_8')
         if len(LIAISON) == 0 : LIAISON = ['LIAISON']
@@ -854,14 +1218,14 @@ class EUROPLEXUS:
    
     # Dictionnaire de passage de champs Aster --> Europlexus
     dic_champ = {'DEPL':'DEPLACEMENT','VITE':'VITESSE','ACCE':'ACCELERATION',
-                 'SIEF_ELGA':'CONTRAINTE','EPSI_ELGA':'EPST','VARI_ELGA':'ECROUISSAGE'}
+                 'SIEF_ELGA':'CONT','EPSI_ELGA':'EPST','VARI_ELGA':'ECRO'}
     
     # Dictionnaire de passage de composantes Aster --> Europlexus
     dic_cmp = {}
     for cham in ['DEPL','VITE','ACCE'] :
       dic_cmp[cham] = {'DX' : 1,'DY':2,'DZ':3,'DRX':4,'DRY':5,'DRZ':6}
     
-    dic_cmp['SIEF_ELGA']  = {'SIXX':1,'SIYY':2,'SIZZ':3,'SIXY':4,'SIXZ':5,'SIYZ':6,}
+    dic_cmp['SIEF_ELGA']  = {'SIXX':1,'SIYY':2,'SIZZ':3,'SIXY':4,'SIXZ':5,'SIYZ':6,'NXX':1,'NYY':2,'NXY':3,'MXX':4,'MYY':5,'MXY':6,'QX':7,'QY':8}
     dic_cmp['VARI_ELGA'] = {}
     for ii in range(1,25):
       dic_cmp['VARI_ELGA']['V%i'%ii] = ii
@@ -888,6 +1252,15 @@ class EUROPLEXUS:
         vale_freq = self.get_motcle(fact,dcles_freq[cle_freq],code_mess=None)
         if vale_freq is not None : break
       return cle_freq,vale_freq  
+      
+    def get_freq2() :
+        if self.PAS_NBRE_COURBE :
+            return 'FREQ',self.PAS_NBRE_COURBE
+        elif self.PAS_INST_COURBE :
+            return 'TFREQ',self.PAS_INST_COURBE
+        else :
+            raise 'Erreur programmation'
+        
 
     def string2list(var) :
       if types.TypeType(var) == types.StringType : var = (var,)
@@ -895,7 +1268,7 @@ class EUROPLEXUS:
 
 
     epx[MODULE] = ['*--ECRITURES DES RESULTATS']
-
+    epx[MODULE] = ['opti K2GP']
     # Entete de la commande Europlexus courante
     epx[MODULE].append('ECRITURE')
 
@@ -907,7 +1280,7 @@ class EUROPLEXUS:
 
     cle_freq_listing, vale_freq_listing = get_freq(listing_fact)
 # AA   cles_entite = ['POINTS','ELEMEMTS']
-    dcles_entite = {'POINTS':'GROUP_NO', 'ELEMEMTS':'GROUP_MA'}
+    dcles_entite = {'POINT':'GROUP_NO', 'ELEM':'GROUP_MA'}
 # AA    dcles_tout   = {'POINTS':'TOUT_GROUP_NO', 'ELEMEMTS':'GROUP_MA'}
     cles_entite = dcles_entite.keys()
 
@@ -919,6 +1292,7 @@ class EUROPLEXUS:
       cham_epx = self.dic_champ[cham_aster]
       st +=  '%s ' % cham_epx  
     st += ' %s %g' % (cle_freq_listing,vale_freq_listing)
+    st += ' NOPO NOEL'
     epx[MODULE].append(st)
     for cle in cles_entite:
 # AA    for cle in cles_entite :
@@ -926,14 +1300,13 @@ class EUROPLEXUS:
 # AA       entite_geo = string2list(entite_geo)
 
        entite_geo = string2list(listing_fact[dcles_entite[cle]])
-
-       if listing_fact['TOUT_%s' % dcles_entite[cle]] == 'OUI': epx[MODULE].append(2*' ' +'%s TOUS ' % cle)
-       elif entite_geo is None:                                 epx[MODULE].append(2*' ' +'NO%s' % cle)
-       else:
-          epx[MODULE].append(2*' ' +'%s LECT' %cle)
-          for group in entite_geo :
-             epx[MODULE].append(6*' '+group)
-          epx[MODULE].append(2*' '+'TERM') 
+       # if listing_fact['TOUT_%s' % dcles_entite[cle]] == 'OUI': epx[MODULE].append(2*' ' +'%s TOUS ' % cle)
+       # elif entite_geo is None:                                 epx[MODULE].append(2*' ' +'NO%s' % cle)
+       # else:
+          # epx[MODULE].append(2*' ' +'%s LECT' %cle)
+          # for group in entite_geo :
+             # epx[MODULE].append(6*' '+group)
+          # epx[MODULE].append(2*' '+'TERM') 
 
 #        if entite_geo is None : 
 #           epx[MODULE].append(2*' ' +'NO%s' %cle)
@@ -951,46 +1324,74 @@ class EUROPLEXUS:
     courbe_fact = self.COURBE
     if courbe_fact is not None :
 
-      dcourbe=[]
-      for j in courbe_fact:
-         dcourbe.append(j.cree_dict_valeurs(j.mc_liste))
-         for i in dcourbe[-1].keys():
-            if dcourbe[-1][i]==None : del dcourbe[-1][i]
+      # dcourbe=[]
+      # for j in courbe_fact:
+         # dcourbe.append(j.cree_dict_valeurs(j.mc_liste))
+         # for i in dcourbe[-1].keys():
+            # if dcourbe[-1][i]==None : del dcourbe[-1][i]
 
-      print 'dcourbe=', dcourbe
+      # if debug: print 'dcourbe=', dcourbe
 
-      cle_freq, vale_freq = get_freq(courbe_fact)
-      epx[MODULE].append(2*' ' + 'FICHIER ALICE TEMPS' + ' %s %g' %(cle_freq,vale_freq))
+      cle_freq, vale_freq = get_freq2()
+      fichier_alit = self.pwd + self.REPE + os.sep + self.nom_fichiers['ALIT']
+      epx[MODULE].append(2*' ' + "FICH ALIT 11  %s %g" %(cle_freq,vale_freq))
 
       # Liste les noeuds a postraiter
-      list_noeuds = []
+      lnoeuds=sets.Set([])
+      lmailles=sets.Set([])
+      for courbe in courbe_fact :
+        if courbe['GROUP_NO'] != None :
+            noeuds = courbe['GROUP_NO']
+            if debug: print type(noeuds)
+            # liste de noeud ou un seul noeud ?
+            if type(noeuds) == tuple :
+                for el in noeuds :
+                    lnoeuds.add(el)
+            else :
+                lnoeuds.add(noeuds)
+        elif courbe['GROUP_MA'] != None :
+            mailles = courbe['GROUP_MA']
+            if debug: print type(mailles)
+            # liste de mailles ou une seule maille ?
+            if type(mailles ) == tuple :
+                for el in mailles :
+                    lmailles.add(el)
+            else :
+                lmailles.add(mailles)           
+        else :
+            raise 'Erreur ni noeud ni maille'
+      # sys.exit()
+      # tables = self.get_motcle(courbe_fact,'TABLE',code_mess='F')
+      # tables = self.setlist(tables)
 
-      # recuperer les mot_cles TABLE
-      print courbe_fact
-      print courbe_fact['NOEUD']
-      sys.exit()
-      tables = self.get_motcle(courbe_fact,'TABLE',code_mess='F')
-      #tables = self.setlist(tables)
-
-      icourbe = 0
-      for table in tables:
-        icourbe += 1
-        noeud = table['NOEUD']
-        list_noeuds.append(noeud)
-      #Ecriture la liste des noeuds sous format epx
-      epx[MODULE].append(4*' ' +'POINTS')
-      epx[MODULE].append(6*' ' +'LECT ')
-      for noeud in list_noeuds :
-        epx[MODULE].append(8*' '+noeud)
-      epx[MODULE].append(6*' '+'TERM')   
-      #Pas besoin d'elements 
-      epx[MODULE].append(4*' ' + 'NOELEMENTS')
-
+      # icourbe = 0
+      # for table in tables:
+        # icourbe += 1
+        # noeud = table['NOEUD']
+        # list_noeuds.append(noeud)
+      # Ecriture la liste des noeuds sous format epx
+      if lnoeuds :
+          epx[MODULE].append(4*' ' +'POINTS')
+          epx[MODULE].append(6*' ' +'LECT ')
+          for noeud in lnoeuds :
+            epx[MODULE].append(8*' '+noeud)
+          epx[MODULE].append(6*' '+'TERM')   
+      if lmailles :
+          epx[MODULE].append(4*' ' +'ELEM')
+          epx[MODULE].append(6*' ' +'LECT ')
+          for maille in lmailles :
+            epx[MODULE].append(8*' '+maille)
+          epx[MODULE].append(6*' '+'TERM')   
+     
+     
+      # Pas besoin d'elements 
+      # epx[MODULE].append(4*' ' + 'NOELEMENTS')
+    
     # Ecriture fichier MED representant les champs aux noeuds et aux points de gauss
-    # Traitement du mot-cle facteur RESULTAT
+    # Traitement du mot-cle facteur ARCHIVAGE
 #    # Traitement du mot-cle facteur CHAMP
 #    champ_fact = self.ECRITURE['CHAMP']
-    champ_fact = self.RESULTAT
+    champ_fact = self.ARCHIVAGE
     if champ_fact is not None :
       cle_freq_champ,vale_freq_champ = get_freq(champ_fact)
       epx[MODULE].append(2*' ' + 'FICHIER MED')
@@ -1001,12 +1402,18 @@ class EUROPLEXUS:
       epx[MODULE].append(2*' ' + ' %s %g' %(cle_freq_champ,vale_freq_champ))
       
       # groupes de mailles du modele
-      entite_geo = []
-      for model in self.modelisations :
-         entite_geo.extend(self.dic_gma[model])
+      entite_geo={}
+      entite_geo['ELEM'] = []
+      for model in ['DKT3','Q4GS'] :
+         if model in self.modelisations :
+             entite_geo['ELEM'].extend(self.dic_gma[model])
+      entite_geo['POINT'] = []
+      for model in ['DKT3','Q4GS','POUT'] :
+         if model in self.modelisations :
+             entite_geo['POINT'].extend(self.dic_gma[model])
       for cle in cles_entite :
        epx[MODULE].append(2*' ' +'%s LECT' %cle)
-       for group in entite_geo :
+       for group in entite_geo[cle] :
           epx[MODULE].append(6*' '+group)
        epx[MODULE].append(2*' '+'TERM') 
     
@@ -1032,44 +1439,64 @@ class EUROPLEXUS:
 
     # Ecriture fort Europlexus
     # Entete de la commande courante
-    epx[MODULE] = ['SUITE']
-    epx[MODULE].append("'TITRE'")
-    epx[MODULE].append('RESULTAT ALICE TEMPS GARD PSCR')
+    epx[MODULE] = ['SUITE\n']
+    # epx[MODULE].append("'TITRE'")
 #    unite_alit = self.get_motcle(courbe_fact,'UNITE_ALIT',code_mess=None)
-#    print 'unite_alit=', unite_alit
+#    if debug: print 'unite_alit=', unite_alit
     if self.UNITE_COURBE: fichier_courbes = os.path.join(self.pwd, 'fort.%s' % str(self.UNITE_COURBE))
     else:                 fichier_courbes = self.pwd + self.REPE + os.sep + self.nom_fichiers['PUN']
-    epx[MODULE].append("OPNF FORMAT 17 '%s'" %fichier_courbes)
-    epx[MODULE].append("SORTIES GRAPHIQUES AXTEMPS 1. 'TEMPS(s)'")
+    fichier_alit = self.pwd + self.REPE + os.sep + self.nom_fichiers['ALIT']
+    epx[MODULE].append("RESULTAT ALICE TEMPS 11")
+    epx[MODULE].append("OPNF FORMAT 17 '%s'" %fichier_courbes)    
+    epx[MODULE].append("SORTIES GRAPHIQUES")
+    # epx[MODULE].append("PERFO '%s'"%fichier_courbes)
+    epx[MODULE].append("AXTEMPS 1. 'TEMPS(s)'")
 
     # recuperer le mot-cle facteur COURBE
 # AA    courbe_fact = self.ECRITURE['COURBE']
     courbe_fact = self.COURBE
     # recuperer les mot_cle TABLE
-    tables = self.get_motcle(courbe_fact,'TABLE',code_mess='F')
+    # tables = self.get_motcle(courbe_fact,'TABLE',code_mess='F')
     #tables = self.setlist(tables)
 
     # Dictionnaire decrivant les legendes des abscisses et ordodonnees des courbes imprimees
     # et utilisee dans get_tables
     self.legend_courbes = {}
-    entites_courbe = ['NOEUD','REGION']
+    entites_courbe = ['GROUP_NO','GROUP_MA'] 
+    entite_EPX={'GROUP_NO' : 'NOEUD', 'GROUP_MA' : 'ELEM'}
     icourbe = 0
-    for table in tables:
-      icourbe += 1
+    # for table in tables:
+    lnoeuds = []
+    for table in courbe_fact :
       for entite_type in entites_courbe :
         try : entite = table[entite_type]
         except : entite = None
-        if entite is not None : break
+        if entite is not None :        
+            cham_aster = table['NOM_CHAM']
+            cmp_aster = table['NOM_CMP']
+            cham_epx = self.dic_champ[cham_aster]
+            cmp_epx  = self.dic_cmp[cham_aster][cmp_aster]
+            # ylabel   = cham_aster + '_' + cmp_aster
+            ylabel   = cmp_aster
+            if type(entite) is not tuple : entite = [entite,]
+            for el in entite :
+                icourbe+=1
+                label = ylabel + '_%s'%el
+                if entite_type == 'MAILLE' :
+                    label = label+'_%s'%table['NUM_GAUSS']
+                st = "COURBE %i '%s' %s COMP %i "% (icourbe,label,cham_epx,cmp_epx)
+                if entite_type == 'MAILLE' :
+                    st=st+"GAUSS %i "%table['NUM_GAUSS']
+                st=st+"%s LECT %s TERM"%(entite_EPX[entite_type],el)
+                if debug: print 'st = %s'%st
+                epx[MODULE].append(st)
+                # epx[MODULE].append("LIST %i AXES 1. '%s'" % (icourbe,ylabel))
+                st = "LIST %s AXES 1. '%s'" % (icourbe,label)
+                if debug: print 'st = %s'%st
+                epx[MODULE].append(st)
+                self.legend_courbes[icourbe] = ['TEMPS',label]
         
-      cham_aster = table['NOM_CHAM']
-      cmp_aster = table['NOM_CMP']
-      cham_epx = self.dic_champ[cham_aster]
-      cmp_epx  = self.dic_cmp[cham_aster][cmp_aster]
-      ylabel   = cham_aster + '_' + cmp_aster
-      st = "COURBE %i '%s' %s COMP %i %s LECT %s TERM" % (icourbe,ylabel,cham_epx,cmp_epx,entite_type,entite)
-      epx[MODULE].append(st)
-      epx[MODULE].append("LIST %i AXES 1. '%s'" % (icourbe,ylabel))
-      self.legend_courbes[icourbe] = ['TEMPS',ylabel]
+    
 
     # Une ligne de saut
     epx[MODULE].append('\n')
@@ -1093,15 +1520,73 @@ class EUROPLEXUS:
       cstab = self.CALCUL['CSTAB']
       epx[MODULE].append(7*' ' + 'CSTAB %s' %cstab)
     
+    listInterfaces = self.INTERFACES
+    listDomaines = self.DOMAINES
+    domaineInterfaces = {}
+    if listDomaines :
+        epx[MODULE].append('\n')
+        epx[MODULE].append('*--DEFINITION DES SOUS DOMAINES')
+        epx[MODULE].append('')
+        epx[MODULE].append('STRUCTURE %s'%len(listDomaines))
+        for interface in listInterfaces :
+            Lgma1 = self.setlist(interface['GROUP_MA_1'])
+            Lgma2 = self.setlist(interface['GROUP_MA_2'])
+            idS1 = interface['IDENT_DOMAINE_1']
+            idS2 = interface['IDENT_DOMAINE_2']
+            if not domaineInterfaces.has_key(idS1) :
+                domaineInterfaces[idS1]= []
+            if not domaineInterfaces.has_key(idS2) :
+                domaineInterfaces[idS2]= []
+            domaineInterfaces[idS1].extend(Lgma1)
+            domaineInterfaces[idS2].extend(Lgma2)
+    else : 
+        listDomaines = []
+    for domaine in listDomaines :
+        Lgma = self.setlist(domaine['GROUP_MA'])
+        id  = domaine['IDENTIFIANT']
+        epx[MODULE].append(3*' '+'DOMA LECT')
+        for gma in Lgma :
+            epx[MODULE].append(12*' '+gma)
+        for gma in domaineInterfaces[id] :
+            epx[MODULE].append(12*' '+gma)
+        epx[MODULE].append(8*' '+'TERM')
+        epx[MODULE].append(8*' '+'IDENTIFIANT %s\n'%id)
+        
+    
+    if listInterfaces :
+        epx[MODULE].append('')
+        epx[MODULE].append('INTERFACE %s'%len(listInterfaces))
+    else :
+        listInterfaces = []
+    for interface in listInterfaces :
+        Lgma1 = self.setlist(interface['GROUP_MA_1'])
+        Lgma2 = self.setlist(interface['GROUP_MA_2'])
+        idS1 = interface['IDENT_DOMAINE_1']
+        idS2 = interface['IDENT_DOMAINE_2']
+        tole = interface['TOLE']
+        epx[MODULE].append(3*' '+'MORTAR TOLE %g'%tole)
+        epx[MODULE].append(7*' '+'DOMA %s LECT'%idS1)
+        for gma in Lgma1 :
+            epx[MODULE].append(13*' '+gma)
+        epx[MODULE].append(10*' '+'TERM')
+        epx[MODULE].append(7*' '+'DOMA %s LECT'%idS2)
+        for gma in Lgma2 :
+            epx[MODULE].append(13*' '+gma)
+        epx[MODULE].append(10*' '+'TERM')
+                
     epx[MODULE].append('\n')
     epx[MODULE].append('*--LANCEMENT DE CALCUL')
     epx[MODULE].append('')
     calcul = 'CALCUL'
-    cles = ['TINI','PASFIX','TFIN','DTMAX','NMAX']
-    for cle in cles:
-      try : calcul += ' %s %g' %(cle,self.CALCUL[cle])
+# AAA    cles = ['INST_INIT','PASFIX','INST_FIN','DTMAX']
+    cles = ['INST_INIT','PASFIX','INST_FIN']
+    dcles = {'INST_INIT':'TINI', 'PASFIX':'PASFIX', 'INST_FIN':'TFIN'}
+    for cle in dcles.keys():
+      try : calcul += ' %s %g' %(dcles[cle], self.CALCUL[cle])
       except : pass
-    
+    # Doit etre mis en entier
+    try : calcul += ' %s %d' %('NMAX',self.CALCUL['NMAX'])
+    except : pass
     epx[MODULE].append(calcul) 
     epx[MODULE].append('\n')
     #epx[MODULE].append('FIN')  
@@ -1135,6 +1620,7 @@ class EUROPLEXUS:
     for module in modules :
       if self.epx.has_key(module) :
         for ll in self.epx[module]:
+          if debug: print 'EPX : %s'%ll
           fd.write('%s\n'%ll)
     # Fin du fichier de commandes epx      
     fd.write('FIN')      
@@ -1151,13 +1637,30 @@ class EUROPLEXUS:
       self.courbes = self.lire_pun(fichier=fichier)
     
     if not os.path.isfile(fichier) : return
-     
-    valeurs = N.array(self.courbes[icourbe])
-    para_abscisse = self.legend_courbes[icourbe][0]
-    para_ordonnee = self.legend_courbes[icourbe][1]
-    table = CREA_TABLE( LISTE =(_F(LISTE_R = valeurs[:,0].tolist() , PARA = para_abscisse,),
-                                _F(LISTE_R = valeurs[:,1].tolist() , PARA = para_ordonnee,)
-                                         ),
+    if debug: print self.courbes,type(self.courbes)
+    nc = 0
+    para_ordonnee = []
+    dico = []
+    for icourbe in self.courbes :
+        valeurs = self.courbes[icourbe]
+        if debug: print 'icourbe = %s ; valeurs = %s'%(icourbe, valeurs)
+        if nc == 0 :
+            para_abscisse = self.legend_courbes[icourbe][0]
+            vale_abscisse = valeurs[0,:].tolist()
+            dico.append({'LISTE_R' : vale_abscisse , 'PARA' : para_abscisse})
+            para_ordonnee = self.legend_courbes[icourbe][1]
+            vale_ordonnee = valeurs[1,:].tolist()
+            dico.append({'LISTE_R' : vale_ordonnee , 'PARA' : para_ordonnee})
+            nc=1
+        else :
+            if ((self.legend_courbes[icourbe][0] == para_abscisse) and (vale_abscisse == valeurs[0,:].tolist())) :
+                para_ordonnee = self.legend_courbes[icourbe][1]
+                vale_ordonnee = valeurs[1,:].tolist()
+                dico.append({'LISTE_R' : vale_ordonnee , 'PARA' : para_ordonnee})
+            else :
+                raise 'Table non compatible'
+    
+    table = CREA_TABLE( LISTE =dico
                       );
     
     if 0 :
@@ -1186,7 +1689,7 @@ class EUROPLEXUS:
     
     if fichier_med == 'auto' : fichier_med = self.REPE + os.sep + self.nom_fichiers['MED'] 
     
-    print fichier_med
+    if debug: print fichier_med
     if not os.path.isfile(fichier_med) :
        print "Pas de fichier MED !"
        return
@@ -1217,22 +1720,30 @@ class EUROPLEXUS:
                     
                                    }
 
+    dic_cmp_gauss['DEFORMATION'] = {'DKT3': {'NOM_CMP'     : ('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),
+                                            'NOM_CMP_MED' : ('EPS1','EPS2','EPS3','EPS4','EPS5','EPS6',),},
+                                   'Q4GS': {'NOM_CMP'     : ('EXX','EYY','EXY','KXX','KYY','KXY','GAX','GAY'),
+                                            'NOM_CMP_MED' : ('EPS1','EPS2','EPS3','EPS4','EPS5','EPS6','EPS7','EPS8'),},
+                                   'POUT' : {}        
+                    
+                                   }
 
     dic_cmp_gauss['ECROUISSAGE'] = {'DKT3': {'NOM_CMP'     : ('V1','V2'),
-                                            'NOM_CMP_MED'  : ('VAR1','VAR2'),},
+                                            'NOM_CMP_MED'  : ('VAR8','VAR9'),},
                                    'Q4GS' : {'NOM_CMP'      : ('V1','V2'),
-                                            'NOM_CMP_MED'  : ('VAR1','VAR2'),},
+                                            'NOM_CMP_MED'  : ('VAR8','VAR9'),},
                                    'POUT' : {}        
                         
                                     }
                                     
     # Dictionnaire permettant de traduire le champ epx en med au nom asscie dans aster
-    epx2aster = {'CONTRAINTE':'SIEF_ELGA','ECROUISSAGE':'VARI_ELGA'}
+# AA    epx2aster = {'CONTRAINTE':'SIEF_ELGA','ECROUISSAGE':'VARI_ELGA'}
+    epx2aster = {'CONTRAINTE':'SIEF_ELGA','DEFORMATION':'EPSI_ELGA_DEPL','ECROUISSAGE':'VARI_ELGA'}
 
 # AA : desactive pour le moment
 #     # Enrichir la liste format_med par les champs aux pts de gauss
 #     imode = 0
-#     print 'self.modelisations',self.modelisations
+#     if debug: print 'self.modelisations',self.modelisations
 #     for modelisation in self.modelisations :
 #       #if modelisation in ['Q4GS','DKT3'] :
 #         imode += 1
@@ -1262,7 +1773,6 @@ class EUROPLEXUS:
        dExcit.append(j.cree_dict_valeurs(j.mc_liste))
        for i in dExcit[-1].keys():
           if dExcit[-1][i]==None : del dExcit[-1][i]
-
     resu = LIRE_RESU(TYPE_RESU='EVOL_NOLI',
 #                  VERI_ELGA='NON',
                   FORMAT='MED',
@@ -1273,10 +1783,328 @@ class EUROPLEXUS:
                   CARA_ELEM=self.CARA_ELEM,
                   TOUT_ORDRE='OUI',
                   EXCIT=dExcit,
-                  INFO=2,
+                  INFO=self.INFO,
                   );
 
+    __EPN = CREA_CHAMP(
+            TYPE_CHAM = 'ELGA_NEUT_R',
+            OPERATION = 'AFFE',
+            MODELE    = self.NEW_MODELE,
+            INFO      = self.INFO,
+            PROL_ZERO = 'OUI',
+            AFFE      = self.listEpais,
+            )
+    __EPN2 = CREA_CHAMP(
+            TYPE_CHAM = 'ELGA_NEUT_R',
+            OPERATION = 'AFFE',
+            INFO      = self.INFO,
+            MODELE    = self.NEW_MODELE,
+            PROL_ZERO = 'OUI',
+            AFFE      = self.listEpais2,
+            )
+    __UNN = CREA_CHAMP(
+            TYPE_CHAM = 'ELGA_NEUT_R',
+            OPERATION = 'AFFE',
+            MODELE    = self.NEW_MODELE,
+            INFO      = 2,
+            PROL_ZERO = 'OUI',
+            AFFE = _F(VALE=(1.,1.), TOUT='OUI', NOM_CMP=('X21','X22')),
+            )
+    __FONC1 = FORMULE(VALE='X1*X21',NOM_PARA=('X1','X21'))
+    __FONC2 = FORMULE(VALE='X2*X21',NOM_PARA=('X2','X21'))
+    __FONC3 = FORMULE(VALE='X3*X21',NOM_PARA=('X3','X21'))
+    __FONC4 = FORMULE(VALE='X4*X22',NOM_PARA=('X4','X22'))
+    __FONC5 = FORMULE(VALE='X5*X22',NOM_PARA=('X5','X22'))
+    __FONC6 = FORMULE(VALE='X6*X22',NOM_PARA=('X6','X22'))
+    __FONC7 = FORMULE(VALE='X7*X21',NOM_PARA=('X7','X21'))
+    __FONC8 = FORMULE(VALE='X8*X21',NOM_PARA=('X8','X21'))
+    __FONC11 = FORMULE(VALE='X11*X21',NOM_PARA=('X11','X21'))
+    __FONC12 = FORMULE(VALE='X12*X21',NOM_PARA=('X12','X21'))
+    __FONC13 = FORMULE(VALE='X13*X21',NOM_PARA=('X13','X21'))
+    __FONC14 = FORMULE(VALE='X14*X22',NOM_PARA=('X14','X22'))
+    __FONC15 = FORMULE(VALE='X15*X22',NOM_PARA=('X15','X22'))
+    __FONC16 = FORMULE(VALE='X16*X22',NOM_PARA=('X16','X22'))
+    __FONC17 = FORMULE(VALE='X17*X21',NOM_PARA=('X17','X21'))
+    __FONC18 = FORMULE(VALE='X18*X21',NOM_PARA=('X18','X21'))
+    
+    __FONCC = CREA_CHAMP(
+        TYPE_CHAM = 'ELGA_NEUT_F',
+        OPERATION = 'AFFE',
+        MODELE    = self.NEW_MODELE,
+        PROL_ZERO = 'OUI',
+        AFFE      = _F(
+               TOUT    = 'OUI',
+               NOM_CMP = ('X1','X2','X3','X4','X5','X6','X7','X8','X11','X12','X13','X14','X15','X16','X17','X18'),
+               VALE_F  = (__FONC1,__FONC2,__FONC3,__FONC4,__FONC5,__FONC6,__FONC7,__FONC8,__FONC11,__FONC12,__FONC13,
+                          __FONC14,__FONC15,__FONC16,__FONC17,__FONC18)),
+        INFO      = self.INFO,
+                          )
+    __FONCC2 = CREA_CHAMP(
+        TYPE_CHAM = 'ELGA_NEUT_F',
+        OPERATION = 'AFFE',
+        MODELE    = self.NEW_MODELE,
+        PROL_ZERO = 'OUI',
+        AFFE      = _F(
+               TOUT    = 'OUI',
+               NOM_CMP = ('X1','X2'),
+               VALE_F  = (__FONC1,__FONC2)),
+        INFO      = self.INFO,
+               )
+    listEffg = []
+    # err = 0
+    # i=0
+    # while 1:
+        # index=1
+        # pas = self.ARCHIVAGE['PAS_NBRE']
+        # dicDetr=[]
+        # if 'Q4GS' in self.modelisations :
+            # try :
+                # __SIG11 = LIRE_CHAMP(
+                    # TYPE_CHAM   = 'ELGA_SIEF_R',
+                    # UNITE       = 99,
+                    # NUME_PT     = i*pas,
+                    # MODELE      = self.NEW_MODELE,
+                    # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    # PROL_ZERO   = 'OUI',
+                    # NOM_MED     = 'CHAMP___CONTRAINTE___001',
+                    # NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
+                    # NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'])
+                # dicDetr.append({'NOM' : __SIG11})
+                # index=2    
+            # except :
+                # err +=1
+        # if 'DKT3' in self.modelisations :
+            # try : 
+                # __SIG21 = LIRE_CHAMP(
+                    # TYPE_CHAM   = 'ELGA_SIEF_R',
+                    # UNITE       = 99,
+                    # NUME_PT     = i*pas,
+                    # MODELE      = self.NEW_MODELE,
+                    # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    # PROL_ZERO   = 'OUI',
+                    # NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%index,
+                    # NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'],
+                    # NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP_MED']),
+                # dicDetr.append({'NOM' : __SIG21})
+
+            # except :
+                # err +=1
+        # if err > 1 :
+            # break
+        # DETRUIRE(CONCEPT=dicDetr) 
+        # i+=1
+    itot=len(resu.LIST_PARA()['INST'])
+    __EFFG=[None]*itot
+    # __EPSG=[None]*itot
+    __ECRG=[None]*itot
+    for i in xrange(itot) :
+        dicAffe=[]
+        dicAffe2=[]
+        dicAffe3=[]
+        index=1
+        pas = self.ARCHIVAGE['PAS_NBRE']
+        dicAsse = [{'TOUT' : 'OUI', 'CHAM_GD' : __EPN, 'NOM_CMP' : 'X21', 'NOM_CMP_RESU' : 'X21'}]
+        dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __EPN2, 'NOM_CMP' : 'X22', 'NOM_CMP_RESU' : 'X22', 'CUMUL' : 'OUI','COEF_R':1.})
+        dicAsse2 = [{'TOUT' : 'OUI', 'CHAM_GD' : __UNN, 'NOM_CMP' : 'X21', 'NOM_CMP_RESU' : 'X21'}]
+        dicAsse2.append({'TOUT' : 'OUI', 'CHAM_GD' : __UNN, 'NOM_CMP' : 'X22', 'NOM_CMP_RESU' : 'X22', 'CUMUL' : 'OUI','COEF_R':1.})
+        dicAsse3 = [{'TOUT' : 'OUI', 'CHAM_GD' : __UNN, 'NOM_CMP' : 'X21', 'NOM_CMP_RESU' : 'X21'}]
+        dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __UNN, 'NOM_CMP' : 'X22', 'NOM_CMP_RESU' : 'X22', 'CUMUL' : 'OUI','COEF_R':1.})
+        dicDetr=[]
+        if 'Q4GS' in self.modelisations :
+                __SIG1 = LIRE_CHAMP(
+                    TYPE_CHAM   = 'ELGA_SIEF_R',
+                    UNITE       = 99,
+                    NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
+                    INFO        = self.INFO,
+                    MODELE      = self.NEW_MODELE,
+                    MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    PROL_ZERO   = 'OUI',
+                    NOM_MED     = 'CHAMP___CONTRAINTE___001',
+                    NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
+                    NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'],
+                    )
+                # __EPS1 = LIRE_CHAMP(
+                    # TYPE_CHAM   = 'ELGA_EPSI_R',
+                    # UNITE       = 99,
+                    # NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
+                    # INFO        = self.INFO,
+                    # MODELE      = self.NEW_MODELE,
+                    # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    # PROL_ZERO   = 'OUI',
+                    # NOM_MED     = 'CHAMP___DEFORM_TOT___001',
+                    # NOM_CMP     = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP'],
+                    # NOM_CMP_MED = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP_MED'])
+#                 __ECR1 = LIRE_CHAMP(
+#                     TYPE_CHAM   = 'ELGA_VARI_R',
+#                     UNITE       = 99,
+#                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
+#                     INFO        = self.INFO,
+#                     MODELE      = self.NEW_MODELE,
+#                     MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+#                     PROL_ZERO   = 'OUI',
+#                     NOM_MED     = 'CHAMP___ECROUISSAGE__001',
+#                     NOM_CMP     = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'],
+#                     NOM_CMP_MED = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP_MED'])
+                dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG1, 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP']), 
+                            'NOM_CMP_RESU' : ('X1','X2','X3','X4','X5','X6','X7','X8'), 'CUMUL' : 'OUI','COEF_R':1.})
+                # dicAsse2.append({'TOUT' : 'OUI', 'CHAM_GD' : __EPS1, 'NOM_CMP' : tuple(dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP']), 
+                            # 'NOM_CMP_RESU' : ('X1','X2','X3','X4','X5','X6','X7','X8'), 'CUMUL' : 'OUI','COEF_R':1.})
+#                 dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __ECR1, 'NOM_CMP' : tuple(dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP']), 
+#                             'NOM_CMP_RESU' : ('X1','X2'), 'CUMUL' : 'OUI','COEF_R':1.})
+                index=2    
+                dicDetr.append({'NOM' : __SIG1})
+                # dicDetr.append({'NOM' : __EPS1})
+#                dicDetr.append({'NOM' : __ECR1})
+        if 'DKT3' in self.modelisations:
+                __SIG2 = LIRE_CHAMP(
+                    TYPE_CHAM   = 'ELGA_SIEF_R',
+                    UNITE       = 99,
+                    NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
+                    INFO        = self.INFO,
+                    MODELE      = self.NEW_MODELE,
+                    MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    PROL_ZERO   = 'OUI',
+                    NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%index,
+                    NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'],
+                    NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP_MED'],
+                    )
+                # __EPS2 = LIRE_CHAMP(
+                    # TYPE_CHAM   = 'ELGA_EPSI_R',
+                    # UNITE       = 99,
+                    # NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
+                    # INFO        = self.INFO,
+                    # MODELE      = self.NEW_MODELE,
+                    # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    # PROL_ZERO   = 'OUI',
+                    # NOM_MED     = 'CHAMP___DEFORM_TOT___00%d'%index,
+                    # NOM_CMP     = dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP'],
+                    # NOM_CMP_MED = dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP_MED']),
+#                 __ECR2 = LIRE_CHAMP(
+#                     TYPE_CHAM   = 'ELGA_VARI_R',
+#                     UNITE       = 99,
+#                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
+#                     INFO        = self.INFO,
+#                     MODELE      = self.NEW_MODELE,
+#                     MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+#                     PROL_ZERO   = 'OUI',
+#                     NOM_MED     = 'CHAMP___ECROUISSAGE__00%d'%index,
+#                     NOM_CMP     = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'],
+#                     NOM_CMP_MED = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP_MED'])
+                dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG2, 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP']),
+                                'NOM_CMP_RESU' : ('X11','X12','X13','X14','X15','X16'), 'CUMUL' : 'OUI','COEF_R':1.})
+                # dicAsse2.append({'TOUT' : 'OUI', 'CHAM_GD' : __EPS2, 'NOM_CMP' : tuple(dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP']), 
+                                # 'NOM_CMP_RESU' : ('X11','X12','X13','X14','X15','X16'), 'CUMUL' : 'OUI','COEF_R':1.})
+#                 dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __ECR2, 'NOM_CMP' : tuple(dic_cmp_gauss['ECROUISSAGE']['DKT3']['NOM_CMP']), 
+#                                 'NOM_CMP_RESU' : ('X11','X12'), 'CUMUL' : 'OUI','COEF_R':1.})
+                dicDetr.append({'NOM' : __SIG2})
+                # dicDetr.append({'NOM' : __EPS2})
+#                dicDetr.append({'NOM' : __ECR2})
+
+        __SIGN = CREA_CHAMP(
+            TYPE_CHAM = 'ELGA_NEUT_R',
+            OPERATION = 'ASSE',
+            INFO      = self.INFO,
+            PROL_ZERO = 'OUI',
+            MODELE    = self.NEW_MODELE,
+            ASSE      = dicAsse,
+            )
+        # __EPSN = CREA_CHAMP(
+            # TYPE_CHAM = 'ELGA_NEUT_R',
+            # OPERATION = 'ASSE',
+            # INFO      = self.INFO,
+            # PROL_ZERO = 'OUI',
+            # MODELE    = self.NEW_MODELE,
+            # ASSE      = dicAsse2)
+#         __ECRN = CREA_CHAMP(
+#             TYPE_CHAM = 'ELGA_NEUT_R',
+#             OPERATION = 'ASSE',
+#             INFO      = self.INFO,
+#             PROL_ZERO = 'OUI',
+#             MODELE    = self.NEW_MODELE,
+#             ASSE      = dicAsse3)
+        dicDetr.append({'NOM' : __SIGN})
+        # dicDetr.append({'NOM' : __EPSN})
+#         dicDetr.append({'NOM' : __ECRN})
+        __EFFGN = CREA_CHAMP(
+            TYPE_CHAM = 'ELGA_NEUT_R',
+            OPERATION = 'EVAL',
+            INFO      = self.INFO,
+                    CHAM_F      = __FONCC,
+                    CHAM_PARA   = (__SIGN),
+          )
+        # __EPSGN = CREA_CHAMP(
+            # TYPE_CHAM = 'ELGA_NEUT_R',
+            # OPERATION = 'EVAL',
+            # INFO      = self.INFO,
+                    # CHAM_F    = __FONCC,
+                    # CHAM_PARA   = (__EPSN))
+#         __ECRGN = CREA_CHAMP(
+#             TYPE_CHAM = 'ELGA_NEUT_R',
+#             OPERATION = 'EVAL',
+#             INFO      = self.INFO,
+#                   CHAM_F    = __FONCC2,
+#                   CHAM_PARA   = (__ECRN))
+        dicDetr.append({'NOM' : __EFFGN})
+        # dicDetr.append({'NOM' : __EPSGN})
+#         dicDetr.append({'NOM' : __ECRGN})
+        __EFFG[i] = CREA_CHAMP(
+            TYPE_CHAM  = 'ELGA_SIEF_R',
+            OPERATION = 'ASSE',
+            INFO      = self.INFO,
+            PROL_ZERO = 'OUI',
+            MODELE    = self.NEW_MODELE,
+            ASSE      = _F(
+                TOUT = 'OUI',
+                CHAM_GD = __EFFGN,
+                NOM_CMP = ('X1','X2','X3','X4','X5','X6','X7','X8')+('X11','X12','X13','X14','X15','X16'),
+                NOM_CMP_RESU = tuple(dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP']+dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'])),
+                )
+        # __EPSG[i] = CREA_CHAMP(
+            # TYPE_CHAM  = 'ELGA_EPSI_R',
+            # OPERATION = 'ASSE',
+            # INFO      = self.INFO,
+            # PROL_ZERO = 'OUI',
+            # MODELE    = self.NEW_MODELE,
+            # ASSE      = _F(
+                # TOUT = 'OUI',
+                # CHAM_GD = __EPSGN,
+                # NOM_CMP = ('X1','X2','X3','X4','X5','X6','X7','X8')+('X11','X12','X13','X14','X15','X16'),
+                # NOM_CMP_RESU = tuple(dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP']+dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP'])))
+#         __ECRG[i] = CREA_CHAMP(
+#             TYPE_CHAM  = 'ELGA_VARI_R',
+#             OPERATION = 'ASSE',
+#             INFO      = self.INFO,
+#             PROL_ZERO = 'OUI',
+#             MODELE    = self.NEW_MODELE,
+#             ASSE      = _F(
+#                 TOUT = 'OUI',
+#                 CHAM_GD = __ECRGN,
+#                 NOM_CMP = ('X1','X2'),
+#                 NOM_CMP_RESU = tuple(dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'])))
+        dicAffe.append({'CHAM_GD' : __EFFG[i], 'MODELE' : self.NEW_MODELE,'CHAM_MATER' : self.CHAM_MATER,'INST': resu.LIST_PARA()['INST'][i]})
+        # dicAffe2.append({'CHAM_GD' : __EPSG[i], 'MODELE' : self.NEW_MODELE,'CHAM_MATER' : self.CHAM_MATER,'INST': resu.LIST_PARA()['INST'][i]})
+#         dicAffe3.append({'CHAM_GD' : __ECRG[i], 'MODELE' : self.NEW_MODELE,'CHAM_MATER' : self.CHAM_MATER,'INST': resu.LIST_PARA()['INST'][i]})
+        DETRUIRE(CONCEPT=dicDetr)
+        resu = CREA_RESU(reuse=resu,
+            OPERATION = 'AFFE',
+            TYPE_RESU = 'EVOL_NOLI',
+            NOM_CHAM  = 'SIEF_ELGA',
+            AFFE = dicAffe,
+            )
+        # resu = CREA_RESU(reuse=resu,
+            # OPERATION = 'AFFE',
+            # TYPE_RESU = 'EVOL_NOLI',
+            # NOM_CHAM  = 'EPSI_ELGA_DEPL',
+            # AFFE = dicAffe2)
+        resu = CREA_RESU(reuse=resu,
+            OPERATION = 'AFFE',
+            TYPE_RESU = 'EVOL_NOLI',
+            NOM_CHAM  = 'VARI_ELGA',
+            AFFE = dicAffe3,
+            )
+
     DEFI_FICHIER(UNITE=unite,ACTION='LIBERER');              
+
     os.remove(fort)
 
 #-----------------------------------------------------------------------
@@ -1284,19 +2112,12 @@ class EUROPLEXUS:
 #    os.chdir(self.pwd + self.REPE)
     fichier_epx = self.nom_fichiers['COMMANDE']
     cmd = '%s %s' %(self.EXEC,fichier_epx)
-    print 'EXEC',cmd
-#    os.system( cmd )
+    if debug: print 'EXEC',cmd
 
     from Utilitai.System import ExecCommand
     comment = "Lancement de la commande :\n%s" % cmd
     os.chdir(self.pwd + self.REPE)
-    iret, output = ExecCommand(cmd, alt_comment=comment)
-    print output
-
-#     EXEC_LOGICIEL(LOGICIEL=self.EXEC,
-#                   ARGUMENT=fichier_epx,
-#                   INFO=2,
-#                  )
+    iret, output = ExecCommand(cmd, alt_comment=comment, follow_output=True)
                   
 
     os.chdir(self.pwd) 
@@ -1375,9 +2196,9 @@ class POUTRE:
 #------------------------------------------------------------------------
   def get_vecty_group_ma(self,group_ma):
     
-    #print '*'*10
-    #print 'Test de group_ma',group_ma
-    #print '*'*10
+    #if debug: print '*'*10
+    #if debug: print 'Test de group_ma',group_ma
+    #if debug: print '*'*10
 
     message = 0
 
@@ -1404,7 +2225,7 @@ class POUTRE:
     self.dic_gma[group_ma]['VECT_Y'] = vect_y 
 
     if message : 
-      #print 'group_ma',group_ma
+      #if debug: print 'group_ma',group_ma
       UTMESS('F','PLEXUS_11',valk=group_ma) 
 
     return vect_y        

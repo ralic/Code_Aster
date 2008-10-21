@@ -7,7 +7,7 @@
       CHARACTER*8  NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,8 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER NBSIGR,JNSG,IS1,IOC1,IS2,IOC2,INDS,IFM,NIV,JCOMBI,JPRESA,
      &        JPRESB,JMOMEA,JMOMEB,JNBOCC,NBTH1,JTH1,NBTH2,JTH2,JCHMAT,
-     &        JMSA,NDIM,JNOC,NSCY,NS,JMSN,NBSIG2,I1,I2,INDI,JIST
+     &        JMSA,NDIM,JNOC,NSCY,NS,JMSN,NBSIG2,I1,I2,INDI,JIST,
+     &        JNSITU,NBSITU
       REAL*8 PPI,PPJ,PQI,PQJ,SALTIJ,UG,SN,SP,SMM,MPI(3),MPJ(3),MQI(3),
      &       MQJ(3),MSE(3),MATPI(14),MATPJ(14),MATQI(14),MATQJ(14),
      &       MATSE(14)
@@ -75,6 +76,7 @@ C DEB ------------------------------------------------------------------
 
       CALL INFNIV(IFM,NIV)
 
+      CALL JEVEUO('&&RC3600.SITU_NUMERO'    ,'L',JNSITU)
       CALL JEVEUO('&&RC3600.SITU_COMBINABLE','L',JCOMBI)
       CALL JEVEUO('&&RC3600.SITU_PRES_A',    'L',JPRESA)
       CALL JEVEUO('&&RC3600.SITU_PRES_B',    'L',JPRESB)
@@ -84,11 +86,12 @@ C DEB ------------------------------------------------------------------
 
       CALL JEVEUO('&&RC3600.MATERIAU','L',JCHMAT)
 
+      CALL JELIRA('&&RC3600.SITU_PRES_A','LONUTI',NBSITU,K8B)
       CALL JELIRA(JEXNUM('&&RC3600.LES_GROUPES',IG),'LONMAX',NBSIGR,K8B)
       CALL JEVEUO(JEXNUM('&&RC3600.LES_GROUPES',IG),'L',JNSG)
       IF (NIV.GE.2) THEN
         WRITE (IFM,1000) IG,NBSIGR
-        WRITE (IFM,1002) (ZI(JNSG+I1-1),I1=1,NBSIGR)
+        WRITE (IFM,1002) (ZI(JNSITU+ZI(JNSG+I1-1)-1),I1=1,NBSIGR)
       END IF
 
       IF (IOCS.EQ.0) THEN
@@ -106,15 +109,15 @@ C DEB ------------------------------------------------------------------
 
       NS = 0
       IF (SEISME) THEN
-        MOMEPI = ZK24(JMOMEA+IOCS-1)
+        MOMEPI = ZK24(JMOMEA+NBSITU+IOCS-1)
         CALL RCMO01(MOMEPI,IMA,IPT,MSE)
         MSE(1) = 2*MSE(1)
         MSE(2) = 2*MSE(2)
         MSE(3) = 2*MSE(3)
-        MATEPI = ZK24(JCHMAT+2*IOCS-1)
+        MATEPI = ZK24(JCHMAT+2*(NBSITU+IOCS)-1)
         CALL RCMA01(MATEPI,IMA,IPT,NBM,ADRM,MATSE)
-        NS = ZI(JNBOCC+2*IOCS-2)
-        NSCY = ZI(JNBOCC+2*IOCS-1)
+        NS = ZI(JNBOCC+2*(NBSITU+IOCS)-2)
+        NSCY = ZI(JNBOCC+2*(NBSITU+IOCS)-1)
       ELSE
         MSE(1) = 0.D0
         MSE(2) = 0.D0
@@ -129,7 +132,7 @@ C     -------------
       DO 20 IS1 = 1,NBSIGR
         IOC1 = ZI(JNSG+IS1-1)
         IF (.NOT.ZL(JCOMBI+IOC1-1)) GO TO 20
-        IF (IOC1.EQ.IOCS) GO TO 20
+        IF (IOC1.GT.NBSITU) GO TO 20
 
         I1 = I1 + 1
         ZI(JNOC-1+2* (I1-1)+1) = ZI(JNBOCC+2*IOC1-2)
@@ -214,7 +217,7 @@ C       -------------
         DO 10 IS2 = IS1 + 1,NBSIGR
           IOC2 = ZI(JNSG+IS2-1)
           IF (.NOT.ZL(JCOMBI+IOC2-1)) GO TO 10
-          IF (IOC2.EQ.IOCS) GO TO 10
+          IF (IOC2.GT.NBSITU) GO TO 10
           I2 = I2 + 1
 
           PQI = ZR(JPRESA+IOC2-1)
@@ -377,10 +380,10 @@ C --- CALCUL DU FACTEUR D'USAGE
      &              UG)
       ELSE
         IF ( NPASS .EQ. 0 ) THEN
-           CALL RC32FU ( NBSIG2, ZI(JNOC), ZI(JIST),
+           CALL RC36FU ( NBSIG2, ZI(JNOC), ZI(JIST),
      &                   ZR(JMSA), NOMMAT, UG, FACTUS )
         ELSE
-           CALL RC32FP ( NBSIG2, ZI(JNOC), ZI(JIST), ZI(JNSG),
+           CALL RC36FP ( NBSIG2, ZI(JNOC), ZI(JIST), ZI(JNSG),
      &                   ZR(JMSA), NOMMAT, UG, FACTUS )
         ENDIF
       END IF

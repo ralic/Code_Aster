@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF meidee_cata Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ import aster
 from Utilitai.Utmess import UTMESS
 from Cata.cata import modele_sdaster , mode_meca, matr_asse_depl_r, maillage_sdaster
 from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
-from Cata.cata import mode_stat_forc, base_modale, nume_ddl_sdaster
+from Cata.cata import mode_stat_forc, base_modale, nume_ddl_sdaster, dyna_harmo
 import Numeric
 from Numeric import array, transpose
 from Numeric import zeros
@@ -46,7 +46,6 @@ from Accas import _F
 aster.onFatalError("EXCEPTION")
 
 #---------------------------------------------------------------------------------
-
 
 class Resultat:
     """!Gestion des sd_resultat d'aster
@@ -77,24 +76,16 @@ class Resultat:
         self.mass = None
         self.kass_name = ""
         self.kass = None
+        self.cass_name = ""
+        self.cass = None
         self.owned = owned
         self.mess = mess
+        self.nom_cham = None
 
-        jdc = CONTEXT.get_current_step().jdc.sds_dict
-        # recuperation des maillages associes aux resultats
-        numerotation = aster.getvectjev( nom.ljust(19)+'.REFD' )
-        #print ".REFD", numerotation
-        if numerotation:
-            self.kass_name = numerotation[0].strip()
-            self.kass = jdc.get(self.kass_name)
-            self.mass_name = numerotation[1].strip()
-            self.mass = jdc.get(self.mass_name)
-            if numerotation[3].strip():
-                self.get_nume_1(jdc,numerotation[3])
-            else:
-                self.get_nume_2(jdc)
-        else:
-            self.get_nume_2(jdc)
+        try:
+            self.get_nom_cham()
+        except AttributeError:
+            pass
 
         #self.show()
 
@@ -110,36 +101,75 @@ class Resultat:
             DETRUIRE(CONCEPT=_F(NOM=(self.obj,)), INFO=1)
 
 
-    def get_nume_1(self, jdc, nume_name):
+    def get_matrices(self):
+        """ recuperation des matrices du REFD et du nume_ddl"""
+        refd = aster.getvectjev( self.nom.ljust(19)+'.REFD' )
+        if refd:
+            self.kass_name = refd[0].strip()
+            self.mass_name = refd[1].strip()
+            self.cass_name = refd[2].strip()
+            try:
+                self.kass = self.objects.matrices[self.kass_name]
+                self.mass = self.objects.matrices[self.mass_name]
+                self.cass = self.objects.matrices[self.cass_name]
+            except KeyError:
+                pass
+
+
+    def get_nume(self):
         """Recuperation de la numerotation et du nume_ddl"""
-        assert nume_name.strip()
-        self.nume_name = nume_name.strip()
-        self.nume = jdc.get(self.nume_name)
-        maillage = aster.getvectjev( nume_name[0:8].ljust(14)+".NUME.REFN")
-        #print ".NUME.REFN", maillage
-        if maillage:
+        refd = aster.getvectjev( self.nom.ljust(19)+'.REFD' )
+        if refd :
+          toto = refd[3][0:8]
+          self.nume_name = toto.strip()
+          if self.nume_name:
+            self.nume = self.objects.nume_ddl[self.nume_name]
+
+          
+
+
+#    def get_nume_2(self):
+#        """2e methode pour la recuperation"""
+#        resu = self.nom
+#        liste_ordre=aster.getvectjev(resu.ljust(19)+'.ORDR')
+#        if not liste_ordre:
+#            return
+#        for j in liste_ordre:
+#            if j==0:
+#                continue
+#            ordr = "%s.001.%06d" % (resu.ljust(8),j)
+#            info = aster.getvectjev(ordr.ljust(19)+".REFE")
+#            #print ".ORDR.REFE", info
+#            if info is not None:
+#                if info[1].strip():
+#                    nom = info[1][0:8].strip()
+#                    self.maya_name = info[0].strip()
+#                    self.maya = self.objects.maillages[self.maya_name]
+
+
+    def get_maillage(self):
+        """Recherche du maillage associe au resultat"""
+        if self.nume_name: # methode 1
+            maillage = aster.getvectjev( self.nume_name[0:8].ljust(14)+".NUME.REFN")
             self.maya_name = maillage[0].strip()
-            self.maya = jdc.get( self.maya_name )
-
-
-    def get_nume_2(self, jdc ):
-        """2e methode pour la recuperation"""
-        resu = self.nom
-        liste_ordre=aster.getvectjev(resu.ljust(19)+'.ORDR')
-        if not liste_ordre:
-            return
-        for j in liste_ordre:
-            if j==0:
-                continue
-            ordr = "%s.001.%06d" % (resu.ljust(8),j)
-            info = aster.getvectjev(ordr.ljust(19)+".REFE")
-            #print ".ORDR.REFE", info
-            if info is not None:
-                if info[1].strip():
-                    nom = info[1][0:8].strip()
-                    self.maya_name = info[0].strip()
-                    self.maya = jdc.get(self.maya_name)
-
+            self.maya = self.objects.maillages[self.maya_name]
+        else: # methode 2
+            resu = self.nom
+            liste_ordre=aster.getvectjev(resu.ljust(19)+'.ORDR')
+            if not liste_ordre:
+                return
+            for j in liste_ordre:
+                if j==0:
+                    continue
+                ordr = "%s.001.%06d" % (resu.ljust(8),j)
+                info = aster.getvectjev(ordr.ljust(19)+".REFE")
+                #print ".ORDR.REFE", info
+                if info is not None:
+                    if info[1].strip():
+                        nom = info[1][0:8].strip()
+                        self.maya_name = info[0].strip()
+                        self.maya = self.objects.maillages[self.maya_name]
+             
 
     def get_modele(self):
         """Recherche le modele associe au resultat"""
@@ -290,10 +320,123 @@ class Resultat:
             self.mess.disp_mess("%3i        %7.5g    %7.5g        %7.5g      %3i" %tuple(cara_mod[ind,:])  )
 
 
+    def get_nom_cham(self):
+        """ Recherche le type de champ rempli dans la sd ('ACCE', 'DEPL'...)"""
+        desc = self.obj.DESC.get()
+        if desc :
+          for ind_cham in range(len(desc)):
+            tach = self.obj.TACH.get()[ind_cham+1]
+            if tach[0].strip():
+                self.nom_cham = desc[ind_cham].strip()
+                return
+        # cette méthode sert a PROJ_MESUR_MODAL dans MACRO_EXPANS : on ne garde
+        # donc qu'un seul nom symbolique. Par ordre décroissant de priorité :
+        # 'DEPL', 'VITE', 'ACCE', etc...
 
 
+#-----------------------------------------------------------------------------------------
 
-#--------------------------------------------------------------------------------------------------------------
+class DynaHarmo:
+    """ pour les resultats de type dyna_harmo"""
+
+    def __init__(self,
+                 objects   = None,    # macro MeideeObjects parente
+                 nom       = None,    # nom du concept aster
+                 obj_ast   = None,    # concept Aster
+                 mess      = None,    # fenetre de messages
+                 owned     = None
+                 ):
+##        Resultat.__init__(self,objects,nom,obj_ast,mess,owned)
+        """Constructeur"""
+        self.objects = objects
+        self.nom = nom.strip()
+        self.obj = obj_ast
+        self.cara_mod = None
+        self.modele_name = ""
+        self.modele = None
+        self.maya_name = ""
+        self.maya = None
+        self.nume_name = ""
+        self.nume = None
+        self.mass_name = ""
+        self.mass = None
+        self.kass_name = ""
+        self.kass = None
+        self.owned = owned
+        self.mess = mess
+        self.nom_cham = None
+        self.nume_ddl = None
+
+        try:
+            self.get_nom_cham()
+        except AttributeError:
+            pass
+
+    def extr_freq(self):
+        vari_acces = zip(self.obj.LIST_VARI_ACCES()['NUME_ORDRE'],
+                         self.obj.LIST_VARI_ACCES()['FREQ'])
+        return vari_acces
+
+    def get_modele(self):
+        """ Recherche du modele associe au resultat harmonique"""
+        if not self.modele:
+          if aster.getvectjev(self.nom.ljust(19) + '.MODL') :
+            self.modele_name = aster.getvectjev(self.nom.ljust(19) + '.MODL')[0].strip()
+            if len(self.modele_name) > 0:
+                self.modele = self.objects.modeles[self.modele_name]
+
+        # TODO : cas ou le resultat dyn n'a pas ete cree avec l'info sur
+        # le modele (exemple : LIRE_RESU, avec mot-cle MAILLAGE). Dans ce cas
+        # il faut aller chercher la nom du maillage dans
+        # 'nom      .00X.000001.REFE', et aller chercher le modele avec le nom
+        # du maillage.
+
+    def get_maillage(self):
+        desc = self.obj.DESC.get()
+        for ind_cham in range(3):
+            # on ne s'interesse qu'aux champ 'DEPL','VITE' et 'ACCE' pour gagner du temps
+          if self.obj.TACH.get() :
+            tach = self.obj.TACH.get()[ind_cham+1][0]
+            if tach.strip():
+               refe = self.nom.ljust(8)+".%03i.000001.REFE" %(ind_cham+1)
+               if aster.getvectjev(refe):
+                   self.maya_name = aster.getvectjev(refe)[0].strip()
+               self.maya = self.objects.maillages[self.maya_name]
+
+    def get_nume(self):
+        """ Recherche d'un nume_ddl. Le pb est qu'il n'est pas nécessaire
+            d'avoir un nume_ddl pour faire un dyna_harmo. On cherche donc
+            le maillage associé au resultat et on regarde quel nume
+            possède ce meme maillage"""
+
+        self.get_maillage()
+        print self.objects.nume_ddl
+        for nume in self.objects.nume_ddl.keys():
+            refe = nume.ljust(14)+'.NUME.REFN'
+            if aster.getvectjev(refe):
+                nom_maya = aster.getvectjev(refe)[0].strip() # maillage associe au nume_ddl
+                if nom_maya == self.maya_name:
+                    self.nume_ddl_name = nume
+                    self.nume_ddl = self.objects.nume_ddl[nume]
+        return self.nume_ddl
+            
+    def get_nom_cham(self):
+        """ Recherche le type de champ rempli dans la sd ('ACCE', 'DEPL'...)"""
+        desc = self.obj.DESC.get()
+        if desc :
+          for ind_cham in range(len(desc)):
+            tach = self.obj.TACH.get()[ind_cham+1]
+            if tach[0].strip():
+                self.nom_cham = desc[ind_cham].strip()
+                return self.nom_cham
+        # cette méthode sert a PROJ_MESU_MODAL dans MACRO_EXPANS : on ne garde
+        # donc qu'un seul nom symbolique. Par ordre décroissant de priorité :
+        # 'DEPL', 'VITE', 'ACCE', etc...
+            
+        
+
+
+#-----------------------------------------------------------------------------------------
 
 class CaraElem:
     """!Gestions des cara modales"""
@@ -625,7 +768,6 @@ class Modele:
             self.maya = self.objects.maillages[self.maya_name]
         else:
             pass
-##            print "on ne trouve pas le maillage associe au modele", self.nom
 
 
     def get_nume(self):
@@ -640,7 +782,6 @@ class Modele:
                     self.nume_ddl = nume
                     self.nume_ddl_name = nume_name
                     return
-##            print "pas de Nume_ddl trouve pour le modele", self.nom
             ## TODO : creation automatique d'un nume_ddl pour les resu exp
             ## avec des caras bidons.
 
@@ -675,7 +816,8 @@ class MeideeObjects:
         self.maillages = {}
         self.groupno = {}
         self.resultats = {}
-        self.masses = {}
+        self.dyna_harmo = {}
+        self.matrices = {}
         self.maillage_modeles = {}
         self.groupno_maillage = {}
         self.cara_elem = {}
@@ -697,8 +839,10 @@ class MeideeObjects:
                 self.modeles[i] = Modele(objects = self, nom = i,obj_ast = v,mess = self.mess)
             elif isinstance( v, mode_meca ) or isinstance( v, base_modale ):
                 self.resultats[i] = Resultat(objects = self, nom = i,obj_ast = v,mess = self.mess)
+            elif isinstance( v, dyna_harmo ):
+                self.dyna_harmo[i] = DynaHarmo(objects = self, nom = i,obj_ast = v,mess = self.mess)
             elif isinstance( v, matr_asse_depl_r ):
-                self.masses[i] = v
+                self.matrices[i] = v
             elif isinstance( v, maillage_sdaster ):
                 self.maillages[i] = v
             elif isinstance( v, cara_elem ):
@@ -712,41 +856,53 @@ class MeideeObjects:
             elif isinstance( v, nume_ddl_sdaster ):
                 self.nume_ddl[i] = v
 
+        self.all_resus = self.resultats.copy()
+        self.all_resus.update(self.dyna_harmo) # dict ou on met toutes les sd resu
+
         #self.debug()
         ## Liaison des concepts entre eux (resu <=> maillage <=> modele)
         for resu_name, resu in self.resultats.items():
             resu.get_modele()
+            resu.get_matrices()
+            resu.get_nume()
+            resu.get_maillage()
+            print resu.nom," a pour modele ",resu.modele, " pour matrices ", resu.kass, resu.mass
 
         for modele_name, modele in self.modeles.items():
             modele.get_maillage()
             modele.get_nume()
 
+        for dyna_name, dyna in self.dyna_harmo.items():
+            dyna.get_nume()
+            dyna.get_maillage()
+            dyna.get_modele()
 
-    def new_objects( self ):
-        """! Récupération des nouveaux concepts, s'il y en a, lorsqu'on
-             change d'onglet. Utilisé uniquement pour les concepts
-             Resultat et InterSpectre"""
+
+
+    def update( self, name, obj ):
+        """ Ajout d'un nouvel objet dans self"""
         self.del_weakref()
-        jdc = CONTEXT.get_current_step().jdc
-
-        for i, v in jdc.sds_dict.items():
-            if isinstance( v, mode_meca ):
-                if not self.resultats.has_key(i):
-                    self.resultats[i] = Resultat(i,v,self.mess)
-                    self.resultats[i].get_modele()
-            elif isinstance( v, table_sdaster ):
-                if not self.inter_spec.has_key(i):
-                    self.inter_spec[i] = InterSpectre(nom = i, obj_ast = v, mess = self.mess)
-            elif isinstance( v, mode_stat_forc ):
-                if not self.resultats.has_key(i):
-                    self.resultats[i] = Resultat(i,v,self.mess)
-                    self.link_objects()
+        if isinstance( obj, mode_meca ):
+            self.resultats[name] = Resultat(self,name,obj,self.mess)
+            self.resultats[name].get_modele()
+            self.resultats[name].get_matrices()
+            self.resultats[name].get_nume()
+            self.resultats[name].get_maillage()
+        if isinstance( obj, dyna_harmo ):
+            self.dyna_harmo[name] = DynaHarmo(self,name,obj,self.mess)
+            self.dyna_harmo[name].get_modele()
+            self.dyna_harmo[name].get_nume()
+            self.dyna_harmo[name].get_maillage()
+        if isinstance( obj, table_sdaster ):
+            self.inter_spec[name] = InterSpectre(nom = name, obj_ast = obj, mess = self.mess)
+        self.all_resus = self.resultats.copy()
+        self.all_resus.update(self.dyna_harmo) # dict ou on met toutes les sd resu
 
 
     def debug(self):
         self.mess.disp_mess( ( "Modeles" + self.modeles ) )
         self.mess.disp_mess( ("Maillages" + self.maillages ) )
-        self.mess.disp_mess( ("Masses" + self.masses ) )
+        self.mess.disp_mess( ("Matrices" + self.matrices ) )
         self.mess.disp_mess( ("Resultats" ) )
         self.mess.disp_mess( ( " " ) )
         for v in self.resultats.values():
@@ -784,6 +940,12 @@ class MeideeObjects:
         """!Renvoie un modele"""
         return self.modeles[name]
 
+    def get_dyna_harmo_name(self):
+        return self.dyna_harmo.keys()
+
+    def get_dyna_harmo(self,name):
+        return self.dyna_harmo[name]
+
     def get_inter_spec_name(self):
         inter_spec = []
         for i in self.inter_spec.keys():
@@ -796,7 +958,7 @@ class MeideeObjects:
 
     def get_matr(self, name):
         """!Renvoie une matrice de masse ou raideur ou None"""
-        return self.masses.get(name)
+        return self.matrices.get(name)
 
     def get_resultats(self):
         """!Liste des objets resultat"""
@@ -810,13 +972,21 @@ class MeideeObjects:
         """!Pas de difference avec get_resultats pour l'instant"""
         return self.get_resultats()
 
+    def get_all_resus_name(self):
+        """recup des noms de toutes les sd resus : mode_meca, base_modale, dyna_harmo"""
+        return self.all_resus.keys()
+
+    def get_all_resus(self, name):
+        """recup d'une sd resu dans la liste ci-dessus"""
+        return self.all_resus[name]
+
     def get_matr_norme(self):
-        normes = self.masses.keys()
+        normes = self.matrices.keys()
         normes[0:0] = ["Aucune"]
         return normes
 
     def get_matr_name(self):
-        return self.masses.keys()
+        return self.matrices.keys()
 
     def get_cara_elem(self, resultat=None):
         if resultat is None:
@@ -848,10 +1018,12 @@ class MeideeObjects:
 
     def register_weakref(self,name):
         """ garde les NOMS des concepts destinés à être supprimés à chaque
-            mse à jour de meidee_objects """
+            mise à jour de meidee_objects """
+        
         self.weakref.append(name)
 
     def del_weakref(self):
+        from Cata.cata import DETRUIRE
         liste = ""
         if len(self.weakref) != 0:
             for obj in self.weakref:
@@ -914,7 +1086,6 @@ def set_extraction_ddl(resu, ddls):
                                'DDL_ACTIF':grp['DDL_ACTIF']})
 
     return extraction_ddl, all_ddls
-
 
 def crea_champ(resu, ind_mod, all_ddls):
     """!Extrait les champs de deplacement d'une sd_resultat aster

@@ -3,7 +3,7 @@
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
         ESC  = 'TR3'
         ESQ  = 'TRIA6'
         MAIT = 'TR3'
-        ELC  = 'SG2'
+        ELC  = 'SE2'
         NNM  = 3
         NNE  = 6
         NNC  = 2
@@ -72,7 +72,7 @@ C
         ESC  = 'QU4'
         ESQ  = 'QUAD8'
         MAIT = 'QU4'
-        ELC  = 'SG2'
+        ELC  = 'SE2'
         NNM  = 4
         NNE  = 8
         NNC  = 2

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2008   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,7 +172,7 @@ TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_G
                                  INST_FIN = 12.,  PAS = 0.001)
                             )
 
-TRAN=REST_BASE_PHYS(   RESU_GENE=TRAN_GEN,
+TRAN=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
                            NOM_CHAM='DEPL',
                        )
 

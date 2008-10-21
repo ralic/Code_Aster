@@ -1,7 +1,7 @@
       SUBROUTINE XAPPAR(PREMIE,NOMA  ,MODELE,DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C --- INITIALISATIONS
 C            
       CHS1   = '&&XAPPAR.CHS1'
       CHS2   = '&&XAPPAR.CHS2'
-      ALIAS  = 'SG2' 
+      ALIAS  = 'SE2' 
       NTPC   = 0  
       K24BLA = ' '
       DO 9 I=1,3
@@ -184,7 +184,7 @@ C
         DO 110 IPC = 1,NBPC
 C
 C-----COORDONNEES DANS ELEMENT DE REFERENCE ET POIDS DU POINT DE CONTACT
-C-----Attention! Le type de maille de contact, 'SG2' est introduite
+C-----Attention! Le type de maille de contact, 'SE2' est introduite
 C-----en dur ici pour le cas 2D!
 C
          CALL MMGAUS(ALIAS ,TYCO  ,IPC   ,KSIPC1,KSIPC2,
@@ -205,9 +205,9 @@ C --- PROJECTION DU POINT DE CONTACT SUR LA FACETTE DE CONTACT
 C --- LA PLUS PROCHE
 C
          CALL XMREMA(MODELE,NOMA  ,NDIM  ,DEFICO,IZONE ,
-     &               MMAIT ,PMAIT ,AMAIT ,NMAIT ,ZMAIT ,
-     &               GEOM  ,JMAESC,POSMIN,JEUMIN,T1MIN ,
-     &               T2MIN ,XIMIN ,YIMIN ,PROJIN)
+     &               MMAIT ,AMAIT ,NMAIT ,GEOM  ,JMAESC,
+     &               POSMIN,JEUMIN,T1MIN ,T2MIN ,XIMIN ,
+     &               YIMIN ,PROJIN)
 C
 C --- ON TROUVE LA FACETTE MAITRE DONT LE PROJETE APPARTIENT (EN
 C --- 3D CA VA CHANGER!!!)

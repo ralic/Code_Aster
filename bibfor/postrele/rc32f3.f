@@ -4,7 +4,7 @@
       REAL*8           SALTIJ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,70 +26,16 @@ C     MISE A ZERO DES LIGNES ET COLONNES DANS SALT POUR LA
 C       SITUATION DE PASSAGE SI NOCC = 0
 C
 C     ------------------------------------------------------------------
-      INTEGER      K, L, I1
-      LOGICAL      COLONA, COLONB, LIGNEA, LIGNEB
+      INTEGER      K, L
 C     ------------------------------------------------------------------
 C
-      COLONA = .FALSE.
-      COLONB = .FALSE.
-      LIGNEA = .FALSE.
-      LIGNEB = .FALSE.
-C
-      IF (NOCC(2*(NUPASS-1)+1) .EQ. 0) COLONA = .TRUE.
-      IF (NOCC(2*(NUPASS-1)+2) .EQ. 0) COLONB = .TRUE.
-      IF (NOCC(2*(NUPASS-1)+1) .EQ. 0) LIGNEA = .TRUE.
-      IF (NOCC(2*(NUPASS-1)+2) .EQ. 0) LIGNEB = .TRUE.
-C
-      IF ( COLONA ) THEN
+      IF ( NOCC(NUPASS) .EQ. 0 ) THEN
          DO 30 K = 1 , NBSIGR
-            I1 = 4*NBSIGR*(K-1)
-            SALTIJ(I1+4*(NUPASS-1)+1) = 0.D0
-            SALTIJ(I1+4*(NUPASS-1)+2) = 0.D0
+            SALTIJ(NBSIGR*(K-1)+NUPASS) = 0.D0
  30      CONTINUE
-         I1 = 4*NBSIGR*(NUPASS-1)
          DO 32 L = 1 , NBSIGR
-            SALTIJ(I1+4*(L-1)+1) = 0.D0
-            SALTIJ(I1+4*(L-1)+3) = 0.D0
+            SALTIJ(NBSIGR*(NUPASS-1)+L) = 0.D0
  32      CONTINUE
-      ENDIF
-C
-      IF ( COLONB ) THEN
-         DO 40 K = 1 , NBSIGR
-            I1 = 4*NBSIGR*(K-1)
-            SALTIJ(I1+4*(NUPASS-1)+3) = 0.D0
-            SALTIJ(I1+4*(NUPASS-1)+4) = 0.D0
- 40      CONTINUE
-         I1 = 4*NBSIGR*(NUPASS-1)
-         DO 42 L = 1 , NBSIGR
-            SALTIJ(I1+4*(L-1)+2) = 0.D0
-            SALTIJ(I1+4*(L-1)+4) = 0.D0
- 42      CONTINUE
-      ENDIF
-C
-      IF ( LIGNEA ) THEN
-         DO 50 K = 1 , NBSIGR
-            I1 = 4*NBSIGR*(K-1)
-            SALTIJ(I1+4*(NUPASS-1)+1) = 0.D0
-            SALTIJ(I1+4*(NUPASS-1)+2) = 0.D0
- 50      CONTINUE
-         I1 = 4*NBSIGR*(NUPASS-1)
-         DO 52 L = 1 , NBSIGR
-            SALTIJ(I1+4*(L-1)+1) = 0.D0
-            SALTIJ(I1+4*(L-1)+3) = 0.D0
- 52      CONTINUE
-      ENDIF
-C
-      IF ( LIGNEB ) THEN
-         DO 60 K = 1 , NBSIGR
-            I1 = 4*NBSIGR*(K-1)
-            SALTIJ(I1+4*(NUPASS-1)+3) = 0.D0
-            SALTIJ(I1+4*(NUPASS-1)+4) = 0.D0
- 60      CONTINUE
-         I1 = 4*NBSIGR*(NUPASS-1)
-         DO 62 L = 1 , NBSIGR
-            SALTIJ(I1+4*(L-1)+2) = 0.D0
-            SALTIJ(I1+4*(L-1)+4) = 0.D0
- 62      CONTINUE
       ENDIF
 C
       END

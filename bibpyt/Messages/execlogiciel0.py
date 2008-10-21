@@ -1,4 +1,4 @@
-#@ MODIF execlogiciel0 Messages  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF execlogiciel0 Messages  DATE 21/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,5 +72,8 @@ Mode de lancement inconnu : %(k1)s
 ----- fin stderr -----------------------------------------------------------------
 """),
 
+11 : _("""
+ Code retour = %(i1)d      (maximum toléré : %(i2)d)
+"""),
 
 }

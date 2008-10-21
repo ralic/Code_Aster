@@ -1,0 +1,63 @@
+#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR CORUS M.CORUS 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# RESPONSABLE CORUS M.CORUS
+
+from Macro.calc_spec_ops import calc_spec_ops
+
+CALC_SPEC=MACRO(nom="CALC_SPEC",op= calc_spec_ops,sd_prod=table_fonction,
+                     reentrant='n',
+                     fr="Calcule une matrice interspectrale ou des fonctions de transferts",
+                     UIinfo={"groupes":("Fonction",)},
+         TAB_ECHANT      =FACT(statut='f',
+           NOM_TAB         =SIMP(statut='o',typ=table_sdaster),
+           LONGUEUR_ECH    =FACT(statut='f',
+             DUREE           =SIMP(statut='f',typ='R'),
+             POURCENT        =SIMP(statut='f',typ='R'),
+             NB_PTS          =SIMP(statut='f',typ='I'),
+                              ),
+           RECOUVREMENT  =FACT(statut='f',
+             DUREE           =SIMP(statut='f',typ='R'),
+             POURCENT        =SIMP(statut='f',typ='R'),
+             NB_PTS          =SIMP(statut='f',typ='I'),
+                                ),
+                              ),
+         ECHANT          =FACT(statut='f',max='**',
+           NUME_ORDRE_I    =SIMP(statut='o',typ='I' ),
+           NUME_MES        =SIMP(statut='o',typ='I' ),
+           FONCTION        =SIMP(statut='o',typ=fonction_sdaster),
+                              ),
+#-- Cas de la matrice interspectrale --#
+         INTERSPE        =FACT(statut='f',
+           FENETRE         =SIMP(statut='f',typ='TXM',defaut="RECT",into=("RECT","HAMM","HANN","EXPO","PART",)),
+           BLOC_DEFI_FENE  =BLOC(condition = "FENETRE == 'EXPO' or FENETRE == 'PART' ", 
+#             DEFI_FENE       =SIMP(statut='f',typ='R',max='**'),
+                                 ),
+                              ),
+#-- Cas des transferts - estimateurs H1 / H2 / Hv + Coherence --#
+         TRANSFERT       =FACT(statut='f',
+           ESTIM           =SIMP(statut='f',typ='TXM',defaut="H1",into=("H1","H2","CO",)),
+           REFER           =SIMP(statut='o',typ='I',max='**'),
+           FENETRE         =SIMP(statut='f',typ='TXM',defaut="RECT",into=("RECT","HAMM","HANN","EXPO","PART",)),
+           DEFI_FENE       =SIMP(statut='f',typ='R',max='**'),
+
+                              ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+);

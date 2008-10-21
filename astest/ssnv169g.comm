@@ -1,0 +1,227 @@
+# MODIF  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+
+
+# TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
+# ssnv169g.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ======================================================================
+# ----------------------------------------------------------------
+# MODELISATION 3D : COUPLAGE FLUAGE PROPRE UMLV ET MAZARS VERSION GRAD_EPSI
+# ----------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='SSNV169G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+
+M=LIRE_MAILLAGE( )
+
+M=DEFI_GROUP( reuse=M,
+              MAILLAGE=M,
+              CREA_GROUP_NO=(_F( GROUP_MA = 'S_INF'),
+                             _F( GROUP_MA = 'S_SUP'),
+                             _F( GROUP_MA = 'S_GCH'),
+                             _F( GROUP_MA = 'S_DRT'),
+                             _F( GROUP_MA = 'S_AVT'),
+                             _F( GROUP_MA = 'S_ARR'),
+            ),)
+
+MO=AFFE_MODELE( MAILLAGE=M,
+                AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D_GRAD_EPSI')
+              )
+
+FONC1=DEFI_FONCTION( NOM_PARA='SECH',
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                      VALE = (0.0, 1.0, 1.0e+10, 1.0),
+                   )
+
+E=DEFI_FONCTION( NOM_PARA='TEMP',
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',
+                 VALE=(0.0, 31000., 1.0, 31000.,)
+               )
+
+NU=DEFI_FONCTION( NOM_PARA='TEMP',
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',
+                  VALE=(0.0,0.2,1.0,0.2,)
+                ),
+
+ALPHA=DEFI_CONSTANTE(VALE=0.);
+
+BETON = DEFI_MATERIAU(ELAS_FO = _F(E = E,
+                                   NU = NU,
+                                   FONC_DESORP = FONC1,
+                                   ALPHA = ALPHA ,
+                                   TEMP_DEF_ALPHA=20.,
+                                   ),
+                      MAZARS = _F (EPSD0 = 5.6E-5,
+                                   AT = 0.831,
+                                   BT = 21330.,
+                                   AC = 1.15,
+                                   BC = 1390.,
+                                   BETA = 1.,
+                                   CHI = 0.6,
+                                   ),
+                      BETON_UMLV_FP = _F( 
+                                   K_RS  = 6.0E+4,
+                                   ETA_RS = 1.E+10,
+                                   K_IS = 3.0E+4,
+                                   ETA_IS = 2.4E+10,
+                                   K_RD = 3.4E+4,
+                                   ETA_RD = 4.08E+11,
+                                   ETA_ID = 5.44E+12,
+                                   ),
+                       NON_LOCAL = _F(LONG_CARA = 0.),                                   
+                       );
+
+SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
+                        AFFE=_F( TOUT = 'OUI',
+                              NOM_CMP = 'TEMP',
+                              VALE = 1.)
+                       )
+
+TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
+                         AFFE=_F(
+                               TOUT = 'OUI',
+                               NOM_CMP = 'TEMP',
+                               VALE = 20.)
+                       )
+
+CM=AFFE_MATERIAU(  MAILLAGE=M,
+                   AFFE=_F( TOUT = 'OUI',MATER = BETON,),
+                   AFFE_VARC=(_F(TOUT='OUI',CHAMP_GD=SECH,NOM_VARC='SECH',VALE_REF=1.),
+                             _F(TOUT='OUI',CHAMP_GD=TEMP,NOM_VARC='TEMP',VALE_REF=20.),),);
+
+
+CH10=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F( GROUP_NO = 'S_INF',
+                                  DZ       = 0.
+                               )
+                    )
+CH11=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F( GROUP_NO = 'S_GCH',
+                                  DX       = 0.
+                                )
+                   )
+
+CH12=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=_F( GROUP_NO = 'S_AVT',
+                                 DY       = 0.
+                               ),
+                  )
+
+CH20=AFFE_CHAR_MECA_F( MODELE=MO,
+                      LIAISON_UNIF=_F( GROUP_NO = 'S_DRT',
+                                       DDL      = 'DX'
+                                     ),
+                     )
+CH21=AFFE_CHAR_MECA_F( MODELE=MO,
+                      LIAISON_UNIF=_F( GROUP_NO = 'S_ARR',
+                                       DDL      = 'DY'
+                                     )
+                     )
+
+heure=3600.
+jour=24.*heure
+annee=365.25*jour
+mois=annee/12.
+
+rap_pic=.80
+
+FORCE=DEFI_FONCTION( NOM_PARA='INST',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='LINEAIRE',
+                     VALE=(0.0, 0.0, 1., 1.736*rap_pic, annee, 1.736*rap_pic)
+                   )
+                   
+CH22=AFFE_CHAR_MECA_F( MODELE=MO,
+                       FORCE_FACE=_F( GROUP_MA = 'S_SUP',
+                                       FZ = FORCE)
+                    )
+
+L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,INTERVALLE=(
+             _F( JUSQU_A = 0.0,       NOMBRE = 1),
+             _F( JUSQU_A = 1.0,       NOMBRE = 1),
+             _F( JUSQU_A = 5400000., NOMBRE = 200),            
+             _F( JUSQU_A = 5960000., NOMBRE = 40),)
+           )
+
+
+U=STAT_NON_LINE( MODELE=MO,
+                 CHAM_MATER=CM,EXCIT=( _F(CHARGE = CH10),
+                             _F(CHARGE = CH11),
+                   _F(CHARGE = CH12),
+                   _F(CHARGE = CH20),
+                   _F(CHARGE = CH21),
+                   _F(CHARGE = CH22),
+                 ),
+       COMP_INCR=_F(
+                 RELATION = 'KIT_DDI',
+                 RELATION_KIT=('BETON_UMLV_FP','MAZARS'),),
+                 INCREMENT=_F(LIST_INST = L_INST,
+                              INST_FIN = 5960000.,
+                               SUBD_METHODE  = 'UNIFORME',
+                               SUBD_NIVEAU = 4,
+                              ),
+                 NEWTON=_F(PREDICTION = 'TANGENTE',
+                 MATRICE = 'TANGENTE',
+                           REAC_ITER = 1,
+                          ),
+                 CONVERGENCE=_F( RESI_GLOB_MAXI = 1.E-6,
+                                 ITER_GLOB_MAXI = 100, ),
+               )
+
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'SIEF_ELGA',
+          MAILLE = 'M1',
+          POINT = 1,
+          NUME_ORDRE = 275,
+          NOM_CMP = 'SIZZ',
+          VALE = 1.38880E+00,
+          PRECISION = 0.0001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'DEPL',
+          NOEUD = 'N5',          
+          NUME_ORDRE = 275,
+          NOM_CMP = 'DZ',
+          VALE = 6.61735E-05,
+          PRECISION = 0.0001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'VARI_ELGA',
+          MAILLE = 'M1',
+          POINT = 1,
+          NUME_ORDRE = 275,
+          NOM_CMP = 'V22',
+          VALE = 5.27630E-02,
+          PRECISION = 0.0001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'VARI_ELGA',
+          MAILLE = 'M1',
+          POINT = 1,
+          NUME_ORDRE = 275,
+          NOM_CMP = 'V7',
+          VALE = 1.06635E-05,
+          PRECISION = 0.0001,
+          REFERENCE = 'NON_REGRESSION'), ),)
+
+         
+FIN()

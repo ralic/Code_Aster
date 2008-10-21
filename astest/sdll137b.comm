@@ -1,5 +1,5 @@
-# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
-# TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC MACRO_VISU_MEIDEE (ES)
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC CALC_ESSAI (ES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 DEBUT( CODE = _F( NOM = 'SDLL137B',
                   NIV_PUB_WEB='INTERNET'),
-       IMPR_MACRO = 'OUI',
+       DEBUG=_F(SDVERI='OUI'),
       );
 
 
@@ -228,7 +228,7 @@ AELCPL=CALC_MATR_ELEM(MODELE=MODLCPL,
 
 interactif = 0
 if interactif :
-    MACRO_VISU_MEIDEE(
+    CALC_ESSAI(
                        INTERACTIF = 'OUI',
                        RESU_MODIFSTRU = _F( MODELE=CO('MODLCPL2'),
                                             MAILLAGE=CO('MAILCPL2'),
@@ -243,7 +243,7 @@ if interactif :
                      );
 
 else :
-    MACRO_VISU_MEIDEE(
+    CALC_ESSAI(
                        INTERACTIF = 'NON',
                        MODIFSTRUCT = _F( MESURE=MODMESU,
                                          MODELE_SUP=MODLSUP,
@@ -252,7 +252,6 @@ else :
                                          #RESOLUTION='LMME',MATR_MASS=MASSUP,
                                          NUME_MODE_MESU=(1,2,3,4,5),
                                          NUME_MODE_CALCUL=(1,2,3,4,5,6,7,8),
-                                         MAILLE_MODIF = MAILX,
                                          MODELE_MODIF = MODLCPL,
                                        ),
                        GROUP_NO_CAPTEURS  = ( _F(GROUP_NO="CAPTEUR", NOM_CMP = ('DY', 'DZ',),)  ),
@@ -266,11 +265,13 @@ else :
                                             NUME_DDL = CO('NUMCPL2'),
                                             PROJ_MESU = CO('PROJMS2'),
                                             MACR_ELEM = CO('MCELEM2'),
+                                            BASE_ES = CO('BASEXP'),
+                                            MODE_STA = CO('MODST'),
                                           )
                       );
 
 
-# La supermaille creee par MACRO_VISU_MEIDEE se nomme SUMAIL
+# La supermaille creee par CALC_ESSAI se nomme SUMAIL
 
 # CONTROLE RETROPROJECTION DU MODE_MECA OBTENU SUR MODELE COUPLE
 
@@ -326,7 +327,7 @@ PROJMS=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODLSUP,
                                    EPS=1.E-5),
                      );
 
-DEPLPR=REST_BASE_PHYS(RESU_GENE=PROJMS,
+DEPLPR=REST_GENE_PHYS(RESU_GENE=PROJMS,
                    TOUT_ORDRE='OUI',
                    NOM_CHAM   ='DEPL');
 

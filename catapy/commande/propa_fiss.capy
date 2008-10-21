@@ -1,0 +1,91 @@
+#& MODIF COMMANDE  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE GALENNE E.GALENNE
+
+
+from Macro.propa_fiss_ops import propa_fiss_ops
+
+def propa_fiss_prod(self,**args):
+  if  args.has_key('MA_TOT2')  : 
+      MA_TOT2 = args['MA_TOT2']
+      self.type_sdprod(MA_TOT2,maillage_sdaster)
+  if args.has_key('MA_XFEM2')  :
+      MA_XFEM2 = args['MA_XFEM2']
+      self.type_sdprod(MA_XFEM2,maillage_sdaster)
+  if args.has_key('FISSURE')  :
+      FISSURE = args['FISSURE']
+      self.type_sdprod(FISSURE,fiss_xfem)
+  return None
+
+PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
+            fr="Propagation de fissure avec X-FEM",reentrant='n',
+            UIinfo={"groupes":("Post traitements",)},
+
+        METHODE_PROPA = SIMP(statut='o',typ='TXM',
+                               into=("HAMILTON","MAILLAGE","INITIALISATION") ),
+            
+        b_hamilton    =BLOC(condition="(METHODE_PROPA=='HAMILTON')",
+              MODELE        =SIMP(statut='o',typ=modele_sdaster),
+              RAYON          =SIMP(statut='o',typ='R',),
+              METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND",),defaut="SIMPLEXE"),
+              FISSURE =  SIMP(statut='o',typ=CO),
+              TABLE   =       SIMP(statut='o',typ=table_sdaster),
+                                ),          
+
+        b_maillage    =BLOC(condition="(METHODE_PROPA=='MAILLAGE')",
+               MA_STRUC       = SIMP(statut='o',typ=maillage_sdaster), 
+               MA_XFEM1       = SIMP(statut='o',typ=maillage_sdaster), 
+               FISSURE1       = SIMP(statut='o',typ=fiss_xfem),
+               DTAN_ORIG      = SIMP(statut='f',typ='R',max=3),
+               DTAN_EXTR      = SIMP(statut='f',typ='R',max=3),
+               METHODE_POSTK  = SIMP(statut='f',typ='I',into=(1,2,3),max=1),
+               ITERATION      = SIMP(statut='o',typ='I',max=1),
+               HYPOTHESE      = SIMP(statut='f',typ='TXM',into=("PLAN","NON_PLAN"),defaut="NON_PLAN"),
+               MA_XFEM2       = SIMP(statut='f',typ=CO), 
+               MA_TOT2        = SIMP(statut='o',typ=CO), 
+               TABLE          = SIMP(statut='o',typ=table_sdaster),
+                                ),      
+                                    
+        b_init    =BLOC(condition="(METHODE_PROPA=='INITIALISATION')",
+               MA_STRUC    = SIMP(statut='o',typ=maillage_sdaster), 
+               FORM_FISS   = SIMP(statut='o',typ='TXM', into=("DEMI_DROITE","DEMI_PLAN"), ),
+               PFON        = SIMP(statut='f',typ='R',max=3),
+               DTAN        = SIMP(statut='o',typ='R',min=3,max=3),
+               POINT_ORIG        = SIMP(statut='f',typ='R',min=3,max=3),
+               POINT_EXTR        = SIMP(statut='f',typ='R',min=3,max=3),
+               NB_POINT_FOND   = SIMP(statut='f',typ='I',),
+               regles=(PRESENT_PRESENT('POINT_ORIG','POINT_EXTR',),
+                       UN_PARMI('PFON','POINT_ORIG'),),
+               MA_TOT2     = SIMP(statut='o',typ=CO), 
+               MA_XFEM2       = SIMP(statut='f',typ=CO), 
+                                ),          
+       
+        LOI_PROPA     =FACT(statut='f',max=1,
+               LOI =SIMP(statut='o',typ='TXM',into=("PARIS",),defaut="PARIS"),
+               b_paris  =BLOC( condition = "LOI=='PARIS'",
+                     C        = SIMP(statut='f',typ='R',),
+                     M        = SIMP(statut='o',typ='R',),
+                     DA_MAX   = SIMP(statut='f',typ='R',max=1),
+                     regles=(UN_PARMI('C','DA_MAX'),),
+                     ),
+            ),
+            
+        INFO          = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+)
+

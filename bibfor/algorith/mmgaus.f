@@ -1,6 +1,6 @@
       SUBROUTINE MMGAUS(ALIAS,TYPI,NORD,XPG,YPG,HPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C OUT HPG    : POIDS DU POINT D'INTEGRATION
 C
 C ----------------------------------------------------------------------
 C
-      REAL*8 A,B,W,V
+      REAL*8 A,B,P1,P2
 C
 C ----------------------------------------------------------------------
 C
@@ -1342,88 +1342,80 @@ C
 C    POINTS DE GAUSS
         IF (TYPI .EQ. 2) THEN
           IF (NORD .EQ. 1) THEN
-            XPG = -2/3.D0
-            YPG = 1 / 3.D0
+            XPG = 1/6.D0
+            YPG = 1/6.D0
           ELSEIF (NORD .EQ. 2) THEN
-            XPG = -2/3.D0
-            YPG = -2/3.D0
+            XPG = 2/3.D0
+            YPG = 1/6.D0
           ELSEIF (NORD .EQ. 3) THEN
-            XPG = 1 / 3.D0
-            YPG = -2/3.D0
+            XPG = 1/6.D0
+            YPG = 2/3.D0
           ELSE
             CALL U2MESS('F','ALGORITH6_8')
           END IF
-          HPG = 2 / 3.D0
+          HPG = 1/6.D0
 C   NOEUDS
         ELSEIF (TYPI .EQ. 1) THEN
           IF (NORD .EQ. 1) THEN
-            XPG = -1.D0
-            YPG = 1.D0
+            XPG = 0.D0
+            YPG = 0.D0
           ELSEIF (NORD .EQ. 2) THEN
-            XPG = -1.D0
-            YPG = -1.D0
-          ELSEIF (NORD .EQ. 3) THEN
             XPG = 1.D0
-            YPG = -1.D0
+            YPG = 0.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 0.D0
+            YPG = 1.D0
           ELSE
             CALL U2MESS('F','ALGORITH6_8')
           END IF
-          HPG = 2 / 3.D0
+          HPG = 1/6.D0
 C SIMPSON
         ELSEIF (TYPI .EQ. 3) THEN
           IF (NORD .EQ. 1) THEN
-            XPG = -1.D0
-            YPG = 1.D0
-            HPG = 2.D0 / 15.D0
+            XPG = 0.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 30.D0
           ELSEIF (NORD .EQ. 2) THEN
-            XPG = -1.D0
-            YPG = -1.D0
-            HPG = 2.D0 / 15.D0
-          ELSEIF (NORD .EQ. 3) THEN
             XPG = 1.D0
-            YPG = -1.D0
-            HPG = 2.D0 / 15.D0
+            YPG = 0.D0
+            HPG = 1.D0 / 30.D0
+          ELSEIF (NORD .EQ. 3) THEN
+            XPG = 0.D0
+            YPG = 1.D0
+            HPG = 1.D0 / 30.D0
           ELSEIF (NORD .EQ. 4) THEN
-            XPG = -1.D0
-            YPG = 0.D0
-            HPG = 8.D0 / 15.D0
+            XPG = 0.D0
+            YPG = 1.D0 / 2.D0
+            HPG = 4.D0 / 30.D0
           ELSEIF (NORD .EQ. 5) THEN
-            XPG = 0.D0
-            YPG = -1.D0
-            HPG = 8.D0 / 15.D0
-          ELSEIF (NORD .EQ. 6) THEN
-            XPG = 0.D0
+            XPG = 1.D0 / 2.D0
             YPG = 0.D0
-            HPG = 8.D0 / 15.D0
+            HPG = 4.D0 / 30.D0
+          ELSEIF (NORD .EQ. 6) THEN
+            XPG = 1.D0 / 2.D0
+            YPG = 1.D0 / 2.D0
+            HPG = 4.D0 / 30.D0
           ELSE
             CALL U2MESS('F','ALGORITH6_8')
           END IF
 C HAMMER A 4 POINTS
         ELSE IF (TYPI .EQ. 6) THEN
           IF (NORD.EQ.1) THEN
-            XPG = -1.D0/6.D0
-            XPG = 2.D0*(1.D0/3.D0)-1.D0
-            YPG = -1.D0/6.D0
-            YPG = 2.D0*(1.D0/3.D0)-1.D0
-            HPG = -108.D0/96.D0
+            XPG = 1.D0 / 5.D0
+            YPG = 1.D0 / 5.D0
+            HPG = 25.D0/96.D0
           ELSE IF (NORD.EQ.2) THEN
-            XPG = -3.D0/10.D0
-            XPG = 2.D0*(1.D0/5.D0)-1.D0
-            YPG = -3.D0/10.D0
-            YPG = 2.D0*(1.D0/5.D0)-1.D0
-            HPG = 100.D0/96.D0
+            XPG = 3.D0 / 5.D0
+            YPG = 1.D0 / 5.D0
+            HPG = 25.D0/96.D0
           ELSE IF (NORD.EQ.3) THEN
-            XPG = 1.D0/10.D0
-            XPG = 2.D0*(3.D0/5.D0)-1.D0
-            YPG = -3.D0/10.D0
-            YPG = 2.D0*(1.D0/5.D0)-1.D0
-           HPG = 100.D0/96.D0
+            XPG = 1.D0 / 5.D0
+            YPG = 3.D0 / 5.D0
+            HPG = 25.D0/96.D0
           ELSE IF (NORD.EQ.4) THEN
-            XPG = -3.D0/10.D0
-            XPG = 2.D0*(1.D0/5.D0)-1.D0
-            YPG = 1.D0/10.D0
-            YPG = 2.D0*(3.D0/5.D0)-1.D0
-            HPG = 100.D0/96.D0
+            XPG = 1.D0 / 3.D0
+            YPG = 1.D0 / 3.D0
+            HPG = -27.D0/96.D0
           ELSE
             CALL U2MESS('F','ALGORITH6_8')
           END IF
@@ -1431,32 +1423,33 @@ C HAMMER A 6 POINTS
         ELSE IF (TYPI .EQ. 7) THEN
           A=0.445948490915965D0
           B=0.091576213509771D0
-          W=0.111690794839005D0
-          V=0.054975871827661D0
+C ATHOMAS VALEURS A VERIFIER
+          P1=0.111690794839005D0
+          P2=0.054975871827661D0
           IF (NORD.EQ.1) THEN
-            XPG = 2.D0*A-1.D0
-            YPG = 2.D0*A-1.D0
-            HPG =W*4
+            XPG = B
+            YPG = B
+            HPG = P2
           ELSE IF (NORD.EQ.2) THEN
-            XPG =2.D0*(1-2.D0*A)-1.D0
-            YPG =2.D0*A-1.D0
-            HPG =W*4
+            XPG = 1.D0 - 2.D0*B
+            YPG = B
+            HPG = P2
           ELSE IF (NORD.EQ.3) THEN
-            XPG =2.D0*A-1.D0
-            YPG =2.D0*(1-2.D0*A)-1.D0
-            HPG =W*4
+            XPG = B
+            YPG = 1.D0 - 2.D0*B
+            HPG = P2
           ELSE IF (NORD.EQ.4) THEN
-            XPG =2.D0*(B)-1.D0
-            YPG =2.D0*B-1.D0
-            HPG =V*4
+            XPG = A
+            YPG = 1.D0 - 2.D0*A
+            HPG = P1
           ELSE IF (NORD.EQ.5) THEN
-            XPG =2.D0*(1-2.D0*B)-1.D0
-            YPG =2.D0*B-1.D0
-            HPG =V*4
+            XPG = A
+            YPG = A
+            HPG = P1
           ELSE IF (NORD.EQ.6) THEN
-            XPG =2.D0*B-1.D0
-            YPG =2.D0*(1-2.D0*B)-1.D0
-            HPG =V*4
+            XPG = 1.D0 - 2.D0*A
+            YPG = A
+            HPG = P1
           ELSE
             CALL U2MESS('F','ALGORITH6_8')
           END IF
@@ -1469,63 +1462,56 @@ C
 C    POINTS DE GAUSS
         IF ((TYPI.EQ.2) .OR. (TYPI.EQ.1) .OR. (TYPI.EQ.3)
      &       .OR. (TYPI.EQ.7)) THEN
-          A = 0.445948490915965D0
-          B = 0.091576213509771D0
-          W = 0.111690794839005D0
-          V = 0.054975871827661D0
-          IF (NORD .EQ. 1) THEN
-            XPG = 2.D0*A - 1.D0
-            YPG = 2.D0*A - 1.D0
-            HPG = W * 4
-          ELSEIF (NORD .EQ. 2) THEN
-            XPG = 2.D0*(1-2.D0*A) - 1.D0
-            YPG = 2.D0*A - 1.D0
-            HPG = W * 4
-          ELSEIF (NORD .EQ. 3) THEN
-            XPG = 2.D0*A - 1.D0
-            YPG = 2.D0*(1-2.D0*A) - 1.D0
-            HPG = W * 4
-          ELSEIF (NORD .EQ. 4) THEN
-            XPG = 2.D0*(B) - 1.D0
-            YPG = 2.D0*B - 1.D0
-            HPG = V * 4
-          ELSEIF (NORD .EQ. 5) THEN
-            XPG = 2.D0*(1-2.D0*B) - 1.D0
-            YPG = 2.D0*B - 1.D0
-            HPG = V * 4
-          ELSEIF (NORD .EQ. 6) THEN
-            XPG = 2.D0*B - 1.D0
-            YPG = 2.D0*(1-2.D0*B) - 1.D0
-            HPG = V * 4
+          A  = 0.445948490915965D0
+          B  = 0.091576213509771D0
+C ATHOMAS VALEURS A VERIFIER
+          P1 = 0.111690794839005D0
+          P2 = 0.054975871827661D0
+          IF (NORD.EQ.1) THEN
+            XPG = B
+            YPG = B
+            HPG = P2
+          ELSE IF (NORD.EQ.2) THEN
+            XPG = 1.D0 - 2.D0*B
+            YPG = B
+            HPG = P2
+          ELSE IF (NORD.EQ.3) THEN
+            XPG = B
+            YPG = 1.D0 - 2.D0*B
+            HPG = P2
+          ELSE IF (NORD.EQ.4) THEN
+            XPG = A
+            YPG = 1.D0 - 2.D0*A
+            HPG = P1
+          ELSE IF (NORD.EQ.5) THEN
+            XPG = A
+            YPG = A
+            HPG = P1
+          ELSE IF (NORD.EQ.6) THEN
+            XPG = 1.D0 - 2.D0*A
+            YPG = A
+            HPG = P1
           ELSE
             CALL U2MESS('F','ALGORITH6_8')
           END IF
 C HAMMER A 4 POINTS
         ELSE IF (TYPI .EQ. 6) THEN
           IF (NORD.EQ.1) THEN
-            XPG = -1.D0/6.D0
-            XPG = 2.D0*(1.D0/3.D0)-1.D0
-            YPG = -1.D0/6.D0
-            YPG = 2.D0*(1.D0/3.D0)-1.D0
-            HPG = -108.D0/96.D0
+            XPG = 1.D0 / 5.D0
+            YPG = 1.D0 / 5.D0
+            HPG = 25.D0/96.D0
           ELSE IF (NORD.EQ.2) THEN
-            XPG = -3.D0/10.D0
-            XPG = 2.D0*(1.D0/5.D0)-1.D0
-            YPG = -3.D0/10.D0
-            YPG = 2.D0*(1.D0/5.D0)-1.D0
-            HPG = 100.D0/96.D0
+            XPG = 3.D0 / 5.D0
+            YPG = 1.D0 / 5.D0
+            HPG = 25.D0/96.D0
           ELSE IF (NORD.EQ.3) THEN
-            XPG = 1.D0/10.D0
-            XPG = 2.D0*(3.D0/5.D0)-1.D0
-            YPG = -3.D0/10.D0
-            YPG = 2.D0*(1.D0/5.D0)-1.D0
-           HPG = 100.D0/96.D0
+            XPG = 1.D0 / 5.D0
+            YPG = 3.D0 / 5.D0
+            HPG = 25.D0/96.D0
           ELSE IF (NORD.EQ.4) THEN
-            XPG = -3.D0/10.D0
-            XPG = 2.D0*(1.D0/5.D0)-1.D0
-            YPG = 1.D0/10.D0
-            YPG = 2.D0*(3.D0/5.D0)-1.D0
-            HPG = 100.D0/96.D0
+            XPG = 1.D0 / 3.D0
+            YPG = 1.D0 / 3.D0
+            HPG = -27.D0/96.D0
           ELSE
             CALL U2MESS('F','ALGORITH6_8')
           END IF
@@ -1533,7 +1519,7 @@ C HAMMER A 4 POINTS
             CALL U2MESS('F','ALGORITH6_8')
         END IF
 C
-      ELSEIF (ALIAS(1:3) .EQ. 'SG2') THEN
+      ELSEIF (ALIAS(1:3) .EQ. 'SE2') THEN
 C
 C POINTS DE GAUSS
 C
@@ -1774,7 +1760,7 @@ C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
             CALL U2MESS('F','ALGORITH6_8')
         END IF
 C
-      ELSEIF (ALIAS(1:3) .EQ. 'SG3') THEN
+      ELSEIF (ALIAS(1:3) .EQ. 'SE3') THEN
 C
 C POINTS DE GAUSS
 C
@@ -1794,16 +1780,18 @@ C LES NOEUDS
           IF (NORD .EQ. 1) THEN
             XPG = -1.D0
             YPG = 0.D0
+            HPG = 1 / 2.D0
           ELSEIF (NORD .EQ. 2) THEN
             XPG = 0.D0
             YPG = 0.D0
+            HPG = 1.D0
           ELSEIF (NORD .EQ. 3) THEN
             XPG = 1.D0
             YPG = 0.D0
+            HPG = 1 / 2.D0
           ELSE
             CALL U2MESS('F','ALGORITH6_8')
           END IF
-          HPG = 2 / 3.D0
 C SYMPSON
         ELSEIF (TYPI .EQ. 3) THEN
           IF (NORD .EQ. 1) THEN

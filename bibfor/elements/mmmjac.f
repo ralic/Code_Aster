@@ -2,7 +2,7 @@
      &                  NDIM  ,JAC   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -83,7 +83,7 @@ C
       DZDE = 0.D0
       DZDK = 0.D0               
 C
-      IF (ALIAS(1:5).EQ.'SG2') THEN
+      IF (ALIAS(1:5).EQ.'SE2') THEN
         DO 10 I = 1,2
           IF(NDIM.EQ.2) THEN
             DXDS = DXDS + ZR(IGEOM-1+2*(I-1)+1)*DFF(1,I)
@@ -106,7 +106,7 @@ C
         ELSE
           JAC = SQRT(DXDS**2+DYDS**2+DZDS**2)
         END IF
-      ELSE IF (ALIAS(1:5).EQ.'SG3') THEN
+      ELSE IF (ALIAS(1:5).EQ.'SE3') THEN
         DO 20 I = 1,3
           DXDS = DXDS + ZR(IGEOM-1+2*(I-1)+1)*DFF(1,I)
           DYDS = DYDS + ZR(IGEOM-1+2*(I-1)+2)*DFF(1,I)

@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 07/07/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF rupture0 Messages  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,7 +123,9 @@ Problème à la récupération des noeuds de la lèvre inf :
 -> Risque et Conseil :
 Pour un calcul avec POST_K1_K2_K3, la lèvre inférieure de la fissure doit
 être obligatoirement définie dans DEFI_FOND_FISS à l'aide du mot-clé
-LEVRE_INF. Vérifier la définition du fond de fissure.
+LEVRE_INF. 
+Si seule la lèvre supérieure est maillée, ne pas oublier de spécifier
+SYME_CHAR = 'SYME' dans POST_K1_K2_K3. 
 """),
 
 21: _("""
@@ -256,8 +258,9 @@ TYPE_MAILLE='LIBRE' dans POST_K1_K2_K3.
 """),
 
 46: _("""
-Il faut au moins trois noeuds dans le plan défini par les lèvres
-et perpendiculaire au fond de fissure.
+Il faut au moins trois noeuds dans le plan défini par les lèvres et perpendiculaire 
+au fond de fissure. Le calcul est impossible : on met la ligne correspondant au noeud
+considéré à zéro et on poursuit le calcul pour le noeud du fond suivant.
 -> Risque et Conseil :
 """),
 
@@ -549,5 +552,11 @@ Récupération impossible de la normale dans le fond de fissure FOND_FISS.
 Un problème a du se produire lors de la création de la structure de données 
 FOND_FISS. Vérifiez les données dans DEFI_FOND_FISS.
 """), 
- 
+
+99: _("""
+Point du fond numéro : %(i1)s.
+Augmenter NB_NOEUD_COUPE. S'il s'agit d'un noeud extrémité, vérifier les tangentes 
+(DTAN_ORIG et DTAN_EXTR).
+"""), 
+
 }

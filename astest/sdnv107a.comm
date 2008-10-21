@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -452,7 +452,7 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGIGENE,
                              NMAX_FREQ = 20
                                         )
                        )
-RESMOD=REST_BASE_PHYS(    RESU_GENE=RESGEN,
+RESMOD=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           NOM_CHAM='DEPL',
                           TOUT_ORDRE='OUI'
                                         )
@@ -501,7 +501,7 @@ MERIME3B=CALC_MATR_ELEM(      MODELE=MODELE3,
 NUMDDL3B=NUME_DDL(  MATR_RIGI=MERIME3B)
                                  
 
-RESMO2=REST_BASE_PHYS(    RESU_GENE=RESGEN,
+RESMO2=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           NUME_DDL=NUMDDL3B,
                           NOM_CHAM='DEPL',
                           TOUT_ORDRE='OUI'
@@ -555,7 +555,7 @@ DYTREX=DYNA_NON_LINE(MODELE=MODELE3,
                      );
 
                                                   
-RESUGLO=REST_BASE_PHYS(   RESU_PHYS=DYTREX,
+RESUGLO=REST_COND_TRAN(   RESULTAT=DYTREX,
                           BASE_MODALE=MODGLO,
                           TOUT_CHAM='OUI',
                                         )

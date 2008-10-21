@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF postrccm Messages  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,10 +186,6 @@ cata_msg={
 
 34: _("""
  avec une ou des situations de passage, il faut définir au plus 3 groupes
-"""),
-
-35: _("""
- avec une ou des situations de passage, il ne faut définir qu'un seul séisme. 
 """),
 
 36: _("""

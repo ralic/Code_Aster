@@ -1,0 +1,161 @@
+# MODIF  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+# TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
+# sslp315a.para = tps_job 150 mem_job 500Mo mem_aster 50 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# CALCUL DE K AVEC CALC_G
+
+DEBUT(CODE=_F(NOM='SSLP315A', NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'))
+      
+from Numeric import *
+nb_pas = 4
+Damax = 2.
+          
+PRE_GMSH();
+MAST=LIRE_MAILLAGE(INFO=1,);
+
+MAST=DEFI_GROUP(reuse =MAST,
+                MAILLAGE=MAST,
+                CREA_GROUP_MA=_F(NOM='MSURF',GROUP_MA='GM1'),
+                CREA_GROUP_NO=(_F(NOM='NAPPUI1',GROUP_NO='GM2'),
+                               _F(NOM='NAPPUI2',GROUP_NO='GM3'),
+                               _F(NOM='NFORCE',GROUP_NO='GM4'),),
+                    );
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.,NU=0.3),);
+LINST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1),);
+
+MAT    = [None]*(nb_pas+2)
+MAX    = [None]*(nb_pas+2)
+MO     = [None]*(nb_pas+2)
+FISS   = [None]*(nb_pas+2)
+MOX    = [None]*(nb_pas+2)
+CHFEM  = [None]*(nb_pas+2)
+CHMAT  = [None]*(nb_pas+2)
+CHAR   = [None]*(nb_pas+2)
+UTOT   = [None]*(nb_pas+2)
+SIF    = [None]*(nb_pas+2)
+
+MAX[0]=CO('MAX_0')
+MAT[0]=CO('MAT_0')
+
+# Initialisation
+PROPA_FISS(METHODE_PROPA='INITIALISATION',
+         MA_STRUC=MAST,
+         MA_XFEM2 = MAX[0],
+         MA_TOT2 = MAT[0],
+         FORM_FISS='DEMI_DROITE',
+         INFO=2,
+         PFON = (40., 15., 0.),
+         DTAN = (0., 10., 0.),
+         );
+
+# Propagation
+for i in range(0,nb_pas) : 
+
+   MO[i]=AFFE_MODELE(MAILLAGE=MAT[i],
+                      AFFE=(_F(GROUP_MA='MSURF',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='D_PLAN',),),);
+
+   FISS[i]=DEFI_FISS_XFEM(MODELE=MO[i],  
+                       DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
+                                    GROUP_MA_FOND='FOND_'+str(i),),
+                       GROUP_MA_ENRI='MSURF',);
+
+   MOX[i]=MODI_MODELE_XFEM(MODELE_IN=MO[i],FISSURE=FISS[i]);
+
+   CHFEM[i]=AFFE_CHAR_MECA(MODELE=MOX[i],LIAISON_XFEM='OUI');
+
+   CHMAT[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
+                          MODELE=MOX[i],
+                          AFFE=_F(TOUT='OUI',MATER=ACIER,));
+
+# chargement pour la poutre 3 trous
+   CHAR[i]=AFFE_CHAR_MECA(MODELE=MOX[i],
+                          DDL_IMPO=(_F(GROUP_NO='NAPPUI1',DX=0.,DY=0.,),
+                                    _F(GROUP_NO='NAPPUI2',DY=0.,),),
+                          FORCE_NODALE=_F(GROUP_NO='NFORCE',FY=-1.,)
+                          );
+
+
+   UTOT[i]=STAT_NON_LINE(MODELE=MOX[i],
+                      CHAM_MATER=CHMAT[i],
+                      EXCIT=(_F(CHARGE=CHAR[i],),
+                             _F(CHARGE=CHFEM[i],),),
+                      COMP_ELAS=_F(RELATION='ELAS',GROUP_MA='MSURF',),
+                      INCREMENT=_F(LIST_INST=LINST),
+                      ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                      );
+
+   SIF[i]=CALC_G(RESULTAT=UTOT[i],
+              OPTION='CALC_K_G',
+              THETA=_F(FISSURE=FISS[i],
+                       R_INF=2.,
+                       R_SUP=4.,),);
+
+   IMPR_TABLE(TABLE=SIF[i])
+   
+   MAX[i+1]=CO('MAX_%d' %(i+1) )
+   MAT[i+1] = CO('MAT_%d'%(i+1))
+
+   PROPA_FISS(METHODE_PROPA='MAILLAGE',
+         MA_STRUC=MAST,
+         MA_XFEM1 = MAX[i],
+         MA_XFEM2 = MAX[i+1],
+         MA_TOT2 = MAT[i+1],
+         ITERATION = i+1,
+         FISSURE1 = FISS[i],
+         HYPOTHESE = 'NON_PLAN',
+         TABLE = SIF[i],
+         INFO=1,
+         LOI_PROPA = _F(LOI='PARIS',
+                        M=3,
+                        DA_MAX=Damax,),
+         );
+
+# TEST DE NON-REGRESSION SUR LA POSITION DU DERNIER FOND DE FISSURE
+MAT[i]=DEFI_GROUP(reuse =MAT[i],
+                MAILLAGE=MAT[i],
+                CREA_GROUP_NO=_F(NOM='FOND_%d' %(i),
+                                 GROUP_MA='FOND_%d' %(i),),
+                    );
+                
+TAB = POST_RELEVE_T(ACTION=_F(INTITULE='Table pour coordonnees du fond',
+                               GROUP_NO='FOND_%d' %(i),
+                              RESULTAT = UTOT[i],
+                              NOM_CHAM= 'DEPL',
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),);
+                                            
+TEST_TABLE(TABLE=TAB,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='COOR_X',
+           PRECISION=1.E-3,
+           VALE= 4.21397E+01   )
+
+TEST_TABLE(TABLE=TAB,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='COOR_Y',
+           PRECISION=1.E-3,
+           VALE= 2.060376E+01     )
+
+FIN()
+
+

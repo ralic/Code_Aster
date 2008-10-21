@@ -1,4 +1,4 @@
-# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,7 +158,7 @@ TRAN_GEN=DYNA_TRAN_MODAL(       MASS_GENE=M_PROJ,
                             )
 
 #
-RESULT1=REST_BASE_PHYS(   RESU_GENE=TRAN_GEN,
+RESULT1=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN')
@@ -414,14 +414,14 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                                         TOUT = 'OUI')))
 
 #
-TRAN_GLO=REST_BASE_PHYS(  RESU_GENE=TRANGENE,
+TRAN_GLO=REST_SOUS_STRUC(  RESU_GENE=TRANGENE,
                             TOUT_CHAM='OUI',
                             LIST_INST=LIST_R,
                             INTERPOL='LIN',
                             SQUELETTE=SQUEL)
 
 #
-TRAN_SS2=REST_BASE_PHYS(   RESU_GENE=TRANGENE,
+TRAN_SS2=REST_SOUS_STRUC(   RESU_GENE=TRANGENE,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',

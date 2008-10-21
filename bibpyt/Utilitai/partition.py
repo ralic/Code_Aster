@@ -1,4 +1,4 @@
-#@ MODIF partition Utilitai  DATE 22/10/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF partition Utilitai  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,8 +143,12 @@ connex   = mm.co
    MAIL9 = mm.ToAster(unite=38)
    """
 
-   def __init__(self,nno=0,nma=0) :
-      self.cn  = N.zeros((nno,3),N.Float)
+   def __init__(self, nno=0, nma=0, ndim=None) :
+      self.ndim = ndim
+      if ndim is None:
+         # on initialise le tableau au plus grand
+         ndim = 3
+      self.cn  = N.zeros((nno, ndim),N.Float)
       self.tm  = N.zeros(nma,N.Int)
       self.co  = CONNEC(nma)
       self.gma = {}
@@ -177,7 +181,7 @@ connex   = mm.co
       try:
          psyco.bind(self.FromAster)
       except: pass
-
+   
 # -------------------------------------------------------------
    def get_connexite(self, nom, nma):
       co=CONNEC(nma)
@@ -187,11 +191,21 @@ connex   = mm.co
       return co
 
    def get_coordonnees_noeuds(self, nom, nombre_noeuds):
-      coordonnees_noeuds = aster.getvectjev(nom)
-      coordonnees_noeuds = N.array(coordonnees_noeuds)
-      coordonnees_noeuds.shape = (nombre_noeuds,3)
-      cn = coordonnees_noeuds
+      assert self.ndim != None, """Dimension réelle du maillage non initialisée."""
+      lcoord = aster.getvectjev(nom)
+      coordonnees_noeuds = N.array(lcoord)
+      nno = len(coordonnees_noeuds) / 3
+      assert nno == nombre_noeuds, """Données incohérentes."""
+      coordonnees_noeuds.shape = (nno, 3)
+      cn = coordonnees_noeuds[:, :self.ndim]
       return cn
+
+# -------------------------------------------------------------
+   def init_dimension(self, ndim):
+      """Initialise la dimension du maillage."""
+      if self.ndim is None:
+         self.ndim = ndim
+      assert ndim == self.ndim, """Il est interdit de modifier la dimension du maillage !"""
 
 # -------------------------------------------------------------
    def FromAster(self,nom) :
@@ -206,6 +220,8 @@ connex   = mm.co
       self.dime_maillage = aster.getvectjev(nom_maillage+'.DIME')
       nombre_noeuds      = self.dime_maillage[0]
       nombre_mailles     = self.dime_maillage[2]
+      ndim               = self.dime_maillage[5]
+      self.init_dimension(ndim)
 
       # coordonnees des noeuds
       self.cn = self.get_coordonnees_noeuds(nom_maillage+'.COORDO    .VALE', nombre_noeuds)
@@ -293,24 +309,24 @@ connex   = mm.co
       l.append('%')
 
       (nno,ndim) = self.cn.shape
+      self.init_dimension(ndim)
 
       # Coordonnees des noeuds
-      l.append('COOR_3D')
+      l.append('COOR_%sD' % ndim)
 
       #  format des nombres : 21.14E ==> -3.00000000000002D-04
       #  longueur d'une ligne : 8 + (2 + 21)*3 = 77
+      fmt = '  '.join(["%21.14E"] * ndim)
       # Si le maillage initial ne provient pas d'Aster
       if len(self.correspondance_noeuds) == 0:
          for i in range(nno) :
-            #ch = 'N'+repr(i)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
-            ch = "%21.14E  %21.14E  %21.14E" % (self.cn[i,0], self.cn[i,1], self.cn[i,2])
+            ch = fmt % tuple([self.cn[i, k] for k in range(ndim)])
             l.append("%-8s  %s" % ('N'+repr(i), ch))
 
       # Si le maillage initial provient d'Aster
       else:
          for i in range(nno) :
-            #ch = self.correspondance_noeuds[i]+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
-            ch = "%21.14E  %21.14E  %21.14E" % (self.cn[i,0], self.cn[i,1], self.cn[i,2])
+            ch = fmt % tuple([self.cn[i, k] for k in range(ndim)])
             l.append("%-8s  %s" % (self.correspondance_noeuds[i], ch))
 
       # Connectivité des mailles
@@ -397,8 +413,8 @@ connex   = mm.co
                   l.append('FINSF') ; l.append('%')
 
       # Fin
-      l.append('FIN\n')
-      return string.join(l,'\n')
+      l.extend(['FIN', ''])
+      return os.linesep.join(l)
 
 
 # ============================================================================ #

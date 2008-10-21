@@ -1,4 +1,4 @@
-#@ MODIF __init__ Meidee  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF __init__ Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

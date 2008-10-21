@@ -1,4 +1,4 @@
-#@ MODIF meidee_test Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_test Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 import aster
 from Accas import _F, ASSD
 
-from meidee_calcul_fludela import MeideeFludela
+from meidee_calcul_fludela import MeideeFludela, MeideeTurbMonomod
 from meidee_calcul_correlation import MeideeCorrelation
 from meidee_calcul_turbulent import CalculTurbulent, CalculInverse
 from Numeric import take
@@ -32,12 +32,14 @@ from Numeric import take
 def TestMeidee(macro,
                mess,
                out_fludela,
-               out_turbulent,
+               out_meideeturb,
+               out_identification,
                out_modifstru,
                objects,
                EXPANSION,
-               FLUIDE_ELASTIQUE,
-               TURBULENT,
+               MEIDEE_FLUDELA,
+               MEIDEE_TURBULENT,
+               IDENTIFICATION,
                MODIFSTRUCT,
                GROUP_NO_CAPTEURS,
                GROUP_NO_EXTERIEUR,               
@@ -71,72 +73,43 @@ def TestMeidee(macro,
             nume_mode_calcul = [ind-1 for ind in
                                 list(EXPANSION['NUME_MODE_CALCUL'])]
         else:
-            nume_mode_calcul = [0, 2, 3, 4, 5, 6]
+            nume_mode_calcul = None
         if EXPANSION['NUME_MODE_MESURE'] != 0:
             nume_mode_mesure = [ind-1 for ind in
                                 list(EXPANSION['NUME_MODE_MESURE'])]
         else:
-            nume_mode_mesure = [0, 2, 3, 4, 5]
+            nume_mode_mesure = None
 
-        meidee.Setup(resu_num, resu_exp, norm_num, norm_exp)
+        meidee.setup(resu_num, nume_mode_calcul, resu_exp, nume_mode_mesure)
         # Lancement de la macro MACRO_MEIDEE_PROJ
         # Les concepts resultats sont srockes sous le nom RESU_+type de resu
-        # On realise l'expansion avec les quatre premiers modes de la base numerique
-        # sur les trois premiers modes exp
-        ind_mod_num = []
-        ind_mod_exp = []
+        meidee.calc_proj_resu("RESU")
 
+        resu_et = objects.resultats["RESU_ET"]
+        resu_nx = objects.resultats["RESU_NX"]
+        resu_rd = objects.resultats["RESU_RD"]
 
-        # Selection des modes à étendre et des modes de la base d'expansion
-        ind_mod_tmp  = take(resu_num.get_cara_mod(), nume_mode_calcul)[:,0].tolist()
-        for j in ind_mod_tmp:
-            ind_mod_num.append(int(j))
-        freq_mod_num = take(resu_num.get_cara_mod(),nume_mode_calcul)[:,0].tolist()
-        num_modes = (ind_mod_num,freq_mod_num)
-        ind_mod_tmp  = take(resu_exp.get_cara_mod(),nume_mode_mesure)[:,0].tolist()
-        for j in ind_mod_tmp:
-            ind_mod_exp.append(int(j))
-        freq_mod_exp  = take(resu_exp.get_cara_mod(),nume_mode_mesure)[:3,1].tolist()
-        exp_modes = (ind_mod_exp,freq_mod_exp)
-        
-        meidee.calc_proj_resu(num_modes,exp_modes,meidee.resu_num, meidee.resu_exp,
-                              "RESU")
+        meidee.calc_mac_mode( resu_et, resu_nx, resu_num.mass )
 
-        objects.recup_objects()
-        resu_et  = objects.resultats["RESU_ET"]
-
-        # Test des MAC_MODE (utilise la fonction calc_mac_mode)
-        # NB : pour l'instant MAC_MODE ne marche pas avec les modes reduits
-        tests = [("phi_et", ),("phi_et", "phi_num" ),("phi_exp", ),
-                 ##("phi_exp", "phi_num_red"),
-                 ("phi_num",)]
-                 ##("phi_num_red",)
-
-        for ind in range(len(tests)):
-            meidee.get_mac(tests[ind],resu_num.obj,resu_exp.obj,norm_num,norm_exp)
-
-        # Test des IMPR_RESU (format GMSH) on affiche tous les resu de MACRO_MEIDEE_PROJ
-        meidee.prep_fichier(1,1,1,1)
+        ## Test des IMPR_RESU (format GMSH) on affiche tous les resu de MACRO_MEIDEE_PROJ
+        #meidee.prep_fichier(resu_et, resu_rd)
 
 
     #############################################
     # 2) Test des fonctions de l'onglet fludela #
     #############################################
-    if FLUIDE_ELASTIQUE:
+    if MEIDEE_FLUDELA:
         fludela = MeideeFludela(mess, out_fludela)
 
         # Transformation des objets Aster en classes Python
-        resu_exp1 = objects.resultats[FLUIDE_ELASTIQUE['MESURE1'].nom]
-        resu_exp2 = objects.resultats[FLUIDE_ELASTIQUE['MESURE2'].nom]
-        resu_exp3 = objects.resultats[FLUIDE_ELASTIQUE['MESURE3'].nom] 
+        resu_exp1 = objects.resultats[MEIDEE_FLUDELA['MESURE1'].nom]
+        resu_exp2 = objects.resultats[MEIDEE_FLUDELA['MESURE2'].nom]
+        resu_exp3 = objects.resultats[MEIDEE_FLUDELA['MESURE3'].nom] 
 
         fludela.set_results(resu_exp1, resu_exp2, resu_exp3)
         fludela.set_param_phy(rho_int=0, rho_ext=1000, diam_int=0.018, diam_ext=0.02)
         fludela.methode_globale = 'Granger'
-        if FLUIDE_ELASTIQUE['RESU_EXPANSION'] == 'OUI':
-            fludela.res_longeq = resu_et
-        else:
-            fludela.res_longeq = objects.resultats[FLUIDE_ELASTIQUE['BASE'].nom]
+        fludela.res_longeq = objects.resultats[MEIDEE_FLUDELA['BASE'].nom]
         fludela.pairs =  [([0], [0], [0]), ([1], [1], [1]), ([2], [2], [2])]
         list_vit = ['10']
         for vit in list_vit:
@@ -158,16 +131,64 @@ def TestMeidee(macro,
         fludela.save_to_file(name, data)
         fludela.save_to_table(fludela.saved_data,"Résultats Meidee fluide-elastique")
 
+
+    #############################################
+    # 3) Test des fonctions de l'onglet fludela #
+    #############################################
+    if MEIDEE_TURBULENT:
+        # utiliser les out_meideeturb
+        turbmonomod = MeideeTurbMonomod(objects,mess,out_meideeturb)
+        
+        inter_spec_name = MEIDEE_TURBULENT['INTE_SPEC'].nom
+        resu_num_name = MEIDEE_TURBULENT['BASE'].nom
+        resu_exp_name = MEIDEE_TURBULENT['MESURE'].nom
+        
+                
+        # Set default indices for the modes
+        if MEIDEE_TURBULENT['NUME_MODE_DECONV'] != 0:
+            nume_mode_deconv = [ind for ind in
+                                list(MEIDEE_TURBULENT['NUME_MODE_DECONV'])]
+        else:
+            nume_mode_calcul = None
+        if MEIDEE_TURBULENT['NUME_MODE_LOCAL'] != 0:
+            nume_mode_EML = [ind for ind in
+                                list(MEIDEE_TURBULENT['NUME_MODE_LOCAL'])]
+        else:
+            nume_mode_EML = None
+                
+        turbmonomod.set_res_longcorr(objects.get_resu(resu_num_name))
+        turbmonomod.set_resultat_exp(objects.get_resu(resu_exp_name))
+        turbmonomod.set_nume_deconv(nume_mode_deconv)
+        turbmonomod.set_nume_EML(nume_mode_EML)
+        
+                
+        turbmonomod.set_ld(3.0)
+        turbmonomod.set_lambdac(3.5)
+        turbmonomod.set_gammac(70)
+        
+        turbmonomod.set_param_phy(rho_int=0, rho_ext=1000, diam_int=0.018, diam_ext=0.02)
+        turbmonomod.set_interspectre(objects.get_inter_spec(inter_spec_name))
+        turbmonomod.set_type_intsp('DEPL')
+        
+        list_vit = ['10']
+        for vit in list_vit:
+            turbmonomod.set_speed(vit) # on fait le test pour une seule vitesse pour l'instant
+            turbmonomod.compute()
+            turbmonomod.compute_interpolation()
+        
+
+
+
     ###############################################
-    # 3) Test des fonctions de l'onglet turbulent #
+    # 4) Test des fonctions de l'onglet turbulent #
     ###############################################
-    if TURBULENT:
+    if IDENTIFICATION:
         calcturb = CalculTurbulent(objects, mess)
 
-        inter_spec_name = TURBULENT['INTE_SPEC'].nom
-        obs_name = TURBULENT['OBSERVABILITE'].nom
-        com_name = TURBULENT['COMMANDABILITE'].nom
-        res_base = TURBULENT['BASE'].nom
+        inter_spec_name = IDENTIFICATION['INTE_SPEC'].nom
+        obs_name = IDENTIFICATION['OBSERVABILITE'].nom
+        com_name = IDENTIFICATION['COMMANDABILITE'].nom
+        res_base = IDENTIFICATION['BASE'].nom
 
         calcturb.set_interspectre(objects.get_inter_spec(inter_spec_name))
         calcturb.set_observabilite(objects.get_resu(obs_name))
@@ -180,21 +201,21 @@ def TestMeidee(macro,
         
         calcturb.set_base(objects.get_resu(res_base))
         
-        calcturb.set_alpha(TURBULENT['ALPHA'])
-        calcturb.set_epsilon(TURBULENT['EPS'])
+        calcturb.set_alpha(IDENTIFICATION['ALPHA'])
+        calcturb.set_epsilon(IDENTIFICATION['EPS'])
         calcturb.set_mcoeff(0.0)
 
         calcturb.calculate_force()
 
-        calcturb.Sff.make_inte_spec(titre="Résultat Meidee turbulent : efforts",
-                                    paras_out = out_turbulent)
-        calcturb.Syy.make_inte_spec(titre="Résultat Meidee turbulent : mesure",
-                                      paras_out = out_turbulent)
-        calcturb.Syy_S.make_inte_spec(titre="Résultat Meidee turbulent : synthèse",
-                                      paras_out = out_turbulent)
+        calcturb.Sff.make_inte_spec(titre="Resultat Meidee turbulent : efforts",
+                                    paras_out = out_identification)
+        calcturb.Syy.make_inte_spec(titre="Resultat Meidee turbulent : mesure",
+                                      paras_out = out_identification)
+        calcturb.Syy_S.make_inte_spec(titre="Resultat Meidee turbulent : synthese",
+                                      paras_out = out_identification)
 
     ##################################################
-    # 4) Test des fonctions de l'onglet modif struct #
+    # 5) Test des fonctions de l'onglet modif struct #
     ##################################################
     if MODIFSTRUCT:
        lance_modif_struct_calcul(macro, objects,
@@ -234,11 +255,12 @@ def lance_modif_struct_calcul(macro, meidee_objects,
                         de groupes de noeuds et leurs degrés de liberté
                         pour les capteurs.
 
-       :param MS_EXTERNE: dictionaire (ou FACT) contenant les choix
+       :param EXTERIEUR: dictionaire (ou FACT) contenant les choix
                           de groupes de noeuds et leurs degrés de liberté
-                          pour la structure externe.
+                          pour les ddl exterieurs.
                           
-       :param RESMODIF: dictionaire (ou FACT) utilisé pour les résultats."""
+       :param out_modifstru: dictionaire (ou FACT) utilisé pour les résultats."""
+
     from Accas import _F       
     from Meidee.meidee_calcul_modifstruct import ModifStruct
     modif_struct = ModifStruct(macro, meidee_objects,
@@ -255,13 +277,15 @@ def lance_modif_struct_calcul(macro, meidee_objects,
     modif_struct.set_modes_ide(MODIFSTRUCT["NUME_MODE_MESU"])
     modif_struct.set_modes_expansion(MODIFSTRUCT["NUME_MODE_CALCUL"])
 
-    modif_struct.find_maillage_couple_from(MODIFSTRUCT["MAILLE_MODIF"].nom)
+    modif_struct.set_sumail_name("SUMAIL")   # nom super-maille par defaut
     modif_struct.find_modele_couple_from(MODIFSTRUCT["MODELE_MODIF"].nom)
+    modif_struct.find_maillage_modif_from(MODIFSTRUCT["MODELE_MODIF"].nom)
 
     modif_struct.calcul_mesure_support_corresp()
 
     modif_struct.set_param_condens({'METHODE':'SVD','EPS':1.0E-5,'REGUL':'NON'})
     modif_struct.calcul_condensation()
+
     mode_simult = 1
     calc_freq = _F(OPTION='PLUS_PETITE',
                    NMAX_FREQ=20,

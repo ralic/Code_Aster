@@ -1,4 +1,4 @@
-#@ MODIF meidee_iface Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_iface Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@
 import os
 from popen2 import Popen3
 
-from Numeric import minimum, maximum, array, arange
+from Numeric import minimum, maximum, array, arange, log
 from Tkinter import Frame, Label, Menubutton, Menu, StringVar, IntVar, Listbox
 from Tkinter import Toplevel, Scrollbar, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, Canvas, Text, END
@@ -444,7 +444,7 @@ class MyMenu(Menubutton):
         \param cmd Le callback associé (si différent de ``None``)
         """
         Menubutton.__init__( self, root, textvariable=var, relief='raised' )
-        var.set(default_var or "Choisir")
+        var.set(default_var or "   Choisir   ")
         self.menu = Menu( self, tearoff=0 )
         self["menu"] = self.menu
         for opt in options:
@@ -523,19 +523,21 @@ class VLabelledItem(HLabelledItem):
 
 #------------------------------------------------------------------------------
 
-def PlotXMGrace(abscisse, ordonnees, couleur, legende, ech_x, ech_y):
+def PlotXMGrace(abscisse, ordonnee, couleur, legende, ech_x, ech_y):
     """!Sortie des données sur une courbe XMGrace
 
     \param abscisse abscisses du graphe
-    \param ordonnees tableau de valeurs
+#    \param ordonnees tableau de valeurs
+    \param ordonnee ordonnees du graphe
     """
     from Cata.cata import IMPR_FONCTION
     _tmp = []
-    for i in range(len(ordonnees)):
-        _tmp.append( { 'ABSCISSE': abscisse,
-                       'ORDONNEE': tuple(ordonnees[i].tolist()),
-                       'LEGENDE':legende[i],
-                       'COULEUR': couleur[i] } )
+#    for i in range(len(ordonnees)):
+    _tmp.append( { 'ABSCISSE': abscisse,
+#                       'ORDONNEE': tuple(ordonnees[i].tolist()),
+                   'ORDONNEE': ordonnee,
+                   'LEGENDE':legende[0],
+                   'COULEUR': couleur[0] } )
 
     motscle= {'COURBE': _tmp}
 
@@ -544,7 +546,7 @@ def PlotXMGrace(abscisse, ordonnees, couleur, legende, ech_x, ech_y):
                   PILOTE='INTERACTIF',
                   TITRE='Courbe',
                   SOUS_TITRE='Sous-titre',
-                  LEGENDE_X='Fréquence',
+                  LEGENDE_X='Pulsation',
                   LEGENDE_Y='Amplitude',
                   ECHELLE_X=ech_x,
                   ECHELLE_Y=ech_y,
@@ -761,8 +763,8 @@ class MacMode(Canvas):
         n,m = mat.shape
         width = self.winfo_width()
         height = self.winfo_height()
-        xc = width*arange(0., n+1, 1.)/(n+1)
-        yc = height*arange(0., m+1, 1.)/(m+1)
+        xc = width*arange(0., n+1, 1.)/n
+        yc = height*arange(0., m+1, 1.)/m
         _min = minimum.reduce
         _max = maximum.reduce
         cmin = _min(mat.flat)
@@ -809,7 +811,7 @@ class MacWindow:
      - un bouton (log) permettant de commuter l'affichage linéaire et logarithmique
 
     """
-    def __init__(self, root, label, modes1, modes2, mat, name1=None, name2=None, top=None ):
+    def __init__(self, root, label, modes1, modes2, mat, resu1=None, resu2=None, top=None ):
         """!Constructeur
 
         :IVariables:
@@ -819,8 +821,8 @@ class MacWindow:
          - `modes2`: liste des modes en X
          - `logvar`: variable Tk liée au bouton radio indiquant la méthode (log ou pas) d'affichage
          - `mac`: l'objet MacMode
-         - `diplayvar1`: variable liée à un label pour permettre l'affichage des coordonnées de la valeur sous le curseur
-         - `diplayvar2`: variable liée à un label pour permettre l'affichage de la valeur sous le curseur
+         - `resu1`:nom de l'instance Resultat qui a servi pour le calcul des modes (idem 'resu2')
+         - `diplayvar1`: variable liée à un label pour permettre l'affichage de la valeur sous le curseur
          - `top`: la fenetre toplevel qui contient l'interface
         """
         self.root = root
@@ -835,24 +837,24 @@ class MacWindow:
         titre.grid(row=0, column=0, columnspan=4, sticky='n' )
 
         # Graphique
-        self.mac = MacMode( top )
-        self.mac.grid( row=2, column=0, sticky='w'+'e'+'s'+'n' )
+        self.mac = MacMode( top,relief='flat' )
+        self.mac.grid( row=2, column=1, sticky='w'+'e'+'s'+'n' )
         self.modes1 = modes1
         self.modes2 = modes2
 
         # Label abcisse/ordonnée
-        if not name1:
-            name1 = "1"
-        if not name2:
-            name2 = "2"
-        Label(top,text=name1).grid(row=1, column=0, sticky='e')
+        if not resu1 : name1 = "1"
+        else :         name1 = resu1.nom
+        if not resu2 : name2 = "2"
+        else :         name2 = resu2.nom
+        Label(top,text=name1).grid(row=2, column=0, sticky='e')
         Label(top,text=name2).grid(row=3, column=1)
 
         # Tableau de modes
-        text1 = self.build_modes(top,modes1)
-        text1.grid( row=2, column=1 )
-        text2 = self.build_modes(top,modes2)
-        text2.grid( row=2, column=2 )
+        text1 = self.build_modes(top,resu1)
+        text1.grid( row=2, column=2 )
+        text2 = self.build_modes(top,resu2)
+        text2.grid( row=2, column=3 )
 
         # Switch log/lin
         self.logvar = IntVar()
@@ -869,10 +871,14 @@ class MacWindow:
         self.top.bind("<Destroy>", self.destroy_mac )
         self.top.bind("<Motion>",self.mode_info )
 
-    def build_modes(self, top, modes):
+    def build_modes(self, top, resu):
         """!Construit la liste des modes dans une boite texte"""
-        text = Text( top, width=max( [len(m) for m in modes[1] ] )+1 )
-        text.insert('end', "\n".join( modes[1] ) )
+        freqtmp = resu.get_modes()[0]
+        freq = []
+        for f in freqtmp[:,1].tolist():
+            freq.append('%8.2f' % f)
+        text = Text( top, width=max( [len(f) for f in freq] )+1 )
+        text.insert('end', "\n".join( freq ) )
         return text
 
     def mode_info(self, event):
@@ -882,17 +888,15 @@ class MacWindow:
             i,j = self.mac.items.get(oid[0], (None,None) )
         else:
             return
-        if i is None or i<0 or i>=len(self.modes1[0]):
+        if i is None or i<0 or i>=len(self.modes1):
             return
-        if j is None or j<0 or j>=len(self.modes2[0]):
+        if j is None or j<0 or j>=len(self.modes2):
             return
-        mode1 = self.modes1[0][i]
-        txt1 = self.modes1[1][i]
-        mode2 = self.modes2[0][j]
-        txt2 = self.modes2[1][j]
+        mode1 = self.modes1[i]
+        mode2 = self.modes2[j]
         v = self.mac.mat[i,j]
-        self.displayvar1.set("( %d - %s ) / ( %d - %s )" % (mode1,txt1,mode2,txt2) )
-        self.displayvar2.set("%.5g" % (v) )
+#        self.displayvar1.set("( %d - %s ) / ( %d - %s )" % (mode1,txt1,mode2,txt2) )
+        self.displayvar2.set("Valeur : %.5g" % (v) )
 
     def setlog(self):
         """!Callback du bouton radio de sélection (log/linéaire)"""
@@ -937,7 +941,8 @@ class MessageBoxInteractif(Frame):
         if unite:
             self.mess_file = open('fort.'+str(unite),'w')
         else:
-            self.mess_file = StringIO.StringIO()
+            self.mess_file = open('fort.'+str(98),'w') 
+#            self.mess_file = StringIO.StringIO()
 
 
     def disp_mess(self, new_mess):

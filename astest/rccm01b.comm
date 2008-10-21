@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / UNITAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,14 +214,14 @@ TEST_TABLE(    TABLE=UNISN,
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SN_MAX',
-                      VALE=300.        )
+                      VALE=200.        )
 
 TEST_TABLE(    TABLE=UNISN,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SN_MAX',
-                      VALE=100.        )
+                      VALE=200.        )
 
 #---le SN*
 TEST_TABLE(    TABLE=UNISN,
@@ -338,14 +338,14 @@ TEST_TABLE(    TABLE=UNIFA,
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SN_MAX',
-                      VALE=300.        )
+                      VALE=200.        )
 
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SN_MAX',
-                      VALE=100.        )
+                      VALE=200.        )
 #---le SN*
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
@@ -367,14 +367,14 @@ TEST_TABLE(    TABLE=UNIFA,
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SP_MAX',
-                      VALE=300.          )
+                      VALE=200.          )
 
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SP_MAX',
-                      VALE=100.          )
+                      VALE=200.          )
 
 #---le SALT
 TEST_TABLE(    TABLE=UNIFA,
@@ -382,14 +382,14 @@ TEST_TABLE(    TABLE=UNIFA,
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SALT_MAX',
-                      VALE=150.          )
+                      VALE=100.          )
 
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SALT_MAX',
-                      VALE=50.          )
+                      VALE=100.          )
 
 #---le FACT_USAGE
 TEST_TABLE(    TABLE=UNIFA,
@@ -397,14 +397,14 @@ TEST_TABLE(    TABLE=UNIFA,
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='FACT_USAGE_CUMU',
-                      VALE=1.81872E-06  )
+                      VALE=4.24242E-07  )
 
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='FACT_USAGE_CUMU',
-                      VALE=2.41379E-07  )
+                      VALE=4.24242E-07  )
 
 
 #--------------------------------------------------------------------------------

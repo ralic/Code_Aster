@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline5 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -374,5 +374,8 @@ cata_msg={
     Matrices de  raideur, de masse et/ou d'amortissement non symétrique(s) dans
     MODE_ITER_SIMULT avec,une matrice de raideur complexe. 
     Pour l'instant, ce cas n'a pas été pris en compte.
+"""),
+71: _("""
+    Les deux bases ne sont pas du même type (Complexe/Réel) !
 """),
 }

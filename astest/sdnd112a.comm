@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE TEST EFFET LAME FLUIDE ENTRE DEUX STRUCTURES MOBILES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,7 +149,7 @@ TRAN_GE1=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,   RIGI_GENE=RIGIDGEN,
 #
 # RESTITUTION DES DEPLACEMENTS SUR LA BASE PHYSIQUE
 # -------------------------------------------------
-DYNATRA1=REST_BASE_PHYS(   RESU_GENE=TRAN_GE1,
+DYNATRA1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                               NOM_CHAM='DEPL',
                               INTERPOL='LIN',
                          MODE_MECA=MODE_BIC,
@@ -234,7 +234,7 @@ TRAN_GE2=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,   RIGI_GENE=RIGIDGEN,
 #
 # RESTITUTION DES DEPLACEMENTS SUR LA BASE PHYSIQUE
 # -------------------------------------------------
-DYNATRA2=REST_BASE_PHYS(   RESU_GENE=TRAN_GE2,
+DYNATRA2=REST_GENE_PHYS(   RESU_GENE=TRAN_GE2,
                               NOM_CHAM='DEPL',
                               INTERPOL='LIN',
                          MODE_MECA=MODE_BIC,

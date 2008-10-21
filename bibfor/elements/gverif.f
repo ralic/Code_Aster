@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -239,7 +239,11 @@ C
             DIM1 = DIM1 + NBOBJ
          ELSE
             IER = IER + 1
-            CALL U2MESK('E','RUPTURE1_2',1,ZK8(JJJ+I-1))
+            IF (NOUM(1:2) .EQ. 'NO') THEN
+              CALL U2MESK('E','RUPTURE1_3',1,ZK8(JJJ+I-1))
+            ELSE
+              CALL U2MESK('E','RUPTURE1_2',1,ZK8(JJJ+I-1))
+            ENDIF
          ENDIF
 100   CONTINUE
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -275,12 +275,12 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                                         TOUT = 'OUI')))
 
 #
-MODCOT=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+MODCOT=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            SOUS_STRUC='COTE1',
                            TOUT_ORDRE='OUI')
 
 #
-MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                              SQUELETTE=SQUEL,
                            TOUT_ORDRE='OUI')
 
@@ -379,7 +379,7 @@ TRANGEN5=DYNA_TRAN_MODAL(        METHODE='ADAPT',
 # ----- VISUALISATION
 #
 DEBUG(SDVERI='NON')
-TRAN1=REST_BASE_PHYS(   RESU_GENE=TRANGEN1,
+TRAN1=REST_GENE_PHYS(   RESU_GENE=TRANGEN1,
                             TOUT_CHAM='OUI',
                              NOEUD='NO3',
                              LIST_INST=LIST_R,
@@ -387,7 +387,7 @@ TRAN1=REST_BASE_PHYS(   RESU_GENE=TRANGEN1,
                              MODE_MECA=MODGLO )
 
 #
-TRAN2=REST_BASE_PHYS(   RESU_GENE=TRANGEN2,
+TRAN2=REST_GENE_PHYS(   RESU_GENE=TRANGEN2,
                             TOUT_CHAM='OUI',
                              NOEUD='NO3',
                              LIST_INST=LIST_R,
@@ -395,7 +395,7 @@ TRAN2=REST_BASE_PHYS(   RESU_GENE=TRANGEN2,
                              MODE_MECA=MODGLO )
 
 #
-TRAN3=REST_BASE_PHYS(   RESU_GENE=TRANGEN3,
+TRAN3=REST_GENE_PHYS(   RESU_GENE=TRANGEN3,
                             TOUT_CHAM='OUI',
                              NOEUD='NO3',
                              LIST_INST=LIST_R,
@@ -403,7 +403,7 @@ TRAN3=REST_BASE_PHYS(   RESU_GENE=TRANGEN3,
                              MODE_MECA=MODGLO )
 
 #
-TRAN4=REST_BASE_PHYS(   RESU_GENE=TRANGEN4,
+TRAN4=REST_GENE_PHYS(   RESU_GENE=TRANGEN4,
                             TOUT_CHAM='OUI',
                              NOEUD='NO3',
                              LIST_INST=LIST_R,
@@ -412,14 +412,14 @@ TRAN4=REST_BASE_PHYS(   RESU_GENE=TRANGEN4,
 
 DEBUG(SDVERI='OUI')
 #
-TRAN5=REST_BASE_PHYS(   RESU_GENE=TRANGEN5,
+TRAN5=REST_SOUS_STRUC(   RESU_GENE=TRANGEN5,
                             TOUT_CHAM='OUI',
                              NOEUD='NO3',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
-                             SQUELETTE=SQUEL )
+                             SQUELETTE=SQUEL,)
 
-TRAN_SS=REST_BASE_PHYS(   RESU_GENE=TRANGEN1,
+TRAN_SS=REST_GENE_PHYS(   RESU_GENE=TRANGEN1,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
@@ -723,28 +723,28 @@ IMPR_FONCTION(  UNITE=24,
 
 #
 #
-RESULT1=REST_BASE_PHYS(   RESU_GENE=TRANG1,
+RESULT1=REST_GENE_PHYS(   RESU_GENE=TRANG1,
                            TOUT_CHAM='OUI',
                             NOEUD = 'NO3',
                             LIST_INST=LIST_R,
                             INTERPOL='LIN')
 
 #
-RESULT2=REST_BASE_PHYS(   RESU_GENE=TRANG2,
+RESULT2=REST_GENE_PHYS(   RESU_GENE=TRANG2,
                            TOUT_CHAM='OUI',
                             NOEUD = 'NO3',
                             LIST_INST=LIST_R,
                             INTERPOL='LIN')
 
 #
-RESULT3=REST_BASE_PHYS(   RESU_GENE=TRANG3,
+RESULT3=REST_GENE_PHYS(   RESU_GENE=TRANG3,
                            TOUT_CHAM='OUI',
                             NOEUD = 'NO3',
                             LIST_INST=LIST_R,
                             INTERPOL='LIN')
 
 #
-RESULT4=REST_BASE_PHYS(   RESU_GENE=TRANG4,
+RESULT4=REST_GENE_PHYS(   RESU_GENE=TRANG4,
                            TOUT_CHAM='OUI',
                             NOEUD = 'NO3',
                             LIST_INST=LIST_R,

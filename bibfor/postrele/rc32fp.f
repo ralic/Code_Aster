@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,12 +48,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
-      INTEGER      ISK, ISL, K, L, NK, NL, N0, I1, I1A4, NSITUP,
+      INTEGER      ISK, ISL, K, L, NK, NL, N0, I1, NSITUP,
      +             IFM, NIV, ICOMPT, NPASS, JSPAS, NBSG1, NBSG2, NBSG3,
      +             NBP12, NBP23, NBP13
       REAL*8       SALTM, NADM, UKL, VALE(2)
       LOGICAL      TROUVE, ENDUR, YAPASS
-      CHARACTER*2  CODRET, K2C, K2L
+      CHARACTER*2  CODRET
       CHARACTER*3  TYPASS
       CHARACTER*8  K8B
 C     ------------------------------------------------------------------
@@ -72,18 +72,15 @@ C --- MISE A ZERO DES LIGNES ET COLONNES DE LA MATRICE SALT
 C     S'IL N'EXISTE PAS DE SITUATIONS DE PASSAGE
 C
       CALL RC32F5 ( NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +              NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +              NBSG2, NBSG3, SALTIJ )
 C
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,*) 'MATRICE SALT INITIALE'
-        WRITE(IFM,1012) ( SITU(2*(L-1)+1),SITU(2*(L-1)+2),L=1,NBSIGR )
-        WRITE(IFM,1010) ( NOCC(2*(L-1)+1),NOCC(2*(L-1)+2),L=1,NBSIGR )
+        WRITE(IFM,1012) ( SITU(L),L=1,NBSIGR )
+        WRITE(IFM,1010) ( NOCC(L),L=1,NBSIGR )
         DO 100 K = 1 , NBSIGR
-          I1 = 4*NBSIGR*(K-1)
-          WRITE(IFM,1000) SITU(2*(K-1)+1), NOCC(2*(K-1)+1),
-     +       (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIGR)
-          WRITE(IFM,1002) SITU(2*(K-1)+2), NOCC(2*(K-1)+2),
-     +       (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIGR)
+          I1 = NBSIGR*(K-1)
+          WRITE(IFM,1000) SITU(K), NOCC(K), (SALTIJ(I1+L),L=1,NBSIGR)
  100    CONTINUE
       ENDIF
 C
@@ -97,7 +94,7 @@ C
 C --- RECHERCHE DU SALT MAXI
 C
       CALL RC32F0 ( NBSIGR, NOCC, SALTIJ, SALTM, TROUVE,
-     &                                    ISK, ISL, I1A4, NK, NL )
+     &                                    ISK, ISL, NK, NL )
 C
       IF ( .NOT. TROUVE ) GOTO 9999
 C
@@ -123,30 +120,18 @@ C
 C
       IF ( ICOMPT .LE. 49 ) THEN
          ICOMPT = ICOMPT + 1
-         FACTUS(4*(ICOMPT-1)+1) = I1A4
-         FACTUS(4*(ICOMPT-1)+2) = SITU(2*(ISK-1)+1)
-         FACTUS(4*(ICOMPT-1)+3) = SITU(2*(ISL-1)+1)
+         FACTUS(4*(ICOMPT-1)+1) = 1
+         FACTUS(4*(ICOMPT-1)+2) = SITU(ISK)
+         FACTUS(4*(ICOMPT-1)+3) = SITU(ISL)
          FACTUS(4*(ICOMPT-1)+4) = UKL
       ENDIF
 C
       IF ( NIV .GE. 2 ) THEN
-         IF ( I1A4.EQ.1 .OR. I1A4.EQ.3 ) THEN
-            K2L = '_A'
-         ELSE
-            K2L = '_B'
-         ENDIF
-         IF ( I1A4.EQ.1 .OR. I1A4.EQ.2 ) THEN
-            K2C = '_A'
-         ELSE
-            K2C = '_B'
-         ENDIF
          IF ( YAPASS ) THEN
-            WRITE(IFM,1040)'=> SALT MAXI = ', SALTM, SITU(2*(ISK-1)+1),
-     +                      K2L, SITU(2*(ISL-1)+1), K2C, 
-     +                      TYPASS, SITU(2*(NSITUP-1)+1)
+            WRITE(IFM,1040)'=> SALT MAXI = ',SALTM,SITU(ISK),SITU(ISL),
+     +                                       TYPASS,SITU(NSITUP)
          ELSE
-            WRITE(IFM,1042)'=> SALT MAXI = ', SALTM, SITU(2*(ISK-1)+1),
-     +                     K2L, SITU(2*(ISL-1)+1), K2C
+            WRITE(IFM,1042)'=> SALT MAXI = ',SALTM,SITU(ISK),SITU(ISL)
          ENDIF
          WRITE(IFM,1030)'          N0 = ', N0
          WRITE(IFM,1020)'        NADM = ', NADM
@@ -156,18 +141,13 @@ C
 C --- MISE A ZERO DES LIGNES ET COLONNES DE LA MATRICE SALT SUIVANT
 C     LE NOMBRE D'OCCURENCE EGAL A ZERO
 C
-      CALL RC32F2 ( NBSIGR, NOCC, SALTIJ, I1A4, ISK, ISL, NK, NL, N0 )
+      CALL RC32F2 ( NBSIGR, NOCC, SALTIJ, ISK, ISL, NK, NL, N0 )
 C
 C --- IDEM POUR LE CHEMIN DE PASSAGE 
 C     
       IF ( YAPASS ) THEN
-         IF ( NOCC(2*(NSITUP-1)+1).NE.0 ) THEN
-            NOCC(2*(NSITUP-1)+1) = MAX(0,NOCC(2*(NSITUP-1)+1)-N0)
-         ELSE
-            NOCC(2*(NSITUP-1)+2) = MAX(0,NOCC(2*(NSITUP-1)+2)-N0)
-         ENDIF         
-         IF ( NOCC(2*(NSITUP-1)+1).EQ.0 .AND.
-     +        NOCC(2*(NSITUP-1)+2).EQ.0 ) THEN
+         NOCC(NSITUP) = MAX(0,NOCC(NSITUP)-N0)
+         IF ( NOCC(NSITUP).EQ.0 ) THEN
              IF ( TYPASS .EQ. '1_2' ) THEN
                 NBP12 = NBP12 - 1         
              ELSEIF ( TYPASS .EQ. '1_3' ) THEN
@@ -178,7 +158,7 @@ C
          ENDIF         
          CALL RC32F3 ( NBSIGR, NOCC, SALTIJ, NSITUP )
          CALL RC32F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                 NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                 NBSG2, NBSG3, SALTIJ )
       ENDIF
 C
 C --- ON VERIFIE SI LA COMBINAISON A ANNULEE DES CHEMINS DE PASSAGE
@@ -187,14 +167,11 @@ C --- ON VERIFIE SI LA COMBINAISON A ANNULEE DES CHEMINS DE PASSAGE
 C
       IF ( NIV .GE. 2 ) THEN
          WRITE(IFM,*) 'MATRICE SALT MODIFIEE'
-         WRITE(IFM,1012) ( SITU(2*(L-1)+1),SITU(2*(L-1)+2),L=1,NBSIGR )
-         WRITE(IFM,1010) ( NOCC(2*(L-1)+1),NOCC(2*(L-1)+2),L=1,NBSIGR )
+         WRITE(IFM,1012) ( SITU(L),L=1,NBSIGR )
+         WRITE(IFM,1010) ( NOCC(L),L=1,NBSIGR )
          DO 110 K = 1 , NBSIGR
-            I1 = 4*NBSIGR*(K-1)
-            WRITE(IFM,1000) SITU(2*(K-1)+1), NOCC(2*(K-1)+1),
-     +          (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIGR)
-            WRITE(IFM,1002) SITU(2*(K-1)+2), NOCC(2*(K-1)+2),
-     +          (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIGR)
+            I1 = NBSIGR*(K-1)
+            WRITE(IFM,1000) SITU(K), NOCC(K), (SALTIJ(I1+L),L=1,NBSIGR)
  110     CONTINUE
       ENDIF
 C
@@ -203,13 +180,12 @@ C
 C
  9999 CONTINUE
 C
- 1000 FORMAT(1P,I7,'_A',I9,'|',40(E9.2,1X,E9.2,'|'))
- 1002 FORMAT(1P,I7,'_B',I9,'|',40(E9.2,1X,E9.2,'|'))
- 1010 FORMAT(1P,9X,'NB_OCCUR ','|',40(I9,1X,I9,'|'))
- 1012 FORMAT(1P,9X,'SITUATION','|',40(I7,'_A',1X,I7,'_B|'))
- 1040 FORMAT(1P,A15,E12.5,', LIGNE:',I4,A2,', COLONNE:',I4,A2,
+ 1000 FORMAT(1P,I7,I9,'|',40(E9.2,'|'))
+ 1010 FORMAT(1P,7X,'NB_OCCUR ','|',40(I9,'|'))
+ 1012 FORMAT(1P,7X,'SITUATION','|',40(I9,'|'))
+ 1040 FORMAT(1P,A15,E12.5,', LIGNE:',I4,', COLONNE:',I4,
      +       ', PASSAGE: ',A3,', SITUATION DE PASSAGE: ',I4)
- 1042 FORMAT(1P,A15,E12.5,', LIGNE:',I4,A2,', COLONNE:',I4,A2)
+ 1042 FORMAT(1P,A15,E12.5,', LIGNE:',I4,', COLONNE:',I4)
  1030 FORMAT(1P,A15,I12)
  1020 FORMAT(1P,A15,E12.5)
 C

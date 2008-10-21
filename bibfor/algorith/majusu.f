@@ -1,7 +1,7 @@
       SUBROUTINE MAJUSU(NOMA  ,DEFICO,RESOCO,DEPMOI,DEPDEL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -217,7 +217,7 @@ C
             CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
             YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
-            CALL CALFFX(ALIAS,XPG,YPG,FF)            
+            CALL MMNONF(NDIM,NNOE,ALIAS,XPG,YPG,FF)
             DEPLPE(1) = 0.D0
             DEPLPE(2) = 0.D0
             DEPLPE(3) = 0.D0
@@ -241,7 +241,7 @@ C
             CALL MMELTY(NOMA,NUMMAM,ALIAS,NNOM,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
             YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
-            CALL CALFFX(ALIAS,XPG,YPG,FF)   
+            CALL MMNONF(NDIM,NNOM,ALIAS,XPG,YPG,FF)
             DEPLPM(1) = 0.D0
             DEPLPM(2) = 0.D0
             DEPLPM(3) = 0.D0
@@ -326,7 +326,7 @@ C
             CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
             YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
-            CALL CALFFX(ALIAS,XPG,YPG,FF) 
+            CALL MMNONF(NDIM,NNOE,ALIAS,XPG,YPG,FF)
             DEPLPE(1) = 0.D0
             DEPLPE(2) = 0.D0
             DEPLME(1) = 0.D0
@@ -346,7 +346,7 @@ C
             CALL MMELTY(NOMA,NUMMAM,ALIAS,NNOM,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
             YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
-            CALL CALFFX(ALIAS,XPG,YPG,FF)   
+            CALL MMNONF(NDIM,NNOM,ALIAS,XPG,YPG,FF)
             DEPLPM(1) = 0.D0
             DEPLPM(2) = 0.D0
             DEPLMM(1) = 0.D0
@@ -398,8 +398,6 @@ C
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
- 
- 99   CONTINUE
 C
 C --- MENAGE 
 C

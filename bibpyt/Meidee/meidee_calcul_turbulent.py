@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_turbulent Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_turbulent Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,6 +42,7 @@ class CalculTurbulent:
         self.mess = mess
         
         self.inter_spec = None
+        self.type_intsp = None
         self.res_base = None
         self.res_obs = None
         self.res_com = None
@@ -63,6 +64,9 @@ class CalculTurbulent:
     def set_interspectre(self, intsp):
         """Trouve l'inter-spectre de mesures en fonctionnement"""
         self.inter_spec = intsp
+
+    def set_type_intsp(self, type_intsp):
+        self.type_intsp = type_intsp
 
     def set_observabilite(self, obs):
         self.res_obs = obs
@@ -128,7 +132,7 @@ class CalculTurbulent:
         # On range tous les resultats intermediaires et definitifs
         # dans une classe CalculInverse
         # Les resultats sont des instances de la classe InterSpectre
-        resultat = CalculInverse(self, self.res_base, self.Syy,
+        resultat = CalculInverse(self, self.res_base, self.Syy, self.type_intsp,
                                  self.modes_red, transpose(self.modes_act), self.mess)
         try:
             self.SQQ, self.val_sing, self.regul = resultat.calc_SQQ()
@@ -167,7 +171,7 @@ class CalculInverse:
     def __init__(self,
                  calcturb,
                  modele_mod,
-                 Syy, CPhi, PhiT_B,
+                 Syy, type_intsp, CPhi, PhiT_B,
                  mess):
         
         # dimensions du probleme
@@ -194,7 +198,7 @@ class CalculInverse:
         self.Syy_S = zeros((self.nb_freq,self.nb_mes,self.nb_mes),'D')
         self.SQQ_R = zeros((self.nb_freq,self.nb_mod,self.nb_mod),'D')
         self.Sff = zeros((self.nb_freq,self.nb_act,self.nb_act),'D')
-        self.Z, self.Zm1 = self.calc_Z()
+        self.Z, self.Zm1 = self.calc_Z(type_intsp)
         
 
         # parametres de calcul
@@ -203,11 +207,16 @@ class CalculInverse:
         self.mcoeff  = float(calcturb.mcoeff)
 
 
-    def calc_Z(self):
+    def calc_Z(self,type_intsp):
         """ Calcul de la matrice d'impedence"""
         Z = zeros((self.nb_freq,self.nb_mod,self.nb_mod),'D')
         Zm1 = zeros((self.nb_freq,self.nb_mod,self.nb_mod),'D')
         
+        # exposant : selon que l'inter-spectre soit en depl, vite ou acce, on change l'exposant
+        if type_intsp == 'DEPL':exp = 0
+        elif type_intsp == 'VITE':exp = 1
+        elif type_intsp == 'ACCE':exp = 2
+        else: exp = 0
         freq_i, xsi_i, mass_i, modes_i, amor_i, rigi_i = self.modele_mod.get_modes()
         l_freq_i = array([i for i in freq_i[:,1]])       # frequences propres
         l_omega_i = 2*pi*l_freq_i                        # pulsations propres equivalentes
@@ -216,10 +225,11 @@ class CalculInverse:
         for ind_freq in range(self.nb_freq):
             omega = 2*pi*self.f[ind_freq]
             for ind_mod in range(self.nb_mod):
-                Z[ind_freq,ind_mod,ind_mod] = l_mass_i[ind_mod]*complex(-omega**2 + l_omega_i[ind_mod]**2 ,
-                                                                        2*omega*l_omega_i[ind_mod]*l_xsi_i[ind_mod])
-                Zm1[ind_freq,ind_mod,ind_mod] = 1/(l_mass_i[ind_mod]*complex(-omega**2 + l_omega_i[ind_mod]**2 ,
+                Zm1[ind_freq,ind_mod,ind_mod] = omega**exp/(l_mass_i[ind_mod]*complex(-omega**2 + l_omega_i[ind_mod]**2 ,
                                                                              2*omega*l_omega_i[ind_mod]*l_xsi_i[ind_mod]))
+                if omega == 0 : omega = 2*pi*self.f[ind_freq+1] # eviter la division par 0
+                Z[ind_freq,ind_mod,ind_mod] = 1/(omega**exp)*l_mass_i[ind_mod]*complex(-omega**2 + l_omega_i[ind_mod]**2 ,
+                                                                        2*omega*l_omega_i[ind_mod]*l_xsi_i[ind_mod])
 
         self.l_omega_i = l_omega_i
         

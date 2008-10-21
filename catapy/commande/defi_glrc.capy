@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+#& MODIF COMMANDE  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,11 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
            C2M1            =SIMP(statut='o',typ='R',val_min=0.E+0),
            C2M2            =SIMP(statut='o',typ='R',val_min=0.E+0),
            C2M3            =SIMP(statut='o',typ='R',val_min=0.E+0),
+           
+           MP1X            =SIMP(statut='f',typ=('R',listr8_sdaster)), 
+           MP2X            =SIMP(statut='f',typ=('R',listr8_sdaster)), 
+           MP1Y            =SIMP(statut='f',typ=('R',listr8_sdaster)), 
+           MP2Y            =SIMP(statut='f',typ=('R',listr8_sdaster)), 
          ),
          NAPPE     =FACT(statut='o',max=10,
            MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
@@ -52,6 +57,7 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
            OMY             =SIMP(statut='o',typ='R',val_min=0.E+0), 
            RX              =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0), 
            RY              =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0), 
+           FS              =SIMP(statut='f',typ='R',val_min=0.E+0),
          ),
          CABLE_PREC   =FACT(statut='f',max=1,
            MATER           =SIMP(statut='o',typ=(mater_sdaster) ),

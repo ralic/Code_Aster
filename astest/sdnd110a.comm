@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE LACHER D'UNE MASSE AVEC FORCE LAME FLUIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,7 +182,7 @@ LISTER1=DEFI_LIST_REEL(  DEBUT=0.02,
                             )
 
 #
-DYNATRAN=REST_BASE_PHYS(
+DYNATRAN=REST_GENE_PHYS(
                     RESU_GENE=DYNAMOD1,
                     LIST_INST=LISTER1,
                     NOM_CHAM='DEPL',
@@ -267,7 +267,7 @@ DYNAMOD2=DYNA_TRAN_MODAL(
 
 #
 ##
-DYNATRA2=REST_BASE_PHYS(
+DYNATRA2=REST_GENE_PHYS(
                     RESU_GENE=DYNAMOD2,
                     LIST_INST=LISTER1,
                     NOM_CHAM='DEPL',

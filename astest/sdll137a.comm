@@ -1,4 +1,4 @@
-# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -322,7 +322,7 @@ PROJMS=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODLSUP,
                                    EPS=1.E-5),
                      );
 
-DEPLPR=REST_BASE_PHYS(RESU_GENE=PROJMS,
+DEPLPR=REST_GENE_PHYS(RESU_GENE=PROJMS,
                    TOUT_ORDRE='OUI',
                    NOM_CHAM   ='DEPL');
 

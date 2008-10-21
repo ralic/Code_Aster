@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,20 +16,17 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ASSIRE
-from Macro.macr_europlexus_ops import macr_europlexus_ops
+# RESPONSABLE ASSIRE A.ASSIRE
+from Macro.calc_europlexus_ops import calc_europlexus_ops
 
 import types
 
-def macr_europlexus_prod(self,COURBE=None,**args):
-# AA  if ECRITURE['COURBE'] is not None:
-# AA    for fonc in ECRITURE['COURBE']['TABLE'] : 
-#  if COURBE is not None:
-#    for fonc in COURBE['TABLE'] : 
-#      self.type_sdprod(fonc['FONC'],table_sdaster) 
+def calc_europlexus_prod(self,COURBE=None,**args):
+  if COURBE is not None:
+      self.type_sdprod(args['TABLE_COURBE'],table_sdaster) 
   return evol_noli
 
-MACR_EUROPLEXUS = MACRO(nom="MACR_EUROPLEXUS",op=macr_europlexus_ops,sd_prod=macr_europlexus_prod,
+CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",op=calc_europlexus_ops,sd_prod=calc_europlexus_prod,
         reentrant='n',
         #UIinfo={"groupes":("Dynamique rapide",)},
         fr="Chainage Code_Aster-Europlexus",
@@ -42,6 +39,7 @@ MACR_EUROPLEXUS = MACRO(nom="MACR_EUROPLEXUS",op=macr_europlexus_ops,sd_prod=mac
         FONC_PARASOL = FACT(statut='f',
            NFKT       = SIMP(statut='o',typ=(fonction_sdaster,)),
            NFKR       = SIMP(statut='o',typ=(fonction_sdaster,)),
+           GROUP_MA   = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            ),
 
 
@@ -81,13 +79,13 @@ MACR_EUROPLEXUS = MACRO(nom="MACR_EUROPLEXUS",op=macr_europlexus_ops,sd_prod=mac
 
         CALCUL = FACT(statut='o',
            TYPE_DISCRETISATION  = SIMP(statut='o',typ='TXM',defaut='AUTO',into=('AUTO','UTIL')),
-           TFIN                 = SIMP(statut='o',typ='R'),
-           TINI                 = SIMP(statut='o',typ='R'),
+           INST_FIN             = SIMP(statut='o',typ='R'),
+           INST_INIT            = SIMP(statut='o',typ='R'),
            NMAX                 = SIMP(statut='f',typ='R'),
 
            b_auto =BLOC( condition = "TYPE_DISCRETISATION=='AUTO'",
               CSTAB  = SIMP(statut='o',typ='R',max='**',defaut=0.3),
-              DTMAX  = SIMP(statut='f',typ='R',max='**'),
+#              DTMAX  = SIMP(statut='f',typ='R',max='**'),
                        ),
 
            b_util =BLOC( condition = "TYPE_DISCRETISATION=='UTIL'",
@@ -115,20 +113,39 @@ MACR_EUROPLEXUS = MACRO(nom="MACR_EUROPLEXUS",op=macr_europlexus_ops,sd_prod=mac
         ),
 
 
-        RESULTAT        =FACT(statut='f', regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
+        ARCHIVAGE        =FACT(statut='f', regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
            PAS_INST     = SIMP(statut='f',typ='R'),
            PAS_NBRE     = SIMP(statut='f',typ='I'),
+           CONT_GENER   = SIMP(statut='o',typ='TXM',defaut="NON",max=1,into=("OUI","NON")),
                              ),                
-
-#        UNITE_COURBE = SIMP(statut='f',typ='I'),
-        COURBE  =  FACT(statut='f', regles=(AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
+        COURBE  =  FACT(statut='f',max='**', regles=(EXCLUS('GROUP_NO','GROUP_MA')),
            UNITE_ALIT = SIMP(statut='f',typ='I'),
-           PAS_INST       = SIMP(statut='f',typ='R'),
-           PAS_NBRE       = SIMP(statut='f',typ='I'),
-# #           FONC       = SIMP(statut='f',typ=CO),
-#            NOM_CHAM   = SIMP(statut='f',typ='TXM',defaut='DEPL'),
-#            NOM_CMP    = SIMP(statut='f',typ='TXM'),
-#            NOEUD      = SIMP(statut='f',typ='TXM',),
-         ),
+            NOM_CHAM   = SIMP(statut='f',typ='TXM'),
+            NOM_CMP    = SIMP(statut='f',typ='TXM'),
+#             NOEUD      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+#             MAILLE     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+            GROUP_NO   = SIMP(statut='f',typ=grno,validators=NoRepeat(),max=1),
+            GROUP_MA   = SIMP(statut='f',typ=grma,validators=NoRepeat(),max=1),
 
+            b_maille = BLOC(condition = "MAILLE != None", regles=(AU_MOINS_UN('NUM_GAUSS')),
+              NUM_GAUSS = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),),
+         ),
+        b_courbe = BLOC(condition = "COURBE != None",
+                        regles=(AU_MOINS_UN('PAS_NBRE_COURBE','PAS_INST_COURBE',),
+                                AU_MOINS_UN('TABLE_COURBE',)),          
+          PAS_INST_COURBE      = SIMP(statut='f',typ='R'),
+          PAS_NBRE_COURBE       = SIMP(statut='f',typ='I'),
+                  TABLE_COURBE      = SIMP(statut='f', typ=CO),
+          ),
+        DOMAINES = FACT(statut='f',max='**',
+             GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+             IDENTIFIANT =  SIMP(statut='f',typ='I'),), 
+        INTERFACES = FACT(statut='f',max='**',
+             GROUP_MA_1 = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+             GROUP_MA_2 = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+             TOLE        =  SIMP(statut='f',typ='R'),
+             IDENT_DOMAINE_1  = SIMP(statut='f',typ='I'), 
+             IDENT_DOMAINE_2  = SIMP(statut='f',typ='I'),),
+
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=( 1, 2 ) ),
         ) ;

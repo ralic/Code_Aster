@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+%& MODIF TYPELEM  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +61,16 @@ MODE_LOCAL__
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EREFCO   = PREC     ELEM__         (EFFORT   )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18
+                                        X19      X20      X21      X22      X23      X24
+                                        X25      X26      X27      X28      X29      X30      )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15      X16      X17      X18
+                                        X19      X20      X21      X22      X23      X24
+                                        X25      X26      X27      X28      X29      X30      )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -180,7 +190,8 @@ OPTION__
                               OUT__  EEFGENO  PSIEFNOR
                                      EEFGENC  PSIEFNOC
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R
+                              OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R  
+                                     EGNEUT_F PNEUT_F
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGENO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELGA_ELNO      159   IN__   CCOMPOR  PCOMPOR  ZVARINO  PVARINR

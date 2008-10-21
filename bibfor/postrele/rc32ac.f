@@ -4,7 +4,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,7 +80,7 @@ C
      +             JNSITU, NSITUP, NSITUQ, IRET, I1, JFACT, I, J,
      +             JREAS, JRESS, JRECA, JRECS, NDIM, NBP12, NBP23, NBP13
       REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ, VALRES,
-     +             UG, NADM, MPI(12), MPJ(12), SM, SN, SNET, SP, SMM,
+     +             UG, NADM, MPI(12), MPJ(12), SM, SN, SNET, SP(2), SMM,
      +             MATPI(8), MATPJ(8), MSE(12),TYPEKE,SPMECA,SPTHER,
      +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB,
      +             SIPMAX, SIMPIJ, SNEMAX, KEMAX, R8VIDE, PMMAX, PBMAX,
@@ -131,14 +131,9 @@ C         10 : UG
 C
 C ------ POUR CHAQUE COMBINAISON, ON ARCHIVE :
 C         1  : SN(P,Q)
-C         2  : SP(K,L)
-C         3  : SALT(K,L)
-C         4  : SP(K,L)
-C         5  : SALT(K,L)
-C         6  : SP(K,L)
-C         7  : SALT(K,L)
-C         8  : SP(K,L)
-C         9  : SALT(K,L)
+C         2  : SP1_MIN
+C         3  : SP2_MAX
+C         4  : SALT(P,Q)
 C
          K24AS = '&&RC3200.AVEC_SEISME'//LIEU(IM)
          CALL JECREC(K24AS, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
@@ -210,7 +205,7 @@ C
             CALL JEECRA (JEXNUM(K24SS,IG), 'LONMAX', 10*NBSIGR, ' ' )
             CALL JEVEUO (JEXNUM(K24SS,IG), 'E', JRESS )
 C
-            NDIM = MAX(9,9*NBSIGR*(NBSIGR-1)/2)
+            NDIM = MAX(4,4*NBSIGR*(NBSIGR-1)/2)
             CALL JECROC (JEXNUM(K24CA,IG))
             CALL JEECRA (JEXNUM(K24CA,IG), 'LONMAX', NDIM, ' ' )
             CALL JEVEUO (JEXNUM(K24CA,IG), 'E', JRECA )
@@ -373,20 +368,21 @@ C
 C
 C ----------- CALCUL DU SP
 C
-              SP = 0.D0
+              SP(1) = 0.D0
+              SP(2) = 0.D0
               SPTHER = 0.D0
               TYPEKE=MATPI(8)
               CALL RC32SP ( 'SP_SITU', LIEU(IM), NSITUP, PPI, MPI, 
      +                      NSITUQ, PPJ, MPJ, SEISME, MSE, 
      +                      SP, TYPEKE, SPMECA, SPTHER )
               SPTHEM = MAX ( SPTHEM , SPTHER )
-              SPMAX = MAX ( SPMAX , SP )
-              IF (NIV.GE.2) WRITE (IFM,2040) NSITUP, SP
-              ZR(JRESS-1+10*(IS1-1)+6) = SP
+              SPMAX = MAX ( SPMAX , SP(1) )
+              IF (NIV.GE.2) WRITE (IFM,2040) NSITUP, SP(1)
+              ZR(JRESS-1+10*(IS1-1)+6) = SP(1)
 C
 C ----------- CALCUL DU SALT
 C
-              CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP, TYPEKE,  
+              CALL RC32SA ( 'SITU',MATER, MATPI, MATPJ, SN, SP, TYPEKE,
      &                    SPMECA, SPTHER, KEMECA, KETHER, SALTIJ, SMM )
               KEMAX = MAX ( KEMAX , KEMECA )
               IF (NIV.GE.2) THEN
@@ -461,7 +457,7 @@ C
             CALL JEECRA (JEXNUM(K24SS,IG), 'LONMAX', 10*NBSIGR, ' ' )
             CALL JEVEUO (JEXNUM(K24SS,IG), 'E', JRESS )
 C
-            NDIM = MAX(9,9*NBSIGR*(NBSIGR-1)/2)
+            NDIM = MAX(4,4*NBSIGR*(NBSIGR-1)/2)
             CALL JECROC (JEXNUM(K24CA,IG))
             CALL JEECRA (JEXNUM(K24CA,IG), 'LONMAX', NDIM, ' ' )
             CALL JEVEUO (JEXNUM(K24CA,IG), 'E', JRECA )
@@ -542,13 +538,6 @@ C
  2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
  2060 FORMAT (1P,' SITUATION ',I4,' FACT_USAGE =',E12.5)
  2070 FORMAT (1P,' SOMME(FACT_USAGE) =',E12.5)
- 1000 FORMAT(A,A8,A,A8)
- 1010 FORMAT(1P,' COMBINAISON P ',I4,' SN =',E12.5,' SP =',E12.5)
- 1020 FORMAT(1P,' COMBINAISON P Q ',I4,I4,' SN =',E12.5)
- 1031 FORMAT(1P,'                 I I ',' SP =',E12.5)
- 1032 FORMAT(1P,'                 I J ',' SP =',E12.5)
- 1033 FORMAT(1P,'                 J J ',' SP =',E12.5)
- 1034 FORMAT(1P,'                 J I ',' SP =',E12.5)
 C
       CALL JEDEMA( )
       END

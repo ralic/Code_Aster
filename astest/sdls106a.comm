@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -267,7 +267,7 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
 #
 #   RESTITUTION SUR MAILLAGE SQUELETTE
 #
-MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                              SQUELETTE=SQUEL,
                            TOUT_ORDRE='OUI',
                       TOUT_CHAM='OUI')
@@ -283,7 +283,7 @@ MODGLO=NORM_MODE(       reuse=MODGLO,
                       SIGNE = 'POSITIF')
                        )
 
-MODGLO2=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            SOUS_STRUC='CARRE1',
                            TOUT_ORDRE='OUI',
                             TOUT_CHAM='OUI')
@@ -298,7 +298,7 @@ SQUELBIS=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,
 
 #
 #
-MODGLBIS=REST_BASE_PHYS(   SQUELETTE=SQUELBIS,
+MODGLBIS=REST_SOUS_STRUC(   SQUELETTE=SQUELBIS,
                                RESULTAT=MODGLO,
                             TOUT_ORDRE='OUI',
                              TOUT_CHAM='OUI'

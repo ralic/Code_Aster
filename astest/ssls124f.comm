@@ -1,4 +1,4 @@
-# MODIF  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 20/10/2008   AUTEUR DESROCHES X.DESROCHES 
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB15 MAILLAGE REGULIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -296,76 +296,6 @@ TEST_RESU(RESU=(
               GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
               ),)
 
-
-
-# CAS 5 :
-
-h=0.02
-
-
-PRE_GIBI(UNITE_GIBI=25,UNITE_MAILLAGE=35);
-
-MAIL35=LIRE_MAILLAGE(UNITE=35);
-
-MAIL35=MODI_MAILLAGE(reuse=MAIL35,MAILLAGE=MAIL35,
-ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
-
-MAIL35=DEFI_GROUP(reuse =MAIL35, MAILLAGE=MAIL35,
-                CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
-
-CHMAT35=AFFE_MATERIAU(MAILLAGE=MAIL35,
-                  AFFE=_F(TOUT='OUI',MATER=MAT,),);
-
-MODMEC35=AFFE_MODELE(MAILLAGE=MAIL35,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
-
-
-CHARG35=AFFE_CHAR_MECA(MODELE=MODMEC35,
-                      DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
-                                   DX=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
-                                   DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
-
-RESU35=MECA_STATIQUE(MODELE=MODMEC35,
-                    CHAM_MATER=CHMAT35,
-                    EXCIT=_F(CHARGE=CHARG35,),
-                    SOLVEUR=_F(METHODE ='MULT_FRONT',NPREC=18 ),
-                    );
-
-Iy=b*h*h*h/12
-Uz=F*L*L*L/3/YG/Iy
-
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU35, NOM_CHAM='DEPL',  REFERENCE='NON_REGRESSION',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = 0.287),
-
-            _F(   RESULTAT = RESU35, NOM_CHAM='DEPL',   REFERENCE='NON_REGRESSION',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = 0.287),
-              ),)
-
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU35, NOM_CHAM='DEPL', PRECISION = 0.15, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU35, NOM_CHAM='DEPL',  PRECISION = 0.15, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
 
 
 FIN()

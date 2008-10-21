@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,10 +44,11 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IBID, N1, IOCC, NBTHER, NUME, NBINST, JINST,
      +             I, J, K, L, NDIM, NBABSC, JABSC, JORIG, JEXTR, NCMP,
-     +             JCONT, IRET
+     +             JCONT, IRET,KK
       PARAMETER  ( NCMP = 6 )
       REAL*8       PREC(2), MOMEN0, MOMEN1, VALE(2), SIGMLO, SIGMLE
-      REAL*8 VALR
+      REAL*8       VALR, SIGTH(1000*NCMP),TRESC(2),TRACE,R3(2)
+      REAL*8       TREMIN(2),TREMAX(2),TMIN(2),TMAX(2)
       COMPLEX*16   CBID
       LOGICAL      EXIST
       CHARACTER*8  K8B,CRIT(2),NOCMP(NCMP),TABLE,TABFLE,KNUME,TBPRES
@@ -125,7 +126,7 @@ C
 C
          CALL WKVECT ( '&&RC32TH.CONTRAINTES', 'V V R', NBABSC, JCONT )
 C
-         NDIM = 4 * NCMP * NBINST
+         NDIM = 4 * NCMP * 2
          CALL JECROC (JEXNOM(JVORIG,KNUME))
          CALL JEECRA (JEXNOM(JVORIG,KNUME),'LONMAX',NDIM,' ')
          CALL JEECRA (JEXNOM(JVORIG,KNUME),'LONUTI',NDIM,' ')
@@ -136,12 +137,26 @@ C
          CALL JEECRA (JEXNOM(JVEXTR,KNUME),'LONUTI',NDIM,' ')
          CALL JEVEUO (JEXNOM(JVEXTR,KNUME), 'E', JEXTR )
 C
+         DO 116 K = 1 , NBABSC*NCMP 
+           SIGTH(K) = 0.D0
+ 116     CONTINUE
+         DO 1116 K = 1 , 2
+           TRESC(K)  = 0.D0
+           R3(K)     = 0.D0
+           TMIN(K)   = 0.D0
+           TREMIN(K) = 0.D0
+           TMAX(K)   = 0.D0
+           TREMAX(K) = 0.D0
+ 1116    CONTINUE
+C
          DO 12 I = 1 , NBINST
            VALE(1) = ZR(JINST+I-1)
 C
            DO 14 J = 1 , NCMP
 C
-             DO 16 K = 1 , NBABSC 
+             KK = 0
+             DO 16 K = 1 , NBABSC, NBABSC-1
+               KK = KK + 1
                VALE(2) = ZR(JABSC+K-1)
 C
                CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
@@ -154,31 +169,123 @@ C
                   VALK (4) = VALEK(2)
                   CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
                ENDIF
-C
+               SIGTH((K-1)*NCMP+J) = ZR(JCONT+K-1)
+               IF (J.EQ.NCMP) THEN
+                 CALL RCTRES(SIGTH((K-1)*NCMP+1),TRESC(KK))
+                 
+                 IF (TRACE(3,SIGTH((K-1)*NCMP+1)).LT.0.D0) THEN
+                   R3(KK) = TRESC(KK)*(-1.0D0)
+                 ELSE
+                   R3(KK) = TRESC(KK)
+                 ENDIF
+                 IF (I.EQ.1) THEN
+                    TREMIN(KK) = R3(KK)
+                    TREMAX(KK) = R3(KK)
+                    TMIN(KK) = VALE(1)
+                    TMAX(KK) = VALE(1)
+                 ELSE 
+                   IF (R3(KK).LT.TREMIN(KK)) THEN
+                    TREMIN(KK) = R3(KK)
+                    TMIN(KK) = VALE(1)
+                   ENDIF
+                   IF (R3(KK).GT.TREMAX(KK)) THEN
+                    TREMAX(KK) = R3(KK)
+                    TMAX(KK) = VALE(1)
+                   ENDIF
+                 ENDIF                   
+               ENDIF     
+                         
  16          CONTINUE
-C
-             L = NCMP*(I-1) + J
-             ZR(JORIG-1+L) = ZR(JCONT)
-             ZR(JEXTR-1+L) = ZR(JCONT+NBABSC-1)
-C
-             CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
-C
-             L = NCMP*NBINST + NCMP*(I-1) + J
-             ZR(JORIG-1+L) = MOMEN0 - 0.5D0*MOMEN1
-             ZR(JEXTR-1+L) = MOMEN0 + 0.5D0*MOMEN1
-C
-             L = 2*NCMP*NBINST + NCMP*(I-1) + J
-             ZR(JORIG-1+L) = MOMEN0
-             ZR(JEXTR-1+L) = MOMEN0
-C
-             L = 3*NCMP*NBINST + NCMP*(I-1) + J
-             ZR(JORIG-1+L) = 0.5D0*MOMEN1
-             ZR(JEXTR-1+L) = 0.5D0*MOMEN1
 C
  14        CONTINUE
 C
  12      CONTINUE
 C
+C   POUR LA VALEUR MINIMALE
+         DO 66 J = 1,NCMP
+           VALE(1) = TMIN(1)
+           DO 166 K=1,NBABSC  
+             VALE(2) = ZR(JABSC+K-1)
+
+             CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
+ 166       CONTINUE
+           ZR(JORIG-1+J) = ZR(JCONT)
+           CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
+C
+           L = NCMP*2 + J
+           ZR(JORIG-1+L) = MOMEN0 - 0.5D0*MOMEN1
+C
+           L = NCMP*4 + J
+           ZR(JORIG-1+L) = MOMEN0
+ 
+           VALE(1) = TMIN(2)
+           DO 266 K=1,NBABSC  
+             VALE(2) = ZR(JABSC+K-1)
+
+             CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
+ 266       CONTINUE
+           ZR(JEXTR-1+J) = ZR(JCONT+NBABSC-1)
+C
+           CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
+C
+           L = NCMP*2 + J
+           ZR(JEXTR-1+L) = MOMEN0 + 0.5D0*MOMEN1
+C
+           L = NCMP*4 + J
+           ZR(JEXTR-1+L) = MOMEN0
+C
+           L = NCMP*6 + J
+           ZR(JEXTR-1+L) = 0.5D0*MOMEN1
+                          
+C   POUR LA VALEUR MAXIMALE
+           VALE(1) = TMAX(1)
+           DO 366 K=1,NBABSC  
+             VALE(2) = ZR(JABSC+K-1)
+
+             CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
+ 366       CONTINUE
+           L = NCMP + J 
+           ZR(JORIG-1+L) = ZR(JCONT)
+C
+           CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
+C
+           L = NCMP*3 + J
+           ZR(JORIG-1+L) = MOMEN0 - 0.5D0*MOMEN1
+C
+           L = NCMP*5 + J
+           ZR(JORIG-1+L) = MOMEN0
+C
+           L = NCMP*7 + J
+           ZR(JORIG-1+L) = 0.5D0*MOMEN1
+           
+           VALE(1) = TMAX(2)
+           DO 466 K=1,NBABSC  
+             VALE(2) = ZR(JABSC+K-1)
+
+             CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
+ 466       CONTINUE
+           L = NCMP + J 
+           ZR(JEXTR-1+L) = ZR(JCONT+NBABSC-1)
+C
+           CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
+C
+             L = NCMP*3 + J
+             ZR(JEXTR-1+L) = MOMEN0 + 0.5D0*MOMEN1
+C
+             L = NCMP*5 + J
+             ZR(JEXTR-1+L) = MOMEN0
+C
+             L = NCMP*7 + J
+             ZR(JEXTR-1+L) = 0.5D0*MOMEN1
+ 66      CONTINUE
          CALL JEDETR ( INSTAN )
          CALL JEDETR ( ABSCUR )
          CALL JEDETR ( '&&RC32TH.CONTRAINTES' )

@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -333,7 +333,18 @@ pour la loi IRRAD3M, par le mot clef TOLER_ET.
    Erreur sur le franchissement du seuil    : <%(r2)E>
 La subdivision du pas de temps au niveau global est déclanchée.
 Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
-""")
+"""),
 
+59: _("""
+ Attention: pas de couplage avec le coefficient de couplage CHI = 0, on retrouve la loi UMLV
+"""),
+
+60: _("""
+Couplage: on ne fait pas dependre E, MU et ALPHA de la temperature T, on prend T=0 comme pour ENDO_ISOT_BETON
+"""),
+
+61: _("""
+Couplage: on fait dependre E, MU et ALPHA de la temperature maximale Tmax, comme pour MAZARS
+"""),
 
 }

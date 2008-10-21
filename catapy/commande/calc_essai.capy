@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 03/06/2008   AUTEUR BODEL C.BODEL 
+#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -16,18 +16,23 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE BODEL C.BODEL
 
-from Macro.macro_visu_meidee_ops import macro_visu_meidee_ops
+# RESPONSABLE NISTOR I.NISTOR
 
-def macro_visu_meidee_prod(self,RESU_FLUDELA,RESU_TURBULENT,RESU_MODIFSTRU,**args):
+from Macro.calc_essai_ops import calc_essai_ops
+
+def calc_essai_prod(self,RESU_FLUDELA,RESU_IDENTIFICATION,RESU_TURBULENT, RESU_MODIFSTRU,**args):
 
     if RESU_FLUDELA != None:
         for res in RESU_FLUDELA:
             self.type_sdprod(res['TABLE'],table_sdaster)
+    if RESU_IDENTIFICATION != None:
+        for res in RESU_IDENTIFICATION:
+            self.type_sdprod(res['TABLE'],table_fonction)
     if RESU_TURBULENT != None:
         for res in RESU_TURBULENT:
-            self.type_sdprod(res['TABLE'],table_fonction)
+            self.type_sdprod(res['FONCTION'],fonction_sdaster)
+
 
     MTYPES = {
         'MODELE'    : modele_sdaster,
@@ -39,6 +44,9 @@ def macro_visu_meidee_prod(self,RESU_FLUDELA,RESU_TURBULENT,RESU_MODIFSTRU,**arg
         'AMOR_MECA' : matr_asse_depl_r,
         'MACR_ELEM' : macr_elem_stat,
         'PROJ_MESU' : mode_gene,
+        'BASE_ES' : base_modale,
+        'BASE_LMME' : mode_meca,
+        'MODE_STA' : mode_stat_forc,
               }
     if RESU_MODIFSTRU != None:
         for res in RESU_MODIFSTRU:
@@ -48,34 +56,40 @@ def macro_visu_meidee_prod(self,RESU_FLUDELA,RESU_TURBULENT,RESU_MODIFSTRU,**arg
     return None
 
 
-MACRO_VISU_MEIDEE=MACRO(nom       = 'MACRO_VISU_MEIDEE',
-                        op        = macro_visu_meidee_ops,
-                        sd_prod   = macro_visu_meidee_prod,
-                        reentrant = 'n',
-                        UIinfo    = {"groupes":("Outils métier",)},
-                        fr        = "Outil de post-traitement interactif pour Meidee ",
-                        UNITE_FIMEN = SIMP( statut='f',typ='I',max='**' ),
-                        INTERACTIF  = SIMP( statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI' ),
-                        RESU_FLUDELA     = FACT( statut='f',max='**',
-                                                 TABLE = SIMP(statut='f', typ=CO),
-                                                ),
-                        RESU_TURBULENT   = FACT( statut='f',max='**',
-                                                 TABLE = SIMP(statut='f', typ=CO),
-                                                ),
-                        RESU_MODIFSTRU = FACT( statut='f', max=1,
-                                               MODELE=SIMP(statut='f',typ=CO,defaut=None),
-                                               MODE_MECA=SIMP(statut='f',typ=CO,defaut=None),
-                                               MAILLAGE=SIMP(statut='f',typ=CO,defaut=None),
-                                               NUME_DDL=SIMP(statut='f',typ=CO,defaut=None),
-                                               MASS_MECA=SIMP(statut='f',typ=CO,defaut=None),
-                                               RIGI_MECA=SIMP(statut='f',typ=CO,defaut=None),
-                                               AMOR_MECA=SIMP(statut='f',typ=CO,defaut=None),
-                                               MACR_ELEM=SIMP(statut='f',typ=CO,defaut=None),
-                                               PROJ_MESU=SIMP(statut='f',typ=CO,defaut=None),
+CALC_ESSAI = MACRO(nom       = 'CALC_ESSAI',
+                   op        = calc_essai_ops,
+                   sd_prod   = calc_essai_prod,
+                   reentrant = 'n',
+                   UIinfo    = {"groupes":("Outils métier",)},
+                   fr        = "Outil de post-traitement interactif pour Meidee ",
+                   UNITE_FIMEN = SIMP( statut='f',typ='I',max='**' ),
+                   INTERACTIF  = SIMP( statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI' ),
+                   RESU_FLUDELA        = FACT( statut='f',max='**',
+                                               TABLE = SIMP(statut='f', typ=CO),
                                              ),
-                        UNITE_RESU = SIMP( statut='f',typ='I'),
+                   RESU_TURBULENT      = FACT( statut='f',max=1,
+                                               FONCTION = SIMP(statut='f', typ=CO),
+                                             ),
+                   RESU_IDENTIFICATION = FACT( statut='f',max='**',
+                                               TABLE = SIMP(statut='f', typ=CO),
+                                             ),
+                   RESU_MODIFSTRU = FACT( statut='f', max=1,
+                                          MODELE=SIMP(statut='f',typ=CO,defaut=None),
+                                          MODE_MECA=SIMP(statut='f',typ=CO,defaut=None),
+                                          MAILLAGE=SIMP(statut='f',typ=CO,defaut=None),
+                                          NUME_DDL=SIMP(statut='f',typ=CO,defaut=None),
+                                          MASS_MECA=SIMP(statut='f',typ=CO,defaut=None),
+                                          RIGI_MECA=SIMP(statut='f',typ=CO,defaut=None),
+                                          AMOR_MECA=SIMP(statut='f',typ=CO,defaut=None),
+                                          MACR_ELEM=SIMP(statut='f',typ=CO,defaut=None),
+                                          PROJ_MESU=SIMP(statut='f',typ=CO,defaut=None),
+                                          BASE_ES=SIMP(statut='f',typ=CO,defaut=None),
+                                          BASE_LMME=SIMP(statut='f',typ=CO,defaut=None),
+                                          MODE_STA=SIMP(statut='f',typ=CO,defaut=None),
+                                         ),
+                   UNITE_RESU = SIMP( statut='f',typ='I'),
 
-                        b_inter    = BLOC( condition="INTERACTIF=='NON'",
+                   b_inter    = BLOC( condition="INTERACTIF=='NON'",
 
                              EXPANSION        = FACT( statut='f',max='**',
                                                       CALCUL           = SIMP(statut='o',typ=mode_meca),
@@ -89,25 +103,29 @@ MACRO_VISU_MEIDEE=MACRO(nom       = 'MACRO_VISU_MEIDEE',
                                                                               EPS = SIMP(statut='f',typ='R', defaut = 0.)
                                                                        )
                                                     ),
-                             FLUIDE_ELASTIQUE = FACT( statut='f', max='**',
+                             MEIDEE_FLUDELA   = FACT( statut='f', max='**',
                                                       MESURE1 = SIMP(statut='o',typ=mode_meca),
                                                       MESURE2 = SIMP(statut='o',typ=mode_meca),
                                                       MESURE3 = SIMP(statut='o',typ=mode_meca),
-                                                      RESU_EXPANSION = SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
-                                                      b_base   = BLOC(condition = "RESU_EXPANSION=='NON'",
-                                                                      BASE = SIMP(statut='o',typ=mode_meca),
-                                                                     ) 
+                                                      BASE    = SIMP(statut='o',typ=mode_meca),
                                                     ),
-                             TURBULENT        = FACT( statut='f',max='**',   
+                             MEIDEE_TURBULENT = FACT( statut='f', max='**',
+                                                      INTE_SPEC      = SIMP(statut='o',typ=table_sdaster),
+                                                      NUME_MODE_DECONV = SIMP(statut='f',typ='I',validators=NoRepeat(),
+                                                                              max=1,defaut=0),
+                                                      NUME_MODE_LOCAL  = SIMP(statut='f',typ='I',validators=NoRepeat(),
+                                                                              max='**',defaut=0),
+                                                      BASE = SIMP(statut='o',typ=mode_meca),
+                                                      MESURE = SIMP(statut='o',typ=(mode_meca,base_modale)),
+                                                    ),
+                             IDENTIFICATION   = FACT( statut='f',max='**',   
                                                       ALPHA   = SIMP(statut='f',typ='R', defaut = 0.),
                                                       EPS     = SIMP(statut='f',typ='R', defaut = 0.),
                                                       OBSERVABILITE  = SIMP(statut='o',typ=(mode_meca, base_modale)),
                                                       COMMANDABILITE = SIMP(statut='o',typ=(mode_meca, base_modale)),
                                                       INTE_SPEC      = SIMP(statut='o',typ=table_sdaster),
                                                       RESU_EXPANSION = SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
-                                                      b_base         = BLOC(condition = "RESU_EXPANSION=='NON'",
-                                                                            BASE = SIMP(statut='o',typ=mode_meca),
-                                                                           ),
+                                                      BASE           = SIMP(statut='o',typ=mode_meca),
                                                      ),
                              MODIFSTRUCT = FACT( statut='f', max=1,
                                                  MESURE = SIMP(statut='o', typ=mode_meca),
@@ -120,21 +138,20 @@ MACRO_VISU_MEIDEE=MACRO(nom       = 'MACRO_VISU_MEIDEE',
                                                                 ),
                                                  NUME_MODE_MESU   = SIMP(statut='o', typ='I',max='**'),
                                                  NUME_MODE_CALCUL = SIMP(statut='o', typ='I',max='**'),
-                                                 MAILLE_MODIF = SIMP(statut='o', typ=maillage_sdaster),
                                                  MODELE_MODIF = SIMP(statut='o', typ=modele_sdaster),
                                                ),
 
-                            # Si on realise une modification structurale, on donne les DDL capteurs et interface
-                            b_inter    = BLOC( condition="MODIFSTRUCT!=None",
-                                GROUP_NO_CAPTEURS  = FACT( statut='f', max='**',
-                                                           GROUP_NO = SIMP(statut='f',typ='TXM', max='**'),
-                                                           NOM_CMP  = SIMP(statut='f',typ='TXM', max='**'),
-                                                         ),
-                                GROUP_NO_EXTERIEUR = FACT( statut='f', max='**',
-                                                           GROUP_NO = SIMP(statut='f',typ='TXM', max='**'),
-                                                           NOM_CMP  = SIMP(statut='f',typ='TXM', max='**'),
-                                                         ),
-                                              ),
+                             # Si on realise une modification structurale, on donne les DDL capteurs et interface
+                             b_inter    = BLOC( condition="MODIFSTRUCT!=None",
+                                   GROUP_NO_CAPTEURS  = FACT( statut='f', max='**',
+                                                              GROUP_NO = SIMP(statut='f',typ='TXM', max='**'),
+                                                              NOM_CMP  = SIMP(statut='f',typ='TXM', max='**'),
+                                                            ),
+                                   GROUP_NO_EXTERIEUR = FACT( statut='f', max='**',
+                                                              GROUP_NO = SIMP(statut='f',typ='TXM', max='**'),
+                                                              NOM_CMP  = SIMP(statut='f',typ='TXM', max='**'),
+                                                            ),
+                                               ),
                                           ),
                         );
 

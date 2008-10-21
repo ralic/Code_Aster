@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL DE BARRAGE AVEC RETENUE SOUS SOLLICITATION SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,7 +149,7 @@ MODHUMI=MODE_ITER_SIMULT(MATR_A=RIGGEN,
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=20,),);
 
-MODMECA=REST_BASE_PHYS(RESU_GENE=MODHUMI,);
+MODMECA=REST_GENE_PHYS(RESU_GENE=MODHUMI,);
 
 NUMGEN2=NUME_DDL_GENE(BASE=MODMECA,
                       STOCKAGE='PLEIN',);
@@ -255,7 +255,7 @@ DYNGEN=DYNA_TRAN_MODAL(MASS_GENE=MASTOT2,
                                  FONC_MULT=ACC_Z,),
                           ),);
 
-DYN=REST_BASE_PHYS(RESU_GENE=DYNGEN,
+DYN=REST_GENE_PHYS(RESU_GENE=DYNGEN,
                    MODE_MECA=MODMECA,
                    INTERPOL='LIN',
                    LIST_INST = LIST_IN);

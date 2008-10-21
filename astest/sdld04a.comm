@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -531,7 +531,7 @@ ACCE_A_1=CALC_FONCTION( COMB=(  _F( FONCTION = ACCE_R_1, COEF = 1.),
                                 _F( FONCTION = ACCE_ENT, COEF = 1.))
                              )
 
-RESTPHYS=REST_BASE_PHYS(   RESU_GENE=TRAN_GEN, NOM_CHAM='ACCE',  NOEUD='N04',
+RESTPHYS=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN, NOM_CHAM='ACCE',  NOEUD='N04',
                            LIST_INST=LISTINST,  )
 
 ACCE_R_2=RECU_FONCTION(  RESULTAT=RESTPHYS,
@@ -542,7 +542,7 @@ ACCE_A_2=CALC_FONCTION( COMB=(  _F( FONCTION = ACCE_R_2, COEF = 1.),
                                 _F( FONCTION = ACCE_ENT, COEF = 1.))
                              )
 
-RESPHYA=REST_BASE_PHYS(        RESU_GENE=TRAN_GEN,
+RESPHYA=REST_GENE_PHYS(        RESU_GENE=TRAN_GEN,
                                      LIST_INST=LISTINST,
                                       NOM_CHAM='ACCE_ABSOLU',
                                ACCE_MONO_APPUI=ACCE_ENT,

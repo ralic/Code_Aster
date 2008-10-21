@@ -6,7 +6,7 @@
       CHARACTER*(*)      CHGEOZ,CHCARA(*),CHHARZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/09/2007   AUTEUR DEVESA G.DEVESA 
+C MODIF CALCULEL  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,6 +119,20 @@ C                     CALL JEEXIN(NOMACR//'.KP_EE',IRET)
  22            CONTINUE
                IF (IER.GT.0) THEN
                   CALL U2MESS('F','CALCULEL3_34')
+               ENDIF
+            ELSEIF (OPTION(1:9).EQ.'AMOR_MECA') THEN
+              DO 24 IMA = 1, NBSMA
+                  IF (ZI(IASSSA-1+IMA).EQ.1) THEN
+                     NOMACR = ZK8(IANMCR-1+IMA)
+                     CALL JEEXIN(NOMACR//'.MAEL_AMOR_VALE',IRET)
+                     IF (IRET.EQ.0) THEN
+                        IER = IER + 1
+                        CALL U2MESK('E','CALCULEL6_80',1,NOMACR)
+                     ENDIF
+                  ENDIF
+ 24            CONTINUE
+               IF (IER.GT.0) THEN
+                  CALL U2MESS('F','CALCULEL6_81')
                ENDIF
             ENDIF
          ENDIF

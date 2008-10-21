@@ -8,7 +8,7 @@
       CHARACTER*3         TYPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,8 +57,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
       INTEGER      JSIGR, IG1, IG2, NBSIPS, JNPASS, I, K, I1, NSITU,
      +             NUMG1, NUMG2, SIPASS, NPASS, IOC1, IOC2
-      REAL*8       SALMIA, SALMIB, SALT1, SALT2, SALT3, SALT4, SALTAM,
-     +             SALTBM
+      REAL*8       SALMIA, SALT1, SALTAM
       LOGICAL      CHEMIN
       CHARACTER*8  K8B
 C     ------------------------------------------------------------------
@@ -85,6 +84,10 @@ C ------ MEME GROUPE
          N0 = MIN ( NK , NL )
          GOTO 9999
       ELSEIF ( NUMG2 .EQ. IG1 ) THEN
+C ------ MEME GROUPE
+         N0 = MIN ( NK , NL )
+         GOTO 9999
+      ELSEIF ( IG1 .EQ. IG2 ) THEN
 C ------ MEME GROUPE
          N0 = MIN ( NK , NL )
          GOTO 9999
@@ -146,7 +149,6 @@ C
       CALL JEVEUO('&&RC32SI.PASSAGE_'//TYPASS,'L',JNPASS)
       CHEMIN = .FALSE.
       SALMIA = 1.D+50
-      SALMIB = 1.D+50
       DO 10 I = 1 , NBSIPS
          SIPASS = ZI(JNPASS+I-1)
          DO 12 K = 1 , NBSIGR
@@ -157,50 +159,25 @@ C
  12      CONTINUE
          CALL U2MESS('F','POSTRCCM_36')
  14      CONTINUE
-         NPASS = MAX(NOCC(2*(IOC1-1)+1),NOCC(2*(IOC1-1)+2))
+         NPASS = NOCC(IOC1)
          IF ( NPASS .EQ. 0 ) GOTO 10
          CHEMIN = .TRUE.     
 C --------- ON RECHERCHE LE MIN DES SALT MAX
           SALTAM = 0.D0
-          SALTBM = 0.D0
           DO 16 K = 1 , NBSIGR
-             I1 = 4*NBSIGR*(K-1)
-C            COLONNE _A             
-             SALT1 = SALTIJ(I1+4*(IOC1-1)+1)
-             SALT3 = SALTIJ(I1+4*(IOC1-1)+3)
+             SALT1 = SALTIJ(NBSIGR*(K-1)+IOC1)
              IF ( SALT1 .GT. SALTAM ) THEN
                 SALTAM = SALT1
                 NSITU = IOC1
              ENDIF
-             IF ( SALT3 .GT. SALTAM ) THEN
-                SALTAM = SALT3
-                NSITU = IOC1
-             ENDIF
-C            COLONNE _B
-             SALT2 = SALTIJ(I1+4*(IOC1-1)+2)
-             SALT4 = SALTIJ(I1+4*(IOC1-1)+4)
-             IF ( SALT2 .GT. SALTBM ) THEN
-                SALTBM = SALT2
-                NSITU = IOC1
-             ENDIF
-             IF ( SALT4 .GT. SALTBM ) THEN
-                SALTBM = SALT4
-                NSITU = IOC1
-             ENDIF
  16       CONTINUE
-C
           IF ( SALTAM .LT. SALMIA ) THEN
              SALMIA = SALTAM
              NSITUP = NSITU
           ENDIF
-          IF ( SALTBM .LT. SALMIB ) THEN
-             SALMIB = SALTBM
-             NSITUP = NSITU
-          ENDIF
-C         
  10   CONTINUE
       IF ( CHEMIN ) THEN
-         NPASS = MAX(NOCC(2*(NSITUP-1)+1),NOCC(2*(NSITUP-1)+2))
+         NPASS = NOCC(NSITUP)
          N0 = MIN ( NK , NL, NPASS )
       ELSE
          YAPASS = .FALSE.     

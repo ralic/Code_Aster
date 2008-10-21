@@ -6,7 +6,7 @@
       REAL*8              SALTIJ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,12 +66,11 @@ C
  12      CONTINUE
          CALL U2MESS('F','POSTRCCM_36')
  14      CONTINUE
-         IF ( NOCC(2*(IOC1-1)+1).NE.0 .OR.
-     +        NOCC(2*(IOC1-1)+2).NE.0 ) GOTO 9999
+         IF ( NOCC(IOC1).NE.0 ) GOTO 9999
  10   CONTINUE
       NBP12 = 0
       CALL RC32F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                      NBSG2, NBSG3, SALTIJ )
 C
  9999 CONTINUE
       TYPASS = '2_3'
@@ -88,12 +87,11 @@ C
  22      CONTINUE
          CALL U2MESS('F','POSTRCCM_36')
  24      CONTINUE
-         IF ( NOCC(2*(IOC1-1)+1).NE.0 .OR.
-     +        NOCC(2*(IOC1-1)+2).NE.0 ) GOTO 9997
+         IF ( NOCC(IOC1).NE.0 ) GOTO 9997
  20   CONTINUE
       NBP23 = 0
       CALL RC32F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                      NBSG2, NBSG3, SALTIJ )
 C
  9997 CONTINUE
       TYPASS = '1_3'
@@ -110,12 +108,11 @@ C
  32      CONTINUE
          CALL U2MESS('F','POSTRCCM_36')
  34      CONTINUE
-         IF ( NOCC(2*(IOC1-1)+1).NE.0 .OR.
-     +        NOCC(2*(IOC1-1)+2).NE.0 ) GOTO 9995
+         IF ( NOCC(IOC1).NE.0 ) GOTO 9995
  30   CONTINUE
       NBP13 = 0
       CALL RC32F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                      NBSG2, NBSG3, SALTIJ )
 C
  9995 CONTINUE
 C

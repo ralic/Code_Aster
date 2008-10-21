@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES : POUTRE 3D SOUS-STRUCTUREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,11 +225,11 @@ MODGEN=MODE_ITER_SIMULT(MATR_A=KGEN,
                         STOP_FREQ_VIDE='NON',);
 
 # expansion des modes generalises d'interface sur chaque sous-structure
-MODPHY1=REST_BASE_PHYS(RESU_GENE=MODGEN,
+MODPHY1=REST_SOUS_STRUC(RESU_GENE=MODGEN,
                       TOUT_ORDRE='OUI',
                       SOUS_STRUC='SS1',);
 
-MODPHY2=REST_BASE_PHYS(RESU_GENE=MODGEN,
+MODPHY2=REST_SOUS_STRUC(RESU_GENE=MODGEN,
                       TOUT_ORDRE='OUI',
                       SOUS_STRUC='SS2',);
 

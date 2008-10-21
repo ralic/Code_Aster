@@ -1,7 +1,7 @@
       SUBROUTINE MMELTY(NOMA  ,NUMA  ,ALIAS ,NNO   ,NDIM  )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,8 +41,8 @@ C IN  NOMA   : NOM DU MAILLAGE
 C IN  NUMA   : NUMERO ABSOLU DE LA MAILLE
 C OUT ALIAS  : TYPE DE L'ELEMENT
 C               'PO1'
-C               'SG2'
-C               'SG3'
+C               'SE2'
+C               'SE3'
 C               'TR3'
 C               'TR6'
 C               'TR7'
@@ -107,11 +107,11 @@ C
         NNO    = 1
         NDIM   = 1
       ELSEIF (NUTYP .EQ. NTSEG2) THEN
-        ALIAS  = 'SG2'
+        ALIAS  = 'SE2'
         NNO    = 2
         NDIM   = 2
       ELSEIF (NUTYP .EQ. NTSEG3) THEN
-        ALIAS  = 'SG3'
+        ALIAS  = 'SE3'
         NNO    = 3
         NDIM   = 2
       ELSEIF (NUTYP .EQ. NTTRI3) THEN

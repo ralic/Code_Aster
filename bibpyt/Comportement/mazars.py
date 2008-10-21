@@ -1,4 +1,4 @@
-#@ MODIF mazars Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF mazars Comportement  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    et la dilatation thermique, supposée linéaire, ne contribue pas à l'évolution de l'endommagement.""",
    num_lc         = 8,
    nb_vari        = 4,
-   nom_vari       = ('ENDO', 'INDICAT','TEMP_MAX','VIDE'),
+   nom_vari       = ('ENDO', 'INDICAT','TEMP_MAX','EPSEQ'),
    mc_mater       = ('ELAS', 'MAZARS', 'NON_LOCAL'),
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN','GRADEPSI',),
    deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),

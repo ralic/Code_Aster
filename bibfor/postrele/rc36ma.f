@@ -3,7 +3,7 @@
       CHARACTER*8 NOMMAT,NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,20 +76,23 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER NBMATE,JMATE,IMATE,NBPA,NBPB,NBMAAF,JMAIL,NBPT,DECAL,IPT,
      &        ICMP,IAD,IM,IERD,NBMAIL,NBMAT2,JCESLA,JCESVA,JCESDA,
      &        JCESLB,JCESVB,JCESDB,IER,IOCC,NBSITU,JCHMAT,NA,NB,JMATER,
-     &        IM1,JREFE,JDESC
+     &        IM1,JREFE,JDESC,NBSEIS,NDIM
       INTEGER JCESVM,JCESDM,JCESLM,ISP,IAD1
       REAL*8 PARA(NBCMP),TEMPA,TEMPRA,TEMPB,TEMPRB,R8VIDE,TKE
       CHARACTER*2 CODRET(NBCMP)
       CHARACTER*8 K8B,NOMGD,MATER,NOPA,NOPB,TYPEKE,NOCMP(NBCMP)
       CHARACTER*8 LICMP(2),KTREF
-      CHARACTER*16 PHENOM,MOTCLF
+      CHARACTER*16 PHENOM,MOTCL1,MOTCL2
       CHARACTER*19 CHNMAT,CHSMAT,CHSMA2
       CHARACTER*24 CHMATA,CHMATB
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 
-      MOTCLF = 'SITUATION'
-      CALL GETFAC(MOTCLF,NBSITU)
+      MOTCL1 = 'SITUATION'
+      MOTCL2 = 'SEISME'
+      CALL GETFAC(MOTCL1,NBSITU)
+      CALL GETFAC(MOTCL2,NBSEIS)
+      NDIM = NBSITU + NBSEIS
 
 C    RECUP TYPE KE
       CALL GETVTX ( ' ', 'TYPE_KE', 0,1,1, TYPEKE, NB )
@@ -102,7 +105,7 @@ C    RECUP TYPE KE
 
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMAIL,K8B,IERD)
 
-      CALL WKVECT('&&RC3600.MATERIAU','V V K24',2*NBSITU,JCHMAT)
+      CALL WKVECT('&&RC3600.MATERIAU','V V K24',2*NDIM,JCHMAT)
       CALL WKVECT('&&RC3600.NOM_MATERIAU', 'V V K8', NBMAIL, JMATER )
 
       CHNMAT = NOMMAT//'.CHAMP_MAT '
@@ -139,7 +142,7 @@ C --- E, SM, M_KE, N_KE : A LA TEMPERATURE DE CALCUL
       NOCMP(7) = 'M_KE'
       NOCMP(8) = 'N_KE'
       NOCMP(9) = 'TYPEKE'
-
+C
       DO 60,IOCC = 1,NBSITU,1
 
         CALL CODENT(IOCC,'D0',K8B)
@@ -159,7 +162,7 @@ C        ------------------
 
         NBPA = 1
         NOPA = 'TEMP'
-        CALL GETVR8(MOTCLF,'TEMP_REF_A',IOCC,1,1,TEMPA,NA)
+        CALL GETVR8(MOTCL1,'TEMP_REF_A',IOCC,1,1,TEMPA,NA)
 
 C ------ ETAT STABILISE "B"
 C        ------------------
@@ -176,7 +179,7 @@ C        ------------------
 
         NBPB = 1
         NOPB = 'TEMP'
-        CALL GETVR8(MOTCLF,'TEMP_REF_B',IOCC,1,1,TEMPB,NB)
+        CALL GETVR8(MOTCL1,'TEMP_REF_B',IOCC,1,1,TEMPB,NB)
 
         DO 50 IM = 1,NBMAIL
 
@@ -204,13 +207,9 @@ C --------- LA TEPERATURE DE REFERENCE :
             TEMPRA=R8VIDE()
           END IF
 
-          IF (NA.EQ.0) THEN
-            TEMPA = TEMPRA
-          END IF
+          IF (NA.EQ.0)  TEMPA = TEMPRA
           TEMPRB = TEMPRA
-          IF (NB.EQ.0) THEN
-            TEMPB = TEMPRB
-          END IF
+          IF (NB.EQ.0)  TEMPB = TEMPRB
 
           ZK8(JMATER+IM-1) = MATER
           CALL RCCOME(MATER,'ELAS',PHENOM,CODRET)
@@ -285,6 +284,148 @@ C --------- LES MAILLES AFFECTEES
         ZK24(JCHMAT+2*IOCC-2) = CHMATB
 
    60 CONTINUE
+C
+      DO 160,IOCC = 1,NBSEIS,1
+
+        CALL CODENT ( NBSITU+IOCC, 'D0', K8B )
+
+C ------ ETAT STABILISE "A"
+C        ------------------
+
+        CHMATA = '&&RC36MA_A.'//K8B
+        NOCMP(2) = 'E_AMBI'
+        CALL CESCRE('V',CHMATA,'ELNO',NOMA,NOMGD,NBCMP,NOCMP,-1,-1,
+     &              -NBCMP)
+        NOCMP(2) = 'E'
+
+        CALL JEVEUO(CHMATA(1:19)//'.CESD','L',JCESDA)
+        CALL JEVEUO(CHMATA(1:19)//'.CESL','E',JCESLA)
+        CALL JEVEUO(CHMATA(1:19)//'.CESV','E',JCESVA)
+
+        NBPA = 1
+        NOPA = 'TEMP'
+        CALL GETVR8(MOTCL2,'TEMP_REF',IOCC,1,1,TEMPA,NA)
+
+C ------ ETAT STABILISE "B"
+C        ------------------
+
+        CHMATB = '&&RC36MA_B.'//K8B
+        NOCMP(2) = 'E_AMBI'
+        CALL CESCRE('V',CHMATB,'ELNO',NOMA,NOMGD,NBCMP,NOCMP,-1,-1,
+     &              -NBCMP)
+        NOCMP(2) = 'E'
+
+        CALL JEVEUO(CHMATB(1:19)//'.CESD','L',JCESDB)
+        CALL JEVEUO(CHMATB(1:19)//'.CESL','E',JCESLB)
+        CALL JEVEUO(CHMATB(1:19)//'.CESV','E',JCESVB)
+
+        NBPB = 1
+        NOPB = 'TEMP'
+        CALL GETVR8(MOTCL2,'TEMP_REF',IOCC,1,1,TEMPB,NB)
+
+        DO 150 IM = 1,NBMAIL
+
+          ICMP = 1
+
+C --------- LE MATERIAU
+          CALL CESEXI('C',JCESDM,JCESLM,IM,1,1,1,IAD)
+          IF (IAD.GT.0) THEN
+            MATER = ZK8(JCESVM-1+IAD)
+          ELSE
+            CALL CODENT(IM,'D',K8B)
+            CALL U2MESK('F','POSTRCCM_10',1,K8B)
+          END IF
+
+C --------- LA TEPERATURE DE REFERENCE :
+          CALL CESEXI('C',JCESDM,JCESLM,IM,1,1,2,IAD)
+          IF (IAD.GT.0) THEN
+            KTREF = ZK8(JCESVM-1+IAD)
+            IF (KTREF.EQ.'NAN') THEN
+              TEMPRA=R8VIDE()
+            ELSE
+              READ (KTREF,'(F8.2)') TEMPRA
+            ENDIF
+          ELSE
+            TEMPRA=R8VIDE()
+          END IF
+
+          IF (NA.EQ.0) TEMPA = TEMPRA
+          TEMPRB = TEMPRA
+          IF (NB.EQ.0) TEMPB = TEMPRB
+
+          ZK8(JMATER+IM-1) = MATER
+          CALL RCCOME(MATER,'ELAS',PHENOM,CODRET)
+          IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'ELAS')
+
+          CALL RCCOME(MATER,'FATIGUE',PHENOM,CODRET)
+        IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'FATIGUE')
+
+          CALL RCCOME(MATER,'RCCM',PHENOM,CODRET)
+          IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'RCCM')
+
+C   INTERPOLATION POUR TEMP_A
+          CALL RCVALE(MATER,'ELAS',NBPA,NOPA,TEMPA,1,NOCMP(1),PARA(1),
+     &                CODRET,'F ')
+
+          CALL RCVALE(MATER,'ELAS',NBPA,NOPA,TEMPRA,3,NOCMP(2),PARA(2),
+     &                CODRET,'F ')
+
+          CALL RCVALE(MATER,'FATIGUE',NBPA,NOPA,TEMPA,1,NOCMP(5),
+     &                PARA(5),CODRET,'F ')
+
+          CALL RCVALE(MATER,'RCCM',NBPA,NOPA,TEMPA,3,NOCMP(6),PARA(6),
+     &                CODRET,'F ')
+
+C --------- LES MAILLES AFFECTEES
+
+          NBPT = ZI(JCESDA-1+5+4* (IM-1)+1)
+          ISP = 1
+          DO 120 IPT = 1,NBPT
+            DO 110 ICMP = 1,NBCMP
+              CALL CESEXI('S',JCESDA,JCESLA,IM,IPT,ISP,ICMP,IAD)
+              IF (IAD.LT.0) THEN
+                 IAD=-IAD
+                 ZL(JCESLA-1+IAD) = .TRUE.
+              ENDIF
+              ZR(JCESVA-1+IAD) = PARA(ICMP)
+  110       CONTINUE
+  120     CONTINUE
+
+C   INTERPOLATION POUR TEMP_B
+          CALL RCVALE(MATER,'ELAS',NBPB,NOPB,TEMPB,1,NOCMP(1),PARA(1),
+     &                CODRET,'F ')
+
+          CALL RCVALE(MATER,'ELAS',NBPB,NOPB,TEMPRB,3,NOCMP(2),PARA(2),
+     &                CODRET,'F ')
+
+          CALL RCVALE(MATER,'FATIGUE',NBPB,NOPB,TEMPB,1,NOCMP(5),
+     &                PARA(5),CODRET,'F ')
+
+          CALL RCVALE(MATER,'RCCM',NBPB,NOPB,TEMPB,3,NOCMP(6),PARA(6),
+     &                CODRET,'F ')
+
+C --------- LES MAILLES AFFECTEES
+
+          NBPT = ZI(JCESDB-1+5+4* (IM-1)+1)
+          ISP = 1
+          DO 140 IPT = 1,NBPT
+            DO 130 ICMP = 1,NBCMP
+              CALL CESEXI('S',JCESDB,JCESLB,IM,IPT,ISP,ICMP,IAD)
+              IF (IAD.LT.0) THEN
+                 IAD=-IAD
+                 ZL(JCESLB-1+IAD) = .TRUE.
+              ENDIF
+              ZR(JCESVB-1+IAD) = PARA(ICMP)
+  130       CONTINUE
+  140     CONTINUE
+
+  150   CONTINUE
+
+        ZK24(JCHMAT+2*(NBSITU+IOCC)-1) = CHMATA
+
+        ZK24(JCHMAT+2*(NBSITU+IOCC)-2) = CHMATB
+
+  160 CONTINUE
       CALL DETRSD ( 'CHAM_ELEM_S', CHSMA2 )
 
       CALL JEDEMA()

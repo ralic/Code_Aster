@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith7 Messages  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,9 +36,11 @@ cata_msg = {
 """),
 
 4 : _("""
- UMLV_FP et MAZARS non encore developpé
+ DEBORST non compatible avec couplage UMLV/Mazars.
+ Mais le traitement analytique est réalisé, il suffit de supprimer le
+ mot-clé DEBORST),
+ 
 """),
-
 5 : _("""
  pas de C_PLAN pour ENDO_ISOT_BETON
  utiliser C_PLAN_DEBORST

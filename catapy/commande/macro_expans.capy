@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,8 @@ from Macro.macro_expans_ops import macro_expans_ops
 
 def macro_expans_prod(self, MODELE_MESURE, RESU_NX, RESU_EX, RESU_ET, RESU_RD, **args):
     RESU_EXP = MODELE_MESURE['MESURE']
-    for res in (RESU_NX, RESU_EX, RESU_ET, RESU_RD):
+    self.type_sdprod(RESU_NX, mode_meca)
+    for res in (RESU_EX, RESU_ET, RESU_RD):
         if isinstance(res, CO):
             if AsType(RESU_EXP) == mode_meca:
                 self.type_sdprod(res, mode_meca)
@@ -42,6 +43,8 @@ MACRO_EXPANS=MACRO(nom="MACRO_EXPANS",
                            MODELE          = SIMP(statut='o',typ=(modele_sdaster) ),
                            BASE            = SIMP(statut='o',typ=(mode_meca,base_modale,) ), 
                            NUME_MODE       = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**',defaut=0),
+                           NUME_ORDRE      = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**',defaut=0),
+
                                              ),
                         MODELE_MESURE   = FACT(statut='o',
                            MODELE          = SIMP(statut='o',typ=(modele_sdaster) ),
@@ -49,6 +52,8 @@ MACRO_EXPANS=MACRO(nom="MACRO_EXPANS",
                            NOM_CHAM        = SIMP(statut='f',typ='TXM',defaut="DEPL",
                                                   into=("DEPL","VITE","ACCE","SIEF_NOEU","EPSI_NOEU_DEPL",) ),
                            NUME_MODE       = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**',defaut=0),
+                           NUME_ORDRE      = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**',defaut=0),
+
                                              ),
                         NUME_DDL       = SIMP(statut='f',typ=(nume_ddl_sdaster)),
                         RESU_NX        = SIMP(statut='f',typ=(mode_meca,dyna_harmo, CO)),

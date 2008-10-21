@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 20/10/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-C     COMMANDE:  CREA_RESU
+C     COMMANDE:  CREA_RESU /AFFE
 C     CREE UNE STRUCTURE DE DONNEE DE TYPE "EVOL_THER"
 C                                          "EVOL_VARC"
 C                                          "EVOL_ELAS"
@@ -28,6 +28,7 @@ C                                          "MULT_ELAS"
 C                                          "FOURIER_ELAS"
 C                                          "FOURIER_THER"
 C                                          "EVOL_CHAR"
+C                                          "MODE_MECA"
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -51,20 +52,21 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER MXPARA,IBID,IER,LG,ICOMPT,IRET,NBFAC,IOCC,NUMINI,NUMFIN,
      &        N0,N1,N2,N3,NIS,NBINST,IP,NBVAL,NUME,IADESC,IGD,L,I,J,JC,
-     &        JCHAM,JCOOR,IAD,JINST,JVAL,JNOMF,IAREFE,JDEEQ,LPROL,NBPF,
+     &        JCHAM,JCOOR,IAD,JINST,JVAL,JNOMF,JDEEQ,LPROL,NBPF,
      &        INO,NBV,JREFE
       PARAMETER (MXPARA=10)
       INTEGER RSMXNO,NBTROU,JCPT,NBR,IVMX,K
-      INTEGER VALI
-      REAL*8 VALPU(MXPARA),RBID,TPS,PREC,VALR(3)
+      INTEGER VALI,JREFD
+      REAL*8 VALPU(MXPARA),RBID,TPS,PREC,VALR(3),FREQ
       COMPLEX*16 CBID
       LOGICAL LNCAS,IDENSD,LFONC
       CHARACTER*6 TYPEGD
       CHARACTER*24 VALKK(2)
-      CHARACTER*8 K8B,RESU,NOMF,NOMA,TYPMOD,CRITER
+      CHARACTER*8 K8B,RESU,NOMF,NOMA,TYPMOD,CRITER,MATR
       CHARACTER*8 MODELE,MATERI,CARELE,BLAN8,VALK(2)
+      CHARACTER*14 NUMEDD
       CHARACTER*16 NOMP(MXPARA),TYPE,OPER,ACCES,K16B
-      CHARACTER*19 NOMCH,CHAMP,CHAMP1,LISTR8,EXCIT,PCHN1
+      CHARACTER*19 NOMCH,CHAMP,CHAMP1,LISTR8,EXCIT,PCHN1,RESU19
       CHARACTER*24 K24,LINST,NSYMB,TYPRES,LCPT,O1,O2,PROFCH,NOOJB
 
       DATA LINST,LISTR8,LCPT/'&&CRTYPE_LINST','&&CRTYPE_LISR8',
@@ -76,6 +78,7 @@ C ----------------------------------------------------------------------
       EXCIT = ' '
 
       CALL GETRES(RESU,TYPE,OPER)
+      RESU19=RESU
       CALL GETFAC('AFFE',NBFAC)
       CALL GETVTX(' ','NOM_CHAM',1,1,1,NSYMB,N1)
       CALL GETVTX(' ','TYPE_RESU',1,1,1,TYPRES,N1)
@@ -85,7 +88,7 @@ C ----------------------------------------------------------------------
 
       LNCAS = .FALSE.
       IF (TYPRES.EQ.'MULT_ELAS' .OR. TYPRES.EQ.'FOURIER_ELAS' .OR.
-     &    TYPRES.EQ.'FOURIER_THER') THEN
+     &    TYPRES.EQ.'FOURIER_THER' .OR. TYPRES.EQ.'MODE_MECA') THEN
         LNCAS = .TRUE.
       ENDIF
 
@@ -157,7 +160,7 @@ C ----- ON CHERCHE A ECONOMISER LES PROF_CHNO (PARTAGE SI POSSIBLE)
         ENDIF
 
 
-C ----- MOT CLE "NOM_CAS", "NUME_MODE" PRESENT :
+C ----- MOT CLE "NOM_CAS", "NUME_MODE", "FREQ"  PRESENT :
         IF (LNCAS) THEN
           CALL RSORAC(RESU,'LONUTI',IBID,RBID,K8B,CBID,RBID,K8B,NUMINI,
      &                1,NBTROU)
@@ -181,35 +184,40 @@ C ----- MOT CLE "NOM_CAS", "NUME_MODE" PRESENT :
             CALL DISMOI('F','PROF_CHNO',NOMCH,'CHAM_NO',IBID,PCHN1,IER)
             IF (PCHN1.NE.PROFCH) THEN
               CALL DETRSD('PROF_CHNO',PCHN1)
-              CALL JEVEUO(NOMCH//'.REFE','E',IAREFE)
-              ZK24(IAREFE+1) = PROFCH
+              CALL JEVEUO(NOMCH//'.REFE','E',JREFE)
+              ZK24(JREFE+1) = PROFCH
             ENDIF
           ENDIF
           CALL RSNOCH(RESU,NSYMB,NUMINI,' ')
+
+          IF (TYPRES.NE.'EVOL_CHAR') THEN
+            CALL RSSEPA(RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
+          ENDIF
 
           CALL GETVTX('AFFE','NOM_CAS',IOCC,1,1,ACCES,N0)
           IF (N0.NE.0) THEN
             CALL RSADPA(RESU,'E',1,'NOM_CAS',NUMINI,0,IAD,K8B)
             ZK16(IAD) = ACCES
-            CALL RSSEPA(RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
+          ENDIF
 
-          ELSE
-            CALL GETVIS('AFFE','NUME_MODE',IOCC,1,1,NUME,N0)
+          CALL GETVIS('AFFE','NUME_MODE',IOCC,1,1,NUME,N0)
+          IF (N0.NE.0) THEN
             CALL RSADPA(RESU,'E',1,'NUME_MODE',NUMINI,0,IAD,K8B)
             ZI(IAD) = NUME
-            IF (TYPRES.NE.'EVOL_CHAR') THEN
-              CALL RSSEPA(RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
-            ENDIF
           ENDIF
-          IF (TYPRES.EQ.'FOURIER_ELAS' .OR.
-     &        TYPRES.EQ.'FOURIER_THER') THEN
-            CALL GETVTX('AFFE','TYPE_MODE',IOCC,1,1,TYPMOD,N0)
+
+          CALL GETVTX('AFFE','TYPE_MODE',IOCC,1,1,TYPMOD,N0)
+          IF (N0.NE.0) THEN
             CALL RSADPA(RESU,'E',1,'TYPE_MODE',NUMINI,0,IAD,K8B)
             ZK8(IAD) = TYPMOD
-            IF (TYPRES.NE.'EVOL_CHAR') THEN
-              CALL RSSEPA(RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
-            ENDIF
           ENDIF
+
+          CALL GETVR8('AFFE','FREQ',IOCC,1,1,FREQ,N0)
+          IF (N0.NE.0) THEN
+            CALL RSADPA(RESU,'E',1,'FREQ',NUMINI,0,IAD,K8B)
+            ZR(IAD) = FREQ
+          ENDIF
+
           GOTO 80
 
         ENDIF
@@ -346,8 +354,8 @@ C ----- MOT CLE LIST_INST PRESENT :
             O2 = NOMCH//'.VALE'
             CALL JEDUPO(O1,'G',O2,.FALSE.)
 
-            CALL JEVEUO(NOMCH//'.REFE','E',IAREFE)
-            ZK24(IAREFE+1) = PROFCH
+            CALL JEVEUO(NOMCH//'.REFE','E',JREFE)
+            ZK24(JREFE+1) = PROFCH
 
           ELSE
             CALL COPISD('CHAMP_GD','G',CHAMP,NOMCH)
@@ -410,6 +418,26 @@ C           ----------------------------------
         CALL JEDETR(LCPT)
 
    80 CONTINUE
+
+
+C     -- REMPLISSAGE DE .REFD POUR LES MODE_MECA :
+      IF ((TYPRES(1:9).EQ.'MODE_MECA')) THEN
+        CALL JEEXIN(RESU19//'.REFD',IER)
+        IF (IER.EQ.0) THEN
+          CALL WKVECT(RESU19//'.REFD','G V K24',6,JREFD)
+        ELSE
+          CALL JEVEUO(RESU19//'.REFD','E',JREFD)
+        ENDIF
+        CALL GETVID(' ','MATR_A',0,1,1,MATR,N1)
+        IF (N1.EQ.1) THEN
+          ZK24(JREFD-1+1)=MATR
+          CALL DISMOI('F','NOM_NUME_DDL',MATR,'MATR_ASSE',IBID,
+     &                NUMEDD,IER)
+          ZK24(JREFD-1+4)=NUMEDD
+        ENDIF
+        CALL GETVID(' ','MATR_B',0,1,1,MATR,N1)
+        IF (N1.EQ.1) ZK24(JREFD-1+2)=MATR
+      ENDIF
 
 
       CALL JEDETR('&&CRTYPE.CHAMPS')

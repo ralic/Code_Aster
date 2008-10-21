@@ -1,8 +1,8 @@
-        SUBROUTINE  MM2ONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
-     &                     KSI2  ,DDFF   ) 
+        SUBROUTINE  MM2ONF(NDIM  ,NNO   ,ALIAS  ,KSI1  ,KSI2  ,
+     &                     DDFF   ) 
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,6 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8 FFORME
       CHARACTER*8 ALIAS 
       REAL*8      KSI1,KSI2   
       REAL*8      DDFF(3,9)
@@ -37,14 +36,6 @@ C DE L'ELEMENT DE REFERENCE
 C      
 C ----------------------------------------------------------------------
 C
-C
-C ROUTINE "GLUTE" NECESSAIRE DU FAIT QUE LES FCT. FORME DE LA METHODE
-C CONTINUE NE SONT PAS CELLES STANDARDS D'ASTER.
-C
-C
-C IN  FFORME : TYPE DES FONCTIONS DE FORME
-C               'CONTINUE' POUR ELTS DE CONTACT
-C               'STANDARD' POUR ELTS STANDARDS
 C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
 C IN  NNO    : NOMBRE DE NOEUD DE L'ELEMENT
 C IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
@@ -84,13 +75,7 @@ C
       KSI(1) = KSI1
       KSI(2) = KSI2
 C
-      IF (ALIAS.EQ.'SG2') THEN
-        ELREFE = 'SE2'
-      ELSEIF (ALIAS.EQ.'SG3') THEN  
-        ELREFE = 'SE3'
-      ELSE
-        ELREFE = ALIAS
-      ENDIF 
+      ELREFE = ALIAS
 C
       IF ((NNO.LT.1).OR.(NNO.GT.9)) THEN
         CALL ASSERT(.FALSE.)
@@ -100,22 +85,16 @@ C
         CALL ASSERT(.FALSE.)
       ENDIF                  
 C
-C --- RECUP DERIVEES SEOCNDES DES FONCTIONS DE FORME
+C --- RECUP DERIVEES SECONDES DES FONCTIONS DE FORME
 C
-      IF (FFORME.EQ.'CONTINUE') THEN
-        CALL CAL2FX(ALIAS ,KSI1  ,KSI2  ,DDFF  )
-      ELSEIF (FFORME.EQ.'STANDARD') THEN
-        CALL ELRFD2(ELREFE,KSI,NNO*NDIM*NDIM,D2FF,IBID,IBID)          
+      CALL ELRFD2(ELREFE,KSI,NNO*NDIM*NDIM,D2FF,IBID,IBID)          
 C
 C --- CONVERSION XI-YI/YI-XI -> KSI1-KSI2 
 C 
-        DO 16 I = 1,NNO
-          DDFF(1,I) = D2FF(1,1,I)
-          DDFF(2,I) = D2FF(2,2,I)  
-          DDFF(3,I) = D2FF(1,2,I)               
-  16    CONTINUE 
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
+      DO 16 I = 1,NNO
+        DDFF(1,I) = D2FF(1,1,I)
+        DDFF(2,I) = D2FF(2,2,I)  
+        DDFF(3,I) = D2FF(1,2,I)               
+  16  CONTINUE 
  
       END

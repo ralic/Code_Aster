@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,8 @@ C  BUT : < RESTITUTION GENERALISEE >
 C
 C  RESTITUER EN BASE PHYSIQUE LES RESULTATS "MODE_GENE"
 C  SANS SOUS-STRUCTURATION
-C  LE CONCEPT RESULTAT EST UN RESULTAT COMPOSE "MODE_MECA"
+C  LE CONCEPT RESULTAT EST UN RESULTAT COMPOSE "MODE_MECA" 
+C               OU "MODE_MECA_C"
 C-----------------------------------------------------------------------
 C
 C NOMRES /I/ : NOM K8 DU CONCEPT MODE MECA RESULTAT
@@ -58,13 +59,14 @@ C
      +             LLREF1,LLREF2,LLREF3,LLREF4,LLREF5,LLREF6
       REAL*8       FREQ,GENEK,GENEM,OMEG2,RBID,XSI
       COMPLEX*16   CBID
-      CHARACTER*1  K1BID
+      CHARACTER*1  K1BID,TYPSCA
       CHARACTER*8  BASMOD,RESPRO,KBID,K8B,MODMEC,MAILSK,MODGEN
       CHARACTER*14 NUMDDL
       CHARACTER*16 DEPL,NOMPAR(6),TYPREP
       CHARACTER*19 CHAMNO,KINT,KREFE,CHAMNE,RAID,NUMGEN,PROFNO
       CHARACTER*24 CHAMOL,MATRIC,INDIRF,CREFE(2),NUMEDD,BASMO2
       CHARACTER*24 VALK
+      LOGICAL      ZCMPLX
 C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
@@ -75,6 +77,12 @@ C-----------------------------------------------------------------------
 C
 C-----RECUPERATION NOMBRE DE MODES PROPRES CALCULES---------------------
 C
+      ZCMPLX = .FALSE.
+
+      CALL DCAPNO ( RESGEN, DEPL, 1,CHAMOL )
+      CALL JELIRA(CHAMOL,'TYPE',IBID,TYPSCA)
+      IF (TYPSCA.EQ.'C') ZCMPLX = .TRUE.
+
       CALL RSORAC ( RESGEN, 'LONUTI', IBID, RBID, KBID, CBID, RBID,
      &              KBID, NBMOD, 1, IBID )
 C
@@ -94,7 +102,11 @@ C
 C
 C --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
 C
-      CALL RSCRSD('G', NOMRES, 'MODE_MECA', NBMOD )
+      IF (ZCMPLX) THEN
+        CALL RSCRSD ( 'G', NOMRES, 'MODE_MECA_C', NBMOD )
+      ELSE
+        CALL RSCRSD ( 'G', NOMRES, 'MODE_MECA', NBMOD )
+      ENDIF
 C
 C --- RECUPERATION DE LA BASE MODALE
 C
@@ -190,7 +202,11 @@ C
 C --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
 C
             CALL RSEXCH ( NOMRES, DEPL, I, CHAMNE, IER )
-            CALL VTCREA ( CHAMNE, CREFE, 'G', 'R',NEQ )
+            IF (ZCMPLX) THEN
+              CALL VTCREA ( CHAMNE, CREFE, 'G', 'C',NEQ )
+            ELSE
+              CALL VTCREA ( CHAMNE, CREFE, 'G', 'R',NEQ )
+            ENDIF
             CALL JEVEUO ( CHAMNE//'.VALE', 'E', LDNEW )
 C
             CALL RSADPA ( RESGEN, 'L', 6,NOMPAR, IORD,0,IADPAR,KBID)
@@ -201,7 +217,11 @@ C
             NUMO  = ZI(IADPAR(5))
             XSI   = ZR(IADPAR(6))
 
-            CALL MDGEPH ( NEQ,NBMO2, ZR(IDBASE), ZR(LLCHOL), ZR(LDNEW))
+            IF (ZCMPLX) THEN
+             CALL MDGEPC ( NEQ,NBMO2,ZR(IDBASE),ZC(LLCHOL),ZC(LDNEW))
+            ELSE
+             CALL MDGEPH ( NEQ,NBMO2,ZR(IDBASE),ZR(LLCHOL),ZR(LDNEW))
+            ENDIF
 
             CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
             CALL RSADPA ( NOMRES, 'E', 6,NOMPAR, I,0,IADPAR,KBID)
@@ -264,7 +284,11 @@ C
 C --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
 C
             CALL RSEXCH(NOMRES,DEPL,I,CHAMNO,IER)
-            CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
+            IF (ZCMPLX) THEN
+              CALL VTCREB(CHAMNO,NUMEDD,'G','C',NEQ)
+            ELSE
+              CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
+            ENDIF
             CALL JEVEUO(CHAMNO//'.VALE','E',LDNEW)
 C
             CALL RSADPA ( RESGEN, 'L', 6,NOMPAR, IORD,0, IADPAR,KBID)
@@ -274,8 +298,12 @@ C
             OMEG2 = ZR(IADPAR(4))
             NUMO  = ZI(IADPAR(5))
             XSI   = ZR(IADPAR(6))
-
-            CALL MDGEPH ( NEQ,NBMO2,ZR(IDBASE),ZR(LLCHOL),ZR(LDNEW))
+            
+            IF (ZCMPLX) THEN
+             CALL MDGEPC ( NEQ,NBMO2,ZR(IDBASE),ZC(LLCHOL),ZC(LDNEW))
+            ELSE
+             CALL MDGEPH ( NEQ,NBMO2,ZR(IDBASE),ZR(LLCHOL),ZR(LDNEW))
+            ENDIF
 
             CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
 

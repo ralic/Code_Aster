@@ -2,7 +2,7 @@
      &                  MAIT  ,NNM )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,30 +67,30 @@ C --- 2D
 C
       IF (NOMTE.EQ.'CFS2S2' .OR. NOMTE.EQ.'COS2S2') THEN
         NDIM = 2
-        ESC  = 'SG2'
+        ESC  = 'SE2'
         NNE  = 2
-        MAIT = 'SG2'
+        MAIT = 'SE2'
         NNM  = 2
         NDDL = NNM*NDIM + NNE*(NDIM+I2D)
       ELSE IF (NOMTE.EQ.'CFS2S3' .OR. NOMTE.EQ.'COS2S3') THEN
         NDIM = 2
-        ESC  = 'SG2'
+        ESC  = 'SE2'
         NNE  = 2
-        MAIT = 'SG3'
+        MAIT = 'SE3'
         NNM  = 3
         NDDL = NNM*NDIM + NNE*(NDIM+I2D)
       ELSE IF (NOMTE.EQ.'CFS3S2' .OR. NOMTE.EQ.'COS3S2') THEN
         NDIM = 2
-        ESC  = 'SG3'
+        ESC  = 'SE3'
         NNE  = 3
-        MAIT = 'SG2'
+        MAIT = 'SE2'
         NNM  = 2
         NDDL = NNM*NDIM + NNE*(NDIM+I2D)
       ELSE IF (NOMTE.EQ.'CFS3S3' .OR. NOMTE.EQ.'COS3S3') THEN
         NDIM = 2
-        ESC  = 'SG3'
+        ESC  = 'SE3'
         NNE  = 3
-        MAIT = 'SG3'
+        MAIT = 'SE3'
         NNM  = 3
         NDDL = NNM*NDIM + NNE*(NDIM+I2D)
 C
@@ -203,9 +203,9 @@ C
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSEIF (NOMTE.EQ.'CFP2P2' .OR. NOMTE.EQ.'COP2P2') THEN
         NDIM = 3
-        ESC  = 'SG2'
+        ESC  = 'SE2'
         NNE  = 2
-        MAIT = 'SG2'
+        MAIT = 'SE2'
         NNM  = 2
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -170,6 +170,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "NADAI_B",
                                        "BETON_DOUBLE_DP",
                                        "ENDO_ISOT_BETON",
+                                       "MAZARS"
                                        ),),
                    ),
            b_kit_thm = BLOC(condition = "RELATION in ['KIT_HHM','KIT_HH','KIT_HM','KIT_THHM','KIT_THH','KIT_THM','KIT_THV']",

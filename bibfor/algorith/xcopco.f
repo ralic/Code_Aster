@@ -2,7 +2,7 @@
   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/05/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C ======================================================================
       INTEGER      POSMA
       REAL*8       XI
       REAL*8       YI
-      REAL*8       GEOM(2)
+      REAL*8       GEOM(3)
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : XAPPAR
@@ -61,7 +61,6 @@ C
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -93,8 +92,8 @@ C     RECUPERATION DES COORDONNES REELES DES POINTS D'INTERSECTION
           COOR(NDIM*(I-1)+J)=ZR(JCSV1-1+IAD)
  210    CONTINUE
  200  CONTINUE
-
-      CALL CALFFX(ALIAS,XI,YI,FF)
+C
+      CALL MMNONF(NDIM,NNO,ALIAS,XI,YI,FF)
       DO 300 I = 1,NDIM
         DO 310 J = 1,NNO
           GEOM(I) = FF(J)*COOR((J-1)*NDIM+I) + GEOM(I)

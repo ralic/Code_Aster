@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC D'UNE POUTRE SUR UN APPUI : CALCUL DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,19 +186,19 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
                                        NOMBRE = 10))
 
 #
-TRAN1=REST_BASE_PHYS(   RESU_GENE=TRAN_GE1,
+TRAN1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN')
 
 #
-TRAN2=REST_BASE_PHYS(   RESU_GENE=TRAN_GE2,
+TRAN2=REST_GENE_PHYS(   RESU_GENE=TRAN_GE2,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN')
 
 #
-TRAN3=REST_BASE_PHYS(   RESU_GENE=TRAN_GE3,
+TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN')

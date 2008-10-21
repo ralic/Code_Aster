@@ -1,0 +1,106 @@
+      SUBROUTINE OP0078(IER)
+      IMPLICIT REAL*8(A-H,O-Z)
+      INTEGER IER
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C     OPERATEUR REST_COND_TRAN
+C
+C ----------------------------------------------------------------------
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
+C
+      CHARACTER*8 K8B,NOMRES,RESIN,NOMSST,MAILSK,MODE
+      CHARACTER*8 K8BID,RESULT,PARAM(3)
+      CHARACTER*16 CONCEP,NOMCMD,TYPRES,TYPREP,CHAMP(4)
+      CHARACTER*19 PROFNO
+      CHARACTER*24 MATGEN,NUMGEN
+C      LOGICAL PROMES
+      INTEGER IOC1,JORD,NBORD,I,IORD,LPAIN(3),LPAOUT(3)
+C
+C     -----------------------------------------------------------------
+      DATA K8B/'        '/
+      DATA PARAM/'MODELE','CHAMPMAT','CARAELEM'/
+
+      CALL JEMARQ()
+      CALL INFMAJ()
+      K8BID='        '
+C
+C     -----------------------------------------------------------------
+C
+C
+      CALL GETRES(NOMRES,TYPRES,NOMCMD)
+C
+C --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
+      CALL GETVTX(' ','NOM_CHAM',1,1,4,CHAMP,NBCHAM)
+      IF (NBCHAM.LT.0) THEN
+        CALL U2MESS('E','ALGORITH9_44')
+      ELSE
+        DO 20 I=1,NBCHAM
+          DO 10 J=I+1,NBCHAM
+            IF (CHAMP(I).EQ.CHAMP(J)) THEN
+              CALL U2MESS('E','ALGORITH9_30')
+            ENDIF
+   10     CONTINUE   
+   20   CONTINUE
+      ENDIF
+C
+
+C --- CREATION DU .REFN DU PROFIL :
+C     ---------------------------
+      PROFNO=NOMRES//'.PROFC.NUME'
+      CALL WKVECT(PROFNO(1:19)//'.REFN','G V K24',4,JREFN)
+      ZK24(JREFN+1)='DEPL_R'
+C
+      CALL GETVID(' ','RESULTAT',1,1,1,RESIN,IR)
+      CALL TRAN78(NOMRES,TYPRES,RESIN,NOMCMD,K8BID)
+
+C --- STOCKAGE
+      CALL GETTCO(RESIN,CONCEP)
+      CALL JEVEUO(NOMRES//'           .ORDR','L',JORD)
+      CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
+      CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
+      DO 50 IORD=1,NBORD
+        CALL RSADPA(RESIN,'L',3,PARAM,ZI(JORD+IORD-1),0,LPAIN,K8B)
+        CALL RSADPA(NOMRES,'E',3,PARAM,ZI(JORD+IORD-1),0,LPAOUT,K8B)
+        DO 40 I=1,3
+          ZK8(LPAOUT(I))=ZK8(LPAIN(I))
+   40   CONTINUE
+   50 CONTINUE
+
+      CALL JEDEMA()
+      END

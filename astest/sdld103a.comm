@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -215,14 +215,14 @@ L_RECU=DEFI_LIST_REEL(  DEBUT=0.,
 
 # RESTITUTION DU DEPLACEMENT ABSOLU
 # ---------------------------------
-RESUAD=REST_BASE_PHYS(  RESU_GENE=TRAN_GED,
+RESUAD=REST_GENE_PHYS(  RESU_GENE=TRAN_GED,
                          INTERPOL='LIN',
                          LIST_INST=L_RECU,
                         TOUT_CHAM='OUI',
                         MULT_APPUI='OUI'
                        )
 
-RESUAA=REST_BASE_PHYS(  RESU_GENE=TRAN_GEA,
+RESUAA=REST_GENE_PHYS(  RESU_GENE=TRAN_GEA,
                          INTERPOL='LIN',
                          PRECISION=4.E-3,
                          LIST_INST=L_RECU,
@@ -232,13 +232,13 @@ RESUAA=REST_BASE_PHYS(  RESU_GENE=TRAN_GEA,
 
 # RESTITUTION DU DEPLACEMENT RELATIF
 # ----------------------------------
-RESURD=REST_BASE_PHYS(  RESU_GENE=TRAN_GED,
+RESURD=REST_GENE_PHYS(  RESU_GENE=TRAN_GED,
                          INTERPOL='LIN',
                          LIST_INST=L_RECU,
                         TOUT_CHAM='OUI',
                        )
 
-RESURA=REST_BASE_PHYS(  RESU_GENE=TRAN_GEA,
+RESURA=REST_GENE_PHYS(  RESU_GENE=TRAN_GEA,
                          INTERPOL='LIN',
                          PRECISION=4.E-3,
                          LIST_INST=L_RECU,

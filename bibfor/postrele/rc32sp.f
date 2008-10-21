@@ -2,13 +2,14 @@
      &                  SPIJ,TYPEKE,SPMECA,SPTHER)
       IMPLICIT   NONE
       INTEGER           NUMSIP,NUMSIQ
-      REAL*8         PI,MI(*),PJ,MJ(*),MSE(*),SPIJ,TYPEKE,SPMECA,SPTHER
+      REAL*8            PI,MI(*),PJ,MJ(*),MSE(*),SPIJ(2),TYPEKE,SPMECA,
+     &                  SPTHER
       LOGICAL           SEISME
       CHARACTER*4       LIEU
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,8 +43,8 @@ C IN  : PJ     : PRESSION ASSOCIEE A L'ETAT STABILISE J
 C IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J
 C IN  : MSE    : EFFORTS DUS AU SEISME
 C OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
-C OUT : SPMECA   : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
-C OUT : SPTHER   : AMPLITUDE DE VARIATION DES CONTRAINTES THERMIQUES
+C VAR : SPMECA : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
+C VAR : SPTHER : AMPLITUDE DE VARIATION DES CONTRAINTES THERMIQUES
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -62,12 +63,23 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
-      INTEGER ICMP,JSIGU,ICMPS,LONG,NBINST,NBTHER,JTHER,ITH,NUMTH,JTHUN
-      REAL*8       PIJ,MIJ(12),SP,SIJ(6),SIGU,SIJ0(6)
+      INTEGER      ICMP,JSIGU,ICMPS,LONG,NBINST,NBTHEP,NBTHEQ,JTHER,ITH,
+     +             NUMTH,JTHUN,JORIG,JEXTR,JTHUN1,KK,I1
+      REAL*8       PIJ,MIJ(12),SP,SIJ(6),SIGU,SIJ0(6),SPMA(6),SPMI(6),
+     +             SQMA(6),SQMI(6),SP1,SP2
       CHARACTER*4  TYP2
       CHARACTER*8  K8B, TYPE, KNUMES, KNUMET
 C DEB ------------------------------------------------------------------
       TYPE = TYPZ
+C
+      SPIJ(1) = 0.D0
+      SPIJ(2) = 0.D0
+      DO 8 I1 = 1 , 6
+        SPMA(I1) = 0.D0
+        SPMI(I1) = 0.D0
+        SQMA(I1) = 0.D0
+        SQMI(I1) = 0.D0
+  8   CONTINUE
 
 C --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 
@@ -75,14 +87,13 @@ C --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 
 C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 
-      PIJ = PJ - PI
+      PIJ = PI - PJ
 
 C --- VARIATION DE MOMENT RESULTANT
 
       DO 10 ICMP = 1,12
-        MIJ(ICMP) = MJ(ICMP) - MI(ICMP)
+        MIJ(ICMP) = MI(ICMP) - MJ(ICMP)
    10 CONTINUE
-
 
 C --- CALCUL DES CONTRAINTES EN PEAU PAR COMBINAISON LINEAIRE
 C     POUR LE CHARGEMENT PIJ, MIJ
@@ -102,19 +113,17 @@ C ----- PRESSION
 
 C CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
 
-C      IF (TYPEKE.LT.0.D0) THEN
-
-
 C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 
         IF (NUMSIP.NE.0) THEN
           KNUMES = 'S       '
           CALL CODENT(NUMSIP,'D0',KNUMES(2:8))
           CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
-     &                NBTHER,K8B)
-          IF (NBTHER.EQ.0) THEN
+     &                NBTHEP,K8B)
+          IF (NBTHEP.EQ.0) THEN
             NBINST = 0
             JTHUN = 1
+            TYP2 = '????'
             IF( TYPE .EQ. 'SP_COMB' ) THEN
               TYP2 = 'COMB'
             ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
@@ -126,11 +135,16 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
             ELSE
                CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
             END IF
-            SPIJ = MAX(SPIJ,SP)
+            SPIJ(1) = MAX(SPIJ(1),SP)
+            IF (TYP2.EQ.'COMB') SPIJ(2) = MAX(SPIJ(2),SP)
+            DO 12 I1 = 1,6
+               SPMI(I1) = SIJ(I1)
+               SPMA(I1) = SIJ(I1)
+ 12         CONTINUE
           ELSE
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
      &                  JTHER)
-            DO 60 ITH = 1,NBTHER
+            DO 60 ITH = 1,NBTHEP
               NUMTH = ZI(JTHER+ITH-1)
               KNUMET = 'T       '
               CALL CODENT(NUMTH,'D0',KNUMET(2:8))
@@ -138,7 +152,8 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
      &                    'LONUTI',LONG,K8B)
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
-              NBINST = LONG / 24
+              NBINST = 2
+              TYP2 = '????'
               IF( TYPE .EQ. 'SP_COMB' ) THEN
                  TYP2 = 'COMB'
               ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
@@ -148,9 +163,16 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
                  CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST,
      &                                                   ZR(JTHUN), SP )
               ELSE
-                 CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
+                IF (TYP2.EQ.'SITU') THEN
+                  CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP) 
+                  SPIJ(1) = SP
+                ELSE
+                  DO 14 I1 = 1,6
+                    SPMI(I1) = SIJ(I1) + ZR(JTHUN+I1-1)
+                    SPMA(I1) = SIJ(I1) + ZR(JTHUN+6+I1-1)
+ 14               CONTINUE
+                ENDIF
               END IF
-              SPIJ = MAX(SPIJ,SP)
    60       CONTINUE
           END IF
         END IF
@@ -162,10 +184,11 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
           KNUMES = 'S       '
           CALL CODENT(NUMSIQ,'D0',KNUMES(2:8))
           CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
-     &                NBTHER,K8B)
-          IF (NBTHER.EQ.0) THEN
+     &                NBTHEQ,K8B)
+          IF (NBTHEQ.EQ.0) THEN
             NBINST = 0
             JTHUN = 1
+            TYP2 = '????'
             IF( TYPE .EQ. 'SP_COMB' ) THEN
               TYP2 = 'COMB'
             ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
@@ -177,11 +200,18 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
             ELSE
               CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
             END IF
-            SPIJ = MAX(SPIJ,SP)
+            SPIJ(1) = MAX(SPIJ(1),SP)
+            IF (TYP2.EQ.'COMB') SPIJ(2) = MAX(SPIJ(2),SP)
+            IF ( TYP2.EQ.'COMB' .AND. NBTHEP.NE.0 ) THEN
+               CALL RCTRES ( SPMI, SP1 )
+               CALL RCTRES ( SPMA, SP2 )
+               SPIJ(1) = MIN(SP1,SP2)
+               SPIJ(2) = MAX(SP1,SP2)
+            END IF
           ELSE
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
      &                  JTHER)
-            DO 70 ITH = 1,NBTHER
+            DO 70 ITH = 1,NBTHEQ
               NUMTH = ZI(JTHER+ITH-1)
               KNUMET = 'T       '
               CALL CODENT(NUMTH,'D0',KNUMET(2:8))
@@ -189,7 +219,8 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
      &                    'LONUTI',LONG,K8B)
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
-              NBINST = LONG / 24
+              NBINST = 2
+              TYP2 = '????'
               IF( TYPE .EQ. 'SP_COMB' ) THEN
                 TYP2 = 'COMB'
               ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
@@ -199,17 +230,26 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST,
      &                                                   ZR(JTHUN), SP )
               ELSE
-                CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
-              END IF
-              SPIJ = MAX(SPIJ,SP)
+                IF (TYP2.EQ.'SITU') THEN
+                  CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP ) 
+                  SPIJ(1) = SP
+                ELSE
+                  DO 114 I1 = 1,6
+                     SQMI(I1) = SPMI(I1) - ZR(JTHUN+6+I1-1)
+                     SQMA(I1) = SPMA(I1) - ZR(JTHUN+I1-1)
+ 114              CONTINUE
+                  CALL RCTRES ( SQMI, SP1 )
+                  CALL RCTRES ( SQMA, SP2 )
+                  SPIJ(1) = MIN(SP1,SP2)
+                  SPIJ(2) = MAX(SP1,SP2)
+                ENDIF
+              ENDIF
    70       CONTINUE
-          END IF
-        END IF
-
+          ENDIF
+        ENDIF
 
 C CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
 
-C      ELSE IF (TYPEKE.GT.0.D0) THEN
       IF (TYPEKE.GT.0.D0) THEN
 
 C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
@@ -218,9 +258,10 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
           KNUMES = 'S       '
           CALL CODENT(NUMSIP,'D0',KNUMES(2:8))
           CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
-     &                NBTHER,K8B)
+     &                NBTHEP,K8B)
           NBINST = 0
           JTHUN = 1
+          TYP2 = '????'
           IF( TYPE .EQ. 'SP_COMB' ) THEN
             TYP2 = 'COMB'
           ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
@@ -234,10 +275,10 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
           END IF
           SPMECA = MAX(SPMECA,SP)
 
-          IF (NBTHER.NE.0) THEN
+          IF (NBTHEP.NE.0) THEN
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
      &                  JTHER)
-            DO 80 ITH = 1,NBTHER
+            DO 80 ITH = 1,NBTHEP
               NUMTH = ZI(JTHER+ITH-1)
               KNUMET = 'T       '
               CALL CODENT(NUMTH,'D0',KNUMET(2:8))
@@ -245,7 +286,7 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
      &                    'LONUTI',LONG,K8B)
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
-              NBINST = LONG / 24
+              NBINST = 2
               TYP2 = 'SITU'
               CALL RC32ST ( TYP2, SIJ0, NBINST, ZR(JTHUN), SP )
               SPTHER = MAX(SPTHER,SP)
@@ -260,11 +301,11 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
           KNUMES = 'S       '
           CALL CODENT(NUMSIQ,'D0',KNUMES(2:8))
           CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
-     &                NBTHER,K8B)
-          IF (NBTHER.NE.0) THEN
+     &                NBTHEQ,K8B)
+          IF (NBTHEQ.NE.0) THEN
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
      &                  JTHER)
-            DO 90 ITH = 1,NBTHER
+            DO 90 ITH = 1,NBTHEQ
               NUMTH = ZI(JTHER+ITH-1)
               KNUMET = 'T       '
               CALL CODENT(NUMTH,'D0',KNUMET(2:8))
@@ -272,7 +313,7 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
      &                    'LONUTI',LONG,K8B)
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
-              NBINST = LONG / 24
+              NBINST = 2
               TYP2 = 'SITU'
               CALL RC32ST ( TYP2, SIJ0, NBINST, ZR(JTHUN), SP )
               SPTHER = MAX(SPTHER,SP)

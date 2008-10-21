@@ -8,7 +8,7 @@
       CHARACTER*(*)       TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J (6)
 C IN  : PJ     : PRESSION ASSOCIEE A L'ETAT STABILISE J
 C IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
 C IN  : MSE    : EFFORTS DUS AU SEISME
-C OUT : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
+C VAR : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER         ZI
@@ -63,9 +63,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNOM, JEXNUM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      ICMP, JSIGU, ICMPS, INDICE, LONG, NBINST,
-     +             NBTHER, JTHER, ITH, NUMTH, JTHUN
-      REAL*8       PIJ, MIJ(12), SN, SIJ(6), SIGU
+      INTEGER      ICMP, JSIGU, ICMPS, INDICE, NBINST, LONG, I1,
+     +             NBTHEP, NBTHEQ, JTHER, ITH, NUMTH, JTHUN, JORIG
+      REAL*8       PIJ, MIJ(12), SN, SIJ(6), SIGU, SNMA(6), SNMI(6),
+     +             SQMA(6), SQMI(6), SN1, SN2
       CHARACTER*4  TYP2
       CHARACTER*8  K8B, TYPE, KNUMES, KNUMET 
 C DEB ------------------------------------------------------------------
@@ -77,12 +78,12 @@ C
 C
 C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 C
-      PIJ = PJ - PI
+      PIJ = PI - PJ
 C
 C --- VARIATION DE MOMENT RESULTANT
 C
       DO 10 ICMP = 1 , 12
-         MIJ(ICMP) = MJ(ICMP) - MI(ICMP)
+         MIJ(ICMP) = MI(ICMP) - MJ(ICMP)
    10 CONTINUE
 C
 C --- CALCUL DES CONTRAINTES LINEAIRISEES PAR COMBINAISON LINEAIRE
@@ -105,8 +106,8 @@ C
          KNUMES = 'S       '
          CALL CODENT ( NUMSIP , 'D0' , KNUMES(2:8)  )
          CALL JELIRA ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
-     &                                          'LONUTI', NBTHER, K8B )
-         IF ( NBTHER .EQ. 0 ) THEN
+     &                                          'LONUTI', NBTHEP, K8B )
+         IF ( NBTHEP .EQ. 0 ) THEN
             NBINST = 0
             INDICE = 1
             IF( TYPE .EQ.  'SN_COMB' .OR.
@@ -123,10 +124,14 @@ C
                CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
             END IF
             SNIJ = MAX( SNIJ , SN )
+            DO 12 I1 = 1,6
+               SNMI(I1) = SIJ(I1)
+               SNMA(I1) = SIJ(I1)
+ 12         CONTINUE
          ELSE
             CALL JEVEUO ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
      &                                                     'L', JTHER )
-            DO 100 ITH = 1 , NBTHER
+            DO 100 ITH = 1 , NBTHEP
                NUMTH = ZI(JTHER+ITH-1)
                KNUMET = 'T       '
                CALL CODENT ( NUMTH , 'D0' , KNUMET(2:8)  )
@@ -134,7 +139,7 @@ C
      &                                            'LONUTI', LONG, K8B )
              CALL JEVEUO ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                                                     'L', JTHUN )
-               NBINST = LONG / 24
+               NBINST = 2
                IF( TYPE .EQ. 'SN_COMB' ) THEN
                  INDICE = JTHUN + 6*NBINST
                  TYP2 = 'COMB'
@@ -152,7 +157,15 @@ C
                  CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
      &                                          NBINST, ZR(INDICE), SN )
                ELSE
-                 CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
+                 IF (TYP2.EQ.'SITU') THEN
+                   CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
+                 ELSE
+                   SN = 0.D0
+                   DO 14 I1 = 1,6
+                     SNMI(I1) = SIJ(I1) + ZR(INDICE+I1-1)
+                     SNMA(I1) = SIJ(I1) + ZR(INDICE+6+I1-1)
+ 14                CONTINUE
+                 ENDIF
                END IF
                SNIJ = MAX( SNIJ , SN )
  100       CONTINUE
@@ -166,8 +179,8 @@ C
          KNUMES = 'S       '
          CALL CODENT ( NUMSIQ , 'D0' , KNUMES(2:8)  )
          CALL JELIRA ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
-     &                                          'LONUTI', NBTHER, K8B )
-         IF ( NBTHER .EQ. 0 ) THEN
+     &                                          'LONUTI', NBTHEQ, K8B )
+         IF ( NBTHEQ .EQ. 0 ) THEN
             NBINST = 0
             INDICE = 1
             IF( TYPE .EQ.  'SN_COMB' .OR.
@@ -184,10 +197,16 @@ C
                CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
             END IF
             SNIJ = MAX( SNIJ , SN )
+            IF ( TYP2.EQ.'COMB' .AND. NBTHEP.NE.0 ) THEN
+               CALL RCTRES ( SNMI, SN1 )
+               CALL RCTRES ( SNMA, SN2 )
+               SN = MAX( SN1, SN2 )
+               SNIJ = MAX( SNIJ , SN )
+            END IF
          ELSE
             CALL JEVEUO ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
      &                                                     'L', JTHER )
-            DO 110 ITH = 1 , NBTHER
+            DO 110 ITH = 1 , NBTHEQ
                NUMTH = ZI(JTHER+ITH-1)
                KNUMET = 'T       '
                CALL CODENT ( NUMTH , 'D0' , KNUMET(2:8)  )
@@ -195,7 +214,7 @@ C
      &                                            'LONUTI', LONG, K8B )
              CALL JEVEUO ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                                                     'L', JTHUN )
-               NBINST = LONG / 24
+               NBINST = 2
                IF( TYPE .EQ.  'SN_COMB' ) THEN
                  INDICE = JTHUN + 6*NBINST
                  TYP2 = 'COMB'
@@ -213,7 +232,17 @@ C
                   CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
      &                                          NBINST, ZR(INDICE), SN )
                ELSE
-                  CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
+                 IF (TYP2.EQ.'SITU') THEN
+                   CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
+                 ELSE
+                   DO 114 I1 = 1,6
+                     SQMI(I1) = SNMA(I1) - ZR(INDICE+I1-1)
+                     SQMA(I1) = SNMI(I1) - ZR(INDICE+6+I1-1)
+ 114               CONTINUE
+                   CALL RCTRES ( SQMI, SN1 )
+                   CALL RCTRES ( SQMA, SN2 )
+                   SN = MAX( SN1, SN2 )
+                 ENDIF
                END IF
                SNIJ = MAX( SNIJ , SN )
  110        CONTINUE

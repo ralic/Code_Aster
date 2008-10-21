@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
+# ssnp503b.para = tps_job 50 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,14 +78,14 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
                                      COEF_REGU_FROT=100,
                                      ITER_FROT_MAXI=10,
                                      COEF_REGU_CONT=100., 
-                                     ITER_CONT_MAXI=40,
+                                     ITER_CONT_MAXI=10,
                                      ITER_GEOM_MAXI=10,
                                      TOLE_PROJ_EXT =0.0,   
                                      CONTACT_INIT='OUI',
                                      GLISSIERE='NON',   
                                      COEF_ECHELLE=1.,
                                      FISS_MAIT = FISS1,
-                                     ALGO_LAGR='VERSION2'
+                                     ALGO_LAGR='VERSION2',
                                      ),
                                   _F(METHODE='XFEM',
                                      INTEGRATION='NOEUD',
@@ -93,14 +94,14 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
                                      COEF_REGU_FROT=100,
                                      ITER_FROT_MAXI=10,
                                      COEF_REGU_CONT=100., 
-                                     ITER_CONT_MAXI=40,
+                                     ITER_CONT_MAXI=10,
                                      ITER_GEOM_MAXI=10,
                                      TOLE_PROJ_EXT =0.0, 
                                      CONTACT_INIT='OUI', 
                                      GLISSIERE='NON',   
                                      COEF_ECHELLE=1.,
                                      FISS_MAIT = FISS2,
-                                     ALGO_LAGR='VERSION2'
+                                     ALGO_LAGR='VERSION2',
                                     ),  
                                   ),
                                 MODELE=MODELEK,
@@ -115,8 +116,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('SURF','LIGINF',),
-                                MATER=ACIER,
-                                ),);
+                                MATER=ACIER,),);
 
 DEPX=2.00
 DEPY=1.E-3
@@ -176,7 +176,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                  GROUP_MA='SURF',),
                     INCREMENT=_F(LIST_INST=L_INST,),
                     CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
-                                    RESI_GLOB_RELA=1E-06
+                                    RESI_GLOB_MAXI=1E-06
                                     )),
                     SOLVEUR=_F(METHODE='MUMPS',
                                PCENT_PIVOT=80,),
@@ -184,310 +184,46 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     INFO=1,);
 
 LAG=[None]*5
-
-# INST=0.25
-
-LAG[1]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                               GROUP_NO='NFISSU',
-                               RESULTAT=UTOT1,
-                               NOM_CHAM='DEPL',
-                               INST=0.25,
-                               NOM_CMP=('DX','LAGS_C','LAGS_F1',),
-                               OPERATION='EXTRACTION',),);
-            
-IMPR_TABLE(TABLE=LAG[1],
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.7',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
-
-TEST_TABLE(TABLE=LAG[1],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=0.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-15,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=LAG[1],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=1.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-8.2318520E+03,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);       
-
-TEST_TABLE(TABLE=LAG[1],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=2.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-6.3690388E+03,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=LAG[1],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=3.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-6.4300140E+03,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
- 
-TEST_TABLE(TABLE=LAG[1],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=4.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-4.0793799E+03,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);               
-
-# INST=0.5
-
-LAG[2]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                               GROUP_NO='NFISSU',
-                               RESULTAT=UTOT1,
-                               NOM_CHAM='DEPL',
-                               INST=0.5,
-                               NOM_CMP=('DX','LAGS_C','LAGS_F1',),
-                               OPERATION='EXTRACTION',),);
-                            
-IMPR_TABLE(TABLE=LAG[2],
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.7',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
-
-TEST_TABLE(TABLE=LAG[2],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=0.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-15,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=LAG[2],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=1.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-1.0604952E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);       
-
-TEST_TABLE(TABLE=LAG[2],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=2.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-1.3046685E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=LAG[2],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=3.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-1.1796782E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
- 
-TEST_TABLE(TABLE=LAG[2],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=4.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-8.5688021E+03,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
-
-# INST=0.75
-
-LAG[3]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                               GROUP_NO='NFISSU',
-                               RESULTAT=UTOT1,
-                               NOM_CHAM='DEPL',
-                               INST=0.75,
-                               NOM_CMP=('DX','LAGS_C','LAGS_F1',),
-                               OPERATION='EXTRACTION',),);
-                            
-IMPR_TABLE(TABLE=LAG[3],
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.7',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
-
-TEST_TABLE(TABLE=LAG[3],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=0.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-15,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=LAG[3],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=1.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-15,
-           REFERENCE='AUTRE_ASTER',);       
-
-TEST_TABLE(TABLE=LAG[3],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=2.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-2.2166004E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=LAG[3],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=3.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-1.8735262E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
- 
-TEST_TABLE(TABLE=LAG[3],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=4.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-1.1431025E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
-           
-# INST=1.0
-
-LAG[4]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                               GROUP_NO='NFISSU',
-                               RESULTAT=UTOT1,
-                               NOM_CHAM='DEPL',
-                               INST=1.0,
-                               NOM_CMP=('DX','LAGS_C','LAGS_F1',),
-                               OPERATION='EXTRACTION',),);
-                            
-IMPR_TABLE(TABLE=LAG[4],
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.7',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
-           
-TEST_TABLE(TABLE=LAG[4],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=0.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-15,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=LAG[4],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=1.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-15,
-           REFERENCE='AUTRE_ASTER',);       
-
-TEST_TABLE(TABLE=LAG[4],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=2.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-1.9530387E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=LAG[4],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=3.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-2.3603572E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
- 
-TEST_TABLE(TABLE=LAG[4],
-           NOM_PARA='LAGS_C',
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     CRIT_COMP='EQ',
-                     VALE=4.0,
-                     PRECISION=1E-3,
-                     CRITERE='ABSOLU',),
-           VALE=-1.7514604E+04,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-1,
-           REFERENCE='AUTRE_ASTER',);
-
-FIN();                  
-
+inst=[0.0,0.25,0.5,0.75,1.0]
+vale = [[0.0,-8.2318426772263E+03,-6.3690747415476E+03,-6.4300888224696E+03,-4.0794459673115E+03],
+        [0.0,-1.0605073124532E+04,-1.3046818405580E+04,-1.1796897408502E+04,-8.5688582786312E+03],
+        [0.0,0.0,-2.2167189670823E+04,-1.8735268291927E+04,-1.1431030978517E+04],
+        [0.0,0.0,-1.9530883294731E+04,-2.3604277746617E+04,-1.7514909721815E+04]]
+        
+for i in [1,2,3,4]: #Boucle sur les increments
+   LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                         GROUP_NO=('NFISSU'),
+                                         RESULTAT=UTOT1,
+                                         NOM_CHAM='DEPL',
+                                         INST=inst[i],
+                                         NOM_CMP=('LAGS_C','LAGS_F1',),
+                                         OPERATION='EXTRACTION',),);
+   IMPR_TABLE(TABLE=LAG[i],
+              FORMAT='AGRAF',
+              FORMAT_R='1PE12.7',
+              FORMAT_C='MODULE_PHASE',
+              NOM_PARA=('NOEUD','INST','COOR_X','LAGS_C','LAGS_F1',),
+              IMPR_FONCTION='NON',
+              TRI=_F(NOM_PARA=('COOR_X',),
+                     ORDRE='CROISSANT',),);
+   
+   for j in [0,1,2,3,4]: #Boucle sur les positions testees
+      if (vale[i-1] [j] == 0.0):
+        precision = 1.0E-12
+        critere = 'ABSOLU'
+      else:
+        precision = 5.E-2 
+        critere = 'RELATIF'
+      TEST_TABLE(TABLE=LAG[i],
+                 NOM_PARA='LAGS_C',
+                 VALE=vale[i-1] [j],
+                 CRITERE=critere,
+                 PRECISION=precision,
+                 REFERENCE='AUTRE_ASTER',
+                 FILTRE=_F(NOM_PARA='COOR_X',
+                           CRIT_COMP='EQ',
+                           VALE=j,
+                           PRECISION=0.03,
+                           CRITERE='ABSOLU',),);
+                           
+FIN();                 

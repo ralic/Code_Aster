@@ -1,61 +1,52 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE BOYERE E.BOYERE
-def rest_base_phys_prod(RESU_GENE,RESU_PHYS,RESULTAT,**args ):
+
+# RESPONSABLE CORUS M.CORUS
+def rest_sous_struc_prod(RESU_GENE,RESULTAT,**args ):
   if AsType(RESU_GENE) == tran_gene : return dyna_trans
   if AsType(RESU_GENE) == mode_gene : return mode_meca
   if AsType(RESU_GENE) == mode_cycl : return mode_meca
   if AsType(RESU_GENE) == harm_gene : return dyna_harmo
-  if AsType(RESU_PHYS) == evol_noli : return dyna_trans
-  if AsType(RESU_PHYS) == dyna_trans     : return dyna_trans
-  if AsType(RESULTAT)  == evol_elas      : return evol_elas
   if AsType(RESULTAT)  == evol_noli      : return evol_noli
-  if AsType(RESULTAT)  == evol_char      : return evol_char
   if AsType(RESULTAT)  == dyna_trans     : return dyna_trans
   if AsType(RESULTAT)  == mode_meca      : return mode_meca
-  if AsType(RESULTAT)  == mode_stat_depl : return mode_stat_depl
   if AsType(RESULTAT)  == base_modale    : return base_modale
   raise AsException("type de concept resultat non prevu")
 
-REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
-                    fr="Restituer dans la base physique des résultats en coordonnées généralisées",
+REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
+          fr="Restituer dans la base physique des résultats obtenus par sous-structuration",
                     reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
-        regles=(UN_PARMI('RESU_GENE','RESU_PHYS','RESULTAT'),
+        regles=(UN_PARMI('RESU_GENE','RESULTAT'),
                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST'),
                 EXCLUS('TOUT_INST','NUME_ORDRE','INST','LIST_INST','TOUT_ORDRE'),
 #  Doc U à revoir
-                EXCLUS('MULT_APPUI','CORR_STAT'),
-                EXCLUS('MULT_APPUI','NOEUD','GROUP_NO'),
-                EXCLUS('CORR_STAT','NOEUD','GROUP_NO'),             
-                EXCLUS('NOEUD','GROUP_NO'),
-                EXCLUS('MACR_ELEM_DYNA','BASE_MODALE'),
+                 EXCLUS('NOEUD','GROUP_NO'),
+                 EXCLUS('MAILLE','GROUP_MA'),
                 PRESENT_PRESENT('RESULTAT','SQUELETTE'),
-                PRESENT_PRESENT('ACCE_MONO_APPUI','DIRECTION'),),
-         RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,evol_char,
-                                               mode_meca,mode_stat_depl,base_modale) ),
-         
+
+                ),
+         RESULTAT        =SIMP(statut='f',typ=(evol_noli,dyna_trans,
+                                            mode_meca,base_modale) ),
          RESU_GENE       =SIMP(statut='f',typ=(tran_gene,mode_gene,mode_cycl,harm_gene) ),
-         RESU_PHYS       =SIMP(statut='f',typ=(evol_noli,dyna_trans) ),
          BASE_MODALE     =SIMP(statut='f',typ=(base_modale,mode_meca) ),
          NUME_DDL        =SIMP(statut='f',typ=nume_ddl_sdaster ),
-         MACR_ELEM_DYNA  =SIMP(statut='f',typ=macr_elem_dyna),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  
@@ -71,8 +62,6 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
          b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
              PRECISION       =SIMP(statut='o',typ='R',),),
          INTERPOL        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","LIN") ),
-         MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         CORR_STAT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=8,defaut="ACCE",   
                                into=("DEPL","VITE","ACCE","ACCE_ABSOLU","EFGE_ELNO_DEPL","SIPO_ELNO_DEPL",                 
                                      "SIGM_ELNO_DEPL","FORC_NODA",) ),
@@ -81,10 +70,6 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
          NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
- 
-         ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-         DIRECTION       =SIMP(statut='f',typ='R',min=3,max=3 ),
-
          CYCLIQUE    =FACT(statut='f',max='**',
            NB_SECTEUR      =SIMP(statut='f',typ='I',validators=NoRepeat(),max=1 ),
            NUME_DIAMETRE    =SIMP(statut='f',typ='I',validators=NoRepeat(),max=1 ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -271,7 +271,7 @@ DYNTGEN=DYNA_TRAN_MODAL(  METHODE='NEWMARK',
                                PAS = pas),
                              );
 
-DYNTPHY=REST_BASE_PHYS(RESU_GENE=DYNTGEN,    
+DYNTPHY=REST_GENE_PHYS(RESU_GENE=DYNTGEN,    
                        PRECISION=1.E-7,
                        LIST_INST=LISTRD,
                        NOM_CHAM=('DEPL','VITE','ACCE'),
@@ -300,7 +300,7 @@ DYNTPHY=CALC_ELEM(reuse =DYNTPHY,
                );
                
 
-DYNHPHY=REST_BASE_PHYS(RESU_GENE=DYNHGEN,
+DYNHPHY=REST_GENE_PHYS(RESU_GENE=DYNHGEN,
                        NOM_CHAM=('DEPL','VITE','ACCE'),
                        FREQ=freq,);
 

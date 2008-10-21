@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSE RESSORT AVEC EXCITATION HARMONIQUE ET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,7 +229,7 @@ LISTER1=DEFI_LIST_REEL(  DEBUT=0.13,INTERVALLE=(
                             )
 
 #
-DYNATRAN=REST_BASE_PHYS(
+DYNATRAN=REST_GENE_PHYS(
                     RESU_GENE=DYNAMOD1,
                     LIST_INST=LISTER1,
                     NOM_CHAM='DEPL',
@@ -320,7 +320,7 @@ LISTER2=DEFI_LIST_REEL(
                             )
 
 #
-DYNATRA2=REST_BASE_PHYS(
+DYNATRA2=REST_GENE_PHYS(
                     RESU_GENE=DYNAMOD2,
                     LIST_INST=LISTER2,
                     NOM_CHAM='DEPL',

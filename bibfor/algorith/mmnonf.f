@@ -1,8 +1,8 @@
-        SUBROUTINE  MMNONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
-     &                     KSI2  ,FF    ) 
+        SUBROUTINE  MMNONF(NDIM  ,NNO   ,ALIAS  ,KSI1  ,KSI2  ,
+     &                     FF    ) 
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,6 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8 FFORME
       CHARACTER*8 ALIAS 
       REAL*8      KSI1,KSI2   
       REAL*8      FF(9)
@@ -36,14 +35,6 @@ C CALCUL DES FONCTIONS DE FORME EN UN POINT DE L'ELEMENT DE REFERENCE
 C      
 C ----------------------------------------------------------------------
 C
-C
-C ROUTINE "GLUTE" NECESSAIRE DU FAIT QUE LES FCT. FORME DE LA METHODE
-C CONTINUE NE SONT PAS CELLES STANDARDS D'ASTER.
-C
-C
-C IN  FFORME : TYPE DES FONCTIONS DE FORME
-C               'CONTINUE' POUR ELTS DE CONTACT
-C               'STANDARD' POUR ELTS STANDARDS
 C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
 C IN  NNO    : NOMBRE DE NOEUD DE L'ELEMENT
 C IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
@@ -71,13 +62,7 @@ C
       KSI(1) = KSI1
       KSI(2) = KSI2
 C
-      IF (ALIAS.EQ.'SG2') THEN
-        ELREFE = 'SE2'
-      ELSEIF (ALIAS.EQ.'SG3') THEN  
-        ELREFE = 'SE3'
-      ELSE
-        ELREFE = ALIAS
-      ENDIF     
+      ELREFE = ALIAS
 C
       IF ((NNO.LT.1).OR.(NNO.GT.9)) THEN
         CALL ASSERT(.FALSE.)
@@ -89,12 +74,6 @@ C
 C
 C --- RECUP FONCTIONS DE FORME 
 C
-      IF (FFORME.EQ.'CONTINUE') THEN
-        CALL CALFFX(ALIAS ,KSI1  ,KSI2  ,FF    )
-      ELSEIF (FFORME.EQ.'STANDARD') THEN         
-        CALL ELRFVF(ELREFE,KSI,NNO          ,FF  ,IBID)
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
+      CALL ELRFVF(ELREFE,KSI,NNO   ,FF    ,IBID)
 
       END

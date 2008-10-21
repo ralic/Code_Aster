@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : MAILLAGE INCOMPATIBLE ET MODES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -219,12 +219,12 @@ MODG=MODE_ITER_SIMULT(MATR_A=KGEN,
                                    NMAX_FREQ=6,),);
 #
 # RESTITUTION SUR CHAQUE MACRO-ELEMENT DES LES MODES D'INTERFACE
-MODINT1=REST_BASE_PHYS(RESU_GENE=MODG,
+MODINT1=REST_SOUS_STRUC(RESU_GENE=MODG,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI',
                        SOUS_STRUC='MAIL1',);
 
-MODINT2=REST_BASE_PHYS(RESU_GENE=MODG,
+MODINT2=REST_SOUS_STRUC(RESU_GENE=MODG,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI',
                        SOUS_STRUC='MAIL2',);
@@ -295,7 +295,7 @@ GLOBAL=DEFI_SQUELETTE(MODELE_GENE=MODELRG,
                                   _F(NOM='MAILR2',
                                      TOUT='OUI',),),);
 
-MODGLO=REST_BASE_PHYS(RESU_GENE=RESGENR,
+MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGENR,
                       TOUT_ORDRE='OUI',
                       SQUELETTE=GLOBAL,);
 

@@ -1,4 +1,4 @@
-#@ MODIF meidee_fludela Meidee  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_fludela Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,9 +34,13 @@ from Meidee.meidee_calcul_correlation import extract_mac_array
 from Tkinter import Frame, Menubutton, Menu, StringVar, IntVar, Listbox
 from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, DoubleVar
+from Tkinter import Toplevel
 from Meidee.meidee_iface import MyMenu, LabelArray, MenuArray, EntryArray, ModeList
-from Meidee.meidee_iface import VLabelledItem, HLabelledItem, MacWindow
-from Meidee.meidee_calcul_fludela import MeideeFludela
+from Meidee.meidee_iface import VLabelledItem, HLabelledItem, MacWindow, XmgrManager, PlotXMGrace
+from Meidee.meidee_calcul_fludela import MeideeFludela, MeideeTurbMonomod
+from Meidee.modes import OptionFrame
+from Meidee.meidee_cata import Resultat, InterSpectre
+from Meidee.meidee_cata import MeideeObjects, CreaTable
 
 
 ######################
@@ -50,7 +54,7 @@ DEFAULT_FRAME_ARGS = {
     "relief" : 'ridge',
     "borderwidth" : 4,
     }
-
+    
 
 #-----------------------------------------------------------------------------
 
@@ -61,7 +65,7 @@ class InterfaceLongeq(Frame):
     def __init__(self, parent, objects, fludela, mess ):
         """!Constructeur
 
-        Construit l'interface de selection et calcul des longueurs équivalente
+        Construit l'interface de selection et calcul des longueurs équivalentes
 
         \param parent La Frame parente
         \param objects Une instance de MeideeObjects
@@ -71,7 +75,7 @@ class InterfaceLongeq(Frame):
         Frame.__init__(self, parent, **DEFAULT_FRAME_ARGS)
         self.parent = parent
         self.objects = objects
-        assert isinstance( parent, InterfaceFludela)
+##        assert isinstance( parent, InterfaceFludela)
         # Menu choix du resultat numerique
         Label(self, text="Choisissez un resultat pour le calcul" \
               " de la longeur equivalente ").grid(row=0, column=0, columnspan=3)
@@ -607,6 +611,7 @@ class InterfaceChoixModes(Frame):
         \param mode1 le nom de l'objet mode_meca pour la base 1
         \param mode2 le nom de l'objet mode_meca pour la base 2
         """
+        print "modes1-2 = ", mode1, mode2
         if ( not self.mode_valid( mode1 ) or
              not self.mode_valid( mode2 ) ):
             return
@@ -615,18 +620,13 @@ class InterfaceChoixModes(Frame):
         try:
             __MAC = MAC_MODES( BASE_1=res_1.obj,
                                BASE_2=res_2.obj )
-        except aster.error:
+        except aster.FatalError:
             self.mess.disp_mess("!! Calcul de MAC impossible : bases incompatibles !!")
             UTMESS('A','MEIDEE0_3')
             return
-        mat = extract_mac_array( __MAC )
-        freq1, _, _, modes1, _, _ = res_1.get_modes()
-        freq2, _, _, modes2, _, _ = res_2.get_modes()
-        freq1 = [ "%.2f" % f[1] for f in freq1 ]
-        freq2 = [ "%.2f" % f[1] for f in freq2 ]
-        modes1 = [ int(i[1]) for i in modes1]
-        modes2 = [ int(i[1]) for i in modes2]
-        mac_win = MacWindow( self, titre, (modes1,freq1), (modes2,freq2), mat, name1=mode1, name2=mode2 )
+        nom_table = 'MAC'
+        mat = extract_mac_array( __MAC,nom_table)
+        mac_win = MacWindow( self, titre, mode1, mode2, mat, resu1=res_1, resu2=res_2 )
 
     def save_calc(self):
         """!Sauvegarde un résultat de calcul dans un fichier
@@ -647,7 +647,7 @@ class InterfaceChoixModes(Frame):
         self.fludela.save_to_file(name, data)
 
     def impr_resu(self):
-        """!Impression dans une table aster des tous les résultats
+        """!Impression dans une table aster de tous les résultats
             obtenus avec les différents calculs"""
         data_fin = self.fludela.saved_data
         nom = self.export_name.get()
@@ -683,7 +683,7 @@ class InterfaceChoixModes(Frame):
 class InterfaceParamPhys(Frame):
     """!Interface de lecture des paramètres physiques"""
     
-    def __init__(self, parent, fludela, mess):
+    def __init__(self, parent, fludela, turbmonomod, mess):
         """!Constructeur
         \param parent l'objet parent dérivant de Tkinter.Frame
         \param fludela une instance de MeideeFludela
@@ -722,7 +722,7 @@ class InterfaceParamPhys(Frame):
 
 
     def update(self, event):
-        """!Callback appelé lors du changement d'un des paramètres physique
+        """!Callback appelé lors du changement d'un des paramètres physiques
 
         on notifie l'objet fludela du changement et on relance le calcul
         """
@@ -749,7 +749,7 @@ class InterfaceParamPhys(Frame):
 class InterfaceFludela(Frame):
     """!Classe qui crée les différents panneaux d'interface du tab fludela"""
     
-    def __init__(self, parent, aster_objects, fimens, mess, out ):
+    def __init__(self, parent, aster_objects, fimens, mess, out, param_visu ):
         """!Constructeur
 
         :IVariable:
@@ -766,16 +766,18 @@ class InterfaceFludela(Frame):
         self.mess = mess
         self.objects = aster_objects
 ##        self.objects.recup_objects()
+        self.param_visu = param_visu
         self.columnconfigure(0, weight=1)
         self.rowconfigure(3, weight=1)
         self.mess.disp_mess( (  "FIC fimens:" + str(fimens) ) ) 
         self.fimens = fimens
 
         self.fludela = MeideeFludela(mess, out)
+        self.turbmonomod = MeideeTurbMonomod(aster_objects,mess,out)
 
         Label(self, text="MeideeFludela - Fludela").grid(row=0, column=0, sticky='n')
         self.longeq = InterfaceLongeq(self, aster_objects, self.fludela, mess)
-        self.param_phys = InterfaceParamPhys(self, self.fludela, mess )
+        self.param_phys = InterfaceParamPhys(self, self.fludela, self.turbmonomod, mess )
         self.choix_modes = InterfaceChoixModes(self, aster_objects, self.param_phys,
                                                self.longeq, fimens, mess, self.fludela )
 
@@ -903,6 +905,571 @@ class InterfaceDisplay(Frame):
 
 #-------------------------------------------------------------------------------
 
+class InterfaceTurbMonomod(Frame):
+    """!Classe qui crée les différents panneaux d'interface du tab fludela"""
+    
+    def __init__(self, parent, aster_objects, fimens, mess, out ,param_visu ):
+        """!Constructeur
+
+        :IVariable:
+         - `parent`: fenetre parente
+         - `aster_objects`: concepts aster dans jeveux
+         - `fimens`: UL des fichiers fimen2x
+         - `mess` : fenetre message
+         - `obj_out`: concepts aster "table_sdaster" dans lesquelles on va ranger
+            les résultats que l'utilisateur voudra sauver
+         - `declout`: la fonction self.DeclareOut
+        """
+
+        Frame.__init__(self, parent, **DEFAULT_FRAME_ARGS )
+        self.mess = mess
+        self.objects = aster_objects
+        self.fimens = fimens
+        self.param_visu = param_visu
+        
+##        self.objects.recup_objects()
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(4, weight=1)
+
+        # appel des classes de meidee_calcul_fludela.py
+        self.fludela = MeideeFludela(mess,out)
+        self.turbmonomod = MeideeTurbMonomod(aster_objects,mess,out)
+
+        Label(self, text="MeideeFludela - Fludela").grid(row=0, column=0, sticky='n')
+        self.donnees = InterfaceDonnees(self, aster_objects, self.turbmonomod, mess)
+        self.param_phys = InterfaceParamPhys(self, self.fludela, self.turbmonomod, mess )
+        self.select_mesures = InterfaceSelectMesures(self,aster_objects,self.turbmonomod,fimens, mess)
+        self.longeq_turb = InterfaceLongeqTurb(self,aster_objects,self.turbmonomod,self.fludela,self.donnees,self.select_mesures,mess)
+
+        self.donnees.grid( row=1, column=0, sticky='n'+'e'+'w'+'s' )
+        self.param_phys.grid( row=2, column=0, sticky='n'+'e'+'w'+'s' )
+        self.select_mesures.grid(row=3, column=0, sticky='n'+'e'+'w'+'s' )
+        self.longeq_turb.grid( row=4, column=0, sticky='n'+'e'+'w'+'s' )
+
+
+    def setup(self):
+####        self.objects.recup_objects()
+        self.longeq_turb.refresh()
+        self.donnees.refresh()
+        self.select_mesures.refresh()
+        
+    def teardown(self):
+        # XXX : sauvegarde des donnees
+        pass
+
+
+#-------------------------------------------------------------------------------
+
+class InterfaceDonnees(Frame):
+    """!Interface de paramétrage du calcul de la longueur équivalente, 
+        (resultat, fonction de corrélation, modes retenus) pour la méthode 
+        turbulente mono-modale     
+
+    """
+    def __init__(self, parent, objects, turbmonomod, mess ):
+        """!Constructeur
+
+        Construit l'interface de selection et calcul des longueurs équivalentes,
+        et des fonctions de corrélation
+
+        \param parent La Frame parente
+        \param objects Une instance de MeideeObjects
+        \param turbmonomod Une instance de MeideeTurbMonomod
+        
+        """
+        Frame.__init__(self, parent, **DEFAULT_FRAME_ARGS)
+        self.parent = parent
+        self.objects = objects
+        self.turbmonomod = turbmonomod
+        self.mess = mess
+
+#       Paramètres de calcul
+        self.ld = DoubleVar()
+        self.lambdac = DoubleVar()
+        self.gammac = IntVar()
+
+        
+#       Numéro des modes retenus dans le sd_resultat
+        self.liste_modes_deconv=[]
+        self.liste_modes_EML=[]
+        
+        
+##        assert isinstance( parent, InterfaceFludela)
+        # Menu choix du resultat numerique
+        Label(self, text="Choisissez un RESULTAT et une fonction de corrélation" \
+              " pour le calcul de la longeur de corrélation généralisée ").grid(
+                  row=0, column=0, columnspan=5)
+
+        Label(self, text="Résultat").grid(row=1,column=1)
+        self.modes_name = StringVar()
+        self.menu_modes = MyMenu( self,
+                                  objects.get_resultats_num(),
+                                  self.modes_name,
+                                  self.update 
+                                 )
+        self.menu_modes.grid(row=2, column=1)
+        
+             
+
+        Label(self, text="Fonction de corrélation").grid(row=1, column=2)
+        self.var_fonc_correl = StringVar()
+        self.menu_correl = MyMenu( self,
+                                   ['MODELE GAMMA','CORCOS'],
+                                   self.var_fonc_correl,
+                                   self.choix_modele_correl )
+
+        self.menu_correl.grid(row=2, column=2)
+
+        Label(self, text="Paramétres supplémentaires").grid(row=2, column=3)
+        
+        self.var_fcorrel_param_frame_visible = IntVar()
+        Checkbutton (self, text="Définition",
+                     command=self.display_fcorrel_param_frame,
+                     variable=self.var_fcorrel_param_frame_visible,
+                     indicatoron=0).grid(row=3,column=3)    
+        
+        self.fcorrel_param_frame = frm1 = Toplevel()
+        frm1.rowconfigure(0,weight=1)
+        frm1.columnconfigure(0,weight=1)
+        
+        self.param_gamma = ParamModeleGamma(frm1, "Paramétres du modèle Gamma")
+        self.param_gamma.grid(row=0,column=0,sticky='nsew')
+        
+        Liste_ParamGamma = self.param_gamma.update_param()
+        
+        self.ld = Liste_ParamGamma[0]
+        self.lambdac = Liste_ParamGamma[1]
+        self.gammac = Liste_ParamGamma[2]
+        
+        self.param_corcos = ParamCorcos(frm1, "Paramétres du modèle de Corcos")
+        self.param_corcos.grid(row=0,column=0,sticky='nsew')
+        
+        frm1.protocol("WM_DELETE_WINDOW", self.hide_fcorrel_param_frame)
+        Button(frm1,text="OK",command=self.hide_fcorrel_param_frame).grid(row=1,column=0)
+        frm1.withdraw()
+#
+        Label(self, text="Choisissez les MODES utilisés pour la déconvolution unimodale"\
+                    " et pour le calcul des EML").grid(row=5, column=0, columnspan=4)
+        
+        self.liste_mode_deconv = ModeList(self, "Déconvolution unimodale")
+        self.liste_mode_deconv.grid(row=6, column=1)
+        
+        self.liste_mode_EML = ModeList(self,"Excitations Modales Locales")
+        self.liste_mode_EML.grid(row=6,column=3)
+        
+        Button (self,text='Selectionner',command=self.Select_deconv).grid(
+            row=6, column=2)
+        Button (self,text='Selectionner',command=self.Select_EML).grid(
+            row=6, column=4)
+        
+
+    def update(self):
+        """ Pour mise à jour de la liste des modes associés au choix RESULTAT"""
+        nom=self.modes_name.get()
+        mode=self.objects.get_resu(nom)
+        print mode.nom
+        self.freq_deconv,bid1,bid2,self.nume_deconv,bid3,bid4 = mode.get_modes()
+        self.liste_mode_deconv.fill_modes(self.freq_deconv,self.nume_deconv)
+        self.freq_EML,bid1,bid2,self.nume_EML,bid3,bid4 = mode.get_modes()
+        self.liste_mode_EML.fill_modes(self.freq_EML,self.nume_EML)
+        
+    def Select_deconv(self):
+        print "###############################"
+        print " Choix du mode pour la deconvolution unimodale"
+        self.mess.disp_mess ("Fréquence du mode pour la deconvolution unimodale")
+        liste_deconv = self.liste_mode_deconv.return_list()
+        modes_deconv = liste_deconv.curselection()
+        for i in modes_deconv:
+            print int(self.nume_deconv[int(i)][1]),self.freq_deconv[int(i)][1]
+            self.mess.disp_mess ( "%13.5E" %(self.freq_deconv[int(i)][1]) )
+            self.liste_modes_deconv.append(self.nume_deconv[int(i)][1])
+            
+            
+    def Select_EML(self):
+        print "###############################"
+        print " Choix du (des) mode(s) pour la méthode des EML"
+        self.mess.disp_mess ("Fréquence(s) du (des) mode(s) pour la méthode des EML")
+        liste_EML = self.liste_mode_EML.return_list()
+        modes_EML = liste_EML.curselection()
+        for i in modes_EML:
+            print int(self.nume_EML[int(i)][1]),self.freq_EML[int(i)][1]
+            self.mess.disp_mess ( "%13.5E" %(self.freq_deconv[int(i)][1]) )
+            self.liste_modes_EML.append(self.nume_EML[int(i)][1])
+    
+
+    def display_fcorrel_param_frame(self):
+        state=self.var_fcorrel_param_frame_visible.get()
+        if state:
+                self.fcorrel_param_frame.deiconify()
+        else:
+                self.fcorrel_param_frame.withdraw()
+
+    def hide_fcorrel_param_frame(self):
+        self.var_fcorrel_param_frame_visible.set(0)
+        self.fcorrel_param_frame.withdraw()
+        
+    def choix_modele_correl(self):
+        choix = self.var_fonc_correl.get()
+        if choix=='MODELE GAMMA':
+            self.param_corcos.grid_remove()
+            self.param_gamma.grid()
+        else:
+            self.param_gamma.grid_remove()
+            self.param_corcos.grid()
+         
+    
+    def refresh(self):
+##        self.objects.recup_objects()
+
+        results_num = self.objects.get_resultats_num()
+        old_result = self.modes_name.get()
+#        self.menu_modes.update( results_num, self.modes_num, self.compute_lcorr )
+        self.modes_name.set(old_result)
+
+        
+
+#-------------------------------------------------------------------------------
+
+class ParamModeleGamma(Frame):
+    """Un panneau pour spécifier les paramètres adimensionnels de la fonction
+       GAMMA : longueur de diffusion, longueur de corrélation et vitesse de 
+       convection 
+    """
+    def __init__(self, root, title, **kwargs):
+        Frame.__init__(self, root, **kwargs)
+        Label(self, text=title).grid(row=0, column=0, columnspan=1)
+        
+        self.ld = DoubleVar()
+        self.lambdac = DoubleVar()
+        self.gammac = IntVar()
+        self.ld.set(3.0)
+        self.lambdac.set(3.5)
+        self.gammac.set(70)
+        self.gamma = OptionFrame(self, "Modèle GAMMA",
+                                 [ ("longueur de diffusion",Entry,
+                                   { 'textvariable':self.ld } ),
+                                   ("longueur de corrélation (nb.de diamètre)",
+                                    Entry,
+                                   { 'textvariable':self.lambdac } ),
+                                   ("vitesse de convection (% de la vitesse moyenne)",
+                                     Entry,
+                                   { 'textvariable':self.gammac } ),
+                                 ])
+        self.gamma.grid(row=1,column=0,sticky="WE",columnspan=2)
+         
+        
+    def update_param(self):
+        mc=[]
+        mc.append(self.ld.get())
+        mc.append(self.lambdac.get())
+        mc.append(self.gammac.get())
+        
+        print "mc"
+        print mc
+        
+        return mc
+        
+                              
+#-------------------------------------------------------------------------------
+
+class ParamCorcos(Frame):
+    """Un panneau pour spécifier les paramètres adimensionnels de la fonction
+       Corcos :  
+    """
+    def __init__(self, root, title, **kwargs):
+        Frame.__init__(self, root, **kwargs)
+        Label(self, text=title).grid(row=0, column=0, columnspan=1)
+        
+        self.param1 = DoubleVar()
+        self.param2 = DoubleVar()
+        self.param1.set(0.0)
+        self.param2.set(0.0)
+        
+        self.corcos = OptionFrame(self, "Modèle de CORCOS",
+                                 [ ("param1",Entry,
+                                    { 'textvariable':self.param1 } ),
+                                   ("param2",Entry,
+                                    { 'textvariable':self.param2 } ),
+                                 ])
+        self.corcos.grid(row=1,column=0,sticky="WE",columnspan=2)
+#-----------------------------------------------------------------------------
+class InterfaceSelectMesures(Frame):
+    """ classe graphique pour la selection des mesures en fonctionnement
+    """
+
+    def __init__(self, parent, objects, turbmonomod, fimens, mess):
+        """  \param fimens: Fichiers fimen à utiliser  
+        """      
+        self.turbmonomod = turbmonomod
+        self.mess = mess
+        self.parent = parent
+        self.objects = objects
+
+        Frame.__init__(self, parent, **DEFAULT_FRAME_ARGS)
+
+        Label(self,text="Choix de l'interspectre en fonctionnement").grid(
+                   row=0,column=0, columnspan = 3)
+        
+        self.inte_spec_name = StringVar()  #le nom de l'interspectre
+        self.choix_inte_spec = MyMenu(self,
+                                objects.get_inter_spec_name(),
+                               self.inte_spec_name,
+                               self._get_inter_spec
+                                   )
+        self.choix_inte_spec.grid(row=1,column=0)
+        
+        Label(self,text="Type de mesures").grid(row=2,column=0)
+        
+        self.typ_resu_fonc = StringVar() # le type de l'interspectre
+        self.opt_cham = ['DEPL','VITE','ACCE'] 
+        self.typ_cham = MyMenu(self,
+                               self.opt_cham,
+                               self.typ_resu_fonc)
+        self.typ_resu_fonc.set('DEPL')
+        self.typ_cham.grid(row=3, column=0)
+        
+        Label(self, text="Choix de la base modale expérimentale").grid(
+                      row=0,column=3,columnspan = 2 )
+        self.ModesExp_name = StringVar()
+        self.menu_modes = MyMenu( self,
+                                  objects.get_resultats_num(),
+                                  self.ModesExp_name                                  
+                                 )
+        self.menu_modes.grid(row=1, column=3)
+        
+        self.vitesse = StringVar()
+        itm = HLabelledItem(self, "Vitesse :",
+                            Entry,
+                            textvariable=self.vitesse)
+        self.vitesse_entry = itm.itm
+        itm.itm.bind("<Return>", self.change_vitesse)
+        itm.grid(row=3, column=2,sticky='w')
+                            
+      # Choix des fichiers FIMEN
+        self.fimens = {}
+        for u,m in fimens:
+            self.fimens[m] = u
+        self.fimen_name = StringVar()
+        self.menu_fimen = MyMenu( self, self.fimens.keys(),
+                                  self.fimen_name )
+        self.fimen_name.set("Fichier FIMEN")
+        self.menu_fimen.grid(row=3, column=3,sticky='w')
+    
+    def change_vitesse(self, event):
+        """!Callback appelé lors d'un changement du paramètre vitesse"""
+        try:
+            vit = float(self.vitesse.get())
+        except ValueError:
+            self.mess.disp_mess( (  "Vitesse invalide" ) )
+            self.mess.disp_mess( ( " " ) ) 
+            self.vitesse_entry['background'] = "red"
+            return
+        except TypeError:
+            self.mess.disp_mess( (  "Rentrer une vitesse d'écoulement" ) )
+            self.mess.disp_mess( ( " " ) )
+            return
+        self.vitesse_entry['background'] = "green"
+        self.turbmonomod.set_speed( vit )
+        
+    def _get_inter_spec(self):
+        """ Va chercher l'instance de la classe Interspectre correspondant 
+        au nom de l'interspectre choisi"""
+        nom_intsp = self.inte_spec_name.get()
+        self.inter_spec = self.objects.inter_spec[nom_intsp]
+    
+    def refresh(self):
+##        self.objects.recup_objects()
+
+        results_num = self.objects.get_resultats_num()
+        old_result = self.ModesExp_name.get()
+#        self.menu_modes.update( results_num, self.modes_num, self.compute_lcorr )
+        self.ModesExp_name.set(old_result)                
+#-----------------------------------------------------------------------------
+class InterfaceLongeqTurb(Frame):
+    """classe graphique qui dirige les calculs des longueurs de correlation
+        fluides, méthode mono-modale"""
+
+    def __init__(self, parent, objects, turbmonomod, fludela, donnees, select_mesures, mess):
+        self.turbmonomod = turbmonomod
+        self.mess = mess
+        self.parent = parent
+        self.objects = objects
+        self.donnees = donnees
+        self.select_mesures = select_mesures 
+        self.fludela = fludela
+        
+        self.xmgr_manager = XmgrManager()
+
+        Frame.__init__(self, parent, **DEFAULT_FRAME_ARGS) 
+        
+        Label(self, text="Calcul des longueurs de corrélation généralisée").grid(
+                     row=0,column = 0,columnspan = 3 )
+        Label(self, text="et des densités spectrales d'excitation").grid(
+                     row=1,column = 0,columnspan = 3 )             
+        
+        Button(self, text="Calcul!", command=self.compute_lcorr_gene ).grid(
+                      row=0, column=3,sticky='w')
+        
+        Label(self, text="Fonction Lc pour le mode fondamental").grid(
+                     row=2,column=0)
+        Button(self, text="Afficher", command = self.affich_fonc_lcorr).grid(
+                     row=2, column=1)
+                     
+        
+        self.lcorr_EML_array = ModeList(self,'Valeurs Lc des modes supplémentaires (EML)')
+        self.lcorr_EML_array.grid(row=2, column=3)
+        self.lcorr_EML_values =  zeros((1,1),)
+
+        self.fludela.register_longeq( self.notify )
+        
+        Label(self, text="Fonction S0 pour le mode fondamental").grid(
+                     row=4,column=0)
+        Button(self, text="Afficher", command = self.affich_fonc_S0).grid(
+                     row=4, column=1)
+        
+        Label(self, text="Recalage du spectre selon la forme analytique").grid(
+                     row=5, column=0)
+        Button(self, text="Calcul !", command = self.compute_interpolation).grid(
+                     row=5, column=1)             
+        
+    def compute_lcorr_gene(self):
+        """!Si possible calcule la longueur de corrélation généralisée"""
+        try:
+            self.resu = self.objects.get_resu( self.donnees.modes_name.get() )
+            self.resu_exp = self.objects.get_resu( self.select_mesures.ModesExp_name.get())
+        except KeyError:
+            return
+        self.mess.disp_mess( (  " Calcul de la longueur de corrélation généralisée" ) )
+        self.mess.disp_mess( (  self.resu.modele_name ) )
+        self.mess.disp_mess( (  self.resu.nom ) )
+        self.mess.disp_mess( ( "  " ) ) 
+
+        # Attention à rafraîchir la mémoire de MeideeObjects
+        self.objects.recup_objects()
+        
+        nom_intsp=self.select_mesures.inte_spec_name.get()
+        self.inter_spec = self.objects.inter_spec[nom_intsp]
+        print "self.inter_spec"
+        print self.inter_spec
+        
+        self.turbmonomod.set_ld(self.donnees.ld)
+        self.turbmonomod.set_lambdac(self.donnees.lambdac)
+        self.turbmonomod.set_gammac(self.donnees.gammac)
+        print "self.donnees.ld"
+        print self.donnees.ld
+        
+        self.turbmonomod.set_res_longcorr( self.resu )
+        self.turbmonomod.set_resultat_exp(self.resu_exp)
+        self.turbmonomod.set_nume_deconv(self.donnees.liste_modes_deconv)
+        self.turbmonomod.set_nume_EML(self.donnees.liste_modes_EML)
+        self.turbmonomod.set_interspectre(self.inter_spec)
+        self.turbmonomod.set_type_intsp(self.select_mesures.typ_resu_fonc.get())
+        if self.select_mesures.fimen_name.get() != 'Fichier FIMEN':
+            self.turbmonomod.set_fimen(self.fimen_name.get())
+        # Lancement des calculs
+        self.turbmonomod.compute()
+        lcorr = self.turbmonomod.long_corr
+        nume_modes = self.resu.get_modes()[3]
+        self.lcorr_EML_array.fill_modes( lcorr, nume_modes, format = '%13.5E' )
+        
+    def compute_interpolation(self):
+        try:
+            self.fonc_S0 = self.turbmonomod.fonc_ModulS0
+        except KeyError:
+            return
+        self.mess.disp_mess( (  " Calcul des parametres de la forme analytique " ) )
+        self.mess.disp_mess( (  "  attendue pour S0 " ) )
+        self.turbmonomod.compute_interpolation()
+        
+    def affich_fonc_lcorr(self):
+        """Lance l'affichage de la fonction Lc(omega) du mode fondamental
+        """
+        var_abs = StringVar()
+        var_ord = StringVar()
+        
+        var_abs.set("LIN")
+        var_ord.set("LIN")
+        
+        fonc_lcorr = self.turbmonomod.fonc_long_corr
+        
+        fonc_lcorr_py = fonc_lcorr.convert()        
+        
+        abscisse = fonc_lcorr_py.vale_x
+        ordonnee = fonc_lcorr_py.vale_y
+        
+        print "abscisse dans affich_fonc_lcorr"
+        print abscisse
+        print "ordonnee dans affich_fonc_lcorr"
+        print ordonnee
+        
+        print "longueurs des tableaux abs et ord de fonc_lcorr"
+        print len(abscisse)
+        print len(ordonnee)
+        print "var_abs.get()"
+        print var_abs.get()
+        print ".var_ord.get()"
+        print var_ord.get()
+        
+        color = [1]
+        
+        legende = [ "Longueur de correlation generalisee" ] 
+        
+        PlotXMGrace(abscisse, ordonnee, color, legende, var_abs.get(),var_ord.get())
+                
+    
+    def affich_fonc_S0(self):
+        """Lance l'affichage de la fonction S0(omega) du mode fondamental
+        """
+        var_abs = StringVar()
+        var_ord = StringVar()
+        
+        var_abs.set("LOG")
+        var_ord.set("LOG")
+        
+        self.fonc_S0 = self.turbmonomod.fonc_ModulS0
+        
+        ModS0_py = self.fonc_S0.convert()
+        
+        abscisse = ModS0_py.vale_x
+        ordonnee = ModS0_py.vale_y
+        
+        print "abscisse dans affich_fonc_S0"
+        print abscisse
+        print "ordonnee dans affich_fonc_S0"
+        print ordonnee
+        
+        print "var_abs.get()"
+        print var_abs.get()
+        print "var_ord.get()"
+        print var_ord.get()
+        
+        color = [1]
+        
+        legende = [ "Spectre d'excitation S0" ] 
+        
+        PlotXMGrace(abscisse, ordonnee, color, legende, var_abs.get(),var_ord.get())
+                
+        
+    def refresh(self):
+#        inte_spec_name = self.objects.get_inter_spec_name()
+        results_num = self.objects.get_resultats_num()
+#        self.choix_inte_spec.update(inte_spec_name,self.inte_spec_name,self._get_inter_spec)
+#        self.choix_deconvunimod.update(results_num,self.deconvunimod_name,self.update)
+#        self.choix_EML.update(results_num,self.EML_name,self.update2)
+        
+    
+
+    def notify(self):
+        lcorr = self.turbmonomod.long_corr
+        nume_modes = self.resu.get_modes()[3]
+# retenir que les nume_mode deconv et EML ???
+        self.lcorr_EML_array.fill_modes( lcorr, nume_modes, format = '%13.5E' )
+
+
+        
+#-------------------------------------------------------------------------------
+
+
 class Curve:
     """!Encapsule une courbe pour TkPlotCanvas"""
     def __init__(self, name, data, field, mode, mess):
@@ -947,6 +1514,7 @@ class Fimen:
         self.b = None
         self.u = None
         self.v = None
+        self.w = None
         self.mess.disp_mess( "on ouvre le fichier fimen suivant : ")
         self.mess.disp_mess( name )
         self.mess.disp_mess( "  " )
@@ -1053,5 +1621,39 @@ class Fimen:
         f0 = f0/nref
         xsi0 = xsi0/nref
 
-        return f0, xsi0        
+        return f0, xsi0  
+        
+#    def variance_granger(self, ind_ref=0, modes=None):
+    def variance_granger(self,ind_ref=0):
+         """!Calcul de la variance globale pour utilisation dans la méthode des EML
+         pour l'estimation des efforts turbulents """
+         
+#         from Cata.cata import CREA_CHAMP, DETRUIRE, CREA_TABLE
+#         
+         nref = self.nrf
+         nm = self.nm
+         A,B,U,V = self.a, self.b, self.u, self.v
+         
+         if modes is None:
+             modes = range(self.nm)
+             
+         
+         var0 = 1.0*zeros( (self.nm,self.nrf))
+         
+                  
+         for imodes in range(nm):
+             for iref in range(nref) :
+                 ponderation = A[imodes,iref]*U[imodes,iref] - B[imodes,iref]*V[imodes,iref]
+#             ponderation = take( ponderation, modes )  
+                              
+                 def2 = U[imodes,iref]*U[imodes,iref]+V[imodes,iref]*V[imodes,iref]
+             
+                 var = 2*(ponderation / def2)
+             
+                 var0[imodes,iref] = var
+         
+         return var0       
+             
+             
+             
 

@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,13 +47,11 @@ C
      +              IRET, NBSIGR, VALEI(3), JNUMGR, JNSITU, JNSG, JVALE,
      +              JPMPB, NBGR, IOC, NUMGR, IS1, IS2, JREAS, JRESS, N1,
      +              JSEIGR, JCOMBI, IOC1, IOC2, IOCS, II, NPAR0
-      PARAMETER    ( NPAR0 = 39, NPAR2 = 7, NPAR1 = 15, NPAR4 = 15,
+      PARAMETER    ( NPAR0 = 34, NPAR2 = 7, NPAR1 = 10, NPAR4 = 15,
      +               NPAR6 = 13 )
       REAL*8        UTOT, VALER(2)
       COMPLEX*16    C16B
-      CHARACTER*2   K2C, K2L
       CHARACTER*4   LIEU(2)
-      CHARACTER*6   K6B
       CHARACTER*8   K8B, VALEK(4), TYPAR0(NPAR0), TYPAR6(NPAR6), TYPTAB
       CHARACTER*16  NOPAR2(NPAR2), NOPAR1(NPAR1), NOPAR4(NPAR4),
      +              NOPAR6(NPAR6), NOPAR0(NPAR0)
@@ -69,14 +67,11 @@ C
      +              'PM' , 'PB' , 'PMPB', 'SN', 'SN*', 'SP', 'KE_MECA',
      +              'KE_THER', 'SALT', 'NUME_SITU_K', 'NUME_SITU_L',
      +              'FACT_USAGE',  '%_FACT_USAGE' ,
-     +              'SP_ETAT_A_A', 'SALT_ETAT_A_A' ,
-     +              'SP_ETAT_B_A', 'SALT_ETAT_B_A' ,
-     +              'SP_ETAT_A_B', 'SALT_ETAT_A_B' ,
-     +              'SP_ETAT_B_B', 'SALT_ETAT_B_B' /
+     +              'SP1_MIN', 'SP2_MAX', 'SALT_IJ' /
       DATA TYPAR0 / 'K8', 'K8', 'I', 'K8',  'R', 'R', 'R', 'R', 'R',
      +              'R', 'R', 'R', 'R', 'R', 'R', 'I', 'I', 'I', 'R',
      +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8',
-     +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'  /
+     +              'R', 'R', 'R', 'R', 'R'  /
 C
 C --- PARAMETRES FACTEUR D'USAGE
 C
@@ -87,10 +82,7 @@ C --- PARAMETRES POUR LE CALCUL DU FACTEUR D'USAGE
 C
       DATA NOPAR1 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU',
      +              'NUME_SITU_I', 'NUME_SITU_J', 'SN' ,
-     +                     'SP_ETAT_A_A', 'SALT_ETAT_A_A' ,
-     +                     'SP_ETAT_B_A', 'SALT_ETAT_B_A' ,
-     +                     'SP_ETAT_A_B', 'SALT_ETAT_A_B' ,
-     +                     'SP_ETAT_B_B', 'SALT_ETAT_B_B' /
+     +                     'SP1_MIN', 'SP2_MAX', 'SALT_IJ' /
 C
 C --- PARAMETRES POUR CHAQUE SITUATION
 C
@@ -211,7 +203,7 @@ C
                   CALL TBAJLI ( NOMRES, NPAR1, NOPAR1, VALEI,
      +                          ZR(JRESS+II), C16B, VALEK, 0 )
 
-                  II = II + 9
+                  II = II + 4
  124           CONTINUE
 
  122        CONTINUE
@@ -242,20 +234,10 @@ C
               ELSE
                 VALER(2) = 100.D0 * VALER(1) / UTOT
               ENDIF
-              IF ( I3.EQ.1 .OR. I3.EQ.3 ) THEN
-                K2L = '_A'
-              ELSE
-                K2L = '_B'
-              ENDIF
-              IF ( I3.EQ.1 .OR. I3.EQ.2 ) THEN
-                K2C = '_A'
-              ELSE
-                K2C = '_B'
-              ENDIF
-              CALL CODENT ( IS1, 'D', K6B )
-              VALEK(3) = K6B//K2L
-              CALL CODENT ( IS2, 'D', K6B )
-              VALEK(4) = K6B//K2C
+              CALL CODENT ( IS1, 'D', K8B )
+              VALEK(3) = K8B
+              CALL CODENT ( IS2, 'D', K8B )
+              VALEK(4) = K8B
               CALL TBAJLI ( NOMRES, NPAR2, NOPAR2, VALEI, VALER,
      +                                                C16B, VALEK, 0 )
 C

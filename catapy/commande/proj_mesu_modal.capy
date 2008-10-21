@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ def proj_mesu_modal_prod(MODELE_MESURE,**args):
      if  AsType(vale) == dyna_trans   : return tran_gene
      if  AsType(vale) == dyna_harmo   : return harm_gene
      if  AsType(vale) == mode_meca    : return mode_gene
-#     if  AsType(vale) == mode_meca_c  : return mode_gene_c
+     if  AsType(vale) == mode_meca_c  : return mode_gene
      if  AsType(vale) == base_modale  : return mode_gene
      raise AsException("type de concept resultat non prevu")
 

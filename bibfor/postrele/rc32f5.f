@@ -1,12 +1,12 @@
       SUBROUTINE RC32F5 ( NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                    NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                    NBSG2, NBSG3, SALTIJ )
       IMPLICIT   NONE        
-      INTEGER             NBP12, NBP23, NBP13, NBSIGR, NOCC(*), NSITUP,
+      INTEGER             NBP12, NBP23, NBP13, NBSIGR,
      +                    NBSG1, NBSG2, NBSG3
       REAL*8              SALTIJ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,22 +34,16 @@ C
          IF ( NBP12 .EQ. 0 ) THEN
 C           BLOC 1_2
             DO 100 I1 = 1,NBSG1
-               ISL = 4*(I1-1)*NBSIGR + 4*NBSG1
+               ISL = (I1-1)*NBSIGR + NBSG1
                DO 102 I2 = 1,NBSG2
-                  SALTIJ(ISL+4*(I2-1)+1) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+2) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+3) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+4) = 0.D0
+                  SALTIJ(ISL+I2) = 0.D0
  102           CONTINUE
  100        CONTINUE
 C           BLOC 2_1
             DO 104 I1 = 1,NBSG2
-               ISL = 4*NBSIGR*NBSG1 + 4*(I1-1)*NBSIGR
+               ISL = NBSIGR*NBSG1 + (I1-1)*NBSIGR
                DO 106 I2 = 1,NBSG1
-                  SALTIJ(ISL+4*(I2-1)+1) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+2) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+3) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+4) = 0.D0
+                  SALTIJ(ISL+I2) = 0.D0
  106           CONTINUE
  104        CONTINUE
          ENDIF
@@ -57,22 +51,16 @@ C
          IF ( NBP23 .EQ. 0 ) THEN
 C           BLOC 2_3
             DO 110 I1 = 1,NBSG2
-               ISL = 4*NBSIGR*NBSG1 + 4*(I1-1)*NBSIGR + 4*(NBSG1+NBSG2)
+               ISL = NBSIGR*NBSG1 + (I1-1)*NBSIGR + (NBSG1+NBSG2)
                DO 112 I2 = 1,NBSG3
-                  SALTIJ(ISL+4*(I2-1)+1) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+2) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+3) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+4) = 0.D0
+                  SALTIJ(ISL+I2) = 0.D0
  112           CONTINUE
  110        CONTINUE
 C           BLOC 3_2
             DO 114 I1 = 1,NBSG3
-               ISL = 4*NBSIGR*(NBSG1+NBSG2) + 4*(I1-1)*NBSIGR + 4*NBSG1
+               ISL = NBSIGR*(NBSG1+NBSG2) + (I1-1)*NBSIGR + NBSG1
                DO 116 I2 = 1,NBSG2
-                  SALTIJ(ISL+4*(I2-1)+1) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+2) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+3) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+4) = 0.D0
+                  SALTIJ(ISL+I2) = 0.D0
  116           CONTINUE
  114        CONTINUE
          ENDIF
@@ -80,22 +68,16 @@ C
          IF ( NBP13 .EQ. 0 ) THEN
 C           BLOC 1_3
             DO 120 I1 = 1,NBSG1
-               ISL = 4*(I1-1)*NBSIGR + 4*(NBSG1+NBSG2)
+               ISL = (I1-1)*NBSIGR + (NBSG1+NBSG2)
                DO 122 I2 = 1,NBSG3
-                  SALTIJ(ISL+4*(I2-1)+1) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+2) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+3) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+4) = 0.D0
+                  SALTIJ(ISL+I2) = 0.D0
  122           CONTINUE
  120        CONTINUE
 C           BLOC 3_1
             DO 124 I1 = 1,NBSG3
-               ISL = 4*NBSIGR*(NBSG1+NBSG2) + 4*NBSIGR*(I1-1)
+               ISL = NBSIGR*(NBSG1+NBSG2) + NBSIGR*(I1-1)
                DO 126 I2 = 1,NBSG1
-                  SALTIJ(ISL+4*(I2-1)+1) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+2) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+3) = 0.D0
-                  SALTIJ(ISL+4*(I2-1)+4) = 0.D0
+                  SALTIJ(ISL+I2) = 0.D0
  126           CONTINUE
  124        CONTINUE
          ENDIF

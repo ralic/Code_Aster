@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -232,7 +232,7 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
 
 
 DEBUG(SDVERI='NON')
-MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN, SQUELETTE=SQUEL, TOUT_ORDRE='OUI')
+MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN, SQUELETTE=SQUEL, TOUT_ORDRE='OUI')
 DEBUG(SDVERI='OUI')
 
 
@@ -316,21 +316,21 @@ LIST_R2=DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 9))
 
 #
 DEBUG(SDVERI='NON')
-TRAN1=REST_BASE_PHYS(   RESU_GENE=TRAN_GE1,
+TRAN1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
 
 #
-TRAN2=REST_BASE_PHYS(   RESU_GENE=TRAN_GE2,
+TRAN2=REST_GENE_PHYS(   RESU_GENE=TRAN_GE2,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
 
 #
-TRAN3=REST_BASE_PHYS(   RESU_GENE=TRAN_GE3,
+TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
@@ -400,11 +400,11 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
                   VALE = 3.45755E-01))
 
-mod1=REST_BASE_PHYS(RESU_GENE=RESGEN,
+mod1=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                     SOUS_STRUC='COTE1',
                     TOUT_ORDRE='OUI');
 
-resu_dy1=REST_BASE_PHYS(   RESU_GENE=TRAN_GE1,
+resu_dy1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
@@ -443,11 +443,11 @@ TEST_TABLE(      TABLE=t_cin1,
                    VALE=1.93800E-02,
                    PRECISION=0.001)
 
-mod2=REST_BASE_PHYS(RESU_GENE=RESGEN,
+mod2=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                     SOUS_STRUC='COTE2',
                     TOUT_ORDRE='OUI');
 
-resu_dy2=REST_BASE_PHYS(   RESU_GENE=TRAN_GE1,
+resu_dy2=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',

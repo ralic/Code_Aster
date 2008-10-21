@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2008   AUTEUR DEVESA G.DEVESA 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE CONDENSATION DYNAMIQUE TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -371,7 +371,7 @@ TEMPL2B=DEFI_LIST_REEL(       DEBUT=5.E-4,
                            INTERVALLE=_F( JUSQU_A = 1.95E-2,
                                        NOMBRE = 38));  
                     
-RESUGLOB=REST_BASE_PHYS( RESU_PHYS=EVOLB,
+RESUGLOB=REST_COND_TRAN( RESULTAT=EVOLB,
                          MACR_ELEM_DYNA=MAEL1,
                          LIST_INST=TEMPL2B,
                          PRECISION=1.E-4,

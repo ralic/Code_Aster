@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul Meidee  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

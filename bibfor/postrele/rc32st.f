@@ -5,7 +5,7 @@
       CHARACTER*4         TYPE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,30 +48,18 @@ C     ----------------
          CALL RCTRES ( SIJM, TRESCA )
          SN = TRESCA
 C
-C --- CALCUL THERMOMECANIQUE (DEPENDANT DU TEMPS)
-C     -------------------------------------------
+C --- CALCUL THERMOMECANIQUE EN TMIN ET TMAX
+C     --------------------------------------
       ELSE
-        E1(1) = -1.D0
-        E1(2) = +1.D0
-        IF ( TYPE .EQ. 'COMB' ) THEN
-          DO 10 IT = 1,NBINST
+        E1(1) = +1.D0
+        E1(2) = -1.D0
             DO 12 IT1 = 1,2
               DO 14 I = 1,6
-                 SIJMT(I) = SIJM(I)*E1(IT1) + STH((IT-1)*6+I)
+                 SIJMT(I) = SIJM(I)*E1(IT1) + STH(6+I) - STH(I)
  14           CONTINUE
               CALL RCTRES ( SIJMT, TRESCA )
               SN = MAX( SN , TRESCA )
  12         CONTINUE
- 10       CONTINUE
-        ELSE
-          DO 20 IT = 1,NBINST
-            DO 22 I = 1,6
-              SIJMT(I) = SIJM(I) + STH((IT-1)*6+I)
- 22         CONTINUE
-            CALL RCTRES ( SIJMT, TRESCA )
-            SN = MAX( SN , TRESCA )
- 20       CONTINUE
-        END IF
       END IF
 C
       END

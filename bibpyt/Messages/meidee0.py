@@ -1,4 +1,4 @@
-#@ MODIF meidee0 Messages  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee0 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,5 +38,14 @@ Problème de NUME_DDL dans MACRO_EXPANS : il est possible de le preciser
 a l'appel de la macro. Si vous utilisez MACRO_EXPANS par l'intermediaire d'une IHM,
 contactez l'assistance technique.
 """),
+6: _("""
+Si vous n'avez pas selectionne de NUME_ORDRE ou de NUME_MODE dans %(k1)s.
+Il ne faut pas declarer de concept en sortie de type %(k2)s.
+Cela risque de causzer une erreur fatale par la suite.
+"""),
+7: _("""
+Erreur dans MACRO_EXPANS
+"""),
+
 
 }

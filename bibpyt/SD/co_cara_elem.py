@@ -1,4 +1,4 @@
-#@ MODIF co_cara_elem SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_cara_elem SD  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,4 +23,15 @@ from sd_cara_elem import sd_cara_elem
 
 # -----------------------------------------------------------------------------
 class cara_elem(ASSD, sd_cara_elem):
-   pass
+   def toEPX(self):
+      EPXnoeud = self.CARRIGXN.get()
+      EPXval   = self.CARRIGXV.get()
+      ressorts = {}
+      i=0
+      assert len(EPXval) == len(EPXnoeud)*6, 'donnees incorrectes'
+      for no in EPXnoeud :
+         ressorts[no] = EPXval[i:i+6]
+         i+=6
+      return ressorts
+
+

@@ -1,4 +1,4 @@
-#@ MODIF meidee_turbulent Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_turbulent Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ from Cata.cata import OBSERVATION, DETRUIRE, CO, IMPR_RESU
 from Meidee.meidee_cata import Resultat, InterSpectre, CreaTable
 from Meidee.meidee_cata import nume_ddl_phy, nume_ddl_gene, CreaTable
 from Meidee.meidee_iface import Compteur, MyMenu
-from Meidee.meidee_iface import MultiList, XmgrManager
+from Meidee.meidee_iface import MultiList
 from Meidee.meidee_calcul_turbulent import CalculTurbulent
 from Meidee.modes import SelectionNoeuds, SelectionMailles, sort_compo_key
 from Meidee.modes import ChgtRepereDialogue
@@ -59,7 +59,7 @@ class InterfaceTurbulent(Frame):
     """
 
     
-    def __init__(self, root, aster_objects, mess, out):
+    def __init__(self, root, aster_objects, mess, out, param_visu):
         Frame.__init__(self, root, relief='raised', borderwidth=4)
 
         # Classe de calculs
@@ -69,6 +69,7 @@ class InterfaceTurbulent(Frame):
         self.objects = aster_objects
         self.mess = mess
         self.out = out
+        self.param_visu = param_visu
 
         self.opt_data = {}
         self.opt_noms = []
@@ -110,8 +111,6 @@ class InterfaceTurbulent(Frame):
         colonne_2.grid(row=1, column=1, rowspan=1, sticky='n'+'s')
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
-
-        self.xmgr_manager = XmgrManager()
 
     def _create_opt_data(self):
         opt_res_definitions = [
@@ -264,15 +263,23 @@ class InterfaceTurbulent(Frame):
         return fra
 
     def _choix_interspectre(self, root):
+        """ Choix de l'interspectre"""
+
+        self.var_resu_fonc = StringVar() # le nom de l'interspectre
+        self.typ_resu_fonc = StringVar() # le type de 'interspectre
         fra = Frame(root, relief='ridge', borderwidth=4)
         desc = "Interspectre en fonctionnement"
         Label(fra, text=desc).grid(row=1, column=0, sticky='w')
        
         options = self.objects.get_inter_spec_name()
-        self.var_resu_fonc = StringVar()
         menu_resu_fonc = MyMenu(fra, options, self.var_resu_fonc,
                                 self._get_inter_spec)
         menu_resu_fonc.grid(row=1, column=1)
+        Label(fra, text = "Type champ",).grid(row=1,column=2)
+        opt_cham = ['DEPL','VITE','ACCE'] 
+        typ_cham = MyMenu(fra,opt_cham,self.typ_resu_fonc)
+        self.typ_resu_fonc.set('DEPL')
+        typ_cham.grid(row=1, column=3, sticky='e')
         
         return fra
 
@@ -454,6 +461,11 @@ class InterfaceTurbulent(Frame):
         self.mess.disp_mess("Le concept d'observabilité " \
                             "a été calculé.")
         self.obs_co = Resultat(self.objects,__OBS.nom,__OBS,self.mess)
+        self.obs_co.get_modele()
+        self.obs_co.get_matrices()
+        self.obs_co.get_nume()
+        self.obs_co.get_maillage()
+
         self.obs_extraction_ddls = get_filtres(grp_no, grp_ma)
 
     def _calculate_commandabilite(self):
@@ -506,6 +518,10 @@ class InterfaceTurbulent(Frame):
         self.mess.disp_mess("Le concept de commandabilité " \
                             "a été calculé.")
         self.com_co = Resultat(self.objects,__COM.nom,__COM,self.mess)
+        self.com_co.get_modele()
+        self.com_co.get_matrices()
+        self.com_co.get_nume()
+        self.com_co.get_maillage()
         self.com_extraction_ddls = get_filtres(grp_no , grp_ma)
         
 
@@ -527,6 +543,7 @@ class InterfaceTurbulent(Frame):
             self.mess.disp_mess("Il faut choisir l'inter-spectre des mesures")
             return
         self.calcturb.set_interspectre(self.inter_spec)
+        self.calcturb.set_type_intsp(self.typ_resu_fonc.get())
 
         self.calcturb.set_alpha(self.alpha.get())
         self.calcturb.set_epsilon(self.epsilon.get())
@@ -702,18 +719,8 @@ class InterfaceTurbulent(Frame):
         
         values, caption = self._get_graph_data()
         
-        # XXX color n'est plus uilisé mais est-ce important? 
-        # Xmgrace applique automatiquement une nouvelle couleur
-        # à chaque courbe.
-        color = range(1, 15)
-        if len(color) > len(values):
-            color = color[0 : len(values)]
-        elif len(color) < len(values):
-            for k in range(len(values) - len(color)):
-                color.append(',1')
-
-        self.xmgr_manager.affiche(freq, values, color, caption,
-                                  self.var_abs.get(), self.var_ord.get())
+        self.param_visu.visu_courbe(freq, values, l_legende=caption,
+                                    titre_x=self.var_abs.get(), titre_y=self.var_ord.get())
    
     def export_inte_spec1(self):
         option = self.var_visu_resu[0].get()

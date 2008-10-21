@@ -1,9 +1,8 @@
-      SUBROUTINE MMCTAN(NOMA  ,FFORME,NOMMAI,ALIAS ,NNO   ,
-     &                  NDIM  ,COORMA,COORNO,ITEMAX,EPSMAX,
-     &                  TAU1  ,TAU2  )
+      SUBROUTINE MMCTAN(NOMMAI,ALIAS ,NNO   ,NDIM  ,COORMA,
+     &                  COORNO,ITEMAX,EPSMAX,TAU1  ,TAU2  )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,8 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8   NOMA,NOMMAI,ALIAS
-      CHARACTER*8   FFORME
+      CHARACTER*8   NOMMAI,ALIAS
       INTEGER       ITEMAX,NDIM,NNO
       REAL*8        EPSMAX,COORNO(3),COORMA(27)
       REAL*8        TAU1(3),TAU2(3)
@@ -38,9 +36,6 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  NOMA   : NOM DU MAILLAGE
-C IN  FFORME : TYPE DES FONCTIONS DE FORME
-C                'STANDARD' ou 'CONTINUE' (POUR CONTACT CONTINU)
 C IN  NOMMAI : NOM DE LA MAILLE
 C IN  ALIAS  : TYPE DE LA MAILLE
 C IN  NNO    : NOMBRE DE NOEUDS DE LA MAILLE
@@ -88,8 +83,8 @@ C
 C --- CALCUL DES VECTEURS TANGENTS DE LA MAILLE EN CE NOEUD
 C         
       CALL MMNEWT(ALIAS ,NNO   ,NDIM  ,COORMA,COORNO,
-     &            ITEMAX,EPSMAX,FFORME,KSI1  ,KSI2  ,
-     &            TAU1  ,TAU2  ,NIVERR)         
+     &            ITEMAX,EPSMAX,KSI1  ,KSI2  ,TAU1  ,
+     &            TAU2  ,NIVERR)         
 C  
 C --- GESTION DES ERREURS LORS DU NEWTON LOCAL POUR LA PROJECTION
 C   
@@ -104,9 +99,7 @@ C
       IF (NIVERR.EQ.1) THEN  
         CALL U2MESS('I','CONTACT3_33')
         CALL U2MESG('F','CONTACT3_14',1,NOMMAI,0,0,3,COORNO)          
-      ENDIF 
-C       
-  555 CONTINUE                  
+      ENDIF
 C
       CALL JEDEMA()
       END

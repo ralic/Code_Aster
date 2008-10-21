@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,22 +49,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBCAR = 100 , NBVAL = 12 , NRD = 2 )
-      INTEGER      JDC(3), JDV(3),IBID,NIV
+      INTEGER      JDC(3), JDV(3),IBID,NIV,IR
       REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3)
       CHARACTER*1  KMA(3)
       CHARACTER*8  K8B, NOMU, CAR(NBCAR)
       CHARACTER*16 REP, REPDIS(NRD), CONCEP, CMD
       CHARACTER*19 CARTDK, CARTDM, CARTDA, CART(3), LIGMO
+      CHARACTER*19 VREPXV, VREPXN
       CHARACTER*24 TMPNDM, TMPVDM, TMPNDA, TMPVDA, TMPNDK, TMPVDK
       CHARACTER*24 TMPDIS, MLGNNO, MLGNMA
       CHARACTER*24 MODNEM
       CHARACTER*1  K1BID
       CHARACTER*8  NOMNOE, NOGP, NOMMAI
-
-C     EUROPLEXUS
-      CHARACTER*16 K16NOM
-      INTEGER      UIEPLX,ULISOP
-      LOGICAL      LOEPLX
 
       LOGICAL      TRANS
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
@@ -74,6 +70,8 @@ C
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)
       TMPDIS = NOMU//'.DISCRET'
+      VREPXV = NOMU//'.CARRIGXV'
+      VREPXN = NOMU//'.CARRIGXN'
       MLGNNO = NOMA//'.NOMNOE'
       MLGNMA = NOMA//'.NOMMAI'
       LIGMO  = NOMO//'.MODELE    '
@@ -88,6 +86,8 @@ C
       CALL WKVECT('&&TMPDISCRET','V V K8',LMAX,JDLS)
       CALL WKVECT('&&TMPTABNO','V V K8',LMAX,ITBNO)
       CALL WKVECT('&&TMPRIGNO','V V R',6*LMAX,IRGNO)
+      CALL WKVECT(VREPXV,'G V R',6*LMAX,IREPV)
+      CALL WKVECT(VREPXN,'G V K8',LMAX,IREPN)
       CALL WKVECT('&&TMPRIGTO','V V R',6*NOEMAF,IRGTO)
       CALL WKVECT('&&TMPAMOTO','V V R',6*NOEMAF,IAMTO)
       CALL WKVECT('&&TMPTABMP','V V K8',LMAX,ITBMP)
@@ -144,19 +144,8 @@ C
 C     RECUPERATION DU NIVEAU D'IMPRESSION
 C     -----------------------------------
       CALL INFNIV(IBID,NIV)
-C
-C     OUVERTURE DES UNITES EUROPLEXUS
-      DO 20 IOC = 1 , NBOCC
-         CALL GETVIS('RIGI_PARASOL','UNITE_EUROPLEXUS',
-     &                IOC,1,1,UIEPLX,IBID)
-         IF ( (IBID.GE.1) .AND. (UIEPLX.GT.0) ) THEN
-C           SI L'UNITE EUROPLEXUS N'EST PAS OUVERTE ==> ON L'OUVRE
-            K16NOM ='                '
-            IF ( ULISOP(UIEPLX,K16NOM) .EQ. 0 )  THEN
-               CALL ULOPEN(UIEPLX,' ',' ','NEW','O')
-            ENDIF
-         ENDIF
-20    CONTINUE
+
+      IR = 0
 C
 C     PAR DEFAUT ON EST DANS LE REPERE GLOBAL
       IREP = 1
@@ -172,13 +161,6 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          CALL GETVID('RIGI_PARASOL','GROUP_MA_POI1',IOC,1,1,NOGP,NGP)
          IF ( NGP .EQ. 0 ) THEN
             CALL GETVID('RIGI_PARASOL','GROUP_MA_SEG2',IOC,1,1,NOGP,NGP)
-         ENDIF
-
-         LOEPLX = .FALSE.
-         CALL GETVIS('RIGI_PARASOL','UNITE_EUROPLEXUS',
-     &                IOC,1,1,UIEPLX,IBID)
-         IF ( (IBID.GE.1) .AND. (UIEPLX.GT.0) ) THEN
-            LOEPLX = .TRUE.
          ENDIF
 
          IF ( NREP .NE. 0) THEN
@@ -360,18 +342,6 @@ C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
      &                               RIROT(1),RIROT(2),RIROT(3)
                   ENDIF
                ENDIF
-C ------------ ECRITURE POUR EUROPLEXUS
-               IF ( LOEPLX ) THEN
-                  WRITE(UIEPLX,1020)
-                  WRITE(UIEPLX,1022) ZK8(JDLS),IOC
-                  IF ( TRANS ) THEN
-                     WRITE(UIEPLX,1025) CAR(NC)(1:LOKM)
-                  ELSE
-                     WRITE(UIEPLX,1026) CAR(NC)(1:LOKM),
-     &                                  RIROT(1),RIROT(2),RIROT(3)
-                  ENDIF
-               ENDIF
-C ------------ ECRITURE POUR EUROPLEXUS
 C
                DO 28 I = 1,NBNO
                   IV = 1
@@ -404,21 +374,23 @@ C
                         ENDIF
                      ENDIF
                   ENDIF
-C --------------- ECRITURE POUR EUROPLEXUS
-                  IF ( LOEPLX ) THEN
-                     IF ( NBNOEU .EQ. 1 ) THEN
-                        IF ( TRANS ) THEN
-                           WRITE(UIEPLX,1030) ZK8(JN),
-     &                                    (ZR(IRGNO+6*I-6+JJ),JJ=0,2)
-                        ELSE
-                           WRITE(UIEPLX,1031) ZK8(JN),
-     &                                    (ZR(IRGNO+6*I-6+JJ),JJ=0,5)
-                        ENDIF
-                     ELSE
-                        CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
-                     ENDIF
+C                   PREPARATION DE L'ATTRIBUT PYTHON
+                  IF ( NBNOEU .EQ. 1 ) THEN
+                    IF (TRANS) THEN
+                      DO 666 JJ=0,2
+                        ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
+                        ZR(IREPV+6*IR+3+JJ)=0.D0
+666                       CONTINUE
+                    ELSE
+                      DO 667 JJ=0,5
+                        ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
+667                       CONTINUE
+                      ZK8(IREPN+IR) = ZK8(JN)
+                      IR = IR + 1
+                    ENDIF
+                  ELSE
+                    CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
                   ENDIF
-C --------------- ECRITURE POUR EUROPLEXUS
 C
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
@@ -438,18 +410,6 @@ C
             ENDIF
  34      CONTINUE
  30   CONTINUE
-
-C     FERMETURE DES UNITES EUROPLEXUS
-      DO 40 IOC = 1 , NBOCC
-         CALL GETVIS('RIGI_PARASOL','UNITE_EUROPLEXUS',
-     &                IOC,1,1,UIEPLX,IBID)
-         IF ( (IBID.GE.1) .AND. (UIEPLX.GT.0) ) THEN
-C           SI L'UNITE EUROPLEXUS EST OUVERTE ==> ON LA FERME
-            IF ( ULISOP(UIEPLX,K16NOM) .NE. 0 )  THEN
-               CALL ULOPEN(-UIEPLX,' ',' ','NEW','O')
-            ENDIF
-         ENDIF
-40    CONTINUE
 
       IF (IXNW.NE.0) CALL JEDETR(TMPDIS)
       CALL JEDETR('&&TMPDISCRET')

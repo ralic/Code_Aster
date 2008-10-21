@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,7 +100,7 @@ DYNAHARG=DYNA_LINE_HARM( MATR_MASS=MASSEGEN, MATR_RIGI=RIGIDGEN,
                              EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = EFFOGENE)
                             )
 
-DYNAHARM=REST_BASE_PHYS(    RESU_GENE=DYNAHARG,
+DYNAHARM=REST_GENE_PHYS(    RESU_GENE=DYNAHARG,
                                 TOUT_CHAM='OUI',
                               LIST_FREQ=LIFREQ
                                                       )

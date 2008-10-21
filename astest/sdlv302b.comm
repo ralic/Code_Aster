@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : POUTRE BI-APPUYEE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -352,7 +352,7 @@ GLOBAL=DEFI_SQUELETTE(    MODELE_GENE=MODEGE,SOUS_STRUC=(
                                            TOUT = 'OUI')))
 
 #
-MODGLO=REST_BASE_PHYS(    RESU_GENE=RESGEN,   
+MODGLO=REST_SOUS_STRUC(    RESU_GENE=RESGEN,   
                              SQUELETTE=GLOBAL,
                             TOUT_ORDRE='OUI' )
 

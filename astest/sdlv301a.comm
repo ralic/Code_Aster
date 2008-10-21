@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION CYCLIQUE : ROUET DE POMPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,7 @@ SQUEL=DEFI_SQUELETTE(     CYCLIQUE    =_F(MODE_CYCL=MOCYCL),
                                   SECTEUR=_F( TOUT = 'OUI'))
 
 #
-DYNAM=REST_BASE_PHYS(    RESU_GENE=MOCYCL,
+DYNAM=REST_SOUS_STRUC(    RESU_GENE=MOCYCL,
                               SQUELETTE=SQUEL )
 
 #

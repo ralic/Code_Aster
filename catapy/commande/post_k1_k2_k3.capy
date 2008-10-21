@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
                              fr="Table issue de post_releve_t sur les noeuds de la lèvre supérieure"),
          TABL_DEPL_INF =SIMP(statut='f',typ=table_sdaster,
                              fr="Table issue de post_releve_t sur les noeuds de la lèvre inférieure"),
-         ABSC_CURV_MAXI=SIMP(statut='f',typ='R',
+         ABSC_CURV_MAXI=SIMP(statut='o',typ='R',
                              fr="Distance maximum à partir du fond de fissure à utiliser pour le calcul"),  
          PREC_VIS_A_VIS= SIMP(statut='f',typ='R',defaut=0.1),
          TOUT_ORDRE    =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -81,7 +81,7 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
              ),
          SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS") ),
          INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         VECT_K1       =SIMP(statut='f',typ='R',max=3,
+         VECT_K1       =SIMP(statut='f',typ='R',max=3,min=3,
                              fr="Vecteur normal au plan de fissure, orienté de la lèvre inférieure vers la lèvre supérieure"),  
          TITRE         =SIMP(statut='f',typ='TXM',max='**'),  
 )  ;

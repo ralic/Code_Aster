@@ -2,7 +2,7 @@
      &                  KSI2  ,COORDP)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      NBNOM,IDIM,NDIM,NUMMAM
       REAL*8       COORMA(27)
-      CHARACTER*8  ALIAS,FFORME,NOMMAM     
+      CHARACTER*8  ALIAS,NOMMAM     
 C
 C-----------------------------------------------------------------------
 C
@@ -79,7 +79,6 @@ C
       DO 10 IDIM = 1,3
         COORDP(IDIM) = 0.D0
    10 CONTINUE
-      FFORME = 'STANDARD'
 C
 C --- CARACTERISTIQUES DE LA MAILLE MAITRE
 C      
@@ -88,8 +87,8 @@ C
 C
 C --- COORDONNEES DU PROJETE
 C
-      CALL MMCOOR(ALIAS ,NBNOM ,NDIM  ,COORMA,FFORME,
-     &            KSI1  ,KSI2  ,COORDP)
+      CALL MMCOOR(ALIAS ,NBNOM ,NDIM  ,COORMA,KSI1  ,
+     &            KSI2  ,COORDP)
 C
       CALL JEDEMA()
       END

@@ -2,7 +2,7 @@
      &                    TINSTM,TINSTP,EPSM,DEPS,SIGM,
      &                    VIM,OPTION,SIGP,VIP,DSIDEP,CRIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C TOLE CRP_21
       CHARACTER*16    COMPOR(3),OPTION(2)
       CHARACTER*(*)    FAMI
       REAL*8           TINSTM,TINSTP
-      REAL*8           EPSM(6),DEPS(6),SIGM(6),SIGP(6),VIM(23),VIP(23)
+      REAL*8           EPSM(6),DEPS(6),SIGM(6),SIGP(6),VIM(*),VIP(*)
       REAL*8           DSIDEP(6,6),CRIT(*)
 
 C---&s---1---------2---------3---------4---------5---------6---------7--
@@ -177,6 +177,11 @@ C     VIX(21)    = INDICATEUR DU FLUAGE SPHERIQUE (0 ou 1)
 C     VARIABLES INTERNES UTILISEES SI COUPLAGE AVEC ENDO_ISOT_BETON
 C     VIX(22)    = ENDOMMAGEMENT D DONNE PAR EIB
 C     VIX(23)    = INDICATEUR D'ENDOMMAGEMENT DE EIB
+C     VARIABLES INTERNES UTILISEES SI COUPLAGE AVEC MAZARS
+C     VIX(22)    = ENDOMMAGEMENT D DONNE PAR MAZARS
+C     VIX(23)    = INDICATEUR D'ENDOMMAGEMENT DE EIB
+C     VIX(24)    = TEMPERATURE MAXIMALE ATTEINTE PAR LE MATERIAU
+C     VIX(25)    = VALEUR DE EPSEQ (UTILE POUR POSTTRAITER)
 C_______________________________________________________________________
 C
       CHARACTER*16    COMPOZ(1)
@@ -186,7 +191,7 @@ C MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION DE NOMPAR
 C      CHARACTER*8     NOMRES(16),NOMPAR(3)
       CHARACTER*8     NOMRES(16)
       CHARACTER*2     CODRET(16)
-      REAL*8         CFPS,CFPD,CHI,COEF1
+      REAL*8         CFPS,CFPD
 C     NSTRS --> 6 NVARI --> 20
       INTEGER I,J,K,L,NSTRS,IFOU,ISPH
       REAL*8  TDT
@@ -203,9 +208,9 @@ C DE VALPAM ET VALPAP
 C      REAL*8  VALPAM(3),VALPAP(3),SIGM(6),DEPS(6)
       REAL*8  CMAT(15),DEP(6,12)
       REAL*8  AN(6),BN(6,6),CN(6,6),VALRES(16)
-      REAL*8  HYGRM,HYGRP,RBID,XI
+      REAL*8  HYGRM,HYGRP,RBID
 C MODIFI DU 18 AOUT 2004 - YLP AJOUT DE LA DEFORMATION DE RETRAIT
-      REAL*8  MATN(6,6),INVN(6,6),RTEMP,EPS(6),EPSF(6)
+      REAL*8  MATN(6,6),INVN(6,6),EPS(6),EPSF(6)
       REAL*8  EPSRM,EPSRP,EPSFM(6)
 C MODIFI OCT 2004 - SMP AJOUT DILATATION THERMIQUE
 C      REAL*8 ALPHA
@@ -213,10 +218,15 @@ C MODIFI AVR 2005 - SMP CORRECTION RETRAIT SI COUPLAGE AVEC EIB
       REAL*8   KRON(6), EPSME(6),EPSE(6)
 C MODIFI MARS 2006 "NOUVELLE" VARIABLE DE COMMANDE HYDR ET SECH
       REAL*8   HYDRM,HYDRP,SECHM,SECHP,SREF,TM,TP,TREF
-      INTEGER  IER
+C      INTEGER  IER
 C MODIFI JUIN 2007
       REAL*8   EPSTHP,EPSTHM
       INTEGER  IRET1,IRET2
+
+C MODIFI 20 OCT 2008 - M.B.
+      REAL*8   TMAXP, TMAXM, YOUNM, XNUM
+      REAL*8   SIGELM(6), SIGELP(6), EPSEL(6)
+      INTEGER  IISNAN
       DATA     KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C
 C   CALCUL DE L'INTERVALLE DE TEMPS
@@ -226,7 +236,7 @@ C
 C   DIMENSION
 C
       NSTRS = 2*NDIM
-C
+
 C   TYPE DE CALCUL
 C
       IF (TYPMOD(1) .EQ. 'C_PLAN') THEN
@@ -239,32 +249,97 @@ C
         IFOU = 0
         GOTO 1
       ELSE
-         IFOU = 2
+        IFOU = 2
       ENDIF
 1     CONTINUE
+
 C
 C   INITIALISATION DU FLUAGE SPHERIQUE PROPRE
 C
       ISPH = 1
-
-C RECUPERATION DES VALEURS DES PARAMETRES MATERIAU
+                     
+C RECUPERATION DES VALEURS DE TEMPERATURE
 C
-      CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHP,IRET1)
-      CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHM,IRET2)
+C      CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHP,IRET1)
+C      CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHM,IRET2)
       CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
       CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
       
 
-C  ------- CARACTERISTIQUES ELASTIQUES
-C
+C  ------- LECTURE DES CARACTERISTIQUES ELASTIQUES
+C  MB: LA DEPENDENCE DES PARAMETRES PAR RAPPORT A LA TEMPERATURE
+C  CHANGE PAR RAPPORT A LA LOI D ENDOMMAGEMENT (COUPLAGE)
+
       NOMRES(1)='E'
       NOMRES(2)='NU'
-      NOMRES(3)='ALPHA'
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
-     &             NOMRES,VALRES,CODRET, 'FM' )
+      NOMRES(3) = 'ALPHA'
+      NOMRES(4) = 'ALPHA'
+
+      IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
+
+        CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,2,
+     &              NOMRES,VALRES,CODRET, 'FM')
+        CALL U2MESS('I', 'COMPOR1_60')
+        
+        CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,1,
+     &               NOMRES(3),VALRES(3),CODRET(3), ' ') 
+        VALRES(4) = VALRES(3)  
+        CODRET(4) = CODRET(3)
+        
+      ELSEIF (OPTION(2).EQ.'MAZARS') THEN
+        TMAXM = VIM(24)
+        TMAXP = MAX(TMAXM, TP)
+ 
+        CALL RCVALB(FAMI,1,1,'-',IMATE,' ','ELAS',1,'TEMP',TMAXM,2,
+     &              NOMRES,VALRES,CODRET, 'FM')
+        YOUNM   = VALRES(1)
+        XNUM    = VALRES(2)     
+
+        CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',TMAXP,2,
+     &              NOMRES,VALRES,CODRET, 'FM')    
+     
+        CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,
+     &                'TEMP',TMAXM,1,NOMRES(3),VALRES(3),CODRET(3),' ')
+        CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,
+     &                'TEMP',TMAXP,1,NOMRES(4),VALRES(4),CODRET(4),'0')
+        CALL U2MESS('I', 'COMPOR1_61')
+        
+      ELSE
+        CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
+     &               NOMRES,VALRES,CODRET, 'FM' )     
+      ENDIF
+      
       YOUN   = VALRES(1)
       XNU    = VALRES(2)
+
+C
+C  -------CALCUL DES DEFORMATIONS THERMIQUES
+C
+      IF ((OPTION(2).EQ.'MAZARS').OR.
+     &      (OPTION(2).EQ.'ENDO_ISOT_BETON')) THEN
+        IF ( (IISNAN(TREF).EQ.1).OR.(CODRET(3).NE.'OK')
+     &        .OR.(CODRET(4).NE.'OK') ) THEN
+          CALL U2MESS('F','CALCULEL_15')          
+        ELSE
+          IF (IISNAN(TM).EQ.0) THEN
+            EPSTHM = VALRES(3) * (TM - TREF)
+          ELSE
+            EPSTHM = 0.D0        
+          ENDIF
+          IF (IISNAN(TP).EQ.0) THEN
+            EPSTHP = VALRES(4) * (TP - TREF)
+          ELSE
+            EPSTHP = 0.D0        
+          ENDIF          
+        ENDIF
+      ELSE
+
+        CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHP,IRET1)
+        CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHM,IRET2)  
+      ENDIF
+
+
 C
 C MODIFI DU 18 AOUT 2004 - AJOUT RETRAIT
 C
@@ -276,6 +351,8 @@ C
      &             NOMRES,VALRES,CODRET, 'FM' )
       BENDO=VALRES(1)
       KDESS=VALRES(2)
+
+            
 C
 C  ------- CARACTERISTIQUES FLUAGE PROPRE UMLV
 C
@@ -296,6 +373,7 @@ C
       KRD     = VALRES(5)
       ETARD   = VALRES(6)
       ETAID   = VALRES(7)
+ 
 C
 C ------- CARACTERISTIQUE FLUAGE DE DESSICATION DE BAZANT
 C
@@ -311,12 +389,14 @@ C     FLUAGE DE DESSICCATION ACTIVE
         CMAT(14) = 1
         ETAFD = VALRES(8)
       ENDIF
+
+
 C
 C  ------- CARACTERISTIQUES HYGROMETRIE H
 C
-      NOMRES(1)='FONC_DESORP'
+      NOMRES(1)='FONC_DES'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
-     &            RBID,1,NOMRES(1),VALRES(1),CODRET(1), 'F ')
+     &            RBID,1,NOMRES(1),VALRES(1),CODRET(1), 'F ')        
       IF  (CODRET(1) .NE. 'OK')  THEN
          CALL U2MESS('F','ALGORITH4_94')
       ENDIF
@@ -327,6 +407,8 @@ C
              CALL U2MESS('F','ALGORITH4_94')
          ENDIF
       HYGRP=VALRES(1)
+             
+
 C
 C CONSTRUCTION DU VECTEUR CMAT CONTENANT LES CARACTERISTIQUES MECANIQUES
 C
@@ -379,13 +461,13 @@ C        DO 12 J=1,NSTRS
 12      CONTINUE
 11    CONTINUE
 
-      CALL LCUMVI('FT',VIM,EPSFM)
+
 C_______________________________________________________________________
 C
 C CALCUL DES MATRICES DES DEFORMATIONS DE FLUAGE TOTAL
-C
 C   DFLUT(N+1) = AN + BN * SIGMA(N) + CN * SIGMA(N+1)
-C
+C_______________________________________________________________________
+     
       IF (TDT.NE.0.D0) THEN
         IF (OPTION(1)(1:9).EQ.'RIGI_MECA') THEN
           ISPH=VIM(21)
@@ -394,57 +476,112 @@ C
      &               HYGRM,HYGRP,
      &               AN,BN,CN,CFPS,CFPD)
       ENDIF
-C
+      
+           
+C_______________________________________________________________________
+C 
+C RECUPERATION DE L HYDRATATION E DU SECHAGE
+C CALCUL DE LA SIGMA ELASTIQUE AU TEMP M POUR COUPLAGE AVEC MAZARS
+C  MODIFIE 20 SEPT 2008 M.BOTTONI 
+C_______________________________________________________________________
+
+
+      CALL LCUMVI('FT',VIM,EPSFM)   
+         
+      
       IF ((OPTION(1)(1:9).EQ.'FULL_MECA').OR.
      &    (OPTION(1)(1:9).EQ.'RAPH_MECA')) THEN
-C_______________________________________________________________________
-C
-C CALCUL DES CONTRAINTES ELASTIQUES
-C_______________________________________________________________________
-C
-C  CONSTRUCTION DE LA MATRICE D ELASTICITE DE HOOKE
-C  ET CALCUL DE L INCREMENT DE DEFORMATION ELASTIQUE : DEP(NSTRS,NSTRS)
-C
+
+C MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
+C PAR LES DEFORMATIONS DE RETRAIT 
+
+        
+          CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRP,IRET)
+          IF ( IRET.NE.0) HYDRP=0.D0
+          CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET)
+          IF ( IRET.NE.0) HYDRM=0.D0
+          CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECHP,IRET)
+          IF ( IRET.NE.0) SECHP=0.D0
+          CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,SECHM,IRET)
+          IF ( IRET.NE.0) SECHM=0.D0
+          CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
+          IF ( IRET.NE.0) SREF=0.D0
+
+          EPSRM = KDESS*(SECHM-SREF)-BENDO*HYDRM + EPSTHM
+          EPSRP = KDESS*(SECHP-SREF)-BENDO*HYDRP + EPSTHP        
+
+
+C - MB: CALCUL DE LA DEFORMATION ELASTIQUE AU TEMP M 
+C    (LA SEULE QUI CONTRIBUE A FAIRE EVOLUER L'ENDOMMAGEMENT) 
+C    POUR LE COUPLAGE AVEC MAZARS
+
+        IF (OPTION(2).EQ.'MAZARS') THEN
+          CALL R8INIR(6, 0.D0, EPSEL,1)
+          DO 35 K=1,NSTRS  
+            EPSEL(K) = EPSM(K) - EPSRM * KRON(K) - EPSFM(K)
+35        CONTINUE
+       
+
+C  -  ON CALCUL LES CONTRAINTES ELASTIQUES AU TEMP M
+C          CALL SIGELA (NDIM,'LAMBD',LAMBDA,DEUXMU,EPSEL,SIGELM)
+
+            CALL SIGELA (TYPMOD,NDIM,YOUNM,XNUM,EPSEL,SIGELM)
+
+        ENDIF
+
+         
+C ________________________________________________________________
+
+C  1. CONSTRUCTION DE LA MATRICE D ELASTICITE DE HOOKE POUR MAZARS 
+C     OU UMLV SANS COUPLAGE, OU DE LA MATRICE ELASTO-ENDOMMAGEE POUR EIB
+C  2. MISE A JOUR DE L ENDOMMAGEMENT ET DES SIGMA POUR EIB
+C ________________________________________________________________
+
+
         IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
           COMPOZ(1)='ENDO_ISOT_BETON'
+C    MATRICE ELASTO-ENDOMMAGEE ET MISE A JOUR DE L ENDOMMAGEMENT
           CALL LCLDSB(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOZ,EPSM,
      &        DEPS,VIM(22),TM,TP,TREF,'RAPH_COUP       ',
-     &        RBID,VIP(22),DEP,CRIT)
-C        ELSE IF (OPTION(2).EQ.'MAZARS') THEN
-C          CALL LCMAZA()
+     &        RBID,VIP(22),DEP,CRIT) 
         ELSE
+C    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
           CALL LCUMME(YOUN,XNU,IFOU,DEP)
-        ENDIF
-C       RECUPERATION DE L HYDRATATION ET DU SECHAGE
-        CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRP,IRET)
-        IF ( IRET.NE.0) HYDRP=0.D0
-        CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET)
-        IF ( IRET.NE.0) HYDRM=0.D0
-        CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECHP,IRET)
-        IF ( IRET.NE.0) SECHP=0.D0
-        CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,SECHM,IRET)
-        IF ( IRET.NE.0) SECHM=0.D0
-        CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
-        IF ( IRET.NE.0) SREF=0.D0
-C
-C  CALCUL DE L INCREMENT DE CONTRAINTES PRENANT EN COMPTE
-C                LE FLUAGE PROPRE ET DE DESSICCATION
-C MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
-C PAR LES DEFORMATIONS DE RETRAIT
-        EPSRM = KDESS*(SECHM-SREF)-BENDO*HYDRM + EPSTHM
-        EPSRP = KDESS*(SECHP-SREF)-BENDO*HYDRP + EPSTHP
-        CALL LCUMEF(DEP,AN,BN,CN,EPSM,EPSRM,EPSRP,
-     &              DEPS,EPSFM,SIGM,NSTRS,SIGP)
-C       CALL LCUMEF(DEP,AN,BN,CN,EPSM,DEPS,EPSFM,SIGM,NSTRS,SIGP)
-C_______________________________________________________________________
-C
-C SAUVEGARDE DES VARIABLES INTERNES FINALES
-C_______________________________________________________________________
-C
-         CALL LCUMSF(SIGM,SIGP,NSTRS,VIM,20,CMAT,15,
-     &                ISPH,TDT,HYGRM,HYGRP,VIP)
 
-         VIP(21)=1
+        ENDIF
+
+
+C ________________________________________________________________
+C   MODIFIE MB 20 OCT 2008 
+C
+C  1. MISE A JOUR DES SIGMA POUR EIB ET UMLV SANS COUPLAGE
+C     CALCUL DES SIGMA ELASTIQUES POUR MAZARS 
+C      (LCUMEF)
+C  2. MISE A JOUR DES VARIABLES INTERNES FINALES DE FLUAGE
+C      (LCUMSF)
+C ________________________________________________________________
+
+C  PRISE EN COMPTE DU FLUAGE PROPRE ET DE DESSICCATION
+C   MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
+C   PAR LES DEFORMATIONS DE RETRAIT 
+
+        IF (OPTION(2).EQ.'MAZARS') THEN
+          CALL LCUMEF(DEP,AN,BN,CN,EPSM,EPSRM,EPSRP,
+     &                DEPS,EPSFM,SIGELM,NSTRS,SIGELP)
+          CALL LCUMSF(SIGELM,SIGELP,NSTRS,VIM,20,CMAT,15,
+     &                ISPH,TDT,HYGRM,HYGRP,VIP) 
+     
+        ELSE
+
+          CALL LCUMEF(DEP,AN,BN,CN,EPSM,EPSRM,EPSRP,
+     &                DEPS,EPSFM,SIGM,NSTRS,SIGP)     
+          CALL LCUMSF(SIGM,SIGP,NSTRS,VIM,20,CMAT,15,
+     &                ISPH,TDT,HYGRM,HYGRP,VIP)             
+       ENDIF
+
+    
+        VIP(21)=1
+
 C
 C  TEST DE LA CROISSANCE SUR LA DEFORMATION DE FLUAGE PROPRE SPHERIQUE
 C
@@ -453,99 +590,139 @@ C
           GOTO 10
         ENDIF
 
+
+
+C___________________________________________________________
+C
+C  MB: MISE A JOUR DE L ENDOMMAGEMENT ET DES SIGMA POUR MAZARS
+C_________________________________________________________
+      
+
+        IF (OPTION(2).EQ.'MAZARS') THEN
+
+          CALL LCMAZA (FAMI,KPG,KSP,NDIM, TYPMOD, IMATE,COMPOR,EPSM,
+     &             DEPS, VIM(22), TM,TP,TREF,'RAPH_COUP       ',
+     &             SIGP, VIP, RBID)
+        ENDIF
+             
+C FIN DE (IF RAPH_MECA ET FULL_MECA)        
       ENDIF
 
+
+
+
+  
+      
 C_______________________________________________________________________
 C
 C CONSTRUCTION DE LA MATRICE TANGENTE
 C_______________________________________________________________________
 C
       IF ((OPTION(1)(1:9).EQ.'FULL_MECA').OR.
-     &     (OPTION(1)(1:9).EQ.'RIGI_MECA')) THEN
-C    FULL_MECA | RIGI_MECA_
-        IF (OPTION(1)(1:9).EQ.'RIGI_MECA') THEN
-          IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
-            COMPOZ(1)='ENDO_ISOT_BETON'
-            CALL LCLDSB(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOZ,EPSM,
-     &               RBID,VIM(22),TM,TP,TREF,'RIGI_COUP       ',
-     &                 RBID,RBID,DEP,CRIT)
+     &     (OPTION(1)(1:9).EQ.'RIGI_MECA')) THEN     
+C      FULL_MECA | RIGI_MECA_
+
+C - MB: SI COUPLAGE AVEC MAZARS, ON UTILISE POUR LE COUPLAGE
+C       LA MATRICE TANGENTE DE CETTE LOI
+        IF (OPTION(2).EQ.'MAZARS') THEN   
+        
+          IF (OPTION(1)(1:9).EQ.'FULL_MECA') 
+     &     OPTION(1) = 'RIGI_COUP       '
+     
+            CALL  LCMAZA (FAMI,KPG,KSP,NDIM, TYPMOD, IMATE, COMPOR,
+     &                     EPSM,DEPS, VIM(22), TM,TP,TREF,
+     &                     OPTION, RBID, VIP, DSIDEP)
+        ELSE
+
+          IF (OPTION(1)(1:9).EQ.'RIGI_MECA') THEN      
+            IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
+              COMPOZ(1)='ENDO_ISOT_BETON'
+              CALL LCLDSB(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOZ,EPSM,
+     &                  RBID,VIM(22),TM,TP,TREF,'RIGI_COUP       ',
+     &                  RBID,RBID,DEP,CRIT)
 C          ELSE IF (OPTION(2).EQ.'MAZARS') THEN
 C            CALL LCMAZA()
-          ELSE
-            CALL LCUMME(YOUN,XNU,IFOU,DEP)
-          ENDIF
-        ENDIF
-        CALL R8INIR(36,0.D0,MATN,1)
-        DO 30 I=1,NSTRS
-          MATN(I,I)=1.D0
- 30     CONTINUE
-
-        DO 31 I=1,NSTRS
-          DO 31 J=1,NSTRS
-            DO 31 K=1,NSTRS
-              MATN(I,J)=MATN(I,J)+CN(I,K)*DEP(K,J)
-31      CONTINUE
-
-        CALL R8INIR(36,0.D0,INVN,1)
-
-        DO 36 I=1,NSTRS
-          INVN(I,I)=1.D0
- 36     CONTINUE
-
-        CALL MGAUSS('NFVP',MATN,INVN,6,NSTRS,NSTRS,DET,IRET)
-
-        CALL R8INIR(36,0.D0,DSIDEP,1)
-
-        DO 37 I=1,NSTRS
-          DO 37 J=1,NSTRS
-            DO 37 K=1,NSTRS
-              DSIDEP(I,J)=DSIDEP(I,J)+INVN(K,J)*DEP(I,K)
- 37     CONTINUE
-
-        IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
-          IF (OPTION(1).EQ.'RIGI_MECA_TANG') THEN
-            CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRP,IRET)
-            IF ( IRET.NE.0) HYDRP=0.D0
-            CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET)
-            IF ( IRET.NE.0) HYDRM=0.D0
-            CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECHP,IRET)
-            IF ( IRET.NE.0) SECHP=0.D0
-            CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,SECHM,IRET)
-            IF ( IRET.NE.0) SECHM=0.D0
-            CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
-            IF ( IRET.NE.0) SREF=0.D0
-            IF (NINT(VIM(23)).EQ.1) THEN
-              EPSRM = KDESS*(SECHM-SREF)-BENDO*HYDRM + EPSTHM
-              DO 40 I=1,NSTRS
-                EPSME(I)=EPSM(I)-EPSRM*KRON(I)
- 40           CONTINUE
-              CALL LCEIBT(NSTRS,EPSME,EPSFM,DEP,INVN,CN,DSIDEP)
-            ENDIF
-          ELSE IF ((OPTION(1).EQ.'RAPH_MECA').OR.
-     &              (OPTION(1).EQ.'FULL_MECA')) THEN
-            IF (NINT(VIP(23)).EQ.1) THEN
-             CALL DCOPY(NSTRS,EPSM,1,EPS,1)
-             CALL DAXPY(NSTRS,1.D0,DEPS,1,EPS,1)
-              DO 45 I=1,NSTRS
-                EPSE(I)=EPSM(I)+DEPS(I)-EPSRP*KRON(I)
- 45           CONTINUE
-              CALL LCUMVI('FT',VIP,EPSF)
-              CALL LCEIBT(NSTRS,EPSE,EPSF,DEP,INVN,CN,DSIDEP)
+            ELSE
+              CALL LCUMME(YOUN,XNU,IFOU,DEP)
             ENDIF
           ENDIF
+          CALL R8INIR(36,0.D0,MATN,1)
+          DO 30 I=1,NSTRS
+            MATN(I,I)=1.D0
+ 30       CONTINUE
+
+          DO 31 I=1,NSTRS
+            DO 31 J=1,NSTRS
+              DO 31 K=1,NSTRS
+                MATN(I,J)=MATN(I,J)+CN(I,K)*DEP(K,J)
+31        CONTINUE
+
+          CALL R8INIR(36,0.D0,INVN,1)
+
+          DO 36 I=1,NSTRS
+            INVN(I,I)=1.D0
+ 36       CONTINUE
+
+          CALL MGAUSS('NFVP',MATN,INVN,6,NSTRS,NSTRS,DET,IRET)
+
+          CALL R8INIR(36,0.D0,DSIDEP,1)
+
+          DO 37 I=1,NSTRS
+            DO 37 J=1,NSTRS
+              DO 37 K=1,NSTRS
+                DSIDEP(I,J)=DSIDEP(I,J)+INVN(K,J)*DEP(I,K)
+ 37       CONTINUE
+
+          IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
+            IF (OPTION(1).EQ.'RIGI_MECA_TANG') THEN
+              CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRP,IRET)
+              IF ( IRET.NE.0) HYDRP=0.D0
+              CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET)
+              IF ( IRET.NE.0) HYDRM=0.D0
+              CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECHP,IRET)
+              IF ( IRET.NE.0) SECHP=0.D0
+              CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,SECHM,IRET)
+              IF ( IRET.NE.0) SECHM=0.D0
+              CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
+              IF ( IRET.NE.0) SREF=0.D0
+              IF (NINT(VIM(23)).EQ.1) THEN
+                EPSRM = KDESS*(SECHM-SREF)-BENDO*HYDRM + EPSTHM
+                DO 40 I=1,NSTRS
+                  EPSME(I)=EPSM(I)-EPSRM*KRON(I)
+ 40             CONTINUE
+                CALL LCEIBT(NSTRS,EPSME,EPSFM,DEP,INVN,CN,DSIDEP)
+              ENDIF
+            ELSE IF ((OPTION(1).EQ.'RAPH_MECA').OR.
+     &               (OPTION(1).EQ.'FULL_MECA')) THEN
+              IF (NINT(VIP(23)).EQ.1) THEN
+                CALL DCOPY(NSTRS,EPSM,1,EPS,1)
+                CALL DAXPY(NSTRS,1.D0,DEPS,1,EPS,1)
+                DO 45 I=1,NSTRS
+                  EPSE(I)=EPSM(I)+DEPS(I)-EPSRP*KRON(I)
+ 45             CONTINUE
+                CALL LCUMVI('FT',VIP,EPSF)
+                CALL LCEIBT(NSTRS,EPSE,EPSF,DEP,INVN,CN,DSIDEP)
+              ENDIF
+            ENDIF
 C        ELSE IF (OPTION(2).EQ.'MAZARS') THEN
-        ENDIF
+          ENDIF
 C----------- CORRECTION POUR LES CONTRAINTES PLANES :
-        IF (IFOU .EQ. -2) THEN
-          DO 136 K=1,NSTRS
-            IF (K.EQ.3) GO TO 136
-            DO 137 L=1,NSTRS
-              IF (L.EQ.3) GO TO 137
-              DSIDEP(K,L)=DSIDEP(K,L)
-     &           - 1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
-137         CONTINUE
-136       CONTINUE
-        ENDIF
-      ENDIF
+          IF (IFOU .EQ. -2) THEN
+            DO 136 K=1,NSTRS
+              IF (K.EQ.3) GO TO 136
+              DO 137 L=1,NSTRS
+                IF (L.EQ.3) GO TO 137
+                DSIDEP(K,L)=DSIDEP(K,L)
+     &             - 1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
+137           CONTINUE
+136         CONTINUE
+          ENDIF
+          
 
+C FIN CHOIX MAZARS
+        ENDIF 
+
+C FIN RIGI_MECA/FULL_MECA        
+      ENDIF
+      
       END

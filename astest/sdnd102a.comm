@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -281,14 +281,14 @@ TRAN_GE2=DYNA_TRAN_MODAL(  MASS_GENE=MGEN_BIC,   RIGI_GENE=RGEN_BIC,
 LISTIMP=DEFI_LIST_REEL(  DEBUT=0.,
                     INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 500))
 
-RESUA1=REST_BASE_PHYS(  RESU_GENE=TRAN_GE1,
+RESUA1=REST_GENE_PHYS(  RESU_GENE=TRAN_GE1,
                           LIST_INST=LISTIMP,
                           INTERPOL='LIN',
                           NOM_CHAM='DEPL',
                          MULT_APPUI='OUI'
                        )
 
-RESUR1=REST_BASE_PHYS(  RESU_GENE=TRAN_GE1,
+RESUR1=REST_GENE_PHYS(  RESU_GENE=TRAN_GE1,
                           LIST_INST=LISTIMP,
                           INTERPOL='LIN',
                           NOM_CHAM='DEPL',

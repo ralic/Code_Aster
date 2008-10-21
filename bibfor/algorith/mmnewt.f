@@ -1,9 +1,9 @@
         SUBROUTINE  MMNEWT(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
-     &                     ITEMAX,EPSMAX,FFORME,KSI1  ,KSI2  ,
-     &                     TAU1  ,TAU2  ,NIVERR)
+     &                     ITEMAX,EPSMAX,KSI1  ,KSI2  ,TAU1  ,
+     &                     TAU2  ,NIVERR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/06/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,8 +27,7 @@ C
       INTEGER      NNO
       INTEGER      NDIM
       REAL*8       COORMA(27)
-      REAL*8       COORPT(3)
-      CHARACTER*8  FFORME      
+      REAL*8       COORPT(3)     
       REAL*8       KSI1,KSI2
       REAL*8       TAU1(3),TAU2(3)
       INTEGER      NIVERR
@@ -45,9 +44,6 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  FFORME : TYPE DES FONCTIONS DE FORME
-C               'CONTINUE' POUR ELTS DE CONTACT
-C               'STANDARD' POUR ELTS STANDARDS
 C IN  ALIAS  : TYPE DE MAILLE
 C IN  NNO    : NOMBRE DE NOEUD SUR LA MAILLE
 C IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
@@ -120,8 +116,8 @@ C
 C --- CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
 C --- DANS LA MAILLE
 C
-        CALL MMFONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
-     &              KSI2  ,FF    ,DFF   ,DDFF   )          
+        CALL MMFONF(NDIM  ,NNO   ,ALIAS  ,KSI1   ,KSI2  ,
+     &              FF    ,DFF   ,DDFF   )          
 C
 C --- CALCUL DU VECTEUR POSITION DU POINT COURANT SUR LA MAILLE
 C
@@ -238,8 +234,8 @@ C
         ELSEIF ((ITER.GE.ITEMAX).AND.(TEST.GT.EPS)) THEN
           KSI1 = KSI1M
           KSI2 = KSI2M
-          CALL MMFONF(FFORME,NDIM  ,NNO   ,ALIAS  ,KSI1   ,
-     &                KSI2  ,FF    ,DFF   ,DDFF   )          
+          CALL MMFONF(NDIM  ,NNO   ,ALIAS  ,KSI1   ,KSI2  ,
+     &                FF    ,DFF   ,DDFF   )          
           CALL MMTANG(NDIM  ,NNO   ,COORMA,DFF   ,
      &                TAU1  ,TAU2)            
         ENDIF  

@@ -2,7 +2,7 @@
      &                   LQUALI,RDESQ,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+!& MODIF AMUMPT MUMPS  DATE 20/10/2008   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -161,7 +161,7 @@ C       ------------------------------------------------
         ELSE IF (OPTION.EQ.6) THEN
           CALL UTTCPU(70,'FIN  ',6,TEMPS)
           ZR(MONIT(5)+RANG)=TEMPS(5)+TEMPS(6)
-          ZI(MONIT(2)+RANG)=INFO(9)+INFO(10)
+          ZI(MONIT(2)+RANG)=INFO(9)
           ZI(MONIT(12)+RANG)=INFO(16)
           CALL MUMMPI(4,IFM,NIV,KMONIT(1),NBPROC,IBID)
           CALL MUMMPI(4,IFM,NIV,KMONIT(2),NBPROC,IBID)

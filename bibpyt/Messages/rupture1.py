@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF rupture1 Messages  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,11 @@ Veuillez utiliser une autre option de lissage
 """),
 
 2: _("""
-%(k1)s n'est pas un GROUP_NO ou un GROUP_MA.
+%(k1)s n'est pas un groupe de mailles du maillage.
+"""),
+
+3: _("""
+%(k1)s n'est pas un groupe de noeuds du maillage.
 """),
 
 6: _("""
@@ -283,4 +287,55 @@ Le calcul de G avec une modélisation X-FEM n'est pas possible avec une loi de co
 Remplacer si possible le comportement élastoplastique (COMP_INCR) par un comportement
 élastique non linéaire (COMP_ELAS).
 """),
+
+44: _("""
+Les paramètres K1_MAX et/ou G_MAX sont absents du tableau des facteurs d'intensité des
+contraintes fourni.
+-> Risque et Conseil :
+Le mot clé METHODE_POSTK doit être fourni si et seulement si la table TABLE a été 
+calculée avec l'opérateur POST_K1_K2_K3. 
+"""),
+
+45: _("""
+La table des facteurs d'intensité des contraintes fournie ne contient pas au moins un
+des paramètres suivants : K1_LOCAL, G_LOCAL, BETA_LOCAL.
+-> Risque et Conseil :
+Vérifier que la table a été correctement calculée par l'opérateur CALC_G (option 
+CALC_K_G). Si la table a été calculée avec l'opérateur POST_K1_K2_K3, le mot clé 
+METHODE_POSTK doit être fourni.
+"""),
+
+46: _("""
+Le taux de restitution d'énergie G est négatif sur certains des noeuds du fond de fissure :
+le calcul de propagation est impossible.
+-> Risque et Conseil :
+Vérifier les paramètres du calcul de G (rayons des couronnes ou abscisse curviligne 
+maximale, type de lissage, ...). 
+"""),
+
+47: _("""
+Le calcul de la propagation d'une fissure avec la méthode 'MAILLAGE' et une hypothèse 
+'NON_PLAN' n'est pas possible si plusieurs instants sont définis dans la table fournie
+en entrée. La bifurcation de la fissure n'a en effet pas été programmée dans ce cas.
+-> Risque et Conseil :
+Un calcul de propagation en supposant que la fissure reste plane est possible 
+(HYPOTHESE='PLAN').
+"""),
+
+48: _("""
+Le calcul de la propagation d'une fissure avec la méthode 'MAILLAGE' n'est possible que
+si la fissure ne comporte qu'un seul fond. La fissure fournie en entrée de PROPA_FISS
+en comporte ici %(i1)s.
+-> Risque et Conseil :
+Vérifier la fissure produite en sortie de DEFI_FISS_XFEM.
+"""),
+
+49: _("""
+Le facteur d'intensité des contraintes K1 est négatif sur certains des noeuds du fond 
+de fissure : le calcul de propagation est impossible.
+-> Risque et Conseil :
+Vérifier les paramètres du calcul de K1 (rayons des couronnes ou abscisse curviligne 
+maximale, type de lissage, ...). 
+"""),
+
 }

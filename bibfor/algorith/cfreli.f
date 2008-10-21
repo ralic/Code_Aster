@@ -2,7 +2,7 @@
      &                  COEFNO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/06/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,12 +72,12 @@ C
       KSI(2) = KSI2
       KSI(3) = UN - KSI1 - KSI2
 C      
-      IF (ALIAS.EQ.'SG2') THEN
+      IF (ALIAS.EQ.'SE2') THEN
         CALL ELRFVF('SE2',KSI,2,FF,IBID)
         COEFNO(1) = - FF(1)
         COEFNO(2) = - FF(2)
         COEFNO(3) = ZERO        
-      ELSE IF (ALIAS.EQ.'SG3') THEN
+      ELSE IF (ALIAS.EQ.'SE3') THEN
         CALL ELRFVF('SE3',KSI,3,FF,IBID)
         COEFNO(1) = - FF(1)
         COEFNO(2) = - FF(2)

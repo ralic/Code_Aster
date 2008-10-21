@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel6 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -319,5 +319,13 @@ Solution :
 79: _("""
  Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM 
 """),
+
+80 : _("""
+ l'amortissement du MACR_ELEM : %(k1)s  n'a pas encore ete calculé.
+ """),
+
+81 : _("""
+  il manque des amortissements.
+  """),
 
 }

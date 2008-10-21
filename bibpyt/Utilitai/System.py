@@ -1,4 +1,4 @@
-#@ MODIF System Utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF System Utilitai  DATE 21/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,21 +30,77 @@ __all__ = ["SYSTEM", "ExecCommand"]
 
 import sys
 import os
+import time
 import popen2
 import re
 from sets import Set
 from types import FileType
+
+try:
+   import threading as _threading
+except ImportError:
+   import dummy_threading as _threading
 
 # ----- differ messages translation
 def _(mesg):
    return mesg
 
 #-------------------------------------------------------------------------------
+class NonBlockingReader(_threading.Thread):
+   """Classe pour lire l'output/error d'un process fils sans bloquer."""
+   def __init__(self, process, file, bufsize=1000, sleep=0):
+      _threading.Thread.__init__(self)
+      self.process = process
+      self.file    = file
+      self.bufsize = bufsize
+      self.lock    = _threading.Lock()
+      self.content = []
+      self.buffer  = []
+      self.sleeptime = sleep
+      self.ended   = False
+
+   def fill_buffer(self, bufsize=-1):
+      #add = os.read(self.file.fileno(), self.bufsize)
+      add = self.file.read(bufsize)
+      if add:
+         self.lock.acquire()
+         self.buffer.append(add)
+         self.lock.release()
+
+   def run(self):
+      while self.process.poll() == -1:
+         self.fill_buffer(self.bufsize)
+         time.sleep(self.sleeptime)
+      self.fill_buffer()
+      self.ended = True
+
+   def flush(self):
+      if len(self.buffer) > 0:
+         self.content.extend(self.buffer)
+         self.buffer = []
+
+   def getcurrent(self):
+      if self.ended:
+         self.fill_buffer()
+      self.lock.acquire()
+      txt = ''.join(self.buffer)
+      self.flush()
+      self.lock.release()
+      return txt
+
+   def read(self):
+      self.fill_buffer()
+      self.lock.acquire()
+      self.flush()
+      txt = ''.join(self.content)
+      self.lock.release()
+      return txt
+
+#-------------------------------------------------------------------------------
 def _exitcode(status, default=0):
    """Extrait le code retour du status. Retourne `default` si le process
    n'a pas fini pas exit.
    """
-   iret = default
    if os.WIFEXITED(status):
       iret = os.WEXITSTATUS(status)
    elif os.WIFSIGNALED(status):
@@ -179,34 +235,35 @@ class SYSTEM:
          iret = os.system(cmd)
          return _exitcode(iret), ''
       # use popen to manipulate stdout/stderr
-      output = []
-      error  = []
+      output = ''
+      error  = ''
       if separated_stderr or not capturestderr:
          p = popen2.Popen3(cmd, capturestderr=capturestderr)
       else:
          p = popen2.Popen4(cmd)
       p.tochild.close()
       if not bg:
-         if not follow_output:
-            output = p.fromchild.readlines()
-            if separated_stderr:
-               error = p.childerr.readlines()
-         else:
+         th_out = NonBlockingReader(p, p.fromchild)
+         th_out.start()
+         if separated_stderr:
+            th_err = NonBlockingReader(p, p.childerr)
+            th_err.start()
+         if follow_output:
             while p.poll() == -1:
-               output.append(p.fromchild.readline())
-               # \n already here...
-               self._print(output[-1], term='')
-               if separated_stderr:
-                  error.append(p.childerr.readline())
-                  self._print(error[-1], term='')
+               new = th_out.getcurrent()
+               if new:
+                  # \n already here...
+                  self._print(new, term='')
             # to be sure to empty the buffer
-            end = p.fromchild.readlines()
-            self._print(''.join(end))
-            output.extend(end)
-            if separated_stderr:
-               end = p.childerr.readlines()
-               self._print(''.join(end))
-               error.extend(end)
+            new = th_out.getcurrent()
+            self._print(new)
+         th_out.join()
+         if separated_stderr:
+            th_err.join()
+         # store all output/error
+         output = th_out.read()
+         if separated_stderr:
+            error  = th_err.read()
          try:
             iret = _exitcode(p.wait())
          except OSError, e:
@@ -215,10 +272,8 @@ class SYSTEM:
       else:
          iret = 0
       p.fromchild.close()
-      output = ''.join(output)
       if separated_stderr:
          p.childerr.close()
-         error = ''.join(error)
 
       # repeat header message
       if follow_output:

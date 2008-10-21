@@ -4,7 +4,7 @@
      &                  MMAT)     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -83,16 +83,12 @@ C
 C
 C --- MATRICE 
 C
-      DO 303 I = 1,NDIM
-        DO 302 J = 1,NDIM
-          DO 301 K = 1,NDIM
-            TT(1,1) = TAU1(K)*TAU1(K) + TT(1,1)
-            TT(1,2) = TAU1(K)*TAU2(K) + TT(1,2)
-            TT(2,1) = TAU2(K)*TAU1(K) + TT(2,1)
-            TT(2,2) = TAU2(K)*TAU2(K) + TT(2,2)
+          DO 301 I = 1,NDIM
+            TT(1,1) = TAU1(I)*TAU1(I) + TT(1,1)
+            TT(1,2) = TAU1(I)*TAU2(I) + TT(1,2)
+            TT(2,1) = TAU2(I)*TAU1(I) + TT(2,1)
+            TT(2,2) = TAU2(I)*TAU2(I) + TT(2,2)
  301      CONTINUE
- 302    CONTINUE
- 303  CONTINUE
       DO 284 I = 1,NNC
         DO 283 J = 1,NNC
           DO 282 L = 1,NDIM-1

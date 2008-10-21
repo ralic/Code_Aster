@@ -1,4 +1,4 @@
-#@ MODIF modes Meidee  DATE 14/05/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF modes Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,16 +26,19 @@
 from Tkinter import *
 
 import aster
+import string
+import Numeric
 from Meidee.meidee_iface import MyMenu, MacMode, VecteurEntry
+from Meidee.meidee_cata import DynaHarmo
 from Accas import _F, ASSD
 
 from Cata.cata import IMPR_RESU, MAC_MODES, DETRUIRE, DEFI_GROUP
 from Cata.cata import MODE_STATIQUE,DEFI_BASE_MODALE,PROJ_MESU_MODAL,MACR_ELEM_STAT
-from Cata.cata import NUME_DDL_GENE,PROJ_MATR_BASE,MODE_ITER_SIMULT,REST_BASE_PHYS
+from Cata.cata import NUME_DDL_GENE,PROJ_MATR_BASE,MODE_ITER_SIMULT
 from Cata.cata import EXTR_MODE, DEFI_MAILLAGE, ASSE_MAILLAGE, AFFE_MODELE
 from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, CO, MACRO_EXPANS
 from Cata.cata import AFFE_CARA_ELEM, AFFE_MATERIAU, AFFE_CHAR_MECA
-from Cata.cata import CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE
+from Cata.cata import CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE, DEPL_INTERNE
 
 try:
     set
@@ -62,7 +65,7 @@ class ModeList(Frame): # pure Tk -> testable hors aster
         scroll = Scrollbar ( self, orient='vertical' )
         scroll.grid ( row=1, column=1, sticky='ns' )
         lst = Listbox(self,
-                      selectmode='multiple',
+                      selectmode='extended',
                       yscrollcommand=scroll.set,
                       exportselection=False,
                       font=("Courier","12"),
@@ -85,24 +88,24 @@ class ModeList(Frame): # pure Tk -> testable hors aster
         self.modes_list.selection_clear(0,END)
 
     def fill_modes(self, modes ):
-        """!Remplit une liste de modes avec les numéros/fréquences passés en paramètres
-        
-        \param modes une liste de (valeur,label)
+        """! Remplit une liste de modes avec les numéros/item passés
+             en paramètres modes une liste de (numero, item)
         """
         self.modes_list.delete(0,END)
         self.modes = modes
         self.values = []
         for val, label in modes:
-            self.modes_list.insert( END, label )
+            self.modes_list.insert( END, val +" "+ label )
             self.values.append( val )
 
     def selection(self):
         """!Renvoie les valeurs associées à la sélection des modes"""
-        return [self.modes[int(v)][0] for v in self.modes_list.curselection() ]
+        return [int(self.modes[int(v)][0]) for v in self.modes_list.curselection() ]
 
 
 class ModeFreqList(ModeList):
-    """!Permet de créer une liste de modes contenues dans un sd_resultat"""
+    """!Permet de créer une liste de modes contenues dans un sd_resultat.
+        Valable pour mode_meca, base_modale (a verifier ??) et dyna_harmo"""
     def __init__(self, root, title=None):
         if title is None:
             title="Choisissez les modes"
@@ -110,10 +113,14 @@ class ModeFreqList(ModeList):
 
     def set_resu(self, resu):
         para = resu.LIST_PARA()
-        modes = para['NUME_MODE']
+        modes = para['NUME_ORDRE']
         freq = para['FREQ']
-        self.fill_modes( [ (n, '%8.2f Hz' % f) for n,f in zip(modes,freq) ] )
+        self.fill_modes( [ ('%3i' % n, '%8.2f Hz' % f) for n,f in zip(modes,freq) ] )
 
+
+class ModeHarmoList(ModeList):
+    """!liste de numeros d'ordre plutot pour les dyna_harmo"""
+    pass
 
 
 class GroupNoList(ModeList):
@@ -209,7 +216,6 @@ class ParamModeIterSimult(Frame):
                                  ])
 
     def select_option(self, *args):
-        print "SELECT", args
         opt = self.opt_option.get()
         if self.opt_panel:
             self.opt_panel.destroy()
@@ -293,7 +299,6 @@ class ParamModeIterInv(Frame):
             self.opt_panel.destroy()
         if opt == "PROCHE":
             panel = ModeList(self, "Fréquences proches")
-##            print self.frequences
             panel.fill_modes( [ (f, "% 6.2f Hz"%f) for f in self.frequences ] )
         elif opt == "SEPARE":
             panel = OptionFrame(self, None, [
@@ -610,7 +615,6 @@ class ChgtRepereDialogue(Toplevel):
             self.deiconify()
             self.is_active = False
         else:
-            print "self.row_dict = ", self.row_dict
             self.mess.disp_mess(
                 "Un dialogue pour le groupe '%s' " \
                 "est déjà ouvert. " % self.row_dict["NOM"])
@@ -680,7 +684,6 @@ class GroupNoWidget(Frame):
         
         for row_user_dict in user_data:
             row_dict = RowDict(row_user_dict.items())
-            print "row_dict = ", row_dict
             row_widgets = []
             row_ddl_vars = []
 
@@ -748,6 +751,263 @@ class GroupNoWidget(Frame):
 
     def toggled(self):
         self.root.notify()
+
+
+
+
+class DispFRFDialogue(Toplevel):
+    """L'interface offrant un changement de repère.
+    """
+
+    def __init__(self, mess, meidee_objects, param_visu, resu1=None, resu2=None, sumail=None):
+        Toplevel.__init__(self)
+
+        self.mess = mess
+        self.meidee_objects = meidee_objects
+        self.param_visu = param_visu
+        self.resu1 = resu1
+        self.resu2 = resu2
+        self.sumail = sumail
+        self.dyna1 = None
+        self.dyna2 = None
+        self.dyna3 = None
+        self.errmess1 = "Donnees incompletes pour le calcul"
+
+        self.protocol("WM_DELETE_WINDOW", self.hide)
+        self.dialog_titre = StringVar()
+        self._build_interface()
+
+        self.is_active  = False
+        self.row_dict = {}
+        self.tmp_widgets = {"labels" : [], "values" : []}
+        self.bind("&lt;Escape>", self.hide)
+
+
+
+    def _build_interface(self):
+        """Construit l'interface de dialogue."""
+        f = Frame(self)
+        f.grid()
+        mdo = self.meidee_objects
+
+        # boite 1 : choix de deux concepts resultats
+        f1 = Frame(f, relief='ridge', borderwidth=4)
+        f1.columnconfigure(0,weight=2)
+        f1.columnconfigure(1,weight=3)
+
+        Label(f1, text="Choix des concepts a visualiser").grid(row=0,column=0,columnspan = 2,pady=5)        
+        self.var_resu1 = StringVar()
+        Label(f1, text="Resultat 1").grid(row=1,column=0)
+        MyMenu( f1, options = mdo.get_all_resus_name(),
+                var = self.var_resu1, cmd = self.update).grid(row=1,column=1,sticky='ew')
+        if self.resu1 != None: self.var_resu1.set(self.resu1.nom)
+        
+        self.var_resu2 = StringVar()
+        Label(f1, text="Resultat 2").grid(row=2,column=0)
+        MyMenu( f1, options = mdo.get_all_resus_name(),
+                var = self.var_resu2, cmd = self.update).grid(row=2,column=1,sticky='ew')
+        if self.resu2 != None: self.var_resu2.set(self.resu2.nom)
+        f1.grid(row=0,column=0, sticky='ew')
+
+        # boite 2 : si le ou les concepts sont des mode_meca, calcul d'une FRF
+        f2 = Frame(f, relief='ridge', borderwidth=4)
+        if self.resu1:
+            if mdo.resultats.has_key(self.var_resu1.get()):
+                #le concept 1 est un mode_meca
+                self.exci_no1 = StringVar()
+                self.exci_ddl1 = StringVar()
+                self.exci_param(f2,self.var_resu1.get(),self.exci_no1,
+                                self.exci_ddl1).grid(row=1,column=0,columnspan = 2)
+                # PROVISOIRE
+                self.exci_no1.set('N1')
+                self.exci_ddl1.set('FX')
+            else:
+                # le concept est un dyna_harmo
+                self.dyna1 = mdo.dyna_harmo[self.var_resu1.get()]
+        if self.resu2:
+            if mdo.resultats.has_key(self.var_resu2.get()):
+                self.exci_no2 = StringVar()
+                self.exci_ddl2 = StringVar()
+                self.exci_param(f2,self.var_resu2.get(),self.exci_no2,
+                                self.exci_ddl2).grid(row=2,column=0,columnspan = 2)
+                # PROVISOIRE
+                self.exci_no2.set('N1')
+                self.exci_ddl2.set('FX')
+            else:
+                # le concept est un dyna_harmo
+                self.dyna2 = mdo.dyna_harmo[self.var_resu2.get()]
+
+        if mdo.resultats.has_key(self.var_resu1.get()) or mdo.resultats.has_key(self.var_resu2.get()):
+            self.freq_max = StringVar()
+            self.df = StringVar()
+            Label(f2,text='Parametres de calcul').grid(row=3,column=0,columnspan=2,pady=5)
+            Label(f2,text='Frequence max').grid(row=4,column=0, sticky='e')
+            Entry(f2,textvariable = self.freq_max).grid(row=4,column=1, sticky='we')
+            Label(f2,text='Resolution frequentielle').grid(row=5,column=0, sticky='e')
+            Entry(f2,textvariable = self.df).grid(row=5,column=1, sticky='we')
+            # PROVISOIRE
+            self.freq_max.set("100")
+            self.df.set('1')
+
+            Button(f2,text='Calculer',command=self.prep_calc).grid(row=6,column=1,sticky='e')            
+            
+        f2.grid(row=1,column=0,sticky='ew')      
+
+        # boite 3 : choix du noeud et DDL de visualisation
+        f3 = Frame(f, relief='ridge', borderwidth=4)
+        Label(f3, text=" visualisation des FRF").grid(row=0,column=0)
+        Label(f3, text="Noeud de visualisation").grid(row=1, column=0, sticky='e')
+        self.visu_no = StringVar()
+        Entry(f3, textvariable = self.visu_no).grid(row=1,column=1, sticky='ew')
+        
+        Label(f3, text="Direction de visualisation").grid(row=2, column=0, sticky='e')
+        ddls = ('DX','DY','DZ','DRX','DRY','DRZ')
+        self.visu_ddl = StringVar()
+        MyMenu(f3, var = self.visu_ddl,
+               options = ddls).grid(row=2, column=1, sticky='ew')
+        
+        Label(f3, text="Nom champ").grid(row=3, column=0, sticky='e')
+        nom_chams = ('DEPL','VITE','ACCE')
+        self.nom_cham = StringVar()
+        MyMenu(f3, var = self.nom_cham,
+               options = nom_chams).grid(row=3, column=1, sticky='ew')
+        
+        Label(f3, text="   ").grid(row=4, column=0)
+        Button(f3,text='Afficher',command=self.affich_FRF).grid(row=4,column=1,sticky='e')
+        f3.grid(row=2,column=0,sticky='ew')
+        # PROVISOIRE
+        self.visu_no.set('N1')
+        self.visu_ddl.set('DX')
+        self.nom_cham.set('DEPL')
+        
+        
+    def exci_param(self, parent, nom_resu, exci_no, exci_ddl):
+        """Frame pour definir les parametres d'excitation"""
+        f = Frame(parent)
+        texte = "Simulation du resultat harmonique pour " + nom_resu
+        Label(f, text=texte).grid(row=0,column=0, columnspan = 2,pady=5)
+        Label(f, text="Noeud d'excitation").grid(row=1, column=0, sticky='e')
+        Entry(f, textvariable = exci_no).grid(row=1,column=1, sticky='ew')
+        Label(f, text="Direction d'excitation").grid(row=2, column=0, sticky='e')
+        ddls = ('FX','FY','FZ')
+        MyMenu(f, var = exci_ddl,
+               options = ddls).grid(row=2, column=1, sticky='ew')
+##        Label(f, text="   ").grid(row=3, column=0)
+        return f
+
+
+    def prep_calc(self):
+        mdo = self.meidee_objects
+        
+        if mdo.resultats.has_key(self.var_resu1.get()):
+            # le concept 1 est un mode_meca
+            if self.exci_no1.get() and self.exci_ddl1.get():
+                self.resu1 = mdo.resultats[self.var_resu1.get()]
+                kass = self.resu1.kass
+                mass = self.resu1.mass
+                cass = self.resu1.cass
+                self.dyna1 = self.calc_dyna_line_harm(self.resu1, mass, kass, cass,
+                                                      self.exci_no1.get(),self.exci_ddl1.get())
+            else:
+                self.mess.disp_mess(self.errmess1)
+                
+        if mdo.resultats.has_key(self.var_resu2.get()):
+            if self.exci_no2.get() and self.exci_ddl2.get():
+                self.resu2 = mdo.resultats[self.var_resu2.get()]
+                kass = self.resu2.kass
+                mass = self.resu2.mass
+                cass = self.resu2.cass
+                self.dyna2 = self.calc_dyna_line_harm(self.resu2, mass, kass, cass,
+                                                      self.exci_no2.get(),self.exci_ddl2.get())
+                if self.sumail:
+                    # etape supplementaire pour les calculs de modif struct
+                    __DYNAM=DEPL_INTERNE(DEPL_GLOBAL=self.dyna2.obj,SUPER_MAILLE=self.sumail)
+                    self.dyna3 = DynaHarmo( self.meidee_objects, __DYNAM.nom, __DYNAM )
+                    self.meidee_objects.update(__DYNAM.nom, __DYNAM )
+
+            else:
+                self.mess.disp_mess(self.errmess1)
+
+
+
+    def calc_dyna_line_harm(self, resu, mass, kass, cass, exci_no, exci_ddl):
+        from Cata.cata import DYNA_LINE_HARM, AFFE_CHAR_MECA, DEFI_FONCTION
+
+        freq_max = string.atof(self.freq_max.get())
+        df = string.atof(self.df.get())
+        nbfreq = int(freq_max/df)
+        freq = tuple(1./df*Numeric.array(range(nbfreq)))
+
+        modele = resu.modele.obj
+        
+        mcfact = { 'NOEUD' : exci_no, exci_ddl : 1 }
+        __char = AFFE_CHAR_MECA( MODELE = modele,
+                                 FORCE_NODALE = mcfact )
+                                                          
+        __dyna = DYNA_LINE_HARM( MATR_MASS = mass,
+                                 MATR_RIGI = kass,
+                                 MATR_AMOR = cass,
+                                 FREQ = freq,
+                                 MODELE = modele,
+                                 EXCIT = _F( CHARGE = __char,
+                                             COEF_MULT_C=('RI',1.,0.) ))
+
+        dyna = DynaHarmo( self.meidee_objects, __dyna.nom, __dyna )
+        self.meidee_objects.update(__dyna.nom, __dyna )
+
+        return dyna
+
+
+    def affich_FRF(self):
+        from Cata.cata import RECU_FONCTION
+        if self.sumail:
+            dynas = [self.dyna1,self.dyna3]
+        else:
+            dynas = [self.dyna1,self.dyna2]
+        module = []
+        legende = []
+        couleur = []
+        for ind in range(2):
+            if dynas[ind]:
+                nomcmp = self.visu_ddl.get()
+                if ind == 0 and self.sumail:
+                    # les frf mesurees sont issues de LIRE_RESU dataset 58
+                    # les noms des composantes sont D1, D2, D3 au lieu de DX, DY, DZ
+                    if self.visu_ddl.get() == 'DX':
+                        nomcmp = ['D1']
+                    if self.visu_ddl.get() == 'DY':
+                        nomcmp = ['D2']
+                    if self.visu_ddl.get() == 'DZ':
+                        nomcmp = ['D3']
+                try:
+                    __fonc = RECU_FONCTION( RESULTAT = dynas[ind].obj,
+                                        NOM_CHAM = self.nom_cham.get(),
+                                        NOEUD = self.visu_no.get(),
+                                        NOM_CMP = nomcmp )
+                except :
+                    self.mess.disp_mess("Erreur dans RECU_FONCTION : " \
+                                "Vérifier le nom et la direction du noeud")
+                    return
+
+                fonc_py = __fonc.convert('complex')
+                ordo = fonc_py.vale_y
+                freq = fonc_py.vale_x
+                module.append([abs(kk) for kk in ordo])
+                legende.append("%s %s_%s" % (dynas[ind].nom,self.visu_no.get(),self.visu_ddl.get()))
+                couleur.append(ind+1)
+
+        self.param_visu.visu_courbe(freq, module, couleur, legende, 'LIN', 'LOG')
+
+    def update(self):
+        """ refabrication de l'interface si les concepts
+            a afficher ont change"""
+        self.withdraw()
+        self._build_interface()
+
+    def hide(self):
+        """Annulation du dialogue"""
+        self.withdraw()
+
 
 
 # Récupération du concept donnant la composante 
@@ -910,7 +1170,7 @@ class MacWindowFrame(Frame):
      - un bouton (log) permettant de commuter l'affichage linéaire et logarithmique
 
     """
-    def __init__(self, root, label,  name1=None, name2=None ):
+    def __init__(self, root, label,  name1=None, name2=None, size=None ):
         """!Constructeur
 
         :IVariables:
@@ -932,7 +1192,9 @@ class MacWindowFrame(Frame):
         titre.grid(row=0, column=0, columnspan=4, sticky='n' )
 
         # Graphique
-        self.mac = MacMode( self, height=100, width=100 )
+        if size == None:
+            size = (100,100)
+        self.mac = MacMode( self, height=size[0], width=size[1] )
         self.mac.grid( row=2, column=0, sticky="nsew" )
         self.modes1 = None
         self.modes2 = None
@@ -953,8 +1215,6 @@ class MacWindowFrame(Frame):
 
         # Switch log/lin
         self.logvar = IntVar()
-        logmode = Checkbutton(self,text="Log",variable=self.logvar, command=self.setlog )
-        logmode.grid( row=4,column=0,columnspan=4)
         self.mac.resize_ok()
         self.displayvar1 = StringVar()
         self.displayvar1.set("none")
@@ -982,13 +1242,6 @@ class MacWindowFrame(Frame):
         self.displayvar1.set("%s / %s" % (txt1,txt2) )
         self.displayvar2.set("%.5g" % (v) )
 
-    def setlog(self):
-        """!Callback du bouton radio de sélection (log/linéaire)"""
-        from Numeric import log
-        if self.logvar.get():
-            self.mac.show_mat( log(self.mat) )
-        else:
-            self.mac.show_mat( self.mat )
 
     def build_modes(self, text, modes):
         """!Construit la liste des modes dans une boite texte"""
@@ -999,8 +1252,6 @@ class MacWindowFrame(Frame):
     def set_modes(self, modes1, modes2, mat ):
         modes1 = (modes1[:,1], ["%8.2f Hz" % f for f in modes1[:,1] ])
         modes2 = (modes2[:,1], ["%8.2f Hz" % f for f in modes2[:,1] ])
-##        print repr( modes1 )
-##        print repr( modes2 )
         self.modes1 = modes1
         self.modes2 = modes2
         self.build_modes(self.text_modes1, modes1 )

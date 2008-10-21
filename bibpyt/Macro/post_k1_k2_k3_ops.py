@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1032,8 +1032,6 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         if  FISSURE : 
            H1 = getattr(tabsupi,'H1X').values()
            nbval = len(H1)
-           if H1[-1]==None : 
-             UTMESS('F','RUPTURE0_33')
            H1 = complete(H1)
            E1 = getattr(tabsupi,'E1X').values()
            E1 = complete(E1)
@@ -1050,13 +1048,6 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
            dzs = 2*(H1 + sqrt(abscs)*E1)
            abscs=array(abscs[:nbval])
 
-#     --- TESTS NOMBRE DE NOEUDS---
-        if nbval<3 :
-           UTMESS('F+','RUPTURE0_46')
-           if FOND_FISS :
-               UTMESS('F+','RUPTURE0_47',valk=Lnofon[ino])
-           UTMESS('F','RUPTURE0_25')
-           
 #   ---------- CALCUL PROP. MATERIAU AVEC TEMPERATURE -----------  
         if Tempe3D :
            tempeno=tabtemp.NOEUD==Lnofon[ino]
@@ -1072,8 +1063,23 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
            coefg  = (1. - nu**2) / e
            coefg3 = (1. + nu)  / e
 
+#     --- TESTS NOMBRE DE NOEUDS---
+        if nbval<3 :
+           UTMESS('A+','RUPTURE0_46')
+           if FOND_FISS :
+               UTMESS('A+','RUPTURE0_47',valk=Lnofon[ino])
+           if FISSURE :
+               UTMESS('A+','RUPTURE0_99',vali=ino)
+           UTMESS('A','RUPTURE0_25')
+           kg1 = [0.]*8
+           kg2 =[0.]*8
+           kg3 =[0.]*8
+         
+        else :  
+#     SI NBVAL >= 3 : 
+
 #     ------------------------------------------------------------------
-#                           CHANGEMENT DE REPERE
+#                    CHANGEMENT DE REPERE
 #     ------------------------------------------------------------------
 #
 #       1 : VECTEUR NORMAL AU PLAN DE LA FISSURE
@@ -1081,139 +1087,139 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #       2 : VECTEUR NORMAL AU FOND DE FISSURE EN M
 #       3 : VECTEUR TANGENT AU FOND DE FISSURE EN M
 #
-        if FISSURE :
-           v2 = VP[ino]
-           v1 = VN[ino]
-        elif SYME_CHAR=='SANS' :
-           vo =  array([( coxs[-1]+coxi[-1] )/2.,( coys[-1]+coyi[-1] )/2.,( cozs[-1]+cozi[-1] )/2.])
-           ve =  array([( coxs[0 ]+coxi[0 ] )/2.,( coys[0 ]+coyi[0 ] )/2.,( cozs[0 ]+cozi[0 ] )/2.])
-           v2 =  ve-vo
-        else :
-           vo = array([ coxs[-1], coys[-1], cozs[-1]])
-           ve = array([ coxs[0], coys[0], cozs[0]])
-           v2 =  ve-vo
-        if not FISSURE :  v1 =  array(VECT_K1)
-        v2 =  v2/sqrt(v2[0]**2+v2[1]**2+v2[2]**2)
-        v1p = sum(v2*v1)
-        if SYME_CHAR=='SANS' : v1  = v1-v1p*v2
-        else : v2  = v2-v1p*v1 
-        v1  = v1/sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
-        v2 =  v2/sqrt(v2[0]**2+v2[1]**2+v2[2]**2)
-        v3  = array([v1[1]*v2[2]-v2[1]*v1[2],v1[2]*v2[0]-v2[2]*v1[0],v1[0]*v2[1]-v2[0]*v1[1]])
-        pgl  = asarray([v1,v2,v3])
-        dpls = asarray([dxs,dys,dzs])
-        dpls = matrixmultiply(pgl,dpls)
-        if SYME_CHAR!='SANS' and abs(dpls[0][0]) > 1.e-10 :
-          UTMESS('A','RUPTURE0_49',valk=[Lnofon[ino],SYME_CHAR])
-        if FISSURE :
-           saut=dpls
-        elif SYME_CHAR=='SANS' :
-           dpli = asarray([dxi,dyi,dzi])
-           dpli = matrixmultiply(pgl,dpli)
-           saut=(dpls-dpli)
-        else :
-           dpli = [multiply(dpls[0],-1.),dpls[1],dpls[2]]
-           saut=(dpls-dpli)
-        if INFO==2 :
-          mcfact=[]
-          mcfact.append(_F(PARA='ABSC_CURV'  ,LISTE_R=abscs.tolist() ))
-          if not FISSURE :
-            mcfact.append(_F(PARA='DEPL_SUP_1',LISTE_R=dpls[0].tolist() ))
-            mcfact.append(_F(PARA='DEPL_INF_1',LISTE_R=dpli[0].tolist() ))
-          mcfact.append(_F(PARA='SAUT_1'    ,LISTE_R=saut[0].tolist() ))
-          if not FISSURE :
-            mcfact.append(_F(PARA='DEPL_SUP_2',LISTE_R=dpls[1].tolist() ))
-            mcfact.append(_F(PARA='DEPL_INF_2',LISTE_R=dpli[1].tolist() ))
-          mcfact.append(_F(PARA='SAUT_2'    ,LISTE_R=saut[1].tolist() ))
-          if ndim==3 :
-            if not FISSURE :
-              mcfact.append(_F(PARA='DEPL_SUP_3',LISTE_R=dpls[2].tolist() ))
-              mcfact.append(_F(PARA='DEPL_INF_3',LISTE_R=dpli[2].tolist() ))
-            mcfact.append(_F(PARA='SAUT_3'    ,LISTE_R=saut[2].tolist() ))
-          __resu0=CREA_TABLE(LISTE=mcfact,TITRE='--> SAUTS')
-          aster.affiche('MESSAGE',__resu0.EXTR_TABLE().__repr__())
-          DETRUIRE(CONCEPT=_F(NOM=__resu0),INFO=1)
+         if FISSURE :
+            v2 = VP[ino]
+            v1 = VN[ino]
+         elif SYME_CHAR=='SANS' :
+            vo =  array([( coxs[-1]+coxi[-1] )/2.,( coys[-1]+coyi[-1] )/2.,( cozs[-1]+cozi[-1] )/2.])
+            ve =  array([( coxs[0 ]+coxi[0 ] )/2.,( coys[0 ]+coyi[0 ] )/2.,( cozs[0 ]+cozi[0 ] )/2.])
+            v2 =  ve-vo
+         else :
+            vo = array([ coxs[-1], coys[-1], cozs[-1]])
+            ve = array([ coxs[0], coys[0], cozs[0]])
+            v2 =  ve-vo
+         if not FISSURE :  v1 =  array(VECT_K1)
+         v2 =  v2/sqrt(v2[0]**2+v2[1]**2+v2[2]**2)
+         v1p = sum(v2*v1)
+         if SYME_CHAR=='SANS' : v1  = v1-v1p*v2
+         else : v2  = v2-v1p*v1 
+         v1  = v1/sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
+         v2 =  v2/sqrt(v2[0]**2+v2[1]**2+v2[2]**2)
+         v3  = array([v1[1]*v2[2]-v2[1]*v1[2],v1[2]*v2[0]-v2[2]*v1[0],v1[0]*v2[1]-v2[0]*v1[1]])
+         pgl  = asarray([v1,v2,v3])
+         dpls = asarray([dxs,dys,dzs])
+         dpls = matrixmultiply(pgl,dpls)
+         if SYME_CHAR!='SANS' and abs(dpls[0][0]) > 1.e-10 :
+           UTMESS('A','RUPTURE0_49',valk=[Lnofon[ino],SYME_CHAR])
+         if FISSURE :
+            saut=dpls
+         elif SYME_CHAR=='SANS' :
+            dpli = asarray([dxi,dyi,dzi])
+            dpli = matrixmultiply(pgl,dpli)
+            saut=(dpls-dpli)
+         else :
+            dpli = [multiply(dpls[0],-1.),dpls[1],dpls[2]]
+            saut=(dpls-dpli)
+         if INFO==2 :
+           mcfact=[]
+           mcfact.append(_F(PARA='ABSC_CURV'  ,LISTE_R=abscs.tolist() ))
+           if not FISSURE :
+             mcfact.append(_F(PARA='DEPL_SUP_1',LISTE_R=dpls[0].tolist() ))
+             mcfact.append(_F(PARA='DEPL_INF_1',LISTE_R=dpli[0].tolist() ))
+           mcfact.append(_F(PARA='SAUT_1'    ,LISTE_R=saut[0].tolist() ))
+           if not FISSURE :
+             mcfact.append(_F(PARA='DEPL_SUP_2',LISTE_R=dpls[1].tolist() ))
+             mcfact.append(_F(PARA='DEPL_INF_2',LISTE_R=dpli[1].tolist() ))
+           mcfact.append(_F(PARA='SAUT_2'    ,LISTE_R=saut[1].tolist() ))
+           if ndim==3 :
+             if not FISSURE :
+               mcfact.append(_F(PARA='DEPL_SUP_3',LISTE_R=dpls[2].tolist() ))
+               mcfact.append(_F(PARA='DEPL_INF_3',LISTE_R=dpli[2].tolist() ))
+             mcfact.append(_F(PARA='SAUT_3'    ,LISTE_R=saut[2].tolist() ))
+           __resu0=CREA_TABLE(LISTE=mcfact,TITRE='--> SAUTS')
+           aster.affiche('MESSAGE',__resu0.EXTR_TABLE().__repr__())
+           DETRUIRE(CONCEPT=_F(NOM=__resu0),INFO=1)
 #     ------------------------------------------------------------------
 #                           CALCUL DES K1, K2, K3
 #     ------------------------------------------------------------------
-        isig=sign(transpose(resize(saut[:,-1],(nbval-1,3))))
-        isig=sign(isig+0.001)
-        saut=saut*array([[coefd]*nbval,[coefd]*nbval,[coefd3]*nbval])
-        saut=saut**2
-        ksig = isig[:,1]
-        ksig = array([ksig,ksig])
-        ksig = transpose(ksig)
-        kgsig=resize(ksig,(1,6))[0]
+         isig=sign(transpose(resize(saut[:,-1],(nbval-1,3))))
+         isig=sign(isig+0.001)
+         saut=saut*array([[coefd]*nbval,[coefd]*nbval,[coefd3]*nbval])
+         saut=saut**2
+         ksig = isig[:,1]
+         ksig = array([ksig,ksig])
+         ksig = transpose(ksig)
+         kgsig=resize(ksig,(1,6))[0]
 #     ------------------------------------------------------------------
 #                           --- METHODE 1 ---
 #     ------------------------------------------------------------------
-        x1 = abscs[1:-1]
-        x2 = abscs[2:  ]
-        y1 = saut[:,1:-1]/x1
-        y2 = saut[:,2:  ]/x2
-        k  = abs(y1-x1*(y2-y1)/(x2-x1))
-        g  = coefg*(k[0]+k[1])+coefg3*k[2]
-        kg1 = [max(k[0]),min(k[0]),max(k[1]),min(k[1]),max(k[2]),min(k[2])]
-        kg1 = sqrt(kg1)*kgsig
-        kg1=Numeric.concatenate([kg1,[max(g),min(g)]])
-        vk  = sqrt(k)*isig[:,:-1]
-        if INFO==2 :
-          mcfact=[]
-          mcfact.append(_F(PARA='ABSC_CURV_1' ,LISTE_R=x1.tolist() ))
-          mcfact.append(_F(PARA='ABSC_CURV_2' ,LISTE_R=x2.tolist() ))
-          mcfact.append(_F(PARA='K1'          ,LISTE_R=vk[0].tolist() ))
-          mcfact.append(_F(PARA='K2'          ,LISTE_R=vk[1].tolist() ))
-          if ndim==3 :
-            mcfact.append(_F(PARA='K3'        ,LISTE_R=vk[2].tolist() ))
-          mcfact.append(_F(PARA='G'           ,LISTE_R=g.tolist() ))
-          __resu1=CREA_TABLE(LISTE=mcfact,TITRE='--> METHODE 1')
-          aster.affiche('MESSAGE',__resu1.EXTR_TABLE().__repr__())
-          DETRUIRE(CONCEPT=_F(NOM=__resu1),INFO=1)
+         x1 = abscs[1:-1]
+         x2 = abscs[2:  ]
+         y1 = saut[:,1:-1]/x1
+         y2 = saut[:,2:  ]/x2
+         k  = abs(y1-x1*(y2-y1)/(x2-x1))
+         g  = coefg*(k[0]+k[1])+coefg3*k[2]
+         kg1 = [max(k[0]),min(k[0]),max(k[1]),min(k[1]),max(k[2]),min(k[2])]
+         kg1 = sqrt(kg1)*kgsig
+         kg1=Numeric.concatenate([kg1,[max(g),min(g)]])
+         vk  = sqrt(k)*isig[:,:-1]
+         if INFO==2 :
+           mcfact=[]
+           mcfact.append(_F(PARA='ABSC_CURV_1' ,LISTE_R=x1.tolist() ))
+           mcfact.append(_F(PARA='ABSC_CURV_2' ,LISTE_R=x2.tolist() ))
+           mcfact.append(_F(PARA='K1'          ,LISTE_R=vk[0].tolist() ))
+           mcfact.append(_F(PARA='K2'          ,LISTE_R=vk[1].tolist() ))
+           if ndim==3 :
+             mcfact.append(_F(PARA='K3'        ,LISTE_R=vk[2].tolist() ))
+           mcfact.append(_F(PARA='G'           ,LISTE_R=g.tolist() ))
+           __resu1=CREA_TABLE(LISTE=mcfact,TITRE='--> METHODE 1')
+           aster.affiche('MESSAGE',__resu1.EXTR_TABLE().__repr__())
+           DETRUIRE(CONCEPT=_F(NOM=__resu1),INFO=1)
 #     ------------------------------------------------------------------
 #                           --- METHODE 2 ---
 #     ------------------------------------------------------------------
-        x1 = abscs[1: ]
-        y1 = saut[:,1:]
-        k  = abs(y1/x1)
-        g  = coefg*(k[0]+k[1])+coefg3*k[2]
-        kg2= [max(k[0]),min(k[0]),max(k[1]),min(k[1]),max(k[2]),min(k[2])]
-        kg2 = sqrt(kg2)*kgsig
-        kg2=Numeric.concatenate([kg2,[max(g),min(g)]])
-        vk = sqrt(k)*isig
-        if INFO==2 :
-          mcfact=[]
-          mcfact.append(_F(PARA='ABSC_CURV' ,LISTE_R=x1.tolist() ))
-          mcfact.append(_F(PARA='K1'        ,LISTE_R=vk[0].tolist() ))
-          mcfact.append(_F(PARA='K2'        ,LISTE_R=vk[1].tolist() ))
-          if ndim==3 :
-            mcfact.append(_F(PARA='K3'      ,LISTE_R=vk[2].tolist() ))
-          mcfact.append(_F(PARA='G'         ,LISTE_R=g.tolist() ))
-          __resu2=CREA_TABLE(LISTE=mcfact,TITRE='--> METHODE 2')
-          aster.affiche('MESSAGE',__resu2.EXTR_TABLE().__repr__())
-          DETRUIRE(CONCEPT=_F(NOM=__resu2),INFO=1)
+         x1 = abscs[1: ]
+         y1 = saut[:,1:]
+         k  = abs(y1/x1)
+         g  = coefg*(k[0]+k[1])+coefg3*k[2]
+         kg2= [max(k[0]),min(k[0]),max(k[1]),min(k[1]),max(k[2]),min(k[2])]
+         kg2 = sqrt(kg2)*kgsig
+         kg2=Numeric.concatenate([kg2,[max(g),min(g)]])
+         vk = sqrt(k)*isig
+         if INFO==2 :
+           mcfact=[]
+           mcfact.append(_F(PARA='ABSC_CURV' ,LISTE_R=x1.tolist() ))
+           mcfact.append(_F(PARA='K1'        ,LISTE_R=vk[0].tolist() ))
+           mcfact.append(_F(PARA='K2'        ,LISTE_R=vk[1].tolist() ))
+           if ndim==3 :
+             mcfact.append(_F(PARA='K3'      ,LISTE_R=vk[2].tolist() ))
+           mcfact.append(_F(PARA='G'         ,LISTE_R=g.tolist() ))
+           __resu2=CREA_TABLE(LISTE=mcfact,TITRE='--> METHODE 2')
+           aster.affiche('MESSAGE',__resu2.EXTR_TABLE().__repr__())
+           DETRUIRE(CONCEPT=_F(NOM=__resu2),INFO=1)
 #     ------------------------------------------------------------------
 #                           --- METHODE 3 ---
 #     ------------------------------------------------------------------
-        x1 = abscs[:-1]
-        x2 = abscs[1: ]
-        y1 = saut[:,:-1]
-        y2 = saut[:,1: ]
-        k  = (sqrt(y2)*sqrt(x2)+sqrt(y1)*sqrt(x1))*(x2-x1)
-        k  = Numeric.sum(transpose(k))
-        de = abscs[-1]
-        vk = (k/de**2)*isig[:,0]
-        g  = coefg*(vk[0]**2+vk[1]**2)+coefg3*vk[2]**2
-        kg3=Numeric.concatenate([[vk[0]]*2,[vk[1]]*2,[vk[2]]*2,[g]*2])
-        if INFO==2 :
-          mcfact=[]
-          mcfact.append(_F(PARA='K1'        ,LISTE_R=vk[0] ))
-          mcfact.append(_F(PARA='K2'        ,LISTE_R=vk[1] ))
-          if ndim==3 :
-            mcfact.append(_F(PARA='K3'      ,LISTE_R=vk[2] ))
-          mcfact.append(_F(PARA='G'         ,LISTE_R=g ))
-          __resu3=CREA_TABLE(LISTE=mcfact,TITRE='--> METHODE 3')
-          aster.affiche('MESSAGE',__resu3.EXTR_TABLE().__repr__())
-          DETRUIRE(CONCEPT=_F(NOM=__resu3),INFO=1)
+         x1 = abscs[:-1]
+         x2 = abscs[1: ]
+         y1 = saut[:,:-1]
+         y2 = saut[:,1: ]
+         k  = (sqrt(y2)*sqrt(x2)+sqrt(y1)*sqrt(x1))*(x2-x1)
+         k  = Numeric.sum(transpose(k))
+         de = abscs[-1]
+         vk = (k/de**2)*isig[:,0]
+         g  = coefg*(vk[0]**2+vk[1]**2)+coefg3*vk[2]**2
+         kg3=Numeric.concatenate([[vk[0]]*2,[vk[1]]*2,[vk[2]]*2,[g]*2])
+         if INFO==2 :
+           mcfact=[]
+           mcfact.append(_F(PARA='K1'        ,LISTE_R=vk[0] ))
+           mcfact.append(_F(PARA='K2'        ,LISTE_R=vk[1] ))
+           if ndim==3 :
+             mcfact.append(_F(PARA='K3'      ,LISTE_R=vk[2] ))
+           mcfact.append(_F(PARA='G'         ,LISTE_R=g ))
+           __resu3=CREA_TABLE(LISTE=mcfact,TITRE='--> METHODE 3')
+           aster.affiche('MESSAGE',__resu3.EXTR_TABLE().__repr__())
+           DETRUIRE(CONCEPT=_F(NOM=__resu3),INFO=1)
 #     ------------------------------------------------------------------
 #                           CREATION DE LA TABLE 
 #     ------------------------------------------------------------------

@@ -1,7 +1,7 @@
       SUBROUTINE MMELIN(NOMA,NUMA,TYPINT,NNINT)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,64 +59,64 @@ C
       CALL MMELTY(NOMA,NUMA,ALIAS,IBID,IBID)
 C
       IF (TYPINT .EQ. 1) THEN
-        IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 2
-        IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 3
+        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 2
+        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 3
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 3
         IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 6
         IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 4
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 2) THEN
-        IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 2
-        IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 2
+        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 2
+        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 2
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 3
         IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 6
         IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 4
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 3) THEN
-        IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 3
-        IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 3
+        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 3
+        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 3
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 6
         IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 6
         IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 4) THEN
-        IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 5
-        IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 5
+        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 5
+        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 5
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 15
         IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 15
         IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 21
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 21
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 21
       ELSEIF (TYPINT .EQ. 5) THEN
-        IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 9
-        IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 9
+        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 9
+        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 42
         IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 42
         IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 65
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 65
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 65
       ELSEIF (TYPINT .EQ. 6) THEN
-        IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 4
-        IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 4
+        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 4
+        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 4
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 4
         IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 4
         IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 16
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 16
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 16
       ELSEIF (TYPINT .EQ. 7) THEN
-        IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 5
-        IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 5
+        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 5
+        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 5
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 6
         IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 6
         IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 25
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 25
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 25
       ELSEIF (TYPINT .EQ. 8) THEN
-        IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 10
-        IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 10
+        IF (ALIAS(1:3) .EQ. 'SE2') NNINT = 10
+        IF (ALIAS(1:3) .EQ. 'SE3') NNINT = 10
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 42
         IF (ALIAS(1:3) .EQ. 'TR6') NNINT = 42
         IF (ALIAS(1:3) .EQ. 'QU4') NNINT = 100

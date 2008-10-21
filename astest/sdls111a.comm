@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : TRIANGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -354,7 +354,7 @@ SKEL=DEFI_SQUELETTE(MODELE_GENE=MODEGENE,
                                 _F(NOM='TRI4',
                                    GROUP_MA='CALCUL',),),);
 
-MODPHY=REST_BASE_PHYS(RESU_GENE=RESGEN,
+MODPHY=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                       TOUT_ORDRE='OUI',
                       TOUT_CHAM='OUI',
                       SQUELETTE=SKEL,

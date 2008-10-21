@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+#& MODIF COMMUN  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
+# RESPONSABLE DESOZA T.DESOZA
 def C_CONTACT() : return FACT(statut='f',max='**',
            fr="Définit les zones soumises à des conditions de contact unilatéral avec ou sans frottement",
 
@@ -146,7 +146,6 @@ def C_CONTACT() : return FACT(statut='f',max='**',
 
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
 
            ),
            b_lagrangien    =BLOC(condition = "METHODE == 'LAGRANGIEN' ",
@@ -168,7 +167,6 @@ def C_CONTACT() : return FACT(statut='f',max='**',
 
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
 
                 b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
                      COULOMB         =SIMP(statut='o',typ='R',),
@@ -193,7 +191,6 @@ def C_CONTACT() : return FACT(statut='f',max='**',
 
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
                 
 
 
@@ -312,7 +309,6 @@ def C_CONTACT() : return FACT(statut='f',max='**',
                                         fr="Autorise-t-on de sortir du domaine admissible lors de la recherche linéaire",),
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
            ),
          );
 

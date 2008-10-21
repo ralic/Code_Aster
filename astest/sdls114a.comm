@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -251,7 +251,7 @@ RES_DYNA=DYNA_TRAN_MODAL(MASS_GENE=MASS_GE,
                          ARCHIVAGE=_F(PAS_ARCH = 200,),
                          IMPRESSION = _F(TOUT='OUI',),);
 
-RESUDYNA = REST_BASE_PHYS(RESU_GENE = RES_DYNA, 
+RESUDYNA = REST_GENE_PHYS(RESU_GENE = RES_DYNA, 
                           NOM_CHAM=('DEPL','ACCE',)
                           );
 

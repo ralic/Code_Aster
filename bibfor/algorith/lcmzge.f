@@ -2,7 +2,7 @@
      &                   EPSTM,DEPST, VIM,
      &                   OPTION, SIG, VIP,  DSIDPT, PROJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,14 +19,14 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
+C TOLE CRP_20
       IMPLICIT NONE
       CHARACTER*8       TYPMOD(*)
       CHARACTER*(*)     FAMI
       CHARACTER*16      OPTION
       INTEGER            NDIM, IMATE,KPG,KSP
       REAL*8             EPSTM(12), DEPST(12), VIM(4)
-      REAL*8             SIG(6), VIP(4), DSIDPT(6,6,2)
+      REAL*8             SIG(6), VIP(*), DSIDPT(6,6,2)
       REAL*8             PROJ(6,6)
 
 C ----------------------------------------------------------------------
@@ -77,8 +77,11 @@ C ----------------------------------------------------------------------
       REAL*8      RAC2, COEF, TMP1, D
       REAL*8      VALRES(6), VALPAR
       REAL*8      KRON(6)
-      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+      REAL*8      EPSFP(6), EPSCOU(6), CHI
+      INTEGER     IDC
+      LOGICAL     COUP
 
+      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/      
 C ======================================================================
 C                            INITIALISATION
 C ======================================================================
@@ -95,7 +98,19 @@ C -- OPTION ET MODELISATION
       IRET1 = 0
       IRET2 = 0
       IRET3 = 0
+C M.B.: NOUVELLE OPTION COUP POUR LE COUPLAGE AVEC UMLV 
+C MEME OPTION UTILISEE POUR LE COUPLAGE UMLV-ENDO_ISOT_BETON
+     
+      COUP  = (OPTION(6:9).EQ.'COUP')
 
+C M.B.: INDICE POUR IDENTIFIER LES VARIABLES INTERNES DANS LES CAS:
+C COUPLAGE ET ABSENCE DE COUPLAGE AVEC UMLV
+
+      IDC = 0
+      IF (COUP) THEN
+        IDC = 21
+      ENDIF
+      
 C -- PROJECTEUR DE COUPURE
       CALL R8INIR(36,0.D0,PROJ,1)
       IF (VIM(1) .LT. 1.D0-1.D-05) CALL R8INIR(6,1.D0,PROJ,7)
@@ -113,7 +128,7 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
           TMAX = R8NNEM()
         ELSE
           TMAX = MAX(TMAXM, TEMP)
-          IF (TMAX.GT.TMAXM) VIP(3) = TMAX
+          IF (TMAX.GT.TMAXM) VIP(IDC+3) = TMAX
         ENDIF
       ELSE
         POUM='-'
@@ -188,6 +203,18 @@ C --- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       AT    = VALRES(5)
       BT    = VALRES(6)
 
+C    M.B.: LECTURE DU PARAMETRE DE COUPLAGE AVEC UMLV
+
+      IF (COUP) THEN
+        NOMRES(7) = 'CHI'
+        CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','MAZARS',0,' ',
+     &              0.D0,1,NOMRES(7),VALRES(7),CODRET(7),'FM')
+        CHI   = VALRES(7)
+        IF (CHI .EQ. 0.D0) THEN
+          CALL U2MESS('I','COMPOR1_59') 
+        ENDIF
+      ENDIF
+
 C -- SEPARATION DE EPSM/EPSRM, DEPS/DEPSR DANS EPSTM, DEPST
 
       DO 10 I=1,NDIMSI
@@ -197,6 +224,12 @@ C -- SEPARATION DE EPSM/EPSRM, DEPS/DEPSR DANS EPSTM, DEPST
         DEPSR(I)=DEPST(I+6)
 10    CONTINUE
 
+C -   M.B.: CALCUL DE LA DEFORMATION DE FLUAGE AU TEMP P
+      IF (COUP .AND. RESI) THEN
+        CALL LCUMVI('FT',VIP,EPSFP)
+      ENDIF
+      
+      
 C ======================================================================
 C    CALCUL DES CONTRAINTES ET VARIABLES INTERNES
 C    (OPTION FULL_MECA ET RAPH_MECA)
@@ -218,11 +251,17 @@ C  -   MISE A JOUR DES DEFORMATIONS MECANIQUES
 30      CONTINUE
         D=VIM(1)
       ENDIF
-C  ON MET DANS EPS LES DEFORMATIONS REELES
+      
+     
+C -  MODIF M.B.: ON MET DANS EPS LES DEFORMATIONS REELES
       DO  40 K=4,NDIMSI
         EPS(K) = EPS(K)/RAC2
-        EPSR(K)=EPSR(K)/RAC2
+        EPSR(K)= EPSR(K)/RAC2
+        IF (COUP .AND. RESI) THEN
+        EPSFP(K) = EPSFP(K)/RAC2
+        ENDIF
 40    CONTINUE
+
 
 C    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE
 C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
@@ -237,6 +276,27 @@ C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
      &                      - KDESS * (SREF-SECH)
      &                      - BENDO *  HYDR         ) * KRON(K)
 35    CONTINUE
+
+
+C  M.B.: SI CONTRAINTES PLAN (COUP)
+C  ON CALCULE LA 3EME  COMPOSANTE NORMALE 
+C   AVANT DE DIAGONALISER
+      IF (COUP .AND. RESI) THEN
+        IF (CPLAN) THEN
+          COPLAN  = - NU/(1.D0-NU)
+          EPSE(3) = COPLAN * (EPSE(1)+EPSE(2))
+          EPSER(3) = COPLAN * (EPSER(1)+EPSER(2))
+        END IF
+      END IF
+
+      IF (COUP .AND. RESI) THEN 
+        CALL R8INIR(6, 0.D0, EPSCOU,1)
+        DO 1010  K=1,NDIMSI
+          EPSE(K) = EPSE(K) - EPSFP(K)
+          EPSCOU(K) = EPSER(K) - (1-CHI)*EPSFP(K)
+1010    CONTINUE
+      ENDIF
+
 
 C  -   ON PASSE DANS LE REPERE PROPRE DE EPS
       NPERM  = 12
@@ -280,16 +340,26 @@ C ON PASSE DANS LE REPERE PROPRE DE EPSR
       TRR(4) = EPSER(2)
       TRR(5) = EPSER(6)
       TRR(6) = EPSER(3)
+      IF (COUP .AND. RESI) THEN
+        TRR(1) = EPSCOU(1)
+        TRR(2) = EPSCOU(4)
+        TRR(3) = EPSCOU(5)
+        TRR(4) = EPSCOU(2)
+        TRR(5) = EPSCOU(6)
+        TRR(6) = EPSCOU(3)
+      ENDIF
 
       CALL JACOBI(3,NPERM,TOL,TOLDYN,TRR,TU,VECPER,EPSPR,JACAUX,
      &       NITJAC,TRIJ,ORDREJ)
 
 C -- SI CONTRAINTES PLANES
-
-      IF (CPLAN) THEN
-        COPLAN  = - NU/(1.D0-NU)
-        EPSP(3)  = COPLAN * (EPS(1)+EPS(2))
-        EPSPR(3)  = COPLAN * (EPSR(1)+EPSR(2))
+C    Modifie M.B.: if NOT COUP
+      IF (.NOT. COUP) THEN
+        IF (CPLAN) THEN
+          COPLAN  = - NU/(1.D0-NU)
+          EPSP(3)  = COPLAN * (EPS(1)+EPS(2))
+          EPSPR(3)  = COPLAN * (EPSR(1)+EPSR(2))
+        END IF
       END IF
 
 
@@ -310,7 +380,7 @@ C     CALCUL DE EPSEQ (NON LOCAL) ET EPSTIL (LOCAL)
       EPSEQ = SQRT(EPSEQ)
       EPSTIL = SQRT(EPSTIL)
 
-C -     CALCUL DES CONTRAINTES ELASTIQUES (REPËRE PRINCIPAL)
+C -     CALCUL DES CONTRAINTES ELASTIQUES (REPERE PRINCIPAL)
       TREPS = EPSP(1)+EPSP(2)+EPSP(3)
       DO 60  K=1,3
         SIGELP(K) = LAMBDA*TREPS
@@ -381,14 +451,16 @@ C        ON PASSE DANS LE REPERE INITIAL LES CONTRAINTES REELLES
         DO  100 K=4,NDIMSI
           SIG(K)=RAC2*SIG(K)
 100     CONTINUE
-        VIP(1) = D
+        VIP(IDC+1) = D
         IF (D.EQ.0.D0) THEN
-          VIP(2) = 0.D0
+          VIP(IDC+2) = 0.D0
         ELSE
-          VIP(2) = 1.D0
+          VIP(IDC+2) = 1.D0
         END IF
-          VIP(4) = EPSEQ
+          VIP(IDC+4) = EPSEQ
       END IF
+      
+      
 C ======================================================================
 C     CALCUL  DE LA MATRICE TANGENTE DSIDEP
 C         OPTION RIGI_MECA_TANG ET FULL_MECA
@@ -398,8 +470,10 @@ C ======================================================================
 C                            MATRICE TANGENTE
 C ======================================================================
 
-
       IF (RIGI) THEN
+
+C - M.B.: OPTION FULL_MECA POUR LE COUPLAGE AVEC UMLV
+        IF (COUP) D = VIP(IDC+1)
 
 C -- CONTRIBUTION ELASTIQUE
 
@@ -430,7 +504,7 @@ C -- CORRECTION DUES AUX CONTRAINTES PLANES
 C -- CONTRIBUTION DISSIPATIVE
 
 C      CONTRIBUTION DUE A  L'ENDOMMAGEMENT
-        IF ((.NOT.ELAS).AND.(PROG).AND.(.NOT.RELA)) THEN
+        IF ((.NOT.ELAS).AND. PROG .AND.(.NOT.RELA)) THEN
           RTEMPT = BT * (EPSEQ - EPSD0)
           RTEMPC = BC * (EPSEQ - EPSD0)
           RTEMPT = MIN(RTEMPT,700.D0)

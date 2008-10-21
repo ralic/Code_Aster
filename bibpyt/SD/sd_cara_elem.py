@@ -1,4 +1,4 @@
-#@ MODIF sd_cara_elem SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cara_elem SD  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,5 +42,7 @@ class sd_cara_elem(AsBase):
     CVENTCXF = Facultatif(sd_carte())
     CARPOUFL = Facultatif(sd_carte())
     CARGEOPO = Facultatif(sd_carte())
+    CARRIGXN = Facultatif(AsVK8())
+    CARRIGXV = Facultatif(AsVR())
 
 

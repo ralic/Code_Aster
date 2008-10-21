@@ -3,7 +3,7 @@
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/10/2008   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,9 +123,8 @@ C
 9        CONTINUE
 C        INDICATEUR PLASTIQUE
          NVI=NVI+1
-CCC JOUM
+C        CONTRAINTE DE CLIVAGE MAX
          NVI = NVI+1
-CCC JOUM
          ZK16(IMK+5*NBOCCM)=ELASTI
          TABDES(1)=1
          TABDES(2)=1
@@ -249,9 +248,10 @@ C           RECOPIE DU VECTEUR K16 DU MONOCRISTAL DANS CELUI DU POLY
             ZI(IPI-1+JCPRI+1)=ZI(IMI-1+5)
             ZI(IPI-1+JCPRI+3)=ZI(IMI-1+7)
 C           NOMBRE DE VAR INT MONO + 6 (TENSEUR BETA OU EPSG)
-C           On enlève 1 = indicateur pour chaque monocristal
-C           ainsi que la déf. plas. cumulee de chaque monocristal
-            NVIT=NVIT-2+ZI(IMI-1+7)
+C           On enlève 3 v.i. de chaque monocristal
+C           nombre de variables internes par phase 
+C           6+3*Ns+6 = (Evp + Ns(alphas, gammas, ps) +  Sig)
+            NVIT=NVIT-3+ZI(IMI-1+7)+6
             JCPRI=JCPRI+3
             CALL GETVR8('POLYCRISTAL','FRAC_VOL',IOCC,1,1,FVOL,
      &                   IFVOL)
@@ -260,14 +260,7 @@ C           ainsi que la déf. plas. cumulee de chaque monocristal
             IF (IORIE.EQ.0) THEN
                 CALL GETVR8('POLYCRISTAL','ANGL_EULER',IOCC,1,3,EULER,
      &                   IORIE)
-C                 DO 17 I=1,3
-C                    EULER(I)=EULER(I)*R8DGRD()
-C  17             CONTINUE
                 CALL EULNAU(EULER,ORIE)
-C                 DO 18 I=1,3
-C                    ORIE(I)=ORIE(I)/R8DGRD()
-C  18             CONTINUE
-
             ENDIF
             ZR(IPR-1+JCPRR+1)=FVOL
             ZR(IPR-1+JCPRR+2)=ORIE(1)

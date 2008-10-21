@@ -1,4 +1,4 @@
-# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL DE MASSE AJOUTEE SUR BASE MODALE CALCULEE PAR SSD
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -244,7 +244,7 @@ RESGAIR=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
                                         FREQ = (2.,70.,))
                             )
 
-MODAIR=REST_BASE_PHYS(   RESU_GENE=RESGAIR,
+MODAIR=REST_SOUS_STRUC(   RESU_GENE=RESGAIR,
                              SQUELETTE=SQUEL,
                            TOUT_ORDRE='OUI')
 
@@ -294,7 +294,7 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGPRO,
 #
 #   RESTITUTION SUR MAILLAGE SQUELETTE
 #
-MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            SQUELETTE=SQUEL,
                            MODE_MECA=MODAIR,
                            TOUT_CHAM='OUI')

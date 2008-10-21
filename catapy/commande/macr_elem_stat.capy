@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,8 @@ MACR_ELEM_STAT=OPER(nom="MACR_ELEM_STAT",op=86,sd_prod=macr_elem_stat,reentrant=
          RIGI_MECA       =FACT(statut='f',
          ),
          MASS_MECA       =FACT(statut='f',
+         ),
+         AMOR_MECA       =FACT(statut='f',
          ),
          CAS_CHARGE      =FACT(statut='f',max='**',
            NOM_CAS         =SIMP(statut='o',typ='TXM'),

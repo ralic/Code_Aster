@@ -1,5 +1,5 @@
-# MODIF  DATE 03/06/2008   AUTEUR BODEL C.BODEL 
-# TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC MACRO_VISU_MEIDEE (LMME)
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC CALC_ESSAI (LMME)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM = 'SDLL137C',NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NOM = 'SDLL137C',NIV_PUB_WEB='INTERNET'),
+       DEBUG=_F(SDVERI='OUI'),
+         )
 
 
 #**********************************
@@ -98,6 +100,7 @@ MODLSUP=AFFE_MODELE(MAILLAGE=MAILSUP,
 
 MATSUP=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.3,
+                             AMOR_ALPHA=1.E-4,AMOR_BETA=1.,
                              RHO=7800.,),);
 
 CHMATSUP=AFFE_MATERIAU(MAILLAGE=MAILSUP,
@@ -138,6 +141,13 @@ MELSUP=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         CARA_ELEM=CHCARSUP,
                         CHARGE=CONDLSUP,);
 
+AELSUP=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                        MODELE=MODLSUP,
+                        RIGI_MECA=KELSUP,MASS_MECA=MELSUP,
+                        CHAM_MATER=CHMATSUP,
+                        CARA_ELEM=CHCARSUP,
+                        CHARGE=CONDLSUP,);
+
 NUMSUP=NUME_DDL(MATR_RIGI=KELSUP,);
 
 KASSUP=ASSE_MATRICE(MATR_ELEM=KELSUP,
@@ -146,8 +156,12 @@ KASSUP=ASSE_MATRICE(MATR_ELEM=KELSUP,
 MASSUP=ASSE_MATRICE(MATR_ELEM=MELSUP,
                       NUME_DDL=NUMSUP,);
 
+AASSUP=ASSE_MATRICE(MATR_ELEM=AELSUP,
+                      NUME_DDL=NUMSUP,);
+
 MODESUP=MODE_ITER_SIMULT(MATR_A=KASSUP,
                          MATR_B=MASSUP,
+                         METHODE='TRI_DIAG', MATR_C=AASSUP,
                          VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=20,
@@ -163,14 +177,14 @@ MODESUP=MODE_ITER_SIMULT(MATR_A=KASSUP,
 MAILX=LIRE_MAILLAGE(UNITE=24);
 
 
-MODLCPL=AFFE_MODELE(
+MODLX=AFFE_MODELE(
           MAILLAGE=MAILX,
           AFFE=(_F(GROUP_MA=('POUTRE',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='POU_D_E',),),
               )
 
-CHCARCPL=AFFE_CARA_ELEM(MODELE=MODLCPL,
+CHCARX=AFFE_CARA_ELEM(MODELE=MODLX,
                         POUTRE=(_F(GROUP_MA='POUTRE',
                                    SECTION='RECTANGLE',
                                    CARA=('HY','HZ',),
@@ -182,50 +196,50 @@ CHCARCPL=AFFE_CARA_ELEM(MODELE=MODLCPL,
 
 MATERX=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.3,
+                             AMOR_ALPHA=1.E-4,AMOR_BETA=1.,
                              RHO=7800.,),);
 
-CHMATCPL=AFFE_MATERIAU(  MAILLAGE=MAILX,
-                         MODELE=MODLCPL,
+CHMATX=AFFE_MATERIAU(  MAILLAGE=MAILX,
+                         MODELE=MODLX,
                          AFFE=(_F(GROUP_MA=('POUTRE',),
                                   MATER=MATERX,),),);
 
-CONDLCPL=AFFE_CHAR_MECA(MODELE=MODLCPL,
+CONDLX=AFFE_CHAR_MECA(MODELE=MODLX,
                       DDL_IMPO=( _F(GROUP_NO=('EXTERNE',),
                                    DX=0.0,
                                    DRX=0.0,
                                 ),
                           ),);
 
-KELCPL=CALC_MATR_ELEM(MODELE=MODLCPL,OPTION='RIGI_MECA',
-                     CARA_ELEM=CHCARCPL,CHAM_MATER=CHMATCPL,
-                     CHARGE=CONDLCPL,
+KELX=CALC_MATR_ELEM(MODELE=MODLX,OPTION='RIGI_MECA',
+                     CARA_ELEM=CHCARX,CHAM_MATER=CHMATX,
+                     CHARGE=CONDLX,
                      )
 
-MELCPL=CALC_MATR_ELEM(MODELE=MODLCPL,OPTION='MASS_MECA',
-                     CARA_ELEM=CHCARCPL,CHAM_MATER=CHMATCPL,
-                     CHARGE=CONDLCPL,
+MELX=CALC_MATR_ELEM(MODELE=MODLX,OPTION='MASS_MECA',
+                     CARA_ELEM=CHCARX,CHAM_MATER=CHMATX,
+                     CHARGE=CONDLX,
                     )
 
-NUMCPL=NUME_DDL(MATR_RIGI=KELCPL,)
-
-KASCPL=ASSE_MATRICE(MATR_ELEM=KELCPL,NUME_DDL=NUMCPL)
-
-MASCPL=ASSE_MATRICE(MATR_ELEM=MELCPL,NUME_DDL=NUMCPL)
-
-# on lui cree aussi une matrice d amortissement
-AELCPL=CALC_MATR_ELEM(MODELE=MODLCPL,
+AELX=CALC_MATR_ELEM(MODELE=MODLX,
                       OPTION='AMOR_MECA',
-                      RIGI_MECA=KELCPL,
-                      MASS_MECA=MELCPL,
-                      CARA_ELEM=CHCARCPL,
-                      CHAM_MATER=CHMATCPL,
-                      CHARGE=CONDLCPL,)
+                      RIGI_MECA=KELX,
+                      MASS_MECA=MELX,
+                      CARA_ELEM=CHCARX,
+                      CHAM_MATER=CHMATX,
+                      CHARGE=CONDLX,)
 
-AASCPL=ASSE_MATRICE(MATR_ELEM=AELCPL,NUME_DDL=NUMCPL);
+NUMX=NUME_DDL(MATR_RIGI=KELX,)
+
+KASX=ASSE_MATRICE(MATR_ELEM=KELX,NUME_DDL=NUMX)
+
+MASX=ASSE_MATRICE(MATR_ELEM=MELX,NUME_DDL=NUMX)
+
+AASX=ASSE_MATRICE(MATR_ELEM=AELX,NUME_DDL=NUMX);
 
 interactif = 0
 if interactif :
-    MACRO_VISU_MEIDEE( 
+    CALC_ESSAI( 
                    INTERACTIF = 'OUI',
                    RESU_MODIFSTRU = _F( MODELE=CO('MODLCPL2'),
                                         MAILLAGE=CO('MAILCPL2'),
@@ -240,7 +254,7 @@ if interactif :
                   );
 
 else :
-    MACRO_VISU_MEIDEE( 
+    CALC_ESSAI( 
                    INTERACTIF = 'NON',
                    MODIFSTRUCT = _F( MESURE=MODMESU,
                                      MODELE_SUP=MODLSUP,
@@ -249,8 +263,7 @@ else :
                                      RESOLUTION='LMME',MATR_MASS=MASSUP,
                                      NUME_MODE_MESU=(1, 2, 3, 4, 5),
                                      NUME_MODE_CALCUL=(1, 2, 3, 4, 5, 6,7,8),
-                                     MAILLE_MODIF = MAILX,
-                                     MODELE_MODIF = MODLCPL,
+                                     MODELE_MODIF = MODLX,
                                      ),
                    GROUP_NO_CAPTEURS  = ( _F(GROUP_NO="CAPTEUR", NOM_CMP = ('DY', 'DZ',),) 
                                          ),
@@ -265,11 +278,12 @@ else :
                                         NUME_DDL = CO('NUMCPL2'),
                                         PROJ_MESU = CO('PROJMS2'),
                                         MACR_ELEM = CO('MCELEM2'),
+                                        BASE_LMME = CO('BASEEX'),
                                         )
                   );
 
 
-# La supermaille creee par MACRO_VISU_MEIDEE se nomme SUMAIL
+# La supermaille creee par CALC_ESSAI se nomme SUMAIL
 
 # CONTROLE RETROPROJECTION DU MODE_MECA OBTENU SUR MODELE COUPLE
 
@@ -283,18 +297,19 @@ MODERETR=DEPL_INTERNE(DEPL_GLOBAL=MODECPL2,SUPER_MAILLE='SUMAIL')
 
 # CREATION MODELE FICTIF DE L INTERFACE
 
-MAILINT=LIRE_MAILLAGE(UNITE=26);
-
-MODLINT=AFFE_MODELE(MAILLAGE=MAILINT,
+MODLINT=AFFE_MODELE(MAILLAGE=MAILCPL2,
                    AFFE=_F(GROUP_MA='VISUAL',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DIS_TR',),);
+                           MODELISATION='DIS_TR',),
+          AFFE_SOUS_STRUC=_F( SUPER_MAILLE = 'SUMAIL',
+                            PHENOMENE='MECANIQUE',),
+              )
 
 CHCARINT=AFFE_CARA_ELEM(MODELE=MODLINT,
                      DISCRET=_F(GROUP_MA='VISUAL',
                                  REPERE='GLOBAL',
                                  CARA='K_TR_D_L',
-                                 VALE=(1e+12,1e+12,1e+12,1e+12,1e+12,1e+12,),
+                                 VALE=(0.e+0,0.e+0,0.e+0,0.e+0,0.e+0,0.e+0,),
                                 ),);
 
 KELINT=CALC_MATR_ELEM(OPTION='RIGI_MECA',
@@ -302,7 +317,16 @@ KELINT=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      CARA_ELEM=CHCARINT,
                      );
 
+MELINT=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=MODLINT,
+                     CARA_ELEM=CHCARINT,
+                     );
+
 NUMINT=NUME_DDL( MATR_RIGI=KELINT,);
+
+KASMAC=ASSE_MATRICE(MATR_ELEM=KELINT,NUME_DDL=NUMINT)
+
+MASMAC=ASSE_MATRICE(MATR_ELEM=MELINT,NUME_DDL=NUMINT)
 
 # EXPANSION STATIQUE DU CHAMP DE DEPL AUX INTERFACES
 
@@ -325,7 +349,7 @@ PROJMS=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODLSUP,
                                    EPS=1.E-5),
                      );
 
-DEPLPR=REST_BASE_PHYS(RESU_GENE=PROJMS,
+DEPLPR=REST_GENE_PHYS(RESU_GENE=PROJMS,
                    TOUT_ORDRE='OUI',
                    NOM_CHAM   ='DEPL');
 
@@ -337,8 +361,6 @@ DEPLINT=PROJ_CHAMP(METHODE='ELEM',
                #TOUT_ORDRE='OUI',
                NUME_ORDRE=(1,2,),
                NUME_DDL=NUMINT,
-               VIS_A_VIS=_F(GROUP_MA_1='VISUAL',
-                            GROUP_MA_2='VISUAL',),
               );
 
 # CHAMP DE DEPL AUX INTERFACES SUR LE MODELE COUPLE
@@ -351,8 +373,6 @@ DEPLXINT=PROJ_CHAMP(METHODE='ELEM',
                #TOUT_ORDRE='OUI',
                NUME_ORDRE=(1,2,),
                NUME_DDL=NUMINT,
-               VIS_A_VIS=_F(GROUP_MA_1='VISUAL',
-                            GROUP_MA_2='VISUAL',),
               );
 
 # INDICATEUR DE PROXIMITE DES MODES
@@ -374,11 +394,47 @@ TEST_TABLE(TABLE=MACINT, REFERENCE='ANALYTIQUE',
            VALE = 2., # 2 modes projetes
            PRECISION = 0.01)
 
+# TEST IERI : CRITERE ENERGETIQUE (ON FAIT INTERVENIR K OU M)
+IERIK=MAC_MODES(BASE_1=DEPLINT,
+               BASE_2=DEPLXINT,
+               MATR_ASSE=KASMAC,
+               IERI='OUI',
+               INFO  =2,
+              );
+
+IERIM=MAC_MODES(BASE_1=DEPLINT,
+               BASE_2=DEPLXINT,
+               MATR_ASSE=MASMAC,
+               IERI='OUI',
+               INFO  =2,
+              );
+
+TEST_TABLE(      TABLE=IERIK,
+       FILTRE=(
+               _F(NOM_PARA='NUME_MODE_1',VALE_I=1),
+               _F(NOM_PARA='NUME_MODE_2',VALE_I=1),),
+           NOM_PARA='IERI',
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE=0. ,
+           PRECISION=5.E-4)
+
+TEST_TABLE(      TABLE=IERIM,
+       FILTRE=(
+               _F(NOM_PARA='NUME_MODE_1',VALE_I=2),
+               _F(NOM_PARA='NUME_MODE_2',VALE_I=2),),
+           NOM_PARA='IERI',
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE=0. ,
+           PRECISION=1.E-5)
+
 nmodes=2
 
-# controle recuperation matrices rigidite - masse
+# controle recuperation matrices rigidite - masse 
 MODECPL3=MODE_ITER_SIMULT(MATR_A=KASCPL2,
                        MATR_B=MASCPL2,
+                       MATR_C=AASCPL2,METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=nmodes,
@@ -398,6 +454,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODLCPL2,
 
 DYH=DYNA_LINE_HARM( MODELE=MODLCPL2,
                         MATR_MASS=MASCPL2,MATR_RIGI=KASCPL2,
+                        MATR_AMOR=AASCPL2,
                         LIST_FREQ=LIFREQ,
                         TOUT_CHAM='OUI',
                         EXCIT=(_F(COEF_MULT_C=('RI',1.,0.),CHARGE=CH,),),
@@ -417,6 +474,7 @@ MODLDIR=AFFE_MODELE(MAILLAGE=MAILSUP,
 
 MATDBL=DEFI_MATERIAU(ELAS=_F(E=4.2E11,
                              NU=0.3,
+                             AMOR_ALPHA=1.E-4,AMOR_BETA=1.,
                              RHO=15600.,),);
 
 CHMATDIR=AFFE_MATERIAU(MAILLAGE=MAILSUP,
@@ -458,6 +516,12 @@ MELDIR=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         CARA_ELEM=CHCARDIR,
                         CHARGE=CONDLDIR,);
 
+AELDIR=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                        MODELE=MODLDIR,
+                        CHAM_MATER=CHMATDIR,RIGI_MECA=KELDIR,MASS_MECA=MELDIR,
+                        CARA_ELEM=CHCARDIR,
+                        CHARGE=CONDLDIR,);
+
 NUMDIR=NUME_DDL(MATR_RIGI=KELDIR,);
 
 KASDIR=ASSE_MATRICE(MATR_ELEM=KELDIR,
@@ -466,8 +530,12 @@ KASDIR=ASSE_MATRICE(MATR_ELEM=KELDIR,
 MASDIR=ASSE_MATRICE(MATR_ELEM=MELDIR,
                       NUME_DDL=NUMDIR,);
 
+AASDIR=ASSE_MATRICE(MATR_ELEM=AELDIR,
+                      NUME_DDL=NUMDIR,);
+
 MODEDIR=MODE_ITER_SIMULT(MATR_A=KASDIR,
                        MATR_B=MASDIR,
+                       MATR_C=AASDIR,METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=nmodes,
@@ -520,7 +588,7 @@ CHDIR=AFFE_CHAR_MECA(MODELE=MODLDIR,
                                    );
 
 DYHDIR=DYNA_LINE_HARM( MODELE=MODLDIR,
-                        MATR_MASS=MASDIR,MATR_RIGI=KASDIR,
+                        MATR_MASS=MASDIR,MATR_RIGI=KASDIR,MATR_AMOR=AASDIR,
                         LIST_FREQ=LIFREQ,
                         TOUT_CHAM='OUI',
                         EXCIT=(_F(COEF_MULT_C=('RI',1.,0.),CHARGE=CHDIR,),),

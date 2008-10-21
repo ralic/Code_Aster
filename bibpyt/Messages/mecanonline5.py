@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline5 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,7 +139,7 @@ On part donc de depl/vite/acce généralisés nuls.
 
 
 32 : _("""
-La SD evol_noli utilisée dans REST_BASE_PHYS ne contient pas les 
+La SD evol_noli utilisée dans REST_COND_TRAN ne contient pas les 
 champs généralisés.
 Verifiez qu'il s'agit du meme concept que celui utilisé dans le DYNA_NON_LINE, 
 option PROJ_MODAL et que l'archivage a été fait (mot-clef ARCHIVAGE de DYNA_NON_LINE)

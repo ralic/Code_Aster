@@ -1,4 +1,4 @@
-# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 20/10/2008   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,7 @@ M=[None]*10
 M[1]=LIRE_MAILLAGE( )
 #
 MACR_INFO_MAIL(
-              VERSION_HOMARD='V9_4',
+              VERSION_HOMARD='V9_5',
               MAILLAGE=M[1],
               QUALITE='OUI',
               INTERPENETRATION='OUI',
@@ -197,7 +197,7 @@ for k in range(1,10):
    M[k+1]=CO('M_%d' % (k+1))
 #
    MACR_ADAP_MAIL(
-              VERSION_HOMARD='V9_4',
+              VERSION_HOMARD='V9_5',
               ADAPTATION='RAFFINEMENT',
               MAILLAGE_N = M[k],
               MAILLAGE_NP1 = M[k+1],

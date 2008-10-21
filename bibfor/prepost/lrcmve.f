@@ -1,11 +1,12 @@
       SUBROUTINE LRCMVE ( NTVALE, NMATYP, NBNOMA, NTPROA, LGPROA,
      &                    NCMPRF, NOMCMR, NTYPEL, NPGMAX, INDPG,
      &                    NBCMFI, NMCMFI, NBCMPV, NCMPVM, NUMCMP,
-     &                    JNUMMA, NOCHMD, NBMA, NPGMA,TYPECH,NUTYMA,
+     &                    JNUMMA, NOCHMD, NBMA,   NPGMA,  NPGMM,
+     &                    TYPECH,NUTYMA,
      &                    ADSL, ADSV, ADSD,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/05/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +51,8 @@ C       NUMCMP : TABLEAU DES NUMEROS DES COMPOSANTES VALIDES
 C       JNUMMA : ADR JEVEUX DU VECTEUR DES NUMEROS DE MAILLES BALAYEES
 C       NOCHMD : NOM MED DU CHAMP A LIRE
 C       NBMA   : NOMBRE DE MAILLES DU MAILLAGE
-C       NPGMA  : NOMBRE DE POINTS DE GAUSS PAR MAILLE
+C       NPGMA  : NOMBRE DE POINTS DE GAUSS PAR MAILLE (ASTER)
+C       NPGMM  : NOMBRE DE POINTS DE GAUSS PAR MAILLE (MED)
 C       TYPECH : TYPE DE CHAMP (ELEM/ELNO/ELGA)
 C       NUTYMA : NUMERO DU TYPE DE MAILLE
 C     SORTIES:
@@ -72,7 +74,7 @@ C 0.1. ==> ARGUMENTS
 C
       INTEGER NMATYP, NBNOMA, LGPROA, NTYPEL, NPGMAX
       INTEGER NCMPRF, NBCMPV, JNUMMA, NBMA
-      INTEGER INDPG(NTYPEL,NPGMAX),NPGMA(NBMA)
+      INTEGER INDPG(NTYPEL,NPGMAX),NPGMA(NBMA),NPGMM(NBMA)
       INTEGER ADSL, ADSV, ADSD, NUTYMA
       INTEGER CODRET
 C
@@ -104,7 +106,7 @@ C
       INTEGER INDIK8
 C
       INTEGER IAUX, JAUX, KAUX, LAUX
-      INTEGER NRCMP, NCMPDB, NBPT
+      INTEGER NRCMP, NCMPDB, NBPT, NBPTM
       INTEGER NUVAL, IPG
       INTEGER NBCMFI, I, KK, LXLGUT, IMA
       INTEGER ADREMP, ADVALE, ADNCFI, ADNUCM, ADNCVM, ADPROA
@@ -228,12 +230,17 @@ C       SI TYPE DE CHAMP = 'ELGA'
           DO 131 , JAUX = 1 , NMATYP
             IMA=ZI(JNUMMA+JAUX-1)
             NBPT=NPGMA(IMA)
-            DO 132 ,  I = 1 , NBPT
-              IPG=INDPG(NUTYMA,I)
-              CALL CESEXI('S',ADSD,ADSL,IMA,IPG,1,IAUX,KK)
+            NBPTM=NPGMM(IMA)
+            DO 132 ,  I = 1 , NBPTM
+
               LAUX = LAUX + NBCMFI
-              ZL(ADSL-KK-1) = .TRUE.
-              ZR(ADSV-KK-1) = ZR(LAUX)
+C             IS GAUSS POINT IN ASTER ELEMENT ?              
+              IF (I.LE.NBPT) THEN
+                IPG=INDPG(NUTYMA,I)
+                CALL CESEXI('S',ADSD,ADSL,IMA,IPG,1,NRCMP,KK)
+                ZL(ADSL-KK-1) = .TRUE.
+                ZR(ADSV-KK-1) = ZR(LAUX)
+              ENDIF
  132        CONTINUE
  131      CONTINUE
 
@@ -241,7 +248,7 @@ C       SI TYPE DE CHAMP = 'ELEM'/'ELNO'
         ELSE
           DO 1310 , JAUX = 1 , NMATYP
             DO 1320 ,  I = 1 , NBNOMA
-              CALL CESEXI('S',ADSD,ADSL,ZI(JNUMMA+JAUX-1),I,1,IAUX,KK)
+              CALL CESEXI('S',ADSD,ADSL,ZI(JNUMMA+JAUX-1),I,1,NRCMP,KK)
               LAUX = LAUX + NBCMFI
               ZL(ADSL-KK-1) = .TRUE.
               ZR(ADSV-KK-1) = ZR(LAUX)
@@ -259,12 +266,17 @@ C       SI TYPE DE CHAMP = 'ELGA'
            JAUX = ZI(ADPROA+NUVAL)
            IMA=ZI(JNUMMA+JAUX-1)
            NBPT=NPGMA(IMA)
-            DO 134 ,  I = 1 , NBPT
-              IPG=INDPG(NUTYMA,I)
-              CALL CESEXI('S',ADSD,ADSL,IMA,IPG,1,IAUX,KK)
+            NBPTM=NPGMM(IMA)
+            DO 134 ,  I = 1 , NBPTM
+
               LAUX = LAUX + NBCMFI
-              ZL(ADSL-KK-1) = .TRUE.
-              ZR(ADSV-KK-1) = ZR(LAUX)
+C             IS GAUSS POINT IN ASTER ELEMENT ?              
+              IF (I.LE.NBPT) THEN              
+                IPG=INDPG(NUTYMA,I)
+                CALL CESEXI('S',ADSD,ADSL,IMA,IPG,1,NRCMP,KK)
+                ZL(ADSL-KK-1) = .TRUE.
+                ZR(ADSV-KK-1) = ZR(LAUX)
+              ENDIF
  134        CONTINUE
  133      CONTINUE
 
@@ -273,7 +285,7 @@ C       SI TYPE DE CHAMP = 'ELEM'/'ELNO'
           DO 1330 , NUVAL = 0 , LGPROA-1
            JAUX = ZI(ADPROA+NUVAL)
             DO 1340 ,  I = 1 , NBNOMA
-              CALL CESEXI('S',ADSD,ADSL,ZI(JNUMMA+JAUX-1),I,1,IAUX,KK)
+              CALL CESEXI('S',ADSD,ADSL,ZI(JNUMMA+JAUX-1),I,1,NRCMP,KK)
               LAUX = LAUX + NBCMFI
               ZL(ADSL-KK-1) = .TRUE.
               ZR(ADSV-KK-1) = ZR(LAUX)

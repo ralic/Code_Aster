@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 21/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,8 +87,6 @@ def macr_adap_mail_ops ( self,
 #                1er niveau de message pour l'exécution de HOMARD
 #     INFO = 4 : aucun message pour les commandes annexes
 #                2nd niveau de message pour l'exécution de HOMARD
-#
-#     Important : EXEC_LOGICIEL necessite INFO au moins egal à 2 pour imprimer les messages
 #
   from Accas import _F
   from Macro import creation_donnees_homard 
@@ -752,7 +750,8 @@ def macr_adap_mail_ops ( self,
                               Nom_Fichier_Donnees,    # fichier de données HOMARD
                               str(version_perso),     # version personnelle de homard ?
                              ),
-                  LOGICIEL = homard
+                  LOGICIEL = homard,
+                  INFO     = INFO,
                 )
 #gn  import time
 #gn  time.sleep(3600)

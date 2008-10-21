@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE LACHER D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,7 +185,7 @@ T4=4. * pi / W0
 
 R4=( U0 - ( 8. * C ) ) * ANG
 
-DYNATRA1=REST_BASE_PHYS(   RESU_GENE=DYNAMODA,
+DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
                                NOM_CHAM='DEPL',
                                NOEUD = 'NO1',
                                INTERPOL='LIN',

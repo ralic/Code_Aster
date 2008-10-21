@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF exec_logiciel_ops Macro  DATE 21/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,14 +114,18 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
    if mode_lancement == CMD_EXTERNE:
       scmd = cmd % d_para
       comment = "Lancement de la commande :\n%s" % scmd
-      iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False,
+      iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False, 
                                         capturestderr=True, separated_stderr=True)
-      erreur = CODE_RETOUR_MAXI >= 0 and iret > CODE_RETOUR_MAXI
+      erreur = iret > CODE_RETOUR_MAXI
       
-      # écrire l'output dans le .mess si demandé
+      # output
+      if INFO > 0 or erreur:
+         UTMESS('I', 'EXECLOGICIEL0_11', vali=(iret, CODE_RETOUR_MAXI))
+         UTMESS('I', 'EXECLOGICIEL0_9',  valk=output)
+      
+      # en cas d'erreur, on dump tout dans le .resu + .erre
       if INFO == 2 or erreur:
          UTMESS('I', 'EXECLOGICIEL0_8',  valk=scmd, print_as='E')
-         UTMESS('I', 'EXECLOGICIEL0_9',  valk=output)
          UTMESS('I', 'EXECLOGICIEL0_10', valk=error, print_as='E')
       
       if erreur:

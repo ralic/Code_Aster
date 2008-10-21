@@ -1,7 +1,8 @@
 
-# MODIF  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/10/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
+# ssnv172a.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -572,6 +573,7 @@ EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
                                      ITER_GLOB_MAXI=10,),),
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      )
+#IMPR_RESU(RESU=_F(RESULTAT=EXPLKRP))
 
 EXPLKRP=CALC_ELEM(reuse =EXPLKRP,
                  RESULTAT=EXPLKRP,

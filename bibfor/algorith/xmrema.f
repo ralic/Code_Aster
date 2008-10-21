@@ -1,10 +1,10 @@
       SUBROUTINE XMREMA(MODELE,NOMA  ,NDIM  ,DEFICO,IZONE ,
-     &                  MMAIT ,PMAIT ,AMAIT ,NMAIT ,ZMAIT ,
-     &                  GEOM  ,JMAESC,POSMIN,JEUMIN,T1MIN ,
-     &                  T2MIN ,XIMIN ,YIMIN ,PROJIN)
+     &                  MMAIT ,AMAIT ,NMAIT ,GEOM  ,JMAESC,
+     &                  POSMIN,JEUMIN,T1MIN ,T2MIN ,XIMIN ,
+     &                  YIMIN ,PROJIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
 C
       IMPLICIT NONE
       CHARACTER*8  NOMA,MODELE
-      INTEGER      NDIM,ZMAIT,MMAIT,PMAIT,NMAIT,AMAIT,JMAESC
+      INTEGER      NDIM,MMAIT,NMAIT,AMAIT,JMAESC
       CHARACTER*24 DEFICO
       INTEGER      IZONE
       REAL*8       GEOM(3)
@@ -53,7 +53,6 @@ C IN  PMAIT  : NUMERO LOCAL DU POINT D'INTERSECTION LE PLUS PROCHE
 C IN  AMAIT  : NUMERO LOCAL DE L'ARETE INTERSECTÉ
 C IN  NMAIT  : NUMERO LOCAL DU NOEUD INTERSECTÉ
 C IN  MMAIT  : NUMERO DE LA MAILLE MAITRE CONTENANT LE PMAIT
-C IN  ZMAIT  : NUMERO DE LA ZONE DE CONTACT CONTENANT LE PMAIT
 C IN  GEOM   : COORDONNEES DU POINT DE CONTACT
 C OUT POSMIN : POSITION DE LA MAILLE MAITRE LA PLUS PROCHE
 C OUT JEUMIN : JEU MINIMUM
@@ -102,7 +101,7 @@ C
       REAL*8       CFDISR,TOLEOU,EPSMAX
       REAL*8       COORMA(27),XI,YI
       REAL*8       R8GAEM,R3BID(3)
-      CHARACTER*8  ALIAS,TYPMA,FFORME
+      CHARACTER*8  ALIAS,TYPMA
       CHARACTER*19 CHS1
       LOGICAL      LDIST,LDMIN,DIRAPP        
       INTEGER      JMA,ITYPMA
@@ -119,15 +118,14 @@ C
       POSMIN = 0      
       DO 10 I=1,27
         COORMA(I)=0.D0
-10    CONTINUE    
-      FFORME = 'CONTINUE'
+10    CONTINUE
       DIRAPP = .FALSE. 
 C
 C --- ALIAS ET TYPMA VALABLE POUR LE CAS 2D, TRI3TRI6 ET QUA4QUA8
 C     (IL FAUDRA CHANGER POUR 3D)
 C     NB: ON SE BASE SUR LE TYPE DE LA MAILLE MAITRE.
 C
-      ALIAS  = 'SG2'
+      ALIAS  = 'SE2'
       CALL JEVEUO(NOMA//'.TYPMAIL','L',JMA)
       ITYPMA=ZI(JMA-1+MMAIT)
       CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
@@ -206,8 +204,8 @@ C----RECUPERATION GEOMETRIE DES POINTS D'INTERS. DE LA FACETTE MAITRE
 C-----------PROJECTION SUR LA FACETTE MAITRE-------------------------
               CALL MMPROJ(ALIAS ,NDIM  ,NDIM  ,COORMA,GEOM  ,
      &                    ITEMAX,EPSMAX,TOLEOU,DIRAPP,R3BID ,
-     &                    FFORME,XI    ,YI    ,TAU1  ,TAU2  ,
-     &                    LDIST ,NIVERR)              
+     &                    XI    ,YI    ,TAU1  ,TAU2  ,LDIST ,
+     &                    NIVERR)              
 C
 C --- ECHEC DE NEWTON
 C      
@@ -217,8 +215,8 @@ C
 C
 C --- CALCUL DU JEU
 C
-              CALL MMJEUX(ALIAS ,NDIM  ,NDIM  ,COORMA,FFORME,
-     &                    XI    ,YI    ,GEOM  ,JEU   )              
+              CALL MMJEUX(ALIAS ,NDIM  ,NDIM  ,COORMA,XI    ,
+     &                    YI    ,GEOM  ,JEU   )              
               
 C
 C --- CHOIX DE LA MAILLE 
@@ -255,8 +253,8 @@ C-----------PROJECTION SUR LA FACETTE MAITRE-------------------------
      
               CALL MMPROJ(ALIAS ,NDIM  ,NDIM  ,COORMA,GEOM  ,
      &                    ITEMAX,EPSMAX,TOLEOU,DIRAPP,R3BID ,
-     &                    FFORME,XI    ,YI    ,TAU1  ,TAU2  ,
-     &                    LDIST ,NIVERR) 
+     &                    XI    ,YI    ,TAU1  ,TAU2  ,LDIST ,
+     &                    NIVERR) 
 C
 C --- ECHEC DE NEWTON
 C      
@@ -266,8 +264,8 @@ C
 C
 C --- CALCUL DU JEU
 C
-              CALL MMJEUX(ALIAS ,NDIM  ,NDIM  ,COORMA,FFORME,
-     &                    XI    ,YI    ,GEOM  ,JEU   )
+              CALL MMJEUX(ALIAS ,NDIM  ,NDIM  ,COORMA,XI    ,
+     &                    YI    ,GEOM  ,JEU   )
 C
 C --- CHOIX DE LA MAILLE 
 C                                

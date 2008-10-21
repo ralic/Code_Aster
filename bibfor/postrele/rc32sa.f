@@ -1,12 +1,13 @@
-      SUBROUTINE RC32SA ( NOMMAT, MATI, MATJ, SNPQ, SPIJ, 
+      SUBROUTINE RC32SA ( TYPZ, NOMMAT, MATI, MATJ, SNPQ, SPIJ, 
      &           TYPEKE, SPMECA, SPTHER, KEMECA, KETHER, SALTIJ, SM )
       IMPLICIT   NONE
-      REAL*8              MATI(*), MATJ(*), SNPQ, SPIJ, SALTIJ, SM
+      REAL*8              MATI(*), MATJ(*), SNPQ, SPIJ(2), SALTIJ, SM
       REAL*8              TYPEKE, SPMECA, SPTHER
       CHARACTER*8         NOMMAT
+      CHARACTER*(*)       TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +42,7 @@ C
 C     ------------------------------------------------------------------
 C
       REAL*8    R8VIDE, E, EC, PARA(3), M, N, NADM, SALTM, SALTH,
-     +          KEMECA, KETHER, KETHE1
+     +          KEMECA, KETHER, KETHE1, SALT1, SALT2
 C DEB ------------------------------------------------------------------
 C
 C --- LE MATERIAU
@@ -61,7 +62,16 @@ C --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
 C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM
 C
       IF (TYPEKE.LT.0.D0) THEN
-         CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ,KEMECA,SALTIJ,NADM )
+         IF (TYPZ.EQ.'SITU') THEN
+           CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ(1),KEMECA,SALTIJ,
+     +                 NADM )
+         ELSE
+           CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ(1),KEMECA,SALT1,
+     +                 NADM )
+           CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ(2),KEMECA,SALT2,
+     +                 NADM )
+           SALTIJ = SALT1 + SALT2
+         ENDIF  
          KETHER = R8VIDE()
       ELSE
          CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPMECA,KEMECA,SALTM,NADM )

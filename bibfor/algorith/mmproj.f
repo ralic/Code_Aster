@@ -1,10 +1,10 @@
         SUBROUTINE  MMPROJ(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
      &                     ITEMAX,EPSMAX,TOLEOU,DIRAPP,DIR   ,
-     &                     FFORME,KSI1  ,KSI2  ,TAU1  ,TAU2  ,
-     &                     LDIST ,NIVERR)
+     &                     KSI1  ,KSI2  ,TAU1  ,TAU2  ,LDIST ,
+     &                     NIVERR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,6 @@ C
       INTEGER      NIVERR
       INTEGER      ITEMAX
       REAL*8       EPSMAX
-      CHARACTER*8  FFORME      
 C      
 C ----------------------------------------------------------------------
 C
@@ -60,9 +59,6 @@ C IN  TOLEOU : TOLERANCE POUR LE PROJETE HORS MAILLE
 C IN  DIRAPP : VAUT .TRUE. SI APPARIEMENT DANS UNE DIRECTION DE 
 C              RECHERCHE DONNEE (PAR DIR)
 C IN  DIR    : DIRECTION D'APPARIEMENT
-C IN  FFORME : TYPE DES FONCTIONS DE FORME
-C               'CONTINUE' POUR ELTS DE CONTACT
-C               'STANDARD' POUR ELTS STANDARDS
 C OUT KSI1   : PREMIERE COORDONNEE PARAMETRIQUE DU POINT PROJETE
 C OUT KSI2   : SECONDE COORDONNEE PARAMETRIQUE DU POINT PROJETE
 C OUT TAU1   : PREMIER VECTEUR TANGENT EN (KSI1,KSI2)
@@ -81,12 +77,12 @@ C --- ALGO DE NEWTON POUR LA PROJECTION SUIVANT UNE DIRECTION DONNEE
 C
       IF (DIRAPP) THEN
         CALL MMNEWD(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
-     &              ITEMAX,EPSMAX,FFORME,DIR   ,KSI1  ,
-     &              KSI2  ,TAU1  ,TAU2  ,NIVERR)
+     &              ITEMAX,EPSMAX,DIR   ,KSI1  ,KSI2  ,
+     &              TAU1  ,TAU2  ,NIVERR)
       ELSE 
         CALL MMNEWT(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
-     &              ITEMAX,EPSMAX,FFORME,KSI1  ,KSI2  ,
-     &              TAU1  ,TAU2  ,NIVERR)     
+     &              ITEMAX,EPSMAX,KSI1  ,KSI2  ,TAU1  ,
+     &              TAU2  ,NIVERR)     
       ENDIF 
       IF (NIVERR.GT.0) THEN  
         GOTO 999  
@@ -95,8 +91,7 @@ C
 C --- AJUSTEMENT PROJECTION HORS ZONE
 C
       CALL MMTOLE(ALIAS ,NNO   ,NDIM  ,COORMA,TOLEOU,
-     &            FFORME,KSI1  ,KSI2  ,TAU1  ,TAU2  ,
-     &            LDIST )           
+     &            KSI1  ,KSI2  ,TAU1  ,TAU2  ,LDIST )
 C      
   999 CONTINUE         
   

@@ -1,4 +1,4 @@
-#@ MODIF macro_expans_ops Macro  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF macro_expans_ops Macro  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ def macro_expans_ops( self,
     import aster
     EXTR_MODE = self.get_cmd('EXTR_MODE')
     PROJ_MESU_MODAL = self.get_cmd('PROJ_MESU_MODAL')
-    REST_BASE_PHYS = self.get_cmd('REST_BASE_PHYS')
+    REST_GENE_PHYS = self.get_cmd('REST_GENE_PHYS')
     PROJ_CHAMP = self.get_cmd('PROJ_CHAMP')
     NORM_MODE = self.get_cmd('NORM_MODE')
     
@@ -53,8 +53,17 @@ def macro_expans_ops( self,
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
-    NUME_MODE_NUM = MODELE_CALCUL['NUME_MODE']
-    NUME_MODE_EXP = MODELE_MESURE['NUME_MODE']
+    is_nume_num = is_nume_exp = 0
+    if MODELE_CALCUL['NUME_MODE'] or  MODELE_CALCUL['NUME_ORDRE']:
+        # on cree un resultat RESU_NX par extraction de NUME_ORDREs
+        is_nume_num = 1
+    else:
+        if RESU_NX: UTMESS('A','MEIDEE0_6',valk=['MODELE_MESURE','RESU_EX'])
+    if MODELE_MESURE['NUME_MODE'] or  MODELE_MESURE['NUME_ORDRE']:
+        # On cree un RESU_EX par extraction de NUME_ORDREs
+        is_nume_exp = 1
+    else:
+        if RESU_EX: UTMESS('A','MEIDEE0_6',valk=['MODELE_CALCUL','RESU_NX'])
     
     RESU_NUM = MODELE_CALCUL['BASE']
     RESU_EXP = MODELE_MESURE['MESURE']
@@ -66,22 +75,32 @@ def macro_expans_ops( self,
 
     # Extraction des modes numériques
     # -------------------------------
-    self.DeclareOut( "RESU_NX", RESU_NX )
-    if not NUME_MODE_NUM:
+    if not is_nume_num:
         RESU_NX = RESU_NUM
     else:
-        RESU_NX = EXTR_MODE( FILTRE_MODE=_F( MODE=RESU_NUM,
-                                             NUME_MODE=NUME_MODE_NUM ) )
+        self.DeclareOut( "RESU_NX", RESU_NX )
+        mfact = {'MODE':RESU_NUM}
+        if MODELE_CALCUL['NUME_MODE']:
+            mfact.update({'NUME_MODE':MODELE_CALCUL['NUME_MODE']})
+        elif MODELE_CALCUL['NUME_ORDRE']:
+            mfact.update({'NUME_ORDRE':MODELE_CALCUL['NUME_ORDRE']})
+            
+        RESU_NX = EXTR_MODE( FILTRE_MODE = mfact )
 
     
     # Extraction des modes expérimentaux
     # ----------------------------------
-    self.DeclareOut( "RESU_EX", RESU_EX )
-    if not NUME_MODE_EXP:
+    if not is_nume_exp:
         RESU_EX = RESU_EXP
     else:
-        RESU_EX = EXTR_MODE( FILTRE_MODE=_F( MODE=RESU_EXP,
-                                             NUME_MODE=NUME_MODE_EXP ) )
+        self.DeclareOut( "RESU_EX", RESU_EX )
+        mfact = {'MODE':RESU_EXP}
+        if MODELE_MESURE['NUME_MODE']:
+            mfact.update({'NUME_MODE':MODELE_MESURE['NUME_MODE']})
+        elif MODELE_MESURE['NUME_ORDRE']:
+            mfact.update({'NUME_ORDRE':MODELE_MESURE['NUME_ORDRE']})
+            
+        RESU_EX = EXTR_MODE( FILTRE_MODE = mfact )
 
 
     
@@ -133,7 +152,7 @@ def macro_expans_ops( self,
     # numerique
     # ------------------------------------------------------------
     self.DeclareOut( "RESU_ET", RESU_ET )
-    RESU_ET = REST_BASE_PHYS( RESU_GENE  = __PROJ,
+    RESU_ET = REST_GENE_PHYS( RESU_GENE  = __PROJ,
                               MODE_MECA   = RESU_NX,
                               TOUT_ORDRE  = 'OUI',
                               NOM_CHAM    = NOM_CHAM);

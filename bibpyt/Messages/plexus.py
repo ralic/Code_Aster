@@ -1,4 +1,4 @@
-#@ MODIF plexus Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF plexus Messages  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,12 +29,6 @@ cata_msg = {
 3 : _("Le mot-cle GROUP_MA est obligatoire dans AFFE_MODELE"), 
 
 4 : _("Le type de section de poutre %(k1)s n'est pas encore pris en compte dans le passage vers Europlexus"), 
-
-5 : _("Le mot-cle %(k1)s est obligatoire dans RIGI_PARASOL pour le chainage avec Europlexus" ), 
-
-6 : _("""La carartéristique %(k1)s n'est pas encore prise en compte dans RIGI_PARASOL 
- Seule l'option K_TR_D_N est valable pour le chainage avec Europlexus
-"""),
 
 7 : _("Le mot-cle FONC_MULT est obligatoire pour le chargement de type PRES_REP"),
 

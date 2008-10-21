@@ -6,7 +6,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,7 +134,7 @@ C====
 C
       CALL LRCAME ( NROFIC, NOCHMD, NOMAMD, NOMAAS,
      &              NBNOE,  'NOEU', TYPENT,
-     &              UBID, UNBID, UBID, UBID, DEUBID,
+     &              UBID, UNBID, UNBID, UBID, UBID, DEUBID,
      &              NBCMPV, NCMPVA, NCMPVM,
      &              IINST, NUMPT, NUMORD, INST, CRIT, PREC,
      &              NOMGD,  NCMPRF, JNOCMP, JCNSL, JCNSV, JCNSD,

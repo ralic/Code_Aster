@@ -1,7 +1,7 @@
       SUBROUTINE CFADJU(ALIAS,KSI1  ,KSI2  ,TOLEOU,LDIST)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  ALIAS  : TYPE DE L'ELEMENT
-C               'SG2','SG3'  
+C               'SE2','SE3'  
 C               'TR3','TR6'  
 C               'QU4','QU8','QU9' 
 C I/O KSI1   : POINT DE CALCUL SUIVANT KSI1 DES
@@ -55,7 +55,7 @@ C
       LDIST  = .TRUE.
       ECART  = 0.D0
 C
-      IF (ALIAS(1:2).EQ.'SG') THEN
+      IF (ALIAS(1:2).EQ.'SE') THEN
         ECART = 0.D0
         IF ((KSI1.LT.-1.D0).OR.(KSI1.GT.1.D0)) THEN
           ECART  = ABS(KSI1)-1.D0
@@ -80,7 +80,6 @@ C
             IZONE = 2
           ELSEIF (KSI2.GT.1.D0) THEN
             IZONE = 3
-            ECART = SQRT(ABS(KSI1)*ABS(KSI1)+ABS(KSI2)*ABS(KSI2))
           ELSE 
             CALL ASSERT(.FALSE.)            
           ENDIF     
@@ -133,8 +132,7 @@ C
           ECART = SQRT(KSI2*KSI2+
      &                (KSI1-1.D0)*(KSI1-1.D0))
         ELSEIF (IZONE.EQ.7) THEN
-          ECART = SQRT((KSI1-1.D0)*(KSI1-1.D0)+
-     &                 (KSI2-1.D0)*(KSI2-1.D0))
+          ECART = SQRT((KSI1-1.D0)*(KSI1-1.D0)+KSI2*KSI2)
         ELSEIF (IZONE.EQ.8) THEN
           ECART = SQRT(ABS(KSI2)*ABS(KSI2))
         ENDIF      
@@ -172,7 +170,6 @@ C
 C --- SECTEUR CONCERNE
 C        
         IZONE = 0
-        ECART = 0.D0
         IF (KSI1.LT.-1.D0) THEN
           IF (KSI2.LT.-1.D0) THEN
             IZONE = 1

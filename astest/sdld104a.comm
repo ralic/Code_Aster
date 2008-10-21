@@ -1,4 +1,4 @@
-# MODIF  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE VALIDATION DE PROJ_MESU_MODAL: CAS DISCRET, BASE (MODE_MECA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,7 @@ REPGENE=PROJ_MESU_MODAL(
 # RESTITUTION DES RESULTATS
 # =========================
 #
-REPONSE=REST_BASE_PHYS(   RESU_GENE=REPGENE,
+REPONSE=REST_GENE_PHYS(   RESU_GENE=REPGENE,
                            TOUT_CHAM='OUI'                          )
 
 #

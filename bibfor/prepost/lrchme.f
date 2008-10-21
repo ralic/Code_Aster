@@ -2,11 +2,12 @@
      &                    NOMAAS, TYPECH, NOMGD, TYPENT,
      &                    NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                    IINST, NUMPT,  NUMORD, INST, CRIT, PREC,
-     &                    NROFIC, LIGREL, OPTION, PARAM, CODRET )
+     &                    NROFIC, LIGREL, OPTION, PARAM, 
+     &                    NBPGMA, NBPGMM, CODRET )
 C TOLE CRP_21
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,6 +75,7 @@ C
       INTEGER CODRET
       INTEGER NBCMPV
       INTEGER IINST, NUMPT, NUMORD
+      INTEGER NBPGMA(*),NBPGMM(*)
 C
       REAL*8 INST
       REAL*8 PREC
@@ -106,7 +108,8 @@ C
      &                NOMAAS, NOMMOD, NOMGD, TYPENT,
      &                NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     &                NROFIC, LIGREL, OPTION, PARAM, CODRET )
+     &                NROFIC, LIGREL, OPTION, PARAM,
+     &                NBPGMA, NBPGMM, CODRET )
       ELSE
         CODRET = 1
         CALL U2MESK('A','MED_92',1,TYPECH(1:4))

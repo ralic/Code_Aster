@@ -1,4 +1,4 @@
-# MODIF  DATE 22/09/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,8 +145,7 @@ DYNPROD=DYNA_LINE_HARM(  MATR_MASS=MASPROD,
 
 
 
-DYNHARD=REST_BASE_PHYS(   RESU_GENE=DYNPROD,
-
+DYNHARD=REST_GENE_PHYS(   RESU_GENE=DYNPROD,
                            FREQ=FD,
                            MODE_MECA=MODESD,
                            TOUT_CHAM='OUI')
@@ -484,7 +483,7 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'COTE2',
                                         TOUT = 'OUI')))
 
-DYNHARM=REST_BASE_PHYS(  RESU_GENE=DYNGEN,
+DYNHARM=REST_SOUS_STRUC(  RESU_GENE=DYNGEN,
                            SQUELETTE=SQUEL)
 
 

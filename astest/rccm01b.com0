@@ -77,14 +77,14 @@ TEST_TABLE(    TABLE=FAT1,
                              VALE_K   = 'ORIG',),
                REFERENCE='ANALYTIQUE',
                NOM_PARA='FACT_USAGE_CUMU',
-               VALE=5.0E-2        )
+               VALE=2.11111E-2        )
                       
 TEST_TABLE(    TABLE=FAT1,
                FILTRE= _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR',),
                REFERENCE='ANALYTIQUE',
                NOM_PARA='FACT_USAGE_CUMU',
-               VALE=5.0E-3        )
+               VALE=2.11111E-2        )
 #--------------------------------------------------------------------------------
 #   option = 'FATIGUE'
 #   chargement unitaire - Validation KE_MIXTE
@@ -143,12 +143,12 @@ TEST_TABLE(    TABLE=FAT2,
                              VALE_K   = 'ORIG',),
                REFERENCE='ANALYTIQUE',
                NOM_PARA='FACT_USAGE_CUMU',
-               VALE=4.1419E-2       )
+               VALE=2.11111E-2      )
                       
 TEST_TABLE(    TABLE=FAT2,
                FILTRE= _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR',),
                REFERENCE='ANALYTIQUE',
                NOM_PARA='FACT_USAGE_CUMU',
-               VALE=1.6759e-2        )
+               VALE=2.11111E-2       )
 FIN();
