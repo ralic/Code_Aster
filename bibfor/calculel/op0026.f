@@ -1,7 +1,7 @@
       SUBROUTINE OP0026(IER   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF CALCULEL  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,22 +51,25 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER         NBPAR
-      PARAMETER       (NBPAR=3)
+      INTEGER         NBPAR,NBLIBL
+      PARAMETER       (NBPAR=5,NBLIBL=5)
       CHARACTER*19    NOMPAR(NBPAR),TYPPAR(NBPAR)
-      CHARACTER*24    VK(NBPAR)   
+      CHARACTER*24    VK(NBPAR)
+      CHARACTER*24    KNOOBJ(NBLIBL),VKK(NBLIBL),KNOTYP(NBLIBL) 
 C
       INTEGER         ZFON  
       PARAMETER      (ZFON    = 22 )        
 C-----------------------------------------------------------------------
-      INTEGER         N1,NBOPT,ITERAT,NUMEOR,I,IBID
-      INTEGER         NIV,IFM
-      INTEGER         IRET,KNINDI,NUORD,NBPASE,JLINST
-      REAL*8          RBID,INSTAM,INSTAP,CONST(2)
+      INTEGER         N1,NBOPT,ITERAT,NUMEOR,I,IBID,NBPA,JINSLU
+      INTEGER         NIV,IFM,VI(1),JVAL,JLG,JTBNP,JNSD
+      INTEGER         IRET,KNINDI,NUORD,NBPASE,JLINST,NBBL,JNOR
+      INTEGER         INOOBJ, INOMSD, INUORD, IINST, JNOBJ, JNOSD
+      INTEGER         JNUOR, JRINS, JLINS, NBLI, J, JTBLP
+      REAL*8          RBID,INSTAM,INSTAP,CONST(2),VR(1),INSTLU
       COMPLEX*16      CBID
       CHARACTER*1     TYPCST(2),TYPECH(2),TYPRES
       CHARACTER*2     CODRET
-      CHARACTER*8     RESULT,TABLE
+      CHARACTER*8     RESULT,TABLE,TABL2,TABLU,K8B
       CHARACTER*14    NUMMOI,NUMDEL
       CHARACTER*16    LOPT(3),OPTION
       CHARACTER*19    LISCHA,K19BLA
@@ -76,9 +79,9 @@ C-----------------------------------------------------------------------
       CHARACTER*24    DEPPLU,SIGPLU,VARPLU,COMMOI,MODELE,DEPMOI
       CHARACTER*24    COMPLU, CODERE
       CHARACTER*24    VALMOI(8),VALPLU(8)
-      CHARACTER*24    SIGMOI,VARMOI,NOMCH(2),CHPRES,DEPMO1
+      CHARACTER*24    SIGMOI,VARMOI,NOMCH(2),CHPRES,DEPMO1,INSTB
       CHARACTER*24    K24BLA,K24BID
-      CHARACTER*19    SOLALG(30)   
+      CHARACTER*19    SOLALG(30),NOMTAB   
       CHARACTER*19    MEELEM(20),VEELEM(30)   
       LOGICAL         TABRET(0:10),FONACT(ZFON)
 C-----------------------------------------------------------------------
@@ -91,6 +94,16 @@ C-----------------------------------------------------------------------
       DATA SIGMOI     /'&&OP0026.SIGMOI'/
       DATA COMMOI     /'&&OP0026.COMMOI'/
       DATA COMPLU     /'&&OP0026.COMPLU'/
+      DATA KNOOBJ     /'MATR_ELEM               ',
+     &                 'SIEF_ELGA               ',
+     &                 'VARI_ELGA               ',
+     &                 'VECT_ELEM               ',
+     &                 'CODE_RETOUR             '/
+      DATA KNOTYP     /'MATR_ELEM_DEPL_R        ',
+     &                 'CHAM_ELEM               ',
+     &                 'CHAM_ELEM               ',
+     &                 'VECT_ELEM_DEPL_R        ',
+     &                 'CHAM_ELEM               '/
 C      
 C ----------------------------------------------------------------------
 C      
@@ -234,10 +247,6 @@ C
 C ======================================================================
 C --- ECRITURE DES RESULTATS DANS UNE TABLE
 C ======================================================================
-
-      CALL DETRSD('TABLE_CONTAINER',TABLE)
-      CALL TBCRSD(TABLE,'G')
-
       NOMPAR(1)='NOM_OBJET'
       TYPPAR(1)='K16'
 
@@ -247,27 +256,135 @@ C ======================================================================
       NOMPAR(3)='NOM_SD'
       TYPPAR(3)='K24'
 
-      CALL TBAJPA(TABLE,NBPAR,NOMPAR,TYPPAR)
-      VK(1)='MATR_ELEM'
-      VK(2)='MATR_ELEM_DEPL_R'
-      VK(3)=MERIGI
-      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
-      VK(1)='SIEF_ELGA'
-      VK(2)='CHAM_ELEM'
-      VK(3)=SIGPLU
-      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
-      VK(1)='VARI_ELGA'
-      VK(2)='CHAM_ELEM'
-      VK(3)=VARPLU
-      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
-      VK(1)='VECT_ELEM'
-      VK(2)='VECT_ELEM_DEPL_R'
-      VK(3)=VEFINT
-      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
-      VK(1)='CODE_RETOUR'
-      VK(2)='CHAM_ELEM'
-      VK(3)=CODERE
-      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
+      NOMPAR(4)='NUME_ORDRE'
+      TYPPAR(4)='I'
+
+      NOMPAR(5)='INST'
+      TYPPAR(5)='R8'
+
+      VR(1)=INSTAP
+      VI(1)=NUMEOR
+
+      VKK(1)=MERIGI
+      VKK(2)=SIGPLU
+      VKK(3)=VARPLU
+      VKK(4)=VEFINT
+      VKK(5)=CODERE
+
+      CALL GETVID(' ','TABLE',0,1,0,K8B,N1)
+
+C     ---------------------------------------------
+C     CAS 1 - ON CREE UNE NOUVELLE TABLE CONTAINER 
+C     ---------------------------------------------
+      IF(N1.EQ.0)THEN
+
+        CALL DETRSD('TABLE_CONTAINER',TABLE)
+        CALL TBCRSD(TABLE,'G')
+
+        CALL TBAJPA(TABLE,NBPAR,NOMPAR,TYPPAR)
+        VK(1)=KNOOBJ(1)
+        VK(2)=KNOTYP(1)
+        VK(3)=VKK(1)
+        CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,VR,CBID,VK,0)
+        VK(1)=KNOOBJ(2)
+        VK(2)=KNOTYP(2)
+        VK(3)=VKK(2)
+        CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,VR,CBID,VK,0)
+        VK(1)=KNOOBJ(3)
+        VK(2)=KNOTYP(3)
+        VK(3)=VKK(3)
+        CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,VR,CBID,VK,0)
+        VK(1)=KNOOBJ(4)
+        VK(2)=KNOTYP(4)
+        VK(3)=VKK(4)
+        CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,VR,CBID,VK,0)
+        VK(1)=KNOOBJ(5)
+        VK(2)=KNOTYP(5)
+        VK(3)=VKK(5)
+        CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,VR,CBID,VK,0)
+
+      ELSE
+
+C     -----------------------------------------------------
+C     CAS 2 - ON ENRICHIT UNE TABLE CONTAINER  OU
+C             ON EN CREE UNE NOUVELLE A PARTIR D'UNE AUTRE
+C     ----------------------------------------------------
+
+        CALL GETVID(' ','TABLE',0,1,1,TABLU,N1)
+
+        IF(TABLU.NE.TABLE)THEN
+          CALL DETRSD('TABLE_CONTAINER',TABLE)
+          CALL COPISD('TABLE','G',TABLU,TABLE)
+        ENDIF
+
+        NOMTAB=TABLE
+        CALL JEVEUO(NOMTAB//'.TBNP','L',JTBNP)
+        NBPA=ZI(JTBNP)
+        NBLI=ZI(JTBNP+1)
+
+C       RECHERCHE DES PARAMETRES CONCERNES DANS LA TABLE FOURNIE
+        INOOBJ=0
+        INOMSD=0
+        INUORD=0
+        IINST=0 
+        CALL JEVEUO(NOMTAB//'.TBLP','L',JTBLP)
+        DO 5 I=1,NBPA
+          IF(ZK24(JTBLP+(I-1)*4)(1:9).EQ.'NOM_OBJET')THEN
+               INOOBJ=I
+          ELSEIF(ZK24(JTBLP+(I-1)*4)(1:6).EQ.'NOM_SD')THEN
+               INOMSD=I
+          ELSEIF(ZK24(JTBLP+(I-1)*4)(1:10).EQ.'NUME_ORDRE')THEN
+               INUORD=I
+          ELSEIF(ZK24(JTBLP+(I-1)*4)(1:4).EQ.'INST')THEN
+               IINST=I
+          ENDIF
+ 5      CONTINUE
+
+        CALL ASSERT(INOOBJ.NE.0)
+        CALL ASSERT(INOMSD.NE.0)
+        CALL ASSERT(INUORD.NE.0)
+        CALL ASSERT(IINST .NE.0)
+
+C       RECUPERATION DES POINTEURS POUR LIRE ET MODIFIER LA TABLE
+        CALL JEVEUO(ZK24(JTBLP+(INOOBJ-1)*4+2),'L',JNOBJ)
+        CALL JEVEUO(ZK24(JTBLP+(INOMSD-1)*4+2),'E',JNOSD)
+        CALL JEVEUO(ZK24(JTBLP+(INUORD-1)*4+2),'E',JNUOR)
+        CALL JEVEUO(ZK24(JTBLP+(IINST -1)*4+2),'E',JRINS)
+        CALL JEVEUO(ZK24(JTBLP+(IINST -1)*4+3),'L',JLINS)
+
+C       POUR LES NBLIBL(=5) NOM_OBJET DE CALCUL
+        DO 10 I=1,NBLIBL
+C         ON PARCOURT LES LIGNES DE LA TABLE POUR:
+          DO 20 J=1,NBLI
+C          - IDENTIFIER LES LIGNES OU L'ON TROUVE LE NOM_OBJET DE CALCUL
+            IF(ZK16(JNOBJ+J-1).EQ.KNOOBJ(I)(1:16))THEN
+              IF(ZI(JLINS+J-1).EQ.1)THEN
+C          - LIRE L'INSTANT PRESENT DANS LA TABLE: 
+C            SI CELUI-CI EST IDENTIQUE A L'INSTANT DU NOM_SD A STOCKER
+                   IF(ZR(JRINS+J-1).EQ.VR(1))THEN
+C            ALORS, ON ECRASE LE CONCEPT NOM_SD ET ON LE REMPLACE PAR
+C            LE NOUVEAU (ON MET A JOUR AUSSI NUME_ORDRE ET INST)
+                       VK(1)=KNOOBJ(I)
+                       VK(2)=TABLU
+                       CALL U2MESG('A','TABLE0_16',2,VK,0,IBID,1,VR) 
+                       CALL JEDETR(ZK24(JNOSD+J-1))
+                       ZK24(JNOSD+J-1)=VKK(I)
+                       ZI(JNUOR+J-1)=VI(1)
+                       ZR(JRINS+J-1)=VR(1)
+                       GOTO 10
+                    ENDIF
+               ENDIF
+             ENDIF
+ 20       CONTINUE
+C         SI LE NOM_OBJET ET L'INSTANT N'ONT PAS ETE TROUVES, ALORS ON
+C         AJOUTE UNE NOUVELLE LIGNE A LA TABLE:
+          VK(1)=KNOOBJ(I)
+          VK(2)=KNOTYP(I)
+          VK(3)=VKK(I)
+          CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,VR,CBID,VK,0)
+ 10     CONTINUE
+
+      ENDIF 
 
 
 C ======================================================================

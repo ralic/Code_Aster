@@ -1,5 +1,6 @@
-# MODIF  DATE 09/09/2008   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE INTEGRATION DU COMPORTEMENT VMIS_ISOT_LINE PAR LA COMMANDE CALCUL
+# pynl01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -315,6 +316,97 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=DIF_SIG,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=1.E-8,),
                         ))
+#
+# ==============     VALIDATION DE : CALCUL/TABLE   ====================
+#  
 
+LIST2=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.0,
+                                  NOMBRE=2,),);
+
+
+CONT=CALCUL(reuse=CONT,
+            OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
+            MODELE=MO,
+            CHAM_MATER=CHMAT,
+            INCREMENT=_F(LIST_INST=LIST2,
+                         NUME_ORDRE=2),
+            EXCIT=_F(CHARGE=CHARGE),
+            TABLE=CONT,
+            DEPL=U,
+            INCR_DEPL=DU,
+            SIGM=SIGP,
+            VARI=VARIP,
+            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+            INFO=2,);
+
+
+SIGM3=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
+                 TABLE=CONT,
+                 NOM_PARA='NOM_SD',
+                 FILTRE=(_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='SIEF_ELGA'),
+                        _F(NOM_PARA='NUME_ORDRE',
+                           VALE_I=2),),)
+
+PRED3=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARGE,),
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=LIST2,),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E12,),);
+
+CALC3=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARGE,),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                   INCREMENT=_F(LIST_INST=LIST2,),
+                   NEWTON=_F(PREDICTION='DEPL_CALCULE',
+                             EVOL_NOLI=PRED3,),
+                   ####                      
+                   # NE PAS FAIRE D'ITERATIONS   
+                   ####                                  
+                   CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
+                                    ARRET = 'NON'),                   
+                   
+                   );
+
+
+SIG_REF3=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                   NOM_CHAM='SIEF_ELGA', RESULTAT=CALC3,
+                   INST=0.5,
+                    )
+
+DIF_SIG3=CREA_CHAMP(OPERATION='ASSE',
+                   MODELE=MO,
+                   TYPE_CHAM='ELGA_SIEF_R',
+                   ASSE=(_F(CHAM_GD=SIG_REF3,
+                            TOUT='OUI',
+                            CUMUL='OUI',
+                            COEF_R=1.),
+                         _F(CHAM_GD=SIGM3,
+                            TOUT='OUI',
+                            CUMUL='OUI',
+                            COEF_R=-1.),
+                        ))
+
+TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=DIF_SIG3,
+                        TYPE_TEST = 'MIN',
+                        CRITERE='ABSOLU',
+                        VALE_ABS='OUI',
+                        VALE=0.,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-8,),
+                     _F(CHAM_GD=DIF_SIG3,
+                        TYPE_TEST = 'MAX',
+                        CRITERE='ABSOLU',
+                        VALE_ABS='OUI',
+                        VALE=0.,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-8,),),)
+
+#
+# ==========     FIN DE LA VALIDATION DE : CALCUL/TABLE   ==============
+#  
 
 FIN();

@@ -1,4 +1,4 @@
-#@ MODIF sd_table_container SD  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF sd_table_container SD  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ class sd_table_container(sd_table):
         # 'NOM_OBJET','TYPE_OBJET','NOM_SD'
         param=['NOM_OBJET','TYPE_OBJET','NOM_SD']
         shape = self.TBNP.get()
-        assert 3,shape[0] # la table a exactement 3 paramètres
+        assert shape[0]>2 # la table à au moins 3 paramètres
         for n in param:
           col=self.get_column_name(n)
           if col == None:

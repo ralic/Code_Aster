@@ -1,13 +1,14 @@
-      SUBROUTINE AFDI2D (IREP,ETA,CAR,VAL,JDC,JDV,IVR,IV,KMA,NCMP,NTP,
-     +                   IFM)
+      SUBROUTINE AFDI2D (IREP,ETA,CAR,VAL,JDC,JDV,JDCNS,JDVNS,IVR,IV,
+     +                   KMA,NCMP,NTP,JDCINF,JDVINF,ISYM,IFM)
       IMPLICIT   NONE
       INTEGER           IREP,JDV(3),JDC(3),IVR(*),IV,NCMP,NTP,IFM
+      INTEGER           JDVNS(3),JDCNS(3),ISYM,JDCINF,JDVINF
       REAL*8                 ETA,    VAL(*)
-      CHARACTER*1                                       KMA(3)
-      CHARACTER*8                CAR
+      CHARACTER*1            KMA(3)
+      CHARACTER*9            CAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +54,9 @@ C     ------------------------------------------------------------------
 C
 C     BOUCLE SUR LES TYPES DE MATRICE (K,M,A)
 C
+      CALL CODENT(1,'G',KI)
+      ZK8(JDCINF+1-1) = 'X'//KI
+      ZR (JDVINF+1-1) = ISYM
       DO 200 J = 1 , 3
          IF (CAR(1:1).EQ.KMA(J)) THEN
             NTP = J
@@ -74,7 +78,7 @@ C - T_D_N
                   ZR (JDV(J)+2) = VAL(IV+1)
                   IV = IV + 2
                ENDIF
-               IF(IVR(3).EQ.1) CALL IMPMV(IFM,CAR,ZR(JDV(J)),3)
+           IF(IVR(3).EQ.1) CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),3)
                NCMP = 4
                IF (CAR(1:1).EQ.'K')THEN
                   ZK8(JDC(J)+4) = 'ETA     '
@@ -100,7 +104,7 @@ C - T_D_L
                   ZR (JDV(J)+7)  = -VAL(IV+1)
                   ZR (JDV(J)+9 ) =  VAL(IV+1)
                   IV = IV + 2
-                  IF(IVR(3).EQ.1) CALL IMPMV(IFM,CAR,ZR(JDV(J)),10)
+           IF(IVR(3).EQ.1) CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),10)
                   NCMP = 11
                   IF (CAR(1:1).EQ.'K') THEN
                      ZK8(JDC(J)+11) = 'ETA     '
@@ -131,7 +135,7 @@ C - TR_D_N
                   ZR (JDV(J)+5)  = VAL(IV+2)
                   IV = IV + 3
                ENDIF
-               IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR,ZR(JDV(J)),6)
+           IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),6)
                NCMP = 7
                IF (CAR(1:1).EQ.'K') THEN
                   ZK8(JDC(J)+7)  = 'ETA     '
@@ -160,7 +164,7 @@ C - TR_D_L
                   ZR (JDV(J)+17) = -VAL(IV+2)
                   ZR (JDV(J)+20) =  VAL(IV+2)
                   IV = IV + 3
-                  IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR,ZR(JDV(J)),21)
+           IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),21)
                   NCMP = 22
                   IF (CAR(1:1).EQ.'K') THEN
                      ZK8(JDC(J)+22) = 'ETA     '
@@ -170,71 +174,143 @@ C - TR_D_L
                ENDIF
 C - T_N
             ELSEIF (CAR(3:5).EQ.'T_N') THEN
-               DO 30 L = 1 , 3
-                  CALL CODENT(L,'G',KI)
-                  ZK8(JDC(J)+L-1) = KMA(J)//KI
-                  ZR (JDV(J)+L-1) = VAL(IV)
-                  IV = IV + 1
- 30            CONTINUE
-               ZK8(JDC(J)+3) = 'REP'//KMA(J)//'    '
-               ZR (JDV(J)+3) = IREP
-               IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR,ZR(JDV(J)),3)
-               NCMP = 4
-               IF (CAR(1:1).EQ.'K') THEN
-                  ZK8(JDC(J)+4) = 'ETA     '
-                  ZR (JDV(J)+4) =  ETA
+C - T_N_NS
+               IF (CAR(6:8).EQ.'_NS') THEN
+                  DO 31 L = 1 , 4
+                     CALL CODENT(L,'G',KI)
+                     ZK8(JDCNS(J)+L-1) = KMA(J)//KI
+                     ZR (JDVNS(J)+L-1) = VAL(IV)
+                     IV = IV + 1
+ 31               CONTINUE
+                  ZK8(JDCNS(J)+4) = 'REP'//KMA(J)//'    '
+                  ZR (JDVNS(J)+4) = IREP
                   NCMP = 5
-               ENDIF
+                  IF (CAR(1:1).EQ.'K') THEN
+                     ZK8(JDCNS(J)+5) = 'ETA     '
+                     ZR (JDVNS(J)+5) =  ETA
+                     NCMP = 6
+                  ENDIF
+               ELSE
+                  DO 30 L = 1 , 3
+                     CALL CODENT(L,'G',KI)
+                     ZK8(JDC(J)+L-1) = KMA(J)//KI
+                     ZR (JDV(J)+L-1) = VAL(IV)
+                     IV = IV + 1
+ 30               CONTINUE
+                  ZK8(JDC(J)+3) = 'REP'//KMA(J)//'    '
+                  ZR (JDV(J)+3) = IREP
+           IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),3)
+                  NCMP = 4
+                  IF (CAR(1:1).EQ.'K') THEN
+                     ZK8(JDC(J)+4) = 'ETA     '
+                     ZR (JDV(J)+4) =  ETA
+                     NCMP = 5
+                  ENDIF
+              ENDIF
 C - T_L
             ELSEIF (CAR(3:5).EQ.'T_L') THEN
-               DO 35 L = 1 , 10
-                  CALL CODENT(L,'G',KI)
-                   ZK8(JDC(J)+L-1) = KMA(J)//KI
-                   ZR (JDV(J)+L-1) = VAL(IV)
-                   IV = IV + 1
- 35            CONTINUE
-               ZK8(JDC(J)+10) = 'REP'//KMA(J)//'    '
-               ZR (JDV(J)+10) = IREP
-               IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR,ZR(JDV(J)),10)
-               NCMP = 11
-               IF (CAR(1:1).EQ.'K') THEN
-                  ZK8(JDC(J)+11) = 'ETA     '
-                  ZR (JDV(J)+11) =  ETA
-                  NCMP = 12
-               ENDIF
+C - T_L_NS
+               IF (CAR(6:8).EQ.'_NS') THEN
+                  DO 36 L = 1 , 16
+                     CALL CODENT(L,'G',KI)
+                     ZK8(JDCNS(J)+L-1) = KMA(J)//KI
+                     ZR (JDVNS(J)+L-1) = VAL(IV)
+                     IV = IV + 1
+ 36               CONTINUE
+                  ZK8(JDCNS(J)+16) = 'REP'//KMA(J)//'    '
+                  ZR (JDVNS(J)+16) = IREP
+                  NCMP = 17
+                  IF (CAR(1:1).EQ.'K') THEN
+                     ZK8(JDCNS(J)+17) = 'ETA     '
+                     ZR (JDVNS(J)+17) =  ETA
+                     NCMP = 18
+                  ENDIF
+               ELSE
+                  DO 35 L = 1 , 10
+                     CALL CODENT(L,'G',KI)
+                     ZK8(JDC(J)+L-1) = KMA(J)//KI
+                     ZR (JDV(J)+L-1) = VAL(IV)
+                     IV = IV + 1
+ 35               CONTINUE
+                  ZK8(JDC(J)+10) = 'REP'//KMA(J)//'    '
+                  ZR (JDV(J)+10) = IREP
+              IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),10)
+                  NCMP = 11
+                  IF (CAR(1:1).EQ.'K') THEN
+                     ZK8(JDC(J)+11) = 'ETA     '
+                     ZR (JDV(J)+11) =  ETA
+                     NCMP = 12
+                  ENDIF
+              ENDIF
 C - TR_N
             ELSEIF (CAR(3:6).EQ.'TR_N') THEN
-               DO 40 L = 1 , 6
-                  CALL CODENT(L,'G',KI)
-                  ZK8(JDC(J)+L-1) = KMA(J)//KI
-                  ZR (JDV(J)+L-1) = VAL(IV)
-                  IV = IV + 1
- 40            CONTINUE
-               ZK8(JDC(J)+6) = 'REP'//KMA(J)//'    '
-               ZR (JDV(J)+6) = IREP
-               IF(IVR(3).EQ.1)CALL IMPMV(IFM,CAR,ZR(JDV(J)),6)
-               NCMP = 7
-               IF (CAR(1:1).EQ.'K') THEN
-                  ZK8(JDC(J)+7) = 'ETA     '
-                  ZR (JDV(J)+7) =  ETA
-                  NCMP = 8
+C - TR_N_NS
+               IF (CAR(7:9).EQ.'_NS') THEN
+                  DO 41 L = 1 , 9
+                     CALL CODENT(L,'G',KI)
+                     ZK8(JDCNS(J)+L-1) = KMA(J)//KI
+                     ZR (JDVNS(J)+L-1) = VAL(IV)
+                     IV = IV + 1
+ 41               CONTINUE
+                  ZK8(JDCNS(J)+9) = 'REP'//KMA(J)//'    '
+                  ZR (JDVNS(J)+9) = IREP
+                  NCMP = 10
+                  IF (CAR(1:1).EQ.'K') THEN
+                     ZK8(JDCNS(J)+10) = 'ETA     '
+                     ZR (JDVNS(J)+10) =  ETA
+                     NCMP = 11
+                  ENDIF
+               ELSE
+                  DO 40 L = 1 , 6
+                     CALL CODENT(L,'G',KI)
+                     ZK8(JDC(J)+L-1) = KMA(J)//KI
+                     ZR (JDV(J)+L-1) = VAL(IV)
+                     IV = IV + 1
+ 40               CONTINUE
+                  ZK8(JDC(J)+6) = 'REP'//KMA(J)//'    '
+                  ZR (JDV(J)+6) = IREP
+              IF(IVR(3).EQ.1)CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),6)
+                  NCMP = 7
+                  IF (CAR(1:1).EQ.'K') THEN
+                     ZK8(JDC(J)+7) = 'ETA     '
+                     ZR (JDV(J)+7) =  ETA
+                     NCMP = 8
+                  ENDIF
                ENDIF
 C - TR_L
             ELSEIF (CAR(3:6).EQ.'TR_L') THEN
-               DO 45 L = 1 , 21
-                  CALL CODENT(L,'G',KI)
-                  ZK8(JDC(J)+L-1) = KMA(J)//KI
-                  ZR (JDV(J)+L-1) = VAL(IV)
-                  IV = IV + 1
- 45            CONTINUE
-               ZK8(JDC(J)+21) = 'REP'//KMA(J)//'    '
-               ZR (JDV(J)+21) = IREP
-               IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR,ZR(JDV(J)),21)
-               NCMP = 22
-               IF (CAR(1:1).EQ.'K') THEN
-                  ZK8(JDC(J)+22) = 'ETA     '
-                  ZR (JDV(J)+22) =  ETA
-                  NCMP = 23
+C - TR_L_NS
+               IF (CAR(7:9).EQ.'_NS') THEN
+                  DO 46 L = 1 , 36
+                     CALL CODENT(L,'G',KI)
+                     ZK8(JDCNS(J)+L-1) = KMA(J)//KI
+                     ZR (JDVNS(J)+L-1) = VAL(IV)
+                     IV = IV + 1
+ 46               CONTINUE
+                  ZK8(JDCNS(J)+36) = 'REP'//KMA(J)//'    '
+                  ZR (JDVNS(J)+36) = IREP
+                  NCMP = 37
+                  IF (CAR(1:1).EQ.'K') THEN
+                     ZK8(JDCNS(J)+37) = 'ETA     '
+                     ZR (JDVNS(J)+37) =  ETA
+                     NCMP = 38
+                  ENDIF
+               ELSE
+                  DO 45 L = 1 , 21
+                     CALL CODENT(L,'G',KI)
+                     ZK8(JDC(J)+L-1) = KMA(J)//KI
+                     ZR (JDV(J)+L-1) = VAL(IV)
+                     IV = IV + 1
+ 45               CONTINUE
+                  ZK8(JDC(J)+21) = 'REP'//KMA(J)//'    '
+                  ZR (JDV(J)+21) = IREP
+              IF (IVR(3).EQ.1) CALL IMPMV(IFM,CAR(1:8),ZR(JDV(J)),21)
+                  NCMP = 22
+                  IF (CAR(1:1).EQ.'K') THEN
+                     ZK8(JDC(J)+22) = 'ETA     '
+                     ZR (JDV(J)+22) =  ETA
+                     NCMP = 23
+                  ENDIF
                ENDIF
             ENDIF
          ENDIF

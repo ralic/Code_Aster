@@ -1,4 +1,4 @@
-#@ MODIF sd_cara_elem SD  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF sd_cara_elem SD  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,5 +44,9 @@ class sd_cara_elem(AsBase):
     CARGEOPO = Facultatif(sd_carte())
     CARRIGXN = Facultatif(AsVK8())
     CARRIGXV = Facultatif(AsVR())
+    CARDNSCK = Facultatif(sd_carte())
+    CARDNSCM = Facultatif(sd_carte())
+    CARDNSCA = Facultatif(sd_carte())
+    CARDINFO = Facultatif(sd_carte())
 
 

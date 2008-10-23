@@ -7,7 +7,7 @@
       CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/06/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8 LPAIN(10),LPAOUT(1),CHARG
       CHARACTER*16 OPTION
       CHARACTER*24 LIGRMO,LCHIN(10),LCHOUT(1)
-      CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM
+      CHARACTER*24 CHGEOM,CHCARA(18),CHTEMP,CHTREF,CHHARM
 
 
       CALL JEMARQ()

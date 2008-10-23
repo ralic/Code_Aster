@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 OPTION,NOPARR(NBPARR)
       CHARACTER*19 CHELEM
       CHARACTER*24 LCHIN(15),LCHOUT(1),LIGREL,MLGGMA,MLGNMA
-      CHARACTER*24 CHGEOM,CHCARA(15),CHHARM
+      CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
       COMPLEX*16 C16B
       LOGICAL NSYMX,NSYMY,EXIGEO
 C     ------------------------------------------------------------------

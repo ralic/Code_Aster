@@ -9,7 +9,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 OPTION
       CHARACTER*19 CHVARC
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(14),LCHOUT(10)
-      CHARACTER*24 CHGEOM,CHCARA(15),CHHARM
+      CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
       DATA CHVARC /'&&MERIFS.CHVARC'/
 
       CALL JEMARQ()

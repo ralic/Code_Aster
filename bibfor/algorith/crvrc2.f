@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 KBID,RESU,MODELE,CARELE,PAOUT,LPAIN(10)
       CHARACTER*16 TYPE,OPER
       CHARACTER*19 LIGRMO,CHOUT,RESU1,CHTEMP
-      CHARACTER*24 K24,CHCARA(15),LCHIN(10)
+      CHARACTER*24 K24,CHCARA(18),LCHIN(10)
       LOGICAL EXICAR
 
 C----------------------------------------------------------------------

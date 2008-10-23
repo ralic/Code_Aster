@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,8 +47,10 @@ C       ---  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 
       INTEGER NDDLM,NL
-      INTEGER I, N, NC, JDM, JDC, J
+      INTEGER I, N, NC, JDM, JDC, J, INFOD, INFODI
       REAL*8  VXX
+      CHARACTER*16 NOMCMD,TYPRES
+      CHARACTER*19 NOMFON
       PARAMETER (NDDLM=6,NL=NDDLM*NDDLM)
 
 C     ------------------------------------------------------------------
@@ -59,9 +61,20 @@ C     ------------------------------------------------------------------
       ELSE
          CALL U2MESS('F','CALCULEL_17')
       ENDIF
-
+      INFODI = 1
+      CALL GETRES(NOMFON,TYPRES,NOMCMD)
       IF (OPTION.EQ.'MECA_GYRO') THEN
-         CALL JEVECH('PCADISM','L',JDC)
+         IF (NOMCMD.EQ.'CALC_MATR_ELEM') THEN
+            CALL JEVECH('PCINFDI','L',INFOD)
+            INFODI = NINT(ZR(INFOD))
+         ENDIF
+         IF (INFODI.EQ.1) THEN
+            CALL JEVECH('PCADISM','L',JDC)
+            VXX   = ZR(JDC+10-1)
+         ELSEIF (INFODI.EQ.2) THEN
+            CALL JEVECH('PCADNSM','L',JDC)
+            VXX   = ZR(JDC+22-1)
+         ENDIF
          CALL JEVECH('PMATUNS','E',JDM)
 
          DO 60 I = 1,NL

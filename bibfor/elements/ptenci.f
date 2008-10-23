@@ -4,7 +4,7 @@
       REAL*8              X(*),MAT(NEQ,NEQ),OMEG,EN(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ELEMENTS  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,9 @@ C        ITYPE : 41 , MAILLE SEG2 DE TRANSLATION ET ROTATION
 C        ITYPE : 0, 1, 2, ELEMENT DE POUTRE
 C
          NDDL = NEQ / 2
-         IF ( ITYPE.EQ.20 .OR. ITYPE.EQ.21 ) NDDL = NEQ
+         IF (ITYPE.EQ.20.OR.ITYPE.EQ.21.OR.ITYPE.EQ.22.OR.
+     &       ITYPE.EQ.23) NDDL = NEQ
+C         
          NN = 1 + NDDL
 C
 C        --- ON N'A QUE LA DIAGONALE ( PAS DE TERMES D'INERTIE ) ---
@@ -109,7 +111,8 @@ C        --- ON N'A QUE LA DIAGONALE ( PAS DE TERMES D'INERTIE ) ---
  12         CONTINUE
  10      CONTINUE
 C
-         IF ( ITYPE.EQ.20 .OR. ITYPE.EQ.21 ) THEN
+         IF (ITYPE.EQ.20.OR.ITYPE.EQ.21.OR.ITYPE.EQ.22.OR.
+     &       ITYPE.EQ.23) THEN
             DO 14 I = 1 , NDDL
                EN(I+1) = ( X(I) * MAT(I,I) * X(I) ) * CONST
  14         CONTINUE
@@ -121,6 +124,7 @@ C
          ENDIF
          IFORM = 10
          IF ( ITYPE.EQ.40 .OR. ITYPE.EQ.20 ) IFORM = 11
+         IF ( ITYPE.EQ.42 .OR. ITYPE.EQ.22 ) IFORM = 11
 C
          GOTO 900
 C
@@ -137,7 +141,7 @@ C
             GOTO 600
          ENDIF
 C            --- MASSE CONCENTREE + INERTIES --
-         IF ( ITYPE .EQ. 21 ) THEN
+         IF (ITYPE .EQ. 21 .OR. ITYPE .EQ. 23 ) THEN
             DO 24 I = 1 , NDDL
                EN(I+1) = ( X(I) * MAT(I,I) * X(I) ) * CONST
  24         CONTINUE

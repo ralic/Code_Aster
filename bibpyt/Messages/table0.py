@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 25/02/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF table0 Messages  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,5 +77,12 @@ Les listes NOM_PARA et VALE doivent avoir le meme cardinal.
 15 : ("""
 Les listes DEFA et PARA_NOCI doivent avoir le meme cardinal.
 """),
+
+16:_("""
+L'objet %(k1)s à l'instant %(r1)f existe déjà dans la table fournie.
+On l'écrase pour le remplacer par le nouveau.
+"""),
+
+
 
 }

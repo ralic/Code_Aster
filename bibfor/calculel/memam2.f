@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 K8B,LPAIN(17),LPAOUT(1),NEWNOM
       CHARACTER*19 CHVARC
       CHARACTER*24 LIGRMO,LCHIN(17),LCHOUT(1),COMPOR
-      CHARACTER*24 CHGEOM,CHCARA(15),CHHARM,VECELZ
+      CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,VECELZ
       DATA CHVARC /'&&MEMAM2.VARC'/
       CALL JEMARQ()
       NEWNOM = '.0000000'

@@ -3,7 +3,7 @@
       CHARACTER*(*) MODELE,MATE,CARA
       REAL*8 XMASTR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGELINE  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +48,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 ORIG(3),R8B, RBI3(3), ZMAS(MXVALE)
       CHARACTER*8 K8B,NOMA,LPAIN(15),LPAOUT(5)
       CHARACTER*19 CHELEM
-      CHARACTER*24 LCHIN(15),LCHOUT(1),MLGGMA,MLGNMA, MATECO
-      CHARACTER*24 CHGEOM,CHGEO2,CHCARA(15),LIGRMO,COMPOR
+      CHARACTER*24 LCHIN(15),LCHOUT(1),MATECO
+      CHARACTER*24 CHGEOM,CHGEO2,CHCARA(18),LIGRMO,COMPOR
       LOGICAL LRET
 
 C     ------------------------------------------------------------------
@@ -63,11 +63,6 @@ C     ------------------------------------------------------------------
       CALL MECARA(CARA,LRET,CHCARA)
 
       NOMA = CHGEOM(1:8)
-      MLGNMA = NOMA//'.NOMMAI'
-      MLGGMA = NOMA//'.GROUPEMA'
-
-      MLGNMA = NOMA//'.NOMMAI'
-      MLGGMA = NOMA//'.GROUPEMA'
 
       LIGRMO = MODELE(1:8)//'.MODELE'
 
@@ -107,7 +102,11 @@ C     --- CALCUL DE L'OPTION ---
       LCHIN(12) = CHCARA(1)(1:8)//'.CAFIBR'
       LPAIN(13) = 'PCOMPOR'
       LCHIN(13) = COMPOR
-      NB = 13
+      LPAIN(14)  = 'PCADNSM'
+      LCHIN(14)  = CHCARA(16)
+      LPAIN(15)  = 'PCINFDI'
+      LCHIN(15)  = CHCARA(18)
+      NB = 15
       LPAOUT(1) = 'PMASSINE'
       LCHOUT(1) = CHELEM
 

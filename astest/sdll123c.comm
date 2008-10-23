@@ -1,0 +1,644 @@
+# MODIF  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+# TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
+# sdll123c.para = tps_job 60 mem_job 32 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# CAS_TEST__:SDLL123C
+#
+
+from Numeric import *
+from LinearAlgebra import *
+
+def EXTR_MATR(matrrr,option) :
+# fonction permettant de recuperer les matrices assemblees au format Numerical array
+# attention a l'espace memoire
+
+# construction des vecteurs jeveux
+                nommatr=matrrr.nom
+                lenm=len(nommatr)
+                nommatr=nommatr+' '*(8-lenm+1)
+                vectrav=nommatr+'          .REFA        '
+                nom=aster.getvectjev(vectrav)
+                nomnume=nom[1]
+                typm=nom[8]
+                lenm=len(nomnume)
+                nomnume=nomnume[0:9]
+
+                nvar=nommatr+'          .VALM'
+                nadia=nomnume+'     .SMOS.SMDI        '
+                nnuml=nomnume+'     .SMOS.SMHC        '
+                nrtt=nomnume+'     .NUME.DELG        '
+                nrtt2=nomnume+'     .NUME.DEEQ        '
+
+                var=aster.getcolljev(nvar)
+                adia=aster.getvectjev(nadia)
+                numl=aster.getvectjev(nnuml)
+                rtt=aster.getvectjev(nrtt)
+                rtt2=aster.getvectjev(nrtt2)
+
+                valr=var[1]
+                if (option==1):
+                  valr2=var[1]
+                if (option==2):
+                  valr2=var[2]
+
+                vc=len(rtt)
+                ddltot=0
+                nnddl=[0]
+                tryy=0
+
+# calc nbre de ddl au total et vect contenant le nbre de ddl pr chaque noeud (ex : barre =3, poutre=6...)
+                for jj in range(0,vc):
+                        if (rtt2[2*jj+1]==1) and (tryy==1):
+                                if (tryy==1):
+                                        nnddl=nnddl+[0]
+                                        tryy=0
+                        if (rtt2[2*jj+1]>0) :
+                                ddltot=ddltot+1
+                                nnddl[len(nnddl)-1]=nnddl[len(nnddl)-1]+1
+                                tryy=1
+                nnddl=nnddl+[0]
+                ddlag=(vc-ddltot)//2
+                ddlphy=ddltot-ddlag
+                indint=[None]*ddlphy
+
+# contruction du vect contenant les indices des ddls non lagr et non nuls
+                gg=0
+                tt=0
+                pp=0
+                limm=nnddl[pp]
+                vecc=[1]*limm
+                ste=limm
+                for ii in range(0,vc):
+                        if (rtt2[2*ii+1]<0):
+                                if (rtt[ii]==-1):
+                                        varr=-1*rtt2[2*ii+1]-1
+                                        vecc[varr]=0
+                                ste=limm
+                        if (rtt2[2*ii+1]>0) and (ste==limm):
+
+                                for hh in range(0,limm):
+                                        if (vecc[hh]==1):
+                                                indint[gg]=ii+hh
+                                                gg=gg+1
+                                        vecc[hh]=1
+                                ste=0                           
+                                pp=pp+1
+                                limm=nnddl[pp-1]
+                                vecc=[1]*limm
+                        if (rtt2[2*ii+1]>0) and (ste<limm):
+                                ste=ste+1
+
+# construction de la matrice complete ddl lag compris (cette etape peut etre fusionnee avec la suivante mais ca devient complique)
+                lon=len(adia)
+                valeu=Numeric.zeros([lon,lon],Numeric.Float)
+                opi=0
+                indc=0
+                indl=0
+                for ii in range(0,lon):
+                        if (ii==0):
+                                opi=adia[ii]
+                        else:
+                                opi=adia[ii]-adia[ii-1]
+                        for jj in range(0, opi):
+                                if (ii==0):
+                                        indc=jj
+                                        indd=numl[indc]-1
+                                else:
+                                        indc=adia[ii-1]+jj
+                                        indd=numl[indc]-1
+                                valeu[indd][ii]=valr[indc]
+                                if (ii!=indd):
+                                  valeu[ii][indd]=valr2[indc]
+                matrig=valeu
+
+# elimination des ddl de lagrange et des ddl nuls
+                rig11=Numeric.zeros([ddlphy,ddlphy],Numeric.Float)
+                for ii in range(0,ddlphy):
+                        for jj in range(0,ddlphy):
+                                rig11[ii][jj]=matrig[indint[ii]][indint[jj]]
+                return rig11
+
+DEBUT( CODE=_F(NOM='SDLL123C', NIV_PUB_WEB='INTERNET'),
+       PAR_LOT='NON')
+aster.matfpe(-1)
+
+nddl=15*6-20
+
+MAIL=LIRE_MAILLAGE()
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(GROUP_MA='ROTOR',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='POU_D_E',),
+                         #_F(GROUP_MA=('DISQUES','GM11A','GM1AB','GM21A','GM21AB','PALIER_A','PALIER_B'),
+                         _F(GROUP_MA=('GM11A','GM1AB','GM21A','GM21AB','PALIER_A','PALIER_B'),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DIS_TR',),
+                         )
+                       )
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1E9,
+                            NU=0.3,
+                            RHO=318.31,),);
+
+
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(GROUP_MA='ROTOR',
+                            MATER=ACIER,),))
+
+CARELEM=AFFE_CARA_ELEM(INFO=1,
+                       POUTRE=_F(GROUP_MA='ROTOR',
+                                 SECTION='CERCLE',
+                                 VALE=0.1,
+                                 CARA='R',),
+                       DISCRET=(_F(GROUP_MA='PALIER_A',
+                                   CARA='M_TR_N_NS',
+                                   SYME='NON',
+                                   #VALE=(5.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),
+                                   VALE = ( 5.0,   0.,   0.,   0.,   0.,   0.,  0.,   5.0,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   5.0,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='PALIER_B',
+                                   CARA='M_TR_N_NS',
+                                   SYME='NON',
+                                   #VALE=(5.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),
+                                   VALE = ( 5.0,   0.,   0.,   0.,   0.,   0.,  0.,   5.0,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   5.0,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='GM11A',
+                                   CARA='K_TR_L_NS',
+                                   SYME='NON',
+                                   #VALE=(0.0,1.E12,1.E12,0.0,0.0,0.0,),
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   1.E12,   0.,   0.,   0.,   0.,   0.,   -1.E12,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   1.E12,   0.,   0.,   0.,
+                                    0.,   0.,   -1.E12,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   -1.E12,   0.,   0.,   0.,   0.,
+                                    0.,   1.E12,   0.,   0.,   0.,   0.,   0.,   0.,   -1.E12,   0.,
+                                    0.,   0.,   0.,   0.,   1.E12,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='GM21A',
+                                   CARA='K_TR_L_NS',
+                                   SYME='NON',
+                                   #VALE=(0.0,1.E12,1.E12,0.0,0.0,0.0,),
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   1.E12,   0.,   0.,   0.,   0.,   0.,   -1.E12,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   1.E12,   0.,   0.,   0.,
+                                    0.,   0.,   -1.E12,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   -1.E12,   0.,   0.,   0.,   0.,
+                                    0.,   1.E12,   0.,   0.,   0.,   0.,   0.,   0.,   -1.E12,   0.,
+                                    0.,   0.,   0.,   0.,   1.E12,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='GM11A',
+                                   CARA='A_TR_L_NS',
+                                   SYME='NON',
+                                   #VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='GM21A',
+                                   CARA='A_TR_L_NS',
+                                   SYME='NON',
+                                   #VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='GM1AB',
+                                   CARA='K_TR_L_NS',
+                                   SYME='NON',
+                                   #VALE=(0.0,1000.0,4000.0,0.0,0.0,0.0,),
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   1000.0,   0.,   0.,   0.,   0.,   0.,   -1000.0,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   4000.0,   0.,   0.,   0.,
+                                    0.,   0.,   -4000.0,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   -1000.0,   0.,   0.,   0.,   0.,
+                                    0.,   1000.0,   0.,   0.,   0.,   0.,   0.,   0.,   -4000.0,   0.,
+                                    0.,   0.,   0.,   0.,   4000.0,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='GM21AB',
+                                   CARA='K_TR_L_NS',
+                                   SYME='NON',
+                                   #VALE=(0.0,1000.0,4000.0,0.0,0.0,0.0,),
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   1000.0,   0.,   0.,   0.,   0.,   0.,   -1000.0,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   4000.0,   0.,   0.,   0.,
+                                    0.,   0.,   -4000.0,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   -1000.0,   0.,   0.,   0.,   0.,
+                                    0.,   1000.0,   0.,   0.,   0.,   0.,   0.,   0.,   -4000.0,   0.,
+                                    0.,   0.,   0.,   0.,   4000.0,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='GM1AB',
+                                   CARA='A_TR_L_NS',
+                                   SYME='NON',
+                                   #VALE=(0.0,40.0,40.0,0.0,0.0,0.0,),
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   40.0,   0.,   0.,   0.,   0.,   0.,   -40.0,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   40.0,   0.,   0.,   0.,
+                                    0.,   0.,   -40.0,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   -40.0,   0.,   0.,   0.,   0.,
+                                    0.,   40.0,   0.,   0.,   0.,   0.,   0.,   0.,   -40.0,   0.,
+                                    0.,   0.,   0.,   0.,   40.0,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,),
+                                   ),
+                                _F(GROUP_MA='GM21AB',
+                                   CARA='A_TR_L_NS',
+                                   SYME='NON',
+                                   #VALE=(0.0,40.0,40.0,0.0,0.0,0.0,),
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   40.0,   0.,   0.,   0.,   0.,   0.,   -40.0,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   40.0,   0.,   0.,   0.,
+                                    0.,   0.,   -40.0,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   -40.0,   0.,   0.,   0.,   0.,
+                                    0.,   40.0,   0.,   0.,   0.,   0.,   0.,   0.,   -40.0,   0.,
+                                    0.,   0.,   0.,   0.,   40.0,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                    0.,   0.,   0.,   0.,),
+                                   ),
+                                #_F(GROUP_MA='DISQUES',
+                                #   CARA='M_TR_N_NS',
+                                #   SYME='NON',
+                                #   #VALE=(0.038289999999999998,3.0000000000000001E-06,1.7999999999999999E-06,1.7999999999999999E-06,0.0,0.0,0.0,0.0,0.0,0.0,),
+                                #   VALE = ( 0.038289999999999998,   0.,   0.,   0.,   0.,   0.,  0.,   0.038289999999999998,   0.,   0.,
+                                #    0.,   0.,   0.,   0.,   0.038289999999999998,   0.,   0.,   0.,   0.,   0.,
+                                #    0.,   3.0000000000000001E-06,   0.,   0.,   0.,   0.,   0.,   0.,   1.7999999999999999E-06,   0.,
+                                #    0.,   0.,   0.,   0.,   0.,   1.7999999999999999E-06,),
+                                #   ),
+                                   ),
+                       MODELE=MODELE,
+                       );
+                                 
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=(
+                                 _F(GROUP_NO=('MASSIF_A','MASSIF_B'),
+                                    DX=0, DY=0, DRZ=0,
+                                    DZ=0, DRX=0, DRY=0,
+                                    ),
+                                 _F(GROUP_NO=('PALIER_A','PALIER_B'),
+                                    DX=0, DRY=0, DRX=0, DRZ=0,
+                                    ),
+                          ))
+                                    
+
+
+MACRO_MATR_ASSE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                CHARGE=BLOQUAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('GYASS'),
+                              OPTION='MECA_GYRO',),
+                           _F(MATRICE=CO('AMOR'),
+                              OPTION='AMOR_MECA',),),);
+
+######################################                    
+# TEST GENERALISE REEL NON SYM
+######################################
+sym='oui'
+# TEST SORENSEN + QZ + PYTHON EN GENERALISE REEL SYM
+option=1
+MATK=RIGIDITE
+MATM=MASSE
+
+# CALCUL VIA SORENSEN                          
+MG_SO=MODE_ITER_SIMULT( INFO=1,
+                       MATR_A=MATK,
+                       MATR_B=MATM,
+                       METHODE='SORENSEN',
+                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10),
+                       VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                                    STOP_ERREUR='NON',
+                                    STURM='OUI',
+                                    SEUIL=9.9999999999999995E-07),
+                        )
+# CALCUL VIA QZ
+MG_QZ=MODE_ITER_SIMULT( INFO=1,
+                       MATR_A=MATK,
+                       MATR_B=MATM,
+                       METHODE='QZ',
+                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10),
+                       VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                                    STOP_ERREUR='NON',
+                                    STURM='OUI',
+                                    SEUIL=9.9999999999999995E-07),
+                        )
+
+# CALCUL VIA PYTHON
+rig=EXTR_MATR(MATK,option)
+mas=EXTR_MATR(MATM,option)
+#print 'gyro'
+#print array2string(rig,precision=2)
+variante=2
+# variante 1: K-1*M U = 1/lambda  * U
+if (variante==1) :
+  masI=inverse(rig)
+  HPRIME=matrixmultiply(masI,mas)
+  frequence=eigenvalues(HPRIME)
+  fr=list(frequence)
+  i=0
+  for vp in fr:
+     i=i+1
+     if (abs(vp)==0) :
+       print i,'infinity'
+     else       :
+       vp1=(1/vp)
+       if (sym=='oui') :
+         vp1r=sqrt(abs(vp1))/2/pi
+         print i,vp1r
+       else :
+         vp1r=sqrt(abs(vp1.real))/2/pi
+         vp1i=0.5*vp1.imag/vp1.real
+         print i,vp1r,vp1i
+
+else :
+# variante 2 : M-1*K U = lambda * U
+  masI=inverse(mas)
+  HPRIME=matrixmultiply(masI,rig)
+  frequence=eigenvalues(HPRIME)
+  fr=list(frequence)
+  i=0
+  for vp in fr:
+     i=i+1
+     if (abs(vp)==0) :
+       print i,'zero'
+     else       :
+       vp1=vp
+       if (sym=='oui') :
+         vp1r=sqrt(abs(vp1))/2/pi
+         print i,vp1r
+       else :
+         vp1r=sqrt(abs(vp1.real))/2/pi
+         vp1i=0.5*vp1.imag/vp1.real
+         print i,vp1r,vp1i
+
+TEST_RESU(RESU=(
+# POUR SORENSEN
+          _F( RESULTAT = MG_SO, PARA = 'FREQ',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 3,  VALE = 1.5915, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MG_SO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 4,  VALE = 1.9492, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MG_SO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 5,  VALE = 3.1829, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MG_SO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 6,  VALE = 3.8984, REFERENCE='NON_REGRESSION',),
+# POUR QZ
+          _F( RESULTAT = MG_QZ, PARA = 'FREQ',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 3,  VALE = 1.5915, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MG_QZ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 4,  VALE = 1.9492, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MG_QZ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 5,  VALE = 3.1829, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MG_QZ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 6,  VALE = 3.8984, REFERENCE='NON_REGRESSION',),
+            ),)
+
+OM=124.14*pi/30.
+
+GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
+                            _F(MATR_ASSE=AMOR, COEF_R=1.,),))
+
+######################################                    
+# TEST QUADRATIQUE REEL NON SYM
+######################################
+# TEST SORENSEN + QZ + PYTHON EN QUADRATIQUE REEL SYM
+option=2
+MATK1=RIGIDITE
+MATM1=MASSE
+MATC1=GYOM
+
+# CALCUL VIA SORENSEN (APPROCHE COMPLEXE, REELLE ET IMAGINAIRE)
+MQ_SO=MODE_ITER_SIMULT( INFO=1,
+                       MATR_A=MATK1,
+                       MATR_B=MATM1,
+                       MATR_C=MATC1,
+                       METHODE='SORENSEN',
+                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,
+                                    APPROCHE='COMPLEXE',),
+                       VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                                    STOP_ERREUR='NON',
+                                    STURM='OUI',
+                                    SEUIL=9.9999999999999995E-07),
+                        )
+MQ_SOR=MODE_ITER_SIMULT( INFO=1,
+                       MATR_A=MATK1,
+                       MATR_B=MATM1,
+                       MATR_C=MATC1,
+                       METHODE='SORENSEN',
+                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,
+                                    APPROCHE='REEL',),
+                       VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                                    STOP_ERREUR='NON',
+                                    STURM='OUI',
+                                    SEUIL=9.9999999999999995E-07),
+                        )
+MQ_SOI=MODE_ITER_SIMULT( INFO=1,
+                       MATR_A=MATK1,
+                       MATR_B=MATM1,
+                       MATR_C=MATC1,
+                       METHODE='SORENSEN',
+                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,
+                                    APPROCHE='IMAG',),
+                       VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                                    STOP_ERREUR='NON',
+                                    STURM='OUI',
+                                    SEUIL=9.9999999999999995E-07),
+                        )                                                     
+# CALCUL VIA QZ
+MQ_QZ=MODE_ITER_SIMULT( INFO=1,
+                       MATR_A=MATK1,
+                       MATR_B=MATM1,
+                       MATR_C=MATC1,
+                       METHODE='QZ',
+                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,),
+                       VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                                    STOP_ERREUR='NON',
+                                    STURM='OUI',
+                                    SEUIL=9.9999999999999995E-07),
+                        )
+
+# CALCUL VIA PYTHON
+rig=EXTR_MATR(MATK1,option)
+mas=EXTR_MATR(MATM1,option)
+amor=EXTR_MATR(MATC1,option)
+variante=1
+if (variante==1) :
+  masI=inverse(mas)
+  HPRIME=zeros((nddl*2,nddl*2),Float)
+  HPRIME[0:nddl,0:nddl]=matrixmultiply(amor,masI)
+  HPRIME[0:nddl,nddl:2*nddl]=matrixmultiply(rig,masI)
+  HPRIME[nddl:2*nddl,0:nddl]=-identity(nddl)
+  frequence=eigenvalues(HPRIME)
+  fr=list(frequence)
+  i=0
+  for vp in fr:
+     i=i+1
+     if (abs(vp)==0) :
+       print i,'zero'
+     else       :       
+       vp1r=vp.real
+       vp1i=vp.imag/2/pi
+       print i,vp1i,-vp1r/abs(vp)
+
+aster.matfpe(+1)
+
+TEST_RESU(RESU=(
+# POUR SORENSEN APPROCHE COMPLEXE
+          _F( RESULTAT = MQ_SO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 3,  VALE = 1.5593, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SO, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 3,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 5,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SO, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 5,  VALE = 0.0999, REFERENCE='NON_REGRESSION',),
+# POUR SORENSEN APPROCHE REELLE
+          _F( RESULTAT = MQ_SOR, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 1,  VALE = 1.5593, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOR, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 1,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOR, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 3,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOR, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 3,  VALE = 0.0999, REFERENCE='NON_REGRESSION',),
+# POUR SORENSEN APPROCHE IMAGINAIRE
+          _F( RESULTAT = MQ_SOI, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 1,  VALE = 1.5593, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOI, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 1,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOI, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 3,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOI, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 3,  VALE = 0.0999, REFERENCE='NON_REGRESSION',),
+# POUR QZ
+          _F( RESULTAT = MQ_QZ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 1,  VALE = 1.5593, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_QZ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 1,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_QZ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 2,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_QZ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 2,  VALE = 0.0999, REFERENCE='NON_REGRESSION',),
+                ),)
+
+
+FIN()
+

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE ABBAS M.ABBAS
 
-CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='n',
+CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='f',
             UIinfo={"groupes":("Résolution",)},
             fr="Calculer des objets élémentaires comme une matrice tangente, intégrer une loi de comportement, etc...",
      OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="COMPORTEMENT",
@@ -26,6 +26,7 @@ CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='n',
      MODELE          =SIMP(statut='o',typ=modele_sdaster),
      CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
      CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
+     TABLE           =SIMP(statut='f',typ=table_container),
      EXCIT           =FACT(statut='o',max='**',
        CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
        FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),

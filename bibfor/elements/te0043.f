@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,58 +55,126 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      REAL*8 PGL(3,3),MAT(78)
-      CHARACTER*16 CH16,CI16
+      REAL*8 PGL(3,3),MAT(144)
+      INTEGER INFOD,INFODI
+      CHARACTER*16 CH16,CI16,NOMCMD,TYPRES
+      CHARACTER*19 NOMFON
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
+      INFODI = 1
+      CALL GETRES(NOMFON,TYPRES,NOMCMD)
+      IF (NOMCMD.EQ.'MECA_STATIQUE') THEN
+         CALL JEVECH('PCINFDI','L',INFOD)
+         INFODI = NINT(ZR(INFOD))
+      ENDIF
       IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 78
         NNO = 2
         NC = 6
         NDIM = 3
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 144
+        NNO = 2
+        NC = 6
+        NDIM = 3
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 21
         NNO = 1
         NC = 6
         NDIM = 3
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 36
+        NNO = 1
+        NC = 6
+        NDIM = 3
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_DIS_T_L') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 21
         NNO = 2
         NC = 3
         NDIM = 3
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 36
+        NNO = 2
+        NC = 3
+        NDIM = 3
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_DIS_T_N') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 6
         NNO = 1
         NC = 3
         NDIM = 3
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 9
+        NNO = 1
+        NC = 3
+        NDIM = 3
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_L') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 21
         NNO = 2
         NC = 3
         NDIM = 2
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 36
+        NNO  = 2
+        NC   = 3
+        NDIM = 2
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_N') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 6
         NNO = 1
         NC = 3
         NDIM = 2
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 9
+        NNO  = 1
+        NC   = 3
+        NDIM = 2
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_L') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 10
         NNO = 2
         NC = 2
         NDIM = 2
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 16
+        NNO  = 2
+        NC   = 2
+        NDIM = 2
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_N') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 3
         NNO = 1
         NC = 2
         NDIM = 2
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 4
+        NNO  = 1
+        NC   = 2
+        NDIM = 2
+        ENDIF
       END IF
 
 C     --- CALCUL DES VECTEURS ELEMENTAIRES ----
       IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
 
 C        --- MATRICE DE RIGIDITE LOCALE ---
-        CALL JEVECH('PCADISM','L',LDIS)
+        IF (INFODI.EQ.1) THEN
+           CALL JEVECH('PCADISM','L',LDIS)
+        ELSEIF (INFODI.EQ.2) THEN
+           CALL JEVECH('PCADNSM','L',LDIS)
+        ENDIF
 
         CALL JEVECH('PCAORIE','L',LORIEN)
         CALL MATROT(ZR(LORIEN),PGL)
@@ -116,9 +184,17 @@ C        --- IREP = 2 = MATRICE EN REPERE LOCAL ==> PASSER EN GLOBAL ---
         IREP = NINT(ZR(LDIS+NBTERM))
         IF (IREP.EQ.2) THEN
           IF (NDIM.EQ.3) THEN
-            CALL UTPSLG(NNO,NC,PGL,ZR(LDIS),MAT)
+            IF (INFODI.EQ.1) THEN
+               CALL UTPSLG(NNO,NC,PGL,ZR(LDIS),MAT)
+            ELSEIF (INFODI.EQ.2) THEN
+               CALL UTPPLG(NNO,NC,PGL,ZR(LDIS),MAT)
+            ENDIF
           ELSE IF (NDIM.EQ.2) THEN
-            CALL UT2MLG(NNO,NC,PGL,ZR(LDIS),MAT)
+            IF (INFODI.EQ.1) THEN
+               CALL UT2MLG(NNO,NC,PGL,ZR(LDIS),MAT)
+            ELSEIF (INFODI.EQ.2) THEN
+               CALL UT2PLG(NNO,NC,PGL,ZR(LDIS),MAT)
+            ENDIF
           END IF
         ELSE
           DO 10 I = 1,NBTERM
@@ -136,43 +212,97 @@ C        --- ON Y VA ---
         LVEC = LVEC - 1
         LDIS = LDIS - 1
         IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
+          IF (INFODI.EQ.1) THEN
           ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+2) = MAT(03)*ZR(LPESA)*ZR(LPESA+2)
           ZR(LVEC+3) = MAT(06)*ZR(LPESA)*ZR(LPESA+3)
           ZR(LVEC+7) = MAT(28)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+8) = MAT(36)*ZR(LPESA)*ZR(LPESA+2)
           ZR(LVEC+9) = MAT(45)*ZR(LPESA)*ZR(LPESA+3)
+          ELSEIF (INFODI.EQ.2) THEN
+          ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+2) = MAT(14)*ZR(LPESA)*ZR(LPESA+2)
+          ZR(LVEC+3) = MAT(27)*ZR(LPESA)*ZR(LPESA+3)
+          ZR(LVEC+7) = MAT(79)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+8) = MAT(92)*ZR(LPESA)*ZR(LPESA+2)
+          ZR(LVEC+9) = MAT(105)*ZR(LPESA)*ZR(LPESA+3)
+          ENDIF
         ELSE IF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
+          IF (INFODI.EQ.1) THEN
           ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+2) = MAT(03)*ZR(LPESA)*ZR(LPESA+2)
           ZR(LVEC+3) = MAT(06)*ZR(LPESA)*ZR(LPESA+3)
+          ELSEIF (INFODI.EQ.2) THEN
+          ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+2) = MAT(08)*ZR(LPESA)*ZR(LPESA+2)
+          ZR(LVEC+3) = MAT(15)*ZR(LPESA)*ZR(LPESA+3)
+          ENDIF
         ELSE IF (NOMTE.EQ.'MECA_DIS_T_L') THEN
+          IF (INFODI.EQ.1) THEN
           ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+2) = MAT(03)*ZR(LPESA)*ZR(LPESA+2)
           ZR(LVEC+3) = MAT(06)*ZR(LPESA)*ZR(LPESA+3)
           ZR(LVEC+4) = MAT(10)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+5) = MAT(15)*ZR(LPESA)*ZR(LPESA+2)
           ZR(LVEC+6) = MAT(21)*ZR(LPESA)*ZR(LPESA+3)
+          ELSEIF (INFODI.EQ.2) THEN
+          ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+2) = MAT(08)*ZR(LPESA)*ZR(LPESA+2)
+          ZR(LVEC+3) = MAT(15)*ZR(LPESA)*ZR(LPESA+3)
+          ZR(LVEC+4) = MAT(22)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+5) = MAT(29)*ZR(LPESA)*ZR(LPESA+2)
+          ZR(LVEC+6) = MAT(36)*ZR(LPESA)*ZR(LPESA+3)
+          ENDIF
         ELSE IF (NOMTE.EQ.'MECA_DIS_T_N') THEN
+          IF (INFODI.EQ.1) THEN
           ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+2) = MAT(03)*ZR(LPESA)*ZR(LPESA+2)
           ZR(LVEC+3) = MAT(06)*ZR(LPESA)*ZR(LPESA+3)
+          ELSEIF (INFODI.EQ.2) THEN
+          ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+2) = MAT(05)*ZR(LPESA)*ZR(LPESA+2)
+          ZR(LVEC+3) = MAT(09)*ZR(LPESA)*ZR(LPESA+3)
+          ENDIF
         ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_L') THEN
+          IF (INFODI.EQ.1) THEN
           ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+2) = MAT(03)*ZR(LPESA)*ZR(LPESA+2)
           ZR(LVEC+4) = MAT(10)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+5) = MAT(15)*ZR(LPESA)*ZR(LPESA+2)
+          ELSEIF (INFODI.EQ.2) THEN
+          ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+2) = MAT(08)*ZR(LPESA)*ZR(LPESA+2)
+          ZR(LVEC+4) = MAT(22)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+5) = MAT(29)*ZR(LPESA)*ZR(LPESA+2)
+          ENDIF
         ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_N') THEN
+          IF (INFODI.EQ.1) THEN
           ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+2) = MAT(03)*ZR(LPESA)*ZR(LPESA+2)
+          ELSEIF (INFODI.EQ.2) THEN
+          ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+2) = MAT(05)*ZR(LPESA)*ZR(LPESA+2)
+          ENDIF
         ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_L') THEN
+          IF (INFODI.EQ.1) THEN
           ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+2) = MAT(03)*ZR(LPESA)*ZR(LPESA+2)
           ZR(LVEC+3) = MAT(06)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+4) = MAT(10)*ZR(LPESA)*ZR(LPESA+2)
+          ELSEIF (INFODI.EQ.2) THEN
+          ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+2) = MAT(06)*ZR(LPESA)*ZR(LPESA+2)
+          ZR(LVEC+3) = MAT(11)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+4) = MAT(16)*ZR(LPESA)*ZR(LPESA+2)
+          ENDIF
         ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_N') THEN
+          IF (INFODI.EQ.1) THEN
           ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
           ZR(LVEC+2) = MAT(03)*ZR(LPESA)*ZR(LPESA+2)
+          ELSEIF (INFODI.EQ.2) THEN
+          ZR(LVEC+1) = MAT(01)*ZR(LPESA)*ZR(LPESA+1)
+          ZR(LVEC+2) = MAT(04)*ZR(LPESA)*ZR(LPESA+2)
+          ENDIF
         ELSE
           CH16 = OPTION
           CI16 = NOMTE

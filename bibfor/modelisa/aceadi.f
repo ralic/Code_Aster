@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,18 +49,24 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBCAR = 100 , NBVAL = 1000 , NRD = 2 )
-      INTEGER      JDC(3), JDV(3), NVALF,LVAL
+      INTEGER      JDC(3), JDV(3),  JDCNS(3), JDVNS(3), NVALF,LVAL
+      INTEGER      JDCINF,  JDVINF
       REAL*8       VAL(NBVAL), ETA
       CHARACTER*1  KMA(3)
       CHARACTER*6  KI
-      CHARACTER*8  K8B, NOMU, CAR(NBCAR)
+      CHARACTER*8  K8B, NOMU
+      CHARACTER*9  CAR(NBCAR)
       CHARACTER*16 SEC, REP, TOU, REPDIS(NRD), CONCEP, CMD, MCF, K16BID
       CHARACTER*19 CARTDK, CARTDM, CARTDA, CART(3), LIGMO, K19B
+      CHARACTER*19 CARTNK, CARTNM, CARTNA, CARTNS(3), CARTDI
+      CHARACTER*16 SYM, SYMDIS(NRD)
       CHARACTER*24 TMPNDM, TMPVDM, TMPNDA, TMPVDA, TMPNDK, TMPVDK
-      CHARACTER*24 TMPDIS, MLGGNO, MLGNNO
+      CHARACTER*24 TMPNNM,TMPVNM,TMPNNA,TMPVNA,TMPNNK,TMPVNK
+      CHARACTER*24 TMPDIS, MLGGNO, MLGNNO, TMCINF,TMVINF
       CHARACTER*24 MODNEM
       CHARACTER*1 K1BID
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
+      DATA SYMDIS  /'OUI             ','NON             '/
       DATA KMA     /'K','M','A'/
 C     ------------------------------------------------------------------
 C
@@ -116,6 +122,20 @@ C --- DIMENSION DU PROBLEME
       CALL WKVECT('&&TMPDISCRET','V V K8',LMAX,JDLS)
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
+C
+      CARTDI = NOMU//'.CARDINFO'
+      CALL ALCART('G',CARTDI,NOMA,'NEUT_R')
+      TMCINF = CARTDI//'.NCMP'
+      TMVINF = CARTDI//'.VALV'
+      CALL JEVEUO(TMCINF,'E',JDCINF)
+      CALL JEVEUO(TMVINF,'E',JDVINF)
+      CALL CODENT(1,'G',KI)
+      ZR (JDVINF+1-1)  = 0.D0
+      ZK8(JDCINF+1-1) = 'X'//KI
+      CALL NOCART(CARTDI,1,' ',' ',0,' ',0,' ',1)
+      IF (IXNW.NE.0) THEN
+         CALL NOCART(CARTDI,-1,' ',' ',0,' ',0,LIGMO,1)
+      ENDIF
       CARTDM = NOMU//'.CARDISCM'
       CARTDA = NOMU//'.CARDISCA'
       CARTDK = NOMU//'.CARDISCK'
@@ -128,7 +148,6 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       TMPVDA = CARTDA//'.VALV'
       TMPNDK = CARTDK//'.NCMP'
       TMPVDK = CARTDK//'.VALV'
-C
       CALL ALCART('G',CART(1),NOMA,'CADISK')
       CALL ALCART('G',CART(2),NOMA,'CADISM')
       CALL ALCART('G',CART(3),NOMA,'CADISA')
@@ -139,31 +158,75 @@ C
       CALL JEVEUO(TMPNDA,'E',JDC(3))
       CALL JEVEUO(TMPVDA,'E',JDV(3))
 C
+      CARTNM = NOMU//'.CARDNSCM'
+      CARTNA = NOMU//'.CARDNSCA'
+      CARTNK = NOMU//'.CARDNSCK'
+      CARTNS(1) = CARTNK
+      CARTNS(2) = CARTNM
+      CARTNS(3) = CARTNA
+      TMPNNM = CARTNM//'.NCMP'
+      TMPVNM = CARTNM//'.VALV'
+      TMPNNA = CARTNA//'.NCMP'
+      TMPVNA = CARTNA//'.VALV'
+      TMPNNK = CARTNK//'.NCMP'
+      TMPVNK = CARTNK//'.VALV'
+      CALL ALCART('G',CARTNS(1),NOMA,'CADNSK')
+      CALL ALCART('G',CARTNS(2),NOMA,'CADNSM')
+      CALL ALCART('G',CARTNS(3),NOMA,'CADNSA')
+      CALL JEVEUO(TMPNNK,'E',JDCNS(1))
+      CALL JEVEUO(TMPVNK,'E',JDVNS(1))
+      CALL JEVEUO(TMPNNM,'E',JDCNS(2))
+      CALL JEVEUO(TMPVNM,'E',JDVNS(2))
+      CALL JEVEUO(TMPNNA,'E',JDCNS(3))
+      CALL JEVEUO(TMPVNA,'E',JDVNS(3))
+C
 C --- AFFECTATION SYSTEMATIQUE DE VALEURS NULLES DANS LES CARTES
 C        CARTDK,CARTDM,CARTDA POUR TOUTES LES MAILLES MAILLAGE+TARDIVES
 C         AFIN DE POUVOIR CALCULER LES MATRICES K,M,A DANS TOUS LES CAS
-      DO 20 I = 1 , 3
-         DO 22 J = 1 , 78
-            CALL CODENT(J,'G',KI)
-            ZR(JDV(I)+J-1)  = 0.D0
-            ZK8(JDC(I)+J-1) = KMA(I)//KI
- 22      CONTINUE
-         ZK8(JDC(I)+78)  = 'REP'//KMA(I)//'    '
-         ZR (JDV(I)+78)  = 1.D0
-         IF (I.EQ.1) THEN
-            ZK8(JDC(I)+79)  = 'ETA     '
-            ZR (JDV(I)+79)  = 0.D0
-            CALL NOCART(CART(I),1,' ',' ',0,' ',0,' ',80)
-            IF (IXNW.NE.0) THEN
-               CALL NOCART(CART(I),-1,' ',' ',0,' ',0,LIGMO,80)
+         DO 20 I = 1 , 3
+            DO 22 J = 1 , 78
+               CALL CODENT(J,'G',KI)
+               ZR(JDV(I)+J-1)  = 0.D0
+               ZK8(JDC(I)+J-1) = KMA(I)//KI
+ 22         CONTINUE
+            ZK8(JDC(I)+78)  = 'REP'//KMA(I)//'    '
+            ZR (JDV(I)+78)  = 1.D0
+            IF (I.EQ.1) THEN
+               ZK8(JDC(I)+79)  = 'ETA     '
+               ZR (JDV(I)+79)  = 0.D0
+               CALL NOCART(CART(I),1,' ',' ',0,' ',0,' ',80)
+               IF (IXNW.NE.0) THEN
+                  CALL NOCART(CART(I),-1,' ',' ',0,' ',0,LIGMO,80)
+               ENDIF
+            ELSE
+               CALL NOCART(CART(I),1,' ',' ',0,' ',0,' ',79)
+               IF (IXNW.NE.0) THEN
+                  CALL NOCART(CART(I),-1,' ',' ',0,' ',0,LIGMO,79)
+               ENDIF
             ENDIF
-         ELSE
-            CALL NOCART(CART(I),1,' ',' ',0,' ',0,' ',79)
-            IF (IXNW.NE.0) THEN
-               CALL NOCART(CART(I),-1,' ',' ',0,' ',0,LIGMO,79)
+ 20      CONTINUE   
+         DO 21 I = 1 , 3
+            DO 23 J = 1 , 144
+               CALL CODENT(J,'G',KI)
+               ZR(JDVNS(I)+J-1)  = 0.D0
+               ZK8(JDCNS(I)+J-1) = KMA(I)//KI
+ 23         CONTINUE
+            ZK8(JDCNS(I)+144)  = 'REP'//KMA(I)//'    '
+            ZR (JDVNS(I)+144)  = 1.D0
+            IF (I.EQ.1) THEN
+               ZK8(JDCNS(I)+145)  = 'ETA     '
+               ZR (JDVNS(I)+145)  = 0.D0
+               CALL NOCART(CARTNS(I),1,' ',' ',0,' ',0,' ',146)
+               IF (IXNW.NE.0) THEN
+                  CALL NOCART(CARTNS(I),-1,' ',' ',0,' ',0,LIGMO,146)
+               ENDIF
+            ELSE
+               CALL NOCART(CARTNS(I),1,' ',' ',0,' ',0,' ',145)
+               IF (IXNW.NE.0) THEN
+                  CALL NOCART(CARTNS(I),-1,' ',' ',0,' ',0,LIGMO,145)
+               ENDIF
             ENDIF
-         ENDIF
- 20   CONTINUE
+ 21      CONTINUE
 C
 C --- BOUCLE SUR LES OCCURENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
@@ -202,6 +265,11 @@ C ET POUR LES PARA_SENSI
          DO 32 I = 1 , NRD
             IF (REP.EQ.REPDIS(I)) IREP = I
  32      CONTINUE
+         CALL GETVTX(MCF,'SYME'   ,IOC,1,1    ,SYM      ,NSYM)
+         IF (NSYM.EQ.0) SYM = SYMDIS(1)
+         DO 33 I = 1 , NRD
+            IF (SYM.EQ.SYMDIS(I)) ISYM = I
+ 33      CONTINUE
          IF (NCAR.GT.0) NCARAC = NCAR
          IF ( IVR(3) .EQ. 1 ) THEN
             WRITE(IFM,1000) REP,IOC
@@ -214,10 +282,17 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
          IF (NG.GT.0) THEN
            IV = 1
             DO 36 I = 1,NCARAC
-              CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,IVR,IV,KMA,
-     &                    NCMP,L,IFM)
+              CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,JDCNS,JDVNS,
+     &                    IVR,IV,KMA,NCMP,L,JDCINF,JDVINF,ISYM,IFM)
                DO 38 II = 1 , NG
-              CALL NOCART(CART(L),2,ZK8(JDLS+II-1),' ',0,' ',0,' ',NCMP)
+               CALL NOCART(CARTDI,2,ZK8(JDLS+II-1),' ',0,' ',0,' ',1)
+               IF (ISYM .EQ. 2) THEN
+                  CALL NOCART(CARTNS(L),2,ZK8(JDLS+II-1),' ',0,' ',0,
+     &                           ' ',NCMP)
+               ELSE
+                  CALL NOCART(CART(L),2,ZK8(JDLS+II-1),' ',0,' ',0,
+     &                           ' ',NCMP)
+               END IF
  38            CONTINUE
  36         CONTINUE
          ENDIF
@@ -226,9 +301,16 @@ C ---   "MAILLE" = TOUTES LES MAILLES  DE LA LISTE DE MAILLES
          IF (NM.GT.0) THEN
             IV = 1
             DO 40 I = 1,NCARAC
-              CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,IVR,IV,KMA,
-     &                    NCMP,L,IFM)
-               CALL NOCART(CART(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',NCMP)
+              CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,JDCNS,JDVNS,
+     &                    IVR,IV,KMA,NCMP,L,JDCINF,JDVINF,ISYM,IFM)
+              CALL NOCART(CARTDI,3,' ','NOM',NM,ZK8(JDLS),0,' ',1)
+              IF (ISYM .EQ. 2) THEN
+              CALL NOCART(CARTNS(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',
+     &                       NCMP)
+              ELSE
+              CALL NOCART(CART(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',
+     &                       NCMP)
+              END IF
  40         CONTINUE
          ENDIF
 C
@@ -246,10 +328,18 @@ C                                                  DE GROUPES DE NOEUDS
                   IF (KK.GT.0) THEN
                      IV = 1
                      DO 44 II = 1,NCARAC
-                        CALL AFFDIS(NDIM,IREP,ETA,CAR(II),VAL,JDC,JDV,
-     &                              IVR,IV,KMA,NCMP,L,IFM)
-                       CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
-     &                                                       LIGMO,NCMP)
+                     CALL AFFDIS(NDIM,IREP,ETA,CAR(II),VAL,JDC,JDV,
+     &                           JDCNS,JDVNS,IVR,IV,KMA,NCMP,L,
+     &                           JDCINF,JDVINF,ISYM,IFM)
+                     CALL NOCART(CARTDI,-3,' ','NUM',KK,' ',ZI(JDDI),
+     &                           LIGMO,1)
+                    IF (ISYM .EQ. 2) THEN
+                     CALL NOCART(CARTNS(L),-3,' ','NUM',KK,' ',
+     &                           ZI(JDDI),LIGMO,NCMP)
+                    ELSE
+                     CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+     &                           LIGMO,NCMP)
+                    END IF
  44                  CONTINUE
                   ENDIF
  42            CONTINUE
@@ -261,10 +351,18 @@ C ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
                IF (KK.GT.0) THEN
                   IV = 1
                   DO 46 I = 1,NCARAC
-                     CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,
-     &                           IVR,IV,KMA,NCMP,L,IFM)
-                     CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
-     &                                                       LIGMO,NCMP)
+                  CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,JDCNS,
+     &                        JDVNS,IVR,IV,KMA,NCMP,L,
+     &                           JDCINF,JDVINF,ISYM,IFM)
+                  CALL NOCART(CARTDI,-3,' ','NUM',KK,' ',ZI(JDDI),
+     &                        LIGMO,1)
+                 IF (ISYM .EQ. 2) THEN
+                  CALL NOCART(CARTNS(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+     &                        LIGMO,NCMP)
+                 ELSE
+                  CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+     &                        LIGMO,NCMP)
+                 END IF
  46               CONTINUE
                ENDIF
             ENDIF
@@ -282,6 +380,14 @@ C
          CALL JEDETR(TMPVDM)
          CALL JEDETR(TMPNDA)
          CALL JEDETR(TMPVDA)
+         CALL JEDETR(TMPNNK)
+         CALL JEDETR(TMPVNK)
+         CALL JEDETR(TMPNNM)
+         CALL JEDETR(TMPVNM)
+         CALL JEDETR(TMPNNA)
+         CALL JEDETR(TMPVNA)
+         CALL JEDETR(TMCINF)
+         CALL JEDETR(TMVINF)
       ENDIF
 C
       CALL JEDEMA()

@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,13 +51,22 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       REAL*8 ALPHA,BETA,GAMMA
-      REAL*8 UL(12),PGL(3,3),KLC(12,12),MAT(78)
-      CHARACTER*16 CH16,CI16
+      REAL*8 UL(12),PGL(3,3),KLC(12,12),MAT(144)
+      INTEGER INFOD,INFODI
+      CHARACTER*16 CH16,CI16,NOMCMD,TYPRES
+      CHARACTER*19 NOMFON
       CHARACTER*24 VALK(2)
 
 C     ------------------------------------------------------------------
 
+      INFODI = 1
+      CALL GETRES(NOMFON,TYPRES,NOMCMD)
+      IF (NOMCMD.EQ.'POST_ELEM') THEN
+         CALL JEVECH('PCINFDI','L',INFOD)
+         INFODI = NINT(ZR(INFOD))
+      ENDIF
       IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 78
         NNO = 2
         NC = 6
@@ -65,7 +74,17 @@ C     ------------------------------------------------------------------
         ITYPE = 41
         KANL = 0
         NDIM = 3
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 144
+        NNO = 2
+        NC = 6
+        NEQ = 12
+        ITYPE = 43
+        KANL = 0
+        NDIM = 3
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 21
         NNO = 1
         NC = 6
@@ -73,7 +92,17 @@ C     ------------------------------------------------------------------
         ITYPE = 21
         KANL = 0
         NDIM = 3
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 36
+        NNO = 1
+        NC = 6
+        NEQ = 6
+        ITYPE = 23
+        KANL = 0
+        NDIM = 3
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_DIS_T_L') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 21
         NNO = 2
         NC = 3
@@ -81,7 +110,17 @@ C     ------------------------------------------------------------------
         ITYPE = 40
         KANL = 0
         NDIM = 3
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 36
+        NNO = 2
+        NC = 3
+        NEQ = 6
+        ITYPE = 42
+        KANL = 0
+        NDIM = 3
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_DIS_T_N') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 6
         NNO = 1
         NC = 3
@@ -89,7 +128,17 @@ C     ------------------------------------------------------------------
         ITYPE = 20
         KANL = 0
         NDIM = 3
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 9
+        NNO = 1
+        NC = 3
+        NEQ = 3
+        ITYPE = 22
+        KANL = 0
+        NDIM = 3
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_L') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 21
         NNO = 2
         NC = 3
@@ -97,7 +146,17 @@ C     ------------------------------------------------------------------
         ITYPE = 41
         KANL = 0
         NDIM = 2
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 36
+        NNO = 2
+        NC = 3
+        NEQ = 6
+        ITYPE = 43
+        KANL = 0
+        NDIM = 2
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_N') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 6
         NNO = 1
         NC = 3
@@ -105,7 +164,17 @@ C     ------------------------------------------------------------------
         ITYPE = 21
         KANL = 0
         NDIM = 2
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 9
+        NNO = 1
+        NC = 3
+        NEQ = 3
+        ITYPE = 23
+        KANL = 0
+        NDIM = 2
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_L') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 10
         NNO = 2
         NC = 2
@@ -113,7 +182,17 @@ C     ------------------------------------------------------------------
         ITYPE = 40
         KANL = 0
         NDIM = 2
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 16
+        NNO = 2
+        NC = 2
+        NEQ = 4
+        ITYPE = 42
+        KANL = 0
+        NDIM = 2
+        ENDIF
       ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_N') THEN
+        IF (INFODI.EQ.1) THEN
         NBTERM = 3
         NNO = 1
         NC = 2
@@ -121,6 +200,15 @@ C     ------------------------------------------------------------------
         ITYPE = 20
         KANL = 0
         NDIM = 2
+        ELSEIF (INFODI.EQ.2) THEN
+        NBTERM = 4
+        NNO = 1
+        NC = 2
+        NEQ = 2
+        ITYPE = 22
+        KANL = 0
+        NDIM = 2
+        ENDIF
       ELSE
         CH16 = OPTION
         CI16 = NOMTE
@@ -145,7 +233,11 @@ C     --- VECTEUR DEPLACEMENT LOCAL  UL = PGL * UG  ---
         CALL JEVECH('PENERDR','E',JENDE)
 
 C        --- MATRICE DE RIGIDITE ---
-        CALL JEVECH('PCADISK','L',LDIS)
+        IF (INFODI.EQ.1) THEN
+           CALL JEVECH('PCADISK','L',LDIS)
+        ELSEIF (INFODI.EQ.2) THEN
+           CALL JEVECH('PCADNSK','L',LDIS)
+        ENDIF
 
 C        --- GLOBAL VERS LOCAL ? ---
 C        --- IREP EQ 1 : MATRICE EN REPERE GLOBAL
@@ -153,9 +245,17 @@ C        --- IREP NE 1 : MATRICE EN REPERE LOCAL
         IREP = NINT(ZR(LDIS+NBTERM))
         IF (IREP.EQ.1) THEN
           IF (NDIM.EQ.3) THEN
-            CALL UTPSGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            IF (INFODI.EQ.1) THEN
+              CALL UTPSGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            ELSEIF (INFODI.EQ.2) THEN
+              CALL UTPPGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            ENDIF
           ELSE IF (NDIM.EQ.2) THEN
-            CALL UT2MGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            IF (INFODI.EQ.1) THEN
+              CALL UT2MGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            ELSEIF (INFODI.EQ.2) THEN
+              CALL UT2PGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            ENDIF
           END IF
         ELSE
           DO 10 I = 1,NBTERM
@@ -164,7 +264,11 @@ C        --- IREP NE 1 : MATRICE EN REPERE LOCAL
         END IF
 
 C        ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
-        CALL VECMA(MAT,NBTERM,KLC,NEQ)
+        IF (INFODI.EQ.1) THEN
+          CALL VECMA(MAT,NBTERM,KLC,NEQ)
+        ELSEIF (INFODI.EQ.2) THEN
+          CALL VECMAP(MAT,NBTERM,KLC,NEQ)
+        ENDIF
 
 C        --- ENERGIE DE DEFORMATION ---
         IF = 1
@@ -174,7 +278,11 @@ C        --- ENERGIE DE DEFORMATION ---
         CALL JEVECH('PENERCR','E',JENDE)
 
 C        --- MATRICE DE MASSE ---
-        CALL JEVECH('PCADISM','L',LDIS)
+        IF (INFODI.EQ.1) THEN
+           CALL JEVECH('PCADISM','L',LDIS)
+        ELSEIF (INFODI.EQ.2) THEN
+           CALL JEVECH('PCADNSM','L',LDIS)
+        ENDIF
 
 C        --- GLOBAL VERS LOCAL ? ---
 C        --- IREP EQ 1 : MATRICE EN REPERE GLOBAL
@@ -182,9 +290,17 @@ C        --- IREP NE 1 : MATRICE EN REPERE LOCAL
         IREP = NINT(ZR(LDIS+NBTERM))
         IF (IREP.EQ.1) THEN
           IF (NDIM.EQ.3) THEN
-            CALL UTPSGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            IF (INFODI.EQ.1) THEN
+              CALL UTPSGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            ELSEIF (INFODI.EQ.2) THEN
+              CALL UTPPGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            ENDIF
           ELSE IF (NDIM.EQ.2) THEN
-            CALL UT2MGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            IF (INFODI.EQ.1) THEN
+              CALL UT2MGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            ELSEIF (INFODI.EQ.2) THEN
+              CALL UT2PGL(NNO,NC,PGL,ZR(LDIS),MAT)
+            ENDIF
           END IF
         ELSE
           DO 20 I = 1,NBTERM
@@ -193,7 +309,11 @@ C        --- IREP NE 1 : MATRICE EN REPERE LOCAL
         END IF
 
 C        ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
-        CALL VECMA(MAT,NBTERM,KLC,NEQ)
+        IF (INFODI.EQ.1) THEN
+          CALL VECMA(MAT,NBTERM,KLC,NEQ)
+        ELSEIF (INFODI.EQ.2) THEN
+          CALL VECMAP(MAT,NBTERM,KLC,NEQ)
+        ENDIF
 
 C        --- FREQUENCE ---
         CALL JEVECH('PFREQR','L',JFREQ)

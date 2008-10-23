@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -238,7 +238,7 @@ C     -----------------------------------
           CALL JEVEUO(TABLE//'.TBNP','L',IAD)
           NBLG=ZI(IAD+1)
           NBPA=ZI(IAD)
-          CALL ASSERT(NBPA.EQ.3)
+          CALL ASSERT(NBPA.GE.3)
           CALL JEVEUO(TABLE//'.TBLP','L',IAD)
           CALL JELIRA(TABLE//'.TBLP','LONMAX',LONG,K1BID)
           NBLP=LONG/NBPA

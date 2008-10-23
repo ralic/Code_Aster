@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,15 +49,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBCAR = 100 , NBVAL = 12 , NRD = 2 )
-      INTEGER      JDC(3), JDV(3),IBID,NIV,IR
+      INTEGER      JDC(3), JDV(3), JDCNS(3), JDVNS(3),IBID,NIV,IR
+      INTEGER      JDCINF,  JDVINF
       REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3)
       CHARACTER*1  KMA(3)
-      CHARACTER*8  K8B, NOMU, CAR(NBCAR)
+      CHARACTER*6  KI
+      CHARACTER*8  K8B, NOMU
+      CHARACTER*9  CAR(NBCAR)
       CHARACTER*16 REP, REPDIS(NRD), CONCEP, CMD
       CHARACTER*19 CARTDK, CARTDM, CARTDA, CART(3), LIGMO
+      CHARACTER*19 CARTNK, CARTNM, CARTNA, CARTNS(3), CARTDI
       CHARACTER*19 VREPXV, VREPXN
       CHARACTER*24 TMPNDM, TMPVDM, TMPNDA, TMPVDA, TMPNDK, TMPVDK
-      CHARACTER*24 TMPDIS, MLGNNO, MLGNMA
+      CHARACTER*24 TMPNNM,TMPVNM,TMPNNA,TMPVNA,TMPNNK,TMPVNK
+      CHARACTER*24 TMPDIS, MLGNNO, MLGNMA, TMCINF,TMVINF
       CHARACTER*24 MODNEM
       CHARACTER*1  K1BID
       CHARACTER*8  NOMNOE, NOGP, NOMMAI
@@ -114,6 +119,18 @@ C      IF ( K8B(1:3) .EQ. 'OUI' )  NDIM = 2
 
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
+      CARTDI = NOMU//'.CARDINFO'
+      TMCINF = CARTDI//'.NCMP'
+      TMVINF = CARTDI//'.VALV'
+      CALL JEEXIN(TMCINF,IXCI)
+      IF (IXCI.NE.0) GOTO 10
+      CALL ALCART('G',CARTDI,NOMA,'NEUT_R')
+ 10   CONTINUE
+      CALL JEVEUO(TMCINF,'E',JDCINF)
+      CALL JEVEUO(TMVINF,'E',JDVINF)
+      CALL CODENT(1,'G',KI)
+      ZR (JDVINF+1-1)  = 0.D0
+      ZK8(JDCINF+1-1) = 'X'//KI
       CARTDM = NOMU//'.CARDISCM'
       CARTDA = NOMU//'.CARDISCA'
       CARTDK = NOMU//'.CARDISCK'
@@ -140,6 +157,31 @@ C
       CALL JEVEUO(TMPVDM,'E',JDV(2))
       CALL JEVEUO(TMPNDA,'E',JDC(3))
       CALL JEVEUO(TMPVDA,'E',JDV(3))
+C      
+      CARTNM = NOMU//'.CARDNSCM'
+      CARTNA = NOMU//'.CARDNSCA'
+      CARTNK = NOMU//'.CARDNSCK'
+      CARTNS(1) = CARTNK
+      CARTNS(2) = CARTNM
+      CARTNS(3) = CARTNA
+      TMPNNM = CARTNM//'.NCMP'
+      TMPVNM = CARTNM//'.VALV'
+      TMPNNA = CARTNA//'.NCMP'
+      TMPVNA = CARTNA//'.VALV'
+      TMPNNK = CARTNK//'.NCMP'
+      TMPVNK = CARTNK//'.VALV'
+      CALL JEEXIN(TMPNNM,IXCA)
+      IF (IXCA.NE.0) GOTO 12
+      CALL ALCART('G',CARTNS(1),NOMA,'CADNSK')
+      CALL ALCART('G',CARTNS(2),NOMA,'CADNSM')
+      CALL ALCART('G',CARTNS(3),NOMA,'CADNSA')
+ 12   CONTINUE
+      CALL JEVEUO(TMPNNK,'E',JDCNS(1))
+      CALL JEVEUO(TMPVNK,'E',JDVNS(1))
+      CALL JEVEUO(TMPNNM,'E',JDCNS(2))
+      CALL JEVEUO(TMPVNM,'E',JDVNS(2))
+      CALL JEVEUO(TMPNNA,'E',JDCNS(3))
+      CALL JEVEUO(TMPVNA,'E',JDVNS(3))
 
 C     RECUPERATION DU NIVEAU D'IMPRESSION
 C     -----------------------------------
@@ -188,28 +230,28 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
                DO 131 J = 1,6
                   VALE(J) = VAL(II+J)
 131            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
             ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_N') THEN
                DO 132 J = 1,3
                   VALE(J) = VAL(II+J)
 132            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
             ELSEIF (CAR(NC)(1:8).EQ.'K_TR_D_L') THEN
                DO 133 J = 1,6
                   VALE(J) = VAL(II+J)
 133            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
             ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_L') THEN
                DO 134 J = 1,3
                   VALE(J) = VAL(II+J)
 134            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
 
@@ -217,28 +259,28 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
                DO 135 J = 1,6
                   VALE(J) = VAL(II+J)
 135            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
             ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_N') THEN
                DO 136 J = 1,3
                   VALE(J) = VAL(II+J)
 136            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
             ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_L') THEN
                DO 137 J = 1,6
                   VALE(J) = VAL(II+J)
 137            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
             ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_L') THEN
                DO 138 J = 1,3
                   VALE(J) = VAL(II+J)
 138            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
             ELSE
@@ -393,7 +435,8 @@ C                   PREPARATION DE L'ATTRIBUT PYTHON
                   ENDIF
 C
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
-     &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
+     &                        JDC,JDV,JDCNS,JDVNS,IVR,IV,KMA,NCMP,L,
+     &                        JDCINF,JDVINF,ISYM,IFM)
                   CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
  28            CONTINUE
             ELSE
@@ -403,7 +446,8 @@ C
                   CALL CRLINU('NOM', MLGNNO, 1, IBID, ZK8(JD),
      &                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
-     &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
+     &                        JDC,JDV,JDCNS,JDVNS,IVR,IV,KMA,NCMP,L,
+     &                        JDCINF,JDVINF,ISYM,IFM)
                   CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      &                        LIGMO,NCMP)
  36            CONTINUE

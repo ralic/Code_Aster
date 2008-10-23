@@ -1,6 +1,6 @@
       SUBROUTINE MECARA(CARA,EXICAR,CHCARA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C
 C     ARGUMENTS:
 C     ----------
       CHARACTER*(*) CARA
-      CHARACTER*(*) CHCARA(15)
+      CHARACTER*(*) CHCARA(18)
       LOGICAL EXICAR
 C ----------------------------------------------------------------------
 C
@@ -79,9 +79,13 @@ C
          CHCARA(12)= CARA(1:8)//'.CARMASSI'
          CHCARA(13)= CARA(1:8)//'.CARPOUFL'
          CHCARA(14)= CARA(1:8)//'.CVENTCXF'
+         CHCARA(15)= CARA(1:8)//'.CARDNSCK'
+         CHCARA(16)= CARA(1:8)//'.CARDNSCM'
+         CHCARA(17)= CARA(1:8)//'.CARDNSCA'
+         CHCARA(18)= CARA(1:8)//'.CARDINFO'
          EXICAR = .TRUE.
       ELSE
-         DO 1 I = 1,15
+         DO 1 I = 1,18
          CHCARA(I) = ' '
     1    CONTINUE
       ENDIF

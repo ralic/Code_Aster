@@ -4,7 +4,7 @@
       REAL*8              X(*),MAT(N,N),EP(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ELEMENTS  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,6 +131,13 @@ C-DEL    IFORM = 10
             EP(1+I) = X(I) * MAT(I,I) * X(I) / DEUX
   203    CONTINUE
 C
+      ELSE IF ( ITYPE .EQ. 22 .OR. ITYPE.EQ.23 ) THEN
+C        --- ELEMENT DISCRET TYPE NODALE ..._N_NS ---
+         NN    = N
+         DO 205 I = 1,N
+            EP(1+I) = X(I) * MAT(I,I) * X(I) / DEUX
+  205    CONTINUE
+C
       ELSE IF ( ITYPE .EQ. 40 .OR. ITYPE.EQ.41 ) THEN
 C        --- ELEMENT DISCRET TYPE LIAISON ..._L ---
 C-DEL    IFORM = 10
@@ -146,6 +153,16 @@ C-DEL    IFORM = 10
      +                 + 2 * X(I) * MAT(I,I+NN) * X(I+NN)
      +                 + X(I+NN) * MAT(I+NN,I+NN) * X(I+NN) ) / DEUX
   403    CONTINUE
+C
+      ELSE IF ( ITYPE .EQ. 42 .OR. ITYPE.EQ.43 ) THEN
+C        --- ELEMENT DISCRET TYPE LIAISON ..._L_NS ---
+         NN    = N / 2
+         DO 405 I = 1,NN
+            EP(1+I) = ( X(I) * MAT(I,I) * X(I)
+     +                 + X(I) * MAT(I,I+NN) * X(I+NN)
+     +                 + X(I+NN) * MAT(I+NN,I) * X(I)
+     +                 + X(I+NN) * MAT(I+NN,I+NN) * X(I+NN) ) / DEUX
+  405    CONTINUE
       ENDIF
 C
 C     --- POURCENTAGE ----

@@ -1,13 +1,14 @@
-      SUBROUTINE AFFDIS(NDIM,IREP,ETA,CAR,VAL,JDC,JDV,IVR,IV,KMA,
-     +                  NCMP,NTP,IFM)
+      SUBROUTINE AFFDIS(NDIM,IREP,ETA,CAR,VAL,JDC,JDV,JDCNS,JDVNS,
+     +                  IVR,IV,KMA,NCMP,NTP,JDCINF,JDVINF,ISYM,IFM)
       IMPLICIT   NONE
       INTEGER           NDIM,IREP,JDV(3),JDC(3),IVR(*),IV,NCMP,NTP,IFM
+      INTEGER           JDVNS(3),JDCNS(3),ISYM,JDCINF,JDVINF
       REAL*8                 ETA,    VAL(*)
-      CHARACTER*1                                       KMA(3)
-      CHARACTER*8                CAR
+      CHARACTER*1             KMA(3)
+      CHARACTER*9                CAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/01/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,9 +52,11 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       IF (NDIM.EQ.2) THEN
-         CALL AFDI2D(IREP,ETA,CAR,VAL,JDC,JDV,IVR,IV,KMA,NCMP,NTP,IFM)
+         CALL AFDI2D(IREP,ETA,CAR,VAL,JDC,JDV,JDCNS,JDVNS,IVR,IV,KMA,
+     &               NCMP,NTP,JDCINF,JDVINF,ISYM,IFM)
       ELSEIF (NDIM.EQ.3) THEN
-         CALL AFDI3D(IREP,ETA,CAR,VAL,JDC,JDV,IVR,IV,KMA,NCMP,NTP,IFM)
+         CALL AFDI3D(IREP,ETA,CAR,VAL,JDC,JDV,JDCNS,JDVNS,IVR,IV,KMA,
+     &               NCMP,NTP,JDCINF,JDVINF,ISYM,IFM)
       ENDIF
 C
       END

@@ -6,7 +6,7 @@
       CHARACTER*(*) MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8 K8B,CARA,LPAIN(3),LPAOUT(1)
       CHARACTER*16 OPTION
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(3),LCHOUT(1)
-      CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM
+      CHARACTER*24 CHGEOM,CHCARA(18),CHTEMP,CHTREF,CHHARM
       LOGICAL LFONC
 
       CALL JEMARQ()
