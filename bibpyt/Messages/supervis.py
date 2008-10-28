@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,6 +130,17 @@ cata_msg={
 
 21: _("""
   Erreur(s) fatale(s) lors de la lecture des catalogues
+"""),
+
+# on ne veut pas émettre d'alarme mais que le message se voit, donc on fait la mise en forme ici !
+22 : _("""
+   !--------------------------------------------------------------------------------!
+   !                                                                                !
+   ! Le mot-clé facteur CODE dans DEBUT/POURSUITE est réservé aux cas-tests.        !
+   ! Il ne faut pas l'utiliser dans les études car il modifie certaines valeurs par !
+   ! défaut des commandes DEBUT/POURSUITE, comme le comportement en cas d'erreur.   !
+   !                                                                                !
+   !--------------------------------------------------------------------------------!
 """),
 
 23: _("""

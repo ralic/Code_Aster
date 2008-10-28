@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xfem2 Messages  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,9 +22,7 @@ def _(x) : return x
 
 cata_msg = {
 
-1 : _("""
-     Point : %(r1)f %(r2)f
-  """),
+
 
 2 : _("""
   -> Seules les modélisations C_PLAN/D_PLAN sont disponibles pour XFEM.
@@ -39,11 +37,6 @@ cata_msg = {
      Veuillez revoir la mise en données de AFFE_CHAR_MECA/CONTACT.
 """),
 
-5 : _("""
-  -> Le vecteur TAU1 correspondant à la première direction du frottement dans
-     l'élément XFEM est nul. Ceci signifie que les gradients des level sets
-     sont surement colinéaires en ce point.
-"""),
 
 6 : _("""
      Multifissuration interdite avec l'opérateur PROPA_XFEM.
@@ -85,9 +78,6 @@ cata_msg = {
      AFFE_CHAR_MECA/CONTACT_XFEM un modèle XFEM.
 """),
 
-13 : _("""
-     Point : %(r1)f %(r2)f %(r3)f
-  """),
 
 14 : _("""
   -> La discrétisation du fond de fissure est grossière par rapport à la 

@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -556,7 +556,7 @@ C     SUPPLEMENTAIRE "DE CONTRAINTES AUX NOEUDS PAR SOUS ELEMENTS"
           CALL EXISD('CHAMP_GD',LCHOUT(2),IRET)
           IF (IRET.EQ.0) THEN
             CODRET = 1
-            CALL U2MESK('F','CALCULEL6_79',1,OPTIO2)
+            CALL U2MESK('A','CALCULEL6_79',1,OPTIO2)
           ENDIF 
         END IF        
 C     MENAGE :

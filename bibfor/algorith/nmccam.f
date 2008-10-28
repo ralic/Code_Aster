@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C
       REAL*8      CT,V0,SEUIL,SEUILB
       REAL*8      XINF,XSUP,RBID
       REAL*8      DIFF,DIFF2
-      REAL*8      ZERO,UN,DEUX,TROIS,SIX,UNSDE,TOL
+      REAL*8      ZERO,UN,DEUX,TROIS,SIX,UNSDE,TOL,PTIT,R8MIEM
       REAL*8      VALM,VALP
       REAL*8      XB0, XB1, XB, FXB0, FXB1, FXB
       INTEGER     NDIMSI,SIGNF,SIGNFI 
@@ -131,9 +131,10 @@ C     ----------------------
 C
       BL2 = '  '
       FB2 = 'F '
+      PTIT = R8MIEM()
 C
-C     -- 2 RECUPERATION DES CARACTERISTIQUES
-C     ---------------------------------------
+C     -- 2 RECUPERATION DES CARACTERISTIQUES MATERIAUX
+C     -------------------------------------------------
       NOMRES(1)='ALPHA'
       NOMRES(2)='MU'
       NOMRES(3)='PORO'
@@ -270,7 +271,6 @@ C     -------------------------------------------------------------
            GO TO 30
          ENDIF
       SIMOEL = SIGMMO*EXP(XK0*DEPSMO)+KCAM/XK0*(EXP(XK0*DEPSMO)-UN)
-
 C ---- INITIALISATION A T=0
       IF (PCRM(1).EQ. 0.D0)  THEN
 
@@ -332,18 +332,51 @@ C      -- TRAITEMENT DE L'ELASTICITE
            ENDIF
 
         ELSE
-
 C     -- PLASTIFICATION : CALCUL DE LA DEFORMATION
 C     -- VOLUMIQUE PLASTIQUE : DEPPMO
          PCRP(2) = 1.D0
-
-         
+         SEUIL = M**2*(PCRM(1)-PTRAC)**2
+        
          XINF = 0.D0
-         XSUP = 1.D0/(XK+XK0)*LOG((SIMOEL-PTRAC)/PCRM(1))
+C     -- RECHERCHE DE LA BORNE SUP
+
+         IF (ABS((SIMOEL - PCRM(1) - PTRAC)/SEUIL).LT. PTIT) THEN
+           V0=0.D0
+           GOTO 100
+         ENDIF
+         
+         IF (ABS(XK0*SIMOEL + KCAM + XK*PCRM(1)).LT. PTIT) THEN
+
+           IF ((-DEUX*(SIMOEL-PCRM(1)-PTRAC)/
+     &           (XK0*SIMOEL+KCAM-XK*PTRAC)).LT.ZERO) THEN
+
+              XSUP = 1.D0/(XK+XK0)*LOG(ABS(SIMOEL-PTRAC)/PCRM(1))
+
+           ELSE
+C       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 2    
+
+             IF ((SIMOEL-PTRAC).GT.PCRM(1))THEN
+
+              XSUP = SQRT((-DEUX*(SIMOEL-PCRM(1)-PTRAC)/
+     &           (XK0*SIMOEL+KCAM-XK*PTRAC)))
+
+             ELSE
+             
+              XSUP = -SQRT((-DEUX*(SIMOEL-PCRM(1)-PTRAC)/
+     &           (XK0*SIMOEL+KCAM-XK*PTRAC)))
+             ENDIF            
+
+          ENDIF
+        ELSE
+C       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 1  
+              XSUP = (SIMOEL - PCRM(1) - PTRAC)/
+     &          (XK0*SIMOEL + KCAM + XK*PCRM(1))
+              
+        ENDIF
 
 C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
          V0 = XINF
-         SEUIL = M**2*(PCRM(1)-PTRAC)**2
+         
 
          IF (  ((-XK0*V0) .GT. EPXMAX) .OR.
      &         ((XK*V0)   .GT. EPXMAX) ) THEN
@@ -368,6 +401,7 @@ C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
            F4 = (1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)
            
            F =SIELEQ**2+M**2*F4**2*F1*F2
+
 
            F1P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
            F2P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)

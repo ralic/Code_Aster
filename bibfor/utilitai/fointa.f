@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER      NPAR(2), INDFCT, JPRO, JPAR, LPARA, NBVN, NBPARA, I
-      INTEGER      NUPAR, NBPT, JVAL, INUME, IER
+      INTEGER      NUPAR, NBPT, JVAL, INUME, IER, IRET
       REAL*8       TAB(4), RPAR, RVAR, EPSI, R8PREM, R8VIDE, VALR(4)
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
       CHARACTER*1  COLI
@@ -97,7 +97,10 @@ C
       ELSEIF (ZK24(JPRO).EQ.'INTERPRE') THEN
 C             ------------------------
          NOMF = ZK24(JPRO+5)
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU,IRET)
+         IF (IRET.GT.0) THEN
+            CALL U2MESK('F', 'FONCT0_9',1,NOMF)
+         ENDIF
          GOTO 9999
 C
 C --- AUTRES TYPES DE FONCTION

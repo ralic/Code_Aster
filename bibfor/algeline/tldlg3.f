@@ -2,7 +2,7 @@
      &                  NDECI,ISINGU,NPVNEG,IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER IEQ3,ISINGU,ISCHC,IEQ,NDECI,JDIGS,NPIVOT
       INTEGER NDECI1,NDECI2,IEQ4,NZERO,VALI(2)
       REAL*8 EPS,DMAX,DMIN,D1,R8MAEM
-
+      LOGICAL LXFEM
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       NOM = ZI(LMAT+1)
@@ -283,14 +283,24 @@ C     ----------------------------------------------
       ELSE
         CALL RGNDAS('NUME_DDL',NU,ISINGU,NOMNO,NOMCMP,TARDIF,LIGREL,
      &              INFOBL)
-          VALK(1)=NOMNO
-          VALK(2)=NOMCMP
-          VALK(3)=LIGREL
-          VALK(4)=INFOBL
+        VALK(1)=NOMNO
+        VALK(2)=NOMCMP
+        VALK(3)=LIGREL
+        VALK(4)=INFOBL
+
+        IF (NOMCMP(1:2).EQ.'H1') THEN
+          LXFEM = .TRUE.
+        ELSE
+          LXFEM = .FALSE.
+        ENDIF
 
         IF (TARDIF(1:4).EQ.'    ') THEN
           IF (IRET.EQ.1) THEN
-            CALL U2MESG(CODMES,'FACTOR_20',4,VALK,2,VALI,0,0.D0)
+            IF (.NOT.LXFEM) THEN
+              CALL U2MESG(CODMES,'FACTOR_20',4,VALK,2,VALI,0,0.D0)
+            ELSE
+              CALL U2MESG(CODMES,'FACTOR_22',4,VALK,2,VALI,0,0.D0)
+            ENDIF
           ELSE IF (IRET.EQ.2) THEN
             CALL U2MESG(CODMES,'FACTOR_21',4,VALK,1,VALI,0,0.D0)
           ENDIF

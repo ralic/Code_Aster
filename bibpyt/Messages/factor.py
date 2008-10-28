@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF factor Messages  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,6 +66,28 @@ Matrice non factorisable :
   pour le noeud %(k1)s et la composante %(k2)s
 """),
 
+#-----------------------------------------------------------------------------------------------
+22: _("""
+  -> Matrice non factorisable :
+     Le pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
+     la composante %(k2)s.
+     Pour information, le nombre de décimales perdues est de %(i2)d.
+
+  -> Conseil & Risque :
+     Il s'agit peut etre d'un mouvement de corps rigide mal bloqué.
+     Vérifiez les conditions aux limites.
+     Si vous faites du contact, il ne faut pas que la
+     structure ne "tienne" que par le contact.
+     
+     il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
+     très près d'un noeud.
+     Si le nombre de décimal n'est pas trop grand (maxi 10 décimales)
+     vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
+     mot-clé NPREC dans STAT_NON_LINE/SOLVEUR.
+     
+     Sinon, contactez l'équipe de développement.
+     
+"""),
 
 #-----------------------------------------------------------------------------------------------
 30: _("""

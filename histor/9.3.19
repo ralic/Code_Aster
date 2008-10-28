@@ -1,0 +1,1226 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 27/10/2008 - 16:51:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012687 DU 2008-10-22 09:36:53
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Erreur dans le tri des Tables
+FONCTIONNALITE
+   On ne pouvait pas trier les tables contenant des cellules vides (non initialisées à None).
+   
+   C'est corrigé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012670 DU 2008-10-20 12:20:22
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.16, le cas-test sdls111a s?arrete en ERREUR_<F> sur Rocks.
+FONCTIONNALITE
+   Test ok en 9.3.17.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls111a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012724 DU 2008-10-27 06:47:55
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Remontee d'erreur en cas d'arret du calcul
+FONCTIONNALITE
+   Depuis que toutes les erreurs sont récupérées (exception aster.error), on n'a plus la
+   remontée d'erreur puisqu'il n'y a plus d'abort. Ce qui est dommage car la remontée peut à
+   elle seule donner une indication au développeur sans avoir à relancer une grosse étude.
+   
+   Pour les versions compilées avec Intel, on peut quand même afficher la remontée d'erreur
+   (routine tracebackqq).
+   On active donc cette possibilité pour toutes les erreurs F et S.
+   Seules les exceptions particularisées (NonConvergenceError, ArretCpuError...) y échappent.
+   
+   Rappel : pour passer par abort en cas d'erreur 'F', il faut avoir mis
+   DEBUT(ERREUR=_F(ERREUR_F='ABORT')) ce qui est le défaut quand CODE est présent. Ne pas
+   utiliser CODE dans une étude.
+   
+   
+   Si le mot-clé CODE est présent, on affiche dorénavant ce message pour avertir
+   l'utilisateur de ne pas l'utiliser :
+   
+   !--------------------------------------------------------------------------------!
+   !................................................................................!
+   !.Le.mot-clé.facteur.CODE.dans.DEBUT/POURSUITE.est.réservé.aux.cas-tests.........!
+   !.Il.ne.faut.pas.l'utiliser.dans.les.études.car.il.modifie.certaines.valeurs.par.!
+   !.défaut.des.commandes.DEBUT/POURSUITE,.comme.le.comportement.en.cas.d'erreur....!
+   !................................................................................!
+   !--------------------------------------------------------------------------------!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz107
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012671 DU 2008-10-20 12:23:55
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.16, le cas-test sdls501a est NOOK sur Rocks.
+FONCTIONNALITE
+   On fait des TEST_RESU à 1.e-10 en relatif.
+   Les valeurs obtenues sont à 1.6e-10, on décale la tolérance à 1e-8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls501a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012727 DU 2008-10-27 12:48:17
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Environ 200 tests thermo-mecaniques casses
+FONCTIONNALITE
+   Plus de 200 tests sont cassés sous Calibre 4/5 avec un message de ce type :
+   
+   
+   on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au parametre:
+   PGEOMER
+    - option: CHAR_MECA_TEMP_R
+    - type_element: MEC3TR7H
+   
+   
+   Suite à la restitution en 9.3.18 de l'ajout de caractéristiques non symétriques pour les
+   discrets, une dimension de tableau n'a pas été corrigé, ce qui provoque un écrasement à
+   cause du tableau CHCARA.
+   
+   
+   Routine incriminée : nmvcfo
+   
+   Dans thaclm, CHCARA était initialisé à 24, on le met à 18 comme tout le monde.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hpla100b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012732 DU 2008-10-27 13:02:12
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Retourner un code retour lors de l'interpretation d'une formule
+FONCTIONNALITE
+   Pour préparer la correction de la fiche 12680, on ajoute à FIINTF un code retour qui vaut :
+   - 0 si l'interprétation de la formule s'est bien passée,
+   - 4 sinon.
+   
+   L'appel à FIINTF se fait par l'intermédiaire de FOINTE (ou FOINTA, FOINTC) qui retourne ce
+   code retour ou arrête avec un message d'erreur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz100
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012699 DU 2008-10-23 18:19:30
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.17, les cas-tests aspic09a et ssnv166a s?arretent en ARRET_<A> sur Bull.
+FONCTIONNALITE
+   Les tests sont ok
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012649 DU 2008-10-16 15:20:52
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.16, les cas-tests ssnp15a et ssnp15b s?arretent par manque temps sur Rocks.
+FONCTIONNALITE
+   En 9.3.18, les tests passent en :
+   - 16 s cpu pour ssnp15a (20 s elapsed)
+   - 16 s cpu pour ssnp15b (53 s elapsed)
+   
+   sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp15a,b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012731 DU 2008-10-27 13:00:29
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.18, le cas-test ssnv182b est NOOK sur Calibre 5.
+FONCTIONNALITE
+   NOOK              RELA  3.83E-10 % VALE:-5.0000000000191D-01
+    MIN              TOLE  2.00E-10 % REFE:-5.0000000000000D-01
+   
+   => On ajuste la tolérance.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv182b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB Joumana      DATE 28/10/2008 - 10:34:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012366 DU 2008-08-01 15:41:07
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.3.6, le cas-test wtnv135a s'arrete en erreur sur la machine Calibre 5
+FONCTIONNALITE
+   Le variable RETCOM (=1 si redécoupage global du pas de 
+   temps) n'était pas initialisée dans les fortrans 
+   suivants :
+   lkcaln.f
+   lkcomp.f
+   lkds2h.f
+   lkdhds.f
+   
+   je l'enlève dans l'appel à lkdlam dans lkgamp
+   et je corrige les message d'erreur 29 30 et 31 dans 
+   compor1.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   wtnv135a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012692 DU 2008-10-23 08:29:13
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cam Clay :Correction de la borne sup de la solution de l'?ation non lin?re
+FONCTIONNALITE
+   A l'équation non linéaire du problème local dans Cam Clay 
+   on peut définir des bornes pour la solution.
+   Une des bornes nécessite une résolution d'une éq non 
+   linéaire. Nous voulons éviter ce travail, nous avons 
+   supposé une expression approchée de celle ci mais qui 
+   nous a fait défaut dans le cas de Ch. Vasse qui sollicite 
+   les contraintes en traction.
+   
+   On remédie à ça en faisant un développement limité 
+   d'ordre 1 pour éviter le log. Or on peut tomber sur un 
+   dénominateur nul, dans ce cas, on opte pour la solution 
+   d'un développement limité d'ordre 2 qui fournit deux 
+   solutions. (Il a fallu traiter chaque possibilité avec un 
+   choix de la borne afin d'éviter les erreurs numériques)
+   
+   Avec cette correction on n'observe plus du redécoupage du 
+   pas de temps dans le cas test ssnp136b, quelques tests 
+   resu ont bougé,  d'où sa correction et restitution avec 
+   cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R7.01.14, V6.03.136
+VALIDATION
+   ssnp136a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR foucault     FOUCAULT Alexandre     DATE 28/10/2008 - 11:50:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012651 DU 2008-10-16 15:39:30
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW 9.3.16, le cas-test wdnp101a s?arrete en ERREUR_<F> sur Rocks.
+FONCTIONNALITE
+   Probleme constate:
+   ------------------
+   Le cas-test wdnp101a s'arrete en erreur fatale sur la 
+   machine Rocks avec le message d'erreur suivant:
+      !--------------------------------------------!
+      ! <F> <CALCULEL3_79>                         !
+      !                                            !
+      !                                            !
+      !  la matrice A est singulière               !
+      !                                            !
+      !                                            !
+      !                                            !
+      ! Cette erreur est fatale. Le code s'arrete. !
+      !--------------------------------------------!
+   
+   Analyse du probleme:
+   --------------------
+   Le probleme apparait dans la routine hujtid lors de 
+   l'appel à la routine mgauss. Il faut modifier son code 
+   d'appel en remplacant 'NFVP' par 'NCVP' pour eviter un 
+   arret fatal.  
+   
+   La modification faite, le calcul ne converge toujours 
+   pas. 
+   
+   Actions entreprises:
+   --------------------
+   Recherche des modifications récentes apportées au modele 
+   de Hujeux : fiche 12226.
+   Un test incohérent est effectué dans la routine hujpxd 
+   suite à la fiche 12226 sur le critere de proximite des 
+   cercles cycliques. Ce test avait ete introduit lors de 
+   la fiche 12086, mais n'etait plus utilise suite a la 
+   fiche 12226. 
+   
+   Solution proposee:
+   ------------------
+   En commentant ce test, on retrouve les resultats 
+   souhaites et la convergence du cas-test wdnp101a pour 
+   une précision legerement modifiee.
+   
+   Fichiers Fortan impactés:
+   -------------------------
+   hujtid.f, hujpxd.f
+   
+   Impact Documentation:
+   ---------------------
+   Doc V du cas-test wdnp101a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V7.34.101
+VALIDATION
+   CAS-TEST WDNP101A
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 27/10/2008 - 13:01:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012674 DU 2008-10-20 12:34:08
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW 9.3.16, les cas-tests sslv110a et sslv110e sont NOOK sur Calibre 4.
+FONCTIONNALITE
+   Probleme
+   ---------
+   Résultats faux sur le calcul de G (CALC_G, option CALC_G) en 3D avec lissage de Lagrange
+   sur Calibre4.
+   
+   Explication
+   -----------
+   Le problème vient d'un test erroné dans les routines gmeth3/gmeth4 (depuis la version 9.3.16).
+   
+   Il faut remplacer :
+   IF (.NOT. GXFEM) THEN
+     IF (ZK8(IADRNO+1-1).EQ.ZK8(IADRNO+NNOFF-1))  CONNEX = .TRUE.
+   ELSE
+     CONNEX = .FALSE.
+   ENDIF
+   
+   par :
+   CONNEX = .FALSE.
+   IF (.NOT. GXFEM) THEN
+      CALL JEVEUO (FOND,'L',IADRNO)
+      IF (ZK8(IADRNO+1-1).EQ.ZK8(IADRNO+NNOFF-1))  CONNEX = .TRUE.
+   ENDIF
+   
+   On en profite aussi pour enlever NNORMF dans la liste des objets en entrée de gmeth3
+   puisqu'il n'est pas utilisé dans la routine (-> impact sur mbilgl et mecagl).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv110a/e
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012675 DU 2008-10-20 12:36:49
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW 9.3.16, le cas-test sslv313a est NOOK sur Calibre 4.
+FONCTIONNALITE
+   Idem 12674
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv313a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012678 DU 2008-10-20 12:46:48
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW 9.3.16, le cas-test ssnv185c est NOOK sur Calibre 5.
+FONCTIONNALITE
+   Problème
+   --------
+   Le cas test ssnv185c donne des résultats faux pour le calcul de K et de G (CALC_G option
+   CALC_K_G) sur des modèles X-FEM en 3D, dans le cas où il y a un chargement de pression sur
+   les lèvres et que celui-ci est défini par une fonction (du temps ou de l'espace). Le
+   résultat n'est faux que sur Calibre 5.
+   
+   Correction
+   ----------
+   Le problème vient d'une variable mal dimensionnée dans xsifle :
+   XG(3) --> XG(4)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv185c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 27/10/2008 - 16:41:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012619 DU 2008-10-11 18:25:32
+TYPE anomalie concernant Code_Aster (VERSION 9.4)
+TITRE
+   xfem quadratique (le retour de la vengeance) : pivot nul
+FONCTIONNALITE
+   Pierre met en évidence un bug qu'on pensait avoir corrigé en 8.1.7 (voir l'histor AL
+   2005-137).
+   Je reprends l'explication : 
+   """
+     Actuellement, le reajustement de la level set consiste a boucler sur toutes
+     les aretes du maillage, et lorsque la level set passe à moins de 1% du bord
+     de l'arete, on met la level set à zero pour le noeud en question.
+     (Ca revient à changer un peu la géométrie du problème considéré puisqu'on
+     déplace la fissure).
+     Dans certains cas, ce reajustement ne suffit pas à éviter des matrices
+     mal conditionnées. Notamment en 3D, avec des hexaèdres coupés dans un coin.
+     La matrice devient presque singulière, et un nombre important de décimales
+     est perdu lors de la résolution. Ces pivots presque nuls apparaissent sur
+     les ddls de saut (Heaviside), car dans la cas limite où la level set passe
+     sur le noeud du coin, ces ddls de saut ne sont pas activés.
+   
+     Solution :
+     L'idée est d'annuler les ddls de saut.
+     Pour répertorier les mailles où il risque d'y avoir un problème, on calcule
+     le rapport entre le petit volume et le grand volume (de part et d'autres de
+     la fissure). Si ce rapport est très faible, il y a de bonnes chances pour
+     que cette maille conduise à des pivots nuls. Mais ce n'est pas tout le temps
+     le cas. Cela arrive seulement dans une configuration précise : un hexa coupé
+     dans un coin (donc seulement en 3D).
+     Ainsi, pour sélectionner les mailles à problème, on vérifie que le rapport
+     de volume est faible (inférieur à une valeur critique basée sur des tests),
+     et on vérifie que la maille est bien un hexa coupé dans un coin.
+     On détermine ensuite les noeuds qui ne "devraient" pas porter de ddls de saut.
+     L'algorithme utilisé est basé sur celui utilisé pour déterminer les ddls
+     enrichis du modèle X-FEM.
+     Finalement, ces ddls sont supprimés lors du passage dans AFFE_CHAR_MECA avec le
+     mot clé LIAISON_XFEM.
+     La valeur critique du rapport de volumes peut etre choisie par l'utilisateur par
+     le mot clé CRITERE dans l'opérateur MODI_MODELE_XFEM. (valeur par défaut : 1.1e-4)
+   """
+   
+   A l'époque, j'avais étudié seulement les configurations linéaires : le problème ne se
+   posait que sur les HEXA8.
+   En quadratique, on dirait que le problème se pose aussi sur les TETRA. Du coup,
+   l'algorithme proposé ne permet pas d'éliminer le problème sur les TETRA10.
+   
+   Plusieurs solutions :
+   ---------------------
+   
+   1) mettre dans STAT_NON_LINE/SOLVEUR : NPREC = 10
+   solution facile, mais limitée. risque t-on un jour de tomber sur 15 décimales perdues ?
+   
+   2) augmenter le critère d'ajustement "fit to vertex".
+   Dans le cas présent, le pb se pose avec d = 1,2%, alors que le critère est à 1%.
+   Si on met en dur le critère à 2%, le calcul passe sans problème, et du coup, beaucoup plus
+   de level sets sont réajustées : 
+    NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:                  2123
+    NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:                  3436
+   Il faudrait alors remonter ce paramètre au niveau utilisateur
+   
+   3) revoir l'algo initial valable pour les mailles linéaires, et l'extrapoler si possible
+   au mailles quadratiques (beaucoup plus long).
+   Cela nécessite tout un travail analytique sur les valeurs propres des matrices de rigidité
+   élémentaires X-FEM, suivant d + une série de tests numériques permettant de fixer un
+   nouveau critère de ratio volumique
+   
+   Faute de temps disponible, je propose la solution 1)
+   
+   mais je modifie le message d'erreur PIVOT presque nul :
+   dans tldlg3, si la composante est une composante de type H1X, H1Y ou H1Z, alors on emet le
+   message factor_22 qui est calqué sur factor_20, avec le § suivant en plus :
+   
+        il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
+        très près d'un noeud.
+        Si le nombre de décimal n'est pas trop grand (maxi 10 décimales)
+        vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
+        mot-clé NPREC dans STAT_NON_LINE/SOLVEUR.
+        
+        Sinon, contactez l'équipe de développement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U2.05.02
+VALIDATION
+   test fourni
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012633 DU 2008-10-15 10:25:34
+TYPE anomalie concernant Code_Aster (VERSION 9.4)
+TITRE
+   plantage calc_elem sief_elno_elga XFEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Un utilisateur post-traite SIEF_ELNO_ELGA sur des éléments 3D directement après un calcul
+   X-FEM, sans passer par les étapes de post-traitement spécifique : POST_MAIL_XFEM et
+   POST_CHAM_XFEM.
+   
+   Il obtient un message d'erreur 
+   "Problème lors du calcul de l'option SIEF_ELNO_ELGA pour les éléments X-FEM"
+   
+   
+   Solution :
+   ----------
+   
+   Cette option n'est pas encore (mais bientotà disponible sur les éléments X-FEM 3D.
+   Dans le cata des éléments, aucun TE n'est déclarré, donc le champ produit est un champ à
+   trous.
+   En fait, l'utilisateur cherche à calculer les contraintes loin de la fissure.
+   
+   On emet donc un nouveau message d'alarme à la place du message d'erreur.
+   
+   " Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM : 
+    le champ produit est incomplet sur les éléments X-FEM.
+   --> Risque : ce champ ne pourra être utilisé sur des éléments non X-FEM.
+   --> Conseils : il vaut mieux utiliser les commandes de post-traitement
+   spécifique POST_MAIL_XFEM et POST_CHAM_XFEM avant le CALC_ELEM."
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test fourni
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011861 DU 2008-03-20 13:02:44
+TYPE anomalie concernant Code_Aster (VERSION 9.4)
+TITRE
+   Bug dans le contact avec X-FEM en 2D
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Il y a un problème dans le traitement du contact avec X-FEM en 2D. 
+   Le test considéré (en pièce jointe) consiste en une plaque fissurée en traction et
+   compression. Il y a deux pas de temps dans le calcul correspondant chacun à un cas de
+   chargement.
+   
+   - si on fait traction puis compression : le contact n'est pas pris en compte. On peut s'en
+   rendre compte par exemple en calculant K : K1 est négatif en compression et égal à
+   l'opposé du K1 en ouverture.
+   
+   - si on fait compression puis traction : cette fois-ci le contact est bien pris en compte
+   et K1_compression est nul (avec POST_K1_K2_K3) ou plus faible que K1_traction (avec CALC_G).
+   Par contre deux itérations de contact sont nécessaires pour le pas de temps correspondant
+   à la traction, alors qu'on pourrait penser qu'une seule suffit :
+   INSTANT DE CALCUL :  1.000000000E+00
+    
+   -------------------------------------------------------------------------------------------------------
+   |     CONTACT    |     CONTACT    |   ITERATIONS   |     RESIDU     |     RESIDU     |   
+    OPTION     |
+   |    CONTINU     |    CONTINU     |     NEWTON     |     RELATIF    |     ABSOLU     |  
+   ASSEMBLAGE   |
+   |   ITER. GEOM.  |   ITER. CONT.  |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |   
+               |
+   -------------------------------------------------------------------------------------------------------
+   |     0          |     1        X |     0        X | 1.84048E+00  X | 4.60204E+04   
+   |TANGENTE        |
+   |     0          |     1        X |     1          | 4.32114E-14    | 1.08048E-09   
+   |TANGENTE        |
+   -------------------------------------------------------------------------------------------------------
+   |     0          |     2        X |     0        X | 4.23842E+03  X | 2.50111E+08   
+   |TANGENTE        |
+   |     0          |     2          |     1          | 9.40702E-13    | 5.55112E-08   
+   |TANGENTE        |
+   -------------------------------------------------------------------------------------------------------
+   
+   Ce constat est vrai aussi bien pour CONTACT_INIT='OUI' ou 'NON' dans AFFE_CHAR_MECA.
+   
+   
+   
+   
+   Solution :
+   ---------
+   
+   Pour le cas traction puis compression, la présence d'un seuil pour "faire 
+   recoller" un point non-contactant se fait sentir. La solution simple: le 
+   faire en trois pas de temps.
+   
+   Je ne pense pas qu'il y ait de problème dans le cas compression puis 
+   traction.
+   
+   Détails:
+   
+   Le test considéré (en pièce jointe) consiste en une plaque fissurée en 
+   traction et compression. Il y a deux pas de temps dans le calcul 
+   correspondant chacun à un cas de chargement.
+   
+   1) si on fait traction puis compression : le contact n'est pas pris en 
+   compte. On peut s'en rendre compte par exemple en calculant K : K1 est 
+   négatif en compression et égal à l'opposé du K1 en ouverture.
+   
+   Ce qui se passe:
+   pour rétablir le contact sur un point non-contactant, on attend
+   que le jeu soit un peu plus que positif (>1e-16). On veut éviter
+   le flip-flop. Or ici,
+   au 2ème pas de temps, le jeu est de l'ordre de 1.e-17, la réaction 
+   est nulle, les points restent non-contactants, on s'arrête.
+   
+   Une solution: si on le fait en 3 pas de temps, on aboutit à une interface 
+   contactante.
+   
+   On peut vérifier que si on met le seuil à 0.0 (le seuil est codé en dur), 
+   tout se passe bien même en 2 pas de temps.
+   
+   2) si on fait compression puis traction : cette fois-ci le contact est 
+   bien pris en compte
+   et K1_compression est nul (avec POST_K1_K2_K3) ou plus faible que 
+   K1_traction (avec CALC_G).
+   Par contre deux itérations de contact sont nécessaires pour le pas de 
+   temps correspondant
+   à la traction, alors qu'on pourrait penser qu'une seule suffit.
+   
+   Il semble qu'il en faut bien deux:
+    - Première itération: les points sont contactants d'après le pas de temps 
+   précédent, le jeu reste nul. La traction rend les réactions positives. Les 
+   points sont marqués non-contactant.
+    - Deuxième itération: les points sont non-contactant et on trouve la 
+   solution.
+   
+   
+   
+   Bilan :
+   -------
+   
+   En effet, le problème était directement lié à la force appliquée qui conduisait à une
+   interpénétration plus faible que le critère fixé en dur.
+   En prenant un chargement plus important (et plus réaliste), on a bien une solution
+   correcte sans changer la liste des pas de temps.
+   
+   OK donc pour un classement de la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucun
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012685 DU 2008-10-22 07:57:18
+TYPE express concernant Code_Aster (VERSION 9.4)
+TITRE
+   X-FEM : suppression de messages d'alarmes obscurs
+FONCTIONNALITE
+   on supprime des messages d'alarme obscurs :
+   
+   xfem2_1, xfem2_5 et xfem2_13
+   
+   qui alarmaient l'autisateur qu'en certains points, les gradients des level sets étaient
+   colinéaires.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests x-fem
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011325 DU 2007-10-04 16:21:52
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TITRE
+   X-FEM et frottement : problemes de non-convergence
+FONCTIONNALITE
+   problème :
+   ----------
+   
+   En essayant de reproduire le cas test ssnv128 (écrasement d'un lopin) avec X-FEM, on se
+   heurte à des problèmes de non-convergence pour des coefficient de frottement supérieurs à
+   0.2. Cela dénote soit un bug dans la programmation, soit un manque dans la formulation.
+   
+   
+   Solution :
+   ----------
+   
+   Les récentes restitutions sur le contact-frottant avec X-FEM ont permis de lever les
+   difficultés énoncées ci-dessus.
+   Le test ssnv209 (modélisations a->h) est en fait le test ssnv128 traité par X-FEM.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv209
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 27/10/2008 - 11:43:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012683 DU 2008-10-21 14:52:44
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   bug jeveux du cote d'etenca (perf005a)
+FONCTIONNALITE
+   Le problème est dans JEVEUX. L'appel à la routine de libération de la mémoire dynamique
+   JJLDYN modifie le commun qui sert de raccourci pour stocker la classe (G ou V) et
+   l'identificateur asscocié à un nom d'objet. Cette routine peut être appelée dans de
+   multiples branches de programmation, il est donc préférable de la modifier : on supprime
+   donc tout appel Jeveux avec un argument de type nom objet (JJALLC, JJVERN, JJLIDE), ce qui
+   corrige le problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perf005a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012679 DU 2008-10-20 12:52:35
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.16, le cas-test zzzz127a s?arrete en ERREUR_<F> sur Calibre 4 et 5
+FONCTIONNALITE
+   L'erreur a lieu lorsqu'on effectue le retassage de la base globale. Lors de cette
+   opération il est nécessaire de fermer les bases globale et volatile, puis de relire la
+   base globale. Lors de cette étape de relecture, au moment de l'ouverture de la base, il
+   est nécessaire de reconstruire les objets système Jeveux. L'objet systéme contenant les
+   statistiques d'accès au enregistrement n'était pas créé assez tôt et lors de la relecture
+   du premier enregistrement on accèdait à une zone mémoire invalide. En mémoire dynamique
+   cet accès provoque tout de suite une erreur. 
+   On corrige la routine JEINIF en déplacant le bloc de création de l'objet système associé à
+   IACCE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz127a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012530 DU 2008-09-24 16:26:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Maj de HDF
+FONCTIONNALITE
+   La version HDF5-1.6.5 a été installée sous le répertoire /aster/public/hdf5-1.6.5. sur
+   Bull, les librairies ont été construites avec le compilateur intel 10.0.026.
+   Les sources déposés dans /aster/NEW9/bibc/hdf doivent être recompilés pour prendre en
+   compte les includes.
+   Les librairies ont été installées sous Calibre4 (clp50a8), Calibre5 (clau555) et sur le
+   cluster Rocks (clpaster)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests faisant appel xc3xa0 MED et HDF
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012532 DU 2008-09-25 09:16:22
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   Intxc3xa9gration de MED 2.3.5
+FONCTIONNALITE
+   La version MED2.3.5 a été installée sous le répertoire /aster/public/med2.3.5-hdf5-1.6.5.
+   sur Bull, les librairies ont été construites avec le compilateur intel 10.0.026.
+   Les librairies ont été installées sous Calibre4 (clp50a8), Calibre5 (clau555) et sur le
+   cluster Rocks (clpaster)
+   Tous les tests faisant appel à MED ont été lancés, il fonctionnent tous, sauf forma03d qui
+   en erreur par ailleurs (AL 12639). Même résultat sur clpaster.
+                                          Temps CPU   Temps SYS   CPU + SYS   real time   
+   CPU prun    SYS prun Elapse prun
+   ahlv100a  OK_ALARME                         7.63        1.51        9.14       11.26     
+     7.75        2.41       14.99
+   ascou01a  OK_ALARME                        89.04        2.40       91.44       94.00     
+    89.15        2.68       96.05
+   ascou04a  OK_ALARME                       182.60        6.45      189.05      192.05     
+   182.71        6.93      194.33
+   ascou05a  OK_ALARME                        12.74        0.82       13.56       14.21     
+    12.85        1.02       15.40
+   ascou07a  OK_ALARME                       117.96        2.62      120.58      122.05     
+   118.09        2.89      122.98
+   ascou08a  OK_ALARME                       109.93        3.10      113.03      114.45     
+   110.04        3.41      117.22
+   ascou09a  OK_ALARME                       192.93        5.91      198.84      200.30     
+   193.04        6.23      201.99
+   ascou16a  OK_ALARME                       186.87       12.36      199.23      201.55     
+   187.02       12.64      202.44
+   comp005a  OK_ALARME                        39.57        2.12       41.69       44.32     
+    39.75        2.99       47.98
+   comp005d  OK_ALARME                        21.32        0.87       22.19       24.43     
+    21.47        1.14       25.58
+   forma01a  OK_ALARME                         6.97        0.68        7.65        8.75     
+     7.10        1.03       10.91
+   forma01b  OK_ALARME                         9.53        1.08       10.61       12.40     
+     9.69        1.47       14.11
+   forma01c  OK_ALARME                        32.66        3.48       36.14       42.58     
+    32.79        3.96       44.99
+   forma01d  OK_ALARME                        18.34        0.88       19.22       20.69     
+    18.49        1.27       22.16
+   forma03a  OK_ALARME                         4.27        0.79        5.06        6.05     
+     4.36        1.14        7.11
+   forma03b  OK_ALARME                        62.35        2.71       65.06       69.03     
+    62.50        3.04       70.15
+   forma03c  OK_ALARME                        57.85        3.23       61.08       65.45     
+    58.03        4.30       69.28
+   forma03d             ARRET_ANORMAL          2.95        0.69        3.64        7.57     
+     3.10        0.92        8.73
+   forma05a  OK_ALARME                        32.23        4.58       36.81       42.76     
+    32.33        4.96       44.14
+   forma05b  OK_ALARME                        41.60        4.13       45.73       49.32     
+    41.74        4.48       50.47
+   hslv304a  OK_ALARME                         9.44        0.79       10.23       11.27     
+     9.60        1.08       12.24
+   hsnv134a  OK_ALARME                        22.06        1.05       23.11       24.00     
+    22.20        1.41       25.10
+   hsnv134b  OK_ALARME                       633.89       12.84      646.73      648.10     
+   634.06       13.14      649.21
+   hsnv135a  OK_ALARME                        29.84        0.88       30.72       31.35     
+    29.91        1.13       32.48
+   perfe01a  OK_ALARME                        91.81        7.66       99.47      101.55     
+    91.98        8.59      105.30
+   perfe02a  OK_ALARME                       168.78        6.00      174.78      178.15     
+   174.00      173.20        6.53
+   perfe03a  OK_ALARME                       179.17        5.24      184.41      187.58     
+   185.00      177.77        5.09
+   plexu02a  OK_ALARME                       194.78       35.22      230.00      230.50     
+   194.86       35.49      232.09
+   sdll137a  OK_ALARME                        10.77        0.64       11.41       12.52     
+    10.89        0.90       14.19
+   sdlx02a   OK_ALARME                         6.01        0.47        6.48        6.96     
+     6.12        0.66        8.62
+   sdlx100a  OK_ALARME                        75.00        2.01       77.01       79.18     
+    75.12        3.22       83.14
+   sdnl105d  OK_ALARME                        27.41        1.16       28.57       30.78     
+    27.51        1.75       33.58
+   sdns106b  OK_ALARME                       398.87       10.01      408.88      413.19     
+   399.01       10.27      414.40
+   sdns106c  OK_ALARME                       106.38        2.71      109.09      110.27     
+   106.48        3.01      111.99
+   ssll107d  OK_ALARME                         5.52        0.53        6.05        6.51     
+     5.67        0.82        7.57
+   ssll11b   OK_ALARME                        13.48        0.76       14.24       15.82     
+    13.60        1.02       17.65
+   ssls132a  OK_ALARME                        11.24        0.68       11.92       12.83     
+    11.38        0.98       14.57
+   ssls132b  OK_ALARME                         7.60        0.61        8.21        9.01     
+     7.70        0.85       10.56
+   ssls132c  OK_ALARME                         7.69        1.62        9.31       11.44     
+     7.80        2.58       15.11
+   ssls132d  OK_ALARME                         7.58        0.72        8.30        9.36     
+     7.78        0.96       10.38
+   ssls132e  OK_ALARME                        11.45        0.96       12.41       13.57     
+    11.57        1.18       14.79
+   ssls132f  OK_ALARME                         7.74        0.69        8.43        9.37     
+     7.86        0.93       10.46
+   sslv07a   OK_ALARME                        22.52        0.99       23.51       27.57     
+    22.65        1.31       29.52
+   sslv111a  OK_ALARME                         8.41        0.62        9.03       10.28     
+     8.54        0.87       12.23
+   sslv135g  OK_ALARME                        19.76        0.87       20.63       23.21     
+    19.94        1.21       25.83
+   sslv145a  OK_ALARME                        18.15        0.84       18.99       20.10     
+    18.26        1.03       20.86
+   ssnl121b  OK_ALARME                        15.64        0.93       16.57       19.39     
+    15.76        1.19       20.77
+   ssnp115b  OK_ALARME                         6.60        0.66        7.26        7.64     
+     6.73        0.95        9.05
+   ssnp131a  OK_ALARME                       472.39        6.21      478.60      482.86     
+   472.51        6.49      484.23
+   ssnp131b  OK_ALARME                       265.13        7.86      272.99      273.80     
+   265.23        8.25      275.20
+   ssnv108a  OK_ALARME                        64.92        3.40       68.32       69.01     
+    65.03        3.70       69.97
+   ssnv171c  OK_ALARME                        61.45        1.73       63.18       64.42     
+    61.63        2.01       65.72
+   ssnv506a  OK_ALARME                        37.73        1.27       39.00       39.81     
+    37.90        1.52       40.74
+   ssnv506c  OK_ALARME                       339.34        9.20      348.54      349.48     
+   339.42        9.47      351.21
+   ssnv506f  OK_ALARME                       265.48       11.71      277.19      287.10     
+   265.56       12.63      290.73
+   tpll01j   OK_ALARME                         5.87        0.59        6.46        7.73     
+     5.97        0.82        9.64
+   tplv100a  OK_ALARME                         5.84        0.67        6.51        7.22     
+     6.02        0.82        8.22
+   wtnl100e  OK_ALARME                        52.17        1.57       53.74       56.07     
+    52.33        1.83       57.81
+   yyyy106a  OK_ALARME                       351.06        6.58      357.64      288.24     
+   351.17        7.10      290.49
+   yyyy106b  OK_ALARME                       287.38        5.58      292.96      294.12     
+   287.53        5.93      295.95
+   zzzz108a  OK_ALARME                        18.93        1.67       20.60       23.23     
+    19.09        2.01       25.29
+   zzzz115a  OK_ALARME                         8.17        0.56        8.73        9.50     
+     8.28        0.76       10.09
+   zzzz121a  OK_ALARME                        15.71        1.77       17.48       21.70     
+    15.84        2.06       23.02
+   zzzz121b  OK_ALARME                        12.13        1.39       13.52       15.32     
+    12.27        1.57       16.34
+   zzzz121c  OK_ALARME                        15.25        1.17       16.42       18.87     
+    15.35        1.44       20.08
+   zzzz121d  OK_ALARME                        15.64        1.47       17.11       19.16     
+    15.71        1.82       20.26
+   zzzz121e  OK_ALARME                         8.70        1.10        9.80       12.27     
+     8.88        1.47       14.00
+   zzzz132a  OK_ALARME                        25.06        1.09       26.15       28.83     
+    25.31        1.50       31.17
+   zzzz161a  OK_ALARME                         5.72        0.59        6.31        7.27     
+     5.82        0.90        8.59
+   zzzz162a  OK_ALARME                        10.97        0.93       11.90       12.66     
+    11.11        1.20       13.71
+   zzzz162b  OK_ALARME                         8.11        0.88        8.99       11.52     
+     8.24        1.15       13.00
+   zzzz175a  OK_ALARME                        55.91        1.71       57.62       59.60     
+    56.02        2.05       61.22
+   zzzz176a  OK_ALARME                         3.71        0.69        4.40        6.68     
+     3.83        1.08        8.04
+   zzzz185a  OK_ALARME                        10.28        0.75       11.03       12.93     
+    10.43        1.03       14.46
+   zzzz215a  OK_ALARME                         8.57        1.02        9.59       12.26     
+     8.68        1.51       14.42
+   zzzz215b  OK_ALARME                         9.06        0.59        9.65       11.33     
+     9.20        0.83       12.39
+   zzzz215c  OK_ALARME                         8.21        0.78        8.99        9.50     
+     8.34        1.09       10.76
+   zzzz231a  OK_ALARME                        81.43        3.82       85.25       86.09     
+    81.54        4.10       87.19
+   zzzz231b  OK_ALARME                        43.92        2.48       46.40       48.43     
+    44.08        3.31       52.12
+   zzzz231c  OK_ALARME                        39.88        1.85       41.73       42.61     
+    39.99        2.13       44.30
+   zzzz237a  OK_ALARME                         7.16        0.77        7.93        9.16     
+     7.31        0.99       10.78
+   zzzz237b  OK_ALARME                         6.98        1.12        8.10       10.67     
+     7.08        1.57       12.84
+   zzzz238a  OK_ALARME                         4.92        0.76        5.68        6.46     
+     5.02        1.04        7.48
+   zzzz238b  OK_ALARME                         5.14        0.70        5.84        7.53     
+     5.24        1.00        8.59
+   zzzz240a  OK_ALARME                         7.05        0.77        7.82        9.91     
+     7.16        1.07       10.86
+   --------  ---------  ----------------  ---------   ---------   ---------   ---------  
+   ---------   ---------   ---------
+         85     84          1               5992.30      245.37     6237.67     6338.07    
+   6014.10      615.66     6125.23
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests faisant appel xc3xa0 MED et HDF
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nistor       NISTOR Ionel           DATE 27/10/2008 - 11:40:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012668 DU 2008-10-20 12:17:29
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.3.16, le cas-test miss06b s?arrete en ERREUR_<F> sur Calibre 4 et 5.
+FONCTIONNALITE
+   Probleme:
+   
+   Le cas-test miss06b s'arrêtait en ERREUR_<F> lors d'une 
+   REST_BASE_PHYS qui était destinée à restituer un résultat de 
+   type mélange evol_noli avec du modal vers l'espace physique. 
+   Dans le message d'erreur on dit ne pas trouver un objet 
+   jeveux.
+   
+   ---------------------------------------------------
+   Solution:
+   Grâce au travail de Nicolas et de George le bug a été 
+   trouvé, un malheureux copie-collé lors de la création de la 
+   nouvelle routine noli75.f. Il faut:
+              ELSEIF ( CHAMP(ICHAM) .EQ. 'ACCE' ) THEN
+                 CHGENE = TRGENE(1:18)//'A'
+   Au lieu de (lettre D à remplacer par A) :
+               ELSEIF ( CHAMP(ICHAM) .EQ. 'ACCE' ) THEN
+                 CHGENE = TRGENE(1:18)//'D'
+   En plus on ne doit libérer l'objet CHGENE que dans le cas où 
+   il n'y a 
+   pas de macro-éléments, donc quand NMC vaut 0.
+   On fait donc :
+              IF (NMC.EQ.0) CALL JELIBE(CHGENE)
+   Au lieu de :
+              CALL JELIBE(CHGENE
+   -------------------------------------------------
+   Validation:
+   
+   Tous le cas-test qui utilisent l'opérateur REST_COND_TRAN 
+   (celui qui hérite la fonctionnalité correspondante de 
+   l'ancien REST_BASE_PHYS):
+   -miss06b
+   -miss06c
+   -sdll113c
+   -sdnv107a
+   --------------------------------------------------
+   Impact dans les sources:
+   -noli75.f
+   --------------------------------------------------
+   Temps de travail:
+   0.1 Nicolas
+   0.1 Georges
+   0.1 Ionel (pour opérer la correction et la restit)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   miss06b, miss06c, sdll113c, sdnv107a
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012616 DU 2008-10-10 14:22:11
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   REST_BASE_PHYS : problxc3xa8me d'instants (cas-test miss06b en 9.3.15 sur Calibre 4.1)
+FONCTIONNALITE
+   Problème d'instants résolu par la fiche 12613 restituée par 
+   Jacques (correction de la routine RSTRAN)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   miss06b
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 27/10/2008 - 11:37:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012691 DU 2008-10-22 15:46:46
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   angles nautiques dans Zmat004a
+FONCTIONNALITE
+   Afin de tirer jusqu'à Zmat la couverture des tests;..
+   le code-coverage notait que les routines angrot, angvec, naueul (appelées par nmzmat) ne
+   passaient dans aucun test.
+   
+   J'ajoute donc des angles nautiques dans Zmat004a. Il y avait déjà dans ce test une
+   comparaison MONOCRISTAL et ZMAT pour les angles d'Euler.
+   
+   On ajoute les angles nautiques et on retrouve les memes résultats.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zmat004a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012669 DU 2008-10-20 12:21:14
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pb (dans l'integration de la LdC ???) avec VISC_CIN2_MEMO
+FONCTIONNALITE
+   Lors d'un (gros) calcul avec VISC_CIN2_MEMO, le calcul plante avec le message d'erreur
+   suivant :
+        !--------------------------------------------!
+   4    ! <F> <ELEMENTS4_61>                         !
+   4    !                                            !
+   4    !                                            !
+   4    !  préconditions non remplies                !
+   4    !                                            !
+   4    !                                            !
+   4    !                                            !
+   4    ! Cette erreur est fatale. Le code s'arrete. !
+   4    !--------------------------------------------!
+   
+   Le problème est dû à l'algorithme de recherche de zero par la méthode  de cordes (zeroco).
+   Le message apparait quand les conditions de départ ne sont pas remplies : on doit avoir
+   f(x1)<0 et f(x2) >0
+   
+   La routine intégrant ce comportement est bien telle que f(x1=0) <0. Mais quand on
+   recherche x2 tel que f(x2) >0, par bracketting, on peut très bien tomber sur une valeur
+   "quasi nulle", c'est à dire donnant (à la précision près) f(x2) =0. Dans ce cas on sort
+   tout de suite, avec  la  solution.
+   
+   D'autre part, dans tous les cas, on ne s'arrête plus  en <F> mais on permet le redécoupage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   comp002i
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF comp001g                        proix J-M.PROIX          207      2      1
+ CASTEST MODIF comp002c                        proix J-M.PROIX          212      2      1
+ CASTEST MODIF comp002h                        proix J-M.PROIX          228      2      1
+ CASTEST MODIF sdls501a                     courtois M.COURTOIS         243      7      7
+ CASTEST MODIF ssnp136a                     elgharib J.EL-GHARIB        722     20     17
+ CASTEST MODIF ssnv166c                      geniaut S.GENIAUT          304      8      6
+ CASTEST MODIF ssnv182b                     courtois M.COURTOIS         288      2      2
+ CASTEST MODIF wdnp101a                     foucault A.FOUCAULT        1203     26     26
+ CASTEST MODIF wtnv135a                     elgharib J.EL-GHARIB        347      2      1
+ CASTEST MODIF zmat004a                        proix J-M.PROIX          516     94      7
+ CASTEST MODIF zzzz107a                     courtois M.COURTOIS         460      1      1
+       C MODIF hdf/hdfcld                   lefebvre J-P.LEFEBVRE        38      1      1
+       C MODIF hdf/hdfclf                   lefebvre J-P.LEFEBVRE        38      1      1
+       C MODIF hdf/hdfclg                   lefebvre J-P.LEFEBVRE        37      1      1
+       C MODIF hdf/hdfcrf                   lefebvre J-P.LEFEBVRE        52      1      1
+       C MODIF hdf/hdfcrg                   lefebvre J-P.LEFEBVRE        60      1      1
+       C MODIF hdf/hdfnbo                   lefebvre J-P.LEFEBVRE        67      1      1
+       C MODIF hdf/hdfnom                   lefebvre J-P.LEFEBVRE        78      1      1
+       C MODIF hdf/hdfopd                   lefebvre J-P.LEFEBVRE        61      1      1
+       C MODIF hdf/hdfopf                   lefebvre J-P.LEFEBVRE        49      1      1
+       C MODIF hdf/hdfopg                   lefebvre J-P.LEFEBVRE        56      1      1
+       C MODIF hdf/hdfrat                   lefebvre J-P.LEFEBVRE        64      1      1
+       C MODIF hdf/hdfrsv                   lefebvre J-P.LEFEBVRE        64      1      1
+       C MODIF hdf/hdftsd                   lefebvre J-P.LEFEBVRE        63      1      1
+       C MODIF hdf/hdftyp                   lefebvre J-P.LEFEBVRE        94      1      1
+       C MODIF hdf/hdfwat                   lefebvre J-P.LEFEBVRE        67      1      1
+       C MODIF hdf/hdfwsv                   lefebvre J-P.LEFEBVRE       122      1      1
+       C MODIF supervis/astermodule         courtois M.COURTOIS        4140      5      4
+ FORTRAN MODIF algeline/tldlg3               geniaut S.GENIAUT          368     12      2
+ FORTRAN MODIF algorith/hujpxd              foucault A.FOUCAULT         105      6      6
+ FORTRAN MODIF algorith/hujtid              foucault A.FOUCAULT         486     29     11
+ FORTRAN MODIF algorith/lkcaln              elgharib J.EL-GHARIB         67      6      4
+ FORTRAN MODIF algorith/lkcomp              elgharib J.EL-GHARIB        595      3      2
+ FORTRAN MODIF algorith/lkdhds              elgharib J.EL-GHARIB         94      5      3
+ FORTRAN MODIF algorith/lkdlam              elgharib J.EL-GHARIB        115      2      2
+ FORTRAN MODIF algorith/lkds2h              elgharib J.EL-GHARIB        115      5      3
+ FORTRAN MODIF algorith/lkgamp              elgharib J.EL-GHARIB        113      2      2
+ FORTRAN MODIF algorith/nmccam              elgharib J.EL-GHARIB        992     43      9
+ FORTRAN MODIF algorith/nmchdp                 proix J-M.PROIX          256     27     42
+ FORTRAN MODIF algorith/nmvcfo              courtois M.COURTOIS         230      2      2
+ FORTRAN MODIF algorith/noli75                nistor I.NISTOR           336      3      3
+ FORTRAN MODIF algorith/xbasco               geniaut S.GENIAUT          186      2     11
+ FORTRAN MODIF calculel/mbilgl               galenne E.GALENNE          386      3      5
+ FORTRAN MODIF calculel/mecagl               galenne E.GALENNE          467      2      2
+ FORTRAN MODIF calculel/mecalc               geniaut S.GENIAUT          570      2      2
+ FORTRAN MODIF calculel/thaclm              courtois M.COURTOIS         864      2      2
+ FORTRAN MODIF elements/gmeth3               galenne E.GALENNE          196      6      9
+ FORTRAN MODIF elements/gmeth4               galenne E.GALENNE          194      3      6
+ FORTRAN MODIF elements/te0510               geniaut S.GENIAUT          206      1      3
+ FORTRAN MODIF elements/xsifle               galenne E.GALENNE          384      2      3
+ FORTRAN MODIF jeveux/jeinif                lefebvre J-P.LEFEBVRE       592      7      5
+ FORTRAN MODIF jeveux/jjldyn                lefebvre J-P.LEFEBVRE       190      2      4
+ FORTRAN MODIF supervis/ibdbgs              courtois M.COURTOIS         156      6      1
+ FORTRAN MODIF utilifor/u2mesg              courtois M.COURTOIS         144      5      3
+ FORTRAN MODIF utilitai/fointa              courtois M.COURTOIS         219      6      3
+ FORTRAN MODIF utilitai/fointc              courtois M.COURTOIS         212      8      8
+ FORTRAN MODIF utilitai/fointe              courtois M.COURTOIS         343      5      2
+       H MODIF include/aster                courtois M.COURTOIS          84      1      1
+       H MODIF include/definition           courtois M.COURTOIS         283      5      1
+  PYTHON MODIF Build/B_SENSIBILITE_MEMO_NOM_SENSI   courtois M.COURTOIS         376      1      2
+  PYTHON MODIF Messages/calculel6            geniaut S.GENIAUT          335      6      2
+  PYTHON MODIF Messages/compor1             elgharib J.EL-GHARIB        350     10     10
+  PYTHON MODIF Messages/factor               geniaut S.GENIAUT          291     23      1
+  PYTHON MODIF Messages/supervis            courtois M.COURTOIS         438     12      1
+  PYTHON MODIF Messages/xfem2                geniaut S.GENIAUT          150      2     12
+  PYTHON MODIF Utilitai/Table               courtois M.COURTOIS        1029     10      4
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   66       22397       464     284      +180
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   66       22397       464     284      +180 

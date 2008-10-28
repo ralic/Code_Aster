@@ -1,6 +1,6 @@
       SUBROUTINE LKDLAM (VARV,NBMAT, MATER,DEPS,DEPSV,DGAMV,
      &                   IM,SM,VINM, DE,UCRIP,SEUILP,GP,DEVGII,
-     &                   PARAEP,VARPL,DFDSP,DLAM,RETCOM)
+     &                   PARAEP,VARPL,DFDSP,DLAM)
 C
       IMPLICIT   NONE
       INTEGER    VARV,NBMAT,RETCOM
@@ -11,7 +11,7 @@ C
       CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

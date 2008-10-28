@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/10/2008   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE SOLLICITATION SISMIQUE DE CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
+# wdnp101a.para = tps_job 600 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,8 +35,8 @@ NU    = 0.3   ;
 RHO   = 2105  ;          # Valeur homogeneisee
 
 K_EAU     = 2000.E+6 ;   # coefficient de compressibilite de l eau
-# INV_K_EAU = 1./K_EAU ;
-INV_K_EAU = 1.E-7 ;
+INV_K_EAU = 1./K_EAU ;
+#INV_K_EAU = 1.E-7 ;
 
 # Parametres Hujeux
 
@@ -305,7 +306,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                  ARCHIVAGE=_F(LIST_INST=TEMPS,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-3));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-3));
 
 DEP[0]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -509,7 +510,7 @@ for n in range(1,nbcouche-1):
                               SUBD_NIVEAU=10),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-3));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-3));
 
     DETRUIRE(INFO=1,CONCEPT=_F(NOM='INIVAR'));
     DETRUIRE(INFO=1,CONCEPT=_F(NOM='INIDEP'));
@@ -831,7 +832,7 @@ U9B=STAT_NON_LINE(MODELE=MOD9B,
                               SUBD_NIVEAU=10),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-5));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-5));
                  
 # IMPR_RESU(RESU=_F(RESULTAT=U9B));
 
@@ -1178,26 +1179,25 @@ ACC_A47X=CALC_FONCTION( LIST_PARA=L_COMB,
                       );
                       
                       
-TEST_FONCTION(VALEUR=_F (FONCTION=ACC_A1X, NOM_PARA='INST',
-                         VALE_PARA=3.10, VALE_REFE=9.50925E-01,
-                         PRECISION = 0.001, REFERENCE='NON_REGRESSION',),);
-                        
-TEST_FONCTION(VALEUR=_F (FONCTION=ACC_A1X, NOM_PARA='INST',
-                         VALE_PARA=3.16, VALE_REFE=-1.24296E+00,
-                         PRECISION = 0.001, REFERENCE='NON_REGRESSION',),); 
+TAB_INF1 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=2.80,
+                                    INST_FIN = 2.88, ))                                                   
+TAB_INF2 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.06,
+                                    INST_FIN = 3.14, ))                                                   
+TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.47,
+                                    INST_FIN = 3.55, ))                                                   
 
-TEST_FONCTION(VALEUR=_F (FONCTION=ACC_A47X, NOM_PARA='INST',
-                         VALE_PARA=2.84, VALE_REFE=2.65602E+00,
-                         PRECISION = 0.001, REFERENCE='NON_REGRESSION',),); 
+TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
+           VALE = 2.05361,PRECISION = 0.02,
+           REFERENCE = 'NON_REGRESSION')
+TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
+           VALE = 2.05361,PRECISION = 0.02,
+           REFERENCE = 'AUTRE_ASTER')
+TEST_TABLE(TABLE=TAB_INF2,NOM_PARA='RMS',
+           VALE = 1.67212,PRECISION = 0.02,
+           REFERENCE = 'NON_REGRESSION')
+TEST_TABLE(TABLE=TAB_INF3,NOM_PARA='RMS',
+           VALE = 2.81561,PRECISION = 0.12,
+           REFERENCE = 'NON_REGRESSION')
 
-TEST_FONCTION(VALEUR=_F (FONCTION=ACC_A47X, NOM_PARA='INST',
-                         VALE_PARA=3.10, VALE_REFE=-2.69603E+00,
-                         PRECISION = 0.001, REFERENCE='NON_REGRESSION',),);
-                         
-TEST_FONCTION(VALEUR=_F (FONCTION=ACC_A47X, NOM_PARA='INST',
-                         VALE_PARA=3.51, VALE_REFE=-3.83218E+00,
-                         PRECISION = 0.001, REFERENCE='NON_REGRESSION',),); 
-                         
-                                                   
 FIN( );
 

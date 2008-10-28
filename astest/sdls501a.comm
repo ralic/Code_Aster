@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 24/03/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -187,7 +187,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ELAS,
                    MAILLE='MA5',
                    VALE=2.227508550862E+05,
                    POINT=1,
-                   PRECISION=1e-10,
+                   PRECISION=1e-8,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.0.15',),
                 _F(RESULTAT=ELAS,
@@ -197,7 +197,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ELAS,
                    MAILLE='MA10',
                    POINT=1,
                    VALE=9.5995307118466E+08,
-                   PRECISION=1e-10,
+                   PRECISION=1e-8,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.0.15',),
                 _F(RESULTAT=ELAS,
@@ -207,7 +207,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ELAS,
                    MAILLE='MA25',
                    NOEUD='NO100',
                    VALE=5.0435078630760E+10,
-                   PRECISION=1e-10,
+                   PRECISION=1e-8,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.0.15',),),);
 
@@ -218,7 +218,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    MAILLE='MA5',
                    POINT=1,
                    VALE=2.227508550862E+05,
-                   PRECISION=1e-10,
+                   PRECISION=1e-8,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MODE,
                    NUME_ORDRE=1,
@@ -227,7 +227,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    MAILLE='MA10',
                    POINT=1,
                    VALE=9.5995307118466E+08,
-                   PRECISION=1e-10,
+                   PRECISION=1e-8,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MODE,
                    NUME_ORDRE=1,
@@ -236,7 +236,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    MAILLE='MA25',
                    NOEUD='NO100',
                    VALE=5.0435078630760E+10,
-                   PRECISION=1e-10,
+                   PRECISION=1e-8,
                    REFERENCE='AUTRE_ASTER',),),);
 
 FIN();

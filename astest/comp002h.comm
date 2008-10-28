@@ -1,6 +1,7 @@
-# MODIF  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 27/10/2008   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_CIN2_MEMO
+# comp002h.para = tps_job 900 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

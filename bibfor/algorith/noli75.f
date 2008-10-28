@@ -1,7 +1,7 @@
       SUBROUTINE NOLI75(NOMRES,SDNOLZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/10/2008   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -252,7 +252,7 @@ C         --- RECUP POINTEUR SUR CHAMP GENERALISE
             ELSEIF ( CHAMP(ICHAM) .EQ. 'VITE' ) THEN
               CHGENE = TRGENE(1:18)//'V'              
             ELSEIF ( CHAMP(ICHAM) .EQ. 'ACCE' ) THEN
-              CHGENE = TRGENE(1:18)//'D'
+              CHGENE = TRGENE(1:18)//'A'
             ELSE
               CALL U2MESS('A','ALGORITH10_94')
               GOTO 300
@@ -306,7 +306,7 @@ C         --- STOCKAGE CHAMP PHYSIQUE
             ZR(LINST) = ZR(JINST+IARCH-1)
           ENDIF
           
-          CALL JELIBE(CHGENE)
+          IF (NMC.EQ.0) CALL JELIBE(CHGENE)
 
  310    CONTINUE     
  300  CONTINUE   

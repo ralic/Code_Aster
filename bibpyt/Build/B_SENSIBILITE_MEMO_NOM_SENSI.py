@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 07/05/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,6 @@ from sets import Set
 # protection pour eficas
 try:
    import aster
-   from Utilitai.Utmess import  UTMESS
 except:
    pass
 

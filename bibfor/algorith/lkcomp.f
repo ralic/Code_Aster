@@ -13,7 +13,7 @@ C
       REAL*8             DSIDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -110,7 +110,7 @@ C =================================================================
       DATA   KRON /UN , UN , UN , ZERO ,ZERO ,ZERO/
       
       DT = INSTAP - INSTAM
-
+      RETCOM = 0
       CALL R8INIR(6,0.D0,DEPSP,1)
       CALL R8INIR(6,0.D0,DEPSV,1)
       DGAMP = ZERO
@@ -572,7 +572,8 @@ C =================================================================
           CALL LKOPTG(VAL,VARV,DT,NBMAT,MATERD, 
      &                I1ML,SML,IEL,SEL,UCRPM,UCRVM,UCRIV,SEUILV,
      &                VINM,DE,DEPSV,DSIDE,IRET)
-      
+          
+
            IF (IRET .EQ. 1 ) THEN
              RETCOM = 1
              GOTO 1000

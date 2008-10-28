@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF Table Utilitai  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -857,8 +857,10 @@ def sort_table(rows, l_para, w_para, reverse=False):
    for i in c_para :
       new_key= '___'+i
       for row in new_rows :
-         row[new_key]=row[i]
-         del row[i]
+         v = row.get(i)
+         if v is not None:
+            row[new_key]=v
+            del row[i]
    # sort
    new_rows.sort()
    # reversed sort
@@ -867,13 +869,17 @@ def sort_table(rows, l_para, w_para, reverse=False):
    for i in w_para :
       old_key= '__'+str(w_para.index(i))+i
       for row in new_rows :
-         row[i]=row[old_key]
-         del row[old_key]
+         v = row.get(old_key)
+         if v is not None:
+            row[i]=v
+            del row[old_key]
    for i in c_para :
       old_key= '___'+i
       for row in new_rows :
-         row[i]=row[old_key]
-         del row[old_key]
+         v = row.get(old_key)
+         if v is not None:
+            row[i]=v
+            del row[old_key]
    return new_rows
 
 # ------------------------------------------------------------------------------

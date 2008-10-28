@@ -5,7 +5,7 @@ C
       REAL*8        B, S(6), VECN(6)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,23 +32,25 @@ C --- : B      : PARAMETRE DU CALCUL DE LA NORMALE ----------------
 C OUT : VECN   : N = (B*S/SII-I)/SQRT(B**2+3) ---------------------
 C =================================================================
       INTEGER I, NDT, NDI
-      REAL*8  SII, RACINE, UN, TROIS, KRON(6), ZERO, LGLEPS
+      REAL*8  SII, RACINE, UN, TROIS, KRON(6), ZERO
+      REAL*8  PTIT, R8MIEM
 C =================================================================
 C --- INITIALISATION DE PARAMETRE ---------------------------------
 C =================================================================
       PARAMETER       ( UN      =   1.0D0  )
       PARAMETER       ( TROIS   =   3.0D0  )
       PARAMETER       ( ZERO    =   0.0D0  )
-      PARAMETER       ( LGLEPS  =  1.0D-8  )
 C =================================================================
       COMMON /TDIM/   NDT , NDI
 C =================================================================
       DATA    KRON    /UN     ,UN     ,UN     ,ZERO   ,ZERO  ,ZERO/
 C --- INITIALISATION ----------------------------------------------
 C =================================================================
+      RETCOM = 0
+      PTIT = R8MIEM()
       CALL     LCPRSC(S, S, SII)
       SII    = SQRT  (SII)
-      IF (SII .LT. LGLEPS) THEN
+      IF (SII .LT. PTIT) THEN
         CALL U2MESS('A','COMPOR1_31')
        RETCOM = 1
        GOTO 1000

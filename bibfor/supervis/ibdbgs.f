@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,11 @@ C     --- OPTIONS PAR DEFAUT ---
 
 C     MOT-CLE CODE PRESENT ?
       CALL GETFAC('CODE',NCODE)
+
+C     -- MOT-CLE CODE
+      IF (NCODE.GT.0) THEN
+         CALL U2MESS('I','SUPERVIS_22')
+      ENDIF
 
 C     -- DEBUG / JXVERI :
 C     -----------------------------------------------------

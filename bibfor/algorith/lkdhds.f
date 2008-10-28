@@ -5,7 +5,7 @@ C
       REAL*8        MATER(NBMAT,2),INVAR,S(6), DHDS(6)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C =================================================================
       REAL*8  GAMCJS, PREF
       REAL*8  T(6), DEVT(6)
       REAL*8  SII, COS3T, RCOS3T, LKHLOD, RHLODE, H5
-      REAL*8  DEUX, CINQ, SIX, LGLEPS
+      REAL*8  DEUX, CINQ, SIX, LGLEPS, PTIT, R8MIEM
       REAL*8  FACT1, FACT2
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
@@ -60,9 +60,11 @@ C =================================================================
 C =================================================================
 C --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 C =================================================================
+      RETCOM = 0
+      PTIT = R8MIEM()
       CALL     LCPRSC(S, S, SII)
       SII    = SQRT  (SII)
-      IF (SII .LT. LGLEPS) THEN
+      IF (SII .LT. PTIT) THEN
        CALL U2MESS('A','COMPOR1_29')
        RETCOM = 1
        GOTO 1000

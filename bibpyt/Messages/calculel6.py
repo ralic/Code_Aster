@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF calculel6 Messages  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -317,7 +317,11 @@ Solution :
 """),
 
 79: _("""
- Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM 
+ Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM : 
+ le champ produit est incomplet sur les éléments X-FEM.
+--> Risque : ce champ ne pourra être utilisé sur des éléments non X-FEM.
+--> Conseils : il vaut mieux utiliser les commandes de post-traitement
+spécifique POST_MAIL_XFEM et POST_CHAM_XFEM avant le CALC_ELEM.
 """),
 
 80 : _("""

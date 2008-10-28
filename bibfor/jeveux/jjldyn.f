@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 27/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,8 +97,7 @@ C        =X ON TRAITE DIRECTEMENT
 C
           ISDC  = ISZON(JISZON + IADMI - 1) / ISSTAT
           IF (CGENR .EQ. 'X' .AND. ISDC .EQ. 2) THEN  
-            CALL JJVERN (NOM32 , 0 , IRET)
-            CALL JJALLC (IC , J , 'L' , IBACOL)
+            IBACOL = IADMI
             IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
             IXIADD = ISZON ( JISZON + IBACOL + IDIADD )
             IXDESO = ISZON ( JISZON + IBACOL + IDDESO )
@@ -149,7 +148,6 @@ C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
                 ENDIF  
  210          CONTINUE  
             ENDIF
-            CALL JJLIDE ('JEIMPO' , NOM32(1:24) , 2)
             GOTO 205
 C          ELSE IF ( NOM32(25:32) .EQ. ' ' ) THEN 
           ELSE 

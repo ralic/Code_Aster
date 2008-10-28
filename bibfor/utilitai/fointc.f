@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,17 +52,13 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                 ZK80
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER      LPROL, NUPAR, MXPARA, NBPF, I, I1, I2, LVALE,
-     &             LFONC, NBVALE
+      INTEGER      LPROL, I, I1, I2, LVALE, LFONC, NBVALE
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
       REAL*8       EPSI, TOLE, R8PREM, R8VIDE, VALR, RESU(2)
-      CHARACTER*1  COLI, K1BID, BL
+      CHARACTER*1  COLI, K1BID
       CHARACTER*16 INTERP, PROLGD
       CHARACTER*19 NOMFON
       CHARACTER*24 CHPROL, CHVALE
-C     ------------------------------------------------------------------
-      INTEGER      IPAR(10)
-      CHARACTER*16 NOMP(10)
 C     ------------------------------------------------------------------
       INTEGER      MXSAVE
       PARAMETER   (MXSAVE=4)
@@ -100,7 +96,11 @@ C
 C --- CALCUL DE LA FONCTION INTERPRETEE ---
 C
       IF ( ZK24(LPROL) .EQ. 'INTERPRE' ) THEN
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU,IER)
+         IF (IER.GT.0) THEN
+            IER = 110
+            GOTO 9999
+         ENDIF
          RESURE=RESU(1)
          RESUIM=RESU(2)
          GOTO 9999

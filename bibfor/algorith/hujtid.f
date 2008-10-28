@@ -1,7 +1,7 @@
         SUBROUTINE HUJTID (MOD, IMAT, SIGR, VIN, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 28/10/2008   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -287,8 +287,12 @@ Caf 04/06/07 Debut
            TH(2) = VIN(4*KK-8)
            PROD  = SIGD(3*K-2)*(XK(1)-RC(K)*TH(1)) + 
      &             SIGD(3*K)*(XK(2)-RC(K)*TH(2))/DEUX  
-           DFDEVP = -M*PK*BETA*BHUJ*(-PROD/Q(K)+RC(K))
-           
+           IF(Q(K).LT.TOLE)THEN
+             DFDEVP = -M*PK*BETA*BHUJ*RC(K)
+           ELSE
+             DFDEVP = -M*PK*BETA*BHUJ*(-PROD/Q(K)+RC(K))
+           ENDIF
+
          ELSEIF (KK .EQ. 8) THEN
          
            X4 = VIN(21)
@@ -309,9 +313,17 @@ Caf 04/06/07 Fin
            
 Ckh --- traction
              IF ((P(L)/PREF).GT.TOLE) THEN
-                DPSI =MDIL+Q(L)/P(L)
+                IF(ABS(P(L)).LT.TOLE)THEN
+                  DPSI = MDIL
+                ELSE
+                  DPSI = MDIL+Q(L)/P(L)
+                ENDIF
               ELSE
-                DPSI =-Q(L)/P(L)
+                IF(ABS(P(L)).LT.TOLE)THEN
+                  DPSI = ZERO
+                ELSE
+                  DPSI = -Q(L)/P(L)
+                ENDIF
              ENDIF
              EVL = -KSI(L)*COEF*DPSI
              
@@ -326,16 +338,20 @@ Caf 04/06/07 Debut
              PS = 2*SIGD(3*L-2)*DEV(1)+SIGD(3*L)*DEV(3)
 Ckh --- traction
              IF ((P(L)/PREF).GT.TOLE) THEN
-               DPSI =MDIL+PS/(2.D0*P(L)*Q(L))
+               IF((Q(L).LT.TOLE).OR.(ABS(P(L)).LT.TOLE))THEN
+                 DPSI = MDIL
+               ELSE
+                 DPSI =MDIL+PS/(2.D0*P(L)*Q(L))
+               ENDIF
              ELSE
-               DPSI =-PS/(2.D0*P(L)*Q(L))
+               IF((Q(L).LT.TOLE).OR.(ABS(P(L)).LT.TOLE))THEN
+                 DPSI = ZERO
+               ELSE
+                 DPSI =-PS/(2.D0*P(L)*Q(L))
+               ENDIF
              ENDIF
               
-             IF((-Q(L)/PREF).GT.TOLE)THEN
-               EVL = -KSI(L)*COEF*DPSI
-             ELSE
-               EVL = -KSI(L)*COEF*MDIL
-             ENDIF
+             EVL = -KSI(L)*COEF*DPSI
              
            ELSEIF (LL .EQ. 8) THEN
            
@@ -376,11 +392,13 @@ Caf 04/06/07 Debut
            TH(1) = VIN(4*KK-9)
            TH(2) = VIN(4*KK-8)
            PROD  = SIGD(3*K-2)*TH(1) + SIGD(3*K)*TH(2)/DEUX
-           B3(K) = M*PK*(UN-BHUJ*LOG(PK/PC))*
-     &             (UN+PROD/Q(K))*(UN-RC(K))**DEUX /AD(K) 
-              
-           IF(ABS(PROD/Q(K)+UN).LT.TOLE)B3(K) = M*PK*2.D0*
-     &       (UN-BHUJ*LOG(PK/PC))*(UN-RC(K))**DEUX /AD(K) 
+           IF(Q(K).LT.TOLE)THEN 
+             B3(K) = M*PK*(UN-BHUJ*LOG(PK/PC))*DEUX*
+     &              (UN-RC(K))**DEUX /AD(K)
+           ELSE
+             B3(K) = M*PK*(UN-BHUJ*LOG(PK/PC))*
+     &              (UN+PROD/Q(K))*(UN-RC(K))**DEUX /AD(K)
+           ENDIF              
 
          ELSEIF (KK .EQ. 8) THEN
            
@@ -422,7 +440,7 @@ C =====================================================================
 C =====================================================================
 C --- III. CALCUL DE D = B-1*D ----------------------------------------
 C =====================================================================
-       CALL MGAUSS('NFVP', B, D, 4, NBMECA, NDT, DET, IRET)
+       CALL MGAUSS('NCVP', B, D, 4, NBMECA, NDT, DET, IRET)
        IF (IRET.EQ.1) CALL U2MESS ('F', 'COMPOR1_6')
        
        

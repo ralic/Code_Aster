@@ -1,7 +1,7 @@
       SUBROUTINE NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
      &DEUXMU,CRIT,SEUIL,VISC,MEMO,DT,RM,QM,KSIM,RP,QP,KSIP,DP,IRET,ITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 27/10/2008   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,47 +135,14 @@ C
         DP = DPE
         GOTO 50
       ELSEIF (F0.LE.ZERO) THEN
-        X(1) = DPE
-        Y(1) = F0
-C
-C ---   F0 < 0 , ON CHERCHE DPMAX TEL QUE FMAX > 0 :
-C
-        DO 10 I = 1, NITER
-C
-C ---    CALCUL DE LA VALEUR FMAX DE LA FONCTION DONT ON CHERCHE LA
-C ---    RACINE POUR DP = SEUIL/(3*MU) :
-C        -----------------------------
-        CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
-     &              DEUXMU,VISC,MEMO,RM,RP,QM,QP,KSIM,KSIP,DT,FMAX)
-C
-        IF (ABS(FMAX).LE.PREC) THEN
-           DP = DPMAX
-           ITER=1
-           GOTO 50
-        ELSEIF (FMAX.GT.ZERO) THEN
-           X(2) = DPMAX
-           Y(2) = FMAX
-           GOTO 20
-        ELSE
-          DPMAX = DPMAX*DIX
-        ENDIF
-C
-  10    CONTINUE
-C
-        CALL U2MESS('A','ALGORITH6_78')
-        GOTO 20
-        
-C       F0 >0. On cherche le plus petit DPMAX tel que F(DPMAX)<0
+        CALL U2MESS('A','ELEMENTS4_61')
+        GOTO 41
       ELSE
         X(2) = DPE
         Y(2) = F0
 C
 C ---   F0 > 0 , ON CHERCHE DPMAX TEL QUE FMAX < 0 :
-C ---   EXAMEN DE LA SOLUTION DP = SEUIL/(3*MU) :
-C       =======================================
 C
-C       VERIFICATION QUE DPMAX N'EST PAS TROP GRAND. BRACKETTING
-        
         CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
      &              DEUXMU,VISC,MEMO,RM,RP,QM,QP,KSIM,KSIP,DT,FMAX)
         IF (ABS(FMAX).LE.PREC) THEN
@@ -183,12 +150,18 @@ C       VERIFICATION QUE DPMAX N'EST PAS TROP GRAND. BRACKETTING
            ITER=1
            GOTO 50
         ELSEIF (FMAX.LT.ZERO) THEN
+C          FMAX < 0.
+C          VERIFICATION QUE DPMAX N'EST PAS TROP GRAND. BRACKETTING
            DO 31 I = 1, NITER
-C             F(DPMAX) ENCORE POSITIF. ON DIVISE PAR 10          
               DPMAX = DPMAX/DIX
               CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,
      &            ALFA2M,DEUXMU,VISC,MEMO,RM,RP,QM,QP,KSIM,KSIP,DT,FMAX)
-              IF (FMAX.GT.ZERO) THEN
+              IF (ABS(FMAX).LE.PREC) THEN
+                 DP = DPMAX
+                 ITER=I
+                 GOTO 50
+              ELSEIF (FMAX.GT.ZERO) THEN
+C                ON RECALCULE LA VALEUR PRECEDENTE DE DPMAX 
                  DPMAX = DPMAX*DIX
                  CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,
      &                       ALFAM,ALFA2M,DEUXMU,VISC,MEMO,RM,RP,QM,QP,
@@ -202,23 +175,25 @@ C             F(DPMAX) ENCORE POSITIF. ON DIVISE PAR 10
            Y(1) = FMAX
            GOTO 20
 
-C          FMAX >0. On augmente DPMAX
         ELSE
+C          FMAX >0. On augmente DPMAX jusqu'à ce que F(DPMAX) < 0
            DO 30 I = 1, NITER
-C ---      CALCUL DE LA VALEUR FMAX DE LA FONCTION DONT ON CHERCHE LA
-C ---      RACINE POUR DP = SEUIL/(3*MU) :
               CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,
      &          ALFA2M,DEUXMU,VISC,MEMO,RM,RP,QM,QP,KSIM,KSIP,DT,FMAX)
-              IF (FMAX.LE.ZERO) THEN
+              IF (ABS(FMAX).LE.PREC) THEN
+                 DP = DPMAX
+                 ITER=I
+                 GOTO 50
+              ELSEIF (FMAX.LT.ZERO) THEN
                  X(1) = DPMAX
                  Y(1) = FMAX
                  GOTO 20
               ELSE
                  DPMAX = DPMAX*DIX
               ENDIF
-  30    CONTINUE
-        CALL U2MESS('A','ALGORITH6_79')
-        GOTO 20
+  30       CONTINUE
+           CALL U2MESS('A','ALGORITH6_79')
+           GOTO 20
         ENDIF
         
       ENDIF
@@ -234,6 +209,14 @@ C     ===========================================
 C
       IF (ABS(Y(4)).LT.PREC) GOTO 50
       DO 40 ITER = 1, NITER
+        IF (Y(1).GT.0 .OR. Y(2).LT.0) THEN
+           CALL U2MESS('A','ALGORITH6_78')
+           GOTO 41
+        ENDIF
+        IF (X(3).EQ.X(4)) THEN
+           CALL U2MESS('A','ALGORITH9_84')
+           GOTO 41
+        ENDIF
         CALL ZEROCO(X,Y)
         DP = X(4)
         CALL NMCHCR(MAT,DP,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
@@ -241,6 +224,8 @@ C
         IF (ABS(Y(4)).LT.PREC) GOTO 50
   40  CONTINUE
 C
+  41  CONTINUE
+  
 C     CAS DE NON CONVERGENCE : IMPRESSIONS SI INFO=2
       CALL INFNIV(IFM,NIV)
       IF (NIV.EQ.2) THEN

@@ -5,7 +5,7 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,10 @@ C
       CALL JEVEUT(CHPROL,'L',LPROL)
       IF (ZK24(LPROL).EQ.'INTERPRE') THEN
 C     ------------------------ CAS DES FORMULES ------------------------
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU,IER)
+         IF (IER.GT.0) THEN
+            IER = 110
+         ENDIF
          GOTO 9999
       ENDIF
 C

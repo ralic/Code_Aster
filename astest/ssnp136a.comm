@@ -1,5 +1,6 @@
-# MODIF  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
+# ssnp136a.para = tps_job 800 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,6 +90,7 @@ chmat=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                             
 TM = -1000000.0
 T0 = 0.
+T12 = 2000000.0
 T1 = 10000000.0
 T2 = 20000000.0
 T3 = 100000000.0
@@ -102,7 +104,8 @@ TAN0=DEFI_LIST_REEL(DEBUT=TM,
                     INTERVALLE=_F(JUSQU_A=T0, NOMBRE=3));
                                                           
 TAN=DEFI_LIST_REEL(DEBUT=T0,
-                   INTERVALLE=(_F(JUSQU_A=T1, NOMBRE=20),
+                   INTERVALLE=(_F(JUSQU_A=T12, NOMBRE=40),
+                               _F(JUSQU_A=T1, NOMBRE=16),
                                _F(JUSQU_A=T2, NOMBRE=20)));
 
 DPLY=DEFI_FONCTION(NOM_PARA='INST',
@@ -444,23 +447,23 @@ resu1=CALC_ELEM(reuse   =resu1,
 
 resu2=STAT_NON_LINE(MODELE    =MODMEC1,
                     CHAM_MATER=chmat,
-                    EXCIT=(_F(CHARGE   =DDLIMP0),
-                           _F(CHARGE   =PESE),
+                    EXCIT=(_F(CHARGE   =DDLIMP0,),
+                           _F(CHARGE   =PESE,),
                            _F(CHARGE   =DDLIMP2,
-                              FONC_MULT=fevol)),
-                    COMP_INCR=_F(RELATION='CAM_CLAY'),
-                    ETAT_INIT=_F(EVOL_NOLI=resu1),
+                              FONC_MULT=fevol,),),
+                    COMP_INCR=_F(RELATION='CAM_CLAY',),
+                    ETAT_INIT=_F(EVOL_NOLI=resu1,),
                     INCREMENT=_F(LIST_INST    =TAN,
                                  INST_INIT    =T0,
                                  INST_FIN     =T2,
                                  SUBD_METHODE ='UNIFORME',
                                  SUBD_PAS     =10,
-                                 SUBD_PAS_MINI=100.0),
+                                 SUBD_PAS_MINI=100.0,),
                     NEWTON=_F(MATRICE  ='TANGENTE',
-                              REAC_ITER=1),
+                              REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1E-06,
                                    ITER_GLOB_MAXI=10,
-                                   ARRET         ='OUI'));
+                                   ARRET         ='OUI',),);
 
 
 #--------------------------------------------------------------------
@@ -504,7 +507,7 @@ IMPR_TABLE(TABLE=T_VARI_A);
 TEST_TABLE(TABLE    =T_VARI_O,
            NOM_PARA ='V4',
            VALE     =450.,
-           PRECISION=150.,
+           PRECISION=50.,
            CRITERE  ='ABSOLU',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA ='V3',
@@ -515,18 +518,18 @@ TEST_TABLE(TABLE    =T_VARI_O,
 TEST_TABLE(TABLE    =T_VARI_O,
            NOM_PARA ='V4',
            VALE     =20000.,
-           PRECISION=0.02,
+           PRECISION=0.04,
            CRITERE  ='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA ='V3',
                      VALE     =110000.,
-                     PRECISION=10.,
+                     PRECISION=100.,
                      CRITERE  ='ABSOLU'));
                      
 TEST_TABLE(TABLE    =T_VARI_O,
            NOM_PARA ='V4',
            VALE     =26060.,
-           PRECISION=0.01,
+           PRECISION=0.02,
            CRITERE  ='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA ='V3',
@@ -580,18 +583,18 @@ TEST_TABLE(TABLE    =T_VARI_A,
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA ='V3',
                      VALE     =100000.,
-                     PRECISION=1.,
+                     PRECISION=10.,
                      CRITERE  ='ABSOLU'));
                      
 TEST_TABLE(TABLE    =T_VARI_A,
            NOM_PARA ='V4',
            VALE     =10420.,
-           PRECISION=0.05,
+           PRECISION=0.06,
            CRITERE  ='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA ='V3',
                      VALE     =98000.,
-                     PRECISION=10.,
+                     PRECISION=200.,
                      CRITERE  ='ABSOLU'));
                      
 TEST_TABLE(TABLE    =T_VARI_A,

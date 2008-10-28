@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 13/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C     ------------------------------------------------------------------
       CHARACTER*132    K132B
       CHARACTER *16    COMPEX
       CHARACTER *8     NOMRES, K8B
-      LOGICAL          LERROR, LVALID, LABORT, SUITE
+      LOGICAL          LERROR, LVALID, LABORT, LTRACE, SUITE
       INTEGER          LOUT,IDF,I,LL,LC,ICMD,IMAAP,LXLGUT
 C     ------------------------------------------------------------------
       SAVE             RECURS
@@ -72,11 +72,13 @@ C         DOIT-ON VALIDER LE CONCEPT ?
      &    .OR. (IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'EXCEPTION+VALID')
 C         DOIT-ON S'ARRETER BRUTALEMENT (POUR DEBUG) ?
       LABORT = IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'ABORT'
+C         TRACEBACK SI F OU S, PAS SI EXCEPTION NOMMEE
+      LTRACE = IDF.EQ.2 .OR. IDF.EQ.6
 C
       CALL UTPRIN(CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C
 C     --- REMONTEE D'ERREUR SI DISPO
-      IF ( LABORT ) THEN
+      IF ( LTRACE ) THEN
           CALL TRACEB('Liste des appels successifs ' //
      &                '(option -traceback)', -1)
       ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+#@ MODIF compor1 Messages  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,32 +154,32 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 
 
 26: _("""
- lklmat :: paramètres de la loi LETK non cohérents 
+ LETK - lklmat :: paramètres de la loi LETK non cohérents 
 """),
 27: _("""
- lkcomp :: Réduire le pas de temps peut dans certains cas remédier au problème.
+ LETK - lkcomp :: Réduire le pas de temps peut dans certains cas remédier au problème.
  Le critère visqueux max en ce point de charge n'est 
  pas défini. Le calcul de la distance au critère n'est pas fait.
 """),
 28: _("""
- lkcomp :: Réduire le pas de temps peut dans certains cas remédier au problème.
+ LETK - lkcomp :: Réduire le pas de temps peut dans certains cas remédier au problème.
  Le critère visqueux en ce point de charge n'est pas défini. 
  Le calcul de la distance au critère n'est pas fait.
 """),
 
 29: _("""
- lkdhds :: division par zéro - entrée rapide en plasticité avec un déviateur nul. 
- réduire le pas de temps.
+ LETK - lkdhds :: division par zéro - entrée en plasticité avec un déviateur  nul. 
+ le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 30: _("""
- lkds2h :: division par zéro - entrée rapide en plasticité avec un déviateur nul. 
- réduire le pas de temps.
+ LETK - lkds2h :: division par zéro - entrée en plasticité avec un déviateur nul. 
+ le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 31: _("""
- lkcaln :: division par zéro - entrée rapide en plasticité avec un déviateur nul. 
- réduire le pas de temps.
+ LETK - lkcaln :: division par zéro - entrée en plasticité avec un déviateur nul. 
+ le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 32: _("""

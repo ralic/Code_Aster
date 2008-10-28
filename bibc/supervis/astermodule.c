@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 20/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF astermodule supervis  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1157,10 +1157,10 @@ void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN STRING_SIZE lnom,
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
-                            _IN INTEGER *nbpu,_IN char *param,_IN STRING_SIZE lpara,
-                            _IN DOUBLE *val,
-                           _OUT DOUBLE *resu)
+void DEFSPSPPP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
+                             _IN INTEGER *nbpu,_IN char *param,_IN STRING_SIZE lpara,
+                             _IN DOUBLE *val,
+                            _OUT DOUBLE *resu, _OUT INTEGER *iret)
 {
         PyObject *res  = (PyObject*)0 ;
         PyObject *tup_par;
@@ -1168,6 +1168,7 @@ void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
         char *kvar;
         int i;
                                                         ASSERT(commande!=(PyObject*)0);
+        *iret = 0;
         tup_par = PyTuple_New( *nbpu ) ;
         tup_val = PyTuple_New( *nbpu ) ;
         for(i=0;i<*nbpu;i++){
@@ -1187,7 +1188,7 @@ void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
         } else if (PyFloat_Check(res) || PyLong_Check(res) || PyInt_Check(res)) {
             *resu=PyFloat_AsDouble(res);
         } else {
-            MYABORT("Type retourne par fiintf invalide !");
+            *iret = 4;
         }
         Py_DECREF(tup_par);
         Py_DECREF(tup_val);
