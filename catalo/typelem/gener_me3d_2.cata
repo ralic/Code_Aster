@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/10/2008   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,6 +64,7 @@ MODE_LOCAL__
     EGTHETA  = G        ELEM__         (GTHETA   )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     ERAYONM  = NEUT_R   ELEM__         (X1       )
     ECASECT  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
@@ -72,6 +73,7 @@ MODE_LOCAL__
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
+    EPRESGA  = PRES_R   ELGA__ RIGI    (PRES     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
@@ -85,7 +87,7 @@ MODE_LOCAL__
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3      
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3
                                         K1    K2   K3   BETA     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
@@ -200,6 +202,8 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRSU_R    422   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
+    COOR_ELGA           488   IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOP_R PCOORPG
     G_BILI              298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  DDL_MECA PTHETAR  CEPSINR  UEPSINR
                                      CEPSINR  VEPSINR  EFORCNO  UPFR23D  EFORCNO  VPFR23D  EPRESNO  UPRESSR
@@ -224,6 +228,6 @@ OPTION__
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R 
+                              OUT__  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  EPRESGA  PPRES_R
 %    TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
 %                              OUT__  E18NEUI  PCNSETO  E6NEUTI PHEAVTO  E9NEUTI  PLONCHA  E9NEUTR PPINTTO

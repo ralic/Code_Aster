@@ -1,4 +1,4 @@
-#@ MODIF modes Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF modes Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -399,6 +399,94 @@ class ParamProjMesuModal(Frame):
             if mc['REGUL'] != 'NON':
                 mc['COEF_PONDER'] = self.regul.get()
 
+        return mc
+
+class InitParamRecalS0(Frame):
+    """Un panneau pour specifier les valeurs initiales des parametres 
+    A, PULSc, BETA et MU pour l'interpolation de la fonction S0
+    par la forme analytique attendue
+    """
+    def __init__(self, root, title, **kwargs):
+        Frame.__init__(self, root, **kwargs)
+        Label(self, text=title).grid(row=0, column=0, columnspan=1)
+
+
+        self.A = DoubleVar()
+        self.Amin = DoubleVar()
+        self.Amax = DoubleVar()
+        self.PULSC = DoubleVar()
+        self.PULSCmin = DoubleVar()
+        self.PULSCmax = DoubleVar()
+        self.BETA = DoubleVar()
+        self.BETAmin = DoubleVar()
+        self.BETAmax = DoubleVar()
+        self.MU = DoubleVar()
+        self.MUmin = DoubleVar()
+        self.MUmax = DoubleVar()
+        self.p1 = DoubleVar()
+        self.p2 = DoubleVar()
+
+        self.A.set(1.0e+11)
+        self.Amin.set(1.0e+8)
+        self.Amax.set(1.0e+14)
+        self.PULSC.set(100.0)
+        self.PULSCmin.set(50.0)
+        self.PULSCmax.set(150.0)
+        self.BETA.set(10.0)
+        self.BETAmin.set(5.0)
+        self.BETAmax.set(15.0)
+        self.MU.set(0.025)
+        self.MUmin.set(0.01)
+        self.MUmax.set(0.05)        
+        self.p1.set(1.0)
+        self.p2.set(0.1)
+
+        self.opt_panel = None
+        self.opt_poids = None
+
+        panel = OptionFrame(self, None, [
+                ("A",Entry,{'textvariable':self.A}),
+                ("Valeur minimale de A - ",Entry,{'textvariable':self.Amin}),
+                ("Valeur maximale de A",Entry,{'textvariable':self.Amax}),
+                ("OMEGAc",Entry,{'textvariable':self.PULSC}),
+                ("Valeur minimale de OMEGAc",Entry,{'textvariable':self.PULSCmin}),
+                ("Valeur maximale de OMEGAc",Entry,{'textvariable':self.PULSCmax}),
+                ("BETA",Entry,{'textvariable':self.BETA}),
+                ("Valeur minimale de BETA",Entry,{'textvariable':self.BETAmin}),
+                ("Valeur maximale de BETA",Entry,{'textvariable':self.BETAmax}),
+                ("MU",Entry,{'textvariable':self.MU}),
+                ("Valeur minimale de MU",Entry,{'textvariable':self.MUmin}),
+                ("Valeur maximale de MU",Entry,{'textvariable':self.MUmax}),
+                ])
+
+        self.opt_panel = panel
+        panel.grid(row=1,column=0,columnspan=2,sticky="WE")
+
+        Label(self,text="POIDS A AFFECTER").grid(row=2,column=0)
+
+        poids = OptionFrame(self, None, [
+                ("Poids à affecter au mode fondamental",Entry,{'textvariable':self.p1}),
+                ("Poids à affecter aux modes supplémentaires (EML)",Entry,{'textvariable':self.p2}),
+                ])
+        self.opt_poids = poids
+        poids.grid(row=3,column=0,columnspan=2,sticky="WE")
+
+    def get_resolution(self):
+        mc = {}
+        mc['A'] = self.A.get()
+        mc['Amin'] = self.Amin.get()
+        mc['Amax'] = self.Amax.get()
+        mc['PULSC'] = self.PULSC.get()
+        mc['PULSCmin'] = self.PULSCmin.get()
+        mc['PULSCmax'] = self.PULSCmax.get()
+        mc['BETA'] = self.BETA.get()
+        mc['BETAmin'] = self.BETAmin.get()
+        mc['BETAmax'] = self.BETAmax.get()
+        mc['MU'] = self.MU.get()
+        mc['MUmin'] = self.MUmin.get()
+        mc['MUmax'] = self.MUmax.get()
+        mc['poids1'] = self.p1.get()
+        mc['poids2'] = self.p2.get()
         return mc
 
 

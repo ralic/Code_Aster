@@ -1,7 +1,7 @@
       SUBROUTINE TE0581 ( OPTION , NOMTE )
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,11 +64,12 @@ C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
       CALL TECACH('ONN','PEPCON2',7,JTAB2,IRET)
       CALL TECACH('ONN','PEPCON3',7,JTAB3,IRET)
 
-      IF ( JTAB1(1)*JTAB2(1)*JTAB3(1).EQ.0 ) THEN
+      IF ( (JTAB1(1).EQ.0).OR.(JTAB2(1).EQ.0).OR.(JTAB3(1).EQ.0)) THEN
          VALK(1) = OPTION
          VALK(2) = NOMTE
          CALL U2MESK('F','ELEMENTS4_38', 2 ,VALK)
       ENDIF
+
       IF (( JTAB1(2).NE.JTAB2(2) ).OR.( JTAB1(3).NE.JTAB2(3) ))
      &   CALL U2MESK('F','ELEMENTS4_39',1,OPTION)
 

@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,7 +102,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*8 LERES0,NOPASE
       CHARACTER*8 NOMCMP,SAVCAR(2)
       CHARACTER*13 INPSCO
-      CHARACTER*14 NUME
+      CHARACTER*19 PFCHNO
       CHARACTER*16 NOMCMD,OPTION,OPTIO2,OPTIOX,NOMCHA,TYPES,K16B
       CHARACTER*19 LERES1
       CHARACTER*19 INFCHA
@@ -456,32 +456,25 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
               CALL U2MESS('A','CALCULEL2_98')
               GO TO 440
             END IF
+
             IF (CONCEP.EQ.'DYNA_HARMO') THEN
-              IF (OPTION.EQ.'SIGM_ELNO_DEPL') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'SIPO_ELNO_DEPL') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'SIEF_ELGA_DEPL') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'EPSI_ELGA_DEPL') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'EPSI_ELNO_DEPL') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
-                OPTIO2 = OPTION
-              ELSE IF (OPTION.EQ.'ENEL_ELGA') THEN
-                OPTIO2 = OPTION
-               ELSE IF (OPTION.EQ.'ENEL_ELNO_ELGA') THEN
-                OPTIO2 = OPTION
+              IF (( OPTION.EQ.'SIGM_ELNO_DEPL')
+     &        .OR. (OPTION.EQ.'SIPO_ELNO_DEPL')
+     &        .OR. (OPTION.EQ.'EFGE_ELNO_DEPL')
+     &        .OR. (OPTION.EQ.'SIEF_ELGA_DEPL')
+     &
+     &        .OR. (OPTION.EQ.'SIEF_ELNO_ELGA')
+     &        .OR. (OPTION.EQ.'EPSI_ELGA_DEPL')
+     &        .OR. (OPTION.EQ.'EPSI_ELNO_DEPL')
+     &        .OR. (OPTION.EQ.'EPOT_ELEM_DEPL')
+     &        .OR. (OPTION.EQ.'ECIN_ELEM_DEPL')
+     &        .OR. (OPTION.EQ.'ENEL_ELGA')
+     &        .OR. (OPTION.EQ.'ENEL_ELNO_ELGA')) THEN
+777             CONTINUE
              ELSE
                 GO TO 520
               END IF
+
             ELSE IF (CONCEP.EQ.'EVOL_NOLI') THEN
               IF (OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
      &            OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
@@ -490,10 +483,9 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
                 CALL U2MESK('A','CALCULEL2_99',1,OPTION)
                 GO TO 440
               END IF
-              OPTIO2 = OPTION
-            ELSE
-              OPTIO2 = OPTION
             END IF
+
+            OPTIO2 = OPTION
 
             IF (TYPESE.EQ.-1) THEN
               IF (OPTIO2.EQ.'SIEF_ELGA_DEPL') THEN
@@ -606,7 +598,8 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
                         CALL FOINTE('F ',K8B,1,'FREQ',FREQ,VALRES,IER)
                         CALPHA = DCMPLX(VALRES,ZERO)
                       ELSE IF (L2.NE.0) THEN
-                        CALL FOINTC(K8B,1,'FREQ',FREQ,VALRES,VALIM,IER)
+                        CALL FOINTC('F',K8B,1,'FREQ',FREQ,
+     &                              VALRES,VALIM,IER)
                         CALPHA = DCMPLX(VALRES,VALIM)
                       ELSE IF (L3.NE.0) THEN
                         CALPHA = DCMPLX(COEF,UN)
@@ -738,7 +731,7 @@ C       OPTION 'SIEF_SENO_SEGA' EST NÉCESSAIRE SI X-FEM
                 OPTIOX(1:14)='SIEF_SENO_SEGA'
                 CALL RSEXC1(LERES1,OPTIOX,IORDR,CHELEX)
               END IF
-C             
+C
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
@@ -767,7 +760,7 @@ C      A PARTIR DE SIEF_ELGA_DEPL
               IF (IRET.GT.0) GO TO 92
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
               IF (IFISS.NE.0) CALL RSNOCH(LERES1,OPTIOX,IORDR,' ')
-                
+
    92         CONTINUE
               CALL JEDEMA()
    90       CONTINUE
@@ -884,9 +877,9 @@ C ---- VERIF SENSIBILITE FIN
               IF (OPTION.EQ.'SIGM_NOZ1_ELGA') THEN
                 CALL SINOZ1(MODELE,CHSIG,CHSIGN)
               ELSE IF (OPTION.EQ.'SIGM_NOZ2_ELGA') THEN
-                CALL DISMOI('F','NOM_NUME_DDL',CHAMGD,'CHAM_NO',IB,NUME,
+                CALL DISMOI('F','PROF_CHNO',CHAMGD,'CHAM_NO',IB,PFCHNO,
      &                      IE)
-                CALL SINOZ2(MODELE,NUME,CHSIG,CHSIGN)
+                CALL SINOZ2(MODELE,PFCHNO,CHSIG,CHSIGN)
               END IF
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   132         CONTINUE
@@ -1298,7 +1291,7 @@ C 3 - BOUCLE SUR LES INSTANTS DEMANDES
 
               IF (IRETER.GT.0) THEN
                 CALL RSEXCH(RESUCO,TYPES,IORDR,CHERR4,IRET5)
-                
+
                 IF (IRET5.GT.0) THEN
                   VALKM(1)=TYPES
                   VALKM(2)=RESUCO
@@ -2253,7 +2246,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    OPTION,IRET)
               IF (IRET.GT.0) CHVARI = ' '
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-     
+
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
      &                    CHTEMP,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),' ',ZERO,

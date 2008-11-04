@@ -5,7 +5,7 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRS_602
 C     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 C     ------------------------------------------------------------------
 C IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A U2MESS, U2MESK
@@ -54,6 +55,7 @@ C IER = 140 : TYPE D'INTERPOLATION SUR LES PARA DE LA NAPPE INCONNU
 C IER = 150 : TYPE DE FONCTION NON TRAITE
 C IER = 160 : PAS ASSEZ DE PARAMETRES
 C IER = 170 : INTERPOLATION SUR LES PARAMETRES DE LA NAPPE NON PERMISE
+C IER = 200 : ERREUR AVEC UNE FORMULE
 C     ------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
@@ -84,6 +86,7 @@ C
 C     ------------------------------------------------------------------
       CHARACTER*24 VALK(2)
       INTEGER      VALI(2)
+      CHARACTER*512 MSGERR
 C     ------------------------------------------------------------------
       INTEGER      MXSAVE, MXPARA, SVNBPA, SVPAR, ISVNXT, ISVIND, NEXTSV
       INTEGER      IAPROL, IAVALE, IAPARA, LUVALE, LUPARA
@@ -126,9 +129,11 @@ C
       CALL JEVEUT(CHPROL,'L',LPROL)
       IF (ZK24(LPROL).EQ.'INTERPRE') THEN
 C     ------------------------ CAS DES FORMULES ------------------------
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU,IER)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IER,MSGERR,RESU)
          IF (IER.GT.0) THEN
-            IER = 110
+            IER = 200
+            CALL U2MESK ('A+', 'FONCT0_51', 1, NOMF )
+            CALL U2MESK ('A', 'FONCT0_52', 1, MSGERR )
          ENDIF
          GOTO 9999
       ENDIF
@@ -322,17 +327,18 @@ C
       SVNOMF(ISAVE) = NOMFON
  9999 CONTINUE
 C
-      IF ( IER .NE. 0 ) THEN
-        IF ( CODME2(1:1) .NE. ' ' ) THEN
+      IF ( IER .NE. 0) THEN
+        IF (CODME2(1:1) .NE. ' ' ) THEN
+C          SI ON A L'INFO, ON AFFICHERA LA MAILLE CONCERNEE
            IF ( CODME2(2:2) .EQ. 'M' ) THEN
               CALL TECAEL ( IADZI, IAZK24 )
               NOMAIL = ZK24(IAZK24-1+3)(1:8)
-C             SI ON A L'INFO, ON AFFICHERA LA MAILLE CONCERNEE
               CODME2(2:2) = '+'
            ELSE
               CODME2(2:2) = ' '
            ENDIF
-           CALL U2MESK(CODME2, 'FONCT0_9', 1, NOMFON)
+           CALL U2MESK(CODME2(1:1)//'+', 'FONCT0_9', 1, NOMFON)
+           CALL U2MESG(CODME2, 'FONCT0_54',NBPU,NOMPU,1,NBPU,0,0.D0)
            IF ( CODME2(2:2) .EQ. '+' ) THEN
               CALL U2MESK ( CODME2(1:1), 'FONCT0_10', 1, NOMAIL )
            ENDIF

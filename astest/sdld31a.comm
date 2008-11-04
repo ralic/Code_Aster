@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,8 +57,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                 _F(  JUSQU_A = 20,     PAS = pasdt),
                 ),);
 # 
-LIAISON=AFFE_CHAR_CINE(MODELE=MO,
-                       MECA_IMPO=(
+LIAISON=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(
                 _F( GROUP_NO = 'A',  DX=0., DY=0., DZ=0. , ),
                 _F( GROUP_NO = 'B',  DX=0., DY=0.,),
                 ),);
@@ -138,8 +138,7 @@ REPVIT=DYNA_NON_LINE(
                 INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,
                     SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
-                CONVERGENCE=_F(RESI_GLOB_MAXI = 10.,
-                                ITER_GLOB_MAXI = 10),
+                CONVERGENCE=_F(ITER_GLOB_MAXI = 10),
                  ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
             );   
             

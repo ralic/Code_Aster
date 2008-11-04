@@ -10,7 +10,7 @@
       CHARACTER*(*) TYPE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C
          LFON  = LVAR + NBPTS
          IF (FCPLX(IOCC)) THEN
          DO 405 I = 1, NBINST
-           CALL FOINTC(NOMFON(IOCC),0,' ',ZR(LRES-1+I),
+           CALL FOINTC('F',NOMFON(IOCC),0,' ',ZR(LRES-1+I),
      .                 RESURE,RESUIM,IER)
          IF (CCPLX(IOCC)) THEN
            VRE=DBLE (COEFZ(IOCC))

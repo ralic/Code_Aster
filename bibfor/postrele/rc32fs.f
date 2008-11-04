@@ -1,12 +1,12 @@
-      SUBROUTINE RC32FS ( NBSIGR, NOCC, SITU, SALIJS, SALTIJ, 
-     +                    SALTSE, NS, NSCY, MATER, UG )
+      SUBROUTINE RC32FS ( NBSIGR, NOCC, SITU, FUIJS, FUIJ, 
+     +                    FUSE, NS, NSCY, MATER, UG )
       IMPLICIT   NONE
       INTEGER             NBSIGR, NOCC(*), SITU(*), NS, NSCY
-      REAL*8              SALIJS(*), SALTIJ(*), SALTSE, UG
+      REAL*8              FUIJS(*), FUIJ(*), FUSE, UG
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +30,7 @@ C     CALCUL DU FACTEUR D'USAGE
 C
 C     ------------------------------------------------------------------
       INTEGER      IS1, IS2, I, I1, IFM, K, L, NIV, NS2, ICOMP
-      REAL*8       SALT, SALTM, NADM, U1KL, U2KL, VALE(2)
+      REAL*8       SALT, FUM, NADM, U1KL, U2KL, VALE(2)
       LOGICAL      TROUVE,ENDUR
       CHARACTER*2  CODRET
 C     ------------------------------------------------------------------
@@ -38,12 +38,12 @@ C
       CALL INFNIV ( IFM, NIV )
 C
       IF ( NIV .GE. 2 ) THEN
-        WRITE(IFM,*) 'MATRICE SALT INITIALE (SEISME)'
+        WRITE(IFM,*) 'MATRICE FACTEUR D USAGE INITIALE (SEISME)'
         WRITE(IFM,1012) ( SITU(L),L=1,NBSIGR )
         WRITE(IFM,1010) ( NOCC(L),L=1,NBSIGR )
         DO 100 I = 1 , NBSIGR
           I1 = NBSIGR*(I-1)
-          WRITE(IFM,1000) SITU(I), NOCC(I), (SALTIJ(I1+L),L=1,NBSIGR)
+          WRITE(IFM,1000) SITU(I), NOCC(I), (FUIJ(I1+L),L=1,NBSIGR)
  100    CONTINUE
       ENDIF
 C
@@ -52,24 +52,24 @@ C
       ICOMP = 0
 C
  10   CONTINUE
-      SALTM = 0.D0
+      FUM = 0.D0
       TROUVE = .FALSE.
       ICOMP = ICOMP + 1
       IF ( ICOMP .GT. NS2 ) GOTO 9999
 C
 C --- ON SELECTIONNE LES 'NS2' COMBINAISONS LES PLUS PENALISANTES
-C     SANS PRENDRE EN COMPTE LE SEISME (MATRICE SALTIJ)
+C     SANS PRENDRE EN COMPTE LE SEISME (MATRICE FUIJ)
 C
       DO 20 K = 1 , NBSIGR
 C
          DO 22 L = 1 , NBSIGR
 C
-            SALT = SALTIJ(NBSIGR*(K-1)+L)
+            SALT = FUIJ(NBSIGR*(K-1)+L)
 C
-            IF ( SALT .GT. SALTM ) THEN
+            IF ( SALT .GT. FUM ) THEN
                IS1 = K
                IS2 = L
-               SALTM = SALT
+               FUM = SALT
                TROUVE = .TRUE.
             ENDIF
 C
@@ -80,54 +80,29 @@ C
       IF ( TROUVE ) THEN
 C
 C ------ ON RECUPERE LA VALEUR ASSOCIEE AVEC PRISE EN COMPTE DU SEISME
-C        (MATRICE SALIJS)
+C        (MATRICE FUIJS)
 C
-         SALTM = SALIJS(NBSIGR*(IS1-1)+IS2)
-C
-         CALL LIMEND ( MATER, SALTM, 'WOHLER', ENDUR )
-         IF ( ENDUR ) THEN
-            U1KL=0.D0
-         ELSE
-            CALL RCVALE ( MATER, 'FATIGUE', 1, 'SIGM    ', SALTM, 1,
-     +                         'WOHLER  ', NADM, CODRET, 'F ' )
-            IF ( NADM .LT. 0 ) THEN
-               VALE(1) = SALTM
-               VALE(2) = NADM
-               CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
-            ENDIF
-            U1KL = 1.D0 / NADM
-         ENDIF
-C
-         CALL LIMEND ( MATER, SALTSE, 'WOHLER', ENDUR )
-         IF ( ENDUR ) THEN
-            U2KL = 0.D0
-         ELSE
-            CALL RCVALE ( MATER, 'FATIGUE', 1, 'SIGM    ', SALTSE, 1,
-     +                         'WOHLER  ', NADM, CODRET, 'F ' )
-            IF ( NADM .LT. 0 ) THEN
-               VALE(1) = SALTSE
-               VALE(2) = NADM
-               CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
-            ENDIF
-             U2KL = DBLE( 2*NSCY-1 ) / NADM
-         ENDIF
+         FUM = FUIJS(NBSIGR*(IS1-1)+IS2)
+         
+         U1KL = FUM
+         U2KL = DBLE( 2*NSCY-1 ) * FUSE
 C
          IF ( NIV .GE. 2 ) THEN
-           WRITE(IFM,1040)'=> SALT MAXI = ', 
-     +               SALTIJ(NBSIGR*(IS1-1)+IS2), SITU(IS1), SITU(IS2)
+           WRITE(IFM,1040)'=> FU MAXI = ', 
+     +               FUIJ(NBSIGR*(IS1-1)+IS2), SITU(IS1), SITU(IS2)
            WRITE(IFM,1020)'        U1KL = ', U1KL
            WRITE(IFM,1020)'        U2KL = ', U2KL
          ENDIF
 C
-         SALTIJ(NBSIGR*(IS1-1)+IS2) = 0.D0
+         FUIJ(NBSIGR*(IS1-1)+IS2) = 0.D0
 C
          IF ( NIV .GE. 2 ) THEN
-           WRITE(IFM,*) 'MATRICE SALT MODIFIEE (SEISME)'
+           WRITE(IFM,*) 'MATRICE FACTEUR D USAGE MODIFIEE (SEISME)'
          WRITE(IFM,1012) ( SITU(L),L=1,NBSIGR )
          WRITE(IFM,1010) ( NOCC(L),L=1,NBSIGR )
            DO 110 I = 1 , NBSIGR
              I1 = NBSIGR*(I-1)
-             WRITE(IFM,1000) SITU(I), NOCC(I), (SALTIJ(I1+L),L=1,NBSIGR)
+             WRITE(IFM,1000) SITU(I), NOCC(I), (FUIJ(I1+L),L=1,NBSIGR)
  110       CONTINUE
          ENDIF
 C

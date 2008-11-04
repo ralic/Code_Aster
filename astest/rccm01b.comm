@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / UNITAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,6 +65,9 @@ TBTHER = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
 TBTHM2 = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
                      NUME_TABLE=3,)
 
+TBTHE2 = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
+                     NUME_TABLE=4,)
+
 #--------------------------------------------------------------------------------
 #   option = PM_PB
 #   chargement unitaire - Validation PM_PB
@@ -102,6 +105,8 @@ UNIPM=POST_RCCM( MATER=MAT,
                   RESU_THER=(
                    _F(NUME_RESU_THER=1,
                       TABL_RESU_THER=TBTHER, ),
+                   _F(NUME_RESU_THER=2,
+                      TABL_RESU_THER=TBTHE2, ),
                   ),
                   SITUATION=(
                   _F(NB_OCCUR=1,
@@ -194,6 +199,8 @@ UNISN=POST_RCCM( MATER=MAT,
                   RESU_THER=(
                    _F(NUME_RESU_THER=1,
                       TABL_RESU_THER=TBTHER, ),
+                   _F(NUME_RESU_THER=2,
+                      TABL_RESU_THER=TBTHE2, ),
                   ),
                   SITUATION=(
                   _F(NB_OCCUR=1,
@@ -275,6 +282,8 @@ UNIFA=POST_RCCM( MATER=MAT,
                   RESU_THER=(
                    _F(NUME_RESU_THER=1,
                       TABL_RESU_THER=TBTHER, ),
+                   _F(NUME_RESU_THER=2,
+                      TABL_RESU_THER=TBTHE2, ),
                   ),
                   SITUATION=(
                   _F(NB_OCCUR=1,

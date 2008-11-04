@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRS_602
 C     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 C ----------------------------------------------------------------------
 C IN  IPIF  : POINTEUR DANS LE MATERIAU CODE (FONCTION OU NAPPE)
@@ -56,6 +57,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*1  COLI
       CHARACTER*19 NOMF
       CHARACTER*24 NOMPF(2)
+      CHARACTER*512 MSGERR
 C     ------------------------------------------------------------------
       INTEGER      IADZI, IAZK24
       CHARACTER*24 VALK(4)
@@ -92,14 +94,15 @@ C         ------------------------
         GOTO 9999
 
 C
-C --- FONCTION "INTERPRE"
+C --- FONCTION "INTERPRE" : FORMULE
 C
       ELSEIF (ZK24(JPRO).EQ.'INTERPRE') THEN
 C             ------------------------
          NOMF = ZK24(JPRO+5)
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU,IRET)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IRET,MSGERR,RESU)
          IF (IRET.GT.0) THEN
-            CALL U2MESK('F', 'FONCT0_9',1,NOMF)
+            CALL U2MESK('F+', 'FONCT0_9',1,NOMF)
+            CALL U2MESK('F', 'FONCT0_51',1,MSGERR)
          ENDIF
          GOTO 9999
 C

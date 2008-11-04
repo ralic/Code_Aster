@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_no SD  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_cham_no SD  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 from SD import *
 from SD.sd_titre import sd_titre
 
-from SD.sd_nume_equa import sd_nume_equa
+from SD.sd_prof_chno import sd_prof_chno
 
 
 class sd_cham_no(sd_titre):
@@ -36,7 +36,6 @@ class sd_cham_no(sd_titre):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
         return self.REFE.exists
 
-    # indirection vers PROF_CHNO/NUME_EQUA :
     def check_cham_no_i_REFE(self, checker):
         if not self.exists() : return
         lnom = self.REFE.get()
@@ -48,9 +47,8 @@ class sd_cham_no(sd_titre):
         sd2 = sd_maillage(lnom[0])
         sd2.check(checker)
 
-        # j'aurai préféré : sd_prof_chno que sd_nume_equa (mais sslv111b !) AJACOT_PB :
         if lnom[1].strip() :
-            if checker.names.has_key(lnom[1][:14]+'.NUME.DEEQ'):  return
-            sd2 = sd_nume_equa(lnom[1]) ; sd2.check(checker)
+            if checker.names.has_key(lnom[1][:14]+'.NUME.PRNO'):  return
+            sd2 = sd_prof_chno(lnom[1]) ; sd2.check(checker)
 
 

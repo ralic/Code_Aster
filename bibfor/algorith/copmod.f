@@ -3,11 +3,11 @@
       INTEGER             NEQ, NBMODE
       REAL*8              BMODAL(NEQ*NBMODE)
       CHARACTER*8         BASEMO
-      CHARACTER*14        NU
+      CHARACTER*(*)        NU
       CHARACTER*(*)       CHAMZ
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,10 +29,12 @@ C     FONCTION  :
 C     RECOPIE DES MODES PROPRES CONTENU DANS LE CONCEPT MODE_MECA
 C     DANS UN VECTEUR DE TRAVAIL
 C
-C    BASEMO         <--   NOM DU CONCEPT MODE_MECA
-C    NEQ            <--   DIMENSION DU SYSTEME ASSEMBLE
-C    NBMODE         <--   NB DE MODES DU CONCEPT MODE_MECA
-C    BMODAL          -->  VECTEUR CONTENANT LES MODES
+C    IN : BASEMO          NOM DU CONCEPT MODE_MECA
+C    IN : NEQ             DIMENSION DU SYSTEME ASSEMBLE
+C    IN : NBMODE          NB DE MODES DU CONCEPT MODE_MECA
+C    IN : NU   / NUME_DDL (K14)
+C              / PROF_CHNO (K19)
+C    OUT :BMODAL          VECTEUR CONTENANT LES MODES
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -53,15 +55,21 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IDDEEQ, I, IRET, IADMOD ,IBID
       INTEGER VALI
       CHARACTER*16  CHAMP
-      CHARACTER*24  NOMCHA, DEEQ
-      CHARACTER*24 VALK(2)
+      CHARACTER*19 NU19
+      CHARACTER*24  NOMCHA, DEEQ, VALK(2)
 C-----------------------------------------------------------------------
 C
 C
       CALL JEMARQ()
 C
       CHAMP = CHAMZ
-      DEEQ = NU//'.NUME.DEEQ'
+
+      NU19=NU
+      IF (NU19(15:19).NE.' ') THEN
+        DEEQ = NU19//'.DEEQ'
+      ELSE
+        DEEQ = NU19(1:14)//'.NUME.DEEQ'
+      ENDIF
       CALL JEVEUO ( DEEQ, 'L', IDDEEQ )
 C
       DO 10 I = 1 , NBMODE

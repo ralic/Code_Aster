@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 06/10/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 04/11/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2269,6 +2269,9 @@ class DRIVER_ISOVALEURS(DRIVER):
     if 'TOUT_CMP' not in selection.nom_cmp :
       para['NOM_CMP'] = tuple(selection.nom_cmp)
 
+    if contexte.para_sensi:
+       para['SENSIBILITE'] = contexte.para_sensi
+
     return para
 
 
@@ -2538,7 +2541,8 @@ class DRIVER_COURBES(DRIVER) :
           MEMO_NOM_SENSI(NOM=( _F(NOM_SD='STNTBLGR',
                                   PARA_SENSI=contexte.para_sensi,
                                   NOM_COMPOSE='STNTBLG2')));
-       except: pass
+       except:
+          pass
 
     DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
 
@@ -2903,7 +2907,7 @@ class PRE_STANLEY :
          concept_exists_and_intypes(i, jdc=self.jdc_recupere,
                                     types='modele_sdaster', append_to=t_modele)
          concept_exists_and_intypes(i, jdc=self.jdc_recupere,
-            types=('evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans'),
+                                    types=('evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans'),
                                     append_to=t_evol)
          concept_exists_and_intypes(i, jdc=self.jdc_recupere,
                                     types='cham_mater', append_to=t_cham_mater)
@@ -2966,28 +2970,23 @@ class PRE_STANLEY :
 
     dico = {}
 
-    liste_concept = [ 'MODL', 'MATE', 'CARA' ]
-    dico_concept  = { 'MODL': _("modele"), 'MATE': _("Champ matériau"), 'CARA': _("Cara_elem") }
-
     for evol in t_evol:
        dico[evol] = []
 
-       for concept in liste_concept:
-          ltmp_aster = aster.getvectjev( evol.ljust(19) + '.'+ concept )
-          l_tmp = []
-          if ltmp_aster:
-             for i in range(len(ltmp_aster)):
-                obj = ltmp_aster[i].strip()
-                if obj and obj not in l_tmp: l_tmp.append(obj)
+#       e = resultat_jeveux(evol)
+       n = aster.getvectjev( evol.ljust(19) + '.RSP8' )
+       dico[evol].append( n[2] ) # modele
+       dico[evol].append( n[1] ) # mater
+       dico[evol].append( n[0] ) # cara_elem
 
-          if len(l_tmp)==1:
-             dico[evol].append( l_tmp[0] )
-
-          elif len(l_tmp)>1:
-             UTMESS('A','STANLEY_36',valk=[dico_concept[concept]])
-             dico[evol].append( None )
-          else:
-             dico[evol].append( None )
+#        self.jdc_recup = CONTEXT.get_current_step().jdc
+#        psi = self.jdc_recup.memo_sensi.psinfo(evol)
+#        if len(psi[1]) >0:
+#           lps = []
+#           for i in range( len(psi[1])/2 ):
+#              lps.append( psi[1][2*i+1] )
+#           lps.sort()
+#           dico[evol].extend(lps)
 
     return dico
 
@@ -3028,27 +3027,22 @@ class PRE_STANLEY :
         Selectionne les concepts modele, cham_mater et cara_elem du resultat courant
         Definit la frequence de scan
     """
-    try:
-       evol = self.evol.courant[0]
-       modele = self.concepts[evol][0]
-       self.modele.Selectionne( modele )
-       cham_mater = self.concepts[evol][1]
-       self.cham_mater.Selectionne( cham_mater )
-       if self.t_cara_elem != []:
-          cara_elem = self.concepts[evol][2]
-          self.cara_elem.Selectionne( cara_elem )
-       if self.t_para_sensi != []:
-          if len(self.dico_para_sensi[evol])>0:
-             para = self.dico_para_sensi[evol][0]
-             t_para = copy.copy(self.dico_para_sensi[evol])
-             t_para.insert(0, texte_sensibilite)
-             self.para_sensi.Change( t_para, para )
-          else:
-             para = self.t_para_sensi[0]
-             t_para = copy.copy(self.t_para_sensi)
-             t_para.insert(0, texte_sensibilite)
-             self.para_sensi.Change( t_para, para )
-    except: pass
+
+    evol       = self.evol.courant[0]
+    modele     = self.concepts[evol][0].strip()
+    cham_mater = self.concepts[evol][1].strip()
+    cara_elem  = self.concepts[evol][2].strip()
+    t_para = copy.copy(self.dico_para_sensi[evol])
+    t_para.insert(0, texte_sensibilite)
+
+    self.modele.Selectionne( modele )
+    self.cham_mater.Selectionne( cham_mater )
+
+    if self.t_cara_elem != []:
+       self.cara_elem.Selectionne( cara_elem )
+    if self.t_para_sensi != []:
+       self.para_sensi.Change( t_para, t_para[0] )
+
 
 
   def Scan_selection(self) :
@@ -3060,8 +3054,10 @@ class PRE_STANLEY :
 
     # Si le resultat a changé on reselectionne les autres concepts
     if self.evol.Scan():
-       try:    self.Change_selections()
-       except: pass
+       try: 
+          self.Change_selections()
+       except Exception, e:
+          print e
 
     self.after_id = self.rootTk.after(30, self.Scan_selection)
 

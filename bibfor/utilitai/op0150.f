@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,7 +128,7 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (LCMPVA='NOM_CMP')
       CHARACTER*11 LCMPVM
       PARAMETER (LCMPVM='NOM_CMP_MED')
-      INTEGER JCMPVA,JCMPVM,IU99,IU98,IU97,ULNUME,NEXCI
+      INTEGER JCMPVA,JCMPVM,IU99,IU98,IU97,ULNUME,NEXCI,IEXI
 
       CHARACTER*72 REP
       CHARACTER*32 K32B
@@ -895,7 +895,7 @@ C
               INST = ZR(JLIST+ITPS-1)
             ENDIF
 C
-            CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,TYPENT, 
+            CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,TYPENT,
      &                  NBCMPV,NCMPVA,NCMPVM,PROLZ,
      &                  IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
      &                  MFICH,LIGREL,OPTION,PARAM,ZI(JNBPGM),ZI(JNBPMM),
@@ -1023,11 +1023,11 @@ C   --------------------------------------------------------
          INPSCO='&&'//NOMPRO//'_PSCO'
          CALL PSLECT ( ' ', IBID, BASENO, RESU, IAUX,
      &                NBPASE, INPSCO, IRET )
-         IF( CONCEP.EQ.'EVOL_ELAS' .OR.
-     &       CONCEP.EQ.'EVOL_NOLI' )THEN
+         IF( TYPRES.EQ.'EVOL_ELAS' .OR.
+     &       TYPRES.EQ.'EVOL_NOLI' )THEN
             CALL NMDOME ( K24B, K24B, K24B, LISCHA,
      &                    NBPASE, INPSCO ,BLAN8,IBID)
-         ELSEIF(CONCEP.EQ.'EVOL_THER')THEN
+         ELSEIF(TYPRES.EQ.'EVOL_THER')THEN
             INFCHA = '&&'//NOMPRO//'_INFCHA    '
             CALL NTDOTH ( K24B, K24B, K24B, FOMULT, MATCST,
      &           COECST, INFCHA, NBPASE, INPSCO,BLAN8,IBID)
@@ -1083,6 +1083,18 @@ C     --------------------------------------------
 
 
       CALL TITRE
+
+
+C     -- CREATION D'UN .REFD VIDE SI NECESSAIRE :
+C     ---------------------------------------------------
+      IF( TYPRES.EQ.'HARM_GENE'  .OR.
+     &    TYPRES.EQ.'DYNA_TRANS' .OR.
+     &    TYPRES.EQ.'DYNA_HARMO' .OR.
+     &    TYPRES(1:9).EQ.'MODE_MECA' )THEN
+         CALL AJREFD(' ',RESU,'FORCE')
+      ENDIF
+
+
       GO TO 300
 
   290 CONTINUE

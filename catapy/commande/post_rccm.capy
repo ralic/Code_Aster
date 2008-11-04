@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,7 +73,6 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
                            regles=(UN_PARMI('MX','MX_TUBU'),),
            NUME_CHAR     =SIMP(statut='o',typ='I',fr="numéro du chargement" ),
            NOM_CHAR      =SIMP(statut='f',typ='TXM',fr="nom du chargement" ),
-           TYPE_CHAR     =SIMP(statut='f',typ='TXM',fr="nature du chargement",into=( "SEISME","AUTRE"),defaut="AUTRE",),
            MX            =SIMP(statut='f',typ='R',fr="moment suivant x", ),
            MX_TUBU       =SIMP(statut='f',typ='R',fr="moment suivant x, tubulure", ),
            b_1_tenseur     =BLOC( condition = "MX != None",
@@ -195,7 +194,6 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
            regles=(UN_PARMI('CHAM_GD','RESULTAT'),),
            NUME_CHAR     =SIMP(statut='o',typ='I',fr="numéro du chargement" ),
            NOM_CHAR      =SIMP(statut='f',typ='TXM',fr="nom du chargement" ),
-           TYPE_CHAR     =SIMP(statut='f',typ='TXM',fr="nature du chargement",into=( "SEISME","AUTRE"),defaut="AUTRE",),
            CHAM_GD         =SIMP(statut='f',typ=cham_gd_sdaster),
            RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
            b_extrac        =BLOC(condition="RESULTAT != None",

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF mecanonline5 Messages  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,11 +146,6 @@ option PROJ_MODAL et que l'archivage a été fait (mot-clef ARCHIVAGE de DYNA_NON_
 
 """),
 
-44 : _("""
-Pour la prédiction de type 'DEPL_CALCULE', il faut obligatoirement:
- - ITER_GLOB_MAXI = 0
- - ARRET = 'NON'
-"""),
 
 45 : _("""
 Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
@@ -170,6 +165,28 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
   -> Risque & Conseil :
      RHO_MAX ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL
 
+"""),
+
+48 : _("""
+  Vous utilisez l'option EXTRAPOL ou DEPL_CALCULE en prédiction,
+  mais il n'y a aucune condition aux limites de Dirichlet donnée par AFFE_CHAR_MECA dans EXCIT.
+
+  On n'a donc pas pu projeter le champ de déplacement donné ou extrapolé
+  sur un champ cinématiquement admissible.
+  -> Risque & Conseil :
+   La convergence risque d'etre difficile si le champ donné ou extrapolé
+   est vraiment cinématiquement non admissible.
+"""),
+
+
+49 : _("""
+  Vous utilisez l'option EXTRAPOL ou DEPL_CALCULE en prédiction,
+  mais il n'y a aucune condition aux limites de Dirichlet donnée par AFFE_CHAR_MECA dans EXCIT.
+  L'absence de matrice en correction va empecher le code d'évaluer le
+  résidu d'équilibre.
+  -> Risque & Conseil :
+   - Choisir REAC_ITER et REAC_INCR judicieusement pour avoir une
+   matrice en CORRECTION.
 """),
 
 }

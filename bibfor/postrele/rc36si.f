@@ -4,7 +4,7 @@
       CHARACTER*8         NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -283,7 +283,7 @@ C
          CALL GETVIS ( MOTCL2,'CHAR_ETAT',IOCC,1,NBCHAR,ZI(JCHAR1),N1)
 C
          CHMOME = '&&RC36SI_A'//K8B
-         CALL RC36CM ( IOCC, 'A', NBMA, LISTMA,
+         CALL RC36CM ( IOCC, 'S', NBMA, LISTMA,
      &                                     NBCHAR, ZI(JCHAR1), CHMOME )
          ZK24(JMOMEA+NBSITU+IOCC-1) = CHMOME
          CALL JEDETR ( '&&RC36SI.CHAR_ETAT' )

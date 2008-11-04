@@ -1,7 +1,7 @@
       SUBROUTINE IMPFOT(UNITE,TIME,CHAINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,6 +45,7 @@ C
 C ----------------------------------------------------------------------
 C
       IF (TIME.LT.60.0D0) THEN
+        SECOND = TIME
         IF (SECOND.LT.0.D0) THEN
           SECOND = 0.D0
         ENDIF 

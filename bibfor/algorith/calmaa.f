@@ -2,7 +2,7 @@
      &                  MAA)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C--------------------D'INTERFACE -----------------------------------
 C-------------------- NUMEROTATION ----------------------------------
 
       NUM = '&&CALMAA.NUM'//DIR
-      CALL NUMDDL(NUM,'V',1,MATEL,'RCMK')
+      CALL NUMDDL(NUM,'VV',1,MATEL,'RCMK')
       CALL PROMOR(NUM,'V')
       CALL CRNSLV(NUM,'MULT_FRO','METIS','V')
 

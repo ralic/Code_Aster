@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,9 +42,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      N1, N1T, IOCC, NDIM, NBCHAR, NUME, JTYPE, JCHAR
+      INTEGER      N1, N1T, IOCC, NDIM, NBCHAR, NUME, JCHAR
       REAL*8       R8B
-      CHARACTER*8  TYPE, KNUMEC
+      CHARACTER*8  KNUMEC
       CHARACTER*16 MOTCLF
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -58,7 +58,6 @@ C
          NDIM = MAX (NDIM, NUME)
  10   CONTINUE
 C
-      CALL WKVECT ('&&RC3200.TYPE_CHAR', 'V V K8 ', NDIM, JTYPE )
       CALL JECREC ('&&RC3200.VALE_CHAR', 'V V R'  , 'NO',
      +                               'DISPERSE', 'VARIABLE', NBCHAR )
 C
@@ -69,8 +68,6 @@ C
          KNUMEC = 'C       '
          CALL CODENT ( NUME , 'D0' , KNUMEC(2:8)  )
 C
-         CALL GETVTX ( MOTCLF, 'TYPE_CHAR', IOCC,1,1, TYPE, N1 )
-         ZK8(JTYPE+NUME-1) = TYPE
 C
          CALL JECROC (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC))
          CALL JEECRA (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC),

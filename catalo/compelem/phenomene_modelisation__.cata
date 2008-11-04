@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+%& MODIF COMPELEM  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -46,14 +46,28 @@ PHENOMENE_MODELISATION__
 %  AXIS =  'OUI' : l'élément est axisymétrique.
 %          C'est a dire qu'il est maillé en 2D mais qu'il représente en réalité un "anneau" de
 %          révolution autour de l'axe OY.
+%          Le champ de déplacement dans un plan radial est indépendant de l'azimut (theta).
 %
-%  TYPMOD : type de  modelisation utilise pour intégrer les lois de comportement (utilisé dans NMCOMP)
-%  TYPMOD = C_PLAN  l'élément fait appel a des comportements C_PLAN
-%           D_PLAN  l'élément fait appel a des comportements D_PLAN 
-%           COMP1D  l'élément fait appel a des comportements COMP1D + DEBORST
-%           COMP1D      l'élément fait appel a des comportements COMP1D 
-%           3D      l'élément fait appel a des comportements 3D
-%           PLAN    l'élément fait appel a des comportements PLAN 
+%
+%  D_PLAN =  'OUI' : l'élément est en "déformations planes".
+%          Le maillage est 2D (OXY). Le déplacement est indépendant de Z et le déplacement suivant OZ est nul.
+%          Un élément 2D représente en réalité un solide cylindrique infini selon OZ.
+%
+%  C_PLAN =  'OUI' : l'élément est en "contraintes planes".
+%          Le maillage est 2D (OXY). L'état de contraintes est "plan" (SIZZ=SIZX=SIYZ=0)
+%          L'hypothèse des contraintes planes est a priori vérifiée pour les structure minces selon OZ (plaque).
+%
+%  FOURIER =  'OUI' : l'élément est destiné a une étude par décomposition en modes de fourier.
+%          Le maillage est 2D (OXY) (comme pour AXIS='OUI').
+%
+%  TYPMOD : Type de  modélisation utilisé pour intégrer les lois de comportement (utilisé dans NMCOMP)
+%           Les valeurs possibles de cet attribut sont définies dans le catalogue de chaque comportement
+%           (bibpyt/Comportement/*.py)
+%  TYPMOD = C_PLAN   l'élément fait appel a des comportements C_PLAN
+%           D_PLAN   l'élément fait appel a des comportements D_PLAN
+%           COMP1D   l'élément fait appel a des comportements COMP1D + DEBORST
+%           COMP3D   l'élément fait appel a des comportements 3D
+%           PLAN     l'élément fait appel a des comportements PLAN
 %           GRADEPSI l'élément utilise des comportements non locaux (TYPMOD(2)='GRADEPSI' pour NMCOMP)
 %           GRADVARI l'élément utilise des comportements non locaux (TYPMOD(2)='GRADVARI' pour NMCOMP)
 %
@@ -65,7 +79,7 @@ PHENOMENE_MODELISATION__
 %
 %  BORD =  'OUI' :
 %        l'élément "borde" un élément "principal" (de dimension topologique supérieure)
-%        Il sert a en général a appliquer des efforts répartis sur l'élément principal qu'il
+%        Il sert a en général a appliquer des efforts sur l'élément principal qu'il
 %        borde. Il fait partie de la meme modélisation que l'élément principal.
 %        Il n'a pas de sens sans un élément principal a coté de lui.
 %        Ses noeuds sont en principe ceux d'une face (ou d'une arrete) de son élément
@@ -83,8 +97,8 @@ PHENOMENE_MODELISATION__
 %                       température ne soit pas une variable de commande (mais un ddl)
 %                       (d'ou le problème de la définition de TEMP_REF)
 %
-%  XFEM = 'XH','XT','XHT'     : élément de type Heaviside, cracktip, ou mixte
-%         'XHC',XTC','XHTC'   : élément de type Heaviside, cracktip, ou mixte, avec du contact
+%  XFEM = 'XH','XT','XHT'     : élément XFEM de type Heaviside, cracktip, ou mixte
+%         'XHC',XTC','XHTC'   : élément XFEM de type Heaviside, cracktip, ou mixte, avec du contact
 %
 %  NBSIGM =  /X4/X6/...
 %        remarque : on est obligé de mettre une lettre (j'ai choisi "X" sans raison particulière)
@@ -281,7 +295,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
               MAILLE__ PENTA6    ELEMENT__ MECA_SHB6
               MAILLE__ TRIA3     ELEMENT__ MECA_FACE3
-              MAILLE__ PENTA15   ELEMENT__ MECA_SHB15      
+              MAILLE__ PENTA15   ELEMENT__ MECA_SHB15
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
               MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
@@ -301,7 +315,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
 
        MODELISATION__ '3D_INCO'          DIM__ 3 3   CODE__ '3DI'
-              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D 
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
               MAILLE__ HEXA20    ELEMENT__ MINC_HEXA20
               MAILLE__ PENTA15   ELEMENT__ MINC_PENTA15
               MAILLE__ TETRA10   ELEMENT__ MINC_TETRA10
@@ -310,7 +324,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
 
        MODELISATION__ '3D_INCO_GD'        DIM__ 3 3   CODE__ '3GI'
-              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D 
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
               MAILLE__ TETRA10   ELEMENT__ GDIN_TETRA10
               MAILLE__ HEXA20    ELEMENT__ GDIN_HEXA20
               MAILLE__ TRIA6     ELEMENT__ MECA_FACE6

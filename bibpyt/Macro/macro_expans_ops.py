@@ -1,21 +1,21 @@
-#@ MODIF macro_expans_ops Macro  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF macro_expans_ops Macro  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -48,8 +48,8 @@ def macro_expans_ops( self,
     REST_GENE_PHYS = self.get_cmd('REST_GENE_PHYS')
     PROJ_CHAMP = self.get_cmd('PROJ_CHAMP')
     NORM_MODE = self.get_cmd('NORM_MODE')
-    
-    
+
+
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
@@ -64,7 +64,7 @@ def macro_expans_ops( self,
         is_nume_exp = 1
     else:
         if RESU_EX: UTMESS('A','MEIDEE0_6',valk=['MODELE_CALCUL','RESU_NX'])
-    
+
     RESU_NUM = MODELE_CALCUL['BASE']
     RESU_EXP = MODELE_MESURE['MESURE']
 
@@ -84,10 +84,10 @@ def macro_expans_ops( self,
             mfact.update({'NUME_MODE':MODELE_CALCUL['NUME_MODE']})
         elif MODELE_CALCUL['NUME_ORDRE']:
             mfact.update({'NUME_ORDRE':MODELE_CALCUL['NUME_ORDRE']})
-            
+
         RESU_NX = EXTR_MODE( FILTRE_MODE = mfact )
 
-    
+
     # Extraction des modes expérimentaux
     # ----------------------------------
     if not is_nume_exp:
@@ -99,11 +99,11 @@ def macro_expans_ops( self,
             mfact.update({'NUME_MODE':MODELE_MESURE['NUME_MODE']})
         elif MODELE_MESURE['NUME_ORDRE']:
             mfact.update({'NUME_ORDRE':MODELE_MESURE['NUME_ORDRE']})
-            
+
         RESU_EX = EXTR_MODE( FILTRE_MODE = mfact )
 
 
-    
+
     # Projection des modes experimentaux - on passe le mot-clef
     # RESOLUTION directement à PROJ_MESU_MODAL
     # ---------------------------------------------------------
@@ -132,8 +132,8 @@ def macro_expans_ops( self,
         paras = None
         #"LE MODELE MEDURE DOIT ETRE UN CONCEPT DE TYPE DYNA_HARMO OU MODE_MECA")
         UTMESS('A','MEIDEE0_1')
-            
-    
+
+
     try:
         __PROJ = PROJ_MESU_MODAL(MODELE_CALCUL = _F( BASE=RESU_NX,
                                                      MODELE=MOD_CALCUL,
@@ -147,7 +147,7 @@ def macro_expans_ops( self,
                                  );
     except Exception, err:
         raise Exception, err
-    
+
     # Phase de reconstruction des donnees mesurees sur le maillage
     # numerique
     # ------------------------------------------------------------
@@ -158,19 +158,21 @@ def macro_expans_ops( self,
                               NOM_CHAM    = NOM_CHAM);
 
 
-    
+
     # Restriction des modes mesures etendus sur le maillage capteur
     # -------------------------------------------------------------
     self.DeclareOut( "RESU_RD", RESU_RD )
     refd1 = aster.getvectjev(RESU_EXP.nom.ljust(19)+".REFD")
     refd2 = aster.getvectjev(RESU_EX.nom.ljust(19)+".REFD")
 
+    nume=None
     if RESU_EX.REFD.get():
         tmp = RESU_EX.REFD.get()[3]
-        nume = self.jdc.sds_dict[tmp.strip()]
+        if tmp.strip() :
+            nume = self.jdc.sds_dict[tmp.strip()]
     elif NUME_DDL:
         nume = NUME_DDL
-    else:
+    if not nume :
         UTMESS('A','MEIDEE0_5')
     RESU_RD = PROJ_CHAMP( METHODE    = 'ELEM',
                           RESULTAT   = RESU_ET,
@@ -184,5 +186,5 @@ def macro_expans_ops( self,
                           NOM_PARA   = paras,
                         );
 
-   
+
     return ier

@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 01/07/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF modelisa9 Messages  DATE 03/11/2008   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,6 +186,18 @@ Conseil :
 
 43 : _("""
  il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d 
+"""),
+
+44 : _("""
+ fichier med :  %(k1)s maillage :  %(k2)s erreur effoco numero  %(i1)d 
+"""),
+
+51 : _("""
+ fichier med :  %(k1)s maillage :  %(k2)s erreur efouvr numero  %(i1)d 
+"""),
+
+52 : _("""
+ fichier med :  %(k1)s maillage :  %(k2)s erreur efferm numero  %(i1)d 
 """),
 
 53 : _("""

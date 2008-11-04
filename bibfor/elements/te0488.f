@@ -1,6 +1,6 @@
       SUBROUTINE TE0488(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C     CALCUL DES COORDONNEES DES POINTS DE GAUSS
-C     POUR LES ELEMENTS ISOPARAMETRIQUES 3D
+C     POUR LES ELEMENTS ISOPARAMETRIQUES 3D  ET LEURS ELEMENTS DE PEAU
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
@@ -45,7 +45,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER JGANO,NNO,KP,IPOIDS,IVF,IGEOM
       INTEGER NPG,NNOS,ICOPG,INO,NDIM,IDFDE
 
-      REAL*8 XX,YY,ZZ,RBID81(81),POIDS
+      REAL*8 XX,YY,ZZ,RBID81(81),POIDS,COVA(3,3),METR(2,2),JAC
 C DEB ------------------------------------------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -62,8 +62,22 @@ C DEB ------------------------------------------------------------------
           YY = YY + ZR(IGEOM+3* (INO-1)+1)*ZR(IVF+ (KP-1)*NNO+INO-1)
           ZZ = ZZ + ZR(IGEOM+3* (INO-1)+2)*ZR(IVF+ (KP-1)*NNO+INO-1)
    10   CONTINUE
-        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+
+        IF (NDIM.EQ.3) THEN
+C         -- CAS DES ELEMENTS 3D
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM),RBID81,RBID81,RBID81,POIDS)
+        ELSEIF (NDIM.EQ.2) THEN
+C         -- CAS DES ELEMENTS "PEAU" DE 3D
+          CALL SUBACO(NNO,ZR(IDFDE+(KP-1)*NDIM*NNO),ZR(IGEOM),COVA)
+          CALL SUMETR(COVA,METR,JAC)
+          POIDS=JAC*ZR(IPOIDS-1+KP)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+
+
+
         ZR(ICOPG+4*(KP-1)+0) = XX
         ZR(ICOPG+4*(KP-1)+1) = YY
         ZR(ICOPG+4*(KP-1)+2) = ZZ

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,9 +190,7 @@ C ----- MOT CLE "NOM_CAS", "NUME_MODE", "FREQ"  PRESENT :
           ENDIF
           CALL RSNOCH(RESU,NSYMB,NUMINI,' ')
 
-          IF (TYPRES.NE.'EVOL_CHAR') THEN
-            CALL RSSEPA(RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
-          ENDIF
+          CALL RSSEPA(RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
 
           CALL GETVTX('AFFE','NOM_CAS',IOCC,1,1,ACCES,N0)
           IF (N0.NE.0) THEN
@@ -407,9 +405,7 @@ C           ----------------------------------
           CALL RSNOCH(RESU,NSYMB,ICOMPT,' ')
           CALL RSADPA(RESU,'E',1,'INST',ICOMPT,0,IAD,K8B)
           ZR(IAD) = TPS
-          IF (TYPRES.NE.'EVOL_CHAR') THEN
-            CALL RSSEPA(RESU,ICOMPT,MODELE,MATERI,CARELE,EXCIT)
-          ENDIF
+          CALL RSSEPA(RESU,ICOMPT,MODELE,MATERI,CARELE,EXCIT)
           IF (J.GE.2) CALL JEDEMA()
 
    70   CONTINUE

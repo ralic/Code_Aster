@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,7 @@
 # ----------------------------------------------------------------------
 #
 DEBUT(CODE=_F(NOM='SDND102C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' A CAUSE DU SUR-COUT CPU
 
 MAILLAGE=LIRE_MAILLAGE()
 

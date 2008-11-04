@@ -1,11 +1,12 @@
-      SUBROUTINE FOINTC ( NOMF, NBPU, NOMPU, VALPU, RESURE, RESUIM, IER)
+      SUBROUTINE FOINTC ( CODMES, NOMF, NBPU, NOMPU,
+     +                    VALPU, RESURE, RESUIM, IER)
       IMPLICIT  NONE
       INTEGER             NBPU, IER
       REAL*8              VALPU(*), RESURE, RESUIM
-      CHARACTER*(*)       NOMF,       NOMPU(*)
+      CHARACTER*(*)       CODMES, NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRS_602
 C     INTERPOLATION POUR FONCTION COMPLEXE A VARIABLE REELLE
 C
 C     CETTE ROUTINE EST DUPLIQUEE,AVEC QUELQUES LIGNES EN MOINS
@@ -59,6 +61,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 INTERP, PROLGD
       CHARACTER*19 NOMFON
       CHARACTER*24 CHPROL, CHVALE
+      CHARACTER*512 MSGERR
 C     ------------------------------------------------------------------
       INTEGER      MXSAVE
       PARAMETER   (MXSAVE=4)
@@ -96,9 +99,11 @@ C
 C --- CALCUL DE LA FONCTION INTERPRETEE ---
 C
       IF ( ZK24(LPROL) .EQ. 'INTERPRE' ) THEN
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU,IER)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IER,MSGERR,RESU)
          IF (IER.GT.0) THEN
             IER = 110
+            CALL U2MESK ('A+', 'FONCT0_51', 1, NOMF )
+            CALL U2MESK ('A', 'FONCT0_52', 1, MSGERR )
             GOTO 9999
          ENDIF
          RESURE=RESU(1)
@@ -208,5 +213,10 @@ C
       ENDIF
 C
 9999  CONTINUE
+C
+      IF (IER.NE.0 .AND. CODMES.NE.' ') THEN
+         CALL U2MESK(CODMES, 'FONCT0_9', 1, NOMF)
+      ENDIF
+
       CALL JEDEMA()
       END

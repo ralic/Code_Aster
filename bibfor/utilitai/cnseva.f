@@ -1,6 +1,6 @@
       SUBROUTINE CNSEVA(CNSF,NPARA,LPARA,CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNOM,JEXNUM
+      CHARACTER*32 ZK32,JEXNUM
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
@@ -61,19 +61,17 @@ C     ------------------------------------------------------------------
       INTEGER JPD,JPC,JPV,JPL,JPK
       INTEGER JRD,JRC,JRV,JRL,JRK
       INTEGER NBNO,IB,K,INO,NCMP,NBPU,IER,NBPUMX
-      INTEGER K2,NCMP2,IPARA,KK,JAD1
+      INTEGER K2,NCMP2,IPARA,JAD1
       PARAMETER (NBPUMX=50)
-      CHARACTER*1 KBID
       CHARACTER*8 MA,NOMGDF,NOMGDR,FO,NOMPU(NBPUMX)
       CHARACTER*8 MA2,NOMGD2
       CHARACTER*3 TSCA
       CHARACTER*19 F,P,R
+      CHARACTER*24 VALK
       REAL*8 X,VALPU(NBPUMX)
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
-
-
 
 C     1- RECUPERATIONS D'INFOS DANS LE CHAMP DE FONCTIONS :
 C     ------------------------------------------------------------
@@ -164,8 +162,12 @@ C           -------------------------------------------------------
 
 C           4.2 APPEL A FOINTE :
 C           --------------------
-            CALL FOINTE('F',FO,NBPU,NOMPU,VALPU,X,IER)
-            CALL ASSERT(IER.EQ.0)
+            CALL FOINTE('E',FO,NBPU,NOMPU,VALPU,X,IER)
+            IF (IER.NE.0) THEN
+               CALL U2MESK('F+', 'FONCT0_9', 1, FO)
+               CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),VALK)
+               CALL U2MESK('F','FONCT0_53',1, VALK)
+            ENDIF
 
 C           4.3 STOCKAGE DU RESULTAT :
 C           --------------------------

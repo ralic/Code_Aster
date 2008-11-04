@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,6 +73,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='CONTINUE',
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
+                               TOLE_PROJ_EXT=-1.0,
                                ),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,

@@ -1,4 +1,4 @@
-#@ MODIF meidee_test Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_test Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,20 +160,40 @@ def TestMeidee(macro,
         turbmonomod.set_resultat_exp(objects.get_resu(resu_exp_name))
         turbmonomod.set_nume_deconv(nume_mode_deconv)
         turbmonomod.set_nume_EML(nume_mode_EML)
-        
+
+        param_corr = {}
+        param_corr['ld']=3.0
+        param_corr['lambdac']=3.5
+        param_corr['gammac']=70
+
                 
-        turbmonomod.set_ld(3.0)
-        turbmonomod.set_lambdac(3.5)
-        turbmonomod.set_gammac(70)
+        turbmonomod.set_param_gamma(param_corr)
         
         turbmonomod.set_param_phy(rho_int=0, rho_ext=1000, diam_int=0.018, diam_ext=0.02)
         turbmonomod.set_interspectre(objects.get_inter_spec(inter_spec_name))
         turbmonomod.set_type_intsp('DEPL')
         
         list_vit = ['10']
+        param0={}
+        param0['A']=5e+15
+        param0['Amin']=1e+11
+        param0['Amax']=1e+18
+        param0['PULSC']=100.
+        param0['PULSCmin']=50.
+        param0['PULSCmax']=150.
+        param0['BETA']=10.
+        param0['BETAmin']=5.
+        param0['BETAmax']=15.
+        param0['MU']=0.025
+        param0['MUmin']=0.01
+        param0['MUmax']=0.05
+        param0['poids1']=1.
+        param0['poids2']=0.1
+
         for vit in list_vit:
             turbmonomod.set_speed(vit) # on fait le test pour une seule vitesse pour l'instant
             turbmonomod.compute()
+            turbmonomod.set_param_init_recal(param0)
             turbmonomod.compute_interpolation()
         
 

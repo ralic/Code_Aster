@@ -1,0 +1,144 @@
+      SUBROUTINE NMASDI(FONACT,VEASSE,CNDFDO,CNDFPI)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*19 CNDFDO,CNDFPI
+      CHARACTER*19 VEASSE(*)
+      LOGICAL      FONACT(*)
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME)
+C
+C CALCUL DES COMPOSANTES DU VECTEUR SECOND MEMBRE
+C  - CHARGEMENT DE TYPE DIRICHLET
+C  - CHARGEMENT FIXE AU COURS DU PAS DE TEMPS
+C  - CHARGEMENT DONNE ET PILOTE
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
+C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE  
+C OUT CNDFDO : VECT_ASSE DE TOUS LES DEPLACEMENTS FIXES DONNES
+C OUT CNDFPI : VECT_ASSE DE TOUS LES DEPLACEMENTS FIXES PILOTES
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+
+      INTEGER      IFM,NIV   
+      INTEGER      IFDO
+      INTEGER      N
+      CHARACTER*19 CNDONN(20)
+      REAL*8       CODONN(20)
+      CHARACTER*19 CNDIDO,CNDIPI
+      CHARACTER*19 NMCHEX,CNCINE,CNDIDI
+      LOGICAL      ISFONC,LDIDI,LPILO
+C 
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ...... CALCUL DIRICHLET CONSTANT' 
+      ENDIF
+C
+C --- FONCTIONNALITES ACTIVEES
+C     
+      LPILO  = ISFONC(FONACT,'PILOTAGE')
+      LDIDI  = ISFONC(FONACT,'DIDI')    
+C
+C --- INITIALISATIONS
+C
+      IFDO   = 0       
+      CALL VTZERO(CNDFDO)
+      CALL VTZERO(CNDFPI)         
+C
+C --- DEPLACEMENTS DONNES (Y COMPRIS DIDI SI NECESSAIRE)
+C
+      CNDIDO       = NMCHEX(VEASSE,'VEASSE','CNDIDO')    
+      IFDO         = IFDO+1 
+      CNDONN(IFDO) = CNDIDO
+      CODONN(IFDO) = 1.D0
+
+      IF (LDIDI) THEN
+        CNDIDI       = NMCHEX(VEASSE,'VEASSE','CNDIDI')
+        IFDO         = IFDO+1 
+        CNDONN(IFDO) = CNDIDI
+        CODONN(IFDO) = 1.D0
+      ENDIF   
+C      
+C --- CONDITIONS CINEMATIQUES IMPOSEES           
+C   
+      CNCINE       = NMCHEX(VEASSE,'VEASSE','CNCINE') 
+      IFDO         = IFDO+1 
+      CNDONN(IFDO) = CNCINE
+      CODONN(IFDO) = 1.D0        
+C
+C --- VECTEUR RESULTANT DEPLACEMENTS DONN2S
+C       
+      DO 17 N = 1,IFDO
+        CALL VTAXPY(CODONN(N),CNDONN(N),CNDFDO)  
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ......... DEPL. DONNES' 
+          WRITE (IFM,*) '<MECANONLINE> .........  ',N,' - COEF: ',
+     &                   CODONN(N)
+          CALL NMDEBG('VECT',CNDONN(N),IFM)
+        ENDIF         
+ 17   CONTINUE 
+C
+C --- VECTEUR RESULTANT DEPLACEMENTS PILOTES
+C
+      IF (LPILO) THEN       
+        CNDIPI       = NMCHEX(VEASSE,'VEASSE','CNDIPI') 
+        CNDFPI       = CNDIPI     
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ......... DEPL. PILOTES' 
+          WRITE (IFM,*) '<MECANONLINE> .........  ',1,' - COEF: ',
+     &                   1.D0
+          CALL NMDEBG('VECT',CNDFPI,IFM)
+        ENDIF           
+        
+      ENDIF         
+C
+      CALL JEDEMA()
+      END

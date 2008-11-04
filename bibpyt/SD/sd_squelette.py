@@ -1,4 +1,4 @@
-#@ MODIF sd_squelette SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_squelette SD  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ from SD.sd_util import *
 class sd_squelette(sd_maillage):
 #-------------------------------
     nomj = SDNom(fin=8)
-    inv_skeleton = AsVI(SDNom(nomj='.INV.SKELETON'), )
+    inv_skeleton = Facultatif(AsVI(SDNom(nomj='.INV.SKELETON'),))
 
     CORRES       = Facultatif(AsVI())
     NOMSST       = Facultatif(AsVK8(SDNom(debut=17),))
@@ -38,8 +38,9 @@ class sd_squelette(sd_maillage):
 
 
     def check_SKELETON(self,checker):
-        dime=self.DIME.get()
+        if not self.inv_skeleton.exists : return
         skeleton=self.inv_skeleton.get()
+        dime=self.DIME.get()
         nbno=dime[0]
         assert len(skeleton)==2*nbno, (dime,len(skeleton))
         for k in skeleton :

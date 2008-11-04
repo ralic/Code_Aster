@@ -1,6 +1,6 @@
-      SUBROUTINE NUDEEQ(PRCHNO,NEQ,GDS,IDDLAG)
+      SUBROUTINE NUDEEQ(BASE,NU14,NEQ,GDS,IDDLAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ASSEMBLA  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,19 +21,23 @@ C ======================================================================
 
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*19 PRCHNO
+      CHARACTER*14 NU14
+      CHARACTER*2 BASE
       INTEGER NEQ,GDS,IDDLAG
 C ----------------------------------------------------------------------
-C     BUT : CREER L'OBJET .DEEQ ET .DELG DANS UN PROF_CHNO.
+C     BUT : CREER LES OBJETS .DEEQ ET .DELG DANS UN PROF_CHNO.
 
 C     IN:
-C     PRCHNO : NOM D'UN PROF_CHNO (ISSU D'UN NUME_DDL)
+C     BASE    : BASE(1:1) : BASE POUR CREER LE NUME_DDL
+C                    (SAUF LE PROF_CHNO)
+C             : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
+C     NU14 : NOM D'UN NUME_DDL
 C     NEQ    : NOMBRE D'EQUATIONS (OU DE DDL) DU PROF_CHNO
 C     GDS    : NUMERO DE LA GRANDEUR SIMPLE ASSOCIEE AU CHAMP.
 C     IDDLAG : ADRESSE DE L'OBJET DSCLAG CREE LOCALEMENT DANS NUEFFE
 
 C     OUT:
-C     PRCHNO EST COMPLETE DE L'OBJET ".DEEQ" V(I) DIM=2*NEQ
+C     NU14 EST COMPLETE DE L'OBJET ".NUME.DEEQ" V(I) DIM=2*NEQ
 C         (CET OBJET EST DETRUIT S'IL EXISTE DEJA).
 C     V((IDDL-1)*2+1)--> SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST PHYS.:
 C                           +NUMERO DU NOEUD
@@ -53,7 +57,7 @@ C                           DE LA CMP CORRESPONDANT AU BLOCAGE.
 C                        SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN
 C                        LAGRANGE DE LIAISON :
 C                            0
-C     PRCHNO EST COMPLETE DE L'OBJET ".DELG" V(I) DIM=NEQ
+C     NU14 EST COMPLETE DE L'OBJET ".NUME.DELG" V(I) DIM=NEQ
 C         (CET OBJET EST DETRUIT S'IL EXISTE DEJA).
 C     V( IDDL ) --> 0  SI LE NOEUD SUPPORT DE L'EQUATION IDDL N'EST PAS
 C                         UN NOEUD DE LAGRANGE
@@ -82,9 +86,10 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 ZR
       COMPLEX*16 ZC
       LOGICAL ZL
-      CHARACTER*8 ZK8,K8BID,MA,BASE,NONO,NOCMP
+      CHARACTER*8 ZK8,K8BID,MA,NONO,NOCMP
       CHARACTER*16 ZK16
-      CHARACTER*24 ZK24,LIGREL
+      CHARACTER*19 NUMEQA
+      CHARACTER*24 ZK24
       CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
@@ -94,29 +99,24 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
 
       CALL JEMARQ()
-      CALL DISMOI('F','NOM_MAILLA',PRCHNO(1:19),'NUME_EQUA',IBID,MA,IED)
+      NUMEQA=NU14//'.NUME'
+      CALL DISMOI('F','NOM_MAILLA',NUMEQA,'NUME_EQUA',IBID,MA,IED)
       CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNM,K8BID,IED)
       CALL DISMOI('F','NB_NL_MAILLA',MA,'MAILLAGE',NBNL,K8BID,IED)
-      IF (NBNL.GT.0) CALL JEVEUO(MA//'.TYPL','L',IATYPL)
-
-
-C     - BASE OU SE TROUVE LE NUME_EQUA :
-      CALL JELIRA(PRCHNO(1:19)//'.NUEQ','CLAS',IBID,BASE)
+      IF (NBNL.GT.0) CALL JEVEUO(MA//'.TYPL','L',JTYPL)
 
 
 C     - ALLOCATION DE ".DEEQ":
-      CALL JEEXIN(PRCHNO(1:19)//'.DEEQ',IRET)
-      IF (IRET.GT.0) CALL JEDETR(PRCHNO(1:19)//'.DEEQ')
-      CALL WKVECT(PRCHNO(1:19)//'.DEEQ',BASE(1:1)//' V I',2*NEQ,IADEEQ)
+      CALL JEDETR(NUMEQA//'.DEEQ')
+      CALL WKVECT(NUMEQA//'.DEEQ',BASE(2:2)//' V I',2*NEQ,JDEEQ)
 
 C     - ALLOCATION DE ".DELG":
-      CALL JEEXIN(PRCHNO(1:19)//'.DELG',IRET)
-      IF (IRET.GT.0) CALL JEDETR(PRCHNO(1:19)//'.DELG')
-      CALL WKVECT(PRCHNO(1:19)//'.DELG',BASE(1:1)//' V I',NEQ,IADELG)
+      CALL JEDETR(NUMEQA//'.DELG')
+      CALL WKVECT(NUMEQA//'.DELG',BASE(1:1)//' V I',NEQ,JDELG)
 
 
 C     - ADRESSE DE ".NUEQ":
-      CALL JEVEUO(PRCHNO(1:19)//'.NUEQ','L',IANUEQ)
+      CALL JEVEUO(NUMEQA//'.NUEQ','L',JNUEQ)
 
       CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GDS),'LONMAX',NCMPMX,K1BID)
       NEC = NBEC(GDS)
@@ -125,11 +125,11 @@ C     - ADRESSE DE ".NUEQ":
       NBLAG = 0
 
 
-      CALL JELIRA(PRCHNO(1:19)//'.PRNO','NMAXOC',NBLIGR,K1BID)
+      CALL JELIRA(NUMEQA//'.PRNO','NMAXOC',NBLIGR,K1BID)
       DO 30 I = 1,NBLIGR
-        CALL JELIRA(JEXNUM(PRCHNO(1:19)//'.PRNO',I),'LONMAX',L,K1BID)
+        CALL JELIRA(JEXNUM(NUMEQA//'.PRNO',I),'LONMAX',L,K1BID)
         IF (L.GT.0) THEN
-          CALL JEVEUO(JEXNUM(PRCHNO(1:19)//'.PRNO',I),'L',IAPRNO)
+          CALL JEVEUO(JEXNUM(NUMEQA//'.PRNO',I),'L',JPRNO)
 C---- NBNO : SI I=1 --> NOMBRE DE NOEUDS DU MAILLAGE
 C            SI I>1 --> NOMBRE DE NOEUDS SUPPLEMENTAIRES DU LIGREL I
           NBNO = L/ (NEC+2)
@@ -140,25 +140,25 @@ C            SI I>1 --> NOMBRE DE NOEUDS SUPPLEMENTAIRES DU LIGREL I
 C--- J : SI I=1 --> NUMERO DU NOEUD DU MAILLAGE
 C        SI I>1 --> NUMERO DU NOEUD SUPPLEMENTAIRE DU
 C                   LIGREL I (CHANGE DE SIGNE).
-            IDDL = ZI(IAPRNO-1+ (J-1)* (NEC+2)+1) - 1
-            IADG = IAPRNO - 1 + (J-1)* (NEC+2) + 3
+            IDDL = ZI(JPRNO-1+ (J-1)* (NEC+2)+1) - 1
+            IADG = JPRNO - 1 + (J-1)* (NEC+2) + 3
             DO 10 K = 1,NCMPMX
               IF (EXISDG(ZI(IADG),K)) THEN
                 IDDL = IDDL + 1
-                IEQ = ZI(IANUEQ-1+IDDL)
+                IEQ = ZI(JNUEQ-1+IDDL)
 
                 IF (I.EQ.1) THEN
                   CALL ASSERT((NBNL.LE.0) .OR. (IEQ.EQ.IDDL))
-                  ZI(IADEEQ-1+2* (IEQ-1)+1) = J
-                  ZI(IADEEQ-1+2* (IEQ-1)+2) = K
-                  ZI(IADELG-1+IEQ) = 0
+                  ZI(JDEEQ-1+2* (IEQ-1)+1) = J
+                  ZI(JDEEQ-1+2* (IEQ-1)+2) = K
+                  ZI(JDELG-1+IEQ) = 0
                 ELSE
                   ILAG = NBLAG + J
                   NOB = ZI(IDDLAG+ (ILAG-1)*3)
                   NDDLB = ZI(IDDLAG+ (ILAG-1)*3+1)
-                  ZI(IADEEQ-1+2* (IEQ-1)+1) = NOB
-                  ZI(IADEEQ-1+2* (IEQ-1)+2) = NDDLB
-                  ZI(IADELG-1+IEQ) = -ZI(IDDLAG+ (ILAG-1)*3+2)
+                  ZI(JDEEQ-1+2* (IEQ-1)+1) = NOB
+                  ZI(JDEEQ-1+2* (IEQ-1)+2) = NDDLB
+                  ZI(JDELG-1+IEQ) = -ZI(IDDLAG+ (ILAG-1)*3+2)
                 END IF
 
               END IF
@@ -174,8 +174,8 @@ C        PLUSIEURS FOIS (ON NE REGARDE QUE LES 10 1ERES CMPS):
 C     -------------------------------------------------------
       CALL WKVECT('&&NUEFFE.LNOBLOQ','V V I',NBNM*10,JLBLQ)
       DO 40,IEQ = 1,NEQ
-        NUNO = ZI(IADEEQ-1+2* (IEQ-1)+1)
-        NUCMP = ZI(IADEEQ-1+2* (IEQ-1)+2)
+        NUNO = ZI(JDEEQ-1+2* (IEQ-1)+1)
+        NUCMP = ZI(JDEEQ-1+2* (IEQ-1)+2)
         IF ((NUNO.GT.0) .AND. (NUCMP.LT.0) .AND. (NUCMP.GE.-10)) THEN
           NUCMP = -NUCMP
           ZI(JLBLQ-1+ (NUNO-1)*10+NUCMP) = ZI(JLBLQ-1+ (NUNO-1)*10+

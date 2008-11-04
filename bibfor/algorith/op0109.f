@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -227,7 +227,7 @@ C
          ENDIF
          IF (NTY2.NE.0) THEN
             CALL U2MESK('I+','SEISME_19',1,TYPCMA)
-         ENDIF 
+         ENDIF
          CALL U2MESS('I','SEISME_27')
       ENDIF
 C     ----- RECUPERATION DES EXCITATIONS -----
@@ -366,7 +366,7 @@ C     ----- CAS DU MULTI-SUPPORT -----
          CALL GETFAC('COMB_DEPL_APPUI',NBFAC)
          IF (NBFAC.NE.0)  CALL ASENAP(MASSE)
       ENDIF
-      
+
 C     --- CALCUL DES REPONSES ---
 
       CALL ASCALC(RESU,MASSE,MECA,PSMO,STAT,NBMODE,NEQ,ZI(JORDR),
@@ -381,7 +381,14 @@ C     --- CALCUL DES REPONSES ---
 C
  9999 CONTINUE
       CALL TITRE
-C
+
+
+C     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
+C     -------------------------------------------
+      CALL AJREFD(' ',RESU,'FORCE')
+
+
+
  1060 FORMAT(/,80('-'))
  1070 FORMAT(/,1X,'--- GRANDEURS MODALES ---')
  1080 FORMAT(30X,'FACTEUR DE   MASSE MODALE')

@@ -1,7 +1,7 @@
       SUBROUTINE CFADJU(ALIAS,KSI1  ,KSI2  ,TOLEOU,LDIST)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,10 +53,9 @@ C
 C ----------------------------------------------------------------------
 C
       LDIST  = .TRUE.
-      ECART  = 0.D0
+      ECART  = -1.D0
 C
       IF (ALIAS(1:2).EQ.'SE') THEN
-        ECART = 0.D0
         IF ((KSI1.LT.-1.D0).OR.(KSI1.GT.1.D0)) THEN
           ECART  = ABS(KSI1)-1.D0
         ENDIF    
@@ -69,6 +68,11 @@ C
           KSI1 = 1.D0  
         ENDIF  
       ELSE IF (ALIAS(1:2).EQ.'TR') THEN
+
+        IF ((KSI1.GE.0.D0).AND.
+     &      (KSI2.GE.0.D0).AND.((KSI1+KSI2).LE.1.D0)) THEN
+          GOTO 999
+        ENDIF
 C
 C --- SECTEUR CONCERNE
 C    
@@ -95,44 +99,37 @@ C
             CALL ASSERT(.FALSE.)  
           ENDIF  
         ENDIF
-        IF (KSI1.GT.0.D0) THEN
+        IF (KSI1.GE.0.D0) THEN
           IF (KSI2.GT.(KSI1+1.D0)) THEN
             IZONE = 4
-          ELSEIF ((KSI2.GE.(-KSI1+1.D0)).AND.
+          ELSEIF ((KSI2.GT.(-KSI1+1.D0)).AND.
      &            (KSI2.GE.(KSI1-1.D0)).AND.
      &            (KSI2.LE.(KSI1+1.D0))) THEN
             IZONE = 5
             KSI1E = 5.D-1*(1.D0+KSI1-KSI2)
             KSI2E = 5.D-1*(1.D0-KSI1+KSI2)
-          ELSEIF ((KSI2.GT.0.D0).AND.
-     &            (KSI2.LT.(KSI1-1.D0)).AND.
-     &            (KSI1.GT.1.D0)) THEN 
+          ELSEIF ((KSI2.GE.0.D0).AND.
+     &            (KSI2.LT.(KSI1-1.D0))) THEN 
             IZONE = 6 
           ENDIF
         ENDIF 
 C
 C --- CALCUL DE L'ECART
 C
-        ECART = 0.D0
         IF (IZONE.EQ.1) THEN
           ECART = SQRT(ABS(KSI1)*ABS(KSI1)+
      &                 ABS(KSI2)*ABS(KSI2))
         ELSEIF (IZONE.EQ.2) THEN
           ECART = SQRT(ABS(KSI1)*ABS(KSI1))
-        ELSEIF (IZONE.EQ.3) THEN
+        ELSEIF (IZONE.EQ.3.OR.IZONE.EQ.4) THEN
           ECART = SQRT(ABS(KSI1)*ABS(KSI1)+
      &                (KSI2-1.D0)*(KSI2-1.D0))
-        ELSEIF (IZONE.EQ.4) THEN
-          ECART = SQRT(KSI1*KSI1+
-     &                (KSI2-1.D0)*(KSI2-1.D0))     
         ELSEIF (IZONE.EQ.5) THEN
           ECART = SQRT((KSI1-KSI1E)*(KSI1-KSI1E)+
      &                   (KSI2-KSI2E)*(KSI2-KSI2E))
-        ELSEIF (IZONE.EQ.6) THEN
-          ECART = SQRT(KSI2*KSI2+
+        ELSEIF (IZONE.EQ.6.OR.IZONE.EQ.7) THEN
+          ECART = SQRT(ABS(KSI2)*ABS(KSI2)+
      &                (KSI1-1.D0)*(KSI1-1.D0))
-        ELSEIF (IZONE.EQ.7) THEN
-          ECART = SQRT((KSI1-1.D0)*(KSI1-1.D0)+KSI2*KSI2)
         ELSEIF (IZONE.EQ.8) THEN
           ECART = SQRT(ABS(KSI2)*ABS(KSI2))
         ENDIF      
@@ -147,19 +144,13 @@ C
           KSI2 = 0.D0
         ELSEIF (IZONE.EQ.2) THEN
           KSI1 = 0.D0
-        ELSEIF (IZONE.EQ.3) THEN
+        ELSEIF (IZONE.EQ.3.OR.IZONE.EQ.4) THEN
           KSI1 = 0.D0
           KSI2 = 1.D0
-        ELSEIF (IZONE.EQ.4) THEN
-          KSI1 = 0.D0
-          KSI2 = 1.D0        
         ELSEIF (IZONE.EQ.5) THEN
           KSI1 = KSI1E
           KSI2 = KSI2E        
-        ELSEIF (IZONE.EQ.6) THEN
-          KSI1 = 1.D0
-          KSI2 = 0.D0        
-        ELSEIF (IZONE.EQ.7) THEN
+        ELSEIF (IZONE.EQ.6.OR.IZONE.EQ.7) THEN
           KSI1 = 1.D0
           KSI2 = 0.D0        
         ELSEIF (IZONE.EQ.8) THEN
@@ -203,7 +194,6 @@ C
 C
 C --- CALCUL DE L'ECART
 C
-        ECART = 0.D0
         IF (IZONE.EQ.1) THEN
           ECART = SQRT((ABS(KSI1)-1.D0)*(ABS(KSI1)-1.D0)+
      &                 (ABS(KSI2)-1.D0)*(ABS(KSI2)-1.D0))
@@ -257,5 +247,7 @@ C
       ELSE
         CALL ASSERT(.FALSE.)  
       END IF
+
+ 999  CONTINUE
 
       END

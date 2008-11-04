@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_cata Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,8 +124,6 @@ class Resultat:
           self.nume_name = toto.strip()
           if self.nume_name:
             self.nume = self.objects.nume_ddl[self.nume_name]
-
-          
 
 
 #    def get_nume_2(self):
@@ -410,7 +408,6 @@ class DynaHarmo:
             possède ce meme maillage"""
 
         self.get_maillage()
-        print self.objects.nume_ddl
         for nume in self.objects.nume_ddl.keys():
             refe = nume.ljust(14)+'.NUME.REFN'
             if aster.getvectjev(refe):
@@ -866,7 +863,7 @@ class MeideeObjects:
             resu.get_matrices()
             resu.get_nume()
             resu.get_maillage()
-            print resu.nom," a pour modele ",resu.modele, " pour matrices ", resu.kass, resu.mass
+##            print resu.nom," a pour modele ",resu.modele, " pour matrices ", resu.kass, resu.mass
 
         for modele_name, modele in self.modeles.items():
             modele.get_maillage()

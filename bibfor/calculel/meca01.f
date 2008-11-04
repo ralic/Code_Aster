@@ -5,7 +5,7 @@
      &                    TYPESE, NPASS,  CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 04/11/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,6 +162,7 @@ C               12   345678   9012345678901234
       CHSIGX = BLAN24
       NCHARP = 0
       NCHARD = 0
+      YAXFEM = .FALSE.
 C
 C=======================================================================
 C 2. OPTION "ERRE_ELEM_SIGM"

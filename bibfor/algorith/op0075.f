@@ -3,7 +3,7 @@
       INTEGER IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C
 C --- CREATION DU .REFN DU PROFIL :
 C     ---------------------------
       PROFNO=NOMRES//'.PROFC.NUME'
-      CALL WKVECT(PROFNO(1:19)//'.REFN','G V K24',4,JREFN)
+      CALL WKVECT(PROFNO(1:19)//'.REFN','V V K24',4,JREFN)
       ZK24(JREFN+1)='DEPL_R'
 C
       CALL GETVID(' ','RESU_GENE',1,1,1,RESIN,IR1)

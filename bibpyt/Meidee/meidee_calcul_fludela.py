@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_fludela Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_calcul_fludela Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -790,18 +790,18 @@ class MeideeTurbMonomod:
         self.rho_flu_int = 1000.0
         self.rho_flu_ext = 1000.0        
         
-        self.ld = None
-        self.lambdac = None
-        self.gammac = None
+        self.param_gamma = None
         
         self.calc = {} #resultats du calcul
         self.obs_longcorr = []
         
-        self.nb_freq=101 #discretisation imposee pour les fonction Lc1 et S0
+        self.nb_freq = None #discretisation du spectre des mesures
         
         self.fimen = None
         self.fimen_name = ""           
         self.indref = 0
+
+        self.param_init_interpolation = None
    
     def set_interspectre(self,intsp):
         """ Trouve l'interspectre des mesures en fonctionnement"""
@@ -814,15 +814,9 @@ class MeideeTurbMonomod:
                     
     def set_base (self, base):
         self.res_base = base
-    
-    def set_ld(self,ld):
-        self.ld = ld
         
-    def set_lambdac(self,lambdac):
-        self.lambdac = lambdac
-        
-    def set_gammac(self,gammac):
-        self.gammac = gammac          
+    def set_param_gamma(self,param):
+        self.param_gamma = param          
                 
     def set_param_phy(self,rho_int=None, rho_ext=None, diam_int=None, diam_ext=None ):
         """!Specifie les parametres physiques a utiliser
@@ -952,16 +946,16 @@ class MeideeTurbMonomod:
         nume_deconv = self.nume_deconv
         
         nume_EML = self.nume_EML
-        ld = self.ld
-        lambdac=self.lambdac
-        gammac=self.gammac
+        ld = self.param_gamma['ld']
+        lambdac=self.param_gamma['lambdac']
+        gammac=self.param_gamma['gammac']
         
         try:
             
-            __fonc = calc_meidee_fonclongeq(self.res_longcorr, self.nume_deconv,self.ld,
-                                          self.lambdac,self.gammac)
-            __tabl = calc_meidee_longeq_2(self.res_longcorr, self.nume_EML,self.ld,
-                                          self.lambdac,self.gammac)
+            __fonc = calc_meidee_fonclongeq(self.res_longcorr, self.nume_deconv,ld,
+                                          lambdac,gammac,self.inter_spec)
+            __tabl = calc_meidee_longeq_2(self.res_longcorr, self.nume_EML,ld,
+                                          lambdac,gammac)
         
         except TypeError:
             self.mess.disp_mess("Longueur equivalente non calculee")
@@ -978,7 +972,26 @@ class MeideeTurbMonomod:
         """ Calcul du carre du module |G1(omega)| de la fonction de transfert associee 
             au mode fondamental 
         """
-        from Cata.cata import DEFI_FONCTION
+        from Cata.cata import DEFI_FONCTION, RECU_FONCTION, DETRUIRE
+
+# on veut recuperer les frequences de discretisation de Suu(x0,x0,omega) [spectre des mesures]        
+        self.Syy = self.inter_spec
+        table_py = self.Syy.obj.EXTR_TABLE()
+        nom_fonc=table_py['FONCTION_C'].values()['FONCTION_C'][0]
+
+                
+        __Syyf = RECU_FONCTION(TABLE=self.Syy.obj,
+                               NOM_PARA_TABL = 'FONCTION_C',
+                               FILTRE=_F(NOM_PARA='FONCTION_C',
+                                          VALE_K = nom_fonc,),
+                               )
+        self.fonc_py=__Syyf.convert('complex')
+
+                
+        DETRUIRE( CONCEPT = _F( NOM = __Syyf ),INFO=1 )
+        # liste des frequences de discretisation, et pulsations associees
+        f=self.fonc_py.vale_x
+        self.nb_freq = len(f)
 
         G = zeros((self.nb_freq),'D')
 
@@ -994,15 +1007,9 @@ class MeideeTurbMonomod:
         mass_mode_deconv = l_mass_i[nume_deconv]
         omega_mode_deconv = 2*pi*freq_mode_deconv
 
-        # liste des frequences de discretisation, et pulsations associees
-        f=[]
+
         omega=[]
         liste_G=[]
-        f.append(0)
-        for ind in range(1,self.nb_freq):
-        #    newf=f[ind-1]+0.2
-            newf=f[ind-1]+2
-            f.append(newf)
         for ind in range(self.nb_freq):
             omega.append(2*pi*f[ind])
             G[ind] = abs(1/(mass_mode_deconv*complex(-(omega[ind])**2 + omega_mode_deconv**2 ,
@@ -1080,7 +1087,10 @@ class MeideeTurbMonomod:
         
 # constante --> retourne le produit (1/2.rho.D.U.U).(1/2.rho.D.U.U).D/U.PHI1(x0).PHI1(x0)
 # soit tout ce qui est independant de omega dans S0
-        constante = ((0.5*self.rho_flu_ext*D*U*U)**2)*D/U*self.deformee[0]*self.deformee[0]
+#        constante = ((0.5*self.rho_flu_ext*D*U*U)**2)*D/U*self.deformee[0]*self.deformee[0]
+# si on ne travaille pas en adimensionnel, on ne prend pas en compte le terme 
+#   (1/2.rho.D.U.U).(1/2.rho.D.U.U).D/U
+        constante = self.deformee[0]*self.deformee[0]
 
 # il faut interpoler les fonctions G et Lc aux memes valeurs omega que le spectre des mesures
         __Lcinterp = CALC_FONC_INTERP(FONCTION =self.fonc_long_corr,
@@ -1179,6 +1189,13 @@ class MeideeTurbMonomod:
         
         return S0_EML
         
+    def set_param_init_recal(self,param):
+        """ parametres initiaux (A,PULSc,BETA et MU), leurs valeurs min et max, pour le 
+            lancement de MACR_RECAL pour interpolation de la fonction S0 par la forme 
+            analytique attendue
+        """
+        self.param_init_interpolation = param
+    
     def compute_interpolation(self):
         """ On rappatrie l'ensemble des donnees experimentales - fonction S0 
             plus les valeurs ponctuelles apportees par les EML.
@@ -1212,8 +1229,8 @@ class MeideeTurbMonomod:
         experience = [tab_deconv , tab_EML]
 # poids relatifs a donner aux courbes deconv et EML
 # valeurs par defaut = 1
-        p1 = 1
-        p2 = 0.1 
+        p1 = self.param_init_interpolation['poids1']
+        p2 = self.param_init_interpolation['poids2'] 
 
         poids = Numeric.array([p1,p2])
         
@@ -1228,9 +1245,21 @@ class MeideeTurbMonomod:
         # les abscisses : ce sont celles de la courbes experimentale
         abscisses1 = tuple(experience[0][:,0].tolist())
         abscisses2 = tuple(experience[1][:,0].tolist())
+        A = self.param_init_interpolation['A']
+        Amin = self.param_init_interpolation['Amin']
+        Amax = self.param_init_interpolation['Amax']
+        BETA = self.param_init_interpolation['BETA']
+        BETAmin = self.param_init_interpolation['BETAmin']
+        BETAmax = self.param_init_interpolation['BETAmax']
+        PULSC = self.param_init_interpolation['PULSC']
+        PULSCmin = self.param_init_interpolation['PULSCmin']
+        PULSCmax = self.param_init_interpolation['PULSCmax']
+        MU = self.param_init_interpolation['MU']
+        MUmin = self.param_init_interpolation['MUmin']
+        MUmax = self.param_init_interpolation['MUmax']
 
-    # On cherche un numero d'unite logique libre et on cree un fichier au sens fortran
-    # correspondant a cette UL
+        # On cherche un numero d'unite logique libre et on cree un fichier au sens fortran
+        # correspondant a cette UL
         _TUL = INFO_EXEC_ASTER( LISTE_INFO = 'UNITE_LIBRE')
         _ULESCL = _TUL['UNITE_LIBRE',1]
         DEFI_FICHIER(FICHIER='TMP',
@@ -1313,10 +1342,10 @@ class MeideeTurbMonomod:
         # au travers d'une petite IHM.
     
         # "parametres" donne les valeurs 1) initiale 2) minimale 3) maximale des parametres a recaler
-        parametres = [['A__',1.0E11,1.0E8,1.0E14],
-                      ['BETA__',10.,5.,15.],
-                      ['PULSC__',100.,50.,150.],
-                      ['MU__',0.025,0.01,0.05]]
+        parametres = [['A__',A,Amin,Amax],
+                      ['BETA__',BETA,BETAmin,BETAmax],
+                      ['PULSC__',PULSC,PULSCmin,PULSCmax],
+                      ['MU__',MU,MUmin,MUmax]]
         # "calcul" est la table definie dans le fichier esclave ('REPONSE') et le nom de l'abscisse
         # et de l'ordonnee (resp 'PULS' et 'VALE'). Ces noms sont arbitraires.
         calcul = [['REPONSE1','PULS','VALE'],['REPONSE2','PULS','VALE']]
@@ -1336,7 +1365,7 @@ class MeideeTurbMonomod:
 
 
 #--------------------------------------------------------------------------------                
-def calc_meidee_fonclongeq(resultat,nume_deconv,ld,lambdac,gammac,*args ):
+def calc_meidee_fonclongeq(resultat,nume_deconv,ld,lambdac,gammac,inter_spec,*args ):
     """ Calcul de la longueur equivalente sur une poutre, a savoir
     int(phi(x1).Gamma(x1,x2,om).phi(x2).dx1dx2). On utilise le maillage associe
     au "resultat", pour avoir les coordonnes des noeuds.
@@ -1350,7 +1379,9 @@ def calc_meidee_fonclongeq(resultat,nume_deconv,ld,lambdac,gammac,*args ):
     fonction de la pulsation omega equivalente, avec une discretisation en frequence
     imposee a 0.2Hz. , 
     """
-    from Cata.cata import CREA_CHAMP, DETRUIRE, CREA_TABLE, DEFI_FONCTION    
+    from Cata.cata import CREA_CHAMP, DETRUIRE, CREA_TABLE, DEFI_FONCTION
+    from Cata.cata import EXTR_TABLE, RECU_FONCTION
+        
     __PHI=CREA_CHAMP( TYPE_CHAM='NOEU_DEPL_R',
                       NUME_ORDRE=1,
                       OPERATION='EXTR',
@@ -1380,22 +1411,32 @@ def calc_meidee_fonclongeq(resultat,nume_deconv,ld,lambdac,gammac,*args ):
     
     fonc_long_corr=[]
     
+    # on veut recuperer la fonction Suu(x0,x0,omega) --> spectre des mesures,
+    # et la discretisation en frequence associee
+    
+    table_py = inter_spec.obj.EXTR_TABLE()
+    nom_fonc=table_py['FONCTION_C'].values()['FONCTION_C'][0]
+    
+    __Syyf = RECU_FONCTION(TABLE=inter_spec.obj,
+                           NOM_PARA_TABL = 'FONCTION_C',
+                           FILTRE=_F(NOM_PARA='FONCTION_C',
+                                     VALE_K = nom_fonc,),
+                           )
+    fonc_py=__Syyf.convert('complex')
 
-    # On genere la liste des frequences - plage [0-100Hz] avec
-    # un pas de 1Hz
+                
+    DETRUIRE( CONCEPT = _F( NOM = __Syyf ),INFO=1 )
 
+    # les frequences de l'autospectre Suu(x0,x0,omega)                
+    freqSyy = fonc_py.vale_x
 
-    nb_freq = 101
-    f = []
-    f.append(0)
-    for ind in range(1,nb_freq):
-        newf=f[ind-1]+1
-        f.append(newf)
-        
+    freq=[]
     omega=[]
-    for ind in range(nb_freq):
-        omega.append(2*pi*f[ind])
+    for ind in range(len(freqSyy)):
+        freq.append(freqSyy[ind])
+        omega.append(2*pi*freqSyy[ind])
         
+    nb_freq = len(freq)
     
     # on recupere le tableau des frequences des modes propres
     freq_i =  resultat.get_modes()[0]
@@ -1404,7 +1445,7 @@ def calc_meidee_fonclongeq(resultat,nume_deconv,ld,lambdac,gammac,*args ):
     l_omega_i = 2*pi*l_freq_i
         
 
-    ind_mod_deconv = [int(m)for m in nume_deconv]
+    ind_mod_deconv = [int(m) for m in nume_deconv]
 
     for indm in ind_mod_deconv:
 

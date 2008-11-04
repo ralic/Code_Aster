@@ -3,10 +3,10 @@
       CHARACTER*19 SOLVEU
       INTEGER NEQUA
       CHARACTER*(*) LLIGR,NUZ,RENUM
-      CHARACTER*1 BASE
+      CHARACTER*2 BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ASSEMBLA  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,9 @@ C ----------------------------------------------------------------------
 C IN/JXOUT K*14 NU  : LE CHAMP .NUME (SD NUME_EQUA) DE LA S.D. NUME_DDL
 C                   EST CREE ET REMPLI.
 C                   SI NU EXISTE DEJA ON LE DETRUIT COMPLETEMENT
-C IN  K1   BASE   : BASE(1:1) : BASE POUR CREER NU.NUME (SD NUME_EQUA)
+C IN  K2   BASE    : BASE(1:1) : BASE POUR CREER LE NUME_DDL
+C                    (SAUF LE PROF_CHNO)
+C                  : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 C IN  K24 LLIGR  : NOM D'UN OBJET JEVEUX REPRESENTANT UN VECTEUR
 C                   DE K24 DONT LES ELEMENTS SONT LES NOMS(TOUS DIFF)
 C                   DES S.D. DE TYPE LIGREL.
@@ -70,12 +72,12 @@ C----------------------------------------------------------------------
       CHARACTER*8 MAILLA
       CHARACTER*14 NU
       CHARACTER*16 NOMTE
-      CHARACTER*24 LILI,NNLI,PSUIV,LSUIV,VSUIV,NUM21,NUNO,NOMLI,PLPRN,
-     &             KNEQUA,DERLI,NUM2,DSCLAG,EXI1,NEWN,OLDN
+      CHARACTER*24 LILI,NNLI,PSUIV,LSUIV,VSUIV,NUM21,NUNO,NOMLI,
+     &             DERLI,NUM2,DSCLAG,EXI1,NEWN,OLDN
       INTEGER NBNO,NDDL,ILIM,ITYPEL,INDIK8
       INTEGER I,IAD,IADLIE,IADNEM,IANUEQ,IBID,ICDDLB
       INTEGER ICER1,ICER2,ICONX1,ICONX2,IDDLAG,IDERLI,IDLGNS
-      INTEGER IDNBNO,IDNEQU,IDNOCM,IDPRN1,IDPRN2,IDPRN3,IDREF
+      INTEGER IDNBNO,IDNEQU,IDNOCM,IDPRN1,IDPRN2,IDREF
       INTEGER IEC,IEL,IER,IEXI1,IFM,IGR,IGREL,ILAG,ILAG2,ILAG3
       INTEGER ILI,ILSUIV,IMAIL,INEWN,INO,INULAG,INUM2,INUM21
       INTEGER INUNO1,INUNO2,IOLDN,IPRNM,IPRNS,IPSUIV,IRE,IRET
@@ -217,9 +219,7 @@ C     ----------------------------------------------------------
 
 C --- NOMS DES PRINCIPAUX OBJETS JEVEUX :
 C     ---------------------------------
-      PLPRN = NU//'.NUME.LPRN'
       LILI = NU//'.NUME.LILI'
-      KNEQUA = NU//'.NUME.NEQU'
       EXI1 = NU//'.EXI1'
       NEWN = NU//'.NEWN'
       OLDN = NU//'.OLDN'
@@ -236,8 +236,8 @@ C     ---------------------------------
 C --- CREATION DE LA COLLECTION NU.NUME.LILI
 C --- ET DE NU//'     .ADNE' ET NU//'     .ADLI' SUR 'V' :
 C     --------------------------------------------------
-      CALL NULILI(LLIGR,LILI,BASE,MOLOC,NOMGDS,IGDS,MAILLA,NEC,NCMP,
-     &            NLILI)
+      CALL NULILI(LLIGR,LILI,BASE(2:2),MOLOC,NOMGDS,IGDS,MAILLA,NEC,
+     &            NCMP,NLILI)
 
       CALL JEVEUO(NU//'     .ADLI','E',IADLIE)
       CALL JEVEUO(NU//'     .ADNE','E',IADNEM)
@@ -262,12 +262,9 @@ C     ---------------------
       CALL JECREC(NUNO,'V V I ','NU','CONTIG','VARIABLE',NLILI)
 
 
-C --- ALLOCATION DE PRNO ET DE SON POINTEUR DE LONGUEUR :
+C --- ALLOCATION DE PRNO :
 C     -------------------------------------------------
-      CALL JECREO(PLPRN,BASE//' V I ')
-      CALL JEECRA(PLPRN,'LONMAX',NLILI,' ')
-      CALL JEVEUO(PLPRN,'E',IDPRN3)
-      CALL JECREC(NU//'.NUME.PRNO',BASE//' V I ','NU','CONTIG',
+      CALL JECREC(NU//'.NUME.PRNO',BASE(2:2)//' V I ','NU','CONTIG',
      &            'VARIABLE',NLILI)
 
 
@@ -280,7 +277,6 @@ C     ------------------------------------------
       NBNOM = NBNO + NBNL
       ZI(IDNBNO) = NBNOM
       CALL JEECRA(JEXNUM(NUNO,1),'LONMAX',NBNOM,KBID)
-      ZI(IDPRN3) = NBNOM* (NEC+2)
       CALL JEECRA(JEXNUM(NU//'.NUME.PRNO',1),'LONMAX',NBNOM* (NEC+2),
      &            KBID)
 
@@ -307,9 +303,6 @@ C        --------------------------------
         ZI(IDNBNO+ILI-1) = NBN
         CALL JEECRA(JEXNUM(NUNO,ILI),'LONMAX',NBN,KBID)
 
-C ---    AFFECTATION DU CHAMP .LPRN DE NU :
-C        --------------------------------
-        ZI(IDPRN3+ILI-1) = NBN* (NEC+2)
         CALL JEECRA(JEXNUM(NU//'.NUME.PRNO',ILI),'LONMAX',NBN* (NEC+2),
      &              KBID)
         N = N + NBN
@@ -947,9 +940,7 @@ C     =================================
   220 CONTINUE
 
       NEQUA = IAD - 1
-      CALL JECREO(KNEQUA,BASE//' V I')
-      CALL JEECRA(KNEQUA,'LONMAX',2,CBID)
-      CALL JEVEUO(KNEQUA,'E',IDNEQU)
+      CALL WKVECT(NU//'.NUME.NEQU',BASE(1:1)//' V I',2,IDNEQU)
       ZI(IDNEQU) = NEQUA
 
       IF (NIV.GE.1) THEN
@@ -969,7 +960,7 @@ C       ----------------------------------------------------------------
 
 
 C AUGMENTATION DE LA TAILLE DU .REFN (DE 2 A 4) POUR FETI
-      CALL WKVECT(NU//'.NUME.REFN',BASE//' V K24',4,IDREF)
+      CALL WKVECT(NU//'.NUME.REFN',BASE(1:1)//' V K24',4,IDREF)
       ZK24(IDREF) = MAILLA
       ZK24(IDREF+1) = NOMGDS
       CALL JEEXIN(SOLVEU(1:19)//'.SLVK',IRET)
@@ -984,12 +975,12 @@ C --- ON COMPLETE LE CONCEPT PROF_CHNO :
 C        OBJET '.DEEQ' :
 C        OBJET '.NUEQ' :
 C     ---------------------------------------------------
-      CALL WKVECT(NU//'.NUME.NUEQ',BASE//' V I',NEQUA,IANUEQ)
+      CALL WKVECT(NU//'.NUME.NUEQ',BASE(2:2)//' V I',NEQUA,IANUEQ)
       DO 310,I = 1,NEQUA
         ZI(IANUEQ-1+I) = I
   310 CONTINUE
 
-      CALL NUDEEQ(NU//'.NUME',NEQUA,IGDS,IDDLAG)
+      CALL NUDEEQ(BASE,NU,NEQUA,IGDS,IDDLAG)
 
 
 C --- DESTRUCTION DES .PRNM ET DES .PRNS DE CHAQUE LIGREL :

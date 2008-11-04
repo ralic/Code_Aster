@@ -2,7 +2,7 @@
      &                  NDIM  ,JAC   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,10 +77,10 @@ C
       DYDS = 0.D0
       DZDS = 0.D0 
       DXDE = 0.D0
-      DXDK = 0.D0
       DYDE = 0.D0
-      DYDK = 0.D0
       DZDE = 0.D0
+      DXDK = 0.D0
+      DYDK = 0.D0
       DZDK = 0.D0               
 C
       IF (ALIAS(1:5).EQ.'SE2') THEN
@@ -97,7 +97,7 @@ C
         IF (IAXIS.EQ.1) THEN
           XX = 0.D0
           DO 7 I=1,2
-          XX = XX+ ZR(IGEOM-1+2*(I-1)+1)*FF(I)
+            XX = XX+ ZR(IGEOM-1+2*(I-1)+1)*FF(I)
 7         CONTINUE
           IF (XX.EQ.0.D0) THEN
             XX=0.01D-5
@@ -112,16 +112,16 @@ C
           DYDS = DYDS + ZR(IGEOM-1+2*(I-1)+2)*DFF(1,I)
    20   CONTINUE
          IF (IAXIS.EQ.1) THEN
-          XX = 0.D0
-          DO 3 I=1,3
-          XX = XX+ ZR(IGEOM-1+2*(I-1)+1)*FF(I)
-3         CONTINUE
-          IF (XX.EQ.0.D0) THEN
-            XX=0.01D-5
-          ENDIF
-          JAC = SQRT(DXDS**2+DYDS**2)*ABS(XX)
+           XX = 0.D0
+           DO 3 I=1,3
+             XX = XX+ ZR(IGEOM-1+2*(I-1)+1)*FF(I)
+3          CONTINUE
+           IF (XX.EQ.0.D0) THEN
+             XX=0.01D-5
+           ENDIF
+           JAC = SQRT(DXDS**2+DYDS**2)*ABS(XX)
          ELSE
-          JAC = SQRT(DXDS**2+DYDS**2)
+           JAC = SQRT(DXDS**2+DYDS**2)
          END IF
       ELSE IF (ALIAS(1:5).EQ.'TR3') THEN
         DO 30 I = 1,3

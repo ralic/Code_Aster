@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24  MASFE1,MASFE2
       INTEGER       IFETM1,IFETM2
       LOGICAL       LFETI
-      
+
 
 C DEB-------------------------------------------------------------------
 
@@ -183,7 +183,6 @@ C     -----------------------------------
         CALL JEDUP1(K191//'.NUEQ',BAS2,K192//'.NUEQ')
         CALL JEDUP1(K191//'.PRNO',BAS2,K192//'.PRNO')
         CALL JEDUP1(K191//'.LILI',BAS2,K192//'.LILI')
-        CALL JEDUP1(K191//'.LPRN',BAS2,K192//'.LPRN')
 
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'NUME_EQUA') THEN
@@ -191,9 +190,9 @@ C     -----------------------------------
         K191 = SD1
         K192 = SD2
         CALL COPIS2('PROF_CHNO',BAS2,K191,K192)
-        CALL JEDUP1(K191//'.DELG',BAS2,K192//'.DELG')
         CALL JEDUP1(K191//'.NEQU',BAS2,K192//'.NEQU')
         CALL JEDUP1(K191//'.REFN',BAS2,K192//'.REFN')
+        CALL JEDUP1(K191//'.DELG',BAS2,K192//'.DELG')
 
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'STOCKAGE') THEN
@@ -239,7 +238,7 @@ C     ---------------------------------------------
         CALL JEDUP1(K191//'.VALF',BAS2,K192//'.VALF')
         CALL JEDUP1(K191//'.WALF',BAS2,K192//'.WALF')
         CALL JEDUP1(K191//'.VALM',BAS2,K192//'.VALM')
-        
+
 C FETI OR NOT ?
         MASFE1 = K191//'.FETM'
         CALL JEEXIN(MASFE1,IRET)
@@ -253,7 +252,7 @@ C FETI OR NOT ?
           MASFE2 = K192//'.FETM'
           CALL JEDUP1(MASFE1,BAS2,MASFE2)
           CALL JEDUP1(K191//'.FETF',BAS2,K192//'.FETF')
-          CALL JEDUP1(K191//'.FETP',BAS2,K192//'.FETP')          
+          CALL JEDUP1(K191//'.FETP',BAS2,K192//'.FETP')
           CALL JEDUP1(K191//'.FETR',BAS2,K192//'.FETR')
 
           CALL JELIRA(MASFE1,'LONMAX',NBSD,K8B)
@@ -266,8 +265,8 @@ C FETI OR NOT ?
             END IF
    30     CONTINUE
 
-        END IF        
-        
+        END IF
+
 
 C --------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'TABLE') THEN
@@ -307,6 +306,47 @@ C     -----------------------------------
         CALL JEDUP1(K191//'.SSSA',BAS2,K192//'.SSSA')
 
 C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'SQUELETTE') THEN
+C     -----------------------------------
+        MAIL1 = SD1
+        MAIL2 = SD2
+        CALL COPIS2('MAILLAGE',BAS2,MAIL1,MAIL2)
+C
+        CALL JEDUP1(MAIL1//'.CORRES',BAS2,MAIL2//'.CORRES')
+        CALL JEDUP1(MAIL1//'.INV.SKELETON',BAS2,MAIL2//'.INV.SKELETON')
+        CALL JEDUP1(MAIL1//'         .NOMSST',BAS2,
+     &              MAIL2//'         .NOMSST')
+        CALL JEDUP1(MAIL1//'.ANGL_NAUT',BAS2,MAIL2//'.ANGL_NAUT')
+        CALL JEDUP1(MAIL1//'.TRANS',BAS2,MAIL2//'.TRANS')
+
+C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'L_TABLE') THEN
+C     -----------------------------------
+        K191 = SD1
+        K192 = SD2
+C
+        CALL JEEXIN ( K191//'.LTNT', IRET )
+        IF ( IRET .NE. 0 ) THEN
+          CALL JEDUP1(K191//'.LTNS',BAS2,K192//'.LTNS')
+          CALL JEDUP1(K191//'.LTNT',BAS2,K192//'.LTNT')
+          CALL JELIRA(K191//'.LTNT','LONUTI',NBTU,K8B)
+          CALL JEVEUO(K191//'.LTNS','L',JLTN1)
+          CALL JEVEUO(K192//'.LTNS','E',JLTN2)
+          K192(1:8) = K192
+          DO 10 I = 1 , NBTU
+             K191 = ZK24(JLTN1+I-1)
+             K192(9:19) = K191(9:19)
+             CALL EXISD ( 'TABLE', K191, IRET )
+             IF ( IRET .NE. 0 ) THEN
+                CALL TBCOPI ( BAS2, K191, K192 )
+             ELSE
+                CALL U2MESK('F','UTILITAI_41',1,K191)
+             ENDIF
+             ZK24(JLTN2+I-1) = K192
+ 10       CONTINUE
+        ENDIF
+
+C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'MAILLAGE') THEN
 C     -----------------------------------
         MAIL1 = SD1
@@ -327,36 +367,15 @@ C
         CALL JEDUP1(MAIL1//'.TYPL',BAS2,MAIL2//'.TYPL')
         CALL JEDUP1(MAIL1//'.TITR',BAS2,MAIL2//'.TITR')
 C
-        CALL JEEXIN ( MAIL1//'           .LTNT', IRET )
-        IF ( IRET .NE. 0 ) THEN
-          CALL JEDUP1(MAIL1//'           .LTNS',BAS2,
-     &                MAIL2//'           .LTNS')
-          CALL JEDUP1(MAIL1//'           .LTNT',BAS2,
-     &                MAIL2//'           .LTNT')
-          CALL JELIRA ( MAIL1//'           .LTNT', 'LONUTI', NBTU, K8B)
-          CALL JEVEUO ( MAIL1//'           .LTNS', 'L', JLTN1 )
-          CALL JEVEUO ( MAIL2//'           .LTNS', 'E', JLTN2 )
-          K192(1:8) = MAIL2
-          DO 10 I = 1 , NBTU
-             K191 = ZK24(JLTN1+I-1)
-             K192(9:19) = K191(9:19)
-             CALL EXISD ( 'TABLE', K191, IRET )
-             IF ( IRET .NE. 0 ) THEN
-                CALL TBCOPI ( BAS2, K191, K192 )
-             ELSE
-                CALL U2MESK('F','UTILITAI_41',1,K191)
-             ENDIF
-             ZK24(JLTN2+I-1) = K192
- 10       CONTINUE
-        ENDIF
+        CALL COPIS2('L_TABLE',BAS2,MAIL1,MAIL2)
+        CALL JEDUP1(MAIL1//'           .TITR',BAS2,
+     &              MAIL2//'           .TITR')
 
 C       -- OBJETS QUE JE NE CONNAIS PAS !! (JP) :
         CALL JEDUP1(MAIL1//'           .FORM',BAS2,
      &              MAIL2//'           .FORM')
         CALL JEDUP1(MAIL1//'.ADAPTATION',BAS2,MAIL2//'.ADAPTATION')
 
-        CALL JEDUP1(MAIL1//'           .TITR',BAS2,
-     &              MAIL2//'           .TITR')
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'MATR_ELEM' .OR. TYPESD.EQ.'VECT_ELEM') THEN
 C     ---------------------------------------------------------------

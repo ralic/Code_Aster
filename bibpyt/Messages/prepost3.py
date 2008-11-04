@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+#@ MODIF prepost3 Messages  DATE 03/11/2008   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,6 +44,10 @@ cata_msg = {
 
 9 : _("""
  type de base inconnu:  %(k1)s 
+"""),
+
+10 : _("""
+ soit le fichier n'existe pas, soit c'est une mauvaise version de hdf (utilise par med).
 """),
 
 29 : _("""

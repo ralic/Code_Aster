@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ __all__ = ['Table', 'merge']
 import sys
 import re
 from copy  import copy
-
+from sets  import Set
 from types import ListType, TupleType, IntType, LongType, FloatType, ComplexType, \
                   DictType, StringType, StringTypes, UnicodeType, NoneType
 EnumTypes = (ListType, TupleType)
@@ -631,15 +631,17 @@ class Table(TableBase):
       new_rows=[]
       #lpz='%s=f(%s,%s)' % (pz,px,py)
       lpz='%s/%s' % (px,py)
-      new_para=[lpz,]
       # attention aux doublons dans lx et ly
-      for it in ly:
-         if it != None and new_para.count(it)==0:
-            new_para.append(it)
-      newx=[]
-      for it in lx:
-         if it != None and newx.count(it)==0:
-            newx.append(it)
+      new_para=Set(ly)
+      new_para.discard(None)
+      new_para = list(new_para)
+      new_para.sort()
+      new_para.insert(0, lpz)
+      # attention aux doublons dans lx et ly
+      newx=Set(lx)
+      newx.discard(None)
+      newx = list(newx)
+      newx.sort()
       for x in newx:
          if x != None:
             d={ lpz : x, }
@@ -647,7 +649,7 @@ class Table(TableBase):
             for dz in taux.rows:
                d[dz[py]]=dz[pz]
             new_rows.append(d)
-      new_type=[self.type[0],] + [self.type[2]]*len(ly)
+      new_type=[self.type[0],] + [self.type[2]]*len(new_para)
       new_titr=self.titr
       if new_titr != '': new_titr+='\n'
       new_titr+=pz + ' FONCTION DE ' + px + ' ET ' + py

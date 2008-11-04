@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
      +              IRET, NBSIGR, VALEI(3), JNUMGR, JNSITU, JNSG, JVALE,
      +              JPMPB, NBGR, IOC, NUMGR, IS1, IS2, JREAS, JRESS, N1,
      +              JSEIGR, JCOMBI, IOC1, IOC2, IOCS, II, NPAR0
-      PARAMETER    ( NPAR0 = 34, NPAR2 = 7, NPAR1 = 10, NPAR4 = 15,
+      PARAMETER    ( NPAR0 = 35, NPAR2 = 7, NPAR1 = 11, NPAR4 = 15,
      +               NPAR6 = 13 )
       REAL*8        UTOT, VALER(2)
       COMPLEX*16    C16B
@@ -67,11 +67,11 @@ C
      +              'PM' , 'PB' , 'PMPB', 'SN', 'SN*', 'SP', 'KE_MECA',
      +              'KE_THER', 'SALT', 'NUME_SITU_K', 'NUME_SITU_L',
      +              'FACT_USAGE',  '%_FACT_USAGE' ,
-     +              'SP1_MIN', 'SP2_MAX', 'SALT_IJ' /
+     +              'SP1_IJ', 'SP2_IJ', 'SALT1_IJ', 'SALT2_IJ' /
       DATA TYPAR0 / 'K8', 'K8', 'I', 'K8',  'R', 'R', 'R', 'R', 'R',
      +              'R', 'R', 'R', 'R', 'R', 'R', 'I', 'I', 'I', 'R',
      +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8',
-     +              'R', 'R', 'R', 'R', 'R'  /
+     +              'R', 'R', 'R', 'R', 'R', 'R'  /
 C
 C --- PARAMETRES FACTEUR D'USAGE
 C
@@ -82,7 +82,7 @@ C --- PARAMETRES POUR LE CALCUL DU FACTEUR D'USAGE
 C
       DATA NOPAR1 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU',
      +              'NUME_SITU_I', 'NUME_SITU_J', 'SN' ,
-     +                     'SP1_MIN', 'SP2_MAX', 'SALT_IJ' /
+     +              'SP1_IJ', 'SP2_IJ', 'SALT1_IJ', 'SALT2_IJ' /
 C
 C --- PARAMETRES POUR CHAQUE SITUATION
 C
@@ -203,7 +203,7 @@ C
                   CALL TBAJLI ( NOMRES, NPAR1, NOPAR1, VALEI,
      +                          ZR(JRESS+II), C16B, VALEK, 0 )
 
-                  II = II + 4
+                  II = II + 5
  124           CONTINUE
 
  122        CONTINUE

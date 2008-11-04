@@ -1,7 +1,7 @@
       LOGICAL FUNCTION NDYNLO(SDDYNA,CHAINE)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -120,10 +120,44 @@ C
         IF (ZK16(JTSCH+2-1)(1:7).EQ.'NEWMARK') THEN
           NDYNLO = .TRUE.
         ENDIF  
+        
+      ELSEIF (CHAINE(1:15).EQ.'FAMILLE_NEWMARK') THEN
+        IF ((ZK16(JTSCH+2-1)(1:7).EQ.'NEWMARK').OR.
+     &      (ZK16(JTSCH+7-1)(1:12).EQ.'DIFF_CENTREE').OR.
+     &      (ZK16(JTSCH+8-1)(1:7).EQ.'TCHAMWA').OR.
+     &      (ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET').OR.
+     &      (ZK16(JTSCH+3-1)(1:3).EQ.'HHT')) THEN
+          NDYNLO = .TRUE.
+        ELSE 
+          NDYNLO = .FALSE.
+        ENDIF         
+        
       ELSEIF (CHAINE(1:13).EQ.'THETA_METHODE') THEN
         IF (ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE') THEN
-          NDYNLO = .TRUE.
-        ENDIF  
+          IF (CHAINE(14:18).EQ.'_DEPL') THEN
+            IF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.1) THEN
+              NDYNLO = .TRUE.
+            ELSEIF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2) THEN
+              NDYNLO = .FALSE.    
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ELSEIF (CHAINE(14:18).EQ.'_VITE') THEN
+            IF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2) THEN
+              NDYNLO = .TRUE.
+            ELSEIF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2) THEN
+              NDYNLO = .FALSE.    
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF 
+          ELSE
+            NDYNLO = .TRUE. 
+          ENDIF  
+        ELSE 
+          NDYNLO = .FALSE.
+        ENDIF   
+  
+        
       ELSEIF (CHAINE(1:11).EQ.'HHT_COMPLET') THEN
         IF (ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET') THEN
           NDYNLO = .TRUE.

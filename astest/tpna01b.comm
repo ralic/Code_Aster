@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # TITRE PB 3D STATIONNAIRE AVEC RAYONNEMENT - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,251 +18,250 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='TPNA01B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NOM='TPNA01B',NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI'),)
 
-PRE_IDEAS( )
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
-T20=DEFI_FONCTION(     NOM_RESU='TEMP',  NOM_PARA='INST',
-                            VALE=(    0.0,  20.0,
-                                   1200.0,  20.0, )
-                        )
+T20=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.0,20.0,
+                        1200.0,20.0,
+                        ),);
 
-HE=DEFI_FONCTION(     NOM_RESU='H',  NOM_PARA='INST',
-                            VALE=(    0.0,  142.0,
-                                   1200.0,  142.0, )
-                        )
+HE=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='H',VALE=(0.0,142.0,
+                       1200.0,142.0,
+                       ),);
 
-CONDUC=DEFI_FONCTION(    NOM_PARA='TEMP',  NOM_RESU='LAMBDA',
-                            VALE=(    0.0,    40.0,
-                                   1200.0,    40.0, ),
-               PROL_DROITE='LINEAIRE',    PROL_GAUCHE='LINEAIRE' )
+CONDUC=DEFI_FONCTION(NOM_PARA='TEMP',NOM_RESU='LAMBDA',VALE=(0.0,40.0,
+                           1200.0,40.0,
+                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-ENTHAL=DEFI_FONCTION(    NOM_PARA='TEMP',  NOM_RESU='CP',
-                            VALE=(    0.0,      0.0,
-                                   1200.0,      1200.0, ),
-               PROL_DROITE='LINEAIRE',    PROL_GAUCHE='LINEAIRE' )
+ENTHAL=DEFI_FONCTION(NOM_PARA='TEMP',NOM_RESU='CP',VALE=(0.0,0.0,
+                           1200.0,1200.0,
+                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-SIGM=DEFI_FONCTION(    NOM_PARA='INST',
-                            VALE=(    0.0,      5.73E-8,
-                                      1.0,      5.73E-8,  )  )
+SIGM=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,5.73E-8,
+                         1.0,5.73E-8,
+                         ),);
 
-EPSI=DEFI_FONCTION(    NOM_PARA='INST',
-                            VALE=(    0.0,      0.15,
-                                      1.0,      0.15,  )  )
+EPSI=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.15,
+                         1.0,0.15,
+                         ),);
 
-TEXT=DEFI_FONCTION(    NOM_PARA='INST',
-                            VALE=(    0.0,      500.,
-                                      1.0,      500.,  )  )
+TEXT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,500.,
+                         1.0,500.,
+                         ),);
 
-RAYO=DEFI_FONCTION(    NOM_PARA='TEMP',
-              VALE=(
-  5.,     6039.403646,
- 10.,     6031.803263,
- 15.,     6023.789402,
- 20.,     6015.347331,
- 25.,     6006.462062,
- 30.,     5997.118348,
- 35.,     5987.300685,
- 40.,     5976.99331,
- 45.,     5966.180203,
- 50.,     5954.845086,
- 55.,     5942.971424,
- 60.,     5930.542421,
- 65.,     5917.541027,
- 70.,     5903.949932,
- 75.,     5889.751569,
- 80.,     5874.928113,
- 85.,     5859.46148,
- 90.,     5843.33333,
- 95.,     5826.525065,
-100.,     5809.017826,
-105.,     5790.792501,
-110.,     5771.829717,
-115.,     5752.109843,
-120.,     5731.612992,
-125.,     5710.319018,
-130.,     5688.207517,
-135.,     5665.257828,
-140.,     5641.449031,
-145.,     5616.759949,
-150.,     5591.169147,
-155.,     5564.654933,
-160.,     5537.195354,
-165.,     5508.768204,
-170.,     5479.351015,
-175.,     5448.921062,
-180.,     5417.455365,
-185.,     5384.930682,
-190.,     5351.323516,
-195.,     5316.610111,
-200.,     5280.766454,
-205.,     5243.768273,
-210.,     5205.591039,
-215.,     5166.209965,
-220.,     5125.600005,
-225.,     5083.735858,
-230.,     5040.591961,
-235.,     4996.142498,
-240.,     4950.361391,
-245.,     4903.222306,
-250.,     4854.698651,
-255.,     4804.763577,
-260.,     4753.389975,
-265.,     4700.55048,
-270.,     4646.217468,
-275.,     4590.363058,
-280.,     4532.959111,
-285.,     4473.97723,
-290.,     4413.388759,
-295.,     4351.164787,
-300.,     4287.276143,
-305.,     4221.693398,
-310.,     4154.386866,
-315.,     4085.326603,
-320.,     4014.482407,
-325.,     3941.823817,
-330.,     3867.320118,
-335.,     3790.940332,
-340.,     3712.653226,
-345.,     3632.42731,
-350.,     3550.230834,
-355.,     3466.031792,
-360.,     3379.797918,
-365.,     3291.49669,
-370.,     3201.095327,
-375.,     3108.560791,
-380.,     3013.859787,
-385.,     2916.958759,
-390.,     2817.823896,
-395.,     2716.421129,
-400.,     2612.716129,
-405.,     2506.674312,
-410.,     2398.260834,
-415.,     2287.440594,
-420.,     2174.178232,
-425.,     2058.438133,
-430.,     1940.184422,
-435.,     1819.380965,
-440.,     1695.991373,
-445.,     1569.978998,
-450.,     1441.306932,
-455.,     1309.938014,
-460.,     1175.834819,
-465.,     1038.95967,
-470.,      899.274628,
-475.,      756.7414985,
-480.,      611.321828,
-485.,      462.9769055,
-490.,      311.667762,
-495.,      157.355171,
-500.,        0.,
-                    ),
-         PROL_DROITE='LINEAIRE',   PROL_GAUCHE='LINEAIRE'
-      )
+RAYO=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(5.,6039.403646,
+                         10.,6031.803263,
+                         15.,6023.789402,
+                         20.,6015.347331,
+                         25.,6006.462062,
+                         30.,5997.118348,
+                         35.,5987.300685,
+                         40.,5976.99331,
+                         45.,5966.180203,
+                         50.,5954.845086,
+                         55.,5942.971424,
+                         60.,5930.542421,
+                         65.,5917.541027,
+                         70.,5903.949932,
+                         75.,5889.751569,
+                         80.,5874.928113,
+                         85.,5859.46148,
+                         90.,5843.33333,
+                         95.,5826.525065,
+                         100.,5809.017826,
+                         105.,5790.792501,
+                         110.,5771.829717,
+                         115.,5752.109843,
+                         120.,5731.612992,
+                         125.,5710.319018,
+                         130.,5688.207517,
+                         135.,5665.257828,
+                         140.,5641.449031,
+                         145.,5616.759949,
+                         150.,5591.169147,
+                         155.,5564.654933,
+                         160.,5537.195354,
+                         165.,5508.768204,
+                         170.,5479.351015,
+                         175.,5448.921062,
+                         180.,5417.455365,
+                         185.,5384.930682,
+                         190.,5351.323516,
+                         195.,5316.610111,
+                         200.,5280.766454,
+                         205.,5243.768273,
+                         210.,5205.591039,
+                         215.,5166.209965,
+                         220.,5125.600005,
+                         225.,5083.735858,
+                         230.,5040.591961,
+                         235.,4996.142498,
+                         240.,4950.361391,
+                         245.,4903.222306,
+                         250.,4854.698651,
+                         255.,4804.763577,
+                         260.,4753.389975,
+                         265.,4700.55048,
+                         270.,4646.217468,
+                         275.,4590.363058,
+                         280.,4532.959111,
+                         285.,4473.97723,
+                         290.,4413.388759,
+                         295.,4351.164787,
+                         300.,4287.276143,
+                         305.,4221.693398,
+                         310.,4154.386866,
+                         315.,4085.326603,
+                         320.,4014.482407,
+                         325.,3941.823817,
+                         330.,3867.320118,
+                         335.,3790.940332,
+                         340.,3712.653226,
+                         345.,3632.42731,
+                         350.,3550.230834,
+                         355.,3466.031792,
+                         360.,3379.797918,
+                         365.,3291.49669,
+                         370.,3201.095327,
+                         375.,3108.560791,
+                         380.,3013.859787,
+                         385.,2916.958759,
+                         390.,2817.823896,
+                         395.,2716.421129,
+                         400.,2612.716129,
+                         405.,2506.674312,
+                         410.,2398.260834,
+                         415.,2287.440594,
+                         420.,2174.178232,
+                         425.,2058.438133,
+                         430.,1940.184422,
+                         435.,1819.380965,
+                         440.,1695.991373,
+                         445.,1569.978998,
+                         450.,1441.306932,
+                         455.,1309.938014,
+                         460.,1175.834819,
+                         465.,1038.95967,
+                         470.,899.274628,
+                         475.,756.7414985,
+                         480.,611.321828,
+                         485.,462.9769055,
+                         490.,311.667762,
+                         495.,157.355171,
+                         500.,0.,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-MATER=DEFI_MATERIAU( THER_NL=_F(  LAMBDA = CONDUC,
-                                  BETA = ENTHAL) )
+MATER=DEFI_MATERIAU(THER_NL=_F(LAMBDA=CONDUC,
+                               BETA=ENTHAL,),);
 
-MAIL=LIRE_MAILLAGE( )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,
-                AFFE=_F(  TOUT = 'OUI', MATER = MATER) )
-
-MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
-                      AFFE=_F( TOUT = 'OUI', MODELISATION = '3D',
-                                      PHENOMENE = 'THERMIQUE'))
+MOTH=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='THERMIQUE',
+                         MODELISATION='3D',),);
 
 CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,
-           ECHANGE=_F( GROUP_MA = 'FACE_EXT',  COEF_H = HE, TEMP_EXT = T20),
-           FLUX_NL=_F( GROUP_MA = 'FACE_INT',  FLUN = RAYO)
-         )
+                      FLUX_NL=_F(GROUP_MA='fint_rot',
+                                 FLUN=RAYO,),
+                      ECHANGE=_F(GROUP_MA='fext_rot',
+                                 COEF_H=HE,
+                                 TEMP_EXT=T20,),);
 
 CHTHB=AFFE_CHAR_THER(MODELE=MOTH,
-           RAYONNEMENT=_F( GROUP_MA = 'FACE_INT',
-                        SIGMA = 5.73E-8,
-                        EPSILON = 0.15,
-                        TEMP_EXT = 500.)
-         )
+                     RAYONNEMENT=_F(GROUP_MA='fint_rot',
+                                    SIGMA=5.73E-8,
+                                    EPSILON=0.15,
+                                    TEMP_EXT=500.,),);
 
 CHTHC=AFFE_CHAR_THER_F(MODELE=MOTH,
-           RAYONNEMENT=_F( GROUP_MA = 'FACE_INT',
-                        SIGMA = SIGM,
-                        EPSILON = EPSI,
-                        TEMP_EXT = TEXT)
-         )
+                       RAYONNEMENT=_F(GROUP_MA='fint_rot',
+                                      SIGMA=SIGM,
+                                      EPSILON=EPSI,
+                                      TEMP_EXT=TEXT,),);
 
-TEMPE=THER_NON_LINE(         MODELE=MOTH,
-                            CHAM_MATER=CHMAT,
-                             ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),EXCIT=(
-                                 _F(  CHARGE = CHTH),
-                                       _F(  CHARGE = CHTHB),
-                                       _F(  CHARGE = CHTHC)),
-                                NEWTON=_F(  REAC_ITER = 1)
-             )
+TEMPE=THER_NON_LINE(MODELE=MOTH,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CHTH,),
+                           _F(CHARGE=CHTHB,),
+                           _F(CHARGE=CHTHC,),),
+                    ETAT_INIT=_F(STATIONNAIRE='OUI',),
+                    NEWTON=_F(REAC_ITER=1,),);
 
-#
+TEMPE=CALC_ELEM(reuse =TEMPE,
+                RESULTAT=TEMPE,
+                INST=0.,
+                OPTION='FLUX_ELNO_TEMP',);
 
-TEST_RESU(RESU=(
+resu=MACR_LIGN_COUPE(RESULTAT=TEMPE,
+                     NOM_CHAM='TEMP',
+                     LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
+                                   NB_POINTS=5,
+                                   COOR_ORIG=(0.3,0.,0.,),
+                                   COOR_EXTR=(0.391,0.,0.,),),);
 
- _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='TEMP',
- NOEUD = 'N106', NOM_CMP = 'TEMP', VALE = 105.55,  PRECISION = 1.E-2),
- _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='TEMP',
- NOEUD = 'N105', NOM_CMP = 'TEMP', VALE = 99.21,  PRECISION = 1.E-2),
- _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='TEMP',
- NOEUD = 'N115', NOM_CMP = 'TEMP', VALE = 93.30,  PRECISION = 1.E-2),
- _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='TEMP',
- NOEUD = 'N125', NOM_CMP = 'TEMP', VALE = 87.76,  PRECISION = 1.E-2),
- _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='TEMP',
- NOEUD = 'N123', NOM_CMP = 'TEMP', VALE = 82.56,  PRECISION = 1.E-2))
-    )
+resu2=MACR_LIGN_COUPE(RESULTAT=TEMPE,
+                      NOM_CHAM='FLUX_ELNO_TEMP',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',DISTANCE_MAX=0.001,
+                                    NB_POINTS=5,
+                                    COOR_ORIG=(0.3,0.,0.,),
+                                    COOR_EXTR=(0.391,0.,0.,),),);
 
-TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,
+# TEST DE LA TEMPERATURE
 
-                OPTION='FLUX_ELNO_TEMP',
-                INST=0.
-                );
+TEST_TABLE(TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           NOM_PARA='TEMP',
+           VALE=105.55,
+           REFERENCE='ANALYTIQUE',);
 
-#
+TEST_TABLE(TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.02275,),
+           NOM_PARA='TEMP',
+           VALE=99.21,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_RESU(RESU=(
+TEST_TABLE(TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0455,),
+           NOM_PARA='TEMP',
+           VALE=93.3,
+           REFERENCE='ANALYTIQUE',);
 
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M16', NOEUD = 'N123', NOM_CMP = 'FLUX',
-   VALE = 8822.98, PRECISION = 2.E-2),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M16', NOEUD = 'N123', NOM_CMP = 'FLUY',
-   VALE = 0.0, CRITERE = 'ABSOLU', PRECISION = 1.E0),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M16', NOEUD = 'N123', NOM_CMP = 'FLUZ',
-   VALE = 0.0, CRITERE = 'ABSOLU', PRECISION = 2.E1),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M16', NOEUD = 'N119', NOM_CMP = 'FLUX',
-   VALE = 8822.98, PRECISION = 2.E-2),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M16', NOEUD = 'N119', NOM_CMP = 'FLUY',
-   VALE = 0.0, CRITERE = 'ABSOLU', PRECISION = 1.E0),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M16', NOEUD = 'N119', NOM_CMP = 'FLUZ',
-   VALE = 0.0, CRITERE = 'ABSOLU', PRECISION = 2.E1),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M17', NOEUD = 'N106',  NOM_CMP = 'FLUX',
-   VALE = 11577.49, PRECISION = 2.E-2),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M17', NOEUD = 'N106', NOM_CMP = 'FLUY',
-   VALE = 0.0, CRITERE = 'ABSOLU', PRECISION = 1.E0),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M17', NOEUD = 'N106', NOM_CMP = 'FLUZ',
-   VALE = 0.0, CRITERE = 'ABSOLU', PRECISION = 2.E1),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M17', NOEUD = 'N103', NOM_CMP = 'FLUX',
-   VALE = 11577.49, PRECISION = 2.E-2),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M17', NOEUD = 'N103', NOM_CMP = 'FLUY',
-   VALE = 0.0, CRITERE = 'ABSOLU', PRECISION = 1.E0),
-   _F( RESULTAT = TEMPE, INST=0., NOM_CHAM='FLUX_ELNO_TEMP',
-   MAILLE = 'M17', NOEUD = 'N103', NOM_CMP = 'FLUZ',
-   VALE = 0.0, CRITERE = 'ABSOLU', PRECISION = 2.E1))
-          )
+TEST_TABLE(TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.06825,),
+           NOM_PARA='TEMP',
+           VALE=87.67,
+           PRECISION=0.002,
+           REFERENCE='ANALYTIQUE',);
 
-FIN()
-#
+TEST_TABLE(TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.091,),
+           NOM_PARA='TEMP',
+           VALE=82.56,
+           REFERENCE='ANALYTIQUE',);
+
+# TEST DU FLUX
+
+TEST_TABLE(TABLE=resu2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           NOM_PARA='FLUX',
+           VALE=11120.60,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=resu2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.091,),
+           NOM_PARA='FLUX',
+           VALE=9121.31,
+           REFERENCE='NON_REGRESSION',);
+
+FIN();

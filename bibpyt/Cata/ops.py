@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF ops Cata  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,6 +177,8 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
             # on rattache chaque assd au nouveau jdc courant (en poursuite)
             pickle_context[elem].jdc=self.jdc
             pickle_context[elem].parent=self.jdc
+            # le marquer comme 'executed'
+            pickle_context[elem].executed = 1
             # pour que sds_dict soit cohérent avec g_context
             self.jdc.sds_dict[elem] = pickle_context[elem]
             assert elem == pickle_context[elem].nom

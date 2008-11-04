@@ -6,7 +6,7 @@
       CHARACTER*24        CHMOME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      JNUME, JCHAM, NBRESU, NBCMP, ICHA, IR, JTYPE, 
+      INTEGER      JNUME, JCHAM, NBRESU, NBCMP, ICHA, IR, 
      +             JLICH, JLICM, JLICR
       INTEGER      VALI(2)
       LOGICAL      SEISME, AUTRE
@@ -67,7 +67,6 @@ C
       CALL JEVEUO ( '&&RC3600.NUME_CHAR', 'L', JNUME )
       CALL JEVEUO ( '&&RC3600.CHAMP'    , 'L', JCHAM )
       CALL JELIRA ( '&&RC3600.NUME_CHAR', 'LONMAX', NBRESU, K8B )
-      CALL JEVEUO ( '&&RC3600.TYPE_CHAR', 'L', JTYPE )
 C
       NBCMP = 3
       NOCMP(1) = 'MT'
@@ -89,15 +88,14 @@ C
          VALI (2) = LICHAR(ICHA)
          CALL U2MESI ('F', 'POSTRCCM_28', 2, VALI )
  114     CONTINUE
-         TYPE = ZK8(JTYPE+IR-1)
-         IF ( TYPE(1:6) .EQ. 'SEISME' ) THEN
+         IF ( ETAT .EQ. 'S' ) THEN
             SEISME = .TRUE.
          ELSE
             AUTRE = .TRUE.
          ENDIF
          ZK24(JLICH+ICHA-1) = ZK24(JCHAM+IR-1)
-           ZL(JLICM+ICHA-1) = .TRUE.
-           ZR(JLICR+ICHA-1) = 1.D0
+         ZL(JLICM+ICHA-1) = .TRUE.
+         ZR(JLICR+ICHA-1) = 1.D0
  110  CONTINUE
 C
       IF ( SEISME .AND. AUTRE ) THEN

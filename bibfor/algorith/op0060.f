@@ -1,6 +1,6 @@
       SUBROUTINE OP0060(IERR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,6 @@ C     ----- DEBUT DES COMMUNS JEVEUX -----------------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32  JEXNUM
 C     ----- FIN DES COMMUNS JEVEUX -------------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
@@ -75,7 +74,7 @@ C
       INTEGER IFREQ, IEQ, INOM, IAUX, JAUX, IER
       INTEGER LCC, LFON, LADRVE, LTYPVE, LPUISS, LPHASE, L
       INTEGER LREFE, LSECMB,JSECMB,JSOLUT,JVEZER
-      INTEGER ICOEF, NDECI, ISINGU, NPVNEG, ICODE
+      INTEGER ICOEF, ICODE
       INTEGER IADR, LVALE, LINST, IRET, IRESOL, LADPA,JORD
 
       INTEGER LMAT(4),LPRO,NBORD
@@ -485,7 +484,7 @@ C
                 CALL JEVEUO(ZK24(LFON+IVECT-1)(:19)//'.PROL','L',
      &                                                      LPRO)
                 IF (ZK24(LPRO).EQ.'FONCT_C') THEN
-                  CALL FOINTC(ZK24(LFON+IVECT-1),1,'FREQ',FREQ,
+                  CALL FOINTC('F',ZK24(LFON+IVECT-1),1,'FREQ',FREQ,
      &                        RESURE,RESUIM,IER)
                   CALP=DCMPLX(RESURE,RESUIM)
                 ELSE

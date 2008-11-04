@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -248,9 +248,11 @@ C
           ZK8(JPARA)=MODEL2
  70     CONTINUE
       ENDIF
-
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
-C
-C
+
+C     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
+C     -------------------------------------------
+      CALL AJREFD(RESUIN,RESUOU,'ZERO')
+
       CALL JEDEMA()
       END

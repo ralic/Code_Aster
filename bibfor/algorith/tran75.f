@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,10 +64,10 @@ C ----------------------------------------------------------------------
       CHARACTER*14  NUMDDL, NUMGEN
       CHARACTER*16  TYPRES, NOMCMD, NOMP(MXPARA), TYPE(8), TYPCHA,
      &              TYPBAS(8), TYPREP, CONCEP, CHAMP(8)
-      CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE,
-     &              TYPREF(8), CHAM19
-      CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1,
-     &              OBJVE2, OBJVE3, OBJVE4, NOMNOE, NUMEDD, NPRNO
+      CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE
+      CHARACTER*19  TYPREF(8), CHAM19
+      CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1
+      CHARACTER*24  OBJVE2,OBJVE3,OBJVE4,NOMNOE,NUMEDD,NPRNO,CHMOD
       LOGICAL       TOUSNO, MULTAP, LEFFOR, LRPHYS
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
@@ -80,6 +80,9 @@ C     ------------------------------------------------------------------
       TRANGE = NOMIN
       CALL GETTCO(NOMIN,CONCEP)
 
+      NOMCHA=' '
+      NUMDDL=' '
+      PRCHNO=' '
 C
 C     --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
       FONCT = ' '
@@ -134,19 +137,18 @@ C
            IF (MATRIC.NE.BLANC) THEN
             CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
      &                 NUMDDL,IRET)
-            CALL DISMOI('F','NOM_MAILLA',MATRIC,'MATR_ASSE',IBID,
-     &                 MAILLA,IRET)
-            IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',
-     &                               NEQ,K8B,IRET)
            ELSE
             NUMDDL = ZK24(IADRIF+3)(1:14)
+           ENDIF
+           PRCHNO=NUMDDL//'.NUME'
+           CALL DISMOI('F','NOM_GD',NUMDDL,'NUME_DDL',IBID,NOMGD,IE)
             CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IBID,
      &                 MAILLA,IRET)
             IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',
      &                               NEQ,K8B,IRET)
-           ENDIF
          ELSE
-C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
+C          -- POUR LES CALCULS SANS MATRICE GENERALISEE
+C             (PROJ_MESU_MODAL)
            MATRIC = ZK24(IADRIF+3)
            IF (MATRIC(1:8) .EQ. BLANC) THEN
              MATRIC=ZK24(IADRIF)
@@ -155,6 +157,7 @@ C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
            ELSE
              NUMDDL = MATRIC(1:8)
            ENDIF
+           PRCHNO=NUMDDL//'.NUME'
            CALL JEVEUO(NUMDDL//'.NUME.REFN','L',J3REFE)
            MATRIC = ZK24(J3REFE)
            MAILLA = MATRIC(1:8)
@@ -169,11 +172,12 @@ C
       ELSE
 C         --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 C
-         CALL RSEXCH ( BASEMO, 'DEPL', 1, NOMCHA, IRET )
-         NOMCHA = NOMCHA(1:19)//'.REFE'
-         CALL JEVEUO ( NOMCHA, 'L', LLCHA )
+         CALL RSEXCH ( BASEMO, 'DEPL', 1, CHMOD, IRET )
+         CHMOD = CHMOD(1:19)//'.REFE'
+         CALL DISMOI('F','NOM_GD',CHMOD,'CHAM_NO',IBID,NOMGD,IE)
+         CALL DISMOI('F','PROF_CHNO',CHMOD,'CHAM_NO',IBID,PRCHNO,IE)
+         CALL JEVEUO ( CHMOD, 'L', LLCHA )
          MAILLA = ZK24(LLCHA)
-         NUMDDL = ZK24(LLCHA+1)
          CREFE(1) = ZK24(LLCHA)
          CREFE(2) = ZK24(LLCHA+1)
          IF ( TOUSNO ) CALL JELIRA(CREFE(2)(1:19)//'.NUEQ','LONMAX',
@@ -202,7 +206,7 @@ C
          OBJVE2 = '&&TRAN75.NOM_CMP     '
          OBJVE3 = '&&TRAN75.NB_NEQ      '
          OBJVE4 = '&&TRAN75.NUME_DDL    '
-         CALL RBPH02 ( MAILLA, NUMDDL, NOMGD, NEQ, NBNOEU, OBJVE1,
+         CALL RBPH02(MAILLA,NUMDDL,CHMOD,NOMGD,NEQ,NBNOEU,OBJVE1,
      &                    NCMP, OBJVE2, OBJVE3, OBJVE4 )
          CALL JEVEUO ( OBJVE1, 'L', INUMNO )
          CALL JEVEUO ( OBJVE2, 'L', INOCMP )
@@ -302,9 +306,7 @@ C
           ELSE
             NOMCHA(20:24)='.CELV'
           END IF
-C          IF (INTERP(1:3).NE.'NON') THEN
-C            NOMCHA = NOMCHA(1:19)//'.VALE'
-C          ENDIF
+
           IF (LEFFOR)
      &     CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
           CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
@@ -313,7 +315,7 @@ C          ENDIF
      &         TYPCHA.EQ.'DEPL') THEN
              CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
             ELSE
-             CALL COPMOD(BASEMO,TYPCHA,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
+             CALL COPMOD(BASEMO,TYPCHA,NEQ,PRCHNO,NBMODE,ZR(IDBASE))
             ENDIF
           ELSE
             DO 110 J = 1,NBMODE
@@ -363,7 +365,7 @@ C          ENDIF
                      CALL VTCREB(CHAMNO,NUMDDL,'G','R',NEQ)
                    ENDIF
                  ELSE
-                   CALL VTCREA(CHAMNO,CREFE,'G','R',NEQ)
+                   CALL VTCREC(CHAMNO,CHMOD,'G','R',NEQ)
                  ENDIF
                ELSE
                   CALL CNOCRE ( MAILLA, NOMGD, NBNOEU, ZI(INUMNO),
@@ -445,14 +447,6 @@ C
         ZK24(LREFE+3  ) = ZK24(IADRIF+3)
         ZK24(LREFE+4  ) = ZK24(IADRIF+4)
         ZK24(LREFE+5  ) = ZK24(IADRIF+5)
-C
-      ELSE
-         ZK24(LREFE  ) = '  '
-         ZK24(LREFE+1) = '  '
-         ZK24(LREFE+2) = '  '
-         ZK24(LREFE+3) = ZK24(LLCHA+1)
-         ZK24(LREFE+4) = '  '
-         ZK24(LREFE+5) = '  '
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C

@@ -9,7 +9,7 @@
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -203,10 +203,10 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
             SPIJ(1) = MAX(SPIJ(1),SP)
             IF (TYP2.EQ.'COMB') SPIJ(2) = MAX(SPIJ(2),SP)
             IF ( TYP2.EQ.'COMB' .AND. NBTHEP.NE.0 ) THEN
-               CALL RCTRES ( SPMI, SP1 )
-               CALL RCTRES ( SPMA, SP2 )
-               SPIJ(1) = MIN(SP1,SP2)
-               SPIJ(2) = MAX(SP1,SP2)
+               CALL RCTRES ( SPMA, SP1 )
+               CALL RCTRES ( SPMI, SP2 )
+               SPIJ(1) = MAX(SP1,SP2)
+               SPIJ(2) = MIN(SP1,SP2)
             END IF
           ELSE
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
@@ -238,10 +238,10 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
                      SQMI(I1) = SPMI(I1) - ZR(JTHUN+6+I1-1)
                      SQMA(I1) = SPMA(I1) - ZR(JTHUN+I1-1)
  114              CONTINUE
-                  CALL RCTRES ( SQMI, SP1 )
-                  CALL RCTRES ( SQMA, SP2 )
-                  SPIJ(1) = MIN(SP1,SP2)
-                  SPIJ(2) = MAX(SP1,SP2)
+                  CALL RCTRES ( SQMA, SP1 )
+                  CALL RCTRES ( SQMI, SP2 )
+                  SPIJ(1) = MAX(SP1,SP2)
+                  SPIJ(2) = MIN(SP1,SP2)
                 ENDIF
               ENDIF
    70       CONTINUE

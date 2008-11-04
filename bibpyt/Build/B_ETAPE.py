@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ from Noyau.N_Exception import AsException
 import B_utils
 from B_CODE import CODE
 import B_OBJECT
-import types
+from Utilitai.utils import miss_dble
 
 class ETAPE(B_OBJECT.OBJECT,CODE):
    """
@@ -408,10 +408,11 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       self.jdc.alea.jumpahead(jump)
       return None
 
-   def fiintf(self,nom_fonction,nom_param,val):
+   def fiintf(self,nom_fonction, nom_param, val):
       """
-         Cette methode permet d'appeler une formule python depuis le fortran
-         Elle évalue les concepts FORMULE
+         Cette methode permet d'appeler une formule python depuis le fortran.
+         Elle évalue les concepts FORMULE.
+         Elle retourne 3 valeurs : code_retour, message_erreur, valeur
       """
       nom_param = [p.strip() for p in nom_param]
       if not hasattr(self,"func_dic"):
@@ -424,23 +425,41 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          self.func_dic[nom_fonction]=objet_sd
 
       if len(nom_param)!=len(val) :
-         self.cr.fatal("""<E> <FORMULE> nombre de valeurs différent du nombre de paramètres""")
-         return None
-# appel de fonction definie dans le corps du jeu de commandes
+         msgerr = """Le nombre de valeurs est différent du nombre de paramètres"""
+         return 4, msgerr, None
+      
+      # paramètres manquants, paramètres en double
+      miss, inter, dble = miss_dble(objet_sd.nompar, nom_param)
+      if len(miss) > 0:
+         args = list(miss)
+         args.sort()
+         args = ', '.join(args)
+         msgerr = """Les paramètres de la formule n'ont pas été fournis.
+Paramètres manquants : %s""" % args
+         return 4, msgerr, None
+      
+      if len(dble) > 0:
+         args = list(dble)
+         args.sort()
+         args = ', '.join(args)
+         msgerr = """Certains paramètres de la formule ont été fournis plusieurs fois.
+Paramètres répétés : %s""" % args
+         return 4, msgerr, None
+      
+      # appel de fonction definie dans le corps du jeu de commandes
       try:
            context={}
-           i=0
-           for param in nom_param :
-               context[param]=val[i]
-               i=i+1
+           # on reduit le dict au seul parametre de la formule
+           dp = dict(zip(nom_param, val))
+           for param in inter :
+               context[param]=dp[param]
            res=eval(objet_sd.code,self.jdc.const_context,context)
       except:
-           traceback.print_exc()
-           print 75*'!'
-           print '! ' + ('Erreur evaluation formule '+objet_sd.nom).ljust(72) + '!'
-           print 75*'!'
-           return None
-      return res
+           msgerr = """Erreur lors de l'évaluation de la formule.
+La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
+%s""" % traceback.format_exc()
+           return 4, msgerr, None
+      return 0, '', res
 
    def getvr8(self,nom_motfac,nom_motcle,iocc,iarg,mxval):
       """

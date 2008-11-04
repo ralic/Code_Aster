@@ -4,7 +4,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,12 +79,13 @@ C
      +             NPASS, NUM1, NUM2, IFM, NIV, IOCS, JSEIGR, JRESU,
      +             JNSITU, NSITUP, NSITUQ, IRET, I1, JFACT, I, J,
      +             JREAS, JRESS, JRECA, JRECS, NDIM, NBP12, NBP23, NBP13
-      REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ, VALRES,
+      REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ(2), 
+     +             VALRES,
      +             UG, NADM, MPI(12), MPJ(12), SM, SN, SNET, SP(2), SMM,
      +             MATPI(8), MATPJ(8), MSE(12),TYPEKE,SPMECA,SPTHER,
      +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB,
      +             SIPMAX, SIMPIJ, SNEMAX, KEMAX, R8VIDE, PMMAX, PBMAX,
-     +             PMBMAX, VALE(2)
+     +             PMBMAX, VALE(2),FUIJ(2)
       LOGICAL      SEISME, ENDUR, CFAIT
       CHARACTER*2  CODRET
       CHARACTER*4  LIEU(2)
@@ -131,9 +132,10 @@ C         10 : UG
 C
 C ------ POUR CHAQUE COMBINAISON, ON ARCHIVE :
 C         1  : SN(P,Q)
-C         2  : SP1_MIN
-C         3  : SP2_MAX
-C         4  : SALT(P,Q)
+C         2  : SP1_IJ
+C         3  : SP2_IJ
+C         4  : SALT1(P,Q)
+C         5  : SALT2(P,Q)
 C
          K24AS = '&&RC3200.AVEC_SEISME'//LIEU(IM)
          CALL JECREC(K24AS, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
@@ -205,7 +207,7 @@ C
             CALL JEECRA (JEXNUM(K24SS,IG), 'LONMAX', 10*NBSIGR, ' ' )
             CALL JEVEUO (JEXNUM(K24SS,IG), 'E', JRESS )
 C
-            NDIM = MAX(4,4*NBSIGR*(NBSIGR-1)/2)
+            NDIM = MAX(5,INT(5*NBSIGR*(NBSIGR-1)/2))
             CALL JECROC (JEXNUM(K24CA,IG))
             CALL JEECRA (JEXNUM(K24CA,IG), 'LONMAX', NDIM, ' ' )
             CALL JEVEUO (JEXNUM(K24CA,IG), 'E', JRECA )
@@ -383,35 +385,24 @@ C
 C ----------- CALCUL DU SALT
 C
               CALL RC32SA ( 'SITU',MATER, MATPI, MATPJ, SN, SP, TYPEKE,
-     &                    SPMECA, SPTHER, KEMECA, KETHER, SALTIJ, SMM )
+     &               SPMECA, SPTHER, KEMECA, KETHER, SALTIJ, SMM, FUIJ)
               KEMAX = MAX ( KEMAX , KEMECA )
               IF (NIV.GE.2) THEN
-                 WRITE (IFM,2050) NSITUP, SALTIJ
+                 WRITE (IFM,2050) NSITUP, SALTIJ(1)
               END IF
               ZR(JRESS-1+10*(IS1-1)+7) = KEMECA
               ZR(JRESS-1+10*(IS1-1)+8) = KETHER
-              ZR(JRESS-1+10*(IS1-1)+9) = SALTIJ
+              ZR(JRESS-1+10*(IS1-1)+9) = SALTIJ(1)
 C
-              IF ( SALTIJ .GT. SAMAX ) THEN
-                 SAMAX = SALTIJ
+              IF ( SALTIJ(1) .GT. SAMAX ) THEN
+                 SAMAX = SALTIJ(1)
                  SM = SMM
               ENDIF
 C
 C ----------- CALCUL DU FACTEUR D'USAGE
 C
-              CALL LIMEND( MATER,SALTIJ,'WOHLER',ENDUR)
-              IF ( ENDUR ) THEN
-                 UG=0.D0
-              ELSE
-                 CALL RCVALE(MATER, 'FATIGUE', 1, 'SIGM    ', SALTIJ, 1,
-     +                                   'WOHLER  ', NADM, CODRET, 'F ')
-                 IF ( NADM .LT. 0 ) THEN
-                    VALE(1) = SALTIJ
-                    VALE(2) = NADM
-                    CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
-                 ENDIF
-                 UG = DBLE( NOCC ) / NADM
-              ENDIF
+              UG = DBLE( NOCC ) * FUIJ(1)
+
               ZR(JRESS-1+10*(IS1-1)+10) = UG
               IF (NIV.GE.2) THEN
                  WRITE (IFM,2060) NSITUP, UG
@@ -457,7 +448,7 @@ C
             CALL JEECRA (JEXNUM(K24SS,IG), 'LONMAX', 10*NBSIGR, ' ' )
             CALL JEVEUO (JEXNUM(K24SS,IG), 'E', JRESS )
 C
-            NDIM = MAX(4,4*NBSIGR*(NBSIGR-1)/2)
+            NDIM = MAX(5,5*NBSIGR*(NBSIGR-1)/2)
             CALL JECROC (JEXNUM(K24CA,IG))
             CALL JEECRA (JEXNUM(K24CA,IG), 'LONMAX', NDIM, ' ' )
             CALL JEVEUO (JEXNUM(K24CA,IG), 'E', JRECA )

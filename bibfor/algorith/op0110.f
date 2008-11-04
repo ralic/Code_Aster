@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,8 @@ C
          ELSE
 C           --- FUSION DES NOEUDS D'INTERFACE D'UN SQUELETTE EXISTANT --
             CALL REC110 ( NOMRES , NOMSQU , MODELG )
+C           -- L'OBJET .INV.SKELETON EST FAUX : ON LE DETRUIT
+            CALL JEDETR(NOMRES//'.INV.SKELETON')
          ENDIF
 C
 C--------------------------UN SQUELETTE---------------------------------
@@ -112,11 +114,13 @@ C
          CALL SQU110 ( NOMRES,NOMA,NBMA,ZK8(JNOM),TRANS,ANGL)
       ENDIF
 C
-      CALL TITRE( )
 C
 C --- CARACTERISTIQUES GEOMETRIQUES :
 C     -----------------------------
-      CALL CARGEO ( NOMRES )
-C
+      CALL DETRSD('L_TABLE',NOMRES)
+      CALL CARGEO(NOMRES)
+
+      CALL TITRE( )
+
       CALL JEDEMA ( )
       END

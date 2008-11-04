@@ -5,7 +5,7 @@
       REAL*8   HPG,FFPC(9),JACOBI,TAU1(3),TAU2(3),MMAT(81,81)  
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

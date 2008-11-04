@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -230,7 +230,7 @@ C
               K8B = ' '
               DO 22 IL = 1,NBPF
                 PTF = ZR(LWR+IL-1)
-                CALL FOINTC(NOMFON,0,K8B,PTF,RESURE,RESUIM,IER)
+                CALL FOINTC('E',NOMFON,0,K8B,PTF,RESURE,RESUIM,IER)
                 IF (IER.NE.0) THEN
                   CALL U2MESS('F','MODELISA7_5')
                 ENDIF

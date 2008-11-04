@@ -1,6 +1,6 @@
       SUBROUTINE DISMPN(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,33 @@ C     --------------------------------
             NBDDLB=NBDDLB+ NBNOS
  10      CONTINUE
          REPI=NEQU-3*(NBDDLB/2)
+
+
+      ELSE IF (QUESTI.EQ.'NB_EQUA') THEN
+C     --------------------------------
+        CALL JELIRA(NOMOB//'.NUEQ','LONMAX',REPI,KBID)
+
+
+      ELSE IF (QUESTI.EQ.'NOM_GD') THEN
+C     --------------------------------
+C       QUESTION POURRIE !! (VALABLE SUR NUME_EQUA)
+C       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
+        CALL JEVEUO(NOMOB//'.REFN','L',IAREFE)
+        REPK = ZK24(IAREFE+1) (1:8)
+
+
+      ELSE IF (QUESTI.EQ.'NOM_MODELE') THEN
+C     --------------------------------
+C       QUESTION POURRIE !!
+C       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
+        CALL JENUNO(JEXNUM(NOMOB//'.LILI',2),NOLIGR)
+        IF (NOLIGR(1:8).EQ.'LIAISONS') THEN
+          REPK = QUESTI
+          IERD = 1
+        ELSE
+          CALL DISMLG(CODMES,QUESTI,NOLIGR,REPI,REPK,IERD)
+        END IF
+
 
       ELSE
          REPK = QUESTI

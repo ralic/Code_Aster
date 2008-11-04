@@ -2,7 +2,7 @@
      &                  CNBUDI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,8 +74,7 @@ C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... ASSEMBLAGE DES REACTIONS '//
      &                'D''APPUI'
-      ENDIF            
-          
+      ENDIF                   
 C
 C --- CALCUL <CNBUDI>
 C

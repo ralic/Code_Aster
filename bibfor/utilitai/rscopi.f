@@ -3,7 +3,7 @@
       CHARACTER*(*) BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/10/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,6 +91,7 @@ C     --- ON DUPLIQUE LES CHAMPS ---
 
       DO 20 I = 1,NBCHAM
         CALL JENUNO(JEXNUM(SDR1//'.DESC',I),NOMSY)
+        CALL JECROC(JEXNUM(SDR2//'.TACH',I))
         DO 10 J = 0,NBORDR - 1
           CALL RSEXCH(SD1,NOMSY,ZI(JORDR+J),CH1,IRET)
           IF (IRET.EQ.0) THEN

@@ -2,7 +2,7 @@
      &                  DEPDEL,DDEPLA,NOMA,CNSINR,CNSPER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/11/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -255,7 +255,8 @@ C
          RTAZ = 0.0D0
          RTGX = 0.0D0
          RTGY = 0.0D0
-         RTGZ = 0.0D0        
+         RTGZ = 0.0D0
+         HN   = 0.0D0
 C
 C --- REPERAGE DE LA LIAISON
 C

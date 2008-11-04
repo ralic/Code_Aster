@@ -7,7 +7,9 @@
       CHARACTER*(*) LITROZ,TYPEM,MOTFAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C RESPONSABLE PELLET J.PELLET
+C TOLE CRP_4
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +60,8 @@ C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
+      INTEGER*4 ZI4
+      COMMON /I4VAJE/ZI4(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
@@ -127,17 +131,17 @@ C     --- CREATION DES TABLEAUX DE TRAVAIL ---
 
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,K8B,IRET)
       IF (NBMA.GT.0) THEN
-        CALL WKVECT('&&RELIEM.INDIC_MAILLE','V V I',MAX(NBMA,1),ITRMA)
+        CALL WKVECT('&&RELIEM.INDIC_MAILLE','V V S',MAX(NBMA,1),ITRMA)
         IF (MODELE.NE.' ') CALL JEVEUO(MODELE//'.MAILLE','L',JMODEL)
       END IF
       CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNO,K8B,IRET)
-      CALL WKVECT('&&RELIEM.INDIC_NOEUD','V V I',NBNO,ITRNO)
+      CALL WKVECT('&&RELIEM.INDIC_NOEUD','V V S',NBNO,ITRNO)
 
       DO 20 K = 1,NBMA
-        ZI(ITRMA-1+K) = 0
+        ZI4(ITRMA-1+K) = 0
    20 CONTINUE
       DO 30 K = 1,NBNO
-        ZI(ITRNO-1+K) = 0
+        ZI4(ITRNO-1+K) = 0
    30 CONTINUE
 
 
@@ -159,16 +163,16 @@ C        -----------------
               DO 40,K = 1,NBMA
                 IF (MODELE.NE.' ') THEN
                   IF (ZI(JMODEL-1+K).NE.0) THEN
-                    ZI(ITRMA-1+K) = 1
+                    ZI4(ITRMA-1+K) = 1
                   END IF
                 ELSE
-                  ZI(ITRMA-1+K) = 1
+                  ZI4(ITRMA-1+K) = 1
                 END IF
    40         CONTINUE
             END IF
             IF (TYPE2.EQ.'NOEUD') THEN
               DO 50,K = 1,NBNO
-                ZI(ITRNO-1+K) = 1
+                ZI4(ITRNO-1+K) = 1
    50         CONTINUE
             END IF
           END IF
@@ -187,26 +191,26 @@ C        -----------------
 
           IF (TYPMCL.EQ.'MAILLE') THEN
             CALL JENONU(JEXNOM(MA//'.NOMMAI',KARG),IMA)
-            ZI(ITRMA-1+IMA) = 1
+            ZI4(ITRMA-1+IMA) = 1
 
           ELSE IF (TYPMCL.EQ.'GROUP_MA') THEN
             CALL JELIRA(JEXNOM(MA//'.GROUPEMA',KARG),'LONMAX',NMA,K8B)
             CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',KARG),'L',KMA)
             DO 60 JMA = 1,NMA
               IMA = ZI(KMA-1+JMA)
-              ZI(ITRMA-1+IMA) = 1
+              ZI4(ITRMA-1+IMA) = 1
    60       CONTINUE
 
           ELSE IF (TYPMCL.EQ.'NOEUD') THEN
             CALL JENONU(JEXNOM(MA//'.NOMNOE',KARG),INO)
-            ZI(ITRNO-1+INO) = 1
+            ZI4(ITRNO-1+INO) = 1
 
           ELSE IF (TYPMCL.EQ.'GROUP_NO') THEN
             CALL JELIRA(JEXNOM(MA//'.GROUPENO',KARG),'LONMAX',NNO,K8B)
             CALL JEVEUO(JEXNOM(MA//'.GROUPENO',KARG),'L',KNO)
             DO 70 JNO = 1,NNO
               INO = ZI(KNO-1+JNO)
-              ZI(ITRNO-1+INO) = 1
+              ZI4(ITRNO-1+INO) = 1
    70       CONTINUE
           END IF
    80   CONTINUE
@@ -217,12 +221,12 @@ C     --- AJOUT DES NOEUDS DE LA LISTE DES MAILLES A CELLE DES NOEUDS
 
       IF (TYPE2.EQ.'NOEUD') THEN
         DO 110 IMA = 1,NBMA
-          IF (ZI(ITRMA-1+IMA).NE.0) THEN
+          IF (ZI4(ITRMA-1+IMA).NE.0) THEN
             CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMA),'L',IACNEX)
             CALL JELIRA(JEXNUM(MA//'.CONNEX',IMA),'LONMAX',NBNOMA,K8B)
             DO 100 INO = 1,NBNOMA
               NUMNO = ZI(IACNEX-1+INO)
-              ZI(ITRNO-1+NUMNO) = 1
+              ZI4(ITRNO-1+NUMNO) = 1
   100       CONTINUE
           END IF
   110   CONTINUE
@@ -236,7 +240,7 @@ C        --- COMPTAGE DES MAILLES ---
 
         NBTROU = 0
         DO 120 IMA = 1,NBMA
-          IF (ZI(ITRMA-1+IMA).NE.0) NBTROU = NBTROU + 1
+          IF (ZI4(ITRMA-1+IMA).NE.0) NBTROU = NBTROU + 1
   120   CONTINUE
         IF (NBTROU.EQ.0) GO TO 190
 
@@ -249,7 +253,7 @@ C        --- COMPTAGE DES MAILLES ---
 C           --- RANGEMENT DES NUMEROS DE MAILLES ---
           LMA = 0
           DO 130 IMA = 1,NBMA
-            IF (ZI(ITRMA-1+IMA).NE.0) THEN
+            IF (ZI4(ITRMA-1+IMA).NE.0) THEN
               LMA = LMA + 1
               ZI(ITBMA-1+LMA) = IMA
             END IF
@@ -262,7 +266,7 @@ C           --- RANGEMENT DES NUMEROS DE MAILLES ---
 C           --- RANGEMENT DES NOMS DE MAILLES ---
           LMA = 0
           DO 140 IMA = 1,NBMA
-            IF (ZI(ITRMA-1+IMA).NE.0) THEN
+            IF (ZI4(ITRMA-1+IMA).NE.0) THEN
               LMA = LMA + 1
               CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),ZK8(ITBMA-1+LMA))
             END IF
@@ -276,7 +280,7 @@ C       ----------------------------------------------------
         IF (MODELE.NE.' ') THEN
           IER = 0
           DO 150 IMA = 1,NBMA
-            IF (ZI(ITRMA-1+IMA).NE.0) THEN
+            IF (ZI4(ITRMA-1+IMA).NE.0) THEN
               IF (ZI(JMODEL-1+IMA).EQ.0) THEN
                 IER = IER + 1
                 CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),NOENT)
@@ -295,7 +299,7 @@ C        --- COMPTAGE DES NOEUDS ---
 
         NBTROU = 0
         DO 160 INO = 1,NBNO
-          IF (ZI(ITRNO-1+INO).NE.0) NBTROU = NBTROU + 1
+          IF (ZI4(ITRNO-1+INO).NE.0) NBTROU = NBTROU + 1
   160   CONTINUE
         IF (NBTROU.EQ.0) GO TO 190
 
@@ -308,7 +312,7 @@ C        --- COMPTAGE DES NOEUDS ---
 C           --- RANGEMENT DES NUMEROS DE NOEUDS ---
           LNO = 0
           DO 170 INO = 1,NBNO
-            IF (ZI(ITRNO-1+INO).NE.0) THEN
+            IF (ZI4(ITRNO-1+INO).NE.0) THEN
               LNO = LNO + 1
               ZI(ITBNO-1+LNO) = INO
             END IF
@@ -321,7 +325,7 @@ C           --- RANGEMENT DES NUMEROS DE NOEUDS ---
 C           --- RANGEMENT DES NOMS DE NOEUDS ---
           LNO = 0
           DO 180 INO = 1,NBNO
-            IF (ZI(ITRNO-1+INO).NE.0) THEN
+            IF (ZI4(ITRNO-1+INO).NE.0) THEN
               LNO = LNO + 1
               CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),ZK8(ITBNO-1+LNO))
             END IF

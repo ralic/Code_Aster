@@ -1,4 +1,4 @@
-#@ MODIF meidee_fludela Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_fludela Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ from Tkinter import Toplevel
 from Meidee.meidee_iface import MyMenu, LabelArray, MenuArray, EntryArray, ModeList
 from Meidee.meidee_iface import VLabelledItem, HLabelledItem, MacWindow, XmgrManager, PlotXMGrace
 from Meidee.meidee_calcul_fludela import MeideeFludela, MeideeTurbMonomod
-from Meidee.modes import OptionFrame
+from Meidee.modes import OptionFrame, InitParamRecalS0
 from Meidee.meidee_cata import Resultat, InterSpectre
 from Meidee.meidee_cata import MeideeObjects, CreaTable
 
@@ -1035,11 +1035,6 @@ class InterfaceDonnees(Frame):
         self.param_gamma = ParamModeleGamma(frm1, "Paramétres du modèle Gamma")
         self.param_gamma.grid(row=0,column=0,sticky='nsew')
         
-        Liste_ParamGamma = self.param_gamma.update_param()
-        
-        self.ld = Liste_ParamGamma[0]
-        self.lambdac = Liste_ParamGamma[1]
-        self.gammac = Liste_ParamGamma[2]
         
         self.param_corcos = ParamCorcos(frm1, "Paramétres du modèle de Corcos")
         self.param_corcos.grid(row=0,column=0,sticky='nsew')
@@ -1159,14 +1154,11 @@ class ParamModeleGamma(Frame):
          
         
     def update_param(self):
-        mc=[]
-        mc.append(self.ld.get())
-        mc.append(self.lambdac.get())
-        mc.append(self.gammac.get())
-        
-        print "mc"
-        print mc
-        
+        mc= {}
+        mc['ld']=self.ld.get()
+        mc['lambdac']=self.lambdac.get()
+        mc['gammac']=self.gammac.get()
+
         return mc
         
                               
@@ -1192,6 +1184,13 @@ class ParamCorcos(Frame):
                                     { 'textvariable':self.param2 } ),
                                  ])
         self.corcos.grid(row=1,column=0,sticky="WE",columnspan=2)
+
+    def update_param(self):
+        mc={}
+        mc['param1']=self.param1.get()
+        mc['param2']=self.param2.get()
+
+        return mc
 #-----------------------------------------------------------------------------
 class InterfaceSelectMesures(Frame):
     """ classe graphique pour la selection des mesures en fonctionnement
@@ -1323,14 +1322,33 @@ class InterfaceLongeqTurb(Frame):
         self.fludela.register_longeq( self.notify )
         
         Label(self, text="Fonction S0 pour le mode fondamental").grid(
-                     row=4,column=0)
+                     row=3,column=0)
         Button(self, text="Afficher", command = self.affich_fonc_S0).grid(
-                     row=4, column=1)
+                     row=3, column=1)
+
+        Label(self, text="Initialisation des paramètres pour recalage").grid(
+                     row=5,column=3)
+        Label(self, text="selon la forme analytique").grid(
+                     row=6,column=3)
+        self.var_recal_param_frame_visible = IntVar()
+        Checkbutton(self,text="Réglages",
+                   command=self.display_recal_param_frame,
+                   variable=self.var_recal_param_frame_visible,
+                   indicatoron=0).grid(row=5,column=4,sticky='w')
+
+        self.recal_param_frame = frm1 = Toplevel()
+        frm1.rowconfigure(0,weight=1)
+        frm1.columnconfigure(0,weight=1)
+
+        self.param_recal_S0 = InitParamRecalS0(frm1, "INITIALISATION DES PARAMETRES")
+        self.param_recal_S0.grid(row=0,column=0,sticky='nsew')
+
+        frm1.protocol("WM_DELETE_WINDOW", self.hide_recal_param_frame)
+        Button(frm1,text="OK",command=self.hide_recal_param_frame).grid(row=1,column=0)
+        frm1.withdraw()
         
-        Label(self, text="Recalage du spectre selon la forme analytique").grid(
-                     row=5, column=0)
-        Button(self, text="Calcul !", command = self.compute_interpolation).grid(
-                     row=5, column=1)             
+        Button(self, text="Recalage !", command = self.compute_interpolation).grid(
+                     row=7, column=4,sticky='w')             
         
     def compute_lcorr_gene(self):
         """!Si possible calcule la longueur de corrélation généralisée"""
@@ -1349,14 +1367,15 @@ class InterfaceLongeqTurb(Frame):
         
         nom_intsp=self.select_mesures.inte_spec_name.get()
         self.inter_spec = self.objects.inter_spec[nom_intsp]
-        print "self.inter_spec"
-        print self.inter_spec
-        
-        self.turbmonomod.set_ld(self.donnees.ld)
-        self.turbmonomod.set_lambdac(self.donnees.lambdac)
-        self.turbmonomod.set_gammac(self.donnees.gammac)
-        print "self.donnees.ld"
-        print self.donnees.ld
+
+        opt = self.donnees.var_fonc_correl.get()
+        if opt == 'MODELE GAMMA':
+            param_corr = self.donnees.param_gamma.update_param()
+        elif opt == 'CORCOS':
+            param_corr = self.donnees.param_corcos.update_param()
+
+
+        self.turbmonomod.set_param_gamma(param_corr)
         
         self.turbmonomod.set_res_longcorr( self.resu )
         self.turbmonomod.set_resultat_exp(self.resu_exp)
@@ -1379,6 +1398,9 @@ class InterfaceLongeqTurb(Frame):
             return
         self.mess.disp_mess( (  " Calcul des parametres de la forme analytique " ) )
         self.mess.disp_mess( (  "  attendue pour S0 " ) )
+
+        param0 = self.param_recal_S0.get_resolution()
+        self.turbmonomod.set_param_init_recal(param0)
         self.turbmonomod.compute_interpolation()
         
     def affich_fonc_lcorr(self):
@@ -1397,19 +1419,7 @@ class InterfaceLongeqTurb(Frame):
         abscisse = fonc_lcorr_py.vale_x
         ordonnee = fonc_lcorr_py.vale_y
         
-        print "abscisse dans affich_fonc_lcorr"
-        print abscisse
-        print "ordonnee dans affich_fonc_lcorr"
-        print ordonnee
-        
-        print "longueurs des tableaux abs et ord de fonc_lcorr"
-        print len(abscisse)
-        print len(ordonnee)
-        print "var_abs.get()"
-        print var_abs.get()
-        print ".var_ord.get()"
-        print var_ord.get()
-        
+                
         color = [1]
         
         legende = [ "Longueur de correlation generalisee" ] 
@@ -1433,16 +1443,6 @@ class InterfaceLongeqTurb(Frame):
         abscisse = ModS0_py.vale_x
         ordonnee = ModS0_py.vale_y
         
-        print "abscisse dans affich_fonc_S0"
-        print abscisse
-        print "ordonnee dans affich_fonc_S0"
-        print ordonnee
-        
-        print "var_abs.get()"
-        print var_abs.get()
-        print "var_ord.get()"
-        print var_ord.get()
-        
         color = [1]
         
         legende = [ "Spectre d'excitation S0" ] 
@@ -1465,7 +1465,16 @@ class InterfaceLongeqTurb(Frame):
 # retenir que les nume_mode deconv et EML ???
         self.lcorr_EML_array.fill_modes( lcorr, nume_modes, format = '%13.5E' )
 
+    def display_recal_param_frame(self):
+        state = self.var_recal_param_frame_visible.get()
+        if state:
+            self.recal_param_frame.deiconify()
+        else:
+            self.recal_param_frame.withdraw()
 
+    def hide_recal_param_frame(self):
+        self.var_recal_param_frame_visible.set(0)
+        self.recal_param_frame.withdraw()
         
 #-------------------------------------------------------------------------------
 

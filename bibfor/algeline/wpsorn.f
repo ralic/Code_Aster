@@ -6,7 +6,7 @@
      &   FLAGE,VAUR,VAUC,VAUL)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 04/11/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,6 +176,10 @@ C POUR ARPACK
      &  LOGFIL, NDIGIT, MGETV0,
      &  MNAUPD, MNAUP2, MNAITR, MNEIGH, MNAPPS, MNGETS, MNEUPD
 C------------------------------------------------------------------
+      DO 10 I=1,11
+         IPARAM(I) = 0
+   10 CONTINUE
+
 C INITIALISATION POUR ARPACK
 
 C NIVEAU D'IMPRESSION ARPACK

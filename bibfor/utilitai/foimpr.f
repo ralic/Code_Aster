@@ -4,7 +4,7 @@
       INTEGER                IMPR,IUL,IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C
       CHARACTER*19  NOMFON, NOMF1, LISTR
       CHARACTER*24  PROL, VALE, PARA
       CHARACTER*24  NOMPAR, NOMRES, TITR
-      COMPLEX*16    RESUC
       INTEGER       NBPU
       CHARACTER*8   NOMPU
 C     ------------------------------------------------------------------
@@ -186,8 +185,8 @@ C
                II = 0
                DO 300 IVAL = 0, NBVAL-1
                   ZR(LVAL+IVAL) = ZR(JVAL+IVAL)
-                  CALL FOINTC(NOMFON,NBPU,NOMPU,ZR(LVAL+IVAL),RESURE,
-     &                        RESUIM,IRET)
+                  CALL FOINTC('F',NOMFON,NBPU,NOMPU,ZR(LVAL+IVAL),
+     &                        RESURE,RESUIM,IRET)
                   ZR(LFON+II) = RESURE
                   II = II + 1
                   ZR(LFON+II) = RESUIM

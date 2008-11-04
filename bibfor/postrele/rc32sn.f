@@ -8,7 +8,7 @@
       CHARACTER*(*)       TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,6 +71,9 @@ C
       CHARACTER*8  K8B, TYPE, KNUMES, KNUMET 
 C DEB ------------------------------------------------------------------
       TYPE = TYPZ
+      SN = 0.D0
+      SN1 = 0.D0
+      SN2 = 0.D0
 C
 C --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 C

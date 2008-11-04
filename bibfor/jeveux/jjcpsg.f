@@ -1,6 +1,6 @@
       SUBROUTINE JJCPSG ( RPART , ICODE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,11 +76,11 @@ C DEB ------------------------------------------------------------------
         ISZON(JISZON + IADPAR - 4 ) = IADPAR + 4
         ISZON(JISZON + IADPAR - 1 ) = ISTAT(1)
         ISZON(JISZON + IADPAR     ) = ISTAT(1)
-        IDINIT(2) = ISZON(JISZON + LISZON - 4) + 1
-        IDXAXD(2) = IDINIT(2)
+        IDINIT(2) = 0
+        IDXAXD(2) = 0
         IDFR = 0
         ITCOL = 1
-       CALL U2MESS('I','JEVEUX_09')
+        CALL U2MESS('I','JEVEUX_09')
       ENDIF
 C FIN ------------------------------------------------------------------
       END

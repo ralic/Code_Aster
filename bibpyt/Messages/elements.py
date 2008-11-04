@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+#@ MODIF elements Messages  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,11 +136,14 @@ cata_msg = {
 """),
 
 33 : _("""
- la convergence locale de la loi GLRC_DAMAGE n'est pas atteinte en 1000 itérations :
+ la convergence d'un processus itératif local de la loi GLRC_DAMAGE 
+ n'a pas été atteinte en 1000 itérations :
  XM1 vaut %(r1)f
  XM2 vaut %(r2)f
  YM1 vaut %(r3)f
  YM2 vaut %(r4)f
+ Si cette alarme n'est pas suivie d'une erreur fatale, alors le résultat
+ est correct.
 """),
 
 34 : _("""

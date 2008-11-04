@@ -5,7 +5,7 @@
       CHARACTER*1         ETAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,8 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C     RECUPERATION DES MOMENTS POUR UN ETAT STABILISE
 C
-C IN  : ETAT   : ETAT STABILISE "A" OU "B"
+C IN  : ETAT   : ETAT STABILISE "A" OU "B" 
+C              : OU "S" SI SEISME
 C IN  : NUMSIT : NUMERO DE LA SITUATION
 C OUT : VALE   : ON SOMME LES CHARGEMENTS
 C                VALE(1)  = FX  OU _TUBU
@@ -59,7 +60,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      I, J, NUMCHA, JLCHA, NBCHAR, JCHAR, JTYPE, IRET
+      INTEGER      I, J, NUMCHA, JLCHA, NBCHAR, JCHAR, IRET
+      CHARACTER*1         ETATS
       CHARACTER*8  K8B, KNUMES, KNUMEC
 C DEB ------------------------------------------------------------------
 C
@@ -72,15 +74,20 @@ C
 C
 C --- LISTE DES CHARGEMENTS POUR LE NUMERO DE SITUATION
 C
-      CALL JEEXIN (JEXNOM('&&RC3200.SITU_ETAT_'//ETAT,KNUMES), IRET )
+      IF ((ETAT.EQ.'S').OR.(ETAT.EQ.'A')) THEN
+        ETATS = 'A'
+      ELSE
+        ETATS = 'B'
+      ENDIF
+      
+      CALL JEEXIN (JEXNOM('&&RC3200.SITU_ETAT_'//ETATS,KNUMES), IRET )
       IF ( IRET .EQ. 0 ) GOTO 9999
 C
-      CALL JELIRA (JEXNOM('&&RC3200.SITU_ETAT_'//ETAT,KNUMES),
+      CALL JELIRA (JEXNOM('&&RC3200.SITU_ETAT_'//ETATS,KNUMES),
      +                                          'LONUTI', NBCHAR, K8B )
-      CALL JEVEUO (JEXNOM('&&RC3200.SITU_ETAT_'//ETAT,KNUMES),
+      CALL JEVEUO (JEXNOM('&&RC3200.SITU_ETAT_'//ETATS,KNUMES),
      +                                                     'L', JLCHA )
 C
-      CALL JEVEUO ('&&RC3200.TYPE_CHAR', 'L ', JTYPE )
 C
       DO 100 I = 1 , NBCHAR
 C
@@ -90,7 +97,7 @@ C
 C
          CALL JEVEUO (JEXNOM('&&RC3200.VALE_CHAR',KNUMEC), 'L', JCHAR )
 C 
-         IF ( ZK8(JTYPE+NUMCHA-1) .EQ. 'SEISME' ) THEN
+         IF ( ETAT .EQ. 'S' ) THEN
             DO 102 J = 1 , 12
                VALE(J) = VALE(J) + ZR(JCHAR-1+J)**2
  102        CONTINUE          
@@ -102,7 +109,7 @@ C
 C
  100  CONTINUE
 C
-       IF ( ZK8(JTYPE+NUMCHA-1) .EQ. 'SEISME' ) THEN
+       IF ( ETAT .EQ. 'S' ) THEN
           DO 106 J = 1 , 12
              VALE(J) = SQRT ( VALE(J) )
  106      CONTINUE          

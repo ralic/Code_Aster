@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith8 Messages  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,10 +28,6 @@ cata_msg = {
 
 2 : _("""
  caractéristique fluage incomplet
-"""),
-
-8 : _("""
- format de colonne inconnu (dvlp)
 """),
 
 12 : _("""

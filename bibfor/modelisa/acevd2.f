@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,10 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          CALL GETVEM(NOMA,'NOEUD',MCF,'NOEUD',IOC,1,LMAX,ZK8(JDLS),NN)
          CALL GETVTX(MCF,'CARA'     ,IOC,1,NBCAR,CAR      ,NCAR)
 C
-         DO 25 ICAR=1,NBCAR
+
+         IF (NCAR.GT.NCAR) CALL ASSERT(.FALSE.)
+
+         DO 25 ICAR=1,NCAR
          IF (CAR(ICAR)(3:4).EQ.'TR') GOTO 28
    25    CONTINUE
 C

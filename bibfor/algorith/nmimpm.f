@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,7 @@ C
       INTEGER          I,K,ICOL,IBID
       INTEGER          UNIBID,R8LONG,R8PREC
       CHARACTER*24     SDIMPR,ARG24
-      CHARACTER*16     ARG16,K16BID,OPTASS
+      CHARACTER*16     ARG16,K16BID,OPTASS,NOVALU
       CHARACTER*9      NATURE
       CHARACTER*1      MARQ
       CHARACTER*4      ARG4
@@ -117,7 +117,7 @@ C
       CHARACTER*18     ARG18  
       INTEGER          LONGR,PRECR,LONGI,LONGK,FORCOL
       INTEGER          VALI,TPSNBR
-      REAL*8           VALR
+      REAL*8           VALR,R8VIDE
       CHARACTER*16     VALK
       CHARACTER*(ZLIG) LIGNE,COLONN,TITRE(ZTIT),TAMPON
       CHARACTER*(ZLAR) TITCOL(ZTIT)
@@ -141,6 +141,7 @@ C
       UNIBID = 0
       R8LONG = 16
       R8PREC = 9
+      NOVALU = ' - SANS OBJET - '
 
 C ======================================================================
 C                   INITIALISATION DE L'IMPRESSION
@@ -619,6 +620,16 @@ C
           WRITE(UNITM,*)
         ENDIF
 C
+C --- CRITERES DE CONVERGENCE ATTEINTS
+C
+      ELSE IF (NATURE .EQ. 'CONV_FORC') THEN
+        IF (UNITM.EQ.MESS) THEN
+          WRITE(UNITM,*)
+          CALL IMPFOK('<*> PAS DE CRITERE(S) DE CONVERGENCE           ',
+     &                47,UNITM)
+          WRITE(UNITM,*)
+        ENDIF         
+C
 C --- RESI_GLOB_RELA ET CHARGEMENT = 0, CONVERGENCE SUR RESI_GLOB_MAXI
 C
       ELSE IF (NATURE .EQ. 'MAXI_RELA') THEN
@@ -690,19 +701,25 @@ C
             POSFIN = POS+ZLAR-1
             CALL IMPSDV(SDIMPR(1:14),
      &                  ICOL,K16BID,VALR,IBID,MARQ)
-            CALL IMPFOR(UNIBID,LONGR,PRECR,VALR,
-     &                  TAMPON(POS:POSFIN))
-            IF (MARQ(1:1).NE.' ') THEN
-              POSMAR = POS + ZLAR - 2
-              TAMPON(POSMAR:POSMAR) = MARQ(1:1)
-            ENDIF
+     
+            IF (VALR.EQ.R8VIDE()) THEN
+              
+              TAMPON(POS:POSFIN) = NOVALU(1:16)
+            ELSE
+              CALL IMPFOR(UNIBID,LONGR,PRECR,VALR,
+     &                    TAMPON(POS:POSFIN))
+              IF (MARQ(1:1).NE.' ') THEN
+                POSMAR = POS + ZLAR - 2
+                TAMPON(POSMAR:POSMAR) = MARQ(1:1)
+              ENDIF
+            ENDIF  
           ELSE IF (FORCOL.EQ.3) THEN
             POSFIN = POS+ZLAR-1
             CALL IMPSDV(SDIMPR(1:14),
      &                  ICOL,VALK,R8BID,IBID,MARQ)
             TAMPON(POS:POSFIN) = VALK(1:16)
           ELSE
-            CALL U2MESS('F','ALGORITH8_8')
+            CALL ASSERT(.FALSE.)
           ENDIF
           POS = POS + ZLAR + 1
  100    CONTINUE

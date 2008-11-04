@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost Messages  DATE 03/11/2008   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,6 +149,14 @@ cata_msg = {
 
 60 : _("""
  arret sur erreur(s)
+"""),
+
+69 : _("""
+ problème à l'ouverture du fichier
+"""),
+
+70 : _("""
+ problème à la fermeture du fichier
 """),
 
 74 : _("""

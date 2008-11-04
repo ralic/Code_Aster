@@ -1,7 +1,7 @@
       SUBROUTINE OP0176 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       INTEGER       NBAC, NBPA, JPA, IRET, NBNOSY, NBPARA
       INTEGER       IAUX, JAUX, IZERO,NIVE,VERSIO,IUL,IUNIFI
       INTEGER NRPASS, NBPASS
-      INTEGER ADRECG
+      INTEGER ADRECG,IEXI,IEXI2
       REAL*8        R8B
       CHARACTER*1   CECR
       CHARACTER*8   K8B, FORM, FORMAR
@@ -201,8 +201,14 @@ C
    30 CONTINUE
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
  9997 CONTINUE
-C
-C
+
+
+
+C     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
+C     -------------------------------------------
+      CALL AJREFD(RESUIN,RESUOU,'COPIE')
+
+
       CALL JEDEMA( )
 C
       END

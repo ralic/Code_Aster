@@ -3,7 +3,7 @@
       CHARACTER*16         OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,15 +85,31 @@ C
 C
 C --- INITIALISATIONS
 C
-      DO 40 I = 1,NDDL
-        DO 30 J = 1,NDDL
+      DO 40 J = 1,81
+        DO 30 I = 1,81
           MMAT(I,J) = 0.D0
    30   CONTINUE
    40 CONTINUE
-      DO 300 I = 1,3
-        DO 290 J = 1,3
+      DO 280 I = 1,6
+        DEPLME(I) = 0.D0
+        DEPLMM(I) = 0.D0
+        DEPLE(I) = 0.D0
+        DEPLM(I) = 0.D0
+        R8BID6(I) = 0.D0
+  280 CONTINUE
+      DO 300 J = 1,3
+        DO 290 I = 1,3
           MPROJ(I,J)  = 0.D0
+          C(I,J) = 0.D0
   290   CONTINUE
+        NORM(J) = 0.D0
+        RESE(J) = 0.D0
+        GEOMM(J) = 0.D0
+        GEOME(J) = 0.D0
+        GEOMI(J) = 0.D0
+        BIDON(J) = 0.D0
+        VECT(J) = 0.D0
+        R8BID3(J) = 0.D0
   300 CONTINUE
       DISSIP = 0.D0 
       PRFUSU = 0.D0
@@ -220,13 +236,13 @@ C CALCUL DE !![[U]]_TAU!!
 321     CONTINUE
 
         DO 331 I = 1,NDIM
-          C(I,I) = 1 + C(I,I)
+          C(I,I) = 1.D0 + C(I,I)
 331     CONTINUE
 
         DO 312 I = 1,NDIM
           GEOMI (I)= (DEPLE(I)-DEPLM(I)) - (DEPLME(I)-DEPLMM(I))
-          BIDON (I)= 0.D00
-          VECT  (I)= 0.D00
+          BIDON (I)= 0.D0
+          VECT  (I)= 0.D0
 312     CONTINUE
 
         DO 332 I=1,NDIM
@@ -243,13 +259,14 @@ C CALCUL DE !![[U]]_TAU!!
 
 C CALCUL DE !![[U]]_TAU!!
 
-        DO 372 I=1,3
-          DO 382  J=1,3
+        DO 372 I=1,NDIM
+          DO 382  J=1,NDIM
             VECT(I)=C(I,J)*BIDON(J)+VECT(I)
 382       CONTINUE
 372     CONTINUE
       ELSE
         PRFUSU = 0.D0
+        DISSIP = 0.D0
       END IF
 C ------------------------------------------------------------
 C CALCUL USURE

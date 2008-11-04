@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_recal_ops Macro  DATE 04/11/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,6 +142,18 @@ def macr_recal_externe( RESU_EXP, LIST_PARA, RESU_CALC, UNITE_ESCL=3, POIDS=None
 
    return fonctionnelle, gradient
 
+# --------------------------------------------------------------------------------------------------
+def force_list(obj, typref=list):
+   """Retourne 'obj' sous forme d'une liste de 'typref'.
+   """
+   if type(obj) not in (list, tuple):
+      assert type(obj) == typref, '%s != %s' % (type(obj), typref)
+      obj = [obj,]
+   elif len(obj) > 0:
+      elt = obj[0]
+      if type(elt) != typref:
+         obj = [obj,]
+   return obj
 
 # --------------------------------------------------------------------------------------------------
 def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC, 
@@ -181,7 +193,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
          self.current_context[k]= v
    self.current_context['_F']=cata.__dict__['_F']
 
-   macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC, 
+   macr_recal(UNITE_ESCL, force_list(RESU_EXP, Numeric.ArrayType), POIDS, force_list(LIST_PARA), LIST_DERIV, force_list(RESU_CALC), 
              ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
              GRAPHIQUE, SUIVI_ESCLAVE, METHODE, INFO, **args)
 

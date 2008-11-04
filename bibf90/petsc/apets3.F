@@ -1,7 +1,7 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS3 PETSC  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS3 PETSC  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -119,6 +119,9 @@
          call KSPSetUp(kspp,ierr)
          call PCBJacobiGetSubKSP(pcp,PETSC_NULL_INTEGER,
      &                               PETSC_NULL_INTEGER,ksp,ierr)
+      ELSE
+! size.LE.1 i.e. SEQUENTIEL
+         IF (ACTION.NE.'PRERES') GOTO 999
       END IF
 
 !     -- choix du preconditionneur :

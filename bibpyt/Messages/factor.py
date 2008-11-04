@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF factor Messages  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,15 +78,15 @@ Matrice non factorisable :
      Vérifiez les conditions aux limites.
      Si vous faites du contact, il ne faut pas que la
      structure ne "tienne" que par le contact.
-     
+
      il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
      très près d'un noeud.
      Si le nombre de décimal n'est pas trop grand (maxi 10 décimales)
      vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
      mot-clé NPREC dans STAT_NON_LINE/SOLVEUR.
-     
+
      Sinon, contactez l'équipe de développement.
-     
+
 """),
 
 #-----------------------------------------------------------------------------------------------
@@ -280,8 +280,24 @@ Solveur MUMPS :
   Echec de la factorisation OUT-OF-CORE de MUMPS.
   Consulter les  messages délivrés  par MUMPS.
 Conseil: Augmenter  le nombre de processeurs utilisés.
-        
 """),
+#-----------------------------------------------------------------------------------------------
+
+67: _("""
+Erreur d'utilisation (commande RESOUDRE) :
+  La matrice et le second membre fournis à la commande RESOUDRE
+  ne sont pas de meme dimension (nombre de ddls).
+Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
+"""),
+#-----------------------------------------------------------------------------------------------
+
+68: _("""
+Erreur d'utilisation (commande RESOUDRE) :
+  La matrice et le second membre fournis à la commande RESOUDRE
+  ne sont pas du meme type (réel/complex).
+Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
+"""),
+#-----------------------------------------------------------------------------------------------
 
 
 

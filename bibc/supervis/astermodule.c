@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 03/11/2008   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1157,18 +1157,21 @@ void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN STRING_SIZE lnom,
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSPSPPP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
-                             _IN INTEGER *nbpu,_IN char *param,_IN STRING_SIZE lpara,
-                             _IN DOUBLE *val,
-                            _OUT DOUBLE *resu, _OUT INTEGER *iret)
+void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
+                              _IN INTEGER *nbpu,_IN char *param,_IN STRING_SIZE lpara,
+                              _IN DOUBLE *val,
+                             _OUT INTEGER *iret,
+                             _OUT char *msgerr, _INOUT STRING_SIZE lmsg,
+                             _OUT DOUBLE *resu)
 {
-        PyObject *res  = (PyObject*)0 ;
+        PyObject *tup3  = (PyObject*)0 ;
+        PyObject *res, *txt, *piret;
         PyObject *tup_par;
         PyObject *tup_val;
-        char *kvar;
+        char *kvar, *sret;
+        STRING_SIZE lsret;
         int i;
                                                         ASSERT(commande!=(PyObject*)0);
-        *iret = 0;
         tup_par = PyTuple_New( *nbpu ) ;
         tup_val = PyTuple_New( *nbpu ) ;
         for(i=0;i<*nbpu;i++){
@@ -1179,20 +1182,34 @@ void DEFSPSPPP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
            PyTuple_SetItem( tup_val, i, PyFloat_FromDouble(val[i]) ) ;
         }
 
-        res=PyObject_CallMethod(commande,"fiintf","s#OO",nomfon,lfon,tup_par,tup_val);
+        tup3 = PyObject_CallMethod(commande,"fiintf","s#OO",nomfon,lfon,tup_par,tup_val);
 
-        if (res == NULL)MYABORT("erreur dans la partie Python");
-        if (PyComplex_Check(res)) {
-            *resu    =PyComplex_RealAsDouble(res);
-            *(resu+1)=PyComplex_ImagAsDouble(res);
-        } else if (PyFloat_Check(res) || PyLong_Check(res) || PyInt_Check(res)) {
-            *resu=PyFloat_AsDouble(res);
+        if (tup3 == NULL)MYABORT("erreur dans la partie Python");
+        piret = PyTuple_GetItem(tup3, 0);
+        txt   = PyTuple_GetItem(tup3, 1);
+        res   = PyTuple_GetItem(tup3, 2);
+
+        *iret = (INTEGER)PyInt_AsLong(piret);
+        *resu = (DOUBLE)0.;
+        BLANK(msgerr, lmsg);
+        if ( *iret == 0 ) {
+           if (PyComplex_Check(res)) {
+               *resu    = PyComplex_RealAsDouble(res);
+               *(resu+1)= PyComplex_ImagAsDouble(res);
+           } else if (PyFloat_Check(res) || PyLong_Check(res) || PyInt_Check(res)) {
+               *resu    = PyFloat_AsDouble(res);
+           } else {
+              *iret = 4;
+           }
         } else {
-            *iret = 4;
+            sret = PyString_AsString(txt);
+            lsret = strlen(sret);
+            STRING_FCPY(msgerr, lmsg, sret, lsret);
         }
+
         Py_DECREF(tup_par);
         Py_DECREF(tup_val);
-        Py_DECREF(res);           /*  decrement sur le refcount du retour */
+        Py_DECREF(tup3);
         return ;
 }
 
@@ -2813,14 +2830,14 @@ PyObject* GetJdcAttr(_IN char *attribut)
    Retourne un attribut du 'jdc' en tant que PyObject.
 */
    PyObject *jdc, *objattr;
-   
+
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
       MYABORT("Impossible de récupérer l'attribut 'jdc' !");
 
    objattr = PyObject_GetAttrString(jdc, attribut);
    /* traiter l'erreur "objattr == NULL" dans l'appelant */
-   
+
    Py_XDECREF(jdc);
    return objattr;
 }
@@ -3529,13 +3546,13 @@ PyObject *args;
 
    rval = (DOUBLE *)malloc((longueur)*sizeof(DOUBLE));
    CALL_JEINFO(rval);
-   
+
    tup = PyTuple_New( longueur ) ;
    for(i=0; i < longueur; i++) {
       PyTuple_SetItem( tup, i, PyFloat_FromDouble( rval[i] )) ;
    }
    free((char *)rval);
-   
+
    return tup;
 }
 
@@ -3755,28 +3772,28 @@ void DEFPSS(LCCREE, lccree, _IN INTEGER *nbkit,
 /*
    Créer un assemblage de LC composé des comportements listés dans 'list_kit'
    et retourne le nom attribué automatiquement à ce comportement.
-      
+
       CALL LCCREE(NBKIT, LKIT, COMPOR)
       ==> comport = catalc.create(*list_kit)
 */
    PyObject *catalc, *res, *tup_kit;
    char *scomp;
    STRING_SIZE lsc;
-   
+
    catalc = GetJdcAttr("catalc");
    /* transforme le tableau de chaines fortran en tuple */
    tup_kit = MakeTupleString(*nbkit, lkit, llkit, NULL);
-   
+
    res = PyObject_CallMethod(catalc, "create", "O", tup_kit);
    if (res == NULL) {
       MYABORT("Echec lors de la creation du comportement (lccree/create) !");
    }
-   
+
    scomp = PyString_AsString(res);
    lsc = strlen(scomp);
                                                               ASSERT(lsc <= lcompor) ;
    STRING_FCPY(compor, lcompor, scomp, lsc);
-   
+
    Py_XDECREF(res);
    Py_XDECREF(tup_kit);
    Py_XDECREF(catalc);
@@ -3789,7 +3806,7 @@ void DEFSPP(LCINFO, lcinfo, _IN char *compor, STRING_SIZE lcompor,
 {
 /*
    Retourne le numéro de routine et le nbre de variables internes
-      
+
       CALL LCINFO(COMPOR, NUMLC, NBVARI)
       ==> num_lc, nb_vari = catalc.get_info(COMPOR)
 */
@@ -3800,7 +3817,7 @@ void DEFSPP(LCINFO, lcinfo, _IN char *compor, STRING_SIZE lcompor,
    if (res == NULL) {
       MYABORT("Echec lors de la recuperation des informations sur le comportement (lcinfo/get_info) !");
    }
-   
+
    *numlc  = PyInt_AsLong(PyTuple_GetItem(res, 0));
    *nbvari = PyInt_AsLong(PyTuple_GetItem(res, 1));
 
@@ -3815,7 +3832,7 @@ void DEFSPS(LCVARI, lcvari, _IN char *compor, STRING_SIZE lcompor,
 {
 /*
    Retourne la liste des variables internes
-      
+
       CALL LCVARI(COMPOR, NBVARI, LVARI)
       ==> nom_vari = catalc.get_vari(COMPOR)
 */
@@ -3826,7 +3843,7 @@ void DEFSPS(LCVARI, lcvari, _IN char *compor, STRING_SIZE lcompor,
    if (res == NULL) {
       MYABORT("Echec lors de la recuperation des noms des variables internes du comportement (lcvari/get_vari) !");
    }
-   
+
    convertxt(*nbvari, res, nomvar, lnomvar);
 
    Py_XDECREF(res);
@@ -3851,7 +3868,7 @@ void DEFSSSP(LCTEST, lctest, _IN char *compor, STRING_SIZE lcompor,
    if (res == NULL) {
       MYABORT("Echec lors du test d'une propriete du comportement (lctest/query) !");
    }
-   
+
    *iret = PyInt_AsLong(res);
 
    Py_XDECREF(res);
@@ -3890,7 +3907,7 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
 
         argc=PyList_GET_SIZE(liste) ;
 
-        argv = (char**)malloc(1+argc*sizeof(char*)) ;
+        argv = (char**)malloc((1+argc)*sizeof(char*)) ;
         argv[argc]=(char*)0 ;
 
         /* conversion de chaque element de la liste en une chaine */

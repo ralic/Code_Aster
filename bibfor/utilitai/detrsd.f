@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,14 +66,15 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,IBID,NBSD,IFETS,ILIMPI,IDD,
-     &        IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP
+      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,IBID,NBSD,IFETS,ILIMPI,IDD
+      INTEGER IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP,N1,K
+      INTEGER JLTNS
       CHARACTER*1 K1BID
       CHARACTER*8 MAILLA,METRES,K8BID
       CHARACTER*14 NU,COM
       CHARACTER*16 TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC,RESU
-      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19B,MATEL
+      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19,MATEL
       CHARACTER*24 K24B,TYPOBJ,KNOMSD
       LOGICAL LFETI
 
@@ -123,10 +124,10 @@ C     -------------------------------------------
 C     ------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'CRITERE') THEN
 C     -----------------------------------
-        K19B = NOMSD
-        CALL JEDETR(K19B//'.CRTI')
-        CALL JEDETR(K19B//'.CRTR')
-        CALL JEDETR(K19B//'.CRDE')
+        K19  = NOMSD
+        CALL JEDETR(K19//'.CRTI')
+        CALL JEDETR(K19//'.CRTR')
+        CALL JEDETR(K19//'.CRDE')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'FONCTION') THEN
@@ -161,8 +162,8 @@ C FETI OR NOT ?
           CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 10 IDD = 1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN
-              K19B = ZK24(IFETS+IDD-1) (1:19)
-              CALL DETRS2('SOLVEUR',K19B)
+              K19 = ZK24(IFETS+IDD-1) (1:19)
+              CALL DETRS2('SOLVEUR',K19)
             END IF
 
    10     CONTINUE
@@ -201,12 +202,36 @@ C     ----------------------------------
         CALL JEDETR(LIGRET//'.PONO')
 
 C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'SQUELETTE') THEN
+C     ----------------------------------
+        MAILLA = NOMSD
+        CALL DETRS2('MAILLAGE',MAILLA)
+        CALL JEDETR(MAILLA//'.CORRES')
+        CALL JEDETR(MAILLA//'         .NOMSST')
+        CALL JEDETR(MAILLA//'.ANGL_NAUT')
+        CALL JEDETR(MAILLA//'.INV.SKELETON')
+        CALL JEDETR(MAILLA//'.TRANS')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'L_TABLE') THEN
+C     ----------------------------------
+        K19 = NOMSD
+        CALL JEEXIN(K19//'.LTNS',IRET)
+        IF (IRET.EQ.0) GOTO 70
+        CALL JEVEUO(K19//'.LTNS','L',JLTNS)
+        CALL JELIRA(K19//'.LTNS','LONMAX',N1,K1BID)
+        DO 1, I=1,N1
+          CALL DETRS2('TABLE',ZK24(JLTNS-1+I))
+ 1      CONTINUE
+        CALL JEDETR(K19//'.LTNS')
+        CALL JEDETR(K19//'.LTNT')
+
+C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'MAILLAGE') THEN
 C     ----------------------------------
         MAILLA = NOMSD
         CALL DETRS2('CHAM_NO',MAILLA//'.COORDO')
-        CALL JEDETR(MAILLA//'           .LTNS')
-        CALL JEDETR(MAILLA//'           .LTNT')
+        CALL DETRS2('L_TABLE',MAILLA)
         CALL JEDETR(MAILLA//'           .TITR')
         CALL JEDETR(MAILLA//'.CONNEX')
         CALL JEDETR(MAILLA//'.DIME')
@@ -340,8 +365,8 @@ C FETI OR NOT ?
           CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 30 IDD = 1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN
-              K19B = ZK24(IFETM+IDD-1) (1:19)
-              CALL DETRS2('MATR_ASSE',K19B)
+              K19 = ZK24(IFETM+IDD-1) (1:19)
+              CALL DETRS2('MATR_ASSE',K19)
             END IF
 
    30     CONTINUE
@@ -372,8 +397,8 @@ C FETI OR NOT ?
           CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 40 IDD = 1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN
-              K19B = ZK24(IFETC+IDD-1) (1:19)
-              CALL DETRS2('CHAM_NO',K19B)
+              K19 = ZK24(IFETC+IDD-1) (1:19)
+              CALL DETRS2('CHAM_NO',K19)
             END IF
 
    40     CONTINUE
@@ -398,7 +423,6 @@ C     ------------------------------------
         CNO = NOMSD
         CALL JEDETR(CNO//'.DEEQ')
         CALL JEDETR(CNO//'.LILI')
-        CALL JEDETR(CNO//'.LPRN')
         CALL JEDETR(CNO//'.NUEQ')
         CALL JEDETR(CNO//'.PRNO')
 
@@ -406,9 +430,9 @@ C     ------------------------------------
 C     ------------------------------------
         CNO = NOMSD
         CALL DETRS2('PROF_CHNO',CNO)
-        CALL JEDETR(CNO//'.DELG')
         CALL JEDETR(CNO//'.NEQU')
         CALL JEDETR(CNO//'.REFN')
+        CALL JEDETR(CNO//'.DELG')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD(1:9).EQ.'CHAM_ELEM') THEN
@@ -519,9 +543,9 @@ C FETI OR NOT ?
           CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 50 IDD = 1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN
-              K19B = ZK24(IFETN+IDD-1) (1:19)
+              K19 = ZK24(IFETN+IDD-1) (1:19)
 C RECURSIVITE DE SECOND NIVEAU SUR DETRSD
-              CALL DETRS2('NUME_DDL',K19B(1:14))
+              CALL DETRS2('NUME_DDL',K19(1:14))
             END IF
 
    50     CONTINUE

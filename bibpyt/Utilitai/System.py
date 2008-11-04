@@ -1,4 +1,4 @@
-#@ MODIF System Utilitai  DATE 21/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF System Utilitai  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ def _(mesg):
 #-------------------------------------------------------------------------------
 class NonBlockingReader(_threading.Thread):
    """Classe pour lire l'output/error d'un process fils sans bloquer."""
-   def __init__(self, process, file, bufsize=1000, sleep=0):
+   def __init__(self, process, file, bufsize=1000, sleep=0.1):
       _threading.Thread.__init__(self)
       self.process = process
       self.file    = file
@@ -80,6 +80,7 @@ class NonBlockingReader(_threading.Thread):
          self.buffer = []
 
    def getcurrent(self):
+      time.sleep(self.sleeptime)
       if self.ended:
          self.fill_buffer()
       self.lock.acquire()
@@ -99,7 +100,7 @@ class NonBlockingReader(_threading.Thread):
 #-------------------------------------------------------------------------------
 def _exitcode(status, default=0):
    """Extrait le code retour du status. Retourne `default` si le process
-   n'a pas fini pas exit.
+   n'a pas fini par exit.
    """
    if os.WIFEXITED(status):
       iret = os.WEXITSTATUS(status)

@@ -1,6 +1,6 @@
       SUBROUTINE ASCOVA(DETR,VACHAR,FOMULZ,NPARA,VPARA,TYPRES,CNCHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,6 @@ C   CNCHAR=VACHAR(1:8)//'.ASCOVA'
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -168,7 +167,7 @@ C     ----------------------------------------------------
             CALL ASSERT(ICHA.LE.NCHAR)
             VALRE = 1.D0
             VALIM = 0.D0
-            IF (FCT) CALL FOINTC(ZK24(JFONCT+ICHA-1)(1:8),1,NPARA,
+            IF (FCT) CALL FOINTC('F',ZK24(JFONCT+ICHA-1)(1:8),1,NPARA,
      &                           VPARA,VALRE,VALIM,IER)
           END IF
 

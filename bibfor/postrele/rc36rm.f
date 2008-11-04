@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,7 +44,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      N1, IOCC, IRET, JORD, JNUME, JTYPE, NBORDR, 
+      INTEGER      N1, IOCC, IRET, JORD, JNUME, NBORDR, 
      +             JCHAM, NBRESU
       REAL*8       PREC
       INTEGER      VALI(2)
@@ -61,14 +61,12 @@ C
       CALL GETFAC ( MOTCLF, NBRESU )
 C
       CALL WKVECT('&&RC3600.NUME_CHAR', 'V V I  ', NBRESU, JNUME )
-      CALL WKVECT('&&RC3600.TYPE_CHAR', 'V V K8 ', NBRESU, JTYPE )
       CALL WKVECT('&&RC3600.CHAMP'    , 'V V K24', NBRESU, JCHAM )
 C
       DO 10, IOCC = 1, NBRESU, 1
 C
          CALL GETVIS ( MOTCLF,'NUME_CHAR',IOCC,1,1,ZI(JNUME+IOCC-1),N1)
-C
-         CALL GETVTX ( MOTCLF,'TYPE_CHAR',IOCC,1,1,ZK8(JTYPE+IOCC-1),N1)
+         
 C
          CALL GETVID ( MOTCLF,'RESULTAT' ,IOCC,1,1,RESU,N1)
          IF ( N1 .NE. 0 ) THEN

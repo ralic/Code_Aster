@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C
 
 C --- CALCUL DE LA NUMEROTATION PROPREMENT DITE :
 C     -----------------------------------------
-      CALL NUMDDL ( NUDEV, 'G', NBMAT,ZK24(IMATEL), RENUM)
+      CALL NUMDDL ( NUDEV, 'GG', NBMAT,ZK24(IMATEL), RENUM)
 
 C --- CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
 C     -----------------------------------------------------------

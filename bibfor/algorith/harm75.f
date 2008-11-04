@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C IN  : NOMIN  : NOM UTILISATEUR DU CONCEPT HARM_GENE AMONT
 C IN  : NOMCMD : NOM DE LA COMMANDE : 'REST_BASE_PHYS'
 C IN  : BASEMO : NOM UTILISATEUR DU CONCEPT MODE_MECA AMONT
 C                (SI CALCUL MODAL PAR SOUS-STRUCTURATION)
-C                K8BID SINON
+C                ' ' SINON
 C ----------------------------------------------------------------------
 C
 C     ----DEBUT DES COMMUNS JEVEUX--------
@@ -55,21 +55,24 @@ C
       REAL*8        EPSI,RBID
       COMPLEX*16    CBID
       CHARACTER*4   TYPE(3)
-      CHARACTER*8   K8B,K8BID,BASEMO,CRIT,CHAMP(3),INTERP,NOMRES,
+      CHARACTER*8   K8B,BASEMO,CRIT,CHAMP(3),INTERP,NOMRES,
      &              NOMIN,MODE,TOUCH
       CHARACTER*8   NOMMOT,MATPRO
       CHARACTER*14  NUMDDL
       CHARACTER*16  TYPRES,NOMCMD,TYPBAS
       CHARACTER*19  KREFE,KNUME,KINST,HRANGE
-      CHARACTER*24  MATRIC,CHAMNO,NOMCHA,CREFE(2)
+      CHARACTER*24  MATRIC,CHAMNO,NOMCHA,CREFE(2),CHMOD
       LOGICAL PROMES
 C
 C     ------------------------------------------------------------------
-      DATA K8BID    /'        '/
       DATA CHAMNO   /'&&HARM75.CHAMNO'/
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+
+      MATRIC=' '
+      MATPRO=' '
+
       MODE = BASEMO
       HRANGE = NOMIN
       CALL GETVTX ( ' ', 'TOUT_CHAM', 0,1,1, TOUCH, N1 )
@@ -97,14 +100,14 @@ C ON SUPPOSE QU ELLE EST ISSUE D UN MODE_MECA OU BASE_MODALE
 C
       PROMES = .FALSE.
 C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
-      IF (MODE.EQ.K8BID) THEN
+      IF (MODE.EQ.' ') THEN
          CALL JEVEUO(HRANGE//'.REFD','L',IAREFE)
          MATPRO = ZK24(IAREFE)(1:8)
-         IF (MATPRO.EQ.K8BID) THEN
+         IF (MATPRO.EQ.' ') THEN
            MATPRO = ZK24(IAREFE+5)(1:8)
            PROMES = .TRUE.
            BASEMO = MATPRO
-           CALL RSORAC(MATPRO,'LONUTI',IBID,RBID,K8BID,CBID,RBID,
+           CALL RSORAC(MATPRO,'LONUTI',IBID,RBID,' ',CBID,RBID,
      &            'ABSOLU',NBMODE,1,IBID)
          ELSE
            CALL GETTCO(MATPRO,TYPBAS)
@@ -120,7 +123,7 @@ C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
          CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
          CALL GETTCO(BASEMO,TYPBAS)
          MATRIC = ZK24(IADRIF)
-         IF (MATRIC.NE.K8BID) THEN
+         IF (MATRIC.NE.' ') THEN
            CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
      &                NUMDDL,IRET)
          ELSE
@@ -131,11 +134,11 @@ C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
 C
 C --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 C
-         CALL RSORAC(MODE,'LONUTI',IBID,BID,K8BID,CBID,
+         CALL RSORAC(MODE,'LONUTI',IBID,BID,' ',CBID,
      &               EBID,'ABSOLU',NBMODE,1,NBID)
-         CALL RSEXCH(BASEMO,'DEPL',1,NOMCHA,IRET)
-         NOMCHA = NOMCHA(1:19)//'.REFE'
-         CALL JEVEUO(NOMCHA,'L',LLCHA)
+         CALL RSEXCH(BASEMO,'DEPL',1,CHMOD,IRET)
+         CHMOD = CHMOD(1:19)//'.REFE'
+         CALL JEVEUO(CHMOD,'L',LLCHA)
          CREFE(1) = ZK24(LLCHA)
          CREFE(2) = ZK24(LLCHA+1)
          CALL JELIRA(CREFE(2)(1:19)//'.NUEQ','LONMAX',NEQ,K8B)
@@ -143,7 +146,7 @@ C
       ENDIF
 
       CALL WKVECT('&&HARM75.BASEMODE','V V R',NBMODE*NEQ,IDBASE)
-      IF (MODE.EQ.K8BID.AND.MATRIC.EQ.K8BID) THEN
+      IF (MODE.EQ.' '.AND.MATRIC.EQ.' ') THEN
         CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
       ELSE
         CALL COPMOD(BASEMO,'DEPL',NEQ,NUMDDL,NBMODE,ZR(IDBASE))
@@ -201,10 +204,10 @@ C          (VOIR FICHE 12522)
                IF ( IRET .EQ. 0 ) THEN
                CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
                ELSEIF ( IRET .EQ. 100 ) THEN
-                 IF (MODE.EQ.K8BID) THEN
+                 IF (MODE.EQ.' ') THEN
                    CALL VTCREB(CHAMNO,NUMDDL,'G','C',NEQ)
                  ELSE
-                   CALL VTCREA(CHAMNO,CREFE,'G','C',NEQ)
+                   CALL VTCREC(CHAMNO,CHMOD,'G','C',NEQ)
                  ENDIF
                ELSE
                  CALL ASSERT(.FALSE.)
@@ -230,20 +233,13 @@ C          (VOIR FICHE 12522)
 C
       KREFE  = NOMRES
       CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
-      IF (MODE.EQ.K8BID) THEN
+      IF (MODE.EQ.' ') THEN
         ZK24(LREFE  ) = ZK24(IADRIF)
         ZK24(LREFE+1) = ZK24(IADRIF+1)
         ZK24(LREFE+2) = ZK24(IADRIF+2)
         ZK24(LREFE+3) = ZK24(IADRIF+3)
         ZK24(LREFE+4) = ZK24(IADRIF+4)
         ZK24(LREFE+5) = ZK24(IADRIF+5)
-      ELSE
-        ZK24(LREFE  ) = '  '
-        ZK24(LREFE+1) = '  '
-        ZK24(LREFE+2) = '  '
-        ZK24(LREFE+3) = ZK24(LLCHA+1)
-        ZK24(LREFE+4) = '  '
-        ZK24(LREFE+5) = '  '
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C

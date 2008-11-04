@@ -12,7 +12,7 @@
       REAL*8  VITPE(6),VITPM(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -122,7 +122,7 @@ C
 22      CONTINUE
 21    CONTINUE
 C
-C --- POUR LES NEOUDS ESCLAVES
+C --- POUR LES NOEUDS ESCLAVES
 C
       DO 31 I = 1,NBDM
         DO 32 J = 1,NNE
@@ -131,8 +131,8 @@ C
           DEPLME(I) = DEPLME(I) +
      &                FFPC(J)*ZR(IDEPM+(J-1)*NBDM+I-1)
           IF (IFORM.EQ.2) THEN
-          VITPE(I)  = VITPE(I) +
-     &                FFPC(J)*ZR(IVITP+(J-1)*NBDM+I-1)
+            VITPE(I)  = VITPE(I) +
+     &                  FFPC(J)*ZR(IVITP+(J-1)*NBDM+I-1)
           ENDIF
           IF (ICOMPL.EQ.1) THEN 
             VITME(I)  = VITME(I) +
@@ -143,7 +143,7 @@ C
 32      CONTINUE
 31    CONTINUE
 C
-C --- POUR LES NEOUDS MAITRES
+C --- POUR LES NOEUDS MAITRES
 C
       DO 41 I = 1,NDIM
         DO 42 J = 1,NNM
@@ -152,8 +152,8 @@ C
           DEPLMM(I) = DEPLMM(I) +
      &                FFPR(J)*ZR(IDEPM+NNE*NBDM+(J-1)*NDIM+I-1)
           IF (IFORM.EQ.2) THEN
-          VITPM(I)  = VITPM(I) +
-     &                FFPC(J)*ZR(IVITP+NNE*NBDM+(J-1)*NDIM+I-1)
+            VITPM(I)  = VITPM(I) +
+     &                  FFPR(J)*ZR(IVITP+NNE*NBDM+(J-1)*NDIM+I-1)
           ENDIF
           IF (ICOMPL.EQ.1) THEN      
             VITMM(I)  = VITMM(I) +

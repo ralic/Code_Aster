@@ -1,8 +1,7 @@
-      SUBROUTINE NMASFI(FONACT,SDDYNA,VEASSE,CNFFDO,CNFFPI,
-     &                  CNDFDO,CNDFPI)
+      SUBROUTINE NMASFI(FONACT,SDDYNA,VEASSE,CNFFDO,CNFFPI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*19 CNFFDO,CNFFPI,CNDFDO,CNDFPI
+      CHARACTER*19 CNFFDO,CNFFPI
       CHARACTER*19 VEASSE(*)
       LOGICAL      FONACT(*)
       CHARACTER*19 SDDYNA
@@ -31,7 +30,10 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME)
 C
-C CALCUL DU VECTEUR DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
+C CALCUL DES COMPOSANTES DU VECTEUR SECOND MEMBRE
+C  - CHARGEMENT DE TYPE NEUMANN
+C  - CHARGEMENT FIXE AU COURS DU PAS DE TEMPS
+C  - CHARGEMENT DONNE ET PILOTE
 C      
 C ----------------------------------------------------------------------
 C
@@ -41,8 +43,6 @@ C IN  SDDYNA : SD DYNAMIQUE
 C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE  
 C OUT CNFFDO : VECT_ASSE DE TOUTES LES FORCES FIXES DONNES
 C OUT CNFFPI : VECT_ASSE DE TOUTES LES FORCES FIXES PILOTES
-C OUT CNDFDO : VECT_ASSE DE TOUS LES DEPLACEMENTS FIXES DONNES
-C OUT CNDFPI : VECT_ASSE DE TOUS LES DEPLACEMENTS FIXES PILOTES
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -67,12 +67,12 @@ C
       INTEGER      IFM,NIV   
       INTEGER      IFDO
       INTEGER      N
-      CHARACTER*19 CNFIXE(20)
-      REAL*8       COFIXE(20)
+      CHARACTER*19 CNDONN(20)
+      REAL*8       CODONN(20)
       REAL*8       NDYNRE,COEEXT,COEEX2 
-      CHARACTER*19 CNFEDO,CNLAME,CNONDP,CNGRFL,CNFEPI,CNDIDO,CNDIPI
-      CHARACTER*19 NMCHEX,CNCINE,CNDIDI,CNSSTF,NDYNKK
-      LOGICAL      ISFONC,NDYNLO,LDIDI,LLAPL
+      CHARACTER*19 CNFEDO,CNLAME,CNONDP,CNGRFL,CNFEPI
+      CHARACTER*19 NMCHEX,CNSSTF,NDYNKK
+      LOGICAL      ISFONC,NDYNLO,LLAPL
       LOGICAL      LONDE,LPILO,LSSTF,LGRFL,LMPAS,LDYNA
 C 
 C ----------------------------------------------------------------------
@@ -83,7 +83,7 @@ C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ...... CALCUL CHARGEMENT FIXE' 
+        WRITE (IFM,*) '<MECANONLINE> ...... CALCUL NEUMANN CONSTANT' 
       ENDIF
 C
 C --- FONCTIONNALITES ACTIVEES
@@ -91,7 +91,6 @@ C
       LONDE  = NDYNLO(SDDYNA,'ONDE_PLANE')  
       LLAPL  = ISFONC(FONACT,'LAPLACE')
       LPILO  = ISFONC(FONACT,'PILOTAGE')
-      LDIDI  = ISFONC(FONACT,'DIDI') 
       LGRFL  = NDYNLO(SDDYNA,'FORCE_FLUIDE') 
       LSSTF  = ISFONC(FONACT,'SOUS_STRUC')      
       LMPAS  = NDYNLO(SDDYNA,'MULTI_PAS')  
@@ -102,8 +101,6 @@ C
       IFDO   = 0       
       CALL VTZERO(CNFFDO)
       CALL VTZERO(CNFFPI)
-      CALL VTZERO(CNDFDO)
-      CALL VTZERO(CNDFPI)
 C
 C --- COEFFICIENTS POUR MULTI-PAS
 C     
@@ -113,57 +110,22 @@ C
       ELSE
         COEEXT = 1.D0
         COEEX2 = 1.D0
-      ENDIF           
-C
-C --- DEPLACEMENTS DONNES (Y COMPRIS DIDI SI NECESSAIRE)
-C
-      CNDIDO       = NMCHEX(VEASSE,'VEASSE','CNDIDO')    
-      IFDO         = IFDO+1 
-      CNFIXE(IFDO) = CNDIDO
-      COFIXE(IFDO) = 1.D0
-
-      IF (LDIDI) THEN
-        CNDIDI       = NMCHEX(VEASSE,'VEASSE','CNDIDI')
-        IFDO         = IFDO+1 
-        CNFIXE(IFDO) = CNDIDI
-        COFIXE(IFDO) = 1.D0
-      ENDIF   
-C      
-C --- CONDITIONS CINEMATIQUES IMPOSEES           
-C   
-      CNCINE       = NMCHEX(VEASSE,'VEASSE','CNCINE') 
-      IFDO         = IFDO+1 
-      CNFIXE(IFDO) = CNCINE
-      COFIXE(IFDO) = 1.D0        
-C
-C --- VECTEUR RESULTANT DEPLACEMENT FIXE
-C       
-      DO 17 N = 1,IFDO
-        CALL VTAXPY(COFIXE(N),CNFIXE(N),CNDFDO)  
-        IF (NIV.GE.2) THEN
-          WRITE (IFM,*) '<MECANONLINE> ......... DEPL. FIXE' 
-          WRITE (IFM,*) '<MECANONLINE> .........  ',N,' - COEF: ',
-     &                   COFIXE(N)
-          CALL NMDEBG('VECT',CNFIXE(N),IFM)
-        ENDIF         
- 17   CONTINUE      
-C      
-      IFDO   = 0               
+      ENDIF                       
 C
 C --- FORCES DONNEES
 C
       CNFEDO       = NMCHEX(VEASSE,'VEASSE','CNFEDO')
       IFDO         = IFDO+1 
-      CNFIXE(IFDO) = CNFEDO
-      COFIXE(IFDO) = COEEX2   
+      CNDONN(IFDO) = CNFEDO
+      CODONN(IFDO) = COEEX2       
 C
 C --- CHARGEMENTS FORCES DE LAPLACE   
 C   
       IF (LLAPL) THEN 
         CNLAME       = NMCHEX(VEASSE,'VEASSE','CNLAPL')
         IFDO         = IFDO+1 
-        CNFIXE(IFDO) = CNLAME
-        COFIXE(IFDO) = COEEX2
+        CNDONN(IFDO) = CNLAME
+        CODONN(IFDO) = COEEX2
       ENDIF   
 C      
 C --- CHARGEMENTS ONDE_PLANE       
@@ -171,8 +133,8 @@ C
       IF (LONDE) THEN 
         CNONDP       = NMCHEX(VEASSE,'VEASSE','CNONDP')
         IFDO         = IFDO+1 
-        CNFIXE(IFDO) = CNONDP
-        COFIXE(IFDO) = -1.D0
+        CNDONN(IFDO) = CNONDP
+        CODONN(IFDO) = -1.D0*COEEX2
       ENDIF  
 C        
 C --- FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION 
@@ -180,8 +142,8 @@ C
       IF (LSSTF) THEN
         CNSSTF       = NMCHEX(VEASSE,'VEASSE','CNSSTF') 
         IFDO         = IFDO+1 
-        CNFIXE(IFDO) = CNSSTF
-        COFIXE(IFDO) = 1.D0     
+        CNDONN(IFDO) = CNSSTF
+        CODONN(IFDO) = 1.D0     
       ENDIF 
 C        
 C --- FORCES FLUIDES
@@ -189,8 +151,8 @@ C
       IF (LGRFL) THEN
         CNGRFL       = NMCHEX(VEASSE,'VEASSE','CNGRFL') 
         IFDO         = IFDO+1 
-        CNFIXE(IFDO) = CNGRFL
-        COFIXE(IFDO) = COEEX2      
+        CNDONN(IFDO) = CNGRFL
+        CODONN(IFDO) = COEEX2      
       ENDIF
 C
 C --- AJOUT FORCES EXTERNES PAS PRECEDENT
@@ -198,51 +160,51 @@ C
       IF (LMPAS) THEN 
         CNFEDO       = NDYNKK(SDDYNA,'CNFEDO')
         IFDO         = IFDO+1 
-        CNFIXE(IFDO) = CNFEDO
-        COFIXE(IFDO) = COEEXT 
+        CNDONN(IFDO) = CNFEDO
+        CODONN(IFDO) = COEEXT 
         IF (LLAPL) THEN 
           CNLAME       = NDYNKK(SDDYNA,'CNLAPL')
           IFDO         = IFDO+1 
-          CNFIXE(IFDO) = CNLAME
-          COFIXE(IFDO) = COEEXT 
+          CNDONN(IFDO) = CNLAME
+          CODONN(IFDO) = COEEXT 
         ENDIF    
         IF (LONDE) THEN 
           CNONDP       = NDYNKK(SDDYNA,'CNONDP')
           IFDO         = IFDO+1 
-          CNFIXE(IFDO) = CNONDP
-          COFIXE(IFDO) = COEEXT
+          CNDONN(IFDO) = CNONDP
+          CODONN(IFDO) = COEEXT
         ENDIF      
         IF (LGRFL) THEN     
           CNGRFL       = NDYNKK(SDDYNA,'CNGRFL')
           IFDO         = IFDO+1 
-          CNFIXE(IFDO) = CNGRFL
-          COFIXE(IFDO) = -1.D0*COEEXT         
+          CNDONN(IFDO) = CNGRFL
+          CODONN(IFDO) = -1.D0*COEEXT         
         ENDIF  
       ENDIF                                
 C
-C --- VECTEUR RESULTANT FORCE FIXE
+C --- VECTEUR RESULTANT FORCES DONNEES
 C       
       DO 10 N = 1,IFDO
-        CALL VTAXPY(COFIXE(N),CNFIXE(N),CNFFDO)  
+        CALL VTAXPY(CODONN(N),CNDONN(N),CNFFDO)  
         IF (NIV.GE.2) THEN
-          WRITE (IFM,*) '<MECANONLINE> ......... FORC. FIXE' 
+          WRITE (IFM,*) '<MECANONLINE> ......... FORC. DONNEES' 
           WRITE (IFM,*) '<MECANONLINE> .........  ',N,' - COEF: ',
-     &                 COFIXE(N)
-          CALL NMDEBG('VECT',CNFIXE(N),IFM)
+     &                 CODONN(N)
+          CALL NMDEBG('VECT',CNDONN(N),IFM)
         ENDIF            
- 10   CONTINUE 
-C 
+ 10   CONTINUE   
+C
+C --- VECTEUR RESULTANT FORCES PILOTEES
+C
       IF (LPILO) THEN       
-C
-C --- FORCES PILOTEES
-C
         CNFEPI       = NMCHEX(VEASSE,'VEASSE','CNFEPI')
-        CNFFPI       = CNFEPI
-C
-C --- DEPLACEMENTS PILOTES
-C
-        CNDIPI       = NMCHEX(VEASSE,'VEASSE','CNDIPI') 
-        CNDFPI       = CNDIPI     
+        CNFFPI       = CNFEPI 
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ......... FORC. PILOTEES' 
+          WRITE (IFM,*) '<MECANONLINE> .........  ',1,' - COEF: ',
+     &                 1.D0
+          CALL NMDEBG('VECT',CNFFPI,IFM)
+        ENDIF           
       ENDIF         
 C
       CALL JEDEMA()

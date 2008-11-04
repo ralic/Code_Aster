@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_turbulent Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_calcul_turbulent Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,6 +135,11 @@ class CalculTurbulent:
         resultat = CalculInverse(self, self.res_base, self.Syy, self.type_intsp,
                                  self.modes_red, transpose(self.modes_act), self.mess)
         try:
+            # Pour tous les calculs inverses, on desactive les fpe
+            # NB : on ne devrait avoir a les desactiver que pour les
+            # operations "sensibles", type SVD, mais en calibre 5, on observe
+            # des plantages sur de simples multiplications.
+            aster.matfpe(-1)
             self.SQQ, self.val_sing, self.regul = resultat.calc_SQQ()
             self.SQQ.nume_gene = nume_ddl_gene(self.res_base)
             self.is_SQQ = 1
@@ -154,6 +159,7 @@ class CalculTurbulent:
             self.is_Syy_S = 1
             self.Syy_S.set_model(self.res_obs)
             self.Syy_S.nume_phy = self.Syy.nume_phy
+            aster.matfpe(1)
 
         except TypeError:
             self.mess.disp_mess("Calcul inverse non complete")
@@ -250,9 +256,9 @@ class CalculInverse:
                 # produits matriciels impossibles
                 self.mess_err("SQQ",{"CPhi":str(shape(CPhi)),"d'impedance mecanique":str(shape(Zm1))})
                 raise TypeError
-            aster.matfpe(-1)
+##            aster.matfpe(-1)
             U,S,VH = MLab.svd(CPhiZm1)
-            aster.matfpe(1)
+##            aster.matfpe(1)
             Smax = max(S)
             U = Matrix(U)
             V = Matrix(conjugate(transpose(VH)))
@@ -313,9 +319,9 @@ class CalculInverse:
         deplacements physiques : [Sqq(om)] = ([CPhi]+)[Syy(om)]([CPhi]+)^H"""
 
         PhiT_B = Matrix(self.PhiT_B)
-        aster.matfpe(-1)
+##        aster.matfpe(-1)
         U,S,VH = MLab.svd(PhiT_B)
-        aster.matfpe(1)
+##        aster.matfpe(1)
         Smax = max(S)
         U = Matrix(U)
         V = Matrix(conjugate(transpose(VH)))

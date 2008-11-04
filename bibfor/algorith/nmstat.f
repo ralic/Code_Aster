@@ -2,7 +2,7 @@
      &                  NUMINS,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,6 +94,7 @@ C
       TPSCOA = 0.D0
       TPSCOG = 0.D0
       TPSARC = 0.D0
+      TPSCTC = 0.D0
       CTCCIT = 0
       CTCCLA = 0
       CTCCLF = 0

@@ -2,7 +2,7 @@
      &                  NBRPAS,RATIO ,RETOUR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,7 +72,7 @@ C
       CHARACTER*24 TPSERR
       INTEGER      JERRE
       INTEGER      I,NBVAL,REGRES
-      REAL*8       ERRREL,ERRMAX
+      REAL*8       ERRREL,ERRMAX,R8PREM
       REAL*8       GLBREL,GLBMAX
       REAL*8       CIBLE,CIBLEN
       REAL*8       SX,SY,SX2,SYX
@@ -216,6 +216,24 @@ C        IL FAUT FAIRE ATTENTION AUX ARRONDIS PAR SECURITE AJOUT 20%
         RETOUR = 3
       ELSE
 C       CALCUL DU RATIO POUR ATTEINDRE LA CIBLE
+  
+        IF (XA1.LE.R8PREM()) THEN
+          RATIO    = 24.0D0/((3.0D0*NBRPAS+UN)**2 - UN)
+          RETOUR   = 0
+          VALIM(1) = NBRPAS
+          VALIM(2) = LENIVO
+          VALRM(1) = RATIO
+          VALRM(2) = DELTAT
+          VALRM(3) = CIBLEN
+          VALRM(4) = ZR(JERRE+2) 
+          IF ( REGRES .EQ. 1 ) THEN
+            VALKM(1) = 'RESI_GLOB_RELA'
+          ELSE
+            VALKM(1) = 'RESI_GLOB_MAXI'
+          ENDIF               
+          CALL U2MESG('I','SUBDIVISE_11',1,VALKM,2,VALIM,4,VALRM)
+          GOTO 999
+        ENDIF 
         IF ( (CIBLEN-MAXITE) .LE. (-10.0D0*XA1/XDET) ) THEN
           RATIO = EXP( (CIBLEN-MAXITE)*XDET/XA1 )
         ELSE

@@ -94,13 +94,13 @@ TEST_TABLE(    TABLE=UNIF2,
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='FACT_USAGE_CUMU',
-                      VALE=7.05300E-02  )
+                      VALE=1.74925E-02  )
 TEST_TABLE(    TABLE=UNIF2,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='FACT_USAGE_CUMU',
-                      VALE=1.16380E-03  )
+                      VALE=1.10629E-04  )
 
 
 #---le PM
@@ -386,14 +386,14 @@ TEST_TABLE(    TABLE=UNIF2,
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SALT_MAX',
-                      VALE=2.52778E+03  )
+                      VALE=1.26389E+03  )
 
 TEST_TABLE(    TABLE=UNIF2,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='SALT_MAX',
-                      VALE=5.69444E+02  )
+                      VALE=2.84722E+02  )
 
 #---le FACT_USAGE
 TEST_TABLE(    TABLE=UNIF2,
@@ -1004,12 +1004,12 @@ TEST_TABLE(    TABLE=UNIF4,
                              VALE_K   = 'ORIG'),),
                  REFERENCE='NON_REGRESSION',
                   NOM_PARA='FACT_USAGE_CUMU',
-                      VALE=7.045865E-02  )
+                      VALE=1.742111E-02  )
 TEST_TABLE(    TABLE=UNIF4,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='NON_REGRESSION',
                   NOM_PARA='FACT_USAGE_CUMU',
-                      VALE=1.16241E-03 )
+                      VALE=1.092346E-04 )
 
 FIN();

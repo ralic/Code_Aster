@@ -1,7 +1,7 @@
       SUBROUTINE MECGM2(LISCHA,INSTAN,MESUIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,8 @@ C
       LOGICAL      FCT    
       CHARACTER*24 LICOEF,FOMULT 
       INTEGER      JLICOE,JFONCT
-      REAL*8       VALRES            
+      REAL*8       VALRES  
+      LOGICAL      BIDON          
 C      
 C ----------------------------------------------------------------------
 C
@@ -75,6 +76,7 @@ C --- INITIALISATIONS
 C      
       FOMULT = LISCHA(1:19)//'.FCHA'
       LICOEF = MESUIV(1:15)//'.COEF'
+      BIDON  = .FALSE.
 C
 C --- NOMBRE DE CHARGEMENTS SUIVEURS
 C
@@ -82,16 +84,19 @@ C
       IF ( IRET .NE. 0 ) THEN
         CALL JELIRA(MESUIV(1:19)//'.RELR','LONUTI',NBCHME,K8BID)
         IF ( NBCHME .EQ. 0 ) THEN
-          CALL ASSERT(.FALSE.)
+          BIDON = .TRUE.
         ELSE
           CALL JEVEUO(MESUIV(1:19)//'.RELR','L',JMEC)
           IF ( ZK24(JMEC)(7:8) .EQ. '00' ) THEN
-            CALL ASSERT(.FALSE.)
+            BIDON = .TRUE.
           ENDIF  
         ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF 
+      IF (BIDON) THEN
+        GOTO 9999
+      ENDIF       
 C
 C --- ACCES AUX FONCTIONS MULTIPLICATRICES
 C
@@ -129,6 +134,8 @@ C
         ENDIF
         ZR(JLICOE+ICHAR-1)  = VALRES
  1    CONTINUE 
+C 
+9999  CONTINUE 
 C
       CALL JEDEMA()        
 C

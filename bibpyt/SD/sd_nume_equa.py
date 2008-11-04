@@ -1,4 +1,4 @@
-#@ MODIF sd_nume_equa SD  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_nume_equa SD  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,8 +23,8 @@ from SD import *
 from SD.sd_prof_chno import sd_prof_chno
 class sd_nume_equa(sd_prof_chno):
     nomj = SDNom(fin=19)
-    NEQU = Facultatif(AsVI(SDNom(debut=19), lonmax=2, ))
-    DELG = Facultatif(AsVI(SDNom(debut=19), ))
-    REFN = Facultatif(AsVK24(SDNom(debut=19),lonmax=4,  ))
+    NEQU = AsVI(lonmax=2,)
+    DELG = AsVI( )
+    REFN = AsVK24(lonmax=4,)
 
 

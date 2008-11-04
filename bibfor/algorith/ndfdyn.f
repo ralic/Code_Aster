@@ -1,7 +1,7 @@
       SUBROUTINE NDFDYN(SDDYNA,MEASSE,VITPLU,ACCPLU,CNDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +29,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (DYNAMIQUE)
 C
-C CALCUL DES FORCES D'EQUILIBRE DYNAMIQUE
+C CALCUL DES FORCES DE RAPPEL DYNAMIQUE
 C
 C ----------------------------------------------------------------------
 C
@@ -61,7 +61,6 @@ C
       REAL*8       NDYNRE,COERMA,COERAM,COERRI      
       LOGICAL      NDYNLO,LAMOR,LIMPL
       LOGICAL      LNEWMA,LTHETA,LTHETD,LTHETV
-      INTEGER      NDYNIN
 C
 C ----------------------------------------------------------------------
 C
@@ -80,30 +79,16 @@ C
 C
 C --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES) OU THETA    
 C
-      IF ((NDYNLO(SDDYNA,'NEWMARK')).OR.
-     &    (NDYNLO(SDDYNA,'DIFF_CENT')).OR.
-     &    (NDYNLO(SDDYNA,'HHT')).OR.
-     &    (NDYNLO(SDDYNA,'HHT_COMPLET')).OR.
-     &    (NDYNLO(SDDYNA,'TCHAMWA'))) THEN
-        LNEWMA = .TRUE.  
-        LTHETA = .FALSE.
-      ELSEIF (NDYNLO(SDDYNA,'THETA_METHODE')) THEN 
-        LNEWMA = .FALSE.  
-        LTHETA = .TRUE.
-      ELSE
-        CALL ASSERT(.FALSE.)           
+      LNEWMA = NDYNLO(SDDYNA,'FAMILLE_NEWMARK')
+      LTHETA = NDYNLO(SDDYNA,'THETA_METHODE')
+      IF (.NOT.(LNEWMA.OR.LTHETA)) THEN
+        CALL ASSERT(.FALSE.)
       ENDIF   
-      IF (LTHETA) THEN
-        IF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.1) THEN
-          LTHETD = .TRUE.
-          LTHETV = .FALSE.
-        ELSEIF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2) THEN
-          LTHETD = .FALSE.
-          LTHETV = .TRUE.        
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-      ENDIF     
+C
+C --- TYPE DE THETA
+C
+      LTHETD = NDYNLO(SDDYNA,'THETA_METHODE_DEPL')
+      LTHETV = NDYNLO(SDDYNA,'THETA_METHODE_VITE')
 C
 C --- MATRICES ASSEMBLEES      
 C           

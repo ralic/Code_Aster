@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,8 +63,7 @@ Format inconnu : %(k1)s
 Erreur lors de l'interpolation de la fonction '%(k1)s'.
 """),
 
-10 : _("""
- sur la maille '%(k1)s'
+10 : _("""sur la maille '%(k1)s'
 """),
 
 11 : _("""
@@ -322,6 +321,22 @@ La formule '%(k1)s' dépend de %(i1)d paramètres.
       - Si votre formule dépend de 3 paramètres ou plus, vous devez d'abord créer une
         nouvelle formule à un seul paramètre (et appelé IMPR_FONCTION) ou à 2 paramètres
         et passer par CALC_FONC_INTERP puis IMPR_FONCTION.
+"""),
+
+51 : _("""
+Erreur lors de l'interprétation de la formule '%(k1)s'.
+"""),
+
+52 : _("""
+%(k1)s
+"""),
+
+53 : _("""sur le noeud '%(k1)s'
+"""),
+
+54 : ("""
+Nombre de paramètres fournis : %(i1)d
+Noms des paramètres fournis  : %(ktout)s
 """),
 
 }

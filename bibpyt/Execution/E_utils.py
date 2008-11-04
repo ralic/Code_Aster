@@ -1,4 +1,4 @@
-#@ MODIF E_utils Execution  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_utils Execution  DATE 04/11/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,6 +40,7 @@ def repr_float(valeur):
   else :
     if abs(valeur) > 0.01 : return repr(valeur)
   t=repr(valeur)
+  if t == 'nan': return t
   if string.find(t,'e') != -1 or string.find(t,'E') != -1 :
     # le réel est déjà sous forme mantisse exposant !
     # --> on remplace e par E
