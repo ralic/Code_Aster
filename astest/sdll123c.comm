@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 10/11/2008   AUTEUR TORKHANI M.TORKHANI 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 # sdll123c.para = tps_job 60 mem_job 32 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ DEBUT( CODE=_F(NOM='SDLL123C', NIV_PUB_WEB='INTERNET'),
        PAR_LOT='NON')
 aster.matfpe(-1)
 
-nddl=15*6-20
+nddl=15*6-42
 
 MAIL=LIRE_MAILLAGE()
 
@@ -368,6 +368,9 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                  _F(GROUP_NO=('PALIER_A','PALIER_B'),
                                     DX=0, DRY=0, DRX=0, DRZ=0,
                                     ),
+                                 _F(GROUP_MA=('ROTOR'),
+                                    DX=0, DRX=0
+                                    ),
                           ))
                                     
 
@@ -470,29 +473,29 @@ TEST_RESU(RESU=(
 # POUR SORENSEN
           _F( RESULTAT = MG_SO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 3,  VALE = 1.5915, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 1,  VALE = 1.5915, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MG_SO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 4,  VALE = 1.9492, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 1.9492, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MG_SO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 5,  VALE = 3.1829, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 3,  VALE = 3.1829, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MG_SO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 6,  VALE = 3.8984, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 4,  VALE = 3.8984, REFERENCE='NON_REGRESSION',),
 # POUR QZ
           _F( RESULTAT = MG_QZ, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 3,  VALE = 1.5915, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 1,  VALE = 1.5915, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MG_QZ, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 4,  VALE = 1.9492, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 1.9492, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MG_QZ, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 5,  VALE = 3.1829, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 3,  VALE = 3.1829, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MG_QZ, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 6,  VALE = 3.8984, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 4,  VALE = 3.8984, REFERENCE='NON_REGRESSION',),
             ),)
 
 OM=124.14*pi/30.
@@ -588,16 +591,28 @@ TEST_RESU(RESU=(
 # POUR SORENSEN APPROCHE COMPLEXE
           _F( RESULTAT = MQ_SO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 3,  VALE = 1.5593, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 1,  VALE = 1.5593, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_SO, PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 3,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 1,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_SO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 5,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 1.8897, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_SO, PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 5,  VALE = 0.0999, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 0.2449, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 3,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SO, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 3,  VALE = 0.0998, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 4,  VALE = 3.8692, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SO, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 4,  VALE = 0.1224, REFERENCE='NON_REGRESSION',),
 # POUR SORENSEN APPROCHE REELLE
           _F( RESULTAT = MQ_SOR, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
@@ -607,10 +622,22 @@ TEST_RESU(RESU=(
                 NUME_ORDRE = 1,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_SOR, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 2,  VALE = 1.8897, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOR, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 2,  VALE = 0.2449, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOR, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
                 NUME_ORDRE = 3,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_SOR, PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 3,  VALE = 0.0999, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 3,  VALE = 0.0998, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOR, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 4,  VALE = 3.8692, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOR, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 4,  VALE = 0.1224, REFERENCE='NON_REGRESSION',),
 # POUR SORENSEN APPROCHE IMAGINAIRE
           _F( RESULTAT = MQ_SOI, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
@@ -620,10 +647,22 @@ TEST_RESU(RESU=(
                 NUME_ORDRE = 1,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_SOI, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 2,  VALE = 1.8897, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOI, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 2,  VALE = 0.2449, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOI, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
                 NUME_ORDRE = 3,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_SOI, PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 3,  VALE = 0.0999, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 3,  VALE = 0.0998, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOI, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 4,  VALE = 3.8692, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MQ_SOI, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 5.E-3,
+                NUME_ORDRE = 4,  VALE = 0.1224, REFERENCE='NON_REGRESSION',),
 # POUR QZ
           _F( RESULTAT = MQ_QZ, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
@@ -633,10 +672,10 @@ TEST_RESU(RESU=(
                 NUME_ORDRE = 1,  VALE = 0.1999, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_QZ, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 2,  VALE = 3.1669, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 1.8897, REFERENCE='NON_REGRESSION',),
           _F( RESULTAT = MQ_QZ, PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 2,  VALE = 0.0999, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 0.2449, REFERENCE='NON_REGRESSION',),
                 ),)
 
 

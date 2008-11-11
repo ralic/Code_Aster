@@ -7,7 +7,7 @@
      &                  ERROR ,FINPAS,MAXREL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/11/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -406,16 +406,17 @@ C
 C
 C --- CONVERGENCE ADAPTEE A LA METHODE DE DE BORST
 C
+      CONVER = CVNEWT.AND.CTCCVG
       IF (CBORST) THEN
-        IF (CVNEWT) THEN
-          CALL IMPSDR(SDIMPR,'ITER_DEBO',' DE BORST...    ',R8BID,IBID)
-          CALL U2MESS('I','MECANONLINE2_3')
-          BORCVG = .FALSE.
-        ELSE
-          CALL IMPSDR(SDIMPR,'ITER_DEBO','                ',R8BID,IBID)
-        ENDIF
+         IF (CONVER) THEN
+           CALL IMPSDR(SDIMPR(1:14),
+     &                 'ITER_DEBO',' DE BORST...    ',R8BID,IBID)
+           CALL U2MESS('I','MECANONLINE2_3')
+           BORCVG = .FALSE.
+         ENDIF
       ELSE
-        BORCVG = .TRUE.  
+         CALL IMPSDR(SDIMPR(1:14),
+     &                 'ITER_DEBO','                ',R8BID,IBID)
       ENDIF
 C
 C --- CONVERGENCE FINALE

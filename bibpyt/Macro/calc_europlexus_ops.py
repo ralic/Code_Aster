@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_europlexus_ops Macro  DATE 07/11/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -848,7 +848,6 @@ class EUROPLEXUS:
         epx[MODULE].append(3*' '+'LECT')
         epx[MODULE].append(7*' '+'%s'%gma)
         epx[MODULE].append(3*' '+'TERM')
-        epx[MODULE].append(3*' '+'TERM')
  
     epx[MODULE].append('\n') 
  
@@ -934,6 +933,11 @@ class EUROPLEXUS:
             typMat[nom_mater] = 'ELAS'
             for car in ['E','RHO','NU']:
               dic_mater[nom_mater][car] = elas[car]
+            for car in ['AMOR_ALPHA','AMOR_BETA'] :
+              if elas.has_key(car) :
+                dic_mater[nom_mater][car] = elas[car]
+              else :
+                dic_mater[nom_mater][car] = None                 
          beton = self.reupere_structure(concept_mater,'BETON')
          if beton  :
             typMat[nom_mater] = 'GLRC'
@@ -949,7 +953,7 @@ class EUROPLEXUS:
               dic_mater[nom_mater]['BETON'][car] = self.get_motcle(elasBeton,car,None)
             ecroBeton = self.reupere_structure(materBeton,'BETON_ECRO_LINE')
             for car in ['SYT','SYC']:
-              dic_mater[nom_mater]['BETON'][car] = ecroBeton[car]
+              dic_mater[nom_mater]['BETON'][car] = self.get_motcle(ecroBeton,car,None)
             for car in ['EPAIS','GAMMA','QP1','QP2','C1N1','C1N2','C1N3','C2N1','C2N2','C2N3','C1M1','C1M2','C1M3','C2M1','C2M2','C2M3'] :
               dic_mater[nom_mater]['BETON'][car] = self.get_motcle(beton,car)
             for car in ['OMT','EAT','BT1','BT2'] :
@@ -1002,9 +1006,17 @@ class EUROPLEXUS:
                 for car in ['E','NU']:
                   dic_tmp[car] = elasNappe[car]           
                 for car in ['SY']:
-                  dic_tmp[car] = ecroNappe[car]
+                  if ecroNappe :
+                    dic_tmp[car] = ecroNappe[car]
+                  else :
+                    dic_tmp[car] = None
                 for car in ['OMX','OMY','RX','RY'] :
                   dic_tmp[car] = nappe[car]
+                for car in ['FS',] :
+                  if nappe.has_key(car) :
+                    dic_tmp[car] = nappe[car]
+                  else :
+                    dic_tmp[car] = None
                 dic_mater[nom_mater]['NAPPE'].append(dic_tmp)
          Lliners = self.setlist(self.reupere_structure(concept_mater,'LINER'))
          if Lliners :
@@ -1043,11 +1055,18 @@ class EUROPLEXUS:
       # mot cle indicant qu'il s'agit des caracteristiques lineaires du materiau
       if typMat[nom_mater] == 'ELAS' :
           dic_corresp = {'E':'YOUNG','NU':'NU','RHO':'RO'}
+          dic_corresp2 ={'AMOR_ALPHA':'KRAY','AMOR_BETA':'MRAY'}
           epx[MODULE].append('LINE')
           for car_aster in dic_corresp.keys():
             vale    = dic_mater[nom_mater][car_aster]
             car_epx = dic_corresp[car_aster]
-            epx[MODULE].append('%s %g' %(car_epx,vale))
+            if vale is not None :
+              epx[MODULE].append('%s %g' %(car_epx,vale))
+          for car_aster in dic_corresp2.keys():
+            vale    = dic_mater[nom_mater][car_aster]
+            car_epx = dic_corresp2[car_aster]
+            if vale is not None :
+              epx[MODULE].append('%s %g' %(car_epx,vale))
       else : #GLRC
         dic_corres1 = {'RHO':'RO','EPAIS':'H','E':'EB','NU':'NUB'}
         dic_corresNapp = {'E' : 'EA','SY':'FY','OMX':'OMX','OMY':'OMY','RX':'RX','RY':'RY','FS':'FS'}
@@ -1647,16 +1666,19 @@ class EUROPLEXUS:
         if nc == 0 :
             para_abscisse = self.legend_courbes[icourbe][0]
             vale_abscisse = valeurs[0,:].tolist()
-            dico.append({'LISTE_R' : vale_abscisse , 'PARA' : para_abscisse})
+            assert (len(para_abscisse)<17)
+            dico.append({'TYPE_K':'K16','LISTE_R' : vale_abscisse , 'PARA' : para_abscisse})
             para_ordonnee = self.legend_courbes[icourbe][1]
             vale_ordonnee = valeurs[1,:].tolist()
-            dico.append({'LISTE_R' : vale_ordonnee , 'PARA' : para_ordonnee})
+            assert (len(para_ordonnee)<17)
+            dico.append({'TYPE_K':'K16','LISTE_R' : vale_ordonnee , 'PARA' : para_ordonnee})
             nc=1
         else :
             if ((self.legend_courbes[icourbe][0] == para_abscisse) and (vale_abscisse == valeurs[0,:].tolist())) :
                 para_ordonnee = self.legend_courbes[icourbe][1]
                 vale_ordonnee = valeurs[1,:].tolist()
-                dico.append({'LISTE_R' : vale_ordonnee , 'PARA' : para_ordonnee})
+                assert (len(para_ordonnee)<17)
+                dico.append({'TYPE_K':'K16','LISTE_R' : vale_ordonnee , 'PARA' : para_ordonnee})
             else :
                 raise 'Table non compatible'
     
@@ -1806,7 +1828,7 @@ class EUROPLEXUS:
             TYPE_CHAM = 'ELGA_NEUT_R',
             OPERATION = 'AFFE',
             MODELE    = self.NEW_MODELE,
-            INFO      = 2,
+            INFO      = self.INFO,
             PROL_ZERO = 'OUI',
             AFFE = _F(VALE=(1.,1.), TOUT='OUI', NOM_CMP=('X21','X22')),
             )
@@ -1851,28 +1873,53 @@ class EUROPLEXUS:
         INFO      = self.INFO,
                )
     listEffg = []
-    # err = 0
-    # i=0
-    # while 1:
+    i=0
+    listType=[]
+    __SIG11 = [None]*10
+    __SIG21 = [None]*10
+    while 1:
         # index=1
         # pas = self.ARCHIVAGE['PAS_NBRE']
         # dicDetr=[]
         # if 'Q4GS' in self.modelisations :
-            # try :
-                # __SIG11 = LIRE_CHAMP(
-                    # TYPE_CHAM   = 'ELGA_SIEF_R',
-                    # UNITE       = 99,
-                    # NUME_PT     = i*pas,
-                    # MODELE      = self.NEW_MODELE,
-                    # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
-                    # PROL_ZERO   = 'OUI',
-                    # NOM_MED     = 'CHAMP___CONTRAINTE___001',
-                    # NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
-                    # NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'])
+            err = 0
+            try :
+                __SIG11[i] = LIRE_CHAMP(
+                    TYPE_CHAM   = 'ELGA_SIEF_R',
+                    UNITE       = 99,
+                    NUME_PT     = 0,
+                    MODELE      = self.NEW_MODELE,
+                    MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    PROL_ZERO   = 'OUI',
+                    NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(i+1),
+                    NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
+                    NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'])
                 # dicDetr.append({'NOM' : __SIG11})
+                DETRUIRE(CONCEPT=_F(NOM = __SIG11[i]))
+                listType.append('Q4GS')
                 # index=2    
-            # except :
-                # err +=1
+            except :
+                err+=1
+            try :
+                __SIG21[i] = LIRE_CHAMP(
+                    TYPE_CHAM   = 'ELGA_SIEF_R',
+                    UNITE       = 99,
+                    NUME_PT     = 0,
+                    MODELE      = self.NEW_MODELE,
+                    MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
+                    PROL_ZERO   = 'OUI',
+                    NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(i+1),
+                    NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'],
+                    NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP_MED']),
+                DETRUIRE(CONCEPT=_F(NOM = __SIG21[i]))
+                if len(listType)<i+1 :
+                    listType.append('DKT3')
+            except : 
+                err+=1
+            if err<2 :
+                i+=1
+            else :
+                break
         # if 'DKT3' in self.modelisations :
             # try : 
                 # __SIG21 = LIRE_CHAMP(
@@ -1893,10 +1940,13 @@ class EUROPLEXUS:
             # break
         # DETRUIRE(CONCEPT=dicDetr) 
         # i+=1
+    nbChamp = i
     itot=len(resu.LIST_PARA()['INST'])
     __EFFG=[None]*itot
     # __EPSG=[None]*itot
     __ECRG=[None]*itot
+    __SIG1 = [None]*nbChamp
+    __SIG2 = [None]*nbChamp
     for i in xrange(itot) :
         dicAffe=[]
         dicAffe2=[]
@@ -1910,8 +1960,10 @@ class EUROPLEXUS:
         dicAsse3 = [{'TOUT' : 'OUI', 'CHAM_GD' : __UNN, 'NOM_CMP' : 'X21', 'NOM_CMP_RESU' : 'X21'}]
         dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __UNN, 'NOM_CMP' : 'X22', 'NOM_CMP_RESU' : 'X22', 'CUMUL' : 'OUI','COEF_R':1.})
         dicDetr=[]
-        if 'Q4GS' in self.modelisations :
-                __SIG1 = LIRE_CHAMP(
+        # if 'Q4GS' in self.modelisations :
+        for j in xrange(nbChamp) :
+            if listType[j] == 'Q4GS' :
+                __SIG1[j] = LIRE_CHAMP(
                     TYPE_CHAM   = 'ELGA_SIEF_R',
                     UNITE       = 99,
                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
@@ -1919,10 +1971,10 @@ class EUROPLEXUS:
                     MODELE      = self.NEW_MODELE,
                     MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
                     PROL_ZERO   = 'OUI',
-                    NOM_MED     = 'CHAMP___CONTRAINTE___001',
+                    NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(j+1),
                     NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
                     NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'],
-                    )
+                        )
                 # __EPS1 = LIRE_CHAMP(
                     # TYPE_CHAM   = 'ELGA_EPSI_R',
                     # UNITE       = 99,
@@ -1945,18 +1997,15 @@ class EUROPLEXUS:
 #                     NOM_MED     = 'CHAMP___ECROUISSAGE__001',
 #                     NOM_CMP     = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'],
 #                     NOM_CMP_MED = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP_MED'])
-                dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG1, 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP']), 
+                dicDetr.append({'NOM' : __SIG1[j]})
+                dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG1[j], 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP']), 
                             'NOM_CMP_RESU' : ('X1','X2','X3','X4','X5','X6','X7','X8'), 'CUMUL' : 'OUI','COEF_R':1.})
                 # dicAsse2.append({'TOUT' : 'OUI', 'CHAM_GD' : __EPS1, 'NOM_CMP' : tuple(dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP']), 
                             # 'NOM_CMP_RESU' : ('X1','X2','X3','X4','X5','X6','X7','X8'), 'CUMUL' : 'OUI','COEF_R':1.})
 #                 dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __ECR1, 'NOM_CMP' : tuple(dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP']), 
 #                             'NOM_CMP_RESU' : ('X1','X2'), 'CUMUL' : 'OUI','COEF_R':1.})
-                index=2    
-                dicDetr.append({'NOM' : __SIG1})
-                # dicDetr.append({'NOM' : __EPS1})
-#                dicDetr.append({'NOM' : __ECR1})
-        if 'DKT3' in self.modelisations:
-                __SIG2 = LIRE_CHAMP(
+            else :
+                __SIG2[j] = LIRE_CHAMP(
                     TYPE_CHAM   = 'ELGA_SIEF_R',
                     UNITE       = 99,
                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
@@ -1964,7 +2013,7 @@ class EUROPLEXUS:
                     MODELE      = self.NEW_MODELE,
                     MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
                     PROL_ZERO   = 'OUI',
-                    NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%index,
+                    NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(j+1),
                     NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'],
                     NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP_MED'],
                     )
@@ -1990,15 +2039,18 @@ class EUROPLEXUS:
 #                     NOM_MED     = 'CHAMP___ECROUISSAGE__00%d'%index,
 #                     NOM_CMP     = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP'],
 #                     NOM_CMP_MED = dic_cmp_gauss['ECROUISSAGE']['Q4GS']['NOM_CMP_MED'])
-                dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG2, 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP']),
+                dicAsse.append({'TOUT' : 'OUI', 'CHAM_GD' : __SIG2[j], 'NOM_CMP' : tuple(dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP']),
                                 'NOM_CMP_RESU' : ('X11','X12','X13','X14','X15','X16'), 'CUMUL' : 'OUI','COEF_R':1.})
                 # dicAsse2.append({'TOUT' : 'OUI', 'CHAM_GD' : __EPS2, 'NOM_CMP' : tuple(dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP']), 
                                 # 'NOM_CMP_RESU' : ('X11','X12','X13','X14','X15','X16'), 'CUMUL' : 'OUI','COEF_R':1.})
 #                 dicAsse3.append({'TOUT' : 'OUI', 'CHAM_GD' : __ECR2, 'NOM_CMP' : tuple(dic_cmp_gauss['ECROUISSAGE']['DKT3']['NOM_CMP']), 
 #                                 'NOM_CMP_RESU' : ('X11','X12'), 'CUMUL' : 'OUI','COEF_R':1.})
-                dicDetr.append({'NOM' : __SIG2})
+                dicDetr.append({'NOM' : __SIG2[j]})
                 # dicDetr.append({'NOM' : __EPS2})
 #                dicDetr.append({'NOM' : __ECR2})
+                # dicDetr.append({'NOM' : __EPS1})
+#                dicDetr.append({'NOM' : __ECR1})
+        # if 'DKT3' in self.modelisations:
 
         __SIGN = CREA_CHAMP(
             TYPE_CHAM = 'ELGA_NEUT_R',
@@ -2084,7 +2136,7 @@ class EUROPLEXUS:
         dicAffe.append({'CHAM_GD' : __EFFG[i], 'MODELE' : self.NEW_MODELE,'CHAM_MATER' : self.CHAM_MATER,'INST': resu.LIST_PARA()['INST'][i]})
         # dicAffe2.append({'CHAM_GD' : __EPSG[i], 'MODELE' : self.NEW_MODELE,'CHAM_MATER' : self.CHAM_MATER,'INST': resu.LIST_PARA()['INST'][i]})
 #         dicAffe3.append({'CHAM_GD' : __ECRG[i], 'MODELE' : self.NEW_MODELE,'CHAM_MATER' : self.CHAM_MATER,'INST': resu.LIST_PARA()['INST'][i]})
-        DETRUIRE(CONCEPT=dicDetr)
+        DETRUIRE(CONCEPT=dicDetr, INFO=1)
         resu = CREA_RESU(reuse=resu,
             OPERATION = 'AFFE',
             TYPE_RESU = 'EVOL_NOLI',
@@ -2109,18 +2161,11 @@ class EUROPLEXUS:
 
 #-----------------------------------------------------------------------
   def lancer_calcul(self,fichier_med='auto'):
-#    os.chdir(self.pwd + self.REPE)
-    fichier_epx = self.nom_fichiers['COMMANDE']
-    cmd = '%s %s' %(self.EXEC,fichier_epx)
-    if debug: print 'EXEC',cmd
 
-    from Utilitai.System import ExecCommand
-    comment = "Lancement de la commande :\n%s" % cmd
-    os.chdir(self.pwd + self.REPE)
-    iret, output = ExecCommand(cmd, alt_comment=comment, follow_output=True)
-                  
+     fichier_epx = self.nom_fichiers['COMMANDE']
+     EXEC_LOGICIEL(LOGICIEL='cd %s ; %s %s ; cd %s' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
+                   INFO=2)
 
-    os.chdir(self.pwd) 
     
 #------------------------------------------------------------------------
 #----------------------------- FIN class EUROPLEXUS ---------------------

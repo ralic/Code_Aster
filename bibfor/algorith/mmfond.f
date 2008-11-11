@@ -2,7 +2,7 @@
      &                  TYPBAR,NUNOBA,NUNFBA,EXNOEB)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -210,12 +210,16 @@ C --- NOEUD MILIEU DU FOND FISSURE
 C                 
             IF (ARTFIS.EQ.1) THEN 
               NUNOBA(3) = 5 
+              TYPBAR = 1
             ELSEIF (ARTFIS.EQ.2) THEN 
-              NUNOBA(3) = 6                         
+              NUNOBA(3) = 6   
+              TYPBAR = 3                      
             ELSEIF (ARTFIS.EQ.3) THEN
-              NUNOBA(3) = 7                           
+              NUNOBA(3) = 7   
+              TYPBAR = 2                        
             ELSEIF (ARTFIS.EQ.4) THEN
-              NUNOBA(3) = 8              
+              NUNOBA(3) = 8 
+              TYPBAR = 3             
             ELSE
               CALL ASSERT(.FALSE.)             
             ENDIF             

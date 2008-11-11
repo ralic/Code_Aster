@@ -1,5 +1,6 @@
-# MODIF  DATE 28/10/2008   AUTEUR FOUCAULT A.FOUCAULT 
-# TITRE SOLLICITATION SISMIQUE DE CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
+# MODIF  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
+# TITRE SOLLICITATION SISMIQUE D'UNE COLONNE DE SOL 
+#  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 600 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1178,7 +1179,8 @@ ACC_A47X=CALC_FONCTION( LIST_PARA=L_COMB,
                                _F( FONCTION = ACCELE, COEF = 1.),),
                       );
                       
-                      
+
+
 TAB_INF1 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=2.80,
                                     INST_FIN = 2.88, ))                                                   
 TAB_INF2 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.06,
@@ -1187,17 +1189,31 @@ TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.47,
                                     INST_FIN = 3.55, ))                                                   
 
 TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 2.05361,PRECISION = 0.02,
+           VALE = 2.05361,PRECISION = 0.10,
            REFERENCE = 'NON_REGRESSION')
 TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 2.05361,PRECISION = 0.02,
+           VALE = 2.05361,PRECISION = 0.10,
            REFERENCE = 'AUTRE_ASTER')
 TEST_TABLE(TABLE=TAB_INF2,NOM_PARA='RMS',
-           VALE = 1.67212,PRECISION = 0.02,
+           VALE = 1.67212,PRECISION = 0.10,
            REFERENCE = 'NON_REGRESSION')
 TEST_TABLE(TABLE=TAB_INF3,NOM_PARA='RMS',
            VALE = 2.81561,PRECISION = 0.12,
            REFERENCE = 'NON_REGRESSION')
+
+
+SPOSCI = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC_A47X,
+                                 NORME=9.81, ),);
+
+
+MAXSP = INFO_FONCTION(MAX = _F(FONCTION = SPOSCI,))   
+
+TEST_TABLE(TABLE=MAXSP,
+           NOM_PARA = 'FREQ',
+           TYPE_TEST = 'MAX',
+           VALE      = 2.55,
+           PRECISION = 0.01,
+           REFERENCE = 'NON_REGRESSION',);
 
 FIN( );
 

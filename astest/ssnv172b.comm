@@ -1,6 +1,7 @@
 
-# MODIF  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 10/11/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS 2D
+# ssnv172b.para = tps_job 600 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -3,7 +3,7 @@
      &                  POUGD ,SOLALG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -429,7 +429,15 @@ C
       IF (LNEWMA) THEN
         IF (LIMPL) THEN
           COINER = UN/(BETA*DELTAT)
-        ENDIF  
+        ELSE
+          COINER = UN/DELTAT  
+        ENDIF 
+      ELSEIF (LTHETA) THEN
+        IF (LDEPL) THEN
+          COINER = UN/THETA
+        ELSE
+          COINER = UN/DELTAT  
+        ENDIF   
       ELSE
         COINER = UN/DELTAT
       ENDIF

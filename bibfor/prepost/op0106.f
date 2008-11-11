@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       PARAMETER (DIMANV=4)
       PARAMETER (NCMPMA=7+DIMAKI+DIMANV)
       CHARACTER*8  NMCMP2(NCMPMA)
-      
+
       DATA NMCMP2/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',
      &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',
      &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',
@@ -129,21 +129,21 @@ C     ------------------------------------------------------------------
           GO TO 6
         END IF
     5 CONTINUE
-    6 CONTINUE    
+    6 CONTINUE
 
       IF (LFNONL) THEN
-        IF (NBOPT.GT.1) CALL U2MESS('F','PREPOST3_96')      
+        IF (NBOPT.GT.1) CALL U2MESS('F','PREPOST3_96')
         IF (RESUC1.EQ.RESUCO(1:8)) THEN
           VALK(1)=RESUC1
           CALL U2MESK('F','PREPOST3_97',1 ,VALK)
-        END IF      
+        END IF
         IF (TYPE.NE.'DYNA_TRANS') CALL U2MESS('F','PREPOST3_98')
       ELSE
         IF (RESUC1.NE.RESUCO(1:8)) THEN
           VALK(1)=RESUC1
           VALK(2)=RESUCO
           CALL U2MESK('F','PREPOST3_79', 2 ,VALK)
-        END IF      
+        END IF
       END IF
 
       CALL GETTCO(RESUCO(1:8),TYSD)
@@ -588,8 +588,8 @@ C             -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
               CALL GNOMSD ( NOOJB,10,14)
               NUME=NOOJB(1:14)
               CALL NUMECN(MODELE,CHDEPL,NUME)
-              IF (OPTION.EQ.'FORC_NODA_NONL'.AND.NUMREF.NE.' ') THEN
-                NUME = NUMREF(1:14)//'.NUME'
+              IF (OPTION.EQ.'FORC_NODA_NONL') THEN
+                IF (NUMREF.NE.' ')  NUME = NUMREF(1:14)//'.NUME'
               ENDIF
 
               CALL RSEXCH(LERES0,'VITE',IORDR,CHVIVE,IRET)
@@ -623,7 +623,7 @@ C           --- CALCUL DES VECTEURS ELEMENTAIRES ---
                   MCL = 'COMP_INCR'
                   CALL NMDOCC(COMPOR(1:19),MODELE,1,MCL,NMCMP2,
      &                        NCMPMA,.TRUE.)
-                END IF              
+                END IF
               END IF
               FNOEVO = .FALSE.
               CALL VEFNME(MODELE,SIGMA,CARAC,CHDEPL,CHDEP2,VFONO,MATER,

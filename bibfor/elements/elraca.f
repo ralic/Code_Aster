@@ -8,7 +8,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 10/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -828,6 +828,7 @@ C     ------------------------------------------------------------------
         NNO = 1
         NNOS = 1
         VOL = 1.D0
+        XIN(1) = 0.D0
 
         NBFPG = 3
         NBPG(1) = 1
@@ -942,12 +943,8 @@ C     ------------------------------------------------------------------
       END IF
 
       DO 200 I = 0,NNO - 1
-        X(NDIM*I+1) = XIN(I+1)
-        IF (NDIM.EQ.2) THEN
-          X(NDIM*I+2) = YIN(I+1)
-        ELSE IF (NDIM.EQ.3) THEN
-          X(NDIM*I+2) = YIN(I+1)
-          X(NDIM*I+3) = ZIN(I+1)
-        END IF
+        IF (NDIM.GE.1) X(NDIM*I+1) = XIN(I+1)
+        IF (NDIM.GE.2) X(NDIM*I+2) = YIN(I+1)
+        IF (NDIM.EQ.3) X(NDIM*I+3) = ZIN(I+1)
   200 CONTINUE
       END

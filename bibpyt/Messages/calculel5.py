@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF calculel5 Messages  DATE 07/11/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,7 +140,11 @@ cata_msg = {
 """),
 
 40 : _("""
- nombre de sous-points incoherent avec etat initial
+ Erreur utilisateur. 
+ Le champ de variables internes initiales n'a pas le bon nombre de sous-points.
+ Maille : %(k1)s
+ Nombre de sous-points a l'instant '-' : %(i1)d
+ Nombre de sous-points a l'instant '+' : %(i2)d
 """),
 
 41 : _("""

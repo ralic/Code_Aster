@@ -3,7 +3,7 @@
      &                  VEASSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,7 +77,7 @@ C
       CHARACTER*24 DDEPLA,DEPDEL 
       CHARACTER*19 NMCHEX
       CHARACTER*8  MODELE 
-      REAL*8       DIINST,INSTAN
+      REAL*8       DIINST,INSTAN(2)
 C
 C ----------------------------------------------------------------------
 C
@@ -86,7 +86,8 @@ C
 C
 C --- INSTANT
 C
-      INSTAN = DIINST(SDDISC,NUMINS)      
+      INSTAN(1) = DIINST(SDDISC,NUMINS)
+      INSTAN(2) = INSTAN(1) - DIINST(SDDISC,NUMINS-1)
 C
 C --- INITIALISATIONS
 C

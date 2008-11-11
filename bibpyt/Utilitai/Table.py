@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF Table Utilitai  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@
 __all__ = ['Table', 'merge']
 
 import sys
+import os
 import re
 from copy  import copy
 from sets  import Set
@@ -494,15 +495,16 @@ class Table(TableBase):
       """Supprime les colonnes correspondantes aux éléments de args """
       if not type(args) in EnumTypes:
          args=[args,]
-      new_rows=self.rows
-      new_para=self.para
-      new_type=self.type
       for item in args:
-         del new_type[new_para.index(item)]
-         new_para.remove(item)
-         for line in new_rows:
-            del line[item] 
-      return Table(new_rows, new_para, new_type, self.titr)
+         try:
+            ind_item = self.para.index(item)
+         except ValueError:
+            UTMESS('F', 'Table', 'Parametre(s) absent(s) de la table : %s' % item)
+         del self.type[ind_item]
+         self.para.remove(item)
+         for line in self.rows:
+            if line.has_key(item):
+               del line[item]
 
 # ------------------------------------------------------------------------------
    def __getitem__(self, args):
@@ -521,7 +523,9 @@ class Table(TableBase):
       for line in self:
          new_line={}
          for item in new_para:
-            new_line[item]=line.get(item)
+            v = line.get(item)
+            if v is not None:
+               new_line[item] = v
          new_rows.append(new_line)
       return Table(new_rows, new_para, new_type, self.titr)
 
@@ -591,6 +595,12 @@ class Table(TableBase):
             mc='LISTE_R'
          # valeurs sans trou / avec trou
          vals=getattr(self, self.para[i]).values()
+         if typ == 'R':
+            try:
+               check_nan(vals)
+            except ValueError, err:
+               UTMESS('F', 'Table', "Erreur pour le paramètre '%s' : %s" \
+                  % (self.para[i], str(err)))
          if vals.count(None)==0:
             d[mc]=vals
          else:
@@ -852,16 +862,18 @@ def sort_table(rows, l_para, w_para, reverse=False):
    for i in w_para :
       new_key= '__'+str(w_para.index(i))+i
       for row in new_rows :
-         row[new_key]=row[i]
-         del row[i]
+         v = row.get(i)
+         row[new_key] = v     # must have a value to sort properly
+         if v is not None:
+            del row[i]
    # rename others parameters by "___" + para
    # ("___" to be after sort keys)
    for i in c_para :
       new_key= '___'+i
       for row in new_rows :
          v = row.get(i)
+         row[new_key] = v     # must have a value to sort properly
          if v is not None:
-            row[new_key]=v
             del row[i]
    # sort
    new_rows.sort()
@@ -870,17 +882,17 @@ def sort_table(rows, l_para, w_para, reverse=False):
       new_rows.reverse()
    for i in w_para :
       old_key= '__'+str(w_para.index(i))+i
-      for row in new_rows :
+      for row in new_rows:
          v = row.get(old_key)
          if v is not None:
-            row[i]=v
+            row[i] = v
             del row[old_key]
    for i in c_para :
       old_key= '___'+i
       for row in new_rows :
          v = row.get(old_key)
          if v is not None:
-            row[i]=v
+            row[i] = v
             del row[old_key]
    return new_rows
 
@@ -1028,4 +1040,9 @@ def _func_test_rela(v, VALE, PRECISION):
          return True
    return False
 
+def check_nan(values):
+   """Raise ValueError exception if nan is found in values."""
+   for i, v in enumerate(values):
+      if str(v) == 'nan':
+         raise ValueError, 'NaN present at index %d' % i
 

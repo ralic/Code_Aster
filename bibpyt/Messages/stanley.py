@@ -1,4 +1,4 @@
-#@ MODIF stanley Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley Messages  DATE 07/11/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,9 +182,8 @@ Le champ est tracé avec la déformée.
 Concept ignoré : %(k1)s
 """),
 
-36 : _("""
-Il y a plusieurs concepts %(k1)s stockés dans la structure de donnée résultat.
-"""),
+
+
 
 37 : _("""
 Tous les concepts Aster nécessaires à Stanley n'ont pas été calculés. 

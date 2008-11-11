@@ -1,7 +1,7 @@
-      LOGICAL FUNCTION NDYNLO(SDDYNA,CHAINE)
+      LOGICAL FUNCTION NDYNLO(SDDYNA,CHAINZ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 10/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*19  SDDYNA
-      CHARACTER*(*) CHAINE
+      CHARACTER*(*) CHAINZ
 C 
 C ----------------------------------------------------------------------
 C
@@ -66,6 +66,8 @@ C
       CHARACTER*24 TSCH ,LOSD
       INTEGER      JTSCH,JLOSD
       INTEGER      NDYNIN
+      CHARACTER*24 CHAINE
+      CHARACTER*16 TYPSCH
 C
 C ----------------------------------------------------------------------
 C
@@ -74,6 +76,7 @@ C
 C --- INITIALISATIONS
 C
       NDYNLO = .FALSE.
+      CHAINE = CHAINZ
 C
 C --- ACCES OBJET PRINCIPAL SDDYNA
 C      
@@ -88,8 +91,9 @@ C
         TSCH   = SDDYNA(1:15)//'.TYPE_SCH'
         CALL JEVEUO(TSCH,'L',JTSCH)
       ENDIF
+      TYPSCH = ZK16(JTSCH+1-1)  
 C  
-      IF (ZK16(JTSCH+1-1)(1:8).EQ.'STATIQUE') THEN
+      IF (TYPSCH(1:8).EQ.'STATIQUE') THEN
         IF (CHAINE(1:8).EQ.'STATIQUE') THEN
           NDYNLO = .TRUE.
         ELSE
@@ -104,7 +108,7 @@ C
       ENDIF
 C
       LOSD   = SDDYNA(1:15)//'.INFO_SD' 
-      CALL JEVEUO(LOSD,'L',JLOSD)
+      CALL JEVEUO(LOSD,'L',JLOSD)  
 C
       IF (CHAINE(1:8).EQ.'STATIQUE')THEN
         NDYNLO = .FALSE.
@@ -145,7 +149,7 @@ C
           ELSEIF (CHAINE(14:18).EQ.'_VITE') THEN
             IF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2) THEN
               NDYNLO = .TRUE.
-            ELSEIF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2) THEN
+            ELSEIF (NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.1) THEN
               NDYNLO = .FALSE.    
             ELSE
               CALL ASSERT(.FALSE.)

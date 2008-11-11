@@ -6,7 +6,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/11/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       NMOCL, NFONO, N2DL, N3DL, N6DL, NCOQ2D, NBCOMP
       PARAMETER     (NMOCL=10)
-      INTEGER       NTYPEL(NMOCL), DDL(NMOCL), FORIMP(NMOCL)
+      INTEGER       NTYPEL(NMOCL), FORIMP(NMOCL)
       REAL*8        R8DGRD, DGRD, VALFOR(NMOCL)
       LOGICAL       EXISDG, VERIF
       CHARACTER*1   K1BID
@@ -279,12 +279,11 @@ C     -----------------------------------------------
 
             DO 120 I = 1,6
                IF ((I-1).GT.30) CALL VERI32()
-               DDL(I) = IAND(ZI(JDESGI-1+INO),2** (I-1))
-               IF ((DDL(I).NE.0) .AND. (EXISDG(ZI(IDGEX),I))) THEN
+               IF (EXISDG(ZI(IDGEX),I)) THEN
                   NUMEL = NTYPEL(I)
                END IF
   120       CONTINUE
-            IF (((DDL(6).NE.0).AND. (EXISDG(ZI(IDGEX),6))) .AND.
+            IF ((EXISDG(ZI(IDGEX),6)) .AND.
      &           (.NOT. (EXISDG(ZI(IDGEX),4)))) THEN
                NUMEL = NCOQ2D
             END IF

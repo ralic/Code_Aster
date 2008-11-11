@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 10/11/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,7 +81,6 @@ C     ------------------------------------------------------------------
              ZR(JDM+I-1) = 0.D0
  60      CONTINUE
 
-         VXX   = ZR(JDC+10-1)
 C     I : LIGNE ; J : COLONNE
       I = 5
       J = 6

@@ -7,7 +7,7 @@
       CHARACTER*(*)       MOTFAC, BASZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 10/11/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,9 +96,11 @@ C
                IER = IER + 1
                CALL U2MESG('E', 'ELEMENTS5_20',1,NOMMA,1,IOCC,0,0.D0)
             ENDIF
-            IF ((IM.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
-               IER = IER + 1
-               CALL U2MESG('E', 'ELEMENTS5_21',1,NOMMA,1,IOCC,0,0.D0)
+            IF (IM.GT.1) THEN
+              IF (TYPM(1:4).NE.TYPMP(1:4)) THEN
+                IER = IER + 1
+                CALL U2MESG('E', 'ELEMENTS5_21',1,NOMMA,1,IOCC,0,0.D0)
+              ENDIF
             ENDIF
             TYPMP(1:4) = TYPM(1:4)
          ENDIF
@@ -377,7 +379,7 @@ C     ------------------------------------------------------------------
 C
       IF ( TYPM(1:4) .EQ. 'SEG2' ) THEN
         NBNO=NBTM+1
-        
+
         IF(MOTFAC(6:8).EQ.'INF') THEN
            CALL WKVECT(RESU//'.FOND_INF  .NOEU',BASE//' V K8',NBNO,JNOE)
         ELSEIF(MOTFAC(6:8).EQ.'SUP') THEN

@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 10/11/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,108 +75,108 @@ C     ------------------------------------------------------------------
         END IF
       END IF
       IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
-         IF (INFODI.EQ.1) THEN
-         N    = 78
-         NNO  = 2
-         NC   = 6
-         NDIM = 3
-         ELSEIF (INFODI.EQ.2) THEN
+         IF (INFODI.EQ.2) THEN
          N    = 144
          NNO  = 2
          NC   = 6
          NDIM = 3
          GOTO 999
+         ELSE
+         N    = 78
+         NNO  = 2
+         NC   = 6
+         NDIM = 3
          ENDIF
       ELSEIF (NOMTE.EQ.'MECA_DIS_T_L') THEN
-         IF (INFODI.EQ.1) THEN
-         N    = 21
-         NNO  = 2
-         NC   = 3
-         NDIM = 3
-         ELSEIF (INFODI.EQ.2) THEN
+         IF (INFODI.EQ.2) THEN
          N    = 36
          NNO  = 2
          NC   = 3
          NDIM = 3
          GOTO 999
+         ELSE
+         N    = 21
+         NNO  = 2
+         NC   = 3
+         NDIM = 3
          ENDIF
       ELSEIF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
-         IF (INFODI.EQ.1) THEN
-         N    = 21
-         NNO  = 1
-         NC   = 6
-         NDIM = 3
-         ELSEIF (INFODI.EQ.2) THEN
+         IF (INFODI.EQ.2) THEN
          N    = 36
          NNO  = 1
          NC   = 6
          NDIM = 3
          GOTO 999
+         ELSE
+         N    = 21
+         NNO  = 1
+         NC   = 6
+         NDIM = 3
          ENDIF
       ELSEIF (NOMTE.EQ.'MECA_DIS_T_N' ) THEN
-         IF (INFODI.EQ.1) THEN
-         N   = 6
+         IF (INFODI.EQ.2) THEN
+         N   = 9
          NNO = 1
          NC  = 3
          NDIM = 3
-         ELSEIF (INFODI.EQ.2) THEN
-         N    = 9
+         GOTO 999
+         ELSE
+         N    = 6
          NNO  = 1
          NC   = 3
          NDIM = 3
-         GOTO 999
          ENDIF
       ELSEIF (NOMTE.EQ.'MECA_2D_DIS_TR_L') THEN
-         IF (INFODI.EQ.1) THEN
-         N    = 21
-         NNO  = 2
-         NC   = 3
-         NDIM = 2
-         ELSEIF (INFODI.EQ.2) THEN
+         IF (INFODI.EQ.2) THEN
          N    = 36
          NNO  = 2
          NC   = 3
          NDIM = 2
          GOTO 999
+         ELSE
+         N    = 21
+         NNO  = 2
+         NC   = 3
+         NDIM = 2
          ENDIF
       ELSEIF (NOMTE.EQ.'MECA_2D_DIS_T_L') THEN
-         IF (INFODI.EQ.1) THEN
-         N    = 10
-         NNO  = 2
-         NC   = 2
-         NDIM = 2
-         ELSEIF (INFODI.EQ.2) THEN
+         IF (INFODI.EQ.2) THEN
          N    = 16
          NNO  = 2
          NC   = 2
          NDIM = 2
          GOTO 999
+         ELSE
+         N    = 10
+         NNO  = 2
+         NC   = 2
+         NDIM = 2
          ENDIF
       ELSEIF (NOMTE.EQ.'MECA_2D_DIS_TR_N') THEN
-         IF (INFODI.EQ.1) THEN
-         N    = 6
-         NNO  = 1
-         NC   = 3
-         NDIM = 2
-         ELSEIF (INFODI.EQ.2) THEN
+         IF (INFODI.EQ.2) THEN
          N    = 9
          NNO  = 1
          NC   = 3
          NDIM = 2
          GOTO 999
+         ELSE
+         N    = 6
+         NNO  = 1
+         NC   = 3
+         NDIM = 2
          ENDIF
       ELSEIF (NOMTE.EQ.'MECA_2D_DIS_T_N' ) THEN
-         IF (INFODI.EQ.1) THEN
-         N    = 3
-         NNO  = 1
-         NC   = 2
-         NDIM = 2
-         ELSEIF (INFODI.EQ.2) THEN
+         IF (INFODI.EQ.2) THEN
          N    = 4
          NNO  = 1
          NC   = 2
          NDIM = 2
          GOTO 999
+         ELSE
+         N    = 3
+         NNO  = 1
+         NC   = 2
+         NDIM = 2
          ENDIF
       ENDIF
       NDDL = NNO * NC

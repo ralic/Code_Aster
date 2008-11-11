@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF MODELISA  DATE 10/11/2008   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,7 @@ C
       CALL JEVEUO(TMCINF,'E',JDCINF)
       CALL JEVEUO(TMVINF,'E',JDVINF)
       CALL CODENT(1,'G',KI)
-      ZR (JDVINF+1-1)  = 0.D0
+      ZR (JDVINF+1-1)  = 1.D0
       ZK8(JDCINF+1-1) = 'X'//KI
       CALL NOCART(CARTDI,1,' ',' ',0,' ',0,' ',1)
       IF (IXNW.NE.0) THEN
