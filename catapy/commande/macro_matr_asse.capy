@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,13 +32,13 @@ def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
 
     if opti in ( "RIGI_MECA","RIGI_FLUI_STRU","RIGI_MECA_LAGR" ,
        "MASS_MECA" , "MASS_FLUI_STRU" ,"RIGI_GEOM" ,"RIGI_ROTA",
-       "AMOR_MECA","IMPE_MECA","MASS_ID_MDEP_R","MASS_ID_MDNS_R",
+       "AMOR_MECA","IMPE_MECA",
        "ONDE_FLUI","MASS_MECA_DIAG","MECA_GYRO" ) : t=matr_asse_depl_r
 
     if opti in ( "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",) : t=matr_asse_pres_c
 
     if opti in ( "RIGI_THER","MASS_THER","RIGI_THER_CONV" ,
-       "RIGI_THER_CONV_D","MASS_ID_MTEM_R","MASS_ID_MTNS_R",) : t=matr_asse_temp_r
+       "RIGI_THER_CONV_D",) : t=matr_asse_temp_r
 
     if opti == "RIGI_MECA_HYST"   : t= matr_asse_depl_c
 
@@ -84,8 +84,7 @@ MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
                                          "ONDE_FLUI","RIGI_FLUI_STRU","MASS_FLUI_STRU",
                                          "RIGI_ROTA","RIGI_GEOM","RIGI_MECA_LAGR","MECA_GYRO",
                                          "RIGI_THER","MASS_THER",
-                                         "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",
-                                         "MASS_ID_MTEM_R","MASS_ID_MTNS_R","MASS_ID_MDEP_R","MASS_ID_MDNS_R",)
+                                         "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",)
                                    ),
 
              b_rigi_meca = BLOC( condition = "OPTION=='RIGI_MECA'",

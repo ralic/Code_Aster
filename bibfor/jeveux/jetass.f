@@ -1,6 +1,6 @@
       SUBROUTINE JETASS ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 17/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,8 @@ C
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
      +                 DN2(N)
+      REAL *8          SVUSE,SMXUSE   
+      COMMON /STATJE/  SVUSE,SMXUSE  
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
      +               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -100,6 +102,8 @@ C DEB ------------------------------------------------------------------
         CALL JJALLS(LGBL,0,'V','I',LOIS,'INIT',ITP,JITP,IADITP,IADYN)
         ISZON(JISZON+IADITP-1) = ISTAT(2)
         ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
+        SVUSE = SVUSE + (ISZON(JISZON+IADITP-4) - IADITP + 4)
+        IF (IADYN .NE. 0) SVUSE = SVUSE + 1
 C
 C ----- BOUCLE "TANT QUE" SUR LES ENREGISTREMENTS UTILISES
 C
@@ -115,6 +119,8 @@ C ----- STOCKEES DANS DES PETITS OBJETS
 C
         IF ( IITECR(IC) .GT. 0 ) THEN
            CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LGBL, 0, 0)
+           IITECR(IC) = 0
+           NITECR(IC) = 0
         ENDIF
         IF ( LITLEC(IC) ) THEN
            CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LGBL, 0, 0)
@@ -130,6 +136,11 @@ C ------- "GROS" OBJET DETRUIT
           IF ( LIBRE ) THEN
             IF ( KLIB .EQ. 0 ) THEN
               KLIB = K
+C
+C ------- ON POSITIONNE LES INDICATEURS POUR EVITER D'UTILISER 
+C-------- L'ENREGISTREMENT DANS JXECRO
+              IUSADI(JUSADI(IC)+3*KLIB-2)=0
+              IUSADI(JUSADI(IC)+3*KLIB-1)=0
             ENDIF
           ELSE
 C
@@ -175,6 +186,8 @@ C ----------------- MISE A JOUR DU COMMON /IATCJE/ POUR APPEL JJLIDE
                 ENDIF
                 CALL JXLIBD (IDCOL, IDOSL, IC, IADDI, LOIS)
                 KLIB = MIN(KLIB+1,K)
+                IUSADI(JUSADI(IC)+3*KLIB-2)=0
+                IUSADI(JUSADI(IC)+3*KLIB-1)=0
 C
 C ----------- L'ENREGISTREMENT CONTIENT DES PETITS OBJETS
 C ----------- ON ACTUALISE LES ADRESSES DISQUE ET ON REECRIT
@@ -229,6 +242,8 @@ C
                   CALL JXECRO (IC,IADITP,IADDIB,LGBL,IDCO,IDOS)
                   IUSADI(JUSADI(IC)+3*KLIB) = IUSADI(JUSADI(IC)+3*K)
                   KLIB = MIN(KLIB+1,K)
+                  IUSADI(JUSADI(IC)+3*KLIB-2)=0
+                  IUSADI(JUSADI(IC)+3*KLIB-1)=0
                 ENDIF
               ENDIF
             ENDIF

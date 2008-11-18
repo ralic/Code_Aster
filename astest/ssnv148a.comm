@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
+# ssnv148a.para = tps_job 60 mem_job 96Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +25,7 @@ DEBUT(CODE=_F(NOM='SSNV148A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
 
-M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),INFO=2);
 
 M=DEFI_GROUP(reuse =M,
              MAILLAGE=M,
@@ -139,6 +140,8 @@ RET=POST_ELEM(
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,);
 
+IMPR_TABLE(TABLE=RET)
+
 TEST_TABLE(TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -194,6 +197,192 @@ TEST_TABLE(TABLE=RET,
            NOM_PARA='TX_CROIS_CAVITES',
            REFERENCE='ANALYTIQUE',
            VALE=1.0701000000000001,);
+
+#--------------------------------------------------
+# POST_ELEM
+#   RICE_TRACEY
+#     LOCAL='OUI', 
+#     OPTION='SIGM_ELMOY'
+#     TOUT, GROUP_MA, MAILLE
+
+#----------------------
+AOUI_MOY=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='OUI',
+                             TOUT='OUI',
+                             OPTION='SIGM_ELMOY',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=AOUI_MOY)
+
+TEST_TABLE(TABLE=AOUI_MOY,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),),
+           NOM_PARA='TX_CROIS_CAVITES',
+           REFERENCE='NON_REGRESSION',
+           VERSION= '9.3.21',
+           VALE=1.0458,);
+#----------------------
+BOUI_MOY=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='OUI',
+                             GROUP_MA='CYL',
+                             OPTION='SIGM_ELMOY',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=BOUI_MOY)
+
+TEST_TABLE(TABLE=BOUI_MOY,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),),
+           NOM_PARA='TX_CROIS_CAVITES',
+           REFERENCE='NON_REGRESSION',
+           VERSION= '9.3.21',
+           VALE=1.0458,);
+#----------------------
+COUI_MOY=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='OUI',
+                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
+                                     'M8','M9','M10','M11','M12','M13','M14'),     
+                             OPTION='SIGM_ELMOY',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=COUI_MOY)
+
+TEST_TABLE(TABLE=COUI_MOY,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=4,),
+                   _F(NOM_PARA='LIEU',VALE_K='M14',),
+                     ),
+           NOM_PARA='VOLUME_CONCERNE',
+           REFERENCE='NON_REGRESSION',
+           VERSION= '9.3.21',
+           VALE=1.43878E4,);
+
+#--------------------------------------------------
+# POST_ELEM
+#   RICE_TRACEY
+#     LOCAL='OUI', 
+#     OPTION='SIGM_ELGA'
+#     TOUT, GROUP_MA, MAILLE
+
+DOUI_ELG=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='OUI',
+                             TOUT='OUI',
+                             OPTION='SIGM_ELGA',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=DOUI_ELG)
+
+TEST_TABLE(TABLE=DOUI_ELG,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),),
+           NOM_PARA='TX_CROIS_CAVITES',
+           REFERENCE='NON_REGRESSION',
+           VERSION= '9.3.21',
+           VALE=1.0458,);
+#----------------------
+EOUI_ELG=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='OUI',
+                             GROUP_MA='CYL',
+                             OPTION='SIGM_ELGA',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=EOUI_ELG)
+
+TEST_TABLE(TABLE=EOUI_ELG,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=4,),),
+           NOM_PARA='VOLUME_CONCERNE',
+           REFERENCE='NON_REGRESSION',
+           VERSION= '9.3.21',
+           VALE=1.39972E2,);
+#----------------------
+
+FOUI_ELG=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='OUI',
+                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
+                                     'M8','M9','M10','M11','M12','M13','M14'),     
+                             OPTION='SIGM_ELGA',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=FOUI_ELG)
+
+TEST_TABLE(TABLE=FOUI_ELG,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=4,),
+                   _F(NOM_PARA='LIEU',VALE_K='M14',),
+                     ),
+           NOM_PARA='VOLUME_CONCERNE',
+           REFERENCE='NON_REGRESSION',
+           VERSION= '9.3.21',
+           VALE=5.031780E2,);
+
+#--------------------------------------------------
+# POST_ELEM
+#   RICE_TRACEY
+#     LOCAL='NON', 
+#     OPTION='SIGM_ELMOY'
+#     TOUT, GROUP_MA, MAILLE
+
+ANON_MOY=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='NON',
+                             TOUT='OUI',
+                             OPTION='SIGM_ELMOY',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=ANON_MOY)
+#----------------------
+
+BNON_MOY=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='NON',
+                             GROUP_MA='CYL',
+                             OPTION='SIGM_ELMOY',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=BNON_MOY)
+
+#----------------------
+
+CNON_MOY=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='NON',
+                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
+                                     'M8','M9','M10','M11','M12','M13','M14'),     
+                             OPTION='SIGM_ELMOY',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=CNON_MOY)
+
+#--------------------------------------------------
+# POST_ELEM
+#   RICE_TRACEY
+#     LOCAL='NON', 
+#     OPTION='SIGM_ELGA'
+#     TOUT, GROUP_MA, MAILLE
+
+DNON_ELG=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='NON',
+                             TOUT='OUI',
+                             OPTION='SIGM_ELGA',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=DNON_ELG)
+
+#----------------------
+
+ENON_ELG=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='NON',
+                             GROUP_MA='CYL',
+                             OPTION='SIGM_ELGA',),
+              RESULTAT=U,);
+
+IMPR_TABLE(TABLE=ENON_ELG)
+
+#----------------------
+
+FNON_ELG=POST_ELEM(
+              RICE_TRACEY=_F(LOCAL='NON',
+                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
+                                     'M8','M9','M10','M11','M12','M13','M14'),     
+                             OPTION='SIGM_ELGA',),
+              RESULTAT=U,);
+IMPR_TABLE(TABLE=FNON_ELG)
 
 FIN()
 #

@@ -1,5 +1,6 @@
-# MODIF  DATE 25/03/2008   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/11/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
+# hsnv132a.para = tps_job 100 mem_job 500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -170,6 +171,20 @@ TABSIF=CALC_G(RESULTAT=UTOT,
               )
 
 IMPR_TABLE(TABLE=TABSIF,);
+
+TABG=CALC_G(RESULTAT=UTOT,
+              NUME_ORDRE=1,
+              THETA=_F( MODULE = 1.,
+                        R_INF = 0.01,
+                        R_SUP = 0.05,
+                        DIRECTION=(-1., 0., 0.,),
+                        FOND_FISS=FOND1),
+              SYME_CHAR='SANS',
+              OPTION='CALC_G'
+              )
+
+IMPR_TABLE(TABLE=TABG,);
+
 PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
                      MAILLAGE=MAILLAGE,
                      MATER=ACIER,
@@ -198,5 +213,14 @@ TEST_TABLE(TABLE=PK,
            CRITERE='RELATIF',
            PRECISION=1.e-4,
            REFERENCE='AUTRE_ASTER');      
+
+# Cas test de non regression sur G
+TEST_TABLE(TABLE=TABG,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
+           NOM_PARA='G',
+           VALE= 4.9878E+02,
+           CRITERE='RELATIF',
+           PRECISION=1.e-4,
+           REFERENCE='AUTRE_ASTER');                      
 
 FIN();

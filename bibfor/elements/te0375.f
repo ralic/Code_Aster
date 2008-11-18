@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C
 C     BUT:
 C         CALCUL DE L'INDICATEUR D'ERREUR EN MECANIQUE
@@ -66,6 +67,7 @@ C
       INTEGER NOE(9,6,3),IPGF,NDI
       INTEGER NDIM,NNO,NNOS,NNO2,JGANO,IRET,JTIME,NIV,IREF1,IREF2
       INTEGER NBF,NSOMM,ITYP,NDEGRE,NPGB,NPG2,IFF2,IDFDE2,IFA,IATYMA
+      INTEGER IADZI,IAZK24
 
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),HE,POIDS
       REAL*8 FORX,FORY,FORZ,FPX,FPY,FPZ
@@ -81,6 +83,7 @@ C
       CHARACTER*2 CODRET(1)
       CHARACTER*8 TYPMAV,ELREFE,ELREF2
       CHARACTER*16 PHENOM
+      CHARACTER*24 VALK(2)
 
 C --- INITIALISATION DU TABLEAU DES NUMEROS DE NOEUDS FACE PAR FACE ----
 C ----- HEXAEDRES A 8,20 ET 27 NOEUDS ----------------------------------
@@ -97,9 +100,13 @@ C
 C ----------------------------------------------------------------------
       CALL JEMARQ()
 
+      CALL TECAEL(IADZI,IAZK24)
+      VALK(1)=ZK24(IAZK24-1+3)
+      VALK(2)=OPTION
+      
       CALL ELREF1(ELREFE)
 
-      IFM=IUNIFI('MESSAGE')
+      IFM=IUNIFI('MESSAGE') 
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
@@ -111,6 +118,10 @@ C ----------------------------------------------------------------------
       INST=ZR(JTIME-1+1)
       IAD=ITAB(1)
       NBCMP=ITAB(2)/NNO
+
+      DO 1 I=1,10
+        ZR(IERR-1+I)=0.D0
+ 1    CONTINUE
 
 C ----------------------------------------------------------------------
 C ---------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------------
@@ -190,6 +201,11 @@ C
         NORSIG=NORSIG+NOR*POIDS
 C
    10 CONTINUE
+C
+      IF (TER1.LT.0.D0) THEN
+        CALL U2MESK('A','INDICATEUR_9',2,VALK)
+        GOTO 9999
+      ENDIF
 C
       TER1=HE*SQRT(TER1)
 C
@@ -307,7 +323,7 @@ C
         DO 170 I=4,6
           POIDS1(I)=1.D0/6.D0
   170   CONTINUE
-C
+Cte0375.f
       ELSE
         CALL U2MESS('F','ELEMENTS3_84')
       END IF
@@ -334,7 +350,7 @@ C
         TYV=ZI(IVOIS+7+IFA)
         IF (TYV.NE.0) THEN
           TYPMAV=ZK8(IATYMA-1+TYV)
-C	
+C       
 C ------- CAS DES PENTAEDRES -------------------------------------------
 C
           IF (NBF.EQ.5.AND.IFA.GE.3) THEN
@@ -387,7 +403,10 @@ C
 C
 C ------- CALCUL DU TERME D'ERREUR -------------------------------------
 C
-            IF (INTE.LT.0.D0) INTE=-INTE
+            IF (INTE.LT.0.D0) THEN
+              CALL U2MESK('A','INDICATEUR_9',2,VALK)
+              GOTO 9999
+            ENDIF
 C
             TER3=TER3+SQRT(HF)*SQRT(INTE)
 C
@@ -412,27 +431,30 @@ C
 C
 C ------- CALCUL DE NORMALES ET JACOBIENS AUX POINTS DE GAUSS ----------
 C
-          CALL CALNOR('3D',IBID,NNO,NPGB,IBID,IBID,NOE,IGEOM,IDFDE,
-     &                 IFA,ITYP,R8BID,HF,
-     &                 JACO,NX,NY,NZ,R8BID,R8BID)
+            CALL CALNOR('3D',IBID,NNO,NPGB,IBID,IBID,NOE,IGEOM,IDFDE,
+     &                   IFA,ITYP,R8BID,HF,
+     &                   JACO,NX,NY,NZ,R8BID,R8BID)
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS ------------------
 C
-          CALL ERMES3(NOE,IFA,ITYP,NBNV,NPGB,IREF1,IVOIS,IAD,NBCMP,
-     &                DSG11,DSG22,DSG33,DSG12,DSG13,DSG23)
+            CALL ERMES3(NOE,IFA,ITYP,NBNV,NPGB,IREF1,IVOIS,IAD,NBCMP,
+     &                  DSG11,DSG22,DSG33,DSG12,DSG13,DSG23)
 C
 C ------- CALCUL DE L'INTEGRALE SUR LA FACE ----------------------------
 C
-          CALL R8INIR(27,0.D0,CHX,1)
-          CALL R8INIR(27,0.D0,CHY,1)
-          CALL R8INIR(27,0.D0,CHZ,1)
+            CALL R8INIR(27,0.D0,CHX,1)
+            CALL R8INIR(27,0.D0,CHY,1)
+            CALL R8INIR(27,0.D0,CHZ,1)
 C
-          CALL INTEGA(NPGB,JACO,POIDSF,CHX,CHY,CHZ,
+            CALL INTEGA(NPGB,JACO,POIDSF,CHX,CHY,CHZ,
      &                DSG11,DSG22,DSG33,DSG12,DSG13,DSG23,NX,NY,NZ,INTE)
 C
 C ------- CALCUL DU TERME D'ERREUR -------------------------------------
 C
-            IF (INTE.LT.0.D0) INTE=-INTE
+            IF (INTE.LT.0.D0) THEN
+              CALL U2MESK('A','INDICATEUR_9',2,VALK)
+              GOTO 9999
+            ENDIF
 C
             TER2=TER2+0.5D0*SQRT(HF)*SQRT(INTE)
 C
@@ -482,5 +504,8 @@ C
 C
       ZR(IERR+9)=HE
 C      
+9999  CONTINUE
+C
       CALL JEDEMA()
+C
       END

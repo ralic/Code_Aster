@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 17/11/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,6 +299,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         Lnofon = Lnf1
         Nbnofo = Nbf1
         ListmaS = FOND_FISS.LEVRESUP___MAIL.get()
+        if ListmaS==None :  UTMESS('F','RUPTURE0_19')
         if SYME_CHAR=='SANS':
           ListmaI = FOND_FISS.LEVREINF___MAIL.get()
         __NCOFON=POST_RELEVE_T(ACTION=_F(INTITULE='Tab pour coordonnees noeuds du fond',

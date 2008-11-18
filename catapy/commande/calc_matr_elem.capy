@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,10 +20,6 @@
 def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "RIGI_MECA"        : return matr_elem_depl_r
   if OPTION == "RIGI_FLUI_STRU"   : return matr_elem_depl_r
-  if OPTION == "MASS_ID_MDEP_R"   : return matr_elem_depl_r
-  if OPTION == "MASS_ID_MDNS_R"   : return matr_elem_depl_r
-  if OPTION == "MASS_ID_MTEM_R"   : return matr_elem_temp_r
-  if OPTION == "MASS_ID_MTNS_R"   : return matr_elem_temp_r
   if OPTION == "MASS_MECA"        : return matr_elem_depl_r
   if OPTION == "MASS_FLUI_STRU"   : return matr_elem_depl_r
   if OPTION == "RIGI_GEOM"        : return matr_elem_depl_r
@@ -51,7 +47,6 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
                                      "AMOR_MECA","RIGI_THER","MASS_THER","IMPE_MECA",
                                      "ONDE_FLUI","AMOR_MECA_ABSO","MASS_FLUI_STRU","RIGI_FLUI_STRU",
                                      "RIGI_ROTA","MECA_GYRO","MASS_MECA_DIAG","RIGI_ACOU",
-                                     "MASS_ID_MDEP_R","MASS_ID_MDNS_R","MASS_ID_MTEM_R","MASS_ID_MTNS_R",
                                      "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST") ),
          MODELE            =SIMP(statut='o',typ=modele_sdaster ),
 
@@ -72,12 +67,6 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
            CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
            CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
-         ),
-
-         b_mass_identite   =BLOC(condition = "(OPTION in ('MASS_ID_MDEP_R','MASS_ID_MTEM_R','MASS_ID_MDNS_R','MASS_ID_MTNS_R'))",
-           # j'ajoute ces 2 mot clés inutiles à cause de l'alarme pas assez subtile de MEDOME
-           CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
-           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
          ),
 
          b_rigi_geom       =BLOC(condition = "OPTION=='RIGI_GEOM'",

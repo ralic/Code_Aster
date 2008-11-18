@@ -1,5 +1,6 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE CHOC THERMIQUE SUR UN MUR INFINI QUAD8
+# ttll01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,5 +117,18 @@ _F( CHAM_GD = TEMP_3, NOEUD = 'N33', NOM_CMP = 'TEMP', VALE = 78.047, PRECISION 
 _F( CHAM_GD = TEMP_4, NOEUD = 'N33', NOM_CMP = 'TEMP', VALE = 99.076, PRECISION = 1.E-4))
     )
 
+#--------------------------------------------------------------------------
+# TEST DE L'OPTION MASS_THER SOUS LA COMMANDE CALC_MATR_ELEM
+
+
+MASSTHER=CALC_MATR_ELEM( MODELE=MOTH,
+                       CHAM_MATER=CHMAT,
+                       OPTION='MASS_THER', )
+
+TEST_RESU(OBJET=_F(NOM='MASSTHER.ME001     .RESL',
+                   S_R=9.2222E-1,
+                   REFERENCE = 'NON_REGRESSION',
+                   VERSION='9.3.21'),)
+
 FIN()
-#
+

@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 17/11/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -506,6 +506,16 @@ C       ================================================================
      &                      IBID,NUMREF,IRET)
               ENDIF
             END IF
+            IF (TYSD.EQ.'MODE_MECA' .OR. TYSD(1:9).EQ.'MODE_STAT' .OR.
+     &           TYSD.EQ.'DYNA_TRANS') THEN
+              NUMREF = ' '
+              CALL JEVEUO(LERES0//'.REFD','L',JREF)
+              IF (ZK24(JREF).NE.' ') THEN
+                CALL DISMOI('F','NOM_NUME_DDL',ZK24(JREF),'MATR_ASSE',
+     &                      IBID,NUMREF,IRET)
+              ENDIF
+            END IF
+
             DO 230 I = 1,NBORDR
               CALL JEMARQ()
               IORDR = ZI(JORDR+I-1)
@@ -584,12 +594,17 @@ C            POUR LE CALCUL DE FORC_NODA DANS LES POU_D_T_GD
               END IF
 
 C             -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
-              NOOJB='12345678.00000.NUME.PRNO'
-              CALL GNOMSD ( NOOJB,10,14)
-              NUME=NOOJB(1:14)
-              CALL NUMECN(MODELE,CHDEPL,NUME)
-              IF (OPTION.EQ.'FORC_NODA_NONL') THEN
-                IF (NUMREF.NE.' ')  NUME = NUMREF(1:14)//'.NUME'
+              IF (TYSD.EQ.'MODE_MECA' .OR. TYSD(1:9).EQ.'MODE_STAT' .OR.
+     &           TYSD.EQ.'DYNA_TRANS') THEN
+                NUME = NUMREF(1:14)//'.NUME'
+              ELSE
+                NOOJB='12345678.00000.NUME.PRNO'
+                CALL GNOMSD ( NOOJB,10,14)
+                NUME=NOOJB(1:14)
+                CALL NUMECN(MODELE,CHDEPL,NUME)
+                IF (OPTION.EQ.'FORC_NODA_NONL') THEN
+                  IF (NUMREF.NE.' ')  NUME = NUMREF(1:14)//'.NUME'
+                ENDIF
               ENDIF
 
               CALL RSEXCH(LERES0,'VITE',IORDR,CHVIVE,IRET)

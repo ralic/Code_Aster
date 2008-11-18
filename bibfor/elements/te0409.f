@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,43 +106,6 @@ C
 C --    DETECTION D'UN MATERIAU ELAS_COQUE :
 C       ----------------------------------
           IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
-        ENDIF
-C
-C ---   VERIFICATION DE LA COHERENCE DES INFORMATIONS 
-C ---   PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
-C       ----------------------------------
-        JNBSPI = 0
-        CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET1)
-        IF (IRET1.EQ.0) THEN
-          NBCOU = ZI(JNBSPI)
-          ICOU = 0
-          EPTOT = 0.D0
-          EPI = 0.D0
-          CALL JEVECH('PCACOQU','L',JCARA)
-          EPAIS  = ZR(JCARA)
-   5      CONTINUE
-          ICOU=ICOU+1
-          CALL CODENT(ICOU,'G',NUM)
-          CALL CODENT(1,'G',VAL)
-          NOMRES = 'C'//NUM//'_V'//VAL
-          CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,
-     &         1,NOMRES,EPI,CODRE1,' ')
-          IF (CODRE1.EQ.'OK') THEN
-                EPTOT=EPTOT+EPI
-                GOTO 5
-          ENDIF
-          IF (EPTOT.NE.0.D0) THEN
-              IF ((ICOU-1).NE.NBCOU) THEN
-                VALI(1) = ICOU-1
-                VALI(2) = NBCOU
-                CALL U2MESG('F','ELEMENTS3_51',0,' ',2,VALI,0,0.D0)
-              ENDIF
-            IF (ABS(EPAIS-EPTOT)/EPAIS.GT.1.D-2) THEN
-              VALR(1) = EPTOT
-              VALR(2) = EPAIS
-              CALL U2MESG('F','ELEMENTS3_52',0,' ',0,0,2,VALR)
-            ENDIF
-          ENDIF
         ENDIF
 
       ENDIF

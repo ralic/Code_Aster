@@ -2,7 +2,7 @@
      &                    MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/11/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,9 +118,9 @@ C     CARACTERISTIQUES ELASTIQUES A TEMP- ET IRRA-
      &            3,NOMCEL,MATERD(1,1),CERR, 'FM' )
 
 C     TEMPERATURE A T-
-      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
 C     IRRADIATION A T-
-      CALL RCVARC(' ','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
+      CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
 C     CARACTERISTIQUES MATERIAU A TEMP- ET IRRA-
       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','IRRAD3M',0,' ',0.0D0,
      &            NBCARA,NOMCIR,MAT,CERR, 'FM' )
@@ -151,8 +151,8 @@ C       - LA FONCTION EST MONOTONE DECROISSANTE
 C       - NORMALISATION PAR R02
       COEFFA = RM*EXP(EU)/R02
 C     F(n) = 1.0 - RM*EXP(EU)*((PE+n-EU)**n)/((n**n)*R02)
-C     F1 = Limite F(n)       F0 = Limite F(n)
-C          n->infini              n->0+
+C     Finf = Limite F(n)       Fzero = Limite F(n)
+C            n->infini                 n->0+
       N0 = EU - PE
       F1 = 1.0D0 - COEFFA*EXP(-N0)
 C     L'équation peut ne pas avoir de solution, pour le vérifier on
@@ -290,9 +290,9 @@ C     CARACTERISTIQUES ELASTIQUES A TEMP+ ET IRRA+
      &            3,NOMCEL,MATERF(1,1),CERR, 'FM' )
 
 C     TEMPERATURE A T+
-      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
 C     IRRADIATION A T+
-      CALL RCVARC(' ','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
+      CALL RCVARC('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
 C     L'IRRADIATION NE PEUT PAS DECROITRE
       IF ( IRRAD .GT. IRRAF*1.00001D0 ) THEN
          VALRM(1) = TEMPD
@@ -335,8 +335,8 @@ C       - LA FONCTION EST MONOTONE DECROISSANTE
 C       - NORMALISATION PAR R02
       COEFFA = RM*EXP(EU)/R02
 C     F(n) = 1.0 - RM*EXP(EU)*((PE+n-EU)**n)/((n**n)*R02)
-C     F1 = Limite F(n)       F0 = Limite F(n)
-C          n->infini              n->0+
+C     Finf = Limite F(n)       Fzero = Limite F(n)
+C            n->infini                 n->0+
       N0 = EU - PE
       F1 = 1.0D0 - COEFFA*EXP(-N0)
 C     L'équation peut ne pas avoir de solution, pour le vérifier on

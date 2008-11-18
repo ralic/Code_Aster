@@ -1,7 +1,7 @@
       SUBROUTINE NMTIME(PHASEZ,TIMEZ ,SDTIME,VALL  ,VALR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -261,7 +261,7 @@ C
           VALR = ZI(JTINFI+20-1)
           
         ELSEIF (TIMER.EQ.'C11') THEN
-          VALR = ZI(JTINFI+21-1) - 1         
+          VALR = ZI(JTINFI+21-1)       
                               
                                        
         ELSE

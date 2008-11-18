@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF indicateur Messages  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,6 +59,15 @@ Le choix %(k1)s apparait au moins dans 2 charges.
 
 8 : _("""
 Probleme sur les charges. Consulter la documentation
+"""),
+
+9 : _("""
+ La maille %(k1)s semble être est trop distordue.
+ On ne calcule pas l'option %(k2)s sur cette maille.
+
+ Risques & conseils :
+   Il faut vérifier votre maillage ! 
+   Vérifiez les messages émis par la commande AFFE_MODELE.
 """),
 
 11 : _("""

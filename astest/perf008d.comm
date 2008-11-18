@@ -1,6 +1,6 @@
-# MODIF  DATE 27/10/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL ELASTIQUE D'UN DIABOLO PLEIN SOUMIS A UN CHARGEMENT THERMIQUE
-# perf008d.para = tps_job 28800 mem_job 30000Mo max_base 70000 ncpus 1 liste_test W
+# perf008d.para = tps_job 4000 mem_job 3000Mo ncpus 1 liste_test W
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,7 +92,7 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHAR,),
                    OPTION='SANS',
-                   SOLVEUR=_F(NPREC=8,),
+                   SOLVEUR=_F(METHODE='GCPC',),
                    INFO=1,);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 18/11/2008   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -187,10 +187,6 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                 fr="% itération autorisée en plus"),
            ),
            # FIN DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS
-           OPTI_LIST_INST  =SIMP(statut='f',typ='TXM',into=("INCR_MAXI",),),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',),
-           NOM_CMP         =SIMP(statut='f',typ='TXM',),
-           VALE            =SIMP(statut='f',typ='R'),
          ),
 #-------------------------------------------------------------------
          SCHEMA_TEMPS     =FACT(statut='o',

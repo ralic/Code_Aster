@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 18/11/2008   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,10 +149,6 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                 fr="% itération autorisée en plus"),
            ),
            # FIN DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS
-           OPTI_LIST_INST  =SIMP(statut='f',typ='TXM',into=("INCR_MAXI",),),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',),
-           NOM_CMP         =SIMP(statut='f',typ='TXM',),
-           VALE            =SIMP(statut='f',typ='R'),
          ),
          NEWTON          =FACT(statut='d',
            REAC_INCR       =SIMP(statut='f',typ='I',defaut= 1,val_min=0),

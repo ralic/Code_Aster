@@ -3,7 +3,7 @@
      &                  BASE  )
 
 C 
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,9 +180,6 @@ C
       LCHOUT(2) = MATELE(1:15)//'.M02'
       IF (OPTION.EQ.'MASS_MECA') THEN
         NBOUT2 = 2
-      ELSE IF (OPTION(1:8).EQ.'MASS_ID_') THEN
-        NBOUT2 = 1
-        LPAOUT(1) = 'PMATRIC'
       ELSE
         NBOUT2 = 1
       END IF

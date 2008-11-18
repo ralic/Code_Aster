@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF modelisa8 Messages  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,9 +270,13 @@ Seule l'extraction est possible : OPERATION='EXTR'
 """),
 
 77 : _("""
- conflit dans les vis_a_vis  des noeuds le noeud  %(k1)s
-  est le vis-a-vis des noeuds  %(k2)s
-  et  %(k3)s
+ Il y a un conflit dans les vis-à-vis des noeuds. Le noeud  %(k1)s est
+ à la fois le vis-à-vis du noeud %(k2)s et du noeud %(k3)s.
+
+ Risques & conseils :
+   Vérifiez les groupes en vis-à-vis, il se peut que les maillages soient incompatibles.
+   Il faut également s'assurer que la distance entre les deux maillages soit du meme
+   ordre de grandeur que la longueur caractéristique du maillage (distance entre deux noeuds).
 """),
 
 79 : _("""

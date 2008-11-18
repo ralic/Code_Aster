@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 18/03/2008   AUTEUR BOYERE E.BOYERE 
+#@ MODIF macro_matr_asse_ops Macro  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
           motscles['RIGI_MECA']   =rigel
           motscles['MASS_MECA']   =masel
     if CHARGE     != None:
-       if option[0:9] not in ('MASS_THER','RIGI_GEOM','MASS_ID_M'):
+       if option[0:9] not in ('MASS_THER','RIGI_GEOM'):
                            motscles['CHARGE']      =CHARGE
     if CHAM_MATER != None: motscles['CHAM_MATER']  =CHAM_MATER
     if CARA_ELEM  != None: motscles['CARA_ELEM']   =CARA_ELEM

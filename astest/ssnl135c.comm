@@ -1,5 +1,7 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# RESPONSABLE PEYRARD C.PEYRARD
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
+# ssnl135c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
