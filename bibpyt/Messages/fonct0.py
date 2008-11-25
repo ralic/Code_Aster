@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF fonct0 Messages  DATE 25/11/2008   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,7 +189,11 @@ Un problème d'interpolation a été rencontré.
 """),
 
 28 : _("""
-Un problème concernant le nom des abscisses ou ordonnées a été rencontré.
+Un problème concernant le nom des abscisses ou ordonnées a été rencontré. 
+Vous ne pouvez pas faire la transformée de fourier d'une fonction dont les abscisses sont des fréquences,
+   ou si la fonction est a valeurs complexes
+Vous ne pouvez pas faire la transformée de fourier inverse d'une fonction dont les abscisses sont des instants,
+   ou si la fonction est a valeur réelle.
 %(k1)s
    
   -> Risque & Conseil :

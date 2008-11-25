@@ -1,5 +1,5 @@
-# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
-# RESPONSABLE O.BOITEAU
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,6 @@ num_calc=0
 MAT[num_calc]=LIRE_MAILLAGE(INFO=2, );
 MACR_INFO_MAIL(MAILLAGE=MAT[num_calc],
         QUALITE='OUI',
-        INTERPENETRATION='OUI',
         CONNEXITE='OUI',
         TAILLE='OUI')
    
@@ -309,7 +308,6 @@ for num_calc in range(0,nb_calc1) :
               CRIT_RAFF_PE=0.2,
               CRIT_DERA_PE=0.1,                       
               QUALITE='OUI',
-              INTERPENETRATION='OUI',
               TAILLE='OUI',
               CONNEXITE='OUI')
 

@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem2 Messages  DATE 24/11/2008   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,7 +118,7 @@ cata_msg = {
 """),
 
 23 : _("""
-  -> PFON_INI semble etre un point mal choisit, on le modifie automatiquement.
+  -> PFON_INI semble etre un point mal choisi, on le modifie automatiquement.
 """),
 
 24 : _("""

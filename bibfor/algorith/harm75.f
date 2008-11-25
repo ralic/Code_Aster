@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/11/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,6 @@ C
       CHARACTER*16  TYPRES,NOMCMD,TYPBAS
       CHARACTER*19  KREFE,KNUME,KINST,HRANGE
       CHARACTER*24  MATRIC,CHAMNO,NOMCHA,CREFE(2),CHMOD
-      LOGICAL PROMES
 C
 C     ------------------------------------------------------------------
       DATA CHAMNO   /'&&HARM75.CHAMNO'/
@@ -98,14 +97,11 @@ C
 C     --- RECUPERATION DE LA BASE MODALE ---
 C ON SUPPOSE QU ELLE EST ISSUE D UN MODE_MECA OU BASE_MODALE
 C
-      PROMES = .FALSE.
-C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
       IF (MODE.EQ.' ') THEN
          CALL JEVEUO(HRANGE//'.REFD','L',IAREFE)
          MATPRO = ZK24(IAREFE)(1:8)
          IF (MATPRO.EQ.' ') THEN
            MATPRO = ZK24(IAREFE+5)(1:8)
-           PROMES = .TRUE.
            BASEMO = MATPRO
            CALL RSORAC(MATPRO,'LONUTI',IBID,RBID,' ',CBID,RBID,
      &            'ABSOLU',NBMODE,1,IBID)
@@ -170,31 +166,14 @@ C
       END IF
 
 C
-C
 C     --- RESTITUTION SUR LA BASE REELLE ---
 C
       IF (INTERP(1:3).NE.'NON') CALL U2MESS('F','ALGORITH3_86')
 
-      CALL JEEXIN(HRANGE//'.FREQ',IEXI)
-      IF (IEXI.GT.0) THEN
-C       -- NORMALEMENT, CELA NE DEVRAIT PAS ARRIVER MAIS ...
-C          (VOIR FICHE 12522)
-         CALL JEVEUO(HRANGE//'.FREQ','L',JFREQ)
-         CALL JELIRA(HRANGE//'.FREQ','LONMAX',NBFREQ,K8B)
-      ELSE
         CALL RSLIPA(HRANGE,'FREQ','&&HARM75.LIFREQ',JFREQ,NBFREQ)
-      ENDIF
-
 
          CALL RSCRSD('G',NOMRES,TYPRES,NBREC)
          CALL WKVECT('&&HARM75.VECTGENE','V V C',NBMODE,IDVECG)
-
-         IF (.NOT. PROMES) THEN
-           DO 40 ICH=1,NBCHAM
-               CALL RSEXCH(NOMIN,TYPE(ICH),1,NOMCHA,IRE)
-               CALL JEVEUO(NOMCHA(1:19)//'.VALE','L',ITRESU(ICH))
-40         CONTINUE
-         ENDIF
 
          IARCHI = 0
          DO 30 I = 0,NBREC-1
@@ -214,14 +193,10 @@ C          (VOIR FICHE 12522)
                ENDIF
                CHAMNO(20:24) = '.VALE'
                CALL JEVEUO(CHAMNO,'E',LVALE)
-               IF (PROMES) THEN
-                 CALL JEVEUO(HRANGE//'.'//TYPE(ICH),'L',ITYPE)
-                 IDVECG = ITYPE + I*NBMODE
-               ELSE
                  CALL ZXTRAC(INTERP,EPSI,CRIT,NBFREQ,ZR(JFREQ),
      &                 ZR(JFRREC+I),TYPE(ICH),NOMIN,NBMODE,ZC(IDVECG)
      &                   , IBID)
-               ENDIF
+
                CALL MDGEPC(NEQ,NBMODE,ZR(IDBASE),
      &                 ZC(IDVECG),ZC(LVALE))
                CALL JELIBE(CHAMNO)

@@ -1,5 +1,5 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE MCOURTOI M.COURTOIS
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -230,8 +230,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                MAILLAGE_FRONTIERE=ARC,
                QUALITE='OUI',
                CONNEXITE='OUI',
-               TAILLE='OUI',
-               INTERPENETRATION='OUI',);
+               TAILLE='OUI');
 #
 # 5. Calcul sur le maillage 1
 #

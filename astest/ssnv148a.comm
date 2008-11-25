@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 25/11/2008   AUTEUR DURAND C.DURAND 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
 # ssnv148a.para = tps_job 60 mem_job 96Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -287,13 +287,6 @@ EOUI_ELG=POST_ELEM(
 
 IMPR_TABLE(TABLE=EOUI_ELG)
 
-TEST_TABLE(TABLE=EOUI_ELG,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=4,),),
-           NOM_PARA='VOLUME_CONCERNE',
-           REFERENCE='NON_REGRESSION',
-           VERSION= '9.3.21',
-           VALE=1.39972E2,);
 #----------------------
 
 FOUI_ELG=POST_ELEM(
@@ -305,21 +298,7 @@ FOUI_ELG=POST_ELEM(
 
 IMPR_TABLE(TABLE=FOUI_ELG)
 
-TEST_TABLE(TABLE=FOUI_ELG,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=4,),
-                   _F(NOM_PARA='LIEU',VALE_K='M14',),
-                     ),
-           NOM_PARA='VOLUME_CONCERNE',
-           REFERENCE='NON_REGRESSION',
-           VERSION= '9.3.21',
-           VALE=5.031780E2,);
-
 #--------------------------------------------------
-# POST_ELEM
-#   RICE_TRACEY
-#     LOCAL='NON', 
-#     OPTION='SIGM_ELMOY'
-#     TOUT, GROUP_MA, MAILLE
 
 ANON_MOY=POST_ELEM(
               RICE_TRACEY=_F(LOCAL='NON',

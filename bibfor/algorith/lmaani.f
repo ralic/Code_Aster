@@ -1,8 +1,9 @@
-        SUBROUTINE LMAANI ( DIAG , M )
-        IMPLICIT REAL*8 (A-H,O-Z)
+        SUBROUTINE LMAANI (MOD, DIAG , M )
+        IMPLICIT NONE
+        CHARACTER*8     MOD
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/95   AUTEUR H2BAXPG P.GEYER 
+C MODIF ALGORITH  DATE 24/11/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,12 +33,13 @@ C       ----------------------------------------------------------------
 C       IN  DIAG   :  M11, M22, M33, M66
 C       OUT M      :  MATRICE D'ANISOTROPIE
 C       ----------------------------------------------------------------
-        REAL*8          M(6,6)  
-        REAL*8          DIAG(4)
+        REAL*8  M(6,6), DIAG(4),PRECIS
+        INTEGER IBID
 C
 C       ----------------------------------------------------------------
 C
         CALL LCINMA ( 0.D0 , M )
+        
         M(1,1) = DIAG(1)
         M(2,2) = DIAG(2)
         M(3,3) = DIAG(3)
@@ -50,5 +52,16 @@ C
         M(3,1) = M(1,3)
         M(3,2) = .5D0 * (   DIAG(1) - DIAG(2) - DIAG(3) )
         M(2,3) = M(3,2)
-C        
+C
+C VERIF COMPATIBLITE ORTHOTROPIE
+        IF (MOD(1:2).NE.'AXIS') THEN
+           PRECIS=1.D-3
+           IF((ABS(M(1,1)-2.D0/3.D0).GT.PRECIS) .OR.
+     &         (ABS(M(2,2)-2.D0/3.D0).GT.PRECIS) .OR.
+     &         (ABS(M(3,3)-2.D0/3.D0).GT.PRECIS) .OR.
+     &         (ABS(M(6,6)-1.D0).GT.PRECIS)) THEN
+               CALL U2MESG('F','COMPOR1_62',1,MOD,0,IBID,4,DIAG)
+           ENDIF 
+        ENDIF 
+       
         END

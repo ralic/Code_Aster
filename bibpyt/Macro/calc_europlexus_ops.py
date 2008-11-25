@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 07/11/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_europlexus_ops Macro  DATE 24/11/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,10 +102,10 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   prev_onFatalError = aster.onFatalError()
   aster.onFatalError('EXCEPTION')
 
+
   # Pour masquer certaines alarmes
   from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
   MasquerAlarme('MED_1')
-
 
   # Ligne de commande d'Europlexus
   if args.has_key('LOGICIEL'): EXEC = args['LOGICIEL']
@@ -1809,26 +1809,26 @@ class EUROPLEXUS:
                   );
 
     __EPN = CREA_CHAMP(
+            INFO      = self.INFO,
             TYPE_CHAM = 'ELGA_NEUT_R',
             OPERATION = 'AFFE',
             MODELE    = self.NEW_MODELE,
-            INFO      = self.INFO,
             PROL_ZERO = 'OUI',
             AFFE      = self.listEpais,
             )
     __EPN2 = CREA_CHAMP(
+            INFO      = self.INFO,
             TYPE_CHAM = 'ELGA_NEUT_R',
             OPERATION = 'AFFE',
-            INFO      = self.INFO,
             MODELE    = self.NEW_MODELE,
             PROL_ZERO = 'OUI',
             AFFE      = self.listEpais2,
             )
     __UNN = CREA_CHAMP(
+            INFO      = self.INFO,
             TYPE_CHAM = 'ELGA_NEUT_R',
             OPERATION = 'AFFE',
             MODELE    = self.NEW_MODELE,
-            INFO      = self.INFO,
             PROL_ZERO = 'OUI',
             AFFE = _F(VALE=(1.,1.), TOUT='OUI', NOM_CMP=('X21','X22')),
             )
@@ -1850,6 +1850,7 @@ class EUROPLEXUS:
     __FONC18 = FORMULE(VALE='X18*X21',NOM_PARA=('X18','X21'))
     
     __FONCC = CREA_CHAMP(
+        INFO      = self.INFO,
         TYPE_CHAM = 'ELGA_NEUT_F',
         OPERATION = 'AFFE',
         MODELE    = self.NEW_MODELE,
@@ -1859,9 +1860,9 @@ class EUROPLEXUS:
                NOM_CMP = ('X1','X2','X3','X4','X5','X6','X7','X8','X11','X12','X13','X14','X15','X16','X17','X18'),
                VALE_F  = (__FONC1,__FONC2,__FONC3,__FONC4,__FONC5,__FONC6,__FONC7,__FONC8,__FONC11,__FONC12,__FONC13,
                           __FONC14,__FONC15,__FONC16,__FONC17,__FONC18)),
-        INFO      = self.INFO,
                           )
     __FONCC2 = CREA_CHAMP(
+        INFO      = self.INFO,
         TYPE_CHAM = 'ELGA_NEUT_F',
         OPERATION = 'AFFE',
         MODELE    = self.NEW_MODELE,
@@ -1870,13 +1871,18 @@ class EUROPLEXUS:
                TOUT    = 'OUI',
                NOM_CMP = ('X1','X2'),
                VALE_F  = (__FONC1,__FONC2)),
-        INFO      = self.INFO,
                )
     listEffg = []
     i=0
     listType=[]
     __SIG11 = [None]*10
     __SIG21 = [None]*10
+
+    # Pour masquer certaines alarmes
+    from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
+    MasquerAlarme('MED_83')
+    MasquerAlarme('MED_98')
+
     while 1:
         # index=1
         # pas = self.ARCHIVAGE['PAS_NBRE']
@@ -1885,6 +1891,7 @@ class EUROPLEXUS:
             err = 0
             try :
                 __SIG11[i] = LIRE_CHAMP(
+                    INFO        = self.INFO,
                     TYPE_CHAM   = 'ELGA_SIEF_R',
                     UNITE       = 99,
                     NUME_PT     = 0,
@@ -1895,13 +1902,14 @@ class EUROPLEXUS:
                     NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP'],
                     NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'])
                 # dicDetr.append({'NOM' : __SIG11})
-                DETRUIRE(CONCEPT=_F(NOM = __SIG11[i]))
+                DETRUIRE(CONCEPT=_F(NOM = __SIG11[i]), INFO=1)
                 listType.append('Q4GS')
-                # index=2    
+                # index=2 
             except :
                 err+=1
             try :
                 __SIG21[i] = LIRE_CHAMP(
+                    INFO        = self.INFO,
                     TYPE_CHAM   = 'ELGA_SIEF_R',
                     UNITE       = 99,
                     NUME_PT     = 0,
@@ -1911,7 +1919,7 @@ class EUROPLEXUS:
                     NOM_MED     = 'CHAMP___CONTRAINTE___00%d'%(i+1),
                     NOM_CMP     = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'],
                     NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP_MED']),
-                DETRUIRE(CONCEPT=_F(NOM = __SIG21[i]))
+                DETRUIRE(CONCEPT=_F(NOM = __SIG21[i]), INFO=1)
                 if len(listType)<i+1 :
                     listType.append('DKT3')
             except : 
@@ -1923,6 +1931,7 @@ class EUROPLEXUS:
         # if 'DKT3' in self.modelisations :
             # try : 
                 # __SIG21 = LIRE_CHAMP(
+                    # INFO        = self.INFO,
                     # TYPE_CHAM   = 'ELGA_SIEF_R',
                     # UNITE       = 99,
                     # NUME_PT     = i*pas,
@@ -1940,6 +1949,12 @@ class EUROPLEXUS:
             # break
         # DETRUIRE(CONCEPT=dicDetr) 
         # i+=1
+
+    # Pour la gestion des alarmes
+    RetablirAlarme('MED_83')
+    RetablirAlarme('MED_98')
+
+
     nbChamp = i
     itot=len(resu.LIST_PARA()['INST'])
     __EFFG=[None]*itot
@@ -1964,10 +1979,10 @@ class EUROPLEXUS:
         for j in xrange(nbChamp) :
             if listType[j] == 'Q4GS' :
                 __SIG1[j] = LIRE_CHAMP(
+                    INFO        = self.INFO,
                     TYPE_CHAM   = 'ELGA_SIEF_R',
                     UNITE       = 99,
                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-                    INFO        = self.INFO,
                     MODELE      = self.NEW_MODELE,
                     MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
                     PROL_ZERO   = 'OUI',
@@ -1976,10 +1991,10 @@ class EUROPLEXUS:
                     NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP_MED'],
                         )
                 # __EPS1 = LIRE_CHAMP(
+                    # INFO        = self.INFO,
                     # TYPE_CHAM   = 'ELGA_EPSI_R',
                     # UNITE       = 99,
                     # NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-                    # INFO        = self.INFO,
                     # MODELE      = self.NEW_MODELE,
                     # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
                     # PROL_ZERO   = 'OUI',
@@ -1987,10 +2002,10 @@ class EUROPLEXUS:
                     # NOM_CMP     = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP'],
                     # NOM_CMP_MED = dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP_MED'])
 #                 __ECR1 = LIRE_CHAMP(
+#                     INFO        = self.INFO,
 #                     TYPE_CHAM   = 'ELGA_VARI_R',
 #                     UNITE       = 99,
 #                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-#                     INFO        = self.INFO,
 #                     MODELE      = self.NEW_MODELE,
 #                     MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
 #                     PROL_ZERO   = 'OUI',
@@ -2006,10 +2021,10 @@ class EUROPLEXUS:
 #                             'NOM_CMP_RESU' : ('X1','X2'), 'CUMUL' : 'OUI','COEF_R':1.})
             else :
                 __SIG2[j] = LIRE_CHAMP(
+                    INFO        = self.INFO,
                     TYPE_CHAM   = 'ELGA_SIEF_R',
                     UNITE       = 99,
                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-                    INFO        = self.INFO,
                     MODELE      = self.NEW_MODELE,
                     MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
                     PROL_ZERO   = 'OUI',
@@ -2018,10 +2033,10 @@ class EUROPLEXUS:
                     NOM_CMP_MED = dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP_MED'],
                     )
                 # __EPS2 = LIRE_CHAMP(
+                    # INFO        = self.INFO,
                     # TYPE_CHAM   = 'ELGA_EPSI_R',
                     # UNITE       = 99,
                     # NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-                    # INFO        = self.INFO,
                     # MODELE      = self.NEW_MODELE,
                     # MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
                     # PROL_ZERO   = 'OUI',
@@ -2029,10 +2044,10 @@ class EUROPLEXUS:
                     # NOM_CMP     = dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP'],
                     # NOM_CMP_MED = dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP_MED']),
 #                 __ECR2 = LIRE_CHAMP(
+#                     INFO        = self.INFO,
 #                     TYPE_CHAM   = 'ELGA_VARI_R',
 #                     UNITE       = 99,
 #                     NUME_PT     = resu.LIST_PARA()['NUME_ORDRE'][i],
-#                     INFO        = self.INFO,
 #                     MODELE      = self.NEW_MODELE,
 #                     MAILLAGE    = self.reupere_structure(self.MODELE,'MAILLAGE'),
 #                     PROL_ZERO   = 'OUI',
@@ -2053,24 +2068,24 @@ class EUROPLEXUS:
         # if 'DKT3' in self.modelisations:
 
         __SIGN = CREA_CHAMP(
+            INFO      = self.INFO,
             TYPE_CHAM = 'ELGA_NEUT_R',
             OPERATION = 'ASSE',
-            INFO      = self.INFO,
             PROL_ZERO = 'OUI',
             MODELE    = self.NEW_MODELE,
             ASSE      = dicAsse,
             )
         # __EPSN = CREA_CHAMP(
+            # INFO      = self.INFO,
             # TYPE_CHAM = 'ELGA_NEUT_R',
             # OPERATION = 'ASSE',
-            # INFO      = self.INFO,
             # PROL_ZERO = 'OUI',
             # MODELE    = self.NEW_MODELE,
             # ASSE      = dicAsse2)
 #         __ECRN = CREA_CHAMP(
+#             INFO      = self.INFO,
 #             TYPE_CHAM = 'ELGA_NEUT_R',
 #             OPERATION = 'ASSE',
-#             INFO      = self.INFO,
 #             PROL_ZERO = 'OUI',
 #             MODELE    = self.NEW_MODELE,
 #             ASSE      = dicAsse3)
@@ -2078,31 +2093,31 @@ class EUROPLEXUS:
         # dicDetr.append({'NOM' : __EPSN})
 #         dicDetr.append({'NOM' : __ECRN})
         __EFFGN = CREA_CHAMP(
+            INFO      = self.INFO,
             TYPE_CHAM = 'ELGA_NEUT_R',
             OPERATION = 'EVAL',
-            INFO      = self.INFO,
-                    CHAM_F      = __FONCC,
-                    CHAM_PARA   = (__SIGN),
+            CHAM_F    = __FONCC,
+            CHAM_PARA = (__SIGN),
           )
         # __EPSGN = CREA_CHAMP(
+            # INFO      = self.INFO,
             # TYPE_CHAM = 'ELGA_NEUT_R',
             # OPERATION = 'EVAL',
-            # INFO      = self.INFO,
-                    # CHAM_F    = __FONCC,
-                    # CHAM_PARA   = (__EPSN))
+            # CHAM_F    = __FONCC,
+            # CHAM_PARA   = (__EPSN))
 #         __ECRGN = CREA_CHAMP(
+#             INFO      = self.INFO,
 #             TYPE_CHAM = 'ELGA_NEUT_R',
 #             OPERATION = 'EVAL',
-#             INFO      = self.INFO,
-#                   CHAM_F    = __FONCC2,
-#                   CHAM_PARA   = (__ECRN))
+#             CHAM_F    = __FONCC2,
+#             CHAM_PARA   = (__ECRN))
         dicDetr.append({'NOM' : __EFFGN})
         # dicDetr.append({'NOM' : __EPSGN})
 #         dicDetr.append({'NOM' : __ECRGN})
         __EFFG[i] = CREA_CHAMP(
+            INFO      = self.INFO,
             TYPE_CHAM  = 'ELGA_SIEF_R',
             OPERATION = 'ASSE',
-            INFO      = self.INFO,
             PROL_ZERO = 'OUI',
             MODELE    = self.NEW_MODELE,
             ASSE      = _F(
@@ -2112,9 +2127,9 @@ class EUROPLEXUS:
                 NOM_CMP_RESU = tuple(dic_cmp_gauss['CONTRAINTE']['Q4GS']['NOM_CMP']+dic_cmp_gauss['CONTRAINTE']['DKT3']['NOM_CMP'])),
                 )
         # __EPSG[i] = CREA_CHAMP(
+            # INFO      = self.INFO,
             # TYPE_CHAM  = 'ELGA_EPSI_R',
             # OPERATION = 'ASSE',
-            # INFO      = self.INFO,
             # PROL_ZERO = 'OUI',
             # MODELE    = self.NEW_MODELE,
             # ASSE      = _F(
@@ -2123,9 +2138,9 @@ class EUROPLEXUS:
                 # NOM_CMP = ('X1','X2','X3','X4','X5','X6','X7','X8')+('X11','X12','X13','X14','X15','X16'),
                 # NOM_CMP_RESU = tuple(dic_cmp_gauss['DEFORMATION']['Q4GS']['NOM_CMP']+dic_cmp_gauss['DEFORMATION']['DKT3']['NOM_CMP'])))
 #         __ECRG[i] = CREA_CHAMP(
+#             INFO      = self.INFO,
 #             TYPE_CHAM  = 'ELGA_VARI_R',
 #             OPERATION = 'ASSE',
-#             INFO      = self.INFO,
 #             PROL_ZERO = 'OUI',
 #             MODELE    = self.NEW_MODELE,
 #             ASSE      = _F(
@@ -2163,10 +2178,10 @@ class EUROPLEXUS:
   def lancer_calcul(self,fichier_med='auto'):
 
      fichier_epx = self.nom_fichiers['COMMANDE']
-     EXEC_LOGICIEL(LOGICIEL='cd %s ; %s %s ; cd %s' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
+     EXEC_LOGICIEL(LOGICIEL='cd %s ; %s %s ; iret=$? ; cd %s ; exit $iret' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
                    INFO=2)
 
-    
+
 #------------------------------------------------------------------------
 #----------------------------- FIN class EUROPLEXUS ---------------------
 #------------------------------------------------------------------------

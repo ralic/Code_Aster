@@ -8,7 +8,7 @@
      &          FPMEC, FFMEC, Z, DZ, D2Z, DT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 25/11/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C-----------------------------------------------------------------------
       REAL*8   LAMA,KM,KA,PM,PA,CF1,CF2,KCF1,KCF2,GFCORR,CFG,CFI
       REAL*8   DTIGE,UMM1,UAM1,NUA
       REAL*8   LMEQM1,DA,CFA,EPSLON,C1,C2,C3,LAMA1
-      REAL*8   UI,UML,LAMEQI,LAMML,C4,C5,C6,KML,KI,UMLM1,UIM1
+      REAL*8   UI,UML,LAMEQI,LAMML,C4,C5,C6,KML,KI,UMLM1,UIM1,C7
       REAL*8   LMEQI1,LAMML1,UG,LAMEQG,PS,PML
       REAL*8   L4,L5,LCT,LLT,LCM,LCI,LCG,CFCM,CFCI,CFCG
       REAL*8   HRUGC,HRUGTC,HRUGM,HRUGA,HRUGML,HRUGG,HRUGSP
@@ -297,8 +297,9 @@ C
       C5 = ROI*KI*AT*AML/AI**2*DZ+(ROML*LML+ROI*LI*AML/AI)/DT
       C6 = -((ROI*KI*(AT/AI)**2*DZ**2 + 2*ROI*LI*AT/AI*D2Z
      &     + 2*(ROML*LML+ROI*LI*AML/AI)*UMLM1/DT))
-      IF ((DZ.NE.ZERO).AND.(C4.NE.ZERO)) THEN
-         UML = (-C5+SQRT(C5**2-C4*C6))/C4
+      C7 = C5**2 - C4*C6
+      IF ((DZ.GE.ZERO).AND.(C4.NE.ZERO).AND.C7.GE.ZERO) THEN
+         UML = (-C5+SQRT(C7))/C4
       ELSE
          UML = ZERO
       ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE DISMRS(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/11/2008   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,15 +97,18 @@ C
 
       ELSE IF  ((QUESTI.EQ.'NOM_MODELE').OR.
      &         (QUESTI.EQ.'MODELE').OR.
+     &         (QUESTI.EQ.'MODELE_1').OR.
      &         (QUESTI.EQ.'CHAM_MATER').OR.
-     &         (QUESTI.EQ.'CARA_ELEM')) THEN
+     &         (QUESTI.EQ.'CHAM_MATER_1').OR.
+     &         (QUESTI.EQ.'CARA_ELEM').OR.
+     &         (QUESTI.EQ.'CARA_ELEM_1')) THEN
 C     ------------------------------------------
         IF  ((QUESTI.EQ.'NOM_MODELE').OR.
-     &       (QUESTI.EQ.'MODELE')) THEN
+     &       (QUESTI(1:6).EQ.'MODELE')) THEN
           CALL RSLIPA(NOMOB,'MODELE','&&DISMRS.LIPAR',JLIPAR,N1)
-        ELSEIF  (QUESTI.EQ.'CARA_ELEM') THEN
+        ELSEIF  (QUESTI(1:9).EQ.'CARA_ELEM') THEN
           CALL RSLIPA(NOMOB,'CARAELEM','&&DISMRS.LIPAR',JLIPAR,N1)
-        ELSEIF  (QUESTI.EQ.'CHAM_MATER')THEN
+        ELSEIF  (QUESTI(1:10).EQ.'CHAM_MATER')THEN
           CALL RSLIPA(NOMOB,'CHAMPMAT','&&DISMRS.LIPAR',JLIPAR,N1)
         ENDIF
         CALL ASSERT(N1.GE.1)
@@ -120,7 +123,15 @@ C     ------------------------------------------
           ENDIF
 10      CONTINUE
         IF (ICO.EQ.0) REPK='#AUCUN'
-        IF (ICO.GT.1) REPK='#PLUSIEURS'
+        IF (ICO.GT.1) THEN
+          IF ((QUESTI.EQ.'MODELE_1').OR.
+     &        (QUESTI.EQ.'CARA_ELEM_1').OR.
+     &        (QUESTI.EQ.'CHAM_MATER_1')) THEN
+C           REPK=REPK
+          ELSE
+            REPK='#PLUSIEURS'
+          ENDIF
+        ENDIF
         CALL JEDETR('&&DISMRS.LIPAR')
 
 
@@ -154,6 +165,27 @@ C        -- SINON ON PARCOURT TOUS LES CHAMPS DU RESULTAT :
  2       CONTINUE
          CALL U2MESS(CODMES,'UTILITAI_69')
          IERD=1
+
+
+      ELSE IF  (QUESTI.EQ.'EXI_CHAM_ELEM') THEN
+C     ------------------------------------------
+         CALL JELIRA(NOMOB//'.TACH','NMAXOC',NBSY,K8BID)
+         DO 21, J=2,NBSY
+           CALL JELIRA(JEXNUM(NOMOB//'.TACH',J),
+     &                                           'LONMAX',NBCH,K8BID)
+           CALL JEVEUO(JEXNUM(NOMOB//'.TACH',J),'L',IATACH)
+           DO 31, I=1,NBCH
+             NOMCH=ZK24(IATACH-1+I)(1:19)
+             IF(NOMCH(1:1).NE.' ') THEN
+               CALL JEEXIN(NOMCH//'.CELD',IEXI)
+               IF (IEXI.GT.0) THEN
+                 REPK='OUI'
+                 GO TO 9999
+               END IF
+             END IF
+ 31        CONTINUE
+ 21      CONTINUE
+         REPK='NON'
 
 
 

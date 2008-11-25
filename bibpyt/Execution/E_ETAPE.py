@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 25/11/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,6 +34,7 @@ from Noyau.N_MACRO_ETAPE import MACRO_ETAPE
 import genpy
 import aster
 import checksd
+from E_Global import MessageLog
 
 class ETAPE:
    """
@@ -112,6 +113,8 @@ class ETAPE:
                 self.jdc.timer.Start('   . sdveri', num=1.15e6)
                 self.jdc.sd_checker = checksd.check(self.jdc.sd_checker, self.sd, l_before, self)
                 self.jdc.timer.Stop('   . sdveri')
+             # pour arreter en cas d'erreur <E>
+             MessageLog.reset_command()
              # affichage du texte de la commande
              self.AfficheFinCommande()
       else:

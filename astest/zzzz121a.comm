@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -206,8 +206,7 @@ for k in range(1,10):
               NOM_CMP_INDICA='ERREST',
               CRIT_RAFF_PE = 0.10,
               NIVE_MAX = 5,
-              QUALITE='OUI',
-              INTERPENETRATION='NON'
+              QUALITE='OUI'
                  )
 #
 # 5. fin de la boucle sur k

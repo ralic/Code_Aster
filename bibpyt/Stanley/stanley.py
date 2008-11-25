@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 04/11/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 24/11/2008   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2973,20 +2973,18 @@ class PRE_STANLEY :
     for evol in t_evol:
        dico[evol] = []
 
-#       e = resultat_jeveux(evol)
-       n = aster.getvectjev( evol.ljust(19) + '.RSP8' )
-       dico[evol].append( n[2] ) # modele
-       dico[evol].append( n[1] ) # mater
-       dico[evol].append( n[0] ) # cara_elem
+       iret, ibid, nomsd = aster.dismoi('F','MODELE_1',evol,'RESULTAT')
+       n_modele = nomsd.strip()
 
-#        self.jdc_recup = CONTEXT.get_current_step().jdc
-#        psi = self.jdc_recup.memo_sensi.psinfo(evol)
-#        if len(psi[1]) >0:
-#           lps = []
-#           for i in range( len(psi[1])/2 ):
-#              lps.append( psi[1][2*i+1] )
-#           lps.sort()
-#           dico[evol].extend(lps)
+       iret, ibid, nomsd = aster.dismoi('F','CARA_ELEM_1',evol,'RESULTAT')
+       n_caraelem = nomsd.strip()
+
+       iret, ibid, nomsd = aster.dismoi('F','CHAM_MATER_1',evol,'RESULTAT')
+       n_chammater = nomsd.strip()
+
+       dico[evol].append( n_modele )      # modele
+       dico[evol].append( n_chammater )   # mater
+       dico[evol].append( n_caraelem )    # cara_elem
 
     return dico
 

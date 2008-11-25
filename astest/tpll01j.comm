@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,8 +86,7 @@ for k in range(1,nbcalc):
                      NOM_CMP_INDICA = 'ERTABS',
                      CRIT_RAFF_PE = 0.05,
                      NIVE_MAX = 5,
-                     QUALITE='OUI',
-                     INTERPENETRATION='NON' )
+                     QUALITE='OUI' )
 
 # Tests de non-regression de ERRE_ELEM_TEMP/ERTH_ELNO_TEMP et de la
 # connection ASTER/HOMARD

@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/11/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -285,36 +285,27 @@ C SECOND MEMBRE REEL
      &              ZR(LRED), ZR(LMESU), ZR(LCOEF), ZR(LABS),
      &              LFONCT, ZR(JDEP))
 C
-C On cree une sd de type mode_gene
            CALL RSCRSD('G',NOMRES, 'MODE_GENE', NBABS )
-C On remplie la sd de type mode_gene a partir de la base d'expansion
            CALL MDALLR(NOMMES,NOMRES, NOMBAS,NBMODE,NBABS,ZR(JDEP),
      &                 CBID,ZCMPLX)
          ENDIF
 C
       ELSE
 C SECOND MEMBRE COMPLEXE
+        CALL WKVECT (NOMCMD//'.RETA', 'V V C', NBMODE*NBABS, JDEP)
+        CALL WKVECT (NOMCMD//'.RET1', 'V V C', NBMODE*NBABS, JVIT)
+        CALL WKVECT (NOMCMD//'.RET2', 'V V C', NBMODE*NBABS, JACC)
+        CALL MPINVC (NBMESU, NBMODE, NBABS,
+     &                  ZR(LRED), ZC(LMESU), ZR(LCOEF), ZR(LABS),
+     &                  LFONCT, ZC(JDEP), ZC(JVIT), ZC(JACC))
         IF (TYPRES(1:9).EQ.'HARM_GENE') THEN
+           CALL RSCRSD('G',NOMRES, 'HARM_GENE', NBABS)
            CALL MDALLC
-     &         (NOMRES, NOMBAS, K8B, K8B, K8B, NBMODE,
-     &          NBABS, NULL,
-     &          NULL, K8BID, NULL,
-     &          JDEP, JVIT, JACC, JORDR, JABS,
-     &          JREDC, JREDD, K8B)
+     &         (NOMRES, NOMBAS, NBMODE, NBABS, 
+     &          JDEP, JVIT, JACC)
 
-           CALL MPINVC (NBMESU, NBMODE, NBABS,
-     &                  ZR(LRED), ZC(LMESU), ZR(LCOEF), ZR(LABS),
-     &                  LFONCT, ZC(JDEP), ZC(JVIT), ZC(JACC))
         ELSEIF (TYPRES(1:9).EQ.'MODE_GENE') THEN
-           CALL WKVECT (NOMCMD//'.RETA', 'V V C', NBMODE*NBABS, JDEP)
-           CALL WKVECT (NOMCMD//'.RET1', 'V V C', NBMODE*NBABS, JVIT)
-           CALL WKVECT (NOMCMD//'.RET2', 'V V C', NBMODE*NBABS, JACC)
-           CALL MPINVC (NBMESU, NBMODE, NBABS,
-     &                  ZR(LRED), ZC(LMESU), ZR(LCOEF), ZR(LABS),
-     &                  LFONCT, ZC(JDEP), ZC(JVIT), ZC(JACC))
-C On cree une sd de type mode_gene
            CALL RSCRSD('G',NOMRES, 'MODE_GENE', NBABS )
-C On remplie la sd de type mode_gene a partir de la base d'expansion
            CALL MDALLR(NOMMES, NOMRES, NOMBAS,NBMODE,NBABS,RBID,
      &                 ZC(JDEP),ZCMPLX)
         ELSE
@@ -328,6 +319,8 @@ C     -- REMPLISSAGE DE L'OBJET .ORDR :
       CALL JEVEUO (NOMRES//'           .ORDR', 'E', JORDR)
       DO 400 I = 1 , NBABS
         IF (TYPRES(1:9).EQ.'MODE_GENE') THEN
+          ZI(JORDR-1 + I) = I
+        ELSEIF (TYPRES(1:9).EQ.'HARM_GENE') THEN
           ZI(JORDR-1 + I) = I
         ELSE
           ZI(JORDR-1 + I) = I - 1

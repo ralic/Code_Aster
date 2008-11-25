@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 21/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,65 +32,65 @@ def macr_adap_mail_ops ( self,
   """
 #
 #  1. args est le dictionnaire des arguments
-#     args.keys() est la liste des mots-clés
+#     args.keys() est la liste des mots-cles
 #     args.keys()[0] est la premiere valeur de cette liste
 #     args.keys()[1:] est la liste des valeurs suivantes dans cette liste
-#     args.keys(mot_cle) représente le contenu de la variable mot_cle dans la macro appelante.
+#     args.keys(mot_cle) represente le contenu de la variable mot_cle dans la macro appelante.
 #
 ###  print args
 ###  print args.keys()
 ###  if len (args.keys())>0 : print args.keys()[0]
 ###  print args["MAILLAGE"]
 #
-#  2. Les caractéristiques d'un passage sont conservées dans un dictionnaire. Il y a autant de
-#     dictionnaires que de sollicitations pour une série d'adaptation. L'ensemble de ces dictionnaires
-#     est conservé dans la liste Liste_Passages. Cette liste est nécessairement globale pour pouvoir
-#     la retrouver à chaque nouveau passage.
+#  2. Les caracteristiques d'un passage sont conservees dans un dictionnaire. Il y a autant de
+#     dictionnaires que de sollicitations pour une serie d'adaptation. L'ensemble de ces dictionnaires
+#     est conserve dans la liste Liste_Passages. Cette liste est necessairement globale pour pouvoir
+#     la retrouver e chaque nouveau passage.
 #     Description du dictionnaire de passages :
-#        dico["Maillage_0"]             = o ; string ; nom du concept du maillage initial de la série d'adaptation
-#        dico["Maillage_NP1"]           = o ; string ; nom du concept du dernier maillage adapté
-#        dico["Rep_Calc_HOMARD_global"] = o ; string ; Nom global du répertoire de calcul pour HOMARD
-#        dico["Rep_Calc_HOMARD_local"]  = o ; string ; Nom local du répertoire de calcul pour HOMARD
-#                                                      depuis le répertoire de calcul pour ASTER
-#        dico["niter"]                  = o ; entier ; numéro d'itération
+#        dico["Maillage_0"]             = o ; string ; nom du concept du maillage initial de la serie d'adaptation
+#        dico["Maillage_NP1"]           = o ; string ; nom du concept du dernier maillage adapte
+#        dico["Rep_Calc_HOMARD_global"] = o ; string ; Nom global du repertoire de calcul pour HOMARD
+#        dico["Rep_Calc_HOMARD_local"]  = o ; string ; Nom local du repertoire de calcul pour HOMARD
+#                                                      depuis le repertoire de calcul pour ASTER
+#        dico["niter"]                  = o ; entier ; numero d'iteration
 #
-#  3. Les caractéristiques d'un maillage sont conservées dans un dictionnaire. Il y a autant de
-#     dictionnaires que de maillages manipulés. L'ensemble de ces dictionnaires est conservé
+#  3. Les caracteristiques d'un maillage sont conservees dans un dictionnaire. Il y a autant de
+#     dictionnaires que de maillages manipules. L'ensemble de ces dictionnaires est conserve
 #     dans la liste liste_maillages.
 #     Description du dictionnaire de maillages :
 #        dico["Type_Maillage"] = o ; string ; "MAILLAGE_N", "MAILLAGE_NP1", "MAILLAGE_NP1_ANNEXE" ou "MAILLAGE_FRONTIERE"
-#        dico["Nom_ASTER"]     = o ; concept ASTER associé
+#        dico["Nom_ASTER"]     = o ; concept ASTER associe
 #        dico["Action"]        = o ; string ; "A_ecrire" ou "A_lire"
 #        dico["NOM_MED"]       = o ; string ; Nom MED du maillage
 #
-#  4. Les caractéristiques d'un champ sont conservées dans un dictionnaire. Il y a autant de
-#     dictionnaires que de champs manipulés. L'ensemble de ces dictionnaires est conservé
+#  4. Les caracteristiques d'un champ sont conservees dans un dictionnaire. Il y a autant de
+#     dictionnaires que de champs manipules. L'ensemble de ces dictionnaires est conserve
 #     dans la liste liste_champs.
 #     Description du dictionnaire de champs :
 #        dico["Type_Champ"]   = o ; string ; "INDICATEUR" ou "CHAMP_MAJ"
-#        dico["RESULTAT"]     = f ; concept ASTER du résutat associé
+#        dico["RESULTAT"]     = f ; concept ASTER du resutat associe
 #        dico["NOM_CHAM"]     = f ; string ; Nom ASTER du champ
-#        dico["CHAM_GD"]      = f ; concept ASTER du champ de grandeur associée
+#        dico["CHAM_GD"]      = f ; concept ASTER du champ de grandeur associee
 #        dico["COMPOSANTE"]   = f ; string ; Nom ASTER de la composante (dans le cas de l'indicateur)
-#        dico["NUME_ORDRE"]   = f ; entier ; Numéro d'ordre du champ
+#        dico["NUME_ORDRE"]   = f ; entier ; Numero d'ordre du champ
 #        dico["INST"]         = f ; entier ; Instant du champ
-#        dico["PRECISION"]    = f ; entier ; Précision sur l'instant du champ
-#        dico["CRITERE"]      = f ; entier ; Critère de précision sur l'instant du champ
-#        dico["CHAM_MAJ"]     = f ; string ; Nom ASTER du champ interpolé sur le nouveau maillage
+#        dico["PRECISION"]    = f ; entier ; Precision sur l'instant du champ
+#        dico["CRITERE"]      = f ; entier ; Critere de precision sur l'instant du champ
+#        dico["CHAM_MAJ"]     = f ; string ; Nom ASTER du champ interpole sur le nouveau maillage
 #        dico["NOM_MED"]      = o ; string ; Nom MED du champ
-#        dico["SENSIBILITE"]  = f ; string ; Nom du paramètre sensible associé
+#        dico["SENSIBILITE"]  = f ; string ; Nom du parametre sensible associe
 #
 #  5. Signification de INFO
 #     INFO = 1 : aucun message
 #     INFO = 2 : les messages des commandes annexes (DEFI_FICHIER, IMPR_RESU, LIRE_MAILLAGE, LIRE_CHAMP)
 #     INFO = 3 : aucun message pour les commandes annexes
-#                1er niveau de message pour l'exécution de HOMARD
+#                1er niveau de message pour l'execution de HOMARD
 #     INFO = 4 : aucun message pour les commandes annexes
-#                2nd niveau de message pour l'exécution de HOMARD
+#                2nd niveau de message pour l'execution de HOMARD
 #
   from Accas import _F
   from Macro import creation_donnees_homard 
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import UTMESS, MasquerAlarme, RetablirAlarme
   import aster 
   import string
   import os
@@ -99,14 +99,14 @@ def macr_adap_mail_ops ( self,
   global Liste_Passages
 #
 #====================================================================
-# 1. Préalables
+# 1. Prealables
 #====================================================================
 #
 # 1.1. ==> La macro compte pour 1 dans la numerotation des commandes
 #
   self.set_icmd(1)
 #
-# 1.2. ==> Numéro du passage dans cette macro
+# 1.2. ==> Numero du passage dans cette macro
 #
   try :
     self.jdc.indice_macro_homard = self.jdc.indice_macro_homard + 1
@@ -124,7 +124,7 @@ def macr_adap_mail_ops ( self,
   LIRE_MAILLAGE   = self.get_cmd("LIRE_MAILLAGE")
   LIRE_CHAMP      = self.get_cmd("LIRE_CHAMP")
 #
-# 1.4. ==> Le nom du programme HOMARD à lancer
+# 1.4. ==> Le nom du programme HOMARD e lancer
 #
   repertoire_outils = aster.repout()
   homard            = repertoire_outils + "homard"
@@ -149,9 +149,9 @@ def macr_adap_mail_ops ( self,
     infocomm = 1
 #
 #====================================================================
-# 2. Décodage des arguments de la macro-commande
+# 2. Decodage des arguments de la macro-commande
 #====================================================================
-# 2.1. ==> Données de pilotage de l'adaptation
+# 2.1. ==> Donnees de pilotage de l'adaptation
 #
   if ( self.nom == "MACR_ADAP_MAIL" ) :
 #
@@ -177,7 +177,7 @@ def macr_adap_mail_ops ( self,
 #gn      print "dico = ",dico
       liste_maillages.append(dico)
 #
-# 2.1.2. ==> L'éventuel indicateur d'erreur
+# 2.1.2. ==> L'eventuel indicateur d'erreur
 #
 #gn    print "\n.. Debut de 2.1.2"
 #gn    print "args = ", args
@@ -218,7 +218,7 @@ def macr_adap_mail_ops ( self,
       dico_indi = dico
 ###      print dico
 #
-# 2.1.3. ==> Les champs à mettre à jour
+# 2.1.3. ==> Les champs e mettre e jour
 #
 #gn     print "\n.. Debut de 2.1.3."
 #
@@ -292,7 +292,7 @@ def macr_adap_mail_ops ( self,
 #
 ###    print liste_zones
 #
-# 2.2. ==> Données de pilotage de l'information
+# 2.2. ==> Donnees de pilotage de l'information
 #
   else :
 #
@@ -304,7 +304,7 @@ def macr_adap_mail_ops ( self,
     dico["Action"]        = "A_ecrire"
     liste_maillages.append(dico)
 #
-# 2.3. ==> Suivi de frontière
+# 2.3. ==> Suivi de frontiere
 #
 #gn   print "\n.. Debut de 2.3."
 #
@@ -316,8 +316,8 @@ def macr_adap_mail_ops ( self,
     dico["Action"]        = "A_ecrire"
     liste_maillages.append(dico)
 #
-# 2.4. ==> Le numéro de version de HOMARD
-#    Remarque : dans la donnée de la version de HOMARD, il faut remplacer
+# 2.4. ==> Le numero de version de HOMARD
+#    Remarque : dans la donnee de la version de HOMARD, il faut remplacer
 #               le _ de la donnee par un ., qui est interdit dans la
 #               syntaxe du langage de commandes ASTER
 #    Remarque : il faut remplacer le N majuscule de la donnee par
@@ -337,14 +337,14 @@ def macr_adap_mail_ops ( self,
 #gn  print ".... version_perso  = ", version_perso
 #
 #====================================================================
-# 3. Préparation du lancement des commandes
+# 3. Preparation du lancement des commandes
 #====================================================================
 #
 # 3.1. ==> . Elaboration des noms MED des concepts de maillage
-#          . Memorisation des noms ASTER du maillage en entrée et en sortie (sous forme string)
+#          . Memorisation des noms ASTER du maillage en entree et en sortie (sous forme string)
 #
-#          On crée une nouvelle liste des dictionnaires décrivant les maillages
-#          et à la fin on écrase l'ancienne liste par cette nouvelle.
+#          On cree une nouvelle liste des dictionnaires decrivant les maillages
+#          et e la fin on ecrase l'ancienne liste par cette nouvelle.
 #
 #gn  print "\n.. Debut de 3.1."
 #
@@ -364,12 +364,12 @@ def macr_adap_mail_ops ( self,
 #gn    print "\ndico apres = ",dico
   liste_maillages = l_aux
 #
-# 3.2. ==> Recherche du numéro d'itération et du répertoire de travail
+# 3.2. ==> Recherche du numero d'iteration et du repertoire de travail
 #
-# 3.2.1. ==> Par défaut :
-#            . le numéro d'itération est nul
-#            . le nom du répertoire de lancement de HOMARD est construit sur le nom
-#              du maillage en entrée et le numéro de passage dans la fonction
+# 3.2.1. ==> Par defaut :
+#            . le numero d'iteration est nul
+#            . le nom du repertoire de lancement de HOMARD est construit sur le nom
+#              du maillage en entree et le numero de passage dans la fonction
 #
 #gn  print "\.. Debut de 3.2.1."
 #
@@ -380,17 +380,17 @@ def macr_adap_mail_ops ( self,
 ###  print "Rep_Calc_HOMARD_local  = ", Rep_Calc_HOMARD_local
 ###  print "Rep_Calc_HOMARD_global = ", Rep_Calc_HOMARD_global
 #
-# 3.2.2. ==> En adaptation : il faut repartir du répertoire de l'itération précédente
+# 3.2.2. ==> En adaptation : il faut repartir du repertoire de l'iteration precedente
 #
 #gn  print "\.. Debut de 3.2.2."
 #
   if ( mode_homard == "ADAP" ) :
 #
-# 3.2.2.1. ==> On recherche si dans les passages déjà effectués, il en existe un
-#              dont le maillage d'arrivée était l'actuel maillage d'entrée. Si c'est
+# 3.2.2.1. ==> On recherche si dans les passages deje effectues, il en existe un
+#              dont le maillage d'arrivee etait l'actuel maillage d'entree. Si c'est
 #              le cas, cela veut dire que l'adaptation en cours est la suite d'une
-#              précédente. On doit donc utiliser le meme répertoire. Le numéro
-#              d'itération est celui de l'adaptation précédente augmenté de 1.
+#              precedente. On doit donc utiliser le meme repertoire. Le numero
+#              d'iteration est celui de l'adaptation precedente augmente de 1.
 #
 #gn     print "\.. Debut de 3.2.2.1."
 #
@@ -430,7 +430,7 @@ def macr_adap_mail_ops ( self,
 #
 ###  print "niter = ", niter, ", Rep_Calc_HOMARD_global = ", Rep_Calc_HOMARD_global
 #
-# 3.2.3. Création du répertoire pour homard
+# 3.2.3. Creation du repertoire pour homard
 #        attention : on ne fait cette creation qu'une seule fois par cas
 #                    d'adaptation ou d'information
 #
@@ -450,16 +450,16 @@ def macr_adap_mail_ops ( self,
 #
 #gn  print "\.. Debut de 4."
 #
-#  On doit écrire : le maillage,
+#  On doit ecrire : le maillage,
 #                   le champ d'indicateur d'erreur
-#                   les champs à convertir
+#                   les champs e convertir
 #  Remarque : on met tout dans le meme fichier
 #
-#  Chacune de ces écritures est optionnelle selon le contexte.
+#  Chacune de ces ecritures est optionnelle selon le contexte.
 #
-# 4.1. ==> Noms des fichiers d'ASTER vers HOMARD et éventuellement de HOMARD vers ASTER
-#          Remarque : aujourd'hui, les écritures ou les lectures au format MED se font obligatoirement sur
-#                     un fichier de nom fort.n, placé dans le répertoire de calcul
+# 4.1. ==> Noms des fichiers d'ASTER vers HOMARD et eventuellement de HOMARD vers ASTER
+#          Remarque : aujourd'hui, les ecritures ou les lectures au format MED se font obligatoirement sur
+#                     un fichier de nom fort.n, place dans le repertoire de calcul
 ##
 # 4.1.1. ==> D'ASTER vers HOMARD
 #
@@ -474,7 +474,7 @@ def macr_adap_mail_ops ( self,
     fichier_homard_vers_aster = os.path.join(Rep_Calc_ASTER,"fort." + str(unite_fichier_homard_vers_aster))
 ###    print "fichier_homard_vers_aster = ",fichier_homard_vers_aster
 #
-# 4.2. La définition du fichier de ASTER vers HOMARD
+# 4.2. La definition du fichier de ASTER vers HOMARD
 # 
   DEFI_FICHIER ( ACTION= "ASSOCIER",
                  UNITE = unite_fichier_aster_vers_homard,
@@ -482,12 +482,12 @@ def macr_adap_mail_ops ( self,
                  INFO = infocomm )
 #
 # 4.3. Le(s) maillage(s)
-# Le maillage de calcul et l'éventuel maillage de la frontiere sont écrits
+# Le maillage de calcul et l'eventuel maillage de la frontiere sont ecrits
 # dans le meme fichier MED
-# En fait, on pourrait s'en passer au dela de la 1ère itération
-# car HOMARD a mémorisé. Mais dès que l'on écrit un champ,
-# les conventions MED imposent la présence du maillage dans le fichier.
-# Donc on va toujours écrire.
+# En fait, on pourrait s'en passer au dela de la 1ere iteration
+# car HOMARD a memorise. Mais des que l'on ecrit un champ,
+# les conventions MED imposent la presence du maillage dans le fichier.
+# Donc on va toujours ecrire.
 #
   for dico in liste_maillages :
     if ( dico["Action"] == "A_ecrire" ) :
@@ -502,27 +502,27 @@ def macr_adap_mail_ops ( self,
                   **motscfa )
 #
 # 4.4. Le(s) champ(s)
-#        Attention : il se peut que l'on demande la mise à jour du champ qui a servi comme
+#        Attention : il se peut que l'on demande la mise e jour du champ qui a servi comme
 #                    indicateur d'erreur. Si c'est le cas, il ne faut pas demander son
 #                    impression sinon il y a plantage d'IMPR_RESU qui ne sait pas substituer
-#                    deux champs. D'ailleurs, c'est plus économique ainsi !
+#                    deux champs. D'ailleurs, c'est plus economique ainsi !
 #        Remarque : pour l'adaptation, on ne demande a priori qu'une composante du champ d'indicateur.
-#                   s'il y a demande de mise à jour, toutes les composantes sont concernées. Il faut
+#                   s'il y a demande de mise e jour, toutes les composantes sont concernees. Il faut
 #                   donc dans ce cas imprimer le champ total.
 #        dico["Type_Champ"]   = o ; string ; "INDICATEUR" ou "CHAMP_MAJ"
-#        dico["RESULTAT"]     = f ; concept ASTER du résutat associé
+#        dico["RESULTAT"]     = f ; concept ASTER du resutat associe
 #        dico["NOM_CHAM"]     = f ; string ; Nom ASTER du champ
-#        dico["CHAM_GD"]      = f ; concept ASTER du champ de grandeur associée
+#        dico["CHAM_GD"]      = f ; concept ASTER du champ de grandeur associee
 #        dico["COMPOSANTE"]   = f ; string ; Nom ASTER de la composante (dans le cas de l'indicateur)
-#        dico["NUME_ORDRE"]   = f ; entier ; Numéro d'ordre du champ
+#        dico["NUME_ORDRE"]   = f ; entier ; Numero d'ordre du champ
 #        dico["INST"]         = f ; entier ; Instant du champ
-#        dico["PRECISION"]    = f ; entier ; Précision sur l'instant du champ
-#        dico["CRITERE"]      = f ; entier ; Critère de précision sur l'instant du champ
-#        dico["CHAM_MAJ"]     = f ; string ; Nom ASTER du champ interpolé sur le nouveau maillage
+#        dico["PRECISION"]    = f ; entier ; Precision sur l'instant du champ
+#        dico["CRITERE"]      = f ; entier ; Critere de precision sur l'instant du champ
+#        dico["CHAM_MAJ"]     = f ; string ; Nom ASTER du champ interpole sur le nouveau maillage
 #        dico["NOM_MED"]      = o ; string ; Nom MED du champ
-#        dico["SENSIBILITE"]  = f ; string ; Nom du paramètre sensible associé
+#        dico["SENSIBILITE"]  = f ; string ; Nom du parametre sensible associe
 #
-# 4.4.1. Recherche d'un doublon éventuel sur le champ d'indicateur d'erreur
+# 4.4.1. Recherche d'un doublon eventuel sur le champ d'indicateur d'erreur
 #
 #gn  print "dico_indi = ",dico_indi
   if len(dico_indi) > 0 :
@@ -540,10 +540,10 @@ def macr_adap_mail_ops ( self,
   liste_champs_imprime = []
   for dico in liste_champs :
 ###    print "\n.... dico = ",dico
-#   Pour un champ à mettre à jour, on a toujours impression
+#   Pour un champ e mettre e jour, on a toujours impression
     if ( dico["Type_Champ"] == "CHAMP_MAJ" ) :
       liste_champs_imprime.append(dico)
-#     Si le champ d'indicateur n'a toujours pas été repéré comme champ à mettre à jour :
+#     Si le champ d'indicateur n'a toujours pas ete repere comme champ e mettre e jour :
       if not indic_est_deja_imprime :
 #       Est-ce le meme champ ?
         on_a_le_champ = 1
@@ -569,9 +569,9 @@ def macr_adap_mail_ops ( self,
               else :
                 on_a_le_champ = 0
                 break
-#       Si oui, est-ce au meme moment ? (remarque : si rien n'est désigné, c'est qu'il n'y a qu'un
-#       seul instant ... donc c'est le meme ! En revanche, on ne sait pas comparer une donnée
-#       en numéro d'ordre et une donnée en instant. On croise les doigts.)
+#       Si oui, est-ce au meme moment ? (remarque : si rien n'est designe, c'est qu'il n'y a qu'un
+#       seul instant ... donc c'est le meme ! En revanche, on ne sait pas comparer une donnee
+#       en numero d'ordre et une donnee en instant. On croise les doigts.)
         if on_a_le_champ :
           for cle in [ "NUME_ORDRE", "INST" ] :
             if dico.has_key(cle) :
@@ -583,12 +583,12 @@ def macr_adap_mail_ops ( self,
         if on_a_le_champ :
           indic_est_deja_imprime = 1
 ###  print "\n\nFin de la boucle .. indic_est_deja_imprime = ",indic_est_deja_imprime
-#   Si le champ d'indicateur n'a pas été repéré comme champ à mettre à jour, il faut
-#   l'inclure dans les champs à imprimer
+#   Si le champ d'indicateur n'a pas ete repere comme champ e mettre e jour, il faut
+#   l'inclure dans les champs e imprimer
   if not indic_est_deja_imprime :
     liste_champs_imprime.append(dico_indi)
 #
-# 4.4.2. Impressions après le filtrage précédent
+# 4.4.2. Impressions apres le filtrage precedent
 #gn  print "\n.... Debut de 4.2.4.2."
 #
   for dico in liste_champs_imprime :
@@ -612,14 +612,14 @@ def macr_adap_mail_ops ( self,
                 **motscfa )
 #
 #====================================================================
-# 5. ==> Création des fichiers de données pour HOMARD
+# 5. ==> Creation des fichiers de donnees pour HOMARD
 #====================================================================
 #
 #gn  print "\.. Debut de 5."
 #
   dico_configuration = {}
 #
-# 5.1. ==> Les généralités
+# 5.1. ==> Les generalites
 #
   dico_configuration["INFO"] = INFO
 #
@@ -639,7 +639,7 @@ def macr_adap_mail_ops ( self,
     dico_configuration[ "NOM_MED_"+dico["Type_Maillage"] ] = dico["NOM_MED"]
 #gn  print dico_configuration
 #
-# 5.3. ==> Les caracteristiques de l'éventuel indicateur d'erreur
+# 5.3. ==> Les caracteristiques de l'eventuel indicateur d'erreur
 #
   for dico in liste_champs :
     dico_aux = {}
@@ -654,7 +654,7 @@ def macr_adap_mail_ops ( self,
 #gn  if dico_configuration.has_key("Indicateur") :
 #gn    print "dico_configuration[Indicateur] = ", dico_configuration["Indicateur"]
 #
-# 5.4. ==> Les éventuelles zones de raffinement
+# 5.4. ==> Les eventuelles zones de raffinement
 #
   prem = 1
   for dico in liste_zones :
@@ -668,7 +668,7 @@ def macr_adap_mail_ops ( self,
 ###  if dico_configuration.has_key("Zones") :
 ###    print "dico_configuration[Zones] = ", dico_configuration["Zones"]
 #
-# 5.5. ==> La mise à jour de champs
+# 5.5. ==> La mise e jour de champs
 #
   prem = 1
   for dico in liste_champs :
@@ -695,7 +695,7 @@ def macr_adap_mail_ops ( self,
 #gn  if dico_configuration.has_key("Champs") :
 #gn   print "dico_configuration[Champs] = ", dico_configuration["Champs"]
 #
-# 5.6. ==> Appel de la fonction de création
+# 5.6. ==> Appel de la fonction de creation
 #
   donnees_homard = creation_donnees_homard.creation_donnees_homard ( self.nom, args, dico_configuration )
   if ( INFO >= 4 ) :
@@ -707,9 +707,9 @@ def macr_adap_mail_ops ( self,
   else :
     Nom_Fichier_Donnees = "0"
 #
-# 5.7. ==> Impression eventuelle des fichiers créés
+# 5.7. ==> Impression eventuelle des fichiers crees
 #
-#gn  print "Répertoire ",Rep_Calc_HOMARD_global
+#gn  print "Repertoire ",Rep_Calc_HOMARD_global
 #gn  os.system("ls -la "+Rep_Calc_HOMARD_global)
   if ( INFO >= 4 ) :
     l_aux = ["HOMARD.Donnees" , "HOMARD.Configuration"]
@@ -733,7 +733,7 @@ def macr_adap_mail_ops ( self,
 #gn        time.sleep(3600)
 #
 #====================================================================
-# 6. Ecriture de la commande d'exécution de homard
+# 6. Ecriture de la commande d'execution de homard
 #====================================================================
 #
 #
@@ -747,7 +747,7 @@ def macr_adap_mail_ops ( self,
   EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_HOMARD_global, # nom du repertoire
                               VERSION_HOMARD,         # version de homard
                               str(iaux),              # niveau d information
-                              Nom_Fichier_Donnees,    # fichier de données HOMARD
+                              Nom_Fichier_Donnees,    # fichier de donnees HOMARD
                               str(version_perso),     # version personnelle de homard ?
                              ),
                   LOGICIEL = homard,
@@ -769,26 +769,33 @@ def macr_adap_mail_ops ( self,
 #        Remarque :
 #        La fonction self.DeclareOut(a,b) fonctionne ainsi :
 #        a est une chaine de caracteres
-#        b est la variable déclarée dans la commande
-#        le but est de associer le contenu de b à la variable locale qui sera désignée par a
+#        b est la variable declaree dans la commande
+#        le but est de associer le contenu de b e la variable locale qui sera designee par a
 #        Exemple :
 #        self.DeclareOut("maillage_a_lire",args["MAILLAGE_NP1"])
-#        ==> la variable maillage_a_lire est identifiée à l'argument "MAILLAGE_NP1"
+#        ==> la variable maillage_a_lire est identifiee e l'argument "MAILLAGE_NP1"
 #====================================================================
 #
   if ( mode_homard == "ADAP" ) :
 #
 # 7.1. ==> Le maillage
+#          On inhibe l'alarme MODELISA5_49 qui apparait car on fait VERIF=NON
 #
 #gn    print "args = ",args
     for dico in liste_maillages :
 #gn      print dico
       if ( dico["Action"] == "A_lire" ) :
+#
+        MasquerAlarme('MODELISA5_49')
+#
         self.DeclareOut("maillage_a_lire", dico["Nom_ASTER"])
         maillage_a_lire = LIRE_MAILLAGE ( UNITE = unite_fichier_homard_vers_aster,
                                        FORMAT = "MED",
                                        NOM_MED = dico["NOM_MED"],
                                        VERI_MAIL = _F(VERIF="NON"), INFO_MED = infocomm, INFO = infocomm )
+#
+        RetablirAlarme('MODELISA5_49')
+#
 #gn        print "MAILLAGE = ",maillage_a_lire
 #gn        print "NOM_MED = ",dico["NOM_MED"]
         if ( dico["Type_Maillage"] == "MAILLAGE_NP1" ) :
@@ -822,7 +829,7 @@ def macr_adap_mail_ops ( self,
 #====================================================================
 # 8. Menage des fichiers devenus inutiles
 #    On doit imperativement garder le dernier fichier homard produit
-#    En mode d'information, on garde également les fichiers textes
+#    En mode d'information, on garde egalement les fichiers textes
 #====================================================================
 #
   liste_aux = [fichier_aster_vers_homard]
@@ -847,9 +854,9 @@ def macr_adap_mail_ops ( self,
         except os.error,codret_partiel :
           self.cr.warn("Code d'erreur de remove : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
           UTMESS("F",'HOMARD0_5',valk=fic)
-#gn  print "Répertoire ",Rep_Calc_HOMARD_global
+#gn  print "Repertoire ",Rep_Calc_HOMARD_global
 #gn  os.system("ls -la "+Rep_Calc_HOMARD_global)
-#gn  print "Répertoire ",Rep_Calc_ASTER
+#gn  print "Repertoire ",Rep_Calc_ASTER
 #gn  os.system("ls -la "+Rep_Calc_ASTER)
 #gn  print os.listdir(Rep_Calc_HOMARD_global)
 #

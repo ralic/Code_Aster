@@ -2,7 +2,7 @@
      &                  LISCHA,MATRIG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/11/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -69,7 +69,7 @@ C
       CHARACTER*19 MEXFEC,MEXFEF,MEXFTC,MEXFTF
       CHARACTER*19 TLIMAT(8)
       CHARACTER*24 K24BID,K24BLA 
-      LOGICAL      ISFONC,LCTCC,LXFCM,LTFCM                
+      LOGICAL      ISFONC,LCTCC,LCTCF,LXFCM,LTFCM                
 C
 C ----------------------------------------------------------------------
 C
@@ -83,7 +83,8 @@ C
 C --- FONCTIONNALITES ACTIVEES
 C 
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU') 
-      LXFCM  = ISFONC(FONACT,'CONT_XFEM') 
+      LCTCF  = ISFONC(FONACT,'FROT_CONTINU')
+      LXFCM  = ISFONC(FONACT,'CONT_XFEM')
       LTFCM = .FALSE.
       IF (LXFCM) THEN
         CALL MMINFP(0    ,DEFICO,K24BLA,'XFEM_GG',
@@ -108,9 +109,11 @@ C
          MECTCC        = NMCHEX(MEELEM,'MEELEM','MECTCC')  
          NBMAT         = NBMAT + 1  
          TLIMAT(NBMAT) = MECTCC   
-         MECTCF        = NMCHEX(MEELEM,'MEELEM','MECTCF')  
-         NBMAT         = NBMAT + 1    
-         TLIMAT(NBMAT) = MECTCF                    
+         IF (LCTCF) THEN
+           MECTCF        = NMCHEX(MEELEM,'MEELEM','MECTCF')  
+           NBMAT         = NBMAT + 1    
+           TLIMAT(NBMAT) = MECTCF    
+         ENDIF                
        ENDIF
 C
 C --- MATR_ELEM DE CONTACT/FROTTEMENT XFEM
@@ -119,7 +122,7 @@ C
          IF (LTFCM) THEN       
            MEXFTC        = NMCHEX(MEELEM,'MEELEM','MEXFTC')  
            NBMAT         = NBMAT + 1   
-           TLIMAT(NBMAT) = MEXFTC   
+           TLIMAT(NBMAT) = MEXFTC
            MEXFTF        = NMCHEX(MEELEM,'MEELEM','MEXFTF')  
            NBMAT         = NBMAT + 1  
            TLIMAT(NBMAT) = MEXFTF
@@ -129,7 +132,7 @@ C
            TLIMAT(NBMAT) = MEXFEC   
            MEXFEF        = NMCHEX(MEELEM,'MEELEM','MEXFEF')  
            NBMAT         = NBMAT + 1  
-           TLIMAT(NBMAT) = MEXFEF           
+           TLIMAT(NBMAT) = MEXFEF
          ENDIF 
        ENDIF  
 C

@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 24/11/2008   AUTEUR ABBAS M.ABBAS 
 C RESPONSABLE CANO V.CANO
 
       INTEGER        NDIM,IMAT,IRET,KPG,KSP
@@ -113,6 +113,7 @@ C *******************
 
       ZERO=100.D0*R8PREM()
       DT = INSTAP-INSTAM
+      IRET = 0
 
       CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRE2)
       CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRE2)
@@ -271,8 +272,12 @@ C         ON SE RAMENE A UNE SEULE EQUATION EN DP
           ITEMAX=CRIT(1)
           PREC=CRIT(3)
                     
-          CALL EDGINI(ITEMAX,PREC,PM,EQSITR,MU,GAMMA,M,N,DP)
-
+          CALL EDGINI(ITEMAX,PREC,PM,EQSITR,MU,GAMMA,M,N,DP,IRE2)
+          IF (IRE2.GT.0) THEN
+            IRET  = 1
+            GOTO 998
+          ENDIF
+          
           DO 40 I=1,NDIMSI
             DVSIGP(I) = (1.D0-3.D0*MU*DP/EQSITR)*DVSITR(I) 
             DVEPEL(I)= DVSIGP(I)/(2.D0*MU)
@@ -295,7 +300,8 @@ C ATTENTION SI W MATRICE DGDY MODIFIE
             CALL MGAUSS('NFSP',DGDY,G,NDIMSI+1,NDIMSI+1,1,RBID,IRE2)
 
             IF (IRE2.GT.0) THEN
-              CALL U2MESS('F','LCEDG:PROBLEME DANS MGAUSS')
+              IRET  = 1
+              GOTO 998
             ENDIF
             
             DO 55 I=1,NDIMSI+1
@@ -304,7 +310,8 @@ C ATTENTION SI W MATRICE DGDY MODIFIE
   55        CONTINUE
 
             IF (Y(NDIMSI+1).LE.0.D0) THEN
-              CALL U2MESS('F','LCEDG:DP NEGATIVE')
+              IRET  = 1
+              GOTO 998
             ENDIF
 
             CALL EDGANI (NDIMSI+1,Y,PM,DVSITR,EQSITR,MU,ANI,GAMMA,M,N,
@@ -312,7 +319,8 @@ C ATTENTION SI W MATRICE DGDY MODIFIE
 
  50       CONTINUE
           
-          CALL U2MESS('F','LCEDG:ITER_INTE_MAXI INSUFFISANT')
+          IRET  = 1
+          GOTO 998
 
  999      CONTINUE
                     
@@ -375,7 +383,8 @@ C SI FULL MAIS VIP(2)=1 => MATRICE COHERENTE A TP
             
           CALL MGAUSS('NFSP',MAT,R1,NDIMSI+1,NDIMSI+1,NDIMSI,RBID,IRE2)
           IF (IRE2.GT.0) THEN
-            CALL U2MESS('F','LCEDG : PROBLEME MATRICE TANG')
+            IRET  = 1
+            GOTO 998
           ENDIF
           
           DO 204 J=1,NDIMSI  
@@ -423,5 +432,7 @@ C *************************************
           SIGP(I)=SIGP(I)*SQRT(2.D0)
  160    CONTINUE
       ENDIF
+      
+ 998  CONTINUE     
       
       END

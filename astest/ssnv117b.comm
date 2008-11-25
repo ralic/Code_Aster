@@ -1,5 +1,6 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 24/11/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE TRACTION CISAILLEMENT EN 3D (LMARC_FO) ET REDECOUPAGE DU TEMPS
+# ssnv117b.para = tps_job 60 mem_job 128Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,350 +52,404 @@
 #
 #
 #----------------------------------------------------------------------
-#
-DEBUT(CODE=_F(NOM='SSNV117B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-CUBE=LIRE_MAILLAGE(    )
+DEBUT(CODE=_F(NOM='SSNV117B',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
-                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
-                                            MODELISATION = '3D',
-                                            MAILLE = 'MA1'))
+CUBE=LIRE_MAILLAGE();
 
-R_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     10.,
-                                 1000.,  10.,      ))
+TROISD=AFFE_MODELE(MAILLAGE=CUBE,
+                   AFFE=_F(MAILLE='MA1',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
 
-DE_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     1.5E-6,
-                                 1000.,  1.5E-6,   ))
+R_0_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,10.,
+                          1000.,10.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-N_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     2.4,
-                                 1000.,  2.4,      ))
+DE_0_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,1.5E-6,
+                           1000.,1.5E-6,
+                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-K_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     15.,
-                                 1000.,  15.,      ))
+N_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,2.4,
+                        1000.,2.4,
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-Y_I_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     160.,
-                                 1000.,  160.,     ))
+K_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,15.,
+                        1000.,15.,
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-Y_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     177.,
-                                 1000.,  177.,     ))
+Y_I_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,160.,
+                          1000.,160.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-B_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     2.5,
-                                 1000.,  2.5,      ))
+Y_0_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,177.,
+                          1000.,177.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-A_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     331.69,
-                                 1000.,  331.69,      ))
+B_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,2.5,
+                        1000.,2.5,
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-RM_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,    0.354E-2,
-                                 1000., 0.354E-2,  ))
+A_0_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,331.69,
+                          1000.,331.69,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-M_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     3.57,
-                                 1000.,  3.57,      ))
+RM_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,0.354E-2,
+                         1000.,0.354E-2,
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-P_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     9000.,
-                                 1000.,  9000.,    ))
+M_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,3.57,
+                        1000.,3.57,
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-P1_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     400.,
-                                 1000.,  400.,     ))
+P_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,9000.,
+                        1000.,9000.,
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-P2_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     10.,
-                                 1000.,  10.,      ))
+P1_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,400.,
+                         1000.,400.,
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-M11_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     1.1,
-                                 1000.,  1.1,      ))
+P2_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,10.,
+                         1000.,10.,
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-M22_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     1.2,
-                                 1000.,  1.2,      ))
+# COEF MATERIAU INITIAUX ANISOTROPES, VALABLES SEULEMENT EN AXI
+# Commentaire fiche 11774 : sans le fortran actuel, il n'y a pas de changement de 
+# repere donc c'est valable seulement en axi et encore si et seulement si les 
+# coefficients sont donnes dans l'ordre (R,Z,T) et non (R,T,Z).
 
-M33_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.66666,
-                                 1000.,  0.66666,  ))
+M11_TOLD=DEFI_CONSTANTE(VALE=1.1,);
 
-M66_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     1.7,
-                                 1000.,  1.7,      ))
+M22_TOLD=DEFI_CONSTANTE(VALE=1.2,);
 
-N11_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.699,
-                                 1000.,  0.699,    ))
+M33_TOLD=DEFI_CONSTANTE(VALE=0.66666,);
 
-N22_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.5624,
-                                 1000.,  0.5624,   ))
+M66_TOLD=DEFI_CONSTANTE(VALE=1.7,);
 
-N33_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.6666666,
-                                 1000.,  0.6666666, ))
+N11_TOLD=DEFI_CONSTANTE(VALE=0.699,);
 
-N66_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.66,
-                                 1000.,  0.66,      ))
+N22_TOLD=DEFI_CONSTANTE(VALE=0.5624,);
 
-Q11_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.6666666,
-                                 1000.,  0.6666666, ))
+N33_TOLD=DEFI_CONSTANTE(VALE=0.6666666,);
 
-Q22_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.6666666,
-                                 1000.,  0.6666666, ))
+N66_TOLD=DEFI_CONSTANTE(VALE=0.66,);
 
-Q33_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.6666666,
-                                 1000.,  0.6666666, ))
+Q11_TOLD=DEFI_CONSTANTE(VALE=0.6666666,);
 
-Q66_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     1.,
-                                 1000.,  1.,       ))
+Q22_TOLD=DEFI_CONSTANTE(VALE=0.6666666,);
 
-R11_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.88,
-                                 1000.,  0.88,     ))
+Q33_TOLD=DEFI_CONSTANTE(VALE=0.6666666,);
 
-R22_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.88,
-                                 1000.,  0.88,     ))
+Q66_TOLD=DEFI_CONSTANTE(VALE=1.,);
 
-R33_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     0.6666666,
-                                 1000.,  0.6666666, ))
+R11_TOLD=DEFI_CONSTANTE(VALE=0.88,);
 
-R66_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     1.375,
-                                 1000.,  1.375,     ))
+R22_TOLD=DEFI_CONSTANTE(VALE=0.88,);
 
-ACIER=DEFI_MATERIAU(            ELAS=_F(   E = 73000.,
-                                            NU = .42,
-                                            ALPHA = 0.),
+R33_TOLD=DEFI_CONSTANTE(VALE=0.6666666,);
 
-                                LMARC_FO=_F(   R_0 = R_0_T,
-                                            DE_0 = DE_0_T,
-                                            N = N_T,
-                                            K = K_T,
-                                            Y_I = Y_I_T,
-                                            Y_0 = Y_0_T,
-                                            B = B_T,
-                                            A_0 = A_0_T,
-                                            RM = RM_T,
-                                            M = M_T,
-                                            P = P_T,
-                                            P1 = P1_T,
-                                            P2 = P2_T,
-                                            M11 = M11_T,
-                                            M22 = M22_T,
-                                            M33 = M33_T,
-                                            M66 = M66_T,
-                                            N11 = N11_T,
-                                            N22 = N22_T,
-                                            N33 = N33_T,
-                                            N66 = N66_T,
-                                            Q11 = Q11_T,
-                                            Q22 = Q22_T,
-                                            Q33 = Q33_T,
-                                            Q66 = Q66_T,
-                                            R11 = R11_T,
-                                            R22 = R22_T,
-                                            R33 = R33_T,
-                                            R66 = R66_T)
-                             )
+R66_TOLD=DEFI_CONSTANTE(VALE=1.375,);
 
-CHT0=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=CUBE,
-           AFFE=_F(  TOUT='OUI',   NOM_CMP = 'TEMP',   VALE = 0.E0,  ) )
-MAT=AFFE_MATERIAU(  MAILLAGE=CUBE,
-                    AFFE=_F(  MAILLE = 'MA1', MATER = ACIER),
-                    AFFE_VARC= _F( TOUT = 'OUI', NOM_VARC = 'TEMP', VALE_REF=0.,CHAMP_GD=CHT0,),
-                    )
+# En consequence, on choisit l'isotropie.
 
-LINST=DEFI_LIST_REEL(              DEBUT=1.,INTERVALLE=(
+M11_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-                           _F(  JUSQU_A = 25.,     NOMBRE = 5),
-                           _F(  JUSQU_A = 30.,     NOMBRE = 5))
-                                         )
+M22_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-COND_LIM=AFFE_CHAR_MECA(
-                     MODELE=TROISD,DDL_IMPO=(
-                   _F(  NOEUD = 'N1',         DX = 0.,  DY = 0.),
-                            _F(  NOEUD = 'N4',         DX = 0.),
-                            _F(  GROUP_NO = 'FACEXY',  DZ = 0.)))
+M33_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-TRAC=AFFE_CHAR_MECA(
-                     MODELE=TROISD,
-               FORCE_NODALE=_F(  GROUP_NO = 'FACE1XY',  FZ = .25))
+M66_T=DEFI_CONSTANTE(VALE=1.,);
 
-CIS=AFFE_CHAR_MECA(
-                     MODELE=TROISD,FORCE_NODALE=(
-               _F(  GROUP_NO = 'FACEXZ',  FZ = -.25),
-               _F(  GROUP_NO = 'FACEXY',  FY = -.25),
-               _F(  GROUP_NO = 'FACE1XZ', FZ = .25),
-               _F(  GROUP_NO = 'FACE1XY', FY = .25)))
+N11_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-COEF_TR=DEFI_FONCTION(
-                              NOM_PARA='INST',
-                                  VALE=(
-                                           0.,   0.,
-                                          30.,   300.,
-     ))
+N22_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-COEF_CS=DEFI_FONCTION(
-                              NOM_PARA='INST',
-                                  VALE=(
-                                           0.,   0.,
-                                          30.,   50.,
-     ))
+N33_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-SOLNL=STAT_NON_LINE(
-                             TITRE='TEST MODELE LMARC',
-                            MODELE=TROISD,
-                        CHAM_MATER=MAT,EXCIT=(
-                             _F(
-                CHARGE = COND_LIM),
-                             _F(
-                CHARGE = TRAC,
-                FONC_MULT = COEF_TR),
-                             _F(
-                CHARGE = CIS,
-                FONC_MULT = COEF_CS)),
-                         COMP_INCR=_F(
-                RELATION = 'LMARC',
-                DEFORMATION = 'PETIT',
-                ITER_INTE_MAXI = 40,
-                ITER_INTE_PAS = 5,
-                TOUT = 'OUI'),
-                         INCREMENT=_F(
-                LIST_INST = LINST),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_INCR = 1,
-                REAC_ITER = 5),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 40,
-                RESI_GLOB_RELA = 1.E-4)
-              )
+N66_T=DEFI_CONSTANTE(VALE=1.,);
 
-SOLNL=CALC_ELEM( reuse=SOLNL,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=SOLNL,
-              )
+Q11_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-SOLNL=CALC_ELEM(       reuse=SOLNL,
-                                      INST=30.,
-                                    OPTION='EPSI_ELNO_DEPL',
-                                 RESULTAT=SOLNL )
+Q22_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ',  VALE = 0.300000E+03),
+Q33_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYZ',  VALE = 0.500000E+02),
+Q66_T=DEFI_CONSTANTE(VALE=1.,);
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPZZ',  VALE = 0.590897E-02,
-                                                     PRECISION = 2.E-3),
+R11_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPYY',  VALE = -0.281487E-02,
-                                                     PRECISION = 5.E-3),
+R22_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPYZ',  VALE = 0.165159E-02,
-                                                     PRECISION = 1.E-2),
+R33_T=DEFI_CONSTANTE(VALE=0.6666666,);
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',
-               NOM_CMP = 'V3',             VALE = 0.166557E+03),
+R66_T=DEFI_CONSTANTE(VALE=1.,);
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',
-               NOM_CMP = 'V2',             VALE = -0.827068E+02),
+ACIER=DEFI_MATERIAU(ELAS=_F(E=73000.,
+                            NU=.42,
+                            ALPHA=0.,),
+                    LMARC_FO=_F(DE_0=DE_0_T,
+                                R_0=R_0_T,
+                                N=N_T,
+                                K=K_T,
+                                Y_I=Y_I_T,
+                                Y_0=Y_0_T,
+                                B=B_T,
+                                A_0=A_0_T,
+                                RM=RM_T,
+                                M=M_T,
+                                P=P_T,
+                                P1=P1_T,
+                                P2=P2_T,
+                                M11=M11_T,
+                                M22=M22_T,
+                                M33=M33_T,
+                                M66=M66_T,
+                                N11=N11_T,
+                                N22=N22_T,
+                                N33=N33_T,
+                                N66=N66_T,
+                                Q11=Q11_T,
+                                Q22=Q22_T,
+                                Q33=Q33_T,
+                                Q66=Q66_T,
+                                R11=R11_T,
+                                R22=R22_T,
+                                R33=R33_T,
+                                R66=R66_T,),);
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',
-               NOM_CMP = 'V1',             VALE = -0.838038E+02),
+CHT0=CREA_CHAMP(TYPE_CHAM='CART_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=CUBE,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=0.E0,),);
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',
-               NOM_CMP = 'V6',             VALE = 0.601284E+02),
+MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
+                  AFFE=_F(MAILLE='MA1',
+                          MATER=ACIER,),
+                  AFFE_VARC=_F(TOUT='OUI',
+                               NOM_VARC='TEMP',
+                               CHAMP_GD=CHT0,
+                               VALE_REF=0.,),);
 
- _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
-               MAILLE = 'MA1',  NOEUD = 'N1',
-               NOM_CMP = 'V19',            VALE = 0.188479E-02,
-                                                     PRECISION = 1.2E-2))
+LINST=DEFI_LIST_REEL(DEBUT=1.,
+                     INTERVALLE=(_F(JUSQU_A=25.,
+                                    NOMBRE=5,),
+                                 _F(JUSQU_A=30.,
+                                    NOMBRE=5,),),);
 
-                                                                     )
+COND_LIM=AFFE_CHAR_MECA(MODELE=TROISD,
+                        DDL_IMPO=(_F(NOEUD='N1',
+                                     DX=0.,
+                                     DY=0.,),
+                                  _F(NOEUD='N4',
+                                     DX=0.,),
+                                  _F(GROUP_NO='FACEXY',
+                                     DZ=0.,),),);
 
-FIN()
-#
+TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
+                    FORCE_NODALE=_F(GROUP_NO='FACE1XY',
+                                    FZ=.25,),);
+
+CIS=AFFE_CHAR_MECA(MODELE=TROISD,
+                   FORCE_NODALE=(_F(GROUP_NO='FACEXZ',
+                                    FZ=-.25,),
+                                 _F(GROUP_NO='FACEXY',
+                                    FY=-.25,),
+                                 _F(GROUP_NO='FACE1XZ',
+                                    FZ=.25,),
+                                 _F(GROUP_NO='FACE1XY',
+                                    FY=.25,),),);
+
+COEF_TR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                            30.,300.,
+                            ),);
+
+COEF_CS=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                            30.,50.,
+                            ),);
+
+SOLNL=STAT_NON_LINE(MODELE=TROISD,
+                    CHAM_MATER=MAT,
+                    EXCIT=(_F(CHARGE=COND_LIM,),
+                           _F(CHARGE=TRAC,
+                              FONC_MULT=COEF_TR,),
+                           _F(CHARGE=CIS,
+                              FONC_MULT=COEF_CS,),),
+                    COMP_INCR=_F(RELATION='LMARC',
+                                 DEFORMATION='PETIT',
+                                 TOUT='OUI',
+                                 ITER_INTE_MAXI=40,
+                                 ITER_INTE_PAS=5,),
+                    INCREMENT=_F(LIST_INST=LINST,),
+                    NEWTON=_F(REAC_INCR=1,
+                              MATRICE='TANGENTE',
+                              REAC_ITER=5,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=0.0001,
+                                   ITER_GLOB_MAXI=40,),
+                    TITRE='TEST MODELE LMARC',);
+
+SOLNL=CALC_ELEM(reuse =SOLNL,
+                RESULTAT=SOLNL,
+                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+
+SOLNL=CALC_ELEM(reuse =SOLNL,
+                RESULTAT=SOLNL,
+                INST=30.,
+                OPTION='EPSI_ELNO_DEPL',);
+
+TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CMP='SIZZ',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=300.0,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CMP='SIYZ',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=50.0,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPZZ',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=0.00573268750925,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPYY',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=-0.00253363483622,
+                   PRECISION=0.01,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPYZ',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=0.00137640648405,
+                   PRECISION=0.01,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V3',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=166.557,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=-83.1984295203,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=-83.1984295203,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V6',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=58.830172954,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V19',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=0.00168164367686,
+                   PRECISION=0.01,),),);
+
+FIN();
+
+# valeurs dans la cas anisotrope
+
+TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CMP='SIZZ',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=300.0,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CMP='SIYZ',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=50.0,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPZZ',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=0.00590897,
+                   PRECISION=0.002,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPYY',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=-0.00281487,
+                   PRECISION=0.005,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPYZ',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=0.00165159,
+                   PRECISION=0.01,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V3',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=166.557,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=-82.7068,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=-83.8038,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V6',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=60.1284,),
+                _F(RESULTAT=SOLNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V19',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=0.00188479,
+                   PRECISION=0.012,),),);

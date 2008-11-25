@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/11/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -555,7 +555,10 @@ C     --- ARCHIVAGE ---
         IF (N1.EQ.0) IPARCH = 1
         IF (METHOD.EQ.'ADAPT') THEN
           DTARCH = DT*IPARCH
-          NBSAUV = INT((TFIN-TINIT)/DTARCH) + 2
+          NBSAUV = INT((TFIN-TINIT)/DTARCH) + 1
+          IF ((TFIN - (TINIT+(NBSAUV-1)*DTARCH)).GE.R8PREM()) THEN
+             NBSAUV=NBSAUV+1
+          END IF
         ELSE IF (METHOD.EQ.'ITMI') THEN
 C       DANS LE CAS ITMI, NBSAUV NE SERA CONNU QUE DANS MDITM2
           NBSAUV = 0

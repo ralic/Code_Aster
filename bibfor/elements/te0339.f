@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 25/11/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -307,6 +307,7 @@ C           --------------------------------
           CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                  ZR(IGEOM), DFDBID, DFDBID, DFDBID, POIDS )
           DVPG = POIDS
+          VOLU = VOLU+DVPG
 
 C           2.4.2 CALCUL DE LA TRIAXIALITE LOCALE
 C           -------------------------------------
@@ -332,9 +333,13 @@ C           ----------------
           ZR(ISDRPR+KP-1) = LRSR0P
           IF (CROIS.GT.RSR0) THEN
             RSR0 = CROIS
-            VOLU = DVPG
           END IF
   140   CONTINUE
+C       ON SORT LE VOLUME ASSOCIE A LA "SOUS-MAILLE" (CF DOC R)
+C       PLUTOT QU ECRIRE UN POIDS RELATIF DE PT DE GAUSS,
+C       VARIABLE SUIVANT LE PG QUI "ACCROCHE" LE MAX,
+C       ON SORT LE SOUS-VOLUME MOYEN PAR PG :
+        VOLU = VOLU/DVPG
 
 C     2.5 TRAITEMENT DES OPTIONS INVALIDES
 C     ------------------------------------

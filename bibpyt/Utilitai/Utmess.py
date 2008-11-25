@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 25/11/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,7 +59,8 @@ class MESSAGE_LOGGER:
       self.erreur_E = False
       
       # compteur des alarmes émises { 'id_alarm' : count }
-      self.count_alarm = {}
+      self.count_alarm = {}         # dans la commande courante (pour arret à 5)
+      self.count_alarm_tot = {}     # au total
       
       # alarmes à ignorer, à masquer (on ne les compte pas temporairement)
       self._ignored_alarm = {}
@@ -281,7 +282,7 @@ Exception : %s
          self._hidden_alarm[idmess] = self._hidden_alarm.get(idmess, 0) + 1
       else:
          self._ignored_alarm[idmess] = self._ignored_alarm.get(idmess, 0) + 1
-      
+
    def reset_alarm(self, idmess, hide=False):
       """Réactive l'alarme "idmess".
       """
@@ -300,7 +301,7 @@ Exception : %s
       """
       s_alarm = Set(self._ignored_alarm.keys())
       if not only_ignored:
-         s_alarm.update(self.count_alarm.keys())
+         s_alarm.update(self.count_alarm_tot.keys())
       l_alarm = list(s_alarm)
       l_alarm.sort()
       # on sépare des éventuels messages en attente
@@ -316,7 +317,7 @@ Exception : %s
          if self._ignored_alarm.get(idmess) is not None:
             mark = '(*)'
          dictmess = self.get_message('I', 'SUPERVIS_90', valk=(mark, idmess),
-                                     vali=self.count_alarm.get(idmess, 0))
+                                     vali=self.count_alarm_tot.get(idmess, 0))
          self.add_to_buffer(dictmess)
       if ieff == 0:
          dictmess = self.get_message('I', 'SUPERVIS_92')
@@ -340,7 +341,8 @@ Exception : %s
          idmess = self.get_current_id()
          # nombre d'occurrence de cette alarme (sauf si cachee)
          if self._hidden_alarm.get(idmess, 0) == 0:
-            self.count_alarm[idmess] = self.count_alarm.get(idmess, 0) + 1
+            self.count_alarm[idmess]     = self.count_alarm.get(idmess, 0) + 1
+            self.count_alarm_tot[idmess] = self.count_alarm_tot.get(idmess, 0) + 1
          
          if self.is_alarm_disabled(idmess) or self.count_alarm[idmess] > nmax_alarm:
             # ignorer l'alarme ou count_alarm > max, on vide le buffer
@@ -355,7 +357,7 @@ Exception : %s
 
 # -----------------------------------------------------------------------------
    def check_counter(self, info_alarm=0, silent=0):
-      """Méthode "jusqu'ici tout va bien" !
+      """Méthode "jusqu'ici tout va bien" ! (Interface C : chkmsg)
       Si des erreurs <E> se sont produites, on arrete le code en <F>.
       Appelée par FIN ou directement au cours de l'exécution d'une commande.
       Retourne un entier : 0 si tout est ok.
@@ -370,6 +372,15 @@ Exception : %s
       if info_alarm:
          self.info_alarm()
       return iret
+
+# -----------------------------------------------------------------------------
+   def reset_command(self):
+      """Méthode appelée entre les commandes. (Interface C : resmsg)
+      On remet à zéro le compteur d'alarme,
+      on vérifie les erreurs <E> en attente."""
+      iret = self.check_counter()
+      # reset des alarmes
+      self.count_alarm = {}
 
 # -----------------------------------------------------------------------------
    def format_message(self, dictmess):

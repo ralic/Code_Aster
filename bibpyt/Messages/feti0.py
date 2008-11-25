@@ -1,4 +1,4 @@
-#@ MODIF feti0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF feti0 Messages  DATE 24/11/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,13 @@ de caractères de NOM_GROUP_MA à un maximum de : %(i1)d
 
 2: _("""
 Il existe déjà un GROUP_MA nommé : %(k1)s
+"""),
+
+3: _("""
+Le modèle contient des noeuds (AFFE_MODELE/AFFE/GROUP_NO). On ne peut pas partitionner.
+
+Conseil : il faut créer des mailles POI1 avec l'opérateur CREA_MAILLAGE/CREA_POI1
+          puis refaire un MODELE avec AFFE_MODELE/AFFE/GROUP_MA uniquement.
 """),
 
 }

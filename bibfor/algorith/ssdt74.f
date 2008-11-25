@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/11/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -224,7 +224,10 @@ C     --- ARCHIVAGE ---
         CALL GETVIS('ARCHIVAGE','PAS_ARCH',1,1,1,IPARCH,N1)
         IF (N1.EQ.0) IPARCH = 1
         DTARCH = DT*IPARCH
-        NBSAUV = NINT((TFIN-TINIT)/DTARCH) + 2
+        NBSAUV = INT((TFIN-TINIT)/DTARCH) + 1
+        IF ((TFIN - (TINIT+(NBSAUV-1)*DTARCH)).GE.R8PREM()) THEN
+             NBSAUV=NBSAUV+1
+        END IF
         LPSTO = .TRUE.
       ELSE
         LISARC = '&&SSDT74.ARCHIVAGE'

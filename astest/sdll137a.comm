@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 24/11/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 DEBUT( CODE=_F( NOM = 'SDLL137A',
                 NIV_PUB_WEB='INTERNET'),
-#       DEBUG=_F(SDVERI='OUI'),
+       DEBUG=_F(SDVERI='OUI'),
       );
 
 #**********************************

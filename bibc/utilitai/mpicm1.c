@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MPICM1 UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF MPICM1 UTILITAI  DATE 24/11/2008   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -26,7 +26,7 @@ void DEFSSPPP(MPICM1, mpicm1,
                    _IN INTEGER *nbv, _INOUT INTEGER *vi, _INOUT DOUBLE *vr)
 
 {
-#if defined _USE_MPI_MUMPS
+#if defined _USE_MPI
    void DEFSSPPP(MPICM1A, mpicm1a, char *, STRING_SIZE, char *, STRING_SIZE, INTEGER *, INTEGER *, DOUBLE *);
    #define CALL_MPICM1A(a,b,c,d,e) CALLSSPPP(MPICM1A,mpicm1a,a,b,c,d,e)
 

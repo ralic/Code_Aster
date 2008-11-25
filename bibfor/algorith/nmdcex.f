@@ -2,7 +2,7 @@
      &                  NBRPAS,RATIO ,RETOUR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/11/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -175,10 +175,31 @@ C
       XDET   = -SX**2 + SX2*XN
       XA0    =  SX2*SY - SX*SYX
       XA1    = -(SX*SY) + SYX*XN
+
+      IF (XDET.LE.R8PREM()) THEN
+        RATIO    = 24.0D0/((3.0D0*NBRPAS+UN)**2 - UN)
+        RETOUR   = 0
+        VALIM(1) = NBRPAS
+        VALIM(2) = LENIVO
+        VALRM(1) = RATIO
+        VALRM(2) = DELTAT
+        VALRM(3) = CIBLEN
+        VALRM(4) = ZR(JERRE+2) 
+        IF ( REGRES .EQ. 1 ) THEN
+          VALKM(1) = 'RESI_GLOB_RELA'
+        ELSE
+          VALKM(1) = 'RESI_GLOB_MAXI'
+        ENDIF               
+        CALL U2MESG('I','SUBDIVISE_11',1,VALKM,2,VALIM,4,VALRM)
+        GOTO 999
+      ENDIF
+      
+      write(6,*) 'Valeurs: ',XDET,XA0,XA1,CIBLE
 C
 C --- NOMBRE D'ITERATIONS TROUVEES
 C      
       CIBLEN = (XA0 + XA1*LOG(CIBLE) )/XDET
+            write(6,*) 'CIBLEN: ',CIBLEN,MINITE,NBRPAS
 
 C        LA METHODE TROUVE UN NOMBRE D'ITERATION < LIMITE ITERATION
 C        CELA SE PRODUIT SI ON DONNE ITER_GLOB_MAXI ET ITER_GLOB_ELAS.

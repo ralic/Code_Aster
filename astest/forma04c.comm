@@ -1,5 +1,5 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE O.BOITEAU
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -267,7 +267,6 @@ for num_calc in range(0,nb_calc1) :
               CRIT_RAFF_PE=0.2,
               CRIT_DERA_PE=0.2,
               QUALITE='OUI',
-              INTERPENETRATION='OUI',
               TAILLE='OUI',
               CONNEXITE='OUI')
 

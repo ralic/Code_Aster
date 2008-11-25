@@ -1,5 +1,4 @@
-
-# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,8 +164,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M00,
                CRIT_RAFF_PE=0.1,
                QUALITE='OUI',
                CONNEXITE='OUI',
-               TAILLE='OUI',
-               INTERPENETRATION='OUI',);
+               TAILLE='OUI',);
 #
 # 5. CALCUL SUR LE MAILLAGE 01
 # 5.1. MODELE MECANIQUE

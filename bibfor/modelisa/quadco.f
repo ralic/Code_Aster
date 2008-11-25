@@ -1,7 +1,7 @@
       SUBROUTINE QUADCO(CHAR  ,MOTFAC,NZOCO ,INDQUA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 24/11/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C
           IF (METH.EQ.-2) THEN  
             INDQUA = 1            
           ELSEIF (METH.EQ.-1) THEN  
-            INDQUA = 0            
+            INDQUA = 1            
           ELSEIF (METH.EQ.0) THEN  
             INDQUA = 0
           ELSEIF (METH.EQ.1) THEN  

@@ -2,7 +2,7 @@
      &                  LOPTMA,LASSME,LCALME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/11/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,7 @@ C I/O LASSME : SI MATR_ELEM A ASSEMBLER
 C      
 C ----------------------------------------------------------------------
 C 
-      LOGICAL      ISFONC,LCTCC,LXFCM,LTFCM
+      LOGICAL      ISFONC,LCTCC,LCTCF,LXFCM,LTFCM
       CHARACTER*24 K24BLA,K24BID
       REAL*8       R8BID
       INTEGER      IBID
@@ -64,6 +64,7 @@ C
 C --- FONCTIONNALITES ACTIVEES
 C
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
+      LCTCF  = ISFONC(FONACT,'FROT_CONTINU')
       LXFCM  = ISFONC(FONACT,'CONT_XFEM') 
       LTFCM = .FALSE.
       IF (LXFCM) THEN
@@ -77,9 +78,11 @@ C
         CALL NMCMAT('AJOU','MECTCC',' '   ,' '   ,.TRUE.,
      &              .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
      &               LCALME,LASSME)       
-        CALL NMCMAT('AJOU','MECTCF',' '   ,' '   ,.TRUE.,
-     &              .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &               LCALME,LASSME)        
+        IF (LCTCF) THEN
+          CALL NMCMAT('AJOU','MECTCF',' '   ,' '   ,.TRUE.,
+     &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
+     &                 LCALME,LASSME) 
+        ENDIF       
       ENDIF   
 C
 C --- CONTACT XFEM
@@ -88,17 +91,17 @@ C
         IF (LTFCM) THEN
           CALL NMCMAT('AJOU','MEXFTC',' '  ,' '   ,.TRUE.,
      &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME)         
+     &                 LCALME,LASSME)     
           CALL NMCMAT('AJOU','MEXFTF',' '  ,' '   ,.TRUE.,
      &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME)   
+     &                 LCALME,LASSME)
         ELSE
           CALL NMCMAT('AJOU','MEXFEC',' '   ,' '   ,.TRUE.,
      &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME)        
+     &                 LCALME,LASSME)
           CALL NMCMAT('AJOU','MEXFEF',' '   ,' '   ,.TRUE.,
      &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME)        
+     &                 LCALME,LASSME)
         ENDIF      
       ENDIF       
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,8 +169,7 @@ MACR_ADAP_MAIL(INFO=1,
                            TYPE_CHAM  = 'NOEU_TEMP_R',
                            NUME_ORDRE = 2,
                            CHAM_MAJ   = CO("TEMPUN")),
-               QUALITE='OUI',
-               INTERPENETRATION='NON'
+               QUALITE='OUI'
                )
 #
 # 5. CALCUL SUR LE MAILLAGE UN
@@ -306,7 +305,6 @@ MACR_ADAP_MAIL(INFO=1,
                        INST = 6.0,
                        CHAM_MAJ   = CO("TEMP_6")),),
                QUALITE='OUI',
-               INTERPENETRATION='OUI',
                CONNEXITE='OUI',
                TAILLE='OUI')
 #

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF B_ETAPE Build  DATE 25/11/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -414,44 +414,47 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          Elle évalue les concepts FORMULE.
          Elle retourne 3 valeurs : code_retour, message_erreur, valeur
       """
-      nom_param = [p.strip() for p in nom_param]
-      if not hasattr(self,"func_dic"):
-         self.func_dic={}
+      nom_param = tuple([p.strip() for p in nom_param])
+      self._cache_func = getattr(self, '_cache_func', {})
 
-      if self.func_dic.has_key(nom_fonction):
-         objet_sd =self.func_dic[nom_fonction]
+      if self._cache_func.get(nom_fonction):
+         objet_sd =self._cache_func[nom_fonction]['fonction']
       else:
          objet_sd =self.parent.get_sd_avant_etape(nom_fonction.strip(),self)
-         self.func_dic[nom_fonction]=objet_sd
+         self._cache_func[nom_fonction]= { 'fonction' : objet_sd }
 
-      if len(nom_param)!=len(val) :
+      if len(nom_param) != len(val) :
          msgerr = """Le nombre de valeurs est différent du nombre de paramètres"""
          return 4, msgerr, None
       
-      # paramètres manquants, paramètres en double
-      miss, inter, dble = miss_dble(objet_sd.nompar, nom_param)
-      if len(miss) > 0:
-         args = list(miss)
-         args.sort()
-         args = ', '.join(args)
-         msgerr = """Les paramètres de la formule n'ont pas été fournis.
+      if self._cache_func.get(nom_fonction).get(nom_param):
+         inter = self._cache_func[nom_fonction][nom_param]
+      else:
+         # paramètres manquants, paramètres en double
+         miss, inter, dble = miss_dble(objet_sd.nompar, nom_param)
+         self._cache_func[nom_fonction][nom_param] = inter
+         if len(miss) > 0:
+            args = list(miss)
+            args.sort()
+            args = ', '.join(args)
+            msgerr = """Les paramètres de la formule n'ont pas été fournis.
 Paramètres manquants : %s""" % args
-         return 4, msgerr, None
-      
-      if len(dble) > 0:
-         args = list(dble)
-         args.sort()
-         args = ', '.join(args)
-         msgerr = """Certains paramètres de la formule ont été fournis plusieurs fois.
+            return 4, msgerr, None
+         
+         if len(dble) > 0:
+            args = list(dble)
+            args.sort()
+            args = ', '.join(args)
+            msgerr = """Certains paramètres de la formule ont été fournis plusieurs fois.
 Paramètres répétés : %s""" % args
-         return 4, msgerr, None
+            return 4, msgerr, None
       
       # appel de fonction definie dans le corps du jeu de commandes
       try:
            context={}
            # on reduit le dict au seul parametre de la formule
            dp = dict(zip(nom_param, val))
-           for param in inter :
+           for param in inter:
                context[param]=dp[param]
            res=eval(objet_sd.code,self.jdc.const_context,context)
       except:

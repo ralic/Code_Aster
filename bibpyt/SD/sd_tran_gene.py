@@ -1,4 +1,4 @@
-#@ MODIF sd_tran_gene SD  DATE 27/11/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#@ MODIF sd_tran_gene SD  DATE 25/11/2008   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,8 +108,8 @@ class sd_tran_gene(sd_titre) :
         assert self.ORDR.lonmax == nbsauv
         assert self.INST.lonmax == nbsauv
         assert self.PTEM.lonmax in (1, nbsauv)
-        # sdu_tous_differents(self.ORDR,checker) # AJACOT_PB : j'aimerais bien "tous_différents"
-        # sdu_tous_differents(self.INST,checker) #      mais il y a sdld102a  => fiche à émettre ?
+        sdu_tous_differents(self.ORDR,checker) # AJACOT_PB : j'aimerais bien "tous_différents"
+        sdu_tous_differents(self.INST,checker) #      mais il y a sdld102a  => fiche à émettre ?
 
 
     def check_DEPL_VITE_ACCE(self,checker):

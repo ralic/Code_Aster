@@ -1,14 +1,15 @@
-      SUBROUTINE EDGINI (ITEMAX,PREC,PM,EQSITR,MU,GAMMA,M,N,DP)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE EDGINI (ITEMAX,PREC,PM,EQSITR,MU,GAMMA,M,N,DP,IRET)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 24/11/2008   AUTEUR ABBAS M.ABBAS 
 C RESPONSABLE CANO V.CANO
 
       INTEGER   ITEMAX
       REAL*8    PREC,PM,EQSITR
       REAL*8    MU,GAMMA(3),M(3),N(3)
       REAL*8    DP
+      INTEGER   IRET
             
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,15 +41,21 @@ C  IN  M       : COEFFICIENT VISQUEUX
 C  IN  N       : COEFFICIENT VISQUEUX
 
 C  OUT DP      : INCREMENT DE DEFORMATION PLASTIQUE CUMULEE
+C  OUT IRET    : CODE RETOUR CALCUL
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ECHEC
 C ----------------------------------------------------------------------
-
+C
       INTEGER        ITER
       REAL*8         DPINF,DPSUP,SEUIL,DSEUIL
-
+C                              IRET=1 => ECHEC
+C ----------------------------------------------------------------------
+C
 C 1 - MINORANT ET MAJORANT
 
       DPINF = 0.D0
       DPSUP = EQSITR/(3.D0*MU)
+      IRET  = 0
 
 C 2 - INITIALISATION
 C     CALCUL DE SEUIL ET DE SA DERIVEE DSEUIL
@@ -70,7 +77,8 @@ C 3 - RESOLUTION PAR UNE METHODE DE NEWTON ENTRE LES BORNES
         IF (SEUIL.LE.0.D0) DPSUP = DP
 
  10   CONTINUE
-      CALL U2MESS('F','EDGINI:ITER_INTE_MAXI INSUFFISANT')
+ 
+      IRET   = 1
 
  100  CONTINUE
 

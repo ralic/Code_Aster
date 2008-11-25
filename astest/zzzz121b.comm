@@ -1,5 +1,4 @@
-
-# MODIF  DATE 06/10/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,8 +141,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=MZERO,
                MAILLAGE_NP1=CO('MUN'),
                ADAPTATION='RAFFINEMENT_UNIFORME',
                GROUP_MA = ('MP_K', 'MP_O',),
-               QUALITE='OUI',
-               INTERPENETRATION='NON',);
+               QUALITE='OUI');
 #
 # 5. CALCUL SUR LE MAILLAGE UN
 # 5.1. MODELE MECANIQUE
@@ -251,8 +249,7 @@ MACR_ADAP_MAIL(LANGUE='ANGLAIS',
                MAJ_CHAM=_F(CHAM_MAJ=CO('DEPLDEUX'),
                            TYPE_CHAM='NOEU_DEPL_R',
                            CHAM_GD=DEPLUN,),
-               QUALITE='OUI',
-               INTERPENETRATION='NON',);
+               QUALITE='OUI',);
 #
 # 8. CALCUL SUR LE MAILLAGE DEUX
 # 8.1. MODELE MECANIQUE

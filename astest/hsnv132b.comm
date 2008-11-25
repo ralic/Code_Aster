@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 # hsnv132b.para = tps_job 50 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,12 +34,8 @@ MACR_ADAP_MAIL(
                         RAYON = 0.1, ),
                   MAILLAGE_N = MAILLAGE,
                   MAILLAGE_NP1 = CO('MAILLAG1'),
-                  INTERPENETRATION='OUI',
                   QUALITE='OUI',
-                  CONNEXITE='OUI',
                   TAILLE='OUI',
-                  NOMBRE='OUI',
-                  ELEMENTS_NON_HOMARD='REFUSER',
                   )
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
