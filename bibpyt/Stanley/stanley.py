@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 24/11/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,8 +128,8 @@ class ERREUR:
 
   def Remonte_Erreur(self, err, l_detr=[], l_return=1, texte=None):
 
-    if not texte:
-       UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
+    if not texte: texte = texte_onFatalError
+    UTMESS('A','STANLEY_38',valk=[texte,str(err)])
 
     if l_detr: self.DETRUIRE(tuple(l_detr))
     
@@ -164,7 +164,8 @@ class PARAMETRES :
     self.dparam, self.dliste_section, self.aide = self.Initialise_dparam()
 
     # Si Stanley est lance depuis Salome, on fixe le numero du port Corba
-    if __salome__: 
+    if __salome__:
+       from_salome = False
        try:
           largs = sys.argv
           i = largs.index('-ORBInitRef')
@@ -174,6 +175,7 @@ class PARAMETRES :
           self.dparam['machine_salome']['val']      = machine_salome
           self.dparam['machine_salome_port']['val'] = machine_salome_port
           print "Salome detecte, on fixe a : %s:%s" % (machine_salome, machine_salome_port)
+          from_salome = True
        except Exception,e:
           print "Salome non detecte..."
           #print e
@@ -185,7 +187,8 @@ class PARAMETRES :
     self.Detecte_Derniere_Config()
 
     # Si Salome est present, on le met en premier choix
-    if __salome__: self.para['MODE_GRAPHIQUE']['mode_graphique'] = 'Salome'
+    if __salome__ and from_salome:
+       self.para['MODE_GRAPHIQUE']['mode_graphique'] = 'Salome'
 
     # Si Salome n'est pas present, on l'enleve de la liste des choix possibles
     if not __salome__:
@@ -2312,7 +2315,7 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
     # Mise a jour specifiques des mot-cles pour Gmsh
     # Si on a choisi le champ DEPL
 
-    if 'DEPL' in selection.nom_cham:
+    if selection.nom_cham == 'DEPL':
        if 'TOUT_CMP' in selection.nom_cmp:
           if   selection.geom[0] in ['VOLUME']:  ndim = 3
           elif selection.geom[0] in ['SURFACE']: ndim = 2
@@ -2443,7 +2446,7 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
 
     # Mise a jour specifiques des mot-cles pour Med
     # Si on a choisi le champ DEPL
-    if 'DEPL' in selection.nom_cham:
+    if selection.nom_cham == 'DEPL':
        if 'TOUT_CMP' in selection.nom_cmp:
           if   selection.geom[0] in ['VOLUME']:  ndim = 3
           elif selection.geom[0] in ['SURFACE']: ndim = 2
@@ -2534,15 +2537,7 @@ class DRIVER_COURBES(DRIVER) :
     # Options supplementaires du IMPR_RESU pour la SENSIBILITE
     if contexte.para_sensi:
        para['SENSIBILITE'] = contexte.para_sensi
-
        DETRUIRE(CONCEPT = _F(NOM = 'STNTBLG2'),INFO=1, ALARME='NON')
-
-       try:
-          MEMO_NOM_SENSI(NOM=( _F(NOM_SD='STNTBLGR',
-                                  PARA_SENSI=contexte.para_sensi,
-                                  NOM_COMPOSE='STNTBLG2')));
-       except:
-          pass
 
     DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
 
@@ -2558,7 +2553,9 @@ class DRIVER_COURBES(DRIVER) :
         para['GROUP_NO'] = point
 
         try:
+          contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
           STNTBLGR = POST_RELEVE_T(ACTION = para)
+          contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
         except aster.error,err:
           return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
         except Exception,err:
@@ -2601,7 +2598,9 @@ class DRIVER_COURBES(DRIVER) :
       for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
         para['NUME_ORDRE'] = no,
         try:
+          contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
           STNTBLGR = POST_RELEVE_T(ACTION = para)
+          contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
         except aster.error,err:
           return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
         except Exception,err:

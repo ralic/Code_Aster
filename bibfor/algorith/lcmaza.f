@@ -2,7 +2,7 @@
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C         BC = CONSTANTE DE COMPRESSION (1000 A 2000)[REEL OU FCT]
 C ----------------------------------------------------------------------
       LOGICAL     RIGI, RESI, PROG, ELAS, CPLAN, COUP
       CHARACTER*1  POUM
-      CHARACTER*2 CODRET(6)
+      CHARACTER*2 CODRET(7)
       CHARACTER*8 NOMRES(7), NOMPAR
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
       INTEGER     I,J,K,L,IRET, IISNAN
@@ -89,7 +89,7 @@ C ----------------------------------------------------------------------
       REAL*8      EPSEQC, EPSEND, EPSEPC(3), VECPEC(3,3)
       INTEGER     IDC
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-            
+
 C ======================================================================
 C                            INITIALISATION
 C ======================================================================
@@ -108,8 +108,8 @@ C -- OPTION ET MODELISATION
       RIGI  = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
       RESI  = (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL')
 
-C M.B.: NOUVELLE OPTION COUP POUR LE COUPLAGE AVEC UMLV 
-C MEME OPTION UTILISEE LE COUPLAGE UMLV-ENDO_ISOT_BETON 
+C M.B.: NOUVELLE OPTION COUP POUR LE COUPLAGE AVEC UMLV
+C MEME OPTION UTILISEE LE COUPLAGE UMLV-ENDO_ISOT_BETON
 
       COUP  = (OPTION(6:9).EQ.'COUP')
       CPLAN = (TYPMOD(1).EQ.'C_PLAN  ')
@@ -139,13 +139,13 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
         POUM='+'
         CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECH,IRET)
         IF ( IRET.NE.0) SECH=0.D0
-        IF (IISNAN(TP).GT.0) THEN 
+        IF (IISNAN(TP).GT.0) THEN
           TMAX = R8NNEM()
           VIP(IDC+3) = R8NNEM()
         ELSE
           TMAX = MAX(TMAXM, TP)
           IF (TMAX.GT.TMAXM) VIP(IDC+3) = TMAX
-        ENDIF 
+        ENDIF
       ELSE
         TEMP = TM
         CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDR,IRET)
@@ -155,7 +155,7 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
         POUM='-'
         TMAX = TMAXM
       ENDIF
-      
+
 C  RECUPERATION DES CARACTERISTIQUES MATERIAUX QUI PEUVENT VARIER
 C  AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
 C-----------------------------------------------------
@@ -175,7 +175,7 @@ C    LECTURE DES CARACTERISTIQUES ELASTIQUES
      &            VALPAR,1,NOMRES(3),VALRES(3),CODRET(3),' ')
       IF ((IISNAN(TP).EQ.0).AND.(IISNAN(TM).EQ.0)) THEN
         IF ((IISNAN(TREF).NE.0).OR.(CODRET(3).NE.'OK')) THEN
-          CALL U2MESS('F','CALCULEL_15') 
+          CALL U2MESS('F','CALCULEL_15')
         ELSE
           EPSTHE = VALRES(3)*(TEMP-TREF)
         ENDIF
@@ -183,13 +183,13 @@ C    LECTURE DES CARACTERISTIQUES ELASTIQUES
         VALRES(3) = 0.D0
         EPSTHE = 0.D0
       ENDIF
-      
+
       E     = VALRES(1)
       NU    = VALRES(2)
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 
-      
+
 C --- LECTURE DU RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 C     SAUF EN CAS DE COUPLAGE
       IF (COMPOR(1)(1:6) .EQ. 'MAZARS')      THEN
@@ -216,8 +216,8 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(4) = 'BC'
       NOMRES(5) = 'AT'
       NOMRES(6) = 'BT'
-      
-      
+
+
       CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','MAZARS',1,NOMPAR,
      &            VALPAR,6,NOMRES,VALRES,CODRET,'FM')
 
@@ -226,7 +226,7 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       AC    = VALRES(3)
       BC    = VALRES(4)
       AT    = VALRES(5)
-      BT    = VALRES(6)      
+      BT    = VALRES(6)
 
 C    M.B.: LECTURE DU PARAMETRE DE COUPLAGE AVEC UMLV
 
@@ -236,13 +236,13 @@ C    M.B.: LECTURE DU PARAMETRE DE COUPLAGE AVEC UMLV
      &              0.D0,1,NOMRES(7),VALRES(7),CODRET(7),'FM')
         CHI   = VALRES(7)
         IF (CHI .EQ. 0.D0) THEN
-          CALL U2MESS('I','COMPOR1_59') 
+          CALL U2MESS('I','COMPOR1_59')
         ENDIF
       ENDIF
-      
- 
-     
-      
+
+
+
+
 C ======================================================================
 C       CALCUL DES GRANDEURS UTILES QUELQUE SOIT OPTION
 C
@@ -252,11 +252,11 @@ C    1 - CALCUL DES DEFORMATIONS MECANIQUES ET THERMIQUES
 C--------------------------------------------------------
 
 C  -  MISE A JOUR DE LA DEFORMATION TOTALE
-      
+
       CALL R8INIR(6, 0.D0, EPS,1)
       IF (RESI) THEN
         DO  10 K = 1, NDIMSI
-          EPS(K) = EPSM(K) + DEPS(K)          
+          EPS(K) = EPSM(K) + DEPS(K)
 10      CONTINUE
       ELSE
         DO 20 K=1,NDIMSI
@@ -264,7 +264,7 @@ C  -  MISE A JOUR DE LA DEFORMATION TOTALE
 20      CONTINUE
         D=VIM(1)
       ENDIF
-      
+
 C      DO  30 K=4,NDIMSI
 C        EPS(K) = EPS(K)/RAC2
 C30    CONTINUE
@@ -283,12 +283,12 @@ C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
         COPLAN  = - NU/(1.D0-NU)
         EPSE(3)  = COPLAN * (EPSE(1)+EPSE(2))
       END IF
-      
-C    M.B.: AVEC COUPLAGE, EPSF POUR L INSTANT  
-C    SERT SEULEMENT AVEC  RESI A L INSTANT P, CAR LA MATRICE TANGENTE 
-C    N EST PAS ENCORE IMPLEMENTEE 
 
-      IF (COUP .AND. RESI) THEN 
+C    M.B.: AVEC COUPLAGE, EPSF POUR L INSTANT
+C    SERT SEULEMENT AVEC  RESI A L INSTANT P, CAR LA MATRICE TANGENTE
+C    N EST PAS ENCORE IMPLEMENTEE
+
+      IF (COUP .AND. RESI) THEN
         CALL LCUMVI('FT',VIP,EPSFP)
         CALL R8INIR(6, 0.D0, EPSCOU,1)
         DO 1010  K=1,NDIMSI
@@ -297,19 +297,19 @@ C    N EST PAS ENCORE IMPLEMENTEE
           EPSCOU(K) = EPSI(K) - (1-CHI)*EPSFP(K)
 1010    CONTINUE
       ENDIF
-      
+
       DO  30 K=4,NDIMSI
         EPSE(K) = EPSE(K)/RAC2
 30    CONTINUE
-      IF (COUP .AND. RESI) THEN 
+      IF (COUP .AND. RESI) THEN
         DO  31 K=4,NDIMSI
           EPSCOU(K) = EPSCOU(K)/RAC2
 31      CONTINUE
       ENDIF
 
-      
+
 C    2 - CALCUL DE EPSEQ = SQRT(TR (<EPSE>+ * <EPSE>+)  )
-C        C EST EPSEQ ELASTIQUE DANS LE CAS DU COUPLAGE 
+C        C EST EPSEQ ELASTIQUE DANS LE CAS DU COUPLAGE
 C--------------------------------------------------------
 C  -   ON PASSE DANS LE REPERE PROPRE DE EPS
 
@@ -336,7 +336,7 @@ C
       CALL JACOBI(3,NPERM,TOL,TOLDYN,TR,TU,VECPE,EPSEP,JACAUX,
      &            NITJAC,TRIJ,ORDREJ)
 
-      
+
       EPSEQ = 0.D0
       DO 40 K = 1,3
         IF (EPSEP(K).GT.0.D0) THEN
@@ -344,19 +344,19 @@ C
         END IF
 40    CONTINUE
       EPSEQ = SQRT(EPSEQ)
-      
-      
-      
+
+
+
 C    2BIS - CALCUL DE EPSEQC = SQRT(TR (<EPSCOU>+ * <EPSCOU>+))
 C        M.B.: C EST LA DEFORMATION EQUIVALENT DANS LE CAS DU COUPLAGE
 C--------------------------------------------------------
 C  -   ON PASSE DANS LE REPERE PROPRE DE EPSCOU
 C     MATRICE  TR = (XX XY XZ YY YZ ZZ) POUR JACOBI)
-C     A CONTROLER SI LES QUANTITES SUIVANTES SERVENT AUSSI POUR LA 
+C     A CONTROLER SI LES QUANTITES SUIVANTES SERVENT AUSSI POUR LA
 C      MATRICE TANGENTE  (RIGI)!
 
-      IF (COUP .AND. RESI) THEN 
-      
+      IF (COUP .AND. RESI) THEN
+
         TR(1) = EPSCOU(1)
         TR(2) = EPSCOU(4)
         TR(3) = EPSCOU(5)
@@ -381,10 +381,10 @@ C      MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
           END IF
 1040    CONTINUE
         EPSEQC = SQRT(EPSEQC)
-        
+
       ENDIF
-      
-      
+
+
 C -  3     CALCUL DE <EPS>+
 C ------------------------------------------------------
 
@@ -416,7 +416,7 @@ C----------------------------------------------------------------
           TMP1 = TMP1 + SIGELP(K)
         END IF
 70    CONTINUE
-        
+
 
 C   5 -     CALCUL DE ALPHAT
 C----------------------------------------------------------------
@@ -431,14 +431,14 @@ C----------------------------------------------------------------
       ELSE
         ALPHAT = 0.0D0
       ENDIF
-      
-      
+
+
 C ======================================================================
 C       CALCUL DES CONTRAINTES ET VARIABLES INTERNES
 C           (OPTION FULL_MECA ET RAPH_MECA - (RESI) )
 C ====================================================================
       IF (RESI) THEN
-C    M.B.: EPSEND est la deformation equivalente 
+C    M.B.: EPSEND est la deformation equivalente
 C    qui fait evoluer l endommagement
 
       IF (COUP) THEN
@@ -446,7 +446,7 @@ C    qui fait evoluer l endommagement
       ELSE
         EPSEND = EPSEQ
       ENDIF
-        
+
       IF (EPSEND.LE.EPSD0) THEN
 C         PAS DE PROGRESSION DE L'ENDOMMAGEMENT
         D = VIM(1)
@@ -519,12 +519,12 @@ C     CALCUL  DE LA MATRICE TANGENTE DSIDEP
 C         OPTION RIGI_MECA_TANG ET FULL_MECA  (RIGI)
 C ======================================================================
 
-   
+
       IF (RIGI) THEN
-      
-C - M.B.: OPTION FULL_MECA POUR LE COUPLAGE AVEC UMLV     
+
+C - M.B.: OPTION FULL_MECA POUR LE COUPLAGE AVEC UMLV
         IF (COUP) D = VIP(IDC+1)
-      
+
 C   1 -  CONTRIBUTION ELASTIQUE
 C -------------------------------------------------------------
 

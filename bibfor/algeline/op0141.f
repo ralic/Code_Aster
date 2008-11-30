@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,9 @@ C PAS COOL ELLE EXISTE PAS
 
       IERI = .FALSE.
       CALL GETVTX ( ' ','IERI',1,1,1,REP,N1)
-      IF (REP .EQ. 'OUI') IERI = .TRUE.
+      IF ( N1.EQ.1 ) THEN
+         IF (REP .EQ. 'OUI') IERI = .TRUE.
+      ENDIF
 
 C RECUPERATION DES BASES DE MODES
       CALL GETVID ( ' ', 'BASE_1'          , 1,1,1, BASE1, N2 )

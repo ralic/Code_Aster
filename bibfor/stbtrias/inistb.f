@@ -1,7 +1,7 @@
       SUBROUTINE INISTB(MAXNOD,NBTYMA,NOMAIL,INDIC,PERMUT,
      &                  LIMAIL,INDICF,PERMUF,MAXFA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 16/06/97   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF STBTRIAS  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,6 +137,7 @@ C         18             PENTAEDRE            24     5     CUBIQUE
 C         19             HEXAEDRE              8     6     LINEAIRE
 C         20             HEXAEDRE             20     6     QUADRATIQUE
 C         21             HEXAEDRE             32     6     CUBIQUE
+C         22-28 IGNORES
 C         29             RESSORT ENTRE NOEUDS  2           LINEAIRE
 C         30             RESSORT FIXE AU SOL   1           LINEAIRE
 C         31             AMORTIS ENTRE NOEUDS  2           LINEAIRE
@@ -300,6 +301,13 @@ C
       NOMAIL(19)='HEXA8'
       NOMAIL(20)='HEXA20'
       NOMAIL(21)='HEXA32'
+      NOMAIL(22)=' '
+      NOMAIL(23)=' '
+      NOMAIL(24)=' '
+      NOMAIL(25)=' '
+      NOMAIL(26)=' '
+      NOMAIL(27)=' '
+      NOMAIL(28)=' '
       NOMAIL(29)='SEG2'
       NOMAIL(30)='POI1'
       NOMAIL(31)='SEG2'

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ solveur = 'MUMPS';
 #  de XX, le parametre mem_pivot autorise MUMPS a en prendre    #
 #  (1+mem_pivot/100)*XX                                         #
 # --------------------------------------------------------------#
-mem_pivot = 10;
+mem_pivot = 15;
 #
 # Choix de la methode de renumeration
 meth_renum = 'METIS';

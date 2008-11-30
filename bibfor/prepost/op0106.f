@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/11/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF PREPOST  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -500,7 +500,6 @@ C       ================================================================
               ZK24(JREF) = ZK24(LREF)
               ZK24(JREF+1) = ZK24(LREF+1)
               ZK24(JREF+2) = ZK24(LREF+2)
-              CALL JELIBE(RESUC1//'.REFD')
               IF (ZK24(JREF).NE.' ') THEN
                 CALL DISMOI('F','NOM_NUME_DDL',ZK24(JREF),'MATR_ASSE',
      &                      IBID,NUMREF,IRET)

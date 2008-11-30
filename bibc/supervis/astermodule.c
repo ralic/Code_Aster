@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 03/11/2008   AUTEUR PELLET J.PELLET */
+/* MODIF astermodule supervis  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2864,10 +2864,12 @@ PyObject *args;
 */
       int len;
       INTEGER lng=0;
-      char tmp[16+1] = "                 ";
+      char tmp[16+1];
       char *comport;
       PyObject *res;
 
+      BLANK(tmp, 16);
+      tmp[16] = '\0';
       len = -1;
       if (!PyArg_ParseTuple(args, "|s#:onFatalError",&comport ,&len)) return NULL;
       if (len == -1 || len == 0) {
@@ -3492,7 +3494,7 @@ static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
 	INTEGER intval = 0;
 	
 	BLANK(charval, 33);
-	charval[32] = '\0';
+	charval[33] = '\0';
 	if (!PyArg_ParseTuple(args, "ss",&nomobj,&attr))
 		return NULL;
 	CALL_JELIRA( nomobj, attr, &intval, charval );
@@ -3977,8 +3979,10 @@ void initvers(PyObject *dict)
     PyObject *v;
     INTEGER vers,util,nivo;
     INTEGER exploi;
-    char date[20];
+    char date[16+1];
     char rev[8];
+    BLANK(date, 16);
+    date[16] = '\0';
 
     CALL_VERSIO(&vers,&util,&nivo,date,&exploi);
     sprintf(rev,"%ld.%ld.%ld",vers,util,nivo);

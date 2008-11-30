@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       REAL*8        EPSI,RBID
       COMPLEX*16    CBID
       CHARACTER*4   TYPE(3)
-      CHARACTER*8   K8B,BASEMO,CRIT,CHAMP(3),INTERP,NOMRES,
+      CHARACTER*8   K8B,BASEMO,CRIT,CHAMP(8),INTERP,NOMRES,
      &              NOMIN,MODE,TOUCH
       CHARACTER*8   NOMMOT,MATPRO
       CHARACTER*14  NUMDDL
@@ -74,22 +74,26 @@ C
 
       MODE = BASEMO
       HRANGE = NOMIN
-      CALL GETVTX ( ' ', 'TOUT_CHAM', 0,1,1, TOUCH, N1 )
-      IF (TOUCH(1:3).EQ.'OUI') THEN
+      CALL GETVTX ( ' ', 'TOUT_CHAM', 1,1,1, TOUCH, N1 )
+      IF (N1.NE.0) THEN
+         CALL ASSERT( TOUCH(1:3).EQ.'OUI' )
          NBCHAM = 3
          TYPE(1) = 'DEPL'
          TYPE(2) = 'VITE'
          TYPE(3) = 'ACCE'
       ELSE
-         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,3, CHAMP, N1 )
-         NBCHAM = N1
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,0, CHAMP, N1 )
+         NBCHAM = -N1
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,NBCHAM, CHAMP, N1 )
          DO 11 I = 1 , NBCHAM
          IF (CHAMP(I)(1:4).EQ.'DEPL') THEN
             TYPE(I) = 'DEPL'
          ELSEIF (CHAMP(I)(1:4).EQ.'VITE') THEN
             TYPE(I) = 'VITE'
-         ELSE
+         ELSEIF (CHAMP(I)(1:4).EQ.'ACCE') THEN
             TYPE(I) = 'ACCE'
+         ELSE
+C           CHAMP IGNORE
          ENDIF
   11     CONTINUE
       ENDIF
@@ -138,7 +142,7 @@ C
          CREFE(1) = ZK24(LLCHA)
          CREFE(2) = ZK24(LLCHA+1)
          CALL JELIRA(CREFE(2)(1:19)//'.NUEQ','LONMAX',NEQ,K8B)
-         NUMDDL = ZK24(LLCHA+1)
+         NUMDDL = ZK24(LLCHA+1)(1:14)
       ENDIF
 
       CALL WKVECT('&&HARM75.BASEMODE','V V R',NBMODE*NEQ,IDBASE)

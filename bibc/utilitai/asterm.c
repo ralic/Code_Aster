@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF main utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF asterm utilitai  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -146,7 +146,7 @@ void asterm(long argc, char** argv)
 */
 {
 	long ivers,iutil,iniv,ilog;
-	char vdate[9];
+	char vdate[9] = "         ";
 	long cerr,inter,iret;
 	long r1,r2,r3;
 

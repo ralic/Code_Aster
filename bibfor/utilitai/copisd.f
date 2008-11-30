@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -257,7 +257,7 @@ C FETI OR NOT ?
 
           CALL JELIRA(MASFE1,'LONMAX',NBSD,K8B)
           CALL JEVEUO(MASFE1,'L',IFETM1)
-          CALL JEVEUO(MASFE2,'L',IFETM2)
+          CALL JEVEUO(MASFE2,'E',IFETM2)
           CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
           DO 30 IDD = 1,NBSD
             IF (ZI(ILIMPI+IDD).EQ.1) THEN

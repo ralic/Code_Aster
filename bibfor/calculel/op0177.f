@@ -1,7 +1,7 @@
       SUBROUTINE OP0177 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,6 +139,7 @@ C -- SENSIBILITE : NOMBRE DE PASSAGES
 C=======================================================================
       IAUX = 1
       JAUX = 1
+      IBID = 1
       CALL PSRESE(' ',IBID,IAUX,TABLE0,JAUX,NBPASS,NORECG,IRET)
       CALL JEVEUO(NORECG,'L',ADRECG)
 C=======================================================================

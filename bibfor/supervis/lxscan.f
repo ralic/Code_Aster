@@ -5,7 +5,7 @@
       REAL*8                                  RVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 12/01/99   AUTEUR SABHHCM C.MASSERET 
+C MODIF SUPERVIS  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,6 +116,7 @@ C     ------------------------------------------------------------------
       KDEB   = IDEB - 1
       NBENEG = .FALSE.
       ISIGNE = 0
+      EXPNEG = .TRUE.
 C
    1  CONTINUE
          KDEB = KDEB + 1

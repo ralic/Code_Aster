@@ -1,6 +1,6 @@
       SUBROUTINE CNSIMP(CNSZ,UNITE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -149,36 +149,36 @@ C       -- ON MET LES VALEURS NON AFFECTEES A " " :
           K = LICMPU(IK)
           IF (ZL(JCNSL-1+ (INO-1)*NCMP+K)) THEN
             IF (TSCA.EQ.'R') THEN
-              WRITE (ZK16(JLVAL-1+K),'(E12.5,A4)') ZR(JCNSV-1+
+              WRITE (ZK16(JLVAL-1+IK),'(E12.5,A4)') ZR(JCNSV-1+
      &          (INO-1)*NCMP+K),' '
             ELSE IF (TSCA.EQ.'K8') THEN
-              WRITE (ZK16(JLVAL-1+K),'(A8,A8)') ZK8(JCNSV-1+
+              WRITE (ZK16(JLVAL-1+IK),'(A8,A8)') ZK8(JCNSV-1+
      &          (INO-1)*NCMP+K),' '
             ELSE IF (TSCA.EQ.'C') THEN
-              WRITE (ZK16(JLVAL-1+2*(K-1)+1),'(E12.5,A4)')
+              WRITE (ZK16(JLVAL-1+2*(IK-1)+1),'(E12.5,A4)')
      &          DBLE(ZC(JCNSV-1+(INO-1)*NCMP+K)),' '
-              WRITE (ZK16(JLVAL-1+2*(K-1)+2),'(E12.5,A4)')
+              WRITE (ZK16(JLVAL-1+2*(IK-1)+2),'(E12.5,A4)')
      &          DIMAG(ZC(JCNSV-1+(INO-1)*NCMP+K)),' '
             ELSE IF (TSCA.EQ.'I') THEN
-              WRITE (ZK16(JLVAL-1+K),'(I12,A4)') ZI(JCNSV-1+
+              WRITE (ZK16(JLVAL-1+IK),'(I12,A4)') ZI(JCNSV-1+
      &          (INO-1)*NCMP+K),' '
             END IF
           ELSE
             IF(TSCA.NE.'C') THEN
-              WRITE (ZK16(JLVAL-1+K),'(A16)') ' '
+              WRITE (ZK16(JLVAL-1+IK),'(A16)') ' '
             ELSE
-              WRITE (ZK16(JLVAL-1+2*(K-1)+1),'(A16)') ' '
-              WRITE (ZK16(JLVAL-1+2*(K-1)+2),'(A16)') ' '
+              WRITE (ZK16(JLVAL-1+2*(IK-1)+1),'(A16)') ' '
+              WRITE (ZK16(JLVAL-1+2*(IK-1)+2),'(A16)') ' '
             ENDIF
           END IF
    60   CONTINUE
         IF(TSCA.NE.'C') THEN
           WRITE (UNITE,FMT2) NOMNO,
-     &            (ZK16(JLVAL-1+LICMPU(IK)),IK=1,NCMPU)
+     &            (ZK16(JLVAL-1+IK),IK=1,NCMPU)
         ELSE
           WRITE (UNITE,FMT2) NOMNO,
-     &            (ZK16(JLVAL-1+2*(LICMPU(IK)-1)+1),
-     &             ZK16(JLVAL-1+2*(LICMPU(IK)-1)+2),IK=1,NCMPU)
+     &            (ZK16(JLVAL-1+2*(IK-1)+1),
+     &             ZK16(JLVAL-1+2*(IK-1)+2),IK=1,NCMPU)
         ENDIF
 
    70 CONTINUE

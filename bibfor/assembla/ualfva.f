@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAZ,BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,17 +93,16 @@ C        -- ON NE SAIT TRAITER QUE LES MATRICES DIAGONALES OU PLEINES :
          DO 5,IEQ=1,NEQ
             IF (ZI(JSCHC-1+IEQ).NE.1) LDIAG=.FALSE.
             IF (ZI(JSCHC-1+IEQ).NE.IEQ) LPLEIN=.FALSE.
-            IF (LDIAG) THEN
-               CALL CRSMOS(STOMOR,'DIAG',NEQ)
-            ELSE
-               IF (LPLEIN) THEN
-                  CALL CRSMOS(STOMOR,'PLEIN',NEQ)
-               ELSE
-                  CALL ASSERT(.FALSE.)
-               ENDIF
-            ENDIF
-
  5       CONTINUE
+         IF (LDIAG) THEN
+            CALL CRSMOS(STOMOR,'DIAG',NEQ)
+         ELSE
+            IF (LPLEIN) THEN
+               CALL CRSMOS(STOMOR,'PLEIN',NEQ)
+            ELSE
+               CALL ASSERT(.FALSE.)
+            ENDIF
+         ENDIF
       ENDIF
 
       CALL JEVEUO(STOMOR//'.SMDI','L',JSMDI)

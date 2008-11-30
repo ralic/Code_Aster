@@ -1,4 +1,4 @@
-# MODIF  DATE 25/11/2008   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC TROIS DISQUES
 # shll102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,16 +149,6 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                                     FREQ=(0.,1000.,),),);
 
 
-
-
-OM=25000./60.*2*pi
-
-AGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
-                                  COEF_R=OM,),
-                               _F(MATR_ASSE=AMOR,
-                                  COEF_R=1.0,),),);
-
-
 balou = 0.0002;
 
 
@@ -190,7 +180,6 @@ for NTRIM in tours:
   print 'nbtour ', NTRIM
 
   malou = balou * OM**2
-  print 'malou ', malou
   F[25]= malou
   F[26]= malou*1j
    
@@ -256,9 +245,6 @@ for NTRIM in tours:
                    GROUP_NO='N_DIS2',);
 
 
-  IMPR_FONCTION(FORMAT='TABLEAU',
-              UNITE=6,
-              COURBE=_F(FONCTION=DZ_DIS2))
 
   MOD_Z_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DZ_DIS2,
                                      PARTIE='MODULE',),);
@@ -271,6 +257,16 @@ for NTRIM in tours:
 
   PHA_Y_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DY_DIS2,
                                      PARTIE='PHASE',),);
+  IMPR_FONCTION(FORMAT='TABLEAU',
+              UNITE=8,
+              COURBE=(_F(FONCTION=DY_DIS2),
+                      _F(FONCTION=DZ_DIS2),
+                      _F(FONCTION=MOD_Y_D2),
+                      _F(FONCTION=PHA_Y_D2),
+                      _F(FONCTION=MOD_Z_D2),
+                      _F(FONCTION=PHA_Z_D2),))
+                      
+
 
   TABMODY=CREA_TABLE(FONCTION=_F(FONCTION=MOD_Y_D2, ))
   TABMODZ=CREA_TABLE(FONCTION=_F(FONCTION=MOD_Z_D2, ))
@@ -306,21 +302,16 @@ for NTRIM in tours:
   DETRUIRE(CONCEPT=_F(NOM=TABPHAY))
   DETRUIRE(CONCEPT=_F(NOM=TABPHAZ))
 
-print "\n"
 
-print 'AMPLITUDE SUR LE DISQUE 2'
 
 elli1=zeros([nbtour+1,1],Float)
 i=0
 for NTRIM in tours:
     dax=ellipse(MODYDIS2[i],MODZDIS2[i],PHAYDIS2[i],PHAZDIS2[i])
-    print ("%f %e " %(NTRIM,dax))
     elli1[i]=dax
     i=i+1
 
-print "\n"
 
-print 'AMPLITUDE SUR LE DISQUE 2 (python)'
 
 elli2=zeros([nbtour+1,1],Float)
 freqi=zeros([nbtour+1,1],Float)
@@ -328,19 +319,12 @@ freqi=zeros([nbtour+1,1],Float)
 i=0
 for NTRIM in tours:
     mody=sqrt(reponsy[i]*conjugate(reponsy[i]))
-    rody=mody.real
-    angy=0.0
-    if reponsy[i].real>1e-30:
-       angy=arctan(reponsy[i].imag/reponsy[i].real)*180/pi
+    angy=arctan2(reponsy[i].imag,reponsy[i].real)*180/pi
     modz=sqrt(reponsz[i]*conjugate(reponsz[i]))
-    rodz=modz.real
-    angz=0.0
-    if reponsz[i].real>1e-30:
-       angz=arctan(reponsz[i].imag/reponsz[i].real)*180/pi
-    dax=ellipse(rody,rodz,angy,angz)
+    angz=arctan2(reponsz[i].imag,reponsz[i].real)*180/pi
+    dax=ellipse(mody.real,modz.real,angy,angz)
     freqi[i]=NTRIM/60.
     elli2[i]=dax
-    print ("%f %e " %(NTRIM,elli2[i]))
     i=i+1
 
 
@@ -377,22 +361,22 @@ TEST_TABLE(TABLE=ELLI2, NOM_PARA='DEPL', VALE=.499E-4,
 
 TEST_TABLE(TABLE=ELLI2, NOM_PARA='DEPL', VALE=.130E-3,
            FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 11281./60.,),),
-           PRECISION=.09,
+           PRECISION=.002,
            REFERENCE='SOURCE_EXTERNE',)
 
 TEST_TABLE(TABLE=ELLI2, NOM_PARA='DEPL', VALE=.421E-5,
             FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 16787./60.,),),
-            PRECISION=.01,
+            PRECISION=.002,
             REFERENCE='SOURCE_EXTERNE',)
 
 TEST_TABLE(TABLE=ELLI2, NOM_PARA='DEPL', VALE=.684E-4,
             FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 24418./60.,),),
-            PRECISION=.14,
+            PRECISION=.002,
             REFERENCE='SOURCE_EXTERNE',)
 
 TEST_TABLE(TABLE=ELLI2, NOM_PARA='DEPL', VALE=.311E-4,
            FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 26611./60.,),),
-           PRECISION=.09,
+           PRECISION=.02,
            REFERENCE='SOURCE_EXTERNE',)
 
 

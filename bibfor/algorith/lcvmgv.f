@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -136,8 +136,7 @@ C
       BL2 = '  '
       FB2 = 'F '
 C
-      IF (.NOT.( COMPOR(1)(1:4) .EQ. 'ELAS'.OR.
-     &     COMPOR(1)(1:9) .EQ. 'VMIS_ISOT' )) THEN
+      IF (.NOT.(COMPOR(1)(1:9) .EQ. 'VMIS_ISOT' )) THEN
             CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
 C

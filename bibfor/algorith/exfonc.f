@@ -1,7 +1,7 @@
       SUBROUTINE EXFONC(FONACT,PARMET,SOLVEU,DEFICO,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,11 +109,11 @@ C
 C
 C --- INITIALISATIONS
 C
-      REINCR = NINT(PARMET(1))       
+      REINCR = NINT(PARMET(1))
 C
 C --- TYPE DE SOLVEUR
 C
-      CALL  JEVEUO(SOLVEU//'.SLVK','L',JSOLVE)
+      CALL  JEVEUO(SOLVEU//'.SLVK','E',JSOLVE)
       LMUMPS = .FALSE.
       LGCPC  = .FALSE.
       LMUMPD = .FALSE.
@@ -200,7 +200,7 @@ C
       IF (LUNIL) THEN
         IF (LPILO) THEN
           CALL U2MESS('F','MECANONLINE3_94')
-        ENDIF      
+        ENDIF
         IF (LRELI) THEN
           CALL U2MESS('A','MECANONLINE3_95')
         ENDIF
@@ -232,24 +232,24 @@ C
       ENDIF
 C
 C --- DYNAMIQUE
-C      
+C
       IF (LDYNA) THEN
         IF (LPILO) THEN
           CALL U2MESS('F','MECANONLINE5_25')
         ENDIF
         IF (LRELI) THEN
-          CALL U2MESS('F','MECANONLINE5_26') 
-        ENDIF   
+          CALL U2MESS('F','MECANONLINE5_26')
+        ENDIF
         IF (LTHETA) THEN
           IF (REAROT) THEN
             CALL U2MESS('F','MECANONLINE5_27')
-          ENDIF        
-        ENDIF  
+          ENDIF
+        ENDIF
         IF (LXFEM) THEN
-          CALL U2MESS('F','MECANONLINE5_28') 
-        ENDIF            
-      ENDIF      
-            
+          CALL U2MESS('F','MECANONLINE5_28')
+        ENDIF
+      ENDIF
+
 C
       CALL JEDEMA()
       END

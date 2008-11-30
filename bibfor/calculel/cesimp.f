@@ -1,6 +1,6 @@
       SUBROUTINE CESIMP(CESZ,UNITE,NBMAT,NUMMAI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,19 +176,19 @@ C       -- ON MET LES VALEURS NON AFFECTEES A " " :
               IF (IAD.GT.0) THEN
 
                 IF (TSCA.EQ.'R') THEN
-                  WRITE (ZK16(JLVAL-1+K),'(1PE16.9)') ZR(JCESV-1+IAD)
+                 WRITE (ZK16(JLVAL-1+IK),'(1PE16.9)') ZR(JCESV-1+IAD)
 
                 ELSE IF (TSCA.EQ.'I') THEN
-                  WRITE (ZK16(JLVAL-1+K),'(I12,A4)') ZI(JCESV-1+IAD),' '
+                 WRITE (ZK16(JLVAL-1+IK),'(I12,A4)') ZI(JCESV-1+IAD),' '
 
                 ELSE IF (TSCA.EQ.'K8') THEN
-                  WRITE (ZK16(JLVAL-1+K),'(A8,A8)') ZK8(JCESV-1+IAD),' '
+                 WRITE (ZK16(JLVAL-1+IK),'(A8,A8)') ZK8(JCESV-1+IAD),' '
 
                 ELSE IF (TSCA.EQ.'K16') THEN
-                  WRITE (ZK16(JLVAL-1+K),'(A16)') ZK16(JCESV-1+IAD)
+                 WRITE (ZK16(JLVAL-1+IK),'(A16)') ZK16(JCESV-1+IAD)
                 END IF
               ELSE
-                WRITE (ZK16(JLVAL-1+K),'(A16)') ' '
+                WRITE (ZK16(JLVAL-1+IK),'(A16)') ' '
               END IF
    80       CONTINUE
 
@@ -201,7 +201,7 @@ C       -- ON MET LES VALEURS NON AFFECTEES A " " :
 
             WRITE (SPOIN,'(I8)') ISP
             WRITE (UNITE,FMT) NOMMA,POIN,SPOIN,
-     &        (ZK16(JLVAL-1+LICMPU(IK)),IK=1,NCMPU)
+     &        (ZK16(JLVAL-1+IK),IK=1,NCMPU)
 
    90     CONTINUE
   100   CONTINUE

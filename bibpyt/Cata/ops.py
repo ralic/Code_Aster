@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF ops Cata  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM):
       # en POURSUITE, ne pas écraser la mémorisation existante.
       if not hasattr(jdc, 'memo_sensi'):
          jdc.memo_sensi = MEMORISATION_SENSIBILITE()
-         jdc.memo_sensi.reparent(jdc)
+      jdc.memo_sensi.reparent(jdc)
 
       if hasattr(jdc, 'msg_init') and jdc.msg_init == 1:
          # messages d'alarmes désactivés

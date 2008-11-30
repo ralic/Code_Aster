@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF iniast utilitai  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF iniast utilitai  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,7 +33,7 @@ INTEGER DEFPPP(INIAST, iniast, long *r1, long *r2, long *r3)
 {
    long ier,ivers,iutil,iniv,ilog,v[6],vrand;
    int a1,a2,a3,delta;
-   char vdate[17];
+   char vdate[17] = "                 ";
 #ifndef _NO_EXPIR
    void STDCALL(ERRLIC, errlic)(void);
 #endif

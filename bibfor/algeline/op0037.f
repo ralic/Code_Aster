@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -491,6 +491,7 @@ C     --- SIGNE DES MODES ---
       ENDIF
 C
 C RECUPERATION INFORMATIONS SENSIBILITE
+      IERD = 1
       CALL GETVID(' ','SENSIBILITE',1,IERD,1,K8B,ISENS)
 
       NBPASS = 0

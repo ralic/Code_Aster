@@ -1,6 +1,6 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C DEB ------------------------------------------------------------------
             ISZON(JISZON+IADMI-1+K)=ISZON(JISZON+KADM-1+K)
  1        CONTINUE
           IF (IADYN .NE. 0) THEN
-            CALL JJLIDY ( KADM , IADYN )
+            CALL JJLIDY ( IADYN, KADM )
           ELSE IF (KADM .NE. 0) THEN
             CALL JJLIBP (KADM)
           ENDIF

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C     COMMANDE :  POST_ZAC
 C        METHODE ZARKA-CASIER
@@ -260,7 +260,7 @@ C AYANT COMME VALEUR LA VALEUR TPZAC FOURNIE PAR L UTILISATEUR
       IF (EXTEMP) THEN
         CALL COPISD('CHAMP','V',CHVARC,CHVZAC)
         CALL JELIRA(CHVZAC(1:19)//'.CELV','LONMAX',LONG,K1BID)
-        CALL JEVEUO(CHVZAC(1:19)//'.CELV','L',JCELV)
+        CALL JEVEUO(CHVZAC(1:19)//'.CELV','E',JCELV)
         DO 25 I=1,LONG
           ZR(JCELV-1+I)=TPZAC
 25      CONTINUE

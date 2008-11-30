@@ -4,7 +4,7 @@
       CHARACTER*(*) RESIN,RESOU,GRAND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,6 @@ C
       REFE(1:8) = RESIN
       CALL JEVEUO (REFE, 'L', JREFE )
       RAIDE = ZK24(JREFE+2)
-      CALL JELIBE( REFE )
 C
       IF ( (TYPOUT(1:10).EQ.'DYNA_HARMO').OR.
      &     (TYPOUT(1:9).EQ.'HARM_GENE') ) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE IRADHS(VERSIO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C---------------- COMMUNS NORMALISES JEVEUX --------------------------
 C
       PARAMETER (MAXNOD=32,NBTYMX=48,MAXFA=6)
       CHARACTER*8 NOMAIL(NBTYMX),NOMTM
-      INTEGER LIMAIL(NBTYMX),INDIC(NBTYMX),INDICF(NBTYMX)
+      INTEGER LIMAIL(NBTYMX),INDIC(NBTYMX),INDICF(NBTYMX),ICAS
       CHARACTER*1 K1BID
 C
       DATA AXDPCP/'AX','DP','CP','PL'/
@@ -91,13 +91,13 @@ C
       DO 1 IMA=1,NBTYMA
          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',IMA),NOMTM)
          IF ( NOMTM .EQ. 'HEXA27' ) NOMTM = 'HEXA20'
-         IF ( NOMTM .EQ. 'TRIA7' ) NOMTM = 'TRIA6'
-         IF ( NOMTM .EQ. 'QUAD9' ) NOMTM = 'QUAD8'
-         IF ( NOMTM .EQ. 'SEG4' ) NOMTM = 'SEG2'
+         IF ( NOMTM .EQ. 'TRIA7'  ) NOMTM = 'TRIA6'
+         IF ( NOMTM .EQ. 'QUAD9'  ) NOMTM = 'QUAD8'
+         IF ( NOMTM .EQ. 'SEG4'   ) NOMTM = 'SEG2'
          DO 2 ISU=1,NBTYMS
             IF (NOMTM.EQ.NOMAIL(ISU)) THEN
                ZI(JCOD1-1+IMA)=ISU
-               GO TO 1
+               GOTO 1
             END IF
     2    CONTINUE
     1 CONTINUE
@@ -113,15 +113,21 @@ C
       DO 4 IMA=1,NBTYMA
          NBN=ZI(JNBNOE-1+IMA)
          ISU=ZI(JCOD1-1+IMA)
-         IF (INDIC(ISU).LT.0) THEN
+         IF (ISU.EQ.0) THEN
+            ICAS = 0
+         ELSE
+            ICAS = INDIC(ISU)
+         ENDIF
+         
+         IF (ICAS.LT.0) THEN
             DO 41 INO=1,NBN
                ZI(JPERMU-1+MAXNOD*(IMA-1)+INO)=0
    41       CONTINUE
-         ELSE IF (INDIC(ISU).EQ.0) THEN
+         ELSE IF (ICAS.EQ.0) THEN
             DO 42 INO=1,NBN
                ZI(JPERMU-1+MAXNOD*(IMA-1)+INO)=INO
    42       CONTINUE
-         ELSE IF (INDIC(ISU).GT.0) THEN
+         ELSE
             DO 43 INO=1,NBN
                DO 44 INOS=1,NBN
                   IMPER=ZI(JPERSU-1+MAXNOD*(ISU-1)+INOS)

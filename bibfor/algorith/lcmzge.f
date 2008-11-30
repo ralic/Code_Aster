@@ -2,7 +2,7 @@
      &                   EPSTM,DEPST, VIM,
      &                   OPTION, SIG, VIP,  DSIDPT, PROJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,8 @@ C ----------------------------------------------------------------------
 
       LOGICAL      RIGI, RESI, ELAS, RELA, PROG, CPLAN
       CHARACTER*1 POUM
-      CHARACTER*2 CODRET(6)
-      CHARACTER*8 NOMRES(6) , NOMPAR
+      CHARACTER*2 CODRET(7)
+      CHARACTER*8 NOMRES(7) , NOMPAR
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
       INTEGER     I,J,K,L,IRET,IRET1,IRET2,IRET3
       REAL*8      E, NU, EPSTHE, KDESS, BENDO,R8NNEM
@@ -75,13 +75,13 @@ C ----------------------------------------------------------------------
       REAL*8      VECPE(3,3), VECPER(3,3)
       REAL*8      COPLAN,  LAMBDA, DEUXMU, RTEMPC, RTEMPT, ALPHAT
       REAL*8      RAC2, COEF, TMP1, D
-      REAL*8      VALRES(6), VALPAR
+      REAL*8      VALRES(7), VALPAR
       REAL*8      KRON(6)
       REAL*8      EPSFP(6), EPSCOU(6), CHI
       INTEGER     IDC
       LOGICAL     COUP
 
-      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/      
+      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C ======================================================================
 C                            INITIALISATION
 C ======================================================================
@@ -98,9 +98,9 @@ C -- OPTION ET MODELISATION
       IRET1 = 0
       IRET2 = 0
       IRET3 = 0
-C M.B.: NOUVELLE OPTION COUP POUR LE COUPLAGE AVEC UMLV 
+C M.B.: NOUVELLE OPTION COUP POUR LE COUPLAGE AVEC UMLV
 C MEME OPTION UTILISEE POUR LE COUPLAGE UMLV-ENDO_ISOT_BETON
-     
+
       COUP  = (OPTION(6:9).EQ.'COUP')
 
 C M.B.: INDICE POUR IDENTIFIER LES VARIABLES INTERNES DANS LES CAS:
@@ -110,7 +110,7 @@ C COUPLAGE ET ABSENCE DE COUPLAGE AVEC UMLV
       IF (COUP) THEN
         IDC = 21
       ENDIF
-      
+
 C -- PROJECTEUR DE COUPURE
       CALL R8INIR(36,0.D0,PROJ,1)
       IF (VIM(1) .LT. 1.D0-1.D-05) CALL R8INIR(6,1.D0,PROJ,7)
@@ -211,7 +211,7 @@ C    M.B.: LECTURE DU PARAMETRE DE COUPLAGE AVEC UMLV
      &              0.D0,1,NOMRES(7),VALRES(7),CODRET(7),'FM')
         CHI   = VALRES(7)
         IF (CHI .EQ. 0.D0) THEN
-          CALL U2MESS('I','COMPOR1_59') 
+          CALL U2MESS('I','COMPOR1_59')
         ENDIF
       ENDIF
 
@@ -228,8 +228,8 @@ C -   M.B.: CALCUL DE LA DEFORMATION DE FLUAGE AU TEMP P
       IF (COUP .AND. RESI) THEN
         CALL LCUMVI('FT',VIP,EPSFP)
       ENDIF
-      
-      
+
+
 C ======================================================================
 C    CALCUL DES CONTRAINTES ET VARIABLES INTERNES
 C    (OPTION FULL_MECA ET RAPH_MECA)
@@ -251,8 +251,8 @@ C  -   MISE A JOUR DES DEFORMATIONS MECANIQUES
 30      CONTINUE
         D=VIM(1)
       ENDIF
-      
-     
+
+
 C -  MODIF M.B.: ON MET DANS EPS LES DEFORMATIONS REELES
       DO  40 K=4,NDIMSI
         EPS(K) = EPS(K)/RAC2
@@ -279,7 +279,7 @@ C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
 
 
 C  M.B.: SI CONTRAINTES PLAN (COUP)
-C  ON CALCULE LA 3EME  COMPOSANTE NORMALE 
+C  ON CALCULE LA 3EME  COMPOSANTE NORMALE
 C   AVANT DE DIAGONALISER
       IF (COUP .AND. RESI) THEN
         IF (CPLAN) THEN
@@ -289,7 +289,7 @@ C   AVANT DE DIAGONALISER
         END IF
       END IF
 
-      IF (COUP .AND. RESI) THEN 
+      IF (COUP .AND. RESI) THEN
         CALL R8INIR(6, 0.D0, EPSCOU,1)
         DO 1010  K=1,NDIMSI
           EPSE(K) = EPSE(K) - EPSFP(K)
@@ -459,8 +459,8 @@ C        ON PASSE DANS LE REPERE INITIAL LES CONTRAINTES REELLES
         END IF
           VIP(IDC+4) = EPSEQ
       END IF
-      
-      
+
+
 C ======================================================================
 C     CALCUL  DE LA MATRICE TANGENTE DSIDEP
 C         OPTION RIGI_MECA_TANG ET FULL_MECA

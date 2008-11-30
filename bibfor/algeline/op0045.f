@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C        MODE_ITER_SIMULT
-C        RECHERCHE DE MODES PAR ITERATION SIMULTANEE EN SOUS-ESPACE 
+C        RECHERCHE DE MODES PAR ITERATION SIMULTANEE EN SOUS-ESPACE
 C        (LANCZOS, JACOBI OU IRA-ARPACK) OU METHODE DE TYPE QR (LAPACK)
 C-----------------------------------------------------------------------
 C        - POUR LE PROBLEME GENERALISE AUX VALEURS PROPRES :
@@ -80,7 +80,8 @@ C VARIABLES LOCALES
      &             NITJAC,NNFREQ,NPREC,N1,NSTOC,NCONV,IEXIN,LWORKR,LAUR,
      &             QRN,QRLWOR,IQRN,LQRN,QRAR,QRAI,QRBA,QRVL,KQRN,
      &             QRN2,ILSCAL,IRSCAL,LAUC,LAUL,IHCOL,IADIA,IFIN,
-     &             IDEB,J,JBID,ICSCAL,IVSCAL,IISCAL,IBSCAL
+     &             IDEB,J,ICSCAL,IVSCAL,IISCAL,IBSCAL,
+     &             JVALMA,JVALMM
       REAL*8       PRORTO,OMEGA2,FMIN,FMAX,RAUX,ALPHA,TOLSOR,
      &             UNDF,R8VIDE,FREQOM,R8PREM,OMEMIN,OMEMAX,OMESHI,
      &             OMECOR,FCORIG,PRECDC,SEUIL,VPINF,PRECSH,TOL,VPMAX,
@@ -115,9 +116,6 @@ C     -------  LECTURE DES DONNEES  ET PREMIERES VERIFICATION   --------
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
-C ---- TEST POUR VALIDER LE QUADRATIQUE INFORMATIQUEMENT
-      LTESTQ=.FALSE.
-C      LTESTQ=.TRUE.
       FLAGE = .FALSE.
       NCONV = 0
       UNDF = R8VIDE()
@@ -138,10 +136,10 @@ C      LTESTQ=.TRUE.
           PRIRAM(I) = 0
    5    CONTINUE
       ENDIF
-      
+
 C     --- RECUPERATION DU RESULTAT  ---
       CALL GETRES(MODES,TYPCON,NOMCMD)
-      
+
 C     --- RECUPERATION DES ARGUMENTS MATRICIELS ---
       CALL GETVID(' ','MATR_A',1,1,1,RAIDE,L)
       CALL GETVID(' ','MATR_B',1,1,1,MASSE,L)
@@ -152,7 +150,7 @@ C     --- RECUPERATION DES ARGUMENTS MATRICIELS ---
       ELSE
         LC=.TRUE.
       ENDIF
-      
+
 C     --- TEST DU TYPE (COMPLEXE OU REELLE) DE LA MATRICE DE RAIDEUR ---
       IF (IER.EQ.0) CALL JELIRA(RAIDE//'.VALM','TYPE',IBID,KTYP)
       IF (KTYP.EQ.'R') THEN
@@ -162,7 +160,7 @@ C     --- TEST DU TYPE (COMPLEXE OU REELLE) DE LA MATRICE DE RAIDEUR ---
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
-            
+
 C     --- METHODE DE RESOLUTION CHOISIE ---
 C     METHOD : 'TRI_DIAG','JACOBI' OU 'SORENSEN' OU 'QZ'
       CALL GETVTX(' ','METHODE',1,1,1,METHOD,LMET)
@@ -212,7 +210,7 @@ C     --- RECUPERATION PARAM LANCZOS ---
          CALL GETVR8(' ','PREC_ORTHO'      ,1,1,1,PRORTO,L)
          CALL GETVR8(' ','PREC_LANCZOS'    ,1,1,1,PRSUDG,L)
          CALL GETVIS(' ','NMAX_ITER_QR'    ,1,1,1,NITV,L)
-         
+
 C     --- RECUPERATION PARAM JACOBI ---
       ELSE  IF (METHOD .EQ. 'JACOBI') THEN
          CALL GETVIS(' ','NMAX_ITER_BATHE ',1,1,1,ITEMAX,L)
@@ -268,7 +266,7 @@ C     --- CONTROLE DE LA COHERENCE OPTION/FREQ OU CHAR_CRIT ---
       ELSE
         CALL VPVOPT(OPTIOF,TYPRES,NNCRIT,ZR(LBORCR),IERX)
       ENDIF
-      
+
 C     ------------------------------------------------------------------
 C     --------------------  REGLES D'EXCLUSION   -----------------------
 C     ------------------------------------------------------------------
@@ -306,7 +304,7 @@ C     --- METHODE QZ ---
      &    CALL U2MESS('F','ALGELINE5_60')
       ENDIF
       IF ((OPTIOF.EQ.'TOUT').AND.(.NOT.LQZ))
-     &  CALL U2MESS('F','ALGELINE5_65')   
+     &  CALL U2MESS('F','ALGELINE5_65')
 
 C     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
       CALL EXISD('MATR_ASSE',RAIDE,IBID)
@@ -364,7 +362,7 @@ C     --- MATRICE K ET/OU M ET OU C NON SYMETRIQUE(S)
       ELSE
         LNS=.FALSE.
       ENDIF
-      
+
 C     ------------------------------------------------------------------
 C     ----------- DDL : LAGRANGE, BLOQUE PAR AFFE_CHAR_CINE  -----------
 C     ------------------------------------------------------------------
@@ -382,7 +380,7 @@ C       -- TRAITEMENTS PARTICULIERS PROPRES A QZ
         IF (OPTIOF(1:4).EQ.'TOUT') NFREQ = NEQACT
         IF ((TYPEQZ(1:5).EQ.'QZ_QR').AND.((NBLAGR.NE.0).OR.LNS))
      &    CALL U2MESS('F','ALGELINE5_60')
-      ENDIF     
+      ENDIF
 C     ------------------------------------------------------------------
 C     ------------  CONSTRUCTION DE LA MATRICE SHIFTEE   ---------------
 C     ------------------------------------------------------------------
@@ -441,7 +439,7 @@ C --- AVEC QZ, UTILE QUE POUR GENERALISE REEL SYMETRIQUE
 C     DANS LES AUTRES CAS (VPFOPC,WPFOPR,WPFOPC) ON SORT DES LE CALCUL
 C     DU SHIFT SIGMA
       LMTPSC= 0
-      LMATRA=0      
+      LMATRA=0
       IF (.NOT.LC) THEN
 C     --- PROBLEME GENERALISE REEL SYMETRIQUE ---
         IF ((LKR).AND.(.NOT.LNS)) THEN
@@ -471,7 +469,7 @@ C     --- PROBLEME GENERALISE COMPLEXE OU REEL NON SYM ---
           IF (.NOT.LQZ)
      &      CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
         ENDIF
-        
+
       ELSE
 
 C     --- PROBLEME QUADRATIQUE REEL SYM OU NON SYM---
@@ -498,13 +496,13 @@ C     --- PROBLEME QUADRATIQUE COMPLEXE SYM ---
           ENDIF
         ENDIF
       ENDIF
-      
+
 C     ------------------------------------------------------------------
 C     ----  CORRECTION EVENTUELLE DU NBRE DE MODES DEMANDES NFREQ ------
 C     ----  DETERMINATION DE LA DIMENSION DU SOUS ESPACE NBVECT   ------
 C     ------------------------------------------------------------------
-        
-      
+
+
       IF (NIV.GE.1) THEN
         WRITE(IFM,*)'INFORMATIONS SUR LE CALCUL DEMANDE:'
         WRITE(IFM,*)'NOMBRE DE MODES RECHERCHES     : ',NFREQ
@@ -576,7 +574,7 @@ C     --- TRAITEMENT SPECIFIQUE A QZ ---
 C     AVEC QZ ON A PAS D'ESPACE DE PROJECTION, IL FAUT DONC AFFECTER
 C     NBVECT EN DUR
       IF (LQZ) NBVECT=NEQ
-      
+
 C     --- CORRECTION DE NBVECT DANS LE CAS QUADRATIQUE
       IF (LC) THEN
         NBVECT = 2*NBVECT
@@ -661,7 +659,7 @@ C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
           CALL WKVECT('&&OP0045.QZ.WORKR','V V R',QRLWOR,KQRNR)
         ENDIF
         CALL JERAZO('&&OP0045.QZ.MATRICEK',QRN2,1)
-        CALL JERAZO('&&OP0045.QZ.MATRICEM',QRN2,1)      
+        CALL JERAZO('&&OP0045.QZ.MATRICEM',QRN2,1)
       ELSE IF (METHOD .EQ. 'SORENSEN') THEN
         LONWL = 3*NBVECT**2+6*NBVECT
         CALL WKVECT('&&OP0045.SELECT','V V L',NBVECT,LSELEC)
@@ -727,26 +725,33 @@ C ---- OPTION ILLICITE
           CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
-      
+
+
+C ---- TEST POUR VALIDER LE QUADRATIQUE INFORMATIQUEMENT
 C TEST POUR SIMULER LE PB GENERALISE KU=LAMBDA*MU VIA LES CHEMINS
 C INFORMATIQUE DU PB QUADRATIQUE. ON POSE C=-M ET M=0
 C OBJECTIF: VALIDER LE QUADRATIQUE INFORMATIQUEMENT
 C PERIMETRE: UNIQUEMENT EN SYMETRIQUE
-      IF ((LTESTQ).AND.(LC)) THEN
-        CALL JEVEUO(JEXNUM(AMOR(1:19)//'.VALM',1),'L',IBID)
-        CALL JEVEUO(JEXNUM(MASSE(1:19)//'.VALM',1),'L',JBID)
-        CALL JEVEUO(NUMEDD(1:14)//'.SMOS.SMHC','L',IHCOL)
-        CALL JEVEUO(NUMEDD(1:14)//'.SMOS.SMDI','L',IADIA)
-        IDEB=1
-        DO 35 J = 1,NEQ
-          IFIN = ZI(IADIA-1+J)
-          DO 34 I = IDEB,IFIN
-            ZR(IBID-1+I)=-ZR(JBID-1+I)
-            ZR(JBID-1+I)=0.D0
-   34     CONTINUE
-          IDEB = IFIN+1
-   35   CONTINUE
-      ENDIF
+C
+C ATTENTION: CETTE PROGRAMMATION MODIFIE AMOR ET MASSE
+C            ELLE NE PEUT DONC SERVIR QU'A TESTER MODE_ITER_SIMULT
+C
+C     LTESTQ=.FALSE.
+C     IF ((LTESTQ).AND.(LC)) THEN
+C       CALL JEVEUO(JEXNUM(AMOR(1:19)//'.VALM',1),'E',JVALMA)
+C       CALL JEVEUO(JEXNUM(MASSE(1:19)//'.VALM',1),'E',JVALMM)
+C       CALL JEVEUO(NUMEDD(1:14)//'.SMOS.SMHC','L',IHCOL)
+C       CALL JEVEUO(NUMEDD(1:14)//'.SMOS.SMDI','L',IADIA)
+C       IDEB=1
+C       DO 35 J = 1,NEQ
+C         IFIN = ZI(IADIA-1+J)
+C         DO 34 I = IDEB,IFIN
+C           ZR(JVALMA-1+I)=-ZR(JVALMM-1+I)
+C           ZR(JVALMM-1+I)=0.D0
+C  34     CONTINUE
+C         IDEB = IFIN+1
+C  35   CONTINUE
+C     ENDIF
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     -------  CALCUL DES VALEURS PROPRES ET VECTEURS PROPRES   --------
@@ -790,7 +795,7 @@ C     ------------------------------------------------------------------
               ZI(LRESUI-1+IMET) = IMET
  38         CONTINUE
           ENDIF
-          
+
         ELSE IF ((METHOD(1:8).EQ.'SORENSEN').AND.(LNS.OR..NOT.LKR)) THEN
 C     ------------------------------------------------------------------
 C     -------  SORENSEN PB GENERALISE COMPLEXE OU REEL NON SYM  --------
@@ -811,14 +816,14 @@ C     ------------------------------------------------------------------
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
             ZK24(LRESUK-1+  MXRESF+IMET) = 'SORENSEN'
  377      CONTINUE
-       
+
         ELSE IF ((LQZ).AND.(LKR).AND.(.NOT.LNS)) THEN
 C     ------------------------------------------------------------------
 C     -------  QZ PB GENERALISE REEL SYMETRIQUE  --------
 C     ------------------------------------------------------------------
           CALL VPQZLA(TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA,
      &         QRVL, LVEC, KQRN, LVALPR, NCONV,
-     &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL, 
+     &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL,
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
      &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
      &         IISCAL, IBSCAL)
@@ -849,7 +854,7 @@ C     -------  QZ PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 C     ------------------------------------------------------------------
           CALL VPQZLA(TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA,
      &         QRVL, LVEC, KQRN, LVALPR, NCONV,
-     &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL, 
+     &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL,
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
      &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
      &         IISCAL, IBSCAL)
@@ -866,7 +871,7 @@ C     ------------------------------------------------------------------
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
             ZK24(LRESUK-1+  MXRESF+IMET) = TYPEQZ
   127     CONTINUE
-                  
+
         ELSE IF (METHOD(1:6).EQ.'JACOBI') THEN
 C     ------------------------------------------------------------------
 C     -------  JACOBI PB GENERALISE REEL   --------
@@ -895,7 +900,7 @@ C     ------------------------------------------------------------------
               ZI(LRESUI-1+IMET) = IMET
  31         CONTINUE
           ENDIF
-          
+
         ELSE IF (METHOD(1:8).EQ.'TRI_DIAG') THEN
 C     ------------------------------------------------------------------
 C     -------  LANCZOS PB GENERALISE REEL   --------
@@ -933,7 +938,7 @@ C     ------------------------------------------------------------------
  33         CONTINUE
           ENDIF
         ENDIF
-               
+
       ELSE
 
 C     ------------------------------------------------------------------
@@ -942,7 +947,7 @@ C     ---------------------  PROBLEME QUADRATIQUE   --------------------
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
-        IF (METHOD(1:8).EQ.'TRI_DIAG') THEN        
+        IF (METHOD(1:8).EQ.'TRI_DIAG') THEN
 C     ------------------------------------------------------------------
 C     -------  LANCZOS PB QUADRATIQUE   --------
 C     ------------------------------------------------------------------
@@ -970,7 +975,7 @@ C     -------  QZ PB QUADRATIQUE REEL ET COMPLEXE, SYM OU NON  --------
 C     ------------------------------------------------------------------
           CALL VPQZLA(TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA,
      &         QRVL, LVEC, KQRN, LVALPR,
-     &         NCONV, OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL, 
+     &         NCONV, OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL,
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
      &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
      &         IISCAL, IBSCAL)
@@ -1047,7 +1052,7 @@ C     ------------------------------------------------------------------
       ENDIF
 C ---- NOMBRE DE MODES CONVERGES
       NCONV = NFREQ
-      
+
 C     ------------------------------------------------------------------
 C     -------------------- CORRECTION : OPTION BANDE -------------------
 C     ------------------------------------------------------------------
