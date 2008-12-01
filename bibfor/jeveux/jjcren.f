@@ -1,6 +1,6 @@
       SUBROUTINE JJCREN ( NOMLU , ICRE , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 02/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,8 @@ C DEB ------------------------------------------------------------------
           END IF
         ELSE
           J = HCOD(JHCOD(ICLA)+I)
-          CLE  = RNOM(JRNOM(ICLA)+ABS(J))
+          CLE = '!'
+          IF ( J.NE.0 ) CLE  = RNOM(JRNOM(ICLA)+ABS(J))
           IF ( CLE .EQ. CLEL ) THEN
             IF ( ICRE .EQ. 1 .OR. ICRE .EQ. 2 ) THEN
               VALK(1)=CLEL

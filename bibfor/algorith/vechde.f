@@ -3,7 +3,7 @@
      &                  LVECHZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/11/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,6 +120,7 @@ C DEB ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
       NEWNOM = '.0000000'
+      CHCHAR = ' '
       TIME = PARTPS(1)
 
       IF (TYPCAL(1:4).NE.'DLAG' .AND. TYPCAL(1:4).NE.'MECA' .AND.
