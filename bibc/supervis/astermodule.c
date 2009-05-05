@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 04/05/2009   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -267,7 +267,7 @@ void initExceptions(PyObject *dict)
 */
 void DEFPS(UEXCEP,uexcep,_IN INTEGER *exc_type,  _IN char *reason , _IN STRING_SIZE lreason )
 {
-   STRING_SIZE l;
+   int l;
    l=min(FindLength(reason,lreason),REASONMAX);
    strncpy(exception_reason,reason,l);
    exception_reason[l]='\0';
@@ -310,7 +310,7 @@ void TraiteMessageErreur( _IN char * message )
         if(PyErr_Occurred())PyErr_Print();
         abort();
         if(exception_flag[niveau]==1){
-          STRING_SIZE l;
+          int l;
           exception_flag[niveau]=0;
           l=min(REASONMAX,strlen(message));
           strncpy(exception_reason,message,l);
@@ -336,7 +336,7 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
                 du fichier et le numero de la ligne.
         */
         char *chaine = (char*)0 ;
-        STRING_SIZE longueur = 0 ;
+        int longueur = 0 ;
         void *malloc(size_t size);
                                                         ASSERT(numeroLigne>0);
                                                         ASSERT(((int)log10((float)numeroLigne))<=5);
@@ -582,7 +582,7 @@ void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE
                 int i;
                 char *s      = (char*)0 ;
                 char *val_i      = (char*)0 ;
-                STRING_SIZE longueur = 0 ;
+                int longueur = 0 ;
                                                                    ASSERT(nval>0) ;
                                                                    ASSERT(taille>0) ;
                 if (!PyTuple_Check(tup)){
@@ -622,7 +622,7 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE
         int i;
         char *s = (char*)0 ;
         char *val_i      = (char*)0 ;
-        STRING_SIZE longueur=0 ;
+        int longueur=0 ;
 
         if(nval != 0){
                 if (!PyList_Check(tup)){
@@ -706,7 +706,7 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
         char *mcs      = (char*)0 ;
         PyObject *res  = (PyObject*)0 ;
         char *nomType  = (char*)0 ;
-        STRING_SIZE longueur   = 0 ;
+        int longueur   = 0 ;
                                                               ASSERT(lnom>0) ;
         mcs=fstr2(nomobj,lnom);
 
@@ -886,7 +886,7 @@ void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN STRING_SIZE lres,
         */
         PyObject *res  = (PyObject*)0 ;
         int ok;
-        STRING_SIZE s1,s2,s3;
+        int s1,s2,s3;
         char *ss1,*ss2,*ss3;
 
         /* (MC) le 1er test ne me semble pas suffisant car entre deux commandes,
@@ -1094,7 +1094,7 @@ void DEFSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
 
         res=PyObject_CallMethod(static_module,"MessageLog","s#s#OOO",typmess,ltype,idmess,lidmess,tup_valk,tup_vali,tup_valr);
         if (!res) {
-           MYABORT("erreur lors de l'appel à MessageLog");
+           MYABORT("erreur lors de l'appel a MessageLog");
         }
 
         Py_DECREF(tup_valk);
@@ -1120,12 +1120,12 @@ void DEFPP(CHKMSG,chkmsg, _IN INTEGER *info_alarm, _OUT INTEGER *iret)
 
    mess_log = PyObject_GetAttrString(static_module, "MessageLog");
    if (!mess_log) {
-      MYABORT("erreur lors de l'accès à l'objet MessageLog.");
+      MYABORT("erreur lors de l'accès a l'objet MessageLog.");
    }
 
    res = PyObject_CallMethod(mess_log, "check_counter", "i", *info_alarm);
    if (!res) {
-      MYABORT("erreur lors de l'appel à la méthode MessageLog.check_counter");
+      MYABORT("erreur lors de l'appel a la methode MessageLog.check_counter");
    }
    *iret = (INTEGER)PyLong_AsLong(res);
 
@@ -1149,7 +1149,7 @@ void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN STRING_SIZE lnom,
 
    res = PyObject_CallMethod(static_module,"checksd","s#s#",nomsd,lnom,typsd,ltyp);
    if (!res) {
-      MYABORT("erreur lors de l'appel à la méthode CHECKSD");
+      MYABORT("erreur lors de l'appel a la methode CHECKSD");
    }
    *iret = (INTEGER)PyLong_AsLong(res);
 
@@ -1169,7 +1169,7 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
         PyObject *tup_par;
         PyObject *tup_val;
         char *kvar, *sret;
-        STRING_SIZE lsret;
+        int lsret;
         int i;
                                                         ASSERT(commande!=(PyObject*)0);
         tup_par = PyTuple_New( *nbpu ) ;
@@ -1562,7 +1562,7 @@ STRING_SIZE FindLength( _IN char *chaineFortran , _IN STRING_SIZE longueur )
                 dernier caractere non blanc.
         */
 
-        STRING_SIZE k = longueur-1 ;
+        int k = longueur-1 ;
         if ( ! chaineFortran ) return 0 ;
 
         while( (int)k>=0 && chaineFortran[k]==' ' ) k-- ;
@@ -1585,7 +1585,7 @@ PyObject * MakeTupleString(long nbval,char *kval,STRING_SIZE lkval,INTEGER *lval
                Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
    */
    int i;
-   STRING_SIZE len;
+   int len;
    char *deb=kval;
    if(nbval == 1){
       if (lval) {
@@ -2035,7 +2035,7 @@ PyObject *args;
         char *groups;
         PyObject *list;
         INTEGER nval=0;
-        STRING_SIZE long_nomcham=8;
+        int long_nomcham=8;
         INTEGER itopo;
         void *malloc(size_t size);
 
@@ -2087,7 +2087,7 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
         char *nomsd, nomsd32[33];
-        char nomob[8] = "        ";
+        char nomob[9] = "         ";
         DOUBLE *f;
         INTEGER *l;
         char *kvar;
@@ -2102,6 +2102,7 @@ PyObject *args;
         if (!PyArg_ParseTuple(args, "s|ll:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
         nomsd32[32] = '\0';
         CSTRING_FCPY(nomsd32, 32, nomsd);
+        nomob[8] = '\0';
 
         try(1){
           iob=0 ;
@@ -2213,7 +2214,7 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
         char *nomsd, *nom, nomsd32[33];
-        char nomob[8] = "        ";
+        char nomob[9] = "         ";
         DOUBLE *f;
         INTEGER *l;
         char *kvar;
@@ -2229,6 +2230,7 @@ PyObject *args;
         if (!PyArg_ParseTuple(args, "s:getcolljev",&nomsd)) return NULL;
         nomsd32[32] = '\0';
         CSTRING_FCPY(nomsd32, 32, nomsd);
+        nomob[8] = '\0';
 
 /* Taille de la collection */
         nbval = 1;
@@ -2670,10 +2672,10 @@ PyObject *args;
         commande=empile(temp);
 
         if(PyErr_Occurred()){
-            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            fprintf(stderr,"Warning: une exception n'a pas ete traitee\n");
             PyErr_Print();
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
-                            etre traitée avant\n");
+                            etre traitee avant\n");
             PyErr_Clear();
         }
 
@@ -2717,10 +2719,10 @@ PyObject *args;
         commande=empile(temp);
 
         if(PyErr_Occurred()){
-            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            fprintf(stderr,"Warning: une exception n'a pas ete traitee\n");
             PyErr_Print();
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
-                            etre traitée avant\n");
+                            etre traitee avant\n");
             PyErr_Clear();
         }
         fflush(stderr) ;
@@ -2784,7 +2786,7 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, STRING_SIZE l_attr)
 
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+      MYABORT("Impossible de recuperer l'attribut 'jdc' !");
 
    val = PyObject_CallMethod(jdc, "get_jdc_attr", "s#", attr, l_attr);
    if (val == NULL){
@@ -2793,7 +2795,7 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, STRING_SIZE l_attr)
    }
 
    if (!PyInt_Check(val))
-      MYABORT("Seuls les attributs de type entier peuvent etre récupérés !");
+      MYABORT("Seuls les attributs de type entier peuvent etre recuperes !");
 
    value = PyInt_AsLong(val);
 
@@ -2813,7 +2815,7 @@ void DEFSP(JDCSET,jdcset,char *attr, STRING_SIZE l_attr, INTEGER *value)
 
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+      MYABORT("Impossible de recuperer l'attribut 'jdc' !");
 
    res = PyObject_CallMethod(jdc, "set_jdc_attr", "s#l", attr, l_attr, *value);
    if (res == NULL)
@@ -2833,7 +2835,7 @@ PyObject* GetJdcAttr(_IN char *attribut)
 
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+      MYABORT("Impossible de recuperer l'attribut 'jdc' !");
 
    objattr = PyObject_GetAttrString(jdc, attribut);
    /* traiter l'erreur "objattr == NULL" dans l'appelant */
@@ -2882,7 +2884,7 @@ PyObject *args;
             res = Py_None;
 
       } else {
-            printf("ERREUR : '%s' n'est pas une valeur autorisée.\n", comport);
+            printf("ERREUR : '%s' n'est pas une valeur autorisee.\n", comport);
             MYABORT("Argument incorrect dans onFatalError.");
       }
       return res;
@@ -2999,10 +3001,10 @@ void DEFSSPSPPSPSS(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE, INTEG
 #define CALL_RCVALE(a,b,c,d,e,f,g,h,i,j) CALLSSPSPPSPSS(RCVALE,rcvale,a,b,c,d,e,f,g,h,i,j)
 
 static char rcvale_doc[] =
-"Interface d'appel à la routine fortran RCVALE.\n"
+"Interface d'appel a la routine fortran RCVALE.\n"
 "   Arguments : nommat, phenomene, nompar, valpar, nomres, stop\n"
 "   Retourne  : valres, codret (tuples)\n"
-" Aucune vérification n'est faite sur les arguments d'entrée (c'est l'appelant,\n"
+" Aucune verification n'est faite sur les arguments d'entree (c'est l'appelant,\n"
 " a priori mater_sdaster.rcvale, qui le fait)";
 
 static PyObject * aster_rcvale(self, args)
@@ -3017,9 +3019,9 @@ PyObject *args;
    INTEGER nbpar, nbres;
    char *nompar, *nomres, *codret;
    DOUBLE *valpar, *valres;
-   STRING_SIZE long_nompar = 8;       /* doivent impérativement correspondre aux  */
-   STRING_SIZE long_nomres = 8;       /* longueurs des chaines de caractères      */
-   STRING_SIZE long_codret = 2;       /* déclarées dans la routine fortran RCVALE */
+   int long_nompar = 8;       /* doivent impérativement correspondre aux  */
+   int long_nomres = 8;       /* longueurs des chaines de caractères      */
+   int long_codret = 2;       /* déclarées dans la routine fortran RCVALE */
    void *malloc(size_t size);
 
    if (!PyArg_ParseTuple(args, "ssOOOs", &nommat, &phenom, \
@@ -3067,7 +3069,7 @@ void DEFSSSSPSP(DISMOI, dismoi, char *,STRING_SIZE, char *,STRING_SIZE,
 #define CALL_DISMOI(a,b,c,d,e,f,g) CALLSSSSPSP(DISMOI,dismoi,a,b,c,d,e,f,g)
 
 static char dismoi_doc[] =
-"Interface d'appel à la routine fortran DISMOI.\n"
+"Interface d'appel a la routine fortran DISMOI.\n"
 "   usage: iret, repi, repk = aster.dismoi(codmes, question, concept, type_concept) \n\n"
 "     codmes       :'F','E','A','I',...\n"
 "     question     : texte de la question\n"
@@ -3075,8 +3077,8 @@ static char dismoi_doc[] =
 "     type_concept : type du concept\n\n"
 "   Retourne :\n"
 "     iret         : 0 si ok, 1 en cas d'erreur\n"
-"     repi         : réponse entière\n"
-"     repk         : réponse de type chaine de caractères\n";
+"     repi         : reponse entiere\n"
+"     repk         : reponse de type chaine de caracteres\n";
 
 static PyObject * aster_dismoi(self, args)
 PyObject *self; /* Not used */
@@ -3084,14 +3086,19 @@ PyObject *args;
 {
    char *codmes, *question, *concept, *typeconcept;
    INTEGER repi=0, iret;
-   char repk[32+1];
+   char repk[33],question32[33],concept32[33],typeconcept32[33];
+
+   repk[32] = '\0'; question32[32] = '\0'; concept32[32] = '\0'; typeconcept32[32] = '\0';
 
    BLANK(repk, 32);
-   repk[32] = '\0';
-
    if (!PyArg_ParseTuple(args, "ssss", &codmes, &question, &concept, &typeconcept)) return NULL;
 
-   CALL_DISMOI(codmes, question, concept, typeconcept, &repi, repk, &iret);
+   CSTRING_FCPY(question32, 32, question);
+   CSTRING_FCPY(concept32, 32, concept);
+   CSTRING_FCPY(typeconcept32, 32, typeconcept);
+
+
+   CALL_DISMOI(codmes, question32, concept32, typeconcept32, &repi, repk, &iret);
 
    return Py_BuildValue("lls", iret, repi, repk);
 }
@@ -3101,10 +3108,10 @@ void DEFP(MATFPE, matfpe, INTEGER *);
 #define CALL_MATFPE(a) CALLP(MATFPE,matfpe,a)
 
 static char matfpe_doc[] =
-"Interface d'appel à la routine C matfpe.\n"
+"Interface d'appel a la routine C matfpe.\n"
 "   usage: matfpe(actif)\n"
-"     matfpe(-1) : on désactive l'interception des erreurs numériques,\n"
-"     matfpe(1)  : on active l'interception des erreurs numériques.\n";
+"     matfpe(-1) : on desactive l'interception des erreurs numeriques,\n"
+"     matfpe(1)  : on active l'interception des erreurs numeriques.\n";
 
 static PyObject * aster_matfpe(self, args)
 PyObject *self; /* Not used */
@@ -3164,7 +3171,7 @@ PyObject *args;
       char *nomsym;
       char *nopase;
       INTEGER codret=0;
-      STRING_SIZE lon1,lon2,lon3;
+      int lon1,lon2,lon3;
       char nochmd[33],n1[33],n2[17],n3[9];
 
       if (!PyArg_ParseTuple(args, "ls#s#s#",&lresu,&noresu,&lon1,&nomsym,&lon2,&nopase,&lon3)) return NULL;
@@ -3295,10 +3302,10 @@ PyObject *args;
         commande=empile(temp);
 
         if(PyErr_Occurred()){
-            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            fprintf(stderr,"Warning: une exception n'a pas ete traitee\n");
             PyErr_Print();
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
-                            etre traitée avant\n");
+                            etre traitee avant\n");
             PyErr_Clear();
         }
 
@@ -3370,10 +3377,10 @@ PyObject *args;
         commande=empile(temp);
 
         if(PyErr_Occurred()){
-            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n");
+            fprintf(stderr,"Warning: une exception n'a pas ete traitee\n");
             PyErr_Print();
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
-                            etre traitée avant\n");
+                            etre traitee avant\n");
             PyErr_Clear();
         }
 
@@ -3423,7 +3430,7 @@ PyObject *args;
    if (!PyArg_ParseTuple(args, "l",&dbg)) return NULL;
 
    /* initialisation de la variable `static_module` */
-   static_module = PyImport_ImportModule("Execution/E_Global");
+   static_module = PyImport_ImportModule("Execution.E_Global");
    if (! static_module) {
       MYABORT("Impossible d'importer le module E_Global !");
    }
@@ -3510,7 +3517,7 @@ static PyObject *jeveux_exists( PyObject* self, PyObject* args)
 {
 	char *nomobj;
 	char tmpbuf[33];
-	STRING_SIZE l;
+	int l;
 	INTEGER intval = 0;
 	
 	if (!PyArg_ParseTuple(args, "s",&nomobj))
@@ -3536,7 +3543,7 @@ void DEFP(JEINFO, jeinfo, DOUBLE *);
 #define CALL_JEINFO(a) CALLP(JEINFO,jeinfo,a)
 
 static char jeinfo_doc[] =
-"Interface d'appel à la routine fortran JEINFO.\n";
+"Interface d'appel a la routine fortran JEINFO.\n";
 
 static PyObject * aster_jeinfo(self, args)
 PyObject *self; /* Not used */
@@ -3609,16 +3616,16 @@ void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, STRING_SIZE lnosimp,
 */
    PyObject *memo_sensi, *val;
    char *sret = (char*)0;
-   STRING_SIZE longueur;
+   int longueur;
    *iret = 0;
 
    memo_sensi = GetJdcAttr("memo_sensi");
    if (memo_sensi == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
+      MYABORT("Impossible de recuperer l'attribut 'memo_sensi' du jdc !");
 
    val = PyObject_CallMethod(memo_sensi, "get_nocomp", "s#s#", nosimp, lnosimp, nopase, lnopase);
    if (val == NULL){
-      MYABORT("erreur lors de l'appel à memo_sensi.get_nocomp !");
+      MYABORT("erreur lors de l'appel a memo_sensi.get_nocomp !");
    }
 
    sret = PyString_AsString(val);
@@ -3664,11 +3671,11 @@ void DEFSSPSSS(PSGEMC,psgemc, _IN  char *nosimp, STRING_SIZE lnosimp,
 
    memo_sensi = GetJdcAttr("memo_sensi");
    if (memo_sensi == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
+      MYABORT("Impossible de recuperer l'attribut 'memo_sensi' du jdc !");
 
    tup3 = PyObject_CallMethod(memo_sensi, "get_mcle", "s#s#", nosimp, lnosimp, nopase, lnopase);
    if (tup3 == NULL) {
-      MYABORT("erreur lors de l'appel à memo_sensi.get_mcle !");
+      MYABORT("erreur lors de l'appel a memo_sensi.get_mcle !");
    }
    tmocl = PyTuple_GetItem(tup3, 0);
    tvale = PyTuple_GetItem(tup3, 1);
@@ -3737,7 +3744,7 @@ void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, STRING_SIZE lnomsd,
 
    memo_sensi = GetJdcAttr("memo_sensi");
    if (memo_sensi == NULL)
-      MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
+      MYABORT("Impossible de recuperer l'attribut 'memo_sensi' du jdc !");
 
    tup2 = PyObject_CallMethod(memo_sensi, "psinfo", "s#", nomsd, lnomsd);
    indic = PyTuple_GetItem(tup2, 0);
@@ -3780,7 +3787,7 @@ void DEFPSS(LCCREE, lccree, _IN INTEGER *nbkit,
 */
    PyObject *catalc, *res, *tup_kit;
    char *scomp;
-   STRING_SIZE lsc;
+   int lsc;
 
    catalc = GetJdcAttr("catalc");
    /* transforme le tableau de chaines fortran en tuple */
@@ -4025,7 +4032,7 @@ void AfficheChaineFortran( _IN char *chaine , _IN STRING_SIZE longueur )
         strm=stderr;
 
         if ( longueur ){
-                STRING_SIZE k=0 ;
+                int k=0 ;
                 fprintf( strm , "'" ) ;
                 for ( k=0 ; k<((longueur<=512)?longueur:512) ; k++ ){
                         fprintf( strm , "%c" , chaine[k] ) ;
@@ -4048,7 +4055,7 @@ int EstPret( _IN char *chaine , _IN STRING_SIZE longueur )
         */
         int pret     = 0 ;
         int k        = 0 ;
-        STRING_SIZE taille   = 0 ;
+        int taille   = 0 ;
 
         taille = ( longueur < 1024 ) ? FindLength( chaine , longueur ) : 1024 ;
         if ( (int)taille >= 0 ){
@@ -4088,9 +4095,9 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement )
         */
 
         char *resultat = (char*)0 ;
-        STRING_SIZE ajout      = 0 ;
-        STRING_SIZE taille     = 0 ;
-        STRING_SIZE total      = 0 ;
+        int ajout      = 0 ;
+        int taille     = 0 ;
+        int total      = 0 ;
         void *malloc(size_t size);
 	
         taille = ( *base ) ? strlen( *base ) : 0 ;

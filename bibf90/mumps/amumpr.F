@@ -1,7 +1,7 @@
       SUBROUTINE AMUMPR(ACTION,KXMPS,RSOLU,VCINE,NBSOL,IRET)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPR MUMPS  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+!& MODIF AMUMPR MUMPS  DATE 05/05/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -72,16 +72,19 @@ C================================================================
       TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
       TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
-      INTEGER      JSLVK,JSLVR,RANG,IFMUMP,NBPROC,NIV,IFM,MONIT(12)
+      INTEGER      JSLVK,JSLVR,RANG,IFMUMP,NBPROC,NIV,IFM,IBID
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE
       CHARACTER*4  ETAMS(NMXINS),IMPR,ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOMAT,NOSOLS(NMXINS)
       CHARACTER*24 KMONIT(12)
+      CHARACTER*24 K24B
       REAL*8       EPSMAX,VALR(2),TEMPS(6),RDESQ
       COMPLEX*16   CBID
       LOGICAL      LQUALI,ELI2LG,LDIST,LDEBUG
-      COMMON /SMUMPS/ DMPS,ZMPS,NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
+      COMMON /SMUMPS1/ DMPS
+      COMMON /SMUMPS2/ ZMPS
+      COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
 C=================================================================
       CALL JEMARQ()
 
@@ -137,12 +140,13 @@ C --- POUR "ELIMINER" LE 2EME LAGRANGE :
 C --- MUMPS PARALLELE DISTRIBUE ?
       LDIST=.FALSE.
       LDIST=ZK24(JSLVK-1+7)(1:10).EQ.'DISTRIBUE_'
-      RANG=XMPSK%MYID
-      NBPROC=XMPSK%NPROCS
-
+      NBPROC=1
+      RANG=0
+      CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
+      CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
+      
 C --- POUR MONITORING
-      CALL AMUMPT(0,KMONIT,MONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,
-     &            TYPE)
+      CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
 
 C     ------------------------------------------------
 C     ------------------------------------------------
@@ -157,6 +161,9 @@ C       ------------------------------------------------
         CALL DMUMPS(XMPSK)
         RANG=XMPSK%MYID
         NBPROC=XMPSK%NPROCS
+C       
+C       WRITE(IFM,*)'APPEL A MUMPS ',XMPSK%VERSION_NUMBER
+C       
 
 C       ------------------------------------------------
 C        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS :
@@ -166,18 +173,18 @@ C       ------------------------------------------------
 C       ------------------------------------------------
 C        REMPLISSAGE DE LA MATRICE MUMPS :
 C       ------------------------------------------------
-        CALL AMUMPM(RANG,LDIST,KXMPS,MONIT,IMPR,IFMUMP,ELI2LG,TYPE)
+        CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE)
+C       -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS:
+        CALL JJLDYN(IBID)
 
 C       ------------------------------------------------
 C        ANALYSE MUMPS:
 C       ------------------------------------------------
         IF (LDEBUG) WRITE(IFM,*)'AVANT ANALYSE MUMPS'
-        CALL AMUMPT(2,KMONIT,MONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,
-     &              RDESQ,TYPE)
+        CALL AMUMPT(2,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
         XMPSK%JOB = 1
         CALL DMUMPS(XMPSK)
-        CALL AMUMPT(4,KMONIT,MONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,
-     &                RDESQ,TYPE)
+        CALL AMUMPT(4,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
         IF (LDEBUG) WRITE(IFM,*)'APRES ANALYSE MUMPS'
 
 C       ------------------------------------------------
@@ -187,6 +194,8 @@ C       ------------------------------------------------
 C              -- C'EST OK
         ELSE IF ((XMPSK%INFOG(1).EQ.-5).OR.(XMPSK%INFOG(1).EQ.-7)) THEN
           CALL U2MESS('F','FACTOR_64')
+        ELSE IF (XMPSK%INFOG(1).EQ.-6) THEN
+          CALL U2MESS('F','FACTOR_69')
         ELSE
           IF (XMPSK%INFOG(1).LT.0) THEN
             CALL U2MESI('F','FACTOR_55',1,XMPSK%INFOG(1))
@@ -206,8 +215,7 @@ C       ------------------------------------------------
         IF (LDEBUG) WRITE(IFM,*)'AVANT FACTORISATION MUMPS'
         XMPSK%JOB = 2
         CALL DMUMPS(XMPSK)
-        CALL AMUMPT(6,KMONIT,MONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,
-     &              RDESQ,TYPE)
+        CALL AMUMPT(6,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
         IF (LDEBUG) WRITE(IFM,*)'APRES FACTORISATION MUMPS'
 
 C       ------------------------------------------------
@@ -215,7 +223,9 @@ C        GESTION ERREURS ET MENAGE ASTER:
 C       ------------------------------------------------
         IF (XMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
-        ELSE IF (XMPSK%INFOG(1).EQ.-9) THEN
+        ELSE IF ((XMPSK%INFOG(1).EQ.-8).OR.(XMPSK%INFOG(1).EQ.-9).OR.
+     &         (XMPSK%INFOG(1).EQ.-14).OR.(XMPSK%INFOG(1).EQ.-15).OR.
+     &         (XMPSK%INFOG(1).EQ.-17).OR.(XMPSK%INFOG(1).EQ.-20)) THEN
           CALL U2MESS('F','FACTOR_53')
         ELSE IF (XMPSK%INFOG(1).EQ.-10) THEN
           IRET=2
@@ -224,7 +234,7 @@ C              -- C'EST OK
         ELSE IF (XMPSK%INFOG(1).EQ.-37) THEN
           CALL U2MESS('F','FACTOR_65')
        ELSE IF (XMPSK%INFOG(1).EQ.-90) THEN
-C     PROBLEME DU TRAITEMENT OUT-OF-CORE DE MUMPS             
+C     PROBLEME DU TRAITEMENT OUT-OF-CORE DE MUMPS
           CALL U2MESS('F','FACTOR_66')
        ELSE
           IF (XMPSK%INFOG(1).LT.0) THEN
@@ -264,12 +274,10 @@ C       ------------------------------------------------
 C        RESOLUTION MUMPS :
 C       ------------------------------------------------
         IF (LDEBUG) WRITE(IFM,*)'AVANT RESOLUTION MUMPS'
-        CALL AMUMPT(8,KMONIT,MONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,
-     &              RDESQ,TYPE)
+        CALL AMUMPT(8,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
         XMPSK%JOB = 3
         CALL DMUMPS(XMPSK)
-        CALL AMUMPT(10,KMONIT,MONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,
-     &              RDESQ,TYPE)
+        CALL AMUMPT(10,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
         IF (LDEBUG) WRITE(IFM,*)'APRES RESOLUTION MUMPS'
 
 C       ------------------------------------------------
@@ -307,8 +315,7 @@ C       ------------------------------------------------
 C       ------------------------------------------------
 C        AFFICHAGE DU MONITORING :
 C       ------------------------------------------------
-        CALL AMUMPT(12,KMONIT,MONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,
-     &              RDESQ,TYPE)
+        CALL AMUMPT(12,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
 
 C     ------------------------------------------------
 C     ------------------------------------------------

@@ -1,0 +1,905 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 04/05/2009 - 18:00:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013356 DU 2009-04-29 13:04:14
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Stanely casse en NEW9.4.10
+FONCTIONNALITE
+   Stanley ne se lance pas en 9.4.10 suite a une erreur qui s'est glissee dans la derniere
+   restitution.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013363 DU 2009-04-30 11:50:38
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Regularisation acearp.f
+FONCTIONNALITE
+   On restitue le fichier acearp.f, oublié dans la fiche 13213.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   plexu01a, plexu02a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 05/05/2009 - 09:42:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013266 DU 2009-04-01 08:59:30
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   xc3xa9crasement dans mumps05a  du au monitoring (INFO=2)
+FONCTIONNALITE
+   Contexte
+   --------
+   Pb affichages faux et diagnostic valgrind alarmant concernant le bloc d'infor
+   mations extrait des outputs de MUMPS. Ce bloc d'informations (MONITORING MUMPS)
+   apparaît dans le fichier de message si on fait INFO=2. 
+   Il concerne plutôt des utilisateurs avancés/développeurs. Il récapitule, pour une
+   résolution donnée, sur le processeur maître, les caractéristiques du système
+   résolu (taille, nnz, facto, conditionnement, erreur...), les temps CPU de chaque 
+   étape (par proc) et les consommations RAM de MUMPS (par proc).
+   Dès qu'un déséquilibrage de charge est repéré (>10% du temps total), un msg est
+   émis.
+   
+   Détails
+   --------- 
+   Ces affichages sont faussés au grès d'écrasement des objets JEVEUX '&MUMPS.INFO.***'. En
+   INFO=1, les résultats du calcul ne sont pas faussés, en
+    INFO=2, on peut avoir écraser des éléments d'autres objets JEVEUX (!!!).
+   J'ai du introduire ce bug (mea-culpa !) en 9.3.3 (2/7/08). Il a du
+   être révélé par une restit récente de Jacques (JJLDYN, 24/03/09).
+   
+   Un bug mineur concerne, toujours ds ce bloc monitoring, le récapitulatif des
+    occupations en mémoire RAM de MUMPS. La troisième colonne, censée reproduire 
+   la consommation effective par proc, reprenait en fait l'estimation d'un calcul OOC. Bref,
+   les 2 dernières colonnes sont toujours les mêmes. ce n'est pas très grave, puisque l'OOC
+   est conseillé, mais bon... c'est malheureux d'avoir un monitoring censé compiler
+   l'information pour faciliter la vie, fausser les 
+   chiffres !
+   
+   Validation
+   -----------
+   cas-test mumps01a et mumps05a sur bull/clpaster (seq) et // (bull).
+   Diagnostic valgrind sur mumps01a (clpaster). Ci-joint fichiers des diagnostics valgrind
+   avant et après les corrections.
+   
+   Sources modifiées
+   ------------------
+   amumpc.F
+   amumpm.F
+   amumpr.F
+   amumpt.F
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.3.3
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique et fonctionnelle
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013274 DU 2009-04-02 19:04:11
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   En NEW 9.4.7, le cas-test ssnv195c s?arrxc3xaate en erreur_<F> sur Rocks.
+FONCTIONNALITE
+   Analyse et correction du probléme
+   ----------------------------------
+   Ce message d'erreur semble du aux écrasements mémoires potentiels
+   activés avec MUMPS et INFO=2. La correction proposée par l'AL13266
+   résoud ce problème sur Rocks.
+   Nota: Ce cas-test passe sans encombre sur le Bull.
+   
+   Six autres cas-tests de la base pouvaient présenter la même pathologie 
+   (mumps05a/b, ssnv173c, ssnv195a/c/d). Avec une étude standard, il est peu
+   fréquent que les utilisateurs active INFO=2. Donc peu de risque de ce coté-là.
+   
+   Divers
+   ------
+   J'en ai profité pour détailler quelques remontées de messages d'erreurs MUMPS:
+   INFOG(1)=-6/-8/-14/-15/-17/-20  pointent vers factor_69 (nouveau) pour le
+   premier cas et factor_63, pour tous les autres.
+   
+   Sources Modifiées
+   -----------------
+   amumpr/c.F
+   factor.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.4.7
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique et non rxc3xa9gression
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011393 DU 2007-10-24 09:31:39
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TITRE
+   sd sous-terraine non documentxc3xa9e : '&MUMPS'
+FONCTIONNALITE
+   Structures de données souterraines documentées dans le Wiki de Code_Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013365 DU 2009-05-04 07:31:43
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.4.10, le cas-test ssnv195d s'arrete en erreur_<F> sur Rocks.
+FONCTIONNALITE
+   Le test semble fonctionner correctement en 9.4.10 même sans la correction de l'écrasement
+   lié à INFO=2 dans MUMPS.
+   
+   On ferme la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 05/05/2009 - 11:41:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013062 DU 2009-01-15 10:28:14
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   message CONTACT3_42
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Les mailles QUAD8 étant proscrites avec du contact discret. Lorsque celles-ci sont
+   utilisées on les "transforme" en liant les noeuds milieux aux noeuds sommets (leur
+   déplacement est égal à la moyenne des 2 noeuds sommets adjacents).
+   Lorsque la surface de contact ne comporte pas que des QUAD8, alors on prend garde à ne pas
+   tout le temps faire la liaison pour éviter des pivots nuls. Ceci était mal fait.
+   
+   Correction
+   ==========
+   
+   Il y a d'une part une petite coquille dans cacoeq.f : on effectuait parfois la liaison à
+   tort ce qui provoquait des pivots nuls. En effet lorsque un des noeuds sommets appartient
+   à SANS_GROUP_NO, on ne fait pas la liaison.
+   
+   D'autre part quand un noeud milieu appartient à la fois à un QUAD8 et un
+   {QUAD9,TRIA6,TRIA7} alors on dit ne pas faire la liaison alors qu'elle est faite
+   systématiquement (car les noeuds milieux sont en fait exclus en amont du contact). Le
+   message n'a donc pas lieu d'être affiché.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste contact
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013321 DU 2009-04-16 17:18:10
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Corrections mineures catalogue C_CONTACT
+FONCTIONNALITE
+   Incohérence documentation/fortran/catalogue
+   ===========================================
+   
+   Cette fiche a pour but d'homogénéiser la documentation, le catalogue et le fortran pour ce
+   qui concerne la mise en données du contact-frottement.
+   
+   Plusieurs mots-clés étaient possibles alors qu'ils n'étaient pas récupérés dans le fortran
+   (soit à cause de règles oubliées, soit car ils n'ont jamais été supprimés).
+   
+   Au global, cela devrait encore améliorer la clarté de la mise en données (surtout pour
+   l'utilisateur d'Eficas, car un grand nombre de mots-clés proposés auparavant va être
+   caché, en particulier pour X-FEM). 
+   
+   Récapitulatif des modifications
+   ===============================
+   
+   ** Méthode 'XFEM'
+   
+   1/ on cache les opérateurs d'appariement
+   2/ on supprime les mots-clés non récupérés FISS_ESCL, SIGN_MAIT, SIGN_ESCL. Le seul
+   mot-clé restant pour sélectionner les zones de contact est FISS_MAIT.
+   
+   ** Méthodes maillées
+   
+   1/ Les mots-clés *_FIXE et *_VECT_Y devraient être obligatoire si VECT_* vaut 'FIXE' ou
+   'VECT_Y' (il y a d'ailleurs un CALL ASSERT(.FALSE.) dans le fortran si ils ne sont pas
+   renseignés). De même pour DIRE_APPA.
+   2/ il manque la règle : regles=(UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
+   Avant on ne mettait qu'une surface esclave quand on faisait du APPARIEMENT='SANS'. Cela
+   explique le manque.
+   
+   ** Méthode 'PENALISATION'
+   
+   1/ on ne doit avoir accès à STOP_SINGULIER que si E_N n'est pas présent. Idem pour
+   NB_RESOL et ITER_MULT_MAXI.
+   2/ E_T est obligatoire si FROTTEMENT='COULOMB'
+   
+   ** Méthode 'GCP'
+   
+   1/ STOP_SINGULIER ne sert pas.
+   
+   ** Méthode 'CONTINUE'
+   
+   1/ ALARME_JEU est possible pour la méthode 'CONTINUE' dans le catalogue mais pas dans la
+   doc, c'est la doc qui a raison. Le mot-clé est lu mais jamais utilisé.
+   
+   ** LIAISON_UNILATER
+   
+   1/ 'GCPC' ne sert pas.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.11
+VALIDATION
+   liste contact
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013343 DU 2009-04-27 07:32:40
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   D?ction AXIS bugg?pour m?ode CONTINUE
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Cf. fiche 13207 pour plus de détails. Celle-ci n'a pu être restituée car elle cassait des
+   tests de manière inexpliquée.
+   
+   On restitue ici seulement la première partie de cette fiche qui consiste à corriger la
+   détection du cas 'AXIS' pour la méthode CONTINUE.
+   On a en effet besoin de connaître la nature de la modélisation pour calculer le jacobien
+   des mailles de peau en accord (on doit multiplier par le rayon en axisymétrique pour
+   calculer le jacobien).
+   
+   Jusqu'ici cette détection était fausse et on pouvait donc mal calculer le jacobien et donc
+   mal calculer la pression de contact sur une modélisation axisymétrique (faux depuis 9.0.17
+   en v9 donc).
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.0.17
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR messier      MESSIER Julien         DATE 05/05/2009 - 11:41:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013278 DU 2009-04-03 15:25:15
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   Loi de propagation dans PROPA_FISS
+FONCTIONNALITE
+   On propose dans cette fiche d'harmoniser les lois de propagation utilisées dans la macro-commande 
+   PROPA_FISS, ce qui implique de diviser par 2 le paramètre matériau m utilisé dans CALC_G dans la 
+   méthode 'SIMPLEXE', par rapport à sa valeur exploitée dans la méthode 'PROJECTION'.
+   On analyse dans cette fiche les conséquences de cette correction.
+   
+   Dans la méthode SIMPLEXE, la vitesse est calculée (dans xprvit) par la formule V=C*G**m.
+   Doubler m revient donc à élever |V| au carré (au coef G près).
+   En revanche, dt(CFL)=(Lcmin)/|V|max se trouve donc diminué dans les proportions inverses.
+   La direction de propagation est inchangée et le pas de propagation (en distance) est le même.
+   Les K (calculés à partir de G qui reste le même) sont identiques.
+   Du coup, modifier le coefficient m n'a, pour la méthode du simplexe, qu'une influence sur le champ de 
+   vitesse de propagation.
+   En d'autres termes, le pas et la direction étant inchangés (après doublement de m), la position du front 
+   l'est également et les TEST_RESU n'ont pas à être modifiés.
+   N.B. : Dans l'état actuel des routines (i.e. condition CFL tenant compte des deux composantes de la 
+   vitesse et non plus seulement de Vt (cf. AL 13080)), seule donc la finesse du maillage détermine (toutes 
+   choses égales par ailleurs) le pas de propagation (da) pour la méthode du simplexe.
+   
+   Au final, l'harmonisation des lois de propagation dans PROPA_FISS amène, pour la méthode du simplexe : 
+   - à modifier la formule de la vitesse dans xprvit qui devient : V=C*G**(2*m),
+   - à modifier le paramètre m du cas-test ssnv185j
+   restitués dans cette fiche.
+   
+   N.B. : Il n'y avait pas de résultat faux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les cas-tests concernxc3xa9s
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 05/05/2009 - 11:41:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013284 DU 2009-04-06 09:42:54
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.4.7, le cas-test plexu02a s?arrete pour un probl? de syntaxe sur Bull.
+FONCTIONNALITE
+   Problème :
+   -------------
+   
+   Suite à la correction de la fiche 13233, le cas test plexu02a ne fonctionne plus sur bull. 
+   Le problème vient de la suppression de mot clés qui ne sont pas utilisés dans Aster mais
+   qui le sont dans Europlexus.
+   
+   Correction:
+   -------------
+   
+   Ajout des mots clés absents dans defi_glrc.capy.
+   
+   
+   Validation :
+   -------------
+   
+   plexu02a.comm sur bull
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   plexu02a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 05/05/2009 - 15:38:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012436 DU 2008-09-03 06:58:44
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN08 - Nouvelles options de calcul de l'?rgie dissip?pour les DKT/DKTG
+FONCTIONNALITE
+   Nouvelles options de calcul de l'énergie dissipée pour 
+   les DKT/DKTG
+   nouvelles options DISS_ELGA, DISS_ELNO_ELGA (sous 
+   CALC_ELEM) et ENER_DISS (sous POST_ELEM), pour les 
+   elements DKT (EIB uniquement) et DKTG (GLRC_DM). Les 
+   options pour les autres modeles evoques dans cette fiche 
+   (GLRC_DM + VMIS_ et GLRC_DAMAGE) n'ont pas encore ete 
+   programmees.
+   
+   1) Nouvelle grandeur DISS_R 
+   avec trois composantes TOTALE, ENDO et PLAS (obsolete 
+   pour l'instant).
+   GRANDEUR_SIMPLE__.CATA
+   C_NOM_GRANDEUR.CAPY
+   
+   2) Nouvelles options DISS_ELGA, DISS_ELNO_ELGA,  
+   ENER_DISS 
+   avec DISS_ELGA.CATA, DISS_ELNO_ELGA.CATA,  
+   ENER_DISS.CATA 
+   CALC_ELEM.CAPY et POST_ELEM.CAPY pour les operateurs.
+   Programme dans une nouvelle routine TE0413.F generique 
+   pour DKT/DKTG.
+   
+   
+   3) Cas-tests SSNS106A (traction simple), SSNS106B 
+   (flexion simple)
+   Tests de NON_REGRESSION + tests AUTRE_ASTER (par rapport 
+   a TRAV_REEL - 
+   TRAV_ELAS) + ANALYTIQUE (relation avec les valeurs de 
+   variables internes)
+   
+   
+   4) Complement fiche 12397 (options ELAS pour DKT/DKTG)
+   Le test etant casse lors de la restit, je le fournit ici 
+   pour valider le 
+   calcul d'energie elastique avec GLRC_DAMAGE, sans 
+   dissipation !
+   
+   2 autres fiches d'évolution complètent cette fiche :
+   - la 12438 pour étendre l'option aux éléments 
+   isoparamétriques 2D et 3D
+   - la 13371 pour étendre l'option aux autres éléments de 
+   structure (poutres et coques)
+   
+   La doc R concernant GLRC_DM (R7.01.32) parle déjà de 
+   l'énergie de dissipation, celle sur EIB (R7.01.04) sera 
+   modifiée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.05.106 U4.81.01 U4.81.22 R7.01.04
+VALIDATION
+   SSNS106A SSNS106B SDNS106A
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR laverne      LAVERNE Jérôme         DATE 05/05/2009 - 16:17:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013203 DU 2009-03-11 15:31:19
+TYPE anomalie concernant Code_Aster (VERSION 9.4)
+TITRE
+   X-FEM : bug FACE_IMPO/DNOR
+FONCTIONNALITE
+   PROBLEME :
+   ----------
+   Les noeuds XFEM non enrichis n'étaient pas pris en compte par le DNOR (ou DTAN) (car
+   exclus dans xddlim).
+   
+   SOLUTION :
+   ----------
+   On corrige ce bug en modifiant cafaci.f dans la même logique que afddli.f :
+   
+   - Si noeud classique ou noeud xfem non enrichi (statut 0) : méthode classique (afrela.f)
+   - Si noeud xfem (statut autre que 0) : méthode xfem (xddlim.f)
+   
+   Pour ce faire, dans cafaci, on teste si DX existe sur le noeud courant. Si oui méthode
+   classique (afrela) sinon méthode xfem (xddlim puis afrela).
+   
+   VALIDATION :
+   -----------
+   - Le valeurs du test sslv313b sont améliorées, on modifie la valeur de référence d'un
+   test_resu de non régression.
+   - Pour améliorer la validation on introduit un FACE_IMPO + DNOR dans le test ssnv198ab
+   destiné à tester les conditions de Dirichlet sur les noeuds xfem.
+   (Il a été nécessaire de modifier la définition des groupes de mailles des maillages)
+   
+   MODIFS:
+   -------
+   (M) cafaci.f
+   (M) sslv313b.comm
+   (M) ssnv198ab.comm ssnv198ab.datg et ssnv198ab.mgib
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.3.12
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.198
+VALIDATION
+   liste xfem + sslv313b
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 04/05/2009 - 15:33:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012922 DU 2008-12-02 10:30:53
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   humeur incompatible entre DYNA_LINE_HARM et MODE_ITER_SIMULT avec GYROSCOPIE
+FONCTIONNALITE
+   Problème:
+   ---------
+   Emmanuel Boyère a remarqué que si on utilisait MULT_FRONT dans DYNA_LINE_HARM après avoir
+   fait un MODE_ITER_SIMULT, les résultats de DYNA_LINE_HARM sont faux.
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Il y a un bug dans la multi-frontale pour les matrices non-symétriques (réelles ou
+   complexes) :
+   Lors de la factorisation numérique de la matrice, on se permet de modifier (routines
+   mltasa.f et mltasc.f) un objet de la structure de donnée sd_nume_ddl (objet.MLTF.ADNT)
+                                                                                            
+                           
+                                                                                            
+                           
+   Correction :
+   ------------
+   Dans les routines mulfr8.f et mlfc16.f, on travaille maintenant sur un objet temporaire
+   obtenu par copie de l'objet .MLTF.ADNT et on ne modifie plus cet objet.
+                                                                                            
+                           
+   Validation:
+   ------------
+   Le test shll102a était NOOK (90%) avec le solveur MULT_FRONT dans DYNA_LINE_HARM. Après
+   correction, il est OK.
+   Je propose de le restituer avec le solveur par défaut (MULT_FRONT).
+                                                                                            
+                           
+   Résultats faux :
+   ----------------
+   Pour obtenir des résultats faux, il faut que :
+     * 2 matrices (au moins) partagent le meme sd_nume_ddl (par exemple A et B).
+     * que A soit symétrique et B non-symétrique
+     * que l'on factorise d'abord A (puis B)
+     * les résultats des résolutions avec B sont alors faux.
+                                                                                            
+                           
+   C'est ce qui se passe dans le test shll102a : Dans MODE_ITER_SIMULT, la matrice de travail
+   est symétrique mais dans DYNA_LINE_HARM, elle est non-symétrique du fait de la gyroscopie.
+                                                                                            
+                           
+   Je pense que ce cas de figure était impossible avant l'introduction de la gyroscopie dans
+   DYNA_LINE_HARM.
+                                                                                            
+                           
+                                                                                            
+                           
+   NB_JOURS_TRAV :
+   ---------------
+   EB : 1.5
+   JP : 1.5
+   CR : 0.5
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  12922
+     mlfc16.f  mulfr8.f
+     shll102a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   shll102a
+NB_JOURS_TRAV  : 3.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013259 DU 2009-03-30 12:20:40
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   forma03b se plante sur calibre5 en debug
+FONCTIONNALITE
+   Problème:
+   ---------
+   Le test forma03b se plante sur Calibre5 en version "debug" (problème dans un dismoi appelé
+   par le python).
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Après examen, on s'aperçoit que sur Calibre5 en debug, il y a un problème de passage
+   d'argument entre le C (aster_dismoi) et le fortran (dismoi.f).
+                                                                                            
+                           
+   Coté C , les arguments d'entrée  question, concept et typeconcept sont corrects mais
+   lorsqu'on les recopie dans des chaines de longueur fixe coté fortran, on voit que la copie
+   complète les chaines par des caractères non initialisés au lieu de compléter par des
+   blancs comme le fait la copie entre variables fortran.
+                                                                                            
+                           
+   Correction:
+   -----------
+   Après discussion avec M. Courtois, on prolonge (coté C) les variables avec des blancs
+   jusqu'à la longueur 32.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  13259
+     astermodule.c
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma03b en debug sur calibre5
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013262 DU 2009-03-31 12:58:45
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pb affe_cara_elem si calcul thermique suivi de calcul mxc3xa9canique
+FONCTIONNALITE
+   Problème:
+   ---------
+   Si on fait un calcul avec des "coques thermiques"  et qu'on veut utiliser la température
+   calculée comme chargement dans un problème de "coques mécaniques", on est obligé
+   d'utiliser la commande CREA_RESU / PREP_VRC1-2.
+   Si dans cette commande, on utilise le CARA_ELEM "thermique" à la place du CARA_ELEM
+   "mécanique", on est arretés par un message "développeur" pas clair du tout :
+                                                                                            
+                    
+   !--------------------------------------------------------------------------------!
+   !.<E>.<CALCULEL_42>..............................................................!
+   !................................................................................!
+   !..Erreur.Programmeur:...........................................................!
+   !..Incohérence.fortran/catalogue.................................................!
+   !..TYPE_ELEMENT.:..MEDKTR3.......................................................!
+   !..OPTION.......:..PREP_VRC......................................................!
+   !..La.routine.texxxx.f.correspondant.au.calcul.élémentaire.ci-dessus.est.bugguée.!
+   !..Elle.écrit.en.dehors.de.la.zone.allouée.au.paramètre.(OUT).PTEMPCR............!
+   !--------------------------------------------------------------------------------!
+                                                                                            
+                    
+                                                                                            
+                    
+   Solution:
+   ---------
+   On se protège d'une telle erreur d'utilisation dans les routines crvrc1.f et crvrc2.f.
+   Maintenant, le message d'erreur est le suivant :
+                                                                                            
+                    
+   !---------------------------------------------------------------------------!
+   !.<F>.<CALCULEL4_14>........................................................!
+   !...........................................................................!
+   !..Erreur.d'utilisation.(CREA_RESU/PREP_VRC.).:.............................!
+   !...Le.CARA_ELEM.(CARAC2).ne.contient.pas.de."couches"......................!
+   !...........................................................................!
+   !..Conseil.:................................................................!
+   !...Le.CARA_ELEM.qu'il.faut.fournir.à.cette.la.commande.CREA_RESU.doit.etre.!
+   !...celui.associé.au.modèle."mécanique".....................................!
+   !---------------------------------------------------------------------------!
+                                                                                            
+                    
+   Validation:
+   -----------
+   Essai perso
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  13262
+     crvrc1.f  crvrc2.f
+     calculel4.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013263 DU 2009-03-31 13:02:29
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Message d'erreur incomplet dans CALCULEL
+FONCTIONNALITE
+   Problème:
+   ----------
+   L'utilisateur a oublié de fournir une température de référence.
+   Il obtient un message d'erreur pas très explicite :
+                                                                                            
+                           
+   !-----------------------------------------------------------------------------------------!
+   !.<F>.<CALCULEL_15>.......................................................................!
+   !  sur la maille xxxxxx le calcul est thermo mécanique. Or il manque le parametre matériau !
+   !  xxxxxx . On ne peut donc pas calculer de déformation thermique.
+   !-----------------------------------------------------------------------------------------!
+                                                                                            
+                           
+   Solution:
+   ---------
+   On améliore le message d'erreur émis par la routine btldth.f
+                                                                                            
+                           
+   !-----------------------------------------------------------------------------------------!
+   !.<F>.<CALCULEL_32>.......................................................................!
+   !.........................................................................................!
+   !.Erreur.utilisateur.:....................................................................!
+   !...Sur.la.maille.M1.le.calcul.est.thermo.mécanique..Mais.il.manque.le.paramètre.matériau.!
+   !...TEMP_REF...On.ne.peut.donc.pas.calculer.la.déformation.thermique......................!
+   !.........................................................................................!
+   !.Conseils.:..............................................................................!
+   !...Si.le.problème.concerne.TEMP_REF,.vérifiez.que.vous.avez.bien.affecté.une.température.!
+   !...de.référence.(AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP',.VALE_REF=...)..................!
+   !-----------------------------------------------------------------------------------------!
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  13263
+     btldth.f  verifg.f  verifm.f  verift.f
+     calculel.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers joints
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013289 DU 2009-04-06 15:05:51
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Erreur SDVERI dans AFFE_CHAR_CINE
+FONCTIONNALITE
+   Problème:
+   ---------
+   T. De Sosa a remarqué qu'AFFE_CHAR_CINE peut produire une SD non-SDVERI
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Le problème vient du fait que parfois, AFFE_CHAR_CINE crée des objets un peu trop grands
+   par rapport au nombre réel de blocages pris en compte dans la charge. C'est du à
+   l'élimination de certains ddls bloqués plusieurs fois.
+   Cette particularité a déjà été prise en compte dans la doc Wiki, mais le python de
+   verification verifiait toujours que les objets étaient alloués "au plus juste".
+                                                                                            
+                           
+   Correction:
+   -----------
+   Dans sd_char_cine.py, on vérifie maintenant que les objets sont "assez" longs.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  13289
+     sd_char_cine.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers joints
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013292 DU 2009-04-07 14:59:53
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   MULT_FRONT / RENUM sans doute rxc3xa9manent
+FONCTIONNALITE
+   Problème:
+   ---------
+   Si on utilise plusieurs fois le solveur MULT_FRONT avec 2 méthodes de renumérotation
+   différentes (par exemple : METIS puis MDA), c'est la 1ère méthode qui est toujours utilisée.
+                                                                                            
+                    
+   Solution:
+   ----------
+   On modifie les routines mulfr8.f, mlfc16.f et mltpre.f pour recommencer la renumérotation
+   et la factorisation symbolique si nécessaire.
+                                                                                            
+                    
+    
+   Liste des fichiers impactés par la correction de la fiche:  13292
+     mlfc16.f  mltpre.f  mulfr8.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013366 DU 2009-05-04 07:38:51
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.4.10, le cas-test ssnv209d s'arrete par manque de temps sur Bull.
+FONCTIONNALITE
+   Le problème de performances est apparu au passage à la version 9.4.7 : le temps système
+   est brutalement passé de 3 à 52 s.
+   Il s'agit très probablement d'une conséquence de la libération systématique de la mémoire
+   avant l'appel à Mumps.
+   
+   Maintenant, le test est "limite" vis à vis du fichier .para (480/500).
+   
+   Correction : je me contente d'augmenter le fichier .para : 500 -> 600
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF sdns106a                    desroches X.DESROCHES        366     93      2
+ CASTEST MODIF shll102a                       pellet J.PELLET           416      1      2
+ CASTEST MODIF sslv313b                      laverne J.LAVERNE          231      2      2
+ CASTEST MODIF ssns106a                    desroches X.DESROCHES        943    213     16
+ CASTEST MODIF ssns106b                    desroches X.DESROCHES        912    195     18
+ CASTEST MODIF ssnv198a                      laverne J.LAVERNE          276     12     19
+ CASTEST MODIF ssnv198b                      laverne J.LAVERNE          241     12     18
+ CASTEST MODIF ssnv209d                       pellet J.PELLET           504      2      1
+ CASTEST MODIF ssnv504i                       desoza T.DESOZA           211      1      2
+ CASTEST MODIF ssnv504j                       desoza T.DESOZA           267      1      2
+CATALOGU AJOUT options/diss_elga           desroches X.DESROCHES         39     39      0
+CATALOGU AJOUT options/diss_elno_elga      desroches X.DESROCHES         39     39      0
+CATALOGU AJOUT options/ener_diss           desroches X.DESROCHES         30     30      0
+CATALOGU MODIF compelem/grandeur_simple__  desroches X.DESROCHES        920      9      2
+CATALOGU MODIF typelem/gener_medkg1        desroches X.DESROCHES        259     13      1
+CATALOGU MODIF typelem/gener_medkt2        desroches X.DESROCHES        384     13      1
+CATALOGU MODIF typelem/gener_megrc2           pellet J.PELLET           204      5      2
+CATALOGU MODIF typelem/gener_megrm2           pellet J.PELLET           208      5      2
+CATALOPY MODIF commande/affe_char_meca        desoza T.DESOZA           816      2      2
+CATALOPY MODIF commande/affe_char_meca_f      desoza T.DESOZA           487      2      2
+CATALOPY MODIF commande/calc_elem          desroches X.DESROCHES        547      7      5
+CATALOPY MODIF commande/mode_iter_inv        boiteau O.BOITEAU           97      2      2
+CATALOPY MODIF commande/mode_iter_simult     boiteau O.BOITEAU          150      2      2
+CATALOPY MODIF commande/post_elem          desroches X.DESROCHES        517     33      2
+CATALOPY MODIF commun/c_contact               desoza T.DESOZA           318     29     27
+CATALOPY MODIF commun/c_nom_cham_into      desroches X.DESROCHES        196      3      1
+CATALOPY MODIF commun/c_nom_grandeur       desroches X.DESROCHES        148      3      1
+       C MODIF supervis/astermodule           pellet J.PELLET          4168     10      5
+FORTRAN90 MODIF mumps/amumpc                  boiteau O.BOITEAU          357     18     20
+FORTRAN90 MODIF mumps/amumpc                  boiteau O.BOITEAU          357     18     20
+FORTRAN90 MODIF mumps/amumpi                  boiteau O.BOITEAU          299      4      2
+FORTRAN90 MODIF mumps/amumpm                  boiteau O.BOITEAU          389     14      7
+FORTRAN90 MODIF mumps/amumpp                  boiteau O.BOITEAU          276      4      2
+FORTRAN90 MODIF mumps/amumpr                  boiteau O.BOITEAU          362     26     21
+FORTRAN90 MODIF mumps/amumps                  boiteau O.BOITEAU          244      4      2
+ FORTRAN AJOUT elements/te0413             desroches X.DESROCHES        321    321      0
+ FORTRAN MODIF algeline/mlfc16                pellet J.PELLET           347     14     22
+ FORTRAN MODIF algeline/mltpre                pellet J.PELLET           513     67     29
+ FORTRAN MODIF algeline/mulfr8                pellet J.PELLET           359     14     22
+ FORTRAN MODIF algorith/crvrc1                pellet J.PELLET           129     12      3
+ FORTRAN MODIF algorith/crvrc2                pellet J.PELLET           122     12      3
+ FORTRAN MODIF calculel/mecalc             desroches X.DESROCHES        571      4      1
+ FORTRAN MODIF calculel/mecalm             desroches X.DESROCHES       2522     50      1
+ FORTRAN MODIF elements/btldth                pellet J.PELLET            97      9      3
+ FORTRAN MODIF elements/te0496                pellet J.PELLET           163     16      1
+ FORTRAN MODIF modelisa/acearp                assire A.ASSIRE           492      4      4
+ FORTRAN MODIF modelisa/cacoeq                desoza T.DESOZA           236      2      3
+ FORTRAN MODIF modelisa/cafaci               laverne J.LAVERNE          456     23     18
+ FORTRAN MODIF modelisa/cazocd                desoza T.DESOZA           273     14      3
+ FORTRAN MODIF modelisa/mmmaxi                desoza T.DESOZA           118     27     33
+ FORTRAN MODIF modelisa/pmfd02                pellet J.PELLET           162      2      2
+ FORTRAN MODIF modelisa/verifg                pellet J.PELLET           166      3      3
+ FORTRAN MODIF modelisa/verifm                pellet J.PELLET           160      3      3
+ FORTRAN MODIF modelisa/verift                pellet J.PELLET           170      3      3
+ FORTRAN MODIF utilitai/op0107             desroches X.DESROCHES        315     15      1
+ FORTRAN MODIF utilitai/peingl             desroches X.DESROCHES        749     30     15
+ FORTRAN MODIF utilitai/rscrsd             desroches X.DESROCHES        443      5      3
+  PYTHON MODIF Messages/calculel4             pellet J.PELLET           337     19      1
+  PYTHON MODIF Messages/calculel              pellet J.PELLET           324     20      4
+  PYTHON MODIF Messages/contact3              desoza T.DESOZA           235      1      7
+  PYTHON MODIF Messages/factor               boiteau O.BOITEAU          325      9      1
+  PYTHON MODIF SD/sd_char_cine                pellet J.PELLET           103      4      4
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3185      1      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4         429       429              +429
+ MODIF :   59       29142      1141     407      +734
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   63       29571      1570     407     +1163 

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF UTILITAI  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -293,6 +293,20 @@ C                   -------------
 
       ENDIF
 C
+
+      CALL GETFAC ( 'ENER_DISS' , NBOCC )
+C                   -----------
+      IF ( NBOCC .NE. 0 ) THEN
+
+         NH = 0
+         CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
+         CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
+         CALL JEVEUO ( KCHA, 'L', JCHA )
+
+         CALL PEINGL ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA), NH,
+     &                 NBOCC, 'ENER_DISS' )
+
+      ENDIF
  9999 CONTINUE
       CALL TITRE
 C

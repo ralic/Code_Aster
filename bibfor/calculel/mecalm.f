@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1180,11 +1180,11 @@ C ---- VERIF SENSIBILITE FIN
      &                    RESUCO,IORDR,NBORDR,NPASS,LIGREL)
               CALL MECARA(CARA,EXICAR,CHCARA)
               CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-              CALL RSEXC2(1,2,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
+              CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET1)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
+              CALL RSEXC2(2,2,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET2)
-              IF (IRET1.GT.0 .OR. IRET2.GT.0) GO TO 187
+              IF (IRET1.GT.0 .AND. IRET2.GT.0) GO TO 187
               CHSIGF='&&'//NOMPRO//'.CHAM_SI2D'
               CALL MEARCC(OPTION,MODELE,CHSIG,CHSIGF)
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -1239,6 +1239,7 @@ C    ------------------------------------------------------------------
               ENDIF
             ENDIF
 
+            TYPES = ' '
             CALL GETVID(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
             IF (IRETER.GT.0) THEN
               CALL U2MESK('I','CALCULEL3_24',1,TYPES)
@@ -1306,6 +1307,7 @@ C       ERZ2_ELEM_SIGM PAR RAPPORT A ERZ1_ELEM_SIGM
 
               ELSE
 
+                IRET5 = 1
                 CALL RSEXCH(RESUCO,'ERRE_ELEM_SIGM',IORDR,CHERR1,IRET1)
                 CALL RSEXCH(RESUCO,'ERZ1_ELEM_SIGM',IORDR,CHERR2,IRET2)
                 CALL RSEXCH(RESUCO,'ERZ2_ELEM_SIGM',IORDR,CHERR3,IRET3)
@@ -2294,6 +2296,7 @@ C ---- VERIF SENSIBILITE FIN
   452         CONTINUE
               CALL JEDEMA()
   450       CONTINUE
+
 C    ------------------------------------------------------------------
 C    -- OPTION "DESI_ELNO_DLSI"
 C    ------------------------------------------------------------------
@@ -2328,6 +2331,54 @@ C ---- VERIF SENSIBILITE FIN
   462         CONTINUE
               CALL JEDEMA()
   460       CONTINUE
+
+C    ------------------------------------------------------------------
+C    -- OPTIONS "DISS_ELGA" ET "DISS_ELNO_ELGA"
+C    ------------------------------------------------------------------
+          ELSE IF (OPTION.EQ.'DISS_ELGA' .OR.
+     &             OPTION.EQ.'DISS_ELNO_ELGA') THEN
+C ---- VERIF SENSIBILITE
+            IF (TYPESE.NE.0) THEN
+               CODSEN = 1
+            ENDIF
+            IF(CODSEN.NE.0) GO TO 900
+C ---- VERIF SENSIBILITE FIN
+            DO 465,IAUX = 1,NBORDR
+              CALL JEMARQ()
+              CALL JERECU('V')
+              IORDR = ZI(JORDR+IAUX-1)
+              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
+     &                    RESUCO,IORDR,NBORDR,NPASS,LIGREL)
+              CALL JEVEUO(KCHA,'L',JCHA)
+              CALL MECARA(CARA,EXICAR,CHCARA)
+              CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
+              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
+              IF (EXITIM) THEN
+                CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
+                TIME = ZR(IAINST)
+                CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
+              ELSE
+                CHTIME = ' '
+                TIME = ZERO
+              END IF
+
+              CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHVARI,
+     &                    OPTION,IRET)
+
+              IF (IRET.GT.0) CHVARI = ' '
+              CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
+              CALL MECALC(OPTION,MODELE,K24B,CHGEOM,MATE,CHCARA,
+     &                    CHTEMP,K24B,CHTIME,CHNUMC,K24B,K24B,
+     &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),' ',ZERO,
+     &                    CZERO,CHDYNR,SOP,CHELEM,K24B,LIGREL,BASE,K24B,
+     &                    K24B,CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
+     &                    TYPESE,CHACSE,IRET)
+              IF (IRET.GT.0) GO TO 467
+              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+  467         CONTINUE
+              CALL JEDEMA()
+  465       CONTINUE
+
 
 C    ------------------------------------------------------------------
 C    -- OPTION "EXTR_ELGA_VARI"

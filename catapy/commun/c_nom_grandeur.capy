@@ -1,4 +1,5 @@
-#& MODIF COMMUN  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
+# RESPONSABLE DESROCHES X.DESROCHES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,6 +55,7 @@ def C_NOM_GRANDEUR() : return  ( #COMMUN#
 "DEPL_C",
 "DEPL_F",
 "DEPL_R",
+"DISS_R",
 "DOMMAG",
 "DURT_R",
 "ENER_R",

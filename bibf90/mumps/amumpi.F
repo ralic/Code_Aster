@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+!& MODIF AMUMPI MUMPS  DATE 05/05/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -52,8 +52,10 @@ C============================================================
       CHARACTER*4  ETAMS(NMXINS),TYPM,ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
-      COMMON /SMUMPS/ DMPS,ZMPS,NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
-
+      COMMON /SMUMPS1/ DMPS
+      COMMON /SMUMPS2/ ZMPS
+      COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
+      
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)

@@ -1,5 +1,6 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 05/05/2009   AUTEUR LAVERNE J.LAVERNE 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
+# ssnv198b.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,25 +33,21 @@ MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(GROUP_MA='VOL',),
-                                   _F(NOM='SURFBAC',
-                                      OPTION='PLAN',
-                                      POINT=(0.,0.,0.),
-                                      VECT_NORMALE=(1.,0.,0.),
-                                      PRECISION=1.E-6,),
-                                   _F(NOM='SURFFRO',
-                                      OPTION='PLAN',
-                                      POINT=(lx,0.,0.),
-                                      VECT_NORMALE=(1.,0.,0.),
-                                      PRECISION=1.E-6,),
-                                      ),);
-
+                    CREA_GROUP_NO=(_F(GROUP_MA='SURFBAC',),
+                                   _F(GROUP_MA='SURFFRO',),)
+                                   );
+                                   
+MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
+                       MAILLAGE=MAILLAG1,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFBAC','SURFFRO'),),
+                       );
+                                   
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=_F(GROUP_MA=('VOL',),
+                     AFFE=_F(GROUP_MA='VOL',
                              PHENOMENE='MECANIQUE',
                              MODELISATION='3D',),
                     );
@@ -94,10 +91,8 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #----------------------------------------------------------
 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
-                  DDL_IMPO=(
-                               _F(GROUP_NO='SURFBAC',DX=0.,DY=0.,DZ=0.),
-                               _F(GROUP_NO='SURFFRO',DX=1.E-6),
-                              ),
+                  DDL_IMPO =(_F(GROUP_NO='SURFBAC',DX=0.,DY=0.,DZ=0.),),
+                  FACE_IMPO=(_F(GROUP_MA='SURFFRO',DNOR=1.E-6),),            
                   INFO=2,
                   );
 

@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/09/2008   AUTEUR LAVERNE J.LAVERNE 
+C MODIF MODELISA  DATE 05/05/2009   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1,MESNO3
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
-      LOGICAL EXISDG,LXFEM
+      LOGICAL EXISDG,EXIDX
 
       CALL JEMARQ()
       CALL GETFAC('FACE_IMPO',NFACI)
@@ -332,10 +332,11 @@ C   ----------------------
           DO 120 INO = 1,NBNO
             IN = ZI(JLINU+INO-1)
 
-C           TEST SI NOEUDS X-FEM
-            LXFEM = .FALSE.   
-            ICMPX = INDIK8(ZK8(INOM),'DCX',1,NBCMP)
-            IF (EXISDG(ZI(JPRNM-1+(IN-1)*NBEC+1),ICMPX)) LXFEM=.TRUE.
+C           TEST SI DDL DX EXISTE : OUI AFRELA CLASSIQUE, NON XDDLIM
+            EXIDX = .TRUE.   
+            ICMPX = INDIK8(ZK8(INOM),'DX',1,NBCMP)
+            IF (.NOT.EXISDG(ZI(JPRNM-1+(IN-1)*NBEC+1),ICMPX)) 
+     &         EXIDX=.FALSE.
             
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
             
@@ -344,18 +345,20 @@ C           TEST SI NOEUDS X-FEM
                 DIRECT(IDIM) = ZR(JNORM-1+NDIM* (INO-1)+IDIM)
   100         CONTINUE
 
-              IF (LXFEM) THEN
-                                  
-                 CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
-     &                       VALIMR(NDDLA+1),VALIMC(J),VALIMF(J),
-     &                       ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
-     &                       IBID,LISREL,NDIM,DIRECT)
-     
-              ELSE
+              IF (EXIDX) THEN
+              
                 CALL AFRELA(COEF,COEFC,DDL,NOMNOE,NDIM,DIRECT,1,
      &                      VALIMR(NDDLA+1),VALIMC(NDDLA+1),
      &                      VALIMF(NDDLA+1),TYPCOE,FONREE,TYPLAG,0.D0,
      &                      LISREL)
+                                  
+              ELSE
+              
+                CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
+     &                      VALIMR(NDDLA+1),VALIMC(J),VALIMF(J),
+     &                      ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
+     &                      IBID,LISREL,NDIM,DIRECT)
+              
               ENDIF
             END IF
             
@@ -364,18 +367,20 @@ C           TEST SI NOEUDS X-FEM
                 DIRECT(IDIM) = ZR(JTANG-1+NDIM* (INO-1)+IDIM)
   110         CONTINUE
   
-              IF (LXFEM) THEN
+              IF (EXIDX) THEN
               
-                 CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
-     &                       VALIMR(NDDLA+2),VALIMC(J),VALIMF(J),
-     &                       ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
-     &                       IBID,LISREL,NDIM,DIRECT)
-              
-              ELSE
                 CALL AFRELA(COEF,COEFC,DDL,NOMNOE,NDIM,DIRECT,1,
      &                      VALIMR(NDDLA+2),VALIMC(NDDLA+2),
      &                      VALIMF(NDDLA+2),TYPCOE,FONREE,TYPLAG,0.D0,
      &                      LISREL)
+                            
+              ELSE
+              
+                CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
+     &                      VALIMR(NDDLA+2),VALIMC(J),VALIMF(J),
+     &                      ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
+     &                      IBID,LISREL,NDIM,DIRECT)
+     
               ENDIF
             END IF
             

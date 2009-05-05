@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF factor Messages  DATE 05/05/2009   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,6 +96,11 @@ Matrice non factorisable :
   nombre de décimales perdues  : %(i2)d
   Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
   La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
+
+Risques & conseils :
+  Il faut vérifier de plus près les conditions aux limites cinématiques.
+  En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
+  Peut-etre devriez vous exclure certains noeuds des conditions de contact (mots clés SANS_NOEUD et SANS_GROUP_NO)
 """),
 
 #-----------------------------------------------------------------------------------------------
@@ -104,6 +109,11 @@ Matrice non factorisable :
   pivot vraiment nul à la ligne : %(i1)d
   Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
   La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
+
+Risques & conseils :
+  Il faut vérifier de plus près les conditions aux limites cinématiques.
+  En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
+  Peut-etre devriez vous exclure certains noeuds des conditions de contact (mots clés SANS_NOEUD et SANS_GROUP_NO)
 """),
 
 
@@ -299,6 +309,14 @@ Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
 """),
 #-----------------------------------------------------------------------------------------------
 
+69: _("""
+Solveur MUMPS :
+  La matrice Aster fournie à MUMPS est singulière structurellement (il manque
+  au moins une ligne/colonne).
+Solution :
+  Il y a sans doute une erreur de programmation.
+  Contactez l'assistance.
+"""),
 
 
 

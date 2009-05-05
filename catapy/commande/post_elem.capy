@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
          regles=(UN_PARMI('MASS_INER', 'ENER_POT', 'ENER_CIN','TRAV_EXT','MINMAX',
                           'WEIBULL', 'RICE_TRACEY', 'CARA_GEOM','CHAR_LIMITE',
                           'CARA_POUTRE', 'INDIC_ENER', 'INDIC_SEUIL',
-                          'AIRE_INTERNE','ENER_ELAS','ENER_TOTALE','INTEGRALE'),
+                          'AIRE_INTERNE','ENER_ELAS','ENER_TOTALE','ENER_DISS','INTEGRALE'),
                 ),
 
          MASS_INER      = FACT(statut='f',max='**',
@@ -148,6 +148,37 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                        NOEUD_CMP      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
                        NOM_CAS        = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
          ),
+
+         ENER_DISS      = FACT(statut='f',max='**',
+                               regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),),
+                               TOUT         = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                               MAILLE       = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                               GROUP_MA     = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                              ),
+         b_ener_diss = BLOC(condition = "( ENER_DISS != None )",
+                       fr="calcul de l'énergie dissipée",
+                       MODELE         = SIMP(statut='f',typ=modele_sdaster),
+                       CHAM_MATER     = SIMP(statut='f',typ=cham_mater),
+                       CARA_ELEM      = SIMP(statut='f',typ=cara_elem),
+                       CHARGE         = SIMP(statut='f',typ=(char_meca,char_cine_meca,
+                       char_ther,char_acou),validators=NoRepeat(),max='**' ),
+                       NUME_COUCHE    = SIMP(statut='f',typ='I',defaut=1),
+                       NIVE_COUCHE    = SIMP(statut='f',typ='TXM',defaut="MOY",into=("INF","SUP","MOY"),),
+                       MODE_FOURIER   = SIMP(statut='f',typ='I',defaut=0),
+                       RESULTAT       = SIMP(statut='o',typ=(evol_noli) ),
+                       regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
+                       CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+                       b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                          PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+                       b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                          PRECISION       =SIMP(statut='o',typ='R',),),
+                       TOUT_ORDRE     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                       NUME_ORDRE     = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+                       LIST_ORDRE     = SIMP(statut='f',typ=listis_sdaster),
+                       INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+                       LIST_INST      = SIMP(statut='f',typ=listr8_sdaster),
+         ),
+
 
          ENER_ELAS      = FACT(statut='f',max='**',
                                regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),),

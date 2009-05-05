@@ -1,5 +1,6 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 05/05/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
+# ssnv504i.para = tps_job 190 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -131,7 +132,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                    CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
                                METHODE='CONTINUE',
                                GLISSIERE = 'OUI',
-                               ALARME_JEU=0.1,
                                CONTACT_INIT='OUI',
                                ITER_GEOM_MAXI=3,
                                ITER_CONT_MAXI=40,

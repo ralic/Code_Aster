@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 04/05/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,8 +109,12 @@ Risques & conseils :
 """),
 
 15 : _("""
- sur la maille %(k1)s le calcul est thermo mécanique. Or il manque le parametre matériau
- %(k2)s . On ne peut donc pas calculer de déformation thermique.
+ Erreur Utilisateur :
+ On cherche à calculer une déformation thermique mais on ne trouve pas toutes les
+ quantités nécessaires :
+    - température
+    - température de référence
+    - coefficient de dilatation
 """),
 
 16 : _("""
@@ -166,8 +170,20 @@ Risques & conseils :
 """),
 
 31 : _("""
-  la température n'est pas correctement renseignée
+  La température n'est pas correctement renseignée
 """),
+
+32 : _("""
+Erreur utilisateur :
+  Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau
+  %(k2)s . On ne peut donc pas calculer la déformation thermique.
+
+Conseils :
+  Si le problème concerne TEMP_REF, vérifiez que vous avez bien affecté une température
+  de référence (AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP', VALE_REF=...)
+"""),
+
+
 
 34 : _("""
  le calcul de l'option :  %(k1)s

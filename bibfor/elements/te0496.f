@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 04/05/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NBCOU,NPGH,NBSECT,NBFIBR,NBVARI,JCOMPO,JDCEL,JNBSP,ITAB(2)
       INTEGER IRET
+      LOGICAL LTEATT
 
 
       CALL JEVECH('PDCEL_I','E',JDCEL)
@@ -84,7 +85,7 @@ C     ------------------------------------------------------------
 
 
 
-C     -- CAS DES ELEMENTS "DKT" 
+C     -- CAS DES ELEMENTS "DKT"
 C     ------------------------------------------------------------
       ELSE IF ( (NOMTE.EQ.'MEDKQU4') .OR. (NOMTE.EQ.'MEDKTR3') .OR.
      &          (NOMTE.EQ.'MEDSQU4') .OR. (NOMTE.EQ.'MEDSTR3') .OR.
@@ -92,6 +93,20 @@ C     ------------------------------------------------------------
         IF (JNBSP.NE.0) THEN
           NBCOU = ZI(JNBSP-1+1)
           NPGH = 3
+          ZI(JDCEL-1+1) = NPGH*NBCOU
+        ELSE
+          ZI(JDCEL-1+1) = 1
+        END IF
+        ZI(JDCEL-1+2) = NBVARI
+
+
+
+C     -- CAS DES ELEMENTS "GRILLE"
+C     ------------------------------------------------------------
+      ELSE IF ( LTEATT(' ','GRILLE','OUI') ) THEN
+        IF (JNBSP.NE.0) THEN
+          NBCOU = ZI(JNBSP-1+1)
+          NPGH = 1
           ZI(JDCEL-1+1) = NPGH*NBCOU
         ELSE
           ZI(JDCEL-1+1) = 1

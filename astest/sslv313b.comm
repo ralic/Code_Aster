@@ -1,4 +1,4 @@
-# MODIF  DATE 22/09/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 05/05/2009   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,7 +225,7 @@ TEST_TABLE( TABLE=TABL_K,
                      _F(  NOM_PARA = 'PT_FOND',  
                             VALE_I = 1,      ),),
             REFERENCE='NON_REGRESSION',
-            VALE= 1.17806E+06 ,
+            VALE= 1.17593E+06 ,
             PRECISION=0.001     )            
 
 FIN();

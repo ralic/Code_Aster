@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 24/11/2008   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPP MUMPS  DATE 05/05/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -70,8 +70,10 @@ C============================================================
       CHARACTER*24 VCIVAL
       REAL*8       RBID
       COMPLEX*16   CBID
-      COMMON /SMUMPS/ DMPS,ZMPS,NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
-
+      COMMON /SMUMPS1/ DMPS
+      COMMON /SMUMPS2/ ZMPS
+      COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
+      
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)

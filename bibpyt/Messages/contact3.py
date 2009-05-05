@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 05/05/2009   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,12 +155,6 @@ L'excentricité de la coque pour la maille %(k1)s n'est pas traitée
 
 41: _("""
 Problème pour récupérer l'excentricité de la coque pour la maille  %(k1)s
-"""),
-
-42 : _("""
-Contact méthodes discrètes. Il y a mélange de mailles quadratiques (TRIA6, TRIA7 ou QUAD9) avec des mailles QUAD8 sur la surface escalve du contact.
-On supprime la liaison entre les noeuds sommets et noeud milieu sur le QUAD8.
-Il y a risque d'interpénétration du noeud milieu pour le QUAD8 considéré.
 """),
 
 43 : _("""

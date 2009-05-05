@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 04/05/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,21 @@ cata_msg = {
      2) Vous devriez peut-etre utiliser le mot clé PROL_ZERO='OUI'
 
 """),
+
+2 : _("""
+Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
+  Les sd_resultat que l'on veut imprimer : %(k1)s, %(k2)s
+  sont associées à des maillages différents : %(k3)s, %(k4)s
+  C'est interdit.
+"""),
+
+3 : _("""
+Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
+  Seul FORMAT='MED' est autorisé
+"""),
+
+
+
 
 8 : _("""
  le resultat  %(k1)s  n'existe pas
@@ -67,6 +82,20 @@ cata_msg = {
 
  Conseil :
   Il faut corriger AFFE_MATERIAU.
+"""),
+
+14 : _("""
+ Erreur d'utilisation (CREA_RESU/PREP_VRC.) :
+  Le CARA_ELEM (%(k1)s) ne contient pas de "couches"
+
+ Conseil :
+  Le CARA_ELEM qu'il faut fournir à la commande CREA_RESU doit etre
+  celui associé au modèle "mécanique".
+"""),
+
+15 : _("""
+ Erreur d'utilisation (CREA_RESU/PREP_VRC.) :
+   Le modèle associé au CARA_ELEM (%(k1)s) est différent de celui fourni à la commande.
 """),
 
 
@@ -182,8 +211,36 @@ cata_msg = {
 """),
 
 69 : _("""
- On ne trouve pas la variable de commande :  %(k1)s  pour la maille:  %(k2)s
+ Erreur utilisateur :
+    On ne trouve pas la variable de commande :  %(k1)s
+    pour la maille                : %(k2)s
+    pour l'instant de calcul      : '%(k3)s'
+    valeur de l'instant de calcul : %(r1)g  (sans signification pour l'instant 'REF')
+
+ Conseils :
+    Les variables de commande sont des variables connues a priori qui influencent
+    le calcul du comportement mécanique (exemple : la température).
+
+    Lorsque le comportement mécanique dépend d'une variable de commande, il faut que l'utilisateur
+    la fournisse au calcul mécanique.
+    Cela se fait via la commande AFFE_MATERIAU / AFFE_VARC.
+
+    Les variables de commande les plus utilisées sont :
+      'TEMP'  : la température
+      'HYDR'  : l'hydratation
+      'SECH'  : le séchage
+      'CORR'  : la corrosion
+      'IRRA'  : l'irradiation
+
+    Attention au fait que les variables de commandes doivent pouvoir etre calculées pour TOUS
+    les instants du calcul. Pour cela, si on utilise une structure de données evol_xxx pour
+    renseigner une variable de commande (AFFE_MATERIAU/AFFE_VARC/EVOL), il faut faire attention
+    à utiliser éventuellement les mots clés PROL_GAUCHE et PROL_DROIT.
 """),
+
+
+
+
 
 79 : _("""
  La grandeur :  %(k1)s  n'existe pas dans le catalogue des grandeurs.

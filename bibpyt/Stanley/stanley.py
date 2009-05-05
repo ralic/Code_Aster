@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley Stanley  DATE 04/05/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -907,11 +907,13 @@ class ETAT_GEOM:
     self.lign = self.lign + ma.lign
     self.poin = self.poin + ma.poin
 
-    for cle in ma.mail.keys() :
-      self.mail[cle] = ma.mail[cle]
+    for cle in ma.mail.keys():
+      if cle!='GM1':
+        self.mail[cle] = ma.mail[cle]
 
     for cle in ma.orie.keys() :
-      self.orie[cle] = ma.orie[cle]
+      if cle!='GM1':
+        self.orie[cle] = ma.orie[cle]
 
 # ==============================================================================
 
@@ -1574,11 +1576,11 @@ class STANLEY:
       driver = DRIVER_SUP_GMSH(self)
       geom = driver.Importer_point(nom,x0,y0,z0)
       if not geom: return
-      
+
       # Incorporation du nouveau point 
       self.etat_geom.Fusion(geom)
-    except: pass
-    self.selection.Refresh()
+    except Exception, e:
+      self.selection.Refresh()
 
 
   def Ajout_chemin(self) :
@@ -2553,9 +2555,9 @@ class DRIVER_COURBES(DRIVER) :
         para['GROUP_NO'] = point
 
         try:
-          contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
+          if contexte.para_sensi: contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
           STNTBLGR = POST_RELEVE_T(ACTION = para)
-          contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
+          if contexte.para_sensi: contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
         except aster.error,err:
           return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
         except Exception,err:
@@ -2598,9 +2600,9 @@ class DRIVER_COURBES(DRIVER) :
       for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
         para['NUME_ORDRE'] = no,
         try:
-          contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
+          if contexte.para_sensi: contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
           STNTBLGR = POST_RELEVE_T(ACTION = para)
-          contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
+          if contexte.para_sensi: contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
         except aster.error,err:
           return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
         except Exception,err:
@@ -2769,25 +2771,25 @@ class DRIVER_SUP_GMSH(DRIVER) :
     mesh.Physical(nom_bid,L0)
 
     try:
-      ma = mesh.LIRE_GMSH(UNITE_GMSH=_UL[0],UNITE_MAILLAGE=_UL[1])
+      __ma = mesh.LIRE_GMSH(UNITE_GMSH=_UL[0],UNITE_MAILLAGE=_UL[1])
     except aster.error,err:
-      return self.erreur.Remonte_Erreur(err, [ma], 1)
+      return self.erreur.Remonte_Erreur(err, [__ma], 1)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
-      return self.erreur.Remonte_Erreur(err, [ma], 1, texte)
+      return self.erreur.Remonte_Erreur(err, [__ma], 1, texte)
 
 
     INDICE=_NUM
 
     try:
-      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = ma,)
+      _MA[INDICE] = CREA_MAILLAGE(MAILLAGE = __ma,)
     except aster.error,err:
-      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1)
+      return self.erreur.Remonte_Erreur(err, [__ma, _MA[INDICE]], 1)
     except Exception,err:
       texte = "Cette action n'est pas realisable.\n"+str(err)
-      return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1, texte)
+      return self.erreur.Remonte_Erreur(err, [__ma, _MA[INDICE]], 1, texte)
 
-    DETRUIRE(CONCEPT = _F(NOM = ma), INFO=1, ALARME='NON')
+    DETRUIRE(CONCEPT = _F(NOM = __ma), INFO=1, ALARME='NON')
     _NUM = _NUM + 1
 
     return ETAT_GEOM(_MA[INDICE])
@@ -2974,12 +2976,15 @@ class PRE_STANLEY :
 
        iret, ibid, nomsd = aster.dismoi('F','MODELE_1',evol,'RESULTAT')
        n_modele = nomsd.strip()
+       if n_modele[0]=='#': n_modele=''
 
        iret, ibid, nomsd = aster.dismoi('F','CARA_ELEM_1',evol,'RESULTAT')
        n_caraelem = nomsd.strip()
+       if n_caraelem[0]=='#': n_caraelem=''
 
        iret, ibid, nomsd = aster.dismoi('F','CHAM_MATER_1',evol,'RESULTAT')
        n_chammater = nomsd.strip()
+       if n_chammater[0]=='#': n_chammater=''
 
        dico[evol].append( n_modele )      # modele
        dico[evol].append( n_chammater )   # mater
@@ -3036,7 +3041,9 @@ class PRE_STANLEY :
     self.cham_mater.Selectionne( cham_mater )
 
     if self.t_cara_elem != []:
-       self.cara_elem.Selectionne( cara_elem )
+       if cara_elem:
+          self.cara_elem.Selectionne( cara_elem )
+
     if self.t_para_sensi != []:
        self.para_sensi.Change( t_para, t_para[0] )
 

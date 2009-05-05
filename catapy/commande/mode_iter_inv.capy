@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 05/05/2009   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE NISTOR I.NISTOR
+# RESPONSABLE O.BOITEAU
 
 def mode_iter_inv_prod(MATR_A,MATR_C,TYPE_RESU,**args ):
   if TYPE_RESU == "MODE_FLAMB" : return mode_flamb

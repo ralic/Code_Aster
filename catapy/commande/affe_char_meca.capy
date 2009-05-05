@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 05/05/2009   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -409,7 +409,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
            COEF_MULT       =SIMP(statut='f',typ='R',max='**'),
 
            METHODE         =SIMP(statut='f',typ='TXM',defaut="CONTRAINTE",
-                                 into=("CONTRAINTE","GCPC",) ),
+                                 into=("CONTRAINTE",) ),
 
 
         ),

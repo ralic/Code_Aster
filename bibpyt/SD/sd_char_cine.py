@@ -1,4 +1,4 @@
-#@ MODIF sd_char_cine SD  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_char_cine SD  DATE 04/05/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,7 @@ class sd_char_cine(AsBase):
         phen, tsca = self.u_veri1()
         afci=self.AFCI.get()
         nbloc=afci[0]
-        assert len(afci)==3*nbloc+1 , afci
+        assert len(afci)>=3*nbloc+1 , afci
         for k in range(nbloc) :
             nuno =afci[3*k +1]
             nucmp=afci[3*k +2]
@@ -86,7 +86,7 @@ class sd_char_cine(AsBase):
             assert afck[2].strip() != '' , afck
         else :
             tsca2 = self.AFCV.type.strip()
-            assert self.AFCV.lonmax == nbloc , (nbloc,self.AFCV.lonmax)
+            assert self.AFCV.lonmax >= nbloc , (nbloc,self.AFCV.lonmax)
 
             if tsca == 'RE' :
                 assert tsca2=='R', tsca2  # champ de réels
@@ -98,6 +98,6 @@ class sd_char_cine(AsBase):
             # vérification des fonctions :
             if tsca == 'FT'  :
                 afcv  = self.AFCV.get()
-                for fonc in afcv :
+                for fonc in afcv[:nbloc] :
                     sd2=sd_fonction(fonc); sd2.check(checker)
 

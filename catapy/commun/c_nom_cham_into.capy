@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +41,8 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "DESI_NOEU_DLSI",
                         "DETE_ELNO_DLTE",
                         "DETE_NOEU_DLTE",
+                        "DISS_ELGA",
+                        "DISS_ELNO_ELGA",
                         "DURT_ELGA_META",
                         "DURT_ELNO_META",
                         "DURT_NOEU_META",

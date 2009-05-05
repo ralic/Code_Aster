@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/11/2008   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,6 +114,7 @@ C    OPTIOZ         IN     K*      NOM DE L'OPTION "INDIC_ENER"
 C                                              OU  "INDIC_SEUIL"
 C                                              OU  "ENER_ELAS"
 C                                              OU  "ENER_TOTALE"
+C                                              OU  "ENER_DISS"
 
 C.========================= DEBUT DES DECLARATIONS ====================
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -172,8 +173,13 @@ C     ---------------
       NBPARR    = 5
       IF (OPTION(1:4).EQ.'ENER') THEN
         NOPARR(5) = 'TOTALE'
-        NOPARR(6) = 'MEMBRANE'
-        NOPARR(7) = 'FLEXION'
+        IF (OPTION(6:9).EQ.'DISS') THEN
+          NOPARR(6) = 'ENDO'
+          NOPARR(7) = 'PLAS'
+        ELSE
+          NOPARR(6) = 'MEMBRANE'
+          NOPARR(7) = 'FLEXION'
+        ENDIF  
         NBPARR    = 7
       END IF
       ENERGI = ZERO
@@ -455,6 +461,10 @@ C      --------------------------------
           NBOUT = 1
           LPAOUT(1) = 'PENERD1'
           LCHOUT(1) = '&&PEINGL.INDIC'
+        ELSE IF (OPTION.EQ.'ENER_DISS') THEN
+          NBOUT = 1
+          LPAOUT(1) = 'PDISSD1'
+          LCHOUT(1) = '&&PEINGL.INDIC'
         END IF
 
         CALL CALCUL('S',OPTION,LIGREL,NBIN,LCHIN,LPAIN,NBOUT,LCHOUT,
@@ -501,22 +511,24 @@ C         -------------------------------------------
               VALEK(1) = NOMA
               VALEK(2) = 'TOUT'
 
-            ELSE IF (OPTION.EQ.'ENER_ELAS' .OR.
-     &               OPTION.EQ.'ENER_TOTALE') THEN
+            ELSE IF (OPTION.EQ.'ENER_ELAS'  .OR.
+     &               OPTION.EQ.'ENER_TOTALE'.OR.
+     &               OPTION.EQ.'ENER_DISS') THEN
 
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_ELAS') THEN
-                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
-              ELSE
+              IF(OPTION.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
+              ELSE
+                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
               ENDIF
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 C ---  L ENERGIE TOTAL
               IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
      &            (COMPT(1:4).NE.'ELAS') .AND.
-     &            (OPTION.NE.'ENER_ELAS')) THEN
+     &            (OPTION.NE.'ENER_ELAS').AND.
+     &            (OPTION.NE.'ENER_DISS')) THEN
                  ENERGI = ENERGI + WORK(1)
               ELSE
                 ENERGI = WORK(1)
@@ -586,15 +598,16 @@ C          -------------------------------------------
                 VALEK(1) = NOMMAI
 
               ELSE IF (OPTION.EQ.'ENER_ELAS' .OR.
-     &                 OPTION.EQ.'ENER_TOTALE') THEN
+     &                 OPTION.EQ.'ENER_TOTALE' .OR.
+     &                 OPTION.EQ.'ENER_DISS') THEN
 
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_ELAS') THEN
-                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,NBMA,ZI(JAD))
-              ELSE
+              IF(OPTION.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,NBMA,ZI(JAD))
+              ELSE
+                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,NBMA,ZI(JAD))
               ENDIF
 
 C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
@@ -602,7 +615,8 @@ C ---  L ENERGIE TOTAL
 
                 IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
      &             (COMPT(1:4).NE.'ELAS') .AND.
-     &             (OPTION.NE.'ENER_ELAS')) THEN
+     &             (OPTION.NE.'ENER_ELAS').AND.
+     &             (OPTION.NE.'ENER_DISS')) THEN
 
 
                   ENERGI = ENERGI + WORK(1)
@@ -675,15 +689,16 @@ C          -------------------------------------------
                 VALEK(1) = NOMMAI
 
               ELSE IF (OPTION.EQ.'ENER_ELAS' .OR.
-     &                 OPTION.EQ.'ENER_TOTALE') THEN
+     &                 OPTION.EQ.'ENER_TOTALE' .OR.
+     &                 OPTION.EQ.'ENER_DISS') THEN
 
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_ELAS') THEN
-                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,1,NUME)
-              ELSE
+              IF(OPTION.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,1,NUME)
+              ELSE
+                CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,1,NUME)
               ENDIF
 
                 IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
