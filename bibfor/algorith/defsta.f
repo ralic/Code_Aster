@@ -2,7 +2,7 @@
      &                  NBDEF,TYDEF,INORD)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      PARAMETER    (NBPABM=8)
+      PARAMETER    (NBPABM=9)
 C
       INTEGER       LDDL(NBFOR,NBDEF),LDPAR(NBPABM)
       CHARACTER*6   PGC
@@ -79,7 +79,7 @@ C
       DATA  BMPARA/
      &  'NUME_MODE  '     , 'FREQ'       , 'NORME'           ,
      &  'NOEUD_CMP'       , 'TYPE_DEFO'          , 'OMEGA2'   ,
-     &  'MASS_GENE'      , 'RIGI_GENE' /
+     &  'MASS_GENE'      , 'RIGI_GENE', 'TYPE_MODE' /
       DATA PGC /'DEFSTA'/
       DATA BLANC /'                        '/
       DATA DEPL /'DEPL'/
@@ -170,6 +170,7 @@ C
         ZR(LDPAR(6))=0.D0
         ZR(LDPAR(7))=0.D0
         ZR(LDPAR(8))=0.D0
+        ZK16(LDPAR(9))='MODE_STA'
 C
 C ----- INCREMENT DU NUMERO D'ORDRE
 C

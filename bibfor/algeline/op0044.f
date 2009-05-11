@@ -1,7 +1,7 @@
       SUBROUTINE OP0044(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C VARIABLES LOCALES
       INTEGER NBPARI, NBPARR, NBPARK, NBPARA, MXDDL
-      PARAMETER     ( NBPARI=8 , NBPARR=16 , NBPARK=2, NBPARA=26 )
+      PARAMETER     ( NBPARI=8 , NBPARR=16 , NBPARK=3, NBPARA=27 )
       PARAMETER     ( MXDDL = 1 )
 
       INTEGER INDF, ISNNEM, IFREQ, IFM, IRET, IERFR, IERD, ICOMP,
@@ -132,7 +132,7 @@ C     ------------------------------------------------------------------
      &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
      &  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
      &  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     &  'NORME'           , 'METHODE'         ,
+     &  'NORME'           , 'METHODE'         , 'TYPE_MODE'       ,
      &  'FREQ'            ,
      &  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
      &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,

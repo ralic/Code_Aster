@@ -4,7 +4,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,12 +62,12 @@ C
      +             LTROTY,LTROTZ,LTVEC,LTYPE,NBBAS,NBCMP,NBCOU,NBMAS,
      +             NBMAX,NBMOD,NBNOT,NBSST,NEQ, NEQS,NNO,NUMO,NUTARS,
      +             LLREF1,LLREF2,LLREF3
-      INTEGER      IADPAR(8)
+      INTEGER      IADPAR(9)
       INTEGER VALI(2)
       REAL*8       COMPX,COMPY,COMPZ,EFMASX,EFMASY,EFMASZ,FREQ,GENEK,
      +             GENEM,MAT(3,3),OMEG2,RBID
       CHARACTER*8  BASMOD,MACREL,MODGEN,SOUTR,KBID
-      CHARACTER*16 DEPL,NOMPAR(8)
+      CHARACTER*16 DEPL,NOMPAR(9)
       CHARACTER*19 RAID,NUMDDL,NUMGEN,CHAMNE
       CHARACTER*24 CREFE(2),CHAMOL,CHAMBA,INDIRF
       CHARACTER*24 VALK
@@ -78,7 +78,8 @@ C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
       DATA SOUTR  /'&SOUSSTR'/
       DATA NOMPAR /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',
-     &             'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ'/
+     &             'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',
+     &             'TYPE_MODE'/
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -231,7 +232,8 @@ C           --- CALCUL DE LA MATRICE DE ROTAION ---
             CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSOR',K),'L',LLROT)
             CALL MATROT(ZR(LLROT),MAT)
 C
-            CALL BMNBMD(BASMOD,'TOUT',NBBAS)
+            CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
+     &                      NBBAS,KBID,IER)
             KBID='  '
             CALL MGUTDM(MODGEN,KBID,K,'NOM_NUME_DDL',IBID,NUMDDL)
             CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQS,KBID,IRET)
@@ -290,7 +292,7 @@ C
         EFMASY = EFMASY*EFMASY/GENEM
         EFMASZ = EFMASZ*EFMASZ/GENEM
         CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
-        CALL RSADPA ( NOMRES,'E',8,NOMPAR,I,0,IADPAR,KBID)
+        CALL RSADPA ( NOMRES,'E',9,NOMPAR,I,0,IADPAR,KBID)
         ZR(IADPAR(1)) = FREQ
         ZR(IADPAR(2)) = GENEK
         ZR(IADPAR(3)) = GENEM
@@ -299,6 +301,7 @@ C
         ZR(IADPAR(6)) = EFMASX
         ZR(IADPAR(7)) = EFMASY
         ZR(IADPAR(8)) = EFMASZ
+        ZK16(IADPAR(9)) = 'MODE_DYN'
 C
         CALL JELIBE(CHAMOL)
 C

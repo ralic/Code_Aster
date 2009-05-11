@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -420,7 +420,7 @@ C     -- REMPLISSAGE DE .REFD POUR LES MODE_MECA :
       IF ((TYPRES(1:9).EQ.'MODE_MECA')) THEN
         CALL JEEXIN(RESU19//'.REFD',IER)
         IF (IER.EQ.0) THEN
-          CALL WKVECT(RESU19//'.REFD','G V K24',6,JREFD)
+          CALL WKVECT(RESU19//'.REFD','G V K24',7,JREFD)
         ELSE
           CALL JEVEUO(RESU19//'.REFD','E',JREFD)
         ENDIF

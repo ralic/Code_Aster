@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_turbulent Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_turbulent Meidee  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -264,7 +264,7 @@ class CalculInverse:
             V = Matrix(conjugate(transpose(VH)))
             l = len(S)
             S = array(S)
-            inv_S = complex(1,0)*S[:]
+            inv_S = zeros(S.shape,'D')
             self.val_sing[:,ind_freq] = S
             alpha = self.choix_alpha(self.alpha,VH,omega)
             for ind in range(l):
@@ -326,7 +326,7 @@ class CalculInverse:
         U = Matrix(U)
         V = Matrix(conjugate(transpose(VH)))
         l = len(S)
-        inv_S = S[:]
+        inv_S = zeros(S.shape,'D')
         self.mess.disp_mess("Valeurs singulieres de la matrice de commande")
         val_sing = "  "
         for s in S:

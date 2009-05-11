@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,8 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*4  TYPCAL
       CHARACTER*8  K8BID,CTYP,CRIT,NOMCMP(3),NOPASE,NOMA,MATERI
       CHARACTER*13 INPSCO
-      CHARACTER*16 OPTION,OPTIO2,TYSD,TYPE,OPER,TYPMCL(4),MOTCLE(4),MCL
+      CHARACTER*16 OPTION,OPTIO2,TYSD,TYPE,OPER
+      CHARACTER*16 TYPMCL(4),MOTCLE(4),MCL(2),TYPMO
       CHARACTER*19 LERES0,RESUCO,KNUM,INFCHA,LIGREL,RESUC1
       CHARACTER*19 CHDEP2,CHAMS0,CHAMS1,PRFCHN
       CHARACTER*24 CHAMNO,NUME,VFONO,VAFONO,SIGMA,CHDEPL
@@ -153,6 +154,12 @@ C               12   345678   9012345678901234
       NORECG = '&&'//NOMPRO//'_PARA_SENSI     '
       KNUM = '&&'//NOMPRO//'.NUME_ORDRE'
 
+C ----ON VERIFIE SI DERRIERE UN CONCEPT MODE_MECA SE TROUVE UN MODE_DYN
+
+      IF (TYSD(1:9) .EQ. 'MODE_MECA') THEN
+        CALL RSADPA(RESUCO,'L',1,'TYPE_MODE',1,0,IAD,K8BID)
+        TYPMO=ZK16(IAD)
+      ENDIF
 C=======================================================================
 C -- SENSIBILITE : NOMBRE DE PASSAGES
 C              12   345678
@@ -211,7 +218,7 @@ C TRI DES OPTIONS SUIVANT TYSD
         EXITIM = .FALSE.
         IF (TYSD.EQ.'EVOL_ELAS' .OR. TYSD.EQ.'EVOL_NOLI') THEN
           EXITIM = .TRUE.
-        ELSE IF (TYSD.EQ.'MODE_MECA' .OR. TYSD(1:9).EQ.'MODE_STAT' .OR.
+        ELSE IF (TYSD.EQ.'MODE_MECA'.OR.
      &           TYSD.EQ.'DYNA_TRANS') THEN
           CALL JEEXIN(LERES0//'.REFD',IRET)
           IF (IRET.NE.0) THEN
@@ -495,17 +502,22 @@ C       ================================================================
 
             IF (OPTION.EQ.'FORC_NODA_NONL') THEN
               NUMREF = ' '
-              CALL WKVECT(RESUC1//'.REFD','G V K24',3,JREF)
+              CALL WKVECT(RESUC1//'.REFD','G V K24',7,JREF)
               CALL JEVEUO(LERES0//'.REFD','L',LREF)
               ZK24(JREF) = ZK24(LREF)
               ZK24(JREF+1) = ZK24(LREF+1)
               ZK24(JREF+2) = ZK24(LREF+2)
+              ZK24(JREF+3) = ZK24(LREF+3)
+              ZK24(JREF+4) = ZK24(LREF+4)
+              ZK24(JREF+5) = ZK24(LREF+5)
+              ZK24(JREF+6) = ZK24(LREF+6)       
               IF (ZK24(JREF).NE.' ') THEN
                 CALL DISMOI('F','NOM_NUME_DDL',ZK24(JREF),'MATR_ASSE',
      &                      IBID,NUMREF,IRET)
               ENDIF
             END IF
-            IF (TYSD.EQ.'MODE_MECA' .OR. TYSD(1:9).EQ.'MODE_STAT' .OR.
+
+            IF (TYSD.EQ.'MODE_MECA' .OR. 
      &           TYSD.EQ.'DYNA_TRANS') THEN
               NUMREF = ' '
               CALL JEVEUO(LERES0//'.REFD','L',JREF)
@@ -593,13 +605,10 @@ C            POUR LE CALCUL DE FORC_NODA DANS LES POU_D_T_GD
               END IF
 
 C             -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
-              IF (TYSD.EQ.'MODE_MECA' .OR. TYSD(1:9).EQ.'MODE_STAT' .OR.
+              IF (TYSD.EQ.'MODE_MECA' .OR.
      &           TYSD.EQ.'DYNA_TRANS') THEN
                 NUME = NUMREF(1:14)//'.NUME'
               ELSE
-                NOOJB='12345678.00000.NUME.PRNO'
-                CALL GNOMSD ( NOOJB,10,14)
-                NUME=NOOJB(1:14)
                 CALL NUMECN(MODELE,CHDEPL,NUME)
                 IF (OPTION.EQ.'FORC_NODA_NONL') THEN
                   IF (NUMREF.NE.' ')  NUME = NUMREF(1:14)//'.NUME'
@@ -634,7 +643,7 @@ C           --- CALCUL DES VECTEURS ELEMENTAIRES ---
               ELSE
                 IF (I.EQ.1) THEN
                   COMPOR = '&&OP0106.COMPOR'
-                  MCL = 'COMP_INCR'
+                  MCL(1) = 'COMP_INCR'
                   CALL NMDOCC(COMPOR(1:19),MODELE,1,MCL,NMCMP2,
      &                        NCMPMA,.TRUE.)
                 END IF
@@ -751,7 +760,8 @@ C             --- CALCUL DU CHAMNO DE REACTION PAR RECOPIE DE FORC_NODA
               END IF
 
 C           --- TRAITEMENT DES MODE_MECA ---
-              IF (TYSD.EQ.'MODE_MECA') THEN
+              IF (TYSD.EQ.'MODE_MECA' .AND. 
+     &            TYPMO(1:8).EQ.'MODE_DYN') THEN
                 CALL RSADPA(LERES0,'L',1,'OMEGA2',IORDR,0,IAD,CTYP)
                 OMEGA2 = ZR(IAD)
                 CALL JEVEUO(CHDEPL(1:19)//'.VALE','L',LDEPL)
@@ -765,7 +775,8 @@ C           --- TRAITEMENT DES MODE_MECA ---
                 CALL JEDETR('&&'//NOMPRO//'.TRAV')
 
 C           --- TRAITEMENT DES MODE_STAT ---
-              ELSE IF (TYSD(1:9).EQ.'MODE_STAT') THEN
+              ELSE IF (TYSD.EQ.'MODE_MECA' .AND. 
+     &            TYPMO(1:8).EQ.'MODE_STA') THEN
                 CALL RSADPA(LERES0,'L',1,'TYPE_DEFO',IORDR,0,IAD,CTYP)
                 IF (ZK16(IAD) (1:9).EQ.'FORC_IMPO') THEN
                   CALL RSADPA(LERES0,'L',1,'NUME_DDL',IORDR,0,IAD,CTYP)

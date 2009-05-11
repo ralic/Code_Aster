@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ MODE_ITER_CYCL=OPER(nom="MODE_ITER_CYCL",op=  80,sd_prod=mode_cycl,
                         +" d'une base de modes propres réels",
                     reentrant='n',
             UIinfo={"groupes":("Résolution",)},
-         BASE_MODALE     =SIMP(statut='o',typ=base_modale ),
+         BASE_MODALE     =SIMP(statut='o',typ=mode_meca ),
          NB_MODE         =SIMP(statut='f',typ='I',defaut= 999 ),
          NB_SECTEUR      =SIMP(statut='o',typ='I' ),
          LIAISON         =FACT(statut='o',

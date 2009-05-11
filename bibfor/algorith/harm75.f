@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C           CHAMP IGNORE
       ENDIF
 C
 C     --- RECUPERATION DE LA BASE MODALE ---
-C ON SUPPOSE QU ELLE EST ISSUE D UN MODE_MECA OU BASE_MODALE
+C ON SUPPOSE QU ELLE EST ISSUE D UN MODE_MECA
 C
       IF (MODE.EQ.' ') THEN
          CALL JEVEUO(HRANGE//'.REFD','L',IAREFE)
@@ -111,9 +111,7 @@ C
      &            'ABSOLU',NBMODE,1,IBID)
          ELSE
            CALL GETTCO(MATPRO,TYPBAS)
-           IF ((TYPBAS(1:9).NE.'MODE_MECA').AND.
-     &        (TYPBAS(1:9).NE.'MODE_STAT').AND.
-     &        (TYPBAS(1:11).NE.'BASE_MODALE')) THEN
+           IF ((TYPBAS(1:9).NE.'MODE_MECA')) THEN
              CALL JEVEUO(MATPRO//'           .REFA','L',IAREF2)
              BASEMO = ZK24(IAREF2)(1:8)
              CALL JEVEUO(MATPRO//'           .DESC','L',IADESC)
@@ -211,7 +209,7 @@ C
  30      CONTINUE
 C
       KREFE  = NOMRES
-      CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
+      CALL WKVECT(KREFE//'.REFD','G V K24',7,LREFE)
       IF (MODE.EQ.' ') THEN
         ZK24(LREFE  ) = ZK24(IADRIF)
         ZK24(LREFE+1) = ZK24(IADRIF+1)
@@ -219,6 +217,7 @@ C
         ZK24(LREFE+3) = ZK24(IADRIF+3)
         ZK24(LREFE+4) = ZK24(IADRIF+4)
         ZK24(LREFE+5) = ZK24(IADRIF+5)
+        ZK24(LREFE+6) = ZK24(IADRIF+6)
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C

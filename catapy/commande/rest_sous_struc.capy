@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,6 @@ def rest_sous_struc_prod(RESU_GENE,RESULTAT,**args ):
   if AsType(RESULTAT)  == evol_noli      : return evol_noli
   if AsType(RESULTAT)  == dyna_trans     : return dyna_trans
   if AsType(RESULTAT)  == mode_meca      : return mode_meca
-  if AsType(RESULTAT)  == base_modale    : return base_modale
   raise AsException("type de concept resultat non prevu")
 
 REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
@@ -34,23 +33,25 @@ REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
                     reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
         regles=(UN_PARMI('RESU_GENE','RESULTAT'),
-                EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST'),
-                EXCLUS('TOUT_INST','NUME_ORDRE','INST','LIST_INST','TOUT_ORDRE'),
+# ajout d'une regle de Ionel et Nicolas:
+#                UN_PARMI('NOM_CHAM','TOUT_CHAM'),
+#
+              EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST','NUME_MODE',
+                     'FREQ', 'LIST_FREQ'),
 #  Doc U à revoir
-                 EXCLUS('NOEUD','GROUP_NO'),
-                 EXCLUS('MAILLE','GROUP_MA'),
-                PRESENT_PRESENT('RESULTAT','SQUELETTE'),
+              EXCLUS('NOEUD','GROUP_NO'),
+              EXCLUS('MAILLE','GROUP_MA'),
+              PRESENT_PRESENT('RESULTAT','SQUELETTE'),
 
                 ),
          RESULTAT        =SIMP(statut='f',typ=(evol_noli,dyna_trans,
-                                            mode_meca,base_modale) ),
+                                            mode_meca) ),
          RESU_GENE       =SIMP(statut='f',typ=(tran_gene,mode_gene,mode_cycl,harm_gene) ),
-         BASE_MODALE     =SIMP(statut='f',typ=(base_modale,mode_meca) ),
          NUME_DDL        =SIMP(statut='f',typ=nume_ddl_sdaster ),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  
-         NUME_MODE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  
+         NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  
          TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),  
          LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ),
@@ -62,10 +63,11 @@ REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
          b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
              PRECISION       =SIMP(statut='o',typ='R',),),
          INTERPOL        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","LIN") ),
-         NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=8,defaut="ACCE",   
-                               into=("DEPL","VITE","ACCE","ACCE_ABSOLU","EFGE_ELNO_DEPL","SIPO_ELNO_DEPL",                 
-                                     "SIGM_ELNO_DEPL","FORC_NODA",) ),
          TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         b_nom_cham=BLOC(condition="TOUT_CHAM == None",
+             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=8,defaut="ACCE",   
+                               into=("DEPL","VITE","ACCE","ACCE_ABSOLU","EFGE_ELNO_DEPL","SIPO_ELNO_DEPL",                 
+                                     "SIGM_ELNO_DEPL","FORC_NODA",) ),),
          GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -74,7 +76,7 @@ REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
            NB_SECTEUR      =SIMP(statut='f',typ='I',validators=NoRepeat(),max=1 ),
            NUME_DIAMETRE    =SIMP(statut='f',typ='I',validators=NoRepeat(),max=1 ),
            RESULTAT2       =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,evol_char,
-                                               mode_meca,mode_stat_depl,base_modale) ),
+                                               mode_meca) ),
          ),
 
          SQUELETTE       =SIMP(statut='f',typ=squelette ),

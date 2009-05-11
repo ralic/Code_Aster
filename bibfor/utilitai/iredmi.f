@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*8  K8B, MAEL, BASEMO, MASSE, NOMA, INTERF, LISTAM
+      CHARACTER*8  K8B, MAEL, BASEMO, MASSE, NOMA, LISTAM
       CHARACTER*16 NOMCMD
 C     ------------------------------------------------------------------
 C
@@ -58,15 +58,11 @@ C     ----- RECUPERATION DES MODES -----
       CALL JELIRA(BASEMO//'           .ORDR','LONMAX',NBMODT,K8B)
       CALL JEVEUO(BASEMO//'           .ORDR','L',JORDR)
       CALL JEVEUO(BASEMO//'           .REFD','L',JVAL)
-      INTERF = ZK24(JVAL+4) (1:8)
-      IF (INTERF.NE.' ') THEN
-       CALL BMNBMD(BASEMO,'MODE',NBMODE)
-       CALL BMNBMD(BASEMO,'DEFORMEE',NBMODS)
-      ELSE
-       CALL JEVEUO(BASEMO//'           .UTIL','L',JVAL)
-       NBMODE = ZI(JVAL+2)
-       NBMODS = ZI(JVAL+3)
-      ENDIF
+
+      CALL DISMOI('F','NB_MODES_DYN',BASEMO,'RESULTAT',
+     &                      NBMODE,K8B,IER)
+      CALL DISMOI('F','NB_MODES_STA',BASEMO,'RESULTAT',
+     &                      NBMODS,K8B,IER)
       NBMODT = NBMODE + NBMODS
 C
       CALL JEVEUO(MAEL//'.MAEL_MASS_REFE','L',JREFE)

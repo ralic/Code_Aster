@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE AUDEBERT S.AUDEBERT
-COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_stat,
+COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
                      fr="Réponse sismique par recombinaison modale par une méthode spectrale",
                      reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
@@ -34,7 +34,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_stat,
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          ),
-         MODE_CORR       =SIMP(statut='f',typ=mode_stat_acce ),
+         MODE_CORR       =SIMP(statut='f',typ=mode_meca ),
          
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
          LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
@@ -97,7 +97,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_stat,
                    AU_MOINS_UN('DX','DY','DZ' ),),
            NOM_CAS         =SIMP(statut='o',typ='TXM',max='**'),
            NUME_CAS        =SIMP(statut='o',typ='I',max='**'),
-           MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,), ),
+           MODE_STAT       =SIMP(statut='f',typ=mode_meca, ),
            NOEUD_REFE      =SIMP(statut='f',typ=no),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),

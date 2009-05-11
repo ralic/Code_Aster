@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,6 @@ def norm_mode_prod(MODE,**args ):
   if AsType(MODE) == mode_meca   : return mode_meca
   if AsType(MODE) == mode_meca_c : return mode_meca_c
   if AsType(MODE) == mode_flamb  : return mode_flamb
-  if AsType(MODE) == base_modale : return base_modale
   raise AsException("type de concept resultat non prevu")
 
 NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
@@ -32,7 +31,7 @@ NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
          regles=(UN_PARMI('NORME','NOEUD','AVEC_CMP','SANS_CMP'),
                  CONCEPT_SENSIBLE('SEPARE'),
                  DERIVABLE('MODE'),),
-         MODE       =SIMP(statut='o',typ=(mode_meca,mode_flamb,base_modale) ),
+         MODE       =SIMP(statut='o',typ=(mode_meca,mode_flamb) ),
          NORME      =SIMP(statut='f',typ='TXM',fr="Norme prédéfinie : masse généralisée, euclidienne,...",
                           into=("MASS_GENE","RIGI_GENE","EUCL","EUCL_TRAN","TRAN","TRAN_ROTA") ),
          NOEUD      =SIMP(statut='f',typ=no, fr="Composante donnée d un noeud spécifié égale à 1"),
@@ -51,11 +50,14 @@ NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
                                fr="Liste des param\350tres de sensibilit\351.",
                                ang="List of sensitivity parameters",
          ),
-         b_base    =BLOC(condition = "AsType(MODE) == base_modale",
-              MASSE = SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ), ),
-              RAIDE = SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ), ),
-              AMOR  = SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
-         ),
+#         b_base    =BLOC(condition = "AsType(MODE) == base_modale",
+#              MASSE = SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ), ),
+#              RAIDE = SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ), ),
+#              AMOR  = SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
+#         ),
+         MASSE = SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ), ),
+         RAIDE = SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ), ),
+         AMOR  = SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
          TITRE      =SIMP(statut='f',typ='TXM',max='**'),
          INFO       =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

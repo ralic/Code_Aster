@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,14 +41,14 @@ MACRO_EXPANS=MACRO(nom="MACRO_EXPANS",
                    fr="Outil d'expansion de resultats exprimentaux sur une base definie sur un modele numerique",
                         MODELE_CALCUL   = FACT(statut='o',
                            MODELE          = SIMP(statut='o',typ=(modele_sdaster) ),
-                           BASE            = SIMP(statut='o',typ=(mode_meca,base_modale,) ), 
+                           BASE            = SIMP(statut='o',typ=(mode_meca,) ), 
                            NUME_MODE       = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**',defaut=0),
                            NUME_ORDRE      = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**',defaut=0),
 
                                              ),
                         MODELE_MESURE   = FACT(statut='o',
                            MODELE          = SIMP(statut='o',typ=(modele_sdaster) ),
-                           MESURE          = SIMP(statut='o',typ=(dyna_trans,dyna_harmo,base_modale,mode_meca,mode_meca_c,) ),
+                           MESURE          = SIMP(statut='o',typ=(dyna_trans,dyna_harmo,mode_meca,mode_meca_c,) ),
                            NOM_CHAM        = SIMP(statut='f',typ='TXM',defaut="DEPL",
                                                   into=("DEPL","VITE","ACCE","SIEF_NOEU","EPSI_NOEU_DEPL",) ),
                            NUME_MODE       = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**',defaut=0),

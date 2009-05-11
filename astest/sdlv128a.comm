@@ -1,0 +1,434 @@
+# MODIF  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+# TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
+# sdlv128a.para = tps_job 300 mem_job 600Mo mem_aster 40 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F(NOM='SDLV128A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
+
+# La structure etudiee est un crayon B4C de grappe de commande multi-supporte par des 
+# ressorts appeles soufflets aux niveaux de "cartes" de maintien. Elle est representative des 
+# crayons que l'on trouve sur la maquette PHACETIE.
+# L'objectif de ce cas-test est de realiser l'expansion des modes identifies experimentalement
+# sur les essasi PHACETIE. 
+# Sur cette maquette, les mesures sont faites avec des jauges extensiometriques collees a 
+# l'interieur du tube. On doit donc realiser une expansion modale a partir de donnees extensiometriques
+# Dans Code_Aster, cette donnee est assimilee a un champ EPSI_NOEU_DEPL.
+# On realise dans ce cas-test une expansion modale sur une base d'expansion composee de 
+# releves statiques aux points de mesure, 
+# on fabrique une base de releves statiques sur les points de mesure. Probleme : il 
+# n'a pas ete possible de calculer les deformation associees aux deformees issues de
+# l'operateur MODE_STATIQUE. On doit pour cela fabriquer la base "a la main" avec une boucle
+# sur MECA_STATIQUE et CREA_RESU.
+ 
+
+#------------------------------------------------------
+# Creation d'un modele 3D representatif de la structure
+#------------------------------------------------------
+
+noeu3D = ('N303', 'N353', 'N402','N461','N482','N204','N154','N105','N46',
+'N25','N1410','N1460','N1509','N1784','N1805','N5543','N5993','N6443','N6974','N7163');
+
+MAINtemp    = LIRE_MAILLAGE( FORMAT  = 'ASTER',
+                             UNITE   = 20,
+                             );
+
+
+MAINtemp    = DEFI_GROUP( reuse           = MAINtemp,
+                          MAILLAGE        = MAINtemp,
+                          CREA_GROUP_MA   = _F( NOM = 'TUBE_MA',
+                                                TOUT = 'OUI') );
+
+# Creation de mailles ponctuelles au niveau des soufflets.
+noeu3D = ('N303', 'N353', 'N402','N461','N482','N204','N154','N105','N46',
+'N25','N1410','N1460','N1509','N1784','N1805','N5543','N5993','N6443','N6974','N7163');
+MAINUM = CREA_MAILLAGE(  MAILLAGE  = MAINtemp,
+                         CREA_POI1 = _F( NOEUD        = noeu3D,
+                                         NOM_GROUP_MA = 'SOU_MA3D' ),
+                        );
+                                
+DETRUIRE( CONCEPT = _F( NOM = MAINtemp ), INFO = 1 );
+
+
+MODELNUM = AFFE_MODELE( MAILLAGE = MAINUM,
+                        VERIF = 'MAILLE',
+                        AFFE  = ( _F( GROUP_MA        = 'TUBE_MA',
+                                      PHENOMENE       = 'MECANIQUE',
+                                      MODELISATION    = '3D' ),
+                                  _F( GROUP_MA        = 'SOU_MA3D',
+                                      PHENOMENE       = 'MECANIQUE',
+                                      MODELISATION    = 'DIS_T'),
+                                ),
+                        );
+
+MATCRAY = DEFI_MATERIAU( ELAS = _F( E   = 210.E9,
+                                    NU  = 0.3,
+                                    RHO = 7800.   ),
+                        );
+
+# Raideurs locales associees aux soufflets : a peu pres recalees par rapport
+# frequences experimentales                                
+K1 = 2.1E7/4
+K2 = 1.8E6/4
+
+CARANUM = AFFE_CARA_ELEM( MODELE  = MODELNUM,
+                          DISCRET = _F( GROUP_MA = 'SOU_MA3D',
+                                        CARA = 'K_T_D_N',
+                                        VALE = (K2, K1, K2),
+                                       ),
+                          );
+                                                       
+ 
+MATNUM = AFFE_MATERIAU( MAILLAGE = MAINUM,
+                        MODELE   = MODELNUM,
+                        AFFE     = _F( GROUP_MA = 'TUBE_MA',
+                                       MATER    = MATCRAY ),
+                       );
+
+KELNUM      = CALC_MATR_ELEM( OPTION          = 'RIGI_MECA',
+                              MODELE          = MODELNUM,
+                              CHAM_MATER      = MATNUM,
+                              CARA_ELEM       = CARANUM );            
+
+MELNUM      = CALC_MATR_ELEM( OPTION          = 'MASS_MECA',
+                              MODELE          = MODELNUM,
+                              CHAM_MATER      = MATNUM,
+                              CARA_ELEM       = CARANUM );
+
+NUMENUM     = NUME_DDL( MATR_RIGI = KELNUM );
+
+KASNUM      = ASSE_MATRICE( MATR_ELEM = KELNUM,
+                            NUME_DDL  = NUMENUM );
+
+MASNUM      = ASSE_MATRICE( MATR_ELEM = MELNUM,
+                            NUME_DDL  = NUMENUM );
+
+#-----------------------------------------------
+# Base d'expansion composee des modes dynamiques
+#-----------------------------------------------
+MODEAIRt    = MODE_ITER_SIMULT( MATR_A    = KASNUM,
+                                MATR_B    = MASNUM,
+                                METHODE   = 'TRI_DIAG',
+                                TYPE_RESU = 'DYNAMIQUE',
+                                OPTION    = 'SANS',
+                                CALC_FREQ = _F( OPTION          = 'BANDE',
+                                                APPROCHE        = 'REEL',
+                                                FREQ            = (10.,200.)  ),
+                                VERI_MODE = _F( STOP_ERREUR     = 'NON',
+                                                SEUIL           = 1e-03  ),
+                               );
+                                
+MODEAIRt    = NORM_MODE( reuse = MODEAIRt,
+                         MODE  = MODEAIRt,
+                         NORME = 'MASS_GENE',
+                        );
+
+MODEAIR = EXTR_MODE( FILTRE_MODE = _F( MODE = MODEAIRt,
+                                       NUME_ORDRE = range(1,7)) )
+
+
+
+MODEAIR = CALC_ELEM( reuse    = MODEAIR,
+                     RESULTAT = MODEAIR,
+                     GROUP_MA = 'TUBE_MA',
+                     OPTION   = 'EPSI_ELNO_DEPL'
+                    );
+
+MODEAIR = CALC_NO( reuse      = MODEAIR,
+                   RESULTAT   = MODEAIR,
+                   GROUP_MA   = 'TUBE_MA',
+                   OPTION     = 'EPSI_NOEU_DEPL'
+                  );
+
+#IMPR_CO( CONCEPT = _F( NOM = MODEAIR ), UNITE = 9 )
+
+#---------------------------------------------------------------------------
+# Base d'expansion composee des deformees statiques avec le modele numerique
+#---------------------------------------------------------------------------
+
+# Position des jauges de mesure sur le maillage numerique : les noeuds choisis
+# pour la correspondance numerique-experimental ont ete donnes par PROJ_MESU_MODAL.
+# 16 jauges sont colles a l'interieur du tube : 8 mesurent la flexion de la poutre
+# dans la direction X, et 8 autres dans la direction Z (axe dela poutre = Y).
+# La base de deformees statique est fabriquee avec MECA_STATIQUE (problemes rencontres avec 
+# MODE_STATIQUE : impossible de calculer les EPSI_NOEU_DEPL sur la sd resultat.
+noeud_num_jaug_X = ('N4217','N4237','N4260','N4289','N4319','N4348','N4377','N4406')
+noeud_num_jaug_Z = ('N2886','N2906','N2929','N2958','N2988','N3017','N3046','N3075');
+
+LSONK      = [None]*16;
+LSONF       = [None]*16;
+KELNU      = [None]*16;
+NUMNU      = [None]*16;
+MOSTi      = [None]*16;
+MOSTd       = [None]*16;
+l_depl      = []
+
+for i in range(8):
+    #Bases de deformees associee aux jauges en X
+    sens = noeud_num_jaug_X[0:i] + noeud_num_jaug_X[i+1:len(noeud_num_jaug_X)]
+    
+    LSONK[i] = AFFE_CHAR_MECA( MODELE   = MODELNUM,
+                               DDL_IMPO = ( _F( NOEUD = sens,
+                                                DX    = 0.0),
+                                            _F( NOEUD = noeud_num_jaug_Z,
+                                                DZ = 0.0),
+                                           ),
+                              );
+
+    KELNU[i] = CALC_MATR_ELEM( OPTION      = 'RIGI_MECA',
+                               MODELE      = MODELNUM,
+                               CHAM_MATER  = MATNUM,
+                               CARA_ELEM   = CARANUM,
+                               CHARGE      = LSONK[i],
+                              );
+
+    NUMNU[i] = NUME_DDL( MATR_RIGI = KELNU[i] );
+                                    
+    LSONF[i] = AFFE_CHAR_MECA( MODELE       = MODELNUM,
+                               FORCE_NODALE = _F( NOEUD = noeud_num_jaug_X[i],
+                                                  FX    = 10000.0,
+                                                            ),
+                                    );
+    MOSTi[i] = MACRO_ELAS_MULT( MODELE          = MODELNUM,
+                                CHAM_MATER      = MATNUM,
+                                CARA_ELEM       = CARANUM,
+                                CHAR_MECA_GLOBAL= LSONK[i],
+                                NUME_DDL        = NUMNU[i],
+                                CAS_CHARGE      =_F( NOM_CAS         = str(i),
+                                                     CHAR_MECA       = LSONF[i]  ),
+                               );
+                                
+    MOSTd[i]    = CREA_CHAMP(       TYPE_CHAM       = 'NOEU_DEPL_R',
+                                    OPERATION       = 'EXTR',
+                                    RESULTAT        = MOSTi[i],
+                                    NOM_CHAM        = 'DEPL',
+                                    NUME_ORDRE      = 1,
+                                    );    
+
+    f_depl      = { 'CHAM_GD'   : MOSTd[i],
+                    'MODELE'    : MODELNUM,
+                    'NOM_CAS'   : str(i),}
+    f_depl['CHAM_MATER']   = MATNUM
+    f_depl['CARA_ELEM']    = CARANUM
+    l_depl.append(f_depl)
+
+
+for i in range(8):
+    #Bases de deformees associee aux jauges en Y
+    sens = noeud_num_jaug_Z[0:i]+noeud_num_jaug_Z[i+1:len(noeud_num_jaug_Z)]
+    j = i+8
+    LSONK[j]   = AFFE_CHAR_MECA( MODELE   = MODELNUM,
+                                 DDL_IMPO = ( _F( NOEUD = sens,
+                                                  DZ    = 0.0),
+                                              _F( NOEUD = noeud_num_jaug_X,
+                                                  DX    = 0.0), 
+                                             ),
+                                    );
+                                    
+    KELNU[j]   = CALC_MATR_ELEM( OPTION          = 'RIGI_MECA',
+                                 MODELE          = MODELNUM,
+                                 CHAM_MATER      = MATNUM,
+                                 CARA_ELEM       = CARANUM,
+                                 CHARGE          = LSONK[j],
+                                 );
+
+    NUMNU[j]   = NUME_DDL( MATR_RIGI       = KELNU[j] );
+                                    
+    LSONF[j]    = AFFE_CHAR_MECA( MODELE          = MODELNUM,
+                                  FORCE_NODALE    = _F( NOEUD           = noeud_num_jaug_Z[i],
+                                                        FZ              = 10000.,
+                                                       ),
+                                  );
+ 
+    MOSTi[j]   = MACRO_ELAS_MULT( MODELE          = MODELNUM,
+                                  CHAM_MATER      = MATNUM,
+                                  CARA_ELEM       = CARANUM,
+                                  CHAR_MECA_GLOBAL= LSONK[j],
+                                  NUME_DDL        = NUMNU[j],
+                                  CAS_CHARGE      =_F( NOM_CAS         = str(j),
+                                                       CHAR_MECA       = LSONF[j],
+                                                      ),
+                                 );
+                                
+    MOSTd[j]    = CREA_CHAMP(       TYPE_CHAM       = 'NOEU_DEPL_R',
+                                    OPERATION       = 'EXTR',
+                                    RESULTAT        = MOSTi[j],
+                                    NOM_CHAM        = 'DEPL',
+                                    NUME_ORDRE      = 1,
+                                    );
+    
+
+    f_depl      = { 'CHAM_GD'   : MOSTd[j],
+                    'MODELE'    : MODELNUM,
+                    'NOM_CAS'   : str(j),}
+    f_depl['CHAM_MATER']   = MATNUM
+    f_depl['CARA_ELEM']    = CARANUM
+    l_depl.append(f_depl)
+
+
+# Avec CREA_RESU, on rassemble les deformees statiques dans une sd resultat MULT_ELAS
+MODESTA = CREA_RESU( OPERATION = 'AFFE',
+                     TYPE_RESU = 'MULT_ELAS',
+                     NOM_CHAM  = 'DEPL',
+                     AFFE      = l_depl,
+                  );
+                              
+MODESTA = CALC_ELEM( reuse    = MODESTA,
+                     RESULTAT = MODESTA,
+                     GROUP_MA = 'TUBE_MA',
+                     OPTION   = 'EPSI_ELNO_DEPL'
+                );
+                                
+MODESTA = CALC_NO( reuse    = MODESTA,
+                   RESULTAT = MODESTA,
+                   GROUP_MA = 'TUBE_MA',
+                   OPTION   = 'EPSI_NOEU_DEPL'
+                  );
+
+NUMSTAT  = DEFI_BASE_MODALE( RITZ = (_F( MODE_MECA  = MODEAIR,
+                                         NMAX_MODE = 0),
+                                     _F( MULT_ELAS = MODESTA,
+                                         NMAX_MODE = 16 ),
+                                    ),
+                             NUME_REF = NUMENUM,
+                             );
+
+#IMPR_CO( CONCEPT = _F( NOM = NUMSTAT ), UNITE = 9 )
+
+
+                             
+#-----------------------------------------------------------------
+# Creation du modele experimental associe aux positions des jauges
+#-----------------------------------------------------------------
+
+MAYAEXP = LIRE_MAILLAGE( UNITE = 21 )
+
+MAYAEXP = DEFI_GROUP( reuse = MAYAEXP,
+                      MAILLAGE = MAYAEXP,
+                      CREA_GROUP_MA = _F( NOM = 'MC',
+                                          TOUT = 'OUI'))
+                      
+# modelisation discrete avec caras mecaniques bidons                  
+MODELEXP = AFFE_MODELE( MAILLAGE = MAYAEXP,
+                        AFFE     = _F( TOUT = 'OUI',
+                                       PHENOMENE = 'MECANIQUE',
+                                       MODELISATION = 'DIS_T' )
+                       );
+
+CARAEXP = AFFE_CARA_ELEM( MODELE  = MODELEXP,
+                          DISCRET = _F( GROUP_MA = 'MC',
+                                        CARA     = 'K_T_D_L',
+                                        VALE     = (100.,100.,100.) )
+                        );
+
+MATEXP = AFFE_MATERIAU( MAILLAGE = MAYAEXP,
+                        MODELE   = MODELEXP,
+                        AFFE     = _F( GROUP_MA = 'MC',
+                                       MATER    = MATCRAY),
+                       );
+                       
+KELEXP = CALC_MATR_ELEM( OPTION    ='RIGI_MECA',
+                         MODELE    = MODELEXP,
+                         CARA_ELEM = CARAEXP,
+                        );
+
+MELEXP = CALC_MATR_ELEM( OPTION    = 'MASS_MECA',
+                         MODELE    = MODELEXP,
+                         CARA_ELEM = CARAEXP,
+                        );
+
+NUMEXP = NUME_DDL( MATR_RIGI = KELEXP );
+
+
+KASSEXP = ASSE_MATRICE(MATR_ELEM = KELEXP,
+                       NUME_DDL  = NUMEXP,);
+
+
+MASSEXP = ASSE_MATRICE(MATR_ELEM = MELEXP,
+                       NUME_DDL  = NUMEXP,);
+
+
+# Les modes experimentaux sont "simules" par projection de la base numerique
+# sur les jauges, sous la forme d'un champ de deformation aux noeuds.                        
+MODESEXP = PROJ_CHAMP( RESULTAT = MODEAIR, 
+                      MODELE_1 = MODELNUM,
+                      MODELE_2 = MODELEXP,
+                      NOM_CHAM = 'EPSI_NOEU_DEPL',
+                      NUME_DDL = NUMEXP)
+
+
+#-------------------------------------------------------
+# Expansion des modes experimentaux sur la base statique
+#-------------------------------------------------------
+
+# Une expansion modale avec la base d'expansion NUMSTAT
+REGEN = PROJ_MESU_MODAL( MODELE_CALCUL = _F( BASE   = NUMSTAT,
+                                             MODELE = MODELNUM),
+                         MODELE_MESURE = _F( MESURE   = MODESEXP,
+                                             MODELE   = MODELEXP,
+                                             NOM_CHAM = 'EPSI_NOEU_DEPL'),
+                         RESOLUTION    = _F( METHODE = 'SVD',
+                                             EPS    = 1.0E-5,),
+                         NOM_PARA      = ('AMOR_GENE','MASS_GENE','AMOR_REDUIT')
+                        );
+
+
+
+RESEtmp = REST_GENE_PHYS( RESU_GENE  = REGEN,
+                          TOUT_ORDRE = 'OUI',
+                          TOUT_CHAM  = 'OUI',
+                          MODE_MECA  = NUMSTAT
+                        );
+
+# Les modes numeriques sont calcules sans amortissment. On ajoute 
+# l'amortissment a la main avec les deux commandes suivantes.
+vale_amor = (0.01,0.02,0.03,0.04,0.05,0.06 )
+LISTAMOR = DEFI_LIST_REEL( VALE = vale_amor);
+
+RESET = DEFI_BASE_MODALE( NUME_REF = NUMENUM,
+                          RITZ = _F( MODE_MECA = RESEtmp ),
+                          LIST_AMOR = LISTAMOR );
+
+
+
+# On verifie que les amortissments ont bien ete ajoutes dans la sd
+TABLAMOR = RECU_TABLE( CO = RESET, NOM_PARA = 'AMOR_REDUIT')
+
+for ind in range(6):
+    TEST_TABLE( TABLE = TABLAMOR,
+                FILTRE = _F( NOM_PARA = 'NUME_ORDRE', VALE_I = ind+1 ),
+                NOM_PARA = 'AMOR_REDUIT',
+                VALE =  vale_amor[ind] )
+                
+MAC = MAC_MODES( BASE_2 = RESET, BASE_1 = MODEAIR, INFO = 2 );
+
+IMPR_TABLE( TABLE = MAC, UNITE = 8)
+vale_mac = (0.952, 0.916, 0.926, 0.950)
+
+# Test du resultat : 
+for ind in range(4):
+    TEST_TABLE( TABLE = MAC,
+                FILTRE = ( _F( NOM_PARA = 'NUME_MODE_1', VALE_I = ind+1 ),
+                           _F( NOM_PARA = 'NUME_MODE_2', VALE_I = ind+1 )),
+                NOM_PARA = 'MAC',
+                VALE = vale_mac[ind], PRECISION = 0.1 );
+
+
+FIN();
+
+
+

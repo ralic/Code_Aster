@@ -4,7 +4,7 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,15 +138,8 @@ C Orthonormalisation par rapport a la matrice
      &                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
       ENDIF
 C
-      CALL RSCRSD('G',NOMRES,'BASE_MODALE',NBMODE)
+      CALL RSCRSD('G',NOMRES,'MODE_MECA',NBMODE)
 C
-      CALL JEEXIN(NOMRES//'           .UTIL',IRET)
-      IF (IRET.NE.0) CALL JEDETR(NOMRES//'           .UTIL')
-      CALL WKVECT(NOMRES//'           .UTIL','G V I',4,JUTIL)
-      ZI(JUTIL  ) = 4
-      ZI(JUTIL+1) = NBMODE
-      ZI(JUTIL+2) = NBMODE
-      ZI(JUTIL+3) = 0
 C
       IORNE =0
       DO 80 I=1,NBMODE
@@ -184,6 +177,10 @@ C
          CALL RSADPA(  BASE, 'L',1,'RIGI_GENE',IOROL,0, IAD,K8B)
          CALL RSADPA(NOMRES, 'E',1,'RIGI_GENE',IORNE,0,JIAD,K8B)
          ZR(JIAD) = ZR(IAD)
+C
+         CALL RSADPA(  BASE, 'L',1,'TYPE_MODE',IOROL,0, IAD,K8B)
+         CALL RSADPA(NOMRES, 'E',1,'TYPE_MODE',IORNE,0,JIAD,K8B)
+         ZK16(JIAD) = ZK16(IAD)
  80   CONTINUE
 C
 C

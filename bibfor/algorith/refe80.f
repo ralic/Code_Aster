@@ -1,6 +1,6 @@
       SUBROUTINE REFE80(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*8 NOMRES,BASMOD,INTF,MAILLA
       CHARACTER*10 TYPBAS(3)
-      CHARACTER*24 BLANC
+      CHARACTER*24 BLANC, IDESC
       CHARACTER*24 VALK(3)
 C
 C-----------------------------------------------------------------------
@@ -73,19 +73,18 @@ C
 C
 C------------------CONTROLE SUR TYPE DE BASE MODALE---------------------
 C
-      CALL JEVEUO(BASMOD//'           .UTIL','L',LLUTI)
-      IDESC=ZI(LLUTI)
+      CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
+      IDESC=ZK24(LLREF+6)
 C
-        IF(IDESC.NE.1) THEN
+        IF(IDESC(1:9).NE.'CLASSIQUE') THEN
           VALK (1) = BASMOD
-          VALK (2) = TYPBAS(IDESC)
+          VALK (2) = IDESC
           VALK (3) = TYPBAS(1)
           CALL U2MESG('F', 'ALGORITH14_13',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 C--------------------RECUPERATION DES CONCEPTS AMONTS-------------------
 C
-      CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
       INTF=ZK24(LLREF+4)
       CALL DISMOI('F','NOM_MAILLA',INTF,'INTERF_DYNA',IBID,
      &            MAILLA,IRET)

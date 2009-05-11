@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ NUME_DDL_GENE=OPER(nom="NUME_DDL_GENE",op= 127,sd_prod=nume_ddl_gene,
                STOCKAGE     =SIMP(statut='f',typ='TXM',defaut="LIGN_CIEL",into=("LIGN_CIEL","PLEIN") ),
                METHODE            =SIMP(statut='f',typ='TXM',defaut="CLASSIQUE",into=("INITIAL","CLASSIQUE") ),
                                     ),
-         BASE     =SIMP(statut='f',typ=(mode_meca,mode_stat,base_modale,mode_gene ) ),
+         BASE     =SIMP(statut='f',typ=(mode_meca,mode_gene ) ),
              b_base     =BLOC(condition = "BASE != None",
                STOCKAGE     =SIMP(statut='f',typ='TXM',defaut="DIAG",into=("DIAG","PLEIN") ),
                NB_VECT     =SIMP(statut='f',typ='I',defaut= 9999 ),

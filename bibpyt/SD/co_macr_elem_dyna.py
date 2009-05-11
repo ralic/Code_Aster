@@ -1,4 +1,4 @@
-#@ MODIF co_macr_elem_dyna SD  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF co_macr_elem_dyna SD  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,16 +45,16 @@ def VALE_triang2array(vect_VALE, dim, typ):
 
 # -----------------------------------------------------------------------------
 class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
-   def NBRE_MODES(self) :
-      """ retourne le nombre de modes total, dynamiques et d'interface """
-      if self.par_lot() :
-         raise Accas.AsException("Erreur dans macr_elem_dyna.NBRE_MODES en PAR_LOT='OUI'")
-      nombase = self.MAEL_REFE.get()[0]
-      nbmode=Numeric.array(aster.getvectjev('%-19s' % nombase[0:8] + '.UTIL'))
-      nbmodtot=nbmode[1]
-      nbmoddyn=nbmode[2]
-      nbmodint=nbmode[3]
-      return [nbmodtot,nbmoddyn,nbmodint]
+#   def NBRE_MODES(self) :
+#      """ retourne le nombre de modes total, dynamiques et d'interface """
+#      if self.par_lot() :
+#         raise Accas.AsException("Erreur dans macr_elem_dyna.NBRE_MODES en PAR_LOT='OUI'")
+#      nombase = self.MAEL_REFE.get()[0]
+#      nbmode=Numeric.array(aster.getvectjev('%-19s' % nombase[0:8] + '.UTIL'))
+#      nbmodtot=nbmode[1]
+#      nbmoddyn=nbmode[2]
+#      nbmodint=nbmode[3]
+#      return [nbmodtot,nbmoddyn,nbmodint]
 
    def EXTR_MATR_GENE(self,typmat) :
       """ retourne les valeurs des matrices generalisees reelles

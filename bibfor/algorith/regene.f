@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,14 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      I,IADREF,IADRIF,IAREFE,IBID,IDBASE,IER,IORD,IRET,
      +             ITRESU,JBID,LDNEW,LLCHOL,LLINSK,LLNUEQ,LREFE,
-     +             NBMOD,NBNOT,NEQ,NNO,NUMO,IADPAR(6),NBMO2,
+     +             NBMOD,NBNOT,NEQ,NNO,NUMO,IADPAR(7),NBMO2,
      +             LLREF1,LLREF2,LLREF3,LLREF4,LLREF5,LLREF6
       REAL*8       FREQ,GENEK,GENEM,OMEG2,RBID,XSI
       COMPLEX*16   CBID
       CHARACTER*1  K1BID,TYPSCA
       CHARACTER*8  BASMOD,RESPRO,KBID,K8B,MODMEC,MAILSK,MODGEN
       CHARACTER*14 NUMDDL
-      CHARACTER*16 DEPL,NOMPAR(6),TYPREP
+      CHARACTER*16 DEPL,NOMPAR(7),TYPREP
       CHARACTER*19 CHAMNO,KINT,KREFE,CHAMNE,RAID,NUMGEN,PROFNO
       CHARACTER*24 CHAMOL,MATRIC,INDIRF,CREFE(2),NUMEDD,BASMO2
       CHARACTER*24 VALK
@@ -71,7 +71,7 @@ C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
       DATA NOMPAR /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',
-     &             'AMOR_REDUIT'/
+     &             'AMOR_REDUIT','TYPE_MODE'/
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -115,8 +115,8 @@ C
       CALL JEVEUO(KINT//'.VALE','L',ITRESU)
       CALL JEVEUO(KINT//'.REFE','L',IADREF)
       BASMOD = ZK24(IADREF)(1:8)
-      CALL GETVID(' ','BASE_MODALE',1,1,1,K8B,IBID)
-      IF (IBID.NE.0) CALL GETVID(' ','BASE_MODALE',1,1,1,BASMOD,IBID)
+C      CALL GETVID(' ','BASE_MODALE',1,1,1,K8B,IBID)
+C      IF (IBID.NE.0) CALL GETVID(' ','BASE_MODALE',1,1,1,BASMOD,IBID)
 C
       BASMO2 = BASMOD
       CALL GETTCO ( BASMO2, TYPREP )
@@ -183,7 +183,7 @@ CC
 C
          CALL JEVEUO (NUMGEN//'.NUEQ','L',LLNUEQ)
          CALL GETVID ( ' ', 'MODE_MECA', 1,1,1, MODMEC, IBID )
-         BASMOD=MODMEC
+         IF (IBID.NE.0) BASMOD=MODMEC
          CALL RSORAC ( BASMOD, 'LONUTI', IBID, RBID, KBID, CBID, RBID,
      &              KBID, NBMO2, 1, IBID )
          CALL WKVECT ('&&REGENE.BASEMODE','V V R',NBMO2*NEQ,IDBASE)
@@ -224,13 +224,14 @@ C
             ENDIF
 
             CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
-            CALL RSADPA ( NOMRES, 'E', 6,NOMPAR, I,0,IADPAR,KBID)
+            CALL RSADPA ( NOMRES, 'E', 7,NOMPAR, I,0,IADPAR,KBID)
             ZR(IADPAR(1)) = FREQ
             ZR(IADPAR(2)) = GENEK
             ZR(IADPAR(3)) = GENEM
             ZR(IADPAR(4)) = OMEG2
             ZI(IADPAR(5)) = NUMO
             ZR(IADPAR(6)) = XSI
+            ZK16(IADPAR(7)) = 'MODE_DYN'
 C
             CALL JELIBE(CHAMOL)
 10       CONTINUE
@@ -254,22 +255,7 @@ C           WRITE(6,*) 'NUMEDD ',NUMEDD
            CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IRET)
            CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMO2*NEQ,IDBASE)
            CALL COPMO2(BASMOD,NEQ,NUMDDL,NBMO2,ZR(IDBASE))
-C         ELSE
-C           IF (TYPREP(1:9) .EQ. 'MODE_MECA') THEN
-C             MATRIC = ZK24(IADRIF+2)
-C           ELSEIF (TYPREP(1:9) .EQ. 'MODE_STAT') THEN
-C             MATRIC = ZK24(IADRIF)
-C             IF (MATRIC(1:8).EQ.BLANC) MATRIC = ZK24(IADRIF+2)
-C           ENDIF
-C           CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
-C     +                 NUMEDD,IRET)
-C           NUMDDL = NUMEDD(1:14)
-C           CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',NEQ,K8B,IRET)
-C           CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMO2*NEQ,IDBASE)
-C           CALL COPMOD(BASMOD,'DEPL',NEQ,NUMDDL,NBMO2,ZR(IDBASE))
-C         ENDIF
-C
-CC
+
 CCC ---- RESTITUTION PROPREMENT DITE
 CC
 C
@@ -307,27 +293,27 @@ C
 
             CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
 
-            CALL RSADPA ( NOMRES, 'E', 6,NOMPAR, I,0, IADPAR,KBID)
+            CALL RSADPA ( NOMRES, 'E', 7,NOMPAR, I,0, IADPAR,KBID)
             ZR(IADPAR(1)) = FREQ
             ZR(IADPAR(2)) = GENEK
             ZR(IADPAR(3)) = GENEM
             ZR(IADPAR(4)) = OMEG2
             ZI(IADPAR(5)) = NUMO
             ZR(IADPAR(6)) = XSI
+            ZK16(IADPAR(7)) = 'MODE_DYN'
 C
             CALL JELIBE(CHAMOL)
 20       CONTINUE
 
          KREFE  = NOMRES
-         CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
+         CALL WKVECT(KREFE//'.REFD','G V K24',7,LREFE)
          ZK24(LREFE  ) = ZK24(IADRIF)
          ZK24(LREFE+1) = ZK24(IADRIF+1)
-C         ZK24(LREFE+1) = '  '
          ZK24(LREFE+2) = ZK24(IADRIF+2)
-C         ZK24(LREFE+3) = ZK24(IADRIF+3)
          ZK24(LREFE+3) = NUMEDD
          ZK24(LREFE+4) = ZK24(IADRIF+4)
          ZK24(LREFE+5) = ZK24(IADRIF+5)
+         ZK24(LREFE+6) = ZK24(IADRIF+6)
          CALL JELIBE(KREFE//'.REFD')
       ENDIF
 

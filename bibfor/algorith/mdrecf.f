@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,15 +77,17 @@ C
       CHARACTER*16  NOMCMD, NOMP(MXPARA)
       CHARACTER*19  CHANNO, FONCT, FACCE
       CHARACTER*19  CHAMNO, CHAMN2
-      CHARACTER*24  DEEQ
+      CHARACTER*24  DEEQ,TYPEBA
       LOGICAL       LFORC
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0
 C ---    CALCUL TRANSITOIRE CLASSIQUE
-      IF ((TYPBAS(1:9).EQ.'MODE_MECA').OR.
-     +    (TYPBAS(1:9).EQ.'MODE_STAT')) THEN
-         CALL JEVEUO(BASEMO//'           .REFD','L',JDRIF)
+      CALL JEVEUO(BASEMO//'           .REFD','L',JDRIF)
+      TYPEBA=ZK24(JDRIF+6)
+
+
+      IF (TYPBAS(1:9).EQ.'MODE_MECA'.AND.TYPEBA(1:1).EQ.' ') THEN
          MATASS =  ZK24(JDRIF)(1:8)
          CALL DISMOI('F','NOM_MAILLA'  ,MATASS,'MATR_ASSE',
      +          IB,MAILLA,IER)
@@ -93,8 +95,7 @@ C ---    CALCUL TRANSITOIRE CLASSIQUE
      +         IBID,NUMDDL,IER)
          DEEQ = NUMDDL//'.NUME.DEEQ'
          CALL JEVEUO(DEEQ,'L',IDDEEQ)
-      ELSEIF (TYPBAS(1:9).EQ.'BASE_MODA') THEN
-         CALL JEVEUO(BASEMO//'           .REFD','L',JDRIF)
+      ELSEIF (TYPEBA(1:1).NE.' ') THEN
          NUMDDL = ZK24(JDRIF+3)(1:14)
          CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',
      +          IB,MAILLA,IER)

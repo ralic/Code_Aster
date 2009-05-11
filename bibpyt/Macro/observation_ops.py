@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF observation_ops Macro  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,7 +52,8 @@ def observation_ops(self,
     from Accas import _F
     from Utilitai.UniteAster import UniteAster
     from Utilitai.Utmess     import UTMESS
-    from Cata.cata import mode_meca, dyna_harmo, evol_elas, base_modale
+#    from Cata.cata import mode_meca, dyna_harmo, evol_elas, base_modale
+    from Cata.cata import mode_meca, dyna_harmo, evol_elas
     MODI_REPERE = self.get_cmd('MODI_REPERE')
     PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
     CREA_CHAMP  = self.get_cmd('CREA_CHAMP')

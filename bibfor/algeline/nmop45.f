@@ -2,7 +2,7 @@
      &                  NFREQ ,BANDE ,MOD45 ,MODES)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/10/2008   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER NBPARI,NBPARR,NBPARK,MXDDL,NBPARA
-      PARAMETER (NBPARI=8,NBPARR=16,NBPARK=2,NBPARA=26)
+      PARAMETER (NBPARI=8,NBPARR=16,NBPARK=3,NBPARA=27)
       PARAMETER (MXDDL=1)
       INTEGER INDF,ISNNEM,IMET,I,IEQ,IRET,
      &        IER1,IBID,IERD,IFREQ
@@ -94,7 +94,7 @@ C     ------------------------------------------------------------------
      &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
      &  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
      &  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     &  'NORME'           , 'METHODE'         ,
+     &  'NORME'           , 'METHODE'         , 'TYPE_MODE'       ,
      &  'FREQ'            ,
      &  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
      &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,

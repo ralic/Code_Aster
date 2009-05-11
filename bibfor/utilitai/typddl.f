@@ -7,7 +7,7 @@
       CHARACTER*(*)     CHOIXZ, NUMEZ
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      APRNO, ADEEQ, IDDL, IDEB, ND, N, NEC, IERD, GD
+      INTEGER      APRNO, ADEEQ, IDDL, IDEB, ND, N, NEC, IERD, GD,IER
       CHARACTER*8  MODGEN, BASEMO
       CHARACTER*16 TYPREP
       CHARACTER*24 NPRNO, NDEEQ, KBID, NORIG
@@ -151,7 +151,8 @@ C On compte que si il y a plus d'une sous-structure
             KBID = '        '
             CALL MGUTDM(MODGEN,KBID,NUSST,'NOM_BASE_MODALE',IBID,
      &                 BASEMO)
-            CALL BMNBMD(BASEMO,'DEFORMEE',NBDEFO)
+            CALL DISMOI('F','NB_MODES_STA',BASEMO,'RESULTAT',
+     &                      NBDEFO,KBID,IER)
             N1DDL = ZI(JPRNO+2*(I-1))+ZI(JPRNO+2*(I-1)+1)-NBDEFO
             N2DDL = ZI(JPRNO+2*(I-1))+ZI(JPRNO+2*(I-1)+1)-1
             DO 24 J=N1DDL,N2DDL

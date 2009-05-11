@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_correlation Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_calcul_correlation Meidee  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,8 @@ import aster
 from Accas import _F
 from Utilitai.Utmess import UTMESS
 from Cata.cata import modele_sdaster , matr_asse_depl_r
-from Cata.cata import mode_meca, dyna_harmo, maillage_sdaster, base_modale
+#from Cata.cata import mode_meca, dyna_harmo, maillage_sdaster, base_modale
+from Cata.cata import mode_meca, dyna_harmo, maillage_sdaster
 from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
 from Cata.cata import IMPR_RESU, RECU_TABLE, MAC_MODES, DETRUIRE
 from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER

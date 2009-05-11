@@ -1,0 +1,236 @@
+      SUBROUTINE BAMO78(NOMRES,TRANGE,TYPRES)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*8   NOMRES
+      CHARACTER*16  TYPRES
+      CHARACTER*19  TRANGE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C IN  : NOMRES : NOM UTILISATEUR POUR LA COMMANDE REST_COND_TRAN
+C IN  : TYPRES : TYPE DE RESULTAT : 'DYNA_TRANS'
+C IN  : TRANGE : NOM UTILISATEUR DU CONCEPT TRAN_GENE AMONT
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*32  JEXNUM,JEXNOM
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*8  K8BID
+      INTEGER      IBID,IRET,IRETOU,IE,IERD,I,J
+      INTEGER      ICHAM,IARCH,IMODE
+      REAL*8       R8BID
+      COMPLEX*16   C16BID
+      INTEGER      NBCHAM,NUME
+      CHARACTER*16 CHAMP(3)
+      INTEGER      N0,N1
+      CHARACTER*8  BASEMO
+      INTEGER      NEC,NEQ
+      INTEGER      NBINST
+      INTEGER      NBMODE
+      INTEGER      IADREF,IADRIF,IADESM,IACONX,IAPRNO
+      INTEGER      JNOCMP,LNOCMP,IDBASE,JRESTR,LDNEW,LINST
+      CHARACTER*14 NUMDDL
+      CHARACTER*24 NUMEDD,CHAMNO
+      CHARACTER*19 CHAM19,CHGENE
+      CHARACTER*19 KNUME,KINST,KREFE
+      INTEGER      JNUME,JINST,JREFE
+      CHARACTER*8  CTYPE,SDNOLI
+      CHARACTER*24 TRGENE
+      INTEGER      JTRGEN      
+C      
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      BASEMO = ' '
+      CTYPE  = 'K24'    
+C      TYPRES = 'EVOL_NOLI' 
+      SDNOLI = TRANGE
+      KREFE  = NOMRES
+C 
+C --- RECUPERATION BASE MODALE
+C      
+      CALL GETVID(' ','BASE_MODALE',1,1,1,BASEMO,IBID)
+C     
+C --- NOMBRE DE MODES
+C         
+      CALL RSORAC(BASEMO,'LONUTI',IBID  ,R8BID ,K8BID ,
+     &            C16BID,R8BID   ,K8BID ,NBMODE,1     ,
+     &            IBID)
+C
+C --- NUME_DDL ATTACHE A LA BASE MODALE
+C     
+      CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
+      NUMEDD = ZK24(IADRIF+3)
+C
+C --- NOUVELLE NUMEROTATION PAS NECESSAIRE ENCORE DANS REST_COND_TRAN
+C         
+C      CALL GETVID(' ','NUME_DDL',1,1,1,K8BID,IBID  )
+C      IF (IBID.NE.0) THEN
+C        CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
+C        NUMEDD = NUMEDD(1:14)//'.NUME'
+C      ENDIF
+      NUMDDL = NUMEDD(1:14)
+C
+C --- RECOPIE DES MODES PROPRES DANS UN VECTEUR DE TRAVAIL 
+C       
+      CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8BID,IRET)
+      CALL WKVECT('&&BAMO78.BASE','V V R',NBMODE*NEQ,IDBASE)
+      CALL COPMO2(BASEMO,NEQ   ,NUMDDL,NBMODE,ZR(IDBASE))
+C
+C --- CHAMPS SUR LESQUELS ON RESTITUE
+C      
+      CALL GETVTX(' ','TOUT_CHAM',1,1,0,K8BID,N0)
+      IF (N0.NE.0) THEN
+         NBCHAM   = 3
+         CHAMP(1) = 'DEPL'
+         CHAMP(2) = 'VITE'
+         CHAMP(3) = 'ACCE'
+      ELSE
+         CALL GETVTX(' ','NOM_CHAM',1,1,0,CHAMP,N1)
+         IF (N1.NE.0) THEN
+            NBCHAM = -N1
+            IF (NBCHAM.GT.3) THEN
+               CALL ASSERT(.FALSE.)
+            ENDIF
+            CALL GETVTX(' ','NOM_CHAM',1,1,NBCHAM,CHAMP,N1)
+         ELSE
+            CALL U2MESS('A','ALGORITH10_93')
+            GOTO 9999
+         ENDIF
+      ENDIF
+C      
+C --- RECUPERATION DES INSTANTS ET DES NUMEROS DE RANGEMENT 
+C        
+      KNUME  = '&&BAMO78.NUM_RANG'
+      KINST  = '&&BAMO78.INSTANT'
+      CALL RSTRAN('NON' ,TRANGE,' '   ,1     ,KINST ,
+     &            KNUME ,NBINST,IRETOU)
+      IF (IRETOU .NE. 0) THEN
+         CALL U2MESS('F','UTILITAI4_24')
+      ENDIF
+      CALL JEEXIN(KINST,IRET  )
+      IF ( IRET .GT. 0 ) THEN
+         CALL JEVEUO(KINST ,'L',JINST )
+         CALL JEVEUO(KNUME ,'L',JNUME )
+      END IF 
+C           
+C --- CREATION DE LA SD RESULTAT EVOL_NOLI
+C
+      CALL RSCRSD('G',NOMRES,TYPRES,NBINST)
+C
+C
+C --- PROJECTION SUR BASE PHYSIQUE
+C
+      DO 300 ICHAM = 1 , NBCHAM
+         DO 310 IARCH = 1, NBINST
+        
+            NUME   = ZI(JNUME+IARCH-1)
+          
+C         --- RECUP POINTEUR SUR CHAMP GENERALISE
+          
+            
+            CALL RSADPA(SDNOLI,'L',1,'TRAN_GENE_NOLI',NUME  ,1,
+     &                  JTRGEN,CTYPE)
+            TRGENE = ZK24(JTRGEN)
+            
+            IF ( CHAMP(ICHAM) .EQ. 'DEPL' ) THEN
+               CHGENE = TRGENE(1:18)//'D'
+            ELSEIF ( CHAMP(ICHAM) .EQ. 'VITE' ) THEN
+               CHGENE = TRGENE(1:18)//'V'              
+            ELSEIF ( CHAMP(ICHAM) .EQ. 'ACCE' ) THEN
+               CHGENE = TRGENE(1:18)//'A'
+            ELSE
+               CALL U2MESS('A','ALGORITH10_94')
+               GOTO 300
+            ENDIF
+            
+            CALL JEEXIN(CHGENE,IRET)
+            IF (IRET.EQ.0) THEN
+               CALL U2MESS('F','MECANONLINE5_32')
+            ELSE
+               CALL JEVEUO(CHGENE,'L',JRESTR)    
+            ENDIF
+            
+          
+C         --- RECUP POINTEUR SUR CHAMP PHYSIQUE DANS SD RESULTAT
+ 
+            CALL RSEXCH(NOMRES,CHAMP(ICHAM)(1:4),IARCH,CHAMNO,IRET)
+          
+C         --- CREATION DU CHAMP       
+          
+            CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
+            CALL JEVEUO(CHAMNO(1:19)//'.VALE','E',LDNEW) 
+          
+C         --- TRANSFERT EFFECTIF SUR BASE PHYSIQUE    
+
+            CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),ZR(JRESTR),ZR(LDNEW))
+          
+C         --- STOCKAGE CHAMP PHYSIQUE
+
+            CALL RSNOCH(NOMRES,CHAMP(ICHAM)(1:4),IARCH,' ')
+            IF (ICHAM.EQ.1) THEN
+               CALL RSADPA(NOMRES,'E',1,'INST',IARCH,0,LINST,K8BID)
+               ZR(LINST) = ZR(JINST+IARCH-1)
+            ENDIF
+          
+            CALL JELIBE(CHGENE)
+
+ 310     CONTINUE     
+ 300  CONTINUE   
+C 
+C --- ENRICHISSEMENT SD TRAN_GENE -> EVOL_NOLI SD_VERI = 'NON' !!!
+C
+      CALL WKVECT(KREFE(1:19)//'.REFD','G V K24',7,JREFE)
+      ZK24(JREFE  ) = ZK24(IADRIF)
+      ZK24(JREFE+1) = ZK24(IADRIF+1)
+      ZK24(JREFE+2) = ZK24(IADRIF+2)
+      ZK24(JREFE+3) = NUMEDD
+      ZK24(JREFE+4) = ZK24(IADRIF+4)
+      ZK24(JREFE+5) = ZK24(IADRIF+5)
+      ZK24(JREFE+6) = ZK24(IADRIF+6)
+      CALL JELIBE(KREFE(1:19)//'.REFD')      
+C
+ 9999 CONTINUE   
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&BAMO78.BASE'    )
+      CALL JEDETR('&&BAMO78.NUM_RANG')
+      CALL JEDETR('&&BAMO78.INSTANT' )
+C
+      CALL JEDEMA()
+      END

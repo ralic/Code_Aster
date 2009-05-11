@@ -2,7 +2,7 @@
      &                  NBSEC,NUMDIA,NBMODE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*8   NOMRES,BASMOD,MODCYC,MAILSK,K8B,MODCYS
-      CHARACTER*16  DEPL,TYPSD,TYPSUP(3)
+      CHARACTER*16  DEPL,TYPSD
       CHARACTER*19  CHAMVA,PROFNO, CHAMNO
       CHARACTER*24  TETGD,NOMVEC,INDIRF,CREFE(2),
      &              CHAMP, NOMCHC, PFCHNO,
@@ -77,8 +77,6 @@ C
 C-----------------------------------------------------------------------
 C
       DATA DEPL   /'DEPL            '/
-      DATA TYPSUP /'BASE_MODALE     ','MODE_MECA       ',
-     &             'EVOL_NOLI       '/
 C
 C-----------------------------------------------------------------------
 C
@@ -162,8 +160,7 @@ C
 C
 C  COMMUN POUR MODE_MECA ET BASE_MODALE
 C
-        IF ((TYPSD(1:9).EQ.'MODE_MECA').OR.
-     &     (TYPSD(1:4).EQ.'BASE')) THEN
+        IF ((TYPSD(1:9).EQ.'MODE_MECA')) THEN
           CALL RSADPA(NOMRES,'E',1,'FREQ',I,0,LDFREQ,K8B)
           CALL RSADPA(NOMRES,'E',1,'RIGI_GENE',I,0,LDKGE ,K8B)
           CALL RSADPA(NOMRES,'E',1,'MASS_GENE',I,0,LDMGE ,K8B)
@@ -178,10 +175,8 @@ C
 C
 C  SPECIFIQUE A BASE_MODALE
 C
-          IF (TYPSD.EQ.TYPSUP(1)) THEN
-            CALL RSADPA(NOMRES,'E',1,'TYPE_DEFO',I,0,LDTYD,K8B)
-            ZK16(LDTYD) = 'PROPRE          '
-          ENDIF
+          CALL RSADPA(NOMRES,'E',1,'TYPE_DEFO',I,0,LDTYD,K8B)
+          ZK16(LDTYD) = 'PROPRE          '
         ELSE
           CALL RSADPA (NOMRES,'E',1,'INST',I,0,LDFREQ,K8B)
           ZR(LDFREQ) = ZR(LLFREQ+ICOMP-1)

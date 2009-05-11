@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE NISTOR I.NISTOR
-DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
+DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=mode_meca,
                      reentrant='f',
                      fr="Définit la base d'une sous-structuration dynamique ou d'une recombinaison modale",
             UIinfo={"groupes":("Matrices/vecteurs",)},
@@ -28,28 +28,30 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=base_modale,
            NMAX_MODE       =SIMP(statut='f',typ='I',defaut= 10 ),
          ),
          RITZ            =FACT(statut='f',max='**',
-           regles=(UN_PARMI('MODE_STAT','MODE_MECA','MULT_ELAS','BASE_MODALE'),),
+           regles=(UN_PARMI('MODE_STAT','MODE_MECA','MULT_ELAS','BASE_MODALE','MODE_INTF'),),
            MODE_MECA       =SIMP(statut='f',typ=mode_meca,max='**'  ),
-           NMAX_MODE       =SIMP(statut='f',typ='I',defaut= 999 ),
-           MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,) ),
+           NMAX_MODE       =SIMP(statut='f',typ='I'),
+           MODE_STAT       =SIMP(statut='f',typ=mode_meca ),
            MULT_ELAS       =SIMP(statut='f',typ=mult_elas ),
-           BASE_MODALE     =SIMP(statut='f',typ=base_modale ),
+           BASE_MODALE     =SIMP(statut='f',typ=mode_meca ),
+           MODE_INTF       =SIMP(statut='f',typ=mode_meca ),
          ),
          b_ritz          =BLOC(condition = "RITZ != None",
            INTERF_DYNA     =SIMP(statut='f',typ=interf_dyna_clas ),
            NUME_REF        =SIMP(statut='o',typ=nume_ddl_sdaster ),
            ORTHO           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                                fr="Reorthonormalisation de la base de Ritz" ),
+           LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
            b_ortho          =BLOC(condition = "ORTHO == 'OUI' ",
              MATRICE          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
                ),
          ),
         DIAG_MASS        =FACT(statut='f',max='**',
            MODE_MECA       =SIMP(statut='o',typ=mode_meca,max='**'  ),
-           MODE_STAT       =SIMP(statut='o',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,) ),
+           MODE_STAT       =SIMP(statut='o',typ=mode_meca ),
          ),
         ORTHO_BASE        =FACT(statut='f',max='**',
-           BASE       =SIMP(statut='o',typ=(mode_meca,mode_stat_depl,mode_stat_acce,mode_stat_forc,mult_elas,base_modale)),
+           BASE       =SIMP(statut='o',typ=(mode_meca,mult_elas)),
            MATRICE    =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
          ),
 

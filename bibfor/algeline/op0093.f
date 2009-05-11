@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      INTEGER      IBID, NEQ, LMATR, LMATM, IFM, NIV
+      INTEGER      IBID, NEQ, LMATR, LMATM, LDUTI, IFM, NIV
       INTEGER VALI
       INTEGER      NIVE, VERSIO
       REAL*8       R8B, ZERO, UN, COEF(3)
@@ -290,6 +290,8 @@ C              --- LES PARAMETRES ---
                ZI(LNUME) = IEQ
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'DEPL_IMPO'
+               CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
+               ZK16(LTYPE) = 'MODE_STA'
             ENDIF
  50      CONTINUE
       ENDIF
@@ -327,6 +329,8 @@ C              --- LES PARAMETRES ---
                ZI(LNUME) = IEQ
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'FORC_IMPO'
+               CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
+               ZK16(LTYPE) = 'MODE_STA'
             ENDIF
  60      CONTINUE
       ENDIF
@@ -364,6 +368,8 @@ C              --- LES PARAMETRES ---
                ZI(LNUME) = IEQ
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'ACCE_DDL_IMPO'
+               CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
+               ZK16(LTYPE) = 'MODE_STA'
             ENDIF
  66      CONTINUE
       ENDIF
@@ -474,6 +480,8 @@ C              --- LES PARAMETRES ---
                ZR(LCOEF) = COEF(3)
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'ACCE_IMPO'
+               CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
+               ZK16(LTYPE) = 'MODE_STA'
  74         CONTINUE
  70      CONTINUE
       ENDIF
@@ -514,7 +522,6 @@ C        IL FAUDRA ENSUITE SUPPRIMER CE BLOC.
       RESU19=RESU
       CALL RSLIPA(RESU,'NOEUD_CMP','&&OP0093.NOEU',IBID,IBID)
       CALL JEDUPO('&&OP0093.NOEU', 'G', RESU19//'.NOEU', .FALSE.)
-
 
 
 C     ------------------------------------------------------------------

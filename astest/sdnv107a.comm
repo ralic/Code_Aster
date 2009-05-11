@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -379,14 +379,19 @@ MODESTAB = CREA_RESU (
               ),
                      );
 
+L_AMOR = DEFI_LIST_REEL(VALE=(0.02, 0.05, 0.07, 0.10, 0.1, 0.1),);
+
 BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
-                                _F( MODE_MECA = MODES_2,
+#                                _F( MODE_MECA = MODES_2,
+                                _F( MODE_INTF = MODES_2,
                                      NMAX_MODE = 999)),
+                         LIST_AMOR=L_AMOR,
                          NUME_REF=NUMDDL)
                                                  
 BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
                     RITZ=( _F( BASE_MODALE=BAMODA),
-                           _F( MODE_MECA = MODES_3,
+#                           _F( MODE_MECA = MODES_3,
+                           _F( MODE_INTF = MODES_3,
                                      NMAX_MODE = 999)),
                          NUME_REF=NUMDDL)
                          

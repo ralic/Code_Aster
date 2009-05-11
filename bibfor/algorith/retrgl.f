@@ -1,6 +1,6 @@
       SUBROUTINE RETRGL(NOMRES,RESGEN,MAILSK,PROFNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -248,7 +248,8 @@ C
               IF (IRET.NE.0) THEN
                 KBID = '  '
                 CALL MGUTDM(MODGEN,KBID,K,'NOM_BASE_MODALE',IBID,BASMOD)
-                CALL BMNBMD(BASMOD,'TOUT',NBBAS)
+                CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
+     &                      NBBAS,KBID,IER)
                 KBID = '  '
                 CALL MGUTDM(MODGEN,KBID,K,'NOM_NUME_DDL',IBID,NUMDDL)
                 CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQS,KBID,
@@ -333,7 +334,8 @@ C
               IF (IRET.NE.0) THEN
                 KBID = '  '
                 CALL MGUTDM(MODGEN,KBID,K,'NOM_BASE_MODALE',IBID,BASMOD)
-                CALL BMNBMD(BASMOD,'TOUT',NBBAS)
+                CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
+     &                      NBBAS,KBID,IER)
                 KBID = '  '
                 CALL MGUTDM(MODGEN,KBID,K,'NOM_NUME_DDL',IBID,NUMDDL)
                 CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQS,KBID,
@@ -390,13 +392,14 @@ C
 C
       ENDIF
 C
-      CALL WKVECT(NOMRES//'           .REFD','G V K24',6,LREFE)
+      CALL WKVECT(NOMRES//'           .REFD','G V K24',7,LREFE)
       ZK24(LREFE  ) = ZK24(LLREF1)
       ZK24(LREFE+1) = ZK24(LLREF1+1)
       ZK24(LREFE+2) = ZK24(LLREF1+2)
       ZK24(LREFE+3) = ZK24(LLREF1+3)
       ZK24(LREFE+4) = ZK24(LLREF1+4)
       ZK24(LREFE+5) = ZK24(LLREF1+5)
+      ZK24(LREFE+6) = ZK24(LLREF1+6)
 C
       CALL JEDETC('V','&&'//PGC,1)
       CALL JEDETC(' ','&&RETREC',1)

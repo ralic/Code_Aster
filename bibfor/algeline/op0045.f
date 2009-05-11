@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C VARIABLES LOCALES
       INTEGER       NBPARI, NBPARR, NBPARK, NBPARA, MXDDL
-      PARAMETER    ( NBPARI=8 , NBPARR=16 , NBPARK=2, NBPARA=26 )
+      PARAMETER    ( NBPARI=8 , NBPARR=16 , NBPARK=3, NBPARA=27 )
       PARAMETER    ( MXDDL=1 )
       INTEGER      INDF,ISNNEM,IADX,IMET,I,IADY,IEQ,IERX,IRET,
      &             IADRB,IADZ,IER1,IFM,ITEMAX,IADRH,IBID,IERD,IFREQ
@@ -102,7 +102,7 @@ C     ------------------------------------------------------------------
      &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
      &  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
      &  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     &  'NORME'           , 'METHODE'         ,
+     &  'NORME'           , 'METHODE'         , 'TYPE_MODE'       ,
      &  'FREQ'            ,
      &  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
      &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
@@ -1156,7 +1156,7 @@ C     DE LA SENSIBILITE
      &            ZI(LRESUI),ZK24(LRESUK))
         ENDIF
       ENDIF
-
+  
 C     ------------------------------------------------------------------
 
  9999 CONTINUE

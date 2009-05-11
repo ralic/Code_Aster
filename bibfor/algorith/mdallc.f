@@ -2,7 +2,7 @@
      &                   JDEPL,JVITE,JACCE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,14 +71,14 @@ C
 
       NUGENE = NOMRES//'.NUGENE'
 
-         CALL WKVECT(NOMRES//'           .REFD','G V K24',6,JREFD)
+         CALL WKVECT(NOMRES//'           .REFD','G V K24',7,JREFD)
          ZK24(JREFD) = BLANC
          ZK24(JREFD+1) = BLANC
          ZK24(JREFD+2) = BLANC
          ZK24(JREFD+3) = BLANC
          ZK24(JREFD+4) = BLANC
          ZK24(JREFD+5) = BASEMO(1:8)
-
+         ZK24(JREFD+6) = BLANC
 C ET ON REMPLIT LA SD
 
 C CREATION DE LA NUMEROTATION GENERALISE SUPPORT

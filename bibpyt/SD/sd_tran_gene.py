@@ -1,4 +1,4 @@
-#@ MODIF sd_tran_gene SD  DATE 25/11/2008   AUTEUR BOYERE E.BOYERE 
+#@ MODIF sd_tran_gene SD  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,8 @@ class sd_tran_gene(sd_titre) :
     INST = AsVR()  # gros objet
     ORDR = AsVI()  # gros objet
     DESC = AsVI(lonmax=5, )
-    REFD = AsVK24(lonmax=6, )
+#    REFD = AsVK24(lonmax=6, )
+    REFD = AsVK24(lonmax=7, )
     PTEM = AsVR()
 
     # si CHOC :

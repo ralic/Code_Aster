@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,10 +65,10 @@ C ----------------------------------------------------------------------
       CHARACTER*16  TYPRES, NOMCMD, NOMP(MXPARA), TYPE(8), TYPCHA,
      &              TYPBAS(8), TYPREP, CONCEP, CHAMP(8)
       CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE
-      CHARACTER*19  TYPREF(8), CHAM19
+      CHARACTER*19  TYPREF(8), CHAM19, PROF
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1
       CHARACTER*24  OBJVE2,OBJVE3,OBJVE4,NOMNOE,NUMEDD,NPRNO,CHMOD
-      LOGICAL       TOUSNO, MULTAP, LEFFOR, LRPHYS
+      LOGICAL       TOUSNO, MULTAP, LEFFOR, LRPHYS, PREMS
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
@@ -142,9 +142,9 @@ C
            ENDIF
            PRCHNO=NUMDDL//'.NUME'
            CALL DISMOI('F','NOM_GD',NUMDDL,'NUME_DDL',IBID,NOMGD,IE)
-            CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IBID,
+           CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IBID,
      &                 MAILLA,IRET)
-            IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',
+           IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',
      &                               NEQ,K8B,IRET)
          ELSE
 C          -- POUR LES CALCULS SANS MATRICE GENERALISEE
@@ -351,6 +351,7 @@ C
             IF (IRET.NE.0 .AND. ZI(JNUME).EQ.1) IARCHI = -1
           ENDIF
           IDRESU = ITRESU(ICH)
+          PREMS=.TRUE.
           DO 200 I = 0,NBINST-1
              IARCHI = IARCHI + 1
              CALL RSEXCH(NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
@@ -368,8 +369,16 @@ C
                    CALL VTCREC(CHAMNO,CHMOD,'G','R',NEQ)
                  ENDIF
                ELSE
-                  CALL CNOCRE ( MAILLA, NOMGD, NBNOEU, ZI(INUMNO),
-     &                 NCMP, ZK8(INOCMP), ZI(INOECP), 'G', CHAMNO )
+                  IF(PREMS) THEN
+                    PREMS=.FALSE.
+                    CALL CNOCRE ( MAILLA, NOMGD, NBNOEU, ZI(INUMNO),
+     &                   NCMP, ZK8(INOCMP), ZI(INOECP), 'G',' ',CHAMNO)
+                    CALL DISMOI('F','PROF_CHNO',CHAMNO,'CHAM_NO',
+     &                           IBID,PROF,IRET)
+                  ELSE
+                    CALL CNOCRE ( MAILLA, NOMGD, NBNOEU, ZI(INUMNO),
+     &                   NCMP,ZK8(INOCMP),ZI(INOECP),'G',PROF,CHAMNO)
+                  ENDIF
                ENDIF
              ELSE
                 CALL ASSERT(.FALSE.)
@@ -439,7 +448,7 @@ C               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
 C
 C
       KREFE  = NOMRES
-      CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
+      CALL WKVECT(KREFE//'.REFD','G V K24',7,LREFE)
       IF (MODE.EQ.BLANC) THEN
         ZK24(LREFE) = ZK24(IADRIF)
         ZK24(LREFE+1) = ZK24(IADRIF+1)
@@ -447,6 +456,7 @@ C
         ZK24(LREFE+3  ) = ZK24(IADRIF+3)
         ZK24(LREFE+4  ) = ZK24(IADRIF+4)
         ZK24(LREFE+5  ) = ZK24(IADRIF+5)
+        ZK24(LREFE+6  ) = ZK24(IADRIF+6)
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C

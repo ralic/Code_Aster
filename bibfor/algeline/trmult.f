@@ -5,7 +5,7 @@
       REAL*8        PSIDE(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C
       EPSI = 1.D-4
       MAGRNO = ' '
       MANONO = ' '
+      IER=0
 C
 C     --- RECUPERATION DE LA DIRECTION SISMIQUE  ---
 C
@@ -154,7 +155,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
      &                                  'DEPL_IMPO',IRET)
                IF (IRET.NE.100) THEN
                   IER = IER + 1
-                  VALK (1) = 'MODE_STAT'
+                  VALK (1) = 'MODE_MECA'
                   VALK (2) = ACCES(1:8)
                   VALK (3) = ACCES(9:16)
                   CALL U2MESG('F', 'ALGELINE4_62',3,VALK,0,0,0,0.D0)

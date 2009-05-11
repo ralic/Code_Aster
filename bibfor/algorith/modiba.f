@@ -8,7 +8,7 @@
       LOGICAL             NEWRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,8 @@ C
       DATA REFD  / '                   .REFD' /
       DATA IDDL  / 1, 2, 3, 4, 5, 6 /
       DATA  NOPARA /
-     &  'NUME_MODE'       , 'NORME'           , 'FREQ'            ,
+     &  'NUME_MODE'       , 'NORME'           ,
+     &  'FREQ'            ,
      &  'OMEGA2'          , 'AMOR_REDUIT'     ,
      &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
@@ -111,13 +112,14 @@ C
          REFD(1:8) = BASEMO
          CALL JEVEUO ( REFD , 'L', KREF )
          REFD(1:8) = NOMRES
-         CALL WKVECT ( REFD, 'G V K24', 6, LREF )
+         CALL WKVECT ( REFD, 'G V K24', 7, LREF )
          ZK24(LREF  ) = ZK24(KREF  )
          ZK24(LREF+1) = ZK24(KREF+1)
          ZK24(LREF+2) = ZK24(KREF+2)
          ZK24(LREF+3) = ZK24(KREF+3)
          ZK24(LREF+4) = ZK24(KREF+4)
          ZK24(LREF+5) = ZK24(KREF+5)
+         ZK24(LREF+6) = ZK24(KREF+6) 
       ENDIF
 C
 C     --- PARAMETRES SOUS ECOULEMENT ---

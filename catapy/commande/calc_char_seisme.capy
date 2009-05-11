@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ CALC_CHAR_SEISME=OPER(nom="CALC_CHAR_SEISME",op=  92,sd_prod=calc_char_seisme_pr
          MATR_MASS       =SIMP(statut='o',typ=matr_asse_depl_r,fr="Matrice de masse" ),
          DIRECTION       =SIMP(statut='o',typ='R',max=6,fr="Directions du séisme imposé"),
          MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),         
-         MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,) ),
+         MODE_STAT       =SIMP(statut='f',typ=(mode_meca,) ),
          b_mode_stat     =BLOC ( condition = "MODE_STAT != None",
            regles=(UN_PARMI('NOEUD','GROUP_NO' ),),
            NOEUD           =SIMP(statut='f',typ=no,validators=NoRepeat(),max='**'),

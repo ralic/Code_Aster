@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : MAILLAGE INCOMPATIBLE ET MODES
+# sdlv402a.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -233,13 +234,15 @@ MODINT2=REST_SOUS_STRUC(RESU_GENE=MODG,
 # DEFINITION DES MACRO-ELEMENTS DYNAMIQUES AVEC MODES D'INTERFACE
 
 BASER1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES1,),
-                             _F(MODE_MECA=MODINT1,),),
+#                             _F(MODE_MECA=MODINT1,),),
+                             _F(MODE_INTF=MODINT1,),),
                        INTERF_DYNA=LINT1,
                        NUME_REF=NUME1,
                        );
 
 BASER2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES2,),
-                             _F(MODE_MECA=MODINT2,),),
+#                             _F(MODE_MECA=MODINT2,),),
+                             _F(MODE_INTF=MODINT2,),),
                        INTERF_DYNA=LINT2,
                        NUME_REF=NUME2,
                        );

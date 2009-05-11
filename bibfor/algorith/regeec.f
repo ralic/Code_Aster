@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN, NOMSST
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,10 +57,10 @@ C
       INTEGER      I, IAD, IBID, IEQ, IER, IORD, IRET, J, JBID, K,
      +             LDNEW, LLCHAB, LLCHOL, LLNUEQ, LLORS, LLPRS,
      +             NBBAS, NBDDG, NBMOD, NBSST, NEQ, NNO, NUMO, NUSST,
-     +             NUTARS, IADPAR(5), LLREF1, LLREF2, LLREF3, LLREF4
+     +             NUTARS, IADPAR(6), LLREF1, LLREF2, LLREF3, LLREF4
       REAL*8       FREQ, GENEK, GENEM, OMEG2, RBID
       CHARACTER*8  KBID, BASMOD, MAILLA, LINT, MODGEN, SOUTR
-      CHARACTER*16 DEPL,NOMPAR(5)
+      CHARACTER*16 DEPL,NOMPAR(6)
       CHARACTER*19 RAID,NUMDDL,NUMGEN,CHAMNE
       CHARACTER*24 CREFE(2),CHAMOL,CHAMBA
       CHARACTER*24 VALK(2)
@@ -69,7 +69,8 @@ C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
       DATA SOUTR  /'&SOUSSTR'/
-      DATA NOMPAR /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE'/
+      DATA NOMPAR /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',
+     &              'TYPE_MODE'/
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -119,7 +120,8 @@ C --- RECUPERATION DE LA BASE MODALE
 C
       CALL MGUTDM(MODGEN,NOMSST,IBID,'NOM_BASE_MODALE',IBID,BASMOD)
 C
-      CALL BMNBMD(BASMOD,'TOUT',NBBAS)
+      CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
+     &                      NBBAS,KBID,IER)
       IF(NBBAS.NE.NBDDG) THEN
         VALK (1) = BASMOD
         VALI (1) = NBBAS
@@ -201,12 +203,13 @@ C ------- BOUCLE SUR LES EQUATIONS PHYSIQUES
           CALL JELIBE(CHAMBA)
 30      CONTINUE
         CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
-        CALL RSADPA ( NOMRES, 'E', 5, NOMPAR, I, 0, IADPAR, KBID )
+        CALL RSADPA ( NOMRES, 'E', 6, NOMPAR, I, 0, IADPAR, KBID )
         ZR(IADPAR(1)) = FREQ
         ZR(IADPAR(2)) = GENEK
         ZR(IADPAR(3)) = GENEM
         ZR(IADPAR(4)) = OMEG2
         ZI(IADPAR(5)) = NUMO
+        ZK16(IADPAR(6)) = 'MODE_DYN'
 C
         CALL JELIBE(CHAMOL)
 20    CONTINUE

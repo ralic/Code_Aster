@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,13 +18,8 @@
 # ======================================================================
 # RESPONSABLE NISTOR I.NISTOR
 
-def mode_stat_prod(MODE_STAT,FORCE_NODALE,PSEUDO_MODE,**args):
- if (MODE_STAT != None)          : return mode_stat_depl
- if (PSEUDO_MODE !=None)         : return mode_stat_acce
- if (FORCE_NODALE != None)       : return mode_stat_forc
- raise AsException("type de concept resultat non prevu")
-MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_stat_prod,
-                   fr="Calcul de modes statiques pour un déplacement, une force ou une accélération unitaire imposé",
+MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
+                   fr="Calcul de deformees statiques pour un déplacement, une force ou une accélération unitaire imposé",
                    reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          MATR_RIGI       =SIMP(statut='o',typ=matr_asse_depl_r ),
@@ -95,8 +90,8 @@ MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_stat_prod,
              PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
                                    into=("CENTRALISE","DISTRIBUE_MC","DISTRIBUE_MD","DISTRIBUE_SD")),
              PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
-             CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
-             CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
+             CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,val_min=0),
+             CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,val_min=0),
              OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
              ),
 

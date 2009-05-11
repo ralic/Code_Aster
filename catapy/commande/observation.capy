@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ from Macro.observation_ops import observation_ops
 
 
 def observation_prod(self, RESULTAT, **args):
-    if AsType(RESULTAT) == base_modale or AsType(RESULTAT) == mode_meca :
-        return base_modale
+    if  AsType(RESULTAT) == mode_meca :
+        return mode_meca
     elif AsType(RESULTAT) == evol_elas :
         return evol_elas
     elif AsType(RESULTAT) == dyna_harmo :
@@ -38,7 +38,7 @@ OBSERVATION=MACRO(nom="OBSERVATION",op=observation_ops,
 #
          MODELE_1        =SIMP(statut='o',typ=modele_sdaster),
          MODELE_2        =SIMP(statut='o',typ=modele_sdaster),
-         RESULTAT        =SIMP(statut='o',typ=(mode_meca,base_modale) ),
+         RESULTAT        =SIMP(statut='o',typ=mode_meca ),
          NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1),
 
 #        ------------------------------------------------------------------

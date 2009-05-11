@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
          MATR_MASS       =SIMP(statut='o',typ=matr_asse_depl_r ),
          MATR_RIGI       =SIMP(statut='o',typ=matr_asse_depl_r ),
          MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r ),
-         MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,) ),
+         MODE_STAT       =SIMP(statut='f',typ=mode_meca),
          NEWMARK         =FACT(statut='f',
            ALPHA           =SIMP(statut='f',typ='R',defaut= 0.25 ),
            DELTA           =SIMP(statut='f',typ='R',defaut= 0.5 ),

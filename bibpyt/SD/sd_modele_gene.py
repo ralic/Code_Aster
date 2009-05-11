@@ -1,4 +1,4 @@
-#@ MODIF sd_modele_gene SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_modele_gene SD  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,8 @@
 
 from SD import *
 from SD.sd_interf_dyna_clas import sd_interf_dyna_clas
-from SD.sd_base_modale import sd_base_modale
+#from SD.sd_base_modale import sd_base_modale
+from SD.sd_mode_meca import sd_mode_meca
 from SD.sd_macr_elem_dyna import sd_macr_elem_dyna
 from SD.sd_util import *
 

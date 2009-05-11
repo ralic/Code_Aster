@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat_dyn SD  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_resultat_dyn SD  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ from SD.sd_proj_mesu import sd_proj_mesu
 class sd_resultat_dyn(sd_resultat):
 #--------------------------------------------------
     nomj = SDNom(fin=8)
-    REFD = AsVK24(SDNom(debut=19), lonmax=6, )
+    REFD = AsVK24(SDNom(debut=19), lonmax=7, )
 
     # si utilisation de PROJ_MESU_MODAL :
     PROJM = Facultatif(sd_proj_mesu())

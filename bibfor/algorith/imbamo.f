@@ -1,6 +1,6 @@
       SUBROUTINE IMBAMO ( NOMRES, IFM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,10 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       PARAMETER    (NBPABM=8)
       CHARACTER*8 NOMRES,INTF,NOMNOE,NOMCMP
-      CHARACTER*19 RAID,MASS
+      CHARACTER*19 RAID,MASS,TYPEBA
       CHARACTER*14 NUMREF
-      INTEGER LDPAR(NBPABM), IFM, LLREF
-      CHARACTER*16 BMPARA(NBPABM),TYPDEF
+      INTEGER LDPAR(NBPABM), IFM, LLREF,IER
+      CHARACTER*16 BMPARA(NBPABM),TYPDEF      
       CHARACTER*8 RESCYC
       CHARACTER*8 K8BID
 
@@ -63,16 +63,13 @@ C
       DATA  BMPARA/
      +  'NUME_MODE  '     , 'FREQ'       , 'NORME'           ,
      +  'NOEUD_CMP'       , 'TYPE_DEFO'          , 'OMEGA2'   ,
-     +  'MASS_GENE'      , 'RIGI_GENE' /
+     +  'MASS_GENE'      , 'RIGI_GENE'/
 C
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C----------------DETERMINATION DU TYPE DE LA BASE-----------------------
-C
-      CALL JEVEUO(NOMRES//'           .UTIL','L',LLUTI)
-      IDESC=ZI(LLUTI)
 C
 C------------------RECUPERATION DES CONCEPT AMONT-----------------------
 C
@@ -81,6 +78,7 @@ C
         MASS=ZK24(LLREF+1)
         NUMREF=ZK24(LLREF+3)
         INTF=ZK24(LLREF+4)
+        TYPEBA=ZK24(LLREF+6)
 C
 C--------------------------------ECRITURES------------------------------
 C
@@ -100,11 +98,14 @@ C
 C
 C    CAS D'UNE BASE DE TYPE CONNUE
 C
-      IF(IDESC.EQ.1) THEN
+      IF(TYPEBA(1:9).EQ.'CLASSIQUE') THEN
 C
-        CALL BMNBMD(NOMRES,'MODE',NBMOD)
-        CALL BMNBMD(NOMRES,'TOUT',NBTOT)
-        NBDEF=NBTOT-NBMOD
+        CALL DISMOI('F','NB_MODES_TOT',NOMRES,'RESULTAT',NBTOT,
+     &              K8BID,IER)
+        CALL DISMOI('F','NB_MODES_STA',NOMRES,'RESULTAT',NBDEF,
+     &              K8BID,IER)
+        CALL DISMOI('F','NB_MODES_DYN',NOMRES,'RESULTAT',NBMOD,
+     &              K8BID,IER)
 C
 C
         WRITE(IFM,*) '                TYPE BASE MODALE: CLASSIQUE'
@@ -122,8 +123,9 @@ C
 C
 C   CAS D'UNE BASE DE TYPE CYCLIQUE
 C
-      IF(IDESC.EQ.2) THEN
-        CALL BMNBMD(NOMRES,'TOUT',NBTOT)
+      IF(TYPEBA(1:8).EQ.'CYCLIQUE') THEN
+        CALL DISMOI('F','NB_MODES_TOT',NOMRES,'RESULTAT',NBTOT,
+     &              K8BID,IER)
         CALL DISMOI('F','NOM_MODE_CYCL',INTF,'INTERF_DYNA',IBID,RESCYC,
      &              IRET)
 C
@@ -139,9 +141,10 @@ C
 C
 C CAS D'UNE BASE DE RITZ
 C
-      IF(IDESC.EQ.3) THEN
+      IF(TYPEBA(1:4).EQ.'RITZ') THEN
 C
-        CALL BMNBMD(NOMRES,'TOUT',NBTOT)
+        CALL DISMOI('F','NB_MODES_TOT',NOMRES,'RESULTAT',NBTOT,
+     &               K8BID,IER)
 C
         WRITE(IFM,*) '                TYPE BASE MODALE: RITZ'
         WRITE(IFM,*) '                ----------------- '

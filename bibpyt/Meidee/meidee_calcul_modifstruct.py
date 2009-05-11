@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_modifstruct Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_calcul_modifstruct Meidee  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -439,10 +439,14 @@ class ModifStruct:
 
         self.clear_concept( self.x_mexp )
         # cas LMME, une fonction existe pour calculer la base d'expansion
-        if isinstance( self.base_expansion, Cata.cata.mode_meca):
+        refd_base=self.base_expansion.REFD.get()
+
+        if self.method_name == "LMME":
+#        if isinstance( self.base_expansion, Cata.cata.mode_meca):
             __MEXP = EXTR_MODE( FILTRE_MODE = _F( MODE = self.base_expansion,
                                                  NUME_MODE = modes_expansion_retenus))
             self.x_mexp = __MEXP
+
         # cas ES, il faut re-calculer la base a partir des noeuds choisis
         else:
             # self.mess.disp_mess("Recalcul de la base modale par ES")
@@ -457,7 +461,6 @@ class ModifStruct:
             __MEXP = self.base_expansion
         self.x_mexp = __MEXP
         self.clear_concept( self.x_proj )
-
         try:
             __PROJ = PROJ_MESU_MODAL( MODELE_CALCUL = _F( MODELE = modlsup.obj,
                                                          BASE = __MEXP,),

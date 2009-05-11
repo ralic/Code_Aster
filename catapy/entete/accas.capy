@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF ENTETE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 
 # faire que la division soit toujours réelle
 from __future__ import division
@@ -147,7 +148,7 @@ from SD.co_cham_elem import cham_elem
 # resultat : (evol_sdaster,mode_stat,mode_meca)
 from SD.co_resultat     import resultat_sdaster, resultat_jeveux
 from SD.co_resultat_dyn import resultat_dyn
-from SD.co_base_modale  import base_modale
+from SD.co_mode_meca  import mode_meca
 
 # -----------------------------------------------------------------------------
 class acou_harmo    (resultat_dyn):pass
@@ -174,16 +175,9 @@ class evol_noli(evol_sdaster):pass
 class evol_ther(evol_sdaster):pass
 class evol_varc(evol_sdaster):pass
 
-# -----------------------------------------------------------------------------
-# resultat_sdaster/mode_stat :
-class mode_stat(resultat_dyn):pass
-class mode_stat_depl(mode_stat):pass
-class mode_stat_acce(mode_stat):pass
-class mode_stat_forc(mode_stat):pass
 
 # -----------------------------------------------------------------------------
 # resultat_sdaster/mode_meca :
-class mode_meca(resultat_dyn):pass
 class mode_meca_c(mode_meca):pass
 
 # -----------------------------------------------------------------------------

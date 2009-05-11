@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,13 +24,12 @@ def depl_interne_prod(DEPL_GLOBAL,**args ):
     if AsType(DEPL_GLOBAL)     == dyna_harmo     : return dyna_harmo
     if AsType(DEPL_GLOBAL)     == mode_meca      : return mode_meca
     if AsType(DEPL_GLOBAL)     == mode_meca_c    : return mode_meca_c
-    if AsType(DEPL_GLOBAL)     == base_modale    : return base_modale
     raise AsException("type de concept resultat non prevu")
 
 DEPL_INTERNE=OPER(nom="DEPL_INTERNE",op=89,sd_prod=depl_interne_prod,reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
                   fr="Calculer le champ de déplacement à l'intérieur d'une sous-structure statique",
-         DEPL_GLOBAL     =SIMP(statut='o',typ=(cham_no_sdaster,mode_meca,mode_meca_c,base_modale,evol_elas,dyna_trans,dyna_harmo),),
+         DEPL_GLOBAL     =SIMP(statut='o',typ=(cham_no_sdaster,mode_meca,mode_meca_c,evol_elas,dyna_trans,dyna_harmo),),
          SUPER_MAILLE    =SIMP(statut='o',typ=ma,),
          NOM_CAS         =SIMP(statut='f',typ='TXM',defaut=" "),
 )  ;

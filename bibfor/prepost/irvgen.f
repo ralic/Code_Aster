@@ -5,7 +5,7 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,11 +43,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*3  TYPVAL
-      CHARACTER*8  K8B, MODE, NOEU, CMP, MOGENE, BLAN
+      CHARACTER*8  K8B, MODE, NOEU, CMP, MOGENE, BLAN,DYNSTA
       CHARACTER*9  TYPMOD
       CHARACTER*14 NUGENE
       CHARACTER*16 TYPREM
       CHARACTER*19 GENE, BASMOD
+      CHARACTER*24 TYPEBA
       LOGICAL      LBASE
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -135,28 +136,36 @@ C
 C      --- CALCUL TRADITIONNEL ---
 C
           CALL GETTCO ( MODE , TYPREM )
+C---------ON RECUPERE LE TYPE DE BASE MODALE S'IL S'AGIT D'UNE BASE
+          CALL JEVEUO(MODE//'           .REFD','L',LTYBA)
+          TYPEBA=ZK24(LTYBA+6) 
+C---------ON RECUPERE LE TYPE DE MODES STAT/DYN
+          CALL RSADPA ( MODE, 'L', 1, 'TYPE_MODE', 1, 0, IAD, K8B )
+          DYNSTA=ZK16(IAD)(1:8)
           IF ( TYPREM .EQ. 'MODE_MECA'
      &         .OR. TYPREM .EQ. 'MODE_GENE' ) THEN
-             TYPMOD = '  PROPRE  '
+             TYPMOD = '  PROPRE'
              NOEU = ' '
              CMP  = ' '
              LBASE = .FALSE.
              CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
 C             NBMODE = ZI(JDESC+1)
-          ELSEIF ( TYPREM .EQ. 'BASE_MODALE' ) THEN
+          ELSEIF ( TYPEBA(1:1) .NE. ' ' ) THEN
+C          ELSEIF ( TYPREM .EQ. 'BASE_MODALE' ) THEN
              LBASE = .TRUE.
              BASMOD = MODE
              CALL JEVEUO(BASMOD//'.ORDR','L',JORDR)
              CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
-          ELSEIF ( TYPREM(1:9) .EQ. 'MODE_STAT' ) THEN
-             TYPMOD = '  PROPRE  '
+          ELSEIF ( DYNSTA .EQ. 'MODE_STA' ) THEN
+C          ELSEIF ( TYPREM(1:9) .EQ. 'MODE_STAT' ) THEN
+             TYPMOD = '  PROPRE'
              NOEU = ' '
              CMP  = ' '
              LBASE = .FALSE.
              CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
           ELSE
            CALL U2MESK('A','PREPOST3_9',1,TYPREM)
-             TYPMOD = '  PROPRE  '
+             TYPMOD = '  PROPRE'
              NOEU = ' '
              CMP  = ' '
              LBASE = .FALSE.
@@ -177,6 +186,8 @@ C             NBMODE = ZI(JDESC+1)
           ENDIF
           IR = 0
           DO 20 I = 1 , NBMODE
+          CALL RSADPA ( MODE, 'L', 1, 'TYPE_MODE', I, 0, IAD, K8B)
+          DYNSTA=ZK16(IAD)(1:8)
              IF ( NBCMPG .GT. 0 ) THEN
                 DO 22 J = 1 , NBCMPG
                    IF ( I .EQ. CMPG(J) ) GOTO 24
@@ -184,7 +195,8 @@ C             NBMODE = ZI(JDESC+1)
                 GOTO 20
  24            CONTINUE
              ENDIF
-             IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
+C             IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
+             IF ( DYNSTA .EQ. 'MODE_STA' ) THEN
                CALL RSADPA(MODE,'L',1,'NOEUD_CMP',I,0,JFREQ,K8B)
              ELSE
                CALL RSADPA(MODE,'L',1,'FREQ',I,0,JFREQ,K8B)
@@ -199,7 +211,8 @@ C             NBMODE = ZI(JDESC+1)
                  NOEU   = ZK16(JPARA)(1:8)
                  CMP    = ZK16(JPARA)(9:16)
                ENDIF
-               IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
+               IF ( DYNSTA .EQ. 'MODE_STA' ) THEN
+C               IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
                  IF ( TYPVAL(1:1).EQ. 'R' ) THEN
                    WRITE(IFI,1013) I, ZR(JVALE+I-1), MODE,
      &                        TYPMOD, ZK16(JFREQ), NOEU, CMP

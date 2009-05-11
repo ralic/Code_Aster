@@ -5,7 +5,7 @@
       CHARACTER*(*)        REPK
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,17 +70,11 @@ C
       ELSEIF ( DOCU .EQ. 'MOGE' ) THEN
          REPK = 'MODE_GENE'
 C
-      ELSEIF ( DOCU .EQ. 'MOST' ) THEN
-         REPK = 'MODE_STAT'
-C
       ELSEIF ( DOCU .EQ. 'EVTH' ) THEN
          REPK = 'EVOL_THER'
 C
       ELSEIF ( DOCU .EQ. 'EVVA' ) THEN
          REPK = 'EVOL_VARC'
-C
-      ELSEIF ( DOCU .EQ. 'BAMO' ) THEN
-         REPK = 'BASE_MODALE'
 C
       ELSEIF ( DOCU .EQ. 'THET' ) THEN
          REPK = 'THETA_GEOM'

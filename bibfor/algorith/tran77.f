@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,10 +60,10 @@ C ----------------------------------------------------------------------
       CHARACTER*16  TYPRES, NOMCMD, NOMP(MXPARA), TYPE(8), TYPCHA,
      &              TYPBAS(8), TYPREP, CONCEP, CHAMP(8)
       CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE,
-     &              TYPREF(8), CHAM19
+     &              TYPREF(8), CHAM19, PROF
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, OBJVE1,
      &              OBJVE2, OBJVE3, OBJVE4, NOMNOE, NUMEDD, NPRNO
-      LOGICAL       TOUSNO, MULTAP, LEFFOR
+      LOGICAL       TOUSNO, MULTAP, LEFFOR, PREMS
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
 C      DATA CHAMN2   /'&&TRAN77.CHAMN2'/
@@ -303,8 +303,16 @@ C
                    CALL VTCREC(CHAMNO,NOMCHA,'G','R',NEQ)
                  ENDIF
                ELSE
-                  CALL CNOCRE ( MAILLA, NOMGD, NBNOEU, ZI(INUMNO),
-     &                 NCMP, ZK8(INOCMP), ZI(INOECP), 'G', CHAMNO )
+                  IF(PREMS) THEN
+                    PREMS=.FALSE.
+                    CALL CNOCRE ( MAILLA, NOMGD, NBNOEU, ZI(INUMNO),
+     &                   NCMP, ZK8(INOCMP), ZI(INOECP), 'G',' ',CHAMNO)
+                    CALL DISMOI('F','PROF_CHNO',CHAMNO,'CHAM_NO',
+     &                           IBID,PROF,IRET)
+                  ELSE
+                    CALL CNOCRE ( MAILLA, NOMGD, NBNOEU, ZI(INUMNO),
+     &                   NCMP,ZK8(INOCMP),ZI(INOECP),'G',PROF,CHAMNO)
+                  ENDIF
                ENDIF
              ELSE
                 CALL ASSERT(.FALSE.)
@@ -374,7 +382,7 @@ C             ENDIF
 C
 C
       KREFE  = NOMRES
-      CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
+      CALL WKVECT(KREFE//'.REFD','G V K24',7,LREFE)
       IF (MODE.EQ.BLANC) THEN
         ZK24(LREFE) = ZK24(IADRIF)
         ZK24(LREFE+1) = ZK24(IADRIF+1)
@@ -382,6 +390,7 @@ C
         ZK24(LREFE+3  ) = ZK24(IADRIF+3)
         ZK24(LREFE+4  ) = ZK24(IADRIF+4)
         ZK24(LREFE+5  ) = ZK24(IADRIF+5)
+        ZK24(LREFE+6  ) = ZK24(IADRIF+6)
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C

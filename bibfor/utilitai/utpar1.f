@@ -5,7 +5,7 @@
       CHARACTER*32 LIPARA(NBPAMX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -325,11 +325,7 @@ C     --------------------------------
       ELSEIF ((TYPSD.EQ.'MODE_MECA').OR.
      &        (TYPSD.EQ.'MODE_MECA_C').OR.
      &        (TYPSD.EQ.'MODE_GENE').OR.
-     &        (TYPSD.EQ.'MODE_ACOU').OR.
-     &        (TYPSD(1:9).EQ.'MODE_STAT').OR.
-     &        (TYPSD.EQ.'MODE_MECA_C').OR.
-     &        (TYPSD.EQ.'DYNAMIQUE').OR.
-     &        (TYPSD.EQ.'BASE_MODALE')) THEN
+     &        (TYPSD.EQ.'MODE_ACOU')) THEN
 C     --------------------------------
         ICO=ICO+1
         LIPARA(ICO)='AMOR_GENE#P#R'
@@ -372,25 +368,21 @@ C     --------------------------------
         ICO=ICO+1
         LIPARA(ICO)='MODELE#P#K8'
         ICO=ICO+1
-        IF ((TYPSD(1:9).EQ.'MODE_STAT').OR.
-     &      (TYPSD.EQ.'BASE_MODALE').OR.
-     &      (TYPSD.EQ.'DYNAMIQUE')) THEN
-          LIPARA(ICO)='NOEUD_CMP#A#K16'
-        ELSE
-          LIPARA(ICO)='NOEUD_CMP#P#K16'
-        ENDIF
-        ICO=ICO+1
         LIPARA(ICO)='NORME#P#K24'
         ICO=ICO+1
         LIPARA(ICO)='NUME_DDL#P#I'
         ICO=ICO+1
         LIPARA(ICO)='NUME_MODE#A#I'
         ICO=ICO+1
+        LIPARA(ICO)='NOEUD_CMP#A#K16'
+        ICO=ICO+1
         LIPARA(ICO)='OMEGA2#P#R'
         ICO=ICO+1
         LIPARA(ICO)='RIGI_GENE#P#R'
         ICO=ICO+1
         LIPARA(ICO)='TYPE_DEFO#P#K16'
+        ICO=ICO+1
+        LIPARA(ICO)='TYPE_MODE#P#K16'
         NBPARA=ICO
         CALL ASSERT(NBPARA.LE.NBPAMX)
 

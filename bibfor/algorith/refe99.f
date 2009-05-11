@@ -1,7 +1,7 @@
       SUBROUTINE  REFE99 (NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C
       CALL GETFAC('CLASSIQUE',IOC1)
       CALL GETFAC('RITZ',IOC3)
       CALL GETFAC('DIAG_MASS',IOC4)
+      CALL GETFAC('ORTHO_BASE',IOC5)
 C
 C --- CAS CLASSIQUE
 C
@@ -130,17 +131,39 @@ C - RECUPERATION DE LA MASSE
      &                 NUMDDL,IRET)
       ENDIF
 C
+C --- CAS ORTHO_BASE
+C
+      IF(IOC5.GT.0) THEN
+        INTF = ' '
+        CALL GETVID('ORTHO_BASE','BASE',1,1,1,MECA,IBID)
+        CALL JEVEUO(MECA//'           .REFD','L',LLRES)
+        RAID = ZK24(LLRES)
+        MASS = ZK24(LLRES+1)
+        AMOR = ZK24(LLRES+2)
+        CALL DISMOI('F','NOM_NUME_DDL',MASS,'MATR_ASSE',IBID,
+     &                 NUMDDL,IRET)
+      ENDIF
+C
 C --- CREATION DU .REFD
 C
       CALL JEEXIN(NOMRES//'           .REFD',IRET)
       IF (IRET.EQ.0) THEN 
-         CALL WKVECT(NOMRES//'           .REFD','G V K24',6,LDREF)
+         CALL WKVECT(NOMRES//'           .REFD','G V K24',7,LDREF)
          ZK24(LDREF) = RAID
          ZK24(LDREF+1) = MASS
          ZK24(LDREF+2) = AMOR
          ZK24(LDREF+3) = NUMDDL
          ZK24(LDREF+4)   = INTF
          ZK24(LDREF+5) = '  '
+         IF (IOC1.GT.0) THEN
+           ZK24(LDREF+6) = 'CLASSIQUE'
+         ELSEIF (IOC3.GT.0)  THEN
+           ZK24(LDREF+6) = 'RITZ'
+         ELSEIF (IOC4.GT.0)  THEN
+           ZK24(LDREF+6) = 'DIAG_MASS'
+         ELSEIF (IOC5.GT.0)  THEN
+           ZK24(LDREF+6) = 'ORTHO_BASE'
+         ENDIF
       ENDIF
 C
 C

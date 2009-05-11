@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,8 @@ MACR_ELEM_STAT=OPER(nom="MACR_ELEM_STAT",op=86,sd_prod=macr_elem_stat,reentrant=
            NMAX_CAS        =SIMP(statut='f',typ='I',defaut=10),
            NMAX_CHAR       =SIMP(statut='f',typ='I',defaut=10),
            PROJ_MESU       =SIMP(statut='f',typ=(mode_gene,tran_gene,harm_gene),max=1),
-           MODE_MESURE     =SIMP(statut='f',typ=( mode_meca,base_modale) ),
+#           MODE_MESURE     =SIMP(statut='f',typ=( mode_meca,base_modale) ),
+           MODE_MESURE     =SIMP(statut='f',typ= mode_meca ), 
          ),
          EXTERIEUR       =FACT(statut='f',
            regles=(AU_MOINS_UN('NOEUD','GROUP_NO'),),

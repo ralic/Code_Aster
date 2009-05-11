@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
 #
            b_sensibilite   =BLOC(condition=" (RESULTAT != None) and \
                                       (   AsType(RESULTAT) in (evol_elas,evol_ther,evol_noli,dyna_trans, \
-                                                               mode_meca,mode_flamb,mode_acou,base_modale,mode_stat, \
+                                                               mode_meca,mode_flamb,mode_acou, \
                                                                mult_elas,fourier_elas,fourier_ther) or \
                                         ( AsType(RESULTAT) in (dyna_harmo,acou_harmo) and FORMAT_C != 'MODULE' ) )",
                                  fr="Définition des paramètres de sensibilité",

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
      &        IMOD1,IAD,NAPEXC,ILNOEX,NCMPEX,IRET,ILCPEX,IDIM1,IDIM0,
      &        NBN,INOEN,ICMPN,NBMAIL,I,IMAIN,INDDL,INOEUD,IDDL,NUPO,
      &        IVARI,NAPEX1,NBMR,IDIM,IMR,NUMOD,IN,NBPF,NBFO1,IFON,IF1,
-     &        IFOR,IFOI,IDIS,ICHAM1,ISIP,ICHAM,NBN1,NBN2
+     &        IFOR,IFOI,IDIS,ICHAM1,ISIP,ICHAM,NBN1,NBN2,LTYPA
       PARAMETER (NBPAR=8)
       REAL*8 R8B,BANDE(2),FREQ1
       COMPLEX*16 C16B
@@ -54,14 +54,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 K8B,MODMEC,MODSTA,NOEUD,NOMA,CMP,TYPAR(NBPAR)
       CHARACTER*16 MOVREP,OPTCAL,OPTCHA,NOPAR(NBPAR),NOPAOU(2),KVAL(2),
      &             TYPCHA,ACCES,TYPMEC,NOCHAM,OPTCH1,MAILLE
-      CHARACTER*24 CHAM19,NOMFON
-      CHARACTER*24 VALK(3)
+      CHARACTER*24 CHAM19,NOMFON,TYPBA
+      CHARACTER*24 VALK(3),REFD
       CHARACTER*3  TOUTOR
       DATA NOPAOU/'NUME_ORDRE_I','NUME_ORDRE_J'/
       DATA NOPAR/'NOM_CHAM','OPTION','DIMENSION','NOEUD_I','NOM_CMP_I',
      &     'NOEUD_J','NOM_CMP_J','FONCTION_C'/
       DATA TYPAR/'K16','K16','I','K8','K8','K8','K8','K24'/
-
+      DATA  REFD  /'                   .REFD'/
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -301,6 +301,10 @@ C     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
           ZR(ICHAM1) = ZR(ISIP+ZI(INDDL+IN-1)-1)
    50   CONTINUE
    60 CONTINUE
+      
+      REFD(1:8) = MODMEC
+      CALL JEVEUO(REFD,'L',LTYPA)
+      TYPBA=ZK24(LTYPA+6)
 
       DO 90 IMR = 1,NBMOD1
         NUMOD = ZI(ILMODE+IMR-1)
@@ -311,7 +315,6 @@ C     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
           CALL U2MESG('F', 'ALGORITH14_62',1,VALK,1,VALI,0,0.D0)
         END IF
         CALL JEVEUO(CHAM19(1:19)//'.VALE','L',ISIP)
-        
         IF (TYPMEC.EQ.'MODE_MECA_C') THEN
           DO 70 IN = 1,NBN
             ICHAM1 = ICHAM + NAPEX1*NBN + NBN* (IMR-1) + IN - 1
@@ -320,7 +323,8 @@ C     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
 C  -------------------------------  
 C  si base modale, alors les nume_ddl des differents modes peuvent 
 C              etres differents
-        ELSEIF(TYPMEC.EQ.'BASE_MODALE') THEN
+
+        ELSEIF(TYPBA(1:1).NE.' ') THEN
           CALL DISMOI('F','TYPE_SUPERVIS',CHAM19,'CHAMP',IBID,
      &                                               TYPCHA,IRET)
           IF (TYPCHA(1:7).EQ.'CHAM_NO') THEN

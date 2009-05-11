@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF CALCULEL  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,7 +92,7 @@ C     --- VARIABLES LOCALES ---
       INTEGER NBVAL
       INTEGER CODSEN,INUME
       INTEGER IINST1,IINST2
-      INTEGER JDIM,JCOOR,JTYPE
+      INTEGER JDIM,JCOOR,JTYPE,LTYMO
       INTEGER NNOEM,NELEM,NDIM,NNCP,NPASS
 
       CHARACTER*1 BASE,TYPCOE
@@ -104,6 +104,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*13 INPSCO
       CHARACTER*19 PFCHNO
       CHARACTER*16 NOMCMD,OPTION,OPTIO2,OPTIOX,NOMCHA,TYPES,K16B
+      CHARACTER*16 TYPEMO
       CHARACTER*19 LERES1
       CHARACTER*19 INFCHA
       CHARACTER*19 CHDYNR,CHACCE,MASSE,REFE,COMPOR
@@ -197,6 +198,11 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
 
       CALL MODOPT(RESUCO,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
+C     ON RECUPERE LE TYPE DE MODE: DYNAMIQUE OU STATIQUE  
+      IF (TYSD.EQ.'MODE_MECA') THEN
+        CALL RSADPA(RESUCO,'L',1,'TYPE_MODE',1,0,LTYMO,K8B)
+        TYPEMO=ZK16(LTYMO)
+      ENDIF
 
       CALL GETVTX(' ','NORME',1,1,1,NORME,NOR)
       CALL JEVEUO(KNUM,'L',JORDR)
@@ -218,8 +224,12 @@ C=======================================================================
 C                   SPECIAL POUTRE A LA POUX (1)
 C=======================================================================
       IF (EXIPOU) THEN
-        IF (CONCEP.EQ.'MODE_MECA' .OR. CONCEP.EQ.'DYNA_TRANS' .OR.
-     &      CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
+C-------on verifie si deriere le concept mode_meca on trouve un mode_dyn
+C        IF (CONCEP.EQ.'MODE_MECA' .OR. CONCEP.EQ.'DYNA_TRANS' .OR.
+C     &      CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
+        IF ((CONCEP.EQ.'MODE_MECA'.AND.TYPEMO(1:8).EQ.'MODE_DYN') .OR. 
+     &       CONCEP.EQ.'DYNA_TRANS' .OR.
+     &       CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
           REFE = RESUCO
           SOP='MASS_MECA'
           INUME=1
@@ -537,7 +547,9 @@ C=======================================================================
               ALPHA = ZERO
               CALPHA = CZERO
               IF (EXIPOU) THEN
-                IF (TYSD.EQ.'MODE_MECA' .OR. TYSD.EQ.'MODE_ACOU') THEN
+C                IF (TYSD.EQ.'MODE_MECA' .OR. TYSD.EQ.'MODE_ACOU') THEN
+                IF ((TYSD.EQ.'MODE_MECA'.AND.TYPEMO(1:8).EQ.'MODE_DYN' )
+     &               .OR. TYSD.EQ.'MODE_ACOU') THEN
                   CALL JEVEUO(CHAMGD(1:19)//'.VALE','L',LDEPL)
                   CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORDR,0,LFREQ,K8B)
                   DO 20 II = 0,NEQ - 1
@@ -1033,7 +1045,8 @@ C
                   GO TO 440
                 END IF
                 IF (TYSD.EQ.'EVOL_ELAS' .OR. TYSD.EQ.'DYNA_TRANS' .OR.
-     &              TYSD.EQ.'MULT_ELAS' .OR. TYSD.EQ.'MODE_MECA'  .OR.
+     &              TYSD.EQ.'MULT_ELAS' .OR. (TYSD.EQ.'MODE_MECA'.AND.
+     &              TYPEMO(1:8).EQ.'MODE_DYN' )  .OR.
      &              TYSD.EQ.'FOURIER_ELAS') THEN
 C          CHAMP D'ENTREE POUR ELEMENTS ISOPARAMETRIQUES
                   IF (IRET1.LE.0) THEN
@@ -1683,7 +1696,8 @@ C           ------------------------------------------------
 
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
 
-              IF (CONCEP.EQ.'MODE_MECA') THEN
+              IF (CONCEP.EQ.'MODE_MECA'.AND.TYPEMO(1:8)
+     &             .EQ.'MODE_DYN') THEN
               CALL ENETOT(OPTION,1,LIGREL,CHGEOM,CHDEPL,CHDEPM,CHSIG,
      &                    CHSIGM,CHELEM)
               ELSE

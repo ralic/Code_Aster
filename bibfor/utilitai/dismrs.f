@@ -1,6 +1,6 @@
       SUBROUTINE DISMRS(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/11/2008   AUTEUR ASSIRE A.ASSIRE 
+C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,9 @@ C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*24 VALK(2)
       CHARACTER*8 K8BID
       CHARACTER*19 NOMCH
-
-
+      COMPLEX*16   CBID
+      INTEGER      IBID
+      REAL*8       RBID
 
       CALL JEMARQ()
       NOMOB = NOMOBZ
@@ -199,6 +200,46 @@ C     ------------------------------------------
             REPI = 1
          END IF
 
+
+      ELSE IF  (QUESTI.EQ.'NB_MODES_TOT') THEN
+C     ------------------------------------------
+         CALL RSORAC ( NOMOB, 'LONUTI', IBID, RBID, K8BID, CBID, RBID,
+     &              K8BID, NBMOD, 1, IBID )
+         REPI = NBMOD
+         REPK='NON'
+  
+      ELSE IF  (QUESTI.EQ.'NB_MODES_STA') THEN    
+C     ------------------------------------------ 
+         NBSTAT=0
+         CALL RSORAC ( NOMOB, 'LONUTI', IBID, RBID, K8BID, CBID, RBID,
+     &              K8BID, NBMOD, 1, IBID )
+C
+         DO 41, I=1,NBMOD
+           CALL RSADPA ( NOMOB, 'L', 1,'TYPE_MODE', I,0,IAD,K8BID)
+           NOMCH = ZK16(IAD)(1:16)
+           IF (NOMCH(1:8).EQ.'MODE_STA') THEN
+             NBSTAT=NBSTAT+1
+           ENDIF
+ 41      CONTINUE
+         REPI = NBSTAT
+         REPK='NON'
+C
+      ELSE IF  (QUESTI.EQ.'NB_MODES_DYN') THEN    
+C     ------------------------------------------ 
+         NBDYN=0
+         CALL RSORAC ( NOMOB, 'LONUTI', IBID, RBID, K8BID, CBID, RBID,
+     &              K8BID, NBMOD, 1, IBID )
+
+         DO 51, I=1,NBMOD
+           CALL RSADPA ( NOMOB, 'L', 1,'TYPE_MODE', I,0,IAD,K8BID)
+           NOMCH = ZK16(IAD)(1:16)
+           IF ((NOMCH(1:9).EQ.'MODE_DYN')) THEN
+             NBDYN=NBDYN+1
+           ENDIF
+ 51      CONTINUE
+         REPI = NBDYN
+         REPK='NON'
+C
       ELSE
          REPK = QUESTI
          CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)

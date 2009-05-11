@@ -4,7 +4,7 @@
       CHARACTER*(*) RESIN,RESOU,GRAND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,10 +150,14 @@ C  Temps
 C  On finalise le RESOU
       IF ( IRES.EQ.0 ) THEN
          KREFE = RESOU(1:8)
-         CALL WKVECT(KREFE//'.REFD','G V K24',3,JORDR)
+         CALL WKVECT(KREFE//'.REFD','G V K24',7,JORDR)
          ZK24(JORDR) = ZK24(JREFE)
          ZK24(JORDR+1) = ZK24(JREFE+1)
          ZK24(JORDR+2) = ZK24(JREFE+2)
+         ZK24(JORDR+3) = ZK24(JREFE+3)
+         ZK24(JORDR+4) = ZK24(JREFE+4)
+         ZK24(JORDR+5) = ZK24(JREFE+5)
+         ZK24(JORDR+6) = ZK24(JREFE+6)
          CALL JELIBE(KREFE//'.REFD')
       ENDIF
 C

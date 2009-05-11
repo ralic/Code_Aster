@@ -11,7 +11,7 @@
       LOGICAL LPSTO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2006   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,13 +90,14 @@ C On recupere la numerotation generalisee
          ELSE
            NUMGEN = BLANC
          ENDIF
-         CALL WKVECT(NOMRES//'           .REFD','G V K24',6,JREFE)
+         CALL WKVECT(NOMRES//'           .REFD','G V K24',7,JREFE)
          ZK24(JREFE) = RIGGEN
          ZK24(JREFE+1) = MASGEN
          ZK24(JREFE+2) = AMOGEN
          ZK24(JREFE+3) = NUMGEN
          ZK24(JREFE+4) = ' '
          ZK24(JREFE+5) = BASEMO(1:8)
+         ZK24(JREFE+6) = ' '
       ENDIF
 C
       CALL JEEXIN(NOMRES//'           .DESC',IRET)

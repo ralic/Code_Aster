@@ -10,7 +10,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,13 +55,13 @@ C     ------------------------------------------------------------------
       INTEGER       VALI(3),JPARA
       INTEGER       NMIN1, KMODE, NORDR, IBID, I, LADPA, LMODE, LVALE
       INTEGER       INDK24, NBPAST, IRANG,IRET,JMODG,JMACR,JBASM,JRAID
-      INTEGER       JMOD2,JMODL,JMATE,JCARA,JLIME,JMERI
-      PARAMETER    ( NBPAST = 17 )
+      INTEGER       JMOD2,JMODL,JMATE,JCARA,JLIME,JMERI,LTYBA
+      PARAMETER    ( NBPAST = 18 )
       CHARACTER*8   RES ,K8B, RAIDE, MODELE, CHMAT, CARAEL
       CHARACTER*16  TYPCON, NOMCMD, NOSY
       CHARACTER*19  CHAMNO,SD2
       CHARACTER*24  REFD,NUME,NOPAST(NBPAST)
-      CHARACTER*24 VALK
+      CHARACTER*24 VALK,TYPEBA
       CHARACTER*32  JEXNUM
       LOGICAL       LREFD, LNUME, LBASM, LSTOCK
 C     ------------------------------------------------------------------
@@ -69,6 +69,7 @@ C     ------------------------------------------------------------------
 C
 C --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE
       DATA  NOPAST /        'NUME_MODE'       , 'NORME'           ,
+     &  'TYPE_MODE'       ,
      &  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
      &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
@@ -92,11 +93,7 @@ C     POUR POUVOIR UTILISER VPSTOR DANS STAT_NON_LINE VIA NMOP45
         NOSY = 'DEPL'
       ENDIF
 C
-      IF ( TYPCON(1:11) .EQ. 'BASE_MODALE' ) THEN
-        LBASM=.TRUE.
-      ELSE
-        LBASM=.FALSE.
-      ENDIF
+      LBASM=.FALSE.
 C
       LREFD = .TRUE.
       LNUME = .TRUE.
@@ -107,10 +104,15 @@ C On teste l'existence du REFD
       IF (IER.EQ.0) THEN
          LREFD = .FALSE.
       ELSE
-         IF(LBASM)THEN
+        CALL JEVEUO(REFD,'L',LTYBA)
+        TYPEBA=ZK24(LTYBA+6)
+        IF (TYPEBA(1:1).NE.' ') THEN
+          LBASM=.TRUE.     
+        ENDIF
+        IF(LBASM)THEN
            LNUME = .TRUE.
            CALL GETVID(' ','RAIDE',0,1,1,RAIDE,IER)
-         ELSE
+        ELSE
            CALL JEVEUO (REFD, 'L', JREFD )
 C On recupere la matrice du REFD
            RAIDE=ZK24(JREFD)(1:8)
@@ -127,7 +129,8 @@ C On recupere la numerotation du REFD si la matrice n'existe pas
         ENDIF
 C Si elle existe on prend la numerotation associee
       ENDIF
-C
+
+
 C
 C     --- CONTROLE PREALABLE ---
       DO 20 IMODE = 1, NBMODE
@@ -303,6 +306,16 @@ C
            CALL RSADPA(MODES,'E',1,NOPAST(2),NORDR,0,LADPA,K8B)
            ZK24(LADPA) = RESUFK(KMODE,IRANG)
         ENDIF
+
+C ----- ON STOCKE 'TYPE_MODE' POUR LES MODES PROPRES 'MODE_MECA'
+C
+        IF ( TYPCON(1:9).EQ.'MODE_MECA'.OR.
+     &       TYPCON(1:9).EQ.'MODE_GENE') THEN
+
+           CALL RSADPA(MODES,'E',1,NOPAST(3),NORDR,0,LADPA,K8B)
+           ZK16(LADPA)= 'MODE_DYN'
+
+        ENDIF
 C
 C ----- ON STOCKE : MODELE, CARA_ELEM, CHAM_MATER
 C
@@ -326,7 +339,7 @@ C
              ZR(LADPA) = RESUFR(KMODE,2)
            ENDIF
         ELSE
-          DO 48 I = 3 , NBPAST
+          DO 48 I = 4 , NBPAST
             IRANG = INDK24(NOPARA(NBPARI+NBPARK+1),NOPAST(I),1,NBPARR)
             IF ( IRANG .GT. 0 ) THEN
               CALL RSADPA(MODES,'E',1,NOPAST(I),NORDR,0,LADPA,K8B)

@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -185,11 +185,9 @@ C
                JFREQ = JFREQ + 1
             ELSEIF ( TYSD .EQ. 'MODE_MECA'   .OR.
      &               TYSD .EQ. 'MODE_GENE'   .OR.
-     &               TYSD .EQ. 'MODE_ACOU'   .OR.
-     &               TYSD .EQ. 'BASE_MODALE' )  THEN
+     &               TYSD .EQ. 'MODE_ACOU'   )  THEN
                JFREQ = JFREQ + 1
                JMODE = JMODE + 1
-            ELSEIF ( TYSD .EQ. 'MODE_STAT'   )  THEN
                JNOCP = JNOCP + 1
             ELSEIF ( TYSD .EQ. 'MULT_ELAS' )  THEN
                JNCAS = JNCAS + 1

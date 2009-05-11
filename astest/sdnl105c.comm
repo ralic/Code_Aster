@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
+# sdnl105c.para = tps_job 140 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# sdnl105c.para = tps_job 140 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # CAS_TEST__: SDNL105C
 #
@@ -321,13 +323,15 @@ for k in range(1,5):
                      );
 
 BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES1),
-                                _F( MODE_MECA = MODES2,
+#                                _F( MODE_MECA = MODES2,
+                                _F( MODE_INTF = MODES2,
                                     NMAX_MODE = 999)),
                         NUME_REF=NUM)
                                                 
 BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
                    RITZ=( _F( BASE_MODALE=BAMODA),
-                          _F( MODE_MECA = MODES3,
+#                          _F( MODE_MECA = MODES3,
+                          _F( MODE_INTF = MODES3,
                                     NMAX_MODE = 999)),
                         NUME_REF=NUM)
                         
@@ -416,7 +420,8 @@ MODGLO=REST_GENE_PHYS(   RESU_GENE=RESGEN,
                          
 MODGL2=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODGLO,
                                     NMAX_MODE=15),
-                                _F( MODE_MECA = MODGLO,
+                                _F( MODE_INTF = MODGLO,
+#                                _F( MODE_MECA = MODGLO,
                                     NMAX_MODE = 0)),
                         NUME_REF=NUM)
 

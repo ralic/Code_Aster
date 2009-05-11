@@ -3,7 +3,7 @@
       INTEGER IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,9 +124,7 @@ C
           CALL TRAN75(NOMRES,TYPRES,RESIN,NOMCMD,K8B)
 C --- CAS DU CALCUL TRANSITOIRE CLASSIQUE
         ELSE
-          IF ((TYPREP(1:9).EQ.'MODE_MECA') .OR.
-     &        (TYPREP(1:9).EQ.'MODE_STAT') .OR.
-     &        (TYPREP(1:11).EQ.'BASE_MODALE')) THEN
+          IF ((TYPREP(1:9).EQ.'MODE_MECA')) THEN
             CALL TRAN75(NOMRES,TYPRES,RESIN,NOMCMD,K8BID)
 C
           ELSEIF (TYPREP(1:9).EQ.'MODE_GENE') THEN
@@ -155,9 +153,7 @@ C
         ELSE
 
 C     --- CALCUL HARMONIQUE SANS SOUS-STRUCTURATION ---
-          IF ((TYPREP(1:9).EQ.'MODE_MECA') .OR.
-     &            (TYPREP(1:9).EQ.'MODE_STAT') .OR.
-     &            (TYPREP(1:11).EQ.'BASE_MODALE')) THEN
+          IF ((TYPREP(1:9).EQ.'MODE_MECA')) THEN 
             CALL HARM75(NOMRES,TYPRES,RESIN,NOMCMD,K8BID)
           ELSEIF (TYPREP(1:9).EQ.'MODE_GENE') THEN
             CALL GETVID(' ','MODE_MECA',1,1,1,MODE,IBID)

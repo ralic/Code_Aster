@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_cata Meidee  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,8 @@ import aster
 from Utilitai.Utmess import UTMESS
 from Cata.cata import modele_sdaster , mode_meca, matr_asse_depl_r, maillage_sdaster
 from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
-from Cata.cata import mode_stat_forc, base_modale, nume_ddl_sdaster, dyna_harmo
+#from Cata.cata import mode_stat_forc, base_modale, nume_ddl_sdaster, dyna_harmo
+from Cata.cata import nume_ddl_sdaster, dyna_harmo
 import Numeric
 from Numeric import array, transpose
 from Numeric import zeros
@@ -834,7 +835,8 @@ class MeideeObjects:
         for i, v in jdc.sds_dict.items():
             if isinstance( v, modele_sdaster ):
                 self.modeles[i] = Modele(objects = self, nom = i,obj_ast = v,mess = self.mess)
-            elif isinstance( v, mode_meca ) or isinstance( v, base_modale ):
+#            elif isinstance( v, mode_meca ) or isinstance( v, base_modale ):
+            elif isinstance( v, mode_meca ):
                 self.resultats[i] = Resultat(objects = self, nom = i,obj_ast = v,mess = self.mess)
             elif isinstance( v, dyna_harmo ):
                 self.dyna_harmo[i] = DynaHarmo(objects = self, nom = i,obj_ast = v,mess = self.mess)
@@ -848,8 +850,8 @@ class MeideeObjects:
                 self.cham_mater[i] = v
             elif isinstance( v, table_sdaster ):
                 self.inter_spec[i] = InterSpectre(nom = i, obj_ast = v, mess = self.mess)
-            elif isinstance( v, mode_stat_forc ):
-                self.resultats[i] = Resultat(objects = self, nom = i,obj_ast = v,mess = self.mess)
+#            elif isinstance( v, mode_stat_forc ):
+#                self.resultats[i] = Resultat(objects = self, nom = i,obj_ast = v,mess = self.mess)
             elif isinstance( v, nume_ddl_sdaster ):
                 self.nume_ddl[i] = v
 

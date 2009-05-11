@@ -1,4 +1,4 @@
-#@ MODIF sd_mode_cycl SD  DATE 23/10/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF sd_mode_cycl SD  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,8 @@
 from SD import *
 from SD.sd_maillage import sd_maillage
 from SD.sd_interf_dyna_clas import sd_interf_dyna_clas
-from SD.sd_base_modale import sd_base_modale
+#from SD.sd_base_modale import sd_base_modale
+from SD.sd_mode_meca import sd_mode_meca
 from SD.sd_util import *
 
 
@@ -52,8 +53,8 @@ class sd_mode_cycl(AsBase):
         refe=self.CYCL_REFE.get_stripped()
         sd2=sd_maillage(refe[0]); sd2.check
         sd2=sd_interf_dyna_clas(refe[1]); sd2.check
-        sd2=sd_base_modale(refe[2]); sd2.check
-
+#        sd2=sd_base_modale(refe[2]); sd2.check
+        sd2=sd_mode_meca(refe[2]); sd2.check
 
     def check_NUIN(self,checker) :
         nuin=self.CYCL_NUIN.get()

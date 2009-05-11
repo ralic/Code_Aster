@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -342,9 +342,8 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
       ELSEIF (TYPES2.EQ.'MODE_MECA' .OR. TYPES2.EQ.'MODE_MECA_C' .OR.
-     &        TYPES2.EQ.'MODE_GENE' .OR. TYPES2(1:9).EQ.'MODE_STAT' .OR.
-     &        TYPES2.EQ.'MODE_ACOU' .OR. TYPES2.EQ.'DYNAMIQUE' .OR.
-     &        TYPES2.EQ.'BASE_MODALE') THEN
+     &        TYPES2.EQ.'MODE_GENE' .OR. TYPES2.EQ.'MODE_ACOU' .OR. 
+     &        TYPES2.EQ.'DYNAMIQUE' ) THEN
 
 
         IF (TYPES2.EQ.'MODE_MECA') THEN
@@ -353,11 +352,7 @@ C     ------------------------------------------------------------------
           CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOME')
         ELSEIF (TYPES2.EQ.'MODE_GENE') THEN
           CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOGE')
-        ELSEIF (TYPES2(1:9).EQ.'MODE_STAT') THEN
-          CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOST')
         ELSEIF (TYPES2.EQ.'DYNAMIQUE') THEN
-          CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'BAMO')
-        ELSEIF (TYPES2.EQ.'BASE_MODALE') THEN
           CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'BAMO')
         ELSEIF (TYPES2.EQ.'MODE_ACOU') THEN
           CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'MOAC')

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,8 +85,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 #    options pour des resultats lineaires
 
      b_lineaire =BLOC( condition = "AsType(RESULTAT) in (evol_elas,dyna_trans,dyna_harmo,mode_meca,\
-                                                               mode_stat,mode_stat_depl,mode_stat_acce,mode_stat_forc,\
-                                                               mult_elas,fourier_elas,base_modale,mode_flamb)",
+                                                               mult_elas,fourier_elas,mode_flamb)",
                                                                fr="options mecaniques lineaires",
           TYPE_OPTION =SIMP(statut='f',typ='TXM',defaut='TOUTES',fr="type d'options mecaniques lineaires",
                            into=("SIGM_MASSIF","SIGM_STRUCT","EPSI","ENER","CRIT","DERIVEES",

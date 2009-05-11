@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/05/2008   AUTEUR CORUS M.CORUS 
+#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
             UIinfo={"groupes":("Matrices/vecteurs",)},
          regles=(EXCLUS('MATR_AMOR','AMOR_REDUIT' ),
                  PRESENT_ABSENT('MATR_IMPE','MATR_RIGI','MATR_MASS'),),
-         BASE_MODALE     =SIMP(statut='o',typ=base_modale ),
+         BASE_MODALE     =SIMP(statut='o',typ=mode_meca ),
          MATR_RIGI       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c),),
          MATR_MASS       =SIMP(statut='f',typ=matr_asse_depl_r ),
          MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r ),

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TYPRES,NOMCH,NOMGD,TYPSD
 
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -70,6 +70,9 @@ C----------------------------------------------------------------------
         TYPSD = 'NOEU'
       ELSE IF (NOMCH.EQ.'FSUR_2D') THEN
         NOMGD = 'FORC_R'
+        TYPSD = 'NOEU'
+      ELSE IF (NOMCH.EQ.'EPSI_NOEU_DEPL') THEN
+        NOMGD = 'EPSI_R'
         TYPSD = 'NOEU'
       ELSE IF (NOMCH.EQ.'VITE_VENT') THEN
         NOMGD = 'DEPL_R'

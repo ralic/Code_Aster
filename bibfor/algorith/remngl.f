@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C
 C  BUT:  < RESTITUTION MAC-NEAL GLOBALE >
 C
@@ -61,10 +61,10 @@ C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*8   NOMRES,BASMOD,MODCYC,INTF,KBID,MAILSK,K8B
-      CHARACTER*16  DEPL,TYPSD,TYPSUP(2)
+      CHARACTER*16  DEPL,TYPSD,TYPSUP(1)
       CHARACTER*19  CHAMVA,NUMDDL,PROFNO,MASS
       CHARACTER*24  FLEXDR,FLEXGA,FLEXAX,TETGD,TETAX
-      CHARACTER*24  VALK(3)
+      CHARACTER*24  VALK(2)
       CHARACTER*24  INDIRF,CREFE(2)
       COMPLEX*16    DEPHC,DEPHCO
       REAL*8        PARA(2),DEPI,R8DEPI,FACT,GENEK,BETA
@@ -72,7 +72,7 @@ C
 C-----------------------------------------------------------------------
 C     
       DATA DEPL   /'DEPL            '/
-      DATA TYPSUP /'BASE_MODALE     ','MODE_MECA       '/
+      DATA TYPSUP /'MODE_MECA       '/
 C
 C-----------------------------------------------------------------------
 C
@@ -82,11 +82,10 @@ C
 C
 C-----VERIFICATION DU TYPE DE STRUCTURE RESULTAT------------------------
 C
-      IF (TYPSD.NE.TYPSUP(1) .AND. TYPSD.NE.TYPSUP(2)) THEN
+      IF(TYPSD.NE.TYPSUP(1))THEN
         VALK (1) = TYPSD
         VALK (2) = TYPSUP(1)
-        VALK (3) = TYPSUP(2)
-        CALL U2MESG('F', 'ALGORITH14_4',3,VALK,0,0,0,0.D0)
+        CALL U2MESG('F', 'ALGORITH14_4',2,VALK,0,0,0,0.D0)
       ENDIF
 C
 C-----REMPLISSAGE DU CREFE POUR CREATION CHAMNO-------------------------
@@ -283,6 +282,7 @@ C
           CALL RSADPA(NOMRES,'E',1,'MASS_GENE',IORC,0,LDMGE ,K8B)
           CALL RSADPA(NOMRES,'E',1,'OMEGA2'   ,IORC,0,LDOM2 ,K8B)
           CALL RSADPA(NOMRES,'E',1,'NUME_MODE',IORC,0,LDOMO ,K8B)
+          CALL RSADPA(NOMRES,'E',1,'TYPE_MODE',IORC,0,LDOTM,K8B)
           FACT  = 1.D0 / (PARA(1)**0.5D0)
           GENEK = (ZR(LLFREQ+ICOMP-1)*DEPI)**2
           ZR(LDFREQ) = ZR(LLFREQ+ICOMP-1)
@@ -290,13 +290,12 @@ C
           ZR(LDMGE)  = 1.D0
           ZR(LDOM2)  = GENEK
           ZI(LDOMO)  = IORC
+          ZK16(LDOTM) = 'MODE_DYN'
 C
 C  SPECIFIQUE A BASE_MODALE
 C
-          IF (TYPSD.EQ.TYPSUP(1)) THEN
-            CALL RSADPA(NOMRES,'E',1,'TYPE_DEFO',IORC,0,LDTYD,K8B)
-            ZK16(LDTYD) = 'PROPRE          '
-          ENDIF
+          CALL RSADPA(NOMRES,'E',1,'TYPE_DEFO',IORC,0,LDTYD,K8B)
+          ZK16(LDTYD) = 'PROPRE          '
 C
 C  BOUCLE SUR LES SECTEURS
 C
@@ -354,6 +353,7 @@ C
             CALL RSADPA(NOMRES,'E',1,'MASS_GENE',IORC,0,LDMGE ,K8B)
             CALL RSADPA(NOMRES,'E',1,'OMEGA2'   ,IORC,0,LDOM2 ,K8B)
             CALL RSADPA(NOMRES,'E',1,'NUME_MODE',IORC,0,LDOMO ,K8B)
+            CALL RSADPA(NOMRES,'E',1,'TYPE_MODE',IORC,0,LDOTM,K8B)
             FACT  = 1.D0 / (PARA(2)**0.5D0)
             GENEK = (ZR(LLFREQ+ICOMP-1)*DEPI)**2
             ZR(LDFREQ) = ZR(LLFREQ+ICOMP-1)
@@ -361,13 +361,12 @@ C
             ZR(LDMGE)  = 1.D0
             ZR(LDOM2)  = GENEK
             ZI(LDOMO)  = IORC
+            ZK16(LDOTM) = 'MODE_DYN'
 C
 C  SPECIFIQUE A BASE_MODALE
 C
-            IF (TYPSD.EQ.TYPSUP(1)) THEN
-              CALL RSADPA(NOMRES,'E',1,'TYPE_DEFO',IORC,0,LDTYD,K8B)
-              ZK16(LDTYD) = 'PROPRE          '
-            ENDIF
+            CALL RSADPA(NOMRES,'E',1,'TYPE_DEFO',IORC,0,LDTYD,K8B)
+            ZK16(LDTYD) = 'PROPRE          '
 C
 C  BOUCLE SUR LES SECTEURS
 C

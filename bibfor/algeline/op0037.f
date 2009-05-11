@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C     PARAMETRES "MODE_FLAMB"
       CHARACTER*24  MASSE, AMOR, RAIDE, REFE, NOMJV, METHOD, TITRMO,
      &              KVEC, KVALI, KVALR, KVALK,
      &              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT),
-     &              MATE, CARA, MODELE
+     &              MATE, CARA, MODELE,TYPEBA
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'LAGR', 'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' /
       DATA  KVEC  / '&&OP0037.VAL_PROPRE'/
@@ -121,16 +121,6 @@ C
          DO 3 I = 1 , NBPARA
             NOPARA(I) = NOPARF(I)
  3       CONTINUE
-      ELSEIF ( TYPCON(1:11) .EQ. 'BASE_MODALE' ) THEN
-         NOMSY = 'DEPL'
-         NBPARI = NBPAMI
-         NBPARR = NBPAMR
-         NBPARK = NBPAMK
-         NBPARA = NBPAMT
-         DO 4 I = 1 , NBPARA
-            NOPARA(I) = NOPARM(I)
- 4       CONTINUE
-         LBASM=.TRUE.
       ELSE
          CALL U2MESK('F','ALGELINE2_33',1,TYPCON)
       ENDIF
@@ -175,6 +165,7 @@ C
 C     --- INITIALISATION ---
       NORM  = ' '
       NOEUD = ' '
+      TYPEBA = ' '
       NCMP  = 0
       IDEB  = 0
       IFIN  = 0
@@ -187,7 +178,11 @@ C
 C     --- MATRICES DE REFERENCE DES MODES ---
       LREFE = .TRUE.
       REFE = MODEIN//'           .REFD'
-      IF ( TYPCON(1:11) .EQ. 'BASE_MODALE' ) THEN
+      CALL JEVEUO(REFE,'L',LMODE)
+      TYPEBA=ZK24(LMODE+6)
+      IF (TYPEBA(1:1).NE.' ') LBASM=.TRUE.
+
+      IF (TYPEBA(1:1).NE.' ') THEN
         CALL GETVID(' ','RAIDE',0,1,1,MAT1,L1)
         CALL GETVID(' ','MASSE',0,1,1,MAT2,L2)
         CALL GETVID(' ','AMOR',0,1,1,MAT3,L3)
@@ -511,7 +506,6 @@ C RECUPERATION INFORMATIONS SENSIBILITE
       CALL JEVEUO ( KVALK, 'E', LVALK )
 
       IF(LBASM)THEN
-
         CALL MTDSCR(MASSE)
         CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMASSE)
         CALL MTDSCR(RAIDE)

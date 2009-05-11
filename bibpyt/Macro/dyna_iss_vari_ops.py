@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,7 +82,8 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
 #   dcoh = MATR_COHE[0].cree_dict_valeurs(MATR_COHE[0].mc_liste)
    
    from SD.sd_maillage import sd_maillage
-   from SD.sd_base_modale import sd_base_modale   
+#   from SD.sd_base_modale import sd_base_modale   
+   from SD.sd_mode_meca import sd_mode_meca 
    from SD.sd_resultat import sd_resultat
    from SD.sd_cham_gene import sd_cham_gene       
    # MAILLAGE
@@ -119,8 +120,10 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
    if INFO==2:
       aster.affiche('MESSAGE','NBNO INTERFACE : '+str(nbno))
   # MODES
-   nbval, nbmodt,nbmodd,nbmods = nume_resu.UTIL.get()
-
+#   nbval, nbmodt,nbmodd,nbmods = nume_resu.UTIL.get()
+   iret,nbmodt,kbid=aster.dismoi('F','NB_MODES_TOT',nom_bamo,'RESULTAT')
+   iret,nbmodd,kbid=aster.dismoi('F','NB_MODES_DYN',nom_bamo,'RESULTAT')
+   iret,nbmods,kbid=aster.dismoi('F','NB_MODES_STA',nom_bamo,'RESULTAT')
 
    nbmodt2 = MATR_GENE['MATR_RIGI'].DESC.get()[1]
    if nbmodt2 != nbmodt:

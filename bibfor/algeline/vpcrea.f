@@ -4,7 +4,7 @@
       CHARACTER*(*)      MODES,MASSE, AMOR, RAIDE, NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C     --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP ---
       CALL JEEXIN(REFD,IER1)
       IF ( IER1 .EQ. 0 ) THEN
          IF ( ICOND .EQ. 0 ) THEN
-           NBVAL = 6
+           NBVAL = 7
            CALL WKVECT(REFD,'G V K24',NBVAL,LMODE)
 C On remplie les champs relatifs aux matrices assemblees
             ZK24(LMODE) = RAIDE
