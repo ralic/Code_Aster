@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -208,7 +208,7 @@ C
         ELSE IF (FAPG.EQ.'SHB20') THEN
 C --------- FORMULE DE QUADRATURE DE GAUSS A 20 POINTS DANS
 C           L EPAISSEUR POUR LE SHB20
-C Des points de gauss sur la facette 1-2-3:
+C           DES POINTS DE GAUSS SUR LA FACETTE 1-2-3:
 C
           XZG5(1) = -0.906179845938664D0
           XZG5(2) = -0.538469310105683D0
@@ -1104,24 +1104,24 @@ C         FINITE ELEMENT PROCEDURES IN ENGINEERING ANALYSIS, PAGE 280)
           HPG(3) = UN/6.D0
 
         ELSE IF (FAPG.EQ.'SIMP') THEN
-          XPG(1) = -1.D0
-          YPG(1) = 1.D0
-          XPG(2) = -1.D0
-          YPG(2) = -1.D0
-          XPG(3) = 1.D0
-          YPG(3) = -1.D0
-          XPG(4) = -1.D0
+          XPG(1) = 0.D0
+          YPG(1) = 0.D0
+          XPG(2) = 1.D0
+          YPG(2) = 0.D0
+          XPG(3) = 0.D0
+          YPG(3) = 1.D0
+          XPG(4) = 1.D0
           YPG(4) = 0.D0
-          XPG(5) = 0.D0
-          YPG(5) = -1.D0
+          XPG(5) = 0.5D0
+          YPG(5) = 0.5D0
           XPG(6) = 0.D0
-          YPG(6) = 0.D0
-          HPG(1) = 2.D0 / 15.D0
-          HPG(2) = 2.D0 / 15.D0
-          HPG(3) = 2.D0 / 15.D0
-          HPG(4) = 8.D0 / 15.D0
-          HPG(5) = 8.D0 / 15.D0
-          HPG(6) = 8.D0 / 15.D0
+          YPG(6) = 0.5D0
+          HPG(1) = 1.D0 / 30.D0
+          HPG(2) = 1.D0 / 30.D0
+          HPG(3) = 1.D0 / 30.D0
+          HPG(4) = 4.D0 / 30.D0
+          HPG(5) = 4.D0 / 30.D0
+          HPG(6) = 4.D0 / 30.D0
 
         ELSE IF (FAPG.EQ.'FPG3NOS') THEN
 C ------- POUR LES POINTS DE GAUSS -------------------------------------

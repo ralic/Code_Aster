@@ -1,14 +1,14 @@
       SUBROUTINE DXGLRC ( NOMTE, OPT, COMPOR, XYZL, UL, DUL, BTSIG,
-     &                    KTAN, EFFINT, PGL, CODRET )
+     &                    KTAN, EFFINT, PGL, CRIT, CODRET )
       IMPLICIT NONE
 
-      INTEGER      CODRET
+      INTEGER      CODRET, CORETG
       REAL*8       XYZL(3,4), KTAN((6*4)*(6*4+1)/2), BTSIG(6,4)
-      REAL*8       UL(6,4), DUL(6,4), PGL(3,3)
+      REAL*8       UL(6,4), DUL(6,4), PGL(3,3), CRIT(*)
       CHARACTER*16 OPT, NOMTE, COMPOR(*)
 
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION 
+C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,7 +135,7 @@ C     ------------------
       REAL*8   EPSM(6),MVAL(50),QSI,ETA
       INTEGER  MENT(50),ICPG,ICPV,T(2,2),IBID
       REAL*8   LAMBDA,DEUXMU,DEUMUF,LAMF,GT,GC,GF,SEUIL,ALPHA
-      LOGICAL  LEUL
+      LOGICAL  LEUL,LRGM
       CHARACTER*8  K8BID,MATK(10)
       CHARACTER*24 KMATR
       CHARACTER*39 MESS
@@ -145,10 +145,12 @@ C     ------------------------------------------------------------------
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)
 
-      CODRET=0
+      CODRET = 0
+      CORETG = 0
 
       VECTEU = ((OPT.EQ.'FULL_MECA') .OR. (OPT.EQ.'RAPH_MECA'))
-      MATRIC = ((OPT.EQ.'FULL_MECA') .OR. (OPT.EQ.'RIGI_MECA_TANG'))
+      MATRIC = ((OPT.EQ.'FULL_MECA') .OR. (OPT(1:9).EQ.'RIGI_MECA'))
+      LRGM = OPT.EQ.'RIGI_MECA     '
 
       IF ( NOMTE(1:8).NE.'MEDKTG3 ' .AND.
      &     NOMTE(1:8).NE.'MEDKQG4 ' ) THEN
@@ -157,14 +159,17 @@ C     ------------------------------------------------------------------
 C
       CALL JEVECH('PMATERC','L',IMATE)
 
-      CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
-      ICONTM=JTAB(1)
-      CALL ASSERT(NPG.EQ.JTAB(3))
-      CALL JEVECH('PVARIMR','L',IVARIM)
-      CALL JEVECH('PCOMPOR','L',ICOMPO)
+      LEUL = .FALSE.
+      IF(.NOT. LRGM) THEN 
+        CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
+        ICONTM=JTAB(1)
+        CALL ASSERT(NPG.EQ.JTAB(3))
+        CALL JEVECH('PVARIMR','L',IVARIM)
+        CALL JEVECH('PCOMPOR','L',ICOMPO)
+        LEUL = ZK16(ICOMPO+2)(1:6).EQ.'EULER_'      
+      ENDIF  
       CALL JEVECH('PCACOQU','L',ICACOQ)
 
-      LEUL = ZK16(ICOMPO+2)(1:6).EQ.'EULER_'      
       IF (VECTEU) THEN
         CALL JEVECH('PCONTPR','E',ICONTP)
         CALL JEVECH('PVARIPR','E',IVARIP)
@@ -216,8 +221,12 @@ C     -------------------------------------------
 C     CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY
       NBCON = 8
 C     NBVAR: NOMBRE DE VARIABLES INTERNES (2D) LOI COMPORTEMENT
-      READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
-      CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
+      IF(LRGM)  THEN
+        NBVAR = 0
+      ELSE
+        READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
+        CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
+      ENDIF
 
 C===============================================================
 C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
@@ -284,21 +293,23 @@ C     -- EULER_ALMANSI - TERMES QUADRATIQUES
 
         TSHEAR = 0
 
-        DO 70, I = 1,3
-          EPST(I)     = EPS(I) + DEPS(I)
-          EPST(3 + I) = KHI(I) + DKHI(I)
-          DEPS(3 + I) = DKHI(I)
- 70     CONTINUE
-        
-        DO 73, I = 1,3
-          EPSM(I)   = EPS(I)        
-          EPSM(I+3) = KHI(I)        
- 73     CONTINUE
+        IF(.NOT. LRGM) THEN
+          DO 70, I = 1,3
+            EPST(I)     = EPS(I) + DEPS(I)
+            EPST(3 + I) = KHI(I) + DKHI(I)
+            DEPS(3 + I) = DKHI(I)
+ 70       CONTINUE
+          
+          DO 73, I = 1,3
+            EPSM(I)   = EPS(I)        
+            EPSM(I+3) = KHI(I)        
+ 73       CONTINUE
 
-        DO 77, I = 1,6
-          SIG(I)  = ZR(ICONTM-1 + ICPG + I)
-          SIGM(I) = SIG(I)
- 77     CONTINUE
+          DO 77, I = 1,6
+            SIG(I)  = ZR(ICONTM-1 + ICPG + I)
+            SIGM(I) = SIG(I)
+ 77       CONTINUE
+        ENDIF
 
         IF (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') THEN
 
@@ -327,9 +338,11 @@ C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
 
         ELSEIF (COMPOR(1)(1:7).EQ. 'GLRC_DM') THEN
 
-          DO 8510, I = 1,NBVAR
-            ECR(I)     = ZR(IVARIM-1 + ICPV + I)        
- 8510     CONTINUE
+          IF(.NOT. LRGM) THEN
+            DO 8510, I = 1,NBVAR
+              ECR(I) = ZR(IVARIM-1 + ICPV + I)
+ 8510       CONTINUE
+          ENDIF 
 
           CALL CRGDM(ZI(IMATE),'GLRC_DM         ',T,LAMBDA,DEUXMU,
      &               LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA,EP)
@@ -343,26 +356,32 @@ C         ENDOMMAGEMENT SEULEMENT
         ELSEIF (COMPOR(1)(1:7).EQ. 'KIT_DDI') THEN
 C         ENDOMMAGEMENT PLUS PLASTICITE
 
-          DO 8515, I = 1,NBVAR
-            ECR(I)     = ZR(IVARIM-1 + ICPV + I)        
- 8515     CONTINUE
+          IF(.NOT. LRGM) THEN
+            DO 8515, I = 1,NBVAR
+              ECR(I) = ZR(IVARIM-1 + ICPV + I)      
+ 8515       CONTINUE
+          ENDIF 
 
             CALL NMCOUP('RIGI',IPG,1,3,K8BID,ZI(IMATE),COMPOR,LBID,
-     &                   R8BID,R8BID,R8BID,EPSM,DEPS,SIGM,ECR,OPT,R8BID,
-     &                   IBID,SIG,ECRP,DSIDEP,IBID)
+     &                   CRIT,R8BID,R8BID,EPSM,DEPS,SIGM,ECR,OPT,R8BID,
+     &                   IBID,SIG,ECRP,DSIDEP,CORETG)
+
+          IF(CORETG .EQ. 1) CODRET = 1
 
         ELSE
            VALK = COMPOR(1)
            CALL U2MESG('F', 'ELEMENTS4_79',1,VALK,0,0,0,0.D0)
         ENDIF
 
-        DO 8520, I = 1,NBVAR
-          ZR(IVARIP-1 + ICPV + I) = ECRP(I)        
- 8520   CONTINUE
+        IF(.NOT. LRGM) THEN
+          DO 8520, I = 1,NBVAR
+            ZR(IVARIP-1 + ICPV + I) = ECRP(I)
+ 8520     CONTINUE
  
-        DO 8530, I = 1,6
-          ZR(ICONTP-1 + ICPG + I) = SIG(I)        
- 8530   CONTINUE
+          DO 8530, I = 1,6
+            ZR(ICONTP-1 + ICPG + I) = SIG(I)
+ 8530     CONTINUE
+        ENDIF 
 
 C
 C         EFFORTS RESULTANTS (N ET M)

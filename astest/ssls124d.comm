@@ -1,5 +1,6 @@
-# MODIF  DATE 20/10/2008   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB20 MAILLAGE REGULIER
+# ssls124d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +23,9 @@
 DEBUT(CODE=_F(NOM='SSLS124D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 YG=2.E11
-L=100
-b=10
-F=1
+L=100.
+b=10.
+F=1.
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=YG,
                           NU=0.3,),);
@@ -33,7 +34,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=YG,
 
 # CAS 1 :
 
-h=10
+h=10.
 
 
 PRE_GIBI(UNITE_GIBI=21,UNITE_MAILLAGE=31);
@@ -45,7 +46,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL31=DEFI_GROUP(reuse =MAIL31, MAILLAGE=MAIL31,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT31=AFFE_MATERIAU(MAILLAGE=MAIL31,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -59,19 +63,13 @@ MODMEC31=AFFE_MODELE(MAILLAGE=MAIL31,
 CHARG31=AFFE_CHAR_MECA(MODELE=MODMEC31,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU31=MECA_STATIQUE(MODELE=MODMEC31,
                     CHAM_MATER=CHMAT31,
@@ -79,8 +77,6 @@ RESU31=MECA_STATIQUE(MODELE=MODMEC31,
                     );
 
 RESU31=CALC_ELEM(reuse=RESU31, RESULTAT=RESU31,
-
-#                   OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM'),
                     OPTION=('SIEF_ELNO_ELGA',),
                     );
 
@@ -128,7 +124,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL32=DEFI_GROUP(reuse =MAIL32, MAILLAGE=MAIL32,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT32=AFFE_MATERIAU(MAILLAGE=MAIL32,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -142,19 +141,13 @@ MODMEC32=AFFE_MODELE(MAILLAGE=MAIL32,
 CHARG32=AFFE_CHAR_MECA(MODELE=MODMEC32,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU32=MECA_STATIQUE(MODELE=MODMEC32,
                     CHAM_MATER=CHMAT32,
@@ -189,7 +182,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL33=DEFI_GROUP(reuse =MAIL33, MAILLAGE=MAIL33,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT33=AFFE_MATERIAU(MAILLAGE=MAIL33,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -203,19 +199,13 @@ MODMEC33=AFFE_MODELE(MAILLAGE=MAIL33,
 CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU33=MECA_STATIQUE(MODELE=MODMEC33,
                     CHAM_MATER=CHMAT33,
@@ -251,7 +241,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL34=DEFI_GROUP(reuse =MAIL34, MAILLAGE=MAIL34,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT34=AFFE_MATERIAU(MAILLAGE=MAIL34,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -265,19 +258,13 @@ MODMEC34=AFFE_MODELE(MAILLAGE=MAIL34,
 CHARG34=AFFE_CHAR_MECA(MODELE=MODMEC34,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU34=MECA_STATIQUE(MODELE=MODMEC34,
                     CHAM_MATER=CHMAT34,
@@ -290,10 +277,10 @@ Uz=F*L*L*L/3/YG/Iy
 
 
 TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU34, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
+            _F(  RESULTAT = RESU34, NOM_CHAM='DEPL', PRECISION = 2.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
               GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
 
-            _F(   RESULTAT = RESU34, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
+            _F(   RESULTAT = RESU34, NOM_CHAM='DEPL',  PRECISION = 2.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
               GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
               ),)
 

@@ -1,8 +1,9 @@
-# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
 # TITRE CONTACT DE DEUX SPHERES
+# ssnv104e.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

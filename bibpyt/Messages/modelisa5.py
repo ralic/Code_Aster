@@ -1,21 +1,21 @@
-#@ MODIF modelisa5 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF modelisa5 Messages  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -57,6 +57,38 @@ cata_msg = {
 9 : _("""
  transcodage : une incoherence a ete detectee entre les declarations de noms de noeuds ou de mailles lors du transcodage des objets groupes et connectivitees
 """),
+
+10 : _("""
+ Erreur utilisateur dans CREA_CHAMP / COMB :
+   Les champs que l'on cherche à combiner doivent tous etre des champs aux noeuds.
+"""),
+
+11 : _("""
+ Erreur utilisateur dans CREA_CHAMP / COMB :
+   Les champs que l'on cherche à combiner doivent tous avoir la meme grandeur (DEPL_R, ...).
+   Ce doit etre la meme que celle donnée dans TYPE_CHAM).
+"""),
+
+12 : _("""
+ Erreur utilisateur dans CREA_CHAMP / COMB :
+   Les champs que l'on cherche à combiner doivent tous avoir la meme numérotation.
+"""),
+
+13 : _("""
+ Erreur utilisateur dans CREA_CHAMP / COMB :
+   Les champs que l'on cherche à combiner doivent tous s'appuyer sur le meme maillage.
+"""),
+
+
+
+
+
+
+
+
+
+
+
 
 32 : _("""
  il faut fournir des mailles
@@ -115,7 +147,7 @@ cata_msg = {
 """),
 
 48 : _("""
-  option calcul de l absc_curv sur  un group_ma non implantee. 
+  option calcul de l absc_curv sur  un group_ma non implantee.
 """),
 
 49 : _("""
@@ -127,7 +159,7 @@ cata_msg = {
 """),
 
 50 : _("""
- la grandeur associee au mot cle:  %(k1)s  doit etre:  %(k2)s  mais elle est:  %(k3)s 
+ la grandeur associee au mot cle:  %(k1)s  doit etre:  %(k2)s  mais elle est:  %(k3)s
 """),
 
 51 : _("""
@@ -135,7 +167,7 @@ cata_msg = {
 """),
 
 52 : _("""
- aucune maille n a ete affectee par des elements finis pour le maillage  %(k1)s 
+ aucune maille n a ete affectee par des elements finis pour le maillage  %(k1)s
 """),
 
 53 : _("""
@@ -225,19 +257,19 @@ cata_msg = {
 """),
 
 74 : _("""
- le spectre de nom  %(k1)s  est associe a la zone  %(k2)s  qui n existe pas dans le concept  %(k3)s 
+ le spectre de nom  %(k1)s  est associe a la zone  %(k2)s  qui n existe pas dans le concept  %(k3)s
 """),
 
 75 : _("""
- le spectre de nom  %(k1)s  est associe a la zone de nom  %(k2)s 
+ le spectre de nom  %(k1)s  est associe a la zone de nom  %(k2)s
 """),
 
 76 : _("""
- deux spectres sont identiques 
+ deux spectres sont identiques
 """),
 
 77 : _("""
- les spectres de noms  %(k1)s  et  %(k2)s  sont associes au meme profil de vitesse, de nom  %(k3)s 
+ les spectres de noms  %(k1)s  et  %(k2)s  sont associes au meme profil de vitesse, de nom  %(k3)s
 """),
 
 78 : _("""
@@ -301,7 +333,7 @@ cata_msg = {
 """),
 
 94 : _("""
- impossibilite, la maille  %(k1)s  doit etre une maille de peau, i.e. de type "quad" ou "tria" en 3d ou de type "seg" en 2d, et elle est de type :  %(k2)s 
+ impossibilite, la maille  %(k1)s  doit etre une maille de peau, i.e. de type "quad" ou "tria" en 3d ou de type "seg" en 2d, et elle est de type :  %(k2)s
 """),
 
 95 : _("""

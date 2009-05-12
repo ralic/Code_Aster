@@ -5,7 +5,7 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,17 +126,6 @@ C
       CHPROL = NOMFON//'.PROL'
       CHVALE = NOMFON//'.VALE'
       CHPARA = NOMFON//'.PARA'
-      CALL JEVEUT(CHPROL,'L',LPROL)
-      IF (ZK24(LPROL).EQ.'INTERPRE') THEN
-C     ------------------------ CAS DES FORMULES ------------------------
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IER,MSGERR,RESU)
-         IF (IER.GT.0) THEN
-            IER = 200
-            CALL U2MESK ('A+', 'FONCT0_51', 1, NOMF )
-            CALL U2MESK ('A', 'FONCT0_52', 1, MSGERR )
-         ENDIF
-         GOTO 9999
-      ENDIF
 C
       DO 10 I = 1, MXSAVE
          IF ( NOMFON .EQ. SVNOMF(I) ) THEN
@@ -149,6 +138,21 @@ C
             GOTO 11
          ENDIF
    10 CONTINUE
+
+
+      CALL JEVEUT(CHPROL,'L',LPROL)
+      IF (ZK24(LPROL).EQ.'INTERPRE') THEN
+C     ------------------------ CAS DES FORMULES ------------------------
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IER,MSGERR,RESU)
+         IF (IER.GT.0) THEN
+            IER = 200
+            CALL U2MESK ('A+', 'FONCT0_51', 1, NOMF )
+            CALL U2MESK ('A', 'FONCT0_52', 1, MSGERR )
+         ENDIF
+         GOTO 9999
+      ENDIF
+
+
 C     --- MEMORISATION DES INFORMATIONS NOUVELLES ---
       ISVNXT = NEXTSV(ISVNXT)
       ISAVE  = ISVNXT

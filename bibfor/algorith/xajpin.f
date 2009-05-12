@@ -5,7 +5,7 @@
       REAL*8        NEWPT(3),LONGAR,AL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,10 +61,11 @@ C
       REAL*8          PADIST,P(3)
       INTEGER         I,J,NDIM,IBID,IADZI,IAZK24,JDIM
       LOGICAL         DEJA
+      INTEGER      ZXAIN,XXMMVD
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-
+      ZXAIN = XXMMVD('ZXAIN')
       CALL TECAEL(IADZI,IAZK24)
       NOMA=ZK24(IAZK24)
       CALL JEVEUO(NOMA//'.DIME','L',JDIM)
@@ -89,10 +90,10 @@ C       TROP DE POINTS DANS LA LISTE
         DO 101 J = 1, NDIM
          ZR(JLIST-1+NDIM*(IPT-1)+J) = NEWPT(J)
  101    CONTINUE
-        ZR(JAINT-1+4*(IPT-1)+1)=IA
-        ZR(JAINT-1+4*(IPT-1)+2)=IN
-        ZR(JAINT-1+4*(IPT-1)+3)=LONGAR
-        ZR(JAINT-1+4*(IPT-1)+4)=AL
+        ZR(JAINT-1+ZXAIN*(IPT-1)+1)=IA
+        ZR(JAINT-1+ZXAIN*(IPT-1)+2)=IN
+        ZR(JAINT-1+ZXAIN*(IPT-1)+3)=LONGAR
+        ZR(JAINT-1+ZXAIN*(IPT-1)+4)=AL
       ENDIF
 
       CALL JEDEMA()

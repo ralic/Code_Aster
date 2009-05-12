@@ -2,7 +2,7 @@
      &                  PAN   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/09/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C ---------------------------------------------------------------------
 C
       REAL*8  HT,HQ,HT2,HT3,HQ2,HQ3,HQ4,R8MAEM
 C
-      INTEGER NNO,P0,I,J,I1,J1,NC
+      INTEGER NNO,P0,I,J,I1,J1,NC,IER
       REAL*8 XMIN(2,3),XMAX(2,3),MM(2,3),XRMIN(2,6),XRMAX(2),R(6),RM,S
       REAL*8 M0(2),M(3),W0(9),W20(3,9),W2(3),W30(2,9),W3(2),W40(9),W4
       CHARACTER*8 TYPEMA
@@ -186,12 +186,12 @@ C --------- MAJORATION EXTREMA POUR PAN
               CALL MMPROD(PAN(1,J),1,0,1,0,3,CNOEUD,3,0,
      &                    NOEPAN(P0),NNO,W0)
               CALL FORME2(XRMIN(1,J),TYPEMA,W20,NNO,NC)
-              CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+              CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
               S = R(J) - HT2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
               IF (S.LT.PAN(4,J)) PAN(4,J) = S
               IF (J.EQ.I) THEN
                 CALL FORME2(XRMAX,TYPEMA,W20,NNO,NC)
-                CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+                CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
                 S = RM + HT2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
                 IF (S.GT.PAN(5,J)) PAN(5,J) = S
               ENDIF
@@ -230,17 +230,17 @@ C --------- MAJORATION EXTREMA POUR PAN
             DO 90 J = 1, NPAN
             CALL MMPROD(PAN(1,J),1,0,1,0,3,CNOEUD,3,0,NOEPAN(P0),NNO,W0)
               CALL FORME2(XRMIN(1,J),TYPEMA,W20,NNO,NC)
-              CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+              CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
               CALL FORME3(XRMIN(1,J),TYPEMA,W30,NNO,NC)
-              CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
+              CALL PRMAVE(0,W30,NC,NC,NNO,W0,NNO,W3,NNO,IER)
               S = R(J) - HT2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                 - HT3*ABS(W3(1))
               IF (S.LT.PAN(4,J)) PAN(4,J) = S
               IF (J.EQ.I) THEN
                 CALL FORME2(XRMAX,TYPEMA,W20,NNO,NC)
-                CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+                CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
                 CALL FORME3(XRMIN(1,J),TYPEMA,W30,NNO,NC)
-                CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
+                CALL PRMAVE(0,W30,NC,NC,NNO,W0,NNO,W3,NNO,IER)
                 S = RM + HT2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                 + HT3*ABS(W3(1))
                 IF (S.GT.PAN(5,J)) PAN(5,J) = S
@@ -348,17 +348,17 @@ C --------- MAJORATION EXTREMA POUR PAN
             DO 130 J = 1, NPAN
             CALL MMPROD(PAN(1,J),1,0,1,0,3,CNOEUD,3,0,NOEPAN(P0),NNO,W0)
               CALL FORME2(XRMIN(1,J),TYPEMA,W20,NNO,NC)
-              CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+              CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
               CALL FORME3(XRMIN(1,J),TYPEMA,W30,NNO,NC)
-              CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
+              CALL PRMAVE(0,W30,NC,NC,NNO,W0,NNO,W3,NNO,IER)
               S = R(J) - HQ2*(2.D0*ABS(W2(2))+ABS(W2(1)))
      &                 - HQ3*ABS(W3(1))
               IF (S.LT.PAN(4,J)) PAN(4,J) = S
               IF (I.EQ.J) THEN
                 CALL FORME2(XRMAX,TYPEMA,W20,NNO,NC)
-                CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+                CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
                 CALL FORME3(XRMAX,TYPEMA,W30,NNO,NC)
-                CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
+                CALL PRMAVE(0,W30,NC,NC,NNO,W0,NNO,W3,NNO,IER)
                 S = RM + HQ2*(2.D0*ABS(W2(2))+ABS(W2(1)))
      &                 + HQ3*ABS(W3(1))
                 IF (S.GT.PAN(5,J)) PAN(5,J) = S
@@ -401,17 +401,17 @@ C --------- MAJORATION EXTREMA POUR PAN
             DO 150 J = 1, NPAN
             CALL MMPROD(PAN(1,J),1,0,1,0,3,CNOEUD,3,0,NOEPAN(P0),NNO,W0)
               CALL FORME2(XRMIN(1,J),TYPEMA,W20,NNO,NC)
-              CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+              CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
               CALL FORME3(XRMIN(1,J),TYPEMA,W30,NNO,NC)
-              CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
+              CALL PRMAVE(0,W30,NC,NC,NNO,W0,NNO,W3,NNO,IER)
               S = R(J) - HQ2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                 - HQ3*(ABS(W3(1))+ABS(W3(2)))
               IF (S.LT.PAN(4,J)) PAN(4,J) = S
               IF (I.EQ.J) THEN
                 CALL FORME2(XRMAX,TYPEMA,W20,NNO,NC)
-                CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+                CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
                 CALL FORME3(XRMAX,TYPEMA,W30,NNO,NC)
-                CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
+                CALL PRMAVE(0,W30,NC,NC,NNO,W0,NNO,W3,NNO,IER)
                 S = RM + HQ2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                 + HQ3*(ABS(W3(1))+ABS(W3(2)))
                 IF (S.GT.PAN(5,J)) PAN(5,J) = S
@@ -458,21 +458,21 @@ C --------- MAJORATION EXTREMA POUR PAN
             DO 170 J = 1, NPAN
             CALL MMPROD(PAN(1,J),1,0,1,0,3,CNOEUD,3,0,NOEPAN(P0),NNO,W0)
               CALL FORME2(XRMIN(1,J),TYPEMA,W20,NNO,NC)
-              CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+              CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
               CALL FORME3(XRMIN(1,J),TYPEMA,W30,NNO,NC)
-              CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
+              CALL PRMAVE(0,W30,NC,NC,NNO,W0,NNO,W3,NNO,IER)
               CALL FORME4(XRMIN(1,J),TYPEMA,W40,NNO,NC)
-              CALL MMPROD(W40,1,0,1,0,NNO,W0,NNO,0,0,1,W4)
+              CALL LCPRSN(NNO,W40,W0,W4)
               S = R(J) - HQ2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                 - HQ3*(ABS(W3(1))+ABS(W3(2))) - HQ4*ABS(W4)
               IF (S.LT.PAN(4,J)) PAN(4,J) = S
               IF (I.EQ.J) THEN
                 CALL FORME2(XRMAX,TYPEMA,W20,NNO,NC)
-                CALL MMPROD(W20,NC,0,NC,0,NNO,W0,NNO,0,0,1,W2)
+                CALL PRMAVE(0,W20,NC,NC,NNO,W0,NNO,W2,NNO,IER)
                 CALL FORME3(XRMAX,TYPEMA,W30,NNO,NC)
-                CALL MMPROD(W30,NC,0,NC,0,NNO,W0,NNO,0,0,1,W3)
+                CALL PRMAVE(0,W30,NC,NC,NNO,W0,NNO,W3,NNO,IER)
                 CALL FORME4(XRMAX,TYPEMA,W40,NNO,NC)
-                CALL MMPROD(W40,1,0,1,0,NNO,W0,NNO,0,0,1,W4)
+                CALL LCPRSN(NNO,W40,W0,W4)
                 S = RM + HQ2*(2.D0*ABS(W2(3))+ABS(W2(1))+ABS(W2(2)))
      &                 + HQ3*(ABS(W3(1))+ABS(W3(2))) + HQ4*ABS(W4)
                 IF (S.GT.PAN(5,J)) PAN(5,J) = S

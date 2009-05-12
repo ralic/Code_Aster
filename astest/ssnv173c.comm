@@ -1,5 +1,6 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
+# ssnv173c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,6 +57,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         CRITERE=1.1E-04,
                          FISSURE=FISS,
                          INFO=1,);
 
@@ -105,13 +107,12 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    INCREMENT=_F(LIST_INST=L_INST,),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
                                  RESI_GLOB_MAXI=1e-8,),
-                   SOLVEUR=_F(METHODE='MUMPS',
-                              TYPE_RESOL='SYMGEN',
-
-                              RESI_RELA=3e-2,
-                             ),
+#                   SOLVEUR=_F(METHODE='MUMPS',
+#                              TYPE_RESOL='SYMGEN',
+#                              RESI_RELA=3e-2,
+#                             ),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=2,);
+                   INFO=1,);
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              GROUP_NO='VOL',

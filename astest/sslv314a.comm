@@ -1,6 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
-# sslv314a.para = tps_job 500 mem_job 1024Mo liste_test S
+# sslv314a.para = tps_job 230 mem_job 1024Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -172,14 +172,14 @@ TEST_TABLE(TABLE=SIF[i],
            NOM_PARA='K1_LOCAL',
            PRECISION=1.E-3,
            TYPE_TEST='MAX',
-           VALE= 4.5022143E+06  )
+           VALE= 4.4238944306211E+06  )
 
 TEST_TABLE(TABLE=SIF[i],
            REFERENCE='NON_REGRESSION',
            NOM_PARA='K2_LOCAL',
            PRECISION=4.E-2,
            TYPE_TEST='MAX',
-           VALE= 1.960428167E+05    )
+           VALE= -2.2203465557277E+04    )
 
 MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],
                           MAILLAGE_SAIN = MAILLAG1,);

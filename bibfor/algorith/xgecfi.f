@@ -1,11 +1,11 @@
-      SUBROUTINE XGECFI(MODELE,CHGEOM,DEPDEL)
+      SUBROUTINE XGECFI(MODELE,DEPDEL)
       IMPLICIT NONE
       CHARACTER*8    MODELE
       CHARACTER*19   CHGEOM,DEPDEL
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,8 +32,7 @@ C TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 C ----------------------------------------------------------------------
 C                    
 C  IN        PREMIE    : SI ON EST À LA PREMIÈRE ITÉRATION DE NEWTON
-C  IN        MODELE    : NOM DE L'OBJET MODELE		 
-C  IN        CHGEOM    : GEOMETRIE DU MAILLAGE
+C  IN        MODELE    : NOM DE L'OBJET MODELE 
 C  IN        DEPLA     : CHAMP DE DEPLACEMENTS
 C  IN/OUT    GEOMES    : SD AVEC LES COORDONNES DE PTS.INT. ESCLAVES
 C  IN/OUT    GEOMMA    : SD AVEC LES COORDONNES DE PTS.INT. MAITRES
@@ -56,8 +55,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*8   LPAIN(6),LPAOUT(2)
-      CHARACTER*19  LCHIN(6),LCHOUT(2)
+      CHARACTER*8   LPAIN(5),LPAOUT(2)
+      CHARACTER*19  LCHIN(5),LCHOUT(2)
       CHARACTER*19  LIGREL,PINTER,LONCHA,NEWGES,NEWGEM
       CHARACTER*19  GESCLO,GMAITO
 C ----------------------------------------------------------------------
@@ -73,18 +72,16 @@ C ----------------------------------------------------------------------
       GESCLO=MODELE//'.TOPOFAC.OE'
       GMAITO=MODELE//'.TOPOFAC.OM'
 
-      LPAIN(1) = 'PGEOMER'
-      LCHIN(1) = CHGEOM
-      LPAIN(2) = 'PDEPLA'
-      LCHIN(2) = DEPDEL
-      LPAIN(3) = 'PPINTER'
-      LCHIN(3) = PINTER
-      LPAIN(4) = 'PLONCHA'
-      LCHIN(4) = LONCHA 
-      LPAIN(5) = 'PGESCLO'
-      LCHIN(5) = GESCLO
-      LPAIN(6) = 'PGMAITO'
-      LCHIN(6) = GMAITO
+      LPAIN(1) = 'PDEPLA'
+      LCHIN(1) = DEPDEL
+      LPAIN(2) = 'PPINTER'
+      LCHIN(2) = PINTER
+      LPAIN(3) = 'PLONCHA'
+      LCHIN(3) = LONCHA 
+      LPAIN(4) = 'PGESCLO'
+      LCHIN(4) = GESCLO
+      LPAIN(5) = 'PGMAITO'
+      LCHIN(5) = GMAITO
 
       LPAOUT(1) = 'PNEWGES'
       LCHOUT(1) = NEWGES
@@ -92,7 +89,7 @@ C ----------------------------------------------------------------------
       LCHOUT(2) = NEWGEM
 
       CALL CALCUL('C','GEOM_FAC',
-     &            LIGREL,6,LCHIN,LPAIN,2,LCHOUT,LPAOUT,'V')
+     &            LIGREL,5,LCHIN,LPAIN,2,LCHOUT,LPAOUT,'V')
 
 C     ON COPIE LA NOUVELLE GEOMETRIE DANS LES SD DES FACETTES DE CONTACT
 

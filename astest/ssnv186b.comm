@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
+# ssnv186b.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

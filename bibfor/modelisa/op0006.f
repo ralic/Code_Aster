@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,17 +82,10 @@ C ----------------------------------------------------------------------
 
 C     1- TRAITEMENT DU MOT CLE AFFE :
 C     -----------------------------------------
-
-C     1.1 : FABRICATION DE LA CARTE CONTENANT LES NOMS DES MATERIAUX:
+C     FABRICATION DE LA CARTE CONTENANT LES NOMS DES MATERIAUX:
       CALL RCMATE(CHMAT,NOMAIL,NOMODE)
 
-
-
-C     1-BIS TRAITEMENT DU MOT CLE AFFE_NOEUD :
-C     -----------------------------------------
-      CALL RCMATN(CHMAT,NOMAIL)
-
-C     1-TER TRAITEMENT DU MOT CLE AFFE_COMPOR :
+C     1-BIS TRAITEMENT DU MOT CLE AFFE_COMPOR :
 C     -----------------------------------------
       CALL RCCOMP(CHMAT,NOMAIL,NOMODE)
 

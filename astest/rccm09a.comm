@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
+# rccm09a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +58,7 @@ TEST_TABLE(  TABLE=AMOR_1,
                            VALE   = 10.   ),
              REFERENCE='ANALYTIQUE',
              NOM_PARA='FACT_AMORCAGE',
-             VALE= 2.00523E-10      )
+             VALE= 1.7482441E-10     )
 
 AMOR_2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                         OPTION='AMORCAGE',
@@ -77,5 +78,26 @@ TEST_TABLE(  TABLE=AMOR_2,
                            VALE   = 10.   ),
              REFERENCE='ANALYTIQUE',
              NOM_PARA='FACT_AMORCAGE',
-             VALE= 2.70994E-10      )
+             VALE= 2.452956E-10    )
+             
+AMOR_3=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                        OPTION='AMORCAGE',
+                     TYPE_RESU='VALE_MAX',
+                     INFO=2,
+                         MATER=MAT,
+                         TITRE='FACTEUR AMORCAGE, RESULTAT: RESU1 - RESU2',
+                   TRANSITOIRE=(_F(  TABL_SIGM_THETA = T_RESU1,
+                                     NB_OCCUR = 1 ),
+                                _F(  TABL_SIGM_THETA = T_RESU2,
+                                     NB_OCCUR = 3 ),)
+              )
+
+IMPR_TABLE ( TABLE = AMOR_3 )
+
+TEST_TABLE(  TABLE=AMOR_3,
+             FILTRE=_F(  NOM_PARA = 'THETA',
+                           VALE   = 10.   ),
+             REFERENCE='ANALYTIQUE',
+             NOM_PARA='FACT_AMORCAGE',
+             VALE= 3.6791345E-10    )             
 FIN( )

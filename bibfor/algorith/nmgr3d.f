@@ -1,4 +1,4 @@
-       SUBROUTINE  NMGR3D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,GEOMI,
+       SUBROUTINE  NMGR3D(NNO,NPG,IPOIDS,IVF,IDFDE,GEOMI,
      &                    TYPMOD,OPTION,IMATE,COMPOR,LGPG,CRIT,
      &                    INSTAM,INSTAP,
      &                    DEPLM,DEPLP,
@@ -7,7 +7,7 @@
      &                    DFDI,PFF,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,13 +31,11 @@ C TOLE CRP_21
 C
        INTEGER       NNO, NPG, IMATE, LGPG, CODRET,IPOIDS,IVF,IDFDE
 C
-       CHARACTER*(*) FAMI
        CHARACTER*8   TYPMOD(*)
        CHARACTER*16  OPTION, COMPOR(4)
 C
        REAL*8        INSTAM,INSTAP
        REAL*8        GEOMI(3,NNO), CRIT(3)
-       REAL*8        TREF
        REAL*8        DEPLM(1:3,1:NNO),DEPLP(1:3,1:NNO),DFDI(NNO,3)
        REAL*8        PFF(6,NNO,NNO),DEF(6,NNO,3)
        REAL*8        SIGM(6,NPG),SIGP(6,NPG)
@@ -81,30 +79,13 @@ C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C.......................................................................
 C
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER  ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-
       LOGICAL GRAND,RESI,RIGI
 
       INTEGER KPG,KK,KKD,N,I,M,J,J1,KL,PQ,COD(27),NMAX
 
       REAL*8 DSIDEP(6,6),F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6),DEPS(6)
       REAL*8 R,SIGMA(6),SIGN(6),SIG(6),SIGG(6),FTF,DETF,FMM(3,3)
-      REAL*8 POIDS,TEMPM,TEMPP,TMP1,TMP2,R8VIDE
+      REAL*8 POIDS,TMP1,TMP2,R8BID
       REAL*8 ELGEOM(10,27),ANGMAS(3),R8NNEM
 
       INTEGER INDI(6),INDJ(6)
@@ -217,7 +198,7 @@ C 5.3.1 - CONTRAINTE CAUCHY -> CONTRAINTE LAGRANGE POUR LDC EN T-
        DETF = FM(3,3)*(FM(1,1)*FM(2,2)-FM(1,2)*FM(2,1))
      &      - FM(2,3)*(FM(1,1)*FM(3,2)-FM(3,1)*FM(1,2))
      &      + FM(1,3)*(FM(2,1)*FM(3,2)-FM(3,1)*FM(2,2))
-       CALL INVMA3(FM,FMM)
+       CALL MATINV(3,FM,FMM,R8BID)
        DO 127 PQ = 1,6
         SIGN(PQ) = 0.D0
         DO 128 KL = 1,6

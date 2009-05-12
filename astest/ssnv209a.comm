@@ -1,5 +1,6 @@
-# MODIF  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
+# ssnv209a.para = tps_job 120 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -224,6 +225,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    VALE       = 1.5364146641691E-05,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '7.1.11',),),);
+                   VERSION    = '7.1.11',),
+                ),);
 
 FIN()

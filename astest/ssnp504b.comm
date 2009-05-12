@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504b.para = tps_job 300 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,20 +28,26 @@ DEBUT(CODE=_F(NOM='SSNP504B',NIV_PUB_WEB='INTERNET'),
 
 PRE_GIBI();
 
-MAILLE=LIRE_MAILLAGE(INFO=1,);
+typma=1
 
-MAILLE=DEFI_GROUP(reuse =MAILLE,
-                  MAILLAGE=MAILLE,
-                  CREA_GROUP_NO=(_F(NOM='SURFQUAD',
-                                    GROUP_MA='SURF',), 
-                                 _F(NOM='PHAU',
+if (typma==1):
+  MAILLAG2=LIRE_MAILLAGE(INFO=1,);
+
+if (typma==2):
+  MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+  MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
+                       LINE_QUAD=_F(GROUP_MA='SURF',),);
+
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                  MAILLAGE=MAILLAG2,
+                  CREA_GROUP_NO=(_F(NOM='PHAU',
                                     OPTION ='ENV_SPHERE',
                                     POINT  = (0.0,9.0),
                                     RAYON = 1E-3,
                                     PRECISION = 2E-3,),),);
                      
-MAILLE=DEFI_GROUP(reuse =MAILLE,
-                  MAILLAGE=MAILLE,
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                  MAILLAGE=MAILLAG2,
                   CREA_GROUP_NO =(_F(NOM = 'LIGSUP',
                                      OPTION = 'PLAN',
                                      GROUP_NO_CENTRE  = 'PHAU',
@@ -51,9 +57,6 @@ MAILLE=DEFI_GROUP(reuse =MAILLE,
                                      NOEUD = ('N45','N46','N47','N48','N49','N50',
                                               'N51','N52','N53','N54','N55',
                                               'N56','N57','N58','N59','N60',),),),); 
-                            
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLE,
-                       LINE_QUAD=_F(GROUP_MA='SURF',),);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -66,11 +69,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT',),
-                           _F(GROUP_MA=('LIGINF',),
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),),);       
-
+                              MODELISATION='D_PLAN_XFEM_CONT',),),);
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.24*X-2.125');
 LT1=FORMULE(NOM_PARA=('X','Y'),VALE='-X-50. ');  
@@ -136,7 +135,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('SURF','LIGINF',),
+                       AFFE=_F(TOUT='OUI',
                                 MATER=ACIER,),);
 
 DEPX=2
@@ -195,7 +194,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='SURF',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
+                   CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
                                    RESI_GLOB_RELA=1E-06)),
                    SOLVEUR=_F(METHODE='MUMPS',
                               PCENT_PIVOT=250,),
@@ -211,7 +210,11 @@ vale = [[0.0,-6.3355791974025E+04,-6.0652835573768E+04,-5.0757742731615E+04,0.0]
         [0.0,0.0,-2.0163277761773E+05,-1.5784446601920E+05,0.0],
         [0.0,0.0,-3.7985867300987E+05,-2.2011906876467E+05,0.0]]
 
-noeud = ['NS283','NS321','NS362','NS403','NS444']
+if (typma==1):
+  noeud = ['N45','N230','N249','N268','N83']
+
+if (typma==2):
+  noeud = ['NS283','NS321','NS362','NS403','NS444']
 
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',

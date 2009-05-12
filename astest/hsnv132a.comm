@@ -1,6 +1,6 @@
-# MODIF  DATE 17/11/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
-# hsnv132a.para = tps_job 100 mem_job 500Mo ncpus 1 liste_test R
+# hsnv132a.para = tps_job 60 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

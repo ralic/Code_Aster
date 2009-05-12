@@ -1,6 +1,7 @@
 
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
+# sdnv103c.para = tps_job 80 mem_job 500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG

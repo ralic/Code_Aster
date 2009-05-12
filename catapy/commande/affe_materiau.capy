@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,16 +32,6 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
-         ),
-
-         #  affectation du nom du matériau (par noeuds):
-         #  ----------------------------------------------
-         AFFE_NOEUD        =FACT(statut='f',max='**',
-           regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
-           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           MATER           =SIMP(statut='o',typ=mater_sdaster,max=1),
          ),
 
          #  affectation de comportement (multifibres pour l'instant):

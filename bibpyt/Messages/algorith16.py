@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 02/06/2008   AUTEUR BOYERE E.BOYERE 
+#@ MODIF algorith16 Messages  DATE 12/05/2009   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,12 @@ cata_msg = {
  jeu initial :  %(r1)f
 """),
 
+10 : _("""
+ <INFO> Pour l'occurence numéro %(i1)d du mot-clé facteur CHOC, RIGI_TAN est
+ renseigné mais pas AMOR_TAN. Le code a donc attribué à AMOR_TAN une valeur
+ optimisée : %(r1)f
+"""),
+
 11 : _("""
  le nb max d'iterations  %(i1)d  est atteint sans converger
  le résidu relatif final est  : %(r1)f
@@ -84,12 +90,12 @@ cata_msg = {
 """),
 
 13 : _("""
- le nombre d'amortissements reduits est insuffisant
+ le nombre d'amortissements réduits est insuffisant
  il en manque :  %(i1)d
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d
-   %(k1)s
-   %(k2)s
+ amortissements réduits avec la valeur du dernier mode propre
+ 
 """),
 
 14 : _("""
@@ -131,9 +137,8 @@ cata_msg = {
  le nombre d'amortissements reduits est insuffisantil en manque :  %(i1)d
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d
-   %(k1)s
-   %(k2)s
-
+ amortissements réduits avec la valeur du dernier mode propre
+ 
 """),
 
 20 : _("""
@@ -323,36 +328,6 @@ cata_msg = {
   - Incrément de déformation cumulée négative = %(r1)f,
   - Changer la taille d'incrément.
 """),
-
-64 : _("""
-    NADAI_B, erreur d'intégration
-     - Essai d'intégration numéro : %(i1)d
-     - Convergence vers une solution non conforme,
-     - Incrément de déformation cumulée négative = %(r1)f
-     - Changer la taille d'incrément
-"""),
-
-65 : _("""
-    NADAI_B : ERREUR
-     - Non convergence a itération maxi : %(i1)d
-     - Convergence régulière mais trop lente
-     - ERREUR > %(r1)f
-     - Diminuer la taille d'incrément
- """),
-
-66 : _("""
-    NADAI_B : ERREUR
-     - Non convergence à itération maxi : %(i1)d
-     - Convergence irrégulière & erreur > %(r1)f
-     - Diminuer la taille d'incrément
- """),
-
-67 : _("""
-   NADAI_B : ERREUR
-     - Non convergence à itération maxi : %(i1)d
-     - ERREUR > %(r1)f
-     - Diminuer la taille d'incrément
- """),
 
 68 : _("""
  Arret par manque de temps CPU au numéro d'ordre %(i1)d

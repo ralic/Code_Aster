@@ -1,6 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
-# ssnp503d.para = tps_job 50 mem_job 32Mo liste_test S
+# ssnp503d.para = tps_job 75 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,28 +27,30 @@ DEBUT(CODE=_F(NOM='SSNP503D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
 PRE_GIBI();
 
-MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+typma=2
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
+if (typma==1):
+  MAILLAG2=LIRE_MAILLAGE(INFO=1,);
+  Y=3
+
+if (typma==2):
+  MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+  MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
                        LINE_QUAD=_F(GROUP_MA='SURF',),);
-                                
+  Y=2.5
+
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO =(_F(NOM = 'NFISSU',
                                        OPTION = 'PLAN',
-                                       POINT  = (0.0,2.5,),
+                                       POINT  = (0.0,Y,),
                                        VECT_NORMALE = (0.0,1.0),
-                                       PRECISION = 1E-1,),
-                                    ),
-                    );
+                                       PRECISION = 1E-1,),),)
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM_CONT',),
-                           _F(GROUP_MA=('LIGINF',),
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);       
+                              MODELISATION='C_PLAN_XFEM_CONT',),),);             
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
 LT1=FORMULE(NOM_PARA=('X','Y'),VALE='-X-10.');  
@@ -113,7 +115,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('SURF','LIGINF',),
+                       AFFE=_F(TOUT='OUI',
                                 MATER=ACIER,
                                 ),);
 
@@ -176,7 +178,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='SURF',),
                     INCREMENT=_F(LIST_INST=L_INST,),
-                    CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
+                    CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
                                     RESI_GLOB_MAXI=1E-06,),),
                     SOLVEUR=_F(METHODE='MUMPS',
                                PCENT_PIVOT=500,),
@@ -185,10 +187,16 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
-vale = [[0.0,-7.2381997723673E+03,-5.4928433477996E+03,-5.5947441906363E+03,-3.6379529728764E+03],
-        [0.0,-9.3916134615046E+03,-1.1352700359925E+04,-1.0340028138765E+04,-7.6451891437089E+03],
-        [0.0,0.0,-1.9702365044462E+04,-1.6378559150242E+04,-1.0278180761557E+04],
-        [0.0,0.0,-1.7447691288661E+04,-2.0847840754336E+04,-1.5703134828960E+04]]
+
+vale = [[0.0,-7.1041387832239E+03,-5.5751916294848E+03,-5.6055420096676E+03,-3.6920555634806E+03],
+        [0.0,-9.1709838813643E+03,-1.1435732074163E+04,-1.0391561917541E+04,-7.7671507432153E+03],
+        [0.0,0.0,-1.9485288504693E+04,-1.6399582621920E+04,-1.0605892575698E+04],
+        [0.0,0.0,-1.7065781429260E+04,-2.0872173661117E+04,-1.6114705916606E+04]]
+
+#vale = [[0.0,-7.2381997723673E+03,-5.4928433477996E+03,-5.5947441906363E+03,-3.6379529728764E+03],
+#        [0.0,-9.3916134615046E+03,-1.1352700359925E+04,-1.0340028138765E+04,-7.6451891437089E+03],
+#        [0.0,0.0,-1.9702365044462E+04,-1.6378559150242E+04,-1.0278180761557E+04],
+#        [0.0,0.0,-1.7447691288661E+04,-2.0847840754336E+04,-1.5703134828960E+04]]
         
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -209,10 +217,10 @@ for i in [1,2,3,4]: #Boucle sur les increments
    
    for j in [0,1,2,3,4]: #Boucle sur les positions testees
       if (vale[i-1] [j] == 0.0):
-        precision = 1.0E-12
+        precision = 1.0E-10
         critere = 'ABSOLU'
       else:
-        precision = 5.E-2 
+        precision = 1.0E-5 
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',

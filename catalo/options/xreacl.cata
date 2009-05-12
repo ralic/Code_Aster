@@ -1,4 +1,5 @@
-%& MODIF OPTIONS  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+% RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +28,8 @@ OPTION__
         PDONCO   XCONTAC
         PCAR_AI  NEUT_R
         PCAR_PT  NEUT_R       
+        PPINTER  NEUT_R
+        PGEOMER  GEOM_R
    OUT__
         PSEUIL  NEUT_R ELEM__
 

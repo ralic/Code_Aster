@@ -1,5 +1,6 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE cas test de validation de la loi de comportement JOINT_BA
+# ssnp126a.para = tps_job 130 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

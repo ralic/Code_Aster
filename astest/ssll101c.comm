@@ -1,8 +1,9 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 27/06/2000
 # AUTEUR : F. LEBOUVIER (DELATCAD)
 # TITRE  : TUYAUTERIE: PROBLEME DE HOVGAARD
+# ssll101c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

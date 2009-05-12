@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 #        ------------------------------------------------------------------
          OPTION         =SIMP(statut='f',typ='TXM'),
 
-         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC","NORMALE","R2C","C2R") ),
+         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC","NORMALE","R2C","C2R","COMB") ),
 
 #        ------------------------------------------------------------------
          b_norm          =BLOC(condition = "OPERATION == 'NORMALE'",
@@ -98,6 +98,14 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 COEF_R          =SIMP(statut='f',typ='R',defaut= 1. ),
                 COEF_C          =SIMP(statut='f',typ='C',max=1),
                                     ),
+                             ),
+#        ------------------------------------------------------------------
+         b_comb          =BLOC(condition = "OPERATION == 'COMB'",
+                               fr="Pour faire une combinaison linéaire de cham_no ayant meme profil",
+             COMB            =FACT(statut='o',max='**',
+                CHAM_GD         =SIMP(statut='o',typ=cham_no_sdaster),
+                COEF_R          =SIMP(statut='o',typ='R'),
+                                   ),
                              ),
 #        ------------------------------------------------------------------
          b_eval          =BLOC(condition = "OPERATION == 'EVAL'",

@@ -1,5 +1,6 @@
-# MODIF  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE TEST EN 3D VMIS_ISOT_PUIS, UTILISANT SIMU_POINT_MAT
+# comp001i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

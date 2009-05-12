@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE SENSIBILITE DES MODES PROPRES CALCULES PAR MODE_ITER_INV
+# sensd08b.para = tps_job 80 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

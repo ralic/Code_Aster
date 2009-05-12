@@ -1,9 +1,9 @@
       SUBROUTINE XMVEF0(NDIM,NNC,NNE,NNES,NFAES,IAINES,
      &                  HPG,FFPC,JACOBI,DEPLE,CFACE,
-     &                  ESQ,TAU1,TAU2,VTMP)     
+     &                  TYPMA,TAU1,TAU2,VTMP)     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,8 +25,8 @@ C ======================================================================
       REAL*8   HPG,FFPC(9),JACOBI  
       REAL*8   DEPLE(6)    
       REAL*8   TAU1(3),TAU2(3)     
-      REAL*8   VTMP(81)
-      CHARACTER*8  ESQ  
+      REAL*8   VTMP(120)
+      CHARACTER*8  TYPMA  
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0367
@@ -101,7 +101,7 @@ C
       END IF
       DO 500 I=1,NNC
         DO 600 L=1,NDIM-1
-          IN=XOULA(CFACE,NFAES,I,IAINES,ESQ)
+          IN=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
           CALL XPLMA2(NDIM,NNE,NNES,IN,PL)
           II = PL+L
           VTMP(II)=-JACOBI*HPG*FFPC(I)*TT(L)

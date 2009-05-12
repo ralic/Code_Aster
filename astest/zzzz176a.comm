@@ -1,5 +1,6 @@
-# MODIF  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE PRE_IDEAS POUR DATASET 82
+# zzzz176a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

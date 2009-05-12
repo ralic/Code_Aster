@@ -1,5 +1,6 @@
-# MODIF  DATE 28/07/2008   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (AXI HHMS)
+# wtna110b.para = tps_job 150 mem_job 128Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

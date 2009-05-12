@@ -1,5 +1,6 @@
-# MODIF  DATE 22/04/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE TEST HHMD, CALCUL DECOUPLE (S=0.5, DSDP=0)
+# wtnv112f.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

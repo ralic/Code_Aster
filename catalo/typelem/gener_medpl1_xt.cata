@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/03/2008   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,6 +50,9 @@ MODE_LOCAL__
                                         X13      X14      X15      X16      X17      X18    )
     E12NEUTR = NEUT_R    ELEM__        (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12)
+    E15NEUTR = NEUT_R    ELEM__        (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9       X10      X11      X12
+                                        X13      X14      X15)
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
 
 VECTEUR__
@@ -77,6 +80,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E12NEUTR PPINTTO  E18NEUI  PCNSETO   E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA
+                                     E15NEUTR PAINTER
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER

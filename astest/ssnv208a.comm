@@ -1,5 +1,6 @@
-# MODIF  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN 
+# ssnv208a.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -335,7 +336,7 @@ TEST_TABLE(TABLE=TAB_EPSV,
 TEST_TABLE(TABLE=TAB_EPSV,
            NOM_PARA='TRACE',
            VALE=-.0018658,
-           PRECISION=0.03,
+           PRECISION=0.04,
            CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='EPYY',

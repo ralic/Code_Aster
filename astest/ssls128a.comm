@@ -1,5 +1,6 @@
-# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE  : VALIDATION DE  CRIT_ELNO_RUPT DE CALC_ELEM
+# ssls128a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

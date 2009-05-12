@@ -1,6 +1,7 @@
-# MODIF  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8  
+# wtnl100c.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

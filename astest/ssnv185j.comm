@@ -1,5 +1,6 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
+# ssnv185j.para = tps_job 100 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,14 +178,17 @@ for i in range(1,4) :
    IMPR_TABLE(TABLE=SIF[i],);
 
    if ( i != 3 ) :
-      FISS[i]=PROPA_XFEM(MODELE=MODELE[i],
+      FISS[i] = CO('FISS_%d'%(i))
+      PROPA_FISS(METHODE_PROPA='HAMILTON',
+                         MODELE=MODELE[i],
                          TABLE=SIF[i],
                          METHODE='SIMPLEXE',
-                         LOI_PROPA=_F(LOI='PARIS',
-                                      C=1.,
-                                      M=1.),
                          RAYON=RS,
-                         INFO=1,);
+                         FISSURE=FISS[i],
+                         INFO=1,
+                  LOI_PROPA=_F(LOI='PARIS',
+                                      C=1.,
+                                      M=0.5),);
 
 #----------------------------------------------
 #         POST TRAITEMENT

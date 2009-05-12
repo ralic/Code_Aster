@@ -1,5 +1,6 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA COMMANDE INTE_MAIL_3D ET POST_RELEVE_T
+# zzzz136c.para = tps_job 60 mem_job 100Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG

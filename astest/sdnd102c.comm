@@ -1,5 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
+# sdnd102c.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,6 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE CONTACT-FROTTANT EN GRANDS GLISSEMENTS
-# ssnp504c.para = tps_job 300 mem_job 256Mo liste_test S
+# ssnp504c.para = tps_job 80 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

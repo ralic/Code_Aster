@@ -1,4 +1,4 @@
-#@ MODIF sd_char_contact SD  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_char_contact SD  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,6 +102,7 @@ class sd_char_contact(AsBase):
     TANGCO    = Facultatif(AsVR())  
     EXCLFR    = Facultatif(AsVR())  
     MODELX    = Facultatif(AsVK8(lonmax=1,))
+    CNCTE     = Facultatif(AsVI())
 
     # si contact xfem :
     xfem      = Facultatif(sd_contact_xfem(SDNom(nomj='')))

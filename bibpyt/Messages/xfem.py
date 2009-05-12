@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,13 +161,21 @@ cata_msg={
      Veuillez renseignez FONC_LT/LN ou GROUP_MA_FISS/FOND.
 """),
 
-26: _("""
-     L'approche <<Grands glissements avec XFEM>> fonctionne seulement pour le cas 2D.
+27: _("""
+     Si vous êtes en 3D pour l'approche de contact <<Grands glissements avec XFEM>>,
+     seul la formulation aux noeuds sommets est possible, les mailles doivent être de type
+     HEXA8, PENTA6 ou TETRA4
 """),
 
-27: _("""
-     Seulement les mailles QUAD4 sont prises en compte par l'approche
-     <<Grands glissements avec XFEM>>.
+28: _("""
+     Pour un modèle XFEM avec contact utilisant l'approche Lagranges aux noeuds,
+     il est indispensable d'utiliser ALGO_LAG='VERSION1' ou 'VERSION2'. On
+     passe outre ALGO_LAG='NON' dans ce cas, et on utilise la version 2.
+"""),
+
+40: _("""
+     Trop d'aretes traversées par la fissure sont connectées au noeud %(i1)d.
+     Nombre maximum d'aretes toléré: %(i2)d. 
 """),
 
 57: _("""
@@ -198,5 +206,17 @@ cata_msg={
      Assurez-vous de la bonne définition de PFON_INI.
 """),
 
+61: _("""
+  -> Une face contient a priori au moins 3 points d'intersection avec l'iso-zéro du champ
+     de level-set car la valeur des level-sets aux noeuds de la maille a probablement été
+     mal reactualisée lors de la phase de réinitialisation.
+  -> Risque & Conseil:
+     Tentez de réduire le rayon d'estimation du résidu pour accélerer la convergence de la 
+     réinitialisation et limiter ce risque d'anomalie.
+"""),
 
+62: _("""
+     Attendez la prochaine version d'Aster avant d'utiliser la propagation en 2D. (Base de
+     cas-tests de validation en cours de réalisation).
+"""),
 }

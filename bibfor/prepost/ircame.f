@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/05/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,7 @@ C
 C
       INTEGER NTYMAX
       INTEGER VALI
-      PARAMETER (NTYMAX=48)
+      PARAMETER (NTYMAX=53)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
       INTEGER EDNOEU

@@ -1,6 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
-# ssnp503e.para = tps_job 300 mem_job 256Mo liste_test S
+# ssnp503e.para = tps_job 80 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnp503e.para = tps_job 300 mem_job 256Mo liste_test S
+# ssnp503e.para = tps_job 80 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
 # CONTACT-FROTTANT EN GRANDS GLISSEMENTS
@@ -30,6 +30,9 @@ DEBUT(CODE=_F(NOM='SSNP503E',
 PRE_GIBI();
 
 MAILLAG2=LIRE_MAILLAGE(INFO=1,);
+
+#IMPR_RESU(FORMAT='ASTER',
+#          RESU=_F(MAILLAGE=MAILLAG2,),),
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -80,16 +83,20 @@ CONT = AFFE_CHAR_MECA(CONTACT=(_F(METHODE='CONTINUE',
                       );
 
 E=100.0E6
+E2=100.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=7800.0,),);
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=E2,
                             NU=nu,
                             RHO=7800.0,),);
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELE,
-                       AFFE=_F(TOUT='OUI',
-                       MATER=ACIER,
-                      ),);
+                       AFFE=(_F(GROUP_MA=('S2',),MATER=ACIER,),
+                             _F(GROUP_MA=('S1','S3',),MATER=ACIER2,),),
+                       );
 
 DEPX=2.0
 DEPY=1.E-3
@@ -132,11 +139,10 @@ UTOT1=STAT_NON_LINE(MODELE=MODELE,
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
-vale = [[0.0,-7.1775420812104E+03,-6.5844269442245E+03,-5.9671401736711E+03,-3.1085352517255E+03],
-        [0.0,-1.6092756427186E+04,-1.3094491854760E+04,-1.2030563126406E+04,-5.2680487351865E+03],
-        [0.0,0.0,-1.9184652565951E+04,-1.8066788230472E+04,-7.8536834021322E+03],
-        [0.0,0.0,-2.7342514561496E+04,-2.3943686888860E+04,-1.1350583361421E+04]]
-
+vale = [[0.0,-7.1942608427242E+03,-6.5408343967577E+03,-6.1360066750219E+03,-2.4914329082053E+03],
+        [0.0,-2.4822528478454E+04,-1.2993429314030E+04,-1.2178296348092E+04,-3.4642908121105E+03],
+        [0.0,0.0,-2.0219781259344E+04,-1.8168928613392E+04,-4.8271685695499E+03],
+        [0.0,0.0,-4.3387251217166E+04,-2.4197888759692E+04,-7.2647039764449E+03]]
 
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -173,5 +179,10 @@ for i in [1,2,3,4]: #Boucle sur les increments
                            VALE=j,
                            PRECISION=0.03,
                            CRITERE='ABSOLU',),);
+
+#IMPR_RESU(FORMAT='GMSH',
+#          RESU=_F(MAILLAGE=MAILLAG2,
+#                  RESULTAT=UTOT1,
+#                 NOM_CHAM='DEPL',),);
 
 FIN();

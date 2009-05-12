@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+%& MODIF COMPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -370,3 +370,24 @@ MAILLE__ SEG32      5       DIM__  1   CODE__  'S32'
 MAILLE__ SEG23      5       DIM__  1   CODE__  'S23'
    ELREFE__ V_SEG23
          FAMILLE__ FPG1        1
+
+MAILLE__ QU4QU4     8       DIM__  2   CODE__  'QQ7'
+   ELREFE__ V_QU4QU4
+         FAMILLE__ FPG1        1
+
+MAILLE__ TR3TR3     6       DIM__  2   CODE__  'TT3'
+   ELREFE__ V_TR3TR3
+         FAMILLE__ FPG1        1
+
+MAILLE__ HE8HE8     16      DIM__  3   CODE__  'HH1'
+   ELREFE__ V_HE8HE8
+         FAMILLE__ FPG8        8
+
+MAILLE__ PE6PE6     12      DIM__  3   CODE__  'PP1'
+   ELREFE__ V_PE6PE6
+         FAMILLE__ FPG8        8
+
+MAILLE__ TE4TE4     8       DIM__  3   CODE__  'TT4'
+   ELREFE__ V_TE4TE4
+         FAMILLE__ FPG8        8
+

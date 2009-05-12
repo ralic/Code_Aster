@@ -1,7 +1,8 @@
-# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE NON LOCAL
+# ssnp124c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

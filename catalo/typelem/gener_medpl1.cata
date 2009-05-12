@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/10/2008   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,8 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
-    CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH)
+    CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
+                                        COPECO   COPEFR)
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )

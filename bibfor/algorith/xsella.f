@@ -2,7 +2,7 @@
      &                  PICKNO,NBPINO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -132,7 +132,7 @@ C
         NO2    = TABDIR(BESTAR,2)
         BESTNO = NO1
         IF ((SCORNO(NO2).GT.SCORNO(NO1)).OR.
-     &      (SCORNO(NO2).GT.SCORNO(NO1).AND.
+     &      (SCORNO(NO2).EQ.SCORNO(NO1).AND.
      &       SCORN2(NO2).LT.SCORN2(NO1)))  THEN
           BESTNO=NO2
         ENDIF  

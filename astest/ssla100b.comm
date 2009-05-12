@@ -1,5 +1,6 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE INFINI SOUMIS A UN CHAMP DE FORCES SURFACIQUES
+# ssla100b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith17 Messages  DATE 12/05/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,5 +34,9 @@ cata_msg={
 """), 
 4: _("""
         La formulation n'est ni en contrainte nette ni en bishop  
+"""), 
+5 : _("""
+  Le champ posttraité est un cham_elem, le calcul de moyenne ne fonctionne que
+ sur les cham_no. Pour les cham_elem utiliser POST_ELEM mot-clé INTEGRALE.
 """), 
 }

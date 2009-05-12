@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 05/05/2009   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMUN  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,6 +102,8 @@ def C_CONTACT() : return FACT(statut='f',max='**',
              INTEGRATION    = SIMP(statut='f',typ='TXM',defaut="FPG4",into=("GAUSS","FPG2","FPG3","FPG4","FPG6",
                                                "FPG7","NOEUD","SIMPSON","SIMPSON1","NCOTES","NCOTES1","NCOTES2") ),
              COEF_REGU_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
+             COEF_STAB_CONT = SIMP(statut='f',typ='R',defaut=0.E+0),
+             COEF_PENA_CONT = SIMP(statut='f',typ='R',defaut=0.E+0),
              ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut=30),
              ITER_GEOM_MAXI  =SIMP(statut='f',typ='I',defaut=0),
 
@@ -114,6 +116,8 @@ def C_CONTACT() : return FACT(statut='f',max='**',
                COULOMB        = SIMP(statut='o',typ='R',),
                ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=2),
                COEF_REGU_FROT = SIMP(statut='f',typ='R',defaut=100.E+0),
+               COEF_STAB_FROT = SIMP(statut='f',typ='R',defaut=0.E+0),
+               COEF_PENA_FROT = SIMP(statut='f',typ='R',defaut=0.E+0),
                SEUIL_INIT     = SIMP(statut='f',typ='R',defaut=0.E+0),
                ),
            ),

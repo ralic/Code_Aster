@@ -1,5 +1,6 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE OBLIQUE SOUS CHARGE AXIALE UNIFORME
+# sslv307a.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

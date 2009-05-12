@@ -1,6 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE PB 3D STATIONNAIRE AVEC RAYONNEMENT - TETRA4 DIAG
-# tpna01d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# tpna01d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

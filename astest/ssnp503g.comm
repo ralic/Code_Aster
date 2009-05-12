@@ -1,0 +1,198 @@
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+# TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ssnp503g.para = tps_job 100 mem_job 32Mo liste_test S
+#
+# CONTACT-FROTTANT EN GRANDS GLISSEMENTS
+# POUR DES FISSURES HORIZONTALES
+#
+DEBUT(CODE=_F(NOM='SSNP503G',
+              NIV_PUB_WEB='INTERNET',),);
+
+PRE_GIBI();
+
+MAILLAG2=LIRE_MAILLAGE(INFO=1,);
+
+MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
+                       MAILLAGE=MAILLAG2,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('S13','S21','S23','S31',),),);
+
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
+                    CREA_GROUP_NO =(_F(NOM = 'S13N',
+                                       GROUP_MA = 'S13',),),
+                    );
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAG2,
+                   AFFE=(_F(TOUT='OUI', 
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),),);       
+
+CONT = AFFE_CHAR_MECA(CONTACT=(_F(METHODE='CONTINUE',
+                                  INTEGRATION='NOEUD',
+                                  FROTTEMENT='COULOMB',
+                                  COULOMB=0.5,
+                                  COEF_REGU_FROT=100,
+                                  SEUIL_INIT=0.0,
+                                  ITER_FROT_MAXI=10,
+                                  COEF_REGU_CONT=100, 
+                                  ITER_CONT_MAXI=4,
+                                  ITER_GEOM_MAXI=10,
+                                  TOLE_PROJ_EXT =0.1,   
+                                  CONTACT_INIT='OUI',   
+                                  GROUP_MA_MAIT = 'S21',
+                                  GROUP_MA_ESCL = 'S13',
+                                  ),
+                               _F(METHODE='CONTINUE',
+                                  INTEGRATION='NOEUD',
+                                  FROTTEMENT='COULOMB',
+                                  COULOMB=0.5,
+                                  COEF_REGU_FROT=100,
+                                  SEUIL_INIT=0.0,
+                                  ITER_FROT_MAXI=10,
+                                  COEF_REGU_CONT=100, 
+                                  ITER_CONT_MAXI=4,
+                                  ITER_GEOM_MAXI=10,
+                                  TOLE_PROJ_EXT =0.1,   
+                                  CONTACT_INIT='OUI',
+                                  GROUP_MA_MAIT = 'S23',
+                                  GROUP_MA_ESCL = 'S31',
+                                  ),
+                               ),
+                      MODELE=MODELE,
+                      );
+
+E=100.0E6
+nu=0.3
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=7800.0,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+                       MODELE=MODELE,
+                       AFFE=_F(TOUT='OUI',
+                       MATER=ACIER,
+                      ),);
+
+DEPX=2.0
+DEPY=1.E-3
+DEPZ=0.0
+
+CH1=AFFE_CHAR_MECA(MODELE=MODELE,
+                   DDL_IMPO=(_F(GROUP_MA='S11',DY=DEPY,DZ=0.0),
+                             _F(GROUP_MA='S33',DY=-DEPY,DZ=0.0),
+                             _F(GROUP_MA=('L1','L2','L11','L12',),
+                                DX=0.0,),
+                             ),
+                   INFO=1,);
+
+CH2=AFFE_CHAR_MECA(MODELE=MODELE,
+                   DDL_IMPO=_F(GROUP_MA='S24',
+                               DX=DEPX,DZ=DEPZ),
+                   INFO=1,);
+
+VAR1=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.,0.,1.,1.),
+                   );
+
+VAR2=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.,0.,1.,1.),);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=4,),);
+
+UTOT1=STAT_NON_LINE(MODELE=MODELE,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CONT,),
+                          _F(CHARGE=CH1,FONC_MULT=VAR1),
+                          _F(CHARGE=CH2,FONC_MULT=VAR2),),
+                   COMP_ELAS=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
+                                  RESI_GLOB_MAXI=1E-06)),
+                   INFO=1,);
+
+LAG=[None]*5
+inst=[0.0,0.25,0.5,0.75,1.0]
+
+vale = [[0.0,-7.4394583764921E+03,-5.5601370655444E+03,-5.7894273952134E+03,-3.8723294509650E+03],
+        [0.0,-9.9465543792087E+03,-1.1457450319764E+04,-1.0644746695273E+04,-8.1152552633727E+03],
+        [0.0,0.0,-2.0437613658808E+04,-1.6583379369957E+04,-1.1024368301123E+04],
+        [0.0,0.0,-1.8510255493553E+04,-2.1051213541175E+04,-1.6537310657554E+04]]
+
+for i in [1,2,3,4]: #Boucle sur les increments
+   LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                         GROUP_NO=('S13N'),
+                                         RESULTAT=UTOT1,
+                                         NOM_CHAM='DEPL',
+                                         INST=inst[i],
+                                         NOM_CMP=('LAGS_C','LAGS_F1',),
+                                         OPERATION='EXTRACTION',),);
+   IMPR_TABLE(TABLE=LAG[i],
+              FORMAT='AGRAF',
+              FORMAT_R='1PE12.7',
+              FORMAT_C='MODULE_PHASE',
+              NOM_PARA=('NOEUD','INST','COOR_X','LAGS_C','LAGS_F1',),
+              IMPR_FONCTION='NON',
+              TRI=_F(NOM_PARA=('COOR_X',),
+                     ORDRE='CROISSANT',),);
+   
+   for j in [0,1,2,3,4]: #Boucle sur les positions testees
+      if (vale[i-1] [j] == 0.0):
+        precision = 1.0E-12
+        critere = 'ABSOLU'
+      else:
+        precision = 5.E-2
+        critere = 'RELATIF'
+      TEST_TABLE(TABLE=LAG[i],
+                 NOM_PARA='LAGS_C',
+                 VALE=vale[i-1] [j],
+                 CRITERE=critere,
+                 PRECISION=precision,
+                 REFERENCE='AUTRE_ASTER',
+                 FILTRE=(_F(NOM_PARA='COOR_X',
+                           CRIT_COMP='EQ',
+                           VALE=j,
+                           PRECISION=0.03,
+                           CRITERE='ABSOLU',),
+                        _F(NOM_PARA='COOR_Z',
+                           CRIT_COMP='EQ',
+                           VALE=0.0,
+                           PRECISION=0.01,
+                           CRITERE='ABSOLU',),),);
+
+
+# IMPR_RESU(FORMAT='GMSH',
+#           RESU=_F(MAILLAGE=MAILLAG2,
+#                   RESULTAT=UTOT1,
+#                 TYPE_CHAM='VECT_3D',
+#                 NOM_CMP=('DX','DY','DZ'),
+#                 NOM_CHAM='DEPL',),);
+
+#DEPL1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+#                   NOM_CHAM='DEPL', RESULTAT=UTOT1, INST=1.0)
+
+#MAILLAG2=MODI_MAILLAGE(reuse=MAILLAG2,MAILLAGE=MAILLAG2,
+#     DEFORME=_F( OPTION = 'TRAN', DEPL = DEPL1))
+
+#IMPR_RESU(MODELE=MODELE, UNITE=55, FORMAT='GMSH', RESU=_F(MAILLAGE=MAILLAG2));
+
+FIN();                  
+

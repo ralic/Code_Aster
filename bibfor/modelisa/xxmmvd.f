@@ -1,7 +1,7 @@
       INTEGER FUNCTION XXMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,9 +37,11 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   ZXCAR,ZXIND
-      PARAMETER (ZXCAR=12,ZXIND=6) 
-      INTEGER   ZXBAS
-      PARAMETER (ZXBAS=12)  
+      PARAMETER (ZXCAR=12,ZXIND=6)
+      INTEGER   ZXBAS,ZXEDG
+      PARAMETER (ZXBAS=12,ZXEDG=25)
+      INTEGER   ZXAIN
+      PARAMETER (ZXAIN=5)      
       LOGICAL    LVECT                       
 C
 C ----------------------------------------------------------------------
@@ -48,11 +50,15 @@ C
 C
       LVECT=.FALSE.
       IF (VECT.EQ.'ZXCAR') THEN
-        XXMMVD = ZXCAR  
+        XXMMVD = ZXCAR
       ELSEIF (VECT.EQ.'ZXIND') THEN
-        XXMMVD = ZXIND  
+        XXMMVD = ZXIND
       ELSEIF (VECT.EQ.'ZXBAS') THEN
-        XXMMVD = ZXBAS                          
+        XXMMVD = ZXBAS
+      ELSEIF (VECT.EQ.'ZXEDG') THEN
+        XXMMVD = ZXEDG
+      ELSEIF (VECT.EQ.'ZXAIN') THEN
+        XXMMVD = ZXAIN
       ELSE
         CALL ASSERT(LVECT)
       ENDIF  

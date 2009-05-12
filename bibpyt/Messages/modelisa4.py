@@ -1,21 +1,21 @@
-#@ MODIF modelisa4 Messages  DATE 06/05/2008   AUTEUR KHAM M.KHAM 
+#@ MODIF modelisa4 Messages  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -92,7 +92,7 @@ cata_msg = {
 """),
 
 14 : _("""
- les champs de cham_f et cham_para n'ont pas la meme discretisation noeu/cart/elga/elno/elem. 
+ les champs de cham_f et cham_para n'ont pas la meme discretisation noeu/cart/elga/elno/elem.
 """),
 
 
@@ -109,7 +109,7 @@ cata_msg = {
 """),
 
 18 : _("""
- le mot-cle type_champ =  %(k1)s n'est pas coherent avec le type du champ extrait :  %(k2)s _ %(k3)s 
+ le mot-cle type_champ =  %(k1)s n'est pas coherent avec le type du champ extrait :  %(k2)s _ %(k3)s
 """),
 
 19 : _("""
@@ -121,7 +121,7 @@ cata_msg = {
 """),
 
 21 : _("""
- impossibilite, la maille  %(k1)s  doit etre une maille de peau de type "quad" ou "tria" car on est en 3d et elle est de type :  %(k2)s 
+ impossibilite, la maille  %(k1)s  doit etre une maille de peau de type "quad" ou "tria" car on est en 3d et elle est de type :  %(k2)s
 """),
 
 22 : _("""
@@ -129,7 +129,7 @@ cata_msg = {
 """),
 
 23 : _("""
- impossibilite, la maille  %(k1)s  doit etre une maille de peau de type "seg" car on est en 2d et elle est de type :  %(k2)s 
+ impossibilite, la maille  %(k1)s  doit etre une maille de peau de type "seg" car on est en 2d et elle est de type :  %(k2)s
 """),
 
 24 : _("""
@@ -137,7 +137,7 @@ cata_msg = {
 """),
 
 25 : _("""
-  la liste : %(k1)s  a concatener avec la liste  %(k2)s  doit exister 
+  la liste : %(k1)s  a concatener avec la liste  %(k2)s  doit exister
 """),
 
 26 : _("""
@@ -208,8 +208,8 @@ cata_msg = {
   -> Mélange de mailles quadratiques avec des QUAD8. Aster supprime la liaison
      sur le noeud milieu des QUAD8
   -> Risque & Conseil :
-     Le problème de contact avec des mailles quadratiques est mal traité dans Aster, vous risquez d'obtenir des 
-     pressions de contact oscillantes entre noeuds milieux et noeuds sommets. Essayez, dans la mesure du possible, 
+     Le problème de contact avec des mailles quadratiques est mal traité dans Aster, vous risquez d'obtenir des
+     pressions de contact oscillantes entre noeuds milieux et noeuds sommets. Essayez, dans la mesure du possible,
      d'utiliser des éléments linéaires.
 """),
 
@@ -281,7 +281,7 @@ cata_msg = {
 """),
 
 61 : _("""
- les fonctions interpretees doivent etre tabulees auparavant 
+ les fonctions interpretees doivent etre tabulees auparavant
 """),
 
 62 : _("""
@@ -313,7 +313,13 @@ cata_msg = {
 """),
 
 69 : _("""
- on ne sait plus trouver de noms.
+ Erreur d'utilisation :
+   On cherche à nommer un objet en y insérant un numéro.
+   Le numéro %(i1)d est trop grand vis à vis de la chaine de caractère.
+
+ Risque et Conseil :
+   Vous avez atteint la limite de ce que sait faire le code
+   (trop de poursuites, de pas de temps, de pas d'archivage, ...)
 """),
 
 70 : _("""
@@ -333,10 +339,6 @@ cata_msg = {
 
 
 
-75 : _("""
-  le determinant de la matrice a inverser est nul
-"""),
-
 76 : _("""
  le vecteur normal est dans le plan tangent
 """),
@@ -346,11 +348,11 @@ cata_msg = {
 """),
 
 78 : _("""
- lecture 1 :erreur de lecture pour %(k1)s 
+ lecture 1 :erreur de lecture pour %(k1)s
 """),
 
 79 : _("""
- lecture 1 :item > 24 car  %(k1)s 
+ lecture 1 :item > 24 car  %(k1)s
 """),
 
 80 : _("""
@@ -391,13 +393,13 @@ cata_msg = {
 """),
 
 92 : _("""
- lecture 1 : ligne lue trop longue : %(k1)s 
+ lecture 1 : ligne lue trop longue : %(k1)s
 """),
 
 93 : _("""
   Probleme lors de la lecture du fichier maillage
-  numéro de la derniere ligne traitée : %(i1)d 
-  
+  numéro de la derniere ligne traitée : %(i1)d
+
   -> Risque & Conseil :
   Verifiez si le mot clé FIN est présent à la fin du fichier.
 """),
@@ -405,9 +407,9 @@ cata_msg = {
 94 : _("""
   Probleme lors de la lecture du fichier maillage
   Le fichier à lire est vide.
-  
+
   -> Risque & Conseil :
-  Vérifiez la valeur mise derrière le mot clé UNITE et 
+  Vérifiez la valeur mise derrière le mot clé UNITE et
   que cette valeur par défaut correspond au type "mail" dans ASTK
 """),
 

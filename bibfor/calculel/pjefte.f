@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTE (RESU1, RESU2 )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,16 +41,15 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
 
-      CHARACTER*8 NOMA1,NOMA2,MODEL1,MODEL2,NCAS,LFONC(3),LPARX(3)
-      CHARACTER*8 KBID
+      CHARACTER*8  NOMA1,NOMA2,MODEL1,MODEL2,NCAS
       CHARACTER*16 CORRES,CORRE1,CORRE2,CORRE3
       CHARACTER*16 TYMOCL(5),MOTCLE(5)
-      CHARACTER*24 GEOM2
-      INTEGER N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1,IFONC
-      INTEGER IAGNO2,IAGMA1,NFONC,JGEOM2,INO2,IER
+      CHARACTER*24 GEOM2,GEOM1
+      INTEGER      N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1
+      INTEGER      IAGNO2,IAGMA1
 
-      LOGICAL LDMAX
-      REAL*8  DISTMA,R8MAEM,VX(3)
+      LOGICAL      LDMAX
+      REAL*8       DISTMA,R8MAEM
 C----------------------------------------------------------------------
 C       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES
 C       --------------------------------------------------------
@@ -128,121 +127,112 @@ C     --------------------------------------------------------
       ENDIF
 
 
-C     PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_2 : CALCUL DE GEOM2
-C     ------------------------------------------------------------
-      CALL PJEFTG (GEOM2,NOMA2,' ',1)
-
-
       CALL GETFAC('VIS_A_VIS',NBOCC)
       IF (NBOCC.EQ.0) THEN
+C        -- CAS : TOUT:'OUI'
+C        ------------------------
+         CALL PJEFCA (MODEL1,' ',0,NCAS )
 
+C        PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2]
+C        --------------------------------------------
+         CALL PJEFTG(1,GEOM1,NOMA1,' ',1)
+         CALL PJEFTG(2,GEOM2,NOMA2,' ',1)
 
-C       -- CAS : TOUT:'OUI'
-C       ------------------------
-
-      CALL PJEFCA (MODEL1,' ',0,NCAS )
-
-        IF (NCAS.EQ.'2D') THEN
-          CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
-     &                 LDMAX,DISTMA)
-        ELSE IF (NCAS.EQ.'3D') THEN
-          CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
-     &                 LDMAX,DISTMA)
-        ELSE IF (NCAS.EQ.'2.5D') THEN
-          CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
-     &                 LDMAX,DISTMA)
-        ELSE IF (NCAS.EQ.'1.5D') THEN
-          CALL PJ6DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
-     &                 LDMAX,DISTMA)
-        ELSE
-          CALL ASSERT(.FALSE.)
-        END IF
+         IF (NCAS.EQ.'2D') THEN
+            CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,GEOM1,GEOM2,
+     &                 CORRES,LDMAX,DISTMA)
+         ELSE IF (NCAS.EQ.'3D') THEN
+            CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,GEOM1,GEOM2,
+     &                 CORRES,LDMAX,DISTMA)
+         ELSE IF (NCAS.EQ.'2.5D') THEN
+            CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,GEOM1,GEOM2,
+     &                 CORRES,LDMAX,DISTMA)
+         ELSE IF (NCAS.EQ.'1.5D') THEN
+            CALL PJ6DCO('TOUT',MODEL1,MODEL2,0,0,0,0,GEOM1,GEOM2,
+     &                 CORRES,LDMAX,DISTMA)
+         ELSE
+            CALL ASSERT(.FALSE.)
+         END IF
 
       ELSE
 
+C        -- CAS : VIS_A_VIS
+C        ------------------------
+         DO 30 IOCC = 1,NBOCC
 
-C       -- CAS : VIS_A_VIS
-C       ------------------------
-        DO 30 IOCC = 1,NBOCC
+C           -- RECUPERATION DE LA LISTE DE MAILLES LMA1 :
+C           ----------------------------------------------
+            MOTCLE(1) = 'MAILLE_1'
+            TYMOCL(1) = 'MAILLE'
+            MOTCLE(2) = 'GROUP_MA_1'
+            TYMOCL(2) = 'GROUP_MA'
+            MOTCLE(3) = 'TOUT_1'
+            TYMOCL(3) = 'TOUT'
+            CALL RELIEM(MODEL1,NOMA1,'NU_MAILLE','VIS_A_VIS',IOCC,3,
+     &                  MOTCLE,TYMOCL,'&&PJEFTE.LIMANU1',NBMA1)
+            CALL JEVEUO('&&PJEFTE.LIMANU1','L',IAGMA1)
 
-C        -- RECUPERATION DE LA LISTE DE MAILLES LMA1 :
-C        ----------------------------------------------
-          MOTCLE(1) = 'MAILLE_1'
-          TYMOCL(1) = 'MAILLE'
-          MOTCLE(2) = 'GROUP_MA_1'
-          TYMOCL(2) = 'GROUP_MA'
-          MOTCLE(3) = 'TOUT_1'
-          TYMOCL(3) = 'TOUT'
-          CALL RELIEM(MODEL1,NOMA1,'NU_MAILLE','VIS_A_VIS',IOCC,3,
-     &                MOTCLE,TYMOCL,'&&PJEFTE.LIMANU1',NBMA1)
-          CALL JEVEUO('&&PJEFTE.LIMANU1','L',IAGMA1)
+C           -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 :
+C           ----------------------------------------------
+            MOTCLE(1) = 'NOEUD_2'
+            TYMOCL(1) = 'NOEUD'
+            MOTCLE(2) = 'GROUP_NO_2'
+            TYMOCL(2) = 'GROUP_NO'
+            MOTCLE(3) = 'MAILLE_2'
+            TYMOCL(3) = 'MAILLE'
+            MOTCLE(4) = 'GROUP_MA_2'
+            TYMOCL(4) = 'GROUP_MA'
+            MOTCLE(5) = 'TOUT_2'
+            TYMOCL(5) = 'TOUT'
+            CALL RELIEM(MODEL2,NOMA2,'NU_NOEUD','VIS_A_VIS',IOCC,5,
+     &                  MOTCLE,TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
+            CALL JEVEUO('&&PJEFTE.LINONU2','L',IAGNO2)
 
+C           PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2]
+C           --------------------------------------------
+            CALL PJEFTG(1,GEOM1,NOMA1,'VIS_A_VIS',IOCC)
+            CALL PJEFTG(2,GEOM2,NOMA2,'VIS_A_VIS',IOCC)
 
-C        -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 :
-C        ----------------------------------------------
-          MOTCLE(1) = 'NOEUD_2'
-          TYMOCL(1) = 'NOEUD'
-          MOTCLE(2) = 'GROUP_NO_2'
-          TYMOCL(2) = 'GROUP_NO'
-          MOTCLE(3) = 'MAILLE_2'
-          TYMOCL(3) = 'MAILLE'
-          MOTCLE(4) = 'GROUP_MA_2'
-          TYMOCL(4) = 'GROUP_MA'
-          MOTCLE(5) = 'TOUT_2'
-          TYMOCL(5) = 'TOUT'
-          CALL RELIEM(MODEL2,NOMA2,'NU_NOEUD','VIS_A_VIS',IOCC,5,MOTCLE,
-     &                TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
-          CALL JEVEUO('&&PJEFTE.LINONU2','L',IAGNO2)
+C           -- CALCUL DU CORRESP_2_MAILLA POUR IOCC :
+C           ----------------------------------------------
+            CALL PJEFCA (MODEL1,'&&PJEFTE.LIMANU1',IOCC,NCAS)
 
-
-C         PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_2 : CALCUL DE GEOM2
-C         ----------------------------------------------------------
-          CALL PJEFTG (GEOM2,NOMA2,'VIS_A_VIS',IOCC)
-
-
-C        -- CALCUL DU CORRESP_2_MAILLA POUR IOCC :
-C        ----------------------------------------------
-          CALL PJEFCA (MODEL1,'&&PJEFTE.LIMANU1',IOCC,NCAS)
-          CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
-          IF (NCAS.EQ.'2D') THEN
-            CALL PJ2DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
-          ELSE IF (NCAS.EQ.'3D') THEN
-            CALL PJ3DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
-          ELSE IF (NCAS.EQ.'2.5D') THEN
-            CALL PJ4DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
-          ELSE IF (NCAS.EQ.'1.5D') THEN
-            CALL PJ6DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
-          ELSE
-            CALL ASSERT(.FALSE.)
-          END IF
+            CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
+            IF (NCAS.EQ.'2D') THEN
+               CALL PJ2DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),
+     &               NBNO2,ZI(IAGNO2),GEOM1,GEOM2,CORRE1,LDMAX,DISTMA)
+            ELSE IF (NCAS.EQ.'3D') THEN
+               CALL PJ3DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),
+     &               NBNO2,ZI(IAGNO2),GEOM1,GEOM2,CORRE1,LDMAX,DISTMA)
+            ELSE IF (NCAS.EQ.'2.5D') THEN
+               CALL PJ4DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),
+     &               NBNO2,ZI(IAGNO2),GEOM1,GEOM2,CORRE1,LDMAX,DISTMA)
+            ELSE IF (NCAS.EQ.'1.5D') THEN
+               CALL PJ6DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),
+     &               NBNO2,ZI(IAGNO2),GEOM1,GEOM2,CORRE1,LDMAX,DISTMA)
+            ELSE
+               CALL ASSERT(.FALSE.)
+            END IF
 
 
-C        -- SURCHARGE DU CORRESP_2_MAILLA :
-C        ----------------------------------------------
-          IF (IOCC.EQ.1) THEN
-            CALL COPISD('CORRESP_2_MAILLA','V',CORRE1,CORRE2)
-          ELSE
-            CALL PJFUCO(CORRE2,CORRE1,'V',CORRE3)
-            CALL DETRSD('CORRESP_2_MAILLA',CORRE2)
-            CALL COPISD('CORRESP_2_MAILLA','V',CORRE3,CORRE2)
-            CALL DETRSD('CORRESP_2_MAILLA',CORRE3)
-          END IF
+C           -- SURCHARGE DU CORRESP_2_MAILLA :
+C           ----------------------------------------------
+            IF (IOCC.EQ.1) THEN
+               CALL COPISD('CORRESP_2_MAILLA','V',CORRE1,CORRE2)
+            ELSE
+               CALL PJFUCO(CORRE2,CORRE1,'V',CORRE3)
+               CALL DETRSD('CORRESP_2_MAILLA',CORRE2)
+               CALL COPISD('CORRESP_2_MAILLA','V',CORRE3,CORRE2)
+               CALL DETRSD('CORRESP_2_MAILLA',CORRE3)
+            END IF
 
-          CALL JEDETR('&&PJEFTE.LIMANU1')
-          CALL JEDETR('&&PJEFTE.LINONU2')
-   30   CONTINUE
-        CALL COPISD('CORRESP_2_MAILLA','V',CORRE2,CORRES)
-        CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
-        CALL DETRSD('CORRESP_2_MAILLA',CORRE2)
-
+            CALL JEDETR('&&PJEFTE.LIMANU1')
+            CALL JEDETR('&&PJEFTE.LINONU2')
+   30    CONTINUE
+         CALL COPISD('CORRESP_2_MAILLA','V',CORRE2,CORRES)
+         CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
+         CALL DETRSD('CORRESP_2_MAILLA',CORRE2)
       END IF
-
-
-
 
 C       3 -- PROJECTION DES CHAMPS DE RESU1 SUR MODEL2
 C          SUIVANT LA CORRESPONDANCE CORRES

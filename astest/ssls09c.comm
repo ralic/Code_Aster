@@ -1,5 +1,6 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS)
+# ssls09c.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

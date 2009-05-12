@@ -1,5 +1,6 @@
-# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
+# sdll123a.para = tps_job 60 mem_job 32 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

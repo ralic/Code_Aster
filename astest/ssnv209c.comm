@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,15 +57,16 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     INFO=1);
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('SURF',),),);
+                       #LINE_QUAD=_F(GROUP_MA=('SURF',),),
+                       );
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
-                    CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
-                                      NOM='PPR',
-                                      POINT=(0.03875,0.),
-                                      RAYON=0.000001,
-                                      PRECISION=0.00001,),
+                    CREA_GROUP_NO=(#_F(OPTION='ENV_SPHERE',
+                                   #   NOM='PPR',
+                                   #   POINT=(0.03875,0.),
+                                   #   RAYON=0.000001,
+                                   #   PRECISION=0.00001,),
                                    _F(NOM='NFISSU',
                                       OPTION='PLAN',
                                       POINT=(0.,0.),
@@ -160,11 +161,13 @@ CTXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  COULOMB        = 1.,
                                  ITER_FROT_MAXI = 20,
                                  INTEGRATION    = 'SIMPSON',
-                                 ALGO_LAGR      = 'NON',
+                                 ALGO_LAGR      = 'VERSION2',
                                  COEF_REGU_CONT = 100.,
                                  ITER_CONT_MAXI = 4,
                                  COEF_ECHELLE   = 1.,
-                                 COEF_REGU_FROT = 100.,),);
+                                 COEF_REGU_FROT = 100.,),
+                      INFO=2,
+                      );
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
@@ -312,23 +315,6 @@ DEP_NFI = CALC_TABLE(reuse = DEP_NFI,
 
 IMPR_TABLE(TABLE=DEP_NFI,);
 
-VC_PPR=POST_RELEVE_T(ACTION=_F(INTITULE='VALE_CONT',
-                               GROUP_NO=('PPR',),
-                               RESULTAT=UTOT1,
-                               NOM_CHAM='VALE_CONT',
-                               INST=1.0,
-                               TOUT_CMP='OUI',
-                               OPERATION='EXTRACTION',),);
-
-VC_PPR = CALC_TABLE(reuse = VC_PPR,
-                    TABLE = VC_PPR,
-                    ACTION = (_F(OPERATION = 'FILTRE',
-                                 NOM_PARA  = 'NOEUD',
-                                 CRIT_COMP = 'REGEXP',
-                                 VALE_K    = 'N[^M]',),),);
-
-IMPR_TABLE(TABLE=VC_PPR,);
-
 DEP_PPA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPA',),
                                 RESULTAT=RES_XFEM,
@@ -405,21 +391,21 @@ DEP_PPE = CALC_TABLE(reuse = DEP_PPE,
 
 preci=1.e-2;
 
-TEST_TABLE(TABLE=VC_PPR,
-           NOM_PARA='JEU',
-           TYPE_TEST='MAX',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.e-12,
-           REFERENCE='AUTRE_ASTER',);
+# TEST_TABLE(TABLE=VC_PPR,
+#            NOM_PARA='JEU',
+#            TYPE_TEST='MAX',
+#            VALE=0.,
+#            CRITERE='ABSOLU',
+#            PRECISION=1.e-12,
+#            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=VC_PPR,
-           NOM_PARA='RN',
-           TYPE_TEST='MAX',
-           VALE=1.0486376884770E+05,
-           CRITERE='RELATIF',
-           PRECISION=1.e-3,
-           REFERENCE='AUTRE_ASTER',);
+# TEST_TABLE(TABLE=VC_PPR,
+#            NOM_PARA='RN',
+#            TYPE_TEST='MAX',
+#            VALE=1.0486376884770E+05,
+#            CRITERE='RELATIF',
+#            PRECISION=1.e-3,
+#            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=DEP_PPA,
            NOM_PARA='DX',

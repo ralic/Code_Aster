@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
+C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,6 @@ C
 C
 C 0.2. ==> COMMUNS
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -117,7 +116,7 @@ C
       PARAMETER ( EDNOPF='                                ' )
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX=48)
+      PARAMETER (NTYMAX=53)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
       INTEGER EDNOEU
@@ -145,7 +144,7 @@ C
       INTEGER RENUMD(NTYMAX),NLYVAL(NTYMAX), NUANOM(NTYMAX,NNOMAX)
       INTEGER NBTYLU,IAUX2,K,NBTY(NTYMAX)
       INTEGER JTYPMA,NBNOMA,NMATYP
-      INTEGER JNUMTY, NROMAI, JAUX, NUMMA,IMA
+      INTEGER JNUMTY, NUMMA,IMA
 C
       CHARACTER*1 SAUX01
       CHARACTER*8 SAUX08
@@ -263,8 +262,8 @@ C
         IAUX = 1
         CALL MDEXMA ( NOFIMD, NOMAMD, IAUX, EXISTM, NDIM, CODRET )
         IF ( .NOT.EXISTM ) THEN
-           VALK(1) = NOMAMD
-           VALK(2) = NOFIMD
+           VALK(1) = NOMAMD(1:24)
+           VALK(2) = NOFIMD(1:24)
            CALL U2MESK('F','MED_51', 2 ,VALK)
         ENDIF
 C
@@ -390,8 +389,8 @@ C
                 GOTO 2221
               ENDIF
   222       CONTINUE
-            VALK (1) = NOFIMD
-            VALK (2) = NOCHMD
+            VALK (1) = NOFIMD(1:24)
+            VALK (2) = NOCHMD(1:24)
             VALR = INST
             VALI (1) = TYPENT
             VALI (2) = TYPGEO(1)
@@ -401,7 +400,7 @@ C
  2221       CONTINUE
 C
             IF ( NIVINF.GT.1 ) THEN
-              VALK (1) = NOCHMD
+              VALK (1) = NOCHMD(1:24)
               VALI (1) = TYPENT
               VALI (2) = TYPGEO(1)
               VALI (3) = NUMORD
@@ -450,8 +449,8 @@ C
 C 2.3. ==> IL MANQUE DES CHOSES !
 C
       IF ( .NOT.EXISTT ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOCHMD
+        VALK (1) = NOFIMD(1:24)
+        VALK (2) = NOCHMD(1:24)
         CALL U2MESG('A+','MED_98',2,VALK,0,0,0,0.D0)
         IF ( IINST.NE.0 ) THEN
           VALR = INST
@@ -556,7 +555,9 @@ C        ET ON RELEVE LES MAILLES CORRESPONDANT AU TYPE LU
               ZI(JNUMTY+K-1)=IMA
            ENDIF
  72      CONTINUE
-         CALL ASSERT(K.EQ.NBTY(LETYPE))
+         IF (K.NE.NBTY(LETYPE)) THEN
+           CALL U2MESS('F','MED_58')
+         ENDIF
 
 C
 C====

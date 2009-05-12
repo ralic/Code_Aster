@@ -1,11 +1,11 @@
-      SUBROUTINE XDIVTE(TYPMA,CONNEC,NIT)
+      SUBROUTINE XDIVTE(TYPMA,CONNEC,AREPAR,NIT)
       IMPLICIT NONE
 
-      INTEGER       CONNEC(6,4),NIT
+      INTEGER       CONNEC(6,4),AREPAR(6,6),NIT
       CHARACTER*8   TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,10 @@ C       TYPMA  : TYPE DE MAILLE
 C
 C     SORTIE
 C       CONNEC  : CONNECTIVITÉ DES NOEUDS DE LA MAILLE
+C       AREPAR  : IT,AR -> ARETE DE L'ELEMENT PARENT QUI
+C                 CORRESPOND A L'ARETE AR DU SSELT IT, OU ZERO
+C                 SI AUCUNE ARETE DE L'ELEMENT PARENT NE CORRESPOND.
+C                 LES ARETES SONT ORDONNEES PAR LA ROUTINE CONARE
 C       NIT     : NOMBRE DE SOUS-TÉTRAS
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -88,6 +92,42 @@ C ----------------------------------------------------------------------
         CONNEC(6,2)=8
         CONNEC(6,3)=4
         CONNEC(6,4)=6
+        AREPAR(1,1)=0
+        AREPAR(1,2)=10
+        AREPAR(1,3)=0
+        AREPAR(1,4)=2
+        AREPAR(1,5)=3
+        AREPAR(1,6)=0
+        AREPAR(2,1)=0
+        AREPAR(2,2)=4
+        AREPAR(2,3)=0
+        AREPAR(2,4)=9
+        AREPAR(2,5)=0
+        AREPAR(2,6)=1
+        AREPAR(3,1)=0
+        AREPAR(3,2)=10
+        AREPAR(3,3)=0
+        AREPAR(3,4)=5
+        AREPAR(3,5)=0
+        AREPAR(3,6)=0
+        AREPAR(4,1)=0
+        AREPAR(4,2)=8
+        AREPAR(4,3)=5
+        AREPAR(4,4)=12
+        AREPAR(4,5)=0
+        AREPAR(4,6)=0
+        AREPAR(5,1)=0
+        AREPAR(5,2)=11
+        AREPAR(5,3)=0
+        AREPAR(5,4)=6
+        AREPAR(5,5)=0
+        AREPAR(5,6)=7
+        AREPAR(6,1)=0
+        AREPAR(6,2)=3
+        AREPAR(6,3)=0
+        AREPAR(6,4)=12
+        AREPAR(6,5)=0
+        AREPAR(6,6)=0
         NIT=6
       ELSEIF (TYPMA(1:5).EQ.'PENTA') THEN
         CONNEC(1,1)=5
@@ -102,12 +142,36 @@ C ----------------------------------------------------------------------
         CONNEC(3,2)=2
         CONNEC(3,3)=5
         CONNEC(3,4)=1
+        AREPAR(1,1)=4
+        AREPAR(1,2)=5
+        AREPAR(1,3)=0
+        AREPAR(1,4)=6
+        AREPAR(1,5)=7
+        AREPAR(1,6)=0
+        AREPAR(2,1)=1
+        AREPAR(2,2)=3
+        AREPAR(2,3)=0
+        AREPAR(2,4)=2
+        AREPAR(2,5)=0
+        AREPAR(2,6)=9
+        AREPAR(3,1)=0
+        AREPAR(3,2)=5
+        AREPAR(3,3)=0
+        AREPAR(3,4)=8
+        AREPAR(3,5)=1
+        AREPAR(3,6)=0
         NIT=3
       ELSEIF (TYPMA(1:5).EQ.'TETRA') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
         CONNEC(1,4)=4
+        AREPAR(1,1)=1
+        AREPAR(1,2)=2
+        AREPAR(1,3)=3
+        AREPAR(1,4)=4
+        AREPAR(1,5)=5
+        AREPAR(1,6)=6
         NIT=1
       ELSEIF (TYPMA(1:4).EQ.'QUAD') THEN
         CONNEC(1,1)=1
@@ -116,15 +180,26 @@ C ----------------------------------------------------------------------
         CONNEC(2,1)=2
         CONNEC(2,2)=3
         CONNEC(2,3)=4
+        AREPAR(1,1)=1
+        AREPAR(1,2)=0
+        AREPAR(1,3)=4
+        AREPAR(2,1)=2
+        AREPAR(2,2)=3
+        AREPAR(2,3)=0
         NIT=2
       ELSEIF (TYPMA(1:4).EQ.'TRIA') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
+        AREPAR(1,1)=1
+        AREPAR(1,2)=2
+        AREPAR(1,3)=3
         NIT=1
       ELSEIF (TYPMA(1:2).EQ.'SE') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
+        AREPAR(1,1)=1
+        AREPAR(1,2)=2
         NIT=1  
       ELSE
 C       TYPE D'ELEMENT FINI PAS TRAITE

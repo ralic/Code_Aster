@@ -1,10 +1,10 @@
       SUBROUTINE NMCHRM(PHASE ,
      &                  PARMET,METHOD,FONACT,SDDISC,SDDYNA,
      &                  NUMINS,ITERAT,DEFICO,METPRE,METCOR,
-     &                  REASMA)
+     &                  REASMA,REAMOR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,7 +32,7 @@ C
       INTEGER      NUMINS,ITERAT
       CHARACTER*24 DEFICO
       LOGICAL      FONACT(*) 
-      LOGICAL      REASMA    
+      LOGICAL      REASMA,REAMOR    
 C 
 C ----------------------------------------------------------------------
 C
@@ -85,7 +85,7 @@ C
       INTEGER      IBID,MATTAN,IRET
       CHARACTER*24 K24BLA,K24BID
       LOGICAL      MATFRO,NDYNLO,ISFONC,LEXPL,LCTCC,LXFCM,LTFCM,LPRMO
-      LOGICAL      PREMIE
+      LOGICAL      PREMIE,LDYNA,LAMOR
       INTEGER      IFM,NIV
 C      
 C ----------------------------------------------------------------------
@@ -124,6 +124,9 @@ C
 C --- FONCTIONNALITES ACTIVEES
 C
       LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
+      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')
+      LAMOR  = NDYNLO(SDDYNA,'MAT_AMORT')
+      REAMOR = NDYNLO(SDDYNA,'RAYLEIGH_KTAN')      
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
       LXFCM  = ISFONC(FONACT,'CONT_XFEM') 
       LPRMO  = NDYNLO(SDDYNA,'PROJ_MODAL')             
@@ -169,6 +172,17 @@ C
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
+      
+C
+C --- DYNAMIQUE: REACTUALISATION DE LA MATRICE 
+C --- D AMORTISSEMENT DE RAYLEIGH
+C      
+      IF (PHASE.EQ.'PREDICTION' .AND. LDYNA .AND. LAMOR) THEN
+        IF (PREMIE) THEN
+          IF ( .NOT. REAMOR ) REAMOR = .TRUE.
+          REASMA = .TRUE.
+        ENDIF
+      ENDIF
 C
 C --- EXPLICITE: DEJA CALCULEE DANS NMINIT
 C      
@@ -204,6 +218,15 @@ C
       IF (LCTCC) THEN
         IF (.NOT.REASMA) THEN
           CALL U2MESS('A','MECANONLINE5_4')
+          REASMA = .TRUE.
+        ENDIF
+      ENDIF
+C
+C --- CONTACT DISCRET - CONTRIBUTION MATRICE TANGENTE
+C
+      IF (MATFRO) THEN
+        IF(.NOT.REASMA) THEN
+          CALL  U2MESS('A','MECANONLINE5_5')
           REASMA = .TRUE.
         ENDIF
       ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,16 +46,23 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                     _F(GROUP_MA='LIG3',),
                                     _F(GROUP_MA='SUR1',
                                        NOM='NSUR1',),
-                                    _F(NOM='P1P',
+                                    _F(NOM='P4P',
                                        OPTION='ENV_SPHERE',
                                        POINT=(0.0,0.04,0.001,),
                                        RAYON=1.E-4,
                                        PRECISION=1.E-4,),
-                                    _F(NOM='P2P',
+                                    _F(NOM='P3P',
                                        OPTION='ENV_SPHERE',
                                        POINT=(0.08,0.04,0.001,),
                                        RAYON=1.E-4,
-                                       PRECISION=1.E-4,),),
+                                       PRECISION=1.E-4,),
+                                    # PLAN DE SYMETRIE EN X
+                                    _F(OPTION='PLAN',
+                                       NOM='BLOCAX',
+                                       POINT=(0.04,0.,0.),
+                                       VECT_NORMALE=(1.,0.,0.),
+                                       PRECISION=1.E-3,),
+                                    ),
                     CREA_GROUP_MA= (_F(OPTION='CYLINDRE',
                                        NOM='PL',
                                        GROUP_NO_CENTRE='P4',
@@ -76,7 +83,8 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     INFO=1);
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('VOLU',),),);
+                       #LINE_QUAD=_F(GROUP_MA=('VOLU',),),
+                       );
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -159,9 +167,7 @@ MATVAR=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=(_F(GROUP_MA=('PLAQ'),
-                                MATER=MATVAR,),
-                             _F(GROUP_MA=('BAT'),
+                       AFFE=(_F(GROUP_MA=('VOLU'),
                                 MATER=MATVAR,),),
                        AFFE_VARC=_F(NOM_VARC='NEUT1',CHAMP_GD=CHABNO),
                        );
@@ -177,12 +183,14 @@ CTXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  FROTTEMENT     = 'COULOMB',
                                  COULOMB        = 1.,
                                  ITER_FROT_MAXI = 10,
-                                 INTEGRATION    = 'NOEUD',
+                                 INTEGRATION    = 'SIMPSON',
                                  ALGO_LAGR      = 'VERSION2',
-                                 COEF_REGU_CONT = 120.,
-                                 ITER_CONT_MAXI = 5.,
+                                 COEF_REGU_CONT = 120000.,
+                                 COEF_STAB_CONT = 120000.,
+                                 ITER_CONT_MAXI = 5,
                                  COEF_ECHELLE   = 1.,
-                                 COEF_REGU_FROT = 100.,
+                                 COEF_REGU_FROT = 100000.,
+                                 COEF_STAB_FROT = 100000.,
                                  ),
                       INFO=1,
                       );
@@ -191,18 +199,20 @@ CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                       CONTACT_XFEM=CTXFEM,);
 
-CHCINE=AFFE_CHAR_CINE(MODELE=MODELEK,
-#                     ENCASTREMENT DU BAS
-                      MECA_IMPO=(_F(GROUP_NO='NSUR1',
+CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+                  DDL_IMPO=(
+#                            ENCASTREMENT DU BAS
+                             _F(GROUP_NO='NSUR1',
                                     DX=0.,
                                     DY=0.,
                                     DZ=0.,),
-#                     BLOCAGE DZ
-#                                 _F(GROUP_NO=('P1','P2','P1P','P2P',),
-#                                    DZ=0.,),
-                                 _F(GROUP_NO='LIG3',
-                                    DZ=0.,),
-                                 ),);
+#                            BLOCAGE CORPS RIGIDES
+                             _F(GROUP_NO=('P3','P4','P4P','P3P',),
+                                DZ=0.,),
+                             _F(GROUP_NO=('BLOCAX'),
+                                DX=0.,),
+                             ),
+                  );
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                     FORCE IMPOSEE EN A
@@ -210,9 +220,9 @@ CHMECA=AFFE_CHAR_MECA(MODELE=MODELEK,
                                    PRES = 5.E07,),),);
 
 def pr(y) :
-   if y  < 0.0:  return 0.E07
-   if y  > 0.0:  return 15.E7
-   if y == 0.0:  return 0.
+   if y  < -1.E-15:  return 0.E07
+   if y  > +1.E-15:  return 15.E7
+   return 0.
 
 FCTPRES = FORMULE(VALE='pr(Y)',
                   NOM_PARA=('X','Y'),);
@@ -236,9 +246,11 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
                     EXCIT=(_F(CHARGE=CHXFEM,),
                            _F(CHARGE=CTXFEM,),
-                           _F(CHARGE=CHCINE,),
+                           #_F(CHARGE=CHCINE,),
                            _F(CHARGE=CHMECA,
                               FONC_MULT=RAMPE),
+                          _F(CHARGE=CH,
+                             FONC_MULT=RAMPE),
                            _F(CHARGE=CHAF,
                               FONC_MULT=RAMPE),
                            ),
@@ -280,11 +292,11 @@ MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                                      POINT=(0.0075,0.,0.),
                                      RAYON=0.000001,
                                      PRECISION=0.00001,),
-                                  _F(NOM='NFISSU',
-                                     OPTION='PLAN',
-                                     POINT=(0.,0.,0.),
-                                     VECT_NORMALE=(0.,1.,0.),
-                                     PRECISION=1.E-6,)),
+                                  _F(OPTION='ENV_SPHERE',
+                                     NOM='PPE',
+                                     POINT=(0.0125,0.,0.),
+                                     RAYON=0.000001,
+                                     PRECISION=0.00001,),),
                    INFO=1);
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -362,7 +374,21 @@ DEP_PPD=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 DEP_PPD = CALC_TABLE(reuse = DEP_PPD,
-                      TABLE = DEP_PPD,
+                     TABLE = DEP_PPD,
+                     ACTION = (_F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^M]',),),);
+
+DEP_PPE=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('PPE',),
+                                RESULTAT=RES_XFEM,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+DEP_PPE = CALC_TABLE(reuse = DEP_PPE,
+                     TABLE = DEP_PPE,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',

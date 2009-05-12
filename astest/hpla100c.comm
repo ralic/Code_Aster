@@ -1,5 +1,6 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
+# hpla100c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -163,6 +164,13 @@ DEPLPES=MECA_STATIQUE(
               CHAM_MATER=CHMAT,
                    EXCIT=_F( CHARGE = CHPES),
                          )
+
+SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                 OPERATION='EXTR',
+                 RESULTAT=DEPLPES,
+                 NOM_CHAM='SIEF_ELGA_DEPL',
+                 NUME_ORDRE=1,
+                 );
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
@@ -347,8 +355,15 @@ TEST_RESU(RESU=(
         NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO_DEPL',
                NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
 #
+     # CONTRAINTES AUX PTS DE GAUSS SUR LES SOUS POINTS
+            _F(  RESULTAT = DEPLPES,  REFERENCE = 'NON_REGRESSION',   
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIEF_ELGA_DEPL',
+               POINT = 2,SOUS_POINT = 6, NOM_CMP = 'SIXX',  VALE = 9.844726E-05),
+            _F(  RESULTAT = DEPLPES,  REFERENCE = 'NON_REGRESSION',   
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIEF_ELGA_DEPL',
+               POINT = 2,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = 1.015881E-04),
      # CONTRAINTES EN PEAU MOYENNE
-            _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 2.6E-2,
+           _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 2.6E-2,
         NUME_ORDRE = 1,     MAILLE = 'MA000004', NOM_CHAM = 'SIGM_ELNO_DEPL',
                NOEUD = 'NO000072', NOM_CMP = 'SIYY',  VALE = 8.00000E-4),
             _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 2.6E-2,
@@ -392,7 +407,6 @@ TEST_RESU(RESU=(
             )
 
 #---------------------------------------------------------------------
-
 CHTH2=AFFE_CHAR_THER( MODELE=MOTHER,
         TEMP_IMPO=_F( TOUT = 'OUI', TEMP_INF = 0.1,   TEMP_SUP = 0.1)
                        )
@@ -555,5 +569,5 @@ TEST_TABLE ( TABLE=T_POT,
              REFERENCE='NON_REGRESSION', VERSION='6.02.22',
              VALE=-5.83316E-05    )
 
-FIN()
 #
+FIN()

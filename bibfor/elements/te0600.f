@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -165,27 +165,6 @@ C =====================================================================
          CALL JEVECH('PCARCRI','L',ICARCR)
          CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PCONTMR','L',ICONTM)
-
-
-
-
-C        UN EXEMPLE DE RECUPERATION DU MATERIAU AUX NOEUDS :
-C        ----------------------------------------------------
-C          CALL JEVECH('PMATERN','L',IMATN )
-C          DO INO=1,6
-C            TEMP=10*INO
-C            CALL RCVALA(ZI(IMATE-1+1),' ','ELAS',
-C    +             1,'TEMP',TEMP,
-C    +             1,'ALPHA',ALPHA,CODRET,'FM')
-C
-C            CALL RCVALA(ZI(IMATN-1+INO),' ','ELAS',
-C    +             1,'TEMP',TEMP,
-C    +             1,'ALPHA',ALPHA,CODRET,'FM')
-C          ENDDO
-C          CALL ASSERT(.FALSE.)
-
-
-
 
 
 

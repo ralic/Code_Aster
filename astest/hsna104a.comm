@@ -1,6 +1,7 @@
-# MODIF  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE CANO V.CANO
 # TITRE DETENSIONNEMENT DE JOINTS HETEROGENES SOUDES PAR FRICTION
+# hsna104a.para = tps_job 600 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,1151 +22,1170 @@
 # TEST V7.20.104
 # MAILLAGE : QUAD8 ET TRIA6
 
-DEBUT(CODE=_F(NOM='HSNA104A',NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='HSNA104A',
+              NIV_PUB_WEB='INTERNET',),);
 
-MAIL = LIRE_MAILLAGE ();
-          
+MAIL=LIRE_MAILLAGE();
+
 # DEFINITION DES MAILLES ASSOCIEES AUX DIFFERENTES COUCHES DE DURETE
 # PHENOMENE DE DECARBURATION A L INTERFACE DANS L ACIER
 # UNE COUCHE DE DURETE EST DEFINIE PAR UN ENSEMBLE DE MAILLES SITUE SUR
 # LE MEME RAYON
 
-MAIL = DEFI_GROUP (reuse=MAIL,
-         MAILLAGE = MAIL,
-         CREA_GROUP_MA =(
-           _F( NOM =   'HV_130',
-               MAILLE   =('M682', 'M683', 'M684', 'M685', 'M686', 'M687',
-               'M688', 'M689', 'M690', 'M691', 'M692', 'M693',
-               'M205', 'M206', 'M207', 'M208', 'M209', 'M210',
-               'M211', 'M212', 'M213', 'M214', 'M215', 'M216',),),
-           _F( NOM =   'HV_150',
-               MAILLE   =('M694', 'M695', 'M696', 'M697', 'M698', 'M699',
-                          'M700', 'M701', 'M702', 'M703', 'M704', 'M705',
-                          'M217', 'M218', 'M219', 'M220', 'M221', 'M222',
-                          'M223', 'M224', 'M225', 'M226', 'M227', 'M228',),),              
-          _F( NOM =   'HV_170',
-              MAILLE   =('M706', 'M707', 'M708', 'M709', 'M710', 'M711',
-                         'M712', 'M713', 'M714', 'M715', 'M716', 'M717',
-                         'M229', 'M230', 'M231', 'M232', 'M233', 'M234',
-                         'M235', 'M236', 'M237', 'M238', 'M239', 'M240',),),                    
-          _F( NOM =   'HV_190',
-              MAILLE   =('M718', 'M719', 'M720', 'M721', 'M722', 'M723',
-                         'M724', 'M725', 'M726', 'M727', 'M728', 'M729',
-                         'M241', 'M242', 'M243', 'M244', 'M245', 'M246',
-                         'M247', 'M248', 'M249', 'M250', 'M251', 'M252',),),                    
-          _F( NOM =   'HV_210',
-              MAILLE   =('M730', 'M731', 'M732', 'M733', 'M734', 'M735',
-                         'M736', 'M737', 'M738', 'M739', 'M740', 'M741',
-                         'M253', 'M254', 'M255', 'M256', 'M257', 'M258',
-                         'M259', 'M260', 'M261', 'M262', 'M263', 'M264',),),       
-          _F( NOM =   'HV_230',
-              MAILLE   =('M742', 'M743', 'M744', 'M745', 'M746', 'M747',
-                         'M748', 'M749', 'M750', 'M751', 'M752', 'M753',
-                         'M265', 'M266', 'M267', 'M268', 'M269', 'M270',
-                         'M271', 'M272', 'M273', 'M274', 'M275', 'M276',),),             
-         _F( NOM =   'HV_250',
-              MAILLE   =('M754', 'M755', 'M756', 'M757', 'M758', 'M759',
-                         'M760', 'M761', 'M762', 'M763', 'M764', 'M765',
-                         'M277', 'M278', 'M279', 'M280', 'M281', 'M282',
-                         'M283', 'M284', 'M285', 'M286', 'M287', 'M288',),),),);
-
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='HV_130',
+                                  MAILLE=
+                                  ('M682','M683','M684','M685','M686','M687','M688',
+                                           'M689','M690','M691','M692','M693','M205','M206','M207','M208','M209','M210',
+                                           'M211','M212','M213','M214','M215','M216',),),
+                               _F(NOM='HV_150',
+                                  MAILLE=
+                                  ('M694','M695','M696','M697','M698','M699','M700',
+                                           'M701','M702','M703','M704','M705','M217','M218','M219','M220','M221','M222',
+                                           'M223','M224','M225','M226','M227','M228',),),
+                               _F(NOM='HV_170',
+                                  MAILLE=
+                                  ('M706','M707','M708','M709','M710','M711','M712',
+                                           'M713','M714','M715','M716','M717','M229','M230','M231','M232','M233','M234',
+                                           'M235','M236','M237','M238','M239','M240',),),
+                               _F(NOM='HV_190',
+                                  MAILLE=
+                                  ('M718','M719','M720','M721','M722','M723','M724',
+                                           'M725','M726','M727','M728','M729','M241','M242','M243','M244','M245','M246',
+                                           'M247','M248','M249','M250','M251','M252',),),
+                               _F(NOM='HV_210',
+                                  MAILLE=
+                                  ('M730','M731','M732','M733','M734','M735','M736',
+                                           'M737','M738','M739','M740','M741','M253','M254','M255','M256','M257','M258',
+                                           'M259','M260','M261','M262','M263','M264',),),
+                               _F(NOM='HV_230',
+                                  MAILLE=
+                                  ('M742','M743','M744','M745','M746','M747','M748',
+                                           'M749','M750','M751','M752','M753','M265','M266','M267','M268','M269','M270',
+                                           'M271','M272','M273','M274','M275','M276',),),
+                               _F(NOM='HV_250',
+                                  MAILLE=
+                                  ('M754','M755','M756','M757','M758','M759','M760',
+                                           'M761','M762','M763','M764','M765','M277','M278','M279','M280','M281','M282',
+                                           'M283','M284','M285','M286','M287','M288',),),),);
 #######################################
+
+
 # PARTIES THERMIQUE ET METALLURGIQUE
 #######################################
+
 
 # PARAMETRES MATERIAUX
 # DIAGRAMME TRC DE L ACIER
 # PASSAGE DE L AUSTENITE ENTRE 758.5 ET 616.5 DEGRES
 
-TRCACIER = DEFI_TRC ( HIST_EXP =(
-_F(VALE = (
- -5.000E-02,  1.100E+01,  0.000E+00,  0.000E+00,
-  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
-  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
-  0.000E+00,  0.000E+00,  0.000E+00,  7.585E+02,
-  1.000E-02,  0.000E+00,  0.000E+00,  7.550E+02,
-  9.900E-01,  0.000E+00,  0.000E+00,  6.200E+02,
-  1.000E+00,  0.000E+00,  0.000E+00,  6.165E+02,
-  1.000E+00,  0.000E+00,  0.000E+00,  5.100E+02,),),),
- TEMP_MS =_F(
-    SEUIL =  4.500E-01,
-    AKM   = -3.125E+01,
-    BKM   =  1.406E+01,
-    TPLM  = -3.497E+03,),
- GRAIN_AUST=_F(DREF = 11.0,),);
+TRCACIER=DEFI_TRC(HIST_EXP=_F(VALE=(-5.000E-02,1.100E+01,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,
+                                     0.000E+00,0.000E+00,8.300E+02,0.000E+00,0.000E+00,0.000E+00,7.585E+02,1.000E-02,0.000E+00,
+                                     0.000E+00,7.550E+02,9.900E-01,0.000E+00,0.000E+00,6.200E+02,1.000E+00,0.000E+00,0.000E+00,
+                                     6.165E+02,1.000E+00,0.000E+00,0.000E+00,5.100E+02,),),
+                  TEMP_MS=_F(SEUIL=4.500E-01,
+                             AKM=-3.125E+01,
+                             BKM=1.406E+01,
+                             TPLM=-3.497E+03,),
+                  GRAIN_AUST=_F(DREF=1.100E+01,),);
 
 # DIAGRAMME TRC DE L INOX 304L : ETAT AUSTENITE
 
-TRCINOX  = DEFI_TRC( HIST_EXP = (
-_F(VALE = (
--3.497E-03,  1.234E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.005E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  6.676E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  6.150E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  6.099E+02,),),),
- TEMP_MS = _F(
-    SEUIL =  4.500E-01,
-    AKM   = -3.125E+01,
-    BKM   =  1.406E+01,
-    TPLM  = -3.497E+03,),
- GRAIN_AUST=_F(DREF = 11.0,),);
+TRCINOX=DEFI_TRC(HIST_EXP=_F(VALE=(-3.497E-03,1.234E+01,8.563E+00,-2.760E-02,1.220E-04,-2.955E-07,3.402E-10,-1.517E-13,0.000E+00,
+                                    0.000E+00,0.000E+00,8.360E+02,0.000E+00,0.000E+00,0.000E+00,8.005E+02,0.000E+00,0.000E+00,
+                                    0.000E+00,6.676E+02,0.000E+00,0.000E+00,0.000E+00,6.150E+02,0.000E+00,0.000E+00,0.000E+00,
+                                    6.099E+02,),),
+                 TEMP_MS=_F(SEUIL=4.500E-01,
+                            AKM=-3.125E+01,
+                            BKM=1.406E+01,
+                            TPLM=-3.497E+03,),
+                 GRAIN_AUST=_F(DREF=11.0,),);
 
-ACIERT = DEFI_MATERIAU (
-            META_ACIER = _F( TRC    = TRCACIER,
-                             AR3    = 830.0,
-                             ALPHA  = -0.0306,
-                             MS0    = 415.0,
-                             AC1    = 724.0,
-                             AC3    = 846.0,
-                             TAUX_1 = 0.34,
-                             TAUX_3 = 0.34,),
-            THER = _F(RHO_CP = 0.0E-3,
-                      LAMBDA = 41.03E-3,),);
+ACIERT=DEFI_MATERIAU(THER=_F(LAMBDA=41.03E-3,
+                             RHO_CP=0.0E-3,),
+                     META_ACIER=_F(TRC=TRCACIER,
+                                   AR3=830.0,
+                                   ALPHA=-0.0306,
+                                   MS0=415.0,
+                                   AC1=724.0,
+                                   AC3=846.0,
+                                   TAUX_1=0.34,
+                                   TAUX_3=0.34,),);
 
-INOXT = DEFI_MATERIAU (
-            META_ACIER = _F( TRC   = TRCINOX,
-                             AR3   = 0.0,
-                             ALPHA = -0.0306,
-                             MS0   = 0.0,
-                             AC1    = 724.0,
-                             AC3    = 846.0,
-                             TAUX_1 = 0.34,
-                             TAUX_3 = 0.34 ,),
-           THER = _F( RHO_CP = 0.0E-3,
-                      LAMBDA = 41.03E-3,),);
+INOXT=DEFI_MATERIAU(THER=_F(LAMBDA=41.03E-3,
+                            RHO_CP=0.0E-3,),
+                    META_ACIER=_F(TRC=TRCINOX,
+                                  AR3=0.0E-3,
+                                  ALPHA=-0.0306,
+                                  MS0=0.0E-3,
+                                  AC1=724.0,
+                                  AC3=846.0,
+                                  TAUX_1=0.34,
+                                  TAUX_3=0.34,),);
 
-CHMATT = AFFE_MATERIAU (MAILLAGE = MAIL,
-                        AFFE =(_F(GROUP_MA = 'SURDGH',
-                                  MATER    = ACIERT,),
-                               _F(GROUP_MA = 'SURDGB',
-                                  MATER    = INOXT, ),),);
+CHMATT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(GROUP_MA='SURDGH',
+                              MATER=ACIERT,),
+                           _F(GROUP_MA='SURDGB',
+                              MATER=INOXT,),),);
 
-MOTH = AFFE_MODELE ( MAILLAGE = MAIL,
-                     AFFE     =_F(TOUT         = 'OUI',
-                                PHENOMENE   = 'THERMIQUE',
-                                MODELISATION = 'AXIS',),);
-                                
+MOTH=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='THERMIQUE',
+                         MODELISATION='AXIS',),);
+
 # RESOLUTION THERMIQUE
 # REFROIDISSEMENT CONTINU DE 875 A 20 DEGRES
 # VITESSE 20 DEGRES PAR HEURE
 
-TIMP = DEFI_FONCTION  (
-            NOM_PARA = 'INST',
-            NOM_RESU = 'TEMP',
-            VALE     = (   0.0,    875.0,
-                          154000.0,  20.0, ),
-            PROL_DROITE  = 'LINEAIRE',
-            PROL_GAUCHE = 'LINEAIRE',);
+TIMP=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.0,875.0,
+                         154000.0,20.0,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-CHTH = AFFE_CHAR_THER_F (
-           MODELE   = MOTH,
-           TEMP_IMPO =(_F(TOUT = 'OUI',TEMP = TIMP,),),);
+CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,
+                      TEMP_IMPO=_F(TOUT='OUI',
+                                   TEMP=TIMP,),);
 
-LIST = DEFI_LIST_REEL (
-         DEBUT      =  0.,
-         INTERVALLE = (_F(JUSQU_A= 154000.,NOMBRE=  26, ),),);
+LIST=DEFI_LIST_REEL(DEBUT=0.,
+                    INTERVALLE=_F(JUSQU_A=154000.,
+                                  NOMBRE=26,),);
 
-TEMPE = THER_LINEAIRE(
-             MODELE     = MOTH,
-             CHAM_MATER = CHMATT,
-             EXCIT      =_F( CHARGE   = CHTH, ),
-             INCREMENT  =_F( LIST_INST = LIST, ),
-             ETAT_INIT  = _F(VALE = 875., ),);
+TEMPE2=THER_LINEAIRE(MODELE=MOTH,
+                     CHAM_MATER=CHMATT,
+                     EXCIT=_F(CHARGE=CHTH,),
+                     INCREMENT=_F(LIST_INST=LIST,),
+                     ETAT_INIT=_F(VALE=875.,),);
+
+CHTEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE_F=TIMP,),);
+
+TEMPE=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=CHTEMP,
+                        LIST_INST=LIST,),);
+
+IMPR_RESU(RESU=_F(RESULTAT=TEMPE2,
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
+
+IMPR_RESU(RESU=_F(RESULTAT=TEMPE,
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
 
 # RESOLUTION METALLURGIQUE 
 # INITIALEMENT LE BARREAU EST 100% AUSTENITISE
 
-PHASINIT=CREA_CHAMP(
-           TYPE_CHAM='CART_VAR2_R',
-           OPERATION='AFFE',
-           MAILLAGE=MAIL,
-           AFFE=(_F(TOUT='OUI',
-                    NOM_CMP=('V1','V2','V3','V4','V5',),
-                    VALE=(0.0,0.0,0.0,0.0,11.0,),),),);
+PHASINIT=CREA_CHAMP(TYPE_CHAM='CART_VAR2_R',
+                    OPERATION='AFFE',
+                    MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP=('V1','V2','V3','V4','V5',),
+                            VALE=(0.0,0.0,0.0,0.0,11.0,),),);
 
 TEMPE=CALC_META(reuse =TEMPE,
-        MODELE=MOTH,
-        CHAM_MATER=CHMATT,
-        RESULTAT=TEMPE,
-        ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
-        COMP_INCR=_F(RELATION='ACIER',),
-        OPTION='META_ELNO_TEMP',);
-
+                MODELE=MOTH,
+                CHAM_MATER=CHMATT,
+                RESULTAT=TEMPE,
+                ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
+                COMP_INCR=_F(RELATION='ACIER',),
+                OPTION='META_ELNO_TEMP',);
 #######################
+
+
 # PARTIE MECANIQUE
 #######################
 
-MOMEC = AFFE_MODELE (
-          MAILLAGE  = MAIL,
-          AFFE=(_F(GROUP_MA     = 'SURDGH',
-                   PHENOMENE    ='MECANIQUE',
-                   MODELISATION ='AXIS',),
-                _F(GROUP_MA     = 'SURDGB',
-                   PHENOMENE    ='MECANIQUE',
-                   MODELISATION ='AXIS',),),);
+
+MOMEC=AFFE_MODELE(MAILLAGE=MAIL,
+                  AFFE=(_F(GROUP_MA='SURDGH',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS',),
+                        _F(GROUP_MA='SURDGB',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS',),),);
 
 # PARAMETRES MATERIAUX DU 16MND5
-
 # MODULE D YOUNG
-E1 = DEFI_FONCTION ( NOM_PARA='TEMP',
-                     PROL_GAUCHE='CONSTANT',
-                     PROL_DROITE='CONSTANT',
-                     VALE =( 20.,    190850.,
-                            200.,    190850.,
-                            300.,    169350.,
-                            400.,    159450.,
-                            500.,    149550.,
-                            600.,    131700.,
-                            700.,    113850.,
-                            800.,     69000.,
-                            900.,     33000.,),);
+
+E1=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,190850.,
+                       200.,190850.,
+                       300.,169350.,
+                       400.,159450.,
+                       500.,149550.,
+                       600.,131700.,
+                       700.,113850.,
+                       800.,69000.,
+                       900.,33000.,
+                       ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # POISSON
-NU = DEFI_CONSTANTE( VALE = 0.3 );
+
+NU=DEFI_CONSTANTE(VALE=0.3,);
 
 # LIMITE D ELASTICITE MATERIAU DE BASE
 # A L ETAT AUSTENITIQUE
-SYAUST = DEFI_FONCTION (
-           NOM_PARA='TEMP',
-           PROL_GAUCHE='CONSTANT',
-           PROL_DROITE='CONSTANT',
-           VALE =( 20.0,  200.0,
-                   300.0,  180.0,
-                   400.0,  150.0,
-                   500.0,  120.0,
-                   600.0,   95.0,
-                   700.0,   75.0,
-                   800.0,   60.0,
-                   900.0,   45.0,),);
+
+SYAUST=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.0,200.0,
+                           300.0,180.0,
+                           400.0,150.0,
+                           500.0,120.0,
+                           600.0,95.0,
+                           700.0,75.0,
+                           800.0,60.0,
+                           900.0,45.0,
+                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # A L ETAT ALPHA A 0% DE DFORMATION PLASTIQUE
 # LUE SUR COURBES DE TRACTION REELLES DE L I.S.
 # HV250
-SY250 = DEFI_FONCTION (
-          NOM_PARA='TEMP',
-          PROL_GAUCHE='CONSTANT',
-          PROL_DROITE='CONSTANT',
-          VALE = (20.0,  300.0,
-                   200.0,  300.0,
-                   400.0,  300.0,
-                   600.0,  200.0,
-                   800.0,  50.0,
-                   900.0,  30.0, ),);
+
+SY250=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.0,300.0,
+                          200.0,300.0,
+                          400.0,300.0,
+                          600.0,200.0,
+                          800.0,50.0,
+                          900.0,30.0,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # HV230
-SY230 = DEFI_FONCTION (
-          NOM_PARA='TEMP',
-          PROL_GAUCHE='CONSTANT',
-          PROL_DROITE='CONSTANT',
-          VALE =( 20.,   276.,
-                  200.,    276.,
-                  400.,    276.,
-                  600.,    184.,
-                  800.,     50.,
-                  900.,     30.,),);
+
+SY230=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,276.,
+                          200.,276.,
+                          400.,276.,
+                          600.,184.,
+                          800.,50.,
+                          900.,30.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # HV210
-SY210 = DEFI_FONCTION (
-          NOM_PARA='TEMP',
-          PROL_GAUCHE='CONSTANT',
-          PROL_DROITE='CONSTANT',
-          VALE =( 20.,    252.,
-                 200.,    252.,
-                 400.,    252.,
-                 600.,    168.,
-                 800.,     50.,
-                 900.,     30.,),);
+
+SY210=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,252.,
+                          200.,252.,
+                          400.,252.,
+                          600.,168.,
+                          800.,50.,
+                          900.,30.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # HV190
-SY190 = DEFI_FONCTION (
-          NOM_PARA='TEMP',
-          PROL_GAUCHE='CONSTANT',
-          PROL_DROITE='CONSTANT',
-          VALE =( 20.,    228.,
-                  200.,    228.,
-                  400.,    228.,
-                  600.,    152.,
-                  800.,     50.,
-                  900.,     30.,),);
+
+SY190=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,228.,
+                          200.,228.,
+                          400.,228.,
+                          600.,152.,
+                          800.,50.,
+                          900.,30.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # HV170
-SY170 = DEFI_FONCTION (
-          NOM_PARA='TEMP',
-          PROL_GAUCHE='CONSTANT',
-          PROL_DROITE='CONSTANT',
-          VALE =( 20.,    204.,
-                  200.,    204.,
-                  400.,    204.,
-                  600.,    136.,
-                  800.,     50.,
-                  900.,     30.,),);
+
+SY170=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,204.,
+                          200.,204.,
+                          400.,204.,
+                          600.,136.,
+                          800.,50.,
+                          900.,30.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # HV150
-SY150 = DEFI_FONCTION (
-          NOM_PARA='TEMP',
-          PROL_GAUCHE='CONSTANT',
-          PROL_DROITE='CONSTANT',
-          VALE =(20.,    180.,
-                 200.,    180.,
-                 400.,    180.,
-                 600.,    120.,
-                 800.,     50.,
-                 900.,     30.,),);
+
+SY150=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,180.,
+                          200.,180.,
+                          400.,180.,
+                          600.,120.,
+                          800.,50.,
+                          900.,30.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # HV130
-SY130 = DEFI_FONCTION (
-          NOM_PARA='TEMP',
-          PROL_GAUCHE='CONSTANT',
-          PROL_DROITE='CONSTANT',
-          VALE =(20.,    156.,
-                 200.,    156.,
-                 400.,    156.,
-                 600.,    104.,
-                 800.,     50.,
-                 900.,     30.,),);
+
+SY130=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,156.,
+                          200.,156.,
+                          400.,156.,
+                          600.,104.,
+                          800.,50.,
+                          900.,30.,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # ECROUISSAGE
 # A L ETAT ALPHA
-HEFPBM = DEFI_FONCTION (
-           NOM_PARA    = 'TEMP',
-           PROL_GAUCHE='CONSTANT',
-           PROL_DROITE='CONSTANT',
-           VALE =(20.,    5450.,
-                 200.,    4560.,
-                 400.,    4780.,
-                 600.,    1712.,
-                 800.,     774.,
-                 900.,     400.,),);
+
+HEFPBM=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,5450.,
+                           200.,4560.,
+                           400.,4780.,
+                           600.,1712.,
+                           800.,774.,
+                           900.,400.,
+                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # A L ETAT AUSTENITIQUE
-HEA = DEFI_FONCTION (
-        NOM_PARA    = 'TEMP',
-        PROL_GAUCHE='CONSTANT',
-        PROL_DROITE='CONSTANT',
-        VALE =(20.0,  2950.0,
-               200.0,  2950.0,
-               400.0,  2950.0,
-               600.0,  2950.0,
-               800.0,  1972.0,
-               1000.0,   408.0,),);
+
+HEA=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.0,2950.0,
+                        200.0,2950.0,
+                        400.0,2950.0,
+                        600.0,2950.0,
+                        800.0,1972.0,
+                        1000.0,408.0,
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # COEFF DILATATION THERMIQUE MOYEN / 875 DEGRES
 # A L ETAT ALPHA
-AFPBM = DEFI_FONCTION (
-          NOM_PARA='TEMP',
-          PROL_GAUCHE='CONSTANT',
-       PROL_DROITE='CONSTANT',
-       VALE =(50., 12.88E-6,
-              150., 13.32E-6,
-              250., 13.48E-6,
-              350., 13.62E-6,
-              450., 13.63E-6,
-              550., 13.47E-6,
-              650., 13.42E-6,
-              750., 13.42E-6,
-              900., 13.42E-6,),);
+
+AFPBM=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(50.,12.88E-6,
+                          150.,13.32E-6,
+                          250.,13.48E-6,
+                          350.,13.62E-6,
+                          450.,13.63E-6,
+                          550.,13.47E-6,
+                          650.,13.42E-6,
+                          750.,13.42E-6,
+                          900.,13.42E-6,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # A L ETAT AUSTENITIQUE
-AAUST  = DEFI_FONCTION (
-       NOM_PARA    = 'TEMP',
-       VALE       = (700.0,  23.5E-6,
-                     1500.0,  23.5E-6,),
-       PROL_GAUCHE='CONSTANT',
-       PROL_DROITE='CONSTANT',);
+
+AAUST=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(700.0,23.5E-6,
+                          1500.0,23.5E-6,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # FONCTION DE PLASTICITE DE TRANSORMATION F(Z)=Z
-FPRIM  = DEFI_FONCTION ( NOM_PARA   = 'META',
-                     PROL_DROITE = 'LINEAIRE',
-                     PROL_GAUCHE= 'LINEAIRE',
-                     VALE =( 0., 1., 1., 1., ),);
+
+FPRIM=DEFI_FONCTION(NOM_PARA='META',VALE=(0.,1.,
+                          1.,1.,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 # LOI DE MELANGE POUR PLASTICITE MULTUPHASE
 
-MELANGE = DEFI_FONCTION (NOM_PARA   = 'META',
-                      PROL_DROITE = 'LINEAIRE',
-                      PROL_GAUCHE= 'LINEAIRE',
-                      VALE       =( 0., 0., 1., 1., ),);
+MELANGE=DEFI_FONCTION(NOM_PARA='META',VALE=(0.,0.,
+                            1.,1.,
+                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 # DEFINITION DES MATERIAUX PAR COUCHE DE DURETE
 
-HV250 = DEFI_MATERIAU (
-      ELAS_META_FO=_F(
-        E=E1,
-        NU=NU,
-        F_ALPHA=AFPBM,
-        C_ALPHA=AAUST,
-        TEMP_DEF_ALPHA=875.,
-        PHASE_REFE='CHAUD',
-        EPSF_EPSC_TREF=1.874E-3,
-        F1_SY=SY250,
-        F2_SY=SY250,
-        F3_SY=SY250,
-        F4_SY=SY250,
-        C_SY=SYAUST,
-        SY_MELANGE=MELANGE,),
-     META_ECRO_LINE=_F(
-       F1_D_SIGM_EPSI=HEFPBM,
-       F2_D_SIGM_EPSI=HEFPBM,
-       F3_D_SIGM_EPSI=HEFPBM,
-       F4_D_SIGM_EPSI=HEFPBM,
-       C_D_SIGM_EPSI=HEA,),
-    META_PT=_F(F1_K=1.E-4,
-      F2_K=1.E-4,
-      F3_K=1.E-4,
-      F4_K=1.E-4,
-      F1_D_F_META=FPRIM,
-      F2_D_F_META=FPRIM,
-      F3_D_F_META=FPRIM,
-      F4_D_F_META=FPRIM,),);
+HV250=DEFI_MATERIAU(ELAS_META_FO=_F(E=E1,
+                                    NU=NU,
+                                    F_ALPHA=AFPBM,
+                                    C_ALPHA=AAUST,
+                                    PHASE_REFE='CHAUD',
+                                    EPSF_EPSC_TREF=1.874E-3,
+                                    TEMP_DEF_ALPHA=875.,
+                                    F1_SY=SY250,
+                                    F2_SY=SY250,
+                                    F3_SY=SY250,
+                                    F4_SY=SY250,
+                                    C_SY=SYAUST,
+                                    SY_MELANGE=MELANGE,),
+                    META_ECRO_LINE=_F(F1_D_SIGM_EPSI=HEFPBM,
+                                      F2_D_SIGM_EPSI=HEFPBM,
+                                      F3_D_SIGM_EPSI=HEFPBM,
+                                      F4_D_SIGM_EPSI=HEFPBM,
+                                      C_D_SIGM_EPSI=HEA,),
+                    META_PT=_F(F1_K=1.E-4,
+                               F2_K=1.E-4,
+                               F3_K=1.E-4,
+                               F4_K=1.E-4,
+                               F1_D_F_META=FPRIM,
+                               F2_D_F_META=FPRIM,
+                               F3_D_F_META=FPRIM,
+                               F4_D_F_META=FPRIM,),);
 
-HV230 = DEFI_MATERIAU (
-      ELAS_META_FO=_F(
-        E=E1,
-        NU=NU,
-        F_ALPHA=AFPBM,
-        C_ALPHA=AAUST,
-        TEMP_DEF_ALPHA=875.,
-        PHASE_REFE='CHAUD',
-        EPSF_EPSC_TREF=1.874E-3,
-        F1_SY=SY230,
-        F2_SY=SY230,
-        F3_SY=SY230,
-        F4_SY=SY230,
-        C_SY=SYAUST,
-        SY_MELANGE=MELANGE,),
-      META_ECRO_LINE=_F(
-        F1_D_SIGM_EPSI=HEFPBM,
-        F2_D_SIGM_EPSI=HEFPBM,
-        F3_D_SIGM_EPSI=HEFPBM,
-        F4_D_SIGM_EPSI=HEFPBM,
-        C_D_SIGM_EPSI=HEA,),
-      META_PT=_F(F1_K=1.E-4,
-        F2_K=1.E-4,
-        F3_K=1.E-4,
-        F4_K=1.E-4,
-        F1_D_F_META=FPRIM,
-        F2_D_F_META=FPRIM,
-        F3_D_F_META=FPRIM,
-        F4_D_F_META=FPRIM,),);
+HV230=DEFI_MATERIAU(ELAS_META_FO=_F(E=E1,
+                                    NU=NU,
+                                    F_ALPHA=AFPBM,
+                                    C_ALPHA=AAUST,
+                                    PHASE_REFE='CHAUD',
+                                    EPSF_EPSC_TREF=1.874E-3,
+                                    TEMP_DEF_ALPHA=875.,
+                                    F1_SY=SY230,
+                                    F2_SY=SY230,
+                                    F3_SY=SY230,
+                                    F4_SY=SY230,
+                                    C_SY=SYAUST,
+                                    SY_MELANGE=MELANGE,),
+                    META_ECRO_LINE=_F(F1_D_SIGM_EPSI=HEFPBM,
+                                      F2_D_SIGM_EPSI=HEFPBM,
+                                      F3_D_SIGM_EPSI=HEFPBM,
+                                      F4_D_SIGM_EPSI=HEFPBM,
+                                      C_D_SIGM_EPSI=HEA,),
+                    META_PT=_F(F1_K=1.E-4,
+                               F2_K=1.E-4,
+                               F3_K=1.E-4,
+                               F4_K=1.E-4,
+                               F1_D_F_META=FPRIM,
+                               F2_D_F_META=FPRIM,
+                               F3_D_F_META=FPRIM,
+                               F4_D_F_META=FPRIM,),);
 
-HV210 = DEFI_MATERIAU (
-     ELAS_META_FO=_F(
-       E=E1,
-       NU=NU,
-       F_ALPHA=AFPBM,
-       C_ALPHA=AAUST,
-       TEMP_DEF_ALPHA=875.,
-       PHASE_REFE='CHAUD',
-       EPSF_EPSC_TREF=1.874E-3,
-       F1_SY=SY210,
-       F2_SY=SY210,
-       F3_SY=SY210,
-       F4_SY=SY210,
-       C_SY=SYAUST,
-       SY_MELANGE=MELANGE,),
-     META_ECRO_LINE=_F(
-       F1_D_SIGM_EPSI=HEFPBM,
-       F2_D_SIGM_EPSI=HEFPBM,
-       F3_D_SIGM_EPSI=HEFPBM,
-       F4_D_SIGM_EPSI=HEFPBM,
-       C_D_SIGM_EPSI=HEA,),
-     META_PT=_F(F1_K=1.E-4,
-       F2_K=1.E-4,
-       F3_K=1.E-4,
-       F4_K=1.E-4,
-       F1_D_F_META=FPRIM,
-       F2_D_F_META=FPRIM,
-       F3_D_F_META=FPRIM,
-       F4_D_F_META=FPRIM,),);
+HV210=DEFI_MATERIAU(ELAS_META_FO=_F(E=E1,
+                                    NU=NU,
+                                    F_ALPHA=AFPBM,
+                                    C_ALPHA=AAUST,
+                                    PHASE_REFE='CHAUD',
+                                    EPSF_EPSC_TREF=1.874E-3,
+                                    TEMP_DEF_ALPHA=875.,
+                                    F1_SY=SY210,
+                                    F2_SY=SY210,
+                                    F3_SY=SY210,
+                                    F4_SY=SY210,
+                                    C_SY=SYAUST,
+                                    SY_MELANGE=MELANGE,),
+                    META_ECRO_LINE=_F(F1_D_SIGM_EPSI=HEFPBM,
+                                      F2_D_SIGM_EPSI=HEFPBM,
+                                      F3_D_SIGM_EPSI=HEFPBM,
+                                      F4_D_SIGM_EPSI=HEFPBM,
+                                      C_D_SIGM_EPSI=HEA,),
+                    META_PT=_F(F1_K=1.E-4,
+                               F2_K=1.E-4,
+                               F3_K=1.E-4,
+                               F4_K=1.E-4,
+                               F1_D_F_META=FPRIM,
+                               F2_D_F_META=FPRIM,
+                               F3_D_F_META=FPRIM,
+                               F4_D_F_META=FPRIM,),);
 
-HV190 = DEFI_MATERIAU (
-      ELAS_META_FO=_F(
-        E=E1,
-        NU=NU,
-        F_ALPHA=AFPBM,
-        C_ALPHA=AAUST,
-        TEMP_DEF_ALPHA=875.,
-        PHASE_REFE='CHAUD',
-        EPSF_EPSC_TREF=1.874E-3,
-        F1_SY=SY190,
-        F2_SY=SY190,
-        F3_SY=SY190,
-        F4_SY=SY190,
-        C_SY=SYAUST,
-        SY_MELANGE=MELANGE,),
-      META_ECRO_LINE=_F(
-        F1_D_SIGM_EPSI=HEFPBM,
-        F2_D_SIGM_EPSI=HEFPBM,
-        F3_D_SIGM_EPSI=HEFPBM,
-        F4_D_SIGM_EPSI=HEFPBM,
-        C_D_SIGM_EPSI=HEA,),
-      META_PT=_F(F1_K=1.E-4,
-        F2_K=1.E-4,
-        F3_K=1.E-4,
-        F4_K=1.E-4,
-        F1_D_F_META=FPRIM,
-        F2_D_F_META=FPRIM,
-        F3_D_F_META=FPRIM,
-        F4_D_F_META=FPRIM,),);
+HV190=DEFI_MATERIAU(ELAS_META_FO=_F(E=E1,
+                                    NU=NU,
+                                    F_ALPHA=AFPBM,
+                                    C_ALPHA=AAUST,
+                                    PHASE_REFE='CHAUD',
+                                    EPSF_EPSC_TREF=1.874E-3,
+                                    TEMP_DEF_ALPHA=875.,
+                                    F1_SY=SY190,
+                                    F2_SY=SY190,
+                                    F3_SY=SY190,
+                                    F4_SY=SY190,
+                                    C_SY=SYAUST,
+                                    SY_MELANGE=MELANGE,),
+                    META_ECRO_LINE=_F(F1_D_SIGM_EPSI=HEFPBM,
+                                      F2_D_SIGM_EPSI=HEFPBM,
+                                      F3_D_SIGM_EPSI=HEFPBM,
+                                      F4_D_SIGM_EPSI=HEFPBM,
+                                      C_D_SIGM_EPSI=HEA,),
+                    META_PT=_F(F1_K=1.E-4,
+                               F2_K=1.E-4,
+                               F3_K=1.E-4,
+                               F4_K=1.E-4,
+                               F1_D_F_META=FPRIM,
+                               F2_D_F_META=FPRIM,
+                               F3_D_F_META=FPRIM,
+                               F4_D_F_META=FPRIM,),);
 
-HV170 = DEFI_MATERIAU (
-      ELAS_META_FO=_F(
-        E=E1,
-        NU=NU,
-        F_ALPHA=AFPBM,
-        C_ALPHA=AAUST,
-        TEMP_DEF_ALPHA=875.,
-        PHASE_REFE='CHAUD',
-        EPSF_EPSC_TREF=1.874E-3,
-        F1_SY=SY170,
-        F2_SY=SY170,
-        F3_SY=SY170,
-        F4_SY=SY170,
-        C_SY=SYAUST,
-        SY_MELANGE=MELANGE,),
-      META_ECRO_LINE=_F(
-        F1_D_SIGM_EPSI=HEFPBM,
-        F2_D_SIGM_EPSI=HEFPBM,
-        F3_D_SIGM_EPSI=HEFPBM,
-        F4_D_SIGM_EPSI=HEFPBM,
-        C_D_SIGM_EPSI=HEA,),
-      META_PT=_F(F1_K=1.E-4,
-        F2_K=1.E-4,
-        F3_K=1.E-4,
-        F4_K=1.E-4,
-        F1_D_F_META=FPRIM,
-        F2_D_F_META=FPRIM,
-        F3_D_F_META=FPRIM,
-        F4_D_F_META=FPRIM,),);
+HV170=DEFI_MATERIAU(ELAS_META_FO=_F(E=E1,
+                                    NU=NU,
+                                    F_ALPHA=AFPBM,
+                                    C_ALPHA=AAUST,
+                                    PHASE_REFE='CHAUD',
+                                    EPSF_EPSC_TREF=1.874E-3,
+                                    TEMP_DEF_ALPHA=875.,
+                                    F1_SY=SY170,
+                                    F2_SY=SY170,
+                                    F3_SY=SY170,
+                                    F4_SY=SY170,
+                                    C_SY=SYAUST,
+                                    SY_MELANGE=MELANGE,),
+                    META_ECRO_LINE=_F(F1_D_SIGM_EPSI=HEFPBM,
+                                      F2_D_SIGM_EPSI=HEFPBM,
+                                      F3_D_SIGM_EPSI=HEFPBM,
+                                      F4_D_SIGM_EPSI=HEFPBM,
+                                      C_D_SIGM_EPSI=HEA,),
+                    META_PT=_F(F1_K=1.E-4,
+                               F2_K=1.E-4,
+                               F3_K=1.E-4,
+                               F4_K=1.E-4,
+                               F1_D_F_META=FPRIM,
+                               F2_D_F_META=FPRIM,
+                               F3_D_F_META=FPRIM,
+                               F4_D_F_META=FPRIM,),);
 
-HV150 = DEFI_MATERIAU (
-     ELAS_META_FO=_F(
-       E=E1,
-       NU=NU,
-       F_ALPHA=AFPBM,
-       C_ALPHA=AAUST,
-       TEMP_DEF_ALPHA=875.,
-       PHASE_REFE='CHAUD',
-       EPSF_EPSC_TREF=1.874E-3,
-       F1_SY=SY150,
-       F2_SY=SY150,
-       F3_SY=SY150,
-       F4_SY=SY150,
-       C_SY=SYAUST,
-       SY_MELANGE=MELANGE,),
-     META_ECRO_LINE=_F(
-       F1_D_SIGM_EPSI=HEFPBM,
-       F2_D_SIGM_EPSI=HEFPBM,
-       F3_D_SIGM_EPSI=HEFPBM,
-       F4_D_SIGM_EPSI=HEFPBM,
-       C_D_SIGM_EPSI=HEA,),
-     META_PT=_F(F1_K=1.E-4,
-       F2_K=1.E-4,
-       F3_K=1.E-4,
-       F4_K=1.E-4,
-       F1_D_F_META=FPRIM,
-       F2_D_F_META=FPRIM,
-       F3_D_F_META=FPRIM,
-       F4_D_F_META=FPRIM,),);
+HV150=DEFI_MATERIAU(ELAS_META_FO=_F(E=E1,
+                                    NU=NU,
+                                    F_ALPHA=AFPBM,
+                                    C_ALPHA=AAUST,
+                                    PHASE_REFE='CHAUD',
+                                    EPSF_EPSC_TREF=1.874E-3,
+                                    TEMP_DEF_ALPHA=875.,
+                                    F1_SY=SY150,
+                                    F2_SY=SY150,
+                                    F3_SY=SY150,
+                                    F4_SY=SY150,
+                                    C_SY=SYAUST,
+                                    SY_MELANGE=MELANGE,),
+                    META_ECRO_LINE=_F(F1_D_SIGM_EPSI=HEFPBM,
+                                      F2_D_SIGM_EPSI=HEFPBM,
+                                      F3_D_SIGM_EPSI=HEFPBM,
+                                      F4_D_SIGM_EPSI=HEFPBM,
+                                      C_D_SIGM_EPSI=HEA,),
+                    META_PT=_F(F1_K=1.E-4,
+                               F2_K=1.E-4,
+                               F3_K=1.E-4,
+                               F4_K=1.E-4,
+                               F1_D_F_META=FPRIM,
+                               F2_D_F_META=FPRIM,
+                               F3_D_F_META=FPRIM,
+                               F4_D_F_META=FPRIM,),);
 
-HV130 = DEFI_MATERIAU (
-      ELAS_META_FO=_F(
-        E=E1,
-        NU=NU,
-        F_ALPHA=AFPBM,
-        C_ALPHA=AAUST,
-        TEMP_DEF_ALPHA=875.,
-        PHASE_REFE='CHAUD',
-        EPSF_EPSC_TREF=1.874E-3,
-        F1_SY=SY130,
-        F2_SY=SY130,
-        F3_SY=SY130,
-        F4_SY=SY130,
-        C_SY=SYAUST,
-        SY_MELANGE=MELANGE,),
-      META_ECRO_LINE=_F(
-        F1_D_SIGM_EPSI=HEFPBM,
-        F2_D_SIGM_EPSI=HEFPBM,
-        F3_D_SIGM_EPSI=HEFPBM,
-        F4_D_SIGM_EPSI=HEFPBM,
-        C_D_SIGM_EPSI=HEA,),
-      META_PT=_F(F1_K=1.E-4,
-        F2_K=1.E-4,
-        F3_K=1.E-4,
-        F4_K=1.E-4,
-        F1_D_F_META=FPRIM,
-        F2_D_F_META=FPRIM,
-        F3_D_F_META=FPRIM,
-        F4_D_F_META=FPRIM,),);
+HV130=DEFI_MATERIAU(ELAS_META_FO=_F(E=E1,
+                                    NU=NU,
+                                    F_ALPHA=AFPBM,
+                                    C_ALPHA=AAUST,
+                                    PHASE_REFE='CHAUD',
+                                    EPSF_EPSC_TREF=1.874E-3,
+                                    TEMP_DEF_ALPHA=875.,
+                                    F1_SY=SY130,
+                                    F2_SY=SY130,
+                                    F3_SY=SY130,
+                                    F4_SY=SY130,
+                                    C_SY=SYAUST,
+                                    SY_MELANGE=MELANGE,),
+                    META_ECRO_LINE=_F(F1_D_SIGM_EPSI=HEFPBM,
+                                      F2_D_SIGM_EPSI=HEFPBM,
+                                      F3_D_SIGM_EPSI=HEFPBM,
+                                      F4_D_SIGM_EPSI=HEFPBM,
+                                      C_D_SIGM_EPSI=HEA,),
+                    META_PT=_F(F1_K=1.E-4,
+                               F2_K=1.E-4,
+                               F3_K=1.E-4,
+                               F4_K=1.E-4,
+                               F1_D_F_META=FPRIM,
+                               F2_D_F_META=FPRIM,
+                               F3_D_F_META=FPRIM,
+                               F4_D_F_META=FPRIM,),);
 
 # PARAMETRES MATERIAUX DE L INOX
-
 # MODULE D YOUNG
-E2 = DEFI_FONCTION (
-   NOM_PARA='TEMP',
-   PROL_GAUCHE='CONSTANT',
-   PROL_DROITE='CONSTANT',
-   VALE =( 20.,    198850.,
-          200.,    198850.,
-          400.,    198850.,
-          600.,    198850.,
-          800.,     81900.,
-          900.,     68000.,),);
+
+E2=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,198850.,
+                       200.,198850.,
+                       400.,198850.,
+                       600.,198850.,
+                       800.,81900.,
+                       900.,68000.,
+                       ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # COEFFI DILA MOYEN / 875 DEGRES
-A2 = DEFI_FONCTION (NOM_PARA='TEMP',
-               PROL_GAUCHE='LINEAIRE',
-               PROL_DROITE='LINEAIRE',
-               VALE =( 50., 17.775E-6,
-                      150., 18.33E-6,
-                      250., 18.53E-6,
-                      350., 18.884E-6,
-                      450., 18.914E-6,
-                      550., 18.967E-6,
-                      650., 18.695E-6,
-                      750., 17.999E-6,
-                      850., 17.775E-6,),);
+
+A2=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(50.,17.775E-6,
+                       150.,18.33E-6,
+                       250.,18.53E-6,
+                       350.,18.884E-6,
+                       450.,18.914E-6,
+                       550.,18.967E-6,
+                       650.,18.695E-6,
+                       750.,17.999E-6,
+                       850.,17.775E-6,
+                       ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 # LIMITE D ELASTICITE
-SYI = DEFI_FONCTION (NOM_PARA='TEMP',
-           PROL_GAUCHE='CONSTANT',
-           PROL_DROITE='CONSTANT',
-           VALE =( 20.,    120.,
-                   200.,    140.,
-                   400.,    100.,
-                   600.,    60.,
-                   800.,     60.,
-                   900.,     50.,),);
+
+SYI=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20.,120.,
+                        200.,140.,
+                        400.,100.,
+                        600.,60.,
+                        800.,60.,
+                        900.,50.,
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 # COURBE TRACTION A 20 DEGRES
 # IL S AGIT DE (SIGMA-SY) EN FONCTION DE LA DEFORMATION PLASTIQUE P
-INOX_20 = DEFI_FONCTION (
- NOM_PARA='EPSI',
- PROL_GAUCHE='LINEAIRE',
- PROL_DROITE='LINEAIRE',
- VALE=(0.000145084,   50.,
-       0.000418783,   95.,
-       0.002038031,   121.,
-       0.048124214,   253.,),);
+
+INOX_20=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.000145084,50.,
+                            0.000418783,95.,
+                            0.002038031,121.,
+                            0.048124214,253.,
+                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 # A 200 DEGRES
-INOX_200 = DEFI_FONCTION (
-     NOM_PARA='EPSI',
-     PROL_GAUCHE='LINEAIRE',
-     PROL_DROITE='LINEAIRE',
-     VALE=(0.000245663,  10.,
-           0.000695373,  20.,
-           0.001964969,  34.,
-           0.048476238,  163.,),);
+
+INOX_200=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.000245663,10.,
+                             0.000695373,20.,
+                             0.001964969,34.,
+                             0.048476238,163.,
+                             ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 # 400 DEGRES
-INOX_400 = DEFI_FONCTION (
-      NOM_PARA='EPSI',
-      PROL_GAUCHE='LINEAIRE',
-      PROL_DROITE='LINEAIRE',
-      VALE=(0.000371385,  25.,
-            0.002003067,  36.,
-            0.048772944,  144.,),);
+
+INOX_400=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.000371385,25.,
+                             0.002003067,36.,
+                             0.048772944,144.,
+                             ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 # A 600 DEGRES
-INOX_600 = DEFI_FONCTION (
-     NOM_PARA='EPSI',
-     PROL_GAUCHE='LINEAIRE',
-     PROL_DROITE='LINEAIRE',
-     VALE=(2.2253E-05,   35.,
-           0.000471964,  45.,
-           0.002002704,  54.,
-           0.048873523,  164.,),);
+
+INOX_600=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(2.2253E-05,35.,
+                             0.000471964,45.,
+                             0.002002704,54.,
+                             0.048873523,164.,
+                             ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 # A 800 DEGRES
-INOX_800 = DEFI_FONCTION (
-      NOM_PARA='EPSI',
-      PROL_GAUCHE='LINEAIRE',
-      PROL_DROITE='LINEAIRE',
-      VALE=(0.000181929,  7.,
-            0.000523199,  20.,
-            0.002000469,  33.,
-            0.048058608,  99.,),);
+
+INOX_800=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.000181929,7.,
+                             0.000523199,20.,
+                             0.002000469,33.,
+                             0.048058608,99.,
+                             ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 # A 900 DEGRES
-INOX_900 = DEFI_FONCTION (
-       NOM_PARA='EPSI',
-       PROL_GAUCHE='LINEAIRE',
-       PROL_DROITE='LINEAIRE',
-       VALE=(0.002000588, 20.,
-             0.019976471, 40.,),);
+
+INOX_900=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.002000588,20.,
+                             0.019976471,40.,
+                             ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 #TRACTION
-TRAC304  = DEFI_NAPPE (
-   NOM_PARA='TEMP',
-   PARA=(20.0,
-         200.0,
-         400.,
-         600.,
-         800.,
-         900.,),
-   FONCTION=(INOX_20,
-             INOX_200,
-             INOX_400,
-             INOX_600,
-             INOX_800,
-             INOX_900,),
-   PROL_GAUCHE='CONSTANT',
-   PROL_DROITE='CONSTANT',);
 
-INOXM = DEFI_MATERIAU (
-   ELAS_META_FO=_F(
-     E=E2,
-     NU=NU,
-     F_ALPHA=A2,
-     C_ALPHA=A2,
-     TEMP_DEF_ALPHA=875.,
-     PHASE_REFE='CHAUD',
-     EPSF_EPSC_TREF=0.,
-     F1_SY=SYI,
-     F2_SY=SYI,
-     F3_SY=SYI,
-     F4_SY=SYI,
-     C_SY=SYI,
-     SY_MELANGE=MELANGE,),
-   META_TRACTION =_F(SIGM_F1 = TRAC304,
-                     SIGM_F2 = TRAC304,
-                     SIGM_F3 = TRAC304,
-                     SIGM_F4 = TRAC304,
-                     SIGM_C = TRAC304, ),);
+TRAC304=DEFI_NAPPE(NOM_PARA='TEMP',
+                   PARA=(20.0,200.0,400.,600.,800.,900.,),
+                   FONCTION=(INOX_20,INOX_200,INOX_400,INOX_600,INOX_800,INOX_900,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
 
-CHMATM=AFFE_MATERIAU(
-   MAILLAGE=MAIL,
-   AFFE=(_F(GROUP_MA='SURDGH',MATER=HV250,),
-         _F(GROUP_MA='HV_230',MATER=HV230,),
-         _F(GROUP_MA='HV_210',MATER=HV210,),
-         _F(GROUP_MA='HV_190',MATER=HV190,),
-         _F(GROUP_MA='HV_170',MATER=HV170,),
-         _F(GROUP_MA='HV_150',MATER=HV150,),
-         _F(GROUP_MA='HV_130',MATER=HV130,),
-         _F(GROUP_MA='SURDGB',MATER=INOXM,),),
-    AFFE_VARC=(_F(TOUT='OUI',
-                  EVOL=TEMPE,
-                  NOM_VARC='M_ACIER',
-                  NOM_CHAM='META_ELNO_TEMP'),
-                _F(TOUT='OUI',
-                   EVOL=TEMPE,
-                   VALE_REF=875.,
-                   NOM_VARC='TEMP',
-                   NOM_CHAM='TEMP'),));
+INOXM=DEFI_MATERIAU(ELAS_META_FO=_F(E=E2,
+                                    NU=NU,
+                                    F_ALPHA=A2,
+                                    C_ALPHA=A2,
+                                    PHASE_REFE='CHAUD',
+                                    EPSF_EPSC_TREF=0.,
+                                    TEMP_DEF_ALPHA=875.,
+                                    F1_SY=SYI,
+                                    F2_SY=SYI,
+                                    F3_SY=SYI,
+                                    F4_SY=SYI,
+                                    C_SY=SYI,
+                                    SY_MELANGE=MELANGE,),
+                    META_TRACTION=_F(SIGM_F1=TRAC304,
+                                     SIGM_F2=TRAC304,
+                                     SIGM_F3=TRAC304,
+                                     SIGM_F4=TRAC304,
+                                     SIGM_C=TRAC304,),);
 
-CHMEC = AFFE_CHAR_MECA (
-     MODELE  = MOMEC,
-     DDL_IMPO=_F(GROUP_NO='PC',DY=0.0,),) ;
+CHMATM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(GROUP_MA='SURDGH',
+                              MATER=HV250,),
+                           _F(GROUP_MA='HV_230',
+                              MATER=HV230,),
+                           _F(GROUP_MA='HV_210',
+                              MATER=HV210,),
+                           _F(GROUP_MA='HV_190',
+                              MATER=HV190,),
+                           _F(GROUP_MA='HV_170',
+                              MATER=HV170,),
+                           _F(GROUP_MA='HV_150',
+                              MATER=HV150,),
+                           _F(GROUP_MA='HV_130',
+                              MATER=HV130,),
+                           _F(GROUP_MA='SURDGB',
+                              MATER=INOXM,),),
+                     AFFE_VARC=(_F(TOUT='OUI',
+                                   NOM_VARC='M_ACIER',
+                                   EVOL=TEMPE,
+                                   NOM_CHAM='META_ELNO_TEMP',),
+                                _F(TOUT='OUI',
+                                   NOM_VARC='TEMP',
+                                   EVOL=TEMPE,
+                                   NOM_CHAM='TEMP',
+                                   VALE_REF=875.,),),);
 
-LISTM = DEFI_LIST_REEL (
-    DEBUT      =  0.,
-    INTERVALLE = (
-      _F(JUSQU_A=9000.,   NOMBRE=  1,),
-      _F(JUSQU_A=36000.,  NOMBRE= 4,),
-      _F(JUSQU_A=54000.,  NOMBRE=10,),
-      _F(JUSQU_A=118000., NOMBRE=7,),
-      _F(JUSQU_A=154000., NOMBRE=4,),),);
+CHMEC=AFFE_CHAR_MECA(MODELE=MOMEC,
+                     DDL_IMPO=_F(GROUP_NO='PC',
+                                 DY=0.0,),);
+
+LISTM=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(_F(JUSQU_A=9000.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=36000.,
+                                    NOMBRE=4,),
+                                 _F(JUSQU_A=54000.,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=118000.,
+                                    NOMBRE=7,),
+                                 _F(JUSQU_A=154000.,
+                                    NOMBRE=4,),),);
 
 U=STAT_NON_LINE(MODELE=MOMEC,
-          CHAM_MATER=CHMATM,
-          EXCIT=_F(CHARGE=CHMEC,),
-          COMP_INCR=(
-            _F(RELATION='META_P_INL',
-               RELATION_KIT='ACIER',
-               DEFORMATION='PETIT',
-               GROUP_MA='SURDGB',),
-           _F(RELATION='META_P_IL_PT',
-               RELATION_KIT='ACIER',
-               DEFORMATION='PETIT',
-               GROUP_MA='SURDGH',),),
-          INCREMENT=_F(LIST_INST=LISTM,),
-          NEWTON=_F(MATRICE='TANGENTE',
-                    REAC_ITER=1,),
-          CONVERGENCE=_F(RESI_GLOB_RELA=5.0E-06,
-                         ITER_GLOB_MAXI=34,),);
+                CHAM_MATER=CHMATM,
+                EXCIT=_F(CHARGE=CHMEC,),
+                COMP_INCR=(_F(RELATION='META_P_INL',
+                              RELATION_KIT='ACIER',
+                              DEFORMATION='PETIT',
+                              GROUP_MA='SURDGB',),
+                           _F(RELATION='META_P_IL_PT',
+                              RELATION_KIT='ACIER',
+                              DEFORMATION='PETIT',
+                              GROUP_MA='SURDGH',),),
+                INCREMENT=_F(LIST_INST=LISTM,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=5.0E-06,
+                               ITER_GLOB_MAXI=34,),);
 
-U= CALC_ELEM (reuse = U,
-   MODELE=MOMEC,
-   CHAM_MATER=CHMATM,
-   NUME_ORDRE=26,
-   RESULTAT=U,
-   OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),
-   EXCIT=_F(CHARGE=CHMEC,),);
+U=CALC_ELEM(reuse =U,
+            MODELE=MOMEC,
+            CHAM_MATER=CHMATM,
+            RESULTAT=U,
+            NUME_ORDRE=26,
+            OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),
+            EXCIT=_F(CHARGE=CHMEC,),);
 
-U = CALC_NO (reuse=U,
-      NUME_ORDRE=26,
-      RESULTAT=U,
-      OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
-
+U=CALC_NO(reuse =U,
+          RESULTAT=U,
+          NUME_ORDRE=26,
+          OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
 #################################################################
+
+
 # TESTS DES RESULTATS
 #################################################################
+
+
 # VALEUR DE REFERENCE POUR LA NON REGRESSION
 #################################################################
 
-TEST_RESU(RESU=( 
 
-# DANS LE 16MND5 - SIGMA LONGI SIYY A T=154000S
-
-# NOEUD N674
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-            NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-            REFERENCE = 'NON_REGRESSION',
-            NOEUD = 'N674',  
-            NOM_CMP = 'SIYY',   VALE = 64.245),
-
-# NOEUD N882
-      _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-        NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-        REFERENCE = 'NON_REGRESSION',
-        NOEUD = 'N882',  
-        NOM_CMP = 'SIYY',  VALE = 113.819),
-
-# NOEUD N1316
-     _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-       NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-       REFERENCE = 'NON_REGRESSION',
-       NOEUD = 'N1316', 
-       NOM_CMP = 'SIYY',   VALE = 141.806),
-
-# NOEUD N1834
-     _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-       NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-       REFERENCE = 'NON_REGRESSION',
-       NOEUD = 'N1834', 
-       NOM_CMP = 'SIYY',   VALE = 169.971),
-
-# NOEUD N2278
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-           REFERENCE = 'NON_REGRESSION',
-           NOEUD = 'N2278', 
-           NOM_CMP = 'SIYY',   VALE = 213.459),
-
-# NOEUD N2719 
-   _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-     NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-     REFERENCE = 'NON_REGRESSION',
-     NOEUD = 'N2719',  
-     NOM_CMP = 'SIYY',   VALE = 258.022),
-
-# DANS LE 304L - SIGMA LONGI SIYY A T=154000S
-
-# NOEUD N5759
-    _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-      NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-      REFERENCE = 'NON_REGRESSION',
-      NOEUD = 'N5759',  
-      NOM_CMP = 'SIYY',   VALE = -81.641),
-
-# NOEUD N5458
-    _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-      NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-      REFERENCE = 'NON_REGRESSION',
-      NOEUD = 'N5458',  
-      NOM_CMP = 'SIYY',   VALE = -140.201),      
-
-# NOEUD N4742
-    _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-      NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-      REFERENCE = 'NON_REGRESSION',
-      NOEUD = 'N4742', 
-      NOM_CMP = 'SIYY',   VALE = -166.688),
-
-# NOEUD N4525
-    _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-      NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-      REFERENCE = 'NON_REGRESSION',
-      NOEUD = 'N4525', 
-      NOM_CMP = 'SIYY',   VALE = -180.092),
-
-# NOEUD N4199
-     _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-       NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-       REFERENCE = 'NON_REGRESSION',
-       NOEUD = 'N4199', 
-       NOM_CMP = 'SIYY',   VALE = -209.876),
-
-# NOEUD N3755
-    _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-      NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-      REFERENCE = 'NON_REGRESSION',
-      NOEUD = 'N3755',  
-      NOM_CMP = 'SIYY',   VALE = -230.442),
-
-# DANS LE 16MND5 - SIGMA CIRCONFERENTIELLE SIZZ A T=154000S
-
-# NOEUD N674
-    _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-      NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-      REFERENCE = 'NON_REGRESSION',
-      NOEUD = 'N674',  
-      NOM_CMP = 'SIZZ',   VALE = 30.937),
-
-# NOEUD N882
-     _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-       NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-       REFERENCE = 'NON_REGRESSION',
-       NOEUD = 'N882',  
-       NOM_CMP = 'SIZZ',   VALE = 23.686),     
-
-# NOEUD N1316
-     _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-       NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-       REFERENCE = 'NON_REGRESSION',
-       NOEUD = 'N1316', 
-       NOM_CMP = 'SIZZ',   VALE = -9.541),
-
-# NOEUD N1834
-     _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-       NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-       REFERENCE = 'NON_REGRESSION',
-       NOEUD = 'N1834', 
-       NOM_CMP = 'SIZZ',   VALE =-70.264),
-
-# NOEUD N2278
-     _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-       NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-       REFERENCE = 'NON_REGRESSION',
-       NOEUD = 'N2278', 
-       NOM_CMP = 'SIZZ',   VALE = -104.430),
-
-# NOEUD N2719
-         _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-           REFERENCE = 'NON_REGRESSION',
-           NOEUD = 'N2719',  
-           NOM_CMP = 'SIZZ',   VALE = -75.962),
-
-
-# DANS LE 304L - SIGMA CIRCONFERENTIELLE SIZZ A T=154000S
-
-# NOEUD N5759
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-           REFERENCE = 'NON_REGRESSION',
-           NOEUD = 'N5759',  
-        NOM_CMP = 'SIZZ',   VALE = -34.912),
-
-# NOEUD N5458
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-           REFERENCE = 'NON_REGRESSION',
-           NOEUD = 'N5458',  
-           NOM_CMP = 'SIZZ',   VALE = -23.355),
-
-# NOEUD N4742
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-           REFERENCE = 'NON_REGRESSION',
-           NOEUD = 'N4742', 
-        NOM_CMP = 'SIZZ',   VALE = 9.290),
-
-# NOEUD N4525
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-           REFERENCE = 'NON_REGRESSION',
-           NOEUD = 'N4525', 
-        NOM_CMP = 'SIZZ',   VALE = 40.284),
-
-# NOEUD N4199
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-           REFERENCE = 'NON_REGRESSION',
-           NOEUD = 'N4199', 
-        NOM_CMP = 'SIZZ',   VALE = 26.372),
-
-# NOEUD N3755
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 1.5E+0,
-           REFERENCE = 'NON_REGRESSION',
-           NOEUD = 'N3755',  
-       NOM_CMP = 'SIZZ',   VALE = 15.857),),);
-
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N674',
+                   VALE=64.245,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N882',
+                   VALE=113.819,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N1316',
+                   VALE=141.806,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N1834',
+                   VALE=169.971,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N2278',
+                   VALE=213.459,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N2719',
+                   VALE=258.022,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N5759',
+                   VALE=-81.641,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N5458',
+                   VALE=-140.201,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N4742',
+                   VALE=-166.688,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N4525',
+                   VALE=-180.092,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N4199',
+                   VALE=-209.876,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N3755',
+                   VALE=-230.442,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N674',
+                   VALE=30.937,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N882',
+                   VALE=23.686,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N1316',
+                   VALE=-9.541,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N1834',
+                   VALE=-70.264,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N2278',
+                   VALE=-104.43,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N2719',
+                   VALE=-75.962,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N5759',
+                   VALE=-34.912,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N5458',
+                   VALE=-23.355,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N4742',
+                   VALE=9.29,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N4525',
+                   VALE=40.284,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N4199',
+                   VALE=26.372,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N3755',
+                   VALE=15.857,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.5,
+                   REFERENCE='NON_REGRESSION',),),);
 ############################################
+
+
 # TEST DES RESULTATS OBTENUS EN CONTRAINTES 
 # PAR RAPPORT AUX MESURES - VALEURS EN PEAU EXTERNE
 ############################################
 
-TEST_RESU(RESU=( 
 
-# DANS LE 16MND5 - SIYY A T=154000S
-
-# NOEUD N674
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N674',  
-           NOM_CMP = 'SIYY',   VALE = 60.2),
-
-# NOEUD N882
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N882',  
-           NOM_CMP = 'SIYY',   VALE = 99.6),
-
-# NOEUD N1316
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N1316', 
-        NOM_CMP = 'SIYY',   VALE = 119.2),
-
-# NOEUD N1834
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N1834', 
-        NOM_CMP = 'SIYY',   VALE = 109.07),
-
-# NOEUD N2278
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N2278', 
-        NOM_CMP = 'SIYY',   VALE = 153.34),
-
-# NOEUD N2719
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N2719',  
-        NOM_CMP = 'SIYY',   VALE = 188.54),
-
-# DANS LE 304L - SIYY A T=154000S
-
-# NOEUD N5759
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N5759',  
-        NOM_CMP = 'SIYY',   VALE = -87.00),
-
-# NOEUD N5458
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N5458',  
-           NOM_CMP = 'SIYY',   VALE = -145.52),
-
-# NOEUD N4742
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N4742', 
-           NOM_CMP = 'SIYY',   VALE = -190.52),
-
-# NOEUD N4525
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N4525', 
-           NOM_CMP = 'SIYY',   VALE = -174.06),
-   
-# NOEUD N4199
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N4199', 
-           NOM_CMP = 'SIYY',   VALE = -220.18),
-
-# NOEUD N3755
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N3755',  
-           NOM_CMP = 'SIYY',   VALE = -181.92),
-
-# DANS LE 16MND5 - SIGMA CIRCONFERENTIELLE
-
-# NOEUD N674
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N674',  
-           NOM_CMP = 'SIZZ',   VALE = 40.35),
-
-# NOEUD N882
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N882',  
-           NOM_CMP = 'SIZZ',   VALE = 61.39),
-
-# NOEUD N1316
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N1316', 
-           NOM_CMP = 'SIZZ',   VALE = 48.03),
-
-# NOEUD N1834
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N1834', 
-           NOM_CMP = 'SIZZ',   VALE = 7.78),
-
-# NOEUD N2278
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N2278', 
-           NOM_CMP = 'SIZZ',   VALE = -64.98),
- 
-# NOEUD N2719
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N2719',  
-           NOM_CMP = 'SIZZ',   VALE = -98.83),
-
-# DANS LE 304L - SIGMA CIRCONFERENTIELLE
-
-# NOEUD N5759
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N5759',  
-           NOM_CMP = 'SIZZ',   VALE = -40.32),
-
-# NOEUD N5458
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N5458',  
-           NOM_CMP = 'SIZZ',   VALE = -16.58),
-
-# NOEUD N4742
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N4742', 
-           NOM_CMP = 'SIZZ',   VALE = 39.47),
-
-# NOEUD N4525
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N4525', 
-           NOM_CMP = 'SIZZ',   VALE = 53.15),
-
-# NOEUD N4199
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N4199', 
-           NOM_CMP = 'SIZZ',   VALE = -26.56),
-
-# NOEUD N3755
-         _F(RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA',
-           NUME_ORDRE = 26,  CRITERE = 'ABSOLU',   PRECISION = 80.,
-           REFERENCE = 'SOURCE_EXTERNE',
-           NOEUD = 'N3755',  
-           NOM_CMP = 'SIZZ',   VALE = 29.26),),);
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N674',
+                   VALE=60.2,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N882',
+                   VALE=99.6,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N1316',
+                   VALE=119.2,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N1834',
+                   VALE=109.07,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N2278',
+                   VALE=153.34,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N2719',
+                   VALE=188.54,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N5759',
+                   VALE=-87.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N5458',
+                   VALE=-145.52,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N4742',
+                   VALE=-190.52,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N4525',
+                   VALE=-174.06,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N4199',
+                   VALE=-220.18,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   NOEUD='N3755',
+                   VALE=-181.92,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N674',
+                   VALE=40.35,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N882',
+                   VALE=61.39,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N1316',
+                   VALE=48.03,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N1834',
+                   VALE=7.78,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N2278',
+                   VALE=-64.98,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N2719',
+                   VALE=-98.83,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N5759',
+                   VALE=-40.32,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N5458',
+                   VALE=-16.58,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N4742',
+                   VALE=39.47,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N4525',
+                   VALE=53.15,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N4199',
+                   VALE=-26.56,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=26,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   NOEUD='N3755',
+                   VALE=29.26,
+                   CRITERE='ABSOLU',
+                   PRECISION=80.0,
+                   REFERENCE='SOURCE_EXTERNE',),),);
 
 FIN();

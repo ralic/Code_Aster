@@ -1,6 +1,7 @@
-# MODIF  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
-# ssns106f.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test R
+# ssns106f.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -302,13 +303,14 @@ RESU1 = STAT_NON_LINE(
                                     RELATION='ENDO_ISOT_BETON',
                                     ALGO_C_PLAN='DEBORST',
                                     ITER_MAXI_DEBORST=5, 
+                                    RESI_DEBO_MAXI=1.E-4,
                                     DEFORMATION='PETIT'),
                                  _F(RESO_INTE='IMPLICITE',
                                     GROUP_MA=('ACIER1L','ACIER2L',
                                               'ACIER1T','ACIER2T'),
                                     RESI_INTE_RELA=1.0E-06,
                                     ITER_INTE_PAS=0,
-                                    ALGO_1D='DEBORST',
+                                  #  ALGO_1D='DEBORST',
                                     ITER_INTE_MAXI=10,
                                     RELATION='GRILLE_ISOT_LINE',
                                     ALGO_C_PLAN='ANALYTIQUE',
@@ -341,7 +343,7 @@ RESU_G = STAT_NON_LINE(
                                      ITER_GLOB_MAXI=25,
                                      ),
                      NEWTON=_F(
-                              REAC_ITER=1,
+                              REAC_ITER=2,
                               PAS_MINI_ELAS=0.0,
                               MATRICE='TANGENTE',
                               REAC_INCR=1),
@@ -352,7 +354,8 @@ RESU_G = STAT_NON_LINE(
                       CARA_ELEM = CAEL_G,
                       COMP_INCR=_F(
                                    RELATION ='KIT_DDI',
-                                   RELATION_KIT=('GLRC_DM','VMIS_CINE_LINE')
+                                   RELATION_KIT=('GLRC_DM','VMIS_CINE_LINE'),
+                                   ITER_MAXI_DEBORST = 15,
                                   ),
                       INCREMENT=_F( LIST_INST = inst1,
                                     PRECISION =1.E-1,

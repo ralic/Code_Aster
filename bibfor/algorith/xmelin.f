@@ -5,7 +5,7 @@ C
       INTEGER     TYPINT
       INTEGER     NNINT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C ======================================================================
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
+C ROUTINE CONTACT GRAND GLISSEMENTS (METHODE XFEM - UTILITAIRE)
 C
 C RETOURNE LE NOMBRE DE POINTS D'INTEGRATION POUR UN ELEMENT DE CONTACT
 C SUIVANT LE TYPE DE SCHEMA D'INTEGRATION
@@ -61,65 +61,41 @@ C
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 3
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 3
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 6
-        IF (TYPMA(1:3) .EQ. 'QU4') NNINT = 4
-        IF (TYPMA(1:3) .EQ. 'QU8') NNINT = 9
-        IF (TYPMA(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 2) THEN
         IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 2
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 2
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 3
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 6
-        IF (TYPMA(1:3) .EQ. 'QU4') NNINT = 4
-        IF (TYPMA(1:3) .EQ. 'QU8') NNINT = 9
-        IF (TYPMA(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 3) THEN
         IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 3
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 3
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 6
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 6
-        IF (TYPMA(1:3) .EQ. 'QU4') NNINT = 9
-        IF (TYPMA(1:3) .EQ. 'QU8') NNINT = 9
-        IF (TYPMA(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 4) THEN
         IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 5
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 5
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 15
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 15
-        IF (TYPMA(1:3) .EQ. 'QU4') NNINT = 21
-        IF (TYPMA(1:3) .EQ. 'QU8') NNINT = 21
-        IF (TYPMA(1:3) .EQ. 'QU9') NNINT = 21
       ELSEIF (TYPINT .EQ. 5) THEN
         IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 9
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 9
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 42
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 42
-        IF (TYPMA(1:3) .EQ. 'QU4') NNINT = 65
-        IF (TYPMA(1:3) .EQ. 'QU8') NNINT = 65
-        IF (TYPMA(1:3) .EQ. 'QU9') NNINT = 65
       ELSEIF (TYPINT .EQ. 6) THEN
         IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 4
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 4
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 4
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 4
-        IF (TYPMA(1:3) .EQ. 'QU4') NNINT = 16
-        IF (TYPMA(1:3) .EQ. 'QU8') NNINT = 16
-        IF (TYPMA(1:3) .EQ. 'QU9') NNINT = 16
       ELSEIF (TYPINT .EQ. 7) THEN
         IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 5
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 5
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 6
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 6
-        IF (TYPMA(1:3) .EQ. 'QU4') NNINT = 25
-        IF (TYPMA(1:3) .EQ. 'QU8') NNINT = 25
-        IF (TYPMA(1:3) .EQ. 'QU9') NNINT = 25
       ELSEIF (TYPINT .EQ. 8) THEN
         IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 10
         IF (TYPMA(1:3) .EQ. 'SE3') NNINT = 10
         IF (TYPMA(1:3) .EQ. 'TR3') NNINT = 42
         IF (TYPMA(1:3) .EQ. 'TR6') NNINT = 42
-        IF (TYPMA(1:3) .EQ. 'QU4') NNINT = 100
-        IF (TYPMA(1:3) .EQ. 'QU8') NNINT = 100
-        IF (TYPMA(1:3) .EQ. 'QU9') NNINT = 100
       ELSEIF (TYPINT .EQ. 12) THEN
         IF (TYPMA(1:3) .EQ. 'SE2') NNINT = 2
       ELSEIF (TYPINT .EQ. 13) THEN

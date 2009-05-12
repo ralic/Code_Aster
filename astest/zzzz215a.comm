@@ -1,5 +1,6 @@
-# MODIF  DATE 23/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
+# zzzz215a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

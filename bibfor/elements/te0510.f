@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,10 +62,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8        FF(20), DFDI(20,3)
       INTEGER       NDIM,IBID
       LOGICAL       LBID
+      INTEGER       ZXAIN,XXMMVD
 C......................................................................
 
       CALL JEMARQ()
 C
+      ZXAIN = XXMMVD('ZXAIN')
       CALL ELREF1(ELP)
       CALL ELREF4(' ','RIGI',NDIM,NNOP,IBID,IBID,IBID,IBID,IBID,IBID)
 C
@@ -113,8 +115,8 @@ C    ON TRANFORME LES COORDONNÉES RÉELES EN COORD. DANS L'ÉLÉMENT DE REF
         DO 112 JJ=1,NDIM
           ZR(JOUT1-1+NDIM*(I-1)+JJ)=PTREF(JJ)
  112    CONTINUE
-         DO 113 J=1,4
-           ZR(JOUT2-1+4*(I-1)+J)=ZR(JAINT-1+4*(I-1)+J)
+         DO 113 J=1,ZXAIN
+           ZR(JOUT2-1+ZXAIN*(I-1)+J)=ZR(JAINT-1+ZXAIN*(I-1)+J)
  113    CONTINUE
  110  CONTINUE
 
@@ -136,8 +138,8 @@ C     TAU1 EST LE PROJETÉ DE GRAD(LST) SUR LA SURFACE
 C     TAU2 EST LE PRODUIT VECTORIEL : ND ^ TAU1
 C                   (BOOK IV 01/02/05)
       DO 130 NLI=1,NINTER
-        IA=NINT(ZR(JAINT-1+4*(NLI-1)+1))
-        IN=NINT(ZR(JAINT-1+4*(NLI-1)+2))
+        IA=NINT(ZR(JAINT-1+ZXAIN*(NLI-1)+1))
+        IN=NINT(ZR(JAINT-1+ZXAIN*(NLI-1)+2))
 
 C       INITIALISATION TAU1 POUR CAS 2D
         TAU1(3)=0.D0
@@ -152,8 +154,8 @@ C       INITIALISATION TAU1 POUR CAS 2D
           CALL ASSERT(IA.NE.0)
           NA=AR(IA,1)
           NB=AR(IA,2)
-          LONGAR=ZR(JAINT-1+4*(NLI-1)+3)
-          AL=ZR(JAINT-1+4*(NLI-1)+4)
+          LONGAR=ZR(JAINT-1+ZXAIN*(NLI-1)+3)
+          AL=ZR(JAINT-1+ZXAIN*(NLI-1)+4)
           DO 132 J=1,NDIM
             ND(J)  = (1-AL/LONGAR) * ZR(JGRLSN-1+NDIM*(NA-1)+J)
      &             +    AL/LONGAR  * ZR(JGRLSN-1+NDIM*(NB-1)+J)

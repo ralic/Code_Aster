@@ -1,7 +1,8 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN
 #              EN CONTRAINTES EFFECTIVES
+# wtnv128b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

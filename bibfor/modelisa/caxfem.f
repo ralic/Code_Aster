@@ -1,7 +1,7 @@
       SUBROUTINE CAXFEM(FONREE,CHAR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +28,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE XFEM (PREPARATION - AFFE_CHAR_MECA)
 C
-C CREER LES RELATIONS LINÉAIRES QUI ANNULENT LES DDLS EN TROP
+C CREER LES RELATIONS LINÃ‰AIRES QUI ANNULENT LES DDLS EN TROP
 C
 C ----------------------------------------------------------------------
 C
@@ -73,7 +73,7 @@ C
       CHARACTER*8  MODELX  
       CHARACTER*24 XNRELL,XNBASC
       INTEGER      JXNREL,JXNBAS      
-      CHARACTER*19 NLISEQ,NLISRL,NLISCO,NBASCO           
+      CHARACTER*19 NLISEQ,NLISRL,NLISCO,NLISUP,NBASCO           
 C
 C ----------------------------------------------------------------------
 C
@@ -180,11 +180,12 @@ C --- RELATIONS ENTRE LES INCONNUES DE CONTACT (POUR LA LBB)
 C
         IF (LCONTX) THEN
           NBASCO = ZK24(JXNBAS+I-1)(1:19)
-          NLISEQ = ZK24(JXNREL+3*(I-1)  )(1:19)
-          NLISRL = ZK24(JXNREL+3*(I-1)+1)(1:19)
-          NLISCO = ZK24(JXNREL+3*(I-1)+2)(1:19)
-          CALL XRELCO(NOMA  ,NLISEQ,NLISRL,NLISCO,
-     &                NBASCO,LISREL,NREL)        
+          NLISEQ = ZK24(JXNREL+4*(I-1)  )(1:19)
+          NLISRL = ZK24(JXNREL+4*(I-1)+1)(1:19)
+          NLISCO = ZK24(JXNREL+4*(I-1)+2)(1:19)
+          NLISUP = ZK24(JXNREL+4*(I-1)+3)(1:19)
+          CALL XRELCO(NOMA  ,NLISEQ,NLISRL,NLISCO,NLISUP,
+     &                NBASCO,LISREL,NREL)
         ENDIF
       
       

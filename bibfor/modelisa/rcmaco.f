@@ -1,11 +1,10 @@
-      SUBROUTINE RCMACO ( CHMAT , INDMAT ,NBMAT, IMATE ,EOUN)
+      SUBROUTINE RCMACO ( CHMAT , INDMAT ,NBMAT, IMATE)
       IMPLICIT   NONE
-      CHARACTER*1        EOUN
       CHARACTER*8        CHMAT
       INTEGER            INDMAT,NBMAT,IMATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +33,6 @@ C IN  IMATE  : NUMERO DU GROUPE
 C     IGRP   : ADRESSE DU VECTEUR K8 CONTENANT LES NOMS DES MATERIAUX
 C     INGRP  : ADRESSE DU VECTEUT ENTIER CONTENANT LE NOMBRE DE MATERIAU
 C              POUR CHAQUE OCCURRENCE DE AFFE
-C IN  EOUN  : / 'E' : MATERIAU PAR ELEMENTS
-C             / 'N' : MATERIAU PAR NOEUDS
 C
 C    CODI(1)   : ADRESSE ZK16  DE '.MATERIAU.NOMRC'
 C    CODI(2)   : NOMBRE DE TYPES DE COMPORTEMENT
@@ -111,19 +108,13 @@ C
       CALL JEMARQ()
       PREC   = 1.0D0
 
-      IF (EOUN.EQ.'E') THEN
         CALL JEVEUT(CHMAT(1:8)//'.MATE_CODE.GRP' ,'L',IGRP)
-      ELSE IF (EOUN.EQ.'N') THEN
-        CALL JEVEUT(CHMAT(1:8)//'.MATN_CODE.GRP' ,'L',IGRP)
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
-
       MATERI=ZK8(IGRP+INDMAT)
       NOMMAT = MATERI
       CALL JEVEUO (CHMAT(1:8)//'.CHAMP_MAT .DESC', 'L', JDESC )
       CALL JENUNO(JEXNUM('&CATA.GD.NOMCMP',ZI(JDESC)),NOMGD)
       CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NBCMP,K8B,IER)
+      IF (IMATE.GT.9999) CALL U2MESS('F','CALCULEL6_11')
       CALL CODENT ( IMATE, 'D0', KNUMA1 )
       CODI  = ' '
       CODI(1:8)  = NOMMAT
@@ -174,7 +165,6 @@ C
            KK = JDIM+LMAT*(K-1)
            CHMA = NOMMAT//'.'//ZK16(JNOMRC+K-1)(1:10)
            CALL CODENT(K, 'D0', KNUMA2)
-C           CH19 = '&&'//CHMA(1:8)//'.'//KNUMA2//'.'//KNUMA1
            CH19 = CHMA(1:8)//'.'//KNUMA2//KNUMA1//KNUMA3
            CALL JEDUPC(' ', CHMA, 1, 'V', CH19, .FALSE.)
            CALL JELIRA ( CH19//'.VALR', 'LONUTI', ZI(KK)  , K8B )
@@ -260,7 +250,7 @@ C ---        INTERPOLATION DES COEFFICIENTS DE DILATATION ALPHA
 C ---        EN TENANT COMPTE DE LA TEMPERATURE DE DEFINITION TDEF :
 C            -----------------------------------------------------
                     CALL ALFINT ( CHMAT, IMATE, NOMMAT, TDEF, NOPARA,
-     &                                            K, PREC, CH19,EOUN)
+     &                                            K, PREC, CH19)
                     ZK8(ZI(KK+5)+ZI(KK)+ZI(KK+2)+ZI(KK+4)+M) = CH19
                  ENDIF
   23           CONTINUE

@@ -1,9 +1,9 @@
-      SUBROUTINE XBASCO(NDIM  ,NUNOA ,NUNOB ,NUNOM ,
+      SUBROUTINE XBASCO(NDIM  ,MAQUA,NUNOA ,NUNOB ,NUNOM ,
      &                  A     ,B     ,C     ,S     ,
      &                  JGRLNV,JGRLTV,JCNSV ,JCNSL )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C
       INTEGER       NDIM
       REAL*8        A(NDIM),B(NDIM),C(NDIM),S
       INTEGER       JGRLNV,JGRLTV,JCNSV,JCNSL
+      LOGICAL       MAQUA
 C      
 C ----------------------------------------------------------------------
 C
@@ -40,8 +41,10 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  MAQUA  : .TRUE. SI LES MAILLES SONT QUADRATIQUES
 C IN  NUNOA  : NUMERO DU NOEUD EXTREMITE 1 DE L'ARETE
 C IN  NUNOB  : NUMERO DU NOEUD EXTREMITE 2 DE L'ARETE
+C IN  NUNOM  : NUMERO DU NOEUD MILIEU      DE L'ARETE
 C IN  A      : COORDONNEES DU NOEUD EXTREMITE 1 DE L'ARETE
 C IN  B      : COORDONNEES DU NOEUD EXTREMITE 2 DE L'ARETE
 C IN  C      : COORDONNEES DU POINT DE CONTACT SUR L'ARETE
@@ -149,37 +152,96 @@ C
 C --- ARCHIVAGE DE LA BASE COVARIANTE
 C
       IF (NDIM.EQ.2) THEN
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+1)  = C(1)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+2)  = C(2)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+3)  = ZERO
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+4)  = ND(1)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+5)  = ND(2)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+6)  = ZERO
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+7)  = TAU1(1)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+8)  = TAU1(2)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+9)  = C(1)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+10) = ZERO
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+11) = ZERO
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+12) = ZERO
+        IF (MAQUA) THEN
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+1)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+2)  = C(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+3)  = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+4)  = ND(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+5)  = ND(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+6)  = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+7)  = TAU1(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+8)  = TAU1(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+9)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+10) = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+11) = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+12) = ZERO
+        ELSE
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+1)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+2)  = C(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+3)  = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+4)  = ND(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+5)  = ND(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+6)  = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+7)  = TAU1(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+8)  = TAU1(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+9)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+10) = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+11) = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+12) = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+1)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+2)  = C(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+3)  = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+4)  = ND(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+5)  = ND(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+6)  = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+7)  = TAU1(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+8)  = TAU1(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+9)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+10) = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+11) = ZERO
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+12) = ZERO
+        ENDIF
       ELSEIF (NDIM.EQ.3) THEN
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+1)  = C(1)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+2)  = C(2)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+3)  = C(3)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+4)  = ND(1)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+5)  = ND(2)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+6)  = ND(3)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+7)  = TAU1(1)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+8)  = TAU1(2)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+9)  = TAU1(3)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+10) = TAU2(1)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+11) = TAU2(2)
-        ZR(JCNSV-1+ZXBAS*(NUNOM-1)+12) = TAU2(3)
+        IF (MAQUA) THEN
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+1)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+2)  = C(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+3)  = C(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+4)  = ND(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+5)  = ND(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+6)  = ND(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+7)  = TAU1(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+8)  = TAU1(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+9)  = TAU1(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+10) = TAU2(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+11) = TAU2(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOM-1)+12) = TAU2(3)
+        ELSE
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+1)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+2)  = C(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+3)  = C(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+4)  = ND(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+5)  = ND(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+6)  = ND(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+7)  = TAU1(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+8)  = TAU1(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+9)  = TAU1(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+10) = TAU2(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+11) = TAU2(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOA-1)+12) = TAU2(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+1)  = C(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+2)  = C(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+3)  = C(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+4)  = ND(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+5)  = ND(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+6)  = ND(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+7)  = TAU1(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+8)  = TAU1(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+9)  = TAU1(3)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+10) = TAU2(1)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+11) = TAU2(2)
+          ZR(JCNSV-1+ZXBAS*(NUNOB-1)+12) = TAU2(3)
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)  
       ENDIF
 C
       DO 900 J=1,ZXBAS
-        ZL(JCNSL-1+ZXBAS*(NUNOM-1)+J)=.TRUE.
+        IF (MAQUA) THEN
+          ZL(JCNSL-1+ZXBAS*(NUNOM-1)+J)=.TRUE.
+        ELSE
+          ZL(JCNSL-1+ZXBAS*(NUNOA-1)+J)=.TRUE.
+          ZL(JCNSL-1+ZXBAS*(NUNOB-1)+J)=.TRUE.
+        ENDIF
  900  CONTINUE
 C
       CALL JEDEMA()

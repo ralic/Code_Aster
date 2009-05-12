@@ -5,7 +5,7 @@
      &                    NBNOEU, NBMAIL, NBCOOR, VECGRM, NBCGRM )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2008   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ C
       PARAMETER ( NOMPRO = 'LRMHDF' )
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 48)
+      PARAMETER (NTYMAX = 53)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
       INTEGER EDLECT

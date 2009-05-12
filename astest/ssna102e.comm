@@ -1,6 +1,7 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 
 # TITRE CONTACT MULTICORPS ELASTIQUES
+# ssna102e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

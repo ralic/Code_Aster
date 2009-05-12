@@ -1,8 +1,9 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 23/07/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD) 
 # TITRE  : POUTRE EN FLAMBEMENT 
+# ssnl502c.para = tps_job 80 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

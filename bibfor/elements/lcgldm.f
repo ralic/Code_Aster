@@ -1,7 +1,8 @@
       SUBROUTINE LCGLDM (EPSM,DEPS,VIM,OPTION,SIG,VIP,DSIDEP,
      &             T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,SEUIL,ALF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,6 +47,7 @@ C       DSIDEP  : MATRICE TANGENTE
 C       D2      : ET DE L AUTRE 
 C ----------------------------------------------------------------------
       LOGICAL     RIGI, RESI,ELAS,MTG, COUP,ELAS1,ELAS2,LSING1,LSING2
+      LOGICAL     LELAS,LRGM
       INTEGER     NDTOT, K, L, I, J, M, N, P, T(2,2),IRET,KDMAX
       REAL*8      EPS(6),TREPS,SIGEL(3)
       REAL*8      FD1, FD2,DA1,DA2, ENER, TROISK, G
@@ -72,8 +74,14 @@ C -- OPTION ET MODELISATION
       RESI  = (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL')
       COUP  = (OPTION(6:9).EQ.'COUP')
       IF (COUP) RIGI=.TRUE.
+      LELAS =  OPTION .EQ.'RIGI_MECA       ' 
+      LRGM  =  OPTION .EQ.'RIGI_MECA       ' 
 
 C -- INITIALISATION
+      IF(LRGM) THEN
+        CALL R8INIR(6,0.D0,EPSM,1)
+        CALL R8INIR(6,0.D0,DEPS,1)
+      ENDIF  
       MU  = DEUXMU*0.5D0
       MUF = DEUMUF*0.5D0
 C-- ICI ON SUPPOSE QUE GF1=GF2, CE QUI N EST PAS NECESSAIRE
@@ -139,8 +147,14 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
       COF2 = 0.5D0*LAMBDA*TR2D * GTR2
       Q2D = 0.25D0*LAMBDA * TR2D*TR2D * GTR2 
      &    + 0.5D0*MU * (EMP(1)*EMP(1)*GI(1) + EMP(2)*EMP(2)*GI(2)) 
-      DA1 = VIM(1)
-      DA2 = VIM(2)
+      
+      IF(LRGM) THEN
+        DA1 = 0.0D0
+        DA2 = 0.0D0
+      ELSE
+        DA1 = VIM(1)
+        DA2 = VIM(2)
+      ENDIF
       CALL CEPS33 (LAMBDA,DEUXMU,TR2D,DA1,DA2,GMT,GMC
      &                   ,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
       TREPS  = TR2D + EPS33
@@ -166,12 +180,15 @@ C        L'ORDRE DE D1,2 = 1 ET LA PRECISION 1D-8*1D-8 ON A
         IF (DA2.LT.VIM(2)) THEN 
           DA2 = VIM(2)  
         END IF  
-        ELAS = (DA1.LE.VIM(1)) .AND. (DA2.LE.VIM(2))        
         ELAS1 = DA1.LE.VIM(1)
-        ELAS2 = DA2.LE.VIM(2)        
+        ELAS2 = DA2.LE.VIM(2)
+         
+        ELAS1 = ELAS1 .OR. LELAS       
+        ELAS2 = ELAS2 .OR. LELAS 
+        ELAS  = ELAS1 .AND. ELAS2
+              
         VIP(1) = DA1  
         VIP(2) = DA2  
-
         IF(ELAS1) THEN 
           VIP(3) = 0.0D0 
         ELSE
@@ -184,11 +201,21 @@ C        L'ORDRE DE D1,2 = 1 ET LA PRECISION 1D-8*1D-8 ON A
         ENDIF
       ELSE
 C   IF NOT RESI ....
-        DA1   = VIM(1) 
-        DA2   = VIM(2) 
-        ELAS1 = NINT(VIM(3)).EQ.0
-        ELAS2 = NINT(VIM(4)).EQ.0
-        ELAS=(ELAS1.AND.ELAS2)
+        IF(LRGM) THEN
+          DA1 = 0.0D0
+          DA2 = 0.0D0
+          ELAS1 = .TRUE.
+          ELAS2 = .TRUE.
+          ELAS  = .TRUE.
+        ELSE
+          DA1   = VIM(1) 
+          DA2   = VIM(2) 
+          ELAS1 = NINT(VIM(3)).EQ.0
+          ELAS2 = NINT(VIM(4)).EQ.0
+          ELAS1 = ELAS1 .OR. LELAS     
+          ELAS2 = ELAS2 .OR. LELAS 
+          ELAS=(ELAS1.AND.ELAS2)
+        ENDIF  
       ENDIF
       TR2 = EMP(1)*EMP(1) + EMP(2)*EMP(2) + EPS33*EPS33
       EN0 = 0.5D0*LAMBDA*TREPS2 + MU*TR2
@@ -222,16 +249,24 @@ C   IF NOT RESI ....
         FD2  = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)          
       ENDIF  
 C -- CALCUL DES CONTRAINTES
-      LAMBDD = LAMBDA *0.5D0 *(FD1 + FD2)
+      IF(LELAS) THEN
+        LAMBDD = LAMBDA
+      ELSE
+        LAMBDD = LAMBDA *0.5D0 *(FD1 + FD2)
+      ENDIF
       DO 80, K=1,2
-        IF (EMP(K).GT.0.D0) THEN
-          FDI1(K)  = (1.0D0 + GMT*DA1) / (1.0D0 + DA1)  
-          FDI2(K)  = (1.0D0 + GMT*DA2) / (1.0D0 + DA2)  
-        ELSE
-          FDI1(K)  = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)          
-          FDI2(K)  = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)      
+        IF(LELAS) THEN
+          DEUMUD(K) = DEUXMU          
+        ELSE  
+          IF (EMP(K).GT.0.D0) THEN
+            FDI1(K)  = (1.0D0 + GMT*DA1) / (1.0D0 + DA1) 
+            FDI2(K)  = (1.0D0 + GMT*DA2) / (1.0D0 + DA2) 
+          ELSE
+            FDI1(K)  = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)        
+            FDI2(K)  = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)    
+          ENDIF
+          DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
         ENDIF
-        DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
  80   CONTINUE
       SIGP(1)=LAMBDD*TREPS + DEUMUD(1)*EMP(1)
       SIGP(2)=LAMBDD*TREPS + DEUMUD(2)*EMP(2)
@@ -341,6 +376,16 @@ C -- CALCUL DE LA MATRICE TANGENTE
           ENDIF
           DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
  1030   CONTINUE
+ 
+        IF(LELAS) THEN
+          KSI2D = 1.0D0
+          LAMBDD = LAMBDA
+          DEUMUD(1) = DEUXMU
+          DEUMUD(2) = DEUXMU
+          LAMFD  =  LAMF
+          DEMUDF(1) =  DEUMUF
+          DEMUDF(2) =  DEUMUF
+        ENDIF 
         DE33I = -LAMBDA*KSI2D/(DEUXMU  + LAMBDA*KSI2D)
         
         DO 100 K = 1,2
@@ -495,5 +540,6 @@ C--------COUPLAGE M-F -----------------
 C   NOT ELAS
       END IF 
       CALL TANMGL(T,VMP,VFP,DSPDEP,DSIDEP)
+
       ENDIF 
       END

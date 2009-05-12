@@ -1,5 +1,6 @@
-# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
+# ssll102g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

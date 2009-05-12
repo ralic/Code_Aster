@@ -1,5 +1,6 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (TETRA4)
+# tpll01h.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

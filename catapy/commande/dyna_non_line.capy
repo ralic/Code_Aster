@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,6 +56,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                 SUPER_MAILLE=SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**',),
                 FONC_MULT   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
               ),
+         AMOR_RAYL_RIGI = SIMP(statut='f',typ='TXM',defaut="TANGENTE",into=("TANGENTE","ELASTIQUE"),),
          AMOR_MODAL      =FACT(statut='f',
            regles=(EXCLUS('AMOR_REDUIT','LIST_AMOR'),),
            MODE_MECA       =SIMP(statut='f',typ=mode_meca),

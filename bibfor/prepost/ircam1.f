@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/06/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
       IMPLICIT NONE
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 48)
+      PARAMETER (NTYMAX = 53)
 C
 C 0.1. ==> ARGUMENTS
 C
@@ -87,7 +87,7 @@ C
       CHARACTER*8 UNIINS, TYPECH
       CHARACTER*8 NOMTYP(*)
       CHARACTER*24 NTLCMP, NTNCMP, NTUCMP, NTPROA
-      CHARACTER*32 NOCHMD
+      CHARACTER*32 NOCHMD, NOMPB(2)
       CHARACTER*(*) NOFIMD,PARTIE
       CHARACTER*32 NOMAMD
       CHARACTER*32 CAIMPK(2,NBIMPR)
@@ -238,6 +238,20 @@ C
           ELSE
             NBPG = CAIMPI(2,NRIMPR)
             NBSP = CAIMPI(3,NRIMPR)
+            WRITE(6,*)'NOCHMD',NOCHMD,'NBPG',NBPG,'TYPECH',TYPECH
+            IF ( ((NBPG.EQ.27).OR.(NBPG.EQ.9).OR.(NBPG.EQ.7)).AND.
+     &           (TYPECH.EQ.'ELNO    ') ) THEN
+              NOMPB(1) = NOCHMD(9:22)
+              IF (NBPG.EQ.27) THEN
+                NOMPB(2) = 'HEXA27'
+              ELSEIF (NBPG.EQ.9) THEN
+                NOMPB(2) = 'QUAD9'
+              ELSEIF (NBPG.EQ.7) THEN
+                NOMPB(2) = 'TRIA7'
+              ENDIF
+              CALL U2MESK('A','PREPOST2_84',2,NOMPB(1))
+              GOTO 41
+            ENDIF
             IF ( NIVINF.GT.1 ) THEN
               WRITE (IFM,4002) NOMTYP(TYMAST), TYGEOM
             ENDIF

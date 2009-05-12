@@ -1,6 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
-# ssnp503b.para = tps_job 50 mem_job 32Mo liste_test S
+# ssnp503b.para = tps_job 75 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,27 +27,30 @@ DEBUT(CODE=_F(NOM='SSNP503B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
 PRE_GIBI();
 
-MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+typma=1
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
+if (typma==1):
+  MAILLAG2=LIRE_MAILLAGE(INFO=1,);
+  Y=3
+
+if (typma==2):
+  MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+  MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
                        LINE_QUAD=_F(GROUP_MA='SURF',),);
-                                
+  Y=2.5
+
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO =(_F(NOM = 'NFISSU',
                                        OPTION = 'PLAN',
-                                       POINT  = (0.0,2.5,),
+                                       POINT  = (0.0,Y,),
                                        VECT_NORMALE = (0.0,1.0),
                                        PRECISION = 1E-1,),),)
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT',),
-                           _F(GROUP_MA=('LIGINF',),
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),),);       
-
+                              MODELISATION='D_PLAN_XFEM_CONT',),),);       
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
 LT1=FORMULE(NOM_PARA=('X','Y'),VALE='-X-10.');  
@@ -85,7 +88,7 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
                                      GLISSIERE='NON',   
                                      COEF_ECHELLE=1.,
                                      FISS_MAIT = FISS1,
-                                     ALGO_LAGR='VERSION2',
+                                     ALGO_LAGR='VERSION1',
                                      ),
                                   _F(METHODE='XFEM',
                                      INTEGRATION='NOEUD',
@@ -101,7 +104,7 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
                                      GLISSIERE='NON',   
                                      COEF_ECHELLE=1.,
                                      FISS_MAIT = FISS2,
-                                     ALGO_LAGR='VERSION2',
+                                     ALGO_LAGR='VERSION1',
                                     ),  
                                   ),
                                 MODELE=MODELEK,
@@ -115,7 +118,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('SURF','LIGINF',),
+                       AFFE=_F(TOUT='OUI',
                                 MATER=ACIER,),);
 
 DEPX=2.00
@@ -175,7 +178,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='SURF',),
                     INCREMENT=_F(LIST_INST=L_INST,),
-                    CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
+                    CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
                                     RESI_GLOB_MAXI=1E-06
                                     )),
                     SOLVEUR=_F(METHODE='MUMPS',
@@ -185,10 +188,16 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
-vale = [[0.0,-8.2318426772263E+03,-6.3690747415476E+03,-6.4300888224696E+03,-4.0794459673115E+03],
-        [0.0,-1.0605073124532E+04,-1.3046818405580E+04,-1.1796897408502E+04,-8.5688582786312E+03],
-        [0.0,0.0,-2.2167189670823E+04,-1.8735268291927E+04,-1.1431030978517E+04],
-        [0.0,0.0,-1.9530883294731E+04,-2.3604277746617E+04,-1.7514909721815E+04]]
+
+vale = [[0.0,-8.1059677419895E+03,-6.4501079962162E+03,-6.4542488547963E+03,-4.1383234820701E+03],
+        [0.0,-1.0392387701211E+04,-1.3120233647294E+04,-1.1868000225318E+04,-8.7124511077385E+03],
+        [0.0,0.0,-2.1971032705744E+04,-1.8731886517003E+04,-1.1800264974966E+04],
+        [0.0,0.0,-1.9159216181349E+04,-2.3596466885199E+04,-1.7951777872766E+04]]
+
+#vale = [[0.0,-8.2318426772263E+03,-6.3690747415476E+03,-6.4300888224696E+03,-4.0794459673115E+03],
+#        [0.0,-1.0605073124532E+04,-1.3046818405580E+04,-1.1796897408502E+04,-8.5688582786312E+03],
+#        [0.0,0.0,-2.2167189670823E+04,-1.8735268291927E+04,-1.1431030978517E+04],
+#        [0.0,0.0,-1.9530883294731E+04,-2.3604277746617E+04,-1.7514909721815E+04]]
         
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -206,10 +215,10 @@ for i in [1,2,3,4]: #Boucle sur les increments
               IMPR_FONCTION='NON',
               TRI=_F(NOM_PARA=('COOR_X',),
                      ORDRE='CROISSANT',),);
-   
+  
    for j in [0,1,2,3,4]: #Boucle sur les positions testees
       if (vale[i-1] [j] == 0.0):
-        precision = 1.0E-12
+        precision = 1.0E-10
         critere = 'ABSOLU'
       else:
         precision = 5.E-2 

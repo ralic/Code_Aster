@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC CALC_ESSAI (ES)
+# sdll137b.para = tps_job 80 mem_job 256Mo mem_aster 40 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

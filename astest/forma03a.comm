@@ -1,6 +1,7 @@
-# MODIF  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN ELASTICITE
+# forma03a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG

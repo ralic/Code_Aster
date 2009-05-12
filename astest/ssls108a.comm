@@ -1,5 +1,6 @@
-# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
+# ssls108a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

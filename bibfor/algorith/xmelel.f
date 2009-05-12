@@ -1,6 +1,6 @@
       SUBROUTINE XMELEL(IIN,NTYMA1,NTYMA2,IORDR,NNDEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,17 +44,21 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER      NBTYP
-      PARAMETER    (NBTYP=4)
-      CHARACTER*8  CPL(NBTYP,4)
+      PARAMETER    (NBTYP=15)
+      CHARACTER*8  CPL(NBTYP,12)
       INTEGER      NPL(NBTYP)
       INTEGER      K
 C
       DATA (CPL(K,1),K=1,NBTYP) /
-     &      'TRIA6','QUAD8','TRIA6','QUAD8'/
+     &      'QUAD8','TRIA6','QUAD4','TRIA3','QUAD4','TRIA3',
+     &      'QUAD8','TRIA6','QUAD4','TRIA3','QUAD4','TRIA3',
+     &      'HEXA8','PENTA6','TETRA4'/
       DATA (CPL(K,2),K=1,NBTYP) /
-     &      'TRIA6','QUAD8','TRIA6','QUAD8'/
+     &      'QUAD8','TRIA6','QUAD4','TRIA3','TRIA3','QUAD4',
+     &      'QUAD8','TRIA6','QUAD4','TRIA3','TRIA3','QUAD4',
+     &      'HEXA8','PENTA6','TETRA4'/
       DATA (NPL(K),K=1,NBTYP) /
-     &      9 ,12 ,9 ,12 /
+     &      12 ,9 ,8 , 6, 7, 7, 12 ,9 ,8 , 6, 7, 7, 16, 12, 8/
 C
 C ----------------------------------------------------------------------
 C

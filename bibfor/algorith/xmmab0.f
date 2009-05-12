@@ -1,10 +1,10 @@
       SUBROUTINE XMMAB0(NDIM,NNC,NNE,NNES,NFAES,IAINES,
-     &                  HPG,FFPC,JACOBI,ESQ,CFACE,
+     &                  HPG,FFPC,JACOBI,TYPMA,CFACE,
      &                  TAU1,TAU2,
      &                  MMAT)     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,8 +25,8 @@ C ======================================================================
       INTEGER  NDIM,NNC,NNE,NNES,NFAES,IAINES,CFACE(5,3)
       REAL*8   HPG,FFPC(9),JACOBI  
       REAL*8   TAU1(3),TAU2(3)     
-      REAL*8   MMAT(81,81)
-      CHARACTER*8  ESQ
+      REAL*8   MMAT(120,120)
+      CHARACTER*8  TYPMA
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0367
@@ -66,7 +66,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER I,J,K,L,II,JJ,INI,INJ,PLI,PLJ,XOULA
-      REAL*8  TT(3,3)
+      REAL*8  TT(2,2)
 C
 C ----------------------------------------------------------------------
 C
@@ -75,8 +75,8 @@ C
 C --- INITIALISATIONS
 C
 
-      DO 300 I = 1,3
-        DO 290 J = 1,3
+      DO 300 I = 1,2
+        DO 290 J = 1,2
           TT(I,J)  = 0.D0
   290   CONTINUE
   300 CONTINUE         
@@ -94,9 +94,9 @@ C
           DO 282 L = 1,NDIM-1
             DO 281 K = 1,NDIM-1
 
-              INI=XOULA(CFACE,NFAES,I,IAINES,ESQ)
+              INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
               CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
-              INJ=XOULA(CFACE,NFAES,J,IAINES,ESQ)
+              INJ=XOULA(CFACE,NFAES,J,IAINES,TYPMA)
               CALL XPLMA2(NDIM,NNE,NNES,INJ,PLJ)
 
               II = PLI+L

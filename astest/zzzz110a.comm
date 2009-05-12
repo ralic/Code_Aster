@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE VABHHTS J.PELLET
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D ET EN FILAIRE)
 #                   + CAS_FIGURE='2D'
@@ -112,14 +112,19 @@ DETRUIRE(CONCEPT=_F(NOM=XX))
 #=================================================================================
 # 2.3) projection d'un maillage 2D sur un maillage filaire  (CARRE2 -> AC)
 #=================================================================================
-XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='ELEM',  MODELE_1=CARRE2,MODELE_2=AC, CAS_FIGURE='2D' )
+FX = FORMULE(NOM_PARA=('X','Y'),VALE=' 2.*X + 3.*Y + 4.')
+FY = FORMULE(NOM_PARA=('X','Y'),VALE='-3.*X + 2.*Y + 7.')
+
+XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='ELEM',  MODELE_1=CARRE2,MODELE_2=AC, CAS_FIGURE='2D',
+              # On en profite pour tester TRANSF_GEOM_1 qui doit annuler TRANSF_GEOM_2 :
+              TRANSF_GEOM_1=(FX,FY,),  TRANSF_GEOM_2=(FX,FY,),)
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    GROUP_NO='A', VALE=3.0, REFERENCE='ANALYTIQUE'),)
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    NOEUD='N356', VALE=4.0, REFERENCE='ANALYTIQUE'),) # N356: X=0.5 Y=0.5
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(CONCEPT=_F(NOM=(XX,FX,FY)))
 
 
 

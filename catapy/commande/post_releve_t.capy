@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 12/05/2009   AUTEUR DESROCHES X.DESROCHES 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,8 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
          ACTION          =FACT(statut='o',max='**',
                                regles=(UN_PARMI('RESULTAT','CHAM_GD'),), 
 
-           OPERATION       =SIMP(statut='o',typ='TXM',into=("EXTRACTION","MOYENNE","EXTREMA"),validators=NoRepeat(),max=2),
+           OPERATION       =SIMP(statut='o',typ='TXM',into=("EXTRACTION","MOYENNE","MOYENNE_ARITH","EXTREMA"),
+           validators=NoRepeat(),max=2),
            INTITULE        =SIMP(statut='o',typ='TXM'),  
 
            CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,
@@ -105,7 +106,19 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
               NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),  
            ),
 
-           b_autre   =BLOC(condition="OPERATION != 'EXTREMA'",
+           b_MOYENNE_ARITH   =BLOC(condition="OPERATION == 'MOYENNE_ARITH'",
+                             fr="moyenne sur des groupes",
+                             regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
+              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+              NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+              TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",)),
+              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),  
+           ),
+
+           b_autre   =BLOC(condition="OPERATION != 'EXTREMA' and OPERATION != 'MOYENNE_ARITH'",
                            fr="extraction et moyenne",
                            regles=(AU_MOINS_UN('CHEMIN','GROUP_NO','NOEUD'),
                                    EXCLUS('CHEMIN','GROUP_NO'),

@@ -1,7 +1,7 @@
-# MODIF  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE SOLLICITATION SISMIQUE D'UNE COLONNE DE SOL 
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
-# wdnp101a.para = tps_job 600 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
+# wdnp101a.para = tps_job 700 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -293,6 +293,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                             _F(
                                ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
+                               RESI_INTE_RELA=1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1]),
@@ -307,7 +308,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                  ARCHIVAGE=_F(LIST_INST=TEMPS,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-3));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-6));
 
 DEP[0]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -496,6 +497,7 @@ for n in range(1,nbcouche-1):
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
+                               RESI_INTE_RELA=1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:n+2]),
@@ -511,7 +513,7 @@ for n in range(1,nbcouche-1):
                               SUBD_NIVEAU=10),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-3));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-6));
 
     DETRUIRE(INFO=1,CONCEPT=_F(NOM='INIVAR'));
     DETRUIRE(INFO=1,CONCEPT=_F(NOM='INIDEP'));
@@ -807,6 +809,7 @@ U9B=STAT_NON_LINE(MODELE=MOD9B,
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
+                               RESI_INTE_RELA=1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:nbcouche]),
@@ -833,7 +836,7 @@ U9B=STAT_NON_LINE(MODELE=MOD9B,
                               SUBD_NIVEAU=10),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-5));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-6));
                  
 # IMPR_RESU(RESU=_F(RESULTAT=U9B));
 
@@ -868,7 +871,7 @@ T_END = 4. ;
 pas_gro = 0.0100;
 pas_fin = 0.0010;
 pas_hfin = 0.001;
-pas_tfin = 0.00005;
+pas_tfin = 0.000005;
 
 # Instant list devoted to seism
 
@@ -912,6 +915,7 @@ U9B=STAT_NON_LINE(reuse=U9B,
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
+                               RESI_INTE_RELA = 1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:nbcouche]),
@@ -941,8 +945,8 @@ U9B=STAT_NON_LINE(reuse=U9B,
                                       ),                              
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=1,RESI_GLOB_RELA=1E-2,
-                                ARRET='NON',),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-6,
+                                ARRET='OUI',),
                  INFO=1,
                  );                    
                     
@@ -1011,6 +1015,7 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
+                               RESI_INTE_RELA=1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:nbcouche]),
@@ -1115,6 +1120,7 @@ U9B2=DYNA_NON_LINE(
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
+                               RESI_INTE_RELA=1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:nbcouche]),
@@ -1189,16 +1195,16 @@ TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.47,
                                     INST_FIN = 3.55, ))                                                   
 
 TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 2.05361,PRECISION = 0.10,
+           VALE = 1.836,PRECISION = 0.01,
            REFERENCE = 'NON_REGRESSION')
 TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 2.05361,PRECISION = 0.10,
+           VALE = 1.836,PRECISION = 0.01,
            REFERENCE = 'AUTRE_ASTER')
 TEST_TABLE(TABLE=TAB_INF2,NOM_PARA='RMS',
-           VALE = 1.67212,PRECISION = 0.10,
+           VALE = 1.362,PRECISION = 0.01,
            REFERENCE = 'NON_REGRESSION')
 TEST_TABLE(TABLE=TAB_INF3,NOM_PARA='RMS',
-           VALE = 2.81561,PRECISION = 0.12,
+           VALE = 2.290,PRECISION = 0.01,
            REFERENCE = 'NON_REGRESSION')
 
 
@@ -1211,7 +1217,7 @@ MAXSP = INFO_FONCTION(MAX = _F(FONCTION = SPOSCI,))
 TEST_TABLE(TABLE=MAXSP,
            NOM_PARA = 'FREQ',
            TYPE_TEST = 'MAX',
-           VALE      = 2.55,
+           VALE      = 2.45,
            PRECISION = 0.01,
            REFERENCE = 'NON_REGRESSION',);
 

@@ -1,6 +1,7 @@
-# MODIF  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB8 MAILLAGE REGULIER
+# ssls124a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,394 +20,511 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ELEMENT SHB8PS - A.COMBESCURE - S.BAGUET -INSA LYON 2003
-#
 
+DEBUT(CODE=_F(NOM='SSLS124A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+YG = 200000000000.0;
 
-DEBUT(CODE=_F(NOM='SSLS124A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+L = 100.0;
 
-YG=2.E11
-L=100
-b=10
-F=1
+b = 10.0;
+
+F = 1.0;
+
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=YG,
-                          NU=0.3,),);
-
-
+                          NU=0.0,),);
 
 # CAS 1 :
+h = 10.0;
 
-h=10
 
+PRE_GIBI(UNITE_GIBI=21,
+         UNITE_MAILLAGE=31,);
 
-PRE_GIBI(UNITE_GIBI=21,UNITE_MAILLAGE=31);
+MAIL31=LIRE_MAILLAGE(UNITE=31,);
 
-MAIL31=LIRE_MAILLAGE(UNITE=31);
+MAIL31=MODI_MAILLAGE(reuse =MAIL31,
+                     MAILLAGE=MAIL31,
+                     ORIE_SHB=_F(GROUP_MA='GEOTOT',),);
 
-MAIL31=MODI_MAILLAGE(reuse=MAIL31,MAILLAGE=MAIL31,
-ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
-
-MAIL31=DEFI_GROUP(reuse =MAIL31, MAILLAGE=MAIL31,
-                CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+MAIL31=DEFI_GROUP(reuse =MAIL31,
+                  MAILLAGE=MAIL31,
+                  CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
+                                 _F(GROUP_MA='SUDEPIM',),
+                                 _F(GROUP_MA='LI15',),
+                                 _F(GROUP_MA='LI21',),
+                                 _F(GROUP_MA='LI87',),),);
 
 CHMAT31=AFFE_MATERIAU(MAILLAGE=MAIL31,
-                  AFFE=_F(TOUT='OUI',MATER=MAT,),);
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MAT,),);
 
 MODMEC31=AFFE_MODELE(MAILLAGE=MAIL31,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
-
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='SHB8',),);
 
 CHARG31=AFFE_CHAR_MECA(MODELE=MODMEC31,
-                      DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
-                                   DX=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
-                                   DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                       DDL_IMPO=(_F(GROUP_MA='SUENCAS',
+                                    DX=0.0,),
+                                 _F(GROUP_MA='LI15',
+                                    DY=0.0,),
+                                 _F(GROUP_MA='LI21',
+                                    DZ=0.0,),),
+                       FORCE_ARETE=_F(GROUP_MA='LI87',
+                                      FZ=(F / b),),);
 
 RESU31=MECA_STATIQUE(MODELE=MODMEC31,
-                    CHAM_MATER=CHMAT31,
-                    EXCIT=_F(CHARGE=CHARG31,),
-                    );
+                     CHAM_MATER=CHMAT31,
+                     EXCIT=_F(CHARGE=CHARG31,),);
 
-RESU31=CALC_ELEM(reuse=RESU31, RESULTAT=RESU31,
+RESU31=CALC_ELEM(reuse =RESU31,
+                 RESULTAT=RESU31,
+                 OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM',),);
+Iy = ((((b * h) * h) * h) / 12.0);
 
-                    OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM'),
-                    );
+Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
 
 
-
-Iy=b*h*h*h/12
-Uz=F*L*L*L/3/YG/Iy
 # point de gauss maille m1 situe a x=5
-moment1=(L-5)*F
+moment1 = ((L - 5.0) * F);
+
+
 # coordonnees des points de Gauss
-z1=0.90618/2*h
-z2=0.5385/2*h
-z3=0
-z4=-0.5385/2*h
-z5=-0.90618/2*h
+z1 = (0.45309 * h);
 
-Sig1=moment1*z1/Iy
-Sig2=moment1*z2/Iy
-Sig3=moment1*z3/Iy
-Sig4=moment1*z4/Iy
-Sig5=moment1*z5/Iy
+z2 = (0.26925 * h);
+
+z3 = 0.0;
+
+z4 = (-0.26925 * h);
+
+z5 = (-0.45309 * h);
+
+Sig1 = ((moment1 * z1) / Iy);
+
+Sig2 = ((moment1 * z2) / Iy);
+
+Sig3 = ((moment1 * z3) / Iy);
+
+Sig4 = ((moment1 * z4) / Iy);
+
+Sig5 = ((moment1 * z5) / Iy);
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU31, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
+TEST_RESU(RESU=(_F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P7',
+                   VALE=Uz,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P8',
+                   VALE=Uz,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #CONTRAINTES REPERE LOCAL
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-3, POINT=1,
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig1 ),
-            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-3, POINT=2,
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig2 ),
-            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-9, POINT=3, CRITERE='ABSOLU',
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig3),
-            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-3, POINT=4,
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig4 ),
-            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-3, POINT=5,
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig5 ),
-            ),)
+TEST_RESU(RESU=(_F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=Sig1,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   POINT=2,
+                   VALE=Sig2,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   POINT=3,
+                   VALE=Sig3,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-09,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   POINT=4,
+                   VALE=Sig4,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   POINT=5,
+                   VALE=Sig5,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELNO_ELGA', PRECISION = 1.E-3, NOEUD='N43',
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig1 ),
-            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELNO_ELGA', PRECISION = 1.E-3, NOEUD='N39',
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig5 ),
-            ),)
+TEST_RESU(RESU=(_F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N43',
+                   VALE=Sig1,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N39',
+                   VALE=Sig5,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=1,
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig1 ),
-            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=2,
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig2 ),
-            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=3, CRITERE='ABSOLU',
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig3),
-            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=4,
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig4 ),
-            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=5,
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig5 ),
-            ),)
+TEST_RESU(RESU=(_F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELGA_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=Sig1,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELGA_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='M1',
+                   POINT=2,
+                   VALE=Sig2,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELGA_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='M1',
+                   POINT=3,
+                   VALE=Sig3,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELGA_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='M1',
+                   POINT=4,
+                   VALE=Sig4,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELGA_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='M1',
+                   POINT=5,
+                   VALE=Sig5,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELNO_SIGM', PRECISION = 1.E-2, NOEUD='N43',
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig1 ),
-            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELNO_SIGM', PRECISION = 1.E-2, NOEUD='N39',
-            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig5 ),
-            ),)
-
+TEST_RESU(RESU=(_F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='M1',
+                   NOEUD='N43',
+                   VALE=Sig1,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU31,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='M1',
+                   NOEUD='N39',
+                   VALE=Sig5,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # CAS 2 :
+h = 1.0;
 
-h=1.0
 
+PRE_GIBI(UNITE_GIBI=22,
+         UNITE_MAILLAGE=32,);
 
-PRE_GIBI(UNITE_GIBI=22,UNITE_MAILLAGE=32);
+MAIL32=LIRE_MAILLAGE(UNITE=32,);
 
-MAIL32=LIRE_MAILLAGE(UNITE=32);
+MAIL32=MODI_MAILLAGE(reuse =MAIL32,
+                     MAILLAGE=MAIL32,
+                     ORIE_SHB=_F(GROUP_MA='GEOTOT',),);
 
-MAIL32=MODI_MAILLAGE(reuse=MAIL32,MAILLAGE=MAIL32,
-ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
-
-MAIL32=DEFI_GROUP(reuse =MAIL32, MAILLAGE=MAIL32,
-                CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+MAIL32=DEFI_GROUP(reuse =MAIL32,
+                  MAILLAGE=MAIL32,
+                  CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
+                                 _F(GROUP_MA='SUDEPIM',),
+                                 _F(GROUP_MA='LI15',),
+                                 _F(GROUP_MA='LI21',),
+                                 _F(GROUP_MA='LI87',),),);
 
 CHMAT32=AFFE_MATERIAU(MAILLAGE=MAIL32,
-                  AFFE=_F(TOUT='OUI',MATER=MAT,),);
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MAT,),);
 
 MODMEC32=AFFE_MODELE(MAILLAGE=MAIL32,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
-
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='SHB8',),);
 
 CHARG32=AFFE_CHAR_MECA(MODELE=MODMEC32,
-                      DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
-                                   DX=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
-                                   DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                       DDL_IMPO=(_F(GROUP_MA='SUENCAS',
+                                    DX=0.0,),
+                                 _F(GROUP_MA='LI15',
+                                    DY=0.0,),
+                                 _F(GROUP_MA='LI21',
+                                    DZ=0.0,),),
+                       FORCE_ARETE=_F(GROUP_MA='LI87',
+                                      FZ=(F / b),),);
 
 RESU32=MECA_STATIQUE(MODELE=MODMEC32,
-                    CHAM_MATER=CHMAT32,
-                    EXCIT=_F(CHARGE=CHARG32,),
-                    );
+                     CHAM_MATER=CHMAT32,
+                     EXCIT=_F(CHARGE=CHARG32,),);
+Iy = ((((b * h) * h) * h) / 12.0);
 
-Iy=b*h*h*h/12
-Uz=F*L*L*L/3/YG/Iy
-
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU32, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU32, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
+Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
 
 
+TEST_RESU(RESU=(_F(RESULTAT=RESU32,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P7',
+                   VALE=Uz,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU32,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P8',
+                   VALE=Uz,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # CAS 3 :
+h = 0.1;
 
-h=0.1
 
+PRE_GIBI(UNITE_GIBI=23,
+         UNITE_MAILLAGE=33,);
 
-PRE_GIBI(UNITE_GIBI=23,UNITE_MAILLAGE=33);
+MAIL33=LIRE_MAILLAGE(UNITE=33,);
 
-MAIL33=LIRE_MAILLAGE(UNITE=33);
+MAIL33=MODI_MAILLAGE(reuse =MAIL33,
+                     MAILLAGE=MAIL33,
+                     ORIE_SHB=_F(GROUP_MA='GEOTOT',),);
 
-MAIL33=MODI_MAILLAGE(reuse=MAIL33,MAILLAGE=MAIL33,
-ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
-
-MAIL33=DEFI_GROUP(reuse =MAIL33, MAILLAGE=MAIL33,
-                CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+MAIL33=DEFI_GROUP(reuse =MAIL33,
+                  MAILLAGE=MAIL33,
+                  CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
+                                 _F(GROUP_MA='SUDEPIM',),
+                                 _F(GROUP_MA='LI15',),
+                                 _F(GROUP_MA='LI21',),
+                                 _F(GROUP_MA='LI87',),),);
 
 CHMAT33=AFFE_MATERIAU(MAILLAGE=MAIL33,
-                  AFFE=_F(TOUT='OUI',MATER=MAT,),);
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MAT,),);
 
 MODMEC33=AFFE_MODELE(MAILLAGE=MAIL33,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
-
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='SHB8',),);
 
 CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
-                      DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
-                                   DX=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
-                                   DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                       DDL_IMPO=(_F(GROUP_MA='SUENCAS',
+                                    DX=0.0,),
+                                 _F(GROUP_MA='LI15',
+                                    DY=0.0,),
+                                 _F(GROUP_MA='LI21',
+                                    DZ=0.0,),),
+                       FORCE_ARETE=_F(GROUP_MA='LI87',
+                                      FZ=(F / b),),);
 
 RESU33=MECA_STATIQUE(MODELE=MODMEC33,
-                    CHAM_MATER=CHMAT33,
-                    EXCIT=_F(CHARGE=CHARG33,),
-                    SOLVEUR=_F(METHODE ='MULT_FRONT',NPREC=11 ),
-                    );
+                     CHAM_MATER=CHMAT33,
+                     EXCIT=_F(CHARGE=CHARG33,),
+                     SOLVEUR=_F(METHODE='MULT_FRONT',
+                                NPREC=11,),);
+Iy = ((((b * h) * h) * h) / 12.0);
 
-Iy=b*h*h*h/12
-Uz=F*L*L*L/3/YG/Iy
-
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU33, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU33, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
+Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
 
 
+TEST_RESU(RESU=(_F(RESULTAT=RESU33,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P7',
+                   VALE=Uz,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU33,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P8',
+                   VALE=Uz,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # CAS 4 :
+h = 0.05;
 
-h=0.05
 
+PRE_GIBI(UNITE_GIBI=24,
+         UNITE_MAILLAGE=34,);
 
-PRE_GIBI(UNITE_GIBI=24,UNITE_MAILLAGE=34);
+MAIL34=LIRE_MAILLAGE(UNITE=34,);
 
-MAIL34=LIRE_MAILLAGE(UNITE=34);
+MAIL34=MODI_MAILLAGE(reuse =MAIL34,
+                     MAILLAGE=MAIL34,
+                     ORIE_SHB=_F(GROUP_MA='GEOTOT',),);
 
-MAIL34=MODI_MAILLAGE(reuse=MAIL34,MAILLAGE=MAIL34,
-ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
-
-MAIL34=DEFI_GROUP(reuse =MAIL34, MAILLAGE=MAIL34,
-                CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+MAIL34=DEFI_GROUP(reuse =MAIL34,
+                  MAILLAGE=MAIL34,
+                  CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
+                                 _F(GROUP_MA='SUDEPIM',),
+                                 _F(GROUP_MA='LI15',),
+                                 _F(GROUP_MA='LI21',),
+                                 _F(GROUP_MA='LI87',),),);
 
 CHMAT34=AFFE_MATERIAU(MAILLAGE=MAIL34,
-                  AFFE=_F(TOUT='OUI',MATER=MAT,),);
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MAT,),);
 
 MODMEC34=AFFE_MODELE(MAILLAGE=MAIL34,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
-
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='SHB8',),);
 
 CHARG34=AFFE_CHAR_MECA(MODELE=MODMEC34,
-                      DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
-                                   DX=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
-                                   DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                       DDL_IMPO=(_F(GROUP_MA='SUENCAS',
+                                    LIAISON='ENCASTRE',),),
+                       FORCE_ARETE=_F(GROUP_MA='LI87',
+                                      FZ=(F / b),),);
 
 RESU34=MECA_STATIQUE(MODELE=MODMEC34,
-                    CHAM_MATER=CHMAT34,
-                    EXCIT=_F(CHARGE=CHARG34,),
-                    SOLVEUR=_F(METHODE ='MULT_FRONT',NPREC=18 ),
-                    );
+                     CHAM_MATER=CHMAT34,
+                     EXCIT=_F(CHARGE=CHARG34,),
+                     SOLVEUR=_F(METHODE='MULT_FRONT',
+                                NPREC=18,),);
+Iy = ((((b * h) * h) * h) / 12.0);
 
-Iy=b*h*h*h/12
-Uz=F*L*L*L/3/YG/Iy
-
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU34, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU34, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
+Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
 
 
+TEST_RESU(RESU=(_F(RESULTAT=RESU34,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P7',
+                   VALE=Uz,
+                   PRECISION=0.011,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU34,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P8',
+                   VALE=Uz,
+                   PRECISION=0.011,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # CAS 5 :
+h = 0.02;
 
-h=0.02
 
+PRE_GIBI(UNITE_GIBI=25,
+         UNITE_MAILLAGE=35,);
 
-PRE_GIBI(UNITE_GIBI=25,UNITE_MAILLAGE=35);
+MAIL35=LIRE_MAILLAGE(UNITE=35,);
 
-MAIL35=LIRE_MAILLAGE(UNITE=35);
+MAIL35=MODI_MAILLAGE(reuse =MAIL35,
+                     MAILLAGE=MAIL35,
+                     ORIE_SHB=_F(GROUP_MA='GEOTOT',),);
 
-MAIL35=MODI_MAILLAGE(reuse=MAIL35,MAILLAGE=MAIL35,
-ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
-
-MAIL35=DEFI_GROUP(reuse =MAIL35, MAILLAGE=MAIL35,
-                CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+MAIL35=DEFI_GROUP(reuse =MAIL35,
+                  MAILLAGE=MAIL35,
+                  CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
+                                 _F(GROUP_MA='SUDEPIM',),
+                                 _F(GROUP_MA='LI15',),
+                                 _F(GROUP_MA='LI21',),
+                                 _F(GROUP_MA='LI87',),),);
 
 CHMAT35=AFFE_MATERIAU(MAILLAGE=MAIL35,
-                  AFFE=_F(TOUT='OUI',MATER=MAT,),);
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MAT,),);
 
 MODMEC35=AFFE_MODELE(MAILLAGE=MAIL35,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
-
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='SHB8',),);
 
 CHARG35=AFFE_CHAR_MECA(MODELE=MODMEC35,
-                      DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
-                                   DX=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
-                                   DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                       DDL_IMPO=(_F(GROUP_MA='SUENCAS',
+                                    LIAISON='ENCASTRE',),),
+                       FORCE_ARETE=_F(GROUP_MA='LI87',
+                                      FZ=(F / b),),);
 
 RESU35=MECA_STATIQUE(MODELE=MODMEC35,
-                    CHAM_MATER=CHMAT35,
-                    EXCIT=_F(CHARGE=CHARG35,),
-                    SOLVEUR=_F(METHODE ='MULT_FRONT',NPREC=18 ),
-                    );
+                     CHAM_MATER=CHMAT35,
+                     EXCIT=_F(CHARGE=CHARG35,),
+                     SOLVEUR=_F(METHODE='MULT_FRONT',
+                                NPREC=18,),);
+Iy = ((((b * h) * h) * h) / 12.0);
 
-Iy=b*h*h*h/12
-Uz=F*L*L*L/3/YG/Iy
-
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU35, NOM_CHAM='DEPL', PRECISION = 6.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU35, NOM_CHAM='DEPL',  PRECISION = 6.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
+Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
 
 
-FIN()
+TEST_RESU(RESU=(_F(RESULTAT=RESU35,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P7',
+                   VALE=Uz,
+                   PRECISION=0.08,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU35,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='P8',
+                   VALE=Uz,
+                   PRECISION=0.08,
+                   REFERENCE='ANALYTIQUE',),),);
 
+FIN();

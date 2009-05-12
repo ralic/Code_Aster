@@ -1,6 +1,7 @@
-# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX 
+# wtnv133a.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -614,7 +615,7 @@ TEST_TABLE(TABLE=TAB_VARI,
 TEST_TABLE(TABLE=TAB_VARI,
            NOM_PARA='V23',
            VALE=7.47E-5,
-           PRECISION=0.02,
+           PRECISION=0.04,
            CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='EPZZ',

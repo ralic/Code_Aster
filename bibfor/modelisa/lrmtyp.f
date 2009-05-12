@@ -2,7 +2,7 @@
      &                    MODNUM, NUANOM, NUMNOA )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ---------------------------------------------------------------------
       IMPLICIT NONE
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 48)
+      PARAMETER (NTYMAX = 53)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
 C
@@ -96,7 +96,8 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      &              'QU8TR6  ','TR6QU9  ','QU9TR6  ','QU8TR3  ',
      &              'TR3QU8  ','QU8QU4  ','QU4QU8  ','QU8QU9  ',
      &              'QU9QU8  ','QU9QU4  ','QU4QU9  ','QU9TR3  ',
-     &              'TR3QU9  ','SEG32   ','SEG23   '/
+     &              'TR3QU9  ','SEG32   ','SEG23   ','QU4QU4  ',
+     &              'TR3TR3  ','HE8HE8  ','PE6PE6  ','TE4TE4  '/
       DATA NUMMED  /1,         102,       0,         103,
      &              0,         0,
      &                         203,       0,         206,
@@ -109,7 +110,8 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
-     &              0,         0,         0/
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0/
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )
 C

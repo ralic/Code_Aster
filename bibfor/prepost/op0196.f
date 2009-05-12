@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
       LICHAM = '&&OP0196.LICHAM'
-      CALL XPOINI(MAXFEM,MO,MALINI,LICHAM,NBSY,RESUCO,RESUX,K2B)
+      CALL XPOINI(MAXFEM,MO,MALINI,LICHAM,NBSY,RESUCO,RESUX,K2B,K8B)
       CALL GETVID(' ','MODELE_VISU',0,1,1,MODVIS,IRET)
 C
 C     ------------------------------------------------------------------
@@ -133,7 +133,7 @@ C       ----------------------------------------------------------------
 
         IF (NIV.GT.1) WRITE(IFM,*)' '
         IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
-        CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,K2B,MAXFEM,
+        CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,K2B,K8B,MAXFEM,
      &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,LISTGR,K24,K24)
 
 C       ----------------------------------------------------------------

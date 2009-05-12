@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,8 +47,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID,IRET,NSETOT,NNNTOT,NCOTOT,NBNOC,NBMAC,IFM,NIV
       INTEGER      NBGMA2,JNIVGR
-      CHARACTER*2  PREFNO(4)
-      CHARACTER*8  MAXFEM,MO,MALINI,K8B,NOMRES
+      CHARACTER*2  PREFNO(5)
+      CHARACTER*8  MAXFEM,MO,MALINI,K8B,NOMRES,NOGRFI
       CHARACTER*16 K16B
       CHARACTER*19 K19B
       CHARACTER*24 MAILX,MAILC,LISTNO,K24B,LOGRMA,DIRGRM,LISTGR,NIVGRM
@@ -63,7 +63,7 @@ C     ------------------------------------------------------------------
 C
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
-      CALL XPOINI(MAXFEM,MO,MALINI,K24B,IBID,K8B,K8B,PREFNO)
+      CALL XPOINI(MAXFEM,MO,MALINI,K24B,IBID,K8B,K8B,PREFNO,NOGRFI)
 C
 C     ------------------------------------------------------------------
 C     2. SEPARATION DES MAILLES DE MALINI EN 2 GROUPES
@@ -121,7 +121,7 @@ C     ------------------------------------------------------------------
 
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
-      CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,PREFNO,MAXFEM,
+      CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,PREFNO,NOGRFI,MAXFEM,
      &            K19B,K19B,K19B,K19B,K19B,K19B,LISTGR,DIRGRM,NIVGRM)
 
       IF (NIV.GT.1) WRITE(IFM,*)'FIN DE POST_MAIL_XFEM'

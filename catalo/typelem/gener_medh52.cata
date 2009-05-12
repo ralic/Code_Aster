@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+%& MODIF TYPELEM  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -158,7 +158,7 @@ OPTION__
     FULL_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMR  NMATERC  PMATERN
+                                     ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
@@ -186,7 +186,7 @@ OPTION__
     RAPH_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMR  NMATERC  PMATERN
+                                     ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
@@ -200,7 +200,7 @@ OPTION__
     RIGI_MECA_TANG      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMR  NMATERC  PMATERN
+                                     ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS
     SIEF_ELNO_ELGA      600   IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR

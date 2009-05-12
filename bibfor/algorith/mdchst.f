@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR BRIE N.BRIE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER       NBCHOC, NBSISM, NBFLAM, NBOCC, I, J, IOC, IBID, IL,
      &              JCOOR, JMAMA, NBNMA, KMA, NN1, NN2, INO1, INO2, IG,
-     &              N1, IRET, NMLIAI, JMAIL, IM, ILIAI, NMGR,
+     &              N1, NAMTAN, IRET, NMLIAI, JMAIL, IM, ILIAI, NMGR,
      &              NGRM, NUMAI, IRETT
       REAL*8        KTANG, CTANG, K, RAP, XJEU, R8BID
       COMPLEX*16    CBID
@@ -267,7 +267,7 @@ C
            CALL GETVR8(MOTFAC,'AMOR_NOR'   ,IOC,1,1,PARCHO(ILIAI,3) ,N1)
            CALL GETVR8(MOTFAC,'RIGI_TAN'   ,IOC,1,1,KTANG       ,N1)
            CALL GETVR8(MOTFAC,'COULOMB'    ,IOC,1,1,PARCHO(ILIAI,6) ,N1)
-           CALL GETVR8(MOTFAC,'AMOR_TAN'   ,IOC,1,1,CTANG       ,N1)
+           CALL GETVR8(MOTFAC,'AMOR_TAN'   ,IOC,1,1,CTANG       ,NAMTAN)
            CALL GETVTX(MOTFAC,'LAME_FLUIDE',IOC,1,1,KBID        ,N1)
                IF (KBID(1:3).EQ.'OUI') THEN
                   LFLU=.TRUE.
@@ -345,11 +345,12 @@ C
                 LOGCHO(ILIAI,4)=1
                NOECHO(ILIAI,9) = 'BI_PLANY'
             ENDIF
-C --------- SI CTANG NON PRECISE ON CALCULE UN AMORTISSEMENT CRITIQUE
-            IF ( CTANG.EQ.0.D0 .AND. KTANG.NE.0.D0 ) THEN
-               K = SQRT( PULSAT(IMODE) ) * MASGEN(IMODE)
+C --------- SI AMOR_TAN NON RENSEIGNE ON LUI AFFECTE UNE VAL OPTIMISEE
+            IF ( NAMTAN.EQ.0 .AND. KTANG.NE.0.D0 ) THEN
+               K = PULSAT(IMODE)**2 * MASGEN(IMODE)
                CTANG =   2.D0*SQRT( MASGEN(IMODE)*(K+KTANG) )
      &                 - 2.D0*AMOGEN(IAMOR)*SQRT( K*MASGEN(IMODE) )
+               CALL U2MESG('I','ALGORITH16_10',0,' ',1,I,1,CTANG)
             ENDIF
             PARCHO(ILIAI,4) = KTANG
             PARCHO(ILIAI,5) = CTANG

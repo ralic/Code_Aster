@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -186,6 +186,11 @@ C     -----------------------------------------
       ELSEIF (OPERA.EQ.'ASSE') THEN
 C     -----------------------------------------
         CALL CHPASS(TYCHR,MA,CELMOD,NOMGD,PROL0,CHOU)
+
+
+      ELSEIF (OPERA.EQ.'COMB') THEN
+C     -----------------------------------------
+        CALL X195CB(TYCHR,NOMGD,CHOU)
 
 
       ELSEIF (OPERA.EQ.'EVAL') THEN

@@ -1,8 +1,8 @@
-      SUBROUTINE XRELCO(NOMA  ,NLISEQ,NLISRL,NLISCO,
+      SUBROUTINE XRELCO(NOMA  ,NLISEQ,NLISRL,NLISCO,NLISUP,
      &                  NBASCO,LISREL,NREL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C
       IMPLICIT NONE
       INTEGER      NREL
       CHARACTER*8  NOMA
-      CHARACTER*19 NLISEQ,NLISRL,NLISCO,NBASCO       
+      CHARACTER*19 NLISEQ,NLISRL,NLISCO,NLISUP,NBASCO
       CHARACTER*19 LISREL
 C      
 C ----------------------------------------------------------------------
@@ -41,6 +41,7 @@ C IN  NOMA   : NOM DU MAILLAGE
 C IN  NLISRL : LISTE REL. LIN. POUR V1 ET V2
 C IN  NLISCO : LISTE REL. LIN. POUR V1 ET V2
 C IN  NLISEQ : LISTE REL. LIN. POUR V2 SEULEMENT
+C IN  NLISUP : LISTE REL. LIN. SUPPLÉMENTAIRES POUR MAILLAGE LINÉAIRE
 C IN  NBASCO : CHAM_NO POUR BASE COVARIANTE
 C OUT LISREL : LISTE DES RELATIONS À IMPOSER
 C OUT NREL   : NOMBRE DE RELATIONS À IMPOSER
@@ -65,15 +66,15 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER     NBDDL
+      INTEGER     NBDDL,XXMMVD,ZXEDG,ZXBAS
       PARAMETER  (NBDDL=3)
       CHARACTER*8 DDLC(NBDDL)
 C
       REAL*8       RBID,BETAR,COEFR(6),DDOT
-      REAL*8       TAUA(3,2),TAUB(3,2),TAUC(3,2)
-      INTEGER      IER,JLIS1,NDIME(6),NEQ,I,NRL,JLIS2,JLIS3,K,JDIME
-      INTEGER      NUNO(6),NDIM,JCNSD,JCNSV,JCNSL,IAD,J
-      CHARACTER*8  NOEUD(6),K8BID,DDL(6)
+      REAL*8       TAUA(3,2),TAUB(3,2),TAUC(3,2),TAU(3,2,4)
+      INTEGER      IER,JLIS1,NDIME(8),NEQ,I,NRL,JLIS2,JLIS3,K,JDIME
+      INTEGER      NUNO(8),NDIM,JCNSD,JCNSV,JCNSL,IAD,J,NRS,JLIS4,L,NNS
+      CHARACTER*8  NOEUD(8),K8BID,DDL(8)
       CHARACTER*19 CHS
       COMPLEX*16   CBID
 C      
@@ -87,9 +88,10 @@ C --- INTIALISATIONS
 C      
       BETAR  = 0.D0
       CHS    = '&&XRELCO.BASCO'
-      DO 5 I = 1,6
+      DO 5 I = 1,8
         NDIME(I) = 0
  5    CONTINUE
+      ZXBAS=XXMMVD('ZXBAS')
 C
 C --- DONNÉES RELATIVES AU MAILLAGE
 C 
@@ -144,10 +146,10 @@ C
         ENDIF
 C        
         DO 20 J = 1,NDIM
-          TAUA(J,1) = ZR(JCNSV-1+12*(NUNO(1)-1)+6+J)
-          TAUB(J,1) = ZR(JCNSV-1+12*(NUNO(2)-1)+6+J)
-          IF (NDIM.EQ.3) TAUA(J,2) = ZR(JCNSV-1+12*(NUNO(1)-1)+9+J)
-          IF (NDIM.EQ.3) TAUB(J,2) = ZR(JCNSV-1+12*(NUNO(2)-1)+9+J)
+          TAUA(J,1) = ZR(JCNSV-1+ZXBAS*(NUNO(1)-1)+6+J)
+          TAUB(J,1) = ZR(JCNSV-1+ZXBAS*(NUNO(2)-1)+6+J)
+          IF (NDIM.EQ.3) TAUA(J,2) = ZR(JCNSV-1+ZXBAS*(NUNO(1)-1)+9+J)
+          IF (NDIM.EQ.3) TAUB(J,2) = ZR(JCNSV-1+ZXBAS*(NUNO(2)-1)+9+J)
  20     CONTINUE
 C 
         DO 21 K=1,NDIM-1
@@ -218,12 +220,12 @@ C              (VOIR BOOK VI 20/04/06)
           NOEUD(6) = NOEUD(3)
         ENDIF
         DO 40 J=1,NDIM
-          TAUA(J,1) = ZR(JCNSV-1+12*(NUNO(1)-1)+6+J)
-          TAUB(J,1) = ZR(JCNSV-1+12*(NUNO(2)-1)+6+J)
-          TAUC(J,1) = ZR(JCNSV-1+12*(NUNO(3)-1)+6+J)
-          IF (NDIM.EQ.3) TAUA(J,2) = ZR(JCNSV-1+12*(NUNO(1)-1)+9+J)
-          IF (NDIM.EQ.3) TAUB(J,2) = ZR(JCNSV-1+12*(NUNO(2)-1)+9+J)
-          IF (NDIM.EQ.3) TAUC(J,2) = ZR(JCNSV-1+12*(NUNO(3)-1)+9+J)
+          TAUA(J,1) = ZR(JCNSV-1+ZXBAS*(NUNO(1)-1)+6+J)
+          TAUB(J,1) = ZR(JCNSV-1+ZXBAS*(NUNO(2)-1)+6+J)
+          TAUC(J,1) = ZR(JCNSV-1+ZXBAS*(NUNO(3)-1)+6+J)
+          IF (NDIM.EQ.3) TAUA(J,2) = ZR(JCNSV-1+ZXBAS*(NUNO(1)-1)+9+J)
+          IF (NDIM.EQ.3) TAUB(J,2) = ZR(JCNSV-1+ZXBAS*(NUNO(2)-1)+9+J)
+          IF (NDIM.EQ.3) TAUC(J,2) = ZR(JCNSV-1+ZXBAS*(NUNO(3)-1)+9+J)
  40     CONTINUE
 
         DO 41 K=1,NDIM-1
@@ -244,6 +246,82 @@ C              (VOIR BOOK VI 20/04/06)
  30   CONTINUE
 
  200  CONTINUE
+C
+C --- 3) RELATIONS SUPPLÉMENTAIRES
+C     
+      CALL JEEXIN(NLISUP,IER)
+      IF (IER.EQ.0) THEN 
+        GOTO 300
+      ELSE      
+        CALL JEVEUO(NLISUP,'L',JLIS4)
+        CALL JELIRA(NLISUP,'LONMAX',NRS,K8BID)
+        CALL CNOCNS(NBASCO,'V',CHS)
+        CALL JEVEUO(CHS(1:19)//'.CNSV' ,'L',JCNSV)
+        CALL JEVEUO(CHS(1:19)//'.CNSD' ,'L',JCNSD)
+        CALL JEVEUO(CHS(1:19)//'.CNSL' ,'L',JCNSL)      
+      ENDIF
+
+      ZXEDG = XXMMVD('ZXEDG')
+      DO 50 I = 1,NRS/ZXEDG
+        NNS=ZI(JLIS4-1+ZXEDG*(I-1)+1)+1
+        DO 51 L=1,NNS
+          NUNO(L)  = ZI(JLIS4-1+ZXEDG*(I-1)+1+L)
+          CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUNO(L)),NOEUD(L))
+          COEFR(L)=1.D0/(NNS-1)
+ 51     CONTINUE
+        COEFR(1) = -1.D0
+C
+C --- RELATION POUR LES MULTIPLICATEURS DE CONTACT ('LAGS_C')
+C
+        DO 52 L=1,NNS
+          DDL(L) = DDLC(1)
+ 52     CONTINUE
+        CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIME,RBID,NNS,BETAR,CBID,
+     &              K8BID,'REEL','REEL','12',0.D0,LISREL)
+        NREL = NREL + 1
+C
+C --- RELATIONS POUR LES SEMI-MULTIPLICATEURS DE FROTTEMENT
+C              (VOIR BOOK VI 20/04/06)
+        DO 53 L=1,NNS
+          DDL(L) = DDLC(2)
+ 53     CONTINUE
+        IF (NDIM.EQ.3) THEN
+          DO 54 L=1,NNS
+            DDL(NNS+L)   = DDLC(3)
+            NUNO(NNS+L)  = NUNO(L)
+            NOEUD(NNS+L) = NOEUD(L)
+ 54       CONTINUE
+        ENDIF
+        DO 55 L=1,NNS
+          DO 60 J=1,NDIM
+            TAU(J,1,L) = ZR(JCNSV-1+ZXBAS*(NUNO(L)-1)+6+J)
+            IF (NDIM.EQ.3) TAU(J,2,L) = ZR(JCNSV-1
+     &                                     +ZXBAS*(NUNO(L)-1)+9+J)
+ 60       CONTINUE
+ 55     CONTINUE
+
+        DO 61 K=1,NDIM-1
+          COEFR(1) = -1.D0 * DDOT(NDIM,TAU(1,1,1),1,TAU(1,K,1),1)
+          DO 62 L=1,NNS-1
+            COEFR(L+1)= 1.D0/(NNS-1)*DDOT(NDIM,TAU(1,1,L+1),1,
+     &               TAU(1,K,1),1)
+ 62       CONTINUE
+          IF (NDIM.EQ.3) THEN       
+            COEFR(NNS+1) = -1.D0 * DDOT(NDIM,TAU(1,2,1),1,TAU(1,K,1),1)
+            DO 63 L=1,NNS-1
+              COEFR(NNS+L+1)= 1.D0/(NNS-1)*DDOT(NDIM,TAU(1,2,L+1),1,
+     &                 TAU(1,K,1),1)
+ 63         CONTINUE
+          ENDIF
+          
+          CALL AFRELA(COEFR,CBID,DDL,NOEUD,NDIME,RBID,NNS*(NDIM-1),
+     &                BETAR,CBID,K8BID,'REEL','REEL','12',0.D0,LISREL)
+          NREL = NREL + 1
+ 61     CONTINUE
+
+ 50   CONTINUE
+
+ 300  CONTINUE
 C 
 C
       CALL JEDEMA()

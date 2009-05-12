@@ -1,10 +1,10 @@
-      SUBROUTINE MATINV(NDIM,MAT,INV)
+      SUBROUTINE MATINV(NDIM,MAT,INV,DET)
       IMPLICIT NONE
       INTEGER    NDIM
-      REAL*8     MAT(NDIM,NDIM),INV(NDIM,NDIM)
-
+      REAL*8     MAT(NDIM,NDIM),INV(NDIM,NDIM),DET
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,20 +21,46 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ----------------------------------------------------------------------
-C FONCTION REALISEE:  CALCUL DE L'INVERSE D'UNE MATRICE
 C
-C    ENTREE:
-C         NDIM : DIMENSION DE LA MATRICE
-C         MAT  : MATRICE A INVERSER
-C    SORTIE:
-C         INV  : MATRICE INVERSE
-C.......................................................................
-      INTEGER       I,J
-      REAL*8        M(3,3),DET,R8GAEM
-
-      IF (NDIM.EQ.3) THEN
-C       CALCUL DES (-1)^(I+J)*MINEURS(J,I)
+C ----------------------------------------------------------------------
+C
+C MATRICE - CALCUL DE SON INVERSE (DIM = 1 , 2 OU 3)
+C ***                     ***
+C
+C ----------------------------------------------------------------------
+C
+C IN  NDIM   : DIMENSION DE LA MATRICE
+C IN  MAT    : MATRICE A INVERSER
+C OUT INV    : MATRICE INVERSE
+C OUT DET    : DETERMINANT DE LA MATRICE MAT
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER       IDIM,JDIM
+      REAL*8        M(NDIM,NDIM),R8GAEM,UNSDET
+C
+      IF (NDIM.EQ.1) THEN
+C
+        M(1,1) = 1.D0
+        DET    = MAT(1,1)
+C
+      ELSEIF (NDIM.EQ.2) THEN
+C
+C --- CALCUL DES (-1)^(I+J)*MINEURS(J,I)
+C
+        M(1,1) =   MAT(2,2)
+        M(2,1) = - MAT(2,1)
+        M(1,2) = - MAT(1,2)
+        M(2,2) =   MAT(1,1)
+C
+C ---   CALCUL DU DETERMINANT
+C
+        DET    = MAT(1,1)*MAT(2,2) - MAT(1,2)*MAT(2,1)
+C
+      ELSEIF (NDIM.EQ.3) THEN
+C
+C --- CALCUL DES (-1)^(I+J)*MINEURS(J,I)
+C
         M(1,1) = MAT(2,2) * MAT(3,3) - MAT(2,3) * MAT(3,2)
         M(2,1) = MAT(3,1) * MAT(2,3) - MAT(2,1) * MAT(3,3)
         M(3,1) = MAT(2,1) * MAT(3,2) - MAT(3,1) * MAT(2,2)
@@ -44,19 +70,27 @@ C       CALCUL DES (-1)^(I+J)*MINEURS(J,I)
         M(1,3) = MAT(1,2) * MAT(2,3) - MAT(1,3) * MAT(2,2)
         M(2,3) = MAT(2,1) * MAT(1,3) - MAT(2,3) * MAT(1,1)
         M(3,3) = MAT(1,1) * MAT(2,2) - MAT(1,2) * MAT(2,1)
-C       CALCUL DU DETERMINANT
+C
+C ---   CALCUL DU DETERMINANT
+C
         DET = MAT(1,1)*M(1,1) + MAT(1,2)*M(2,1) + MAT(1,3)*M(3,1)
-        IF(ABS(DET).LE.1.D0/R8GAEM()) THEN
-          CALL U2MESS('F','ALGORITH5_19')
-        ENDIF
-C       CALCUL DE L'INVERSE
-        DO 10 I=1,NDIM
-          DO 20 J=1,NDIM
-            INV(I,J)=M(I,J)/DET
- 20       CONTINUE
- 10     CONTINUE
       ELSE
         CALL U2MESS('F','ALGORITH5_20')
       ENDIF
-
+C
+      IF(ABS(DET).LE.1.D0/R8GAEM()) THEN
+        CALL U2MESS('F','ALGORITH5_19')
+      ENDIF
+C
+C --- CALCUL DE L'INVERSE
+C
+      UNSDET = 1.D0/DET
+      DO 10 JDIM = 1 , NDIM
+        DO 20 IDIM = 1 , NDIM
+C
+          INV(IDIM,JDIM) = UNSDET * M(IDIM,JDIM)
+C
+ 20     CONTINUE
+ 10   CONTINUE
+C
       END

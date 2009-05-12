@@ -1,5 +1,6 @@
-# MODIF  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D; AVEC SIMU_POINT_MAT
+# ssnv160e.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

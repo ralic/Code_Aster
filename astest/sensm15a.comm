@@ -1,5 +1,6 @@
-# MODIF  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DKT    50 N - 76 TRIA3
+# sensm15a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

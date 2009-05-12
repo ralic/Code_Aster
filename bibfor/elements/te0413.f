@@ -3,8 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,14 +76,12 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER  ICOMPO,ICACOQ,I,NCMP,ICONTP,JVARI,NBVAR,JTAB(7),IVPG
       INTEGER  JNBSPI,NBCOU,NPGH,IRET,ICOU,IGAUH,ISP,TMA(3,3)
       
-      CHARACTER*16 COMPOR  
-      CHARACTER*4  FAMI  
+      CHARACTER*16 COMPOR,VALK(2)  
       LOGICAL  GRILLE,ELASCO,DKQ,DKG,LKIT,COUP     
       
       DEUX   = 2.D0
       DKQ = .FALSE.
       DKG = .FALSE.
-      FAMI = 'RIGI'  
 
       IF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
         DKQ = .TRUE.
@@ -118,8 +115,7 @@ C     +                                         IVF,IDFDX,IDFD2,JGANO)
       
       LKIT = ZK16(ICOMPO)(1:7).EQ.'KIT_DDI'
 
-      IF ( ZK16(ICOMPO)(1:15).EQ.'ENDO_ISOT_BETON'   .OR.
-     &     ZK16(ICOMPO)(1:7).EQ.'GLRC_DM'.OR. 
+      IF ( ZK16(ICOMPO)(1:7).EQ.'GLRC_DM'.OR. 
      &     ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE'.OR. 
      &   (LKIT  .AND. ZK16(ICOMPO+7)(1:7).EQ.'GLRC_DM' ) 
      &   ) THEN
@@ -194,21 +190,6 @@ C           CALL DKTBF ( QSI, ETA, CARA, BF )
           CALL CRGDM(ZI(IMATE),'GLRC_DM         ',TMA,R8B(1),R8B(2),
      &               R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),EP)
 
-        ELSEIF(ZK16(ICOMPO)(1:15).EQ.'ENDO_ISOT_BETON') THEN
-          COMPOR = ZK16(ICOMPO)
-          CALL R8INIR(6,0.D0,EBID,1)
-C          TM = 0.0D0
-C          TREF = 0.0D0
-          SREF = 0.0D0
-          SECHM = 0.0D0
-          HYDRM = 0.0D0
-          CALL RCVARC(' ','TEMP','-'  ,FAMI,1,1,TM  ,IRET)
-          CALL RCVARC(' ','TEMP','REF',FAMI,1,1,TREF,IRET)
-          
-          CALL LCEIB1 ('RIGI',ZI(IMATE), COMPOR, NDIM, EBID, TM,TREF,
-     &                 SREF,SECHM,HYDRM,TMA, R8B(1),R8B(2),R8B(3), 
-     &               R8B(4), R8B(5),R8B(6), SEUIL,COUP)
-           
         ENDIF  
 
 C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
@@ -313,9 +294,9 @@ C     ================
 
       ELSE
 C      RELATION NON PROGRAMMEE      
-        WRITE(6,*)  'OPTION ',OPTION,'  N EST PAS DISPONIBLE POUR'
-        WRITE(6,*)  'ELEMENT ',NOMTE,' ET RELATION ',ZK16(ICOMPO)
-        CALL ASSERT(ZK16(ICOMPO)(1:4) .EQ. 'ELAS')
+        VALK(1)=OPTION
+        VALK(2) = ZK16(ICOMPO)(1:7)
+        CALL U2MESK('A','ELEMENTS4_63',2,VALK)
       ENDIF
 
       END

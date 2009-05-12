@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF asojb Noyau  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -297,6 +297,10 @@ class OJBCollec(OJB):
 # -----------------------------------------------------------------------------
 class AsVI(OJBVect):
     _type = "I"
+
+# -----------------------------------------------------------------------------
+class AsVS(OJBVect):
+    _type = "S"
 
 # -----------------------------------------------------------------------------
 class AsVR(OJBVect):

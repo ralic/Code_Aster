@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/05/2009   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,8 +92,8 @@ C
       CALL WKVECT('&&TMPDISCRET','V V K8',LMAX,JDLS)
       CALL WKVECT('&&TMPTABNO','V V K8',LMAX,ITBNO)
       CALL WKVECT('&&TMPRIGNO','V V R',6*LMAX,IRGNO)
-      CALL WKVECT(VREPXV,'G V R',2*NBOCC*6*LMAX,IREPV)
-      CALL WKVECT(VREPXN,'G V K8',2*NBOCC*LMAX,IREPN)
+      CALL WKVECT(VREPXV,'G V R',6*LMAX,IREPV)
+      CALL WKVECT(VREPXN,'G V K8',LMAX,IREPN)
       CALL WKVECT('&&TMPRIGTO','V V R',6*NOEMAF,IRGTO)
       CALL WKVECT('&&TMPAMOTO','V V R',6*NOEMAF,IAMTO)
       CALL WKVECT('&&TMPTABMP','V V K8',LMAX,ITBMP)
@@ -429,9 +429,9 @@ C                   PREPARATION DE L'ATTRIBUT PYTHON
                       DO 667 JJ=0,5
                         ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
 667                       CONTINUE
-                    ENDIF
                     ZK8(IREPN+IR) = ZK8(JN)
                     IR = IR + 1
+                    ENDIF
                   ELSE
                     CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
                   ENDIF

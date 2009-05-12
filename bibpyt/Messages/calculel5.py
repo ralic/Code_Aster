@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 07/11/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calculel5 Messages  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,7 +140,7 @@ cata_msg = {
 """),
 
 40 : _("""
- Erreur utilisateur. 
+ Erreur utilisateur.
  Le champ de variables internes initiales n'a pas le bon nombre de sous-points.
  Maille : %(k1)s
  Nombre de sous-points a l'instant '-' : %(i1)d
@@ -155,9 +155,9 @@ cata_msg = {
  comportements incompatibles :  %(k1)s  et  %(k2)s  pour la maille  %(k3)s
 """),
 
-
-
-
+43 : _("""
+PROJ_CHAMP (ou LIAISON_MAILLE) :
+  Le noeud %(k1)s de coordonnées (%(r1)f,%(r2)f,%(r3)f) est projeté à la distance %(r4)f"""),
 
 44 : _("""
  ! le champ doit etre un cham_elem !
@@ -173,11 +173,11 @@ cata_msg = {
 
 48 : _("""
  PROJ_CHAMP (ou LIAISON_MAIL) :
- Certains noeuds ont été projetés sur des mailles un peu distantes
- (la distance à la maille est supérieure à 1/10ième du diamètre de la maille) 
- Le noeud projeté le plus loin est le noeud: %(k1)s
- Il a été projeté à la distance %(r1)f
-"""),
+ Nombre de noeuds projetés sur des mailles un peu distantes : %(i1)d.
+ (la distance à la maille est supérieure à 1/10ième du diamètre de la maille)
+
+ Le noeud %(k1)s est projeté le plus loin à la distance %(r1)f"""),
+
 
 49 : _("""
  LIAISON_MAIL :

@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,23 +25,23 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
-C                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
+C                      DÃ‰COUPER LE TETRA EN NSE SOUS-TETRAS
 C
 C     ENTREE
 C       IT       : INDICE DU TETRA EN COURS
-C       CONNEC   : CONNECTIVITÉ DES NOEUDS DU TETRA
+C       CONNEC   : CONNECTIVITÃ‰ DES NOEUDS DU TETRA
 C       LSN      : VALEURS DE LA LEVEL SET NORMALE
-C       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
-C       PINTER   : COORDONNÉES DES POINTS D'INTERSECTION
+C       IGEOM    : ADRESSE DES COORDONNÃ‰ES DES NOEUDS DE L'ELT PARENT
+C       PINTER   : COORDONNÃ‰ES DES POINTS D'INTERSECTION
 C       NINTER   : NB DE POINTS D'INTERSECTION
 C       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD
 C       AINTER   : INFOS ARETE CORRESPONDATE AU PT INTERSECTION
 C
 C     SORTIE
-C       NSE      : NOMBRE DE SOUS-ÉLÉMENTS (TÉTRAS)
-C       CNSE     : CONNECTIVITÉ DES SOUS-ÉLÉMENTS (TÉTRAS)
-C       COORSE   : COORDONNÉES DES NOEUDS DES SOUS-ÉLÉMENTS
-C       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-ÉLÉMENT
+C       NSE      : NOMBRE DE SOUS-ELTS (TETRAS)
+C       CNSE     : CONNECTIVITE DES SOUS-Ã‰LÃ‰MENTS (TETRAS)
+C       COORSE   : COORDONNEES DES NOEUDS DES SOUS-ELTS
+C       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-ELT
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -65,11 +65,12 @@ C
       INTEGER         NSEMAX,IN,INH,I,J,AR(12,2),NBAR,ISE,NDIM,IBID
       INTEGER         A1,A2,A3,A4,A,B,C,IADZI,IAZK24,NDIME,JDIM
       CHARACTER*8     TYPMA,NOMA
+      INTEGER      ZXAIN,XXMMVD
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL ELREF4(' ','RIGI',NDIME,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
-
+      ZXAIN = XXMMVD('ZXAIN')
       CALL TECAEL(IADZI,IAZK24)
       NOMA=ZK24(IAZK24)
       CALL JEVEUO(NOMA//'.DIME','L',JDIM)
@@ -109,7 +110,7 @@ C     NDIME = 2 ALORS QUE NDIM = 3
       CALL CONARE(TYPMA,AR,NBAR)
 
 C-----------------------------------------------------------------------
-C     REMPLISSAGE DE LA CONNECTIVITÉ DES SOUS-ELEMENTS TÉTRAS
+C     REMPLISSAGE DE LA CONNECTIVITÃ‰ DES SOUS-ELEMENTS TÃ‰TRAS
 C                  ALGO BOOK III (26/04/04)
 C-----------------------------------------------------------------------
 
@@ -125,8 +126,8 @@ C         1 SEUL ELEMENT
             CNSE(1,IN)=CONNEC(IT,IN)
  90       CONTINUE
         ELSEIF (NINTER .EQ. 2) THEN
-          A1=NINT(ZR(JAINT-1+4*(1-1)+1))
-          A2=NINT(ZR(JAINT-1+4*(2-1)+1))
+          A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
+          A2=NINT(ZR(JAINT-1+ZXAIN*(2-1)+1))
           IF (NPTS .EQ. 2) THEN
 C           1 SEUL ELEMENT
             NSE=1
@@ -137,20 +138,20 @@ C           1 SEUL ELEMENT
 C           2 ELEMENTS
             NSE=2
             CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
-C           101 et 102 les 2 points d'intersection
+C           101 ET 102 LES 2 POINTS D'INTERSECTION
 C            CNSE(1,1)=101
-            CNSE(1,1)=ZR(JAINT-1+4*(NPTS-1)+2)
+            CNSE(1,1)=NINT(ZR(JAINT-1+ZXAIN*(NPTS-1)+2))
             CNSE(1,2)=102
             CNSE(1,3)=CONNEC(IT,AR(A2,1))
 C            CNSE(2,1)=101
-            CNSE(2,1)=ZR(JAINT-1+4*(NPTS-1)+2)
+            CNSE(2,1)=NINT(ZR(JAINT-1+ZXAIN*(NPTS-1)+2))
             CNSE(2,2)=102
             CNSE(2,3)=CONNEC(IT,AR(A2,2))
           ELSE
 C           3 ELEMENTS
             NSE=3
             CALL ASSERT(A1.NE.0)
-C           101 et 102 les 2 points d'intersection
+C           101 ET 102 LES 2 POINTS D'INTERSECTION
 C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             DO 93 I=1,2
               DO 94 J=1,2
@@ -195,7 +196,7 @@ C         1 SEUL ELEMENT
             CNSE(1,IN)=CONNEC(IT,IN)
  95       CONTINUE
         ELSEIF (NINTER .EQ. 1) THEN
-          A1=NINT(ZR(JAINT-1+4*(1-1)+1))
+          A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
           IF (NPTS .EQ. 1) THEN
 C           1 SEUL ELEMENT
             NSE=1
@@ -209,7 +210,7 @@ C           2 ELEMENTS
                   A=AR(A1,1)
                   B=AR(A1,2)
 
-C           101 et 102 les 2 points d'intersection
+C           101 ET 102 LES 2 POINTS D'INTERSECTION
 C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             CNSE(1,1)=101
             CNSE(1,2)=CONNEC(IT,A)
@@ -236,7 +237,7 @@ C         TROP DE POINTS D'INTERSECTION
 
         IF (NINTER.LT.3) THEN
 
-C       1°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
+C       1Â°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
 C       ---------------------------------------------
 
 C         INTER DOUTEUSE
@@ -249,11 +250,11 @@ C         ON A UN SEUL ELEMENT
 
         ELSEIF (NINTER.EQ.3) THEN
 
-C         2°) AVEC TROIS POINTS D'INTERSECTION
+C         2Â°) AVEC TROIS POINTS D'INTERSECTION
 C         ------------------------------------
-          A1=NINT(ZR(JAINT-1+4*(1-1)+1))
-          A2=NINT(ZR(JAINT-1+4*(2-1)+1))
-          A3=NINT(ZR(JAINT-1+4*(3-1)+1))
+          A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
+          A2=NINT(ZR(JAINT-1+ZXAIN*(2-1)+1))
+          A3=NINT(ZR(JAINT-1+ZXAIN*(3-1)+1))
 
           IF (NPTS.EQ.3) THEN
 C           ON A UN SEUL ELEMENT
@@ -313,27 +314,27 @@ C           ON A QUATRE SOUS-ELEMENTS
 
 C           ON A 4 CONFIG POSSIBLES :
             IF (A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.3) THEN
-C             CONFIGURATION N°1
+C             CONFIGURATION NÂ°1
               CNSE(1,4)=CONNEC(IT,1)
               CALL XPENTE(2,CNSE,103,101,102,CONNEC(IT,4),CONNEC(IT,2),
      &                                                     CONNEC(IT,3))
             ELSEIF (A1.EQ.1.AND.A2.EQ.4.AND.A3.EQ.5) THEN
-C             CONFIGURATION N°2
+C             CONFIGURATION NÂ°2
               CNSE(1,4)=CONNEC(IT,2)
               CALL XPENTE(2,CNSE,CONNEC(IT,1),CONNEC(IT,3),CONNEC(IT,4),
      &                                                      101,102,103)
             ELSEIF (A1.EQ.2.AND.A2.EQ.4.AND.A3.EQ.6) THEN
-C             CONFIGURATION N°3
+C             CONFIGURATION NÂ°3
               CNSE(1,4)=CONNEC(IT,3)
               CALL XPENTE(2,CNSE,CONNEC(IT,4),CONNEC(IT,2),CONNEC(IT,1),
      &                                                      103,102,101)
             ELSEIF (A1.EQ.3.AND.A2.EQ.5.AND.A3.EQ.6) THEN
-C             CONFIGURATION N°4
+C             CONFIGURATION NÂ°4
               CNSE(1,4)=CONNEC(IT,4)
               CALL XPENTE(2,CNSE,CONNEC(IT,1),CONNEC(IT,2),CONNEC(IT,3),
      &                                                      101,102,103)
             ELSE 
-C             PROBLEME DE DECOUPAGE À 3 POINTS
+C             PROBLEME DE DECOUPAGE Ã€ 3 POINTS
               CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.3)
             ENDIF
 
@@ -341,25 +342,25 @@ C             PROBLEME DE DECOUPAGE À 3 POINTS
 
         ELSEIF (NINTER.EQ.4) THEN
 
-C         2°) AVEC QUATRE POINTS D'INTERSECTION
+C         2Â°) AVEC QUATRE POINTS D'INTERSECTION
 C          -------------------------------------
-          A1=NINT(ZR(JAINT-1+4*(1-1)+1))
-          A2=NINT(ZR(JAINT-1+4*(2-1)+1))
-          A3=NINT(ZR(JAINT-1+4*(3-1)+1))
-          A4=NINT(ZR(JAINT-1+4*(4-1)+1))
+          A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
+          A2=NINT(ZR(JAINT-1+ZXAIN*(2-1)+1))
+          A3=NINT(ZR(JAINT-1+ZXAIN*(3-1)+1))
+          A4=NINT(ZR(JAINT-1+ZXAIN*(4-1)+1))
 
 C         ON A SIX SOUS-ELEMENTS (DANS TOUS LES CAS ?)
           NSE=6
           IF (A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.5.AND.A4.EQ.6) THEN
-C          CONFIGURATION N°1
+C          CONFIGURATION NÂ°1
            CALL XPENTE(1,CNSE,104,102,CONNEC(IT,3),103,101,CONNEC(IT,2))
            CALL XPENTE(4,CNSE,CONNEC(IT,1),101,102,CONNEC(IT,4),103,104)
           ELSEIF (A1.EQ.1.AND.A2.EQ.3.AND.A3.EQ.4.AND.A4.EQ.6) THEN
-C          CONFIGURATION N°2
+C          CONFIGURATION NÂ°2
            CALL XPENTE(1,CNSE,101,CONNEC(IT,2),103,102,CONNEC(IT,4),104)
            CALL XPENTE(4,CNSE,102,101,CONNEC(IT,1),104,103,CONNEC(IT,3))
           ELSEIF (A1.EQ.2.AND.A2.EQ.3.AND.A3.EQ.4.AND.A4.EQ.5) THEN
-C          CONFIGURATION N°3
+C          CONFIGURATION NÂ°3
            CALL XPENTE(1,CNSE,101,103,CONNEC(IT,3),102,104,CONNEC(IT,4))
            CALL XPENTE(4,CNSE,CONNEC(IT,2),104,103,CONNEC(IT,1),102,101)
           ELSE 
@@ -378,7 +379,7 @@ C 99   CONTINUE
 C        WRITE(6,*)'  '
 
 C-----------------------------------------------------------------------
-C     VÉRIFICATION DU SENS DES SOUS-ÉLÉMENTS TETRA
+C     VÃ‰RIFICATION DU SENS DES SOUS-Ã‰LÃ‰MENTS TETRA
 C                  ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
 
@@ -423,7 +424,7 @@ C            WRITE(6,*)'VERIF SENS OK'
       ENDIF
 
 C-----------------------------------------------------------------------
-C             MATRICE DES COORDONNÉES ET FONCTION HEAVYSIDE
+C             MATRICE DES COORDONNÃ‰ES ET FONCTION HEAVYSIDE
 C             ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
 
@@ -453,9 +454,9 @@ C-----------------------------------------------------------------------
 C     REMARQUE IMPORTANTE :
 C     IN ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
 C     (NDIME = NDIM - 1 ET NPTS = NINTER = NDIM) ALORS ON NE PEUT PAS
-C     DÉTERMINER DE QUEL COTÉ DE L'INTERFACE ON SE TROUVE, CAR ON
-C     EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE ZR(JHEAV-1+ISE)
-C     EST DONC FAUSSE DANS CE CAS : on met 99.
+C     DÃ‰TERMINER DE QUEL COTÃ‰ DE L'INTERFACE ON SE TROUVE, CAR
+C     ON EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE ZR(JHEAV-1+ISE)
+C     EST DONC FAUSSE DANS CE CAS : ON MET 99.
 C     UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION
 C     DES NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI ZR(JHEAV-1+ISE)
       IF (NDIME.EQ.NDIM-1.AND.NPTS.EQ.NINTER.AND.NINTER.EQ.NDIM) THEN

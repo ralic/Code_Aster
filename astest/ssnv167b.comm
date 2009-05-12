@@ -1,6 +1,7 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
+# ssnv167b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

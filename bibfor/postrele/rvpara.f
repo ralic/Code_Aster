@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF POSTRELE  DATE 12/05/2009   AUTEUR DESROCHES X.DESROCHES 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,7 @@ C
      &              JNOEU, N11, N12, N13, N14, N15, N16, N17, N18,
      &              JNCAS, JANGL, JNOCP, NUMCMP, JNUCP, NBORDR, JNUME
       REAL*8        R8B
-      LOGICAL       LMIMA, LMOYE, LEXTR
+      LOGICAL       LMIMA, LMOYE, LEXTR, LMOYGR
       COMPLEX*16    C16B
       CHARACTER*8   K8B, RESU, NOCMP(50), TYPARA(100), NOMCMP
       CHARACTER*16  K16B, NOMSY, TYSD
@@ -341,10 +341,12 @@ C
          ENDIF
 C
          LMIMA = .FALSE.
+         LMOYGR = .FALSE.
          LMOYE = .FALSE.
          LEXTR = .FALSE.
          CALL GETVTX ( MCF, 'OPERATION', IOCC,1,1, K16B, N3 )
          IF ( K16B .EQ. 'EXTREMA' ) LMIMA = .TRUE.
+         IF ( K16B .EQ. 'MOYENNE_ARITH' ) LMOYGR = .TRUE.
          IF ( K16B .EQ. 'MOYENNE' ) THEN
             JMOYE = JMOYE + 1
             LMOYE = .TRUE.
@@ -598,6 +600,20 @@ C
          TYPARA(NBP) = 'K8'
          NBP = NBP + 1
          NOPARA(NBP) = 'VALE'
+         TYPARA(NBP) = 'R'
+      ENDIF
+C
+      IF ( LMOYGR ) THEN
+         IF ( JRESU.NE.0 .AND. JORDR.EQ.0 ) THEN
+            NBP = NBP + 1
+            NOPARA(NBP) = 'NUME_ORDRE'
+            TYPARA(NBP) = 'I'
+         ENDIF
+         NBP = NBP + 1
+         NOPARA(NBP) = 'CMP'
+         TYPARA(NBP) = 'K8'
+         NBP = NBP + 1
+         NOPARA(NBP) = 'MOYENNE'
          TYPARA(NBP) = 'R'
       ENDIF
 C

@@ -1,6 +1,7 @@
-# MODIF  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE DESATURATION -CONSOLIDATION AVEC LE MODELE DE BARCELONE
+# wtnv124a.para = tps_job 110 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

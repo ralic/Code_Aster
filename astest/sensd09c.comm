@@ -1,5 +1,6 @@
-# MODIF  DATE 05/05/2008   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE SENSIBILITE EFGE_ELNO_DEPL / SIPO_ELNO_DEPL
+# sensd09c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

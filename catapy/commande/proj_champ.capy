@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,11 +76,23 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
            NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
 
+           b_acce_reel     =BLOC(condition="(FREQ != None)or(LIST_FREQ != None)or(INST != None)or(LIST_INST != None)",
+              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+              b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+              b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                   PRECISION       =SIMP(statut='o',typ='R',),),
+           ),
+
 
            CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",),
                 fr="Pour indiquer au programme le type de projection souhaité"),
            DISTANCE_MAX    =SIMP(statut='f',typ='R',
                 fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
+
+           TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
+                fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                   " aux noeuds du MODELE_1 avant la projection."),
            TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
                 fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
                    " aux noeuds du MODELE_2 avant la projection."),
@@ -116,6 +128,9 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
+           TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
+                fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                   " aux noeuds du MODELE_1 avant la projection."),
            TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
                 fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
                    " aux noeuds du MODELE_2 avant la projection."),

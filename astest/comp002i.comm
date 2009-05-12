@@ -1,6 +1,7 @@
-# MODIF  DATE 07/10/2008   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GENIAUT S.GENIAUT
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISCOCHAB
+# comp002i.para = tps_job 250 mem_job 512Mo mem_aster 20 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,42 +82,45 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                     G2_0  = Gam2,
                                     ),
                     VISCOCHAB=_F(
+
                                  # ecrouissage isotrope
                                  K=SY_Pa,
                                  B=b,
+#                                 A_R=1.,
+
                                  # memoire
-                                 ETA=0.5,
+#                                 ETA=0.5,
                                  MU=10.,
                                  Q_M=Qinf_Pa,
                                  Q_0=Qzer_Pa,
-                                 QR_0=0.,
+
                                  # ecrouissage cinematique
                                  C1=C1inf_Pa,
                                  C2=C2inf_Pa,
                                  G1_0=Gam1,
                                  G2_0=Gam2,
+#                                 A_I=1.,
                                  
                                  # viscosite
                                  K_0=Kv_Pa ,
                                  N=N,
                                  
-                                 # restauration
-                                 M_R=1.,
-                                 G_R=0.,
                                  # ecoulement terme en exp
                                  A_K=1.,
-                                 A_R=1.,
-                                 ALP=0.,
+#                                 ALP=0.,
+
                                  # terme Burlet
-                                 D2=1.,
-                                 D1=1.,
-                                 # restauration cinematique
-                                 M_1=1.,
-                                 M_2=1.,
-                                 G_X1=0,
-                                 G_X2=0.,
-                                 # modif de gamma
-                                 A_I=1.,
+#                                 D2=1.,
+#                                 D1=1.,
+
+                                 # restauration
+#                                 M_R=1.,
+#                                 G_R=0.,
+#                                 M_1=1.,
+#                                 M_2=1.,
+#                                 G_X1=0,
+#                                 G_X2=0.,
+#                                 QR_0=0.,
                                  ),
                                  );
 # unite en MPa
@@ -133,42 +137,45 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                     G2_0  = Gam2,
                                  ),
                     VISCOCHAB=_F(
+
                                  # ecrouissage isotrope
                                  K=SY,
                                  B=b,
+#                                 A_R=1.,
+
                                  # memoire
-                                 ETA=0.5,
+#                                 ETA=0.5,
                                  MU=10.,
                                  Q_M=Qinf,
                                  Q_0=Qzer,
-                                 QR_0=0.,
+
                                  # ecrouissage cinematique
                                  C1=C1inf,
                                  C2=C2inf,
                                  G1_0=Gam1,
                                  G2_0=Gam2,
+#                                 A_I=1.,
                                  
                                  # viscosite
                                  K_0=Kv ,
                                  N=N,
                                  
-                                 # restauration
-                                 M_R=1.,
-                                 G_R=0.,
                                  # ecoulement terme en exp
                                  A_K=1.,
-                                 A_R=1.,
-                                 ALP=0.,
+#                                 ALP=0.,
+
                                  # terme Burlet
-                                 D2=1.,
-                                 D1=1.,
-                                 # restauration cinematique
-                                 M_1=1.,
-                                 M_2=1.,
-                                 G_X1=0,
-                                 G_X2=0.,
-                                 # modif de gamma
-                                 A_I=1.,
+#                                 D2=1.,
+#                                 D1=1.,
+
+                                 # restauration
+#                                 M_R=1.,
+#                                 G_R=0.,
+#                                 M_1=1.,
+#                                 M_2=1.,
+#                                 G_X1=0,
+#                                 G_X2=0.,
+#                                 QR_0=0.,
                                  ),
                                  
                                  );

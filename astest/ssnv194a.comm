@@ -1,6 +1,7 @@
-# MODIF  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
 # RESPONSABLE JMBHH01 J.M.PROIX
+# ssnv194a.para = tps_job 280 mem_job 70Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

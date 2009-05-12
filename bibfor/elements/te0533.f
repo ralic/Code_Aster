@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/08/2008   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,14 +61,19 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
       INTEGER      NPG,NPGF,AR(12,2),NBAR,XOULA,IN(3),FAC(6,4),NBF
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
-      INTEGER      INTEG,NFE,SINGU,JSTNO
-      CHARACTER*8  ELREF,TYPMA,FPG,ELC
+      INTEGER      INTEG,NFE,SINGU,JSTNO,NVIT,NLINOL(27)
+      INTEGER      NNOL,PLA(27),LACT(40),NOLA(27)
+      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG
       REAL*8       FFI,FFJ,FFP(27),SAUT(3),KNP(3,3)
-      REAL*8       MMAT(204,204),JAC,RHON,MU,RHOTK,MULT
+      REAL*8       MMAT(204,204),JAC,RHON,MU,RHOTK,MULT,COEFBU,COEFFR
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3)
       REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60),DDOT
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
       REAL*8       LSN,LST,R,RR,E,G(3),RBID
+      LOGICAL      ADHER
+      REAL *8      CSTACO,CSTAFR,CPENCO,CPENFR,VITANG(3),GT(3),X(4)
+      INTEGER      ZXAIN,XXMMVD
+      LOGICAL      PEFRSE,MALIN
 C......................................................................
 
       CALL JEMARQ()
@@ -77,6 +82,7 @@ C-----------------------------------------------------------------------
 C     INITIALISATIONS
 C-----------------------------------------------------------------------
 C
+      ZXAIN=XXMMVD('ZXAIN')
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
@@ -88,9 +94,8 @@ C
 
       IF (NDIM .EQ. 3) THEN
          CALL CONFAC(TYPMA,IBID2,IBID,FAC,NBF)
-      ELSE
-         CALL CONARE(TYPMA,AR,NBAR)
       ENDIF
+      CALL CONARE(TYPMA,AR,NBAR)
 C
 C-----------------------------------------------------------------------
 C     RECUPERATION DES ENTREES / SORTIE
@@ -128,7 +133,27 @@ C     SUR LA TOPOLOGIE DES FACETTES
       MU = ZR(JDONCO-1+2)
       RHOTK = ZR(JDONCO-1+3)
 
-      INTEG = NINT(ZR(JDONCO-1+4))
+C     COEFFICIENTS DE STABILISATION
+      CSTACO=ZR(JDONCO-1+6)
+      CSTAFR=ZR(JDONCO-1+7)
+
+C     COEFFICIENTS DE PENALISATION
+      CPENCO=ZR(JDONCO-1+8)
+      CPENFR=ZR(JDONCO-1+9)
+
+      IF (CSTACO.EQ.0.D0) CSTACO=RHON
+      IF (CSTAFR.EQ.0.D0) CSTAFR=RHOTK
+
+      IF (CPENCO.EQ.0.D0) CPENCO=RHON
+      IF (CPENFR.EQ.0.D0) CPENFR=RHOTK
+
+C     PENALISATION PURE
+      IF (CSTACO.EQ.0.D0) CSTACO=CPENCO
+      PEFRSE=.FALSE.
+      IF (CSTAFR.EQ.0.D0) THEN
+        PEFRSE=.TRUE.
+      ENDIF
+
 C     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
 C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
       INTEG = NINT(ZR(JDONCO-1+4))
@@ -156,6 +181,7 @@ C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
         IF (INTEG.EQ.14) FPG='FPG4'
         ELC='SE2'
       ENDIF
+      CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,IDFDEF,IBID)
 
       NFACE=ZI(JLONCH-1+2)
       DO 11 I=1,NFACE
@@ -166,7 +192,7 @@ C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
 
 C     RECUPERATION DU COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
       E=ZR(JDONCO-1+5)
-C
+
 C     RECUPERATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
       DO 13 NLI=1,NINTER
         DO 14 J=1,NDIM
@@ -180,6 +206,21 @@ C     RECUPERATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
 C     INITIALISATION DE LA MATRICE
       CALL MATINI(204,204,0.D0,MMAT)
 C
+C     L'ELEMENT EST-IL LINEAIRE OU QUADRATIQUE
+C
+      CALL TEATTR (NOMTE,'C','XLAG',LAG,IBID)
+      IF (IBID.EQ.0.AND.LAG.EQ.'NOEUD') THEN
+        MALIN=.TRUE.
+      ELSE
+        MALIN=.FALSE.
+      ENDIF
+C
+C     LISTE DES LAMBDAS ACTIFS
+C
+      IF (MALIN) THEN
+        CALL XLACTI(NDIM,NFACE,NNO,NNOM,CFACE,JAINT,AR,LACT)
+      ENDIF
+C
 C-----------------------------------------------------------------------
 C
 C     BOUCLE SUR LES FACETTES
@@ -189,7 +230,7 @@ C       PETIT TRUC EN PLUS POUR LES FACES EN DOUBLE
         MULT=1.D0
         DO 101 I=1,NDIM
           NLI=CFACE(IFA,I)
-          IN(I)=NINT(ZR(JAINT-1+4*(NLI-1)+2))
+          IN(I)=NINT(ZR(JAINT-1+ZXAIN*(NLI-1)+2))
  101    CONTINUE
 C       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
         IF (NDIM .EQ. 3) THEN
@@ -224,7 +265,31 @@ C MULTIPLICATION PAR 1/2
         ENDIF
  104    CONTINUE
 
-        CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,IDFDEF,IBID)
+C       NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
+        IF (MALIN) THEN
+          NNOL=0
+          DO 15 I=1,NNO
+            IF (LACT(I).NE.0) THEN
+              NNOL=NNOL+1
+C             NOEUD SOMMET DE L'ELT PARENT
+              NOLA(NNOL)=I
+C             POINT D'INTERSECTION (POUR BASE COVARIANTE)
+              NLINOL(NNOL)=LACT(I)
+C             PLACE DU LAMBDA DANS LA MATRICE
+              CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,I,PLI)
+              PLA(NNOL)=PLI
+            ENDIF
+ 15       CONTINUE
+        ELSE
+          NNOL=NNOF
+          DO 16 I=1,NNOF
+C           XOULA  : RENVOIE LE NUMERO DU NOEUD PORTANT CE LAMBDA
+            NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
+C           PLACE DU LAMBDA DANS LA MATRICE
+            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
+            PLA(I)=PLI
+ 16       CONTINUE
+        ENDIF
 C
 C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         DO 110 IPGF=1,NPGF
@@ -242,6 +307,34 @@ C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
             CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
      &                                         'NON',JAC,FFP,RBID,ND)
           ENDIF
+
+C         CE POINT DE GAUSS EST-IL SUR UNE ARETE?
+          K=0
+          DO 17 I=1,NINTER
+            IF (K.EQ.0) THEN
+              X(4)=0.D0
+              DO 20 J=1,NDIM
+                X(J)=ZR(JPTINT-1+NDIM*(I-1)+J)
+ 20           CONTINUE
+              DO 21 J=1,NDIM
+                X(4) = X(4) + (X(J)-G(J))*(X(J)-G(J))
+ 21           CONTINUE
+              X(4) = SQRT(X(4))
+              IF (X(4).LT.1.D-12) THEN
+                K=I
+                GOTO 17
+              ENDIF
+            ENDIF
+ 17       CONTINUE
+          IF (K.NE.0) THEN
+            NVIT = ZR(JAINT-1+ZXAIN*(K-1)+5)
+          ELSE
+            NVIT = 0
+          ENDIF
+C         IL NE FAUT PAS UTILISER NVIT SI LE SCHEMA D'INTEGRATION
+C         NE CONTIENT PAS DE NOEUDS
+          IF ((FPG(1:3).EQ.'FPG').OR.(FPG.EQ.'GAUSS')
+     &             .OR.(FPG.EQ.'XCON')) NVIT=1
 
 C         NORMALE AU CENTRE DE LA FACETTE
           CALL LCINVN(NDIM,0.D0,NBARY)
@@ -270,38 +363,51 @@ C         I) CALCUL DES MATRICES DE CONTACT
 C         ..............................
 
           IF (OPTION.EQ.'RIGI_CONT') THEN
+
 C
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LA MATRICE C
             IF (INDCO(ISSPG).EQ.0) THEN
 C
-              DO 120 I = 1,NNOF
+              IF (NVIT.NE.0) THEN
 
-                FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-C               XOULA  : RENVOIE LE NUMERO DU NOEUD PORTANT CE LAMBDA
-                NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
+                DO 120 I = 1,NNOL
 
-                DO 121 J = 1,NNOF
+                  PLI=PLA(I)
+                  IF (MALIN) THEN
+                    FFI=FFP(NOLA(I))
+                  ELSE
+                    FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                  ENDIF
 
-                  FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
-                  NJ=XOULA(CFACE,IFA,J,JAINT,TYPMA)
-                  CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
+                  DO 121 J = 1,NNOL
+
+                    PLJ=PLA(J)
+                    IF (MALIN) THEN
+                      FFJ=FFP(NOLA(J))
+                    ELSE
+                      FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
+                    ENDIF
 C
-                  MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
-     &                     - FFJ * FFI * JAC * MULT / RHON * E * E
+                    MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
+     &                       - FFJ * FFI * JAC * MULT / CSTACO * E * E
 
- 121            CONTINUE
- 120          CONTINUE
+ 121              CONTINUE
+ 120            CONTINUE
+
+              ENDIF
 C
 C           SI CONTACT POUR CE PG : ON REMPLIT LES MATRICES A, At ET A_U
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
 C
 C             I.1. CALCUL DE A ET DE At
-              DO 130 I = 1,NNOF
+              DO 130 I = 1,NNOL
 
-                FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-                NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
+                PLI=PLA(I)
+                IF (MALIN) THEN
+                  FFI=FFP(NOLA(I))
+                ELSE
+                  FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                ENDIF
 
                 DO 131 J = 1,NNO
                   DO 132 L = 1,DDLH
@@ -339,14 +445,16 @@ C             I.2. CALCUL DE A_U
 C
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
-     &                4.D0*RHON*FFP(I)*FFP(J)*ND(K)*ND(L)*JAC*MULT
+     &                4.D0*CPENCO*FFP(I)*FFP(J)*ND(K)*ND(L)
+     &                         *JAC*MULT
 C
  143                CONTINUE
                     DO 144 L = 1,SINGU*NDIM
 C
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) =
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) +
-     &                4.D0*RHON*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC*MULT
+     &                4.D0*CPENCO*FFP(I)*FFP(J)*RR*ND(K)*ND(L)
+     &                         *JAC*MULT
 C
  144                CONTINUE
 C
@@ -356,12 +464,14 @@ C
                     DO 146 L = 1,DDLH
                       MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) +
-     &                4.D0*RHON*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC*MULT
+     &                4.D0*CPENCO*FFP(I)*FFP(J)*RR*ND(K)*ND(L)
+     &                         *JAC*MULT
  146                CONTINUE
                     DO 147 L = 1,SINGU*NDIM
                      MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+DDLH+L)
      &           =   MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+DDLH+L)
-     &           +   4.D0*RHON*FFP(I)*FFP(J)*RR*RR*ND(K)*ND(L)*JAC*MULT
+     &           +   4.D0*CPENCO*FFP(I)*FFP(J)*RR*RR*ND(K)*ND(L)
+     &                         *JAC*MULT
  147                CONTINUE
  145              CONTINUE
 
@@ -384,35 +494,48 @@ C         ..............................
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F
             IF (INDCO(ISSPG).EQ.0) THEN
 
-              DO 150 I = 1,NNOF
-                FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-                NLI=CFACE(IFA,I)
-                NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
-                DO 151 J = 1,NNOF
-                  FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
-                  NLJ=CFACE(IFA,J)
-                  NJ=XOULA(CFACE,IFA,J,JAINT,TYPMA)
-                  CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
+              IF (NVIT.NE.0) THEN
 
-C                 MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
-                  METR(1,1)=DDOT(NDIM,TAU1(1,NLI),1,TAU1(1,NLJ),1)
-                  IF (NDIM.EQ.3) THEN
-                    METR(1,2)=DDOT(NDIM,TAU1(1,NLI),1,TAU2(1,NLJ),1)
-                    METR(2,1)=DDOT(NDIM,TAU2(1,NLI),1,TAU1(1,NLJ),1)
-                    METR(2,2)=DDOT(NDIM,TAU2(1,NLI),1,TAU2(1,NLJ),1)
+                DO 150 I = 1,NNOL
+                  PLI=PLA(I)
+                  IF (MALIN) THEN
+                    FFI=FFP(NOLA(I))
+                    NLI=NLINOL(I)
+                  ELSE
+                    FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                    NLI=CFACE(IFA,I)
                   ENDIF
 
-                  DO 152 K = 1,NDIM-1
-                    DO 153 L = 1,NDIM-1
+                  DO 151 J = 1,NNOL
+                    PLJ=PLA(J)
+                    IF (MALIN) THEN
+                      FFJ=FFP(NOLA(J))
+                      NLJ=NLINOL(J)
+                    ELSE
+                      FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
+                      NLJ=CFACE(IFA,J)
+                    ENDIF
 
-                      MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
+C                   MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
+                    METR(1,1)=DDOT(NDIM,TAU1(1,NLI),1,TAU1(1,NLJ),1)
+                    IF (NDIM.EQ.3) THEN
+                      METR(1,2)=DDOT(NDIM,TAU1(1,NLI),1,TAU2(1,NLJ),1)
+                      METR(2,1)=DDOT(NDIM,TAU2(1,NLI),1,TAU1(1,NLJ),1)
+                      METR(2,2)=DDOT(NDIM,TAU2(1,NLI),1,TAU2(1,NLJ),1)
+                    ENDIF
+
+                    DO 152 K = 1,NDIM-1
+                      DO 153 L = 1,NDIM-1
+
+                        MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
      &                           + FFI * FFJ * METR(K,L) * JAC * MULT
 
- 153                CONTINUE
- 152              CONTINUE
- 151            CONTINUE
- 150          CONTINUE
+ 153                  CONTINUE
+ 152                CONTINUE
+ 151              CONTINUE
+ 150            CONTINUE
+
+             ENDIF
 
 C           SI CONTACT POUR CE PG : ON REMPLIT B, Bt, B_U et F
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
@@ -441,11 +564,15 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
  156            CONTINUE
  154          CONTINUE
 
-              DO 158 I=1,NNOF
-                FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-                NLI=CFACE(IFA,I)
-                NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
+              DO 158 I=1,NNOL
+                PLI=PLA(I)
+                IF (MALIN) THEN
+                  FFI=FFP(NOLA(I))
+                  NLI=NLINOL(I)
+                ELSE
+                  FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                  NLI=CFACE(IFA,I)
+                ENDIF
                 DO 159 J=1,NDIM
                   LAMB1(J)=LAMB1(J)+FFI * (ZR(IDEPD-1+PLI+1)
      &                                  +ZR(IDEPM-1+PLI+1)
@@ -458,17 +585,26 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
  159            CONTINUE
  158          CONTINUE
 
-              CALL XADHER(P,SAUT,LAMB1,RHOTK,R3,KN,PTKNP,IK)
+              CALL XADHER(P,SAUT,LAMB1,RHOTK,CSTAFR,CPENFR,VITANG,R3,KN,
+     &                 PTKNP,IK,ADHER)
 
               CALL PROMAT(KN,3,NDIM,NDIM,P,3,NDIM,NDIM,KNP)
 
 C             II.1. CALCUL DE B ET DE Bt
-              DO 160 I = 1,NNOF
 
-                FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-                NLI=CFACE(IFA,I)
-                NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
+C             B ET Bt SONT NULLES EN PENALISATION SEULE
+              IF (PEFRSE) GOTO 190
+
+              DO 160 I = 1,NNOL
+
+                PLI=PLA(I)
+                IF (MALIN) THEN
+                  FFI=FFP(NOLA(I))
+                  NLI=NLINOL(I)
+                ELSE
+                  FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                  NLI=CFACE(IFA,I)
+                ENDIF
 
 C               CALCUL DE TAU.KN.P
                 DO 161 J = 1,NDIM
@@ -517,6 +653,26 @@ C
  160          CONTINUE
 
 C             II.2. CALCUL DE B_U
+
+ 190          CONTINUE
+              IF (ADHER) THEN
+
+C               CAS ADHERENT, TERME DE PENALISATION:
+C               ON A ALORS PTKNP=PT.ID.P
+                COEFBU=CPENFR
+
+              ELSE
+
+                IF (PEFRSE) THEN
+C                 CAS GLISSANT, PENALISATION SEULE
+                  COEFBU=CPENFR
+                ELSE
+C                 CAS GLISSANT
+                  COEFBU=CSTAFR
+                ENDIF
+
+              ENDIF
+
               DO 170 I = 1,NNO
                 DO 171 J = 1,NNO
 
@@ -525,7 +681,7 @@ C             II.2. CALCUL DE B_U
 C
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) -
-     &                4.D0*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*
+     &                4.D0*MU*SEUIL(ISSPG)*COEFBU*FFP(I)*FFP(J)*
      &                                               PTKNP(K,L)*JAC*MULT
 C
  173                CONTINUE
@@ -533,7 +689,7 @@ C
 C
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) =
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) -
-     &                4.D0*RR*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*
+     &                4.D0*RR*MU*SEUIL(ISSPG)*COEFBU*FFP(I)*FFP(J)*
      &                                               PTKNP(K,L)*JAC*MULT
 C
  174                CONTINUE
@@ -544,7 +700,7 @@ C
 C
                       MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) -
-     &                4.D0*RR*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*
+     &                4.D0*RR*MU*SEUIL(ISSPG)*COEFBU*FFP(I)*FFP(J)*
      &                                               PTKNP(K,L)*JAC*MULT
 C
  176                CONTINUE
@@ -552,7 +708,7 @@ C
 C
                      MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+DDLH+L)
      &            =  MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+DDLH+L)
-     &            -  4.D0*RR*RR*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*
+     &            -  4.D0*RR*RR*MU*SEUIL(ISSPG)*COEFBU*FFP(I)*FFP(J)*
      &                                               PTKNP(K,L)*JAC*MULT
 C
  177                CONTINUE
@@ -560,32 +716,58 @@ C
 
  171            CONTINUE
  170          CONTINUE
+
 C
 C             II.3. CALCUL DE F
-              DO 180 I = 1,NNOF
-                FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-                NLI=CFACE(IFA,I)
-                NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
-                DO 181 J = 1,NNOF
-                  FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
-                  NLJ=CFACE(IFA,J)
-                  NJ=XOULA(CFACE,IFA,J,JAINT,TYPMA)
-                  CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NJ,PLJ)
 
-C                 CALCUL DE TAIKTA = TAUt.(Id-KN).TAU
-                  CALL XMAFR2(NLI,NLJ,TAU1,TAU2,IK,TAIKTA)
+C             F EST NULLE SI LE POINT EST ADHERENT, ET
+C             SI ON N'EST PAS EN PENALISATION SEULE
+              IF (.NOT.ADHER.OR.PEFRSE) THEN
 
-                  DO 182 K = 1,NDIM-1
-                    DO 183 L = 1,NDIM-1
+C               LE COEFFICIENT DE F_R EST CELUI DE STABILISATION
+                COEFFR=CSTAFR
+C               SAUF EN CAS DE PENALISATION SEULE
+                IF (PEFRSE) COEFFR=CPENFR
 
-                      MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
-     &              + MU*SEUIL(ISSPG)/RHOTK*FFI*FFJ*TAIKTA(K,L)*JAC*MULT
+                DO 180 I = 1,NNOL
+                  PLI=PLA(I)
+                  IF (MALIN) THEN
+                    FFI=FFP(NOLA(I))
+                    NLI=NLINOL(I)
+                  ELSE
+                    FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                    NLI=CFACE(IFA,I)
+                  ENDIF
+                  DO 181 J = 1,NNOL
+                    PLJ=PLA(J)
+                    IF (MALIN) THEN
+                      FFJ=FFP(NOLA(J))
+                      NLJ=NLINOL(J)
+                    ELSE
+                      FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
+                      NLJ=CFACE(IFA,J)
+                    ENDIF
 
- 183                CONTINUE
- 182              CONTINUE
- 181            CONTINUE
- 180          CONTINUE
+                    IF (PEFRSE) THEN
+C                     PENALISATION SEULE, TAIKTA=TAUt.Id.TAU
+                      CALL XMAFR2(NLI,NLJ,TAU1,TAU2,KN,TAIKTA)
+                    ELSE
+C                     CALCUL DE TAIKTA = TAUT.(ID-KN).TAU
+                      CALL XMAFR2(NLI,NLJ,TAU1,TAU2,IK,TAIKTA)
+                    ENDIF
+
+                    DO 182 K = 1,NDIM-1
+                      DO 183 L = 1,NDIM-1
+                        
+                        MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
+     &                           + MU*SEUIL(ISSPG)/COEFFR*
+     &                           FFI*FFJ*TAIKTA(K,L)*JAC*MULT
+
+ 183                  CONTINUE
+ 182                CONTINUE
+ 181              CONTINUE
+ 180            CONTINUE
+              ENDIF
 
             ELSE
 C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
@@ -594,7 +776,7 @@ C             PROBLEME DE STATUT DE CONTACT.
             END IF
 
           ELSE
-C           SI OPTION NI 'RIGI_CONT' NI 'RIGI_FROTT'
+C           SI OPTION NI 'RIGI_CONT' NI 'RIGI_FROT'
             CALL ASSERT(OPTION.EQ.'RIGI_FROT' .OR.
      &                  OPTION.EQ.'RIGI_CONT')
           ENDIF
@@ -606,7 +788,7 @@ C       FIN DE BOUCLE SUR LES FACETTES
  100  CONTINUE
 C
 C-----------------------------------------------------------------------
-C     COPIE DES CHAMPS DE SORITES ET FIN
+C     COPIE DES CHAMPS DE SORTIES ET FIN
 C-----------------------------------------------------------------------
 C
       DO 200 J = 1,NDDL

@@ -1,6 +1,7 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PBADEL P.BADEL
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
+# ssnv169c.para = tps_job 90 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

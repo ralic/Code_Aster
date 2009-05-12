@@ -1,4 +1,4 @@
-# MODIF  DATE 24/11/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,11 +56,8 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                        DIST=0.0099,),),
                     INFO=1);
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('SURF',),),);
-
-MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
-                    MAILLAGE=MAILLAG2,
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
                                       NOM='PPR',
                                       POINT=(0.03875,0.),
@@ -73,8 +70,8 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                       PRECISION=1E-7),),
                     INFO=1);
 
-MAILLAG2=MODI_MAILLAGE(reuse=MAILLAG2,
-                       MAILLAGE=MAILLAG2,
+MAILLAG1=MODI_MAILLAGE(reuse=MAILLAG1,
+                       MAILLAGE=MAILLAG1,
                        ORIE_PEAU_2D=(_F(GROUP_MA = 'LIG2',),
                                      _F(GROUP_MA = 'LIG3',),
                                      _F(GROUP_MA = 'LIG4',),),);
@@ -83,7 +80,7 @@ MAILLAG2=MODI_MAILLAGE(reuse=MAILLAG2,
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=(_F(GROUP_MA=('LIG3',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),
@@ -150,7 +147,7 @@ E_F=DEFI_FONCTION(NOM_PARA='NEUT1',
 
 MATVAR=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=rho));
 
-CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('PLAQ'),
                                 MATER=MATVAR,),
@@ -171,12 +168,15 @@ CTXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  FROTTEMENT     = 'COULOMB',
                                  COULOMB        = 1.,
                                  ITER_FROT_MAXI = 20,
-                                 INTEGRATION    = 'NCOTES1',
-                                 ALGO_LAGR      = 'NON',
+                                 INTEGRATION    = 'NOEUD',
+                                 ALGO_LAGR      = 'VERSION2',
                                  COEF_REGU_CONT = 100.,
+                                 COEF_STAB_CONT = 100000.,
                                  ITER_CONT_MAXI = 4,
                                  COEF_ECHELLE   = 1.,
-                                 COEF_REGU_FROT = 100.,),);
+                                 COEF_REGU_FROT = 100.,
+                                 COEF_STAB_FROT = 100000.,
+                                 ),);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
@@ -279,11 +279,7 @@ MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                                      POINT=(0.01125,0.),
                                      RAYON=0.000001,
                                      PRECISION=0.00001,),
-                                  _F(NOM='NFISSU',
-                                     OPTION='PLAN',
-                                     POINT=(0.,0.),
-                                     VECT_NORMALE=(0.,1.),
-                                     PRECISION=1.E-6,),),
+                                  ),
                    INFO=1);
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -315,7 +311,7 @@ DEP_NFI = CALC_TABLE(reuse = DEP_NFI,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]',),),);
+                                  VALE_K    = 'N[^P]',),),);
 
 DEP_NFI = CALC_TABLE(reuse = DEP_NFI,
                      TABLE = DEP_NFI,
@@ -332,13 +328,6 @@ VC_PPR=POST_RELEVE_T(ACTION=_F(INTITULE='VALE_CONT',
                                INST=1.0,
                                TOUT_CMP='OUI',
                                OPERATION='EXTRACTION',),);
-
-VC_PPR = CALC_TABLE(reuse = VC_PPR,
-                    TABLE = VC_PPR,
-                    ACTION = (_F(OPERATION = 'FILTRE',
-                                 NOM_PARA  = 'NOEUD',
-                                 CRIT_COMP = 'REGEXP',
-                                 VALE_K    = 'N[^M]',),),);
 
 IMPR_TABLE(TABLE=VC_PPR,);
 
@@ -510,6 +499,86 @@ TEST_TABLE(TABLE=DEP_PPE,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
            VALE=1.5364146641691E-05,
+           CRITERE='RELATIF',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPA,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPA,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPB,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPB,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPC,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=-1.4724675280627E+07,
+           CRITERE='RELATIF',
+           PRECISION=5.E-2,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPC,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           VALE=-1.4724675280627E+07,
+           CRITERE='RELATIF',
+           PRECISION=5.E-2,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPD,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=-2.4583481034903E+07,
+           CRITERE='RELATIF',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPD,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           VALE=-2.4583481034903E+07,
+           CRITERE='RELATIF',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPE,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=-3.4650090742044E+07,
+           CRITERE='RELATIF',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DEP_PPE,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           VALE=-3.4650090742044E+07,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);

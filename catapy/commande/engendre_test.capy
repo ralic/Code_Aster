@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ ENGENDRE_TEST=PROC(nom="ENGENDRE_TEST",op=178,
          b_aster     =BLOC( condition = "FORMAT==None",
             CO              =SIMP(statut='o',typ=(cham_gd_sdaster,resultat_sdaster,table_sdaster),
                                   validators=NoRepeat(),max='**'),
-            TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut="SOMM_ABS",into=("SOMM","SOMM_ABS","MAX","MIN") ),
+            TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut="SOMM_ABS",into=("SOMME","SOMM_ABS","MAX","MIN") ),
          ),
 #============================================================================
          b_objet     =BLOC( condition = "FORMAT=='OBJET'",

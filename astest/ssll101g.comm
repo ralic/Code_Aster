@@ -1,5 +1,6 @@
-# MODIF  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
 # TITRE PROBLEME DE HOVGAARD : CALCUL DES EFFORTS POU_C_T + POU_D_T
+# ssll101g.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
