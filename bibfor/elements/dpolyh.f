@@ -4,7 +4,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,23 +20,30 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-C ======================================================================
-      REAL*8    DPOLYH
-      REAL*8    A(*),X
-      INTEGER   N
-      INTEGER   I
-      REAL*8    AUX
+C======================================================================
+C
+C     EVALUE LE POLYNOME Y = A1 + A2 * X + ... + A(N+1) * X**N
+C
+C IN  N : DEGRE DU POLYNOME
+C IN  A : COEFFICIENT DU POLYNOME
+C IN  X : VALEUR DE X OU EST EVALUE LE POLYNOME
+C
+C OUT DPOLYH : EVALUATION DU POLYNOME A X
+
+      INTEGER I, N
+      REAL*8 DPOLYH, A(*), X
 
       IF(N.GT.0) THEN
-         AUX = A(N+1)
-         DO 10, I=N,1,-1
-            AUX = AUX*X + A(I)
- 10      CONTINUE
-         DPOLYH = AUX
+C     LE POLYNOME EST DE DIMENSION SUPERIEUR A 0
+        DPOLYH = A(N+1)
+        DO 10, I = N, 1, -1
+          DPOLYH = DPOLYH*X + A(I)
+ 10     CONTINUE
       ELSEIF(N.EQ.0) THEN
-         DPOLYH = A(1)
+C     LE POLYNOME EST DE DIMENSION 0 DONC UNE CONSTANTE
+        DPOLYH = A(1)
       ELSE
-         CALL U2MESS('A','ELEMENTS_90')
+        CALL U2MESS('A','ELEMENTS_90')
       ENDIF
 
       END

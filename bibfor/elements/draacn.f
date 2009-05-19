@@ -1,11 +1,11 @@
       SUBROUTINE DRAACN(DEG,POLY,NBROOT,ROOT)
-      
+
       IMPLICIT NONE
-      
+
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,134 +21,149 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C ======================================================================
-      INTEGER     DEG
-      REAL*8      POLY(DEG+1)
-      INTEGER     NBROOT
-      REAL*8      ROOT(DEG)
-      REAL*8   A(DEG+1),B(DEG+3),C(DEG+3)
-      REAL*8   DP1,DQ,D,E,F,P1,Q,R,TTT,U,V,X,Y,Z
-      REAL*8   REALRO(DEG),CCOEF,COEF(DEG+1)
-      INTEGER  I,J,K,M,N,NROOT,IRAN(20)
-      INTEGER  II,KK,I2,KKK
-      REAL*8   ZERO
-      DATA     ZERO /1.0D-8/
+C======================================================================
+C
+C     EVALUE LES RACINES DU POLYNOME DE DEGRE DEG PAR L ALGORITHME
+C     DE BAIRSTOW AVEC POLISSAGE DES RACINES PAR L ALGO DE NEWTON
+C
+C
+C IN  DEG : DEGRE DU POLYNOME
+C IN  POLY : COEFFICIENT DU POLYNOME
+C
+C OUT NBROOT : NOMBRE DE RACINE DU POLYNOME
+C OUT ROOT : RACINE DU POLYNOME
 
-      N=DEG
+      INTEGER I, J, K, N, NROOT, IRAN(20)
+      INTEGER I2, KKK
+      INTEGER DEG, NBROOT
 
-      DO 20, I = 1,(DEG+1)
-        A(I) = POLY(I)
- 20   CONTINUE
- 
+      REAL*8 POLY(DEG+1), ROOT(DEG)
+      REAL*8 A(DEG+1),B(DEG+3),C(DEG+3)
+      REAL*8 DP1,DQ,D,E,F,P1,Q,TTT,U,X,Y,Z
+      REAL*8 REALRO(DEG),CCOEF,COEF(DEG+1)
+
+      REAL*8 ZERO
+
+      N = DEG
+      ZERO = 1.0D-8
       CCOEF=0.D0
-      DO 22, I=1,N+1
-         CCOEF = MAX(CCOEF,ABS(A(I)))
- 22   CONTINUE
 
-      DO 24, KK = 1,10000000
-         IF((N .LE. 0) .OR. (ABS(A(1)) .GT. ZERO*CCOEF)) GOTO 25
-         DO 23, I=1,N
-            A(I)=A(I+1)
- 23      CONTINUE
-         A(N+1)=0.D0
-         N=N-1
- 24   CONTINUE
- 25   CONTINUE
-      IF (N .GT. 0) THEN 
+C     COPIE DES COEFFICIENTS DU POLYNOME ET
+C     RECHERCHE DU PLUS GRAND COEFFICIENT EN VALEUR ABSOLUE
+      DO 20, I = 1, DEG+1
+        A(I) = POLY(I)
+        CCOEF = MAX(CCOEF,ABS(A(I)))
+ 20   CONTINUE
+
+      IF(ABS(A(1)) .LE. ZERO*CCOEF) THEN
+        DO 24, N = DEG, 1, -1
+          DO 23, I = 1, N
+            A(I) = A(I+1)
+ 23       CONTINUE
+
+          A(N+1)=0.D0
+ 24     CONTINUE
+      ELSE
         CCOEF=A(1)
         DO 30, I = 1,N+1
           A(I)=A(I)/CCOEF
- 30     CONTINUE       
+ 30     CONTINUE
       ENDIF
-C-----------------------------------------------------------------------
 
-      P1=0.D0
-      Q=0.D0
-      K=100
-      E=1.D-4
+      P1 = 0.D0
+      Q = 0.D0
+      K = 100
+      E = 1.D-4
 
-      CALL R8INIR(DEG,0.0D0,ROOT,1)      
-      CALL R8INIR(DEG,0.0D0,REALRO,1) 
+C     INITIALISATION DES TABLEAUX
+      CALL R8INIR(DEG,0.0D0,ROOT,1)
+      CALL R8INIR(DEG,0.0D0,REALRO,1)
+
       NBROOT=0
-      DO 59, KK = 1,10000000
-         IF(N .LE. 2) GOTO 60
+
+      DO 59, N = N, 3, -2
 
         J=0
         F=E+1.0D0
-          DO 49, KKK = 1,10000000
-            IF(F .LE. E) GOTO 50
-          
-            IF (J .GT. K) THEN
-                GOTO 60
-            ENDIF
-            J=J+1
-            B(1) = 0.D0
-            B(2) = 0.D0
-            C(1) = 0.D0
-            C(2) = 0.D0
-            
-            DO 40, I2 = 1,N+1
-              I = I2 + 2
-              B(I)=A(I-2)-P1*B(I-1)-Q*B(I-2)
-              C(I)=-B(I-1)-P1*C(I-1)-Q*C(I-2)
- 40         CONTINUE
-            X=B(N+2)
-            Y=B(N+3)
-            Z=C(N+1)
-            TTT=C(N+2)
-            U=C(N+3)
-            D=TTT*TTT-Z*(U+X)
-            
-            IF (D .EQ. 0.D0) THEN
-               GOTO 60
-            ENDIF
-            DP1=(Z*Y-X*TTT)/D
-            DQ=(-X*(Q*Z+P1*TTT)-Y*TTT)/D
-            P1=P1+DP1
-            Q=Q+DQ
-            F=(ABS(DP1)+ABS(DQ))/(ABS(P1)+ABS(Q))
 
- 49     CONTINUE        
- 50     CONTINUE        
+        DO 49, KKK = 1,10000000
+          IF(F .LE. E) GOTO 50
 
+          IF (J .GT. K) GOTO 60
+
+          J=J+1
+          B(1) = 0.D0
+          B(2) = 0.D0
+          C(1) = 0.D0
+          C(2) = 0.D0
+
+          DO 40, I2 = 1, N+1
+            I = I2 + 2
+            B(I) = A(I-2)-P1*B(I-1)-Q*B(I-2)
+            C(I) = -B(I-1)-P1*C(I-1)-Q*C(I-2)
+ 40       CONTINUE
+
+          X = B(N+2)
+          Y = B(N+3)
+          Z = C(N+1)
+          TTT = C(N+2)
+          U = C(N+3)
+          D = TTT*TTT-Z*(U+X)
+
+          IF (D .EQ. 0.D0) GOTO 60
+
+          DP1=(Z*Y-X*TTT)/D
+          DQ=(-X*(Q*Z+P1*TTT)-Y*TTT)/D
+          P1=P1+DP1
+          Q=Q+DQ
+          F=(ABS(DP1)+ABS(DQ))/(ABS(P1)+ABS(Q))
+ 49     CONTINUE
+
+ 50     CONTINUE
+
+C     RECHERCHE DES RACINES DU POLYNOME DU SECOND DEGRE
+C     Y = X**2 + P1 * X + Q
         CALL DRAAC2(1.D0,P1,Q,
      &        REALRO(NBROOT+1),REALRO(NBROOT+2),NROOT)
 
         NBROOT=NBROOT+NROOT
-        N=N-2
-        DO 55, I = 1,N+1
-          A(I)=B(I+2)
- 55     CONTINUE       
- 59    CONTINUE       
- 60    CONTINUE       
-C-----------------------------------------------------------------------
 
-      IF (N .EQ. 2) THEN      
+        DO 55, I = 1,N-1
+          A(I) = B(I+2)
+ 55     CONTINUE
+ 59   CONTINUE
+
+ 60   CONTINUE
+
+      IF (N .EQ. 2) THEN
+C     RECHERCHE DES RACINES DU POLYNOME DU SECOND DEGRE
+C     Y = A(1) * X**2 + A(2) * X + A(3)
         CALL DRAAC2(A(1),A(2),A(3),
      &        REALRO(NBROOT+1),REALRO(NBROOT+2),NROOT)
-        NBROOT=NBROOT+NROOT
-      ELSEIF (N .EQ. 1) THEN  
-        NBROOT=NBROOT+1
-
-        REALRO(NBROOT)=-A(2)/A(1)  
+        NBROOT = NBROOT+NROOT
+      ELSEIF (N .EQ. 1) THEN
+        NBROOT = NBROOT + 1
+        REALRO(NBROOT) = -A(2)/A(1)
       ENDIF
 
-C-----------------------------------------------------------------------
-
-      IF (NBROOT .GT.  0) THEN
+      IF (NBROOT .GT. 0) THEN
         DO 65, I=1,DEG+1
-           COEF(I)=POLY(DEG-I+1 +1)          
+          COEF(I) = POLY(DEG-I+2)
  65     CONTINUE
+
         DO 67, I=1,NBROOT
-           CALL NWTPOL(DEG,COEF,REALRO(I))
+C     RAFFINE LA RECHERCHE DES RACINES PAR LA METHODE DE NEWTON
+          CALL NWTPOL(DEG,COEF,REALRO(I))
  67     CONTINUE
       ENDIF
 
       IF (NBROOT .GT. 1) THEN
-        CALL DCLASS(NBROOT,REALRO,IRAN)      
+C     EVALUE L ORDRE DES RACINES DANS IRAN
+        CALL DCLASS(NBROOT,REALRO,IRAN)
+
         DO 70, I = 1,NBROOT
           ROOT(I)=REALRO(IRAN(I))
  70     CONTINUE
       ENDIF
 
-      END 
+      END

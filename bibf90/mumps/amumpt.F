@@ -2,7 +2,7 @@
      &                   LQUALI,RDESQ,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPC MUMPS  DATE 05/05/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPC MUMPS  DATE 18/05/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

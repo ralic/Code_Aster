@@ -1,11 +1,11 @@
       FUNCTION GPLASS (NMNBN,NMPLAS,BEND)
-      
+
       IMPLICIT NONE
 
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,29 +22,29 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      REAL*8 GPLASS
-C---------------------------------------------
-        REAL*8  NMNBN(6)         
-        REAL*8  NMPLAS(2,3)   
-        REAL*8  NMDPLA(2,2)  
-        REAL*8  NMDDPL(2,2)
-        REAL*8  NMZEF        
-        REAL*8  NMZEG         
-        INTEGER NMIERF  
-        INTEGER NMPROX(2)  
-C---------------------------------------------
-      REAL*8 X, Y, COEF
+C
+C     CALCUL DES CONDITIONS DE PLASTICITE G
+C
+C IN  NMNBN : FORCE - BACKFORCE
+C IN  NMPLAS : MOMENTS LIMITES DE PLASTICITE
+C IN  BEND : SIGNE DE LA FLEXION (1 POSITIVE, 2 NEGATIVE)
+C
+C OUT GPLASS : CONDITIONS DE PLASTICITE G
+
       INTEGER BEND
+
+      REAL*8 GPLASS, NMNBN(6), NMPLAS(2,3)
+      REAL*8 X, Y, COEF
 
       X = NMNBN(4)-NMPLAS(BEND,1)
       Y = NMNBN(5)-NMPLAS(BEND,2)
 
       COEF = 1.001D0
 
-      IF (BEND  .EQ.  1) THEN
-            GPLASS =  MAX(COEF*X + Y, X/COEF + Y)
+      IF (BEND .EQ. 1) THEN
+        GPLASS = MAX(COEF*X + Y, X/COEF + Y)
       ELSE
-            GPLASS =  MAX(-COEF*X - Y,-X/COEF - Y)
+        GPLASS = MAX(-COEF*X - Y,-X/COEF - Y)
       ENDIF
 
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 19/05/2009   AUTEUR DESROCHES X.DESROCHES 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -210,6 +210,14 @@ DEPLDIL=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
                     AFFE=_F(  INST = 1.,  CHAM_GD = DEP1,
                               MODELE=MO, CHAM_MATER=CHMAT1, CARA_ELEM=CARE, )     )
 
+
+CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
+           OPTION=('SIEF_ELGA_DEPL',),
+           EXCIT=_F( CHARGE = CHDIL),
+           REPE_COQUE=_F(
+           NUME_COUCHE=1,
+           NIVE_COUCHE='INF',),
+                         )
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
            EXCIT=_F( CHARGE = CHDIL),
@@ -232,6 +240,14 @@ DEP2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 DEPLDILT=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
                      AFFE=_F(  INST = 1.,  CHAM_GD = DEP2,
                                MODELE=MO, CHAM_MATER=CHMATH1, CARA_ELEM=CARE, )     )
+
+CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
+           OPTION=('SIEF_ELGA_DEPL',),
+           EXCIT=_F( CHARGE = CHDIL),
+           REPE_COQUE=_F(
+           NUME_COUCHE=1,
+           NIVE_COUCHE='INF',),
+                         )
 
 CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
@@ -352,9 +368,25 @@ TEST_RESU(RESU=(
                NOEUD = 'NO000001', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
         NUME_ORDRE = 1,     MAILLE = 'MA000053', NOM_CHAM = 'EFGE_ELNO_DEPL',
-               NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = -0.20000E+0),),
-            )
+               NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
 
+     # CONTRAINTES AUX PTS DE GAUSS SUR LES SOUS POINTS
+
+            _F(  RESULTAT = DEPLDIL,  REFERENCE = 'ANALYTIQUE',   
+        NUME_ORDRE = 1,     MAILLE = 'MA000025', NOM_CHAM = 'SIEF_ELGA_DEPL',
+               POINT = 4,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = 1.428571E+0),
+            _F(  RESULTAT = DEPLDIL,  REFERENCE = 'ANALYTIQUE',   
+        NUME_ORDRE = 1,     MAILLE = 'MA000053', NOM_CHAM = 'SIEF_ELGA_DEPL',
+               POINT = 6,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = 1.428571E+0),
+#
+            _F(  RESULTAT = DEPLDI2,  REFERENCE = 'ANALYTIQUE',   
+        NUME_ORDRE = 1,     MAILLE = 'MA000025', NOM_CHAM = 'SIEF_ELGA_DEPL',
+               POINT = 4,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = -0.19780E+0),
+            _F(  RESULTAT = DEPLDI2,  REFERENCE = 'ANALYTIQUE',   
+        NUME_ORDRE = 1,     MAILLE = 'MA000053', NOM_CHAM = 'SIEF_ELGA_DEPL',
+               POINT = 3,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = -0.19780E+0),)
+
+        )
 #---------------------------------------------------------------------
 
 CHTH2=AFFE_CHAR_THER( MODELE=MOTHER,

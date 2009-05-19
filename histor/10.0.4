@@ -1,0 +1,654 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 19/05/2009 - 13:13:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010925 DU 2007-05-31 13:00:00
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   mieux tester le calcul des contraintes SIEF_ELGA_DEPL dans les coques 3D
+FONCTIONNALITE
+   Les contraintes SIEF_ELGA_DEPL pour les éléments COQUE_3D
+   ne sont pas testées avec un chargement température.
+   
+   On les calcule et on les teste dans un cas test avec une 
+   solution analytique :
+   
+   Cylindre creux mince thermoélastique avec un champ de 
+   température linéaire dans l'épaisseur
+   HPLA100C : QUAD9
+   HPLA100D : TRIA7
+   
+   De plus, dans ces tests, les coques ont 2 couches, ce 
+   qui permet de tester les valeurs sur les sous-points et 
+   de vérifier que les valeurs sont bien rangées.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.01.100
+VALIDATION
+   HPLA100C HPLA100D
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012156 DU 2008-06-04 07:52:32
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   M?ode des modes incompatibles appliqu?aux ?ments Q4
+FONCTIONNALITE
+   Suite à la réunion du 12 mars 2009 sur le lot coques,
+   on a décidé de ne pas réaliser cette fiche au profit de 
+   la fiche 
+   
+   10622  	 MN02 - Enrichissement des formulations des 
+   éléments plaque/coque avec la troisieme rotation
+   
+   On solde donc cette fiche.
+   
+   Extrait du CR du 12 mars :
+   ------------------------
+   
+   Sur les 2 EL concernant les stagiaires 2007 et 2008 de 
+   Damian, on a décidé :
+     fiche 10622  :  reprise par XD, sous réserve de 
+   transmission par Damijan des travaux produits à ce jour 
+   par le stagiaire 
+     fiche 12156   :  on abandonne
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010610 DU 2007-03-06 13:47:58
+TYPE evolution concernant Code_Aster (VERSION 9.1)
+TITRE
+   El?nts 3D stabilis?
+FONCTIONNALITE
+   Fiche concernant le travail de stage de Mlle Doan sur 
+   l'élément fini WW3D (Hexa8 à 8 points de Gauss 
+   partiellement stabilisé) : l'élément fonctionne bien 
+   mais n'est pas entièrement fiable . Il a encore des 
+   blocages et pour certains types de conditions aux 
+   limites (pas d'encastrement par exemple), il peut 
+   conduire à des systèmes singuliers. Il n'est donc pas 
+   question de le mettre dans Aster.
+   
+   La 2-ème partie du stage (éléments de Belytschko en 
+   dynamique) a donné de bons résultats comme on pouvait 
+   s'y attendre : l'élément HEXAS8 fonctionne avec 
+   DYNA_TRAN_EXPLI, donc sans développement supplémentaire 
+   dans Aster.
+   
+   On restitue donc cette fiche en l'état.
+   
+   Références du rapport de stage :
+   ------------------------------
+   
+   Implémentation et validation dans Aster d'un élément 
+   fini 3D linéaire par une méthode "assumed strain"
+   
+   par DOAN Vinh (LAMI ENPC/LCPC) Master MMS
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 18/05/2009 - 13:27:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013423 DU 2009-05-15 11:21:52
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Type LOGICAL dans les structures fortran90 de MUMPS
+FONCTIONNALITE
+   La structure Fortran90 manipulée par MUMPS contients des éléments de type LOGICAL. Il est
+   nécessaire de les modifier en LOGICAL*4 quand ils sont embarqués dans aster et compilés
+   avec l'option -i8 sur le serveur Bull pour assurer la cohérence avec les librairies MUMPS
+   compilées elles sans cette option.
+   On modifie les fichiers d'include dmumps_root.h,dmumps_struc.h, zmumps_root.h et
+   zmumps_struc.h et on restitue les routines : amumpc.F, amumpi.F, amumpm.F,  amumpp.F,
+   amumpr.F, amumps.F et amumpt.F sans modifications pour qu'elles soient recompilées avec
+   les fichiers d'include modifiés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les tests mumpsXX
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 19/05/2009 - 11:31:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012618 DU 2008-10-10 15:18:25
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   POST_ELEM INTEGRALE
+FONCTIONNALITE
+   POST_ELEM/INTEGRALE ne fonctionne que sur des sd RESULTAT.
+   On rajoute la possibilité de le faire sur des CHAM_GD.
+   Le mot-clé CHAM_GD existait déjà dans la commande, on 
+   rajoute simplement ce mot-clé sous le bloc INTEGRALE :
+   
+   INTEGRALE= _F(  /TOUT    =	'OUI',
+                   /GROUP_MA=	lgrma,	   [l_gr_maille]
+                   /MAILLE  =	l_maille,  [l_maille]
+                )
+   
+   Mots-cles simples:
+   	MODELE =	mo,	[modele]
+   /	CHAM_GD =	cham,	[cham_gd]
+   / 	RESULTAT =	resu,	[resultat]
+   
+   Catalogue: 
+   post_elem.capy 
+   
+   Routines Fortran:
+   peeint.f peecal.f
+   
+   Cas-tests:
+   --------
+   La validation a été faite à l'aide des tests sslv140a et 
+   zzzz242a où les memes champs que ceux de RESULTAT ont été 
+   testés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.22
+VALIDATION
+   sslv140a zzzz242a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 18/05/2009 - 18:07:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013208 DU 2009-03-13 10:08:11
+TYPE express concernant Code_Aster (VERSION 10.1)
+TITRE
+   Ajout d'une modxc3xa9lisation xc3xa0 COMP002 : loi MONOCRISTAL orthotrope
+FONCTIONNALITE
+   Pour compléter la validation des lois monocristallines, le test COMP002 s'enrichit d'une
+   nouvelle modélisation : COMP002J test la loi MONOCRISTAL avec élasticité ORTHOTROPE.
+   
+   Ceci a permis de corriger le fonctionnement de ces tests dans le cas de réelle anisotropie
+   : il faut en effet que, pour le test de rotation, le maillage, le chargement, le repère
+   d'orthotropie tournent ensemble. Le nouveau test réalise cela, à l'aide d'une petite
+   modification de SIMU_POINT_MAT permettant de prendre en compte la rotation :
+   
+   - an ajoute le mot-clé ANGLE, qui permet de définir une rotation du maillage et du
+   chargement et un changement de repère (MODIF_REPERE) homogènes.
+   
+   - pour les comportements orthotropes comme le monocristal, on ajout le mot-clé MASSIF
+   (comme dans AFFE_CARA_ELEM).
+   
+   Ce test pourra servir pour d'autres comportements anisotropes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.12, V6.07.102
+VALIDATION
+   comp002j
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010098 DU 2006-10-03 07:10:06
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   POST-ZAC - Usage de MERIMO
+FONCTIONNALITE
+   Pour des raisons de simplification de maintenance, et à la demande du projet SIMUMECA,
+   nous résorbons POST_ZAC. 
+   
+   Pour résumer les avantages et inconvénients rappelés par Saïd Taheri dans cette fiche,
+   cette méthode simplifiée fournit l'état limite stabilisé sous chargement périodique à
+   partir de 3 calculs élastiques, mais sous l'hypothèse contraignante d'un écrouissage
+   cinématique linéaire. 
+   
+   Elle est donc très efficace, et beaucoup plus rapide que les calculs d'évolution de chaque
+   cycle. Suivant le problème traité, elle fournit l'état adapté (cycle limite élastique) ou
+   l'état accommodé (cycle limite élastoplastique).
+   
+   Mais :
+   
+   Aujourd'hui, pour les matériaux que nous étudions (inox en particulier), les cyles limites
+   restent élastoplastiques même après des millions de cycles. L'état adapté est une
+   situation trop conservative.
+   
+   Pour l'estimation de l'état accommodé, la méthode ZAC a donné des résultats intéréssants
+   sur un benchmark CEA-EDF-FRA. Mais elle présentait des défauts surtout dans le cas d'un
+   chargement non radial (cas courant en thermomécanique).
+   
+   La méthode a été éliminés du code RCC-MR, car la limitation à l'écrouissage cinématique
+   linéaire est trop contraignante car pas très représentative du comportement des matériaux.
+   
+   On résorbe donc, sachant que des méthodes de sauts de cycles, plus générales dans  leurs
+   applications, seront introduites dans une version future.
+   
+   On supprime les tests SSNA100A,B, les routines op0175, asasm2, medim2, merim2, suppression
+   d'un bloc IF dans medom1 et nmdome.
+   
+   Remarque : il avait été évoquée la possibilité de reprogrammer la méthode ZAC en python,
+   en utilisant CALCUL. Ceci reste envisageable, si le besoin s'en fait sentir.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.83.21, V6.01.100, R7.06.01
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012666 DU 2008-10-20 12:13:34
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   erreur doc sur les comportements non-linxc3xa9aires
+FONCTIONNALITE
+   C'est corrigé dans la doc U4.51.11 correspondant à la version 9.4 : les comportements
+   pouvant être couplés avec GRANGER* sont :
+   
+   'BETON_DOUBLE_DP'
+   'VMIS_ISOT_TRAC'
+   'VMIS_ISOT_PUIS'
+   'VMIS_ISOT_LINE'
+   'ROUSS_PR'
+   'LMARC'
+   ?BETON_DOUBLE_DP'
+   'NADAI_B'
+   
+   Ceux qui sont compatibles avec le modèle de fluage ?BETON_UMLV_FP' 
+   sont :
+   ?ENDO_ISOT_BETON?,
+   ?MAZARS?
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.11
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012170 DU 2008-06-06 09:50:29
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   Documentation R3.01.01
+FONCTIONNALITE
+   La correction de la page 21 a été effectuée dans R3.01.01G
+   
+   Par contre la documentation de la famille FPG64, spécifique à Arlequin, ne sera pas faite
+   ici. Elle n'est pas accessible dans le modèle.
+   
+   Peut-être faudrait-il la documenter dans la doc d'Arlequin
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.01.01G
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB Joumana      DATE 18/05/2009 - 18:07:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013287 DU 2009-04-06 09:53:47
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 9.4.7, le cas-test ssnv206a s?arrete en ERREUR_<F> sur Calibre 5.
+FONCTIONNALITE
+   Je n'arrive pas à reproduire le bug et donc à le corriger car ce test
+   tourne sur la clau5aaa (calibre 5) en version 9.4.8 et tourne sur ma 
+   machine (calibre 5) en version 9.4.7
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv206a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 18/05/2009 - 18:07:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013397 DU 2009-05-11 07:32:46
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Creation de fichier dans un fichier de commande
+FONCTIONNALITE
+   le message COPY_ERROR était  dû à un .med qui n'était pas renseigné.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013419 DU 2009-05-14 14:37:31
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.3, le cas-test sdls117a s'arrete par manque de temps sur Calibre 4.
+FONCTIONNALITE
+   En NEW10.0.3, le cas-test sdls117a s'arrete par manque de temps sur Calibre 4.
+   
+   Le para est passé de 3 à 4 mn
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   lui-meme
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013406 DU 2009-05-12 12:56:12
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 10.0.1, le cas-test ssnp138a s?arrete par manque de temps Bull.
+FONCTIONNALITE
+   En NEW 10.0.1, le cas-test ssnp138a s?arrete par manque de temps Bull.
+   
+   Le .para passe de 200s a 360s
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   lui-meme
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013404 DU 2009-05-12 12:50:36
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 10.0.1, les cas-tests ssnl127d et ssnl127e s?arretent en ARRET_<A> sur Rocks.
+FONCTIONNALITE
+   En NEW 10.0.1, les cas-tests ssnl127d et ssnl127e s?arretent en ARRET_<A> sur Rocks.
+   
+   Le .para est passé de 1mn a 2mn. 
+   
+   On supprime aussi RHO_MIN pour enlever l'alarme
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   lui-meme
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 19/05/2009 - 13:09:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013294 DU 2009-04-08 07:54:33
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   IMPR_RESU dans fichier message
+FONCTIONNALITE
+   Problème :
+   ----------
+   "Je voudrais imprimer mon champ dans le fichier message et la commande suivante ne semble pas
+   fonctionner :
+   
+   IMPR_RESU(FORMAT='ASTER',UNITE=6,RESu=_F(CHAM_GD=xxx))"
+   
+   
+   Analyse :
+   ---------
+   "J'ai compris mon erreur grâce à Nicolas Sellenet : il faut FORMAT='RESULTAT' et non
+   FORMAT='ASTER', qui n'imprime que le maillage. Or ici précisément, je ne donnais que le
+   CHAM_GD, sans maillage. Résultat, je n'ai rien.
+   
+   Il faudrait peut être une petite alarme si FORMAT=ASTER mais pas de maillage. Cas pour
+   lequel IMPR_RESU ne ferait donc rien."
+   
+   
+   Solution :
+   ----------
+   Je rajoute un message qui prévient l'utilisateur que IMPR_RESU au format ASTER sans
+   MAILLAGE ne fait rien.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013326 DU 2009-04-20 09:15:15
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Temps anormalement long dans MODE_ITER_SIMULT
+FONCTIONNALITE
+   Problème :
+   ----------
+   Temps anormalement long dans MODE_ITER_SIMULT
+   
+   
+   Solution :
+   ----------
+   Changer de renuméroteur + Ajout d'un commentaire dans le cas test yyyy102a pour prévenir
+   l'utilisateur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   unitaire
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013429 DU 2009-05-18 07:14:54
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   WRITE inutile
+FONCTIONNALITE
+   Problème :
+   ----------
+   Thomas a repéré un WRITE(6,*) inutile dans ircam1.
+   
+   
+   Solution :
+   ----------
+   Le supprimer.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 19/05/2009 - 11:36:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013375 DU 2009-05-05 12:41:02
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Nettoyage du code source de GLRC_DAMAGE
+FONCTIONNALITE
+   La loi de comportement GLRC_DAMAGE initialement implémentée dans EPX (F95) a été dupliquée
+   dans Code_Aster.
+   Le passage du code F95 à F77 a entraîné une quantité impressionnante de donnée surabondante :
+   _variables déclarées non utilisées
+   _arguments de fonctions inutiles
+   _...
+   
+   Le but de cette fiche est de remettre à plat les 48 routines Aster qui constituent GLRC_DAMAGE
+   
+   A l'issu du nettoyage :
+   _Suppressions de l'ensemble des variables déclarées mais non utilisées (370/370)
+   _Suppressions de l'ensemble des arguments de routines inutiles (32/32)
+   _Suppressions de boucle Do i = 1, 100000000 (6/9)
+   _Commentaires des sources
+   
+   Sources impactées :
+   
+   te0409.f, dxglrc.f, maglrc.f, glrcmm.f, glrcdd.f, glrcad.f, mppffn.f, d0mpfn.f, ddmpfn.f,
+   tanmat.f, critnu.f, dndiss.f, brbagl.f, dxktan.f, cdnfon.f, d2diag.f, damage.f, matmul.f,
+   fplass.f, gplass.f, nmnet1.f, nmnet2.f, restzo.f, d1cro2.f, d1crit.f, d2crit.f, d2cro2.f,
+   distfo.f, hplass.f, dfuuss.f, dfplgl.f, draac2.f, dracsy.f, dclass.f, draacn.f, dclhoa.f,
+   dclsma.f, nwtpol.f, di2epx.f, dpolyh.f, dpolyn.f, xifonc.f, norrm3.f, norrm6.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Cas test GLRC_DAMAGE
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT comp002j                        proix J-M.PROIX          320    320      0
+ CASTEST MODIF hpla100c                    desroches X.DESROCHES        608     36      1
+ CASTEST MODIF hpla100d                    desroches X.DESROCHES        466     35      3
+ CASTEST MODIF sdls117a                        proix J-M.PROIX          210      2      2
+ CASTEST MODIF sdns106a                     sfayolle S.FAYOLLE          366      2      2
+ CASTEST MODIF ssls126a                     sfayolle S.FAYOLLE          289      3      3
+ CASTEST MODIF ssls126b                     sfayolle S.FAYOLLE          230      2      2
+ CASTEST MODIF ssls127a                     sfayolle S.FAYOLLE          258      1      1
+ CASTEST MODIF ssls127b                     sfayolle S.FAYOLLE          260      1      1
+ CASTEST MODIF sslv140a                      macocco K.MACOCCO          243     65     13
+ CASTEST MODIF ssnl127d                        proix J-M.PROIX          471      6      4
+ CASTEST MODIF ssnl127e                        proix J-M.PROIX          382      2      1
+ CASTEST MODIF ssnp138a                        proix J-M.PROIX          358      2      1
+ CASTEST MODIF yyyy102a                     sellenet N.SELLENET          89      4      1
+ CASTEST MODIF zzzz242a                      macocco K.MACOCCO          147     22      1
+ CASTEST SUPPR ssna100a.comm                   proix J-M.PROIX          427      0    427
+ CASTEST SUPPR ssna100b.comm                   proix J-M.PROIX          439      0    439
+CATALOGU SUPPR commande/post_zac               proix J-M.PROIX           48      0     48
+CATALOPY MODIF commande/post_elem            macocco K.MACOCCO          519      6      4
+CATALOPY MODIF commande/simu_point_mat         proix J-M.PROIX          216      9      1
+FORTRAN90 MODIF mumps/amumpc                 lefebvre J-P.LEFEBVRE       357      1      1
+FORTRAN90 MODIF mumps/amumpc                 lefebvre J-P.LEFEBVRE       357      1      1
+FORTRAN90 MODIF mumps/amumpi                 lefebvre J-P.LEFEBVRE       299      1      1
+FORTRAN90 MODIF mumps/amumpm                 lefebvre J-P.LEFEBVRE       389      1      1
+FORTRAN90 MODIF mumps/amumpp                 lefebvre J-P.LEFEBVRE       276      1      1
+FORTRAN90 MODIF mumps/amumpr                 lefebvre J-P.LEFEBVRE       362      1      1
+FORTRAN90 MODIF mumps/amumps                 lefebvre J-P.LEFEBVRE       244      1      1
+ FORTRAN MODIF algorith/nmdome                 proix J-M.PROIX          814      1      3
+ FORTRAN MODIF calculel/medom1                 proix J-M.PROIX          211      2      4
+ FORTRAN MODIF elements/brbagl              sfayolle S.FAYOLLE          165     70     37
+ FORTRAN MODIF elements/cdnfon              sfayolle S.FAYOLLE           58     19      5
+ FORTRAN MODIF elements/critnu              sfayolle S.FAYOLLE           77     25     21
+ FORTRAN MODIF elements/d0mpfn              sfayolle S.FAYOLLE           65     17     16
+ FORTRAN MODIF elements/d1crit              sfayolle S.FAYOLLE           89     43     39
+ FORTRAN MODIF elements/d1cro2              sfayolle S.FAYOLLE          130     54     46
+ FORTRAN MODIF elements/d2crit              sfayolle S.FAYOLLE          130     51     50
+ FORTRAN MODIF elements/d2cro2              sfayolle S.FAYOLLE          218     60     60
+ FORTRAN MODIF elements/d2diag              sfayolle S.FAYOLLE           63     17     12
+ FORTRAN MODIF elements/damage              sfayolle S.FAYOLLE           79     24      6
+ FORTRAN MODIF elements/dclass              sfayolle S.FAYOLLE           48     16      9
+ FORTRAN MODIF elements/dclhoa              sfayolle S.FAYOLLE          128     67     45
+ FORTRAN MODIF elements/dclsma              sfayolle S.FAYOLLE           51     11      6
+ FORTRAN MODIF elements/ddmpfn              sfayolle S.FAYOLLE           89     23     18
+ FORTRAN MODIF elements/dfplgl              sfayolle S.FAYOLLE           46     15     14
+ FORTRAN MODIF elements/dfuuss              sfayolle S.FAYOLLE           62     26     22
+ FORTRAN MODIF elements/di2epx              sfayolle S.FAYOLLE           58     21      8
+ FORTRAN MODIF elements/distfo              sfayolle S.FAYOLLE          103     30     15
+ FORTRAN MODIF elements/dndiss              sfayolle S.FAYOLLE          358    128    104
+ FORTRAN MODIF elements/dpolyh              sfayolle S.FAYOLLE           49     18     11
+ FORTRAN MODIF elements/dpolyn              sfayolle S.FAYOLLE           48     21      8
+ FORTRAN MODIF elements/draac2              sfayolle S.FAYOLLE           91     29      9
+ FORTRAN MODIF elements/draacn              sfayolle S.FAYOLLE          169     73     58
+ FORTRAN MODIF elements/dracsy              sfayolle S.FAYOLLE          186     47     20
+ FORTRAN MODIF elements/dxglrc              sfayolle S.FAYOLLE          450     88    103
+ FORTRAN MODIF elements/dxktan              sfayolle S.FAYOLLE          133     22     22
+ FORTRAN MODIF elements/fplass              sfayolle S.FAYOLLE           41     13     13
+ FORTRAN MODIF elements/glrcad              sfayolle S.FAYOLLE          338    106     65
+ FORTRAN MODIF elements/glrcdd              sfayolle S.FAYOLLE          232     88     44
+ FORTRAN MODIF elements/glrcmm              sfayolle S.FAYOLLE          119     32     44
+ FORTRAN MODIF elements/gplass              sfayolle S.FAYOLLE           50     13     13
+ FORTRAN MODIF elements/hplass              sfayolle S.FAYOLLE           55     27     24
+ FORTRAN MODIF elements/maglrc              sfayolle S.FAYOLLE          182     16     49
+ FORTRAN MODIF elements/matmul              sfayolle S.FAYOLLE           50     16      3
+ FORTRAN MODIF elements/mppffn              sfayolle S.FAYOLLE           62     26     45
+ FORTRAN MODIF elements/nmnet1              sfayolle S.FAYOLLE           72     32     27
+ FORTRAN MODIF elements/nmnet2              sfayolle S.FAYOLLE           81     39     31
+ FORTRAN MODIF elements/norrm3              sfayolle S.FAYOLLE           35      8      1
+ FORTRAN MODIF elements/norrm6              sfayolle S.FAYOLLE           35      7      1
+ FORTRAN MODIF elements/nwtpol              sfayolle S.FAYOLLE           66     36     25
+ FORTRAN MODIF elements/restzo              sfayolle S.FAYOLLE           63     21     46
+ FORTRAN MODIF elements/tanmat              sfayolle S.FAYOLLE          198     47     27
+ FORTRAN MODIF elements/xifonc              sfayolle S.FAYOLLE           47     14      4
+ FORTRAN MODIF prepost/ircam1               sellenet N.SELLENET         355      1      2
+ FORTRAN MODIF prepost/op0039               sellenet N.SELLENET         970      4      1
+ FORTRAN MODIF utilitai/peecal               macocco K.MACOCCO          251     24     12
+ FORTRAN MODIF utilitai/peeint               macocco K.MACOCCO          228     24      3
+ FORTRAN SUPPR algorith/asasm2                 proix J-M.PROIX           73      0     73
+ FORTRAN SUPPR algorith/medim2                 proix J-M.PROIX          103      0    103
+ FORTRAN SUPPR algorith/merim2                 proix J-M.PROIX          441      0    441
+ FORTRAN SUPPR calculel/op0175                 proix J-M.PROIX          559      0    559
+  PYTHON MODIF Macro/simu_point_mat_ops        proix J-M.PROIX          501    161    242
+  PYTHON MODIF Messages/calculel4              proix J-M.PROIX          321      1     17
+  PYTHON MODIF Messages/prepost3            sellenet N.SELLENET         222      6      1
+  PYTHON MODIF Messages/prepost5               proix J-M.PROIX          228      1      6
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1         320       320              +320
+ MODIF :   76       16366      1986    1565      +421
+ SUPPR :    7        2090              2090     -2090
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   84       18776      2306    3655     -1349 

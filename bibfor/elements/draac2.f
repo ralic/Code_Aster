@@ -4,7 +4,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,52 +20,72 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C ======================================================================
-      REAL*8  A,B,C,X1,X2
+C======================================================================
+C
+C     EVALUE LES RACINES DU POLYNOME DU SECOND DEGRE Y=A X**2 + B X + C
+C
+C IN  A : COEFFICIENT DU POLYNOME
+C IN  B : COEFFICIENT DU POLYNOME
+C IN  C : COEFFICIENT DU POLYNOME
+C
+C OUT X1 : RACINE DU POLYNOME
+C OUT X2 : RACINE DU POLYNOME
+C OUT KODE : NOMBRE DE RACINES
+C          = 0 : PAS DE RACINE REELLE
+C          = 1 : UNE RACINE REELLE
+C          = 2 : DEUX RACINES REELLES
+
       INTEGER KODE
-      REAL*8  DELTA,EPSI,ZERO,X0,DEUZA,ASUP
-      DATA ZERO/1.0D-8/
+
+      REAL*8  A, B, C, X1, X2
+      REAL*8  DELTA, EPSI, X0, DEUZA, ASUP
 
       X1    = 0.0D0
       X2    = 0.0D0
       KODE  = 0
       DELTA = 0.0D0
-      EPSI  = ZERO * MAX(ABS(A),ABS(B),ABS(C))
-      X0    = 0.0D0   
+      EPSI  = 1.0D-8 * MAX(ABS(A),ABS(B),ABS(C))
+      X0    = 0.0D0
       DEUZA = 0.0D0
       ASUP  = 0.0D0
-      
+
       IF(ABS(A).GT.EPSI) THEN
-         X1    = B * B
-         X2    = 4.0D0 * A * C
-         DELTA = X1 - X2
-         ASUP  = ZERO * MAX(X1,ABS(X2))
-         DEUZA = 2.0D0 * A
-         X0    = -B / DEUZA
-         IF(DELTA.LT.-ASUP) THEN
-            KODE = 0
-            X1   = 0.0D0
-            X2   = 0.0D0
-         ELSEIF(DELTA.LT.ASUP) THEN
-            KODE = 1
-            X1   = X0
-            X2   = X0
-         ELSE
-            KODE = 2
-            X2   = SQRT(DELTA)/ABS(DEUZA)
-            X1   = X0 - X2
-            X2   = X0 + X2
-         ENDIF
+        X1 = B * B
+        X2 = 4.0D0 * A * C
+        DELTA = X1 - X2
+        ASUP = 1.0D-8 * MAX(X1,ABS(X2))
+        DEUZA = 2.0D0 * A
+        X0 = -B / DEUZA
 
+        IF(DELTA.LT.-ASUP) THEN
+C     CAS OU ON A DEUX RACINES IMAGINAIRES
+          KODE = 0
+          X1 = 0.0D0
+          X2 = 0.0D0
+        ELSEIF(DELTA.LT.ASUP) THEN
+C     CAS OU ON A UNE RACINE REELE DOUBLE
+          KODE = 1
+          X1 = X0
+          X2 = X0
+        ELSE
+C     CAS OU ON A DEUX RACINES
+          KODE = 2
+          X2 = SQRT(DELTA)/ABS(DEUZA)
+          X1 = X0 - X2
+          X2 = X0 + X2
+        ENDIF
       ELSEIF(ABS(B).LE.EPSI) THEN
-         KODE = 0
-         X1   = 0.0D0
-         X2   = 0.0D0
-
+C     CAS OU LE POLYNOME DU SECOND DEGRE
+C     S APPARENTE A UNE CONSTANTE
+        KODE = 0
+        X1 = 0.0D0
+        X2 = 0.0D0
       ELSE
-         KODE = 1
-         X1   = - C / B
-         X2   = X1
+C     CAS OU LE POLYNOME DU SECOND DEGRE
+C     S APPARENTE A UN POLYNOME DU PREMIER DEGRE
+        KODE = 1
+        X1 = - C / B
+        X2 = X1
       ENDIF
 
       END

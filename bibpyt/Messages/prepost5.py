@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost5 Messages  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,11 +57,6 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  taille disponible :  %(i1)d
  taille necessaire :  %(i2)d
 """),
-
-9 : _("""
-
- La commande POST_ZAC ne tolère comme variable de commande que la température.
- """),
 
 10 : _("""
  le noeud traite  n'est associe a aucune maille volumique.

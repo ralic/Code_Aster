@@ -1,10 +1,10 @@
       SUBROUTINE DCLASS(N,TAB,IRAN)
-      
+
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,22 +20,29 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C ======================================================================
-      REAL*8      TAB(*)
-      INTEGER     N
-      INTEGER     IRAN(*)
-      INTEGER   LIM
-      DATA     LIM /8/
+C======================================================================
+C
+C     EVALUE L ORDRE DES RACINES DANS IRAN
+C
+C IN  N : NOMBRE DE RACINE DU POLYNOME
+C IN  TAB : TABLEAU DES RACINES DU POLYNOME
+C
+C OUT IRAN : RANG DE LA RACINE
+
+      INTEGER N, IRAN(*), LIM
+
+      REAL*8 TAB(*)
+
+      LIM = 8
 
       IF( N .LE. 1 ) THEN
-         IRAN(1) = 1
-         GOTO 10
-      ENDIF
-      IF(N .GE. LIM) THEN
-         CALL  DCLHOA(N,TAB,IRAN)
+        IRAN(1) = 1
       ELSE
-         CALL  DCLSMA(N,TAB,IRAN)
+        IF(N .GE. LIM) THEN
+          CALL DCLHOA(N,TAB,IRAN)
+        ELSE
+          CALL DCLSMA(N,TAB,IRAN)
+        ENDIF
       ENDIF
-      
- 10   CONTINUE
-      END 
+
+      END

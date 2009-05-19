@@ -1,9 +1,8 @@
-      SUBROUTINE D0MPFN(ZIMAT,NMNBN,NMPLAS,NMDPLA,NMDDPL,
-     &                  NMZEF,NMZEG,NMIEF,NMPROX )
+      SUBROUTINE D0MPFN(ZIMAT,NMNBN,NMDPLA)
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,22 +18,21 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C ======================================================================
-      REAL*8  NMNBN(6)         
-      REAL*8  NMPLAS(2,3)   
-      REAL*8  NMDPLA(2,2)  
-      REAL*8  NMDDPL(2,2)
-      REAL*8  NMZEF        
-      REAL*8  NMZEG         
-      INTEGER NMIEF  
-      INTEGER NMPROX(2)  
+C======================================================================
+C
+C     RECUPERE LES VALEURS DES DERIVEES DES MOMENTS LIMITES DE PLAST
+C
+C IN  ZIMAT : ADRESSE DE LA LISTE DE MATERIAU CODE
+C IN  NMNBN : FORCE - BACKFORCE
+C
+C OUT NMDPLA : DERIVEES DES MOMENTS LIMITES DE PLASTICITE
+
       INTEGER I,IER0,IER1,ZIMAT
 
-      CHARACTER*24    CGLR
-      INTEGER       IMP1,IMP2,IDMP1,IDMP2,IDDMP1,IDDMP2,INN,INM
-      CHARACTER*8   NOMRES(4),DOMRES(4),DDMRES(4)
+      REAL*8 NMNBN(6)
+      REAL*8 NMDPLA(2,2)
 
-C----- LECTURE DES OBJETS "GLRC"      
+      CHARACTER*8 NOMRES(4),DOMRES(4)
 
       NOMRES(1) = 'FMEX1'
       NOMRES(2) = 'FMEX2'
@@ -46,17 +44,20 @@ C----- LECTURE DES OBJETS "GLRC"
       DOMRES(3) = 'DFMEY1'
       DOMRES(4) = 'DFMEY2'
 
-      DO 10, I=1,2 
+      DO 10, I=1,2
         CALL CDNFON(ZIMAT,DOMRES(2*(I-1)+1),NMNBN(I),0,
      &                 NMDPLA(1,I),IER0)
-        IF (IER0 .GT. 0) THEN 
+
+        IF (IER0 .GT. 0) THEN
           CALL CDNFON(ZIMAT,NOMRES(2*(I-1)+1),NMNBN(I),1,
      &                NMDPLA(1,I),IER1)
         ENDIF
-          CALL CDNFON(ZIMAT,DOMRES(2*I),NMNBN(I),0,
+
+        CALL CDNFON(ZIMAT,DOMRES(2*I),NMNBN(I),0,
      &                NMDPLA(2,I),IER0)
+
         IF (IER0 .GT. 0) THEN 
-         CALL CDNFON(ZIMAT,NOMRES(2*I),NMNBN(I),1,
+          CALL CDNFON(ZIMAT,NOMRES(2*I),NMNBN(I),1,
      &                NMDPLA(2,I),IER1)
         ENDIF
  10   CONTINUE

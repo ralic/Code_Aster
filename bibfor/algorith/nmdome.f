@@ -1,7 +1,7 @@
       SUBROUTINE NMDOME(MODELE,MATE,CARELE,LISCHA,NBPASE,INPSCO,
      &                  RESULT, NUORD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/07/2008   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,12 +157,21 @@ C ------ LE MODELE
             MODELE = MODE
          END IF
 
+C ------ LE MODELE NE DOIT PAS CONTENIR DE MAILLES TARDIVES POUR OP0070:
+
+         CALL JEEXIN(MODELE(1:8)//'.MODELE    .NEMA',IRET)
+         IF (IRET.GT.0) THEN
+            IF ((NOMCMD.EQ.'STAT_NON_LINE').OR.
+     &          (NOMCMD.EQ.'DYNA_NON_LINE'))
+     &      CALL U2MESK('F','CALCULEL3_51',1,NOMCMD)
+         END IF
+
 C ------ LE MATERIAU
 
          MATERI = ' '
          CALL GETVID ( ' ', 'CHAM_MATER', 1,1,1, MATERI, N1 )
          CALL DISMOI('F','BESOIN_MATER',MODELE,'MODELE',IBID,K8BID,IE)
-         IF ((N1.EQ.0) .AND. (K8BID(1:3).EQ.'OUI')) 
+         IF ((N1.EQ.0) .AND. (K8BID(1:3).EQ.'OUI'))
      &      CALL U2MESS('A','CALCULEL3_40')
          IF (N1.NE.0) THEN
             CALL RCMFMC(MATERI,MATE)
@@ -173,12 +182,10 @@ C ------ LE MATERIAU
 C ------ LES CARACTERISTIQUES ELEMENTAIRES
 
          CARA = ' '
-         IF (NOMCMD(1:8).NE.'POST_ZAC') THEN
-            CALL GETVID ( ' ', 'CARA_ELEM', 1,1,1, CARA, N1 )
-            CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8BID,IE)
-            IF ((N1.EQ.0) .AND. (K8BID(1:3).EQ.'OUI'))
-     &         CALL U2MESS('A','CALCULEL3_39')
-         ENDIF
+         CALL GETVID ( ' ', 'CARA_ELEM', 1,1,1, CARA, N1 )
+         CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8BID,IE)
+         IF ((N1.EQ.0) .AND. (K8BID(1:3).EQ.'OUI'))
+     &      CALL U2MESS('A','CALCULEL3_39')
          CARELE = CARA
       ENDIF
 C
@@ -222,7 +229,7 @@ C====
 C 3. LES CHARGES
 C====
  500  CONTINUE
- 
+
 C 3.1. ==> DECOMPTE DU NOMBRE DE CHARGES
 
       CALL GETFAC ( 'EXCIT', NEXCI )
@@ -386,7 +393,7 @@ C      CONTROLE DU CARACTERE MECANIQUE DE LA CHARGE
           IF ((AFFCHA(1:5).NE.'MECA_') .AND.
      &        (AFFCHA(1:5).NE.'CIME_')) THEN
             NONMEC = .TRUE.
-            CALL U2MESK('E','ALGORITH7_22',1,ZK24(IALICH-1+ICH) (1:8))
+            CALL U2MESK('E','CHARGES_22',1,ZK24(IALICH-1+ICH) (1:8))
           END IF
 
 
@@ -398,11 +405,11 @@ C 3.2.3. ==> CHARGE DU TYPE DIRICHLET PROVENANT D'UN AFFE_CHAR_CINE
 
           IF (AFFCHA(1:5).EQ.'CIME_') THEN
             IF (TYPCHA(1:4).EQ.'SUIV') THEN
-              CALL U2MESK('F','ALGORITH7_23',1,ZK24(IALICH-1+ICH) (1:8))
+              CALL U2MESK('F','CHARGES_23',1,ZK24(IALICH-1+ICH) (1:8))
             ELSE IF (TYPCHA.EQ.'FIXE_PIL') THEN
-              CALL U2MESK('F','ALGORITH7_27',1,ZK24(IALICH-1+ICH) (1:8))
+              CALL U2MESK('F','CHARGES_27',1,ZK24(IALICH-1+ICH) (1:8))
             ELSE IF (TYPCHA(1:4).EQ.'DIDI') THEN
-              CALL U2MESK('F','ALGORITH7_24',1,ZK24(IALICH-1+ICH) (1:8))
+              CALL U2MESK('F','CHARGES_24',1,ZK24(IALICH-1+ICH) (1:8))
             ELSE
               IF (AFFCHA(5:7).EQ.'_FT') THEN
                 ZI(JINF+ICH) = -3
@@ -422,12 +429,12 @@ C                                          OU AFFE_CHAR_MECA_F
           CALL JEEXIN(LCHIN,IRET)
           IF (IRET.NE.0) THEN
             IF (TYPCHA(1:4).EQ.'SUIV') THEN
-              CALL U2MESK('F','ALGORITH7_23',1,ZK24(IALICH-1+ICH) (1:8))
+              CALL U2MESK('F','CHARGES_23',1,ZK24(IALICH-1+ICH) (1:8))
             ELSE IF (TYPCHA.EQ.'FIXE_PIL') THEN
               ZI(JINF+ICH) = 5
               CALL DISMOI('F','PARA_INST',LCHIN(1:19),'CARTE',IBID,
      &                  PARCHA,IERD)
-              IF (PARCHA(1:3).EQ.'OUI') CALL U2MESS('F','ALGORITH7_28')
+              IF (PARCHA(1:3).EQ.'OUI') CALL U2MESS('F','CHARGES_28')
             ELSE
               IF (AFFCHA(5:7).EQ.'_FO') THEN
                 ZI(JINF+ICH) = 2
@@ -478,8 +485,9 @@ C 3.2.5. ==> CHARGES DU TYPE NEUMANN (FORCE)
                 IF (NOMLIG(K).NE.'.VEASS') THEN
                   CALL DISMOI('F','PARA_INST',LCHIN(1:19),'CARTE',IBID,
      &                      PARCHA,IERD)
-                  IF (PARCHA(1:3).EQ.'OUI') CALL U2MESS('F','ALGORITH7_2
-     &8')
+                  IF (PARCHA(1:3).EQ.'OUI') THEN
+                    CALL U2MESS('F','CHARGES_28')
+                  ENDIF              
                 ENDIF
               ELSE IF (TYPCHA(1:4).EQ.'SUIV') THEN
                 ZI(JINF+NCHAR+ICH) = 4
@@ -527,12 +535,12 @@ C ---- CHARGE DU TYPE THERMIQUE
           CALL JEEXIN(LCHIN,IRET)
           IF (IRET.NE.0) THEN
             IF (EXITHE) THEN
-              CALL U2MESS('F','ALGORITH7_25')
+              CALL U2MESS('F','CHARGES_25')
             END IF
             EXITHE = .TRUE.
             ZI(JINF+2*NCHAR+1) = ICH
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
-              CALL U2MESK('F','ALGORITH7_29',1,ZK24(IALICH-1+ICH) (1:
+              CALL U2MESK('F','CHARGES_29',1,ZK24(IALICH-1+ICH) (1:
      &                 8))
             END IF
           END IF
@@ -543,12 +551,12 @@ C ---- CHARGE DU TYPE SECHAGE
           CALL JEEXIN(LCHIN,IRET)
           IF (IRET.NE.0) THEN
             IF (EXISEC) THEN
-              CALL U2MESS('F','ALGORITH7_30')
+              CALL U2MESS('F','CHARGES_30')
             END IF
             EXISEC = .TRUE.
             ZI(JINF+4*NCHAR+6) = ICH
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
-              CALL U2MESK('F','ALGORITH7_31',1,ZK24(IALICH-1+
+              CALL U2MESK('F','CHARGES_31',1,ZK24(IALICH-1+
      &                ICH) (1:8))
             END IF
           END IF
@@ -560,12 +568,12 @@ C ---- CHARGE DU TYPE DEFO ANELASTIQUES
           CALL JEEXIN(LCHIN,IRET)
           IF (IRET.NE.0) THEN
             IF (EXIANE) THEN
-              CALL U2MESS('F','ALGORITH7_32')
+              CALL U2MESS('F','CHARGES_32')
             END IF
             EXIANE = .TRUE.
             ZI(JINF+4*NCHAR+4) = ICH
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
-              CALL U2MESK('F','ALGORITH7_33',1,ZK24(IALICH-1+ICH) (1:8))
+              CALL U2MESK('F','CHARGES_33',1,ZK24(IALICH-1+ICH) (1:8))
             END IF
           END IF
 
@@ -575,7 +583,7 @@ C ---- CHARGE DU TYPE SIGM_INTERNE
           CALL JEEXIN(LCHIN,IRET)
           IF (IRET.NE.0) THEN
             IF (EXISIN) THEN
-              CALL U2MESS('F','ALGORITH7_32')
+              CALL U2MESS('F','CHARGES_32')
             END IF
             EXISIN = .TRUE.
             ZI(JINF+4*NCHAR+4) = 99
@@ -587,7 +595,7 @@ C ---- CHARGE DU TYPE EVOL_CHAR FCT DU TEMPS (EVOL_CHAR)
           LCHIN = LIGRCH(1:13)//'.EVOL.CHAR'
           CALL JEEXIN(LCHIN,IRET)
           IF ((IRET.NE.0) .AND. (TYPCHA.EQ.'FIXE_PIL')) CALL U2MESK('F',
-     &'ALGORITH7_34',1,ZK24(IALICH-1+ICH) (1:8))
+     &'CHARGES_34',1,ZK24(IALICH-1+ICH) (1:8))
 
 
 C ---- CHARGES DE TYPE FORCE DE LAPLACE
@@ -616,19 +624,19 @@ C ---- CHARGES DE TYPE 'LIAISON_UNIL' (1) OU 'CONTACT' (2)
           CALL JEEXIN(LCHIN,IRET1)
           CALL JEEXIN(CONTA,IRET2)
           IF ((IRET1.NE.0) .AND. (IRET2.NE.0)) THEN
-            CALL U2MESS('F','ALGORITH7_35')
+            CALL U2MESS('F','CHARGES_35')
           END IF
           IF (IRET1.NE.0) THEN
             ZI(JINF+2*NCHAR+2+ICH) = 1
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
-              CALL U2MESK('F','ALGORITH7_36',1,ZK24(IALICH-1+
+              CALL U2MESK('F','CHARGES_36',1,ZK24(IALICH-1+
      &ICH) (1:8))
             END IF
           ELSE IF (IRET2.NE.0) THEN
             ZI(JINF+2*NCHAR+2+ICH) = 2
             NCONTA = NCONTA + 1
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
-              CALL U2MESK('F','ALGORITH7_37',1,ZK24(IALICH-1+
+              CALL U2MESK('F','CHARGES_37',1,ZK24(IALICH-1+
      &           ICH) (1:8))
             END IF
           ELSE
@@ -758,7 +766,7 @@ C      PAS DE FONCTIONS MULTIPLICATRICES -> CREATION FCT CSTE = 1
      &                               ZK24(IALIFC+ICH-1),N2)
 
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
-              CALL U2MESK('F','ALGORITH7_38',1,ZK24(IALICH-1+ICH) (1:8))
+              CALL U2MESK('F','CHARGES_38',1,ZK24(IALICH-1+ICH) (1:8))
             END IF
           END IF
         ENDIF
@@ -777,27 +785,30 @@ C -- EN PRESENCE DE PILOTAGE, VERIFIER QU'IL Y A DES CHARGES PILOTEES
         IF (NOMCMD.EQ.'STAT_NON_LINE') THEN
           CALL GETVTX('PILOTAGE','TYPE',1,1,1,K24BID,N1)
           IF (N1.NE.0 .AND. NPILO.EQ.0) THEN
-            CALL U2MESS('F','ALGORITH7_39')
+            CALL U2MESS('F','CHARGES_39')
           END IF
+          IF (NPILO.GT.1) THEN
+            CALL U2MESS('F','CHARGES_40')
+          END IF          
         END IF
 
 
 C -- VERIFICATION QU'AU PLUS UNE CHARGE EST DE TYPE 'CONTACT'
 
         IF (NCONTA.GT.1) THEN
-          CALL U2MESS('F','ALGORITH7_40')
+          CALL U2MESS('F','CHARGES_42')
         END IF
 
 
 C -- VERIFICATION QU'IL N'Y A QUE DES CHARGES MECANIQUES
 
         IF (NONMEC) THEN
-          CALL U2MESS('F','ALGORITH7_41')
+          CALL U2MESS('F','CHARGES_41')
         END IF
 
       END IF
 
-C 
+C
  9999 CONTINUE
       CALL JEDEMA()
       END

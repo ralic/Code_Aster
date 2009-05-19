@@ -1,5 +1,6 @@
-# MODIF  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE PLAQUE EXCENTREE ORTHOTROPE ET AMORTIE SOUMISE A DES VIBRATIONS
+# sdls117a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

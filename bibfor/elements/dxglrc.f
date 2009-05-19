@@ -1,14 +1,8 @@
       SUBROUTINE DXGLRC ( NOMTE, OPT, COMPOR, XYZL, UL, DUL, BTSIG,
      &                    KTAN, EFFINT, PGL, CRIT, CODRET )
       IMPLICIT NONE
-
-      INTEGER      CODRET, CORETG
-      REAL*8       XYZL(3,4), KTAN((6*4)*(6*4+1)/2), BTSIG(6,4)
-      REAL*8       UL(6,4), DUL(6,4), PGL(3,3), CRIT(*)
-      CHARACTER*16 OPT, NOMTE, COMPOR(*)
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,56 +21,39 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-
-      REAL*8   MG(3), ROT(9), DH(9), R, R8B
-      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  MULTIC
-      INTEGER  IMATE,  IRET,   ICONTM, IVARIM
-      INTEGER  ICOMPO, ICACOQ, ICONTP, IVARIP, INO,   NBCON
-      INTEGER  NBVAR,  NDIMV,  IVARIX, L,      IPG,    JVARI, IVARI
-      INTEGER  K
-
-      REAL*8 DELAS(6,6)
-      REAL*8 ZERO
-      REAL*8 DFE(9),   DME(9),    DMFE(9)
-      REAL*8 RBIB8,    RBIB1(4),  RBIB2(4),  RBIB3(6), RBIB4(6)
-      REAL*8 XAB(3,3), DEFO(2,2) ,DSIDEP(6,6)
-      INTEGER I,J
-      LOGICAL LBID,ELASCQ
-C     ------------------------------------------------------------------
 C     CALCUL LES OPTIONS NON LINEAIRES POUR L'ELEMENT DE PLAQUE DKTG
 C     TOUTES LES ENTREES ET LES SORTIES SONT DANS LE REPERE LOCAL.
-C     ------------------------------------------------------------------
-C     IN  OPT  : OPTION NON LINEAIRE A CALCULER
+C
+C     IN  OPT : OPTION NON LINEAIRE A CALCULER
 C                'RAPH_MECA' ,'FULL_MECA', OU 'RIGI_MECA_TANG'
 C     IN  XYZL : COORDONNEES DES NOEUDS DANS LE REPERE LOCAL
-C     IN  UL   : DEPLACEMENT A L'INSTANT T "-"
-C     IN  DUL  : INCREMENT DE DEPLACEMENT
-C     IN  PGL  : MATRICE DE PASSAGE
+C     IN  UL : DEPLACEMENT A L'INSTANT T "-"
+C     IN  DUL : INCREMENT DE DEPLACEMENT
+C     IN  PGL : MATRICE DE PASSAGE
 C                DU REPERE GLOBAL AU REPERE LOCAL ELEMENT
 C     OUT KTAN : MATRICE DE RIGIDITE TANGENTE
 C                    SI 'FULL_MECA' OU 'RIGI_MECA_TANG'
 C     OUT BTSIG: DIV (SIGMA)
 C                    SI 'FULL_MECA' OU 'RAPH_MECA'
-C     ------------------------------------------------------------------
+C
+
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL,VECTEU,MATRIC,TEMPNO
+      LOGICAL ZL
       COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*24 VALK
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
 C --------- VARIABLES LOCALES :
 C  -- GENERALITES :
 C  ----------------
@@ -92,7 +69,7 @@ C   - FLEXION  : MXX,MYY,MXY
 C --------------------------------------------------------------------
 C            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 C            NC :    NOMBRE DE COTES DE L'ELEMENT
-      REAL*8 POIDS,ZIC,ZMIN,TP,TM,VALPU(2)
+      REAL*8 POIDS
 C            POIDS:  POIDS DE GAUSS (Y COMPRIS LE JACOBIEN)
 C            AIRE:   SURFACE DE L'ELEMENT
       REAL*8 UM(2,4),UF(3,4),DUM(2,4),DUF(3,4)
@@ -118,29 +95,39 @@ C            DMF:    MATRICE DE RIGIDITE TANGENTE MATERIELLE (COUPLAGE)
 C            BF :    MATRICE "B" (FLEXION)
 C            BM :    MATRICE "B" (MEMBRANE)
       REAL*8 FLEX(3*4,3*4),MEMB(2*4,2*4)
-      REAL*8 MEFL(2*4,3*4),WORK(3,3*4),D4,D2,AUX,AUX1
+      REAL*8 MEFL(2*4,3*4),WORK(3,3*4)
 C           MEMB:    MATRICE DE RIGIDITE DE MEMBRANE
 C           FLEX:    MATRICE DE RIGIDITE DE FLEXION
 C           WORK:    TABLEAU DE TRAVAIL
 C           MEFL:    MATRICE DE COUPLAGE MEMBRANE-FLEXION
-C             LE MATERIAU EST SUPPOSE HOMOGENE
-C     ------------------
-      INTEGER  JTAB(7), COD, ITABP(8),ITABM(8)
-      REAL*8   DEUX, CTOR, LC
-      REAL*8   T2EV(4),T2VE(4),T1VE(9),CARAT3(21),JACOB(5),CARAQ4(25)
+C           LE MATERIAU EST SUPPOSE HOMOGENE
 
-      REAL*8   MATR(50),SIGM(6)
-      INTEGER  TSHEAR, ICARA
-      REAL*8   EPST(6), EP, SURFGP, SIG(6),DSIG(8),ECR(21),ECRP(21)
-      REAL*8   EPSM(6),MVAL(50),QSI,ETA
-      INTEGER  MENT(50),ICPG,ICPV,T(2,2),IBID
-      REAL*8   LAMBDA,DEUXMU,DEUMUF,LAMF,GT,GC,GF,SEUIL,ALPHA
-      LOGICAL  LEUL,LRGM
-      CHARACTER*8  K8BID,MATK(10)
-      CHARACTER*24 KMATR
-      CHARACTER*39 MESS
-      REAL*8      R8BID
-C     ------------------------------------------------------------------
+      LOGICAL LEUL,LRGM
+      LOGICAL LBID, VECTEU, MATRIC
+
+      INTEGER CODRET, CORETG
+      INTEGER NDIM, NNO, NNOS, NPG, IPOIDS, ICOOPG, IVF, IDFDX
+      INTEGER IDFD2, JGANO
+      INTEGER IMATE, IRET, ICONTM, IVARIM
+      INTEGER ICOMPO, ICACOQ, ICONTP, IVARIP, INO, NBCON
+      INTEGER NBVAR, IPG
+      INTEGER I, J, K, L
+      INTEGER ICPG, ICPV, T(2,2), IBID
+      INTEGER ICARA, JTAB(7)
+
+      REAL*8 XYZL(3,4), KTAN((6*4)*(6*4+1)/2), BTSIG(6,4)
+      REAL*8 UL(6,4), DUL(6,4), PGL(3,3), CRIT(*)
+      REAL*8 DELAS(6,6), DSIDEP(6,6)
+      REAL*8 LAMBDA, DEUXMU, DEUMUF, LAMF, GT, GC, GF, SEUIL, ALPHA
+      REAL*8 R8BID
+      REAL*8 EPST(6), EP, SURFGP, SIG(6), DSIG(8), ECR(21), ECRP(21)
+      REAL*8 EPSM(6), QSI, ETA, CTOR
+      REAL*8 CARAT3(21), JACOB(5), CARAQ4(25)
+      REAL*8 MATR(50), SIGM(6)
+
+      CHARACTER*8 K8BID
+      CHARACTER*16 OPT, NOMTE, COMPOR(*)
+      CHARACTER*24 VALK
 
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)
@@ -156,18 +143,20 @@ C     ------------------------------------------------------------------
      &     NOMTE(1:8).NE.'MEDKQG4 ' ) THEN
         CALL U2MESK('F','ELEMENTS_14',1,NOMTE(1:8))
       ENDIF
-C
+
       CALL JEVECH('PMATERC','L',IMATE)
 
       LEUL = .FALSE.
-      IF(.NOT. LRGM) THEN 
+
+      IF(.NOT. LRGM) THEN
         CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
         ICONTM=JTAB(1)
         CALL ASSERT(NPG.EQ.JTAB(3))
         CALL JEVECH('PVARIMR','L',IVARIM)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
-        LEUL = ZK16(ICOMPO+2)(1:6).EQ.'EULER_'      
-      ENDIF  
+        LEUL = ZK16(ICOMPO+2)(1:6).EQ.'EULER_'
+      ENDIF
+
       CALL JEVECH('PCACOQU','L',ICACOQ)
 
       IF (VECTEU) THEN
@@ -177,32 +166,34 @@ C
         ICONTP = ICONTM
         IVARIP = IVARIM
       END IF
-C
-C     -- GRANDEURS GEOMETRIQUES :
-C     ---------------------------
+
+C     GRANDEURS GEOMETRIQUES :
+
       IF(NNO.EQ.3) THEN
         CALL GTRIA3(XYZL,CARAT3)
       ELSEIF(NNO.EQ.4) THEN
         CALL GQUAD4(XYZL,CARAQ4)
       ENDIF
+
       CTOR = ZR(ICACOQ+3)
-C
-C     -- MISES A ZERO :
-C     ------------------
+
+C     MISES A ZERO :
+
       IF (MATRIC) THEN
         CALL R8INIR((3*NNO)* (3*NNO),0.D0,FLEX,1)
         CALL R8INIR((2*NNO)* (2*NNO),0.D0,MEMB,1)
         CALL R8INIR((2*NNO)* (3*NNO),0.D0,MEFL,1)
       END IF
+
       IF (VECTEU) THEN
         CALL R8INIR(6*NNO,0.D0,BTSIG,1)
         CALL R8INIR(32,0.D0,EFFINT,1)
       END IF
-C
+
       CALL R8INIR(36,0.D0,DELAS,1)
-C
-C     -- PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
-C     -------------------------------------------------
+
+C     PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
+
       DO 10,INO = 1,NNO
         UM(1,INO) = UL(1,INO)
         UM(2,INO) = UL(2,INO)
@@ -215,11 +206,12 @@ C     -------------------------------------------------
         DUF(2,INO) = DUL(5,INO)
         DUF(3,INO) = -DUL(4,INO)
    10 CONTINUE
-C
-C     -- INTEGRATION SUR LA SURFACE DE L'ELEMENT:
-C     -------------------------------------------
+
+C     INTEGRATION SUR LA SURFACE DE L'ELEMENT:
+
 C     CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY
       NBCON = 8
+
 C     NBVAR: NOMBRE DE VARIABLES INTERNES (2D) LOI COMPORTEMENT
       IF(LRGM)  THEN
         NBVAR = 0
@@ -228,23 +220,20 @@ C     NBVAR: NOMBRE DE VARIABLES INTERNES (2D) LOI COMPORTEMENT
         CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       ENDIF
 
-C===============================================================
-C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
-C     -------------------------------------------------
+C     BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
+
       DO 130,IPG = 1,NPG
-C
+
         CALL R8INIR(21,0.D0,ECRP,1)
-        
         CALL R8INIR(3,0.D0,N,1)
         CALL R8INIR(3,0.D0,M,1)
         CALL R8INIR(9,0.D0,DF,1)
         CALL R8INIR(9,0.D0,DM,1)
         CALL R8INIR(9,0.D0,DMF,1)
 
-
         QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
         ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
-C
+
         ICPG = (IPG-1)*NBCON
         ICPV = (IPG-1)*NBVAR
 
@@ -265,66 +254,68 @@ C
         CALL PMRVEC('ZERO',3,3*NNO,BF,DUF,DKHI)
 
         CALL JEVECH('PCACOQU','L',ICARA)
-C ---   EPAISSEUR TOTALE :
+
+C     EPAISSEUR TOTALE :
         EP = ZR(ICARA)
-C     -- EULER_ALMANSI - TERMES QUADRATIQUES
+
+C     EULER_ALMANSI - TERMES QUADRATIQUES
         IF(LEUL) THEN
           CALL R8INIR(6,0.D0,BMQ,1)
+
           DO 145,I = 1,2
             DO 146,K = 1,NNO
               DO 142,J = 1,2
                 BMQ(I,J) = BMQ(I,J) + BM(I,2*(K-1)+I)*DUM(J,K)
  142          CONTINUE
-              BMQ(I,3) = BMQ(I,3) + BM(I,2*(K-1)+I)*DUF(1,K)            
+              BMQ(I,3) = BMQ(I,3) + BM(I,2*(K-1)+I)*DUF(1,K)
  146        CONTINUE
  145      CONTINUE
- 
+
           DO 150, K = 1,3
             DO 155, I = 1,2
               DEPS(I) = DEPS(I) - 0.5D0*BMQ(I,K)*BMQ(I,K)
  155        CONTINUE
             DEPS(3) = DEPS(3) - BMQ(1,K)*BMQ(2,K)
  150      CONTINUE
-        ENDIF  
+        ENDIF
 
         DO 60, I = 1,50
           MATR(I) = 0.0D0
  60     CONTINUE
 
-        TSHEAR = 0
-
         IF(.NOT. LRGM) THEN
           DO 70, I = 1,3
-            EPST(I)     = EPS(I) + DEPS(I)
+            EPST(I) = EPS(I) + DEPS(I)
             EPST(3 + I) = KHI(I) + DKHI(I)
             DEPS(3 + I) = DKHI(I)
  70       CONTINUE
-          
+
           DO 73, I = 1,3
-            EPSM(I)   = EPS(I)        
-            EPSM(I+3) = KHI(I)        
+            EPSM(I) = EPS(I)
+            EPSM(I+3) = KHI(I)
  73       CONTINUE
 
           DO 77, I = 1,6
-            SIG(I)  = ZR(ICONTM-1 + ICPG + I)
+            SIG(I) = ZR(ICONTM-1 + ICPG + I)
             SIGM(I) = SIG(I)
  77       CONTINUE
         ENDIF
 
         IF (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') THEN
-
           DO 75, I = 1,NBVAR
-            ECR(I)     = ZR(IVARIM-1 + ICPV + I)
+            ECR(I) = ZR(IVARIM-1 + ICPV + I)
  75       CONTINUE
 
-          CALL MAGLRC (ZI(IMATE),NNO,COMPOR,PGL,MATR,DELAS,ECR)
+          CALL MAGLRC (ZI(IMATE),MATR,DELAS,ECR)
 
 C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
           SURFGP = POIDS
-          CALL GLRCMM(ZI(IMATE),MATR,EP,SURFGP,PGL,SIG
-     &               ,EPST,DEPS,DSIG,ECR,TSHEAR,DELAS,DSIDEP)
+
+          CALL GLRCMM(ZI(IMATE),MATR,EP,SURFGP,PGL
+     &               ,EPST,DEPS,DSIG,ECR,DELAS,DSIDEP)
+
           DO 78, I = 1,3
-            DSIG(I)     = DSIG(I) * EP
+            DSIG(I) = DSIG(I) * EP
             DSIG(3 + I) = DSIG(3 + I) * EP*EP / 6.D0
  78       CONTINUE
 
@@ -335,42 +326,39 @@ C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
           DO 85, I = 1,6
             SIG(I) = SIG(I) + DSIG(I)
  85       CONTINUE
-
         ELSEIF (COMPOR(1)(1:7).EQ. 'GLRC_DM') THEN
-
           IF(.NOT. LRGM) THEN
             DO 8510, I = 1,NBVAR
               ECR(I) = ZR(IVARIM-1 + ICPV + I)
  8510       CONTINUE
-          ENDIF 
+          ENDIF
 
           CALL CRGDM(ZI(IMATE),'GLRC_DM         ',T,LAMBDA,DEUXMU,
      &               LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA,EP)
-     
-C         ENDOMMAGEMENT SEULEMENT      
-     
+
+C     ENDOMMAGEMENT SEULEMENT
+
             CALL R8INIR(36,0.D0,DSIDEP,1)
             CALL LCGLDM(EPSM,DEPS,ECR,OPT,SIG,ECRP,DSIDEP,T,
      &                LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA)
 
         ELSEIF (COMPOR(1)(1:7).EQ. 'KIT_DDI') THEN
-C         ENDOMMAGEMENT PLUS PLASTICITE
+C     ENDOMMAGEMENT PLUS PLASTICITE
 
           IF(.NOT. LRGM) THEN
             DO 8515, I = 1,NBVAR
-              ECR(I) = ZR(IVARIM-1 + ICPV + I)      
+              ECR(I) = ZR(IVARIM-1 + ICPV + I)
  8515       CONTINUE
-          ENDIF 
+          ENDIF
 
-            CALL NMCOUP('RIGI',IPG,1,3,K8BID,ZI(IMATE),COMPOR,LBID,
+          CALL NMCOUP('RIGI',IPG,1,3,K8BID,ZI(IMATE),COMPOR,LBID,
      &                   CRIT,R8BID,R8BID,EPSM,DEPS,SIGM,ECR,OPT,R8BID,
      &                   IBID,SIG,ECRP,DSIDEP,CORETG)
 
           IF(CORETG .EQ. 1) CODRET = 1
-
         ELSE
-           VALK = COMPOR(1)
-           CALL U2MESG('F', 'ELEMENTS4_79',1,VALK,0,0,0,0.D0)
+          VALK = COMPOR(1)
+          CALL U2MESG('F', 'ELEMENTS4_79',1,VALK,0,0,0,0.D0)
         ENDIF
 
         IF(.NOT. LRGM) THEN
@@ -381,40 +369,40 @@ C         ENDOMMAGEMENT PLUS PLASTICITE
           DO 8530, I = 1,6
             ZR(ICONTP-1 + ICPG + I) = SIG(I)
  8530     CONTINUE
-        ENDIF 
+        ENDIF
 
-C
-C         EFFORTS RESULTANTS (N ET M)
-C         --------------------------
-            IF (VECTEU) THEN
-              DO 90 I= 1,3
-                N(I) = ZR(ICONTP-1+ICPG+I)
-                M(I) = ZR(ICONTP-1+ICPG+I+3)
-   90            CONTINUE
-            END IF
+C     EFFORTS RESULTANTS (N ET M)
 
-C         -- CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
-C         ---------------------------------------------------------
-            IF (MATRIC) THEN
-                L=0
-                DO 96 I=1,3
-                  DO 97 J=1,3
-                  L=L+1
-                  DM(L) = DM(L)  + POIDS*DSIDEP(J,I)
-                  DMF(L)= DMF(L) + POIDS*DSIDEP(J,I+3)
-                  DF(L) = DF(L)  + POIDS*DSIDEP(J+3,I+3)
-   97           CONTINUE
-   96         CONTINUE
-            END IF
-C
-C       -- CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
-C       ----------------------------------------------------------
-C       BTSIG = BTSIG + BFT*M + BMT*N
         IF (VECTEU) THEN
-           DO 100,K = 1,3
-              EFFINT((IPG-1)*8+K)   = N(K)
-              EFFINT((IPG-1)*8+3+K) = M(K)
-  100       CONTINUE
+          DO 90 I= 1,3
+            N(I) = ZR(ICONTP-1+ICPG+I)
+            M(I) = ZR(ICONTP-1+ICPG+I+3)
+   90     CONTINUE
+        END IF
+
+C     CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
+        IF (MATRIC) THEN
+          L = 0
+
+          DO 96 I = 1, 3
+            DO 97 J = 1, 3
+              L = L + 1
+              DM(L) = DM(L) + POIDS*DSIDEP(J,I)
+              DMF(L)= DMF(L) + POIDS*DSIDEP(J,I+3)
+              DF(L) = DF(L)  + POIDS*DSIDEP(J+3,I+3)
+   97       CONTINUE
+   96     CONTINUE
+        END IF
+
+C     CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
+
+C     BTSIG = BTSIG + BFT*M + BMT*N
+        IF (VECTEU) THEN
+          DO 100,K = 1,3
+            EFFINT((IPG-1)*8+K)   = N(K)
+            EFFINT((IPG-1)*8+3+K) = M(K)
+  100     CONTINUE
+
           DO 120,INO = 1,NNO
             DO 110,K = 1,3
               BTSIG(1,INO) = BTSIG(1,INO) +
@@ -430,29 +418,25 @@ C       BTSIG = BTSIG + BFT*M + BMT*N
   110       CONTINUE
   120     CONTINUE
         END IF
-C       -- CALCUL DE LA MATRICE TANGENTE :
-C       ----------------------------------
-C       KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
+
+C     CALCUL DE LA MATRICE TANGENTE :
+
+C     KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
         IF (MATRIC) THEN
-C         -- MEMBRANE :
-C         -------------
+C     MEMBRANE :
           CALL UTBTAB('CUMU',3,2*NNO,DM,BM,WORK,MEMB)
-C         -- FLEXION :
-C         ------------
+
+C     FLEXION :
           CALL UTBTAB('CUMU',3,3*NNO,DF,BF,WORK,FLEX)
-C         -- COUPLAGE:
-C         ------------
+
+C     COUPLAGE:
           CALL UTCTAB('CUMU',3,3*NNO,2*NNO,DMF,BF,BM,WORK,MEFL)
         END IF
-C
-C       -- FIN BOUCLE SUR LES POINTS DE GAUSS
-C
 
+C     FIN BOUCLE SUR LES POINTS DE GAUSS
   130 CONTINUE
 
-C
-C     -- ACCUMULATION DES SOUS MATRICES DANS KTAN :
-C     -----------------------------------------------
+C     ACCUMULATION DES SOUS MATRICES DANS KTAN :
       IF (MATRIC) THEN
         IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN
           CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,KTAN)
@@ -460,6 +444,7 @@ C     -----------------------------------------------
           CALL DXQLOC(FLEX,MEMB,MEFL,CTOR,KTAN)
         ENDIF
       END IF
+
   140 CONTINUE
 
       END

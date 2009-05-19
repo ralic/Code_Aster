@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 03/11/2008   AUTEUR SELLENET N.SELLENET 
+#@ MODIF prepost3 Messages  DATE 19/05/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,6 +133,11 @@ cata_msg = {
 69 : _("""
  L'impression d'un champ complexe nécessite l'utilisation du mot-clé PARTIE.
  Ce mot-clé permet de choisir la partie du champ à imprimer (réelle ou imaginaire).
+"""),
+
+70 : _("""
+ Vous avez demandé une impression au format ASTER sans préciser de MAILLAGE.
+ Aucune impression ne sera réalisée car IMPR_RESU au format ASTER n'imprime qu'un MAILLAGE.
 """),
 
 71 : _("""

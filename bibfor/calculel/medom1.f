@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C ======================================================================
 C     SAISIE ET VERIFICATION DE LA COHERENCE DES DONNEES MECANIQUES
 C     DU PROBLEME
 C     COPIE DE MEDOME POUR LES COMMANDES CALC_ELEM, CALC_CHAM_ELEM,
-C                                        CALC_G ET POST_ZAC
+C                                        CALC_G 
 C ----------------------------------------------------------------------
 C OUT : MODELE : NOM DU MODELE
 C OUT : MATE   : CHAMP MATERIAU
@@ -101,12 +101,10 @@ C
       ELSE
 C
         CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
-        IF(NOMCMD(1:8).NE.'POST_ZAC') THEN
-           CALL GETVID(' ','CARA_ELEM' ,0,1,1,CARA  ,N2)
-           CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8B,IE)
-           IF ((N2.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
-     &      CALL U2MESS('A','CALCULEL3_39')
-        ENDIF
+        CALL GETVID(' ','CARA_ELEM' ,0,1,1,CARA  ,N2)
+        CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8B,IE)
+        IF ((N2.EQ.0).AND.(K8B(1:3).EQ.'OUI'))
+     &   CALL U2MESS('A','CALCULEL3_39')
 
 
         CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N3)

@@ -4,7 +4,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,18 +20,30 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-C ======================================================================
-      REAL*8 DISTFO
+C======================================================================
+C
+C     CALCUL
+C
+C IN  ZIMAT : 
+C IN  KFONC : 
+C IN  XX : 
+C IN  YY :
+C
+C OUT NORMX : 
+C OUT NORMY : 
 
-      INTEGER      I,ITMAX,IER,ZIMAT
-      REAL*8       XX,YY,NORMX,NORMY,FX,X0,Y0,DY
-      REAL*8       XI,YI,XM1,RES,YM1,RP,DYM1,TOL,RPX
-      REAL*8       XM2,YM2,DYI,VALR(4)
-      CHARACTER*8  KFONC
-      CHARACTER*2   CODRES
-      CHARACTER*16  PHENOM
+      INTEGER I, ITMAX, IER, ZIMAT
+
+      REAL*8 DISTFO, XX, YY, NORMX, NORMY, X0, Y0
+      REAL*8 XI, YI, XM1, RES, YM1, RP, DYM1, TOL
+      REAL*8 XM2, YM2, DYI, VALR(4)
+
+      CHARACTER*2 CODRES
+      CHARACTER*8 KFONC
+      CHARACTER*16 PHENOM
 
       PHENOM = 'GLRC_DAMAGE'
+
       TOL = 1.0D-3
       X0 = XX / NORMX
       Y0 = YY / NORMY
@@ -39,48 +51,51 @@ C ======================================================================
       XI = X0
 
       YM1 = 0.0D0
-      XI  = 0.0D0
+      XI = 0.0D0
       ITMAX = 1000
-      XM1   = 1.0D20
-      YM1   = 1.0D20
+      XM1 = 1.0D20
+      YM1 = 1.0D20
 
-      XI  = XI* NORMX
+      XI = XI* NORMX
       CALL RCVALA(ZIMAT,' ',PHENOM,1,'X ',XI,1,KFONC,YI,CODRES,'FM')
       CALL CDNFON(ZIMAT,KFONC,XI,1,DYI,IER)
-      YI   = YI/ NORMY
-      XI   = XI/ NORMX
-      DYI  = DYI * NORMX / NORMY
+      YI = YI/ NORMY
+      XI = XI/ NORMX
+      DYI = DYI * NORMX / NORMY
 
       DO 20, I = 1,ITMAX
-        XM2   = XM1
-        YM2   = YM1
-        XM1   = XI
-        YM1   = YI
-        DYM1  = DYI
+        XM2  = XM1
+        YM2  = YM1
+        XM1  = XI
+        YM1  = YI
+        DYM1 = DYI
 
         RP  = (XM2 - XM1)*(XM2 - XM1) + (YM2 - YM1)*(YM2 - YM1)
         RES = SQRT(RP*RP)
+
         IF (RES .LT. TOL) GOTO 30
 
-C        RP  =  1.0D0/(DYM1 + 1.0D0/DYM1)
-        RP  =  DYM1/(DYM1*DYM1 + 1.0D0)
-C        XI  =  RP*(Y0 - YM1 + DYM1*XM1 + X0/DYM1)
-        XI  =  RP*(Y0 - YM1 + DYM1*XM1) + X0/(DYM1*DYM1 + 1.0D0)
+        RP = DYM1/(DYM1*DYM1 + 1.0D0)
+        XI = RP*(Y0 - YM1 + DYM1*XM1) + X0/(DYM1*DYM1 + 1.0D0)
+        XI = XI* NORMX
 
-        XI  = XI* NORMX
         CALL RCVALA(ZIMAT,' ',PHENOM,1,'X ',XI,1,KFONC,YI,CODRES,'FM')
         CALL CDNFON(ZIMAT,KFONC,XI,1,DYI,IER)
-        YI   = YI/ NORMY
-        XI   = XI/ NORMX
-        DYI  = DYI * NORMX / NORMY
+
+        YI = YI/ NORMY
+        XI = XI/ NORMX
+        DYI = DYI * NORMX / NORMY
 
  20   CONTINUE
-      VALR(1)=XM1
-      VALR(2)=XM2
-      VALR(1)=YM1
-      VALR(2)=YM2
+
+      VALR(1) = XM1
+      VALR(2) = XM2
+      VALR(1) = YM1
+      VALR(2) = YM2
       CALL U2MESR('A','ELEMENTS_33',4,VALR)
+
  30   CONTINUE
+
       RP = (XM1 - X0)*(XM1 - X0)
       RP = RP + (YM1 - Y0)*(YM1 - Y0)
       DISTFO = SQRT(RP)

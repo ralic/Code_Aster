@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 19/05/2009   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -74,33 +74,33 @@ C
       LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD,LGMSH,ULEXIS
       LOGICAL LMAIL,AFAIRE,LREST
 C     ------------------------------------------------------------------
-      CHARACTER*1  CECR,K1BID
+      CHARACTER*1  CECR,K1BID,K1OCC
       CHARACTER*3  INFRES,TOUPAR,TOUCHA,COOR,TMAX,TMIN, SAUX03
       CHARACTER*4  PARTIE
-      CHARACTER*8  MODELE,NOMA,FORM,NOMMA,TABL,NOMARE
-      CHARACTER*8  K8B,RESU,CRIT,TEXTE,NOMAB,TYCHA,RESURE
+      CHARACTER*8  MODELE,NOMA,NOMA2,FORM,NOMMA,TABL,NOMARE
+      CHARACTER*8  K8B,RESU,CRIT,TEXTE,NOMAB,TYCHA,RESURE(9),RESUR(9)
       CHARACTER*8  LERESU,NOPASE,NOMGD
       CHARACTER*16 NOMCMD,K16BID,FORMR,FICH,TYRES
       CHARACTER*19 NOCH19,KNUM,RESU19
       CHARACTER*24 NOMJV
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(6)
       CHARACTER*24 NORECG,CORRN,CORRM
       CHARACTER*80 TITRE
 C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
-C
-      NORECG = '&&OP0039_RESULTA_GD'
 
       BORINF = 0.D0
       BORSUP = 0.D0
+      NORECG = '&&OP0039.RESULTAT_GD'
 
 C     --- RECUPERATION DU NOM DE LA COMMANDE ---
       CALL GETRES ( K8B, K8B, NOMCMD )
+
 C     --- RECUPERATION DU NOMBRE DE MISES EN FACTEUR DU MOT-CLE RESU ---
       CALL GETFAC ( 'RESU', NOCC )
-C
+
       DO 100 IOCC = 1,NOCC
        CALL GETVTX('RESU','NOEUD_CMP',IOCC,1,0,K8B,NMO)
        IF(NMO.NE.0) THEN
@@ -120,31 +120,61 @@ C     -----------------
       IF ( N .NE. 0 ) LMOD= .TRUE.
 
 
-C     ------------------------------------
+
+C     ----------------------------------------------------------------
 C     TRAITEMENT DU MOT CLE "RESTREINT"
-C     ------------------------------------
+C     ----------------------------------------------------------------
+C     -- REMARQUE : LE MOT CLE RESTREINT CREE DES SD_RESULTAT
+C        TEMPORAIRES + 1 MAILLAGE TEMPORAIRE ET CE SONT CES
+C        SD QUI DOIVENT ETRE IMPRIMEES.
+C        C'EST POURQUOI, DANS LE RESTE DE L'OPERATEUR (QUI IMPRIME),
+C        ON DOIT REMPLACER :
+C          - GETVID/RESULTAT PAR RESURE(IOCC)
+C          - GETVID/MAILLAGE PAR NOMARE
+      LREST=.FALSE.
       CALL GETFAC('RESTREINT',NBREST)
-      IF (NBREST.NE.0) THEN
+      CALL ASSERT(NBREST.EQ.0.OR.NBREST.EQ.1)
+      IF (NBREST.EQ.1) THEN
         LREST=.TRUE.
-C       -- ON FABRIQUE :
-C          NOMARE : SD_MAILLAGE "RESTREINT"
-C          RESURE : SD_RESULTAT "RESTREINT"
-        IF (NOCC.NE.1) CALL U2MESS('F','PREPOST6_37')
-        CALL GETVID('RESU','MAILLAGE',1,1,1,NOMA,NM)
-        IF (NM.NE.1) CALL U2MESS('F','PREPOST6_37')
+C       -- SI RESTREINT, IL FAUT VERIFIER QUE RESU/RESULTAT EST
+C          TOUJOURS FOURNI :
+        CALL ASSERT(NOCC.LE.9)
+        DO 74,IOCC=1,NOCC
+          CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESUR(IOCC),NM)
+          IF (NM.EQ.0) CALL U2MESI('F','CALCULEL4_2',1,IOCC)
+  74    CONTINUE
+
+C       -- ON VERIFIE QUE TOUS LES RESUR ONT LE MEME MAILLAGE
+        CALL DISMOI('F','NOM_MAILLA',RESUR(1),'RESULTAT',IBID,NOMA,IER)
+        DO 76,IOCC=2,NOCC
+          CALL DISMOI('F','NOM_MAILLA',RESUR(IOCC),'RESULTAT',IBID,
+     &                 NOMA2,IER)
+          CALL ASSERT(NOMA2.NE.' ')
+          IF (NOMA2.NE.NOMA) THEN
+            VALK(1)=RESUR(1)
+            VALK(2)=RESUR(IOCC)
+            VALK(3)=NOMA
+            VALK(4)=NOMA2
+            CALL U2MESK('F','CALCULEL4_2',4,VALK)
+          ENDIF
+ 76     CONTINUE
+
+C       -- ON VA FABRIQUER :
+C          NOMARE : 1 SD_MAILLAGE "RESTREINT"
+C          RESURE : NOCC SD_RESULTAT "RESTREINT"
         NOMARE='&&OP0039'
         CORRN='&&OP0039.CORRN'
         CORRM='&&OP0039.CORRM'
         CALL RDTMAI(NOMA,NOMARE,'V',CORRN,CORRM)
 
-        CALL GETVID('RESU','RESULTAT',1,1,1,RESU,NM)
-        IF (NM.EQ.1) THEN
-          RESURE='&REDUIT_'
-          CALL RDTRES(RESU,RESURE,NOMA,NOMARE,CORRN,CORRM)
-        ENDIF
-      ELSE
-        LREST=.FALSE.
+        DO 77, IOCC=1,NOCC
+          CALL CODENT(IOCC,'D',K1OCC)
+          RESURE(IOCC)='&RESUR'//K1OCC//'_'
+          CALL RDTRES(RESUR(IOCC),RESURE(IOCC),NOMA,NOMARE,CORRN,
+     &                CORRM,IOCC)
+ 77     CONTINUE
       ENDIF
+
 
 
 C     ---------------------------------------------
@@ -153,6 +183,8 @@ C     ---------------------------------------------
 C
 C     --- FORMAT ---
       CALL GETVTX ( ' ', 'FORMAT'  ,1,1,1, FORM , N )
+      IF (LREST.AND.FORM.NE.'MED') CALL U2MESS('F','CALCULEL4_3')
+
 C
 C     --- VERSION D'ECRITURE  ----
       NIVE = 0
@@ -187,40 +219,37 @@ C     --- FICHIER ---
       IF ( .NOT. ULEXIS( IFI ) ) THEN
          CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
       ENDIF
-C
-      NUMEMO = 0
-      NOMJV  = '&&OP0039.NOM_MODELE'
+
+
+C     -- FORMAT CASTEM : IMPRESSION DU MAILLAGE :
+C     -------------------------------------------
       IF ( FORM .EQ. 'CASTEM' ) THEN
-        INFMAI = 0
+         NUMEMO = 0
+         NOMJV  = '&&OP0039.NOM_MODELE'
+         INFMAI = 0
          DO 200 IOCC = 1,NOCC
             IF ( NUMEMO .EQ. 0 ) THEN
                IF ( LMOD ) THEN
                   NBMODL = 1
                   CALL WKVECT ( NOMJV, 'V V K24', 10, JMODL )
-                  CALL JEECRA ( NOMJV , 'LONUTI' , NBMODL , ' ' )
+                  CALL JEECRA ( NOMJV , 'LONUTI' , NBMODL , ' ')
                   CALL JEVEUO ( NOMJV, 'E', JMODL )
-                  ZK24(JMODL) = MODELE//'.MODELE         '
+                  ZK24(JMODL) = MODELE//'.MODELE'
                ENDIF
                DO 202 IOC2 = 1 , NOCC
-                 CALL GETVID ( 'RESU', 'RESULTAT', IOC2,1,1, RESU, NR )
-                 IF (LREST) RESU=RESURE
-                 IF ( NR .NE. 0 ) CALL RSCRMO ( IOC2, RESU , NOMJV )
+                 CALL GETVID('RESU','RESULTAT',IOC2,1,1,RESU,NR)
+                 IF ( NR .NE. 0 ) CALL RSCRMO ( IOC2, RESU , NOMJV)
  202           CONTINUE
                NUMEMO = NUMEMO + 1
             ENDIF
-C
-C           --- MAILLAGE ---
-            CALL GETVID ( 'RESU', 'MAILLAGE', IOCC,1,1, NOMA, NM )
-            IF (LREST) NOMA=NOMARE
-C
+
 C           ---  IMPRESSION DU MAILLAGE -----
+            CALL GETVID('RESU','MAILLAGE',IOCC,1,1,NOMA,NM)
             IF ( NM .NE. 0 ) THEN
                IF ( LMOD  ) THEN
                   CALL DISMOI('I','NOM_MAILLA',MODELE,'MODELE',IBID,
      &                                                 NOMAB,IRET)
-                  IF (NOMA.NE.NOMAB) THEN
-                    CALL U2MESS('F','PREPOST3_66')
-                  ENDIF
+                  IF (NOMA.NE.NOMAB) CALL U2MESS('F','PREPOST3_66')
                ENDIF
                CALL IRMAIL ( FORM,IFI,VERSIO,NOMA,LMOD,MODELE,NIVE,
      &                     INFMAI )
@@ -228,45 +257,38 @@ C           ---  IMPRESSION DU MAILLAGE -----
             ENDIF
  200     CONTINUE
 
-         IF ( NUMEMO .LE. 1 ) THEN
-          CALL U2MESS('F','PREPOST3_67')
-         ENDIF
+         IF ( NUMEMO .LE. 1 ) CALL U2MESS('F','PREPOST3_67')
 C
          CALL JEEXIN('&&OP0039.LAST',IRET)
          IF(IRET.EQ.0)  CALL WKVECT('&&OP0039.LAST','V V I',8,JLAST)
-C
       ENDIF
 
+
+
+C     -- VERIFICATIONS POUR GMSH :
       IF (FORM(1:4).EQ.'GMSH') THEN
          LMAIL=.FALSE.
          LRESU=.FALSE.
          DO 220 IOCC = 1 , NOCC
-            CALL GETVID ( 'RESU','MAILLAGE',IOCC,1,1,NOMA,NM )
-            IF (LREST) NOMA=NOMARE
-            CALL GETVID ( 'RESU','RESULTAT',IOCC,1,1,RESU,NR )
-            IF (LREST) RESU=RESURE
-            CALL GETVID ( 'RESU','CHAM_GD',IOCC,1,1,RESU,NC )
+            CALL GETVID('RESU','MAILLAGE',IOCC,1,1,NOMA,NM)
+            CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESU,NR)
+            CALL GETVID('RESU','CHAM_GD',IOCC,1,1,RESU,NC)
             IF ( NR.NE.0 .OR. NC.NE.0 ) THEN
                LRESU=.TRUE.
                GOTO 220
             ENDIF
-
-            IF ( NM.NE.0 ) THEN
-               LMAIL=.TRUE.
-            ENDIF
-
+            IF ( NM.NE.0 )  LMAIL=.TRUE.
  220     CONTINUE
-
          IF ( LMAIL.AND.LRESU ) THEN
             CALL U2MESS('A','PREPOST3_68')
             GOTO 9999
          ENDIF
       ENDIF
-C
-C
-C     -------------------------------------------
+
+
 C
 C     --- BOUCLE SUR LE NOMBRE DE MISES EN FACTEUR ---
+C     -----------------------------------------------------------------
       DO 10 IOCC = 1,NOCC
          LMAX = .FALSE.
          LMIN = .FALSE.
@@ -303,7 +325,10 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
          RESU = ' '
          PARTIE = ' '
          CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESU,NR)
-         IF (LREST) RESU=RESURE
+         IF (LREST) THEN
+           NR=1
+           RESU=RESURE(IOCC)
+         ENDIF
          CALL GETVTX('RESU','PARTIE',IOCC,1,1,PARTIE,NP)
          IF(NR.NE.0)THEN
             CALL GETTCO(RESU,TYRES)
@@ -343,7 +368,6 @@ C          --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
          ENDIF
 C
 C        --- NOMBRE DE PASSAGES POUR LA SENSIBILITE ---
-C
          IAUX = IOCC
          IF ( LRESU ) THEN
            IBID = 1
@@ -364,8 +388,18 @@ C             ET QUE L'ON DEMANDE L'IMPRESSION DU MAILLAGE, IL NE FAUDRA
 C             IMPRIMER QUE LA PARTIE DU MAILLAGE AFFECTEE DANS LE MODELE
          NOMA   = ' '
          NOMAB   = ' '
-         CALL GETVID ( 'RESU', 'MAILLAGE', IOCC,1,1, NOMA, NM )
-         IF (LREST) NOMA=NOMARE
+         CALL GETVID('RESU','MAILLAGE', IOCC,1,1, NOMA, NM )
+         IF ( (FORM.EQ.'ASTER').AND.(NOMA.EQ.'        ')) THEN
+               CALL U2MESS('A','PREPOST3_70')
+         ENDIF
+         IF (LREST) THEN
+           IF (IOCC.EQ.1) THEN
+             NM=1
+             NOMA=NOMARE
+           ELSE
+             NM=0
+           ENDIF
+         ENDIF
 C
 C        --- TEST DE LA COHERENCE DU MAILLAGE ET DU MODELE ---
 C
@@ -378,7 +412,6 @@ C
 C
 C===================================
          DO 11 , NRPASS = 1 , NBPASS
-
          NBCMP = 0
          NBMAT = 0
          NBNOS = 0
@@ -509,7 +542,8 @@ C                   TRAITEMENT PARTICULIER POUR LA GRANDEUR VARI_R
                     NBCMPT = NBCMPT + 1
                     GOTO 17
                  ENDIF
-       CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K1BID)
+                 CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',
+     &                       NCMPMX,K1BID)
                  CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IAD)
                  CALL IRVCMP(NCMPMX,ZK8(IAD),ZK8(JVCMP+ICMP),NBCMPT)
                ENDIF
@@ -916,7 +950,7 @@ C        --- DESTRUCTION TABLEAUX DE TRAVAIL
 C===================================
  11   CONTINUE
 C
-      CALL JEDETR ( NORECG )
+      CALL JEDETR(NORECG)
 C
       ENDIF
 C

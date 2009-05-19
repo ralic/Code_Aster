@@ -1,10 +1,10 @@
-      SUBROUTINE DFPLGL (NMNBN,NMPLAS,NMDPLA,NMDDPL,BEND,DFPL)
-      
+      SUBROUTINE DFPLGL (NMNBN,NMPLAS,NMDPLA,BEND,DFPL)
+
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,20 +20,21 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C ======================================================================
-      REAL*8 DFPL(*)
-C---------------------------------------------
-      REAL*8  NMNBN(6)         
-      REAL*8  NMPLAS(2,3)   
-      REAL*8  NMDPLA(2,2)  
-      REAL*8  NMDDPL(2,2)
-      REAL*8  NMZEF        
-      REAL*8  NMZEG         
-      INTEGER NMIEF  
-      INTEGER NMPROX(2)  
-C---------------------------------------------
+C======================================================================
+C
+C     CALCUL LE GRADIENT DU CRITERE DE PLASICITE
+C
+C IN  NMNBN : FORCE - BACKFORCE
+C IN  NMPLAS : MOMENTS LIMITES DE PLASTICITE
+C IN  NMDPLA : DERIVEES DES MOMENTS LIMITES DE PLASTICITE
+C IN  BEND : FLEXION POSITIVE (1) OU NEGATIVE (2)
+C
+C OUT DFPL : GRADIENT DU CRITERE DE PLASICITE
+
 
       INTEGER BEND
+
+      REAL*8 DFPL(*), NMNBN(6), NMPLAS(2,3), NMDPLA(2,2)
 
       DFPL(4) = -(NMNBN(5)-NMPLAS(BEND,2))
       DFPL(5) = -(NMNBN(4)-NMPLAS(BEND,1))
@@ -42,4 +43,4 @@ C---------------------------------------------
       DFPL(2) = -NMDPLA(BEND,2)*DFPL(5)
       DFPL(3) = 0.D0*NMNBN(6)
 
-      END 
+      END

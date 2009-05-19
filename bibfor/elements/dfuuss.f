@@ -1,11 +1,11 @@
-      SUBROUTINE DFUUSS(NMNBN,NMPLAS,NMDPLA,NMDDPL,NMPROX,BEND,DFUU)
-      
+      SUBROUTINE DFUUSS(NMNBN,NMPLAS,NMDPLA,NMPROX,BEND,DFUU)
+
       IMPLICIT NONE
 
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,38 +21,42 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C ======================================================================
-      REAL*8  DFUU(*)
-C---------------------------------------------
-        REAL*8  NMNBN(6)         
-        REAL*8  NMPLAS(2,3)   
-        REAL*8  NMDPLA(2,2)  
-        REAL*8  NMDDPL(2,2)
-        REAL*8  NMZEF        
-        REAL*8  NMZEG         
-        INTEGER NMIEF  
-        INTEGER NMPROX(2)  
-C---------------------------------------------
+C======================================================================
+C
+C     CALUL DES DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
+C
+C IN  NMNBN : FORCE - BACKFORCE
+C IN  NMPLAS : MOMENTS LIMITES DE PLASTICITE
+C IN  NMDPLA : DERIVEES DES MOMENTS LIMITES DE PLASTICITE
+C IN  NMPROX : NMPROX > 0 : NBN DANS ZONE DE CRITIQUE
+C IN  BEND : FLEXION POSITIVE (1) OU NEGATIVE (2)
+C
+C OUT DFUU : DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
 
-      INTEGER BEND,PROX,AUX
+      INTEGER BEND, NMPROX(2)
+
+      REAL*8  DFUU(*), NMNBN(6), NMPLAS(2,3), NMDPLA(2,2)
 
       IF (NMPROX(BEND)  .GT.  0) THEN
-         IF (BEND .EQ. 1) THEN
-           AUX=1
-         ELSE
-           AUX=-1
-         ENDIF
+        IF (BEND .EQ. 1) THEN
+          DFUU(1) = -NMDPLA(BEND,1)
+          DFUU(2) = -NMDPLA(BEND,2)
+          DFUU(4) = 1.D0
+          DFUU(5) = 1.D0
+        ELSE
+          DFUU(1) = NMDPLA(BEND,1)
+          DFUU(2) = NMDPLA(BEND,2)
+          DFUU(4) = -1.D0
+          DFUU(5) = -1.D0
+        ENDIF
 
-         DFUU(1) = -AUX*NMDPLA(BEND,1)
-         DFUU(2) = -AUX*NMDPLA(BEND,2)
-         DFUU(3) = 0.D0
-         DFUU(4) = AUX*1.D0
-         DFUU(5) = AUX*1.D0
-         DFUU(6) = 0.D0
+        DFUU(3) = 0.D0
+        DFUU(6) = 0.D0
       ELSE
 
-         CALL DFPLGL(NMNBN,NMPLAS,NMDPLA,NMDDPL,BEND,DFUU)
-     
+C     CALCUL LE GRADIENT DU CRITERE DE PLASICITE
+        CALL DFPLGL(NMNBN,NMPLAS,NMDPLA,BEND,DFUU)
+
       ENDIF
 
       END

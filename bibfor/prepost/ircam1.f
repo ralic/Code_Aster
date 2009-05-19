@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF PREPOST  DATE 19/05/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -238,7 +238,6 @@ C
           ELSE
             NBPG = CAIMPI(2,NRIMPR)
             NBSP = CAIMPI(3,NRIMPR)
-            WRITE(6,*)'NOCHMD',NOCHMD,'NBPG',NBPG,'TYPECH',TYPECH
             IF ( ((NBPG.EQ.27).OR.(NBPG.EQ.9).OR.(NBPG.EQ.7)).AND.
      &           (TYPECH.EQ.'ELNO    ') ) THEN
               NOMPB(1) = NOCHMD(9:22)

@@ -214,7 +214,7 @@
          INTEGER*4, DIMENSION(:),   POINTER :: ISTEP_TO_INIV2
          INTEGER*4, DIMENSION(:),   POINTER :: FUTURE_NIV2
          INTEGER*4, DIMENSION(:,:), POINTER :: TAB_POS_IN_PERE 
-	 LOGICAL, DIMENSION(:), POINTER :: I_AM_CAND
+	 LOGICAL*4, DIMENSION(:), POINTER :: I_AM_CAND
 !        For heterogeneous architecture
          INTEGER*4, DIMENSION(:), POINTER :: MEM_DIST
 !        Compressed RHS

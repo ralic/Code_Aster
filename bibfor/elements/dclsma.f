@@ -1,10 +1,9 @@
       SUBROUTINE DCLSMA(N,TAB,IRAN)
       IMPLICIT NONE
-      
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,27 +19,33 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C ======================================================================
-      INTEGER     I,II,J,JJ,ISWAP
-      REAL*8      TAB(*)
-      INTEGER     N
-      INTEGER     IRAN(*)
+C======================================================================
+C
+C     EVALUE L ORDRE DES RACINES DANS IRAN AVEC N PETIT
+C
+C IN  N : NOMBRE DE RACINE DU POLYNOME
+C IN  TAB : TABLEAU DES RACINES DU POLYNOME
+C
+C OUT IRAN : RANG DE LA RACINE
+
+      INTEGER  I, II, J, JJ, N, ISWAP, IRAN(*)
+      REAL*8 TAB(*)
 
       DO 10, I=1,N
-         IRAN(I) = I
+        IRAN(I) = I
  10   CONTINUE
 
       DO 30, I=1,N-1
         II=IRAN(I)
         DO 20, J=I+1,N
-           JJ=IRAN(J)
-           IF(TAB(II) .GT. TAB(JJ)) THEN
-              ISWAP=IRAN(I)
-              IRAN(I)=IRAN(J)
-              IRAN(J)=ISWAP
-              II=IRAN(I)
-           ENDIF
+          JJ=IRAN(J)
+          IF(TAB(II) .GT. TAB(JJ)) THEN
+            ISWAP=IRAN(I)
+            IRAN(I)=IRAN(J)
+            IRAN(J)=ISWAP
+            II=IRAN(I)
+          ENDIF
  20     CONTINUE
- 30   CONTINUE  
+ 30   CONTINUE
 
-      END  
+      END

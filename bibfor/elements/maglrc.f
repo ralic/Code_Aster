@@ -1,7 +1,7 @@
-      SUBROUTINE MAGLRC (ZIMAT,NNO,COMPOR,PGL,MATR,DELAS,ECR)
+      SUBROUTINE MAGLRC (ZIMAT,MATR,DELAS,ECR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL,VECTEU,MATRIC,TEMPNO
+      LOGICAL ZL
       COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
@@ -35,48 +35,16 @@ C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-C
 
-      REAL*8    MATR(*)
-      INTEGER   ZIMAT
+      INTEGER I, JCOQU, ICACOQ, ZIMAT
 
+      REAL*8 MATR(*), DELAS(6,6), R8B
+      REAL*8 VALRES(15), VGLOB(3), EPAIS
+      REAL*8 ECR(*), ALPH, BETA, VEL, R8DGRD
 
-      REAL*8   MG(3), ROT(9), DH(9), R, R8B
-      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-
-      INTEGER  IMATE,  IRET,   ICONTM, IVARIM
-      INTEGER  ICOMPO, ICACOQ, ICONTP, IVARIP, INO,   NBCON
-      INTEGER  NBVAR,  NDIMV,  IVARIX, L,      IPG,    JVARI, IVARI
-      INTEGER  K
-      REAL*8 DELAS(6,6)
-      REAL*8 ZERO
-      REAL*8 RBIB8,    RBIB1(4),  RBIB2(4),  RBIB3(6), RBIB4(6)
-      REAL*8 XAB(3,3), DEFO(2,2) ,DSIDEP(6,6)
-      INTEGER I,J
-
-      REAL*8 DF(9),DM(9),DMF(9), ECR(*), ALPH, BETA, VEL
-      INTEGER  JTAB(7), COD, ITABP(8),ITABM(8)
-      REAL*8   DEUX, CTOR, LC
-      REAL*8   T2EV(4),T2VE(4),T1VE(9),CARAT3(21),JACOB(5),CARAQ4(25)
-
-      CHARACTER*2    CODRES(15)
-      CHARACTER*8    NOMRES(15), NFX1
-      CHARACTER*16   COMPOR(*)
-      REAL*8         VALRES(15), PGL(3,3),VGLOB(3)
-      REAL*8         MP1(3), MP2(3), C1(3,3), C2(3,3)
-      REAL*8         MF1, MF2, QP1,  QP2, GAMMA, E, NU
-      REAL*8         DC(2,2), DCI(2,2), DMC(3,2), DFC(3,2), EPAIS
-      INTEGER        JCOQU, NBVAL, RPI, IER, JNOMA
-      REAL*8         PAR1, PAR2, AX, AY, EA, HZA, NUEQ
-
-      INTEGER       JMVK,JMVR,IBID,FL,KL,RL,CL
-      INTEGER       NF0, NNM0
-      CHARACTER*8   NOMCHM,MAT,NMAT(100),K8BID,NFON,NOMI
-
-      INTEGER         IFEPX,IPHEN,NBMAT,ICOMP,JMAT,IPI,NBF,IK
-      CHARACTER*16    PHENOM
-
-C----------------------------------
+      CHARACTER*2 CODRES(15)
+      CHARACTER*8 NOMRES(15)
+      CHARACTER*16 PHENOM
 
       CALL R8INIR(6*6,0.0D0,DELAS,1)
       PHENOM = 'GLRC_DAMAGE'
@@ -84,7 +52,7 @@ C----------------------------------
         CALL U2MESK('F','ELEMENTS2_32',1,PHENOM)
       ENDIF
 
-C--------EPAISSEUR----------------------
+C     EPAISSEUR
       CALL JEVECH('PCACOQU','L',JCOQU)
       EPAIS = ZR(JCOQU)
       NOMRES(1)  = 'EPAIS'
@@ -95,7 +63,7 @@ C--------EPAISSEUR----------------------
         CALL U2MESG('F','ELEMENTS5_42',0,' ',0,0,2,VALRES)
       ENDIF
 
-C--------ELAS----------------------
+C     ELAS
 
       NOMRES(1)  = 'E'
       NOMRES(2)  = 'NU'
@@ -105,9 +73,9 @@ C--------ELAS----------------------
       MATR(6) = VALRES(1)
       MATR(7) = VALRES(2)
 
-C--------GLRC_DAMAGE----------------------
+C     GLRC_DAMAGE
 
-C--------MATRICE ELASTIQUE MEMBRANE/CISAILLEMENT----------------------
+C     MATRICE ELASTIQUE MEMBRANE/CISAILLEMENT
 
       NOMRES(1)  = 'BN11'
       NOMRES(2)  = 'BN12'
@@ -136,7 +104,7 @@ C--------MATRICE ELASTIQUE MEMBRANE/CISAILLEMENT----------------------
       MATR(14) = VALRES(5) 
       MATR(15) = VALRES(6) 
 
-C--------SEUILS ET PENTES----------------------
+C     SEUILS ET PENTES
 
       NOMRES(1)  = 'MF1'
       NOMRES(2)  = 'MF2'
@@ -153,9 +121,8 @@ C--------SEUILS ET PENTES----------------------
       MATR(11) = VALRES(4)
       MATR(12) = VALRES(5) 
 
-C--------PARAMETRES TENSEUR DE PRAGER----------------------
-
-C--------     MEMBRANE----------------------
+C     PARAMETRES TENSEUR DE PRAGER
+C     MEMBRANE
       NOMRES(1)  = 'C1N1'
       NOMRES(2)  = 'C1N2'
       NOMRES(3)  = 'C1N3'
@@ -173,7 +140,7 @@ C--------     MEMBRANE----------------------
       MATR(23) = VALRES(5) 
       MATR(24) = VALRES(6) 
 
-C--------     FLEXION---------------------
+C     FLEXION
 
       NOMRES(1)  = 'C1M1'
       NOMRES(2)  = 'C1M2'
@@ -199,11 +166,12 @@ C--------     FLEXION---------------------
       DELAS(3,3) = MATR(5)
 
       CALL JEVECH('PCACOQU','L',ICACOQ)
-      ALPH = ZR(ICACOQ + 1)
-      BETA = ZR(ICACOQ + 2)
-      VGLOB(1) = COS(ALPH)
-      VGLOB(2) = SIN(ALPH)
-      VGLOB(3) = COS(BETA)
+      ALPH = ZR(ICACOQ+1)*R8DGRD()
+      BETA = ZR(ICACOQ+2)*R8DGRD()
+
+      VGLOB(1) = COS(BETA)*COS(ALPH)
+      VGLOB(2) = COS(BETA)*SIN(ALPH)
+      VGLOB(3) = -SIN(BETA)
       VEL = VGLOB(1)*VGLOB(1) + VGLOB(2)*VGLOB(2)
       VEL = VEL + VGLOB(3)*VGLOB(3)
       VEL = SQRT(VEL)

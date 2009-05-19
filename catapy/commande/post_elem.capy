@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
+#& MODIF COMMANDE  DATE 19/05/2009   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -245,15 +245,17 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                                TOUT         = SIMP(statut='f',typ='TXM',into=("OUI",) ),
                                MAILLE       = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
                                GROUP_MA     = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                               NOM_CHAM     = SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
+                               NOM_CHAM     = SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
                                NOM_CMP      = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
                                DEJA_INTEGRE = SIMP(statut='f',typ='TXM',into=("OUI","NON",),),
                               ),
          b_integrale = BLOC(condition = "( INTEGRALE != None )",
                        fr="calcul de la moyenne d'une composante",
-                       regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
+                       regles=(UN_PARMI('CHAM_GD','RESULTAT'),
+                               EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_ORDRE','LIST_INST'),),
                        MODELE         = SIMP(statut='f',typ=modele_sdaster),
-                       RESULTAT       = SIMP(statut='o',typ=(evol_noli,evol_ther,evol_elas,evol_char) ),
+                       RESULTAT       = SIMP(statut='f',typ=(evol_noli,evol_ther,evol_elas,evol_char) ),
+                       CHAM_GD        = SIMP(statut='f',typ=(cham_no_sdaster,cham_elem) ),
                        CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
                        b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
                           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),

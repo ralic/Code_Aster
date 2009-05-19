@@ -53,7 +53,7 @@
         INTEGER*4, DIMENSION(:), POINTER :: RG2L_COL
         INTEGER*4 , DIMENSION(:), POINTER :: IPIV
         INTEGER*4, DIMENSION( 9 ) :: DESCRIPTOR, DESCB
-        LOGICAL yes, gridinit_done
+        LOGICAL*4 yes, gridinit_done
         INTEGER*4 LPIV
 !       Used to access Schur easily from root structure
         COMPLEX*16, DIMENSION(:), POINTER :: SCHUR_POINTER

@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 04/05/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,22 +127,6 @@ Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
 
 47 : _("""
  type_resu inconnu:  %(k1)s
-"""),
-
-48 : _("""
- erreur calcul alpha0 :champ depl elastique non trouve
-"""),
-
-49 : _("""
- erreur : le champ depl elastique n'existe pas
-"""),
-
-50 : _("""
- erreur: le champ sief_elga_depl n'existe pas
-"""),
-
-51 : _("""
- methode zac : accommodation et chargement non radial --> methode non appliquable
 """),
 
 53 : _("""
