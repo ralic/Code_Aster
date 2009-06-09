@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 18/05/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPI MUMPS  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -47,15 +47,18 @@ C============================================================
       TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
       INTEGER      IFM,NIV,ICNTL(NICNTL),I,JREFA,ISYMM,JSLVK,ISYMV,ISYM,
-     &             JSLVI
+     &             JSLVI,IVERS,N1,N3,N5,IISNAN
+      INTEGER*4    KXMPS4,I4
+      REAL*8       RVERS
       CHARACTER*1  ROUCS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),TYPM,ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
+      CHARACTER*80 NVERS
       COMMON /SMUMPS1/ DMPS
       COMMON /SMUMPS2/ ZMPS
       COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
-      
+
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -71,20 +74,22 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C-----------------------------------------------------------------------
+C=================================================================
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
 
 C       ------------------------------------------------
 C        INITS
 C       ------------------------------------------------
+      KXMPS4=KXMPS
       IF (TYPE.EQ.'R') THEN
-        XMPSK=>DMPS(KXMPS)
+        XMPSK=>DMPS(KXMPS4)
       ELSE IF (TYPE.EQ.'C') THEN
-        YMPSK=>ZMPS(KXMPS)
+        YMPSK=>ZMPS(KXMPS4)
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
+
       NOMAT=NOMATS(KXMPS)
       NOSOLV=NOSOLS(KXMPS)
       NONU=NONUS(KXMPS)
@@ -147,12 +152,13 @@ C --- SINON, ON APPLIQUE LE CHOIX DE L'UTILISATEUR
         ENDIF
 
 C ---   PARAMETRES D'INITIALISATION DE L'OCCURENCE MUMPS KXMPS
+        I4=ISYM
         IF (TYPE.EQ.'R') THEN
-          XMPSK%SYM = ISYM
+          XMPSK%SYM = I4 
           XMPSK%PAR = 1
           XMPSK%JOB = -1
         ELSE
-          YMPSK%SYM = ISYM
+          YMPSK%SYM = I4
           YMPSK%PAR = 1
           YMPSK%JOB = -1
         ENDIF
@@ -162,13 +168,40 @@ C        INITIALISATION ICNTL POUR MUMPS
 C       ------------------------------------------------
       ELSE IF (OPTION.EQ.2) THEN
 
+C ---      INIT
+        DO I=1,NICNTL
+          ICNTL(I)=0
+        ENDDO
+        NVERS(1:80)=''
+        IF (TYPE.EQ.'R') THEN
+          NVERS(1:5)=XMPSK%VERSION_NUMBER
+        ELSE IF (TYPE.EQ.'C') THEN
+          NVERS(1:5)=YMPSK%VERSION_NUMBER
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+C       DECRYPTAGE (TRES FRUSTE) DU NUMERO DE VERSION DE MUMPS
+        IVERS=0
+        IF (NVERS.NE.' ') THEN
+          READ(NVERS(1:1),*)N1
+          READ(NVERS(3:3),*)N3
+          READ(NVERS(5:5),*)N5
+          IVERS=N1*100+N3*10+N5
+C          WRITE(6,*)'TEST NUMERO VERSION MUMPS ',NVERS(1:5),IVERS
+C         TESTS DE NAN
+          RVERS=1.D0*IVERS
+          CALL ASSERT(IISNAN(RVERS).EQ.0)
+          CALL ASSERT((IVERS.GE.100).AND.(IVERS.LT.999))
+          IF (IVERS.LT.473) CALL U2MESK('F','FACTOR_72',1,NVERS(1:5))
+        ENDIF
+        
 C ---      MESSAGES/ALERTES MUMPS
         ICNTL(1) = IFM
         ICNTL(2) = 0
         ICNTL(3) = 0
         ICNTL(4) = 1
         IF (NIV.GE.2) THEN
-           ICNTL(2) = IFM
+           ICNTL(2) = 0
            ICNTL(3) = IFM
 C ---      ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS
            ICNTL(4) = 2
@@ -182,7 +215,12 @@ C ---      PRETRAITEMENTS (SCALING/PERMUTATION)
           ICNTL(12) = 1
         ELSE IF (ZK24(JSLVK-1+2).EQ.'AUTO') THEN
           ICNTL(6) = 7
-          ICNTL(8) = 7
+C--       A PARTIR DE LA V4.8.0 (77 AU LIEU DE 7)
+          IF (IVERS.GE.480) THEN
+            ICNTL(8) = 77
+          ELSE
+            ICNTL(8) = 7
+          ENDIF
           ICNTL(12) = 0
         ELSE
           CALL ASSERT(.FALSE.)
@@ -271,6 +309,7 @@ C---    ON N'AJOUTE PAS DE PREFIXE AU FICHIER CREE PAR MUMPS
         ELSE IF (ZK24(JSLVK-1+9)(1:3).EQ.'NON') THEN
 C ---     CAS IN_CORE (FACTO/RESOLUTION)
           ICNTL(22)=0
+          ICNTL(23)=0
         ELSE
 C ---     CHOIX NON LICITE   
           CALL ASSERT(.FALSE.)
@@ -280,11 +319,13 @@ C --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
 C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         IF (TYPE.EQ.'R') THEN
           DO I=1,NICNTL
-            XMPSK%ICNTL(I)=ICNTL(I)
+            I4=ICNTL(I)
+            XMPSK%ICNTL(I)=I4
           ENDDO
         ELSE IF (TYPE.EQ.'C') THEN
           DO I=1,NICNTL
-            YMPSK%ICNTL(I)=ICNTL(I)
+            I4=ICNTL(I)
+            YMPSK%ICNTL(I)=I4
           ENDDO
         ENDIF
 

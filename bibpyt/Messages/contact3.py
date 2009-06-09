@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 05/05/2009   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 08/06/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -192,6 +192,16 @@ La maille %(k1)s est de type 'POI1', elle nécessite l'utilisation de l'option
 NORMALE='FIXE' avec une normale non-nulle. 
 """),
 
+81 : _("""
+Contact méthodes discrètes.
+  -> Il y a trop de réactualisations géométriques (plus de 99).
+  -> Risque & Conseil :
+     Votre maillage est incorrect ou le glissement relatif des deux
+     surfaces est trop important.
+     Tentez de découper plus finement en temps votre problème.
+ 
+"""),
+
 85 : _("""
 Contact méthode continue. 
   -> Il y a échec de la boucle contraintes actives lors du traitement
@@ -230,6 +240,19 @@ Contact méthode continue.
      Il y a des risques que le problème soit un peu moins bien traité.
      Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles.
      S'il y des interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
+"""),
+
+96 : _("""
+Contact méthodes discrètes.
+    -> Les surfaces en contact relatif ont bougé de plus de 5%%.
+       Or vous n'avez pas activé la réactualisation géométrique (REAC_GEOM) automatique ou
+       vous utiliser le mode "CONTROLE"
+    -> Risque & Conseil : Vos résultats risquent d'etre faux, les mailles ne
+       seront peut-etre pas correctement appariées et donc la condition de contact sera peut
+       etre fausse.
+       Si vous avez volontairement négligé la non-linéarité géoémtrique de contact (pour des raisons
+       de performance), nous vous invitons à vérifier visuellement qu'il n'y a effectivement
+       pas interpénétration.
 """),
 
 }

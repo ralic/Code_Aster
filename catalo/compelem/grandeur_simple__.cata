@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+%& MODIF COMPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 % RESPONSABLE PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -57,43 +57,16 @@ GRANDEUR_SIMPLE__
 >>
     CACO3D   = R    CRF
 
-    CADISA   = R    A1       A2       A3       A4       A5       A6       A7       A8
-                    A9       A10      A11      A12      A13      A14      A15      A16
-                    A17      A18      A19      A20      A21      A22      A23      A24
-                    A25      A26      A27      A28      A29      A30      A31      A32
-                    A33      A34      A35      A36      A37      A38      A39      A40
-                    A41      A42      A43      A44      A45      A46      A47      A48
-                    A49      A50      A51      A52      A53      A54      A55      A56
-                    A57      A58      A59      A60      A61      A62      A63      A64
-                    A65      A66      A67      A68      A69      A70      A71      A72
-                    A73      A74      A75      A76      A77      A78      REPA
+    CADISA   = R    A[78]    REPA
 
 <<  CADISK : MATRICE DE RIGIDITE DES ELEMENTS DISCRETS (MODELISATION='DIS_XXXX')
        K1,K2,...K78 : COEFFICIENTS DE LA MATRICE DE RIGIDITE
        REPK :  TYPE DU REPERE (=1 REPERE GLOBAL, =2 REPERE LOCAL)
        ETA : COEFFICIENT DE L AMORTISSEMENT HYSTERETIQUE
 >>
-    CADISK   = R    K1       K2       K3       K4       K5       K6       K7       K8
-                    K9       K10      K11      K12      K13      K14      K15      K16
-                    K17      K18      K19      K20      K21      K22      K23      K24
-                    K25      K26      K27      K28      K29      K30      K31      K32
-                    K33      K34      K35      K36      K37      K38      K39      K40
-                    K41      K42      K43      K44      K45      K46      K47      K48
-                    K49      K50      K51      K52      K53      K54      K55      K56
-                    K57      K58      K59      K60      K61      K62      K63      K64
-                    K65      K66      K67      K68      K69      K70      K71      K72
-                    K73      K74      K75      K76      K77      K78      REPK     ETA
+    CADISK   = R    K[78]    REPK     ETA
 
-    CADISM   = R    M1       M2       M3       M4       M5       M6       M7       M8
-                    M9       M10      M11      M12      M13      M14      M15      M16
-                    M17      M18      M19      M20      M21      M22      M23      M24
-                    M25      M26      M27      M28      M29      M30      M31      M32
-                    M33      M34      M35      M36      M37      M38      M39      M40
-                    M41      M42      M43      M44      M45      M46      M47      M48
-                    M49      M50      M51      M52      M53      M54      M55      M56
-                    M57      M58      M59      M60      M61      M62      M63      M64
-                    M65      M66      M67      M68      M69      M70      M71      M72
-                    M73      M74      M75      M76      M77      M78      REPM
+    CADISM   = R    M[78]    REPM
 
     CAFI_R   = R    XG       YG       AIRE
 
@@ -102,65 +75,11 @@ GRANDEUR_SIMPLE__
         REPK :  TYPE DU REPERE (=1 REPERE GLOBAL, =2 REPERE LOCAL)
         ETA : COEFFICIENT DE L AMORTISSEMENT HYSTERETIQUE 
 >>
-    CADNSK   = R    K1       K2       K3       K4       K5       K6       K7       K8
-                    K9       K10      K11      K12      K13      K14      K15      K16
-                    K17      K18      K19      K20      K21      K22      K23      K24
-                    K25      K26      K27      K28      K29      K30      K31      K32
-                    K33      K34      K35      K36      K37      K38      K39      K40
-                    K41      K42      K43      K44      K45      K46      K47      K48
-                    K49      K50      K51      K52      K53      K54      K55      K56
-                    K57      K58      K59      K60      K61      K62      K63      K64
-                    K65      K66      K67      K68      K69      K70      K71      K72
-                    K73      K74      K75      K76      K77      K78      K79      K80      
-                    K81      K82      K83      K84      K85      K86      K87      K88      
-                    K89      K90      K91      K92      K93      K94      K95      K96
-                    K97      K98      K99      K100     K101     K102     K103     K104     
-                    K105     K106     K107     K108     K109     K110     K111     K112     
-                    K113     K114     K115     K116     K117     K118     K119     K120
-                    K121     K122     K123     K124     K125     K126     K127     K128     
-                    K129     K130     K131     K132     K133     K134     K135     K136     
-                    K137     K138     K139     K140     K141     K142     K143     K144    
-                    REPK     ETA
+    CADNSK   = R    K[144]   REPK     ETA
 
-    CADNSM   = R    M1       M2       M3       M4       M5       M6       M7       M8
-                    M9       M10      M11      M12      M13      M14      M15      M16
-                    M17      M18      M19      M20      M21      M22      M23      M24
-                    M25      M26      M27      M28      M29      M30      M31      M32
-                    M33      M34      M35      M36      M37      M38      M39      M40
-                    M41      M42      M43      M44      M45      M46      M47      M48
-                    M49      M50      M51      M52      M53      M54      M55      M56
-                    M57      M58      M59      M60      M61      M62      M63      M64
-                    M65      M66      M67      M68      M69      M70      M71      M72
-                    M73      M74      M75      M76      M77      M78      M79      M80      
-                    M81      M82      M83      M84      M85      M86      M87      M88      
-                    M89      M90      M91      M92      M93      M94      M95      M96
-                    M97      M98      M99      M100     M101     M102     M103     M104     
-                    M105     M106     M107     M108     M109     M110     M111     M112     
-                    M113     M114     M115     M116     M117     M118     M119     M120
-                    M121     M122     M123     M124     M125     M126     M127     M128     
-                    M129     M130     M131     M132     M133     M134     M135     M136     
-                    M137     M138     M139     M140     M141     M142     M143     M144     
-                    REPM
+    CADNSM   = R    M[144]   REPM
 
-    CADNSA   = R    A1       A2       A3       A4       A5       A6       A7       A8
-                    A9       A10      A11      A12      A13      A14      A15      A16
-                    A17      A18      A19      A20      A21      A22      A23      A24
-                    A25      A26      A27      A28      A29      A30      A31      A32
-                    A33      A34      A35      A36      A37      A38      A39      A40
-                    A41      A42      A43      A44      A45      A46      A47      A48
-                    A49      A50      A51      A52      A53      A54      A55      A56
-                    A57      A58      A59      A60      A61      A62      A63      A64
-                    A65      A66      A67      A68      A69      A70      A71      A72
-                    A73      A74      A75      A76      A77      A78      A79      A80      
-                    A81      A82      A83      A84      A85      A86      A87      A88      
-                    A89      A90      A91      A92      A93      A94      A95      A96
-                    A97      A98      A99      A100     A101     A102     A103     A104     
-                    A105     A106     A107     A108     A109     A110     A111     A112     
-                    A113     A114     A115     A116     A117     A118     A119     A120
-                    A121     A122     A123     A124     A125     A126     A127     A128     
-                    A129     A130     A131     A132     A133     A134     A135     A136     
-                    A137     A138     A139     A140     A141     A142     A143     A144     
-                    REPA
+    CADNSA   = R    A[144]   REPA
 
 <<  CAGEBA : CARACTERISTIQUES DES SECTIONS DE BARRE CERCLE OU RECTANGLE :
        HY1, EPY1, HY2, EPY2 : DIMENSION DE LA SECTION RECTANGULAIRE ET
@@ -288,8 +207,8 @@ GRANDEUR_SIMPLE__
     DDLI_C   = C    C
     DDLI_F   = K24  C
     DDLI_R   = R    C
-    DDLM_C   = C    A1       A2       A3       B1       B2       B3
-    DDLM_R   = R    A1       A2       A3       B1       B2       B3
+    DDLM_C   = C    A[3]     B[3]
+    DDLM_R   = R    A[3]     B[3]
 
 %
 %   COMPOSANTES IDENTIQUES POUR LES DEPL_x
@@ -660,52 +579,17 @@ GRANDEUR_SIMPLE__
                     NUG2     NUG3     NUG4     NUG5     NUG6     NUG7     NUG8    NUG9
                     NUG10
 
-    NEUT_F   = K8   X1       X2       X3       X4       X5       X6       X7       X8
-                    X9       X10      X11      X12      X13      X14      X15      X16
-                    X17      X18      X19      X20      X21      X22      X23      X24
-                    X25      X26      X27      X28      X29      X30
+    NEUT_F   = K8   X[30]
 
-    NEUT_I   = I    X1       X2       X3       X4       X5       X6       X7       X8
-                    X9       X10      X11      X12      X13      X14      X15      X16
-                    X17      X18      X19      X20      X21      X22      X23      X24
-                    X25      X26      X27      X28      X29      X30      X31      X32
-                    X33      X34      X35      X36      X37      X38      X39      X40
-                    X41      X42      X43      X44      X45      X46      X47      X48
-                    X49      X50      X51      X52      X53      X54      X55      X56
-                    X57      X58      X59      X60      X61      X62      X63      X64
-                    X65      X66      X67      X68      X69      X70      X71      X72
-                    X73      X74      X75      X76      X77      X78      X79      X80
-                    X81      X82      X83      X84      X85      X86      X87      X88
-                    X89      X90      X91      X92      X93      X94      X95      X96
-                    X97      X98      X99      X100     X101     X102     X103     X104
-                    X105     X106     X107     X108     X109     X110     X111     X112
-                    X113     X114     X115     X116     X117     X118     X119     X120
-                    X121     X122     X123     X124     X125     X126     X127     X128
+    NEUT_I   = I    X[128]
 
-    NEUT_K8 = K8    Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
-                    Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
-                    Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
+    NEUT_K8 = K8    Z[24]
 
-    NEUT_K16 = K16  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
-                    Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
-                    Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
+    NEUT_K16 = K16  Z[24]
 
-    NEUT_K24 = K24  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
-                    Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
-                    Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
+    NEUT_K24 = K24  Z[24]
 
-    NEUT_R   = R    X1       X2       X3       X4       X5       X6       X7       X8
-                    X9       X10      X11      X12      X13      X14      X15      X16
-                    X17      X18      X19      X20      X21      X22      X23      X24
-                    X25      X26      X27      X28      X29      X30      X31      X32
-                    X33      X34      X35      X36      X37      X38      X39      X40
-                    X41      X42      X43      X44      X45      X46      X47      X48
-                    X49      X50      X51      X52      X53      X54      X55      X56
-                    X57      X58      X59      X60      X61      X62      X63      X64
-                    X65      X66      X67      X68      X69      X70      X71      X72
-                    X73      X74      X75      X76      X77      X78      X79      X80
-                    X81      X82      X83      X84      X85      X86      X87      X88
-                    X89      X90
+    NEUT_R   = R    X[90]
 
     NUMC_I   = I    NUMC     ORDO     ANGL
 
@@ -865,19 +749,7 @@ GRANDEUR_SIMPLE__
     TEMP_R   = R    TEMP     TEMP_INF TEMP_SUP LAGR
     VALO_R   = R    VALEUR   GRAD_X   GRAD_Y   GRAD_Z
     VANL_R   = R    VANL
-    VAR2_R   = R    V1       V2       V3       V4       V5       V6       V7       V8
-                    V9       V10      V11      V12      V13      V14      V15      V16
-                    V17      V18      V19      V20      V21      V22      V23      V24
-                    V25      V26      V27      V28      V29      V30      V31      V32
-                    V33      V34      V35      V36      V37      V38      V39      V40
-                    V41      V42      V43      V44      V45      V46      V47      V48
-                    V49      V50      V51      V52      V53      V54      V55      V56
-                    V57      V58      V59      V60      V61      V62      V63      V64
-                    V65      V66      V67      V68      V69      V70      V71      V72
-                    V73      V74      V75      V76      V77      V78      V79      V80
-                    V81      V82      V83      V84      V85      V86      V87      V88
-                    V89      V90      V91      V92      V93      V94      V95      V96
-                    V97      V98      V99      V100
+    VAR2_R   = R    V[100]
 
     VARI_R   = R    VARI
 
@@ -923,3 +795,4 @@ GRANDEUR_ELEMENTAIRE__
    VSIZ_R 1 SIZZ_R
    VTEM_R 1 TEMP_R
    VVAR_R 1 VANL_R
+   MZNS_R 2 NEUT_R   NEUT_R   MR

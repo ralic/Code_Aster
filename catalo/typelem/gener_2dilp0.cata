@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,14 +61,10 @@ MODE_LOCAL__
     EGINDLO  = IND_LOCA ELGA__ RIGI    (INDICE   DIR1     DIR2     DIR3     DIR4     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6]     )
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )

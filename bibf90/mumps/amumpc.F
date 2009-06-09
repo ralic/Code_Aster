@@ -1,7 +1,8 @@
-      SUBROUTINE AMUMPC(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRET)
+      SUBROUTINE AMUMPC(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRET,
+     &                  IMPR,IFMUMP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPC MUMPS  DATE 18/05/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPC MUMPS  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -38,11 +39,13 @@ C OUT : IRET (I) : CODE_RETOUR :
 C            0 : OK
 C            2 : MATRICE NUMERIQUEMENT SINGULIERE
 C IN  : NBSOL  : NBRE DE SYSTEMES A RESOUDRE
+C IN  : IMPR,IFMUMP : PARAMETRES POUR SORTIE FICHIER MATRICE CF AMUMPS
 C---------------------------------------------------------------
       CHARACTER*(*) ACTION
+      CHARACTER*14  IMPR
       CHARACTER*19  VCINE,NOSOLV
-      INTEGER       IRET,NBSOL,KXMPS
-      COMPLEX*16 CSOLU(*)
+      INTEGER       IRET,NBSOL,KXMPS,IFMUMP
+      COMPLEX*16    CSOLU(*)
 
 #ifdef _HAVE_MUMPS
 
@@ -72,14 +75,16 @@ C================================================================
       TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
       TYPE (ZMUMPS_STRUC) , POINTER :: XMPSK
-      INTEGER      JSLVK,JSLVR,RANG,IFMUMP,NBPROC,NIV,IFM,IBID
+      INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB,
+     &             IETRAT
+      INTEGER*4    KXMPS4
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE
-      CHARACTER*4  ETAMS(NMXINS),IMPR,ETAM
+      CHARACTER*4  ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOMAT,NOSOLS(NMXINS)
       CHARACTER*24 KMONIT(12)
-      REAL*8       EPSMAX,VALR(2),TEMPS(6),RDESQ,RBID
-      LOGICAL      LQUALI,ELI2LG,LDIST,LDEBUG
+      REAL*8       EPSMAX,VALR(2),TEMPS(6),RDESQ,RBID,RCTDEB
+      LOGICAL      LQUALI,ELI2LG,LDIST,LRESOL
       COMMON /SMUMPS1/ DMPS
       COMMON /SMUMPS2/ ZMPS
       COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
@@ -93,13 +98,12 @@ C --- ON DESACTIVE LA LEVEE D'EXCEPTION FPE DANS LA BIBLIOTHEQUE MKL
 C --  CAR CES EXCEPTIONS NE SONT PAS JUSTIFIEES
       CALL MATFPE(-1)
       CALL INFNIV(IFM,NIV)
-C      WRITE(IFM,*)'DEBUT AMUMPC'
-C      CALL JXVERI('MESSAGE','DEBUT AMUMPC')
-C --- PARAMETRE POUR DEBUGGAGE
-      LDEBUG=.TRUE.
-      LDEBUG=.FALSE.
 
+C --- PARAMETRE POUR IMPRESSION FICHIER
+      LRESOL=((IMPR(1:3).EQ.'NON').OR.(IMPR(1:9).EQ.'OUI_SOLVE'))
+      
 C --- TYPE DE SYSTEME: REEL OU COMPLEXE
+      KXMPS4=KXMPS
       TYPE='C'
       CALL ASSERT(KXMPS.GT.0)
       CALL ASSERT(KXMPS.LE.NMXINS)
@@ -109,15 +113,9 @@ C --- TYPE DE SYSTEME: REEL OU COMPLEXE
       ETAM=ETAMS(KXMPS)
       ROUC=ROUCS(KXMPS)
       CALL ASSERT(ROUC.EQ.TYPE)
-      XMPSK=>ZMPS(KXMPS)
+      XMPSK=>ZMPS(KXMPS4)
       IRET=0
-
-C --- IMPR : PARAMETRE POUR IMPRIMER LA MATRICE OU LE SECOND MEMBRE
-C            SUR L'UNITE IFMUMP (POUR RESOLUTION EXTERNE)
-      IMPR='OUI'
-      IMPR='NON'
-      IFMUMP=17
-
+      
 C --- RDESQ: TAUX DE DESEQUILIBRAGE MAX. POUR PROFILING ACTIVE
 C --- AVEC INFO=2
       RDESQ=10.D0
@@ -143,7 +141,9 @@ C --- MUMPS PARALLELE DISTRIBUE ?
       NBPROC=XMPSK%NPROCS
 
 C --- POUR MONITORING
-      CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
+      CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &            IETDEB,IETRAT,RCTDEB)
+
 
 C     ------------------------------------------------
 C     ------------------------------------------------
@@ -167,19 +167,20 @@ C       ------------------------------------------------
 C       ------------------------------------------------
 C        REMPLISSAGE DE LA MATRICE MUMPS :
 C       ------------------------------------------------
+        CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &              IETDEB,IETRAT,RCTDEB)
         CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE)
-C       -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS:
         CALL JJLDYN(IBID)
 
 C       ------------------------------------------------
 C        ANALYSE MUMPS:
 C       ------------------------------------------------
-        IF (LDEBUG) WRITE(IFM,*)'AVANT ANALYSE MUMPS'
-        CALL AMUMPT(2,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
+        CALL AMUMPT(2,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &              IETDEB,IETRAT,RCTDEB)
         XMPSK%JOB = 1
         CALL ZMUMPS(XMPSK)
-        CALL AMUMPT(4,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
-        IF (LDEBUG) WRITE(IFM,*)'APRES ANALYSE MUMPS'
+        CALL AMUMPT(4,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &              IETDEB,IETRAT,RCTDEB)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
@@ -206,11 +207,10 @@ C --- VERIFICATION DU RENUMEROTEUR EFFECTIVEMENT UTILISE
 C       ------------------------------------------------
 C        FACTORISATION NUMERIQUE MUMPS:
 C       ------------------------------------------------
-        IF (LDEBUG) WRITE(IFM,*)'AVANT FACTORISATION MUMPS'
         XMPSK%JOB = 2
-        CALL ZMUMPS(XMPSK)
-        CALL AMUMPT(6,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
-        IF (LDEBUG) WRITE(IFM,*)'APRES FACTORISATION MUMPS'
+        IF (LRESOL) CALL ZMUMPS(XMPSK)
+        CALL AMUMPT(6,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &              IETDEB,IETRAT,RCTDEB)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
@@ -260,19 +260,20 @@ C     ------------------------------------------------
 C       ------------------------------------------------
 C        PRETRAITEMENTS ASTER DU/DES SECOND(S) MEMBRE(S) :
 C       ------------------------------------------------
-        IF (LDEBUG) WRITE(IFM,*)'AVANT PRETRAITEMENT SM'
+        CALL AMUMPT(7,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &              IETDEB,IETRAT,RCTDEB)
         CALL AMUMPP(0,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
      &              RBID,CSOLU,VCINE)
 
 C       ------------------------------------------------
 C        RESOLUTION MUMPS :
 C       ------------------------------------------------
-        IF (LDEBUG) WRITE(IFM,*)'AVANT RESOLUTION MUMPS'
-        CALL AMUMPT(8,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
+        CALL AMUMPT(8,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &              IETDEB,IETRAT,RCTDEB)
         XMPSK%JOB = 3
-        CALL ZMUMPS(XMPSK)
-        CALL AMUMPT(10,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
-        IF (LDEBUG) WRITE(IFM,*)'APRES RESOLUTION MUMPS'
+        IF (LRESOL) CALL ZMUMPS(XMPSK)
+        CALL AMUMPT(10,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &              IETDEB,IETRAT,RCTDEB)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
@@ -304,18 +305,19 @@ C        POST-TRAITEMENTS ASTER DE/DES (LA) SOLUTION(S) :
 C       ------------------------------------------------
         CALL AMUMPP(2,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
      &              RBID,CSOLU,VCINE)
-        IF (LDEBUG) WRITE(IFM,*)'APRES POST-TRAITEMENTS SOL'
 
 C       ------------------------------------------------
 C        AFFICHAGE DU MONITORING :
 C       ------------------------------------------------
-        CALL AMUMPT(12,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE)
+        CALL AMUMPT(12,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+     &              IETDEB,IETRAT,RCTDEB)
 
 C     ------------------------------------------------
 C     ------------------------------------------------
-      ELSE IF (ACTION.EQ.'DETR_MAT') THEN
+      ELSE IF (ACTION(1:8).EQ.'DETR_MAT') THEN
 C     ------------------------------------------------
 C     ------------------------------------------------
+
 
 C       ------------------------------------------------
 C        MENAGE ASTER ET MUMPS:
@@ -349,8 +351,6 @@ C       ------------------------------------------------
 
 C     -- ON REACTIVE LA LEVEE D'EXCEPTION
       CALL MATFPE(1)
-C      WRITE(IFM,*)'FIN AMUMPC'
-C      CALL JXVERI('MESSAGE','FIN AMUMPC')
       CALL JEDEMA()
 
 #endif

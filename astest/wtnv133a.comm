@@ -1,7 +1,7 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/06/2009   AUTEUR FOUCAULT A.FOUCAULT 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX 
-# wtnv133a.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test R
+# wtnv133a.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -253,7 +253,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,INFO=1,
                               RELATION_KIT   = ('HUJEUX',
                                                 'LIQU_SATU','HYDR_UTIL'),
                               RESI_INTE_RELA = 1.E-6,
-                              ITER_INTE_PAS  = -10),
+                              ITER_INTE_PAS  = +3),
                  NEWTON=_F(MATRICE   = 'TANGENTE',
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
@@ -582,7 +582,7 @@ TEST_TABLE(TABLE=TAB_VARI,
 TEST_TABLE(TABLE=TAB_VARI,
            NOM_PARA='V23',
            VALE=-3.65E-5,
-           PRECISION=0.03,
+           PRECISION=0.04,
            CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='EPZZ',
@@ -593,7 +593,7 @@ TEST_TABLE(TABLE=TAB_VARI,
 TEST_TABLE(TABLE=TAB_VARI,
            NOM_PARA='V23',
            VALE=-5.59E-5,
-           PRECISION=0.01,
+           PRECISION=0.03,
            CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='EPZZ',

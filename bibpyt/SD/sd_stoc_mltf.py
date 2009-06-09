@@ -1,4 +1,4 @@
-#@ MODIF sd_stoc_mltf SD  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_stoc_mltf SD  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,11 +30,11 @@ class sd_stoc_mltf(AsBase):
     DESC = AsVI(lonmax=5,)
     FILS = AsVI()
     FRER = AsVI()
-    GLOB = AsVI()
+    GLOB = AsVS()
     LFRN = AsVI()
     LGBL = AsVI()
     LGSN = AsVI()
-    LOCL = AsVI()
+    LOCL = AsVS()
     NBAS = AsVI()
     NBLI = AsVI()
     NCBL = AsVI()

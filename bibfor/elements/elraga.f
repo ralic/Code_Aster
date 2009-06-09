@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 08/06/2009   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1110,7 +1110,7 @@ C         FINITE ELEMENT PROCEDURES IN ENGINEERING ANALYSIS, PAGE 280)
           YPG(2) = 0.D0
           XPG(3) = 0.D0
           YPG(3) = 1.D0
-          XPG(4) = 1.D0
+          XPG(4) = 0.5D0
           YPG(4) = 0.D0
           XPG(5) = 0.5D0
           YPG(5) = 0.5D0

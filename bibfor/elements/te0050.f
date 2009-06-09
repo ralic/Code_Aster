@@ -1,6 +1,6 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/06/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -30,15 +30,21 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
+      INTEGER            NBRES,NBPAR
       PARAMETER         ( NBRES=2 )
       PARAMETER         ( NBPAR=3 )
-      CHARACTER*8        NOMRES(NBRES),NOMPAR(NBPAR)
-      CHARACTER*2        BL2, CODRET(NBRES)
-      REAL*8             VALRES(NBRES),VALPAR(NBPAR),VXYZ
-      INTEGER            IRESU,IRIGEL,IMASEL,IMATE
+
+      INTEGER            JGANO,IRET,NBVAL,NBDDL,IDIMGE,NPARA
+      INTEGER            I,J,K,KNS,KS,MATER,IRIGI,IMASS
+      INTEGER            IRESU,IMATE,IBID,INS
       INTEGER            IDRESU(5),IDRIGI(2),IDMASS(2),IDGEO(5)
       INTEGER            IPOIDS,IVF,IDFDX,IGEOM
       INTEGER            NDIM,NNO,NNOS,NPG1,INO
+
+      REAL*8             ALPHA,BETA,ETA,VALRES(NBRES),VALPAR(NBPAR),VXYZ
+
+      CHARACTER*2        BL2, CODRET(NBRES)
+      CHARACTER*8        NOMRES(NBRES),NOMPAR(NBPAR)
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -63,7 +69,12 @@ C
 C     -- RECUPERATION DES CHAMPS PARAMETRES ET DE LEURS LONGUEURS:
 C     ------------------------------------------------------------
       IF (OPTION.EQ.'AMOR_MECA') THEN
-        CALL TECACH('ONN','PMATUUR',5,IDRESU,IRET)
+        CALL TECACH('NNO','PRIGIEL',1,IBID,INS)
+        IF (INS .EQ. 0) THEN
+          CALL TECACH('ONN','PMATUUR',5,IDRESU,IRET)
+        ELSE
+          CALL TECACH('ONN','PMATUNS',5,IDRESU,IRET)
+        ENDIF
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
         CALL TECACH('ONN','PMATUUC',5,IDRESU,IRET)
       ELSE
@@ -92,9 +103,13 @@ C
       CALL JEVECH('PMATERC','L',IMATE)
       MATER=ZI(IMATE)
 C
-      CALL TECACH('ONN','PRIGIEL',2,IDRIGI,IRET)
-      CALL ASSERT(IDRIGI(2).EQ.NBVAL)
-
+      IF (INS .EQ. 0) THEN
+        CALL TECACH('ONN','PRIGIEL',2,IDRIGI,IRET)
+        CALL ASSERT(IDRIGI(2).EQ.NBVAL)
+      ELSE
+        CALL TECACH('ONN','PRIGINS',2,IDRIGI,IRET)
+        CALL ASSERT(IDRIGI(2).EQ.NBVAL)
+      ENDIF
 C
 C
 C     -- RECUPERATION DES COEFFICIENTS FONCTIONS DE LA GEOMETRIE :
@@ -102,8 +117,15 @@ C     -------------------------------------------------------------
 C
       IF (OPTION.EQ.'AMOR_MECA') THEN
 C     --------------------------------
-      CALL TECACH('ONN','PMASSEL',2,IDMASS,IRET)
-        CALL ASSERT (IDMASS(2).EQ.NBVAL)
+        CALL TECACH('ONN','PMASSEL',2,IDMASS,IRET)
+C
+        IF (INS .EQ. 0) THEN
+          CALL ASSERT (IDMASS(2).EQ.NBVAL)
+        ELSE
+          NBDDL = INT(SQRT(DBLE(NBVAL)))
+          CALL ASSERT (IDMASS(2).EQ. NBDDL*(NBDDL+1)/2)
+        ENDIF
+C
         NOMRES(1)='AMOR_ALPHA'
         NOMRES(2)='AMOR_BETA'
         VALRES(1) = 0.D0
@@ -133,7 +155,6 @@ C     ------------------------------------------
         CALL ASSERT(.FALSE.)
       END IF
 C
-C
 C     -- CALCUL PROPREMENT DIT :
 C     --------------------------
       IRESU= IDRESU(1)
@@ -143,9 +164,25 @@ C     --------------------------
         BETA = VALRES(2)
         IMASS= IDMASS(1)
 C
-        DO 1 I=1,NBVAL
-          ZR(IRESU-1+I)=ALPHA*ZR(IRIGI-1+I)+BETA*ZR(IMASS-1+I)
- 1      CONTINUE
+        IF (INS .EQ. 0) THEN
+          DO 1 I=1,NBVAL
+            ZR(IRESU-1+I)=ALPHA*ZR(IRIGI-1+I)+BETA*ZR(-1+I)
+ 1        CONTINUE
+        ELSE
+C     Cas non symetrique
+          DO 3 I=1,NBDDL
+            KNS = (I-1)*NBDDL
+            DO 4 J=1,NBDDL
+              IF (J.LE.I) THEN
+                KS = (I-1)*I/2+J
+              ELSE
+                KS = (J-1)*J/2+I
+              END IF
+              ZR(IRESU-1+KNS+J)=ALPHA*ZR(IRIGI-1+KNS+J)
+     &                         +BETA*ZR(IMASS-1+KS)
+ 4          CONTINUE
+ 3        CONTINUE
+        ENDIF
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
         ETA  = VALRES(1)
         DO 2 I=1,NBVAL

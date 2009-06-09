@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/06/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -205,22 +205,31 @@ C ======================================================================
      &                      CONGEP(ADCOME), VINTP,
      &                      DSDEME,RETCOM)
       ENDIF
+
+C ======================================================================
+C ------                       LOI DE HUJEUX                      ------
+C ======================================================================
       IF (MECA.EQ.'HUJEUX') THEN
+      
         MECTRU = .TRUE.
         TINI = T - DT
 
         DO 150 I =1, 7
           ANGMAS(I)=0.D0
  150      CONTINUE
-
-        CALL NMHUJ(TYPMOD,  IMATE, COMPOR, CRIT,
-     &                      INSTAM, INSTAP,
-     &                      TINI, T, TREF, ANGMAS,
-     &                      DEFGEM(ADDEME+NDIM), DEPS,
-     &                      CONGEM(ADCOME), VINTM, OPTION,
-     &                      CONGEP(ADCOME), VINTP,
-     &                      DSDEME, RETCOM)
+ 
+        COMPLG(1) = 'HUJEUX'
+        WRITE (COMPLG(2),'(I16)') NVIMEC
+        NUMLC=34
+        CP=.FALSE.
+        CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
+     &             INSTAP,CP,NUMLC,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
+     &             CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMAS,
+     &             CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
+     
       ENDIF
+C --- End
+
       IF (MECA.EQ.'LAIGLE') THEN
         COMPLG(1) = 'LAIGLE'
         WRITE (COMPLG(2),'(I16)') NVIMEC

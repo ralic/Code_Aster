@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*8 MA,NOMA,NOGMA,KBID,NOGMA2,KPOS,NOM1,NOM2,TOUT
-      CHARACTER*8 ALARM
+      CHARACTER*8 ALARM,TYMA
       CHARACTER*16 CONCEP,CMD,OPTION
       CHARACTER*24 LISMA
       CHARACTER*24 VALK(2)
@@ -405,9 +405,25 @@ C               ----------------------------
 C            -- TRAITEMENT DE L'OPTION APPUI_LACHE :
 C               ----------------------------------
           ELSE IF (OPTION(1:11).EQ.'APPUI_LACHE') THEN
+            CALL U2MESS('A','SOUSTRUC2_6')
             CALL CGMAAL('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
-          END IF
 
+C            -- TRAITEMENT DE L'OPTION APPUI_STRICT :
+C               ----------------------------------
+          ELSE IF (OPTION(1:5).EQ.'APPUI') THEN
+            CALL CGMAAP('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
+          END IF
+C
+C        -- ON FILTRE LES TYPES DE MAILLES :
+C           --------------------------------
+          CALL GETVTX('CREA_GROUP_MA','TYPE_MAILLE',IOCC,1,1,TYMA,NTYP)
+          IF(TYMA(1:4).NE.'TOUT')THEN
+             CALL CGMFTM(TYMA,MA,LISMA,NBMA,IERR)
+             IF(IERR.NE.0)THEN
+                CALL U2MESK('F','SOUSTRUC2_7',1,NOGMA)
+             ENDIF
+          ENDIF
+C
 C        -- CREATION ET AFFECTATION DU GROUP_MA :
 C            ----------------------------------
           IF (NBMA.EQ.0) THEN
@@ -479,7 +495,7 @@ C     --------------------
               CALL JENUNO(JEXNUM(MA//'.NOMMAI',ZI(IAGMA-1+KKK)),NOMA)
               CARD((III-1)*10+1:) = ' '//NOMA//' '
   230       CONTINUE
-            WRITE (IFM,'(A))') CARD(:10*NBCOL)
+            WRITE (IFM,'(A)') CARD(:10*NBCOL)
   240     CONTINUE
   250   CONTINUE
         WRITE (IFM,'(/,/)')

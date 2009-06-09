@@ -1,0 +1,109 @@
+
+DEBUT();
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=30000.0,
+                            NU=0.2,
+                            RHO=2764.0,
+                            AMOR_ALPHA=1e-4,
+                            AMOR_BETA=1e-1,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=-1950.0,
+                                 SY=3.0,),
+                    NON_LOCAL=_F(LONG_CARA=1.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D_GRAD_EPSI',),);
+
+CL=AFFE_CHAR_MECA(MODELE=MODELE,
+                  DDL_IMPO=(_F(GROUP_NO='CENTER',
+                               LIAISON='ENCASTRE',),
+                            _F(GROUP_MA='BAS',
+                               DZ=0.0,),
+                            _F(GROUP_MA='CLDX',
+                               DX=0.0,),
+                            _F(GROUP_MA='CDLY',
+                               DY=0.0,),
+                           ),);
+
+TRACTION=AFFE_CHAR_MECA(MODELE=MODELE,
+                        FORCE_FACE=_F(GROUP_MA='HAUT',
+                                      FZ=100.0,),);
+
+INSTANT=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=1.0,
+                                     NOMBRE=100,),);
+
+FONCMULT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,1.0,
+                             1.0,1.0,
+                             ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+RESU=DYNA_NON_LINE(MODELE=MODELE,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=TRACTION,
+                             FONC_MULT=FONCMULT,),),
+                   COMP_INCR=_F(RELATION='ENDO_FRAGILE',),
+                   INCREMENT=_F(LIST_INST=INSTANT,
+                                SUBD_METHODE='UNIFORME',
+                                SUBD_PAS_MINI=1e-06,),
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                   FORMULATION='DEPLACEMENT',),);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('VARI_ELNO_ELGA','SIEF_ELNO_ELGA',),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(MAILLAGE=MAILLAGE,
+                  RESULTAT=RESU,
+                  NOM_CHAM=('VARI_ELNO_ELGA','SIEF_ELNO_ELGA','DEPL',),),);
+
+MATER2=DEFI_MATERIAU(ELAS=_F(E=30000.0,
+                             NU=0.2,
+                             RHO=2764.0,),
+                     ECRO_LINE=_F(D_SIGM_EPSI=-1950.0,
+                                  SY=3.0,),);
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATER2,),);
+
+MODELE2=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+
+CL2=AFFE_CHAR_MECA(MODELE=MODELE2,
+                   DDL_IMPO=(_F(GROUP_NO='CENTER',
+                                LIAISON='ENCASTRE',),
+                             _F(GROUP_MA='BAS',
+                                DZ=0.0,),),);
+
+TRACTIO2=AFFE_CHAR_MECA(MODELE=MODELE2,
+                        FORCE_FACE=_F(GROUP_MA='HAUT',
+                                      FZ=100.0,),);
+
+RESU2=DYNA_NON_LINE(MODELE=MODELE2,
+                    CHAM_MATER=CHMAT2,
+                    EXCIT=(_F(CHARGE=CL2,),
+                           _F(CHARGE=TRACTIO2,
+                              FONC_MULT=FONCMULT,),),
+                    COMP_INCR=_F(RELATION='ENDO_FRAGILE',),
+                    INCREMENT=_F(LIST_INST=INSTANT,
+                                 SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS_MINI=1e-06,),
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                    FORMULATION='DEPLACEMENT',),);
+
+RESU2=CALC_ELEM(reuse =RESU2,
+                RESULTAT=RESU2,
+                OPTION=('VARI_ELNO_ELGA','SIEF_ELNO_ELGA',),);
+
+FIN();

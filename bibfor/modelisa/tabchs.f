@@ -1,7 +1,7 @@
       SUBROUTINE TABCHS(TABIN,TYPCHS,BASE,NOMGD,MA,MO,OPTION,CHS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C      ==> VARIABLES LOCALES
        INTEGER K,IRET,JIND,J,JOBJ1,JOBJ2,JOBJ3,ILI,INOEU,NUNO,ICMP
        INTEGER JTMP,NBVAL,IBID,NBCOMP,IMAI,IPOI,ISPT,JPG,JREPE,IGREL
        INTEGER JMA,JPT,JTYPMA,NUMA,NBPT,JOBJ4,JSSPT,NBMA,JCESD,NBSSP
-       INTEGER JCESL,JCESV,JCESC,JOBJP,IAD,JOBJS,IOPT,NBGREL
+       INTEGER JCESL,JCESV,JCESC,JOBJP,IAD,JOBJS,IOPT,NBGREL,IMA
        INTEGER NBMAGL,NUMTE,NUMGD,IPARA,IMOLOC,JMOL,NBIN,NBOUT
        INTEGER NBELEM,NBGR,IAOPTE,IANBLC,LGCO,IPOUT,IAOPMO,IOPTTE
        CHARACTER*1 BASV,KBID
@@ -235,9 +235,10 @@ C        APPARTIENNENT AU MAILLAGE
          CALL JEVEUO(OBJMA,'L',JMA)
          CALL VERIMA(MA,ZK8(JMA),NBVAL,PARA(1:6))
 
-C        (V5) ON VERIFIE LA COHERENCE : POINT/MAILLE
-         CALL JEVEUO(MA//'.TYPMAIL','L',JTYPMA)
-         IF(TYPCHS(1:4).NE.'ELEM')THEN
+C        (V5) POUR LES CHAMPS ELNO ON VERIFIE SI LE NUMERO DE NOEUD
+C             EST POSSIBLE :
+         IF(TYPCHS(1:4).EQ.'ELNO')THEN
+            CALL JEVEUO(MA//'.TYPMAIL','L',JTYPMA)
             OBJPT='&&WORK3'
             PARA='POINT'
             CALL TBEXVE(TABIN,PARA,OBJPT,BASV,NBVAL,TYPE)
@@ -325,11 +326,11 @@ C                       NOMBRE DE SOUS-POINTS
            CALL JEVEUO(LIGREL//'.REPE','L',JREPE)
            CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,K8B,IRET)
            CALL WKVECT('&&PG_TOT','V V I',NBMA,JPG)
-           DO 65 I=1,NBMA
-              ZI(JPG+I-1)=0
+           DO 65 IMA=1,NBMA
+              ZI(JPG-1+IMA)=0
  65        CONTINUE
-           NBGR=NBGREL(LIGREL)
 
+           NBGR=NBGREL(LIGREL)
            DO 70 I=1,NBGR
               CALL JEVEUO(JEXNUM(LIGREL//'.LIEL',I),'L',IGREL)
               CALL JELIRA(JEXNUM(LIGREL//'.LIEL',I),'LONMAX',NBMAGL,
@@ -343,18 +344,14 @@ C                       NOMBRE DE SOUS-POINTS
               CALL JENUNO(JEXNUM('&CATA.TE.NOMMOLOC',IMOLOC),MODLOC)
               CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLOC),'L',JMOL)
               NBPT=MOD(ZI(JMOL-1+4),10000)
-              IF(NBGR.EQ.1)THEN
-                DO 75 J=1,NBMA
-                   ZI(JPG+J-1)=NBPT
- 75             CONTINUE
-              ELSE
-                 DO 80 J=1,NBMAGL-1
-                    ZI(JPG+J-1)=NBPT
- 80              CONTINUE
-              ENDIF
+              DO 80 J=1,NBMAGL-1
+                 IMA = ZI(IGREL+J-1)
+                 ZI(JPG-1+IMA)=NBPT
+ 80           CONTINUE
  70        CONTINUE
         ENDIF
-C
+
+
 C       CREATION DU CHAM_ELEM_S
         IF(TYPCHS(1:4).EQ.'ELNO'.OR.TYPCHS(1:4).EQ.'ELEM')THEN
            CALL CESCRE(BASE,CHS,TYPCHS(1:4),MA,NOMGD,NCMP,
@@ -414,16 +411,20 @@ C ---   REMPLISSAGE DU CHAM_S
              IF(ZI(JOBJ2+ILI-1).EQ.1)THEN
                 NOMA=ZK8(JOBJ1+ILI-1)
                 CALL JENONU(JEXNOM(MA//'.NOMMAI',NOMA),NUMA)
-                CALL CESEXI('S',JCESD,JCESL,NUMA,ZI(JOBJP+ILI-1),
+                CALL CESEXI('C',JCESD,JCESL,NUMA,ZI(JOBJP+ILI-1),
      &              ZI(JOBJS+ILI-1),ICMP,IAD)
-                IF(IAD.GT.0)THEN
-                   VALK (1) = TABIN(1:8)
-                   VALK (2) = NOMA
-                   VALI (1) = ZI(JOBJP+ILI-1)
-                   VALI (2) = ZI(JOBJS+ILI-1)
-                   CALL U2MESG('F', 'MODELISA9_7',2,VALK,2,VALI,0,0.D0)
+                IF(IAD.GE.0)THEN
+                  VALK (1) = TABIN(1:8)
+                  VALK (2) = NOMA
+                  VALI (1) = ZI(JOBJP+ILI-1)
+                  VALI (2) = ZI(JOBJS+ILI-1)
+                  IF(IAD.GT.0)THEN
+                    CALL U2MESG('F','MODELISA9_7',2,VALK,2,VALI,0,0.D0)
+                  ELSE
+                    CALL U2MESG('F','MODELISA9_33',2,VALK,2,VALI,0,0.D0)
+                  ENDIF
                 ELSE
-                   IAD=-IAD
+                  IAD=-IAD
                 ENDIF
                 ZR(JCESV+IAD-1)=ZR(JOBJ3+ILI-1)
                 ZL(JCESL+IAD-1)=.TRUE.

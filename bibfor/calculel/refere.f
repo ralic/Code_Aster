@@ -2,7 +2,7 @@
      &                  ITEMAX,IFORM ,M0    ,IRET  ,F1)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  M      : POINT SUR MAILLE DE REFERENCE (X,Y,[Z])
+C IN  M      : COORDONNEES DE M DANS L'ESPACE REEL (X,Y,[Z])
 C IN  NO     : COORDONNEES DES NOEUDS DE LA MAILLE
 C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  TYPEMA : TYPE DE LA MAILLE
@@ -54,8 +54,9 @@ C OUT F1     : FONCTIONS DE FORME EN CE POINT (W1,W2,...) SI IFORM
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      ITER,IDIME,ISING,NNO,IER
-      REAL*8       DET,D,R,M1(3),F(3),F0(27),DF(3,3),DF0(3,27),DM(3)
+      INTEGER      ITER,IDIME,NNO,IER
+      REAL*8       D,R,M1(3),F(3),F0(27),DF(3,3),DF0(3,27),DM(DIME)
+      REAL*8       INVDF(DIME,DIME),DMAUX(DIME),R8BID
 C
 C ----------------------------------------------------------------------
 C
@@ -90,17 +91,18 @@ C
 C --- DEBUT DE LA BOUCLE DE NEWTON
 C
  10   CONTINUE
-
-C ----- RESIDU ET NORME DU RESIDU
-
+C
 C --- FONCTIONS DE FORME AU POINT M0 DANS LA MAILLE
+C
         CALL FORME0(M1,TYPEMA,F0,NNO)
         CALL PRMAVE(0,NO,DIME,DIME,NNO,F0,NNO,F,DIME,IER)
         IF ( IER.NE.0 ) CALL U2MESS('F','ALGORITH_71')
 
         ITER = ITER + 1
         R    = 0.D0
-
+C
+C ----- RESIDU ET NORME DU RESIDU
+C
         DO 20 IDIME = 1, DIME
           DM(IDIME) = M(IDIME) - F(IDIME)
           D         = ABS(DM(IDIME))
@@ -119,11 +121,9 @@ C ----- MATRICE TANGENTE
         CALL MTPROD(NO,DIME,0,DIME,0,NNO,DF0,DIME,0,DIME,0,DF)
 
 C ----- RESOLUTION
-        CALL MGAUSS('NFWP',DF,DM,DIME,DIME,1,DET,ISING)
-        IF (ISING.EQ.0) THEN
-          IRET=.TRUE.
-        ENDIF
-
+        CALL MATINV(DIME,DF,INVDF,R8BID)
+        CALL PRMAVE(0,INVDF,DIME,DIME,DIME,DM,DIME,DMAUX,DIME,IER)
+        CALL DCOPY(DIME,DMAUX,1,DM,1)
 C ----- SI MATRICE NON INVERSIBLE, ECHEC
         IF (.NOT.IRET) GOTO 40
 

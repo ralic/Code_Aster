@@ -1,0 +1,92 @@
+      SUBROUTINE ARLTEC(NNS   ,NNC   ,NDIM  ,LCARA ,
+     &                  MCPLN ,MCPLB ,MCPLC)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT    NONE
+      INTEGER      NNS,NNC,NDIM
+      REAL*8       LCARA
+      REAL*8       MCPLN(NNS,NNC)
+      REAL*8       MCPLB(NDIM*NNS,NDIM*NNC)
+      REAL*8       MCPLC(NDIM*NNS,NDIM*NNC)
+C
+C ----------------------------------------------------------------------
+C
+C CALCUL DES MATRICES DE COUPLAGE ARLEQUIN
+C OPTION ARLQ_MATR
+C
+C CREATION D'UNE MATRICE DE COUPLAGE POUR LES ELEMENTS ISOPARAMETRIQUES
+C 2D, 3D
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NNS    : NOMBRE DE NOEUDS MAILLE SUPPORT S
+C IN  NNC    : NOMBRE DE NOEUDS MAILLE COUPLEE C
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  LCARA  : LONGUEUR CARACTERISTIQUE
+C IN  MCPLN  : MATRICE DES TERMES DE COUPLAGE DES TERMES N
+C IN  MCPLB  : MATRICE DES TERMES DE COUPLAGE DES TERMES DERIVEES B
+C OUT MCPLC  : MATRICE DE COUPLAGE
+C
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER      I,J,INO,JNO,IDIM,JDIM
+      REAL*8       MCPLNZ(NDIM*NNS,NDIM*NNC)
+C
+C ----------------------------------------------------------------------
+C
+C --- ON CONSIDERE UN COUPLE DE MAILLES
+C
+C ===
+C 1.  MISE EN FORME DE LA MATRICE GLOBALE
+C     ON REMPLIT UNIQUEMENT LES TERMES SUR LA DIAGONALE
+C ===
+C
+      DO 110 JNO = 1, NNC
+        DO 100 INO = 1, NNS
+          DO 90 JDIM = 1, NDIM
+            J = JDIM + (JNO - 1)*NDIM
+            DO 80 IDIM = 1, NDIM
+              I = IDIM + (INO - 1)*NDIM
+              IF (IDIM.EQ.JDIM) THEN
+                 MCPLNZ(I,J) = MCPLN(INO,JNO)
+              ELSE
+                 MCPLNZ(I,J) = 0.D0
+              ENDIF
+  80        CONTINUE
+  90      CONTINUE
+ 100    CONTINUE
+ 110  CONTINUE
+C
+C ===
+C 2.  MISE EN FORME DE LA MATRICE GLOBALE
+C     ON COMPLETE AVEC LES TERMES EXRA-DIAGONAUX
+C ===
+C --- COEF 2 PARCE QUE RATEAU A MIS 0.5 DEVANT LCARA = L2
+C
+      DO 130 J = 1,NNC*NDIM
+        DO 120 I = 1,NNS*NDIM
+          MCPLC(I,J) = MCPLNZ(I,J) + 2*LCARA*MCPLB(I,J)
+ 120    CONTINUE
+ 130  CONTINUE
+C
+      END

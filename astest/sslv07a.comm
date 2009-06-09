@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,7 +57,8 @@ MA=ASSE_MAILLAGE(MAILLAGE_1=MA1,
 
 
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,
-            CREA_GROUP_MA=_F( NOM = 'VOLUM',OPTION='APPUI_LACHE',
+            CREA_GROUP_MA=_F( NOM = 'VOLUM',OPTION='APPUI', 
+                              TYPE_APPUI='AU_MOINS_UN',
                            GROUP_NO='A'))
 
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,

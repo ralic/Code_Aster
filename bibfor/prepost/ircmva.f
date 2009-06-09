@@ -4,7 +4,7 @@
      &                    TYMAST, MODNUM, NUANOM, TYPECH,
      &                    VAL, PROFAS, IDEB, IFIN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF PREPOST  DATE 08/06/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -242,15 +242,17 @@ C
               JAUX = JAUX + 1
               DO 2211 , NRPG = 1 , NBPG
                 CALL CESEXI ('C',ADSD,ADSL,IMA,NRPG,NRSP,NRCMPR,KAUX)
-                IF(ITYPE.EQ.1)THEN
+                IF ( (KAUX.GT.0) ) THEN
+                  IF(ITYPE.EQ.1)THEN
                     VAL(NRCMP,NRSP,NUANOM(TYMAST,NRPG),JAUX)=
      &                    ZR(ADSV-1+KAUX)
-                ELSEIF(ITYPE.EQ.2)THEN
+                  ELSEIF(ITYPE.EQ.2)THEN
                     VAL(NRCMP,NRSP,NUANOM(TYMAST,NRPG),JAUX)=
      &                    DBLE(ZC(ADSV-1+KAUX))
-                ELSEIF(ITYPE.EQ.3)THEN
+                  ELSEIF(ITYPE.EQ.3)THEN
                     VAL(NRCMP,NRSP,NUANOM(TYMAST,NRPG),JAUX)=
      &                    DIMAG(ZC(ADSV-1+KAUX))
+                  ENDIF
                 ENDIF
  2211         CONTINUE
 C
@@ -264,12 +266,14 @@ C
               DO 2221 , NRPG = 1 , NBPG
                 DO 2222 , NRSP = 1 , NBSP
                   CALL CESEXI ('C',ADSD,ADSL,IMA,NRPG,NRSP,NRCMPR,KAUX)
-                  IF(ITYPE.EQ.1)THEN
-                    VAL(NRCMP,NRSP,NRPG,JAUX) = ZR(ADSV-1+KAUX)
-                  ELSEIF(ITYPE.EQ.2)THEN
-                    VAL(NRCMP,NRSP,NRPG,JAUX) = DBLE(ZC(ADSV-1+KAUX))
-                  ELSEIF(ITYPE.EQ.3)THEN
-                    VAL(NRCMP,NRSP,NRPG,JAUX) = DIMAG(ZC(ADSV-1+KAUX))
+                  IF ( (KAUX.GT.0) ) THEN
+                    IF(ITYPE.EQ.1)THEN
+                      VAL(NRCMP,NRSP,NRPG,JAUX)=ZR(ADSV-1+KAUX)
+                    ELSEIF(ITYPE.EQ.2)THEN
+                      VAL(NRCMP,NRSP,NRPG,JAUX)=DBLE(ZC(ADSV-1+KAUX))
+                    ELSEIF(ITYPE.EQ.3)THEN
+                      VAL(NRCMP,NRSP,NRPG,JAUX)=DIMAG(ZC(ADSV-1+KAUX))
+                    ENDIF
                   ENDIF
  2222           CONTINUE
  2221         CONTINUE

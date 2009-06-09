@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 09/06/2009   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -191,7 +191,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
 #-------------------------------------------------------------------
          SCHEMA_TEMPS     =FACT(statut='o',
             SCHEMA          =SIMP(statut='o',min=1,max=1,typ='TXM',
-                                  into=("DIFF_CENT","TCHAMWA","NEWMARK","HHT","THETA_METHODE"),),
+                                  into=("DIFF_CENT","TCHAMWA","NEWMARK","HHT","THETA_METHODE","KRENK"),),
             b_tchamwa = BLOC(condition="SCHEMA=='TCHAMWA'",
                PHI          =SIMP(statut='f',typ='R',defaut= 1.05),),
 
@@ -204,7 +204,10 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                MODI_EQUI    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),
 
             b_theta   = BLOC(condition="SCHEMA=='THETA_METHODE'",
-               THETA         =SIMP(statut='f',typ='R',defaut= 1.,val_min=0.5,val_max=1. ),),
+               THETA         =SIMP(statut='f',typ='R',defaut= 1.,val_min=0.5,val_max=100. ),),
+
+            b_krenk   = BLOC(condition="SCHEMA=='KRENK'",
+               KAPPA         =SIMP(statut='f',typ='R',defaut= 1.0,val_min=1.0,val_max=100. ),),          
 
             b_explicit= BLOC(condition="SCHEMA=='TCHAMWA'or SCHEMA=='DIFF_CENT'",
                STOP_CFL     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),),

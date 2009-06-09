@@ -4,7 +4,7 @@
      &                  NUMEDD,VALMOI,VALPLU,SOLALG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/06/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -217,11 +217,14 @@ C
         IF (CTCGEO) THEN        
           NIVEAU = 0
           CALL NMIMPR('IMPR','CNV_GEOME',' ',0.D0,0)
-          CALL IMPSDM(SDIMPR,'ITER_NEWT',' ')
-          CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)
-          CALL NMCVGI('CVG',MAXREL)
+          IF (MAXREL) THEN
+            CALL NMCVGI('CVG_MX') 
+          ELSE
+            CALL NMCVGI('CVG_OK') 
+          ENDIF
           GOTO 9999     
-        ELSE  
+        ELSE
+       
           NIVEAU = 3     
         ENDIF       
       ENDIF     

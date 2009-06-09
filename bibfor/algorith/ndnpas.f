@@ -3,7 +3,7 @@
      &                  POUGD ,SOLALG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/06/2009   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,7 +81,7 @@ C
       CHARACTER*24 TFOR,CFSC
       INTEGER      NDYNIN
       REAL*8       NDYNRE
-      REAL*8       ALPHA,BETA,GAMMA,THETA,PHI     
+      REAL*8       ALPHA,BETA,GAMMA,THETA,PHI,KAPPA   
       REAL*8       DIINST,INSTAM,INSTAP,DELTAT    
       LOGICAL      LEXGE,LCTCC,LMUAP,REAROT,LEXPL,LMPAS,LHHTC,LIMPL
       LOGICAL      NDYNLO,ISFONC
@@ -90,7 +90,7 @@ C
       CHARACTER*8  K8BID
       LOGICAL      SCOTCH
       LOGICAL      LDEPL,LVITE,LACCE
-      LOGICAL      LNEWMA,LTHETA
+      LOGICAL      LNEWMA,LTHETA,LKRENK
       LOGICAL      LCVITE
       REAL*8       COERIG,COEAMO,COEMAS
       REAL*8       COEEXT,COEINT,COEEQU,COEEX2  
@@ -99,7 +99,7 @@ C
       REAL*8       COEFD(3),COEFV(3),COEFA(3)         
       REAL*8       COEDEP,COEVIT,COEACC
       REAL*8       COERMA,COERAM,COERRI
-      REAL*8       COINER
+      REAL*8       COINER,R8PREM,UNTHET
       CHARACTER*24 K24BID
       CHARACTER*24 DEPPLU,VITPLU,ACCPLU
       CHARACTER*24 DEPMOI,VITMOI,ACCMOI 
@@ -174,7 +174,8 @@ C --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES) OU THETA
 C
       LNEWMA = NDYNLO(SDDYNA,'FAMILLE_NEWMARK')
       LTHETA = NDYNLO(SDDYNA,'THETA_METHODE')
-      IF (.NOT.(LNEWMA.OR.LTHETA)) THEN
+      LKRENK = NDYNLO(SDDYNA,'KRENK')
+      IF (.NOT.(LNEWMA.OR.LTHETA.OR.LKRENK)) THEN
         CALL ASSERT(.FALSE.)
       ENDIF   
 C
@@ -186,9 +187,12 @@ C --- COEFFICIENTS DU SCHEMA EN TEMPS
 C     
       BETA   = NDYNRE(SDDYNA,'BETA')
       GAMMA  = NDYNRE(SDDYNA,'GAMMA')
-      THETA  = NDYNRE(SDDYNA,'THETA') 
+      THETA  = NDYNRE(SDDYNA,'THETA')
+      UNTHET = UN-THETA
+      IF (ABS(UNTHET).LE.R8PREM()) UNTHET = UN
       PHI    = NDYNRE(SDDYNA,'PHI') 
       ALPHA  = NDYNRE(SDDYNA,'ALPHA')
+      KAPPA  = NDYNRE(SDDYNA,'KAPPA')
 C
 C --- SI NOEUD COLLE, THETA-SCHEMA PUREMENT IMPLICITE
 C
@@ -221,7 +225,7 @@ C
         ENDIF
       ELSEIF (LTHETA) THEN
         IF (LDEPL) THEN
-          COERIG = UN
+          COERIG = THETA
           COEAMO = UN/(THETA*DELTAT)
           COEMAS = UN/(THETA*DELTAT*DELTAT)        
         ELSEIF (LVITE) THEN
@@ -231,6 +235,18 @@ C
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF   
+      ELSEIF (LKRENK) THEN
+        IF (LDEPL) THEN
+          COERIG = (KAPPA)/DEUX
+          COEAMO = UN/DELTAT
+          COEMAS = DEUX/((KAPPA)*DELTAT*DELTAT)        
+        ELSEIF (LVITE) THEN
+          COERIG = ((KAPPA)/DEUX)*((KAPPA)/DEUX)*DELTAT
+          COEAMO = (KAPPA)/DEUX
+          COEMAS = UN/DELTAT      
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF        
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF  
@@ -264,11 +280,23 @@ C
         IF (LDEPL) THEN
           COEDEP = UN
           COEVIT = UN/(THETA*DELTAT)
-          COEACC = UN/(THETA*DELTAT*DELTAT)          
+          COEACC = DEUX/(THETA*DELTAT*DELTAT)          
         ELSEIF (LVITE) THEN
           COEDEP = DELTAT*THETA
           COEVIT = UN
-          COEACC = UN/(DELTAT*THETA)               
+          COEACC = DEUX/(DELTAT)               
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF   
+      ELSEIF (LKRENK) THEN
+        IF (LDEPL) THEN
+          COEDEP = UN
+          COEVIT = DEUX/((KAPPA)*DELTAT)
+          COEACC =  DEUX*DEUX/(KAPPA*DELTAT*DELTAT)          
+        ELSEIF (LVITE) THEN
+          COEDEP = DELTAT*((KAPPA)/DEUX)
+          COEVIT = UN
+          COEACC = DEUX/DELTAT               
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF   
@@ -341,11 +369,11 @@ C
           COEFD(2) = ZERO
           COEFD(3) = ZERO         
           COEFV(1) = ZERO
-          COEFV(2) = (THETA-UN)/THETA
+          COEFV(2) = (THETA-UN)/(THETA)
           COEFV(3) = ZERO
           COEFA(1) = ZERO
-          COEFA(2) = -UN/(THETA*DELTAT)
-          COEFA(3) = ZERO        
+          COEFA(2) = -DEUX/(THETA*DELTAT)
+          COEFA(3) = -UN       
         ELSEIF (LVITE) THEN
           COEFD(1) = UN
           COEFD(2) = DELTAT
@@ -355,10 +383,34 @@ C
           COEFV(3) = ZERO            
           COEFA(1) = ZERO
           COEFA(2) = ZERO
-          COEFA(3) = (THETA-UN)/THETA               
+          COEFA(3) = -UN               
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF   
+      ELSEIF (LKRENK) THEN
+        IF (LDEPL) THEN
+          COEFD(1) = UN
+          COEFD(2) = ZERO
+          COEFD(3) = ZERO    
+          COEFV(1) = ZERO
+          COEFV(2) = ((KAPPA)-DEUX)/(KAPPA)
+          COEFV(3) = ZERO
+          COEFA(1) = ZERO
+          COEFA(2) = -DEUX*DEUX/(KAPPA*DELTAT)
+          COEFA(3) = -UN        
+        ELSEIF (LVITE) THEN
+          COEFD(1) = UN
+          COEFD(2) = DELTAT
+          COEFD(3) = ZERO
+          COEFV(1) = ZERO
+          COEFV(2) = UN
+          COEFV(3) = ZERO            
+          COEFA(1) = ZERO
+          COEFA(2) = ZERO
+          COEFA(3) = -UN               
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF           
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -393,10 +445,24 @@ C
           COEEX2 = UN
         ELSEIF (LTHETA) THEN  
           COEEXT = (UN-THETA)
+          IF (ABS(UN-THETA).LE.R8PREM()) THEN
+            COEEXT = ZERO
+          ENDIF
           COEINT = ZERO         
           COEEQU = UN
           COEEX2 = THETA         
-          
+        ELSEIF (LKRENK) THEN
+          IF (LDEPL) THEN
+            COEEXT = UN/DEUX
+            COEINT = ZERO         
+            COEEQU = UN
+            COEEX2 = UN/DEUX          
+          ELSEIF (LVITE) THEN
+            COEEXT = UN/DEUX
+            COEINT = ZERO         
+            COEEQU = UN
+            COEEX2 = UN/DEUX
+          ENDIF                     
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -434,7 +500,13 @@ C
         ENDIF 
       ELSEIF (LTHETA) THEN
         IF (LDEPL) THEN
-          COINER = UN/THETA
+          COINER = UN/DELTAT
+       ELSE
+          COINER = UN/DELTAT  
+        ENDIF   
+      ELSEIF (LKRENK) THEN
+        IF (LDEPL) THEN
+          COINER = UN/DELTAT
         ELSE
           COINER = UN/DELTAT  
         ENDIF   
@@ -454,11 +526,28 @@ C
           COERMA = ZERO
           COERAM = UN
           COERRI = THETA*DELTAT         
-        ELSE
-          COERMA = UN
-          COERAM = UN
+          IF (ABS(UN-THETA).LE.R8PREM()) THEN
+            COERRI = DELTAT 
+          ENDIF
+        ELSEIF (LDEPL) THEN
+          IF (ABS(UN-THETA).LE.R8PREM()) THEN
+            COERMA = -UN/(THETA*DELTAT)
+          ELSE
+            COERMA = -UN/((THETA)*DELTAT)
+          ENDIF
+          COERAM = UN 
           COERRI = UN
         ENDIF
+      ELSEIF (LKRENK) THEN
+         IF (LDEPL) THEN
+           COERMA = DEUX/((DEUX-KAPPA)*DELTAT)
+           COERAM = UN
+           COERRI = UN         
+         ELSEIF (LVITE) THEN
+           COERMA = ZERO
+           COERAM = ZERO
+           COERRI = ((KAPPA)/DEUX)*DELTAT 
+         ENDIF 
       ELSE
         COERMA = UN
         COERAM = UN

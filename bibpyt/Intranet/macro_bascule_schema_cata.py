@@ -1,4 +1,4 @@
-#@ MODIF macro_bascule_schema_cata Intranet  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macro_bascule_schema_cata Intranet  DATE 08/06/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
             regles=(CONCEPT_SENSIBLE('ENSEMBLE'),),
          MODE          =SIMP(statut='o',typ=modele_sdaster),
          MATE      =SIMP(statut='o',typ=cham_mater),
-         MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,)),
+         MODE_STAT       =SIMP(statut='f',typ=(mode_meca,)),
          CARA       =SIMP(statut='f',typ=cara_elem),
          MASS_DIAG       =SIMP(statut='f',typ='TXM',into=("OUI","NON",) ),
          EXC_T           =FACT(statut='o',max='**',

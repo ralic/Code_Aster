@@ -1,7 +1,7 @@
       LOGICAL FUNCTION NDYNLO(SDDYNA,CHAINZ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
+C MODIF UTILITAI  DATE 09/06/2009   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,7 @@ C               FALSE SINON
 C IN  SDDYNA : NOM DE LA SD DEDIEE A LA DYNAMIQUE
 C IN  CHAINE : PROPRIETE EVENTUELLE DE LA SD DYNAC
 C                    = 'DIFF_CENT','TCHAMWA','NEWMARK','THETA_METHODE',
-C                      'HHT_NON_MODIFIE','HHT_MODIFIE',
+C                      'HHT_NON_MODIFIE','HHT_MODIFIE','KRENK',
 C                      'IMPLICITE', 'EXPLICITE',
 C                       'STATIQUE', 'DYNAMQIUE'
 C                      'MAT_AMORT','MASS_DIAG',
@@ -170,11 +170,16 @@ C
         IF (ZK16(JTSCH+3-1)(1:3).EQ.'HHT') THEN
           NDYNLO = .TRUE.
         ENDIF  
+      ELSEIF(CHAINE(1:5).EQ.'KRENK') THEN
+        IF (ZK16(JTSCH+9-1)(1:5).EQ.'KRENK') THEN
+          NDYNLO = .TRUE.
+        ENDIF          
       ELSEIF (CHAINE(1:9).EQ.'IMPLICITE') THEN
         IF (ZK16(JTSCH+2-1)(1:7) .EQ.'NEWMARK'       .OR.
      &      ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE' .OR.
      &      ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET'   .OR.
-     &      ZK16(JTSCH+3-1)(1:3).EQ.'HHT') THEN
+     &      ZK16(JTSCH+3-1)(1:3).EQ.'HHT'            .OR.
+     &      ZK16(JTSCH+9-1)(1:5) .EQ.'KRENK') THEN
           NDYNLO = .TRUE.
         ENDIF  
       ELSE IF (CHAINE(1:9).EQ.'EXPLICITE') THEN
@@ -229,12 +234,19 @@ C
         IF ((ZK16(JTSCH+5-1)(1:11).EQ.'HHT_COMPLET')) THEN
           NDYNLO = .TRUE.
           GOTO 9999
+        ELSEIF ((ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE')) THEN  
+          NDYNLO = .TRUE.
+          GOTO 9999           
+        ELSEIF ((ZK16(JTSCH+9-1)(1:5).EQ.'KRENK')) THEN  
+          NDYNLO = .TRUE.
+          GOTO 9999           
         ELSE
           NDYNLO = .FALSE.
         ENDIF
         
         IF ((NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.2).AND.
-     &      ( ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE')) THEN
+     &      (( ZK16(JTSCH+4-1)(1:13).EQ.'THETA_METHODE').OR.
+     &      (ZK16(JTSCH+9-1)(1:5).EQ.'KRENK')) ) THEN
           NDYNLO = .TRUE.
         ELSE
           NDYNLO = .FALSE.

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/06/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,26 +20,26 @@ GENER_MV3D_3
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MVCA_HEXA20      MAILLE__ HEXA20
-   ELREFE__  H20       GAUSS__  RIGI=FPG8  MASS=FPG8  GANO=FPG8    NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO)
-   ELREFE__  HE8       GAUSS__  RIGI=FPG8  MASS=FPG8
+   ELREFE__  H20       GAUSS__  RIGI=FPG8  MASS=FPG27  GANO=FPG8    NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO)
+   ELREFE__  HE8       GAUSS__  RIGI=FPG8  MASS=FPG27
    ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9    NOEU=NOEU
    ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 ENTETE__ ELEMENT__ MVCA_TETRA10     MAILLE__ TETRA10
-   ELREFE__  T10       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4    NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO)
-   ELREFE__  TE4       GAUSS__  RIGI=FPG4  MASS=FPG4
+   ELREFE__  T10       GAUSS__  RIGI=FPG4  MASS=FPG15  GANO=FPG4    NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO)
+   ELREFE__  TE4       GAUSS__  RIGI=FPG4  MASS=FPG15
    ELREFE__  TR6       GAUSS__  RIGI=FPG6  MASS=FPG6    NOEU=NOEU
    ENS_NOEUD__  EN2     =     5  6  7  8  9  10
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MVCA_PENTA15     MAILLE__ PENTA15
-   ELREFE__  P15       GAUSS__  RIGI=FPG6  MASS=FPG6  GANO=FPG6  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO)
+   ELREFE__  P15       GAUSS__  RIGI=FPG6  MASS=FPG21  GANO=FPG6  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO)
    ELREFE__  PE6       GAUSS__  RIGI=FPG6  MASS=FPG6
    ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9    NOEU=NOEU
    ELREFE__  TR6       GAUSS__  RIGI=FPG6  MASS=FPG6    NOEU=NOEU
    ENS_NOEUD__  EN2     =     7  8  9  10  11  12  13  14  15
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 ENTETE__ ELEMENT__ MVCA_PYRAM13     MAILLE__ PYRAM13
-   ELREFE__  P13       GAUSS__  RIGI=FPG5  MASS=FPG5  GANO=FPG5  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO)
+   ELREFE__  P13       GAUSS__  RIGI=FPG5  MASS=FPG27  GANO=FPG5  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO)
    ELREFE__  PY5       GAUSS__  RIGI=FPG5  MASS=FPG5
    ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9    NOEU=NOEU
    ELREFE__  TR6       GAUSS__  RIGI=FPG6  MASS=FPG6    NOEU=NOEU
@@ -104,6 +104,7 @@ MODE_LOCAL__
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CREFERI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12      )
+    ECOURAN  = NEUT_R   ELEM__         (X1       )
     CCONSTR  = NEUT_R   ELEM__         (X1       )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     CALPHAR  = NEUT_R   ELEM__         (X1       )
@@ -159,7 +160,9 @@ MATRICE__
 OPTION__
     VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     ADD_SIGM            -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    AMOR_MECA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUNS  PRIGINS
+                                     ZVARCPG  PVARCPR
+                              OUT__  MMATUNS  PMATUNS
     CALC_NOEU_BORD      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -245,9 +248,12 @@ OPTION__
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    MASS_MECA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    MASS_MECA_EXPLI     -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    MASS_MECA           545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_DIAG      545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_EXPLI     545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
@@ -255,8 +261,8 @@ OPTION__
     M_GAMMA             -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
-    PAS_COURANT         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
+                              OUT__  ECOURAN  PCOURAN
     PILO_PRED_DEFO      518   IN__   CBORNPI  PBORNPI  CCDTAU   PCDTAU   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R  DDL_MECA PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR

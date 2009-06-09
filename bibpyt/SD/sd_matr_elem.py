@@ -1,4 +1,4 @@
-#@ MODIF sd_matr_elem SD  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_matr_elem SD  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,7 @@
 
 from SD import *
 from SD.sd_resuelem import sd_resuelem
+from SD.sd_cham_no import sd_cham_no
 from SD.sd_modele import sd_modele
 from SD.sd_cham_mater import sd_cham_mater
 from SD.sd_cara_elem import sd_cara_elem
@@ -38,7 +39,13 @@ class sd_matr_elem(AsBase):
         lnom = self.RELR.get_stripped()
         for nom in lnom:
             if nom != '' :
-                sd2 = sd_resuelem(nom); sd2.check(checker)
+                # le nom est celui d'un resuelem ou parfois d'un cham_no (VECT_ASSE):
+                sd2 = sd_resuelem(nom)
+                if sd2.RESL.exists :
+                    sd2.check(checker)
+                else :
+                    sd2 = sd_cham_no(nom)
+                    sd2.check(checker)
 
 
     def check_1(self, checker):

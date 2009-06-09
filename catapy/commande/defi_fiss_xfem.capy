@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,11 +24,14 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 
     MODELE                =SIMP(statut='o',typ=modele_sdaster),
     DEFI_FISS             =FACT(statut='o',max=01,
-      regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT','FORM_FISS'),
+      regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT','FORM_FISS','CHAM_NO_LSN'),
                             ENSEMBLE('FONC_LT','FONC_LN'),
+                            ENSEMBLE('CHAM_NO_LSN','CHAM_NO_LST'),
                             ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
       FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+      CHAM_NO_LSN         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
+      CHAM_NO_LST         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
       GROUP_MA_FISS       =SIMP(statut='f',typ=grma,max=01),
       GROUP_MA_FOND       =SIMP(statut='f',typ=grma),
       FORM_FISS           =SIMP(statut='f',typ='TXM',into=("ELLIPSE","CYLINDRE","DEMI_PLAN","SEGMENT","DEMI_DROITE") ),

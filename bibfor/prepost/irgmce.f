@@ -26,7 +26,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -332,15 +332,12 @@ C
       IF (TENS) THEN
 C
 C ----- VERIFICATION SUR LES COMPOSANTES FOURNIES PAR L'UTILISATEUR:
-        CALL ASSERT(NBCMP.EQ.NBCMPI)
-        IF(IOR.EQ.1)THEN
-          DO 145 K=1,NBCMPI
-            ICMP=INDIK8(ZK8(JNCMP),NOMCMP(K),1,NBCMP)
-            IF(ICMP.EQ.0)THEN
-              CALL U2MESK('F','PREPOST6_34',1,NOMCMP(K))
-            ENDIF
- 145      CONTINUE
-        ENDIF          
+        DO 145 K=1,NBCMPI
+          ICMP=INDIK8(ZK8(JNCMP),NOMCMP(K),1,NBCMP)
+          IF(ICMP.EQ.0)THEN
+            CALL U2MESK('F','PREPOST6_34',1,NOMCMP(K))
+          ENDIF
+ 145    CONTINUE         
 C
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************

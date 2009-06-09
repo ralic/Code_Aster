@@ -1,4 +1,4 @@
-#@ MODIF sd_vect_elem SD  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF sd_vect_elem SD  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,6 @@
 # ======================================================================
 
 from SD import *
-from SD.sd_resuelem import sd_resuelem
 from SD.sd_matr_elem import sd_matr_elem
 
 class sd_vect_elem(sd_matr_elem):

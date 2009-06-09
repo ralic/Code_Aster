@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 18/05/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPP MUMPS  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -28,7 +28,7 @@ C IN  NBSOL  :   IN   : NBRE DE SYSTEMES A RESOUDRE
 C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
 C IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
-C IN  IMPR   :   K4   : FLAG POUR IMPRESSION MATRICE
+C IN  IMPR   :  K14   : FLAG POUR IMPRESSION MATRICE
 C IN  IFMUMP :   IN   : UNITE LOGIQUE POUR IMPRESSION FICHIER
 C IN  ELI2LG :  LOG   : LOGICAL POUR NE LAISSER QU'1 LAGRANGE ACTIF
 C IN/OUT RSOLU :  R   : EN ENTREE : SECONDS MEMBRES REELS
@@ -40,7 +40,7 @@ C---------------------------------------------------------------
       INTEGER       OPTION,NBSOL,KXMPS,IFMUMP
       LOGICAL       LDIST,ELI2LG
       CHARACTER*1   TYPE
-      CHARACTER*4   IMPR
+      CHARACTER*14  IMPR
       CHARACTER*19  VCINE
       REAL*8 RSOLU(*)
       COMPLEX*16 CSOLU(*)
@@ -62,7 +62,7 @@ C============================================================
       TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
       INTEGER      N,NNBSOL,RANG,LMAT,I,IERD,IDVALC,IBID,
      &             JDELG,K,IFM,NIV
-      INTEGER*4    N4
+      INTEGER*4    N4,KXMPS4
       CHARACTER*1  ROUCS(NMXINS),ROUC
       CHARACTER*4  ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
@@ -96,14 +96,15 @@ C-----------------------------------------------------------------------
 C     ------------------------------------------------
 C     INITS
 C     ------------------------------------------------
+      KXMPS4=KXMPS
       IF (TYPE.EQ.'R') THEN
-        XMPSK=>DMPS(KXMPS)
+        XMPSK=>DMPS(KXMPS4)
         RANG=XMPSK%MYID
         N=XMPSK%N
         XMPSK%NRHS=NBSOL
         XMPSK%LRHS=N
       ELSE IF (TYPE.EQ.'C') THEN
-        YMPSK=>ZMPS(KXMPS)
+        YMPSK=>ZMPS(KXMPS4)
         RANG=YMPSK%MYID
         N=YMPSK%N
         YMPSK%NRHS=NBSOL
@@ -198,25 +199,28 @@ C         -- COPIE DE SOLU DANS %RHS:
           ENDIF
 
 C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
-          IF (IMPR.EQ.'OUI') THEN
-            IF (RANG.GT.0) THEN
+          IF (IMPR(1:3).EQ.'OUI') THEN
+            IF (RANG.EQ.0) THEN
               IF (TYPE.EQ.'R') THEN
                 DO K=1,NNBSOL
-                  WRITE(IFMUMP,*) XMPSK%RHS(K)
+                  WRITE(IFMUMP,*) K,XMPSK%RHS(K)
                 ENDDO
               ELSE
                 DO K=1,NNBSOL
-                  WRITE(IFMUMP,*) YMPSK%RHS(K)
+                  WRITE(IFMUMP,*) K,YMPSK%RHS(K)
                 ENDDO
               ENDIF
               WRITE(IFMUMP,*) 'MUMPS FIN RHS'
             ENDIF
+            IF (IMPR(1:11).EQ.'OUI_NOSOLVE')
+     &        CALL U2MESI('F','FACTOR_71',1,IFMUMP)
           ENDIF
         ENDIF
 
 
       ELSE IF (OPTION.EQ.2) THEN
 
+        
 C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE LA SOLUTION :
 C       ------------------------------------------------
@@ -264,7 +268,22 @@ C       -- BROADCAST DE SOLU A TOUS LES PROC
 C         -- EST-CE AUSSI SIMPLE POUR LES COMPLEXES ?
           CALL MPICM1('BCAST','R',2*NNBSOL,IBID,CSOLU)
         ENDIF
-
+        
+C       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
+        IF (IMPR(1:9).EQ.'OUI_SOLVE') THEN
+          IF (RANG.EQ.0) THEN
+            IF (TYPE.EQ.'R') THEN
+              DO K=1,NNBSOL
+                WRITE(IFMUMP,*) K,RSOLU(K)
+              ENDDO
+            ELSE
+              DO K=1,NNBSOL
+                WRITE(IFMUMP,*) K,CSOLU(K)
+              ENDDO
+            ENDIF
+            WRITE(IFMUMP,*) 'MUMPS FIN SOLUTION'
+          ENDIF
+        ENDIF
       ELSE
 C       ------------------------------------------------
 C        MAUVAISE OPTION

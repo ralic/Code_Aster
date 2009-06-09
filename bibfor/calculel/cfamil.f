@@ -1,7 +1,7 @@
       SUBROUTINE CFAMIL(TYPEMA,FAMIL ,NOMFAM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C
 C ROUTINE ARLEQUIN - UTILITAIRE
 C
 C DONNE FAMILLE DE POINT DE GAUSS SUIVANT TYPE MAILLE ET NUM.FAM.
-C FAMILLE DE NOM UTILE DANS LE CATALOQUE DE L'OPTION ARLQ_COUPL
+C FAMILLE DE NOM UTILE DANS LE CATALOQUE DE L'OPTION ARLQ_MATR
 C
 C ----------------------------------------------------------------------
 C
@@ -42,23 +42,13 @@ C
 C
 C ----------------------------------------------------------------------
 C
-
-C
-C ----------------------------------------------------------------------
-C
       NOMFAM = '        '
 C
       IF ( TYPEMA(1:3) .EQ. 'TRI' ) THEN
         IF (FAMIL.EQ.1) THEN
           NOMFAM = 'ARLQ_1'
-        ELSEIF (FAMIL.EQ.2) THEN
-          NOMFAM = 'ARLQ_2'
-        ELSEIF (FAMIL.EQ.3) THEN
-          NOMFAM = 'ARLQ_3'
         ELSEIF (FAMIL.EQ.4) THEN
           NOMFAM = 'ARLQ_4'
-        ELSEIF (FAMIL.EQ.5) THEN
-          NOMFAM = 'ARLQ_5'
         ELSEIF (FAMIL.EQ.6) THEN
           NOMFAM = 'ARLQ_6'
         ELSEIF (FAMIL.EQ.7) THEN
@@ -71,18 +61,38 @@ C
       ELSEIF ( TYPEMA(1:3) .EQ. 'QUA' ) THEN
         IF (FAMIL.EQ.1) THEN
           NOMFAM = 'ARLQ_1'
-        ELSEIF (FAMIL.EQ.2) THEN
-          NOMFAM = 'ARLQ_2'
         ELSEIF (FAMIL.EQ.3) THEN
           NOMFAM = 'ARLQ_3'
-        ELSEIF (FAMIL.EQ.4) THEN
-          NOMFAM = 'ARLQ_4'
-        ELSEIF (FAMIL.EQ.5) THEN
-          NOMFAM = 'ARLQ_5'
         ELSEIF (FAMIL.EQ.6) THEN
           NOMFAM = 'ARLQ_6'
         ELSEIF (FAMIL.EQ.7) THEN
           NOMFAM = 'ARLQ_7'
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ELSEIF ( TYPEMA(1:3) .EQ. 'TET' ) THEN
+        IF (FAMIL.EQ.1) THEN
+          NOMFAM = 'ARLQ_1'
+        ELSEIF (FAMIL.EQ.3) THEN
+          NOMFAM = 'ARLQ_3'
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ELSEIF ( TYPEMA(1:3) .EQ. 'PEN' ) THEN
+        IF (FAMIL.EQ.2) THEN
+          NOMFAM = 'ARLQ_2'
+        ELSEIF (FAMIL.EQ.4) THEN
+          NOMFAM = 'ARLQ_4'
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ELSEIF ( TYPEMA(1:3) .EQ. 'HEX' ) THEN
+        IF (FAMIL.EQ.1) THEN
+          NOMFAM = 'ARLQ_1'
+        ELSEIF (FAMIL.EQ.2) THEN
+          NOMFAM = 'ARLQ_2'
+        ELSEIF (FAMIL.EQ.3) THEN
+          NOMFAM = 'ARLQ_3'
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 09/06/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 % RESPONSABLE GREFFET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -21,6 +21,7 @@ AMOR_MECA
 OPTION__
    IN__
         PRIGIEL  MDEP_R
+        PRIGINS  MDNS_R
         PMASSEL  MDEP_R
         PMATERC  ADRSJEVE
         PGEOMER  GEOM_R

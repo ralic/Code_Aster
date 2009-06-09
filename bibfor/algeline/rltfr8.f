@@ -6,8 +6,9 @@ C
       REAL*8 XSOL(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
+C     TOLE CRP_4
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +50,8 @@ C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
+      INTEGER*4 ZI4
+      COMMON /I4VAJE/ZI4(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
@@ -134,7 +137,7 @@ C
       CALL JEDETR('&&RLTFR8.ALLEUR.VALF ')
       DO 110 I = 1,NBSOL
           CALL MLTDRA(NBLOC,ZI(LGBLOC),ZI(NCBLOC),ZI(DECAL),ZI(SEQ),
-     +                NBSN,NEQ,ZI(SUPND),ZI(ADRESS),ZI(GLOBAL),ZI(LGSN),
+     +              NBSN,NEQ,ZI(SUPND),ZI(ADRESS),ZI4(GLOBAL),ZI(LGSN),
      +                FACTOL,FACTOU,XSOL(1,I),ZR(POINTR),
      +                ZI(NOUV),ZI(ANC),ZI(AD),ZR(TRAV),TYPSYM )
   110 CONTINUE

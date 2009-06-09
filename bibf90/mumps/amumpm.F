@@ -2,7 +2,7 @@
      &                  TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 18/05/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPM MUMPS  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -27,7 +27,7 @@ C IN  RANG   :   IN   : RANG DU PROCESSEUR.
 C IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
 C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
 C IN  KMONIT :  K24   : VECTEUR DE NOMS DES OBJ JEVEUX
-C IN  IMPR   :   K4   : FLAG POUR IMPRESSION MATRICE
+C IN  IMPR   :  K14   : FLAG POUR IMPRESSION MATRICE
 C IN  IFMUMP :   IN   : UNITE LOGIQUE POUR IMPRESSION FICHIER
 C IN  ELI2LG :  LOG   : LOGICAL POUR NE LAISSER QU'1 LAGRANGE ACTIF
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
@@ -35,7 +35,7 @@ C---------------------------------------------------------------
       INTEGER      RANG,KXMPS,IFMUMP
       LOGICAL      LDIST,ELI2LG
       CHARACTER*1  TYPE
-      CHARACTER*4  IMPR
+      CHARACTER*14 IMPR
       CHARACTER*24 KMONIT(12)
 
 #ifdef _HAVE_MUMPS
@@ -55,6 +55,7 @@ C============================================================
       INTEGER      JSMDI,NSMDI,JSMHC,NSMHC,JDELG,N1,N,NZ,NZ2,NVALE,
      &             JVALE,NLONG,JVALE2,NZLOC,JCOL,KTERM,ILIG,ITERM,KZERO,
      &             IFM,NIV,K,SYM,IRET,IBID
+      INTEGER*4    KXMPS4
       CHARACTER*1  ROUCS(NMXINS)
       CHARACTER*4  KBID,ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
@@ -94,12 +95,13 @@ C       ------------------------------------------------
       ETAM=ETAMS(KXMPS)
 C --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
 C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
+      KXMPS4=KXMPS
       IF (TYPE.EQ.'R') THEN
-        XMPSK=>DMPS(KXMPS)
+        XMPSK=>DMPS(KXMPS4)
         LTYPR=.TRUE.
         SYM=XMPSK%SYM
       ELSE IF (TYPE.EQ.'C') THEN
-        YMPSK=>ZMPS(KXMPS)
+        YMPSK=>ZMPS(KXMPS4)
         LTYPR=.FALSE.
         SYM=YMPSK%SYM
       ELSE
@@ -149,6 +151,7 @@ C       ------------------------------------------------
 C       DETERMINATION DU NBRE LOCAL DE TERMES PAR PROC EN MODE DIST
 C       NZLOC
 C       ------------------------------------------------
+      
       IF (LDIST) THEN
         NZLOC=0
         JCOL=1
@@ -174,15 +177,17 @@ C -- SOUS LA DIAGONALE :
           ENDIF
         ENDDO
         NZ2=NZLOC
+C       WRITE(IFM,*)'<AMUMPM> PROC/NZLOC ',RANG,NZLOC
       ENDIF
+
+      CALL JJLDYN(IBID)       
 
 C       ------------------------------------------------
 C       ALLOCATION DES OBJETS MUMPS F90
 C       ------------------------------------------------
       IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
 C       -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS:
-        CALL JJLDYN(IBID)
-
+                    
         IF (LDIST) THEN
           IF (LTYPR) THEN
             XMPSK%N=N
@@ -212,7 +217,7 @@ C       -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS:
             ALLOCATE(YMPSK%A(NZ2))
           ENDIF
         ENDIF
-
+            
 C       ------------------------------------------------
 C       REMPLISSAGE EFFECTIF DES TERMES DE LA MATRICE
 C       ------------------------------------------------
@@ -311,7 +316,7 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
           ENDIF
 C ---FIN DE LA BOUCLE SUR NZ
         ENDDO
-
+      
         CALL ASSERT(ITERM.LE.NZ2)
         NZ2=ITERM
         IF (LDIST) THEN
@@ -349,8 +354,8 @@ C     FIN DE COMMANDE (NUM_DDL/FACTORISER/RESOUDRE)
 C       ------------------------------------------------
 C       IMPRESSION DE LA MATRICE (SI DEMANDEE) :
 C       ------------------------------------------------
-        IF (IMPR.EQ.'OUI') THEN
-          WRITE(IFMUMP,*)SYM,'   : SYM'
+        IF (IMPR(1:3).EQ.'OUI') THEN
+          WRITE(IFMUMP,*)SYM,'   : SYM', RANG,'   : RANG'
           WRITE(IFMUMP,*)N,'   : N'
           IF (LDIST) THEN
             WRITE(IFMUMP,*)NZ2,'   : NZ_loc'

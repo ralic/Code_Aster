@@ -1,7 +1,7 @@
       SUBROUTINE IMPFOT(UNITE,TIME,CHAINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/06/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,49 +38,48 @@ C IN  TIME   : TEMPS EN SECONDES A AFFICHER
 C OUT CHAINE : CHAINE DE SORTIE SI UNITE = 0
 C
 C ----------------------------------------------------------------------
-C
-      REAL*8       SECOND     
-      INTEGER      MINUT,HEURE   
+C 
+      INTEGER      MINUT,HEURE,SECOND   
 C
 C ----------------------------------------------------------------------
 C
       IF (TIME.LT.60.0D0) THEN
-        SECOND = TIME
-        IF (SECOND.LT.0.D0) THEN
-          SECOND = 0.D0
+        SECOND = INT(TIME)
+        IF (SECOND.LT.0) THEN
+          SECOND = 0
         ENDIF 
         WRITE(CHAINE,10) SECOND
       ELSE 
         IF (TIME.LE.3600.D0) THEN
-          MINUT  = NINT(TIME/60)
+          MINUT  = INT(TIME/60)
           IF (MINUT.LT.0) THEN
             MINUT = 0
           ENDIF
-          SECOND = ABS(TIME - (MINUT*60))
-          IF (SECOND.LT.0.D0) THEN
-            SECOND = 0.D0
-          ENDIF          
+          SECOND = INT(TIME - (MINUT*60))
+          IF (SECOND.LT.0) THEN
+            SECOND = 0
+          ENDIF        
           WRITE(CHAINE,20) MINUT,SECOND
         ELSE
-          HEURE  = NINT(TIME/3600)
+          HEURE  = INT(TIME/3600)
           IF (HEURE.LT.0) THEN
             HEURE = 0
           ENDIF
-          MINUT  = NINT((TIME - (HEURE*3600))/60)
+          MINUT  = INT((TIME - (HEURE*3600))/60)
           IF (MINUT.LT.0) THEN
             MINUT = 0
           ENDIF
-          SECOND = ABS(TIME - (HEURE*3600) - (MINUT*60))
-          IF (SECOND.LT.0.D0) THEN
-            SECOND = 0.D0
-          ENDIF 
+          SECOND = INT(TIME - (HEURE*3600) - (MINUT*60))
+          IF (SECOND.LT.0) THEN
+            SECOND = 0
+          ENDIF
           WRITE(CHAINE,30) HEURE,MINUT,SECOND
         ENDIF  
       ENDIF
 
- 10   FORMAT (F6.3,' s')
- 20   FORMAT (I2,' m ',F6.3,' s') 
- 30   FORMAT (I8,' h ',I2,' m ',F6.3,' s') 
+ 10   FORMAT (I2,' s')
+ 20   FORMAT (I2,' m ',I2,' s') 
+ 30   FORMAT (I8,' h ',I2,' m ',I2,' s') 
  
 
       END

@@ -1,7 +1,8 @@
-# MODIF  DATE 07/04/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE ANGLES J.ANGLES
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
+# sslv135g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,22 +122,28 @@ CUBE=DEFI_GROUP(reuse = CUBE,
 
 CUBE=DEFI_GROUP(reuse = CUBE,
                 ALARME='OUI',
-                CREA_GROUP_MA=(_F(OPTION='APPUI_LACHE',
+                CREA_GROUP_MA=(_F(OPTION='APPUI', 
+                                  TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE1',
                                   NOM='FACE1_3D'),
-                               _F(OPTION='APPUI_LACHE',
+                               _F(OPTION='APPUI', 
+                                  TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE2',
                                   NOM='FACE2_3D'),
-                               _F(OPTION='APPUI_LACHE',
+                               _F(OPTION='APPUI', 
+                                  TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE3',
                                   NOM='FACE3_3D'),
-                               _F(OPTION='APPUI_LACHE',
+                               _F(OPTION='APPUI', 
+                                  TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE4',
                                   NOM='FACE4_3D'),
-                               _F(OPTION='APPUI_LACHE',
+                               _F(OPTION='APPUI', 
+                                  TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE5',
                                   NOM='FACE5_3D'),
-                               _F(OPTION='APPUI_LACHE',
+                               _F(OPTION='APPUI', 
+                                  TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE6',
                                   NOM='FACE6_3D')),
                 MAILLAGE=CUBE,

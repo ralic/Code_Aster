@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 05/05/2009   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF factor Messages  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -255,7 +255,7 @@ Information Solveur MUMPS :
   Déséquilibrage de charge maximum supérieur à %(r1)g %% sur au moins une des 6 étapes profilées.
 Conseils: Pour optimiser l'équilibrage de votre calcul, vous pouvez essayer
         - d'enlever du modèle les mailles qui ne participent pas au calcul,
-        - utiliser l'option 'DISTRIBUE_SD' au lieu de 'DISTRIBUE_MAILLE' ou 'CENTRALISE',
+        - utiliser l'option PARALLELISME='DISTRIBUE_SD',
         - diminuer le nombre de processeurs utilisés.
 """),
 
@@ -318,8 +318,34 @@ Solution :
   Contactez l'assistance.
 """),
 
+#-----------------------------------------------------------------------------------------------
 
+70: _("""
+Solveur MUMPS :
+  Vous avez activé l'option IMPR='OUI_SOLVE' en surchargeant AMUMPS.F. La résolu
+  tion du système linéaire en cours va donc s'effectuer normalement mais en plus
+  sa matrice et son second membre vont être écrits dans le fichier d'unité logique
+  %(i1)d. Vous pouvez le récupérer (sur le proc 0) via ASTK.
+"""),
 
+#-----------------------------------------------------------------------------------------------
 
+71: _("""
+Solveur MUMPS :
+  Vous avez activé l'option IMPR='OUI_NOSOLVE' en surchargeant AMUMPS.F. La résolu
+  tion du système linéaire en cours ne va donc pas s'effectuer mais sa matrice et
+  son second membre vont être écrits dans le fichier d'unité logique %(i1)d. 
+  Après cette écriture, l'execution Aster s'arrête en ERREUR_FATALE pour vous
+  permettre de récuperer plus rapidement votre fichier.
+  Vous pouvez le récupérer (sur le proc 0) via ASTK.
+"""),
+#-----------------------------------------------------------------------------------------------
 
+72: _("""
+Solveur MUMPS :
+  Vous utilisez une version de MUMPS antérieure à la 4.7.3: la %(k1)s.
+  Celle-ci n'est plus supportée pour le couplage Code_Aster/MUMPS.
+Solution:
+  Télécharger et installer une version de MUMPS plus récente.
+"""),
 }

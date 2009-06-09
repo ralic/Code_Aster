@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF UTILITAI  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -606,6 +606,14 @@ C     =============================
      &      (TYPRES.EQ.'MODE_MECA_C')) THEN
           CALL U2MESK('F','UTILITAI5_40',1,TYPRES)
         ENDIF
+
+C       ON VERIFIE QUE LE PHENOMENE DU MODELE FOURNI EST COHERENT AVEC
+C       LA SD RESULTAT
+        CALL GETVID(' ','MODELE',0,1,1,NOMO,NBV)
+        IF (NBV.EQ.1) THEN
+           CALL LRVEMO(NOMO)
+        ENDIF
+
 
         DO 260 I = 1,NBNOCH
           OPTION = ' '

@@ -1,7 +1,7 @@
       SUBROUTINE ARLTMM(JTYEL  ,NUMORI,ITYEL2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C
         ELSE
           NOMTE2 = NOMTE
         ENDIF
-
+C
       ELSEIF (NOMTE(1:4).EQ.'MIPL') THEN
         IF (LDECOU) THEN
           NOMTE2(1:4) = NOMTE(1:4)
@@ -129,7 +129,22 @@ C
           NOMTE2 = NOMTE
         ENDIF
       ELSEIF (NOMTE(1:5).EQ.'MECA_') THEN
-        LSTOP = .TRUE.
+        IF (LDECOU) THEN
+          NOMTE2(1:5) = NOMTE(1:5)
+          IF (NOMTE(6:11).EQ.'TETRA4'.OR.NOMTE(6:11).EQ.'PENTA6'
+     &        .OR.NOMTE(6:10).EQ.'HEXA8') THEN
+            NOMTE2(6:11) = 'TETRA4'
+          ELSEIF (NOMTE(6:12).EQ.'TETRA10'.OR.NOMTE(6:12).EQ.'PENTA15'
+     &           .OR.NOMTE(6:11).EQ.'HEXA20'.OR.NOMTE(6:11).EQ.'HEXA27')
+     &      THEN
+            NOMTE2(6:11) = 'TETRA4'
+          ELSE
+            LSTOP = .TRUE.
+          ENDIF
+        ELSE
+           NOMTE2 = NOMTE
+        ENDIF
+C
       ELSEIF (NOMTE(1:4).EQ.'METD') THEN
         LSTOP = .TRUE.
       ELSEIF (NOMTE(1:4).EQ.'METC') THEN

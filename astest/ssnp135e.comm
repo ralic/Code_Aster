@@ -1,5 +1,6 @@
-# MODIF  DATE 13/05/2008   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE SIMULATION D'UNE PLAQUE TROUEE EN PLASTICITE - METHODE ARLEQUIN
+# ssnp135e.para = tps_job 110 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,10 +28,8 @@ DEBUT(CODE=_F(NOM='SSNP135E',
 #    de la plaque
 ########################
 
-PRE_GMSH(UNITE_GMSH=19,
-         UNITE_MAILLAGE=20,);
-
-MAIL1=LIRE_MAILLAGE(UNITE=20,);
+MAIL1=LIRE_MAILLAGE(UNITE=20,
+                    FORMAT='MED',);
 
 ########################
 # 2. Lecture du maillage
@@ -38,10 +37,8 @@ MAIL1=LIRE_MAILLAGE(UNITE=20,);
 #    (patch Arlequin)
 ########################
 
-PRE_GMSH(UNITE_GMSH=22,
-         UNITE_MAILLAGE=21,);
-
-MAIL2=LIRE_MAILLAGE(UNITE=21,);
+MAIL2=LIRE_MAILLAGE(UNITE=21,
+                    FORMAT='MED',);
 
 MAIL=ASSE_MAILLAGE(MAILLAGE_1=MAIL1,
                    MAILLAGE_2=MAIL2,
@@ -97,15 +94,15 @@ EFFORT=AFFE_CHAR_MECA(MODELE=MOD,
 ###
 # C. Creation des relations de couplage Arlequin
 #    entre les groupes de mailles
-#    GM11 (maillage fin) et
-#    GM6 (maillage grossier)
+#    GM111 (maillage fin) et
+#    GM61 (maillage grossier)
 #    Collage sur le modele fin
 ###
 
 ARLQ=AFFE_CHAR_MECA(MODELE=MOD,
-                    ARLEQUIN=_F(GROUP_MA_1='GM6',
-                                GROUP_MA_2=('GM9','GM11',),
-                                GROUP_MA_COLL='GM11',
+                    ARLEQUIN=_F(GROUP_MA_1='GM61',
+                                GROUP_MA_2=('GM9','GM111',),
+                                GROUP_MA_COLL='GM111',
                                 COND_LIM=SYMET,
                                 COLLAGE='FIN',
                                 POIDS_FIN=0.9999,),);
@@ -139,7 +136,7 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
                                 GROUP_MA='GM9',),
                    COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA=('GM6','GM11',),),
+                                GROUP_MA=('GM61','GM111',),),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=3.5,),
                    NEWTON=_F(REAC_INCR=1,
@@ -175,13 +172,11 @@ DX_A=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              GROUP_NO='GM33',
                              NOM_CMP='DX',),);
 
-#IMPR_TABLE(TABLE=DX_A)
-
 TEST_TABLE(TABLE=DX_A,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.5,),
            NOM_PARA='DX',
-           VALE=-2.5415171286325E-02,
+           VALE=-2.5516150341568E-02,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -191,7 +186,7 @@ TEST_TABLE(TABLE=DX_A,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
            NOM_PARA='DX',
-           VALE=-3.4446793017166E-02,
+           VALE=-3.4703922024684E-02,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -203,7 +198,7 @@ TEST_TABLE(TABLE=DX_A,
            NOM_PARA='DX',
            VALE=-2.5415171286325E-02,
            CRITERE='RELATIF',
-           PRECISION=0.001,
+           PRECISION=0.004,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=DX_A,
@@ -226,13 +221,11 @@ DY_B=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              GROUP_NO='GM32',
                              NOM_CMP='DY',),);
 
-#IMPR_TABLE(TABLE=DY_B)
-
 TEST_TABLE(TABLE=DY_B,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.5,),
            NOM_PARA='DY',
-           VALE=7.7181865030523E-02,
+           VALE=7.7160730362990E-02,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -242,7 +235,7 @@ TEST_TABLE(TABLE=DY_B,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
            NOM_PARA='DY',
-           VALE=1.1666794741196E-01,
+           VALE=1.1665868767192E-01,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -281,13 +274,11 @@ STHETA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CMP=('SIXX','SIYY','SIXY',),
                                REPERE='POLAIRE',),);
 
-#IMPR_TABLE(TABLE=STHETA)
-
 TEST_TABLE(TABLE=STHETA,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=15.7017,),
            NOM_PARA='SIXX',
-           VALE=-1.1666995158918E-01,
+           VALE=-1.1772187656200E-01,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -299,7 +290,7 @@ TEST_TABLE(TABLE=STHETA,
            NOM_PARA='SIXX',
            VALE=-1.0794845533703E-01,
            CRITERE='RELATIF',
-           PRECISION=0.09,
+           PRECISION=0.1,
            REFERENCE='AUTRE_ASTER',);
 
 ###
@@ -317,7 +308,7 @@ TEST_TABLE(TABLE=SYY_A,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
            NOM_PARA='SIYY',
-           VALE=6.2769522007211E+00,
+           VALE=6.3494327945475E+00,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -331,8 +322,6 @@ TEST_TABLE(TABLE=SYY_A,
            CRITERE='RELATIF',
            PRECISION=0.025,
            REFERENCE='AUTRE_ASTER',);
-
-#IMPR_TABLE(TABLE=SYY_A)
 
 ###
 # E. CONTRAINTE SIXX AU POINT B
@@ -349,7 +338,7 @@ TEST_TABLE(TABLE=SXX_B,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
            NOM_PARA='SIXX',
-           VALE=-3.5733944601687E+00,
+           VALE=-3.5990172585491E+00,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -361,10 +350,8 @@ TEST_TABLE(TABLE=SXX_B,
            NOM_PARA='SIXX',
            VALE=-3.4520540472581E+00,
            CRITERE='RELATIF',
-           PRECISION=0.036,
+           PRECISION=0.045,
            REFERENCE='AUTRE_ASTER',);
-
-#IMPR_TABLE(TABLE=SXX_B)
 
 ###
 # F. FORCE RESULTANTE EN HAUT
@@ -386,14 +373,14 @@ TEST_TABLE(TABLE=F_HAUT,
            NOM_PARA='DX',
            VALE=-7.7257980876221E-01,
            CRITERE='RELATIF',
-           PRECISION=0.18,
+           PRECISION=0.19,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=F_HAUT,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
            NOM_PARA='DX',
-           VALE=-6.3371311722966E-01,
+           VALE=-6.3175748827719E-01,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -434,7 +421,7 @@ RESU=STAT_NON_LINE(reuse =RESU,
                    COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
                                 GROUP_MA='GM9',),
                    COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA=('GM11','GM6',),),
+                                GROUP_MA=('GM111','GM61',),),
                    ETAT_INIT=_F(EVOL_NOLI=RESU,),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=INSTFIN,
@@ -481,7 +468,7 @@ TEST_TABLE(TABLE=STHETA2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=15.6956,),
            NOM_PARA='SIXX',
-           VALE=-1.6486779955235E+00,
+           VALE=-1.8647154313877E+00,
            CRITERE='RELATIF',
            PRECISION=1e-06,
            REFERENCE='NON_REGRESSION',
@@ -502,7 +489,7 @@ TEST_TABLE(TABLE=SYY_A2,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=5.4,),
            NOM_PARA='SIYY',
-           VALE=6.3977585932263E+00,
+           VALE=6.4709283095989E+00,
            CRITERE='RELATIF',
            PRECISION=1e-08,
            REFERENCE='NON_REGRESSION',
@@ -532,7 +519,7 @@ TEST_TABLE(TABLE=SXX_B2,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=5.4,),
            NOM_PARA='SIXX',
-           VALE=-6.4555408008187E+00,
+           VALE=-6.6287709532474E+00,
            CRITERE='RELATIF',
            PRECISION=1e-06,
            REFERENCE='NON_REGRESSION',

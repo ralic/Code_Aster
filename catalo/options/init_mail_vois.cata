@@ -1,5 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
-% RESPONSABLE DELMAS
+%& MODIF OPTIONS  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,10 +16,17 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 % ======================================================================
+% RESPONSABLE DELMAS
 INIT_MAIL_VOIS
+       <<  INIT_MAIL_VOIS :
+           CALCUL DES VOISINS DE L ELEMENT
+           PRODUIT UN CHAMP PAR ELEMENT  >>
+
 OPTION__
    IN__
         PGEOMER  GEOM_R
+       <<  PGEOMER : COORDONNEES DES NOEUDS  >>
    OUT__
-PVOISIN VOISIN ELEM__
+        PVOISIN VOISIN ELEM__
+       <<  PVOISIN : VOISINS DE L ELEMENT  >>
 

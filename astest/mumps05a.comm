@@ -1,5 +1,6 @@
-# MODIF  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 08/06/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
+# mumps05a.para = tps_job 2220 mem_job 15800Mo mem_aster 52 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test M
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

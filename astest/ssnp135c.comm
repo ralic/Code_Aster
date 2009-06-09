@@ -1,5 +1,6 @@
-# MODIF  DATE 13/05/2008   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE SIMULATION D'UNE PLAQUE TROUEE EN ELASTICITE - METHODE ARLEQUIN
+# ssnp135c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +20,7 @@
 # ======================================================================
 # ARLEQUIN : RACCORD 2D/2D INCOMPATIBLE.
 #            MAILLAGES DE DENSITES DIFFERENTES
-# IDEM SSNP135B AVEC RESOLUTION STAT_NON_LINE
+# RESOLUTION MECA_STATIQUE & STAT_NON_LINE
 
 DEBUT(CODE=_F(NOM='SSNP135C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -29,22 +30,26 @@ DEBUT(CODE=_F(NOM='SSNP135C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #    (patch Arlequin)
 ########################
 
-PRE_GMSH(UNITE_GMSH=19,
-         UNITE_MAILLAGE=20,);
+MAIL1=LIRE_MAILLAGE(UNITE=21,
+                    FORMAT='MED',);
 
-MAIL1=LIRE_MAILLAGE(UNITE=20,);
+MAIL1Q=CREA_MAILLAGE(MAILLAGE=MAIL1,
+                     LINE_QUAD=_F(TOUT='OUI',),);
 
 ########################
 # 2. Lecture du maillage
 #    de la plaque
 ########################
 
-PRE_GMSH(UNITE_GMSH=22,
-         UNITE_MAILLAGE=21,);
-MAIL2=LIRE_MAILLAGE(UNITE=21,);
 
-MAIL=ASSE_MAILLAGE(MAILLAGE_1=MAIL1,
-                   MAILLAGE_2=MAIL2,
+MAIL2=LIRE_MAILLAGE(UNITE=20,
+                    FORMAT='MED',);
+
+MAIL2Q=CREA_MAILLAGE(MAILLAGE=MAIL2,
+                     LINE_QUAD=_F(TOUT='OUI',),);
+
+MAIL=ASSE_MAILLAGE(MAILLAGE_1=MAIL1Q,
+                   MAILLAGE_2=MAIL2Q,
                    OPERATION='SUPERPOSE',);
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
@@ -87,7 +92,15 @@ ARLQ=AFFE_CHAR_MECA(MODELE=MOD,
                                 COLLAGE='FIN',
                                 POIDS_FIN=0.99,),);
 
+
+
+################################################
+# 4. Resolution STAT_NON_LINE
+################################################
+
+###
 # L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR HAUT
+###
 
 F_DEPL=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,
@@ -111,7 +124,7 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
 ####################
-# 4. POST-TRAITEMENT
+# 5. POST-TRAITEMENT
 ####################
 
 RESU=CALC_ELEM(reuse =RESU,
@@ -122,7 +135,9 @@ RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
 
+###
 # A. SIGMA THETA AU BORD DU TROU
+###
 
 CERCLE=INTE_MAIL_2D(MAILLAGE=MAIL,
                     DEFI_CHEMIN=_F(GROUP_MA='GM28',),);
@@ -135,12 +150,14 @@ STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
                                REPERE='POLAIRE',
                                OPERATION='EXTRACTION',),);
 
+###
 # B. CONTRAINTES
 # QUATRE COMPARAISONS: ANALYTIQUE, NON-REGRESSION, SANS ARLEQUIN,
 #                      ARLEQUIN MECA_STATIQUE
+###
 
 sigth1 = 3.0
-signr1 = 2.9782054698251E+00
+signr1 = 2.9233144666073E+00
 sigsa1 = 3.02275E+00
 sigst1 = 2.9782054698380E+00
 
@@ -150,7 +167,7 @@ TEST_TABLE(TABLE=STHETA,
            VALE = sigth1,
            REFERENCE= 'ANALYTIQUE',
            CRITERE = 'RELATIF',
-           PRECISION = 0.008,);
+           PRECISION = 0.03,);
 
 TEST_TABLE(TABLE=STHETA,
            FILTRE = _F(NOM_PARA='COOR_X',VALE=1.00000E+01),
@@ -167,7 +184,7 @@ TEST_TABLE(TABLE=STHETA,
            VALE = sigsa1,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.015,);
+           PRECISION = 0.04,);
 
 TEST_TABLE(TABLE=STHETA,
            FILTRE = _F(NOM_PARA='COOR_X',VALE=1.00000E+01),
@@ -175,10 +192,10 @@ TEST_TABLE(TABLE=STHETA,
            VALE = sigst1,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
+           PRECISION = 2E-2,);
 
 sigth2 = -1.0
-signr2 = -9.4424095957837E-01
+signr2 = -9.5317845977580E-01
 sigsa2 = -9.66034E-01
 sigst2 = -9.4424095959215E-01
 
@@ -213,10 +230,12 @@ TEST_TABLE(TABLE=STHETA,
            VALE = sigst2,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-8,);
+           PRECISION = 1E-2,);
 
+###
 # C. DEPLACEMENTS
 # DEUX COMPARAISONS: NON-REGRESSION ET SANS ARLEQUIN
+###
 
 HAUT=INTE_MAIL_2D(MAILLAGE=MAIL,
                     DEFI_CHEMIN=_F(GROUP_MA='GM26',),);
@@ -229,7 +248,7 @@ DPL_H=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
                                OPERATION='EXTRACTION',),);
 
 depsa1 = 1.51067E-01
-depnr1 = 1.5153074197664E-01
+depnr1 = 1.5181108939954E-01
 depst1 = 1.5153074197663E-01
 
 TEST_TABLE(TABLE=DPL_H,
@@ -238,7 +257,7 @@ TEST_TABLE(TABLE=DPL_H,
            VALE = depsa1,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.004,);
+           PRECISION = 0.005,);
 
 TEST_TABLE(TABLE=DPL_H,
            FILTRE = _F(NOM_PARA='COOR_X',VALE=1.00000E+02),
@@ -255,10 +274,10 @@ TEST_TABLE(TABLE=DPL_H,
            VALE = depst1,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-10,);
+           PRECISION = 2E-3,);
 
 depsa2 = 1.53288E-01
-depnr2 = 1.5325113035190E-01
+depnr2 = 1.5494142309006E-01
 depst2 = 1.5325113035196E-01
 
 TEST_TABLE(TABLE=DPL_H,
@@ -267,7 +286,7 @@ TEST_TABLE(TABLE=DPL_H,
            VALE = depsa2,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.0003,);
+           PRECISION = 2E-2,);
 
 TEST_TABLE(TABLE=DPL_H,
            FILTRE = _F(NOM_PARA='COOR_X',VALE=0.00000E+02),
@@ -284,7 +303,179 @@ TEST_TABLE(TABLE=DPL_H,
            VALE = depst2,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-10,);
+           PRECISION = 1.2E-2,);
+
+################################################
+# 6. RESOLUTION MECA_STATIQUE
+################################################
+
+RESU2=MECA_STATIQUE(MODELE=MOD,
+                   CHAM_MATER=CHMATER,
+                   EXCIT=(_F(CHARGE=SYMET,),
+                          _F(CHARGE=EFFORT,),
+                          _F(CHARGE=ARLQ,),),);
+####################
+# 7. POST-TRAITEMENT
+####################
+
+
+RESU2=CALC_ELEM(reuse =RESU2,
+               RESULTAT=RESU2,
+               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
+
+RESU2=CALC_NO(reuse =RESU2,
+             RESULTAT=RESU2,
+             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
+
+###
+# A. SIGMA THETA AU BORD DU TROU
+###
+
+CERCLE2=INTE_MAIL_2D(MAILLAGE=MAIL,
+                    DEFI_CHEMIN=_F(GROUP_MA='GM28',),);
+
+STHETA2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='STHETA2',
+                               RESULTAT=RESU2,
+                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               CHEMIN=CERCLE2,
+                               NOM_CMP=('SIXX','SIYY','SIXY',),
+                               REPERE='POLAIRE',),);
+
+###
+# B. CONTRAINTES
+# TROIS COMPARAISONS: ANALYTIQUE, NON-REGRESSION, SANS ARLEQUIN
+###
+
+sigth1 = 3.0;
+
+signr1 = 2.92331446660;
+
+sigsa1 = 3.02275;
+
+
+TEST_TABLE(TABLE=STHETA2,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=10.0,),
+           NOM_PARA='SIYY',
+           VALE=sigth1,
+           CRITERE='RELATIF',
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=STHETA2,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=10.0,),
+           NOM_PARA='SIYY',
+           VALE=signr1,
+           CRITERE='RELATIF',
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.3.19',);
+
+TEST_TABLE(TABLE=STHETA2,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=10.0,),
+           NOM_PARA='SIYY',
+           VALE=sigsa1,
+           CRITERE='RELATIF',
+           PRECISION=0.035,
+           REFERENCE='AUTRE_ASTER',);
+sigth2 = -1.0;
+
+signr2 = -9.5317845976896E-01;
+
+sigsa2 = -0.966034;
+
+
+TEST_TABLE(TABLE=STHETA2,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=10.0,),
+           NOM_PARA='SIYY',
+           VALE=sigth2,
+           CRITERE='RELATIF',
+           PRECISION=0.06,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=STHETA2,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=10.0,),
+           NOM_PARA='SIYY',
+           VALE=signr2,
+           CRITERE='RELATIF',
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.3.20',);
+
+TEST_TABLE(TABLE=STHETA2,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=10.0,),
+           NOM_PARA='SIYY',
+           VALE=sigsa2,
+           CRITERE='RELATIF',
+           PRECISION=0.023,
+           REFERENCE='AUTRE_ASTER',);
+
+###
+# C. DEPLACEMENTS
+# DEUX COMPARAISONS: NON-REGRESSION ET SANS ARLEQUIN
+###
+
+HAUT2=INTE_MAIL_2D(MAILLAGE=MAIL,
+                  DEFI_CHEMIN=_F(GROUP_MA='GM26',),);
+
+DPL_H2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='STHETA2',
+                              RESULTAT=RESU2,
+                              NOM_CHAM='DEPL',
+                              CHEMIN=HAUT2,
+                              NOM_CMP='DY',),);
+depsa1 = 0.151067;
+
+depnr1 = 1.5181108939952E-01;
+
+
+TEST_TABLE(TABLE=DPL_H2,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=100.0,),
+           NOM_PARA='DY',
+           VALE=depsa1,
+           CRITERE='RELATIF',
+           PRECISION=0.005,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DPL_H2,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=100.0,),
+           NOM_PARA='DY',
+           VALE=depnr1,
+           CRITERE='RELATIF',
+           PRECISION=1e-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.3.19',);
+
+depsa2 = 0.153288;
+
+depnr2 = 1.5494142308810E-01;
+
+
+TEST_TABLE(TABLE=DPL_H2,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0.0,),
+           NOM_PARA='DY',
+           VALE=depsa2,
+           CRITERE='RELATIF',
+           PRECISION=0.015,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=DPL_H2,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0.0,),
+           NOM_PARA='DY',
+           VALE=depnr2,
+           CRITERE='RELATIF',
+           PRECISION=1e-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='8.3.19',);
 
 FIN();
-

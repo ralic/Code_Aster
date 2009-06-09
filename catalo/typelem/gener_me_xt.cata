@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+%& MODIF TYPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ MODE_LOCAL__
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
+                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
@@ -71,84 +71,19 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DCX     DCY      DCZ      E1X     E1Y      E1Z
                                         E2X     E2Y      E2Z      E3X     E3Y      E3Z
                                         E4X     E4Y      E4Z      )
-    DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX     DY      DZ      )
+    DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX      DY       DZ       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E2NEUTI  = NEUT_I   ELEM__         (X1       X2      )
-    E9NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9 )
-    E15NEUTI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      )
-
-    E18NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18      )
-
-    E30NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
-
-    E33NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33       )
-    E36NEUTI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      X34      X35      X36      )
-    E54NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      X34      X35      X36
-                                        X37      X38      X39      X40      X41      X42
-                                        X43      X44      X45      X46      X47      X48
-                                        X49      X50      X51      X52      X53      X54      )
-    E90NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      X34      X35      X36
-                                        X37      X38      X39      X40      X41      X42
-                                        X43      X44      X45      X46      X47      X48
-                                        X49      X50      X51      X52      X53      X54
-                                        X55      X56      X57      X58      X59      X60
-                                        X61      X62      X63      X64      X65      X66
-                                        X67      X68      X69      X70      X71      X72
-                                        X73      X74      X75      X76      X77      X78
-                                        X79      X80      X81      X82      X83      X84
-                                        X85      X86      X87      X88      X89      X90      )
-    E128NEUI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      X34      X35      X36
-                                        X37      X38      X39      X40      X41      X42
-                                        X43      X44      X45      X46      X47      X48
-                                        X49      X50      X51      X52      X53      X54
-                                        X55      X56      X57      X58      X59      X60
-                                        X61      X62      X63      X64      X65      X66
-                                        X67      X68      X69      X70      X71      X72
-                                        X73      X74      X75      X76      X77      X78
-                                        X79      X80      X81      X82      X83      X84
-                                        X85      X86      X87      X88      X89      X90
-                                        X91      X92      X93      X94      X95      X96
-                                        X97      X98      X99      X100     X101     X102
-                                        X103     X104     X105     X106     X107     X108
-                                        X109     X110     X111     X112     X113     X114
-                                        X115     X116     X117     X118     X119     X120
-                                        X121     X122     X123     X124     X125     X126
-                                        X127     X128    )
+    E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
+    E15NEUTI = NEUT_I   ELEM__         (X[15]    )
+    E18NEUTR = NEUT_R   ELEM__         (X[18]    )
+    E30NEUTR = NEUT_R   ELEM__         (X[30]    )
+    E33NEUTR = NEUT_R   ELEM__         (X[33]    )
+    E36NEUTI = NEUT_I   ELEM__         (X[36]    )
+    E54NEUTR = NEUT_R   ELEM__         (X[54]    )
+    E90NEUTR = NEUT_R   ELEM__         (X[90]    )
+    E128NEUI = NEUT_I   ELEM__         (X[128]   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -161,26 +96,17 @@ MODE_LOCAL__
                                         EPNMOY2  SIGEQ2   NBRUP2   ENDO2    )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3      
                                         K1    K2   K3   BETA     )
     EGTHETA  = G        ELEM__         (GTHETA         )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     EREFCO   = PREC     ELEM__         (SIGM     )
-    G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27       )
+    G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27]    )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )
-    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       )
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
@@ -196,9 +122,6 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
-                              OUT__  ZVARCPG  PVARCPR
     CALC_K_G            297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
                                      CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
@@ -287,6 +210,8 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     MASS_INER           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MOY_NOEU_S          118   IN__   N1NEUT_R PNEUTR
@@ -328,6 +253,7 @@ OPTION__
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R
                                      ZVARIPG  PVARI_R
+    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     WEIBULL             -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     XFEM_SMPLX_INIT     118   IN__   NGEOMER  PGEOMER

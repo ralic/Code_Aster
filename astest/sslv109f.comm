@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (QUAD8)
 # sslv109f.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,5 +156,26 @@ TEST_RESU(RESU=(
 
             );
 
+
+#---------------------------------------------------------------------------------------------------
+# Pour valider la possibilite d'un cas de charge de type VECT_ASSE pour MACRO_ELAS_MULT :
+#----------------------------------------------------------------------------------------
+VASS2 = CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', MAILLAGE=M,
+                   AFFE=(_F( TOUT = 'OUI', NOM_CMP = 'DX', VALE = 7. ),
+                         _F( TOUT = 'OUI', NOM_CMP = 'DY', VALE = 11. )))
+
+CH2=AFFE_CHAR_MECA(MODELE=MO, VECT_ASSE=VASS2, )
+
+RESU2=MACRO_ELAS_MULT( MODELE=MO, CHAM_MATER=CM, CHAR_MECA_GLOBAL=BLOQU,
+                       CAS_CHARGE=_F( MODE_FOURIER = 1, TYPE_MODE = 'SYME',
+                                 CHAR_MECA = CH2, SOUS_TITRE = 'MODE FOURIER 1 SYME' ))
+
+TEST_RESU(RESU=
+   _F(  RESULTAT = RESU2, NUME_MODE=1, NOM_CHAM='DEPL',
+         CRITERE = 'RELATIF',  PRECISION = 1.E-6, REFERENCE='NON_REGRESSION',
+         NOEUD = 'N12', NOM_CMP='DY', VALE=-5.7021953770987E+01,    ))
+#---------------------------------------------------------------------------------------------------
+
+
+
 FIN()
-#

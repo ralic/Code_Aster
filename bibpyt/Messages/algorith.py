@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith Messages  DATE 08/06/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,9 +205,7 @@ cata_msg = {
  liaison de frottement incongrue
 """),
 
-81 : _("""
- erreur contact - trop de réactualisations géométriques
-"""),
+
 
 96 : _("""
  ce mot cle de MODI_MAILLAGE attend un vecteur de norme non nulle.

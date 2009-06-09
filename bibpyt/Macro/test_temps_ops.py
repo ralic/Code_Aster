@@ -1,4 +1,4 @@
-#@ MODIF test_temps_ops Macro  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_temps_ops Macro  DATE 08/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -216,7 +216,8 @@ def test_temps_ops(self, RESU, INFO, **args):
               NOM_PARA='DIAGNOSTIC',
               VALE_I=1,
               CRITERE='ABSOLU',
-              PRECISION=0,)
+              PRECISION=0,
+              REFERENCE='NON_REGRESSION')
 
    return ier
 

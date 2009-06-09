@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 # TITRE CRITERES GEOMETRIQUES DANS DEFI_GROUP EN 2D
 # zzzz106b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,6 +28,84 @@
 DEBUT(CODE=_F(  NOM = 'ZZZZ106B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
+
+# -----> validation: 1) DEFI_GROUP/CREA_GROUP_MA/OPTION='APPUI' --------
+#
+# 1.1 CAS LINEAIRE
+#
+MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
+               CREA_GROUP_NO=
+                 _F( NOM='GPNO',
+                     NOEUD=('N10','N11','N25','N2','N3','N9','N1'),),)
+
+MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
+               CREA_GROUP_MA=(
+                             _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
+                               GROUP_NO='GPNO',
+                               NOM='AU_MOINS'),
+                            _F(OPTION='APPUI',TYPE_APPUI='TOUT',
+                               GROUP_NO='GPNO',
+                               NOM='TOUS'),),)
+#
+# 1.2 CAS QUADRATIQUE
+#
+MA2=CREA_MAILLAGE(MAILLAGE=MA,LINE_QUAD=_F(TOUT='OUI'),)
+
+MA2=DEFI_GROUP( reuse = MA2, MAILLAGE=MA2,
+               CREA_GROUP_NO=
+                 _F( NOM='GPNS',
+                     NOEUD=('N10','N11','N25','N2','N3','N9','N1',
+                            'NS44','NS45','NS46','NS32','NS47'),),)
+
+MA2=DEFI_GROUP( reuse = MA2, MAILLAGE=MA2,
+               CREA_GROUP_MA=(
+                            _F(OPTION='APPUI',TYPE_APPUI='TOUT',
+                               GROUP_NO='GPNS',
+                               NOM='TOUS2'),
+                            _F(OPTION='APPUI',TYPE_APPUI='SOMMET',
+                               GROUP_NO='GPNS',
+                               NOM='TOUS_SO2'),),)
+
+#
+#  fin de la validation 1) 
+#
+# ----->  validation : 2) DEFI_GROUP/CREA_GROUP_MA/TYPE_MAILLE  --------
+#
+MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
+               CREA_GROUP_MA=(
+                             _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
+                               TYPE_MAILLE='TOUT',
+                               GROUP_NO='GPNO',
+                               NOM='G1D2D'),
+                            _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
+                               TYPE_MAILLE='1D',
+                               GROUP_NO='GPNO',
+                               NOM='G1D'),
+                            _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
+                               TYPE_MAILLE='2D',
+                               GROUP_NO='GPNO',
+                               NOM='G2D'),),)
+
+
+DEFI_FICHIER(UNITE=38)
+
+IMPR_RESU(UNITE=38,RESU=_F(MAILLAGE=MA),)
+
+DEFI_FICHIER (ACTION='ASSOCIER',UNITE=38)
+
+IMPR_RESU(UNITE=38,RESU=_F(MAILLAGE=MA2),)
+
+DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
+
+TEST_FICHIER(FICHIER='fort.38',
+             NB_VALE=852,EXPR_IGNORE=('ASTER'),
+             VALE=10938.05,
+             VALE_K='56f62d34323ce6db20fd386f4e222ec8',
+             REFERENCE='NON_REGRESSION',
+             VERSION='9.3.22');
+
+# fin de la validation 2
+# ----------------------------------------------------------------------
 
 MA=DEFI_GROUP(     reuse=MA,        MAILLAGE=MA,CREA_GROUP_MA=(
                         _F(  NOM = 'GM1',

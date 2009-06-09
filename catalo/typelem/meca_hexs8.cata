@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
+%& MODIF TYPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,71 +83,25 @@ MODE_LOCAL__
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    E9NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       )
-    E36NEUTI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      X34      X35      X36      )
-    E128NEUI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      X34      X35      X36
-                                        X37      X38      X39      X40      X41      X42
-                                        X43      X44      X45      X46      X47      X48
-                                        X49      X50      X51      X52      X53      X54
-                                        X55      X56      X57      X58      X59      X60
-                                        X61      X62      X63      X64      X65      X66
-                                        X67      X68      X69      X70      X71      X72
-                                        X73      X74      X75      X76      X77      X78
-                                        X79      X80      X81      X82      X83      X84
-                                        X85      X86      X87      X88      X89      X90
-                                        X91      X92      X93      X94      X95      X96
-                                        X97      X98      X99      X100     X101     X102
-                                        X103     X104     X105     X106     X107     X108
-                                        X109     X110     X111     X112     X113     X114
-                                        X115     X116     X117     X118     X119     X120
-                                        X121     X122     X123     X124     X125     X126
-                                        X127     X128     )
-    CREFERI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12      )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6]     )
+    E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
+    E36NEUTI = NEUT_I   ELEM__         (X[36]    )
+    E128NEUI = NEUT_I   ELEM__         (X[128]   )
+    CREFERI  = NEUT_I   ELEM__         (X[12]    )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     CCONSTR  = NEUT_R   ELEM__         (X1       )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     E3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )
-    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       )
-    E33NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      )
-    G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      )
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
+    E33NEUTR = NEUT_R   ELEM__         (X[33]    )
+    G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27]    )
     CALPHAR  = NEUT_R   ELEM__         (X1       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
@@ -199,9 +153,6 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
-                              OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
     ALPH_ELGA_ZAC       565   IN__   ECONTPG  PCONTRP  DDL_MECA PDEPLAE  DDL_MECA PDEPLAP  NGEOMER  PGEOMER
@@ -448,6 +399,8 @@ OPTION__
                               OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
     INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
                               OUT__  EVOISIN  PVOISIN
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     MASS_INER           65    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
@@ -561,6 +514,7 @@ OPTION__
                               OUT__  ZVARIPG  PVARIGR
     VARI_ELNO_ELGA      20    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
+    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     WEIBULL             338   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRG  EDEFOPG  PDEFORR  EDOMGGA  PDOMMAG
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CSOUSOP  PSOUSOP  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIPG

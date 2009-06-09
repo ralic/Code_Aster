@@ -1,4 +1,4 @@
-#@ MODIF soustruc2 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF soustruc2 Messages  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,5 +44,20 @@ cata_msg={
  mot-clef "AMOR_MECA" interdit :
  le resultat :  %(k1)s  existe deja.
 """),
+
+6: _("""
+ -> Utilisation d'une fonctionnalité qui va disparaitre (APPUI_LACHE)
+ -> Risque & Conseil:
+    Utilisez  CREA_GROUP_MA / OPTION = 'APPUI', TYPE_APPUI='AU_MOINS_UN'.
+"""),
+
+
+7: _("""
+ -> Le groupe de mailles %(k1)s est vide. On ne le crée donc pas !
+ -> Risque & Conseil:
+    Veuillez vous assurer que le type de mailles souhaité soit cohérant
+    avec votre maillage.
+"""),
+
 
 }

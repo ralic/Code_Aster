@@ -1,7 +1,7 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMPLEX*16 ZC,CBID
       LOGICAL ZL,EXIGEO,EXICAR,EXITHE,EXITRF
       CHARACTER*1 BASE
-      CHARACTER*2 CODRET 
+      CHARACTER*2 CODRET
       INTEGER NBIN
       PARAMETER (NBIN=19)
       CHARACTER*8 ZK8,LPAIN(NBIN),LPAOUT(1),TEMPE,NOMA,EXIELE,REPK
@@ -548,19 +548,25 @@ C ====================================================================
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
-C!
+          CALL JEEXIN(LIGRCH(1:13)//'.VEASS',IRET)
+          IF (IRET.GT.0) THEN
+            ILIRES = ILIRES + 1
+            CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
+            CALL JEVEUO(LIGRCH(1:13)//'.VEASS','L',JVEASS)
+            CALL COPISD('CHAMP_GD',BASE,ZK8(JVEASS),LCHOUT(1))
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
+          END IF
+C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.ONDE ',IRET)
           IF (IRET.NE.0) THEN
             IF (LFONC) THEN
-C!
               OPTION = 'CHAR_MECA_ONDE_F'
               LPAIN(4) = 'PONDECF'
             ELSE
-C!
               OPTION = 'CHAR_MECA_ONDE'
               LPAIN(4) = 'PONDECR'
             END IF
-C!
+
             LCHIN(4) = LIGRCH(1:13)//'.ONDE .DESC'
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))

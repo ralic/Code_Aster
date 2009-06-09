@@ -7,7 +7,7 @@
      &                  ERROR ,FINPAS,MAXREL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/11/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/06/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,13 +143,13 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      LOGICAL      LCTCD,LCTCV,LCTCC,LTABL,LEXPL,LCTCG
+      LOGICAL      LCTCD,LCTCV,LCTCC,LTABL,LEXPL
       LOGICAL      ISFONC,NDYNLO
       INTEGER      IBID,IRET,MMITGO
       REAL*8       R8VIDE,R8BID,PASMIN
       REAL*8       RESIGR
       REAL*8       DIINST,INSTAM,INSTAP
-      CHARACTER*16 K16BID
+      CHARACTER*16 K16BID,K16BLA
       INTEGER      JCRI,JCRR
       CHARACTER*24 IMPCNA,CRITER
       INTEGER      JIMPCA
@@ -194,6 +194,7 @@ C
       IRELA  = 0
       IMAXI  = 0
       IREFE  = 0 
+      K16BLA = ' '
 C
 C --- FONCTIONNALITES ACTIVEES
 C      
@@ -201,7 +202,6 @@ C
       LCTCV  = ISFONC(FONACT,'CONT_VERIF')
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU') 
       LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
-      LCTCG  = ISFONC(FONACT,'CONT_GEOM')
 C
 C --- ACCES SDIMPR
 C
@@ -372,10 +372,8 @@ C
         CTCFIX = ZL(JCLREA+2-1)
         IF (CTCFIX) THEN
           CALL IMPSDM(SDIMPR,'CTCD_ITER','X')
-          CALL IMPSDR(SDIMPR,'CTCD_NOEU',' ',R8BID   ,IBID)
-          CALL IMPSDR(SDIMPR,'CTCD_GEOM',' ',R8VIDE(),IBID)          
         ELSE
-          CALL IMPSDM(SDIMPR,'CTCD_ITER',' ')            
+          CALL IMPSDM(SDIMPR,'CTCD_ITER',' ')
         ENDIF
 C
 C --- NOMBRE ITERATIONS INTERNES DE CONTACT POUR L'ITERATION COURANTE
@@ -383,23 +381,24 @@ C
         CALL CFITER(RESOCO,'L','CONT',CTCITE,R8BID)
         CALL IMPSDR(SDIMPR,'CTCD_ITER',K16BID,R8BID,CTCITE) 
 C
-C --- EVALUATION DE LA REACUALISATION GEOMETRIQUE POUR CONTACT DISCRET
+C --- INIT AFFICHAGE REAC_GEOM
+C        
+        CALL IMPSDR(SDIMPR,'CTCD_NOEU',K16BLA,R8BID   ,IBID)
+        CALL IMPSDR(SDIMPR,'CTCD_GEOM',K16BLA,R8VIDE(),IBID)
+C  
+C --- EVALUATION DE LA REACTUALISATION GEOMETRIQUE POUR CONTACT DISCRET
 C       
+        CTCGEO = .FALSE.
         IF (CVNEWT) THEN
           IF (.NOT.CTCFIX) THEN 
             CALL CFCONV(MAILLA,NUMEDD,SDIMPR,RESOCO,SOLALG,
      &                  MAXREL,CTCGEO)
           ENDIF
-          CTCCVG = (.NOT.CTCFIX).AND.CTCGEO
+          CTCCVG = (.NOT.CTCFIX)  
         ELSE
-          CALL IMPSDR(SDIMPR,'CTCD_NOEU',' ',R8BID   ,IBID)
-          CALL IMPSDR(SDIMPR,'CTCD_GEOM',' ',R8VIDE(),IBID) 
-          CTCCVG = .FALSE.           
-        ENDIF    
-        IF (.NOT.LCTCG) THEN  
-          CALL IMPSDR(SDIMPR,'CTCD_NOEU',' ',R8BID   ,IBID)
-          CALL IMPSDR(SDIMPR,'CTCD_GEOM',' ',R8VIDE(),IBID)         
-        ENDIF    
+          CTCCVG = .FALSE.          
+        ENDIF
+        CTCCVG = CTCCVG.AND.CTCGEO 
       ELSE 
         CTCCVG = .TRUE.         
       ENDIF
@@ -431,40 +430,37 @@ C
         ELSE
           LTABL = .TRUE.
         ENDIF   
-      ELSEIF (LCTCD) THEN
-        IF (CVNEWT.AND.BORCVG) THEN
-          IF (CTCFIX) THEN
-            LTABL = .TRUE.
-          ELSE
-            IF (LCTCG) THEN
-              LTABL = .FALSE.         
-              IF (.NOT.CTCGEO) THEN   
-                CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)    
-                CALL NMIMPR('IMPR','LIGNE    ',' ',0.D0,0)  
-              ELSE
-                CALL MMBOUC(RESOCO,'GEOM','INCR',MMITGO)
-                CALL NMIMPR('IMPR','BCL_GEOME',' ',0.D0,MMITGO) 
-              ENDIF
-            ELSE
-              LTABL = .TRUE.
-            ENDIF                  
-          ENDIF 
-         
+      ELSEIF (LCTCD.AND.(.NOT.LCTCV)) THEN
+        IF (CONVER) THEN
+          LTABL = .FALSE.
         ELSE
-          LTABL = .TRUE.
-        ENDIF          
+          LTABL = .TRUE.  
+        ENDIF  
       ELSE
         LTABL = .TRUE.
       ENDIF
 C
 C --- AFFICHAGE LIGNE DU TABLEAU DE CONVERGENCE
 C
-      IF (LTABL) THEN
-        CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)     
+      IF (LTABL) THEN     
         IF (CONVER) THEN
-          CALL NMCVGI('CVG' ,MAXREL)  
+          IF (MAXREL) THEN
+            CALL NMCVGI('CVG_MX') 
+          ELSE
+            CALL NMCVGI('CVG_OK') 
+          ENDIF
+        ELSE
+          CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)     
         ENDIF
-      ENDIF      
+      ENDIF 
+C      
+      IF (LCTCD.AND.(.NOT.LCTCV)) THEN
+        IF (CVNEWT.AND.BORCVG.AND.(.NOT.CTCFIX).AND.(.NOT.CTCGEO)) THEN
+          CALL MMBOUC(RESOCO,'GEOM','INCR',MMITGO)
+          CALL NMIMPR('IMPR','BCL_GEOME',' ',0.D0,MMITGO)
+          CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)      
+        ENDIF   
+      ENDIF        
 C
 C --- DEPASSEMENT ITERATIONS
 C      
@@ -495,16 +491,14 @@ C
  9999 CONTINUE
 C
 C --- S'IL N'Y A PAS EU CALCUL DES RESIDUS - ON AFFICHE QUAND MEME
-C --- LA LIGNE, MAIS AVEC DES <R8VIDE> SAUF EN EXPLICITE
+C --- LA LIGNE SAUF EN EXPLICITE
 C
       IF (.NOT.LRESI) THEN
         CALL IMPSDM(SDIMPR,'ITER_NEWT','X')
         IF (.NOT.LEXPL) THEN
           CALL NMIMRE(NUMEDD,SDIMPR,IRELA ,IMAXI ,IREFE ,
-     &                VRELA ,VMAXI ,VREFE )  
-          CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)
-          CALL NMIMPR('IMPR','LIGNE    ',' ',0.D0,0)
-          CALL NMIMPR('IMPR','CONV_FORC',' ',0.D0,0)
+     &                VRELA ,VMAXI ,VREFE ) 
+          CALL NMCVGI('CVG_NO')
         ENDIF
         IF (ERROR) THEN     
           CALL NMERGE('PRT','ALL',ERROR,SDERRO)   

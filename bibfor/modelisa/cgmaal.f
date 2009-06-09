@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBMA
       CHARACTER*(*)       MOFAZ, NOMAZ, LISMAZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER        IBID, DIME, NBMC, NBNO, NCI, ADRVLC, ACNCIN, IER,
+      INTEGER        IBID, NBMC, NBNO, NCI, ADRVLC, ACNCIN, IER,
      &               I, J, NBMAT, ITYP, NUNO, JADR, NUMA, IDLIST,
      &               JNOEU, IDLIMA
       CHARACTER*8    NOMA, K8BID, MOTCLE(2), TYMOCL(2), TYPMA
@@ -87,11 +87,6 @@ C
       CALL JEVEUO ( JEXATR(NCNCIN,'LONCUM'), 'L', ADRVLC )
       CALL JEVEUO ( JEXNUM(NCNCIN,1)       , 'L', ACNCIN )
 C
-C --- RECUPERATION DE LA DIMENSION DU PROBLEME :
-C     ----------------------------------------
-      DIME = 3
-      CALL DISMOI('F','Z_CST',NOMA,'MAILLAGE',IBID,K8BID,IER)
-      IF ( K8BID(1:3) .EQ. 'OUI' )  DIME = 2
 C
 C --- RECUPERATION DU NOMBRE DE MAILLES DU MAILLAGE :
 C     ---------------------------------------------
@@ -113,24 +108,7 @@ C     -----------------------------------
          JADR = ZI(ADRVLC+NUNO-1)
          DO 20 J = 1 , NBMA
             NUMA = ZI(ACNCIN+JADR-1+J-1)
-
-            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP+NUMA-1)),TYPMA)
-
-            IF ( DIME .EQ. 2 ) THEN
-               IF ( (TYPMA(1:4).EQ.'QUAD' ) .OR.
-     &              (TYPMA(1:4).EQ.'TRIA' ) ) THEN
-
-                  ZI(IDLIMA+NUMA-1) = 1
-               ENDIF
-            ELSE
-               IF ( (TYPMA(1:5).EQ.'TETRA') .OR.
-     &              (TYPMA(1:5).EQ.'PENTA') .OR.
-     &              (TYPMA(1:5).EQ.'PYRAM') .OR.
-     &              (TYPMA(1:4).EQ.'HEXA' ) ) THEN
-
-                  ZI(IDLIMA+NUMA-1) = 1
-               ENDIF
-            ENDIF
+            ZI(IDLIMA+NUMA-1) = 1
  20      CONTINUE
  10   CONTINUE
 C

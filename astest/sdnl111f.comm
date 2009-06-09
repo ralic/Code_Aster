@@ -1,5 +1,6 @@
-# MODIF  DATE 10/11/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/06/2009   AUTEUR GREFFET N.GREFFET 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
+# sdnl111f.para = tps_job 170 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,6 +119,7 @@ U=DYNA_NON_LINE(MODELE=MODELE,
                                 FORMULATION='DEPLACEMENT',
                                 THETA=0.7,),
 #                NEWTON=_F(MATRICE='ELASTIQUE',),
+                CONVERGENCE =_F(RESI_GLOB_MAXI = 1.E-3,),
                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
 ##############################################

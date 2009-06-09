@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/06/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,25 +21,25 @@ TYPE_GENE__
 
 ENTETE__ ELEMENT__ MVDPTR6          MAILLE__ TRIA6
    ELREFE__  TR6       GAUSS__  RIGI=FPG3  MASS=FPG6  GANO=FPG3   FPG_LISTE__  MATER = (RIGI GANO)
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3  MASS=FPG3
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3  MASS=FPG6
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ MVDPQS8          MAILLE__ QUAD8
    ELREFE__  QU8       GAUSS__  RIGI=FPG4  MASS=FPG9  GANO=FPG4   FPG_LISTE__  MATER = (RIGI GANO)
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG9
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MVAXTR6          MAILLE__ TRIA6
    ELREFE__  TR6       GAUSS__  RIGI=FPG3  MASS=FPG6  GANO=FPG3   FPG_LISTE__  MATER = (RIGI GANO)
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3  MASS=FPG3
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3  MASS=FPG6
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ MVAXQS8          MAILLE__ QUAD8
    ELREFE__  QU8       GAUSS__  RIGI=FPG4  MASS=FPG9  GANO=FPG4   FPG_LISTE__  MATER = (RIGI GANO)
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG9
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
@@ -147,7 +147,9 @@ OPTION__
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    AMOR_MECA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUNS  PRIGINS
+                                     ZVARCPG  PVARCPR
+                              OUT__  MMATUNS  PMATUNS
     CALC_NOEU_BORD      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -220,9 +222,12 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     MASS_INER        -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    MASS_MECA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    MASS_MECA_EXPLI     -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    MASS_MECA           545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_DIAG      545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_EXPLI     545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX

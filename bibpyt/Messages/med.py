@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 04/08/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF med Messages  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -302,8 +302,21 @@ cata_msg = {
        de MED_NOEUD_MAILLE).
 """),
 
+54 : _("""
+  -> Le modèle fourni à LIRE_RESU n'est pas cohérent avec le type de structure
+     de données résultat que vous souaitez produire.
+"""),
+
+
 55 : _("""
   -> Lecture impossible pour  %(k1)s  au format MED
+"""),
+
+56 : _("""
+     En effet, le phénomène %(k1)s de votre modèle n'est pas compatible avec une 
+     SD Résultat de type %(k2)s.
+  -> Risque & Conseil :
+     Veuillez fournir à LIRE_RESU un autre modèle ou changer de TYPE_RESU.
 """),
 
 57 : _("""
@@ -312,8 +325,36 @@ cata_msg = {
      Vérifier l'intégrité du fichier MED avec medconforme/mdump.
 """),
 
+58 : _("""
+  -> Le nombre de type de maille présent dans le fichier MED est 
+      différent du nombre de type de maille présent dans le maillage fourni.
+  -> Risque & Conseil :
+     Le modèle sur lequel le résultat a été créé n'est pas le même
+      que le modèle fourni.
+     Vérifiez le maillage de votre modèle !
+"""),
+59 : _("""
+     Les éléments du modèle fourni ont pour support géométrique des 
+     mailles ne figurant pas dans le fichier med.
+     Par exemple, il y %(i1)s mailles de types %(k1)s dans le fichier med,
+     alors que le modèle en contient %(i2)s. 
+  -> Risque & Conseil :
+     Veuillez fournir un modèle dont le maillage correspond à celui présent
+     dans le fichier med.
+"""),
+
 60 : _("""
   -> On ne traite pas les maillages distants.
+"""),
+
+61 : _("""
+     Le maillage contenu dans le fichier med contient beaucoup plus de mailles
+     que celui associé au modèle fourni. 
+     Par exemple, on dénombre %(i1)s mailles de types %(k1)s dans le maillage
+     med, alors que le modèle n'en contient que %(i2)s ! 
+  -> Risque & Conseil :
+     Veuillez vérifier que le modèle fourni ne résulte pas d'une restriction,
+     ou que l'un des maillages est quadratique et l'autre linéaire.
 """),
 
 62 : _("""

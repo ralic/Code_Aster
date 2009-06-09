@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+%& MODIF TYPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,29 +20,34 @@ GENER_MEDPL2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEDPQU4          MAILLE__ QUAD4
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO NOEU)
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  ARLQ_1=FPG1  ARLQ_3=FPG4
+                                ARLQ_6=FPG9  ARLQ_7=FPG9  FPG_LISTE__ MATER=(RIGI GANO NOEU)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MDDPQU4          MAILLE__ QUAD4
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO NOEU)
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MEDPTR3          MAILLE__ TRIA3
-   ELREFE__  TR3       GAUSS__  RIGI=FPG1  MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO NOEU)
+   ELREFE__  TR3       GAUSS__  RIGI=FPG1  MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  ARLQ_1=FPG1  ARLQ_4=FPG3
+                                ARLQ_6=FPG6  ARLQ_7=FPG7  ARLQ_8=FPG12  FPG_LISTE__ MATER=(RIGI GANO NOEU)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
    ENS_NOEUD__  EN1     =     1  2  3
    OPTION__   CALC_DG                 -1
    OPTION__   CALC_DG_F               -1
    OPTION__   DESI_ELNO_DLSI          -1
 ENTETE__ ELEMENT__ MEDPTR6          MAILLE__ TRIA6
-   ELREFE__  TR6       GAUSS__  RIGI=FPG3  MASS=FPG6  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO NOEU)
+   ELREFE__  TR6       GAUSS__  RIGI=FPG3  MASS=FPG6  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU  ARLQ_1=FPG1  ARLQ_4=FPG3
+                                ARLQ_6=FPG6  ARLQ_8=FPG12  FPG_LISTE__ MATER=(RIGI GANO NOEU)
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 ENTETE__ ELEMENT__ MEDPQU8          MAILLE__ QUAD8
-   ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO NOEU)
+   ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  ARLQ_1=FPG1  ARLQ_3=FPG4
+                                ARLQ_6=FPG9  ARLQ_7=FPG9  FPG_LISTE__ MATER=(RIGI GANO NOEU)
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 ENTETE__ ELEMENT__ MEDPQU9          MAILLE__ QUAD9
-   ELREFE__  QU9       GAUSS__  RIGI=FPG9  MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG_LISTE__ MATER=(RIGI GANO NOEU)
+   ELREFE__  QU9       GAUSS__  RIGI=FPG9  MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  ARLQ_1=FPG1  ARLQ_3=FPG4
+                                ARLQ_6=FPG9  ARLQ_7=FPG9  FPG_LISTE__ MATER=(RIGI GANO NOEU)
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8  9
    OPTION__   CALC_DG                 -1
@@ -106,9 +111,9 @@ MODE_LOCAL__
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
     EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
-    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
+    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
                                         TERMN2   TERMSA   TERMS2   TAILLE   )
-    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
+    EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
                                         TERMN2   TERMSA   TERMS2   TAILLE   )
     CFISSR   = FISS_R   ELEM__         (XA       YA       XNORM    YNORM    )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
@@ -131,33 +136,21 @@ MODE_LOCAL__
                                         IZZ      IXY      IXZ      IYZ      )
     ECARAGE  = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      IXR2     IYR2     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    CREFERI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12      )
-    E6NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       )
-    E9NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9  )
-    E18NEUI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18      )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6]     )
+    CREFERI  = NEUT_I   ELEM__         (X[12]    )
+    E6NEUTI  = NEUT_I   ELEM__         (X[6]     )
+    E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
+    E18NEUI  = NEUT_I   ELEM__         (X[18]    )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     CCONSTR  = NEUT_R   ELEM__         (X1       )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    E6NEUTR  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6       )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )
+    E6NEUTR  = NEUT_R   ELEM__         (X[6]     )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
@@ -191,7 +184,12 @@ MODE_LOCAL__
     EWEIBUL  = WEIBULL  ELEM__         (DSIGWB   )
     ESOURCR  = SOUR_R   ELGA__ RIGI  (SOUR)
     CITERAT  = NEUT_R   ELEM__         (X1       )
-    E1NEUTR = NEUT_R   ELEM__         (X1       )
+    E1NEUTR  = NEUT_R   ELEM__         (X1       )
+    NFAMILK  = NEUT_K8  ELEM__         (Z1       )
+    NINFORR  = NEUT_R   ELEM__         (X[5]     )
+    EREFE1K  = NEUT_K8  ELEM__         (Z1       )
+    ECOOR1R  = NEUT_R   ELEM__         (X[18]    )
+    DDL_MEC2 = NEUT_R   ELEM__         (X[18]    )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -203,9 +201,9 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
     MMATZZR = MSIZ_R DDL_NOZ1 DDL_NOZ1
+    MMATUNZ = MZNS_R DDL_MEC2 DDL_MEC2
 
 OPTION__
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
     ALPH_ELGA_ZAC       561   IN__   ECONTPG  PCONTRP  DDL_MECA PDEPLAE  DDL_MECA PDEPLAP  NGEOMER  PGEOMER
@@ -217,6 +215,9 @@ OPTION__
     AMPL_ELNO_ZAC       564   IN__   EDEFOPG  PALPHAR  ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EDEFOPG  PALPHAP  ECONTNO  PCONTZR  EDEFONO  PDEFOZR
+    ARLQ_MATR           119   IN__   NGEOMER  PGEOMER  NFAMILK  PFAMILK  NINFORR  PINFORR  EREFE1K  PREFE1K
+                                     EREFE1K  PREFE2K  ECOOR1R  PCOOR1R  ECOOR1R  PCOOR2R
+                              OUT__  MMATUNZ  PMATUN1  MMATUNZ  PMATUN2
     CALC_DG             96    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL  DDL_MECA PDEPINR
                                      DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  CEPSINR  PEPSINR  NFORCER  PFRVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
@@ -601,6 +602,8 @@ OPTION__
                               OUT__  ZVARIPG  PVARIGR
     VARI_ELNO_ELGA      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
+    VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
+                              OUT__  ECODRET  PCODRET
     WEIBULL             331   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRG  EDEFOPG  PDEFORR  EDOMGGA  PDOMMAG
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CSOUSOP  PSOUSOP  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIPG

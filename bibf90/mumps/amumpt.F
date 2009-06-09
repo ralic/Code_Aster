@@ -1,8 +1,8 @@
       SUBROUTINE  AMUMPT(OPTION,KMONIT,TEMPS,RANG,NBPROC,KXMPS,
-     &                   LQUALI,RDESQ,TYPE)
+     &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPC MUMPS  DATE 18/05/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPT MUMPS  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -33,10 +33,10 @@ C IN  RDESQ  :  R8    : PARAMETRE POUR LE DESEQUILIBRAGE MAX
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 C---------------------------------------------------------------
  
-      INTEGER      OPTION,RANG,NBPROC,KXMPS
+      INTEGER      OPTION,RANG,NBPROC,KXMPS,IETDEB,IETRAT
       CHARACTER*1  TYPE
       CHARACTER*24 KMONIT(12)
-      REAL*8       TEMPS(6),RDESQ
+      REAL*8       TEMPS(6),RDESQ,RCTDEB
       LOGICAL      LQUALI
 
 #ifdef _HAVE_MUMPS
@@ -53,12 +53,15 @@ C============================================================
       TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
       INTEGER      IFM,NIV,IBID,IAUX1,IAUX2,IAUX3,K,I,N,INFO(100),IRET,
-     &             MONIT(12)
+     &             MONIT(12),IETFIN,IETMAX
+      INTEGER*4    KXMPS4
       CHARACTER*1  ROUCS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS)
       CHARACTER*14 NONUS(NMXINS)
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),KTEMP
-      REAL*8       RMONIT(18),RAUX,VALR(2),RINFOG(100)
+      CHARACTER*80 NVERS
+      REAL*8       RMONIT(18),RAUX,VALR(2),RINFOG(100),RCTFIN,RETFIN
+      LOGICAL      LDEBUG
       COMMON /SMUMPS1/ DMPS
       COMMON /SMUMPS2/ ZMPS
       COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
@@ -81,14 +84,20 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
-
+      
+C --- PARAMETRE POUR DEBUGGAGE (ATTENTION IL FAUT INFO=2)
+      LDEBUG=.TRUE.
+      LDEBUG=.FALSE.
+      IF (LDEBUG.AND.(NIV.NE.2)) CALL ASSERT(.FALSE.)
+      
 C       ------------------------------------------------
 C        INITS
 C       ------------------------------------------------
 C --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
 C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
+      KXMPS4=KXMPS
       IF (TYPE.EQ.'R') THEN
-        XMPSK=>DMPS(KXMPS)
+        XMPSK=>DMPS(KXMPS4)
         N=XMPSK%N
         INFO(9)=XMPSK%INFO(9)
         INFO(10)=XMPSK%INFO(10)
@@ -98,8 +107,9 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RINFOG(7)=XMPSK%RINFOG(7)
         RINFOG(9)=XMPSK%RINFOG(9)
         RINFOG(10)=XMPSK%RINFOG(10)
+        NVERS(1:5)=XMPSK%VERSION_NUMBER
       ELSE IF (TYPE.EQ.'C') THEN
-        YMPSK=>ZMPS(KXMPS)
+        YMPSK=>ZMPS(KXMPS4)
         N=YMPSK%N
         INFO(9)=YMPSK%INFO(9)
         INFO(10)=YMPSK%INFO(10)
@@ -109,6 +119,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RINFOG(7)=YMPSK%RINFOG(7)
         RINFOG(9)=YMPSK%RINFOG(9)
         RINFOG(10)=YMPSK%RINFOG(10)
+        NVERS(1:5)=YMPSK%VERSION_NUMBER
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -151,10 +162,23 @@ C       ------------------------------------------------
       IF (NIV.GE.2) THEN
         IF (OPTION.EQ.0) THEN
 C --      ON NE FAIT RIEN DE PLUS !
+        ELSE IF (OPTION.EQ.1) THEN
+          IF (LDEBUG) THEN
+            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+            CALL CPU_TIME(RCTDEB)
+          ENDIF
         ELSE IF (OPTION.EQ.2) THEN
           CALL UTTCPU(70,'INIT ',6,TEMPS)
           CALL UTTCPU(70,'DEBUT',6,TEMPS)
-
+          IF (LDEBUG) THEN
+            CALL SYSTEM_CLOCK(IETFIN)
+            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+            CALL CPU_TIME(RCTFIN)
+            WRITE(IFM,*)'REMPLISSAGE MATRICE + 2*JJLDYN '
+     &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
+            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+            CALL CPU_TIME(RCTDEB)
+          ENDIF
         ELSE IF (OPTION.EQ.4) THEN
           CALL UTTCPU(70,'FIN  ',6,TEMPS)
           ZR(MONIT(4)+RANG)=TEMPS(5)+TEMPS(6)
@@ -162,7 +186,15 @@ C --      ON NE FAIT RIEN DE PLUS !
           ZI(MONIT(11)+RANG)=INFO(17)
           CALL UTTCPU(70,'INIT ',6,TEMPS)
           CALL UTTCPU(70,'DEBUT',6,TEMPS)
-
+          IF (LDEBUG) THEN
+            CALL SYSTEM_CLOCK(IETFIN)
+            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+            CALL CPU_TIME(RCTFIN)
+            WRITE(IFM,*)'ANALYSE MUMPS '
+     &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
+            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+            CALL CPU_TIME(RCTDEB)
+          ENDIF
         ELSE IF (OPTION.EQ.6) THEN
           CALL UTTCPU(70,'FIN  ',6,TEMPS)
           ZR(MONIT(5)+RANG)=TEMPS(5)+TEMPS(6)
@@ -170,16 +202,50 @@ C --      ON NE FAIT RIEN DE PLUS !
           ZI(MONIT(12)+RANG)=INFO(16)
           CALL MUMMPI(4,IFM,NIV,KMONIT(1),NBPROC,IBID)
           CALL MUMMPI(4,IFM,NIV,KMONIT(2),NBPROC,IBID)
-
+          IF (LDEBUG) THEN
+            CALL SYSTEM_CLOCK(IETFIN)
+            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+            CALL CPU_TIME(RCTFIN)
+            WRITE(IFM,*)'FACTO NUMERIQUE MUMPS '
+     &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
+          ENDIF
+        ELSE IF (OPTION.EQ.7) THEN
+          IF (LDEBUG) THEN
+            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+            CALL CPU_TIME(RCTDEB)
+          ENDIF
         ELSE IF (OPTION.EQ.8) THEN
           CALL UTTCPU(70,'INIT ',6,TEMPS)
           CALL UTTCPU(70,'DEBUT',6,TEMPS)
-
+          IF (LDEBUG) THEN
+            CALL SYSTEM_CLOCK(IETFIN)
+            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+            CALL CPU_TIME(RCTFIN)
+            WRITE(IFM,*)'PRETRAITEMENTS RHS '
+     &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
+            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+            CALL CPU_TIME(RCTDEB)
+          ENDIF
         ELSE IF (OPTION.EQ.10) THEN
           CALL UTTCPU(70,'FIN  ',6,TEMPS)
           ZR(MONIT(8)+RANG)=TEMPS(5)+TEMPS(6)
-
+          IF (LDEBUG) THEN
+            CALL SYSTEM_CLOCK(IETFIN)
+            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+            CALL CPU_TIME(RCTFIN)
+            WRITE(IFM,*)'DESCENTE-REMONTEE MUMPS '
+     &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
+            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+            CALL CPU_TIME(RCTDEB)
+          ENDIF
         ELSE IF (OPTION.EQ.12) THEN
+          IF (LDEBUG) THEN
+            CALL SYSTEM_CLOCK(IETFIN)
+            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+            CALL CPU_TIME(RCTFIN)
+            WRITE(IFM,*)'POST-TRAITEMENTS SOLUTION '
+     &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
+          ENDIF
 C -- COMMUNICATION DES DONNEES DU MONITORING
            CALL MUMMPI(4,IFM,NIV,KMONIT(3),NBPROC,IBID)
            CALL MUMMPI(4,IFM,NIV,KMONIT(4),NBPROC,IBID)
@@ -195,7 +261,7 @@ C -- AFFICHAGE
              WRITE(IFM,*)
              WRITE(IFM,*)'*********************************************'
      &                  //'*********************************'
-             WRITE(IFM,*)'<MONITORING MUMPS >'
+             WRITE(IFM,*)'<MONITORING MUMPS '//NVERS(1:5)//' >'
              WRITE(IFM,'(A19,I9)')' TAILLE DU SYSTEME ',N
              IF (LQUALI) THEN
                WRITE(IFM,'(A28,1PD11.4,1PD11.4)')'CONDITIONNEMENT'//
@@ -274,17 +340,22 @@ C -- AFFICHAGE
                ENDDO
              ENDIF
   998        CONTINUE
-C            MONITORING MEMOIRE             
-             IF (DMPS(KXMPS)%ICNTL(22).EQ. 0) THEN 
-                 KTEMP='IN-CORE'
-              ELSE 
-                 KTEMP='OUT-OF-CORE'
-              END IF
-              WRITE(IFM,*)' MEMOIRE RAM ESTIMEE ET REQUISE 
+C            MONITORING MEMOIRE
+             IF (TYPE.EQ.'R') THEN             
+               IBID=XMPSK%ICNTL(22)
+             ELSE
+               IBID=YMPSK%ICNTL(22)
+             ENDIF
+             IF (IBID.EQ.0) THEN 
+               KTEMP='IN-CORE'
+             ELSE 
+               KTEMP='OUT-OF-CORE'
+             ENDIF
+             WRITE(IFM,*)' MEMOIRE RAM ESTIMEE ET REQUISE 
      &             PAR MUMPS EN MO(FAC_NUM + RESOL)'
             
-              WRITE(IFM,*)'RANG ASTER : '//
-     &             'ESTIM IN-CORE | ESTIM OUT-OF-CORE | RESOL. '//KTEMP  
+             WRITE(IFM,*)'RANG ASTER : '//
+     &            'ESTIM IN-CORE | ESTIM OUT-OF-CORE | RESOL. '//KTEMP  
              
 C            POUR LE CALCUL DES MOYENNES            
              RMONIT(1)=0.0

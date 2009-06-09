@@ -1,6 +1,6 @@
       SUBROUTINE JXECRO ( IC , IADMI , IADDI , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ------------------------------------------------------------------
       COMMON /JUSADI/  JUSADI(N)
 C     ------------------------------------------------------------------
       REAL*8           R8BID
-      INTEGER          IADMO , KADD , LADD ,NDE ,LGBL
+      INTEGER          IADMO , KADD , LADD ,NDE ,LGBL ,LSO2
       LOGICAL          LPETIT
       PARAMETER      ( NDE = 6)
 C ----------------------------------------------------------------------
@@ -89,7 +89,9 @@ C DEB ------------------------------------------------------------------
       LADD   = IADDI(2)
       IADMO  = ( IADM - 1 ) * LOIS + LADM + 1
       LGBL   = 1024*LONGBL(IC)*LOIS
-      LPETIT = ( LSO .LT. LGBL-NDE*LOIS )
+      LSO2   = LSO
+      IF ( MOD(LSO,LOIS) .NE. 0 ) LSO2 = (1 + LSO/LOIS) * LOIS
+      LPETIT = ( LSO2 .LT. LGBL-NDE*LOIS )
       IF ( IADDI(1) .EQ. 0 ) THEN
 C
 C ----- PREMIER DECHARGEMENT
@@ -98,7 +100,7 @@ C
 C
 C -------- PETIT OBJET
 C
-          IF ( NITECR(IC) + LSO +NDE*LOIS .GT. LGBL ) THEN
+          IF ( NITECR(IC) + LSO2 +NDE*LOIS .GT. LGBL ) THEN
 C
 C --------- LE PETIT OBJET NE TIENT PAS DANS LE TAMPON D'ECRITURE
             IF ( IITECR(IC) .GT. 0 ) THEN
@@ -163,20 +165,20 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
           JIECR = (JK1ZON+KITECR(IC)+NITECR(IC))/LOIS+1
           ISZON(JIECR  )              = IDCO
           ISZON(JIECR+1)              = IDOS
-          ISZON(JIECR+2)              = LSO/LOIS
-          ISZON(JIECR+2+(LSO/LOIS)+1) = 0
-          ISZON(JIECR+2+(LSO/LOIS)+2) = 0
-          ISZON(JIECR+2+(LSO/LOIS)+3) = 0
+          ISZON(JIECR+2)              = LSO2/LOIS
+          ISZON(JIECR+2+(LSO2/LOIS)+1) = 0
+          ISZON(JIECR+2+(LSO2/LOIS)+2) = 0
+          ISZON(JIECR+2+(LSO2/LOIS)+3) = 0
           CALL JXDEPS (IADMO, KITECR(IC)+NITECR(IC)+3*LOIS+1, LSO )
           IADDI(1) = IITECR(IC)
           IADDI(2) = NITECR(IC)+3*LOIS
-          NITECR(IC) = NITECR(IC) + LSO + 3*LOIS
+          NITECR(IC) = NITECR(IC) + LSO2 + 3*LOIS
         ELSE
 C
 C ------- GROS OBJET
 C
-          NBL = LSO / LGBL
-          IF ( MOD ( LSO , LGBL ) .NE. 0 ) NBL = NBL + 1
+          NBL = LSO2 / LGBL
+          IF ( MOD ( LSO2 , LGBL ) .NE. 0 ) NBL = NBL + 1
           KD = 1
  301      CONTINUE
           IF ( KD .LE. NBLMAX(IC)-NBL ) THEN

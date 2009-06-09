@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-import string,copy,traceback
+import string,copy,traceback,re
 from Lecture_Cata_Ele import spark
 GenericScanner       =spark.GenericScanner
 GenericASTBuilder    =spark.GenericASTBuilder
@@ -157,7 +157,7 @@ class MonScanner(GenericScanner):
         self.rv.append(t)
 
     def t_ident(self, s):
-        r'[a-z][a-z0-9_]*'
+        r'[a-z][a-z0-9_]*(\[[0-9]+\])*'
         t = Token(type="ident", lineno=self.lineno, attr=string.upper(s))
         self.rv.append(t)
 
@@ -359,7 +359,7 @@ class MonParser(GenericASTBuilder):
         molocn   ::= ident =  ident  ELNO__  DIFF__   l_point
         moloce   ::= ident =  ident  ELGA__  ident    point
         l_point  ::= l_point ident point
-        l_point  ::= ident  point
+        l_point  ::= ident point
         point    ::= ( l_ident )
         point    ::= ( )
         lcmp     ::= l_ident
@@ -535,9 +535,27 @@ class creer_capy(GenericASTTraversal):
         node.l_ident=[]
         if len(node) == 2 :
            node.l_ident.extend(node[0].l_ident)
-           node.l_ident.append(node[1].attr)
+           match=re.search('([a-z][a-z0-9_]*)\[([0-9]*)\]',node[1].attr,re.IGNORECASE)
+           if match is not None :
+             prefix=match.group(1)
+             lonlist=match.group(2)
+             ident_list=[]
+             for i in range(1,int(lonlist)+1) :
+               ident_list.append(prefix+str(i))
+             node.l_ident.extend(ident_list)
+           else :
+             node.l_ident.append(node[1].attr)
         else :
-           node.l_ident.append(node[0].attr)
+           match=re.search('([a-z][a-z0-9_]*)\[([0-9]*)\]',node[0].attr,re.IGNORECASE)
+           if match is not None :
+             prefix=match.group(1)
+             lonlist=match.group(2)
+             ident_list=[]
+             for i in range(1,int(lonlist)+1) :
+               ident_list.append(prefix+str(i))
+             node.l_ident.extend(ident_list)
+           else :
+             node.l_ident.append(node[0].attr)
         del node._kids
 
     def n_l_entier(self, node):
