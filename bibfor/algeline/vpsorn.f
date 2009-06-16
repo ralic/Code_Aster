@@ -5,7 +5,7 @@
      &   OMECOR, NCONV, FLAGE)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -226,15 +226,17 @@ C GESTION DES FLAGS D'ERREURS
       ENDIF
 C
 C GESTION DES MODES CONVERGES
-      IF ((NCONV.LT.NFREQ).AND.(IDO.EQ.99)) THEN
-        VALI (1) = NCONV
-        VALI (2) = NFREQ
-        VALI (3) = INFO
-        VALI (4) = NBVECT
-        VALI (5) = MAXITR
-        VALR (1) = TOLSOR
-        CALL U2MESG('E','ALGELINE5_49',0,' ',5,VALI,1,VALR)
-        FLAGE = .TRUE.
+      IF (IDO.EQ.99) THEN
+        IF (NCONV.LT.NFREQ) THEN
+          VALI (1) = NCONV
+          VALI (2) = NFREQ
+          VALI (3) = INFO
+          VALI (4) = NBVECT
+          VALI (5) = MAXITR
+          VALR (1) = TOLSOR
+          CALL U2MESG('E','ALGELINE5_49',0,' ',5,VALI,1,VALR)
+          FLAGE = .TRUE.
+        ENDIF
       ENDIF
 
 C---------------------------------------------------------------------

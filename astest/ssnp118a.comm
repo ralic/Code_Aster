@@ -1,4 +1,4 @@
-# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION JOINT 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_1=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250), 
+    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250),
     )
   )
 
@@ -89,8 +89,8 @@ TRAC_1=AFFE_CHAR_MECA(
 TRAC_2=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-     _F(MAILLE='HAUT', DX=-1.250, DY= 2.16506350946110),   
-     _F(MAILLE='BAS',  DX=-1.250, DY= 2.16506350946110),  
+     _F(MAILLE='HAUT', DX=-1.250, DY= 2.16506350946110),
+     _F(MAILLE='BAS',  DX=-1.250, DY= 2.16506350946110),
     )
   )
 
@@ -121,12 +121,12 @@ FCT = DEFI_FONCTION(
   PROL_DROITE = 'LINEAIRE'
   )
 
-#----------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE I
 #-----------------------------------------------------------------------------------
 
 U_1=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+  SOLVEUR=_F(METHODE='MUMPS',),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
@@ -145,7 +145,7 @@ U_1=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_1,
-  SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+  SOLVEUR=_F(METHODE='MUMPS',),
   ETAT_INIT  = _F(EVOL_NOLI = U_1),
   MODELE     = MO,
   CHAM_MATER = CM,
@@ -173,11 +173,11 @@ STAT_NON_LINE(reuse = U_1,
   ARCHIVAGE  = _F(LIST_INST = L_INST2)
   )
 
-#----------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE II
 #-----------------------------------------------------------------------------------
 U_2=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+  SOLVEUR=_F(METHODE='MUMPS',),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
@@ -196,7 +196,7 @@ U_2=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_2,
-  SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+  SOLVEUR=_F(METHODE='MUMPS',),
   ETAT_INIT  = _F(EVOL_NOLI = U_2),
   MODELE     = MO,
   CHAM_MATER = CM,
@@ -226,7 +226,7 @@ STAT_NON_LINE(reuse = U_2,
 
 
 
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 # TESTS CALCUL MODE I
 #-----------------------------------------------------------------------------------
 
@@ -328,7 +328,7 @@ TEST_RESU (
     )
   )
 
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 # TESTS CALCUL MODE II
 #-----------------------------------------------------------------------------------
 F_DY_2=RECU_FONCTION( RESULTAT=U_2,
@@ -343,14 +343,14 @@ T_ETA_2=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA_2))
 IMPR_TABLE(TABLE=T_ETA_2)
 
 
-F_SIGN_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA', 
+F_SIGN_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
           MAILLE  = 'CUBEDEG',POINT=1)
 T_SIGN_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_2))
 IMPR_TABLE(TABLE=T_SIGN_2)
 
 
-F_SITX_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA', 
+F_SITX_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITX',
           MAILLE  = 'CUBEDEG',POINT=1)
 T_SITX_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_2))
@@ -389,7 +389,7 @@ TEST_RESU (
     )
   )
 
-IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),  
-IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
 
 FIN()

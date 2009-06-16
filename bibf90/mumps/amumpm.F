@@ -2,7 +2,7 @@
      &                  TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPM MUMPS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !

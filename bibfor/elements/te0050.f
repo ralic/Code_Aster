@@ -1,6 +1,6 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/06/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C
 C
 C     -- RECUPERATION DES CHAMPS PARAMETRES ET DE LEURS LONGUEURS:
 C     ------------------------------------------------------------
+      INS=0
       IF (OPTION.EQ.'AMOR_MECA') THEN
         CALL TECACH('NNO','PRIGIEL',1,IBID,INS)
         IF (INS .EQ. 0) THEN
@@ -166,7 +167,7 @@ C     --------------------------
 C
         IF (INS .EQ. 0) THEN
           DO 1 I=1,NBVAL
-            ZR(IRESU-1+I)=ALPHA*ZR(IRIGI-1+I)+BETA*ZR(-1+I)
+            ZR(IRESU-1+I)=ALPHA*ZR(IRIGI-1+I)+BETA*ZR(IMASS-1+I)
  1        CONTINUE
         ELSE
 C     Cas non symetrique

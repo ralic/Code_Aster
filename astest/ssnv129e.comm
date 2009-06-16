@@ -1,6 +1,7 @@
-# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
+# ssnv129e.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,7 +115,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', SYME='OUI',PARALLELISME='DISTRIBUE_MD',),
+RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', SYME='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CAREL,

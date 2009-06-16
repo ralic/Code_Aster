@@ -1,6 +1,6 @@
       SUBROUTINE OP0086(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+C MODIF SOUSTRUC  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,10 @@ C
       CALL INFMAJ()
 C
       CALL GETRES(NOMU,KBI1,KBI2)
-C
-C     -- VERIFICATION DE L'APPEL DE LA COMMANDE :
-C
+
+
 C     --TRAITEMENT DES MOTS CLEFS 'DEFINITION' ET 'EXTERIEUR'
+C     --------------------------------------------------------
       CALL GETFAC('DEFINITION',NOCC)
       IF (NOCC.EQ.1) THEN
          CALL JEEXIN(NOMU//'.REFM',IRET)
@@ -57,8 +57,10 @@ C     --TRAITEMENT DES MOTS CLEFS 'DEFINITION' ET 'EXTERIEUR'
             CALL SSDEGE(NOMU)
          END IF
       END IF
-C
+
+
 C     --TRAITEMENT DU MOT CLEF 'RIGI_MECA'
+C     --------------------------------------
       CALL GETFAC('RIGI_MECA',NOCC)
       IF (NOCC.EQ.1) THEN
          CALL JEEXIN(NOMU//'.REFM',IRET)
@@ -72,8 +74,10 @@ C     --TRAITEMENT DU MOT CLEF 'RIGI_MECA'
             CALL SSRIGE(NOMU)
          END IF
       END IF
-C
+
+
 C     --TRAITEMENT DU MOT CLEF 'MASS_MECA':
+C     --------------------------------------
       CALL GETFAC('MASS_MECA',NOCC)
       IF (NOCC.EQ.1) THEN
          CALL JEEXIN(NOMU//'.REFM',IRET)
@@ -90,8 +94,10 @@ C     --TRAITEMENT DU MOT CLEF 'MASS_MECA':
             CALL SSMAGE(NOMU,'MASS_MECA')
          END IF
       END IF
-C
+
+
 C     --TRAITEMENT DU MOT CLEF 'AMOR_MECA':
+C     --------------------------------------
       CALL GETFAC('AMOR_MECA',NOCC)
       IF (NOCC.EQ.1) THEN
          CALL JEEXIN(NOMU//'.REFM',IRET)
@@ -105,8 +111,10 @@ C     --TRAITEMENT DU MOT CLEF 'AMOR_MECA':
            CALL SSMAGE(NOMU,'AMOR_MECA')
          END IF
       END IF
-C
+
+
 C     --TRAITEMENT DU MOT CLEF 'CAS_CHARGE'
+C     --------------------------------------
       CALL GETFAC('CAS_CHARGE',NOCC)
       IF (NOCC.GT.0) THEN
          CALL JEEXIN(NOMU//'.REFM',IRET)

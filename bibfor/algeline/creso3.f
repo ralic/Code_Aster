@@ -1,7 +1,7 @@
       SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,
-     &           KLAG2,EPS,ISTOP,KDISZ,SDFETZ,KOOC)
+     &           KLAG2,EPS,ISTOP,SDFETZ,KOOC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*) SOLVEZ
-      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,KDISZ,SDFETZ,KOOC
+      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,SDFETZ,KOOC
       INTEGER PCPIVZ ,ISTOP
       REAL*8 EPS
 C ----------------------------------------------------------
@@ -43,13 +43,11 @@ C                  0.  -> DEFAUT
 C IN/JXOUT    SOLVEU  : LE SOLVEUR EST CREE ET REMPLI
 C IN I   ISTOP   : 0 : STOP_SINGULIER=OUI
 C                  1 : STOP_SINGULIER=NON
-C IN K  KDISZ     : PARAMETRE DE MUMPS PARALLELE: CENTRA/DISTRI
-C IN K  SDFETZ    : NOM DE LA SD_FETI DECRIVANT LA DISTRIBUTION DES
-C                   DONNEES SI KDISZ='DISTRI'
+C IN K  SDFETZ    : NOM DE LA SD_FETI
 C IN K KOOC  :  TRAITEMENT OUT_OF_CORE DES PHASES DE FACT + RESOL
 C               DE MUMPS : /OUI/NON (PAR DEFAUT NON)
 C ----------------------------------------------------------
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 
@@ -75,7 +73,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
       INTEGER      ISLVK,ISLVI,ISLVR,PCPIV
       CHARACTER*3  SYME
       CHARACTER*8  K8BID,KTYPR,KTYPRN,KTYPS,SDFETI
-      CHARACTER*16 KDIS
       CHARACTER*19 SOLVEU
 
 C------------------------------------------------------------------
@@ -87,7 +84,6 @@ C------------------------------------------------------------------
       KTYPRN=KTYPRZ
       PCPIV=PCPIVZ
       EPSMAX=EPS
-      KDIS=KDISZ
       SDFETI=SDFETZ
 
 C     SYME : (CE MOT CLE NE CONCERNE QUE L'ASSEMBLAGE)
@@ -122,9 +118,8 @@ C     ------------
 
 C     PARALLELISME :
 C     ------------
-      IF (KDIS.EQ.' ') KDIS='CENTRALISE'
 
-C     OUT-OF-CORE  :  
+C     OUT-OF-CORE  :
 C     -----------
       IF (KOOC.EQ.' ') KOOC='NON'
 
@@ -144,7 +139,6 @@ C     ---------------------------------------------------
       ZK24(ISLVK-1+4) = KTYPRN
       ZK24(ISLVK-1+5) = SYME
       ZK24(ISLVK-1+6) = KLAG2
-      ZK24(ISLVK-1+7) = KDIS
       ZK24(ISLVK-1+8) = SDFETI
       ZK24(ISLVK-1+9) = KOOC
       ZI(ISLVI-1+1) = -9999

@@ -1,6 +1,7 @@
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
+# wtnp111b.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,10 +110,7 @@ CHAR1=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                 COEF_MULT=FONCT2,),);
 
 
-MESTAT=STAT_NON_LINE(SOLVEUR=_F( METHODE='MUMPS',
-                                 PARALLELISME='DISTRIBUE_MD',
-                                 PCENT_PIVOT=20,
-                                ),
+MESTAT=STAT_NON_LINE(SOLVEUR=_F( METHODE='MUMPS', PCENT_PIVOT=80, ),
                      MODELE=MODELE,
                      CHAM_MATER=CHMATO,
                      EXCIT=(_F(CHARGE=CHAR0,),

@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPR MUMPS  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPR MUMPS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -75,8 +75,8 @@ C================================================================
       TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
       TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
-      INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB,
-     &             IETRAT
+      INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB
+      INTEGER      IETRAT,JREFA
       INTEGER*4    KXMPS4
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE
       CHARACTER*4  ETAMS(NMXINS),ETAM
@@ -137,13 +137,13 @@ C --- POUR "ELIMINER" LE 2EME LAGRANGE :
       ELI2LG=ZK24(JSLVK-1+6)(1:3).EQ.'OUI'
 
 C --- MUMPS PARALLELE DISTRIBUE ?
-      LDIST=.FALSE.
-      LDIST=ZK24(JSLVK-1+7)(1:10).EQ.'DISTRIBUE_'
+      CALL JEVEUO(NOMAT//'.REFA','L',JREFA)
+      LDIST=(ZK24(JREFA-1+11).NE.'MPI_COMPLET')
       NBPROC=1
       RANG=0
       CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
       CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
-      
+
 C --- POUR MONITORING
       CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &            IETDEB,IETRAT,RCTDEB)
@@ -160,7 +160,7 @@ C       ------------------------------------------------
         CALL AMUMPI(0,LQUALI,LDIST,KXMPS,TYPE)
         CALL DMUMPS(XMPSK)
         RANG=XMPSK%MYID
-        NBPROC=XMPSK%NPROCS       
+        NBPROC=XMPSK%NPROCS
 
 C       ------------------------------------------------
 C        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS :
@@ -171,10 +171,10 @@ C       ------------------------------------------------
 C        REMPLISSAGE DE LA MATRICE MUMPS :
 C       ------------------------------------------------
         CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)        
-        CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE)        
+     &              IETDEB,IETRAT,RCTDEB)
+        CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE)
         CALL JJLDYN(IBID)
-        
+
 C       ------------------------------------------------
 C        ANALYSE MUMPS:
 C       ------------------------------------------------
@@ -308,7 +308,7 @@ C        POST-TRAITEMENTS ASTER DE/DES (LA) SOLUTION(S) :
 C       ------------------------------------------------
         CALL AMUMPP(2,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
      &              RSOLU,CBID,VCINE)
-     
+
 C       ------------------------------------------------
 C        AFFICHAGE DU MONITORING :
 C       ------------------------------------------------

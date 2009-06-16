@@ -4,7 +4,7 @@
       CHARACTER*(*)      MODELZ, BASEZ, LIGREZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,12 +52,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*1     BASE,K1BID
-      CHARACTER*8     MODELE,NOMA,NOMAIL
+      CHARACTER*8     MODELE,NOMA,NOMAIL,PARTIT
       CHARACTER*16    PHENO
       CHARACTER*19    LIGREL,LIGRMO
       CHARACTER*24    CPTLIE
       INTEGER         I,J,IB,IE,LONT,NUMVEC,NUMAIL,IGREL,NBMAM
-      INTEGER         LCLIEL,ADLIEL,JREPE,JDNB,JDNM,IADM,JDLI
+      INTEGER         LCLIEL,ADLIEL,JREPE,JDNB,JLGRF,IADM,JDLI
       INTEGER         JTYP,JNEL,TYPELE,TYPEL1,NBTYEL,ITYPE,NMEL
 C     ------------------------------------------------------------------
 
@@ -74,6 +74,7 @@ C     --------------------------
 C --- LIGREL DU MODELE
 C     ----------------
       CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IB,LIGRMO,IE)
+      CALL DISMOI('F','PARTITION',LIGRMO,'LIGREL',IB,PARTIT,IE)
 C
       CALL JEVEUO(LIGRMO//'.REPE','L',JREPE)
       CALL JEVEUO(JEXATR(LIGRMO//'.LIEL','LONCUM'),'L',LCLIEL)
@@ -84,10 +85,11 @@ C     ----------
       CALL WKVECT(LIGREL//'.NBNO',BASE//' V I',1,JDNB)
       ZI(JDNB) = 0
 
-C --- OBJET NOMA
+C --- OBJET LGRF
 C     ----------
-      CALL WKVECT(LIGREL//'.LGRF',BASE//' V K8',1,JDNM)
-      ZK8(JDNM) = NOMA
+      CALL WKVECT(LIGREL//'.LGRF',BASE//' V K8',2,JLGRF)
+      ZK8(JLGRF-1+1) = NOMA
+      ZK8(JLGRF-1+2) = PARTIT
 C
       CALL JELIRA(MODELE(1:8)//'.MODELE    .LGRF','DOCU',IB,PHENO)
       CALL JEECRA(LIGREL//'.LGRF','DOCU',IB,PHENO)

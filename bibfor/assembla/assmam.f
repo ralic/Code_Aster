@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,11 +68,9 @@ C-----------------------------------------------------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
-      INTEGER CADIST
-      COMMON /CAII18/CADIST
       CHARACTER*1 BASE1,TYPSCA,KBID
       CHARACTER*2 TT
-      CHARACTER*8 K8BID,NOGDCO,NOGDSI,MA,MA2,MO,MO2
+      CHARACTER*8 K8BID,NOGDCO,NOGDSI,MA,MA2,MO,MO2,PARTIT
       CHARACTER*8 KNUMER,SYMEL,KEMPIC,KAMPIC,EXIVF
       CHARACTER*14 NUDEV,NU14
       CHARACTER*19 MATDEV,MAT19,RESU,MATEL,LIGRE1,LIGRE2,SDFETI
@@ -83,7 +81,7 @@ C-----------------------------------------------------------------------
       COMPLEX*16 CBID
 
       LOGICAL ACREER,CUMUL,DBG,IDDOK,LBID,LFETI,LFETIC
-      LOGICAL LGOTO,LLICH,LLICHD,LLICHP,LLIMO,LMUMPS,LPDMS
+      LOGICAL LGOTO,LLICH,LLICHD,LLICHP,LLIMO,LDIST,LPDMS
       LOGICAL LMASYM,LMESYM,ZEROBJ
 
       INTEGER ADMODL,EPDMS,I
@@ -230,20 +228,20 @@ C ------------------------------------------------------------------
 
 
 C ------------------------------------------------------------------
-C     -- SOLVEUR MUMPS DISTRIBUE :
+C     -- SI LES CALCULS ONT ETE "DISTRIBUES" :
 C        CALCUL DE :
-C           * LMUMPS : .TRUE. : ON VA RESOUDRE AVEC MUMPS DISTRIBUE
-C           * JNUMSD : ADRESSE DE '&MUMPS.MAILLE.NUMSD'
+C           * LDIST : .TRUE. : LES CALCULS ONT ETE DISTRIBUES
+C           * JNUMSD : ADRESSE DE PARTIT//'.NUPROC.MAILLE'
 C ------------------------------------------------------------------
-      CALL ASSERT(CADIST.GE.-1 .AND. CADIST.LE.1)
-      LMUMPS=.FALSE.
-      CALL JEEXIN('&MUMPS.MAILLE.NUMSD',IRET)
-      IF (IRET.NE.0) THEN
-        CALL ASSERT(CADIST.EQ.1)
+      CALL PARTI0(NBMAT,TLIMAT,PARTIT)
+      IF (PARTIT.NE.' ') THEN
+        LDIST=.TRUE.
         CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
-        LMUMPS=.TRUE.
-        CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',JNUMSD)
+        CALL JEVEUO(PARTIT//'.NUPROC.MAILLE','L',JNUMSD)
+      ELSE
+        LDIST=.FALSE.
       ENDIF
+      CALL ASSERT(.NOT.(LFETI.AND.LDIST))
 
 
 
@@ -522,6 +520,17 @@ C           ==========================
               RESU=ZK24(JLRES+IRESU-1)
               CALL JEEXIN(RESU//'.DESC',IER)
               IF (IER.EQ.0)GOTO 70
+
+
+C             -- CALCUL DE KAMPIC :
+              CALL DISMOI('F','MPI_COMPLET',RESU,'RESUELEM',IBID,KEMPIC,
+     &                    IERD)
+              IF (KEMPIC.EQ.'NON') THEN
+                CALL ASSERT(LDIST .OR. LFETI)
+                KAMPIC='NON'
+              ENDIF
+
+
 C             -- PARFOIS, CERTAINS RESUELEM SONT == 0.
               IF (ZEROBJ(RESU//'.RESL'))GOTO 70
 
@@ -609,13 +618,6 @@ C               -- MONITORING:
                 WRITE (IFM,*)'<FETI/ASSMAM> ILIMO',ILIMO,'ILIMA',ILIMA
                 WRITE (IFM,*)'<FETI/ASSMAM> LIGRE1/2 ',LIGRE1,LIGRE2
               ENDIF
-              CALL DISMOI('F','MPI_COMPLET',RESU,'RESUELEM',IBID,KEMPIC,
-     &                    IERD)
-              IF (KEMPIC.EQ.'NON') THEN
-                CALL ASSERT(CADIST.EQ.1)
-                CALL ASSERT(LMUMPS .OR. LFETI)
-                KAMPIC='NON'
-              ENDIF
               CALL DISMOI('F','TYPE_SCA',RESU,'RESUELEM',IBID,TYPSCA,
      &                    IERD)
               CALL ASSERT(TYPSCA.EQ.'R' .OR. TYPSCA.EQ.'C')
@@ -652,7 +654,7 @@ C                 ================================
      &                          IGR,IEL,C1,RANG,IFEL2,IFEL3,IFEL4,IFEL5,
      &                          IFM,JFNUSD,JNUEQ,JNUMSD,JPDMS,JRESL,
      &                          JRSVI,NBVEL,NNOE,LFETI,LLICH,LLICHD,
-     &                          LLICHP,LLIMO,LMUMPS,LPDMS,ILIMA,JADLI,
+     &                          LLICHP,LLIMO,LDIST,LPDMS,ILIMA,JADLI,
      &                          JADNE,JPRN1,JPRN2,JNULO1,JNULO2,JPOSD1,
      &                          JPOSD2,ADMODL,LCMODL,MODE,NEC,NMXCMP,
      &                          NCMP,NBLC,JSMHC,JSMDI,ICONX1,ICONX2,
@@ -725,15 +727,15 @@ C              LES VALEURS DES TERMES DIAGONAUX DU BLOC SUPERIEUR
           ENDIF
 
 C         -- IL FAUT COMMUNIQUER ELLAGR ENTRE LES PROCS :
-          IF (CADIST.EQ.1) CALL MPICM1('MPI_MAX','I',1,ELLAGR,RBID)
+          IF (PARTIT.NE.' ') CALL MPICM1('MPI_MAX','I',1,ELLAGR,RBID)
 
 
 C         -- MISE A L'ECHELLE DES COEF. DE LAGRANGE SI NECESSAIRE :
           IF (LFETI) THEN
-            IF ((ELLAGR.GT.0) .AND. (IDD.GT.0)) CALL ASSMA1(MAT19)
+            IF ((ELLAGR.GT.0).AND.(IDD.GT.0)) CALL ASSMA1(MAT19,PARTIT)
             CALL JEDEMA()
           ELSE
-            IF (ELLAGR.GT.0) CALL ASSMA1(MAT19)
+            IF (ELLAGR.GT.0) CALL ASSMA1(MAT19,PARTIT)
           ENDIF
         ENDIF
 
@@ -741,7 +743,6 @@ C         -- MISE A L'ECHELLE DES COEF. DE LAGRANGE SI NECESSAIRE :
         IF (KAMPIC.EQ.'OUI') THEN
           ZK24(JREFA-1+11)='MPI_COMPLET'
         ELSE
-          CALL ASSERT(CADIST.EQ.1)
           ZK24(JREFA-1+11)='MPI_INCOMPLET'
         ENDIF
   130 CONTINUE

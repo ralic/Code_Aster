@@ -2,7 +2,7 @@
      &                   NBSOL,IRET)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPS MUMPS  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPS MUMPS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !

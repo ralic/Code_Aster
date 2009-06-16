@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,6 +105,10 @@ C
       ELSEIF ( QUESTI .EQ. 'NOM_LIGREL' ) THEN
          CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
          REPK = ZK24(JNOLI)
+C
+      ELSEIF ( QUESTI .EQ. 'PARTITION' ) THEN
+         CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
+         CALL DISMLG ( CODMES, QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
 C
       ELSEIF ( QUESTI .EQ. 'NOM_MODELE' ) THEN
          CALL JEVEUO ( NOMOB//'.NOLI','L', JNOLI )

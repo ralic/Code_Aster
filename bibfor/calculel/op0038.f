@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ C     ------------------------------------------------------------------
       REAL*8      RUNDF,R8VIDE
       CHARACTER*1 BASE
       CHARACTER*4 CTYP
-      CHARACTER*8 MODELE,CARA,TEMP,NOMA,K8BID, BLAN8
+      CHARACTER*8 MODELE,CARA,TEMP,NOMA,K8BID,BLAN8,KMPIC
       CHARACTER*16 TYPE,OPER,OPTION
       CHARACTER*19 KCHA,CHELEM,PRESS,LIGREL
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,CHAMGD,CHSIG,CHEPS,MATE,K24B
@@ -155,6 +155,10 @@ C        ---------------------
 
 
    10 CONTINUE
+
+C     -- SI CHELEM N'EST PAS MPI_COMPLET, ON LE COMPLETE :
+      CALL DISMOI('F','MPI_COMPLET',CHELEM,'CHAM_ELEM',IBID,KMPIC,IBID)
+      IF (KMPIC.EQ.'NON')  CALL SDMPIC('CHAM_ELEM',CHELEM)
 
       CALL JEDEMA()
       END

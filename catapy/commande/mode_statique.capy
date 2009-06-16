@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,11 +87,6 @@ MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
              ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
-             PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
-                                   into=("CENTRALISE","DISTRIBUE_MC","DISTRIBUE_MD","DISTRIBUE_SD")),
-             PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
-             CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,val_min=0),
-             CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,val_min=0),
              OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
              ),
 

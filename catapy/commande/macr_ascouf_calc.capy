@@ -1,29 +1,28 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GALENNE E.GALENNE
 from Macro.macr_ascouf_calc_ops import macr_ascouf_calc_ops
-def macr_ascouf_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS,CHARGE,RESU_THER,**args):
+def macr_ascouf_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS,RESU_THER,**args):
   self.type_sdprod(MODELE,modele_sdaster)
   if CHAM_MATER != None:self.type_sdprod(CHAM_MATER,cham_mater)
   if CARA_ELEM  != None:self.type_sdprod(CARA_ELEM,cara_elem)
   if FOND_FISS  != None:self.type_sdprod(FOND_FISS,fond_fiss)
-  if CHARGE     != None:self.type_sdprod(CHARGE,char_meca)
   if RESU_THER  != None:self.type_sdprod(RESU_THER,evol_ther)
   return evol_noli
 
@@ -50,7 +49,6 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
          CHAM_MATER      =SIMP(statut='f',typ=CO,),
          CARA_ELEM       =SIMP(statut='f',typ=CO,),
          FOND_FISS       =SIMP(statut='f',typ=CO,),
-         CHARGE          =SIMP(statut='f',typ=CO,),
          RESU_THER       =SIMP(statut='f',typ=CO,),
 
          AFFE_MATERIAU   =FACT(statut='o',max=3,
@@ -112,11 +110,6 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
             ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
             RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.0E-6,),
-            PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
-                                  into=("CENTRALISE","DISTRIBUE_MC","DISTRIBUE_MD","DISTRIBUE_SD")),
-            PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
-            CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
-            CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
             OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
             ),
 
@@ -201,7 +194,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
            b_subd_extr=BLOC(condition = "SUBD_METHODE == 'EXTRAPOLE'",
              regles=(AU_MOINS_UN('SUBD_NIVEAU','SUBD_PAS_MINI'),),
              SUBD_OPTION    =SIMP(statut='f',typ='TXM',
-                into =("IGNORE_PREMIERES","GARDE_DERNIERES",), 
+                into =("IGNORE_PREMIERES","GARDE_DERNIERES",),
                 defaut="IGNORE_PREMIERES",
                 fr="Technique d'extrapolation : les 1ere itérations sont ignorées ou les dernières sont gardées"),
              SUBD_ITER_IGNO =SIMP(statut='c',typ='I',defaut=3,val_min=0,
@@ -217,7 +210,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
              SUBD_ITER_PLUS =SIMP(statut='c',typ='I',defaut=50,val_min=20,
                 fr="% itération autorisée en plus"),
            ),
-           # FIN DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS 
+           # FIN DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS
          ),
 
          THETA_3D        =FACT(statut='f',max='**',
@@ -249,10 +242,10 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
          IMPRESSION      =FACT(statut='f',
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
                                  into=("RESULTAT","ASTER","IDEAS","CASTEM") ),
-                                 
+
            b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr="version Ideas",
              VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),
-           ),  
+           ),
 
            b_format_castem =BLOC(condition="FORMAT=='CASTEM'",fr="version Castem",
              NIVE_GIBI       =SIMP(statut='f',typ='I',defaut=10,into=(3,10)),

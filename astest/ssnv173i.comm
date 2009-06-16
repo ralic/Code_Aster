@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,12 +30,8 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
-                   AFFE=_F(GROUP_MA=('VOL',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',
-                           ),
-                   );
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,AFFE=_F(GROUP_MA=('VOL',), PHENOMENE='MECANIQUE', MODELISATION='3D',))
+
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');
 
@@ -51,10 +47,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     INFO=3,
                     );
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         INFO=2,
-                         );
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, INFO=2,);
 
 E=205000.0E6
 nu=0.3
@@ -82,7 +75,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.0,
                                     NOMBRE=3,),);
 
-UTOT=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),MODELE=MODELEK,
+MODI_MODELE(reuse=MODELEK, MODELE=MODELEK, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
+UTOT=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',),MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH,),
                           _F(CHARGE=CHXFEM,),),

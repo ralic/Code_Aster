@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,8 +66,14 @@ C DEB ------------------------------------------------------------------
 C     --------------------------------
       IF (QUESTI.EQ.'NOM_MAILLA') THEN
 C     --------------------------------
-        CALL JEVEUO(NOMOB//'.LGRF','L',IANOMA)
-        REPK = ZK8(IANOMA)
+        CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
+        REPK = ZK8(JLGRF-1+1)
+
+C     --------------------------------
+      ELSEIF (QUESTI.EQ.'PARTITION') THEN
+C     --------------------------------
+        CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
+        REPK = ZK8(JLGRF-1+2)
 
 C     -----------------------------------
       ELSE IF (QUESTI.EQ.'EXI_ELEM') THEN
@@ -247,14 +253,14 @@ C     ------------------------------------------
 C     ---------------------------------------
       ELSE IF (QUESTI.EQ.'NB_NO_MAILLA') THEN
 C     ---------------------------------------
-        CALL JEVEUO(NOMOB//'.LGRF','L',IANOMA)
-        CALL DISMMA(CODMES,QUESTI,ZK8(IANOMA),REPI,REPK,IERD)
+        CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
+        CALL DISMMA(CODMES,QUESTI,ZK8(JLGRF),REPI,REPK,IERD)
 
 C     ---------------------------------------
       ELSE IF (QUESTI.EQ.'NB_MA_MAILLA') THEN
 C     ---------------------------------------
-        CALL JEVEUO(NOMOB//'.LGRF','L',IANOMA)
-        CALL DISMMA(CODMES,QUESTI,ZK8(IANOMA),REPI,REPK,IERD)
+        CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
+        CALL DISMMA(CODMES,QUESTI,ZK8(JLGRF),REPI,REPK,IERD)
 
 C     -----------------------------------
       ELSE IF (QUESTI.EQ.'DIM_GEOM') THEN

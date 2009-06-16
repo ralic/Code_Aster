@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 27/10/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF calculel6 Messages  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,6 +41,12 @@ Solution :
 
 10: _("""
   Option inconnue %(k1)s
+"""),
+
+11: _("""
+  Erreur d'utilisation :
+    Vous avez dépassé une des limites de la programmation concernant les champs de matériaux :
+    On ne pas utiliser plus de 9999 matériaux différents
 """),
 
 13: _("""
@@ -150,7 +156,11 @@ Solution :
  Conseils pour l'utilisateur :
    1) Il faut émettre une demande d'évolution du code pour que le calcul demandé aille à son terme.
    2) En attendant, il ne faut pas utiliser la "distribution" des structures de donnée.
-      Aujourd'hui, cela veut dire : "ne pas utiliser le solveur MUMPS distribué".
+      Aujourd'hui, cela veut dire :
+        - éviter de se retrouver avec une "partition" du modèle dans la commande où le problème a été
+          détecté.
+        - pour cela, juste avant l'appel à la commande problématique, il faut appeler la commande :
+          MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='NON'))
 """),
 
 55: _("""
@@ -162,7 +172,11 @@ Solution :
    1) Il faut émettre une demande d'évolution du code pour que le calcul demandé aille à son terme.
       Aide pour le développeur : Noms de deux matrices incompatibles : %(k1)s  et %(k2)s
    2) En attendant, il ne faut pas utiliser la "distribution" des structures de donnée.
-      Aujourd'hui, cela veut dire : "ne pas utiliser le solveur MUMPS distribué".
+      Aujourd'hui, cela veut dire :
+        - éviter de se retrouver avec une "partition" du modèle dans la commande où le problème a été
+          détecté.
+        - pour cela, juste avant l'appel à la commande problématique, il faut appeler la commande :
+          MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='NON'))
 """),
 
 
@@ -317,7 +331,7 @@ Solution :
 """),
 
 79: _("""
- Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM : 
+ Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM :
  le champ produit est incomplet sur les éléments X-FEM.
 --> Risque : ce champ ne pourra être utilisé sur des éléments non X-FEM.
 --> Conseils : il vaut mieux utiliser les commandes de post-traitement

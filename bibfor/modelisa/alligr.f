@@ -6,7 +6,7 @@
       CHARACTER*(*)                                 LIGRCZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,7 +120,7 @@ C     --- CREATION DU LIGREL DE CHARGE SI NECESSAIRE ---
      +                                              'VARIABLE', NBMATA)
          LONEMA = MAX(LONEMA,1)
          CALL JEECRA (LIGRCH//'.NEMA', 'LONT', LONEMA, ' ')
-         CALL WKVECT (LIGRCH//'.LGRF', 'G V K8',1, JNOMA)
+         CALL WKVECT (LIGRCH//'.LGRF', 'G V K8',2, JNOMA)
          ZK8(JNOMA) = NOMA
          CALL WKVECT (LIGRCH//'.NBNO', 'G V I',1,IDNBNO)
          ZI(IDNBNO) = 0

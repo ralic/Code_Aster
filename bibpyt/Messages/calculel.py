@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 04/05/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,12 +96,28 @@ Risques & conseils :
    Vérifier le nom des ddls portés par les noeuds des éléments de votre modèle.
 """),
 
+10 : _("""
+Erreur de programmation lors de l'assemblage :
+   Les quantités que l'on cherche à assembler (matr_elem ou vect_elem) ont été calculées avec au
+   moins 2 partitions différentes :  %(k1)s et %(k2)s
+"""),
+
 11 : _("""
  le mode_local:  %(k1)s  ne doit pas etre vecteur ou matrice.
 """),
 
 12 : _("""
- le mode_local:  %(k1)s  ne doit pas etre "diff__".
+ le mode_local:  %(k1)s  ne doit pas etre "DIFF__".
+"""),
+
+13 : _("""
+Erreur utilisateur concernant le parallélisme des calculs élémentaires :
+  La partition des éléments du modèle a été faite sur %(i1)d processeurs.
+  Mais maintenant, le nombre de processeurs disponibles est de %(i2)d.
+
+Conseil :
+  Il faut utiliser la commande MODI_MODELE pour modifier la partition du modèle
+  afin qu'elle soit cohérente avec le nombre de processeurs disponibles pour les calculs.
 """),
 
 14 : _("""

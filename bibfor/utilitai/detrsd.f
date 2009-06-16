@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-C RESPONSABLE                            VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 C ----------------------------------------------------------------------
 C  BUT : DETRUIRE UNE STRUCTURE DE DONNEE DONT ON CONNAIT LE TYPE
 C  ATTENTION : QUAND ON UTILISE TYPESD=' ', ON APPELLE LA ROUTINE JEDETC
@@ -29,7 +29,7 @@ C              QUI EST TRES COUTEUSE EN CPU.
 C  IN   TYPESD : TYPE DE LA STRUCTURE DE DONNEE A DETRUIRE
 C          'NUME_DDL'     'PROF_CHNO'    'MLTF'
 C          'MATR_ASSE'    'VECT_ASSE'    'MATR_ASSE_GENE'
-C          'MATR_ELEM'    'VECT_ELEM'
+C          'MATR_ELEM'    'VECT_ELEM'   'PARTITION'
 C          'VARI_COM'     'FONCTION' (POUR LES FONCTIONS OU NAPPES)
 C          'TABLE_SDASTER' 'TABLE_CONTAINER'
 C          'SOLVEUR'      'CORRESP_2_MAILLA'
@@ -66,11 +66,11 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,IBID,NBSD,IFETS,ILIMPI,IDD
+      INTEGER IRET,IAD,LONG,I,NBCH,JRELR,IBID,NBSD,IFETS,ILIMPI,IDD
       INTEGER IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP,N1,K
       INTEGER JLTNS
       CHARACTER*1 K1BID
-      CHARACTER*8 MAILLA,METRES,K8BID
+      CHARACTER*8 MAILLA,METRES,K8BID,PARTIT
       CHARACTER*14 NU,COM
       CHARACTER*16 TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC,RESU
@@ -108,6 +108,12 @@ C     --------------------------------------
         CALL JEDETR(CES//'.CESC')
         CALL JEDETR(CES//'.CESL')
         CALL JEDETR(CES//'.CESV')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'PARTITION') THEN
+C     -------------------------------------------
+        PARTIT = NOMSD
+        CALL JEDETR(PARTIT//'.NUPROC.MAILLE')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CORRESP_2_MAILLA') THEN
@@ -576,16 +582,19 @@ C     ------------------------------------------------------------------
      &         (TYP2SD(1:9).EQ.'VECT_ELEM')) THEN
 C     ---------------------------------------
         MATEL = NOMSD
-        CALL JEDETR(MATEL//'.RERR')
         CALL JEEXIN(MATEL//'.RELR',IRET)
-        IF (IRET.LE.0) GO TO 70
+        IF (IRET.LE.0) GO TO 61
         CALL JELIRA(MATEL//'.RELR','LONUTI',NBCH,K1BID)
-        IF(NBCH.GT.0)CALL JEVEUO(MATEL//'.RELR','L',ILIRES)
+        IF(NBCH.GT.0) CALL JEVEUO(MATEL//'.RELR','L',JRELR)
         DO 60,I = 1,NBCH
-          CALL ASSDE1(ZK24(ILIRES-1+I) (1:19))
+          CHAMP=ZK24(JRELR-1+I)
+          CALL ASSDE1(CHAMP)
    60   CONTINUE
+   61   CONTINUE
         CALL JEDETR(MATEL//'.RELR')
         CALL JEDETR(MATEL//'.RELC')
+        CALL JEDETR(MATEL//'.RECC')
+        CALL JEDETR(MATEL//'.RERR')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'RESULTAT') THEN

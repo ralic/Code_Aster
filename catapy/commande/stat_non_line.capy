@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/11/2008   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
                                  into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS",
                                       "ELAS_POUTRE_GR","CABLE","ELAS_HYPER")),
-          
+
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GREEN","GREEN_GR",) ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -171,7 +171,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
          ),
          PILOTAGE        =FACT(statut='f',
            regles=(EXCLUS('NOEUD','GROUP_NO'),PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
-           TYPE    =SIMP(statut='o',typ='TXM',into=("DDL_IMPO","LONG_ARC","PRED_ELAS","PRED_ELAS_INCR","DEFORMATION","ANA_LIM") ),
+           TYPE    =SIMP(statut='o',typ='TXM',into=("DDL_IMPO","LONG_ARC","PRED_ELAS","DEFORMATION","ANA_LIM") ),
            COEF_MULT       =SIMP(statut='f',typ='R',defaut= 1.0E+0),
            ETA_PILO_MAX    =SIMP(statut='f',typ='R'),
            ETA_PILO_MIN    =SIMP(statut='f',typ='R'),
@@ -208,12 +208,12 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
            TYPE            =SIMP(statut='f',typ='TXM',defaut="PIC",into=("PIC","PLATEAU")),
            b_plateau    =BLOC(condition = "TYPE == 'PLATEAU' ",
-             
+
              PLATEAU_ITER    =SIMP(statut='f',typ='I',defaut=3, val_min =2),
-             PLATEAU_RELA    =SIMP(statut='f',typ='R',defaut=1E-3),                   
-           ),           
-           
-           
+             PLATEAU_RELA    =SIMP(statut='f',typ='R',defaut=1E-3),
+           ),
+
+
            ARRET           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          ),
          SOLVEUR         =FACT(statut='d',
@@ -243,11 +243,6 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
-             PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
-                                   into=("CENTRALISE","DISTRIBUE_MC","DISTRIBUE_MD","DISTRIBUE_SD")),
-             PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
-             CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
-             CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
              OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
              ),
            b_feti          =BLOC(condition = "METHODE == 'FETI' ",fr="Paramètres de la méthode FETI 1",
@@ -277,9 +272,9 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              ),             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
-           ),           
-           
-           
+           ),
+
+
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          ),
          ARCHIVAGE       =FACT(statut='f',
@@ -293,7 +288,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            NUME_INIT       =SIMP(statut='f',typ='I'),
            DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),
            CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("DEPL","SIEF_ELGA","VARI_ELGA","LANL_ELGA")),
+                                 into=("DEPL","SIEF_ELGA","VARI_ELGA")),
          ),
          OBSERVATION     =FACT(statut='f',max='**',
            NOM_CMP         =SIMP(statut='o',typ='TXM',max='**' ),
@@ -348,7 +343,6 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                                       "RESI_REFE","REFE_NOEU",
                                       "RELI_ITER","RELI_COEF",
                                       "PILO_PARA",
-                                      "LAGR_ECAR","LAGR_INCR","LAGR_ITER",
                                       "MATR_ASSE",
                                       "ITER_DEBO",
                                       "CTCD_ITER","CTCD_GEOM","CTCD_NOEU",

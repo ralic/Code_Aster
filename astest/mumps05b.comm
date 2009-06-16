@@ -1,5 +1,6 @@
-# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
+# mumps05b.para = tps_job 8660 mem_job 17900Mo mem_aster 5.33333333333 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 1 liste_test M
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,18 +100,14 @@ TPS=DEFI_LIST_REEL(DEBUT=0.0,
 # 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE
 #----------------------------------------------------------
 
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 MECAC=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
                      EXCIT=(_F(CHARGE=CHARF,),
                             _F(CHARGE=CHARD,),),
                      OPTION='SANS',
-                     SOLVEUR=_F(METHODE=solveur,
-                                RENUM=meth_renum,
-                                RESI_RELA=-1.0,
-                                PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='CENTRALISE',
-                                ),);
+                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, PCENT_PIVOT=mem_pivot, ),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   NUME_ORDRE=1,
@@ -134,18 +131,14 @@ TEST_RESU(RESU=_F(RESULTAT=MECAC,
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE
 #----------------------------------------------------------
 
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
 MECAD1=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
                      EXCIT=(_F(CHARGE=CHARF,),
                             _F(CHARGE=CHARD,),),
                      OPTION='SANS',
-                     SOLVEUR=_F(METHODE=solveur,
-                                RENUM=meth_renum,
-                                RESI_RELA=-1.0,
-                                PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='DISTRIBUE_MD',
-                                ),);
+                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, PCENT_PIVOT=mem_pivot, ),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   NUME_ORDRE=1,

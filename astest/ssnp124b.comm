@@ -1,4 +1,4 @@
-# MODIF  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
@@ -98,7 +98,7 @@ TEMPS    = DEFI_LIST_REEL( DEBUT       = 1.,
                                            _F(  JUSQU_A = 2.000, NOMBRE = 100, ),),
                           )
 
-U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),
+U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',),
                           MODELE     = MODELE,
                           CHAM_MATER = CHMAT,
                           EXCIT      = (

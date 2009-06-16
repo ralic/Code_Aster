@@ -1,7 +1,7 @@
-      SUBROUTINE ALRSLT(IOPT,LIGREL,NOUT,LCHOUT,LPAOUT,BASE)
+      SUBROUTINE ALRSLT(IOPT,LIGREL,NOUT,LCHOUT,LPAOUT,BASE,LDIST)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE                            VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 
 C     ARGUMENTS:
 C     ----------
@@ -27,6 +27,7 @@ C     ----------
       CHARACTER*19 LIGREL
       CHARACTER*(*) BASE,LCHOUT(*)
       CHARACTER*8 LPAOUT(*)
+      LOGICAL LDIST
 C ----------------------------------------------------------------------
 C     ENTREES:
 C      IOPT : OPTION
@@ -53,7 +54,7 @@ C     -------------------
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER GD,DESCGD,CODE,I,IRET1,IRET2,IBID,IANOLI,IRET
+      INTEGER GD,DESCGD,CODE,I,IRET1,IRET2,IBID,IANOLI,IRET,JCELK,JNOLI
       CHARACTER*19 NOCHOU,DCEL
       CHARACTER*8 NOMPAR
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -94,11 +95,19 @@ C        -- SI GD EST 1 GRANDEUR_SIMPLE --> CHAM_ELEM
             DCEL = ' '
           END IF
           CALL ALCHML(LIGREL,NOMOPT,NOMPAR,BASE,NOCHOU,IRET,DCEL)
+          IF (LDIST) THEN
+            CALL JEVEUO(NOCHOU//'.CELK','E',JCELK)
+            ZK24(JCELK-1+7)='MPI_INCOMPLET'
+          ENDIF
 
         ELSE
 C        -- SINON --> RESUELEM
           CALL ASSERT((CODE.GE.3).AND.(CODE.LE.5))
           CALL ALRESL(IOPT,LIGREL,NOCHOU,NOMPAR,BASE)
+          IF (LDIST) THEN
+            CALL JEVEUO(NOCHOU//'.NOLI','E',JNOLI)
+            ZK24(JNOLI-1+3)='MPI_INCOMPLET'
+          ENDIF
         END IF
    10 CONTINUE
 

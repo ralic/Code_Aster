@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121l.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
@@ -84,7 +84,7 @@ FONC=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,  0.0,
                          1.0,  1.0,),);
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', SYME='OUI',PARALLELISME='DISTRIBUE_MD',),
+RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', SYME='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHA1,

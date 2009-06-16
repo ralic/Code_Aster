@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*19 SOLVEU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,35 +42,22 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
-      INTEGER CADIST
-      COMMON /CAII18/CADIST
 
-      INTEGER ISTOP,IBID,JSDMPI,IFM,NIV,ICOBIS,
-     &        NBSD,I,NBMA,JFDIM,JNUMSD,
-     &        JMAIL,PCPIV,NBPROC,RANG,
-     &        NMP1,NMPP,I3,NMP0,NM5,NMPRO1,NMP0AF,NBPRO1,
-     &        IDD,JFETA,NBMASD,I2,VALI(1),NBMAMO,DIST0,
-     &        MONIT(12),IAUX,IAUX1,ICO,IMA,KRANG
-      REAL*8 EPS,RBID
+      INTEGER ISTOP,IBID,IFM,NIV,I,PCPIV,NBPROC,RANG,MONIT(12)
+      REAL*8 EPS
       CHARACTER*3 SYME,KLAG2,KOOC
-      CHARACTER*8 K8BID
-      CHARACTER*8 MODELE
       CHARACTER*8 KTYPR,KTYPS,KTYPRN
-      CHARACTER*16 MOTFAC,KDIS
-      CHARACTER*24 SDFETI,K24B,K24BID,SDFETA,KMONIT(12)
-      CHARACTER*32 JEXNUM
-      LOGICAL EXISYM,GETEXM,PLEIN0,EXIMOD
+      CHARACTER*16 MOTFAC
+      CHARACTER*24 KMONIT(12),K24B
+      LOGICAL EXISYM,GETEXM
 C------------------------------------------------------------------
       CALL JEMARQ()
 
 
       EPS=0.D0
       ISTOP=0
-      SDFETI='????'
-      KDIS='????'
 
       CALL INFNIV(IFM,NIV)
-      CALL ASSERT(CADIST.EQ.-1)
 
 
 
@@ -88,7 +75,9 @@ C------------------------------------------------------------------
       CALL GETVTX(MOTFAC,'ELIM_LAGR2',1,1,1,KLAG2,IBID)
       CALL ASSERT(IBID.EQ.1)
       CALL GETVR8(MOTFAC,'RESI_RELA',1,1,1,EPS,IBID)
-      CALL GETVTX(MOTFAC,'PARALLELISME',1,1,1,KDIS,IBID)
+
+
+
       CALL ASSERT(IBID.EQ.1)
       CALL GETVTX(MOTFAC,'OUT_OF_CORE',1,1,1,KOOC,IBID)
       CALL ASSERT(IBID.EQ.1)
@@ -100,178 +89,8 @@ C------------------------------------------------------------------
 C     -- OBJETS DE MONITORING
       KMONIT(9)='&MUMPS.NB.MAILLE'
       CALL WKVECT(KMONIT(9),'V V I',NBPROC,MONIT(9))
-      IF ((KDIS(1:10).NE.'DISTRIBUE_').AND.(NIV.GE.2)) THEN
-        EXIMOD = GETEXM(' ','MODELE')
-        IF (EXIMOD) THEN
-          CALL GETVID(' ','MODELE',1,1,1,MODELE,IBID)
-          CALL ASSERT(IBID.EQ.1)
-          CALL JEVEUO(MODELE(1:8)//'.MAILLE','L',JMAIL)
-          CALL JELIRA(MODELE(1:8)//'.MAILLE','LONMAX',NBMA,K8BID)
-          NBMAMO=0
-          DO 5 IMA=1,NBMA
-            IF (ZI(JMAIL-1+IMA).NE.0) NBMAMO=NBMAMO+1
-    5     CONTINUE
-          ZI(MONIT(9)+RANG)=NBMAMO
-        ENDIF
-      ENDIF
-
-      IF (KDIS(1:10).EQ.'DISTRIBUE_') THEN
-C     ---------------------------------------
-        IF (NBPROC.LE.1) CALL U2MESS('A','ALGORITH16_97')
-        IF (KDIS(11:11).EQ.'M') THEN
-          CALL GETVIS(MOTFAC,'CHARGE_PROC0_MA',1,1,1,DIST0,IBID)
-        ELSEIF (KDIS(11:12).EQ.'SD') THEN
-          CALL GETVIS(MOTFAC,'CHARGE_PROC0_SD',1,1,1,DIST0,IBID)
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
 
 
-        IF (KDIS.EQ.'DISTRIBUE_SD') THEN
-C       -----------------------------------------------
-          CALL GETVID(MOTFAC,'PARTITION',1,1,1,SDFETI(1:8),IBID)
-          IF (IBID.EQ.0) CALL U2MESS('F','ALGORITH16_96')
-          CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',JFDIM)
-          NBSD=ZI(JFDIM-1+1)
-          IF (NBPROC.GT.1) THEN
-C           IL FAUT AU MOINS UN SD PAR PROC HORS PROC0
-            IF (((NBSD-DIST0).LT.(NBPROC-1)) .AND.
-     &          (DIST0.GT.0)) CALL U2MESS('F','ALGORITH16_99')
-            IF ((NBSD.LT.NBPROC) .AND. (DIST0.EQ.0)) THEN
-              VALI(1)=RANG
-              CALL U2MESI('F','ALGORITH17_1',1,VALI)
-            ENDIF
-          ELSEIF (NBPROC.EQ.1) THEN
-            DIST0=0
-          ENDIF
-        ENDIF
-
-
-C       ALLOCATION DE L'OBJET '&MUMPS.MAILLE.NUMSD'
-C       QUI EST LE FIL CONDUCTEUR DE LA PARALLELISATION DU FLOT DE
-C       DONNEES DE MUMPS DISTRIBUE. NOTAMMENT POUR CALCUL.
-        CALL GETVID(' ','MODELE',1,1,1,MODELE,IBID)
-        CALL ASSERT(IBID.EQ.1)
-        CALL JEVEUO(MODELE(1:8)//'.MAILLE','L',JMAIL)
-        CALL JELIRA(MODELE(1:8)//'.MAILLE','LONMAX',NBMA,K8BID)
-        CALL JEEXIN('&MUMPS.MAILLE.NUMSD',IBID)
-        CALL ASSERT(IBID.EQ.0)
-        CALL WKVECT('&MUMPS.MAILLE.NUMSD','V V I',NBMA,JNUMSD)
-        CADIST=1
-
-C       NBMAMO : NBRE DE MAILLES DU MODELE
-        NBMAMO=0
-        DO 10 IMA=1,NBMA
-          ZI(JNUMSD-1+IMA)=-999
-          IF (ZI(JMAIL-1+IMA).NE.0) NBMAMO=NBMAMO+1
-   10   CONTINUE
-
-
-        IF (KDIS.EQ.'DISTRIBUE_SD') THEN
-C       ----------------------------------------
-          CALL MUMMPI(0,IFM,NIV,K24BID,NBSD,DIST0)
-          SDFETA=SDFETI(1:19)//'.FETA'
-          CALL JEVEUO('&MUMPS.LISTE.SD.MPI','L',JSDMPI)
-          DO 30 IDD=1,NBSD
-            IF (ZI(JSDMPI+IDD).EQ.1) THEN
-              CALL JEVEUO(JEXNUM(SDFETA,IDD),'L',JFETA)
-              CALL JELIRA(JEXNUM(SDFETA,IDD),'LONMAX',NBMASD,K8BID)
-              DO 20 I=1,NBMASD
-                I2=ZI(JFETA-1+I)
-                IF (ZI(JNUMSD-1+I2).NE.-999) THEN
-C                 -- MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
-                  VALI(1)=I2
-                  CALL U2MESI('F','ELEMENTS16_98',1,VALI)
-                ELSE
-                  ZI(JNUMSD-1+I2)=RANG
-                ENDIF
-   20         CONTINUE
-            ENDIF
-   30     CONTINUE
-          CALL MPICM1('MPI_MAX','I',NBMA,ZI(JNUMSD),RBID)
-          CALL JEDETR('&MUMPS.LISTE.SD.MPI')
-
-
-        ELSEIF (KDIS.EQ.'DISTRIBUE_MD') THEN
-C       ----------------------------------------
-C         -- LE PROC 0 A UNE CHARGE DIFFERENTE DES AUTRES (DIST0) :
-C         NMPP NBRE DE MAILLES PAR PROC (A LA LOUCHE)
-          CALL ASSERT(NBPROC.GT.0)
-          NMPP=MAX(1,NBMAMO/NBPROC)
-C         NMP0 NBRE DE MAILLES AFFECTEES AU PROC0 (A LA LOUCHE)
-          CALL ASSERT(DIST0.LE.100)
-          NMP0=MAX(NBMAMO,(DIST0*NMPP)/100)
-
-C         -- AFFECTATION DES MAILLES AUX DIFFERENTS PROCS :
-          NMP0AF=0
-          ICO=0
-          NBPRO1=NBPROC
-          PLEIN0=.FALSE.
-          IF (NBPROC.EQ.1) THEN
-            NMP0=NBMAMO
-          ENDIF
-          DO 77, IMA=1,NBMA
-            IF (ZI(JMAIL-1+IMA).EQ.0)GOTO 77
-            ICO=ICO+1
-            KRANG=MOD(ICO,NBPRO1)
-            IF (PLEIN0) RANG=RANG+1
-            IF (KRANG.EQ.0) NMP0AF=NMP0AF+1
-            ZI(JNUMSD-1+IMA)=KRANG
-            IF (NMP0AF.EQ.NMP0) THEN
-              PLEIN0=.TRUE.
-              NBPRO1=NBPROC-1
-            ENDIF
-  77      CONTINUE
-
-
-        ELSEIF (KDIS.EQ.'DISTRIBUE_MC') THEN
-C       ----------------------------------------
-          CALL ASSERT(NBPROC.GT.0)
-C         NMP0 NBRE DE MAILLES AFFECTEES AU PROC0 :
-          NMPP=MAX(1,NBMAMO/NBPROC)
-          CALL ASSERT(DIST0.LE.100)
-          NMP0=MAX(NBMAMO,(DIST0*NMPP)/100)
-          IF (NBPROC.EQ.1) THEN
-            NMP0=NBMAMO
-            NMP1=0
-          ELSE
-            NMP1=((NBMAMO-NMP0)/(NBPROC-1))+1
-          ENDIF
-
-C         -- AFFECTATION DES MAILLES AUX DIFFERENTS PROCS :
-C            ON AFFECTE LES 1ERES MAILLES AU PROC0 PUIS LES AUTRES
-C            AUX AUTRES PROCS.
-          NMPP=NMP0
-          KRANG=0
-          ICO=0
-          DO 78, IMA=1,NBMA
-            IF (ZI(JMAIL-1+IMA).EQ.0)GOTO 78
-            ICO=ICO+1
-C           -- ON CHANGE DE PROC :
-            IF (ICO.GT.NMPP) THEN
-              ICO=1
-              NMPP=NMP1
-              KRANG=KRANG+1
-            ENDIF
-            ZI(JNUMSD-1+IMA)=KRANG
-  78      CONTINUE
-
-
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-
-C       -- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTRIBUEES :
-        ICO=0
-        ICOBIS=0
-        DO 11 I=1,NBMA
-          IF (ZI(JNUMSD-1+I).GE.0) ICO=ICO+1
-          IF (ZI(JNUMSD-1+I).EQ.RANG) ICOBIS=ICOBIS+1
-   11   CONTINUE
-        ZI(MONIT(9)+RANG)=ICOBIS
-        CALL ASSERT(ICO.EQ.NBMAMO)
-      ENDIF
-      
 
 
 C     -- OBJETS DE MONITORING
@@ -288,7 +107,7 @@ C     -- OBJETS DE MONITORING
         KMONIT(10)='&MUMPS.INFO.MEM.EIC'
         KMONIT(11)='&MUMPS.INFO.MEM.EOC'
         KMONIT(12)='&MUMPS.INFO.MEM.USE'
-        
+
         CALL WKVECT(KMONIT(1),'V V I',NBPROC,MONIT(1))
         CALL WKVECT(KMONIT(2),'V V I',NBPROC,MONIT(2))
         CALL WKVECT(KMONIT(3),'V V R',NBPROC,MONIT(3))
@@ -319,9 +138,7 @@ C     -- OBJETS DE MONITORING
 
 C     -- ON REMPLIT LA SD_SOLVEUR
       CALL CRESO3(SOLVEU,SYME,PCPIV,KTYPR,KTYPS,KTYPRN,KLAG2,EPS,ISTOP,
-     &            KDIS,SDFETI,KOOC)
-
-
+     &            '???',KOOC)
 
   120 CONTINUE
 

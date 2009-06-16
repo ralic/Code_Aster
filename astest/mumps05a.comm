@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05a.para = tps_job 2220 mem_job 15800Mo mem_aster 52 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test M
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,6 +102,8 @@ TPS=DEFI_LIST_REEL(DEBUT=0.0,
 # 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE
 #-----------------------------------------------
 
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
+
 MECAC=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
@@ -112,7 +114,6 @@ MECAC=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='CENTRALISE',
                                 OUT_OF_CORE='OUI',
                                 ),);
 
@@ -137,6 +138,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECAC,
 # 2.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE
 #----------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE',CHARGE_PROC0_MA=0,))
 
 MECAD1=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
@@ -148,8 +150,6 @@ MECAD1=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='DISTRIBUE_MD',
-                                CHARGE_PROC0_MA=0,
                                 OUT_OF_CORE='NON',
                                 ),);
 
@@ -174,6 +174,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD1,
 # 2.2 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
 #       EQUILIBRAGE DE CHARGE FORCE POUR SOULAGER LE PROC 0
 #----------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE',CHARGE_PROC0_MA=70,))
 
 MECAD2=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
@@ -185,8 +186,6 @@ MECAD2=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='DISTRIBUE_MD',
-                                CHARGE_PROC0_MA=70,
                                 OUT_OF_CORE='OUI',
                                 ),);
 
@@ -217,6 +216,9 @@ SDFETI = DEFI_PART_FETI(
                 EXCIT=(_F(CHARGE=CHARF,),_F(CHARGE=CHARD,),),
                 METHODE='KMETIS',
                 NOM_GROUP_MA='SD',);
+
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI, CHARGE_PROC0_SD=0,))
+
 MECAD3=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
@@ -227,9 +229,6 @@ MECAD3=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='DISTRIBUE_SD',
-                                CHARGE_PROC0_SD=0,
-                                PARTITION=SDFETI,
                                 OUT_OF_CORE='NON',
                                 ),);
 
@@ -254,6 +253,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD3,
 # 3.2 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
 #       EQUILIBRAGE DE CHARGE FORCE POUR SOULAGER LE PROC 0
 #----------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI, CHARGE_PROC0_SD=2,))
 
 MECAD4=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
@@ -265,9 +265,6 @@ MECAD4=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='DISTRIBUE_SD',
-                                CHARGE_PROC0_SD=2,
-                                PARTITION=SDFETI,
                                 OUT_OF_CORE='OUI',
                                 ),);
 

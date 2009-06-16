@@ -1,7 +1,7 @@
       SUBROUTINE MMLIGR(NOMA  ,DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,13 +23,13 @@ C
       IMPLICIT NONE
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - CREATION OBJETS - LIGREL)
 C
 C CREATION DU LIGREL POUR LES ELEMENTS TARDIFS DE CONTACT
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -62,10 +62,10 @@ C
       INTEGER      CFMMVD,ZTABF
       INTEGER      ICO,JCO,IPC,ITYP,INO,IBID
       INTEGER      JNOMA,JTYNMA,IACNX1,ILCNX1
-      INTEGER      NUMMAM,NUMMAE
+      INTEGER      NUMMAM,NUMMAE,IZONE
       INTEGER      JNBNO,LONG,JAD,ITYTE,ITYMA
       INTEGER      NNDEL,NTPC,NBNOM,NBNOE,NBGREL,NNDTOT
-      INTEGER      COMPT(NBTYP), COMPF(NBTYP)
+      INTEGER      COMPTC(NBTYP), COMPTF(NBTYP)
       CHARACTER*8  K8BID
       CHARACTER*16 NOMTM,NOMTE
       CHARACTER*16 MMELTM,MMELTC,MMELTF
@@ -73,31 +73,33 @@ C
       INTEGER      JTABF,JCRNUD
       INTEGER      IFM,NIV
       CHARACTER*19 LIGRCF
-      CHARACTER*24 TYPELT
-      LOGICAL      LAPPAR
+      CHARACTER*24 TYPELT,K24BID,K24BLA
+      LOGICAL      LAPPAR,LFROTT
+      REAL*8       R8BID
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFDBG('CONTACT',IFM,NIV)
-C      
-C --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT    
 C
-      LIGRCF = RESOCO(1:14)//'.LIGR'      
+C --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
+C
+      LIGRCF = RESOCO(1:14)//'.LIGR'
 C
 C --- ACCES OBJETS
 C
-      TABFIN = DEFICO(1:16)//'.TABFIN'  
-      CRNUDD = RESOCO(1:14)//'.NUDD'   
-      CALL JEVEUO(CRNUDD,'L',JCRNUD)       
+      TABFIN = DEFICO(1:16)//'.TABFIN'
+      CRNUDD = RESOCO(1:14)//'.NUDD'
+      CALL JEVEUO(CRNUDD,'L',JCRNUD)
       CALL JEVEUO(TABFIN,'L',JTABF)
-C      
+C
       ZTABF = CFMMVD('ZTABF')
 C
 C --- INITIALISATIONS
 C
       NTPC   = NINT(ZR(JTABF-1+1))
       TYPELT = '&&MMLIGR.TYPNEMA'
+      K24BLA = ' '
 C
 C --- REAPPARIEMENT OU PAS ?
 C
@@ -105,15 +107,15 @@ C
       IF (LAPPAR) THEN
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<CONTACT> CREATION DU LIGREL DES'//
-     &          ' ELEMENTS DE CONTACT' 
-        ENDIF       
+     &          ' ELEMENTS DE CONTACT'
+        ENDIF
       ELSE
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<CONTACT> PAS CREATION DU LIGREL DES'//
-     &        ' ELEMENTS DE CONTACT' 
-        ENDIF     
+     &        ' ELEMENTS DE CONTACT'
+        ENDIF
         GOTO   999
-      ENDIF  
+      ENDIF
 C
 C --- DESTRUCTION DU LIGREL S'IL EXISTE
 C
@@ -121,15 +123,15 @@ C
 C
 C --- CREATION DE .NOMA
 C
-      CALL WKVECT(LIGRCF//'.LGRF','V V K8',1,JNOMA)
+      CALL WKVECT(LIGRCF//'.LGRF','V V K8',2,JNOMA)
       ZK8(JNOMA-1+1) = NOMA
       CALL JEVEUO(NOMA//'.CONNEX','L',IACNX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILCNX1)
 C
-C --- LISTE DES ELEMENTS DE CONTACT      
-C      
-      CALL MMLIGE(NOMA  ,DEFICO,TYPELT,NBTYP ,COMPT ,
-     &            COMPF ,NNDTOT,NBGREL)
+C --- LISTE DES ELEMENTS DE CONTACT
+C
+      CALL MMLIGE(NOMA  ,DEFICO,TYPELT,NBTYP ,COMPTC,
+     &            COMPTF,NNDTOT,NBGREL)
       CALL JEVEUO(TYPELT,'L',JTYNMA)
 C
 C --- PAS DE NOEUDS TARDIFS
@@ -160,13 +162,13 @@ C
         CALL JEECRA(JEXNUM(LIGRCF//'.NEMA',IPC),'LONMAX',NNDEL+1,K8BID)
         CALL JEVEUO(JEXNUM(LIGRCF//'.NEMA',IPC),'E',JAD)
         ZI(JAD-1+NNDEL+1) = ZI(JTYNMA-1+2* (IPC-1)+1)
-C        
+C
 C --- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE ESCLAVE
 C
         DO 30 INO = 1,NBNOE
           ZI(JAD-1+INO) = ZI(IACNX1+ZI(ILCNX1-1+NUMMAE)-2+INO)
    30   CONTINUE
-C        
+C
 C --- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE MAITRE
 C
         DO 40 INO = 1,NBNOM
@@ -178,8 +180,8 @@ C --- LONGUEUR TOTALE DU LIEL
 C
       LONG = NBGREL
       DO 70 ITYP = 1,NBTYP
-        LONG = LONG + COMPT(ITYP)
-   70 CONTINUE  
+        LONG = LONG + COMPTC(ITYP) + COMPTF(ITYP)
+   70 CONTINUE
 C
 C --- CREATION DE L'OBJET .LIEL
 C
@@ -193,37 +195,66 @@ C
       CALL JEECRA(LIGRCF//'.LIEL','LONT',LONG,K8BID)
       ICO = 0
       DO 90 ITYP = 1,NBTYP
-        IF (COMPT(ITYP).NE.0) THEN
+        IF (COMPTC(ITYP).NE.0) THEN
           ICO = ICO + 1
           CALL JECROC(JEXNUM(LIGRCF//'.LIEL',ICO))
           CALL JEECRA(JEXNUM(LIGRCF//'.LIEL',ICO),'LONMAX',
-     &                COMPT(ITYP)+1,K8BID)
+     &                COMPTC(ITYP)+1,K8BID)
           CALL JEVEUO(JEXNUM(LIGRCF//'.LIEL',ICO),'E',JAD)
-          
-          IF (COMPF(ITYP).EQ.0) THEN
-            NOMTE  = MMELTC(ITYP)
-            NOMTM  = MMELTM(ITYP)
-          ELSEIF (COMPF(ITYP).EQ.1) THEN
-            NOMTE  = MMELTF(ITYP) 
-            NOMTM  = MMELTM(ITYP)         
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF
+
+          NOMTE  = MMELTC(ITYP)
+          NOMTM  = MMELTM(ITYP)
 
           CALL JENONU(JEXNOM('&CATA.TE.NOMTE',NOMTE),ITYTE)
           CALL JENONU(JEXNOM('&CATA.TM.NOMTM',NOMTM),ITYMA)
-          
-          ZI(JAD-1+COMPT(ITYP)+1) = ITYTE
+
+          ZI(JAD-1+COMPTC(ITYP)+1) = ITYTE
 
           JCO = 0
           DO 80 IPC = 1,NTPC
             IF (ZI(JTYNMA-1+2* (IPC-1)+1).EQ.ITYMA) THEN
-              JCO = JCO + 1
-              ZI(JAD-1+JCO) = -IPC
+              IZONE = NINT(ZR(JTABF+ZTABF*(IPC-1)+15))
+              CALL MMINFP(IZONE ,DEFICO,K24BLA,'FROTTEMENT_ZONE',
+     &                    IBID  ,R8BID ,K24BID,LFROTT)
+              IF (.NOT.LFROTT) THEN
+                JCO = JCO + 1
+                ZI(JAD-1+JCO) = -IPC
+              ENDIF
             ENDIF
    80     CONTINUE
+          CALL ASSERT(JCO.EQ.COMPTC(ITYP))
+        ENDIF
+        IF (COMPTF(ITYP).NE.0) THEN
+          ICO = ICO + 1
+          CALL JECROC(JEXNUM(LIGRCF//'.LIEL',ICO))
+          CALL JEECRA(JEXNUM(LIGRCF//'.LIEL',ICO),'LONMAX',
+     &                COMPTF(ITYP)+1,K8BID)
+          CALL JEVEUO(JEXNUM(LIGRCF//'.LIEL',ICO),'E',JAD)
+
+          NOMTE  = MMELTF(ITYP)
+          NOMTM  = MMELTM(ITYP)
+
+          CALL JENONU(JEXNOM('&CATA.TE.NOMTE',NOMTE),ITYTE)
+          CALL JENONU(JEXNOM('&CATA.TM.NOMTM',NOMTM),ITYMA)
+
+          ZI(JAD-1+COMPTF(ITYP)+1) = ITYTE
+
+          JCO = 0
+          DO 85 IPC = 1,NTPC
+            IF (ZI(JTYNMA-1+2* (IPC-1)+1).EQ.ITYMA) THEN
+              IZONE = NINT(ZR(JTABF+ZTABF*(IPC-1)+15))
+              CALL MMINFP(IZONE ,DEFICO,K24BLA,'FROTTEMENT_ZONE',
+     &                    IBID  ,R8BID ,K24BID,LFROTT)
+              IF (LFROTT) THEN
+                JCO = JCO + 1
+                ZI(JAD-1+JCO) = -IPC
+              ENDIF
+            ENDIF
+   85     CONTINUE
+          CALL ASSERT(JCO.EQ.COMPTF(ITYP))
         ENDIF
    90 CONTINUE
+      CALL ASSERT(ICO.EQ.NBGREL)
 C
 C --- IMPRESSIONS
 C
@@ -239,7 +270,7 @@ C
 C --- MENAGE
 C
       CALL JEDETR(TYPELT)
-  999 CONTINUE    
+  999 CONTINUE
 C
       CALL JEDEMA()
       END

@@ -1,21 +1,21 @@
-#@ MODIF algorith16 Messages  DATE 12/05/2009   AUTEUR BRIE N.BRIE 
+#@ MODIF algorith16 Messages  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -95,7 +95,7 @@ cata_msg = {
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d
  amortissements réduits avec la valeur du dernier mode propre
- 
+
 """),
 
 14 : _("""
@@ -138,7 +138,7 @@ cata_msg = {
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d
  amortissements réduits avec la valeur du dernier mode propre
- 
+
 """),
 
 20 : _("""
@@ -472,18 +472,8 @@ cata_msg = {
   Van_Genuchten non autorisé pour ce modèle de couplage
  """),
 
-96 : _("""
- le solveur linéaire MUMPS en mode parallèle distribué 'DISTSD' requiert un concept
- produit de type SD_FETI en entrée du mot-clé PARTITION. Voir les commandes
-  DEFI_PART_FETI et DEFI_PART_OPS.
- """),
 
-97 : _("""
- Attention, vous utilisez le solveur linéaire MUMPS en mode parallèle distribué,
- mais vous n'avez alloué qu'un processeur MPI. Vous aurez bien les résultats
- attendus mais sans doute pas les performances. Il s'agit sans doute d'un run
- de test !
- """),
+
 
 99 : _("""
  Valeur du parametre SOLVEUR/DIST_PROC0 incorrecte, routine CRESOL.

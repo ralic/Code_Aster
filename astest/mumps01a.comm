@@ -1,4 +1,4 @@
-# MODIF  DATE 08/07/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # TITRE validation du solveur MUMPS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 # VALIDATION DU SOLVEUR MUMPS EN MODULANT:
 #     - POUR LA PRISE EN COMPTE DES DIRICHLETS (AFFE_CHAR_CINE/MECA)
 #     - POUR LES OPTIONS DE TYPE DE PB DE MUMPS (SYMDEF/SYMGEN/NONSYM)
-#     - POUR LE PARALLELISME (CENTRALISE ET DISTRIBUE_MD/MC/SD).
+#     - POUR LE PARALLELISME (CENTRALISE, MAIL_DISPERSE, SOUS_DOMAINE).
 #
 # WARNING: EN MODE PARALLELE, PAS PLUS DE 4 PROCS CAR LES 3 DERNIERS
 #          CALCULS SONT BASES SUR UNE REPARTITION EN 4 SOUS-DOMAINES.
@@ -68,58 +68,60 @@ TEST_RESU( RESU=_F(  RESULTAT = RESU0,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL', REFER
 
 # 2.1 : MUMPS (centralise) charge_dualisee + charge_cine + SYMGEN:
 # ----------------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 RESU1=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='CENTRALISE',
-                              TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU1,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
 # 2.2 : MUMPS (centralise) charge_cine + SYMDEF:
 # ----------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 RESU3=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHARCI3),_F(CHARGE = CHARP)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='CENTRALISE',
-                              TYPE_RESOL='SYMDEF'), )
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMDEF'), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU3,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
 #  2.3 : MUMPS (centralise)charge_dualisee + charge_cine + NONSYM:
 # -----------------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 RESU4=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='CENTRALISE',
-                     TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU4,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
 
 # 3.1 : MUMPS (distribue par mailles) charge_dualisee + charge_cine + SYMGEN:
 # ----------------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_CONTIGU'))
 RESU5=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD',
-                              TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU5,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
 # 3.2 : MUMPS (distribue par mailles) charge_cine + SYMDEF:
 # ----------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_CONTIGU'))
 RESU6=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHARCI3),_F(CHARGE = CHARP)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MC',
-                              TYPE_RESOL='SYMDEF'), )
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMDEF'), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU6,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
 #  3.3 : MUMPS (distribue par mailles) charge_dualisee + charge_cine + NONSYM:
-# -----------------------------------------------------------------
+# ----------------------------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_CONTIGU'))
 RESU7=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD',
-                              TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU7,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
+
+
 
 SDFETI = DEFI_PART_FETI(
                 MODELE=MO,
@@ -129,28 +131,28 @@ SDFETI = DEFI_PART_FETI(
                 NOM_GROUP_MA='SD',);
 # 4.1 : MUMPS (distribue par sous-domaines) charge_dualisee + charge_cine + SYMGEN:
 # ----------------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
 RESU8=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_SD',PARTITION=SDFETI,
-                              TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU8,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
 # 4.2 : MUMPS (distribue par sous-domaines) charge_cine + SYMDEF:
 # ----------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
 RESU9=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHARCI3),_F(CHARGE = CHARP)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_SD',PARTITION=SDFETI,
-                              TYPE_RESOL='SYMDEF'), )
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMDEF'), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU9,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
 #  4.3 : MUMPS (distribue par sous-domaines) charge_dualisee + charge_cine + NONSYM:
 # -----------------------------------------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
 RESU10=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_SD',PARTITION=SDFETI,
-                             TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU10,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 

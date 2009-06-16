@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C      ---------------------------------------------------------
 C
 C ---  CREATION DU K8 QUI EST LE NOM DU MAILLAGE :
 C      -----------------------------------------
-      CALL WKVECT(LIGRET//'.LGRF',BASE//' V K8',1,IDNOMA)
+      CALL WKVECT(LIGRET//'.LGRF',BASE//' V K8',2,IDNOMA)
 C
 C ---  CREATION DE L'ENTIER QUI EST LE NOMBRE DE MAILLES TARDIVES :
 C      ----------------------------------------------------------

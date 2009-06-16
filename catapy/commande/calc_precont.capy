@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE MICHEL S.MICHEL
 
@@ -25,8 +25,8 @@ from Macro.calc_precont_ops import calc_precont_ops
 #           CATALOGUE DE LA MACRO "CALC_PRECONT"
 #           -----------------------------------------
 # USAGE :
-# 
-#  
+#
+#
 # ===========================================================================
 
 CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
@@ -63,7 +63,7 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
            b_subd_extr=BLOC(condition = "SUBD_METHODE == 'EXTRAPOLE'",
              regles=(AU_MOINS_UN('SUBD_NIVEAU','SUBD_PAS_MINI'),),
              SUBD_OPTION    =SIMP(statut='f',typ='TXM',
-                into =("IGNORE_PREMIERES","GARDE_DERNIERES",), 
+                into =("IGNORE_PREMIERES","GARDE_DERNIERES",),
                 defaut="IGNORE_PREMIERES",
                 fr="Technique d'extrapolation : les 1ere itérations sont ignorées ou les dernières sont gardées"),
              SUBD_ITER_IGNO =SIMP(statut='c',typ='I',defaut=3,val_min=0,
@@ -79,7 +79,7 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
              SUBD_ITER_PLUS =SIMP(statut='c',typ='I',defaut=50,val_min=20,
                 fr="% itération autorisée en plus"),
            ),
-           # FIN DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS 
+           # FIN DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS
          ),
 
          NEWTON          =FACT(statut='d',
@@ -148,11 +148,6 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
               ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
               PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
               RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.0E-6,),
-              PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
-                                    into=("CENTRALISE","DISTRIBUE_MC","DISTRIBUE_MD","DISTRIBUE_SD")),
-              PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
-              CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
-              CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
               OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
               ),
 

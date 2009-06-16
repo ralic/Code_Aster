@@ -1,4 +1,4 @@
-#@ MODIF sd_ligrel SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_ligrel SD  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ from SD import *
 class sd_ligrel(AsBase):
     nomj = SDNom(fin=19)
 
-    LGRF = AsVK8(lonmax=1, docu=Parmi('ACOU', 'MECA', 'THER'), )
+    LGRF = AsVK8(lonmax=2, docu=Parmi('ACOU', 'MECA', 'THER'), )
     NBNO = AsVI(lonmax=1,)
     PRNM = AsVI()
 
@@ -45,6 +45,15 @@ class sd_ligrel(AsBase):
     def exists(self):
         # retourne True si la SD semble exister.
         return self.LGRF.exists
+
+    def check_LGRF(self,checker):
+        if not self.exists() : return
+        lgrf=self.LGRF.get_stripped()
+        from SD.sd_maillage import sd_maillage
+        sd2=sd_maillage(lgrf[0]); sd2.check(checker)
+        if lgrf[1] != '' :
+           from SD.sd_partition import sd_partition
+           sd2=sd_partition(lgrf[1]); sd2.check(checker)
 
 
     def check_presence(self,checker):
