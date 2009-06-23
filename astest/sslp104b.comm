@@ -1,6 +1,7 @@
-# MODIF  DATE 13/05/2008   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 22/06/2009   AUTEUR MEUNIER S.MEUNIER 
 # TITRE POUTRE CONSOLE 3D EN FLEXION
 # VALIDATION DE LA METHODE ARLEQUIN
+# sslp104b.para = tps_job 60 mem_job 70Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

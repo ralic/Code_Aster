@@ -1,6 +1,6 @@
       SUBROUTINE JXLIRO ( IC , IADMI , IADDI , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 22/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
       COMMON /JUSADI/  JUSADI(N)
 C ----------------------------------------------------------------------
       CHARACTER*75     CMESS
-      INTEGER          IADMO , KADD , LADD ,LGBL
+      INTEGER          IADMO , KADD , LADD , LGBL , LSO2 
       LOGICAL          LPETIT
       PARAMETER      ( NDE = 6)
 C ----------------------------------------------------------------------
@@ -64,6 +64,8 @@ C DEB ------------------------------------------------------------------
       LADD   = IADDI(2)
       LGBL   = 1024*LONGBL(IC)*LOIS
       IADMO  = ( IADM - 1 ) * LOIS + LADM + 1
+      LSO2   = LSO
+      IF ( MOD(LSO,LOIS) .NE. 0 ) LSO2 = (1 + LSO/LOIS) * LOIS
       LPETIT = ( LSO .LT. LGBL-NDE*LOIS )
 C
       IF ( IADDI(1) .EQ. 0 ) THEN
@@ -96,7 +98,7 @@ C
 C
 C ------- GROS  OBJET
 C
-          CALL JXLIRB ( IC , KADD , IADMO , LSO )
+          CALL JXLIRB ( IC , KADD , IADMO , LSO2 )
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

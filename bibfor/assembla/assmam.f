@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +100,7 @@ C-----------------------------------------------------------------------
       INTEGER NBLC,NBNOMX,NBNOSS,NBRESU,NBSD
       INTEGER NCMP,NBVEL,NEC,NEL,NEQU
       INTEGER NIV,NLILI,NMXCMP,NNOE,JPTVOI,JELVOI
-      INTEGER NUGD,RANG,IEQ,IDIA,ELLAGR,JREPE,ITYPEL
+      INTEGER NUGD,RANG,IEQ,IDIA,ELLAGR,JREPE,ITYPEL,IMATD
 
 C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
@@ -148,7 +148,14 @@ C----------------------------------------------------------------------
         ICONX1=0
         ICONX2=0
       ENDIF
-      CALL JEVEUO(NUDEV//'.NUME.NUEQ','L',JNUEQ)
+      
+      CALL JEEXIN(NUDEV//'.NUML.NULG',IMATD)
+      IF ( IMATD.NE.0 ) THEN
+        CALL JEVEUO(NUDEV//'.NUML.NUEQ','L',JNUEQ)
+      ELSE
+        CALL JEVEUO(NUDEV//'.NUME.NUEQ','L',JNUEQ)
+      ENDIF
+      
 C     ELLAGR : 0 : PAS D'ELEMENT DE LAGRANGE
 C              1 : IL EXISTE DES ELEMENTS DE LAGRANGE
       ELLAGR=0
@@ -390,8 +397,13 @@ C         -------------------------------------
           IF ((.NOT.LFETI) .OR. (IDD.GT.0)) THEN
             CALL JEVEUO(NU14//'.SMOS.SMHC','L',JSMHC)
             CALL JEVEUO(NU14//'.SMOS.SMDI','L',JSMDI)
-            CALL JEVEUO(NU14//'.NUME.PRNO','L',JPRN1)
-            CALL JEVEUO(JEXATR(NU14//'.NUME.PRNO','LONCUM'),'L',JPRN2)
+            IF ( IMATD.NE.0 ) THEN
+              CALL JEVEUO(NU14//'.NUML.PRNO','L',JPRN1)
+              CALL JEVEUO(JEXATR(NU14//'.NUML.PRNO','LONCUM'),'L',JPRN2)
+            ELSE
+              CALL JEVEUO(NU14//'.NUME.PRNO','L',JPRN1)
+              CALL JEVEUO(JEXATR(NU14//'.NUME.PRNO','LONCUM'),'L',JPRN2)
+            ENDIF
           ENDIF
 
 
@@ -744,6 +756,9 @@ C         -- MISE A L'ECHELLE DES COEF. DE LAGRANGE SI NECESSAIRE :
           ZK24(JREFA-1+11)='MPI_COMPLET'
         ELSE
           ZK24(JREFA-1+11)='MPI_INCOMPLET'
+        ENDIF
+        IF ( IMATD.NE.0 ) THEN
+          ZK24(JREFA-1+11)='MATR_DISTR'
         ENDIF
   130 CONTINUE
 

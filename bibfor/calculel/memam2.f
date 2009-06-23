@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,9 +61,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C ----------------------------------------------------------------------
       CHARACTER*1 BASE
       CHARACTER*2 CODRET
-      CHARACTER*8 K8B,LPAIN(17),LPAOUT(1),NEWNOM
+      CHARACTER*8 K8B,LPAIN(18),LPAOUT(1),NEWNOM
       CHARACTER*19 CHVARC
-      CHARACTER*24 LIGRMO,LCHIN(17),LCHOUT(1),COMPOR
+      CHARACTER*24 LIGRMO,LCHIN(18),LCHOUT(1),COMPOR
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,VECELZ
       DATA CHVARC /'&&MEMAM2.VARC'/
       CALL JEMARQ()
@@ -119,17 +119,19 @@ C ----------------------------------------------------------------------
       LPAIN(14) = 'PDEPLAR'
       LCHIN(14) = CHACCE
       LPAIN(15) = 'PNBSP_I'
-      LCHIN(15) = CHCARA(1) (1:8)//'.CANBSP'
+      LCHIN(15) = CHCARA(16)
       LPAIN(16) = 'PFIBRES'
-      LCHIN(16) = CHCARA(1) (1:8)//'.CAFIBR'
+      LCHIN(16) = CHCARA(17)
       LPAIN(17) = 'PCOMPOR'
       LCHIN(17) = COMPOR
+      LPAIN(18) = 'PCINFDI'
+      LCHIN(18) = CHCARA(15)
 
       LCHOUT(1) = '&&MEMAM2.???????'
       CALL GCNCO2(NEWNOM)
       LCHOUT(1) (10:16) = NEWNOM(2:8)
       CALL CORICH('E',LCHOUT(1),-1,IBID)
-      CALL CALCUL('S',OPTION,LIGRMO,17,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE)
+      CALL CALCUL('S',OPTION,LIGRMO,18,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE)
 
       CALL REAJRE(VECELZ,LCHOUT(1),BASE)
 

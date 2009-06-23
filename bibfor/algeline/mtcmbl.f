@@ -9,7 +9,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,7 +85,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----------------------------------------------------------------
       CHARACTER*1 BASE,BAS2,TYPRES
-      CHARACTER*8 KBID,TYPMAT,KMPIC,KMPIC1
+      CHARACTER*8 KBID,TYPMAT,KMPIC,KMPIC1,KMATD
       CHARACTER*19 MATEMP,MAT1,MATRES,MATI
       CHARACTER*24 VALK(2)
 C     -----------------------------------------------------------------
@@ -153,6 +153,11 @@ C     ----------------------------------------------------
       ELSE
         ZK24(JREFAR-1+11)='MPI_INCOMPLET'
       ENDIF
+      CALL DISMOI('F','MATR_DISTR',MAT1,'MATR_ASSE',IBID,
+     &            KMATD,IBID)
+      IF (KMATD.EQ.'OUI') THEN
+        CALL U2MESS('F','ALGELINE5_1')
+      ENDIF
       DO 19 I = 2,NBCOMB
         MATI=LIMAT(I)
         CALL DISMOI('F','MPI_COMPLET',MATI,'MATR_ASSE',IBID,KMPIC,IBID)
@@ -160,6 +165,11 @@ C     ----------------------------------------------------
           VALK(1)=MAT1
           VALK(2)=MATI
           CALL U2MESK('F','CALCULEL6_55',2,VALK)
+        ENDIF
+        CALL DISMOI('F','MATR_DISTR',MATI,'MATR_ASSE',IBID,
+     &              KMATD,IBID)
+        IF (KMATD.EQ.'OUI') THEN
+          CALL U2MESS('F','ALGELINE5_1')
         ENDIF
    19 CONTINUE
 

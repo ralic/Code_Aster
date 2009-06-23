@@ -1,5 +1,5 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
-# TITRE SOLLICITATION SISMIQUE D'UNE COLONNE DE SOL 
+# MODIF  DATE 22/06/2009   AUTEUR DEVESA G.DEVESA 
+# TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL 
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 700 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -81,18 +81,19 @@ VAR=[None]*(nbcouche-1);
 
 # -->5: debut boucle for
 list_group_ma=['ELEM0'];
-list_group_m2=['ELEMS0'];
 for n in range(nbcouche-1):
 
   list_group_ma.append('ELEM'+str(n+1));
-  list_group_m2.append('ELEMS'+str(n+1));
   print '   n=',n,'; liste=',list_group_ma
 
   MOD[n] = AFFE_MODELE(MAILLAGE=MA,
                        AFFE=(
                             _F(GROUP_MA    =tuple(list_group_ma),
                                PHENOMENE   ='MECANIQUE',
-                               MODELISATION='D_PLAN_HMS'),
+                               MODELISATION='D_PLAN_HM'),
+                            _F(GROUP_MA    ='BAS',
+                               PHENOMENE   ='MECANIQUE',
+                               MODELISATION='D_PLAN_ABSO'),
                              ),
                         );
 
@@ -166,17 +167,6 @@ MAT1=DEFI_MATERIAU(ELAS=_F(
                                VISC       = VISCOLIQ,
                                D_VISC_TEMP= DVISCOL));
                                
-MAT_DYN=DEFI_MATERIAU(
-# general inertial properties of the medium
-                      ELAS=_F(E=0.0000001, NU=NU,
-                              AMOR_ALPHA=0., AMOR_BETA=0.,
-                              RHO=2105, ALPHA=0.0,),);
-                              
-MAT_DY0=DEFI_MATERIAU(
-# general inertial properties of the medium
-                      ELAS=_F(E=0.0000001, NU=NU,
-                              AMOR_ALPHA=0., AMOR_BETA=0.,
-                              RHO=0.0001, ALPHA=0.0,),);
                               
 MAT_PAR=DEFI_MATERIAU(
 # general mechanical properties of the rock
@@ -189,15 +179,13 @@ AFFMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                               MATER=MAT1),
                             _F(GROUP_MA=list_group_ma[0],
                               MATER=MAT0),
-                            _F(GROUP_MA=list_group_m2[0:nbcouche],
-                              MATER=MAT_DY0),
                             _F(GROUP_MA='BAS',
                               MATER=MAT_PAR),
                            ),
                      );
 
 PES=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
-                   PESANTEUR=(9.81,0.0,-1.0,0.0));
+                   PESANTEUR=(1.0,0.0,-1.0,0.0));
 
 CHPAR=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
                      DDL_IMPO=_F(GROUP_MA='BAS',
@@ -236,6 +224,8 @@ F_EVOL=DEFI_FONCTION(NOM_PARA='INST',
                      PROL_GAUCHE='CONSTANT',
                      VALE=(0.       , 0.,
                            1000000.0, 1.));
+                           
+FOC = DEFI_CONSTANTE( VALE=9.81) ;
 
 #        ----------------------------------
 # INIT-  Pose couches 1 et 2 = 1ere couches
@@ -267,9 +257,6 @@ SIEF=CREA_CHAMP(INFO=1,
                 AFFE=(_F(GROUP_MA=list_group_ma[1],
                         NOM_CMP=('SIXX','SIYY','SIZZ'),
                         VALE=(P0,P0,P0),),
-                      _F(GROUP_MA=list_group_m2[1],
-                        NOM_CMP =('SIXX','SIYY','SIZZ'),
-                        VALE    =(ZERO,ZERO,ZERO),),
                       )
                  );
 
@@ -284,7 +271,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                  EXCIT=(_F(CHARGE=PHAUT),
                         _F(CHARGE=CHPAR),
                         _F(CHARGE=CHLAT),
-                        _F(CHARGE=PES)),
+                        _F(CHARGE=PES, FONC_MULT=FOC)),
                  ETAT_INIT=_F(SIGM=SIEF),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
@@ -293,7 +280,6 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                             _F(
                                ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
-                               RESI_INTE_RELA=1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1]),
@@ -308,7 +294,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                  ARCHIVAGE=_F(LIST_INST=TEMPS,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-6));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-6));
 
 DEP[0]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -490,7 +476,7 @@ for n in range(1,nbcouche-1):
                  EXCIT=(_F(CHARGE=PHAUT),
                         _F(CHARGE=CHPAR),
                         _F(CHARGE=CHLAT),
-                        _F(CHARGE=PES)),
+                        _F(CHARGE=PES, FONC_MULT=FOC)),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
@@ -552,120 +538,8 @@ for n in range(1,nbcouche-1):
 
 # <--10: fin boucle for
 
-MOD9B = AFFE_MODELE(MAILLAGE=MA,
-                       AFFE=(
-                            _F(GROUP_MA    =list_group_ma[0:nbcouche],
-                               PHENOMENE   ='MECANIQUE',
-                               MODELISATION='D_PLAN_HMS'),
-                            _F(GROUP_MA    =list_group_m2[0:nbcouche],
-                               PHENOMENE   ='MECANIQUE',
-                               MODELISATION='D_PLAN'),
-                            _F(GROUP_MA    ='BAS',
-                               PHENOMENE   ='MECANIQUE',
-                               MODELISATION='D_PLAN_ABSO'),
-                             ),
-                        );
-                                                
 
-SIEFCO=CREA_CHAMP(INFO=1,
-                    TYPE_CHAM='ELGA_SIEF_R',
-                    OPERATION='AFFE',
-                    MODELE=MOD9B,
-                    PROL_ZERO='OUI',
-                    AFFE=_F(GROUP_MA=list_group_m2[0:nbcouche],
-                            NOM_CMP =('SIXX','SIYY','SIZZ'),
-                            VALE    =(ZERO,ZERO,ZERO)));
-                            
-INISIG=CREA_CHAMP(INFO=1,
-                      TYPE_CHAM='ELGA_SIEF_R',
-                      OPERATION='ASSE',
-                      MODELE=MOD9B,
-                      PROL_ZERO='OUI',
-                      ASSE=(_F(GROUP_MA=list_group_ma[0:nbcouche],
-                               CHAM_GD=SIG[9],
-                               CUMUL='OUI',
-                               COEF_R=1.0),
-                            _F(GROUP_MA=list_group_m2[0:nbcouche],
-                               CHAM_GD=SIEFCO,
-                               CUMUL='OUI',
-                               COEF_R=1.0),
-                               
-                            ),
-                      );
-                            
-CARTCO = CREA_CHAMP(INFO = 1,
-                   TYPE_CHAM='ELGA_NEUT_R',
-                   OPERATION='AFFE',
-                   MODELE=MOD9B,
-                   PROL_ZERO='OUI',
-                   AFFE=_F(GROUP_MA=list_group_m2[0:nbcouche],
-                           NOM_CMP =('X1',),
-                           VALE    =varico));
-                           
-INIVAR=CREA_CHAMP(INFO=1,
-                      TYPE_CHAM='ELGA_VARI_R',
-                      OPERATION='ASSE',
-                      MODELE=MOD9B,
-                      PROL_ZERO='OUI',
-                      ASSE=(_F(GROUP_MA=list_group_ma[0:nbcouche],
-                               CHAM_GD=VAR[9],
-                               CUMUL='OUI',
-                               COEF_R=1.0),
-                            _F(GROUP_MA=list_group_m2[0:nbcouche],
-                               CHAM_GD=CARTCO,
-                               NOM_CMP =('X1',),
-                               NOM_CMP_RESU=('V1',),
-                               CUMUL='OUI',
-                               COEF_R=1.0),
-                              )
-                         );
-                         
-INIDEP=CREA_CHAMP(INFO=1,
-                      TYPE_CHAM='NOEU_DEPL_R',
-                      OPERATION='ASSE',
-                      MODELE=MOD9B,
-                      OPTION='DEPL',
-                      PROL_ZERO='OUI',
-                      ASSE=(_F(GROUP_MA=list_group_ma[0:nbcouche],
-                               CHAM_GD=DEP[9]),
-                           ),
-                   );
-                         
-AFFMAT1B=AFFE_MATERIAU(MAILLAGE=MA,
-                      AFFE=(_F(GROUP_MA=list_group_ma[1:nbcouche],
-                              MATER=MAT1),
-                            _F(GROUP_MA=list_group_ma[0],
-                              MATER=MAT0),
-                            _F(GROUP_MA=list_group_m2[0:nbcouche],
-                              MATER=MAT_DYN),
-                            _F(GROUP_MA='BAS',
-                              MATER=MAT_PAR),
-                           ),
-                     );
-                     
-AFFMAT2=AFFE_MATERIAU(MAILLAGE=MA,
-                      AFFE=(_F(GROUP_MA=list_group_ma[0:nbcouche],
-                              MATER=MAT_DY0),
-                            _F(GROUP_MA=list_group_m2[0:nbcouche],
-                              MATER=MAT_DYN),
-                            _F(GROUP_MA='BAS',
-                              MATER=MAT_PAR),
-                           ),
-                     );
-AFFMAT2B=AFFE_MATERIAU(MAILLAGE=MA,
-                      AFFE=(_F(GROUP_MA=list_group_ma[0:nbcouche],
-                              MATER=MAT_DY0),
-                            _F(GROUP_MA=list_group_m2[0],
-                              MATER=MAT0),
-                            _F(GROUP_MA=list_group_m2[1:nbcouche],
-                              MATER=MAT1),
-                            _F(GROUP_MA='BAS',
-                              MATER=MAT_PAR),
-                           ),
-                     );
-                     
-
-BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD9B,
+BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD[9],
                         DDL_IMPO=(
                                   _F(GROUP_NO='BAS',
                                      # DX=0., 
@@ -703,106 +577,16 @@ BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD9B,
                                     COEF_IMPO = 0.,),
                                     ),
                         );
-                        
-BO_CONHM=AFFE_CHAR_MECA(MODELE=MOD9B,
-                        DDL_IMPO=(_F(GROUP_NO='BAS',
-                                     DX=0., DY=0.,),
-                                  _F(GROUP_NO='FREESURF',
-                                     PRE1=0.,),
-                                  ),
-                       LIAISON_GROUP=             
-                                (_F(GROUP_NO_1='LAT_LEFT',
-                                    GROUP_NO_2='LAT_RIGH',
-                                    DDL_1=('DX',),
-                                    DDL_2=('DX',),
-                                    COEF_MULT_1 = 1.,
-                                    COEF_MULT_2 = -1.,
-                                    COEF_IMPO = 0.,),
-                                 _F(GROUP_NO_1='LAT_LEFT',
-                                    GROUP_NO_2='LAT_RIGH',
-                                    DDL_1=('DY',),
-                                    DDL_2=('DY',),
-                                    COEF_MULT_1 = 1.,
-                                    COEF_MULT_2 = -1.,
-                                    COEF_IMPO = 0.,),
-                                 _F(GROUP_NO_1='LAT_LEFD',
-                                    GROUP_NO_2='LAT_RIGD',
-                                    DDL_1=('PRE1',),
-                                    DDL_2=('PRE1',),
-                                    COEF_MULT_1 = 1.,
-                                    COEF_MULT_2 = -1.,
-                                    COEF_IMPO = 0.,),
-                                    ),
-                        );
+
 TI_LI_IN=DEFI_LIST_REEL(DEBUT=-1.e-6, INTERVALLE=_F(JUSQU_A=0.,
                                                  NOMBRE=1,),);
-MOD9_M = AFFE_MODELE(MAILLAGE=MA,
-                       AFFE=(
-                            _F(GROUP_MA    =list_group_ma[0:nbcouche],
-                               PHENOMENE   ='MECANIQUE',
-                               MODELISATION='D_PLAN'),
-                            _F(GROUP_MA    =list_group_m2[0:nbcouche],
-                               PHENOMENE   ='MECANIQUE',
-                               MODELISATION='D_PLAN'),
-                            _F(GROUP_MA    ='BAS',
-                               PHENOMENE   ='MECANIQUE',
-                               MODELISATION='D_PLAN_ABSO'),
-                             ),
-                        );
-                        
-                    
-MACRO_MATR_ASSE(MODELE=MOD9_M, 
-                CHAM_MATER=AFFMAT1,
-                NUME_DDL=CO('NUM9M'),
-                MATR_ASSE=(_F(MATRICE=CO('rigiM'),
-                             OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('massM'),
-                             OPTION='MASS_MECA',),
-                           ),
-               );
-               
-MACRO_MATR_ASSE(MODELE=MOD9_M, 
-                CHAM_MATER=AFFMAT2,
-                NUME_DDL=CO('NUM9M2'),
-                MATR_ASSE=(_F(MATRICE=CO('rigiM2'),
-                             OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('massM2'),
-                             OPTION='MASS_MECA',),
-                           ),
-               );
-                    
-PESAY=CALC_CHAR_SEISME(  MATR_MASS=massM,   DIRECTION=( 0., 1.0, 0.,),
-                              MONO_APPUI='OUI' );
-                           
-NUM9B = NUME_DDL( MODELE=MOD9B,CHARGE=BO_CONH0, );
-                                                            
-VAPESA1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                    OPERATION='ASSE',
-                    NUME_DDL=NUM9B,
-                    MAILLAGE=MA,
-                    ASSE=(
-                    _F(GROUP_MA=list_group_ma[0:nbcouche],
-                       CHAM_GD=DEP[9],
-                       CUMUL='OUI',
-                       COEF_R=0.0,),
-                   _F(GROUP_MA=list_group_m2[0:nbcouche],
-                       CHAM_GD=PESAY,
-                       CUMUL='OUI',
-                       COEF_R=1.0,),
-                          ),
-                   );
-                   
-CHVPESA1 = AFFE_CHAR_MECA(MODELE=MOD9B, VECT_ASSE=VAPESA1);
 
-FOC = DEFI_CONSTANTE( VALE=9.81) ;
+FOC2 = DEFI_CONSTANTE( VALE=9.81001) ;                        
 
-FOC2 = DEFI_CONSTANTE( VALE=9.81001) ;
-                        
-
-U9B=STAT_NON_LINE(MODELE=MOD9B,
-                 CHAM_MATER=AFFMAT1B,
+U9B=STAT_NON_LINE(MODELE=MOD[9],
+                 CHAM_MATER=AFFMAT1,
                  EXCIT=(_F(CHARGE=BO_CONH0),
-                        _F(CHARGE=CHVPESA1, FONC_MULT=FOC,)),
+                        _F(CHARGE=PES, FONC_MULT=FOC,)),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
@@ -815,10 +599,6 @@ U9B=STAT_NON_LINE(MODELE=MOD9B,
                                GROUP_MA=list_group_ma[1:nbcouche]),
                             _F(RELATION='ELAS',
                                DEFORMATION='PETIT',
-                               GROUP_MA=list_group_m2[0:nbcouche],
-                               PARM_THETA=0.57,),
-                            _F(RELATION='ELAS',
-                               DEFORMATION='PETIT',
                                GROUP_MA=('BAS',),
                                PARM_THETA=0.57,),
                                ),
@@ -827,9 +607,9 @@ U9B=STAT_NON_LINE(MODELE=MOD9B,
                             METHODE='MULT_FRONT',
                             NPREC=15,
                             SYME='NON'),
-                 ETAT_INIT=_F(DEPL=INIDEP,
-                              SIGM=INISIG,
-                              VARI=INIVAR),
+                 ETAT_INIT=_F(DEPL=DEP[9],
+                              SIGM=SIG[9],
+                              VARI=VAR[9]),
                  INCREMENT=_F(LIST_INST=TI_LI_IN,
                               SUBD_METHODE='UNIFORME',
                               SUBD_PAS=10,
@@ -838,30 +618,9 @@ U9B=STAT_NON_LINE(MODELE=MOD9B,
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-6));
                  
-# IMPR_RESU(RESU=_F(RESULTAT=U9B));
-
-MONOX=CALC_CHAR_SEISME(  MATR_MASS=massM2,   DIRECTION=( 1., 0.0, 0.,),
-                              MONO_APPUI='OUI' );
+MONOX=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
+                   PESANTEUR=(1.0,-1.0,0.0,0.0));
                            
-                                                            
-VAMONO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                    OPERATION='ASSE',
-                    NUME_DDL=NUM9B,
-                    MAILLAGE=MA,
-                    # MODELE=MOD9B,
-                    ASSE=(
-                    _F(GROUP_MA=list_group_ma[0:nbcouche],
-                       CHAM_GD=DEP[9],
-                       CUMUL='OUI',
-                       COEF_R=0.0,),
-                   _F(GROUP_MA=list_group_m2[0:nbcouche],
-                       CHAM_GD=MONOX,
-                       CUMUL='OUI',
-                       COEF_R=1.0,),
-                          ),
-                   );
-                   
-CHVMONO = AFFE_CHAR_MECA(MODELE=MOD9B, VECT_ASSE=VAMONO);
 
 # SEISMIC SIGNAL Friuli_GEFDYN : FONC_MULT=ACCELE
 INCLUDE(UNITE=90, INFO=1,);
@@ -886,14 +645,8 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=T000,
 L_COMB=DEFI_LIST_REEL(DEBUT=T000,
                       INTERVALLE=_F(JUSQU_A=T_END,
                                     PAS=pas_gro,),);
-                                                             
 
-MATR0=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                   MODELE=MOD9B,
-                   CHAM_MATER=AFFMAT2B,
-                   CHARGE=BO_CONH0,);
-                   
-NU=NUME_DDL(MATR_RIGI=MATR0,);
+NU = NUME_DDL( MODELE=MOD[9], CHARGE=BO_CONH0, );
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=pas_tfin,
@@ -903,11 +656,11 @@ LIST=DEFI_LIST_REEL(DEBUT=0.0,
 #   deplacement solution 
 
 U9B=STAT_NON_LINE(reuse=U9B, 
-                 MODELE=MOD9B,
-                 CHAM_MATER=AFFMAT1B,
+                 MODELE=MOD[9],
+                 CHAM_MATER=AFFMAT1,
                  EXCIT=(_F(CHARGE=BO_CONH0),
-                        _F(CHARGE=CHVPESA1, FONC_MULT=FOC2,),
-                        _F(CHARGE=CHVMONO, FONC_MULT=ACCELE,),
+                        _F(CHARGE=PES, FONC_MULT=FOC2,),
+                        _F(CHARGE=MONOX, FONC_MULT=ACCELE,),
                         ),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
@@ -915,14 +668,10 @@ U9B=STAT_NON_LINE(reuse=U9B,
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
-                               RESI_INTE_RELA = 1E-7,
+                               RESI_INTE_RELA=1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:nbcouche]),
-                            _F(RELATION='ELAS',
-                               DEFORMATION='PETIT',
-                               GROUP_MA=list_group_m2[0:nbcouche],
-                               PARM_THETA=0.57,),
                             _F(RELATION='ELAS',
                                DEFORMATION='PETIT',
                                GROUP_MA=('BAS',),
@@ -980,34 +729,28 @@ DU=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                        CUMUL='OUI',
                        COEF_R=-1.0,),                       
                           ),
-                   );
-                   
-                                                      
+                   );                                           
 
 SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=U9B,
                 NOM_CHAM='SIEF_ELGA',
                 INST=0.0,
-                INFO=1,);
-                
+                INFO=1,);                
                 
 VARIP=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U9B,
                 NOM_CHAM='VARI_ELGA',
                 INST=0.0,
-                INFO=1,);
-                
-                   
-
+                INFO=1,);                
                                   
 CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
-                 MODELE=MOD9B,
-                 CHAM_MATER=AFFMAT1B,
+                 MODELE=MOD[9],
+                 CHAM_MATER=AFFMAT1,
                  EXCIT=(_F(CHARGE=BO_CONH0),
-                        _F(CHARGE=CHVPESA1, FONC_MULT=FOC2,),
-                        _F(CHARGE=CHVMONO, FONC_MULT=ACCELE,),
+                        _F(CHARGE=PES, FONC_MULT=FOC2,),
+                        _F(CHARGE=MONOX, FONC_MULT=ACCELE,),
                         ),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
@@ -1015,14 +758,9 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=-10,
-                               RESI_INTE_RELA=1E-7,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:nbcouche]),
-                            _F(RELATION='ELAS',
-                               DEFORMATION='PETIT',
-                               GROUP_MA=list_group_m2[0:nbcouche],
-                               PARM_THETA=0.57,),
                             _F(RELATION='ELAS',
                                DEFORMATION='PETIT',
                                GROUP_MA=('BAS',),
@@ -1044,8 +782,8 @@ MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
                  
                    
 MATM=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                   MODELE=MOD9B,
-                   CHAM_MATER=AFFMAT1B,
+                   MODELE=MOD[9],
+                   CHAM_MATER=AFFMAT1,
                    CHARGE=BO_CONH0,);
                    
 MATASM=ASSE_MATRICE(MATR_ELEM=MATM, NUME_DDL=NU,);
@@ -1053,7 +791,6 @@ MATASM=ASSE_MATRICE(MATR_ELEM=MATM, NUME_DDL=NU,);
 MATASR=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NU, SYME='OUI',);
 
 IMPR_CO(CHAINE='MATASR             .LIME');
-
                                                                              
 MODET=MACRO_MODE_MECA(MATR_A=MATASR, MATR_B=MATASM,
                        NMAX_ITER_SOREN=80,
@@ -1071,15 +808,13 @@ BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODET),
                          NUME_REF=NU);
                          
 NDDLGENE = NUME_DDL_GENE( BASE= BAMODA,
-                          STOCKAGE= 'PLEIN',);
-                          
+                          STOCKAGE= 'PLEIN',);                          
                             
 RIGIGEN=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=MATASR );
 
 MASSGEN=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
-                            MATR_ASSE=MATASM );
-                            
+                            MATR_ASSE=MATASM );                            
                             
 modgen=MODE_ITER_SIMULT(MATR_A=RIGIGEN, MATR_B=MASSGEN,
                        CALC_FREQ=_F(
@@ -1087,8 +822,7 @@ modgen=MODE_ITER_SIMULT(MATR_A=RIGIGEN, MATR_B=MASSGEN,
                                     FREQ=(-0.1,215.),
                                     ),
                        VERI_MODE=_F(STOP_ERREUR='NON',),
-                         );
-                         
+                         );                         
                          
 RESPHY=REST_GENE_PHYS(    RESU_GENE=modgen,
                           NOM_CHAM='DEPL',
@@ -1104,15 +838,13 @@ RESMOD=DEFI_BASE_MODALE(
 MODEP = NORM_MODE(MODE=RESMOD, NORME='TRAN_ROTA', 
                   MASSE=MATASM, RAIDE=MATASR,
                   );
-                                         
-                       
-                      
+                                                                                      
 U9B2=DYNA_NON_LINE(
-                 MODELE=MOD9B,
-                 CHAM_MATER=AFFMAT1B,
+                 MODELE=MOD[9],
+                 CHAM_MATER=AFFMAT1,
                  EXCIT=(_F(CHARGE=BO_CONH0),
-                        _F(CHARGE=CHVPESA1, FONC_MULT=FOC,),
-                        _F(CHARGE=CHVMONO, FONC_MULT=ACCELE,),
+                        _F(CHARGE=PES, FONC_MULT=FOC,),
+                        _F(CHARGE=MONOX, FONC_MULT=ACCELE,),
                         ),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
@@ -1124,10 +856,6 @@ U9B2=DYNA_NON_LINE(
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:nbcouche]),
-                            _F(RELATION='ELAS',
-                               DEFORMATION='PETIT',
-                               GROUP_MA=list_group_m2[0:nbcouche],
-                               PARM_THETA=0.57,),
                             _F(RELATION='ELAS',
                                DEFORMATION='PETIT',
                                GROUP_MA=('BAS',),
@@ -1153,8 +881,7 @@ U9B2=DYNA_NON_LINE(
                  SCHEMA_TEMPS=_F(SCHEMA='TCHAMWA',
                                  FORMULATION='ACCELERATION',
                                  PHI=1.17,STOP_CFL='NON',),
-                 );                                                        
-                                    
+                 );
                                     
 ACC_R1X=RECU_FONCTION(  RESULTAT=U9B2,
                         TITRE='ACC_R1X',
@@ -1173,7 +900,6 @@ ACC_R47X=RECU_FONCTION( RESULTAT=U9B2,
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
                         INTERPOL='LIN',);
- 
                          
 ACC_A1X=CALC_FONCTION( LIST_PARA=L_COMB,
                        COMB=(  _F( FONCTION = ACC_R1X, COEF = 1.),
@@ -1184,8 +910,6 @@ ACC_A47X=CALC_FONCTION( LIST_PARA=L_COMB,
                        COMB=(  _F( FONCTION = ACC_R47X, COEF = 1.),
                                _F( FONCTION = ACCELE, COEF = 1.),),
                       );
-                      
-
 
 TAB_INF1 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=2.80,
                                     INST_FIN = 2.88, ))                                                   
@@ -1195,16 +919,16 @@ TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.47,
                                     INST_FIN = 3.55, ))                                                   
 
 TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 1.836,PRECISION = 0.01,
+           VALE = 1.818,PRECISION = 0.01,
            REFERENCE = 'NON_REGRESSION')
 TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 1.836,PRECISION = 0.01,
+           VALE = 1.818,PRECISION = 0.01,
            REFERENCE = 'AUTRE_ASTER')
 TEST_TABLE(TABLE=TAB_INF2,NOM_PARA='RMS',
-           VALE = 1.362,PRECISION = 0.01,
+           VALE = 1.307,PRECISION = 0.01,
            REFERENCE = 'NON_REGRESSION')
 TEST_TABLE(TABLE=TAB_INF3,NOM_PARA='RMS',
-           VALE = 2.290,PRECISION = 0.01,
+           VALE = 2.194,PRECISION = 0.01,
            REFERENCE = 'NON_REGRESSION')
 
 
@@ -1217,9 +941,8 @@ MAXSP = INFO_FONCTION(MAX = _F(FONCTION = SPOSCI,))
 TEST_TABLE(TABLE=MAXSP,
            NOM_PARA = 'FREQ',
            TYPE_TEST = 'MAX',
-           VALE      = 2.45,
+           VALE      = 2.50,
            PRECISION = 0.01,
            REFERENCE = 'NON_REGRESSION',);
 
 FIN( );
-

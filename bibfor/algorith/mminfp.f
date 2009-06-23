@@ -2,7 +2,7 @@
      &                  IREP  ,RREP  ,KREP  ,LREP   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -245,7 +245,7 @@ C
 C
       ELSEIF (QUESTI.EQ.'SANS_GROUP_NO') THEN
         CALL JEVEUO(CARACF,'L',JCMCF) 
-        IF (NINT(ZR(JCMCF+25)).EQ.1) THEN
+        IF (NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+25)).EQ.1) THEN
           LREP(1) = .TRUE.
         ELSE
           LREP(1) = .FALSE.
@@ -253,7 +253,7 @@ C
 C
       ELSEIF (QUESTI.EQ.'SANS_GROUP_NO_FR') THEN
         CALL JEVEUO(CARACF,'L',JCMCF) 
-        IF (NINT(ZR(JCMCF+25)).EQ.2) THEN
+        IF (NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+25)).EQ.2) THEN
           LREP(1) = .TRUE.
         ELSE
           LREP(1) = .FALSE.

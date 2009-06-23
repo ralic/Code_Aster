@@ -1,7 +1,7 @@
       SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,
-     &           KLAG2,EPS,ISTOP,SDFETZ,KOOC)
+     &           KLAG2,EPS,ISTOP,SDFETZ,KOOC,KMD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,8 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*) SOLVEZ
-      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,SDFETZ,KOOC
+      CHARACTER*(*) KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,SDFETZ,KOOC,KMD
+      
       INTEGER PCPIVZ ,ISTOP
       REAL*8 EPS
 C ----------------------------------------------------------
@@ -46,6 +47,7 @@ C                  1 : STOP_SINGULIER=NON
 C IN K  SDFETZ    : NOM DE LA SD_FETI
 C IN K KOOC  :  TRAITEMENT OUT_OF_CORE DES PHASES DE FACT + RESOL
 C               DE MUMPS : /OUI/NON (PAR DEFAUT NON)
+C IN K KMD  :  STOCKAGE DISTRIBUEE DE LA MATRICE ASSEMBLEE
 C ----------------------------------------------------------
 C RESPONSABLE PELLET J.PELLET
 
@@ -123,7 +125,9 @@ C     OUT-OF-CORE  :
 C     -----------
       IF (KOOC.EQ.' ') KOOC='NON'
 
-
+C     MATR_DISTRIBUEE :
+C     ---------------
+      IF (KMD.EQ.' ') KMD='NON'
 
 
 
@@ -133,14 +137,15 @@ C     ---------------------------------------------------
       CALL WKVECT(SOLVEU//'.SLVR','V V R',4,ISLVR)
       CALL WKVECT(SOLVEU//'.SLVI','V V I',6,ISLVI)
 
-      ZK24(ISLVK-1+1) = 'MUMPS'
-      ZK24(ISLVK-1+2) = KTYPS
-      ZK24(ISLVK-1+3) = KTYPR
-      ZK24(ISLVK-1+4) = KTYPRN
-      ZK24(ISLVK-1+5) = SYME
-      ZK24(ISLVK-1+6) = KLAG2
-      ZK24(ISLVK-1+8) = SDFETI
-      ZK24(ISLVK-1+9) = KOOC
+      ZK24(ISLVK-1+1)  = 'MUMPS'
+      ZK24(ISLVK-1+2)  = KTYPS
+      ZK24(ISLVK-1+3)  = KTYPR
+      ZK24(ISLVK-1+4)  = KTYPRN
+      ZK24(ISLVK-1+5)  = SYME
+      ZK24(ISLVK-1+6)  = KLAG2
+      ZK24(ISLVK-1+8)  = SDFETI
+      ZK24(ISLVK-1+9)  = KOOC
+      ZK24(ISLVK-1+10) = KMD
       ZI(ISLVI-1+1) = -9999
       ZI(ISLVI-1+2) = PCPIV
       ZI(ISLVI-1+3) = ISTOP

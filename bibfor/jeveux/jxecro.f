@@ -1,6 +1,6 @@
       SUBROUTINE JXECRO ( IC , IADMI , IADDI , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 22/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -205,7 +205,7 @@ C
           ENDIF
           CALL U2MESG('F','JEVEUX_42',1,NOMBAS(IC),1,NBLMAX(IC),0,R8BID)
  304      CONTINUE
-          CALL JXECRB (IC, KD, IADMO, LSO, IDCO, IDOS)
+          CALL JXECRB (IC, KD, IADMO, LSO2, IDCO, IDOS)
         ENDIF
       ELSE
 C
@@ -233,7 +233,7 @@ C
 C
 C ------- GROS  OBJET
 C
-          CALL JXECRB (IC, KADD ,IADMO, LSO, IDCO, IDOS)
+          CALL JXECRB (IC, KADD ,IADMO, LSO2, IDCO, IDOS)
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

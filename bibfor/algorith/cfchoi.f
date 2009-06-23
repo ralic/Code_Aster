@@ -1,10 +1,9 @@
-      SUBROUTINE CFCHOI(METHOZ,PROJMI,JEU   ,JEUMIN,POSMAM,
-     &                  POSMIN,TAU1  ,T1MIN ,TAU2  ,T2MIN ,
-     &                  KSI1  ,XIMIN ,KSI2  ,YIMIN ,LDIST ,
-     &                  LDMIN )
+      SUBROUTINE CFCHOI(JEU   ,JEUMIN,POSMAM,POSMIN,TAU1  ,
+     &                  T1MIN ,TAU2  ,T2MIN ,KSI1  ,XIMIN ,
+     &                  KSI2  ,YIMIN ,IPROJ ,IPROJM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,9 +23,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*(*) METHOZ
-      CHARACTER*3   PROJMI
-      LOGICAL       LDIST,LDMIN      
+      INTEGER       IPROJ,IPROJM
       REAL*8        JEU,JEUMIN
       INTEGER       POSMAM,POSMIN
       REAL*8        TAU1(3),T1MIN(3)
@@ -43,21 +40,14 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  METHOD : TYPE DE METHODE DE CONTACT (CONTINUE OU DISCRET)
-C I/O PROJMI : OPERATION DE PROJECTION 
-C              'NOP' ON NE FAIT RIEN
-C              'ADD' ON AJOUTE L'APPARIEMENT DE CE NOEUD ESCLAVE
-C              'SUP' ON SUPPRIME L'APPARIEMENT DE CE NOEUD ESCLAVE
 C IN  JEU    : JEU CALCULE SUR LE VECTEUR PM
 C I/O JEUMIN : VALEUR DU JEU MINIMUM
 C IN  POSMAM : MAILLE MAITRE APPARIEE
 C OUT POSMIN : MAILLE MAITRE CORRESPONDANT AU JEU MINIMUM 
-C IN  LDIST  : TYPE DE PROJECTION
-C              VAUT .FALSE. SI POINT RAMENE DANS ELEMENT DE REFERENCE
-C              VAUT .TRUE. SI LA PROJECTION EST BIEN DANS L'ELEMENT
-C OUT LDMIN  : TYPE DE PROJECTION CORRESPONDANT AU JEU MINIMUM
-C              VAUT .FALSE. SI POINT RAMENE DANS ELEMENT DE REFERENCE
-C              VAUT .TRUE. SI LA PROJECTION EST BIEN DANS L'ELEMENT
+C IN  IPROJ  : VAUT 0 SI POINT PROJETE DANS L'ELEMENT
+C                   1 SI POINT PROJETE DANS LA ZONE DEFINIE PAR TOLEOU
+C                   2 SI POINT PROJETE EN DEHORS (EXCLUS)
+C OUT IPROJM : TYPE DE PROJECTION CORRESPONDANT AU JEU MINIMUM
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
 C OUT T1MIN  : PREMIER VECTEUR TANGENT CORRESPONDANT AU JEU MINIMUM
@@ -88,71 +78,70 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      REAL*8      ECAN
-      CHARACTER*8 METHOD
+      REAL*8      ECAN,R8PREM
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
-C --- INITIALISATIONS
-C
-      METHOD = METHOZ           
+      CALL JEMARQ()         
 C
 C --- ECART ANCIEN/NOUVEAU
 C
-      IF (JEUMIN.EQ.0.D0) THEN
-        ECAN = 1.D0
+      IF ((JEUMIN.EQ.0.D0).OR.(JEU.EQ.JEUMIN)) THEN
+        ECAN = 0.D0
       ELSE
-        ECAN = ABS((JEU -JEUMIN)/JEUMIN)
+        ECAN = ABS((JEU - JEUMIN)/JEUMIN)
       ENDIF           
-C
-C --- PROJECTION SUR UNE MAILLE
-C ---      -> ON APPARIE
-C --- PROJECTION HORS MAILLE
-C ---      -> SI NVELLE PROJECTION "LOIN" DE L'ANCIENNE (ECAN.GT.1D-8)
-C ---         ON SUPPRIME L'APPARIEMENT
-C
-      IF (METHOD.EQ.'DISCRETE') THEN
-        IF ((JEU .LE.JEUMIN).AND.
-     &      (ECAN.GT.1D-15)) THEN
-          JEUMIN = JEU 
-          POSMIN = POSMAM
-          LDMIN  = LDIST
-          CALL DCOPY(3,TAU1,1,T1MIN,1)
-          CALL DCOPY(3,TAU2,1,T2MIN,1)
-          XIMIN = KSI1
-          YIMIN = KSI2
-          IF (LDIST) THEN
-            PROJMI = 'ADD'   
+
+C PREMIERE PROJECTION
+      IF (IPROJM.EQ.-1) THEN
+        JEUMIN = JEU
+        POSMIN = POSMAM
+        IPROJM = IPROJ
+        CALL DCOPY(3,TAU1,1,T1MIN,1)
+        CALL DCOPY(3,TAU2,1,T2MIN,1)
+        XIMIN = KSI1
+        YIMIN = KSI2
+      ELSE
+C PROJECTION SUIVANTES
+        IF (IPROJM.NE.0) THEN
+C ON N'A PAS ENCORE PROJETE DANS UN ELEMENT
+          IF (IPROJ.EQ.0) THEN
+C UN POINT SE PROJETE DANS UN ELEMENT
+            JEUMIN = JEU
+            POSMIN = POSMAM
+            IPROJM = IPROJ
+            CALL DCOPY(3,TAU1,1,T1MIN,1)
+            CALL DCOPY(3,TAU2,1,T2MIN,1)
+            XIMIN = KSI1
+            YIMIN = KSI2
           ELSE
-            IF (PROJMI.EQ.'ADD') THEN
-              IF (ECAN.GE.1.D-8) THEN
-                PROJMI = 'SUP'
-              ENDIF
-            ELSE
-              PROJMI = 'SUP'
+            IF (JEU.LT.JEUMIN) THEN
+              JEUMIN = JEU
+              POSMIN = POSMAM
+              IPROJM = IPROJ
+              CALL DCOPY(3,TAU1,1,T1MIN,1)
+              CALL DCOPY(3,TAU2,1,T2MIN,1)
+              XIMIN = KSI1
+              YIMIN = KSI2
             ENDIF
           ENDIF
         ELSE
-          IF (PROJMI.EQ.'ADD') THEN
-            PROJMI =  'NOP'
+C ON A DEJA PROJETE DANS UN ELEMENT
+          IF (IPROJ.EQ.0) THEN
+            IF (JEU.LT.JEUMIN.AND.ECAN.GT.R8PREM()) THEN
+C ON SELECTIONNE LE PROJETE MINIMISANT LA DISTANCE
+              JEUMIN = JEU
+              POSMIN = POSMAM
+              IPROJM = IPROJ
+              CALL DCOPY(3,TAU1,1,T1MIN,1)
+              CALL DCOPY(3,TAU2,1,T2MIN,1)
+              XIMIN = KSI1
+              YIMIN = KSI2
+            ENDIF
           ENDIF
-        ENDIF
-      ELSEIF (METHOD.EQ.'CONTINUE') THEN
-        IF (JEU.LT.JEUMIN) THEN
-          PROJMI = 'ADD'
-          POSMIN = POSMAM
-          JEUMIN = JEU 
-          LDMIN  = LDIST
-          CALL DCOPY(3,TAU1,1,T1MIN,1)
-          CALL DCOPY(3,TAU2,1,T2MIN,1)
-          XIMIN = KSI1
-          YIMIN = KSI2
-        END IF           
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF 
-C 
+        ENDIF         
+C
+      ENDIF
+C
       CALL JEDEMA()
       END

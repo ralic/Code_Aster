@@ -4,7 +4,7 @@
      &                  FONACT,NBIN  ,LPAIN ,LCHIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -278,11 +278,11 @@ C
       LPAIN(35) = 'PVARCPR'
       LCHIN(35) = VRCPLU
       LPAIN(36) = 'PNBSP_I'
-      LCHIN(36) = CHCARA(1) (1:8)//'.CANBSP'
+      LCHIN(36) = CHCARA(16)
       LPAIN(37) = 'PFIBRES'
-      LCHIN(37) = CHCARA(1) (1:8)//'.CAFIBR'
-      LPAIN(38) = ' '
-      LCHIN(38) = ' '
+      LCHIN(37) = CHCARA(17)
+      LPAIN(38) = 'PCINFDI'
+      LCHIN(38) = CHCARA(15)
       LPAIN(39) = ' '
       LCHIN(39) = ' '
       LPAIN(40) = 'PVARCRR'

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+%& MODIF TYPELEM  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,42 +26,12 @@ MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CABSCUR  = ABSC_R   ELEM__         (ABSC1    ABSC2    )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CCINFDI  = NEUT_R   ELEM__         (X1       )
-    CCADISA  = CADISA   ELEM__         (A1       A2       A3       A4       A5       A6
-                                        A7       A8       A9       A10      A11      A12
-                                        A13      A14      A15      A16      A17      A18
-                                        A19      A20      A21      REPA     )
-    CCADISK  = CADISK   ELEM__         (K1       K2       K3       K4       K5       K6
-                                        K7       K8       K9       K10      K11      K12
-                                        K13      K14      K15      K16      K17      K18
-                                        K19      K20      K21      REPK     ETA      )
-    CCADISM  = CADISM   ELEM__         (M1       M2       M3       M4       M5       M6
-                                        M7       M8       M9       M10      M11      M12
-                                        M13      M14      M15      M16      M17      M18
-                                        M19      M20      M21      REPM     )
-    CCADNSA  = CADNSA   ELEM__         (A1       A2       A3       A4       A5       A6
-                                        A7       A8       A9       A10      A11      A12
-                                        A13      A14      A15      A16      A17      A18
-                                        A19      A20      A21      A22      A23      A24
-                                        A25      A26      A27      A28      A29      A30
-                                        A31      A32      A33      A34      A35      A36      
-                                        REPA     )
-    CCADNSK  = CADNSK   ELEM__         (K1       K2       K3       K4       K5       K6
-                                        K7       K8       K9       K10      K11      K12
-                                        K13      K14      K15      K16      K17      K18
-                                        K19      K20      K21      K22      K23      K24
-                                        K25      K26      K27      K28      K29      K30
-                                        K31      K32      K33      K34      K35      K36    
-                                        REPK     ETA      )
-    CCADNSM  = CADNSM   ELEM__         (M1       M2       M3       M4       M5       M6
-                                        M7       M8       M9       M10      M11      M12
-                                        M13      M14      M15      M16      M17      M18
-                                        M19      M20      M21      M22      M23      M24
-                                        M25      M26      M27      M28      M29      M30
-                                        M31      M32      M33      M34      M35      M36
-                                        REPM     )
-    CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     GAMMA    )
-    ECODRET  = CODE_I   ELEM__         (IRET     )
+    CCADISA  = CADISA   ELEM__         (A[36])
+    CCADISK  = CADISK   ELEM__         (K[36])
+    CCADISM  = CADISM   ELEM__         (M[36])
+    CCINFDI  = CINFDI   ELEM__         (REPK  REPM  REPA  SYMK  SYMM  SYMA  ETAK)
+    CCAORIE  = CAORIE   ELEM__         (ALPHA   BETA GAMMA    )
+    ECODRET  = CODE_I   ELEM__         (IRET   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
@@ -102,68 +72,69 @@ OPTION__
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
                               OUT__  EEFGEGA  PEPCON3
     AMOR_MECA           41    IN__   CCADISA  PCADISA  CCAORIE  PCAORIE  CMATERC  PMATERC  MMATUUR  PRIGIEL
-                                     CCADNSA  PCADNSA  CCINFDI  PCINFDI
+                                     CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     CHAR_MECA_PESA_R    43    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CPESANR  PPESANR
-                                     CCADNSM  PCADNSM  CCINFDI  PCINFDI
+                                     CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_MECA_TEMP_R    99    IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     ECIN_ELEM_DEPL      44    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFREQR   PFREQR
-                                     CCADNSM  PCADNSM  CCINFDI  PCINFDI
+                                     CCINFDI  PCINFDI
                               OUT__  EENERCR  PENERCR
-    EFGE_ELNO_CART      39    IN__   CCAORIE  PCAORIE  EEFGENO  PCONTRR
+    EFGE_ELNO_CART      39    IN__   CCAORIE  PCAORIE  EEFGENO  PCONTRR  CCINFDI  PCINFDI
                               OUT__  EEFFONO  PEFFORR
     EFGE_ELNO_DEPL      42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
-                                     CCADNSK  PCADNSK  CCINFDI  PCINFDI
+                                     CCINFDI  PCINFDI
                               OUT__  EEFGENO  PEFFORR
                                      EEFGENC  PEFFORC
     EPOT_ELEM_DEPL      44    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
-                                     CCADNSK  PCADNSK  CCINFDI  PCINFDI
+                                     CCINFDI  PCINFDI
                               OUT__  EENERDR  PENERDR
-    FORC_NODA           39    IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR
+    FORC_NODA           39    IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR  CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
     FORC_NODA_NONL      39    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
-                              OUT__  MVECTUR  PVECTUR                              
+                                     CMATERC  PMATERC  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CCINFDI  PCINFDI
+                              OUT__  MVECTUR  PVECTUR
     FULL_MECA           47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC
-                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
-                                     DDL_MECA PVITPLU  CINSTPR  PINSTMR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
+                                     CCINFDI  PCINFDI
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC
-                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
-                                     DDL_MECA PVITPLU  CINSTPR  PINSTMR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
+                                     CCINFDI  PCINFDI
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE
+    MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
-    MASS_INER           45    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CCADNSM  PCADNSM
-                                     CCINFDI  PCINFDI
+    MASS_INER           45    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CCINFDI  PCINFDI
                               OUT__  EMASSINE PMASSINE
-    MASS_MECA           41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CCADNSM  PCADNSM  CCINFDI  PCINFDI
+    MASS_MECA           41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
-    MASS_MECA_DIAG      41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CCADNSM  PCADNSM  CCINFDI  PCINFDI
+    MASS_MECA_DIAG      41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
-    MASS_MECA_EXPLI     41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE   OUT__  MMATUUR  PMATUUR
-    MECA_GYRO           009   IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CCADNSM  PCADNSM
-                                     CCINFDI  PCINFDI
+    MASS_MECA_EXPLI     41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI
+                              OUT__  MMATUUR  PMATUUR
+    MECA_GYRO            9    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CCINFDI  PCINFDI
                               OUT__  MMATUNS  PMATUNS
     MASS_MECA_SENSI     41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PVAPRIN  CCADISM  PSEDISM
+                                     CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
     MASS_MECA_SENS_C    41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NDEPLAC  PVAPRIN  CCADISM  PSEDISM
+                                     CCINFDI  PCINFDI
                               OUT__  MVECTUC  PVECTUC
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    M_GAMMA             41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
+    M_GAMMA             41    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
@@ -171,41 +142,41 @@ OPTION__
                               OUT__  ECOURAN  PCOURAN
     RAPH_MECA           47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC
-                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
-                                     DDL_MECA PVITPLU  CINSTPR  PINSTMR
-                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    REFE_FORC_NODA      39    IN__   EREFCO   PREFCO
-                              OUT__  MVECTUR  PVECTUR
-    RIGI_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISK  PCADISK  CCAORIE  PCAORIE
-                              OUT__  MMATUUR  PMATUUR
-    RIGI_MECA           41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCADNSK  PCADNSK
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
                                      CCINFDI  PCINFDI
+                              OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+    REFE_FORC_NODA      39    IN__   EREFCO   PREFCO   CCINFDI  PCINFDI
+                              OUT__  MVECTUR  PVECTUR
+    RIGI_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
+                              OUT__  MMATUUR  PMATUUR
+    RIGI_MECA           41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_MECA_ELAS      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC
-                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
-                                     DDL_MECA PVITPLU  CINSTPR  PINSTMR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
+                                     CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_HYST      41    IN__   CCADISK  PCADISK  MMATUUR  PRIGIEL
+    RIGI_MECA_HYST      41    IN__   CCADISK  PCADISK  MMATUUR  PRIGIEL  CCINFDI  PCINFDI
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_SENSI     41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PVAPRIN  CCADISK  PSEDISK
+                                     CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
     RIGI_MECA_SENS_C    41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  NDEPLAC  PVAPRIN  CCADISK  PSEDISK
+                                     CCINFDI  PCINFDI
                               OUT__  MVECTUC  PVECTUC
     RIGI_MECA_TANG      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC
-                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
-                                     DDL_MECA PVITPLU  CINSTPR  PINSTMR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
+                                     CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_DEPL      42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
-                                     CCADNSK  PCADNSK  CCINFDI  PCINFDI
-                              OUT__  EEFGEGA  PCONTRR
-                                     EEFGEGC  PCONTRC
+                                     CCINFDI  PCINFDI
+                              OUT__  EEFGEGA  PCONTRR  EEFGEGC  PCONTRC
     SIEF_ELGA_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIEF_ELNO_ELGA      39    IN__   EEFGEGA  PCONTRR

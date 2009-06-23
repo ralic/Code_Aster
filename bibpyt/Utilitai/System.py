@@ -1,4 +1,4 @@
-#@ MODIF System Utilitai  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF System Utilitai  DATE 22/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,11 +48,13 @@ def _(mesg):
 #-------------------------------------------------------------------------------
 class NonBlockingReader(_threading.Thread):
    """Classe pour lire l'output/error d'un process fils sans bloquer."""
-   def __init__(self, process, file, bufsize=1000, sleep=0.1):
+   def __init__(self, process, file, bufsize=10000, sleep=0.1, follow=True):
       _threading.Thread.__init__(self)
       self.process = process
       self.file    = file
       self.bufsize = bufsize
+      if not follow:
+         self.bufsize = -1
       self.lock    = _threading.Lock()
       self.content = []
       self.buffer  = []
@@ -60,8 +62,12 @@ class NonBlockingReader(_threading.Thread):
       self.ended   = False
 
    def fill_buffer(self, bufsize=-1):
-      #add = os.read(self.file.fileno(), self.bufsize)
-      add = self.file.read(bufsize)
+      if bufsize < 0:
+         # file.read waits to read bufsize bytes
+         add = self.file.read(bufsize)
+      else:
+         # os.read doesn't block if only few bytes can be read
+         add = os.read(self.file.fileno(), self.bufsize)
       if add:
          self.lock.acquire()
          self.buffer.append(add)
@@ -199,7 +205,8 @@ class SYSTEM:
 #-------------------------------------------------------------------------------
    def Shell(self, cmd, bg=False, verbose=None, follow_output=False,
              alt_comment=None, interact=False,
-             capturestderr=True, separated_stderr=False):
+             capturestderr=True, separated_stderr=False,
+             heavy_output=False):
       """Execute a command shell
          cmd      : command
          bg       : put command in background if True
@@ -235,6 +242,10 @@ class SYSTEM:
       if interact:
          iret = os.system(cmd)
          return _exitcode(iret), ''
+      # adapt parameters (bufsize, sleeptime) according to output volume
+      bufsize, sleeptime = 1000, 0.
+      if heavy_output:
+         bufsize, sleeptime = 100000, 0.1
       # use popen to manipulate stdout/stderr
       output = ''
       error  = ''
@@ -244,10 +255,10 @@ class SYSTEM:
          p = popen2.Popen4(cmd)
       p.tochild.close()
       if not bg:
-         th_out = NonBlockingReader(p, p.fromchild)
+         th_out = NonBlockingReader(p, p.fromchild, bufsize=bufsize, sleep=sleeptime, follow=follow_output)
          th_out.start()
          if separated_stderr:
-            th_err = NonBlockingReader(p, p.childerr)
+            th_err = NonBlockingReader(p, p.childerr, bufsize=bufsize, sleep=sleeptime, follow=follow_output)
             th_err.start()
          if follow_output:
             while p.poll() == -1:

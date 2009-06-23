@@ -1,8 +1,8 @@
       SUBROUTINE AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,
-     &                  TYPE)
+     &                  TYPE,LMD)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPM MUMPS  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -33,7 +33,7 @@ C IN  ELI2LG :  LOG   : LOGICAL POUR NE LAISSER QU'1 LAGRANGE ACTIF
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 C---------------------------------------------------------------
       INTEGER      RANG,KXMPS,IFMUMP
-      LOGICAL      LDIST,ELI2LG
+      LOGICAL      LDIST,ELI2LG,LMD
       CHARACTER*1  TYPE
       CHARACTER*14 IMPR
       CHARACTER*24 KMONIT(12)
@@ -53,8 +53,9 @@ C============================================================
       TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
       INTEGER      JSMDI,NSMDI,JSMHC,NSMHC,JDELG,N1,N,NZ,NZ2,NVALE,
-     &             JVALE,NLONG,JVALE2,NZLOC,JCOL,KTERM,ILIG,ITERM,KZERO,
-     &             IFM,NIV,K,SYM,IRET,IBID
+     &             JVALE,NLONG,JVALE2,NZLOC,JCOLG,KTERM,ILIGG,ITERM,
+     &             IFM,NIV,K,SYM,IRET,JCOLL,ILIGL,JNULOGL,
+     &             COLTMP,NBEQ,JNEQU,KZERO,IBID
       INTEGER*4    KXMPS4
       CHARACTER*1  ROUCS(NMXINS)
       CHARACTER*4  KBID,ETAMS(NMXINS),ETAM
@@ -108,6 +109,10 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         CALL ASSERT(.FALSE.)
       ENDIF
 
+      IF (LMD.EQ..TRUE.) THEN
+        CALL JEVEUO(NONU//'.NUML.NULG','L',JNULOGL)
+      ENDIF
+
 C       ------------------------------------------------
 C        LECTURE D'ADRESSES ET DE PARAMETRES PRELIMINAIRES
 C       ------------------------------------------------
@@ -116,8 +121,15 @@ C       ------------------------------------------------
         CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
         CALL JEVEUO(NONU//'.SMOS.SMHC','L',JSMHC)
         CALL JELIRA(NONU//'.SMOS.SMHC','LONMAX',NSMHC,KBID)
-        CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
-        CALL JELIRA(NONU//'.NUME.DELG','LONMAX',N1,KBID)
+        IF (LMD.EQ..TRUE.) THEN
+          CALL JEVEUO(NONU//'.NUML.DELG','L',JDELG)
+          CALL JELIRA(NONU//'.NUML.DELG','LONMAX',N1,KBID)
+        ELSE
+          CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
+          CALL JELIRA(NONU//'.NUME.DELG','LONMAX',N1,KBID)
+        ENDIF
+        CALL JEVEUO(NONU//'.NUME.NEQU','L',JNEQU)
+        NBEQ=ZI(JNEQU)
         CALL ASSERT(N1.EQ.NSMDI)
 C --- CALCUL DE N
         N=NSMDI
@@ -154,10 +166,10 @@ C       ------------------------------------------------
       
       IF (LDIST) THEN
         NZLOC=0
-        JCOL=1
+        JCOLL=1
         DO KTERM = 1, NZ
-          IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1
-          ILIG=ZI(JSMHC-1+KTERM)
+          IF (ZI(JSMDI-1+JCOLL).LT.KTERM) JCOLL=JCOLL+1
+          ILIGL=ZI(JSMHC-1+KTERM)
           IF (LTYPR) THEN
             RAUX=ZR(JVALE-1+KTERM)
             IF (RAUX.NE.0.D0) NZLOC=NZLOC+1
@@ -166,7 +178,7 @@ C       ------------------------------------------------
             IF (CAUX.NE.(0.D0,0.D0)) NZLOC=NZLOC+1
           ENDIF
 C -- SOUS LA DIAGONALE :
-          IF ((SYM.EQ.0).AND.(ILIG.NE.JCOL)) THEN
+          IF ((SYM.EQ.0).AND.(ILIGL.NE.JCOLL)) THEN
             IF (LTYPR) THEN
               IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
               IF (RAUX.NE.0.D0) NZLOC=NZLOC+1
@@ -190,7 +202,11 @@ C       -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS:
                     
         IF (LDIST) THEN
           IF (LTYPR) THEN
-            XMPSK%N=N
+            IF (LMD.EQ..TRUE.) THEN
+              XMPSK%N=NBEQ
+            ELSE
+              XMPSK%N=N
+            ENDIF
             XMPSK%NZ_loc=NZ2
             ALLOCATE(XMPSK%IRN_loc(NZ2))
             ALLOCATE(XMPSK%JCN_loc(NZ2))
@@ -221,13 +237,13 @@ C       -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS:
 C       ------------------------------------------------
 C       REMPLISSAGE EFFECTIF DES TERMES DE LA MATRICE
 C       ------------------------------------------------
-        JCOL=1
+        JCOLL=1
         ITERM=0
         DO KTERM=1,NZ
 
 C --- PARTIE TRIANGULAIRE SUPERIEURE
-          IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1
-          ILIG=ZI(JSMHC-1+KTERM)
+          IF (ZI(JSMDI-1+JCOLL).LT.KTERM) JCOLL=JCOLL+1
+          ILIGL=ZI(JSMHC-1+KTERM)
           LNN=.FALSE.
           IF (LTYPR) THEN
             RAUX=ZR(JVALE-1+KTERM)
@@ -236,48 +252,60 @@ C --- PARTIE TRIANGULAIRE SUPERIEURE
             CAUX=ZC(JVALE-1+KTERM)
             IF (CAUX.NE.(0.D0,0.D0)) LNN=.TRUE.
           ENDIF
+          IF (LMD.EQ..TRUE.) THEN
+            ILIGG=ZI(JNULOGL+ILIGL-1)
+            JCOLG=ZI(JNULOGL+JCOLL-1)
+          ELSE
+            ILIGG=ILIGL
+            JCOLG=JCOLL
+          ENDIF
+          IF ( ILIGG.GE.JCOLG ) THEN
+            COLTMP=JCOLG
+            JCOLG=ILIGG
+            ILIGG=COLTMP
+          ENDIF
           IF ((LDIST.AND.LNN).OR.(.NOT.LDIST)) THEN
             ITERM=ITERM+1
             IF (LDIST) THEN
               IF (LTYPR) THEN
-                XMPSK%IRN_loc(ITERM)=ILIG
-                XMPSK%JCN_loc(ITERM)=JCOL
+                XMPSK%IRN_loc(ITERM)=ILIGG
+                XMPSK%JCN_loc(ITERM)=JCOLG
                 XMPSK%A_loc(ITERM)=RAUX
               ELSE
-                YMPSK%IRN_loc(ITERM)=ILIG
-                YMPSK%JCN_loc(ITERM)=JCOL
+                YMPSK%IRN_loc(ITERM)=ILIGG
+                YMPSK%JCN_loc(ITERM)=JCOLG
                 YMPSK%A_loc(ITERM)=CAUX
               ENDIF
             ELSE
               IF (LTYPR) THEN
-                XMPSK%IRN(ITERM)=ILIG
-                XMPSK%JCN(ITERM)=JCOL
+                XMPSK%IRN(ITERM)=ILIGG
+                XMPSK%JCN(ITERM)=JCOLG
                 XMPSK%A(ITERM)=RAUX
               ELSE
-                YMPSK%IRN(ITERM)=ILIG
-                YMPSK%JCN(ITERM)=JCOL
+                YMPSK%IRN(ITERM)=ILIGG
+                YMPSK%JCN(ITERM)=JCOLG
                 YMPSK%A(ITERM)=CAUX
               ENDIF
             ENDIF
             IF (ELI2LG) THEN
 C ------      ON ELIMINE LE DERNIER TERME DE A/A_loc SI LAG2
               KZERO=0
-              IF (ZI(JDELG-1+ILIG).EQ.-1) THEN
-                IF (JCOL.EQ.ILIG) KZERO=1
-                IF (ZI(JDELG-1+JCOL).EQ.-2) KZERO=1
+              IF (ZI(JDELG-1+ILIGL).EQ.-1) THEN
+                IF (JCOLL.EQ.ILIGL) KZERO=1
+                IF (ZI(JDELG-1+JCOLL).EQ.-2) KZERO=1
               ENDIF
-              IF (ZI(JDELG-1+ILIG).EQ.-2) THEN
-                IF (JCOL.NE.ILIG) KZERO=1
+              IF (ZI(JDELG-1+ILIGL).EQ.-2) THEN
+                IF (JCOLL.NE.ILIGL) KZERO=1
               ENDIF
-              IF (ZI(JDELG-1+JCOL).EQ.-2) THEN
-                IF (JCOL.NE.ILIG) KZERO=1
+              IF (ZI(JDELG-1+JCOLL).EQ.-2) THEN
+                IF (JCOLL.NE.ILIGL) KZERO=1
               ENDIF
               IF (KZERO.EQ.1)  ITERM=ITERM-1
             ENDIF
           ENDIF
 
 C --- PARTIE TRIANGULAIRE INFERIEURE
-          IF ((SYM.EQ.0).AND.(ILIG.NE.JCOL)) THEN
+          IF ((SYM.EQ.0).AND.(ILIGL.NE.JCOLL)) THEN
             LNN=.FALSE.
             IF (LTYPR) THEN
               IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
@@ -288,24 +316,31 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
             ENDIF
             IF ((LDIST.AND.LNN).OR.(.NOT.LDIST)) THEN
               ITERM=ITERM+1
+              IF (LMD.EQ..TRUE.) THEN
+                ILIGG=ZI(JNULOGL+ILIGL-1)
+                JCOLG=ZI(JNULOGL+JCOLL-1)
+              ELSE
+                ILIGG=ILIGL
+                JCOLG=JCOLL
+              ENDIF
               IF (LDIST) THEN
                 IF (LTYPR) THEN
-                  XMPSK%IRN_loc(ITERM)=JCOL
-                  XMPSK%JCN_loc(ITERM)=ILIG
+                  XMPSK%IRN_loc(ITERM)=JCOLG
+                  XMPSK%JCN_loc(ITERM)=ILIGG
                   XMPSK%A_loc(ITERM)=RAUX
                 ELSE
-                  YMPSK%IRN_loc(ITERM)=JCOL
-                  YMPSK%JCN_loc(ITERM)=ILIG
+                  YMPSK%IRN_loc(ITERM)=JCOLG
+                  YMPSK%JCN_loc(ITERM)=ILIGG
                   YMPSK%A_loc(ITERM)=CAUX
                 ENDIF
               ELSE
                 IF (LTYPR) THEN
-                  XMPSK%IRN(ITERM)=JCOL
-                  XMPSK%JCN(ITERM)=ILIG
+                  XMPSK%IRN(ITERM)=JCOLG
+                  XMPSK%JCN(ITERM)=ILIGG
                   XMPSK%A(ITERM)=RAUX
                 ELSE
-                  YMPSK%IRN(ITERM)=JCOL
-                  YMPSK%JCN(ITERM)=ILIG
+                  YMPSK%IRN(ITERM)=JCOLG
+                  YMPSK%JCN(ITERM)=ILIGG
                   YMPSK%A(ITERM)=CAUX
                 ENDIF
               ENDIF
@@ -332,13 +367,16 @@ C ---FIN DE LA BOUCLE SUR NZ
             YMPSK%NZ=NZ2
           ENDIF
         ENDIF
-        CALL ASSERT(ILIG.EQ.N)
-        CALL ASSERT(JCOL.EQ.N)
+        CALL ASSERT(ILIGL.EQ.N)
+        CALL ASSERT(JCOLL.EQ.N)
         CALL JELIBE(NONU//'.SMOS.SMDI')
         CALL JELIBE(NONU//'.SMOS.SMHC')
         CALL JELIBE(JEXNUM(NOMAT//'.VALM',1))
         IF (LMNSY) CALL JELIBE(JEXNUM(NOMAT//'.VALM',2))
         CALL JELIBE(NONU//'.NUME.DELG')
+        IF ( LMD.EQ..TRUE. ) THEN
+          CALL JELIBE(NONU//'.NUML.DELG')
+        ENDIF
 
         IF (NIV.GE.2) THEN
 C --- TEST POUR EVITER LE MONITORING DES CMDES ECLATEES

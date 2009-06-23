@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+#& MODIF COMMUN  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "DIS_VISC",        # RESP. : FLEJOU J.L.FLEJOU
                                         "DRUCK_PRAGER",    # RESP. : FERNANDES R.FERNANDES
                                         "DRUCK_PRAG_N_A",  # RESP. : FERNANDES R.FERNANDES
+                                        "VISC_DRUC_PRAG",  # RESP. : ELGHARIB J.ELGHARIB
                                         "ELAS_GONF",       # RESP. : GRANET S.GRANET
                                         "ELAS_HYPER",      # RESP. : ABBAS M.ABBAS
                                         "ENDO_FRAGILE",    # RESP. : MICHEL S.MICHEL
@@ -108,7 +109,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "META_V_INL",      # RESP. : CANO V.CANO
                                         "MONOCRISTAL",     # RESP. : PROIX J.M.PROIX
                                         "MULTIFIBRE",      # RESP. : FLEJOU J.L.FLEJOU
-                                        "NADAI_B",         # RESP. : None
                                         "NORTON_HOFF",     # RESP. : MICHEL S.MICHEL
                                         "PINTO_MENEGOTTO", # RESP. : ROSPARS C.ROSPARS
                                         "POLYCRISTAL",     # RESP. : PROIX J.M.PROIX
@@ -124,7 +124,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "VISC_IRRA_LOG",   # RESP. : FERNANDES R.FERNANDES
                                         "VISC_ISOT_LINE",  # RESP. : MICHEL S.MICHEL
                                         "VISC_ISOT_TRAC",  # RESP. : PROIX J.M.PROIX
-                                        "VISCOCHAB",       # RESP. : None
+                                        "VISCOCHAB",       # RESP. : GENIAUT S.GENIAUT
                                         "VISC_TAHERI",     # RESP. : TAHERI S.TAHERI
                                         "VMIS_ASYM_LINE",  # RESP. : PROIX J.M.PROIX
                                         "VMIS_CIN1_CHAB",  # RESP. : PROIX J.M.PROIX
@@ -159,7 +159,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "VMIS_CINE_LINE",
                                        "VMIS_ISOT_TRAC",
                                        "VMIS_ISOT_LINE",
-                                       "VMIS_ISOT_CINE",
                                        "VMIS_ISOT_PUIS",
                                        "GLRC_DM",
                                        "GRANGER_FP",
@@ -167,7 +166,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "GRANGER_FP_V",
                                        "BETON_UMLV_FP",
                                        "ROUSS_PR",
-                                       "NADAI_B",
                                        "BETON_DOUBLE_DP",
                                        "ENDO_ISOT_BETON",
                                        "MAZARS"
@@ -187,6 +185,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "LETK",
                                        "DRUCK_PRAGER",
                                        "DRUCK_PRAG_N_A",
+                                       "VISC_DRUC_PRAG",
                                        "ELAS_GONF",
                                        "HOEK_BROWN_EFF",
                                        "HOEK_BROWN_TOT",
@@ -221,7 +220,13 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                    "REAC_GEOM","EULER_ALMANSI")),
 
            ALGO_C_PLAN     =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
-           RESI_DEBORST  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+           RESI_DEBO_MAXI = SIMP(statut='f',typ='R',
+                   fr="Critère d'arret absolu pour assurer la condition de contraintes planes",
+           ),
+           b_resideborst      = BLOC(condition = " RESI_DEBO_MAXI == None ",
+           fr="Critère d'arret relatif pour assurer la condition de contraintes planes",
+                            RESI_DEBO_RELA = SIMP(statut='f',typ='R',defaut= 1.0E-6),
+                            ),
            ALGO_1D         =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
            ITER_MAXI_DEBORST  =SIMP(statut='f',typ='I',defaut= 1),
 

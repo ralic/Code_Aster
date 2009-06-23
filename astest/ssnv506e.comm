@@ -1,5 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
+# ssnv506e.para = tps_job 220 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# ssnv506e.para = tps_job 220 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 
 DEBUT(CODE=_F(NOM='SSNV506E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI',),);
@@ -74,6 +76,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
                                TOLE_PROJ_EXT=-1.0,
+                               SANS_GROUP_NO=('E','S',),
                                ),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
@@ -102,6 +105,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 
 
 U=STAT_NON_LINE(MODELE=MO,
+                #INFO=2,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=CHA1,),
                        _F(CHARGE=CHA2,
@@ -223,29 +227,5 @@ TEST_TABLE(TABLE=TAB_REAC,
            VALE=-9.1321615262971E+06,
            VERSION='9.2.18',
            REFERENCE='NON_REGRESSION',);
-
-
-# TESTS DE NON-REGRESSION (AUTRES)
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NOEUD='N295',
-                  NUME_ORDRE=63,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=1.1058333934147E+06,
-                  PRECISION=0.1,
-                  CRITERE='RELATIF',
-                  REFERENCE='AUTRE_ASTER',
-                  VERSION='8.0.11',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NOEUD='N294',
-                  NUME_ORDRE=63,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=0.0,
-                  PRECISION=1.E-12,
-                  CRITERE='ABSOLU',
-                  REFERENCE='AUTRE_ASTER',
-                  VERSION='8.0.11',),);
 
 FIN();

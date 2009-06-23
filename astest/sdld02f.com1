@@ -1,0 +1,134 @@
+# AJOUT
+# TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
+# CAS_TEST__:SDLD02F
+#
+
+POURSUITE(CODE=_F(NOM='SDLD02F'))
+
+
+AFREQ=MODE_ITER_INV(   MATR_A=MATASSR,      MATR_B=MATASSM,
+          CALC_FREQ=_F(  OPTION = 'AJUSTE',
+                      FREQ = (5., 10., 15., 20., 24., 27., 30., 32.,)),
+           CALC_MODE=_F(  OPTION = 'DIRECT') )
+
+AFREQ=NORM_MODE( reuse=AFREQ,    MODE=AFREQ,
+                      NORME='TRAN_ROTA',
+                    MODE_SIGNE=_F(  NOEUD = 'P2',
+                                 NOM_CMP = 'DY',
+                                 SIGNE = 'NEGATIF')   )
+
+AFREQ2=EXTR_RESU(     RESULTAT=AFREQ,
+                       ARCHIVAGE=_F(   PAS_ARCH = 8)
+                   )
+
+# --------------------------------------------------------------------
+AMODE1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                    NOM_CHAM='DEPL', RESULTAT=AFREQ,
+                      NUME_ORDRE=1
+                         )
+
+AMODE8=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                    NOM_CHAM='DEPL', RESULTAT=AFREQ2,
+                      NUME_ORDRE=8
+                         )
+
+AMODE81=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                    NOM_CHAM='DEPL', RESULTAT=AFREQ,
+                      FREQ=31.3474
+                         )
+
+AMODE82=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                    NOM_CHAM='DEPL', RESULTAT=AFREQ2,
+                      NUME_MODE=8
+                         )
+
+# --------------------------------------------------------------------
+CMP='DY'
+# ----------------------------------------------------------------------
+TEST_RESU(
+   RESU=(
+      _F( REFERENCE='ANALYTIQUE', RESULTAT = AFREQ,        PARA = 'FREQ',
+               CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+               NUME_ORDRE = 1,         VALE = 5.5274),
+      _F( REFERENCE='ANALYTIQUE', RESULTAT = AFREQ,        PARA = 'FREQ',
+               CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+               NUME_ORDRE = 2,         VALE = 10.8868),
+      _F( REFERENCE='ANALYTIQUE', RESULTAT = AFREQ,        PARA = 'FREQ',
+               CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+               NUME_ORDRE = 3,         VALE = 15.9155),
+      _F( REFERENCE='ANALYTIQUE', RESULTAT = AFREQ,        PARA = 'FREQ',
+               CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+               NUME_ORDRE = 4,         VALE = 20.4606),
+      _F( REFERENCE='ANALYTIQUE', RESULTAT = AFREQ,        PARA = 'FREQ',
+               CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+               NUME_ORDRE = 5,         VALE = 24.3840),
+      _F( REFERENCE='ANALYTIQUE', RESULTAT = AFREQ,        PARA = 'FREQ',
+               CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+               NUME_ORDRE = 6,         VALE = 27.5664),
+      _F( REFERENCE='ANALYTIQUE', RESULTAT = AFREQ,        PARA = 'FREQ',
+               CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+               NUME_ORDRE = 7,         VALE = 29.9113),
+      _F( REFERENCE='ANALYTIQUE', RESULTAT = AFREQ,        PARA = 'FREQ',
+               CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+               NUME_ORDRE = 8,         VALE = 31.3474)),
+   CHAM_NO=(
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE1,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  GROUP_NO = 'GP1',          VALE = -0.3473),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE1,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P2',             VALE = -0.6527),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE1,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P3',             VALE = -0.8794),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE1,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P4',             VALE = -1.),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE1,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P5',             VALE = -1.),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE1,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P6',             VALE = -0.8794),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE1,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P7',             VALE = -0.6527),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE1,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P8',             VALE = -0.3473),
+
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE8,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  GROUP_NO = 'GP1',          VALE = 0.3473),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE81,       NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P1',             VALE = 0.3473),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE82,       NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P1',             VALE = 0.3473),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE8,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P2',             VALE = -0.6527),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE8,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P3',             VALE = 0.8794),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE8,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P4',             VALE = -1.),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE8,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P5',             VALE = 1.),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE8,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P6',             VALE = -0.8794),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE8,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P7',             VALE = 0.6527),
+      _F( REFERENCE='ANALYTIQUE', CHAM_GD = AMODE8,        NOM_CMP = CMP,
+                  CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+                  NOEUD = 'P8',             VALE = -0.3473),
+   ),
+)
+
+FIN()
+#

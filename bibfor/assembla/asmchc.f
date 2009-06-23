@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ASSEMBLA  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C----------------------------------------------------------------------
       CHARACTER*19 MAT,NOMSTO
       INTEGER TYPMAT,IELIM,JELIM,KDEB,KFIN,NCCVA,KKELI,ILIG,JCOL
       INTEGER JSMHC,JSMDI,JVALM,JVALM2,JCCVA,JCCLL,NELIM
-      INTEGER JREFA,IRET2,JNEQU,IEQ,K,DECIEL,NTERM,NEQ,IER
+      INTEGER JREFA,IRET2,JNEQU,IEQ,K,DECIEL,NTERM,NEQ,IER,IMATD
       INTEGER IRET,NBLOCM,JCCII,JREMP,DECJEL,IREMP,JCCID,KETA,IBID
       LOGICAL NONSYM
 C----------------------------------------------------------------------
@@ -64,7 +64,13 @@ C     CALL CHEKSD('SD_MATR_ASSE',MAT,IRET)
       CALL JELIRA(MAT//'.REFA','CLAS',IBID,BASE)
       CALL JEVEUO(MAT//'.REFA','E',JREFA)
       NU = ZK24(JREFA-1+2)(1:14)
-      CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      CALL JEEXIN(NU//'.NUML.DELG',IMATD)
+      IF ( IMATD.NE.0 ) THEN
+        CALL U2MESS('F','ASSEMBLA_2')
+        CALL JEVEUO(NU//'.NUML.NEQU','L',JNEQU)
+      ELSE
+        CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      ENDIF
       NEQ = ZI(JNEQU)
 
 
@@ -226,7 +232,6 @@ C     -----------------------------------------
         END IF
 
   121 CONTINUE
-
 
 
 C---  "SIMPLIFICATION" DE .VALM : 1. SUR LA DIAGONALE ET 0. EN DEHORS

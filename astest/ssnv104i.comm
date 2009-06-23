@@ -1,6 +1,7 @@
-# MODIF  DATE 08/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
 #  CAS_TEST  : SSNV104I
 #  TITRE : CONTACT DE DEUX SPHERES
+# ssnv104i.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -296,7 +297,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
                    GROUP_NO='H',
                    VALE=-0.11118,
                    CRITERE='RELATIF',
-                   PRECISION=0.012,
+                   PRECISION=0.07,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=RESU,
                    INST=1.,
@@ -305,7 +306,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
                    GROUP_NO='HP',
                    VALE=-0.11118,
                    CRITERE='RELATIF',
-                   PRECISION=0.012,
+                   PRECISION=0.07,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=RESU,
                    INST=1.,
@@ -332,7 +333,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
                    GROUP_NO='I',
                    VALE=-0.16844000000000001,
                    CRITERE='RELATIF',
-                   PRECISION=0.057,
+                   PRECISION=0.11,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=RESU,
                    INST=1.,
@@ -341,7 +342,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
                    GROUP_NO='IP',
                    VALE=-0.16844000000000001,
                    CRITERE='RELATIF',
-                   PRECISION=0.054,
+                   PRECISION=0.11,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=RESU,
                    INST=1.,

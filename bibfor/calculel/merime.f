@@ -10,7 +10,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -153,16 +153,14 @@ C     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
         LPAIN(18) = 'PTEMPSR'
         LCHIN(18) = CHTIME
         LPAIN(19) = 'PNBSP_I'
-        LCHIN(19) = CHCARA(1) (1:8)//'.CANBSP'
+        LCHIN(19) = CHCARA(16)
         LPAIN(20) = 'PFIBRES'
-        LCHIN(20) = CHCARA(1) (1:8)//'.CAFIBR'
+        LCHIN(20) = CHCARA(17)
         LPAIN(21) = 'PCOMPOR'
         LCHIN(21) = COMPOR
-        LPAIN(22) = 'PCADNSK'
+        LPAIN(22) = 'PCINFDI'
         LCHIN(22) = CHCARA(15)
-        LPAIN(23) = 'PCINFDI'
-        LCHIN(23) = CHCARA(18)
-        CALL CALCUL('S',OPTION,LIGRMO,23,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
+        CALL CALCUL('S',OPTION,LIGRMO,22,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
      &              BASE)
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
         CALL REAJRE(MATEL,LCHOUT(2),BASE)

@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 22/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,18 @@ cata_msg = {
 
 2 : _("""
  pour les options de thermique, il y a encore a travailler !!
+"""),
+
+3 : _("""
+Erreur Utilisateur :
+  On cherche à regrouper des éléments finis en "paquets" de façon à ce que la taille de leurs
+  matrices élémentaires ne puisse pas dépasser la taille des blocs définis dans :
+  DEBUT / MEMOIRE / TAILLE_BLOC
+
+  Malheureusement, la taille indiquée ne permet pas de mettre 1 seul élément dans le paquet.
+
+Conseil :
+  Il faut augmenter la valeur du paramètre  DEBUT / MEMOIRE / TAILLE_BLOC
 """),
 
 4 : _("""

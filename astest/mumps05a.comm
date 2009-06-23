@@ -1,6 +1,6 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
-# mumps05a.para = tps_job 2220 mem_job 15800Mo mem_aster 52 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test M
+# mumps05a.para = tps_job 2600 mem_job 15800Mo mem_aster 52 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test M
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -277,6 +277,41 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD4,
                   REFERENCE='ANALYTIQUE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD4,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='D',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1e-08,
+                  REFERENCE='ANALYTIQUE',),);
+
+# 3.3 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
+#       AVEC MATRICE_DISTRIBUEE
+#----------------------------------------------------------
+MECAD5=MECA_STATIQUE(INFO=niv_info,
+                     MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     EXCIT=(_F(CHARGE=CHARF,),
+                            _F(CHARGE=CHARD,),),
+                     OPTION='SANS',
+                     SOLVEUR=_F(METHODE=solveur,
+                                RENUM=meth_renum,
+                                RESI_RELA=-1.0,
+                                PCENT_PIVOT=mem_pivot,
+                                OUT_OF_CORE='OUI',
+                                MATR_DISTRIBUEE='OUI',
+                                ),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD5,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='D',
+                  VALE=0.1,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD5,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',

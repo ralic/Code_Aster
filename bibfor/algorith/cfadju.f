@@ -1,7 +1,7 @@
-      SUBROUTINE CFADJU(ALIAS,KSI1  ,KSI2  ,TOLEOU,LDIST)
+      SUBROUTINE CFADJU(ALIAS,KSI1  ,KSI2  ,TOLEOU,IPROJ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C
       IMPLICIT NONE
       CHARACTER*8 ALIAS
       REAL*8      KSI1,KSI2,TOLEOU
-      LOGICAL     LDIST
+      INTEGER     IPROJ
 C      
 C ----------------------------------------------------------------------
 C
@@ -43,7 +43,9 @@ C               FONCTIONS DE FORME ET LEURS DERIVEES
 C I/O KSI2   : POINT DE CALCUL SUIVANT KSI2 DES
 C               FONCTIONS DE FORME ET LEURS DERIVEES
 C IN  TOLEOU : TOLERANCE POUR PROJECTION HORS SEGMENT 
-C OUT LDIST  : VAUT .FALSE. SI POINT RAMENE DANS ELEMENT DE REFERENCE
+C OUT IPROJ  : VAUT 0 SI POINT PROJETE DANS L'ELEMENT
+C                   1 SI POINT PROJETE DANS LA ZONE DEFINIE PAR TOLEOU
+C                   2 SI POINT PROJETE EN DEHORS (EXCLUS)
 C
 C ----------------------------------------------------------------------
 C      
@@ -52,23 +54,35 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      LDIST  = .TRUE.
+      IPROJ  = 0
       ECART  = -1.D0
 C
       IF (ALIAS(1:2).EQ.'SE') THEN
-        IF ((KSI1.LT.-1.D0).OR.(KSI1.GT.1.D0)) THEN
-          ECART  = ABS(KSI1)-1.D0
+C
+        IF ((KSI1.GE.-1.D0).AND.(KSI1.LE.1.D0)) THEN
+          GOTO 999
         ENDIF    
-        IF (ECART.GT.TOLEOU) THEN
-          LDIST = .FALSE.
-        ENDIF  
+C
+C --- CALCUL DE L'ECART
+C
+        ECART  = ABS(KSI1)-1.D0
+C
+C --- RABATTEMENT
+C   
+        IPROJ = 1
+C
         IF (KSI1.LT.-1.D0) THEN
           KSI1 = -1.D0
         ELSEIF (KSI1.GT.1.D0) THEN 
-          KSI1 = 1.D0  
+          KSI1 = 1.D0 
         ENDIF  
+C
+        IF (ECART.GT.TOLEOU) THEN
+          IPROJ = 2
+        ENDIF  
+C
       ELSE IF (ALIAS(1:2).EQ.'TR') THEN
-
+C
         IF ((KSI1.GE.0.D0).AND.
      &      (KSI2.GE.0.D0).AND.((KSI1+KSI2).LE.1.D0)) THEN
           GOTO 999
@@ -132,13 +146,14 @@ C
      &                (KSI1-1.D0)*(KSI1-1.D0))
         ELSEIF (IZONE.EQ.8) THEN
           ECART = SQRT(ABS(KSI2)*ABS(KSI2))
-        ENDIF      
-        IF (ECART.GT.TOLEOU) THEN
-          LDIST = .FALSE.
-        ENDIF
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF  
 C
 C --- RABATTEMENT
 C        
+        IPROJ = 1
+C
         IF (IZONE.EQ.1) THEN
           KSI1 = 0.D0
           KSI2 = 0.D0
@@ -149,14 +164,23 @@ C
           KSI2 = 1.D0
         ELSEIF (IZONE.EQ.5) THEN
           KSI1 = KSI1E
-          KSI2 = KSI2E        
+          KSI2 = KSI2E     
         ELSEIF (IZONE.EQ.6.OR.IZONE.EQ.7) THEN
           KSI1 = 1.D0
-          KSI2 = 0.D0        
+          KSI2 = 0.D0    
         ELSEIF (IZONE.EQ.8) THEN
           KSI2 = 0.D0 
-        ENDIF                 
+        ENDIF       
+C              
+        IF (ECART.GT.TOLEOU) THEN
+          IPROJ = 2
+        ENDIF
+C
       ELSE IF (ALIAS(1:2).EQ.'QU') THEN
+C
+        IF ((ABS(KSI1).LE.1.D0).AND.(ABS(KSI2).LE.1.D0)) THEN
+          GOTO 999
+        ENDIF
 C
 C --- SECTEUR CONCERNE
 C        
@@ -214,14 +238,14 @@ C
      &                 (ABS(KSI2)-1.D0)*(ABS(KSI2)-1.D0))
         ELSEIF (IZONE.EQ.8) THEN
           ECART = SQRT((ABS(KSI2)-1.D0)*(ABS(KSI2)-1.D0)) 
+        ELSE
+          CALL ASSERT(.FALSE.)
         ENDIF        
-        IF (ECART.GT.TOLEOU) THEN
-          LDIST = .FALSE.
-        ENDIF
-        
 C
 C --- RABATTEMENT
-C        
+C     
+        IPROJ = 1
+C   
         IF (IZONE.EQ.1) THEN
           KSI1 = -1.D0
           KSI2 = -1.D0
@@ -243,6 +267,10 @@ C
         ELSEIF (IZONE.EQ.8) THEN
           KSI2 = -1.D0 
         ENDIF 
+C
+        IF (ECART.GT.TOLEOU) THEN
+          IPROJ = 2
+        ENDIF
 C            
       ELSE
         CALL ASSERT(.FALSE.)  

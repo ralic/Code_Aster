@@ -1,7 +1,7 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -178,7 +178,7 @@ C        -- EN PRINCIPE, EXITIM EST TOUJOURS .TRUE.
         LCHIN(11) = CHCARA(8)
 
         LPAIN(17) = 'PNBSP_I'
-        LCHIN(17) = CHCARA(1) (1:8)//'.CANBSP'
+        LCHIN(17) = CHCARA(16)
 
 
         DO 50 ICHA = 1,NCHAR
@@ -388,10 +388,8 @@ C ====================================================================
             LCHIN(12) = CHCARA(5)
             LPAIN(13) = 'PCAGNBA'
             LCHIN(13) = CHCARA(11)
-            LPAIN(18) = 'PCADNSM'
-            LCHIN(18) = CHCARA(16)
             LPAIN(19) = 'PCINFDI'
-            LCHIN(19) = CHCARA(18)
+            LCHIN(19) = CHCARA(15)
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
@@ -429,7 +427,7 @@ C ====================================================================
             LPAIN(13) = 'PHARMON'
             LCHIN(13) = CHHARM
             LPAIN(14) = 'PFIBRES'
-            LCHIN(14) = CHCARA(1)(1:8)//'.CAFIBR'
+            LCHIN(14) = CHCARA(17)
             LPAIN(15) = 'PCOMPOR'
             LCHIN(15) =  MATE(1:8)//'.COMPOR'
             ILIRES = ILIRES + 1

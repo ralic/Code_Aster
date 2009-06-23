@@ -1,0 +1,75 @@
+# AJOUT
+# TITRE PLAQUE INDEFORMABLE SUR UN TAPIS DE RESSORTS
+# CAS_TEST__:SSNL130A
+#
+
+def Pression(t,x,y,z):
+   Pressy = 5.0*(y-2.0)**2
+   if ( t <= 1.0 ): return Pressy*t
+   return Pressy
+
+def Deplacer(t,x,y,z):
+   if ( t<= 1.0): return 0.0
+   return (t-1.0)*0.5E-02
+
+
+POURSUITE(CODE=_F(NOM='SSNL130A'))
+
+Aresu=STAT_NON_LINE(
+   MODELE=model,
+   CHAM_MATER=mater,
+   CARA_ELEM=carelem,
+   EXCIT=_F(CHARGE=CHARGE,),
+   COMP_INCR=(
+      _F(RELATION='ELAS',     DEFORMATION='PETIT', TOUT='OUI'),
+      _F(RELATION='DIS_CHOC', DEFORMATION='PETIT', GROUP_MA='RESSORT'),
+   ),
+   NEWTON=(_F(REAC_INCR=1,MATRICE='TANGENTE',REAC_ITER=1,),),
+   CONVERGENCE= _F(ITER_GLOB_MAXI=60,),
+   INCREMENT=_F(LIST_INST=ll, INST_FIN=2.0,),
+);
+
+
+TEST_RESU(
+   RESU=(
+      _F(RESULTAT   = Aresu, NOM_CHAM='DEPL', NOM_CMP='DZ',
+         INST       = 1.0,  GROUP_NO='PT01', VALE=-3.532908705E-03,
+         VERSION    = '8.0.12',REFERENCE='ANALYTIQUE',
+         CRITERE    = 'RELATIF',PRECISION= 4.0E-04),
+      _F(RESULTAT   = Aresu, NOM_CHAM='DEPL', NOM_CMP='DZ',
+         INST       = 1.0,  GROUP_NO='PT02', VALE=-3.532908705E-03,
+         VERSION    = '8.0.12',REFERENCE='ANALYTIQUE',
+         CRITERE    = 'RELATIF',PRECISION= 4.0E-04),
+
+      _F(RESULTAT   = Aresu, NOM_CHAM='DEPL', NOM_CMP='DZ',
+         INST       = 1.0,  GROUP_NO='PT03', VALE= 1.149763188E-03,
+         VERSION    = '8.0.12',REFERENCE='ANALYTIQUE',
+         CRITERE    = 'RELATIF',PRECISION= 7.0E-03),
+      _F(RESULTAT   = Aresu, NOM_CHAM='DEPL', NOM_CMP='DZ',
+         INST       = 1.0,  GROUP_NO='PT04', VALE= 1.149763188E-03,
+         VERSION    = '8.0.12',REFERENCE='ANALYTIQUE',
+         CRITERE    = 'RELATIF',PRECISION= 7.0E-03),
+
+      _F(RESULTAT   = Aresu, NOM_CHAM='DEPL', NOM_CMP='DZ',
+         INST       = 2.0,  GROUP_NO='PT01', VALE= 1.467091295E-03,
+         VERSION    = '8.0.12',REFERENCE='ANALYTIQUE',
+         CRITERE    = 'RELATIF',PRECISION= 4.0E-04),
+      _F(RESULTAT   = Aresu, NOM_CHAM='DEPL', NOM_CMP='DZ',
+         INST       = 2.0,  GROUP_NO='PT02', VALE= 1.467091295E-03,
+         VERSION    = '8.0.12',REFERENCE='ANALYTIQUE',
+         CRITERE    = 'RELATIF',PRECISION= 4.0E-04),
+
+      _F(RESULTAT   = Aresu, NOM_CHAM='DEPL', NOM_CMP='DZ',
+         INST       = 2.0,  GROUP_NO='PT03', VALE= 6.149763188E-03,
+         VERSION    = '8.0.12',REFERENCE='ANALYTIQUE',
+         CRITERE    = 'RELATIF',PRECISION= 7.0E-03),
+      _F(RESULTAT   = Aresu, NOM_CHAM='DEPL', NOM_CMP='DZ',
+         INST       = 2.0,  GROUP_NO='PT04', VALE= 6.149763188E-03,
+         VERSION    = '8.0.12',REFERENCE='ANALYTIQUE',
+         CRITERE    = 'RELATIF',PRECISION= 7.0E-03),
+
+   )
+)
+
+
+FIN();

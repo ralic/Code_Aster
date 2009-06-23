@@ -3,7 +3,7 @@
      &                  MEMASS,MEAMOR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -198,19 +198,16 @@ C
       LCHIN(8)  = RIGICH
 
       IF (RIGICH.NE.' ') THEN
-        CALL DISMOI('F','NOM_GD',RIGICH,'RESUELEM',IBID,
-     &            NOMGD,IED)
-        IF (NOMGD.EQ.'MDNS_R') LPAIN(8)  = 'PRIGINS'
+         CALL DISMOI('F','NOM_GD',RIGICH,'RESUELEM',IBID,NOMGD,IED)
+         IF (NOMGD.EQ.'MDNS_R') LPAIN(8)  = 'PRIGINS'
       ENDIF
 
       LPAIN(9)  = 'PMASSEL'
       LCHIN(9)  = MASSCH
       LPAIN(10) = 'PCADISK'
       LCHIN(10) = CHCARA(2)
-      LPAIN(11) = 'PCADNSA'
-      LCHIN(11) = CHCARA(17)
-      LPAIN(12) = 'PCINFDI'
-      LCHIN(12) = CHCARA(18)
+      LPAIN(11) = 'PCINFDI'
+      LCHIN(11) = CHCARA(15)
 C
 C --- REMPLISSAGE DES CHAMPS DE SORTIE
 C
@@ -232,7 +229,7 @@ C
       IF (OPTION.EQ.'AMOR_MECA_ABSO') THEN
         NOP = 3
       ELSE
-        NOP = 12
+        NOP = 11
       ENDIF
       CALL CALCUL('S',OPTION,LIGRMO,NOP ,LCHIN,LPAIN,
      &                              2   ,LCHOUT,LPAOUT,BASE)

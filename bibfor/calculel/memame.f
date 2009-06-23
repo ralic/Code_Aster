@@ -2,8 +2,8 @@
      &                  CARELE,EXITIM,INSTAN,COMPOR,MATELZ,
      &                  BASE  )
 
-C 
-C MODIF CALCULEL  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+C
+C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,13 +29,13 @@ C
       CHARACTER*1   BASE
       CHARACTER*(*) OPTION,MODELE,MATE,CARELE,COMPOR,MATELZ
       LOGICAL       EXITIM
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CALCUL
 C
 C CALCUL DES MATRICES ELEMENTAIRES DE MASSE MECA
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -72,57 +72,57 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      NBOUT,NBIN
-      PARAMETER    (NBOUT=2, NBIN=19)
+      PARAMETER    (NBOUT=2, NBIN=18)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
 C
-   
+
       CHARACTER*2  CODRET
       CHARACTER*19 CHVARC,MATELE
       CHARACTER*24 LIGRMO
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
       INTEGER      NBOUT2
       INTEGER      NH,IRET,ICODE,IAREFE
-      INTEGER      IFMDBG,NIVDBG 
-      LOGICAL      DEBUG        
+      INTEGER      IFMDBG,NIVDBG
+      LOGICAL      DEBUG
       DATA CHVARC /'&&MEMAME.VARC'/
 C
 C ----------------------------------------------------------------------
-C      
+C
       CALL JEMARQ()
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)       
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
-C   
-      MATELE = MATELZ     
+C
+      MATELE = MATELZ
       IF (NIVDBG.GE.2) THEN
         DEBUG  = .TRUE.
       ELSE
         DEBUG  = .FALSE.
-      ENDIF 
+      ENDIF
       NH    = 0
       IF (MODELE(1:1).EQ.' ') THEN
         CALL ASSERT(.FALSE.)
       ELSE
         LIGRMO = MODELE(1:8)//'.MODELE'
-      ENDIF          
+      ENDIF
 C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT)  
+     &            NBOUT ,LPAOUT,LCHOUT)
 C
 C --- CREATION DES CHAMPS GEOM. CARAC_ELEM ET HARM_FOURIER
 C
       CALL MECHAM(OPTION,MODELE,NCHAR ,LCHAR ,CARELE,
      &            NH    ,CHGEOM,CHCARA,CHHARM,ICODE )
 C
-C --- CREATION DU CHAMP DE VARIABLES DE COMMANDE 
+C --- CREATION DU CHAMP DE VARIABLES DE COMMANDE
 C
       CALL VRCINS(MODELE,MATE  ,CARELE,INSTAN,CHVARC,
      &            CODRET)
 C
-C --- PREPARATION DES MATR_ELEM 
+C --- PREPARATION DES MATR_ELEM
 C
       CALL MEMARE(BASE  ,MATELE,MODELE,MATE  ,CARELE,OPTION)
       CALL JEVEUO(MATELE(1:19)//'.RERR','E',IAREFE)
@@ -164,13 +164,11 @@ C
       LPAIN(15) = 'PCOMPOR'
       LCHIN(15) = COMPOR
       LPAIN(16) = 'PNBSP_I'
-      LCHIN(16) = CHCARA(1) (1:8)//'.CANBSP'
+      LCHIN(16) = CHCARA(16)
       LPAIN(17) = 'PFIBRES'
-      LCHIN(17) = CHCARA(1) (1:8)//'.CAFIBR'
-      LPAIN(18) = 'PCADNSM'
-      LCHIN(18) = CHCARA(16)
-      LPAIN(19) = 'PCINFDI'
-      LCHIN(19) = CHCARA(18)
+      LCHIN(17) = CHCARA(17)
+      LPAIN(18) = 'PCINFDI'
+      LCHIN(18) = CHCARA(15)
 C
 C --- CHAMPS DE SORTIE
 C
@@ -190,13 +188,13 @@ C
         CALL DBGCAL(OPTION,IFMDBG,
      &              NBIN  ,LPAIN ,LCHIN ,
      &              NBOUT2,LPAOUT,LCHOUT)
-      ENDIF 
-C            
+      ENDIF
+C
       CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN ,
      &                              NBOUT2,LCHOUT,LPAOUT,BASE)
 C
 C --- STOCKAGE DES RESU_ELEM
-C 
+C
       CALL REAJRE(MATELZ,LCHOUT(1),BASE)
       CALL REAJRE(MATELZ,LCHOUT(2),BASE)
 

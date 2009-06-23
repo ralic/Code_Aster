@@ -1,0 +1,2179 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR brie         BRIE Nicolas           DATE 23/06/2009 - 11:07:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012635 DU 2008-10-16 08:32:30
+TYPE anomalie concernant Code_Aster (VERSION 9.4)
+TITRE
+   MN18 - DYNA_TRAN_MODAL : contact penalise + frottement
+FONCTIONNALITE
+   1) Analyse du problème
+   ----------------------
+   Dans le schéma ADAPT de DTM, à la fin d une itération de calcul, on archive soit l
+   itération actuelle, soit l itération précédente (on choisit celle qui est la plus près d
+   un instant d archivage demandé par l utilisateur). Il faut donc avoir gardé en mémoire les
+   grandeurs de l itération précédente. Ceci était bien fait pour les grandeurs cinématiques
+   (déplacements, vitesses, accélarations) mais pas pour les grandeurs de choc (forces
+   notamment). Quand c est l itération précédente qui est archivée, on archivait donc bien la
+   cinématique de cette itération précédente, mais avec les forces de choc de l'itération
+   actuelle. D où l impression d un mauvais calcul des forces de contact. Le calcul était
+   juste mais pas le stockage.
+   
+   2) Impact sur les sources
+   -------------------------
+   Dans la routine mdadap.f, on rajoute un vecteur permettant de garder en mémoire les
+   grandeurs de choc de l itération précédente. Quand c est cette itération précédente qui
+   est archivée, on archive désormais ce nouveau vecteur.
+   
+   3) Pas d'impact documentaire
+   
+   4) Validation
+   -------------
+   Cas-test avec DTM    +    cas-test où on vérifie la cohérence du bilan énergétique et l
+   adéquation entre la cinématique et les forces de choc.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.4.7
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 3.4.7
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso + cas-tests avec DTM
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 22/06/2009 - 15:44:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013355 DU 2009-04-29 12:02:17
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   commande CALC_TABLE
+FONCTIONNALITE
+   Si OPERATION='FILTRE', CRIT_COMP='REGEXP' (filtre par expression régulière) dans
+   CALC_TABLE, VALE_K est obligatoire puisque c'est ici qu'on fournit l'expression régulière.
+   La doc est ok, pas le catalogue.
+   On corrige calc_table.capy.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   8 tests calc_table REGEXP
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013544 DU 2009-06-21 13:03:43
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+   astout (as_run) ne s'arrete pas apres "nbmaxnook" erreurs
+FONCTIONNALITE
+   L'astout lancé avec as_run ne s'arrêtait plus après que le nombre maximum d'erreurs soit
+   atteint.
+   
+   Fonctionnement de l'astout :
+   
+   On définit une "tâche" DistribTestTask (dérivée de as_thread.Task). Une tâche a deux
+   méthodes execute et result.
+   Quand on veut lancer la tâche en parallèle, as_thread définit une classe Dispatcher qui
+   "distribue" cette tâche dans N threads distincts, tâche à exécuter sur une liste
+   d'arguments (la Queue).
+   Le Dispatcher crée N threads, instances d'un objet (appelé Worker) dérivé de
+   threading.Thread pour appeler execute sur chaque item ou groupe d'items de la Queue.
+   La méthode result est appelé de manière protégée (par un verrou threading.Lock) pour
+   éviter les conflits sur la modification des attributs, c'est-à-dire un thread à la fois
+   pour stocker les résultats.
+   
+   Pour éviter les blocages en cas de présence du bug python+popen en multi-thread, on a
+   définit deux classes Worker (pour les cas où numthread=1) et ThreadWorker(Worker, Thread)
+   pour numthread>1.
+   Worker ne dérive pas de Thread et éviter ainsi les blocages.
+   
+   BUG #1 : Pour se comporter comme un Thread, Worker définit deux méthodes start et join
+   triviales.
+   Et comme ThreadWorker dérive de Worker, il a aussi ces méthodes triviales...
+   Conséquence : depuis 1.7.0, même quand plusieurs threads sont utilisés, le premier fait
+   tout le travail en séquentiel. Les suivants sont créés quand il n'y a plus rien à faire.
+   La solution est simple : on déplace les méthodes triviales start et join dans un
+   SequentialWorker et on utilise soit SequentialWorker, soit ThreadWorker.
+   
+   On aurait pu le voir sur la compilation qui se faisait donc routine par routine.
+   
+   
+   BUG #2 : L'astout n'était plus interrompu quand le nombre maximum d'erreurs était atteint.
+   
+   En fait, le compteur n'était incrémenté que dans la méthode result, puisque la "tâche" de
+   lancement pouvait être dispatchée entre plusieurs threads, donc quand tous les tests
+   avaient été lancés !
+   
+   Solution : L'attribut DistribTestTask.nbnook est maintenant une liste indexée sur le
+   numéro du thread. Chaque thread peut ainsi incrémenter le nombre d'erreurs qu'il a vu sans
+   entrer en conflit avec ses voisins.
+   On peut aussi faire le test sum(nbnook) >= nbmaxnook dans execute (la somme n'est pas
+   fiable car un autre thread peut être en train de modifier sa valeur, mais le test >= sera
+   d'autant plus vérifier).
+   
+   
+   Nouveau test unitaire dans ASTK_SERV/unittest/others : thread.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   unittest/others/thread.py
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013529 DU 2009-06-15 16:26:12
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.5, le cas-test zzzz159f s'arrete anormalement Bull, Rocks, Calibre 4 et 5.
+FONCTIONNALITE
+   Il s'agit du test 'python' du recalage (sans appel à MACR_RECAL).
+   
+   Il y a deux modules utils.py, un dans Code_Aster et un dans as_run.
+   Or les imports sont mal faits dans as_run (il manque le niveau package).
+   
+   Il y a donc un conflit au moment de l'import de la classe ASTER_PROFIL :
+   
+   File "/home/aster/ASTK/ASTK_SERV/lib/as_profil.py", line 33, in ?
+   from utils import get_absolute_path
+   
+   
+   Contournement (provisoire) : on modifie l'ordre des ajouts dans sys.path dans zzzz159f.comm.
+   
+   De plus, ce test nécessite la présence de mem_aster dans le .para qui n'y est plus. On le
+   remet.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz159f
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 22/06/2009 - 18:30:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012237 DU 2008-06-25 14:46:28
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   macr_cabri_mail en script Salom?
+FONCTIONNALITE
+   Le présent travail est non restitué (MACR_CABRI_MAIL a d'ailleurs été résorbée). Il a
+   permis de valider d'une part l'appel de services Salomé depuis un calcul Aster sur la
+   machine centralisé Bull, d'autre part le maillage de géométries complexes avec GEOM/SMESH
+   avec une macro-commande.
+   
+   
+   Évolution
+   =========
+   
+   L'objet de cette fiche est d'ajouter un nouveau logiciel de maillage (en l'occurrence
+   Salomé) à la macro MACR_CABRI_MAIL qui dispose déjà de Gibi.
+   MACR_CABRI_MAIL permet de générer des maillages de brides selon un catalogue ou à partir
+   de données d'entrée fournies par l'utilisateur, la finesse de maillage pouvant être
+   contrôlée au travers de quelques grandeurs caractéristiques.
+   
+   Descriptif
+   ==========
+   
+   On a récupéré et adapté à la dernière version de Salomé (4.1.3) le script de maillage
+   réalisé par C. Bourcier et N. Tardieu. Celui-ci a été committé dans la base SVN où il se
+   trouvait.
+   Le maillage produit par le script n'est pas tout à fait le même que celui de Gibi pour la
+   simple raison que la technique de maillage diffère entre Gibi (mailleur uniquement) et
+   GEOM/SMESH (modeleur/mailleur). La difficulté dans Salomé (GEOM uniquement) est de
+   réaliser les partitions et les extractions d'edges nécessaires au maillage en hexa. Le
+   paramètre "nsect" qui donne le nombre de sections de révolution du goujon, n'est pas utilisé.
+   
+   Le script de maillage a ensuite servi de squelette pour générer à la volée un maillage
+   selon les données fournies. On dispose maintenant de deux choix possibles sous LOGICIEL.
+   Afin de permettre l'exécution de fichier Salomé, on a aussi fait évoluer EXEC_LOGICIEL
+   (fiche 10691).
+   
+   Remarque : la façon de générer le maillage reste la même 
+   1/ on construit en Python un fichier texte qui correspond à la géométrie souhaitée
+   2/ on exécute Salomé sur ce fichier (python).
+   Le fichier squelette est donc un fichier datg qui se place dans le répertoire idoine, la
+   carte d'information commence donc par une * (commentaire Gibi). Je suis donc obligé de
+   filtrer les lignes pour éliminer l'en-tête.
+   
+   Quelques chiffres
+   =================
+   
+   Sur le maillage de la bride AA :
+   * Gibi   : 2148 noeuds / 1218 quadrangles / 1381 hexaèdres / 45 pentaèdres
+   * Salomé : 2308 noeuds / 2648 quadrangles / 1550 hexèdres
+   
+   Sur le maillage d'un bride quelconque (cabri02a) :
+   * Gibi   : 6378 noeuds / 14 triangles / 2822 quadrangles / 4666 hexaèdres / 98 pentaèdres
+   * Salomé : 6539 noeuds /              / 6283 quadrangles / 4920 hexaèdres
+   
+   Quelques temps
+   ==============
+   
+   Pour générer le maillage Gibi, il faut en général 1 seconde, tandis que via Salomé, on a
+   besoin d'environ 30s sur ma propre machine (qui comprennent le lancement, autour de 5
+   secondes, de Salomé). Le script de maillage va être transmis à NEPAL pour voir si
+   certaines opérations peuvent être optimisées (la partition en vue du maillage structuré
+   prend jusqu'à 15 secondes).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   macro cabri
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012958 DU 2008-12-08 12:53:13
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - CONTACT - TOLE_PROJ_EXT et choix de la maille apparixc3xa9e
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Cette fiche vise à homogénéiser une partie (la seule) encore dissociée entres méthodes
+   DISCRETES et CONTINUES de l'appariement : le choix de la maille projetée.
+   
+   Détails
+   =======
+   
+   Le choix de la maille projetée consiste à choisir entre différentes projections d'un noeud
+   (esclave) sur des mailles maîtres potentielles. Dans le cas le plus simple, on pressent
+   qu'il n'y a qu'une seule maille pour lequel la projection du noeud est dans l'intérieur
+   d'une maille (unicité).
+   Dans le cas le plus général, il arrive qu'il existe plusieurs mailles qui vérifient cette
+   propriété (surface concave par exemple), il paraît alors logique de prendre celle qui
+   vérifie le minimum de distance (mais ce n'est pas toujours possible, car il y a parfois
+   égalité des distances !).
+   
+   On modifie les 2 routines CFADJU et  CFCHOI pour prendre en compte tous ces cas. En
+   particulier : désormais s'il existe une unique maille qui vérifie la projection (à
+   l'intérieur) alors on la sélectionne (ce n'était pas le cas avant, car on ne prenait que
+   la maille vérifiant le minimum de distance sans tenir compte de la projection à
+   l'intérieur ou à l'extérieur).
+   
+   Il y a quelques impacts sur les appelants de ces routines. Désormais CFCHOI ne prend plus
+   en entrée le type de méthode (DISCRETE, CONTINUE), il n'y a donc plus du tout de
+   distinction pour la projection.
+   Pour la projection dans le cas méthode 'XFEM', rien ne change par rapport à avant.
+   
+   Astout
+   ======
+   
+   Suite à la modification, il faut ajuster quelques tests. Il y a cependant des résultats
+   meilleurs sur le contact de Hertz. Exemple : SSNV104I
+   avant :  OK  SIYY         RELA    11.706 % VALE:-3.1258606477174D+03
+   apres :  OK  SIYY         RELA     6.875 % VALE:-2.9906932036946D+03
+   M5884    N1900    TOLE    12.000 % REFE:-2.7983000000000D+03
+   
+   Tests dont des valeurs de références sont ajustées : SSNV104I, on change les valeurs de 4
+   tests (NON_REGRESSION)
+   Test dont le maillage est modifié : SSNV506E. En effet ce test introduit à l'époque où la
+   méthode CONTINUE ne supportait pas le mot-clé SANS_GROUP_NO comportait un maillage
+   bizarre. On avait généré des groupes de maille (surfaces de contact) ne comportant pas la
+   maille touchant directement l'axe de révolution, les projections n'étaient donc pas
+   réalistes !
+   ==> on restitue un maillage correct
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010970 DU 2007-06-12 08:25:53
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - performances de la mxc3xa9thode continue
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Cette fiche est issue de la constatation d'Olivier B. que l'on semble passer beaucoup de
+   temps dans des parties essentiellement séquentielles lorsque l'on utilise la méthode
+   CONTINUE de contact.
+   Elle est à rapprocher de la fiche 10553 qui a déjà permis d'améliorer les performances de
+   cette méthode.
+   L'évolution est là encore principalement algorithmique.
+   
+   Détails
+   =======
+   
+   Un profiling a été réalisé en utilisant un cas-test de grande taille (cf. CR-AMA-07.257).
+   Il ressort du profiling que l'utilitaire MMELTY de la méthode CONTINUE est sur-représenté.
+   Cet utilitaire est non seulement coûteux par appel (appels JEVEUX multiples pour lire le
+   catalogue CATATM) mais aussi trop largement appelé.
+   On a donc commencé par réduire le nombre d'appels JEVEUX de 9 à 1, puis on a
+   systématiquement fait remonter les appels à MMELTY dans les boucles d'appariement et de
+   contact au niveau le plus haut.
+   
+   Sources modifiées : 
+   callam.f  mappar.f mmelty.f  mmmbca.f  mmusur.f  nmtble.f  reaclm.f
+   
+   Sources ajoutées : 
+   mcomce.f  mcopce.f
+   
+   Résultats
+   =========
+   
+   ** Astout
+   
+   AVANT
+   --------  ---------  ----------------  ---------   ---------   --------- 
+         66     66          0               5255.50      166.58     5422.08 
+   
+   APRES
+   --------  ---------  ----------------  ---------   ---------   ---------
+         66     66          0               5142.14      160.92     5303.06
+   
+   
+   ** Cas-test CR
+   
+   Avant (NEW 9.4.5)
+   ==================
+    * STAT_NON_LINE            :    2291.97 :      24.44 :    2316.41 :    2317.44 *
+   
+   Avec modifs
+   ===========
+    * STAT_NON_LINE            :    1418.44 :      18.22 :    1436.66 :    1437.40 *
+   
+   
+   ** PERF005B
+   
+   Avant
+   =====
+   * STAT_NON_LINE            :    1003.38 :      25.13 :    1028.51 :    1070.19 *
+   
+   Après
+   =====
+   * STAT_NON_LINE            :     936.08 :      16.82 :     952.90 :     969.25 *
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013463 DU 2009-05-28 12:44:49
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   SANS_GROUP_NO mxc3xa9thode CONTINUE : petit bug
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Il y a un petit bug dans la méthode CONTINUE pour le traitement de SANS_GROUP_NO :
+   lorsqu'il y a plusieurs zones de contact et que la première ne contient pas le mot-clé 
+   SANS_GROUP_NO alors les SANS_GROUP_NO éventuellement présents dans les zones suivantes
+   sont ignorés.
+   
+   Le cas-test SSNA102D modifié joint à la fiche le montre.
+   
+   Correction
+   ==========
+   
+   Le problème vient du fait que l'utilitaire MMINFP ("DISMOI" méthode continue par zone) ne
+   regarde la présence de SANS_GROUP_NO (et SANS_GROUP_NO_FR) que sur la 1ère zone de
+   contact, il ignore dans ce cas l'argument IZONE.
+   On corrige dans MAPPAR/MMINFP.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssna102d modifixc3xa9
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013205 DU 2009-03-12 10:42:40
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Etude 2D axisymxc3xa9trique avec contact et frottement
+FONCTIONNALITE
+   Réponse par mail à une demande d'AT sur une étude de robinetterie 2D axi :
+   
+   """
+   1) sensibilité de la convergence à la fréquence de réactualisation de la matrice tangente,
+   et au découpage du pas de temps : en effet, l'étude fournie a tourné en STA9.4 (sur une
+   machine MMC 32 bits : renut2al, calibre 4 ?) mais ne tourne pas en l'état sur la Bull, en
+   STA9.4 bien sûr.  Cette sensibilité me semble causée par le frottement car si j'enlève le
+   frottement de Coulomb, alors ça converge et vite en plus (la réponse n'est cependant plus
+   la même puisque l'on ne transmet plus d'efforts tangents entre tige et garnitures et
+   garnitures et boite).
+   
+   2) sensibilité à la valeur du coefficient de frottement (la méthode de contact est
+   discrète) : c'est un défaut connu des méthodes discrètes. Je n'ai pas cherché à creuser
+   pour la raison évoquée dans le point 1). On notera que la méthode 'CONTINUE' est plus
+   robuste et sur ce cas elle tourne sans problème (en NEW9 avec la correction de la fiche
+   12908 et si l'on prend garde à tout condenser dans un seul STAT_NON_LINE) et malgré de
+   très nombreux échecs dans l'intégration de la LdC. Reste bien sûr le problème de cette
+   dernière quand on découpe le chargement en plusieurs STAT_NON_LINE pour changer des
+   paramètres (objet de la fiche 12951).
+   
+   Conclusion : c'est visiblement le frottement qui pose problème ici, quand il est actif, il
+   provoque des difficultés dans CAM_CLAY (le pas de temps demande vraiment à être très petit
+   ...). En méthode discrète : c'est peu robuste (sensibilité au coefficient et à la
+   plate-forme). En méthode continue : c'est mieux mais pas utilisable avec plusieurs
+   STAT_NON_LINE.
+   """
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR devesa       DEVESA Georges         DATE 22/06/2009 - 17:50:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013125 DU 2009-02-05 17:27:23
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Options MASS_MECA et M_GAMMA pour les ?ments HM (3D,D_PLAN)
+FONCTIONNALITE
+   On étend le calcul des options MASS_MECA et M_GAMMA pour tous 
+   les éléments concernés par les modélisations contenant de 
+   l'hydromécanique : THM, THHM, HHM, HH2M, THH2M.
+   On complète également le calcul des options MASS_MECA_DIAG et 
+   MASS_MECA_EXPLI quand c'est possible, donc en 3D seulement et 
+   pas en D_PLAN.
+   Cela permet de traiter la dynamique sur les modélisations HM 
+   sans superposer une modélisation purement mécanique afin de 
+   pouvoir calculer la masse (cf. cas test WDNP101A). On évite 
+   ainsi des contorsions dans l'affectation des caractéristiques 
+   matériaux pour ne pas calculer 2 fois la raideur ou les charges 
+   de pesanteur. 
+   Les options MASS_MECA et M_GAMMA sont calculées par TE0012 en 3D 
+   et TE0082 en D_PLAN ou AXIS. Les options MASS_MECA_DIAG et 
+   MASS_MECA_EXPLI sont calculées également par TE0012 en 3D mais 
+   non actives en 2D car déjà non actives en mécanique pure D_PLAN 
+   ou AXIS.
+   On paramètre ces TE pour un grand nombre de modélisations afin 
+   d'effectuer l'expansion des termes calculés purement mécaniques 
+   à l'ensemble des DDL de la modélisation. 
+   Cela dépend d'un décalage de DDL associés aux composantes 
+   PRESS1, PRESS2, TEMPE qu'on peut déduire directement d'un appel 
+   à GRDTHM et la variable de décalage qui vaut 1 pour les éléments 
+   HM, vaut plus généralement PRESS1(1) + PRESS2(1) + TEMPE(1) 
+   obtenus en sortie de GRDTHM selon la valeur de NOMTE.
+   On introduit la simplification du modèle sans présence 
+   d'éléments purement mécaniques dans le cas test existant de 
+   dynamique en HM WDNP101A, ce qui permet d'économiser environ 300 
+   lignes et prépare ainsi mieux la génération automatique de 
+   commandes pour la dynamique dans une optique macro-commande.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.10
+VALIDATION
+   cas test WDNP101A
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB Joumana      DATE 22/06/2009 - 14:26:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013434 DU 2009-05-19 09:28:37
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Int?ation de la loi de comportement viscoplastique VISC_DRUC_PRAG
+FONCTIONNALITE
+   Modification du nom de la loi (VISC_DRUC_PRAG au lieu de DP_VP) suite à la RTA et des
+   titres des documentations correspondantes.
+   
+   Cette évolution s'intègre dans le livrable AR5-LP du projet stockage.
+   Elle concerne l'intégration dans Code_Aster de la loi de comportement viscoplastique
+   DP_VP. cette loi est basée sur un modèle élastoplastique Drucker-Prager et prend en compte
+   la viscosité selon une loi puissance de type Perzyna. Son domaine d'application est
+   l'argilite qui est la roche hôte du stockage.
+   Le modèle comporte un seul mécanisme viscoplastique. Le critère s'écrouit avec la
+   déformation viscoplastique cumulée en passant par trois seuils/ élastique, de pic et
+   ultime. L'écoulement est non associé, le potentiel d'écoulement est un potentiel
+   Drucker-Prager s'écrouissant selon trois niveaux: élastique, de pic et ultime. Entre les
+   seuils, les écrouissages sont linéaires.
+   Cette loi peut être utilisée dans une modélisation mécanique pure comme en modélisation
+   THM. Elle est disponible en 3D, déformations planes et axisymétrique. 
+   Elle est intégrée par la résolution d'une seule équation scalaire non linéaire par appel à
+   la routine zeroco.
+   Documentation :
+   R7.01.22 : Loi de comportement viscoplastique VISC_DRUC_PRAG
+   V6.04.211a : Essai triaxial drainé avec la loi VISC_DRUC_PRAG
+   V7.31.137a : Essai triaxial drainé avec la loi VISC_DRUC_PRAG (KIT_HM)
+   V7.31.138a : Essai triaxial non drainé avec la loi VISC_DRUC_PRAG (KIT_HM)
+   U4.43.01   : DEFI_MATERIAU
+   U4.51.11   : C_COMP_INCR
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R7.01.22, U4.43.01,U4.51.11, V6.04.211A, V7.31.137A, V7.31.138A
+VALIDATION
+   ssnv211a,wtnv137a,wtnv138a
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 22/06/2009 - 16:26:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013471 DU 2009-06-03 14:49:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR00 - AFFE_CARA_ELEM + DISCRETS: m?ge catalogues et fortrans
+FONCTIONNALITE
+   Le but de cette fiche est de mettre certaines choses qui concernent les discrets un peu
+   plus au carré.
+   Résolution de la fiche 13540 pour la version NEW10.
+   
+   Lors de la restitution de la fiche 12024, certain choix ont dus être faits en tenant
+   compte du catalogue de AFFE_CARA_ELEM et des catalogues des éléments discrets.
+   
+   Impacts dans le catalogue de AFFE_CARA_ELEM : pour la fiche 12024 ==> Obligation de créer
+   de nouveaux discrets K_T_L_NS, A_T_L_NS, K_TR_N_NS, A_TR_N_NS, M_TR_N_NS pour permettre 
+   de prendre en compte des coefficients non symétriques (ex: Kxy différent de Kyx). Avec en
+   plus une obligation pour l'utilisateur de renseigner le mot clef SYME. Cette obligation
+   était due à un bug dans Eficas, résolue par la fiche 13162. Dans le fortran on identifiait
+   le choix de xx_NS et on faisait ce qu'il fallait pour affecter les matrices
+   non-symétriques, on vérifiait également que le discret pouvait être non-symétrique.
+   Maintenant l'utilisateur indique si la matrice est symétrique ou pas SYME (par défaut OUI)
+   choisit le discret parmi une liste de discret valide K_T_L, A_T_L , ... . Il n'y a donc
+   plus de  discret xx_NS, dans le catalogue d'AFFE_CARA_ELEM qui ne correspondait à aucune
+   modélisation. Simplification des fortrans : il n'y a plus de test à faire sur _NS à la fin
+   du nom du discret, ajout de CALL ASSERT quand le discret ne peut pas être non-symétrique.
+   
+   Impacts sur tous les catalogues des éléments discrets : Avant, les matrices K, M, A
+   étaient définies par K1....K144 et ensuite on trouvait dans la même carte des informations
+   sur le repère, le coefficient d'amortissement. Maintenant, on utilise la fiche 12124 ==>
+   K[144], A[144] et on complète la carte, crée par anticipation lors de la restit de la
+   fiche 12024, dans laquelle était uniquement stocké le fait que le discret était symétrique
+   ou pas, par les informations qui se trouvait après les coefficients des matrices A, K, M.
+   CCINFDI  = CINFDI   ELEM__  (REPK  REPM  REPA  SYMK  SYMM  SYMA  ETAK)
+   
+   Je profite de cette fiche pour également simplifier les cartes des discrets. Il y avait 6
+   cartes par type de discrets : CARDISK, CARDISM, CARDISA pour les discrets symétriques,
+   CARDNSK, CARDNSM, CARDNSA pour les discrets non-symétriques, avec les pointeurs associés,
+   les déclarations dans grandeur_simple, et le fortran pour aller piocher les bonnes cartes
+   en fonction de la symétrie ou pas du discret. Maintenant que les cartes ne mélangent plus
+   les grandeurs (raideur, repère, etak) je ne fais plus qu'une carte par type (K, M, A)
+   dimensionnée par rapport au non-symétrique. Il n'y a donc plus qu'un seul pointeur par
+   type de matrice, avec une simplification des catalogues et du fortran.
+   
+   Modifs Catalogues :
+   ===================
+     affe_cara_elem.capy
+   - Tous les catalogues de discrets
+       gener_me2dt0.cata  gener_me2tr0.cata  gener_medit0.cata  gener_medtr0.cata
+       gener_me2dt1.cata  gener_me2tr1.cata  gener_medit1.cata  gener_medtr1.cata
+   - Le catalogue grandeur_simple__.cata
+   - Tous les catalogues d'options liées aux discrets (ajout de CCINFDI)
+       amor_meca.cata         forc_noda_nonl.cata    mass_meca.cata        raph_meca.cata
+       rigi_meca_sensi.cata   char_meca_pesa_r.cata  full_meca.cata        mass_meca_diag.cata
+       refe_forc_noda.cata    rigi_meca_tang.cata    ecin_elem_depl.cata   full_meca_elas.cata
+       mass_meca_expli.cata   rigi_flui_stru.cata    sief_elga_depl.cata   efge_elno_cart.cata
+       mass_meca_sens_c.cata  rigi_meca.cata         sief_elga_elno.cata   efge_elno_depl.cata
+       mass_meca_sensi.cata   rigi_meca_elas.cata    sief_elno_elga.cata   epot_elem_depl.cata
+       mass_flui_stru.cata    meca_gyro.cata         rigi_meca_hyst.cata   forc_noda.cata
+       mass_iner.cata         m_gamma.cata           rigi_meca_sens_c.cata
+   
+   
+   Modifs Fortran :
+   ================
+   Modifications de tous les fortrans qui utilisent les informations sur les repères, la
+   symétrie des matrices, ainsi que ceux qui construisent les champ IN pour calcul.
+   aceadi.f  afdi2d.f  impmv.f   meamgy.f  mecara.f  merifs.f  pemain.f  te0041.f
+   te0044.f  vechde.f  vpmain.f  acearm.f  afdi3d.f  meamme.f  memam2.f  merime.f
+   te0009.f  te0042.f  te0045.f  vechme.f  acearp.f  affdis.f  me2mme.f  mecalc.f
+   memame.f   merimp.f  te0039.f  te0043.f  te0047.f  vefnme.f
+   
+   Nouveau fortran :
+   =================
+   infdis.f : Pour interroger la carte 'CINFDI' des discrets
+   ......SUBROUTINE INFDIS(CARA,IVALE,RVALE)
+   C  IN
+   C     CARA : CLEF
+   C              REPK, REPM, REPA, SYMK, SYMM, SYMA, ETAK, SKMA
+   C  OUT
+   C     IVALE : SI REPK, REPM, REPA : REPERE GLOBAL(IVALE=1) OU LOCAL(IVALE=2)
+   C           : SI SYMK, SYMM, SYMA : MATRICE SYMETRIQUE(IVALE=1) OU NON-SYSMETRE(=2)
+   C           : SI SKMA   : TOUTES LES MATRICES SONT SYMETRIQUES IVALE=3 SINON IVALE>3
+   C     RVALE : SI ETAK   : RVALE = COEFFICIENT AMORTISSEMENT HYSTERETIQUE
+   
+   
+   
+   Validation
+   ==========
+   Nouveaux cas test, se sont des poursuites de cas test déjà existant.
+   POURSUITE()
+     copie des TEST_RESU  existant dans le .comm
+   FIN()
+   
+   AFFE_CARA_ELEM/DISCRET en 2D          : sdld02f.com1
+   AFFE_CARA_ELEM/DISCRET non-symétrique : sdll123c.com1 (modifs du .comm, cf la fin du fichier)
+   AFFE_CARA_ELEM/RIGI_PARASOL           : ssnl130a.com1 
+   AFFE_CARA_ELEM/DISCRET en 3D          : ssnl132a.com1
+   
+   Passage de 235 cas tests (grep  DISCRET *.comm)
+   
+   Impact Documentation
+   ====================
+   Chapitre sur les discrets, ajouter après le type du discret, la valeur de l'option SYME
+   K_T_L/A_T_L avec SYME='OUI', matrice symétrique
+   
+   K_T_L/A_T_L avec SYME='NON', matrice non-symétrique
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.42.01, D6.00.01
+VALIDATION
+   passage de 235 cas tests
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fournier     FOURNIER Isabelle      DATE 22/06/2009 - 14:07:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012986 DU 2008-12-16 09:32:47
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   SALOME4.1.3  : probleme concernant "Dump Study"
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Le dumpstudy est utilisable même en cas de destruction 
+   d'objets référencés (idem issue12841)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012841 DU 2008-11-18 14:26:48
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 876 : Destruction de certains objets rend le dumpstudy inutilisable
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Le dumpstudy est utilisable même en cas de destruction 
+   d'objets référencés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012963 DU 2008-12-09 08:08:19
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   PAL 903/ PAL 904 : MakePartition sur un tube avec sous xc3xa9paisseur xc3xa9choue ou produit des rxc3xa9sultats faux avec extra edges
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Suite a la correction PAL 903, les problemes de 
+   partition pour le tube sous-epaisseur sont regles sous la condition de 
+   partitionner par des plans non tangeants a la structure (modification 
+   axe_tube pour qu'il dépasse du tube)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012862 DU 2008-11-20 09:13:40
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 882 : Partition pour obtenir un quadrillage crxc3xa9e un objet avec des segments manquants
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Amélioration de Partition pour éviter la création de 
+   sections indésirables
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013128 DU 2009-02-09 14:04:51
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   PAL 951 : Anomalie GETINPLACE
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Correction de GetInPlace - On ne recupere plus les 
+   surfaces perpendiculaires qui n'appartiennnet pas a la surface demandee.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012481 DU 2008-09-16 15:03:11
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 812 : GetInPlace sur un objet partitionnxc3xa9 perd des sous objets
+FONCTIONNALITE
+   Salome-Meca 2009.1 et Salome-Meca 2009.2 : Suite aux corrections de la 
+   fonction GetInPlace, dans le script joint (Bloc_fiss circulaire), le fond de 
+   fissure est bien récupéré dans la Partition.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013138 DU 2009-02-13 12:21:03
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 960 : MakePipe double les faces sur face partitionnxc3xa9e
+FONCTIONNALITE
+   Salome-Meca 2009.2 : L'extrusion along a path (MakePipe)ne genere plus de 
+   doubles faces supplementaires.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013193 DU 2009-03-09 18:23:01
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   PAL 986 : Plantage brutal Netgen2D1D
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Correction du plantage SMESH Netgen1D2D de l'etude 
+   jointe
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013192 DU 2009-03-09 17:30:30
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 987 : Plantage Netgen1D2D3D+ submesh
+FONCTIONNALITE
+   Salome-Meca 2009.2 : L'algorithme NetGenAD2D3D accepte un sous-maillage et 
+   ne plante plus en SIGSEV
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013143 DU 2009-02-17 15:27:09
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 965 : Segmentation fault en ouvrant dans SMESH cette xc3xa9tude
+FONCTIONNALITE
+   Salome-Meca 2009.2 : L'etude jointe peut etre ouverte dans SMESH sans 
+   provoquer de segmentation  fault
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013348 DU 2009-04-27 16:22:51
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 926 : Netgen et maillage quadratique
+FONCTIONNALITE
+   Salome-Meca 2009.2 : La conversion linéaire/quadratique d'un maillage de 
+   sphere Netgen1D2D est corrigée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013142 DU 2009-02-17 15:08:55
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   PAL 967 : Bugs dans la fusion de noeuds coxc3xafncidents (v 4.1.4)
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Correction de l'anomalie sur la fusion des noeuds 
+   coïncidents (MergeNode) qui supprimait intempestivement des elements.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012917 DU 2008-12-01 13:43:21
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 891 Visu aux points de Gauss sur un groupe n'affiche qu'un point de Gauss par maille
+FONCTIONNALITE
+   Salome-Meca 2009.2 : la visu aux points de gauss sur un groupe affiche tous 
+   les points de Gauss.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013043 DU 2009-01-09 15:32:41
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 930 : VISU - Clipping planes demande 2 tentatives
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Clipping Plane sur une déformée sélectionnée à partir 
+   d'un instant est activable.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012928 DU 2008-12-03 09:41:48
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 923 : Impossible de fair un clipping sur une deformed shape on scalar map sur un maillage xc3xa0 3 millions de txc3xa9traxc3xa8dres
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Résolution du problème de plan de coupe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012852 DU 2008-11-20 08:12:35
+TYPE evolution concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 880 : Pas de clipping sur la visu aux points de Gauss
+FONCTIONNALITE
+   Fiche sans suite : Sur Salome 4, il existe l'outil "Segmentation plane" 
+   (icone dans le Gauss Viewer) qui définit un plan de clipping. Dans Salome 5, 
+   le clipping plane est disponible en menu contectuel car unifacation de la 
+   VISU Gauss et de la visu VTK.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013181 DU 2009-03-04 14:09:27
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   PAL 980 : Import Etude VISU hdf sur fichiers meds diffxc3xa9rents
+FONCTIONNALITE
+   Salome-Meca 2009.2 : La sauvegarde d'un etude comportant deux fichiers MED 
+   de même nom mais d'eplacement differents est corrigee - Un nombre 
+   hexadecimal est suffixe au nom du fichier MED.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012853 DU 2008-11-20 08:18:34
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 884 : Visu des vecteurs: le changement d'xc3xa9paisseur n'est pas pris en compte dans la vue courante
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Le changement d'épaisseur d'une VISU vecteurs est prise 
+   en compte
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012932 DU 2008-12-03 10:07:48
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 895 : Le nom d'une deformed shape on scalar bar change quand on xc3xa9dite la scalar bar
+FONCTIONNALITE
+   Salome-Meca 2009.2 : La mémorisation du titre d'une ScalarBarOndeformed est 
+   conservé lorsqu'on modifie d'autres paramètres.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012907 DU 2008-11-28 14:10:40
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 890 : ScalarMapOnDeformed (sur champ) pas de mxc3xa9morisation composante visualisxc3xa9e
+FONCTIONNALITE
+   Salome-Meca 2009.2 : La composante est bien mémorisée dans la cas d'une 
+   ScalarMapOnDeformed.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013033 DU 2009-01-08 14:09:50
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 924 : Gauss View + Deformed Shape + Picking + Display parent mesh element
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Si l'on prend l'option "picking" avec "Display parent 
+   mesh element" c'est maintenant l'élément déformé qui est affiché si l'option 
+   est 'Deformed shape'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013172 DU 2009-03-03 08:25:06
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 976 : Rxc3xa9actualisation groupe de maille suite xc3xa0 une modification du groupe GEOM
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Correction pour la re-création d'un groupe de maille 
+   après modification du groupe geometrique.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013146 DU 2009-02-19 09:49:51
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 966 : Impossible de sxc3xa9lectionner un noeud dans "Mesh element info"
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Correction de l'anomalie de selection des mailles de 
+   differentes dimension pour afficher leur information.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013056 DU 2009-01-14 13:58:08
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   PAL 956 : VISU TUI: AddMeshOnGroup n'est pas pris en compte
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Correction de l'anomalie sur AddMeshOnGroup : 
+   l'affichage des résultats sur le groupe défini est effectué.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012930 DU 2008-12-03 09:58:59
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 971 : Store/Restore Visu state splitte les vues aux points de Gauss
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Store/Restore Visu  ne splitte plus les vues aux points 
+   de Gauss
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012854 DU 2008-11-20 08:20:42
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 881 : Visu Gauss: impossible de renommer dans l'arbre d'xc3xa9tude
+FONCTIONNALITE
+   Salome-Meca 2009.2 : La presentation d'une vue Gauss peut etre renomme dans 
+   l'arbre d'etude.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012896 DU 2008-11-27 09:36:08
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 877 : Champ SIEF_ELNO_ELGA, ScalarMap => legende avec valeur NAN
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Lorsque le fichier MED n'est pas valide (présence de 
+   NaN), la VISU n'est pas construite aussi bien en sélectionnant un instant ou 
+   le champ entier.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013367 DU 2009-05-04 11:20:00
+TYPE evolution concernant Eficas (VERSION )
+TITRE
+   Fichier clxc3xa9 documentaire
+FONCTIONNALITE
+   Eficas 1.16 : Modification du fichier clé documentaire en donnant le chemin 
+   du fichier directement pour permettre une doc par version
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013188 DU 2009-03-06 12:14:01
+TYPE anomalie concernant Eficas (VERSION 1.7)
+TITRE
+   Affichage d'un champ xc3xa9gal xc3xa0 un paramxc3xa8tre lors de l'ouverture du fichier
+FONCTIONNALITE
+   Eficas V1.16 : (IHM QT)Affichage d'un champ égal à un paramètre lors de 
+   l'ouverture du fichier est correct
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013162 DU 2009-02-24 16:44:56
+TYPE anomalie concernant Eficas (VERSION 1.7)
+TITRE
+   Bug Eficas : mot clef simple + bloc conditionnel + mot clef simple dans le bloc en position=global
+FONCTIONNALITE
+   Eficas 1.16 : Comportement mot clef simple + bloc conditionnel + mot clef 
+   simple dans le bloc en position=global a été corrigé
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011065 DU 2007-07-10 09:59:57
+TYPE anomalie concernant Eficas (VERSION 1.10)
+TITRE
+   Traducteur V7->V8 : plus d'indications pour les variables de commande
+FONCTIONNALITE
+   Eficas V1.16 : le traducteur V8V9 indique dans le cas du chantier variables 
+   de commandes un message plus explicite 
+   "Passage aux variables de commande : definir un materiau dependant de la 
+   temperature 'AFFE_MATERIAU(AFFE_VARC=_F(...))' et supprimer TEMP_CALCULEE 
+   dans les chargements"
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010407 DU 2006-12-21 15:01:24
+TYPE evolution concernant Eficas (VERSION )
+TITRE
+   Evolutions du traducteur
+FONCTIONNALITE
+   Pour le traducteur V7V8, les évolutions suivantes ont été faites :
+   3.Modification du message (INFO: Renommage de: CO, 67, en NOM)
+   Le fichier feti003b est valide après traduction
+   5. Le dictionnaire a été corrigé pour wtnv107a
+   7. Homogénéisation des messages
+   
+   Les évolutions demandées (2,4,6) qui consistent à mettre un mot-clé et une 
+   valeur xxx ne sont pas faites car le fichier n'est pas ouvrable alors via 
+   Eficas.
+   
+   Le fichier de conversion est consultable sous Eficas_install/convert.log
+   De plus le fichier traduit ne vient pas écraser le fichier initial : un diff 
+   est toujours possible
+   
+   Je ne pense pas qu'il faille faire d'autres évolutions sur le traducteur 
+   V7V8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011309 DU 2007-10-02 10:38:03
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   Possibilitxc3xa9 de lancer une POURSUITE depuis Salome
+FONCTIONNALITE
+   Suite au cahier des charges de réécriture du module Aster, il a ete decide 
+   de ne pas integrer un nouveau cas de type POURSUITE, sachant que 
+   l'utilisation de POURSUITE dans le cadre de post-traitement est possible au 
+   travers de l'utilisation de Stanley.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010665 DU 2007-03-19 09:36:05
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   Si aucune vue n'est ouverte, ouvrir une fenxc3xaatre OCC pour afficher les groupes
+FONCTIONNALITE
+   La fiche est classee sans suite : l'ouverture d'une fenetre OCC depuis 
+   python a un cout eleve par rapport a l'usage attendu. L'utilisateur peut 
+   creer une fenetre OCC via le menu Window.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013387 DU 2009-05-07 10:53:37
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1028 : Etude Salomxc3xa9 perdue
+FONCTIONNALITE
+   Le HDF est corrompu. Les informations extrayables ont été donnés à 
+   l'utilisateur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013299 DU 2009-04-08 14:24:18
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1013 : impossible de relire ce fichier .hdf
+FONCTIONNALITE
+   Problème de fichier hdf corrompu : Le fichier ne peut pas être lu par la 
+   biliothèque HDF elle-même et l'utilisateur n'ayant pas de script valable, on 
+   peut classer la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013300 DU 2009-04-08 15:23:27
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   impossible de relire ce fichier.hdf
+FONCTIONNALITE
+   Cette fiche est identique à la fiche 13299 dans laquelle j'avais mis la réponse OCC. Fiche fermée
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012329 DU 2008-07-22 13:32:45
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 798 : pb de maillage surfacique dans la version 4.1.3
+FONCTIONNALITE
+   Le problème vient des tous petits edges qui sont créés pour corriger la 
+   géométrie (par exemple Wire_69)
+   Jean-Louis m'a dit que cela a pu être contourné par une autre façon de corriger 
+   la géométrie.
+   Dans un futur chantier, il faudrait envisager de spécifier des fonctionalités 
+   de correction de CAO qui permettent de ne pas aboutir à des géométries 'exotiques'.
+   Fiche d'anomalie fermée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013453 DU 2009-05-25 12:47:26
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   L'option "module" de Salomxc3xa9 est xc3xa0 revoir avec les contraintes
+FONCTIONNALITE
+   Comportement de Salome en terme de visualisation : 
+   Le module correspond au module d'un vecteur et donc ne traite que les trois 
+   premières composantes du champ (ou d'un complexe si le champ n'a que deux 
+   composantes).
+   Salome ne peut pas détecter si le type du champ est adéquat(vecteur ou 
+   autre).En effet, un champ de déplacement Aster peut comporter 6 composantes 
+   et on veut bien traiter en module les trois premières pour une déformée.
+   
+   On a gardé ce défaut car dans le cas des déformées, c'est adéquat et dans 
+   les autres cas, il n'y a pas de défaut évident (il est rare que la première 
+   composante soit celle qu'on désire et donc l'utilisateur doit de toute façon 
+   la modifier). Ce défaut peut être modifié via le menu Préférences/POST-
+   PRO/ScalarBar
+   
+   La fiche est donc classée sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013446 DU 2009-05-20 15:51:58
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   Mesh/createmesh/1D_wire_discrxc3xa9tisation/automat
+FONCTIONNALITE
+   Erreur d'utilisation : mélange entre "Add hypothèse" et "Edit hypothèse"
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013441 DU 2009-05-20 14:22:05
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   message d'alerte lors d'une vxc3xa9rification de maillage
+FONCTIONNALITE
+   Non reproductible - Classée sans suite
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013420 DU 2009-05-15 09:06:10
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   SIGSEV lors d'un clipping planes sur Calibre 5
+FONCTIONNALITE
+   Salome-Meca 2009.2 : Le clipping Plane s'effectue correctement
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013333 DU 2009-04-22 11:26:56
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   Build compound mesh
+FONCTIONNALITE
+   Erreur de manipulation de l'utilisateur + Anomalie 13142 resolue dans Salome-
+   Meca 2009.2
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013316 DU 2009-04-15 15:39:16
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   Salome module POST_PRO
+FONCTIONNALITE
+   Fiche résolue sans suite : l'utilisation du filtrage groupe pour une vue 
+   d'un champ sur déformée est actif
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012976 DU 2008-12-11 14:15:37
+TYPE evolution concernant Salome (VERSION 2008.1)
+TITRE
+   partition / plan
+FONCTIONNALITE
+   Sans suite : Pour la partition, les deux constructeurs Partition donnent le 
+   même résultat sur une boite partitionne par un plan plus grand que la boîte 
+   et sur une boite partitionne par un plan plus petit que la boîte. Le 
+   constructeur "Partition par un plan" peut etre plus performant 
+   que "Partition de deux listes d'objets".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012746 DU 2008-10-29 09:38:10
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   proprixc3xa9txc3xa9s d'un cercle dans Salomxc3xa9
+FONCTIONNALITE
+   Fiche résolue sans suite : La propriété d'un cercle donne bien le rayon.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012799 DU 2008-11-12 13:56:58
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 893 : animation sur champ indisponible si fenxc3xaatre VTK (ou Gauss) inexistante
+FONCTIONNALITE
+   VISU ouvre par défaut, si elle n'existe pas, une vue VTK à chaque activation.
+   De plus, on peut créer une vue VTK via le menu New Window.
+   La fiche est classée résolue sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012975 DU 2008-12-11 14:11:43
+TYPE aide utilisation concernant Salome (VERSION 2008.1)
+TITRE
+   message d'alerte avant une erreure fatale SIGFPE
+FONCTIONNALITE
+   Il n'est pas possible de faire un message d'alerte. Les scénarios conduisant 
+   a ce type d'erreur doivent etre identifies (fiche REX anomalie) pour 
+   permettre d'arreter avant de provoquer l'erreur et d'emettre un message 
+   utilisateur.
+   Cela a ete le cas, par exemple, pour ta fiche issue13192.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013159 DU 2009-02-23 14:35:39
+TYPE anomalie concernant Salome (VERSION 2009.2)
+TITRE
+   PAL 964 : Portable Calibre 5: Impossibilitxc3xa9 de lancer Salome2009.1 hors reseau
+FONCTIONNALITE
+   Probleme d'installation Calibre 5 hors réseau : il manquait dans le etc/hosts le nom de la machine 
+   derrière localhost.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 22/06/2009 - 14:01:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013511 DU 2009-06-15 13:39:05
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.5, le cas-test sslp104b s'arrete par manque de mxc3xa9moire sur Bull, Calibre4 et Calibre5
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En NEW10.0.5, le cas-test sslp104b s'arrete par manque de mémoire sur Bull, Calibre4 et
+   Calibre5
+   
+   Solution :
+   ----------
+   
+   On adapte le .para du test sslp04b. On passe de 64 Mo à 70 Mo. Par ailleurs, le test
+   s'arrête en erreur fatale sur calibre 4 en nodebug. On modifie la ligne 107 de arltep.f
+   
+   <       CALL ELRFDF(ELREFC,COORPC,NDIM*NNC,DFR ,IBID,IBID)
+   >       CALL ELRFDF(ELREFC,COORPC,NDIM*NNC,DFR ,IBID,JBID)
+   
+   ce qui permet de faire passer le test. A noter que cette correction résout également la
+   fiche 13524.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.0.5
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslp104b sur Bull, Calibre4 et Calibre5
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013524 DU 2009-06-15 15:35:50
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.5, les cas-tests ssnp135b et ssnp135e sont en erreur_<F> sur Calibre 4.
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En NEW10.0.5, les cas-tests ssnp135b et ssnp135e sont en erreur_<F> sur Calibre 4.
+   
+   Solution :
+   ----------
+   
+   On modifie la ligne 107 de arltep.f
+   
+   <       CALL ELRFDF(ELREFC,COORPC,NDIM*NNC,DFR ,IBID,IBID)
+   >       CALL ELRFDF(ELREFC,COORPC,NDIM*NNC,DFR ,IBID,JBID)
+   
+   ce qui permet de faire passer les tests.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.0.5
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp135b,ssnp135e
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013526 DU 2009-06-15 16:02:44
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.5, le cas-test ssnp135c est NOOK sur Rocks, Calibre 4 et 5.
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En NEW10.0.5, le cas-test ssnp135c est NOOK sur Rocks, Calibre 4 et 5.
+   Le test NOOK est le suivant:
+   "--------------------------------------------------------------------------------
+    ---- TABLE: DPL_H2   NOM_PARA: DY                      
+                                          
+   REFERENCE: NON_REGRESSION   VERSION: 8.3.19          
+   NOOK DPL_H2       RELA  1.35E-09 % VALE: 1.5494142309019D-01
+   DY                TOLE  1.00E-10 % REFE: 1.5494142308810D-01
+   
+   Solution :
+   ----------
+   
+   On adapte légèrement la tolérance pour ce test. On passe de 10E-12 à 2*10E-11.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.0.5
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.03.135
+VALIDATION
+   ssnp135c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 22/06/2009 - 14:12:24
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012437 DU 2008-09-03 07:39:36
+TYPE evolution concernant Documentation (VERSION )
+TMA : DeltaCad
+TITRE
+   Basculer en Wiki 4 documents D5 oublixc3xa9s
+FONCTIONNALITE
+   les 4 documents D5 suivant ont été basculés en Wiki :
+   
+   D5.01.01 - Introduire une nouvelle commande
+   D5.01.02 - Introduire une nouvelle macro-commande
+   D5.03.02 - Pouvoir éliminer un nouveau ddl (AFFE_CHAR_CINE)
+   D5.03.03 - Pouvoir contraindre un nouveau ddl (dualisation)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : D5.01.01 D5.01.02 D5.03.02  D5.03.03
+VALIDATION
+   rien de particulier
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013493 DU 2009-06-09 15:54:15
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.5.1, le cas-test ssnp110c s'arrete par manque de temps sur Bull.
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le test ssnp110c manque de temps CPU en version 9.5.1
+                                                                                            
+                           
+   Correction :
+   ------------
+   Le temps consommé par ce test sur bull est proche de la limite du .para
+   On augmente donc cette limite pour etre plus tranquile : 100s -> 150s
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp110c
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013509 DU 2009-06-15 13:24:12
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.5, le cas-test ssnv503b s'arrete en erreur_<F> sur toutes les machines
+FONCTIONNALITE
+   Problème:
+   ---------
+   Le test ssnv503b est cassé en version 10.0.5 sur toutes les plateformes.
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Ce test redéfinit le paramètre DEBUT / MEMOIRE / TAILLE_BLOC = 0.1
+                                                                                            
+                           
+   Mais en version 10.0.5, le catalogue des éléments 3D a été modifié et maintenant, avec une
+   taille
+   de bloc de 0.1, on ne peut plus mettre un seul PENTA15 dans un tel bloc.
+                                                                                            
+                           
+   Corrections:
+   ------------
+   1) on blinde la code pour émettre un nouveau message d'erreur plus explicite :
+                                                                                            
+                           
+   !-----------------------------------------------------------------------------------------------!
+   !.<F>.<CALCULEL5_3>.............................................................................!
+   !...............................................................................................!
+   !.Erreur.Utilisateur.:..........................................................................!
+   !...On.cherche.à.regrouper.des.éléments.finis.en."paquets".de.façon.à.ce.que.la.taille.de.leurs.!
+   !...matrices.élémentaires.ne.puisse.pas.dépasser.la.taille.des.blocs.définis.dans.:.............!
+   !...DEBUT./.MEMOIRE./.TAILLE_BLOC...............................................................!
+   !...............................................................................................!
+   !...Malheureusement,.la.taille.indiquée.ne.permet.pas.de.mettre.1.seul.élément.dans.le.paquet...!
+   !...............................................................................................!
+   !.Conseil.:.....................................................................................!
+   !...Il.faut.augmenter.la.valeur.du.paramètre..DEBUT./.MEMOIRE./.TAILLE_BLOC.....................!
+   !-----------------------------------------------------------------------------------------------!
+                                                                                            
+                           
+   2) on modifie le .comm du test pour augmenter TAILLE_BLOC : 0.1 -> 0.5
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv503b
+NB_JOURS_TRAV  : 0.15
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013516 DU 2009-06-15 15:06:03
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.5, 10 cas-tests s'arretent sur Rocks et sur Bull
+FONCTIONNALITE
+   Problème :
+   ----------
+   En NEW10.0.5, 10 cas-tests s'arretent par absence de convergence Rocks dont 4 sont en
+   erreur_<F> ou ARRET_<A> sur Bull.
+    
+   Que sur Rocks:
+   ascou13a
+   ascou15a
+   ascou19a
+   ascou20a
+   aspic07a
+   yyyy118b
+    
+   Sur Rocks et Bull:
+   ascou03a
+   ascou12a
+   aspic09a
+   sslv110f
+                                                                                            
+                           
+                                                                                            
+                           
+   Réponse :
+   ---------
+   En version 10.0.6 :
+     Sur Rocks, tous les tests sont OK.
+     Sur Bull, 4 tests sont encore cassés :
+        - ascou03a
+        - ascou12a
+        - aspic09a
+        - sslv110f
+                                                                                            
+                           
+   Pour ces 4 tests, le problème vient de l'usage des INTEGER*4.
+   Lorsqu'un vecteur d'INTEGER*4 est déchargé sur disque, si cet objet est de longueur
+   impaire et qu'il fait partie des "gros objets" (ceux qui ne rentrent pas entièrement 1
+   enregistrement de la base), lorsqu'il revient en mémoire, le dernier entier est écrasé (il
+   vaut 0).
+                                                                                            
+                           
+   Jean-Pierre a proposé une correction des 2 routines jxliro.f et jxecro.f
+                                                                                            
+                           
+   Validation :
+   ------------
+   Après correction de ces 2 routines, les 4 tests sont OK sur Bull.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les 4 tests cassxc3xa9s sur Bull
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013512 DU 2009-06-15 13:59:04
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.5, le cas-test sdlv302d s'arrete en erreur _<F> sur Bull, Rocks et Calibre 4 et est NOOK sur Calibre 5.
+FONCTIONNALITE
+   Problème:
+   ----------
+   En NEW10.0.5, le cas-test sdlv302d s'arrete en erreur _<F> sur Bull, Rocks et Calibre 4 et
+   est NOOK sur Calibre 5.
+   
+   Réponse :
+   ---------
+   en NEW10.0.6 ce test est OK sur toutes les plateformes
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013318 DU 2009-04-16 07:44:33
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Chargement non suiveur en symetrie cyclique
+FONCTIONNALITE
+   Olivier Nicolas est OK pour classer cette fiche "sans suite". 
+   
+   Son dernier "post" est :
+   Auteur: onicolas  	Date: 2009-06-18.06:49:05
+   
+   Je suis d'accord avec le classement "sans suite" de la fiche mais je dirais 
+   seulement qu'il n'est pas illicite mais difficile (temps cpu notamment) de faire 
+   un calcul de type "répétitivité cyclique" (avec LIAISON_MAIL) si le chargement 
+   n'a pas la meme "symétrie".
+   En effet, cela implique de déconvoluer le chargement non cyclique sur une base 
+   de Fourrier ce qui rend les vecteurs second membre nombreux et pleins.
+   
+   ON
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012197 DU 2008-06-16 14:55:40
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR01 : reflexions autour d'une troisieme base
+FONCTIONNALITE
+   Idée de départ :
+   -----------------
+   Dans l'idée de la réduction de résultat, réflexions autour de la possibilité d'avoir une
+   troisième base (en plus de volatile et globale) afin de stocker les structures de données
+   Aster réduite et d'avoir ainsi un résultat (au sens "une base") auto-porteur. 
+   Voir faisabilité et intérêt par rapport à la question de la pérénité des bases (une base
+   Aster n'est utilisable que pour une version donnée d'Aster et n'est donc pas pérène dans
+   le temps).
+   
+   Réponse :
+   ---------
+   Je propose de classer cette fiche "sans suite" du fait que la possibilité de "réduire" le
+   volume des résultats est maintenant possible grâce au mot clé IMPR_RESU / RESTREINT.
+   
+   Le fichier (réduit) produit par IMPR_RESU permet de faire les post_traitements (CALC_ELEM,
+   POST_ELEM, POST_RELEVE_T, ...) sur une partie du modèle.
+   
+   L'avantage de cette solution (par rapport à la "base réduite") est d'être moins lié à la
+   version du code qui a produit la base. On peut en général relire un fichier MED produit
+   par une version antérieure de Code_Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien departiculier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013464 DU 2009-05-28 13:36:48
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   representation de champs ELNO ?artir d'HEXA27
+FONCTIONNALITE
+   Ce problème ne m'étonne pas. L'explication se trouve dans la notice de l'opérateur
+   PROJ_CHAMP au paragraphe 3.12. Mais on va quand même essayer d'améliorer ce paragraphe.
+   
+   L'algorithme de projection pour un champ ELNO est tel que tous les élements partageant un
+   même noeud porteront la même valeur : le champ ELNO projeté sera continu ! 
+   
+   Mais la situation la plus embêtante est celle où les mailles projetées sont coincidentes
+   (ce qui est la cas ici): en effet, pour chaque noeud du maillage final, il y a ambiguité
+   sur la maille la plus proche de lui. La valeur affectée sur un noeud donné sera celle
+   portée par la "première" maille du maillage initial incluant ce noeud. Cette première
+   maille est aléatoire : elle dépend de la numérotation du maillage.
+   
+   Conclusion : la projection d'un champ ELNO est a priori plus aléatoire (ou "bruitée") que
+   la projection d'un champ aux noeuds . Pour votre étude, le mieux serait qu'IMPR_RESU
+   transforme les HEXA27 en HEXA20. En attendant cette évolution, il vaut mieux calculer
+   EPSI_NOEU_DEPL avant l'appel à PROJ_CHAMP.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.72.05
+VALIDATION
+   rien
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 23/06/2009 - 08:50:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013139 DU 2009-02-13 14:38:29
+TYPE evolution concernant Code_Aster (VERSION 10.1)
+TITRE
+   SV10 - Retailler certains objets Aster avec MUMPS distribuxc3xa9
+FONCTIONNALITE
+   Evolution demandée :
+   --------------------
+   L'idée est de réduire la taille de la matrice assemblée lorsqu'on utilise le solveur
+   MUMPS. En effet jusqu'à présent la matrice était allouée à sa taille maximale
+   (correspondant à sa taille en séquentiel).
+   
+   
+   Solution :
+   ----------
+   Il faut modifier le stockage morse de la matrice en ne prenant en compte que les ddl qui
+   concernent le procs courant.
+   
+   Pour construire le stockage morse, on utilise le .PRNO du nume_ddl. L'idée est donc de
+   reconstruire un nume_ddl "bis" qui sera utilisé par les routines qui construisent le
+   profil de la matrice assemblée. C'est ce nouveau nume_ddl (nommé dans le fortran ".NUML")
+   qui sera utilisé dans le cas de mumps parallèle avec matrice assemblée distribuée.
+   
+   Pour permettre l'assemblage de cette nouvelle matrice, on créé donc le .NUML en lui
+   ajoutant certaines composantes :
+   - .PRNO : en renumérotant les ddl et en supprimant ceux non présents sur le proc courant
+   (à noter que  les ddl de lagrange sont ajoutés sur le proc 0),
+   - .DELG : qui précise si un ddl est un ddl de Lagrange ou non,
+   - .NEQU : qui donne le nombre de ddl locaux,
+   - .NUEQ : tableau d'indirection qui donne la position d'un ddl dans le .VALE,
+   - .NULG : qui permet de passer de la numérotation locale à celle globale.
+   
+   Tous ces éléments sont créés par une nouvelle subroutine nommée : NUGLLO.
+   
+   Ensuite au niveau de mumps, il est néanmoins nécessaire de donner au solveur la
+   numérotation global des ddl en utilisant le .NULG.
+   
+   Ces modifications ont été testées sur mumps05a et epicu01a. On ajoute aussi une
+   modélisation à mumps05a pour valider cette fonctionnalité.
+   
+   Fichiers impactées :
+   algeline5.py
+   amumpc.F
+   amumpm.F
+   amumpr.F
+   amumps.F
+   asmchc.f
+   assembla.py
+   assma1.f
+   assmam.f
+   creso3.f
+   crsvmu.f
+   dismms.f
+   meca_statique.capy
+   mrmult.f
+   mtcmbl.f
+   nugllo.f
+   numer2.f
+   promor.f
+   resoud.f
+   stat_non_line.capy
+   
+   
+   Utilisation :
+   -------------
+   Disponible pour MECA_STATIQUE et STAT_NON_LINE en ajoutant le mot-clé :
+   MATR_DISTRIBUEE='OUI'
+   à la catégorie SOLVEUR (dans le cas mumps bien évidemment).
+   
+   Ne fonctionne pas avec les macro-éléments ni avec les charges cinématiques.
+   
+   
+   Gains :
+   -------
+   Sur le cas test Epicure fournit par Olivier, on obtient pour la mémoire JEVEUX maximum
+   utilisée :
+   Avant modif : 1838,93 Mo
+   Après modif : 337,75 Mo
+   
+   Malheureusement, côté utilisateur, ce gain est masqué par la taille de l'instance MUMPS
+   qui est égale à 1,9 Go.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   unitaires
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdnd121a                         brie N.BRIE             242    242      0
+ CASTEST AJOUT ssnv211a                     elgharib J.EL-GHARIB        287    287      0
+ CASTEST AJOUT wtnv137a                     elgharib J.EL-GHARIB        335    335      0
+ CASTEST AJOUT wtnv138a                     elgharib J.EL-GHARIB        348    348      0
+ CASTEST MODIF mumps05a                     sellenet N.SELLENET         323     37      2
+ CASTEST MODIF sdld02f                        flejou J-L.FLEJOU         354     91     83
+ CASTEST MODIF sdll123c                       flejou J-L.FLEJOU         687     17     13
+ CASTEST MODIF sslp104b                      meunier S.MEUNIER          146      2      1
+ CASTEST MODIF ssnl130a                       flejou J-L.FLEJOU         167      3      2
+ CASTEST MODIF ssnl132a                       flejou J-L.FLEJOU         915      1      1
+ CASTEST MODIF ssnp110c                       pellet J.PELLET           377      2      1
+ CASTEST MODIF ssnp135b                      meunier S.MEUNIER          472      1      1
+ CASTEST MODIF ssnp135c                      meunier S.MEUNIER          481      2      2
+ CASTEST MODIF ssnp135e                      meunier S.MEUNIER          546      1      1
+ CASTEST MODIF ssnv104i                       desoza T.DESOZA           368      5      5
+ CASTEST MODIF ssnv503b                       pellet J.PELLET           429      2      2
+ CASTEST MODIF ssnv506e                       desoza T.DESOZA           231      3     25
+ CASTEST MODIF wdnp101a                       devesa G.DEVESA           948     42    319
+ CASTEST MODIF zzzz159f                     courtois M.COURTOIS         177      3      3
+ CASTEST MODIF zzzz200b                       flejou J-L.FLEJOU        1131      1      1
+CATALOGU MODIF compelem/grandeur_simple__     flejou J-L.FLEJOU         819     41     20
+CATALOGU MODIF options/amor_meca              flejou J-L.FLEJOU          35      2      3
+CATALOGU MODIF options/char_meca_pesa_r       flejou J-L.FLEJOU          53      2      3
+CATALOGU MODIF options/ecin_elem_depl         flejou J-L.FLEJOU          59      2      7
+CATALOGU MODIF options/efge_elno_cart         flejou J-L.FLEJOU          56      2      1
+CATALOGU MODIF options/efge_elno_depl         flejou J-L.FLEJOU          93      2      7
+CATALOGU MODIF options/epot_elem_depl         flejou J-L.FLEJOU          65      2      7
+CATALOGU MODIF options/forc_noda              flejou J-L.FLEJOU          94      2      1
+CATALOGU MODIF options/forc_noda_nonl         flejou J-L.FLEJOU          44      2      1
+CATALOGU MODIF options/full_meca_elas         flejou J-L.FLEJOU          73      2      1
+CATALOGU MODIF options/full_meca              flejou J-L.FLEJOU          78      2      1
+CATALOGU MODIF options/mass_flui_stru         flejou J-L.FLEJOU          39      2      1
+CATALOGU MODIF options/mass_iner              flejou J-L.FLEJOU          41      2      3
+CATALOGU MODIF options/mass_meca_diag         flejou J-L.FLEJOU          49      2      3
+CATALOGU MODIF options/mass_meca_expli        flejou J-L.FLEJOU          56      2      1
+CATALOGU MODIF options/mass_meca              flejou J-L.FLEJOU          43      2      3
+CATALOGU MODIF options/mass_meca_sens_c       flejou J-L.FLEJOU          47      2      1
+CATALOGU MODIF options/mass_meca_sensi        flejou J-L.FLEJOU          47      2      1
+CATALOGU MODIF options/meca_gyro              flejou J-L.FLEJOU          39      3     10
+CATALOGU MODIF options/m_gamma                flejou J-L.FLEJOU          43      2      1
+CATALOGU MODIF options/raph_meca              flejou J-L.FLEJOU          80      2      1
+CATALOGU MODIF options/refe_forc_noda         flejou J-L.FLEJOU          65      2      1
+CATALOGU MODIF options/rigi_flui_stru         flejou J-L.FLEJOU          38      2      1
+CATALOGU MODIF options/rigi_meca_elas         flejou J-L.FLEJOU          73      2      1
+CATALOGU MODIF options/rigi_meca              flejou J-L.FLEJOU          49      2      3
+CATALOGU MODIF options/rigi_meca_hyst         flejou J-L.FLEJOU          34      2      1
+CATALOGU MODIF options/rigi_meca_sens_c       flejou J-L.FLEJOU          50      2      1
+CATALOGU MODIF options/rigi_meca_sensi        flejou J-L.FLEJOU          50      2      1
+CATALOGU MODIF options/rigi_meca_tang         flejou J-L.FLEJOU          82      2      1
+CATALOGU MODIF options/sief_elga_depl         flejou J-L.FLEJOU          89      2      7
+CATALOGU MODIF options/sief_elga_elno         flejou J-L.FLEJOU          27      2      1
+CATALOGU MODIF options/sief_elno_elga         flejou J-L.FLEJOU          61      2      1
+CATALOGU MODIF typelem/gener_me2dt0           flejou J-L.FLEJOU         173     38     42
+CATALOGU MODIF typelem/gener_me2dt1           flejou J-L.FLEJOU         186     40     55
+CATALOGU MODIF typelem/gener_me2tr0           flejou J-L.FLEJOU         172     39     50
+CATALOGU MODIF typelem/gener_me2tr1           flejou J-L.FLEJOU         186     38     68
+CATALOGU MODIF typelem/gener_me3a13           devesa G.DEVESA           251     22     11
+CATALOGU MODIF typelem/gener_me3a43           devesa G.DEVESA           255     22     11
+CATALOGU MODIF typelem/gener_me3h13           devesa G.DEVESA           251     22     11
+CATALOGU MODIF typelem/gener_me3h23           devesa G.DEVESA           245     22     11
+CATALOGU MODIF typelem/gener_me3h43           devesa G.DEVESA           254     22     11
+CATALOGU MODIF typelem/gener_me3h53           devesa G.DEVESA           248     22     11
+CATALOGU MODIF typelem/gener_meaa22           devesa G.DEVESA           216     14      7
+CATALOGU MODIF typelem/gener_meaa32           devesa G.DEVESA           216     14      7
+CATALOGU MODIF typelem/gener_meah12           devesa G.DEVESA           226     16      9
+CATALOGU MODIF typelem/gener_meah22           devesa G.DEVESA           223     16      9
+CATALOGU MODIF typelem/gener_meah42           devesa G.DEVESA           233     16      9
+CATALOGU MODIF typelem/gener_meah52           devesa G.DEVESA           226     16      9
+CATALOGU MODIF typelem/gener_meda22           devesa G.DEVESA           218     18      9
+CATALOGU MODIF typelem/gener_meda32           devesa G.DEVESA           218     18      9
+CATALOGU MODIF typelem/gener_medh12           devesa G.DEVESA           228     20     11
+CATALOGU MODIF typelem/gener_medh22           devesa G.DEVESA           251     20     11
+CATALOGU MODIF typelem/gener_medh42           devesa G.DEVESA           232     20     11
+CATALOGU MODIF typelem/gener_medh52           devesa G.DEVESA           229     20     11
+CATALOGU MODIF typelem/gener_medhb2           devesa G.DEVESA           217     18      9
+CATALOGU MODIF typelem/gener_medit0           flejou J-L.FLEJOU         184     47     58
+CATALOGU MODIF typelem/gener_medit1           flejou J-L.FLEJOU         193     48     88
+CATALOGU MODIF typelem/gener_medtr0           flejou J-L.FLEJOU         193     46     75
+CATALOGU MODIF typelem/gener_medtr1           flejou J-L.FLEJOU         210     43     46
+CATALOPY MODIF commande/affe_cara_elem        flejou J-L.FLEJOU         587    507    632
+CATALOPY MODIF commande/calc_table          courtois M.COURTOIS         121      2      2
+CATALOPY MODIF commande/defi_materiau       elgharib J.EL-GHARIB       2896     18      1
+CATALOPY MODIF commande/meca_statique       sellenet N.SELLENET         117      2      1
+CATALOPY MODIF commun/c_comp_incr           elgharib J.EL-GHARIB        259      3      1
+FORTRAN90 MODIF mumps/amumpc                 sellenet N.SELLENET         361      8      4
+FORTRAN90 MODIF mumps/amumpm                 sellenet N.SELLENET         432     76     38
+FORTRAN90 MODIF mumps/amumpr                 sellenet N.SELLENET         363      8      4
+FORTRAN90 MODIF mumps/amumps                 sellenet N.SELLENET         290     13      3
+ FORTRAN AJOUT algorith/dpvpcr              elgharib J.EL-GHARIB         42     42      0
+ FORTRAN AJOUT algorith/dpvpdb              elgharib J.EL-GHARIB        290    290      0
+ FORTRAN AJOUT algorith/dpvpdi              elgharib J.EL-GHARIB         63     63      0
+ FORTRAN AJOUT algorith/dpvpdv              elgharib J.EL-GHARIB         97     97      0
+ FORTRAN AJOUT algorith/dpvpeq              elgharib J.EL-GHARIB         43     43      0
+ FORTRAN AJOUT algorith/dpvplc              elgharib J.EL-GHARIB         71     71      0
+ FORTRAN AJOUT algorith/dpvpma              elgharib J.EL-GHARIB        127    127      0
+ FORTRAN AJOUT algorith/dpvpot              elgharib J.EL-GHARIB        328    328      0
+ FORTRAN AJOUT algorith/dpvpre              elgharib J.EL-GHARIB        188    188      0
+ FORTRAN AJOUT algorith/dpvpsi              elgharib J.EL-GHARIB         66     66      0
+ FORTRAN AJOUT algorith/dpvpva              elgharib J.EL-GHARIB         95     95      0
+ FORTRAN AJOUT algorith/lc0042              elgharib J.EL-GHARIB         99     99      0
+ FORTRAN AJOUT algorith/mcomce                desoza T.DESOZA           101    101      0
+ FORTRAN AJOUT algorith/mcopce                desoza T.DESOZA            67     67      0
+ FORTRAN AJOUT assembla/nugllo              sellenet N.SELLENET         358    358      0
+ FORTRAN AJOUT elements/infdis                flejou J-L.FLEJOU         103    103      0
+ FORTRAN MODIF algeline/creso3              sellenet N.SELLENET         159      9      4
+ FORTRAN MODIF algeline/mrmult              sellenet N.SELLENET         101      5      1
+ FORTRAN MODIF algeline/mtcmbl              sellenet N.SELLENET         261     12      2
+ FORTRAN MODIF algeline/resoud              sellenet N.SELLENET         298     20      3
+ FORTRAN MODIF algeline/vpmain                flejou J-L.FLEJOU         127      6      8
+ FORTRAN MODIF algorith/calcme              elgharib J.EL-GHARIB        572     36      3
+ FORTRAN MODIF algorith/callam                desoza T.DESOZA           113      8     24
+ FORTRAN MODIF algorith/cfadju                desoza T.DESOZA           281     46     18
+ FORTRAN MODIF algorith/cfchoi                desoza T.DESOZA           147     47     58
+ FORTRAN MODIF algorith/cfproj                desoza T.DESOZA           223     12     26
+ FORTRAN MODIF algorith/chmano                desoza T.DESOZA           258      9     14
+ FORTRAN MODIF algorith/crsvmu              sellenet N.SELLENET         160     18      4
+ FORTRAN MODIF algorith/mappar                desoza T.DESOZA           413      8      7
+ FORTRAN MODIF algorith/mdadap                  brie N.BRIE             628     10      5
+ FORTRAN MODIF algorith/merimp                flejou J-L.FLEJOU         316      5      5
+ FORTRAN MODIF algorith/mmelty                desoza T.DESOZA           137     18     27
+ FORTRAN MODIF algorith/mminfp                desoza T.DESOZA           490      3      3
+ FORTRAN MODIF algorith/mmmbca                desoza T.DESOZA           405     14      8
+ FORTRAN MODIF algorith/mmproj                desoza T.DESOZA            99      7      6
+ FORTRAN MODIF algorith/mmrema                desoza T.DESOZA           100      5      7
+ FORTRAN MODIF algorith/mmtole                desoza T.DESOZA            77      8      7
+ FORTRAN MODIF algorith/nmtble                desoza T.DESOZA           243      2      2
+ FORTRAN MODIF algorith/nmthmc              elgharib J.EL-GHARIB        474      3      2
+ FORTRAN MODIF algorith/numer2              sellenet N.SELLENET         134      5      1
+ FORTRAN MODIF algorith/posvar              elgharib J.EL-GHARIB        447     26      1
+ FORTRAN MODIF algorith/reaclm                desoza T.DESOZA           131     14      8
+ FORTRAN MODIF algorith/vechde                flejou J-L.FLEJOU         553     20     15
+ FORTRAN MODIF algorith/vechme                flejou J-L.FLEJOU         458     12     12
+ FORTRAN MODIF algorith/vefnme                flejou J-L.FLEJOU         290      6      4
+ FORTRAN MODIF algorith/xmrema                desoza T.DESOZA           313      7      6
+ FORTRAN MODIF assembla/asmchc              sellenet N.SELLENET         294      8      3
+ FORTRAN MODIF assembla/assma1              sellenet N.SELLENET         199     22     10
+ FORTRAN MODIF assembla/assmam              sellenet N.SELLENET         780     17      2
+ FORTRAN MODIF assembla/promor              sellenet N.SELLENET         481     33      3
+ FORTRAN MODIF calculel/me2mme                flejou J-L.FLEJOU         610      4      6
+ FORTRAN MODIF calculel/meamgy                flejou J-L.FLEJOU         101      4      6
+ FORTRAN MODIF calculel/meamme                flejou J-L.FLEJOU         274      5      8
+ FORTRAN MODIF calculel/mecalc                flejou J-L.FLEJOU         569      2      4
+ FORTRAN MODIF calculel/mecara                flejou J-L.FLEJOU          91     32     34
+ FORTRAN MODIF calculel/memam2                flejou J-L.FLEJOU         142      8      6
+ FORTRAN MODIF calculel/memame                flejou J-L.FLEJOU         205      6      8
+ FORTRAN MODIF calculel/merifs                flejou J-L.FLEJOU         144      8      6
+ FORTRAN MODIF calculel/merime                flejou J-L.FLEJOU         192      5      7
+ FORTRAN MODIF elements/arltep               meunier S.MEUNIER          134      3      3
+ FORTRAN MODIF elements/te0009                flejou J-L.FLEJOU          89      9     15
+ FORTRAN MODIF elements/te0012                devesa G.DEVESA           303     82      2
+ FORTRAN MODIF elements/te0039                flejou J-L.FLEJOU         706     27     24
+ FORTRAN MODIF elements/te0041                flejou J-L.FLEJOU         582    148    109
+ FORTRAN MODIF elements/te0042                flejou J-L.FLEJOU         278      9     17
+ FORTRAN MODIF elements/te0043                flejou J-L.FLEJOU         310     11     18
+ FORTRAN MODIF elements/te0044                flejou J-L.FLEJOU         325     22     28
+ FORTRAN MODIF elements/te0045                flejou J-L.FLEJOU         459     83    126
+ FORTRAN MODIF elements/te0047                flejou J-L.FLEJOU         981     37     17
+ FORTRAN MODIF elements/te0082                devesa G.DEVESA           202     67      1
+ FORTRAN MODIF jeveux/jxecro                  pellet J.PELLET           240      3      3
+ FORTRAN MODIF jeveux/jxliro                  pellet J.PELLET           105      5      3
+ FORTRAN MODIF modelisa/aceadi                flejou J-L.FLEJOU         324    108    178
+ FORTRAN MODIF modelisa/acearm                flejou J-L.FLEJOU         208     54     92
+ FORTRAN MODIF modelisa/acearp                flejou J-L.FLEJOU         454     50     88
+ FORTRAN MODIF modelisa/adalig                pellet J.PELLET           175      2      1
+ FORTRAN MODIF modelisa/afdi2d                flejou J-L.FLEJOU         209     79    189
+ FORTRAN MODIF modelisa/afdi3d                flejou J-L.FLEJOU         238    109    219
+ FORTRAN MODIF modelisa/affdis                flejou J-L.FLEJOU          42      7     27
+ FORTRAN MODIF modelisa/impmv                 flejou J-L.FLEJOU          76     42     33
+ FORTRAN MODIF modelisa/mmusur                desoza T.DESOZA            87      5     20
+ FORTRAN MODIF utilitai/dismms              sellenet N.SELLENET         186     15      2
+ FORTRAN MODIF utilitai/pemain                flejou J-L.FLEJOU         221      6      8
+  PYTHON AJOUT Comportement/visc_druc_prag   elgharib J.EL-GHARIB         39     39      0
+  PYTHON MODIF Messages/algeline5           sellenet N.SELLENET         385      5      1
+  PYTHON MODIF Messages/assembla            sellenet N.SELLENET         273     11      1
+  PYTHON MODIF Messages/calculel5             pellet J.PELLET           350     13      1
+  PYTHON MODIF Utilitai/System              courtois M.COURTOIS         316     12      5
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   21        3389      3389             +3389
+ MODIF :  155       42431      3230    3538      -308
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  176       45820      6619    3538     +3081 

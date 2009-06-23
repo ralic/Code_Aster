@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,6 +162,31 @@ C----- DEFORMATION VOLUMIQUE PLASTIQUE CUMULEE
 C----- INDICATEUR D ETAT
          ELSE IF (VARI(1:7).EQ.'IND_ETA') THEN
             NUME=ADVIME+2
+            GOTO 9999
+         ELSE
+            NUME=-1
+            GOTO 9999
+         ENDIF
+
+C----- LOI MECANIQUE VISCOPLASTIQUE : VISC_DRUC_PRAG
+
+      ELSE IF (MECA(1:14).EQ.'VISC_DRUC_PRAG') THEN
+
+C----- VARIABLE D ECROUISSAGE VISCOPLASTIQUE
+         IF (VARI(1:1).EQ.'P') THEN
+            NUME=ADVIME
+            GOTO 9999
+C----- INDICATEUR DE VISCOPLASTICITE
+         ELSE IF (VARI(1:4).EQ.'PLAS') THEN
+            NUME=ADVIME+1
+            GOTO 9999
+C----- POSITION DE P PAR RAPPORT AUX SEUILS
+         ELSE IF (VARI(1:3).EQ.'POS') THEN
+            NUME=ADVIME+2
+            GOTO 9999
+C----- NOMBRE D ITERATIONS LOCALES
+         ELSE IF (VARI(1:4).EQ.'NBRE') THEN
+            NUME=ADVIME+3
             GOTO 9999
          ELSE
             NUME=-1

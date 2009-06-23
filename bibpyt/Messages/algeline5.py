@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF algeline5 Messages  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,6 +22,10 @@
 def _(x) : return x
 
 cata_msg={
+
+1: _("""
+ La manipulation (produit ou somme) de matrice distribuée est impossible
+"""),
 
 4: _("""
  erreur LAPACK (ou BLAS) au niveau de la routine  %(k1)s

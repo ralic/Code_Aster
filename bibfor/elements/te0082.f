@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 22/06/2009   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,19 +50,29 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*16       PHENOM
       CHARACTER*2        CODRET
+C      CHARACTER*4        FAMI
       REAL*8             VALRES, DFDX(9),DFDY(9),POIDS,R,R8B,VFI,VFJ
       REAL*8             MATP(18,18), MATV(171),MASVIT(18)
       REAL*8             DDOT
+      REAL*8             VECT1(18), VECT2(18)
       INTEGER            NNO,KP,NNOS,NPG2,II,JJ,I,J,K,IMATUU,JGANO
+      INTEGER            L,N1,N2,I2,J2
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            KD1,KD2,IJ1,IJ2,NDDL,NVEC,IACCE,IVECT,NDIM
       INTEGER            IVITE,IFREQ,IECIN
       LOGICAL            LTEATT
+      INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),IBI,IDEC
 C ......................................................................
 C
       CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFDE,JGANO)
       NDDL = 2 * NNO
       NVEC = NDDL * ( NDDL + 1 ) / 2
+      PRESS1(1) = 0
+      PRESS2(1) = 0
+      TEMPE(1) = 0
+      CALL GRDTHM(NOMTE,.FALSE.,2,MECANI,PRESS1,PRESS2,TEMPE,
+     &            IBI,IBI,IBI,IBI,IBI,IBI)
+      IDEC = PRESS1(1) + PRESS2(1) + TEMPE(1)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -107,15 +117,71 @@ C
 C
       IF ( OPTION .EQ. 'MASS_MECA' ) THEN
          CALL JEVECH('PMATUUR','E',IMATUU)
-         DO 100 I = 1 , NVEC
-            ZR(IMATUU+I-1) = MATV(I)
- 100     CONTINUE
+         IF (IDEC.EQ.0) THEN
+           DO 100 I = 1 , NVEC
+              ZR(IMATUU+I-1) = MATV(I)
+ 100       CONTINUE
+         ELSE
+           DO 101 K = 1 , NNO
+             DO 102 N1 = 1 , 2
+               I = 2*K+N1-2
+               IF (K.LE.NNOS) THEN
+                 I2 = I+IDEC*(K-1)
+               ELSE
+                 I2 = I+IDEC*NNOS
+               ENDIF
+               DO 103 L = 1 , NNO
+                 DO 104 N2 = 1 , 2
+                   J = 2*L+N2-2
+                   IF (J.GT.I) GOTO 105
+                   IF (L.LE.NNOS) THEN
+                     J2 = J+IDEC*(L-1)
+                   ELSE
+                     J2 = J+IDEC*NNOS
+                   ENDIF
+                   ZR(IMATUU+I2*(I2-1)/2+J2-1) = MATV(I*(I-1)/2+J)
+ 104             CONTINUE
+ 103           CONTINUE
+ 105           CONTINUE
+ 102         CONTINUE
+ 101       CONTINUE
+         ENDIF
 C
       ELSEIF ( OPTION .EQ. 'M_GAMMA' ) THEN
          CALL JEVECH('PDEPLAR','L',IACCE)
          CALL JEVECH('PVECTUR','E',IVECT)
          CALL VECMA(MATV,NVEC,MATP,NDDL)
-         CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
+         IF (IDEC.EQ.0) THEN
+           CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
+         ELSE
+           DO 120 K = 1,NDDL
+             VECT1(K) = 0.0D0
+             VECT2(K) = 0.0D0
+ 120       CONTINUE
+           DO 111 K = 1 , NNO
+             DO 112 N1 = 1 , 2
+               I = 2*K+N1-2
+               IF (K.LE.NNOS) THEN
+                 I2 = I+IDEC*(K-1)
+               ELSE
+                 I2 = I+IDEC*NNOS
+               ENDIF
+               VECT1(I) = ZR(IACCE+I2-1)
+ 112         CONTINUE
+ 111       CONTINUE
+           CALL PMAVEC('ZERO',NDDL,MATP,VECT1,VECT2)
+           DO 113 K = 1 , NNO
+             DO 114 N1 = 1 , 2
+               I = 2*K+N1-2
+               IF (K.LE.NNOS) THEN
+                 I2 = I+IDEC*(K-1)
+               ELSE
+                 I2 = I+IDEC*NNOS
+               ENDIF
+               ZR(IVECT+I2-1) = VECT2(I)
+ 114         CONTINUE
+ 113       CONTINUE
+         ENDIF
 
 C OPTION ECIN_ELEM_DEPL : CALCUL DE L'ENERGIE CINETIQUE
 

@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 09/06/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -122,8 +122,8 @@ C ======================================================================
          NU     = ELAS(2)
          ALPHA0 = ELAS(3)
       ENDIF
-      IF (( MECA.EQ.'DRUCK_PRAGER' ).OR.(MECA.EQ.'LETK').OR.
-     &    (MECA.EQ.'ELAS_GONF')) THEN
+      IF (( MECA.EQ.'DRUCK_PRAGER' ).OR.(MECA.EQ.'VISC_DRUC_PRAG').OR.
+     &    (MECA.EQ.'LETK').OR.(MECA.EQ.'ELAS_GONF')) THEN
          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
      &                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
@@ -313,6 +313,39 @@ C ======================================================================
      &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
      &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
  306        CONTINUE
+         ENDIF
+        ENDIF
+      ENDIF
+C ======================================================================
+C --- LOI VISC_DRUC_PRAG -----------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'VISC_DRUC_PRAG') THEN
+        TINI = T - DT
+        CALL DPVPLC( TYPMOD, OPTION,  IMATE,  CRIT,
+     &                      INSTAM, INSTAP,
+     &                      TINI,T, TREF,
+     &                      DEPS,
+     &                      CONGEM(ADCOME), VINTM, 
+     &                      CONGEP(ADCOME), VINTP,
+     &                      DSDEME,RETCOM)        
+        IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
+     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
+          DO 252 I = 1 , 2*NDIM
+           DO 253 J = 1 , 2*NDIM
+            DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
+  253     CONTINUE
+  252     CONTINUE
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
+         IF (YATE.EQ.1) THEN
+            DO 256 I=1,3
+                  DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
+     &            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+ 256        CONTINUE
          ENDIF
         ENDIF
       ENDIF

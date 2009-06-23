@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,23 +50,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBCAR = 100 , NBVAL = 12 , NRD = 2 )
-      INTEGER      JDC(3), JDV(3), JDCNS(3), JDVNS(3),IBID,NIV,IR
+      INTEGER      JDC(3), JDV(3), IBID,NIV,IR
       INTEGER      JDCINF,  JDVINF
       REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3)
-      CHARACTER*1  KMA(3)
+      CHARACTER*1  KMA(3), K1BID
       CHARACTER*6  KI
-      CHARACTER*8  K8B, NOMU
+      CHARACTER*8  NOMNOE, NOGP, NOMMAI, K8B, NOMU
       CHARACTER*9  CAR(NBCAR)
       CHARACTER*16 REP, REPDIS(NRD), CONCEP, CMD
-      CHARACTER*19 CARTDK, CARTDM, CARTDA, CART(3), LIGMO
-      CHARACTER*19 CARTNK, CARTNM, CARTNA, CARTNS(3), CARTDI
+      CHARACTER*19 CART(3), LIGMO, CARTDI
       CHARACTER*19 VREPXV, VREPXN
-      CHARACTER*24 TMPNDM, TMPVDM, TMPNDA, TMPVDA, TMPNDK, TMPVDK
-      CHARACTER*24 TMPNNM,TMPVNM,TMPNNA,TMPVNA,TMPNNK,TMPVNK
-      CHARACTER*24 TMPDIS, MLGNNO, MLGNMA, TMCINF,TMVINF
-      CHARACTER*24 MODNEM
-      CHARACTER*1  K1BID
-      CHARACTER*8  NOMNOE, NOGP, NOMMAI
+      CHARACTER*24 TMPND(3), TMPVD(3)
+      CHARACTER*24 TMPDIS, MLGNNO, MLGNMA, TMCINF, TMVINF, MODNEM
 
       LOGICAL      TRANS
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
@@ -117,86 +112,53 @@ C      IF ( K8B(1:3) .EQ. 'OUI' )  NDIM = 2
       IF (IBID.EQ.3) THEN
          NDIM=3
       ENDIF
-
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CARTDI = NOMU//'.CARDINFO'
       TMCINF = CARTDI//'.NCMP'
       TMVINF = CARTDI//'.VALV'
+C     SI LA CARTE N'EXISTE PAS ON LA CREE
       CALL JEEXIN(TMCINF,IXCI)
-      IF (IXCI.NE.0) GOTO 10
-      CALL ALCART('G',CARTDI,NOMA,'NEUT_R')
- 10   CONTINUE
+      IF (IXCI.EQ.0) CALL ALCART('G',CARTDI,NOMA,'CINFDI')
+C
       CALL JEVEUO(TMCINF,'E',JDCINF)
       CALL JEVEUO(TMVINF,'E',JDVINF)
-      CALL CODENT(1,'G',KI)
-      ZR (JDVINF+1-1)  = 0.D0
-      ZK8(JDCINF+1-1) = 'X'//KI
-      CARTDM = NOMU//'.CARDISCM'
-      CARTDA = NOMU//'.CARDISCA'
-      CARTDK = NOMU//'.CARDISCK'
-      CART(1) = CARTDK
-      CART(2) = CARTDM
-      CART(3) = CARTDA
-      TMPNDM = CARTDM//'.NCMP'
-      TMPVDM = CARTDM//'.VALV'
-      TMPNDA = CARTDA//'.NCMP'
-      TMPVDA = CARTDA//'.VALV'
-      TMPNDK = CARTDK//'.NCMP'
-      TMPVDK = CARTDK//'.VALV'
-      CALL JEEXIN(TMPNDM,IXCA)
-      IF (IXCA.NE.0) GOTO 11
+C     PAR DEFAUT POUR M, A, K : REPERE GLOBAL , MATRICE SYMETRIQUE
+      DO 200 I = 1 , 3
+         ZK8(JDCINF+I-1) = 'REP'//KMA(I)//'    '
+         ZR (JDVINF+I-1) = 1.D0
+         ZK8(JDCINF+I+2) = 'SYM'//KMA(I)//'    '
+         ZR (JDVINF+I+2) = 1.D0
+200   CONTINUE
+      ZK8(JDCINF+6) = 'ETAK    '
+      ZR (JDVINF+6) = 0.D0
 C
-      CALL ALCART('G',CART(1),NOMA,'CADISK')
-      CALL ALCART('G',CART(2),NOMA,'CADISM')
-      CALL ALCART('G',CART(3),NOMA,'CADISA')
- 11   CONTINUE
+      DO 220 I = 1 , 3
+         CART(I)  = NOMU//'.CARDISC'//KMA(I)
+         TMPND(I) = CART(I)//'.NCMP'
+         TMPVD(I) = CART(I)//'.VALV'
+C        SI LES CARTES N'EXISTENT PAS ON LES CREES
+         CALL JEEXIN(TMPND(I),IXCKMA)
+         IF (IXCKMA .EQ. 0) THEN
+            CALL ALCART('G',CART(I),NOMA,'CADIS'//KMA(I))
+         ENDIF
+         CALL JEVEUO(TMPND(I),'E',JDC(I))
+         CALL JEVEUO(TMPVD(I),'E',JDV(I))
+220   CONTINUE
 C
-      CALL JEVEUO(TMPNDK,'E',JDC(1))
-      CALL JEVEUO(TMPVDK,'E',JDV(1))
-      CALL JEVEUO(TMPNDM,'E',JDC(2))
-      CALL JEVEUO(TMPVDM,'E',JDV(2))
-      CALL JEVEUO(TMPNDA,'E',JDC(3))
-      CALL JEVEUO(TMPVDA,'E',JDV(3))
-C
-      CARTNM = NOMU//'.CARDNSCM'
-      CARTNA = NOMU//'.CARDNSCA'
-      CARTNK = NOMU//'.CARDNSCK'
-      CARTNS(1) = CARTNK
-      CARTNS(2) = CARTNM
-      CARTNS(3) = CARTNA
-      TMPNNM = CARTNM//'.NCMP'
-      TMPVNM = CARTNM//'.VALV'
-      TMPNNA = CARTNA//'.NCMP'
-      TMPVNA = CARTNA//'.VALV'
-      TMPNNK = CARTNK//'.NCMP'
-      TMPVNK = CARTNK//'.VALV'
-      CALL JEEXIN(TMPNNM,IXCA)
-      IF (IXCA.NE.0) GOTO 12
-      CALL ALCART('G',CARTNS(1),NOMA,'CADNSK')
-      CALL ALCART('G',CARTNS(2),NOMA,'CADNSM')
-      CALL ALCART('G',CARTNS(3),NOMA,'CADNSA')
- 12   CONTINUE
-      CALL JEVEUO(TMPNNK,'E',JDCNS(1))
-      CALL JEVEUO(TMPVNK,'E',JDVNS(1))
-      CALL JEVEUO(TMPNNM,'E',JDCNS(2))
-      CALL JEVEUO(TMPVNM,'E',JDVNS(2))
-      CALL JEVEUO(TMPNNA,'E',JDCNS(3))
-      CALL JEVEUO(TMPVNA,'E',JDVNS(3))
 
 C     RECUPERATION DU NIVEAU D'IMPRESSION
 C     -----------------------------------
       CALL INFNIV(IBID,NIV)
-
       IR = 0
-C
-C     PAR DEFAUT ON EST DANS LE REPERE GLOBAL
-      IREP = 1
-      ISYM = 1
-      REP  = REPDIS(IREP)
 C --- BOUCLE SUR LES OCCURENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
-         ETA = 0.D0
+         ETA = 0.0D0
+C        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
+         IREP = 1
+         ISYM = 1
+         REP = REPDIS(1)
+C
          CALL GETVEM(NOMA,'GROUP_MA','RIGI_PARASOL','GROUP_MA',
      &               IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVTX('RIGI_PARASOL','CARA'    ,IOC,1,NBCAR,CAR,NCAR)
@@ -206,7 +168,6 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          IF ( NGP .EQ. 0 ) THEN
             CALL GETVID('RIGI_PARASOL','GROUP_MA_SEG2',IOC,1,1,NOGP,NGP)
          ENDIF
-
          IF ( NREP .NE. 0) THEN
             DO 32 I = 1 , NRD
                IF (REP.EQ.REPDIS(I)) IREP = I
@@ -418,27 +379,28 @@ C
                         ENDIF
                      ENDIF
                   ENDIF
-C                   PREPARATION DE L'ATTRIBUT PYTHON
+C                 PREPARATION DE L'ATTRIBUT PYTHON
                   IF ( NBNOEU .EQ. 1 ) THEN
-                    IF (TRANS) THEN
-                      DO 666 JJ=0,2
-                        ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
-                        ZR(IREPV+6*IR+3+JJ)=0.D0
-666                       CONTINUE
-                    ELSE
-                      DO 667 JJ=0,5
-                        ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
-667                       CONTINUE
-                    ZK8(IREPN+IR) = ZK8(JN)
-                    IR = IR + 1
-                    ENDIF
+                     IF (TRANS) THEN
+                        DO 666 JJ=0,2
+                           ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
+                           ZR(IREPV+6*IR+3+JJ)=0.D0
+666                     CONTINUE
+                     ELSE
+                        DO 667 JJ=0,5
+                           ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
+667                     CONTINUE
+                        ZK8(IREPN+IR) = ZK8(JN)
+                        IR = IR + 1
+                     ENDIF
                   ELSE
-                    CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
+                     CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
                   ENDIF
 C
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
-     &                        JDC,JDV,JDCNS,JDVNS,IVR,IV,KMA,NCMP,L,
+     &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
      &                        JDCINF,JDVINF,ISYM,IFM)
+                  CALL NOCART(CARTDI, 3,' ','NOM',1,ZK8(JD),0,' ',7)
                   CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
  28            CONTINUE
             ELSE
@@ -448,8 +410,10 @@ C
                   CALL CRLINU('NOM', MLGNNO, 1, IBID, ZK8(JD),
      &                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
-     &                        JDC,JDV,JDCNS,JDVNS,IVR,IV,KMA,NCMP,L,
+     &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
      &                        JDCINF,JDVINF,ISYM,IFM)
+                  CALL NOCART(CARTDI, -3,' ','NUM',KK,' ',ZI(JDDI),
+     &                        LIGMO,7)
                   CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      &                        LIGMO,NCMP)
  36            CONTINUE
@@ -466,12 +430,12 @@ C
       CALL JEDETR('&&TMPTABMP')
       CALL GETFAC('RIGI_MISS_3D',NBORM)
       IF (NBORM.EQ.0) THEN
-         CALL JEDETR(TMPNDK)
-         CALL JEDETR(TMPVDK)
-         CALL JEDETR(TMPNDM)
-         CALL JEDETR(TMPVDM)
-         CALL JEDETR(TMPNDA)
-         CALL JEDETR(TMPVDA)
+         DO 240 I = 1 , 3
+            CALL JEDETR(TMPND(I))
+            CALL JEDETR(TMPVD(I))
+240      CONTINUE
+         CALL JEDETR(TMCINF)
+         CALL JEDETR(TMVINF)
       ENDIF
 C
       CALL JEDEMA()
@@ -486,7 +450,5 @@ C
      &       '    VALE=(',3(1X,1PE12.5,','),/,
      &       '          ',3(1X,1PE12.5,','),'),',/,
      &       '    REPERE=''',A,'''),')
-
-
 
       END

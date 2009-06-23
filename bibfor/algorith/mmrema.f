@@ -4,7 +4,7 @@
      &                  TAU2M ,KSI1  ,KSI2  ,PROJIN)
 C       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -78,7 +78,6 @@ C              TOMBEEE HORS DE LA MAILLE MAITRE (A LA TOLERANCE PRES)
 C
 C ----------------------------------------------------------------------
 C 
-      CHARACTER*3  PROJOP 
       LOGICAL      LDIST      
 C
 C ----------------------------------------------------------------------
@@ -88,15 +87,14 @@ C --- PROJECTION SUR LA MAILLE MAITRE
 C --- CALCUL DU JEU MINIMUM, DES COORDONNEES DU POINT PROJETE
 C --- ET DES DEUX VECTEURS TANGENTS
 C      
-      CALL CFPROJ(NOMA  ,DEFICO,NEWGEO,'CONTINUE',POSNOM,
-     &            ITEMAX,EPSMAX,TOLEOU,DIRAPP    ,DIR   ,
-     &            COORPT,PROJOP,POSMAM,NUMMAM    ,JEU   ,
-     &            KSI1  ,KSI2  ,TAU1M ,TAU2M     ,LDIST )
+      CALL CFPROJ(NOMA  ,DEFICO,NEWGEO,POSNOM,ITEMAX,
+     &            EPSMAX,TOLEOU,DIRAPP,DIR   ,COORPT,
+     &            POSMAM,NUMMAM,JEU   ,KSI1  ,KSI2  ,
+     &            TAU1M ,TAU2M ,LDIST )
 C
 C --- TRAITEMENT DU CAS DU RABATTEMENT
 C
       PROJIN = .TRUE.
       IF (.NOT.LDIST)      PROJIN = .FALSE.
-      IF (TOLEOU.EQ.-1.D0) PROJIN = .TRUE.
       IF (DIRAPP)          PROJIN = .TRUE.
       END

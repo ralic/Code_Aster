@@ -1,6 +1,6 @@
       SUBROUTINE DISMMS(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,8 +129,21 @@ C
 
       ELSEIF (QUESTI.EQ. 'MPI_COMPLET' ) THEN
          K24 = ZK24(JREFA-1+11)
-         CALL ASSERT(K24.EQ.'MPI_COMPLET'.OR.K24.EQ.'MPI_INCOMPLET')
+         CALL ASSERT( (K24.EQ.'MPI_COMPLET').OR.
+     &                (K24.EQ.'MPI_INCOMPLET').OR.
+     &                (K24.EQ.'MATR_DISTR'))
          IF (K24.EQ.'MPI_COMPLET')THEN
+            REPK='OUI'
+         ELSE
+            REPK='NON'
+         ENDIF
+
+      ELSEIF (QUESTI.EQ. 'MATR_DISTR' ) THEN
+         K24 = ZK24(JREFA-1+11)
+         CALL ASSERT( (K24.EQ.'MPI_COMPLET').OR.
+     &                (K24.EQ.'MPI_INCOMPLET').OR.
+     &                (K24.EQ.'MATR_DISTR'))
+         IF (K24.EQ.'MATR_DISTR')THEN
             REPK='OUI'
          ELSE
             REPK='NON'

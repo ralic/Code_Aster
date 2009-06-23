@@ -1,8 +1,8 @@
-      SUBROUTINE MMUSUR(DEFICO,RESOCO,NCMPMX,IZONE ,IMA   ,
-     &                  IPC   ,NBPC  ,JEUUSU)
+      SUBROUTINE MMUSUR(RESOCO,NCMPMX,IMA   ,IPC   ,NBPC  ,
+     &                  JEUUSU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,8 +22,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C     
       IMPLICIT NONE     
-      CHARACTER*24  DEFICO,RESOCO
-      INTEGER       IZONE, IPC, NBPC, IMA, NCMPMX
+      CHARACTER*24  RESOCO
+      INTEGER       IPC, NBPC, IMA, NCMPMX
       REAL*8        JEUUSU
 
 C      
@@ -36,11 +36,8 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  LUSURE : .TRUE. SI USURE
-C IN  IZONE  : ZONE DE CONTACT
 C IN  IPC    : NUMERO DU POINT DE CONTACT
 C IN  NBPC   : NOMBRE DE POINTS DE CONTACT
-C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT 
 C IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 C IN  IMA    : NUMERO DE LA MAILLE ESCLAVE
 C IN  NCMPMX : NOMBRE MAXI DE GRANDEURS DANS NEUT_R
@@ -70,33 +67,21 @@ C
 C      
       CHARACTER*19 USUFIX
       INTEGER      JVALEX
-      REAL*8       R8BID   
-      CHARACTER*24 K24BID,K24BLA   
-      LOGICAL      LUSURE    
-      INTEGER      IBID       
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ() 
 C
 C --- INTITIALISATIONS
-C
-      K24BLA = ' '         
+C        
       JEUUSU = 0.D0
-C
-C --- OPTIONS SUR LA ZONE DE CONTACT
-C    
-      CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE',
-     &            IBID  ,R8BID ,K24BID,LUSURE)        
 C
 C --- USURE ?      
 C      
-      IF (LUSURE) THEN
-        USUFIX = RESOCO(1:14)//'.USUF'
-        CALL JEVEUO(USUFIX(1:19)//'.VALE','L',JVALEX)
-        JVALEX = JVALEX + (NCMPMX-NCMPU)*(IPC-1)*IMA
-        JEUUSU = - ABS(ZR(JVALEX+(NBPC*(IMA-1)+IPC-1)))
-      ENDIF    
+      USUFIX = RESOCO(1:14)//'.USUF'
+      CALL JEVEUO(USUFIX(1:19)//'.VALE','L',JVALEX)
+      JVALEX = JVALEX + (NCMPMX-NCMPU)*(IPC-1)*IMA
+      JEUUSU = - ABS(ZR(JVALEX+(NBPC*(IMA-1)+IPC-1)))
 C      
       CALL JEDEMA()
       END

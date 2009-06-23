@@ -1,9 +1,9 @@
       SUBROUTINE VECHME(TYPCAL,MODELZ,CHARGZ,INFCHZ,INST  ,
      &                  CARELE,MATE  ,VRCPLU,LIGREZ,VAPRIZ,
      &                  NOPASZ,TYPESE,STYPSE,VECELZ)
-C     
-C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -258,16 +258,14 @@ C     -------------------------------------
       LPAIN(14) = 'PCAGEPO'
       LCHIN(14) = CHCARA(5)
       LPAIN(15) = 'PNBSP_I'
-      LCHIN(15) = CHCARA(1) (1:8)//'.CANBSP'
+      LCHIN(15) = CHCARA(16)
       LPAIN(16) = 'PFIBRES'
-      LCHIN(16) = CHCARA(1) (1:8)//'.CAFIBR'
-      LPAIN(19) = 'PCADNSM'
-      LCHIN(19) = CHCARA(16)
-      LPAIN(20) = 'PCINFDI'
-      LCHIN(20) = CHCARA(18)      
+      LCHIN(16) = CHCARA(17)
+      LPAIN(17) = 'PCINFDI'
+      LCHIN(17) = CHCARA(15)
+      NCHIN = 17
 
       PAOUT = 'PVECTUR'
-
 
 
       DO 70 ICHA = 1,NCHAR
@@ -345,15 +343,17 @@ C           DANS LIGRCS.
                   CALL JEVEUO(LIGRCH(1:13)//'.SIINT.VALE','L',ISIGI)
                   LPAIN(1) = 'PCONTMR'
                   LCHIN(1) = ZK8(ISIGI)
-                  LPAIN(17) = 'PDEPLMR'
-                  LCHIN(17) = ' '
+                  NCHIN = NCHIN + 1
+                  LPAIN(NCHIN) = 'PDEPLMR'
+                  LCHIN(NCHIN) = ' '
                 ELSE IF (NUMCHM.GE.4) THEN
                   GO TO 40
                 END IF
 C               PCOMPOR UTILE POUR POUTRES MULTI-FIBRES. ON PREND
 C               LA CARTE QUI EST DANS MATE
-                LPAIN(18) = 'PCOMPOR'
-                LCHIN(18) =  MATE(1:8)//'.COMPOR'
+                NCHIN = NCHIN + 1
+                LPAIN(NCHIN) = 'PCOMPOR'
+                LCHIN(NCHIN) =  MATE(1:8)//'.COMPOR'
                 CALL GCNCO2(NEWNOM)
                 RESUEL(10:16) = NEWNOM(2:8)
                 CALL CORICH('E',RESUEL,ICHA,IBID)
@@ -384,7 +384,7 @@ C               POUR LES ELEMENTS DE BORD X-FEM
                   LPAIN(NCHIN + 6) = 'PLST'
                   LCHIN(NCHIN + 6) = MODELE(1:8)//'.LTNO'
                   LPAIN(NCHIN + 7) = 'PSTANO'
-                  LCHIN(NCHIN + 7) = MODELE(1:8)//'.STNO' 
+                  LCHIN(NCHIN + 7) = MODELE(1:8)//'.STNO'
                   NCHIN = NCHIN + 7
                   IF (OPTION.EQ.'CHAR_MECA_PRES_R'.OR.
      &                OPTION.EQ.'CHAR_MECA_PRES_F') THEN
@@ -405,13 +405,13 @@ C             -- SI .VEASS, IL N'Y A PAS DE CALCUL A LANCER
                 IF (NOMLIG(K).EQ.'.VEASS') THEN
                   CALL JEVEUO(LCHIN(1),'L',JLCHIN)
                   CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),RESUEL)
-                  
+
                 ELSE
 
                   CALL ASSERT(NCHIN.LE.NCHINX)
 
                   CALL CALCUL(STOP,OPTION,LIGREL,NCHIN,LCHIN,LPAIN,1,
-     &                        RESUEL,PAOUT,'V')                 
+     &                        RESUEL,PAOUT,'V')
 
                 END IF
 

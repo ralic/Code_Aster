@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 22/06/2009   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,9 +60,12 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER JGANO,NNO,KP,I,J,K,IMATUU,IRET,IACCE,IVECT
       INTEGER IJKL,IK,L,NDIM,NPG,NDDL,NVEC
+      INTEGER N1,N2,I2,J2,K2
       INTEGER IDIAG,NNOS
       INTEGER IVITE,IECIN,IFREQ
       REAL*8 TRACE,ALFA,WGT,MASVIT(81),DDOT
+      REAL*8 VECT1(81), VECT2(81)
+      INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),IBI,IDEC
 C.......................................................................
 
       CALL ELREF1(ELREFE)
@@ -74,6 +77,12 @@ C.......................................................................
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       NDDL = 3*NNO
       NVEC = NDDL* (NDDL+1)/2
+      PRESS1(1) = 0
+      PRESS2(1) = 0
+      TEMPE(1) = 0
+      CALL GRDTHM(NOMTE,.FALSE.,3,MECANI,PRESS1,PRESS2,TEMPE,
+     &            IBI,IBI,IBI,IBI,IBI,IBI)
+      IDEC = PRESS1(1) + PRESS2(1) + TEMPE(1)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -115,6 +124,9 @@ C    BOUCLE SUR LES POINTS DE GAUSS
       IF (OPTION.EQ.'MASS_MECA') THEN
 
         CALL JEVECH('PMATUUR','E',IMATUU)
+        DO 410 K = 1,NVEC
+          MATV(K) = 0.0D0
+  410   CONTINUE
 
 C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 
@@ -124,11 +136,40 @@ C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
               IK = ((3*I+K-4)* (3*I+K-3))/2
               DO 120 J = 1,I
                 IJKL = IK + 3* (J-1) + L
-                ZR(IMATUU+IJKL-1) = A(K,L,I,J)
+                MATV(IJKL) = A(K,L,I,J)
   120         CONTINUE
   130       CONTINUE
   140     CONTINUE
   150   CONTINUE
+        IF (IDEC.EQ.0) THEN
+          DO 400 I = 1 , NVEC
+            ZR(IMATUU+I-1) = MATV(I)
+ 400      CONTINUE
+        ELSE
+          DO 401 K = 1 , NNO
+            DO 402 N1 = 1 , 3
+              I = 3*K+N1-3
+              IF (K.LE.NNOS) THEN
+                I2 = I+IDEC*(K-1)
+              ELSE
+                I2 = I+IDEC*NNOS
+              ENDIF
+              DO 403 L = 1 , NNO
+                DO 404 N2 = 1 , 3
+                  J = 3*L+N2-3
+                  IF (J.GT.I) GOTO 405
+                  IF (L.LE.NNOS) THEN
+                    J2 = J+IDEC*(L-1)
+                  ELSE
+                    J2 = J+IDEC*NNOS
+                  ENDIF
+                  ZR(IMATUU+I2*(I2-1)/2+J2-1) = MATV(I*(I-1)/2+J)
+ 404            CONTINUE
+ 403          CONTINUE
+ 405          CONTINUE
+ 402        CONTINUE
+ 401      CONTINUE
+        ENDIF
 
       ELSE IF (OPTION.EQ.'MASS_MECA_DIAG' .OR.
      &         OPTION.EQ.'MASS_MECA_EXPLI' ) THEN
@@ -162,7 +203,16 @@ C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
         DO 200 J = 1,NNO
           DO 190 I = 1,3
             K = K + 1
-            IDIAG = K* (K+1)/2
+            IF (IDEC.EQ.0) THEN 
+              IDIAG = K* (K+1)/2
+            ELSE
+              IF (J.LE.NNOS) THEN
+                K2 = K+IDEC*(J-1)
+              ELSE
+                K2 = K+IDEC*NNOS
+              ENDIF
+              IDIAG = K2* (K2+1)/2
+            ENDIF            
             ZR(IMATUU+IDIAG-1) = A(I,I,J,J)*ALFA
   190     CONTINUE
   200   CONTINUE
@@ -186,7 +236,37 @@ C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
   240     CONTINUE
   250   CONTINUE
         CALL VECMA(MATV,NVEC,MATP,NDDL)
-        CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
+        IF (IDEC.EQ.0) THEN
+          CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
+        ELSE
+          DO 320 K = 1,NDDL
+            VECT1(K) = 0.0D0
+            VECT2(K) = 0.0D0
+ 320      CONTINUE
+          DO 311 K = 1 , NNO
+            DO 312 N1 = 1 , 3
+              I = 3*K+N1-3
+              IF (K.LE.NNOS) THEN
+                I2 = I+IDEC*(K-1)
+              ELSE
+                I2 = I+IDEC*NNOS
+              ENDIF
+              VECT1(I) = ZR(IACCE+I2-1)
+ 312        CONTINUE
+ 311      CONTINUE
+          CALL PMAVEC('ZERO',NDDL,MATP,VECT1,VECT2)
+          DO 313 K = 1 , NNO
+            DO 314 N1 = 1 , 3
+              I = 3*K+N1-3
+              IF (K.LE.NNOS) THEN
+                I2 = I+IDEC*(K-1)
+              ELSE
+                I2 = I+IDEC*NNOS
+              ENDIF
+              ZR(IVECT+I2-1) = VECT2(I)
+ 314        CONTINUE
+ 313      CONTINUE
+        ENDIF
 
 C OPTION ECIN_ELEM_DEPL : CALCUL DE L'ENERGIE CINETIQUE
 

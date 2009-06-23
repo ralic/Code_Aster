@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+%& MODIF TYPELEM  DATE 22/06/2009   AUTEUR DEVESA G.DEVESA 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -21,39 +21,39 @@ GENER_ME3H13
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ HHM_HEXA20      MAILLE__ HEXA20
-   ELREFE__  H20       GAUSS__  RIGI=FPG27   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  H20       GAUSS__  RIGI=FPG27   MASS=FPG27   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  HE8       GAUSS__  RIGI=FPG27
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
    ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 ENTETE__ ELEMENT__ HHM_PENTA15     MAILLE__ PENTA15
-   ELREFE__  P15       GAUSS__  RIGI=FPG21   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  P15       GAUSS__  RIGI=FPG21   MASS=FPG21   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  PE6       GAUSS__  RIGI=FPG21
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ENS_NOEUD__  EN2     =     7  8  9  10  11  12  13  14  15
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 ENTETE__ ELEMENT__ HHM_TETRA10     MAILLE__ TETRA10
-   ELREFE__  T10       GAUSS__  RIGI=FPG15   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  T10       GAUSS__  RIGI=FPG15   MASS=FPG15   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TE4       GAUSS__  RIGI=FPG15
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ENS_NOEUD__  EN2     =     5  6  7  8  9  10
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ HHM_HEXA20D     MAILLE__ HEXA20
-   ELREFE__  H20       GAUSS__  RIGI=NOEU_S   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  H20       GAUSS__  RIGI=NOEU_S   MASS=NOEU_S   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  HE8       GAUSS__  RIGI=NOEU_S
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
    ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 ENTETE__ ELEMENT__ HHM_PENTA15D    MAILLE__ PENTA15
-   ELREFE__  P15       GAUSS__  RIGI=NOEU_S   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  P15       GAUSS__  RIGI=NOEU_S   MASS=NOEU_S   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  PE6       GAUSS__  RIGI=NOEU_S
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ENS_NOEUD__  EN2     =     7  8  9  10  11  12  13  14  15
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 ENTETE__ ELEMENT__ HHM_TETRA10D    MAILLE__ TETRA10
-   ELREFE__  T10       GAUSS__  RIGI=NOEU_S   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  T10       GAUSS__  RIGI=NOEU_S   MASS=NOEU_S   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TE4       GAUSS__  RIGI=NOEU_S
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ENS_NOEUD__  EN2     =     5  6  7  8  9  10
@@ -104,6 +104,8 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
+    EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
+                                        IZZ      IXY      IXZ      IYZ      )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
                                         X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
                                         X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
@@ -115,6 +117,7 @@ MODE_LOCAL__
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
+    ECOURAN  = NEUT_R   ELEM__         (X1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     EREFCO   = PREC     ELEM__         (SIGM     FHYDR1   FHYDR2   FTHERM   )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
@@ -193,16 +196,24 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    MASS_INER           -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MASS_INER           65    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  EMASSINE PMASSINE
+    MASS_MECA           12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_DIAG      12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_EXPLI     12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                              OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    M_GAMMA             12    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                              OUT__  MVECTUR  PVECTUR
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
-    PAS_COURANT         -2    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    PAS_COURANT         404   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  ECOURAN  PCOURAN
     RAPH_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR

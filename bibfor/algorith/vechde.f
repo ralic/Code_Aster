@@ -3,7 +3,7 @@
      &                  LVECHZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -311,8 +311,8 @@ C 4.2.=>  DEFINITION DES ARGUMENTS DE CALCUL
         LCHIN(10) = CHHARM
         LPAIN(11) = 'PPESANR'
         LCHIN(11) = CHCHAR
-        LPAIN(12) = ' '
-        LCHIN(12) = ' '
+        LPAIN(12) = 'PCINFDI'
+        LCHIN(12) = CHCARA(15)
         LPAIN(13) = ' '
         LCHIN(13) = ' '
         LPAIN(14) = 'PCAGNBA'
@@ -328,9 +328,9 @@ C 4.2.=>  DEFINITION DES ARGUMENTS DE CALCUL
         LPAIN(19) = 'PTEMPSR'
         LCHIN(19) = CHTIME
         LPAIN(20) = 'PNBSP_I'
-        LCHIN(20) = CHCARA(1) (1:8)//'.CANBSP'
+        LCHIN(20) = CHCARA(16)
         LPAIN(21) = 'PFIBRES'
-        LCHIN(21) = CHCARA(1) (1:8)//'.CAFIBR'
+        LCHIN(21) = CHCARA(17)
 C ... LA CARTE MATERIAU DERIVEE
         LPAIN(22) = 'PMATSEN'
         LCHIN(22) = MATSEN
@@ -395,9 +395,9 @@ C 5.1. ==>  DEFINITION DES ARGUMENTS DE CALCUL
         LPAIN(18) = 'PTEMPSR'
         LCHIN(18) = CHTIME
         LPAIN(19) = 'PNBSP_I'
-        LCHIN(19) = CHCARA(1) (1:8)//'.CANBSP'
+        LCHIN(19) = CHCARA(16)
         LPAIN(20) = 'PFIBRES'
-        LCHIN(20) = CHCARA(1) (1:8)//'.CAFIBR'
+        LCHIN(20) = CHCARA(17)
 C ... LA CARTE MATERIAU DERIVEE
         LPAIN(21) = 'PMATSEN'
         LCHIN(21) = MATSEN
@@ -407,8 +407,9 @@ C ... CHAMPS DE DEPLACEMENTS A T+/T-
 C ... LA CARTE MATRICE RAIDEUR ELEMENTAIRE DISCRETE DERIVEE
         LPAIN(23) = 'PSEDISK'
         LCHIN(23) = CHCARS(2)
-        NCHIN = 23
-
+        LPAIN(24) = 'PCINFDI'
+        LCHIN(24) = CHCARA(15)
+        NCHIN = 24
 
         OPTION = 'RIGI_MECA_SENS_C'
 
@@ -452,9 +453,9 @@ C====
         LPAIN(14) = 'PCAPOUF'
         LCHIN(14) = CHCARA(13)
         LPAIN(15) = 'PNBSP_I'
-        LCHIN(15) = CHCARA(1) (1:8)//'.CANBSP'
+        LCHIN(15) = CHCARA(16)
         LPAIN(16) = 'PFIBRES'
-        LCHIN(16) = CHCARA(1) (1:8)//'.CAFIBR'
+        LCHIN(16) = CHCARA(17)
         LPAIN(17) = 'PVAPRIN'
         LCHIN(17) = DEPLA
         LPAIN(18) = 'PSEDISM'
@@ -462,8 +463,10 @@ C====
 C ... LA CARTE MATERIAU DERIVEE
         LPAIN(19) = 'PMATSEN'
         LCHIN(19) = MATSEN
+        LPAIN(20) = 'PCINFDI'
+        LCHIN(20) = CHCARA(15)
 
-        NCHIN = 19
+        NCHIN = 20
 
         OPTION = 'MASS_MECA_SENS_C'
 
@@ -506,9 +509,9 @@ C====
         LPAIN(14) = 'PCAPOUF'
         LCHIN(14) = CHCARA(13)
         LPAIN(15) = 'PNBSP_I'
-        LCHIN(15) = CHCARA(1) (1:8)//'.CANBSP'
+        LCHIN(15) = CHCARA(16)
         LPAIN(16) = 'PFIBRES'
-        LCHIN(16) = CHCARA(1) (1:8)//'.CAFIBR'
+        LCHIN(16) = CHCARA(17)
         LPAIN(17) = 'PVAPRIN'
         LCHIN(17) = DEPLA
         LPAIN(18) = 'PSEDISM'
@@ -516,8 +519,10 @@ C====
 C ... LA CARTE MATERIAU DERIVEE
         LPAIN(19) = 'PMATSEN'
         LCHIN(19) = MATSEN
+        LPAIN(20) = 'PCINFDI'
+        LCHIN(20) = CHCARA(15)
 
-        NCHIN = 19
+        NCHIN = 20
 
         OPTION = 'MASS_MECA_SENSI'
 
