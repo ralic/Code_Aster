@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,7 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (PRES     PHI      )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     EIMPEDR  = IMPE_R   ELGA__ RIGI    (IMPE     )
     EONDEPR  = ONDE_R   ELGA__ RIGI    (PRES     )
     ESOURCF  = SOUR_F   ELGA__ RIGI    (VNOR     )
@@ -52,6 +53,8 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_VNOR_F    174   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ESOURCF  PSOURCF
                               OUT__  MVECTUR  PVECTUR
+    COOR_ELGA           488   IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOP_R PCOORPG                              
     IMPE_MECA           10    IN__   NGEOMER  PGEOMER  EIMPEDR  PIMPEDR  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     IMPE_MECA_F         -1    IN__   XXXXXX   XXXXXX

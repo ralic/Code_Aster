@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF asojb Noyau  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,7 +118,7 @@ class AsBase(Type):
         return "<%s(%x,%r)>" % (self.__class__.__name__, id(self), self.nomj() )
 
     def long_repr(self):
-        if not hasattr(self, "par_lot") or self.par_lot():
+        if not hasattr(self, "accessible") or not self.accessible():
            # hors Aster ou en par_lot='oui'
            return self.short_repr()
         else:

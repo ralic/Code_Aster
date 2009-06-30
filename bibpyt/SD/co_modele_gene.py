@@ -1,4 +1,4 @@
-#@ MODIF co_modele_gene SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_modele_gene SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ class modele_gene(ASSD, sd_modele_gene):
    def LIST_SOUS_STRUCT(self) :
       """ retourne la liste des sous structures du modele generalise
          la liste des macro-elements sous-jacents"""
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans modele_gene.LIST_SOUS_STRUCT en PAR_LOT='OUI'")
       nommodgen=self.get_name()
       ncham=nommodgen+(8-len(nommodgen))*' '
@@ -38,7 +38,7 @@ class modele_gene(ASSD, sd_modele_gene):
    def LIST_LIAIS_STRUCT(self) :
       """ retourne la liste des liaisons entre sous structures du modele generalise sous la forme :
          [ (ss1, nom_liais1,  ss2 , nom_liais2), ...] """
-      if self.par_lot() :
+      if not self.accessible() :
          raise Accas.AsException("Erreur dans modele_gene.LIST_LIAIS_STRUCT en PAR_LOT='OUI'")
       nommodgen=self.get_name()
       ncham=nommodgen+(8-len(nommodgen))*' '

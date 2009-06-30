@@ -1,4 +1,4 @@
-#@ MODIF co_maillage SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_maillage SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ class maillage_sdaster(ASSD, sd_maillage):
    def LIST_GROUP_NO(self) :
       """ retourne la liste des groupes de noeuds sous la forme :
         [ (gno1, nb noeuds  gno1), ...] """
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans maillage.LIST_GROUP_NO en PAR_LOT='OUI'")
       nommail=self.get_name()
       dic_gpno=aster.getcolljev(nommail.ljust(8)+".GROUPENO")
@@ -37,7 +37,7 @@ class maillage_sdaster(ASSD, sd_maillage):
    def LIST_GROUP_MA(self) :
       """ retourne la liste des groupes de mailles sous la forme :
         [ (gma1, nb mailles gma1, dime max des mailles gma1), ...] """
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans maillage.LIST_GROUP_MA en PAR_LOT='OUI'")
       nommail=self.get_name()
       nommail=nommail.ljust(8)

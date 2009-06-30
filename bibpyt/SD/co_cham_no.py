@@ -1,4 +1,4 @@
-#@ MODIF co_cham_no SD  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF co_cham_no SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
           - self.valeurs : Numeric.array contenant les valeurs
         Si on a demande la topo (i.e. self.topo = 1) :
           - self.noeud  : numero de noeud """
-      if self.par_lot() :
+      if not self.accessible() :
          raise Accas.AsException("Erreur dans cham_no.EXTR_COMP en PAR_LOT='OUI'")
 
       ncham=self.get_name()
@@ -80,7 +80,6 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
       __maillage=CONTEXT.get_current_step().sds_dict[__nomMaillage]
       # on recupere le nom a gauche du signe "="
       toto=GetNomConceptResultat(self)
-      print 50*'#','\n',toto,50*'#','\n'
       __CHAM = CREA_CHAMP(OPERATION='ASSE',
                           MAILLAGE=__maillage,
                           TYPE_CHAM=__type,

@@ -1,4 +1,4 @@
-#@ MODIF co_vect_asse_gene SD  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_vect_asse_gene SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ class vect_asse_gene(ASSD, sd_cham_gene):
       dans un format Numerical Array
          Attributs retourne
             - self.valeurs : Numeric.array contenant les valeurs """
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans vect_asse_gene_r.EXTR_VECT_GENE en PAR_LOT='OUI'")
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
@@ -43,7 +43,7 @@ class vect_asse_gene(ASSD, sd_cham_gene):
       """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
       reel definie dans jeveux
          Attributs ne retourne rien """
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans vect_asse_gene_r.RECU_VECT_GENE en PAR_LOT='OUI'")
 
       Numeric.asarray(vecteur)
@@ -66,7 +66,7 @@ class vect_asse_gene(ASSD, sd_cham_gene):
       dans un format Numerical Array
          Attributs retourne
             - self.valeurs : Numeric.array contenant les valeurs """
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans vect_asse_gene_c.EXTR_VECT_GENE en PAR_LOT='OUI'")
 
       ncham=self.get_name()
@@ -79,7 +79,7 @@ class vect_asse_gene(ASSD, sd_cham_gene):
       """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
       complexe definie dans jeveux
          Attributs ne retourne rien """
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans vect_asse_gene_c.RECU_VECT_GENE en PAR_LOT='OUI'")
 
       Numeric.asarray(vecteur)

@@ -1,4 +1,4 @@
-#@ MODIF co_table SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF co_table SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ from sd_table import sd_table
 class table_sdaster(ASSD, sd_table):
    def __getitem__(self,key):
       from Utilitai.Utmess import UTMESS
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans table.__getitem__ en PAR_LOT='OUI'")
       requete = '%-24s' % key[0]
       tblp = '%-19s.TBLP' % self.get_name()
@@ -52,7 +52,7 @@ class table_sdaster(ASSD, sd_table):
       (Utile pour récupérer le titre et uniquement le titre d'une table dont
       on souhaite manipuler la dérivée).
       """
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans table.TITRE en PAR_LOT='OUI'")
       titj = aster.getvectjev('%-19s.TITR' % self.get_name())
       #titj = self.TITR.get()
@@ -68,7 +68,7 @@ class table_sdaster(ASSD, sd_table):
       def Nonefy(l1,l2) :
           if l2==0 : return None
           else     : return l1
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans table.EXTR_TABLE en PAR_LOT='OUI'")
       from Utilitai.Table import Table
       # titre

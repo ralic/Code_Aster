@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/06/2009   AUTEUR DEVESA G.DEVESA 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -58,6 +58,7 @@ ENTETE__ ELEMENT__ THHM_AXIS_TR6S   MAILLE__ TRIA6
    ENS_NOEUD__  EN1     =     1  2  3
 
 MODE_LOCAL__
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     NMATERC  = ADRSJEVE ELNO__  IDEN__  (I1       )
@@ -127,6 +128,7 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
+    COOR_ELGA           479   IN__   NGEOMER  PGEOMER OUT__  EGGEOP_R PCOORPG
     VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR

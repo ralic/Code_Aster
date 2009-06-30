@@ -1,4 +1,4 @@
-#@ MODIF co_matr_asse_gene SD  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF co_matr_asse_gene SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,7 +68,7 @@ class matr_asse_gene_r(matr_asse_gene):
     dans un format Numerical Array
         Attributs retourne
           - self.valeurs : Numeric.array contenant les valeurs """
-    if self.par_lot():
+    if not self.accessible():
        raise Accas.AsException("Erreur dans matr_asse_gene.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
     desc=Numeric.array(self.DESC.get())
@@ -92,7 +92,7 @@ class matr_asse_gene_r(matr_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans des matrices
     generalisees reelles definies dans jeveux
         Attributs ne retourne rien """
-    if self.par_lot():
+    if not self.accessible():
        raise Accas.AsException("Erreur dans matr_asse_gene.RECU_MATR_GENE en PAR_LOT='OUI'")
 
     ncham=self.get_name()
@@ -140,7 +140,7 @@ class matr_asse_gene_c(matr_asse_gene):
     dans un format Numerical Array
         Attributs retourne
           - self.valeurs : Numeric.array contenant les valeurs """
-    if self.par_lot():
+    if not self.accessible():
        raise Accas.AsException("Erreur dans matr_asse_gene_c.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
     desc = Numeric.array(self.DESC.get())
@@ -163,7 +163,7 @@ class matr_asse_gene_c(matr_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans des matrices
     generalisees reelles definies dans jeveux
         Attributs ne retourne rien """
-    if self.par_lot():
+    if not self.accessible():
        raise Accas.AsException("Erreur dans matr_asse_gene_c.RECU_MATR_GENE en PAR_LOT='OUI'")
 
     Numeric.asarray(matrice)

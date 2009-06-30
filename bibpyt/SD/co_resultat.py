@@ -1,4 +1,4 @@
-#@ MODIF co_resultat SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_resultat SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,22 +25,22 @@ from sd_resultat import sd_resultat
 # -----------------------------------------------------------------------------
 class resultat_sdaster(ASSD, sd_resultat):
    def LIST_CHAMPS (self) :
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans resultat.LIST_CHAMPS en PAR_LOT='OUI'")
       return aster.GetResu(self.get_name(), "CHAMPS")
 
    def LIST_NOM_CMP (self) :
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans resultat.LIST_NOM_CMP en PAR_LOT='OUI'")
       return aster.GetResu(self.get_name(), "COMPOSANTES")
 
    def LIST_VARI_ACCES (self) :
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans resultat.LIST_VARI_ACCES en PAR_LOT='OUI'")
       return aster.GetResu(self.get_name(), "VARI_ACCES")
 
    def LIST_PARA (self) :
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'")
       return aster.GetResu(self.get_name(), "PARAMETRES")
 

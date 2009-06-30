@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,15 @@ cata_msg={
 
 3: _("""
  le CHAMP_S:  %(k1)s n'existe pas.
+"""),
+
+4: _("""
+Erreur de programmation :
+ On essaye de calculer l'intégrale d'un cham_elem / ELGA.
+ Malheureusement, la famille de points de Gauss : %(k1)s n'est pas autorisée dans la programmation.
+
+Conseil :
+  Si nécessaire, il faut demander une évolution du code.
 """),
 
 7: _("""
@@ -67,6 +76,15 @@ cata_msg={
 
 13: _("""
  Il manque la composante: %(k1)s  sur le noeud: %(k2)s pour le CHAM_NO: %(k3)s
+"""),
+
+14: _("""
+ Erreur Utilisateur :
+   Commande MACR_ECLA_PG :
+   On n'a pu "éclater" aucun champ pour NOM_CHAM = %(k1)s
+ Conseils :
+   1) Vérifiez l'orthographe
+   2) Est-ce bien un champ ELGA ?
 """),
 
 21: _("""
@@ -254,10 +272,61 @@ cata_msg={
   - type_element: %(k3)s
 """),
 
+
+
 73: _("""
- on n'a pas pu extraire toutes les cmps voulues du champ associé au paramètre: %(k1)s
- - option: %(k2)s
- - type_element: %(k3)s )
+Erreur utilisateur dans un calcul élémentaire :
+  On n'a pas pu extraire toutes les CMPS voulues du champ associé au paramètre : %(k1)s
+   - option        : %(k2)s
+   - type_element  : %(k3)s )
+   - maille        : %(k4)s )
+"""),
+
+74: _("""
+Erreur utilisateur dans un calcul élémentaire :
+  Le matériau est nécessaire sur la maille : %(k4)s
+  - option de calcul élémentaire : %(k2)s
+  - type_element                 : %(k3)s
+
+Conseils :
+  * Peut-etre avez-vous oublié de renseigner le mot clé CHAM_MATER dans la commande courante.
+  * Dans la commande AFFE_MATERIAU, avez-vous affecté un matériau sur la maille incriminée ?
+"""),
+
+75: _("""
+Erreur utilisateur dans un calcul élémentaire :
+  Des caractéristiques de "coque" sont nécessaires sur la maille : %(k4)s
+  - option de calcul élémentaire : %(k2)s
+  - type_element                 : %(k3)s
+
+Conseils :
+  * Peut-etre avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
+  * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques de "coque"
+    sur la maille incriminée ?
+"""),
+
+76: _("""
+Erreur utilisateur dans un calcul élémentaire :
+  Des caractéristiques de "poutre" sont nécessaires sur la maille : %(k4)s
+  - option de calcul élémentaire : %(k2)s
+  - type_element                 : %(k3)s
+
+Conseils :
+  * Peut-etre avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
+  * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques de "poutre"
+    sur la maille incriminée ?
+"""),
+
+77: _("""
+Erreur utilisateur dans un calcul élémentaire :
+  Des caractéristiques d'"orientation" sont nécessaires sur la maille : %(k4)s
+  - option de calcul élémentaire : %(k2)s
+  - type_element                 : %(k3)s
+
+Conseils :
+  * Peut-etre avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
+  * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques d'"oreination"
+    sur la maille incriminée ?
 """),
 
 81: _("""

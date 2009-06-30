@@ -1,4 +1,4 @@
-#@ MODIF co_mater SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF co_mater SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ class mater_sdaster(ASSD, sd_mater):
       """Appel à la routine fortran RCVALE pour récupérer les valeurs des
       propriétés du matériau.
       """
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans mater.RCVALE en PAR_LOT='OUI'")
       from Utilitai.Utmess import UTMESS
       # vérification des arguments

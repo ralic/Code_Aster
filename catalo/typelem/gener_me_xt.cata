@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,6 +50,7 @@ ENTETE__ ELEMENT__ MECA_XT_TETRA10     MAILLE__ TETRA10
 
 
 MODE_LOCAL__
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
@@ -122,6 +123,7 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
+    COOR_ELGA           488   IN__   NGEOMER  PGEOMER OUT__  EGGEOP_R PCOORPG
     CALC_K_G            297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
                                      CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN

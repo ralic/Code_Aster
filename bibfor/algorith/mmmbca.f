@@ -2,7 +2,7 @@
      &                  MMCVCA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 29/06/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -269,10 +269,12 @@ C
            JEU = JEU + (GEOME(K)-GEOMM(K))*NORM(K)
    10     CONTINUE
 C
+          JEUUSU = 0.D0
           IF (LUSURE) THEN
             CALL MMUSUR(RESOCO,NCMPMX,IMAE  ,IPC   ,NBPC  ,
      &                  JEUUSU)
           ENDIF
+C
 C GLUTE POUR BUG DIST_*
           POSNOE = IZONE
           CALL CFDIST(DEFICO,IZONE ,POSNOE,GEOME ,INSTAN,

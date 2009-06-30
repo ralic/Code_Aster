@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,7 @@ ENTETE__ ELEMENT__ MET3SEG3         MAILLE__ SEG3
    ELREFE__  SE3       GAUSS__  RIGI=FPG3  MASS=FPG3   FPG_LISTE__  MATER = (RIGI)
 
 MODE_LOCAL__
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAGEPO  = CAGEPO   ELEM__         (R1       EP1      )
@@ -70,6 +71,7 @@ MODE_LOCAL__
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     EREFCO   = PREC     ELEM__         (SIGM     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
+    CPRESSF  = PRES_F   ELEM__         (PRES     )
     ESIGMNOR = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -91,6 +93,7 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
+    COOR_ELGA           478   IN__   NGEOMER  PGEOMER OUT__  EGGEOP_R PCOORPG
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
@@ -118,6 +121,9 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    583   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
                                      EPRESNO  PPRESSR
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_PRES_F    583   IN__   CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
+                                     CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

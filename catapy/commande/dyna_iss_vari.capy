@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 24/06/2009   AUTEUR ZENTNER I.ZENTNER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",op=dyna_iss_vari_ops ,sd_prod=table_fonc
             MATR_AMOR     = SIMP(statut='f',typ=(matr_asse_gene_r,matr_asse_gene_c ) ), 
          ),         
 #         
-#         OPTION        =SIMP(statut='f',typ='TXM',into=("TOUT","DIAG"),defaut="TOUT"),
+         OPTION        = SIMP(statut='f',typ='TXM',into=("TOUT","DIAG"),defaut="TOUT"),
 #             
          INFO           =SIMP(statut='f',typ='I' ,defaut=1,into=( 1 , 2)),
          )  ;

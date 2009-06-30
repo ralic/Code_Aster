@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -172,6 +172,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHVOIS_XFEM         400   IN__   E18NEUI  PCNSETO E9NEUTI  PLONCHA
                               OUT__  E18NEUI  PCVOISX
+    COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -2    IN__   XXXXXX   XXXXXX

@@ -1,0 +1,980 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 29/06/2009 - 15:03:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012325 DU 2008-07-22 09:11:13
+TYPE evolution concernant Eficas (VERSION )
+TITRE
+   traducteur : faire un fichier dictErreur par version
+FONCTIONNALITE
+   Pour faciliter l'organisation des différentes versions du traducteur, on a créé un fichier
+   dictErreur par type de traduction (de V7 à V8, de V8 à V9, etc.).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   eficas
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013466 DU 2009-06-02 07:09:56
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Dyna_Tran_Modal et dxc3xa9placement imposxc3xa9
+FONCTIONNALITE
+   Un utilisateur a remarqué que le catalogue de la commande DYAN_TRAN_MODAL n'est pas
+   complétement blindé. Lorsque l'on fait du multi-appui il est possible d'oublier le
+   VECT_GENE (ou le NUME_ORDRE).
+   On modifie le catapy en conséquence.
+   Des précisions supplémentaires dans la doc U4.53.21 ne sont pas non plus inutiles.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.21
+VALIDATION
+   astout
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 30/06/2009 - 14:26:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013563 DU 2009-06-25 12:38:59
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Methode par_lot des ASSD
+FONCTIONNALITE
+   Les ASSD ont une méthode par_lot qui répond à la question est-ce que le jeu de commandes
+   qui produit le concept est en mode PAR_LOT='OUI' ou 'NON'.
+   Or si on demande cette info au niveau du concept, c'est pour savoir s'il l'on peut accéder
+   au contenu de sa structure de données ou pas.
+   [sinon on peut faire "assd".jdc.par_lot()]
+   
+   Je propose de renommer la méthode "par_lot" (dans N_ASSD.py) en "accessible", qui dit si
+   on peut accéder aux valeurs du concept ou pas.
+   
+   Rem : la réponse est inversée : ex-par_lot() == not accessible()
+   
+   
+   La réponse est :
+    self.jdc.par_lot != 'OUI' or (self.jdc is not self.etape.parent and not
+   self.etape.parent.is_include())
+   
+   i.e. on est en PAR_LOT='NON' ou on n'est pas dans le jdc (donc sous une macro qui n'est
+   pas INCLUDE*).
+   
+   
+   Impact : N_ASSD.py + utilisateurs de la méthode accessible :
+   asojb.py, co_listr8.py, co_matr_asse_gene.py, co_vect_asse_gene.py, co_cham_elem.py,
+   co_macr_elem_dyna.py, co_modele_gene.py, co_cham_no.py, co_maillage.py, co_resultat.py,
+   N_ETAPE.py, co_fonction.py, co_mater.py, co_table.py, N_FONCTION.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 29/06/2009 - 13:06:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013559 DU 2009-06-24 12:45:19
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-tests mxc3xa9thode CONTINUE cassxc3xa9s en 10.0.7
+FONCTIONNALITE
+   Express
+   =======
+   
+   Sur clpaster, une quarantaine de cas-tests de contact méthode CONTINUE ont été cassés
+   suite à ma restit.
+   
+   En voulant supprimer un appel à MMUSUR dans MMMBCA je n'ai pas pris garde au fait que l'on
+   initialisait la variable JEUUSU à 0.D0 dans MMUSUR.
+   ==> je corrige MMMBCA pour prendre en compte cela
+   
+   Il reste alors quelques cas-tests NOOK ou en arrêt CPU :
+   
+   perf005b : j'augmente un peu le temps 700s -> 760s
+   ssnv104i : j'augmente 2 tolérances de 7 à 7.2%
+   sdnv105a : j'augmente 2 tolérances de 65 à 67% et de 3 à 3.2%
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 29/06/2009 - 16:01:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013540 DU 2009-06-18 16:32:33
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   Plantage en poursuite sur discrets non-symxc3xa9triques/symxc3xa9triques en STA9, OLD9, NEW10
+FONCTIONNALITE
+   Le problème vient effectivement d'appels manquant à NOCART. En fait on crée sur la base
+   globale la carte mais on ne la remplie pas.
+   
+   Quand on utilise une base classique, en relecture cela passe. Quand on utilise une base
+   hdf, cela ne passe plus : LIMA$$LONG n'existe pas car la carte n'a pas été remplie.
+   
+   En NEW10, Le problème n'est pas totalement réglé par la fiche 13471 (comme je l'aurais
+   cru), il faut modifier alcart (cf Jacques pour des explications claires).
+   
+   Pour la NEW9, je joins les fichiers à la fiche (fortran et cas test).
+   
+   Il faut donc mettre : 
+   - les appels aux NOCART qui manquent sur CARTDI dans acearp et acearm (en NEW9).
+      CALL NOCART(CARTDI, 3,' ','NOM',1,ZK8(JD),0,' ',1), juste après le 1er AFFDIS
+      CALL NOCART(CARTDI,-3,' ','NUM',KK,' ',ZI(JDDI),LIGMO,1), juste après le 2nd AFFDIS 
+   - ajouter un CALL JEVEUO en 'E' dans alcart pour que la collection soit en mémoire (en
+   NEW9, NEW10).
+   
+   Modif NEW9 : 
+   acearp, acearm, alcart
+   
+   Modif NEW10 (la fiche 13471 modifie comme il faut acearp, acearm) : 
+   alcart
+   
+   Cas tests restitués en NEW9, NEW10 
+   AFFE_CARA_ELEM/RIGI_PARASOL : ssnl130a.com1 (poursuite sur base HDF)
+   
+   Remarque :
+   =========
+   Les comportements entre base jeveux et base HDF différent. Dans ce dernier cas, les objets
+   associés à une collection sont recréés et mis en mémoire dans la commande POURSUITE pour
+   être réécrits au format standard. Or si aucun objet de collection n'a été chargé en
+   mémoire, le fichier HDF ne contriendra aucune référence. Dans le cas ci-dessus, il s'agit
+   d'un des objets systéme : le vecteur des longueurs des OC.
+   Il serait possible de disposer d'un comportement identique dans les 2 cas en mofifiant
+   légèrement les routines jjlchd.f et jjlihd.f.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas tests
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 29/06/2009 - 17:17:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013403 DU 2009-05-12 12:41:00
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 10.0.1, le cas-test sdnv100a est NOOK sur Rocks.
+FONCTIONNALITE
+   Après une analyse des solutions numériques obtenues sur clpaster en 10.0.6 
+   et 10.0.7, on peut en conclure que l'on trouve en fait toujours la même 
+   chose que l'on soit en debug ou nodebug (ouf).
+   C'est ce que l'on constate dans les graphes ci-joint :
+   - comparaison des déplacements aux extrémités,
+   - comparaison des vitesses aux extrémités.
+   
+   Si l'on zoome à l'instant 1.8E-5 s, on s'aperçoit (graphe comparaison-
+   deplacements-detail.jpg) que la solution en nodebug présente une 
+   subdivision du pas de temps, c'est la seule différence (le pas valant 2.E-6 
+   s est coupé en quatre).
+   
+   En pratique, dans le .mess on a effectivement cela :
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+    
+   INSTANT DE CALCUL :  2.000000000E-05
+    
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+   |     CONTACT    |   ITERATIONS   |     RESIDU     |     RESIDU     |     
+   OPTION     |     CONTACT    |    REAC GEOM   |
+   |                |     NEWTON     |     RELATIF    |     ABSOLU     |   
+   ASSEMBLAGE   |    DISCRET     |    MAXIMUM     |
+   |   ITER. GEOM.  |                | RESI_GLOB_RELA | RESI_GLOB_MAXI 
+   |                |   ITERATIONS   |                |
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+   |     1        X |     0          | 3.85286E-15    | 5.50409E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     1        X |     1          | 7.00244E-16    | 1.00035E-09    
+   |TANGENTE        |     0          | 5.00000E-01    |
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+   |     2        X |     2          | 1.73334E-15    | 2.47619E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |     3          | 1.41885E-15    | 2.02692E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |     4          | 1.66585E-15    | 2.37978E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |     5          | 1.19319E-15    | 1.70456E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |     6          | 1.69682E-15    | 2.42403E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |     7          | 1.07838E-15    | 1.54054E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |     8          | 1.86357E-15    | 2.66225E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |     9          | 9.64624E-16    | 1.37803E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    10          | 1.81225E-15    | 2.58893E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    11          | 9.22981E-16    | 1.31854E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    12          | 1.83423E-15    | 2.62033E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    13          | 1.20030E-15    | 1.71471E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    14          | 1.49910E-15    | 2.14156E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    15          | 1.17336E-15    | 1.67623E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    16          | 1.77444E-15    | 2.53491E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    17          | 1.18053E-15    | 1.68647E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    18          | 1.67279E-15    | 2.38970E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    19          | 1.23018E-15    | 1.75740E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     2        X |    20          | 1.70321E-15    | 2.43315E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+    
+   NOMBRE MAXIMUM D'ITERATIONS ATTEINT                                   
+    
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+    
+   SUBDIVISION DU PAS DE TEMPS EN    4 SOUS PAS
+    
+    
+   TEMPS CPU CONSOMME DANS CE PAS DE TEMPS :  1 s                    
+      TEMPS PAR ITERATION DE NEWTON  :  0 s                     - NBRE 
+   NEWT.:    21
+      TEMPS ARCHIVAGE                :  0 s                    
+      TEMPS CREATION NUMEROTATION    :  0 s                     - NBRE 
+   NUME.:     0
+      TEMPS FACTORISATION MATRICE    :  0 s                     - NBRE 
+   FACT.:    21
+      TEMPS INTEGRATION COMPORTEMENT :  0 s                     - NBRE 
+   INTE.:    23
+      TEMPS RESOLUTION K.U = F       :  0 s                     - NBRE 
+   RESO.:    21
+      TEMPS AUTRES OPERATIONS        :  0 s                    
+    
+    
+   CONTACT DISCRET:
+      NOMBRE D'ITERATIONS DE CONTACT        :        0
+      NOMBRE D'ITERATIONS DE REAC. GEOM     :        2
+      NOMBRE FINAL DE LIAISONS DE CONTACT   :        4
+      TEMPS TOTAL APPARIEMENT               :  0 s                    
+      TEMPS TOTAL RESOLUTION                :  0 s                    
+    
+    
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+    
+   INSTANT DE CALCUL :  1.850000000E-05
+    
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+   |     CONTACT    |   ITERATIONS   |     RESIDU     |     RESIDU     |     
+   OPTION     |     CONTACT    |    REAC GEOM   |
+   |                |     NEWTON     |     RELATIF    |     ABSOLU     |   
+   ASSEMBLAGE   |    DISCRET     |    MAXIMUM     |
+   |   ITER. GEOM.  |                | RESI_GLOB_RELA | RESI_GLOB_MAXI 
+   |                |   ITERATIONS   |                |
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+   |     1        X |     0          | 6.46564E-16    | 3.69465E-09    
+   |TANGENTE        |     0        X | - SANS OBJET - |
+   |     1        X |     1          | 2.13681E-16    | 1.22104E-09    
+   |TANGENTE        |     0          | 5.00000E-01    |
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+   |     2          |     2          | 2.23531E-16    | 1.27732E-09    
+   |TANGENTE        |     0          | 8.13152E-16    |
+   ----------------------------------------------------------------------------
+   --------------------------------------------
+   
+   Pour info, le cas-test devient NOOK, alors que la solution est inchangée, 
+   car les tests se font pour des numéros d'ordre donnés, et pas des instants. 
+   Avec la subdivision les numéros d'ordre sont donc décalés...
+   Si on avait fait les tests à des instants spécifiés, ce cas-test n'aurait 
+   pas été cassé !
+   
+   Grâce à l'aide de Thomas de Soza, j'ai pu comprendre que l'on ne 
+   convergeait pas à cause d'un test lié au contact (ici discret par 
+   pénalisation). Il y a en effet un algo de point fixe et on itère tant que 
+   le nombre de ddls en contact ne se stabilise pas.
+   Thomas a testé une surcharge où l'on retire ce test et le cas-test devient 
+   OK.
+   Ce problème est en fait tracé dans la fiche 13257.
+   En attendant le traitement complet de ce problème par cette fiche, on peut 
+   réparer le cas-test en autorisant un grand nombre d'itérations à 
+   convergence (200 au lieu de 20) :
+              CONVERGENCE =_F(ITER_GLOB_MAXI = 200),
+   Et là ça finit par passer sans avoir à subdiviser le pas de temps.
+   
+   On peut signaler aussi que cette difficulté à converger pour le point fixe 
+   est liée à la précision du solveur : en basculant sur mumps le cas-test 
+   passe, de même que si l'on utilise MDA comme renuméroteur avec la multi-
+   frontale (qui est employée ici par défaut).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdnv100a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 30/06/2009 - 15:46:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012277 DU 2008-07-07 15:12:47
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TMA : CS
+TITRE
+   gxc3xa9nxc3xa9ralisation de COOR_ELGA dans les catalogues d'xc3xa9lxc3xa9ments
+FONCTIONNALITE
+   Problèmes :
+   -----------
+   1) Joumana n'a pas pu calculer une intégrale avec POST_ELEM car sur les éléments
+   incompressibles, l'option 'COOR_ELGA' n'est pas programmée.
+                                                                                            
+                                             
+   2) Par la suite, elle a également constaté que l'option EPOT_ELEM_DEPL n'était pas
+   disponible pour les éléments incompressibles.
+                                                                                            
+                                             
+                                                                                            
+                                             
+   Evolution réalisée :
+   --------------------
+   2) C. Nguyen a consulté Sylvie Michel (responsable des éléments incompressibles) pour lui
+   demander comment calculer l'énergie potentielle sur ces éléments. Elle a répondu qu'elle
+   ne pouvait pas s'y mettre avant quelques temps. Nous avons donc décidé de laisser tomber
+   ce point. Joumana réémettra une nouvelle fiche si elle a toujours ce besoin.
+                                                                                            
+                                             
+   1) L'option 'COOR_ELGA' a été ajoutée dans 146 catalogues d'éléments qui ne la
+   calculaient pas encore. En revanche, nous ne proposons aucun test nouveau (puisqu'aucune
+   routine fortran nouvelle n'a été introduite).
+                                                                                            
+                                             
+   Remarques :
+   ------------
+   1) Sur un certain nombre d'éléments un peu exotiques, on ne réalise pas l'option, on la
+   déclare  "-2" :
+                                                                                            
+                                             
+   gener_cmcfz1.cata:        COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_cmcfz2.cata:        COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_cmcoz1.cata:        COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_cmcoz2.cata:        COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_ctecp1.cata:        COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_ctecp2.cata:        COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_medpl2_xh.cata:     COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_medpl2_xht.cata:    COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_medpl2_xt.cata:     COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+   gener_mefls1.cata:        COOR_ELGA           -2    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX
+     XXXXXX
+                                                                                            
+                                             
+   2) Cette évolution n'est pas révolutionnaire. Son mérite est simplement de permettre plus
+   de calculs d'intégrale dans POST_ELEM. Son défaut est que l'intégrale n'est possible que
+   si les champs ELGA à intégrer s'appuient sur la famille 'RIGI'. Ce qui est le cas général.
+   Mais si la famille n'est pas 'RIGI', l'utilisateur sera arreté par le message d'erreur:
+                                                                                            
+                                             
+   CALCULEL2_4 :
+   Erreur de programmation :
+    On essaye de calculer l'intégrale d'un cham_elem / ELGA.
+    Malheureusement, la famille de points de Gauss : %(k1)s n'est pas autorisée dans la
+   programmation.
+                                                                                            
+                                             
+   Conseil :
+     Si nécessaire, il faut demander une évolution du code.
+                                                                                            
+                                             
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  12277
+     chpond.f
+     calculel2.py
+     gener_2d2g.cata         gener_2dilp0.cata       gener_2dilsl.cata      
+   gener_ac3d_2.cata       gener_ac3d_3.cata
+     gener_acpla1.cata       gener_acpla2.cata       gener_cmcfz1.cata      
+   gener_cmcfz2.cata       gener_cmcoz1.cata
+     gener_cmcoz2.cata       gener_ctecp1.cata       gener_ctecp2.cata      
+   gener_me2db1.cata       gener_me2dt1.cata
+     gener_me2fa1.cata       gener_me2fl1.cata       gener_me2fl2.cata      
+   gener_me2fp2.cata       gener_me2fs1.cata
+     gener_me2tr1.cata       gener_me3a12.cata       gener_me3a13.cata      
+   gener_me3a32.cata       gener_me3a33.cata
+     gener_me3a42.cata       gener_me3a43.cata       gener_me3a61.cata      
+   gener_me3a62.cata       gener_me3a63.cata
+     gener_me3a64.cata       gener_me3da2.cata       gener_me3df3.cata      
+   gener_me3di3.cata       gener_me3fa2.cata
+     gener_me3fl2.cata       gener_me3fl3.cata       gener_me3g32.cata      
+   gener_me3g33.cata       gener_me3gi3.cata
+     gener_me3h12.cata       gener_me3h13.cata       gener_me3h22.cata      
+   gener_me3h23.cata       gener_me3h32.cata
+     gener_me3h33.cata       gener_me3h42.cata       gener_me3h43.cata      
+   gener_me3h52.cata       gener_me3h53.cata
+     gener_meaa11.cata       gener_meaa12.cata       gener_meaa21.cata      
+   gener_meaa22.cata       gener_meaa31.cata
+     gener_meaa32.cata       gener_meaa61.cata       gener_meaa62.cata      
+   gener_meaa63.cata       gener_meaa64.cata
+     gener_meafo1.cata       gener_meafs1.cata       gener_meag31.cata      
+   gener_meag32.cata       gener_meah11.cata
+     gener_meah12.cata       gener_meah21.cata       gener_meah22.cata      
+   gener_meah31.cata       gener_meah32.cata
+     gener_meah41.cata       gener_meah42.cata       gener_meah51.cata      
+   gener_meah52.cata       gener_meaxf1.cata
+     gener_meaxf2.cata       gener_mecap1.cata       gener_mecpl2_xh.cata   
+   gener_mecpl2_xhc.cata   gener_mecpl2_xht.cata
+     gener_mecpl2_xhtc.cata  gener_mecpl2_xt.cata    gener_mecpl2_xtc.cata  
+   gener_mecq32.cata       gener_mecqd1.cata
+     gener_meda11.cata       gener_meda12.cata       gener_meda21.cata      
+   gener_meda22.cata       gener_meda31.cata
+     gener_meda32.cata       gener_meda61.cata       gener_meda62.cata      
+   gener_meda63.cata       gener_meda64.cata
+     gener_medg31.cata       gener_medg32.cata       gener_medh11.cata      
+   gener_medh12.cata       gener_medh21.cata
+     gener_medh22.cata       gener_medh31.cata       gener_medh32.cata      
+   gener_medh41.cata       gener_medh42.cata
+     gener_medh51.cata       gener_medh52.cata       gener_medhb1.cata      
+   gener_medhb2.cata       gener_medit1.cata
+     gener_medkg1.cata       gener_medkt2.cata       gener_medpa1.cata      
+   gener_medpl2_xh.cata    gener_medpl2_xhc.cata
+     gener_medpl2_xht.cata   gener_medpl2_xhtc.cata  gener_medpl2_xt.cata   
+   gener_medpl2_xtc.cata   gener_medtr0.cata
+     gener_mefls1.cata       gener_mefls2.cata       gener_megrc2.cata      
+   gener_megrm2.cata       gener_mepct1.cata
+     gener_mepde1.cata       gener_mepdg1.cata       gener_mepdt1.cata      
+   gener_mepgd1.cata       gener_mepli2.cata
+     gener_mepmf1.cata       gener_mepmf2.cata       gener_metu61.cata       gener_mevf1.cata
+          gener_me_xh_2.cata
+     gener_me_xh.cata        gener_me_xhc.cata       gener_me_xht_2.cata    
+   gener_me_xht.cata       gener_me_xhtc.cata
+     gener_me_xt_2.cata      gener_me_xt.cata        gener_me_xtc.cata      
+   gener_mf3d_3.cata       gener_th3d_2.cata
+     gener_th3dd2.cata       gener_thax_1.cata       gener_thaxd1.cata      
+   gener_thaxf1.cata       gener_thcq_1.cata
+     gener_thcqa1.cata       gener_thcqp1.cata       gener_thpl_1.cata      
+   gener_thpld1.cata       met3seg3.cata
+     met3seg4.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013521 DU 2009-06-15 15:24:59
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.5, les cas-tests sslp201b est NOOK sur Rocks.
+FONCTIONNALITE
+   Problème :
+   ----------
+   en 10.0.5 le test sslp201b est NOOK sur Rocks
+   
+   Correction:
+   -----------
+   On ne fait rien car en 10.0.7, ce test est redevenu OK
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslp201b
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 30/06/2009 - 15:46:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013407 DU 2009-05-12 16:04:16
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   erreur sur POST_ELEM INTEGRALE
+FONCTIONNALITE
+   POST_ELEM option INTEGRALE : plantage dans un CALL ASSERT 
+   de la routine CHPOND.
+   
+   On effectuait une vérification sur toutes les mailles du 
+   maillage alors que l'utilisateur a rentré un GROUP_MA.
+   La vérification plantait sur une maille en dehors du 
+   GROUP_MA, une maille de type POI1 pour laquelle le calcul 
+   de l'option n'est pas programmé.
+   
+   2 choses sont réalisées:
+   
+   - on limite la vérification aux mailes concernées par le 
+   post-traitement
+   
+   - on émet un messsage d'erreur fatale si un type élément 
+   ne sait pas calculer l'option
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers associ?a la fiche + cas-tests Aster
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011173 DU 2007-08-22 13:49:11
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Pb de relation ELAS_ISTR en V 9.1 avec STAT_NON_LINE
+FONCTIONNALITE
+   En utilisant l'élément HEXA8 sous-intégré stabilisé avec 
+   un comportement ELAS_ISTR, un utilisateur avait le 
+   message :
+   
+    <F> <STAT_NON_LINE> <RCVALA_02> COMPORTEMENT :ELAS       
+   NON TROUVEPOUR 
+   LA  MAILLE  >M10681  < 
+   
+   En fait l'élément est programmé pour les lois anisotropes
+   mais ne fonctionnait pas à cause d'un appel à RCVALB avec
+   le comportement ELAS au lieu d'un comportement général.
+   C'est ce qui explique le plantage.
+   
+   On corrige en linéaire et non linéaire.
+   3 routines impactées : te0392 nmas3d et nmasf3.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers associxc3xa9s a la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011008 DU 2007-06-22 12:16:43
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR02 - sd_courbe et sd_surface doc D4.02.03
+FONCTIONNALITE
+   compléter (ajouter check_xxx) les catalogues des SD :
+          sd_surface_1d.py  
+          sd_reperage_1d.py  
+          sd_surface.py
+          sd_courbe_lm.py  
+          sd_courbe_sa.py
+          sd_courbe.py
+   
+   On ajoute des procédures de vérification sur les 
+   dimensions et le contenu des objets des sd surface et 
+   courbe produites par INTE_MAIL_2D et INTE_MAIL_3D.
+   
+   La doc D4.02.03 sur ces sd est complète et ne nécessite 
+   pas de modifications.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complxc3xa8te
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 30/06/2009 - 12:46:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013505 DU 2009-06-15 09:18:04
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   blanc en extension des noms des groupes dans le fichier au format 'med'
+FONCTIONNALITE
+   Demande initiale :
+   ------------------
+   Problème de blancs terminaux dans Salomé => apparition de '...' dans l'"object browser".
+   
+   
+   Solution :
+   ----------
+   J'ai écrit à Eric Fayolle pour savoir si côté MED, il était prévu de faire quelque chose,
+   voici sa réponse :
+   
+   """
+   Bonjour,
+   
+   D'après ce que je comprends, il s'agit des noms des groupes de mailles ou de noeuds qui
+   apparaissent dans SALOME.
+   Cette demande n'est pas du tout liée au problème de blancs terminaux qui ne doivent pas
+   apparaitre dans les chaines C des noms de maillages et des noms de champs.
+   A la création des familles les noms des différents groupes sont données dans une unique
+   chaîne, chaque groupe étant en effet codé sur 80 caractères.
+   Ceci ne changera pas dans les versions à venir de MED.
+   Cela n'empêche pas les codes utilisateurs comme SALOME d'enlever les blancs terminaux à
+   l'affichage.
+   """
+   
+   Donc, on ne peut rien faire côté aster puisque MED attend un CHARACTER*80 et côté MED, rien
+   n'est pas prévu.
+   
+   Je classe donc la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013477 DU 2009-06-04 09:33:52
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   PAL 1048 : VISU : instant n?tifs
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   pb Aster : présence de Nan dans un fichier MED.
+   """
+   
+   
+   Solution :
+   ----------
+   Problème déjà corrigé par la fiche 13337.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   unitaire
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013570 DU 2009-06-26 14:12:30
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Correction problxc3xa8me de compilation MUMPS
+FONCTIONNALITE
+   Problème :
+   ----------
+   Impossible de compiler amumpm.F sur Calibre 4 et 5.
+   
+   
+   Solution :
+   ----------
+   Modifier le fichier pour éviter de faire un test d'égalité d'un logical avec .TRUE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   compil
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR zentner      ZENTNER Irmela         DATE 24/06/2009 - 10:19:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013411 DU 2009-05-13 16:59:28
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   option "DIAG" pour DYNA_ISS_VARI
+FONCTIONNALITE
+   Les calculs avec DYNA_ISS_VARI peuvent être très long si l'interface 
+   pour le calcul ISS possède beaucoup de ddl. Ce lenteur est dû au 
+   remplissage des tableau de sortie, contenant les données 
+   table_fonction ou sont stockés les valeurs des interspectres (pour 
+   tous les ddl).
+   Or, dans la plupart des cas, on ne s'intéresse qu'à la partie 
+   diagonale de la matrice de densité spectrale en sortie, à savoir les 
+   autospectres. 
+   En créant le mot cle OPTION, l'utilisateur peut choisir s'il veut 
+   tout le spectre (OPTION="TOUT" -par défaut) ou uniquement les 
+   autospectres (OPTION='DIAG").
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.31, U2.06.12
+VALIDATION
+   sdls118a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF perf005b                       desoza T.DESOZA           108      2      2
+ CASTEST MODIF sdls118a                      zentner I.ZENTNER          474     35      1
+ CASTEST MODIF sdnv100a                      greffet N.GREFFET          386      2      2
+ CASTEST MODIF sdnv105a                       desoza T.DESOZA          1336      3      3
+ CASTEST MODIF ssnl130a                       flejou J-L.FLEJOU         167      2      2
+ CASTEST MODIF ssnv104i                       desoza T.DESOZA           368      3      3
+ CASTEST SUPPR test.comm                    courtois M.COURTOIS           0      0      0
+CATALOGU MODIF typelem/gener_2d2g             pellet J.PELLET           169      3      1
+CATALOGU MODIF typelem/gener_2dilp0           pellet J.PELLET           153      3      1
+CATALOGU MODIF typelem/gener_2dilsl           pellet J.PELLET           148      3      1
+CATALOGU MODIF typelem/gener_ac3d_2           pellet J.PELLET            54      4      1
+CATALOGU MODIF typelem/gener_ac3d_3           pellet J.PELLET           100      4      1
+CATALOGU MODIF typelem/gener_acpla1           pellet J.PELLET            48      4      1
+CATALOGU MODIF typelem/gener_acpla2           pellet J.PELLET            92      4      1
+CATALOGU MODIF typelem/gener_ctecp1           pellet J.PELLET            82      2      1
+CATALOGU MODIF typelem/gener_ctecp2           pellet J.PELLET            80      2      1
+CATALOGU MODIF typelem/gener_me2db1           pellet J.PELLET           227      4      1
+CATALOGU MODIF typelem/gener_me2dt1           pellet J.PELLET           189      4      1
+CATALOGU MODIF typelem/gener_me2fa1           pellet J.PELLET            68      4      1
+CATALOGU MODIF typelem/gener_me2fl1           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_me2fl2           pellet J.PELLET           121      4      1
+CATALOGU MODIF typelem/gener_me2fp2           pellet J.PELLET           110      4      1
+CATALOGU MODIF typelem/gener_me2fs1           pellet J.PELLET            65      4      1
+CATALOGU MODIF typelem/gener_me2tr1           pellet J.PELLET           189      4      1
+CATALOGU MODIF typelem/gener_me3a12           pellet J.PELLET            66      4      1
+CATALOGU MODIF typelem/gener_me3a13           pellet J.PELLET           254      4      1
+CATALOGU MODIF typelem/gener_me3a32           pellet J.PELLET            56      4      1
+CATALOGU MODIF typelem/gener_me3a33           pellet J.PELLET           202      4      1
+CATALOGU MODIF typelem/gener_me3a42           pellet J.PELLET            66      4      1
+CATALOGU MODIF typelem/gener_me3a43           pellet J.PELLET           258      4      1
+CATALOGU MODIF typelem/gener_me3a61           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_me3a62           pellet J.PELLET           178      4      1
+CATALOGU MODIF typelem/gener_me3a63           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_me3a64           pellet J.PELLET           181      4      1
+CATALOGU MODIF typelem/gener_me3da2           pellet J.PELLET            77      4      1
+CATALOGU MODIF typelem/gener_me3df3           pellet J.PELLET            89      4      1
+CATALOGU MODIF typelem/gener_me3di3           pellet J.PELLET           232      4      1
+CATALOGU MODIF typelem/gener_me3fa2           pellet J.PELLET            74      4      1
+CATALOGU MODIF typelem/gener_me3fl2           pellet J.PELLET            64      4      1
+CATALOGU MODIF typelem/gener_me3fl3           pellet J.PELLET           129      4      1
+CATALOGU MODIF typelem/gener_me3g32           pellet J.PELLET            56      4      2
+CATALOGU MODIF typelem/gener_me3g33           pellet J.PELLET           190      4      1
+CATALOGU MODIF typelem/gener_me3gi3           pellet J.PELLET           181      4      1
+CATALOGU MODIF typelem/gener_me3h12           pellet J.PELLET            67      4      1
+CATALOGU MODIF typelem/gener_me3h13           pellet J.PELLET           254      4      1
+CATALOGU MODIF typelem/gener_me3h22           pellet J.PELLET            67      4      1
+CATALOGU MODIF typelem/gener_me3h23           pellet J.PELLET           248      4      1
+CATALOGU MODIF typelem/gener_me3h32           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_me3h33           pellet J.PELLET           199      4      1
+CATALOGU MODIF typelem/gener_me3h42           pellet J.PELLET            66      4      1
+CATALOGU MODIF typelem/gener_me3h43           pellet J.PELLET           257      4      1
+CATALOGU MODIF typelem/gener_me3h52           pellet J.PELLET            66      4      2
+CATALOGU MODIF typelem/gener_me3h53           pellet J.PELLET           251      4      1
+CATALOGU MODIF typelem/gener_meaa11           pellet J.PELLET            52      4      1
+CATALOGU MODIF typelem/gener_meaa12           pellet J.PELLET           165      4      1
+CATALOGU MODIF typelem/gener_meaa21           pellet J.PELLET            57      4      1
+CATALOGU MODIF typelem/gener_meaa22           pellet J.PELLET           219      4      1
+CATALOGU MODIF typelem/gener_meaa31           pellet J.PELLET            57      4      2
+CATALOGU MODIF typelem/gener_meaa32           pellet J.PELLET           219      4      1
+CATALOGU MODIF typelem/gener_meaa61           pellet J.PELLET            52      4      2
+CATALOGU MODIF typelem/gener_meaa62           pellet J.PELLET           164      4      1
+CATALOGU MODIF typelem/gener_meaa63           pellet J.PELLET            53      4      1
+CATALOGU MODIF typelem/gener_meaa64           pellet J.PELLET           167      4      1
+CATALOGU MODIF typelem/gener_meafo1           pellet J.PELLET            63      4      1
+CATALOGU MODIF typelem/gener_meafs1           pellet J.PELLET            65      4      1
+CATALOGU MODIF typelem/gener_meag31           pellet J.PELLET            51      4      2
+CATALOGU MODIF typelem/gener_meag32           pellet J.PELLET           154      4      1
+CATALOGU MODIF typelem/gener_meah11           pellet J.PELLET            59      4      1
+CATALOGU MODIF typelem/gener_meah12           pellet J.PELLET           229      4      1
+CATALOGU MODIF typelem/gener_meah21           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_meah22           pellet J.PELLET           226      4      1
+CATALOGU MODIF typelem/gener_meah31           pellet J.PELLET            53      4      1
+CATALOGU MODIF typelem/gener_meah32           pellet J.PELLET           175      4      1
+CATALOGU MODIF typelem/gener_meah41           pellet J.PELLET            59      4      1
+CATALOGU MODIF typelem/gener_meah42           pellet J.PELLET           235      3      1
+CATALOGU MODIF typelem/gener_meah51           pellet J.PELLET            59      4      1
+CATALOGU MODIF typelem/gener_meah52           pellet J.PELLET           229      4      1
+CATALOGU MODIF typelem/gener_meaxf1           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_meaxf2           pellet J.PELLET            91      4      1
+CATALOGU MODIF typelem/gener_mecap1           pellet J.PELLET           164      4      1
+CATALOGU MODIF typelem/gener_mecpl2_xhc       pellet J.PELLET           301      3      1
+CATALOGU MODIF typelem/gener_mecpl2_xh        pellet J.PELLET           272      3      1
+CATALOGU MODIF typelem/gener_mecpl2_xhtc      pellet J.PELLET           307      3      1
+CATALOGU MODIF typelem/gener_mecpl2_xht       pellet J.PELLET           268      3      1
+CATALOGU MODIF typelem/gener_mecpl2_xtc       pellet J.PELLET           274      3      1
+CATALOGU MODIF typelem/gener_mecpl2_xt        pellet J.PELLET           265      3      1
+CATALOGU MODIF typelem/gener_mecq32           pellet J.PELLET           310      4      1
+CATALOGU MODIF typelem/gener_mecqd1           pellet J.PELLET           213      4      1
+CATALOGU MODIF typelem/gener_meda11           pellet J.PELLET            52      4      1
+CATALOGU MODIF typelem/gener_meda12           pellet J.PELLET           165      4      1
+CATALOGU MODIF typelem/gener_meda21           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_meda22           pellet J.PELLET           221      4      1
+CATALOGU MODIF typelem/gener_meda31           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_meda32           pellet J.PELLET           221      4      1
+CATALOGU MODIF typelem/gener_meda61           pellet J.PELLET            54      4      1
+CATALOGU MODIF typelem/gener_meda62           pellet J.PELLET           164      4      1
+CATALOGU MODIF typelem/gener_meda63           pellet J.PELLET            54      4      1
+CATALOGU MODIF typelem/gener_meda64           pellet J.PELLET           167      4      1
+CATALOGU MODIF typelem/gener_medg31           pellet J.PELLET            52      4      1
+CATALOGU MODIF typelem/gener_medg32           pellet J.PELLET           154      4      1
+CATALOGU MODIF typelem/gener_medh11           pellet J.PELLET            59      4      1
+CATALOGU MODIF typelem/gener_medh12           pellet J.PELLET           231      4      1
+CATALOGU MODIF typelem/gener_medh21           pellet J.PELLET            59      4      1
+CATALOGU MODIF typelem/gener_medh22           pellet J.PELLET           254      4      1
+CATALOGU MODIF typelem/gener_medh31           pellet J.PELLET            53      4      1
+CATALOGU MODIF typelem/gener_medh32           pellet J.PELLET           175      4      1
+CATALOGU MODIF typelem/gener_medh41           pellet J.PELLET            59      4      1
+CATALOGU MODIF typelem/gener_medh42           pellet J.PELLET           234      3      1
+CATALOGU MODIF typelem/gener_medh51           pellet J.PELLET            59      4      1
+CATALOGU MODIF typelem/gener_medh52           pellet J.PELLET           231      3      1
+CATALOGU MODIF typelem/gener_medhb1           pellet J.PELLET            58      4      1
+CATALOGU MODIF typelem/gener_medhb2           pellet J.PELLET           220      4      1
+CATALOGU MODIF typelem/gener_medit1           pellet J.PELLET           196      4      1
+CATALOGU MODIF typelem/gener_medkg1           pellet J.PELLET           261      3      1
+CATALOGU MODIF typelem/gener_medkt2           pellet J.PELLET           386      3      1
+CATALOGU MODIF typelem/gener_medpa1           pellet J.PELLET            71      4      1
+CATALOGU MODIF typelem/gener_medpl2_xhc       pellet J.PELLET           305      3      1
+CATALOGU MODIF typelem/gener_medpl2_xh        pellet J.PELLET           270      2      1
+CATALOGU MODIF typelem/gener_medpl2_xhtc      pellet J.PELLET           304      3      1
+CATALOGU MODIF typelem/gener_medpl2_xht       pellet J.PELLET           265      3      3
+CATALOGU MODIF typelem/gener_medpl2_xtc       pellet J.PELLET           273      3      1
+CATALOGU MODIF typelem/gener_medpl2_xt        pellet J.PELLET           263      2      1
+CATALOGU MODIF typelem/gener_medtr0           pellet J.PELLET           196      4      1
+CATALOGU MODIF typelem/gener_mefls1           pellet J.PELLET            54      2      2
+CATALOGU MODIF typelem/gener_mefls2           pellet J.PELLET            71      4      1
+CATALOGU MODIF typelem/gener_megrc2           pellet J.PELLET           206      3      1
+CATALOGU MODIF typelem/gener_megrm2           pellet J.PELLET           210      3      1
+CATALOGU MODIF typelem/gener_mepct1           pellet J.PELLET           262      4      1
+CATALOGU MODIF typelem/gener_mepde1           pellet J.PELLET           313      4      1
+CATALOGU MODIF typelem/gener_mepdg1           pellet J.PELLET           283      4      1
+CATALOGU MODIF typelem/gener_mepdt1           pellet J.PELLET           295      4      1
+CATALOGU MODIF typelem/gener_mepgd1           pellet J.PELLET           213      4      1
+CATALOGU MODIF typelem/gener_mepli2           pellet J.PELLET           220      4      1
+CATALOGU MODIF typelem/gener_mepmf1           pellet J.PELLET           273      4      1
+CATALOGU MODIF typelem/gener_mepmf2           pellet J.PELLET           273      4      1
+CATALOGU MODIF typelem/gener_metu61           pellet J.PELLET           282      4      1
+CATALOGU MODIF typelem/gener_mevf1            pellet J.PELLET            49      4      2
+CATALOGU MODIF typelem/gener_me_xh_2          pellet J.PELLET            98      3      1
+CATALOGU MODIF typelem/gener_me_xhc           pellet J.PELLET           318      4      1
+CATALOGU MODIF typelem/gener_me_xh            pellet J.PELLET           265      3      1
+CATALOGU MODIF typelem/gener_me_xht_2         pellet J.PELLET            99      3      1
+CATALOGU MODIF typelem/gener_me_xhtc          pellet J.PELLET           324      4      1
+CATALOGU MODIF typelem/gener_me_xht           pellet J.PELLET           265      3      1
+CATALOGU MODIF typelem/gener_me_xt_2          pellet J.PELLET            99      3      1
+CATALOGU MODIF typelem/gener_me_xtc           pellet J.PELLET           323      4      1
+CATALOGU MODIF typelem/gener_me_xt            pellet J.PELLET           268      3      1
+CATALOGU MODIF typelem/gener_mf3d_3           pellet J.PELLET           148      4      1
+CATALOGU MODIF typelem/gener_th3d_2           pellet J.PELLET           158      4      1
+CATALOGU MODIF typelem/gener_th3dd2           pellet J.PELLET           152      4      1
+CATALOGU MODIF typelem/gener_thax_1           pellet J.PELLET           143      4      1
+CATALOGU MODIF typelem/gener_thaxd1           pellet J.PELLET           153      4      1
+CATALOGU MODIF typelem/gener_thaxf1           pellet J.PELLET            85      4      1
+CATALOGU MODIF typelem/gener_thcq_1           pellet J.PELLET            79      4      1
+CATALOGU MODIF typelem/gener_thcqa1           pellet J.PELLET           113      4      1
+CATALOGU MODIF typelem/gener_thcqp1           pellet J.PELLET           113      4      1
+CATALOGU MODIF typelem/gener_thpl_1           pellet J.PELLET           144      4      1
+CATALOGU MODIF typelem/gener_thpld1           pellet J.PELLET           154      4      1
+CATALOGU MODIF typelem/met3seg3               pellet J.PELLET           276      3      1
+CATALOGU MODIF typelem/met3seg4               pellet J.PELLET           273      4      1
+CATALOPY MODIF commande/dyna_iss_vari        zentner I.ZENTNER           54      2      2
+CATALOPY MODIF commande/dyna_tran_modal       boyere E.BOYERE           244      2      1
+FORTRAN90 MODIF mumps/amumpm                 sellenet N.SELLENET         432      7      7
+ FORTRAN MODIF algorith/mmmbca                desoza T.DESOZA           407      3      1
+ FORTRAN MODIF algorith/nmas3d                pellet J.PELLET           450     13      4
+ FORTRAN MODIF algorith/nmasf3                pellet J.PELLET           268     12      3
+ FORTRAN MODIF calculel/alcart                flejou J-L.FLEJOU         130      4      2
+ FORTRAN MODIF elements/te0392                pellet J.PELLET           281     10      8
+ FORTRAN MODIF modelisa/mmusur                desoza T.DESOZA            81      1      7
+ FORTRAN MODIF utilitai/chpond                pellet J.PELLET           213     22      6
+  PYTHON MODIF Macro/dyna_iss_vari_ops       zentner I.ZENTNER          366     23      9
+  PYTHON MODIF Messages/calculel2             pellet J.PELLET           377     10      1
+  PYTHON MODIF Messages/utilitai8             pellet J.PELLET           250      9      1
+  PYTHON MODIF Noyau/asojb                  courtois M.COURTOIS         346      2      2
+  PYTHON MODIF Noyau/N_ASSD                 courtois M.COURTOIS         149     17      8
+  PYTHON MODIF Noyau/N_ETAPE                courtois M.COURTOIS         416      8      5
+  PYTHON MODIF Noyau/N_FONCTION             courtois M.COURTOIS         118      2      2
+  PYTHON MODIF SD/co_cham_elem              courtois M.COURTOIS          74      2      2
+  PYTHON MODIF SD/co_cham_no                courtois M.COURTOIS         102      2      3
+  PYTHON MODIF SD/co_fonction               courtois M.COURTOIS         333      9      9
+  PYTHON MODIF SD/co_listr8                 courtois M.COURTOIS          40      2      2
+  PYTHON MODIF SD/co_macr_elem_dyna         courtois M.COURTOIS         120      3     13
+  PYTHON MODIF SD/co_maillage               courtois M.COURTOIS          53      3      3
+  PYTHON MODIF SD/co_mater                  courtois M.COURTOIS          53      2      2
+  PYTHON MODIF SD/co_matr_asse_gene         courtois M.COURTOIS         210      5      5
+  PYTHON MODIF SD/co_modele_gene            courtois M.COURTOIS          47      3      3
+  PYTHON MODIF SD/co_resultat               courtois M.COURTOIS          53      5      5
+  PYTHON MODIF SD/co_table                  courtois M.COURTOIS         117      4      4
+  PYTHON MODIF SD/co_vect_asse_gene         courtois M.COURTOIS         101      5      5
+  PYTHON MODIF SD/sd_courbe_lm                pellet J.PELLET            56     29      2
+  PYTHON MODIF SD/sd_courbe_sa                pellet J.PELLET            58     27     10
+  PYTHON MODIF SD/sd_reperage_1d              pellet J.PELLET            37      9      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :  190       33229       875     312      +563
+ SUPPR :    1           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  191       33229       875     312      +563 

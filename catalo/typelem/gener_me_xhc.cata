@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,6 +126,7 @@ MODE_LOCAL__
     N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )    
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       FZ       )
@@ -208,6 +209,8 @@ OPTION__
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
+    COOR_ELGA           488   IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOP_R PCOORPG                              
     DEPL_POST_XFEM      515   IN__   E128NEUI PCNSETO  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  E36NEUTI PHEAVTO
                                      E9NEUTI  PLONCHA  E33NEUTR PPINTTO  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST

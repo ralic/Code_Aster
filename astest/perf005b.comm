@@ -1,6 +1,6 @@
-# MODIF  DATE 04/11/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 29/06/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
-# perf005b.para = tps_job 700 mem_job 165Mo ncpus 1 liste_test S
+# perf005b.para = tps_job 760 mem_job 165Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,29 +25,6 @@
 DEBUT(CODE=_F(NOM='PERF005B',NIV_PUB_WEB='INTERNET'),MEMOIRE=_F(DYNAMIQUE=400,))
 
 MA=LIRE_MAILLAGE(FORMAT='MED')
-
-MA=DEFI_GROUP(reuse =MA,  MAILLAGE=MA,
-                    CREA_GROUP_NO=(_F(OPTION='PLAN',
-                                      NOM='LIM1',
-                                      POINT=(0.0,0.0,0.0),
-                                      VECT_NORMALE=(1.0,0.0,0.0),
-                                      PRECISION=1.E-2,),
-                                   _F(OPTION='PLAN',
-                                      NOM='LIM2',
-                                      POINT=(0.0,0.0,0.0),
-                                      VECT_NORMALE=(0.0,0.0,1.0),
-                                      PRECISION=1.E-2,),
-                                   _F(OPTION='PLAN',
-                                      NOM='FACEINF',
-                                      POINT=(0.0,0.0,0.0),
-                                      VECT_NORMALE=(0.0,1.0,0.0),
-                                      PRECISION=1.E-2,),
-                                   _F(OPTION='PLAN',
-                                      NOM='FACESUP',
-                                      POINT=(0.0,100.0,0.0),
-                                      VECT_NORMALE=(0.0,-1.0,0.0),
-                                      PRECISION=1.E-2,),
-                                   ))
 
 #_____________________________________________________________________
 #

@@ -2,7 +2,7 @@
      &                  TYPE,LMD)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
+!& MODIF AMUMPM MUMPS  DATE 30/06/2009   AUTEUR SELLENET N.SELLENET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -109,7 +109,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         CALL ASSERT(.FALSE.)
       ENDIF
 
-      IF (LMD.EQ..TRUE.) THEN
+      IF (LMD) THEN
         CALL JEVEUO(NONU//'.NUML.NULG','L',JNULOGL)
       ENDIF
 
@@ -121,7 +121,7 @@ C       ------------------------------------------------
         CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
         CALL JEVEUO(NONU//'.SMOS.SMHC','L',JSMHC)
         CALL JELIRA(NONU//'.SMOS.SMHC','LONMAX',NSMHC,KBID)
-        IF (LMD.EQ..TRUE.) THEN
+        IF (LMD) THEN
           CALL JEVEUO(NONU//'.NUML.DELG','L',JDELG)
           CALL JELIRA(NONU//'.NUML.DELG','LONMAX',N1,KBID)
         ELSE
@@ -202,7 +202,7 @@ C       -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS:
                     
         IF (LDIST) THEN
           IF (LTYPR) THEN
-            IF (LMD.EQ..TRUE.) THEN
+            IF (LMD) THEN
               XMPSK%N=NBEQ
             ELSE
               XMPSK%N=N
@@ -252,7 +252,7 @@ C --- PARTIE TRIANGULAIRE SUPERIEURE
             CAUX=ZC(JVALE-1+KTERM)
             IF (CAUX.NE.(0.D0,0.D0)) LNN=.TRUE.
           ENDIF
-          IF (LMD.EQ..TRUE.) THEN
+          IF (LMD) THEN
             ILIGG=ZI(JNULOGL+ILIGL-1)
             JCOLG=ZI(JNULOGL+JCOLL-1)
           ELSE
@@ -316,7 +316,7 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
             ENDIF
             IF ((LDIST.AND.LNN).OR.(.NOT.LDIST)) THEN
               ITERM=ITERM+1
-              IF (LMD.EQ..TRUE.) THEN
+              IF (LMD) THEN
                 ILIGG=ZI(JNULOGL+ILIGL-1)
                 JCOLG=ZI(JNULOGL+JCOLL-1)
               ELSE
@@ -374,7 +374,7 @@ C ---FIN DE LA BOUCLE SUR NZ
         CALL JELIBE(JEXNUM(NOMAT//'.VALM',1))
         IF (LMNSY) CALL JELIBE(JEXNUM(NOMAT//'.VALM',2))
         CALL JELIBE(NONU//'.NUME.DELG')
-        IF ( LMD.EQ..TRUE. ) THEN
+        IF ( LMD ) THEN
           CALL JELIBE(NONU//'.NUML.DELG')
         ENDIF
 

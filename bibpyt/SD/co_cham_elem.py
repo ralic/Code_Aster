@@ -1,4 +1,4 @@
-#@ MODIF co_cham_elem SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_cham_elem SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ class cham_elem(cham_gd_sdaster, sd_cham_elem):
           - self.maille  : numero de mailles
           - self.point   : numero du point dans la maille
           - self.sous_point : numero du sous point dans la maille """
-      if self.par_lot() :
+      if not self.accessible() :
          raise Accas.AsException("Erreur dans cham_elem.EXTR_COMP en PAR_LOT='OUI'")
 
       ncham=self.get_name()

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 29/06/2009   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,6 +73,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
 
          EXCIT           =FACT(statut='f',max='**',
            regles=(UN_PARMI('FONC_MULT','COEF_MULT','ACCE'),
+                   UN_PARMI('VECT_GENE','NUME_ORDRE',),
                    PRESENT_PRESENT('ACCE','VITE','DEPL'),
                    PRESENT_PRESENT('D_FONC_DT','D_FONC_DT2'),
                    PRESENT_ABSENT('NUME_ORDRE','VECT_GENE','COEF_MULT'),

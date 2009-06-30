@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (PHI      DH       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CPESANR  = PESA_R   ELEM__         (G        )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
@@ -54,6 +55,8 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    COOR_ELGA           488   IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOP_R PCOORPG                              
     ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX      
     ENER_ELAS           -2    IN__   XXXXXX   XXXXXX

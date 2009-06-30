@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai8 Messages  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -237,6 +237,14 @@ Conseil:
  Erreur dans les données pour le champ  %(k1)s
  Aucune maille ne supporte les composantes
  %(k2)s, %(k3)s, %(k4)s, %(k5)s, ...
+"""),
+
+63 : _("""
+ POST_ELEM INTEGRALE : la maille %(i1)d de type %(k1)s ne sait pas
+ (ou ne peut pas) calculer le post traitement demandé 
+Conseil:
+   Limiter le post traitement à des GROUP_MA contenant des mailles 
+de type valide
 """),
 
 }

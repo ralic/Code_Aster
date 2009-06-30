@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/05/2008   AUTEUR GRANET S.GRANET 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,6 +32,7 @@ MODE_LOCAL__
     CFLUXF   = FTHM_F   ELEM__         (PFLU1    PFLU2    )
     EFLUXE   = FTHM_R   ELGA__ RIGI   (PFLU1    PFLU2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
@@ -50,6 +51,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    472   IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
-
+    COOR_ELGA           478   IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOP_R PCOORPG
     RIGI_MECA           -1    IN__   XXXXXX   XXXXXX
                              OUT__  XXXXXX   XXXXXX

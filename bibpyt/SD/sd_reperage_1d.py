@@ -1,4 +1,4 @@
-#@ MODIF sd_reperage_1d SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_reperage_1d SD  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,5 +25,13 @@ class sd_reperage_1d(AsBase):
     TYPE = AsVI(SDNom(debut=19), )
     EXTR = AsVR(SDNom(debut=19), )
     ORIG = AsVR(SDNom(debut=19), )
+    def check_1(self,checker):
+      type=self.TYPE.get()
+      extr=self.EXTR.get()
+      orig=self.ORIG.get()
+      assert len(extr) == len(orig)
+      assert len(extr) == len(type)
+      for k in range(len(type)):
+         assert  (type[k] <= 3) and (type[k] >= 1)
 
 

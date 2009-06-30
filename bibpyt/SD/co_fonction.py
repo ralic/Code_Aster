@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 22/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_fonction SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ class fonction_class(ASSD):
       le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
       """
       from Utilitai.Utmess import UTMESS
-      if not self.par_lot():
+      if self.accessible():
         TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
         objev = '%-19s.PROL' % self.get_name()
         prol = aster.getvectjev(objev)
@@ -70,7 +70,7 @@ class fonction_class(ASSD):
       return dico
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une fonction"""
-      if self.par_lot() :
+      if not self.accessible() :
          raise Accas.AsException("Erreur dans fonction.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
       gr=Graph()
@@ -102,7 +102,7 @@ class fonction_sdaster(fonction_class, sd_fonction_aster):
       Retourne deux listes de valeurs : abscisses et ordonnees
       """
       from Utilitai.Utmess import UTMESS
-      if not self.par_lot():
+      if self.accessible():
         vale = '%-19s.VALE' % self.get_name()
         lbl = aster.getvectjev(vale)
         if lbl == None:
@@ -185,7 +185,7 @@ class fonction_c(fonction_class, sd_fonction_aster):
       Retourne trois listes de valeurs : abscisses, parties reelles et imaginaires.
       """
       from Utilitai.Utmess import UTMESS
-      if not self.par_lot():
+      if self.accessible():
          vale = '%-19s.VALE' % self.get_name()
          lbl = aster.getvectjev(vale)
          if lbl == None:
@@ -220,7 +220,7 @@ class fonction_c(fonction_class, sd_fonction_aster):
       return self.Valeurs()[2]
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une fonction complexe"""
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans fonction_c.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
       para = self.Parametres()
@@ -268,7 +268,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       et une liste de couples (abscisses,ordonnees) de chaque fonction.
       """
       from Utilitai.Utmess import UTMESS
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans nappe.Valeurs en PAR_LOT='OUI'")
       nsd = '%-19s' % self.get_name()
       dicv=aster.getcolljev(nsd+'.VALE')
@@ -290,7 +290,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       et une liste de dictionnaire des parametres de chaque fonction.
       """
       from Utilitai.Utmess import UTMESS
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans nappe.Parametres en PAR_LOT='OUI'")
       TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
       objev = '%-19s.PROL' % self.get_name()
@@ -320,7 +320,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       return self.Valeurs()[0]
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une nappe"""
-      if self.par_lot():
+      if not self.accessible():
          raise Accas.AsException("Erreur dans nappe.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
       gr=Graph()

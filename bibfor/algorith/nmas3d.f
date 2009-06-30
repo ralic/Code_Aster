@@ -6,8 +6,7 @@
      &                  SIGM,VIM,
      &                  DFDI,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -255,20 +254,30 @@ C - ERREUR D'INTEGRATION
 C
 C  RECUP DU COEF DE POISSON POUR ASQBI
 C
-      NOMRES(1)='E'
-      NOMRES(2)='NU'
+      IF(PROJ.EQ.2) THEN
+        NOMRES(1)='E'
+        IF(COMPOR(1).EQ.'ELAS') THEN
+           NOMRES(2)='NU'
+        ELSE IF (COMPOR(1).EQ.'ELAS_ISTR') THEN
+           NOMRES(2)='NU_LT'
+        ELSE IF (COMPOR(1).EQ.'ELAS_ORTH') THEN
+           NOMRES(2)='NU_LT'
+        ELSE
+           CALL ASSERT (.FALSE.)
+        ENDIF
 C
 C
-      CALL RCVALB(FAMI,KPG,1,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
-     +                 NOMRES(2),VALRES(2),CODRE, 'FM' )
-      IF(CODRE.EQ.'OK') THEN
-         NU = VALRES(2)
-      ELSE
-         CALL U2MESS('F','ELEMENTS4_72')
+        CALL RCVALB(FAMI,KPG,1,'-',IMATE,' ',COMPOR(1),0,' ',0.D0,1,
+     +                   NOMRES(2),VALRES(2),CODRE, 'FM' )
+        IF(CODRE.EQ.'OK') THEN
+           NU = VALRES(2)
+        ELSE
+           CALL U2MESS('F','ELEMENTS4_72')
+        ENDIF
+
+        NUB = NU/(1.D0-NU)
       ENDIF
-
-      NUB = NU/(1.D0-NU)
-
+C
       IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA') THEN
 

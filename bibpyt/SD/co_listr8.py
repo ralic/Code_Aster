@@ -1,4 +1,4 @@
-#@ MODIF co_listr8 SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF co_listr8 SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ class listr8_sdaster(ASSD, sd_listr8):
       Retourne la liste des valeurs : [val1, ..., valN]
       """
       from Utilitai.Utmess import UTMESS
-      if not self.par_lot():
+      if self.accessible():
          vale='%-19s.VALE' % self.get_name()
          t_vale = aster.getvectjev(vale)
          if t_vale == None:

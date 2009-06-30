@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,7 @@ MODE_LOCAL__
     CFLUXNF  = FLUN_F   ELEM__         (FLUN     )
     CFLUXNR  = FLUN_R   ELEM__         (FLUN     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     CT_EXTF  = TEMP_F   ELEM__         (TEMP     TEMP_INF TEMP_SUP )
     CT_EXTR  = TEMP_R   ELEM__         (TEMP     TEMP_INF TEMP_SUP )
@@ -69,6 +70,8 @@ OPTION__
                               OUT__  MVECTTR  PVECTTR
     CHAR_THER_TEXT_R    108   IN__   CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  CT_EXTR  PT_EXTR
                               OUT__  MVECTTR  PVECTTR
+    COOR_ELGA           478   IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOP_R PCOORPG                              
     RIGI_THER_COEH_F    103   IN__   CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
     RIGI_THER_COEH_R    104   IN__   CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR

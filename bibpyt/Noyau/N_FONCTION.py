@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_FONCTION Noyau  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,7 @@ class formule(ASSD,AsBase):
       """
       from SD.sd_fonction  import sd_formule
       from Utilitai.Utmess import UTMESS
-      if not self.par_lot():
+      if self.accessible():
         TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT', 'I':'INTERPRE' }
         sd = sd_formule(self.get_name())
         prol = sd.PROL.get()

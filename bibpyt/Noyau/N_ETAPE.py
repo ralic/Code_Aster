@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -255,8 +255,6 @@ Causes possibles :
           Methode utilisee pour que l etape self se declare etape
           courante. Utilise par les macros
       """
-      #print "set_current_step ",self.nom
-      #traceback.print_stack(limit=3,file=sys.stdout)
       cs= CONTEXT.get_current_step()
       if self.parent != cs :
          raise "L'étape courante %s devrait etre le parent de self : %s" % (cs,self)
@@ -269,8 +267,6 @@ Causes possibles :
             Methode utilisee par l'etape self qui remet son etape parent comme 
             etape courante 
       """
-      #print "reset_current_step ",self.nom
-      #traceback.print_stack(limit=3,file=sys.stdout)
       cs= CONTEXT.get_current_step()
       if self != cs :
          raise "L'étape courante %s devrait etre self : %s" % (cs,self)
@@ -410,4 +406,11 @@ Causes possibles :
        """
        if self.sd and self.reuse == None :
            self.parent.NommerSdprod(self.sd,self.sd.nom)
+
+
+   def is_include(self):
+      """Permet savoir si on a affaire à une commande de type INCLUDE/INCLUDE_MATERIAU
+      car le comportement de ces macros est particulier.
+      """
+      return self.nom.startswith('INCLUDE')
 

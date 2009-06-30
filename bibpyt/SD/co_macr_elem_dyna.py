@@ -1,4 +1,4 @@
-#@ MODIF co_macr_elem_dyna SD  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF co_macr_elem_dyna SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,16 +45,6 @@ def VALE_triang2array(vect_VALE, dim, typ):
 
 # -----------------------------------------------------------------------------
 class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
-#   def NBRE_MODES(self) :
-#      """ retourne le nombre de modes total, dynamiques et d'interface """
-#      if self.par_lot() :
-#         raise Accas.AsException("Erreur dans macr_elem_dyna.NBRE_MODES en PAR_LOT='OUI'")
-#      nombase = self.MAEL_REFE.get()[0]
-#      nbmode=Numeric.array(aster.getvectjev('%-19s' % nombase[0:8] + '.UTIL'))
-#      nbmodtot=nbmode[1]
-#      nbmoddyn=nbmode[2]
-#      nbmodint=nbmode[3]
-#      return [nbmodtot,nbmoddyn,nbmodint]
 
    def EXTR_MATR_GENE(self,typmat) :
       """ retourne les valeurs des matrices generalisees reelles
@@ -64,7 +54,7 @@ class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
          typmat='AMOR_GENE' pour obtenir la matrice d'amortissement generalisee
          Attributs retourne
             - self.valeurs : Numeric.array contenant les valeurs """
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans macr_elem_dyna.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
       if (typmat=='MASS_GENE') :
@@ -91,7 +81,7 @@ class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
          typmat='RIGI_GENE' pour obtenir la matrice de raideur generalisee
          typmat='AMOR_GENE' pour obtenir la matrice d'amortissement generalisee
          Attributs ne retourne rien """
-      if self.par_lot() :
+      if not self.accessible():
          raise Accas.AsException("Erreur dans macr_elem_dyna.RECU_MATR_GENE en PAR_LOT='OUI'")
 
       nommacr=self.get_name()
