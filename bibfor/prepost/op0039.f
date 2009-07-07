@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 19/05/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -588,10 +588,10 @@ C              (OPERANDE DE SELECTION SUR DES ENTITES TOPOLOGIQUES)
            NBGRN=0
            NBMA=0
            NBGRM=0
-           CALL GETVID('RESU','NOEUD'   ,IOCC,1,0,K8B,N1)
-           CALL GETVID('RESU','GROUP_NO',IOCC,1,0,K8B,N2)
-           CALL GETVID('RESU','MAILLE'  ,IOCC,1,0,K8B,N3)
-           CALL GETVID('RESU','GROUP_MA',IOCC,1,0,K8B,N4)
+           CALL GETVTX('RESU','NOEUD'   ,IOCC,1,0,K8B,N1)
+           CALL GETVTX('RESU','GROUP_NO',IOCC,1,0,K8B,N2)
+           CALL GETVTX('RESU','MAILLE'  ,IOCC,1,0,K8B,N3)
+           CALL GETVTX('RESU','GROUP_MA',IOCC,1,0,K8B,N4)
            IF((N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0)
      &          .AND. (FORM(1:7).EQ.'ENSIGHT')) THEN
              CALL U2MESS('A','PREPOST3_72')
@@ -615,7 +615,7 @@ C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
      &                     NBGRN,JLGRN)
                CALL WKVECT('&&OP0039.NOM_GRNO','V V K80',
      &                     NBGRN,JNGRN)
-               CALL GETVID('RESU','GROUP_NO',IOCC,1,NBGRN,
+               CALL GETVTX('RESU','GROUP_NO',IOCC,1,NBGRN,
      &                                               ZK8(JLGRN),IBID)
                ZI(JTOPO-1+3) = NBGRN
              ENDIF
@@ -628,7 +628,7 @@ C                UN TABLEAU DE K8, LISTE DES NOMS DE NOEUDS
 C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
                CALL WKVECT('&&OP0039.LIST_NOE','V V K8',NBNO,JLNO)
                CALL WKVECT('&&OP0039.NOM_NOE','V V K80',NBNO,JNNO)
-               CALL GETVID('RESU','NOEUD',IOCC,1,NBNO,ZK8(JLNO),IBID)
+               CALL GETVTX('RESU','NOEUD',IOCC,1,NBNO,ZK8(JLNO),IBID)
                ZI(JTOPO-1+1) = NBNO
              ENDIF
 C
@@ -642,7 +642,7 @@ C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
      &                     NBGRM,JLGRM)
                CALL WKVECT('&&OP0039.NOM_GRMA','V V K80',
      &                     NBGRM,JNGRM)
-               CALL GETVID('RESU','GROUP_MA',IOCC,1,NBGRM,
+               CALL GETVTX('RESU','GROUP_MA',IOCC,1,NBGRM,
      &                                               ZK8(JLGRM),IBID)
                ZI(JTOPO-1+7) = NBGRM
              ENDIF
@@ -655,7 +655,7 @@ C                UN TABLEAU DE K8, LISTE DES NOMS DE MAILLES
 C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
                CALL WKVECT('&&OP0039.LIST_MAI','V V K8',NBMA,JLMA)
                CALL WKVECT('&&OP0039.NOM_MAI','V V K80',NBMA,JMMA)
-               CALL GETVID('RESU','MAILLE',IOCC,1,NBMA,ZK8(JLMA),IBID)
+               CALL GETVTX('RESU','MAILLE',IOCC,1,NBMA,ZK8(JLMA),IBID)
                ZI(JTOPO-1+5) = NBMA
              ENDIF
 C

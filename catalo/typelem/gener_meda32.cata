@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,8 +51,7 @@ MODE_LOCAL__
                                         TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     NVI_C    NVI_T
+                                        XXXX2    KIT[9]     NVI_C    NVI_T
                                         NVI_H    NVI_M    )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
@@ -68,7 +67,7 @@ MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGINDLO  = IND_LOCA ELGA__ RIGI    (INDICE   DIR1     DIR2     DIR3     DIR4     )
+    EGINDLO  = IND_LOCA ELGA__ RIGI    (INDICE   DIR[4])
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
@@ -76,16 +75,12 @@ MODE_LOCAL__
                                         IZZ      IXY      IXZ      IYZ      )
     ECARAGE  = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      IXR2     IYR2     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )

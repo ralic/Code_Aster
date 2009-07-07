@@ -69,7 +69,7 @@ for n in range(nbcouche):
       
   # <--30: fin boucle for
   
-  DETRUIRE(CONCEPT=_F(NOM=('v')));
+  DETRUIRE(CONCEPT=_F(NOM=(v)));
   
 # <--20: fin boucle for
 
@@ -158,7 +158,7 @@ for n in range(n_pas_temps):
                 COURBE =_F(FONCTION=tass[n]));
   
   del(def_courbe);
-  DETRUIRE(CONCEPT=_F(NOM=('l_cote','l_tass')));
+  DETRUIRE(CONCEPT=_F(NOM=(l_cote,l_tass)));
   
 # <--200: fin boucle for
 

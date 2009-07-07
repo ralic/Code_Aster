@@ -4,7 +4,7 @@
       CHARACTER*8 NOMAIL(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 06/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,6 +100,14 @@ C       -------------------
      &    'NOM=INDEFINI',CHENTI
 C
         IJ = 0
+C
+C --- ON VERIFIE QUE LE NOMBRE MAX DE MAILLES N'EST PAS ATTEINT
+C     LA LIMITE EST DE 9 999 999 MAILLES
+C     
+      IF(NBMAIL.GE.10000000) THEN
+        VALI (1) = NBMAIL
+        CALL U2MESG('E', 'PREPOST6_43',0,' ',1,VALI,0,0.D0)
+      ENDIF
 C
 C ---   BOUCLE SUR LES MAILLES :
 C       ----------------------

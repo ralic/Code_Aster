@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF impr_fonction_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,7 +188,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                dCi['LEGENDE'] = '%s %s=%g' % (Leg,dic['NOM_PARA'].strip(),p)
                Graph.AjoutParaCourbe(dicC, args=dCi)
                graph.AjoutCourbe(**dicC)
-               DETRUIRE(CONCEPT=_F(NOM=('li__','ftmp__'),),ALARME='NON',INFO=1)
+               DETRUIRE(OBJET=_F(CHAINE=('li__','ftmp__'),),ALARME='NON',INFO=1)
          else:
             ftmp__=obj
             dpar=ftmp__.Parametres()
@@ -324,10 +324,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          graph.AjoutCourbe(**dicC)
 
       # 1.2.9. ménage
-      DETRUIRE(CONCEPT=_F(NOM=('li__','ftmp__','ftm2__'),),ALARME='NON',INFO=1)
+      DETRUIRE(OBJET=_F(CHAINE=('li__','ftmp__','ftm2__'),),ALARME='NON',INFO=1)
 
    # 1.2.99. ménage hors boucle
-   DETRUIRE(CONCEPT=_F(NOM=('linter__'),), ALARME='NON',INFO=1)
+   DETRUIRE(OBJET=_F(CHAINE='linter__',), ALARME='NON',INFO=1)
 
    # 1.3. dbg
    if INFO==2:

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,25 +49,13 @@ MODE_LOCAL__
                                  EN1    (DCX     DCY      DCZ      H1X      H1Y      H1Z     LAGS_C    LAGS_F1    LAGS_F2)
                                  EN2    (DCX     DCY      DCZ      H1X      H1Y      H1Z)
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    CCONPT   = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30   )
+    CCONPT   = NEUT_R   ELEM__         (X[30])
 
-    CCONPI   = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18   )
+    CCONPI   = NEUT_R   ELEM__         (X[18])
 
-    CCONAI   = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30   )
+    CCONAI   = NEUT_R   ELEM__         (X[30])
 
-    CCONCF   = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      )
+    CCONCF   = NEUT_R   ELEM__         (X[15])
 
     CCONIN   = NEUT_R   ELEM__         (X1      )
 

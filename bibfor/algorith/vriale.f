@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,8 +79,8 @@ C
 C---NNOEEX=NINDEX OU NNOEEX=2*NINDEX
 C
       IF ( NBINDI .EQ. 0 ) THEN
-         CALL GETVID ( 'EXCIT', 'NOEUD_I'  , 1,1,0, K8B, NBINDI )
-         CALL GETVID ( 'EXCIT', 'NOEUD_J'  , 1,1,0, K8B, NBINDJ )
+         CALL GETVTX ( 'EXCIT', 'NOEUD_I'  , 1,1,0, K8B, NBINDI )
+         CALL GETVTX ( 'EXCIT', 'NOEUD_J'  , 1,1,0, K8B, NBINDJ )
          CALL GETVTX ( 'EXCIT', 'NOM_CMP_I', 1,1,0, K8B, NBCMPI )
          CALL GETVTX ( 'EXCIT', 'NOM_CMP_J', 1,1,0, K8B, NBCMPJ )
          IF ( NBCMPI .NE. NBCMPJ ) THEN
@@ -95,7 +95,7 @@ C
       ENDIF
       NINDEX = -NBINDI
 C
-      CALL GETVID ( 'EXCIT', 'NOEUD', 1,1,0, K8B, NNOEEX )
+      CALL GETVTX ( 'EXCIT', 'NOEUD', 1,1,0, K8B, NNOEEX )
       NNOEEX = -NNOEEX
       IF ( NNOEEX .NE. 0 ) NAPEXC = NNOEEX
 C

@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_turbulent Meidee  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_calcul_turbulent Meidee  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,6 @@ import MLab
 import aster
 from Matrix import Matrix
 from Accas import _F
-from Cata.cata import CREA_CHAMP, PROJ_CHAMP, DETRUIRE, OBSERVATION
 
 
 class CalculTurbulent:

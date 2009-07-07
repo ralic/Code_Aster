@@ -4,7 +4,7 @@
       CHARACTER*(*)           NOMAZ,NOMOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,10 +53,9 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C
-      REAL*8        R8B
       CHARACTER*4   TYPE
       CHARACTER*8   K8B, NOMU, NOMA, NOMO, NOMAIL, TYPEL, NOGRM
-      CHARACTER*16  REP, TOU, CONCEP, CMD, MCF
+      CHARACTER*16  CONCEP, CMD, MCF
       CHARACTER*24  GRMAMA, MAILMA, CARA
       CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
@@ -148,7 +147,7 @@ C
          IF ( NM .NE. 0 ) THEN
             NBMAIL = -NM
             CALL WKVECT ( '&&ACEVDI.MAILLE', 'V V K8', NBMAIL, JMAIL )
-            CALL GETVID ( MCF, 'MAILLE', IOC,1,NBMAIL, ZK8(JMAIL), N1 )
+            CALL GETVTX ( MCF, 'MAILLE', IOC,1,NBMAIL, ZK8(JMAIL), N1 )
             DO 12 IMA = 1, NBMAIL
                NOMAIL = ZK8(JMAIL+IMA-1)
                CALL JENONU(JEXNOM(MAILMA,NOMAIL),NUMA)
@@ -168,7 +167,7 @@ C
          IF ( NG .NE. 0 ) THEN
             NBGRM = -NG
             CALL WKVECT ( '&&ACEVDI.GROUP_MA', 'V V K8', NBGRM, JGRM )
-            CALL GETVID ( MCF, 'GROUP_MA', IOC,1,NBGRM, ZK8(JGRM), N1 )
+            CALL GETVTX ( MCF, 'GROUP_MA', IOC,1,NBGRM, ZK8(JGRM), N1 )
             DO 14 IG = 1, NBGRM
                NOGRM = ZK8(JGRM+IG-1)
                CALL JELIRA(JEXNOM(GRMAMA,NOGRM),'LONMAX',NBMAIL,K8B)

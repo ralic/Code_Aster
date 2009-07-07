@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,40 +299,55 @@ def detruire(self,d):
    """
    if hasattr(self,"executed") and self.executed == 1:
       return
-   if self["CONCEPT"]!=None:
-      sd = []
+   list_co = set()
+   sd = []
+   # par nom de concept (typ=assd)
+   if self["CONCEPT"] != None:
       for mc in self["CONCEPT"]:
          mcs = mc["NOM"]
-         if mcs is None:
-            continue
          if type(mcs) not in (list, tuple):
             mcs = [mcs]
-       
-         for co in mcs:
-            if isinstance(co, ASSD):
-               sd.append(co)
-               co = co.nom
-            # traitement particulier pour les listes de concepts, on va mettre à None
-            # le terme de l'indice demandé dans la liste :
-            # nomconcept_i est supprimé, nomconcept[i]=None
-            i = co.rfind('_')
-            if i > 0 and not co.endswith('_'):
-               concept_racine = co[:i]
-               if d.has_key(concept_racine) and type(d[concept_racine]) is list:
-                  try:
-                     num = int(co[i+1:])
-                     d[concept_racine][num] = None
-                  except (ValueError, IndexError):
-                     # cas : RESU_aaa ou (RESU_8 avec RESU[8] non initialisé)
-                     pass
-            # pour tous les concepts :
-            if d.has_key(co):
-               del d[co]
-            if self.jdc.sds_dict.has_key(co):
-               del self.jdc.sds_dict[co]
-      for s in sd:
-         # On signale au parent que le concept s n'existe plus apres l'étape self 
-         self.parent.delete_concept_after_etape(self,s)
+         list_co.update(mcs)
+   # par chaine de caractères (typ='TXM')
+   if self["OBJET"] != None:
+      for mc in self["OBJET"]:
+         mcs = mc["CHAINE"]
+         if type(mcs) not in (list, tuple):
+            mcs = [mcs]
+         # longueur <= 8, on cherche les concepts existants
+         for nom in mcs:
+            assert type(nom) in (str, unicode), 'On attend une chaine de caractères : %s' % nom
+            if len(nom.strip()) <= 8:
+               if self.jdc.sds_dict.get(nom) != None:
+                  list_co.add(self.jdc.sds_dict[nom])
+               elif d.get(nom) != None:
+                  list_co.add(d[nom])
+            #else uniquement destruction des objets jeveux
+   
+   for co in list_co:
+      assert isinstance(co, ASSD), 'On attend un concept : %s (type=%s)' % (co, type(co))
+      nom = co.nom
+      # traitement particulier pour les listes de concepts, on va mettre à None
+      # le terme de l'indice demandé dans la liste :
+      # nomconcept_i est supprimé, nomconcept[i]=None
+      i = nom.rfind('_')
+      if i > 0 and not nom.endswith('_'):
+         concept_racine = nom[:i]
+         if d.has_key(concept_racine) and type(d[concept_racine]) is list:
+            try:
+               num = int(nom[i+1:])
+               d[concept_racine][num] = None
+            except (ValueError, IndexError):
+               # cas : RESU_aaa ou (RESU_8 avec RESU[8] non initialisé)
+               pass
+      # pour tous les concepts :
+      if d.has_key(nom):
+         del d[nom]
+      if self.jdc.sds_dict.has_key(nom):
+         del self.jdc.sds_dict[nom]
+      # On signale au parent que le concept s n'existe plus apres l'étape self 
+      self.parent.delete_concept_after_etape(self, co)
+
 
 def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
    """

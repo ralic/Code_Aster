@@ -8,7 +8,7 @@
       LOGICAL            MONOAP, MUAPDE, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,13 +98,13 @@ C
             IF (K8B(1:7).EQ.'CORRELE' ) MUAPDE = .FALSE.
          ENDIF
 C
-         CALL GETVID(MOTFAC,'NOEUD',IOC,1,0,K8B,NN)
+         CALL GETVTX(MOTFAC,'NOEUD',IOC,1,0,K8B,NN)
          IF ( NN.NE.0 .AND. MONOAP ) THEN
             IER = IER + 1
             CALL U2MESS('E','SEISME_8')
          ENDIF
 C
-         CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,0,K8B,NG)
+         CALL GETVTX(MOTFAC,'GROUP_NO',IOC,1,0,K8B,NG)
          IF ( NG.NE.0 .AND. MONOAP ) THEN
             IER = IER + 1
             CALL U2MESS('E','SEISME_8')

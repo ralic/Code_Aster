@@ -1,0 +1,62 @@
+# POST-TRAITEMENT D'UN CALCUL AVEC CALC_FATIGUE / FATIGUE_VIBR :
+# CALCUL DE L'AMPLITUDE MAXIMALE ADMISSIBLE EN UN NOEUD DONNE
+
+POURSUITE(CODE=_F(NOM='SDLV129A'),PAR_LOT='NON')
+
+fact_partici = [1., 0.5]
+nume_mode = [1,2]
+num_noeud = 'N150'
+
+# EXTRACTION DES DEPLACEMENTS DE LA TABLE
+TDEP = POST_RELEVE_T(ACTION=_F(     NOEUD='N194',
+                                    INTITULE='Depl. modal',
+                                    RESULTAT=MODE,
+                                    NOM_CHAM='DEPL',
+                                    TOUT_CMP='OUI',
+                                    OPERATION='EXTRACTION',) ,) ;
+
+IMPR_TABLE(TABLE=TDEP)
+
+
+nbmode = len(nume_mode)
+DX = [None]*nbmode
+DY = [None]*nbmode
+DZ = [None]*nbmode
+tdepl = TDEP.EXTR_TABLE()
+for i in range(nbmode) :
+  dmod = tdepl.NUME_MODE==nume_mode[i]
+  DX[i] = dmod['DX'].values()['DX']
+  DY[i] = dmod['DY'].values()['DY']
+  DZ[i] = dmod['DZ'].values()['DZ']
+
+# EXTRACTION DU COEFFICIENT AMIN
+AMIN = TDMG12.EXTR_TABLE()
+AMIN = AMIN.EXTREMA=='MIN'
+AMIN = AMIN['VALE'].values()['VALE']
+
+# CALCUL DU DEPLACEMENT MAXIMAL ADMISSIBLE
+DXmax = 0.
+DYmax = 0.
+DZmax = 0.
+for i in range(nbmode) :
+  DXmax = DXmax + AMIN[0] * fact_partici[i] * abs(DX[i][0])
+  DYmax = DYmax + AMIN[0] * fact_partici[i] * abs(DY[i][0])
+  DZmax = DZmax + AMIN[0] * fact_partici[i] * abs(DZ[i][0])
+Dtot = sqrt(DXmax*DXmax + DYmax*DYmax +DZmax*DZmax )
+
+TDMAX = CREA_TABLE(LISTE=( _F(LISTE_K=num_noeud, PARA='NOEUD'),
+                           _F(LISTE_R=DXmax, PARA='DX_MAX'),
+                           _F(LISTE_R=DYmax, PARA='DY_MAX'),
+                           _F(LISTE_R=DZmax, PARA='DZ_MAX'),
+                           _F(LISTE_R=Dtot, PARA='DMAX'),),);
+IMPR_TABLE(TABLE=TDMAX)
+
+TEST_TABLE(  TABLE=TDMAX,
+             REFERENCE='ANALYTIQUE',
+             NOM_PARA='DMAX',
+             VALE=8.412329E+00,
+             PRECISION = 1.e-4,
+           )
+
+
+FIN();

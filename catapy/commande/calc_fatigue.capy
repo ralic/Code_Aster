@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +21,7 @@ def calc_fatigue_prod(TYPE_CALCUL,OPTION,**args):
   if TYPE_CALCUL == "CUMUL_DOMMAGE" : return cham_elem
   if TYPE_CALCUL == "FATIGUE_MULTI" and OPTION == "DOMA_ELGA": return cham_elem
   if TYPE_CALCUL == "FATIGUE_MULTI" and OPTION == "DOMA_NOEUD": return cham_no_sdaster
+  if TYPE_CALCUL == "FATIGUE_VIBR" : return cham_elem
   raise AsException("type de calcul non prevu")
 
 CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant='n',
@@ -29,7 +30,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
             UIinfo={"groupes":("Post traitements",)},
 
          TYPE_CALCUL = SIMP(statut='o',typ='TXM',
-                               into=("CUMUL_DOMMAGE","FATIGUE_MULTI",) ),
+                               into=("CUMUL_DOMMAGE","FATIGUE_MULTI","FATIGUE_VIBR") ),
 
          b_cumul_domma   =BLOC(condition = "TYPE_CALCUL == 'CUMUL_DOMMAGE'",
                                fr="Calcul d un champ de dommage subi par une structure.",
@@ -38,18 +39,50 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                                  into=("DOMA_ELNO_SIGM","DOMA_ELGA_SIGM",
                                        "DOMA_ELNO_EPSI","DOMA_ELGA_EPSI",
                                        "DOMA_ELNO_EPME","DOMA_ELGA_EPME") ),
-           HISTOIRE        =FACT(statut='o',
-             RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,
+           
+             b_sigm   =BLOC(condition = "OPTION == 'DOMA_ELNO_SIGM' or OPTION == 'DOMA_ELGA_SIGM'",
+                               fr="Calcul a partir d un champ de contraintes.",
+               HISTOIRE        =FACT(statut='o',
+               RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,
                                                    evol_noli) ),
-             EQUI_GD         =SIMP(statut='f',typ='TXM',defaut="VMIS_SG",
-                                 into=("VMIS_SG","INVA_2_SG") ),
-           ),
+               EQUI_GD         =SIMP(statut='f',typ='TXM',defaut="VMIS_SG",
+                                 into=("VMIS_SG",) ),
+                                   ),
+                           ),
+             b_epsi   =BLOC(condition = "OPTION != 'DOMA_ELNO_SIGM' and OPTION != 'DOMA_ELGA_SIGM'",
+                               fr="Calcul a partir d un champ de déformations.",
+               HISTOIRE        =FACT(statut='o',
+               RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,
+                                                   evol_noli) ),
+               EQUI_GD         =SIMP(statut='o',typ='TXM',defaut="INVA_2_SG",
+                                 into=("INVA_2_SG",) ),
+                                    ),
+                           ),
            DOMMAGE         =SIMP(statut='o',typ='TXM',
                                into=("WOHLER","MANSON_COFFIN","TAHERI_MANSON",
                                      "TAHERI_MIXTE",) ),
            MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
            TAHERI_NAPPE    =SIMP(statut='f',typ=(nappe_sdaster,formule) ),
            TAHERI_FONC     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+         ),
+         
+         b_domma_moda   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_VIBR'",
+                               fr="Calcul d un champ de dommage en dynamique vibratoire",
+           regles=(PRESENT_PRESENT('DOMMAGE','MATER', ),),
+           OPTION          =SIMP(statut='o',typ='TXM',
+                                 into=("DOMA_ELNO_SIGM","DOMA_ELGA_SIGM",) ),
+           CORR_SIGM_MOYE = SIMP(statut='o',typ='TXM',into=("GOODMAN","GERBER")),
+           HISTOIRE        =FACT(statut='o',
+             RESULTAT  =SIMP(statut='o',typ=(evol_elas, evol_noli) ),
+             MODE_MECA        =SIMP(statut='o',typ=(mode_meca) ),
+             NUME_MODE        =SIMP(statut='o',typ='I',min=1 ,max='**'),
+             FACT_PARTICI        =SIMP(statut='o',typ='R',min=1, max='**',defaut=1. ),
+             EQUI_GD         =SIMP(statut='f',typ='TXM',defaut="VMIS_SG",
+                                 into=("VMIS_SG",) ),
+           ),
+           DOMMAGE         =SIMP(statut='o',typ='TXM',
+                               into=("WOHLER",) ),
+           MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
          ),
 
          b_fatigue_multi   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_MULTI'",

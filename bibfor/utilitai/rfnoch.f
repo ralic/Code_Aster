@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,8 @@ C
       CALL GETVID ( ' ', 'LIST_PARA' , 0,1,1, LISTR , IND  )
       CALL GETVTX ( ' ', 'SOUS_STRUC', 0,1,1, SST   , NSST )
 C
-      CALL GETVID ( ' ', 'NOEUD_CHOC'   , 0,1,1, NOEUD, NC )
-      CALL GETVID ( ' ', 'GROUP_NO_CHOC', 0,1,1, NOGNO, NG )
+      CALL GETVTX ( ' ', 'NOEUD_CHOC'   , 0,1,1, NOEUD, NC )
+      CALL GETVTX ( ' ', 'GROUP_NO_CHOC', 0,1,1, NOGNO, NG )
 C
       IF ( NC .NE. 0 ) THEN
 C

@@ -3,7 +3,7 @@
       CHARACTER*(*)     CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C     ---------------------------------------------------
 C
 C --- RECUPERATION DES GROUP_MA DEFINISSANT LES BORDS DES TROUS :
 C     ---------------------------------------------------------
-      CALL GETVID(MOTFAC,'GROUP_MA',1,1,0,K8BID,NG)
+      CALL GETVTX(MOTFAC,'GROUP_MA',1,1,0,K8BID,NG)
       IF (NG.NE.0) THEN
         NG = -NG
         CALL WKVECT(CHARGE//'.CARA_TORSION','V V R',NG,IDCARA)

@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,8 +82,11 @@ C ----------------------------------------------------------------------
 
 C     1- TRAITEMENT DU MOT CLE AFFE :
 C     -----------------------------------------
+
 C     FABRICATION DE LA CARTE CONTENANT LES NOMS DES MATERIAUX:
       CALL RCMATE(CHMAT,NOMAIL,NOMODE)
+
+
 
 C     1-BIS TRAITEMENT DU MOT CLE AFFE_COMPOR :
 C     -----------------------------------------
@@ -316,8 +319,8 @@ C           -- ON AFFECTE UNE CARTE CONTENANT DES R8NNEM :
 
 C         TOUT='OUI' PAR DEFAUT :
           CALL GETVTX('AFFE_VARC','TOUT',IOCC,1,1,K8B,NBTOU)
-          CALL GETVID('AFFE_VARC','GROUP_MA',IOCC,1,0,K8B,NBGM1)
-          CALL GETVID('AFFE_VARC','MAILLE',IOCC,1,0,K8B,NBM1)
+          CALL GETVTX('AFFE_VARC','GROUP_MA',IOCC,1,0,K8B,NBGM1)
+          CALL GETVTX('AFFE_VARC','MAILLE',IOCC,1,0,K8B,NBM1)
           IF (NBGM1+NBM1.EQ.0) NBTOU=1
 
           IF (NBTOU.NE.0) THEN

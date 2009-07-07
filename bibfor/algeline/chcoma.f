@@ -4,7 +4,7 @@
       CHARACTER*(*)       TABLEZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGELINE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,10 +94,10 @@ C     -----------------------------------------
 C
 C --- RECUPERATION DANS LA TABLE DES COORDONNEES DU CENTRE DE GRAVITE :
 C     ---------------------------------------------------------------
-      CALL GETVID('REPERE','GROUP_MA',1,1,0,K8B,NGM)
+      CALL GETVTX('REPERE','GROUP_MA',1,1,0,K8B,NGM)
       IF (NGM.NE.0) THEN
           NGM = 1
-          CALL GETVID('REPERE','GROUP_MA',1,1,NGM,NOGRMA,NGM)
+          CALL GETVTX('REPERE','GROUP_MA',1,1,NGM,NOGRMA,NGM)
           NOMA=NOGRMA
           IRET=0
       ELSE

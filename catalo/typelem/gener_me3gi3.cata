@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,8 +51,7 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )    
     CTEMPSR  = INST_R   ELEM__         (INST     )
-    CREFERE  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12      )
+    CREFERE  = NEUT_I   ELEM__         (X[12])
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)

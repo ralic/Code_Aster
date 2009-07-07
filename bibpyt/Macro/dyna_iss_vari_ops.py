@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 24/06/2009   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,7 +82,6 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
 #   dcoh = MATR_COHE[0].cree_dict_valeurs(MATR_COHE[0].mc_liste)
    
    from SD.sd_maillage import sd_maillage
-#   from SD.sd_base_modale import sd_base_modale   
    from SD.sd_mode_meca import sd_mode_meca 
    from SD.sd_resultat import sd_resultat
    from SD.sd_cham_gene import sd_cham_gene       
@@ -120,7 +119,6 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
    if INFO==2:
       aster.affiche('MESSAGE','NBNO INTERFACE : '+str(nbno))
   # MODES
-#   nbval, nbmodt,nbmodd,nbmods = nume_resu.UTIL.get()
    iret,nbmodt,kbid=aster.dismoi('F','NB_MODES_TOT',nom_bamo,'RESULTAT')
    iret,nbmodd,kbid=aster.dismoi('F','NB_MODES_DYN',nom_bamo,'RESULTAT')
    iret,nbmods,kbid=aster.dismoi('F','NB_MODES_STA',nom_bamo,'RESULTAT')
@@ -329,36 +327,31 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
 #   ------ CREATION DE L OBJET TABLE 
    tab = Table()
    tab.append({'NOM_CHAM' : 'DSP', 'OPTION' : 'TOUT',  'DIMENSION' : nbmodt})
-#   foncc=Num.array([None]*NB_FREQ*3)
    for k2 in range(nbmodt):
+      if OPTION =='DIAG' : # on ecrit uniquement les termes diagonaux (autospectres) de la matrice
+         foncc=[]
+         for k in range(NB_FREQ) :
+                foncc.append(abscisse[k])
+                foncc.append(SPEC[k][k2,k2].real)
+                foncc.append(SPEC[k][k2,k2].imag)      
+         _f = DEFI_FONCTION(NOM_PARA='FREQ',
+                      NOM_RESU='SPEC',
+                      VALE_C  = foncc )      
+         # Ajout d'une ligne dans la Table
+         tab.append({'NUME_ORDRE_I' : k2+1, 'NUME_ORDRE_J' : k2+1, 'FONCTION_C' : _f.nom})
 
-         if OPTION =='DIAG' : # on ecrit uniquement les termes diagonaux (autospectres) de la matrice
+      else: # on ecrit tout
+         for k1 in range(k2+1):
             foncc=[]
             for k in range(NB_FREQ) :
-                   foncc.append(abscisse[k])
-                   foncc.append(SPEC[k][k2,k2].real)
-                   foncc.append(SPEC[k][k2,k2].imag)      
+               foncc.append(abscisse[k])
+               foncc.append(SPEC[k][k1,k2].real)
+               foncc.append(SPEC[k][k1,k2].imag)      
             _f = DEFI_FONCTION(NOM_PARA='FREQ',
-                         NOM_RESU='SPEC',
-                         VALE_C  = foncc )      
-      # Ajout d'une ligne dans la Table
-            tab.append({'NUME_ORDRE_I' : k2+1, 'NUME_ORDRE_J' : k2+1, 'FONCTION_C' : _f.nom})
-
-
-         else: # on ecrit tout
-            for k1 in range(k2+1):
-               foncc=[]
-               for k in range(NB_FREQ) :
-                  foncc.append(abscisse[k])
-                  foncc.append(SPEC[k][k1,k2].real)
-                  foncc.append(SPEC[k][k1,k2].imag)      
-               _f = DEFI_FONCTION(NOM_PARA='FREQ',
-                         NOM_RESU='SPEC',
-                         VALE_C  = foncc )
-      
-      # Ajout d'une ligne dans la Table
-               tab.append({'NUME_ORDRE_I' : k1+1, 'NUME_ORDRE_J' : k2+1, 'FONCTION_C' : _f.nom})
-      
+                      NOM_RESU='SPEC',
+                      VALE_C  = foncc )
+            # Ajout d'une ligne dans la Table
+            tab.append({'NUME_ORDRE_I' : k1+1, 'NUME_ORDRE_J' : k2+1, 'FONCTION_C' : _f.nom})
 
    # Creation du concept en sortie
    tab_out = CREA_TABLE(TYPE_TABLE='TABLE_FONCTION',

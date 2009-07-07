@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,16 +75,16 @@ C     -----------------------------------
       NBGNAJ = 0
       DO 210,IOCC = 1,NBGMP
 
-        CALL GETVID('CREA_GROUP_MA','NOM',IOCC,1,1,NOGMA,N1)
+        CALL GETVTX('CREA_GROUP_MA','NOM',IOCC,1,1,NOGMA,N1)
 
         CALL JENONU(JEXNOM(MA//'.GROUPEMA',NOGMA),IBID)
         IF (IBID.GT.0) CALL U2MESK('A','ALGELINE3_7',1,NOGMA)
 
         CALL GETVEM(MA,'MAILLE','CREA_GROUP_MA','MAILLE',IOCC,1,0,KBID,
      &              N2)
-        CALL GETVID('CREA_GROUP_MA','INTERSEC',IOCC,1,0,KBID,N3)
-        CALL GETVID('CREA_GROUP_MA','UNION',IOCC,1,0,KBID,N4)
-        CALL GETVID('CREA_GROUP_MA','DIFFE   ',IOCC,1,0,KBID,N5)
+        CALL GETVTX('CREA_GROUP_MA','INTERSEC',IOCC,1,0,KBID,N3)
+        CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,1,0,KBID,N4)
+        CALL GETVTX('CREA_GROUP_MA','DIFFE   ',IOCC,1,0,KBID,N5)
         CALL GETVEM(MA,'GROUP_MA','CREA_GROUP_MA','GROUP_MA',IOCC,1,0,
      &              KBID,N6)
         CALL GETVTX('CREA_GROUP_MA','OPTION',IOCC,1,0,OPTION,N7)
@@ -204,7 +204,7 @@ C       ---------------------
 C       -- MOT CLEF INTER:
 C       -------------------
         IF (N3.GT.0) THEN
-          CALL GETVID('CREA_GROUP_MA','INTERSEC',IOCC,1,N3,ZK8(IALIK8),
+          CALL GETVTX('CREA_GROUP_MA','INTERSEC',IOCC,1,N3,ZK8(IALIK8),
      &                NBID)
           DO 50,IGM = 1,N3
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
@@ -259,7 +259,7 @@ C       -------------------
 C       -- MOT CLEF UNION:
 C       -------------------
         IF (N4.GT.0) THEN
-          CALL GETVID('CREA_GROUP_MA','UNION',IOCC,1,N4,ZK8(IALIK8),
+          CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,1,N4,ZK8(IALIK8),
      &                NBID)
           DO 100,IGM = 1,N4
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
@@ -324,7 +324,7 @@ C       -------------------
 C       -- MOT CLEF DIFFE:
 C       -------------------
         IF (N5.GT.0) THEN
-          CALL GETVID('CREA_GROUP_MA','DIFFE',IOCC,1,N5,ZK8(IALIK8),
+          CALL GETVTX('CREA_GROUP_MA','DIFFE',IOCC,1,N5,ZK8(IALIK8),
      &                NBID)
           DO 150,IGM = 1,N5
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)

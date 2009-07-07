@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -704,8 +704,9 @@ for num_calc in range(1,nb_calc_total_plus_1) :
        print '================================================'
 
    nom_concept = 'RESU_%d' % num_calc
-   DETRUIRE(CONCEPT=_F( NOM = nom_concept))
-    
+   #DETRUIRE(OBJET=_F( CHAINE = nom_concept))
+   DETRUIRE(CONCEPT=_F(NOM=RESU[num_calc]))
+
 #
 #
 #        On teste les valeurs calculees de keff et da pour 

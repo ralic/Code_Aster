@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,8 +49,8 @@ MODE_LOCAL__
     CHARMON  = HARMON   ELEM__         (NH       )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )

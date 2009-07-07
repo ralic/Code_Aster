@@ -2,7 +2,7 @@
      &                  NBSUIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,10 +153,10 @@ C
 C
 C --- VERIFICATION DES NOEUDS ET MAILLES 
 C
-         CALL GETVID(MOTFAC,'NOEUD'   ,IOCC,1,0,K8B ,N1 )
-         CALL GETVID(MOTFAC,'GROUP_NO',IOCC,1,0,K8B ,N2 )
+         CALL GETVTX(MOTFAC,'NOEUD'   ,IOCC,1,0,K8B ,N1 )
+         CALL GETVTX(MOTFAC,'GROUP_NO',IOCC,1,0,K8B ,N2 )
          IF (CHAMEV.OR.CHAMES) THEN
-           CALL GETVID(MOTFAC,'MAILLE'  ,IOCC,1,0,K8B ,N3 )
+           CALL GETVTX(MOTFAC,'MAILLE'  ,IOCC,1,0,K8B ,N3 )
            CALL GETVIS(MOTFAC,'POINT'   ,IOCC,1,0,IBID,N4 )
          ELSE
            N3     = 0
@@ -164,7 +164,7 @@ C
          ENDIF         
 C         
          IF(LSUIVI(IOCC))THEN
-           CALL GETVID(MOTFAC,'GROUP_MA',IOCC,1,0,K8B ,N6 )
+           CALL GETVTX(MOTFAC,'GROUP_MA',IOCC,1,0,K8B ,N6 )
            CALL GETVTX(MOTFAC,'VALE_MAX' ,IOCC,1,1,K8B ,N7 )
            CALL GETVTX(MOTFAC,'VALE_MIN' ,IOCC,1,1,K8B ,N8 )
          ENDIF
@@ -172,7 +172,7 @@ C
          IF ( N1 .NE. 0 ) THEN
             NBNO = -N1
             CALL WKVECT ('&&DYOBS1.LIST_NOEU','V V K8',NBNO,JNOE)
-            CALL GETVID (MOTFAC,'NOEUD',IOCC,1,NBNO,
+            CALL GETVTX (MOTFAC,'NOEUD',IOCC,1,NBNO,
      &                   ZK8(JNOE),N1)
             DO 20 INO = 0 , NBNO-1
                CALL JEEXIN ( JEXNOM(NOMNOE,ZK8(JNOE+INO)) , IRET )
@@ -186,7 +186,7 @@ C
          IF ( N2 .NE. 0 ) THEN
             NBGN = -N2
             CALL WKVECT ('&&DYOBS1.LIST_GRNO','V V K8',NBGN,JGRN)
-            CALL GETVID (MOTFAC,'GROUP_NO',IOCC,1,NBGN,
+            CALL GETVTX (MOTFAC,'GROUP_NO',IOCC,1,NBGN,
      &                   ZK8(JGRN),N2)
             DO 22 IGNO = 0 , NBGN-1
                CALL JEEXIN ( JEXNOM(GRPNO,ZK8(JGRN+IGNO)) , IRET )
@@ -200,7 +200,7 @@ C
          IF ( N3 .NE. 0 ) THEN
             NBMA = -N3
             CALL WKVECT ('&&DYOBS1.LIST_MAIL','V V K8',NBMA,JMAI)
-            CALL GETVID (MOTFAC,'MAILLE',IOCC,1,NBMA,
+            CALL GETVTX (MOTFAC,'MAILLE',IOCC,1,NBMA,
      &                   ZK8(JMAI),N3)
             DO 24 IMA = 0 , NBMA-1
                CALL JEEXIN ( JEXNOM(NOMMAI,ZK8(JMAI+IMA)) , IRET )
@@ -214,7 +214,7 @@ C
          IF ( LSUIVI(IOCC) .AND. N6 .NE. 0 ) THEN
             NBGM = -N6
             CALL WKVECT ('&&DYOBS1.LIST_GRMA','V V K8',NBGM,JGRM)
-            CALL GETVID (MOTFAC,'GROUP_MA',IOCC,1,NBGM,
+            CALL GETVTX (MOTFAC,'GROUP_MA',IOCC,1,NBGM,
      &                   ZK8(JGRM),N6)
             DO 25 IGMA = 0 , NBGM-1
                CALL JEEXIN ( JEXNOM(GRPMA,ZK8(JGRM+IGMA)) , IRET )

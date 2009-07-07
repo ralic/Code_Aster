@@ -1,0 +1,80 @@
+#& MODIF COMMUN  DATE 07/07/2009   AUTEUR REZETTE C.REZETTE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE REZETTE C.REZETTE
+def C_SOLVEUR() : return FACT(statut='d',
+           METHODE=SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS","FETI","PETSC") ),
+           b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+           ),
+           b_ldlt         =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
+           ),
+           b_ldlt_mult    =BLOC(condition = "METHODE == 'LDLT' or METHODE == 'MULT_FRONT' or METHODE == 'FETI'",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
+             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
+             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","DECOUPE") ),
+           ),
+           b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
+             NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
+             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
+           ),
+           b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
+             PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
+             ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
+             OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+             ),
+           b_feti          =BLOC(condition = "METHODE == 'FETI' ",fr="Paramètres de la méthode FETI 1",
+             PARTITION       =SIMP(statut='o',typ=sd_feti_sdaster),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,val_min=0.),
+             NMAX_ITER       =SIMP(statut='f',typ='I',defaut=0,val_min=0),
+             REAC_RESI       =SIMP(statut='f',typ='I',defaut=0,val_min=0),
+             TYPE_REORTHO_DD =SIMP(statut='f',typ='TXM',defaut="GSM",into=("SANS","GS","GSM","IGSM") ),
+             NB_REORTHO_DD   =SIMP(statut='f',typ='I',defaut=0,val_min=0),
+             NB_REORTHO_INST =SIMP(statut='f',typ='I',defaut=0,val_min=0),
+             PRE_COND        =SIMP(statut='f',typ='TXM',defaut="LUMPE",into=("LUMPE","SANS") ),
+             SCALING         =SIMP(statut='f',typ='TXM',defaut="MULT",into=("SANS","MULT") ),
+             VERIF_SDFETI    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+             TEST_CONTINU    =SIMP(statut='f',typ='R',defaut=1.E-8,val_min=0.),
+             INFO_FETI       =SIMP(statut='f',typ='TXM',defaut='FFFFFFFFFFFFFFFFFFFFFFFF'),
+             STOCKAGE_GI     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","CAL") ),
+             NB_SD_PROC0     =SIMP(statut='f',typ='I',defaut=0,val_min=0),
+             ACCELERATION_SM =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           ),
+           b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la méthode PETSC",
+             ALGORITHME      =SIMP(statut='f',typ='TXM',into=("BCGS","BICG","CG","CR","GMRES","TFQMR",),defaut="CG" ),
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","JACOBI","SOR"),defaut="LDLT_INC" ),
+             b_petsc_ilu     =BLOC(condition = "PRE_COND == 'LDLT_INC' ",
+               NIVE_REMPLISSAGE = SIMP(statut='f',typ='I',defaut= 0 ),
+               REMPLISSAGE      = SIMP(statut='f',typ='R',defaut= 1.0),
+             ),             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6),
+             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
+           ),
+
+
+           SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+         );

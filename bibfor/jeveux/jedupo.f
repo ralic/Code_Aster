@@ -1,7 +1,7 @@
       SUBROUTINE JEDUPO(SCHIN, CLAOUT, SCHOUT, DUPCOL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -207,12 +207,14 @@ C
               LONOI = LONO(JLONO(ICOUT)+IDOUT)
               NBL   = LONOI * LTYPI
               IF (NBL .GT. 0 ) THEN
-                CALL JJALLT (NBL,ICOUT,GENRI,TYPEI,LTYPI,'INIT',IADOUT,
-     &                       IADYN)
-                CALL JJECRS (IADOUT,IADYN,ICOUT,IDOUT,0,'E',
-     &                       IMARQ(JMARQ(ICOUT)+2*IDOUT-1))
-                IADM(JIADM(ICOUT)+2*IDOUT-1) = IADOUT
-                IADM(JIADM(ICOUT)+2*IDOUT  ) = IADYN
+                IF( (K.EQ.1 .AND. IV(1).EQ.1 ) .OR. K .GT. 1) THEN
+                  CALL JJALLT(NBL,ICOUT,GENRI,TYPEI,LTYPI,'INIT',IADOUT,
+     &                        IADYN)
+                  CALL JJECRS(IADOUT,IADYN,ICOUT,IDOUT,0,'E',
+     &                        IMARQ(JMARQ(ICOUT)+2*IDOUT-1))
+                  IADM(JIADM(ICOUT)+2*IDOUT-1) = IADOUT
+                  IADM(JIADM(ICOUT)+2*IDOUT  ) = IADYN
+                ENDIF
               ENDIF
               IF ( IV(K) .EQ. 1 ) THEN
                 IF ( IADMI .NE. 0 ) THEN

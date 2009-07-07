@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,13 +86,13 @@ C ----------------------------------------------------------------------
 
       DO 100 , IOCC = 1 , NBOCC
 
-        CALL GETVID ( MOTFAC, 'NOEUD'        , IOCC,1,0, K8B, N2 )
-        CALL GETVID ( MOTFAC, 'INTERSEC'     , IOCC,1,0, K8B, N3 )
-        CALL GETVID ( MOTFAC, 'UNION'        , IOCC,1,0, K8B, N4 )
-        CALL GETVID ( MOTFAC, 'DIFFE'        , IOCC,1,0, K8B, N5 )
-        CALL GETVID ( MOTFAC, 'GROUP_MA'     , IOCC,1,0, K8B, N6 )
+        CALL GETVTX ( MOTFAC, 'NOEUD'        , IOCC,1,0, K8B, N2 )
+        CALL GETVTX ( MOTFAC, 'INTERSEC'     , IOCC,1,0, K8B, N3 )
+        CALL GETVTX ( MOTFAC, 'UNION'        , IOCC,1,0, K8B, N4 )
+        CALL GETVTX ( MOTFAC, 'DIFFE'        , IOCC,1,0, K8B, N5 )
+        CALL GETVTX ( MOTFAC, 'GROUP_MA'     , IOCC,1,0, K8B, N6 )
         CALL GETVTX ( MOTFAC, 'TOUT_GROUP_MA', IOCC,1,0, K8B, N7 )
-        CALL GETVID ( MOTFAC, 'GROUP_NO'     , IOCC,1,0, K8B, N8 )
+        CALL GETVTX ( MOTFAC, 'GROUP_NO'     , IOCC,1,0, K8B, N8 )
         CALL GETVTX ( MOTFAC, 'OPTION'       , IOCC,1,0, K8B, N9 )
 
 C ----------------------------------------------------------------------
@@ -115,7 +115,7 @@ C       ---------------------
 
 C ----------------------------------------------------------------------
 
-        CALL GETVID ( MOTFAC, 'NOM', IOCC,1,1, NOGNO, N1 )
+        CALL GETVTX ( MOTFAC, 'NOM', IOCC,1,1, NOGNO, N1 )
         CALL JENONU ( JEXNOM(GRPNOE,NOGNO), IRET )
         IF (IRET.GT.0) THEN
             IF (ALARM.EQ.'OUI') THEN

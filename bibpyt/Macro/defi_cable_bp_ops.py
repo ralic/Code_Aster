@@ -1,4 +1,4 @@
-#@ MODIF defi_cable_bp_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF defi_cable_bp_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,9 +61,6 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
   DEFI_GROUP      = self.get_cmd('DEFI_GROUP')
   IMPR_RESU       = self.get_cmd('IMPR_RESU')
   DEFI_CABLE_OP   = self.get_cmd('DEFI_CABLE_OP')
-  RECU_TABLE      = self.get_cmd('RECU_TABLE')
-  IMPR_TABLE      = self.get_cmd('IMPR_TABLE')
-  IMPR_CO         = self.get_cmd('IMPR_CO')
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
@@ -287,8 +284,5 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
                        INFO=INFO,
                        **motscles
                        );
-
-#   __TCAB = RECU_TABLE(CO=__DC,NOM_TABLE='CABLE_BP');
-#   IMPR_TABLE(TABLE=__TCAB);
 
   return ier

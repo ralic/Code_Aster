@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        R8B
       LOGICAL       BON
       CHARACTER*8   K8B, NOMU, CARA(100), KIOC
-      CHARACTER*16  K16B, SEC, VSEC, TOU, CONCEP, CMD
+      CHARACTER*16  SEC, VSEC, CONCEP, CMD
       INTEGER       VALI(3)
 C     ------------------------------------------------------------------
 C
@@ -59,8 +59,8 @@ C
       NLG = 0
       DO 100 IOC = 1 , NBOCC
          CALL CODENT(IOC,'G',KIOC)
-         CALL GETVID ( 'POUTRE', 'GROUP_MA' , IOC,1,0,  K8B, NG )
-         CALL GETVID ( 'POUTRE', 'MAILLE'   , IOC,1,0,  K8B, NM )
+         CALL GETVTX ( 'POUTRE', 'GROUP_MA' , IOC,1,0,  K8B, NG )
+         CALL GETVTX ( 'POUTRE', 'MAILLE'   , IOC,1,0,  K8B, NM )
          CALL GETVTX ( 'POUTRE', 'SECTION'  , IOC,1,1,  SEC, NS )
          CALL GETVTX ( 'POUTRE', 'VARI_SECT', IOC,1,1, VSEC, NVS)
          CALL GETVTX ( 'POUTRE', 'CARA'     , IOC,1,0,  K8B, NC )

@@ -4,7 +4,7 @@
       CHARACTER*24 CNOC, CFAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,13 +41,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      NBINST, JNOC, JNOCR, JFU, I1, I2, IND, NOC1, NOC2,
-     +             I1M, I2M, NOC1M, NOC2M, DNOC
+      INTEGER      NBINST, JNOCR, JFU, I1, I2, IND, NOC1, NOC2,
+     +             I1M, I2M, NOC1M, NOC2M, NBCYCL
       INTEGER      JNOCK, JNOCL, JFUKL, INDI, INDS, K, L, IFM, NIV
-      REAL*8       FUM, FUKL
+      REAL*8       FUM, FUKL,R8PREM
       LOGICAL      ENCORE
       CHARACTER*8  K8B
 C DEB ------------------------------------------------------------------
@@ -73,13 +72,13 @@ C
       DO 20 I1 = 1 , NBINST
          INDI = NBINST*(I1-1) + I1
          IND = IND + 1
-         ZR(JFUKL-1+INDI) = ZR(JFU-1+4*(IND-1)+4)
+         ZR(JFUKL-1+INDI) = ZR(JFU-1+5*(IND-1)+4)
          DO 22 I2 = I1+1 , NBINST
             INDS = NBINST*(I1-1) + I2
             INDI = NBINST*(I2-1) + I1
             IND = IND + 1
-            ZR(JFUKL-1+INDS) = ZR(JFU-1+4*(IND-1)+4)
-            ZR(JFUKL-1+INDI) = ZR(JFU-1+4*(IND-1)+4)
+            ZR(JFUKL-1+INDS) = ZR(JFU-1+5*(IND-1)+4)
+            ZR(JFUKL-1+INDI) = ZR(JFU-1+5*(IND-1)+4)
  22      CONTINUE
  20   CONTINUE
 C
@@ -93,7 +92,7 @@ C
         IF ( IND .EQ. 1 ) THEN
           WRITE(IFM,*) 'MATRICE FACTEUR D''USAGE INITIALE'
         ELSE
-          WRITE(IFM,*) 'MATRICE FACTEUR D''USAGE'
+          WRITE(IFM,*) 'MATRICE FACTEUR D''USAGE MODIFIEE'
         ENDIF
         WRITE(IFM,1010) ( ZI(JNOCL+L-1), L=1,NBINST )
         DO 700 K = 1 , NBINST
@@ -115,6 +114,7 @@ C
             L = I2
 C
             FUKL = ZR(JFUKL-1+K+L)
+            IF ( FUKL .LT. R8PREM() ) GOTO 112
             IF ( FUKL .GT. FUM ) THEN
                NOC1M = NOC1
                NOC2M = NOC2
@@ -126,37 +126,48 @@ C
  112    CONTINUE
 C
  110  CONTINUE
+      NBCYCL = MIN( NOC1M , NOC2M )
 C
+      IF ( FUM .LT. R8PREM()  ) GOTO 999
       IF ( NIV .EQ. 2 ) THEN
-         WRITE(IFM,*)'-->> FACTEUR D''USAGE MAXIMUM = ', FUM
-         WRITE(IFM,*)'-->>   LIGNE = ', I1M
-         WRITE(IFM,*)'-->> COLONNE = ', I2M
+         WRITE(IFM,1020)'=> FACTEUR D''USAGE MAXI: ',FUM,I1M,I2M
+         WRITE(IFM,1030)'   NB_OCCUR = ', NBCYCL
       ENDIF
 C
 C --- ON CUMULE
 C
-      FUT = FUT + FUM
+      FUT = FUT + FUM*DBLE(NBCYCL)
 C
 C --- ON MET A ZERO LES FACTEURS D'USAGE INCRIMINES
 C
       IF ( NOC1M .EQ. NOC2M ) THEN
+         ZI(JNOCL-1+I1M) = 0
          ZI(JNOCL-1+I2M) = 0
          ZI(JNOCK-1+I1M) = 0
+         ZI(JNOCK-1+I2M) = 0
          DO 120 K = 1 , NBINST
             ZR(JFUKL-1+(K-1)*NBINST+I2M) = 0.D0
+            ZR(JFUKL-1+(I2M-1)*NBINST+K) = 0.D0
+            ZR(JFUKL-1+(K-1)*NBINST+I1M) = 0.D0
             ZR(JFUKL-1+(I1M-1)*NBINST+K) = 0.D0
  120     CONTINUE
       ELSEIF ( NOC1M .LT. NOC2M ) THEN
          ZI(JNOCL-1+I2M) = ZI(JNOCL-1+I2M) - NOC1M
+         ZI(JNOCK-1+I2M) = ZI(JNOCK-1+I2M) - NOC1M
          ZI(JNOCK-1+I1M) = 0
+         ZI(JNOCL-1+I1M) = 0
          DO 122 K = 1 , NBINST
             ZR(JFUKL-1+(I1M-1)*NBINST+K) = 0.D0
+            ZR(JFUKL-1+(K-1)*NBINST+I1M) = 0.D0
  122     CONTINUE
       ELSE
          ZI(JNOCL-1+I2M) = 0
+         ZI(JNOCK-1+I2M) = 0
+         ZI(JNOCL-1+I1M) = ZI(JNOCL-1+I1M) - NOC2M
          ZI(JNOCK-1+I1M) = ZI(JNOCK-1+I1M) - NOC2M
          DO 124 K = 1 , NBINST
             ZR(JFUKL-1+(K-1)*NBINST+I2M) = 0.D0
+            ZR(JFUKL-1+(I2M-1)*NBINST+K) = 0.D0
  124     CONTINUE
       ENDIF
 C
@@ -164,19 +175,25 @@ C --- EXISTE-T-IL DES ETATS TELS QUE NB_OCCUR > 0
 C
       ENCORE = .FALSE.
       DO 200 I1 = 1, NBINST
-         IF ( ZI(JNOCK-1+I1) .GT. 0 ) ENCORE = .TRUE.
+         IF ( ZI(JNOCK-1+I1) .GT. 0 ) THEN
+           ENCORE = .TRUE.
+        ENDIF
  200   CONTINUE
       IF ( ENCORE )  GOTO 100 
 C
+ 999  CONTINUE
+C
       IF ( NIV .EQ. 2 )
-     +   WRITE(IFM,*)'-->> FACTEUR D''USAGE CUMULEE = ', FUT
+     +   WRITE(IFM,*)'-->> FACTEUR D''USAGE CUMULE = ', FUT
 C
       CALL JEDETR ( '&&RCEVFU.NB_OCC_K' )
       CALL JEDETR ( '&&RCEVFU.NB_OCC_L' )
       CALL JEDETR ( '&&RCEVFU.MATR_FU'  )
 C
  1000 FORMAT(1P,I10,'|',40(E10.3,'|'))
- 1010 FORMAT(1P,' NB_OCCUR ','|',40(I10,'|'))
+ 1010 FORMAT(1P,'   NB_OCCUR ','|',40(I10,'|'))
+ 1020 FORMAT(1P,A28,E12.5,', LIGNE:',I4,', COLONNE:',I4)
+ 1030 FORMAT(1P,A15,I8)
 C
       CALL JEDEMA()
       END

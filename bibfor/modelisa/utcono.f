@@ -6,7 +6,7 @@
       CHARACTER*(*)       MCFAC, MOCLE(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,9 +80,9 @@ C
       NOMNOE = NOMAIL//'.NOMNOE         '
       CALL JEVEUO ( COORD, 'L', JCOOR )
 C
-      CALL GETVID ( MCFAC, MOCLE(2), IOCC,1,0, K8B, N2 )
+      CALL GETVTX ( MCFAC, MOCLE(2), IOCC,1,0, K8B, N2 )
       IF ( N2 .NE. 0 ) THEN
-         CALL GETVID ( MCFAC, MOCLE(2), IOCC,1,1, NOEUD, N2 )
+         CALL GETVTX ( MCFAC, MOCLE(2), IOCC,1,1, NOEUD, N2 )
           CALL JENONU ( JEXNOM(NOMNOE,NOEUD), NUMNO )
           IF ( NUMNO .EQ. 0 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )
@@ -99,9 +99,9 @@ C
           GOTO 9999
        ENDIF
 C
-       CALL GETVID ( MCFAC, MOCLE(3), IOCC,1,1, K8B, N3 )
+       CALL GETVTX ( MCFAC, MOCLE(3), IOCC,1,1, K8B, N3 )
        IF ( N3 .NE. 0 ) THEN
-          CALL GETVID ( MCFAC, MOCLE(3), IOCC,1,1, NOEUD, N3 )
+          CALL GETVTX ( MCFAC, MOCLE(3), IOCC,1,1, NOEUD, N3 )
           CALL UTNONO ( ' ', NOMAIL, 'NOEUD', NOEUD, K8B, IER )
           IF ( IER .EQ. 10 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )

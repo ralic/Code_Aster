@@ -1,4 +1,4 @@
-#@ MODIF reca_utilitaires Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF reca_utilitaires Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,7 +84,7 @@ def detr_concepts(self):
    liste_concepts=mes_concepts(base=self.parent)
    for e in liste_concepts:
       nom = string.strip(e)
-      DETRUIRE( CONCEPT =self.g_context['_F'](NOM = nom), INFO=1, ALARME='NON')
+      DETRUIRE( OBJET =self.g_context['_F'](CHAINE = nom), INFO=1, ALARME='NON')
       if self.jdc.g_context.has_key(nom) : del self.jdc.g_context[nom]
    del(liste_concepts)
 
@@ -111,7 +111,7 @@ def temps_CPU(restant_old,temps_iter_old):
    """
    CPU=INFO_EXEC_ASTER(LISTE_INFO = ("CPU_RESTANT",))
    TEMPS=CPU['CPU_RESTANT',1]
-   DETRUIRE(CONCEPT=_F(NOM='CPU'),INFO=1)
+   DETRUIRE(CONCEPT=_F(NOM=CPU),INFO=1)
    err=0
    # Indique une execution interactive
    if (TEMPS>1.E+9):

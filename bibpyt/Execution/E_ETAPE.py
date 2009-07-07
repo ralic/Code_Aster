@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 25/11/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 06/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,8 +167,7 @@ class ETAPE:
          echo_mess=[]
          decalage="  "  # blancs au debut de chaque ligne affichee
          echo_mess.append( '\n' )
-         echo_mess.append( decalage )
-         echo_mess.append("#  ---------------------------------------------------------------------------")
+         echo_mess.append(decalage + ' #  ' + '-'*90)
          echo_mess.append( '\n' )
 
          # Affichage numero de la commande (4 digits)
@@ -216,15 +215,18 @@ class ETAPE:
             echo_mem = """%s  #  USAGE DE LA MEMOIRE JEVEUX""" % (decalage)
             echo_mem += os.linesep +"""%s  #     - MEMOIRE DYNAMIQUE CONSOMMEE : %12.2f Mo (MAXIMUM ATTEINT : %12.2f Mo) """ % (decalage, rval[2],rval[4])
             echo_mem += os.linesep +"""%s  #     - MEMOIRE UTILISEE            : %12.2f Mo (MAXIMUM ATTEINT : %12.2f Mo) """ % (decalage, rval[0],rval[1])
-            echo_mem += os.linesep 
+            if rval[5] > 0. :
+              echo_mem += os.linesep +"""%s  #  USAGE DE LA MEMOIRE POUR LE PROCESSUS""" % (decalage)
+              echo_mem += os.linesep +"""%s  #     - VmData : %12.2f Mo - VmSize : %12.2f Mo """ % (decalage, rval[5]/1024,rval[6]/1024)
+              echo_mem += os.linesep 
             
-            echo_fin = "%s  #  FIN COMMANDE NO : %04d   DUREE TOTALE:%12.2fs (SYST:%12.2fs)" \
-               % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst)
+            echo_fin = "%s  #  FIN COMMANDE NO : %04d   USER+SYST:%12.2fs (SYST:%12.2fs, ELAPS:%12.2fs)" \
+               % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst, elapsed)
             echo_mess.append(echo_mem)
          else :
             echo_fin = "%s  #  FIN COMMANDE : %s" % (decalage, self.nom)
          echo_mess.append(echo_fin)
-         echo_mess.append(decalage + '  #  ' + '-'*75)
+         echo_mess.append(decalage + '  #  ' + '-'*90)
          texte_final=os.linesep.join(echo_mess)
          aster.affiche('MESSAGE', texte_final)
 

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,8 +30,7 @@ MODE_LOCAL__
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     MGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     MTEMPSR  = INST_R   ELEM__         (INST     )
-    ECASECT  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      )
+    ECASECT  = NEUT_R   ELEM__         (X[10])
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
 
 VECTEUR__

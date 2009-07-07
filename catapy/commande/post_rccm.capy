@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,9 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
          MATER           =SIMP(statut='o',typ=mater_sdaster ),
          SY_MAX          =SIMP(statut='f',typ='R',
                                fr="limite élastique utilisée pour le calcul du rochet thermique" ),
-
+         TYPE_KE         =SIMP(statut='f',typ='TXM',defaut="KE_MECA",into=("KE_MECA","KE_MIXTE"),
+                               fr="Ke meca seul ou partition mecanique + thermique" ),
+                               
          TRANSITOIRE     =FACT(statut='o',max='**',fr="transitoire à dépouiller",
            regles=(EXCLUS('TOUT_ORDRE','INST','LIST_INST'),
                    UN_PARMI('TABL_RESU_MECA','TABL_SIGM_THETA'),),
@@ -155,7 +157,6 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
               NOM_SITU         =SIMP(statut='f',typ='TXM',fr="nom de la situation" ),
               NUME_GROUPE      =SIMP(statut='o',typ='I',fr="numéros du groupe de la situation" ),
               CHAR_ETAT        =SIMP(statut='o',typ='I',max='**',fr="numeros de chargements etat A" ),
-              NUME_RESU_THER   =SIMP(statut='f',typ='I',max='**',fr="numeros de transitoires thermiques" ),
                                ),
          SITUATION         =FACT(statut='o',max='**',fr="Situation",ang="situation_ang",
               NB_OCCUR         =SIMP(statut='o',typ='I',fr="nombre d'occurences de la situation" ),
@@ -255,7 +256,6 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
               NOM_SITU         =SIMP(statut='f',typ='TXM',fr="nom de la situation" ),
               NUME_GROUPE      =SIMP(statut='o',typ='I',fr="numéros du groupe de la situation" ),
               CHAR_ETAT        =SIMP(statut='o',typ='I',max='**',fr="numeros de chargements etat A" ),
-              NUME_RESU_THER   =SIMP(statut='f',typ='I',max='**',fr="numeros de transitoires thermiques" ),
               TEMP_REF         =SIMP(statut='f',typ='R',fr="temperature référence"),
                                ),
          SITUATION         =FACT(statut='o',max='**',fr="Situation",ang="situation_ang",

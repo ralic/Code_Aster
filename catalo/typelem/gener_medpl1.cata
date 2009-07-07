@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,22 +68,13 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       )
-    E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
-    E8NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8      )
-    E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18    )
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9])
+    E6NEUTI = NEUT_I    ELEM__         (X[6])
+    E8NEUTI = NEUT_I    ELEM__         (X[8])
+    E18NEUI = NEUT_I    ELEM__         (X[18])
 
-    E9NEUTR = NEUT_R   ELEM__          (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9   )
-    E30NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30 )
+    E9NEUTR = NEUT_R   ELEM__          (X[9])
+    E30NEUTR = NEUT_R   ELEM__         (X[30])
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       )

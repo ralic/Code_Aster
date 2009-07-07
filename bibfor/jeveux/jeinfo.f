@@ -1,8 +1,9 @@
       SUBROUTINE JEINFO(RVAL)
       IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8           RVAL(5)      
+      REAL*8           RVAL(7)      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C TOLE CRS_512
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,10 +32,23 @@ C DEB ------------------------------------------------------------------
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C FIN ------------------------------------------------------------------
-      INTEGER LOISEM
+      INTEGER LOISEM,IV(2),IVAL
+      IV(1) = 0
+      IV(2) = 0
       RVAL(1) = (SVUSE*LOISEM())/(1024*1024)
       RVAL(2) = (SMXUSE*LOISEM())/(1024*1024)
       RVAL(3) =  MCDYN  /(1024*1024)
       RVAL(4) =  VMXDYN /(1024*1024)
       RVAL(5) =  MXDYN  /(1024*1024)
+      IVAL    =  MEMPID(IV)
+C       IV(1) VmData
+C       IV(2) VmSize
+      IF ( IVAL .NE. -1 ) THEN 
+        RVAL(6) = DBLE(IV(1))
+        RVAL(7) = DBLE(IV(2))
+      ELSE
+        RVAL(6) = 0.D0
+        RVAL(7) = 0.D0
+      ENDIF
+            
       END      

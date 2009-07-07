@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +48,10 @@ C     -----  DEBUT COMMUNS NORMALISES  JEVEUX  -----------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      REAL*8        R8B, R8MAME, TST
+      REAL*8        R8B, TST
       CHARACTER*8   K8B, KIOC, KI, NOMU
       CHARACTER*24 VALK(3)
-      CHARACTER*16  K16B, SEC, TOU, CONCEP, CMD
+      CHARACTER*16  K16B, SEC, CONCEP, CMD
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -83,8 +83,8 @@ C
       NLG = 0
       DO 10 IOC = 1 , NBOCC
          CALL CODENT(IOC,'G',KIOC)
-         CALL GETVID('BARRE','GROUP_MA'     ,IOC,1,0    ,K8B ,NG)
-         CALL GETVID('BARRE','MAILLE'       ,IOC,1,0    ,K8B ,NM)
+         CALL GETVTX('BARRE','GROUP_MA'     ,IOC,1,0    ,K8B ,NG)
+         CALL GETVTX('BARRE','MAILLE'       ,IOC,1,0    ,K8B ,NM)
          CALL GETVTX('BARRE','SECTION'      ,IOC,1,0    ,K8B ,NS)
          CALL GETVTX('BARRE','SECTION'      ,IOC,1,1    ,SEC ,NSEC)
          CALL GETVTX('BARRE','CARA'         ,IOC,1,0    ,K8B ,NC)

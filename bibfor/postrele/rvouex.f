@@ -4,7 +4,7 @@
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,8 +148,8 @@ C
 C
                CALL RVGNOE ( MCF, IOCC, NMAILA, LSTNAC, 0, IBID )
 C
-               CALL GETVID ( MCF, 'GROUP_MA', IOCC,1,0, K8B, N1 )
-               CALL GETVID ( MCF, 'MAILLE',   IOCC,1,0, K8B, N2 )
+               CALL GETVTX ( MCF, 'GROUP_MA', IOCC,1,0, K8B, N1 )
+               CALL GETVTX ( MCF, 'MAILLE',   IOCC,1,0, K8B, N2 )
                IF ( (N1+N2) .EQ. 0 ) THEN
                   NBMALU = 0
                ELSE

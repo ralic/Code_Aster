@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,8 +56,7 @@ MODE_LOCAL__
                                         TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     )
+                                        XXXX2    KIT[9])
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
                                         COPECO   COPEFR)
@@ -76,22 +75,14 @@ MODE_LOCAL__
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E2NEUTI  = NEUT_I   ELEM__         (X1       X2      )
-    E9NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9  )
-    E4NEUTR  = NEUT_R   ELEM__         (X1       X2       X3       X4       )
-    E8NEUTR  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8      )
-    E10NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      )
-    E6NEUTR = NEUT_R    ELEM__         (X1       X2       X3       X4       X5       X6       )
-    E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
-    E20NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20   )
-    E18NEUI = NEUT_I   ELEM__          (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18    )
+    E9NEUTI  = NEUT_I   ELEM__         (X[9])
+    E4NEUTR  = NEUT_R   ELEM__         (X[4])
+    E8NEUTR  = NEUT_R   ELEM__         (X[8])
+    E10NEUTR = NEUT_R   ELEM__         (X[10])
+    E6NEUTR = NEUT_R    ELEM__         (X[6])
+    E6NEUTI = NEUT_I    ELEM__         (X[6])
+    E20NEUTR = NEUT_R   ELEM__         (X[20])
+    E18NEUI = NEUT_I   ELEM__          (X[18])
     ECODRET  = CODE_I   ELEM__         (IRET     )
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
@@ -99,19 +90,15 @@ MODE_LOCAL__
     EDOMGGA  = DOMMAG   ELGA__ RIGI    (DOMA     )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     EGTHETA  = G        ELEM__         (GTHETA         )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
     EREFCO   = PREC     ELEM__         (SIGM     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
-    N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )

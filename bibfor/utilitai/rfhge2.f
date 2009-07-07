@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,8 @@ C
       CMP   = ' '
       CALL GETVTX ( ' ', 'NOM_CMP',  1,1,1, CMP,    N1  )
       CALL GETVTX ( ' ', 'NOM_CHAM', 1,1,1, NOMCHA, N2  )
-      CALL GETVID ( ' ', 'NOEUD',    1,1,1, NOEUD,  N3  )
-      CALL GETVID ( ' ', 'GROUP_NO', 1,1,1, NOGNO,  NGN )
+      CALL GETVTX ( ' ', 'NOEUD',    1,1,1, NOEUD,  N3  )
+      CALL GETVTX ( ' ', 'GROUP_NO', 1,1,1, NOGNO,  NGN )
 C
       KNUME = '&&RFHGE2.NUME_ORDR'
       KINST = '&&RFHGE2.FREQUENCE'

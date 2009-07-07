@@ -5,7 +5,7 @@
       CHARACTER*24        CHTH(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM, JEXATR
+      CHARACTER*32     JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      NBRETH, NBCMP, ITHS, ITH, IRET, N1, N2, IOCC, IERD,
@@ -133,7 +133,7 @@ C        ON VERIFIE L'ORDRE DES NOEUDS DANS LA TABLE
 C
          CALL TBEXIP ( TBTHER, 'INST', EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
-            VALK(1) = TBMOYE
+            VALK(1) = TBTHER
             VALK(2) = 'INST'
             CALL U2MESK('F', 'POSTRCCM_1',2,VALK)
          ENDIF
@@ -252,8 +252,8 @@ C
             CALL JEVEUO ( MESMAI, 'L', JMAIL )
          ENDIF
 C
-         CALL GETVID ( MOTCLF, 'GROUP_NO', IOCC,1,0, K8B, N1)
-         CALL GETVID ( MOTCLF, 'NOEUD'   , IOCC,1,0, K8B, N2)
+         CALL GETVTX ( MOTCLF, 'GROUP_NO', IOCC,1,0, K8B, N1)
+         CALL GETVTX ( MOTCLF, 'NOEUD'   , IOCC,1,0, K8B, N2)
          IF ( N1+N2 .NE. 0 ) THEN
             CALL RELIEM ( ' ', NOMA, 'NU_NOEUD', MOTCLF, IOCC, 2,
      &                                MOTCLN, TYPMCN, MESNOE, NBNOEU )

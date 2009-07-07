@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,7 +151,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    # 99. Création de la table_sdaster résultat
    # cas réentrant : il faut détruire l'ancienne table_sdaster
    if self.sd.nom == TABLE.nom:
-      DETRUIRE(CONCEPT=_F(NOM=TABLE.nom,), INFO=1)
+      DETRUIRE(CONCEPT=_F(NOM=TABLE,), INFO=1)
 
    dprod = tab.dict_CREA_TABLE()
    if INFO == 2:

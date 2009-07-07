@@ -1,17 +1,19 @@
       SUBROUTINE RCEVOD ( CSIGM, CINST, CNOC, SM, LFATIG, LPMPB, LSN,
      +                    CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO, CFAE,
      +                    CSPO, CSPE, CRESU, KINTI, IT, JT, LROCHT, 
-     +                    SYMAX, CPRES)
+     +                    SYMAX, CPRES, KEMIXT, CSPTO, CSPTE, 
+     +                    CSPMO, CSPME)
       IMPLICIT   NONE
       INTEGER      IT, JT
       REAL*8       SM, SYMAX
-      LOGICAL      LFATIG, LPMPB, LSN, FLEXIO, LROCHT
+      LOGICAL      LFATIG, LPMPB, LSN, FLEXIO, LROCHT, KEMIXT
       CHARACTER*16 KINTI
       CHARACTER*24 CSIGM, CINST, CNOC, CSNO, CSNE, CSNEO, CSNEE,
-     +             CFAO, CFAE, CSPO, CSPE, CRESU, CPRES
+     +             CFAO, CFAE, CSPO, CSPE, CRESU, CPRES,
+     +             CSPTO, CSPTE, CSPMO, CSPME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,30 +51,30 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      NCMP, JSIGM, JINST, NBINST, JSNO, JSNE, N1, 
-     +             IND, I1, I2, ICMP, L1,L2,L3,L4, NPARA, IK, IR, I, J,
-     +             VAIO(5), VAIE(5), IOO1, IOO2, IOE1, IOE2, NPAR1,
+      INTEGER      NCMP, JSIGM, JINST, NBINST, JSNO, JSNE, 
+     +             IND, I1, I2, ICMP, L1,L2,L3,L4, NPARA, IK, IR, I,
+     +             VAIO(5), VAIE(5), NPAR1,JRESP,
      +             JSNEO, JSNEE, JSPO, JSPE, JFAO, JFAE, JNOC, JRESU,
-     +             JRESP
+     +             JSPTO, JSPTE, JSPMO, JSPME
       PARAMETER  ( NCMP = 6 )
       REAL*8       TPM(NCMP), TPB(NCMP), TPMPBO(NCMP), TPMPBE(NCMP),
-     +             DCO, DCE, TRESCA, VALO(36), VALE(36), STLIN,STPAR
+     +             DCO, DCE, TRESCA, VALO(39), VALE(39), STLIN,STPAR
       COMPLEX*16   C16B
-      CHARACTER*8  K8B, NOMRES, RESU, RESUTH, TYPARA(36)
-      CHARACTER*16 NOMCMD, CONCEP, NOPARA(36), VAKO(5), VAKE(5)
+      CHARACTER*8  K8B, NOMRES, TYPARA(39)
+      CHARACTER*16 NOMCMD, CONCEP, NOPARA(39), VAKO(5), VAKE(5)
 C
-      INTEGER      NPAREN, NPARPM, NPARSN, NPARSE, NPARF1, NPARF2,NPARRT
+      INTEGER      NPAREN, NPARPM, NPARSN, NPARSE, NPARF1, NPARF2,
+     +             NPARF3, NPARRT, IFM, NIV
       PARAMETER  ( NPAREN=4, NPARPM=5, NPARSN=5, NPARSE=1,
-     +             NPARF1=14, NPARF2=13, NPARRT=6 )
+     +             NPARF1=14, NPARF2=13, NPARRT=6 , NPARF3=17)
       CHARACTER*8  TYPAEN(NPAREN), TYPAPM(NPARPM), TYPASN(NPARSN),
      +             TYPASE(NPARSE), TYPAF1(NPARF1), TYPAF2(NPARF2),
-     +             TYPART(NPARRT)
+     +             TYPART(NPARRT), TYPAF3(NPARF3)
       CHARACTER*16 NOPAEN(NPAREN), NOPAPM(NPARPM), NOPASN(NPARSN),
      +             NOPASE(NPARSE), NOPAF1(NPARF1), NOPAF2(NPARF2),
-     +             NOPART(NPARRT)
+     +             NOPART(NPARRT), NOPAF3(NPARF3)
 C
       DATA NOPAEN / 'INTITULE', 'LIEU', 'SM', '3SM' /
       DATA TYPAEN / 'K16',      'K8'  , 'R' , 'R'   / 
@@ -98,10 +100,17 @@ C
      +              'DOMMAGE', 'DOMMAGE_CUMU' /
       DATA TYPAF2 / 'K8', 'R', 'I', 'K8', 'R', 'I',
      +              'R', 'R', 'R', 'R', 'R', 'R', 'R' /
+      DATA NOPAF3 / 'TABL_RESU_1', 'INST_1', 'NB_OCCUR_1', 
+     +            'TABL_RESU_2', 'INST_2', 'NB_OCCUR_2', 
+     +            'SN', 'SN*', 'SP','SP_MECA','SP_THER','KE_MECA', 
+     +            'KE_THER', 'SALT', 'NADM', 'DOMMAGE', 'DOMMAGE_CUMU' /
+      DATA TYPAF3 / 'K8', 'R', 'I', 'K8', 'R', 'I','R', 'R', 
+     +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' /
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )
+      CALL INFNIV ( IFM, NIV )
 C
       CALL JEVEUO ( CRESU, 'L', JRESU )
       CALL JEVEUO ( CINST, 'L', JINST )
@@ -130,18 +139,26 @@ C
            NPARA = NPARA + NPARPM
         ENDIF
         IF ( LFATIG ) THEN
-          IF ( FLEXIO ) THEN
-            DO 14 I = 1 , NPARF1
-              NOPARA(NPARA+I) = NOPAF1(I)
-              TYPARA(NPARA+I) = TYPAF1(I)
+          IF (KEMIXT) THEN
+            DO 14 I = 1 , NPARF3
+              NOPARA(NPARA+I) = NOPAF3(I)
+              TYPARA(NPARA+I) = TYPAF3(I)
  14         CONTINUE
-            NPARA = NPARA + NPARF1
+            NPARA = NPARA + NPARF3
           ELSE
-            DO 16 I = 1 , NPARF2
-              NOPARA(NPARA+I) = NOPAF2(I)
-              TYPARA(NPARA+I) = TYPAF2(I)
- 16         CONTINUE
-            NPARA = NPARA + NPARF2
+            IF ( FLEXIO ) THEN
+              DO 15 I = 1 , NPARF1
+                NOPARA(NPARA+I) = NOPAF1(I)
+                TYPARA(NPARA+I) = TYPAF1(I)
+ 15           CONTINUE
+              NPARA = NPARA + NPARF1
+            ELSE
+              DO 16 I = 1 , NPARF2
+                NOPARA(NPARA+I) = NOPAF2(I)
+                TYPARA(NPARA+I) = TYPAF2(I)
+ 16           CONTINUE
+              NPARA = NPARA + NPARF2
+            ENDIF
           ENDIF
         ELSE
           IF ( LSN ) THEN
@@ -309,19 +326,6 @@ C
          IND = 0
          DO 210 I1 = 1, NBINST
             IND = IND + 1
-            VAKO(IK+1) = ZK8(JRESU+I1-1)
-            VAKO(IK+2) = ZK8(JRESU+I1-1)
-            IR = 2 + 1
-            VALO(IR) = ZR(JINST+I1-1)
-            IR = IR + 1
-            VALO(IR) = ZR(JINST+I1-1)
-            IR = IR + 1
-            VALO(IR) = ZR(JSNO+IND-1)
-            IF ( FLEXIO ) THEN
-               IR = IR + 1
-               VALO(IR) = ZR(JSNEO+IND-1)
-            ENDIF
-            CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIO,VALO,C16B,VAKO,0)
             DO 212 I2 = I1+1, NBINST
                IND = IND + 1
                VAKO(IK+1) = ZK8(JRESU+I1-1)
@@ -345,19 +349,6 @@ C
          IND = 0
          DO 220 I1 = 1, NBINST
             IND = IND + 1
-            VAKE(IK+1) = ZK8(JRESU+I1-1)
-            VAKE(IK+2) = ZK8(JRESU+I1-1)
-            IR = 2 + 1
-            VALE(IR) = ZR(JINST+I1-1)
-            IR = IR + 1
-            VALE(IR) = ZR(JINST+I1-1)
-            IR = IR + 1
-            VALE(IR) = ZR(JSNE+IND-1)
-            IF ( FLEXIO ) THEN
-               IR = IR + 1
-               VALE(IR) = ZR(JSNEE+IND-1)
-            ENDIF
-            CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIE,VALE,C16B,VAKE,0)
             DO 222 I2 = I1+1, NBINST
                IND = IND + 1
                VAKE(IK+1) = ZK8(JRESU+I1-1)
@@ -380,7 +371,12 @@ C
 C --- POUR L'OPTION "FATIGUE"
 C
       IF ( LFATIG ) THEN
-         IF ( FLEXIO ) THEN
+         IF ( KEMIXT ) THEN
+           DO 301 I = 1 , NPARF3
+             NOPARA(NPARA+I) = NOPAF3(I)
+ 301       CONTINUE
+           NPAR1 = NPARA + NPARF3 - 1
+         ELSEIF ( FLEXIO ) THEN
             DO 302 I = 1 , NPARF1
                NOPARA(NPARA+I) = NOPAF1(I)
  302        CONTINUE
@@ -397,34 +393,13 @@ C
          IF ( FLEXIO ) CALL JEVEUO (CSNEO, 'L', JSNEO )
          CALL JEVEUO ( CSPO, 'L', JSPO )
          CALL JEVEUO ( CFAO, 'L', JFAO )
+         IF (KEMIXT) THEN
+           CALL JEVEUO ( CSPMO, 'L', JSPMO )
+           CALL JEVEUO ( CSPTO, 'L', JSPTO )
+         ENDIF
          IND = 0
          DO 310 I1 = 1, NBINST
             IND = IND + 1
-            VAKO(IK+1) = ZK8(JRESU+I1-1)
-            VAKO(IK+2) = ZK8(JRESU+I1-1)
-            VAIO(1) = ZI(JNOC+I1-1)
-            VAIO(2) = ZI(JNOC+I1-1)
-            IR = 2 + 1
-            VALO(IR) = ZR(JINST+I1-1)
-            IR = IR + 1
-            VALO(IR) = ZR(JINST+I1-1)
-            IR = IR + 1
-            VALO(IR) = ZR(JSNO+IND-1)
-            IF ( FLEXIO ) THEN
-               IR = IR + 1
-               VALO(IR) = ZR(JSNEO+IND-1)
-            ENDIF
-            IR = IR + 1
-            VALO(IR) = ZR(JSPO-1+IND)
-            IR = IR + 1
-            VALO(IR) = ZR(JFAO-1+4*(IND-1)+1)
-            IR = IR + 1
-            VALO(IR) = ZR(JFAO-1+4*(IND-1)+2)
-            IR = IR + 1
-            VALO(IR) = ZR(JFAO-1+4*(IND-1)+3)
-            IR = IR + 1
-            VALO(IR) = ZR(JFAO-1+4*(IND-1)+4)
-            CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIO,VALO,C16B,VAKO,0)
             DO 312 I2 = I1+1, NBINST
                IND = IND + 1
                VAKO(IK+1) = ZK8(JRESU+I1-1)
@@ -443,14 +418,24 @@ C
                ENDIF
                IR = IR + 1
                VALO(IR) = ZR(JSPO-1+IND)
+               IF (KEMIXT) THEN
+                 IR = IR + 1
+                 VALO(IR) = ZR(JSPMO-1+IND)
+                 IR = IR + 1
+                 VALO(IR) = ZR(JSPTO-1+IND)
+               ENDIF
                IR = IR + 1
-               VALO(IR) = ZR(JFAO-1+4*(IND-1)+1)
+               VALO(IR) = ZR(JFAO-1+5*(IND-1)+1)
+               IF (KEMIXT) THEN
+                 IR = IR + 1
+                 VALO(IR) =ZR(JFAO-1+5*(IND-1)+5)
+               ENDIF
                IR = IR + 1
-               VALO(IR) = ZR(JFAO-1+4*(IND-1)+2)
+               VALO(IR) = ZR(JFAO-1+5*(IND-1)+2)
                IR = IR + 1
-               VALO(IR) = ZR(JFAO-1+4*(IND-1)+3)
+               VALO(IR) = ZR(JFAO-1+5*(IND-1)+3)
                IR = IR + 1
-               VALO(IR) = ZR(JFAO-1+4*(IND-1)+4)
+               VALO(IR) = ZR(JFAO-1+5*(IND-1)+4)
                CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIO,VALO,C16B,VAKO,0)
  312        CONTINUE
  310     CONTINUE
@@ -459,34 +444,13 @@ C
          IF ( FLEXIO ) CALL JEVEUO (CSNEE, 'L', JSNEE )
          CALL JEVEUO ( CSPE, 'L', JSPE )
          CALL JEVEUO ( CFAE, 'L', JFAE )
+         IF (KEMIXT) THEN
+           CALL JEVEUO ( CSPME, 'L', JSPME )
+           CALL JEVEUO ( CSPTE, 'L', JSPTE )
+         ENDIF
          IND = 0
          DO 320 I1 = 1, NBINST
             IND = IND + 1
-            VAKE(IK+1) = ZK8(JRESU+I1-1)
-            VAKE(IK+2) = ZK8(JRESU+I1-1)
-            VAIE(1) = ZI(JNOC+I1-1)
-            VAIE(2) = ZI(JNOC+I1-1)
-            IR = 2 + 1
-            VALE(IR) = ZR(JINST+I1-1)
-            IR = IR + 1
-            VALE(IR) = ZR(JINST+I1-1)
-            IR = IR + 1
-            VALE(IR) = ZR(JSNE+IND-1)
-            IF ( FLEXIO ) THEN
-               IR = IR + 1
-               VALE(IR) = ZR(JSNEE+IND-1)
-            ENDIF
-            IR = IR + 1
-            VALE(IR) = ZR(JSPE-1+IND)
-            IR = IR + 1
-            VALE(IR) = ZR(JFAE-1+4*(IND-1)+1)
-            IR = IR + 1
-            VALE(IR) = ZR(JFAE-1+4*(IND-1)+2)
-            IR = IR + 1
-            VALE(IR) = ZR(JFAE-1+4*(IND-1)+3)
-            IR = IR + 1
-            VALE(IR) = ZR(JFAE-1+4*(IND-1)+4)
-            CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIE,VALE,C16B,VAKE,0)
             DO 322 I2 = I1+1, NBINST
                IND = IND + 1
                VAKE(IK+1) = ZK8(JRESU+I1-1)
@@ -505,21 +469,35 @@ C
                ENDIF
                IR = IR + 1
                VALE(IR) = ZR(JSPE-1+IND)
+               IF (KEMIXT) THEN
+                 IR = IR + 1
+                 VALE(IR) = ZR(JSPME-1+IND)
+                 IR = IR + 1
+                 VALE(IR) = ZR(JSPTE-1+IND)
+               ENDIF
                IR = IR + 1
-               VALE(IR) = ZR(JFAE-1+4*(IND-1)+1)
+               VALE(IR) = ZR(JFAE-1+5*(IND-1)+1)
+               IF (KEMIXT) THEN
+                 IR = IR + 1
+                 VALE(IR) =ZR(JFAE-1+5*(IND-1)+5)
+               ENDIF
                IR = IR + 1
-               VALE(IR) = ZR(JFAE-1+4*(IND-1)+2)
+               VALE(IR) = ZR(JFAE-1+5*(IND-1)+2)
                IR = IR + 1
-               VALE(IR) = ZR(JFAE-1+4*(IND-1)+3)
+               VALE(IR) = ZR(JFAE-1+5*(IND-1)+3)
                IR = IR + 1
-               VALE(IR) = ZR(JFAE-1+4*(IND-1)+4)
+               VALE(IR) = ZR(JFAE-1+5*(IND-1)+4)
                CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIE,VALE,C16B,VAKE,0)
  322        CONTINUE
  320     CONTINUE
 C
          NOPARA(NPARA+1) = 'DOMMAGE_CUMU'
          NPAR1 = NPARA + 1
+         IF ( NIV .EQ. 2 ) 
+     &      WRITE(6,*) '******* ORIGINE DU SEGMENT *******'
          CALL RCEVFU ( CNOC, CFAO, DCO )
+         IF ( NIV .EQ. 2 ) 
+     &      WRITE(6,*) '******* EXTREMITE DU SEGMENT *******'
          CALL RCEVFU ( CNOC, CFAE, DCE )
          VALO(3) = DCO
          VALE(3) = DCE

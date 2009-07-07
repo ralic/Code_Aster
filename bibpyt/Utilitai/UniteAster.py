@@ -1,4 +1,4 @@
-#@ MODIF UniteAster Utilitai  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF UniteAster Utilitai  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,6 @@
 import types
 
 import aster
-#from Cata.cata import _F, DEFI_FICHIER, INFO_EXEC_ASTER, DETRUIRE
 from Cata.cata import _F
 from Cata.cata import DEFI_FICHIER
 from Cata.cata import INFO_EXEC_ASTER

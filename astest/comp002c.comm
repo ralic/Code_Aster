@@ -1,7 +1,7 @@
-# MODIF  DATE 27/10/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/07/2009   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_CIN1_CHAB
-# comp002c.para = tps_job 900 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
+# comp002c.para = tps_job 560 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,11 +142,11 @@ for i in range(Ncal):
         RESU[i]=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
                    NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=3,),
+                             REAC_ITER=3,PAS_MINI_ELAS=0),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
                    ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=temps,),
+                   INCREMENT=_F(LIST_INST=temps,SUBD_METHODE="AUCUNE",),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
                     );
@@ -189,10 +189,10 @@ RESU_TGT=SIMU_POINT_MAT(
                                 TYPE_MATR_TANG='VERIFICATION',
                                 VALE_PERT_RELA=1.E-5,
                                ),
-                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,PAS_MINI_ELAS=0),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[1],  
-                   INCREMENT=_F(LIST_INST=Linst,),
+                   INCREMENT=_F(LIST_INST=Linst,SUBD_METHODE="AUCUNE",),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
                         );

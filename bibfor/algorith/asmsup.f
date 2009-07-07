@@ -8,7 +8,7 @@
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,11 +155,11 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
  45           CONTINUE
  44         CONTINUE
           ELSE
-            CALL GETVID(MOTFAC,'NOEUD',IOC,1,0,NOEU,N1)
+            CALL GETVTX(MOTFAC,'NOEUD',IOC,1,0,NOEU,N1)
             IF (N1.NE.0) THEN
               NNO = -N1
               CALL WKVECT('&&ASMSUP.NOEUD','V V K8',NNO,JNOE)
-              CALL GETVID(MOTFAC,'NOEUD',IOC,1,NNO,ZK8(JNOE),N1)
+              CALL GETVTX(MOTFAC,'NOEUD',IOC,1,NNO,ZK8(JNOE),N1)
               DO 46 INO = 1, NNO
                 NOEU = ZK8(JNOE+INO-1)
                 CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
@@ -180,11 +180,11 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
  46           CONTINUE
               CALL JEDETR('&&ASMSUP.NOEUD')
             ELSE
-              CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,0,K8B,N1)
+              CALL GETVTX(MOTFAC,'GROUP_NO',IOC,1,0,K8B,N1)
               IF (N1.NE.0) THEN
                 NGR = -N1
                 CALL WKVECT('&&ASMSUP.GROUP_NO','V V K8',NGR,JGRN)
-                CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,NGR,ZK8(JGRN),N1)
+                CALL GETVTX(MOTFAC,'GROUP_NO',IOC,1,NGR,ZK8(JGRN),N1)
                 DO 50 IGR = 1, NGR
                   GRNOEU = ZK8(JGRN+IGR-1)
                   CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)

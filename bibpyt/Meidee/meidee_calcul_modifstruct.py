@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_modifstruct Meidee  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_calcul_modifstruct Meidee  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,6 @@
 import aster
 from Accas import _F, ASSD
 
-# XXX import done only for mode_meca, should it be removed?
 import Cata.cata
 from Cata.cata import MAC_MODES, MODE_ITER_INV, DEPL_INTERNE, AFFE_CHAR_MECA
 from Cata.cata import MODE_STATIQUE, DEFI_BASE_MODALE, PROJ_MESU_MODAL
@@ -442,7 +441,6 @@ class ModifStruct:
         refd_base=self.base_expansion.REFD.get()
 
         if self.method_name == "LMME":
-#        if isinstance( self.base_expansion, Cata.cata.mode_meca):
             __MEXP = EXTR_MODE( FILTRE_MODE = _F( MODE = self.base_expansion,
                                                  NUME_MODE = modes_expansion_retenus))
             self.x_mexp = __MEXP

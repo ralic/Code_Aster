@@ -1,6 +1,6 @@
       SUBROUTINE SSDMDN ( MAG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,11 +113,11 @@ C
 C
 C       -- CAS : MAILLE, NOEUD_FIN, NOEUD_INIT :
 C       ---------------------------------------
-          CALL GETVID('DEFI_NOEUD','SUPER_MAILLE',
+          CALL GETVTX('DEFI_NOEUD','SUPER_MAILLE',
      &               IOCC,1,1,NOSMA,N1)
-          CALL GETVID('DEFI_NOEUD','NOEUD_FIN',
+          CALL GETVTX('DEFI_NOEUD','NOEUD_FIN',
      &                  IOCC,1,1,NOMNOG,N2)
-          CALL GETVID('DEFI_NOEUD','NOEUD_INIT',
+          CALL GETVTX('DEFI_NOEUD','NOEUD_INIT',
      &                   IOCC,1,1,NOMNOL,N3)
           IF((N1*N2*N3).EQ.0) CALL U2MESS('F','SOUSTRUC_58')
 C

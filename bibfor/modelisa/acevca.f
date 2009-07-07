@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C OUT : NLM    : NOMBRE TOTAL DE MAILLE
 C OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 C ----------------------------------------------------------------------
       REAL*8       R8B
-      CHARACTER*8  K8B, TOU, NOMU
+      CHARACTER*8  K8B, NOMU
       CHARACTER*16 CONCEP, CMD
 C     ------------------------------------------------------------------
       CALL GETRES(NOMU,CONCEP,CMD)
@@ -37,8 +37,8 @@ C
       NLM = 0
       NLG = 0
       DO 10 IOC = 1,NBOCC
-         CALL GETVID('CABLE','GROUP_MA' ,IOC,1,0,K8B,NG  )
-         CALL GETVID('CABLE','MAILLE'   ,IOC,1,0,K8B,NM  )
+         CALL GETVTX('CABLE','GROUP_MA' ,IOC,1,0,K8B,NG  )
+         CALL GETVTX('CABLE','MAILLE'   ,IOC,1,0,K8B,NM  )
          CALL GETVR8('CABLE','SECTION'  ,IOC,1,0,R8B,NE  )
 C
          IF (IOC.EQ.1 .AND. NE.EQ.0) THEN

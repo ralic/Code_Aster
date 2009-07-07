@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF recal Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ def detr_concepts(self):
      liste_concepts=mes_concepts(base=self.parent)
      for e in liste_concepts:
         nom = string.strip(e)
-        DETRUIRE( CONCEPT =self.g_context['_F'](NOM = nom),INFO=1)
+        DETRUIRE( OBJET =self.g_context['_F'](CHAINE = nom),INFO=1)
         if self.jdc.g_context.has_key(nom) : del self.jdc.g_context[nom]
      del(liste_concepts)
 

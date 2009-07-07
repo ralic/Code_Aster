@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF CALCULEL  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1253,7 +1253,7 @@ C    ------------------------------------------------------------------
             ENDIF
 
             TYPES = ' '
-            CALL GETVID(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
+            CALL GETVTX(' ','TYPE_ESTI',1,1,1,TYPES,IRETER)
             IF (IRETER.GT.0) THEN
               CALL U2MESK('I','CALCULEL3_24',1,TYPES)
             ENDIF

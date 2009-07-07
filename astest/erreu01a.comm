@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUR TESTER DES EMISSIONS DE MESSAGES D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,7 +88,7 @@ TEST_TABLE(TABLE=TAB1,
            VALE_I=1,
            REFERENCE='ANALYTIQUE',)
 
-DETRUIRE(CONCEPT=_F(NOM=('UELAS', 'TAB1'),),)
+DETRUIRE(CONCEPT=_F(NOM=(UELAS, TAB1),),)
 
 
 # 2) message de la routine PRERES pour dire qu'une matrice est singuliere :
@@ -116,6 +116,6 @@ TEST_TABLE(TABLE=TAB1,
            VALE_I=1,
            REFERENCE='ANALYTIQUE',)
 
-DETRUIRE(CONCEPT=_F(NOM=('UELAS', 'TAB1'),),)
+DETRUIRE(CONCEPT=_F(NOM=(UELAS, TAB1),),)
 
 FIN()

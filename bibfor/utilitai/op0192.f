@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
+C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -227,7 +227,7 @@ C                 1234567890123456789
 C
 C 2.6. ==> NOM DU MAILLAGE MED ASSOCIE
 C
-      CALL GETVID ( ' ', 'NOM_MAIL_MED', 0, 1, 1, NOMAMD, IAUX )
+      CALL GETVTX ( ' ', 'NOM_MAIL_MED', 0, 1, 1, NOMAMD, IAUX )
 C
       IF ( IAUX.EQ.0 ) THEN
         NOMAMD = ' '

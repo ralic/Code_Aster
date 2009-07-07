@@ -1,7 +1,7 @@
-# MODIF  DATE 22/06/2009   AUTEUR DEVESA G.DEVESA 
+# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL 
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
-# wdnp101a.para = tps_job 700 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test S
+# wdnp101a.para = tps_job 840 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -336,8 +336,7 @@ U[0]=CALC_ELEM(reuse=U[0],
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=('CHLAT','PHAUT','SIEF',
-                             'CART1','CART2','CART3',)));
+    DETRUIRE(INFO=1,OBJET=_F(CHAINE=('CHLAT','PHAUT','SIEF','CART1','CART2','CART3',)));
 
     n_couche = n+2
     print ' > n_couche          =',n_couche
@@ -501,9 +500,9 @@ for n in range(1,nbcouche-1):
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-6));
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM='INIVAR'));
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM='INIDEP'));
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM='INISIG'));
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=INIVAR));
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=INIDEP));
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=INISIG));
 
     DEP[n]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='EXTR',

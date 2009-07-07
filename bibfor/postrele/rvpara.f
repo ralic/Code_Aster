@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 12/05/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -359,10 +359,10 @@ C
 C
             IF ( N1 .EQ. 0 ) JABSC = JABSC + 1
 C
-            CALL GETVID ( MCF, 'NOEUD', IOCC,1,0, K8B, N2 )
+            CALL GETVTX ( MCF, 'NOEUD', IOCC,1,0, K8B, N2 )
             IF ( (N1 .EQ. 0) .AND. (N2 .NE. 0) ) JNOEU = JNOEU + 1
 C
-            CALL GETVID ( MCF, 'GROUP_NO', IOCC,1,0, K8B, N2 )
+            CALL GETVTX ( MCF, 'GROUP_NO', IOCC,1,0, K8B, N2 )
             IF ( (N1 .EQ. 0) .AND. (N2 .NE. 0) ) JNOEU = JNOEU + 1
          ENDIF
 C

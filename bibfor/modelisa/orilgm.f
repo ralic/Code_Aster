@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -141,7 +141,7 @@ C
      &                                     IOCC, 1, NG, ZK8(JJJ), NG )
 C        PRESENCE DE GROUP_MA_SURF ?
 C        ---------------------------
-         CALL GETVID(MOFA2D,'GROUP_MA_SURF',IOCC, 1, 0,K8B, NGS )
+         CALL GETVTX(MOFA2D,'GROUP_MA_SURF',IOCC, 1, 0,K8B, NGS )
          IF(NGS.NE.0)THEN
            NGS = -NGS
            CALL WKVECT ( '&&ORILGM.WORK2', 'V V K8', NGS, JGS )
@@ -211,7 +211,7 @@ C
 
 C        PRESENCE DE GROUP_MA_VOLU ?
 C        ---------------------------
-         CALL GETVID(MOFA3D,'GROUP_MA_VOLU',IOCC, 1, 0,K8B, NGV )
+         CALL GETVTX(MOFA3D,'GROUP_MA_VOLU',IOCC, 1, 0,K8B, NGV )
          IF(NGV.NE.0)THEN
            NGV = -NGV
            CALL WKVECT ( '&&ORILGM.WORK2', 'V V K8', NGV, JGV )
@@ -278,13 +278,13 @@ C
          IF (N1.NE.0)THEN
             ORIVEC = .TRUE.
             CALL GETVR8 ( MOFB3D, 'VECT_NORM', IOCC,1,-N1, VECT, N1 )
-            CALL GETVID ( MOFB3D, 'NOEUD', IOCC,1,0, K8B, N2 )
+            CALL GETVTX ( MOFB3D, 'NOEUD', IOCC,1,0, K8B, N2 )
             IF (N2.NE.0)THEN
-               CALL GETVID ( MOFB3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )
+               CALL GETVTX ( MOFB3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )
                CALL JENONU (JEXNOM(NOMNOE,NNOEUD),NOEUD)
                IF(NOEUD.EQ.0)CALL U2MESK('F','MODELISA5_97',1,NNOEUD)
             ELSE
-               CALL GETVID(MOFB3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
+               CALL GETVTX(MOFB3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
                CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
                IF ( IER .EQ. 10 ) THEN
                   VALK = NNOEUD
@@ -338,13 +338,13 @@ C
          IF (N1.NE.0)THEN
             ORIVEC = .TRUE.
             CALL GETVR8 ( MOFC3D, 'VECT_TANG', IOCC,1,-N1, VECT, N1 )
-            CALL GETVID ( MOFC3D, 'NOEUD', IOCC,1,0, K8B, N2 )
+            CALL GETVTX ( MOFC3D, 'NOEUD', IOCC,1,0, K8B, N2 )
             IF (N2.NE.0)THEN
-               CALL GETVID ( MOFC3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )
+               CALL GETVTX ( MOFC3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )
                CALL JENONU (JEXNOM(NOMNOE,NNOEUD),NOEUD)
                IF(NOEUD.EQ.0)CALL U2MESK('F','MODELISA5_97',1,NNOEUD)
             ELSE
-               CALL GETVID(MOFC3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
+               CALL GETVTX(MOFC3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
                CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
                IF ( IER .EQ. 10 ) THEN
                   VALK = NNOEUD

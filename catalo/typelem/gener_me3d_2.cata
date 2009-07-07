@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,8 +67,7 @@ MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     ERAYONM  = NEUT_R   ELEM__         (X1       )
-    ECASECT  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      )
+    ECASECT  = NEUT_R   ELEM__         (X[10])
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
@@ -77,8 +76,7 @@ MODE_LOCAL__
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     )
+                                        XXXX2    KIT[9])
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
@@ -90,33 +88,15 @@ MODE_LOCAL__
     EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3
                                         K1    K2   K3   BETA     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       )
-    G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27       )
-    E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
-    E9NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9   )
-    E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18    )
-    E9NEUTR = NEUT_R   ELEM__          (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9        )
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9])
+    G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27])
+    E6NEUTI = NEUT_I    ELEM__         (X[9])
+    E18NEUI = NEUT_I    ELEM__         (X[18])
+    E9NEUTR = NEUT_R   ELEM__          (X[9])
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]      )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]      )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

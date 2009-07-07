@@ -3,7 +3,7 @@
       INTEGER             IERR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C
       CALL GETFAC('RELA_EFFO_DEPL',NBIND)
       IF (NBIND.NE.0 .AND. ZI(JDESC+3).NE.0 ) THEN
          DO 20 I = 1,NBIND
-            CALL GETVID('RELA_EFFO_DEPL','NOEUD'  ,I,1,1,NOEU,N2)
+            CALL GETVTX('RELA_EFFO_DEPL','NOEUD'  ,I,1,1,NOEU,N2)
             CALL GETVTX('RELA_EFFO_DEPL','NOM_CMP',I,1,1,CMP ,N2)
 C
             CALL POREFD (TRANGE, NOEU, CMP, NOMRES )

@@ -1,7 +1,7 @@
       SUBROUTINE SS2MME(NOMO  ,MOTFAZ,VESSTR,BASE)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,12 +117,12 @@ C
 C
 C       -- CAS : MAILLE: L_MAIL
 C       
-        CALL GETVID(MOTFAC,'SUPER_MAILLE',IOC   ,1     ,0     ,
+        CALL GETVTX(MOTFAC,'SUPER_MAILLE',IOC   ,1     ,0     ,
      &              K8BID ,N2)
         IF (-N2.GT.NBSMA) THEN
           CALL U2MESS('F','SOUSTRUC_25')
         ELSE  
-          CALL GETVID(MOTFAC,'SUPER_MAILLE',IOC   ,1     ,NBSMA  ,
+          CALL GETVTX(MOTFAC,'SUPER_MAILLE',IOC   ,1     ,NBSMA  ,
      &                ZK8(IALMAI),N2)
         ENDIF
         DO 2 I=1,N2

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCF, NOMF
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,8 +39,8 @@ C
       CALL GETVIS ( MCF, 'NUME_VITE_FLUI', IOCC,1,1, IVIT  , N2 )
       CALL GETVIS ( MCF, 'NUME_ORDRE_I'  , IOCC,1,1, NUMI  , N3 )
       CALL GETVIS ( MCF, 'NUME_ORDRE_J'  , IOCC,1,1, NUMJ  , N4 )
-      CALL GETVID ( MCF, 'NOEUD_I'       , IOCC,1,1, NOEUI , N5 )
-      CALL GETVID ( MCF, 'NOEUD_J'       , IOCC,1,1, NOEUJ , N6 )
+      CALL GETVTX ( MCF, 'NOEUD_I'       , IOCC,1,1, NOEUI , N5 )
+      CALL GETVTX ( MCF, 'NOEUD_J'       , IOCC,1,1, NOEUJ , N6 )
       CALL GETVTX ( MCF, 'NOM_CMP_I'     , IOCC,1,1, CMPI  , N7 )
       CALL GETVTX ( MCF, 'NOM_CMP_J'     , IOCC,1,1, CMPJ  , N8 )
 C

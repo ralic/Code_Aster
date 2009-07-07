@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,8 +45,7 @@ MODE_LOCAL__
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     )
+                                        XXXX2    KIT[9])
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN    SITX      CONT_X   CONT_Y)
     ECONTNO  = SIEF_R   ELNO__ DIFF__
                                  EN1   ()
@@ -68,18 +67,10 @@ MODE_LOCAL__
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     EREFCO   = PREC     ELEM__         (SIGM     DEPL)
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )

@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C
 C
       NOEUD = ' '
       CMP   = ' '
-      CALL GETVID(' ','NOEUD',0,1,1,NOEUD,N1)
+      CALL GETVTX(' ','NOEUD',0,1,1,NOEUD,N1)
       CALL GETVTX(' ','NOM_CMP'      ,0,1,1,CMP   ,N2)
       CALL GETVTX(' ','NOM_CHAM' ,0,1,1,NOMCHA,N3)
 C
@@ -195,7 +195,7 @@ C
            CALL WKVECT('&&RFRGEN.VECT.PROPRE','V V R',NEQ*NBMODE,IDBASE)
            CALL COPMO2(BASEMO,NEQ,NUME,NBMODE,ZR(IDBASE))
          ENDIF
-         CALL GETVID(' ','GROUP_NO',0,1,1,NOGNO,NGN)
+         CALL GETVTX(' ','GROUP_NO',0,1,1,NOGNO,NGN)
          IF (NGN.NE.0) THEN
            CALL JENONU(JEXNOM(NOMA//'.GROUPENO',NOGNO),IGN2)
            IF (IGN2.LE.0)  CALL U2MESK('F','ELEMENTS_67',1,NOGNO)

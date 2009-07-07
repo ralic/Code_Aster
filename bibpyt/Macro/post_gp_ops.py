@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 15/04/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_gp_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,9 +46,7 @@ def post_gp_ops(self, **args):
    DEFI_LIST_ENTI= self.get_cmd('DEFI_LIST_ENTI')
    CALC_ELEM     = self.get_cmd('CALC_ELEM')
    RECU_FONCTION = self.get_cmd('RECU_FONCTION')
-   DETRUIRE      = self.get_cmd('DETRUIRE')
    DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
-   IMPR_CO       = self.get_cmd('IMPR_CO')
    FIN           = self.get_cmd('FIN')
    
    # ----- Comptage, commandes + déclaration concept sortant
@@ -274,16 +272,14 @@ def post_gp_ops(self, **args):
             # pour chaque noeud de l'element on recupere sa trace
             for noeud in list_no:
                
-               VM=RECU_FONCTION(RESULTAT=resu2,
+               __VM=RECU_FONCTION(RESULTAT=resu2,
                                     TOUT_INST='OUI',
                                     NOM_CHAM='EQUI_ELNO_SIGM',
                                     NOM_CMP='VMIS_SG',
                                     MAILLE=elem,
                                     NOEUD=noeud);
    
-               T_noeuds[noeud]=VM.Ordo()
-               
-               DETRUIRE(CONCEPT=(_F(NOM=VM)))
+               T_noeuds[noeud]=__VM.Ordo()
                
             T_noeuds.fromfunction('VM_MAIL', moyenne, list_no)
             

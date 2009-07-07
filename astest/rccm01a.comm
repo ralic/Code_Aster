@@ -1,5 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
-# TITRE VALIDATION DE L'OPERATEUR POST_RCCM
+# MODIF  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
+# TITRE VALIDATION ELEMENTAIRE DE L'OPERATEUR POST_RCCM - EVOLUTION
+# rccm01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,187 +19,391 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GALENNE E.GALENNE
-# ANCIEN TEST ZZZZ107
+
+# VALIDATION DE TOUTES LES OPTIONS POUR TYPE_RESU='DETAILS'
 
 DEBUT(CODE=_F(NOM='RCCM01A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE( )
 
-DEFI_GROUP(reuse=MA,  MAILLAGE=MA,
-                  CREA_GROUP_NO=_F(  TOUT_GROUP_MA = 'OUI')  )
+COURFATA = FORMULE(NOM_PARA='SIGM',VALE='5.E5/SIGM ')
 
-MO=AFFE_MODELE(  MAILLAGE=MA,
-                  AFFE=_F(  TOUT = 'OUI',   PHENOMENE = 'MECANIQUE',
-                         MODELISATION = 'C_PLAN')  )
-
-WOHLER=DEFI_FONCTION(
-             NOM_PARA='SIGM',
-   VALE=(
-               138.,     1000000.,
-               152.,      500000.,
-               165.,      200000.,
-               180.,      100000.,
-               200.,       50000.,
-               250.,       20000.,
-               295.,       12000.,
-               305.,       10000.,
-               340.,        5000.,
-               430.,        2000.,
-               540.,        1000.,
-               690.,         500.,
-               930.,         200.,
-              1210.,         100.,
-              1590.,          50.,
-              2210.,          20.,
-              2900.,          10.,
-               ),
-               INTERPOL='LOG',
-            PROL_DROITE='LINEAIRE',
-            PROL_GAUCHE='LINEAIRE' )
+L_INST=DEFI_LIST_REEL(  DEBUT=1.,
+                        INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
+                           
+FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
+                          NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='CONSTANT',
+                          NOM_RESU='NADM'       )
 
 MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
-                     FATIGUE=_F(  WOHLER = WOHLER, E_REFE = 200000.),
-                        RCCM=_F(  M_KE = 1.7,
-                                  N_KE = 0.3,
-                                  SM = 200.,
-                                  SY_02 = 200.)
+                    FATIGUE=_F(  WOHLER = FWOHLER, E_REFE = 200000.),
+                    RCCM=_F(  M_KE = 2.,
+                              N_KE = 0.2,
+                              SM = 200.,
+                              SY_02 = 200.)
                                )
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F( TOUT = 'OUI', MATER = MAT)  )
+# SITUATION 1 : CONTRAINTES TOTALES                               
+T_RESU1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=1,)
 
-# DEPLACEMENT IMPOSE DY = A1*X+A2
+# SITUATION 1 : CONTRAINTES THERMIQUES                            
+T_RESUTH = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=2,)
 
-A1=0.0E-3
+# SITUATION 2 : CONTRAINTES TOTALES                        
+T_RESU2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=3,)
 
-A2=1.0E-3
+     
 
-DY1=( -1.0 * A1 ) + A2
+# VALIDATION DU CALCUL DE PM ET PB
+PMPB1=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                OPTION='PM_PB',
+                TYPE_RESU='DETAILS',
+                MATER=MAT,
+                TITRE='CALCUL DE PM_PB (DETAILS), SITUATION 1',
+                TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU1,
+                                 TABL_SIGM_THER = T_RESUTH  )
+                 )
 
-DY2=( +1.0 * A1 ) + A2
+IMPR_TABLE(    TABLE=PMPB1,)        
+ 
+PMPB2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                OPTION='PM_PB',
+                TYPE_RESU='DETAILS',
+                MATER=MAT,
+                TITRE='CALCUL DE PM_PB (DETAILS), SITUATION 2',
+                TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU2 )
+                 )
 
-DYCD=DEFI_FONCTION(   NOM_PARA='X',
-                      VALE=( -1.0, DY1,  1.0, DY2, )  )
+IMPR_TABLE(    TABLE=PMPB2,)         
 
-NUL=DEFI_CONSTANTE(    VALE=0. )
+# CALCUL DE PM ET PB EN SUPPOSANT QUE TR. THERMIQUE 1 = SIG PRIMAIRES
+PMPB3=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                OPTION='PM_PB',
+                TYPE_RESU='DETAILS',
+                MATER=MAT,
+                TITRE='CALCUL DE PM-PB (DETAILS), TRANSITOIRE THERMIQUE 1 CONSIDERE COMME PRIMAIRE',
+                TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESUTH )
+                 )
 
-CHMEC=AFFE_CHAR_MECA_F(  MODELE=MO,
-                         DDL_IMPO=( _F( GROUP_NO = 'CD', DY = DYCD),
-                                    _F( GROUP_NO = 'AB', DY = NUL ),
-                                    _F( GROUP_NO = 'A' , DX = NUL )) )
+IMPR_TABLE(    TABLE=PMPB3,)        
 
-LINST=DEFI_LIST_REEL(   DEBUT=0.,
-                        INTERVALLE=_F(  JUSQU_A = 3.,  PAS = 1.)  )
+# VALIDATION DU CALCUL DE SN ET DE SN*
+SN1=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                OPTION='SN',
+                TYPE_RESU='DETAILS',
+                MATER=MAT,
+                TITRE='CALCUL DE SN (DETAILS), SITUATION 1',
+                TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU1,
+                                 TABL_SIGM_THER = T_RESUTH, )
+                 )
 
-FCTMUL=DEFI_FONCTION(  NOM_PARA='INST',
-                       VALE=( 0.0,  0.0,   1.0,  1.0,
-                              2.0,  1.0,   3.0,  0.0,  )   )
+IMPR_TABLE(    TABLE=SN1,)        
+ 
+SN2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                OPTION='SN',
+                TYPE_RESU='DETAILS',
+                MATER=MAT,
+                TITRE='CALCUL DE SN (DETAILS), SITUATION 2',
+                TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU2 )
+                 )
 
-#----------------------------------------------------------------------
-# CHARGEMENT MECANIQUE SEUL
-
-
-RESU1=MECA_STATIQUE(  MODELE=MO,       CHAM_MATER=CHMAT,
-                       LIST_INST=LINST,
-                       EXCIT=_F( CHARGE = CHMEC,  FONC_MULT = FCTMUL), )
-
-CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 ,
-                       LIST_INST=LINST,
-                       OPTION=( 'SIGM_ELNO_DEPL',
-                        )
-                     )
-
-TEST_RESU(RESU=(
-     _F(  RESULTAT = RESU1,    NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 2,
-       REFERENCE = 'ANALYTIQUE',
-       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 200.),
-     _F(  RESULTAT = RESU1,    NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 3,
-       REFERENCE = 'ANALYTIQUE',
-       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 200.))
-            )
-
-#----------------------------------------------------------------------
-# TEMPERATURE IMPOSEE T = T1*X+T2
-
-T1=50.0
-
-T2=0.0
-
-T = FORMULE(NOM_PARA='X',VALE='T1*X+T2')
-
-CHT0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
-                      AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = 0.0) )
-
-CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
-                      AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE_F = T) )
-
-TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',
-                 AFFE=( _F(  INST = 0.,  CHAM_GD = CHT0),
-                        _F(  INST = 1.,  CHAM_GD = CHT0),
-                        _F(  INST = 2.,  CHAM_GD = CHT1),
-                        _F(  INST = 3.,  CHAM_GD = CHT1))  )
+IMPR_TABLE(    TABLE=SN2,)         
 
 
-#----------------------------------------------------------------------
-# CHARGEMENTS MECANIQUE + THERMIQUE
+# VALIDATION DU ROCHET THERMIQUE
+SNROC=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                OPTION='SN',
+                TYPE_RESU='DETAILS',
+                MATER=MAT,
+                TITRE='CALCUL DE SN* (DETAILS), SITUATION 1 ',
+                TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU1,
+                                 TABL_SIGM_THER = T_RESUTH,
+                                 TABL_RESU_PRES = T_RESU1,
+                                 INST=(2,3,4), )
+                 )
 
-CHMTM=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F( TOUT = 'OUI', MATER = MAT),
-                        AFFE_VARC=_F(TOUT = 'OUI',
-                                     EVOL=TEMP,
-                                     NOM_VARC='TEMP',
-                                     NOM_CHAM='TEMP',
-                                     VALE_REF=0.),)
-
-
-RESU2=MECA_STATIQUE(  MODELE=MO,      CHAM_MATER=CHMTM,
-                       LIST_INST=LINST,
-                       EXCIT=( _F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),     )
-
-CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,
-                       LIST_INST=LINST,
-                       OPTION=( 'SIGM_ELNO_DEPL',
-                        )
-                    )
-
-TEST_RESU(RESU=(
-     _F(  RESULTAT = RESU2,    NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 3,
-       REFERENCE = 'ANALYTIQUE',
-       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 300.),
-     _F(  RESULTAT = RESU2,    NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 4,
-       REFERENCE = 'ANALYTIQUE',
-       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 100.))
-            )
-
-#----------------------------------------------------------------------
-# POUR LE CALCUL DE SN* : CHARGEMENT THERMIQUE SEUL
+IMPR_TABLE(    TABLE=SNROC,)        
 
 
-CHMEC0=AFFE_CHAR_MECA(  MODELE=MO,
-                        DDL_IMPO=( _F( GROUP_NO = 'AB',  DY = 0.0),
-                                   _F( GROUP_NO = 'A' ,  DX = 0.0),
-                                   _F( GROUP_NO = 'CD',  DY = 0.0)) )
+# VALIDATION DU CALCUL EN FATIGUE
+FAT_A=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+               OPTION='FATIGUE_ZH210',
+               TYPE_RESU='DETAILS',
+               MATER=MAT,INFO=2,
+               TITRE='CALCUL EN FATIGUE - NB_OCCUR=1',
+               TRANSITOIRE=(_F(TABL_RESU_MECA = T_RESU1,
+                               TABL_SIGM_THER = T_RESUTH,
+                               NB_OCCUR=1),
+                            _F(TABL_RESU_MECA = T_RESU2,
+                               NB_OCCUR=1),
+                                ),
+                 )
+
+IMPR_TABLE(    TABLE=FAT_A,)
+
+# VALIDATION DU CALCUL EN FATIGUE : NOMBRE D OCCURENCES DIFFERENTS
+FAT_B=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+               OPTION='FATIGUE_ZH210',
+               TYPE_RESU='DETAILS',
+               MATER=MAT,INFO=2,
+               TITRE='CALCUL EN FATIGUE - NB_OCCUR = 1, 5 ET 10',
+               TRANSITOIRE=(_F(TABL_RESU_MECA = T_RESU1,
+                               TABL_SIGM_THER = T_RESUTH,
+                               NB_OCCUR=1),
+                            _F(TABL_RESU_MECA = T_RESU2,
+                               NB_OCCUR=10),),
+                 )
+
+IMPR_TABLE(    TABLE=FAT_B,)
+
+# VALIDATION DU CALCUL EN FATIGUE : CALCUL DE KE(SN)
+MAT2=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
+                     FATIGUE=_F(  WOHLER = FWOHLER, E_REFE = 200000.),
+                     RCCM=_F(  M_KE = 2.,
+                               N_KE = 0.2,
+                               SM = 50.,
+                               SY_02 = 200.)
+                               )
+
+FAT_C=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+               OPTION='FATIGUE_ZH210',
+               TYPE_RESU='DETAILS',
+               MATER=MAT2,INFO=2,
+               TITRE='CALCUL EN FATIGUE - NB_OCCUR=1 - MATERIAU MAT2',
+               TRANSITOIRE=(_F(TABL_RESU_MECA = T_RESU1,
+                               TABL_SIGM_THER = T_RESUTH,
+                               NB_OCCUR=1),
+                            _F(TABL_RESU_MECA = T_RESU2,
+                               NB_OCCUR=1),),
+                 )
+
+IMPR_TABLE(    TABLE=FAT_C,)
+
+# VALIDATION DU CALCUL EN FATIGUE : KE_MIXTE
+FAT_D=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+               OPTION='FATIGUE_ZH210',
+               TYPE_RESU='DETAILS',
+               MATER=MAT,INFO=2,
+               TYPE_KE='KE_MIXTE',
+               TITRE='CALCUL EN FATIGUE - KE_MIXTE',
+               TRANSITOIRE=(_F(TABL_RESU_MECA = T_RESU1,
+                               TABL_SIGM_THER = T_RESUTH,
+                               NB_OCCUR=1),
+                            _F(TABL_RESU_MECA = T_RESU2,
+                               NB_OCCUR=1),),
+                 )
+
+IMPR_TABLE(    TABLE=FAT_D,)
+
+#--------------------------------------------------------------------------------
+#   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
+#--------------------------------------------------------------------------------
+# PM - - SITUATION 1
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PM',
+           VALE=200.  )
+TEST_TABLE(TABLE=PMPB1,
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PB',
+           VALE=100.  )
+TEST_TABLE(TABLE=PMPB1,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PMB',
+           VALE=100.  )
+TEST_TABLE(TABLE=PMPB1,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PMB',
+           VALE=300.  )
+
+# PM - - SITUATION 2
+TEST_TABLE(TABLE=PMPB2,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PM',
+           VALE=50.  )
+TEST_TABLE(TABLE=PMPB2,
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PB',
+           VALE=150.  )
+TEST_TABLE(TABLE=PMPB2,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PMB',
+           VALE=200.  )
+TEST_TABLE(TABLE=PMPB2,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PMB',
+           VALE=100.  )         
+
+# PM - - TRANSITOIRE THERMIQUE 1 
+TEST_TABLE(TABLE=PMPB3,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PM',
+           VALE=250.  )
+TEST_TABLE(TABLE=PMPB3,
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PB',
+           VALE=100.  )
+TEST_TABLE(TABLE=PMPB3,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PMB',
+           VALE=200.  )
+TEST_TABLE(TABLE=PMPB3,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='PMB',
+           VALE=300.  )     
 
 
-RESUTH=MECA_STATIQUE(  MODELE=MO,    CHAM_MATER=CHMTM,
-                        LIST_INST=LINST,
-                        EXCIT=( _F( CHARGE = CHMEC0,  FONC_MULT = FCTMUL)),
-                      )
+# SN - - SITUATION 1
+TEST_TABLE(TABLE=SN1,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='SN',
+           VALE=200.  )
+TEST_TABLE(TABLE=SN1,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='SN',
+           VALE=225.  )
 
-CALC_ELEM( reuse= RESUTH ,RESULTAT= RESUTH ,
-                        LIST_INST=LINST,
-                        OPTION='SIGM_ELNO_DEPL'
-                      )
+# SN - - SITUATION 2
+TEST_TABLE(TABLE=SN2,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='SN',
+           VALE=200.  )
+TEST_TABLE(TABLE=SN2,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='SN',
+           VALE=100.  )
+         
+# SN* - SITUATION 1 
+TEST_TABLE(TABLE=SN1,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='SN*',
+           VALE=275.  )
+TEST_TABLE(TABLE=SN1,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='SN*',
+           VALE=150.  )
+
+# ROCHET THERMIQUE 
+TEST_TABLE(TABLE=SNROC,
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='VALE_MAXI_LINE',
+           VALE=300.  )
+TEST_TABLE(TABLE=SNROC,
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='VALE_MAXI_PARAB',
+           VALE=390.  )
+
+# FU - CAS A
+TEST_TABLE(TABLE=FAT_A,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DOMMAGE_CUMU',
+           VALE=5.E-4  )
+TEST_TABLE(TABLE=FAT_A,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DOMMAGE_CUMU',
+           VALE=7.E-4  )
+
+# FU - CAS B
+TEST_TABLE(TABLE=FAT_B,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DOMMAGE_CUMU',
+           VALE=2.3E-3  )
+TEST_TABLE(TABLE=FAT_B,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DOMMAGE_CUMU',
+           VALE=1.8E-3  )
+
+# FU - CAS C
+TEST_TABLE(TABLE=FAT_C,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DOMMAGE_CUMU',
+           VALE=1.7E-3 )
+TEST_TABLE(TABLE=FAT_C,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DOMMAGE_CUMU',
+           VALE=3.5E-3  )
+
+# FU - CAS D
+TEST_TABLE(TABLE=FAT_D,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DOMMAGE_CUMU',
+           VALE=5.54277E-04 )
+TEST_TABLE(TABLE=FAT_D,
+           FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           TYPE_TEST = 'MAX',
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DOMMAGE_CUMU',
+           VALE=1.17685E-03  )
+                            
+FIN()
 
 
-TEST_RESU(RESU=(
-     _F(  RESULTAT = RESUTH,   NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 3,
-       REFERENCE = 'ANALYTIQUE',
-       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 100.),
-     _F(  RESULTAT = RESUTH,   NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 4,
-       REFERENCE = 'ANALYTIQUE',
-       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 100.))
-            )
-
-FIN( )
-#

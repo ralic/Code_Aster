@@ -1,17 +1,19 @@
       SUBROUTINE RCEVOM ( CSIGM, CINST, CNOC, SM, LFATIG, LPMPB, LSN,
      +                    CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO, CFAE,
      +                    CSPO, CSPE, CRESU, KINTI, IT, JT, LROCHT, 
-     +                    SYMAX, CPRES )
+     +                    SYMAX, CPRES , KEMIXT, CSPTO, CSPTE, 
+     +                    CSPMO, CSPME)
       IMPLICIT   NONE
       INTEGER      IT, JT
       REAL*8       SM, SYMAX
-      LOGICAL      LFATIG, LPMPB, LSN, FLEXIO, LROCHT
+      LOGICAL      LFATIG, LPMPB, LSN, FLEXIO, LROCHT, KEMIXT
       CHARACTER*16 KINTI
       CHARACTER*24 CSIGM, CINST, CNOC, CSNO, CSNE, CSNEO, CSNEE,
-     +             CFAO, CFAE, CSPO, CSPE, CRESU, CPRES
+     +             CFAO, CFAE, CSPO, CSPE, CRESU, CPRES,
+     +             CSPTO, CSPTE, CSPMO, CSPME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,26 +59,29 @@ C
      +             IND, I1, I2, ICMP, L1,L2,L3,L4, NPARA, II,IK,IR, I,
      +             VAIO(5), VAIE(5), IOO1, IOO2, IOE1, IOE2, NPAR1,
      +             JSNEO, JSNEE, JSPO, JSPE, JFAO, JFAE, JNOC, JRESU,
-     +             JRESP
+     +             JRESP, JSPTO, JSPTE, JSPMO, JSPME
       PARAMETER  ( NCMP = 6 )
       REAL*8       TPM(NCMP), TPB(NCMP), TPMPBO(NCMP), TPMPBE(NCMP),
      +             PM, PB, PMPBO, PMPBE, IPM, IPB, IPMPBO, IPMPBE,
      +             SNO, SNE, I1SNO, I2SNO, I1SNE, I2SNE,
      +             SPO, SPE, KEO, KEE, SAO, SAE, NAO, NAE,
-     +             DOO, DOE, DCO, DCE, STLIN, STPAR,
-     +             TRESCA, VALO(36), VALE(36)
+     +             DOO, DOE, DCO, DCE, STLIN, STPAR, KETHO, KETHE,
+     +             TRESCA, VALO(39), VALE(39),SPMO, SPME, SPTO, SPTE 
       COMPLEX*16   C16B
-      CHARACTER*8  K8B, NOMRES, TYPARA(36), RPM, RPB, RPMPBO, RPMPBE, 
+      CHARACTER*8  K8B, NOMRES, TYPARA(39), RPM, RPB, RPMPBO, RPMPBE, 
      +             R1SNO, R1SNE, R2SNO, R2SNE
-      CHARACTER*16 NOMCMD, CONCEP, NOPARA(36), VAKO(5), VAKE(5)
+      CHARACTER*16 NOMCMD, CONCEP, NOPARA(39), VAKO(5), VAKE(5)
 C
-      INTEGER      NPAREN, NPARPM, NPARSN, NPARSE, NPARFA, NPARRT
-      PARAMETER  ( NPAREN=4, NPARPM=7, NPARSN=5, NPARSE=3, NPARFA=10,
-     +             NPARRT=5 )
+      INTEGER      NPAREN, NPARPM, NPARSN, NPARSE, NPARF1, NPARRT, 
+     +             NPARF2
+      PARAMETER  ( NPAREN=4, NPARPM=7, NPARSN=5, NPARSE=3, NPARF1=10,
+     +             NPARRT=5 , NPARF2=13)
       CHARACTER*8  TYPAEN(NPAREN), TYPAPM(NPARPM), TYPASN(NPARSN),
-     +             TYPASE(NPARSE), TYPAFA(NPARFA), TYPART(NPARRT)
+     +             TYPASE(NPARSE), TYPAF1(NPARF1), TYPART(NPARRT),
+     +             TYPAF2(NPARF2)
       CHARACTER*16 NOPAEN(NPAREN), NOPAPM(NPARPM), NOPASN(NPARSN),
-     +             NOPASE(NPARSE), NOPAFA(NPARFA), NOPART(NPARRT)
+     +             NOPASE(NPARSE), NOPAF1(NPARF1), NOPART(NPARRT),
+     +             NOPAF2(NPARF2)
 C
       DATA NOPAEN / 'INTITULE', 'LIEU', 'SM', '3SM' /
       DATA TYPAEN / 'K16',      'K8'  , 'R' , 'R'   / 
@@ -91,11 +96,17 @@ C
       DATA TYPASN / 'K8', 'R' ,'K8', 'R', 'R'  /
       DATA NOPASE / 'INST_SN*_1', 'INST_SN*_2', 'SN*' /
       DATA TYPASE / 'R' , 'R', 'R'  /
-      DATA NOPAFA / 'INST_SALT_1', 'NB_OCCUR_1',
+      DATA NOPAF1 / 'INST_SALT_1', 'NB_OCCUR_1',
      +              'INST_SALT_2', 'NB_OCCUR_2', 
      +              'SP', 'KE', 'SALT', 'NADM', 'DOMMAGE',
      +              'DOMMAGE_CUMU' /
-      DATA TYPAFA / 'R', 'I', 'R', 'I','R', 'R', 'R', 'R', 'R', 'R' /
+      DATA TYPAF1 / 'R', 'I', 'R', 'I','R', 'R', 'R', 'R', 'R', 'R' /
+      DATA NOPAF2 / 'INST_SALT_1', 'NB_OCCUR_1',
+     +              'INST_SALT_2', 'NB_OCCUR_2', 
+     +              'SP', 'SP_MECA','SP_THER','KE_MECA', 'KE_THER',
+     +              'SALT', 'NADM', 'DOMMAGE', 'DOMMAGE_CUMU' /
+      DATA TYPAF2 / 'R', 'I', 'R', 'I','R', 'R', 'R', 'R', 'R', 'R', 
+     +              'R', 'R', 'R' /
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -142,11 +153,19 @@ C
            NPARA = NPARA + NPARSE
         ENDIF
         IF ( LFATIG ) THEN
-           DO 18 I = 1 , NPARFA
-              NOPARA(NPARA+I) = NOPAFA(I)
-              TYPARA(NPARA+I) = TYPAFA(I)
- 18        CONTINUE
-           NPARA = NPARA + NPARFA
+           IF (.NOT. KEMIXT) THEN
+             DO 18 I = 1 , NPARF1
+                NOPARA(NPARA+I) = NOPAF1(I)
+                TYPARA(NPARA+I) = TYPAF1(I)
+ 18          CONTINUE
+             NPARA = NPARA + NPARF1
+           ELSE
+             DO 19 I = 1 , NPARF2
+                NOPARA(NPARA+I) = NOPAF2(I)
+                TYPARA(NPARA+I) = TYPAF2(I)
+ 19          CONTINUE
+             NPARA = NPARA + NPARF2
+           ENDIF
         ENDIF
 C
         CALL TBCRSD ( NOMRES, 'G' )
@@ -519,15 +538,35 @@ C
          I2SNO = ZR(JINST)
          I1SNE = ZR(JINST)
          I2SNE = ZR(JINST)
+         IF (KEMIXT) THEN
+           CALL JEVEUO ( CSPMO, 'L', JSPMO )
+           CALL JEVEUO ( CSPME, 'L', JSPME )
+           CALL JEVEUO ( CSPTO, 'L', JSPTO )
+           CALL JEVEUO ( CSPTE, 'L', JSPTE )
+           SPMO = 0.D0
+           SPME = 0.D0
+           SPTO = 0.D0
+           SPTE = 0.D0
+           KETHO = 0.D0
+           KETHE = 0.D0
+         ENDIF
          DO 300 I = 1, NBORDR
             SPO = MAX ( SPO , ZR(JSPO-1+I) )
-            KEO = MAX ( KEO , ZR(JFAO-1+4*(I-1)+1) )
-            NAO = MAX ( NAO , ZR(JFAO-1+4*(I-1)+3) )
-            DOO = MAX ( DOO , ZR(JFAO-1+4*(I-1)+4) )
+            KEO = MAX ( KEO , ZR(JFAO-1+5*(I-1)+1) )
+            NAO = MAX ( NAO , ZR(JFAO-1+5*(I-1)+3) )
+            DOO = MAX ( DOO , ZR(JFAO-1+5*(I-1)+4) )
             SPE = MAX ( SPE , ZR(JSPE-1+I) )
-            KEE = MAX ( KEE , ZR(JFAE-1+4*(I-1)+1) )
-            NAE = MAX ( NAE , ZR(JFAE-1+4*(I-1)+3) )
-            DOE = MAX ( DOE , ZR(JFAE-1+4*(I-1)+4) )
+            KEE = MAX ( KEE , ZR(JFAE-1+5*(I-1)+1) )
+            NAE = MAX ( NAE , ZR(JFAE-1+5*(I-1)+3) )
+            DOE = MAX ( DOE , ZR(JFAE-1+5*(I-1)+4) )
+            IF (KEMIXT) THEN
+              SPMO = MAX ( SPMO , ZR(JSPMO-1+I) )
+              SPTO = MAX ( SPTO , ZR(JSPTO-1+I) )
+              SPME = MAX ( SPME , ZR(JSPME-1+I) )
+              SPTE = MAX ( SPTE , ZR(JSPTE-1+I) )
+              KETHO = MAX ( KETHO , ZR(JFAO-1+5*(I-1)+5) )
+              KETHE = MAX ( KETHE , ZR(JFAE-1+5*(I-1)+5) )
+            ENDIF
  300     CONTINUE
          IND = 0
          DO 310 I1 = 1, NBINST
@@ -606,11 +645,34 @@ C
          IR = IR + 1
          VALO(IR) = SPO
          VALE(IR) = SPE
-         NPAR1 = NPAR1 + 1
-         NOPARA(NPAR1) = 'KE'
-         IR = IR + 1
-         VALO(IR) = KEO
-         VALE(IR) = KEE
+         IF (KEMIXT) THEN
+           NPAR1 = NPAR1 + 1
+           NOPARA(NPAR1) = 'SP_MECA'
+           IR = IR + 1
+           VALO(IR) = SPMO
+           VALE(IR) = SPME
+           NPAR1 = NPAR1 + 1
+           NOPARA(NPAR1) = 'SP_THER'
+           IR = IR + 1
+           VALO(IR) = SPTO
+           VALE(IR) = SPTE
+           NPAR1 = NPAR1 + 1
+           NOPARA(NPAR1) = 'KE_MECA'
+           IR = IR + 1
+           VALO(IR) = KEO
+           VALE(IR) = KEE
+           NPAR1 = NPAR1 + 1
+           NOPARA(NPAR1) = 'KE_THER'
+           IR = IR + 1
+           VALO(IR) = KETHO
+           VALE(IR) = KETHE
+         ELSE
+           NPAR1 = NPAR1 + 1
+           NOPARA(NPAR1) = 'KE'
+           IR = IR + 1
+           VALO(IR) = KEO
+           VALE(IR) = KEE
+         ENDIF
          NPAR1 = NPAR1 + 1
          NOPARA(NPAR1) = 'SALT'
          IR = IR + 1

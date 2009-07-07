@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,9 +91,9 @@ C        DE GROUP_NO OU DE NOEUD
 C        --------------------------------------------------
       NDIM1 = 0
       DO 10 I = 1,NLIAI
-        CALL GETVID(MOTFAC,MOGROU,I,1,0,K8BID,NENT)
+        CALL GETVTX(MOTFAC,MOGROU,I,1,0,K8BID,NENT)
         NDIM1 = MAX(NDIM1,-NENT)
-        CALL GETVID(MOTFAC,MOTCLE,I,1,0,K8BID,NENT)
+        CALL GETVTX(MOTFAC,MOTCLE,I,1,0,K8BID,NENT)
         NDIM1 = MAX(NDIM1,-NENT)
    10 CONTINUE
 
@@ -107,7 +107,7 @@ C        RELATION LINEAIRE
 C        -------------------------------------------------------
       NDIM2 = NDIM1
       DO 40 IOCC = 1,NLIAI
-        CALL GETVID(MOTFAC,MOGROU,IOCC,1,NDIM1,ZK8(JJJ),NGR)
+        CALL GETVTX(MOTFAC,MOGROU,IOCC,1,NDIM1,ZK8(JJJ),NGR)
         NBGT = 0
         DO 20 IGR = 1,NGR
           CALL JEEXIN(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),IRET)
@@ -121,7 +121,7 @@ C        -------------------------------------------------------
           END IF
    20   CONTINUE
         NDIM2 = MAX(NDIM2,NBGT)
-        CALL GETVID(MOTFAC,MOTCLE,IOCC,1,NDIM1,ZK8(JJJ),NNO)
+        CALL GETVTX(MOTFAC,MOTCLE,IOCC,1,NDIM1,ZK8(JJJ),NNO)
         DO 30 INO = 1,NNO
           CALL JENONU(JEXNOM(NOEUMA,ZK8(JJJ+INO-1)),IRET)
           IF (IRET.EQ.0) THEN

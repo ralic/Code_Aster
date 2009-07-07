@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF PREPOST  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -323,8 +323,8 @@ C        POUR LES OPTIONS "XXXX_NOEU_XXXX
           NBMA = 0
           JMAI = 1
 C ------- MAILLES QUI PARTICIPENT A LA MOYENNE
-          CALL GETVID(' ','MAILLE'  ,1,1,0,K8BID,N0)
-          CALL GETVID(' ','GROUP_MA',1,1,0,K8BID,N2)
+          CALL GETVTX(' ','MAILLE'  ,1,1,0,K8BID,N0)
+          CALL GETVTX(' ','GROUP_MA',1,1,0,K8BID,N2)
           IF (N0+N2.NE.0) THEN
             DO 40 IOPT = 1,NBOPT
               OPTION = ZK16(JOPT+IOPT-1)
@@ -356,10 +356,10 @@ C ------- MAILLES QUI PARTICIPENT A LA MOYENNE
 C ------- RESULTAT SUR LES NOEUDS
           NBNO = 0
           JNOE = 1
-          CALL GETVID(' ','MAILLE_RESU'  ,1,1,0,K8BID,N0)
-          CALL GETVID(' ','GROUP_MA_RESU',1,1,0,K8BID,N2)
-          CALL GETVID(' ','NOEUD_RESU'   ,1,1,0,K8BID,N3)
-          CALL GETVID(' ','GROUP_NO_RESU',1,1,0,K8BID,N4)
+          CALL GETVTX(' ','MAILLE_RESU'  ,1,1,0,K8BID,N0)
+          CALL GETVTX(' ','GROUP_MA_RESU',1,1,0,K8BID,N2)
+          CALL GETVTX(' ','NOEUD_RESU'   ,1,1,0,K8BID,N3)
+          CALL GETVTX(' ','GROUP_NO_RESU',1,1,0,K8BID,N4)
           IF (N0+N2+N3+N4.NE.0) THEN
             DO 42 IOPT = 1,NBOPT
               OPTION = ZK16(JOPT+IOPT-1)

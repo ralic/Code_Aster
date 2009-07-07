@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR BRIE N.BRIE 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C
          NMLIAI = 0
 C
          IF (MOTFAC.EQ.'CHOC') THEN
-            CALL GETVID ( MOTFAC, 'MAILLE', IOC,1,0, KBID, IBID )
+            CALL GETVTX ( MOTFAC, 'MAILLE', IOC,1,0, KBID, IBID )
             IF (IBID.NE.0) THEN
                LNOUE2 = .TRUE.
                NMLIAI = -IBID
@@ -140,7 +140,7 @@ C
                GOTO 102
             ENDIF
 C
-            CALL GETVID ( MOTFAC, 'GROUP_MA', IOC,1,0, KBID, IBID )
+            CALL GETVTX ( MOTFAC, 'GROUP_MA', IOC,1,0, KBID, IBID )
             IF (IBID.NE.0) THEN
                LNOUE2 = .TRUE.
                NMLIAI = 0
@@ -189,7 +189,7 @@ C
                NOECHO(ILIAI,5) = NOMNO2
                LNOUE2 = .TRUE.
             ELSE
-               CALL GETVID(MOTFAC,'GROUP_NO_2',IOC,1,1,NOMGR2,NN2)
+               CALL GETVTX(MOTFAC,'GROUP_NO_2',IOC,1,1,NOMGR2,NN2)
                IF (NN2.NE.0) THEN
                   CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR2,NOMNO2,IRET)
                   IF (IRET.EQ.10) THEN
@@ -227,7 +227,7 @@ C
             NOECHO(ILIAI,5) = NOMNO2
             LNOUE2 = .TRUE.
          ELSE
-            CALL GETVID(MOTFAC,'GROUP_NO_2',IOC,1,1,NOMGR2,NN2)
+            CALL GETVTX(MOTFAC,'GROUP_NO_2',IOC,1,1,NOMGR2,NN2)
             IF (NN2.NE.0) THEN
                CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR2,NOMNO2,IRET)
                IF (IRET.EQ.10) THEN

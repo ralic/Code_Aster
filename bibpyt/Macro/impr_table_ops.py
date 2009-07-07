@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF impr_table_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,7 +223,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
                   TITRE = 'Fonction %s' % f,
                )
                __fonc.Trace(**kfonc)
-               DETRUIRE(CONCEPT=_F(NOM=('__fonc',),), ALARME='NON', INFO=1,)
+               DETRUIRE(CONCEPT=_F(NOM=(__fonc,),), ALARME='NON', INFO=1,)
 
    # 99. Traiter le cas des UL réservées
    UL.EtatInit()

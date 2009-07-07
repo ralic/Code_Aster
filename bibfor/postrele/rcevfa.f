@@ -1,12 +1,15 @@
       SUBROUTINE RCEVFA ( NOMMAT, PARA, SM, CNOC, CSNO, CSNE, CSPO,
-     +                    CSPE, CFAO, CFAE )
+     +                    CSPE, KEMIXT, CSPTO, CSPTE, CSPMO, CSPME,
+     +                    CFAO, CFAE )
       IMPLICIT     NONE
       REAL*8       PARA(3), SM
       CHARACTER*8  NOMMAT
-      CHARACTER*24 CNOC, CSNO, CSNE, CSPO, CSPE, CFAO, CFAE
+      CHARACTER*24 CNOC, CSNO, CSNE, CSPO, CSPE, CFAO, CFAE, 
+     +              CSPTO, CSPTE, CSPMO, CSPME
+      LOGICAL       KEMIXT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 17/11/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,10 +50,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      NBORDR, JSNO, JSNE, JSPO, JSPE, JFAO, JFAE, I, IND,
-     +             NBOCC1, NBOCC2, NBCYCL, JNOC, NBINST, I1, I2
+     +             JNOC, NBINST, I1, I2, JSPTO, JSPTE, JSPMO, JSPME
       REAL*8       SNO, SNE, SPO, SPE, KEO, KEE, SALTO, SALTE,
-     +             NADMO, NADME
+     +             NADMO, NADME, KTH, KETHEO, KETHEE, KEMECA,
+     +             SPTO, SPTE, SPMO, SPME, KEMECO, KEMECE, NBID, 
+     +             SALTMO, SALTME, SALTHO, SALTHE, VALR(2),R8MAEM
       CHARACTER*8  K8B
+      CHARACTER*2  CODRET
+      LOGICAL       ENDUR
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -59,83 +66,122 @@ C
       CALL JEVEUO ( CSNE, 'L', JSNE )
       CALL JEVEUO ( CSPO, 'L', JSPO )
       CALL JEVEUO ( CSPE, 'L', JSPE )
+      IF (KEMIXT) THEN
+        CALL JEVEUO ( CSPTO, 'L', JSPTO )
+        CALL JEVEUO ( CSPTE, 'L', JSPTE )
+        CALL JEVEUO ( CSPMO, 'L', JSPMO )
+        CALL JEVEUO ( CSPME, 'L', JSPME )
+      ENDIF
       CALL JELIRA ( CNOC, 'LONMAX', NBINST, K8B )
       CALL JEVEUO ( CNOC, 'L', JNOC )
 C
-      CALL WKVECT ( CFAO, 'V V R', 4*NBORDR, JFAO )
-      CALL WKVECT ( CFAE, 'V V R', 4*NBORDR, JFAE )
+      CALL WKVECT ( CFAO, 'V V R', 5*NBORDR, JFAO )
+      CALL WKVECT ( CFAE, 'V V R', 5*NBORDR, JFAE )
 C
       IND = 0
+C
+C ---     POUR TOUTES COMBINAISONS D INSTANTS : CALCUL AUX DEUX 
+C ---     EXTREMITES :
+C ---     - DU COEFFICIENT DE CONCENTRATION ELASTO-PLASTIQUE KE
+C ---     - DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
+C ---     - DU NBRE DE CYCLES ADMISSIBLE NADM (AVEC LA COURBE DE WOHLER)
+C ---     - DU FACTEUR D USAGE
+C         --------------------------------------------------------
       DO 10 I1 = 1 , NBINST
 C
         IND = IND + 1
-        NBOCC1 = ZI(JNOC-1+I1)
-        NBOCC2 = ZI(JNOC-1+I1)
-        SNO = ZR(JSNO+IND-1)
-        SNE = ZR(JSNE+IND-1)
-        SPO = ZR(JSPO+IND-1)
-        SPE = ZR(JSPE+IND-1)
-C
-C ---   CALCUL DU COEFFICIENT DE CONCENTRATION ELASTO-PLASTIQUE KE
-C ---   AUX ORIGINES ET EXTREMITES DU CHEMIN
-C ---   CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
-C ---   AUX ORIGINES ET EXTREMITES DU CHEMIN
-C ---   CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM EN UTILISANT
-C ---   LA COURBE DE WOHLER AUX ORIGINES ET EXTREMITES DU CHEMIN
-C       --------------------------------------------------------
-        CALL PRCCM3(NOMMAT, PARA, SM, SNO, SPO, KEO, SALTO, NADMO)
-        CALL PRCCM3(NOMMAT, PARA, SM, SNE, SPE, KEE, SALTE, NADME)
-C
-        ZR(JFAO-1+4*(IND-1)+1) = KEO
-        ZR(JFAO-1+4*(IND-1)+2) = SALTO
-        ZR(JFAO-1+4*(IND-1)+3) = NADMO
-C
-        ZR(JFAE-1+4*(IND-1)+1) = KEE
-        ZR(JFAE-1+4*(IND-1)+2) = SALTE
-        ZR(JFAE-1+4*(IND-1)+3) = NADME
-C
-C ---   CALCUL DES FACTEURS D'USAGE AUX EXTREMITES DU CHEMIN
-C ---   CORRESPONDANT A LA COMBINAISON DES 2 INSTANTS CONSIDERES
-C ---   DU TRANSITOIRE :
-C        --------------
-        NBCYCL = MIN( NBOCC1 , NBOCC2 )
-        ZR(JFAO-1+4*(IND-1)+4) = DBLE(NBCYCL) / NADMO
-        ZR(JFAE-1+4*(IND-1)+4) = DBLE(NBCYCL) / NADME
+        ZR(JFAO-1+5*(IND-1)+4) = 0.D0
+        ZR(JFAE-1+5*(IND-1)+4) = 0.D0
 C
         DO 12 I2 = I1+1 , NBINST
 C
           IND = IND + 1
-          NBOCC2 = ZI(JNOC-1+I2)
           SNO = ZR(JSNO+IND-1)
           SNE = ZR(JSNE+IND-1)
-          SPO = ZR(JSPO+IND-1)
-          SPE = ZR(JSPE+IND-1)
+C          
+          IF (.NOT. KEMIXT) THEN
 C
-C ---     CALCUL DU COEFFICIENT DE CONCENTRATION ELASTO-PLASTIQUE KE
-C ---     AUX ORIGINES ET EXTREMITES DU CHEMIN
-C ---     CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
-C ---     AUX ORIGINES ET EXTREMITES DU CHEMIN
-C ---     CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM EN UTILISANT
-C ---     LA COURBE DE WOHLER AUX ORIGINES ET EXTREMITES DU CHEMIN
-C         --------------------------------------------------------
-          CALL PRCCM3(NOMMAT, PARA, SM, SNO, SPO, KEO, SALTO, NADMO)
-          CALL PRCCM3(NOMMAT, PARA, SM, SNE, SPE, KEE, SALTE, NADME)
+C --- 1ER CAS : KE_MECA 
+C          
+            SPO = ZR(JSPO+IND-1)
+            SPE = ZR(JSPE+IND-1)
+C          
+            CALL PRCCM3(NOMMAT, PARA, SM, SNO, SPO, KEO, SALTO, NADMO)
+            CALL PRCCM3(NOMMAT, PARA, SM, SNE, SPE, KEE, SALTE, NADME)
 C
-          ZR(JFAO-1+4*(IND-1)+1) = KEO
-          ZR(JFAO-1+4*(IND-1)+2) = SALTO
-          ZR(JFAO-1+4*(IND-1)+3) = NADMO
+            ZR(JFAO-1+5*(IND-1)+1) = KEO
+            ZR(JFAO-1+5*(IND-1)+2) = SALTO
+            ZR(JFAO-1+5*(IND-1)+3) = NADMO
 C
-          ZR(JFAE-1+4*(IND-1)+1) = KEE
-          ZR(JFAE-1+4*(IND-1)+2) = SALTE
-          ZR(JFAE-1+4*(IND-1)+3) = NADME
+            ZR(JFAE-1+5*(IND-1)+1) = KEE
+            ZR(JFAE-1+5*(IND-1)+2) = SALTE
+            ZR(JFAE-1+5*(IND-1)+3) = NADME
 C
-C ---     CALCUL DES FACTEURS D'USAGE AUX EXTREMITES DU CHEMIN
-C ---     CORRESPONDANT A LA COMBINAISON DES 2 INSTANTS CONSIDERES
-C ---     DU TRANSITOIRE :
-C         --------------
-          NBCYCL = MIN( NBOCC1 , NBOCC2 )
-          ZR(JFAO-1+4*(IND-1)+4) = DBLE(NBCYCL) / NADMO
-          ZR(JFAE-1+4*(IND-1)+4) = DBLE(NBCYCL) / NADME
+            ZR(JFAO-1+5*(IND-1)+4) = 1.D0 / NADMO
+            ZR(JFAE-1+5*(IND-1)+4) = 1.D0 / NADME
+          ELSE
+C
+C --- 2EME CAS : KE_MIXTE 
+C   
+            SPMO = ZR(JSPMO+IND-1)
+            SPME = ZR(JSPME+IND-1)
+            SPTO = ZR(JSPTO+IND-1)
+            SPTE = ZR(JSPTE+IND-1)
+C            
+            KTH = 1.86D0*(1.D0-(1.D0/(1.66D0+SNO/SM)))
+            KETHEO = MAX(1.D0,KTH)   
+            SALTHO =  0.5D0 * PARA(3) * KETHEO * SPTO
+C                
+            KTH = 1.86D0*(1.D0-(1.D0/(1.66D0+SNE/SM)))
+            KETHEE = MAX(1.D0,KTH) 
+            SALTHE =  0.5D0 * PARA(3) * KETHEE * SPTE    
+C           
+            CALL PRCCM3 ( NOMMAT,PARA,SM,SNO,SPMO,KEMECO,SALTMO,NBID )
+            CALL PRCCM3 ( NOMMAT,PARA,SM,SNE,SPME,KEMECE,SALTME,NBID )
+            SALTO = SALTMO + SALTHO
+            SALTE = SALTME + SALTHE
+C
+C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM 
+C
+            CALL LIMEND( NOMMAT,SALTO,'WOHLER',ENDUR)
+            IF (ENDUR) THEN
+               NADMO=R8MAEM()
+            ELSE
+              CALL RCVALE (NOMMAT,'FATIGUE', 1, 'SIGM    ',SALTO, 1,
+     +                      'WOHLER  ', NADMO, CODRET, 'F ' )
+              IF ( NADMO .LT. 0 ) THEN
+                VALR (1) = SALTO
+                VALR (2) = NADMO
+                CALL U2MESG('A','POSTRELE_61',0,' ',0,0,2,VALR)
+              ENDIF
+            ENDIF
+C            
+            CALL LIMEND( NOMMAT,SALTE,'WOHLER',ENDUR)
+            IF (ENDUR) THEN
+               NADME=R8MAEM()
+            ELSE
+              CALL RCVALE (NOMMAT,'FATIGUE', 1, 'SIGM    ',SALTE, 1,
+     +                      'WOHLER  ', NADME, CODRET, 'F ' )
+              IF ( NADMO .LT. 0 ) THEN
+                VALR (1) = SALTE
+                VALR (2) = NADME
+                CALL U2MESG('A','POSTRELE_61',0,' ',0,0,2,VALR)
+              ENDIF
+            ENDIF
+C            
+            ZR(JFAO-1+5*(IND-1)+1) = KEMECO
+            ZR(JFAO-1+5*(IND-1)+5) = KETHEO
+            ZR(JFAO-1+5*(IND-1)+2) = SALTO
+            ZR(JFAO-1+5*(IND-1)+3) = NADMO
+            ZR(JFAO-1+5*(IND-1)+4) = 1.D0 / NADMO
+C
+            ZR(JFAE-1+5*(IND-1)+1) = KEMECE
+            ZR(JFAE-1+5*(IND-1)+5) = KETHEE
+            ZR(JFAE-1+5*(IND-1)+2) = SALTE
+            ZR(JFAE-1+5*(IND-1)+3) = NADME
+            ZR(JFAE-1+5*(IND-1)+4) = 1.D0 / NADME
+C
+          ENDIF
 C
  12     CONTINUE
 C

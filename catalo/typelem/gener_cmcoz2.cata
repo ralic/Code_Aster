@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,8 +29,8 @@ ENTETE__ ELEMENT__ COQ4Q4           MAILLE__ QUAD44
    ENS_NOEUD__  EN1     =     5  6  7  8
 ENTETE__ ELEMENT__ COT3T3           MAILLE__ TRIA33
    ELREFE__  V_TRIA33
-   ENS_NOEUD__  EN1     =     4  5  6
    ENS_NOEUD__  EN2     =     1  2  3
+   ENS_NOEUD__  EN1     =     4  5  6
 ENTETE__ ELEMENT__ COQ4T3           MAILLE__ QU4TR3
    ELREFE__  V_QU4TR3
    ENS_NOEUD__  EN2     =     1  2  3  4
@@ -129,15 +129,7 @@ MODE_LOCAL__
                                  EN1   (DX       DY       DZ       )
                                  EN2   (DX       DY       DZ       LAGS_C  )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    CCONFR   = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      X34      X35      X36
-                                        X37      X38      X39      X40      X41      X42
-                                        X43      X44      X45      X46      X47      X48
-                                        X49      X50   )
+    CCONFR   = NEUT_R   ELEM__         (X[50])
     ENEUTR   = NEUT_R   ELNO__ IDEN__  (X1    )
 
 VECTEUR__
@@ -150,13 +142,6 @@ OPTION__
     CHAR_MECA_CONT      365   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
                                      ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FROT      365   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
-                                     ENEUTR   PUSULAR  DDL_MECA PVITE_P
-                              OUT__  MVECTUR  PVECTUR
     RIGI_CONT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
                                      ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MMATUUR  PMATUUR
-    RIGI_FROT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
-                                     ENEUTR   PUSULAR  DDL_MECA PVITE_P
-                              OUT__  MMATUUR  PMATUUR
-

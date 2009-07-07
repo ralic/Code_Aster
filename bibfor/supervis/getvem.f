@@ -5,7 +5,7 @@
       INTEGER            IOCC, IARG, MXVAL,      NBVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 12/05/99   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C                       SI NBVAL < 0 ==> NOMBRE DE VALEUR DE LA LISTE
 C                                        SACHANT QUE L'ON NE FOURNIT QUE
 C                                        LES MXVAL PREMIERES
 C     ------------------------------------------------------------------
-      CALL GETVID ( MOTFAC, MOTCLE, IOCC, IARG, MXVAL, VK8, NBVAL )
+      CALL GETVTX ( MOTFAC, MOTCLE, IOCC, IARG, MXVAL, VK8, NBVAL )
       IF (MXVAL.NE.0) THEN
         MM=MIN(MXVAL,ABS(NBVAL))
         CALL VERIMA ( NOMA,VK8,MM,TYPENT)

@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,15 +28,14 @@ C IN  : NBOCC  : NOMBRE D'OCCURENCE
 C OUT : NLM    : NOMBRE TOTAL DE MAILLE
 C OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 C ----------------------------------------------------------------------
-      CHARACTER*8  K8B, TOU, NOMU
-      CHARACTER*16 CONCEP, CMD
+      CHARACTER*8  K8B
 C     ------------------------------------------------------------------
 C
       NLM = 0
       NLG = 0
       DO 10 IOC = 1,NBOCC
-         CALL GETVID('MASSIF','GROUP_MA' ,IOC,1,0,K8B,NG  )
-         CALL GETVID('MASSIF','MAILLE'   ,IOC,1,0,K8B,NM  )
+         CALL GETVTX('MASSIF','GROUP_MA' ,IOC,1,0,K8B,NG  )
+         CALL GETVTX('MASSIF','MAILLE'   ,IOC,1,0,K8B,NM  )
 C
          NSOM = NG + NM
          IF (NSOM.EQ.NG .OR. NSOM.EQ.NM) THEN

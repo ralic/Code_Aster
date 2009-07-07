@@ -1,4 +1,4 @@
-#@ MODIF defi_part_feti_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF defi_part_feti_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,6 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
   DEFI_PART_OPS   = self.get_cmd('DEFI_PART_OPS')
   INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
   DEFI_FICHIER    = self.get_cmd('DEFI_FICHIER')
-  DETRUIRE        = self.get_cmd('DETRUIRE')
   DEFI_PART_PA_OPS   = self.get_cmd('DEFI_PART_PA_OPS')
 
   nompro='DEFI_PART_FETI'

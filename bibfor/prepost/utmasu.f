@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C --- VERIFIERA T'ON LES NORMALES ?
 C     -----------------------------
       LVNOR=.TRUE.
       IF(OPER(1:14).EQ.'AFFE_CHAR_MECA')THEN
-         CALL GETVID(' ','VERI_NORM',0,1,1,VNOR,IRET)
+         CALL GETVTX(' ','VERI_NORM',0,1,1,VNOR,IRET)
          IF(IRET.NE.0)THEN
             IF(VNOR(1:3).EQ.'NON')LVNOR=.FALSE.
          ENDIF

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -31,26 +31,17 @@ MODE_LOCAL__
                                         TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     )
+                                        XXXX2    KIT[9])
     ECODRET  = CODE_I   ELEM__         (IRET     )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30      )
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )

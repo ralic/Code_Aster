@@ -4,7 +4,7 @@
       INTEGER                                     I, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,15 +153,15 @@ C           /* LE LIEU DU POST TRAITEMENT EST UNE COURBE */
          ELSE
 C           /* LE LIEU DU POST TRAITEMENT EST UN ENSMBLE DE NOEUDS */
 C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
-            CALL GETVID('ACTION','GROUP_NO',I,1,0,ZK8,NBGRPN)
-            CALL GETVID('ACTION','NOEUD'   ,I,1,0,ZK8,NBNEUD)
+            CALL GETVTX('ACTION','GROUP_NO',I,1,0,ZK8,NBGRPN)
+            CALL GETVTX('ACTION','NOEUD'   ,I,1,0,ZK8,NBNEUD)
             NBGRPN = -NBGRPN
             NBNEUD = -NBNEUD
             IF ( NBGRPN .NE. 0 ) THEN
                CALL JECREO('&&OP0051.NOM.GRPN','V V K8')
                CALL JEECRA('&&OP0051.NOM.GRPN','LONMAX',NBGRPN,' ')
                CALL JEVEUO('&&OP0051.NOM.GRPN','E',AGRPND)
-              CALL GETVID('ACTION','GROUP_NO',I,1,NBGRPN,ZK8(AGRPND),N1)
+              CALL GETVTX('ACTION','GROUP_NO',I,1,NBGRPN,ZK8(AGRPND),N1)
                DO 120, K = 1, NBGRPN, 1
                   NOMGRN = ZK8(AGRPND + K-1)
                   CALL JENONU(JEXNOM(NMAICH//'.GROUPENO',NOMGRN),N1)
@@ -173,7 +173,7 @@ C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
             ENDIF
             IF ( NBNEUD .NE. 0 ) THEN
                CALL WKVECT('&&OP0051.NOM.NEUD','V V K8',NBNEUD,ALNEUD)
-               CALL GETVID('ACTION','NOEUD',I,1,NBNEUD,ZK8(ALNEUD),N1)
+               CALL GETVTX('ACTION','NOEUD',I,1,NBNEUD,ZK8(ALNEUD),N1)
                NREPND = NMAICH//'.NOMNOE'
                DO 130, K = 1, NBNEUD, 1
                   NOMND = ZK8(ALNEUD + K-1)

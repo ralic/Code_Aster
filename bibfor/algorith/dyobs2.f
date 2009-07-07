@@ -2,7 +2,7 @@
      &                  NBSUIV,SDOBSE,SDSUIV)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,10 +176,10 @@ C
 C
 C --- LES NOEUDS ET MAILLES 
 C
-         CALL GETVID (MOTFAC,'NOEUD'   , IOCC,1,0, K8B ,N4 )
-         CALL GETVID (MOTFAC,'GROUP_NO', IOCC,1,0, K8B ,N5 )
+         CALL GETVTX (MOTFAC,'NOEUD'   , IOCC,1,0, K8B ,N4 )
+         CALL GETVTX (MOTFAC,'GROUP_NO', IOCC,1,0, K8B ,N5 )
          IF (CHAMEV.OR.CHAMES) THEN
-           CALL GETVID (MOTFAC,'MAILLE'  , IOCC,1,0, K8B ,N6 )
+           CALL GETVTX (MOTFAC,'MAILLE'  , IOCC,1,0, K8B ,N6 )
            CALL GETVIS (MOTFAC,'POINT'   , IOCC,1,0, IBID,N7 )
          ELSE
            N6     = 0
@@ -187,7 +187,7 @@ C
          ENDIF
 C
          IF (LSUIVI(IOCC))THEN
-           CALL GETVID(MOTFAC,'GROUP_MA', IOCC,1,0, K8B ,N8 )
+           CALL GETVTX(MOTFAC,'GROUP_MA', IOCC,1,0, K8B ,N8 )
            CALL GETVTX(MOTFAC,'VALE_MAX' ,IOCC,1,0,K8B ,N9 )
            CALL GETVTX(MOTFAC,'VALE_MIN' ,IOCC,1,0,K8B ,N10 )
          ENDIF                  
@@ -195,7 +195,7 @@ C
          IF ( N4 .NE. 0 ) THEN
             NBNO = -N4
             CALL WKVECT ('&&DYOBS2.LIST_NOEU','V V K8',NBNO,JNOE)
-            CALL GETVID (MOTFAC,'NOEUD', IOCC,1,NBNO,ZK8(JNOE),N4)
+            CALL GETVTX (MOTFAC,'NOEUD', IOCC,1,NBNO,ZK8(JNOE),N4)
          ENDIF
          IF ( N5 .NE. 0 ) THEN
             CALL RELIEM (' ',MAILLA,'NO_NOEUD',MOTFAC,IOCC,1,
@@ -205,7 +205,7 @@ C
          IF ( N6 .NE. 0 ) THEN
             NBMA = -N6
             CALL WKVECT ('&&DYOBS2.LIST_MAIL','V V K8',NBMA,JMAI)
-            CALL GETVID (MOTFAC,'MAILLE', IOCC,1,NBMA,ZK8(JMAI),N6)
+            CALL GETVTX (MOTFAC,'MAILLE', IOCC,1,NBMA,ZK8(JMAI),N6)
          ENDIF
          IF ( N7 .NE. 0 ) THEN
             NBPO = -N7

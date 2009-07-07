@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,10 +81,10 @@ C     ------------------------------------------------------------------
 C     --- RECUPERATION DES ENTITES DU MAILLAGE SUR LESQUELLES ---
 C     ---                PORTE LA RESTITUTION                 ---
       TOUSNO = .TRUE.
-      CALL GETVID ( ' ', 'GROUP_NO', 1,1,0, K8B, N1 )
-      CALL GETVID ( ' ', 'NOEUD'   , 1,1,0, K8B, N2 )
-      CALL GETVID ( ' ', 'GROUP_MA', 1,1,0, K8B, N3 )
-      CALL GETVID ( ' ', 'MAILLE'  , 1,1,0, K8B, N4 )
+      CALL GETVTX ( ' ', 'GROUP_NO', 1,1,0, K8B, N1 )
+      CALL GETVTX ( ' ', 'NOEUD'   , 1,1,0, K8B, N2 )
+      CALL GETVTX ( ' ', 'GROUP_MA', 1,1,0, K8B, N3 )
+      CALL GETVTX ( ' ', 'MAILLE'  , 1,1,0, K8B, N4 )
       IF ( N1+N2+N3+N4 .NE. 0 ) TOUSNO = .FALSE.
 C
 C     --- RECUPERATION DE LA BASE MODALE ---

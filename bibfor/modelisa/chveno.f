@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,7 +165,7 @@ C
             INDIC = 0
 C
             DO 210  IC = 1 , NBMC
-               CALL GETVID ( MOTFAC, VALMC(IC), IOCC,1,0, K8B, NBOBJ )
+               CALL GETVTX ( MOTFAC, VALMC(IC), IOCC,1,0, K8B, NBOBJ )
                IF ( NBOBJ .EQ. 0 ) GOTO 210
 C
                NBOBJ = -NBOBJ

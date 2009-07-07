@@ -6,7 +6,7 @@
       REAL*8       EPAIS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -532,7 +532,7 @@ C  -------------------------------------------------------------
   112     CONTINUE
   110   CONTINUE
 C
-        CALL GETVID('COQU_VOLU','NOM',1,1,1,NOMG,N1)
+        CALL GETVTX('COQU_VOLU','NOM',1,1,1,NOMG,N1)
         CALL JEEXIN(JEXNOM(GRPMAI,NOMG),IRET)
         IF (IRET.EQ.0) THEN
           CALL JECROC(JEXNOM(GRPMAI,NOMG))

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,8 +125,8 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
       DO 10 ICABL = 1, NBCABL
 C
-        CALL GETVID('DEFI_CABLE','NOEUD_ANCRAGE'   ,ICABL,1,0,K8B,N1)
-        CALL GETVID('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,1,0,K8B,N2)
+        CALL GETVTX('DEFI_CABLE','NOEUD_ANCRAGE'   ,ICABL,1,0,K8B,N1)
+        CALL GETVTX('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,1,0,K8B,N2)
         NBANCR = N1 + N2
         IF ( ABS(NBANCR).NE.2 ) THEN
            WRITE(K3B,'(I3)') ICABL
@@ -137,14 +137,14 @@ C
            ENDIF
         ELSE
            IF ( N1.NE.0 ) THEN
-              CALL GETVID('DEFI_CABLE','NOEUD_ANCRAGE',ICABL,1,2,
+              CALL GETVTX('DEFI_CABLE','NOEUD_ANCRAGE',ICABL,1,2,
      &                    NOANCR(1),IBID)
               IF ( NOANCR(1).EQ.NOANCR(2) ) THEN
                  WRITE(K3B,'(I3)') ICABL
                  CALL U2MESK('F','MODELISA5_85',1,K3B)
               ENDIF
            ELSE
-              CALL GETVID('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,1,2,
+              CALL GETVTX('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,1,2,
      &                    NOANCR(1),IBID)
               IF ( NOANCR(1).EQ.NOANCR(2) ) THEN
                  WRITE(K3B,'(I3)') ICABL
@@ -155,7 +155,7 @@ C
 C
 C TEST DU TYPE D'ANCRAGE
 C    LE CATALOGUE ASSURE QU'IL Y A DEUX OCCURENCES DE CE MOT-CLE
-        CALL GETVID(' ','TYPE_ANCRAGE',ICABL,1,2,TYPANC(1),IBID)
+        CALL GETVTX(' ','TYPE_ANCRAGE',ICABL,1,2,TYPANC(1),IBID)
 
 C    SI TYPES D'ANCRAGE SONT TOUS LES DEUX PASSIFS
         IF ((TYPANC(1).EQ.'PASSIF').AND.(TYPANC(2).EQ.'PASSIF')) THEN

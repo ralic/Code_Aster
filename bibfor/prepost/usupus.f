@@ -2,7 +2,7 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
             IF ( N1 .EQ. 0 ) NBLOC = 1
             CALL GETVR8(' ','INST_INIT' ,1,1,1,TDEBUT,N2)
             CALL GETVR8(' ','INST_FIN'  ,1,1,1,TFIN  ,N3)
-            CALL GETVID(' ','NOEUD'     ,1,1,1,NOEU  ,N4)
+            CALL GETVTX(' ','NOEUD'     ,1,1,1,NOEU  ,N4)
 C
             CALL JEVEUO(TRANGE//'.NCHO','L',JNCHO)
 C           --- RECHERCHE DU NOEUD DE CHOC ---

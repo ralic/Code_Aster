@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -432,15 +432,15 @@ C     --- CHOC  ET  ANTI_SISM ---
 C
       NBCHOC = 0
       DO 200 IOC = 1, NBCHO1
-        CALL GETVID ( 'CHOC', 'MAILLE', IOC,1,0, K8B, N1 )
+        CALL GETVTX ( 'CHOC', 'MAILLE', IOC,1,0, K8B, N1 )
         IF ( N1 .NE. 0 ) THEN
           NBCHOC = NBCHOC - N1
         ELSE
-          CALL GETVID ( 'CHOC', 'GROUP_MA', IOC,1,0, K8B, N2 )
+          CALL GETVTX ( 'CHOC', 'GROUP_MA', IOC,1,0, K8B, N2 )
           IF ( N2 .NE. 0 ) THEN
             NGR = -N2
             CALL WKVECT('&&MDTR74.GROUP_MA','V V K8',NGR,JGR)
-            CALL GETVID ( 'CHOC', 'GROUP_MA', IOC,1,NGR, ZK8(JGR), N2 )
+            CALL GETVTX ( 'CHOC', 'GROUP_MA', IOC,1,NGR, ZK8(JGR), N2 )
             DO 210 IG = 0, NGR-1
               CALL JELIRA(JEXNOM(MAILLA//'.GROUPEMA',ZK8(JGR+IG)),
      &                                           'LONMAX',NBMG,K8B)

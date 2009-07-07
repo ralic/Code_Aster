@@ -1,19 +1,25 @@
-      SUBROUTINE LC0005(NDIM,TYPMOD,OPTION,IMATE,EPSM,DEPS,VIM,TAMPON,
-     &                  SIGP,VIP,DSIDEP)
+      SUBROUTINE LC0005(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
+     &              INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
+     &                  TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
       IMPLICIT NONE
-      INTEGER         IMATE,NDIM
+      INTEGER         IMATE,NDIM,KSP,KPG
+      INTEGER         ICOMP,NVI
+      INTEGER         CODRET
+      REAL*8          ANGMAS(*)
       REAL*8          TAMPON(*)
-      CHARACTER*16    OPTION
+      CHARACTER*16    COMPOR(*),OPTION
       CHARACTER*8     TYPMOD(*)
-      REAL*8          EPSM(6),  DEPS(6)
-      REAL*8          SIGP(6)
+      CHARACTER*(*)   FAMI
+      REAL*8          EPSM(6),  DEPS(6),CRIT(*)
+      REAL*8          SIGP(6),SIGM(*),INSTAM,INSTAP
       REAL*8          VIM(*),   VIP(*)
       REAL*8          DSIDEP(6,6)
 
 C
+C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/07/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

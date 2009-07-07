@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,17 +40,12 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA    )
     CPRES_R  = PRES_R   ELEM__         (PRES     CISA    )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
-    E8NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8      )
-    E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18     )
+    E6NEUTI = NEUT_I    ELEM__         (X[6])
+    E8NEUTI = NEUT_I    ELEM__         (X[8])
+    E18NEUI = NEUT_I    ELEM__         (X[18])
     
-    E9NEUTR = NEUT_R    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9      )
-    E10NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10     )
+    E9NEUTR = NEUT_R    ELEM__         (X[9])
+    E10NEUTR = NEUT_R   ELEM__         (X[10])
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
 
 VECTEUR__

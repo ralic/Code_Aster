@@ -4,7 +4,7 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,12 +80,12 @@ C----------------------------------------------------------------------
       IER = 0
       NBTM = 0
       DO 40,OCC = 1,NBPARM,1
-        CALL GETVID('DEFI_CHEMIN','MAILLE',OCC,1,0,K8B,N1)
-        CALL GETVID('DEFI_CHEMIN','GROUP_MA',OCC,1,0,K8B,N2)
+        CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,1,0,K8B,N1)
+        CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,0,K8B,N2)
         IF (N1.NE.0) THEN
           N1 = -N1
           CALL WKVECT('&&OP0050.MAILLE','V V K8',N1,JMAIL)
-          CALL GETVID('DEFI_CHEMIN','MAILLE',OCC,1,N1,ZK8(JMAIL),N1)
+          CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,1,N1,ZK8(JMAIL),N1)
           DO 10,IM = 1,N1,1
             NOMMA = ZK8(JMAIL+IM-1)
             CALL JEEXIN(JEXNOM(NOMMAI,NOMMA),EXISTE)
@@ -113,7 +113,7 @@ C----------------------------------------------------------------------
         IF (N2.NE.0) THEN
           N2 = -N2
           CALL WKVECT('&&OP0050.GROUP_MA','V V K8',N2,JGRMA)
-          CALL GETVID('DEFI_CHEMIN','GROUP_MA',OCC,1,N2,ZK8(JGRMA),N2)
+          CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,N2,ZK8(JGRMA),N2)
           DO 30,IG = 1,N2,1
             NOMGR = ZK8(JGRMA+IG-1)
             CALL JENONU(JEXNOM(GRPMAI,NOMGR),EXISTE)
@@ -148,12 +148,12 @@ C----------------------------------------------------------------------
       CALL WKVECT('&INTLISTOTAL','V V I',NBTM,ALSTOT)
       LIBR1 = 1
       DO 80,OCC = 1,NBPARM,1
-        CALL GETVID('DEFI_CHEMIN','MAILLE',OCC,1,0,K8B,N1)
-        CALL GETVID('DEFI_CHEMIN','GROUP_MA',OCC,1,0,K8B,N2)
+        CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,1,0,K8B,N1)
+        CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,0,K8B,N2)
         IF (N1.NE.0) THEN
           N1 = -N1
           CALL WKVECT('&&OP0050.MAILLE','V V K8',N1,JMAIL3)
-          CALL GETVID('DEFI_CHEMIN','MAILLE',OCC,1,N1,ZK8(JMAIL3),N2)
+          CALL GETVTX('DEFI_CHEMIN','MAILLE',OCC,1,N1,ZK8(JMAIL3),N2)
           DO 50,IM = 1,N1,1
             CALL JENONU(JEXNOM(NOMMAI,ZK8(JMAIL3+IM-1)),NUMM)
             CALL I2RDLI(NUMM,ZI(ALSTOT),LIBR1)
@@ -162,7 +162,7 @@ C----------------------------------------------------------------------
         ELSE
           N2 = -N2
           CALL WKVECT('&&OP0050.GROUP_MA','V V K8',N2,JGRMA)
-          CALL GETVID('DEFI_CHEMIN','GROUP_MA',OCC,1,N2,ZK8(JGRMA),N2)
+          CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,N2,ZK8(JGRMA),N2)
           DO 70,IG = 1,N2,1
             NOMGR = ZK8(JGRMA+IG-1)
             CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONMAX',NBM,K1B)
@@ -203,14 +203,14 @@ C     --- ON VERIFIE QU'EN 1 NOEUD ON A AU PLUS 2 MAILLES ---
 C     --- CHOIX DE L'ABSCISSE CURVILIGNE 0. ---
 
       NUMNO = 0
-      CALL GETVID(' ','NOEUD_ORIG',1,1,0,NOEUD,N1)
+      CALL GETVTX(' ','NOEUD_ORIG',1,1,0,NOEUD,N1)
       IF (N1.NE.0) THEN
-        CALL GETVID(' ','NOEUD_ORIG',1,1,1,NOEUD,N1)
+        CALL GETVTX(' ','NOEUD_ORIG',1,1,1,NOEUD,N1)
         CALL JENONU(JEXNOM(NOMNOE,NOEUD),NUMNO)
       ELSE
-        CALL GETVID(' ','GROUP_NO_ORIG',1,1,0,NOEUD,N1)
+        CALL GETVTX(' ','GROUP_NO_ORIG',1,1,0,NOEUD,N1)
         IF (N1.NE.0) THEN
-          CALL GETVID(' ','GROUP_NO_ORIG',1,1,1,NOEUD,N1)
+          CALL GETVTX(' ','GROUP_NO_ORIG',1,1,1,NOEUD,N1)
           CALL UTNONO(' ',NOMAIL,'NOEUD',NOEUD,K8B,IRET)
           IF (IRET.EQ.10) THEN
             CALL U2MESK('F','INTEMAIL_31',1,NOEUD)
@@ -259,8 +259,8 @@ C     --- CHOIX DE L'ABSCISSE CURVILIGNE 0. ---
         CALL JEDETR('&&OP0050.VERI_MAIL')
       END IF
 
-C        /* CALCUL DES COMPOSSANTES CONNEXES (I.E. CHEMINS) /*
-C        /*       ET REPERAGE DANS LE MAILLAGE              /*
+C        /* CALCUL DES COMPOSSANTES CONNEXES (I.E. CHEMINS) */
+C        /*       ET REPERAGE DANS LE MAILLAGE              */
 
       CALL WKVECT('&INTSTRUCT','V V I',2*NBTM,ASTRCT)
       CALL WKVECT('&INTMAIL1','V V I',NBTM,JMAIL1)
@@ -269,7 +269,7 @@ C        /*       ET REPERAGE DANS LE MAILLAGE              /*
       CALL I2IMAM(CONEC,TYPE,ZI(ALSTOT),NBTM,ZI(ASTRCT),ZI(APTSTR),
      &            NBCNX,ZI(JMAIL1),ZI(JMAIL2))
 
-C         /* CREATION DES CHAMPS DU CONCEPT PRODUIT /*
+C         /* CREATION DES CHAMPS DU CONCEPT PRODUIT */
 
       NCHMIN = NOMCRB//'.CHEMIN'
       NMAIL1 = NOMCRB//'.MAIL1'

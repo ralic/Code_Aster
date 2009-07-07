@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C
       CHARACTER*16  KBI1, KBI2, OPTION
       CHARACTER*19  GEOMI, GEOMF,GEOM1
       CHARACTER*24  COORJV
-      REAL*8        LTCHAR, PT(3), PT2(3), DIR(3), ANGL
+      REAL*8        LTCHAR, PT(3), PT2(3), DIR(3), ANGL, R8BID
 
       REAL*8        AXE1(3),AXE2(3),PERP(3)
 
@@ -104,12 +104,12 @@ C
 C
 C     --- TRAITEMENT DU MOT CLEF  "TRANSLATION" :
 C     ---------------------------------------
-      CALL GETVID ( ' ', 'TRANSLATION', 1,1,0, K8BID, N1 )
+      CALL GETVR8 ( ' ', 'TRANSLATION', 1,1,0, R8BID, N1 )
       IF ( N1 .NE. 0 ) THEN
          GEOMI = MA//'.COORDO'
          BIDIM = .FALSE.
          CALL GETVR8 ( ' ', 'TRANSLATION', 1, 1, 0, LTCHAR, DIM )
-         DIM = (-1.D0) * DIM
+         DIM = - DIM
          IF ( DIM .EQ. 2 ) THEN
            CALL GETVR8 ( ' ', 'TRANSLATION', 1, 1, 2, DIR, N1 )
            DIR(3) = 0.D0
@@ -128,7 +128,7 @@ C     ---------------------------------------
          GEOMI = MA//'.COORDO'
          BIDIM = .FALSE.
          CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1, 1, 0, LTCHAR, DIM )
-         DIM = (-1.D0) * DIM
+         DIM = - DIM
          IF ( DIM .EQ. 2 ) THEN
             CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1, 1, 2, PT, N1 )
             PT(3) = 0.D0
@@ -151,8 +151,8 @@ C     ---------------------------------------
          DO 10 I = 1 , NBOCC
             CALL GETVR8 ( 'ROTATION', 'POIN_1', I, 1, 0, LTCHAR, DIM )
             CALL GETVR8 ( 'ROTATION', 'ANGL', I, 1, 1, ANGL, N1 )
-            CALL GETVID ( 'ROTATION', 'POIN_2', I, 1, 0, K8BID, N2 )
-            DIM = (-1.D0) * DIM
+            CALL GETVR8 ( 'ROTATION', 'POIN_2', I, 1, 0, R8BID, N2 )
+            DIM = - DIM
             IF ( DIM .EQ. 2 ) THEN
                CALL GETVR8 ( 'ROTATION', 'POIN_1', I, 1, 2, PT, N1 )
                PT(3) = 0.D0
@@ -221,7 +221,7 @@ C
 C
 C     --- TRAITEMENT DU MOT CLEF  "ECHELLE" :
 C     ---------------------------------------
-      CALL GETVID ( ' ', 'ECHELLE', 1,1,0, K8BID, N1 )
+      CALL GETVR8 ( ' ', 'ECHELLE', 1,1,0, R8BID, N1 )
       IF ( N1 .NE. 0 ) THEN
          GEOMI = MA//'.COORDO'
          CALL GETVR8 ( ' ', 'ECHELLE', 1, 1, 1, LTCHAR, N2 )

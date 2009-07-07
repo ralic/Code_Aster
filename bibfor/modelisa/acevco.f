@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +37,8 @@ C
       NLM = 0
       NLG = 0
       DO 10 IOC = 1,NBOCC
-         CALL GETVID('COQUE','GROUP_MA'     ,IOC,1,0,K8B,NG  )
-         CALL GETVID('COQUE','MAILLE'       ,IOC,1,0,K8B,NM  )
+         CALL GETVTX('COQUE','GROUP_MA'     ,IOC,1,0,K8B,NG  )
+         CALL GETVTX('COQUE','MAILLE'       ,IOC,1,0,K8B,NM  )
          CALL GETVR8('COQUE','EPAIS'        ,IOC,1,0,R8B,NE  )
          CALL GETVID('COQUE','EPAIS_F'      ,IOC,1,0,K8B,NEF )
          CALL GETVR8('COQUE','A_CIS'        ,IOC,1,0,R8B,NK  )

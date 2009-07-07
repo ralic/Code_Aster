@@ -5,7 +5,7 @@
       CHARACTER*(*)       MCF , MCS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,14 +46,14 @@ C
          MCGRNO = 'GROUP_NO_EXTR'
       ENDIF
 C
-      CALL GETVID ( MCF, MCNOEU, IOCC,1,0, K8B, N1 )
+      CALL GETVTX ( MCF, MCNOEU, IOCC,1,0, K8B, N1 )
       IF ( N1 .NE. 0 ) THEN
          CALL GETVEM ( MA, 'NOEUD', MCF, MCNOEU, IOCC,1,1, NOEUD, N1 )
       ENDIF
 C
-      CALL GETVID ( MCF, MCGRNO, IOCC,1,0, K8B, N1)
+      CALL GETVTX ( MCF, MCGRNO, IOCC,1,0, K8B, N1)
       IF ( N1 .NE. 0 ) THEN
-         CALL GETVID ( MCF,  MCGRNO, IOCC,1,1, NOGNO, N1 )
+         CALL GETVTX ( MCF,  MCGRNO, IOCC,1,1, NOGNO, N1 )
          CALL UTNONO ( ' ', MA, 'NOEUD', NOGNO, NOEUD, IRET )
          IF ( IRET .EQ. 10 ) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOGNO)

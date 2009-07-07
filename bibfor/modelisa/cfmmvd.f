@@ -1,7 +1,7 @@
       INTEGER FUNCTION CFMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF MODELISA  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 07/07/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,8 +51,6 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
       IF (VECT.EQ.'ZNOES') THEN
         CFMMVD = ZNOES
       ELSE IF (VECT.EQ.'ZMETH') THEN
@@ -97,5 +95,4 @@ C
         CALL ASSERT(.FALSE.)
       ENDIF  
 C
-      CALL JEDEMA()
       END

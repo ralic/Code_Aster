@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -385,7 +385,7 @@ list_noeu_haut=list_no_later_dro[:2]
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(CONCEPT=_F(NOM=('CHLAT','PHAUT','INIDEP','INISIG','SIEF',
+    DETRUIRE(OBJET=_F(CHAINE=('CHLAT','PHAUT','INIDEP','INISIG','SIEF',
                              'INIVAC','CART1','CART2','CART3','CART_C')));
 
     n_couche = n+2
@@ -546,7 +546,7 @@ for n in range(1,nbcouche-1):
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=25,RESI_GLOB_RELA=1E-5));
 
-    DETRUIRE(CONCEPT=_F(NOM=('INIVAR')));
+    DETRUIRE(CONCEPT=_F(NOM=(INIVAR)));
 
     DEP[n]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='EXTR',

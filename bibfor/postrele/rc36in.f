@@ -5,7 +5,7 @@
       CHARACTER*24        CHINDI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -113,8 +113,8 @@ C
             IF ( TYPE(1:3).EQ.'TEE' ) VALE(7) = 40.D0
          ENDIF
 C
-         CALL GETVID ( MOTCLF, 'GROUP_NO', IOCC,1,0, K8B, N1)
-         CALL GETVID ( MOTCLF, 'NOEUD'   , IOCC,1,0, K8B, N2)
+         CALL GETVTX ( MOTCLF, 'GROUP_NO', IOCC,1,0, K8B, N1)
+         CALL GETVTX ( MOTCLF, 'NOEUD'   , IOCC,1,0, K8B, N2)
          IF ( N1+N2 .NE. 0 ) THEN
             CALL RELIEM ( ' ', NOMA, 'NU_NOEUD', MOTCLF, IOCC, 2, 
      +                                MOTCLN, TYPMCN, MESNOE, NBNOEU )

@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C OUT : NLM    : NOMBRE TOTAL DE MAILLE
 C OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 C ----------------------------------------------------------------------
       REAL*8       XRC, XOA, XFL, XSI
-      CHARACTER*8  TOU, NOMU
+      CHARACTER*8  NOMU
       CHARACTER*16 CONCEP, CMD
       CHARACTER*8 K8BID
 C     ------------------------------------------------------------------
@@ -39,8 +39,8 @@ C
       NLM = 0
       NLG = 0
       DO 10 IOC = 1,NBOCC
-         CALL GETVID('DEFI_ARC','GROUP_MA'  ,IOC,1,0,K8BID,NG)
-         CALL GETVID('DEFI_ARC','MAILLE'    ,IOC,1,0,K8BID,NM)
+         CALL GETVTX('DEFI_ARC','GROUP_MA'  ,IOC,1,0,K8BID,NG)
+         CALL GETVTX('DEFI_ARC','MAILLE'    ,IOC,1,0,K8BID,NM)
          CALL GETVR8('DEFI_ARC','RAYON'     ,IOC,1,1,XRC,NR)
          CALL GETVR8('DEFI_ARC','ORIE_ARC'  ,IOC,1,1,XOA,NA)
          CALL GETVR8('DEFI_ARC','CENTRE'    ,IOC,1,0,XOC,NC)

@@ -1,7 +1,7 @@
       SUBROUTINE OP0090(IER)
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,8 +53,8 @@ C     -----------------------------------------------------------------
 C     -----------------------------------------------------------------
 C                   --- CAS D'UN NOEUD DE CHOC ---
 C     -----------------------------------------------------------------
-      CALL GETVID(' ','NOEUD_CHOC',0,1,1,K8B,NC)
-      CALL GETVID(' ','GROUP_NO_CHOC',0,1,1,K8B,NG)
+      CALL GETVTX(' ','NOEUD_CHOC',0,1,1,K8B,NC)
+      CALL GETVTX(' ','GROUP_NO_CHOC',0,1,1,K8B,NG)
       IF (NC+NG.NE.0) THEN
         CALL RFNOCH()
         GO TO 10

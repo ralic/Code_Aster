@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
       CALL GETVR8(' ','VALE_C'    ,0,1,0,R8BID,N3)
       CALL GETVR8(' ','ABSCISSE'  ,0,1,0,R8BID,NBLA)
 
-      CALL GETVID(' ','NOEUD_PARA',0,1,0,K8B  ,NBLN)
+      CALL GETVTX(' ','NOEUD_PARA',0,1,0,K8B  ,NBLN)
       CALL GETVID(' ','VALE_PARA' ,0,1,0,K8B  ,NBLR)
       CALL GETVR8(' ','VALE_Y'    ,0,1,0,R8BID,NBLV)
       NBVR = ABS(N2)

@@ -5,7 +5,7 @@
       CHARACTER*(*)       MODELE, MATE, CHCARA(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,8 +168,8 @@ C
 C
       DO 10 IOC = 1 , NREP
 C
-         CALL GETVID ( MOTCLE, 'MAILLE'  , IOC,1,0, K8B, N1 )
-         CALL GETVID ( MOTCLE, 'GROUP_MA', IOC,1,0, K8B, N2 )
+         CALL GETVTX ( MOTCLE, 'MAILLE'  , IOC,1,0, K8B, N1 )
+         CALL GETVTX ( MOTCLE, 'GROUP_MA', IOC,1,0, K8B, N2 )
          IF ( N1+N2 .EQ. 0 ) THEN
             LTOUT = .TRUE.
             NBMA  = NBMAIL

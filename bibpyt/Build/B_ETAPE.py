@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 25/11/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,7 @@
 import repr
 import traceback
 from os import times
+from types import ClassType, TypeType
 
 # Module Eficas
 import Noyau.N_FONCTION
@@ -34,6 +35,7 @@ from Noyau.N_utils import AsType
 from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_ASSD,N_ENTITE
 from Noyau import N_FACT,N_BLOC,N_SIMP
 from Noyau.N_Exception import AsException
+from Noyau.N_GEOM  import GEOM
 import B_utils
 from B_CODE import CODE
 import B_OBJECT
@@ -159,6 +161,40 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : print '\tGETFAC : ',"taille=",taille
       return taille
 
+
+   def get_mcsimp(self, nom_motfac, nom_motcle):
+      """Fonction :
+             retourne le mot-clé si :
+                   - le mot-cle de nom nom_motcle existe dans le mot-cle facteur
+                     de nom nom_motfac
+                   - ou si le mot-cle de nom nom_motcle existe dans l'etape
+                     self, dans ce cas nom_motfac est blanc (ou vide)
+                   - ou si le mot-cle de nom nom_motfac existe dans l'etape
+                     self, dans cas nom_motcle est blanc (ou vide).
+             dans le cas contraire get_mcsimp retourne la valeur None.
+      """
+      if CONTEXT.debug : prbanner("get_mcsimp '%s' '%s' "%(nom_motfac,nom_motcle))
+
+      nom_motfac=nom_motfac.strip()
+      nom_motcle=nom_motcle.strip()
+      assert(nom_motfac!="" or nom_motcle!="")
+
+      mcsimp = None
+      if nom_motfac == "" :
+         mcsimp = self.definition.get_entite(nom=nom_motcle, typ=N_SIMP.SIMP)
+      else:
+         if nom_motcle == "" :
+            # ici on recherche nom_motfac dans l'etape courante
+            mcsimp = self.definition.get_entite(nom=nom_motfac, typ=N_FACT.FACT)
+         else :
+            l_mot_fac = self.definition.getmcfs(nom_motfac)
+            for mot_fac in l_mot_fac:
+               mcsimp = mot_fac.get_entite(nom=nom_motcle, typ=N_SIMP.SIMP)
+               if mcsimp != None :
+                  break
+      return mcsimp
+
+
    def getexm(self,nom_motfac,nom_motcle):
       """ Fonction :
              retourne 1 si :
@@ -171,29 +207,11 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
              dans le cas contraire getexm retourne la valeur 0.
       """
       if CONTEXT.debug : prbanner("getexm '%s' '%s' "%(nom_motfac,nom_motcle))
-
-      nom_motfac=nom_motfac.strip()
-      nom_motcle=nom_motcle.strip()
-      assert(nom_motfac!="" or nom_motcle!="")
-
-      presence=0
-      if nom_motfac == "" :
-        if self.definition.get_entite(nom=nom_motcle,typ=N_SIMP.SIMP) != None :
-           presence=1
-      else:
-        if nom_motcle=="" :
-           # ici on recherche nom_motfac dans l'etape courante
-           if self.definition.get_entite(nom=nom_motfac,typ=N_FACT.FACT) != None :
-              presence=1
-        else :
-           l_mot_fac = self.definition.getmcfs(nom_motfac)
-           for mot_fac in l_mot_fac :
-              if mot_fac.get_entite(nom=nom_motcle,typ=N_SIMP.SIMP) != None :
-                 presence=1
-                 break
+      
+      presence = int( self.get_mcsimp(nom_motfac, nom_motcle) != None )
       if CONTEXT.debug : print '\tGETEXM : ',"presence= ",presence
-      assert(presence==1 or presence==0),'presence='+`presence`
       return presence
+
 
    def getvtx(self,nom_motfac,nom_motcle,iocc,iarg,mxval):
       """
@@ -205,6 +223,15 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       if CONTEXT.debug : prbanner("getvtx %s %s %d %d %d" %(nom_motfac,nom_motcle,iocc,iarg,mxval))
 
       valeur=self.get_valeur_mc(nom_motfac,nom_motcle,iocc,iarg,mxval)
+
+      if not self.check_text(valeur[1]):
+         # elements de contexte
+         print '! Etape  :', getattr(self, 'nom', '?'), '/', nom_motfac, '/', nom_motcle
+         print '! Parent :', getattr(self.parent, 'nom', '?')
+         print "! ERREUR incoherence fortran/catalogue de commande, chaine de caractères attendue et non :"
+         print "!", valeur[1]
+         raise AssertionError
+
       valeur=self.Traite_value(valeur,"TX")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVTX',nom_motfac,iocc,nom_motcle,valeur)
@@ -212,6 +239,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       # il faut prendre en compte le catalogue : 'TXM' --> on retourne la chaine en majuscules,
       # 'TX' --> on la retourne telle qu'elle est
       return valeur
+
 
    def get_valeur_mc(self,nom_motfac,nom_motcle,iocc,iarg,mxval):
       """
@@ -270,10 +298,21 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           de la ième occurrence du MCF nom_motfac.
       """
       valeur=self.get_valeur_motcle(nom_motfac,iocc,nom_motcle)
+      
       if valeur :
-          return self.transforme_valeur_nom(valeur)
+         chk = self.check_assd(valeur)
+         if not chk:
+            # elements de contexte
+            print '! Etape  :', getattr(self, 'nom', '?'), '/', nom_motfac, '/', nom_motcle
+            print '! Parent :', getattr(self.parent, 'nom', '?')
+            print "! ERREUR incoherence fortran/catalogue de commande, concept attendu et non :"
+            print "!", valeur
+            raise AssertionError
+      
+         return self.transforme_valeur_nom(valeur)
       else :
-          return None
+         return None
+
 
    def transforme_valeur_nom(self,valeur):
       """
@@ -281,11 +320,10 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           (dans le cas ou valeur n'est pas une instance retourne la string valeur, sinon retourne valeur.nom)
           Traite le cas ou valeur est un tuple d'instances et retourne alors le tuple des strings
       """
-      # utile pour getvid
 
       if isinstance(valeur, N_ASSD.ASSD):
          return valeur.nom
-      elif type(valeur) == tuple:
+      elif type(valeur) in (list, tuple):
          l=[]
          for obj in valeur :
              l.append(self.transforme_valeur_nom(obj))
@@ -329,6 +367,34 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          valeur_apres=( len(list_apres) , tuple(list_apres) )
 
       return valeur_apres
+
+
+   def check_values(self, func, values):
+      """Vérifier que les éléments de 'values' sont des chaines de caractères (pour getvtx).
+      """
+      ok = True
+      if not type(values) in (list, tuple):
+         values = [values,]
+      for v in values:
+         if type(v) in (list, tuple):
+            ok = self.check_values(func, v)
+            continue
+         ok = func(v)
+         if not ok:
+            break
+      return ok
+
+
+   def check_text(self, values):
+      """Vérifier que les éléments de 'values' sont des chaines de caractères (pour getvtx).
+      """
+      return self.check_values(lambda v : type(v) in (str, unicode), values)
+
+
+   def check_assd(self, values):
+      """Vérifier que les éléments de 'values' sont des concepts (pour getvid).
+      """
+      return self.check_values(lambda v : isinstance(v, N_ASSD.ASSD), values)
 
 
    def retnom( self ) :
@@ -505,6 +571,7 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
       nom_motcle=nom_motcle.strip()
 
       valeur=self.get_valeur_motcle_pour_getvid(nom_motfac,iocc,nom_motcle)
+      
       if valeur == None:
          if CONTEXT.debug : print "\tGETVID : valeur =",None
          return 0,()

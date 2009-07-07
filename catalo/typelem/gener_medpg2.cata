@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,8 +34,7 @@ MODE_LOCAL__
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     )
+                                        XXXX2    KIT[9])
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
@@ -74,16 +73,11 @@ MODE_LOCAL__
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     ECARAGE  = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      IXR2     IYR2     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
-    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
-    CALPHAR  = NEUT_R   ELEM__         (X1       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
-                                        X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
-                                        X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
@@ -128,12 +122,6 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_EPLG_F    296   IN__   CALPHAR  PALPHAR  CEPSINF  PEPSINF  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR
-                              OUT__  MVECTDR  PVECTUR
-    CHAR_MECA_EPLG_R    296   IN__   CALPHAR  PALPHAR  CEPSINR  PEPSINR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NDEPLAR  PTHETAR
-                              OUT__  MVECTDR  PVECTUR
     CHAR_MECA_EPSA_R    421   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCRR
                               OUT__  MVECTDR  PVECTUR
@@ -175,9 +163,6 @@ OPTION__
     DLSI_ELGA_DEPL      558   IN__   NDEPLAR  PDEPLAR  NDEPLAR  PDLAGDE  ZVARCPG  PVARCMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  NDEPLAR  PVECTTH
                               OUT__  ECONTPG  PDLAGSG
-    DLSI_ELNO_DLDE      558   IN__   NDEPLAR  PDEPLAR  NDEPLAR  PDLAGDE  ZVARCPG  PVARCMR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  NDEPLAR  PVECTTH
-                              OUT__  ECONTNO  PDLSINO
     ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENDO_ELNO_SIGM      511   IN__   ECONTNO  PCONTNO  ECONTPG  PCONTPG  CMATERC  PMATERC  ZVARCPG  PVARCPR

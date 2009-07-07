@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,14 +59,14 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGINDLO  = IND_LOCA ELGA__ RIGI    (INDICE   DIR1     DIR2     DIR3     DIR4     )
+    EGINDLO  = IND_LOCA ELGA__ RIGI    (INDICE   DIR[4])
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6]     )
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
-    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )

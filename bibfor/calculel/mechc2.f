@@ -3,7 +3,7 @@
       CHARACTER*(*)       CHGEOM, CHMASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,8 +84,8 @@ C
          CALL GETVR8 ( MOTCLE, 'VECTEUR' , IOC,1,0, VECT, NVEC )
          IF ( NA+NVEC .EQ. 0 )  GOTO 10
 C
-         CALL GETVID ( MOTCLE, 'MAILLE'  , IOC,1,0, K8B, N1 )
-         CALL GETVID ( MOTCLE, 'GROUP_MA', IOC,1,0, K8B, N2 )
+         CALL GETVTX ( MOTCLE, 'MAILLE'  , IOC,1,0, K8B, N1 )
+         CALL GETVTX ( MOTCLE, 'GROUP_MA', IOC,1,0, K8B, N2 )
 C
          IF ( N1+N2 .EQ. 0 ) THEN
             LTOUT = .TRUE. 

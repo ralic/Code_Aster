@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,8 +83,8 @@ C
          ILEV=ILEV+1
          TYPFON=FONLEV(ILEV)
       ENDIF
-      CALL GETVID ( TYPFON, 'NOEUD_ORIG'   , 1,1,0, K8B, N1 )
-      CALL GETVID ( TYPFON, 'GROUP_NO_ORIG', 1,1,0, K8B, N2 )
+      CALL GETVTX ( TYPFON, 'NOEUD_ORIG'   , 1,1,0, K8B, N1 )
+      CALL GETVTX ( TYPFON, 'GROUP_NO_ORIG', 1,1,0, K8B, N2 )
       IF ( N1+N2 .EQ. 0 ) THEN
          CALL GVERIF ( RESU, NOMA, TYPFON, ENTIT2 )
       ELSE

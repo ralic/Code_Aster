@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,16 +46,14 @@ MODE_LOCAL__
                                         TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     )
+                                        XXXX2    KIT[9])
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
                                         COPECO   COPEFR)
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
-    CREFERI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12      )
+    CREFERI  = NEUT_I   ELEM__         (X[12])
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -67,7 +65,7 @@ MODE_LOCAL__
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E2NEUTI  = NEUT_I   ELEM__         (X1       X2      )
     E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
-    E4NEUTR = NEUT_R    ELEM__         (X1       X2       X3       X4       )
+    E4NEUTR = NEUT_R    ELEM__         (X[4])
 
     E6NEUTR = NEUT_R    ELEM__         (X[6]     )
     E6NEUTI = NEUT_I    ELEM__         (X[6]     )

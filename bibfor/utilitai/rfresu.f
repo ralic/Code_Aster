@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,13 +73,13 @@ C
       MAILLE = ' '
       NOGMA = ' '
       NOGNO = ' '
-      CALL GETVID(' ','MAILLE',0,1,1,MAILLE,NM)
-      CALL GETVID(' ','GROUP_MA',0,1,1,NOGMA,NGM)
+      CALL GETVTX(' ','MAILLE',0,1,1,MAILLE,NM)
+      CALL GETVTX(' ','GROUP_MA',0,1,1,NOGMA,NGM)
       CALL GETVIS(' ','SOUS_POINT',0,1,1,NUSP,NP)
       IF (NP.EQ.0) NUSP = 0
       CALL GETVIS(' ','POINT',0,1,1,NPOINT,NP)
-      CALL GETVID(' ','NOEUD',0,1,1,NOEUD,NN)
-      CALL GETVID(' ','GROUP_NO',0,1,1,NOGNO,NGN)
+      CALL GETVTX(' ','NOEUD',0,1,1,NOEUD,NN)
+      CALL GETVTX(' ','GROUP_NO',0,1,1,NOGNO,NGN)
 
 C     -----------------------------------------------------------------
 C                       --- CAS D'UN RESULTAT ---

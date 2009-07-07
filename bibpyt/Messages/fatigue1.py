@@ -1,21 +1,21 @@
-#@ MODIF fatigue1 Messages  DATE 26/11/2007   AUTEUR ANGLES J.ANGLES 
+#@ MODIF fatigue1 Messages  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -154,7 +154,7 @@ cata_msg={
 """),
 
 29: _("""
- la methode 'WOHLER' ne peut pas être utilisée avec l'option %(k1)s 
+ la methode 'WOHLER' ne peut pas être utilisée avec l'option %(k1)s
 """),
 
 30: _("""
@@ -162,7 +162,7 @@ cata_msg={
 """),
 
 31: _("""
- la methode 'MANSON_COFFIN' ne peut pas être utilisée avec l'option %(k1)s 
+ la methode 'MANSON_COFFIN' ne peut pas être utilisée avec l'option %(k1)s
 """),
 
 32: _("""
@@ -285,5 +285,81 @@ cata_msg={
  On ne peut donc pas extraire de cycles.
 
 """),
+
+78: _("""
+ Le nombre de points à traiter n'est pas correcte.
+
+ Soit les mailles comportent des sous-points, or ce cas n'est pas prévu.
+
+ Soit le nombre total de composantes de l'option : %(k1)s a changé et n'est plus égal à %(i1)d.
+
+"""),
+
+79 : _("""
+   *** Point  %(i1)d
+   Contrainte statique        =  %(r1)f
+   Contrainte dynamique       =  %(r2)f
+   Amplitude maximale admissible en ce point  =  %(r3)f
+"""),
+
+80 : _("""
+   Attention, la contrainte statique en ce point est supérieure à la contrainte 
+   à la rupture du matériau.
+"""),
+
+81 : _("""
+ Calcul du dommage en %(k1)s (composante grandeur equivalente %(k3)s)
+ Points de calcul du dommage : %(k2)s
+ Nombre de points de calcul : %(i1)d
+ Nombre de modes considérés : %(i2)d
+"""),
+
+82 : _("""
+ -------------------------------------------------------------------
+ Amplitude de vibration maximale admissible par la structure :  %(r1)f
+ -------------------------------------------------------------------
+"""),
+
+83 : _("""
+   Attention, la contrainte statique en un ou plusieurs points est supérieure à 
+   la contrainte à la rupture du matériau.
+   Contrainte statique maximale = %(r1)f
+   Contrainte à la rupture      = %(r2)f
+"""),
+
+84 : _("""
+   Le résultat correspondant à la contrainte statique (mot clé 
+   RESULTAT_STATIQUE) comporte %(i1)d instants. 
+   Le calcul en fatigue vibratoire n'est possible que si le résultat statique
+   comporte un et un seul instant. Vérifiez les données.
+"""),
+
+85 : _("""
+   Le nombre de points de calcul est différent entre la contrainte statique
+   ( %(i1)d points) et la contrainte modale (%(i2)d points).
+   Vérifiez la cohérence des données.
+"""),
+
+86 : _("""
+   La longueur de la liste des coefficients modaux COEF_MODE est différente
+   du nombre de modes retenus pour le calcul NUME_MODE.
+   Vérifiez la cohérence des données.
+"""),
+
+87 : _("""
+ Contrainte à la rupture : %(r1)f
+ Limite d'endurance : %(r2)f
+"""),
+
+88 : _("""
+ Le paramètre %(k1)s est absent dans la définition du matériau. Le calcul est impossible.
+ Risques et conseils : pour l'option FATIGUE_VIBR de CALC_FATIGUE, il est obligatoire de 
+ définir les propriétés matériaux suivantes (dans DEFI_MATERIAU) :
+ - la contrainte à la rupture (opérande SU, mot clé facteur RCCM) ;
+ - la limite d'endurance (première abscisse de la courbe de fatigue définie dans l'opérande 
+ WOHLER du mot clé facteur FATIGUE).
+"""),
+
+
 
 }

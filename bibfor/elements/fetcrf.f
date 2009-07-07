@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,13 +190,13 @@ C     DETERMINATION DU NB TOTAL DE NOEUDS ET DE MAILLES DU MAILLAGE
 
 C     LECTURE DU CONTENU DES MOT-CLES DEFI
       DO 1 I = 1, NBSD
-        CALL GETVID('DEFI','GROUP_MA',I,1,1,ZK8(LSTGMA-1+I),
+        CALL GETVTX('DEFI','GROUP_MA',I,1,1,ZK8(LSTGMA-1+I),
      &                                         ZI(NGMA-1+I))
         IF (ZI(NGMA-1+I).NE.1) THEN
           VALI(1)=I
           CALL U2MESI('F','ELEMENTS5_25',1,VALI)
         ENDIF
-        CALL GETVID('DEFI','GROUP_MA_BORD',I,1,1,ZK8(LSTBRD-1+I),
+        CALL GETVTX('DEFI','GROUP_MA_BORD',I,1,1,ZK8(LSTBRD-1+I),
      &                                              ZI(NBRD-1+I))
   1   CONTINUE
 

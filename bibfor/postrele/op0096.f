@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,8 +122,8 @@ C     --- TRAITEMENT DES GROUP_MA ET MAILLE ---
 C
       LISMAI = '&&OP0096.NUME_MAIL'
 C
-      CALL GETVID ( ' ', 'GROUP_MA', 1,1,0, K8B, N1 )
-      CALL GETVID ( ' ', 'MAILLE'  , 1,1,0, K8B, N2 )
+      CALL GETVTX ( ' ', 'GROUP_MA', 1,1,0, K8B, N1 )
+      CALL GETVTX ( ' ', 'MAILLE'  , 1,1,0, K8B, N2 )
 C
       IF ( (N1+N2) .EQ. 0 ) THEN
          CALL WKVECT ( LISMAI, 'V V I', NBTMA, JNUMA )

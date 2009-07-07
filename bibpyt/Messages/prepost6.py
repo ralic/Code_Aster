@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost6 Messages  DATE 06/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ def _(x) : return x
 cata_msg = {
 
 2 : _("""
- -> le nombre de mailles de votre maillage (%(i1)d) est supérieur 
+ -> le nombre de mailles de votre maillage (%(i1)d) est supérieur
     à la limite de 9 999 999.
  -> Risque & Conseil : veuillez vérifier le script gibi qui vous a permis
     de générer le fichier mgib.
@@ -125,11 +125,8 @@ cata_msg = {
  de résultats en variables généralisées.
 """),
 
-37 : _("""
- Erreur d'utilisation :
-   Quand on utilise IMPR_RESU/RESTREINT, il ne faut pas répéter le mot-clé facteur RESU.
-   Dans l'unique occurrence de RESU, il faut renseigner le mot clé MAILLAGE.
-"""),
+
+
 
 38 : _("""
  Problème dans la lecture du fichier de maillage GMSH.
@@ -140,7 +137,7 @@ cata_msg = {
 39 : _("""
  <I> Depuis la version 2.2.0 de GMSH il est possible de lire et écrire le format MED.
      Conseil : Utilisez plutot GMSH avec MED comme format d'entrée et de sortie.
-     
+
 """),
 
 40 : _("""
@@ -155,6 +152,12 @@ cata_msg = {
 42 : _("""
  Problème dans la lecture du fichier de maillage GMSH.
  Il manque la balise de début de la liste des éléments.
+"""),
+
+43 : _("""
+ -> le nombre de mailles de votre maillage (%(i1)d) est supérieur
+    à la limite de 9 999 999.
+ -> Risque & Conseil : générez un fichier MED directement depuis GMSH. 
 """),
 
 }

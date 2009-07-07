@@ -1,13 +1,15 @@
-      SUBROUTINE RCEVO2 ( NBINTI, KINTI, CSIGM, CINST, CCONT, 
-     +                    LFATIG, FLEXIO, LROCHT, CNOC, CRESU, CPRES )
+      SUBROUTINE RCEVO2 ( NBINTI, KINTI, CSIGM, CINST, CSIEX, 
+     +                     KEMIXT, CSTEX, CSMEX, LFATIG, FLEXIO, 
+     +                     LROCHT, CNOC, CRESU, CPRES )
       IMPLICIT      NONE
       INTEGER       NBINTI
-      LOGICAL       LFATIG, FLEXIO, LROCHT
+      LOGICAL       LFATIG, FLEXIO, LROCHT,KEMIXT
       CHARACTER*16  KINTI
-      CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
+      CHARACTER*24  CSIGM, CINST, CSIEX, CNOC, CRESU, CPRES,
+     +               CSTEX, CSMEX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,12 +54,13 @@ C
       INTEGER      IBID, N1, NUME, NBINST, KINST, JCONT, JCOFL, NCMPR,
      +             I, J, K, L, NDIM, NBABSC, JABSC, JSIGM, JINST, NCMP,
      +             IRET, JOCCU, NBTRAN, JSIOE, IOCC, NBINS0, JNOCC, II,
-     +             JRESU, NBCYCL, JCALS, JCOPR, JRESP
+     +             JRESU, NBCYCL, JCALS, JCOPR, JRESP, JSTOE, LO, LE, 
+     +             JSMOE
       PARAMETER  ( NCMP = 6 )
       REAL*8       R8B, PREC(2), MOMEN0, MOMEN1, VALE(2), SIGMLO,
      +             SIGMLE, R8VIDE
       COMPLEX*16   CBID
-      LOGICAL      EXIST, CFAIT
+      LOGICAL      EXIST, CFAIT,FLEXII
       CHARACTER*4  TYPE
       CHARACTER*8  K8B, CRIT(2), NOCMP(NCMP), KNUME
       CHARACTER*16 MOTCLF, VALEK(2), TABLE, TABL0, TABFLE, TABFL0,
@@ -93,6 +96,7 @@ C
 C --- RECHERCHE DU NOMBRE D'INSTANTS A COMBINER
 C
       NBINST = 0
+      FLEXIO = .FALSE.
       DO 10, IOCC = 1, NBTRAN, 1
         CFAIT  = .FALSE.
 C
@@ -117,9 +121,9 @@ C
                 TABPRE = TABPR0
               ELSE
                 CFAIT  = .TRUE.
-                TABLE  = '&&RCEVO2.RESU_MECA'
-                TABFLE = '&&RCEVO2.SIGM_THER'
-                TABPRE = '&&RCEVO2.RESU_PRES'
+                TABLE  = '&&RCEVO2.RESU_ME'
+                TABFLE = '&&RCEVO2.SIGM_TH'
+                TABPRE = '&&RCEVO2.RESU_PR'
                 CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
      +                       IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
                IF ( IRET .EQ. 10 ) THEN
@@ -183,9 +187,9 @@ C
             TABPRE = TABPR0
           ELSE
             CFAIT  = .TRUE.
-            TABLE  = '&&RCEVO2.RESU_MECA'
-            TABFLE = '&&RCEVO2.SIGM_THER'
-            TABPRE = '&&RCEVO2.RESU_PRES'
+            TABLE  = '&&RCEVO2.RESU_ME'
+            TABFLE = '&&RCEVO2.SIGM_TH'
+            TABPRE = '&&RCEVO2.RESU_PR'
             CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
      +                    IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
             IF ( IRET .EQ. 10 ) THEN
@@ -295,7 +299,11 @@ C
       CALL WKVECT ( CRESU, 'V V K8', NBINST, JRESU )
       IF ( LFATIG ) THEN
          NDIM = 2 * NBINST * NCMP
-         CALL WKVECT ( CCONT, 'V V R', NDIM, JSIOE )
+         CALL WKVECT ( CSIEX, 'V V R', NDIM, JSIOE )
+         IF (KEMIXT) THEN
+           CALL WKVECT ( CSTEX, 'V V R', NDIM, JSTOE )
+           CALL WKVECT ( CSMEX, 'V V R', NDIM, JSMOE )
+         ENDIF
       ENDIF
       IF ( LROCHT ) THEN
          CALL WKVECT ( CPRES, 'V V K8', NBTRAN, JRESP )
@@ -310,8 +318,9 @@ C
 C
         CALL GETVID ( MOTCLF, 'TABL_RESU_MECA', IOCC,1,1, TABL0, N1 )
 C
+        FLEXII = .FALSE.
         CALL GETVID ( MOTCLF, 'TABL_SIGM_THER', IOCC,1,1, TABFL0, N1 )
-        IF (N1.NE.0) FLEXIO = .TRUE.
+        IF (N1.NE.0) FLEXII = .TRUE.
 C
         CALL GETVID ( MOTCLF, 'TABL_RESU_PRES', IOCC,1,1, TABPR0, N1 )
         IF (N1.NE.0) THEN
@@ -324,9 +333,9 @@ C
            TABFLE = TABFL0
            TABPRE = TABPR0
         ELSE
-           TABLE  = '&&RCEVO2.RESU_MECA'
-           TABFLE = '&&RCEVO2.SIGM_THER'
-           TABPRE = '&&RCEVO2.RESU_PRES'
+           TABLE  = '&&RCEVO2.RESU_ME'
+           TABFLE = '&&RCEVO2.SIGM_TH'
+           TABPRE = '&&RCEVO2.RESU_PR'
            CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
      +                   IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
            IF ( IRET .EQ. 10 ) THEN
@@ -338,7 +347,7 @@ C
               VALK(2) = 'INTITULE'
               CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
            ENDIF
-           IF ( FLEXIO ) THEN
+           IF ( FLEXII ) THEN
               CALL TBEXTB ( TABFL0, 'V', TABFLE, 1, 'INTITULE',
      +            'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
               IF ( IRET .EQ. 10 ) THEN
@@ -423,7 +432,7 @@ C
                 CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
               ENDIF
 C
-              IF ( FLEXIO ) THEN
+              IF ( FLEXII ) THEN
                 CALL TBLIVA ( TABFLE, 2, VALEK, IBID, VALE,
      +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
      +                        IBID, ZR(JCOFL+K-1), CBID, K8B, IRET)
@@ -452,10 +461,21 @@ C
  106        CONTINUE
 C
             IF ( LFATIG ) THEN
-              L = NCMP*(II-1) + J
-              ZR(JSIOE-1+L) = ZR(JCONT)
-              L = NCMP*NBINST + NCMP*(II-1) + J
-              ZR(JSIOE-1+L) = ZR(JCONT+NBABSC-1)
+              LO = NCMP*(II-1) + J
+              LE = NCMP*NBINST + NCMP*(II-1) + J
+              ZR(JSIOE-1+LO) = ZR(JCONT)
+              ZR(JSIOE-1+LE) = ZR(JCONT+NBABSC-1)
+              IF (KEMIXT ) THEN
+                IF ( FLEXII) THEN
+                  ZR(JSTOE-1+LO) = ZR(JCOFL)
+                  ZR(JSTOE-1+LE) = ZR(JCOFL+NBABSC-1)
+                ELSE
+                  ZR(JSTOE-1+LO) = 0.D0
+                  ZR(JSTOE-1+LE) = 0.D0
+                ENDIF
+                ZR(JSMOE-1+LO) = ZR(JCONT) - ZR(JSTOE-1+LO)
+                ZR(JSMOE-1+LE) = ZR(JCONT+NBABSC-1) - ZR(JSTOE-1+LE)
+              ENDIF
             ENDIF
 C
             CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
@@ -466,7 +486,7 @@ C
             L = NCMP*NBINST + NCMP*(II-1) + J
             ZR(JSIGM-1+L) = MOMEN1
 C
-            IF ( FLEXIO ) THEN
+            IF ( FLEXII ) THEN
               CALL RC32MY (NBABSC,ZR(JABSC),ZR(JCOFL), MOMEN0, MOMEN1)
               MOMEN1 = 0.5D0*MOMEN1
             ELSE
@@ -496,7 +516,7 @@ C
         CALL JEDETR ( INSTAN )
         IF ( NBINTI .NE. 1 ) THEN
            CALL DETRSD ( 'TABLE', TABLE )
-           IF ( FLEXIO ) CALL DETRSD ( 'TABLE', TABFLE )
+           IF ( FLEXII ) CALL DETRSD ( 'TABLE', TABFLE )
            IF ( LROCHT ) CALL DETRSD ( 'TABLE', TABPRE )
         ENDIF
 C

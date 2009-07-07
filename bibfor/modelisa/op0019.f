@@ -1,5 +1,5 @@
       SUBROUTINE OP0019(IER)
-C MODIF MODELISA  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -315,7 +315,7 @@ C     ---------------------------------------------------------------
         DO 90 IOC = 1,NBOCC(ICLF)
           CALL CODENT(IOC,'G',KIOC)
           DO 80 ICLE = 1,NBMCLE(ICLF)
-            CALL GETVID(MCLF(ICLF),MCLE(ICLE),IOC,1,LMAX,ZK8(JDLS),NG)
+            CALL GETVTX(MCLF(ICLF),MCLE(ICLE),IOC,1,LMAX,ZK8(JDLS),NG)
             CALL VERIMA(NOMA, ZK8(JDLS), NG, MCLE(ICLE))
    80     CONTINUE
    90   CONTINUE

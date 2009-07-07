@@ -3,7 +3,7 @@
       INTEGER  IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,8 +59,8 @@ C
       IF ( NVAL.EQ.0 ) THEN
          CALL GETVID(' ','RESU_GENE',1,1,1,RESIN,NVAL)
       ENDIF
-      CALL GETVID(' ','METHODE',1,1,1,METHOD,NVAL)
-      CALL GETVID(' ','SYMETRIE',1,1,1,SYMETR,NVAL)
+      CALL GETVTX(' ','METHODE',1,1,1,METHOD,NVAL)
+      CALL GETVTX(' ','SYMETRIE',1,1,1,SYMETR,NVAL)
 C   Evaluation sens de la FFT
       CALL GETTCO(RESIN,TYPRES)
       IF ((TYPRES(1:10).EQ.'DYNA_HARMO').OR.

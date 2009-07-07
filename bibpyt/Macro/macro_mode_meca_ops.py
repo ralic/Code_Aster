@@ -1,4 +1,4 @@
-#@ MODIF macro_mode_meca_ops Macro  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+#@ MODIF macro_mode_meca_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,6 @@ def macro_mode_meca_ops(self,MATR_A,MATR_B,INFO,METHODE,OPTION,CALC_FREQ,
   NORM_MODE         =self.get_cmd('NORM_MODE')
   IMPR_RESU         =self.get_cmd('IMPR_RESU')
   EXTR_MODE         =self.get_cmd('EXTR_MODE')
-  DETRUIRE          =self.get_cmd('DETRUIRE')
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
@@ -133,5 +132,4 @@ def macro_mode_meca_ops(self,MATR_A,MATR_B,INFO,METHODE,OPTION,CALC_FREQ,
                             CRIT_EXTR=IMPRESSION['CRIT_EXTR'],)
   self.DeclareOut('nomres',self.sd)
   nomres=EXTR_MODE(**motscles)
-  DETRUIRE(CONCEPT=_F(NOM='__nomre0',),ALARME='NON')
   return ier
