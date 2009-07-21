@@ -1,5 +1,6 @@
-# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ARRACHEMENT D'UNE ARMATURE RIGIDE AVEC DES ELEMENTS A DISCONTINUITE (EN AXIS)
+# ssna115a.para = tps_job 230 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -178,8 +179,6 @@ EVOL = STAT_NON_LINE(
          INCREMENT = _F(
                          LIST_INST = INSTANTS, 
                          INST_FIN  = 0.,
-                         SUBD_METHODE='UNIFORME', SUBD_PAS  = 10,
-                         SUBD_PAS_MINI = 1.E-5
        ),
          RECH_LINEAIRE = _F (
                              ITER_LINE_MAXI = 2
@@ -211,8 +210,6 @@ EVOL = STAT_NON_LINE(reuse  = EVOL,
   INCREMENT = _F(
     LIST_INST = INSTANTS,
     INST_FIN  = tfin,
-    SUBD_METHODE='UNIFORME', SUBD_PAS  = 10,
-    SUBD_PAS_MINI = 1.E-5
     ),
   PILOTAGE  = _F (
     GROUP_MA       = 'JOINT',

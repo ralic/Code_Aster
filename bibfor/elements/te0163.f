@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C     ------------------------------------------------------------------
       ZERO = 0.D0
 
 
-      IF (NOMTE(1:15).EQ.'MECA_POU_D_T_GD') THEN
+      IF (NOMTE.EQ.'MECA_POU_D_T_GD') THEN
         NDDL = 6
       ELSE
         NDDL = 3

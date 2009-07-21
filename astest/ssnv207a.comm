@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ETUDE: DRAINED CYCLIC STRESS-CONTROLLED SHEAR TEST WITH HUJEUX MODEL (MECA PUR)
 # ssnv207a.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,16 +78,18 @@ COEF2=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',);
 
 
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_NIVEAU=10),)
+
 U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',
                                ITER_INTE_MAXI=10,
                                ITER_INTE_PAS = -10),
                   MATER=MATE,
-                  INCREMENT=_F(LIST_INST=TEMPS1,
+                  INCREMENT=_F(LIST_INST=DEFLIST1,
                                NUME_INST_INIT=0,
-                               INST_FIN=40,
-                               SUBD_METHODE='UNIFORME',
-                               SUBD_PAS=10,
-                               SUBD_NIVEAU=10,),
+                               INST_FIN=40,),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
 #                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           
@@ -234,12 +236,9 @@ U2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',
                                ITER_INTE_MAXI=10,
                                ITER_INTE_PAS = -10),
                   MATER=MATE,
-                  INCREMENT=_F(LIST_INST=TEMPS1,
+                  INCREMENT=_F(LIST_INST=DEFLIST1,
                                NUME_INST_INIT=0,
-                               INST_FIN=40,
-                               SUBD_METHODE='UNIFORME',
-                               SUBD_PAS=10,
-                               SUBD_NIVEAU=10,),
+                               INST_FIN=40,),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
 #                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           

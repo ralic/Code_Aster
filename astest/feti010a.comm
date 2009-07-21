@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION CALCUL FETI + CONTACT CONTINU ENTRE DEUX CLOISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,10 +121,7 @@ RESUSC=STAT_NON_LINE(MODELE=MOMEQ,
                               ('CLOIS_1B','CLOIS_1H','CLOIS_2B','CLOIS_2H','BAS_CL_1',
                                          'BAS_CL_2','FAC_EX11','FAC_EX12',
                                          'FAC_EX21','FAC_EX22','FAC_PRE1','FAC_PRE2',),),
-                 INCREMENT=_F(LIST_INST=LINST,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_PAS_MINI=1e-05,),
+                 INCREMENT=_F(LIST_INST=LINST,),
                  NEWTON=_F(
                            PREDICTION='ELASTIQUE',
                            MATRICE='TANGENTE',
@@ -156,10 +153,7 @@ RESUAC=STAT_NON_LINE(MODELE=MOMEQ,
                               ('CLOIS_1B','CLOIS_1H','CLOIS_2B','CLOIS_2H','BAS_CL_1',
                                          'BAS_CL_2','FAC_EX11','FAC_EX12',
                                          'FAC_EX21','FAC_EX22','FAC_PRE1','FAC_PRE2',),),
-                 INCREMENT=_F(LIST_INST=LINST,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_PAS_MINI=1e-05,),
+                 INCREMENT=_F(LIST_INST=LINST,),
                  NEWTON=_F(
                            PREDICTION='ELASTIQUE',
                            MATRICE='TANGENTE',

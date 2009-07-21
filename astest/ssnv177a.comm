@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,9 +128,7 @@ U=STAT_NON_LINE(MODELE=MO,
                            RESI_INTE_RELA=1.E-06,
                            ITER_INTE_MAXI=20,),
               INCREMENT=_F(LIST_INST=L_INST,
-                           INST_FIN=1.,
-                           SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                           SUBD_PAS_MINI=1.E-05,),
+                           INST_FIN=1.,),
               NEWTON=_F(MATRICE='TANGENTE',
                         REAC_ITER=1,),
               CONVERGENCE=_F(RESI_GLOB_RELA=1.E-15,
@@ -151,9 +149,7 @@ U=STAT_NON_LINE(reuse=U,
                                       RESI_INTE_RELA=1.E-06,
                                       ITER_INTE_MAXI=20,),
                 INCREMENT=_F(LIST_INST=L_INST,
-                             INST_FIN=2.,
-                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                             SUBD_PAS_MINI=1.E-07,),
+                             INST_FIN=2.,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,18 +144,18 @@ C               ----------------------------
         IC = ZI(JNUMCO)
         INIV = ZI(JNUMCO+1)
 
-        IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     &      NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
+        IF (NOMTE.EQ.'MEDKTR3 ' .OR.
+     &      NOMTE.EQ.'MEDKTG3 ' ) THEN
           CALL DKTCOD(XYZL,OPTION,PGL,IC,INIV,DEPL,SIGTOT,
      &                MULTIC)
-        ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ') THEN
+        ELSE IF (NOMTE.EQ.'MEDSTR3 ') THEN
           CALL DSTCOD(XYZL,OPTION,PGL,IC,INIV,DEPL,SIGTOT)
-        ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 '.OR.
-     &           NOMTE(1:8).EQ.'MEDKQG4 ') THEN
+        ELSE IF (NOMTE.EQ.'MEDKQU4 '.OR.
+     &           NOMTE.EQ.'MEDKQG4 ') THEN
           CALL DKQCOD(XYZL,OPTION,PGL,IC,INIV,DEPL,SIGTOT)
-        ELSE IF (NOMTE(1:8).EQ.'MEDSQU4 ') THEN
+        ELSE IF (NOMTE.EQ.'MEDSQU4 ') THEN
           CALL DSQCOD(XYZL,OPTION,PGL,IC,INIV,DEPL,SIGTOT)
-        ELSE IF (NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+        ELSE IF (NOMTE.EQ.'MEQ4QU4 ') THEN
           CALL Q4GCOD(XYZL,OPTION,PGL,IC,INIV,DEPL,SIGTOT)
         END IF
 
@@ -182,21 +182,21 @@ C
            NBCOU = ZI(JNBSPI)
            IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
 
-           IF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     &          NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
+           IF ( NOMTE.EQ.'MEDKTR3 ' .OR.
+     &          NOMTE.EQ.'MEDKTG3 ' ) THEN
               CALL DKTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM),
      &                    MULTIC)
-           ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
+           ELSE IF (NOMTE.EQ.'MEDSTR3 ' ) THEN
               CALL DSTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
      &                    ZR(JSIGM),NPG)
-           ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     &              NOMTE(1:8).EQ.'MEDKQG4 ' ) THEN
+           ELSE IF (NOMTE.EQ.'MEDKQU4 ' .OR.
+     &              NOMTE.EQ.'MEDKQG4 ' ) THEN
               CALL DKQCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
      &                    ZR(JSIGM),NPG)
-           ELSE IF (NOMTE(1:8).EQ.'MEDSQU4 ' ) THEN
+           ELSE IF (NOMTE.EQ.'MEDSQU4 ' ) THEN
               CALL DSQCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
      &                    ZR(JSIGM),NPG)
-           ELSE IF (NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
+           ELSE IF (NOMTE.EQ.'MEQ4QU4 ' ) THEN
               CALL Q4GCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
      &                    ZR(JSIGM),NPG)
            END IF
@@ -292,17 +292,17 @@ C               ----------------------------
         CALL JEVECH('PDEFOGR','E',JEFFG)
 
 
-        IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     &     NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
+        IF (NOMTE.EQ.'MEDKTR3 ' .OR.
+     &     NOMTE.EQ.'MEDKTG3 ' ) THEN
           CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFGT,MULTIC)
-        ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
+        ELSE IF (NOMTE.EQ.'MEDSTR3 ' ) THEN
           CALL DSTEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     &           NOMTE(1:8).EQ.'MEDKQG4 ' ) THEN
+        ELSE IF (NOMTE.EQ.'MEDKQU4 ' .OR.
+     &           NOMTE.EQ.'MEDKQG4 ' ) THEN
           CALL DKQEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        ELSE IF (NOMTE(1:8).EQ.'MEDSQU4 ' ) THEN
+        ELSE IF (NOMTE.EQ.'MEDSQU4 ' ) THEN
           CALL DSQEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        ELSE IF (NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
+        ELSE IF (NOMTE.EQ.'MEQ4QU4 ' ) THEN
           CALL Q4GEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
         END IF
 C

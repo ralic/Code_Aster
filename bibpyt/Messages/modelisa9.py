@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa9 Messages  DATE 20/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,7 +126,7 @@ Conseil :
 """),
 
 23 : _("""
- erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d
+ erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 24 : _("""
@@ -142,19 +142,19 @@ Conseil :
 """),
 
 27 : _("""
- erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d
+ erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
  pour le mot cle  %(k2)s
   le noeud n'existe pas  %(k3)s
 """),
 
 28 : _("""
- erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d
+ erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
  pour le mot cle  %(k2)s
   le GROUP_NO n'existe pas  %(k3)s
 """),
 
 29 : _("""
- trop de noeuds dans le GROUP_NO mot cle facteur  %(k1)s  occurence  %(i1)d
+ trop de noeuds dans le GROUP_NO mot cle facteur  %(k1)s  occurrence  %(i1)d
    noeud utilise:  %(k2)s
 """),
 
@@ -163,7 +163,7 @@ Conseil :
 """),
 
 31 : _("""
- poutre : occurence %(i2)d :
+ poutre : occurrence %(i2)d :
  "cara" nombre de valeurs entrees:  %(i2)d
  "vale" nombre de valeurs entrees:  %(i3)d
  verifier vos donnees
@@ -171,7 +171,7 @@ Conseil :
 """),
 
 32 : _("""
- erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d
+ erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 33 : _("""
@@ -190,7 +190,7 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 36 : _("""
- erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d
+ erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 39 : _("""
@@ -198,7 +198,7 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 40 : _("""
- erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d
+ erreur dans les donnees mot cle facteur  %(k1)s  occurrence  %(i1)d
 """),
 
 43 : _("""
@@ -416,17 +416,35 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 """),
 
 93 : _("""
- ...
+ERREUR EUROPLEXUS
+   Toutes les occurrences de RIGI_PARASOL doivent avoir la même valeur pour le mot
+   clef EUROPLEXUS. La valeur du mot clef EUROPLEXUS à l'occurrence %(i1)d est différente
+   de sa valeur à l'occurrence numéro 1.
 """),
 
 94 : _("""
-     On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D
+   On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D
 """),
 95 : _("""
-     ERREUR: l'auto-spectre est a valeurs négatives
+   ERREUR: l'auto-spectre est a valeurs négatives
 """),
+
 96 : _("""
-EUROPLEXUS ne gère pas les MAILLES seulement les POINTS.
-Le problème vient de la maille %(k1)s.
+EUROPLEXUS
+   EUROPLEXUS ne gère pas les MAILLES, mais seulement les POINTS.
+   Le problème vient de la maille %(k1)s.
 """),
+
+97 : _("""
+ERREUR EUROPLEXUS
+   Données incorrectes. Les dimensions des objets ne sont pas cohérentes (Erreur Fortran : acearp)
+"""),
+
+98 : _("""
+ERREUR EUROPLEXUS
+   Pour accéder aux valeurs nécessaires à EUROPLEXUS, il faut que dans la commande AFFE_CARA_ELEM,
+   pour le mot clef facteur RIGI_PARASOL, la valeur du mot clef EUROPLEXUS soit 'OUI' dans
+   toutes les occurrences.
+"""),
+
 }

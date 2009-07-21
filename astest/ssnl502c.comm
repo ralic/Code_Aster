@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 23/07/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD) 
@@ -161,6 +161,11 @@ LIS_INST=DEFI_LIST_REEL(       DEBUT=0.0,INTERVALLE=(
 )
                            )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LIS_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 0.00000001),)
+
 #
 RESULT=STAT_NON_LINE(       MODELE=MO,
                           CHAM_MATER=CHMAT,
@@ -192,13 +197,10 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                                       TYPE_CHARGE = 'FIXE_PILO')),
                            COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
                                       DEFORMATION = 'GREEN_GR',),
-                           INCREMENT=_F( LIST_INST = LIS_INST,
-                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                     SUBD_PAS_MINI=0.000001,
+                           INCREMENT=_F( LIST_INST = DEFLIST,
                                       ),
                               NEWTON=_F( REAC_ITER = 1,
                                       MATRICE = 'TANGENTE'),
-                             SOLVEUR=_F( STOP_SINGULIER='DECOUPE'),
                          CONVERGENCE=_F( 
                                       ITER_GLOB_MAXI = 40,
                                       RESI_GLOB_RELA = 1.E-6),
@@ -223,11 +225,8 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                                       TYPE_CHARGE = 'FIXE_PILO')),
                            COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
                                       DEFORMATION = 'GREEN_GR',),
-                           INCREMENT=_F( LIST_INST = LIS_INST,
-                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                     SUBD_PAS_MINI=0.000001,
+                           INCREMENT=_F( LIST_INST = DEFLIST,
                                       ),
-                             SOLVEUR=_F( STOP_SINGULIER='DECOUPE'),
                               NEWTON=_F( REAC_ITER = 1,
                                       MATRICE = 'TANGENTE'),
                          CONVERGENCE=_F( 

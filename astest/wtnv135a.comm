@@ -1,7 +1,7 @@
-# MODIF  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
-# wtnv135a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+# wtnv135a.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -259,6 +259,11 @@ EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
 #    CALCUL DE LA SOLUTION
 #***********************************************************************
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS2 ,),
+                                ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                         SUBD_PAS=10,
+                                         SUBD_PAS_MINI=1.,),)
+
 
 U2=STAT_NON_LINE( 
                             MODELE=MODELE,
@@ -285,10 +290,7 @@ U2=STAT_NON_LINE(
                 EVOL_NOLI = U1,        
                 ),
                          INCREMENT=_F( 
-                LIST_INST = TEMPS2,   
-                SUBD_METHODE='UNIFORME', 
-                SUBD_PAS=10,
-                SUBD_PAS_MINI=1.,
+                LIST_INST = DEFLIST,   
                 ),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',

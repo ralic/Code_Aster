@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
 # ssnv169d.para = tps_job 240 mem_job 128Mo ncpus 1 liste_test S
@@ -157,6 +157,10 @@ L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,INTERVALLE=(
              _F( JUSQU_A = 5960000., NOMBRE = 40),)
            )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                               SUBD_NIVEAU = 4,),)
+
 
 U=STAT_NON_LINE( MODELE=MO,
                  CHAM_MATER=CM,EXCIT=( _F(CHARGE = CH10),
@@ -169,10 +173,8 @@ U=STAT_NON_LINE( MODELE=MO,
        COMP_INCR=_F(
                  RELATION = 'KIT_DDI',
                  RELATION_KIT=('BETON_UMLV_FP','MAZARS'),),
-                 INCREMENT=_F(LIST_INST = L_INST,
+                 INCREMENT=_F(LIST_INST = DEFLIST,
                               INST_FIN = 5960000.,
-                               SUBD_METHODE  = 'UNIFORME',
-                               SUBD_NIVEAU = 4,
                               ),
                  NEWTON=_F(PREDICTION = 'TANGENTE',
                  MATRICE = 'TANGENTE',

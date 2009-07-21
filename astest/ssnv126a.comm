@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 # ssnv126a.para = tps_job 80 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -281,10 +281,7 @@ SOLNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',),MODELE=EPD3,
                                  ITER_INTE_MAXI=20,
                                  RESO_INTE='RUNGE_KUTTA_2',),
                     INCREMENT=_F(LIST_INST=LINST,
-                                 NUME_INST_FIN=60,
-                                 SUBD_METHODE='EXTRAPOLE',
-                                 SUBD_PAS=10,
-                                 SUBD_NIVEAU=10,),
+                                 NUME_INST_FIN=60,),
                     NEWTON=_F(REAC_INCR=1,
                               PREDICTION='EXTRAPOL',
                               MATRICE='ELASTIQUE',

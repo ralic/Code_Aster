@@ -1,4 +1,4 @@
-# MODIF  DATE 09/06/2009   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 # sdnl111f.para = tps_job 170 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,9 +112,7 @@ U=DYNA_NON_LINE(MODELE=MODELE,
                 ETAT_INIT=_F(VITE= VITINI),       
                 COMP_INCR=_F(RELATION='ELAS',
                              DEFORMATION='PETIT',),                
-                INCREMENT=_F(LIST_INST=L_INST,
-                             SUBD_METHODE='UNIFORME', SUBD_PAS=3,
-                             SUBD_PAS_MINI=1.E-8,),
+                INCREMENT=_F(LIST_INST=L_INST,),
                 SCHEMA_TEMPS=_F(SCHEMA='THETA_METHODE',
                                 FORMULATION='DEPLACEMENT',
                                 THETA=0.7,),

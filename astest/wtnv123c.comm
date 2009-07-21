@@ -1,6 +1,7 @@
-# MODIF  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE ESSAI TRIAXIAL A SUCCION FIXEE AVEC LE MODELE DE BARCELONE
+# wtnv123c.para = tps_job 130 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -525,8 +526,6 @@ U1=STAT_NON_LINE(reuse=U1,
                 LIST_INST = TEMPS5,
                 INST_INIT = 46., 
                 INST_FIN = 60.,        
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
-                SUBD_PAS_MINI = 0.001,
                 ),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE', 

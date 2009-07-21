@@ -1,0 +1,481 @@
+      SUBROUTINE OP0028(IER)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
+C
+      IMPLICIT NONE
+      INTEGER           IER
+C
+C ----------------------------------------------------------------------
+C
+C OPERATEUR DEFI_LIST_INS
+C
+C DEFINITION DE LA DISCRETISATION TEMPORELLE
+C
+C ----------------------------------------------------------------------
+C OUT IER   : CODE RETOUR ERREUR COMMANDE
+C               IER = 0 => TOUT S'EST BIEN PASSE
+C               IER > 0 => NOMBRE D'ERREURS RENCONTREES
+C
+C CONCEPT SORTANT DE TYPE LIST_INST
+C
+C OBJETS DE LA SD : .LIST.INFOR    : (R) LLINR
+C                   .LIST.DITR     : (R) 
+C                                    VALEURS DES INSTANTS DONNES PAR
+C                                    L'UTILISATEUR (LIST_INST)
+C
+C                   .ECHE.EVENR    : (R)   LEEVR*NOCC DE ECHE
+C                   .ECHE.EVENK    : (K16) LEEVK*NOCC DE ECHE
+C                   .ECHE.SUBDR    : (R)   LESUR*NOCC DE ECHE
+C
+C                   .ADAP.EVENR    : (R)   LAEVR*NOCC DE ADAP
+C                   .ADAP.EVENK    : (K8)  LAEVK*NOCC DE ADAP
+C                   .ADAP.TPLUR    : (R)   LATPR*NOCC DE ADAP
+C                   .ADAP.TPLUK    : (K16) LATPK*NOCC DE ADAP
+C
+C        LES OBJETS DOIVENT ETRE EN CONFORMITE AVEC LA ROUTINE UTDIDT
+C
+C -------------- DEBUT EVENARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN EVENARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      IFM,NIV
+      CHARACTER*8  SDDISC
+      CHARACTER*8  K8BID
+      CHARACTER*16 K16BID
+
+      INTEGER      IBID,I,N1
+      CHARACTER*16 CL,MCFACT,NOPARA,CRICOM,MODETP,NOCHAM,NOCMP
+      CHARACTER*16 NOSCHE
+      CHARACTER*19 LISINS      
+      REAL*8       INSINI,INCINI,INSFIN,VALE,PCENT,VALERE,R8MAEM
+      INTEGER      NOCC,IOCC
+      INTEGER      NBINSE,VALEI,NIT,NBPAMX
+      INTEGER      JLIR,JDITR,JINST,NBINST,CEIL
+      CHARACTER*16 EVEN
+      REAL*8       PASMIN,PASMAX,DTMIN,DELTAT,RAPP
+
+      INTEGER      LLINR,LEEVR,LEEVK,LESUR,LAEVR,LAEVK,LATPR,LATPK
+      PARAMETER   (LLINR=7)
+      PARAMETER   (LEEVR=4,LEEVK=3,LESUR=8)
+      PARAMETER   (LAEVR=5,LAEVK=1,LATPR=6,LATPK=4)
+
+      CHARACTER*16 SUBMET,OPTION
+      INTEGER      ITEIGN,ITEFIN,NBPLUS,N2,NBRPAS,NIVEAU,NUCMP,IDIV
+      REAL*8       RATIO,R8VIDE
+      
+      INTEGER      JEEVR,JEEVK,JESUR,JAEVR,JAEVK,JATPR,JATPK
+      CHARACTER*8  FORTPL,NOMGD,DINOGD
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      CALL INFMAJ()
+C      CALL INFDBG('AVOIR',IFM,NIV)
+      IER = 0
+C
+C --- NOM DU CONCEPT 
+C
+      CALL GETRES(SDDISC,K16BID,K16BID)
+C
+C     -----------------------------------
+C     MOT-CLE FACTEUR DEFI_LIST
+C     -----------------------------------
+
+      MCFACT = 'DEFI_LIST'
+      CALL WKVECT(SDDISC//'.LIST.INFOR','G V R',LLINR,JLIR)
+C     ECRITURE DES DIFFERENTES INFOS
+C     ZR(JLIR-1 + 1) <===> 'METHODE' =1 SI 'MANUEL'
+C                                    =2 SI 'AUTO'
+C                                    =3 SI 'CFL'
+C                                    =4 SI 'MODAL'
+C     ZR(JLIR-1 + 2) <===> 'PAS_MINI
+C     ZR(JLIR-1 + 3) <===> 'PAS_MAXI'
+C     ZR(JLIR-1 + 4) <===> 'NB_PAS_MAX'
+C     ZR(JLIR-1 + 5) <===> DTMIN
+C     ZR(JLIR-1 + 6) <===> DT ACTUEL (VOIR NMCRLI...)
+C     ZR(JLIR-1 + 7) <===> REDECOUPE SI DIVERGENCE_ERRE (POUR CRESOL)
+      CALL GETVTX(MCFACT,'METHODE',1,1,1,CL,IBID)
+
+      IF (CL.NE.'MANUEL'.AND.CL.NE.'AUTO') THEN
+        WRITE(6,*)'CETTE FONCTIONNALITE N EST PAS ENCORE DISPO'
+        IER = IER + 1
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+C     RECUPERATION DE LA LISTE D'INSTANTS FOURNIE
+      IF (CL.EQ.'MANUEL'.OR.CL.EQ.'AUTO') THEN
+        CALL GETVID(MCFACT,'LIST_INST',1,1,1,LISINS,N1)
+        CALL JEVEUO(LISINS//'.VALE','L',JINST)
+        CALL JELIRA(LISINS//'.VALE','LONMAX',NBINST,K8BID)   
+
+        CALL WKVECT(SDDISC//'.LIST.DITR','G V R',NBINST,JDITR)
+        DO 20 I=1,NBINST
+          ZR(JDITR-1+I) = ZR(JINST-1+I)
+ 20     CONTINUE
+
+C       VERIFICATION IL Y A AU MOINS UN INSTANT DE CALCUL
+        IF (NBINST.LT.2) CALL U2MESS('F','DISCRETISATION_86')
+C
+C       INTERVALLE DE TEMPS MINIMAL : DTMIN
+        DTMIN = R8MAEM()
+        DO 30 I = 1,NBINST-1
+          DELTAT = ZR(JDITR-1+I+1) - ZR(JDITR-1+I)
+          DTMIN  = MIN(DELTAT,DTMIN)
+30      CONTINUE
+
+C       VERIFICATION DE LA STRICTE CROISSANCE DE LA LISTE D'INSTANTS
+        IF (DTMIN.LE.0.D0) CALL U2MESS('F','DISCRETISATION_87')
+
+C       ENREGISTRMENET DE DTMIN
+        ZR(JLIR-1+5)= DTMIN
+      ENDIF
+
+      IF (CL.EQ.'MANUEL') THEN
+        ZR(JLIR-1+1)= 1.D0
+      ELSEIF (CL.EQ.'AUTO') THEN
+        ZR(JLIR-1+1)= 2.D0
+        CALL GETVR8(MCFACT,'PAS_MINI' ,1,1,1,PASMIN,IBID)
+        IF (PASMIN.GT.DTMIN) CALL U2MESS('F','DISCRETISATION_1')
+        CALL GETVR8(MCFACT,'PAS_MAXI' ,1,1,1,PASMAX,IBID)
+        IF (IBID.EQ.0) PASMAX = ZR(JDITR-1+NBINST) - ZR(JDITR-1+1)
+        CALL GETVIS(MCFACT,'NB_PAS_MAXI' ,1,1,1,NBPAMX,IBID)     
+        RAPP = MAX (PASMAX / PASMIN, 1.D9)
+        IF (IBID.EQ.0) NBPAMX = CEIL(RAPP)
+        ZR(JLIR-1+2)= PASMIN
+        ZR(JLIR-1+3)= PASMAX
+        ZR(JLIR-1+4)= NBPAMX
+      ENDIF
+
+C     ATTENTION : LIST.INFOR EST DIMENSIONNE A 6 CAR ON EN AURA BESOIN
+
+C     -----------------------------------
+C     MOT-CLE FACTEUR ECHEC
+C     -----------------------------------
+
+      MCFACT = 'ECHEC'
+      CALL GETFAC(MCFACT,NOCC)
+
+C     ON DIMENSIONNE A NOCC+1 CAR ON DEDOUBLE LE CRITERE DE DIVERGENCE 
+C      - DIV POUR CAUSE DE DEPASSEMENT DE ITERMAX
+C      - DIV POUR CAUSE D'ERREUR (CONTACT, PILO, LC...)     
+      CALL WKVECT(SDDISC//'.ECHE.EVENR','G V R',  (NOCC+1)*LEEVR,JEEVR)
+      CALL WKVECT(SDDISC//'.ECHE.EVENK','G V K16',(NOCC+1)*LEEVK,JEEVK)
+      CALL WKVECT(SDDISC//'.ECHE.SUBDR','G V R'  ,(NOCC+1)*LESUR,JESUR)
+
+C     INFOS SUR L'EVENEMENT POUR CHAQUE OCCURENCE
+
+C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 1) <===> 'EVENEMENT' 
+C                                            = 0 SI DIVERGENCE_ITER
+C                                            = 1 SI DIVERGENCE_ERRE
+C                                            = 2 SI 'COLLISION'
+C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 2) <===> 'CRIT_COMP'
+C                                               = 1 SI 'LT'
+C                                               = 2 SI 'GT'
+C                                               = 3 SI 'LE'
+C                                               = 4 SI 'GE'
+C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 3) <===> 'VALE'
+C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 4) <===> NUMERO DE LA COMPOSANTE
+C
+C
+C     ZK16(JEEVK-1 + LEEVK*(IOCC-1) + 1) <===> 'FORMULE'
+C     ZK16(JEEVK-1 + LEEVK*(IOCC-1) + 2) <===> 'NOM_CHAM'
+C     ZK16(JEEVK-1 + LEEVK*(IOCC-1) + 3) <===> 'NOM_CMP'
+C
+C
+C     ZR(JESUR-1 + LESUR*(IOCC-1) + 1) <===> 'SUBD_METHODE'
+C                                            = 0 SI 'AUCUNE'
+C                                            = 1 SI 'UNIFORME'
+C                                            = 2 SI 'EXTRAP_IGNO'
+C                                            = 3 SI 'EXTRAP_FIN'
+C     ZR(JESUR-1 + LESUR*(IOCC-1) + 2) <===> 'SUBD_PAS'
+C     ZR(JESUR-1 + LESUR*(IOCC-1) + 3) <===> 'SUBD_PAS_MINI'
+C     ZR(JESUR-1 + LESUR*(IOCC-1) + 4) <===> 'SUBD_COEF_PAS_1'
+C     ZR(JESUR-1 + LESUR*(IOCC-1) + 5) <===> 'SUBD_NIVEAU'
+C     ZR(JESUR-1 + LESUR*(IOCC-1) + 6) <===> 'SUBD_ITER_IGNO'
+C     ZR(JESUR-1 + LESUR*(IOCC-1) + 7) <===> 'SUBD_ITER_FIN'
+C     ZR(JESUR-1 + LESUR*(IOCC-1) + 8) <===> 'SUBD_ITER_PLUS'
+
+
+C     NUMERO DE L'OCCURENCE DE L'EVEN DIVERGENCE
+      IDIV = 0
+
+      DO 100 IOCC = 1,NOCC
+        CALL GETVTX(MCFACT,'EVENEMENT',IOCC,1,1,EVEN,IBID)
+
+        IF (EVEN.NE.'DIVERGENCE') THEN
+          WRITE(6,*)'CETTE FONCTIONNALITE N EST PAS ENCORE DISPO'
+          IER = IER + 1
+          CALL ASSERT(.FALSE.)
+        ENDIF
+
+C       ON NE PEUT DEFINIR QU'UNE SEULE OCCURENCE AVEC DIVERGENCE
+        IF (IDIV.NE.0.AND.EVEN.EQ.'DIVERGENCE') THEN
+          CALL U2MESS('F','DISCRETISATION_10')
+        ENDIF
+
+        IF (EVEN.EQ.'DIVERGENCE') THEN
+          IDIV=IOCC
+          ZR(JEEVR-1+LEEVR*(IOCC-1)+1)=0.D0
+        ELSEIF (EVEN.EQ.'COLLISION') THEN
+          ZR(JEEVR-1+LEEVR*(IOCC-1)+1)=2.D0
+        ENDIF
+
+C       DANS LE CAS DE DIVERGENCE, ON SOUHAITE RE-DECOUPER
+        IF (EVEN.EQ.'DIVERGENCE') THEN
+          CALL GETVTX(MCFACT,'SUBD_METHODE',IOCC,1,1,SUBMET,N1)
+
+          IF (SUBMET.EQ.'AUCUNE') THEN
+            ZR(JESUR-1+LESUR*(IOCC-1)+1)=0.D0
+            GOTO 100
+          ENDIF
+
+          NIVEAU = 0
+          CALL GETVIS(MCFACT,'SUBD_NIVEAU'  ,IOCC,1,1,NIVEAU,N1)
+          IF ((N1.NE.0).AND.(NIVEAU.LT.1)) THEN
+            CALL U2MESS('F','DISCRETISATION_99')
+          ENDIF
+C         EN MODE AUTO, ON EN TIENT PAS COMPTE DE LA NOTION DE NIVEAU
+          IF (ZR(JLIR-1+1).EQ.2.AND.NIVEAU.NE.0) THEN
+            CALL U2MESS('A','DISCRETISATION_4')
+          ENDIF
+          ZR(JESUR-1+LESUR*(IOCC-1)+5) = NIVEAU
+
+          CALL GETVR8(MCFACT,'SUBD_PAS_MINI',IOCC,1,1,PASMIN,N2)
+          IF (PASMIN.GT.DTMIN) CALL U2MESS('F','DISCRETISATION_1')
+          ZR(JESUR-1+LESUR*(IOCC-1)+3) = PASMIN
+
+          NBRPAS = 4
+          CALL GETVIS(MCFACT,'SUBD_PAS'     ,IOCC,1,1,NBRPAS,IBID)
+          IF (NBRPAS .LT. 2) CALL U2MESS('F','DISCRETISATION_3')
+          ZR(JESUR-1+LESUR*(IOCC-1)+2) = NBRPAS
+
+          RATIO  = 1.D0
+          CALL GETVR8(MCFACT,'SUBD_COEF_PAS_1',IOCC,1,1,RATIO,IBID)
+          ZR(JESUR-1+LESUR*(IOCC-1)+4) = RATIO
+
+          IF     ( SUBMET.EQ. 'UNIFORME' ) THEN
+            ZR(JESUR-1+LESUR*(IOCC-1)+1) = 1.D0
+          ELSEIF ( SUBMET.EQ. 'EXTRAPOLE' ) THEN
+            CALL GETVTX(MCFACT,'SUBD_OPTION',1,1,1,OPTION,IBID)
+            IF     ( OPTION .EQ. 'IGNORE_PREMIERES') THEN
+              ZR(JESUR-1+LESUR*(IOCC-1)+1) = 2.D0
+            ELSEIF ( OPTION .EQ. 'GARDE_DERNIERES') THEN
+              ZR(JESUR-1+LESUR*(IOCC-1)+1) = 3.D0
+            ENDIF
+
+            ITEIGN = 3
+            CALL GETVIS(MCFACT,'SUBD_ITER_IGNO',1,1,1,ITEIGN,IBID)
+            ZR(JESUR-1+LESUR*(IOCC-1)+6) = ITEIGN
+
+            ITEFIN = 8
+            CALL GETVIS(MCFACT,'SUBD_ITER_FIN' ,1,1,1,ITEFIN,IBID)
+            ZR(JESUR-1+LESUR*(IOCC-1)+7) = ITEFIN
+
+            CALL GETVIS(MCFACT,'SUBD_ITER_PLUS',1,1,1,NBPLUS,IBID)
+            ZR(JESUR-1+LESUR*(IOCC-1)+8) = NBPLUS
+          ENDIF
+        ELSEIF (EVEN.EQ.'COLLISION') THEN
+C         ON SOUHAITE REDECOUPER SUIVANT UN CRITERE PRE-ETABLI
+        ENDIF
+      
+ 100  CONTINUE
+
+C     DEDOUBLEMENT DU CRITERE DE DIVERGENCE EN CAS D'ERREUR
+C     ON FORCE LE SOUS-DECOUPAGE AVEC LA METHODE UNIFORME
+C     CAR LA METHODE EXTRAPOLE NE GERE PAS CE CAS
+C     (ANCIENNEMENT FECUP)
+C     PARAMETRES = CEUX DE L'OCCURENCE DE DIVERGENCE_ITER
+      IOCC = NOCC + 1
+      IF (IDIV.NE.0) THEN   
+C       ON MET EVEN = 'DIVERGENCE_ERRE'
+        ZR(JEEVR-1+LEEVR*(IOCC-1)+1) = 1.D0
+C       ON MET METHODE = 'UNIFORME'
+        ZR(JESUR-1+LESUR*(IOCC-1)+1) = 1.D0
+C       ON COPIE SUBD_PAS, SUBD_PAS_MINI, SUBD_COEF_PAS_1, SUBD_NIVEAU
+        ZR(JESUR-1+LESUR*(IOCC-1)+2) = ZR(JESUR-1+LESUR*(IDIV-1)+2)
+        ZR(JESUR-1+LESUR*(IOCC-1)+3) = ZR(JESUR-1+LESUR*(IDIV-1)+3)
+        ZR(JESUR-1+LESUR*(IOCC-1)+4) = ZR(JESUR-1+LESUR*(IDIV-1)+4)
+        ZR(JESUR-1+LESUR*(IOCC-1)+5) = ZR(JESUR-1+LESUR*(IDIV-1)+5)
+        ZR(JLIR-1+7)= 1.D0
+      ELSE
+C       AUCUNE OCCURENCE DE 'DIVERGENCE' : 
+C       ON MET EVEN='DIVERGENCE_ERRE' ET METHODE ='AUCUNE'
+        ZR(JEEVR-1+LEEVR*(IOCC-1)+1) = 1.D0
+        ZR(JESUR-1+LESUR*(IOCC-1)+1) = 0.D0 
+        ZR(JLIR-1+7)= 0.D0
+      ENDIF
+      
+C     --------------------------------------------
+C     MOT-CLE FACTEUR ADAPTATION
+C     --------------------------------------------
+
+C     ADAPTATION SEULEMENT SI METHODE AUTO
+      IF (ZR(JLIR-1+1).NE.2.D0) GOTO 9999
+
+      MCFACT = 'ADAPTATION'
+      CALL GETFAC(MCFACT,NOCC)
+      CALL WKVECT(SDDISC//'.ADAP.EVENR','G V R',  NOCC*LAEVR,JAEVR)
+      CALL WKVECT(SDDISC//'.ADAP.EVENK','G V K8', NOCC*LAEVK,JAEVK)
+      CALL WKVECT(SDDISC//'.ADAP.TPLUR','G V R',  NOCC*LATPR,JATPR)
+      CALL WKVECT(SDDISC//'.ADAP.TPLUK','G V K16',NOCC*LATPK,JATPK)
+
+C     ECRITURE DES DIFFERENTES INFOS POUR CHAQUE OCCURENCE
+C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 1) <===> 'EVENEMENT' 
+C                                             = 0 SI 'AUCUN'
+C                                             = 1 SI 'TOUT_INST'
+C                                             = 2 SI  SEUIL SANS FORMULE
+C                                             = 3 SI  SEUIL AVEC FORMULE
+C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 2) <===> 'NB_INCR_SEUIL'
+C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 3) <===> 'NOM_PARA'
+C                                               = 1 SI 'NB_ITER_NEWTON'
+C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 4) <===> 'CRIT_COMP'
+C                                               = 1 SI 'LT'
+C                                               = 2 SI 'GT'
+C                                               = 3 SI 'LE'
+C                                               = 4 SI 'GE'
+C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 5) <===> 'VALE'
+
+C     ZR(JAEVK-1 + LAEVK*(IOCC-1) + 1) <===> 'FORMULE_SEUIL'
+
+C     ZR(JATPR-1 + LATPR*(IOCC-1) + 1) <===> 'MODE_CALCUL_TPLUS'
+C                                               = 1 SI 'FIXE'
+C                                               = 2 SI  'DELTA_GRANDEUR'
+C                                               = 3 SI  'ITER_NEWTON'
+C                                               = 4 SI  'FORMULE'
+C     ZR(JATPR-1 + LATPR*(IOCC-1) + 2) <===> 'PCENT_AUGM'
+C     ZR(JATPR-1 + LATPR*(IOCC-1) + 3) <===> 'VALE_REF'
+C     ZR(JATPR-1 + LATPR*(IOCC-1) + 4) <===> NUMERO DE LA COMPOSANTE
+C     ZR(JATPR-1 + LATPR*(IOCC-1) + 5) <===> 'NB_ITER_NEWTON_REF'
+C     ZR(JATPR-1 + LATPR*(IOCC-1) + 6) <===> NUMERO DE LA FORMULE
+C                                               = 1 SI 'OLIVER'
+
+C     ZR(JATPK-1 + LATPK*(IOCC-1) + 1) <===> 'NOM_PARA'
+C     ZR(JATPK-1 + LATPK*(IOCC-1) + 2) <===> 'NOM_CHAM'
+C     ZR(JATPK-1 + LATPK*(IOCC-1) + 3) <===> 'NOM_CMP'
+C     ZR(JATPK-1 + LATPK*(IOCC-1) + 4) <===> 'FORMULE_TPLUS'
+
+      DO 200 IOCC = 1,NOCC
+
+C       DONNEE CONCERNANT L'EVENEMENT
+        CALL GETVTX(MCFACT,'EVENEMENT',IOCC,1,1,EVEN,IBID)
+
+        IF (EVEN.EQ.'AUCUN') THEN
+          ZR(JAEVR-1+LAEVR*(IOCC-1)+1) = 0.D0
+          CALL U2MESS('A','DISCRETISATION_5')
+        ELSEIF (EVEN.EQ.'TOUT_INST') THEN
+          ZR(JAEVR-1+LAEVR*(IOCC-1)+1) = 1.D0
+        ELSEIF (EVEN.EQ.'SEUIL') THEN
+C          CALL GETVTX(MCFACT,'FORMULE_SEUIL',IOCC,1,1,FORSEU,IBID)
+          IBID = 0
+          IF (IBID.NE.0) THEN
+C           LE SEUIL EST DONNE PAR UNE FORMULE
+C            ZR( JAEVR-1+LAEVR*(IOCC-1)+1) = 3.D0
+C            ZK8(JAEVK-1+LAEVK*(IOCC-1)+1) = FORSEU
+          ELSE
+C           LE SEUIL N'EST PAS DONNE PAR UNE FORMULE
+            ZR(JAEVR-1+LAEVR*(IOCC-1)+1) = 2.D0
+            CALL GETVIS(MCFACT,'NB_INCR_SEUIL',IOCC,1,1,NBINSE,IBID)
+            ZR(JAEVR-1+LAEVR*(IOCC-1)+2) = NBINSE
+            CALL GETVTX(MCFACT,'NOM_PARA'     ,IOCC,1,1,NOPARA,IBID)
+            IF (NOPARA.EQ.'NB_ITER_NEWTON') THEN          
+              ZR(JAEVR-1+LAEVR*(IOCC-1)+3) = 1.D0
+              VALEI=0
+              CALL GETVIS(MCFACT,'VALE_I',IOCC,1,1,VALEI,IBID)
+              VALE = VALEI
+C            ELSEIF (NOPARA.EQ.'DP') THEN
+C              ZR(JAEVR-1+LAEVR*(IOCC-1)+3) = 2.D0
+C              CALL GETVR8(MCFACT,'VALE',IOCC,1,1,VALE,IBID)
+            ENDIF
+            ZR(JAEVR-1+LAEVR*(IOCC-1)+5) = VALE
+            CALL GETVTX(MCFACT,'CRIT_COMP'    ,IOCC,1,1,CRICOM,IBID)
+            IF     (CRICOM.EQ.'LT') THEN
+              ZR(JAEVR-1+LAEVR*(IOCC-1)+4) = 1.D0
+            ELSEIF (CRICOM.EQ.'GT') THEN
+              ZR(JAEVR-1+LAEVR*(IOCC-1)+4) = 2.D0
+            ELSEIF (CRICOM.EQ.'LE') THEN
+              ZR(JAEVR-1+LAEVR*(IOCC-1)+4) = 3.D0
+            ELSEIF (CRICOM.EQ.'GE') THEN
+              ZR(JAEVR-1+LAEVR*(IOCC-1)+4) = 4.D0
+            ENDIF
+          ENDIF
+        ENDIF
+
+C       DONNEE CONCERNANT LE MODE DE CALCUL DE T+
+        CALL GETVTX(MCFACT,'MODE_CALCUL_TPLUS',IOCC,1,1,MODETP,IBID)
+        IF (MODETP.EQ.'FIXE') THEN
+          ZR(JATPR-1+LATPR*(IOCC-1)+1) = 1.D0
+          CALL GETVR8(MCFACT,'PCENT_AUGM',IOCC,1,1,PCENT,IBID)
+          ZR(JATPR-1+LATPR*(IOCC-1)+2) = PCENT
+C          WRITE(6,*)'   SI CV & SEUIL OK, ON ACCELERE DE ',PCENT,'%'
+        ELSEIF (MODETP.EQ.'DELTA_GRANDEUR') THEN
+          ZR(JATPR-1+LATPR*(IOCC-1)+1) = 2.D0
+          CALL GETVR8(MCFACT,'VALE_REF',IOCC,1,1,VALERE,IBID)
+          ZR(JATPR-1+LATPR*(IOCC-1)+3) = VALERE
+          CALL GETVTX(MCFACT,'NOM_PARA',IOCC,1,1,NOPARA,IBID)
+          CALL GETVTX(MCFACT,'NOM_CHAM',IOCC,1,1,NOCHAM,IBID)
+          CALL GETVTX(MCFACT,'NOM_CMP' ,IOCC,1,1,NOCMP,IBID)
+          NOMGD = DINOGD(NOCHAM)
+          CALL UTCMP2 (NOMGD,MCFACT,IOCC,NOCMP,IBID,NUCMP,IBID)
+          ZK16(JATPK-1+LATPK*(IOCC-1)+1)=NOPARA
+          ZK16(JATPK-1+LATPK*(IOCC-1)+2)=NOCHAM
+          ZK16(JATPK-1+LATPK*(IOCC-1)+3)=NOCMP
+          ZR(JATPR-1+LATPR*(IOCC-1)+4)  =NUCMP
+        ELSEIF (MODETP.EQ.'ITER_NEWTON') THEN
+          ZR(JATPR-1+LATPR*(IOCC-1)+1) = 3.D0
+          CALL GETVIS(MCFACT,'NB_ITER_NEWTON_REF',IOCC,1,1,NIT,IBID)
+          ZR(JATPR-1+LATPR*(IOCC-1)+5) = NIT
+        ELSEIF (MODETP.EQ.'FORMULE') THEN
+          ZR(JATPR-1+LATPR*(IOCC-1)+1) = 4.D0
+          CALL GETVTX(MCFACT,'FORMULE_TPLUS',IOCC,1,1,FORTPL,IBID)
+          IF (IBID.NE.0) THEN
+            ZK16(JATPK-1+LATPK*(IOCC-1)+4)=FORTPL
+          ENDIF
+          CALL GETVTX(MCFACT,'NOM_SCHEMA',IOCC,1,1,NOSCHE,IBID)
+          IF (NOSCHE.EQ.'OLIVER') THEN
+            ZR(JATPR-1+LATPR*(IOCC-1)+6) = 1.D0
+          ENDIF
+          IER = IER + 1
+          WRITE(6,*)'CETTE FONCTIONNALITE N EST PAS ENCORE DISPO'
+          CALL ASSERT(.FALSE.)
+        ENDIF
+ 200  CONTINUE
+C
+C     --------------------------------------------
+C     FIN
+C     --------------------------------------------
+ 9999 CONTINUE
+
+      CALL JEDEMA()
+      END

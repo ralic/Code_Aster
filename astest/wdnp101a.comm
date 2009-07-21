@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL 
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 840 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test S
@@ -260,6 +260,10 @@ SIEF=CREA_CHAMP(INFO=1,
                       )
                  );
 
+DEFLISTT =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=5,SUBD_NIVEAU=10),)
+
 # Pas d Initialisation des contraintes
 # Mise en place de la premiere couche et de la seconde couche simultanement = 1ere couche
 # Etat initail du pb hydraulique
@@ -285,12 +289,9 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                                GROUP_MA=list_group_ma[1]),
                             ),
                  #RECH_LINEAIRE=_F( ),
-                 INCREMENT=_F(LIST_INST=TEMPS,
+                 INCREMENT=_F(LIST_INST=DEFLISTT,
                               INST_INIT=0,
-                              INST_FIN=2000000.0,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=5,
-                              SUBD_NIVEAU=10,),
+                              INST_FIN=2000000.0,),
                  ARCHIVAGE=_F(LIST_INST=TEMPS,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
@@ -490,12 +491,9 @@ for n in range(1,nbcouche-1):
                  ETAT_INIT=_F(DEPL=INIDEP,
                               SIGM=INISIG,
                               VARI=INIVAR),
-                 INCREMENT=_F(LIST_INST=TEMPS,
+                 INCREMENT=_F(LIST_INST=DEFLISTT,
                               INST_INIT=t_init,
-                              INST_FIN=t_fin,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=5,
-                              SUBD_NIVEAU=10),
+                              INST_FIN=t_fin,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-6));
@@ -582,6 +580,10 @@ TI_LI_IN=DEFI_LIST_REEL(DEBUT=-1.e-6, INTERVALLE=_F(JUSQU_A=0.,
 
 FOC2 = DEFI_CONSTANTE( VALE=9.81001) ;                        
 
+DEFLIST3 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TI_LI_IN),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,SUBD_NIVEAU=10),)
+
 U9B=STAT_NON_LINE(MODELE=MOD[9],
                  CHAM_MATER=AFFMAT1,
                  EXCIT=(_F(CHARGE=BO_CONH0),
@@ -609,10 +611,7 @@ U9B=STAT_NON_LINE(MODELE=MOD[9],
                  ETAT_INIT=_F(DEPL=DEP[9],
                               SIGM=SIG[9],
                               VARI=VAR[9]),
-                 INCREMENT=_F(LIST_INST=TI_LI_IN,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_NIVEAU=10),
+                 INCREMENT=_F(LIST_INST=DEFLIST3,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-6));
@@ -654,6 +653,9 @@ LIST=DEFI_LIST_REEL(DEBUT=0.0,
 # On utilise une valeur de critere lache car on accepte tout champ de 
 #   deplacement solution 
 
+DEFLIST4 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LIST ),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME'))
+
 U9B=STAT_NON_LINE(reuse=U9B, 
                  MODELE=MOD[9],
                  CHAM_MATER=AFFMAT1,
@@ -684,10 +686,9 @@ U9B=STAT_NON_LINE(reuse=U9B,
                  ETAT_INIT=_F(EVOL_NOLI=U9B,
                               INST=0.0,PRECISION=1.E-6,),
                  INCREMENT=_F(
-                              LIST_INST=LIST, 
+                              LIST_INST=DEFLIST4, 
                               PRECISION=1.E-8,
-                              INST_FIN=pas_tfin, 
-                              SUBD_METHODE='AUCUNE',),
+                              INST_FIN=pas_tfin,),
                  ARCHIVAGE=_F(
                                PAS_ARCH = 1,
                                       ),                              
@@ -838,6 +839,10 @@ MODEP = NORM_MODE(MODE=RESMOD, NORME='TRAN_ROTA',
                   MASSE=MATASM, RAIDE=MATASR,
                   );
                                                                                       
+DEFLISTh =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INSTh ),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=2,SUBD_NIVEAU=20),)
+
 U9B2=DYNA_NON_LINE(
                  MODELE=MOD[9],
                  CHAM_MATER=AFFMAT1,
@@ -869,11 +874,8 @@ U9B2=DYNA_NON_LINE(
                  ETAT_INIT=_F(EVOL_NOLI=U9B,
                               INST=0.0,PRECISION=1.E-6,),
                  INCREMENT=_F(
-                              LIST_INST=L_INSTh, 
-                              PRECISION=1.E-6,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=2,
-                              SUBD_NIVEAU=20),
+                              LIST_INST=DEFLISTh, 
+                              PRECISION=1.E-6,),
                  ARCHIVAGE=_F(
                                LIST_INST=L_ARCH,
                                       ),                              

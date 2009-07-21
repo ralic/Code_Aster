@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION MONOTONE DRAINE (MECA PUR)
 # ssnv204b.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,9 +183,6 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 20),
                  INCREMENT=_F(LIST_INST    = TEMPS0,
-                              SUBD_METHODE = 'UNIFORME',
-                              SUBD_PAS     = 10,
-                              SUBD_PAS_MINI= 0.0001,
                               INST_INIT    = -10.0,
                               INST_FIN     = 0.0));              
                               

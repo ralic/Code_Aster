@@ -1,6 +1,7 @@
-# MODIF  DATE 22/04/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE MODELISATION AXIS_THHD EN QUAD8
+# wtna106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -264,6 +265,11 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                              0.0,0.0,0.0,0.0,0.0,0.0,0.0),),
                              ),);
 
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INST1),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI=10.0,),)
+
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(
@@ -274,10 +280,8 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                               ITER_INTE_MAXI=5,),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
-                 INCREMENT=_F(LIST_INST=INST1,
+                 INCREMENT=_F(LIST_INST=DEFLIST1,
                               NUME_INST_FIN=1,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                              SUBD_PAS_MINI=10.0,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
@@ -432,6 +436,11 @@ FLUTH2=AFFE_CHAR_MECA(MODELE=MODELE2,
                                        ),
                                       );
 
+DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INST2),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI=10.0,),)
+
 U2=STAT_NON_LINE(MODELE=MODELE2,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(
@@ -440,10 +449,8 @@ U2=STAT_NON_LINE(MODELE=MODELE2,
                  COMP_INCR=_F(RELATION='KIT_THH',PARM_THETA=0.57,
                               RELATION_KIT=('LIQU_VAPE_GAZ','HYDR_UTIL'),
                               ITER_INTE_MAXI=5,),
-                 INCREMENT=_F(LIST_INST=INST2,
+                 INCREMENT=_F(LIST_INST=DEFLIST2,
                               NUME_INST_FIN=1,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                              SUBD_PAS_MINI=10.0,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
@@ -463,10 +470,8 @@ U2=STAT_NON_LINE(reuse=U2,
                               ITER_INTE_MAXI=5,),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
-                 INCREMENT=_F(LIST_INST=INST2,
+                 INCREMENT=_F(LIST_INST=DEFLIST2,
                               NUME_INST_FIN=2,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                              SUBD_PAS_MINI=10.0,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),

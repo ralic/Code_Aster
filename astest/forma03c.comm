@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP FORMATION NON LINEAIRE PLAQUE TROUEE EN TRACTION - PILOTAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,12 +88,8 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
                                TYPE_CHARGE='FIXE_PILO',),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                      INCREMENT=_F(LIST_INST=L_INST,
-                                  INST_FIN=TFIN,
-                                  SUBD_METHODE='UNIFORME',
-                                  SUBD_PAS=10,
-                                  SUBD_NIVEAU=10,),
+                                  INST_FIN=TFIN,),
                      NEWTON=_F(REAC_ITER=1,),
-                     SOLVEUR=_F(STOP_SINGULIER='DECOUPE'),
                      PILOTAGE=_F(TYPE='DDL_IMPO',
                                  COEF_MULT=1.0,
                                  GROUP_NO='G',

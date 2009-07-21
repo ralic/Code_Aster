@@ -1,7 +1,7 @@
 
-# MODIF  DATE 10/11/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS 2D
-# ssnv172b.para = tps_job 600 mem_job 128Mo ncpus 1 liste_test S
+# ssnv172b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,9 +101,7 @@ SOLCHAB=STAT_NON_LINE(MODELE=MODEL2D,
                                     DEFORMATION='PETIT',
                                     ITER_INTE_MAXI=100,
                                     TOUT='OUI',),),
-                      INCREMENT=(_F(LIST_INST=LINST,
-                                    SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                    SUBD_PAS_MINI=1e-06,),),
+                      INCREMENT=(_F(LIST_INST=LINST,),),
                       NEWTON=(_F(REAC_ITER=1,),),
                       ARCHIVAGE=_F(LIST_INST=LINST,),);
 
@@ -141,9 +139,7 @@ IMPL1=STAT_NON_LINE(MODELE=MODEL2D,INFO=1,
                                    ITER_INTE_MAXI=100,
                                    RESI_INTE_RELA=1.E-9,
                                    TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST,
-                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                   SUBD_PAS_MINI=1e-06,),),
+                     INCREMENT=(_F(LIST_INST=LINST,),),
                      NEWTON=(_F(REAC_ITER=1),),
                      ARCHIVAGE=_F(LIST_INST=LINST,),
                                      );
@@ -176,9 +172,7 @@ EXPL1=STAT_NON_LINE(MODELE=MODEL2D,
                      NEWTON=(_F(PREDICTION='EXTRAPOL',
                                 MATRICE='ELASTIQUE',
                                 REAC_ITER=0,),),
-                    INCREMENT=(_F(LIST_INST=LINST,
-                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                  SUBD_PAS_MINI=1e-06,),),
+                    INCREMENT=(_F(LIST_INST=LINST,),),
                     );
 
 

@@ -1,0 +1,1586 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 20/07/2009 - 16:30:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013561 DU 2009-06-24 16:06:50
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   Europlexus + AFFE_CARA_ELEM : m?ge ?aire dans acearp ?
+FONCTIONNALITE
+   Nettoyage de acerap vs Europlexus
+   
+   a) Dans AFFE_CARA_ELEM/RIGI_PARASOL remplacement de UNITE_EUROPLEXUS par
+   EUROPLEXUS=('OUI','NON') par défaut 'NON', pour bien indiquer que l'on va remplir les
+   structures de données CARRIGXV et CARRIGXN. Elles ne sont utilisées que par le python
+   d'EUROPLEXUS.
+   
+   
+   b) Dans acerap : GETVTX( 'EUROPLEXUS' ).
+   * Vérification que dans toutes les occurrences de RIGI_PARASOL, le mot clef EUROPLEXUS à
+   la même valeur. Si ce n'est pas le cas "CALL U2MESI('F','MODELISA9_93',1,IOC)"
+   * Toutes les opérations qui concernent EUROPLEXUS sont dans un IF ( EURPLX )  ... ENDIF
+   * Correction d'un bug potentiel, non mis en évidence par les tests. Les lignes suivantes
+   semblent mal placées.
+        ZK8(IREPN+IR) = ZK8(JN)
+        IR = IR + 1
+   Il y aurait eu un plantage dans le cas ou des discrets étaient seulement en translation.
+   Plantage dans le cas de mélange de discrets en T et TR, ou dans le cas de discret en T.
+   * Remplacement des CALL RAIREP(...,CAR(NC)(1:8),...) par des CALL RAIREP(...,CAR(NC),...)
+   Les tests sur CAR(NC) sont correctement fait dans RAIREP
+   
+   
+   c) modification de toEPX dans co_cara_elem. Ajout d'un try except autour de la
+   récupération des structures de données CARRIGXV et CARRIGXN. Si elles n'existent pas
+   "UTMESS('F','MODELISA9_98')".
+   
+   
+   d) nouveaux messages n°93, 97, 98 dans MODELISA9
+   
+   
+   e) modification du test plexu01a, ajout dans RIGI_PARASOL de EUROPLEXUS='OUI'
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage cas test Europlexus
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013595 DU 2009-07-03 10:30:00
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   En NEW9.5.2, le cas-test miss06a s'arrete anormalement sur Bull et Calibre 5.
+FONCTIONNALITE
+   C'est la variable ISYM qui est non initialisée, et cela depuis la version 9.3.18, fiche
+   12024 pour les discrets non-symétriques.
+   
+   Informatiquement parlant en 9.3.18, cela aurait dû planter, sauf qu'il avait aussi le pb
+   des CALL NOCART non réalisés (carte dans un état indéfini).
+   
+   Correction à faire seulement en NEW9 (pour la NEW10 ce point est ok)
+   Dans acearm
+   
+   Actuellement
+   156 C --- BOUCLE SUR LES OCCURRENCES DE DISCRET
+   157       DO 30 IOC = 1 , NBOCC
+   158         ETA = 0.D0
+   
+   Correction
+   156 C --- BOUCLE SUR LES OCCURRENCES DE DISCRET
+   157       DO 30 IOC = 1 , NBOCC
+   158          ETA  = 0.D0
+   159          ISYM = 1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage du cas test miss06a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 20/07/2009 - 15:36:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012431 DU 2008-09-02 13:38:17
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : macro pour l'adaptation de maillage
+FONCTIONNALITE
+   Contexte : 
+   ----------
+   
+   Pour une étude de fissuration avec X-FEM (GSS de Fessenheim par exemple), on part souvent
+   d'un maillage sain, parfois récupéré d'une ancienne étude.
+   Ce maillage est souvent grossier partout, et en tout cas, pas suffisamment fin dans les
+   zones où on souhaite introduire une fissure.
+   
+   Il est donc nécessaire de procéder à un raffinement du maillage initial dans les zones
+   d'interêts, donc proche des fonds de fissure. Une stratégie à base de level sets et de
+   Homard a été mise en place (CR-07.215 en pièce jointe) l'année dernière : en bref, on
+   calcule une carte d'erreur, cette erreur est la distance aux fonds de fissure. En plus
+   détaillé, ça donne :
+   -	à partir d'un maillage non raffiné en fond de fissure, calculer les level sets avec
+   DEFI_FISS_XFEM,
+   -	extraire les champs level sets et calculer un champ d'erreur,
+   -	utiliser Homard pour créer un nouveau maillage,
+   -	recommencer jusqu'à obtenir un maillage satisfaisant.
+   
+   Depuis, cette stratégie est appliquée pour toutes les études avec X-FEM.
+   
+   
+   
+   Problème :
+   ----------
+   
+   En présence de plusieurs fissures, la création de la carte d'erreur (point n°2 de
+   l'algorithme ci-dessus) n'est pas simple et nécessite de nombreux appels à CREA_CHAMP
+   (enchaînement de 17 CREA_CHAMP pour 2 fissures par exemple). Afin de faciliter les choses,
+   on souhaiterait la création d'une macro-commande Aster qui prendrait en entrée :
+   - la liste des fissures X-FEM,
+   et en sortie, retournerait :
+   - une carte/champ d'erreur, l'erreur étant ici la distance au fond de fissure le plus
+   proche. L'appel à cette macro-commande remplacerait le point n°2 de l'algorithme évoqué
+   ci-dessus.
+   
+   
+   
+   Solution :
+   ----------
+   
+   On crée la macro commande RAFF_XFEM :
+   RAFF_XFEM=MACRO(nom="RAFF_XFEM",op=raff_xfem_ops,sd_prod=cham_no_sdaster,
+                      fr="Calcul de la distance au fond de fissure le plus proche",
+                      reentrant='n',
+               UIinfo={"groupes":("Rupture",)},
+   
+       FISSURE       =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
+       INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+   )  ;
+   
+   En entrée, on prend la liste des fissures (ou interfaces). En sortie, on veut le champ
+   "d'erreur". 
+   
+   Remarque : dans le cas d'une interface, on choisit la distance à l'interface. Pour cela,
+   la level sets tangente ne sert pas.
+   Pour savoir si on traite une fissure ou une interface, on ajoute un utilitaire dismoi.
+   Pour un objet de type 'XFEM', les questions possibles sont :
+   'TYPE_DISCONTINUITE' : 'FISSURE' ou 'INTERFACE'
+   'CHAM_DISCONTINUITE' : pour l'instant que 'DEPL'
+   (à venir 'SIGM' avec la thèse de Binh chez MMC).
+   Pour le moment, le dismoi (-> dismxf) renvoi forcément FISSURE et DEPL.
+   Cette fonctionnalité sera totalement activé avec la resitution très prochainement de la
+   fiche 11876 (X-FEM : faciliter la définition d'interfaces).
+   
+   
+   Une idée pour la suite, serait d'inclure le MACR_ADAP_MAIL directement dans RAFF_XFEM (au
+   choix de l'utilisateur). 
+   
+   Une autre serait de pouvoir raffiner sur un critère de courbure de la level set normale.
+   
+   Validation :
+   ------------
+   
+   On ajoute un nouveau cas test SSLP317a : 
+   plaque multi-fissurée : 4 fissures
+   on fait 3 itérations de raffinement, puis on fait un calcul.
+   On teste le nombre de noeuds du maillage final.
+   
+   Dès que la fiche sur les interfaces sera restituée, on modifiera ce test pour remplacer
+   une des 4 fissures par une inclusion ('TYPE_DISCONTINUITE' = 'INTERFACE').
+   
+   
+   
+   impact : 
+   raff_xfem.capy
+   raff_xfem_ops.cpy
+   dismoi.f
+   dismxf.f
+   
+   doc :
+   V3.02.317
+   U2.05.02 (notice d'utilisation d'X-FEM)
+   U4.82.12 (opérateur RAFF_XFEM)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.02.317, U2.05.02, U7.03.51
+VALIDATION
+   sslp317a
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013087 DU 2009-01-22 16:55:23
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Performances XFEM
+FONCTIONNALITE
+   But :
+   -----
+   
+   Suppression des wkvect dans les TE de contact X-FEM.
+   
+   
+   Solution :
+   ----------
+   
+   Correction prise en compte lors de la restitution par Sylvain Mazet des fiches
+   10708, 13179, 13178, 11816, 10556 (Contact XFEM, Lagranges aux noeuds et Grands-glissements
+   3D)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucun
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013492 DU 2009-06-09 15:37:19
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   XFEM : piquage RCV620TY + fissure rectangulaire (suite fiche 13231)
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En STA9.5 :
+   
+   Un calcul X-FEM avec des mailles quadratiques et MUMPS plante sauvagement dans STAT_NON_LINE (
+   alors qu'il passe sans problème sur un maillage linéaire) :
+   ---------------------------------------------------------------------
+    
+   INSTANT DE CALCUL :  1.000000000E+00
+    
+   ---------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |     OPTION     |
+   |     NEWTON     |     RELATIF    |     ABSOLU     |   ASSEMBLAGE   |
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |                |
+   ---------------------------------------------------------------------
+   Memory fault (core dumped) 
+   <E>_FICHIER_CORE  L'execution a produit un fichier core.
+   
+   
+   Le même calcul avec MULT_FRONT par défaut plante par perte de 32 décimales sur le noeud
+   N59163, composante H1X.
+   
+   
+   
+   Solution :
+   ----------
+   
+   Le problème est dû au mauvais conditionnement de la matrice de rigidité lorsque la level
+   set coupe un petit bout d'élément.
+   Normalement, ce genre de pb arrive si un HEXA est coupé dans un angle.
+   La stratégie mise en place pour éviter ce pb est buguée pour les éléments quadratiques.
+   Dans xstan2, on vérifie que les pbs arrivent sur des mailles HEXA (ce qui est le cas ici)
+   et coupées en 3 points (dans un angle). Ce qui est aussi le cas ici
+   Mais le nombre de points d'intersection en quadratique n'est en fait pas calculé (dans
+   te0510 + xcface) car normalement, NINTER ne sert qu'au contact et que les éléments
+   quadratiques ne gèrent pas le contact.
+   Donc NINTER est mis à  -1 pour les mailles quadratiques.
+   
+   Ce qui fait que la stratégie n'est pas enclanchée (car NINTER .ne. 3).
+   
+   je corrige donc la routine xstan2.f
+   
+   maintenant, on vérifie seulement le type de maille (HEXA) et plus NINTER
+   
+   
+   Avec cette correction, MULT_FRONT par défaut plante par perte de 12 décimales.
+   Ce qui démontre que la stratégie, prévue pour limiter la perte à 8 décimales avec des
+   éléments linéaires, n'est pas suffisante sur des éléments quadratiques.
+   
+   Je ne sais pas traiter pour le moment correctement ce pb.
+   Je propose d'autoriser NPREC = 13 dans STAT_NON_LINE/SOLVEUR.
+   Le calcul se passe sans problème
+   (avec la correction mentionnée précédemment)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012196 DU 2008-06-16 14:43:24
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN08 - Nouvelles fonctionnalit?concernant la gestion de la liste des instants
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   Actuellement, la liste d'instants utilisée dans STAT_NON_LINE ou DYNA_NON_LINE est donnée
+   par l'utilisateur via le mot-clef LIST_INST (mot-clef obligatoire)
+   Cette liste est construite explicitement et a priori grâce à la commande DEFI_LIST_REEL.
+   Cette liste est statique: elle n'évolue pas au cours du calcul. Il est néanmoins possible
+   de "ralentir", c'est à dire de subdiviser la liste initiale en cas de difficultés de
+   convergence (mots-clefs 'SUBD_*').
+   Cette stratégie est insuffisante.
+   
+   
+   Les évolutions proposées sont les suivantes:
+   1/ Laisser le code construire la liste d'instants fixe, ex nihilo, à partir du critère de
+   pas de temps minimum de la condition de courant pour l'explicite.
+   
+   2/ Laisser le code construire la liste d'instants au fur et à mesure du calcul. Pour celà,
+   on s'appuie sur une approche heuristique, mélant des informations globales données par
+   l'utilisateur (pas de temps mini, pas de temps maxi, critère de ralentissement et
+   d'accélération) et des retours du processus de convergence (voir CR03-128 et CR-08.109),
+   ainsi que l'introduction d'une gestion par event-driven (fiche 9332).
+   
+   3/ Garder la possibilité d'une liste d'instants fixe, donnée par l'utilisateur (LIST_INST)
+   
+   
+   Travaux réalisés
+   ================
+   
+   I) Syntaxe
+   -----------
+   
+   Ajout d'une nouvelle commande servant à définir les parmètres pour la gestion de la liste
+   d'instants.
+   DEFI_LIST_INST, qui produit un concept de type sd_list_inst.
+   
+   Dans cet opérateur, l'utilisateur définit 
+   1) la liste des instants de passage (LIST_INST habituel), ainsi que la la manière de gérer
+   cette liste
+   2) les possibilités de re-découpage en cas d'échec (divergence) : on dépasse le nombre
+   d'itérations de Newton maxi, pb de contact, pb d'intégration de loi de comportement, pb de
+   pilotage... 
+   Une nouvelle cause d'échec (par ex COLLISION) peut être facilement ajoutée.
+   3) les possibilités d'adaptation du pas de temps pour les nouveaux instants
+   
+   Cette SD est donnée en entrée de STAT_NON_LINE et DYNA_NON_LINE (ainsi que les macrso les
+   appelant) sous INCREMENT/LIST_INST.
+   On peut aussi fournir à LIST_INST la liste de réel 8 habituelle, mais il est alors
+   impossible de sous-découper.
+   
+   Ainsi, un utilisateur qui n'a pas besoin de sous-découpe du pas de temps n'a aucune imapct
+   syntaxique.
+   Par contre, un utilisateur qui a besoin de la sous-découpe ou de l'adaptation de pas de
+   temps est obligé de passer par DEFI_LIST_INST.
+   
+   
+   
+   II) Algorithmie :
+   -----------------
+   
+   On offre une architecture permettant une détermination automatique ab initio du pas de
+   temps (ex pour la dynamique), sans que le calcul à proprement parlé soit programmé
+   
+   On offre une architecture permettant l'ajout de nouvelles causes de sous-découpage, avec
+   pour chaque cause, une méthode de sous-découpage. Mais aucune nouvelle cause (ex
+   COLLISION) ni méthode n'a été programmée
+   
+   On offre une architecture permettant de déterminer dynamiquement le nouveau pas de temps
+   en cours du calcul.
+   Des stratégies d'adaptation ont été programmées :
+   a) basée sur celles d'Abaqus
+   b) basée sur celles de Zébulon
+   
+   a) On accélère de X pourcent si on a NF feux verts d'affilé, un feu vert étant défini par
+   "on a fait moins de NX itérations de Newton" (X, NF et NX sont des paramètes utilisateurs,
+   par défaut X = 100, NF = 2 et NX = ITER_GLOB_MAXI/2).
+   
+   (Rq : les paramètres par défaut d'Abaqus sont X = 50, NF = 2 et NX = 5)
+   
+   b) le nouveau pas de temps est déterminé à chaque fois par DT(i+1) = DT(i) * coef.
+   Il n'y a aucune condition (cad, on a tout le temps un feu vert...)
+   le coef peut etre déterminé de plusieurs manières :
+   coef = sqrt(NREF / NIT)
+   coef = DVREF / DV
+   coef = déterminé par une sd_formule
+   coef = calculé en dur dans le fortran
+   ....
+   Si coef > 1, alors on accélèrera, si coef < 1, on déccélèrera.
+   
+   (Dans Zébulon, on prend le min des 2 premiers coefs, aucune valeur par défaut pour NREF et
+   DVREF).
+   
+   On peut avoir autant de stratégies d'adaptation en même temps, avec chacune un critères de
+   validité (feu vert).
+   On choisira, parmi celles valides, celle qui donne le plus petit pas de temps.
+   Si aucune n'est valide, on garde le pas de temps précédent DT(i).
+   
+   
+   Remarque sur les Instants de Passage Obligés (IPO) :
+   La liste définie par l'utilisateur définit les IPO.
+   Lors du calcul d'un nouvel instant, on vérifie que l'on ne dépasse pas le prochain IPO.
+   Si on le dépasse alors le nouvel instant est cet IPO.
+   
+   
+   Remarque sur la notion de NIVEAU (de découpage) en gestion automatique (adaptation
+   autorisée) :
+   La notion de NIVEAU n'a plus de sens dans ce cas.
+   D'ailleurs, on ne respecte pas les sous-instants en cas de gestion automatique (seul le
+   1er sous-instant est respecté).
+   
+   
+   
+   
+   III) SD
+   -------
+   
+   
+   .LIST.INFOR    : (R) LLINR
+   C     ZR(JLIR-1 + 1) <===> 'METHODE' =1 SI 'MANUEL'
+   C                                    =2 SI 'AUTO'
+   C                                    =3 SI 'CFL'
+   C                                    =4 SI 'MODAL'
+   C     ZR(JLIR-1 + 2) <===> 'PAS_MINI
+   C     ZR(JLIR-1 + 3) <===> 'PAS_MAXI'
+   C     ZR(JLIR-1 + 4) <===> 'NB_PAS_MAX'
+   C     ZR(JLIR-1 + 5) <===> DTMIN
+   C     ZR(JLIR-1 + 6) <===> DT ACTUEL (VOIR NMCRLI...)
+   C     ZR(JLIR-1 + 7) <===> REDECOUPE SI DIVERGENCE_ERRE (POUR CRESOL)
+   
+   
+   
+   
+   .LIST.DITR     : (R) VALEURS DES INSTANTS DONNES PAR L'UTILISATEUR (LIST_INST)
+   
+   
+   
+   
+   .ECHE.EVENR    : (R)   LEEVR*NOCC DE ECHE
+   .ECHE.EVENK    : (K16) LEEVK*NOCC DE ECHE
+   .ECHE.SUBDR    : (R)   LESUR*NOCC DE ECHE
+   
+   C     INFOS SUR L'EVENEMENT POUR CHAQUE OCCURENCE
+   
+   C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 1) <===> 'EVENEMENT' 
+   C                                            = 0 SI DIVERGENCE_ITER
+   C                                            = 1 SI DIVERGENCE_ERRE
+   C                                            = 2 SI 'COLLISION'
+   C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 2) <===> 'CRIT_COMP'
+   C                                               = 1 SI 'LT'
+   C                                               = 2 SI 'GT'
+   C                                               = 3 SI 'LE'
+   C                                               = 4 SI 'GE'
+   C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 3) <===> 'VALE'
+   C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 4) <===> NUMERO DE LA COMPOSANTE
+   C
+   C
+   C     ZK16(JEEVK-1 + LEEVK*(IOCC-1) + 1) <===> 'FORMULE'
+   C     ZK16(JEEVK-1 + LEEVK*(IOCC-1) + 2) <===> 'NOM_CHAM'
+   C     ZK16(JEEVK-1 + LEEVK*(IOCC-1) + 3) <===> 'NOM_CMP'
+   C
+   C
+   C     ZR(JESUR-1 + LESUR*(IOCC-1) + 1) <===> 'SUBD_METHODE'
+   C                                            = 0 SI 'AUCUNE'
+   C                                            = 1 SI 'UNIFORME'
+   C                                            = 2 SI 'EXTRAP_IGNO'
+   C                                            = 3 SI 'EXTRAP_FIN'
+   C     ZR(JESUR-1 + LESUR*(IOCC-1) + 2) <===> 'SUBD_PAS'
+   C     ZR(JESUR-1 + LESUR*(IOCC-1) + 3) <===> 'SUBD_PAS_MINI'
+   C     ZR(JESUR-1 + LESUR*(IOCC-1) + 4) <===> 'SUBD_COEF_PAS_1'
+   C     ZR(JESUR-1 + LESUR*(IOCC-1) + 5) <===> 'SUBD_NIVEAU'
+   C     ZR(JESUR-1 + LESUR*(IOCC-1) + 6) <===> 'SUBD_ITER_IGNO'
+   C     ZR(JESUR-1 + LESUR*(IOCC-1) + 7) <===> 'SUBD_ITER_FIN'
+   C     ZR(JESUR-1 + LESUR*(IOCC-1) + 8) <===> 'SUBD_ITER_PLUS'
+   
+   
+   .ADAP.EVENR    : (R)   LAEVR*NOCC DE ADAP
+   .ADAP.EVENK    : (K8)  LAEVK*NOCC DE ADAP
+   .ADAP.TPLUR    : (R)   LATPR*NOCC DE ADAP
+   .ADAP.TPLUK    : (K16) LATPK*NOCC DE ADAP
+   C     ECRITURE DES DIFFERENTES INFOS POUR CHAQUE OCCURENCE
+   C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 1) <===> 'EVENEMENT' 
+   C                                             = 0 SI 'AUCUN'
+   C                                             = 1 SI 'TOUT_INST'
+   C                                             = 2 SI  SEUIL SANS FORMULE
+   C                                             = 3 SI  SEUIL AVEC FORMULE
+   C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 2) <===> 'NB_INCR_SEUIL'
+   C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 3) <===> 'NOM_PARA'
+   C                                               = 1 SI 'NB_ITER_NEWTON'
+   C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 4) <===> 'CRIT_COMP'
+   C                                               = 1 SI 'LT'
+   C                                               = 2 SI 'GT'
+   C                                               = 3 SI 'LE'
+   C                                               = 4 SI 'GE'
+   C     ZR(JAEVR-1 + LAEVR*(IOCC-1) + 5) <===> 'VALE'
+   
+   C     ZR(JAEVK-1 + LAEVK*(IOCC-1) + 1) <===> 'FORMULE_SEUIL'
+   
+   C     ZR(JATPR-1 + LATPR*(IOCC-1) + 1) <===> 'MODE_CALCUL_TPLUS'
+   C                                               = 1 SI 'FIXE'
+   C                                               = 2 SI  'DELTA_GRANDEUR'
+   C                                               = 3 SI  'ITER_NEWTON'
+   C                                               = 4 SI  'FORMULE'
+   C     ZR(JATPR-1 + LATPR*(IOCC-1) + 2) <===> 'PCENT_AUGM'
+   C     ZR(JATPR-1 + LATPR*(IOCC-1) + 3) <===> 'VALE_REF'
+   C     ZR(JATPR-1 + LATPR*(IOCC-1) + 4) <===> NUMERO DE LA COMPOSANTE
+   C     ZR(JATPR-1 + LATPR*(IOCC-1) + 5) <===> 'NB_ITER_NEWTON_REF'
+   C     ZR(JATPR-1 + LATPR*(IOCC-1) + 6) <===> NUMERO DE LA FORMULE
+   C                                               = 1 SI 'OLIVER'
+   
+   C     ZR(JATPK-1 + LATPK*(IOCC-1) + 1) <===> 'NOM_PARA'
+   C     ZR(JATPK-1 + LATPK*(IOCC-1) + 2) <===> 'NOM_CHAM'
+   C     ZR(JATPK-1 + LATPK*(IOCC-1) + 3) <===> 'NOM_CMP'
+   C     ZR(JATPK-1 + LATPK*(IOCC-1) + 4) <===> 'FORMULE_TPLUS'
+   
+   
+   Chaque vecteur aura une copie locale dans STAT(DYNA)_NON_LINE car certaines valeurs sont
+   parfois modifiés en cours de calcul.
+   De plus, on ajoute un vecteur local qui stocke pour chaque instant le nombre d'itérations
+   de Newton effectuées.
+   
+   
+   IV) impacts 
+   -----------
+   
+   nouvel opérateur :
+   defi_list_int.capy, stat_non_line.capy, dyna_non_line.capy, simu_point_mat.capy,
+   accas.capy, op0028.f
+   
+   pour la lecture des instants :
+   nminit.f, nmcrli.f, cresol.f, nmdoin.f, mgrin.f, op0026.f, pascom.f, pascou.f, tiinit.f
+   
+   pour la lecture des observations et archivage
+   dyobar.f, dyobs3.f, dyobse.f, lobs.f, nmcrob.f, nmobsv.f, op0186.f
+   
+   pour la découpe du pas de temps :
+   nmcrsu.f, nmdeco.f, dideco.f, nmdcin.f, nmdcea.f, nmdcei.f, nmdcex.f
+   
+   pour l'adaptation du pas de temps :
+   op0070.f, nmadat.f, nmcadt.f
+   
+   utilitaires :
+   diinit.f, diinst.f, dinins.f, diadap.f, dicrec.f, dinogd.f, utdidt.f
+   
+   autres :
+   ceil.f
+   
+   cas tests modifés nécessitant du sous-découpage : 
+   comp002i.comm  ssna111a.comm  ssnp102a.comm  ssnv147f.comm  ssnv197c.comm  wtna106a.comm 
+   wtnp107a.comm  comp002j.comm  ssna111b.comm  ssnp102b.comm  ssnv157c.comm  ssnv197d.comm 
+   wtna106b.comm 
+   wtnp112e.comm  demo003a.comm  ssna115b.comm  ssnp110a.comm  ssnv169d.comm  ssnv204a.comm 
+   wtna106c.comm 
+   wtnp112f.comm  forma03b.comm  ssna117b.comm  ssnp110b.comm  ssnv169e.comm  ssnv205a.comm 
+   wtna106d.comm 
+   wtnp112g.comm  forma03d.comm  ssna118a.comm  ssnp110c.comm  ssnv169f.comm  ssnv206a.comm 
+   wtna109a.comm 
+   wtnp112h.comm  hsnv101d.comm  ssnl111a.comm  ssnp110d.comm  ssnv169g.comm  ssnv207a.comm 
+   wtna109b.comm 
+   wtnv123f.comm  hsnv120b.comm  ssnl127e.comm  ssnp123a.comm  ssnv169h.comm  ssnv208a.comm 
+   wtnp100a.comm 
+   wtnv132a.comm  htna100a.comm  ssnl133a.comm  ssnp123b.comm  ssnv169i.comm  ssnv501c.comm 
+   wtnp100b.comm 
+   wtnv134a.comm  miss06b.comm   ssnl135a.comm  ssnp125a.comm  ssnv176e.comm  ssnv506b.comm 
+   wtnp100c.comm 
+   wtnv135a.comm  perfe02a.comm  ssnl135b.comm  ssnp125b.comm  ssnv189b.comm  ssnv506c.comm 
+   wtnp102a.comm 
+   zzzz107a.comm  sdnv103b.comm  ssnl136b.comm  ssnp132a.comm  ssnv189c.comm  ssnv506d.comm 
+   wtnp102b.comm 
+   zzzz175a.comm  sdnv104b.comm  ssnl502b.comm  ssnp133a.comm  ssnv190a.comm  ssnv506e.comm 
+   wtnp102c.comm
+   sdnv104e.comm  ssnl502c.comm  ssnv138b.comm  ssnv190b.comm  wdnp101a.comm  wtnp102d.comm
+   
+   cas tests modifiés ne nécessitant pas de sous-découpage : 
+   ssnv147b.comm  ssnv157g.comm  ssnv175a.comm  ssnv199b.comm  ssnv505b.comm  wtnp113b.comm 
+   wtnv121b.comm  wtnv134a.comm  ssnv147c.comm  ssnv157h.comm  ssnv177a.comm  ssnv199c.comm 
+   ssnv505c.comm  wtnp113c.comm  wtnv122b.comm  wtnv135a.comm  ssnv147d.comm  ssnv157i.comm 
+   ssnv184a.comm  ssnv199d.comm  ssnv505d.comm  wtnp113d.comm  wtnv123c.comm  wtnv137a.comm 
+   ssnv147e.comm  ssnv157j.comm  ssnv184b.comm  ssnv199e.comm  ssnv505e.comm  wtnp115a.comm 
+   wtnv128a.comm  wtnv138a.comm  ssnv147i.comm  ssnv160c.comm  ssnv184c.comm  ssnv199f.comm 
+   ssnv505f.comm  wtnp115b.comm  wtnv128b.comm  zmat007a.comm  ssnv157a.comm  ssnv164a.comm 
+   ssnv189a.comm  ssnv202a.comm  ssnv505g.comm  wtnp116a.comm  wtnv129a.comm  zzzz107b.comm 
+   snv157b.comm  ssnv164b.comm  ssnv194b.comm  ssnv204b.comm  ssnv505h.comm  wtnp116b.comm 
+   wtnv129b.comm  zzzz130a.comm
+   ssnv157d.comm  ssnv171b.comm  ssnv197a.comm  ssnv211a.comm  ssnv506a.comm  wtnv101a.comm 
+   wtnv132a.comm  zzzz131a.comm  ssnv157e.comm  ssnv172a.comm  ssnv197b.comm  ssnv501a.comm 
+   ssnv506f.comm  wtnv102a.comm  wtnv133a.comm  zzzz175a.comm  ssnv157f.comm  ssnv172b.comm 
+   ssnv199a.comm  ssnv505a.comm  wtnp113a.comm  wtnv102b.comm  wtnv133b.comm  zzzz254a.comm
+   
+   cas test modifiés ne nécessitant pas de sous-découpage pour matrice singulière :
+   ssnl134a.comm  ssnl136a.comm  ssnl502a.comm  ssnl502d.comm  ssnv138d.comm
+   
+   
+   V) validation 
+   -------------
+   
+   Liste complète
+   
+   + wtnp117b : #  REEQUILIBRAGE CAPILLAIRE D UN BI-MATERIAUX BO-BG - D_PLAN_HHS LOI HYDRAU
+   DE DE VAN GENUCHTEN+MUALEM COUPLAGE LIQU_VAPE_GAZ avec un nouveau SNL en gestion automatique
+   
+   d'autres cas tests sont à prévoir
+   
+   
+   
+   VI) documentation 
+   -----------------
+   
+   U4.51.03 : SNL-DNL
+   U4.34.03 : DEFI_LIST_INST
+   U4.51.12 : SIMU_POINT_MAT
+   V7.32.117 : wtnp117
+   
+   doc U2, R, CR ?
+   
+   
+   VII) améliorations :
+   -------------------
+   
+   Pour le moment, on insère un nouvel instant à chaque fois (extension de 1 de la liste
+   d'instants, d'archivage et des itérations de Newton)
+   meilleure encapsulation de l'extension d'un vecteur
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03, U4.34.03, U4.51.12, V7.32.117
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR laverne      LAVERNE Jérôme         DATE 20/07/2009 - 14:55:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013027 DU 2009-01-07 10:50:24
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CZM_FAT_MIX, une loi cohesive pour la fatigue
+FONCTIONNALITE
+   Développement d'une loi cohésive pour la fatigue : CZM_FAT_MIX basée sur la formulation
+   des éléments d'interfaces mixtes. Le but est de simuler la propagation de fissure
+   en fatigue en 2D ou 3D (mode I uniquement) avec la possibilité de considérer
+   un matériau environnant non linéaire afin de modéliser (entre autre) l'effet retard lié à
+   une surcharge.
+   Cadre : 5% innovation AMA.
+   
+   AJOUT : lc0043.f, lceifa.f, czm_fat_mix.py
+   MODIF : c_comp_incr.capy
+   
+   VALIDATION ELEMENTAIRE ajout de trois modélisations en fatigue : 
+     SSNP118J 2D éléments d'interface QUAD8
+     SSNP118K 3D éléments d'interface HEXA20
+     SSNP118L 3D éléments d'interface PENTA15 
+   
+   VALIDATION POUTRE DCB 2D ajout de cas test, en monotone et fatigue :
+     SSNP139A : chargement monotone loi CZM_OUV_MIX éléments d'interface QUAD8  
+     SSNP139B : chargement cyclique loi CZM_FAT_MIX éléments d'interface QUAD8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.03.118, V6.03.139, R7.02.11,U4.51.11
+VALIDATION
+   SSNP118JKL,SSNP139AB
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 21/07/2009 - 14:09:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012634 DU 2008-10-15 15:48:14
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   usage g?ralis?e LTEATT
+FONCTIONNALITE
+   1 - OBJECTIFS
+   -------------
+   L'objectif de cette fiche est dans la mesure du possible de remplacer les conditions
+   IF(NOMTE(i:j)....) en utilisant les attributs définis dans le catalogue
+   phenomene_modelisation__.cata tels que:
+    - C_PLAN, D_PLAN, AXIS   
+    - ALIAS8
+    - DIM_TOPO_MAILLE
+    - TYPMOD2,
+    - ...
+   
+   Ou bien en créer de nouveaux attributs comme LUMPE et INCO 
+   
+   2 - REALISATION 
+   ---------------
+   a) Utilisation des attributs existants C_PLAN, D_PLAN, TYPMOD2, DIM_TOPO_MAILLE
+       ex: IF(NOMTE(3:4).EQ.'CP') 
+           -> remplacé par
+           IF(LTEATT' ','C_PLAN','OUI') THEN
+   b) Utilisation de l'attribut ALIAS8
+       ex: IF ( NOMTE(5:8).EQ.'TR6') THEN
+           -> remplacé par
+           CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
+           IF (ALIAS8(6:8).EQ.'TR6') THEN
+   c) Utilisation de nouveaux attribut LUMPE et INCO
+           INCO -> éléments "incompressibles" (R3.06.08): 
+               - Le volume de l'élément reste constant (trace(epsilon)=0)
+               - Il existe des ddls qui "dualisent" la condition 
+                 précédente 
+                 (PRES,GONF)
+           LUMPE -> éléments "lumpés" (R3.06.07):
+               - Ce sont des éléments de thermique
+               - leur matrice de "masse" (MASS_THER) est diagonale
+           ex : IF(NOMTE(11,12).EQ.'_D')  
+           -> remplacé par
+                IF(LTEATT' ','LUMPE','OUI') THEN
+   
+   d) Utilisation du nom complet de l'élément 
+          ex : IF(NOMTE(1,7).EQ.'MEPOULI')
+           -> remplacé par
+          	    IF(NOMTE.EQ.'MEPOULI')
+      
+   3 - Commentaires
+   ----------------
+   les modifications ont été effectuées dans 142 fortran, sur la base des informations
+   fournies dans le fichier resu2 établi par Jacques. Les conditions IF(NOMTE(i:j) qui n'ont
+   pu être traitées sont présentées dans le fichiers resu2_amaigri. 
+   Parmi les 491 IF(NOMTE(i:j) rescencées 339 on été traitées.
+   
+   4 - VALIDATION
+   --------------
+   Passage de la liste restreinte
+   
+   5 - PERFORMANCE
+   ---------------
+   Les temps ci-dessous représente les temps obtenus avec la liste restreinte soit en
+   utilisant la version de référence soit en utilisant le modification de cette fiche.
+                     Sans Modifs      Avec Modifs      Ecart (%)
+   Temps CPU          14265.59          14546.94         2.0
+   Temps SYS            799.95            838.99         4.9
+   CPU + SYS          15065.54          15385.93         2.1
+   real time          16216.39          17559.54         8.1
+   CPU prun           14375.76          14661.03         2.0
+   SYS prun            1214.10           1249.48         2.9
+   Elapse prun        17607.84          19319.75         9.7
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012796 DU 2008-11-10 16:59:03
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   suite fiche 12488 : nettoyer demo005a
+FONCTIONNALITE
+   1- Objectifs
+   ------------
+   Transférer dans un nouveau cas-test (zzzz250a) la vérification des mots clés, 
+   effectuée dans le cas-test demo005a de MODI_MAILLAGE :
+      - ORIE_PEAU_2D / GROUP_MA_SURF
+      - ORIE_PEAU_3D / GROUP_MA_VOLU
+   permettant d'orienter une maille de bord coincée entre deux mailles solides.
+   
+   
+   2- Demo005a : nettoyage du cas-test
+   -----------------------------------
+   Les cas-tests demoxxx comme leur nom l'indique,doivent rester le plus simples
+   possibles. 
+   Les modifications apportées dans le cadre de la fiche d'évolution 12488 "orientation d'un
+   bord enserré dans un maillage 2D (complément fiche
+   11115)ont donc été supprimées.
+   
+   
+   3- zzzz250a : nouveau cas-test
+   ------------------------------
+   Ce test permet de valider les fonctionnalités de MODI_MAILLAGE:
+      - ORIE_PEAU_2D / GROUP_MA_SURF
+      - ORIE_PEAU_3D / GROUP_MA_VOLU
+   
+   Ex 2D:
+           A----------C----------E
+           !   MA1    !    MA2   !
+           B----------D----------F
+   
+   # Le maillage est constitue des :
+   #  - mailles "solides" MA1 et MA2 
+   #  - mailles de bords AB, CD et EF.
+   # On bloque AB et on impose une pression SIXX= p=1.E8 (TRACTION) sur le coté CD. Le
+   déplacement doit être positive ainsi que SIXX dans la maille MA1.
+   # 
+   # L'état initial est tel que la maille CD est mal orientée, il faut donc la 
+   # réorienté avec MODI_MAILLAGE et ORIE_PEAU_2D/GROUP_MA_SURF
+   
+   On effectue la même chose mais en 3D.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz250a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013542 DU 2009-06-19 14:54:30
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   CREA_MAILLAGE/RESTREINT bug
+FONCTIONNALITE
+   Problème:
+   --------
+   Si on utilise CREA_MAILLAGE / RESTREINT / GROUP_NO = 'toto' et que 'toto' n'est pas un
+   group_no du maillage, on est arrêté sans message explicite.
+   
+   Solution :
+   ----------
+   On modifie la routine rdtmai pour vérifier l'existence des groupes de noeuds fournis sous
+   le mot cle GROUP_NO présent sous le mot clé facteur RESTREINT. Si le group de noeud est
+   absent on émet une erreur fatale.
+   
+   rdtmai (boucle 160)
+   -------------------
+             CALL JENONU(JEXNOM(NOMA//'.GROUPENO',ZK8(JNUGN+IGN-1)),NUMGNO)
+   	  IF(NUMGNO.EQ.0) THEN
+                VALK(1) = ZK8(JNUGN+IGN-1)
+                VALK(2) = NOMA
+                CALL U2MESK('F','CALCULEL6_82', 2 ,VALK)
+             ENDIF
+   
+   Message émis
+   ------------
+      !----------------------------------------------------------------!
+      ! <EXCEPTION> <CALCULEL6_82>                                     !
+   
+      !  le groupe de noeuds CENTRE n'appartient pas au maillage: MESH !
+      !----------------------------------------------------------------!
+   
+   NEW9 :
+   -------
+   reporter la correction de la routine rdtmai.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ?de jointe
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 20/07/2009 - 14:57:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013612 DU 2009-07-10 15:24:32
+TYPE express concernant Code_Aster (VERSION 10.1)
+TITRE
+   ARLEQUIN - Nettoyage Fortran en vue d'une nouvelle architecture pour l'appariement des mailles
+FONCTIONNALITE
+   On souhaite tester un nouvel algorithme d'appariement de mailles pour la méthode Arlequin
+   avec G. Nicolas car l'algorithme actuel n'est pas correct dans tous les cas (voir fiches
+   d'évolution 13330 et 13239).
+   
+   Pour l'instant, on réorganise certains programmes existants (arlapp.f et arlfam.f) pour
+   faciliter l'intégration éventuelle prochaine de notre nouvel algorithme. On isole dans
+   arlapp.f la boucle réalisant l'appariement des mailles et dans arlfam.f, on isole la
+   boucle créant la structure de données quadrature.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   10 tests de la base Arlequin
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013624 DU 2009-07-16 13:59:42
+TYPE express concernant Code_Aster (VERSION 10.1)
+TITRE
+   Nettoyage routines THM
+FONCTIONNALITE
+   Je supprime les (nombreux !) arguments et les (nombreuses !) variables inutiles de
+   certaines routines THM. Ce travail pourrait être généralisé à tout le code ...
+   
+   Routines nettoyées :
+   --------------------
+   calcft.f  calcme.f  comthm.f  equthm.f  equthp.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 20/07/2009 - 15:18:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013546 DU 2009-06-22 07:46:50
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.6, les cas-tests ssnl127d et ssnl127e s'arretent en arret_<A> sur Rocks.
+FONCTIONNALITE
+   Problème:
+   ----------
+   Les cas test ssnl127d,e s'arretent en erreur fatale sur Rocks en version 10.0.6 (nodebug).
+                                                                                            
+                           
+   Correction:
+   -----------
+   Il s'agit d'un bug de la routine nm3dco.f : le tableau CODRET n'était pas alloué assez grand.
+                                                                                            
+                           
+   J'ai profité de cette anomalie (que l'on a malheureusement déjà rencontrée plusieurs fois
+   !) pour revérifier assez rapidement la dimension des tableaux CODRET des routines appelant
+   RCVALA ou RCVALB.
+                                                                                            
+                           
+   J'ai alors trouvé 3 erreurs du meme type dans les routines crgdm.f, te0377.f et te0382.f
+                                                                                            
+                           
+   Validation:
+   -----------
+   Le test ssll127d est OK sur Rocks en nodebug.
+                                                                                            
+                           
+   NEW9 :
+   ------
+   Les erreurs suivantes de dimensionnement sont probablement à reporter en NEW9 :
+    
+   crgdm.f:<       CHARACTER*2 CODRET(3)
+   crgdm.f:>       CHARACTER*2 CODRET(4)
+   crgdm.f:<       CHARACTER*8 NOMRES(5)
+   crgdm.f:>       CHARACTER*8 NOMRES(4)
+   crgdm.f:<       REAL*8      VALRES(5), E, NU, EP,EFLEX
+   crgdm.f:>       REAL*8      VALRES(4), E, NU, EP,EFLEX
+    
+   nm3dco.f:<       CHARACTER*2  FB2,CODRES
+   nm3dco.f:>       CHARACTER*2  FB2,CODRES(4)
+    
+   te0377.f:<       CHARACTER*2 CODRET(1),FORM,FORMV,NOEU
+   te0377.f:>       CHARACTER*2 CODRET(2),FORM,FORMV,NOEU
+    
+   te0382.f:<       CHARACTER*2 CODRET(1),NOEU
+   te0382.f:>       CHARACTER*2 CODRET(2),NOEU
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssll127d sur rocks en nodebug
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013588 DU 2009-07-02 13:53:03
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   conversion champ ELEM vers ELGA
+FONCTIONNALITE
+   Problème:
+   ---------
+   Un utilisateur veut utiliser AFFE_CHAR_THER / SOURCE / SOURCE_CALCULEE avec un cham_elem /
+   ELEM de la grandeur SOUR_R.
+                                                                                            
+                     
+   Il est malheureusement arreté par un message d'erreur fatale (ELEMENT_10) lui disant qu'il
+   faut un cham_elem ELGA.
+                                                                                            
+                     
+   Mais s'il essaie de transformer son champ ELEM en champ ELGA avec CREA_CHAMP / DISC, il
+   est arreté car cette conversion n'est pas programmée.
+                                                                                            
+                     
+   Réponse :
+   ---------
+   Le problème vient de la routine cbsour.f qui arrete inutilement le code si le champ de
+   source n'est pas ELGA. Ce problème est résolu si l'on retire le "CALL CHPVER".
+                                                                                            
+                     
+   Validation :
+   ------------
+   J'ai modifié le test tpll101b pour qu'il utilise un champ ELEM. Le calcul va jusqu'au bout.
+                                                                                            
+                     
+   Détail :
+   --------
+   En regardant le catalogue des éléments qui calculent l'option CHAR_THER_SOUR_R, je me suis
+   aperçu que plusieurs d'entre eux ne permettaient pas la création de champs ELEM de SOUR_R.
+   J'y ai donc ajouté l'option TOU_INI_ELEM adaptée.
+                                                                                            
+                     
+   NEW9 :
+   ------
+   On peut reporter la correction de cbsour.f en NEW9 :
+   48d47
+   <             CALL CHPVER('F',CHSOUR(1:19),'ELGA','SOUR_R',IER)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tpll101b
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sslp317a                      geniaut S.GENIAUT          229    229      0
+ CASTEST AJOUT ssnp118j                      laverne J.LAVERNE          267    267      0
+ CASTEST AJOUT ssnp118k                      laverne J.LAVERNE          271    271      0
+ CASTEST AJOUT ssnp118l                      laverne J.LAVERNE          268    268      0
+ CASTEST AJOUT ssnp139a                      laverne J.LAVERNE          287    287      0
+ CASTEST AJOUT ssnp139b                      laverne J.LAVERNE          325    325      0
+ CASTEST AJOUT zzzz250a                    lebouvier F.LEBOUVIER        205    205      0
+ CASTEST MODIF comp002b                      geniaut S.GENIAUT          208      3      3
+ CASTEST MODIF comp002c                      geniaut S.GENIAUT          212      3      3
+ CASTEST MODIF comp002i                      geniaut S.GENIAUT          321     12      5
+ CASTEST MODIF comp002j                      geniaut S.GENIAUT          339     26      7
+ CASTEST MODIF comp005d                      geniaut S.GENIAUT          297      1      7
+ CASTEST MODIF demo002a                      geniaut S.GENIAUT          515      3      7
+ CASTEST MODIF demo003a                      geniaut S.GENIAUT          205      8      5
+ CASTEST MODIF demo005a                    lebouvier F.LEBOUVIER        286      2    146
+ CASTEST MODIF fdnv100a                      geniaut S.GENIAUT          330      2      4
+ CASTEST MODIF feti010a                      geniaut S.GENIAUT          285      3      9
+ CASTEST MODIF forma02b                       pellet J.PELLET           159      2      1
+ CASTEST MODIF forma03b                      geniaut S.GENIAUT          342     18     10
+ CASTEST MODIF forma03c                      geniaut S.GENIAUT          157      2      6
+ CASTEST MODIF forma03d                      geniaut S.GENIAUT          331      5      4
+ CASTEST MODIF forma12b                      geniaut S.GENIAUT          239      2      6
+ CASTEST MODIF forma12d                      geniaut S.GENIAUT          219      3      8
+ CASTEST MODIF hplp310a                      geniaut S.GENIAUT          859      2      4
+ CASTEST MODIF hplp310b                      geniaut S.GENIAUT          860      2      4
+ CASTEST MODIF hsnv101d                      geniaut S.GENIAUT          641     12      5
+ CASTEST MODIF hsnv120b                      geniaut S.GENIAUT          352     16      9
+ CASTEST MODIF hsnv125d                      geniaut S.GENIAUT          472      2      5
+ CASTEST MODIF hsnv125g                      geniaut S.GENIAUT          503      2      4
+ CASTEST MODIF hsnv129b                      geniaut S.GENIAUT          213      2      5
+ CASTEST MODIF htna100a                      geniaut S.GENIAUT         1198      4      2
+ CASTEST MODIF miss06a                       geniaut S.GENIAUT          650      4      4
+ CASTEST MODIF miss06b                       geniaut S.GENIAUT          802      9      5
+ CASTEST MODIF perfe01a                      geniaut S.GENIAUT          383      2      5
+ CASTEST MODIF perfe02a                      geniaut S.GENIAUT          249      8      5
+ CASTEST MODIF perfe03a                      geniaut S.GENIAUT          333      2      4
+ CASTEST MODIF plexu01a                       flejou J-L.FLEJOU         248      2      2
+ CASTEST MODIF sdld31a                       geniaut S.GENIAUT          945     12     22
+ CASTEST MODIF sdnl111c                      geniaut S.GENIAUT          257      3      7
+ CASTEST MODIF sdnl111d                      geniaut S.GENIAUT          149      2      4
+ CASTEST MODIF sdnl111e                      geniaut S.GENIAUT          178      2      4
+ CASTEST MODIF sdnl111f                      geniaut S.GENIAUT          211      2      4
+ CASTEST MODIF sdnl131a                      geniaut S.GENIAUT          979      1      3
+ CASTEST MODIF sdns106b                      geniaut S.GENIAUT          424      2      5
+ CASTEST MODIF sdns106c                      geniaut S.GENIAUT          424      2      5
+ CASTEST MODIF sdns106e                      geniaut S.GENIAUT          416      1      7
+ CASTEST MODIF sdnv103a                      geniaut S.GENIAUT          206      2      5
+ CASTEST MODIF sdnv103b                      geniaut S.GENIAUT          408      9      5
+ CASTEST MODIF sdnv103c                      geniaut S.GENIAUT          237      2      5
+ CASTEST MODIF sdnv103d                      geniaut S.GENIAUT          244      1      4
+ CASTEST MODIF sdnv103f                      geniaut S.GENIAUT          264      1      4
+ CASTEST MODIF sdnv104a                      geniaut S.GENIAUT          219      2      6
+ CASTEST MODIF sdnv104b                      geniaut S.GENIAUT          216     17     10
+ CASTEST MODIF sdnv104c                      geniaut S.GENIAUT          244      3      7
+ CASTEST MODIF sdnv104d                      geniaut S.GENIAUT          223      2      6
+ CASTEST MODIF sdnv104e                      geniaut S.GENIAUT          230      7      7
+ CASTEST MODIF sdnv105a                      geniaut S.GENIAUT         1334      2      4
+ CASTEST MODIF sdnv105b                      geniaut S.GENIAUT         1265      3     11
+ CASTEST MODIF sdnv106a                      geniaut S.GENIAUT          367      3      5
+ CASTEST MODIF sensm06a                      geniaut S.GENIAUT          178      2      5
+ CASTEST MODIF sensm08a                      geniaut S.GENIAUT          269      2      5
+ CASTEST MODIF sensm09a                      geniaut S.GENIAUT          475      3      9
+ CASTEST MODIF sensm11a                      geniaut S.GENIAUT          200      2      5
+ CASTEST MODIF sensm12a                      geniaut S.GENIAUT          334      3      9
+ CASTEST MODIF sensm14a                      geniaut S.GENIAUT          786      4     13
+ CASTEST MODIF sslp106a                      geniaut S.GENIAUT          109      2      4
+ CASTEST MODIF sslp106b                      geniaut S.GENIAUT          109      2      4
+ CASTEST MODIF sslv115a                      geniaut S.GENIAUT          389      1      1
+ CASTEST MODIF sslv303e                      geniaut S.GENIAUT          174      3      7
+ CASTEST MODIF ssna111a                      geniaut S.GENIAUT          217      8      6
+ CASTEST MODIF ssna111b                      geniaut S.GENIAUT          226      8      6
+ CASTEST MODIF ssna112a                      geniaut S.GENIAUT          398      2      4
+ CASTEST MODIF ssna113a                      geniaut S.GENIAUT          327      3      7
+ CASTEST MODIF ssna114a                      geniaut S.GENIAUT          129      3      4
+ CASTEST MODIF ssna115a                      geniaut S.GENIAUT          301      1      5
+ CASTEST MODIF ssna115b                      geniaut S.GENIAUT          252     11     13
+ CASTEST MODIF ssna115c                      geniaut S.GENIAUT          327      2      6
+ CASTEST MODIF ssna116a                      geniaut S.GENIAUT          446      1      3
+ CASTEST MODIF ssna116b                      geniaut S.GENIAUT          468      1      3
+ CASTEST MODIF ssna117b                      geniaut S.GENIAUT          190      6      2
+ CASTEST MODIF ssna118a                      geniaut S.GENIAUT          302      7      3
+ CASTEST MODIF ssnd105b                      geniaut S.GENIAUT          508      5     13
+ CASTEST MODIF ssnl106f                      geniaut S.GENIAUT          375      2      4
+ CASTEST MODIF ssnl111a                      geniaut S.GENIAUT          555      8      5
+ CASTEST MODIF ssnl111b                      geniaut S.GENIAUT          569      2      4
+ CASTEST MODIF ssnl119a                      geniaut S.GENIAUT          427      9      9
+ CASTEST MODIF ssnl127a                      geniaut S.GENIAUT          438      4     10
+ CASTEST MODIF ssnl127b                      geniaut S.GENIAUT          456      4     10
+ CASTEST MODIF ssnl127c                      geniaut S.GENIAUT          469      4     10
+ CASTEST MODIF ssnl127d                      geniaut S.GENIAUT          465      4     10
+ CASTEST MODIF ssnl127e                      geniaut S.GENIAUT          391     19     10
+ CASTEST MODIF ssnl129a                      geniaut S.GENIAUT          361      4     10
+ CASTEST MODIF ssnl129b                      geniaut S.GENIAUT          355      4     10
+ CASTEST MODIF ssnl129c                      geniaut S.GENIAUT          353      4     10
+ CASTEST MODIF ssnl129d                      geniaut S.GENIAUT          335      4     10
+ CASTEST MODIF ssnl129e                      geniaut S.GENIAUT          331      4     13
+ CASTEST MODIF ssnl129f                      geniaut S.GENIAUT          329      4     10
+ CASTEST MODIF ssnl132a                      geniaut S.GENIAUT          906      2     11
+ CASTEST MODIF ssnl132b                      geniaut S.GENIAUT          955      3     11
+ CASTEST MODIF ssnl133a                      geniaut S.GENIAUT          277      9      6
+ CASTEST MODIF ssnl133b                      geniaut S.GENIAUT          234      5     10
+ CASTEST MODIF ssnl134a                      geniaut S.GENIAUT          436      4      5
+ CASTEST MODIF ssnl135a                      geniaut S.GENIAUT          735      8      6
+ CASTEST MODIF ssnl135b                      geniaut S.GENIAUT          740      8      6
+ CASTEST MODIF ssnl135c                      geniaut S.GENIAUT          741      4      5
+ CASTEST MODIF ssnl136a                      geniaut S.GENIAUT          247      4      5
+ CASTEST MODIF ssnl136b                      geniaut S.GENIAUT          230      6      4
+ CASTEST MODIF ssnl502a                      geniaut S.GENIAUT          386      5      9
+ CASTEST MODIF ssnl502b                      geniaut S.GENIAUT          369      9     11
+ CASTEST MODIF ssnl502c                      geniaut S.GENIAUT          423      8      9
+ CASTEST MODIF ssnl502d                      geniaut S.GENIAUT          538      5      9
+ CASTEST MODIF ssnp101a                      geniaut S.GENIAUT          266      2      4
+ CASTEST MODIF ssnp102a                      geniaut S.GENIAUT          493     10      9
+ CASTEST MODIF ssnp102b                      geniaut S.GENIAUT          391      9      5
+ CASTEST MODIF ssnp110a                      geniaut S.GENIAUT          298      2      5
+ CASTEST MODIF ssnp110b                      geniaut S.GENIAUT          272      2      5
+ CASTEST MODIF ssnp110c                      geniaut S.GENIAUT          373      2      6
+ CASTEST MODIF ssnp110d                      geniaut S.GENIAUT          315      2      5
+ CASTEST MODIF ssnp113a                      geniaut S.GENIAUT          212      2      4
+ CASTEST MODIF ssnp113b                      geniaut S.GENIAUT          237      2      4
+ CASTEST MODIF ssnp117a                      geniaut S.GENIAUT          223      6     10
+ CASTEST MODIF ssnp118g                      geniaut S.GENIAUT          530      1      7
+ CASTEST MODIF ssnp122a                      geniaut S.GENIAUT          299      4     10
+ CASTEST MODIF ssnp123a                      geniaut S.GENIAUT          227      7      4
+ CASTEST MODIF ssnp123b                      geniaut S.GENIAUT          206      8      4
+ CASTEST MODIF ssnp125a                      geniaut S.GENIAUT          494      7      4
+ CASTEST MODIF ssnp125b                      geniaut S.GENIAUT          424      7      4
+ CASTEST MODIF ssnp126a                      geniaut S.GENIAUT          386      2      4
+ CASTEST MODIF ssnp127b                      geniaut S.GENIAUT          144      3      7
+ CASTEST MODIF ssnp128a                      geniaut S.GENIAUT          895      1      3
+ CASTEST MODIF ssnp132a                      geniaut S.GENIAUT          208      6      2
+ CASTEST MODIF ssnp133a                      geniaut S.GENIAUT          412      7      6
+ CASTEST MODIF ssnp133b                      geniaut S.GENIAUT          359      1      4
+ CASTEST MODIF ssnp135e                      geniaut S.GENIAUT          543      2      5
+ CASTEST MODIF ssnp136a                      geniaut S.GENIAUT          713      4     13
+ CASTEST MODIF ssnp14a                       geniaut S.GENIAUT          225      2      5
+ CASTEST MODIF ssnp501a                      geniaut S.GENIAUT          250      2      4
+ CASTEST MODIF ssnp501b                      geniaut S.GENIAUT          246      2      4
+ CASTEST MODIF ssnp501c                      geniaut S.GENIAUT          239      2      4
+ CASTEST MODIF ssnp501d                      geniaut S.GENIAUT          254      2      4
+ CASTEST MODIF ssnp502a                      geniaut S.GENIAUT          253      2      4
+ CASTEST MODIF ssnp502b                      geniaut S.GENIAUT          254      2      4
+ CASTEST MODIF ssnp502c                      geniaut S.GENIAUT          247      2      4
+ CASTEST MODIF ssns101a                      geniaut S.GENIAUT          334      2      4
+ CASTEST MODIF ssns101b                      geniaut S.GENIAUT          244      2      4
+ CASTEST MODIF ssns101c                      geniaut S.GENIAUT          295      2      4
+ CASTEST MODIF ssns101d                      geniaut S.GENIAUT          293      2      4
+ CASTEST MODIF ssns101e                      geniaut S.GENIAUT          293      2      4
+ CASTEST MODIF ssns101f                      geniaut S.GENIAUT          293      2      4
+ CASTEST MODIF ssns101g                      geniaut S.GENIAUT          292      2      4
+ CASTEST MODIF ssns102a                      geniaut S.GENIAUT          323      2      4
+ CASTEST MODIF ssns102b                      geniaut S.GENIAUT          311      2      4
+ CASTEST MODIF ssns106b                      geniaut S.GENIAUT          882      1      4
+ CASTEST MODIF ssns106c                      geniaut S.GENIAUT          825      1      7
+ CASTEST MODIF ssns106d                      geniaut S.GENIAUT          520      1      7
+ CASTEST MODIF ssns106e                      geniaut S.GENIAUT          463      1      4
+ CASTEST MODIF ssns106g                      geniaut S.GENIAUT          493      1      7
+ CASTEST MODIF ssns108a                      geniaut S.GENIAUT          477      1      5
+ CASTEST MODIF ssns109a                      geniaut S.GENIAUT          333      2      5
+ CASTEST MODIF ssns109b                      geniaut S.GENIAUT          332      2      5
+ CASTEST MODIF ssns109c                      geniaut S.GENIAUT          332      2      5
+ CASTEST MODIF ssns109d                      geniaut S.GENIAUT          332      2      5
+ CASTEST MODIF ssns501a                      geniaut S.GENIAUT          254      1      3
+ CASTEST MODIF ssns501b                      geniaut S.GENIAUT          250      1      3
+ CASTEST MODIF ssnv101c                      geniaut S.GENIAUT          416      2      4
+ CASTEST MODIF ssnv118d                      geniaut S.GENIAUT          319      2      5
+ CASTEST MODIF ssnv126a                      geniaut S.GENIAUT          459      2      5
+ CASTEST MODIF ssnv128e                      geniaut S.GENIAUT          386      5     17
+ CASTEST MODIF ssnv128f                      geniaut S.GENIAUT          414     13     13
+ CASTEST MODIF ssnv128g                      geniaut S.GENIAUT          264      5     17
+ CASTEST MODIF ssnv128h                      geniaut S.GENIAUT          382      5     17
+ CASTEST MODIF ssnv128i                      geniaut S.GENIAUT          403      5     17
+ CASTEST MODIF ssnv128j                      geniaut S.GENIAUT          383      5     17
+ CASTEST MODIF ssnv128k                      geniaut S.GENIAUT          276      5     17
+ CASTEST MODIF ssnv128l                      geniaut S.GENIAUT          248      3      9
+ CASTEST MODIF ssnv128o                      geniaut S.GENIAUT          258      3      9
+ CASTEST MODIF ssnv138a                      geniaut S.GENIAUT          226      3      7
+ CASTEST MODIF ssnv138b                      geniaut S.GENIAUT          320      8      6
+ CASTEST MODIF ssnv138d                      geniaut S.GENIAUT          303      4      5
+ CASTEST MODIF ssnv139b                      geniaut S.GENIAUT          265      2      4
+ CASTEST MODIF ssnv141b                      geniaut S.GENIAUT          176      2      4
+ CASTEST MODIF ssnv146a                      geniaut S.GENIAUT          145      2      2
+ CASTEST MODIF ssnv147a                      geniaut S.GENIAUT          218      2      4
+ CASTEST MODIF ssnv147b                      geniaut S.GENIAUT          167      2      4
+ CASTEST MODIF ssnv147c                      geniaut S.GENIAUT          194      3      8
+ CASTEST MODIF ssnv147d                      geniaut S.GENIAUT          454      2      4
+ CASTEST MODIF ssnv147e                      geniaut S.GENIAUT          190      2      5
+ CASTEST MODIF ssnv147f                      geniaut S.GENIAUT          183      9      6
+ CASTEST MODIF ssnv147i                      geniaut S.GENIAUT          465      2      4
+ CASTEST MODIF ssnv157a                      geniaut S.GENIAUT          128      3      7
+ CASTEST MODIF ssnv157b                      geniaut S.GENIAUT          129      3      7
+ CASTEST MODIF ssnv157c                      geniaut S.GENIAUT          134     10      9
+ CASTEST MODIF ssnv157d                      geniaut S.GENIAUT          133      3      8
+ CASTEST MODIF ssnv157e                      geniaut S.GENIAUT          133      3      7
+ CASTEST MODIF ssnv157f                      geniaut S.GENIAUT          134      3      7
+ CASTEST MODIF ssnv157g                      geniaut S.GENIAUT          132      3      7
+ CASTEST MODIF ssnv157h                      geniaut S.GENIAUT          136      3      7
+ CASTEST MODIF ssnv157i                      geniaut S.GENIAUT          135      3      7
+ CASTEST MODIF ssnv157j                      geniaut S.GENIAUT          135      3      7
+ CASTEST MODIF ssnv160c                      geniaut S.GENIAUT          285      2      5
+ CASTEST MODIF ssnv164a                      geniaut S.GENIAUT          565      4     12
+ CASTEST MODIF ssnv164b                      geniaut S.GENIAUT          566      4     12
+ CASTEST MODIF ssnv169d                      geniaut S.GENIAUT          224      6      4
+ CASTEST MODIF ssnv169e                      geniaut S.GENIAUT          248      7      6
+ CASTEST MODIF ssnv169f                      geniaut S.GENIAUT          240      7      4
+ CASTEST MODIF ssnv169g                      geniaut S.GENIAUT          230      7      4
+ CASTEST MODIF ssnv169h                      geniaut S.GENIAUT          252      7      6
+ CASTEST MODIF ssnv169i                      geniaut S.GENIAUT          240      7      4
+ CASTEST MODIF ssnv171b                      geniaut S.GENIAUT          298      4     16
+ CASTEST MODIF ssnv172a                      geniaut S.GENIAUT         1100     14     43
+ CASTEST MODIF ssnv172b                      geniaut S.GENIAUT          192      4     10
+ CASTEST MODIF ssnv175a                      geniaut S.GENIAUT          137      3      7
+ CASTEST MODIF ssnv176e                      geniaut S.GENIAUT          389     18     24
+ CASTEST MODIF ssnv177a                      geniaut S.GENIAUT          251      3      7
+ CASTEST MODIF ssnv184a                      geniaut S.GENIAUT          448      1      3
+ CASTEST MODIF ssnv184b                      geniaut S.GENIAUT          445      1      3
+ CASTEST MODIF ssnv184c                      geniaut S.GENIAUT          436      1      3
+ CASTEST MODIF ssnv189a                      geniaut S.GENIAUT          136      2      5
+ CASTEST MODIF ssnv189b                      geniaut S.GENIAUT          135      8      6
+ CASTEST MODIF ssnv189c                      geniaut S.GENIAUT          146      2      5
+ CASTEST MODIF ssnv190a                      geniaut S.GENIAUT          304     12      3
+ CASTEST MODIF ssnv190b                      geniaut S.GENIAUT          388     11      3
+ CASTEST MODIF ssnv194b                      geniaut S.GENIAUT          201      2      5
+ CASTEST MODIF ssnv197a                      geniaut S.GENIAUT          477      1      4
+ CASTEST MODIF ssnv197b                      geniaut S.GENIAUT          487      1      4
+ CASTEST MODIF ssnv197c                      geniaut S.GENIAUT          491      6      5
+ CASTEST MODIF ssnv197d                      geniaut S.GENIAUT          492      7      5
+ CASTEST MODIF ssnv199a                      geniaut S.GENIAUT          337      1      4
+ CASTEST MODIF ssnv199b                      geniaut S.GENIAUT          340      1      4
+ CASTEST MODIF ssnv199c                      geniaut S.GENIAUT          341      1      4
+ CASTEST MODIF ssnv199d                      geniaut S.GENIAUT          340      1      4
+ CASTEST MODIF ssnv199e                      geniaut S.GENIAUT          360      1      4
+ CASTEST MODIF ssnv199f                      geniaut S.GENIAUT          386      1      4
+ CASTEST MODIF ssnv202a                      geniaut S.GENIAUT          331      2      5
+ CASTEST MODIF ssnv204a                      geniaut S.GENIAUT          652     20     13
+ CASTEST MODIF ssnv204b                      geniaut S.GENIAUT          348      1      4
+ CASTEST MODIF ssnv205a                      geniaut S.GENIAUT          602     17     16
+ CASTEST MODIF ssnv206a                      geniaut S.GENIAUT          330     11      7
+ CASTEST MODIF ssnv207a                      geniaut S.GENIAUT          264     10     11
+ CASTEST MODIF ssnv208a                      geniaut S.GENIAUT          594      7      5
+ CASTEST MODIF ssnv211a                      geniaut S.GENIAUT          283      2      6
+ CASTEST MODIF ssnv501a                      geniaut S.GENIAUT          401      2      4
+ CASTEST MODIF ssnv501c                      geniaut S.GENIAUT          411      7      4
+ CASTEST MODIF ssnv505a                      geniaut S.GENIAUT          223      1      3
+ CASTEST MODIF ssnv505b                      geniaut S.GENIAUT          181      1      3
+ CASTEST MODIF ssnv505c                      geniaut S.GENIAUT          183      1      3
+ CASTEST MODIF ssnv505d                      geniaut S.GENIAUT          181      1      3
+ CASTEST MODIF ssnv505e                      geniaut S.GENIAUT          183      1      3
+ CASTEST MODIF ssnv505f                      geniaut S.GENIAUT          284      3      7
+ CASTEST MODIF ssnv505g                      geniaut S.GENIAUT          248      1      5
+ CASTEST MODIF ssnv505h                      geniaut S.GENIAUT          455      1     10
+ CASTEST MODIF ssnv506a                      geniaut S.GENIAUT          284      2      4
+ CASTEST MODIF ssnv506b                      geniaut S.GENIAUT          270      7      5
+ CASTEST MODIF ssnv506c                      geniaut S.GENIAUT          281      8      4
+ CASTEST MODIF ssnv506d                      geniaut S.GENIAUT          264      8      5
+ CASTEST MODIF ssnv506e                      geniaut S.GENIAUT          233      7      5
+ CASTEST MODIF ssnv506f                      geniaut S.GENIAUT          283      2      4
+ CASTEST MODIF wdnp101a                      geniaut S.GENIAUT          949     25     23
+ CASTEST MODIF wtna105a                      geniaut S.GENIAUT          759      1      4
+ CASTEST MODIF wtna106a                      geniaut S.GENIAUT          502     14     10
+ CASTEST MODIF wtna106b                      geniaut S.GENIAUT          502     14     10
+ CASTEST MODIF wtna106c                      geniaut S.GENIAUT          428      7      4
+ CASTEST MODIF wtna106d                      geniaut S.GENIAUT          428      7      4
+ CASTEST MODIF wtna109a                      geniaut S.GENIAUT          363      7      4
+ CASTEST MODIF wtna109b                      geniaut S.GENIAUT          363      7      4
+ CASTEST MODIF wtnp100a                      geniaut S.GENIAUT          365      7      4
+ CASTEST MODIF wtnp100b                      geniaut S.GENIAUT          327      7      4
+ CASTEST MODIF wtnp100c                      geniaut S.GENIAUT          366      7      4
+ CASTEST MODIF wtnp102a                      geniaut S.GENIAUT          503     14     10
+ CASTEST MODIF wtnp102b                      geniaut S.GENIAUT          360      7      4
+ CASTEST MODIF wtnp102c                      geniaut S.GENIAUT          515     14     10
+ CASTEST MODIF wtnp102d                      geniaut S.GENIAUT          515     14     10
+ CASTEST MODIF wtnp107a                      geniaut S.GENIAUT          365      7      4
+ CASTEST MODIF wtnp112e                      geniaut S.GENIAUT          281      7      4
+ CASTEST MODIF wtnp112f                      geniaut S.GENIAUT          290      7      4
+ CASTEST MODIF wtnp112g                      geniaut S.GENIAUT          309      7      4
+ CASTEST MODIF wtnp112h                      geniaut S.GENIAUT          279      7      4
+ CASTEST MODIF wtnp113a                      geniaut S.GENIAUT          467      1      3
+ CASTEST MODIF wtnp113b                      geniaut S.GENIAUT          485      1      3
+ CASTEST MODIF wtnp113c                      geniaut S.GENIAUT          491      1      3
+ CASTEST MODIF wtnp113d                      geniaut S.GENIAUT          500      1      3
+ CASTEST MODIF wtnp115a                      geniaut S.GENIAUT          273      1      3
+ CASTEST MODIF wtnp115b                      geniaut S.GENIAUT          257      1      3
+ CASTEST MODIF wtnp116a                      geniaut S.GENIAUT          485      3      9
+ CASTEST MODIF wtnp116b                      geniaut S.GENIAUT          525      3      9
+ CASTEST MODIF wtnp117b                      geniaut S.GENIAUT          439     43      1
+ CASTEST MODIF wtnv101a                      geniaut S.GENIAUT          583      2      4
+ CASTEST MODIF wtnv102a                      geniaut S.GENIAUT          341      1      3
+ CASTEST MODIF wtnv102b                      geniaut S.GENIAUT          357      1      3
+ CASTEST MODIF wtnv121b                      geniaut S.GENIAUT          366      1      3
+ CASTEST MODIF wtnv122b                      geniaut S.GENIAUT          449      1      3
+ CASTEST MODIF wtnv123c                      geniaut S.GENIAUT          831      1      3
+ CASTEST MODIF wtnv123f                      geniaut S.GENIAUT          369      8      5
+ CASTEST MODIF wtnv128a                      geniaut S.GENIAUT          536      1      3
+ CASTEST MODIF wtnv128b                      geniaut S.GENIAUT          528      1      3
+ CASTEST MODIF wtnv129a                      geniaut S.GENIAUT          536      1      3
+ CASTEST MODIF wtnv129b                      geniaut S.GENIAUT          538      1      3
+ CASTEST MODIF wtnv132a                      geniaut S.GENIAUT          638     13     11
+ CASTEST MODIF wtnv133a                      geniaut S.GENIAUT          623      1      4
+ CASTEST MODIF wtnv133b                      geniaut S.GENIAUT          607      1      4
+ CASTEST MODIF wtnv134a                      geniaut S.GENIAUT          873      8      9
+ CASTEST MODIF wtnv135a                      geniaut S.GENIAUT          349      7      5
+ CASTEST MODIF wtnv137a                      geniaut S.GENIAUT          332      1      4
+ CASTEST MODIF wtnv138a                      geniaut S.GENIAUT          346      1      3
+ CASTEST MODIF zmat007a                      geniaut S.GENIAUT          390      1      5
+ CASTEST MODIF zzzz107a                      geniaut S.GENIAUT          463      7      4
+ CASTEST MODIF zzzz107b                      geniaut S.GENIAUT          135      2      5
+ CASTEST MODIF zzzz130a                      geniaut S.GENIAUT          341      2      2
+ CASTEST MODIF zzzz131a                      geniaut S.GENIAUT          575      3      3
+ CASTEST MODIF zzzz175a                      geniaut S.GENIAUT          623      8      5
+ CASTEST MODIF zzzz254a                      geniaut S.GENIAUT          135      2      4
+CATALOGU MODIF compelem/phenomene_modelisation__  lebouvier F.LEBOUVIER       1488     49     32
+CATALOGU MODIF typelem/gener_th3dd3           pellet J.PELLET           219      4      1
+CATALOGU MODIF typelem/gener_thaxd2           pellet J.PELLET           233      4      1
+CATALOGU MODIF typelem/gener_thaxf2           pellet J.PELLET           145      4      1
+CATALOGU MODIF typelem/gener_thpl_2           pellet J.PELLET           256      4      1
+CATALOGU MODIF typelem/gener_thpld2           pellet J.PELLET           234      4      1
+CATALOPY AJOUT commande/defi_list_inst       geniaut S.GENIAUT          198    198      0
+CATALOPY AJOUT commande/raff_xfem            geniaut S.GENIAUT           28     28      0
+CATALOPY MODIF commande/affe_cara_elem        flejou J-L.FLEJOU         587      2      2
+CATALOPY MODIF commande/dyna_non_line        geniaut S.GENIAUT          367      8     43
+CATALOPY MODIF commun/c_comp_incr            laverne J.LAVERNE          260      2      1
+CATALOPY MODIF commun/c_increment            geniaut S.GENIAUT           32      2     39
+CATALOPY MODIF entete/accas                  geniaut S.GENIAUT          223      2      1
+ FORTRAN AJOUT algorith/diadap               geniaut S.GENIAUT          118    118      0
+ FORTRAN AJOUT algorith/dicrec               geniaut S.GENIAUT           91     91      0
+ FORTRAN AJOUT algorith/dinogd               geniaut S.GENIAUT           46     46      0
+ FORTRAN AJOUT algorith/lc0043               laverne J.LAVERNE           53     53      0
+ FORTRAN AJOUT algorith/lceifa               laverne J.LAVERNE          210    210      0
+ FORTRAN AJOUT algorith/nmadat               geniaut S.GENIAUT          230    230      0
+ FORTRAN AJOUT algorith/nmcadt               geniaut S.GENIAUT          201    201      0
+ FORTRAN AJOUT algorith/op0028               geniaut S.GENIAUT          481    481      0
+ FORTRAN AJOUT algorith/utdidt               geniaut S.GENIAUT          311    311      0
+ FORTRAN AJOUT calculel/arlap0               meunier S.MEUNIER          257    257      0
+ FORTRAN AJOUT calculel/arlap1               meunier S.MEUNIER          467    467      0
+ FORTRAN AJOUT modelisa/arlfa0               meunier S.MEUNIER          268    268      0
+ FORTRAN AJOUT modelisa/arlfa1               meunier S.MEUNIER          295    295      0
+ FORTRAN AJOUT utilitai/ceil                 geniaut S.GENIAUT           41     41      0
+ FORTRAN AJOUT utilitai/dismxf               geniaut S.GENIAUT           81     81      0
+ FORTRAN MODIF algorith/calcft               meunier S.MEUNIER          148     20     26
+ FORTRAN MODIF algorith/calcme               meunier S.MEUNIER          558      6     20
+ FORTRAN MODIF algorith/comthm               meunier S.MEUNIER          218     20     26
+ FORTRAN MODIF algorith/cresol               geniaut S.GENIAUT          192     12      9
+ FORTRAN MODIF algorith/dideco               geniaut S.GENIAUT          190     41    118
+ FORTRAN MODIF algorith/diinit               geniaut S.GENIAUT          106     10     12
+ FORTRAN MODIF algorith/diinst               geniaut S.GENIAUT           88     17      9
+ FORTRAN MODIF algorith/dilini             lebouvier F.LEBOUVIER        119      1      8
+ FORTRAN MODIF algorith/dinins               geniaut S.GENIAUT           84     13      3
+ FORTRAN MODIF algorith/dyobar               geniaut S.GENIAUT          528      5      5
+ FORTRAN MODIF algorith/dyobs3               geniaut S.GENIAUT          190     10     14
+ FORTRAN MODIF algorith/dyobse               geniaut S.GENIAUT          165      8      8
+ FORTRAN MODIF algorith/equthm               meunier S.MEUNIER          696      3      3
+ FORTRAN MODIF algorith/equthp               meunier S.MEUNIER          570      3      3
+ FORTRAN MODIF algorith/lobs                 geniaut S.GENIAUT          107     10      8
+ FORTRAN MODIF algorith/nmcrli               geniaut S.GENIAUT          328     50     16
+ FORTRAN MODIF algorith/nmcrob               geniaut S.GENIAUT          115     13     12
+ FORTRAN MODIF algorith/nmcrsu               geniaut S.GENIAUT          295    143    114
+ FORTRAN MODIF algorith/nmdcea               geniaut S.GENIAUT          116      7      2
+ FORTRAN MODIF algorith/nmdcei               geniaut S.GENIAUT          180     29     13
+ FORTRAN MODIF algorith/nmdcex               geniaut S.GENIAUT          303     32     10
+ FORTRAN MODIF algorith/nmdcin               geniaut S.GENIAUT           90     16      4
+ FORTRAN MODIF algorith/nmdeco               geniaut S.GENIAUT          138     32     28
+ FORTRAN MODIF algorith/nmdoin               geniaut S.GENIAUT          156      4      7
+ FORTRAN MODIF algorith/nmgrin               geniaut S.GENIAUT           95      4      5
+ FORTRAN MODIF algorith/nminit               geniaut S.GENIAUT          259      4      5
+ FORTRAN MODIF algorith/nmobsv               geniaut S.GENIAUT           73      4      5
+ FORTRAN MODIF algorith/op0070               geniaut S.GENIAUT          567     12      8
+ FORTRAN MODIF algorith/op0186               geniaut S.GENIAUT          648      2      2
+ FORTRAN MODIF algorith/pascom               geniaut S.GENIAUT          134     12     15
+ FORTRAN MODIF algorith/pascou               geniaut S.GENIAUT          196     11     13
+ FORTRAN MODIF algorith/regini             lebouvier F.LEBOUVIER        141      1      8
+ FORTRAN MODIF algorith/te0350             lebouvier F.LEBOUVIER        181      4      4
+ FORTRAN MODIF algorith/tiinit               geniaut S.GENIAUT          110      2      2
+ FORTRAN MODIF algorith/typthm             lebouvier F.LEBOUVIER         73      2      9
+ FORTRAN MODIF algorith/xstan2               geniaut S.GENIAUT          257     10      4
+ FORTRAN MODIF calculel/arlapf               meunier S.MEUNIER          153      2      2
+ FORTRAN MODIF calculel/connec             lebouvier F.LEBOUVIER        124     12      4
+ FORTRAN MODIF calculel/op0026               geniaut S.GENIAUT          395      4      5
+ FORTRAN MODIF calculel/rdtmai             lebouvier F.LEBOUVIER        421      7      2
+ FORTRAN MODIF calculel/te0159             lebouvier F.LEBOUVIER        114      6      7
+ FORTRAN MODIF calculel/te0503             lebouvier F.LEBOUVIER        126      8      4
+ FORTRAN MODIF calculel/te0507             lebouvier F.LEBOUVIER        137      8      4
+ FORTRAN MODIF elements/crgdm                 pellet J.PELLET           131      4      4
+ FORTRAN MODIF elements/dktnli             lebouvier F.LEBOUVIER        480      3      3
+ FORTRAN MODIF elements/dktsnl             lebouvier F.LEBOUVIER        550      3      3
+ FORTRAN MODIF elements/dxbmat             lebouvier F.LEBOUVIER         63      8      8
+ FORTRAN MODIF elements/dxbsig             lebouvier F.LEBOUVIER        129      5      5
+ FORTRAN MODIF elements/dxeffi             lebouvier F.LEBOUVIER        133      6      6
+ FORTRAN MODIF elements/dxefgi             lebouvier F.LEBOUVIER        123      7      7
+ FORTRAN MODIF elements/dxefgm             lebouvier F.LEBOUVIER         62      8      8
+ FORTRAN MODIF elements/dxefnt             lebouvier F.LEBOUVIER        162      7      7
+ FORTRAN MODIF elements/dxsief             lebouvier F.LEBOUVIER        214      6      6
+ FORTRAN MODIF elements/dxsigm             lebouvier F.LEBOUVIER         88      8      8
+ FORTRAN MODIF elements/dxsigt             lebouvier F.LEBOUVIER        165      7      7
+ FORTRAN MODIF elements/effi               lebouvier F.LEBOUVIER        131      2      2
+ FORTRAN MODIF elements/eqcara             lebouvier F.LEBOUVIER        255      5      3
+ FORTRAN MODIF elements/matdtd             lebouvier F.LEBOUVIER        132      4      4
+ FORTRAN MODIF elements/mattge             lebouvier F.LEBOUVIER        130      2      2
+ FORTRAN MODIF elements/porigi             lebouvier F.LEBOUVIER        145      2      2
+ FORTRAN MODIF elements/ptfocp             lebouvier F.LEBOUVIER        193      2      2
+ FORTRAN MODIF elements/te0003             lebouvier F.LEBOUVIER        910      3     18
+ FORTRAN MODIF elements/te0007             lebouvier F.LEBOUVIER        128      3      5
+ FORTRAN MODIF elements/te0020             lebouvier F.LEBOUVIER        142      3      7
+ FORTRAN MODIF elements/te0030             lebouvier F.LEBOUVIER        192      2      5
+ FORTRAN MODIF elements/te0031             lebouvier F.LEBOUVIER        412      1      1
+ FORTRAN MODIF elements/te0033             lebouvier F.LEBOUVIER        321     22     22
+ FORTRAN MODIF elements/te0061             lebouvier F.LEBOUVIER        550      3      3
+ FORTRAN MODIF elements/te0068             lebouvier F.LEBOUVIER        123      9      5
+ FORTRAN MODIF elements/te0070             lebouvier F.LEBOUVIER        127      8      4
+ FORTRAN MODIF elements/te0071             lebouvier F.LEBOUVIER        131      9      4
+ FORTRAN MODIF elements/te0072             lebouvier F.LEBOUVIER        135      8      4
+ FORTRAN MODIF elements/te0073             lebouvier F.LEBOUVIER        448      9      4
+ FORTRAN MODIF elements/te0074             lebouvier F.LEBOUVIER        110      8      4
+ FORTRAN MODIF elements/te0075             lebouvier F.LEBOUVIER        127      8      4
+ FORTRAN MODIF elements/te0076             lebouvier F.LEBOUVIER        192      9      5
+ FORTRAN MODIF elements/te0077             lebouvier F.LEBOUVIER        162     10      6
+ FORTRAN MODIF elements/te0078             lebouvier F.LEBOUVIER        534     10      6
+ FORTRAN MODIF elements/te0079             lebouvier F.LEBOUVIER        111      9      5
+ FORTRAN MODIF elements/te0080             lebouvier F.LEBOUVIER        124      9      5
+ FORTRAN MODIF elements/te0091             lebouvier F.LEBOUVIER         94      1      6
+ FORTRAN MODIF elements/te0096             lebouvier F.LEBOUVIER       1241      3      3
+ FORTRAN MODIF elements/te0098             lebouvier F.LEBOUVIER        126      1     12
+ FORTRAN MODIF elements/te0100             lebouvier F.LEBOUVIER        284      5      7
+ FORTRAN MODIF elements/te0101             lebouvier F.LEBOUVIER        630      8      7
+ FORTRAN MODIF elements/te0102             lebouvier F.LEBOUVIER        357      3      4
+ FORTRAN MODIF elements/te0103             lebouvier F.LEBOUVIER        503      4      4
+ FORTRAN MODIF elements/te0104             lebouvier F.LEBOUVIER        432      4      4
+ FORTRAN MODIF elements/te0105             lebouvier F.LEBOUVIER        214      4      4
+ FORTRAN MODIF elements/te0106             lebouvier F.LEBOUVIER        152      5      5
+ FORTRAN MODIF elements/te0107             lebouvier F.LEBOUVIER        234      4      4
+ FORTRAN MODIF elements/te0108             lebouvier F.LEBOUVIER        162      5      5
+ FORTRAN MODIF elements/te0110             lebouvier F.LEBOUVIER        947      8      9
+ FORTRAN MODIF elements/te0113             lebouvier F.LEBOUVIER        206      4      3
+ FORTRAN MODIF elements/te0114             lebouvier F.LEBOUVIER        112      1      9
+ FORTRAN MODIF elements/te0134             lebouvier F.LEBOUVIER        142      1      3
+ FORTRAN MODIF elements/te0135             lebouvier F.LEBOUVIER        208      1      3
+ FORTRAN MODIF elements/te0136             lebouvier F.LEBOUVIER        136      8      4
+ FORTRAN MODIF elements/te0137             lebouvier F.LEBOUVIER        149      8      4
+ FORTRAN MODIF elements/te0138             lebouvier F.LEBOUVIER        135      8      4
+ FORTRAN MODIF elements/te0140             lebouvier F.LEBOUVIER        259      4      4
+ FORTRAN MODIF elements/te0141             lebouvier F.LEBOUVIER        266      5      5
+ FORTRAN MODIF elements/te0142             lebouvier F.LEBOUVIER        239      3      3
+ FORTRAN MODIF elements/te0161             lebouvier F.LEBOUVIER        266      7      7
+ FORTRAN MODIF elements/te0163             lebouvier F.LEBOUVIER        165      2      2
+ FORTRAN MODIF elements/te0204             lebouvier F.LEBOUVIER        786      3      3
+ FORTRAN MODIF elements/te0219             lebouvier F.LEBOUVIER        139      9      5
+ FORTRAN MODIF elements/te0221             lebouvier F.LEBOUVIER        280      3      3
+ FORTRAN MODIF elements/te0223             lebouvier F.LEBOUVIER        109      2      2
+ FORTRAN MODIF elements/te0224             lebouvier F.LEBOUVIER        126      2      2
+ FORTRAN MODIF elements/te0225             lebouvier F.LEBOUVIER        146      4      4
+ FORTRAN MODIF elements/te0226             lebouvier F.LEBOUVIER        152      3      3
+ FORTRAN MODIF elements/te0227             lebouvier F.LEBOUVIER        156      3      3
+ FORTRAN MODIF elements/te0228             lebouvier F.LEBOUVIER        106      2      2
+ FORTRAN MODIF elements/te0229             lebouvier F.LEBOUVIER        117      2      2
+ FORTRAN MODIF elements/te0230             lebouvier F.LEBOUVIER        188      3      3
+ FORTRAN MODIF elements/te0231             lebouvier F.LEBOUVIER        209      3      3
+ FORTRAN MODIF elements/te0232             lebouvier F.LEBOUVIER         96      2      2
+ FORTRAN MODIF elements/te0233             lebouvier F.LEBOUVIER         93      2      2
+ FORTRAN MODIF elements/te0234             lebouvier F.LEBOUVIER        354      7      7
+ FORTRAN MODIF elements/te0235             lebouvier F.LEBOUVIER        365      3      5
+ FORTRAN MODIF elements/te0237             lebouvier F.LEBOUVIER        191      3      3
+ FORTRAN MODIF elements/te0239             lebouvier F.LEBOUVIER        360      6      6
+ FORTRAN MODIF elements/te0242             lebouvier F.LEBOUVIER        251      9      5
+ FORTRAN MODIF elements/te0243             lebouvier F.LEBOUVIER        245      9      5
+ FORTRAN MODIF elements/te0244             lebouvier F.LEBOUVIER        490      9      5
+ FORTRAN MODIF elements/te0247             lebouvier F.LEBOUVIER        431      2      2
+ FORTRAN MODIF elements/te0249             lebouvier F.LEBOUVIER        177      8      4
+ FORTRAN MODIF elements/te0250             lebouvier F.LEBOUVIER        194      8      4
+ FORTRAN MODIF elements/te0251             lebouvier F.LEBOUVIER        134      8      4
+ FORTRAN MODIF elements/te0259             lebouvier F.LEBOUVIER        111      2     16
+ FORTRAN MODIF elements/te0274             lebouvier F.LEBOUVIER        226      8      4
+ FORTRAN MODIF elements/te0287             lebouvier F.LEBOUVIER        281      2      2
+ FORTRAN MODIF elements/te0299             lebouvier F.LEBOUVIER        350      3      2
+ FORTRAN MODIF elements/te0300             lebouvier F.LEBOUVIER        329      2      2
+ FORTRAN MODIF elements/te0329             lebouvier F.LEBOUVIER        201      2      2
+ FORTRAN MODIF elements/te0330             lebouvier F.LEBOUVIER        144      2      2
+ FORTRAN MODIF elements/te0334             lebouvier F.LEBOUVIER        297      3      3
+ FORTRAN MODIF elements/te0376             lebouvier F.LEBOUVIER        214      2      2
+ FORTRAN MODIF elements/te0377                pellet J.PELLET           395      2      2
+ FORTRAN MODIF elements/te0380             lebouvier F.LEBOUVIER        108      5      5
+ FORTRAN MODIF elements/te0382                pellet J.PELLET           452      2      2
+ FORTRAN MODIF elements/te0397             lebouvier F.LEBOUVIER        121      2      2
+ FORTRAN MODIF elements/te0399             lebouvier F.LEBOUVIER        274      3      3
+ FORTRAN MODIF elements/te0401             lebouvier F.LEBOUVIER        213      1      5
+ FORTRAN MODIF elements/te0412             lebouvier F.LEBOUVIER        306      5      5
+ FORTRAN MODIF elements/te0415             lebouvier F.LEBOUVIER        527      9      9
+ FORTRAN MODIF elements/te0421             lebouvier F.LEBOUVIER        229      2      2
+ FORTRAN MODIF elements/te0437             lebouvier F.LEBOUVIER        131      1      5
+ FORTRAN MODIF elements/te0449             lebouvier F.LEBOUVIER        219      8      5
+ FORTRAN MODIF elements/te0480             lebouvier F.LEBOUVIER        122     10      7
+ FORTRAN MODIF elements/te0486             lebouvier F.LEBOUVIER        282      2      2
+ FORTRAN MODIF elements/te0487             lebouvier F.LEBOUVIER         95      2      2
+ FORTRAN MODIF elements/te0498                pellet J.PELLET           354      3      3
+ FORTRAN MODIF elements/te0508             lebouvier F.LEBOUVIER        123      2      4
+ FORTRAN MODIF elements/te0512             lebouvier F.LEBOUVIER        437      1      7
+ FORTRAN MODIF elements/te0518             lebouvier F.LEBOUVIER        122      2      4
+ FORTRAN MODIF elements/te0539             lebouvier F.LEBOUVIER        317      4      4
+ FORTRAN MODIF elements/te0540             lebouvier F.LEBOUVIER        175      4      7
+ FORTRAN MODIF elements/te0543             lebouvier F.LEBOUVIER        144      4      8
+ FORTRAN MODIF elements/te0544             lebouvier F.LEBOUVIER        125      4      3
+ FORTRAN MODIF elements/te0545             lebouvier F.LEBOUVIER        190      3      3
+ FORTRAN MODIF elements/te0558             lebouvier F.LEBOUVIER        280      3      3
+ FORTRAN MODIF elements/te0561             lebouvier F.LEBOUVIER        201      4      4
+ FORTRAN MODIF elements/te0563             lebouvier F.LEBOUVIER        164      2      2
+ FORTRAN MODIF elements/te0564             lebouvier F.LEBOUVIER        311      4      4
+ FORTRAN MODIF elements/te0577             lebouvier F.LEBOUVIER        369      3      3
+ FORTRAN MODIF elements/te0590             lebouvier F.LEBOUVIER        232      9      5
+ FORTRAN MODIF elements/te0592             lebouvier F.LEBOUVIER        282      8      4
+ FORTRAN MODIF elements/te0593             lebouvier F.LEBOUVIER        265      8      4
+ FORTRAN MODIF elements/te0594             lebouvier F.LEBOUVIER        222      8      4
+ FORTRAN MODIF elements/te0595             lebouvier F.LEBOUVIER        261      8      4
+ FORTRAN MODIF elements/te0598             lebouvier F.LEBOUVIER        773     10      6
+ FORTRAN MODIF elements/te0599             lebouvier F.LEBOUVIER        194      9      5
+ FORTRAN MODIF elements/vdefge             lebouvier F.LEBOUVIER        254      3      3
+ FORTRAN MODIF elements/vdefgn             lebouvier F.LEBOUVIER        288      3      3
+ FORTRAN MODIF elements/vdesnd             lebouvier F.LEBOUVIER        105      5      5
+ FORTRAN MODIF elements/xgelem             lebouvier F.LEBOUVIER        419      5      6
+ FORTRAN MODIF elements/xsifel             lebouvier F.LEBOUVIER        520      4      6
+ FORTRAN MODIF modelisa/acearp                flejou J-L.FLEJOU         423     78    108
+ FORTRAN MODIF modelisa/afdi2d                flejou J-L.FLEJOU         209      3      3
+ FORTRAN MODIF modelisa/afdi3d                flejou J-L.FLEJOU         238      2      2
+ FORTRAN MODIF modelisa/affdis                flejou J-L.FLEJOU          42      3      3
+ FORTRAN MODIF modelisa/arlapp               meunier S.MEUNIER           94      5      5
+ FORTRAN MODIF modelisa/arldeg               meunier S.MEUNIER          113     23     23
+ FORTRAN MODIF modelisa/cbsour                pellet J.PELLET            61      1      2
+ FORTRAN MODIF modelisa/nm3dco                pellet J.PELLET           425      2      2
+ FORTRAN MODIF utilitai/arldbg               meunier S.MEUNIER          441      2      2
+ FORTRAN MODIF utilitai/dismoi               geniaut S.GENIAUT          145      3      1
+ FORTRAN SUPPR calculel/appari               meunier S.MEUNIER          557      0    557
+ FORTRAN SUPPR modelisa/arlfam               meunier S.MEUNIER          414      0    414
+  PYTHON AJOUT Comportement/czm_fat_mix      laverne J.LAVERNE           39     39      0
+  PYTHON AJOUT Macro/raff_xfem_ops           geniaut S.GENIAUT          197    197      0
+  PYTHON AJOUT SD/co_list_inst               geniaut S.GENIAUT           26     26      0
+  PYTHON AJOUT SD/sd_list_inst               geniaut S.GENIAUT           38     38      0
+  PYTHON MODIF Intranet/macro_bascule_schema_cata    geniaut S.GENIAUT          364      1     75
+  PYTHON MODIF Messages/arlequindebg2        meunier S.MEUNIER          175      1      1
+  PYTHON MODIF Messages/calculel6          lebouvier F.LEBOUVIER        353      5      1
+  PYTHON MODIF Messages/discretisation       geniaut S.GENIAUT          119     29      7
+  PYTHON MODIF Messages/modelisa9             flejou J-L.FLEJOU         450     30     12
+  PYTHON MODIF Messages/sensibilite        lebouvier F.LEBOUVIER        204      1      5
+  PYTHON MODIF Messages/subdivise            geniaut S.GENIAUT           95      9      7
+  PYTHON MODIF SD/co_cara_elem                flejou J-L.FLEJOU          48     13      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   28        5528      5528             +5528
+ MODIF :  512      166821      2943    3603      -660
+ SUPPR :    2         971               971      -971
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  542      173320      8471    4574     +3897 

@@ -1,4 +1,4 @@
-#@ MODIF subdivise Messages  DATE 28/07/2008   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF subdivise Messages  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,14 @@ cata_msg={
 # Plus de messages pour développeur ==> ASSERT
 
 # Messages utilisateurs
+
+1: _("""Avec PREDICTION = 'DEPL_CALCULE', la subdivision du pas de temps
+n'est pas autorisée. Or la méthode sélectionnée est %(k1)s.
+On force SUBD_METHODE = 'AUCUNE'.
+Conseil :
+Pour ne plus avoir ce message, choisissez SUBD_METHODE = 'AUCUNE'.
+   """),
+
 9: _("""La subdivisition utilise la méthode EXTRAPOLE.
 Il n'y a pas eu de détection de convergence alors que les critères sont atteints.
 Cela peut arriver, si vous avez du contact avec une réactualisation géométrique.
@@ -64,12 +72,6 @@ Conseil :
    s'arrete dès que l'un des 2 critères est vérifié."""),
 
 13: _("""Méthode de subdivision : %(k1)s"""),
-
-14: _("""La subdivision est forcée, méthode UNIFORME.
-   Nombre d'intervalle             = <%(i1)d>
-   Niveau de subdivision           = <%(i2)d>
-   Ratio sur le premier intervalle = <%(r1)E>
-   Pas de Temps actuel             = <%(r2)E>"""),
 
 15: _("""Le pas minimal de la subdivision est atteint.
    Pas de Temps actuel          = <%(r1)E>

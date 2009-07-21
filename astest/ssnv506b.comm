@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,6 +110,10 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=1.0,
                                     NOMBRE=17,),),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=9.9999999999999995E-07,),)
 
 U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 MODELE=MO,
@@ -121,10 +125,8 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                              GROUP_MA='MAT2',),
                 COMP_ELAS=_F(RELATION='ELAS',
                              GROUP_MA='MAT1',),
-                INCREMENT=_F(LIST_INST=LINST,
-                             INST_FIN=1.,
-                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                             SUBD_PAS_MINI=9.9999999999999995E-07,),
+                INCREMENT=_F(LIST_INST=DEFLIST,
+                             INST_FIN=1.,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=15,),

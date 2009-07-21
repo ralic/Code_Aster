@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,10 +102,7 @@ U=STAT_NON_LINE(
                          COMP_INCR=_F(
                 RELATION = 'VMIS_CINE_LINE'),
                          INCREMENT=_F(
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
-                SUBD_PAS_MINI = 0.0001,
-                SUBD_COEF_PAS_1 = 0.001),
+                LIST_INST = L_INST,),
                          ARCHIVAGE=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(

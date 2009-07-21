@@ -1,6 +1,6 @@
       SUBROUTINE TE0380 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,18 +50,18 @@ C
       CALL JEVECH ( 'PDEPLAR' , 'L', IDEPL  )
       CALL JEVECH ( 'PEFFORR' , 'E', IEFFCA )
 C
-      IF (NOMTE(1:15).NE.'MECA_POU_D_T_GD') THEN
+      IF (NOMTE.NE.'MECA_POU_D_T_GD') THEN
          CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
-         IF(NOMTE(1:7).EQ.'MEPOULI') THEN
+         IF(NOMTE.EQ.'MEPOULI') THEN
             NE2    = 9
-         ELSEIF(NOMTE(1:7).EQ.'MECABL2') THEN
+         ELSEIF(NOMTE.EQ.'MECABL2') THEN
             NE2    = 6
          ENDIF
          DO 10 I = 1,NE2
             XUG(I) = ZR(IDEPL-1+I) + ZR(IGEOM-1+I)
  10      CONTINUE
 C
-         IF (NOMTE(1:7).NE.'MEPOULI') THEN
+         IF (NOMTE.NE.'MEPOULI') THEN
             CALL VDIFF(3,XUG(4),XUG(1),XD)
             S=DDOT(3,XD,1,XD,1)
             S = SQRT(S)

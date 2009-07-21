@@ -1,6 +1,7 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
+# wtnv121b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -314,8 +315,6 @@ REPONSE=STAT_NON_LINE(
                      INCREMENT=_F(
                                   LIST_INST = L_INST,
                                   INST_FIN=1.,
-                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1.E-6,
                                   ),
                      NEWTON=_F(
                                   MATRICE = 'TANGENTE',

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8   NOMAIL, NOMPAR(4)
 C     ------------------------------------------------------------------
 C
-      IF (NOMTE(1:8).EQ.'MEC3QU9H' .OR. NOMTE(1:8).EQ.'MEC3TR7H') THEN
+      IF (NOMTE.EQ.'MEC3QU9H' .OR. NOMTE.EQ.'MEC3TR7H') THEN
          CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI','L',JIN)
          NNO   = ZI(JIN)
       ELSE

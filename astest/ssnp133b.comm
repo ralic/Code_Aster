@@ -1,5 +1,6 @@
-# MODIF  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE PLAQUE TROUE
+# ssnp133b.para = tps_job 100 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -191,9 +192,6 @@ EVOL = STAT_NON_LINE(
     ),
   INCREMENT  = _F(LIST_INST = INSTANTS, 
     INST_FIN = tfin,
-    SUBD_METHODE='UNIFORME',
-    SUBD_PAS  = 10,
-    SUBD_PAS_MINI = 1.55E-5
                  ),    
   PILOTAGE  = _F (
     TYPE           = 'PRED_ELAS',

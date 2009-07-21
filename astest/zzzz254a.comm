@@ -1,4 +1,4 @@
-# MODIF  DATE 09/06/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DU CALCUL DE LA MATRICE DE MASSE AVEC UNE MODELISATION A GRADIENT
 # zzzz254a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -69,9 +69,7 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                           _F(CHARGE=TRACTION,
                              FONC_MULT=FONCMULT,),),
                    COMP_INCR=_F(RELATION='ENDO_FRAGILE',),
-                   INCREMENT=_F(LIST_INST=INSTANT,
-                                SUBD_METHODE='UNIFORME',
-                                SUBD_PAS_MINI=1e-06,),
+                   INCREMENT=_F(LIST_INST=INSTANT,),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                    FORMULATION='DEPLACEMENT',),);
 

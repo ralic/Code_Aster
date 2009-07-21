@@ -1,5 +1,5 @@
 
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103c.para = tps_job 80 mem_job 500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,10 +125,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    ETAT_INIT=_F(VITE=VIT_0,),
 
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=2.E-05,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-17,
-                                SUBD_COEF_PAS_1=1.0,),
+                                INST_FIN=2.E-05,),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                
 FORMULATION='DEPLACEMENT',BETA=0.49,GAMMA=0.9,),

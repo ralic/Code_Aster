@@ -1,5 +1,6 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN 
+# wtnv129a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -281,8 +282,6 @@ U2=STAT_NON_LINE(
                 VARI = VAR_INI),
                          INCREMENT=_F( 
                 LIST_INST = TEMPS2,
-                SUBD_METHODE='UNIFORME', SUBD_PAS  = 2,
-                SUBD_PAS_MINI = 1.E-8,
                 INST_FIN=5.0),
                 NEWTON=_F(
                 MATRICE = 'TANGENTE',

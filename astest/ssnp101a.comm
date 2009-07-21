@@ -1,5 +1,5 @@
 
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,9 +221,7 @@ U2=STAT_NON_LINE(MODELE=MO,
                  COMP_INCR=_F(RELATION='VENDOCHAB',
                               ITER_INTE_MAXI=1000,),
                  INCREMENT=_F(LIST_INST=L_INST2,
-                              INST_FIN=30.0,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                              SUBD_PAS_MINI=0.0001,),
+                              INST_FIN=30.0,),
                  NEWTON=_F(PREDICTION='EXTRAPOL',
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),

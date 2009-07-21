@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -170,9 +170,9 @@ C     --------------------------------------------------------
       DKT    = .FALSE.
       DKQ    = .FALSE.
 
-      IF (NOMTE(1:8).EQ.'MEDKTR3 ') THEN
+      IF (NOMTE.EQ.'MEDKTR3 ') THEN
         DKT = .TRUE.
-      ELSEIF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
+      ELSEIF (NOMTE.EQ.'MEDKQU4 ') THEN
         DKQ = .TRUE.
       ELSE
         CALL U2MESK('F','ELEMENTS_34',1,NOMTE)

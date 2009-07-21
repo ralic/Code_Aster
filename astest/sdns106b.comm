@@ -1,5 +1,7 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME EN GRILLE_EXCENTRE TRIA3
+# sdns106b.para = tps_job 600 mem_job 270Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -233,10 +235,7 @@ RESU=DYNA_NON_LINE(MODELE=LEMOD,
                    COMP_INCR=_F(RELATION='ELAS',
                                # ALGO_1D='DEBORST',
                                 TOUT='OUI',),
-                   INCREMENT=_F(LIST_INST=LINST,
-                                SUBD_METHODE='UNIFORME',
-                                SUBD_PAS=3,
-                                SUBD_PAS_MINI=1.E-5,),
+                   INCREMENT=_F(LIST_INST=LINST,),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                    FORMULATION='DEPLACEMENT',),
                    ARCHIVAGE=_F(LIST_INST=LARCH,

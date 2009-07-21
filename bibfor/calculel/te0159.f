@@ -1,6 +1,6 @@
       SUBROUTINE TE0159(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,11 @@ C     -----------------------------------------------
         CALL JEVECH('PCONTRR','L',ISIGGA)
         CALL JEVECH('PSIEFNOR','E',ISIGNO)
 
-        IF (NOMTE(1:7).EQ.'MEPOULI') THEN
+        IF (NOMTE.EQ.'MEPOULI') THEN
           ZR(ISIGNO) = ZR(ISIGGA)
           ZR(ISIGNO+1) = ZR(ISIGGA)
           ZR(ISIGNO+2) = ZR(ISIGGA)
-        ELSE IF (NOMTE(1:7).EQ.'MECABL2') THEN
+        ELSE IF (NOMTE.EQ.'MECABL2') THEN
           ZR(ISIGNO) = ZR(ISIGGA)
           ZR(ISIGNO+1) = ZR(ISIGGA)
         END IF
@@ -69,15 +69,14 @@ C     -----------------------------------------------
 C     -----------------------------------------------
         CALL JEVECH('PVARIGR','L',IVARGA)
         CALL JEVECH('PVARINR','E',IVARNO)
-        IF (NOMTE(1:7).EQ.'MEPOULI') THEN
+        IF (NOMTE.EQ.'MEPOULI') THEN
           ZR(IVARNO) = ZR(IVARGA)
           ZR(IVARNO+1) = ZR(IVARGA)
           ZR(IVARNO+2) = ZR(IVARGA)
-        ELSE IF (NOMTE(1:7).EQ.'MECABL2') THEN
+        ELSE IF (NOMTE.EQ.'MECABL2') THEN
           ZR(IVARNO) = ZR(IVARGA)
           ZR(IVARNO+1) = ZR(IVARGA)
-        ELSE IF (NOMTE(1:10).EQ.'MECA_POU_D' .OR.
-     &           NOMTE.EQ.'MECA_DIS_TR_L') THEN
+        ELSE IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
           CALL JEVECH('PCOMPOR','L',ICOMPO)
           IF (ZK16(ICOMPO) (1:4).EQ.'ELAS') GO TO 30
           CALL TECACH('OON','PVARIGR',7,JTAB,IRET)

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,10 +99,7 @@ RESUS=STAT_NON_LINE(MODELE=MO,
                    COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                 RESI_INTE_RELA = 1.E-8),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-4,
-                                SUBD_COEF_PAS_1=1.0,),
+                                INST_FIN=1.,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),
@@ -189,10 +186,7 @@ RESU2 = STAT_NON_LINE(MODELE=MO,
                       COMP_INCR=_F(RELATION='DRUCK_PRAGER',
                                    RESI_INTE_RELA = 1.E-8),
                       INCREMENT=_F(LIST_INST=L_INST,
-                                   INST_FIN=1.,
-                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                   SUBD_PAS_MINI=1.E-4,
-                                   SUBD_COEF_PAS_1=1.0,),
+                                   INST_FIN=1.,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 PREDICTION='ELASTIQUE',
                                 REAC_ITER=1,),

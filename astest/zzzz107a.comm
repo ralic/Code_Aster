@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -293,6 +293,9 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                                    MY=3000.0,
                                    MZ=0.0,),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST))
+
+
 is_ok = 0
 try :
      # avoir au moins un pas de temps converge
@@ -303,7 +306,7 @@ try :
                                    FONC_MULT=F1,),
                           COMP_INCR=_F(RELATION='ASSE_CORN',
                                        MAILLE='D1',),
-                          INCREMENT=_F(LIST_INST=LINST,
+                          INCREMENT=_F(LIST_INST=DEFLIST,
                                        NUME_INST_FIN=1,),
                           NEWTON=_F(MATRICE='TANGENTE',
                                     REAC_ITER=1,),)
@@ -318,7 +321,7 @@ try :
                           ETAT_INIT=_F(EVOL_NOLI=STATNL,),
                           COMP_INCR=_F(RELATION='ASSE_CORN',
                                        MAILLE='D1',),
-                          INCREMENT=_F(LIST_INST=LINST,
+                          INCREMENT=_F(LIST_INST=DEFLIST,
                                        NUME_INST_FIN=12,),
                           NEWTON=_F(MATRICE='ELASTIQUE',
                                     REAC_ITER=1,),)
@@ -340,7 +343,7 @@ except aster.NonConvergenceError:
                                        NUME_ORDRE=last_iter,),
                           COMP_INCR=_F(RELATION='ASSE_CORN',
                                        MAILLE='D1',),
-                          INCREMENT=_F(LIST_INST=LINST,
+                          INCREMENT=_F(LIST_INST=DEFLIST,
                                        NUME_INST_FIN=12,),
                           NEWTON=_F(MATRICE='TANGENTE',
                                     REAC_ITER=1,),

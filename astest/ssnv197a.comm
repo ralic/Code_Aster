@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 # ssnv197a.para = tps_job 150 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,9 +194,6 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                                 ITER_GLOB_MAXI = 10),
                  ARCHIVAGE =_F(LIST_INST=TEMPS1,),              
                  INCREMENT=_F(LIST_INST = TEMPS1,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_PAS_MINI=0.00001,
                               INST_INIT=0.0,
                               INST_FIN =10.));
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE PEYRARD C.PEYRARD
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -646,9 +646,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                  _F(RELATION='MULTIFIBRE',
                                     GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),),),
                       INCREMENT=_F(LIST_INST=TEMPS,
-                                   INST_FIN=1.01,
-                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                   SUBD_PAS_MINI=1.0E-6,),
+                                   INST_FIN=1.01,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
                       PILOTAGE=_F(TYPE='LONG_ARC',
@@ -658,7 +656,8 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                   NOM_CMP=('DX','DY','DZ',),),
                       CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
                                      ITER_GLOB_MAXI=NBGL,),
-                      SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+#                      SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),
+                      );
 # ----------------------------------------------------
 # Pour : BARRE, POU_D_TGM, CABLE
 

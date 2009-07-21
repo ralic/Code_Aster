@@ -1,7 +1,7 @@
-# MODIF  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
-# ssnv169f.para = tps_job 240 mem_job 128Mo ncpus 1 liste_test S
+# ssnv169f.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -166,6 +166,11 @@ L_INS = DEFI_LIST_REEL( DEBUT = -1.0,
                                       _F(JUSQU_A = 2500000., NOMBRE = 40,),
                                       ),
                           );
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INS ),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_NIVEAU = 4,
+                                 ),)
                           
 # SOLUTION : ANALYSE QUASI STATIQUE                          
 
@@ -179,10 +184,8 @@ RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
                                     RELATION_KIT = ('BETON_UMLV_FP', 'MAZARS'),
                                     DEFORMATION = 'PETIT',
                                     GROUP_MA = 'Q'),
-                     INCREMENT = _F(LIST_INST = L_INS,
+                     INCREMENT = _F(LIST_INST = DEFLIST,
                                     INST_FIN = 2500000.,
-                                    SUBD_METHODE  = 'UNIFORME',                                 
-                                    SUBD_NIVEAU = 4,
                                     ),
                      NEWTON = _F(PREDICTION = 'TANGENTE',
                                  MATRICE = 'TANGENTE',

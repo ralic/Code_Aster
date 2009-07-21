@@ -1,4 +1,4 @@
-# MODIF  DATE 04/02/2008   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,8 +141,7 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,
                     _F( CHARGE = LIAISON),
                     _F( CHARGE = TRACTION, FONC_MULT = RAMPE)),
                 COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE'),
-                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = 1.5,
-                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,SUBD_PAS_MINI = 1.E-6),
+                INCREMENT=_F(LIST_INST = L_INST,INST_FIN = 1.5,),
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 10),
@@ -160,8 +159,7 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,
                     _F( CHARGE = LIAISON),
                     _F( CHARGE = TRACTION, FONC_MULT = RAMPE),),
                 COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE'),
-                INCREMENT=_F(LIST_INST = L_INST,SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                             SUBD_PAS_MINI = 1.E-6),
+                INCREMENT=_F(LIST_INST = L_INST,),
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                ITER_GLOB_MAXI = 10),

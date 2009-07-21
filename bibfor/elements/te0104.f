@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16  OPTION, NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +53,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      IF (NOMTE(1:8).NE.'THCPSE3 ' .AND. NOMTE(1:8).NE.'THCASE3 ' .AND.
-     &    NOMTE(1:8).NE.'THCOSE3 ' .AND. NOMTE(1:8).NE.'THCOSE2 ') THEN
+      IF (NOMTE.NE.'THCPSE3 ' .AND. NOMTE.NE.'THCASE3 ' .AND.
+     &    NOMTE.NE.'THCOSE3 ' .AND. NOMTE.NE.'THCOSE2 ') THEN
         CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,
      &                         IDFDE,JGANO)
       ELSE
@@ -178,7 +178,7 @@ C     -----------------------------------
           CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IGEOM),DFDX,
      &                COUR,POIDS,COSA,SINA)
 
-          IF (NOMTE(3:4).EQ.'CA') THEN
+          IF (NOMTE.EQ.'THCASE3') THEN
             R = ZERO
             DO 80 I = 1,NNO
               R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)

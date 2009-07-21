@@ -1,4 +1,4 @@
-# MODIF  DATE 29/06/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -410,9 +410,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT,
                                     ALGO_C_PLAN='ANALYTIQUE',),
                        ETAT_INIT=_F(EVOL_NOLI=u_pesa,
                                     INST=-1.05, PRECISION=1.e-05,),
-                       INCREMENT=_F(LIST_INST=L_INST_p, SUBD_METHODE='UNIFORME', 
-                                    SUBD_PAS=2, SUBD_COEF_PAS_1=1., 
-                                    SUBD_PAS_MINI=0.0015625,
+                       INCREMENT=_F(LIST_INST=L_INST_p,
                                     INST_FIN=T000,),
                      SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                      MODI_EQUI='NON',

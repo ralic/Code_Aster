@@ -1,6 +1,7 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR SUR CELLULE UNIAIRE
+# wtnp115b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -200,8 +201,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1,
                               NUME_INST_FIN=1,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                              SUBD_PAS_MINI=10.0,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),

@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 20/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C ----------------------------------------------------------------------
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : NOMO   : NOM DU MODELE
 C IN  : LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
-C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE DISCRET
+C IN  : NBOCC  : NOMBRE D'OCCURRENCES DU MOT CLE DISCRET
 C IN  : IVR    : TABLEAU DES INDICES DE VERIFICATION
 C ----------------------------------------------------------------------
 C TOLE  CRP_20
@@ -54,15 +54,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      JDCINF,  JDVINF
       REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3)
       CHARACTER*1  KMA(3), K1BID
-      CHARACTER*8  NOMNOE, NOGP, NOMMAI, K8B, NOMU
-      CHARACTER*9  CAR(NBCAR)
+      CHARACTER*8  NOMNOE, NOGP, NOMMAI, K8BID, NOMU, CAR(NBCAR)
       CHARACTER*16 REP, REPDIS(NRD), CONCEP, CMD
       CHARACTER*19 CART(3), LIGMO, CARTDI
       CHARACTER*19 VREPXV, VREPXN
       CHARACTER*24 TMPND(3), TMPVD(3)
       CHARACTER*24 TMPDIS, MLGNNO, MLGNMA, TMCINF, TMVINF, MODNEM
 
-      LOGICAL      TRANS
+      LOGICAL      TRANSL,TRAROT,EURPLX,LBID
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
       DATA KMA     /'K','M','A'/
 C     ------------------------------------------------------------------
@@ -70,8 +69,6 @@ C
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)
       TMPDIS = NOMU//'.DISCRET'
-      VREPXV = NOMU//'.CARRIGXV'
-      VREPXN = NOMU//'.CARRIGXN'
       MLGNNO = NOMA//'.NOMNOE'
       MLGNMA = NOMA//'.NOMMAI'
       LIGMO  = NOMO//'.MODELE    '
@@ -86,19 +83,34 @@ C
       CALL WKVECT('&&TMPDISCRET','V V K8',LMAX,JDLS)
       CALL WKVECT('&&TMPTABNO','V V K8',LMAX,ITBNO)
       CALL WKVECT('&&TMPRIGNO','V V R',6*LMAX,IRGNO)
-      CALL WKVECT(VREPXV,'G V R',6*LMAX,IREPV)
-      CALL WKVECT(VREPXN,'G V K8',LMAX,IREPN)
       CALL WKVECT('&&TMPRIGTO','V V R',6*NOEMAF,IRGTO)
       CALL WKVECT('&&TMPAMOTO','V V R',6*NOEMAF,IAMTO)
       CALL WKVECT('&&TMPTABMP','V V K8',LMAX,ITBMP)
+C     POUR EUROPLEXUS
+C     SI EUROPLEXUS ALORS TOUTES LES OCCURRENCES DE RIGI_PARASOL DOIVENT
+C     AVOIR EUROPLEXUS='OUI'. TEST SUR LA 1ERE OCCURENCE DU MOT CLEF,
+C     PUIS DANS LA BOUCLE SUR LES OCCURRENCES QUE L'OPTION NE CHANGE PAS
+      EURPLX = .FALSE.
+      CALL GETVTX('RIGI_PARASOL','EUROPLEXUS',1,1,1,K8BID,IBID)
+      IF ( IBID .NE. 0 ) THEN
+         EURPLX = ( K8BID(1:3) .EQ. 'OUI' )
+      ENDIF
+      IF ( EURPLX ) THEN
+         VREPXV = NOMU//'.CARRIGXV'
+         VREPXN = NOMU//'.CARRIGXN'
+C        LES STRUCTURES SONT UTILISEES SEULEMENT EN PYTHON
+         CALL WKVECT(VREPXV,'G V R', 6*LMAX,IREPV)
+         CALL WKVECT(VREPXN,'G V K8',  LMAX,IREPN)
+      ENDIF
+C
       IFM = IUNIFI('MESSAGE')
 C
 C --- RECUPERATION DE LA DIMENSION DU MAILLAGE
       NDIM = 3
-C      CALL DISMOI('F','Z_CST',NOMO,'MODELE',IBID,K8B,IER)
-C      IF ( K8B(1:3) .EQ. 'OUI' )  NDIM = 2
+C      CALL DISMOI('F','Z_CST',NOMO,'MODELE',IBID,K8BID,IER)
+C      IF ( K8BID(1:3) .EQ. 'OUI' )  NDIM = 2
 
-      CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',IBID,K8B,IER)
+      CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',IBID,K8BID,IER)
       IF (IBID.GE.1000) IBID = IBID - 1000
       IF (IBID.GE.100) THEN
          IBID = IBID - 100
@@ -150,7 +162,7 @@ C     RECUPERATION DU NIVEAU D'IMPRESSION
 C     -----------------------------------
       CALL INFNIV(IBID,NIV)
       IR = 0
-C --- BOUCLE SUR LES OCCURENCES DE DISCRET
+C --- BOUCLE SUR LES OCCURRENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          ETA = 0.0D0
 C        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
@@ -172,13 +184,22 @@ C
                IF (REP.EQ.REPDIS(I)) IREP = I
  32         CONTINUE
          ENDIF
-
+C        POUR EUROPLEXUS
+         LBID = .FALSE.
+         CALL GETVTX('RIGI_PARASOL','EUROPLEXUS',1,1,1,K8BID,IBID)
+         IF ( IBID .NE. 0 ) THEN
+            LBID = ( K8BID(1:3) .EQ. 'OUI' )
+         ENDIF
+         IF ( LBID .NEQV. EURPLX ) THEN
+            CALL U2MESI('F','MODELISA9_93',1,IOC)
+         ENDIF
+C
          IF (NCAR.GT.0) NCARAC = NCAR
          IF (IVR(3).EQ.1) THEN
             WRITE(IFM,1000) REP,IOC
  1000       FORMAT(/,3X,
      &            '<DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
-     &                                '(REPERE ',A6,'), OCCURENCE ',I4)
+     &                       '(REPERE ',A6,'), OCCURRENCE ',I4)
          ENDIF
 C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
@@ -186,68 +207,41 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
 
          II = 0
          DO 34 NC = 1,NCARAC
-            IF (NC.EQ.2.AND.CAR(1)(1:1).EQ.CAR(2)(1:1))
+            IF ( (NC.EQ.2) .AND. (CAR(1)(1:1).EQ.CAR(2)(1:1)) )
      &         CALL U2MESS('F','MODELISA_16')
-            IF     (CAR(NC)(1:8).EQ.'K_TR_D_N') THEN
-               DO 131 J = 1,6
-                  VALE(J) = VAL(II+J)
-131            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
-               II = II + 6
-            ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_N') THEN
+C           DISCRETS SEULEMENT EN TRANSLATION
+            TRANSL = (CAR(NC)(1:7) .EQ. 'K_T_D_N').OR.
+     &               (CAR(NC)(1:7) .EQ. 'K_T_D_L').OR.
+     &               (CAR(NC)(1:7) .EQ. 'A_T_D_N').OR.
+     &               (CAR(NC)(1:7) .EQ. 'A_T_D_L')
+C           DISCRETS EN TRANSLATION ET ROTATION
+            TRAROT = (CAR(NC)(1:8) .EQ. 'K_TR_D_N').OR.
+     &               (CAR(NC)(1:8) .EQ. 'K_TR_D_L').OR.
+     &               (CAR(NC)(1:8) .EQ. 'A_TR_D_N').OR.
+     &               (CAR(NC)(1:8) .EQ. 'A_TR_D_L')
+C
+            IF (TRANSL .EQV. TRAROT) THEN
+               CALL U2MESK('F','MODELISA_17',1,CAR(NC))
+            ENDIF
+C
+            IF ( TRANSL ) THEN
                DO 132 J = 1,3
                   VALE(J) = VAL(II+J)
 132            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
      &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
-            ELSEIF (CAR(NC)(1:8).EQ.'K_TR_D_L') THEN
-               DO 133 J = 1,6
-                  VALE(J) = VAL(II+J)
-133            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
-               II = II + 6
-            ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_L') THEN
-               DO 134 J = 1,3
-                  VALE(J) = VAL(II+J)
-134            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
-               II = II + 3
-
-            ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_N') THEN
-               DO 135 J = 1,6
-                  VALE(J) = VAL(II+J)
-135            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
-               II = II + 6
-            ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_N') THEN
-               DO 136 J = 1,3
-                  VALE(J) = VAL(II+J)
-136            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
-               II = II + 3
-            ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_L') THEN
-               DO 137 J = 1,6
-                  VALE(J) = VAL(II+J)
-137            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
-               II = II + 6
-            ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_L') THEN
-               DO 138 J = 1,3
-                  VALE(J) = VAL(II+J)
-138            CONTINUE
-               CALL RAIREP(NOMA,IOC,CAR(NC)(1:8),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
-               II = II + 3
-            ELSE
-               CALL U2MESK('F','MODELISA_17',1,CAR(NC))
             ENDIF
+C
+            IF ( TRAROT ) THEN
+               DO 131 J = 1,6
+                  VALE(J) = VAL(II+J)
+131            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 6
+            ENDIF
+C
             IF (IXNW.NE.0.AND.NGP.EQ.0) THEN
                DO 39 I = 1,NBNO
                   ITROU = 0
@@ -268,47 +262,21 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
                CALL U2MESS('F','MODELISA_19')
             ENDIF
             IF (NGP.NE.0) THEN
-               IF     (CAR(NC)(1:8).EQ.'K_TR_D_N') THEN
-                  NBNOEU = 1
-                  LOKM = 8
-                  TRANS = .FALSE.
-               ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_N') THEN
-                  NBNOEU = 1
-                  LOKM = 8
-                  TRANS = .FALSE.
-               ELSEIF (CAR(NC)(1:8).EQ.'K_TR_D_L') THEN
-                  NBNOEU = 2
-                  LOKM = 8
-                  TRANS = .FALSE.
-               ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_L') THEN
-                  NBNOEU = 2
-                  LOKM = 8
-                  TRANS = .FALSE.
-               ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_N')  THEN
-                  NBNOEU = 1
-                  LOKM = 7
-                  TRANS = .TRUE.
-               ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_N')  THEN
-                  NBNOEU = 1
-                  LOKM = 7
-                  TRANS = .TRUE.
-               ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_L')  THEN
-                  NBNOEU = 2
-                  LOKM = 7
-                  TRANS = .TRUE.
-               ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_L')  THEN
-                  NBNOEU = 2
-                  LOKM = 7
-                  TRANS = .TRUE.
-               ENDIF
+               NBNOEU = 0
+               LOKM   = 0
+               IF ( TRANSL ) LOKM = 7
+               IF ( TRAROT ) LOKM = 8
+               IF ( CAR(NC)(LOKM:LOKM) .EQ. 'N' ) NBNOEU = 1
+               IF ( CAR(NC)(LOKM:LOKM) .EQ. 'L' ) NBNOEU = 2
+               CALL ASSERT( (NBNOEU.GT.0).AND.(LOKM.GT.0) )
 
                CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
-     &                     NMA,K8B)
+     &                     NMA,K8BID)
                CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
                DO 22 IN = 0,NMA-1
 C                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
                   CALL JELIRA(JEXNUM(NOMA//'.CONNEX',ZI(LDGM+IN)),
-     &                        'LONMAX',NBNMA,K8B)
+     &                        'LONMAX',NBNMA,K8BID)
                   CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',ZI(LDGM+IN)),
      &                        'L',LDNM)
                   CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
@@ -339,7 +307,7 @@ C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
                   LOREP  = 5
                ENDIF
                IF ( NIV .EQ. 2 ) THEN
-                  IF ( TRANS ) THEN
+                  IF ( TRANSL ) THEN
                      WRITE(IFR,1005) CAR(NC)(1:LOKM)
                   ELSE
                      WRITE(IFR,1006) CAR(NC)(1:LOKM),
@@ -353,7 +321,7 @@ C
                   JN = ITBNO + I - 1
                   IF ( NIV .EQ. 2 ) THEN
                      IF ( NBNOEU .EQ. 1 ) THEN
-                        IF ( TRANS ) THEN
+                        IF ( TRANSL ) THEN
                            WRITE(IFR,1010) 'NOEUD',ZK8(JN),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
@@ -365,7 +333,7 @@ C
      &                           REPDIS(IREP)(1:LOREP)
                         ENDIF
                      ELSE
-                        IF ( TRANS ) THEN
+                        IF ( TRANSL ) THEN
                            WRITE(IFR,1010) 'MAILLE',ZK8(JD),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
@@ -378,22 +346,24 @@ C
                         ENDIF
                      ENDIF
                   ENDIF
-C                 PREPARATION DE L'ATTRIBUT PYTHON
-                  IF ( NBNOEU .EQ. 1 ) THEN
-                     IF (TRANS) THEN
-                        DO 666 JJ=0,2
-                           ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
-                           ZR(IREPV+6*IR+3+JJ)=0.D0
-666                     CONTINUE
-                     ELSE
-                        DO 667 JJ=0,5
-                           ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
-667                     CONTINUE
+C                 POUR EUROPLEXUS PREPARATION DE L'ATTRIBUT PYTHON
+                  IF ( EURPLX ) THEN
+                     IF ( NBNOEU .EQ. 1 ) THEN
+                        IF (TRANSL) THEN
+                           DO 666 JJ=0,2
+                              ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
+                              ZR(IREPV+6*IR+3+JJ)=0.D0
+666                        CONTINUE
+                        ELSE
+                           DO 667 JJ=0,5
+                              ZR(IREPV+6*IR+JJ)=ZR(IRGNO+6*I-6+JJ)
+667                        CONTINUE
+                        ENDIF
                         ZK8(IREPN+IR) = ZK8(JN)
                         IR = IR + 1
+                     ELSE
+                        CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
                      ENDIF
-                  ELSE
-                     CALL U2MESK('A','MODELISA9_96',1,ZK8(JD))
                   ENDIF
 C
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),

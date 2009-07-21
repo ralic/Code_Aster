@@ -1,4 +1,4 @@
-#@ MODIF arlequindebg2 Messages  DATE 07/07/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF arlequindebg2 Messages  DATE 20/07/2009   AUTEUR MEUNIER S.MEUNIER 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,8 +41,8 @@ cata_msg={
 
 5: _("""
  <ARLEQUIN> ... PSEUDO-MAILLAGE - SURESTIMATION NBRE MAILLES 
- <ARLEQUIN> ...... PREVU :  %(i1)s MAILLES
- <ARLEQUIN> ...... OBTENU:  %(i2)s MAILLES
+ <ARLEQUIN> ...... PREVU  : %(i1)s MAILLES
+ <ARLEQUIN> ...... OBTENU : %(i2)s MAILLES
  <ARLEQUIN> ......... %(i3)s MAILLES 2 SUR 1
  <ARLEQUIN> ......... %(i4)s MAILLES 1 SUR 2
  <ARLEQUIN> ......... %(i5)s MAILLES DECOUPEES
@@ -115,11 +115,11 @@ cata_msg={
 """),
 
 20: _("""
- <ARLEQUIN><ECH> ...... POINT  <%(i1)s>  : %(r1)f %(r2)f
+ <ARLEQUIN><ECH> ...... POINT <%(i1)s> : %(r1)g %(r2)g
 """),
 
 21: _("""
- <ARLEQUIN><ECH> ...... POINT  <%(i1)s>  : %(r1)f %(r2)f %(r3)f
+ <ARLEQUIN><ECH> ...... POINT <%(i1)s> : %(r1)g %(r2)g %(r3)g
 """),
 
 22: _("""
@@ -153,6 +153,22 @@ cata_msg={
 29: _("""
   <ARLEQUIN><INT> ... NBRE COMPOSANTES CONNEXES: %(i1)s
   <ARLEQUIN><INT> *** FIN CALCUL INTERSECTION DE DEUX POLYGONES 
+"""),
+
+30: _("""
+ <ARLEQUIN><INT> ...... Ajout du point <%(i1)s> : %(r1)g %(r2)g
+"""),
+
+31: _("""
+ <ARLEQUIN><INT> ...... Ajout du point <%(i1)s> : %(r1)g %(r2)g %(r3)g
+"""),
+
+32: _("""
+ <ARLEQUIN><APP> ... Le point %(i1)s est dans la boite de la maille %(k1)s
+"""),
+
+33: _("""
+ <ARLEQUIN><APP> ... Le barycentre des points est dans la boite de la maille %(k1)s
 """),
 
 

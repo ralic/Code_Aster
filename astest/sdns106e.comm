@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 #  TITRE  : REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME (MODELE GLRC) 
 # sdns106e.para = tps_job 180 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -207,9 +207,6 @@ RESU1 = DYNA_NON_LINE(
                                    ),
                        INCREMENT=_F( LIST_INST = inst1,
                                      PRECISION =1.E-1,                                  
-                                  SUBD_METHODE='UNIFORME',
-                                  SUBD_PAS=2,
-                                  SUBD_PAS_MINI=1.E-6,
                                   
                                    INST_FIN = t1,
                                   
@@ -264,9 +261,6 @@ RESU2 = DYNA_NON_LINE(
                                    ),
                        INCREMENT=_F( LIST_INST = inst2,
                                      PRECISION =1.E-1,                                  
-                                  SUBD_METHODE='UNIFORME',
-                                  SUBD_PAS=2,
-                                  SUBD_PAS_MINI=1.E-6, 
                                                                    
                                   INST_INIT = t1,
                                   INST_FIN = tmax,

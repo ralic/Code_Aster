@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,7 +219,7 @@ C
         A   = 1 + ALPHA * (DTDM(1)+DTDM(2)) +
      &          ALPHA*ALPHA*(DTDM(1)*DTDM(2)-DTDM(3)*DTDM(5))
 C
-         IF ( NOMTE(3:4) .EQ. 'DP' ) THEN
+         IF ( LTEATT(' ','D_PLAN','OUI') ) THEN
            C1 = DP1
            C2 = DP2
            C3 = DP3

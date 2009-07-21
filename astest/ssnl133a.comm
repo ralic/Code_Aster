@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
+# ssnl133a.para = tps_job 260 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,6 +78,12 @@ TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                                  _F(JUSQU_A=tfin,
                                     PAS=0.1,),),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_NIVEAU=10,
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 1e-7),)
+
 RESO=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=MAT,
                    CARA_ELEM=CARA,
@@ -85,11 +92,8 @@ RESO=STAT_NON_LINE(MODELE=MO,
                              FONC_MULT=FORCE_F,),),
                    COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
                                 DEFORMATION='GREEN_GR',),
-                   INCREMENT=_F(LIST_INST=TEMPS,
-                                INST_FIN=tfin,
-                                SUBD_NIVEAU=10,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.0E-7,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
+                                INST_FIN=tfin,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,

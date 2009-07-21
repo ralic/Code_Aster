@@ -1,7 +1,7 @@
       SUBROUTINE TE0590 ( OPTION , NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
       INTEGER            NBRES
       PARAMETER         ( NBRES=3 )
 C
-      CHARACTER*8        NOMPAR(NBRES), ELREFE
+      CHARACTER*8        NOMPAR(NBRES), ELREFE, ALIAS8
 C
       REAL*8             VECTT(9)
       REAL*8             R, Z
@@ -70,7 +70,7 @@ C
       INTEGER            ICODE
       INTEGER            ISOUR
       INTEGER            ITHETA
-      INTEGER            ITEMPS
+      INTEGER            ITEMPS,IBID
 C
       LOGICAL THTNUL,AXI,THEGA1,LTEATT
 C
@@ -94,8 +94,12 @@ C
       EPSI = R8PREM ()
 C
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
-      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
+C
+      IF ( LTEATT(' ','LUMPE','OUI')) THEN
+         CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
+         IF(ALIAS8(6:8).EQ.'QU9')  ELREFE='QU4'
+         IF(ALIAS8(6:8).EQ.'TR6')  ELREFE='TR3'
+      ENDIF
 C
       CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &            JGANO)

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
 # ssnv169e.para = tps_job 240 mem_job 128Mo ncpus 1 liste_test S
@@ -173,6 +173,11 @@ L_INS = DEFI_LIST_REEL( DEBUT = -1.0,
                                       ),
                           );
                           
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INS),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_NIVEAU = 4,
+                                 SUBD_PAS=4,),)
+
 # SOLUTION : ANALYSE QUASI STATIQUE                          
 
 RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
@@ -186,13 +191,9 @@ RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
 #                                    ALGO_C_PLAN = 'DEBORST',
                                     DEFORMATION = 'PETIT',
                                     GROUP_MA = 'Q'),
-                     INCREMENT = _F(LIST_INST = L_INS,
+                     INCREMENT = _F(LIST_INST = DEFLIST,
                                     INST_FIN = 7200000.,
 #                                    NUME_INST_FIN = 22,
-                                    SUBD_METHODE  = 'UNIFORME',                                 
-#                                     SUBD_PAS = 4,
-#                                     SUBD_PAS_MINI = 1.,
-                                    SUBD_NIVEAU = 4,
                                     ),
                      NEWTON = _F(PREDICTION = 'TANGENTE',
                                  MATRICE = 'TANGENTE',

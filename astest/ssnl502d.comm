@@ -1,5 +1,6 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE POUTRE EN FLAMBEMENT 
+# ssnl502d.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -161,14 +162,12 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    COMP_INCR=_F(RELATION='MULTIFIBRE',
                                 GROUP_MA='AB',),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=0.95,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.0E-6,),
+                                INST_FIN=0.95,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=100,),
-                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+                   );
 #Difficulte a converger : on pilote en longueur d'arc
 
 RESO=STAT_NON_LINE(reuse =RESO,
@@ -181,9 +180,7 @@ RESO=STAT_NON_LINE(reuse =RESO,
                    COMP_INCR=_F(RELATION='MULTIFIBRE',),
                    ETAT_INIT=_F(
                    EVOL_NOLI=RESO,),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.0E-6,),
+                   INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    PILOTAGE=_F(TYPE='LONG_ARC',
@@ -194,7 +191,7 @@ RESO=STAT_NON_LINE(reuse =RESO,
                                NOM_CMP=('DX','DY',),),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=100,),
-                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+                   );
 #
 
 RESO=CALC_ELEM(reuse =RESO,

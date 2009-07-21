@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURATION JOINT 2D AXIS SUR ARRACHEMENT, LOI CZM_LIN_REG
 # ssna115b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,6 +120,12 @@ INS_ARCH=DEFI_LIST_REEL(DEBUT=-1.,
 FCT=DEFI_FONCTION(NOM_PARA='INST',
                   VALE=(-1.0,0.0,0.0,0.00001,),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTANTS),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_NIVEAU = 10,
+                                 SUBD_PAS_MINI=0.00001,),)
+
 EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=FIXE,),
@@ -129,12 +135,8 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                  GROUP_MA='MATRICE',),
                               _F(RELATION='CZM_LIN_REG',
                                  GROUP_MA='JOINT',),),
-                   INCREMENT=_F(LIST_INST=INSTANTS,
-                                INST_FIN=0.0,
-                                SUBD_NIVEAU = 10,
-                                SUBD_METHODE='UNIFORME',
-                                SUBD_PAS=10,
-                                SUBD_PAS_MINI=0.00001,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
+                                INST_FIN=0.0,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
@@ -151,12 +153,8 @@ EVOL=STAT_NON_LINE(reuse =EVOL,
                               _F(RELATION='CZM_LIN_REG',
                                  GROUP_MA='JOINT',),),
                    ETAT_INIT=_F(EVOL_NOLI=EVOL,),
-                   INCREMENT=_F(LIST_INST=INSTANTS,
-                                INST_FIN=tfin,
-                                SUBD_NIVEAU = 10,
-                                SUBD_METHODE='UNIFORME',
-                                SUBD_PAS=10,
-                                SUBD_PAS_MINI=0.00001,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
+                                INST_FIN=tfin,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PAS_MINI_ELAS=1.E-3,
                              REAC_ITER=1,),

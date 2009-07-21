@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,14 +81,14 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       DKQ = .FALSE.
       DKG = .FALSE.  
 
-      IF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
+      IF (NOMTE.EQ.'MEDKQU4 ') THEN
         DKQ = .TRUE.
-      ELSEIF (NOMTE(1:8).EQ.'MEDKQG4 ') THEN
+      ELSEIF (NOMTE.EQ.'MEDKQG4 ') THEN
         DKQ = .TRUE.
         DKG = .TRUE.
-      ELSEIF (NOMTE(1:8).EQ.'MEDKTR3 ') THEN
+      ELSEIF (NOMTE.EQ.'MEDKTR3 ') THEN
         DKQ = .FALSE.
-      ELSEIF (NOMTE(1:8).EQ.'MEDKTG3 ') THEN
+      ELSEIF (NOMTE.EQ.'MEDKTG3 ') THEN
         DKQ = .FALSE.
         DKG = .TRUE.
       ELSE

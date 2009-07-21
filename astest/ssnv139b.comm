@@ -1,5 +1,6 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
+# ssnv139b.para = tps_job 270 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,9 +102,7 @@ NONLIN=STAT_NON_LINE(
            #              SOLVEUR=_F(
            #     STOP_SINGULIER='DECOUPE'),
                          INCREMENT=_F( 
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                SUBD_PAS_MINI=0.00000001,),
+                LIST_INST = L_INST,),
                             NEWTON=_F( 
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 

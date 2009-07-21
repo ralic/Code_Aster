@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA      '
@@ -115,7 +115,7 @@ C     COSA : COSINUS ANGLE ALPHA: NORMALE/ HORIZONTALE
 C     R    : RAYON VECTEUR
 
         C1 = -COUR*H/ (UN- (COUR*H/DEUX)**2)
-        IF (NOMTE(3:4).EQ.'CX') THEN
+        IF (NOMTE.EQ.'MECXSE3') THEN
           C2 = -COSA*H/ (R**2- (COSA*H/DEUX)**2)
           IF (TEST.LE.EPS .OR. CORREC.EQ.ZERO) THEN
             CSS = COEFF1*H
@@ -171,7 +171,7 @@ C     CONTRAINTES PLANES ET DEFORMATIONS PLANES
 C     COUR : COURBURE RS
 C     H    : EPAISSEUR
 
-          IF (NOMTE(1:8).EQ.'METDSE3 ') VALRES(1) = COEFF1
+          IF (NOMTE.EQ.'METDSE3 ') VALRES(1) = COEFF1
           IF (TEST.LE.EPS .OR. CORREC.EQ.ZERO) THEN
             CSS = VALRES(1)*H
             BSS = ZERO

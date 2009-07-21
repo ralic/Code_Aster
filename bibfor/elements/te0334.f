@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -226,7 +226,7 @@ C           ------------------------------------------------------
           SIGMA(I) = ZR(IDSIG+ (IGAU-1)*NBSIG+I-1)
   100   CONTINUE
 
-        IF (NOMTE(3:4).EQ.'CP') THEN
+        IF (LTEATT(' ','C_PLAN','OUI')) THEN
           TRSIG = SIGMA(1) + SIGMA(2)
         ELSE
           TRSIG = SIGMA(1) + SIGMA(2) + SIGMA(3)
@@ -244,7 +244,7 @@ C           ---------------------------------------------------------
      &                              - (C1*SIGMA(1)-C2*TRSIG) - EPSFLF(1)
         EPSPLA(NBSIG* (IGAU-1)+2) = EPSM(NBSIG* (IGAU-1)+2) 
      &                              - (C1*SIGMA(2)-C2*TRSIG) - EPSFLF(2)
-        IF (NOMTE(3:4).EQ.'CP') THEN
+        IF (LTEATT(' ','C_PLAN','OUI')) THEN
           EPSPLA(NBSIG* (IGAU-1)+3) = - (EPSPLA(NBSIG* (IGAU-1)+1)+
      &                                  EPSPLA(NBSIG* (IGAU-1)+2))
         ELSE

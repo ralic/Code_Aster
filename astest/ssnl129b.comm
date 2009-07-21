@@ -1,5 +1,6 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : VALIDATION DE LA LOI VISC_ISOT_TRAC SUR ESSAI DE TRACTION
+# ssnl129b.para = tps_job 90 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,9 +128,7 @@ UL=STAT_NON_LINE(MODELE=MO,
                               DEFORMATION='SIMO_MIEHE',
                               RESI_INTE_RELA=1e-09,
                               ITER_INTE_MAXI=10,),
-                 INCREMENT=_F(LIST_INST=L_INSTL,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=3,
-                              SUBD_PAS_MINI=1e-10,),
+                 INCREMENT=_F(LIST_INST=L_INSTL,),
                  NEWTON=_F(REAC_INCR=1,
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
@@ -174,9 +173,7 @@ UM=STAT_NON_LINE(MODELE=MO,
                               DEFORMATION='SIMO_MIEHE',
                               RESI_INTE_RELA=1e-09,
                               ITER_INTE_MAXI=10,),
-                 INCREMENT=_F(LIST_INST=L_INSTM,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=3,
-                              SUBD_PAS_MINI=1e-10,),
+                 INCREMENT=_F(LIST_INST=L_INSTM,),
                  NEWTON=_F(REAC_INCR=1,
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
@@ -222,9 +219,7 @@ UR=STAT_NON_LINE(MODELE=MO,
                               DEFORMATION='SIMO_MIEHE',
                               RESI_INTE_RELA=1e-09,
                               ITER_INTE_MAXI=10,),
-                 INCREMENT=_F(LIST_INST=L_INSTR,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=3,
-                              SUBD_PAS_MINI=1e-10,),
+                 INCREMENT=_F(LIST_INST=L_INSTR,),
                  NEWTON=_F(REAC_INCR=1,
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),

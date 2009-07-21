@@ -1,5 +1,6 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - 3D
+# ssnv189a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,10 +68,7 @@ RESU=STAT_NON_LINE(MODELE=modmeca,
                                 DEFORMATION='GREEN',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=2.0,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                                SUBD_PAS_MINI=1e-05,
-                                SUBD_COEF_PAS_1=1.0,),
+                                INST_FIN=2.0,),
                    NEWTON=_F(PREDICTION='TANGENTE',
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TRACTION D'UN BARREAU AVEC LOI DE COMPORTEMENT ROUSSELIER
 # ssnv147d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -424,9 +424,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 DEFORMATION = 'PETIT_REAC'),
 
                 INCREMENT=_F(
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                SUBD_PAS_MINI = 1.E-6),
+                LIST_INST = L_INST,),
                PILOTAGE=_F(
                 TYPE = 'DEFORMATION',
                 COEF_MULT = 3.E3,

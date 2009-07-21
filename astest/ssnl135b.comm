@@ -1,7 +1,7 @@
-# MODIF  DATE 17/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE PEYRARD C.PEYRARD
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
-# ssnl135b.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+# ssnl135b.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -624,6 +624,10 @@ NBGL = 50;
 RESGL = 1e-06;
 
 # ----------------------------------------------------------------------
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 1e-6),)
 
 MEKEFOR=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
@@ -640,10 +644,8 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                              'D00B052','D00B062','D00B061','D00B072','D00B082',),),
                                  _F(RELATION='MULTIFIBRE',
                                     GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),),),
-                      INCREMENT=_F(LIST_INST=TEMPS,
-                                   INST_FIN=0.59,
-                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                   SUBD_PAS_MINI=1.0E-6,),
+                      INCREMENT=_F(LIST_INST=DEFLIST,
+                                   INST_FIN=0.59,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
                       PILOTAGE=_F(TYPE='LONG_ARC',
@@ -653,7 +655,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                   NOM_CMP=('DX','DY','DZ',),),
                       CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
                                      ITER_GLOB_MAXI=NBGL,),
-                      SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+                      );
 # ----------------------------------------------------
 # Pour : BARRE, POU_D_TGM, CABLE
 

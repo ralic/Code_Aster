@@ -3,7 +3,7 @@
       REAL*8              XYZL(3,1), PGL(3,1), DEPL(1), EFFG(1)
       CHARACTER*16        NOMTE,OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,21 +38,21 @@ C     ------------------------------------------------------------------
       INTEGER MULTIC
 C     ------------------------------------------------------------------
 C
-      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     &    NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
+      IF (NOMTE.EQ.'MEDKTR3 ' .OR.
+     &    NOMTE.EQ.'MEDKTG3 ' ) THEN
         CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFG,MULTIC)
 C
-      ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ') THEN
+      ELSE IF (NOMTE.EQ.'MEDSTR3 ') THEN
         CALL DSTEDG(XYZL,OPTION,PGL,DEPL,EFFG)
 C
-      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 '.OR.
-     &         NOMTE(1:8).EQ.'MEDKQG4 ') THEN
+      ELSE IF (NOMTE.EQ.'MEDKQU4 '.OR.
+     &         NOMTE.EQ.'MEDKQG4 ') THEN
         CALL DKQEDG(XYZL,OPTION,PGL,DEPL,EFFG)
 C
-      ELSE IF (NOMTE(1:8).EQ.'MEDSQU4 ') THEN
+      ELSE IF (NOMTE.EQ.'MEDSQU4 ') THEN
         CALL DSQEDG(XYZL,OPTION,PGL,DEPL,EFFG)
 C
-      ELSE IF (NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+      ELSE IF (NOMTE.EQ.'MEQ4QU4 ') THEN
         CALL Q4GEDG(XYZL,OPTION,PGL,DEPL,EFFG)
 C
       ELSE

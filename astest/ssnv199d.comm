@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE DCB EN 3D AVEC DES ELEMENTS DE JOINT PENTA6 CZM_LIN_REG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -204,9 +204,6 @@ U=STAT_NON_LINE(reuse=U,
                 ),               
   INCREMENT  = _F(LIST_INST = L_INST, 
                   INST_FIN = tfin,
-                  SUBD_METHODE='UNIFORME',
-                  SUBD_PAS  = 5,
-                  SUBD_PAS_MINI = 1.E-8
                  ),
   NEWTON     = _F(MATRICE    = 'TANGENTE'  , REAC_ITER=1 ,
                    ),

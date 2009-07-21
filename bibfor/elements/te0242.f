@@ -1,6 +1,6 @@
       SUBROUTINE TE0242 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8        ELREFE
+      CHARACTER*8        ELREFE,ALIAS8
       REAL*8             LAMBDA,R8BID,RHOCP,DELTAT
       REAL*8             DFDX(9),DFDY(9),POIDS,R,THETA,KHI,TPGI
       REAL*8             MT(9,9),COORSE(18),DIFF,TPSEC,TPG
@@ -54,12 +54,16 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            ICOMP,ITEMPI,IMATTT,JGANO,IPOID2,NPG2
       INTEGER            C(6,9),ISE,NSE,NNOP2,IVF2,IDFDE2
-      INTEGER            ISECHF,ISECHI
+      INTEGER            ISECHF,ISECHI,IBID
       LOGICAL            LTEATT
 C DEB ------------------------------------------------------------------
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
-      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
+C
+      IF ( LTEATT(' ','LUMPE','OUI')) THEN
+         CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
+         IF(ALIAS8(6:8).EQ.'QU9')  ELREFE='QU4'
+         IF(ALIAS8(6:8).EQ.'TR6')  ELREFE='TR3'
+      ENDIF
 C
       CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
      &            JGANO)

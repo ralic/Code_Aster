@@ -1,5 +1,5 @@
 
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 # wtnp116a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,10 +198,7 @@ RESU_00=STAT_NON_LINE(MODELE=MODE_00,
                              _F(CHARGE=FLUH_00,),),
                       COMP_INCR=_F(RELATION='KIT_HM',
                                    RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
-                      INCREMENT=_F(LIST_INST=LISTINST,
-                                   SUBD_METHODE='UNIFORME',
-                                   SUBD_PAS=4,
-                                   SUBD_PAS_MINI=0.0001,),);
+                      INCREMENT=_F(LIST_INST=LISTINST,),);
 
 #
 # 3.5. Calcul des indicateurs d'erreur en residu
@@ -387,10 +384,7 @@ RESU_01=STAT_NON_LINE(MODELE=MODE_01,
                              _F(CHARGE=FLUH_01,),),
                       COMP_INCR=_F(RELATION='KIT_HM',
                                    RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
-                      INCREMENT=_F(LIST_INST=LISTINST,
-                                   SUBD_METHODE='UNIFORME',
-                                   SUBD_PAS=4,
-                                   SUBD_PAS_MINI=0.0001,),);
+                      INCREMENT=_F(LIST_INST=LISTINST,),);
 #
 # 7.5. Calcul des indicateurs d'erreur en residu
 # 7.5.1. Contraintes aux noeuds par elements

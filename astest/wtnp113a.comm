@@ -1,5 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ
+# wtnp113a.para = tps_job 1850 mem_job 128Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 #                    TEST32 ALLIANCES
+# wtnp113a.para = tps_job 1850 mem_job 128Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 DEBUT(CODE=_F( NOM = 'WTNP113A',NIV_PUB_WEB='INTERNET'))
@@ -319,8 +321,6 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                  RELATION = 'KIT_THH',
                  RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
                 INCREMENT=_F( LIST_INST = LI,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                              SUBD_PAS_MINI   = 10000.  ,
                               ),
                 RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
                                   RHO_MIN = 0.1,METHODE='MIXTE',

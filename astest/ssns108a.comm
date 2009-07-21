@@ -1,5 +1,6 @@
-# MODIF  DATE 14/10/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE SIMULATION DE L'ESSAI SAFE
+# ssns108a.para = tps_job 270 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,26 +21,30 @@
 
 DEBUT(CODE=_F(NOM='SSNS108A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
-MTRAN=2.818E6
-RHOBET=2500
-RHOACI=7800.
+#-----------------------------------------------------------------------
+#              OPTION DE CALCULS
+#-----------------------------------------------------------------------
 
 LOI_COMPORTEMENT = 'ENDO_ISOT_BETON'
 CALCUL = 'STATIQUE'
 RESOLUTION = 'TANGENTE'
 TANG_SEC = 'TANGENTE_SECANTE'
 
-SUBD_PAS = 2;
-Nmax = 100;
-#Nmaxdb = 20
+Nmax = 30;
 Nmaxdb = 40
 RESI_GLOB_RELA = 1E-7 
 Pas = 1.5E-3
-Tmax = 0.15 
+
+Tmax = 0.0495 
+ResiDB=1.E-4
 
 ALGO_C_PLAN = 'DEBORST'
 
-MA = LIRE_MAILLAGE();
+#-----------------------------------------------------------------------
+#              MAILLAGE
+#-----------------------------------------------------------------------
+
+MA = LIRE_MAILLAGE();#FORMAT='MED',);
 
 MURS = []
 MURS.append('F1_QUAD')
@@ -113,17 +118,18 @@ MA = DEFI_GROUP(reuse = MA,
                   ),
                )
 
-NB_NOEUD = 26
-MTRAN_HAUT = (MTRAN)/NB_NOEUD
 NOEUD_PILOTE = 'N325'
+
+#-----------------------------------------------------------------------
+#              AFFE_MODELE
+#-----------------------------------------------------------------------
 
 modele_aff = []
 
-gr_armature = []
-gr_armature +=  ['F1_H1','F1_H2','F2_H1','F2_H2','F1_V1','F1_V2','F2_V1','F2_V2']
+#gr_armature = []
+gr_armature =  ['F1_H1','F1_H2','F2_H1','F2_H2','F1_V1','F1_V2','F2_V1','F2_V2']
 gr_armature += ['M_H1','M_H2','M_V1','M_V2']
 
-#--------------------------------------------------------------------------               
 modele_aff.append({'GROUP_MA':gr_armature,
                    'PHENOMENE': 'MECANIQUE',
                    'MODELISATION' :'GRILLE_MEMBRANE'})
@@ -138,8 +144,16 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=modele_aff,
                 ) ;
 
-E     = DEFI_CONSTANTE(VALE = 32308e6)
+#-----------------------------------------------------------------------
+#              DEFINITION DES MATERIAUX
+#-----------------------------------------------------------------------
+
+#----- beton -----
+
+RHOBET= 2500.
+E     = DEFI_CONSTANTE(VALE = 32308.e6)
 NU    = DEFI_CONSTANTE(VALE = 0.2)
+
 BETON = DEFI_MATERIAU(ELAS_FO = _F(E   = E,
                                    NU       = NU,
                                    RHO      = RHOBET,
@@ -153,19 +167,14 @@ BETON = DEFI_MATERIAU(ELAS_FO = _F(E   = E,
 
 #----- acier du liner -----
 
+RHOACI=7800.
+
 ACIER1 = DEFI_MATERIAU ( ELAS =_F( E   = 2.0E11 ,
                                    NU  = 0.3 ,
                                    RHO = RHOACI ,
                                   ),
                          ECRO_LINE =_F(D_SIGM_EPSI=300.0E6,
                                        SY=570.0E6,),) ;
-
-
-
-BETEL = DEFI_MATERIAU ( ELAS =_F( E   = 3.29725E10 ,
-                                   NU  = 0.16 ,
-                                   RHO = RHOBET ,
-                       ),),
 
 #-----------------------------------------------------------------------
 #              AFFECTATION DES MATERIAUX AUX ELEMENTS
@@ -181,46 +190,48 @@ MATER = AFFE_MATERIAU (MAILLAGE = MA ,
                        AFFE = aff_mater,
                        );
 
-#-------------------------------------------------
-#  Definition des caracteristiques des elements
-#-------------------------------------------------
+#-----------------------------------------------------------------------
+#              DEFINITION DES CARACTERISTIQUES DES ELEMENTS
+#-----------------------------------------------------------------------
 
 liste_carac_grille = []
 
 EXT = 0.1
 for gr in ['M_H1','M_H2']:
-   
+
     liste_carac_grille.append({'GROUP_MA' : gr,
                                'SECTION'    : 8e-4,
                                'EXCENTREMENT' : EXT,
                                'ANGL_REP'  : (0,0)})
     EXT = -1.0*EXT
-  
-  
-EXT = 0.1                               
+
+
+EXT = 0.1
+
 for gr in ['M_V1','M_V2']:
     liste_carac_grille.append({'GROUP_MA' : gr,
                                'SECTION'    : 8e-4,
                                'EXCENTREMENT' : EXT,
                                'ANGL_REP'  : (0,90)})
-    EXT = -1.0*EXT                             
-                                
+    EXT = -1.0*EXT
 
-EXT = 0.08                               
-for gr in ['F1_H1','F1_H2', 'F2_H1','F2_H2']:                                                                                            
+
+EXT = 0.08
+
+for gr in ['F1_H1','F1_H2', 'F2_H1','F2_H2']:
     liste_carac_grille.append({'GROUP_MA' : gr,
                                'SECTION'    : 8e-4,
                                'EXCENTREMENT' : EXT,
                                'ANGL_REP'  : (90,0)})
-    EXT = -1.0*EXT                             
+    EXT = -1.0*EXT
 
-EXT = 0.08                                                              
-for gr in ['F1_V1','F1_V2', 'F2_V1','F2_V2']:                                                                                            
+EXT = 0.08
+for gr in ['F1_V1','F1_V2', 'F2_V1','F2_V2']:
     liste_carac_grille.append({'GROUP_MA' : gr,
                                'SECTION'    : 8e-4,
                                'EXCENTREMENT' : EXT,
                                'ANGL_REP'  : (90,90)})
-    EXT = -1.0*EXT                           
+    EXT = -1.0*EXT
 
 discret = None
 coque = []
@@ -228,7 +239,6 @@ coque.append({'EPAIS' : 0.20,
               'GROUP_MA':'MUR_QUAD',
               'COQUE_NCOU' : 11,
               'ANGL_REP': (0.0,0.0,),
-#              'COEF_RIGI_DRZ' : 1.0E-10,
             })
 
 coque.append({'EPAIS' : 0.16,
@@ -243,6 +253,12 @@ CAEL = AFFE_CARA_ELEM(MODELE = MO,
                       DISCRET = discret,
                       );
 
+#-----------------------------------------------------------------------
+#              DEFINITION DES CL ET DES CHARGEMENTS
+#-----------------------------------------------------------------------
+
+#----- CL -----
+
 CHAR0 = AFFE_CHAR_MECA(MODELE = MO,
                        DDL_IMPO = (_F(GROUP_NO = 'GM_BAS',
                                       DX = 0.0,
@@ -255,84 +271,105 @@ CHAR0 = AFFE_CHAR_MECA(MODELE = MO,
                        LIAISON_UNIF = _F(GROUP_NO = 'HAUT_TOU',
                                          DDL = ('DZ','DX')),
                                         );
-
-comp_incr=[]
-comp_incr.append({'GROUP_MA' : gr_armature,
-                  'RELATION' : 'GRILLE_ISOT_LINE'})
-comp_incr.append({'GROUP_MA' : ('MUR_QUAD'),
-                  'RELATION' : LOI_COMPORTEMENT,
-                  'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'ITER_MAXI_DEBORST' : Nmaxdb,
-                  'TYPE_MATR_TANG' : TANG_SEC,
-                })               
-
-comp_incr.append({'GROUP_MA' : ('F1_QUAD'),
-                  'RELATION' : LOI_COMPORTEMENT,
-                  'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'ITER_MAXI_DEBORST' : Nmaxdb,
-                  'TYPE_MATR_TANG' : TANG_SEC,
-                  })
-                  
-comp_incr.append({'GROUP_MA' : ('F2_QUAD'),
-                  'RELATION' : LOI_COMPORTEMENT,
-                  'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'ITER_MAXI_DEBORST' : Nmaxdb,
-                  'TYPE_MATR_TANG' : TANG_SEC,
-                  })
+#----- Chargements -----
+#----- Cacul de la matrice de masse -----
 
 RIGI_ELE = CALC_MATR_ELEM( MODELE= MO,
                            OPTION= 'RIGI_MECA',
                            CARA_ELEM=CAEL,
                            CHAM_MATER=MATER,
                            CHARGE=CHAR0 );
+
 MASS_ELE = CALC_MATR_ELEM( MODELE=MO,
                            OPTION='MASS_MECA',
                            CARA_ELEM=CAEL,
                            CHAM_MATER=MATER,
                            CHARGE=CHAR0);
+
 NUM_DDL = NUME_DDL( MATR_RIGI=RIGI_ELE,
                      METHODE='LDLT',
                      RENUM='SANS');
 
-MASSE    = ASSE_MATRICE( MATR_ELEM=MASS_ELE,
+MASSE = ASSE_MATRICE( MATR_ELEM=MASS_ELE,
                          NUME_DDL=NUM_DDL );
 
-#----- POIDS PROPRE
+#----- Poids propre -----
 
 DEPSZ = CALC_CHAR_SEISME ( MATR_MASS=MASSE,
                           MONO_APPUI='OUI',
                           DIRECTION=(0.,0,1.),);
 
-# on transforme le cham_no_depl_r et char_meca                  
-POIDS=AFFE_CHAR_MECA ( MODELE =MO,
-                      VECT_ASSE =DEPSZ);
+# on transforme le cham_no_depl_r en char_meca
+
+POIDS = AFFE_CHAR_MECA ( MODELE =MO,
+                         VECT_ASSE =DEPSZ);
 
 # il y a deja un moins dans calc_char_seisme !!!
-GG=DEFI_CONSTANTE(VALE=9.81)
-L0=DEFI_LIST_REEL(VALE=(-1.,0.))
+
+GG = DEFI_CONSTANTE( VALE=9.81);
+L0 = DEFI_LIST_REEL( VALE=(-1.,0.));
+
+#----- Deplacement impose -----
 
 DEPL = AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO = (_F(NOEUD= NOEUD_PILOTE,
+                      DDL_IMPO = (_F(NOEUD= NOEUD_PILOTE,
                                       DX=0.01,),
-                                     ),
-                     );   
+                                  ),
+                      );
 
-LINST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=Tmax,
-                                     PAS= Pas ,),
-                           ))
+LINST = DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(_F(JUSQU_A=Tmax,
+                                      PAS= Pas ,),
+                           ),);
 
 RAMPE = DEFI_FONCTION(
        NOM_PARA = 'INST',
        VALE     = (0,0,1,1),
        PROL_DROITE = 'CONSTANT',
-       ) 
+       );
 
-DYNA = STAT_NON_LINE (
+#-----------------------------------------------------------------------
+#  DEFINITION DES METHODES DE RESOLUTION DES LOIS DE COMPORTEMENT
+#-----------------------------------------------------------------------
+
+comp_incr=[]
+
+comp_incr.append({'GROUP_MA' : gr_armature,
+                  'RELATION' : 'GRILLE_ISOT_LINE'})
+
+comp_incr.append({'GROUP_MA' : ('MUR_QUAD'),
+                  'RELATION' : LOI_COMPORTEMENT,
+                  'ALGO_C_PLAN' : ALGO_C_PLAN,
+                  'RESI_DEBO_MAXI' : ResiDB,
+                  'ITER_MAXI_DEBORST' : Nmaxdb,
+                  'TYPE_MATR_TANG' : TANG_SEC,
+                })
+
+comp_incr.append({'GROUP_MA' : ('F1_QUAD'),
+                  'RELATION' : LOI_COMPORTEMENT,
+                  'ALGO_C_PLAN' : ALGO_C_PLAN,
+                  'ITER_MAXI_DEBORST' : Nmaxdb,
+                  'RESI_DEBO_MAXI' : ResiDB,
+                  'TYPE_MATR_TANG' : TANG_SEC,
+                  })
+
+comp_incr.append({'GROUP_MA' : ('F2_QUAD'),
+                  'RELATION' : LOI_COMPORTEMENT,
+                  'ALGO_C_PLAN' : ALGO_C_PLAN,
+                  'ITER_MAXI_DEBORST' : Nmaxdb,
+                  'RESI_DEBO_MAXI' : ResiDB,
+                  'TYPE_MATR_TANG' : TANG_SEC,
+                  })
+
+#-----------------------------------------------------------------------
+#              CALCUL NON LINEAIRE
+#-----------------------------------------------------------------------
+
+RESU = STAT_NON_LINE (
                       MODELE=MO,
                       CHAM_MATER=MATER,
                       CARA_ELEM=CAEL,
-                  
+
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER = 1,
                                 REAC_INCR = 1,
@@ -344,9 +381,6 @@ DYNA = STAT_NON_LINE (
                       COMP_INCR=comp_incr,
                       INCREMENT=_F(LIST_INST=LINST,
                                    PRECISION = 1.E-2,
-                                   SUBD_PAS=SUBD_PAS ,
-                                   SUBD_PAS_MINI=1.E-5 ,
-                                   SUBD_METHODE='UNIFORME',
                                    ),
                       CONVERGENCE=_F(
                                      RESI_GLOB_RELA=RESI_GLOB_RELA,
@@ -355,21 +389,53 @@ DYNA = STAT_NON_LINE (
                                      ),
                   );
 
-GROUPES =  MURS
+#-----------------------------------------------------------------------
+#              POST TRATEMENT
+#-----------------------------------------------------------------------
+
 GROUPES =  MURS + gr_armature
 
-DYNA = CALC_NO(reuse = DYNA,
+RESU = CALC_NO(reuse = RESU,
     MODELE     = MO,
     CHAM_MATER = MATER,
     CARA_ELEM  = CAEL,
-    RESULTAT   =  DYNA,
+    RESULTAT   =  RESU,
     OPTION     = ('FORC_NODA','REAC_NODA',),
     GROUP_MA   = GROUPES,
-    ) 
+    );
 
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(MAILLAGE=MA,
+                  RESULTAT=RESU,
+                  NOM_CHAM=('DEPL',),),);
+
+
+TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
+                                 GROUP_NO='GM_HAUT',#HAUT_TOU',
+                                 RESULTAT=RESU,
+                                 NOM_CHAM='REAC_NODA',
+                                 LIST_INST=LINST,
+                                 RESULTANTE='DX',
+                                 OPERATION = 'EXTRACTION'),); 
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.03),
+           VALE=1.07976E+06,
+           PRECISION=0.60,
+           REFERENCE='SOURCE_EXTERNE',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.0495),
+           VALE=1.32921E+06,
+           PRECISION=0.11,
+           REFERENCE='SOURCE_EXTERNE',);
 
 TEST_RESU(RESU=(
-                 _F(RESULTAT=DYNA,
+                 _F(RESULTAT=RESU,
                    INST = 0.03,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
@@ -377,8 +443,8 @@ TEST_RESU(RESU=(
                    VALE= 2.5652E-04,
                    PRECISION = 1E-4,
                    REFERENCE='NON_REGRESSION',),
-                   
-                 _F(RESULTAT=DYNA,
+
+                 _F(RESULTAT=RESU,
                    INST = 0.03,
                    NOM_CHAM='FORC_NODA',
                    NOM_CMP='DX',
@@ -386,26 +452,26 @@ TEST_RESU(RESU=(
                    VALE= 1.18879E+05,
                    PRECISION = 1E-4,
                    REFERENCE='NON_REGRESSION',),
-                   
-                 _F(RESULTAT=DYNA,
+
+                 _F(RESULTAT=RESU,
                    INST = Tmax,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    NOEUD ='N311',
-                   VALE= 1.35E-03,
-                   PRECISION = (5E-2,1E-6),
+                   VALE= 4.54121E-04,
+                   PRECISION = (1E-4,1E-6),
                    REFERENCE='NON_REGRESSION',),
-                   
-                 _F(RESULTAT=DYNA,
+
+                 _F(RESULTAT=RESU,
                    INST = Tmax,
                    NOM_CHAM='FORC_NODA',
                    NOM_CMP='DX',
                    NOEUD ='N332',
-                   VALE= 1.74E+05,
-                   PRECISION = (5E-2,1E-6),
-                   REFERENCE='NON_REGRESSION',),               
+                   VALE= 1.3695795E+05,
+                   PRECISION = (1E-4,1E-6),
+                   REFERENCE='NON_REGRESSION',),
                 )
-          )
+          );
 
 FIN()
 

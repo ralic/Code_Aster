@@ -1,6 +1,6 @@
       SUBROUTINE DXBSIG (NOMTE, XYZL , PGL , SIGMA, BSIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +61,8 @@ C     ------------------------------------------------------------------
 C
       ZERO   = 0.0D0
 C
-      IF (NOMTE(1:8) .EQ.'MEDKTR3 '.OR.NOMTE(1:8) .EQ.'MEDSTR3 '.OR.
-     &    NOMTE(1:8) .EQ.'MEDKTG3 ') THEN
+      IF (NOMTE .EQ.'MEDKTR3 '.OR.NOMTE .EQ.'MEDSTR3 '.OR.
+     &    NOMTE .EQ.'MEDKTG3 ') THEN
           NPG   = 3
           NNO   = 3
 C
@@ -70,8 +70,8 @@ C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE
 C      -------------------------------------------------
          CALL GTRIA3 (XYZL , CARA )
 C
-      ELSEIF (NOMTE(1:8) .EQ.'MEDKQU4 '.OR.NOMTE(1:8) .EQ.'MEDSQU4 '
-     &.OR.NOMTE(1:8) .EQ.'MEQ4QU4 '.OR.NOMTE(1:8) .EQ.'MEDKQG4 ') THEN
+      ELSEIF (NOMTE .EQ.'MEDKQU4 '.OR.NOMTE .EQ.'MEDSQU4 '
+     &.OR.NOMTE .EQ.'MEQ4QU4 '.OR.NOMTE .EQ.'MEDKQG4 ') THEN
           NPG   = 4
           NNO   = 4
 C

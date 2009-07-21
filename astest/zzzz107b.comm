@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 #
 # TITRE TEST DE LA LEVEE DE L'EXCEPTION ARRETCPUERROR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,10 +112,7 @@ try:
                                     ),
                      CONVERGENCE=(_F(ITER_GLOB_MAXI=20,)),
                      INCREMENT=_F(LIST_INST=L_INST,
-                                 INST_FIN=1.,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1.E-4,
-                                 SUBD_COEF_PAS_1=1.0,),
+                                 INST_FIN=1.,),
                      NEWTON=_F(MATRICE='TANGENTE',
                               PREDICTION='ELASTIQUE',
                               REAC_ITER=1,),

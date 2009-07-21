@@ -1,5 +1,6 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
+# sdnv104d.para = tps_job 720 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,8 +145,6 @@ ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
-                                 SUBD_PAS_MINI=0.0000001,
                                  ),
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
@@ -188,9 +187,7 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                            _F(CHARGE=COND_LIM,),),
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
-                                 SUBD_PAS_MINI=0.0000001,),
+                    INCREMENT=_F(LIST_INST=L_INST,),
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),

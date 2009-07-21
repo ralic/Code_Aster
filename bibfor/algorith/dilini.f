@@ -4,7 +4,7 @@
      +                  INTERP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -106,14 +106,7 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DU TYPE DE LA MODELISATION --------------------------
 C ======================================================================
-      IF ( NOMTE(5:6).EQ.'DP' ) THEN
-         TYPMOD(1) = 'D_PLAN  '
-      ELSE IF ( NOMTE(5:6).EQ.'3D' ) THEN
-         TYPMOD(1) = '3D  '
-      ELSE
-C       NOM D'ELEMENT ILLICITE
-        CALL ASSERT(NOMTE(5:6).EQ.'DP' .OR. NOMTE(5:6).EQ.'3D' )
-      ENDIF
+      TYPMOD(1) = 'D_PLAN  '
 C ======================================================================
       IF (INTERP.EQ.'P0') THEN
          CALL DIMP0(NDIM,NNO,NNOS,DIMDEF,DIMCON,NNOM,NNOC,NDDLS,NDDLM,

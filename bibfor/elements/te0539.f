@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,13 +80,13 @@ C - TYPE DE MODELISATION
       ELSE
          IF (LTEATT(' ','AXIS','OUI')) THEN
            TYPMOD(1) = 'AXIS    '
-         ELSE IF (NOMTE(3:4).EQ.'CP') THEN
+         ELSE IF (LTEATT(' ','C_PLAN','OUI')) THEN
            TYPMOD(1) = 'C_PLAN  '
-         ELSE IF (NOMTE(3:4).EQ.'DP') THEN
+         ELSE IF ( LTEATT(' ','D_PLAN','OUI')) THEN
            TYPMOD(1) = 'D_PLAN  '
          ELSE
 C          NOM D'ELEMENT ILLICITE
-           CALL ASSERT(NOMTE(3:4).EQ.'CP')
+           CALL ASSERT( LTEATT(' ','C_PLAN','OUI'))
          END IF
          IF (NOMTE(1:2).EQ.'MD') THEN
            TYPMOD(2) = 'ELEMDISC'

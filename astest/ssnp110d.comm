@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,10 +167,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                        COMP_INCR=_F(
                                    RELATION = relation,
                                     DEFORMATION = 'PETIT'),
-                       INCREMENT=_F(LIST_INST = L_INST,
-                                    SUBD_COEF_PAS_1=1.0,
-                                    SUBD_METHODE='UNIFORME', SUBD_PAS=2,
-                                    SUBD_PAS_MINI=0.00001),
+                       INCREMENT=_F(LIST_INST = L_INST,),
                        CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
                    SOLVEUR=_F(PCENT_PIVOT = 200,METHODE='MUMPS',),
                    NEWTON=_F(REAC_ITER=1,

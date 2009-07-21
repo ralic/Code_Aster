@@ -1,5 +1,6 @@
-# MODIF  DATE 22/04/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE INDENTATION ELASTOPLASTIQUE D UN DEMI-PLAN
+# ssnv506f.para = tps_job 780 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -159,9 +160,7 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
                                     GROUP_MA='SMAI',),
                        INCREMENT=_F(LIST_INST=LINST,
 # ON NE VA PAS PLUS LOIN CAR LE TEMPS DU TEST EST DEJA GRAND
-                                    INST_FIN=0.02,
-                                    SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                    SUBD_PAS_MINI=9.9999999999999995E-07,),
+                                    INST_FIN=0.02,),
                        NEWTON=_F(MATRICE='TANGENTE',
 # INOPERANT POUR L'INSTANT (REAC_ITER=1 FORCE PAR CONTACT CONTINU)
                                  REAC_ITER=3,

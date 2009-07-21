@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
         E11 = EPS(2)*COSA - EPS(1)*SINA
         K11 = EPS(3)
         ESX3 = EPS(5) + EPS(1)*COSA + EPS(2)*SINA
-        IF (NOMTE(3:4).EQ.'CX') THEN
+        IF (NOMTE.EQ.'MECXSE3') THEN
           E22 = EPS(4)/R
           K22 = -EPS(5)*SINA/R
           DEFOPG(3*KP-1) = (E22+X3*K22)/ (1.D0+ (COSA*X3*CORREC/R))

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,6 +57,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 l=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,0.0,1.0,1.0,),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI = 1e-5),)
+
 RESU=STAT_NON_LINE(MODELE=modmeca,
                    CHAM_MATER=chmat,
                    EXCIT=_F(CHARGE=encastr,
@@ -64,11 +69,8 @@ RESU=STAT_NON_LINE(MODELE=modmeca,
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
                                 DEFORMATION='GREEN',
                                 TOUT='OUI',),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.0,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                                SUBD_PAS_MINI=1.0000000000000001E-05,
-                                SUBD_COEF_PAS_1=1.0,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
+                                INST_FIN=1.0,),
                    ARCHIVAGE=_F(LIST_INST=L_INST,
                                 ARCH_ETAT_INIT='OUI',),);
 

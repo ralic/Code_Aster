@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C ......................................................................
         K = (KP-1)*NNO
         CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDK+K),ZR(IGEOM),DFDX,COUR,
      &              POIDS,NX,NY)
-        IF (NOMTE(3:4).EQ.'CX') THEN
+        IF (NOMTE.EQ.'MECXSE3') THEN
           R = 0.0D0
           DO 20 I = 1,NNO
             R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)
@@ -91,7 +91,7 @@ C ......................................................................
           RMF = RF* (COUR+NX/R)
         END IF
 
-        IF (NOMTE(1:7).EQ.'METDSE3' .OR. NOMTE(1:7).EQ.'METCSE3') THEN
+        IF (NOMTE.EQ.'METDSE3' .OR. NOMTE.EQ.'METCSE3') THEN
           RMF = RF*COUR
         END IF
         KD1 = 5

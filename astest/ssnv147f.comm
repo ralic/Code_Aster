@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TRACTION D'UN BARREAU FRAGILE - PRED_ELAS - BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,6 +107,11 @@ RAMPE=DEFI_FONCTION(
                         1., 1.,)
              )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=1e-6,),)
+
 REPONSE=STAT_NON_LINE(
                      MODELE=MO,
                  CHAM_MATER=CHMAT,EXCIT=(
@@ -117,7 +122,7 @@ REPONSE=STAT_NON_LINE(
                 RELATION = 'BETON_DOUBLE_DP'),
 
                 INCREMENT=_F(
-                LIST_INST = L_INST,
+                LIST_INST = DEFLIST,
                 INST_FIN = 1.),
                      NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -139,10 +144,8 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 RELATION = 'BETON_DOUBLE_DP'),
 
                 INCREMENT=_F(
-                LIST_INST = L_INST,
-                INST_FIN = 3.,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                SUBD_PAS_MINI = 1.E-6),
+                LIST_INST = DEFLIST,
+                INST_FIN = 3.,),
                PILOTAGE=_F(
                 TYPE = 'PRED_ELAS',
                 ETA_PILO_MIN = 0.50),

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,6 +110,13 @@ F=DEFI_FONCTION(      NOM_PARA='INST',
                                       3.0,  0.0, )
                      )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=2,
+                                 SUBD_PAS_MINI = 0.001,
+                                 SUBD_COEF_PAS_1 = 0.001 ),)
+
+
 UP=STAT_NON_LINE( 
                             MODELE=MO,
                         CHAM_MATER=CM,
@@ -120,10 +127,7 @@ UP=STAT_NON_LINE(
                 RELATION = 'VMIS_ISOT_TRAC',
                 DEFORMATION = 'PETIT'),
                          INCREMENT=_F( 
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 2,
-                SUBD_PAS_MINI = 0.001,
-                SUBD_COEF_PAS_1 = 0.001),
+                LIST_INST = DEFLIST,),
                          ARCHIVAGE=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 
@@ -158,10 +162,7 @@ UP2=STAT_NON_LINE(
                 RELATION = 'VMIS_ECMI_TRAC',
                 DEFORMATION = 'PETIT'),
                          INCREMENT=_F( 
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 2,
-                SUBD_PAS_MINI = 0.001,
-                SUBD_COEF_PAS_1 = 0.001),
+                LIST_INST = DEFLIST),
                          ARCHIVAGE=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 

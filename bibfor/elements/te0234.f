@@ -1,5 +1,5 @@
       SUBROUTINE TE0234(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -160,7 +160,7 @@ C-- BOUCLE SUR LES POINTS D'INTEGRATION SUR LA SURFACE
      &                CODRET,'FM')
           NU = VALRES(2)
           CISAIL = VALRES(1)/ (UN+NU)
-          IF (NOMTE(3:4).EQ.'CX') JACP = JACP*R
+          IF (NOMTE.EQ.'MECXSE3') JACP = JACP*R
           TEST = ABS(H*COUR/DEUX)
           IF (TEST.GE.UN) CORREC = ZERO
           TEST2 = ABS(H*COSA/ (DEUX*R))
@@ -205,7 +205,7 @@ C-- DE L'INSTANT PRESENT
               CALL DEFGEN(TESTL1,TESTL2,NNO,R,X3,SINA,COSA,COUR,
      &                    ZR(IVF+K),DFDX,ZR(IDEPLM),EPS2D,EPSX3)
 
-              IF (NOMTE(3:4).EQ.'TD' .OR. NOMTE(3:4).EQ.'TC') THEN
+              IF (NOMTE.EQ.'METDSE3' .OR. NOMTE.EQ.'METCSE3') THEN
                 EPS2D(2) = 0.D0
               END IF
 
@@ -220,7 +220,7 @@ C                                  DE LA SURFACE MOYENNE
               K1 = 4* (KPKI-1)
 C-- CALCUL DES CONTRAINTES TILDE, ON A REMPLACE ICONTP PAR ICONTM
 
-              IF (NOMTE(3:4).EQ.'CX') THEN
+              IF (NOMTE.EQ.'MECXSE3') THEN
 C                                                    AXISYM
                 SIGTDI(1) = ZR(ICONTM-1+K1+1)/RHOS
                 SIGTDI(2) = X3*ZR(ICONTM-1+K1+1)/RHOS
@@ -273,7 +273,7 @@ C-- BOUCLE SUR LES POINTS D'INTEGRATION SUR LA SURFACE
      &                CODRET,'FM')
           NU = VALRES(2)
           CISAIL = VALRES(1)/ (UN+NU)
-          IF (NOMTE(3:4).EQ.'CX') JACP = JACP*R
+          IF (NOMTE.EQ.'MECXSE3') JACP = JACP*R
           TEST = ABS(H*COUR/DEUX)
           IF (TEST.GE.UN) CORREC = ZERO
           TEST2 = ABS(H*COSA/ (DEUX*R))
@@ -309,7 +309,7 @@ C--   DE L'INSTANT PRESENT
               CALL DEFGEN(TESTL1,TESTL2,NNO,R,X3,SINA,COSA,COUR,
      &                    ZR(IVF+K),DFDX,ZR(IDEPLM),EPS2D,EPSX3)
 
-              IF (NOMTE(3:4).EQ.'TD' .OR. NOMTE(3:4).EQ.'TC') THEN
+              IF (NOMTE.EQ.'METDSE3' .OR. NOMTE.EQ.'METCSE3') THEN
                 EPS2D(2) = 0.D0
               END IF
 C--  CONSTRUCTION DE LA DEFORMATION GSX3 ET DE LA CONTRAINTE SGMSX3
@@ -322,7 +322,7 @@ C                                  DE LA SURFACE MOYENNE
               K1 = 4* (KPKI-1)
 C-- CALCUL DES CONTRAINTES TILDE, ON A REMPLACE ICONTP PAR ICONM
 
-              IF (NOMTE(3:4).EQ.'CX') THEN
+              IF (NOMTE.EQ.'MECXSE3') THEN
 C                                                  AXISYM
                 SIGTDI(1) = ZR(ICONTM-1+K1+1)/RHOS
                 SIGTDI(2) = X3*ZR(ICONTM-1+K1+1)/RHOS

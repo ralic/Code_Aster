@@ -1,7 +1,7 @@
       SUBROUTINE TE0330(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       CALL EQCARA(NOMTE,TYPMOD,NDIM1,NCEQ,NCMP,NBVA)
 
-      IF (NOMTE(1:8).EQ.'MEC3QU9H' .OR. NOMTE(1:8).EQ.'MEC3TR7H') THEN
+      IF (NOMTE.EQ.'MEC3QU9H' .OR. NOMTE.EQ.'MEC3TR7H') THEN
          CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI','L',JIN)
          NNO   = ZI(JIN)
          NPG   = NNO

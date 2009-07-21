@@ -1,6 +1,6 @@
       SUBROUTINE CONNEC(NOMTE,NSE,NNOP2,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER NNO,I,J,IADZI,IAZK24
-
+      CHARACTER*8 ALIAS8
+      LOGICAL LTEATT
+      
       CALL TECAEL(IADZI,IAZK24)
       NNO = ZI(IADZI-1+2)
 
@@ -70,14 +72,19 @@ C INITIALISATION DU TABLEAU COMPLET
 
 C CONNECTIVITE DES SOUS ELEMENTS (ELEMENTS ISO_P2)
 
-      IF (NOMTE(5:7).EQ.'SL3') THEN
+      CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
+
+      IF (LTEATT(' ','LUMPE','OUI').AND.
+     &          (ALIAS8(6:8).EQ.'SE3')) THEN
         NNOP2 = 3
         NSE = 2
         C(1,1) = 1
         C(1,2) = 3
         C(2,1) = C(1,2)
         C(2,2) = 2
-      ELSE IF (NOMTE(5:7).EQ.'TL6') THEN
+
+      ELSE IF (LTEATT(' ','LUMPE','OUI').AND.
+     &          (ALIAS8(6:8).EQ.'TR6')) THEN
         NNOP2 = 6
         NSE = 4
         C(1,1) = 1
@@ -92,7 +99,8 @@ C CONNECTIVITE DES SOUS ELEMENTS (ELEMENTS ISO_P2)
         C(4,1) = C(1,2)
         C(4,2) = C(2,3)
         C(4,3) = C(1,3)
-      ELSE IF (NOMTE(5:7).EQ.'QL9') THEN
+      ELSE IF (LTEATT(' ','LUMPE','OUI').AND.
+     &        (ALIAS8(6:8).EQ.'QU9')) THEN
         NNOP2 = 9
         NSE = 4
         C(1,1) = 1

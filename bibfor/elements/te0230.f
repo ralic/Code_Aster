@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -152,7 +152,7 @@ C===============================================================
 
         E11 = EPS(2)*COSA - EPS(1)*SINA
         K11 = EPS(3)
-        IF (NOMTE(3:4).EQ.'CX') THEN
+        IF (NOMTE.EQ.'MECXSE3') THEN
           E22 = EPS(4)/R
           K22 = -EPS(5)*SINA/R
           EP22 = (E22+X3*K22)/ (1.D0+ (CORREC*X3*COSA/R))
@@ -171,7 +171,7 @@ C===============================================================
         IF (NOMTE(3:4).EQ.'CX') THEN
           CONTPG(3* (KP-1)+1) = C2* (EP11+NU*EP22) - EPSTHE
           CONTPG(3* (KP-1)+2) = C2* (EP22+NU*EP11) - EPSTHE
-        ELSE IF (NOMTE(1:8).EQ.'METDSE3 ') THEN
+        ELSE IF (NOMTE.EQ.'METDSE3 ') THEN
           CONTPG(3* (KP-1)+1) = C2*EP11 - EPSTHE
           CONTPG(3* (KP-1)+2) = C2*NU*EP11 - EPSTHE
         ELSE

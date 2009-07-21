@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ETUDE:  ESSAI DE CISAILLEMENT CYCLIQUE DRAINE (MECA PUR)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,16 @@ TEMPS2=DEFI_LIST_REEL(DEBUT=0,
                                   _F (JUSQU_A=50,
                                      NOMBRE=100,),),);
 
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_NIVEAU=10),)
+
+DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS2),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_NIVEAU=10),)
+
 ################################################################
 #ESSAI DE CISAILLEMENT CYCLIQUE A 0.2% DE DEFORMATIONS IMPOSEES#
 ################################################################
@@ -88,12 +98,9 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
 U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
                               ITER_INTE_PAS = -10),
                   MATER=MATE,
-                  INCREMENT=_F(LIST_INST=TEMPS1,
+                  INCREMENT=_F(LIST_INST=DEFLIST1,
                                NUME_INST_INIT=0,
-                               INST_FIN=50.,
-                               SUBD_METHODE='UNIFORME',
-                               SUBD_PAS=10,
-                               SUBD_NIVEAU=10,),
+                               INST_FIN=50.,),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
 #                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           
@@ -127,12 +134,9 @@ COEF4=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
 U2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
                               ITER_INTE_PAS = -10),
                   MATER=MATE,
-                  INCREMENT=_F(LIST_INST=TEMPS1,
+                  INCREMENT=_F(LIST_INST=DEFLIST1,
                                NUME_INST_INIT=0,
-                               INST_FIN=50.,
-                               SUBD_METHODE='UNIFORME',
-                               SUBD_PAS=10,
-                               SUBD_NIVEAU=10,),
+                               INST_FIN=50.,),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
 #                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           
@@ -166,12 +170,9 @@ COEF5=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
 U3=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
                               ITER_INTE_PAS = -10),
                   MATER=MATE,
-                  INCREMENT=_F(LIST_INST=TEMPS2,
+                  INCREMENT=_F(LIST_INST=DEFLIST2,
                                NUME_INST_INIT=0,
-                               INST_FIN=50.,
-                               SUBD_METHODE='UNIFORME',
-                               SUBD_PAS=10,
-                               SUBD_NIVEAU=10,),
+                               INST_FIN=50.,),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
 #                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           

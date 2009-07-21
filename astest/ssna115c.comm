@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURATION INTERFACE 2D AXIS SUR ARRACHEMENT, LOI CZM_TAC_MIX
 # ssna115c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,9 +177,7 @@ EVOL = STAT_NON_LINE(
       _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_TAC_MIX')),
          INCREMENT = _F(
                          LIST_INST = INSTANTS, 
-                         INST_FIN  = 0.,
-                         SUBD_METHODE='UNIFORME', SUBD_PAS  = 10,
-                         SUBD_PAS_MINI = 1.E-5),
+                         INST_FIN  = 0.,),
        RECH_LINEAIRE = _F (ITER_LINE_MAXI = 2),
        NEWTON  = _F(
                     MATRICE   = 'TANGENTE',
@@ -206,8 +204,6 @@ EVOL = STAT_NON_LINE(reuse  = EVOL,
   INCREMENT = _F(
     LIST_INST = INSTANTS,
     INST_FIN  = tfin,
-    SUBD_METHODE='UNIFORME', SUBD_PAS  = 10,
-    SUBD_PAS_MINI = 1.E-5
     ),
   PILOTAGE  = _F (
     GROUP_MA       = 'JOINT',

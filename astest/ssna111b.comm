@@ -1,5 +1,6 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
+# ssna111b.para = tps_job 880 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,6 +91,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=50,),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
+                        ECHEC=_F(SUBD_PAS=4,
+                                 SUBD_PAS_MINI=1.E-6,
+                                 SUBD_COEF_PAS_1=1.0,),)
+
 F=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,  0.0,
                       0.8,  1.0,
@@ -107,11 +113,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
                               _F(RELATION='ELAS',
                                 GROUP_MA='GM17',),
                                   ),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-6,
-                                SUBD_COEF_PAS_1=1.0,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
+                                INST_FIN=1.,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),

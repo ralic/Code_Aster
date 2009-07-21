@@ -1,0 +1,391 @@
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE
+# ssnp102b.para = tps_job 200 mem_job 500Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ********************************************************************
+# ********************************************************************
+#
+# PLAQUE ENTAILLEE SOUMISE A DES CHARGES ET DECHARGES
+# EN PLASTICITE
+#
+# SOLUTION DE REFERENCE SOURCE_EXTERNE (IDEM 3D)
+# ********************************************************************
+# ********************************************************************
+
+DEBUT(CODE=_F( NOM = 'SSNP102B',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),   )
+
+M=DEFI_GROUP(  reuse=M,        
+               MAILLAGE=M,
+               CREA_GROUP_NO= _F( GROUP_MA = 'DG'),);
+
+FISS=DEFI_FOND_FISS(MAILLAGE=M,
+                    FOND_FISS=_F(GROUP_MA='DG',),
+                    NORMALE=(0.,1.,0.));
+
+
+MO=AFFE_MODELE(            MAILLAGE=M,
+                                 AFFE=_F(  TOUT = 'OUI',
+                                        PHENOMENE = 'MECANIQUE',
+                                        MODELISATION = '3D') )
+
+SIGMF=DEFI_FONCTION(    NOM_PARA='EPSI',
+                              VALE=(0.0023333,  480.2,
+                                    0.01,       480.35778, ),
+                           PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='LINEAIRE')
+
+MA=DEFI_MATERIAU(            ELAS=_F(  E = 205800.,
+                                        NU = 0.3,
+                                        ALPHA = 0.0),
+                             TRACTION=_F(  SIGM = SIGMF), 
+                              PRAGER=_F(C=0.))
+
+CM=AFFE_MATERIAU(        MAILLAGE=M,
+                                 AFFE=_F(  TOUT = 'OUI',
+                                        MATER = MA,
+                                        ) )
+
+#
+# ****************************************************************
+#            CONDITIONS AUX LIMITES EN DEPLACEMENTS :
+#          CONTINUITE ET SYMETRIE SUR L'INTERFACE SDE : U2=0
+#                                                 SAB : U1=0
+# ****************************************************************
+#
+
+
+CH=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+                          _F(  GROUP_MA = 'SAB',  DX = 0.),
+                          _F(  GROUP_MA = 'SDE',  DY = 0.),
+                          _F(  GROUP_MA = 'EPROUVET',   DZ = 0.)),
+                          PRES_REP=_F(  GROUP_MA = 'SFA',  PRES = -196.)
+                      )
+
+#
+# ****************************************************************
+#             DEFINITION DES INSTANTS DE CALCUL
+# ****************************************************************
+#
+
+
+L_INST=DEFI_LIST_REEL(          DEBUT=0.0,
+                              INTERVALLE=_F(  JUSQU_A = 2.0,
+                                            NOMBRE = 20)
+                           )
+
+#
+# ****************************************************************
+#     RESOLUTION DU PROBLEME
+# ****************************************************************
+#
+
+
+F=DEFI_FONCTION(      NOM_PARA='INST',
+                        PROL_DROITE='LINEAIRE',
+                       PROL_GAUCHE='LINEAIRE',
+                               VALE=( 0.0,  0.0, 
+                                      0.5,  1.0, 
+                                      1.0,  0.0, 
+                                      1.5,  1.0, 
+                                      2.0,  0.0, 
+                                      2.5,  1.0, 
+                                      3.0,  0.0, )
+                     )
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=2,
+                                 SUBD_PAS_MINI = 0.001,
+                                 SUBD_COEF_PAS_1 = 0.001 ),)
+
+
+UP=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CM,
+                             EXCIT=_F( 
+                CHARGE = CH,
+                FONC_MULT = F),
+                         COMP_INCR=_F( 
+                RELATION = 'VMIS_ISOT_TRAC',
+                DEFORMATION = 'PETIT'),
+                         INCREMENT=_F( 
+                LIST_INST = DEFLIST),
+                         ARCHIVAGE=_F( 
+                LIST_INST = L_INST),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                RESI_REFE_RELA=1.,
+                SIGM_REFE     =4.8E-3,
+             #   RESI_GLOB_RELA = 1.E-8,
+                ITER_GLOB_MAXI = 8)
+              )
+
+
+
+
+UP=CALC_ELEM( reuse=UP,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=UP,
+              )
+
+UP=CALC_ELEM( reuse=UP,   
+                      RESULTAT=UP,
+                       OPTION=('EPSP_ELNO','EPSI_ELGA_DEPL')
+                  )
+
+              
+# ****************************************************************
+#     CALCUL DU TAUX DE RESTITUTION D'ENERGIE G SUR 4 COURONNES
+# ****************************************************************
+#
+
+THET1=CALC_THETA(       MODELE=MO,
+                  FOND_FISS=FISS,
+                        THETA_3D=_F(  GROUP_NO = 'DG',
+                                   MODULE = 1.0,
+                                   R_INF = 0.55,
+                                   R_SUP = 1.0),
+                       DIRECTION=(1.,0.,0.,)
+                   )
+
+THET2=CALC_THETA(       MODELE=MO,
+                  FOND_FISS=FISS,
+                        THETA_3D=_F(  GROUP_NO = 'DG',
+                                   MODULE = 1.0,
+                                   R_INF = 1.0,
+                                   R_SUP = 1.5),
+                       DIRECTION=(1.,0.,0.,)
+                   )
+
+THET3=CALC_THETA(       MODELE=MO,
+                  FOND_FISS=FISS,
+                        THETA_3D=_F(  GROUP_NO = 'DG',
+                                   MODULE = 1.0,
+                                   R_INF = 1.5,
+                                   R_SUP = 2.0),
+                       DIRECTION=(1.,0.,0.,)
+                    )
+
+THET4=CALC_THETA(       MODELE=MO,
+                  FOND_FISS=FISS,
+                        THETA_3D=_F(  GROUP_NO = 'DG',
+                                   MODULE = 1.0,
+                                   R_INF = 2.0,
+                                   R_SUP = 3.0),
+                       DIRECTION=(1.,0.,0.,)
+                   )
+
+G1=CALC_G(  
+            RESULTAT=UP,
+            THETA=_F(THETA=THET1),
+            SYME_CHAR='SYME',
+            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
+                         DEFORMATION = 'PETIT'),
+            OPTION='CALC_G_GLOB'
+             );
+
+
+G2=CALC_G(  
+            RESULTAT=UP,
+            THETA=_F(THETA=THET2),
+            SYME_CHAR='SYME',
+            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
+                         DEFORMATION = 'PETIT'),
+            OPTION='CALC_G_GLOB'
+             );
+
+G3=CALC_G(  
+            RESULTAT=UP,
+            THETA=_F(THETA=THET3),
+            SYME_CHAR='SYME',
+            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
+                         DEFORMATION = 'PETIT'),
+            OPTION='CALC_G_GLOB'
+             );
+
+G4=CALC_G(  
+            RESULTAT=UP,
+            THETA=_F(THETA=THET4),
+            SYME_CHAR='SYME',
+            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
+                         DEFORMATION = 'PETIT'),
+            OPTION='CALC_G_GLOB'
+             );                                          
+
+IMPR_TABLE(       TABLE=G1,)
+IMPR_TABLE(       TABLE=G2,)
+IMPR_TABLE(       TABLE=G3,)
+IMPR_TABLE(       TABLE=G4,)
+
+#
+# ****************************************************************
+#     TESTS DE G  POUR LES NUMEROS D'ORDRE 5,10,15,20,25 ET 30
+# ****************************************************************
+#
+# EPAISSEUR DE LA PLAQUE 
+EPAIS = 0.25
+
+TEST_TABLE(       TABLE=G1,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 5),
+                       NOM_PARA='G',
+                           VALE=2.769*EPAIS,
+                      PRECISION=3.5E-2 ,
+                      REFERENCE='SOURCE_EXTERNE'  )
+
+TEST_TABLE(       TABLE=G2,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 5),
+                       NOM_PARA='G',
+                           VALE=2.769*EPAIS,
+                      PRECISION=3.5E-2  ,
+                      REFERENCE='SOURCE_EXTERNE' )
+
+TEST_TABLE(       TABLE=G3,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 5),
+                       NOM_PARA='G',
+                           VALE=2.769*EPAIS,
+                      PRECISION=3.5E-2  ,
+                      REFERENCE='SOURCE_EXTERNE' )
+
+TEST_TABLE(       TABLE=G4,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 5),
+                       NOM_PARA='G',
+                           VALE=2.769*EPAIS,
+                      PRECISION=3.5E-2 ,
+                      REFERENCE='SOURCE_EXTERNE'  )
+
+
+TEST_TABLE(       TABLE=G1,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 10),
+                       NOM_PARA='G',
+                           VALE=3.183*EPAIS,
+                      PRECISION=5.E-2  ,
+                      REFERENCE='SOURCE_EXTERNE' )
+
+TEST_TABLE(       TABLE=G2,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 10),
+                       NOM_PARA='G',
+                           VALE=3.183*EPAIS,
+                      PRECISION=5.E-2 ,
+                      REFERENCE='SOURCE_EXTERNE'  )
+
+TEST_TABLE(       TABLE=G3,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 10),
+                       NOM_PARA='G',
+                           VALE=3.183*EPAIS,
+                      PRECISION=5.E-2  ,
+                      REFERENCE='SOURCE_EXTERNE' )
+
+TEST_TABLE(       TABLE=G4,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 10),
+                       NOM_PARA='G',
+                           VALE=3.183*EPAIS,
+                      PRECISION=5.E-2  ,
+                      REFERENCE='SOURCE_EXTERNE' )
+
+TEST_TABLE(       TABLE=G1,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 15),
+                       NOM_PARA='G',
+                           VALE=4.276*EPAIS,
+                      PRECISION=2.5E-2  ,
+                      REFERENCE='SOURCE_EXTERNE' )
+
+TEST_TABLE(       TABLE=G2,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 15),
+                       NOM_PARA='G',
+                           VALE=4.276*EPAIS,
+                      PRECISION=2.5E-2 ,
+                      REFERENCE='SOURCE_EXTERNE'  )
+
+TEST_TABLE(       TABLE=G3,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 15),
+                       NOM_PARA='G',
+                           VALE=4.276*EPAIS,
+                      PRECISION=2.5E-2 ,
+                      REFERENCE='SOURCE_EXTERNE'  )
+
+TEST_TABLE(       TABLE=G4,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 15),
+                       NOM_PARA='G',
+                           VALE=4.276*EPAIS,
+                      PRECISION=2.5E-2  ,
+                      REFERENCE='SOURCE_EXTERNE'  )
+
+TEST_TABLE(       TABLE=G1,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 20),
+                       NOM_PARA='G',
+                           VALE=4.651*EPAIS,
+                      PRECISION=6.E-2 ,
+                      REFERENCE='SOURCE_EXTERNE'   )
+
+TEST_TABLE(       TABLE=G2,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 20),
+                       NOM_PARA='G',
+                           VALE=4.651*EPAIS,
+                      PRECISION=6.E-2  ,
+                      REFERENCE='SOURCE_EXTERNE'  )
+
+TEST_TABLE(       TABLE=G3,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 20),
+                       NOM_PARA='G',
+                           VALE=4.651*EPAIS,
+                      PRECISION=6.E-2 ,
+                      REFERENCE='SOURCE_EXTERNE'   )
+
+TEST_TABLE(       TABLE=G4,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 20),
+                       NOM_PARA='G',
+                           VALE=4.651*EPAIS,
+                      PRECISION=6.E-2 ,
+                      REFERENCE='SOURCE_EXTERNE'  )
+
+TEST_TABLE(       TABLE=G1,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 20),
+                       NOM_PARA='G',
+                           VALE=1.09502,
+                      PRECISION=1.E-4 ,
+                      REFERENCE='NON_REGRESSION'  )
+
+
+
+FIN()
+#

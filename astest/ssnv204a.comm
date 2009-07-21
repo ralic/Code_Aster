@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,6 +189,16 @@ COEF4=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=( 0.0, 0.0,
                           10.0, 2*P0));
+DEFLIST0 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS0),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI =0.00001 ),)
+
+
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI =0.00001 ),)
 
 #***********************************************************************
 #    CONSOLIDATION PLASTIQUE DRAINE JUSQU'A 300KPA
@@ -210,10 +220,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                                 ITER_GLOB_MAXI = 20),
                  
                  ARCHIVAGE=_F(LIST_INST = TEMPS0),                              
-                 INCREMENT=_F(LIST_INST = TEMPS0,
-                              SUBD_METHODE = 'UNIFORME',
-                              SUBD_PAS = 10,
-                              SUBD_PAS_MINI = 0.0001,
+                 INCREMENT=_F(LIST_INST = DEFLIST0,
                               INST_INIT = -10.0,
                               INST_FIN = 0.0));
 
@@ -256,10 +263,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 20),
                  ARCHIVAGE=_F(LIST_INST = TEMPS1),
-                 INCREMENT=_F(LIST_INST = TEMPS1,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_PAS_MINI=0.001,
+                 INCREMENT=_F(LIST_INST = DEFLIST1,
                               INST_INIT=0.0,
                               INST_FIN =10.));
 
@@ -289,6 +293,12 @@ COEF5=DEFI_FONCTION(NOM_PARA='INST',
 #***********************************************************************
 #    CONSOLIDATION CYCLIQUE RETOUR JUSQU'A 340KPA
 #***********************************************************************
+
+DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS2),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI =0.00001 ),)
+
 U2=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,
                  EXCIT=(_F(CHARGE    = CHAR_U1,
@@ -315,10 +325,7 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 10),
                  ARCHIVAGE=_F(LIST_INST = TEMPS2),
-                 INCREMENT=_F(LIST_INST = TEMPS2,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_PAS_MINI=0.0001,
+                 INCREMENT=_F(LIST_INST = DEFLIST2,
                               INST_INIT=10.0,
                               INST_FIN =20.));               
                               

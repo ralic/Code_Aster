@@ -1,4 +1,4 @@
-# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,6 +34,11 @@ duree = T_final / nbre_calcul
 #
 l_inst=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=T_final,PAS=pas_de_temps,),)
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = l_inst),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=1.E-1),)
 #
 # 1.3. Fonction du chargement
 #
@@ -140,10 +145,8 @@ for num_calc in range(nbre_calcul):
                                _F(CHARGE=pres[num_calc],),),
                         NEWTON=_F(REAC_ITER=1),
                         COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
-                        INCREMENT=_F(LIST_INST=l_inst,
-                                     INST_FIN=inst_fin,
-                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                     SUBD_PAS_MINI=1.E-1,),);
+                        INCREMENT=_F(LIST_INST=DEFLIST,
+                                     INST_FIN=inst_fin,),);
 #
 # 5.6. Extraction du deplacement
 #

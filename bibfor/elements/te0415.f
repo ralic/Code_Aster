@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,9 +71,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       NPGSR = ZI(LZI-1+3)
       NPGSN = ZI(LZI-1+4)
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
-      IF (NOMTE(1:8).EQ.'MEC3QU9H') THEN
+      IF (NOMTE.EQ.'MEC3QU9H') THEN
         NSO = 4
-      ELSE IF (NOMTE(1:8).EQ.'MEC3TR7H') THEN
+      ELSE IF (NOMTE.EQ.'MEC3TR7H') THEN
         NSO = 3
       END IF
       IF (OPTION(1:9).EQ.'SIEF_ELNO' .OR.
@@ -199,14 +199,14 @@ C     --------------------------------------------------------
               JJ = NSO* (NORDO+1) + NSO*NPGE* (ICOU-1) + J
               SIGGN(I,J) = SIGMA(I,JJ)
   140       CONTINUE
-            IF (NOMTE(1:8).EQ.'MEC3QU9H') THEN
+            IF (NOMTE.EQ.'MEC3QU9H') THEN
               SIGGN(I,5) = (SIGGN(I,1)+SIGGN(I,2))/2.D0
               SIGGN(I,6) = (SIGGN(I,2)+SIGGN(I,3))/2.D0
               SIGGN(I,7) = (SIGGN(I,3)+SIGGN(I,4))/2.D0
               SIGGN(I,8) = (SIGGN(I,4)+SIGGN(I,1))/2.D0
               SIGGN(I,9) = (SIGGN(I,1)+SIGGN(I,2)+SIGGN(I,3)+
      &                     SIGGN(I,4))/4.D0
-            ELSE IF (NOMTE(1:8).EQ.'MEC3TR7H') THEN
+            ELSE IF (NOMTE.EQ.'MEC3TR7H') THEN
               SIGGN(I,4) = (SIGGN(I,1)+SIGGN(I,2))/2.D0
               SIGGN(I,5) = (SIGGN(I,2)+SIGGN(I,3))/2.D0
               SIGGN(I,6) = (SIGGN(I,3)+SIGGN(I,1))/2.D0
@@ -313,7 +313,7 @@ C -- CREATION DU CHAMP DE VARIABLES INTERNES POUR LES POINTS
 C -- MILIEUX ET LE CENTRE
 C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
 
-        IF (NOMTE(1:8).EQ.'MEC3QU9H') THEN
+        IF (NOMTE.EQ.'MEC3QU9H') THEN
           DO 310 IC = 5,NB2
             NPO = (IC-1)*LGPG
             IF (IC.EQ.5) THEN
@@ -352,7 +352,7 @@ C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
   300         CONTINUE
             END IF
   310     CONTINUE
-        ELSE IF (NOMTE(1:8).EQ.'MEC3TR7H') THEN
+        ELSE IF (NOMTE.EQ.'MEC3TR7H') THEN
           DO 340 IC = 4,NB2
             NPO = (IC-1)*LGPG
             IF (IC.EQ.4) THEN
@@ -452,7 +452,7 @@ C -- CREATION DU CHAMP DE VARIABLES INTERNES POUR LES POINTS
 C -- MILIEUX ET LE CENTRE
 C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
 
-        IF (NOMTE(1:8).EQ.'MEC3QU9H') THEN
+        IF (NOMTE.EQ.'MEC3QU9H') THEN
           DO 510 IC = 5,NB2
             NPO = (IC-1)*NBVARI
             IF (IC.EQ.5) THEN
@@ -491,7 +491,7 @@ C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
   500         CONTINUE
             END IF
   510     CONTINUE
-        ELSE IF (NOMTE(1:8).EQ.'MEC3TR7H') THEN
+        ELSE IF (NOMTE.EQ.'MEC3TR7H') THEN
           DO 540 IC = 4,NB2
             NPO = (IC-1)*NBVARI
             IF (IC.EQ.4) THEN

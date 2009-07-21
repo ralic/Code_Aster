@@ -3,7 +3,7 @@
       REAL*8        XYZL(3,1),PGL(3,1),SIGT(1)
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,13 +76,13 @@ C     -----------------
       CALL RCVARC(' ','TEMP','REF','NOEU',1,1,TREF,IRET1)
 
 
-      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
-     &    NOMTE(1:8).EQ.'MEDKTG3 ') THEN
+      IF (NOMTE.EQ.'MEDKTR3 ' .OR. NOMTE.EQ.'MEDSTR3 ' .OR.
+     &    NOMTE.EQ.'MEDKTG3 ') THEN
          NNO = 3
-      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     &         NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
-     &         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     &         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+      ELSE IF (NOMTE.EQ.'MEDKQU4 ' .OR.
+     &         NOMTE.EQ.'MEDKQG4 ' .OR.
+     &         NOMTE.EQ.'MEDSQU4 ' .OR.
+     &         NOMTE.EQ.'MEQ4QU4 ') THEN
          NNO = 4
       ELSE
          CALL U2MESK('F','ELEMENTS_14',1,NOMTE(1:8))

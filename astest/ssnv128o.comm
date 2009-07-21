@@ -1,5 +1,6 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
+# ssnv128o.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# ssnv128o.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # CAS_TEST__:SSNV128O
@@ -97,10 +99,7 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   NEWTON = _F(MATRICE = 'ELASTIQUE',),
                   INCREMENT  = _F(LIST_INST = L_INST,
-                                  PRECISION = 1.0E-3,
-                                  SUBD_PAS_MINI = 1.0E-6,
-                                  SUBD_METHODE='UNIFORME', SUBD_PAS =2,
-                                  SUBD_COEF_PAS_1 = 1.,),
+                                  PRECISION = 1.0E-3,),
                   CONVERGENCE= _F(ARRET = 'OUI',
                                  ITER_GLOB_MAXI = 15,
                                  RESI_GLOB_RELA = 1.0E-5,),
@@ -183,10 +182,7 @@ U2L=STAT_NON_LINE(MODELE    = MO,
                                METHODE = 'LDLT',),
                   NEWTON = _F(MATRICE = 'ELASTIQUE',),
                   INCREMENT  = _F(LIST_INST = L_INST,
-                                  PRECISION = 1.0E-3,
-                                  SUBD_PAS_MINI = 1.0E-6,
-                                  SUBD_METHODE='UNIFORME', SUBD_PAS =2,
-                                  SUBD_COEF_PAS_1 = 1.,),
+                                  PRECISION = 1.0E-3,),
                   CONVERGENCE= _F(ARRET = 'OUI',
                                  ITER_GLOB_MAXI = 15,
                                  RESI_GLOB_RELA = 1.0E-5,),

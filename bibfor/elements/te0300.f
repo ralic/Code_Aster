@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -218,7 +218,7 @@ C --- BOUCLE SUR LES POINTS DE GAUSS
         DCOEFK = VALRES(1)/ (1.D0-VALRES(2)*VALRES(2))
         CCOEFK = VALRES(1)
 
-        IF (NOMTE(3:4).EQ.'DP' .OR. AXI) THEN
+        IF (AXI) THEN
           CK = DPK
           COEFK = DCOEFK
         ELSE

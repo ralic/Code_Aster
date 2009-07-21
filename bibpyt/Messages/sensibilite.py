@@ -1,21 +1,21 @@
-#@ MODIF sensibilite Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sensibilite Messages  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -23,12 +23,12 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
- Type de dérivation voulu : %(i1)d 
+ Type de dérivation voulu : %(i1)d
  Ce type n'est pas implanté.
 """),
 
 2 : _("""
- On veut dériver %(k1)s par rapport à %(k2)s. 
+ On veut dériver %(k1)s par rapport à %(k2)s.
  Cela n'est pas disponible.
 """),
 
@@ -63,7 +63,7 @@ cata_msg = {
 
 10 : _("""
  Initialisation de la table associée à la table %(k1)s et au paramètre sensible %(k2)s
- connue sous le nom de concept %(k3)s 
+ connue sous le nom de concept %(k3)s
 """),
 
 11 : _("""
@@ -107,10 +107,6 @@ cata_msg = {
  L'option sensibilité n'est pas opérationnelle pour le comportement %(k1)s
 """),
 
-36 : _("""
- L'option sensibilité n'est pas opérationnelle pour le type d'élément %(k1)s
-"""),
-
 37 : _("""
  L'option sensibilité n'est pas opérationnelle pour la modélisation %(k1)s
 """),
@@ -132,7 +128,7 @@ cata_msg = {
 """),
 
 51 : _("""
- Dérivation de g : un seul paramètre sensible par appel à CALC_G. 
+ Dérivation de g : un seul paramètre sensible par appel à CALC_G.
 """),
 
 52 : _("""
@@ -152,8 +148,23 @@ cata_msg = {
  Le calcul de derivée n'a pas été étendu à la plasticité.
 """),
 
+56 : _("""
+Problème :
+  Le calcul de sensibilité dans MODE_ITER_SIMULT n'est pas conseillé ici.
+  Il aura besoin de beaucoup de mémoire (>3 Go).
+
+Conseil :
+  Pour les nombres de ddls importants, il faut préférer le calcul de sensibilité
+  par "différences finies".
+"""),
+
+
+
+
+
+
 71 : _("""
- Dérivation par rapport au paramètre sensible : %(k1)s 
+ Dérivation par rapport au paramètre sensible : %(k1)s
 """),
 
 72 : _("""
@@ -161,7 +172,7 @@ cata_msg = {
 """),
 
 73 : _("""
- Le type de la dérivation est %(k1)s 
+ Le type de la dérivation est %(k1)s
 """),
 
 81 : _("""
@@ -170,7 +181,7 @@ cata_msg = {
 
 91 : _("""
  Le pas de temps adaptatif n'est pas approprié pour le calcul de sensibilité
- par rapport au paramètre materiau 
+ par rapport au paramètre materiau
 """),
 
 92 : _("""

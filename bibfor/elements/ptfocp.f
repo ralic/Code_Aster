@@ -7,7 +7,7 @@
       REAL*8                               XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,7 @@ C
          ENDIF
 C        --- PASSAGE REPERE LOCAL DU VECTEUR FORCE (SI NECESSAIRE) ---
          IF ( GLOBAL .OR. NORMAL ) THEN
-            IF ( NOMTE(1:12) .EQ. 'MECA_POU_C_T' ) THEN
+            IF ( NOMTE .EQ. 'MECA_POU_C_T' ) THEN
                CALL UTPVGL ( NNOC, NCC, PGL1, QR(1), QQR(1))
                CALL UTPVGL ( NNOC, NCC, PGL2, QR(7), QQR(7))
                CALL UTPVGL ( NNOC, NCC, PGL1, QI(1), QQI(1))

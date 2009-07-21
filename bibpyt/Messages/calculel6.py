@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -345,5 +345,9 @@ spécifique POST_MAIL_XFEM et POST_CHAM_XFEM avant le CALC_ELEM.
 81 : _("""
   il manque des amortissements.
   """),
+
+82: _("""
+ le groupe de noeuds %(k1)s n'appartient pas au maillage: %(k2)s
+"""),
 
 }

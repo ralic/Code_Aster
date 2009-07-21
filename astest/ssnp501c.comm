@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,9 +119,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              FONC_MULT=RAMPE,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 DEFORMATION='GREEN',),
-                   INCREMENT=_F(LIST_INST=LINST,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=9.9999999999999995E-07,),
+                   INCREMENT=_F(LIST_INST=LINST,),
                    SOLVEUR=_F(METHODE='LDLT',
                               RENUM='SANS'),
                    NEWTON=_F(MATRICE='TANGENTE',

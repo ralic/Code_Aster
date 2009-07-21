@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF ENTETE  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,6 +104,7 @@ from SD.co_fond_fiss        import fond_fiss
 from SD.co_interf_dyna_clas import interf_dyna_clas
 from SD.co_gfibre           import gfibre_sdaster
 from SD.co_listis           import listis_sdaster
+from SD.co_list_inst        import list_inst
 from SD.co_melasflu         import melasflu_sdaster
 from SD.co_mode_cycl        import mode_cycl
 from SD.co_nume_ddl_gene    import nume_ddl_gene

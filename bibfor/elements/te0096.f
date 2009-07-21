@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/09/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,10 +141,10 @@ C =====================================================================
       IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS'
         AXI = .TRUE.
-      ELSEIF (NOMTE(3:4).EQ.'CP') THEN
+      ELSEIF (LTEATT(' ','C_PLAN','OUI')) THEN
         TYPMOD(1) = 'C_PLAN'
         CP  = .TRUE.
-      ELSEIF (NOMTE(3:4).EQ.'DP') THEN
+      ELSEIF (LTEATT(' ','D_PLAN','OUI')) THEN
         TYPMOD(1) = 'D_PLAN'
       ENDIF
 C

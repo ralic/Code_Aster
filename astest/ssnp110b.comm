@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,10 +65,7 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
                                  FONC_MULT = RAMPE)),
                        COMP_ELAS=_F(RELATION = 'ELAS_VMIS_LINE',
                                     DEFORMATION = 'GREEN'),
-                       INCREMENT=_F(LIST_INST = L_INST,
-                                    SUBD_COEF_PAS_1=1.0,
-                                    SUBD_METHODE='UNIFORME', SUBD_PAS=2,
-                                    SUBD_PAS_MINI=0.00001),
+                       INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
                        CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),

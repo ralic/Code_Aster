@@ -1,58 +1,52 @@
-        SUBROUTINE CALCFT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,
-     +                    DIMCON,YAMEC,YAP1,NBPHA1,YAP2,
-     +                    NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,
-     +                    ADCOTE,CONGEM,CONGEP,
-     +                    DSDE,EPSV,P1,P2,T,GRAT,PHI,SATBID,PVP,
-     +                    RGAZ, RHOD, CPD, BIOT, SATM, SAT,DSATP1, 
-     +                    PESA, PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, 
-     +                    DPERMP, FICK, DFICKT, DFICKG, LAMBP,
-     +                    DLAMBP, RHOL, UNSURK, ALPHA, CPL, LAMBS,
-     +                    DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
-     +                    DLAMBT,VISCG, 
-     +                    DVISCG, MAMOLV, CPVG, VISCVG, DVISVG,
-     +                    RETCOM,LAMBCT,RHO11,H11,H12)
+        SUBROUTINE CALCFT(OPTION,THMC  ,IMATE ,NDIM  ,DIMDEF,
+     +                    DIMCON,YAMEC ,YAP1  ,YAP2  ,
+     +                    ADDETE,ADDEME,ADDEP1,ADDEP2,
+     +                    ADCOTE,CONGEP,
+     +                    DSDE  ,T     ,GRAT  ,PHI   ,PVP   ,
+     +                    RGAZ  , BIOT ,SAT   ,DSATP1,
+     +                    LAMBP ,DLAMBP, LAMBS,DLAMBS,LAMBT ,
+     +                    DLAMBT,MAMOLV,
+     +                    LAMBCT,RHO11 ,H11   ,H12           )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 20/07/2009   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ======================================================================
 C ROUTINE CALC_FLUX_THERM ----------------------------------------------
 C CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE DES FLUX -
-C OUT RETCOM : RETOUR LOI DE COMPORTEMENT ------------------------------
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       NDIM,DIMDEF,DIMCON,IMATE,RETCOM
-      INTEGER       YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE
+      INTEGER       NDIM,DIMDEF,DIMCON,IMATE
+      INTEGER       YAMEC,YAP1,YAP2
       INTEGER       ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE
-      REAL*8        CONGEM(1:DIMCON),CONGEP(1:DIMCON)
-      REAL*8        DSDE(1:DIMCON,1:DIMDEF),EPSV,P1,P2,MAMOLV
+      REAL*8        CONGEP(1:DIMCON)
+      REAL*8        DSDE(1:DIMCON,1:DIMDEF),MAMOLV
       INTEGER       I,J
-      REAL*8        T,GRAT(3),PHI,SAT,DSATP1,PVP,LAMBDT(5),SATBID
-      REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR,DSATUR, PESA(3)
-      REAL*8        PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, DPERMP, FICK
-      REAL*8        DFICKT, DFICKG, LAMBP,DLAMBP, RHOL,UNSURK,CPL
-      REAL*8        ALPHA, LAMBS,DLAMBS, VISCL, DVISCL, CPG, LAMBT
-      REAL*8        DLAMBT,VISCG, DVISCG, MAMOLG, CPVG, VISCVG, DVISVG
+      REAL*8        T,GRAT(3),PHI,SAT,DSATP1,PVP,LAMBDT(5)
+      REAL*8        RGAZ, BIOT
+      REAL*8        LAMBP,DLAMBP
+      REAL*8        LAMBS,DLAMBS, LAMBT
+      REAL*8        DLAMBT
       REAL*8        LAMBCT,RHO11,H11,H12,RHO12
-      CHARACTER*16  OPTION,MECA,THMC,HYDR
+      CHARACTER*16  OPTION,THMC
 C    PARAMETRE POUR LA RECUP DES COEF MECA
       INTEGER      NELAS
       PARAMETER  ( NELAS=4 )
@@ -105,7 +99,7 @@ C
      +            +CS*(SAT+(1.D0-SAT)*RHO12/RHO11)*(BIOT-PHI)*
      +             DLAMBP*LAMBS*LAMBT
            LAMBDT(4) =0.D0
-           LAMBDT(5) = LAMBS*LAMBP*DLAMBT 
+           LAMBDT(5) = LAMBS*LAMBP*DLAMBT
      +            +(BIOT-PHI)*(-3.D0*ALPHA0+CS*(1.D0-SAT)*
      +            RHO12*(H12-H11)/T)*DLAMBP*LAMBS*LAMBT
      +            +LAMBP*DLAMBS*LAMBT*DSATP1*RHO12*(H12-H11)/T
@@ -115,10 +109,10 @@ C
            LAMBDT(3) = LAMBP*DLAMBS*LAMBT*DSATP1
      +            -SAT*CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
            LAMBDT(4) = CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
-           LAMBDT(5) = LAMBS*LAMBP*DLAMBT 
+           LAMBDT(5) = LAMBS*LAMBP*DLAMBT
      +            -(BIOT-PHI)*3.D0*ALPHA0*DLAMBP*LAMBS*LAMBT
          ENDIF
-         
+
 C =====================================================================
 C --- CALCUL DU FLUX THERMIQUE ----------------------------------------
 C =====================================================================
@@ -132,7 +126,7 @@ C =====================================================================
                DO 101 J=1,3
                   DSDE(ADCOTE+I,ADDEME+NDIM-1+J)=
      +              DSDE(ADCOTE+I,ADDEME+NDIM-1+J)-LAMBDT(2)*GRAT(I)
- 101           CONTINUE    
+ 101           CONTINUE
             ENDIF
             IF (YAP1.EQ.1) THEN
                DSDE(ADCOTE+I,ADDEP1)=DSDE(ADCOTE+I,ADDEP1)
@@ -145,7 +139,7 @@ C =====================================================================
  100     CONTINUE
       ENDIF
       IF ( (OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     +     (OPTION(1:9).EQ.'FULL_MECA')      ) THEN 
+     +     (OPTION(1:9).EQ.'FULL_MECA')      ) THEN
          DO 102 I=1,NDIM
             CONGEP(ADCOTE+I)=-LAMBDT(1)*GRAT(I)
  102     CONTINUE

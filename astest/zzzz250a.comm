@@ -1,0 +1,205 @@
+# MODIF  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+#
+# TITRE : MODI_MAILLAGE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#         Validation de ORIE_PEAU_2D/GROUP_MA_SURF et
+#                    de ORIE_PEAU_3D/GROUP_MA_VOLU
+# ---------------------------------------------------
+# zzzz250a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+
+DEBUT(CODE=_F(NOM='ZZZZ250A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                            NU=0.0,),);
+
+
+# 1 - VALIDATION DE ORIE_PEAU_2D/GROUP_MA_SURF
+# --------------------------------------------
+#
+#        ^y
+#        .
+#      A .           C            E
+#        |-----------|------------|
+#        |           |            |
+#        |           |            |
+#        |    MA1    |     MA2    |
+#        |           |            |
+#        |           |            |
+#      z .-----------|------------|...> x
+#        B           D            F
+#
+# Le maillage est constitue des :
+#  - mailles "solides" MA1 et MA2 
+#  - mailles de bords AB, CD et EF.
+# On bloque AB et on impose une pression SIXX= p=1.E8 (TRACTION) sur le cote CD
+# 
+# L'etat initial est tel que la maille CD est mal orientee, il faut donc la 
+# reoriente avec MODI_MAILLAGE et ORIE_PEAU_2D/GROUP_MA_SURF
+#
+mail2D = LIRE_MAILLAGE (INFO=2) ;
+
+mail2D=MODI_MAILLAGE(reuse=mail2D,
+                 MAILLAGE=mail2D,
+                 ORIE_PEAU_2D=_F(GROUP_MA=('CD'),
+                                 GROUP_MA_SURF=('MA1'),),)  
+
+chmat2D=AFFE_MATERIAU(MAILLAGE=mail2D,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=acier,),);
+
+mo2D=AFFE_MODELE(MAILLAGE=mail2D,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='C_PLAN',),);
+
+
+clim2D=AFFE_CHAR_MECA(MODELE=mo2D,
+                    DDL_IMPO=_F(GROUP_NO=('AB',),
+                                DX=0.,DY=0.,),);
+
+# On ajoute VERI_NORM='NON' pour annuler la verification de la normale
+
+pres2D=AFFE_CHAR_MECA(MODELE=mo2D,VERI_NORM='NON',
+                      PRES_REP=_F(GROUP_MA=('CD',),
+                      PRES=-1.E8),);
+
+resu2D=MECA_STATIQUE(
+                   MODELE=mo2D,
+                   CHAM_MATER=chmat2D,
+                   EXCIT=(_F(CHARGE=pres2D,),
+                        _F(CHARGE=clim2D,),),);
+
+resu2D=CALC_ELEM(OPTION='SIGM_ELNO_DEPL',
+                 RESULTAT=resu2D,reuse=resu2D,
+                 )
+
+# On verifie que :
+#  - le deplacement est positif et egal = 0.00142857 aux noeuds C et D.
+#  - la contrainte SIXX dans la maille MA1 est positive et egale a 1.E8.
+
+TEST_RESU(RESU=_F(RESULTAT=resu2D,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='C',
+                  VALE=1.42857E-03,
+                  REFERENCE='ANALYTIQUE',),)
+
+TEST_RESU(RESU=_F(RESULTAT=resu2D,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIGM_ELNO_DEPL',
+                  MAILLE ='MA1',
+                  NOM_CMP='SIXX',
+                  NOEUD='C',
+                  VALE=1.E8,
+                  REFERENCE='ANALYTIQUE',),)
+
+IMPR_RESU(RESU=_F(RESULTAT=resu2D))
+
+
+
+# 2 - VALIDATION DE ORIE_PEAU_3D/GROUP_MA_VOLU
+# --------------------------------------------
+#
+#            A1          C1            E1
+#             --------------------------
+#        z   /.          /.           /|
+#        ^  / .         / .          / |
+#        . /  .        /  .         /  |    
+#      B1./   .     D1/   .      F1/   |
+#        |-----------|------------|    |
+#        |   A.      |   C.       |   E|
+#        |   ........|............|.../
+#        |  .  MA1   |  .  MA2    |  /
+#        | .         | .          | /
+#        |.          |.           |/
+#        |-----------|------------|.....> x
+#        B           D            F
+
+## Le maillage est constitue des :
+#  - mailles "solides" MA1 et MA2 
+#  - mailles de bords M1 (A,B,B1,A1), M2 (C,D,D1,C1) et M3 (E,F,F1,E1).
+# On la face (A,B,B1,A1) et on impose une pression SIXX= p=1.E8 (TRACTION)
+# la face (C,D,D1,C1)
+# 
+# L'etat initial est tel que la maille M2 est mal orientee il faut donc la 
+# reoriente avec MODI_MAILLAGE et ORIE_PEAU_3D/GROUP_MA_VOLU
+#
+
+mail3D = LIRE_MAILLAGE (UNITE=21,INFO=2) ;
+
+mail3D=MODI_MAILLAGE(reuse=mail3D,
+                 MAILLAGE=mail3D,
+                 ORIE_PEAU_3D=_F(GROUP_MA=('M2'),
+                                 GROUP_MA_VOLU=('MA1'),),)  
+
+chmat3D=AFFE_MATERIAU(MAILLAGE=mail3D,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=acier,),);
+
+mo3D=AFFE_MODELE(MAILLAGE=mail3D,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),);
+
+clim3D=AFFE_CHAR_MECA(MODELE=mo3D,
+                    DDL_IMPO=_F(GROUP_MA=('M1',),
+                                DX=0.,DY=0.,DZ=0.),);
+
+# On ajoute VERI_NORM='NON' pour annuler la verification de la normale
+
+pres3D=AFFE_CHAR_MECA(MODELE=mo3D,VERI_NORM='NON',
+                      PRES_REP=_F(GROUP_MA=('M2',),
+                      PRES=-1.E8),);
+
+resu3D=MECA_STATIQUE(
+                   MODELE=mo3D,
+                   CHAM_MATER=chmat3D,
+                   EXCIT=(_F(CHARGE=pres3D,),
+                        _F(CHARGE=clim3D,),),);
+
+resu3D=CALC_ELEM(OPTION='SIGM_ELNO_DEPL',
+                 RESULTAT=resu3D,reuse=resu3D,
+                 )
+
+# On verifie que :
+#  - le deplacement est positif et egal = 0.00142857 aux noeuds C,D
+#  - la contrainte SIXX, dans la maille MA1, est positive et egale a 1.E8
+
+TEST_RESU(RESU=_F(RESULTAT=resu3D,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='C',
+                  VALE=1.42857E-03,
+                  REFERENCE='ANALYTIQUE',),)
+
+TEST_RESU(RESU=_F(RESULTAT=resu3D,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIGM_ELNO_DEPL',
+                  MAILLE ='MA1',
+                  NOM_CMP='SIXX',
+                  NOEUD='C',
+                  VALE=1.E8,
+                  REFERENCE='ANALYTIQUE',),)
+
+IMPR_RESU(RESU=_F(RESULTAT=resu3D))
+
+
+FIN();

@@ -1,7 +1,7 @@
       REAL*8 FUNCTION DIINST(SDDISC,NUMINS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  SDDISC : SD DISCRETISATION
+C IN  SDDISC : SD DISCRETISATION LOCALE OU 
 C IN  NUMINS : NUMERO D'INSTANTS
 C OUT DIINST : VALEUR DE L'INSTANT
 C
@@ -57,24 +57,32 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      JTEMPS
+      INTEGER      JINST
       CHARACTER*24 TPSDIT
+      CHARACTER*16  TYPECO         
 C      
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+      IF (NUMINS.LT.0) CALL ASSERT(.FALSE.)
+
+      CALL GETTCO(SDDISC, TYPECO)
+
 C --- ACCES SD LISTE D'INSTANTS
-C    
-      TPSDIT = SDDISC(1:19)//'.DITR' 
-      CALL JEVEUO(TPSDIT,'L',JTEMPS)  
-      IF (NUMINS.LT.0) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF    
+
+      IF (TYPECO.EQ.'LISTR8_SDASTER') THEN
+         CALL JEVEUO(SDDISC(1:19)//'.VALE','L',JINST)
+      ELSEIF  (TYPECO.EQ.'LIST_INST') THEN 
+         CALL JEVEUO(SDDISC(1:8)//'.LIST.DITR','L',JINST)
+      ELSE
+        TPSDIT = SDDISC(1:19)//'.DITR' 
+        CALL JEVEUO(TPSDIT,'L',JINST)  
+      ENDIF
+ 
 C
 C --- VALEUR DE L'INSTANT
-C
-      DIINST = ZR(JTEMPS+NUMINS)
+      DIINST = ZR(JINST+NUMINS)
 C      
       CALL JEDEMA()
       END

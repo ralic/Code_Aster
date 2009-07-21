@@ -1,5 +1,6 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
+# ssnl134a.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,9 +111,7 @@ RESO2=STAT_NON_LINE(MODELE=MOD_TGM,
                     COMP_INCR=_F(RELATION='MULTIFIBRE',
                                  ),
                     INCREMENT=_F(LIST_INST=L_INST,
-                                 INST_FIN=tfin,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1e-6,),
+                                 INST_FIN=tfin,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     PILOTAGE=_F(TYPE='LONG_ARC',
@@ -123,7 +122,8 @@ RESO2=STAT_NON_LINE(MODELE=MOD_TGM,
                                 ETA_PILO_MAX=2.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-6,
                                    ITER_GLOB_MAXI=50,),
-                    SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+#                    SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),
+                    );
 
 ETA_PILO=RECU_FONCTION(RESULTAT=RESO2,
                     NOM_PARA_RESU='ETA_PILOTAGE',);

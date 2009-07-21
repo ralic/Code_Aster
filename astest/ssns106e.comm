@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -315,9 +315,6 @@ RESU_G = STAT_NON_LINE(
                                   ),
                       INCREMENT=_F( LIST_INST = inst1,
                                     PRECISION =1.E-1,
-                                    SUBD_METHODE='UNIFORME',
-                                    SUBD_PAS=4,
-                                    SUBD_PAS_MINI=1.E-4
                                   ),
                       EXCIT=(   
                              _F( CHARGE = COND_0, 

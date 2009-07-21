@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TP DYNAMIQUE TRANSITOIRE NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -207,11 +207,7 @@ DYNANL=DYNA_NON_LINE(MODELE=MO,
                                   TOUT='OUI',
                                   ITER_INTE_MAXI=500,
                                   ),
-                     INCREMENT=_F(LIST_INST=LINST,
-                                  SUBD_METHODE='UNIFORME',
-                                  SUBD_COEF_PAS_1=1.0,
-                                  SUBD_PAS=5,
-                                  SUBD_PAS_MINI=1e-05,),
+                     INCREMENT=_F(LIST_INST=LINST,),
                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                      NEWTON=_F(
                                MATRICE='TANGENTE',

@@ -1,5 +1,6 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
+# sdnl111e.para = tps_job 1140 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,9 +106,7 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                 ETAT_INIT=_F(VITE= VITINI),       
                 COMP_INCR=_F(RELATION='ELAS',
                              DEFORMATION='PETIT_REAC',),                
-                INCREMENT=_F(LIST_INST=L_INST,
-                             SUBD_METHODE='UNIFORME', SUBD_PAS=3,
-                             SUBD_PAS_MINI=1.E-8,),
+                INCREMENT=_F(LIST_INST=L_INST,),
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',
                                 ALPHA = -0.30, ),

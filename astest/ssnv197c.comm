@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2008   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,6 +146,10 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=( 0.0, 0.0,
                           10.0, .2));
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI =0.00001 ),)
 
 #***********************************************************************
 #    PRECONSOLIDATION ELASTIQUE JUSQU'A 200KPA
@@ -192,10 +196,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 10),
                  ARCHIVAGE =_F(LIST_INST=TEMPS1,),              
-                 INCREMENT=_F(LIST_INST = TEMPS1,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_PAS_MINI=0.00001,
+                 INCREMENT=_F(LIST_INST = DEFLIST,
                               INST_INIT=0.0,
                               INST_FIN =10.));
 

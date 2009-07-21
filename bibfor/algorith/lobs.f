@@ -1,7 +1,7 @@
-      SUBROUTINE LOBS  (SDOBSE,LISINS,INSTAP)
+      SUBROUTINE LOBS  (SDOBSE,SDDISC,INSTAP)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C
       IMPLICIT     NONE
       REAL*8       INSTAP
       CHARACTER*14 SDOBSE
-      CHARACTER*19 LISINS
+      CHARACTER*19 SDDISC
 C
 C ----------------------------------------------------------------------
 C
@@ -34,7 +34,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  LISINS : LISTE D'INSTANTS 
+C IN  SDDISC : SD DISCRETISATION TEMPORELLE
 C I/O SDOBSE : NOM DE LA SD POUR OBSERVATION
 C IN  INSTAP : INSTANT DE CALCUL 
 C
@@ -59,9 +59,10 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*19 LISOBS,INFOBS
       INTEGER      JOBSE ,JOBSI
-      INTEGER      JINST
-      REAL*8       R8PREM
+      INTEGER      JINST,IBID
+      REAL*8       R8PREM,R8B
       INTEGER      NBOBSE,NUINS0,NUOBSE,LOBSER      
+      CHARACTER*8  K8BID
 C
 C ----------------------------------------------------------------------
 C      
@@ -73,7 +74,7 @@ C
       INFOBS = SDOBSE(1:14)//'.INFO'       
       CALL JEVEUO(LISOBS,'L',JOBSE)
       CALL JEVEUO(INFOBS,'E',JOBSI) 
-      CALL JEVEUO(LISINS(1:19)//'.VALE','L',JINST)
+      CALL UTDIDT('L',SDDISC,'LIST',IBID,'JINST',R8B,JINST,K8BID)
 C
 C --- INITIALISATIONS
 C             
@@ -87,7 +88,8 @@ C
       IF (NBOBSE.NE.0) THEN         
         IF ((INSTAP+R8PREM( )).GE.ZR(JINST+NUINS0+1)) THEN
           NUINS0 = NUINS0 + 1
-          IF (ZI(JOBSE-1+NUINS0+1).EQ.1) THEN
+C          IF (ZI(JOBSE-1+NUINS0+1).EQ.1) THEN
+          IF (ZI(JOBSE-1+NUINS0).EQ.1) THEN
             LOBSER = 1
             NUOBSE = NUOBSE + 1            
           ENDIF

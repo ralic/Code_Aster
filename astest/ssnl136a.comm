@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE GRANDS DEPLACEMENTS DE L'ARC A ANGLE D'OUVERTURE 45 DEGRES
+# ssnl136a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,14 +102,13 @@ RESO=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=FORCE,
                              FONC_MULT=F_FORCE,),),
                    COMP_INCR=_F(RELATION='MULTIFIBRE'),
-                   INCREMENT=_F(LIST_INST=TEMPS,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.0E-6,),
+                   INCREMENT=_F(LIST_INST=TEMPS,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+#                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),
+                   );
 
 DEPZ=RECU_FONCTION(RESULTAT=RESO,
                    TOUT_ORDRE='OUI',

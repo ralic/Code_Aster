@@ -1,5 +1,6 @@
-# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS SOUS PRESSION ET CHARGEMENT THERMIQUE EQUIVALENT A L'AUTOFRETTAGE
+# hplp310b.para = tps_job 80 mem_job 64Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -179,9 +180,7 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
                               _F( CHARGE = CL)),
                        COMP_ELAS=_F(RELATION = 'ELAS'),
                        NEWTON=_F(MATRICE = 'ELASTIQUE'),
-                       INCREMENT=_F(LIST_INST = L_INST,
-                                    SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
-                                    SUBD_PAS_MINI = 0.000001),
+                       INCREMENT=_F(LIST_INST = L_INST,),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20),
               )

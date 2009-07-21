@@ -1,4 +1,4 @@
-# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,9 +115,6 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
 
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=2.E-05,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-30,
-                                SUBD_COEF_PAS_1=1.,
                                 ),
                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 FORMULATION='DEPLACEMENT',

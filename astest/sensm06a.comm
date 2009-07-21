@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN ELASTICITE LINEAIRE ISOTROPE
+# sensm06a.para = tps_job 60 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,10 +80,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                             FONC_MULT=F,),
                    COMP_INCR=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-4,
-                                SUBD_COEF_PAS_1=1.0,),
+                                INST_FIN=1.,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),

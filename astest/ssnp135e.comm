@@ -1,4 +1,4 @@
-# MODIF  DATE 22/06/2009   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE SIMULATION D'UNE PLAQUE TROUEE EN PLASTICITE - METHODE ARLEQUIN
 # ssnp135e.para = tps_job 110 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -424,10 +424,7 @@ RESU=STAT_NON_LINE(reuse =RESU,
                                 GROUP_MA=('GM111','GM61',),),
                    ETAT_INIT=_F(EVOL_NOLI=RESU,),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=INSTFIN,
-                                SUBD_METHODE='UNIFORME',
-                                SUBD_PAS=4,
-                                SUBD_PAS_MINI=0.0001,),
+                                INST_FIN=INSTFIN,),
                    NEWTON=_F(PREDICTION='TANGENTE',
                              REAC_ITER=1,),
                    PILOTAGE=_F(TYPE='DDL_IMPO',

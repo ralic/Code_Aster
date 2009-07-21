@@ -1,4 +1,4 @@
-# MODIF  DATE 08/04/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,9 +179,7 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
                               _F( CHARGE = CL)),
                        COMP_ELAS=_F(RELATION = 'ELAS'),
                        NEWTON=_F(MATRICE = 'ELASTIQUE'),
-                       INCREMENT=_F(LIST_INST = L_INST,
-                                    SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
-                                    SUBD_PAS_MINI = 0.000001),
+                       INCREMENT=_F(LIST_INST = L_INST,),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20),
               )

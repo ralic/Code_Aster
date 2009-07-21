@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,9 +126,7 @@ UR = STAT_NON_LINE (
                          RESI_INTE_RELA=1.E-09,
                          ITER_INTE_MAXI=10, 
                          DEFORMATION = 'SIMO_MIEHE',),
-          INCREMENT = _F(LIST_INST = L_INST_R,
-                         SUBD_METHODE='UNIFORME', SUBD_PAS = 3,
-                         SUBD_PAS_MINI = 1.E-10,),
+          INCREMENT = _F(LIST_INST = L_INST_R,),
           ARCHIVAGE = _F(LIST_INST = L_ARCH_R,),
           NEWTON=_F(REAC_INCR=1,
                     MATRICE='TANGENTE',
@@ -171,9 +169,7 @@ UL = STAT_NON_LINE (
                          RESI_INTE_RELA=1.E-09,
                          ITER_INTE_MAXI=10, 
                          DEFORMATION = 'SIMO_MIEHE',),
-          INCREMENT = _F(LIST_INST = L_INST_L,
-                         SUBD_METHODE='UNIFORME', SUBD_PAS = 3,
-                         SUBD_PAS_MINI = 1.E-10,),
+          INCREMENT = _F(LIST_INST = L_INST_L,),
           ARCHIVAGE = _F(LIST_INST = L_ARCH_L,),
           NEWTON=_F(REAC_INCR=1,
                     MATRICE='TANGENTE',

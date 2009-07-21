@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     --- BOUCLE SUR LES POINTS DE GAUSS ---
         K = (KP-1)*NNO
         CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDK+K),ZR(IGEOM),DFDX,COUR,
      &              POIDS,NX,NY)
-        IF (NOMTE(3:4).EQ.'CX') THEN
+        IF (NOMTE.EQ.'MECXSE3') THEN
           R = ZERO
           DO 30 I = 1,NNO
             R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)
@@ -118,7 +118,7 @@ C           --- INERTIE ---
    50   CONTINUE
    60 CONTINUE
 
-      IF (NOMTE(3:4).EQ.'CX') THEN
+      IF (NOMTE.EQ.'MECXSE3') THEN
         YG = ZR(LCASTR+2)/VOLUME
         ZR(LCASTR) = DEPI*VOLUME*RM
         ZR(LCASTR+3) = YG

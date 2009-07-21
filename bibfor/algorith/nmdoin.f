@@ -1,7 +1,7 @@
        SUBROUTINE NMDOIN(EVOL  ,EVONOL,INST  ,NUME  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,11 +64,10 @@ C
       INTEGER      JINST    
       CHARACTER*24 TYPEVO  
       CHARACTER*19 LISINS
-      REAL*8       R8BID,PREC
+      REAL*8       R8BID,PREC,DIINST
       COMPLEX*16   C16BID
       CHARACTER*8  K8BID,CRITER
       INTEGER      IFM,NIV
-C      
 C ----------------------------------------------------------------------
 C      
       CALL JEMARQ()
@@ -136,12 +135,10 @@ C --- DEFINITION CHAMP PAR CHAMP (OU PAS D'ETAT INITIAL DU TOUT)
 C 
         CALL GETVR8('ETAT_INIT','INST_ETAT_INIT',1,1,1,INST,N2)
         IF (N2.EQ.0) THEN
-          CALL GETVR8('INCREMENT','INST_INIT',1,1,1,
-     &                INST     ,N3)
+          CALL GETVR8('INCREMENT','INST_INIT',1,1,1,INST,N3)
           IF (N3.EQ.0) THEN
             CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)
-            CALL JEVEUO(LISINS(1:19)//'.VALE','L',JINST)
-            INST = ZR(JINST)
+            INST = DIINST(LISINS,0)
           ENDIF
         ENDIF
         NUME = 0

@@ -1,7 +1,7 @@
       SUBROUTINE TYPTHM ( NOMTE, AXI, PERMAN, TYPMOD, NDIM )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,14 +50,7 @@ C
         TYPMOD(1) = 'AXIS    '
         NDIM      = 2
 C
-      ELSEIF ( NOMTE(6:7) .EQ.'DP' .OR.
-     >         NOMTE(7:8) .EQ.'DP' .OR.
-     >         NOMTE(4:5) .EQ.'DP' .OR.
-     >         NOMTE(5:6) .EQ.'DP' .OR.
-     >         NOMTE(6:9) .EQ.'D_PL' .OR.
-     >         NOMTE(7:10) .EQ.'D_PL' .OR.
-     >         NOMTE(4:7) .EQ.'D_PL' .OR.
-     >         NOMTE(5:8) .EQ.'D_PL') THEN
+      ELSEIF ( LTEATT(' ','D_PLAN','OUI')) THEN
         TYPMOD(1) = 'D_PLAN  '
         NDIM      = 2
 C

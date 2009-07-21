@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,14 +56,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 CH16,OPTI
       REAL*8 PGL(3,3),PGL1(3,3),PGL2(3,3),KLV(NL),KLW(NL)
       REAL*8 E, RHO
-      REAL*8 ANGARC, ANGS2, DEUX, RAD, TRIGOM, VALPAR, XL, XNU, ZERO
+      REAL*8 ANGARC, ANGS2, RAD, TRIGOM, VALPAR, XL, XNU, ZERO
       INTEGER IMATE, LMAT, LORIEN, LRCOU, LSECT, LX
       INTEGER NBPAR, NC, NNO
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','RHO','NU'/
 C     ------------------------------------------------------------------
       ZERO = 0.D0
-      DEUX = 2.D0
 C     ------------------------------------------------------------------
 
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
@@ -105,19 +104,6 @@ C     CHANGEMENT DE BASE : LOCAL -> GLOBAL
 
 C CONSITUER UNE MATRICE PLEINE A PARTIR DE LA TRIANGULAIRE SUPERIEURE
         CALL UPLETR(NDDL,ZR(LMAT),KLW)
-       
-      ELSE IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
-        CALL JEVECH('PGEOMER','L',LX)
-        LX = LX - 1
-        XL = SQRT((ZR(LX+4)-ZR(LX+1))**2+ (ZR(LX+5)-ZR(LX+2))**2+
-     &       (ZR(LX+6)-ZR(LX+3))**2)
-        CALL JEVECH('PCAARPO','L',LRCOU)
-        RAD = ZR(LRCOU)
-        ANGARC = ZR(LRCOU+1)
-        ANGS2 = TRIGOM('ASIN',XL/ (DEUX*RAD))
-        CALL MATRO2(ZR(LORIEN),ANGARC,ANGS2,PGL1,PGL2)
-        CALL CHGREP('LG',PGL1,PGL2,KLV,ZR(LMAT))
-
       ELSE
         CALL U2MESK('F','ELEMENTS2_42',1,NOMTE)
       END IF

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110c.para = tps_job 150 mem_job 192Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,11 +176,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                            _F(CHARGE=CH,),),
                     COMP_ELAS=_F(RELATION=relation,
                                  DEFORMATION='PETIT',),
-                    INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_METHODE='UNIFORME',
-                                 SUBD_COEF_PAS_1=1.0,
-                                 SUBD_PAS=2,
-                                 SUBD_PAS_MINI=1.E-5,),
+                    INCREMENT=_F(LIST_INST=L_INST,),
                     NEWTON=_F(REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,),
                     SOLVEUR=_F(METHODE='MUMPS',

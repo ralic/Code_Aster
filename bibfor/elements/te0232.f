@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
           RX = RX + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
           RY = RY + ZR(IGEOM+2*I-1)*ZR(IVF+K+I-1)
    10   CONTINUE
-        IF (NOMTE(3:4).EQ.'CX') THEN
+        IF (NOMTE.EQ.'MECXSE3') THEN
           POIDS = POIDS*RX
           DO 20 I = 1,NNO
             ZR(IVECTU+3*I-3) = ZR(IVECTU+3*I-3) +

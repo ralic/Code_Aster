@@ -2,13 +2,13 @@
      &                    INSTAM,INSTAP,
      &                    TREF,NDIM,DIMDEF,DIMCON,NVIMEC,
      &                    NVITH,YATE,ADDEME,ADCOME,ADDETE,DEFGEM,CONGEM,
-     &                    CONGEP,VINTM,VINTP,ADVIME,ADDEP1,ADDEP2,DSDE,
-     &                    DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM,DP1,DP2,
+     &                    CONGEP,VINTM,VINTP,ADDEP1,ADDEP2,DSDE,
+     &                    DEPS,DEPSV,P1,P2,T,DT,RETCOM,DP1,DP2,
      &                    SAT,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 20/07/2009   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ C ======================================================================
       IMPLICIT      NONE
       LOGICAL       MECTRU,PRE2TR
       INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,ADDEME,ADDETE,ADDEP1
-      INTEGER       ADDEP2,ADCOME,ADVIME,IMATE,YATE,RETCOM
+      INTEGER       ADDEP2,ADCOME,IMATE,YATE,RETCOM
       REAL*8        DEFGEM(1:DIMDEF),CONGEM(1:DIMCON),CONGEP(1:DIMCON)
       REAL*8        VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
       REAL*8        DSDE(1:DIMCON,1:DIMDEF)
@@ -62,28 +62,14 @@ C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER       I,J,NELAS,NRESMA,NUMLC
       REAL*8        DEPS(6),DEPSV,T,DT,TINI,P1,P2
-      REAL*8        PHI,YOUNG,NU,ALPHA0,PHI0,CRIT(*),INSTAM,INSTAP,TREF
+      REAL*8        YOUNG,NU,ALPHA0,CRIT(*),INSTAM,INSTAP,TREF
       PARAMETER (NELAS = 4  )
       PARAMETER (NRESMA = 18)
       REAL*8       ELAS(NELAS)
       CHARACTER*8  NCRA1(NELAS)
       CHARACTER*2 CODRET(NRESMA)
-C BG
-      REAL*8  XKL,XKB,BTK,ALFAD,RKB,RLA,R2G,REE,RHO
-      REAL*8  RDLADT,RD2GDT,RDEEDP,RDEEDT,RDKBDP,RDKBDT
-C
-      REAL*8  ELOAD,EUNLD,XN,RF,TM1,SUCM
-      REAL*8  ANPHI,COHES,SUCC,SUCP1,SUCP2,TEN,TENS
-      REAL*8  S1,S2,S3,SMEAN,ATMP,SUC
-      REAL*8  AP1,SR,SMAX,SM1,TRAC,AA
-      REAL*8  ET,BT,BTMAX,BTMIN,RDEEP1,RDEEP2
-      REAL*8  RDBTDT,RDBTP1,RDBTP2
-      REAL*8  RD2GP1,RD2GP2,RDLAP1,RDLAP2
-      REAL*8  DC,DF,J1,J2,J3,EV
       REAL*8  DSDEME(6,6)
-      REAL*8  ALPH0,ALPH1,ALPH2,ALPH3,XMT,RDDCDT,RDXMDT
-      REAL*8  ALPHAT,ALPHBT,ALPHCT,SY,BB,XM,TM
-      REAL*8  PP,R8BID,ANGMA1(3),ANGMAS(7)
+      REAL*8  R8BID,ANGMA1(3),ANGMAS(7)
       CHARACTER*16 COMPLG(2)
       LOGICAL         CP , YAPRE2
 C ======================================================================
@@ -210,14 +196,14 @@ C ======================================================================
 C ------                       LOI DE HUJEUX                      ------
 C ======================================================================
       IF (MECA.EQ.'HUJEUX') THEN
-      
+
         MECTRU = .TRUE.
         TINI = T - DT
 
         DO 150 I =1, 7
           ANGMAS(I)=0.D0
  150      CONTINUE
- 
+
         COMPLG(1) = 'HUJEUX'
         WRITE (COMPLG(2),'(I16)') NVIMEC
         NUMLC=34
@@ -226,7 +212,7 @@ C ======================================================================
      &             INSTAP,CP,NUMLC,TINI,T,TREF,DEFGEM(ADDEME+NDIM),DEPS,
      &             CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMAS,
      &             CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
-     
+
       ENDIF
 C --- End
 
@@ -325,9 +311,9 @@ C ======================================================================
      &                      INSTAM, INSTAP,
      &                      TINI,T, TREF,
      &                      DEPS,
-     &                      CONGEM(ADCOME), VINTM, 
+     &                      CONGEM(ADCOME), VINTM,
      &                      CONGEP(ADCOME), VINTP,
-     &                      DSDEME,RETCOM)        
+     &                      DSDEME,RETCOM)
         IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DO 252 I = 1 , 2*NDIM

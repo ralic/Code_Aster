@@ -1,6 +1,6 @@
       SUBROUTINE TE0161(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       R8MIN = R8MIEM()
 
-      IF (NOMTE(1:15).EQ.'MECA_POU_D_T_GD') THEN
+      IF (NOMTE.EQ.'MECA_POU_D_T_GD') THEN
         NDDL = 6
       ELSE
         NDDL = 3
@@ -89,7 +89,7 @@ C          ------------------------------
         CALL JEVECH('PPESANR','L',IPESA)
         CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
      &               CODRET,'FM')
-        IF (NOMTE(1:15).EQ.'MECA_POU_D_T_GD') THEN
+        IF (NOMTE.EQ.'MECA_POU_D_T_GD') THEN
           CALL JEVECH('PCAGNPO','L',LSECT)
         ELSE
           CALL JEVECH('PCACABL','L',LSECT)
@@ -114,9 +114,9 @@ C        POUR LE CAS DU VENT
           OKVENT = .TRUE.
         ELSE
           CALL JEVECH('PFR1D1D','L',IFORC)
-          IF (NOMTE(1:15).EQ.'MECA_POU_D_T_GD') THEN
+          IF (NOMTE.EQ.'MECA_POU_D_T_GD') THEN
             NORMAL = ABS(ZR(IFORC+6)) .GT. 1.001D0
-          ELSE IF (NOMTE(1:15).EQ.'MECABL2') THEN
+          ELSE IF (NOMTE.EQ.'MECABL2') THEN
             NORMAL = ABS(ZR(IFORC+3)) .GT. 1.001D0
           END IF
         END IF
@@ -127,9 +127,9 @@ C        POUR LE CAS DU VENT
 C          ------------------------------
         C1 = 1.D0
         CALL JEVECH('PFF1D1D','L',IFORC)
-        IF (NOMTE(1:15).EQ.'MECA_POU_D_T_GD') THEN
+        IF (NOMTE.EQ.'MECA_POU_D_T_GD') THEN
           NORMAL = ZK8(IFORC+6) .EQ. 'VENT'
-        ELSE IF (NOMTE(1:15).EQ.'MECABL2') THEN
+        ELSE IF (NOMTE.EQ.'MECABL2') THEN
           NORMAL = ZK8(IFORC+3) .EQ. 'VENT'
         END IF
         CALL TECACH('NNN','PTEMPSR',1,ITEMPS,IRET)

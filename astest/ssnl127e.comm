@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PLAQUE EN TRACTION - TEST CORR_ACIER EN COQUE_3D
 # ssnl127e.para = tps_job 120 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,6 +94,11 @@ CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE=_F(TOUT='OUI', MATER = MATC2,),
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR,), )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 1e-06),)
+
 REST=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT1,
                    CARA_ELEM=CAREL,
@@ -102,9 +107,7 @@ REST=STAT_NON_LINE(MODELE=MO,
                    COMP_INCR=_F(RELATION='CORR_ACIER',
                                 RESI_INTE_RELA=1e-06,
                                 ITER_INTE_MAXI=150,),
-                   INCREMENT=_F(LIST_INST=LINST,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1e-06,),
+                   INCREMENT=_F(LIST_INST=DEFLIST),
                    NEWTON=_F(REAC_INCR=1,
                              PREDICTION='ELASTIQUE',
                              MATRICE='TANGENTE',
@@ -169,6 +172,11 @@ CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE=_F(TOUT='OUI', MATER = MATC2,),
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR2,), )
 
+DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST2),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 1e-06),)
+
 REST2=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CAREL,
@@ -177,9 +185,7 @@ REST2=STAT_NON_LINE(MODELE=MO,
                     COMP_INCR=_F(RELATION='CORR_ACIER',
                                  RESI_INTE_RELA=1e-06,
                                  ITER_INTE_MAXI=15,),
-                    INCREMENT=_F(LIST_INST=LINST2,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1e-06,),
+                    INCREMENT=_F(LIST_INST=DEFLIST2),
                     NEWTON=_F(REAC_INCR=1,
                               PREDICTION='ELASTIQUE',
                               MATRICE='TANGENTE',
@@ -246,6 +252,11 @@ CHMAT3=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE=_F(TOUT='OUI', MATER = MATC2,),
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR3,), )
 
+DEFLIST3 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST3),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 1e-06),)
+
 REST3=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT3,
                     CARA_ELEM=CAREL,
@@ -254,9 +265,7 @@ REST3=STAT_NON_LINE(MODELE=MO,
                     COMP_INCR=_F(RELATION='CORR_ACIER',
                                  RESI_INTE_RELA=1e-06,
                                  ITER_INTE_MAXI=15,),
-                    INCREMENT=_F(LIST_INST=LINST3,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1e-06,),
+                    INCREMENT=_F(LIST_INST=DEFLIST3),
                     NEWTON=_F(REAC_INCR=1,
                               PREDICTION='ELASTIQUE',
                               MATRICE='TANGENTE',

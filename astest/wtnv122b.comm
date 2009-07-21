@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D
 # wtnv122b.para = tps_job 100 mem_job 300Mo mem_aster 50 ncpus 1 liste_test S
@@ -286,8 +286,6 @@ U1=STAT_NON_LINE(reuse=U1,
                          INCREMENT=_F(
                 LIST_INST = TEMPS2,
                 INST_INIT = 6.,
-                SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                SUBD_PAS_MINI=0.001,
                               ),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',

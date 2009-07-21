@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE
 # sslv303e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,9 +85,7 @@ DEF1=STAT_NON_LINE( MODELE=MODELE,
                                    FONC_MULT= RAMPE  ),
                                _F(  CHARGE = CLIM)),
                    COMP_INCR=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=INSTANTS,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=0.001,),
+                   INCREMENT=_F(LIST_INST=INSTANTS,),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
 
@@ -97,9 +95,7 @@ DEF2=STAT_NON_LINE( MODELE=MODELE,
                                    FONC_MULT= RAMPE  ),
                                _F(  CHARGE = CLIM)),
                    COMP_INCR=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=INSTANTS,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=0.001,),
+                   INCREMENT=_F(LIST_INST=INSTANTS,),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
 

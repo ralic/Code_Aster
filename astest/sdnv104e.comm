@@ -1,5 +1,6 @@
-# MODIF  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
+# sdnv104e.para = tps_job 1200 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,6 +133,10 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.5,
                                     NOMBRE=350,),)
          
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=5,
+                                 SUBD_PAS_MINI=0.0000001,),)
          
 
 #############################
@@ -147,9 +152,7 @@ UPM =  DYNA_NON_LINE(MODELE=MODE,
                            _F(CHARGE=COND_LIM,),),
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
-                                 SUBD_PAS_MINI=0.0000001,),
+                    INCREMENT=_F(LIST_INST=DEFLIST,),
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
@@ -191,9 +194,7 @@ UPL =  DYNA_NON_LINE(MODELE=MODE,
                            _F(CHARGE=COND_LIM,),),
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
-                                 SUBD_PAS_MINI=0.0000001,),
+                    INCREMENT=_F(LIST_INST=DEFLIST),
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),

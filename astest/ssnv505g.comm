@@ -1,5 +1,6 @@
-# MODIF  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
+# ssnv505g.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -157,8 +158,6 @@ ULAG=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=0.4,
-                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                             SUBD_PAS_MINI=1E-8,
                              ),
                 NEWTON=_F(REAC_ITER=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
@@ -194,8 +193,6 @@ ULAG2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=0.4,
-                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                             SUBD_PAS_MINI=1E-8,
                              ),
                 NEWTON=_F(REAC_ITER=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),

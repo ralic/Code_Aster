@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -199,9 +199,7 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                           ),
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
-                   INCREMENT=_F(LIST_INST=LINST,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=3,
-                                SUBD_PAS_MINI=1.E-3,),
+                   INCREMENT=_F(LIST_INST=LINST,),
                    SCHEMA_TEMPS=_F(FORMULATION='DEPLACEMENT',
                                    SCHEMA='HHT',
                                    ALPHA=0.0,),
@@ -233,9 +231,7 @@ RESU2=DYNA_NON_LINE(MODELE=MO,
                           ),
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
-                   INCREMENT=_F(LIST_INST=LINST,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=3,
-                                SUBD_PAS_MINI=1.E-3,),
+                   INCREMENT=_F(LIST_INST=LINST,),
                    SCHEMA_TEMPS=_F(FORMULATION='DEPLACEMENT',
                                    SCHEMA='HHT',
                                    ALPHA=0.0,),

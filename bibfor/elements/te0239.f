@@ -1,5 +1,5 @@
       SUBROUTINE TE0239(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -186,7 +186,7 @@ C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
         NU = VALRES(2)
         CISAIL = VALRES(1)/ (UN+NU)
 
-        IF (NOMTE(3:4).EQ.'CX') JACP = JACP*R
+        IF (NOMTE.EQ.'MECXSE3') JACP = JACP*R
 
         TEST = ABS(H*COUR/DEUX)
         IF (TEST.GE.UN) CORREC = ZERO
@@ -238,17 +238,17 @@ C           DE L'INSTANT PRESENT
      &                  DFDX,ZR(IDEPLP),DEPS2D,DEPSX3)
 
 C           COQUE_D_PLAN
-            IF (NOMTE(3:4).EQ.'TD') THEN
+            IF (NOMTE.EQ.'METDSE3') THEN
               EPS2D(2) = 0.D0
               DEPS2D(2) = 0.D0
               MOD=2
 C           COQUE_C_PLAN
-            ELSE IF (NOMTE(3:4).EQ.'TC') THEN
+            ELSE IF (NOMTE.EQ.'METCSE3') THEN
               EPS2D(2) = 0.D0
               DEPS2D(2) = 0.D0
               MOD=-1
 C           COQUE_AXIS
-            ELSEIF (NOMTE(3:4).EQ.'CX') THEN
+            ELSEIF (NOMTE.EQ.'MECXSE3') THEN
               MOD=1
             END IF
             
@@ -303,7 +303,7 @@ C-- CONSTRUCTION DE LA MATRICE DTD (DTILD)
 
             IF (VECTEU) THEN
 C-- CALCULS DES EFFORTS INTERIEURS : BOUCLE SUR L'EPAISSEUR
-              IF (NOMTE(3:4).EQ.'CX') THEN
+              IF (NOMTE.EQ.'MECXSE3') THEN
                 SIGTDI(1) = ZR(ICONTP-1+K1+1)/RHOS
                 SIGTDI(2) = X3*ZR(ICONTP-1+K1+1)/RHOS
                 SIGTDI(3) = ZR(ICONTP-1+K1+2)/RHOT

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -312,6 +312,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=1.0,
                                      NOMBRE=50,),),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=9.9999999999999995E-07,),)
+
 U=STAT_NON_LINE(MODELE=MODEL,
                     CHAM_MATER=CM,
                     EXCIT=(_F(CHARGE=CH1,
@@ -325,9 +330,7 @@ U=STAT_NON_LINE(MODELE=MODEL,
                                _F(RELATION='VMIS_ISOT_LINE',
                                   DEFORMATION='SIMO_MIEHE',
                                   GROUP_MA='SOLIDE',),),
-                    INCREMENT=_F(LIST_INST=L_INST,INST_FIN=0.75,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                 SUBD_PAS_MINI=9.9999999999999995E-07,),
+                    INCREMENT=_F(LIST_INST=DEFLIST,INST_FIN=0.75,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,

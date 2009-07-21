@@ -1,6 +1,6 @@
       SUBROUTINE TE0564 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,7 +131,7 @@ C
              EPS(3) = EPS(1)
            ENDIF
            DEFOPG(IDPG+3) = EPS(3)
-        ELSE IF (NOMTE(3:4) .EQ. 'CP' ) THEN
+        ELSE IF (LTEATT(' ','C_PLAN','OUI')) THEN
            DEFOPG(IDPG+3) = EPS(3)
         ELSE
            DEFOPG(IDPG+3) = 0.D0
@@ -159,7 +159,7 @@ C
         A23M = A12M
         A33M = A11M
         G12M = (1.D0+NU)/E
-        IF ( NOMTE(3:4) .EQ. 'DP' ) THEN
+        IF ( LTEATT(' ','D_PLAN','OUI') ) THEN
            A11M=A11M-A13M*A13M/A33M
            A12M=A12M-A13M*A23M/A33M
            A22M=A22M-A23M*A23M/A33M
@@ -182,7 +182,7 @@ C
         A23 = A12
         A33 = A11
         G12 = C1/2.D0
-        IF ( NOMTE(3:4) .EQ. 'CP' ) THEN
+        IF ( LTEATT(' ','C_PLAN','OUI') ) THEN
            A11=A11-A13*A13/A33
            A12=A12-A13*A23/A33
            A22=A22-A23*A23/A33

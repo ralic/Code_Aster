@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,9 +89,7 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                                 DEFORMATION='PETIT_REAC',),
                    ETAT_INIT=_F(
                    VITE=VITINI,),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=3,
-                                SUBD_PAS_MINI=1.E-8,),
+                   INCREMENT=_F(LIST_INST=L_INST,),
                    SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                    FORMULATION='DEPLACEMENT',
                                    ALPHA=-0.1,),

@@ -2,7 +2,7 @@
      &                  BASLOC,NNOP,NPG,DEPL,LSN,LST,IDECPG,IGTHET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,8 +89,8 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8   ENERGI(2),SIGL(6),PROD,PROD2,RAC2,SR(3,3),TCLA,DIVT
       CHARACTER*2  CODRET(3)
       CHARACTER*8  ELRESE(3),FAMI(3),TYPMOD(2)
-      CHARACTER*16 NOMTE,COMPOR(4),OPRUPT
-      LOGICAL  LCOUR,GRDEPL,CP
+      CHARACTER*16 COMPOR(4),OPRUPT
+      LOGICAL  LCOUR,GRDEPL,CP, LTEATT
       DATA     ELRESE /'SE2','TR3','TE4'/
       DATA     FAMI   /'BID','XINT','XINT'/
 
@@ -98,7 +98,6 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       GRDEPL=.FALSE.
       CALL TECAEL(IADZI,IAZK24)
-      NOMTE = ZK24(IAZK24-1+3+ZI(IADZI-1+2)+1)
       
       TYPMOD(2) = ' '
       CP  = .FALSE.
@@ -108,10 +107,10 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       TTHE  = 0.D0
 
 
-      IF (NOMTE(3:4).EQ.'CP') THEN
+      IF (LTEATT(' ','C_PLAN','OUI')) THEN
         TYPMOD(1) = 'C_PLAN'
         CP  = .TRUE.
-      ELSEIF (NOMTE(3:4).EQ.'DP') THEN
+      ELSEIF (LTEATT(' ','D_PLAN','OUI')) THEN
         TYPMOD(1) = 'D_PLAN'
       ENDIF
 

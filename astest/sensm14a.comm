@@ -1,4 +1,4 @@
-# MODIF  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CAVITE 2D CALCUL DE SENSIBILITE (LOI DE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,10 +195,7 @@ RES=STAT_NON_LINE(MODELE=MODEMECA,
                                ITER_INTE_MAXI=5,
                               # ITER_INTE_PAS=10,
                                ),
-                  INCREMENT=_F(LIST_INST=TEMPS,
-                               SUBD_METHODE='UNIFORME',
-                               SUBD_PAS=4,
-                               SUBD_PAS_MINI=1,),
+                  INCREMENT=_F(LIST_INST=TEMPS,),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1),
                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-09,
@@ -392,10 +389,7 @@ for i in range(n):
                                        ITER_INTE_MAXI=5,
                                        #ITER_INTE_PAS=10,
                                        ),
-                          INCREMENT=_F(LIST_INST=TEMPS,
-                                       SUBD_METHODE='UNIFORME',
-                                       SUBD_PAS=4,
-                                       SUBD_PAS_MINI=1,),
+                          INCREMENT=_F(LIST_INST=TEMPS,),
                           NEWTON=_F(MATRICE='TANGENTE',
                                     REAC_ITER=1),
                           CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
@@ -415,10 +409,7 @@ for i in range(n):
                                        ITER_INTE_MAXI=5,
                                       # ITER_INTE_PAS=10,
                                        ),
-                          INCREMENT=_F(LIST_INST=TEMPS,
-                                       SUBD_METHODE='UNIFORME',
-                                       SUBD_PAS=4,
-                                       SUBD_PAS_MINI=1,),
+                          INCREMENT=_F(LIST_INST=TEMPS,),
                           NEWTON=_F(MATRICE='TANGENTE',
                                     REAC_ITER=1),
                           CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,

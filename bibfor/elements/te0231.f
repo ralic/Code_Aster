@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/06/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ CJMP  CORREC = ZR(ICACO+2)
 
         E11 = EPS(2)*COSA - EPS(1)*SINA
         K11 = EPS(3)
-        IF (NOMTE(3:4).EQ.'CX') THEN
+        IF (NOMTE.EQ.'MECXSE3') THEN
           E22 = EPS(4)/R
           K22 = -EPS(5)*SINA/R
         ELSE
@@ -166,7 +166,7 @@ C---- COMME POUR LA LONGUEUR
             EFFOPG(6* (KP-1)+5) = EFFOPG(6* (KP-1)+5) +
      &                            ZR(IPOIDS-1+IP)*X3* (H/2.D0)*
      &                            (C* (NU*EP11+EP22)-EPSTHE)
-          ELSE IF (NOMTE(1:8).EQ.'METCSE3 ') THEN
+          ELSE IF (NOMTE.EQ.'METCSE3 ') THEN
             EFFOPG(6* (KP-1)+1) = EFFOPG(6* (KP-1)+1) +
      &                            ZR(IPOIDS-1+IP)* (H/2.D0)*
      &                            (E* (EP11-EPSTHE))

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TEST MONOCRISTAL 2D DEBORST ET 3D UTILISANT SIMU_PONT_MAT
 # comp002j.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,6 +178,12 @@ for i in range(Ncal):
                                  _F(JUSQU_A=6.0*t_0,NOMBRE=N_pas[i],),
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N_pas[i],),
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N_pas[i],),),);
+
+        DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
+                                ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                         SUBD_PAS=10,
+                                         SUBD_NIVEAU=2,),)
+
 #       Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,
@@ -193,13 +199,15 @@ for i in range(Ncal):
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
                    ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=temps,
-                   SUBD_METHODE='UNIFORME',SUBD_PAS=10,SUBD_NIVEAU=2),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
+#                   SUBD_METHODE='UNIFORME',SUBD_PAS=10,SUBD_NIVEAU=2
+                                ),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0],EPYY=eps_def[1],EPXY=eps_def[2],),
                         );
         # On renomme les composantes en fonction de  l'ordre de discretisation
         R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
         DETRUIRE(CONCEPT=_F(NOM=temps))
+        DETRUIRE(CONCEPT=_F(NOM=DEFLIST))
         
 # TEST_RESU sur les erreurs relatives 
 TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_para)
@@ -242,6 +250,12 @@ for i in range(Ncal):
                                  _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+
+        DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
+                                ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                         SUBD_PAS=10,
+                                         SUBD_NIVEAU=2,),)
+
 #       Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,
@@ -255,12 +269,13 @@ for i in range(Ncal):
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
                    ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=temps,
-                   SUBD_METHODE='UNIFORME',SUBD_PAS=10,SUBD_NIVEAU=2),
+                   INCREMENT=_F(LIST_INST=DEFLIST),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
                                   EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
                         );                        
         DETRUIRE(CONCEPT=_F(NOM=temps))
+        DETRUIRE(CONCEPT=_F(NOM=DEFLIST))
+
 # On renomme les composantes en fonction de  l'ordre de discretisation
         R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
         
@@ -280,6 +295,11 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = Linst,),
+                                ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                         SUBD_PAS=10,
+                                         SUBD_NIVEAU=2,),)
+
 RESU_TGT=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,                
                                 TYPE_MATR_TANG='VERIFICATION',
@@ -293,8 +313,7 @@ RESU_TGT=SIMU_POINT_MAT(
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[1],  
-                   INCREMENT=_F(LIST_INST=Linst,
-                   SUBD_METHODE='UNIFORME',SUBD_PAS=10,SUBD_NIVEAU=2),
+                   INCREMENT=_F(LIST_INST=DEFLIST,),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
                                   EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
                         );

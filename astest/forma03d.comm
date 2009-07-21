@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TP FORMATION NON LINEAIRE. RECALAGE PARAMETRES PUIS CALCUL PLAQUE TROUEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -230,9 +230,10 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
                      ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
                      INCREMENT=_F(LIST_INST=L_INST,
                                   INST_FIN=TFIN,
-                                  SUBD_METHODE='EXTRAPOLE',
-                                  SUBD_PAS=2,
-                                  SUBD_NIVEAU=20,),
+#                                  SUBD_METHODE='EXTRAPOLE',
+#                                  SUBD_PAS=2,
+#                                  SUBD_NIVEAU=20,
+                                   ),
                      NEWTON=_F(REAC_ITER=1,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,),
                      ARCHIVAGE=_F(LIST_INST=L_INST,),);

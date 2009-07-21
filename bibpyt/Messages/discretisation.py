@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF discretisation Messages  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,12 +27,17 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
  que le pas de temps minimal renseigné (SUBD_PAS_MINI)
 """),
 
-2 : _("""
- il faut donner SUBD_NIVEAU et/ou SUBD_PAS_MINI
-"""),
-
 3 : _("""
  le nombre de subdivisions du pas de temps doit etre plus grand que 1 (SUBD_PAS)
+"""),
+
+4 : _("""
+ Avec une gestion automatique de la liste d'instants, la notion de NIVEAU de subdivisions est ignorée.
+"""),
+
+5 : _("""
+ L'adaptation du pas de temps a été désactivée. Seuls les instants définis par LIST_INST seront calculés
+ (hormis les sous-découpages éventuels).
 """),
 
 6 : _("""
@@ -53,6 +58,23 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
    Renseignez la discrétisation temporelle par le mot clé INCREMENT
 """),
 
+
+10 : _("""
+ On ne peut définir qu'une seule occurence de ECHEC/EVENEMENT='DIVERGENCE'.
+"""),
+
+11 : _("""
+ La valeur du pas de temps retenu (%(r1)s) est inférieure à PAS_MINI.
+"""),
+
+12 : _("""
+ La valeur du pas de temps retenu (%(r1)s) est supérieure à PAS_MAXI.
+"""),
+
+13 : _("""
+ On a depassé le nombre maximal de pas de temps autorisé.
+"""),
+
 86 : _("""
 Il n'y a aucun pas de calcul temporel.
 En mécanique, 'LIST_INST' est absent.
@@ -60,7 +82,7 @@ En thermique, 'LIST_INST' est absent ou un singleton.
 """),
 
 87 : _("""
-La liste d'instants n'est pas croissante.
+La liste d'instants n'est pas strictement croissante.
 """),
 
 89 : _("""
@@ -80,7 +102,7 @@ Instant final introuvable dans la liste d'instants (LIST_INST).
 """),
 
 94 : _("""
-  -> Le numéro d'ordre correspondant à l'instant final de calcul NUME_INST_FIN
+  -> Le numto d'ordre correspondant à l'instant final de calcul NUME_INST_FIN
      n'appartient pas à la liste des numéros d'ordre.
      Dans ce cas, Aster considère pour numéro d'ordre final, le dernier de
      la liste fournie.

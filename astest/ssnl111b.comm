@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -420,9 +420,7 @@ U=STAT_NON_LINE(
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_INIT = 0,
-                NUME_INST_FIN = 6,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
-                SUBD_PAS_MINI = 0.001),
+                NUME_INST_FIN = 6,),
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE',
                 REAC_INCR = 1,

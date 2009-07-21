@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
+# ssnv505a.para = tps_job 960 mem_job 300Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,8 +137,6 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                              GROUP_MA='STRUCT',),
                 INCREMENT=_F(LIST_INST=LINST,
                              INST_FIN=0.8,
-                             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                             SUBD_PAS_MINI=1E-5,
                              ),
                 NEWTON=_F(REAC_ITER=1,
                           ),

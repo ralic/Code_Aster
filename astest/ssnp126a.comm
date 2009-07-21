@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE cas test de validation de la loi de comportement JOINT_BA
 # ssnp126a.para = tps_job 130 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,9 +128,7 @@ U=STAT_NON_LINE(
              MAILLE = 'CUBE',),
           ),               
   INCREMENT  = _F(LIST_INST = L_INST,
-                  INST_FIN = 30.,
-                  SUBD_METHODE='UNIFORME', SUBD_PAS=5,
-                  SUBD_PAS_MINI=0.0001),
+                  INST_FIN = 30.,),
   NEWTON     = _F(MATRICE = 'TANGENTE',
                   PAS_MINI_ELAS = 0.0001,
                   REAC_ITER=1),

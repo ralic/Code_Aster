@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,14 +134,8 @@ C     * NNOS  = NOMBRE DE NOEUDS SOMMETS
 C     * NPG   = NOMBRE DE POINTS D'INTEGRATION
 C     * NBSIG = NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C     ---------------------------------------------------
-C      ELREFA = (NDIM.EQ.3) .AND. (NOMTE(3:4).NE.'FO')
-C      IF (ELREFA) THEN
-        FAMI = 'RIGI'
-        CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-C      ELSE
-C        NNO = NBNOEU(' ')
-C        NNOS = NBNOSO(NOMTE)
-C      END IF
+      FAMI = 'RIGI'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       NBSIG = NBSIGM()
 C
       DO 10 I = 1, MXCMEL

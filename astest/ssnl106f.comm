@@ -1,6 +1,7 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
+# ssnl106f.para = tps_job 140 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -283,9 +284,7 @@ RESM=STAT_NON_LINE(MODELE=MO,
                               _F(RELATION='ELAS',
                                  GROUP_MA=('POU2','POU1',),),),
                    INCREMENT=_F(LIST_INST=LINSR,
-                                INST_FIN=2.7999999999999998,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=2,
-                                SUBD_PAS_MINI=1.E-2,),
+                                INST_FIN=2.7999999999999998,),
                    NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                    

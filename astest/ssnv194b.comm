@@ -1,6 +1,6 @@
-# MODIF  DATE 20/10/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, ACIER BAINITIQUE
-# ssnv194b.para = tps_job 600 mem_job 60Mo ncpus 1 liste_test S
+# ssnv194b.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,10 +136,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,
                                TYPE_CHARGE='FIXE_CSTE',),),
-                       INCREMENT=(_F(LIST_INST=LINST,
-                       SUBD_METHODE='EXTRAPOLE',
-                       SUBD_PAS=4,
-                       SUBD_NIVEAU=5),),
+                       INCREMENT=(_F(LIST_INST=LINST,),),
                     COMP_INCR=(_F(RELATION='POLYCRISTAL',
                                   COMPOR=COMPORP,
                                   DEFORMATION='PETIT',

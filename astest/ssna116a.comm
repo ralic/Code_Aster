@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE HOEK_BROWN
+# ssna116a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #      CAS PARTICULIER D UNE DEFORMATION VOLUMIQUE PLASTIQUE CONSTANTE
+# ssna116a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 #   HOEK-BROWN MODIFIE POUR UN OCNFINEMENT DE 5 MPA
@@ -193,8 +195,6 @@ U2=STAT_NON_LINE(
                 VARI = VAR_INI),
                          INCREMENT=_F(
                 LIST_INST = TEMPS2,
-                SUBD_METHODE='UNIFORME', SUBD_PAS  = 2,
-                SUBD_PAS_MINI = 1.E-8,
                 INST_FIN=4.5),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',

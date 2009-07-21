@@ -1,4 +1,4 @@
-# MODIF  DATE 09/06/2009   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX 
 # wtnv133a.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test S
@@ -263,9 +263,6 @@ U1=STAT_NON_LINE(MODELE=MODELE,INFO=1,
                                 ITER_GLOB_MAXI = 20),
                  ARCHIVAGE=_F(LIST_INST    = TEMPS1,),
                  INCREMENT=_F(LIST_INST    = TEMPS1,
-                              SUBD_METHODE = 'UNIFORME',
-                              SUBD_PAS     = 10,
-                              SUBD_PAS_MINI= 0.0001,
                               INST_INIT    = 0.0,
                               
                               INST_FIN     = 10.,

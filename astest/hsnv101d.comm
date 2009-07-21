@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -267,6 +267,11 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
              )
            )
 
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
+                        ECHEC=_F(SUBD_PAS=2,
+                                 SUBD_COEF_PAS_1=0.1,
+                                 SUBD_PAS_MINI = 0.10E-02 ),)
+
 U=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM2,
@@ -277,11 +282,13 @@ U=STAT_NON_LINE(
                 RELATION = 'META_P_CL',
                 RELATION_KIT = ('ACIER',)),
                          INCREMENT=_F(
-                LIST_INST = L_INST,
+                LIST_INST = DEFLIST,
 #                INST_FIN = 176.,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 2 ,
-                SUBD_PAS_MINI = 0.10E-02 ,
-                SUBD_COEF_PAS_1 = 0.10),
+#                SUBD_METHODE='UNIFORME',
+#                SUBD_PAS = 2 ,
+#                SUBD_PAS_MINI = 0.10E-02 ,
+#                SUBD_COEF_PAS_1 = 0.10
+),
 
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',

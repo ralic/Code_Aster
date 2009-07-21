@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,25 +128,10 @@ C--------------------------------------------------------------------
      &              JGANO)
 
 C INITIALISATION DIMENSION DE L'ESPACE DE TRAVAIL/LLUMPE OU PAS
-      NOMT3 = NOMTE(5:7)
-      IF ((NOMT3.EQ.'TR3') .OR. (NOMT3.EQ.'QU4') .OR.
-     &    (NOMT3.EQ.'TR6') .OR. (NOMT3.EQ.'QU8') .OR.
-     &    (NOMT3.EQ.'QU9')) THEN
-        L2D = .TRUE.
-        LLUMPE = .FALSE.
-      ELSE IF ((NOMT3.EQ.'TL3') .OR. (NOMT3.EQ.'QL4') .OR.
-     &         (NOMT3.EQ.'TL6') .OR. (NOMT3.EQ.'QL8') .OR.
-     &         (NOMT3.EQ.'QL9')) THEN
-        L2D = .TRUE.
-        LLUMPE = .TRUE.
-      ELSE
-        L2D = .FALSE.
-        IF (NOMTE(12:13).NE.'_D' .AND. NOMTE(11:12).NE.'_D') THEN
-          LLUMPE = .FALSE.
-        ELSE
-          LLUMPE = .TRUE.
-        END IF
-      END IF
+      LLUMPE = .FALSE.
+      IF(LTEATT(' ','LUMPE','OUI')) LLUMPE = .TRUE.
+      L2D = .TRUE.
+      IF(LTEATT(' ','DIM_TOPO_MAILLE','X3')) L2D = .FALSE.
 
 C INIT. GENERALES (PARAM NUMERIQUE, INTERPOLATION, FLAG SI AXI...)
       PREC = R8PREM()

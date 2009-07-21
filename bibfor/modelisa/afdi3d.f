@@ -1,14 +1,14 @@
       SUBROUTINE AFDI3D(IREP,ETA,CAR,VAL,JDC,JDV,IVR,IV,
      &                  KMA,NCMP,NTP,JDCINF,JDVINF,ISYM,IFM)
       IMPLICIT   NONE
-      INTEGER       IREP,JDV(3),JDC(3),IVR(*),IV,NCMP,NTP,IFM
-      INTEGER       ISYM,JDCINF,JDVINF
-      REAL*8        ETA,VAL(*)
-      CHARACTER*1   KMA(3)
-      CHARACTER*9   CAR
+      INTEGER        IREP,JDV(3),JDC(3),IVR(*),IV,NCMP,NTP,IFM
+      INTEGER        ISYM,JDCINF,JDVINF
+      REAL*8         ETA,VAL(*)
+      CHARACTER*1    KMA(3)
+      CHARACTER*(*)  CAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 20/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,10 +85,7 @@ C =====================================================================
             LOGTHM  = .TRUE.
             IF ( LTEATT(' ','AXIS','OUI') )THEN
                MOD(1:4) = 'AXIS'
-            ELSE IF ( NOMTE(6:7) .EQ.'DP' .OR.
-     &                NOMTE(7:8) .EQ.'DP' .OR.
-     &                NOMTE(4:5) .EQ.'DP' .OR.
-     &                NOMTE(5:6) .EQ.'DP'      )THEN
+            ELSE IF ( LTEATT(' ','D_PLAN','OUI'))THEN
                MOD(1:6) = 'D_PLAN'
             ELSE
 C =====================================================================

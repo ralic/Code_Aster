@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/08/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -161,6 +161,10 @@ LIS_INST=DEFI_LIST_REEL(       DEBUT=0.0,INTERVALLE=(
                            _F( JUSQU_A = 1.5052102, NOMBRE = 20),)
                            )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LIS_INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 0.00000001),)
 #
 RESULT=STAT_NON_LINE(       MODELE=MO,
                           CHAM_MATER=CHMAT,
@@ -172,12 +176,9 @@ RESULT=STAT_NON_LINE(       MODELE=MO,
                                       FONC_MULT = F_PERT)),
                            COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'GREEN_GR',),
-                           INCREMENT=_F( LIST_INST = LIS_INST,
-                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                     SUBD_PAS_MINI=0.00000001,
+                           INCREMENT=_F( LIST_INST = DEFLIST,
                                       NUME_INST_FIN = 11),
-                            SOLVEUR=_F( STOP_SINGULIER='DECOUPE',
-                                         SYME='OUI',),
+                            SOLVEUR=_F( SYME='OUI',),
                               NEWTON=_F( REAC_ITER = 1,
                                       MATRICE = 'TANGENTE',
                                       PREDICTION='ELASTIQUE',),
@@ -197,13 +198,10 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                                       TYPE_CHARGE = 'FIXE_PILO')),
                            COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'GREEN_GR',),
-                           INCREMENT=_F( LIST_INST = LIS_INST,
+                           INCREMENT=_F( LIST_INST = DEFLIST,
                                       NUME_INST_INIT = 11, 
-                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                     SUBD_PAS_MINI=0.00000001,
                                      NUME_INST_FIN = 151),
-                            SOLVEUR=_F( STOP_SINGULIER='DECOUPE',
-                                         SYME='OUI',),
+                            SOLVEUR=_F(  SYME='OUI',),
                               NEWTON=_F( REAC_ITER = 1,
                                       MATRICE = 'TANGENTE',
                                       PREDICTION='ELASTIQUE',),

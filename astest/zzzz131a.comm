@@ -1,4 +1,4 @@
-# MODIF  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,7 +113,7 @@ RESU1=STAT_NON_LINE(
                                     RESO_INTE = 'RUNGE_KUTTA_4',
                                     ITER_INTE_MAXI = 500)),
                          INCREMENT=_F( LIST_INST =
-                         LINST1,SUBD_METHODE='AUCUNE'),
+                         LINST1,),
                             NEWTON=_F( MATRICE = 'TANGENTE',
                                     REAC_ITER = 1),
               )
@@ -320,7 +320,7 @@ RESU2=STAT_NON_LINE(
                                     ITER_INTE_MAXI = 500,
                                     GROUP_MA = 'POU3')),
                          INCREMENT=_F( LIST_INST = LINST2,
-                         SUBD_METHODE='AUCUNE'),
+                         ),
                             NEWTON=_F( MATRICE = 'ELASTIQUE'),
                        CONVERGENCE=_F(ARRET = 'NON')
 

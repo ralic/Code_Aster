@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CHAUFFAGE D UN MILIEU POREUX SANS AIR
 # wtnp107a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -315,6 +315,11 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                            VALE=(0.0,0.0,0.0,10,0.0,0.0,0.0,2307539.,0.0,0.0,0.0,),),);
 #---------------------------------------------------------------------
 
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INST1),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=2,
+                                 SUBD_PAS_MINI=5.,),)
+
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(_F(CHARGE=CALDEP,),
@@ -325,9 +330,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                   ),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
-                 INCREMENT=_F(LIST_INST=INST1,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS=2,
-                              SUBD_PAS_MINI=5,
+                 INCREMENT=_F(LIST_INST=DEFLIST1,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),

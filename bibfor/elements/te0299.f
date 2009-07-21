@@ -1,6 +1,6 @@
        SUBROUTINE TE0299(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,7 +243,8 @@ C
         NU    = VALRES(2)
         CFORM  = (1.D0+NU)/(SQRT(DEPI)*E)
         C3 = E/(2.D0*(1.D0+NU))
-        IF ( NOMTE(3:4) .EQ. 'DP'.OR. LTEATT(' ','AXIS','OUI') ) THEN
+        IF ( LTEATT(' ','D_PLAN','OUI').OR. 
+     &       LTEATT(' ','AXIS','OUI') ) THEN
           C1 = E*(1.D0-NU)/((1.D0+NU)*(1.D0-2.D0*NU))
           C2 = NU/(1.D0-NU)*C1
           CK = 3.D0-4.D0*NU

@@ -1,7 +1,7 @@
       SUBROUTINE TE0599 ( OPTION , NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,11 +72,11 @@ C
       INTEGER            NNO, NPG, NSE, ISE, NNOP2, C(6,9)
       INTEGER            KP, I, J, K, IDEB, IFIN
       INTEGER            ISOUR
-      INTEGER            ITHETA
+      INTEGER            ITHETA, IBID
 C
       LOGICAL THTNUL
       LOGICAL AXI,LTEATT
-      CHARACTER*8        ELREFE
+      CHARACTER*8        ELREFE,ALIAS8
 C     -----------------------------------------------------------------
 C====
 C 1. INITIALISATIONS ET CONTROLE DE LA NULLITE DE THETA
@@ -85,8 +85,12 @@ C
       EPSI = R8PREM ()
 C
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
-      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
+C
+      IF ( LTEATT(' ','LUMPE','OUI')) THEN
+         CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
+         IF(ALIAS8(6:8).EQ.'QU9')  ELREFE='QU4'
+         IF(ALIAS8(6:8).EQ.'TR6')  ELREFE='TR3'
+      ENDIF
 C
       CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &            JGANO)

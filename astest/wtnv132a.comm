@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -239,6 +239,14 @@ SIEF=CREA_CHAMP(INFO=1,
                         NOM_CMP=('SIXX','SIYY','SIZZ'),
                         VALE=(P0,P0,P0)));
 
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_NIVEAU=10,),)
+
+
+
 # Pas d'Initialisation des contraintes
 # Mise en place de la premiere couche et de la seconde couche simultanement = 1ere couche
 # Etat initail du pb hydraulique
@@ -259,12 +267,9 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1])),
-                 INCREMENT=_F(LIST_INST=TEMPS,
+                 INCREMENT=_F(LIST_INST=DEFLIST,
                               INST_INIT=0,
-                              INST_FIN=2000000.0,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_NIVEAU=5,),
+                              INST_FIN=2000000.0,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=20));
@@ -536,12 +541,9 @@ for n in range(1,nbcouche-1):
                  ETAT_INIT=_F(DEPL=INIDEP,
                               SIGM=INISIG,
                               VARI=INIVAR),
-                 INCREMENT=_F(LIST_INST=TEMPS,
+                 INCREMENT=_F(LIST_INST=DEFLIST,
                               INST_INIT=t_init,
-                              INST_FIN=t_fin,
-                              SUBD_METHODE='UNIFORME',
-                              SUBD_PAS=10,
-                              SUBD_NIVEAU=10),
+                              INST_FIN=t_fin,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=25,RESI_GLOB_RELA=1E-5));

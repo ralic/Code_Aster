@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
+%& MODIF TYPELEM  DATE 20/07/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,7 @@ MODE_LOCAL__
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
+    CSOURCR  = SOUR_R   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
     CPHASIN_ = VAR2_R   ELEM__         (V1       V2       V3       V4       V5       )
@@ -136,6 +137,8 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     RIGI_THER           260   IN__   NGEOMER  PGEOMER  CHARMON  PHARMON  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
+    TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
+                              OUT__  CSOURCR  PSOUR_R
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
     WEIBULL             -2    IN__   XXXXXX   XXXXXX

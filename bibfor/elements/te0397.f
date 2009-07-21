@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C-----------------------------------------------------
             FY = FY + NY*F3*ZR(IVF+L-1)
             R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+L-1)
    10     CONTINUE
-          IF (NOMTE(3:4).EQ.'CX') POIDS = POIDS*R
+          IF (NOMTE.EQ.'MECXSE3') POIDS = POIDS*R
           DO 20 I = 1,NNO
             L = (KP-1)*NNO + I
             ZR(IVECTU+NDDL* (I-1)) = ZR(IVECTU+NDDL* (I-1)) +

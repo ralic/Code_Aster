@@ -1,4 +1,4 @@
-# MODIF  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC VISC_DRUC_PRAG
 # wtnv138a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -272,8 +272,6 @@ U2=STAT_NON_LINE(
                 ),
                          INCREMENT=_F(
                 LIST_INST = TEMPS2,
-                SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                SUBD_PAS_MINI=1.E-4,
                 INST_FIN = 13000.),
                 ARCHIVAGE = _F(LIST_INST=ARCHI),
                             NEWTON=_F(

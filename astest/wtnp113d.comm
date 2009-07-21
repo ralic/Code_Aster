@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE : RESATURATION D UNE ALVEOLE TEST THH2D, 2D ,
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -333,8 +333,6 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                  RELATION = 'KIT_THH',
                  RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
                 INCREMENT=_F( LIST_INST = LI,
-                              SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                              SUBD_PAS_MINI   = 10000.  ,
                               ),
                 RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
                                   RHO_MIN = 0.3,

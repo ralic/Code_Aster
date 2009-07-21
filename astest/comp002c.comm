@@ -1,4 +1,4 @@
-# MODIF  DATE 07/07/2009   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_CIN1_CHAB
 # comp002c.para = tps_job 560 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
@@ -146,7 +146,7 @@ for i in range(Ncal):
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
                    ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=temps,SUBD_METHODE="AUCUNE",),
+                   INCREMENT=_F(LIST_INST=temps,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
                     );
@@ -192,7 +192,7 @@ RESU_TGT=SIMU_POINT_MAT(
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,PAS_MINI_ELAS=0),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[1],  
-                   INCREMENT=_F(LIST_INST=Linst,SUBD_METHODE="AUCUNE",),
+                   INCREMENT=_F(LIST_INST=Linst,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
                         );

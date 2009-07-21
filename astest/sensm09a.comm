@@ -1,6 +1,7 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (PLAST VON-MISES ISOT LINEAIRE)
+# sensm09a.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +19,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# sensm09a.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
 DEBUT(CODE=_F( NOM = 'SENSM09A',NIV_PUB_WEB='INTERNET'),
@@ -281,10 +283,7 @@ U= STAT_NON_LINE ( MODELE=MO,
                                 RESI_INTE_RELA = 1.E-8),
                    INCREMENT=_F(LIST_INST=L_INST,
 #                                INST_FIN=60.,
-                                INST_FIN=40.,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-4,
-                                SUBD_COEF_PAS_1=1.0,),
+                                INST_FIN=40.,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),
@@ -308,10 +307,7 @@ U= STAT_NON_LINE ( reuse=U,
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                 RESI_INTE_RELA = 1.E-8),
                    INCREMENT=_F(LIST_INST=L_INST2,
-                                INST_FIN=60.,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-4,
-                                SUBD_COEF_PAS_1=1.0,),
+                                INST_FIN=60.,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),

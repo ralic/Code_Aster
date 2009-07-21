@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TEST DES ELEMENTS DE JOINT 2D SUR UNE PLAQUE TROUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,6 +222,11 @@ INS_ARCH = DEFI_LIST_REEL(
     )
   )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTANTS),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+    SUBD_NIVEAU = 10,
+    SUBD_PAS_MINI = 1.55E-8),)
 
 EVOL = STAT_NON_LINE(
   MODELE = MO,
@@ -236,12 +241,8 @@ EVOL = STAT_NON_LINE(
     _F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
     _F(RELATION = 'CZM_EXP_REG', GROUP_MA = 'JOINT'  ),
     ),    
-  INCREMENT  = _F(LIST_INST = INSTANTS, 
+  INCREMENT  = _F(LIST_INST = DEFLIST, 
     INST_FIN = tfin,
-    SUBD_METHODE='UNIFORME',
-    SUBD_PAS  = 10,
-    SUBD_NIVEAU = 10,
-    SUBD_PAS_MINI = 1.55E-8
                  ),    
   PILOTAGE  = _F (
     TYPE           = 'PRED_ELAS',

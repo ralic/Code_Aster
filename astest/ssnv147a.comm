@@ -1,4 +1,4 @@
-# MODIF  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FRAGILE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,9 +124,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 RELATION = 'ENDO_FRAGILE'),
 
                 INCREMENT=_F(
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                SUBD_PAS_MINI = 1.E-6),
+                LIST_INST = L_INST,),
                PILOTAGE=_F(
                 TYPE = 'PRED_ELAS',
                 COEF_MULT = 10.,

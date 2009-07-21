@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 #  TITRE  ROTATION DES CONTRAINTES PRINCIPALES (WILLIAM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,9 +114,7 @@ RES1=STAT_NON_LINE(reuse     = RES1,
                                   RESI_INTE_RELA=1.E-6,
                                   ITER_INTE_PAS=-10),
                    INCREMENT  =_F(
-                                  LIST_INST=L_INS1,
-                                  SUBD_METHODE='UNIFORME', SUBD_PAS   = 3,
-                                  SUBD_PAS_MINI   = 0.00001),
+                                  LIST_INST=L_INS1,),
                    NEWTON     =_F(
                                   MATRICE='TANGENTE',
                                   REAC_ITER  = 1,

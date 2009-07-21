@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE EN FLEXION EN 2D AXI (PLAST VON-MISES ISOT LINEAIRE)
 # sensm11a.para = tps_job 60 mem_job 64Mo liste_test R
@@ -104,10 +104,7 @@ EVOL= STAT_NON_LINE ( MODELE=MO,
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                 RESI_INTE_RELA = 1.E-8),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=60.,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-4,
-                                SUBD_COEF_PAS_1=1.0,),
+                                INST_FIN=60.,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),

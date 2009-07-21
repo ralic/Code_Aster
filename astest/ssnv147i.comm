@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TRACTION D'UN BARREAU AVEC LOI DE COMPORTEMENT ROUSSELIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -427,9 +427,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                               _F( CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')),
                        COMP_INCR=_F(RELATION = 'ROUSSELIER',
                                     DEFORMATION = 'SIMO_MIEHE'),
-                       INCREMENT=_F(LIST_INST = L_INST,
-                                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                                    SUBD_PAS_MINI = 1.E-6),
+                       INCREMENT=_F(LIST_INST = L_INST,),
                        PILOTAGE=_F(TYPE = 'DEFORMATION',
                                   COEF_MULT = 3.E3,
                                   ETA_PILO_MIN = 0.50),

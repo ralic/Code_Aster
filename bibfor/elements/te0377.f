@@ -3,22 +3,22 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/07/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE DELMAS J.DELMAS
 C
@@ -72,7 +72,7 @@ C
       REAL*8 SIG11(3),SIG22(3),SIG12(3),DSX,DSY
       REAL*8 E,NU,VALRES(2)
 
-      CHARACTER*2 CODRET(1),FORM,FORMV,NOEU
+      CHARACTER*2 CODRET(2),FORM,FORMV,NOEU
       CHARACTER*8 TYPEMA,TYPMAV,TYPNOR,NOMRES(2)
       CHARACTER*16 PHENOM
 C
@@ -96,7 +96,7 @@ C ----------------------------------------------------------------------
 C ----- NORME CALCULEE : SEMI-H1 (H1) ou ENERGIE (NRJ) -----------------
 C ----------------------------------------------------------------------
 C
-      TYPNOR='NRJ'         
+      TYPNOR='NRJ'
 C
 C ----------------------------------------------------------------------
 C ---------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------------
@@ -104,7 +104,7 @@ C ----------------------------------------------------------------------
 C
 C ----- CALCUL DU DIAMETRE DE L'ELEMENT --------------------------------
 C
-      NIV=1 
+      NIV=1
       CALL UTHK(NOMTE,IGEOM,HE,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
 C
 C ----- CALCUL DES FORCES DE PESANTEUR ET DE ROTATION ------------------
@@ -173,7 +173,7 @@ C
 C ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE GAUSS -----------
 C
         TER1=TER1+((FORX+DSX)**2+(FORY+DSY)**2)*POIDS
-C     
+C
 C ------- CALCUL DE LA NORME DE SIGMA SUR L'ELEMENT --------------------
 C
         NORSIG=NORSIG+NOR*POIDS
@@ -187,7 +187,7 @@ C       NORME H1
 C       NORME EN ENERGIE
         TER1=(HE**2)*(SQRT(TER1))**2
       ENDIF
-C     
+C
 C ----------------------------------------------------------------------
 C ------------ FIN DU CALCUL DU PREMIER TERME DE L'ERREUR --------------
 C ----------------------------------------------------------------------
@@ -204,7 +204,7 @@ C ----- TEST SUR LE TYPE DE LA MAILLE COURANTE -------------------------
 C
       TYP=ZI(IVOIS+7)
       IATYMA=ZI(IREF1+3)
-      TYPEMA=ZK8(IATYMA-1+TYP)      
+      TYPEMA=ZK8(IATYMA-1+TYP)
 C
       FORM=TYPEMA(1:2)
       IF (FORM.EQ.'TR') THEN
@@ -229,7 +229,7 @@ C ----- TEST DU TYPE DE VOISIN -----------------------------------------
 C
         TYPV=ZI(IVOIS+7+INO)
         IF (TYPV.NE.0) THEN
-          TYPMAV=ZK8(IATYMA-1+TYPV)      
+          TYPMAV=ZK8(IATYMA-1+TYPV)
           FORMV=TYPMAV(1:2)
 C
 C ----- CALCUL DE NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
@@ -253,7 +253,7 @@ C
      &                  SG11,SG22,SG12)
 C
 C ------- CALCUL DE L'INTEGRALE SUR LE BORD ----------------------------
-C     
+C
             CALL R8INIR(3,0.D0,CHX,1)
             CALL R8INIR(3,0.D0,CHY,1)
 C
@@ -281,7 +281,7 @@ C
      &                  INST,NX,NY,TX,TY,SIG11,SIG22,SIG12,CHX,CHY)
 C
 C ------- CALCUL DE L'INTEGRALE SUR LE BORD ----------------------------
-C     
+C
             CALL INTENC(NBNA,JAC,CHX,CHY,SIG11,SIG22,SIG12,NX,NY,INTE)
 C
 C ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE NEWTON-COTES ----
@@ -309,7 +309,7 @@ C ------------ MISE EN MEMOIRE DES DIFFERENTS TERMES DE IERR -----------
 C ----------------------------------------------------------------------
 C
       IF (TYPNOR.EQ.'H1') THEN
-C        
+C
         IF (NBNA.EQ.3) THEN
           COEFF=SQRT(96.D0)
         ELSE
@@ -342,7 +342,7 @@ C
 C
         ZR(IERR+7)=ERREST
         ZR(IERR+8)=NUEST
-C      
+C
       ELSE IF (TYPNOR.EQ.'NRJ') THEN
 C
         NOMRES(1)='E'
@@ -389,7 +389,7 @@ C
       ENDIF
 C
       ZR(IERR+9)=HE
-C      
+C
       CALL JEDEMA()
 C
       END

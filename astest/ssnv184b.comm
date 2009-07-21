@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE ETUDE : ESSAI TRIAXIAL 3D AVEC LE MODELE DE HOEK-BROWN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,8 +196,6 @@ U2 = STAT_NON_LINE(
                     ETAT_INIT  = _F( SIGM           = SIG_INI,
                                      VARI           = VAR_INI),
                     INCREMENT  = _F( LIST_INST      = TEMPS2,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS  = 2,
-                                SUBD_PAS_MINI = 1.E-8,                    
                                          INST_FIN=4.8),
                     NEWTON     = _F( 
                                          MATRICE        = 'TANGENTE',

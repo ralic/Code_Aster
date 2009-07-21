@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C ==== CALCUL ISOTROPE HOMOGENE =====
 
         H = ZR(ICACO)
         AXIS = ZERO
-        IF (NOMTE(1:8).EQ.'MECXSE3 ') AXIS = UN
+        IF (NOMTE.EQ.'MECXSE3 ') AXIS = UN
 
 C     ** BOUCLE CONCERNANT LES POINTS DE GAUSS **************
 
@@ -101,7 +101,7 @@ C     ** BOUCLE CONCERNANT LES POINTS DE GAUSS **************
           DO 10 I = 1,NNO
             R = R + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
    10     CONTINUE
-          IF (NOMTE(1:8).EQ.'MECXSE3 ') JAC = JAC*R
+          IF (NOMTE.EQ.'MECXSE3 ') JAC = JAC*R
 
 C---- UTILISATION DE 4 POINTS DE GAUSS DANS L'EPAISSEUR
 C---- COMME POUR LA LONGUEUR
@@ -126,7 +126,7 @@ C---- COMME POUR LA LONGUEUR
             ENDIF
             NU = VALRES(2)
             COEF = VALRES(1)*JAC*EPSTHE*ZR(IPOIDS+IP-1)* (H/DEUX)
-            IF (NOMTE(1:8).NE.'METCSE3 ') COEF = COEF/ (UN-NU)
+            IF (NOMTE.NE.'METCSE3 ') COEF = COEF/ (UN-NU)
 
             DO 20 I = 1,NNO
               J = 3* (I-1)

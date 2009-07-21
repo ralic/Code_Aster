@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH LETK
@@ -109,6 +109,10 @@ COEF1=DEFI_FONCTION(      NOM_PARA='INST',
                                 7000.0,    5.,)
                        )
 
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_NIVEAU=5, ),)
+
 #***********************************************************************
 #    CALCUL DE LA SOLUTION
 #***********************************************************************
@@ -132,9 +136,7 @@ U1=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),
                          INCREMENT=_F( 
-                LIST_INST = TEMPS1,
-                SUBD_NIVEAU=5,
-                SUBD_METHODE='UNIFORME',),
+                LIST_INST = DEFLIST1,),
  
                 )
 
@@ -168,6 +170,10 @@ TEMPS2=DEFI_LIST_REEL(   DEBUT=7000.,
                                      _F(  JUSQU_A =12000.00,    NOMBRE = 100, ),
                                      _F(  JUSQU_A =13000.00,    NOMBRE = 100, ),
                                                         ))
+
+DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS2),
+                        ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
+                                 SUBD_NIVEAU=10, ),)
 
 ARCHI=DEFI_LIST_REEL(   DEBUT=7000.,
                          INTERVALLE=(_F(  JUSQU_A = 8000.00,   NOMBRE = 10, ),
@@ -226,9 +232,7 @@ U2=STAT_NON_LINE(
                 RELATION = 'LETK'
                               ),
                 ETAT_INIT=_F(EVOL_NOLI=U1),
-                INCREMENT=_F(LIST_INST=TEMPS2,
-                             SUBD_NIVEAU=10,
-                             SUBD_METHODE='EXTRAPOLE',
+                INCREMENT=_F(LIST_INST=DEFLIST2,
                              ),
                 NEWTON=_F(MATRICE = 'TANGENTE',
                           REAC_ITER = 1,),

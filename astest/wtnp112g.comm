@@ -1,6 +1,7 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THH2D, 2D ,
+# wtnp112g.para = tps_job 110 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -232,6 +233,11 @@ CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
                                    TEMP=0.,),);                                  
 
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LI),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=10.,),)
+
 RESU0=STAT_NON_LINE( 
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT0,
@@ -244,9 +250,7 @@ RESU0=STAT_NON_LINE(
                 COMP_INCR=_F( 
                 RELATION = 'KIT_THH',
                 RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
-                INCREMENT=_F(  LIST_INST = LI,
-                               SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                               SUBD_PAS_MINI=10.0),
+                INCREMENT=_F(  LIST_INST = DEFLIST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,),

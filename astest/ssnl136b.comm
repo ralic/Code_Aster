@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 # ssnl136b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,6 +74,10 @@ TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=1.0,
                                    NOMBRE=60,),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 1e-6),)
 RESO=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=MAT,
                    CARA_ELEM=CARA,
@@ -82,9 +86,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                              FONC_MULT=F_FORCE,),),
                    COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
                                 DEFORMATION='GREEN_GR',),
-                   INCREMENT=_F(LIST_INST=TEMPS,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.0E-6,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,

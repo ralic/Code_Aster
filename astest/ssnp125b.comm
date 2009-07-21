@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 # ssnp125b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -134,6 +134,11 @@ TEMPS=DEFI_LIST_REEL(   DEBUT=0.,
                          INTERVALLE=(
                          _F(  JUSQU_A = 2.00,        NOMBRE =  100, ),),
                     )
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI = 0.000001),)
                     
 try :
      U=STAT_NON_LINE(MODELE=MODELE,
@@ -148,9 +153,7 @@ try :
                                 RESI_INTE_RELA = 1.E-6,
                                 ITER_INTE_MAXI = 100,
                                 ITER_INTE_PAS  = -10,),
-                 INCREMENT=_F( LIST_INST = TEMPS,
-                               SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                               SUBD_PAS_MINI=0.000001,),
+                 INCREMENT=_F( LIST_INST = DEFLIST,),
                  NEWTON=_F( MATRICE = 'TANGENTE',
                             REAC_ITER = 1,),
                  ETAT_INIT   = _F( SIGM  = SIGINIT,),

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,7 +127,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
      &         OPTION.EQ.'MASS_MECA_DIAG' .OR.
      &         OPTION.EQ.'MASS_MECA_EXPLI' .OR.
      &         OPTION.EQ.'M_GAMMA') THEN
-         IF(NOMTE(1:13).NE.'MECA_POU_D_EM')THEN
+         IF(NOMTE.NE.'MECA_POU_D_EM')THEN
             CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,
      &                  NOMRES,VALRES,CODRES,'FM')
             E = VALRES(1)
@@ -171,7 +171,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
       IF (OPTION.EQ.'MASS_MECA_DIAG' .OR.
      &    OPTION.EQ.'MASS_MECA_EXPLI') KANL = 0
 
-      IF (NOMTE(1:13).EQ.'MECA_POU_D_EM') THEN
+      IF (NOMTE.EQ.'MECA_POU_D_EM') THEN
          CALL PMFMAS(NOMTE,ZI(LMATER),KANL,MLV)
       ELSE IF (NOMTE.EQ.'MECA_POU_D_TG'.OR.
      &         NOMTE.EQ.'MECA_POU_D_TGM') THEN
@@ -228,7 +228,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
             CALL MATROT(ZR(LORIEN),PGL)
             CALL UTPSLG(NNO,NC,PGL,MLV,MATV)
 
-         ELSE IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
+         ELSE IF (NOMTE.EQ.'MECA_POU_C_T') THEN
             CALL JEVECH('PCAARPO','L',LRCOU)
             RAD = ZR(LRCOU)
             ANGARC = ZR(LRCOU+1)
@@ -249,7 +249,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
      &       NOMTE(1:12).EQ.'MECA_POU_D_T') THEN
             CALL MATROT(ZR(LORIEN),PGL)
             CALL UTPSLG(NNO,NC,PGL,MLV,ZR(LMAT))
-         ELSE IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
+         ELSE IF (NOMTE.EQ.'MECA_POU_C_T') THEN
             CALL JEVECH('PGEOMER','L',LX)
             CALL JEVECH('PCAARPO','L',LRCOU)
             RAD = ZR(LRCOU)

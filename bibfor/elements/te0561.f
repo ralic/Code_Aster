@@ -1,6 +1,6 @@
       SUBROUTINE TE0561 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,7 +131,7 @@ C
             ENDIF
             DEFORP(IDPG+3) = EPSP(3)
             DEFORE(IDPG+3) = EPSE(3)
-          ELSE IF (NOMTE(3:4) .EQ. 'CP' ) THEN
+          ELSE IF (LTEATT(' ','C_PLAN','OUI')) THEN
             DEFORP(IDPG+3)   = EPSP(3)
             DEFORE(IDPG+3)   = EPSE(3)
           ELSE
@@ -146,7 +146,7 @@ C
           DEFORE(IDPG+2) =  EPSE(2)
           DEFORE(IDPG+4) = (EPSE(4)+EPSE(5))/2.D0
 C
-          IF (NOMTE(3:4) .EQ. 'CP' ) THEN
+          IF (LTEATT(' ','C_PLAN','OUI')) THEN
             TRCP = ZR(ICONTP+IDPG)+ZR(ICONTP+IDPG+1)
           ELSE
             TRCP = ZR(ICONTP+IDPG)+ZR(ICONTP+IDPG+1)+ZR(ICONTP+IDPG+2)
@@ -166,7 +166,7 @@ C
      &           - (ZR(ICONTP+IDPG+1) - TRCP/3.D0)
      &           + (DEFORE(IDPG+2) - TREL/3.D0)/C1
 C
-          IF (NOMTE(3:4) .EQ. 'CP' ) THEN
+          IF (LTEATT(' ','C_PLAN','OUI')) THEN
             DEFOPP(IDPG+3)=-999999.D0
           ELSE
             DEFOPP(IDPG+3)=

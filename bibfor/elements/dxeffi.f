@@ -5,7 +5,7 @@
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,11 +65,11 @@ C
 C
 C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 C     --------------------------------------------------------
-      IF (NOMTE(1:8).NE.'MEDKTR3 ' .AND.
-     &        NOMTE(1:8).NE.'MEDSTR3 ' .AND.
-     &        NOMTE(1:8).NE.'MEDKQU4 ' .AND.
-     &        NOMTE(1:8).NE.'MEDSQU4 ' .AND.
-     &        NOMTE(1:8).NE.'MEQ4QU4 ' ) THEN
+      IF (NOMTE.NE.'MEDKTR3 ' .AND.
+     &        NOMTE.NE.'MEDSTR3 ' .AND.
+     &        NOMTE.NE.'MEDKQU4 ' .AND.
+     &        NOMTE.NE.'MEDSQU4 ' .AND.
+     &        NOMTE.NE.'MEQ4QU4 ' ) THEN
          CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
 

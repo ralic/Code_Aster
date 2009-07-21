@@ -1,6 +1,6 @@
       SUBROUTINE TE0134 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,8 +56,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL            LTEATT
 C DEB ------------------------------------------------------------------
       CALL ELREF1(ELREFE)
-      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
-      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
 C
       CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,
      &                          IDFDE,JGANO)

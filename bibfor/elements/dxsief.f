@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,12 +77,12 @@ C
       DKT    = .FALSE.
       DKQ    = .FALSE.
 
-      IF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     &         NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
+      IF ( NOMTE.EQ.'MEDKTR3 ' .OR.
+     &         NOMTE.EQ.'MEDSTR3 ' ) THEN
         DKT = .TRUE.
-      ELSEIF ( NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     &         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     &         NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
+      ELSEIF ( NOMTE.EQ.'MEDKQU4 ' .OR.
+     &         NOMTE.EQ.'MEDSQU4 ' .OR.
+     &         NOMTE.EQ.'MEQ4QU4 ' ) THEN
         DKQ = .TRUE.
       ELSE
         CALL U2MESK('F','ELEMENTS_34',1,NOMTE)

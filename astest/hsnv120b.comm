@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TRACTION THERMIQUE HYPER-ELASTICITE NON LINEAIRE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,6 +143,11 @@ CHR_FORC=AFFE_CHAR_MECA(
                FORCE_CONTOUR=_F( MAILLE = 'MA2',  FX = 1298.)
              )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
+                        ECHEC=_F(SUBD_PAS=5,
+                                 SUBD_COEF_PAS_1=0.01,
+                                 SUBD_PAS_MINI = 0.0001,),)
+
 VL=STAT_NON_LINE( 
                             MODELE=MO,
                         CHAM_MATER=CHP_MATL,EXCIT=(
@@ -154,10 +159,11 @@ VL=STAT_NON_LINE(
                 RELATION = 'ELAS_VMIS_LINE',
                 DEFORMATION = 'GREEN'),
                          INCREMENT=_F( 
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
-                SUBD_PAS_MINI = 0.0001,
-                SUBD_COEF_PAS_1 = 0.01),
+                LIST_INST = DEFLIST,
+#                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
+#                SUBD_PAS_MINI = 0.0001,
+#                SUBD_COEF_PAS_1 = 0.01
+                                       ),
                          ARCHIVAGE=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 
@@ -181,10 +187,11 @@ VT=STAT_NON_LINE(
                 RELATION = 'ELAS_VMIS_TRAC',
                 DEFORMATION = 'GREEN'),
                          INCREMENT=_F( 
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
-                SUBD_PAS_MINI = 0.0001,
-                SUBD_COEF_PAS_1 = 0.01),
+                LIST_INST = DEFLIST,
+#                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
+#                SUBD_PAS_MINI = 0.0001,
+#                SUBD_COEF_PAS_1 = 0.01
+                                       ),
                          ARCHIVAGE=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 

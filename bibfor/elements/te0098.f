@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/09/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,17 +53,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     ------------------------------------------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-
-C NOMBRE DE COMPOSANTES DES CONTRAINTES SUPPLEMENTAIRES
-C      NCMP2 = 0
-C CMP SUPPLEMENTAIRES POUR SOSU_ARETE3 (3D_JOINT_CT)
-C ET MINC_*  INCOMPRESSIBLES
-C      IF ((NOMTE(1:2).EQ.'SO') .OR. (NOMTE(1:2).EQ.'SN')) THEN
-C        NCMP2 = 7
-C      ELSEIF (NOMTE(1:2).EQ.'MI') THEN
-C        NCMP2 = 1
-C      END IF
-
 
 C
       IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN

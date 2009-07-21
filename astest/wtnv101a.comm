@@ -1,6 +1,7 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE LAIGLE
+# wtnv101a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -242,9 +243,7 @@ U2=STAT_NON_LINE(
                 NUME_ORDRE = 1,
                 ),
                          INCREMENT=_F(
-                LIST_INST = TEMPS2,
-                SUBD_METHODE='UNIFORME', SUBD_PAS=10,
-                SUBD_PAS_MINI=1.E-4,),
+                LIST_INST = TEMPS2,),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER=1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES ROTATIONS SSNV138A
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,14 +103,13 @@ RESO=STAT_NON_LINE(MODELE=MO,
                              FONC_MULT=MOMENT_F,),),
                    COMP_INCR=_F(RELATION='MULTIFIBRE',),
                    INCREMENT=_F(LIST_INST=TEMPS,
-                                INST_FIN=tfin,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.0E-6,),
+                                INST_FIN=tfin,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+#                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),
+                   );
 
 U_CALC=RECU_FONCTION(RESULTAT=RESO,
                      TOUT_ORDRE='OUI',

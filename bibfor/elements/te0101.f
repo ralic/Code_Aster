@@ -1,6 +1,6 @@
       SUBROUTINE TE0101(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C ......................................................................
       PARAMETER (NBRES=24)
       PARAMETER (NBVAR=2)
       CHARACTER*2 CODRET(NBRES),NUM
-      CHARACTER*8 NOMRES(NBRES),NOMPAR(NBVAR)
+      CHARACTER*8 NOMRES(NBRES),NOMPAR(NBVAR),ALIAS8
       CHARACTER*16 PHENOM
       REAL*8 B(3,3),A(3,3,2,2),CONDUC,H,THETA
       REAL*8 VALRES(NBRES),AXE(3,3),ANG(2),HOM(NBRES)
@@ -44,7 +44,7 @@ C ......................................................................
       REAL*8 MATREF(3),MATELE(3)
       REAL*8 VALPAR(NBVAR),TEMPE,INSTAN
       REAL*8 RIGITH(NDIMAX,NDIMAX)
-      INTEGER IMATE,ICACOQ
+      INTEGER IMATE,ICACOQ,IBID
       INTEGER NNO,KP,NPG1,NPG2,GI,PI,GJ,PJ,K,IMATTT,NDIM,NNOS
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,JGANO,JGANO2
       INTEGER NDIM2,NNO2,NNOS2
@@ -128,9 +128,10 @@ C     ---------------------------------------
 
 C --- NOMBRE DE NOEUDS SOMMETS :
 C     ------------------------
-      IF (NOMTE(5:6).EQ.'TR') THEN
+      CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
+      IF (ALIAS8(6:7).EQ.'TR') THEN
         NBNOSO = 3
-      ELSE IF (NOMTE(5:6).EQ.'QU') THEN
+      ELSE IF (ALIAS8(6:7).EQ.'QU') THEN
         NBNOSO = 4
       END IF
 
@@ -433,7 +434,7 @@ C======================================
 
 C --- CAS DES COQUES SURFACIQUES :
 C     --------------------------
-      IF (NOMTE(1:8).NE.'THCPSE3 ' .AND. NOMTE(1:8).NE.'THCASE3 ') THEN
+      IF (NOMTE.NE.'THCPSE3 ' .AND. NOMTE.NE.'THCASE3 ') THEN
 
 C ---   CALCUL DES COORDONNEES DES CONNECTIVITES DANS LE REPERE
 C ---   DE L'ELEMENT :
@@ -536,7 +537,7 @@ C      -----------------------------------
           CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IGEOM),
      &               DFDX,COUR,POIDS,COSA,SINA)
 
-          IF (NOMTE(3:4).EQ.'CA') THEN
+          IF (NOMTE.EQ.'THCASE3') THEN
             R = ZERO
             DO 190 I = 1,NNO
               R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)
