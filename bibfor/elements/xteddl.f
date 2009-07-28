@@ -3,7 +3,7 @@
      &                  MAT,VECT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
-       INTEGER      JPOS,IER,NNODEP,ISTATU,INO,K,I,J,cpt
+       INTEGER      JPOS,IER,NNODEP,ISTATU,INO,K,I,J
        CHARACTER*8  TYENEL
        CHARACTER*19 POSDDL
        LOGICAL      LCONTX,IELIM
@@ -178,17 +178,19 @@ C     POUR LES OPTIONS CONCERNANT DES MATRICES :
 C        CALCUL DU COEFFICIENT DIAGONAL POUR
 C        L'ELIMINATION DES DDLS HEAVISIDE
         IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
+     &           OPTION.EQ.'RIGI_MECA'   .OR.
      &           OPTION.EQ.'FULL_MECA'   .OR.
      &           OPTION.EQ.'RIGI_CONT'   .OR.
-     &           OPTION.EQ.'RIGI_FROT') THEN
+     &           OPTION.EQ.'RIGI_FROT'   .OR.
+     &           OPTION.EQ.'MASS_MECA') THEN
           CALL ASSERT(MATSYM)
           DMIN=R8MAEM()
-          DMAX=0.D0
+          DMAX=-R8MAEM()
           DO 110 I = 1,NDDL
             CODIA=MAT((I-1)*I/2+I)
-            IF (ABS(CODIA).GT.DMAX) THEN
+            IF (CODIA.GT.DMAX) THEN
               DMAX=CODIA
-            ELSE IF (ABS(CODIA).LT.DMIN) THEN
+            ELSE IF (CODIA.LT.DMIN) THEN
               DMIN=CODIA
             ENDIF
  110      CONTINUE
@@ -205,9 +207,11 @@ C        MISE A ZERO DES TERMES I
         DO 200 I = 1,NDDL
           IF (ZI(JPOS-1+I).EQ.0) GOTO 200
           IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
+     &             OPTION.EQ.'RIGI_MECA'   .OR.
      &             OPTION.EQ.'FULL_MECA'   .OR.
      &             OPTION.EQ.'RIGI_CONT'   .OR.
-     &             OPTION.EQ.'RIGI_FROT') THEN
+     &             OPTION.EQ.'RIGI_FROT'   .OR.
+     &             OPTION.EQ.'MASS_MECA') THEN
             CALL ASSERT(MATSYM)
             DO 210 J = 1,NDDL
               IF (J.LT.I)  MAT((I-1)*I/2+J) = 0.D0

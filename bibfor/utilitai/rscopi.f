@@ -3,7 +3,7 @@
       CHARACTER*(*) BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 28/07/2009   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,7 @@ C     --- LE .DESC, .NOVA, .TAVA, .ORDR ---
       CALL JEDUPO(SDR1//'.NOVA',BAS2,SDR2//'.NOVA',.FALSE.)
       CALL JEDUPO(SDR1//'.TAVA',BAS2,SDR2//'.TAVA',.FALSE.)
       CALL JEDUPO(SDR1//'.ORDR',BAS2,SDR2//'.ORDR',.FALSE.)
+      CALL JEDUPO(SDR1//'.REFD',BAS2,SDR2//'.REFD',.FALSE.)
 
 C     --- LE .TACH ---
 

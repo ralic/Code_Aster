@@ -1,11 +1,11 @@
         SUBROUTINE CJSMDE ( MOD, CRIT, MATER, NVI, EPSD, DEPS,
      >                  SIGD, SIGF, VIND, VINF,
      >                  NOCONV,AREDEC,STOPNC,
-     >                  NITER,EPSCON)
+     >                  NITER,EPSCON,TRAC)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 27/07/2009   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C       ----------------------------------------------------------------
         INTEGER   NDT, NDI, NVI, NR, NMOD
         PARAMETER ( NMOD = 14 )
         INTEGER   ITER,NITER,IRET
-        LOGICAL   NOCONV,AREDEC,STOPNC
+        LOGICAL   NOCONV,AREDEC,STOPNC,TRAC
 
         REAL*8    EPSD(6), DEPS(6)
         REAL*8    SIGD(6), SIGF(6), GD(6)
@@ -78,18 +78,19 @@ C
         CHARACTER*8 MOD
 
         COMMON /TDIM/   NDT, NDI
-
-
-C     ------------------------------------------------------------------
          UMESS = IUNIFI('MESSAGE')
          NOCONV = .FALSE.
+         TRAC = .FALSE.
          PA =    MATER(12,2)
          QINIT = MATER(13,2)
+         TRAC = .FALSE.
+         
+
 
 C -> DIMENSION DU PROBLEME NR = NDT(SIG) + 1(R) + NDT(X) + 1(DLAMBD)
 
         NR = 2* NDT + 2
-
+        
 C -> MISE A ZERO DES DATAS
 
         DO 10 I =1, NR
@@ -148,6 +149,8 @@ C
 
 
         IF( (YF(1)+YF(2)+YF(3)) .GE. -QINIT ) THEN
+
+
            DO 31 I=1, NDI
              SIGF(I) = -QINIT/3.D0+PA/100.0D0
  31        CONTINUE
@@ -155,10 +158,13 @@ C
              SIGF(I) = 0.D0
  32        CONTINUE
            CALL LCEQVN ( NVI-1, VIND, VINF )
-           VINF(NVI) = 0.D0
-           GOTO 9999
-        ENDIF
 
+           
+           VINF(NVI) = 0.D0
+           TRAC = .TRUE.
+           GOTO 9999   
+        ENDIF
+        
 
 
 C -> CALCUL DU SECOND MEMBRE A T+DT :  -R(DY)
@@ -268,12 +274,12 @@ C          --  NON CONVERVENCE : ITERATION SUIVANTE  --
         ELSE
 
 C          --  NON CONVERVENCE : ITERATION MAXI ATTEINTE  --
-       IF(AREDEC.AND.STOPNC) THEN
-         CALL CJSNCV('CJSMDE',NITIMP,ITER,NDT,NVI,UMESS,
+         IF(AREDEC.AND.STOPNC) THEN
+           CALL CJSNCV('CJSMDE',NITIMP,ITER,NDT,NVI,UMESS,
      >          ERIMP,
      >          EPSD,DEPS,SIGD,VIND)
-        ELSE
-          NOCONV = .TRUE.
+         ELSE
+           NOCONV = .TRUE.
          ENDIF
         ENDIF
 

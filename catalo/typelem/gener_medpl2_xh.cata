@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -217,6 +217,10 @@ OPTION__
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    MASS_MECA           538   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  STANO_I  PSTANO
+                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
+                                     E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MMATUUR  PMATUUR
     MOY_NOEU_S          118   IN__   N1NEUT_R PNEUTR
                               OUT__  E1NEUTR  PMOYEL
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
@@ -235,8 +239,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    RIGI_MECA           81    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
-                              OUT__  MMATUUR  PMATUUR
+
     RIGI_MECA_TANG      539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC
@@ -244,6 +247,14 @@ OPTION__
                                      ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
                                      E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR
+    RIGI_MECA           539   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  STANO_I  PSTANO
+                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
+                                     E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MMATUUR  PMATUUR
+    RIGI_MECA_GE        536   IN__   NGEOMER  PGEOMER  ECONTPG  PCONTRR  STANO_I  PSTANO
+                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
+                                     E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                              OUT__  MMATUUR  PMATUUR
     SIEF_ELNO_ELGA      289   IN__   ECONTPG  PCONTRR  E18NEUI  PCNSETO  E9NEUTI  PLONCHA
                               OUT__  ECONTNO  PSIEFNOR ECONTSE  PSIEFSER
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT

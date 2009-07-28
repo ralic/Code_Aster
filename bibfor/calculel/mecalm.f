@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -659,7 +659,7 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
                 END IF
               END IF
 C=======================================================================
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
+              IF (TYSD.EQ.'FOURIER_ELAS'.OR.TYSD.EQ.'COMB_FOURIER') THEN
                 CALL RSADPA(RESUCO,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
                 CALL MEHARM(MODELE,ZI(JNMO),CHHARM)
               END IF
@@ -821,7 +821,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (IRET.GT.0) GO TO 112
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
               FREQ = UN
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
+              IF (TYSD.EQ.'FOURIER_ELAS'.OR.TYSD.EQ.'COMB_FOURIER') THEN
                 CALL RSADPA(RESUCO,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
                 CALL MEHARM(MODELE,ZI(JNMO),CHHARM)
               END IF
@@ -937,7 +937,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    IRET)
               IF (IRET.GT.0) CHVARI = ' '
               CALL RSEXC1(LERES1,OPTION,IORDR,CHEPSP)
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
+              IF (TYSD.EQ.'FOURIER_ELAS'.OR.TYSD.EQ.'COMB_FOURIER') THEN
                 CALL RSADPA(RESUCO,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
                 CALL MEHARM(MODELE,ZI(JNMO),CHHARM)
               END IF
@@ -1013,6 +1013,9 @@ C ---- VERIF SENSIBILITE FIN
      &                      OPTION,IRET)
                 IF (IRET.GT.0) GO TO 162
               ELSE IF (OPTION.EQ.'EQUI_ELGA_SIGM') THEN
+                IF (TYSD.EQ.'FOURIER_ELAS') THEN
+                    CALL U2MESK('F','CALCULEL6_83',1,OPTION)
+                END IF
                 CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                      IRET)
                 CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
@@ -1031,6 +1034,9 @@ C ---- VERIF SENSIBILITE FIN
      &                      OPTION,IRET1)
                 IF (IRET1.GT.0) GO TO 162
               ELSE IF (OPTION.EQ.'EQUI_ELNO_SIGM') THEN
+                IF (TYSD.EQ.'FOURIER_ELAS') THEN
+                    CALL U2MESK('F','CALCULEL6_83',1,OPTION)
+                END IF
                 CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,IRET1)
                 CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET2)
                 CALL RSEXCH(RESUCO,'SIGM_ELNO_COQU',IORDR,CHSIC,IRET3)
@@ -1047,6 +1053,7 @@ C
                 IF (TYSD.EQ.'EVOL_ELAS' .OR. TYSD.EQ.'DYNA_TRANS' .OR.
      &              TYSD.EQ.'MULT_ELAS' .OR. (TYSD.EQ.'MODE_MECA'.AND.
      &              TYPEMO(1:8).EQ.'MODE_DYN' )  .OR.
+     &              TYSD.EQ.'COMB_FOURIER'. OR .
      &              TYSD.EQ.'FOURIER_ELAS') THEN
 C          CHAMP D'ENTREE POUR ELEMENTS ISOPARAMETRIQUES
                   IF (IRET1.LE.0) THEN
@@ -1507,7 +1514,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(1,1,RESUCO,'VITE',IORDR,CHAMGD,OPTION,IRET)
               IF (IRET.GT.0) GO TO 252
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
+              IF (TYSD.EQ.'FOURIER_ELAS'.OR.TYSD.EQ.'COMB_FOURIER') THEN
                 CALL RSADPA(RESUCO,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
                 CALL MEHARM(MODELE,ZI(JNMO),CHHARM)
               END IF
@@ -2242,7 +2249,7 @@ C ---- VERIF SENSIBILITE FIN
                 GO TO 432
               END IF
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
+              IF (TYSD.EQ.'FOURIER_ELAS'.OR.TYSD.EQ.'COMB_FOURIER') THEN
                 CALL RSADPA(RESUCO,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
                 CALL MEHARM(MODELE,ZI(JNMO),CHHARM)
               END IF

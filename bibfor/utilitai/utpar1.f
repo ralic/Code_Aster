@@ -5,7 +5,7 @@
       CHARACTER*32 LIPARA(NBPAMX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF UTILITAI  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -286,6 +286,14 @@ C          LRIDEA.F (TEST ZZZZ165A)
 C     --------------------------------
         ICO=ICO+1
         LIPARA(ICO)='ANGL#A#R'
+        ICO=ICO+1
+        LIPARA(ICO)='MODELE#P#K8'
+        ICO=ICO+1
+        LIPARA(ICO)='CHAMPMAT#P#K8'
+        ICO=ICO+1
+        LIPARA(ICO)='CARAELEM#P#K8'
+        ICO=ICO+1
+        LIPARA(ICO)='EXCIT#P#K24'
         NBPARA=ICO
         CALL ASSERT(NBPARA.LE.NBPAMX)
 

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,9 +38,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       COMPLEX*16    CBID
-      CHARACTER*8   K8B, RESU, RESUIN
+      CHARACTER*8   K8B, RESU, RESUIN, MODELE, MATE, CARELE
       CHARACTER*16  CONCEP, NOMCMD, NSYMB
-      CHARACTER*24  NOMCH
+      CHARACTER*19  LISCHA
+      CHARACTER*24  NOMCH,NOOBJ
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -53,7 +54,6 @@ C
       CALL WKVECT('&&OP0161.NUME_ORDRE','V V I',NBORDR,JORDR)
       CALL RSORAC (RESUIN,'TOUT_ORDRE',IBID,RBID,K8B,CBID,RBID,K8B,
      &                                        ZI(JORDR),NBORDR,IBID)
-
 C
       CALL GETVTX(' ','NOM_CHAM',1,1,0,K8B,N2)
       NBCHAM = -N2
@@ -71,6 +71,7 @@ C
       CALL WKVECT('&&OP0161.TYP_CHAMP','V V K8' ,NBORDR,JTCH)
       CALL WKVECT('&&OP0161.NUM_HARMO','V V I'  ,NBORDR,JNHA)
       CALL WKVECT('&&OP0161.COEFFICIE','V V R'  ,NBORDR,JCOE)
+C
       DO 100 ICH = 1 , NBCHAM
         NSYMB = ZK16(JCHAM+ICH-1)
         K = 0
@@ -85,8 +86,34 @@ C
             CALL RSADPA ( RESUIN,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
             ZI(JNHA+K-1) = ZI(JNMO)
             ZR(JCOE+K-1) = 1.D0
+            CALL RSADPA ( RESUIN,'L',1,'MODELE',IORDR,0,JMOD,K8B)
+            MODELE = ZK8(JMOD)
+            CALL RSADPA ( RESUIN,'L',1,'CHAMPMAT',IORDR,0,JMAT,K8B)
+            MATE = ZK8(JMAT)
+            CALL RSADPA ( RESUIN,'L',1,'CARAELEM',IORDR,0,JCARA,K8B)
+            CARELE = ZK8(JCARA)
           ENDIF
  120    CONTINUE
+C
+        DO 130 IAN = 1 , NBANGL
+C      
+C     STOCKAGE DU NOM DU MODELE
+C     -------------------------
+          CALL RSADPA(RESU,'E',1,'MODELE',IAN,0,JPARA,K8B)
+          ZK8(JPARA)=MODELE
+C
+C     STOCKAGE DU NOM DU CHAMP MATERIAU
+C     ---------------------------------
+          CALL RSADPA(RESU,'E',1,'CHAMPMAT',IAN,0,JPARA,K8B)
+          ZK8(JPARA)=MATE
+C
+C     STOCKAGE DU NOM DE LA CARACTERISTIQUE ELEMENTAIRE
+C     -------------------------------------------------
+          CALL RSADPA(RESU,'E',1,'CARAELEM',IAN,0,JPARA,K8B)
+          ZK8(JPARA)=CARELE
+C
+ 130    CONTINUE
+C
         IF ( K .NE. 0 ) THEN
           DO 110 IAN = 1 , NBANGL
             CALL RSEXCH ( RESU, NSYMB, IAN, NOMCH, IRET )

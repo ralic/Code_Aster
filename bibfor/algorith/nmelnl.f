@@ -3,7 +3,7 @@
      &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -432,6 +432,7 @@ C====================================================================
 
 C - CALCUL DE LA MATRICE DE RIGIDITE TANGENTE
       IF ( OPTION(1:10) .EQ. 'RIGI_MECA_' .OR.
+     &     OPTION       .EQ. 'RIGI_MECA' .OR.
      &     OPTION(1:9)  .EQ. 'FULL_MECA' ) THEN
 
         DO 60, K=1,NDIMSI

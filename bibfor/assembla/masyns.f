@@ -1,6 +1,6 @@
       SUBROUTINE  MASYNS(MATAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 27/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE PELLET J.PELLET
       IMPLICIT NONE
 C ======================================================================
@@ -66,7 +66,7 @@ C---------------------------------------------------------------------
 
       CALL JEDUPO(MAT19//'.VALM','V','&&MASYNS.VALM',.FALSE.)
       CALL JEDETR(MAT19//'.VALM')
-      CALL COCOPG('&&MASYNS.VALM',MAT19//'.VALM',2,0,BASE)
+      CALL JEAGCO('&&MASYNS.VALM',MAT19//'.VALM',2,0,BASE)
       CALL JEDETR('&&MASYNS.VALM')
 
 

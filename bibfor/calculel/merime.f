@@ -10,7 +10,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,6 +66,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8 K8B,LPAIN(25),LPAOUT(2),STATUT,NOMRES,NOMGD,KBID
       CHARACTER*16 OPTION,NOMCMD,TYPRES
       CHARACTER*19 NOMFON,CHVARC
+      CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(25),LCHOUT(2)
       CHARACTER*24 CHGEOM,CHCARA(18),CHTEMP,CHTREF,CHHARM
       CHARACTER*24 CHCHAR,ARGU,CHTIME
@@ -113,9 +114,56 @@ C     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
       LCHOUT(1) = MATEL(1:8)//'.ME001'
       LPAOUT(2) = 'PMATUNS'
       LCHOUT(2) = MATEL(1:8)//'.ME002'
+      LIGRMO = MODELE//'.MODELE'
 
-      IF (ICODE.EQ.0) THEN
-        LIGRMO = MODELE//'.MODELE'
+C  ---VERIFICATION DE L'EXISTENCE D'UN MODELE X-FEM-------
+      CALL EXIXFE(MODELE,IER)
+
+      IF (IER.NE.0) THEN
+
+C  ---  CAS DU MODELE X-FEM-----------
+
+        ILIRES=ILIRES+1
+        PINTTO = MODELE(1:8)//'.TOPOSE.PIN'
+        CNSETO = MODELE(1:8)//'.TOPOSE.CNS'
+        HEAVTO = MODELE(1:8)//'.TOPOSE.HEA'
+        LONCHA = MODELE(1:8)//'.TOPOSE.LON'
+        BASLOC = MODELE(1:8)//'.BASLOC'
+        LSN    = MODELE(1:8)//'.LNNO'
+        LST    = MODELE(1:8)//'.LTNO'
+        STANO  = MODELE(1:8)//'.STNO'
+
+C ----- REMPLISSAGE DES CHAMPS D'ENTREE
+C
+        LPAIN(1)  = 'PGEOMER'
+        LCHIN(1)  = CHGEOM
+        LPAIN(2)  = 'PMATERC'
+        LCHIN(2)  = MATE
+        LPAIN(3) = 'PPINTTO'
+        LCHIN(3) = PINTTO
+        LPAIN(4) = 'PHEAVTO'
+        LCHIN(4) = HEAVTO
+        LPAIN(5) = 'PLONCHA'
+        LCHIN(5) = LONCHA
+        LPAIN(6) = 'PCNSETO'
+        LCHIN(6) = CNSETO
+        LPAIN(7) = 'PBASLOR'
+        LCHIN(7) = BASLOC
+        LPAIN(8) = 'PLSN'
+        LCHIN(8) = LSN
+        LPAIN(9) = 'PLST'
+        LCHIN(9) = LST
+        LPAIN(10) = 'PSTANO'
+        LCHIN(10) = STANO  
+
+        CALL CALCUL('S',OPTION,LIGRMO,10,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
+     &              BASE)
+        CALL REAJRE(MATEL,LCHOUT(1),BASE)
+
+      ELSEIF (ICODE.EQ.0 .AND. IER.EQ.0) THEN
+
+C----- CAS DU MODELE FEM CLASSIQUE---------------
+
         LPAIN(1) = 'PGEOMER'
         LCHIN(1) = CHGEOM
         LPAIN(2) = 'PMATERC'

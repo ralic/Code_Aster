@@ -18,7 +18,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,6 +92,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
+      CHARACTER*16  COMPO2(4)
       INTEGER  KPG,KK,N,I,M,J,J1,KL,PQ,KKD,INO,IG,IRET
       INTEGER  NNO,NNOS,NPGBIS,DDLT,DDLD,CPT,NDIMB,IPG
       INTEGER  JCOOPG,JDFD2,JGANO,JCOORS,IDFDE,IVF,IPOIDS
@@ -100,10 +101,12 @@ C
       REAL*8   POIDS,TMP1,TMP2,FE(4),BASLOG(9)
       REAL*8   XG(NDIM),XE(NDIM),FF(NNOP),JAC,SIGP(6),LSNG,LSTG
       REAL*8   RBID(4,3),RBID1(4),RBID2(4),RBID3(4),XYZ(NDIM)
+      REAL*8   RBID7(7), RBID4(3)
       REAL*8   DFDI(NNOP,NDIM),PFF(6,NNOP,NNOP),DGDGL(4,3)
       REAL*8   DEF(6,NNOP,NDIM+DDLH+NDIM*NFE),GRAD(3,3),ANGMAS(3)
+      REAL*8   DEPL0(NDIM+DDLH+NDIM*NFE+DDLC,NNOP)
 C
-      INTEGER INDI(6),INDJ(6)
+      INTEGER INDI(6),INDJ(6),IBID
       REAL*8  RIND(6),RAC2
       DATA    INDI / 1 , 2 , 3 , 1 , 1 , 2 /
       DATA    INDJ / 1 , 2 , 3 , 2 , 3 , 3 /
@@ -177,9 +180,24 @@ C         CAR ON SE TROUVE SUR LE FOND DE FISSURE
 C
 C       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 C       ET CALCUL DE FF, DFDI, ET EPS
-        CALL REEREF(ELREFP,NNOP,IGEOM,XG,DEPL,GRDEPL,NDIM,HE,DDLH,NFE,
-     &              DDLT,FE,DGDGL,'OUI',XE,FF,DFDI,F,EPS,GRAD)
+        IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'
+     &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    
+     &  .OR. OPTION(1: 9) .EQ. 'RAPH_MECA') THEN
 
+          CALL REEREF(ELREFP,NNOP,IGEOM,XG,DEPL,GRDEPL,NDIM,HE,DDLH,
+     &              NFE,DDLT,FE,DGDGL,'OUI',XE,FF,DFDI,F,EPS,GRAD)
+
+C       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
+        ELSEIF ( OPTION .EQ. 'RIGI_MECA') THEN
+          DO 300 I=1,NNOP
+            DO 301 J=1,DDLT
+              DEPL0(J,I)=0.D0
+ 301        CONTINUE
+ 300      CONTINUE
+          CALL REEREF(ELREFP,NNOP,IGEOM,XG,DEPL0,.FALSE.,NDIM,HE,DDLH,
+     &              NFE,DDLT,FE,DGDGL,'OUI',XE,FF,DFDI,F,EPS,GRAD)
+
+        ENDIF
 C
 C       CALCUL DES PRODUITS SYMETR. DE F PAR N,
         DO 120 N=1,NNOP
@@ -249,6 +267,62 @@ C      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
  126      CONTINUE
         ENDIF
 
+C - CALCUL DE LA MATRICE DE RIGIDITE POUR L'OPTION RIGI_MECA
+
+        IF ( OPTION .EQ. 'RIGI_MECA') THEN
+C
+C -       LOI DE COMPORTEMENT : ON VA OBTENIR ICI LA MATRICE DE HOOKE
+C         POUR LE CAS ELASTIQUE ISOTROPE - 3D
+          IPG= IDECPG + KPG
+          COMPO2(1)='ELAS'
+          COMPO2(2)=' '
+          COMPO2(3)=' '        
+          COMPO2(4)=' '        
+        
+          CALL NMCPEL('XFEM',IPG,1,POUM,3,TYPMOD,ANGMAS,IMATE,COMPO2,
+     &            CRIT,OPTION,EPS,SIGMA,VI(1,KPG),DSIDEP,CODRET)
+
+          DO 230 N=1,NNOP
+            DO 231 I=1,DDLD
+              KKD = (DDLT*(N-1)+I-1) * (DDLT*(N-1)+I) /2
+              DO 251,KL=1,6
+                SIGP(KL)=0.D0
+                SIGP(KL)=SIGP(KL)+DEF(1,N,I)*DSIDEP(1,KL)
+                SIGP(KL)=SIGP(KL)+DEF(2,N,I)*DSIDEP(2,KL)
+                SIGP(KL)=SIGP(KL)+DEF(3,N,I)*DSIDEP(3,KL)
+                SIGP(KL)=SIGP(KL)+DEF(4,N,I)*DSIDEP(4,KL)
+                SIGP(KL)=SIGP(KL)+DEF(5,N,I)*DSIDEP(5,KL)
+                SIGP(KL)=SIGP(KL)+DEF(6,N,I)*DSIDEP(6,KL)
+ 251          CONTINUE
+              DO 240 J=1,DDLD
+                DO 241 M=1,N
+                  IF (M.EQ.N) THEN
+                    J1 = I
+                  ELSE
+                    J1 = DDLD
+                  ENDIF
+                  TMP2=0.D0
+                  TMP2=TMP2+SIGP(1)*DEF(1,M,J)
+                  TMP2=TMP2+SIGP(2)*DEF(2,M,J)
+                  TMP2=TMP2+SIGP(3)*DEF(3,M,J)
+                  TMP2=TMP2+SIGP(4)*DEF(4,M,J)
+                  TMP2=TMP2+SIGP(5)*DEF(5,M,J)
+                  TMP2=TMP2+SIGP(6)*DEF(6,M,J)
+C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
+                  IF (J.LE.J1) THEN
+                     KK = KKD + DDLT*(M-1)+J
+                     MATUU(KK) = MATUU(KK) + TMP2*JAC
+                  END IF
+C
+ 241            CONTINUE
+ 240          CONTINUE
+ 231        CONTINUE
+ 230      CONTINUE
+
+        GOTO 9999
+        ENDIF
+
+
 C
 C - LOI DE COMPORTEMENT : CALCUL DE S(E) ET DS/DE À PARTIR DE EPS
 C                       {XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ}
@@ -316,7 +390,7 @@ C
  131        CONTINUE
  130      CONTINUE
         ENDIF
-C
+
 
 C - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
 C
@@ -355,7 +429,7 @@ C          SIMPLE CORRECTION DES CONTRAINTES
  820        CONTINUE
           ENDIF
         ENDIF
-
+ 9999 CONTINUE
  100  CONTINUE
 
       END

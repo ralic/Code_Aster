@@ -1,6 +1,7 @@
-# MODIF  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 27/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN_SI
 # RESPONSABLE VABHHTS J.PELLET
+# sslp201b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -605,7 +606,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.1E-9,
               VALE=1.1359427986974E+09),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',

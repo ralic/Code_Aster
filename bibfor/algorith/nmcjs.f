@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 27/07/2009   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,19 +122,21 @@ C
         REAL*8          EPSCON
         REAL*8          EPSTHE,EPSTHM
         REAL*8          DEPSTH(6),EPSDTH(6),ALPHAF,ALPHAM
+        LOGICAL         TRAC
 C
         REAL*8 I1D
 C
         INTEGER   UMESS,IUNIFI
+        
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
 C
 
 
-
         UMESS = IUNIFI('MESSAGE')
         MOD = TYPMOD(1)
+        TRAC = .FALSE.
 C
 C --    RECUPERATION COEF DE LA LOI CJS (INDEPENDANTS DE LA TEMPERATURE)
 C                    NB DE CMP DIRECTES/CISAILLEMENT
@@ -293,21 +295,28 @@ C
 
 C
           IF ( (SEUILI .GT. 0.D0) .OR. (SEUILD .GT. 0.D0) ) THEN
+          
+C ecriture des contraintes 
+           
 C
 C --      PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
 C
-          ETATF = 'PLASTIC'
+           ETATF = 'PLASTIC'
 
-          CALL  CJSPLA ( MOD, CRIT, MATERF, SEUILI, SEUILD, NVI,
+           CALL  CJSPLA ( MOD, CRIT, MATERF, SEUILI, SEUILD, NVI,
      &                   EPSDTH, DEPSTH, SIGD, VIND, SIGF, VINF, MECANF,
      &                   NIVCJS ,NITER,
-     &                   NDEC,EPSCON,IRET)
-          IF (IRET.EQ.1) GOTO 9999
+     &                   NDEC,EPSCON,IRET,TRAC)
+           IF (IRET.EQ.1) GOTO 9999
+           IF((TRAC)) THEN
+             ETATF = 'ELASTIC'
+           ENDIF
+                     
           ELSE
 C
 C --      PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
 C
-          ETATF = 'ELASTIC'
+           ETATF = 'ELASTIC'
           ENDIF
 
         ENDIF
@@ -321,7 +330,6 @@ C       POUR 'RIGI_MECA_TANG' ET POUR 'FULL_MECA'
 C       ----------------------------------------------------------------
 
         IF ( OPT .EQ. 'RIGI_MECA_TANG' ) THEN
-
           CALL LCINMA ( 0.D0, DSDE )
 
 
@@ -345,7 +353,7 @@ C          MECANISME ISOTROPE SEUL
            ENDIF
 
 C          MECANISME DEVIATOIRE SEUL
-           IF(MECAND .EQ. 'DEVIAT') THEN
+           IF((MECAND .EQ. 'DEVIAT')) THEN
              CALL CJSTDE( MOD, MATERF, NVI, EPSDTH, SIGD, VIND, DSDE )
            ENDIF
 
@@ -361,7 +369,7 @@ C          MECANISMES ISOTROPE ET DEVIATOIRE
 
 
         IF ( OPT .EQ. 'FULL_MECA' ) THEN
-
+         
           CALL LCINMA ( 0.D0, DSDE )
 
 
@@ -381,7 +389,7 @@ C          MECANISME ISOTROPE SEUL
            ENDIF
 
 C          MECANISME DEVIATOIRE SEUL
-           IF(MECANF .EQ. 'DEVIAT') THEN
+           IF((MECANF .EQ. 'DEVIAT')) THEN
              CALL LCSOVE(EPSDTH,DEPSTH,EPSF)
              CALL CJSTDE( MOD, MATERF, NVI, EPSF, SIGF, VINF, DSDE )
            ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106f.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
@@ -283,6 +283,8 @@ inst1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                           _F(JUSQU_A = tmax,PAS = 5*dt),
                       ),);
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =inst1 ),)
+
 RESU1 = STAT_NON_LINE(
                      NEWTON=_F(
                               REAC_ITER=1,
@@ -319,7 +321,7 @@ RESU1 = STAT_NON_LINE(
                       CONVERGENCE=(_F(
                                       ITER_GLOB_MAXI=25,
                                       )),
-                      INCREMENT=_F( LIST_INST = inst1,
+                      INCREMENT=_F( LIST_INST = DEFLIST,
                                     PRECISION =1.E-1,
                                   ),
                       EXCIT=(
@@ -357,7 +359,7 @@ RESU_G = STAT_NON_LINE(
                                    RELATION_KIT=('GLRC_DM','VMIS_CINE_LINE'),
                                    ITER_MAXI_DEBORST = 15,
                                   ),
-                      INCREMENT=_F( LIST_INST = inst1,
+                      INCREMENT=_F( LIST_INST = DEFLIST,
                                     PRECISION =1.E-1,
                                   ),
                       EXCIT=(

@@ -7,7 +7,7 @@
       CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 OPTION
       CHARACTER*24 LIGRMO,LCHIN(10),LCHOUT(1)
       CHARACTER*24 CHGEOM,CHCARA(18),CHTEMP,CHTREF,CHHARM
-
+      CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
 
       CALL JEMARQ()
       IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
@@ -67,31 +67,85 @@ C     ------------------------------------------------------------------
 
       CALL MEMARE(BASE,MATEL,MODELE,' ',CARA,OPTION)
 
-      LPAOUT(1) = 'PMATUUR'
-      LCHOUT(1) = MATEL(1:8)//'.ME001'
+C  -----CAS DU MODELE X-FEM-----------------------
+      CALL EXIXFE(MODELE,IER)
+      IF (IER.NE.0) THEN
 
-      LIGRMO = MODELE//'.MODELE'
-      LPAIN(1) = 'PGEOMER'
-      LCHIN(1) = CHGEOM
-      LPAIN(2) = 'PCONTRR'
-      LCHIN(2) = SIGG
-      LPAIN(3) = 'PCAORIE'
-      LCHIN(3) = CHCARA(1)
-      LPAIN(4) = 'PCADISK'
-      LCHIN(4) = CHCARA(2)
-      LPAIN(5) = 'PCAGNPO'
-      LCHIN(5) = CHCARA(6)
-      LPAIN(6) = 'PCACOQU'
-      LCHIN(6) = CHCARA(7)
-      LPAIN(7) = 'PEFFORR'
-      LCHIN(7) = SIGG
-      LPAIN(8) = 'PHARMON'
-      LCHIN(8) = CHHARM
-      LPAIN(9) = 'PNBSP_I'
-      LCHIN(9) = CARA(1:8)//'.CANBSP'
-      OPTION = 'RIGI_MECA_GE'
-      CALL CALCUL('S',OPTION,LIGRMO,9,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE)
-      CALL REAJRE(MATEL,LCHOUT(1),BASE)
+        PINTTO = MODELE(1:8)//'.TOPOSE.PIN'
+        CNSETO = MODELE(1:8)//'.TOPOSE.CNS'
+        HEAVTO = MODELE(1:8)//'.TOPOSE.HEA'
+        LONCHA = MODELE(1:8)//'.TOPOSE.LON'
+        BASLOC = MODELE(1:8)//'.BASLOC'
+        LSN    = MODELE(1:8)//'.LNNO'
+        LST    = MODELE(1:8)//'.LTNO'
+        STANO  = MODELE(1:8)//'.STNO'
+
+        LIGRMO = MODELE//'.MODELE'
+
+C ----- REMPLISSAGE DES CHAMPS D'ENTREE
+C
+        LPAIN(1)  = 'PGEOMER'
+        LCHIN(1)  = CHGEOM
+        LPAIN(2) = 'PCONTRR'
+        LCHIN(2) = SIGG
+        LPAIN(3) = 'PPINTTO'
+        LCHIN(3) = PINTTO
+        LPAIN(4) = 'PHEAVTO'
+        LCHIN(4) = HEAVTO
+        LPAIN(5) = 'PLONCHA'
+        LCHIN(5) = LONCHA
+        LPAIN(6) = 'PCNSETO'
+        LCHIN(6) = CNSETO
+        LPAIN(7) = 'PBASLOR'
+        LCHIN(7) = BASLOC
+        LPAIN(8) = 'PLSN'
+        LCHIN(8) = LSN
+        LPAIN(9) = 'PLST'
+        LCHIN(9) = LST
+        LPAIN(10) = 'PSTANO'
+        LCHIN(10) = STANO  
+C
+C --- CHAMPS DE SORTIE
+C
+        LPAOUT(1) = 'PMATUUR'
+        LCHOUT(1) = MATEL(1:15)//'.ME001'
+
+        OPTION = 'RIGI_MECA_GE'
+
+        CALL CALCUL('S',OPTION,LIGRMO,10,LCHIN,LPAIN,1,
+     &              LCHOUT,LPAOUT,BASE)
+        CALL REAJRE(MATEL,LCHOUT(1),BASE)
+
+      ELSEIF (IER.EQ.0) THEN
+
+        LPAOUT(1) = 'PMATUUR'
+        LCHOUT(1) = MATEL(1:8)//'.ME001'
+
+        LIGRMO = MODELE//'.MODELE'
+        LPAIN(1) = 'PGEOMER'
+        LCHIN(1) = CHGEOM
+        LPAIN(2) = 'PCONTRR'
+        LCHIN(2) = SIGG
+        LPAIN(3) = 'PCAORIE'
+        LCHIN(3) = CHCARA(1)
+        LPAIN(4) = 'PCADISK'
+        LCHIN(4) = CHCARA(2)
+        LPAIN(5) = 'PCAGNPO'
+        LCHIN(5) = CHCARA(6)
+        LPAIN(6) = 'PCACOQU'
+        LCHIN(6) = CHCARA(7)
+        LPAIN(7) = 'PEFFORR'
+        LCHIN(7) = SIGG
+        LPAIN(8) = 'PHARMON'
+        LCHIN(8) = CHHARM
+        LPAIN(9) = 'PNBSP_I'
+        LCHIN(9) = CARA(1:8)//'.CANBSP'
+        OPTION = 'RIGI_MECA_GE'
+        CALL CALCUL('S',OPTION,LIGRMO,9,LCHIN,LPAIN,1,LCHOUT,
+     &              LPAOUT,BASE)
+        CALL REAJRE(MATEL,LCHOUT(1),BASE)
+
+      ENDIF
 
       CALL JEDEMA()
       END

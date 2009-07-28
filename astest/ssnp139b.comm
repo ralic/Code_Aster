@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE DCB 2D PLASTIQUE AVEC ELEMENTS D'INTERFACE EN FATIGUE : LOI CZM_FAT_MIX
 # ssnp139b.para = tps_job 500 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -207,6 +207,14 @@ FCT_FAT = DEFI_FONCTION(
   VALE     = a,
   )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
+                        ECHEC=_F(
+                  SUBD_METHODE='UNIFORME',
+                  SUBD_PAS  = 3,
+                  SUBD_COEF_PAS_1=0.01,
+                  SUBD_PAS_MINI = 1.E-10,
+                  SUBD_NIVEAU=10,
+                                 ),)
  
 # CALCUL
   
@@ -223,13 +231,8 @@ U=STAT_NON_LINE(
                 _F(RELATION = loi_vol,  GROUP_MA = ('DCB1','DCB2')),
                 _F(RELATION = loi_czm ,    GROUP_MA = 'DCBJ'),
                 ),               
-  INCREMENT  = _F(LIST_INST = L_INST, 
+  INCREMENT  = _F(LIST_INST = DEFLIST, 
                   INST_FIN = tfin,
-                  SUBD_METHODE='UNIFORME',
-                  SUBD_PAS  = 3,
-                  SUBD_COEF_PAS_1=0.01,
-                  SUBD_PAS_MINI = 1.E-10,
-                  SUBD_NIVEAU=10,
                   ),
   NEWTON     = _F(MATRICE  = 'TANGENTE'  , REAC_ITER=1),
   CONVERGENCE = _F(

@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith6 Messages  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,6 +125,7 @@ cata_msg = {
  itérations cycliques :
  changement de configuration ou variation trop importante
  du deplacement physique à l'issue de la dernière itération
+ Conseil: diminuez le pas de temps
 """),
 
 53 : _("""

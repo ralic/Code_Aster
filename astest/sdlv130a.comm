@@ -1,0 +1,261 @@
+# MODIF  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
+# TITRE PLAQUE 3D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
+# sdlv130a.para = tps_job 60 mem_job 256Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       VALIDATION DU CALCUL MODAL AVEC X-FEM
+
+
+# ON CALCULE ICI LA SOLUTION DE REFERENCE POUR SDLV130B, LA VALIDATION 
+# DU CALCUL MODAL AVEC X-FEM
+
+DEBUT(CODE=_F(NOM='SDLV130A',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='NON',),
+      DEBUG=_F(SDVERI='OUI',),);
+
+#----------------------------------------------
+#             MAILLAGE : hexa_cla_5_30_50.mgib
+#----------------------------------------------
+PRE_GIBI();
+
+MAILLAGE=LIRE_MAILLAGE(INFO=1,);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=(_F(GROUP_MA='LEVSUP',),
+                                   _F(GROUP_MA='LEVINF',),
+                                   _F(GROUP_MA='FONFIS',),
+                                   _F(GROUP_MA='VOL',),
+                                   _F(DIFFE=('LEVSUP','FONFIS',),
+                                      NOM='LEVS',),
+                                   _F(DIFFE=('LEVINF','FONFIS',),
+                                      NOM='LEVI',),
+                                   _F(DIFFE=('VOL','LEVSUP','LEVINF',),
+                                      NOM='VOLB',),),);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),);
+
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(GROUP_MA='SURFINF',),);
+
+#----------------------------------------------
+#                   MODELE 
+#----------------------------------------------
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                     AFFE=_F(GROUP_MA=('VOLSUP','VOLINF','LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),);
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('LEVSUP','LEVINF','SURFSUP','SURFINF',),),);
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+E = 205000000000.0;
+
+nu = 0.0;
+
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=7800.0,),);
+
+CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                      MODELE=MODELEIN,
+                      AFFE=_F(GROUP_MA=('VOLSUP','VOLINF','LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),
+                              MATER=ACIER,),);
+
+
+#----------------------------------------------
+#                   CHARGEMENTS 
+#----------------------------------------------
+#                   1) TRACTION
+PRES = -10000000.0;
+
+
+
+CHARBL1=AFFE_CHAR_MECA(MODELE=MODELEIN,
+                       DDL_IMPO=(_F(NOEUD='N4265',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,),
+                                 _F(NOEUD='N3751',
+                                    DZ=0.0,),
+                                 _F(NOEUD='N4256',
+                                    DX=0.0,
+                                    DZ=0.0,),),);
+
+CHF1=AFFE_CHAR_MECA(MODELE=MODELEIN,
+                    PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
+                                PRES=PRES,),);
+
+MELR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                    MODELE=MODELEIN,
+                    CHAM_MATER=CHAMPMA,
+                    CHARGE=CHARBL1,);
+
+MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                    MODELE=MODELEIN,
+                    CHAM_MATER=CHAMPMA,
+                    CHARGE=CHARBL1,);
+
+NUM=NUME_DDL(MATR_RIGI=MELR,);
+
+MATR=ASSE_MATRICE(MATR_ELEM=MELR,
+                  NUME_DDL=NUM,);
+
+MATM=ASSE_MATRICE(MATR_ELEM=MELM,
+                  NUME_DDL=NUM,);
+
+#
+#---------------------------------------------
+#          RESOLUTION DU PROBLEME STATIQUE
+#---------------------------------------------
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+
+RESU=STAT_NON_LINE(MODELE=MODELEIN,
+                   CHAM_MATER=CHAMPMA,
+                   EXCIT=(_F(CHARGE=CHARBL1,),
+                          _F(CHARGE=CHF1,),),
+                   COMP_ELAS=_F(RELATION='ELAS',GROUP_MA='VOL',),
+                   INCREMENT=_F(LIST_INST=L_INS1,
+                                INST_FIN=1.0,),
+                   NEWTON=_F(REAC_ITER=0,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);
+
+#---------------------------------
+# CALCUL DES CONTRAINTES ASSOCIEES
+
+CONTR=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                 OPERATION='EXTR',
+                 RESULTAT=RESU,
+                 NOM_CHAM='SIEF_ELGA',
+                 NUME_ORDRE=1,);
+
+
+MELRG=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
+                     MODELE=MODELEIN,
+                     SIEF_ELGA=CONTR,);
+
+
+MATRG=ASSE_MATRICE(MATR_ELEM=MELRG,
+                   NUME_DDL=NUM,);
+
+
+MATRC=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR,
+                                COEF_R=1.0,),
+                             _F(MATR_ASSE=MATRG,
+                                COEF_R=1.0,),),);
+
+MODES=MODE_ITER_SIMULT(MATR_A=MATRC,
+                       MATR_B=MATM,
+                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                    NMAX_FREQ=8,),);
+
+IMPR_RESU(FORMAT='GMSH',
+          RESU=_F(RESULTAT=MODES,
+                  TYPE_CHAM='VECT_3D',
+                  NOM_CMP=('DX','DY','DZ'),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=1.3638427954242,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   VALE=3.2209278515285,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=3,
+                   PARA='FREQ',
+                   VALE=4.8149074293549,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=4,
+                   PARA='FREQ',
+                   VALE=7.1950304171199,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=5,
+                   PARA='FREQ',
+                   VALE=1.0098075140375E+01,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=6,
+                   PARA='FREQ',
+                   VALE=1.1789843364219E+01,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=7,
+                   PARA='FREQ',
+                   VALE=1.7484451607818E+01,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=8,
+                   PARA='FREQ',
+                   VALE=1.8281495749577E+01,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+
+
+FIN();

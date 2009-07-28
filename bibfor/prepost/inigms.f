@@ -1,6 +1,6 @@
       SUBROUTINE  INIGMS(NOMAIL,NBNOMA,NUCONN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF PREPOST  DATE 22/07/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            IMPLICIT NONE
-           INTEGER     NUCONN(15,32),NBNOMA(15)
+           INTEGER     NUCONN(19,32),NBNOMA(19)
            CHARACTER*8  NOMAIL(*)
 
 
@@ -69,14 +69,18 @@ C
       NOMAIL(7)  = 'PYRAM5'
       NOMAIL(8)  = 'SEG3'
       NOMAIL(9)  = 'TRIA6'
-      NOMAIL(10)  = 'QUAD8'
-      NOMAIL(11)  = 'TETRA10'
-      NOMAIL(12)  = 'HEXA20'
-      NOMAIL(13)  = 'PENTA15'
-      NOMAIL(14)  = 'PYRAM13'
+      NOMAIL(10) = 'QUAD8'
+      NOMAIL(11) = 'TETRA10'
+      NOMAIL(12) = 'HEXA27'
+      NOMAIL(13) = 'PENTA15'
+      NOMAIL(14) = 'PYRAM13'
       NOMAIL(15) = 'POI1'
+      NOMAIL(16) = 'QUAD8'
+      NOMAIL(17) = 'HEXA20'
+      NOMAIL(18) = 'PENTA15'
+      NOMAIL(19) = 'PYRAM13'
 
-      DO 5 M = 1,15
+      DO 5 M = 1,19
         CALL JEVEUO(JEXNOM('&CATA.TM.NBNO',NOMAIL(M)),'L',JNBNO)
         NBNOMA(M) = ZI(JNBNO)
  5    CONTINUE
@@ -89,7 +93,7 @@ C   ND_ASTER : NUMERO DU NOEUD DE LA MAILLE ASTER DE REFERENCE
 C   ND_GMSH  : NUMERO DU NOEUD DE LA MAILLE GMSH  DE REFERENCE
 
 C    PAR DEFAUT LES NUMEROTATIONS COINCIDENT
-      DO 10 I = 1,15
+      DO 10 I = 1,19
         DO 20 J = 1,32
           NUCONN(I,J) = J
  20     CONTINUE
@@ -101,8 +105,7 @@ C    TETRA 10
       NUCONN(11, 9) = 10
       NUCONN(11,10) =  9
 
-C    HEXA 20
-      NUCONN(12, 9) =  9
+C    HEXA 27
       NUCONN(12,10) = 12
       NUCONN(12,11) = 14
       NUCONN(12,12) = 10
@@ -114,6 +117,9 @@ C    HEXA 20
       NUCONN(12,18) = 19
       NUCONN(12,19) = 20
       NUCONN(12,20) = 18
+      NUCONN(12,23) = 24
+      NUCONN(12,24) = 25
+      NUCONN(12,25) = 23
 
 C    PENTA 15
       NUCONN(13, 7) =  7
@@ -135,6 +141,40 @@ C    PYRAM 13
       NUCONN(14,11) = 10
       NUCONN(14,12) = 12
       NUCONN(14,13) = 13
+
+C    HEXA 20
+      NUCONN(17,10) = 12
+      NUCONN(17,11) = 14
+      NUCONN(17,12) = 10
+      NUCONN(17,13) = 11
+      NUCONN(17,14) = 13
+      NUCONN(17,15) = 15
+      NUCONN(17,16) = 16
+      NUCONN(17,17) = 17
+      NUCONN(17,18) = 19
+      NUCONN(17,19) = 20
+      NUCONN(17,20) = 18
+
+C    PENTA 15
+      NUCONN(18, 7) =  7
+      NUCONN(18, 8) = 10
+      NUCONN(18, 9) =  8
+      NUCONN(18,10) =  9
+      NUCONN(18,11) = 11
+      NUCONN(18,12) = 12
+      NUCONN(18,13) = 13
+      NUCONN(18,14) = 15
+      NUCONN(18,15) = 14
+
+C    PYRAM 13
+      NUCONN(19, 6) =  6
+      NUCONN(19, 7) =  9
+      NUCONN(19, 8) = 11
+      NUCONN(19, 9) =  7
+      NUCONN(19,10) =  8
+      NUCONN(19,11) = 10
+      NUCONN(19,12) = 12
+      NUCONN(19,13) = 13
 
 
 C

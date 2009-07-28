@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 28/07/2009   AUTEUR TORKHANI M.TORKHANI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,8 @@ def crea_table_prod(TYPE_TABLE, **args):
    """
    if TYPE_TABLE == 'TABLE_FONCTION':
       return table_fonction
+   elif TYPE_TABLE == 'TABLE_CONTENEUR':
+      return table_container
    else:
       return table_sdaster
 
@@ -56,7 +58,7 @@ CREA_TABLE=OPER(nom="CREA_TABLE",op=36,sd_prod=crea_table_prod,
                                     ang="List of sensitivity parameters"),
            ),
            TYPE_TABLE = SIMP(statut='f', typ='TXM', defaut="TABLE",
-                             into=('TABLE', 'TABLE_FONCTION'),),
+                             into=('TABLE', 'TABLE_FONCTION', 'TABLE_CONTENEUR'),),
            
            TITRE=SIMP(statut='f',typ='TXM',max='**'),
 )  ;

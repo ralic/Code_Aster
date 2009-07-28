@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai2 Messages  DATE 27/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -266,7 +266,8 @@ cata_msg = {
 """),
 
 94 : _("""
- champ non prevu :  %(k1)s
+ Champ non prevu :  %(k1)s
+ Demandez l'évolution
 """),
 
 95 : _("""

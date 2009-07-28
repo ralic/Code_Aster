@@ -1,10 +1,10 @@
         SUBROUTINE CJSPLA ( MOD, CRIT, MATER, SEUILI, SEUILD,
      &                NVI, EPSD, DEPS, SIGD, VIND, SIGF, VINF, MECANI,
-     &                NIVCJS ,NITER,NDEC,EPSCON,IRET)
+     &                NIVCJS ,NITER,NDEC,EPSCON,IRET,TRAC)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 27/07/2009   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C       ----------------------------------------------------------------
         REAL*8        I1F
         REAL*8        SEUILI, SEUILD , PA, PREF,QINIT
         REAL*8        ZERO
-        LOGICAL       CHGMEC, NOCONV, AREDEC,STOPNC
+        LOGICAL       CHGMEC, NOCONV, AREDEC,STOPNC,TRAC
         CHARACTER*6   MECANI
         CHARACTER*4     NIVCJS
 
@@ -64,8 +64,7 @@ C       ----------------------------------------------------------------
         PARAMETER     ( ZERO = 0.D0   )
         INTEGER       IDEC
         INTEGER       I,NITER0
-
-
+C
         COMMON /TDIM/   NDT, NDI
 C
 
@@ -73,7 +72,7 @@ C
 C
         PA    = MATER(12,2)
         QINIT = MATER(13,2)
-
+        TRAC = .FALSE.
 
 C  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
         CALL LCEQVE( SIGF, PREDI0 )
@@ -92,6 +91,7 @@ C
         ELSE
           STOPNC = .FALSE.
         ENDIF
+C
 C
 C  INITIALISATION DES VARIABLES DE REDECOUPAGE
 C  -------------------------------------------
@@ -218,14 +218,16 @@ C       -------------------------
           CALL CJSMDE ( MOD, CRIT, MATER, NVI, EPSD, DEPS,
      &                  SIGD, SIGF, VIND, VINF,
      &                  NOCONV,AREDEC,STOPNC,
-     &                  NITER0,EPSCON)
+     &                  NITER0,EPSCON,TRAC)
           NITER = NITER + NITER0
+          IF(TRAC)  GOTO 9999
+          
           IF ( NOCONV.AND.(.NOT.AREDEC)) GOTO 500
           IF(NOCONV) THEN
             IRET=1
             GOTO 9999
           ENDIF
-         ENDIF
+        ENDIF
 C
 C       MECANISMES ISOTROPE ET DEVIATOIRE
 C       ---------------------------------
@@ -249,6 +251,7 @@ C--->   CALCUL DES FONCTIONS DE CHARGES SUR ETAT FINAL
 
          CALL CJSSMI ( MATER, SIGF, VINF, SEUILI )
          CALL CJSSMD ( MATER, SIGF, VINF, SEUILD )
+
          I1F  = ZERO
          DO 22  I=1, NDI
           I1F  = I1F  +   SIGF(I)
@@ -270,6 +273,7 @@ C--->   VERIFICATION DES MECANISMES ACTIVES
           MECANI='ISODEV'
           CHGMEC=.TRUE.
          ENDIF
+
 C
 C - SI ON ACTIVE EN FAIT LES DEUX MECANISMES AU LIEU D'UN SEUL : RETOUR
 C   ET SI ON AVAIT CONVERGE
@@ -296,7 +300,7 @@ C--->   CALCUL DE LA VARIABLE INTERNE CORRESPONDANT AU MECANISME PLASTIC
 C
 
          IF (MECANI .EQ. 'ISOTRO') VINF(NVI) = 1.D0
-         IF (MECANI .EQ. 'DEVIAT') VINF(NVI) = 2.D0
+         IF (MECANI .EQ.'DEVIAT')  VINF(NVI) = 2.D0
          IF (MECANI .EQ. 'ISODEV') VINF(NVI) = 3.D0
 
 9999     CONTINUE

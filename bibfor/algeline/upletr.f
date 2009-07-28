@@ -1,6 +1,6 @@
       SUBROUTINE UPLETR(NDIM, MPLE,MCOL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/03/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 27/07/2009   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,8 +48,8 @@ C PASSAGE DE MATRICE COLONNE VERS MAT PLEINE (COMPLETEE PAR ANTI
 C SYMETRIE)
         DO 1,I = 1,NDIM
                DO 2,J = 1,I
-                        MPLE(I,J)=MCOL(INT(I*(I-1)/2)+J)
-                        MPLE(J,I) = - MPLE(I,J)
+                        MPLE(J,I)=MCOL(INT(I*(I-1)/2)+J)
+                        MPLE(I,J) = - MPLE(J,I)
     2          CONTINUE
     1   CONTINUE
 C

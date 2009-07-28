@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 27/07/2009   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,8 +82,8 @@ C
 C     I : LIGNE ; J : COLONNE
       I = 5
       J = 6
-      ZR(JDM-1+NC*(J-1) + I) = VXX
-      ZR(JDM-1+NC*(I-1) + J) =-VXX
+      ZR(JDM-1+NC*(J-1) + I) =-VXX
+      ZR(JDM-1+NC*(I-1) + J) =VXX
 C
       CALL JEDEMA()
       END

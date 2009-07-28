@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF PREPOST  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C       ----------------------------------------------------------------
         IF (NIV.GT.1) WRITE(IFM,*)' '
         IF (NIV.GT.1) WRITE(IFM,*)'4. XPOMAC'
         CALL XPOMAC(MALINI,MAILC,LISTNO,NBNOC,NBMAC,MAXFEM,K24,
-     &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2)
+     &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,RESUCO)
 
 C       ----------------------------------------------------------------
 C       5. TRAITEMENT DES MAILLES DE MAILX
@@ -134,7 +134,8 @@ C       ----------------------------------------------------------------
         IF (NIV.GT.1) WRITE(IFM,*)' '
         IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
         CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,K2B,K8B,MAXFEM,
-     &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,LISTGR,K24,K24)
+     &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,LISTGR,K24,K24,
+     &              RESUCO)
 
 C       ----------------------------------------------------------------
 C       6. ENREGISTREMENT DES CHAMPS DE SORTIES
@@ -157,11 +158,23 @@ C       ----------------------------------------------------------------
           ENDIF
           CALL RSNOCH(RESUX,NOMCHA,IORD,' ')
  20     CONTINUE
-        CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST1,KBID)
-        CALL RSADPA(RESUX ,'E',1,'INST',IORD,0,JINST2,KBID)
-        ZR(JINST2) = ZR(JINST1)
-        CALL RSADPA(RESUX ,'E',1,'MODELE',IORD,0,JMOD,KBID)
-        ZK8(JMOD)=MODVIS
+
+        IF(TYSD(1:9).EQ.'EVOL_NOLI') THEN
+          CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST1,KBID)
+          CALL RSADPA(RESUX ,'E',1,'INST',IORD,0,JINST2,KBID)
+          ZR(JINST2) = ZR(JINST1)
+          CALL RSADPA(RESUX ,'E',1,'MODELE',IORD,0,JMOD,KBID)
+          ZK8(JMOD)=MODVIS
+        ELSEIF(TYSD(1:9).EQ.'MODE_MECA') THEN
+          CALL RSADPA(RESUCO,'L',1,'FREQ',IORD,0,JINST1,KBID)
+          CALL RSADPA(RESUX ,'E',1,'FREQ',IORD,0,JINST2,KBID)
+          ZR(JINST2) = ZR(JINST1)
+
+          CALL RSADPA(RESUX ,'E',1,'MODELE',IORD,0,JMOD,KBID)
+          ZK8(JMOD)=MO
+
+          CALL AJREFD(RESUCO,RESUX,'COPIE')
+        ENDIF
 
         CALL DETRSD('CHAM_NO_S',CNS1)
         CALL DETRSD('CHAM_NO_S',CNS2)

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,9 +196,13 @@ ANGL2=135.
 
 CO_FOUR1=COMB_FOURIER(   RESULTAT=FO_ELAS1,
                             NOM_CHAM=( 'DEPL',  'REAC_NODA',
-                                       'SIGM_ELNO_DEPL',     ),
+                      'SIEF_ELGA_DEPL', 'SIGM_ELNO_DEPL', ),
                                 ANGL=( ANGL1,  ANGL2,  )
                         )
+
+CO_FOUR1=CALC_ELEM(reuse =CO_FOUR1,
+                   RESULTAT=CO_FOUR1,
+                   OPTION=('EQUI_ELGA_SIGM','EQUI_ELNO_SIGM',),);
 
 TEST_RESU(RESU=(
             _F(  RESULTAT = CO_FOUR1,
@@ -296,6 +300,15 @@ TEST_RESU(RESU=(
         NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
          MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = 0.7071068,   ))
          )
+
+TEST_RESU(RESU=(
+         _F(  RESULTAT = CO_FOUR1,REFERENCE='NON_REGRESSION',
+           NOM_CHAM = 'EQUI_ELNO_SIGM',    ANGL = ANGL1,
+         MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'VMIS',   VALE = 0.707110,  ),
+         _F(  RESULTAT = CO_FOUR1,REFERENCE='NON_REGRESSION',
+           NOM_CHAM = 'EQUI_ELNO_SIGM',    ANGL = ANGL1,
+          MAILLE = 'M1',   NOEUD = 'N6',    NOM_CMP = 'TRESCA',   VALE = 0.707110,  ),
+           ))
 
 # ----------------------------------------------------------------------
 #                     COMBINAISON DE CHAMPS

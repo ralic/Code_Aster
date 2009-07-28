@@ -1,5 +1,6 @@
-# MODIF  DATE 30/05/2007   AUTEUR ADOBES A.ADOBES 
+# MODIF  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
+# sdll136a.para = tps_job 260 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -611,7 +612,8 @@ TRANGENE = DYNA_TRAN_MODAL (
              INCREMENT=_F(
                   INST_INIT=0.0,
                   INST_FIN=5.000000e+01,
-                  PAS=1.000000e-04,
+                  PAS=9.000000e-05,
+#                  PAS=1.0E-4,
                   ),
              ARCHIVAGE=_F(PAS_ARCH=1,),
              );

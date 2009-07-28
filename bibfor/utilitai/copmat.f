@@ -1,6 +1,6 @@
       SUBROUTINE COPMAT(MATR,NUMDDL,MAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 27/07/2009   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
       CHARACTER*8 KBID,MATR
       CHARACTER*14 NUMDDL
       REAL*8      MAT(*),PIJ
+      LOGICAL LSYM
 C
 C-----------------------------------------------------------------------
       DATA KBID /'        '/
@@ -75,24 +76,52 @@ C
         CALL JEVEUO(NUMDDL(1:8)//'      .SLCS.SCBL','L',JSCBL)
         CALL JEVEUO(NUMDDL(1:8)//'      .SLCS.SCDI','L',ISCDI)
         CALL JEVEUO(NUMDDL(1:8)//'      .SLCS.SCHC','L',ISCHC)
-        DO 20 IB=1,NBBLOC
-          CALL JEVEUO(JEXNUM(MATR//'           .VALM',IB),'L',JBLOC)
-          N1BLOC=ZI(JSCBL+IB-1)+1
-          N2BLOC=ZI(JSCBL+IB)
+        CALL JEVEUO(MATR//'           .REFA','L',JREFA)
+        LSYM=ZK24(JREFA-1+9) .EQ. 'MS'
+        IF (LSYM) THEN
+          DO 20 IB=1,NBBLOC
+            CALL JEVEUO(JEXNUM(MATR//'           .VALM',IB),'L',JBLOC)
+            N1BLOC=ZI(JSCBL+IB-1)+1
+            N2BLOC=ZI(JSCBL+IB)
 C
-C         BOUCLE SUR LES COLONNES DU BLOC
+C           BOUCLE SUR LES COLONNES DU BLOC
 C
-          DO 30 J=N1BLOC,N2BLOC
+            DO 30 J=N1BLOC,N2BLOC
 C
-C         BOUCLE SUR LES LIGNES DANS LA COLONNE
+C           BOUCLE SUR LES LIGNES DANS LA COLONNE
 C
-            DO 30 I= (J-ZI(ISCHC+J-1)+1),J
-              PIJ = ZR(JBLOC+ZI(ISCDI+J-1)+I-J-1)
-              MAT(I+ (J-1)*NEQ) = PIJ
-              MAT(J+ (I-1)*NEQ) = PIJ
-30        CONTINUE
-          CALL JELIBE(JEXNUM(MATR//'           .VALM',IB))
-20      CONTINUE
+              DO 30 I= (J-ZI(ISCHC+J-1)+1),J
+                PIJ = ZR(JBLOC+ZI(ISCDI+J-1)+I-J-1)
+                MAT(I+ (J-1)*NEQ) = PIJ
+                MAT(J+ (I-1)*NEQ) = PIJ
+30          CONTINUE
+            CALL JELIBE(JEXNUM(MATR//'           .VALM',IB))
+20        CONTINUE
+        ELSE
+           CALL ASSERT(NBBLOC.EQ.1)
+C          TRIANGULAIRE SUPERIEURE
+            CALL JEVEUO(JEXNUM(MATR//'           .VALM',1),'L',JBLOC)
+C          TRIANGULAIRE INFERIEURE
+            CALL JEVEUO(JEXNUM(MATR//'           .VALM',2),'L',JBLO2)
+C            N1BLOC=ZI(JSCBL+IB-1)+1
+C            N2BLOC=ZI(JSCBL+IB)
+C
+C           BOUCLE SUR LES COLONNES DU BLOC
+C
+            DO 50 J=1,NEQ
+C
+C           BOUCLE SUR LES LIGNES DANS LA COLONNE
+C
+              DO 50 I= (J-ZI(ISCHC+J-1)+1),J
+                PIJ = ZR(JBLOC+ZI(ISCDI+J-1)+I-J-1)
+                PJI = ZR(JBLO2+ZI(ISCDI+J-1)+I-J-1)
+                MAT(I+ (J-1)*NEQ) = PIJ
+                MAT(J+ (I-1)*NEQ) = PJI
+50          CONTINUE
+            CALL JELIBE(JEXNUM(MATR//'           .VALM',1))
+            CALL JELIBE(JEXNUM(MATR//'           .VALM',2))
+40        CONTINUE
+        ENDIF
         CALL JELIBE(NUMDDL(1:8)//'      .SLCS.SCBL')
         CALL JELIBE(NUMDDL(1:8)//'      .SLCS.SCDI')
 C

@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF calculel6 Messages  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -348,6 +348,12 @@ spécifique POST_MAIL_XFEM et POST_CHAM_XFEM avant le CALC_ELEM.
 
 82: _("""
  le groupe de noeuds %(k1)s n'appartient pas au maillage: %(k2)s
+"""),
+
+83 : _("""
+  option  %(k1)s  non traitée pour un résultat de type fourier_elas 
+(produit par MACRO_ELAS_MULT). Il faut faire après MACRO_ELAS_MULT une
+ recombinaison de Fourier par l'opérateur COMB_FOURIER. 
 """),
 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE FISSURATION INTERFACE 3D PLAN (HEXA20), LOI CZM_FAT_MIX
 # ssnp118k.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,6 +131,13 @@ FCT = DEFI_FONCTION(
   VALE     = a
   )
  
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
+                        ECHEC=_F(SUBD_METHODE = 'UNIFORME',
+                                 SUBD_PAS     = 4,
+                                 SUBD_COEF_PAS_1 = 0.01,
+                                 SUBD_NIVEAU  = 5,
+                                ),)
+
   
 #----------------------------------------------------------------------------------  
 # CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_FAT_MIX
@@ -149,12 +156,8 @@ U_FAT=STAT_NON_LINE(
           _F(RELATION = 'ELAS',       MAILLE = 'CUBE',),
           ),               
   INCREMENT = _F(
-    LIST_INST    = L_INST,
+    LIST_INST    = DEFLIST,
     INST_FIN     = tfin,
-    SUBD_METHODE = 'UNIFORME',
-    SUBD_PAS     = 4,
-    SUBD_COEF_PAS_1=0.01,
-    SUBD_NIVEAU  = 5,
     ),
   CONVERGENCE = _F(
     RESI_REFE_RELA = 1.E-6,

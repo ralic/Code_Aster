@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 22/07/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,7 +125,7 @@ C     --- REMPLISSAGE DU .PROL ---
       ELSE
         ZK24(LPRO) = 'FONCTION'
       END IF
-      ZK24(LPRO+1) = 'NON     '
+      ZK24(LPRO+1) = 'NON NON '
       ZK24(LPRO+2) = NOMACC
       ZK24(LPRO+3) = CMP
       ZK24(LPRO+4) = 'EE      '

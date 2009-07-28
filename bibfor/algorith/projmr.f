@@ -1,12 +1,12 @@
       SUBROUTINE PROJMR(MATRAS,NOMRES,BASEMO,NUGENE,NU,NEQ,NBMO)
       IMPLICIT NONE
-      INTEGER             NEQ, NBMO
-      CHARACTER*8         MATRAS, NOMRES, BASEMO
-      CHARACTER*14        NU,NUGENE
-      CHARACTER*19        NOMSTO
+      INTEGER NEQ,NBMO
+      CHARACTER*8 MATRAS,NOMRES,BASEMO
+      CHARACTER*14 NU,NUGENE
+      CHARACTER*19 NOMSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 27/07/2009   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,134 +26,188 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C
 C     CALCUL PROJECTION MATRICE REELLE SUR BASE DE RITZ
+C     REMARQUE : LA MATRICE PEUT ETRE SYMETRIQUE OU NON-SYMETRIQUE
 C
 C-----------------------------------------------------------------------
 C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
-      INTEGER        ZI
+      INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8         ZR
+      REAL*8 ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16     ZC
+      COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL        ZL
+      LOGICAL ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8    ZK8
-      CHARACTER*16          ZK16
-      CHARACTER*24                  ZK24
-      CHARACTER*32                          ZK32
-      CHARACTER*80                                  ZK80
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32   JEXNUM,JEXNOM
+      CHARACTER*32 JEXNUM,JEXNOM
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      INTEGER      IBID, IDDEEQ, JSCDE, NUEQ, NTBLOC, NBLOC, IALIME,
-     +             IACONL, JREFA, IADESC, I, J, IMATRA, JSCDI, JSCBL,
-     +             JSCHC, IBLO, LDBLO, N1BLOC, N2BLOC, IADMOD, IRET,
-     +             IDVEC2, IDBASE
-      REAL*8       PIJ, DDOT
-      CHARACTER*8  K8B
+      INTEGER IBID,IDDEEQ,JSCDE,NUEQ,NTBLOC,NBLOC,IALIME,IACONL,JREFA,
+     &        IADESC,I,J,IMATRA,JSCDI,JSCBL,JSCHC,IBLO,LDBLO,N1BLOC,
+     &        N2BLOC,IADMOD,IRET,IDVEC2,IDBASE,NBJ,LDBLO1,LDBLO2
+      REAL*8 PIJ,DDOT
+      CHARACTER*8 K8B
       CHARACTER*16 TYPBAS
-      CHARACTER*19 MATR, RESU, NOMCHA
+      CHARACTER*19 MATR,RESU,NOMCHA
+      LOGICAL LSYM
 C-----------------------------------------------------------------------
-C
+
       CALL JEMARQ()
-C
-      RESU = NOMRES
-      MATR = MATRAS
+
+      RESU=NOMRES
+      MATR=MATRAS
       CALL GETTCO(BASEMO,TYPBAS)
-      CALL JEVEUO ( NU//'.NUME.DEEQ', 'L', IDDEEQ )
-C
+      CALL JEVEUO(NU//'.NUME.DEEQ','L',IDDEEQ)
+
       NOMSTO=NUGENE//'.SLCS'
-      CALL JEVEUO ( NOMSTO//'.SCDE', 'L', JSCDE )
-      NUEQ   = ZI(JSCDE-1+1)
-      NTBLOC = ZI(JSCDE-1+2)
-      NBLOC  = ZI(JSCDE-1+3)
-C
-      CALL JECREC ( RESU//'.UALF', 'G V R', 'NU', 'DISPERSE',
-     &                                            'CONSTANT', NBLOC )
-      CALL JEECRA ( RESU//'.UALF', 'LONMAX', NTBLOC, K8B )
-C
-      CALL WKVECT ( RESU//'.LIME', 'G V K24', 1, IALIME )
-      ZK24(IALIME) = '                        '
-C
-      CALL WKVECT ( RESU//'.CONL', 'G V R' , NUEQ, IACONL )
-      DO 10 I = 1 , NUEQ
-         ZR(IACONL+I-1) = 1.0D0
- 10   CONTINUE
-C
-      CALL WKVECT (RESU//'.REFA', 'G V K24',11,JREFA )
-      ZK24(JREFA-1+11)='MPI_COMPLET'
-      ZK24(JREFA-1+1)   = BASEMO
-      ZK24(JREFA-1+2) = NUGENE
-      ZK24(JREFA-1+9) = 'MS'
-      ZK24(JREFA-1+10) = 'GENE'
-C
-      CALL WKVECT ( RESU//'.DESC', 'G V I', 3, IADESC )
-      ZI(IADESC)   = 2
-      ZI(IADESC+1) = NUEQ
-C   ON TESTE LA HAUTEUR MAXIMALE DES COLONNES DE LA MATRICE
-C   SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
-      IF (ZI(JSCDE-1+4).EQ.1) THEN
-        ZI(IADESC+2) = 1
+      CALL JEVEUO(NOMSTO//'.SCDE','L',JSCDE)
+      NUEQ=ZI(JSCDE-1+1)
+      NTBLOC=ZI(JSCDE-1+2)
+      NBLOC=ZI(JSCDE-1+3)
+
+      CALL JEVEUO(MATR//'.REFA','L',JREFA)
+      LSYM=ZK24(JREFA-1+9) .EQ. 'MS'
+      IF (LSYM) THEN
+        CALL JECREC(RESU//'.UALF','G V R','NU','DISPERSE','CONSTANT',
+     &              NBLOC)
       ELSE
-        ZI(IADESC+2) = 2
+        CALL JECREC(RESU//'.UALF','G V R','NU','DISPERSE','CONSTANT',
+     &              2*NBLOC)
+      ENDIF
+
+      CALL JEECRA(RESU//'.UALF','LONMAX',NTBLOC,K8B)
+
+      CALL WKVECT(RESU//'.LIME','G V K24',1,IALIME)
+      ZK24(IALIME)=' '
+
+      CALL WKVECT(RESU//'.CONL','G V R',NUEQ,IACONL)
+      DO 10 I=1,NUEQ
+        ZR(IACONL+I-1)=1.0D0
+   10 CONTINUE
+C
+      CALL WKVECT(RESU//'.REFA','G V K24',11,JREFA)
+      ZK24(JREFA-1+11)='MPI_COMPLET'
+      ZK24(JREFA-1+1)=BASEMO
+      ZK24(JREFA-1+2)=NUGENE
+      IF (LSYM) THEN
+         ZK24(JREFA-1+9)='MS'
+      ELSE
+         ZK24(JREFA-1+9)='MR'
+      ENDIF
+      ZK24(JREFA-1+10)='GENE'
+C
+      CALL WKVECT(RESU//'.DESC','G V I',3,IADESC)
+      ZI(IADESC)=2
+      ZI(IADESC+1)=NUEQ
+
+C     -- ON TESTE LA HAUTEUR MAXIMALE DES COLONNES DE LA MATRICE
+C     SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
+      IF (ZI(JSCDE-1+4).EQ.1) THEN
+        ZI(IADESC+2)=1
+C        CALL ASSERT(.NOT.LSYM)
+      ELSE
+        ZI(IADESC+2)=2
       ENDIF
 C
-      CALL WKVECT ( '&&PROJMR.VECTASS2', 'V V R', NEQ, IDVEC2 )
-      CALL WKVECT ( '&&PROJMR.BASEMO','V V R',NBMO*NEQ,IDBASE)
+      CALL WKVECT('&&PROJMR.VECTASS2','V V R',NEQ,IDVEC2)
+      CALL WKVECT('&&PROJMR.BASEMO','V V R',NBMO*NEQ,IDBASE)
 C ----- CONVERSION DE BASEMO A LA NUMEROTATION NU
       IF (TYPBAS.EQ.'MODE_GENE') THEN
-         CALL COPMOD(BASEMO,'DEPL',NEQ,NU,NBMO,ZR(IDBASE))
+        CALL COPMOD(BASEMO,'DEPL',NEQ,NU,NBMO,ZR(IDBASE))
       ELSE
-         CALL COPMO2(BASEMO,NEQ,NU,NBMO,ZR(IDBASE))
+        CALL COPMO2(BASEMO,NEQ,NU,NBMO,ZR(IDBASE))
       ENDIF
 C
-      CALL MTDSCR ( MATRAS )
-      CALL JEVEUO ( MATR//'.&INT', 'E', IMATRA )
+      CALL MTDSCR(MATRAS)
+      CALL JEVEUO(MATR//'.&INT','E',IMATRA)
 C
 C --- RECUPERATION DE LA STRUCTURE DE LA MATR_ASSE_GENE
 C
-      CALL JEVEUO ( NOMSTO//'.SCDI', 'L', JSCDI )
-      CALL JEVEUO ( NOMSTO//'.SCBL', 'L', JSCBL )
-      CALL JEVEUO ( NOMSTO//'.SCHC', 'L', JSCHC )
-C
-      DO 20 IBLO = 1 , NBLOC
-C
-         CALL JECROC ( JEXNUM(RESU//'.UALF',IBLO) )
-         CALL JEVEUO ( JEXNUM(RESU//'.UALF',IBLO), 'E', LDBLO )
+      CALL JEVEUO(NOMSTO//'.SCDI','L',JSCDI)
+      CALL JEVEUO(NOMSTO//'.SCBL','L',JSCBL)
+      CALL JEVEUO(NOMSTO//'.SCHC','L',JSCHC)
+
+
+C     -- CAS DES MATRICES SYMETRIQUES :
+C     ----------------------------------
+      IF (LSYM) THEN
+        DO 40 IBLO=1,NBLOC
+
+          CALL JECROC(JEXNUM(RESU//'.UALF',IBLO))
+          CALL JEVEUO(JEXNUM(RESU//'.UALF',IBLO),'E',LDBLO)
 C
 C ------ PROJECTION DE LA MATRICE ASSEMBLEE
 C
 C        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 C
-         N1BLOC = ZI(JSCBL+IBLO-1)+1
-         N2BLOC = ZI(JSCBL+IBLO)
-C
-         DO 30 I = N1BLOC , N2BLOC
-C
+          N1BLOC=ZI(JSCBL+IBLO-1)+1
+          N2BLOC=ZI(JSCBL+IBLO)
+
+          DO 30 I=N1BLOC,N2BLOC
+            NBJ=I-ZI(JSCHC+I-1)+1
+            CALL ASSERT(NBJ.EQ.1 .OR. NBJ.EQ.I)
+
 C --------- CALCUL PRODUIT MATRICE*MODE I
-            CALL MRMULT ( 'ZERO', IMATRA, ZR(IDBASE+(I-1)*NEQ),
-     &                    'R',ZR(IDVEC2),1)
-            CALL ZERLAG ( ZR(IDVEC2), NEQ, ZI(IDDEEQ) )
-C
+            CALL MRMULT('ZERO',IMATRA,ZR(IDBASE+(I-1)*NEQ),'R',
+     &                  ZR(IDVEC2),1)
+            CALL ZERLAG(ZR(IDVEC2),NEQ,ZI(IDDEEQ))
+
 C --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
-            DO 40 J = (I-ZI(JSCHC+I-1)+1) , I
-C
+            DO 20 J=NBJ,I
+
 C ------------ PRODUIT SCALAIRE VECTASS * MODE
-               PIJ = DDOT( NEQ, ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
+              PIJ=DDOT(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
 C
 C ------------ STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
-               ZR(LDBLO+ZI(JSCDI+I-1)+J-I-1) = PIJ
+              ZR(LDBLO+ZI(JSCDI+I-1)+J-I-1)=PIJ
 C
- 40         CONTINUE
- 30      CONTINUE
-         CALL JELIBE ( JEXNUM(RESU//'.UALF', IBLO) )
- 20   CONTINUE
-C
+   20       CONTINUE
+   30     CONTINUE
+          CALL JELIBE(JEXNUM(RESU//'.UALF',IBLO))
+   40   CONTINUE
+
+
+      ELSE
+C     -- CAS DES MATRICES NON-SYMETRIQUES :
+C     --------------------------------------
+        CALL ASSERT(NBLOC.EQ.1)
+        CALL JECROC(JEXNUM(RESU//'.UALF',1))
+        CALL JECROC(JEXNUM(RESU//'.UALF',2))
+        CALL JEVEUO(JEXNUM(RESU//'.UALF',1),'E',LDBLO1)
+        CALL JEVEUO(JEXNUM(RESU//'.UALF',2),'E',LDBLO2)
+        N1BLOC=ZI(JSCBL+1-1)+1
+        N2BLOC=ZI(JSCBL+1)
+        CALL ASSERT(N1BLOC.EQ.1)
+        CALL ASSERT(N2BLOC.EQ.NUEQ)
+
+        DO 60 I=1,NUEQ
+          NBJ=I-ZI(JSCHC+I-1)+1
+          CALL ASSERT(NBJ.EQ.1)
+          CALL MRMULT('ZERO',IMATRA,ZR(IDBASE+(I-1)*NEQ),'R',ZR(IDVEC2),
+     &                1)
+          CALL ZERLAG(ZR(IDVEC2),NEQ,ZI(IDDEEQ))
+          DO 50 J=1,NUEQ
+            PIJ=DDOT(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
+            IF (J.LE.I) THEN
+              ZR(LDBLO1+ZI(JSCDI+I-1)+J-I-1)=PIJ
+            ENDIF
+            IF (J.GE.I) THEN
+              ZR(LDBLO2+ZI(JSCDI+J-1)+I-J-1)=PIJ
+            ENDIF
+   50     CONTINUE
+   60   CONTINUE
+      ENDIF
+
+
       CALL JEDETR('&&PROJMR.VECTASS2')
       CALL JEDETR('&&PROJMR.BASEMO')
 
       CALL UALFVA(RESU,'G')
-C
+
       CALL JEDEMA()
       END

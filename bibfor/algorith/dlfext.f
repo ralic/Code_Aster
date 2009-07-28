@@ -9,7 +9,7 @@
       CHARACTER*24 MODELE,CARELE,CHARGE,MATE,NUMEDD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/07/2009   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C
         NOPASE = '        '
 
 C 2.1. ==> --- CAS D'UN CHARGEMENT DEFINI PAR VECT_ASSE ---
-
+      
         IF (NVECA.NE.0) THEN
 
           CALL FEXT(TEMPS,NEQ,NVECA,LIAD,LIFO,F)
@@ -171,6 +171,8 @@ C -- TEST DE PRESENCE DE CHARGEMENT DIRICHLET (DEPL IMPOSE NON NUL)
             F(JJ) = F(JJ) + ZR(IF2+JJ-1)
  2222     CONTINUE
 
+        ELSE
+           CALL R8INIR ( NEQ , 0.D0 , F , 1 )
         END IF
 C
 C====

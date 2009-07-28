@@ -1,4 +1,4 @@
-#@ MODIF sd_table_container SD  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF sd_table_container SD  DATE 28/07/2009   AUTEUR TORKHANI M.TORKHANI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,7 @@ from SD.sd_table import sd_table, Colonne
 from SD.sd_vect_elem import sd_vect_elem
 from SD.sd_matr_elem import sd_matr_elem
 from SD.sd_cham_elem import sd_cham_elem
+from SD.sd_mode_meca import sd_mode_meca
 # --------------------------------------------------------------------
 # sd_table contenant les colonnes nommée "NOM_OBJET","TYPE_OBJET",
 # et "NOM_SD"
@@ -75,6 +76,9 @@ class sd_table_container(sd_table):
              sd5.check(checker)
           elif lnom1[k][:9]=='CHAM_ELEM':
              sd5=sd_cham_elem(lnom2[k])
+             sd5.check(checker)
+          elif lnom1[k][:11]=='MODE_MECA':
+             sd5=sd_mode_meca(lnom2[k])
              sd5.check(checker)
           else:
              assert 0,lnom1[k]

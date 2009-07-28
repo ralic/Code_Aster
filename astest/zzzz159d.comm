@@ -1,5 +1,6 @@
-# MODIF  DATE 23/07/2007   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE (VALIDATION SENSIBILITE)
+# zzzz159d.para = tps_job 480 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# zzzz159d.para = tps_job 480 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE

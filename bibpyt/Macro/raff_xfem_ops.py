@@ -1,4 +1,4 @@
-#@ MODIF raff_xfem_ops Macro  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF raff_xfem_ops Macro  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,7 +78,7 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
       # recuperation du type de discontinuite :'FISSURE' ou 'INTERFACE'
       # si FISSURE   : l'erreur est la distance au fond de fissure
       # si INTERFACE : l'erreur est la distance a l'interface 
-      iret,ibid,typ_ds = aster.dismoi('F','TYPE_DISCONTINUITE',fiss.nom,'XFEM')
+      iret,ibid,typ_ds = aster.dismoi('F','TYPE_DISCONTINUITE',fiss.nom,'FISS_XFEM')
       typ_ds=typ_ds.rstrip()
 
       # extraction des champs level sets

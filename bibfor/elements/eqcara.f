@@ -4,7 +4,7 @@
       CHARACTER*6   TYPMOD
       INTEGER       NDIM, NCEQ ,NCMP, NBVA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,6 +42,11 @@ C--- ELEMENTS 2D MECA
        PARAMETER    (NBEL2D=48)
        CHARACTER*16  ELEM2D(NBEL2D)
 C
+C--- ELEMENTS FOURIER MECA
+       INTEGER       NBELFO
+       PARAMETER    (NBELFO=5)
+       CHARACTER*16  ELEMFO(NBELFO)
+C
 C--- ELEMENTS 3D MECA
        INTEGER       NBEL3D
        PARAMETER    (NBEL3D=28)
@@ -68,7 +73,7 @@ C
 C
        INTEGER       I
 C
-       LOGICAL       LELE2D,LELE3D,LELECQ
+       LOGICAL       LELE2D,LELEFO,LELE3D,LELECQ
        LOGICAL       LEDTHM,LEATHM,LE3THM
 C
        LOGICAL       LTEATT
@@ -84,6 +89,9 @@ C
      &     'MVAXQS8',  'MECPQS4',  'MECPTR3',  'MEDPQS4',  'MEDPQS8',
      &     'MIAXQU8',  'MIAXTR6',  'MIPLQU8',  'MIPLTR6',  'GIAXTR6',
      &     'GIAXQU8',  'GIPLTR6',  'GIPLQU8'/
+     
+       DATA ELEMFO /
+     & 'MEFOQU4' ,  'MEFOQU8' ,'MEFOQU9'  , 'MEFOTR3',   'MEFOTR6'/
      
        DATA ELEM3D /
      & 'MECA_HEXA20' ,  'MECA_HEXA27' ,'MECA_HEXA8'  , 'MECA_HEXS20',
@@ -149,6 +157,7 @@ C
 C DEB ------------------------------------------------------------------
 
       LELE2D = .FALSE.
+      LELEFO = .FALSE.
       LELE3D = .FALSE.
       LELECQ = .FALSE.
       LEDTHM = .FALSE.
@@ -170,6 +179,13 @@ C --- RECHERCHE DU TYPE D'ELEMENT 2D(AXI), 3D ou COQUE
             GOTO 40
          ENDIF
  10   CONTINUE
+C
+      DO 11 I=1,NBELFO
+         IF(NOMTE.EQ.ELEMFO(I)) THEN
+            LELEFO = .TRUE.
+            GOTO 40
+      ENDIF
+ 11   CONTINUE
 C
       DO 20 I=1,NBEL3D
          IF(NOMTE.EQ.ELEM3D(I)) THEN
@@ -225,6 +241,11 @@ C
          NCMP  = 7
          IF(LTEATT(' ','INCO','OUI')) NCEQ = 7
          IF(NOMTE.EQ.'MECA_SHB8') NBVA = 6
+      ELSEIF (LELEFO) THEN
+         TYPMOD = '3D'
+         NDIM  = 3
+         NCEQ  = 16
+         NCMP  = 7
       ELSEIF(LELECQ)THEN
          TYPMOD = 'COQUE'
          NDIM  = 3

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,12 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.5,
                                     NOMBRE=350,),)
-         
+                 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
+                        ECHEC=_F(SUBD_METHODE = 'UNIFORME',
+                                 SUBD_PAS     = 5,
+                                 SUBD_PAS_MINI=0.0000001,
+                                ),)
 
 ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),        
                      MODELE=MODE,
@@ -142,7 +147,7 @@ ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                            _F(CHARGE=COND_LIM,),),
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,
+                    INCREMENT=_F(LIST_INST=DEFLIST,
                                  ),
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
@@ -184,7 +189,7 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                            _F(CHARGE=COND_LIM,),),
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,),
+                    INCREMENT=_F(LIST_INST=DEFLIST,),
                     SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),

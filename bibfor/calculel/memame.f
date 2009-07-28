@@ -3,7 +3,7 @@
      &                  BASE  )
 
 C
-C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,15 +75,15 @@ C
       PARAMETER    (NBOUT=2, NBIN=18)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
+      CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
 C
-
       CHARACTER*2  CODRET
       CHARACTER*19 CHVARC,MATELE
       CHARACTER*24 LIGRMO
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
       INTEGER      NBOUT2
       INTEGER      NH,IRET,ICODE,IAREFE
-      INTEGER      IFMDBG,NIVDBG
+      INTEGER      IFMDBG,NIVDBG,IER
       LOGICAL      DEBUG
       DATA CHVARC /'&&MEMAME.VARC'/
 C
@@ -130,73 +130,125 @@ C
       CALL JEEXIN(MATELE(1:19)//'.RELR',IRET)
       IF (IRET.GT.0) CALL JEDETR(MATELE(1:19)//'.RELR')
       IF (ICODE.EQ.2) GO TO 10
+
+C  -----VERIFICATION DE L'EXISTENCE D'UN MODELE X-FEM------
+      CALL EXIXFE(MODELE,IER)
+      IF (IER.NE.0) THEN
+
+C  -----CAS DU MODELE X-FEM-----------------------
+
+        PINTTO = MODELE(1:8)//'.TOPOSE.PIN'
+        CNSETO = MODELE(1:8)//'.TOPOSE.CNS'
+        HEAVTO = MODELE(1:8)//'.TOPOSE.HEA'
+        LONCHA = MODELE(1:8)//'.TOPOSE.LON'
+        BASLOC = MODELE(1:8)//'.BASLOC'
+        LSN    = MODELE(1:8)//'.LNNO'
+        LST    = MODELE(1:8)//'.LTNO'
+        STANO  = MODELE(1:8)//'.STNO'
+
+C ----- REMPLISSAGE DES CHAMPS D'ENTREE
 C
-C --- CHAMPS D'ENTREE
-C
-      LPAIN(1)  = 'PGEOMER'
-      LCHIN(1)  = CHGEOM
-      LPAIN(2)  = 'PMATERC'
-      LCHIN(2)  = MATE
-      LPAIN(3)  = 'PCAORIE'
-      LCHIN(3)  = CHCARA(1)
-      LPAIN(4)  = 'PCADISM'
-      LCHIN(4)  = CHCARA(3)
-      LPAIN(5)  = 'PCAGNPO'
-      LCHIN(5)  = CHCARA(6)
-      LPAIN(6)  = 'PCACOQU'
-      LCHIN(6)  = CHCARA(7)
-      LPAIN(7)  = 'PCASECT'
-      LCHIN(7)  = CHCARA(8)
-      LPAIN(8)  = 'PVARCPR'
-      LCHIN(8)  = CHVARC
-      LPAIN(9)  = 'PCAARPO'
-      LCHIN(9)  = CHCARA(9)
-      LPAIN(10) = 'PCACABL'
-      LCHIN(10) = CHCARA(10)
-      LPAIN(11) = 'PCAGEPO'
-      LCHIN(11) = CHCARA(5)
-      LPAIN(12) = 'PABSCUR'
-      LCHIN(12) = CHGEOM(1:8)//'.ABS_CURV'
-      LPAIN(13) = 'PCAGNBA'
-      LCHIN(13) = CHCARA(11)
-      LPAIN(14) = 'PCAPOUF'
-      LCHIN(14) = CHCARA(13)
-      LPAIN(15) = 'PCOMPOR'
-      LCHIN(15) = COMPOR
-      LPAIN(16) = 'PNBSP_I'
-      LCHIN(16) = CHCARA(16)
-      LPAIN(17) = 'PFIBRES'
-      LCHIN(17) = CHCARA(17)
-      LPAIN(18) = 'PCINFDI'
-      LCHIN(18) = CHCARA(15)
+        LPAIN(1)  = 'PGEOMER'
+        LCHIN(1)  = CHGEOM
+        LPAIN(2)  = 'PMATERC'
+        LCHIN(2)  = MATE
+        LPAIN(3) = 'PPINTTO'
+        LCHIN(3) = PINTTO
+        LPAIN(4) = 'PHEAVTO'
+        LCHIN(4) = HEAVTO
+        LPAIN(5) = 'PLONCHA'
+        LCHIN(5) = LONCHA
+        LPAIN(6) = 'PCNSETO'
+        LCHIN(6) = CNSETO
+        LPAIN(7) = 'PBASLOR'
+        LCHIN(7) = BASLOC
+        LPAIN(8) = 'PLSN'
+        LCHIN(8) = LSN
+        LPAIN(9) = 'PLST'
+        LCHIN(9) = LST
+        LPAIN(10) = 'PSTANO'
+        LCHIN(10) = STANO  
 C
 C --- CHAMPS DE SORTIE
 C
-      LPAOUT(1) = 'PMATUUR'
-      LCHOUT(1) = MATELE(1:15)//'.M01'
-      LPAOUT(2) = 'PMATUNS'
-      LCHOUT(2) = MATELE(1:15)//'.M02'
-      IF (OPTION.EQ.'MASS_MECA') THEN
-        NBOUT2 = 2
-      ELSE
-        NBOUT2 = 1
-      END IF
+        LPAOUT(1) = 'PMATUUR'
+        LCHOUT(1) = MATELE(1:15)//'.M01'
+
+        CALL CALCUL('S',OPTION,LIGRMO,10,LCHIN,LPAIN,1,
+     &              LCHOUT,LPAOUT,BASE)
+        CALL REAJRE(MATELZ,LCHOUT(1),BASE)
+
+      ELSEIF (IER.EQ.0) THEN
 C
-C --- APPEL A CALCUL
+C----------CAS FEM CLASSIQUE-------------------------
 C
-      IF (DEBUG) THEN
-        CALL DBGCAL(OPTION,IFMDBG,
+C ----- CHAMPS D'ENTREE
+C
+        LPAIN(1)  = 'PGEOMER'
+        LCHIN(1)  = CHGEOM
+        LPAIN(2)  = 'PMATERC'
+        LCHIN(2)  = MATE
+        LPAIN(3)  = 'PCAORIE'
+        LCHIN(3)  = CHCARA(1)
+        LPAIN(4)  = 'PCADISM'
+        LCHIN(4)  = CHCARA(3)
+        LPAIN(5)  = 'PCAGNPO'
+        LCHIN(5)  = CHCARA(6)
+        LPAIN(6)  = 'PCACOQU'
+        LCHIN(6)  = CHCARA(7)
+        LPAIN(7)  = 'PCASECT'
+        LCHIN(7)  = CHCARA(8)
+        LPAIN(8)  = 'PVARCPR'
+        LCHIN(8)  = CHVARC
+        LPAIN(9)  = 'PCAARPO'
+        LCHIN(9)  = CHCARA(9)
+        LPAIN(10) = 'PCACABL'
+        LCHIN(10) = CHCARA(10)
+        LPAIN(11) = 'PCAGEPO'
+        LCHIN(11) = CHCARA(5)
+        LPAIN(12) = 'PABSCUR'
+        LCHIN(12) = CHGEOM(1:8)//'.ABS_CURV'
+        LPAIN(13) = 'PCAGNBA'
+        LCHIN(13) = CHCARA(11)
+        LPAIN(14) = 'PCAPOUF'
+        LCHIN(14) = CHCARA(13)
+        LPAIN(15) = 'PCOMPOR'
+        LCHIN(15) = COMPOR
+        LPAIN(16) = 'PNBSP_I'
+        LCHIN(16) = CHCARA(16)
+        LPAIN(17) = 'PFIBRES'
+        LCHIN(17) = CHCARA(17)
+        LPAIN(18) = 'PCINFDI'
+        LCHIN(18) = CHCARA(15)
+C
+C ----- CHAMPS DE SORTIE
+C
+        LPAOUT(1) = 'PMATUUR'
+        LCHOUT(1) = MATELE(1:15)//'.M01'
+        LPAOUT(2) = 'PMATUNS'
+        LCHOUT(2) = MATELE(1:15)//'.M02'
+        IF (OPTION.EQ.'MASS_MECA') THEN
+          NBOUT2 = 2
+        ELSE
+          NBOUT2 = 1
+        END IF
+C
+C ----- APPEL A CALCUL
+C
+        IF (DEBUG) THEN
+          CALL DBGCAL(OPTION,IFMDBG,
      &              NBIN  ,LPAIN ,LCHIN ,
      &              NBOUT2,LPAOUT,LCHOUT)
-      ENDIF
+        ENDIF
 C
-      CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN ,
+        CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN ,
      &                              NBOUT2,LCHOUT,LPAOUT,BASE)
 C
-C --- STOCKAGE DES RESU_ELEM
+C ----- STOCKAGE DES RESU_ELEM
 C
-      CALL REAJRE(MATELZ,LCHOUT(1),BASE)
-      CALL REAJRE(MATELZ,LCHOUT(2),BASE)
+        CALL REAJRE(MATELZ,LCHOUT(1),BASE)
+        CALL REAJRE(MATELZ,LCHOUT(2),BASE)
+      ENDIF
 
    10 CONTINUE
       CALL DETRSD('CHAMP_GD',CHVARC)

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE - COQUE_3D TRIA7
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,14 +72,6 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,DDL_IMPO=(
 #____________________ MODELISATION PRES_REP REEL _______________
 
 
-F_PRES=DEFI_CONSTANTE(   NOM_RESU='PRES',
-                                VALE=0.     )
-
-CHP_F=AFFE_CHAR_MECA_F(     MODELE=MO,
-                              PRES_REP=_F(  GROUP_MA = 'CYLINDRE',
-                                         PRES = F_PRES)
-                       )
-
 CHP=AFFE_CHAR_MECA(         MODELE=MO,
                               PRES_REP=_F(  GROUP_MA = 'CYLINDRE',  PRES = 10.)
                        )
@@ -88,8 +80,7 @@ CHP=AFFE_CHAR_MECA(         MODELE=MO,
 RESP=MECA_STATIQUE(       MODELE=MO,
                             CARA_ELEM=CA,        CHAM_MATER=CM,EXCIT=(
                             _F(  CHARGE = CH),
-                                  _F(  CHARGE = CHP),
-                                  _F(  CHARGE = CHP_F)),
+                            _F(  CHARGE = CHP),),
 
                         )
 

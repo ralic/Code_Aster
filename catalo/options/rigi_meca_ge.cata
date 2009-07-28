@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 % RESPONSABLE PELLET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -31,6 +31,15 @@ OPTION__
         PDEPLAR  DEPL_R
         PHARMON  HARMON
         PNBSP_I  NBSP_I
+%parametres spécifiques X-FEM
+        PSTANO   NEUT_I
+        PPINTTO  NEUT_R
+        PCNSETO  NEUT_I
+        PHEAVTO  NEUT_I
+        PLONCHA  NEUT_I
+        PBASLOR  NEUT_R
+        PLSN     NEUT_R
+        PLST     NEUT_R
    OUT__
 PMATUUR MDEP_R RESL__
 

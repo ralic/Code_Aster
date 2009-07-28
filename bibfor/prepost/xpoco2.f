@@ -1,8 +1,8 @@
       SUBROUTINE XPOCO2(MALINI,MAXFEM,DIRNO,NBNO,DIRMA,NBMA,
-     &                  CNS1,CNS2,CES1,CES2,CESVI1,CESVI2)
+     &                  CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,RESUCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF PREPOST  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
 
       IMPLICIT NONE
 
-      CHARACTER*8   MALINI,MAXFEM
+      CHARACTER*8   MALINI,MAXFEM,RESUCO
       CHARACTER*19  CNS1,CNS2,CES1,CES2,CESVI1,CESVI2
       INTEGER       NBNO,DIRNO(NBNO),NBMA,DIRMA(NBMA)
 C
@@ -37,7 +37,7 @@ C       DIRNO : TABLEAU DE CORRESPONDANCE DES NUMEROS DE NOEUDS
 C       NBNO  : LONGUEUR DE DIRNO
 C       CNS1   : CHAMP_NO_S DU DEPLACEMENT EN ENTREE
 C       CES1   : CHAMP_ELEM_S DE CONTRAINTES EN ENTREE
-
+C       RESUCO : NOM DU CONCEPT RESULTAT D'ORIGINE
 C   OUT
 C       CNS2   : CHAMP_NO_S DU DEPLACEMENT EN SORTIE
 C       CES2   : CHAMP_ELEM_S DE CONTRAINTES EN SORTIE
@@ -67,6 +67,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER      IMA,NPG1,NCMP1,NPG2,NCMP2,IPG,ICMP,IMA2,NPGV1,NPGV2
       INTEGER      NCMV1,NCMV2
       CHARACTER*8  K8B
+      CHARACTER*16  TYSD
       INTEGER      IVIEX,IRET
      
       
@@ -96,78 +97,81 @@ C     VERIF QUE LES 2 PREMIERES COMPOSANTES DU CHAMP DEP1 SONT DX DY
  110      CONTINUE
         ENDIF
  100  CONTINUE
-
+C
+      CALL GETTCO(RESUCO,TYSD)
+      IF (TYSD(1:9).NE.'MODE_MECA') THEN
 C     ------------------------------------------------------------------
 C                          CONTRAINTES
 C     ------------------------------------------------------------------
-      CALL JEVEUO(CES1//'.CESV','L',JCESV1)
-      CALL JEVEUO(CES1//'.CESD','L',JCESD1)
-      CALL JEVEUO(CES1//'.CESL','L',JCESL1)
-      CALL JEVEUO(CES2//'.CESV','E',JCESV2)
-      CALL JEVEUO(CES2//'.CESD','L',JCESD2)
-      CALL JEVEUO(CES2//'.CESL','E',JCESL2)
+        CALL JEVEUO(CES1//'.CESV','L',JCESV1)
+        CALL JEVEUO(CES1//'.CESD','L',JCESD1)
+        CALL JEVEUO(CES1//'.CESL','L',JCESL1)
+        CALL JEVEUO(CES2//'.CESV','E',JCESV2)
+        CALL JEVEUO(CES2//'.CESD','L',JCESD2)
+        CALL JEVEUO(CES2//'.CESL','E',JCESL2)
 
-      CALL JEEXIN(CESVI1//'.CESV',IRET)
-      IF(IRET .NE. 0) THEN      
-        CALL JEVEUO(CESVI1//'.CESV','L',JCVIV1)
-        CALL JEVEUO(CESVI1//'.CESD','L',JCVID1)
-        CALL JEVEUO(CESVI1//'.CESL','L',JCVIL1)
-      ENDIF
-      IVIEX = IRET
-
-      CALL JEEXIN(CESVI2//'.CESV',IRET)
-      IF(IRET .NE. 0) THEN      
-        CALL JEVEUO(CESVI2//'.CESV','E',JCVIV2)
-        CALL JEVEUO(CESVI2//'.CESD','L',JCVID2)
-        CALL JEVEUO(CESVI2//'.CESL','E',JCVIL2)
-      ENDIF
-      IVIEX = IVIEX*IRET
-
-      DO 10 IMA = 1,NBMA
-        IMA2 = DIRMA(IMA)
-        IF (IMA2.EQ.0) GOTO 10
-
-        NPG1  = ZI(JCESD1-1+5+4* (IMA-1)+1)
-        NCMP1 = ZI(JCESD1-1+5+4* (IMA-1)+3)
-        
-        NPG2  = ZI(JCESD2-1+5+4* (IMA2-1)+1)
-        NCMP2 = ZI(JCESD2-1+5+4* (IMA2-1)+3)
-
-        CALL ASSERT(NPG1.EQ.NPG2)
-        CALL ASSERT(NCMP1.EQ.NCMP2)
-        
-        IF(IVIEX .NE. 0) THEN
-          NPGV1  = ZI(JCVID1-1+5+4* (IMA-1)+1)
-          NCMV1 = ZI(JCVID1-1+5+4* (IMA-1)+3)
-          NPGV2  = ZI(JCVID2-1+5+4* (IMA2-1)+1)
-          NCMV2 = ZI(JCVID2-1+5+4* (IMA2-1)+3)
-          CALL ASSERT(NPG2.EQ.NPGV2)
-          CALL ASSERT(NPGV1.EQ.NPG2)
-          CALL ASSERT(NCMV1.LE.NCMV2)
+        CALL JEEXIN(CESVI1//'.CESV',IRET)
+        IF(IRET .NE. 0) THEN      
+          CALL JEVEUO(CESVI1//'.CESV','L',JCVIV1)
+          CALL JEVEUO(CESVI1//'.CESD','L',JCVID1)
+          CALL JEVEUO(CESVI1//'.CESL','L',JCVIL1)
         ENDIF
-        
-        DO 20 IPG = 1,NPG1
-          DO 30 ICMP = 1,NCMP1
-            CALL CESEXI('C',JCESD1,JCESL1,IMA,IPG,1,ICMP,IAD1)
-            CALL ASSERT(IAD1.GT.0) 
-            CALL CESEXI('C',JCESD2,JCESL2,DIRMA(IMA),IPG,1,ICMP,IAD2)
-            CALL ASSERT(IAD2.GT.0) 
-            ZL(JCESL2-1+IAD2) = .TRUE.
-            ZR(JCESV2-1+IAD2) = ZR(JCESV1-1+IAD1)
- 30       CONTINUE
-          IF(IVIEX .NE. 0) THEN
-            DO 40 ICMP = 1,NCMV1
-              CALL CESEXI('C',JCVID1,JCVIL1,IMA,IPG,1,ICMP,IAD1)
-              CALL ASSERT(IAD1.GT.0) 
-              CALL CESEXI('C',JCVID2,JCVIL2,DIRMA(IMA),IPG,1,ICMP,IAD2)
-              CALL ASSERT(IAD2.LT.0) 
-              IAD2 = -IAD2
-              ZL(JCVIL2-1+IAD2) = .TRUE.
-              ZR(JCVIV2-1+IAD2) = ZR(JCVIV1-1+IAD1)
- 40         CONTINUE
-          ENDIF
- 20     CONTINUE
- 10   CONTINUE
+        IVIEX = IRET
 
+        CALL JEEXIN(CESVI2//'.CESV',IRET)
+        IF(IRET .NE. 0) THEN      
+          CALL JEVEUO(CESVI2//'.CESV','E',JCVIV2)
+          CALL JEVEUO(CESVI2//'.CESD','L',JCVID2)
+          CALL JEVEUO(CESVI2//'.CESL','E',JCVIL2)
+        ENDIF
+        IVIEX = IVIEX*IRET
+
+        DO 10 IMA = 1,NBMA
+          IMA2 = DIRMA(IMA)
+          IF (IMA2.EQ.0) GOTO 10
+
+          NPG1  = ZI(JCESD1-1+5+4* (IMA-1)+1)
+          NCMP1 = ZI(JCESD1-1+5+4* (IMA-1)+3)
+        
+          NPG2  = ZI(JCESD2-1+5+4* (IMA2-1)+1)
+          NCMP2 = ZI(JCESD2-1+5+4* (IMA2-1)+3)
+
+          CALL ASSERT(NPG1.EQ.NPG2)
+          CALL ASSERT(NCMP1.EQ.NCMP2)
+        
+          IF(IVIEX .NE. 0) THEN
+            NPGV1  = ZI(JCVID1-1+5+4* (IMA-1)+1)
+            NCMV1 = ZI(JCVID1-1+5+4* (IMA-1)+3)
+            NPGV2  = ZI(JCVID2-1+5+4* (IMA2-1)+1)
+            NCMV2 = ZI(JCVID2-1+5+4* (IMA2-1)+3)
+            CALL ASSERT(NPG2.EQ.NPGV2)
+            CALL ASSERT(NPGV1.EQ.NPG2)
+            CALL ASSERT(NCMV1.LE.NCMV2)
+          ENDIF
+        
+          DO 20 IPG = 1,NPG1
+            DO 30 ICMP = 1,NCMP1
+              CALL CESEXI('C',JCESD1,JCESL1,IMA,IPG,1,ICMP,IAD1)
+              CALL ASSERT(IAD1.GT.0) 
+              CALL CESEXI('C',JCESD2,JCESL2,DIRMA(IMA),IPG,1,ICMP,IAD2)
+              CALL ASSERT(IAD2.GT.0) 
+              ZL(JCESL2-1+IAD2) = .TRUE.
+              ZR(JCESV2-1+IAD2) = ZR(JCESV1-1+IAD1)
+ 30         CONTINUE
+            IF(IVIEX .NE. 0) THEN
+              DO 40 ICMP = 1,NCMV1
+                CALL CESEXI('C',JCVID1,JCVIL1,IMA,IPG,1,ICMP,IAD1)
+                CALL ASSERT(IAD1.GT.0) 
+                CALL CESEXI('C',JCVID2,JCVIL2,DIRMA(IMA),IPG,1,
+     &                      ICMP,IAD2)
+                CALL ASSERT(IAD2.LT.0) 
+                IAD2 = -IAD2
+                ZL(JCVIL2-1+IAD2) = .TRUE.
+                ZR(JCVIV2-1+IAD2) = ZR(JCVIV1-1+IAD1)
+ 40           CONTINUE
+            ENDIF
+ 20       CONTINUE
+ 10     CONTINUE
+      ENDIF
       CALL JEDEMA()
       END

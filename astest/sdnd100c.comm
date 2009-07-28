@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE LACHER D'UN PATIN FROTTANT
 # sdnd100c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,6 +97,10 @@ MAILLAGE=POUTRE,
 L_INST=DEFI_LIST_REEL(  DEBUT=0.,
                INTERVALLE=_F(  JUSQU_A = .2, PAS = 0.0005))
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
+                        ECHEC=_F(SUBD_METHODE = 'UNIFORME',
+                                 SUBD_PAS     = 4,
+                                ),)
 #
 TRAN_DI=DYNA_NON_LINE(
                 MODELE=MODELE,
@@ -107,7 +111,7 @@ TRAN_DI=DYNA_NON_LINE(
                                DEPL = DEPLINI),
                 COMP_INCR=_F(  RELATION = 'DIS_CHOC',
                            MAILLE = 'EL1'),
-                INCREMENT=_F(  LIST_INST = L_INST),
+                INCREMENT=_F(  LIST_INST = DEFLIST),
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',
                                 ALPHA = -0.02),  #0.01

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE FISSURATION INTERFACE 3D (PENTA15) LOIS CZM_OUV_MIX ET CZM_TAC_MIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,6 +102,8 @@ L_INST=DEFI_LIST_REEL(
       _F( JUSQU_A = 10.0,    NOMBRE = 10 ),
       )
      )
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),)
 
 FCT = DEFI_FONCTION(
   NOM_PARA = 'INST',
@@ -224,7 +226,7 @@ STAT_NON_LINE(reuse = U_TAC,
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_PRISM',),
           ),
-  INCREMENT  = _F(LIST_INST = L_INST),
+  INCREMENT  = _F(LIST_INST = DEFLIST),
   CONVERGENCE = _F(
     RESI_REFE_RELA = 1.E-6,
     SIGM_REFE      = Sc,

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF OPTIONS  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 % RESPONSABLE PELLET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -43,6 +43,16 @@ OPTION__
 % que lineaire : modelisation 3D_FAISCEAU
         PCAPOUF  CAPOUF
         PCINFDI  CINFDI  <<  PCINFDI : INFORMATIONS SUR LES DISCRETS, PAR AFFE_CARA_ELEM  >>
+%parametres spécifiques X-FEM
+        PSTANO   NEUT_I
+        PPINTTO  NEUT_R
+        PCNSETO  NEUT_I
+        PHEAVTO  NEUT_I
+        PLONCHA  NEUT_I
+        PBASLOR  NEUT_R
+        PLSN     NEUT_R
+        PLST     NEUT_R
+%fin de paramèetres spécifiques X-FEM
    OUT__
         PMATUUR  MDEP_R  RESL__
         PMATUNS  MDNS_R  RESL__

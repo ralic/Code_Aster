@@ -15,7 +15,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,13 +92,15 @@ C..............................................................
 C----------------------------------------------------------------
       CHARACTER*8   ELREFP,ELRESE(3),FAMI(3)
       CHARACTER*24  COORSE,PINTER,AINTER,HEAV
-      REAL*8        HE
+      CHARACTER*16  K16BID
+      REAL*8        HE,R8BID
       INTEGER       CONNEC(6,4),NINTER,NPTS,NSE,CNSE(6,4),NPG,NBSIGM
       INTEGER       I,J,IT,ISE,IN,INO,NIT,CPT,NCMPS,IDEBS,JCOORS,IDEBV
       INTEGER       IBID,NSEMAX(3),IDECPG,NBSIG
       DATA          NSEMAX / 2 , 3 , 6 /
       DATA    ELRESE /'SE2','TR3','TE4'/
       DATA    FAMI   /'BID','XINT','XINT'/
+
 
 
 C     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
@@ -158,19 +160,38 @@ C         DEBUT DE LA ZONE MEMOIRE DE SIG et VI CORRESPONDANTE
           IF (NDIM .EQ. 3) THEN
 
             CALL ASSERT(NBSIG.EQ.6)
-            CALL XNMEL3(POUM,ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,NFE,
-     &                  BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,COMPOR,LGPG,
-     &                  CRIT,DEPL,LSN,LST,IDECPG,SIG(IDEBS+1),
-     &                  VI(IDEBV+1),MATUU,VECTU,CODRET)
-
+            IF (OPTION.EQ.'RIGI_MECA') THEN
+              CALL XNMEL3(POUM,ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,
+     &                    NFE,BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,
+     &                    K16BID,LGPG,R8BID,R8BID,LSN,LST,IDECPG,
+     &                    R8BID,R8BID,MATUU,R8BID,CODRET)           
+            ELSEIF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
+     &              OPTION(1:9).EQ.'FULL_MECA' .OR.
+     &              OPTION(1:10).EQ.'RIGI_MECA_')  THEN
+              CALL XNMEL3(POUM,ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,
+     &                    NFE,BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,
+     &                    COMPOR,LGPG,CRIT,DEPL,LSN,LST,IDECPG,
+     &                    SIG(IDEBS+1),VI(IDEBV+1),MATUU,VECTU,CODRET)
+            ENDIF
           ELSEIF (NDIM.EQ.2) THEN
 
             CALL ASSERT(NBSIG.EQ.4)
-            CALL XNMEL2(POUM,ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,NFE,
-     &                  BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,COMPOR,LGPG,
-     &                  CRIT,DEPL,LSN,LST,IDECPG,SIG(IDEBS+1),
-     &                  VI(IDEBV+1),MATUU,VECTU,CODRET)
 
+            IF (OPTION.EQ.'RIGI_MECA') THEN
+              CALL XNMEL2(POUM,ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,
+     &                    NFE,BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,
+     &                    K16BID,LGPG,R8BID,R8BID,LSN,LST,IDECPG,
+     &                    R8BID,R8BID,MATUU,R8BID,CODRET)
+
+            ELSEIF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
+     &              OPTION(1:9).EQ.'FULL_MECA' .OR.
+     &              OPTION(1:10).EQ.'RIGI_MECA_')  THEN
+
+              CALL XNMEL2(POUM,ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,
+     &                    NFE,BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,
+     &                    COMPOR,LGPG,CRIT,DEPL,LSN,LST,IDECPG,
+     &                    SIG(IDEBS+1),VI(IDEBV+1),MATUU,VECTU,CODRET)
+            ENDIF
           ENDIF
 
           CALL JEDETR(COORSE)
