@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005a.para = tps_job 60 mem_job 42Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,15 +109,15 @@ if 0 : # pour compter les noeuds en contact (ceux qui ont CONT != 0.) :
 TEST_TEMPS(
    RESU = (_F(
       COMMANDE  = 'STAT_NON_LINE',
-      MACHINE   = 'all',
-      VALE      = 6.,
+      MACHINE   = ('all', 'Calibre5'),
+      VALE      = (  6.,     4.),
       CRITERE   = 'ABSOLU',
       PRECISION = 2.,
       TYPE_TEST = 'USER', ),
          _F(
       COMMANDE  = 'STAT_NON_LINE',
-      MACHINE   = 'all',
-      VALE      = 8.,
+      MACHINE   = ('all', 'Calibre5'),
+      VALE      = (  8.,     6.),
       CRITERE   = 'ABSOLU',
       PRECISION = 2.,
       TYPE_TEST = 'USER+SYS',),

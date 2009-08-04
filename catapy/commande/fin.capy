@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,12 +19,16 @@
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
 FIN=PROC(nom="FIN",op=9999,repetable='n',fr="Fin d'une étude, fin du travail engagé par une des commandes DEBUT ou POURSUITE",
             UIinfo={"groupes":("Gestion du travail",)},
+#
+# FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
+# NonConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
+# En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.
+# Pour cela, on force certains mots-clés dans Execution/E_JDC.py.
+# 
          FORMAT_HDF      =SIMP(fr="sauvegarde de la base GLOBALE au format HDF",statut='f',
                                typ='TXM',defaut="NON",into=("OUI","NON",) ), 
          RETASSAGE       =SIMP(fr="provoque le retassage de la base GLOBALE",
                                statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
-         PERFORMANCE     =SIMP(fr="provoque l'impression d'un résumé des mesures de temps ",
-                               statut='f',typ='TXM',defaut="OUI",into=("OUI","NON",) ),
          INFO_RESU       =SIMP(fr="provoque l'impression des informations sur les structures de données",
                                statut='f',typ='TXM',defaut="OUI",into=("OUI","NON",) ),
          UNITE           =SIMP(statut='f',typ='I',defaut=6),  

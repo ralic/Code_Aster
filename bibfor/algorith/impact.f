@@ -9,7 +9,7 @@
       CHARACTER*(*)       NMTAB
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/07/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR BRIE N.BRIE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,6 +93,8 @@ C
                IFIN   = I
                TCHOC  = T(IFIN) - T(IDEBUT)
                FNMMOY = FNMMOY + FNMAX
+C                    FNMMOY EST PROVISOIREMENT LE CUMUL DES FNMAX, ON
+C                    DIVISE A LA FIN PAR NBCHOC POUR AVOIR LA MOYENNE
                FNMETY = FNMETY + FNMAX*FNMAX
                NBCHOC = NBCHOC + 1
                ICHOC  = 0
@@ -143,6 +145,7 @@ C
       IF ( NBCHOC .NE. 0 ) THEN
 C      ON PASSE PAR UNE VARIABLE INTERMEDIAIRE FNMMO2
 C      POUR EVITER LES PROBLEMES DE PRECISION
+         FNMMOY = FNMMOY / NBCHOC
          FNMMO2 = FNMMOY*FNMMOY
          FNMETY = SQRT(ABS(FNMETY/NBCHOC-FNMMO2))
       ELSE

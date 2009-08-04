@@ -2,7 +2,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,10 +38,10 @@ C ======================================================================
         REAL*8       S(6), SII, HTS, SIIC, NORM(6), EPSSIG, SIIREL, PREF
         REAL*8       N, RM, RC, A, B, C, PCO, PA, QINIT, HDEV, QGX
         REAL*8       BETA, BETAPR, GAMMA, MUCJS, DFHGD, DFH(6), HGD(6)
-        REAL*8       Q(6), QII, QQ(6), QQII, DET
+        REAL*8       Q(6), QII, QQ(6), QQII
         REAL*8       PC, COS3TQ, HTQ, COSA, COSDIF, RR, PHI, PHIO
-        REAL*8       DETS, COS3TS, TANGS, TANGQ, TETAS, TETAQ, COS3T
-        REAL*8       TRUC, SIGNE, COEF1, COEF2, COEF3, COEF4, TRACE
+        REAL*8       COS3TS, TANGS, TANGQ, TETAS, TETAQ, COS3T
+        REAL*8       TRUC, SIGNE, COEF3, COEF4, TRACE
         REAL*8       MUN5, ZERO, D12, UN, DEUX, TROIS, HLODE
         CHARACTER*8  MOD
 C ======================================================================
@@ -253,10 +253,7 @@ C                         HDEV  +  DFDDS(R,S) HOOK(R,S,T,U) GD(T,U)
 C
 C --- C'EST A DIRE :  DSDE = HOOK - HGD.DFH / ( HDEV + DFHGD ) ---------
 C ======================================================================
-        DO 150 I = 1, 6
-        DO 150 J = 1, 6
-           DSDE(I,J) = 0.D0
-  150   CONTINUE
+        CALL MATINI(6,6,0.D0,DSDE)
         DO 160 I = 1, NDT
         DO 160 J = 1, NDT
            DSDE(I,J) = HOOK(I,J) - HGD(I)*DFH(J) / (HDEV+DFHGD)

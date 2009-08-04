@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       REAL*8    QSI, ETA, HFT2(2,6), DEPF(12), CODI(*), LCOT(*), VT(2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,10 +117,9 @@ C
       TKQ(6,12) =   QSI * SU(3) - ETA * SU(4) - 0.25D0
 C
 C     ------ VT = HFT2.TKQ.DEPF ------------------------------------
-      DO 115 I = 1, 2
-      DO 115 J = 1, 12
-         BC(I,J) = 0.D0
-  115 CONTINUE
+
+      CALL MATINI(2,12,0.D0,BC)
+
       DO 130 I = 1, 2
          DO 120 J = 1, 3*NNO
             DO 110 K = 1, 6

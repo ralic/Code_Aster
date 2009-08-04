@@ -1,5 +1,6 @@
-# MODIF  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 03/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  DSR3 SANS RENUM / AFFE_CHAR_MECA / MECA_STAT(LDLT)
+# yyyy104a.para = tps_job 1320 mem_job 400Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +53,8 @@ CHA=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
 #
 
 IMPR_JEVEUX ( ENTITE='MEMOIRE' )
+
+IMPR_JEVEUX ( ENTITE='ENREGISTREMENT' , CLASSE = 'G' , NUMERO=1 , INFO=1)
 
 VECAS=MECA_STATIQUE(    MODELE=MO,
                              CHAM_MATER=CHMAT,

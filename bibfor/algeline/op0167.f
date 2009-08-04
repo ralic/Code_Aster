@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/08/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -374,7 +374,9 @@ C
      &                             ZI(JNUM+IOCC-1),N1)
           CALL PALIM2('MODI_MAILLE',IOCC,NOMAIN,MOMANU,MOMANO,
      &                ZI(JIAD+IOCC-1))
-          IF (ZI(JIAD+IOCC-1)-1.LE.0)GOTO 60
+          IF (ZI(JIAD+IOCC-1)-1.LE.0) THEN
+            CALL U2MESG('F','MODELISA3_32',1,OPTION,0,0,0,0.D0)
+          ENDIF
 
           CALL WKVECT(LISI,'V V I',ZI(JIAD+IOCC-1)-1,JLII)
           CALL WKVECT(LISK,'V V K8',ZI(JIAD+IOCC-1)-1,JLIK)
@@ -415,6 +417,7 @@ C LES AUTRES SE TROUVENT EN INCREMENTANT
           ENDIF
    60   CONTINUE
 C
+
         CALL JEVEUO(MOMUTO,'L',JMOMTU)
         CALL JEVEUO(MOMOTO,'L',JMOMTO)
         NBNOAJ=IAD-1

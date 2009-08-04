@@ -6,23 +6,23 @@ C
        IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
@@ -30,7 +30,7 @@ C ======================================================================
 C     BUT:  CALCUL  DE LA MATRICE B EN MODE D'INTEGRATION MIXTE
 C              AVEC ELEMENTS P2P1
 C     EN MECANIQUE DES MILIEUX POREUX PARTIELLEMENT SATURE
-C     AVEC COUPLAGE THM 
+C     AVEC COUPLAGE THM
 C ======================================================================
 C.......................................................................
 C ARGUMENTS D'ENTREE
@@ -87,10 +87,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C ======================================================================
       LOGICAL      AXI
-      INTEGER      NDDLS,NDDLM,NMEC,NP1,NP2,NDIM,NNO,I,N,G,KK,J,YAMEC
+      INTEGER      NDDLS,NDDLM,NMEC,NP1,NP2,NDIM,NNO,I,N,KK,YAMEC
       INTEGER      NNOS,NNOM,NPI,KPI,DIMDEF,DIMUEL,IPOIDS,IDFDE,IVF
       INTEGER      ADDEME,YAP1,YAP2,ADDEP1,ADDEP2,YATE,ADDETE
-      INTEGER      IPOID2,IDFDE2,IVF2,IDL,IDL1M,IV
+      INTEGER      IPOID2,IDFDE2,IVF2
       REAL*8       DFDI(NNO,3),DFDI2(NNOS,3),GEOM(NDIM,NNO),POIDS,POIDS2
       REAL*8       B(DIMDEF,DIMUEL),RAC,R,RMAX
 C ======================================================================
@@ -100,11 +100,7 @@ C ======================================================================
 C ======================================================================
 C --- INITIALISATION DE LA MATRICE B -----------------------------------
 C ======================================================================
-      DO 100 N=1,DIMUEL
-         DO 101 G=1,DIMDEF
-            B(G,N)=0.D0
- 101     CONTINUE
- 100  CONTINUE
+      CALL MATINI(DIMDEF,DIMUEL,0.D0,B)
 C ======================================================================
 C --- RECUPERATION DES DERIVEES DES FONCTIONS DE FORME -----------------
 C ======================================================================
@@ -150,7 +146,7 @@ C ======================================================================
          KK = (KPI-1)*NNO
          R  = 0.D0
          DO 10 N=1,NNO
-            R  = R + ZR(IVF + N + KK - 1)*GEOM(1,N) 
+            R  = R + ZR(IVF + N + KK - 1)*GEOM(1,N)
  10      CONTINUE
 C ======================================================================
 C --- DANS LE CAS OU R EGAL 0, ON A UN JACOBIEN NUL --------------------
@@ -175,7 +171,7 @@ C --- AUX NOEUDS SOMMETS -----------------------------------------------
 C ======================================================================
       DO 102 N=1,NNOS
 C ======================================================================
-         IF (YAMEC.EQ.1) THEN 
+         IF (YAMEC.EQ.1) THEN
             DO 103 I=1,NDIM
                B(ADDEME-1+I,(N-1)*NDDLS+I)=
      +         B(ADDEME-1+I,(N-1)*NDDLS+I)+ZR(IVF+N+(KPI-1)*NNO-1)
@@ -194,7 +190,7 @@ C ======================================================================
                IF (R .EQ. 0.D0) THEN
                   B(ADDEME+4,(N-1)*NDDLS+1)= DFDI(N,1)
                ELSE
-                  KK=(KPI-1)*NNO 
+                  KK=(KPI-1)*NNO
                   B(ADDEME+4,(N-1)*NDDLS+1)=ZR(IVF+N+KK-1)/R
                ENDIF
             ENDIF
@@ -286,7 +282,7 @@ C ======================================================================
                IF (R .EQ. 0.D0) THEN
                   B(ADDEME+4,NNOS*NDDLS+(N-1)*NDDLM+1)=DFDI(N+NNOS,1)
                ELSE
-                  KK=(KPI-1)*NNO 
+                  KK=(KPI-1)*NNO
                   B(ADDEME+4,NNOS*NDDLS+(N-1)*NDDLM+1)=
      +                                             ZR(IVF+N+NNOS+KK-1)/R
                ENDIF

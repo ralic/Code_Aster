@@ -6,7 +6,7 @@
      &                  SIGM,VIM,
      &                  DFDI,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,8 +39,6 @@ C TOLE CRP_21
       REAL*8 SIGM(78,NBPG1),SIGP(78,NBPG1)
       REAL*8 VIM(LGPG,NBPG1),VIP(LGPG,NBPG1)
       REAL*8 MATUU(*),VECTU(3,NNO),ANGMAS(3)
-
-      LOGICAL DEFANE
 C.......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -76,39 +74,21 @@ C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C.......................................................................
 C
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER  ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-
       LOGICAL GRAND,CALBN,AXI
-      INTEGER KPG,I,II,INO,IA,J,K,J1,KL,PROJ,COD(9),NBPG2,IC
-      INTEGER NDIM,NNOS,JGANO,KP,IAA,KP1,KP3
+      INTEGER KPG,I,II,INO,IA,J,K,KL,PROJ,COD(9),NBPG2
+      INTEGER NDIM,NNOS,JGANO,KP,IAA
       REAL*8 D(6,6),F(3,3),EPS(6),DEPS(6),R,S,SIGMA(6),SIGN(6)
-      REAL*8 POIDS,TMP,POIPG2(8)
+      REAL*8 POIDS,POIPG2(8)
       REAL*8 ELGEOM(10,9)
       REAL*8 JAC,SIGAS(6,8),INVJA(3,3),BI(3,8),HX(3,4)
       REAL*8 GAM(4,8),COOPG2(24),H(8,4),DH(4,24)
       REAL*8 QPLUS(72),QMOINS(72),DQ(72)
-      REAL*8 BN(6,3,8),P(3,3)
+      REAL*8 BN(6,3,8)
       REAL*8 PQX(4),PQY(4),PQZ(4)
       REAL*8 DFDX(8),DFDY(8),DFDZ(8)
-      REAL*8 VALPAR(3),VALRES(2),NU,NUB,RAC2,R8VIDE,DEN,BID
-      REAL*8 XAB(6,24),K0(24,24),MATUUR(24,24),DJAC(6,6)
+      REAL*8 VALRES(2),NU,NUB,RAC2,DEN,BID
       CHARACTER*2 CODRE
-      CHARACTER*8 NOMRES(2),NOMPAR(3)
+      CHARACTER*8 NOMRES(2)
       CHARACTER*16 OPTIOS
       DATA H/ 1.D0, 1.D0, -1.D0,-1.D0,-1.D0,-1.D0, 1.D0, 1.D0,
      &        1.D0,-1.D0, -1.D0, 1.D0,-1.D0, 1.D0, 1.D0,-1.D0,
@@ -148,12 +128,8 @@ C - INITIALISATION HEXAS8
 
 C - CALCUL DES COEFFICIENTS BI (MOYENNE DES DERIVEES DES FCTS DE FORME)
 
-      DO 66 I = 1,3
-        DO 77 INO = 1,NNO
-          II=3*(INO-1)
-          BI(I,INO) = 0.D0
-  77    CONTINUE
-  66  CONTINUE
+      CALL MATINI(3,NNO,0.D0,BI)
+
       DEN = 0.D0
       DO 2 KPG = 1,NBPG2
         CALL DFDM3D ( NNO, KPG, IPOID2, IDFDE2, GEOM,
@@ -356,17 +332,8 @@ C      INCREMENT DES CONTRAINTES GENERALISEES
           QPLUS(I) = QMOINS(I) + DQ(I)
   180   CONTINUE
 
-        DO 181 I = 1,NNO
-          DO 182 J = 1,3
-              VECTU(J,I) = 0.D0
-  182     CONTINUE
-  181   CONTINUE
-
-        DO 183 I = 1,6
-          DO 184 J = 1,NBPG2
-              SIGAS(I,J) = 0.D0
-  184     CONTINUE
-  183   CONTINUE
+        CALL MATINI(3,NNO,0.D0,VECTU)
+        CALL MATINI(6,NBPG2,0.D0,SIGAS)
 
         CALBN = .TRUE.
 

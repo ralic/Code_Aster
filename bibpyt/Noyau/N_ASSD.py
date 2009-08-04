@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,21 +126,12 @@ class ASSD(object):
 
 
    def accessible(self):
+      """Dit si on peut acceder aux "valeurs" (jeveux) de l'ASSD.
       """
-         But : Savoir si on peut acceder aux "valeurs" (jeveux) de l'ASSD.
-               Retourne True si le jdc est en mode PAR_LOT='NON'
-               ou si on est sous une macro (== on n'est pas dans le jdc).
-      """
-#      print '<-- MC', self.nom
-#      print '      ', self.jdc
-#      print '      ', self.etape.nom, self.etape, 'is include ? ', self.etape.is_include()
-#      print '      ', self.etape.parent.nom, self.etape.parent
-      if hasattr(self, 'jdc') and self.jdc != None and hasattr(self, 'etape'):
-         # etape.parent == jdc pour une etape, pas pour une macro-etape
-         res = self.jdc.par_lot != 'OUI' or (self.jdc is not self.etape.parent and not self.etape.parent.is_include())
-      else:
-         res = True
-      return res
+      if CONTEXT.debug: print '| accessible ?', self.nom
+      is_accessible = CONTEXT.get_current_step().sd_accessible()
+      if CONTEXT.debug: print '  `- is_accessible =', repr(is_accessible)
+      return is_accessible
 
 
 class assd(ASSD):

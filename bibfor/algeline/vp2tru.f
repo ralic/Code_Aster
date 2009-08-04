@@ -10,7 +10,7 @@
       REAL*8 VALR(2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +48,7 @@ C
 C     ------------------------------------------------------------------
 C
       IF (METHOD.EQ.'TRI_DIAG') THEN
-        DO 10 I = 1,NBVECT
-           DO 10 J = 1,NBVECT
-                A(I,J) = 0.D0
-   10   CONTINUE
+        CALL MATINI(NBVECT,NBVECT,0.D0,A)
         A(1,1) = SIGNES(1) * ALPHA(1)
         A(1,2) = SIGNES(1) * BETA(2)
         DO 20 I = 2,NBVECT - 1

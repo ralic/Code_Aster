@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai Messages  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,18 +157,6 @@ cata_msg = {
 
 36 : _("""
  on ne traite que des cham_no reels ou complexes. vraiment desole !
-"""),
-
-37 : _("""
- acces "r8" interdit ici.
-"""),
-
-38 : _("""
- acces interdit
-"""),
-
-39 : _("""
- genre :  %(k1)s  non prevu.
 """),
 
 40 : _("""

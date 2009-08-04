@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -433,6 +433,20 @@ Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
 """),
 
 92 : _("""   !          aucune alarme                                                !
+"""),
+
+93 : _("""
+La variable python "%(k1)s" fait référence au concept "%(k2)s".
+Cela se produit avec ce type d'enchainement :
+   %(k2)s = COMMANDE(...)
+   %(k1)s = %(k2)s
+
+On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
+
+-> Conseil :
+   Pour éviter cette alarme, supprimer l'alias dans le jeu de commandes
+   qui produit la base :
+      del %(k1)s
 """),
 
 }

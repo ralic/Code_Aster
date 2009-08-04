@@ -1,6 +1,6 @@
       SUBROUTINE DMATDP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,REPERE,D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,13 +68,9 @@ C      ---------------
       VALPAR = INSTAN
       NOMPAR = 'INST'
 
-      DO 20 I = 1,4
-        DO 10 J = 1,4
-          D(I,J) = ZERO
-          DORTH(I,J) = ZERO
-          WORK(I,J)  = ZERO
-   10   CONTINUE
-   20 CONTINUE
+      CALL MATINI(4,4,ZERO,D)
+      CALL MATINI(4,4,ZERO,DORTH)
+      CALL MATINI(4,4,ZERO,WORK)
 
 C ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 C      --------------------------------------------

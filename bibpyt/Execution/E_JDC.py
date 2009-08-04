@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF E_JDC Execution  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,6 +99,7 @@ class JDC:
       except self.codex.error,exc_val:
          self.traiter_user_exception(exc_val)
          self.affiche_fin_exec()
+         e = self.get_derniere_etape()
          self.traiter_fin_exec("par_lot",e)
 
       except MemoryError, e:
@@ -107,11 +108,24 @@ class JDC:
       except EOFError:
          # L'exception EOFError a ete levee par l'operateur FIN
          self.affiche_fin_exec()
+         e = self.get_derniere_etape()
          self.traiter_fin_exec("par_lot",e)
          pass
 
       CONTEXT.unset_current_step()
       return ier
+
+   def get_derniere_etape(self):
+       """ Cette méthode sert à récupérer la dernière étape exécutée
+           Elle sert essentiellement en cas de plantage
+       """
+       numMax = -1
+       etapeMax = None
+       for e in self.etapes:
+          if numMax < self.index_etapes[e]:
+             numMax = self.index_etapes[e]
+             etapeMax = e
+       return etapeMax
 
    def affiche_fin_exec(self):
        """ Cette methode affiche les statistiques de temps finales.
@@ -197,6 +211,13 @@ class JDC:
           # qui ont été réellement exécutées (du début jusqu'à etape)
           context.update(self.get_contexte_avant(etape))
 
+       if CONTEXT.debug:
+          print '<DBG> (traiter_fin_exec) context.keys(assd) =',
+          for key,value in context.items():
+             if isinstance(value,ASSD) :
+                print key,
+          print
+
        # On élimine du contexte courant les objets qui ne supportent pas
        # le pickle (version 2.2)
        context=self.filter_context(context,mode)
@@ -250,7 +271,7 @@ class JDC:
           self.codex.impers()
           self.cr.exception("<S> Exception utilisateur levee mais pas interceptee.\n"
                             "Les bases sont fermees.\n"+raison)
-          self.fini_jdc()
+          self.fini_jdc(exc_val)
 
 
    def abort_jdc(self):
@@ -261,16 +282,34 @@ class JDC:
       print ">> JDC.py : FIN RAPPORT"
       os.abort()
 
-   def fini_jdc(self):
-      """ Cette methode execute la commande FIN du catalogue
+
+   def fini_jdc(self, exc_val):
+      """ Cette methode execute la commande FIN du JDC
           pour terminer proprement le JDC
       """
-      self.set_par_lot("NON")
-      fin_cmd=self.get_cmd("FIN")
+      fin_etape = None
+      for e in self.etapes:
+         if e.nom == 'FIN':
+            fin_etape = e
+            break
+      assert fin_etape != None, "Il manque l'étape FIN !"
+      # insertion de l'étape FIN du jdc juste après l'étape courante
+      self.etapes.insert(self.index_etape_courante + 1, fin_etape)
+      # si ArretCPUError, on supprime tout ce qui peut coûter
+      if isinstance(exc_val, self.codex.ArretCPUError):
+         # faire évoluer avec fin.capy
+         fin_etape.valeur.update({
+            'FORMAT_HDF'  : 'NON',
+            'RETASSAGE'   : 'NON',
+            'INFO_RESU'   : 'NON',
+         })
+         fin_etape.McBuild()
       try:
-             fin_cmd()
-      except:
-             pass
+         # raise EOFError op9999 > jefini > xfini(19)
+         fin_etape.BuildExec()
+      except EOFError:
+         pass
+
 
    def get_liste_etapes(self):
       liste=[]
@@ -306,7 +345,6 @@ class JDC:
       for attr in self.l_pick_attr:
          d[attr] = getattr(self, attr)
       context['jdc_pickled_attributes'] = d
-      #print "<DBG> context['jdc_pickled_attributes'] = ", d
 
 
    def restore_pickled_attrs(self, context):
@@ -316,7 +354,7 @@ class JDC:
       for attr, value in d.items():
          #assert attr in self.l_pick_attr
          setattr(self, attr, value)
-         #print "<DBG> jdc.'%s' = %s" % (attr, value)
+
 
    def get_concept(self, nomsd):
       """

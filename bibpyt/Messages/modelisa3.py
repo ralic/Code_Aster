@@ -1,21 +1,21 @@
-#@ MODIF modelisa3 Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa3 Messages  DATE 03/08/2009   AUTEUR CAO B.CAO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -50,12 +50,11 @@ cata_msg={
  impossibilite de faire le vis a vis des 2 listes de noeuds, elles n'ont pas le meme nombre de noeuds apres elimination des doublons.
 """),
 
-
-
-
-
-
-
+8: _("""
+ Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :
+  Vous avez demandé de transformer des mailles quadratiques en mailles linéaires.
+  Mais il n'y a aucune maille quadratique à transformer.
+"""),
 
 9: _("""
  le mot cle "tran" sous le mot cle facteur %(k1)s  n"admet que 3 valeurs
@@ -70,16 +69,16 @@ cata_msg={
 """),
 
 12: _("""
-  Mot clé LIAISON_GROUP : les mots clés %(k1)s et %(k2)s à mettre 
+  Mot clé LIAISON_GROUP : les mots clés %(k1)s et %(k2)s à mettre
   en vis-à-vis n'ont pas le meme nombre de noeuds.
-  
+
    - Nombre de noeuds présent sous le mot clé %(k1)s: %(i1)d
    - Nombre de noeuds présent sous le mot clé %(k2)s: %(i2)d
 
 """),
 
 13: _("""
- il n'y a aucun groupe de noeuds ni aucun noeud defini apres le mot facteur  %(k1)s 
+ il n'y a aucun groupe de noeuds ni aucun noeud defini apres le mot facteur  %(k1)s
 """),
 
 14: _("""
@@ -160,6 +159,12 @@ Suggestion :
  l'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyenne, au noeud  %(k1)s , est superieur a 10 degres et vaut  %(k2)s  degres.
 """),
 
+32: _("""
+ Erreur utilisateur dans CREA_MAILLAGE/MODI_MAILLE :
+  Vous avez demandé la transformation de type %(k1)s.
+  Mais il n'y a aucune maille quadratique à transformer.
+"""),
+
 
 35: _("""
  probleme pour determiner le rang de la composante <n> de la grandeur <sief_r>
@@ -170,7 +175,7 @@ Suggestion :
 """),
 
 37: _("""
- erreur a l appel de la routine etenca pour extension de la carte  %(k1)s 
+ erreur a l appel de la routine etenca pour extension de la carte  %(k1)s
 """),
 
 
@@ -192,6 +197,12 @@ Suggestion :
 
 43: _("""
  trop de grandeurs dans la liaison unilaterale
+"""),
+
+44: _("""
+ Erreur utilisateur dans CREA_MAILLAGE / LINE_QUAD :
+  Vous avez demandé de transformer des mailles linéaires en mailles quadratiques.
+  Mais il n'y a aucune maille linéaire à transformer.
 """),
 
 
@@ -236,15 +247,15 @@ Suggestion :
 """),
 
 67: _("""
- on doit utiliser obligatoirement le mot-cle dist pour definir la demi-largeur de bande. 
+ on doit utiliser obligatoirement le mot-cle dist pour definir la demi-largeur de bande.
 """),
 
 68: _("""
- on doit donner une distance strictement positive pour definir la bande. 
+ on doit donner une distance strictement positive pour definir la bande.
 """),
 
 69: _("""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option bande de crea_group_ma. ce mot-cle permet de definir la direction perpendiculaire au plan milieu de la bande. 
+ on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option bande de crea_group_ma. ce mot-cle permet de definir la direction perpendiculaire au plan milieu de la bande.
 """),
 
 70: _("""
@@ -264,11 +275,11 @@ Suggestion :
 """),
 
 74: _("""
- on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon du cylindre. 
+ on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon du cylindre.
 """),
 
 75: _("""
- on doit donner un rayon strictement positif pour definir la cylindre. 
+ on doit donner un rayon strictement positif pour definir la cylindre.
 """),
 
 76: _("""
@@ -296,11 +307,11 @@ Suggestion :
 """),
 
 82: _("""
- on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon de la sphere. 
+ on doit utiliser obligatoirement le mot-cle rayon pour definir le rayon de la sphere.
 """),
 
 83: _("""
- on doit donner un rayon strictement positif pour definir la sphere. 
+ on doit donner un rayon strictement positif pour definir la sphere.
 """),
 
 84: _("""
@@ -324,7 +335,7 @@ Suggestion :
 """),
 
 89: _("""
- on doit donner une demi-epaisseur strictement positive definir l'enveloppe du cylindre. 
+ on doit donner une demi-epaisseur strictement positive definir l'enveloppe du cylindre.
 """),
 
 90: _("""
@@ -332,7 +343,7 @@ Suggestion :
 """),
 
 91: _("""
- on doit donner une demi-epaisseur strictement positive definir l'enveloppe de la sphere. 
+ on doit donner une demi-epaisseur strictement positive definir l'enveloppe de la sphere.
 """),
 
 92: _("""
@@ -340,7 +351,7 @@ Suggestion :
 """),
 
 93: _("""
- on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option plan de crea_group_no. ce mot-cle permet de definir la direction  perpendiculaire au plan ou a la droite. 
+ on doit utiliser obligatoirement le mot-cle angl_naut ou le mot-cle vect_normale pour l'option plan de crea_group_no. ce mot-cle permet de definir la direction  perpendiculaire au plan ou a la droite.
 """),
 
 94: _("""
@@ -360,7 +371,7 @@ Suggestion :
 """),
 
 98: _("""
- on doit donner une tolerance strictement positive pour verifier l'appartenance d'un noeud au plan ou a la droite. 
+ on doit donner une tolerance strictement positive pour verifier l'appartenance d'un noeud au plan ou a la droite.
 """),
 
 99: _("""

@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 14/04/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 
 def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,
-                              FOND_FISS,CHARGE,RESU_THER,AFFE_MATERIAU,
+                              FOND_FISS,RESU_THER,AFFE_MATERIAU,
                               PRES_REP,ECHANGE,TORS_P1,COMP_INCR,COMP_ELAS,
                               SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
                               INCREMENT,THETA_3D,IMPR_TABLE,IMPRESSION,INFO,TITRE ,**args):
@@ -364,9 +364,11 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   for i in dNewton.keys():
       if dNewton[i]==None : del dNewton[i]
 #
-  dRechlin=RECH_LINEAIRE[0].cree_dict_valeurs(RECH_LINEAIRE[0].mc_liste)
-  for i in dRechlin.keys():
-      if dRechlin[i]==None : del dRechlin[i]
+  dRechlin = {}
+  if RECH_LINEAIRE != None:
+     dRechlin=RECH_LINEAIRE[0].cree_dict_valeurs(RECH_LINEAIRE[0].mc_liste)
+     for i in dRechlin.keys():
+         if dRechlin[i]==None : del dRechlin[i]
 #
   dIncrem=INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
   for i in dIncrem.keys():

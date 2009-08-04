@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -690,3 +690,12 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
            concept.jdc=self.jdc
        for e in self.etapes:
            e.reparent(self)
+
+   def sd_accessible(self):
+      """On peut acceder aux "valeurs" (jeveux) des ASSD dans
+      les macro-commandes qui sont localement en PAR_LOT="NON"
+      sauf pour INCLUDE et INCLUDE_MATERIAU.
+      """
+      if CONTEXT.debug: print ' `- MACRO sd_accessible :', self.nom
+      return not self.nom.startswith('INCLUDE')
+

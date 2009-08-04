@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,25 +58,7 @@ C
 C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C               L'ORDRE :  XX YY ZZ XY XZ YZ
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C ----------------------------------------------------------------------
 C
 C     COMMON POUR LES PARAMETRES DES LOIS VISCOPLASTIQUES
       COMMON / NMPAVP / SIELEQ,DEUXMU,TROISK,DELTAT,TSCHEM,PREC,THETA,
@@ -97,9 +79,9 @@ C
       REAL*8            DEGRAN(6)
       REAL*8            VPAGM1
       EXTERNAL          VPAGM1
-      INTEGER           IULMES,IUNIFI,K,L,IRET1,IRET2,IRET3,IRET4
+      INTEGER           IULMES,IUNIFI,K,L,IRET1,IRET2,IRET4
       INTEGER           NDIMSI
-      REAL*8            A0,XAP,X,TM,TP
+      REAL*8            A0,XAP,TM,TP
       REAL*8            FG,FDGDST,FDGDEV
       REAL*8            COEF1,COEF2,DELTEV
       CHARACTER*2       FB2, CODRET(5)
@@ -142,10 +124,9 @@ C
   90  CONTINUE
       RAC2 = SQRT(2.D0)
       DELTAT = INSTAP - INSTAM
-      DO 100 K=1,6
-      DO 100 L=1,6
-        DSIDEP(K,L) = 0.D0
- 100  CONTINUE
+
+      CALL MATINI(6,6,0.D0,DSIDEP)
+
       IF(NDIM.EQ.2) THEN
         NDIMSI=4
       ELSE
@@ -247,7 +228,7 @@ C
       EPSMO = 0.D0
       DO 110 K=1,3
         DEPSTH(K)   = DEPS(K)
-     &                -(EPSTHE)
+     &                -EPSTHE
      &                -(DEFAP(K)-DEFAM(K))
         DEPSTH(K) = DEPSTH(K) - DEGRAN(K)
         DEPSTH(K)   = DEPSTH(K) * THETA

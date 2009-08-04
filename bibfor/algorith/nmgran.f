@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TPMXM,TPMXP,DEPST,
      &                   SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,32 +58,14 @@ C
 C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C ----------------------------------------------------------------------
 C
       REAL*8      VALRES(16),TM,TP,TREF
-      REAL*8      E,NU,TROISK,DEUXMU,ALPHAP
+      REAL*8      E,NU,TROISK,DEUXMU
       REAL*8      DELTA, DTEQT,AGEM,AGEP,DAGE,TCEQ
       REAL*8      TEMP, TABS, R8T0,TKM,TKP,TMPRIM,TPPRIM,TKREF
       REAL*8      KRON(6),FTPRIM,HYDRM, HYDRP,SECHM, SECHP, SREF
-      REAL*8      EM,NUM,TROIKM,DEUMUM,ALPHAM
+      REAL*8      EM,NUM,TROIKM,DEUMUM
       REAL*8      DEPSMO, DEPSDV(6),SIGMMO,SIGMDV(6),SIGPMO, SIGPDV(6)
       REAL*8      SMDV(6),SPDV(6),SMMO,SPMO,DSDV(6),DSMO,DEPS(6),DEPS3
       REAL*8      SIGLDV(6), SIGLMO ,SIGMP(6),SIGMPO, SIGMPD(6)
@@ -91,8 +73,8 @@ C
       INTEGER     I,K,L,N, IISNAN,IRET1,IRET2,IRET3
       CHARACTER*2 BL2, FB2, CODRET(16)
       CHARACTER*8 NOMRES(16),MOD
-      CHARACTER*8 NOMPAR,TYPE
-      REAL*8      VALPAM,VALPAP,RESU
+      CHARACTER*8 NOMPAR
+      REAL*8      VALPAM,VALPAP
       REAL*8      BENDOM,BENDOP,KDESSM,KDESSP
       REAL*8      J(8),TAUX(8),HYGRM,HYGRP,QSRT,QSRV,VIEIL
       REAL*8      AMDV(6,9),APDV(6,9),AMMO(9),APMO(9),AP(6,9),AM(6,9)
@@ -119,11 +101,7 @@ C
 C      NDIMSI = 2*NDIM
       MOD      = TYPMOD(1)
       CALL GRANVI (MOD , NDIMSI , IBID , IBID )
-      DO 100 K=1,NDIMSI
-         DO 101 L=1,NDIMSI
-            DSIDEP(K,L) = 0.D0
- 101     CONTINUE
- 100  CONTINUE
+      CALL MATINI(6,6,0.D0,DSIDEP)
       IF (.NOT.( COMPOR(1)(1:10) .EQ. 'GRANGER_FP' )) THEN
           CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
@@ -189,14 +167,14 @@ C
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
      &            1,NOMRES(3),VALRES(3),CODRET(3), BL2)
 
-      IF ( CODRET(3) .NE. 'OK' ) THEN 
+      IF ( CODRET(3) .NE. 'OK' ) THEN
            VALRES(3) = 0.D0
            EPSTHP = 0.D0
       ELSEIF (((IISNAN(TP).GT.0).OR.(IISNAN(TM).GT.0).OR.
      &   (IISNAN(TREF).GT.0)).AND.(CODRET(3) .EQ. 'OK' )) THEN
          CALL U2MESS('F','CALCULEL_15')
-      ELSE 
-           EPSTHP = VALRES(3)*(TP-TREF) 
+      ELSE
+           EPSTHP = VALRES(3)*(TP-TREF)
       ENDIF
       E      = VALRES(1)
       NU     = VALRES(2)
@@ -281,7 +259,7 @@ C
      &              1,   NOMRES(1),VALRES(1),CODRET(1), BL2)
         IF (CODRET(I) .NE. 'OK') VALRES(1)=0.D0
         QSRT=VALRES(1)
-        COEFT=(-QSRT)*(1/TEMP-1/(TKREF))
+        COEFT=(-QSRT)*(1/TEMP-1/TKREF)
         COEFT=EXP(COEFT)
         DTEQT=COEFT*DELTA
 C
@@ -345,7 +323,7 @@ C   -------------------------
       SIGMMO = SIGMMO /3.D0
       DO 140 K=1,NDIMSI
          SIGMDV(K) = SIGM(K)- SIGMMO * KRON(K)
-         SIGMP(K)=DEUXMU/DEUMUM*(SIGMDV(K)) +
+         SIGMP(K)=DEUXMU/DEUMUM*SIGMDV(K) +
      &            TROISK/TROIKM*SIGMMO*KRON(K)
 140   CONTINUE
       SIGMPO = 0.D0
@@ -357,7 +335,7 @@ C   -------------------------
          SIGMPD(K) = SIGMP(K)- SIGMPO * KRON(K)
  127  CONTINUE
 C
-C -------  QUELQUES COEFFICIENT-------------------------
+C -------  QUELQUES COEFFICIENTS-------------------------
 C
       COEFB=0.D0
       DO 150 I=1,8

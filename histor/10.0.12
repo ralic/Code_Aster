@@ -1,0 +1,992 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR brie         BRIE Nicolas           DATE 03/08/2009 - 16:39:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013576 DU 2009-06-29 16:23:33
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   POST_DYNA_MODA_T : calul erron?es grandeurs statistiques
+FONCTIONNALITE
+   1) Probleme
+   Dans l operateur POST_DYNA_MODA_T avec OPTION='IMPACT' qui permet d etablir des
+   statistiques de choc apres un
+   calcul avec DYNA_TRAN_MODAL, le calcul des grandeurs statistiques est faux : pour la
+   moyenne des forces maximales (F_MAX_MOY), on obtient non pas la moyenne mais la somme des
+   F_MAX. De meme, l ecart type est faux car il fait intervenir cette moyenne mal calculee.
+   
+   2) Consequence sur les sources
+   impact.f : on corrige le calcul de la moyenne en rajoutant la division par le nombre de chocs.
+   
+   3) Pas de consequence sur la documentation.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.5.30
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 3.5.30
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   personnelle
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 03/08/2009 - 15:45:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013310 DU 2009-04-14 15:01:35
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : CS
+TITRE
+   CREA_MAILLAGE : aide utilisation
+FONCTIONNALITE
+   Problème: 
+   ---------
+   Dans l'étude jointe, le message est injustifié et provient d'un bug lors de la
+   transformation des quadrangles quadratiques en quadrangles à 9 noeuds. Le calcul a été
+   realisé sur un maillage composé d'haxaèdres et de quadrangles linéaires ne comportant pas
+   de quadrangle quadratique. L'absence de quadrangle quadratique devrait normalement pas
+   entraver le bon déroulement de la compilation, or le message suivant apparait:
+   
+      !-----------------------------------------------------------------------------!
+      ! <EXCEPTION> <JEVEUX_26>                                                     !
+      !                                                                             !
+      !                                                                             !
+      !      Objet JEVEUX inexistant dans les bases ouvertes : >&&OP0167.MO_TO.NUM< !
+      !      l'objet n'a pas été créé ou il a été détruit                           !
+      !                                                                             !
+      !                                                                             !
+      !                                                                             !
+      !                                                                             !
+      !-----------------------------------------------------------------------------!
+   
+   
+   Solution: 
+   ---------
+   En ce qui concerne le message d'alarme, il a été modifié comme suit :
+   
+      !-----------------------------------------------------------------------------!
+      ! <EXCEPTION> <MODELISA3_32>                                                  !
+      !                                                                             !
+      !                                                                             !
+      !      Erreur utilisateur dans CREA_MAILLAGE/MODI_MAILLE :                    !
+      !      Vous avez demandé la transformation de type QUAD8_9                    !
+      !      Mais il n'y a aucune maille quadratique à transformer                  !
+      !                                                                             !
+      !                                                                             !
+      !                                                                             !
+      !-----------------------------------------------------------------------------!
+   
+   
+   Désormais le message d'alarme est plus explicite et précise l'origine réelle de
+   l'anomalie (ici l'absence de maille composé de quadrangle quadratique)
+   
+   Impact: 
+   -------
+   Les fichiers concernés sont les suivants :
+   
+   op0167.f
+   modelisa3.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ?de jointe
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 03/08/2009 - 13:05:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013596 DU 2009-07-03 15:53:20
+TYPE evolution concernant astk (VERSION )
+TITRE
+   Type hist dans ASTK/SURCHARGE
+FONCTIONNALITE
+   Lors de la sélection d'un fichier, l'interface essaie d'associer le type qui convient à
+   l'extension du fichier dans l'onglet courant.
+   Exemple : source.f => type 'f', 'hist' => type 'hist' dans SURCHARGE, '.mmed' => type
+   'mmed' dans ETUDE.
+   
+   On élargit le mécanisme :
+    - on commence par rechercher si l'extension correspond (strictement) à un type de
+   l'onglet (comme actuellement)
+    - si on n'a pas trouvé, on regarde si l'extension commence par un type de l'onglet :
+   'histor' => type 'hist', 'base_calcul' => type 'base', 'list_ct_detruire' => type 'list',
+    - si on n'a pas trouvé, on regarde si l'extension fait partie d'un type de l'onglet :
+   'med' => type 'mmed',
+    - si on n'a pas trouvé => premier type de l'onglet ('comm' ou 'f').
+   
+   
+   Dans astk >= 1.7.8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   graphique
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013541 DU 2009-06-19 11:09:40
+TYPE evolution concernant astk (VERSION )
+TITRE
+   Reconnaitre les fichiers *.med
+FONCTIONNALITE
+   idem 13596.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   graphique
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013469 DU 2009-06-03 12:59:08
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   doc V : titres incorrects
+FONCTIONNALITE
+   Le titre de certaines docs V était incorrect.
+   Par exemple : "ASPIC 07 - Piquage...", "SDLL 508 - Poutre..."
+   
+   Il est nécessaire que le titre soit bien formatté car il est utilisé lors de la publication :
+   - pour aller vérifier le NIV_PUB_WEB (intranet/internet)
+   - pour construire la page "cas-test par nom".
+   
+   Le nom du test est extrait par l'expression régulière : [A-Z]{3,5}[0-9]+
+   
+   
+   Un traitement similaire est fait sur les docs U pour construire la page "commande par nom"
+   (plusieurs majuscules + '_').
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   visu des pages produites
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012330 DU 2008-07-22 15:46:35
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV11 - CALCUL multi-threads
+FONCTIONNALITE
+   sans suite : repris par issue13200
+   
+   L'objectif initial était de tester les apports de la programmation parallèle par threads
+   dans les calculs élémentaires afin de tirer profit des machines multi-coeurs disponibles
+   sur le poste de l'ingénieur.
+   
+   
+   L'étude des travaux antérieurs du parallélisme de CALCUL (Berthou, 1998), du retour
+   d'expérience sur la programmation par threads (Dutka-Malem, 2009), et des évolutions
+   concernant la généralisation du parallélisme indépendamment du solveur conduit à
+   réorienter le travail sur l'analyse des performances du parallélisme actuel sur ces
+   machines cibles afin d'en tirer le meilleur parti.
+   
+   A savoir :
+   
+   - le parallélisme MPI dans le solveur MUMPS
+   
+   - le parallélisme MPI des calculs élémentaires
+   
+   - le parallélisme OpenMP dans le solveur MULT_FRONT
+   
+   - des stratégies de parallélisme multi-niveaux de MULT_FRONT et des BLAS.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013408 DU 2009-05-12 17:21:14
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Impossible de relire une base apres erreur<S>
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   Soit un enchainement de commandes du type :
+   DEBUT()
+   [...]
+   RESU = STAT_NON_LINE(...)
+   FONC = RECU_FONCTION(...)
+   [...]
+   FIN()
+   
+   L'utilisateur envoie le signal USR1 au job.
+   Quand il essaie de lancer la POURSUITE, il obtient :
+   
+    <EXCEPTION> <SUPERVIS_88>
+    Concept de nom FONC et de type <class SD.co_table.table_sdaster'> introuvable dans la
+   base globale"
+   
+   
+   Analyse :
+   =========
+   
+   Le fonctionnement est identique quelle que soit l'exception (y compris une erreur fatale
+   non forcée en abort).
+   
+   E_JDC.BuildExec
+   . > traiter_user_exception
+   . . > fini_jdc
+   . . . > appelle une commande FIN* (prise dans le cata.py)
+   . > traiter_fin_exec
+   . . > get_contexte_avant(etape=FIN*)
+   . . > picked du contexte
+   
+   Comme FIN* est ajouté à la fin de la liste des étapes, le contexte contient aussi les
+   objets assd des concepts pas encore calculés.
+   
+   
+   Solution :
+   ==========
+   
+   Dans fini_jdc, on récupère l'étape FIN présente dans le JDC et on l'insère juste après
+   l'étape courante.
+   Ainsi, le contexte avant l'étape FIN ne contiendra pas les concepts non calculés.
+   
+   Le fait de prendre l'étape FIN dans le JDC et non dans le catalogue permet d'appliquer la
+   commande FIN choisie par l'utilisateur.
+   
+   S'il a choisi FORMAT_HDF='OUI', la base hdf sera produite même après une exception (fatale
+   récupérée, NonConvergence, signal USR1...).
+   
+   En cas de manque de temps CPU (exception ArretCPUError), on surcharge les mots-clés de
+   l'utilisateur pour aller au plus vite : FORMAT_HDF='NON', RETASSAGE='NON', INFO_RESU='NON'.
+   
+   
+   Remarque : On en profite pour supprimer le mot-clé PERFORMANCE de FIN qui n'est plus
+   utilisé depuis la 8.1.13 (Durand, 2005).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.11.02
+VALIDATION
+   sur la base du ssnp102a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013564 DU 2009-06-25 16:06:21
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Objet JEVEUX inexistant en POURSUITE
+FONCTIONNALITE
+   sans suite, doublon avec 13468
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013659 DU 2009-07-29 11:24:37
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Messages orphelins
+FONCTIONNALITE
+   Suppression des messages utilitai_{37,38,39} orphelins suite à la résorption de la routine
+   cocopg (fiche 13349).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013462 DU 2009-05-28 11:45:32
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Fonctionnement du calcul distribue
+FONCTIONNALITE
+   Lancement d'une étude paramétrique en batch sur la machine de référence.
+   
+   Deux problèmes différents :
+   
+   1.
+    <F>_ERROR          No write access to calc_1.export
+   
+   Le nom du fichier export affecté aux calculs élémentaires était en relatif ! Donc dans
+   /tmp et en conflit avec les autres utilisateurs !
+   
+   corrigé dans astk 1.7.4.
+   
+   
+   2. 2 fois sur 3 le calcul échouait dès la soumission avec le message d'erreur :
+   
+   loader[aster6]: can't cd to /tmp/835825: No such file or directory: use -D <dir> prun option
+   prun: Error: loader 0 failed to start its processes
+   
+   Cela se produisait quand le noeud de soumission est différent du noeud d'exécution. Dans
+   l'exemple : /tmp/835825 créé sur aster7 soumis depuis aster6.
+   Il y avait un 'cd' (sans argument, donc $HOME a priori) qui était dans le script de
+   soumission (machine de référence seulement) après le prun.
+   En le retirant, çà fonctionne correctement... çà reste inexpliqué !
+   
+   corrigé dans astk 1.7.8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   unittest sur Bull
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013600 DU 2009-07-07 09:25:17
+TYPE evolution concernant astk (VERSION )
+TITRE
+   Lancement en interactif d'un calcul
+FONCTIONNALITE
+   Problème :
+   ==========
+   Parfois lorsque l'on lance un calcul en interactif, on rencontre l'erreur suivante : 
+   
+   <F>_COPY_ERROR     error during copying /tmp/astk_desoza/profil_astk.6166 to
+   /tmp/interactif.6166/6166.export
+   message : cp: cannot create regular file `/tmp/interactif.6166/6166.export': Permission denied
+   
+   
+   Solution :
+   ==========
+   Cela se produit quand un job avec le même numéro a déjà été exécuté (par un utilisateur
+   différent) et que le répertoire de travail n'a pas été nettoyé.
+   
+   Un problème similaire a été observé en utilisant un répertoire de travail partagé entre
+   plusieurs machines (pas vraiment conseillé pour les perfs) où le numéro de process utilisé
+   pour nommer le répertoire est le même sur les deux machines.
+   
+   Pour le premier cas, on ajoute le nom de l'utilisateur dans le nom. Pour le second, on
+   ajoute le nom de machine.
+   
+   Le répertoire est ainsi construit avec ce nom :
+   
+   /'rep_trav'/user@hostname.domainname-interactif.'job number'
+   
+   
+   Dans astk 1.7.8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests unitaires
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013616 DU 2009-07-13 13:10:17
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.9, les cas-tests ascou03a, aspic02a et aspic09a s'arretent anormalement sur Bull, Rocks, Calibre 4 et Calibre 5
+FONCTIONNALITE
+   Suite à la restitution de la fiche 12970 (création des catalogues communs pour les
+   mots-clés facteurs CONVERGENCE, INCREMENT, NEWTON, RECH_LINEAIRE, SOLVEUR), les tests
+   ascou03a, aspic02a et aspic09a étaient cassés.
+   
+   En effet, avant 10.0.9, RECH_LINEAIRE était par défaut dans les catalogues de
+   MACR_ASCOUF_CALC et MACR_ASPIC_CALC. Après RECH_LINEAIRE est facultatif.
+   
+   Il faut donc vérifier la présence du mot-clé RECH_LINEAIRE dans le corps de la macro avant
+   de lire sa valeur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests concernxc3xa9s
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013666 DU 2009-07-31 12:24:38
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Impressions suspectes dans ssnp131b
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   Dans ssnp131b, la macro-commande POST_GP emet le message CALCULEL6_65 avec les valeurs
+   suivantes :
+      !---------------------------------------------------------------------!
+      ! <A> <CALCULEL6_65>                                                  !
+      !                                                                     !
+      !                                                                     !
+      !  Le nombre de charges fourni par l'utilisateur 3 est différent du   !
+      !  nombre de charges trouvées dans la SD_resultat 4611686018487612236 !
+      !                                                                     !
+      !                                                                     !
+      !                                                                     !
+      ! Ceci est une alarme. Si vous ne comprenez pas le sens de cette      !
+      ! alarme, vous pouvez obtenir des résultats inattendus !              !
+      !---------------------------------------------------------------------!
+   
+   Le message est émis lors de la comparaison du nombre de charge fourni par l'utilisateur et
+   celui présent dans la SD résultat. Le nombre (très) élevé fait croire qu'il y a un
+   problème lors de la récupération du nombre dans la SD.
+   
+   Solution :
+   ==========
+   
+   Effectivement, çà fait beaucoup !
+   <         VALI(1)=NCHALU
+   <         VALI(1)=NCHASD
+   par
+   >         VALI(1)=NCHALU
+   >         VALI(2)=NCHASD
+   
+   L'anomalie était émise à bon escient, mais la valeur affichée était incorrecte.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013639 DU 2009-07-22 09:25:04
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Xmgrace interactif dans astout
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Lorsqu'on lance un astout et que l'on a un display actif sur Bull, des fenêtres
+   interactives de Xmgrace s'ouvrent à cause de commandes IMPR_FONCTION(PILOTE='INTERACTIF'.
+   Dans certains tests (demo001a par exemple) la commande est "protégée" par un if.
+   
+   Les tests où la commande n'est pas protégée sont :
+   ssns109a
+   ssns109c
+   ssns109d
+   
+   
+   Solution
+   ========
+   
+   On met PILOTE = '' par défaut pour supprimer l'ouverture d'xmgrace dans les tests.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013535 DU 2009-06-16 13:07:22
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   probleme lecture de donnees en POURSUITE
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Lors d'une POURSUITE, la relecture de la base s'arrête avec ce message :
+   
+   ...!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   ...!.Etape..POURSUITE.ligne.:..1.fichier.:..fort.1..impossible.d.affecter.un.type.au.!
+   ...!.resultat........................................................................!
+   ...!....File."./Eficas/Cata/ops.py",.line.186,.in.POURSUITE..........................!
+   ...!.....assert.elem.==.pickle_context[elem].nom.....................................!
+   ...!..AssertionError.................................................................!
+   ...!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   
+   
+   Solution
+   ========
+   
+   Cet arrêt apparaît en lisant un objet de type ASSD (un concept) dont l'attribut ".nom" est
+   différent du nom de la variable Python.
+   
+   result = COMMANDE(...)
+   => l'attribut .nom est fixé à "result" et c'est le nom utilisé par le fortran.
+   
+   
+   Dans l'étude en question, dans une boucle, à la première itération on utilise le modèle
+   initial, puis aux itérations suivantes, on utilise le modèle produit par l'itération
+   précédente (enlèvement de matière).
+   Pour faire cela, on écrit :
+   
+   ModMeca = AFFE_MODELE(...)
+   
+   for i in ...:
+   . if i == 0:
+   . . modele = ModMeca
+   . else:
+   . . modele = MO[i-1]
+   [...]
+   . MO[i] = AFFE_MODELE(...)
+   etc.
+   
+   
+   La lecture de la base s'arrête quand on lit "modele" car c'est un objet de type ASSD mais
+   dont l'attribut .nom vaut ModMeca ou MO_i (nom donné lorsqu'il s'agit de liste de concepts).
+   
+   
+   Au lieu d'arrêter en erreur, je propose d'émettre une alarme de ce type :
+   
+   ...!-------------------------------------------------------------------------!
+   ...!.<A>.<SUPERVIS_93>.......................................................!
+   ...!.........................................................................!
+   ...!.........................................................................!
+   ...!.La.variable.python."modele".fait.référence.au.concept."MO[3]"...........!
+   ...!.Cela.se.produit.avec.ce.type.d'enchainement.:...........................!
+   ...!....MO[3].=.COMMANDE(...)................................................!
+   ...!....modele.=.MO[3].......................................................!
+   ...!.........................................................................!
+   ...!.On.détruit.cette.variable.("modele".dans.l'exemple.ci-dessus)...........!
+   ...!.........................................................................!
+   ...!.->.Conseil.:............................................................!
+   ...!....Pour.éviter.cette.alarme,.supprimer.l'alias.dans.le.jeu.de.commandes.!
+   ...!....qui.produit.la.base.:................................................!
+   ...!.......del.modele........................................................!
+   ...!.........................................................................!
+   ...!.........................................................................!
+   ...!.........................................................................!
+   ...!.Ceci.est.une.alarme..Si.vous.ne.comprenez.pas.le.sens.de.cette..........!
+   ...!.alarme,.vous.pouvez.obtenir.des.résultats.inattendus.!..................!
+   ...!-------------------------------------------------------------------------!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   poursuite sur la base de l'xc3xa9tude
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013634 DU 2009-07-21 13:40:01
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Probleme dans N_ASSD.py
+FONCTIONNALITE
+   Révision de la méthode "accessible" des ASSD.
+   
+   Pour savoir si on peut accéder au contenu d'un concept, on interroge l'endroit où on est
+   (macro, jdc) :
+   
+   class ASSD(object):
+   
+      def accessible(self):
+         """Dit si on peut acceder aux "valeurs" (jeveux) de l'ASSD.
+         """
+         return CONTEXT.get_current_step().sd_accessible()
+   
+   
+   C'est le parent de l'étape qui nous le dira (doit pouvoir se produire si appel depuis le
+   fortran) :
+   
+   class ETAPE(N_MCCOMPO.MCCOMPO):
+   
+      def sd_accessible(self):
+         """Dit si on peut acceder aux "valeurs" (jeveux) de l'ASSD produite par l'étape.
+         """
+         return self.parent.sd_accessible()
+   
+   
+   Si on se trouve dans le jdc :
+   
+   class JDC(N_OBJECT.OBJECT):
+   
+      def sd_accessible(self):
+         """On peut acceder aux "valeurs" (jeveux) des ASSD si le JDC est en PAR_LOT="NON".
+         """
+         return self.par_lot == 'NON'
+   
+   
+   Si on est dans une macro-commande :
+   
+   class MACRO_ETAPE(N_ETAPE.ETAPE):
+   
+      def sd_accessible(self):
+         """On peut acceder aux "valeurs" (jeveux) des ASSD dans
+         les macro-commandes qui sont localement en PAR_LOT="NON"
+         sauf pour INCLUDE et INCLUDE_MATERIAU.
+         """
+         return not self.nom.startswith('INCLUDE')
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013402 DU 2009-05-12 12:35:20
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW 10.0.1 et NEW 9.4.11, le cas-test perf005a est NOOK sur Calibre5.
+FONCTIONNALITE
+   Le cas-test perf005a est NOOK sur Calibre5 depuis 10.0.1 et 9.4.11.
+   
+   En effet, le TEST_TEMPS vérifie que le test tourne en 8 secondes.
+   Il tourne en 6 sur Calibre 5.
+   Il suffit de faire :
+   
+   TEST_TEMPS(
+      RESU = (_F(
+         COMMANDE  = 'STAT_NON_LINE',
+         MACHINE   = ('all', 'Calibre5'),
+         VALE      = (  6.,     4.),
+         CRITERE   = 'ABSOLU',
+         PRECISION = 2.,
+         TYPE_TEST = 'USER', ),
+            _F(
+         COMMANDE  = 'STAT_NON_LINE',
+         MACHINE   = ('all', 'Calibre5'),
+         VALE      = (  8.,     6.),
+         CRITERE   = 'ABSOLU',
+         PRECISION = 2.,
+         TYPE_TEST = 'USER+SYS',),
+      ),
+   )
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perf005a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 03/08/2009 - 13:20:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012797 DU 2008-11-12 12:39:21
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Enrichir la commande IMPR_JEVEUX
+FONCTIONNALITE
+   La commande IMPR_JEVEUX est enrichie d'une nouvelle possibilité :   
+            b_enregist   =BLOC(condition = "(ENTITE=='ENREGISTREMENT')",
+               CLASSE          =SIMP(statut='f',typ='TXM' ,into=('G','V'),defaut='G'),  
+               NUMERO          =SIMP(statut='o',typ='I',val_min=1),  
+               INFO            =SIMP(statut='f',typ='I',into=(1,2),defaut=1),  
+   permettant d'imprimer le contenu d'un enregistrement du fichier binaire d'accès direct
+   associé aux bases JEVEUX. Le contenu (INFO=2) est imprimé tel que stocké par le
+   gestionnaire de mémoire, c'est à dire sous forme d'entier, seul ce type est donc
+   interprétable. Cela permet de vérifier le chaînage des objets sur l'enregistrement et la
+   liste des objets y figurant. En INFO=1, seule la liste des objets présents sur
+   l'enregistrement est imprimée.    
+   
+   Exemple d'utilisation :
+   =======================
+   
+   IMPR_JEVEUX(ENTITE='ENREGISTREMENT',
+                 INFO=2,
+                 NUMERO=5,
+                 CLASSE='G',
+                 );
+   
+     
+    --------------------------------------------------------------------------------
+     
+                                                                                    
+     NOM DE LA BASE                    : GLOBALE 
+     NB D'ENREGISTREMENTS MAXIMUM      :  125829
+     NB D'ENREGISTREMENTS UTILISES     :  7
+     LONGUEUR D'ENREGISTREMENT (OCTETS):  409600
+                                      
+    --------------------------------------------------------------------------------
+    CONTENU BRUT DE L'ENREGISTREMENT  5
+         1 -            0           -1           -1            0           -1           -1  
+            0           -1           -1            0
+        11 -           -1           -1            0           -1           -1            0  
+           -1           -1            0           -1
+        21 -           -1            0           -1           -1            0           -1  
+           -1            0           -1           -1
+        31 -            0           -1           -1            0           -1           -1  
+            0           -1           -1            0
+   ...
+   102371 -           -1           -1            0           -1           -1            0   
+          -1           -1            0           -1
+    102381 -           -1            0           -1           -1            0           -1  
+           -1            0           -1           -1
+    102391 -            0           -1           -1            0           -1           -1  
+            0           -1           -1            0
+     
+    ENREGISTREMENT NUMERO :  5
+    ENREGISTREMENT AFFECTE A UN UNIQUE OBJET
+    OBJET SIMPLE DE NOM :  ________GLOBALE ________$$USADI 
+    --------------------------------------------------------------------------------
+   
+   
+      IMPR_JEVEUX(ENTITE='ENREGISTREMENT',
+                 INFO=1,
+                 NUMERO=1,
+                 CLASSE='G',
+                 );
+   
+     
+    --------------------------------------------------------------------------------
+     
+                                                                                    
+     NOM DE LA BASE                    : GLOBALE 
+     NB D'ENREGISTREMENTS MAXIMUM      :  125829
+     NB D'ENREGISTREMENTS UTILISES     :  7
+     LONGUEUR D'ENREGISTREMENT (OCTETS):  409600
+                                      
+    --------------------------------------------------------------------------------
+     
+    CHAINAGE DE L'ENREGISTREMENT NUMERO : 1
+        1 ID COLLECTION:     0 ID OBJET:     1 LONGUEUR:    11 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$CARA  
+        2 ID COLLECTION:     0 ID OBJET:     2 LONGUEUR:  4000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$IADD  
+        3 ID COLLECTION:     0 ID OBJET:     3 LONGUEUR:   500 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$GENR  
+        4 ID COLLECTION:     0 ID OBJET:     4 LONGUEUR:   500 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$TYPE  
+        5 ID COLLECTION:     0 ID OBJET:     5 LONGUEUR:  2000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$DOCU  
+        6 ID COLLECTION:     0 ID OBJET:     6 LONGUEUR:  4000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$ORIG  
+        7 ID COLLECTION:     0 ID OBJET:     7 LONGUEUR: 16000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$RNOM  
+        8 ID COLLECTION:     0 ID OBJET:     8 LONGUEUR:  2000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$LTYP  
+        9 ID COLLECTION:     0 ID OBJET:     9 LONGUEUR:  2000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$LONG  
+       10 ID COLLECTION:     0 ID OBJET:    10 LONGUEUR:  2000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$LONO  
+       11 ID COLLECTION:     0 ID OBJET:    11 LONGUEUR:  2000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$DATE  
+       12 ID COLLECTION:     0 ID OBJET:    12 LONGUEUR:  2000 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$LUTI  
+       13 ID COLLECTION:     0 ID OBJET:    13 LONGUEUR:  3203 OBJET SIMPLE DE NOM :
+   ________GLOBALE ________$$HCOD  
+       14 ID COLLECTION:     0 ID OBJET:     0 LONGUEUR:     0 FIN DE L'ENREGISTREMENT ATTEINT
+    --------------------------------------------------------------------------------
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.91.21
+VALIDATION
+   test yyyy104a enrichi
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011799 DU 2008-02-22 14:08:55
+TYPE evolution concernant agla (VERSION )
+TITRE
+   faire en sorte que les asrest de l'agla utilisent systxc3xa9matiquement JXVERI='OUI'
+FONCTIONNALITE
+   Dans les tests le coût de l'appel à JXVERI entre chaque commande est marginal. La liste
+   restreinte passe sans problème de temps et la liste complète est passée sans détecter
+   d'anomalie.
+   On modifie le fichier ops.py pour que systématiquement si le mot clé CODE est présent dans
+   DEBUT ou POURSUITE alors on positionne le mot clé JXVERI='OUI' sous DEBUG.
+   Cet appel permet de vérifier le contenu des entiers encadrant les segments de valeurs et
+   de détecter d'éventuels écrasements de la mémoire JEVEUX.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.11.01 U4.11.03
+VALIDATION
+   Liste complxc3xa8te
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 03/08/2009 - 17:43:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013549 DU 2009-06-22 13:41:59
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Operations elementaires avec les routines utilitaires
+FONCTIONNALITE
+   Objectif de la fiche :
+   ----------------------
+   
+   a) Remplacer la routine INITMA par MATINI dans les routines appelant à INITMA, et de
+   résorber INITMA.
+   
+   b) Remplacer les boucles d'initialisation des matrices par un appel à la routine MATINI.
+   Cette modification a été effectuée dans 38 routines. Pour les autres routines prévues dans
+   cette fiche il n'est pas possible d'utiliser l'appel à MATINI car les boucles
+   d'initialisation ne balayent pas les cellules de la matrice à initialiser de la même
+   manière que MATINI. 
+   
+   exemple nzisfw : 
+   
+         DIMENSION DSIDEP(6,6)
+         ...
+         IF(NDIM.EQ.2) THEN
+           NDIMSI=4
+         ELSE
+           NDIMSI=6
+         ENDIF
+   
+   => AVANT
+          DO 131 I=1,NDIMSI
+   	 DO 135 J=1,NDIMSI
+   	   DSIDEP(I,J) = 0.D0
+   135	 CONTINUE
+   131    CONTINUE
+   
+   => APRES
+   
+          CALL MATINI(NDIMSI,NDIMSI,0.D0,DSIDEP)
+   
+   En FORTRAN, les cellules du tableau DSIDEP ne sont pas rangées de la même manière entre la
+   routine appelante et la routine appelée dans le cas ou NDIMSI=4.
+   
+   
+   2 - VALIDATION
+   --------------
+   Passage de la liste complète
+   
+   
+   3 - PERFORMANCES
+   ----------------
+   Pas de crainte sur le coût d'un CALL. Les tests faits par TdS montrent que les résultats
+   sont identiques avec ifort. Avec g77/gfortran, faire N CALL est plus rapide que N fois la
+   boucle.
+   (tests avec N=100e6, matrice 20x20)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.00.01
+VALIDATION
+   Liste complxc3xa8te
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF perf005a                     courtois M.COURTOIS         127      5      5
+ CASTEST MODIF ssns109a                     courtois M.COURTOIS         333      2      2
+ CASTEST MODIF ssns109c                     courtois M.COURTOIS         332      2      2
+ CASTEST MODIF ssns109d                     courtois M.COURTOIS         332      2      2
+ CASTEST MODIF yyyy104a                     lefebvre J-P.LEFEBVRE       171      3      1
+CATALOPY MODIF commande/fin                 courtois M.COURTOIS          35      7      3
+CATALOPY MODIF commande/impr_jeveux         lefebvre J-P.LEFEBVRE        61     10      5
+ FORTRAN MODIF algeline/jacobi               meunier S.MEUNIER          290      4      4
+ FORTRAN MODIF algeline/mefmat               meunier S.MEUNIER          465      5     10
+ FORTRAN MODIF algeline/op0167                   cao B.CAO              940      5      2
+ FORTRAN MODIF algeline/vp2tru               meunier S.MEUNIER           91      2      5
+ FORTRAN MODIF algeline/vpzqrh               meunier S.MEUNIER          411      2      6
+ FORTRAN MODIF algorith/alitmi               meunier S.MEUNIER          492      4      4
+ FORTRAN MODIF algorith/assthm               meunier S.MEUNIER          437      4      6
+ FORTRAN MODIF algorith/cabr2g               meunier S.MEUNIER          166      3      7
+ FORTRAN MODIF algorith/cabrp0               meunier S.MEUNIER          149      3      7
+ FORTRAN MODIF algorith/cabthm               meunier S.MEUNIER          323      4      8
+ FORTRAN MODIF algorith/calfft               meunier S.MEUNIER           69      3      3
+ FORTRAN MODIF algorith/calres               meunier S.MEUNIER          156      4      4
+ FORTRAN MODIF algorith/calvol               meunier S.MEUNIER           85      5      5
+ FORTRAN MODIF algorith/cjstde               meunier S.MEUNIER          264      5      8
+ FORTRAN MODIF algorith/cjstid               meunier S.MEUNIER          314      7     10
+ FORTRAN MODIF algorith/coupla               meunier S.MEUNIER           83      3      3
+ FORTRAN MODIF algorith/hypela               meunier S.MEUNIER          158      2      8
+ FORTRAN MODIF algorith/hypinc               meunier S.MEUNIER          165      2      6
+ FORTRAN MODIF algorith/impact                  brie N.BRIE             168      4      1
+ FORTRAN MODIF algorith/inialg               meunier S.MEUNIER          154      3      3
+ FORTRAN MODIF algorith/inipar               meunier S.MEUNIER          148      1      1
+ FORTRAN MODIF algorith/lcumme               meunier S.MEUNIER          105      3     10
+ FORTRAN MODIF algorith/lklmat               meunier S.MEUNIER          149      5     10
+ FORTRAN MODIF algorith/mdchoe               meunier S.MEUNIER          242      4      4
+ FORTRAN MODIF algorith/nmas3d               meunier S.MEUNIER          417     11     44
+ FORTRAN MODIF algorith/nmccam               meunier S.MEUNIER          983     11     20
+ FORTRAN MODIF algorith/nmchat               meunier S.MEUNIER          245      5     11
+ FORTRAN MODIF algorith/nmcine               meunier S.MEUNIER          222      7     29
+ FORTRAN MODIF algorith/nmgran               meunier S.MEUNIER          500     10     32
+ FORTRAN MODIF algorith/nmtari               meunier S.MEUNIER           78      2      6
+ FORTRAN MODIF algorith/nmvpgm               meunier S.MEUNIER          359      8     27
+ FORTRAN MODIF algorith/nmvpir               meunier S.MEUNIER          543      9     11
+ FORTRAN MODIF algorith/nmvple               meunier S.MEUNIER          281      6     25
+ FORTRAN MODIF algorith/nzcifw               meunier S.MEUNIER          732      4      8
+ FORTRAN MODIF algorith/nzcizi               meunier S.MEUNIER          708      4      8
+ FORTRAN MODIF algorith/nzedga               meunier S.MEUNIER          732      4      8
+ FORTRAN MODIF algorith/nzisfw               meunier S.MEUNIER          756      5     11
+ FORTRAN MODIF algorith/rk0346               meunier S.MEUNIER          228      3      6
+ FORTRAN MODIF calculel/sinoz2               meunier S.MEUNIER          462      8     14
+ FORTRAN MODIF calculel/te0503               meunier S.MEUNIER          122      2      6
+ FORTRAN MODIF calculel/utjac                meunier S.MEUNIER          135      2      6
+ FORTRAN MODIF elements/bmatmc               meunier S.MEUNIER          218      2      6
+ FORTRAN MODIF elements/coqsep               meunier S.MEUNIER          445     14     17
+ FORTRAN MODIF elements/dfdm3d               meunier S.MEUNIER          110      2      5
+ FORTRAN MODIF elements/dkqtxy               meunier S.MEUNIER          138      4      5
+ FORTRAN MODIF elements/dkttxy               meunier S.MEUNIER          114      4      5
+ FORTRAN MODIF elements/dmat3d               meunier S.MEUNIER          255      4      8
+ FORTRAN MODIF elements/dmatcp               meunier S.MEUNIER          184      5      8
+ FORTRAN MODIF elements/dmatdp               meunier S.MEUNIER          242      4      8
+ FORTRAN MODIF elements/dpfch3               meunier S.MEUNIER          103      3      5
+ FORTRAN MODIF elements/dsfch3               meunier S.MEUNIER          238      4      9
+ FORTRAN MODIF elements/dxdmul               meunier S.MEUNIER          183      7     13
+ FORTRAN MODIF elements/te0366               meunier S.MEUNIER          336      2      6
+ FORTRAN MODIF elements/te0550               meunier S.MEUNIER          125      4      9
+ FORTRAN MODIF elements/te0555               meunier S.MEUNIER          161      6     14
+ FORTRAN MODIF elements/tufull               meunier S.MEUNIER          410     12     15
+ FORTRAN MODIF elements/turigi               meunier S.MEUNIER          249      6     12
+ FORTRAN MODIF elements/vlgglc               meunier S.MEUNIER          132      1      3
+ FORTRAN MODIF modelisa/nm3dco               meunier S.MEUNIER          418     13     20
+ FORTRAN MODIF utilitai/op0016              lefebvre J-P.LEFEBVRE       222     14      2
+ FORTRAN MODIF utilitai/rslesd              courtois M.COURTOIS         377      3      3
+ FORTRAN SUPPR algorith/initma               meunier S.MEUNIER           48      0     48
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         501      8      3
+  PYTHON MODIF Execution/E_JDC              courtois M.COURTOIS         365     34     10
+  PYTHON MODIF Macro/macr_ascouf_calc_ops   courtois M.COURTOIS         763      3      1
+  PYTHON MODIF Macro/macr_aspic_calc_ops    courtois M.COURTOIS         863      3      1
+  PYTHON MODIF Messages/modelisa3                cao B.CAO              380      7      1
+  PYTHON MODIF Messages/supervis            courtois M.COURTOIS         452     15      1
+  PYTHON MODIF Messages/utilitai            courtois M.COURTOIS         375      1     13
+  PYTHON MODIF Noyau/N_ASSD                 courtois M.COURTOIS         140      6     15
+  PYTHON MODIF Noyau/N_ETAPE                courtois M.COURTOIS         422      7      1
+  PYTHON MODIF Noyau/N_JDC                  courtois M.COURTOIS         517      8      1
+  PYTHON MODIF Noyau/N_MACRO_ETAPE          courtois M.COURTOIS         701     10      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   79       25057       435     648      -213
+ SUPPR :    1          48                48       -48
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   80       25105       435     696      -261 

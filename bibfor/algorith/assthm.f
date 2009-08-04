@@ -12,7 +12,7 @@
      &                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -261,11 +261,9 @@ C ======================================================================
          DO 3 I=1,DIMUEL*DIMUEL
                MATUU(I)=0.D0
  3       CONTINUE
-         DO 5 I=1,DIMMAT
-            DO 6 J=1,DIMMAT
-               MATRI(I,J)=0.D0
- 6          CONTINUE
- 5       CONTINUE
+C
+         CALL MATINI(DIMMAT,DIMMAT,0.D0,MATRI)
+C
       ENDIF
 C ======================================================================
 C --- CALCUL POUR CHAQUE POINT D'INTEGRATION: BOUCLE SUR KPI -----------

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     INTRINSIC  ABS
 C
 C ROUTINES EXTERNES
 C -----------------
-C     EXTERNAL   DISBUT, FORNOR, FORTAN, INITMA, INITVE, PRMAVE
+C     EXTERNAL   DISBUT, FORNOR, FORTAN, MATINI, INITVE, PRMAVE
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -135,8 +135,8 @@ C
 C 3. SINON INITIALISATION DES MATR. JACOB. ET DE FORCES RESIDUELLES.
 C    ---------------------------------------------------------------
 C
-         CALL INITMA(3,3,JACOBC)
-         CALL INITMA(3,3,JACOBK)
+         CALL MATINI(3,3,0.D0,JACOBC)
+         CALL MATINI(3,3,0.D0,JACOBK)
          OLD(1,IC) = -SINT*VLOC(2) + COST*VLOC(3)
          OLD(2,IC) = VLOC(1)
          OLD(3,IC) = 0.D0

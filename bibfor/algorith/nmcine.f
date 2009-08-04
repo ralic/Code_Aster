@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,32 +50,14 @@ C
 C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C               L'ORDRE :  XX YY ZZ XY XZ YZ
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C ----------------------------------------------------------------------
 C
       REAL*8      DEPSTH(6),VALRES(3),LAMBDA,DEUXMU,EPSTHE
       REAL*8      DEPSDV(6),SIGDV(6),SIGEL(6),EPSMO,SIGMO,E,NU
-      REAL*8      SIMOEQ,SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY
-      REAL*8      TROISK,RPRIM,RP,KRON(6),R8MIEM,VALRM(2)
-      REAL*8      EM,NUM,TROIKM,DEUMUM,SIGMP(6),PLASTI
-      INTEGER     NDIMSI,IDIB
+      REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY
+      REAL*8      TROISK,KRON(6),R8MIEM,VALRM(2)
+      REAL*8      EM,NUM,TROIKM,DEUMUM,PLASTI
+      INTEGER     NDIMSI
       CHARACTER*2 FB2, CODRET(3)
       CHARACTER*8 NOMRES(3)
       REAL*8      RAC2
@@ -92,7 +74,7 @@ C
       FB2 = 'F '
 
       CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET)
- 
+
 C
 C LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (TEMPS - ET +)
       NOMRES(1)='E'
@@ -119,7 +101,7 @@ C LECTURE DES CARACTERISTIQUES D'ECROUISSAGE
       NOMRES(2)='SY'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ECRO_LINE',0,' ',
      &            0.D0,2,NOMRES,VALRES,CODRET, FB2 )
-      DSDEM=VALRES(1)      
+      DSDEM=VALRES(1)
       IF ((EM-DSDEM).LT.R8MIEM()) THEN
          VALRM(1)=DSDEM
          VALRM(2)=EM
@@ -127,7 +109,7 @@ C LECTURE DES CARACTERISTIQUES D'ECROUISSAGE
       ELSE
          CM = 2.D0/3.D0*DSDEM/(1.D0-DSDEM/EM)
       ENDIF
-      
+
       NOMRES(1)='D_SIGM_EPSI'
       NOMRES(2)='SY'
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_LINE',0,' ',
@@ -191,10 +173,7 @@ C
 C CALCUL DE LA RIGIDITE TANGENTE
       IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' .OR.
      &     OPTION(1:9)    .EQ. 'FULL_MECA' ) THEN
-        DO 100 K=1,6
-        DO 100 L=1,6
-          DSIDEP(K,L) = 0.D0
- 100    CONTINUE
+        CALL MATINI(6,6,0.D0,DSIDEP)
         DO 120 K=1,6
           DSIDEP(K,K) = DEUXMU
  120    CONTINUE
@@ -239,6 +218,5 @@ C MISE AU FORMAT DES CONTRAINTES DE RAPPEL
  30     CONTINUE
       END IF
 C
- 9999 CONTINUE
 C FIN ------------------------------------------------------------------
       END

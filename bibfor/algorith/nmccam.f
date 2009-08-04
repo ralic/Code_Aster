@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C  TOLE CRP_20
       INTEGER            NDIM,IMATE,RETCOM
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*),OPTION
-      REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TP2,TREF
+      REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TREF
       REAL*8             DEPS(6),DEUXMU
       REAL*8             SIGM(6),PCRM(7),SIGP(6),PCRP(7),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -56,7 +56,6 @@ C               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -74,8 +73,8 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      LOGICAL     CPLAN,PLASTI
-      INTEGER     IADZI,IAZK24,UMESS,IUNIFI,IRET, IISNAN
+      LOGICAL     CPLAN
+      INTEGER     IADZI,IAZK24,IRET, IISNAN
       REAL*8      EPXMAX
       PARAMETER   (EPXMAX = 5.D0)
       CHARACTER*8 NOMAIL
@@ -86,30 +85,28 @@ C
       REAL*8      SIGMMO,SIGPMO,DELTAP,SIEQM,SIEQP,SIELEQ,SIMOEL,SPARDS
       REAL*8      KRON(6),DEPSDV(6),DEPSTH(6),SIGMDV(6),SIGPDV(6)
       REAL*8      DELTAS(6),SIGEL(6),TPLUS(6)
-      REAL*8      A(6),AA(6),FV(6),FF(6)
+      REAL*8      A(6),AA(6),FV(6)
       REAL*8      FFI(6,6),EE(6,6),C(6,6),CC(6,6)
-      REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6),SS(6,6),TT(6,6)
-      REAL*8      HH(6,6),SES(6,6),GG(6,6),SPS(6,6),HHM(6,6),IDEN6(6,6)
+      REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6)
+      REAL*8      HH(6,6),SES(6,6),GG(6,6),SPS(6,6),HHM(6,6)
       REAL*8      D1G(6,6),D1GHHM(6,6),ID2(6,6),DEVHYD(6,6),DEVHYM(6,6)
-      REAL*8      D(3,3),DD(3,3),X(2), Y(2)
-      REAL*8      F1,F2,F3,F4,F5,F6,F,FP
-      REAL*8      F1P, F2P, F3P, F4P      
+      REAL*8      F1,F2,F3,F4,F,FP
+      REAL*8      F1P, F2P, F3P, F4P
       REAL*8      FXI1,FXI2,FXI3,FXI4,FXI
       REAL*8      H,HP,XC,XD,XLAM,XA,XU,XG,XH,XE,XF,XV,XI,RAP
-      REAL*8      CT,V0,SEUIL,SEUILB
+      REAL*8      CT,V0,SEUIL
       REAL*8      XINF,XSUP,RBID
       REAL*8      DIFF,DIFF2
       REAL*8      ZERO,UN,DEUX,TROIS,SIX,UNSDE,TOL,PTIT,R8MIEM
       REAL*8      VALM,VALP
-      REAL*8      XB0, XB1, XB, FXB0, FXB1, FXB
-      INTEGER     NDIMSI,SIGNF,SIGNFI 
+      INTEGER     NDIMSI,SIGNF,SIGNFI
       INTEGER     I,K,L,ITER, MATR
       CHARACTER*2 BL2, FB2, CODRET(9)
-      CHARACTER*8 NOMRES(10),NOMPAR(10),TYPE
+      CHARACTER*8 NOMRES(10),NOMPAR(10)
 C ======================================================================
       REAL*8       VALRM(5)
       INTEGER      VALIM
-      CHARACTER*10 VALKM(5)
+      CHARACTER*16 VALKM(5)
 C ======================================================================
       PARAMETER   ( ZERO   = 0.D0   )
       PARAMETER   ( UN     = 1.D0   )
@@ -117,8 +114,8 @@ C ======================================================================
       PARAMETER   ( TROIS  = 3.D0   )
       PARAMETER   ( SIX    = 6.D0   )
       PARAMETER   ( UNSDE  = 0.5D0  )
-      
-      
+
+
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA        TOL/1.D-6/
 C DEB ------------------------------------------------------------------
@@ -155,7 +152,7 @@ C
      &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
 
          IF ((IISNAN(TP).EQ.0).AND.(IISNAN(TM).GT.0)) THEN
-           IF ((IISNAN(TREF).GT.0).OR.(CODRET(1) .NE.'OK')) THEN 
+           IF ((IISNAN(TREF).GT.0).OR.(CODRET(1) .NE.'OK')) THEN
              CALL U2MESS('F','CALCULEL_31')
            ELSE
              COEF = VALRES(1)*(TP-TREF) - VALRES(1)*(TM-TREF)
@@ -186,7 +183,7 @@ C
      &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
          IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
          COEF = VALRES(1)*(TP-TREF) - VALRES(1)*(TM-TREF)
- 
+
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,8,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          MU     = VALRES(2)
@@ -216,7 +213,7 @@ C
          XK     = (1.D0+E0)/(LAMBDA-KAPA)
          IF ((KCAM.NE.ZERO).AND.(KCAM.LE.(-XK0*PTRAC))) THEN
              CALL U2MESS('F','COMPOR1_42')
-         ENDIF    
+         ENDIF
 C
 C     -- 3 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
@@ -242,7 +239,7 @@ C     -------------------------------------------------------------
       DO 116 K =1,3
         SIGMMO = SIGMMO + SIGM(K)
  116  CONTINUE
-      SIGMMO = -SIGMMO /3.D0 
+      SIGMMO = -SIGMMO /3.D0
       IF (SIGMMO.LT.PTRAC) THEN
            CALL U2MESS('F','ALGORITH6_64')
       ENDIF
@@ -258,13 +255,13 @@ C     -------------------------------------------------------------
       SIEQM    = SQRT(1.5D0*SIEQM)
 
          IF (  ((XK0*DEPSMO) .GT. EPXMAX) ) THEN
-            
+
            CALL TECAEL(IADZI,IAZK24)
            VALKM(1) = ZK24(IAZK24-1+3) (1:8)
            VALRM(1) =  EPXMAX
-           VALKM(2) ='EXP(XK0*DEPSMO) '
+           VALKM(2) ='EXP(XK0*DEPSMO)'
            VALRM(2) = (XK0*DEPSMO)
-           VALKM(3) ='EXP(XK*DEPSMO) '
+           VALKM(3) ='EXP(XK*DEPSMO)'
            VALRM(3) = (XK*DEPSMO)
            CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
            RETCOM = 1
@@ -274,8 +271,8 @@ C     -------------------------------------------------------------
 C ---- INITIALISATION A T=0
       IF (PCRM(1).EQ. 0.D0)  THEN
 
-        PCRM(1) = PRESCR 
-        PCRM(3) = SIMOEL 
+        PCRM(1) = PRESCR
+        PCRM(3) = SIMOEL
         PCRM(4) = SIELEQ
         PCRM(5) = 0.D0
         PCRM(6) = 0.D0
@@ -284,7 +281,7 @@ C ---- INITIALISATION A T=0
 C ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
         NU = (TROIS*((UN+E0)*SIGMMO+KAPA*KCAM)-DEUXMU*KAPA)/
      &         (SIX*((UN+E0)*SIGMMO+KAPA*KCAM)+DEUXMU*KAPA)
-     
+
         YOUNG = DEUXMU*(UN+NU)
 
         IF ((YOUNG.LE.ZERO).OR.
@@ -294,7 +291,7 @@ C ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
           NOMAIL = ZK24(IAZK24-1+3) (1:8)
           CALL U2MESK('F','COMPOR1_3',1,NOMAIL)
         ENDIF
-        
+
       ENDIF
 
 C
@@ -309,26 +306,26 @@ C     ------------------------------------------------------------
      &     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
         IF (FONC.LE.0.D0) THEN
 C      -- TRAITEMENT DE L'ELASTICITE
-           PCRP(1) = PCRM(1)  
+           PCRP(1) = PCRM(1)
            PCRP(2) = 0.D0
             DO 118 K=1,NDIMSI
               SIGPDV(K) = SIGEL(K)
-              SIGP(K)   = SIGEL(K)-SIMOEL*KRON(K) 
+              SIGP(K)   = SIGEL(K)-SIMOEL*KRON(K)
  118  CONTINUE
 
            PCRP(3) = SIMOEL
            PCRP(4) = SIELEQ
            PCRP(5) = 0.D0
            PCRP(6) = 0.D0
-           
+
            IF ((PCRM(3).NE.ZERO).AND.((PCRP(3)/PCRM(3)).GT.ZERO)) THEN
-     
+
              PCRP(7) = PCRM(7) - KAPA*LOG(PCRP(3)/PCRM(3))
-             
+
            ELSE
-           
+
              PCRP(7) = PCRM(7)
-             
+
            ENDIF
 
         ELSE
@@ -336,7 +333,7 @@ C     -- PLASTIFICATION : CALCUL DE LA DEFORMATION
 C     -- VOLUMIQUE PLASTIQUE : DEPPMO
          PCRP(2) = 1.D0
          SEUIL = M**2*(PCRM(1)-PTRAC)**2
-        
+
          XINF = 0.D0
 C     -- RECHERCHE DE LA BORNE SUP
 
@@ -344,7 +341,7 @@ C     -- RECHERCHE DE LA BORNE SUP
            V0=0.D0
            GOTO 100
          ENDIF
-         
+
          IF (ABS(XK0*SIMOEL + KCAM + XK*PCRM(1)).LT. PTIT) THEN
 
            IF ((-DEUX*(SIMOEL-PCRM(1)-PTRAC)/
@@ -353,7 +350,7 @@ C     -- RECHERCHE DE LA BORNE SUP
               XSUP = 1.D0/(XK+XK0)*LOG(ABS(SIMOEL-PTRAC)/PCRM(1))
 
            ELSE
-C       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 2    
+C       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 2
 
              IF ((SIMOEL-PTRAC).GT.PCRM(1))THEN
 
@@ -361,45 +358,45 @@ C       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 2
      &           (XK0*SIMOEL+KCAM-XK*PTRAC)))
 
              ELSE
-             
+
               XSUP = -SQRT((-DEUX*(SIMOEL-PCRM(1)-PTRAC)/
      &           (XK0*SIMOEL+KCAM-XK*PTRAC)))
-             ENDIF            
+             ENDIF
 
           ENDIF
         ELSE
-C       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 1  
+C       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 1
               XSUP = (SIMOEL - PCRM(1) - PTRAC)/
      &          (XK0*SIMOEL + KCAM + XK*PCRM(1))
-              
+
         ENDIF
 
 C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
          V0 = XINF
-         
+
 
          IF (  ((-XK0*V0) .GT. EPXMAX) .OR.
      &         ((XK*V0)   .GT. EPXMAX) ) THEN
-            
+
            CALL TECAEL(IADZI,IAZK24)
            VALKM(1) = ZK24(IAZK24-1+3) (1:8)
            VALRM(1) =  EPXMAX
-           VALKM(2) ='EXP(-XK0*V0) '
+           VALKM(2) ='EXP(-XK0*V0)'
            VALRM(2) = (-XK0*V0)
-           VALKM(3) ='EXP(XK*V0) '
+           VALKM(3) ='EXP(XK*V0)'
            VALRM(3) = (XK*V0)
            CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
            RETCOM = 1
            GO TO 30
          ENDIF
-         
+
            F1 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
            F2 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
      &           -2.D0*PCRM(1)*EXP(XK*V0)
            F3 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
      &           -PCRM(1)*EXP(XK*V0)
            F4 = (1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)
-           
+
            F =SIELEQ**2+M**2*F4**2*F1*F2
 
 
@@ -409,7 +406,7 @@ C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
            F3P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
      &                      -XK*PCRM(1)*EXP(XK*V0)
            F4P = 3.D0*DEUXMU/2.D0/(M**2)*(F3-V0*F3P)/F3/F3
-           
+
            FP = M**2*F4**2*(F1P*F2 + F1*F2P) +
      &          2.D0*M**2*F4*F4P*F1*F2
 
@@ -431,13 +428,13 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
 
            IF (  ((-XK0*V0) .GT. EPXMAX) .OR.
      &           ((XK*V0)   .GT. EPXMAX)  ) THEN
-            
+
              CALL TECAEL(IADZI,IAZK24)
              VALKM(1) = ZK24(IAZK24-1+3) (1:8)
              VALRM(1) =  EPXMAX
-             VALKM(2) ='EXP(-XK0*V0) '
+             VALKM(2) ='EXP(-XK0*V0)'
              VALRM(2) = (-XK0*V0)
-             VALKM(3) ='EXP(XK*V0) '
+             VALKM(3) ='EXP(XK*V0)'
              VALRM(3) = (XK*V0)
              CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
              RETCOM = 1
@@ -449,7 +446,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
            F3 = (SIMOEL+KCAM/XK0)*EXP(-XK0*V0)-KCAM/XK0-PTRAC
      &           -PCRM(1)*EXP(XK*V0)
            F4 = (1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)
-           
+
            F =SIELEQ**2+M**2*F4**2*F1*F2
 
            IF (F.GT.ZERO) SIGNF =  1
@@ -461,7 +458,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
            F3P =-(XK0*SIMOEL+KCAM)*EXP(-XK0*V0)
      &                      -XK*PCRM(1)*EXP(XK*V0)
            F4P = 3.D0*DEUXMU/2.D0/(M**2)*(F3-V0*F3P)/F3/F3
-           
+
            FP = M**2*F4**2*(F1P*F2 + F1*F2P) +
      &          2.D0*M**2*F4*F4P*F1*F2
 
@@ -472,9 +469,9 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
             CALL TECAEL(IADZI,IAZK24)
             VALKM(1) = ZK24(IAZK24-1+3) (1:8)
             VALRM(1) =  EPXMAX
-            VALKM(2) ='EXP(-XK0*XINF) '
+            VALKM(2) ='EXP(-XK0*XINF)'
             VALRM(2) = (-XK0*XINF)
-            VALKM(3) ='EXP(XK*XINF) '
+            VALKM(3) ='EXP(XK*XINF)'
             VALRM(3) = (XK*XINF)
             CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
             RETCOM = 1
@@ -487,9 +484,9 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
           FXI3 = (SIMOEL+KCAM/XK0)*EXP(-XK0*XINF)-KCAM/XK0-PTRAC
      &            -PCRM(1)*EXP(XK*XINF)
           FXI4 = (1.D0+3.D0*DEUXMU*XINF/2.D0/M/M/FXI3)
-          
+
           FXI=SIELEQ**2+M**2*FXI4**2*FXI1*FXI2
-     
+
           IF (FXI.GT.ZERO) SIGNFI =  1
           IF (FXI.LT.ZERO) SIGNFI = -1
 
@@ -509,16 +506,16 @@ C     -- REACTUALISATION DE LA VARIABLE INTERNE
             CALL TECAEL(IADZI,IAZK24)
             VALKM(1) = ZK24(IAZK24-1+3) (1:8)
             VALRM(1) =  EPXMAX
-            VALKM(2) ='EXP(XK*DEPPMO) '
+            VALKM(2) ='EXP(XK*DEPPMO)'
             VALRM(2) = (XK*DEPPMO)
-            VALKM(3) ='EXP(XK0*(DEPSMO-DEPPMO)) '
+            VALKM(3) ='EXP(XK0*(DEPSMO-DEPPMO))'
             VALRM(3) = (XK0*(DEPSMO-DEPPMO))
             CALL U2MESG('A','COMPOR1_41',3,VALKM,0,VALIM,3,VALRM)
             RETCOM = 1
             GO TO 30
          ENDIF
 
-          
+
           PCRP(1) = PCRM(1)*EXP(XK*DEPPMO)
 C     -- REACTUALISATION DES CONTRAINTES
           SIGPMO = (SIGMMO+KCAM/XK0)*EXP(XK0*(DEPSMO-DEPPMO))-KCAM/XK0
@@ -529,9 +526,9 @@ C     -- REACTUALISATION DES CONTRAINTES
              SIGP(K) = SIGPDV(K)-SIGPMO*KRON(K)
  119  CONTINUE
 
-  
+
 C ---- V(3) CONTRAINTE VOLUMIQUE
-          PCRP(3) = SIGPMO      
+          PCRP(3) = SIGPMO
 
 C ---- V(4) CONTRAINTE EQUIVALENTE
           SIEQP = 0.0D0
@@ -540,7 +537,7 @@ C ---- V(4) CONTRAINTE EQUIVALENTE
  440    CONTINUE
           PCRP(4) = SQRT(1.5D0*SIEQP)
 
-C ---- V(5) DEFORMATION PLASTIQUE VOLUMIQUE      
+C ---- V(5) DEFORMATION PLASTIQUE VOLUMIQUE
           PCRP(5) = PCRM(5) + DEPPMO
 
 C ---- V(6) DEFORMATION PLASTIQUE EQUIVALENTE
@@ -556,16 +553,16 @@ C ---- V(7) :: INDICE DES VIDES
      &        ((PCRP(3)/PCRM(3)).GT.ZERO).AND.
      &        ((PCRP(1)/PCRM(1)).GT.ZERO).AND.
      &        (PCRM(1).NE.ZERO)) THEN
-      
+
            PCRP(7) = PCRM(7) - KAPA * LOG(PCRP(3)/PCRM(3))
      &  - (LAMBDA-KAPA) * LOG(PCRP(1)/PCRM(1))
-     
+
            ELSE
-      
+
            PCRP(7) = PCRM(7)
-        
+
           ENDIF
-       
+
         ENDIF
 
       ENDIF
@@ -592,11 +589,7 @@ C
        END IF
 C      INITIALISATION DE L'OPERATEUR TANGENT
 C     ---------------------------------------
-         DO 125 K=1,6
-         DO 126 L=1,6
-            DSIDEP(K,L) = 0.D0
- 126  CONTINUE
- 125  CONTINUE
+         CALL MATINI(6,6,0.D0,DSIDEP)
 C
 C     -- 7.1 CALCUL DE DSIDEP(6,6)-ELASTIQUE:
 C     ---------------------------------------
@@ -664,7 +657,7 @@ C     -- 7.2.3 CALCUL DES TERMES DE DSIDEP
            DO 138 K=1,NDIMSI
            DSIDEP(K,K) = DEUXMU + DSIDEP(K,K)
  138  CONTINUE
-  
+
         ENDIF
 C
       IF ( MATR .EQ. 2 ) THEN
@@ -679,11 +672,11 @@ C     -- 7.2.1 CALCUL DU MODULE ELASTOPLASTIQUE H
 
         H = 4.D0*M**4*(SIGPMO-PTRAC)*(SIGPMO-PTRAC-PCRP(1))*
      &  (XK0*(SIGPMO-PTRAC-PCRP(1))+XK*PCRP(1))+DEUXMU*9.D0*VALP
-    
+
 C     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
        CALL R8INIR(3,0.D0,A,1)
        CALL R8INIR(3,0.D0,AA,1)
-       
+
           DO 4130 K=1,3
              A(K) = -DEUX*XK0*M*M*(SIGPMO-PTRAC)*(SIGPMO-PTRAC-PCRP(1))
      &                                          *KRON(K)+
@@ -987,6 +980,4 @@ C
 C ======================================================================
  30   CONTINUE
 C =====================================================================
- 9001 FORMAT (A10,2X,A40,2X,A8)
-C    FIN ---------------------------------------------------------
       END

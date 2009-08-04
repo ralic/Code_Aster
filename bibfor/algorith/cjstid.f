@@ -2,7 +2,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,16 +33,16 @@ C ======================================================================
         INTEGER     NDT, NDI , NVI, I, J
         REAL*8      MATER(14,2), VIN(*), SIG(6), DSDE(6,6)
         REAL*8      HOOK(6,6), I1, S(6), SII, HTS, SIIC, NORM(6)
-        REAL*8      EPS(6), EPSV, TRACE, COS3T, HLODE, BETA, BETAPR, M
+        REAL*8      EPS(6), EPSV, TRACE, COS3T, HLODE, BETA, BETAPR
         REAL*8      QISO, R, GR, X(6), GX(6), XII, GAMMA, MUCJS
         REAL*8      KOE, KE, KOP, KP, N, RM, RC, A, B, C, PCO, PA
-        REAL*8      E, NU, AL, LA, MU, Q(6), QII, QQ(6), QQII, DET
+        REAL*8      E, NU, AL, LA, MU, Q(6), QII, QQ(6), QQII
         REAL*8      PC, COS3TQ, HTQ, COSA, COSDIF, RR, PHI, PHIO
-        REAL*8      DETS, COS3TS, TANGS, TANGQ, TETAS, TETAQ, TROIS
-        REAL*8      DFDDS(6), GD(6), TRGD, UN5, ZERO, D12, UN, DEUX
+        REAL*8      COS3TS, TANGS, TANGQ, TETAS, TETAQ, TROIS
+        REAL*8      DFDDS(6), GD(6), TRGD, ZERO, D12, UN, DEUX
         REAL*8      HDEV, QGX, DFHGD, DFH(6), HGD(6), HK(6), DFHK, MUN5
         REAL*8      T1(6), T2(6), KRON(6), EPSSIG, SIIREL, PREF,QINIT
-        REAL*8      TRUC, SIGNE, COEF1, COEF2, COEF3, COEF4, COEF5
+        REAL*8      TRUC, SIGNE, COEF3, COEF4, COEF5
         CHARACTER*8 MOD
 C ======================================================================
         COMMON /TDIM/   NDT, NDI
@@ -303,10 +303,7 @@ C                  - HOOK(I,J,M,N)*GD(M,N)*T2(K,L)
 C ======================================================================
 C --- C'EST A DIRE :  DSDE = HOOK - HK*T1/TROIS - HGD*T2 ---------------
 C ======================================================================
-        DO 190 I = 1, 6
-        DO 190 J = 1, 6
-           DSDE(I,J) = 0.D0
-  190   CONTINUE
+        CALL MATINI(6,6,0.D0,DSDE)
         DO 200 I = 1, NDT
         DO 200 J = 1, NDT
            DSDE(I,J) = HOOK(I,J) - HK(I)*T1(J)/TROIS - HGD(I)*T2(J)

@@ -2,7 +2,7 @@
      &                  EPS,
      &                  SIG,DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C ======================================================================
       INTEGER      IMATE
       CHARACTER*16 COMPOR(*)
       REAL*8       CRIT(3)
-      REAL*8       TEMP
       REAL*8       EPS(6)
       REAL*8       SIG(6)
       REAL*8       DSIDEP(6,6)
@@ -55,7 +54,6 @@ C                                   0 = EN VITESSE     >SYMETRIQUE
 C                                   1 = EN INCREMENTAL >NON-SYMETRIQUE
 C                             (3) = VALEUR TOLERANCE DE CONVERGENCE
 C                                    (RESI_INTE_RELA == RESCREL)
-C IN  TEMP    : TEMPERATURE.
 C IN  EPS     : DEFORMATION (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
 C OUT SIG     : CONTRAINTES
 C OUT DSIDEP  : MATRICE TANGENTE
@@ -71,11 +69,7 @@ C
 C
 C --- INITIALISATION DE LA RIGIDITE TANGENTE
 C
-      DO 2 M=1,2*NDIM
-        DO 3 L=1,2*NDIM
-          DSIDEP(M,L) = 0.D0
- 3      CONTINUE
- 2    CONTINUE
+      CALL MATINI(2*NDIM,2*NDIM,0.D0,DSIDEP)
 C
 C --- LECTURE DES CARACTERISTIQUES ELASTIQUES
 C

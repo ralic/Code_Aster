@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 01/04/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -508,3 +508,10 @@ Causes possibles :
        self.index_etapes[etape] = len(self.etapes) - 1
        etape.reparent(self)
        etape.reset_jdc(self)
+
+   def sd_accessible(self):
+      """On peut acceder aux "valeurs" (jeveux) des ASSD si le JDC est en PAR_LOT="NON".
+      """
+      if CONTEXT.debug: print ' `- JDC sd_accessible : PAR_LOT =', self.par_lot
+      return self.par_lot == 'NON'
+

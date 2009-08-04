@@ -1,6 +1,6 @@
       SUBROUTINE NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,SIGM,
      &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRILDC,CODRET)
-C MODIF MODELISA  DATE 20/07/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,11 +50,11 @@ C     ------------------------------------------------------------------
       INTEGER NDIM,IMATE,CODRET,KPG,KSP
 
       REAL*8 YOUNG,NU,KCOEF,MCOEF,COEFDC,LIMIT
-      REAL*8 VALPAR, VALRES(4)
+      REAL*8 VALRES(4)
       CHARACTER*2  FB2,CODRES(4)
-      CHARACTER*8  NOMPAR, NOMRES(4)
+      CHARACTER*8  NOMRES(4)
 
-      INTEGER ITER,ITEMAX,NDIMSI,I,J,K,L,M,ITD,IBID
+      INTEGER ITER,ITEMAX,NDIMSI,I,K,L,M,ITD,IBID
 
       REAL*8 RESI,ECUM,ECUMM,DCOEF,PLAS
       REAL*8 DEFE,DEFC,NUETOI,DEFPC(3),ECUMC,ECUMD
@@ -66,8 +66,6 @@ C     ------------------------------------------------------------------
 
       REAL*8 SIGFI(6),SIGD(6),RBID,DRDP,HP
       REAL*8 KCI,LAMDA,DEUMU,ACOEF,BCOEF,CCOEF,CORRM
-
-2327  FORMAT(A4,6(2X,D12.6))
 
       NDIMSI=2*NDIM
       NOMRES(1) = 'D_CORR'
@@ -320,10 +318,9 @@ C     CALCUL DE LA MATRICE TANGENTE OU ELAS OU SECANTE DECHARGE
 C     ELASTIQUE
       IF((OPTION.EQ.'RIGI_MECA').OR.MELAS.OR.
      &   (MTANG.AND.(PLAS.LT.0.5D0)))THEN
-         DO 150 K=1,6
-         DO 150 L=1,6
-           DSIDEP(K,L) = 0.D0
- 150     CONTINUE
+
+         CALL MATINI(6,6,0.D0,DSIDEP)
+
          DO 160 K=1,6
            DSIDEP(K,K) = COEF1
  160     CONTINUE
@@ -354,7 +351,7 @@ C     PLASTICITE
 178        CONTINUE
          END IF
          DRDP = (ECUM**((1.D0/MCOEF)-1.D0))
-         DRDP = (KCOEF/(MCOEF))*DRDP
+         DRDP = (KCOEF/MCOEF)*DRDP
 
          IF(DCOEF.LE.0.D0)THEN
 C          PLASTICITE SANS ENDOMMAGEMENT
@@ -364,10 +361,7 @@ C          PLASTICITE SANS ENDOMMAGEMENT
            BCOEF = 1.D0- (((DRDP*DP)/(RINI+LIMIT)))
            BCOEF = KCI*((9.D0*(COEF1**2))/(4.D0*HP))*BCOEF
            CCOEF = DRDP+((3.D0/2.D0)*COEF1)
-           DO 200 K=1,NDIMSI
-           DO 200 M=1,NDIMSI
-              DSIDEP(K,M) = 0.D0
- 200       CONTINUE
+           CALL MATINI(6,6,0.D0,DSIDEP)
            DO 210 K=1,NDIMSI
               DSIDEP(K,K) = DEUMU
  210       CONTINUE
@@ -387,16 +381,15 @@ C          PLASTICITE ET ENDOMMAGEMENT
      &                     ((1.D0-DCOEF)*(RINI+LIMIT)))
            LAMDA = COEF2+((COEF1/3.D0)*(1.D0-(1.D0/HP)))
            DEUMU = COEF1/HP
-           ACOEF = ((COEFDC)/(ECUMC-ECUMD))
+           ACOEF = (COEFDC/(ECUMC-ECUMD))
            BCOEF = (1.D0- (DP*(((1.D0-DCOEF)*DRDP) -
      &          (RINI*ACOEF))/((1.D0-DCOEF)*(RINI+LIMIT))))
            BCOEF = KCI*((9.D0*(COEF1**2))/(4.D0*HP))*BCOEF
            CCOEF = (((1.D0-DCOEF)*DRDP)+((3.D0/2.D0)*COEF1)
      &                            -(RINI*ACOEF))
-           DO 240 K=1,NDIMSI
-           DO 240 M=1,NDIMSI
-              DSIDEP(K,M) = 0.D0
- 240       CONTINUE
+
+           CALL MATINI(6,6,0.D0,DSIDEP)
+
            DO 250 K=1,NDIMSI
               DSIDEP(K,K) = DEUMU
  250       CONTINUE

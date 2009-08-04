@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -413,4 +413,10 @@ Causes possibles :
       car le comportement de ces macros est particulier.
       """
       return self.nom.startswith('INCLUDE')
+
+   def sd_accessible(self):
+      """Dit si on peut acceder aux "valeurs" (jeveux) de l'ASSD produite par l'étape.
+      """
+      if CONTEXT.debug: print '`- ETAPE sd_accessible :', self.nom
+      return self.parent.sd_accessible()
 

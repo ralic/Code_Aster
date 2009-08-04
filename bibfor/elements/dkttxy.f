@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       REAL*8    CODI(*), LCOT(*), HFT2(2,6), DEPF(9), VT(2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,10 +93,9 @@ C
       TKT(6,9) =   SU(3) - SU(2)
 C
 C     ------ VT = HFT2.TKT.DEPF ---------------------------------------
-      DO 110 I = 1, 2
-      DO 110 J = 1, 9
-         BC(I,J) = 0.D0
-  110 CONTINUE
+
+      CALL MATINI(2,9,0.D0,BC)
+
       DO 140 I = 1, 2
          DO 130 J = 1, 3*NNO
             DO 120 K = 1, 6

@@ -1,7 +1,7 @@
       SUBROUTINE  BMATMC ( IGAU, NBSIG, XYZ, IPOIDS, IVF, IDFDE,
      &                     NNO, NHARM, JACOB, B )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,11 +68,7 @@ C
 C ---- INITIALISATIONS
 C      ---------------
       ZERO   = 0.0D0
-C
-      DO 10 I = 1, NBSIG
-      DO 10 J = 1, 81
-         B(I,J) = ZERO
- 10   CONTINUE
+      CALL MATINI(NBSIG,81,ZERO,B)
 C
 C       -------------
 C ----  CAS MASSIF 3D

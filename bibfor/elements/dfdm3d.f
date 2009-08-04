@@ -1,7 +1,7 @@
       SUBROUTINE DFDM3D ( NNO, IPG, IPOIDS, IDFDE, COOR,
      &                    DFDX, DFDY, DFDZ, JAC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,10 +61,7 @@ C
 C
       POIDS = ZR(IPOIDS+IPG-1)
 C
-      DO 1 I=1,3
-      DO 1 J=1,3
-         G(I,J) = 0.D0
-1     CONTINUE
+      CALL MATINI(3,3,0.D0,G)
 C
       DO 100 I=1,NNO
          K  = 3*NNO*(IPG-1)
