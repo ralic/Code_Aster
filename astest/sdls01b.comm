@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD (ROTATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,14 +199,21 @@ DYNHARM=DYNA_LINE_HARM( MATR_MASS=MATASSM3,   MATR_RIGI=MATASSR3,
 
 DYNHARM=CALC_ELEM(reuse=DYNHARM,     RESULTAT=DYNHARM,
                               MODELE=MO,
-                              OPTION=( 'SIGM_ELNO_DEPL',
+                              OPTION=( 'SIEF_ELGA_DEPL',
+                                       'SIGM_ELNO_DEPL',   
                                        'EFGE_ELNO_DEPL',  ),
                           CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM
                        )
+DYNHARM=CALC_NO(reuse =DYNHARM,
+              RESULTAT=DYNHARM,
+              OPTION='EFGE_NOEU_DEPL',);
 
-# REFERENCE ASTER VERSION 3.03.15
+
+#X2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_C', OPERATION='EXTR', RESULTAT=DYNHARM, INFO=2, FREQ=50., NOM_CHAM='DEPL')
+#X1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_C', OPERATION='EXTR', RESULTAT=DYNHARM, INFO=2, FREQ=50., NOM_CHAM='SIEF_ELGA_DEPL')
 
 TEST_RESU(RESU=(
+# REFERENCE ASTER VERSION 3.03.15
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'DEPL',  NOEUD = 'N145', NOM_CMP = 'DZ',
        FREQ = 50., REFERENCE = 'NON_REGRESSION',     VALE_C = 2.90290E-02+5.20606E-02j),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'DEPL',  NOEUD = 'N145', NOM_CMP = 'DRX',
@@ -243,8 +250,59 @@ TEST_RESU(RESU=(
        FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = 5.49245E+04-5.65997E+05j),
      _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'SIGM_ELNO_DEPL',
        MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'SIYZ',
-       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = -4.72014E+04+3.10219E+05j))
-            )
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = -4.72014E+04+3.10219E+05j),
+
+     _F(  RESULTAT = DYNHARM,   NOM_CHAM = 'SIEF_ELGA_DEPL',
+       MAILLE = 'M2',   POINT = 3, SOUS_POINT=3,  NOM_CMP = 'SIXX',
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = -6.8467904E+07 + 2.0239156E+07j),
+
+            ))
+#
+#  TESTS MODI_REPERE SUR TORSEURS D'EFFORTS (ELNO ET NOEU)
+#
+RESU1=MODI_REPERE(RESULTAT=DYNHARM,
+                  MODI_CHAM=_F(MAILLE=('M251','M252','M255',),
+                               TYPE_CHAM='TORS_3D',
+                               NOM_CHAM='EFGE_ELNO_DEPL',
+                               NOM_CMP=('NXX','MXX','MYY','MXY','QX','QY',),),
+                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                                 ANGL_NAUT=(0.,),),
+                              );
+
+TEST_RESU(RESU=(
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'EFGE_ELNO_DEPL',
+       MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'MXX',
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = 1.14053E+01+1.45539E+03j),
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'EFGE_ELNO_DEPL',
+       MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'MYY',
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = 1.10224E+01-1.31441E+03j),
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'EFGE_ELNO_DEPL',
+       MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'MXY',
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = 1.03148E+01+3.55382E+02j),
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'EFGE_ELNO_DEPL',
+       MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'QX',
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = 3.66163E+02-3.77331E+03j),
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'EFGE_ELNO_DEPL',
+       MAILLE = 'M255',   NOEUD = 'N145',   NOM_CMP = 'QY',
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = -3.14676E+02+2.06813E+03j),
+      ),)
+
+RESU2=MODI_REPERE(RESULTAT=DYNHARM,
+                  MODI_CHAM=_F(MAILLE=('M251','M252','M255',),
+                               TYPE_CHAM='TORS_3D',
+                               NOM_CHAM='EFGE_NOEU_DEPL',
+                               NOM_CMP=('NXX','MXX','MYY','MXY','QX','QY',),),
+                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                                 ANGL_NAUT=(0.,),),
+                                );
+
+TEST_RESU(RESU=(
+     _F(  RESULTAT = RESU2,   NOM_CHAM = 'EFGE_NOEU_DEPL',
+       NOEUD = 'N145',   NOM_CMP = 'MXX',
+       FREQ = 50.,       REFERENCE = 'NON_REGRESSION', VALE_C = -8.22091E+00+1.42314E+03j),
+     _F(  RESULTAT = RESU2,   NOM_CHAM = 'EFGE_NOEU_DEPL',
+       NOEUD = 'N145',   NOM_CMP = 'MYY',
+       FREQ = 50., REFERENCE = 'NON_REGRESSION',      VALE_C = 2.00565E+00-1.30679E+03j),
+        ))
 
 FIN( )
-#

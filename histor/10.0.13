@@ -1,0 +1,1152 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 10/08/2009 - 17:56:24
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013672 DU 2009-07-31 15:47:09
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   En NEW10.0.11, le cas-test shll102a est NOOK sur Bull, Calibre4, Calibre5 et Rocks
+FONCTIONNALITE
+   Contrairement à ce que j'annonçais il y deux semaines dans la fiche 13653, les petites
+   corrections apportées dans le calcul de la gyroscopie ont une influence sur les résultats
+   de calcul modal et de calcul harmonique en STA9.
+   En effet, la principale erreur était d'avoir considéré que le calcul élémentaire de la
+   matrice de gyroscopie était effectué sur la demi-matrice supérieure alors que la
+   convention dans Code_Aster est d'employer la demi-matrice inférieure. La matrice de
+   gyroscopie étant antisymétrique, cela conduisait à une inversion de signe pour les termes
+   de gyroscopie. 
+   La correction a eu un impact sur le test SHLL102 où, dans une deuxième erreur qui
+   compensait la première, le rotor tournait à l'envers. 
+   Je corrige le test en question.
+   
+   Comme l'inversion du sens de rotation peut prêter à confusion et que les corrections sont
+   mineures, je préconise aussi d'appliquer les légères modifications aux fichiers
+   projmr.f
+   dlnewi.f
+   copmat.f
+   dlfext.f
+   upletr.f
+   te0009.f (cf fiche 13653)
+   et au cas test SHLL102a
+   aussi en v9.5.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.3
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.3
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SHLL102a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013605 DU 2009-07-08 13:49:35
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   calcul de lacher dans DYNA_LINE_TRAN
+FONCTIONNALITE
+   Lors d'un calcul de lâcher (calcul dynamique transitoire à partir d'un état hors
+   équilibre), il n'y a, en général, pas de forces extérieures. Or dans la routine DLFEXT,
+   qui calcule les forces externes appliquées au système pour DYNA_LINE_TRAN, ce cas a été
+   oublié et le vecteur chargement n'est pas mis à zéro, mais reste non initialisé. Les
+   resultats d'un calcul de lâcher avec DYNA_LINE_TRAN ne sont donc pas toujours justes.
+   C'est le cas depuis au moins la version 5. Attention aux résultats faux !
+   On peut pondérer ce risque en remarquant qu'il est exceptionnel de faire un calcul de
+   dynamique transitoire sans forces extérieures.
+   La restitution a été anticipée et a été intégrée dans la fiche 13653.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.0.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 3.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.01.034
+VALIDATION
+   SDLD34
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012966 DU 2008-12-09 16:34:04
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   validation de la dynamique transitoire linxc3xa9aire  avec gyroscopie
+FONCTIONNALITE
+   On restitue un cas test pour valider le calcul de dynamique transitoire d'une poutre en
+   rotation munie de trois disque où l'on prend en compte l'effet de la gyroscopie.
+   On propose trois modélisations :
+   SDLL126a : calcul transitoire avec DYNA_LINE_TRAN
+   SDLL126b : calcul transitoire avec DYNA_TRAN_MODAL
+   SDLL126c : calcul harmonique avec DYNA_LINE_HARM - on compare la réponse harmonique avec
+   le régime stationnaire obtenu dans les deux autres modélisations.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.02.126
+VALIDATION
+   SDLL126a, SDLL126b, SDLL126c
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 10/08/2009 - 15:12:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013246 DU 2009-03-24 17:10:41
+TYPE anomalie concernant Code_Aster (VERSION 9.6)
+TITRE
+   Messages d'alarme frequents et peu clairs
+FONCTIONNALITE
+   Problème :
+   ========
+   Il y en a 138 messages d'alarmes différents émis par les tests de Code_Aster.
+   Si on regarde les messages les plus fréquents dans les tests, on en trouve 20 qui sont
+   émis par plus de 10 tests différents.
+   Parmi ces 20 messages d'alarme, il y en a 3 assez obscurs : 
+   UTILITAI5_93
+   UTILITAI5_94
+   CALCULEL6_65
+   
+   on ne comprends pas le danger et on n'a pas de piste pour les éviter.
+   
+   Analyse :
+   =======
+   Les deux premiers messages sont émis de manière intempestives. On émet le message avant de
+   vérifier que l'on se trouve bien dans le contexte prévu par le message.
+   
+   Le troisième est plus suspect quant à son émission : est-il normal de se trouver dans ce
+   cas de figure dans les tests de la base.
+   
+   Correction :
+   ==========
+   Pour les deux premiers messages, on vérifie avant le message de bien être dans le contexte
+   et on reformule.
+   
+   Pour le troisième, on reformule le message pour qu'il soit plus clair et une fiche (fiche
+   13668) est émise pour savoir s'il est bien normal d'avoir ce message dans les tests de la
+   base.
+   
+   Impacts :
+   =======
+   op0150.f
+   972,975d972
+   <        IF(TYPRES.EQ.'EVOL_CHAR'.OR.TYPRES.EQ.'HARM_GENE')THEN
+   <          CALL U2MESK('A','UTILITAI5_93',1,TYPRES)
+   <          GOTO 35
+   <        ENDIF
+   979a977,982
+   >        IF ( ( (N1.EQ.0) .OR. (N2.EQ.0) .OR. (N3.EQ.0) ) .AND.
+   >      &  ( (TYPRES.EQ.'EVOL_CHAR') .OR. (TYPRES.EQ.'HARM_GENE') ) ) THEN
+   >          CALL U2MESK('A','UTILITAI5_93',1,TYPRES)
+   >          GOTO 35
+   >        ENDIF
+   > 
+   1022,1025d1024
+   <        IF(TYPRES(1:4).EQ.'DYNA'.OR.TYPRES(1:4).EQ.'MODE')THEN
+   <          CALL U2MESK('A','UTILITAI5_94',1,TYPRES)
+   <          GOTO 35
+   <        ENDIF
+   1027a1027,1030
+   >          IF(TYPRES(1:4).EQ.'DYNA'.OR.TYPRES(1:4).EQ.'MODE')THEN
+   >            CALL U2MESK('A','UTILITAI5_94',1,TYPRES)
+   >            GOTO 35
+   >          ENDIF
+   
+   utilitai5.py
+   calculel6.py
+   
+   A reporter en version d'exploitation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013265 DU 2009-03-31 17:51:45
+TYPE anomalie concernant Code_Aster (VERSION 9.6)
+TITRE
+   Alarme intempestive dans LIRE_RESU(TYPE_RESU='EVOL_CHAR'
+FONCTIONNALITE
+   Problème :
+   ========
+   Le message UTILITAI5_93 est peu clair dans le contexte du calcul. (idem 13246)
+   
+   Analyse :
+   =======
+   Le message est émis avant d'avoir vérifié que l'on est bien dans le contexte prévu par le
+   message.
+   
+   Correction :
+   ==========
+   idem 13246
+   On vérifie que l'on est bien dans le contexte prévu par le message avant de l'émettre.
+   
+   Impact :
+   ======
+   op0150.f
+   utilitai5.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013514 DU 2009-06-15 14:22:49
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.5, les cas-tests sslv134d est NOOK sur Bull, Rocks, Calibre4 et 5
+FONCTIONNALITE
+   Problème :
+   ========
+   En NEW10.0.5, les cas-tests sslv134d est très légèrement NOOK sur Bull, Rocks, Calibre4 et 5. 
+   
+   Analyse :
+   =======
+   Après avoir creusé, on s'aperçoit que l'évolution responsable de la variation est
+   l'introduction des matrices de coulage pour Arlequin (fiche 11717). Cette évolution a eu
+   pour effet de modifier la taille des ligrels. Dans le calcul du terme de saut de l'erreur
+   en mécanique en 3D (ermes2.f), on navigue dans le champ de contraintes des voisins grâce à
+   des formules magiques donnant le bon décalage. Or ce calcul du décalage était faux (depuis
+   l'introduction). On ne récupérait pas les bonnes valeurs de contraintes et avec la fiche
+   11717 on allait chercher d'autres valeurs (toujours fausses). Ceci explique le NOOK.
+   
+   Correction :
+   ==========
+   Une erreur était faite pour le nombre de n?uds voisins ; on le déduisait de la maille
+   courante alors qu'il doit être déduit de la maille voisine. On corrige cette erreur et on
+   réécrit la routine avec les bonnes formules données dans la doc sur les champs. On modifie
+   la valeur de référence du test en laissant la même tolérance (10e-8 %).
+   
+   Impact :
+   ======
+   ermes3.f
+   te0375.f
+   te0368.f
+   sslv134d.comm
+   
+   A faire en version d'exploitation (les routines doivent pouvoir être reprise à l'identique)
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.3
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 3.3
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste erreur
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 10/08/2009 - 14:36:27
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012581 DU 2008-10-02 10:59:05
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - CONTACT - Objets volumineux pour les algorithmes de contact
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Cette fiche est issue du besoin d'utiliser la méthode de contact par pénalisation sur des
+   calculs faisant intervenir de nombreux noeuds en contact (plus de 1000). La fiche 12506
+   avait mis en évidence un premier problème d'objets indûment créés ou trop gros. Suite à
+   cette correction, la méthode pénalisée qui ne devrait consommer que très peu de mémoire,
+   est toujours inutilisable.
+   Après analyse on se rend compte que cela vient du fait que les objets de la structure de
+   données du contact que l'on utilise pour construire la matrice tangente du contact
+   pénalisé sont pleins (i.e. dimensionnés à NEQ). Or ces derniers ne contiennent au maximum
+   que 30 termes non nuls par vecteur.
+   
+   Détails
+   =======
+   
+   L'évolution consiste à stocker au format creux 3 objets du contact qui sont utilisés en
+   pénalisation mais aussi en contact/frottement dualisé.
+   
+   1/ Objets concernés
+   
+   Trois objets sont trop gros : 
+   
+   * pour CM1A qui est alloué complètement et utilisé indifféremment selon les méthodes, on
+   propose de le renommer (pour les méthodes pénalisées) en ENAT (pour En.At) qui est le
+   véritable terme calculé (ALGOCP, FROGDP).
+   * pour CM2A et CM3A, on propose FRO1 et FRO2 (utilisé dans FROPGD,FROGDP,FROLGD).
+   
+   2/ Stockage creux
+   
+   Le stockage creux est proposé dans une collection dispersée à N objets (comme maintenant,
+   N nombre de ddls de contact) de taille constante par objet (30 soit le nombre maximal de
+   DDLs impliqués dans une relation linéaire entre noeud esclave et maille maître).
+   La différence notable étant qu'avant la taille de chaque objet était NEQ, le nombre total
+   d'équations du pb.
+   
+   Remarque : pour un problème faisant intervenir 50000 noeuds esclaves la taille de la
+   collection est de 11 Mo environ.
+   
+   3/ Périmètre
+   
+   Méthodes pénalisées et dualisées (en contact ET/OU en frottement). Dans la terminologie
+   Aster, il s'agit des 4 routines
+   * ALGOCP : contact pénalisé
+   * FROPGD : contact dualisé, frottement pénalisé
+   * FROGDP : contact/frottement pénalisé
+   * FROLGD : contact/frottement dualisé
+   
+   La modification impacte directement ATASMO qui prend en entrée les objets modifiés (et
+   construit le produit At.A) et CFCRSD (pour la création de ces objets). CALAPR évolue aussi.
+   
+   On ajoute 3 utilitaires TRIR, TRINSR et TRRAPR qui permettent d'ordonner un tableau
+   d'entiers tout en répercutant la permutation sur un tableau de réels. C'est la copie de 3
+   sources TRI, TRIINS et TRIRAP qui font la même chose avec un tableau d'entiers.
+   On a besoin de ces utilitaires pour classer les termes non nuls de la matrice par numéro
+   d'équation, car les utilitaires de création du stockage morse de la matrice suppose un
+   rangement ordonné (MOINSR).
+   
+   Enfin, on est obligé de modifier la routine RRSSM2 utilisée dans la combinaison linéaire
+   de matrices n'ayant pas le même profil pour des raisons de performances. On trouve en
+   effet dans cette routine une double boucle sur le nombre d'équations (on boucle alors dans
+   cette routine quand le problème comporte un grand nombre de ddls). En cherchant bien on
+   peut la supprimer.
+   
+   Astout
+   ======
+   
+   Un astout avec ces développements donne ceci :
+   
+                                          Temps CPU   Temps SYS   CPU + SYS
+   sdnv100a  OK_ALARME                        22.32        3.55       25.87
+   sdnv103a  OK_ALARME                       136.89        5.92      142.81
+   sdnv103b  OK_ALARME                       182.64        6.39      189.03
+   sdnv103c  OK_ALARME                        30.82        1.80       32.62
+   sdnv103d  OK_ALARME                        19.68        1.47       21.15
+   sdnv104b  OK_ALARME                       246.85       57.39      304.24
+   sdnv104e  OK_ALARME                       295.94       64.27      360.21
+   ssnp121c  OK_ALARME                         6.44        1.04        7.48
+   ssnp502b  OK_ALARME                        31.43        2.28       33.71
+   ssnv104h  OK_ALARME                         9.02        1.57       10.59
+   ssnv127c  OK_ALARME                        10.66        1.17       11.83
+   ssnv127d             ARRET_ANORMAL         40.01        1.80       41.81
+   ssnv128a  OK_ALARME                        27.59        3.28       30.87
+   ssnv128b  OK_ALARME                        49.90        7.30       57.20
+   ssnv128c  OK_ALARME                        28.68        3.30       31.98
+   ssnv128d  OK_ALARME                        38.29        3.90       42.19
+   ssnv128e  OK_ALARME                        57.09        4.22       61.31
+   ssnv128f  OK_ALARME                       188.04        6.40      194.44
+   ssnv128g  OK_ALARME                        48.79        4.59       53.38
+   ssnv128h  OK_ALARME                        54.44        3.92       58.36
+   ssnv128i  OK_ALARME                       265.17        7.34      272.51
+   ssnv128j  OK_ALARME                        73.09        5.53       78.62
+   ssnv128k  OK_ALARME                       259.69        8.85      268.54
+   ssnv128l  OK_ALARME                        34.52        2.32       36.84
+   ssnv503c  OK_ALARME                        21.11        1.14       22.25
+   ssnv503d  OK_ALARME                        19.91        1.09       21.00
+   ssnv503e  OK_ALARME                        32.47        1.81       34.28
+   ssnv503f  OK_ALARME                        30.08        1.54       31.62
+   ssnv503g  OK_ALARME                        30.95        1.64       32.59
+   --------  ---------  ----------------  ---------   ---------   ---------
+         29     28          1               2292.51      216.82     2509.33
+   
+   En comparant un à un les fichiers de message de chaque test, on constate un affichage
+   identique des tableaux de convergence avant/après, la modification est bien neutre au
+   niveau résultat.
+   
+   Le test ssnv127d s'arrête pour cause de non convergence. Après analyse, il s'avère que
+   c'est parce que la matrice tangente de pénalisation est mal construite. En effet dans ce
+   test un noeud appartient à la fois à la surface maître et à la surface esclave. Ce n'est
+   pas normal et doit être interdit (cf. issue13606). Ici suite à l'évolution on se heurte à
+   un problème car la relation linéaire de contact comporte un doublon (le noeud commun), par
+   suite la matrice produite est erronée (auparavant on stockait la relation linéaire dans un
+   vecteur plein, la double contribution était donc sommée et on ne rencontrait pas le pb).
+   
+   Performances
+   ============
+   
+   Temps : on gagne sur tous les tests sauf sdnv104b et sdnv104e. Les gains en temps sont dus
+   au traitement d'objets de taille moindre, aussi bien à parcourir qu'à (éventuellement)
+   décharger.
+   
+   Mémoire : pour presque tous les tests on ne gagne pas sur le minimum requis (car
+   auparavant les objets de collection pouvaient être déchargés sur disque), mais on gagne
+   sur le minimum requis pour passer tout en mémoire. À mémoire fixée, on gagne donc en temps.
+   Seuls sdnv104b, sdnv104e, ssnv128e ne vérifient pas ce constat. Le point commun de ces
+   tests est d'utiliser la pénalisation pour le contact et le frottement. Dans ce cas on a
+   bien diminué la taille des objets manipulés mais on a surtout pris soin de rendre la
+   programmation plus claire, cela a pour conséquence de manipuler plus d'objets : ainsi la
+   matrice tangente est obtenue par la somme de 3 matrices alors qu'auparavant on n'en
+   utilisait que 2 (dont une qui était créée puis détruite, puis recréée).
+   
+   Pour ssnv128e, cela conduit à une augmentation de la taille d'objets systèmes JEVEUX. On
+   consomme ainsi 1.14 Mo de plus. Mais ici le cas-test étant petit, ces objets ont une
+   taille comparable avec le reste des objets en mémoire. Pour des cas plus gros, le problème
+   ne se posera plus.
+   Pour sdnv104b et sdnv104e, le problème est exactement le même sauf qu'ici la taille du
+   répertoire est carrément grande devant la taille des objets (350 pas de temps, 108 ddls) :
+   ainsi on double la taille du répertoire : et on passe ainsi de 60Mo de répertoire à 120Mo
+   ! Le minimum de mémoire requis (et le maximum d'ailleurs) vaut 120Mo, et c'est la taille
+   nécessaire à avoir le répertoire en mémoire !
+   
+   Sur des cas plus gros : 
+   
+   perf005b
+   avant * STAT_NON_LINE            :     608.71 :      10.13 :     618.84 :     619.07 * 
+         #     - MEMOIRE DYNAMIQUE CONSOMMEE :         0.00 Mo (MAXIMUM ATTEINT :     
+   1677.45 Mo)
+         #     - MEMOIRE UTILISEE            :         0.00 Mo (MAXIMUM ATTEINT :      
+   184.79 Mo)
+         
+   après * STAT_NON_LINE            :     363.70 :      10.13 :     373.83 :     374.07 *
+         #     - MEMOIRE DYNAMIQUE CONSOMMEE :         0.00 Mo (MAXIMUM ATTEINT :     
+   1214.75 Mo)
+         #     - MEMOIRE UTILISEE            :         0.00 Mo (MAXIMUM ATTEINT :      
+   184.79 Mo)
+   
+   On gagne sur tous les tableaux. De plus si l'on compare (à armes égales, c'est à dire en
+   forçant l'utilisation d'une matrice tangente avec réactualisation) avec la méthode de
+   contact par défaut 'CONTRAINTE', on a ceci :
+         * STAT_NON_LINE            :     220.85 :       4.28 :     225.13 :     225.20 *
+         #     - MEMOIRE DYNAMIQUE CONSOMMEE :         0.00 Mo (MAXIMUM ATTEINT :     
+   1237.17 Mo) 
+         #     - MEMOIRE UTILISEE            :         0.00 Mo (MAXIMUM ATTEINT :      
+   184.78 Mo)
+   
+   On consomme donc moins de mémoire pour passer tout en mémoire, pour un temps plus
+   important néanmoins. Gardons cependant à l'esprit que l'avantage des méthodes par
+   correction ('CONTRAINTE','LAGRANGIEN' sans frottement,'GCP') est de n'être pas obligé de
+   réactualiser la matrice.
+   Ce que montre PERF005B ici c'est que l'on est à limite du problème traitable efficacement
+   par une méthode dualisée de type direct : au delà, aussi bien la place mémoire requise que
+   la complexité calcul liée à la factorisation devient rédhibitoire. Par ailleurs pour des
+   problèmes fortement non linéaires, le temps de calcul lié à la méthode pénalisée résidant
+   essentiellement dans l'augmentation du nombre d'itérations de Newton, cette dernière doit
+   trouver son intérêt.
+   
+   Conclusion
+   ==========
+   
+   L'intérêt de cette évolution est essentiellement qu'elle permet d'utiliser la méthode
+   'PENALISATION' sur des problèmes de taille conséquente (en nombre absolu de ddls, comme en
+   nombre de ddls de contact). C'est d'ailleurs ce qui devrait lui redonner un peu de
+   popularité, car sur des petits problèmes, elle est moins précise, moins rapide, voire plus
+   gourmande que la méthode par défaut (donc peu utilisée jusqu'à maintenant).
+   Accessoirement les performances des méthodes lagrangiennes avec frottement ont aussi
+   progressé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 15.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013474 DU 2009-06-03 17:01:11
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Red?upage des pas de temps et m?ode CONTINUE
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Lors du redécoupage de pas de temps, la méthode CONTINUE de contact ne remet pas à son
+   état antérieur certaines données (plus précisément, le statut de contact et le seuil de
+   frottement). Par conséquent on risque de repartir avec un état de contact/frottement
+   erroné, pouvant entraîner :
+   
+   - au mieux : rien
+   - au pire : non convergence
+   
+   En présence de frottement, il risque cependant d'y avoir des résultats différents (de si
+   on avait pas découpé).
+   
+   Analyse
+   =======
+   
+   On propose de stocker dans un objet temporaire (ETATCT) attaché à la structure de
+   résolution du contact RESOCO les informations suivantes dès qu'un pas de temps a convergé :
+   
+   * statut de contact : 0 ou 1 (jeu nul ou non)
+   * seuil de frottement : lambda
+   * compliance : 0 ou 1 (on touche ou pas les aspérités)
+   * glissière : 0 ou 1 (on a déjà collé ou pas)
+   
+   et ce pour chaque point d'intégration. Il s'agit donc d'un vecteur de taille 4*NTPC.
+   
+   Ce vecteur est créé sur la base volatile puis : 
+   
+   1. en début de pas de temps (CFMXME) on recopie son contenu dans le vecteur TABFIN (si il
+   s'agit d'un nouveau pas de temps alors c'est comme si on ne faisait rien, si par contre il
+   s'agit d'un redécoupage alors on restaure ainsi l'état du dernier pas de temps convergé
+   (au lieu de celui au moment de l'échec)
+   
+   2. en fin de pas de temps (MMMRES) on sauvegarde les informations ci-dessus dans ETATCT.
+   
+   Validation
+   ==========
+   
+   Perso sur le cas-test SSNV506F modifié joint à la fiche : auparavant le fait de ne
+   demander qu'un seul incrément de temps (de 0.0 à 1.0) entrainait un sous-découpage (en 10)
+   jusqu'à 0.001 où l'on ne convergeait toujours pas. Si on demande directement l'incrémeent
+   0.001 on converge. Après correction cela fonctionne et donne exactement le même tableau de
+   convergence.
+   
+   Impact : cfinit.f  cfmmvd.f  cfmxme.f  cfmxre.f  mmmres.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv506f modifi?
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013594 DU 2009-07-03 10:27:33
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.5.2, le cas-test ssnl133a s'arrete anormalement sur Rocks
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   En NEW9.5.2 le cas-test SSNL133A s'arrête sur une matrice non inversible après avoir
+   atteint la taille limite du pas de temps.
+   
+   Ce cas-test utilise le mot-clé STOP_SINGULIER='DECOUPE', pour permettre un découpage du
+   pas de temps adapté au phénomène simulé (post-flambement élastique avec point limite).
+   Ici on n'arrive plus à avancer malgré cette stratégie. Difficile d'incriminer le modèle
+   (POU_D_T_GD) qui n'évolue pas depuis des années.
+   
+   Quelques tests : en nodebug, le test passe systématiquement (sur le frontal en interactif
+   et en batch sur les noeuds de calcul)
+   en debug, il échoue uniquement sur le frontal. Si on le passe en RENUM='MDA' il est OK
+   (mais ici la différence n'est pas due à une erreur de METIS, d'ailleurs la routine PRNCHK
+   ne détecte rien, mais bien à la très grande sensibilité des calculs).
+   
+   Conclusion : ne rien faire. C'est la 4ème fois que ce test se casse en matrice non
+   inversible (et se sans que l'on puisse le reproduire vraiment). À la 5ème je proposerai
+   une solution en modifiant le test (utilisation du PILOTAGE en déplacement pour éviter les
+   matrices non inversibles).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnl133a
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013606 DU 2009-07-08 15:50:26
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   CONTACT - Noeuds communs aux surfaces ma?es et esclaves
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Dans la base de tests de contact, on trouve des mauvaises définitions de zones de contact
+   : il arrive que les surfaces maîtres et esclaves aient des noeuds en communs. Dans
+   certains cas, cela est justifié et on doit utiliser le mot-clé adéquat (SANS_GROUP_NO pour
+   exclure ces noeuds du contact), dans d'autres ce peut être une erreur de maillage. On a
+   développé une routine qui fait cette vérification systématiquement et on l'a testée sur la
+   base.
+   
+   Analyse
+   =======
+   
+   * aspic01b : 53 noeuds communs. Licite car fissure mais le groupe de noeuds donné sous
+   GROUP_MA_FOND ne contient pas la totalité du fond de fissure.
+   ==> comme on utilise ici la méthode 'VERIF' ce n'est pas grave. On ne fait rien et on
+   n'émet pas de message.
+   
+   * ssnv127[a-f]h : 1 noeud commun pour bloquer mouvement de corps rigide. Pas dans
+   SANS_GROUP_NO. On le rajoute.
+   
+   * ssnv166[ac] : 40 noeuds communs. Licite car fissure mais le fond de fissure n'est pas
+   donné dans SANS_GROUP_NO, conséquence le mécanisme de détection de pivot nul se déclenche.
+   On le rajoute.
+   
+   * ssnp121[no] : GROUP_MA_FOND/GROUP_NO_FOND dans la méthode CONTINUE. On ne traite pas ce
+   cas, on n'émet donc pas d'alarme.
+   
+   En faisant les modifications ad-hoc tous les tests passent et restent OK.
+   
+   Conclusion
+   ==========
+   
+   À l'avenir la vérification engendrera une erreur <F> (sauf méthode 'VERIF' et *_FOND
+   méthode CONTINUE) si il existe des noeuds communs qui ne sont pas dans
+   SANS_GROUP_NO/SANS_NOEUD.
+   
+   !--------------------------------------------------------------------------------------------------------------------!
+   !.<F>.<CONTACT2_13>..................................................................................................!
+   !....................................................................................................................!
+   !....................................................................................................................!
+   !.Contact.méthodes.maillées..Il.existe.une.zone.de.contact.dans.laquelle.un.noeud.est.commun.aux.surfaces.maîtres.et.!
+   !.esclaves..Vérifiez.la.définition.de.vos.surfaces.de.contact.ou.bien.renseignez.le.mot
+   clé.SANS_GROUP_NO............!
+   !....................................................................................................................!
+   !....................................................................................................................!
+   !....................................................................................................................!
+   !.Cette.erreur.est.fatale..Le.code.s'arrete..........................................................................!
+   !--------------------------------------------------------------------------------------------------------------------!
+   
+   Remarque : cette évolution a son intérêt pour l'EL12581. En effet les modifications en
+   'PENALISATION' font que si il existe des noeuds communs aux surfaces M/E, on ne peut plus
+   construire la matrice de pénalisation.
+   
+   Impact : limaco.f, cfnodb.f (ajout)
+            contact2.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.11
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013683 DU 2009-08-05 11:16:46
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Bug mxc3xa9thode CONTINUE dans le cas GLISSIERE
+FONCTIONNALITE
+   Express
+   =======
+   
+   Dans MMMBCA, il y a eu une petite régression dans le cas GLISSIERE : si plusieurs zones de
+   contact sont définies et que seules certaines d'entre elles sont GLISSIERE alors elles
+   risquent d'être ignorées.
+   
+   cf. issue12018
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 11/08/2009 - 16:50:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013554 DU 2009-06-23 12:41:12
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   MODI_REPERE et champ complexe
+FONCTIONNALITE
+   L'opérateur MODI_REPERE sur des résultats complexes ne fonctionne 
+   pas et se plante quand il essaie de vider la mémoire.
+   En regardant, on constate qu'il n'est pas programmé pour les champs 
+   complexes !
+   Or il est prévu pour traiter des résultats dyna_harmo, donc 
+   complexes.
+   On développe donc le traitement des résultats complexes.
+   
+   Routines modifiees :
+   - routine chprno : traitement des cham_no
+   - routine chprel : traitement des cham_elem
+   
+   2 cas-tests sont enrichis :
+   - SHLV100A pour des tenseurs et des vecteurs complexes
+   - SDLS01B  pour des torseurs complexes
+   
+   On ne fait pas le developpement en V9, mais on blinde MODI_REPERE
+   en émettant un message d'erreur clair si le résultat contient des 
+   champs complexes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.07.100 V2.03.001
+VALIDATION
+   SHLV100A SDLS01B
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013649 DU 2009-07-24 09:22:13
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Performance POST_RELEVE_T + IMPR_TABLE
+FONCTIONNALITE
+   Pour post-traiter les études sur les Internes de Cuve Jean-Luc fait 
+   une poursuite avec POST_RELEVE_T.
+   Il fait des extractions sur 55000 noeuds et obtient des temps CPU 
+   variant entre 2000 et 2500 secondes!
+   
+   Malgré le fait que les fichiers n'ont pas été transmis, j'ai pu 
+   reproduire le problème sur le cas-test de performance YYYY106 
+   (clapet sous transitoire froid) qui a 19000 noeuds.
+   J'obtiens un temps d'extraction de 330s (sur un cham_no à 6 cmp), ce 
+   qui est aberrant.
+   En regardant la programmation et en faisant des mesures de temps cpu,
+   je me suis aperçu que 95% du temps est passé dans la routine TBAJLI,
+   qui construit la table de sortie ligne par ligne. De plus, 90% du 
+   temps de TBAJLI est passé dans la routine JUVECA, qui augmente la 
+   dimension d'un tableau. Le problème est que cette routine est 
+   appelée beaucoup trop souvent et qu'elle coûte cher.
+   Or on peut l'appeler sans problème 100 fois moins: il suffit 
+   d'agrandir la taille des tableaux toutes les 1000 lignes de la table
+   au lieu de toutes les 10, comme c'est le cas actuellement. 
+   Evidemment on augmente l'incrément de taille d'autant.
+   En faisant çà, je passe de 330s à 12.9s (soit un gain d'un facteur 
+   25) et Jean-Luc devrait passer de 2500 à 100 secondes.
+   
+   J'ai également fait un gain important dans le cas d'une extraction 
+   avec TOUT_CMP = 'OUI' si le champ possède des noeuds dont les 
+   composantes ne sont pas affectées. La programmation était correcte 
+   dans le cas de NOM_CMP mais n'avait pas été répercutée pour 
+   TOUT_CMP. Sur un exemple, on gagne plus d'un facteur 100 cette fois.
+   
+   Malgré tout, la "sauce" POST_RELEVE est lourde et les performances 
+   sont moyennes, mais c'est à la généralité (et à la complexité) de la 
+   commande que c'est dû. On pourra difficilement faire mieux sans 
+   reprogrammer les choses plus simplement, tout au moins une partie.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   LISTE RESTREINTE
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 11/08/2009 - 10:45:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012798 DU 2008-11-12 12:51:28
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Utilitxc3xa9 de la base LDUMMY
+FONCTIONNALITE
+   La base "LDUMMY" ne sert plus depuis le changement de superviseur. Il est tout de même
+   indispensable d'avoir effectué les initialisations de JEVEUX au niveau de la routine
+   IB0MAI pour pouvoir faire appel aux utilitaires d'impression de messages. 
+   Je remplace la base LDUMMY par une base VOLATILE temporaire qui est détruite dans IBBASE
+   avant ouverture des bases GLOBALE et VOLATILE.
+   On supprime la routine UTINIT qui n'a plus d'interêt depuis la mise en place des
+   catalogues de messages python.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test personnel
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012824 DU 2008-11-17 15:17:45
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Problxc3xa8me de lecture de base
+FONCTIONNALITE
+   Je n'ai pas regardé le problème au moment de l'émission de la fiche, la base (8Go) n'étant
+   pas disponible. Je classe sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013440 DU 2009-05-20 11:20:58
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   ssnp110c en erreur numxc3xa9rique sur Calibre 4 - STA9.5.0
+FONCTIONNALITE
+   Ce jour, 04/08/2009, avec une version STA9.5 complétement recompilée avec g77 sur la
+   machine calibre 4 claut664, le test ssnp110c s'exécute sans problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp110c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009009 DU 2005-09-15 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   jerecu dans operateurs de resolution
+FONCTIONNALITE
+   On n'observe plus de temps système dans le test ssnv183a. L'appel à JERECU, routine JEVEUX
+   permettant de récupérer les enregistrements libérés du fichier d'accès direct associé à la
+   base, n'est effectivement déclenché que si l'on dépasse un seuil d'objets détruits (cf
+   histor 8.1.20). Il n'y a donc pas lieu d'intervenir.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010943 DU 2007-06-04 14:04:03
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   zmat002b : retirer la commande DEBUG(SD_VERI='NON')
+FONCTIONNALITE
+   En supprimant les deux commandes DEBUG(SD_VERI='NON/OUI') autour de DEFI_MATERIAU, le test
+   zmat002b fonctionne correctement avec la version de l'exécutable asteru_zmat en version
+   NEW10.0.12.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zmat002b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013063 DU 2009-01-15 12:59:17
+TYPE evolution concernant agla (VERSION )
+TITRE
+   perf001a + mumps distribuxc3xa9 sur 4 procs => speed-up de 0.65 !!
+FONCTIONNALITE
+   J'introduit deux nouvelles fonctionc C ISMPI et ISOMP qui possèdent des directives de
+   pré-compilation avec les valeurs _USE_MPI et _USE_OPENMP. Leur interrogation permet de
+   compléter l'affichage en début d'exécution :
+   
+                                           -- CODE_ASTER -- VERSION DE DEVELOPPEMENT 10.00.12 --
+   
+                                                            VERSION SEQUENTIELLE
+   
+                                                         PARALLELISME OPENMP ACTIF
+   
+                                                      COPYRIGHT  EDF-R&D 1991 - 2009
+   
+   ou bien :
+   
+                                           -- CODE_ASTER -- VERSION DE DEVELOPPEMENT 10.00.12 --
+    
+                                                     VERSION PARALLELE COMPILEE AVEC MPI
+    
+                                                          PARALLELISME OPENMP ACTIF
+    
+                                                       COPYRIGHT  EDF-R&D 1991 - 2009
+   
+   La fonction python.c imprime un message plus complet du type :
+   
+   <I>  Version séquentielle de Code_aster 
+   
+   ou bien :
+   
+   <I> Version parallèle de Code_aster compilée avec MPI
+   <I> Exécution sur le processeur de nom aster4 der ang 0
+   <I> Nombre de processeurs utilisés 2
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests personnels
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 11/08/2009 - 10:45:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013603 DU 2009-07-07 17:24:18
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   Pb de mise en page doc V3.03.126
+FONCTIONNALITE
+   Bonjour,
+   
+   Il y a effectivement un problème de mise en page suite à la conversion du .doc en .odt.
+   J'ai corrigé le problème.
+   
+   Sébastien
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   doc
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 11/08/2009 - 10:45:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013545 DU 2009-06-22 07:42:28
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.6, le cas-test perf001e s'arrete en erreur_<F> sur Bull et sur Calibre 5.
+FONCTIONNALITE
+   Analyse du pb
+   =============
+   Ce cas-test présente la particularité d'avoir une
+   matrice mal conditionnée (en 10.D+10). Donc même si
+   l'erreur due à l'algo de MUMPS est bonne (backward
+   error ici en 6*10.D-15), le produit des 2  fournit 
+   ici une borne de l'erreur relative sur la solution
+   (forward error) 6*10.D-15 x 10.D+10 = 6*10.D-5 supé
+   rieure à l'erreur relative max tolérée (paramétrée
+   par le potard RESI_RELA=5*10.D-5).
+   Le chiffre de la backward error a bougé avec le 
+   dernier changement de version de MUMPS. Il est 
+   passé de 3*10.D-15 à 6*10D-15. Ce n'est pas bien
+   grave en soit, milles explications sont possibles
+   (changement de stratégie de résolution ds les choix
+   automatiques de MUMPS, changement ds les traitements
+   de MUMPS à option constante...). Mais cette variation
+   fait passer la barre fatidique du RESI_RELA.
+   
+   Solution préconisée
+   ====================
+   On peut laisser le RESI_RELA à sa valeur 5*10.D-5 et 
+   améliorer le résultat en forçant MUMPS a effectuer 
+   quelques itérations de raffinement itératif. Au bout 
+   de 2 itérations, la backward error baisse de 
+   6*10.D-15 à 7*10.D-16, et le calcul passe. Avec les
+   valeurs par défaut actuelles de l'algo de raffinement
+   itératif, aucune itération ne se déclanchait. Le
+   résultat semblait déjà bon (car on ne tient pas comp
+   te du conditionnement à ce niveau).
+   Seulement pour faire cela il faut surcharger les sour
+   ces car pour l'instant l'utilisateur n'a pas accès à
+   ces options de post-traitements de MUMPS. 
+   Je propose de restituer avec cette AL quelques devts
+   qui vont permettre de palier cette absence.
+   
+   (petit) Chantier logiciel
+   =========================
+   On rend accessible cette fonctionnalité (souvent pré
+   conisée par les pro des solveurs) de raffinement ité
+   ratif (cf. Doc R6.02.03 chap2.3) via les mot-clés du
+   fichier de cmde. De la même manière qu'il y'a le mot-
+   clé PRETRAITEMENTS, on introduit POSTTRAITEMENTS:
+   
+   POSTTRAITEMENTS=SIMP(status='f',typ='TXM',defaut="AUTO",
+      into=("SANS","AUTO","FORCE"));
+   
+   si "SANS" (nouvelle possibilité); pas de raffinement
+      itératif; Option utile pour test ou en non-
+      linéaire pour éventuellement gagner du temps.
+   
+   si "AUTO" (valeur par défaut, paramètre caché qui pré
+      valait jusqu'à présent); 4 itérations de raffine
+   ment max et critère d'arrêt fixé à 10.D-14.
+   
+   si "FORCE" (nouvelle possibilité); On force MUMPS à 
+     effectuer au moins 1 itération; nbre maxi fixé à 10
+   et critère d'arrêt à 0.D-50.
+   
+   Nota: 
+    _ Ce processus de raffinement itératif améliore
+   souvent la qualité de la solution.
+    - Il s'arrête dès qu'il ne gagne plus au moins un 
+   facteur 5 (paramètre en dur ds MUMPS). Donc ce
+    processus peu couteux (descente-remontée), ne vas 
+   pas itérer longtemps.
+    - Il est mis en oeuvre ds Aster que si on demande
+   une estimation de la qualité (qui elle peut couter
+    10% du calcul) via une RESI_RELA > 0.
+   
+   Annexe
+   =======
+   Suite à plusieurs msgs sur le forum internet de MUMPS
+   j'ai rajouté une alarme qui avertie l'utilisateur
+   d'un nbre de pivots supérieur à 10% des DDLS:
+   73: _("""
+   Solveur MUMPS :
+     Lors de la factorisation numérique, le nombre de 
+   pivots s'est avéré supérieur à 10% de
+     la taille du problème. Cela peut engendrer un 
+   résultat de mauvaise qualité. Vérifiez bien
+     la qualité de celui-ci en fin de resolution via la 
+   mot-clé RESI_RELA.
+   Solution:
+     Si ce n'est pas fait, activez l'option 
+   prétraitements (PRETRAITEMENTS='AUTO') ou
+     désactivez l'option ELIM_LAGR2 (ELIM_LAGR2='NON') 
+   si vous avez beaucoup de Lagranges.
+     Sinon, contactez l'Equipe de Développement.
+   """),
+   
+   Validation
+   ==========
+   Machine Bull en séquentiel.
+   Cas-test perf001e et la liste des cas-tests 
+   utilisants MUMPS.
+   -> Pour corriger la fiche, je passe le calcul    
+      MECA_STATIQUE de perf001e
+      en SOLVEUR/POSTTRAITEMENTS='FORCE'.
+   -> Pour tester les 2 autres valeurs ('SANS' 
+   et 'AUTO'), j'enrichis le premier calcul de mumps02a.
+   Je met en dur POSTTRAITEMENTS='AUTO' (valeur par 
+   défaut, cela ne change rien, c'est juste un test 
+   fonctionnel) et durcit le RESI_RELA (puisqu'on va
+   faire qqes itérations de posttraitements). Il passe 
+   de 3.*10E-5 à 1.10E-8. 
+   Je duplique ce calcul ds le même fichier de cmde et
+   passe ce nouveau calcul en POSTTRAITEMENTS='SANS. Du
+   coup l'erreur est moins faible et je met un RESI_RELA
+   à 1.*10E-5.
+   NB. Les TEST_RESUs sur les valeurs du champ de dépla
+   cement ont des tolérances égales à ces RESI_RELA. car
+   c'est précisement ce que teste ce potard de MUMPS: 
+   l'écart relatif (ds une certaine norme) à la solution
+   exacte (sans erreur d'arrondi).
+   
+   Sources impactées
+   =================
+   F77: creso3.f  crsvmu.f  op0015.f
+   F90: amumpr.F  amumps.F  amumpt.F
+   PY: factor.py
+   CAPY: calc_elem.capy        c_solveur.capy           
+         dyna_non_line.capy    meca_statique.capy  
+        ther_lineaire.capy     calc_forc_ajou.capy  
+        dyna_line_harm.capy    dyna_tran_modal.capy  
+        mode_statique.capy     ther_non_line.capy
+       calc_matr_ajou.capy     dyna_line_tran.capy      
+       macro_matr_ajou.capy     resoudre.capy          
+       ther_non_line_mo.capy   dyna_line_harm.capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R6.02.03,U4.50.01
+VALIDATION
+   informatique,fonctionnelle
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT utilitai/ismpi               lefebvre J-P.LEFEBVRE        35     35      0
+       C AJOUT utilitai/isomp               lefebvre J-P.LEFEBVRE        35     35      0
+ CASTEST AJOUT sdld34a                        boyere E.BOYERE           173    173      0
+ CASTEST AJOUT sdll126a                       boyere E.BOYERE           189    189      0
+ CASTEST AJOUT sdll126b                       boyere E.BOYERE           195    195      0
+ CASTEST AJOUT sdll126c                       boyere E.BOYERE           188    188      0
+ CASTEST MODIF mumps02a                     lefebvre J-P.LEFEBVRE       130     31     11
+ CASTEST MODIF perf001e                     lefebvre J-P.LEFEBVRE        70      4      2
+ CASTEST MODIF sdls01b                     desroches X.DESROCHES        308     52      2
+ CASTEST MODIF shll102a                       boyere E.BOYERE           416      3      3
+ CASTEST MODIF shlv100a                    desroches X.DESROCHES        675    236      2
+ CASTEST MODIF sslp315b                    desroches X.DESROCHES        165      6      4
+ CASTEST MODIF sslv134d                       delmas J.DELMAS          1334      7      2
+ CASTEST MODIF ssnv127a                       desoza T.DESOZA           490     10      1
+ CASTEST MODIF ssnv127b                       desoza T.DESOZA           435     10      1
+ CASTEST MODIF ssnv127c                       desoza T.DESOZA           446     10      1
+ CASTEST MODIF ssnv127d                       desoza T.DESOZA           440     10      1
+ CASTEST MODIF ssnv127e                       desoza T.DESOZA           435     10      1
+ CASTEST MODIF ssnv127f                       desoza T.DESOZA           435     20     11
+ CASTEST MODIF ssnv127h                       desoza T.DESOZA           459     10      1
+ CASTEST MODIF ssnv166a                       desoza T.DESOZA           419      8      1
+ CASTEST MODIF ssnv166c                       desoza T.DESOZA           311      8      1
+CATALOPY MODIF commande/calc_elem           lefebvre J-P.LEFEBVRE       542      2      1
+CATALOPY MODIF commande/calc_forc_ajou      lefebvre J-P.LEFEBVRE        95      2      1
+CATALOPY MODIF commande/calc_matr_ajou      lefebvre J-P.LEFEBVRE        86      2      1
+CATALOPY MODIF commande/dyna_line_harm      lefebvre J-P.LEFEBVRE       138      3      1
+CATALOPY MODIF commande/dyna_line_tran      lefebvre J-P.LEFEBVRE       180      2      1
+CATALOPY MODIF commande/dyna_non_line       lefebvre J-P.LEFEBVRE       368      2      1
+CATALOPY MODIF commande/dyna_tran_modal     lefebvre J-P.LEFEBVRE       245      2      1
+CATALOPY MODIF commande/macro_matr_ajou     lefebvre J-P.LEFEBVRE       129      2      1
+CATALOPY MODIF commande/meca_statique       lefebvre J-P.LEFEBVRE       118      2      1
+CATALOPY MODIF commande/mode_statique       lefebvre J-P.LEFEBVRE       119      2      1
+CATALOPY MODIF commande/resoudre            lefebvre J-P.LEFEBVRE        45      4      1
+CATALOPY MODIF commande/ther_lineaire       lefebvre J-P.LEFEBVRE       125      2      1
+CATALOPY MODIF commande/ther_non_line       lefebvre J-P.LEFEBVRE       167      2      1
+CATALOPY MODIF commande/ther_non_line_mo    lefebvre J-P.LEFEBVRE        90      2      1
+CATALOPY MODIF commun/c_solveur             lefebvre J-P.LEFEBVRE        81      2      1
+       C MODIF supervis/python              lefebvre J-P.LEFEBVRE        86      7      3
+       C MODIF utilitai/rmfile              lefebvre J-P.LEFEBVRE        78      6      3
+FORTRAN90 MODIF mumps/amumpc                 lefebvre J-P.LEFEBVRE       360      4      5
+FORTRAN90 MODIF mumps/amumpi                 lefebvre J-P.LEFEBVRE       354     21      7
+FORTRAN90 MODIF mumps/amumpr                 lefebvre J-P.LEFEBVRE       360      7     10
+ FORTRAN AJOUT algeline/trinsr                desoza T.DESOZA            83     83      0
+ FORTRAN AJOUT algeline/trir                  desoza T.DESOZA           115    115      0
+ FORTRAN AJOUT algeline/trrapr                desoza T.DESOZA           121    121      0
+ FORTRAN AJOUT modelisa/cfnodb                desoza T.DESOZA           132    132      0
+ FORTRAN MODIF algeline/creso3              lefebvre J-P.LEFEBVRE       168     18      9
+ FORTRAN MODIF algeline/op0015              lefebvre J-P.LEFEBVRE       119      6      1
+ FORTRAN MODIF algeline/rrssm2                desoza T.DESOZA            82      3      6
+ FORTRAN MODIF algorith/algocg                desoza T.DESOZA           637      3      9
+ FORTRAN MODIF algorith/algocp                desoza T.DESOZA           355     28     43
+ FORTRAN MODIF algorith/calapr                desoza T.DESOZA            49      6      7
+ FORTRAN MODIF algorith/cfalgo                desoza T.DESOZA           178      2      2
+ FORTRAN MODIF algorith/cfcrsd                desoza T.DESOZA           428     62     28
+ FORTRAN MODIF algorith/cffrot                desoza T.DESOZA           111     10      2
+ FORTRAN MODIF algorith/cfinit                desoza T.DESOZA           204     26      4
+ FORTRAN MODIF algorith/cfmxme                desoza T.DESOZA           236     18      3
+ FORTRAN MODIF algorith/cfmxre                desoza T.DESOZA           135      3      3
+ FORTRAN MODIF algorith/chrpel             desroches X.DESROCHES        716    185      4
+ FORTRAN MODIF algorith/chrpno             desroches X.DESROCHES        615    130      3
+ FORTRAN MODIF algorith/crsvmu              lefebvre J-P.LEFEBVRE       162      5      3
+ FORTRAN MODIF algorith/frogdp                desoza T.DESOZA           570     87    141
+ FORTRAN MODIF algorith/frolgd                desoza T.DESOZA          1075     42     37
+ FORTRAN MODIF algorith/fropgd                desoza T.DESOZA           824     33     31
+ FORTRAN MODIF algorith/mmmbca                desoza T.DESOZA           410      5      2
+ FORTRAN MODIF algorith/mmmres                desoza T.DESOZA           949     25      8
+ FORTRAN MODIF elements/ermes3                delmas J.DELMAS           180     74     34
+ FORTRAN MODIF elements/te0368                delmas J.DELMAS           600      4     11
+ FORTRAN MODIF elements/te0375                delmas J.DELMAS           504      4     11
+ FORTRAN MODIF jeveux/jelibf                lefebvre J-P.LEFEBVRE       362     10      3
+ FORTRAN MODIF jeveux/jxcopy                lefebvre J-P.LEFEBVRE       134      4      3
+ FORTRAN MODIF modelisa/atasmo                desoza T.DESOZA           299     42     29
+ FORTRAN MODIF modelisa/cfmmvd                desoza T.DESOZA           100      5      3
+ FORTRAN MODIF modelisa/limaco                desoza T.DESOZA           200      5      1
+ FORTRAN MODIF postrele/rvgnoe             desroches X.DESROCHES        217      2      2
+ FORTRAN MODIF postrele/rvouex             desroches X.DESROCHES        273     15      3
+ FORTRAN MODIF supervis/debut               lefebvre J-P.LEFEBVRE       100      1      2
+ FORTRAN MODIF supervis/ib0mai              lefebvre J-P.LEFEBVRE        94      4      5
+ FORTRAN MODIF supervis/ibbase              lefebvre J-P.LEFEBVRE       210      6      5
+ FORTRAN MODIF supervis/ibmain              lefebvre J-P.LEFEBVRE        69      1      2
+ FORTRAN MODIF supervis/prente              lefebvre J-P.LEFEBVRE        99     10      2
+ FORTRAN MODIF utilitai/op0150                delmas J.DELMAS          1128     10      7
+ FORTRAN MODIF utilitai/tbajli             desroches X.DESROCHES        294      2      2
+ FORTRAN SUPPR utilifor/utinit              lefebvre M.ADMINISTRATEUR    115      0    115
+  PYTHON MODIF Messages/calculel6             delmas J.DELMAS           366     34     27
+  PYTHON MODIF Messages/contact2              desoza T.DESOZA            44      6      1
+  PYTHON MODIF Messages/factor              lefebvre J-P.LEFEBVRE       364     14      1
+  PYTHON MODIF Messages/utilitai5             delmas J.DELMAS           300     10      7
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   10        1266      1266             +1266
+ MODIF :   77       24694      1473     595      +878
+ SUPPR :    1         115               115      -115
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   88       26075      2739     710     +2029 

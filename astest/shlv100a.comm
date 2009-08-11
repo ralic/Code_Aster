@@ -1,5 +1,5 @@
 
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (PENTA6 HEXA8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -435,7 +435,241 @@ TEST_RESU(RESU=(
      ),
 );
 
-#--------------------------------------------------------------------
 
+RESU1=MODI_REPERE(RESULTAT=DYNAH,
+                  MODI_CHAM=_F(MAILLE=('MA253',),
+                               TYPE_CHAM='TENS_3D',
+                               NOM_CHAM='SIGM_ELNO_DEPL',
+                               NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+                  DEFI_REPERE=_F(REPERE='CYLINDRIQUE',AXE_Z=(0.,0.,1.,),
+                                 ORIGINE=(0.,0.,0.,),),
+                               );
+
+# TEST DES CONTRAINTES ELNO APRES MODI_REPERE (SIYY et SIZZ INVERSES)
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU1,
+        NUME_ORDRE=1,
+        NOM_CHAM='SIGM_ELNO_DEPL',
+        MAILLE='MA253',
+        GROUP_NO='A',
+        NOM_CMP='SIXX',
+        VALE_C=-1.0+0.j,
+        REFERENCE='ANALYTIQUE',
+        CRITERE='RELATIF',
+        PRECISION=0.12,),
+    _F(RESULTAT=RESU1,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_ELNO_DEPL',
+       MAILLE='MA253',
+       GROUP_NO='A',
+       NOM_CMP='SIYY',
+       VALE_C=0.20055+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.24,),
+    _F(RESULTAT=RESU1,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_ELNO_DEPL',
+       MAILLE='MA253',
+       GROUP_NO='A',
+       NOM_CMP='SIZZ',
+       VALE_C=1.6685+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.03,),
+      ),)
+      
+DYNAH=CALC_NO(reuse =DYNAH,
+              RESULTAT=DYNAH,
+              OPTION='SIGM_NOEU_DEPL',);
+
+TEST_RESU(RESU=(
+     _F(RESULTAT=DYNAH,
+        NUME_ORDRE=1,
+        NOM_CHAM='SIGM_NOEU_DEPL',
+        GROUP_NO='A',
+        NOM_CMP='SIXX',
+        VALE_C=-1.0+0.j,
+        REFERENCE='ANALYTIQUE',
+        CRITERE='RELATIF',
+        PRECISION=0.13,),
+    _F(RESULTAT=DYNAH,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_NOEU_DEPL',
+       GROUP_NO='A',
+       NOM_CMP='SIYY',
+       VALE_C=1.6685+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.03,),
+    _F(RESULTAT=DYNAH,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_NOEU_DEPL',
+       GROUP_NO='A',
+       NOM_CMP='SIZZ',
+       VALE_C=0.20055+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.12,),
+      ),)
+
+RESU2=MODI_REPERE(RESULTAT=DYNAH,
+                  MODI_CHAM=_F(MAILLE=('MA253',),
+                               TYPE_CHAM='TENS_3D',
+                               NOM_CHAM='SIGM_NOEU_DEPL',
+                               NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+                  DEFI_REPERE=_F(REPERE='CYLINDRIQUE',AXE_Z=(0.,0.,1.,),
+                                 ORIGINE=(0.,0.,0.,),),
+                                );
+
+# TEST DES CONTRAINTES AUX NOEUDS APRES MODI_REPERE (SIYY et SIZZ INVERSES)
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU2,
+        NUME_ORDRE=1,
+        NOM_CHAM='SIGM_NOEU_DEPL',
+        GROUP_NO='A',
+        NOM_CMP='SIXX',
+        VALE_C=-1.0+0.j,
+        REFERENCE='ANALYTIQUE',
+        CRITERE='RELATIF',
+        PRECISION=0.13,),
+    _F(RESULTAT=RESU2,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_NOEU_DEPL',
+       GROUP_NO='A',
+       NOM_CMP='SIYY',
+       VALE_C=0.20055+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.12,),
+    _F(RESULTAT=RESU2,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_NOEU_DEPL',
+       GROUP_NO='A',
+       NOM_CMP='SIZZ',
+       VALE_C=1.6685+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.03,),
+      ),)
+#
+#  MEMES TESTS EN REPERE UTILISATEUR
+#
+
+RESU3=MODI_REPERE(RESULTAT=DYNAH,
+                  MODI_CHAM=_F(MAILLE=('MA253',),
+                               TYPE_CHAM='TENS_3D',
+                               NOM_CHAM='SIGM_ELNO_DEPL',
+                               NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                                 ANGL_NAUT=(0.,0.,0.,),),
+                               );
+
+# TEST DES CONTRAINTES ELNO APRES MODI_REPERE 
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU3,
+        NUME_ORDRE=1,
+        NOM_CHAM='SIGM_ELNO_DEPL',
+        MAILLE='MA253',
+        GROUP_NO='A',
+        NOM_CMP='SIXX',
+        VALE_C=-1.0+0.j,
+        REFERENCE='ANALYTIQUE',
+        CRITERE='RELATIF',
+        PRECISION=0.12,),
+    _F(RESULTAT=RESU3,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_ELNO_DEPL',
+       MAILLE='MA253',
+       GROUP_NO='A',
+       NOM_CMP='SIZZ',
+       VALE_C=0.20055+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.24,),
+    _F(RESULTAT=RESU3,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_ELNO_DEPL',
+       MAILLE='MA253',
+       GROUP_NO='A',
+       NOM_CMP='SIYY',
+       VALE_C=1.6685+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.03,),
+      ),)
+      
+
+RESU4=MODI_REPERE(RESULTAT=DYNAH,
+                  MODI_CHAM=_F(MAILLE=('MA253',),
+                               TYPE_CHAM='TENS_3D',
+                               NOM_CHAM='SIGM_NOEU_DEPL',
+                               NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                                 ANGL_NAUT=(0.,0.,0.,),),
+                  );
+
+# TEST DES CONTRAINTES AUX NOEUDS APRES MODI_REPERE 
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU4,
+        NUME_ORDRE=1,
+        NOM_CHAM='SIGM_NOEU_DEPL',
+        GROUP_NO='A',
+        NOM_CMP='SIXX',
+        VALE_C=-1.0+0.j,
+        REFERENCE='ANALYTIQUE',
+        CRITERE='RELATIF',
+        PRECISION=0.13,),
+    _F(RESULTAT=RESU4,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_NOEU_DEPL',
+       GROUP_NO='A',
+       NOM_CMP='SIZZ',
+       VALE_C=0.20055+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.12,),
+    _F(RESULTAT=RESU4,
+       NUME_ORDRE=1,
+       NOM_CHAM='SIGM_NOEU_DEPL',
+       GROUP_NO='A',
+       NOM_CMP='SIYY',
+       VALE_C=1.6685+0.j,
+        REFERENCE='ANALYTIQUE',
+       CRITERE='RELATIF',
+       PRECISION=0.03,),
+      ),)
+
+RESU5=MODI_REPERE(RESULTAT=DYNAH,
+                  MODI_CHAM=_F(MAILLE=('MA253',),
+                               TYPE_CHAM='VECT_3D',
+                               NOM_CHAM='DEPL',
+                               NOM_CMP=('DX','DY','DZ',),),
+                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                                 ANGL_NAUT=(0.,0.,0.,),),
+                  );
+
+# TEST DES DEPLACEMENTS APRES MODI_REPERE 
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU5,
+     NUME_ORDRE=1,
+     NOM_CHAM='DEPL',
+     NOM_CMP='DX',
+     GROUP_NO='A',
+     VALE_C=0.0073398+0.j,
+        REFERENCE='ANALYTIQUE',
+     CRITERE='RELATIF',
+     PRECISION=0.01,),
+     _F(RESULTAT=RESU5,
+     NUME_ORDRE=1,
+     NOM_CHAM='DEPL',
+     NOM_CMP='DY',
+     GROUP_NO='A',
+     VALE_C=0.+0.j,
+        REFERENCE='ANALYTIQUE',
+     CRITERE='ABSOLU',
+     PRECISION=1e-10,),
+      ),)
+      
 FIN();
 #

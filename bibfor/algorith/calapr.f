@@ -1,9 +1,9 @@
-      SUBROUTINE CALAPR (NEQ,NBDDL,MU,AFMU,DDL,ATMU)
+      SUBROUTINE CALAPR (NBDDL,MU,AFMU,DDL,ATMU)
 C
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2000   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGORITH  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,15 +20,14 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      INTEGER NEQ,NBDDL,DDL(NBDDL)
-      REAL*8  MU,AFMU(NEQ),ATMU(NEQ)
+      INTEGER NBDDL,DDL(NBDDL)
+      REAL*8  MU,AFMU(*),ATMU(*)
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : FROPGD/FROLGD
+C ROUTINE APPELEE PAR : FROPGD/FROLGD/FROGDP
 C ----------------------------------------------------------------------
 C CALCUL DE ATMU = AFMU * MU
 C
-C IN  NEQ    : NOMBRE D'EQUATIONS
 C IN  NBDDL  : NOMBRE DE DDLS IMPLIQUES DANS LA LIAISON UNILATERALE
 C IN  MU     : COEFFICIENT DE MULTIPLICATION PAR PENALISATION
 C IN  AFMU   : COEFFICIENTS IMPLIQUES DANS LA LIAISON UNILATERALE
@@ -42,7 +41,7 @@ C
 C ----------------------------------------------------------------------
 C
       DO 10 J = 1,NBDDL
-        ATMU(DDL(J)) = AFMU(DDL(J)) * MU
+        ATMU(J) = AFMU(DDL(J)) * MU
  10   CONTINUE
 C
 C ======================================================================

@@ -3,7 +3,7 @@
      &                  CTCCVG,CTCFIX)
 C   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,10 +106,12 @@ C
       INTEGER      CFDISI
       LOGICAL      TROUAC,DELPOS,LELPIV,CFEXCL
       INTEGER      IFM,NIV
+      INTEGER      NDLMAX,NMULT
+      PARAMETER   (NDLMAX = 30)
       INTEGER      IBID,IER,ILIAI,JJ,KK,JJC,LL,IZONE
       INTEGER      NDECI,ISINGU,NPVNEG,ISTO
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NDIM
-      INTEGER      NBDDL,NEQMAX,NBLCIN,NESMAX,NBLIG
+      INTEGER      NBDDL,NEQMAX,NBLCIN,NESMAX
       INTEGER      ILIAC,LLIAC,JDECAL
       INTEGER      INDFAC,POSIT,SPAVAN,INDIC,NUMIN
       INTEGER      BTOTAL,ITEMUL
@@ -125,8 +127,8 @@ C
       CHARACTER*14 NUMEDD
       CHARACTER*19 MAT,MAF2,MAFROT
       INTEGER      JRESU,JDEPDE
-      CHARACTER*19 AFMU,MAF1,CM2A,CM3A
-      INTEGER      JAFMU,LMAF1,JCM2A,JCM3A
+      CHARACTER*19 AFMU,MAF1,FRO1,FRO2
+      INTEGER      JAFMU,LMAF1,JFRO1,JFRO2
       CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,COCO,LIOT
       INTEGER      JLIAC,JMU,JATMU,JDELT0,JDELTA,JCOCO,JLIOT
       CHARACTER*24 APJEFX,APJEFY,APMEMO
@@ -179,8 +181,8 @@ C ======================================================================
       AFMU   = RESOCO(1:14)//'.AFMU'
       DELT0  = RESOCO(1:14)//'.DEL0'
       DELTA  = RESOCO(1:14)//'.DELT'
-      CM2A   = RESOCO(1:14)//'.CM2A'
-      CM3A   = RESOCO(1:14)//'.CM3A'
+      FRO1   = RESOCO(1:14)//'.FRO1'
+      FRO2   = RESOCO(1:14)//'.FRO2'
       MAFROT = RESOCO(1:8)//'.MAFR'
       MAF1   = '&&FROPGD.MAF1'
       MAF2   = '&&FROPGD.MAF2'
@@ -668,35 +670,35 @@ C --- NUMERO DE LA LIAISON
         ELSE
           LLIAC = ILIAI - NBLIAI
         END IF
-C --- CALCUL DE CM2A (PARTIE SYMETRIQUE DE KF) POUR LES LIAISONS
+C --- CALCUL DE FRO1 (PARTIE SYMETRIQUE DE KF) POUR LES LIAISONS
 C --- ACTIVES AVEC INTIALISATION A ZERO DE LA COLONNE CORRESPONDANT
 C --- A LA LIAISON
         DO 280 JJ = 1,NBLIAC
           IF (ZI(JLIAC-1+JJ).EQ.LLIAC) TROUAC = .FALSE.
   280   CONTINUE
-        CALL JEVEUO(JEXNUM(CM2A,ILIAI),'E',JCM2A)
-        DO 290 KK = 1,NEQ
-          ZR(JCM2A-1+KK) = 0.0D0
+        CALL JEVEUO(JEXNUM(FRO1,ILIAI),'E',JFRO1)
+        DO 290 KK = 1,NDLMAX
+          ZR(JFRO1-1+KK) = 0.0D0
   290   CONTINUE
         IF (.NOT.TROUAC) THEN
           JDECAL = ZI(JAPPTR+LLIAC-1)
           NBDDL = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
           XMU = ZR(JMU-1+3*NBLIAI+LLIAC)
           IF (ILIAI.GT.NBLIAI) THEN
-            CALL CALATM(NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                  ZI(JAPDDL+JDECAL),ZR(JCM2A))
+            CALL DAXPY(NBDDL,XMU,
+     &                 ZR(JAPCOF+JDECAL+30*NESMAX),1,ZR(JFRO1),1)
           ELSE
-            CALL CALATM(NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL),
-     &                  ZI(JAPDDL+JDECAL),ZR(JCM2A))
+            CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL),1,ZR(JFRO1),1)
           END IF
         END IF
-        CALL JELIBE(JEXNUM(CM2A,ILIAI))
+        CALL JELIBE(JEXNUM(FRO1,ILIAI))
   300 CONTINUE
 C ======================================================================
-C --- CALCUL DE KF STOCKE DANS MAF1 = CM2AT*CM2A
+C --- CALCUL DE KF STOCKE DANS MAF1 = FRO1T*FRO1
 C ======================================================================
-      NBLIG = NBLIAI*(NDIM-1)
-      CALL ATASMO(CM2A,NUMEDD,MAF1,'V',NBLIG)
+      NMULT = NDIM - 1
+      CALL ATASMO(NEQ,FRO1,ZI(JAPDDL),
+     &                     ZI(JAPPTR),NUMEDD,MAF1,'V',NBLIAI,NMULT)
 C ======================================================================
 C --- CREATION DU VECTEUR DE CISAILLEMENT (PARTIE SYMETRIQUE DE KFR)
 C ---   KF*(ZR(JDEPDE-1+NUM1) + ZR(JDELTA-1+NUM1))
@@ -706,7 +708,7 @@ C ======================================================================
       CALL JEVEUO(MAF1//'.&INT','E',LMAF1)
       CALL MRMULT('ZERO',LMAF1,ZR(JDELTA),'R',ZR(JAFMU),1)
 C ======================================================================
-C - CALCUL DE KFR STOCKE DANS CM3A SUR L ENSEMBLE DES LIAISONS
+C - CALCUL DE KFR STOCKE DANS FRO2 SUR L ENSEMBLE DES LIAISONS
 C ======================================================================
       DO 330 ILIAI = 1,NBLIAI
         TROUAC = .TRUE.
@@ -720,12 +722,12 @@ C
             JJC = JJ
           END IF
   310   CONTINUE
-C --- INITIALISATION DE CM3A
-        CALL JEVEUO(JEXNUM(CM3A,ILIAI),'E',JCM3A)
-        DO 320 LL = 1,NEQ
-          ZR(JCM3A-1+LL) = 0.0D0
+C --- INITIALISATION DE FRO2
+        CALL JEVEUO(JEXNUM(FRO2,ILIAI),'E',JFRO2)
+        DO 320 LL = 1,NDLMAX
+          ZR(JFRO2-1+LL) = 0.0D0
   320   CONTINUE
-C --- ON EFFECTUE LE CALCUL DE CM3A SUR LES LIAISONS ACTIVES
+C --- ON EFFECTUE LE CALCUL DE FRO2 SUR LES LIAISONS ACTIVES
         IF (.NOT.TROUAC) THEN
           AJEUFX = 0.D0
           AJEUFY = 0.D0
@@ -752,7 +754,7 @@ C
             BETA = 0.D0
           ELSE
             IF (XX.LE.XXMAX*XTOL) XX = XXMIN
-              ALPHA = SQRT(XK/XX)
+            ALPHA = SQRT(XK/XX)
             BETA = SQRT(1.D0/ (XK*XX))
             IF (ALPHA.GT.XF) BETA = 0.D0
           END IF
@@ -764,21 +766,21 @@ C
             XMU = SQRT(ZR(ICOMA-1+LLIAC))
             BETA = BETA*XMU
           END IF
-C --- ON EFFECTUE CM3A = AFMU * BETA
-          CALL CALAPR(NEQ,NBDDL,BETA,ZR(JAFMU),ZI(JAPDDL+JDECAL),
-     &                ZR(JCM3A))
+C --- ON EFFECTUE FRO2 = AFMU * BETA
+          CALL CALAPR(NBDDL,BETA,ZR(JAFMU),ZI(JAPDDL+JDECAL),ZR(JFRO2))
         END IF
-        CALL JELIBE(JEXNUM(CM3A,ILIAI))
+        CALL JELIBE(JEXNUM(FRO2,ILIAI))
   330 CONTINUE
 C ======================================================================
 C --- CREATION DE LA MATRICE DE FROTTEMENT - SECONDE PARTIE (MAF2)
 C ======================================================================
-      NBLIG = NBLIAI
-      CALL ATASMO(CM3A,NUMEDD,MAF2,'V',NBLIG)
+      NMULT = 1
+      CALL ATASMO(NEQ,FRO2,ZI(JAPDDL),
+     &                     ZI(JAPPTR),NUMEDD,MAF2,'V',NBLIAI,NMULT)
 C ======================================================================
 C --- CALCUL DE LA MATRICE TANGENTE AVEC FROTTEMENT
 C ======================================================================
-      CALL CFFROT(MAF1,MAF2,MAFROT)
+      CALL CFFROT(MAF1,'-',MAF2,MAFROT)
 C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================

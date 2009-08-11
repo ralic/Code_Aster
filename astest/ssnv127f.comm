@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,19 +35,19 @@ DEBUT(CODE=_F( NOM = 'SSNV127F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
 
 #_____________________________________________________________________ 
 #                                                       
-#                    LECTURE DE SSNV127A.MGIB           
+#                    LECTURE DE SSNV127F.MGIB           
 #_____________________________________________________________________ 
 #                                                       
 #
 
 
-SSNV127A=LIRE_MAILLAGE();
+SSNV127F=LIRE_MAILLAGE();
 #                                                       
 #
 
 
-SSNV127A=DEFI_GROUP(reuse =SSNV127A,
-                    MAILLAGE=SSNV127A,
+SSNV127F=DEFI_GROUP(reuse =SSNV127F,
+                    MAILLAGE=SSNV127F,
                     CREA_GROUP_NO=(_F(GROUP_MA='CC4',),
                                    _F(GROUP_MA='AD1',),
                                    _F(GROUP_MA='AD2',),
@@ -60,6 +60,14 @@ SSNV127A=DEFI_GROUP(reuse =SSNV127A,
                                       NOM='RELEVE',
                                       GROUP_NO_ORIG='A1',
                                       GROUP_NO_EXTR='B2',),),);
+
+# POUR ELIMINER LES NOEUDS COMMUNS AUX SURFACES DE CONTACT
+SSNV127F=DEFI_GROUP(reuse=SSNV127F,
+                    MAILLAGE=SSNV127F,
+                    CREA_GROUP_NO=(_F(GROUP_MA='BCC1',),
+                                   _F(GROUP_MA='BCC2',),
+                                   _F(INTERSEC=('BCC1','BCC2',),
+                                      NOM='BCC_SGN'),),)
 #                                                       
 #_____________________________________________________________________ 
 #                                                       
@@ -69,18 +77,18 @@ SSNV127A=DEFI_GROUP(reuse =SSNV127A,
 #
 
 
-MO=AFFE_MODELE(MAILLAGE=SSNV127A,
+MO=AFFE_MODELE(MAILLAGE=SSNV127F,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
 
-SSNV127A=MODI_MAILLAGE(reuse =SSNV127A,
-                       MAILLAGE=SSNV127A,
+SSNV127F=MODI_MAILLAGE(reuse =SSNV127F,
+                       MAILLAGE=SSNV127F,
                        ORIE_PEAU_2D=_F(GROUP_MA='BCC1',),
                       );
 
-SSNV127A=MODI_MAILLAGE(reuse =SSNV127A,
-                       MAILLAGE=SSNV127A,
+SSNV127F=MODI_MAILLAGE(reuse =SSNV127F,
+                       MAILLAGE=SSNV127F,
                        ORIE_PEAU_2D=_F(GROUP_MA='BCC2',),
                       );
 #_____________________________________________________________________ 
@@ -97,7 +105,7 @@ MAT1=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
 #
 
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV127A,
+CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV127F,
                     AFFE=_F(GROUP_MA='SURFF',
                             MATER=MAT1,),);
 #_____________________________________________________________________ 
@@ -137,6 +145,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                COULOMB=0.40000000000000002,
                                GROUP_MA_MAIT='BCC1',
                                GROUP_MA_ESCL='BCC2',
+                               SANS_GROUP_NO='BCC_SGN',
                                ),);
 #_____________________________________________________________________ 
 #                                                       

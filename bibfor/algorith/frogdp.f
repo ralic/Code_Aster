@@ -2,7 +2,7 @@
      &                  RESIGR,REAPRE,DEPDEL,CTCFIX)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,21 +94,24 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      IBID,IER,IFM,NIV,JCM2A1,JCM2A2,JCM2A3
+      INTEGER      IFM,NIV
+      INTEGER      NDLMAX,NMULT
+      PARAMETER   (NDLMAX = 30)
+      INTEGER      IBID,IER,JFRO11,JFRO12
       INTEGER      ICOMA,II,JJ,KK,JAPJFX,JAPJFY,JZOCO
       INTEGER      JRESU,JMU,JATMU,NDIM
       INTEGER      JDEPDE,JDELT0,JDELTA,JLIAC,JCOCO,JAPMEM
-      INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLCIN,NBLIG,NBDDL
+      INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLCIN,NBDDL
       INTEGER      LLIAC,JDECAL,IPENA
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO
-      INTEGER      JAPCOF,JAFMU,LMAF1,JCM1A,JCM3A,IFRO,ITER
+      INTEGER      JAPCOF,JAFMU,LMAF1,JENAT,JFRO2,IFRO,ITER
       INTEGER      JDIM,NESMAX,LLF,LLF1,LLF2,AJLIAI,SPLIAI,INDIC,POSIT
-      REAL*8       AJEUFX,AJEUFY,XF,XX,XK,XMU,VAL,XMU1,XMU2
+      REAL*8       AJEUFX,AJEUFY,XF,XX,XK,XMU,VAL
       REAL*8       BETA,VAL1,VAL2,R8BID
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
-      CHARACTER*14 NUMEDD,NUMEF1
-      CHARACTER*19 AFMU,MAT,CM1A,CM2A,CM3A,MAF1,MAF2,MAFROT
+      CHARACTER*14 NUMEDD
+      CHARACTER*19 AFMU,MAT,ENAT,FRO1,FRO2,MACT,MAF1,MAF2,MAFROT,MATEMP
       CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,COCO
       CHARACTER*24 APJEFX,APJEFY,NOZOCO
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,APMEMO
@@ -159,12 +162,14 @@ C ======================================================================
       AFMU     = RESOCO(1:14)//'.AFMU'
       DELT0    = RESOCO(1:14)//'.DEL0'
       DELTA    = RESOCO(1:14)//'.DELT'
-      CM1A     = RESOCO(1:14)//'.CM1A'
-      CM2A     = RESOCO(1:14)//'.CM2A'
-      CM3A     = RESOCO(1:14)//'.CM3A'
+      ENAT     = RESOCO(1:14)//'.ENAT'
+      FRO1     = RESOCO(1:14)//'.FRO1'
+      FRO2     = RESOCO(1:14)//'.FRO2'
       MAFROT   = RESOCO(1:8)//'.MAFR'
+      MACT     = '&&FROPGD.MACT'
       MAF1     = '&&FROPGD.MAF1'
       MAF2     = '&&FROPGD.MAF2'
+      MATEMP   = '&&FROPGD.MATP'
       FROTE    = DEFICO(1:16)//'.FROTE'
       PENAL    = DEFICO(1:16)//'.PENAL'
       COMAFO   = DEFICO(1:16)//'.COMAFO'
@@ -213,10 +218,10 @@ C --- INDIC  : 0  INITIALISATION,
 C             +1 ON A RAJOUTE UNE LIAISON
 C             -1 ON A ENLEVE UNE LIAISON
 C --- SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
-C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
+C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR ENAT
 C --- AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
 C              LIAISON CORRECTE DU CALCUL
-C              DE LA MATRICE DE CONTACT ACM1AT
+C              DE LA MATRICE DE CONTACT AENATT
 C --- LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
 C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX
 C               DIRECTIONS SIMULTANEES (EN 3D)
@@ -286,29 +291,20 @@ C
          ZR(JMU-1+3*NBLIAI+II) = 0.D0
          JDECAL = ZI(JAPPTR+II-1)
          NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-         CALL JEVEUO ( JEXNUM(CM1A,II), 'E', JCM1A )
-         DO 20 KK = 1, NEQ
-            ZR(JCM1A-1+KK) = 0.0D0
- 20      CONTINUE
-
          CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
      &                ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
-
          IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
            ZR(JAPJEU+II-1) = ZR(JAPJEU+II-1) - VAL
 
            IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
              POSIT  = NBLIAC + 1
              CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
-     +                                   RESOCO,TYPEAJ,POSIT,II,TYPEC0)
-             XMU    = 1.D0
-             CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
-     &                                ZI(JAPDDL+JDECAL),ZR(JCM1A))
+     &                                   RESOCO,TYPEAJ,POSIT,II,TYPEC0)
              ZR(JMU-1+NBLIAC) = -ZR(JAPJEU+II-1)*ZR(IPENA-1+2*II-1)
-             CALL DAXPY(NEQ,ZR(JMU-1+NBLIAC),ZR(JCM1A),1,ZR(JATMU),1)
+             CALL CALATM(NEQ,NBDDL,ZR(JMU-1+NBLIAC),ZR(JAPCOE+JDECAL),
+     &                             ZI(JAPDDL+JDECAL),ZR(JATMU))
            ENDIF
          ENDIF
-         CALL JELIBE(JEXNUM(CM1A,II))
  50   CONTINUE
 C
       IF (NBLIAC.EQ.0) THEN
@@ -359,66 +355,84 @@ C
  100  CONTINUE
 C
 C ======================================================================
-C --- CREATION DE LA PSEUDO-MATRICE CM2A = E_N*AT
-C --- CETTE MATRICE NE SERT QU'AU CALCUL DU SECOND MEMBRE
+C --- CREATION DE LA MATRICE DE CONTACT ENAT = E_N*AT
+C ======================================================================
+C
+      DO 160 II = 1, NBLIAI
+         CALL JEVEUO ( JEXNUM(ENAT,II), 'E', JENAT )
+         DO 150 KK = 1, NDLMAX
+            ZR(JENAT-1+KK) = 0.0D0
+ 150     CONTINUE
+         IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+           IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+             JDECAL = ZI(JAPPTR+II-1)
+             NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
+             XMU    = SQRT(ZR(IPENA-1+2*II-1))
+             CALL DAXPY(NBDDL,XMU,ZR(JAPCOE+JDECAL),1,ZR(JENAT),1)
+             ZR(JMU-1+2*NBLIAI+II) = 1.D0
+           ENDIF
+         ENDIF
+         CALL JELIBE(JEXNUM(ENAT,II))
+ 160  CONTINUE
+C
+C ======================================================================
+C --- CREATION DE MACT = E_N*AT*A
+C ======================================================================
+C
+      NMULT = 1
+      CALL ATASMO(NEQ,ENAT,ZI(JAPDDL),
+     &                     ZI(JAPPTR),NUMEDD,MACT,'V',NBLIAI,NMULT)
+C
+C ======================================================================
+C --- CREATION DE LA MATRICE FRO1 = E_N*AT
 C ======================================================================
 C
       IF (NDIM.EQ.3) THEN
          DO 210 II = 1, NBLIAI
-            CALL JEVEUO ( JEXNUM(CM2A,II)       ,   'E', JCM2A1 )
-            CALL JEVEUO ( JEXNUM(CM2A,II+NBLIAI),   'E', JCM2A2 )
-            CALL JEVEUO ( JEXNUM(CM2A,II+2*NBLIAI), 'E', JCM2A3 )
-            DO 200 KK = 1, NEQ
-               ZR(JCM2A1-1+KK) = 0.0D0
-               ZR(JCM2A2-1+KK) = 0.0D0
-               ZR(JCM2A3-1+KK) = 0.0D0
+            CALL JEVEUO ( JEXNUM(FRO1,II)       ,   'E', JFRO11 )
+            CALL JEVEUO ( JEXNUM(FRO1,II+NBLIAI),   'E', JFRO12 )
+            DO 200 KK = 1, NDLMAX
+               ZR(JFRO11-1+KK) = 0.0D0
+               ZR(JFRO12-1+KK) = 0.0D0
  200        CONTINUE
             IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
               IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
                 JDECAL = ZI(JAPPTR+II-1)
                 NBDDL  = ZI(JAPPTR+II)   - ZI(JAPPTR+II-1)
                 XMU    = ZR(JMU-1+3*NBLIAI+II)
-                CALL CALATM(NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A3))
-                CALL CALATM(NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL),
-     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A2))
+                CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL),1,ZR(JFRO11),1)
+                CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NESMAX),
+     &                             1,ZR(JFRO12),1)
               ENDIF
             ENDIF
-            CALL JELIBE(JEXNUM(CM2A,II)       )
-            CALL JELIBE(JEXNUM(CM2A,II+NBLIAI))
-            CALL JELIBE(JEXNUM(CM2A,II+2*NBLIAI))
+            CALL JELIBE(JEXNUM(FRO1,II)       )
+            CALL JELIBE(JEXNUM(FRO1,II+NBLIAI))
  210     CONTINUE
       ELSE
          DO 216 II = 1, NBLIAI
-            CALL JEVEUO ( JEXNUM(CM2A,II)       , 'E', JCM2A1 )
-            CALL JEVEUO ( JEXNUM(CM2A,II+NBLIAI), 'E', JCM2A2 )
-            DO 202 KK = 1, NEQ
-               ZR(JCM2A1-1+KK) = 0.0D0
-               ZR(JCM2A2-1+KK) = 0.0D0
+            CALL JEVEUO ( JEXNUM(FRO1,II)       , 'E', JFRO11 )
+            DO 202 KK = 1, NDLMAX
+               ZR(JFRO11-1+KK) = 0.0D0
  202        CONTINUE
-            DO 218 KK = 1, NBLIAC
-               IF ( ZI(JLIAC-1+KK).EQ.II ) THEN
-                 JDECAL = ZI(JAPPTR+II-1)
-                 NBDDL  = ZI(JAPPTR+II)   - ZI(JAPPTR+II-1)
-                 XMU  = ZR(JMU-1+3*NBLIAI+II)
-                 CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL),
-     &                                     ZI(JAPDDL+JDECAL),ZR(JCM2A2))
-                 GOTO 222
-               ENDIF
- 218        CONTINUE
- 222        CONTINUE
-            CALL JELIBE(JEXNUM(CM2A,II))
-            CALL JELIBE(JEXNUM(CM2A,II+NBLIAI))
+            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+              IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+                JDECAL = ZI(JAPPTR+II-1)
+                NBDDL  = ZI(JAPPTR+II)   - ZI(JAPPTR+II-1)
+                XMU  = ZR(JMU-1+3*NBLIAI+II)
+                CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL),1,ZR(JFRO11),1)
+              ENDIF
+            ENDIF
+            CALL JELIBE(JEXNUM(FRO1,II))
  216     CONTINUE
       ENDIF
 C
 C ======================================================================
-C --- CREATION DE LA PSEUDO-MATRICE MAF1 = E_N*AT*A
-C --- CETTE MATRICE NE SERT QU'AU CALCUL DU SECOND MEMBRE
+C --- CREATION DE LA MATRICE MAF1 = E_N*AT*A
 C ======================================================================
 C
-      NBLIG = NBLIAI*NDIM
-      CALL ATASMO(CM2A,NUMEDD,MAF1,'V',NBLIG)
+      NMULT = NDIM - 1
+      CALL ATASMO (NEQ,FRO1,ZI(JAPDDL),
+     &                      ZI(JAPPTR),NUMEDD,MAF1,'V',NBLIAI,NMULT)
 C
 C ======================================================================
 C --- RECUPERATION DU SECOND MEMBRE
@@ -426,87 +440,17 @@ C --- CE VECTEUR EST REAFFECTE DANS ZR(JAFMU)
 C ======================================================================
 C
       CALL MTDSCR( MAF1 )
-      CALL JEVEUO( MAF1//'.&INT', 'E', LMAF1 )
+      CALL JEVEUO( MAF1//'.&INT', 'L', LMAF1 )
       CALL MRMULT('ZERO', LMAF1, ZR(JDELTA), 'R', ZR(JAFMU), 1 )
-      CALL DISMOI('F','NOM_NUME_DDL',MAF1,'MATR_ASSE',IBID,NUMEF1,IER)
-      CALL DETRSD('NUME_DDL',NUMEF1)
-      CALL DETRSD('MATR_ASSE', MAF1  )
 C
 C ======================================================================
-C --- CREATION DE CM2A = E_N*AT
-C ======================================================================
-C
-      IF (NDIM.EQ.3) THEN
-         DO 220 II = 1, NBLIAI
-            CALL JEVEUO ( JEXNUM(CM2A,II),          'E', JCM2A1 )
-            CALL JEVEUO ( JEXNUM(CM2A,II+NBLIAI),   'E', JCM2A2 )
-            CALL JEVEUO ( JEXNUM(CM2A,II+2*NBLIAI), 'E', JCM2A3 )
-            DO 230 KK = 1, NEQ
-               ZR(JCM2A1-1+KK) = 0.0D0
-               ZR(JCM2A2-1+KK) = 0.0D0
-               ZR(JCM2A3-1+KK) = 0.0D0
- 230        CONTINUE
-            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
-              IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-                JDECAL = ZI(JAPPTR+II-1)
-                NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
-                XMU1   = SQRT(ZR(IPENA-1+2*II-1))
-                CALL CALATM(NEQ,NBDDL,XMU1,ZR(JAPCOE+JDECAL),
-     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A1))
-                ZR(JMU-1+2*NBLIAI+II) = 1.D0
-                XMU2   = ZR(JMU-1+3*NBLIAI+II)
-                CALL CALATM(NEQ,NBDDL,XMU2,ZR(JAPCOF+JDECAL),
-     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A2))
-                CALL CALATM(NEQ,NBDDL,XMU2,
-     &                      ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A3))
-              ENDIF
-            ENDIF
-            CALL JELIBE(JEXNUM(CM2A,II))
-            CALL JELIBE(JEXNUM(CM2A,II+NBLIAI))
-            CALL JELIBE(JEXNUM(CM2A,II+2*NBLIAI))
- 220     CONTINUE
-      ELSE
-         DO 224 II = 1, NBLIAI
-            CALL JEVEUO ( JEXNUM(CM2A,II),          'E', JCM2A1 )
-            CALL JEVEUO ( JEXNUM(CM2A,II+NBLIAI),   'E', JCM2A2 )
-            DO 232 KK = 1, NEQ
-               ZR(JCM2A1-1+KK) = 0.0D0
-               ZR(JCM2A2-1+KK) = 0.0D0
- 232        CONTINUE
-            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
-              IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-                JDECAL = ZI(JAPPTR+II-1)
-                NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
-                XMU1   = SQRT(ZR(IPENA-1+2*II-1))
-                CALL CALATM(NEQ,NBDDL,XMU1,ZR(JAPCOE+JDECAL),
-     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A1))
-                ZR(JMU-1+2*NBLIAI+II) = 1.D0
-                XMU2   = ZR(JMU-1+3*NBLIAI+II)
-                CALL CALATM(NEQ,NBDDL,XMU2,ZR(JAPCOF+JDECAL),
-     &                     ZI(JAPDDL+JDECAL),ZR(JCM2A2))
-              ENDIF
-            ENDIF
-            CALL JELIBE(JEXNUM(CM2A,II))
-            CALL JELIBE(JEXNUM(CM2A,II+NBLIAI))
- 224     CONTINUE
-      ENDIF
-C
-C ======================================================================
-C --- CREATION DE LA PREMIERE PARTIE DE LA MATRICE DE FROTTEMENT MAF1
-C ======================================================================
-C
-      NBLIG = NBLIAI*NDIM
-      CALL ATASMO (CM2A,NUMEDD,MAF1,'V',NBLIG)
-C
-C ======================================================================
-C --- CREATION DE CM3A = E_T*AT
+C --- CREATION DE FRO2 = E_T*AT
 C ======================================================================
 C
       DO 300 II = 1, NBLIAI
-         CALL JEVEUO ( JEXNUM(CM3A,II), 'E', JCM3A )
-         DO 310 KK = 1, NEQ
-            ZR(JCM3A-1+KK) = 0.0D0
+         CALL JEVEUO ( JEXNUM(FRO2,II), 'E', JFRO2 )
+         DO 310 KK = 1, NDLMAX
+            ZR(JFRO2-1+KK) = 0.0D0
  310     CONTINUE
          IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
            IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
@@ -558,29 +502,31 @@ C
                XMU = SQRT(ZR(ICOMA-1+II))
                BETA = BETA*XMU
              ENDIF
-             CALL CALAPR(NEQ,NBDDL,BETA,ZR(JAFMU),
-     &                                ZI(JAPDDL+JDECAL),ZR(JCM3A))
+             CALL CALAPR(NBDDL,BETA,ZR(JAFMU),
+     &                              ZI(JAPDDL+JDECAL),ZR(JFRO2))
              ZR(JMU-1+2*NBLIAI+II) = 1.D0
            ELSE
              ZR(JMU-1+2*NBLIAI+II) = 0.D0
            ENDIF
          ENDIF
  305     CONTINUE
-         CALL JELIBE(JEXNUM(CM3A,II))
+         CALL JELIBE(JEXNUM(FRO2,II))
  300  CONTINUE
 C
 C ======================================================================
 C --- CREATION DE LA SECONDE PARTIE DE LA MATRICE DE FROTTEMENT MAF2
 C ======================================================================
 C
-      NBLIG = NBLIAI
-      CALL ATASMO(CM3A,NUMEDD,MAF2,'V',NBLIG)
+      NMULT = 1
+      CALL ATASMO(NEQ,FRO2,ZI(JAPDDL),
+     &                     ZI(JAPPTR),NUMEDD,MAF2,'V',NBLIAI,NMULT)
 C
 C ======================================================================
-C --- CALCUL DE LA MATRICE TANGENTE AVEC FROTTEMENT MAFROT = MAF1+MAF2
+C --- CALCUL DE LA MATRICE TANGENTE MAFROT = MACT+MAF1+MAF2
 C ======================================================================
 C
-      CALL CFFROT(MAF1,MAF2,MAFROT)
+      CALL CFFROT(MAF1,'-',MAF2  ,MATEMP)
+      CALL CFFROT(MACT,'+',MATEMP,MAFROT)
 C ======================================================================
 C --- CALCUL DES FORCES DE CONTACT (AT.MU) ET FROTTEMENT (AF.MU)
 C ======================================================================

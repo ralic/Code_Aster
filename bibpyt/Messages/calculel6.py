@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF calculel6 Messages  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ Solution :
 
 
 10: _("""
-  Option inconnue %(k1)s
+  L'option %(k1)s est inconnue.
 """),
 
 11: _("""
@@ -57,8 +57,8 @@ Solution :
 """),
 
 15: _("""
-  l'element diagonal u( %(i1)d , %(i2)d ) de la factorisation est nul. %(k1)s
-  la solution et les estimations d' erreurs ne peuvent etre calculees. %(k2)s
+  L'élément diagonal u( %(i1)d , %(i2)d ) de la factorisation est nul. %(k1)s
+  la solution et les estimations d'erreurs ne peuvent etre calculées. %(k2)s
 """),
 
 17: _("""
@@ -253,8 +253,11 @@ Solution :
 """),
 
 65: _("""
- Le nombre de charges fourni par l'utilisateur %(i1)d est différent du
- nombre de charges trouvées dans la SD_resultat %(i2)d
+ Vous avez fourni %(i1)d charges alors qu'il n'y a %(i2)d dans la SD résultat.
+
+ Risque & Conseil : 
+   Vous pouvez obtenir des résultats faux si les charges sont différentes.  
+   Vérifiez que vous n'avez pas oublié de charge ou que vous n'en avez pas ajouté.
 """),
 
 66: _("""
@@ -299,59 +302,63 @@ Solution :
 """),
 
 73: _("""
- ! jacobien negatif en 3d !
+  Le jacobien est négatif.
 """),
 
 74: _("""
  élément  :  %(i1)d
  jacobien :  %(r1)f
- attention le calcul d'erreur est faux si la maille n est pas correctement orientée
+ Attention, le calcul d'erreur est faux si la maille n'est pas correctement orientée.
 """),
 
 75: _("""
- Probleme de parallélisation des calculs élémentaires avec FETI. Imcompatiblité
- entre LIGRELs dans la routine CALCUL.
---> Risques & conseils :
- Essayer de passer en séquentiel ou de changer de solveur linéaire.
+  Problème de parallélisation des calculs élémentaires avec FETI.
+  Incompatiblité entre LIGRELs dans la routine CALCUL.
+
+  Risques & conseils :
+  Essayez de passer en séquentiel ou de changer de solveur linéaire.
 """),
 
 76: _("""
- Problème de parallélisation des calculs élémentaires avec FETI. Imcompatiblité
- LIGREL/numéro de maille dans la routine CALCUL.
---> Risques & conseils :
- Essayer de passer en séquentiel ou de changer de solveur linéaire.
+  Problème de parallélisation des calculs élémentaires avec FETI.
+  Incompatiblité LIGREL/numéro de maille dans la routine CALCUL.
+
+  Risques & conseils :
+  Essayez de passer en séquentiel ou de changer de solveur linéaire.
 """),
 
 77: _("""
- problème lors de l'affectation du champ: %(k1)s
- des valeurs n'ont pas ete recopiées dans le CHAM_ELEM final (perte d'information ?)
- ce problème peut être du a l'utilisation du mot cle TOUT='OUI'.
- on peut vérifier le champ produit avec info=2
+  Problème lors de l'affectation du champ %(k1)s.
+  Des valeurs n'ont pas été recopiées dans le CHAM_ELEM final.
+  Ce problème peut être dû à l'utilisation du mot-clé TOUT='OUI'.
+  Il est possible de vérifier le champ produit avec INFO=2.
 
 """),
 
 79: _("""
- Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM :
- le champ produit est incomplet sur les éléments X-FEM.
---> Risque : ce champ ne pourra être utilisé sur des éléments non X-FEM.
---> Conseils : il vaut mieux utiliser les commandes de post-traitement
-spécifique POST_MAIL_XFEM et POST_CHAM_XFEM avant le CALC_ELEM.
+  Problème lors du calcul de l'option %(k1)s pour les éléments X-FEM :
+  le champ produit est incomplet sur les éléments X-FEM.
+
+  Risque & Conseils :
+  Ce champ ne pourra être utilisé sur des éléments non X-FEM.
+  Il vaut mieux utiliser les commandes de post-traitement spécifique
+  POST_MAIL_XFEM et POST_CHAM_XFEM avant le CALC_ELEM.
 """),
 
 80 : _("""
- l'amortissement du MACR_ELEM : %(k1)s  n'a pas encore ete calculé.
+  L'amortissement du MACR_ELEM %(k1)s n'a pas encore été calculé.
  """),
 
 81 : _("""
-  il manque des amortissements.
+  Il manque des amortissements.
   """),
 
 82: _("""
- le groupe de noeuds %(k1)s n'appartient pas au maillage: %(k2)s
+  Le groupe de noeuds %(k1)s n'appartient pas au maillage %(k2)s.
 """),
 
 83 : _("""
-  option  %(k1)s  non traitée pour un résultat de type fourier_elas 
+  L'option %(k1)s n'est pas traitée pour un résultat de type fourier_elas 
 (produit par MACRO_ELAS_MULT). Il faut faire après MACRO_ELAS_MULT une
  recombinaison de Fourier par l'opérateur COMB_FOURIER. 
 """),

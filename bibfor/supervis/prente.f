@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 15/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,6 @@ C
          ENDIF
          
       ENDIF
-C      
 C     ------------------------------------------------------------------
       IF (BDVP .AND. LEXP) THEN
         CALL PRTITR('C','-- CODE_ASTER -- VERSION'
@@ -70,6 +69,15 @@ C     ------------------------------------------------------------------
         CALL PRTITR('C','-- CODE_ASTER -- VERSION'
      +                  //' DE DEVELOPPEMENT STABILISEE '//CVERS//' --')
       ENDIF
+      IF ( ISMPI() .EQ.1 ) THEN
+        CALL PRTITR('C',' VERSION PARALLELE COMPILEE AVEC MPI')
+      ELSE
+        CALL PRTITR('C',' VERSION SEQUENTIELLE')
+      ENDIF
+      IF ( ISOMP() .EQ.1 ) THEN
+        CALL PRTITR('C',' PARALLELISME OPENMP ACTIF')
+      ENDIF
+
       CALL PRTITR('C','COPYRIGHT  EDF-R&D 1991 - '//DATEVE(7:10))
       
       WRITE(KPRO,'(I3)') MLNBPR() 

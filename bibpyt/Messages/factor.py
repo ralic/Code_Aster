@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 08/06/2009   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF factor Messages  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -348,4 +348,17 @@ Solveur MUMPS :
 Solution:
   Télécharger et installer une version de MUMPS plus récente.
 """),
+#-----------------------------------------------------------------------------------------------
+
+73: _("""
+Solveur MUMPS :
+  Lors de la factorisation numérique, le nombre de pivots s'est avéré supérieur à 10% de
+  la taille du problème. Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien
+  la qualité de celui-ci en fin de résolution via la mot-clé RESI_RELA.
+Solution:
+  Si ce n'est pas fait, activez l'option prétraitements (PRETRAITEMENTS='AUTO') ou
+  désactivez l'option ELIM_LAGR2 (ELIM_LAGR2='NON') si vous avez beaucoup de Lagranges.
+  Sinon, contactez l'équipe de développement.
+"""),
+
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
 # sslp315b.para = tps_job 80 mem_job 500Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,11 +138,13 @@ MAT[i]=DEFI_GROUP(reuse =MAT[i],
                                  GROUP_MA='FOND_%d' %(i),),
                     );
                 
+CHXN = CREA_CHAMP (OPERATION = 'EXTR',TYPE_CHAM='NOEU_GEOM_R',
+                   NOM_CHAM='GEOMETRIE',MAILLAGE=MAT[i],)
+
 TAB = POST_RELEVE_T(ACTION=_F(INTITULE='Table pour coordonnees du fond',
                                GROUP_NO='FOND_%d' %(i),
-                              RESULTAT = UTOT[i],
-                              NOM_CHAM= 'DEPL',
-                               TOUT_CMP='OUI',
+                               CHAM_GD = CHXN ,
+                               NOM_CMP=('X','Y',),
                                OPERATION='EXTRACTION',),);
 
 TEST_TABLE(TABLE=TAB,

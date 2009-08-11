@@ -1,7 +1,7 @@
       SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,
-     &           KLAG2,EPS,ISTOP,SDFETZ,KOOC,KMD)
+     &           KLAG2,EPS,ISTOP,SDFETZ,KOOC,KMD,KTYPPZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,12 +18,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT   NONE
+      IMPLICIT NONE
       CHARACTER*(*) SOLVEZ
-      CHARACTER*(*) KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,SDFETZ,KOOC,KMD
-      
-      INTEGER PCPIVZ ,ISTOP
-      REAL*8 EPS
+      CHARACTER*(*) KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,SDFETZ,KOOC,KMD,
+     &              KTYPPZ      
+      INTEGER       PCPIVZ ,ISTOP
+      REAL*8        EPS
 C ----------------------------------------------------------
 C BUT : CREER UN SOLVEUR POUR MUMPS
 C
@@ -33,7 +33,9 @@ C IN I   PCPIVZ  : POURCENTAGE DE MEMOIRE POUR PIVOTAGE TARDIF
 C                  0   -> DEFAUT
 C IN K   KTYPZ   : TYPE DE FACTORISATION /SYMGEN/SYMDEF/NONSYM
 C                  ' ' -> DEFAUT
-C IN K   KTYPSZ   : TYPE DE SCALING /SANS/AUTO
+C IN K   KTYPSZ   : TYPE DE PRETRAITEMENTS /SANS/AUTO
+C                  ' ' -> DEFAUT
+C IN K   KTYPPZ   : TYPE DE POSTTRAITEMENTS /SANS/AUTO/FORCE
 C                  ' ' -> DEFAUT
 C IN K   KTYPRZ   : TYPE DE RENUMEROTATION /AMD/AMF/PORD/METIS/QAMD/AUTO
 C                  ' ' -> DEFAUT
@@ -74,7 +76,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
       INTEGER      I,IBID
       INTEGER      ISLVK,ISLVI,ISLVR,PCPIV
       CHARACTER*3  SYME
-      CHARACTER*8  K8BID,KTYPR,KTYPRN,KTYPS,SDFETI
+      CHARACTER*8  K8BID,KTYPR,KTYPRN,KTYPS,SDFETI,KTYPP
       CHARACTER*19 SOLVEU
 
 C------------------------------------------------------------------
@@ -83,6 +85,7 @@ C------------------------------------------------------------------
       SYME=SYMZ
       KTYPR=KTYPZ
       KTYPS=KTYPSZ
+      KTYPP=KTYPPZ
       KTYPRN=KTYPRZ
       PCPIV=PCPIVZ
       EPSMAX=EPS
@@ -102,9 +105,13 @@ C     TYPE_RESOL :
 C     ------------
       IF (KTYPR.EQ.' ') KTYPR='AUTO'
 
-C     TYPE_SCALING :
-C     ------------
+C     TYPE_PRETRAITEMENT :
+C     -------------------
       IF (KTYPS.EQ.' ') KTYPS='AUTO'
+      
+C     TYPE_POSTTRAITEMENT :
+C     -------------------
+      IF (KTYPP.EQ.' ') KTYPP='AUTO'
 
 C     TYPE_RENUM :
 C     ------------
@@ -133,7 +140,7 @@ C     ---------------
 
 C     CREATION DE LA SD ET STOCKAGE DES VALEURS OBTENUES :
 C     ---------------------------------------------------
-      CALL WKVECT(SOLVEU//'.SLVK','V V K24',11,ISLVK)
+      CALL WKVECT(SOLVEU//'.SLVK','V V K24',12,ISLVK)
       CALL WKVECT(SOLVEU//'.SLVR','V V R',4,ISLVR)
       CALL WKVECT(SOLVEU//'.SLVI','V V I',6,ISLVI)
 
@@ -146,6 +153,8 @@ C     ---------------------------------------------------
       ZK24(ISLVK-1+8)  = SDFETI
       ZK24(ISLVK-1+9)  = KOOC
       ZK24(ISLVK-1+10) = KMD
+      ZK24(ISLVK-1+11) = KTYPP
+
       ZI(ISLVI-1+1) = -9999
       ZI(ISLVI-1+2) = PCPIV
       ZI(ISLVI-1+3) = ISTOP

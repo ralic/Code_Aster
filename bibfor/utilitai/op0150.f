@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX --------------------------
       COMMON /LVARJE/ZL(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
+
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
@@ -969,13 +970,15 @@ C           DU CHAMP CREE AVEC LE PROF_CHNO PRECEDENT :
 
 C - STOCKAGE EVENTUEL : MODELE, CHAM_MATER, CARA_ELEM, EXCIT
 C   --------------------------------------------------------
-       IF(TYPRES.EQ.'EVOL_CHAR'.OR.TYPRES.EQ.'HARM_GENE')THEN
-         CALL U2MESK('A','UTILITAI5_93',1,TYPRES)
-         GOTO 35
-       ENDIF
        CALL GETVID(' ','CHAM_MATER',0,1,0,K8B,N1)
        CALL GETVID(' ','CARA_ELEM',0,1,0,K8B,N2)
        CALL GETVID(' ','MODELE',0,1,0,K8B,N3)
+
+       IF ( ( (N1.EQ.0) .OR. (N2.EQ.0) .OR. (N3.EQ.0) ) .AND.
+     &  ( (TYPRES.EQ.'EVOL_CHAR') .OR. (TYPRES.EQ.'HARM_GENE') ) ) THEN
+         CALL U2MESK('A','UTILITAI5_93',1,TYPRES)
+         GOTO 35
+       ENDIF
 
        CALL RSORAC(RESU,'LONUTI',IBID,RBID,K8B,CBID,EPSI,CRIT,NBORDR,1,
      &            NBTROU)
@@ -1019,12 +1022,12 @@ C   --------------------------------------------------------
             ZK8(JPARA)=MODELE
  33      CONTINUE
        ENDIF
-       IF(TYPRES(1:4).EQ.'DYNA'.OR.TYPRES(1:4).EQ.'MODE')THEN
-         CALL U2MESK('A','UTILITAI5_94',1,TYPRES)
-         GOTO 35
-       ENDIF
        CALL GETFAC('EXCIT',NEXCI)
        IF(NEXCI.GT.0)THEN
+         IF(TYPRES(1:4).EQ.'DYNA'.OR.TYPRES(1:4).EQ.'MODE')THEN
+           CALL U2MESK('A','UTILITAI5_94',1,TYPRES)
+           GOTO 35
+         ENDIF
          NOOBJ ='12345678'//'.1234'//'.EXCIT.INFC'
          CALL GNOMSD(NOOBJ,10,13)
          LISCH2 = NOOBJ(1:19)

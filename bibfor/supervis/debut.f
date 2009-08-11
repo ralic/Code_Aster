@@ -4,7 +4,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,6 @@ C
          CALL IBIMPR( IERIMP )
          CALL PRINIT( -1, 0 )
          CALL PRENTE
-         CALL UTINIT( 2 , 80 , 1 )
 C --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
       CALL IBDBGS()
 C

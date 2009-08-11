@@ -1,5 +1,6 @@
-# MODIF  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
+# sslv134d.para = tps_job 120 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -185,6 +186,11 @@ RESU1=MECA_STATIQUE(MODELE=MO,
 RESU1=CALC_ELEM(reuse =RESU1,
                RESULTAT=RESU1,
                OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
+
+#IMPR_RESU(UNITE=13,
+#          RESU=_F(RESULTAT=RESU1,
+#                  NOM_CHAM='SIGM_ELNO_DEPL',
+#                  TOUT_CMP='OUI',),);
 
 DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -1318,7 +1324,7 @@ TEST_TABLE(TABLE=TABK13A3,
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=1,
                   PARA='ERREUR_ERRE',
-                  VALE=2.4587662830463E+06,
+                  VALE=2.4153175191656E+06,
                   PRECISION=1E-10,
                   REFERENCE='NON_REGRESSION',
                   VERSION='9.0.4',),);

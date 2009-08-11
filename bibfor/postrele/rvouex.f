@@ -4,7 +4,7 @@
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,13 +71,13 @@ C  -----------------
       INTEGER      NBTMA,NBM,NBMAC,NBNAC,NBCRB,INDMOT,NBMALU
       INTEGER      I,IN,N,M,LIBRE,N1,IBID,IGREL,JNUMA,ILISMA,J
       INTEGER      IBIB,IE,IMOLO,JCELD,N2,KK
-      INTEGER      II,JMMAIL,NBTROU,NBCMP,NC,JCMP
+      INTEGER      II,JMMAIL,NBTROU,NBCMP,NC,JCMP,NTC
       CHARACTER*4  DOCU
       CHARACTER*8  NMAILA,COURBE,K8B,NOMGD
       CHARACTER*15 NCONEC
       CHARACTER*16 MOTCLE(2),TYPMCL(2)
       CHARACTER*19 NCHP19
-      CHARACTER*24 NCNCIN,NREPE,LISMAI,MALIST
+      CHARACTER*24 NCNCIN,NREPE,LISMAI,MALIST,NOMOBJ
 C**********************************************************************
 C
       CALL JEMARQ()
@@ -123,6 +123,7 @@ C
 C
          NBTROU = 0
          JMMAIL = 1
+C
          CALL GETVTX ( MCF, 'NOM_CMP', IOCC,1,0, K8B, NC )
          IF ( NC.LT.0 .AND. NBCRB.EQ.0 ) THEN
             NBCMP = -NC
@@ -132,6 +133,17 @@ C
      &                                                 MALIST, NBTROU )
             IF ( NBTROU .NE. 0 ) CALL JEVEUO ( MALIST, 'L', JMMAIL )
             CALL JEDETR ( '&&RVOUEX.NOM_CMP' )
+         ENDIF
+C
+         CALL GETVTX ( MCF, 'TOUT_CMP', IOCC,1,0, K8B, NTC )
+         IF ( NTC.LT.0 .AND. NBCRB.EQ.0 ) THEN
+            NOMOBJ = '&&RVOUEX.NOMCMP.USER'
+            CALL UTNCMP ( NCHP19, NBCMP, NOMOBJ )
+            CALL JEVEUO ( NOMOBJ, 'L', JCMP )
+            CALL UTMACH ( NCHP19, NBCMP, ZK8(JCMP), 'NU',
+     &                                                 MALIST, NBTROU )
+            IF ( NBTROU .NE. 0 ) CALL JEVEUO ( MALIST, 'L', JMMAIL )
+            CALL JEDETR ( NOMOBJ )
          ENDIF
 C
          IF ( DOCU .EQ. 'CHML' ) THEN

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF RMFILE UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF RMFILE UTILITAI  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,6 +18,8 @@
 /* ================================================================== */
 /* appel de la commande systeme de destruction de fichier */
 /* rm ou del suivant les plates-formes                    */
+/* si info  = 1 mode bavard                               */
+/* si info != 1 mode silencieux                           */
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +30,7 @@ extern int errno;
 #include "aster.h"
 
 
-void DEFS(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1)
+void DEFSP(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, INTEGER *info)
 {
    char nomcmd[85];char *ncmd;
    long i,l,ldeb,num;
@@ -60,8 +62,9 @@ void DEFS(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1)
      nomcmd[i+ldeb] ='\0';
      ldeb = ldeb+i-1;
    }
-
+   if ( *info == 1 ) { 
    fprintf(stdout,"\n\nLancement de la commande ->%s<-\n\n",nomcmd);
+                     }
    ier=system(nomcmd);
    if ( ier == -1 ) {
         perror("\n<rmfile> code retour system");

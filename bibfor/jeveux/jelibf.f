@@ -1,7 +1,7 @@
       SUBROUTINE JELIBF ( COND , CLAS )
 C TOLE CRS_505 CRS_508 CRP_18
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,10 +84,10 @@ C ----------------------------------------------------------------------
       INTEGER          LIDBAS      , LIDEFF
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*1      KCLAS
-      CHARACTER*8      KCOND,VALK(1)
+      CHARACTER*8      KCOND,VALK(1),NOM
       CHARACTER*32     NOMCAR
       INTEGER          IADCAR,IADDAC(2),LGBL,VALI(7),IADCDY,IBID,
-     &                 IADDAD(2),KLEC,KECR
+     &                 IADDAD(2),KLEC,KECR,INFO
       REAL*8           VALR(1)
 C DEB ------------------------------------------------------------------
       KCOND = COND
@@ -331,6 +331,13 @@ C       ----------- LIBERER PLACE
           CALL JJLIBP ( KIADM(IC) )
         ENDIF
 C
+        IF ( KSTOUT(IC)(1:7) .EQ. 'DETRUIT' ) THEN
+          NOM = NOMFIC(IC)(1:4)//'.?  '
+          CALL LXMINS (NOM)
+          INFO = 0
+          CALL RMFILE (NOM,INFO)
+        ENDIF
+C	
         CLASSE(IC:IC) = ' '
         NOMFIC(IC)    = ' '
         NOMBAS(IC)    = ' '

@@ -3,7 +3,7 @@
      &                  CTCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,11 +104,14 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
+      INTEGER      IFM,NIV
+      INTEGER      NDLMAX,NMULT
+      PARAMETER   (NDLMAX = 30)
       INTEGER      CFDISI
       LOGICAL      TROUAC,DELPOS,GLISS1,GLISS2,LELPIV,LELPI1,LELPI2
       LOGICAL      CFEXCL
       INTEGER      JJC,JDEPDE,LLF,JDIM,NESMAX,LFMIN
-      INTEGER      IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,LFMIN2
+      INTEGER      IBID,IER,NDECI,ISINGU,NPVNEG,LFMIN2
       INTEGER      ILIAI,JJ,KK,LL,IZONE,ILIAC,NUMIN
       INTEGER      JRESU,JMU,JATMU
       INTEGER      JDELT0,JDELTA,JLIAC,JCOCO
@@ -118,7 +121,7 @@ C
       INTEGER      NBLCIN,LLF1,LLF2,LLKAC,AJLIAI,SPLIAI
       INTEGER      JLIOT
       INTEGER      ICOMA,IFRO
-      INTEGER      JAPCOF,JAFMU,LMAF1,JCM2A1,JCM2A2,JCM3A
+      INTEGER      JAPCOF,JAFMU,LMAF1,JFRO11,JFRO12,JFRO2
       INTEGER      LFMIN1,JGLI1,JGLI2,JADHR
       INTEGER      ITER,ITEMAX,ITEMUL,NBLFIN,ISTO,INCR
       INTEGER      INDFAC,POSIT,BTOTAL,JVECC,COMPT0,JZOCO
@@ -131,7 +134,7 @@ C
       CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2
       CHARACTER*14 NUMEDD
       CHARACTER*16 NMGLI1,NMGLI2, NMADHR
-      CHARACTER*19 AFMU,MAT,CM2A,CM3A,MAF1,MAF2,MAFROT
+      CHARACTER*19 AFMU,MAT,FRO1,FRO2,MAF1,MAF2,MAFROT
       CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,COCO,LIOT,CONVEC
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL
       CHARACTER*24 NDIMCO,APCOFR,FROTE,COMAFO,NOZOCO
@@ -172,8 +175,8 @@ C
       APPARI   = RESOCO(1:14)//'.APPARI'
       APPOIN   = RESOCO(1:14)//'.APPOIN'
       ATMU     = RESOCO(1:14)//'.ATMU'
-      CM2A     = RESOCO(1:14)//'.CM2A'
-      CM3A     = RESOCO(1:14)//'.CM3A'
+      FRO1     = RESOCO(1:14)//'.FRO1'
+      FRO2     = RESOCO(1:14)//'.FRO2'
       COCO     = RESOCO(1:14)//'.COCO'
       COMAFO   = DEFICO(1:16)//'.COMAFO'
       CONVEC   = RESOCO(1:14)//'.CONVEC'
@@ -821,8 +824,8 @@ C ======================================================================
 C --- AFFECTATION DE A LIGNE PAR LIGNE (A PARTIR DE IDEBUT)
 C ======================================================================
       DO 200 ILIAI = 1, NBLIAI
-         CALL JEVEUO ( JEXNUM(CM2A,ILIAI       ), 'E', JCM2A1 )
-         CALL JEVEUO ( JEXNUM(CM2A,ILIAI+NBLIAI), 'E', JCM2A2 )
+         CALL JEVEUO ( JEXNUM(FRO1,ILIAI       ), 'E', JFRO11 )
+         CALL JEVEUO ( JEXNUM(FRO1,ILIAI+NBLIAI), 'E', JFRO12 )
          TROUAC = .TRUE.
 C ======================================================================
 C --- MISE A ZERO DE LA COLONNE
@@ -840,12 +843,12 @@ C ======================================================================
             ENDIF
  203     CONTINUE
          IF (TROUAC) THEN
-            DO 2192 LL = 1, NEQ
-               ZR(JCM2A1-1+LL) = 0.0D0
-               ZR(JCM2A2-1+LL) = 0.0D0
+            DO 2192 LL = 1, NDLMAX
+               ZR(JFRO11-1+LL) = 0.0D0
+               ZR(JFRO12-1+LL) = 0.0D0
  2192       CONTINUE
-            CALL JELIBE(JEXNUM(CM2A,ILIAI       ))
-            CALL JELIBE(JEXNUM(CM2A,ILIAI+NBLIAI))
+            CALL JELIBE(JEXNUM(FRO1,ILIAI       ))
+            CALL JELIBE(JEXNUM(FRO1,ILIAI+NBLIAI))
             GOTO 200
          ENDIF
          CALL CFELPV(LLIAC, TYPEF0, RESOCO, NBLIAI, TROUAC)
@@ -862,8 +865,8 @@ C ======================================================================
 
             CALL CFELPV(LLIAC, TYPEF1, RESOCO, NBLIAI, GLISS1)
             IF (.NOT.GLISS1) THEN
-               DO 209 LL = 1, NEQ
-                  ZR(JCM2A1-1+LL) = 0.0D0
+               DO 209 LL = 1, NDLMAX
+                  ZR(JFRO11-1+LL) = 0.0D0
  209           CONTINUE
                CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL),
      &                                 ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
@@ -876,8 +879,8 @@ C ======================================================================
 
             CALL CFELPV(LLIAC, TYPEF2, RESOCO, NBLIAI, GLISS2)
             IF (.NOT.GLISS2) THEN
-               DO 219 LL = 1, NEQ
-                  ZR(JCM2A2-1+LL) = 0.0D0
+               DO 219 LL = 1, NDLMAX
+                  ZR(JFRO12-1+LL) = 0.0D0
  219           CONTINUE
                CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                                 ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
@@ -891,27 +894,27 @@ C ======================================================================
                XMU = SQRT ( XK / XX )
             ENDIF
             IF (.NOT.GLISS1) THEN
-               CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL),
-     &                                     ZI(JAPDDL+JDECAL),ZR(JCM2A1))
+               CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL),1,ZR(JFRO11),1)
             ENDIF
             IF (.NOT.GLISS2) THEN
-               CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                                     ZI(JAPDDL+JDECAL),ZR(JCM2A2))
+               CALL DAXPY(NBDDL,XMU,
+     &                    ZR(JAPCOF+JDECAL+30*NESMAX),1,ZR(JFRO12),1)
             ENDIF
          ELSE
-            DO 2091 LL = 1, NEQ
-               ZR(JCM2A1-1+LL) = 0.0D0
-               ZR(JCM2A2-1+LL) = 0.0D0
+            DO 2091 LL = 1, NDLMAX
+               ZR(JFRO11-1+LL) = 0.0D0
+               ZR(JFRO12-1+LL) = 0.0D0
  2091       CONTINUE
          ENDIF
-         CALL JELIBE(JEXNUM(CM2A,ILIAI       ))
-         CALL JELIBE(JEXNUM(CM2A,ILIAI+NBLIAI))
+         CALL JELIBE(JEXNUM(FRO1,ILIAI       ))
+         CALL JELIBE(JEXNUM(FRO1,ILIAI+NBLIAI))
  200  CONTINUE
 C ======================================================================
 C --- CREATION DE LA MATRICE ATA
 C ======================================================================
-
-      CALL ATASMO(CM2A,NUMEDD,MAF1,'V',NBLIAI*(NDIM-1))
+      NMULT = NDIM - 1
+      CALL ATASMO(NEQ,FRO1,ZI(JAPDDL),
+     &                     ZI(JAPPTR),NUMEDD,MAF1,'V',NBLIAI,NMULT)
 C ======================================================================
 C --- CREATION DU VECTEUR DE CISAILLEMENT
 C --- MATF*((ZR(JDEPDE-1+NUM1)+ZR(JDELT0-1+NUM1))
@@ -937,12 +940,12 @@ C ======================================================================
                JJC = COMPT0
             ENDIF
  301     CONTINUE
-         CALL JEVEUO(JEXNUM(CM3A,ILIAI),'E',JCM3A)
-         DO 303 LL = 1, NEQ
-            ZR(JCM3A-1+LL) = 0.0D0
+         CALL JEVEUO(JEXNUM(FRO2,ILIAI),'E',JFRO2)
+         DO 303 LL = 1, NDLMAX
+            ZR(JFRO2-1+LL) = 0.0D0
  303     CONTINUE
          IF (TROUAC) THEN
-            CALL JELIBE(JEXNUM(CM3A,ILIAI))
+            CALL JELIBE(JEXNUM(FRO2,ILIAI))
             GOTO 1300
          ENDIF
          CALL CFELPV(LLIAC, TYPEF0, RESOCO, NBLIAI, TROUAC)
@@ -994,19 +997,21 @@ C ======================================================================
                XMU  = SQRT( ZR(ICOMA-1+LLIAC) )
                BETA = BETA * XMU
             ENDIF
-            CALL CALAPR(NEQ,NBDDL,BETA,ZR(JAFMU),
-     &                  ZI(JAPDDL+JDECAL),ZR(JCM3A))
+            CALL CALAPR(NBDDL,BETA,ZR(JAFMU),
+     &                             ZI(JAPDDL+JDECAL),ZR(JFRO2))
          ENDIF
-         CALL JELIBE(JEXNUM(CM3A,ILIAI))
+         CALL JELIBE(JEXNUM(FRO2,ILIAI))
  1300 CONTINUE
 C ======================================================================
 C --- CREATION DE LA MATRICE DE FROTTEMENT - SECONDE PARTIE (MAF2)
 C ======================================================================
-      CALL ATASMO(CM3A,NUMEDD,MAF2,'V',NBLIAI)
+      NMULT = 1
+      CALL ATASMO(NEQ,FRO2,ZI(JAPDDL),
+     &                     ZI(JAPPTR),NUMEDD,MAF2,'V',NBLIAI,NMULT)
 C ======================================================================
 C --- CALCUL DE LA MATRICE TANGENTE AVEC FROTTEMENT
 C ======================================================================
-      CALL CFFROT(MAF1,MAF2,MAFROT)
+      CALL CFFROT(MAF1,'-',MAF2,MAFROT)
 C ======================================================================
  999  CONTINUE
 C ======================================================================

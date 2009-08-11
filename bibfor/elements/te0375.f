@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NPG,I,IPG,TYV,IPOIDS,IVF,IDFDE,IGEOM,IFM,IUNIFI
       INTEGER IAD,IFOR,IERR,IPES,IROT,IMATE
-      INTEGER IVOIS,NBNV
+      INTEGER IVOIS
       INTEGER NBCMP,ITAB(7),IBID,IP,IR
       INTEGER NOE(9,6,3),IPGF,NDI
       INTEGER NDIM,NNO,NNOS,NNO2,JGANO,IRET,JTIME,NIV,IREF1,IREF2
@@ -229,7 +229,6 @@ C
         NSOMM=4
         ITYP=1
         ELREFE='QU4'
-        NBNV=8
         NDEGRE=1
         DO 40 I=1,4
           POIDS1(I)=1.D0
@@ -240,7 +239,6 @@ C
         NSOMM=4
         ITYP=1
         ELREFE='QU8'
-        NBNV=20
         NDEGRE=2
         DO 50 I=1,4
           POIDS1(I)=1.D0/9.D0
@@ -254,7 +252,6 @@ C
         NBF=6
         ITYP=1
         ELREFE='QU9'
-        NBNV=27
         NDEGRE=2
         DO 70 I=1,4
           POIDS1(I)=1.D0/9.D0
@@ -269,7 +266,6 @@ C
         ITYP=2
         ELREFE='TR3'
         ELREF2='QU4'
-        NBNV=6
         NDEGRE=1
         DO 90 I=1,3
           POIDS1(I)=1.D0/6.D0
@@ -283,7 +279,6 @@ C
         ITYP=2
         ELREFE='TR6'
         ELREF2='QU8'
-        NBNV=15
         NDEGRE=2
         DO 110 I=1,3
           POIDS1(I)=0.D0
@@ -304,7 +299,6 @@ C
         NBF=4
         ITYP=3
         ELREFE='TR3'
-        NBNV=4
         NDEGRE=1
         DO 150 I=1,3
           POIDS1(I)=1.D0/6.D0
@@ -315,7 +309,6 @@ C
         NBF=4
         ITYP=3
         ELREFE='TR6'
-        NBNV=10
         NDEGRE=2
         DO 160 I=1,3
           POIDS1(I)=0.D0
@@ -323,7 +316,7 @@ C
         DO 170 I=4,6
           POIDS1(I)=1.D0/6.D0
   170   CONTINUE
-Cte0375.f
+C
       ELSE
         CALL U2MESS('F','ELEMENTS3_84')
       END IF
@@ -437,7 +430,7 @@ C
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS ------------------
 C
-            CALL ERMES3(NOE,IFA,ITYP,NBNV,NPGB,IREF1,IVOIS,IAD,NBCMP,
+            CALL ERMES3(NOE,IFA,ITYP,TYPMAV,NPGB,IREF1,IVOIS,IAD,NBCMP,
      &                  DSG11,DSG22,DSG33,DSG12,DSG13,DSG23)
 C
 C ------- CALCUL DE L'INTEGRALE SUR LA FACE ----------------------------

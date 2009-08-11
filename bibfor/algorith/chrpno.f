@@ -1,6 +1,6 @@
       SUBROUTINE CHRPNO( CHAMP1, REPERE, NBCMP, ICHAM, TYPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
       IMPLICIT       NONE
       INTEGER        NBCMP , ICHAM
       CHARACTER*(*)  CHAMP1, REPERE, TYPE
@@ -55,11 +56,13 @@ C
       INTEGER      IPT   , INOT  , NDIM  , LICMPU(6), JCNSL
       INTEGER      NBN, IDNOEU, NBNOEU, INOE
       REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6),DDOT
-      REAL*8 VALR
+      REAL*8       VALR , VALEI(6)
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3)
       REAL*8       EPSI     , PROSCA  , XNORMR  , VALET(6)
       REAL*8       R8DGRD, PGL2(3,3)
-      CHARACTER*8  MA    , K8B, TYPMCL(4)
+      COMPLEX*16   VALETC(6)
+      CHARACTER*3  TSCA
+      CHARACTER*8  MA    , K8B, TYPMCL(4), NOMGD
       CHARACTER*16 MOTCLE(4)
       CHARACTER*19 CHAMS1,CHAMS0
       CHARACTER*24 MESNOE
@@ -96,6 +99,9 @@ C
       CALL JEVEUO(CHAMS1//'.CNSK','L',JCNSK)
       CALL JEVEUO(CHAMS1//'.CNSD','L',JCNSD)
       MA    = ZK8(JCNSK-1+1)
+      NOMGD    = ZK8(JCNSK-1+2)
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
+
       NBNO  = ZI(JCNSD-1+1)
       CALL JEVEUO(CHAMS1//'.CNSV','E',JCNSV)
       CALL JEVEUO(CHAMS1//'.CNSL','E',JCNSL)
@@ -180,6 +186,8 @@ C
                  INOE = INO
                ENDIF
                IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+1)) GOTO 10
+             IF (TSCA.EQ.'R') THEN
+C CHAMP REEL
                DO 11 II=1,NBCMP
                   VALET(II)=ZR(JCNSV-1+(INOE-1)*NBCMP+II)
  11            CONTINUE
@@ -199,6 +207,43 @@ C
                DO 12 II=1,NBCMP
                   ZR(JCNSV-1+(INOE-1)*NBCMP+II) = VALER(II)
  12            CONTINUE
+             ELSE
+C CHAMP COMPLEXE
+               DO 211 II=1,NBCMP
+                  VALETC(II)=ZC(JCNSV-1+(INOE-1)*NBCMP+II)
+211            CONTINUE
+               VALED(1) = DBLE(VALETC(1))
+               VALED(2) = DBLE(VALETC(4))
+               VALED(3) = DBLE(VALETC(2))
+               VALED(4) = DBLE(VALETC(5))
+               VALED(5) = DBLE(VALETC(6))
+               VALED(6) = DBLE(VALETC(3))
+               CALL UTPSGL(1,3,PGL,VALED,VALET)
+               VALER(1) = VALET(1)
+               VALER(2) = VALET(3)
+               VALER(3) = VALET(6)
+               VALER(4) = VALET(2)
+               VALER(5) = VALET(4)
+               VALER(6) = VALET(5)
+
+               VALED(1) = DIMAG(VALETC(1))
+               VALED(2) = DIMAG(VALETC(4))
+               VALED(3) = DIMAG(VALETC(2))
+               VALED(4) = DIMAG(VALETC(5))
+               VALED(5) = DIMAG(VALETC(6))
+               VALED(6) = DIMAG(VALETC(3))
+               CALL UTPSGL(1,3,PGL,VALED,VALET)
+               VALEI(1) = VALET(1)
+               VALEI(2) = VALET(3)
+               VALEI(3) = VALET(6)
+               VALEI(4) = VALET(2)
+               VALEI(5) = VALET(4)
+               VALEI(6) = VALET(5)
+               DO 212 II=1,NBCMP
+      ZC(JCNSV-1+(INOE-1)*NBCMP+II) = DCMPLX(VALER(II),VALEI(II))
+212            CONTINUE
+    
+             ENDIF
 
  10         CONTINUE
          ELSE
@@ -210,6 +255,8 @@ C VECTEUR
                  INOE = INO
                ENDIF
                IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+1)) GOTO 13
+             IF (TSCA.EQ.'R') THEN
+C VECTEUR REEL
                DO 14 II=1,NBCMP
                   VALED(II)=ZR(JCNSV-1+(INOE-1)*NBCMP+II)
  14            CONTINUE
@@ -221,6 +268,25 @@ C VECTEUR
                DO 15 II=1,NBCMP
                   ZR(JCNSV-1+(INOE-1)*NBCMP+II) = VALER(II)
  15            CONTINUE
+             ELSE
+C VECTEUR COMPLEXE
+               DO 214 II=1,NBCMP
+                  VALETC(II)=ZC(JCNSV-1+(INOE-1)*NBCMP+II)
+                  VALED(II) = DBLE(VALETC(II))
+                  VALET(II) = DIMAG(VALETC(II))
+214            CONTINUE
+               IF (NDIM.EQ.3) THEN
+                  CALL UTPVGL(1,NBCMP,PGL,VALED,VALER)
+                  CALL UTPVGL(1,NBCMP,PGL,VALET,VALEI)
+               ELSE
+                  CALL UT2VGL(1,NBCMP,PGL,VALED,VALER)
+                  CALL UT2VGL(1,NBCMP,PGL,VALET,VALEI)
+               ENDIF
+               DO 215 II=1,NBCMP
+      ZC(JCNSV-1+(INOE-1)*NBCMP+II) = DCMPLX(VALER(II),VALEI(II))
+215            CONTINUE
+
+             ENDIF
  13         CONTINUE
          ENDIF
       ELSE
@@ -349,6 +415,8 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   PGL(3,I) = AXET(I)
  20            CONTINUE
                IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+1)) GOTO 16
+             IF (TSCA.EQ.'R') THEN
+C CHAMP REEL
                DO 21 II=1,NBCMP
                   VALET(II)=ZR(JCNSV-1+(INOE-1)*NBCMP+II)
  21            CONTINUE
@@ -368,6 +436,43 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                DO 22 II=1,NBCMP
                   ZR(JCNSV-1+(INOE-1)*NBCMP+II)=VALER(LICMPU(II))
  22            CONTINUE
+             ELSE
+C CHAMP COMPLEXE
+               DO 311 II=1,NBCMP
+                  VALETC(II)=ZC(JCNSV-1+(INOE-1)*NBCMP+II)
+311            CONTINUE
+               VALED(1) = DBLE(VALETC(1))
+               VALED(2) = DBLE(VALETC(4))
+               VALED(3) = DBLE(VALETC(2))
+               VALED(4) = DBLE(VALETC(5))
+               VALED(5) = DBLE(VALETC(6))
+               VALED(6) = DBLE(VALETC(3))
+               CALL UTPSGL(1,3,PGL,VALED,VALET)
+               VALER(1) = VALET(1)
+               VALER(2) = VALET(3)
+               VALER(3) = VALET(6)
+               VALER(4) = VALET(2)
+               VALER(5) = VALET(4)
+               VALER(6) = VALET(5)
+
+               VALED(1) = DIMAG(VALETC(1))
+               VALED(2) = DIMAG(VALETC(4))
+               VALED(3) = DIMAG(VALETC(2))
+               VALED(4) = DIMAG(VALETC(5))
+               VALED(5) = DIMAG(VALETC(6))
+               VALED(6) = DIMAG(VALETC(3))
+               CALL UTPSGL(1,3,PGL,VALED,VALET)
+               VALEI(1) = VALET(1)
+               VALEI(2) = VALET(3)
+               VALEI(3) = VALET(6)
+               VALEI(4) = VALET(2)
+               VALEI(5) = VALET(4)
+               VALEI(6) = VALET(5)
+               DO 312 II=1,NBCMP
+      ZC(JCNSV-1+(INOE-1)*NBCMP+II) = DCMPLX(VALER(II),VALEI(II))
+312            CONTINUE
+
+             ENDIF
  16         CONTINUE
          ELSE
 C VECTEUR
@@ -464,6 +569,8 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   PGL(3,I) = AXET(I)
  27            CONTINUE
                IF (.NOT.ZL(JCNSL-1+(INOE-1)*NBCMP+1)) GOTO 23
+             IF (TSCA.EQ.'R') THEN
+C VECTEUR REEL
                DO 28 II=1,NBCMP
                   VALED(II)=ZR(JCNSV-1+(INOE-1)*NBCMP+II)
  28            CONTINUE
@@ -475,6 +582,26 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                DO 29 II=1,NBCMP
                   ZR(JCNSV-1+(INOE-1)*NBCMP+II)=VALER(LICMPU(II))
  29            CONTINUE
+             ELSE
+C VECTEUR COMPLEXE
+               DO 328 II=1,NBCMP
+                  VALETC(II)=ZC(JCNSV-1+(INOE-1)*NBCMP+II)
+                  VALED(II) = DBLE(VALETC(II))
+                  VALET(II) = DIMAG(VALETC(II))
+328            CONTINUE
+               IF (NDIM.EQ.3) THEN
+                  CALL UTPVGL(1,NBCMP,PGL,VALED,VALER)
+                  CALL UTPVGL(1,NBCMP,PGL,VALET,VALEI)
+               ELSE
+                  CALL UT2VGL(1,NBCMP,PGL,VALED,VALER)
+                  CALL UT2VGL(1,NBCMP,PGL,VALET,VALEI)
+               ENDIF
+               DO 329 II=1,NBCMP
+      ZC(JCNSV-1+(INOE-1)*NBCMP+II) = DCMPLX(VALER(II),VALEI(II))
+329            CONTINUE
+
+             ENDIF
+
  23         CONTINUE
          ENDIF
       ENDIF

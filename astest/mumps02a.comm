@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE VALIDATION DU SOLVEUR MUMPS POUR UN MODELE DPLAN_INCO
 # mumps02a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,8 +49,10 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.0,  0.0, 1.0,  1.0,),);
 #  1 : MUMPS (centralise)
 # -------------------------
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
-RESU1=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=3.e-5),
-                   CHAM_MATER=CH_MATER, INFO=1,
+RESU1=STAT_NON_LINE(MODELE=MO,     
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
+                   RESI_RELA=1.E-8,POSTTRAITEMENTS='AUTO',),
+                   CHAM_MATER=CH_MATER, INFO=2,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=INSTANTS, ),
@@ -59,15 +61,33 @@ RESU1=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN
 
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-6, REFERENCE  = 'ANALYTIQUE',),
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',),
                 _F(RESULTAT   = RESU1, INST       = 1.0, NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-6, REFERENCE  = 'ANALYTIQUE',)
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',)
+                   ));
+
+RESU11=STAT_NON_LINE(MODELE=MO,     
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
+                   RESI_RELA=1.E-5,POSTTRAITEMENTS='SANS',),
+                   CHAM_MATER=CH_MATER, INFO=2,
+                   EXCIT=(  _F(CHARGE=SYMETRI2,),),
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=INSTANTS, ),
+                   NEWTON=_F(REAC_ITER=1,),
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU11, INST       = 1.0,  NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
+                   PRECISION  = 1.E-5, REFERENCE  = 'ANALYTIQUE',),
+                _F(RESULTAT   = RESU11, INST       = 1.0, NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
+                   PRECISION  = 1.E-5, REFERENCE  = 'ANALYTIQUE',)
                    ));
 #  2 : MUMPS (distribue par mailles)
 # ------------------------------------
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
-RESU2=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=3.e-5,PCENT_PIVOT=200,),
+RESU2=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8,PCENT_PIVOT=200,),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
@@ -77,10 +97,10 @@ RESU2=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN
 
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-6, REFERENCE  = 'ANALYTIQUE',),
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',),
                 _F(RESULTAT   = RESU2, INST       = 1.0, NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-6, REFERENCE  = 'ANALYTIQUE',)
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',)
                    ));
 
 #  3 : MUMPS (distribue par sous-domaines)
@@ -92,7 +112,7 @@ SDFETI = DEFI_PART_FETI(
                 METHODE='KMETIS',
                 NOM_GROUP_MA='SD',);
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
-RESU3=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=3.e-5, PCENT_PIVOT=200,),
+RESU3=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8, PCENT_PIVOT=200,),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
@@ -102,9 +122,9 @@ RESU3=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN
 
 TEST_RESU(RESU=(_F(RESULTAT   = RESU3, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-6, REFERENCE  = 'ANALYTIQUE',),
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',),
                 _F(RESULTAT   = RESU3, INST       = 1.0, NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-6, REFERENCE  = 'ANALYTIQUE',)
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',)
                    ));
 FIN();

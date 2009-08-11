@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NPG,I,IPG,TYV,IPOIDS,IVF,IDFDE,IGEOM,IFM,IUNIFI
       INTEGER IADP,IADD,IFORP,IFORD,IERR,IPESP,IPESD,IROTP,IROTD,IMATE
-      INTEGER IVOIS,NBNV
+      INTEGER IVOIS
       INTEGER NBCMP,ITABP(7),ITABD(7),IBID,IPP,IRP,IPD,IRD
       INTEGER NOE(9,6,3),IPGF,NDI,IS
       INTEGER NDIM,NNO,NNOS,NNO2,JGANO,IRET,JTIME,NIV
@@ -263,7 +263,6 @@ C
         NSOMM=4
         ITYP=1
         ELREFE='QU4'
-        NBNV=8
         NDEGRE=1
         DO 40 I=1,4
           POIDS1(I)=1.D0
@@ -274,7 +273,6 @@ C
         NSOMM=4
         ITYP=1
         ELREFE='QU8'
-        NBNV=20
         NDEGRE=2
         DO 50 I=1,4
           POIDS1(I)=1.D0/9.D0
@@ -288,7 +286,6 @@ C
         NBF=6
         ITYP=1
         ELREFE='QU9'
-        NBNV=27
         NDEGRE=2
         DO 70 I=1,4
           POIDS1(I)=1.D0/9.D0
@@ -303,7 +300,6 @@ C
         ITYP=2
         ELREFE='TR3'
         ELREF2='QU4'
-        NBNV=6
         NDEGRE=1
         DO 90 I=1,3
           POIDS1(I)=1.D0/6.D0
@@ -317,7 +313,6 @@ C
         ITYP=2
         ELREFE='TR6'
         ELREF2='QU8'
-        NBNV=15
         NDEGRE=2
         DO 110 I=1,3
           POIDS1(I)=0.D0
@@ -338,7 +333,6 @@ C
         NBF=4
         ITYP=3
         ELREFE='TR3'
-        NBNV=4
         NDEGRE=1
         DO 150 I=1,3
           POIDS1(I)=1.D0/6.D0
@@ -349,7 +343,6 @@ C
         NBF=4
         ITYP=3
         ELREFE='TR6'
-        NBNV=10
         NDEGRE=2
         DO 160 I=1,3
           POIDS1(I)=0.D0
@@ -508,12 +501,12 @@ C
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS PB. PRIMAL -------
 C
-          CALL ERMES3(NOE,IFA,ITYP,NBNV,NPGF,IREFP1,IVOIS,IADP,NBCMP,
+          CALL ERMES3(NOE,IFA,ITYP,TYPMAV,NPGF,IREFP1,IVOIS,IADP,NBCMP,
      &                SGP11,SGP22,SGP33,SGP12,SGP13,SGP23)
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS PB. DUAL ---------
 C
-          CALL ERMES3(NOE,IFA,ITYP,NBNV,NPGF,IREFD1,IVOIS,IADD,NBCMP,
+          CALL ERMES3(NOE,IFA,ITYP,TYPMAV,NPGF,IREFD1,IVOIS,IADD,NBCMP,
      &                SGD11,SGD22,SGD33,SGD12,SGD13,SGD23)
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS PB. GLOBAL -------

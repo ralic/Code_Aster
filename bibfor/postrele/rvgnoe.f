@@ -6,7 +6,7 @@
       CHARACTER*24                           NLSTND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C
  250     CONTINUE
       ELSE
          DO 252, I = 1, NBTROU, 1
-            DO 254, J = 1, LIBRE, 1
+            DO 254, J = 1, LIBRE-1, 1
                IF ( LINOEU(I) .EQ. ZI(ALNDTP+J-1) ) THEN
                   NBTND = NBTND + 1
                   GOTO 252

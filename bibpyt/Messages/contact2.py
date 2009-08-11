@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact2 Messages  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,11 @@ cata_msg={
 12 : _("""
 Contact méthode continue. Une zone de contact contient à la fois des éléments axisymétriques et non axisymétriques.
 Vérifier votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact. 
+"""),
+
+13 : _("""
+Contact méthodes maillées. Il existe une zone de contact dans laquelle un noeud est commun aux surfaces maîtres et
+esclaves. Vérifiez la définition de vos surfaces de contact ou bien renseignez le mot-clé SANS_GROUP_NO.
 """),
 
 }

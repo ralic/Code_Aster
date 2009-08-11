@@ -3,7 +3,7 @@
       INTEGER                      IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,14 +78,13 @@ C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
       CALL JEDEBU(4,IMEMO,MXDYN,IADZON,LMO,'MESSAGE','VIGILE',IDEBUG )
       WRITE(6,'(1X,A)')   '======================================='
 C
-C     --- ALLOCATION D'UNE BASE DE DONNEES DUMMY ---
-      NOMF = 'LDUMMY'
-      CALL JEINIF( 'DUMMY','DETRUIT',NOMF,'L', 250 , 100, 1 )
+C     --- ALLOCATION D'UNE BASE DE DONNEES TEMPORAIRE VOLATILE---
+      NOMF = 'VOLATILE'
+      CALL JEINIF( 'DEBUT','DETRUIT',NOMF,'V', 250 , 100, 1 )
 C
       CALL ULDEFI(6,' ','MESSAGE','A','N','N')
       CALL ULDEFI(9,' ','ERREUR' ,'A','N','N')
       CALL ULDEFI(15,' ','CODE' ,'A','N','N')
-      CALL UTINIT(2, 80, 1)
 
       IF ( LERMEM ) CALL U2MESI('F','SUPERVIS_11',1,INT(FNTMEM*LOIS))
 

@@ -1,7 +1,7 @@
-      SUBROUTINE CFFROT(MAF1  ,MAF2  ,MAFROT)
+      SUBROUTINE CFFROT(MAF1  ,KOPER ,MAF2  ,MAFROT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
 C RESPONSBALE
 C
       IMPLICIT     NONE
+      CHARACTER*1  KOPER
       CHARACTER*19 MAF1
       CHARACTER*19 MAF2
       CHARACTER*19 MAFROT
@@ -35,6 +36,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  MAF1   : PARTIE 1 DE LA MATRICE FROTTEMENT
+C IN  KOPER  : ADDITION ('+') OU SOUSTRACTION ('-')
 C IN  MAF2   : PARTIE 2 DE LA MATRICE FROTTEMENT
 C OUT MAFROT : MATRICE GLOBALE TANGENTE AVEC FROTTEMENT RESULTANTE
 C
@@ -79,7 +81,13 @@ C
       LIMAT(1)  = MAF1
       LIMAT(2)  = MAF2
       COEFMU(1) =  1.0D0
-      COEFMU(2) = -1.0D0
+      IF (KOPER.EQ.'+') THEN
+        COEFMU(2) = +1.0D0
+      ELSEIF (KOPER.EQ.'-') THEN
+        COEFMU(2) = -1.0D0
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
       TYPCST(1) = 'R'
       TYPCST(2) = 'R'
 C

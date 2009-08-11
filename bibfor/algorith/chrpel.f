@@ -1,6 +1,6 @@
       SUBROUTINE CHRPEL(CHAMP1, REPERE, NBCMP, ICHAM, TYPE, NOMCH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,8 @@ C     CHAMP1   IN  K16  : NOM DU CHAMP A TRAITER
 C     REPERE   IN  K8   : TYPE DE REPERE (UTILISATEUR OU CYLINDRIQUE)
 C     NBCMP    IN  I    : NOMBRE DE COMPOSANTES A TRAITER
 C     ICHAM    IN  I    : NUMERO D'OCCURRENCE
+C     TYPE     IN  K8   : TYPE DU CHAMP : 'TENS' 'VECT' OU 'TORS'
+C     NOMCH    IN  K16  : NOM DE CHAMP
 C ----------------------------------------------------------------------
 C ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------------
       INTEGER           ZI
@@ -55,14 +57,16 @@ C
       INTEGER      JCONX1, JCONX2, NBSP  , INEL  , JCMP  , IPT2
       INTEGER      IBID  , NBMA  , JCESK , IRET  , INOT  , INBNO
       INTEGER      NDIM  , LICMPU(6), NBM, IDMAIL, NBMAIL, IMAI
-      INTEGER      INOEU , IRET0 , IGRNO , IRET1 , NBGNO , IGNO,NNCP
+      INTEGER      INOEU , IRET0 , IGRNO , IRET1 , NBGNO , IGNO,NNCP,I2
       LOGICAL      TEST
       REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6),DDOT
-      REAL*8 VALR
+      REAL*8       VALR , VALEI(6)
       REAL*8       VALET(6) , EPSI    , XNORMR  , PROSCA,  R8DGRD
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3),PGL2(3,3)
+      COMPLEX*16   VALETC(6)
       CHARACTER*1  K1B
-      CHARACTER*8  MA    , K8B, TYPMCL(2)
+      CHARACTER*3  TSCA
+      CHARACTER*8  MA    , K8B, TYPMCL(2), NOMGD
       CHARACTER*16 OPTION,MOTCLE(2)
       CHARACTER*19 CHAMS1,CHAMS0
       CHARACTER*24 LIGREL,MESMAI
@@ -98,6 +102,8 @@ C
       CALL JEVEUO(CHAMS1//'.CESK','L',JCESK)
       CALL JEVEUO(CHAMS1//'.CESD','L',JCESD)
       MA     = ZK8(JCESK-1+1)
+      NOMGD    = ZK8(JCESK-1+2)
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
 C
 C     ON EXCLUT LES MOT-CLES 'NOEUD' ET 'GROUP_NO'
       CALL JEVEUO(MA//'.DIME   ','L',INBNO)
@@ -113,9 +119,9 @@ C     ON EXCLUT LES MOT-CLES 'NOEUD' ET 'GROUP_NO'
       ELSE
         GOTO 100
       ENDIF
-                           VALK (1) = K8B
-                           VALK (2) = NOMCH
-                           VALK (3) = ' '
+      VALK (1) = K8B
+      VALK (2) = NOMCH
+      VALK (3) = ' '
       CALL U2MESG('F', 'ALGORITH12_42',3,VALK,0,0,0,0.D0)
  100  CONTINUE
       CALL JEDETR('&&CHRPEL.NOEUDS')
@@ -183,14 +189,17 @@ C
          ANGNOT(3) = ANGNOT(3)*R8DGRD()
          CALL MATROT(ANGNOT,PGL)
          IF (TYPE(1:4).EQ.'TENS') THEN
+C TENSEUR
             DO 10 INEL=1,NBMAIL
-               IF (NBM.NE.0) THEN
-                 IMAI = ZI(IDMAIL+INEL-1)
-               ELSE
-                 IMAI = INEL
-               ENDIF
-               NBPT = ZI(JCESD-1+5+4* (IMAI-1)+1)
-               NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
+             IF (NBM.NE.0) THEN
+               IMAI = ZI(IDMAIL+INEL-1)
+             ELSE
+               IMAI = INEL
+             ENDIF
+             NBPT = ZI(JCESD-1+5+4* (IMAI-1)+1)
+             NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
+             IF (TSCA.EQ.'R') THEN
+C CHAMP REEL
                DO 11,IPT = 1,NBPT
                   DO 12,ISP = 1,NBSP
                      DO 13 II=1,NCMP
@@ -225,8 +234,61 @@ C
  14                  CONTINUE
  12               CONTINUE
  11            CONTINUE
+              ELSE
+C CHAMP COMPLEXE
+               DO 111,IPT = 1,NBPT
+                  DO 112,ISP = 1,NBSP
+                     DO 113 II=1,NCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
+                        IF (IAD.GT.0) THEN
+                           VALETC(II)=ZC(JCESV-1+IAD)
+                        ELSE
+                           GOTO 10
+                        ENDIF
+ 113                 CONTINUE
+                     VALED(1) = DBLE(VALETC(1))
+                     VALED(2) = DBLE(VALETC(4))
+                     VALED(3) = DBLE(VALETC(2))
+                     VALED(4) = DBLE(VALETC(5))
+                     VALED(5) = DBLE(VALETC(6))
+                     VALED(6) = DBLE(VALETC(3))
+                     CALL UTPSGL(1,3,PGL,VALED,VALET)
+                     VALER(1) = VALET(1)
+                     VALER(2) = VALET(3)
+                     VALER(3) = VALET(6)
+                     VALER(4) = VALET(2)
+                     VALER(5) = VALET(4)
+                     VALER(6) = VALET(5)
+C
+                     VALED(1) = DIMAG(VALETC(1))
+                     VALED(2) = DIMAG(VALETC(4))
+                     VALED(3) = DIMAG(VALETC(2))
+                     VALED(4) = DIMAG(VALETC(5))
+                     VALED(5) = DIMAG(VALETC(6))
+                     VALED(6) = DIMAG(VALETC(3))
+                     CALL UTPSGL(1,3,PGL,VALED,VALET)
+                     VALEI(1) = VALET(1)
+                     VALEI(2) = VALET(3)
+                     VALEI(3) = VALET(6)
+                     VALEI(4) = VALET(2)
+                     VALEI(5) = VALET(4)
+                     VALEI(6) = VALET(5)
+C
+                     DO 114 II=1,NBCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
+     &                              II,IAD)
+                        IF (IAD.GT.0) THEN
+                           ZC(JCESV-1+IAD) = DCMPLX(VALER(II),VALEI(II))
+                        ELSE
+                           GOTO 10
+                        ENDIF
+ 114                 CONTINUE
+ 112              CONTINUE
+ 111           CONTINUE
+             ENDIF
  10         CONTINUE
          ELSE
+C  VECTEUR
             DO 15 INEL=1,NBMAIL
                IF (NBM.NE.0) THEN
                  IMAI = ZI(IDMAIL+INEL-1)
@@ -235,6 +297,8 @@ C
                ENDIF
                NBPT = ZI(JCESD-1+5+4* (IMAI-1)+1)
                NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
+             IF (TSCA.EQ.'R') THEN
+C CHAMP REEL
                DO 16,IPT = 1,NBPT
                   DO 17,ISP = 1,NBSP
                      DO 18 II=1,NCMP
@@ -260,9 +324,42 @@ C
  19                  CONTINUE
  17               CONTINUE
  16            CONTINUE
+           ELSE
+C CHAMP COMPLEXE
+               DO 116,IPT = 1,NBPT
+                  DO 117,ISP = 1,NBSP
+                     DO 118 II=1,NCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
+                        IF (IAD.GT.0) THEN
+                           VALETC(II) = ZC(JCESV-1+IAD)
+                           VALED(II) = DBLE(VALETC(II))
+                           VALET(II) = DIMAG(VALETC(II))
+                        ELSE
+                           GOTO 15
+                        ENDIF
+ 118                  CONTINUE
+                     IF (NDIM.EQ.3) THEN
+                        CALL UTPVGL(1,NCMP,PGL,VALED,VALER)
+                        CALL UTPVGL(1,NCMP,PGL,VALET,VALEI)
+                     ELSE
+                        CALL UT2VGL(1,NCMP,PGL,VALED,VALER)
+                        CALL UT2VGL(1,NCMP,PGL,VALET,VALEI)
+                     ENDIF
+                     DO 119 II=1,NBCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
+                        IF (IAD.GT.0) THEN
+                           ZC(JCESV-1+IAD) = DCMPLX(VALER(II),VALEI(II))
+                        ELSE
+                           GOTO 15
+                        ENDIF
+ 119                  CONTINUE
+ 117               CONTINUE
+ 116            CONTINUE
+           ENDIF
  15         CONTINUE
          ENDIF
       ELSE
+C REPERE CYLINDRIQUE
          IF (NDIM.EQ.3) THEN
             CALL GETVR8('DEFI_REPERE','ORIGINE',1,1,3,ORIG,IBID)
             IF (IBID.NE.3) THEN
@@ -365,7 +462,7 @@ C
                         IF (XNORMR .LT. EPSI) THEN
                            CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
                            VALK (1) = K8B
-      CALL U2MESG('F', 'ALGORITH12_44',1,VALK,0,0,0,0.D0)
+                     CALL U2MESG('F', 'ALGORITH12_44',1,VALK,0,0,0,0.D0)
                         ENDIF
                      ENDIF
                      CALL PROVEC(AXEZ,AXER,AXET)
@@ -376,6 +473,8 @@ C
                         PGL(2,I) = AXEZ(I)
                         PGL(3,I) = AXET(I)
  26                  CONTINUE
+                    IF (TSCA.EQ.'R') THEN
+C CHAMP REEL
                      DO 27 II=1,NCMP
                         CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
@@ -406,10 +505,59 @@ C
                            GOTO 20
                         ENDIF
  28                  CONTINUE
+                    ELSE
+C CHAMP COMPLEXE
+                     DO 213 II=1,NCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
+                        IF (IAD.GT.0) THEN
+                           VALETC(II)=ZC(JCESV-1+IAD)
+                        ELSE
+                           GOTO 20
+                        ENDIF
+ 213                 CONTINUE
+                     VALED(1) = DBLE(VALETC(1))
+                     VALED(2) = DBLE(VALETC(4))
+                     VALED(3) = DBLE(VALETC(2))
+                     VALED(4) = DBLE(VALETC(5))
+                     VALED(5) = DBLE(VALETC(6))
+                     VALED(6) = DBLE(VALETC(3))
+                     CALL UTPSGL(1,3,PGL,VALED,VALET)
+                     VALER(1) = VALET(1)
+                     VALER(2) = VALET(3)
+                     VALER(3) = VALET(6)
+                     VALER(4) = VALET(2)
+                     VALER(5) = VALET(4)
+                     VALER(6) = VALET(5)
+C
+                     VALED(1) = DIMAG(VALETC(1))
+                     VALED(2) = DIMAG(VALETC(4))
+                     VALED(3) = DIMAG(VALETC(2))
+                     VALED(4) = DIMAG(VALETC(5))
+                     VALED(5) = DIMAG(VALETC(6))
+                     VALED(6) = DIMAG(VALETC(3))
+                     CALL UTPSGL(1,3,PGL,VALED,VALET)
+                     VALEI(1) = VALET(1)
+                     VALEI(2) = VALET(3)
+                     VALEI(3) = VALET(6)
+                     VALEI(4) = VALET(2)
+                     VALEI(5) = VALET(4)
+                     VALEI(6) = VALET(5)
+C
+                     DO 214 II=1,NBCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
+     &                              II,IAD)
+                        IF (IAD.GT.0) THEN
+                           ZC(JCESV-1+IAD) = DCMPLX(VALER(II),VALEI(II))
+                        ELSE
+                           GOTO 20
+                        ENDIF
+ 214                 CONTINUE
+                    ENDIF
  22               CONTINUE
  21            CONTINUE
  20         CONTINUE
          ELSE
+C VECTEUR
             IF (NDIM.EQ.2) THEN
                LICMPU(1)=1
                LICMPU(2)=3
@@ -482,7 +630,7 @@ C
                         IF (XNORMR .LT. EPSI) THEN
                            CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
                            VALK (1) = K8B
-      CALL U2MESG('F', 'ALGORITH12_44',1,VALK,0,0,0,0.D0)
+                    CALL U2MESG('F', 'ALGORITH12_44',1,VALK,0,0,0,0.D0)
                         ENDIF
                      ENDIF
                      CALL PROVEC(AXEZ,AXER,AXET)
@@ -493,6 +641,8 @@ C
                         PGL(2,I) = AXEZ(I)
                         PGL(3,I) = AXET(I)
  35                  CONTINUE
+             IF (TSCA.EQ.'R') THEN
+C CHAMP REEL
                      DO 36 II=1,NCMP
                         CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
@@ -515,6 +665,37 @@ C
                            GOTO 29
                         ENDIF
  37                  CONTINUE
+            ELSE
+C CHAMP COMPLEXE
+                     DO 136 II=1,NCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
+                        IF (IAD.GT.0) THEN
+                           VALETC(II) = ZC(JCESV-1+IAD)
+                           VALED(II) = DBLE(VALETC(II))
+                           VALET(II) = DIMAG(VALETC(II))
+                        ELSE
+                           GOTO 29
+                        ENDIF
+ 136                  CONTINUE
+                     IF (NDIM.EQ.3) THEN
+                        CALL UTPVGL(1,3,PGL,VALED,VALER)
+                        CALL UTPVGL(1,3,PGL,VALET,VALEI)
+                     ELSE
+                        CALL UT2VGL(1,3,PGL,VALED,VALER)
+                        CALL UT2VGL(1,3,PGL,VALET,VALEI)
+                     ENDIF
+                     DO 137 II=1,NBCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
+     &                              II,IAD)
+                        IF (IAD.GT.0) THEN
+                           I2=LICMPU(II)
+                           ZC(JCESV-1+IAD) = DCMPLX(VALER(I2),VALEI(I2))
+                        ELSE
+                           GOTO 29
+                        ENDIF
+ 137                  CONTINUE
+            ENDIF
+
  31               CONTINUE
  30            CONTINUE
  29         CONTINUE

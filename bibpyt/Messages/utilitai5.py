@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai5 Messages  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,7 +175,8 @@ cata_msg = {
 """),
 
 40 : _("""
- LIRE_RESU ne sait pas lire les structures de données de type %(k1) s
+ La commande LIRE_RESU ne sait pas lire les structures de données
+ de type %(k1) s.
 """),
 
 41 : _("""
@@ -271,14 +272,16 @@ cata_msg = {
 """),
 
 93 : _("""
- Le stockage dans la SD résultat du modèle, du champ materiau 
- et des caractéristiques élémentaires  n'est pas possible 
- pour une SD résultat de type %(k1)s. 
+ Vous essayez de stocker le modèle, le champ matériau ou 
+ des caractéristiques élémentaires dans la SD résultat.
+ Ce n'est pas possible pour une SD résultat de type %(k1)s,
+ on ne stocke aucun de ces trois éléments. 
 """),
 
 94 : _("""
- Le stockage de la SD charge dans la SD résultat n'est pas
- possible pour une SD résultat de type %(k1)s. 
+ Vous essayer de stocker la SD charge dans la SD résultat.
+ Ce n'est pas possible pour une SD résultat de type %(k1)s,
+ on ne stocke pas la charge. 
 """),
 
 95 : _("""

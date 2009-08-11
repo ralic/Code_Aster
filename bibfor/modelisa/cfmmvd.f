@@ -1,7 +1,7 @@
       INTEGER FUNCTION CFMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF MODELISA  DATE 07/07/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,8 +46,8 @@ C
       PARAMETER (ZMESX=4, ZAPME=4 ,ZAPPA=3)
       INTEGER   ZCONV,ZRESU,ZCARF,ZXFEM
       PARAMETER (ZCONV=9 ,ZRESU=24,ZCARF=4 ,ZXFEM=27) 
-      INTEGER   ZEXCL
-      PARAMETER (ZEXCL=6 )                       
+      INTEGER   ZEXCL,ZETAT
+      PARAMETER (ZEXCL=6 ,ZETAT=4)                       
 C
 C ----------------------------------------------------------------------
 C
@@ -91,6 +91,8 @@ C
         CFMMVD = ZXFEM    
       ELSE IF (VECT.EQ.'ZEXCL') THEN
         CFMMVD = ZEXCL                
+      ELSE IF (VECT.EQ.'ZETAT') THEN
+        CFMMVD = ZETAT                
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF  

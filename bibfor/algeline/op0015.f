@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,11 @@ C     -- MODIFICATION DU SOLVEUR DU FAIT DE CERTAINS MOTS CLES :
         CALL JEVEUO(SOLVE2//'.SLVR','E',J1)
         ZR(J1-1+2)=EPS
       ENDIF
+      CALL GETVTX(' ','POSTTRAITEMENTS',1,1,1,KVARI,NB)
+      IF (NB.EQ.1) THEN
+        CALL JEVEUO(SOLVE2//'.SLVK','E',J1)
+        ZK24(J1-1+11)=KVARI
+      ENDIF     
       CALL GETVIS(' ','NMAX_ITER',0,1,1,MXITER,NB)
       IF (NB.EQ.1) THEN
         CALL JEVEUO(SOLVE2//'.SLVI','E',J1)

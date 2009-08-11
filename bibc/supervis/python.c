@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF python supervis  DATE 20/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
-/* RESPONSABLE                                 D6BHHJP J.P.LEFEBVRE   */
+/* MODIF python supervis  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -69,7 +69,11 @@ main(argc, argv)
    MPI_Comm_size(MPI_COMM_WORLD, &nbproc);
    MPI_Comm_rank(MPI_COMM_WORLD, &me);
    MPI_Get_processor_name(processor_name, &namelen);
-   printf("Processeur/rang/nbproc= %s %d %d\n", processor_name,me,nbproc);
+   printf("\n Version parallèle de Code_aster compilée avec MPI\n");
+   printf(" Exécution sur le processeur de nom %s de rang %d\n",processor_name,me);
+   printf(" Nombre de processeurs utilisés %d\n",nbproc);
+#else	
+   printf("\n Version séquentielle de Code_aster \n");
 #endif	
 	
    PyImport_AppendInittab("aster",initaster);

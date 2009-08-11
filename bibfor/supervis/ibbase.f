@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C     --- VALEURS PAR DEFAUTS DES CAS ----------------------------------
       CHARACTER*24 VALK(3)
       INTEGER      NBBLCA(MXBASE,MXCAS), LGBLCA(MXBASE,MXCAS)
       INTEGER      LGRECA(MXBASE,MXCAS)
-      INTEGER      VALI(2)
+      INTEGER      VALI(2),INFO
 C
       DATA      NOMBA  /'GLOBALE '   , 'VOLATILE'   /
       DATA      PRESBA /    0        ,     0        /
@@ -181,8 +181,8 @@ C     --- DEFINITION DES UNITES LOGIQUES DES BASES DE DONNEES ---
 C
       IF ( IER .EQ. 0 ) THEN
 C
-C        --- DESTRUCTION DU FICHIER TAMPON DUMMY ---
-         CALL JELIBF('DETRUIT','L')
+C        --- DESTRUCTION DE LA BASE TEMPORAIRE VOLATILE ---
+         CALL JELIBF('DETRUIT','V')
 C
 C        --- RE-DEFINITION DE L'ENVIRONNEMENT SELON DESIRS UTILISATEUR -
 C
@@ -191,7 +191,8 @@ C        --- INITIALISATION DE CHAQUE BASE ---
             CALL JELIHD ('GLOBALE ',FICHDF,'G')
 C           --- DESTRUCTION DU FICHIER POUR QU'ON NE CONFONDE PAS PLUS
 C               TARD AVEC UNE EVENTUELLE BASE HDF EN RESULTAT ---
-            CALL RMFILE(FICHDF)
+            INFO=1
+            CALL RMFILE(FICHDF,INFO)
          ENDIF
          IDEB = 1
          IF ( FICHDF .NE. ' ') IDEB = 2

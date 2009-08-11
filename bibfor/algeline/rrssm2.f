@@ -1,7 +1,7 @@
       SUBROUTINE RRSSM2(NEQ,SMHCR,SMHCI,SMDIR,SMDII,IDLEXC,COEF,VALMI,
      &                  VALMR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
       INTEGER SMHCR(*),SMHCI(*),IDLEXC(*)
       INTEGER SMDIR(*),SMDII(*)
       INTEGER NEQ,IDEBL1,IDEBL2,KIN1,KIN2,IEQUA,IFINL1
-      INTEGER IFINL2,I,JINDIR,J2,K,I2,I1,J1,IND1
+      INTEGER IFINL2,JINDIR,J2,K,I2,I1,J1,IND1
       REAL*8 COEF,VALMI(*),VALMR(*)
 C--------------------------------------------------------
 
@@ -45,9 +45,6 @@ C     ------------------------
       DO 60 IEQUA = 1,NEQ
         IFINL1 = SMDIR(IEQUA)
         IFINL2 = SMDII(IEQUA)
-        DO 10 I = 1,NEQ
-          ZI(JINDIR-1+I) = 0
-   10   CONTINUE
 
 C       -- CALCUL DE .IND_LIG :
 C       ------------------------
@@ -74,7 +71,7 @@ C       ------------------------------------
           VALMR(KIN1+IND1) = VALMR(KIN1+IND1) +
      &                       COEF*VALMI(KIN2)* (1-IDLEXC(I2))*
      &                       (1-IDLEXC(IEQUA))
-
+          ZI(JINDIR-1+I2) = 0
    50   CONTINUE
 
         IDEBL1 = SMDIR(IEQUA) + 1

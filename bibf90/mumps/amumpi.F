@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPI MUMPS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -38,8 +38,8 @@ C============================================================
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
 C============================================================
-      INTEGER    NICNTL
-      PARAMETER (NICNTL=26)
+      INTEGER    NICNTL,NCNTL
+      PARAMETER (NICNTL=26,NCNTL=5)
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
       TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
@@ -49,7 +49,7 @@ C============================================================
       INTEGER      IFM,NIV,ICNTL(NICNTL),I,JREFA,ISYMM,JSLVK,ISYMV,ISYM,
      &             JSLVI,IVERS,N1,N3,N5,IISNAN
       INTEGER*4    KXMPS4,I4
-      REAL*8       RVERS
+      REAL*8       RVERS,CNTL(NCNTL)
       CHARACTER*1  ROUCS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),TYPM,ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
@@ -172,6 +172,9 @@ C ---      INIT
         DO I=1,NICNTL
           ICNTL(I)=0
         ENDDO
+        DO I=1,NCNTL
+          CNTL(I)=0.D0
+        ENDDO
         NVERS(1:80)=''
         IF (TYPE.EQ.'R') THEN
           NVERS(1:5)=XMPSK%VERSION_NUMBER
@@ -201,9 +204,8 @@ C ---      MESSAGES/ALERTES MUMPS
         ICNTL(3) = 0
         ICNTL(4) = 1
         IF (NIV.GE.2) THEN
-           ICNTL(2) = 0
+C ---      ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
            ICNTL(3) = IFM
-C ---      ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS
            ICNTL(4) = 2
         ENDIF
 C ---      FORMAT MATRICE
@@ -254,7 +256,17 @@ C ---      TYPE DE RESOLUTION: A OU AT
 
 C ---      RAFFINEMENT ITERATIF
         ICNTL(10) = 0
-        IF (LQUALI)  ICNTL(10) = 4
+        CNTL(2)=10.D+99
+        IF (LQUALI)  THEN
+          IF (ZK24(JSLVK-1+11).EQ.'SANS') THEN
+          ELSE IF (ZK24(JSLVK-1+11).EQ.'AUTO') THEN
+            ICNTL(10)=4
+            CNTL(2)=1.D-14
+          ELSE IF (ZK24(JSLVK-1+11).EQ.'FORCE') THEN
+            ICNTL(10)=10
+            CNTL(2)=10.D-50
+          ENDIF
+        ENDIF
         ICNTL(11) = 0
         IF (LQUALI)  ICNTL(11) = 1
 
@@ -322,11 +334,13 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
             I4=ICNTL(I)
             XMPSK%ICNTL(I)=I4
           ENDDO
+          XMPSK%CNTL(2)=CNTL(2)
         ELSE IF (TYPE.EQ.'C') THEN
           DO I=1,NICNTL
             I4=ICNTL(I)
             YMPSK%ICNTL(I)=I4
           ENDDO
+          YMPSK%CNTL(2)=CNTL(2)
         ENDIF
 
 C       ------------------------------------------------

@@ -5,7 +5,7 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
 C     ------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      NOMBA1,NOMBA2,NOM
-      INTEGER          ITP(1),JITP,IADITP,LGBL1,LGBL2
+      INTEGER          ITP(1),JITP,IADITP,LGBL1,LGBL2,INFO
 C DEB ------------------------------------------------------------------
       NOMIN  = NOMINZ
       CLASIN = CLSINZ
@@ -81,7 +81,8 @@ C
       LBLOC= LONGBL(ICI)
       NOM = NOMOUT(1:4)//'.?  '
       CALL LXMINS (NOM)
-      CALL RMFILE (NOM)
+      INFO = 1
+      CALL RMFILE (NOM,INFO)
       CALL JEINIF ( 'DEBUT', 'SAUVE', NOMOUT, KCLAS, NREP, NBLOC, LBLOC)
       ICO = INDEX ( CLASSE , KCLAS)
       NOMBA1 = NOMFIC(ICI)(1:4)//'.   '
