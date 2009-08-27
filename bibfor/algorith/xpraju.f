@@ -1,11 +1,12 @@
-      SUBROUTINE XPRAJU(NOMA,CNSLT,CNSVT,CNSVN,DELTAT)
+      SUBROUTINE XPRAJU(NOMA,CNSLT,CNSVT,CNSVN,DELTAT,VMAX)
+
       IMPLICIT NONE
       CHARACTER*8    NOMA
-      CHARACTER*19   CNSVT,CNSVN,CNSLT
-      REAL*8         DELTAT
+      CHARACTER*19   CNSVT,CNSVN,CNSLT,GRLN,GRLT
+      REAL*8         DELTAT,VMAX
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,20 +26,22 @@ C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C     ------------------------------------------------------------------
 C
-C       XPRAJU   : X-FEM PROPAGATION : AJUSTEMENT DE VT
+C       XPRAJU   : X-FEM PROPAGATION : AJUSTEMENT DE VN
 C       ------     -     --            --- 
-C    AJUSTEMENT DU CHAMP DE VITESSE VT :
-C          SI  LT >=0 , VN AJUSTEE = HEAVISDE(LST)*(VN*LST)/(VT*DELTAT)
+C    AJUSTEMENT DU CHAMP DE VITESSE VN :
+C          SI  LT <=0 , VN AJUSTEE = 0
+C          SINON, VN AJUSTEE = (VN*LST)/(VT*DELTAT)
 C
 C    ENTREE
 C        NOMA    : NOM DU CONCEPT MAILLAGE
 C        CNSLT   : CHAM_NO_S LEVEL SET TANGENTIELLE
 C        CNSVT   : CHAM_NO_S VITESSE TANGENTIELLE DE PROPAGATION
 C        CNSVN   : CHAM_NO_S VITESSE NORMALE DE PROPAGATION
-C        DELTAT  : PAS DE TEMPS CHOISI
+C        DELTAT  : TEMPS TOTAL DE PROPAGATION
 C
 C    SORTIE
 C        CNSVN   : CHAM_NO_S VITESSE NORMALE DE PROPAGATION AJUSTEE
+C        VMAX    : VALEUR MAXIMALE DES COMPOSANTES DE VITESSE
 C
 C     ------------------------------------------------------------------
 
@@ -61,8 +64,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*8    K8B
-      INTEGER        I,IRET,NBNO,JVTNO,JVNNO,JLTNO,IFM,NIV,CPTZO,CPTAJU
-      REAL*8         NORMV,HEAV
+      INTEGER        I,IRET,NBNO,JVTNO,JVNNO,JLTNO,IFM,NIV,CPTZO,CPTAJU,
+     &               ADDIM,J
+      REAL*8         MODZON,DMIN,R8MIEM
 
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -83,27 +87,45 @@ C   RECUPERATION DE L'ADRESSE DES VALEURS DE LST
 
       CPTZO = 0
       CPTAJU = 0
+      DMIN = R8MIEM()
+      VMAX = 0.D0
+
 C   BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE
       DO 100 I=1,NBNO
 
-C   CALCUL DE HEAVISIDE(LST)
-         IF (ZR(JLTNO+I-1).GT.(0.0D0)) THEN
-            HEAV=1.D0
-            CPTAJU=CPTAJU+1
-         ELSE
-            HEAV=0.D0
-            CPTZO=CPTZO+1
-         ENDIF
-C   AJUSTEMENT DE LA VALEUR DE VN
-         ZR(JVNNO+I-1) =
-     &     HEAV*ZR(JVNNO+I-1)*ZR(JLTNO+I-1)/(ZR(JVTNO+I-1)*DELTAT)
+          IF(ZR(JLTNO-1+I).LE.DMIN) THEN
+
+C             THE NODE (OR ITS PROJECTION) IS ON THE EXISTING CRACK
+C             SURFACE. ITS NORMAL SPEED MUST BE SET TO ZERO.
+              ZR(JVNNO-1+I) = 0
+
+C             CALCULATE THE MAXIMUM VALUE OF THE SPEED COMPONENTS
+              IF (ABS(ZR(JVTNO-1+I)).GT.VMAX) VMAX=ABS(ZR(JVTNO-1+I))
+
+              CPTZO = CPTZO+1
+
+          ELSE
+
+C             THE NODE (OR ITS PROJECTION) IS AHEAD OF THE CRACK TIP. 
+C             ITS NORMAL SPEED MUST BE RECALCULATED USING A LINEAR
+C             EXTRAPOLATION.
+              MODZON = ZR(JVTNO-1+I)*DELTAT
+              ZR(JVNNO-1+I) = ZR(JVNNO-1+I)*ZR(JLTNO-1+I)/MODZON
+
+C             CALCULATE THE MAXIMUM VALUE OF THE SPEED COMPONENTS
+              IF (ABS(ZR(JVTNO-1+I)).GT.VMAX) VMAX=ABS(ZR(JVTNO-1+I))
+              IF (ABS(ZR(JVNNO-1+I)).GT.VMAX) VMAX=ABS(ZR(JVNNO-1+I))
+
+              CPTAJU = CPTAJU+1
+
+          ENDIF
      
  100  CONTINUE
  
-C      IF (NIV.GT.1) THEN
-         WRITE(IFM,*)'NOMBRE DE NOEUDS DONT VN EST ANNULEE :',CPTZO
-         WRITE(IFM,*)'NOMBRE DE NOEUDS DONT VN EST AJUSTEE :',CPTAJU
-C      ENDIF
+      IF (NIV.GE.1) THEN
+         WRITE(IFM,*)'   NOMBRE DE NOEUDS DONT VN EST ANNULEE :',CPTZO
+         WRITE(IFM,*)'   NOMBRE DE NOEUDS DONT VN EST AJUSTEE :',CPTAJU
+      ENDIF
 
 C-----------------------------------------------------------------------
 C     FIN

@@ -1,0 +1,571 @@
+      SUBROUTINE XPRCNU(NOMA,CNXINV,VCN,VCND,VCNL,REFJEV)
+      IMPLICIT NONE
+
+      CHARACTER*8    NOMA
+      CHARACTER*19   CNXINV,VCN,VCND,VCNL,REFJEV
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
+C TOLE CRP_20
+
+C     ------------------------------------------------------------------
+C
+C       XPRCNU   : X-FEM PROPAGATION : CREATION DE LA TABLE DE CONNEXION
+C       ------     -     --                                    -
+C                                       DES NODES POUR LA METHODE UPWIND
+C                                           -                     -
+C
+C    DANS LE CADRE DE LA PROPAGATION DE FISSURE XFEM AVEC LA METHODE
+C    UPWIND, ON CALCULE LA BASE LOCALE DE LA GRILLE UTILISEE ET ON
+C    ARRANGE LES NOEUDS SELON LA DIRECTION DES AXES DE CETTE BASE
+C
+C    ENTREE
+C            NOMA   = NOM DU MAILLAGE SUR LEQUEL LES LEVEL SETS SONT
+C                     STOCKES
+C            CNXINV = CONNECTIVITE INVERSEE DU MAILLAGE NOMA
+C  
+C    SORTIE
+C            VCN    = NOM DU OBJET JEVEUX POUR STOCKER LA TABLE (VOIR
+C                     CI-DESSOUS DANS LE CODE POUR LA DESCRIPTION DE LA
+C                     TABLE)
+C            VCND   = NOM DU OBJET JEVEUX POUR STOCKER LA DISTANCE ENTRE
+C                     LES NOEUDS DE LA GRILLE (VOIR CI-DESSOUS DANS LE
+C                     CODE POUR LA DESCRIPTION DE LA TABLE UTILISEE)
+C            VCNL   = NOM DU OBJET JEVEUX POUR STOCKER LE VECTEUR
+C                     BOOLEAN INDIQUANT LES NOEUDS DE LA GRILLE QUI SONT
+C                     SUR LA FRONTIERE (VOIR CI-DESSOUS DANS LE CODE
+C                     POUR LA DESCRIPTION DE LA TABLE UTILISEE)
+C            REFJEV = NOM DU OBJET JEVEUX POUR STOCKER LA BASE LOCALE.
+C                     CELLE-CI EST STOCKEE DANS UNE TABLE 3X3. LE
+C                     PREMIER AXE EST STOCKE DANS LA PREMIERE COLONNE,
+C                     LE DEUXIEME AXE DANS LA DEUXIEME COLONNE ET LE
+C                     TROIXIEME AXE DANS LA TROIXIEME COLONNE. LES TROIS
+C                     VECTEURS SONT STOCKES COMME VECTEURS UNITAIRES.
+C
+C     ------------------------------------------------------------------
+
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32    JEXNUM,JEXATR,JEXNOM
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      
+C     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
+      INTEGER          NBNO,NBMA,JCOOR,JCONX1,JCONX2,JMAI,ITYPMA
+      INTEGER          IFM,NIV,IRET,ADDIM,NDIM
+      CHARACTER*8      TYPMA,K8B
+      INTEGER          I,J
+      
+C     LOCAL REFERENCE SYSTEM
+      REAL*8           LOCREF(3,3),NODREF(4,3),MODVEC,PARTOL
+      PARAMETER        (PARTOL=1.D-2)
+      INTEGER          ELMORI,NOTPAR,JREF
+
+C     CREATION OF THE CONNECTION TABLE OF THE NODES
+      INTEGER          JVCN,JVCND,JVCNL
+      INTEGER          NODE,NODEPS,NODEDG,NBELNO,ELNO,JELNO,ELNOL
+      REAL*8           NODXYZ(2,3), ABSXYZ(3), LOCXYZ(3),R8PREM
+      INTEGER          NODCON(3),ELDEF(8),NOCUR,ORPH,UNSUPP,AR(12,2),
+     &                 NBAR,MAXEDG(3),NUMNOD(3)
+
+C-----------------------------------------------------------------------
+C     DEBUT
+C-----------------------------------------------------------------------
+      CALL JEMARQ()
+      CALL INFMAJ()
+      CALL INFNIV(IFM,NIV)
+
+C SET THE NUMBER OF EDGES OF THE ELEMENT SHARING ONE NODE FOR 2D MODELS
+      MAXEDG(2) = 2
+C SET THE NUMBER OF EDGES OF THE ELEMENT SHARING ONE NODE FOR 3D MODELS
+      MAXEDG(3) = 3
+
+C SET THE NUMBER OF NODES IN THE SUPPORTED 2D ELEMENTS
+      NUMNOD(2) = 4
+C SET THE NUMBER OF NODES IN THE SUPPORTED 3D ELEMENTS
+      NUMNOD(3) = 8
+
+C RETRIEVE THE NUMBER OF NODES AND ELEMENTS IN THE MESH
+      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
+      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8B,IRET)
+C RETRIEVE THE COORDINATES OF THE NODES
+C                12345678901234567890
+      CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
+C RETRIEVE THE DEFINITION OF THE ELEMENTS IN TERMS OF NODES
+      CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
+      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
+C RETRIEVE THE TYPE OF EACH ELEMENT IN THE MESH
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',JMAI)
+C RETRIEVE THE DIMENSION OF THE PROBLEM (2D AND 3D ARE SUPPORTED)
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      NDIM=ZI(ADDIM-1+6)
+
+C ----------------------------------------------------------------------
+C FIRST OF ALL, THE LOCAL REFERENCE SYSTEM FOR THE GRID MUST BE
+C CALCULATED. IT WILL BE USED BELOW FOR THE NODE ORDERING TASK.
+C ----------------------------------------------------------------------
+
+      ELMORI = 0
+
+C     SEARCH THE FIRST SUPPORTED ELEMENT IN THE MESH
+      DO 1010 I=1,NBMA
+         ITYPMA=ZI(JMAI-1+I)
+         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+         IF (((NDIM.EQ.2).AND.(TYPMA(1:5).EQ.'QUAD4')).OR.
+     &       ((NDIM.EQ.3).AND.(TYPMA(1:5).EQ.'HEXA8'))) THEN
+             ELMORI = I
+             GOTO 1000
+         ENDIF
+1010  CONTINUE
+
+1000  CONTINUE
+
+C     CHECK IF A SUPPORTED ELEMENT HAS BEEN FOUND
+      IF (ELMORI.EQ.0) THEN
+         CALL U2MESS('F','XFEM2_54')
+      ENDIF
+
+C     RETRIEVE THE NODE CONNECTION OF ALL THE EDGES OF THE FIRST
+C     SUPPORTED ELEMENT
+      CALL CONARE(TYPMA,AR,NBAR)
+
+C     RETRIEVE THE TWO (2D CASE) OR THREE (3D CASE) EDGES THAT SHARE THE
+C     NODE AT THE ORIGIN OF THE LOCAL REFERENCE SYSTEM
+      J=0
+      DO 1100 I=1,NBAR
+         IF (AR(I,1).EQ.1) THEN
+            J=J+1
+C           THE NUMBER OF EDGES SHARING THE NODE SHOULD ALWAYS BE
+C           LOWER OR EQUAL TO THE MAXIMUM VALUE EXPECTED
+            CALL ASSERT(J.LE.MAXEDG(NDIM))
+            NODCON(J) = AR(I,2)
+         ENDIF
+
+         IF(AR(I,2).EQ.1) THEN
+            J = J+1
+C           THE NUMBER OF EDGES SHARING THE NODE SHOULD ALWAYS BE
+C           LOWER OR EQUAL TO THE MAXIMUM VALUE EXPECTED
+            CALL ASSERT(J.LE.MAXEDG(NDIM))
+            NODCON(J) = AR(I,1)
+         ENDIF
+1100  CONTINUE
+
+C     THE NUMBER OF EDGES RETRIEVED SHOULD ALWAYS BE EQUAL TO
+C     THE NUMBER OF THE EXPECTED EDGES
+      CALL ASSERT(J.EQ.MAXEDG(NDIM))
+
+C     RETRIEVE THE COORDINATES OF THE ORIGIN
+      J = ZI(JCONX1-1+ZI(JCONX2-1+ELMORI)+1-1)
+      NODREF(1,1) = ZR(JCOOR-1+3*(J-1)+1)
+      NODREF(1,2) = ZR(JCOOR-1+3*(J-1)+2)
+      NODREF(1,3) = ZR(JCOOR-1+3*(J-1)+3)
+
+C     RETRIEVE THE COORDINATES OF THE OTHER NODES DEFINING THE LOCAL
+C     AXES (Xl,Yl,Zl)
+      DO 1200 I=1,NDIM
+         J = ZI(JCONX1-1+ZI(JCONX2-1+ELMORI)+NODCON(I)-1)
+         NODREF(I+1,1) = ZR(JCOOR-1+3*(J-1)+1)
+         NODREF(I+1,2) = ZR(JCOOR-1+3*(J-1)+2)
+         NODREF(I+1,3) = ZR(JCOOR-1+3*(J-1)+3)
+1200  CONTINUE
+
+C     EVALUATE THE UNIT VECTORS DEFINING THE THREE LOCAL AXES
+      DO 1300 I=1,NDIM
+C        VECTOR...
+         LOCREF(I,1) = NODREF(I+1,1) - NODREF(1,1)
+         LOCREF(I,2) = NODREF(I+1,2) - NODREF(1,2)
+         LOCREF(I,3) = NODREF(I+1,3) - NODREF(1,3)
+C        ...MODULE OF THE VECTOR...
+         MODVEC = (LOCREF(I,1)**2+LOCREF(I,2)**2+LOCREF(I,3)**2)**0.5D0
+C        ...UNIT VECTOR!
+         LOCREF(I,1) = LOCREF(I,1)/MODVEC
+         LOCREF(I,2) = LOCREF(I,2)/MODVEC
+         LOCREF(I,3) = LOCREF(I,3)/MODVEC
+1300  CONTINUE
+
+C     FOR THE 2D CASE, THE Zl AXIS DIRECTION IS KNOWN IN ADVANCE BECAUSE
+C     IT'S COINCIDENT WITH THE GLOBAL Z AXIS
+      IF (NDIM.EQ.2) THEN
+         LOCREF(3,1) = 0
+         LOCREF(3,2) = 0
+         LOCREF(3,3) = 1
+      ENDIF
+
+C     CHECK IF THE LOCAL AXES ARE ORTHOGONAL EACH OTHER
+C     Xl - Yl
+      MODVEC = LOCREF(1,1)*LOCREF(2,1)+LOCREF(1,2)*LOCREF(2,2)+
+     &         LOCREF(1,3)*LOCREF(2,3)
+      IF(ABS(MODVEC).GT.PARTOL) CALL U2MESS('F','XFEM2_55')
+C     Xl - Zl
+      MODVEC = LOCREF(1,1)*LOCREF(3,1)+LOCREF(1,2)*LOCREF(3,2)+
+     &         LOCREF(1,3)*LOCREF(3,3)
+      IF(ABS(MODVEC).GT.PARTOL) CALL U2MESS('F','XFEM2_55')
+C     Yl - Zl
+      MODVEC = LOCREF(2,1)*LOCREF(3,1)+LOCREF(2,2)*LOCREF(3,2)+
+     &         LOCREF(2,3)*LOCREF(3,3)
+      IF(ABS(MODVEC).GT.PARTOL) CALL U2MESS('F','XFEM2_55')
+
+C     THE DIRECTIONS OF THE THREE AXES ARE CORRECT (ORTHOGONAL TO EACH
+C     OTHER) BUT THE SENSE COULD BE WRONG. THEREFORE THE Z-AXIS IS
+C     RECALCULATED IN SUCH A WAY THAT ITS SENSE IS COHERENT WITH THE
+C     SENSE OF X AND Y AXES. IT IS CALCULATED AS THE VECTORIAL PRODUCT
+C     OF X AND Y AXES.
+      LOCREF(3,1) = LOCREF(1,2)*LOCREF(2,3)-LOCREF(1,3)*LOCREF(2,2)
+      LOCREF(3,2) = LOCREF(1,3)*LOCREF(2,1)-LOCREF(1,1)*LOCREF(2,3)
+      LOCREF(3,3) = LOCREF(1,1)*LOCREF(2,2)-LOCREF(1,2)*LOCREF(2,1)
+
+C     STORE THE LOCAL REFERENCE SYSTEM IN THE JEVEUO OBJECT. THIS WILL
+C     BE USED LATER BY XPRUPW.F
+      CALL WKVECT(REFJEV,'V V R',9,JREF)
+
+      DO 1400 I=1,3
+         ZR(JREF-1+3*(I-1)+1) = LOCREF(I,1)
+         ZR(JREF-1+3*(I-1)+2) = LOCREF(I,2)
+         ZR(JREF-1+3*(I-1)+3) = LOCREF(I,3)
+1400  CONTINUE
+
+C-----------------------------------------------------------------------
+C CREATION OF THE TWO VECTORS DESCRIBING THE CONNECTION OF THE NODES. 
+C FOR EACH NODE IN THE MESH, THE DATA CONTAINED IN THE TWO VECTORS
+C ARE AS FOLLOWS:
+C
+C VECTOR 1, INTEGERS, 6 ELEMENTS: N+X,N-X,N+Y,N-Y,N+Z,N-Z
+C VECTOR 2, REALS, 6 ELEMENTS: DX+,DX-,DY+,DY-,DZ+,DZ-
+C
+C WHERE
+C   N+i  = NEAREST NODE IN POSITIVE i-DIRECTION
+C   Di+  = DISTANCE BETWEEN THE CURRENT NODE AND N+i (IN i-DIRECTION,
+C          OF COURSE!)
+C   N-i  = NEAREST NODE IN NEGATIVE i-DIRECTION
+C   Di-  = DISTANCE BETWEEN THE CURRENT NODE AND N-i (OPPOSITE TO
+C          i-DIRECTION, OF COURSE!)
+C
+C IN ADDITION A LOGICAL VECTOR IS CREATED. THIS VECTOR IS USED TO MARK
+C (VALUE TRUE) THE NODES LYING ON THE BOUNDARY OF THE MESH. THESE NODES
+C ARE IN FACT PROBLEMATIC FOR THE FINITE DIFFERENCE METHOD BECAUSE THE
+C INFORMATION AT SOME OF THE NEIGHBORING NODES ARE MISSING (SIMPLY
+C BECAUSE SOME OF THESE NODES ARE MISSING).
+C-----------------------------------------------------------------------
+
+C     CREATION OF THE VECTORS
+      CALL WKVECT(VCN,'V V I',6*NBNO,JVCN)
+      CALL WKVECT(VCND,'V V R',6*NBNO,JVCND)
+      CALL WKVECT(VCNL,'V V L',NBNO,JVCNL)
+
+C     CHECK THE NUMBER OF UNSUPPORTED ELEMENTS IN THE MESH
+      UNSUPP = 0
+
+C     CHECK THE NUMBER OF EDGES IN THE MESH THAT ARE NOT PARALLEL TO
+C     THE LOCAL REFERENCE SYSTEM
+      NOTPAR = 0
+
+C     ANALYSE EACH NODE IN THE MESH
+      DO 100 NODE=1,NBNO
+
+C        RETRIEVE THE COORDINATES OF THE NODE
+         NODXYZ(1,1) = ZR(JCOOR-1+3*(NODE-1)+1)
+         NODXYZ(1,2) = ZR(JCOOR-1+3*(NODE-1)+2)
+         NODXYZ(1,3) = ZR(JCOOR-1+3*(NODE-1)+3)
+
+C        RETRIEVE THE ELEMENTS CONTAINING THE NODE
+         CALL JELIRA(JEXNUM(CNXINV,NODE),'LONMAX',NBELNO,K8B)
+         CALL JEVEUO(JEXNUM(CNXINV,NODE),'L',JELNO)
+
+C        FOR EACH OF THESE ELEMENTS, RETRIEVE THE THREE EDGES CONTAINING
+C        THE ACTUAL NODE AND DETERMINE THEIR ORIENTATION AND LENGTH
+         DO 200 ELNOL=1,NBELNO
+
+C           GET THE ELEMENT NUMBER
+            ELNO = ZI(JELNO-1+ELNOL)
+
+C           ONLY THE SUPPORTED ELEMENTS ARE CONSIDERED
+            ITYPMA=ZI(JMAI-1+ELNO)
+            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+
+            IF (((TYPMA(1:5).EQ.'HEXA8').AND.(NDIM.EQ.3)).OR.
+     &          ((TYPMA(1:5).EQ.'QUAD4').AND.(NDIM.EQ.2))) THEN
+            
+C              GET THE ELEMENT DEFINITION AND THE NODE POSITION INTO THE
+C              ELEMENT DEFINITION
+               NODEPS = 0
+               DO 300 NOCUR=1,NUMNOD(NDIM)
+                  ELDEF(NOCUR) = ZI(JCONX1-1+ZI(JCONX2-1+ELNO)+NOCUR-1)
+                  IF (ELDEF(NOCUR).EQ.NODE) NODEPS=NOCUR
+300            CONTINUE
+
+C              THE NODE SHOULD ALWAYS BE PRESENT INTO THE ELEMENT
+C              DEFINITION. HOWEVER IT IS BETTER TO CHECK IT, JUST IN THE
+C              CASE SOMETHING IS WRONG IN THE MESH DEFINITION
+               CALL ASSERT(NODEPS.GT.0)
+
+C              RETRIEVE ALL THE EDGES OF THE ELEMENT
+               CALL CONARE(TYPMA,AR,NBAR)
+
+C              RETRIEVE THE THREE EDGES CONTAINING THE ACTUAL NODE. ONLY
+C              THE POSITION INTO THE ELEMENT DEFINITION OF THE EDGE
+C              NODES DIFFERENT FROM THE CURRENT ONE IS STORED.
+               J=0
+               DO 350 I=1,NBAR
+C                 IF THE CURRENT NODE IS THE FIRST IN THE EDGE
+C                 DEFINITION, THE SECOND NODE IN THE EDGE DEFINITION IS
+C                 STORED
+                  IF(AR(I,1).EQ.NODEPS) THEN
+                    J = J+1
+C                   THE NUMBER OF EDGES SHARING THE NODE SHOULD ALWAYS
+C                   BE LOWER OR EQUAL TO THE MAXIMUM VALUE EXPECTED
+                    CALL ASSERT(J.LE.MAXEDG(NDIM))
+                    NODCON(J) = AR(I,2)
+                  ENDIF
+
+C                 IF THE CURRENT NODE IS THE SECOND IN THE EDGE
+C                 DEFINITION, THE FIRST NODE IN THE EDGE DEFINITION IS
+C                 STORED
+                  IF(AR(I,2).EQ.NODEPS) THEN
+                    J = J+1
+C                   THE NUMBER OF EDGES SHARING THE NODE SHOULD ALWAYS
+C                   BE LOWER OR EQUAL TO THE MAXIMUM VALUE EXPECTED
+                    CALL ASSERT(J.LE.MAXEDG(NDIM))
+                    NODCON(J) = AR(I,1)
+                  ENDIF
+350            CONTINUE
+
+C              THE NUMBER OF EDGES RETRIEVED SHOULD ALWAYS BE EQUAL TO
+C              THE NUMBER OF THE EXPECTED EDGES
+               CALL ASSERT(J.EQ.MAXEDG(NDIM))
+
+C              BUILD EACH EDGE SHARING THE CURRENT NODE AND EVALUATE ITS
+C              DIRECTION
+               DO 400 I=1,MAXEDG(NDIM)
+                  NODEDG = ELDEF(NODCON(I))
+                  NODXYZ(2,1) = ZR(JCOOR-1+3*(NODEDG-1)+1)
+                  NODXYZ(2,2) = ZR(JCOOR-1+3*(NODEDG-1)+2)
+                  NODXYZ(2,3) = ZR(JCOOR-1+3*(NODEDG-1)+3)
+               
+                  NODXYZ(2,1) = NODXYZ(2,1) - NODXYZ(1,1)
+                  NODXYZ(2,2) = NODXYZ(2,2) - NODXYZ(1,2)
+                  NODXYZ(2,3) = NODXYZ(2,3) - NODXYZ(1,3)
+
+C                 EXPRESSS THE EDGE VECTOR (EXPRESSED IN THE GLOBAL
+C                 REFERENCE SYSTEM) IN THE LOCAL REFERENCE SYSTEM
+                  DO 450 J=1,3
+                     LOCXYZ(J) = (NODXYZ(2,1)*LOCREF(J,1)+
+     &                            NODXYZ(2,2)*LOCREF(J,2)+
+     &                            NODXYZ(2,3)*LOCREF(J,3))
+450               CONTINUE
+
+C                 EVALUATE THE ABSOLUTE VALUE OF THE COMPONENTS OF THE
+C                 EDGE VECTOR EXPRESSED IN THE LOCAL REFERENCE SYSTEM
+                  ABSXYZ(1) = ABS(LOCXYZ(1))
+                  ABSXYZ(2) = ABS(LOCXYZ(2))
+                  ABSXYZ(3) = ABS(LOCXYZ(3))
+
+C                 TOLERANCE ON THE LOCAL COMPONENTS OF THE EDGE VECTOR
+C                 USED TO CHECK IF THE EDGE IS PARALLEL TO ONE LOCAL
+C                 AXIS
+                  MODVEC = ((ABSXYZ(1)**2+ABSXYZ(2)**2+ABSXYZ(3)**2)
+     &                     **0.5D0)*PARTOL
+               
+                  IF ((ABSXYZ(1).GT.ABSXYZ(2)) .AND. 
+     &               (ABSXYZ(1).GT.ABSXYZ(3))) THEN
+
+C                    CHECK IF THE EDGE IS REALLY PARALLEL TO Xl AXIS
+                     IF(.NOT.((ABSXYZ(1).GT.MODVEC).AND.
+     &                        (ABSXYZ(2).LT.MODVEC).AND.
+     &                        (ABSXYZ(3).LT.MODVEC))) THEN
+                         NOTPAR = NOTPAR+1
+                     ENDIF
+
+C                    CHECK THAT THE VALUE OF DELTAX IS GREATER THAN ZERO
+                     IF (.NOT.(ABSXYZ(1).GT.R8PREM())) THEN
+                        CALL U2MESS('F','XFEM2_57')
+                     ENDIF
+
+                     IF (LOCXYZ(1).GT.0) THEN
+C                       EDGE PARALLEL TO Xl-AXIS, DELTAX POSITIVE
+                        ZI(JVCN-1+6*(NODE-1)+1) = NODEDG
+                        ZR(JVCND-1+6*(NODE-1)+1) = ABSXYZ(1)
+                     ELSE
+C                       EDGE PARALLEL TO Xl-AXIS, DELTAX NEGATIVE
+                        ZI(JVCN-1+6*(NODE-1)+2) = NODEDG
+                        ZR(JVCND-1+6*(NODE-1)+2) = ABSXYZ(1)
+                     ENDIF
+               
+                  ELSE
+                        IF (ABSXYZ(2).GT.ABSXYZ(3)) THEN
+
+C                           CHECK IF THE EDGE IS REALLY PARALLEL TO Yl
+C                           AXIS
+                            IF(.NOT.((ABSXYZ(2).GT.MODVEC).AND.
+     &                               (ABSXYZ(1).LT.MODVEC).AND.
+     &                               (ABSXYZ(3).LT.MODVEC))) THEN
+                                NOTPAR = NOTPAR+1
+                            ENDIF
+
+C                           CHECK THAT THE VALUE OF DELTAY IS GREATER
+C                           THAN ZERO
+                            IF (.NOT.(ABSXYZ(2).GT.R8PREM())) THEN
+                               CALL U2MESS('F','XFEM2_57')
+                            ENDIF
+
+                            IF (LOCXYZ(2).GT.0) THEN
+C                              EDGE PARALLEL TO Yl-AXIS, DELTAY POSITIVE
+                               ZI(JVCN-1+6*(NODE-1)+3) = NODEDG
+                               ZR(JVCND-1+6*(NODE-1)+3) = ABSXYZ(2)
+                            ELSE
+C                              EDGE PARALLEL TO Yl-AXIS, DELTAY NEGATIVE
+                               ZI(JVCN-1+6*(NODE-1)+4) = NODEDG
+                               ZR(JVCND-1+6*(NODE-1)+4) = ABSXYZ(2)
+                            ENDIF
+                         
+                        ELSE
+
+C                           CHECK IF THE EDGE IS REALLY PARALLEL TO Zl
+C                           AXIS
+                            IF(.NOT.((ABSXYZ(3).GT.MODVEC).AND.
+     &                               (ABSXYZ(1).LT.MODVEC).AND.
+     &                               (ABSXYZ(2).LT.MODVEC))) THEN
+                                NOTPAR = NOTPAR+1
+                            ENDIF
+
+C                           CHECK THAT THE VALUE OF DELTAZ IS GREATER
+C                           THAN ZERO
+                            IF (.NOT.(ABSXYZ(3).GT.R8PREM())) THEN
+                               CALL U2MESS('F','XFEM2_57')
+                            ENDIF
+
+                            IF (LOCXYZ(3).GT.0) THEN
+C                              EDGE PARALLEL TO Zl-AXIS, DELTAZ POSITIVE
+                               ZI(JVCN-1+6*(NODE-1)+5) = NODEDG
+                               ZR(JVCND-1+6*(NODE-1)+5) = ABSXYZ(3)
+                            ELSE
+C                              EDGE PARALLEL TO Zl-AXIS, DELTAZ NEGATIVE
+                               ZI(JVCN-1+6*(NODE-1)+6) = NODEDG
+                               ZR(JVCND-1+6*(NODE-1)+6) = ABSXYZ(3)
+                            ENDIF
+                         
+                        ENDIF
+                     
+                  ENDIF
+               
+400            CONTINUE
+
+            ELSE
+
+C               THE ELEMENT IS NOT SUPPORTED
+                UNSUPP = UNSUPP + 1
+
+            ENDIF
+
+200      CONTINUE
+
+100   CONTINUE
+
+C     IF EDGES NOT PARALLEL TO THE LOCAL REFERENCE SYSTEM HAVE BEEN
+C     DETECTED, A FATAL ERROR IS ISSUED
+      IF (NOTPAR.GT.0) CALL U2MESS('F','XFEM2_55')
+
+C     ANALYSE EACH NODE IN THE MESH TO CHECK IF IT IS ON THE BOUNDARY.
+C     I CHECK ALSO IF THERE ARE SOME NODES THAT DO NOT BELONG TO THE
+C     TYPE OF ELEMENT CONSIDERED FOR THE UPWIND SCHEME
+
+      ORPH = 0
+      DO 500 NODE=1,NBNO
+      
+         I = 0
+         ZL(JVCNL-1+NODE) = .FALSE.
+
+C        CHECK THE NEIGHBORING NODES IN Xl AND Yl DIRECTIONS
+         DO 600 NOCUR=1,4
+            IF (ZI(JVCN-1+6*(NODE-1)+NOCUR).EQ.0) THEN
+               ZL(JVCNL-1+NODE) = .TRUE.
+               I = I+1
+            ENDIF
+600      CONTINUE
+
+C        CHECK THE NEIGHBORING NODES IN Zl DIRECTION ONLY FOR THE 3D
+C        CASE
+         IF (NDIM.EQ.3) THEN
+            DO 601 NOCUR=5,6
+               IF (ZI(JVCN-1+6*(NODE-1)+NOCUR).EQ.0) THEN
+                  ZL(JVCNL-1+NODE) = .TRUE.
+                  I = I+1
+               ENDIF
+601         CONTINUE
+         ENDIF
+
+C        THE NODE DOES NOT BELONG TO ANY ALLOWED ELEMENT FOR THE UPWIND
+C        SCHEME. HERE I LABEL THIS NODE AS "ORPHAN NODE".
+         IF (((I.EQ.6).AND.(NDIM.EQ.3)).OR.((I.EQ.4).AND.(NDIM.EQ.2)))
+     &           ORPH=ORPH+1
+         
+500   CONTINUE
+
+C     IF THERE ARE UNSUPPORTED ELEMENTS BUT ALL THE NODES BELONG TO
+C     SUPPORTED ELEMENT, A WARNING IS ISSUED: THE UNSUPPORTED ELEMENTS
+C     WILL BE IGNORED.
+      IF ((UNSUPP.GT.0).AND.(ORPH.EQ.0)) CALL U2MESS('A','XFEM2_52')
+
+C     IF THERE ARE UNSUPPORTED ELEMENTS AND SOME NODES DO NOT BELONG TO
+C     THE SUPPORTED ELEMENTS IN THE MESH, A FATAL ERROR MESSAGE IS
+C     ISSUED.
+      IF ((UNSUPP.GT.0).AND.(ORPH.GT.0)) CALL U2MESS('F','XFEM2_53')
+
+      IF (NIV.GT.1) THEN
+      WRITE(IFM,900)
+      WRITE(IFM,905)
+      DO 50 I=1,NBNO
+        IF (ZL(JVCNL-1+I)) THEN
+         WRITE(IFM,901)I,ZI(JVCN-1+6*(I-1)+1),ZI(JVCN-1+6*(I-1)+2),
+     &  ZI(JVCN-1+6*(I-1)+3),ZI(JVCN-1+6*(I-1)+4),ZI(JVCN-1+6*(I-1)+5),
+     &  ZI(JVCN-1+6*(I-1)+6)
+        ELSE
+         WRITE(IFM,902)I,ZI(JVCN-1+6*(I-1)+1),ZI(JVCN-1+6*(I-1)+2),
+     &  ZI(JVCN-1+6*(I-1)+3),ZI(JVCN-1+6*(I-1)+4),ZI(JVCN-1+6*(I-1)+5),
+     &  ZI(JVCN-1+6*(I-1)+6)
+        ENDIF
+         WRITE(IFM,904)ZR(JVCND-1+6*(I-1)+1),ZR(JVCND-1+6*(I-1)+2),
+     &ZR(JVCND-1+6*(I-1)+3),ZR(JVCND-1+6*(I-1)+4),ZR(JVCND-1+6*(I-1)+5),
+     &  ZR(JVCND-1+6*(I-1)+6)
+50    CONTINUE
+      ENDIF
+
+900   FORMAT('NODE  | NX+  | NX-  | NY+  | NY-  | NZ+  | NZ-  | BOUND.')
+901   FORMAT(I6,6('|',I6),'| YES')
+902   FORMAT(I6,6('|',I6),'| NO')
+904   FORMAT('      ',6('|',F6.3),'|')
+905   FORMAT('      | DX+  | DX-  | DY+  | DY-  | DZ+  | DZ-  |')
+
+C-----------------------------------------------------------------------
+C     FIN
+C-----------------------------------------------------------------------
+      CALL JEDEMA()
+      END

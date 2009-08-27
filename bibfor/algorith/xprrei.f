@@ -7,7 +7,7 @@
       CHARACTER*19   CNSLN,CNSLT,CNSGLS,NOESOM,NORESI,ISOZRO,CNXINV
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               NBNOMA,ITYPMA,IADF,IADMET,IADDFI,INO,IMA,IADALP,
      &               NUNO,NBMA,JDELFI,JDEFIL,JDEFID,JALPHA,JALPHL,J,I,
      &               JALPHD,JGLSNO,JZERO,JNOSOM,JRESDU,NMANOI,JMANOI,
-     &               CPTNOV,IMAI,NUMAI,JCOOR
+     &               CPTNOV,IMAI,NUMAI,JCOOR,JCNO
       REAL*8         SIGNLS,SIGMLS,SDIFF,LSPREC,SIGLST,SDIFFT,SIGLSI,
      &               LSNOUV,NORMGR,SIGMGR,R8PREM,GRAD(3),JI(3),PROSCA
       CHARACTER*3    ITERK3
@@ -93,11 +93,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24   LIGREL,LCHIN(4),LCHOUT(2)
 
       REAL*8         RESILN,RESILT
-      PARAMETER      (RESILN = 1.D-7)
-      PARAMETER      (RESILT = 1.D-5)
+      PARAMETER      (RESILN = 5.D-3)
+      PARAMETER      (RESILT = 5.D-3)
       INTEGER        ITERMX
-      PARAMETER      (ITERMX=100)
-      REAL*8         RESIDU(ITERMX),RESIT(ITERMX)
+      PARAMETER      (ITERMX=500)
+C      PARAMETER      (ITERMX=1)
+      REAL*8         RESIDU(ITERMX),RESIT(ITERMX),NORMOY,JMOY
 
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -169,7 +170,8 @@ C----------------------------------------------------------------------
 C  VECTEUR IDIQUANT SI LS AU NOEUD EST CALCULEE
       CALL WKVECT(ISOZRO,'V V L',NBNO,JZERO)
 
-      CALL XPRLS0(NOMA,FISS,NOESOM,CNSLN,CNSLT,ISOZRO,LEVSET)
+
+      CALL XPRLS0(NOMA,FISS,NOESOM,LCMIN,CNSLN,CNSLT,ISOZRO,LEVSET)
 
 C--------------------------------------
 C   CALCUL DE PETIT F SUR LES ELEMENTS
@@ -218,9 +220,13 @@ C-----------------------------------------------------------------------
       CNSGDF =  '&&XPRREI.CNSGDF'
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSGDF)
       CALL JEVEUO(CNSGDF//'.CNSV','E',JGDF)
+     
       CALL JEVEUO(CNSGDF//'.CNSL','E',JGDFL)
+
       CNOGDF = '&&XPRREI.CNOGDF'
+
       CELGDF =  '&&XPRREI.CELGDF'
+
       IF (LEVSET.EQ.'LN')  CALL CNSCNO(CNSLN,' ','NON','V',CNOLS,'F',
      &                                 IBID)
       IF (LEVSET.EQ.'LT')  CALL CNSCNO(CNSLT,' ','NON','V',CNOLS,'F',
@@ -245,8 +251,13 @@ C--------------------------------------
      &         SIGNLS = ZR(JLSNO-1+I) / ABS(ZR(JLSNO-1+I))
             ZL(JGDFL-1+I) = .TRUE.
             ZR(JGDF-1+I) = SIGNLS
+
  90      CONTINUE
          CALL CNSCNO(CNSGDF,' ','NON','V',CNOGDF,'F',IBID)
+
+
+91       CONTINUE 
+         
          LPAIN(1)='PNEUTR'
          LCHIN(1)=CNOGDF
          LPAOUT(1)='PMOYEL'
@@ -255,6 +266,7 @@ C--------------------------------------
          CALL CALCUL('S','MOY_NOEU_S',LIGREL,1,LCHIN,LPAIN,1,
      &               LCHOUT,LPAOUT,'V')
 
+                     
 C-----------------------------------------------------------------------
          IF (METHOD.EQ.'SIMPLEXE') THEN
 
@@ -275,8 +287,10 @@ C---------------------------------------------------------
             LPAOUT(2)='PALPHA'
             LCHOUT(2)=CELALF
 
+
             CALL CALCUL('S','XFEM_SMPLX_CALC',LIGREL,4,LCHIN,LPAIN,2,
      &                  LCHOUT,LPAOUT,'V')
+
 
             CALL CELCES (CELDFI,'V',CESDFI)
             CALL JEVEUO (CESDFI//'.CESV','L',JDELFI)
@@ -287,6 +301,7 @@ C---------------------------------------------------------
             CALL JEVEUO (CESALF//'.CESL','L',JALPHL)
             CALL JEVEUO (CESALF//'.CESD','L',JALPHD)
 
+
 C---------------------------------------
 C     CALCUL DES CHAMPS NODAUX VI ET WI
 C---------------------------------------
@@ -296,8 +311,10 @@ C   BOUCLE SUR LES MAILLES DU MAILLAGE
 C   VERIFICATION DU TYPE DE MAILLE
                ITYPMA=ZI(JMAI-1+IMA)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
-               IF ((TYPMA(1:5).NE.'TETRA').AND.
-     &             (TYPMA(1:4).NE.'HEXA'))    GOTO 120
+               IF ((((TYPMA(1:5).NE.'TETRA').AND.
+     &             (TYPMA(1:4).NE.'HEXA')).AND.(NDIM.EQ.3)).OR.
+     &             ((TYPMA(1:4).NE.'QUAD').AND.(NDIM.EQ.2))) GOTO 120
+C                GOTO 120
 C   BOUCLE SUR LES NOEUDS DE LA MAILLE
                CALL CESEXI('S',JFELD,JFELL,IMA,1,1,1,IADF)
                CALL CESEXI('S',JMESTD,JMESTL,IMA,1,1,1,IADMET)
@@ -312,6 +329,7 @@ C   BOUCLE SUR LES NOEUDS DE LA MAILLE
 
                   ZR(JWI-1+NUNO) = ZR(JWI-1+NUNO) + ZR(JALPHA-1+IADALP)
      &                               * ZR(JMEAST-1+IADMET)
+
  130           CONTINUE
  120        CONTINUE
 
@@ -328,15 +346,17 @@ C---------------------------------------
          SDIFF = 0.D0
          SDIFFT = 0.D0
          SIGLST = 0.D0
-         DO 200 I=1,NBNO
+         DO 200 I=1,NBNO           
+
 C  ON ECARTE LES NOEUDS MILIEUX
             IF (.NOT.ZL(JNOSOM-1+I)) GOTO 200
 C  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
             IF (ZL(JZERO-1+I)) GOTO 200
             LSPREC = ZR(JLSNO-1+I)
             IF (ABS(ZR(JWI-1+I)).GT.R8PREM()) THEN
+C           WRITE(*,*)'La reinit du noeud d"indice',I,' se fait a WI>0'
                LSNOUV = ZR(JLSNO-1+I)-DELTAT*(ZR(JVI-1+I)/ZR(JWI-1+I))
-               ZR(JLSNO-1+I) = LSNOUV
+               ZR(JLSNO-1+I) = LSNOUV     
                IF (ZL(JRESDU-1+I)) THEN
                   SDIFF = SDIFF + (LSNOUV-LSPREC)**2.0D0
                   SIGMLS = SIGMLS + LSPREC**2.0D0
@@ -360,13 +380,19 @@ C  CAS OU TOUS LES RESIDUS A ESTIMER SONT CALCULES
 C---------------------------------
 C     CALCUL DES NOEUDS DONT WI=0
 C---------------------------------
+
          DO 800 I=1,NBNO
 C  ON ECARTE LES NOEUDS MILIEUX
             IF (.NOT.ZL(JNOSOM-1+I)) GOTO 800
 C  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
             IF (ZL(JZERO-1+I)) GOTO 800
+            
+            
             IF (ABS(ZR(JWI-1+I)).LT.R8PREM()) THEN
+C           WRITE(*,*)'La reinit du noeud d"indice',I,' se fait a WI=0'
                CPTNOV = 0
+               
+               
                SIGLSI = 0.D0
 C    RECUPERATION DES MAILLES CONTENANT LE NOEUD I
                CALL JELIRA(JEXNUM(CNXINV,I),'LONMAX',NMANOI,K8B)
@@ -376,9 +402,10 @@ C     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD I
                   NUMAI = ZI(JMANOI-1+IMAI)
                   ITYPMA = ZI(JMAI-1+NUMAI)
                   CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
-C     SI MAILLE NON VOLUMIQUE ON SAUTE LA MAIILE
-                  IF (TYPMA(1:4).NE.'HEXA'.AND.TYPMA(1:5).NE.'TETRA')
-     &                GOTO 160
+C     SI MAILLE NON VOLUMIQUE (en 3D) OU SURFACIQUE (en 2D) ON LA SAUTE
+               IF ((((TYPMA(1:5).NE.'TETRA').AND.
+     &             (TYPMA(1:4).NE.'HEXA')).AND.(NDIM.EQ.3)).OR.
+     &             ((TYPMA(1:4).NE.'QUAD').AND.(NDIM.EQ.2))) GOTO 160
 C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                   NBNOMA = ZI(JCONX2+NUMAI) - ZI(JCONX2+NUMAI-1)
                   DO 170 INO=1,NBNOMA
@@ -386,31 +413,55 @@ C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                      IF (.NOT.ZL(JNOSOM-1+NUNO)) GOTO 170
                      IF (ABS(ZR(JWI-1+NUNO)).GT.R8PREM()) THEN
                         NORMGR=0.D0
-                        DO 175 J=1,3
+                        IF (NDIM.EQ.3) THEN
+                         DO 175 J=1,3
                            JI(J) = ZR(JCOOR-1+3*(I-1)+J)
      &                           - ZR(JCOOR-1+3*(NUNO-1)+J)
-                           GRAD(J)=ZR(JGLSNO-1+NDIM*(I-1)+J)
+                           GRAD(J)=ZR(JGLSNO-1+3*(I-1)+J)  
                            NORMGR=NORMGR+GRAD(J)**2.D0
- 175                    CONTINUE
+ 175                     CONTINUE
+                        ENDIF
+                        IF (NDIM.EQ.2) THEN
+                         DO 176 J=1,2
+                           JI(J) = ZR(JCOOR-1+3*(I-1)+J)
+     &                           - ZR(JCOOR-1+3*(NUNO-1)+J)
+                           GRAD(J)=ZR(JGLSNO-1+2*(I-1)+J)  
+                           NORMGR=NORMGR+GRAD(J)**2.D0
+ 176                     CONTINUE
+                        ENDIF 
                         NORMGR=NORMGR**0.5D0
-                        CALL LCPRSN(3,JI,GRAD,PROSCA)
+                        CALL LCPRSN(NDIM,JI,GRAD,PROSCA)
                         SIGLSI = SIGLSI+ZR(JLSNO-1+NUNO)+PROSCA/NORMGR
                         CPTNOV = CPTNOV+1
-                     ENDIF
+                     ENDIF                    
  170              CONTINUE
  160           CONTINUE
                IF (CPTNOV.NE.0) THEN
-               ZR(JLSNO-1+I) = SIGLSI/CPTNOV
-               ELSE
+                  LSPREC = ZR(JLSNO-1+I) 
+                  LSNOUV = SIGLSI/CPTNOV                            
+               
+               ELSE               
+
                   SIGNLS = ZR(JLSNO-1+I) / ABS(ZR(JLSNO-1+I))
-                  NORMGR = ( ZR(JGLSNO-1+NDIM*(I-1)+1)**2 +
-     &                     ZR(JGLSNO-1+NDIM*(I-1)+2)**2 +
-     &                     ZR(JGLSNO-1+NDIM*(I-1)+3)**2 )**0.5D0
-                  ZR(JLSNO-1+I) = ZR(JLSNO-1+I) - DELTAT
+                  IF (NDIM.EQ.3) THEN
+                    NORMGR = ( ZR(JGLSNO-1+3*(I-1)+1)**2 +
+     &                         ZR(JGLSNO-1+3*(I-1)+2)**2 +
+     &                         ZR(JGLSNO-1+3*(I-1)+3)**2 )**0.5D0
+                  ELSEIF (NDIM.EQ.2) THEN
+                    NORMGR = ( ZR(JGLSNO-1+2*(I-1)+1)**2 +
+     &                         ZR(JGLSNO-1+2*(I-1)+2)**2)**0.5D0
+                  ENDIF
+                     
+                  LSPREC = ZR(JLSNO-1+I)
+                  LSNOUV = ZR(JLSNO-1+I) - DELTAT
      &                           * SIGNLS * (NORMGR-1.D0)
+                  
                ENDIF
+               ZR(JLSNO-1+I)=LSNOUV       
             ENDIF
+
  800     CONTINUE
+
 
 C---------------------------------------------------
 C     CALCUL DU GRADIENT DE LA LEVEL SET RESULTANTE
@@ -442,6 +493,13 @@ C  CONVERGENCE ATTEINTE
          IF (LEVSET.EQ.'LT'.AND.RESIDU(ITEMP).LT.RESILT) GOTO 999
 C  NOMBRE D'ITERATION MAXI
          IF (ITEMP.EQ.ITERMX) GOTO 999
+C  MINIMUM LOCAL DU RESIDU GLOBAL ATTEINT
+C  ON VEUT SORTIR SUR UN MINIMUM LOCAL SI LE RESIDU N'EST PAS TROP GROS
+         IF ((ITEMP.GT.5).AND.(RESIDU(ITEMP).LT.(1000*RESILN))) THEN
+            IF ((RESIT(ITEMP)-RESIT(ITEMP-1)).GE.0.D0)  GOTO 999
+         ENDIF
+C         WRITE(*,*)'Fin de l"iteration N.',ITEMP
+C         WRITE(*,*)'Valeur du residu:', RESIDU(ITEMP)
 
  995  CONTINUE
 C-----FIN DE LA BOUCLE PRINCIPALE---------------------------------------
@@ -468,6 +526,15 @@ C  CONVERGENCE ATTEINTE
       IF ((LEVSET.EQ.'LN'.AND.RESIDU(ITEMP).LT.RESILN).OR.
      &    (LEVSET.EQ.'LT'.AND.RESIDU(ITEMP).LT.RESILT))
      &   WRITE(IFM,*)'   CONVERGENCE ATTEINTE A L''ITERATION '//ITERK3
+
+C  MINIMUM LOCAL ATTEINT
+      IF ((ITEMP.GT.5).AND.(RESIDU(ITEMP).LT.(100*RESILN))) THEN
+        IF (ITEMP.GT.5.AND.(RESIT(ITEMP)-RESIT(ITEMP-1)).GE.0.D0) THEN
+           WRITE(IFM,*)'   MINIMUM LOCAL DU RESIDU GLOBAL ATTEINT.'
+           WRITE(IFM,*)'   ARRET A L''ITERATION '//ITERK3
+        ENDIF
+      ENDIF
+
 C  NOMBRE MAXI D'ITERATIONS ATTEINT
       IF (ITEMP.EQ.ITERMX)
      &   WRITE(IFM,*)'   NOMBRE MAX D''ITERATION ('//ITERK3//') ATTEINT'

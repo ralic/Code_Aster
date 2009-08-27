@@ -1,6 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
-# sslv315a.para = tps_job 500 mem_job 1024Mo liste_test S
+# sslv315a.para = tps_job 250 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,7 +112,6 @@ SIF = [None]*nbcalc
 LSN = [None]*nbcalc
 LST = [None]*nbcalc
 
-
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 RI = 0.2
 RS = 0.8
@@ -153,15 +152,20 @@ for i in range(nbcalc) :
    if ( i != (nbcalc-1) ) :
       FISS[i+1] = CO('FISS_%d'%(i+1))
       PROPA_FISS(MODELE=MODELX[i],
-                         TABLE=SIF[i],
-                         METHODE_PROPA='HAMILTON',
-                         METHODE='SIMPLEXE',
-                         LOI_PROPA=_F(LOI='PARIS',
-                                      C=1.,
-                                      M=1.),
-                         RAYON=RS,
-                         FISSURE = FISS[i+1],
-                         INFO=1,);
+                 FISSURE=_F(FISS_ACTUELLE=FISS[i],
+                            FISS_PROPAGEE=FISS[i+1],
+                            TABLE=SIF[i],),
+                 METHODE_PROPA='SIMPLEXE',
+                 LOI_PROPA=_F(LOI='PARIS',
+                              C=1.,
+                              M=1.,
+                              N=0.,
+                              MATER=ACIER,),
+                 COMP_LINE=_F(COEF_MULT_MINI=0.,
+                              COEF_MULT_MAXI=1.,),
+                 DA_MAX=0.5,
+                 RAYON=RS,
+                 INFO=1,);
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -170,16 +174,16 @@ i=nbcalc-1
 TEST_TABLE(TABLE=SIF[i],
            REFERENCE='NON_REGRESSION',
            NOM_PARA='K1_LOCAL',
-           PRECISION=1.E-2,
+           PRECISION=5.E-2,
            TYPE_TEST='MAX',
-           VALE= 3.609754580E+06  )
+           VALE= 3.2963386204942E+06  )
 
 TEST_TABLE(TABLE=SIF[i],
            REFERENCE='NON_REGRESSION',
            NOM_PARA='K2_LOCAL',
-           PRECISION=1.2E-1,
+           PRECISION=5.E-2,
            TYPE_TEST='MAX',
-           VALE= -6.594128E+05    )
+           VALE= 4.0259145440442E+05    )
 
 MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],
                           MAILLAGE_SAIN = MAILLAG1,);

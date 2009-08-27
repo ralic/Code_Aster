@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,14 +36,9 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(
-                                 FONC_LT=LT,
-                                 FONC_LN=LN,
-                                 ),
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',
-                    ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(-0.5,0.,1.5 ),),
                     INFO=3,
                     );
 

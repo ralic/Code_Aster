@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,16 +127,11 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
 # FORME ANALYTIQUE POUR LA FISSURE
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10.');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    GROUP_MA_ENRI=('VOLU'),
-                    ORIE_FOND=_F(PFON_INI=(0.,0.,0.),
-                                 VECT_ORIE=(0.,1.,0.),
-                                 POINT_ORIG=(0.04,0.,0.02),),
-                    INFO=1,
-                    );
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN),
+                    GROUP_MA_ENRI='VOLU',)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,

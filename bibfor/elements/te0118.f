@@ -1,6 +1,6 @@
       SUBROUTINE TE0118(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,9 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C  FONCTION REALISEE:
 C     DANS LE CADRE X-FEM, PROPAGATION :
-C    * CALCUL DES CONDITIONS CFL
+C    * CALCUL DE LA LONGUEUR DU PLUS PETIT ARETE DU MAILLAGE, C'EST A
+C      DIRE LA VALEUR DE LA CONDITION CFL POUR LES PHASES DE
+C      REINITIALISATION ET REORTHOGONALISATION
 C    * CALCULS ELEMENTAIRES NECESSAIRES AUX PHASES DE REINITIALISATION
 C     ET REORTHOGONALISATION (CF DOC R7.02.12)
 C
@@ -28,11 +30,10 @@ C  OPTIONS
 C  -------
 C     'CFL_XFEM'
 C      --------
-C     CALCULE LES CONDITIONS CFL
+C     CALCULE LA CONDITION CFL POUR LES PHASES DE REINITIALISATION ET
+C     REORTHOGONALISATION
 C        IN :  'PGEOMR'    GEOMETRIE
-C              'PVTNO'     CHAM_NO
 C        OUT : 'PLONCAR'   CHAM_ELEM
-C        OUT : 'PCFLVT'    CHAM_ELEM
 C
 C     'MOY_NOEU_S'
 C      ----------
@@ -86,14 +87,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER     IADZI,IAZK24,IGEOM,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     &            JGANO,I,J,INO,IMEAST,INI,ILSNO,IGRLS,IGDF,IDPHI,
-     &            IALPHA,INEUTR,IMOYEL,ILC,ICFL,IVTNO
+     &            JGANO,I,J,INO,IMEAST,INI,ILSNO,IGRLS,IGDF,IDPHI,NBMA,
+     &            IALPHA,INEUTR,IMOYEL,ILC,ADDIM,IADRMA,IBID,
+     &            NDIME
       REAL*8      DFDX(27),DFDY(27),DFDZ(27),MEAST,NX,NY,NZ,NEUTR,JAC,
      &            GRADX,GRADY,GRADZ,NORMGR,K(8),DELPHI,DPHI(8),SIGMAK,
      &            SIGKFI,ALPHA(8),SMXDFI,DMIN,DISTIJ,XI,YI,ZPTI,XJ,YJ,
-     &            ZJ,VTI,VTMAX,SIGMNI(3),NORM12,NORM14,NORM15,R8PREM,
+     &            ZJ,SIGMNI(3),NORM12,NORM14,NORM15,R8PREM,
      &            TOLENI
-      CHARACTER*8 TYPMA,NOMAIL
+      CHARACTER*8 TYPMA,NOMA,NOMO,NOMAIL,K8BID
       CHARACTER*24 VALK(3)
 
       PARAMETER   (TOLENI=1.D-6)
@@ -112,56 +114,85 @@ C-----------------------------------------------------------------------
 C  --------------------------------
 C  RECUPERATION DES ENTREES/SORTIES
 C  --------------------------------
+
          CALL JEVECH('PGEOMER','L',IGEOM)
-         CALL JEVECH('PVTNO','L',IVTNO)
          CALL JEVECH('PLONCAR','E',ILC)
-         CALL JEVECH('PCFLVT','E',ICFL)
 
          CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &               JGANO)
+         CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
+C
+C --- NOM DU MAILLAGE ATTACHE AU MODELE
+C
+         CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',IADRMA)
+         NOMA  = ZK8(IADRMA)
+         CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+         NDIME=ZI(ADDIM-1+6)
+         CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
+       
+
+         IF (NDIME.EQ.3) THEN
+C  ----------------------------------------------------------
+C  CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
+C  ----------------------------------------------------------
+           DMIN = SQRT((ZR(IGEOM-1+NDIM*(2-1)+1)-ZR(IGEOM-1+1))**2
+     &                +(ZR(IGEOM-1+NDIM*(2-1)+2)-ZR(IGEOM-1+2))**2
+     &                +(ZR(IGEOM-1+NDIM*(2-1)+3)-ZR(IGEOM-1+3))**2)
+
+C     BOUCLE SUR LES NOEUDS SOMMETS
+           DO 10 I=1,NNOS-1
+              XI = ZR(IGEOM-1+NDIM*(I-1)+1)
+              YI = ZR(IGEOM-1+NDIM*(I-1)+2)
+              ZPTI = ZR(IGEOM-1+NDIM*(I-1)+3)
+
+C     ON CHERCHE LE NOEUDS SOMMET LE PLUS PROCHE
+              DO 20 J=I+1,NNOS
+                 XJ = ZR(IGEOM-1+NDIM*(J-1)+1)
+                 YJ = ZR(IGEOM-1+NDIM*(J-1)+2)
+                 ZJ = ZR(IGEOM-1+NDIM*(J-1)+3)
+
+                 DISTIJ = SQRT((XJ-XI)**2+(YJ-YI)**2+(ZJ-ZPTI)**2)
+                 IF ((DISTIJ.LE.DMIN).AND.(DISTIJ.NE.0))  DMIN = DISTIJ
+
+ 20           CONTINUE
+              
+ 10        CONTINUE
+
+         ELSEIF (NDIME.EQ.2) THEN 
 
 C  ----------------------------------------------------------
 C  CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
 C  ----------------------------------------------------------
-         DMIN = SQRT((ZR(IGEOM-1+NDIM*(2-1)+1)-ZR(IGEOM-1+1))**2
-     &              +(ZR(IGEOM-1+NDIM*(2-1)+2)-ZR(IGEOM-1+2))**2
-     &              +(ZR(IGEOM-1+NDIM*(2-1)+3)-ZR(IGEOM-1+3))**2)
-
-         VTMAX = 0.D0
+           DMIN = SQRT((ZR(IGEOM-1+NDIM*(2-1)+1)-ZR(IGEOM-1+1))**2
+     &                +(ZR(IGEOM-1+NDIM*(2-1)+2)-ZR(IGEOM-1+2))**2)
 
 C     BOUCLE SUR LES NOEUDS SOMMETS
-         DO 10 I=1,NNOS-1
-            XI = ZR(IGEOM-1+NDIM*(I-1)+1)
-            YI = ZR(IGEOM-1+NDIM*(I-1)+2)
-            ZPTI = ZR(IGEOM-1+NDIM*(I-1)+3)
+           DO 30 I=1,NNOS-1
+              XI = ZR(IGEOM-1+NDIM*(I-1)+1)
+              YI = ZR(IGEOM-1+NDIM*(I-1)+2)
 
 C     ON CHERCHE LE NOEUDS SOMMET LE PLUS PROCHE
-            DO 20 J=I+1,NNOS
-               XJ = ZR(IGEOM-1+NDIM*(J-1)+1)
-               YJ = ZR(IGEOM-1+NDIM*(J-1)+2)
-               ZJ = ZR(IGEOM-1+NDIM*(J-1)+3)
+              DO 40 J=I+1,NNOS
+                 XJ = ZR(IGEOM-1+NDIM*(J-1)+1)
+                 YJ = ZR(IGEOM-1+NDIM*(J-1)+2)
+                 DISTIJ = SQRT((XJ-XI)**2+(YJ-YI)**2)
+                 IF ((DISTIJ.LE.DMIN).AND.(DISTIJ.NE.0))  DMIN = DISTIJ
 
-               DISTIJ = SQRT((XJ-XI)**2+(YJ-YI)**2+(ZJ-ZPTI)**2)
-               IF ((DISTIJ.LE.DMIN).AND.(DISTIJ.NE.0))  DMIN = DISTIJ
+ 40           CONTINUE
 
- 20         CONTINUE
-
-C     ON CHERCHE LE NOEUDS SOMMET OU VT EST MAXIMALE
-            VTI = ABS(ZR(IVTNO+I-1))
-            VTMAX = MAX(VTI,VTMAX)
-
- 10      CONTINUE
+ 30        CONTINUE
+         ENDIF
 
          ZR(ILC) = DMIN
-         ZR(ICFL) = DMIN / VTMAX
 
       ELSE
-         IF (TYPMA(1:5).NE.'TETRA'.AND.TYPMA(1:4).NE.'HEXA') THEN
-           VALK(1) = OPTION
-           VALK(2) = NOMAIL
-           VALK(3) = TYPMA
-           CALL U2MESK('F','ELEMENTS3_19', 3 ,VALK)
-         ENDIF
+           IF (TYPMA(1:5).NE.'TETRA'.AND.TYPMA(1:4).NE.'HEXA'.AND.
+     &       TYPMA(1:3).NE.'TRI'.AND.TYPMA(1:3).NE.'QUA') THEN
+             VALK(1) = OPTION
+             VALK(2) = NOMAIL
+             VALK(3) = TYPMA
+             CALL U2MESK('F','ELEMENTS3_19', 3 ,VALK)
+           ENDIF
       ENDIF
 
 C-----------------------------------------------------------------------
@@ -179,16 +210,14 @@ C  CALCUL DE GRANDF ET PETITF
 C  --------------------------
          CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &               JGANO)
-
          NEUTR = 0.D0
          DO 50 INO=1,NNO
             NEUTR = NEUTR + ZR(INEUTR-1+INO)
  50      CONTINUE
 
          NEUTR = NEUTR / NNO
-
          ZR(IMOYEL) = NEUTR
-
+  
 C-----------------------------------------------------------------------
       ELSEIF (OPTION.EQ.'XFEM_SMPLX_INIT') THEN
 C-----------------------------------------------------------------------
@@ -204,10 +233,23 @@ C  --------------------------------
      &               JGANO)
          CALL ASSERT(NNO.LE.8)
 
+
+         CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
+C
+C --- NOM DU MAILLAGE ATTACHE AU MODELE
+C
+         CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',IADRMA)
+         NOMA  = ZK8(IADRMA)
+         CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+         NDIME=ZI(ADDIM-1+6)
+
 C  --------------
 C  CALCUL DE |T|
 C  --------------
-         IF (TYPMA(1:5).EQ.'TETRA') THEN
+
+         IF (NDIME.EQ.3) THEN
+
+           IF (TYPMA(1:5).EQ.'TETRA') THEN
             CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &                  JGANO)
             CALL ASSERT(NPG.EQ.1)
@@ -216,7 +258,7 @@ C  --------------
             CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &                  JGANO)
 
-         ELSEIF (TYPMA(1:4).EQ.'HEXA') THEN
+           ELSEIF (TYPMA(1:4).EQ.'HEXA') THEN
                NORM12=0.D0
                NORM14=0.D0
                NORM15=0.D0
@@ -231,17 +273,38 @@ C  --------------
                NORM12=NORM12**.5D0
                NORM14=NORM14**.5D0
                NORM15=NORM15**.5D0
-
+C       Volume elementaire
                MEAST = NORM12 * NORM14 * NORM15
+           ENDIF
 
+         ELSEIF (NDIME.EQ.2) THEN
+           IF (TYPMA(1:3).EQ.'QUA') THEN
+               NORM12=0.D0
+               NORM14=0.D0
+               DO 116 I=1,2
+                  NORM12=NORM12+(ZR(IGEOM-1+NDIM*(2-1)+I)
+     &                           -ZR(IGEOM-1+NDIM*(1-1)+I))**2.D0
+                  NORM14=NORM14+(ZR(IGEOM-1+NDIM*(4-1)+I)
+     &                           -ZR(IGEOM-1+NDIM*(1-1)+I))**2.D0
+ 116           CONTINUE
+               NORM12=NORM12**.5D0
+               NORM14=NORM14**.5D0
+C       Surface elementaire
+               MEAST = NORM12 * NORM14
+           ENDIF
          ENDIF
-
 C  -----------------------
 C  CALCUL DE NI AUX NOEUDS
 C  -----------------------
          DO 100 INO=1,NNO
+
+          IF (NDIME.EQ.3) THEN
             CALL DFDM3D(NNO,INO,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
      &                  DFDZ,JAC)
+          ELSEIF (NDIME.EQ.2) THEN
+            CALL DFDM2D(NNO,INO,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     &                  JAC)
+          ENDIF
 
             IF (TYPMA(1:5).EQ.'TETRA') THEN
                ZR(INI-1+(INO-1)*3+1) = NDIM * MEAST * DFDX(INO)
@@ -249,13 +312,18 @@ C  -----------------------
                ZR(INI-1+(INO-1)*3+3) = NDIM * MEAST * DFDZ(INO)
 
             ELSEIF (TYPMA(1:4).EQ.'HEXA') THEN
-
                ZR(INI-1+(INO-1)*3+1) = NDIM * MEAST * DFDX(INO)/4.D0
                ZR(INI-1+(INO-1)*3+2) = NDIM * MEAST * DFDY(INO)/4.D0
                ZR(INI-1+(INO-1)*3+3) = NDIM * MEAST * DFDZ(INO)/4.D0
 
-            ENDIF
+            ELSEIF (TYPMA(1:3).EQ.'QUA') THEN
+C   Rq : en 2D La derivee des FF en 0 vaut la moitie de celle au 
+C   Noeud considere. Il faudra penser a s'occuper des autres elem 2D
+C   et des FF d'ordre 2!
+               ZR(INI-1+(INO-1)*2+1) = NDIM * MEAST * DFDX(INO)/2.D0
+               ZR(INI-1+(INO-1)*2+2) = NDIM * MEAST * DFDY(INO)/2.D0
 
+            ENDIF
  100     CONTINUE
 
 C  VERIFICATION SIGMA(NI)=0
@@ -288,6 +356,14 @@ C  ------------------------
          CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &               JGANO)
          CALL ASSERT(NNO.LE.8)
+         CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
+C
+C --- NOM DU MAILLAGE ATTACHE AU MODELE
+C
+         CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',IADRMA)
+         NOMA  = ZK8(IADRMA)
+         CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+         NDIME=ZI(ADDIM-1+6)
 
 C  ------------------------------------------
 C  INITIALISATION DE DELTAPHI ET ALPHA(I) A 0
@@ -303,8 +379,8 @@ C  ---------------------
 C  CETTE PARTIE EST UTILE EN REINITIALISATION 3D, SI L'ON A DES ELEMENTS
 C  AYANT AUTANT DE NOEUDS DE PART ET D'AUTRE DE L'ISOZERO EN L'ABSENCE
 C  DE L'ALGORITHME DE CALCUL DIRECT DES DISTANCES
-         IF (ZR(IGDF).EQ.0.D0) GOTO 850
 
+         IF (ZR(IGDF).EQ.0.D0) GOTO 850
 C  --------------------------------------
 C  CALCUL DU GRADIENT DE LS SUR L'ELEMENT
 C  --------------------------------------
@@ -329,12 +405,14 @@ C  -----------------------
          DO 400 INO=1,NNO
 
 C  RECUPERATION DE LA DIRECTION NI AU NOEUD
-            NX = ZR(INI-1+(INO-1)*3+1)
-            NY = ZR(INI-1+(INO-1)*3+2)
-            NZ = ZR(INI-1+(INO-1)*3+3)
+            NX = ZR(INI-1+(INO-1)*NDIME+1)
+            NY = ZR(INI-1+(INO-1)*NDIME+2)
+            IF (NDIME.EQ.3) NZ = ZR(INI-1+(INO-1)*3+3)
+            IF (NDIME.EQ.2) NZ = 0.D0
+            
 
-C  CALCUL DE KI AU NOEUD
-            K(INO) = ZR(IGDF)*(GRADX*NX+GRADY*NY+GRADZ*NZ)/(NORMGR*NDIM)
+C  CALCUL DE KI AU NOEUD            
+           K(INO) = ZR(IGDF)*(GRADX*NX+GRADY*NY+GRADZ*NZ)/(NORMGR*NDIM)
 
  400     CONTINUE
 
@@ -352,6 +430,7 @@ C  ------------------------------------------------------
 C  CALCUL DE DELTAPHI AUX NOEUDS ET DELTAPHI DE L'ELEMENT
 C  ------------------------------------------------------
          DELPHI = 0.D0
+
          DO 600 INO=1,NNO
 
 C  CALCUL DE SIGKFI = SIGMA( K(I)(-)*(LS(INO)-LS(I)) ) AUX NOEUDS
@@ -362,11 +441,10 @@ C  CALCUL DE SIGKFI = SIGMA( K(I)(-)*(LS(INO)-LS(I)) ) AUX NOEUDS
  610        CONTINUE
 
             DPHI(INO) = MAX(0.D0,K(INO)) * SIGKFI / SIGMAK
-
             DELPHI = DELPHI + K(INO)*ZR(ILSNO+INO-1)
 
  600     CONTINUE
-
+         
          IF (ABS(DELPHI).LT.R8PREM()) GOTO 850
 
 C  --------------------------------------------------------
@@ -385,7 +463,7 @@ C  --------------------------
          DO 800 INO=1,NNO
             ALPHA(INO) = MAX(0.D0,DPHI(INO)/DELPHI) / SMXDFI
  800     CONTINUE
-
+         
  850     CONTINUE
 
 C  --------------------
@@ -395,8 +473,10 @@ C  --------------------
          CALL JEVECH('PALPHA','E',IALPHA)
 
          ZR(IDPHI) = DELPHI
+            
          DO 900 INO=1,NNO
             ZR(IALPHA-1+INO) = ALPHA(INO)
+            
  900     CONTINUE
 
 C-----------------------------------------------------------------------

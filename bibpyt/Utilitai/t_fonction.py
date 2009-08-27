@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 01/07/2008   AUTEUR CORUS M.CORUS 
+#@ MODIF t_fonction Utilitai  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,24 +30,26 @@ class InterpolationError(FonctionError):  pass
 class ProlongementError(FonctionError):   pass
 
 # -----------------------------------------------------------------------------
-def interp(typ_i,val,x1,x2,y1,y2) :
+def interp(typ_i,val,x1,x2,y1,y2,tol=1.e-6) :
   """Interpolation linéaire/logarithmique entre un couple de valeurs
   """
   if typ_i==['LIN','LIN']: return y1+(y2-y1)*(val-x1)/(x2-x1)
   if typ_i==['LIN','LOG']: return exp(log(y1)+(val-x1)*(log(y2)-log(y1))/(x2-x1))
   if typ_i==['LOG','LOG']: return exp(log(y1)+(log(val)-log(x1))*(log(y2)-log(y1))/(log(x2)-log(x1)))
   if typ_i==['LOG','LIN']: return y1+(log(val)-log(x1))*(y2-y1)/(log(x2)-log(x1))
-  if typ_i[0]=='NON'     : 
-      if   val==x1 : return y1
-      elif val==x2 : return y2
-      else         :
+  if typ_i[0]=='NON'     :
+      if   abs(val-x1) < tol : return y1
+      elif abs(val-x2) < tol : return y2
+      else:
          raise InterpolationError, "abscisse = %g, intervalle = [%g, %g]" % (val, x1, x2)
 
-def is_ordo(liste) :
-  listb=list(Set(liste))
-  listb.sort()
-  return liste==listb
-            
+import Numeric
+
+def is_ordo(liste):
+  if len(liste) > 1:
+    val = Numeric.array(liste, Numeric.Float)
+    return min(val[1:] - val[:len(val)-1]) >= 0.
+  else: return True
 
 # -----------------------------------------------------------------------------
 class t_fonction :
@@ -132,6 +134,19 @@ class t_fonction :
     """
     i=searchsorted(self.vale_x,val)
     n=len(self.vale_x)
+    if n == 1:
+      # Utilisation abusive de la tolérance relative mais ce cas est particulier
+      if (val-self.vale_x[0]) < tol:
+         return self.vale_y[0]
+      elif val-self.vale_x[0] > 0:
+         if (self.para['PROL_DROITE']=='CONSTANT') or (self.para['PROL_DROITE']=='LINEAIRE'):
+            return self.vale_y[0]
+         else: raise ProlongementError, 'fonction évaluée hors du domaine de définition'
+      elif val-self.vale_x[0] < 0:
+         if (self.para['PROL_GAUCHE']=='CONSTANT') or (self.para['PROL_GAUCHE']=='LINEAIRE'):
+            return self.vale_y[0]
+         else: raise ProlongementError, 'fonction évaluée hors du domaine de définition'
+    
     if i==0 :
       if self.para['PROL_GAUCHE']=='EXCLU'    :
          eps_g=(val-self.vale_x[0] )/(self.vale_x[1] -self.vale_x[0])
@@ -226,14 +241,14 @@ class t_fonction :
        i=searchsorted(f2.vale_x,f1.vale_x[-1])
        if i!=len(f2.vale_x) : para['PROL_DROITE']=f2.para['PROL_DROITE']
        else                 : para['PROL_DROITE']=f1.para['PROL_DROITE']
-       vale_x=array(f1.vale_x.tolist()+f2.vale_x[i:].tolist())
-       vale_y=array(f1.vale_y.tolist()+f2.vale_y[i:].tolist())
+       vale_x = concatenate((f1.vale_x, f2.vale_x[i:len(f2.vale_x)]))
+       vale_y = concatenate((f1.vale_y, f2.vale_y[i:len(f2.vale_y)]))
     elif surcharge=='DROITE' :
        i=searchsorted(f1.vale_x,f2.vale_x[0])
        if i!=len(f1.vale_x) : para['PROL_DROITE']=f2.para['PROL_DROITE']
        else                 : para['PROL_DROITE']=f1.para['PROL_DROITE']
-       vale_x=array(f1.vale_x[:i].tolist()+f2.vale_x.tolist())
-       vale_y=array(f1.vale_y[:i].tolist()+f2.vale_y.tolist())
+       vale_x = concatenate((f1.vale_x[:i], f2.vale_x))
+       vale_y = concatenate((f1.vale_y[:i], f2.vale_y))
     return t_fonction(vale_x,vale_y,para)
 
   def tabul(self) :
@@ -261,9 +276,10 @@ class t_fonction :
   def trapeze(self,coef) :
     """renvoie la primitive de la fonction, calculée avec la constante d'intégration 'coef'
     """
-    trapz     = zeros(len(self.vale_y),Float)
+    n = len(self.vale_y)   # [1:n] car pb sur calibre 5 (etch, python2.5 x86_64)
+    trapz     = zeros(n, Float)
     trapz[0]  = coef
-    trapz[1:] = (self.vale_y[1:]+self.vale_y[:-1])/2*(self.vale_x[1:]-self.vale_x[:-1])
+    trapz[1:n] = (self.vale_y[1:n]+self.vale_y[:-1])/2*(self.vale_x[1:n]-self.vale_x[:-1])
     prim_y=cumsum(trapz)
     para=copy.copy(self.para)
     para['PROL_GAUCHE']='EXCLU'
@@ -309,9 +325,10 @@ class t_fonction :
   def derive(self) :
     """renvoie la dérivée de la fonction
     """
-    pas=self.vale_x[1:]-self.vale_x[:-1]
-    pentes=(self.vale_y[1:]-self.vale_y[:-1])/(self.vale_x[1:]-self.vale_x[:-1])
-    derive=(pentes[1:]*pas[1:]+pentes[:-1]*pas[:-1])/(pas[1:]+pas[:-1])
+    n = len(self.vale_y)   # [1:n] car pb sur calibre 5 (etch, python2.5 x86_64)
+    pas=self.vale_x[1:n]-self.vale_x[:-1]
+    pentes=(self.vale_y[1:n]-self.vale_y[:-1])/(self.vale_x[1:n]-self.vale_x[:-1])
+    derive=(pentes[1:n-1]*pas[1:n-1]+pentes[:-1]*pas[:-1])/(pas[1:n-1]+pas[:-1])
     derv_y=[pentes[0]]+derive.tolist()+[pentes[-1]]
     para=copy.copy(self.para)
     para['PROL_GAUCHE']='EXCLU'

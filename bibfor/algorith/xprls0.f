@@ -1,11 +1,12 @@
-      SUBROUTINE XPRLS0(NOMA,FISS,NOESOM,CNSLN,CNSLT,ISOZRO,LEVSET)
+      SUBROUTINE XPRLS0(NOMA,FISS,NOESOM,ARMIN,CNSLN,CNSLT,ISOZRO,
+     &                  LEVSET)
       IMPLICIT NONE
       CHARACTER*2    LEVSET
       CHARACTER*8    NOMA,FISS
       CHARACTER*19   CNSLN,CNSLT,ISOZRO,NOESOM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
+C TOLE CRP_20
 C     ------------------------------------------------------------------
 C
 C       XPRLS0   : X-FEM PROPAGATION : CALCUL DES LS PROCHE DES ISO-0
@@ -37,6 +39,7 @@ C    ENTREE
 C        NOMA    :   NOM DU CONCEPT MAILLAGE
 C        FISS    :   NOM DU CONCEPT FISSURE XFEM
 C        NOESOM  :   VECTEUR LOGIQUE CONTENANT L'INFO. 'NOEUD SOMMET'
+C        LCMIN   :   LONGEUR DE PLUS PETIT ARETE DU MAILLAGE NOMA
 C        CNSLN   :   CHAM_NO_S LEVEL SET NORMALE
 C        CNSLT   :   CHAM_NO_S LEVEL SET TANGENTE
 C        LEVSET  :   ='LN' SI ON REINITIALISE LN
@@ -72,19 +75,24 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               JCONX2,ADDIM,NDIM,JZERO,JMACO,NBMACO,NBNOMA,JMAI,
      &               NUNOA,NUNOB,JNOMCO,NBNOCO,NUNO,NMAABS,NPTINT,NTRI,
      &               ITYPMA,ITRI,JCOOR,JNOSOM,NBNOZO,IA,IB,IC,CPTZO,
-     &               JLSNO,JLTNO,JNOULS,JNOULT,AR(12,2),NBAR,IAR,NA,NB
-      REAL*8         R8PREM,P(3),X(6),Y(6),Z(6),XA,YA,ZA,XB,YB,
+     &               JLSNO,JLTNO,JNOULS,JNOULT,AR(12,2),NBAR,IAR,NA,NB,
+     &               IBID,IPT,NBLSN0,IBID2(12,3),IFQ,NBF,FA(6,4),NI,
+     &               NUNOI,NBSOM
+      REAL*8         R8B,R8PREM,P(3),X(7),Y(7),Z(7),XA,YA,ZA,XB,YB,
      &               ZB,S,A(3),B(3),C(3),EPS(3),M(3),D,VN(3),NORMGR,
      &               LSNA,LSNB,LSTA,LSTB,LSTC,LST(6),BESTD,BESTDI,LSN,
-     &               BESTLT,BESTLI
+     &               BESTLT,BESTLI,DIST,ARMIN,LONGAR,LONGMX,PADIST,
+     &               LSNC,LSND,AB(3),AP(3),NORMAB,NORMAP,NORMVN,DDOT
+      COMPLEX*16     C16B
       CHARACTER*2    NPTIK2
-      CHARACTER*8    K8B,TYPMA,NOMAIL
-      CHARACTER*19   MAICOU,NOMCOU,VNOULS,VNOULT,MAI
-      CHARACTER*24 VALK(4)
-      LOGICAL        DEJAIN,DEJADI,NOEMAI,IN
+      CHARACTER*8    K8B,TYPMA,NOMAIL,K8BID
+      CHARACTER*19   MAICOU,NOMCOU,VNOULS,VNOULT,MAI,NOMT19
+      CHARACTER*24   VALK(4),PARA
+      LOGICAL        DEJAIN,DEJADI,NOEMAI,IN,DEJA
+      REAL*8         TOLL
 
 C  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
-      REAL*8         IATRI(20),IBTRI(20),ICTRI(20)
+      INTEGER        IATRI(20),IBTRI(20),ICTRI(20)
 C        ---------------------
 C        |  I | TRIANGLE | N |
 C        --------------------
@@ -123,6 +131,12 @@ C-----------------------------------------------------------------------
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
 
+C     EVALUATION OF THE TOLERANCE USED TO ASSESS IF THE VALUE OF THE
+C     NORMAL LEVELSET IN ONE NODE IS ZERO OR NOT
+C     THIS IS FIXED TO 1% OF THE LENGTH OF THE SMALLEST ELEMENT EDGE
+C     IN THE MESH
+      TOLL = 1.D-2*ARMIN
+
 C      IF (NIV.GT.1)
       WRITE(IFM,*)'   CALCUL DES LEVEL SETS A PROXIMITE '
      &   //'DE L''ISOZERO DE '//LEVSET//'.'
@@ -137,7 +151,8 @@ C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL JEVEUO(MAI,'L',JMAI)
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       NDIM=ZI(ADDIM-1+6)
-
+ 
+      
 C   RECUPERATION DE L'ADRESSE DES VALEURS DES LS
       IF (LEVSET.EQ.'LN') THEN
          CALL JEVEUO(CNSLN//'.CNSV','E',JLSNO)
@@ -145,6 +160,7 @@ C   RECUPERATION DE L'ADRESSE DES VALEURS DES LS
       ELSEIF (LEVSET.EQ.'LT') THEN
          CALL JEVEUO(CNSLT//'.CNSV','E',JLSNO)
       ENDIF
+
 
 C  RECUPERATION DE L'ADRESSE DE L'INFORMATION 'NOEUD SOMMET'
       CALL JEVEUO(NOESOM,'L',JNOSOM)
@@ -154,6 +170,12 @@ C  RECUPERATION DE L'ADRESSE DES VALEURS DE ISOZRO
       DO 10 INO=1,NBNO
          ZL(JZERO-1+INO)=.FALSE.
  10   CONTINUE
+ 
+C INITIALISATION DU VECTEUR LST
+      DO 20 I=1,6
+        LST(I)=0.D0
+ 20   CONTINUE  
+
 
 C-----------------------------------------------------------------------
 C     DANS UN PREMIER TEMPS,ON S'OCCUPE DES NOEUDS SOMMETS SUR L'ISOZERO
@@ -161,7 +183,7 @@ C     ( UTILE DANS LE CAS DE MAILLES 1 OU 2 NOEUDS SONT A 0 )
 C-----------------------------------------------------------------------
       NBNOZO=0
       DO 50 INO=1,NBNO
-         IF ( ABS(ZR(JLSNO-1+INO)).LT.R8PREM() .AND.
+         IF ( ABS(ZR(JLSNO-1+INO)).LT.TOLL .AND.
      &        ZL(JNOSOM-1+INO) ) THEN
             ZR(JLSNO-1+INO)=0.D0
             ZL(JZERO-1+INO)=.TRUE.
@@ -186,7 +208,7 @@ C   VERIFICATION DU TYPE DE MAILLE
          IF (NDIM.EQ.3.AND.TYPMA(1:5).NE.'TETRA'.AND.
      &       TYPMA(1:5).NE.'PENTA'.AND.TYPMA(1:4).NE.'HEXA') GOTO 100
          IF (NDIM.EQ.2.AND.
-     &       TYPMA(1:4).NE.'TETRA'.AND.TYPMA(1:4).NE.'QUAD') GOTO 100
+     &       TYPMA(1:4).NE.'TRIA'.AND.TYPMA(1:4).NE.'QUAD') GOTO 100
          NBNOMA = ZI(JCONX2+IMA) - ZI(JCONX2+IMA-1)
 
 C  ON COMPTE D'ABORD LE NOMBRE DE NOEUDS DE LA MAILLE QUI S'ANNULENT
@@ -194,20 +216,20 @@ C  ON COMPTE D'ABORD LE NOMBRE DE NOEUDS DE LA MAILLE QUI S'ANNULENT
          DO 105 INOA=1,NBNOMA
             NUNOA=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+INOA-1)
             LSNA = ZR(JLSNO-1+NUNOA)
-            IF (ABS(LSNA).LT.R8PREM().AND.ZL(JNOSOM-1+NUNOA))
+            IF (ABS(LSNA).LT.TOLL.AND.ZL(JNOSOM-1+NUNOA))
      &         CPTZO = CPTZO+1
  105     CONTINUE
 
-C  SI AU MOINS TROIS NOEUDS S'ANNULENT,ON A UN PLAN D'INTERSECTION
-         IF (CPTZO.GE.3) THEN
+C  SI AU - TROIS NOEUDS S'ANNULENT (en 3D),ON A UN PLAN D'INTERSECTION
+         IF (CPTZO.GE.NDIM) THEN
             NBMACO = NBMACO + 1
             ZI(JMACO-1+NBMACO) = IMA
             GOTO 100
          ENDIF
 
-C  ON PARCOURS LES ARETES DE L'ELEMENT
+C  ON PARCOURT LES ARETES DE L'ELEMENT
          ITYPMA=ZI(JMAI-1+IMA)
-         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA) 
          CALL CONARE(TYPMA,AR,NBAR)
          DO 110 IAR = 1,NBAR
             NA=AR(IAR,1)
@@ -227,6 +249,11 @@ C  SI UNE ARETE EST COUPEE,LA MAILLE L'EST FORCEMENT
  110     CONTINUE
 
  100  CONTINUE
+
+C     IF EVERYTHING GOES CORRECTLY, I SHOULD FIND AT LEAST ONE ELEMENT
+C     CUT BY THE ISOZERO OF LSN. IT'S BETTER TO CHECK IT BEFORE
+C     CONTINUING.
+      CALL ASSERT(NBMACO.GT.0)
 
 C-----------------------------------------------------
 C     ON REPERE LES NOEUDS SOMMETS DES MAILLES COUPEES
@@ -274,7 +301,7 @@ C  -----------------------------------------
       DO 300 INO=1,NBNOCO
          NUNO = ZI(JNOMCO-1+INO)
          LSN = ZR(JLSNO-1+NUNO)
-
+ 
 C  SI LE NOEUD EST SUR L'ISOZERO, ON L'A DEJA REPERE
          IF (ZL(JZERO-1+NUNO)) THEN
             ZR(JNOULS-1+INO) = 0.D0
@@ -284,6 +311,7 @@ C  SI LE NOEUD EST SUR L'ISOZERO, ON L'A DEJA REPERE
 
          DEJAIN=.FALSE.
          DEJADI=.FALSE.
+
 
 C  BOUCLE SUR LES MAILLES COUPEES DONT LE NOEUD (INO) EST SOMMET
 C  -------------------------------------------------------------
@@ -304,11 +332,21 @@ C  SI LE NOEUD APPARTIENT A LA MAILLE
 
                P(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
                P(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
-               P(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
+               IF (NDIM.EQ.3) P(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
+               IF (NDIM.EQ.2) P(3)=0.D0
 
+                                          
 C  ON RECUPERE LES POINTS D'INTERSECTION ISOZERO-ARETES
                NPTINT = 0
 
+C On initialise les coordonnes des points d'intersection
+            DO 321 I=1,7
+               X(I)=0.D0
+               Y(I)=0.D0
+               Z(I)=0.D0
+ 321        CONTINUE
+
+               
 C  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
                DO 340 INOA=1,NBNOMA
                   NUNOA = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOA-1)
@@ -316,18 +354,84 @@ C  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
                   LSNA = ZR(JLSNO-1+NUNOA)
                   IF (ABS(LSNA).LT.R8PREM()) THEN
                      NPTINT = NPTINT+1
-                     X(NPTINT) = ZR(JCOOR-1+NDIM*(NUNOA-1)+1)
-                     Y(NPTINT) = ZR(JCOOR-1+NDIM*(NUNOA-1)+2)
-                     Z(NPTINT) = ZR(JCOOR-1+NDIM*(NUNOA-1)+3)
+                     X(NPTINT) = ZR(JCOOR-1+3*(NUNOA-1)+1)
+                     Y(NPTINT) = ZR(JCOOR-1+3*(NUNOA-1)+2)
+                     IF (NDIM.EQ.3) THEN
+                        Z(NPTINT) = ZR(JCOOR-1+3*(NUNOA-1)+3)
+                     ELSEIF (NDIM.EQ.2) THEN 
+                        Z(NPTINT) = 0.D0
+                     ENDIF  
                      IF (LEVSET.EQ.'LN') LST(NPTINT)=ZR(JLTNO-1+NUNOA)
 
                   ENDIF
  340           CONTINUE
 
+
 C  ON PARCOURT ENSUITE LES ARETES [AB] DE LA MAILLE
                ITYPMA=ZI(JMAI-1+NMAABS)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+C  On verifie prealablement qu'une face ne contient pas
+C plus de 2 aretes coupees par LSN0
+
+               NBSOM = 0
+
+               IF ((TYPMA(1:4).EQ.'HEXA').OR.(TYPMA(1:4).EQ.'QUAD')) 
+     &           NBSOM = 4
+               IF ((TYPMA(1:5).EQ.'TETRA').OR.(TYPMA(1:4).EQ.'TRIA')) 
+     &           NBSOM = 3
+                
+               IF (NDIM.EQ.3) CALL CONFAC(TYPMA,IBID2,IBID,FA,NBF)
+               IF (NDIM.EQ.2) THEN
+                 NBF=1
+                 DO 341 I=1,NBSOM
+                   FA(1,I)=I
+ 341             CONTINUE                                       
+               ENDIF
+                  
+               DO 610 IFQ=1,NBF
+                  NBLSN0 = 0               
+                  NA=FA(IFQ,1)
+                  NUNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NA-1)      
+                  LSNA=ZR(JLSNO-1+(NUNOA-1)+1)
+                  DO 411 I=2,NBSOM
+                    NUNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,I)-1)
+                    LSNB=ZR(JLSNO-1+(NUNOB-1)+1)
+                    IF ((LSNA*LSNB.LT.0.D0).AND.
+     &                (ABS(LSNA).GT.R8PREM()).AND.
+     &                (ABS(LSNB).GT.R8PREM())) THEN
+                         NBLSN0 = NBLSN0 + 1
+                    ENDIF
+                    LSNA=LSNB
+ 411              CONTINUE
+C  On affecte a B le point A initial pour comparer D et A
+                    NUNOB=NUNOA
+                    LSNB=ZR(JLSNO-1+(NUNOB-1)+1) 
+                    IF ((LSNA*LSNB.LT.0.D0).AND.
+     &                (ABS(LSNA).GT.R8PREM()).AND.
+     &                (ABS(LSNB).GT.R8PREM())) THEN
+                         NBLSN0 = NBLSN0 + 1
+                    ENDIF
+C  Arret fatal si on trouve au moins 3 points d'intersection sur
+C une meme face 
+                    IF (NBLSN0.GE.3) CALL U2MESS('F','XFEM_61')
+ 610           CONTINUE                 
+
+                              
                CALL CONARE(TYPMA,AR,NBAR)
+C  On cherche la plus grande arï¿½te de l'ï¿½lï¿½ment
+               LONGMX=0
+               DO 333 IAR = 1,NBAR
+                  NA=AR(IAR,1)
+                  NB=AR(IAR,2)
+                  NUNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NA-1)
+                  NUNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NB-1)
+                  DO 444 I = 1,NDIM
+                    A(I)= ZR(JCOOR-1+3*(NUNOA-1)+I)
+                    B(I)= ZR(JCOOR-1+3*(NUNOB-1)+I)
+ 444              CONTINUE                    
+                  LONGAR=PADIST(NDIM,A,B)
+                  IF (LONGAR.GT.LONGMX) LONGMX = LONGAR
+ 333           CONTINUE
                DO 330 IAR = 1,NBAR
                   NA=AR(IAR,1)
                   NB=AR(IAR,2)
@@ -341,44 +445,111 @@ C  ON PARCOURT ENSUITE LES ARETES [AB] DE LA MAILLE
      &                (ABS(LSNA).GT.R8PREM()).AND.
      &                (ABS(LSNB).GT.R8PREM())) THEN
 C  UN POINT D'INTERSECTION SE SITUE ENTRE LES NOEUDS (NUNOA) ET (NUNOB)
-                     NPTINT = NPTINT+1
-                     XA = ZR(JCOOR-1+NDIM*(NUNOA-1)+1)
-                     YA = ZR(JCOOR-1+NDIM*(NUNOA-1)+2)
-                     ZA = ZR(JCOOR-1+NDIM*(NUNOA-1)+3)
-                     XB = ZR(JCOOR-1+NDIM*(NUNOB-1)+1)
-                     YB = ZR(JCOOR-1+NDIM*(NUNOB-1)+2)
-                     ZB = ZR(JCOOR-1+NDIM*(NUNOB-1)+3)
+C  Incrementation commente par julien pour verifier la validite du point
+C                     NPTINT = NPTINT+1
+                     XA = ZR(JCOOR-1+3*(NUNOA-1)+1)
+                     YA = ZR(JCOOR-1+3*(NUNOA-1)+2)
+                     IF (NDIM.EQ.3) ZA = ZR(JCOOR-1+3*(NUNOA-1)+3)
+                     IF (NDIM.EQ.2) ZA = 0.D0
+                     XB = ZR(JCOOR-1+3*(NUNOB-1)+1)
+                     YB = ZR(JCOOR-1+3*(NUNOB-1)+2)
+                     IF (NDIM.EQ.3) ZB = ZR(JCOOR-1+3*(NUNOB-1)+3)
+                     IF (NDIM.EQ.2) ZB = 0.D0
                      S = ABS(LSNA) / ( ABS(LSNA) + ABS(LSNB) )
-                     X(NPTINT) = XA + S*(XB-XA)
-                     Y(NPTINT) = YA + S*(YB-YA)
-                     Z(NPTINT) = ZA + S*(ZB-ZA)
-                     IF (LEVSET.EQ.'LN') THEN
-                        LSTA = ZR(JLTNO-1+NUNOA)
-                        LSTB = ZR(JLTNO-1+NUNOB)
-                        LST(NPTINT) = LSTA + S*(LSTB-LSTA)
-                     ENDIF
+                     X(NPTINT+1) = XA + S*(XB-XA)
+                     Y(NPTINT+1) = YA + S*(YB-YA)
+                     Z(NPTINT+1) = ZA + S*(ZB-ZA)
 
+C  ON VERIFIE LA VALIDITE DU POINT		     
+                     DEJA=.FALSE.
+                     IF (NDIM.EQ.3) THEN
+                       DIST = (((X(NPTINT+1)-XA)**2)+
+     &                        ((Y(NPTINT+1)-YA)**2)+
+     &                        ((Z(NPTINT+1)-ZA)**2))**0.5D0
+                     ELSEIF (NDIM.EQ.2) THEN
+                       DIST = (((X(NPTINT+1)-XA)**2)+
+     &                        ((Y(NPTINT+1)-YA)**2))**0.5D0 
+                     ENDIF         
+
+                                
+                     IF (NPTINT.GT.0) THEN
+                      DO 380 IPT = 1,NPTINT
+                      
+                       IF (NDIM.EQ.3) THEN
+                        DIST = (((X(NPTINT+1)-X(NPTINT+1-IPT))**2)+
+     &                        ((Y(NPTINT+1)-Y(NPTINT+1-IPT))**2)+
+     &                        ((Z(NPTINT+1)-Z(NPTINT+1-IPT))**2))**0.5D0
+                       ELSEIF (NDIM.EQ.2) THEN
+                        DIST = (((X(NPTINT+1)-X(NPTINT+1-IPT))**2)+
+     &                        ((Y(NPTINT+1)-Y(NPTINT+1-IPT))**2))**0.5D0
+                       ENDIF                      
+                       IF (DIST.GT.(LONGMX*NDIM**0.5D0)) THEN
+                        DEJA=.TRUE.
+                        GOTO 330
+                       ENDIF
+
+                       IF (DIST.LT.R8PREM()) THEN
+                        DEJA=.TRUE.
+                        GOTO 330
+                       ENDIF
+
+                       
+ 380                  CONTINUE
+                    
+                     ENDIF
+                    
+                     IF (.NOT.DEJA) THEN
+                       NPTINT = NPTINT+1
+                       IF (LEVSET.EQ.'LN') THEN
+                            LSTA = ZR(JLTNO-1+NUNOA)
+                            LSTB = ZR(JLTNO-1+NUNOB)
+                            LST(NPTINT) = LSTA + S*(LSTB-LSTA)
+                       ENDIF
+                     ENDIF
                   ENDIF
+
+
+
  330           CONTINUE
 
 C  VERIFICATION SUR LE NOMBRE DE POINTS D'INTERSECTION TROUVES
 
 C              LES ARETES DE LA MAILLE 'NOMMA' DE TYPE 'TYPMA' ONT  N
-C              POINTS D'INTERSECTION AVEC L'ISO-ZÉRO DE 'LEVSET'
+C              POINTS D'INTERSECTION AVEC L'ISO-ZERO DE 'LEVSET'
+
+                
                CALL ASSERT(.NOT.(
      &             (TYPMA(1:5).EQ.'TETRA'.AND.NPTINT.GT.4).OR.
      &             (TYPMA(1:5).EQ.'PENTA'.AND.NPTINT.GT.5).OR.
-     &             (TYPMA(1:4).EQ.'HEXA'.AND.NPTINT.GT.6)))
+     &             (TYPMA(1:4).EQ.'HEXA'.AND.NPTINT.GT.6).OR.
+     &             (TYPMA(1:4).EQ.'QUAD'.AND.NPTINT.GT.2)))
 
                IF (NDIM.EQ.2.AND.NPTINT.LT.2) GOTO 310
                IF (NDIM.EQ.3.AND.NPTINT.LT.3) GOTO 310
+
                CALL ASSERT(NPTINT.LE.6)
 
+C              CORRECTION FOR THE 2D CASE
+C              ONLY TWO POINTS ARE FOUND FOR THE 2D CASE. IN ORDER TO
+C              USE THE PROJECTION ON A TRIANGLE, THAT IS THE SAME CODE
+C              USED FOR THE 3D CASE, A "VIRTUAL" THIRD POINT IS CREATED.
+C              IN ORDER TO AVOID ILL CONDITIONED PROBLEMS, ITS Z-COORD
+C              IS EVALUATED AS THE DISTANCE BETWEEN THE OTHER TWO (REAL)
+C              POINTS
+               IF (NDIM.EQ.2) THEN
+                  CALL ASSERT(NPTINT.EQ.2)
+                  NPTINT = NPTINT+1
+                  X(NPTINT) = X(1)
+                  Y(NPTINT) = Y(1)
+                  Z(NPTINT) = ((X(1)-X(2))**2+(Y(1)-Y(2))**2)**0.5D0
+                  LST(NPTINT) = LST(1)
+               ENDIF
 
 C  CALCUL DE DISTANCE DU NOEUD (INO) A L'ISOZERO SUR LA MAILLE (NMAABS)
 C  --------------------------------------------------------------------
-C  ON PARCOURS TOUS LES TRIANGLES QUE L'ON PEUT FORMER AVEC LES POINTS
+C  ON PARCOURT TOUS LES TRIANGLES QUE L'ON PEUT FORMER AVEC LES POINTS
 C  D'INTERSECTION ISOZERO-ARETES :
+
                IF (NPTINT.EQ.3)  NTRI=1
                IF (NPTINT.EQ.4)  NTRI=4
                IF (NPTINT.EQ.5)  NTRI=10
@@ -436,17 +607,18 @@ C  ON STOCKE LA DISTANCE MINIMALE AVEC PROJECTION DANS LE TRIANGLE ABC
      &                     EPS(1)*LSTB + EPS(2)*LSTC + EPS(3)*LSTA
                      ENDIF
                   ENDIF
- 350           CONTINUE
-            ENDIF
+ 350           CONTINUE         
+
+          ENDIF
  310     CONTINUE
 
 C  ON ATTRIBUE LES LS CORRESPONDANT AUX MEILLEURES DISTANCES TROUVEES
 C  ------------------------------------------------------------------
 C  (INTERIEURES, LE CAS ECHEANT)
-         ZR(JNOULS-1+INO) = BESTD * SIGN(1.0D0,LSN)
+         ZR(JNOULS-1+INO) = BESTD * SIGN(1.D0,LSN)
          IF (LEVSET.EQ.'LN') ZR(JNOULT-1+INO) = BESTLT
          IF (DEJAIN) THEN
-            ZR(JNOULS-1+INO) = BESTDI*SIGN(1.0D0,LSN)
+            ZR(JNOULS-1+INO) = BESTDI*SIGN(1.D0,LSN)
             IF (LEVSET.EQ.'LN') ZR(JNOULT-1+INO) = BESTLI
          ENDIF
 
@@ -459,14 +631,19 @@ C  REMPLACEMENT DES LEVEL SETS PAR CELLES CALCULEES
 C  ------------------------------------------------
       DO 400 INO=1,NBNOCO
          NUNO=ZI(JNOMCO-1+INO)
+
+
          ZR(JLSNO-1+NUNO) = ZR(JNOULS-1+INO)
+         
          IF (LEVSET.EQ.'LN') THEN
             ZR(JLTNO-1+NUNO) = ZR(JNOULT-1+INO)
          ENDIF
+ 
  400  CONTINUE
 
 C      IF (NIV.GT.1)
       WRITE(IFM,*)'   NOMBRE DE LEVEL SETS CALCULEES :',NBNOCO+NBNOZO
+
 
 C   DESTRUCTION DES OBJETS VOLATILES
       CALL JEDETR(MAICOU)

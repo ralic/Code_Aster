@@ -1,12 +1,12 @@
-      SUBROUTINE XPRLS(MODEL,NOMA,CNSLN,CNSLT,GRLN,GRLT,CNSVT,CNSVN,
-     &                 DELTAT)
+      SUBROUTINE XPRLS(MODEL,NOMA,CNSLN,CNSLT,GRLN,GRLT,CNSVN,CNSVT,
+     &                 CNSBL,DELTAT,CFL,FISS)
       IMPLICIT NONE
-      REAL*8         DELTAT
-      CHARACTER*8    MODEL,NOMA
-      CHARACTER*19   CNSLN,CNSLT,GRLN,GRLT,CNSVT,CNSVN
+      REAL*8         DELTAT,CFL
+      CHARACTER*8    MODEL,NOMA,FISS
+      CHARACTER*19   CNSLN,CNSLT,GRLN,GRLT,CNSVN,CNSVT,CNSBL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,9 +37,15 @@ C        CNSLT   : CHAM_NO_S LEVEL SET TANGENTIELLE
 C        CNSLN   : CHAM_NO_S LEVEL SET NORMALE
 C        GRLT    : CHAM_NO_S GRADIENT DE LEVEL SET TANGENTIELLE
 C        GRLN    : CHAM_NO_S GRADIENT DE LEVEL SET NORMALE
-C        CNSVT   : CHAM_NO_S VITESSE TANGENTIELLE DE PROPAGATION
-C        CNSVN   : CHAM_NO_S VITESSE NORMALE DE PROPAGATION
-C        DELTAT  : PAS DE TEMPS
+C        CNSVN   : CHAM_NO_S DES COMPOSANTES NORMALES DE LA VITESSE DE
+C                  PROPAGATION
+C        CNSVT   : CHAM_NO_S DES COMPOSANTES TANGENTES DE LA VITESSE DE
+C                  PROPAGATION
+C        CNSBL   : CHAM_NO_S DES VECTEURS NORMALE ET TANGENTIELLE DE LA
+C                  BASE LOCALE
+C                  IN CHAQUE NODE DU MAILLAGE
+C        DELTAT  : TEMPS TOTAL D'INTEGRATION
+C        CFL     : VALEUR DE LA CONDITION CFL A RESPECTER
 C
 C    SORTIE
 C        CNSLT   : CHAM_NO_S LEVEL SET TANGENTIELLE
@@ -67,13 +73,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER    I,IFM,NIV,NBNO,IRET,JLTNO,JLNNO,JGRTNO,JGRNNO
-      INTEGER    JVTNO,JVNNO,JLTI,JLTIL,JLNI,JLNIL,JGRTI,JGRNI,IBID
+      INTEGER    I,IFM,NIV,NBNO,IRET,JLTNO,JLNNO,JGRTNO,JGRNNO,NDIM,
+     &           ADDIM,J,NI
+      INTEGER    JLTI,JLTIL,JLNI,JLNIL,JGRTI,JGRNI,IBID
       CHARACTER*8      K8B,LPAIN(2),LPAOUT(1)
       CHARACTER*19     CNSLTI,CNSLNI,CNSGTI,CNSGNI,CHGRTI,CHGRNI,CHAMSI,
      &                 CHGRLT,CHGRLN,CHAMS,CNOLTI,CNOLNI,CNOLT,CNOLN
       CHARACTER*24     OBJMA,LCHIN(2),LCHOUT(1),LIGRMO
       REAL*8           NORMGN,NORMGT,NORGNI,NORGTI
+
+      REAL*8           DTLEFT,R8MIEM,R8PREM,DT,DAMAX,TMPLSN,TMPLST
+      CHARACTER*8      TYPCMP(3)
+      CHARACTER*19     CNSVVT,CNSVVN
+      INTEGER          JVTV,JVTL,JVNV,JVNL,JCNSVN,JCNSVT
+
+      INTEGER JBL
+      REAL*8  BAST(3),TAST(3),N(3),T(3),B(3)
 
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -83,20 +98,127 @@ C-----------------------------------------------------------------------
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
 
-C  RECUPERATION DE CARACTERISTIQUES DU MAILLAGE
+C     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE IN THE MESH
+      CALL JEVEUO(CNSBL//'.CNSV','E',JBL)
+
+C     RECUPERATION DE CARACTERISTIQUES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
 
-      WRITE(IFM,*)'   DELTA_T = ',DELTAT
+C     RETRIEVE THE DIMENSION OF THE PROBLEM (2D AND 3D ARE SUPPORTED)
+      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
+      NDIM=ZI(ADDIM-1+6)
 
-C   RECUPERATION DE L'ADRESSE DES VALEURS DE LT, LN ET LEURS GRADIENTS
+C     INITIALIZE THE REMAINING INTEGRATION TIME VARIABLE
+      DTLEFT = DELTAT
+
+C     COUNTER FOR THE NUMBER OF ITERATIONS
+      NI=0
+
+C ***************************************************************
+C CALCULATE THE NORMAL AND TANGENTIAL PROPAGATION SPEED VECTOR FOR
+C EACH NODE IN THE MESH (WITH RESPECT TO THE CRACK PLANE). THESE
+C VECTORS ARE NOT CHANGED DURING THE INTEGRATION OF THE LEVEL SET
+C UPDATE EQUATIONS.
+C ***************************************************************
+
+C     CREATION OF THE NORMAL AND TANGENTIAL PROPAGATION SPEED VECTORS
+C     DATA STRUCTURES (CHAMP_NO_S)
+      CNSVVT = '&&XPRLS.CNSVT'
+      CNSVVN = '&&XPRLS.CNSVN'
+      TYPCMP(1)='X1'
+      TYPCMP(2)='X2'
+      TYPCMP(3)='X3'
+      CALL CNSCRE(NOMA,'NEUT_R',NDIM,TYPCMP,'V',CNSVVT)
+      CALL CNSCRE(NOMA,'NEUT_R',NDIM,TYPCMP,'V',CNSVVN)
+
+      CALL JEVEUO(CNSVVT//'.CNSV','E',JVTV)
+      CALL JEVEUO(CNSVVT//'.CNSL','E',JVTL)
+      CALL JEVEUO(CNSVVN//'.CNSV','E',JVNV)
+      CALL JEVEUO(CNSVVN//'.CNSL','E',JVNL)
+
+C     RETRIEVE THE GRADIENT OF THE TWO LEVEL SETS
+      CALL JEVEUO(GRLT//'.CNSV','E',JGRTNO)
+      CALL JEVEUO(GRLN//'.CNSV','E',JGRNNO)
+
+C     RETRIEVE THE NORMAL AND TANGENTIAL PROPAGATION SPEEDS (SCALAR
+C     VALUE). THESE VALUES WILL BE USED BELOW TO CALCULATE THE
+C     PROPAGATION SPEED VECTORS FOR EACH NODE
+      CALL JEVEUO(CNSVN//'.CNSV','L',JCNSVN)
+      CALL JEVEUO(CNSVT//'.CNSV','L',JCNSVT)
+
+C     ELABORATE EACH NODE
+      DO 400 I=1,NBNO
+
+C        EVALUATE THE SPEED VECTORS
+         CALL JEVEUO(CNSLT//'.CNSV','E',JLTNO)
+
+C        CHECK IF THE NODE IS ON THE EXISTING CRACK SURFACE
+         IF (ZR(JLTNO-1+I).LT.R8MIEM()) THEN
+
+C           CALCULATE THE NORM OF THE GRADIENTS IN ORDER TO EVALUATE THE
+C           NORMAL AND TANGENTIAL UNIT VECTORS
+            IF(NDIM.EQ.2) THEN
+              NORMGT = ( ZR(JGRTNO-1+2*(I-1)+1)**2.D0 +
+     &                   ZR(JGRTNO-1+2*(I-1)+2)**2.D0 )**.5D0
+              NORMGN = ( ZR(JGRNNO-1+2*(I-1)+1)**2.D0 +
+     &                   ZR(JGRNNO-1+2*(I-1)+2)**2.D0 )**.5D0
+            ELSE
+              NORMGT = ( ZR(JGRTNO-1+3*(I-1)+1)**2.D0 +
+     &                   ZR(JGRTNO-1+3*(I-1)+2)**2.D0 +
+     &                   ZR(JGRTNO-1+3*(I-1)+3)**2.D0 )**.5D0
+              NORMGN = ( ZR(JGRNNO-1+3*(I-1)+1)**2.D0 +
+     &                   ZR(JGRNNO-1+3*(I-1)+2)**2.D0 +
+     &                   ZR(JGRNNO-1+3*(I-1)+3)**2.D0 )**.5D0
+            ENDIF
+
+C           IF THE TANGENTIAL LEVELSET IS NEGATIVE, THE NODE BELONGS TO 
+C           THE EXISTING CRACK SURFACE. THEREFORE THE GRADIENT OF THE 
+C           LEVEL SETS IS A GOOD CANDIDATE FOR THE LOCAL REFERENCE
+C           SYSTEM.
+            DO 405 J=1,NDIM
+              IF(NORMGN.GT.R8PREM()) THEN
+              ZR(JVNV-1+NDIM*(I-1)+J) = ZR(JCNSVN-1+I)*
+     &                                  ZR(JGRNNO-1+NDIM*(I-1)+J)/NORMGN
+              ELSE
+                 ZR(JVNV-1+NDIM*(I-1)+J) = 0.D0
+              ENDIF
+
+              IF(NORMGT.GT.R8PREM()) THEN
+              ZR(JVTV-1+NDIM*(I-1)+J) = ZR(JCNSVT-1+I)*
+     &                                  ZR(JGRTNO-1+NDIM*(I-1)+J)/NORMGT
+              ELSE
+                 ZR(JVTV-1+NDIM*(I-1)+J) = 0.D0
+              ENDIF
+405         CONTINUE
+
+         ELSE
+
+C           IF THE TANGENTIAL LEVELSET IS POSITIVE, THE LOCAL REFERENCE 
+C           SYSTEM CALCULATED PREVIOUSLY FROM THE INFORMATIONS ON THE 
+C           CRACK FRONT CAN BE USED
+            DO 406 J=1,NDIM
+              ZR(JVNV-1+NDIM*(I-1)+J) = ZR(JCNSVN-1+I)*
+     &                                  ZR(JBL-1+2*NDIM*(I-1)+J)
+              ZR(JVTV-1+NDIM*(I-1)+J) = ZR(JCNSVT-1+I)*
+     &                                  ZR(JBL-1+2*NDIM*(I-1)+NDIM+J)
+406         CONTINUE
+
+         ENDIF
+
+400   CONTINUE
+
+C ***************************************************************
+C START THE ITERATIONS FOR THE INTEGRATION OF THE LEVEL SET UPDATE
+C EQUATION
+C ***************************************************************
+
+300   CONTINUE
+
+C     RECUPERATION DE L'ADRESSE DES VALEURS DE LT, LN ET LEURS GRADIENTS
       CALL JEVEUO(CNSLT//'.CNSV','E',JLTNO)
       CALL JEVEUO(CNSLN//'.CNSV','E',JLNNO)
       CALL JEVEUO(GRLT//'.CNSV','E',JGRTNO)
       CALL JEVEUO(GRLN//'.CNSV','E',JGRNNO)
-
-C   RECUPERATION DES ADRESSES DES CHAMPS DE VITESSE AUX NOEUDS
-      CALL JEVEUO(CNSVT//'.CNSV','L',JVTNO)
-      CALL JEVEUO(CNSVN//'.CNSV','L',JVNNO)
 
 C     CREATION DES OBJETS VOLATILES
       CNSLTI = '&&XPRLS.CNSLTI'
@@ -113,6 +235,14 @@ C     CREATION DES OBJETS VOLATILES
       CNOLT  = '&&XPRLS.CNOLT'
       CNOLN  = '&&XPRLS.CNOLN'
 
+C     EVALUATE THE TIME LEFT FOR THE INTEGRATION
+      IF (DTLEFT.GT.CFL) THEN
+         DT=CFL
+         DTLEFT = DTLEFT-CFL
+      ELSE
+         DT=DTLEFT
+         DTLEFT=0
+      ENDIF
 
 C-----------------------------------------------------------------------
 C     CALCUL DES LEVEL SETS INTERMEDIAIRES
@@ -126,22 +256,31 @@ C-----------------------------------------------------------------------
       CALL JEVEUO(CNSLNI//'.CNSV','E',JLNI)
       CALL JEVEUO(CNSLNI//'.CNSL','E',JLNIL)
 
+C     INTEGRATE THE EQUATIONS FOR EACH NODE IN THE MESH
       DO 100 I=1,NBNO
-      NORMGT = ( ZR(JGRTNO-1+3*(I-1)+1)**2.D0 +
-     &           ZR(JGRTNO-1+3*(I-1)+2)**2.D0 +
-     &           ZR(JGRTNO-1+3*(I-1)+3)**2.D0 )**.5D0
-      NORMGN = ( ZR(JGRNNO-1+3*(I-1)+1)**2.D0 +
-     &           ZR(JGRNNO-1+3*(I-1)+2)**2.D0 +
-     &           ZR(JGRNNO-1+3*(I-1)+3)**2.D0 )**.5D0
+
          ZL(JLTIL-1+I)=.TRUE.
          ZL(JLNIL-1+I)=.TRUE.
-         IF ( (NORMGN.EQ.(0.D0)) .AND. (NORMGT.EQ.(0.D0)) ) THEN
-            ZR(JLTI-1+I)=0.D0
-            ZR(JLNI-1+I)=0.D0
-         ELSE
-            ZR(JLTI-1+I)=ZR(JLTNO-1+I)-DELTAT*ZR(JVTNO-1+I)*NORMGT
-            ZR(JLNI-1+I)=ZR(JLNNO-1+I)-DELTAT*ZR(JVNNO-1+I)*NORMGN
-         ENDIF
+         ZR(JLNI-1+I) = 0.D0
+         ZR(JLTI-1+I) = 0.D0
+
+         DO 105 J=1,NDIM
+C           SCALAR PRODUCT BETWEEN THE NORMAL PROPAGATION SPEED VECTOR
+C           AND THE NORMAL GRADIENT
+            ZR(JLNI-1+I)=ZR(JLNI-1+I)+ZR(JVNV-1+NDIM*(I-1)+J)*
+     &                   ZR(JGRNNO-1+NDIM*(I-1)+J)
+
+C           SCALAR PRODUCT BETWEEN THE TANGENTIAL PROPAGATION SPEED
+C           VECTOR AND  THE TANGENTIAL GRADIENT
+            ZR(JLTI-1+I)=ZR(JLTI-1+I)+ZR(JVTV-1+NDIM*(I-1)+J)*
+     &                   ZR(JGRTNO-1+NDIM*(I-1)+J)
+105      CONTINUE
+
+C        CALCULATE THE VALUE OF THE INTERMEDIATE LEVEL SETS
+C        (RUNGE-KUTTA)
+         ZR(JLTI-1+I)=ZR(JLTNO-1+I)-DT*ZR(JLTI-1+I)
+         ZR(JLNI-1+I)=ZR(JLNNO-1+I)-DT*ZR(JLNI-1+I)
+
  100  CONTINUE
 
 C-----------------------------------------------------------------------
@@ -188,22 +327,30 @@ C-----------------------------------------------------------------------
 C     CALCUL DES LEVEL SETS RESULTANTES
 C-----------------------------------------------------------------------
 
+C     INTEGRATE THE EQUATIONS FOR EACH NODE IN THE MESH
       DO 200 I=1,NBNO
-         NORGTI = ( ZR(JGRTI-1+3*(I-1)+1)**2.D0 +
-     &              ZR(JGRTI-1+3*(I-1)+2)**2.D0 +
-     &              ZR(JGRTI-1+3*(I-1)+3)**2.D0 )**.5D0
-         NORGNI = ( ZR(JGRNI-1+3*(I-1)+1)**2.D0 +
-     &              ZR(JGRNI-1+3*(I-1)+2)**2.D0 +
-     &              ZR(JGRNI-1+3*(I-1)+3)**2.D0 )**.5D0
-         IF ( (NORGTI.EQ.(0.D0)) .AND. (NORGNI.EQ.(0.D0)) ) THEN
-            ZR(JLTNO-1+I) = 0.D0
-            ZR(JLNNO-1+I) = 0.D0
-         ELSE
-            ZR(JLTNO-1+I) = (ZR(JLTNO-1+I)+ZR(JLTI-1+I))/2.D0
-     &                      - DELTAT/2.D0*ZR(JVTNO-1+I)*NORGTI
-            ZR(JLNNO-1+I) = (ZR(JLNNO-1+I)+ZR(JLNI-1+I))/2.D0
-     &                      - DELTAT/2.D0*ZR(JVNNO-1+I)*NORGNI
-         ENDIF
+
+         TMPLSN = 0.D0
+         TMPLST = 0.D0
+
+         DO 205 J=1,NDIM
+C           SCALAR PRODUCT BETWEEN THE NORMAL PROPAGATION SPEED VECTOR
+C           AND THE NORMAL GRADIENT
+            TMPLSN = TMPLSN+ZR(JVNV-1+NDIM*(I-1)+J)*
+     &                      ZR(JGRNI-1+NDIM*(I-1)+J)
+
+C           SCALAR PRODUCT BETWEEN THE TANGENTIAL PROPAGATION SPEED
+C           VECTOR AND THE TANGENTIAL GRADIENT
+            TMPLST = TMPLST+ZR(JVTV-1+NDIM*(I-1)+J)*
+     &                      ZR(JGRTI-1+NDIM*(I-1)+J)
+205      CONTINUE
+
+C        CALCULATE THE NEW VALUE OF THE LEVEL SETS (RUNGE-KUTTA)
+         ZR(JLNNO-1+I) = (ZR(JLNNO-1+I)+ZR(JLNI-1+I))/2.D0
+     &                      - DT/2.D0*TMPLSN
+         ZR(JLTNO-1+I) = (ZR(JLTNO-1+I)+ZR(JLTI-1+I))/2.D0
+     &                      - DT/2.D0*TMPLST
+
  200  CONTINUE
 
 C-----------------------------------------------------------------------
@@ -258,6 +405,20 @@ C  DESTRUCTION DES OBJETS VOLATILES
       CALL JEDETR(CHAMS)
       CALL JEDETR(CNOLT)
       CALL JEDETR(CNOLN)
+
+C     INCREMENT THE ITERATION COUNTER
+      NI=NI+1
+
+C     CHECK IF THE INTEGRATION HAS BEEN DONE FOR THE WHOLE TIME INTERVAL
+      IF (DTLEFT.GT.R8PREM()) GOTO 300
+
+C     WRITE SOME INFORMATIONS
+      IF (NIV.GE.0) THEN
+         WRITE(IFM,*)'   NOMBRE D''ITERATIONS                    = ',NI
+      ENDIF
+
+      CALL JEDETR(CNSVVT)
+      CALL JEDETR(CNSVVN)
 
 C-----------------------------------------------------------------------
 C     FIN

@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
+# ssnv186d.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,18 +42,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='3D',),),);
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-17.5');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-100. ');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(
-                                 FONC_LT=LT,
-                                 FONC_LN=LN,
-                                 ),
-                    GROUP_MA_ENRI='VOL',
-                    ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(-0.5,0.,1.5 ),),
-                    INFO=1,);
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN),
+                    GROUP_MA_ENRI='VOL',);
+
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,

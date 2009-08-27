@@ -1,36 +1,41 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
-TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
+from Macro.test_fonction_ops import test_fonction_ops
+
+TEST_FONCTION=MACRO(nom="TEST_FONCTION",op=test_fonction_ops,sd_prod=None,
             fr="Extraction d'une valeur numérique ou d'un attribut de fonction pour comparaison à une valeur de référence",
             UIinfo={"groupes":("Impression",)},
          TEST_NOOK       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          VALEUR          =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction ou d une nappe",
            regles=(UN_PARMI('VALE_REFE','VALE_REFE_C',),
+                   UN_PARMI('VALE_PARA','INTERVALLE'),
                    DERIVABLE('FONCTION'),),
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c,nappe_sdaster,formule) ),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
                                  fr="Paramètre de sensibilité.",
                                  ang="Sensitivity parameter"),
            NOM_PARA        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2),
-           VALE_PARA       =SIMP(statut='o',typ='R'  ,validators=NoRepeat(),max=2),
+           VALE_PARA       =SIMP(statut='f',typ='R'  ,validators=NoRepeat(),max=2),
+           INTERVALLE      =SIMP(statut='f',typ='R'  ,validators=NoRepeat(),min=2,max=2),
            VALE_REFE       =SIMP(statut='f',typ='R',max='**' ),
            VALE_REFE_C     =SIMP(statut='f',typ='C',max='**' ),
            VALE_ABS        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
@@ -40,7 +45,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
                                  defaut= 1.E-3 ),
            REFERENCE       =SIMP(statut='f',typ='TXM',
                                  into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
-           b_version = BLOC (condition = "REFERENCE == 'NON_REGRESSION'", 
+           b_version = BLOC (condition = "REFERENCE == 'NON_REGRESSION'",
              VERSION         =SIMP(statut='f',typ='TXM' ),
            ),
          ),
@@ -56,7 +61,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
            ATTR_REFE       =SIMP(statut='o',typ='TXM' ),
            REFERENCE       =SIMP(statut='f',typ='TXM',
                                  into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
-           b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'", 
+           b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'",
              VERSION         =SIMP(statut='f',typ='TXM' ),
            ),
          ),
@@ -66,10 +71,10 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
            INTE_SPEC       =SIMP(statut='o',typ=table_fonction),
            NOEUD_I         =SIMP(statut='f',typ=no),
            NUME_ORDRE_I    =SIMP(statut='f',typ='I' ),
-           b_nume_ordre_i = BLOC (condition = "NUME_ORDRE_I != None", 
+           b_nume_ordre_i = BLOC (condition = "NUME_ORDRE_I != None",
              NUME_ORDRE_J    =SIMP(statut='o',typ='I' ),
            ),
-           b_noeud_i = BLOC (condition = "NOEUD_I != None",             
+           b_noeud_i = BLOC (condition = "NOEUD_I != None",
              NOEUD_J         =SIMP(statut='o',typ=no),
              NOM_CMP_I       =SIMP(statut='o',typ='TXM' ),
              NOM_CMP_J       =SIMP(statut='o',typ='TXM' ),
@@ -83,7 +88,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
                                  defaut= 1.E-3 ),
            REFERENCE       =SIMP(statut='f',typ='TXM',
                                  into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
-           b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'", 
+           b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'",
              VERSION         =SIMP(statut='f',typ='TXM' ),
            ),
          ),

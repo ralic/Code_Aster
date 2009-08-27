@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF propa_fiss_ops Macro  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,12 +21,12 @@
 
 def InterpolationLineaire(x0, points) :
    """
-       Interpolation Lineaire de x0 sur la fonction discrétisée yi=points(xi) i=1,..,n
+       Interpolation Lineaire de x0 sur la fonction discretisee yi=points(xi) i=1,..,n
    """
    # x0     = Une abscisse        (1 colonne, 1 ligne)
    # points = Tableau de n points (2 colonnes, n lignes)
    # on suppose qu'il existe au moins 2 points, 
-   # et que les points sont classés selon les abscisses croissantes
+   # et que les points sont classes selon les abscisses croissantes
 
    n = len(points)
    if ( x0 < points[0][0] )  :
@@ -45,9 +45,9 @@ def InterpolFondFiss(s0, Coorfo) :
    """
        Interpolation des points du fond de fissure
    """
-   # s0     = abscisse curviligne du point considéré      (0 < s0 > 1)
-   # Coorfo = Coordonnées du fond (extrait de la sd fiss_xfem)
-   # xyz = Coordonnées du point
+   # s0     = abscisse curviligne du point considere      (0 < s0 > 1)
+   # Coorfo = Coordonnees du fond (extrait de la sd fiss_xfem)
+   # xyz = Coordonnees du point
 
    n = len(Coorfo) / 4
    if ( s0 < Coorfo[3] )  :
@@ -87,6 +87,7 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
    return VPVNi
 
 
+#def propa_fiss_ops(self,METHODE_PROPA,TEST_MAIL,INFO,**args):
 def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   """
   Macro PROPA_FISS
@@ -104,6 +105,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   import Numeric
   from Numeric import array,asarray,Float,concatenate,sqrt,sign,resize,dot,zeros
   from math import atan, atan2, cos, sin
+  from SD.sd_mater     import sd_compor1
+  from Cata.cata import table_sdaster,fiss_xfem,modele_sdaster
 
 
   EnumTypes = (ListType, TupleType)
@@ -118,31 +121,208 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   CALC_TABLE    =self.get_cmd('CALC_TABLE'  )
   PROPA_XFEM = self.get_cmd('PROPA_XFEM'  )
   DEFI_FISS_XFEM = self.get_cmd('DEFI_FISS_XFEM'  )
+  MODI_MODELE_XFEM = self.get_cmd('MODI_MODELE_XFEM'  )
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
-  
+
 #------------------------------------------------------------------
-# CAS 1 : METHODE_PROPA = 'HAMILTON'
+# Loi de propagation 
+  ##if (METHODE_PROPA != 'INITIALISATION') and (TEST_MAIL == 'NON' ) :
+  #if (METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND') : 
+    #TEST_MAIL=args['TEST_MAIL']
+    #if (TEST_MAIL == 'NON' ) :
+      #LOI= args['LOI_PROPA']
+      #if LOI == None :
+         #print 'MESSAGE D ERREUR : IL FAUT UNE LOI DE PROPAGATION' 
+      #dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
+## Recuperation de E et de Nu
+      ##fiss =    args['FISSURE']
+      ##self.DeclareOut('nomfiss',fiss)
+      #mat = dLoi['MATER']
+      #matph = mat.NOMRC.get()  
+      #phenom=None
+      #for cmpt in matph :
+         #if cmpt[:4]=='ELAS' :
+            #phenom=cmpt
+            #break
+      #if phenom==None : UTMESS('F','RUPTURE0_5')
+      #compor = sd_compor1('%-8s.%s' % (mat.nom, phenom))
+      #valk = [s.strip() for s in compor.VALK.get()]
+      #valr = compor.VALR.get()
+      #dicmat=dict(zip(valk,valr))
+      #if dicmat.has_key('TEMP_DEF')  :
+        #nompar = ('TEMP',)
+        #valpar = (dicmat['TEMP_DEF'],)
+        #UTMESS('A','XFEM2_85',valr=valpar)
+        #nomres=['E','NU']
+        #valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,'F')
+        #e = valres[0]
+        #nu = valres[1]
+      #else :
+        #e  = dicmat['E']
+        #nu = dicmat['NU']  
+## Construction catalogue PROPA_XFEM
+      #dLoix = {}
+      #dLoix['LOI'] = 'PARIS'
+      #dLoix['E'] = e
+      #dLoix['NU'] = nu
+      #dLoix['C'] = dLoi['C']
+      #dLoix['M'] = dLoi['M']
+      #dLoix['N'] = dLoi['N']
+
+#------------------------------------------------------------------
+# CAS 1 : METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND'
 #
-  if METHODE_PROPA == 'HAMILTON' :
-    mod =  args['MODELE']
-    tabk = args['TABLE']
-    meth =  args['METHODE']
-    ray =  args['RAYON']
-    LOI_PROPA = args['LOI_PROPA']
-    if LOI_PROPA != None :
-      coefc =  LOI_PROPA['C']
-      coefm =  LOI_PROPA['M']
-    fiss =    args['FISSURE']
-    self.DeclareOut('nomfiss',fiss)
-    nomfiss = PROPA_XFEM(MODELE=mod,
-                         TABLE=tabk,
-                         METHODE=meth,
-                         LOI_PROPA=_F(LOI='PARIS',
-                                      C=coefc,
-                                      M=coefm),
-                         RAYON=ray,
-                         INFO=INFO,)
+
+  if (METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND'):
+
+    TEST_MAIL=args['TEST_MAIL']
+    
+    if (TEST_MAIL == 'NON' ) :
+      LOI= args['LOI_PROPA']
+      if LOI == None :
+         print 'MESSAGE D ERREUR : IL FAUT UNE LOI DE PROPAGATION' 
+      dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
+      #fiss =    args['FISSURE']
+      #self.DeclareOut('nomfiss',fiss)
+      mat = dLoi['MATER']
+      matph = mat.NOMRC.get()  
+      phenom=None
+      for cmpt in matph :
+         if cmpt[:4]=='ELAS' :
+            phenom=cmpt
+            break
+      if phenom==None : UTMESS('F','RUPTURE0_5')
+      compor = sd_compor1('%-8s.%s' % (mat.nom, phenom))
+      valk = [s.strip() for s in compor.VALK.get()]
+      valr = compor.VALR.get()
+      dicmat=dict(zip(valk,valr))
+      if dicmat.has_key('TEMP_DEF')  :
+        nompar = ('TEMP',)
+        valpar = (dicmat['TEMP_DEF'],)
+        UTMESS('A','XFEM2_85',valr=valpar)
+        nomres=['E','NU']
+        valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,'F')
+        e = valres[0]
+        nu = valres[1]
+      else :
+        e  = dicmat['E']
+        nu = dicmat['NU']  
+# Construction catalogue PROPA_XFEM
+      dLoix = {}
+      dLoix['LOI'] = 'PARIS'
+      dLoix['E'] = e
+      dLoix['NU'] = nu
+      dLoix['C'] = dLoi['C']
+      dLoix['M'] = dLoi['M']
+      dLoix['N'] = dLoi['N']
+     
+    # Retreive all the parameters of PROPA_FISS
+    mcsimp = {}
+    mcsimp['MODELE'] =  args['MODELE']
+    mcsimp['RAYON'] =  args['RAYON']
+    mcsimp['DA_MAX'] =  args['DA_MAX']
+    mcsimp['TEST_MAIL']=TEST_MAIL
+    Fissures = args['FISSURE']
+
+#   Build the list for the PROPA_XFEM operateur
+    Table = []
+    GrilleAux = []
+    FissAct = []
+    FissNou = []
+    NbPointFond = []
+    
+    for Fiss in Fissures :
+        if Fiss['GRILLE_AUX']!=None :
+           GrilleAux.append(Fiss['GRILLE_AUX'])
+        else :
+           GrilleAux.append(args['MODELE'])
+        FissAct.append(Fiss['FISS_ACTUELLE'])
+        FissNou.append(Fiss['FISS_PROPAGEE'])
+        if TEST_MAIL == 'NON':
+            Table.append(Fiss['TABLE'])
+            if Fiss['NB_POINT_FOND']!=None :
+               if isinstance(Fiss['NB_POINT_FOND'],int) :
+                  NbPointFond.append(Fiss['NB_POINT_FOND'])
+               else :
+                  for nbptfo in range(0,len(Fiss['NB_POINT_FOND'])) :
+                      NbPointFond.append(Fiss['NB_POINT_FOND'][nbptfo])
+            else :
+               NbPointFond.append(-1)
+        
+    mcsimp['LISTE_FISS'] = FissAct
+    
+    if TEST_MAIL == 'NON':
+       mcsimp['TABLE'] = Table
+       mcsimp['NB_POINT_FOND'] = NbPointFond
+       mcsimp['LOI_PROPA'      ] =dLoix
+       
+       COMP_LINE = args['COMP_LINE']
+       if  COMP_LINE !=None : 
+           dcomp=COMP_LINE[0].cree_dict_valeurs(COMP_LINE[0].mc_liste)
+           mcsimp  ['COMP_LINE'      ] =dcomp
+
+    if TEST_MAIL != 'CONSTANT' :
+#      Ok. It's time for propagation! Let's call PROPA_XFEM for each
+#      propagating crack.
+       for NumFiss in range(0,len(FissAct)) :
+           mcsimp['FISS_PROP'] = FissAct[NumFiss]
+           mcsimp['GRILLE_AUX'] = 123
+           if GrilleAux[NumFiss]!=args['MODELE'] : 
+               mcsimp['GRILLE_AUX'] = GrilleAux[NumFiss]
+           else :
+               del mcsimp['GRILLE_AUX']
+           self.DeclareOut('nomfiss',FissNou[NumFiss])
+           nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
+           
+    else :
+#      Ok. I should make several crack propagation and check for the
+#      distance between each propagated front and the corresponding one
+#      at the beginning of the propagation.
+       UTMESS('A','XFEM2_60')
+       StepTot = args['ITERATIONS']
+       __Fis = [None]*(StepTot*len(FissAct))
+       __Mod = [None]*StepTot
+       mcsimp['TOLERANCE'] = args['TOLERANCE']
+       for NumStep in range(0,StepTot) :
+         
+           aster.affiche('MESSAGE',' ------------------------')
+           texte=' TEST_MAIL - ITERATION %d'%(NumStep+1)
+           aster.affiche('MESSAGE',texte)
+           aster.affiche('MESSAGE',' ------------------------')
+           
+           ListeFiss = []
+           mcsimp['DISTANCE'] = args['DA_MAX']*(NumStep+1)
+
+           for NumFiss in range(0,len(FissAct)) :
+              if NumStep==0 :
+                 mcsimp['FISS_PROP'] = FissAct[NumFiss]
+              else :
+                 mcsimp['MODELE'] = __Mod[NumStep-1]
+                 mcsimp['FISS_PROP'] = __Fis[(NumStep-1)*len(FissAct)+NumFiss]
+              mcsimp['FISS_INITIALE'] = FissAct[NumFiss]
+              mcsimp['GRILLE_AUX'] = 123
+              if GrilleAux[NumFiss]!=args['MODELE'] : 
+                 mcsimp['GRILLE_AUX'] = GrilleAux[NumFiss]
+              else :
+                  del mcsimp['GRILLE_AUX']
+              if NumStep==StepTot-1 :
+                 self.DeclareOut('nomfiss',FissNou[NumFiss])
+                 nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
+              else:
+                 __Fis[NumFiss+NumStep*len(FissAct)] = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
+                 ListeFiss.append(__Fis[NumFiss+NumStep*len(FissAct)])
+              
+           if NumStep<StepTot-1 :
+              aster.affiche('MESSAGE',' ------------------------')
+              aster.affiche('MESSAGE',' CREATION DU MODELE FISSURE TEMPORAIRE')
+              aster.affiche('MESSAGE',' ')
+              __Mod[NumStep] = MODI_MODELE_XFEM(MODELE_IN=args['MODELE'],FISSURE=(ListeFiss))
+              mcsimp['LISTE_FISS'] = ListeFiss
+              aster.affiche('MESSAGE',' ')
+              aster.affiche('MESSAGE',' ------------------------')
+              aster.affiche('MESSAGE',' ')
+
 
 #------------------------------------------------------------------
 # CAS 2 : METHODE_PROPA = 'MAILLAGE'
@@ -362,7 +542,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
          mm.cn = concatenate((mm.cn,LesNoeudsEnPlus))
          mm.correspondance_noeuds = tuple( list(mm.correspondance_noeuds) + NomNoeudsEnPlus )
   
-# Ajout Maille lèvre (quad4)      
+# Ajout Maille levre (quad4)      
       nbnotot = len(mm.correspondance_noeuds)
       NomMaillesEnPlus = []
       num_maille = []
@@ -450,7 +630,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       mm.cn = concatenate((mm.cn,LesNoeudsEnPlus))
       mm.correspondance_noeuds = tuple(linomno + NomNoeudsEnPlus )
       
-# Ajout Maille lèvre (SEG2)
+# Ajout Maille levre (SEG2)
       NomMaillesEnPlus =     ['MX%s%i' %(ALPHABET[0], it+1)]
       num_maille = [ nbma + 1 ]
       num_maille.append( nbma + 1 )
@@ -516,7 +696,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       mm.cn = LesNoeudsEnPlus
       mm.correspondance_noeuds = tuple( NomNoeudsEnPlus )
 
-# Ajout Maille lèvre (SEG2)
+# Ajout Maille levre (SEG2)
       it = 1
       nbma = 0
       nbno = 0
@@ -584,7 +764,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         mm.cn = concatenate((mm.cn,LesNoeudsEnPlus))
         mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds)  +NomNoeudsEnPlus )
 
-# Ajout Maille lèvre (quad4)      
+# Ajout Maille levre (quad4)      
       NomMaillesEnPlus = []
       num_maille = []
       NoeudsMailles = []

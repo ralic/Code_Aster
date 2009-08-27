@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,21 +23,45 @@ PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
                 fr="Propagation de fissure avec X-FEM",
     
     MODELE        =SIMP(statut='o',typ=modele_sdaster),
-        
-    TABLE         =SIMP(statut='o',typ=table_sdaster),
 
-    LOI_PROPA     =FACT(statut='o',max=1,
-      LOI            =SIMP(statut='o',typ='TXM',into=("PARIS",),defaut="PARIS"),
-      b_paris        =BLOC( condition = "LOI=='PARIS'",
-        C            =SIMP(statut='o',typ='R',),
-        M            =SIMP(statut='o',typ='R',),),
-            ),
+    GRILLE_AUX    =SIMP(statut='f',typ=modele_sdaster),
+
+    TEST_MAIL     =SIMP(statut='f',typ='TXM',into=("NON","CONSTANT","LINEAIRE",),defaut="NON"),
+
+    DA_MAX        =SIMP(statut='o',typ='R'),
+
+    FISS_PROP     =SIMP(statut='o',typ=fiss_xfem),
+
+    LISTE_FISS    =SIMP(statut='o',typ=fiss_xfem,min=1,max='**'),
+        
+    b_propa =BLOC( condition = "TEST_MAIL == 'NON' ",
+                   NB_POINT_FOND =SIMP(statut='f',typ='I',min=1,max='**'),
+                   TABLE         =SIMP(statut='o',typ=table_sdaster,min=1,max='**'),
+                   LOI_PROPA     =FACT(statut='o',max=1,
+                   LOI            =SIMP(statut='o',typ='TXM',into=("PARIS",),defaut="PARIS"),
+                   b_paris        =BLOC( condition = "LOI=='PARIS'",
+                     C            =SIMP(statut='o',typ='R',),
+                     N            =SIMP(statut='o',typ='R',),
+                     M            =SIMP(statut='o',typ='R',),
+                     E            =SIMP(statut='o',typ='R',),
+                     NU           =SIMP(statut='o',typ='R',),),
+                       ),
+
+                   COMP_LINE      =FACT(statut='f',max=1, 
+                     COEF_MULT_MINI        =SIMP(statut='o',typ='R',),
+                     COEF_MULT_MAXI        =SIMP(statut='o',typ='R',),
+                       ),
+         ),
+
+    b_test_mail_const =BLOC( condition = "TEST_MAIL == 'CONSTANT' ",
+                             FISS_INITIALE =SIMP(statut='o',typ=fiss_xfem,max=1),
+                             DISTANCE      =SIMP(statut='o',typ='R',max=1),
+                             TOLERANCE     =SIMP(statut='o',typ='R',max=1),
+                           ),
             
     RAYON          =SIMP(statut='o',typ='R',),
           
-    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND",),defaut="SIMPLEXE"),
+    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND",),defaut="UPWIND"),
 
-#    RUNGE_KUTTA    =SIMP(statut='f',typ='I',into=("1","2",),defaut=1),
-
-    INFO           =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
+    INFO           =SIMP(statut='f',typ='I',defaut= 0,into=(0,1,2) ),
 )  ;

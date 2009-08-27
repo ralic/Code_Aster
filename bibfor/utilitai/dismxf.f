@@ -1,7 +1,7 @@
       SUBROUTINE DISMXF(CODMES,QUESTI,NOMOB,REPI,REPK,IER)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF UTILITAI  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-C      INTEGER JINFO
+      INTEGER JINFO
 
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
@@ -64,17 +64,15 @@ C
       CALL JEMARQ()
 
       IF (QUESTI.EQ.'TYPE_DISCONTINUITE') THEN
-C        CALL JEVEUO(NOMOB//'.INFO','L',JINFO)
-C        REPK = ZK8(JINFO-1+1)
-        REPK = 'FISSURE'
+        CALL JEVEUO(NOMOB//'.INFO','L',JINFO)
+        REPK = ZK16(JINFO-1+1)
       ELSE IF (QUESTI.EQ.'CHAM_DISCONTINUITE') THEN
-C        CALL JEVEUO(NOMOB//'.INFO','L',JINFO)
-C        REPK = ZK8(JINFO-1+2)
-        REPK = 'DEPL'
+        CALL JEVEUO(NOMOB//'.INFO','L',JINFO)
+        REPK = ZK16(JINFO-1+2)
       ELSE
-         CALL U2MESK(CODMES,'UTILITAI_49',1,QUESTI)
-         REPK = QUESTI
-         IER=1
+        CALL U2MESK(CODMES,'UTILITAI_49',1,QUESTI)
+        REPK = QUESTI
+        IER=1
       END IF
 C
       CALL JEDEMA()

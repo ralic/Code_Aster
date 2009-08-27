@@ -1,5 +1,6 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FISSURE AVEC X-FEM
+# ssnv173b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,19 +37,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      );
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(
-                                 FONC_LT=LT,
-                                 FONC_LN=LN,
-                                 ),
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',
-                    ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(-0.5,0.,1.5 ),),
-                    INFO=3,
-                    );
+                    INFO=3, );
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
@@ -113,16 +107,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-#                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
-                                  RESI_GLOB_MAXI=1e-07,
-#                                  RESI_GLOB_RELA=1e-06,
-                                  ),
-#                   SOLVEUR=_F(METHODE='LDLT',
-#                              RENUM='RCMK',
-#                              STOP_SINGULIER='OUI',),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=2,);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-07,),);
 
 UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -131,16 +116,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-#                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
-                                  RESI_GLOB_MAXI=1e-07,
-#                                  RESI_GLOB_RELA=1e-06,
-                                  ),
-#                   SOLVEUR=_F(METHODE='LDLT',
-#                              RENUM='RCMK',
-#                              STOP_SINGULIER='OUI',),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-07,),);
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOEUD=('N1','N2','N3','N4','N5','N21',),
@@ -148,7 +124,6 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-#                                NOM_CMP=('DX','DY','DZ','H1X','H1Y','H1Z',),
                                 OPERATION='EXTRACTION',),);
 
 DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -157,7 +132,6 @@ DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-#                                NOM_CMP=('DX','DY','DZ','H1X','H1Y','H1Z',),
                                 OPERATION='EXTRACTION',),);
 
 IMPR_TABLE(TABLE=DEP1,

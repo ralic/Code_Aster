@@ -1,6 +1,7 @@
 
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTENT AVEC XFEM
+# ssnv182f.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,15 +46,11 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
 THETA=-30./180.*pi
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='(Y-10)*cos(THETA)-sin(THETA)*(X-10)');
-LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X*cos(THETA)-Y*sin(THETA)-100');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(
-                                 FONC_LT=LT,
-                                 FONC_LN=LN,
-                                 ),
-                    GROUP_MA_ENRI='SURF',
-                    INFO=1,);
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
+                    GROUP_MA_ENRI='SURF',);
  
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
@@ -154,7 +151,7 @@ IMPR_TABLE(TABLE=LAG,
            IMPR_FONCTION='NON',);
 
 LAREF=-.05*3./4.
-LA1REF=1./(3.**.5)
+LA1REF=-1./(3.**.5)
 
 
 # -------------------------------------------------------------   

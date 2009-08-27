@@ -1,7 +1,7 @@
       SUBROUTINE CGCRTB(LATABL,OPTIO1,DIME,LMELAS,TROIDL,NBPRUP,
      &                  NOPRUP,TYPRUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,25 +61,29 @@ C
           NOPRUP(3) = 'G'
           TYPRUP(3) = 'R'
       ELSEIF((OPTIO1.EQ.'CALC_G_X').AND. TROIDL)THEN
-          NBPRUP = 5
-          NOPRUP(1) = 'NUME_ORDRE'
+          NBPRUP = 6
+          NOPRUP(1) = 'NUME_FOND'
           TYPRUP(1) = 'I'
-          NOPRUP(2) = 'INST'
-          TYPRUP(2) = 'R'
-          NOPRUP(3) = 'NUM_PT'
-          TYPRUP(3) = 'I'
-          NOPRUP(4) = 'ABSC_CURV'
-          TYPRUP(4) = 'R'
-          NOPRUP(5) = 'G_LOCAL'
-          TYPRUP(5) = 'R'   
+          NOPRUP(2) = 'NUME_ORDRE'
+          TYPRUP(2) = 'I'
+          NOPRUP(3) = 'INST'
+          TYPRUP(3) = 'R'
+          NOPRUP(4) = 'NUM_PT'
+          TYPRUP(4) = 'I'
+          NOPRUP(5) = 'ABSC_CURV'
+          TYPRUP(5) = 'R'
+          NOPRUP(6) = 'G_LOCAL'
+          TYPRUP(6) = 'R'   
       ELSEIF((OPTIO1.EQ.'CALC_G_X').AND. DIME.EQ.2)THEN
-          NBPRUP = 3
-          NOPRUP(1) = 'NUME_ORDRE'
+          NBPRUP = 4
+          NOPRUP(1) = 'NUME_FOND'
           TYPRUP(1) = 'I'
-          NOPRUP(2) = 'INST'
-          TYPRUP(2) = 'R'
-          NOPRUP(3) = 'G'
-          TYPRUP(3) = 'R'   
+          NOPRUP(2) = 'NUME_ORDRE'
+          TYPRUP(2) = 'I'
+          NOPRUP(3) = 'INST'
+          TYPRUP(3) = 'R'
+          NOPRUP(4) = 'G'
+          TYPRUP(4) = 'R'   
       ELSEIF((OPTIO1.EQ.'CALC_G').AND. TROIDL)THEN
           NBPRUP = 5
           IF(LMELAS)THEN
@@ -188,35 +192,60 @@ C
           TYPRUP(5) = 'R'
           NOPRUP(6) = 'G_IRWIN'
           TYPRUP(6) = 'R'
-      ELSEIF(OPTIO1(1:6).EQ.'CALC_K' .AND. TROIDL)THEN
-          NBPRUP = 10
+      ELSE IF( OPTIO1.EQ.'CALC_K_X' .AND. DIME.EQ.2)THEN
+          NBPRUP = 7
+          NOPRUP(1) = 'NUME_FOND'
+          TYPRUP(1) = 'I'
           IF(LMELAS)THEN
-            NOPRUP(1) = 'NUME_CAS'
-            TYPRUP(1) = 'I'
-            NOPRUP(2) = 'NOM_CAS'
-            TYPRUP(2) = 'K16'
+            NOPRUP(2) = 'NUME_CAS'
+            TYPRUP(2) = 'I'
+            NOPRUP(3) = 'NOM_CAS'
+            TYPRUP(3) = 'K16'
           ELSE
-            NOPRUP(1) = 'NUME_ORDRE'
-            TYPRUP(1) = 'I'
-            NOPRUP(2) = 'INST'
-            TYPRUP(2) = 'R'
+            NOPRUP(2) = 'NUME_ORDRE'
+            TYPRUP(2) = 'I'
+            NOPRUP(3) = 'INST'
+            TYPRUP(3) = 'R'
           ENDIF
-          NOPRUP(3) = 'NUM_PT'
-          TYPRUP(3) = 'I'
-          NOPRUP(4) = 'ABSC_CURV'
+          NOPRUP(4) = 'G'
           TYPRUP(4) = 'R'
-          NOPRUP(5) = 'K1_LOCAL'
+          NOPRUP(5) = 'K1'
           TYPRUP(5) = 'R'
-          NOPRUP(6) = 'K2_LOCAL'
+          NOPRUP(6) = 'K2'
           TYPRUP(6) = 'R'
-          NOPRUP(7) = 'K3_LOCAL'
+          NOPRUP(7) = 'G_IRWIN'
           TYPRUP(7) = 'R'
-          NOPRUP(8) = 'G_LOCAL'
+      ELSEIF(OPTIO1(1:6).EQ.'CALC_K' .AND. TROIDL)THEN
+          NBPRUP = 11
+          NOPRUP(1) = 'NUME_FOND'
+          TYPRUP(1) = 'I'
+          IF(LMELAS)THEN
+            NOPRUP(2) = 'NUME_CAS'
+            TYPRUP(2) = 'I'
+            NOPRUP(3) = 'NOM_CAS'
+            TYPRUP(3) = 'K16'
+          ELSE
+            NOPRUP(2) = 'NUME_ORDRE'
+            TYPRUP(2) = 'I'
+            NOPRUP(3) = 'INST'
+            TYPRUP(3) = 'R'
+          ENDIF
+          NOPRUP(4) = 'NUM_PT'
+          TYPRUP(4) = 'I'
+          NOPRUP(5) = 'ABSC_CURV'
+          TYPRUP(5) = 'R'
+          NOPRUP(6) = 'K1_LOCAL'
+          TYPRUP(6) = 'R'
+          NOPRUP(7) = 'K2_LOCAL'
+          TYPRUP(7) = 'R'
+          NOPRUP(8) = 'K3_LOCAL'
           TYPRUP(8) = 'R'
-          NOPRUP(9) = 'BETA_LOCAL'
+          NOPRUP(9) = 'G_LOCAL'
           TYPRUP(9) = 'R'
-          NOPRUP(10) = 'G_IRWIN'
+          NOPRUP(10) = 'BETA_LOCAL'
           TYPRUP(10) = 'R'
+          NOPRUP(11) = 'G_IRWIN'
+          TYPRUP(11) = 'R'
       ELSEIF ( OPTIO1 .EQ. 'CALC_DK_DG_E' ) THEN
           NBPRUP = 5
           IF(LMELAS)THEN

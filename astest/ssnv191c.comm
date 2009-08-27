@@ -1,5 +1,6 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 2D
+# ssnv191c.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,12 +65,10 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 LN = FORMULE(VALE='Y-1.5',
              NOM_PARA=('X','Y',),);
 
-LT = FORMULE(VALE='X-100.',
-             NOM_PARA=('X','Y',),);
 
 FISS=DEFI_FISS_XFEM(MODELE=MO,
-                    DEFI_FISS=_F(FONC_LT=LT,
-                                 FONC_LN=LN,),
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='MTOT',
                     INFO=3,);
 

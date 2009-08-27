@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,9 +28,10 @@ def propa_fiss_prod(self,**args):
   if args.has_key('MA_XFEM2')  :
       MA_XFEM2 = args['MA_XFEM2']
       self.type_sdprod(MA_XFEM2,maillage_sdaster)
-  if args.has_key('FISSURE')  :
+  if args.has_key('FISSURE') :
       FISSURE = args['FISSURE']
-      self.type_sdprod(FISSURE,fiss_xfem)
+      for numfis in FISSURE :
+          self.type_sdprod(numfis['FISS_PROPAGEE'],fiss_xfem)
   return None
 
 PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
@@ -38,15 +39,46 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
             UIinfo={"groupes":("Post traitements",)},
 
         METHODE_PROPA = SIMP(statut='o',typ='TXM',
-                               into=("HAMILTON","MAILLAGE","INITIALISATION") ),
+                               into=("SIMPLEXE","UPWIND","MAILLAGE","INITIALISATION") ),
             
-        b_hamilton    =BLOC(condition="(METHODE_PROPA=='HAMILTON')",
-              MODELE        =SIMP(statut='o',typ=modele_sdaster),
-              RAYON          =SIMP(statut='o',typ='R',),
-              METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND",),defaut="SIMPLEXE"),
-              FISSURE =  SIMP(statut='o',typ=CO),
-              TABLE   =       SIMP(statut='o',typ=table_sdaster),
-                                ),          
+        b_hamilton = BLOC(condition="(METHODE_PROPA=='SIMPLEXE') or (METHODE_PROPA=='UPWIND') ",
+              MODELE        = SIMP(statut='o',typ=modele_sdaster),
+              TEST_MAIL     = SIMP(statut='f',typ='TXM',into=("NON","CONSTANT","LINEAIRE",),defaut="NON"),
+              DA_MAX        = SIMP(statut='o',typ='R',max=1),
+              RAYON         = SIMP(statut='o',typ='R',),
+              b_propagation = BLOC(condition = "TEST_MAIL == 'NON' ",
+                                   FISSURE   = FACT(statut='o',min=1,max='**',
+                                                    FISS_ACTUELLE  = SIMP(statut='o',typ=fiss_xfem,max=1),
+                                                    FISS_PROPAGEE  = SIMP(statut='o',typ=CO,max=1),
+                                                    GRILLE_AUX     = SIMP(statut='f',typ=modele_sdaster,max=1),
+                                                    NB_POINT_FOND  = SIMP(statut='f',typ='I',max='**'),
+                                                    TABLE          = SIMP(statut='o',typ=table_sdaster,max=1),
+                                                    ),
+                                   LOI_PROPA = FACT(statut='o',max=1,
+                                                    LOI     = SIMP(statut='o',typ='TXM',into=("PARIS",),defaut="PARIS"),
+                                                    b_paris = BLOC(condition = "LOI=='PARIS'",
+                                                                   C = SIMP(statut='o',typ='R',),
+                                                                   N = SIMP(statut='o',typ='R',),
+                                                                   M = SIMP(statut='o',typ='R',),
+                                                                  ),
+                                                    MATER = SIMP(statut='o',typ=mater_sdaster,),
+                                                   ),
+                                   COMP_LINE = FACT(statut='f',max=1, 
+                                                    COEF_MULT_MINI = SIMP(statut='o',typ='R',),
+                                                    COEF_MULT_MAXI = SIMP(statut='o',typ='R',),
+                                                   ),
+                                   ),
+              b_test_const  = BLOC(condition = "TEST_MAIL == 'CONSTANT' ",
+                                   FISSURE   = FACT(statut='o',min=1,max='**',
+                                                    FISS_ACTUELLE  = SIMP(statut='o',typ=fiss_xfem,max=1),
+                                                    FISS_PROPAGEE  = SIMP(statut='o',typ=CO,max=1),
+                                                    GRILLE_AUX     = SIMP(statut='f',typ=modele_sdaster,max=1),
+                                                    ),
+                                   ITERATIONS     = SIMP(statut='f',typ='I',max=1,val_min=3,defaut=5),
+                                   TOLERANCE      = SIMP(statut='f',typ='R',max=1,val_min=0.0,val_max=100.0,defaut=5.0),
+                                  ),
+
+                         ),
 
         b_maillage    =BLOC(condition="(METHODE_PROPA=='MAILLAGE')",
                MA_STRUC       = SIMP(statut='o',typ=maillage_sdaster), 
@@ -59,7 +91,7 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
                HYPOTHESE      = SIMP(statut='f',typ='TXM',into=("PLAN","NON_PLAN"),defaut="NON_PLAN"),
                MA_XFEM2       = SIMP(statut='f',typ=CO), 
                MA_TOT2        = SIMP(statut='o',typ=CO), 
-               TABLE          = SIMP(statut='o',typ=table_sdaster),
+               TABLE          = SIMP(statut='o',typ=table_sdaster,max=1),
                                 ),      
                                     
         b_init    =BLOC(condition="(METHODE_PROPA=='INITIALISATION')",
@@ -75,17 +107,19 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
                MA_TOT2     = SIMP(statut='o',typ=CO), 
                MA_XFEM2       = SIMP(statut='f',typ=CO), 
                                 ),          
-       
-        LOI_PROPA     =FACT(statut='f',max=1,
-               LOI =SIMP(statut='o',typ='TXM',into=("PARIS",),defaut="PARIS"),
-               b_paris  =BLOC( condition = "LOI=='PARIS'",
-                     C        = SIMP(statut='f',typ='R',),
-                     M        = SIMP(statut='o',typ='R',),
-                     DA_MAX   = SIMP(statut='f',typ='R',max=1),
-                     regles=(UN_PARMI('C','DA_MAX'),),
-                     ),
-            ),
-            
-        INFO          = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+
+        b_loi_et_comp_line=BLOC(condition="(METHODE_PROPA=='MAILLAGE') or (METHODE_PROPA=='INITIALISATION') ",
+                              LOI_PROPA = FACT(statut='f',max=1,
+                                          LOI = SIMP(statut='o',typ='TXM',into=("PARIS",),defaut="PARIS"),
+                                          b_paris  =BLOC( condition = "LOI=='PARIS'",
+                                                       C        = SIMP(statut='f',typ='R',),
+                                                       M        = SIMP(statut='o',typ='R',),
+                                                       DA_MAX   = SIMP(statut='f',typ='R',max=1),
+                                                       regles=(UN_PARMI('C','DA_MAX'),),
+                                                          ),
+                                               ),
+                              ),
+
+        INFO = SIMP(statut='f',typ='I',defaut=1,into=(0,1,2)),
 )
 

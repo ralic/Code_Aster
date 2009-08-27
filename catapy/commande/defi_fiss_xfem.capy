@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,21 +20,48 @@
 
 DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
-               fr="Définition des caratéristiques d'une fissure avec X-FEM",
+               fr="Définition des caratéristiques d'une fissure ou d'une interface avec X-FEM",
+
+# ------------------------------------------------------------------------------------------------------------------------
+#                       modele sous-jacent
+# ------------------------------------------------------------------------------------------------------------------------
 
     MODELE                =SIMP(statut='o',typ=modele_sdaster),
-    DEFI_FISS             =FACT(statut='o',max=01,
-      regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT','FORM_FISS','CHAM_NO_LSN'),
-                            ENSEMBLE('FONC_LT','FONC_LN'),
-                            ENSEMBLE('CHAM_NO_LSN','CHAM_NO_LST'),
-                            ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
+
+# ------------------------------------------------------------------------------------------------------------------------
+#                       fissure/interface
+# ------------------------------------------------------------------------------------------------------------------------
+
+      TYPE_DISCONTINUITE  =SIMP(statut='f',typ='TXM',into=("FISSURE","INTERFACE",) ,defaut="FISSURE",position='global'),
+
+# ------------------------------------------------------------------------------------------------------------------------
+#                       caracteristiques de la fissure/interface
+# ------------------------------------------------------------------------------------------------------------------------
+
+    DEFI_FISS             =FACT(statut='o',max=1,
+
+      regles              =UN_PARMI('GROUP_MA_FISS','FONC_LN','FORM_FISS','CHAM_NO_LSN'),
+
+# impossible de faire des regles dans des blocs condition, dommage
+#       b_fissure           =BLOC(condition = "TYPE_DISCONTINUITE == 'FISSURE' ",fr="Regles pour les fissures",           
+#                 regles    =(ENSEMBLE('FONC_LN','FONC_LT'),
+#                             ENSEMBLE('CHAM_NO_LSN','CHAM_NO_LST'),
+#                             ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
+#                                ),
+# 
+#       b_interface           =BLOC(condition = "TYPE_DISCONTINUITE == 'INTERFACE' ",fr="Regles pour les interfaces",           
+#                 regles    =(PRESENT_ABSENT('FONC_LN','FONC_LT'),
+#                             PRESENT_ABSENT('CHAM_NO_LSN','CHAM_NO_LST'),
+#                             PRESENT_ABSENT('GROUP_MA_FISS','GROUP_MA_FOND')),
+#                                ),
+
       FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       CHAM_NO_LSN         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
       CHAM_NO_LST         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
-      GROUP_MA_FISS       =SIMP(statut='f',typ=grma,max=01),
-      GROUP_MA_FOND       =SIMP(statut='f',typ=grma),
-      FORM_FISS           =SIMP(statut='f',typ='TXM',into=("ELLIPSE","CYLINDRE","DEMI_PLAN","SEGMENT","DEMI_DROITE") ),
+      GROUP_MA_FISS       =SIMP(statut='f',typ=grma,min=1,max=1),
+      GROUP_MA_FOND       =SIMP(statut='f',typ=grma,min=1,max=1),
+      FORM_FISS   =SIMP(statut='f',typ='TXM',into=("ELLIPSE","CYLINDRE","DEMI_PLAN","SEGMENT","DEMI_DROITE","INCLUSION","DROITE") ),
       b_ellipse           =BLOC(condition = "FORM_FISS == 'ELLIPSE' ",fr="Paramètres de la fissure elliptique",           
            DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.E+0),
            DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.E+0),
@@ -48,7 +75,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
            CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),),
-      b_demiplan         =BLOC(condition = "FORM_FISS == 'DEMI_PLAN' ",fr="Paramètres de la fissure plane à front droit", 
+      b_demiplan          =BLOC(condition = "FORM_FISS == 'DEMI_PLAN' ",fr="Paramètres de la fissure plane à front droit", 
            PFON           =SIMP(statut='o',typ='R',min=3,max=3),
            NORMALE        =SIMP(statut='o',typ='R',min=3,max=3),
            DTAN           =SIMP(statut='o',typ='R',min=3,max=3),),
@@ -67,22 +94,58 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
            CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),),
-    ),
+                            ),
+
+# ------------------------------------------------------------------------------------------------------------------------
+#                       partie du maillage potentiellement enrichie
+# ------------------------------------------------------------------------------------------------------------------------
+
     GROUP_MA_ENRI         =SIMP(statut='o',typ=grma,max=01),
-    TYPE_ENRI_FOND        =SIMP(statut='f',typ='TXM',into=("TOPOLOGIQUE","GEOMETRIQUE"),defaut="TOPOLOGIQUE" ),
-      b_enri_geom         =BLOC(condition = "TYPE_ENRI_FOND == 'GEOMETRIQUE' ",fr="Paramètres de l enrichissement geometrique",
+
+# ------------------------------------------------------------------------------------------------------------------------
+#                       types d'enrichissement 
+# ------------------------------------------------------------------------------------------------------------------------
+
+    b_enri_inte           =BLOC(condition = "TYPE_DISCONTINUITE == 'INTERFACE' ",     
+
+      CHAM_DISCONTINUITE  =SIMP(statut='f',typ='TXM',into=("DEPL","SIGM"),defaut="DEPL" ),
+
+                          ),
+
+
+    b_enri_fiss           =BLOC(condition = "TYPE_DISCONTINUITE == 'FISSURE' ",           
+
+      CHAM_DISCONTINUITE  =SIMP(statut='f',typ='TXM',into=("DEPL",),defaut="DEPL" ),
+      TYPE_ENRI_FOND      =SIMP(statut='f',typ='TXM',into=("TOPOLOGIQUE","GEOMETRIQUE"),defaut="TOPOLOGIQUE" ),
+
+        b_enri_geom       =BLOC(condition = "TYPE_ENRI_FOND == 'GEOMETRIQUE' ",fr="Paramètres de l enrichissement geometrique",
            RAYON_ENRI     =SIMP(statut='f',typ='R',val_min=0.E+0),
 
-        b_enri_couches    =BLOC(condition = "(RAYON_ENRI == None) ",fr="Paramètres de l enrichissement à n couches",
+          b_enri_couches  =BLOC(condition = "(RAYON_ENRI == None) ",fr="Paramètres de l enrichissement à n couches",
            NB_COUCHES     =SIMP(statut='f',typ='I',defaut=4,val_min=1),
-                          ),
-                        
+
+                               ),
+                             ),                        
                           ),
 
-    ORIE_FOND             =FACT(statut='f',max=01,
-      PFON_INI            =SIMP(statut='o',typ='R',max=03),
-      VECT_ORIE           =SIMP(statut='o',typ='R',max=03),
-      POINT_ORIG          =SIMP(statut='o',typ='R',max=03),
-    ),
+# ------------------------------------------------------------------------------------------------------------------------
+#                       orientation du fond de fissure
+# ------------------------------------------------------------------------------------------------------------------------
+
+    b_orie_fond           =BLOC(condition = "TYPE_DISCONTINUITE == 'FISSURE' ",           
+
+    ORIE_FOND             =FACT(statut='f',max=1,
+      PFON_INI            =SIMP(statut='o',typ='R',max=3),
+      VECT_ORIE           =SIMP(statut='o',typ='R',max=3),
+      POINT_ORIG          =SIMP(statut='o',typ='R',max=3),
+                               ),
+
+                             ),
+
+# ------------------------------------------------------------------------------------------------------------------------
+#                       info
+# ------------------------------------------------------------------------------------------------------------------------
+
     INFO                  =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,3,) ),
+
 )  ;

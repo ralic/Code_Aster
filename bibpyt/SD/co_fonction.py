@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_fonction SD  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -330,4 +330,14 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
          gr.AjoutCourbe(Val=[lx,ly], Lab=[dp['NOM_PARA_FONC'],dp['NOM_RESU']],
             Leg=os.linesep.join(self.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
+   def __call__(self,val1,val2):
+      ### Pour EFICAS : substitution de l'instance de classe
+      ### parametre par sa valeur
+      if isinstance(val1, ASSD):
+         val1=val1.valeur
+      if isinstance(val2, ASSD):
+         val2=val2.valeur
+      ###
+      __ff=self.convert()
+      return __ff(val1,val2)
 

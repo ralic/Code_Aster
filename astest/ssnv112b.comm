@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 # ssnv112b.para = tps_job 60 mem_job 200Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,6 +110,9 @@ RAMPE    = DEFI_FONCTION (
                1., 1.,
                ),
              ) ;
+
+DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTANTS),)
+
 EVOL   = STAT_NON_LINE (
              MODELE= MO,
              CHAM_MATER= CM,
@@ -118,9 +121,7 @@ EVOL   = STAT_NON_LINE (
 #                      _F(CHARGE=CH2,
                         FONC_MULT= RAMPE),
                      ),
-             INCREMENT= _F(
-               LIST_INST= INSTANTS,
-               ),
+             INCREMENT= _F(LIST_INST=DEFLIST,),
              COMP_INCR= _F(
                RELATION= 'VMIS_ISOT_LINE',
                DEFORMATION='SIMO_MIEHE'),

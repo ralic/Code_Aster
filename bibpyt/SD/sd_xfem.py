@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+#@ MODIF sd_xfem SD  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,6 +34,8 @@ from SD.sd_util      import *
 class sd_fiss_xfem(AsBase):
     nomj = SDNom(fin=8)
 
+    INFO   = AsVK16(lonmax=2,)   # info discontinuite
+
 # I.1) objets relatifs aux level sets
 
     LNNO   = sd_cham_no()
@@ -44,7 +46,7 @@ class sd_fiss_xfem(AsBase):
     FONDFISS        = Facultatif(AsVR())
     BASEFOND        = Facultatif(AsVR())
     FONDMULT        = Facultatif(AsVI())
-    CARAFOND        = AsVR(lonmax=12,)
+    CARAFOND        = Facultatif(AsVR(lonmax=12,))
 
 # I.2) objets relatifs à l'enrichissement
 
@@ -122,7 +124,6 @@ class sd_modele_xfem(AsBase):
     FISS   = AsVK8()             # noms des fissures
     NFIS   = AsVI(lonmax=1,)     # nombre de fissures
     XMAFIS = sd_carte()          # pour chaque maille : nom de la fissure
-
 
 
 #----------------------------------

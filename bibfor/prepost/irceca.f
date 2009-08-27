@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 27/08/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,6 +116,8 @@ C
           DO 14 I = 1 , NCMPV
             IF ( NUCMPV(I) .LE. ICOMAX ) THEN
               NCMP = NCMP + 1
+            ELSE IF (NOMGD.EQ.'VARI_R') THEN
+              NCMP = NCMP + 1         
             ELSE
               CALL CODENT ( NUCMPV(I), 'G', K8B )
               NOMCO = 'V'//K8B
@@ -146,13 +148,25 @@ C
           CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
           IF ( NBCPUT .NE. 0 ) THEN
             DO 18 ICM = 1,NBCPUT
-              DO 20 I = 1,NCMPMX
-                IF ( NCMPUT(ICM) .EQ. NCMPGD(I) ) THEN
-                   ZL(JLOG-1+(ISO-1)*NCMPMX+I) = .TRUE.
-                   NBVAR = NBVAR + 1
-                   GO TO 18
-                ENDIF
- 20           CONTINUE
+               IF (NOMGD.EQ.'VARI_R') THEN
+                 CALL LXLIIS(NCMPUT(ICM)(2:8),IVARI,IRET)
+                 IF ((NCMPUT(ICM)(1:1).NE.'V').OR.(IRET.NE.0)) THEN
+                   VALK (1) = NCMPUT(ICM)
+                   VALK (2) = 'VARI_R'
+                 CALL U2MESK('F', 'CALCULEL6_49',2,VALK)
+                 END IF
+                 ZL(JLOG-1+(ISO-1)*NCMPMX+IVARI) = .TRUE.
+                 NBVAR = NBVAR + 1
+                 GO TO 18
+               ELSE
+                DO 20 I = 1,NCMPMX
+                  IF ( NCMPUT(ICM) .EQ. NCMPGD(I) ) THEN
+                     ZL(JLOG-1+(ISO-1)*NCMPMX+I) = .TRUE.
+                     NBVAR = NBVAR + 1
+                     GO TO 18
+                  ENDIF
+ 20             CONTINUE
+              ENDIF
               VALK (1) = NCMPUT(ICM)
               VALK (2) = NOMGD
               CALL U2MESG('A', 'PREPOST5_25',2,VALK,0,0,0,0.D0)

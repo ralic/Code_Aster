@@ -1,4 +1,4 @@
-# MODIF  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,19 +37,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                    );
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(
-                                 FONC_LT=LT,
-                                 FONC_LN=LN,
-                                 ),
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',
-                    ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(-0.5,0.,1.5 ),),
-                    INFO=3,
-                    );
+                    INFO=3,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
@@ -248,70 +241,44 @@ TBLSN=LIRE_TABLE(UNITE=38,
                SEPARATEUR=' ',
                TITRE='level set normale',)
 
-TBLST=LIRE_TABLE(UNITE=38, 
-               FORMAT='ASTER',  
-               NUME_TABLE=2, 
-               SEPARATEUR=' ',
-               TITRE='level set tangente',)
-
 CHLSN=CREA_CHAMP(OPERATION='EXTR',TABLE=TBLSN,
                 TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=MAILLAG1)
 
-CHLST=CREA_CHAMP(OPERATION='EXTR',TABLE=TBLST,
-                TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=MAILLAG1)
-
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F( CHAM_NO_LSN=CHLSN,
-                                  CHAM_NO_LST=CHLST ),
-                    GROUP_MA_ENRI='VOL',
-                    ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(-0.5,0.,1.5 ),),
-                    INFO=3,
-                    );
+                     TYPE_DISCONTINUITE='INTERFACE',
+                     DEFI_FISS=_F(CHAM_NO_LSN=CHLSN),
+                     GROUP_MA_ENRI='VOL',);
 
 CHLSN2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
               OPERATION='EXTR',
               NOM_CHAM='LNNO',
               FISSURE=FISS2,);
 
-CHLST2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-              OPERATION='EXTR',
-              NOM_CHAM='LTNO',
-              FISSURE=FISS2,);
 
 CHLSN0=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
               OPERATION='EXTR',
               NOM_CHAM='LNNO',
               FISSURE=FISS,);
 
-CHLST0=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-              OPERATION='EXTR',
-              NOM_CHAM='LTNO',
-              FISSURE=FISS,);
-
 DEFI_FICHIER(UNITE=81,FICHIER='./fort.81')
 
 IMPR_RESU(UNITE=81,
-          RESU=(_F(CHAM_GD=CHLSN2),
-                _F(CHAM_GD=CHLST2),),)
+          RESU=_F(CHAM_GD=CHLSN2),)
 
 IMPR_RESU(UNITE=81,
-            RESU=(_F(CHAM_GD=CHLSN),
-                  _F(CHAM_GD=CHLST),),)
+          RESU=_F(CHAM_GD=CHLSN),)
 
 IMPR_RESU(UNITE=81,
-          RESU=(_F(CHAM_GD=CHLSN0),
-                _F(CHAM_GD=CHLST0),),)
+          RESU=_F(CHAM_GD=CHLSN0),)
 
 DEFI_FICHIER(UNITE=81, ACTION='LIBERER')
 
 TEST_FICHIER(FICHIER='./fort.81',
              EXPR_IGNORE = ('ASTER'),
              REFERENCE='NON_REGRESSION',
-             NB_VALE=102,
-             VALE=42.0,
-             VALE_K='6b7731996c03918bbd857b12cf58e30e',
+             NB_VALE=51,
+             VALE=111.0,
+#             VALE_K='6b7731996c03918bbd857b12cf58e30e',
              VERSION='9.4.7')
 
 FIN();

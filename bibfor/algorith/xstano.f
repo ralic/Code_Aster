@@ -1,15 +1,15 @@
       SUBROUTINE XSTANO(NOMA,LISNO,NMAFIS,JMAFIS,CNSLT,CNSLN,RAYON,
-     &                  STANO)
+     &                  CNXINV,STANO)
       IMPLICIT NONE
 
       REAL*8        RAYON
       INTEGER       NMAFIS,JMAFIS
       CHARACTER*8   NOMA
-      CHARACTER*19  CNSLT,CNSLN
+      CHARACTER*19  CNSLT,CNSLN,CNXINV
       CHARACTER*24  LISNO,STANO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/10/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C         CNSLT  : LEVEL SET TANGENTE
 C         CNSLN  : LEVEL SET NORMALE
 C         RAYON  : RAYON DE LA ZONE D'ENRICHISSEMENT DES NOEUDS EN FOND
 C                  DE FISSURE
+C         CNXINV : CONNECTIVITE INVERSE
 C         STANO  : VECTEUR STATUT DES NOEUDS INITIALISE À 0
 C
 C     SORTIE
@@ -65,16 +66,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER         INO,IMAE,IN,AR(12,2),IA,I,NBNOE,NBNOTT(3)
-      INTEGER         PARE,NABS,NMAABS,NBNOMA,NUNO,NRIEN,NBAR,NA
+      INTEGER         IN,AR(12,2),IA,I,J,K,NBNOE,NBNOTT(3)
+      INTEGER         INO,IMA,NBNOMA,NUNO,NRIEN,NBAR,NA
       INTEGER         NB,NUNOA,NUNOB,ENR,ENR1,ENR2,JDLINO,JMA,JSTANO
       INTEGER         JCONX1,JCONX2,JLTSV,JLNSV,JCOOR,ITYPMA,NDIM,ADDIM
+      INTEGER         NBMA,IBID,JLMAF,NMASUP,JMASUP,ISUP
       REAL*8          MINLSN,MINLST,MAXLSN,MAXLST,LSNA,LSNB,LSTA,LSTB
-      REAL*8          LSNC,LSTC,LSN,A(3),B(3),C(3),R8MAEM,LST
+      REAL*8          LSNC,LSTC,LSN,A(3),B(3),C(3),R8MAEM,R8PREM,LST
+      REAL*8          DDOT,AB(3),AC(3)
       CHARACTER*8     TYPMA,K8B
-      CHARACTER*19    MAI
+      CHARACTER*19    MAI,LMAFIS
       CHARACTER*32    JEXATR
-      LOGICAL         MARE
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -96,110 +98,113 @@ C ----------------------------------------------------------------------
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       NDIM=ZI(ADDIM-1+6)
 
+      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8B,IBID)
+
+C     CREATION D'UN VECTEUR TEMPORAIRE LMAFIS POUR SAVOIR RAPIDEMENT
+C     SI UNE MAILLE DU MAILLAGE APPARTIENT A MAFIS
+      LMAFIS='&&XSTANO.LMAFIS'
+      CALL WKVECT(LMAFIS,'V V I',NBMA,JLMAF)
+      DO 10 I=1,NMAFIS
+        IMA=ZI(JMAFIS-1+I)
+        ZI(JLMAF-1+IMA)=1
+ 10   CONTINUE
+
 C     BOUCLE SUR LES NOEUDS DE GROUP_ENRI
-      DO 200 INO=1,NBNOE
-        PARE=0
+      DO 200 I=1,NBNOE
         MAXLSN=-1*R8MAEM()
         MINLSN=R8MAEM()
         MAXLST=-1*R8MAEM()
         MINLST=R8MAEM()
-        NABS=ZI(JDLINO-1+(INO-1)+1)
+        INO=ZI(JDLINO-1+I)
+        CALL JELIRA(JEXNUM(CNXINV,INO),'LONMAX',NMASUP,K8B)
+        CALL JEVEUO(JEXNUM(CNXINV,INO),'L',JMASUP)
 
-C       BOUCLE SUR LES MAILLES DE MAFIS
-        DO 210 IMAE=1,NMAFIS
-          MARE=.FALSE.
-          NMAABS=ZI(JMAFIS-1+(IMAE-1)+1)
-C         NOMBRE DE NOEUDS DE LA MAILLE TRAITEE
-          NBNOMA=ZI(JCONX2+NMAABS) - ZI(JCONX2+NMAABS-1)
+        ISUP=0
+C       BOUCLE SUR LES MAILLES SUPPORT DE INO
+        DO 210 J=1,NMASUP
+          IMA = ZI(JMASUP-1+J)
 
-          DO 211 IN=1,NBNOMA
-            NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+IN-1)
-            IF (NABS.EQ.NUNO) THEN
-              MARE=.TRUE.
+C         SI LA MAILLE N'APPARTIENT PAS A MAFIS, ON PASSE A LA SUIVANTE
+          IF (ZI(JLMAF-1+IMA).EQ.0) GOTO 210
+          ISUP = 1
+
+C         MAILLE SUPPORT APPARTENANT A MAFIS :
+C         ON CALCULE LST QUE SUR LES PTS OÙ LSN=0
+C         ON CALCULE LSN SUR LES NOEUDS
+
+          NRIEN=0
+C         BOUCLE SUR LES ARETES DE LA MAILLE RETENUE
+          ITYPMA=ZI(JMA-1+IMA)
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+          CALL CONARE(TYPMA,AR,NBAR)
+          DO 212 IA=1,NBAR
+            NA=AR(IA,1)
+            NB=AR(IA,2)
+            NUNOA=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+NA-1)
+            NUNOB=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+NB-1)
+            LSNA=ZR(JLNSV-1+(NUNOA-1)+1)
+            LSNB=ZR(JLNSV-1+(NUNOB-1)+1)
+            LSTA=ZR(JLTSV-1+(NUNOA-1)+1)
+            LSTB=ZR(JLTSV-1+(NUNOB-1)+1)
+
+            IF (LSNA.EQ.0.D0.AND.LSNB.EQ.0.D0) THEN
+C             ON RETIENT LES 2 POINTS A ET B
+C             ET ACTUALISATION DE MIN ET MAX POUR LST
+              IF (LSTA.LT.MINLST) MINLST=LSTA
+              IF (LSTA.GT.MAXLST) MAXLST=LSTA
+              IF (LSTB.LT.MINLST) MINLST=LSTB
+              IF (LSTB.GT.MAXLST) MAXLST=LSTB
+            ELSEIF((LSNA*LSNB).LE.0.D0) THEN
+C            CA VEUT DIRE QUE LSN S'ANNULE SUR L'ARETE AU PT C
+C            (RETENU) ET ACTUALISATION DE MIN ET MAX POUR LST EN CE PT
+              DO 21 K=1,NDIM
+                A(K)=ZR(JCOOR-1+3*(NUNOA-1)+K)
+                B(K)=ZR(JCOOR-1+3*(NUNOB-1)+K)
+                AB(K)=B(K)-A(K)
+C               INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
+                C(K)=A(K)-LSNA/(LSNB-LSNA)*AB(K)
+                AC(K)=C(K)-A(K)
+ 21           CONTINUE
+              CALL ASSERT(DDOT(NDIM,AB,1,AB,1).GT.R8PREM())
+              LSTC = LSTA + (LSTB-LSTA) * DDOT(NDIM,AB,1,AC,1) 
+     &                                  / DDOT(NDIM,AB,1,AB,1)
+              IF (LSTC.LT.MINLST) MINLST=LSTC
+              IF (LSTC.GT.MAXLST) MAXLST=LSTC
+            ELSE
+C             AUCUN POINT DE L'ARETE N'A LSN = 0,ALORS ON RETIENT RIEN
+              NRIEN=NRIEN+1
             ENDIF
- 211      CONTINUE
-C         SI MAILLE RETENUE : ON CALCULE LST QUE SUR LES PTS OÙ LSN=0
-C                             ON CALCULE LSN SUR LES NOEUDS
-          IF (MARE) THEN
-            NRIEN=0
-C           BOUCLE SUR LES ARETES DE LA MAILLE RETENUE
-            ITYPMA=ZI(JMA-1+NMAABS)
-            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
-            CALL CONARE(TYPMA,AR,NBAR)
-            DO 212 IA=1,NBAR
-              NA=AR(IA,1)
-              NB=AR(IA,2)
-              NUNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NA-1)
-              NUNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NB-1)
-              LSNA=ZR(JLNSV-1+(NUNOA-1)+1)
-              LSNB=ZR(JLNSV-1+(NUNOB-1)+1)
-              LSTA=ZR(JLTSV-1+(NUNOA-1)+1)
-              LSTB=ZR(JLTSV-1+(NUNOB-1)+1)
+C           AUCUNE ARETE SUR LAQUELLE LSN S'ANNULE
+            CALL ASSERT(NRIEN.NE.NBAR)
+ 212      CONTINUE
 
+          CALL PANBNO(ITYPMA,NBNOTT)
+C         BOUCLE SUR LES NOEUDS SOMMET DE LA MAILLE COURANTE
+          DO 213 IN=1,NBNOTT(1)
+            NUNO=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+IN-1)         
+            LSN=ZR(JLNSV-1+(NUNO-1)+1)
+            IF (LSN.LT.MINLSN) MINLSN=LSN
+            IF (LSN.GT.MAXLSN) MAXLSN=LSN
+ 213      CONTINUE
 
-              IF (LSNA.EQ.0.D0.AND.LSNB.EQ.0.D0) THEN
-C               ON RETIENT LES 2 POINTS A ET B
-C               ET ACTUALISATION DE MIN ET MAX POUR LST
-                IF (LSTA.LT.MINLST) MINLST=LSTA
-                IF (LSTA.GT.MAXLST) MAXLST=LSTA
-                IF (LSTB.LT.MINLST) MINLST=LSTB
-                IF (LSTB.GT.MAXLST) MAXLST=LSTB
-              ELSEIF((LSNA*LSNB).LE.0.D0) THEN
-C              CA VEUT DIRE QUE LSN S'ANNULE SUR L'ARETE AU PT C
-C              (RETENU) ET ACTUALISATION DE MIN ET MAX POUR LST EN CE PT
-                DO 21 I=1,NDIM
-                  A(I)=ZR(JCOOR-1+3*(NUNOA-1)+I)
-                  B(I)=ZR(JCOOR-1+3*(NUNOB-1)+I)
-C                 INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
-                  C(I)=A(I)-LSNA/(LSNB-LSNA)*(B(I)-A(I))
- 21             CONTINUE
-                IF (A(1).NE.B(1)) THEN
-                  LSTC=LSTA+(LSTB-LSTA)*(C(1)-A(1))/(B(1)-A(1))
-                ELSEIF (A(2).NE.B(2)) THEN
-                  LSTC=LSTA+(LSTB-LSTA)*(C(2)-A(2))/(B(2)-A(2))
-                ELSEIF (NDIM .EQ. 3) THEN
-                  IF (A(3).NE.B(3))
-     &            LSTC=LSTA+(LSTB-LSTA)*(C(3)-A(3))/(B(3)-A(3))
-                ENDIF
-                IF (LSTC.LT.MINLST) MINLST=LSTC
-                IF (LSTC.GT.MAXLST) MAXLST=LSTC
-              ELSE
-C               AUCUN POINT DE L'ARETE N'A LSN = 0,ALORS ON RETIENT RIEN
-                NRIEN=NRIEN+1
-              ENDIF
-C             AUCUNE ARETE SUR LAQUELLE LSN S'ANNULE
-              CALL ASSERT(NRIEN.NE.NBAR)
- 212        CONTINUE
-
-            CALL PANBNO(ITYPMA,NBNOTT)
-C           BOUCLE SUR LES NOEUDS SOMMETS DE LA MAILLE RETENUE
-            DO 213 IN=1,NBNOTT(1)
-              NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+IN-1)
-              LSN=ZR(JLNSV-1+(NUNO-1)+1)
-              IF (LSN.LT.MINLSN) MINLSN=LSN
-              IF (LSN.GT.MAXLSN) MAXLSN=LSN
- 213        CONTINUE
-          ELSE
-C           MAILLE PAS RETENUE
-            PARE=PARE+1
-          ENDIF
  210    CONTINUE
 
         ENR=0
         ENR1=0
         ENR2=0
 
-C       TEST S'IL Y A EU UNE MAILLE DE VOISINAGE TROUVÉE
-        IF (PARE.LT.NMAFIS) THEN
-         IF ((MINLSN*MAXLSN.LT.0.D0).AND.(MAXLST.LE.0.D0))        ENR1=1
-         IF ((MINLSN*MAXLSN.LE.0.D0).AND.(MINLST*MAXLST.LE.0.D0)) ENR2=2
+C       TEST S'IL Y A EU UNE MAILLE SUPPORT TROUVÉE DANS MAFIS
+        IF (ISUP.GT.0) THEN
+          IF ((MINLSN*MAXLSN.LT.0.D0).AND.(MAXLST.LE.R8PREM())) ENR1=1
+          IF ((MINLSN*MAXLSN.LE.R8PREM()).AND.
+     &        (MINLST*MAXLST.LE.R8PREM()))                      ENR2=2
         ENDIF
-
+        
 C       SI ON DEFINIT UN RAYON POUR LA ZONE D'ENRICHISSEMENT SINGULIER
         IF (RAYON.GT.0.D0) THEN
-          LSN=ZR(JLNSV-1+(NABS-1)+1)
-          LST=ZR(JLTSV-1+(NABS-1)+1)
-          IF (SQRT(LSN**2+LST**2) .LE . RAYON) ENR2=2
+          LSN=ZR(JLNSV-1+(INO-1)+1)
+          LST=ZR(JLTSV-1+(INO-1)+1)
+          IF (SQRT(LSN**2+LST**2).LE.RAYON) ENR2=2
         ENDIF
 
 C       ATTENTION, LE TRAITEMENT EVENTUEL DE NB_COUCHES N'EST PAS FAIT 
@@ -210,10 +215,11 @@ C       PEUT ETRE MODIFIE
         ENR=ENR1+ENR2
 
 C       ENREGISTREMENT DU STATUT DU NOEUD
-        ZI(JSTANO-1+(NABS-1)+1)=ENR
+        ZI(JSTANO-1+(INO-1)+1)=ENR
 
  200  CONTINUE
 
+      CALL JEDETR(LMAFIS)      
 
       CALL JEDEMA()
       END

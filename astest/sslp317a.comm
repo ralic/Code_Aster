@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,7 +50,7 @@ LT1=FORMULE(NOM_PARA=('X','Y'),VALE='Y');
 
 r2 = 0.1
 LN2=FORMULE(NOM_PARA=('X','Y'),VALE='sqrt((X-r2*cos(atan3(Y,X)))**2+(Y-r2*sin(atan3(Y,X)))**2)*SIGN(r2*r2-X*X-Y*Y)');
-LT2=FORMULE(NOM_PARA=('X','Y'),VALE='-Y');         
+#LT2=FORMULE(NOM_PARA=('X','Y'),VALE='-Y');         
 
 
 def FLT3(x,y) :
@@ -85,7 +85,8 @@ for num_calc in range(0,nb_raff+1) :
 
 
    FISS2[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  DEFI_FISS=_F(FONC_LT=LT2,FONC_LN=LN2,),
+                                  TYPE_DISCONTINUITE='INTERFACE',
+                                  DEFI_FISS=_F(FONC_LN=LN2,),
                                   GROUP_MA_ENRI='SURF');
 
    FISS3[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
@@ -100,19 +101,30 @@ for num_calc in range(0,nb_raff+1) :
    if num_calc < nb_raff :
 
       CHERR[num_calc] = RAFF_XFEM(FISSURE=(FISS1[num_calc],FISS2[num_calc],FISS3[num_calc],FISS4[num_calc]),)
+      IMPR_RESU(FORMAT='GMSH',UNITE=85,RESU=_F(CHAM_GD = CHERR[num_calc]));
+      IMPR_RESU(RESU=_F(CHAM_GD = CHERR[num_calc]));
 
       # SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES  
       MA[num_calc+1]=CO('MA_%d' % (num_calc+1))
 
       MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
                   CHAM_GD = CHERR[num_calc],
-                  CRIT_RAFF_PE = 0.1,
+# bug homard : ca plante avec 0.1
+#                  CRIT_RAFF_PE = 0.1,
+                  CRIT_RAFF_PE = 0.12,
                   TYPE_VALEUR_INDICA='V_RELATIVE',
                   NOM_CMP_INDICA = 'X1',
                   MAILLAGE_N = MA[num_calc],
                   MAILLAGE_NP1 = MA[num_calc+1],
                   ELEMENTS_NON_HOMARD='IGNORER')
 
+
+# definition group de noeuds pour bloquer l'inclusion centrale
+MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
+                        MAILLAGE=MA[nb_raff],
+                        CREA_GROUP_NO=_F(NOM='NC',OPTION='ENV_SPHERE',POINT=(0.,0.),PRECISION=1/200.,RAYON=1/200.),
+                        INFO=2 );
+                        
 # impression du dernier maillage
 IMPR_RESU(FORMAT='GMSH',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]));
 IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(CHAM_GD=CHERR[nb_raff-1]));
@@ -141,6 +153,12 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
                                    DY=0.0,),
                        );
 
+# pour bloquer les modes rigides de l'inclusion centrale
+CHARINC=AFFE_CHAR_MECA(MODELE=MODELEK,
+                       DDL_IMPO=_F(GROUP_NO='NC',
+                                   DX=0.0,DY=10.0,),
+                       );
+
 CHpres=AFFE_CHAR_MECA(MODELE=MODELEK,
                       PRES_REP=_F(GROUP_MA=('LIG2','LIG3','LIG4'),PRES=-1.e6,),);
 
@@ -152,6 +170,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CHARBLO,),
+                          _F(CHARGE=CHARINC,),
                           _F(CHARGE=CHpres,),
                           _F(CHARGE=CHXFEM,),),
                    COMP_ELAS=_F(RELATION='ELAS',
@@ -216,7 +235,7 @@ TAB=POST_RELEVE_T(TITRE='TAB',
 #IMPR_TABLE(TABLE=TAB)
 
 # NOMBRE DE NOEUDS DU MAILLAGE FINAL
-nbno = 821
+nbno = 2322
 
 TEST_TABLE(TABLE=TAB,
            TYPE_TEST='SOMM',

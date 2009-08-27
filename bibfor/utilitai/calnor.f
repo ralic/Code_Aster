@@ -4,7 +4,7 @@
      &                    HF   , JAC  , NX   , NY , NZ , TX  , TY )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF UTILITAI  DATE 24/08/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C DECLARATION PARAMETRES D'APPELS
       INTEGER IGEOM, IDFDE
       INTEGER IFA, ITYP
       REAL*8  ORIEN, HF
-      REAL*8  JAC(27), NX(27), NY(27), NZ(27), TX(3), TY(3)
+      REAL*8  JAC(9), NX(9), NY(9), NZ(9), TX(3), TY(3)
       CHARACTER*2 DIM
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -241,9 +241,9 @@ C
 C
 C 2.1. ==> PREALABLE
 C
-        CALL R8INIR(27,0.D0,NX,1)
-        CALL R8INIR(27,0.D0,NY,1)
-        CALL R8INIR(27,0.D0,NZ,1)
+        CALL R8INIR(9,0.D0,NX,1)
+        CALL R8INIR(9,0.D0,NY,1)
+        CALL R8INIR(9,0.D0,NZ,1)
 C
 C 2.2. ==> COORDONNEES DES NOEUDS
 C

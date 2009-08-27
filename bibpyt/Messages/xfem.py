@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+#@ MODIF xfem Messages  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,9 +156,29 @@ cata_msg={
 """),
 
 23: _("""
-  -> Erreur dans le choix de la méthode de calcul des level-sets
-  -> Risque & Conseil :
-     Veuillez renseignez FONC_LT/LN ou GROUP_MA_FISS/FOND.
+     Erreur dans le choix de la méthode de calcul des level-sets.
+     Vous souhaitez définir une %(k1)s.
+     Or la forme que vous avez sélectionnée < %(k2)s >
+     correspond à une %(k3)s.
+     Conseil :
+     Sélectionnez une forme de %(k1)s.
+"""),
+
+24: _("""
+     Erreur dans le choix de la méthode de calcul des level-sets.
+     Vous souhaitez définir une fissure.
+     Pour cela il est nécessaire de définir 2 level sets : LT et LN.
+     Conseil :
+     Veuillez renseignez %(k1)s.
+"""),
+
+25: _("""
+     Erreur dans le choix de la méthode de calcul des level-sets.
+     Vous souhaitez définir une interface.
+     Pour cela il ne faut est pas définir la level set normale LT.
+     %(k1)s ne sera pas considéré.
+     Conseil :
+     Pour ne plus obtenir ce message, ne renseignez pas %(k1)s.
 """),
 
 27: _("""
@@ -186,12 +206,13 @@ cata_msg={
 
 58: _("""
   -> Aucun point du fond de fissure n'a été trouvé !
+     Cela signifie que le fond de fissure se trouve en dehors de la structure.
+
   -> Risque & Conseil :
-     Ce message est normal si vous souhaitiez définir une interface (et non une fissure).
-     Si vous souhaitiez définir une fissure, la définition des level sets (Méthode XFEM)
-     ne permet pas de trouver de points du fond de fissure à l'intèrieur de la structure.
-     Il doit y avoir une erreur lors de la définition de la level set tangente.
-     Vérifier la définition des level sets.
+     - Si vous souhaitiez définir une interface, il faut choisir TYPE_DISCONTINUITE = 'INTERFACE'
+        pour ne plus avoir ce message.
+     -  Si vous souhaitiez définir une fissure, il doit y avoir une erreur lors de la définition 
+        de la level set tangente Vérifier la définition des level sets.
 """),
 
 59: _("""
@@ -215,8 +236,4 @@ cata_msg={
      réinitialisation et limiter ce risque d'anomalie.
 """),
 
-62: _("""
-     Attendez la prochaine version d'Aster avant d'utiliser la propagation en 2D. (Base de
-     cas-tests de validation en cours de réalisation).
-"""),
 }

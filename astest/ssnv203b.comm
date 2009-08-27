@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : APPLICATION D'UNE PRESSION SUR LES LEVRES D'UNE FISSURE AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,16 +56,11 @@ MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
                        MODELISATION='3D',),);
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-0.5');
-#LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-0.5');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y-100.');
 
 FISS=DEFI_FISS_XFEM(MODELE=MO,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',
-                    ORIE_FOND=_F(PFON_INI= (0. ,0.5 ,0.5 ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,2. ,0.5 ),),
-                    INFO=1,);
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
+                    GROUP_MA_ENRI='VOL',);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
@@ -74,6 +69,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                       INFO=1,);
+
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------

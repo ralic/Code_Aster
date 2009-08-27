@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF elements3 Messages  DATE 24/08/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,10 +229,6 @@ cata_msg = {
 
 80 : _("""
  situation de contact impossible
-"""),
-
-84 : _("""
- type de maille inconnu
 """),
 
 85 : _("""

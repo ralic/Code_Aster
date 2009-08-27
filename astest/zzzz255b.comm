@@ -1,0 +1,110 @@
+# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# TITRE VALIDATION DE L'OPTION TEST_MAIL DANS PROPA_FISS
+# zzzz255b.para = tps_job 250 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE GENIAUT S.GENIAUT
+
+DEBUT(CODE=_F(NOM='ZZZZ255B', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+            IGNORE_ALARM=('XFEM2_52','XFEM2_60'),)
+
+# DANS LE MAILLAGE IL Y A DES MAILLES SURFACIQUES QUI NE SONT PAS CONSIDEREES PAR
+# LA METHODE UPWIND. EN CONSEQUENCE ON IGNORE LE MESSAGE XFEM2_52.
+# ON IGNORE LE MESSAGE D'ALARME XFEM2_60 QUI DIT QUE L'OPTION TEST_MAIL A ETE
+# UTILISEE PAR L'UTILISATEUR.
+
+MaiPlate=LIRE_MAILLAGE(FORMAT='MED',
+                       INFO_MED=1,);
+
+plate=AFFE_MODELE(MAILLAGE=MaiPlate,
+                   AFFE=(_F(GROUP_MA=('All',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),),);
+
+#***********************************
+# DEFINITION DE LA FISSURE (CERCLE)
+#***********************************
+
+Fiss = [None]*2
+
+Fiss[0] = DEFI_FISS_XFEM(MODELE=plate,
+                         DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                      DEMI_GRAND_AXE = 250.,
+                                      DEMI_PETIT_AXE = 250.,
+                                      CENTRE         = (0., 0., 0.),
+                                      VECT_X         = (1. , 0. , 0. ),
+                                      VECT_Y         = (0., 1. , 0. ),),
+                         GROUP_MA_ENRI='All',);
+
+
+#****************************
+# TEST_MAIL
+#****************************
+
+ModX=MODI_MODELE_XFEM(MODELE_IN=plate,
+                      FISSURE=Fiss[0],);
+
+Fiss[1]=CO('Fiss_1')
+PROPA_FISS(MODELE=ModX,
+           FISSURE=_F(FISS_ACTUELLE=Fiss[0],
+                      FISS_PROPAGEE=Fiss[1],
+                     ),
+           TEST_MAIL='CONSTANT',
+           ITERATIONS=3,
+           DA_MAX=25.,
+           METHODE_PROPA='SIMPLEXE',
+           RAYON=25*4,
+           INFO=0,);
+
+#****************************
+# TEST TABLE
+#****************************
+
+# LA PART SUIVANTE N'EST PAS UTILISEE POUR LA VERIFICATION
+# DU BON FONCTIONNEMENT DE L'OPTION TEST_MAIL.
+# ON FAIT LE TEST SUR LA VALEUR DE LA LEVEL SET NORMALE
+# AU NODE 'N1' DU MAILLAGE EN UTILISANT TEST_TABLE. CELA
+# EST OBLIGATOIRE POUR LA VALIDATION INFORMATIQUE.
+# SI L'OPTION TEST_MAIL NE MARCHE PAS, UN MESSAGE D'ALERTE
+# EST ISSU PAR PROPA_FISS LUI-MEME ET DONC LA VALIDATION
+# INFORMATIQUE S'ARRETE.
+
+CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                OPERATION='EXTR',
+                NOM_CHAM='LNNO',
+                FISSURE=Fiss[1],);
+
+TABLSN = POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
+                                 NOEUD='N1',
+                                 CHAM_GD=CHLN,
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABLSN,);
+
+TEST_TABLE(TABLE=TABLSN,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=10.,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 50.0  )
+
+
+
+FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,6 +94,10 @@ TEST_FONCTION(VALEUR=( _F( FONCTION = DFR4,
                        _F( FONCTION = DFR4,
                            VALE_PARA = 1.,
                            VALE_REFE = 3.,
+                           REFERENCE='ANALYTIQUE',),
+                       _F( FONCTION = DFR4,
+                           INTERVALLE = (0.5,1.5),
+                           VALE_REFE = 2.25,
                            REFERENCE='ANALYTIQUE',),
                        _F( FONCTION = DFR4,
                            VALE_PARA = 5.,

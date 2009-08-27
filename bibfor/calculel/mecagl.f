@@ -18,7 +18,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,MILIEU,PAIR,THLAG2,LMELAS
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/10/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER I,IBID,IADRG,IADRGS,IRET,JRESU,NCHIN
       INTEGER JTEMP,NNOFF,NUM,INCR,NRES,NSIG,NDEP
-      INTEGER NDEG,IERD,INIT,IAD,GPMI(2) 
+      INTEGER NDEG,IERD,INIT,IAD,GPMI(3), NUMFON
       INTEGER IADRNO,IADGI,IADABS,IFM,NIV,IFON,IADRMA,IADRCO
 
       REAL*8 GTHI,GPMR(3),RBID,XL     
@@ -418,7 +418,8 @@ C- IMPRESSION ET ECRITURE DANS TABLE(S) DE G(S)
         CALL GIMPGS(RESULT,NNOFF,ZR(IADABS),ZR(IADRGS),NUM,ZR(IADGI),
      &              NDEG,NDIMTE,ZR(IADRG),EXTIM,TIME,IORD,IFM)
       END IF
-
+C
+      CALL GETVIS('THETA','NUME_FOND',1,1,1,NUMFON,IBID)
       DO 40 I = 1,NNOFF
         IF (.NOT. GXFEM) NOEUD = ZK8(IADRNO+I-1)
         IF (NBPRUP.EQ.3) THEN
@@ -432,16 +433,26 @@ C- IMPRESSION ET ECRITURE DANS TABLE(S) DE G(S)
             GPMR(1) = ZR(IADABS+I-1)
             GPMR(2) = ZR(IADRGS+I-1)
             GPNK(1) = NOMCAS
-            IF (.NOT. GXFEM) GPNK(2) = NOEUD
-            GPMI(1)=IORD
-            IF (GXFEM)  GPMI(2)=I
+            IF (GXFEM) THEN
+              GPMI(1)=NUMFON
+              GPMI(2)=IORD
+              GPMI(3)=I
+            ELSE
+              GPMI(1)=IORD
+              GPNK(2) = NOEUD
+            ENDIF
             CALL TBAJLI(RESULT,NBPRUP,NOPRUP,GPMI,GPMR,CBID,GPNK,0)
           ELSE
             GPMR(1) = TIME
             GPMR(2) = ZR(IADABS+I-1)
             GPMR(3) = ZR(IADRGS+I-1)
-            GPMI(1)=IORD
-            IF (GXFEM)  GPMI(2)=I
+            IF (GXFEM) THEN
+              GPMI(1)=NUMFON
+              GPMI(2)=IORD
+              GPMI(3)=I
+            ELSE
+              GPMI(1)=IORD
+            ENDIF
             CALL TBAJLI(RESULT,NBPRUP,NOPRUP,GPMI,GPMR,CBID,NOEUD,0)
           ENDIF
         END IF

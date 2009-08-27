@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+#@ MODIF indicateur Messages  DATE 24/08/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,6 +68,11 @@ Probleme sur les charges. Consulter la documentation
  Risques & conseils :
    Il faut vérifier votre maillage ! 
    Vérifiez les messages émis par la commande AFFE_MODELE.
+"""),
+
+10 : _("""
+ Erreur de programmation :
+ Le type de maille %(k1)s n'est pas prévu ou est inconnu.
 """),
 
 11 : _("""

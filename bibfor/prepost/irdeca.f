@@ -11,7 +11,7 @@ C
       LOGICAL        LRESU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF PREPOST  DATE 27/08/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,12 +108,23 @@ C
 C
         IF ( NBCPUT .NE. 0 ) THEN
           DO 30 ICM = 1,NBCPUT
-            DO 32 ICMP = 1,NCMPMX
-               IF ( NCMPUT(ICM) .EQ. NCMPGD(ICMP) ) THEN
-                  ZL(ILTABL+ICMP-1)= .TRUE.
-                  GO TO 30
-               ENDIF
-  32        CONTINUE
+            IF(NOMGD.EQ.'VARI_R')THEN
+               CALL LXLIIS(NCMPUT(ICM)(2:8),IVARI,IRET)
+                 IF ((NCMPUT(ICM)(1:1).NE.'V').OR.(IRET.NE.0)) THEN
+                   VALK (1) = NCMPUT(ICM)
+                   VALK (2) = 'VARI_R'
+                 CALL U2MESK('F', 'CALCULEL6_49',2,VALK)
+                 END IF
+                 ZL(ILTABL+IVARI-1)= .TRUE.
+                 GO TO 30
+            ELSE
+              DO 32 ICMP = 1,NCMPMX
+                 IF ( NCMPUT(ICM) .EQ. NCMPGD(ICMP) ) THEN
+                    ZL(ILTABL+ICMP-1)= .TRUE.
+                    GO TO 30
+                 ENDIF
+  32          CONTINUE
+            ENDIF
             VALK (1) = NCMPUT(ICM)
             VALK (2) = NOMGD
             CALL U2MESG('A', 'PREPOST5_25',2,VALK,0,0,0,0.D0)

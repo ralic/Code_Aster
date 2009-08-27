@@ -2,7 +2,7 @@
      &                                         VECT1,VECT2,CNSLT,CNSLN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,14 +74,17 @@ C
       REAL*8        VALPU(3),P2D(2),P3D(3),PLOC(3),VECT3(3),H
       REAL*8        NORME,LSNA,LSNB,D,LSTA,LSTB
       REAL*8        NORI(3),NEXT(3),NMIL(3),VSEG(3),NSEG
-      CHARACTER*8   K8BID,NOMPU(3),TYPMA,NOMNO,NCHAMN,NCHAMT
-      CHARACTER*16  K16BID
+      CHARACTER*8   FISS,K8BID,NOMPU(3),TYPMA,NOMNO,NCHAMN,NCHAMT
+      CHARACTER*16  K16BID,TYPDIS,VALK(3)
       CHARACTER*19  MAI,CHSLSN,CHSLST
       CHARACTER*24  LISMA,LISNO,LISSE
       REAL*8        R8PREM
+      LOGICAL       CALLST
 C
       CALL JEMARQ()
 C
+      CALL GETRES(FISS,K16BID,K16BID)
+
       NOMPU(1)='X'
       NOMPU(2)='Y'
       NOMPU(3)='Z'
@@ -102,6 +105,11 @@ C
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       DIMENS=ZI(ADDIM-1+6)
 
+      CALL DISMOI('F','TYPE_DISCONTINUITE',FISS,'FISS_XFEM',
+     &                                                 IBID,TYPDIS,IRET)
+      IF (TYPDIS.EQ.'INTERFACE') CALLST = .FALSE.
+      IF (TYPDIS.EQ.'FISSURE')   CALLST = .TRUE.
+
       IF (METH.EQ.'FONCTION') THEN
 
 C-----------------------------------------------------------------------
@@ -110,15 +118,19 @@ C-----------------------------------------------------------------------
 
         WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 1'
         DO 1 INO=1,NBNO
-           DO 12 DIMNO=1, DIMENS
-             VALPU(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
- 12        CONTINUE
-           CALL FOINTE('F ',NFONF, DIMENS, NOMPU, VALPU, XLT, IBID )
-           CALL FOINTE('F ',NFONG, DIMENS, NOMPU, VALPU, XLN, IBID )
-           ZR(JLTSV-1+(INO-1)+1)=XLT
-           ZR(JLNSV-1+(INO-1)+1)=XLN
-           ZL(JLTSL-1+(INO-1)+1)=.TRUE.
-           ZL(JLNSL-1+(INO-1)+1)=.TRUE.             
+          DO 12 DIMNO=1, DIMENS
+            VALPU(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
+ 12       CONTINUE
+          CALL FOINTE('F ',NFONG, DIMENS, NOMPU, VALPU, XLN, IBID )
+          IF (CALLST) THEN
+            CALL FOINTE('F ',NFONF, DIMENS, NOMPU, VALPU, XLT, IBID )
+          ELSE
+            XLT = -1.D0
+          ENDIF
+          ZR(JLNSV-1+(INO-1)+1)=XLN
+          ZR(JLTSV-1+(INO-1)+1)=XLT
+          ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+          ZL(JLNSL-1+(INO-1)+1)=.TRUE.             
  1      CONTINUE
 
       ELSEIF (METH.EQ.'GROUP_MA') THEN
@@ -133,17 +145,19 @@ C-----------------------------------------------------------------------
      &              'GROUP_MA_FISS','GROUP_MA',LISMA,NBMAF)       
         CALL JEVEUO(LISMA,'L',JDLIMA)
 
-        LISSE = '&&XINILS.LISTE_MA_FONFIS' 
-        CALL RELIEM(' ',NOMA,'NU_MAILLE','DEFI_FISS',1,1,
-     &              'GROUP_MA_FOND','GROUP_MA',LISSE,NBSEF)  
-        CALL JEVEUO(LISSE,'L',JDLISE)
+        IF (CALLST) THEN
+          LISSE = '&&XINILS.LISTE_MA_FONFIS' 
+          CALL RELIEM(' ',NOMA,'NU_MAILLE','DEFI_FISS',1,1,
+     &                'GROUP_MA_FOND','GROUP_MA',LISSE,NBSEF)  
+          CALL JEVEUO(LISSE,'L',JDLISE)
+        ENDIF
 
         IF (DIMENS .EQ. 3) THEN
-         CALL XLS3D(JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR,
-     &   NBMAF,JDLIMA,NBSEF,JDLISE,JCONX1,JCONX2,NOMA)
+         CALL XLS3D(CALLST,JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR,
+     &              NBMAF,JDLIMA,NBSEF,JDLISE,JCONX1,JCONX2,NOMA)
         ELSE     
-         CALL XLS2D(JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR,
-     &   NBMAF,JDLIMA,NBSEF,JDLISE,JCONX1,JCONX2)
+         CALL XLS2D(CALLST,JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR,
+     &              NBMAF,JDLIMA,NBSEF,JDLISE,JCONX1,JCONX2)
         ENDIF
 
       ELSEIF (METH.EQ.'GEOMETRI') THEN
@@ -153,9 +167,31 @@ C       DANS LE CAS OU ON DONNE LA GEOMETRIE DE LA FISSURE
 C-----------------------------------------------------------------------
 
         WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 3'    
-        
+
+C       VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
+        IF (.NOT.CALLST) THEN
+          IF (GEOFIS.EQ.'ELLIPSE'.OR.
+     &        GEOFIS.EQ.'CYLINDRE'.OR.      
+     &        GEOFIS.EQ.'DEMI_PLAN'.OR.
+     &        GEOFIS.EQ.'SEGMENT'.OR.      
+     &        GEOFIS.EQ.'DEMI_DROITE') THEN
+            VALK(1) = 'INTERFACE'
+            VALK(2) =  GEOFIS
+            VALK(3) = 'FISSURE'
+            CALL U2MESK('F','XFEM_23',3,VALK)
+          ENDIF
+        ELSEIF (CALLST) THEN
+          IF (GEOFIS.EQ.'DROITE'.OR.      
+     &        GEOFIS.EQ.'INCLUSION') THEN  
+            VALK(1) = 'FISSURE'
+            VALK(2) =  GEOFIS
+            VALK(3) = 'INTERFACE'
+            CALL U2MESK('F','XFEM_23',3,VALK)
+          ENDIF
+        ENDIF
+                
         IF (GEOFIS.EQ.'ELLIPSE') THEN
-           
+            
 C  VECT1  = VECT DU DEMI-GRAND AXE
 C  VECT2  = VECT DU DEMI-PETIT AXE
 C  NOEUD  = CENTRE DE L'ELLIPSE
@@ -441,6 +477,9 @@ C           LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
             ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
 
 C           LEVEL SET TANGENTE PAS DEFINIE 
+            CALL ASSERT(.NOT.CALLST)
+            ZR(JLTSV-1+(INO-1)+1)= -1.D0
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.        
             
  40       CONTINUE  
         
@@ -485,6 +524,9 @@ C           AU CYLINDRE
             ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
 C           LEVEL SET TANGENTE PAS DEFINIE 
+            CALL ASSERT(.NOT.CALLST)
+            ZR(JLTSV-1+(INO-1)+1)= -1.D0
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.        
 
  45       CONTINUE          
                           
@@ -498,36 +540,37 @@ C-----------------------------------------------------------------------
 
         WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 4'
         CALL GETVID('DEFI_FISS','CHAM_NO_LSN',1,1,1,NCHAMN,ME4)
-        CALL GETVID('DEFI_FISS','CHAM_NO_LST',1,1,1,NCHAMT,ME4)
+        CALL GETVID('DEFI_FISS','CHAM_NO_LST',1,1,1,NCHAMT,IBID)
 
         CHSLSN='&&XINILS.CHAM_S_LSN'
         CHSLST='&&XINILS.CHAM_S_LST'
         CALL CNOCNS(NCHAMN,'V',CHSLSN)
-        CALL CNOCNS(NCHAMT,'V',CHSLST)
+        IF (CALLST) CALL CNOCNS(NCHAMT,'V',CHSLST)
 
 C       ON VERIFIE LE NOMBRE DE COMPOSANTES = 1  (LSN OU LST)
         CALL JEVEUO(CHSLSN//'.CNSD','L',JCND)
         CALL ASSERT(ZI(JCND+1).EQ.1)
-        CALL JEVEUO(CHSLST//'.CNSD','L',JCTD)
-        CALL ASSERT(ZI(JCTD+1).EQ.1)
+        IF (CALLST) CALL JEVEUO(CHSLST//'.CNSD','L',JCTD)
+        IF (CALLST) CALL ASSERT(ZI(JCTD+1).EQ.1)
 
         CALL JEVEUO(CHSLSN//'.CNSV','L',JCNV)
         CALL JEVEUO(CHSLSN//'.CNSL','L',JCNL)
-        CALL JEVEUO(CHSLST//'.CNSV','L',JCTV)
-        CALL JEVEUO(CHSLST//'.CNSL','L',JCTL)
+        IF (CALLST) CALL JEVEUO(CHSLST//'.CNSV','L',JCTV)
+        IF (CALLST) CALL JEVEUO(CHSLST//'.CNSL','L',JCTL)
 
         DO 60 INO=1,NBNO
 C           ON VERIFIE QUE LE NOEUD POSSEDE CETTE COMPOSANTE
             CALL ASSERT(ZL(JCNL+INO-1))
-            CALL ASSERT(ZL(JCTL+INO-1))
+            IF (CALLST) CALL ASSERT(ZL(JCTL+INO-1))
             ZR(JLNSV-1+(INO-1)+1)=ZR(JCNV+INO-1)
             ZL(JLNSL-1+(INO-1)+1)=.TRUE. 
-            ZR(JLTSV-1+(INO-1)+1)=ZR(JCTV+INO-1)
+            IF (CALLST)      ZR(JLTSV-1+(INO-1)+1)=ZR(JCTV+INO-1)
+            IF (.NOT.CALLST) ZR(JLTSV-1+(INO-1)+1)= -1.D0
             ZL(JLTSL-1+(INO-1)+1)=.TRUE.
  60     CONTINUE 
 
         CALL JEDETR(CHSLSN)
-        CALL JEDETR(CHSLST)
+        IF (CALLST) CALL JEDETR(CHSLST)
 
       ENDIF     
       
