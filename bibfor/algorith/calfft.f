@@ -2,7 +2,7 @@
 C
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
       N2M1 = (N/2) - 1
       CALL MATINI(NP4,NP1,0.D0,AA)
       CALL MATINI(NP4,NP1,0.D0,BB)
-      CALL INITVE(NP4,OMEGAF)
+      CALL VECINI(NP4,0.D0,OMEGAF)
 C
       DF = 1.0D0 / (DBLE(N)*DTEXT)
 C

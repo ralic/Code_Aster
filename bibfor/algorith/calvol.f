@@ -5,7 +5,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,15 +51,15 @@ C -----------------
 C
 C ROUTINES EXTERNES
 C -----------------
-C     EXTERNAL     COEFMO, MATINI, INITVE
+C     EXTERNAL     COEFMO, MATINI, LCINVN
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
       CALL MATINI(NP1,NP1,0.D0,KMOD00)
       CALL MATINI(NP1,NP1,0.D0,CMOD00)
       CALL MATINI(NP1,NP1,0.D0,AMFLU0)
-      CALL INITVE(NP1,AMOR00)
-      CALL INITVE(NP1,PULS00)
+      CALL VECINI(NP1,0.D0,AMOR00)
+      CALL VECINI(NP1,0.D0,PULS00)
 C
       DO 10 I = 1, NBM
          KMOD00(I,I) = PULSI(I)*PULSI(I)

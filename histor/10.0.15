@@ -1,0 +1,599 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 01/09/2009 - 10:06:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013791 DU 2009-08-28 14:05:46
+TYPE express concernant Code_Aster (VERSION 10.1)
+TITRE
+   Sources oubliees
+FONCTIONNALITE
+   Rappel de la fiche 13703
+   
+   Problème :
+   ========
+   Les fichiers .para des tests  suivants ont une syntaxe incorrecte. La
+   mémoire indiquée derrière le mot clé mem_job doit préciser l'unité 
+   
+   forma11c, perf001c, sdld34a , sdll123a
+   sdll123b, sdll123c, sdll124a, sdll125a
+   sdll126a, sdll126b, sdll126c, sdll140a
+   
+   Correction :
+   ==========
+   On indique l'unité de la mémoire.
+   ex : sdll126a mem_job 900  -> mem_job 900Mo
+   
+   Impacts :
+   =======
+   *.para des tests incriminés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   *
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013765 DU 2009-08-24 10:58:34
+TYPE express concernant Code_Aster (VERSION 10.1)
+TITRE
+   Verifier les appels a MATINI
+FONCTIONNALITE
+   Problème :
+   ========
+   L'utilisation généralisée de matini.f pour initialiser les matrices a cassé un certain
+   nombre de test. Des fiches ont été émise et résolue.
+   On propose ici de vérifie les appels à la routine pour éviter des risques de bugs. Les
+   dimensions de la matrice fournies à matini doivent correspondre à celle permettant de
+   déclarer la matrice.
+   
+   Correction :
+   ==========
+   Sur les 66 routines appelant matini.f, les suivantes ont été corrigées car elles
+   présentent le problème de ne pas correctement initialiser la matrice (cf. fiche 13691).
+   
+   coqsep.f  hypela.f  hypinc.f  reeref.f  te0503.f  te0550.f  vpzqrh.f  xadher.f
+   
+   On en profite pour mettre un commentaire dans matini expliquant comment utiliser la
+   routine (il faut au moins que le nombre de lignes correspondent au nombre de ligne déclaré
+   plus haut pour la même matrice. On conseille, pour ne pas commettre d'erreur d'initialiser
+   complètement la matrice)
+   
+   Impacts :
+   =======
+   coqsep.f
+   hypela.f
+   hypinc.f
+   reeref.f
+   te0503.f
+   te0550.f
+   vpzqrh.f
+   xadher.f
+   matini.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013716 DU 2009-08-13 08:43:46
+TYPE express concernant Site web (VERSION 7.0)
+TITRE
+   Page wiki sur les conseils de rxc3xa9daction
+FONCTIONNALITE
+   A partir des ses travaux, Bertille a rédigé une page wiki sur les conseils de rédaction
+   pour la documentation et les catalogue de message.
+   
+   On en a profité pour structurer un nouvelle rubrique "Documenter Code_Aster" :
+   .-. Documenter Code_Aster
+   ... - Conseils de rédaction
+   ... - Notes pour les relecteurs
+   ... - Notes sur l'application de GED
+   
+   L'url est le suivant :
+   http://www.code-aster.org/wiki/doku.php?id=fr:p10_doc:p100_conseils_redaction
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   *
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013696 DU 2009-08-07 13:54:13
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.12, le cas-test fdlv111b s'arrete en erreur_<F> sur Bull, Calibre5 et Rocks.
+FONCTIONNALITE
+   Problème :
+   ========
+   En NEW10.0.12, le cas-test fdlv111b s'arrete en erreur_<F> sur Bull, Calibre4, Calibre5 et
+   Rocks.
+   
+   Analyse :
+   =======
+   Le problème est identique à la fiche 13691 (usage de MATINI pour initialiser les matrices).
+   
+   Correction :
+   ==========
+   <      CALL MATINI(NDI,NDI,0.D0,A)
+   >      CALL MATINI(6,6,0.D0,A)
+   
+   Impact :
+   ======
+   te0550.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013165 DU 2009-02-25 11:50:42
+TYPE anomalie concernant Site web (VERSION )
+TITRE
+   Corriger le problxc3xa8me des pixc3xa8ces jointes doublement compressxc3xa9es
+FONCTIONNALITE
+   Problème :
+   ========
+   Les archives téléchargées sur le forum au format gzip se retrouvent être compressées deux
+   fois. Ainsi toto.tar.gz est en fait toto.tar.gz.gz
+   Cependant on remarquera que toto.tgz est bien toto.tar.gz ! Cela dépend donc du nom du
+   fichier.
+   
+   Analyse :
+   =======
+   NOOK sur Firefox 2.0.0.20 sur la Ubuntu de TdS
+   NOOK sur Firefox 3.0.13   sur Ubuntu
+   NOOK sur Firefox 2.0.0.6  sur Calibre5
+   NOOK sur Firefox 1.0      sur Clpaster
+   NOOK sur Firefox 3.0.8    sur Windows
+   
+   OK sur Firefox 3.5.2    sur Windows
+   OK sur Internet Explorer 6
+   OK sur Links
+   OK si on télécharge le fichier à l'adresse suivante avec wget
+   
+   On peut penser à un bug (ou feature) de Firefox.
+   
+   Pas de problème similaire sur le forum de PunBB...
+   
+   Mais voici une piste d'explication. Les pages avant d'être missent dans le cache et
+   envoyées au navigateur sont compressées par gzip (pour alléger la bande passante) (option
+   de PunBB et d'Apache). Les navigateurs reçoivent des pages compressées et les
+   décompressent avant de les afficher. Le mécanisme est peut-être identique pour les pièces
+   jointes. Ainsi Firefox ne décompresserait pas les pièces jointes *.tar.gz .
+   
+   Correction :
+   ==========
+   Cette option de compression est désactivée sur le forum. En ce qui concerne le serveur,
+   c'est coté CSP-IT est je ne pense pas que l'on puisse avoir de réponse. Mais il semble que
+   Firefox soit en cause de toutes façons.
+   Pas de correction possible.
+   
+   Workaround proposé par Thomas :
+   =============================
+   Un petit script (ztar) à placer dans son PATH pour décompresser (comme avec tar)
+   une archive doublement compressée :
+   
+   desoza@claut621:~/Bureau$ ls -l multicon.tar.gz 
+   -rw-r--r-- 1 desoza desoza 724194 2009-08-12 08:52 multicon.tar.gz
+   desoza@claut621:~/Bureau$ tar -xvzf multicon.tar.gz 
+   tar: Ceci ne ressemble pas à une archive de type « tar »
+   tar: On saute à l'en-tête suivant
+   tar: Des erreurs ont provoqué l'arrêt du programme
+   desoza@claut621:~/Bureau$ ztar -xvzf multicon.tar.gz 
+   Multi_Cont/Con/
+   Multi_Cont/Con/Con.export
+   Multi_Cont/Con/Con.comm
+   Multi_Cont/Con/Con.mess
+   Multi_Cont/Con/Con.resu
+   Multi_Cont/Con/Conmesh.med
+   Multi_Cont/Con/ConmeshRO.med
+   Multi_Cont/Con/Con.base/
+   Multi_Cont/Con/Con.astk
+   Multi_Cont/Con/Con.erre
+   desoza@claut621:~/Bureau$
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai du script
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011145 DU 2007-07-30 09:05:02
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TITRE
+   Probleme copie parametres dans CALC_ELEM
+FONCTIONNALITE
+   Problème :
+   ========
+   Si on fait :
+   
+   RESU2=CALC_ELEM(RESULTAT=RESU1,..)
+   
+   et que dans ce CALC_ELEM, on souhaite écrire des paramètres dans RESU2 (erreur globale
+   calculée par exemple), on a la désagréable surprise de trouver dans RESU2, les mêmes
+   paramètres que RESU1.
+   
+   Ce problème avait été évoqué dans la fiche 10960 qui avait été fermée par erreur.
+   
+   Analyse :
+   =======
+   Le bloc de recopie des paramètres se trouve à la fin de mecalm.f, écrasant ainsi toute les
+   paramètres calculés dans une des options de CALC_ELEM pour RESU2 par les valeurs de RESU1
+   
+   Correction :
+   ==========
+   Pour régler ce problème, je déplace le bloc de recopie des paramètres au début de la
+   boucle de sensibilité.
+   
+   Validation :
+   ==========
+   On vérifie sur un cas simple que la modification marche.
+   Astout / CALC_ELEM
+   
+   Impacts :
+   =======
+   mecalm.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout / CALC_ELEM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 01/09/2009 - 09:33:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013668 DU 2009-07-31 14:20:08
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TMA : DeltaCad
+TITRE
+   Alarme CALCULEL6_65 dans les tests de la base
+FONCTIONNALITE
+   Problème :
+   ========
+   L'objectif de cette fiche est de supprimer l'alarme CALCULEL6_65, alarme qui prévient
+   l'utilisateur qu'il y a une incohérence entre les charges contenues dans la SD (et donc
+   qui ont servi au calcul du champ DEPL) et celles fournies par l'utilisateur (pour un
+   post-traitement par exemple CALC_NO, CALC_ELEM, POST_GP) dans les cas-tests suivants: 
+   
+   -> Mécanique de la rupture :
+   hplp100b, sslp102b, ssnp131b
+   -> Contact :
+   ssna102f, ssnp501a, ssnp501c, ssnp501d
+   ssnp502a, ssnp502b, ssnp502c, ssnv505b
+   ssnv505d, ssnv506a, ssnv506b
+   
+   Analyse :
+   =======
+   Dans le plupart des cas cette alarme est justifiée car les charges doivent être les mêmes
+   entre celles utilisées pour le calcul et pour le post-traitement.
+   
+   Correction :
+   ==========
+   a) cas-tests de contact : on supprime le mot-clé facteur EXCIT dans CALC_NO, CALC_ELEM.
+   b) cas-tests de mécanique de la rupture: 
+   -> ssnp131b : la suppression de EXCIT de POST_GP provoque une erreur lors de la
+   construction de la macro POST_GP => émission de la fiche REX n°13772. 
+   Pour éliminer l'alarme, on restitue le cas-test avec la totalité des charges qui ont servi
+   aux calculs.
+   -> hplp100b : comme indiqué dans la doc, il s'agit là d'un test "purement informatique et
+   fonctionnel". Plusieurs chargement sont utilisés uniquement en post-traitement, sans que
+   cela ait un sens mécanique. on laisse le test en l'état (un commentaire existe déjà pour
+   justifier l'alarme).
+   - sslp102b : là encore l'alarme est émise pour un test informatique, signalé comme tel
+   dans le fichier de commande. A noter que ce cas test sera probablement complètement
+   modifié dans les semaines qui viennent (travail de Renaud Bargellini sur la prise en
+   compte de l'état initial).
+   
+   Impacts :
+   =======
+   ssnp131b
+   ssna102f
+   ssnp501a
+   ssnp501c
+   ssnp501d
+   ssnp502a
+   ssnp502b
+   ssnp502c
+   ssnv505b
+   ssnv505d
+   ssnv506a
+   ssnv506b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests incrimines
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 01/09/2009 - 10:08:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013655 DU 2009-07-27 13:59:08
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Resorption te0494 ou te0495 pour char_meca_sech_r
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   J'ai l'impression que te0494.f et te0495.f sont identiques. Ne peut-on pas en résorber un ?
+   """
+   
+   Solution :
+   ----------
+   Les calculs réalisés sont les mêmes donc, on peut résorber TE0495.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013648 DU 2009-07-23 12:55:23
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Rxc3xa9sorption initve.f
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Les routines initve.f et lcinvn.f font la même chose : initialisation d'un vecteur. On
+   peut résorber initve.f.
+   """
+   
+   
+   Solution :
+   ----------
+   On résorbe initve et on change le nom de lcinvn en vecini. Modification de tous les appels
+   par des appels à ces deux routines. 64 fichiers impactés :
+   alitmi.f
+   arltep.f
+   calcmi.f
+   calfft.f
+   calfnl.f
+   calres.f
+   caltra.f
+   calvol.f
+   cvmini.f
+   defttr.f
+   diag99.f
+   inialg.f
+   irrini.f
+   lcinit.f
+   lcmmin.f
+   lcmmsg.f
+   lmaini.f
+   mdchoe.f
+   mdchof.f
+   newton.f
+   op0154.f
+   reeref.f
+   reereg.f
+   sommve.f
+   te0036.f
+   te0037.f
+   te0046.f
+   te0297.f
+   te0363.f
+   te0366.f
+   te0367.f
+   te0441.f
+   te0519.f
+   te0532.f
+   te0533.f
+   te0534.f
+   trvpmd.f
+   xbsig2.f
+   xbsig3.f
+   xcface.f
+   xdecou.f
+   xfovol.f
+   xgelem.f
+   xmase2.f
+   xmase3.f
+   xmmres.f
+   xnmel2.f
+   xnmel3.f
+   xnmpl2.f
+   xnmpl3.f
+   xoripe.f
+   xpesro.f
+   xpoajd.f
+   xpoajn.f
+   xpoffo.f
+   xreacg.f
+   xrige2.f
+   xrige3.f
+   xsifel.f
+   xsifle.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013635 DU 2009-07-22 08:18:42
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   CALC_META : un bug dans smevol.f depuis la version 5.4.4
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Valgind signale un problème dans smevol sur l'usage de la variable TEST non initialisée.
+   C'est vrai ! la ligne TEST='NO' est commentarisée depuis son origine (en 5.4.4).
+   """
+   
+   
+   Solution :
+   ----------
+   On décommente la ligne TEST='NO'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF forma11c                       delmas J.DELMAS           184      2      1
+ CASTEST MODIF perf001a                     sellenet N.SELLENET          67      1      1
+ CASTEST MODIF perf001c                       delmas J.DELMAS            67      2      2
+ CASTEST MODIF sdld34a                        delmas J.DELMAS           173      2      2
+ CASTEST MODIF sdll123a                       delmas J.DELMAS           324      2      2
+ CASTEST MODIF sdll123b                       delmas J.DELMAS           486      2      2
+ CASTEST MODIF sdll123c                       delmas J.DELMAS           687      2      2
+ CASTEST MODIF sdll124a                       delmas J.DELMAS           257      2      2
+ CASTEST MODIF sdll125a                       delmas J.DELMAS           277      2      2
+ CASTEST MODIF sdll126a                       delmas J.DELMAS           189      2      2
+ CASTEST MODIF sdll126b                       delmas J.DELMAS           195      2      2
+ CASTEST MODIF sdll126c                       delmas J.DELMAS           188      2      2
+ CASTEST MODIF sdll140a                       delmas J.DELMAS           400      2      2
+ CASTEST MODIF ssna102f                    lebouvier F.LEBOUVIER        314      2      4
+ CASTEST MODIF ssnp131b                    lebouvier F.LEBOUVIER        370      4      2
+ CASTEST MODIF ssnp501a                    lebouvier F.LEBOUVIER        250      3      3
+ CASTEST MODIF ssnp501c                    lebouvier F.LEBOUVIER        239      3      3
+ CASTEST MODIF ssnp501d                    lebouvier F.LEBOUVIER        254      3      3
+ CASTEST MODIF ssnp502a                    lebouvier F.LEBOUVIER        254      4      3
+ CASTEST MODIF ssnp502b                    lebouvier F.LEBOUVIER        255      4      3
+ CASTEST MODIF ssnp502c                    lebouvier F.LEBOUVIER        246      2      3
+ CASTEST MODIF ssnv505b                    lebouvier F.LEBOUVIER        180      2      3
+ CASTEST MODIF ssnv505d                    lebouvier F.LEBOUVIER        180      2      3
+ CASTEST MODIF ssnv506a                    lebouvier F.LEBOUVIER        284      2      2
+ CASTEST MODIF ssnv506b                    lebouvier F.LEBOUVIER        270      3      3
+CATALOGU MODIF typelem/gener_me3d_3         sellenet N.SELLENET         644      2      2
+CATALOGU MODIF typelem/gener_me3dg_1        sellenet N.SELLENET         326      2      2
+CATALOGU MODIF typelem/gener_me3dg_3        sellenet N.SELLENET         359      2      2
+CATALOGU MODIF typelem/gener_mv3d_3         sellenet N.SELLENET         321      2      2
+CATALOGU MODIF typelem/meca_hexs8           sellenet N.SELLENET         526      2      2
+ FORTRAN AJOUT utilifor/vecini              sellenet N.SELLENET          34     34      0
+ FORTRAN MODIF algeline/vpzqrh                delmas J.DELMAS           415      6      2
+ FORTRAN MODIF algorith/alitmi              sellenet N.SELLENET         492     10     10
+ FORTRAN MODIF algorith/calcmi              sellenet N.SELLENET          80      4      4
+ FORTRAN MODIF algorith/calfft              sellenet N.SELLENET          69      2      2
+ FORTRAN MODIF algorith/calfnl              sellenet N.SELLENET          92      3      3
+ FORTRAN MODIF algorith/calres              sellenet N.SELLENET         156      4      4
+ FORTRAN MODIF algorith/caltra              sellenet N.SELLENET         139      4      4
+ FORTRAN MODIF algorith/calvol              sellenet N.SELLENET          85      4      4
+ FORTRAN MODIF algorith/cvmini              sellenet N.SELLENET         303      4      4
+ FORTRAN MODIF algorith/defttr              sellenet N.SELLENET         100      4      4
+ FORTRAN MODIF algorith/diag99              sellenet N.SELLENET         242      2      2
+ FORTRAN MODIF algorith/hypela                delmas J.DELMAS           158      2      2
+ FORTRAN MODIF algorith/hypinc                delmas J.DELMAS           165      2      2
+ FORTRAN MODIF algorith/inialg              sellenet N.SELLENET         154      3      3
+ FORTRAN MODIF algorith/irrini              sellenet N.SELLENET         182      3      3
+ FORTRAN MODIF algorith/lcinit              sellenet N.SELLENET          87      2      2
+ FORTRAN MODIF algorith/lcmmin              sellenet N.SELLENET         160      3      3
+ FORTRAN MODIF algorith/lcmmsg              sellenet N.SELLENET         570      2      2
+ FORTRAN MODIF algorith/lmaini              sellenet N.SELLENET         168      4      4
+ FORTRAN MODIF algorith/matini                delmas J.DELMAS            52     14      3
+ FORTRAN MODIF algorith/mdchoe              sellenet N.SELLENET         242      7      7
+ FORTRAN MODIF algorith/mdchof              sellenet N.SELLENET         278      7      7
+ FORTRAN MODIF algorith/newton              sellenet N.SELLENET         623      4      4
+ FORTRAN MODIF algorith/op0154              sellenet N.SELLENET         275      4      4
+ FORTRAN MODIF algorith/smevol              sellenet N.SELLENET         315      2      2
+ FORTRAN MODIF algorith/sommve              sellenet N.SELLENET          55      2      2
+ FORTRAN MODIF algorith/trvpmd              sellenet N.SELLENET         159      3      3
+ FORTRAN MODIF algorith/xadher                delmas J.DELMAS           193      2      2
+ FORTRAN MODIF algorith/xcface              sellenet N.SELLENET         383      4      4
+ FORTRAN MODIF algorith/xdecou              sellenet N.SELLENET         193      3      3
+ FORTRAN MODIF algorith/xmase2              sellenet N.SELLENET         222      3      3
+ FORTRAN MODIF algorith/xmase3              sellenet N.SELLENET         225      3      3
+ FORTRAN MODIF algorith/xmmres              sellenet N.SELLENET         497      6      6
+ FORTRAN MODIF algorith/xnmel2              sellenet N.SELLENET         419      3      3
+ FORTRAN MODIF algorith/xnmel3              sellenet N.SELLENET         435      3      3
+ FORTRAN MODIF algorith/xnmpl2              sellenet N.SELLENET         373      3      3
+ FORTRAN MODIF algorith/xnmpl3              sellenet N.SELLENET         389      3      3
+ FORTRAN MODIF algorith/xoripe              sellenet N.SELLENET         389      7      7
+ FORTRAN MODIF algorith/xreacg              sellenet N.SELLENET         179      2      2
+ FORTRAN MODIF algorith/xrige2              sellenet N.SELLENET         258      3      3
+ FORTRAN MODIF algorith/xrige3              sellenet N.SELLENET         276      3      3
+ FORTRAN MODIF calculel/mecalm                delmas J.DELMAS          2556     50     37
+ FORTRAN MODIF calculel/te0503                delmas J.DELMAS           122      2      2
+ FORTRAN MODIF elements/arltep              sellenet N.SELLENET         134      3      3
+ FORTRAN MODIF elements/coqsep                delmas J.DELMAS           445      2      2
+ FORTRAN MODIF elements/reeref              sellenet N.SELLENET         222      3      3
+ FORTRAN MODIF elements/reereg              sellenet N.SELLENET         138      3      3
+ FORTRAN MODIF elements/te0036              sellenet N.SELLENET         452      9      9
+ FORTRAN MODIF elements/te0037              sellenet N.SELLENET         343      2      2
+ FORTRAN MODIF elements/te0046              sellenet N.SELLENET         181      2      2
+ FORTRAN MODIF elements/te0297              sellenet N.SELLENET         316      2      2
+ FORTRAN MODIF elements/te0363              sellenet N.SELLENET         291      7      7
+ FORTRAN MODIF elements/te0366              sellenet N.SELLENET         337      4      4
+ FORTRAN MODIF elements/te0367              sellenet N.SELLENET         362     11     11
+ FORTRAN MODIF elements/te0441              sellenet N.SELLENET         186      2      2
+ FORTRAN MODIF elements/te0519              sellenet N.SELLENET         131      3      3
+ FORTRAN MODIF elements/te0532              sellenet N.SELLENET         320      2      2
+ FORTRAN MODIF elements/te0533              sellenet N.SELLENET         810      4      4
+ FORTRAN MODIF elements/te0534              sellenet N.SELLENET         662      7      7
+ FORTRAN MODIF elements/te0550                delmas J.DELMAS           125      2      2
+ FORTRAN MODIF elements/xbsig2              sellenet N.SELLENET         204      3      3
+ FORTRAN MODIF elements/xbsig3              sellenet N.SELLENET         212      3      3
+ FORTRAN MODIF elements/xfovol              sellenet N.SELLENET         243      3      3
+ FORTRAN MODIF elements/xgelem              sellenet N.SELLENET         419      8      8
+ FORTRAN MODIF elements/xpesro              sellenet N.SELLENET         202      3      3
+ FORTRAN MODIF elements/xsifel              sellenet N.SELLENET         520     21     21
+ FORTRAN MODIF elements/xsifle              sellenet N.SELLENET         383     13     13
+ FORTRAN MODIF prepost/xpoajd               sellenet N.SELLENET         295      3      3
+ FORTRAN MODIF prepost/xpoajn               sellenet N.SELLENET         148      2      2
+ FORTRAN MODIF prepost/xpoffo               sellenet N.SELLENET         135      4      4
+ FORTRAN SUPPR algorith/initve              sellenet N.SELLENET          45      0     45
+ FORTRAN SUPPR elements/te0495              sellenet N.SELLENET         128      0    128
+ FORTRAN SUPPR utilifor/lcinvn              sellenet N.SELLENET          33      0     33
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1          34        34               +34
+ MODIF :  100       29907       411     383       +28
+ SUPPR :    3         206               206      -206
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  104       30147       445     589      -144 

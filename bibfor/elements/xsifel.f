@@ -2,7 +2,7 @@
      &                  BASLOC,NNOP,NPG,DEPL,LSN,LST,IDECPG,IGTHET,FNO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -142,10 +142,10 @@ C     ------------------------------------------------------------------
       DO 10 KPG=1,NPGBIS
 
 C       INITIALISATIONS
-        CALL LCINVN(9,0.D0,DTDM)
-        CALL LCINVN(9,0.D0,DU1DM)
-        CALL LCINVN(9,0.D0,DU2DM)
-        CALL LCINVN(9,0.D0,DU3DM)
+        CALL VECINI(9,0.D0,DTDM)
+        CALL VECINI(9,0.D0,DU1DM)
+        CALL VECINI(9,0.D0,DU2DM)
+        CALL VECINI(9,0.D0,DU3DM)
 
 C       RECUPERATION DES DONNEES MATERIAUX
         IPG = IDECPG + KPG
@@ -187,7 +187,7 @@ C       RECUPERATION DES DONNEES MATERIAUX
         ENDIF 
 
 C       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-        CALL LCINVN(NDIM,0.D0,XG)
+        CALL VECINI(NDIM,0.D0,XG)
         DO 101 I=1,NDIM
           DO 102 N=1,NNO
             XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+N) 
@@ -211,8 +211,8 @@ C       1) COORDONNÉES POLAIRES ET BASE LOCALE
 C       --------------------------------------
 
 C       BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-        CALL LCINVN(3,0.D0,E1)
-        CALL LCINVN(3,0.D0,E2)
+        CALL VECINI(3,0.D0,E1)
+        CALL VECINI(3,0.D0,E2)
         LSNG=0.D0
         LSTG=0.D0
         DO 100 INO=1,NNOP
@@ -230,7 +230,7 @@ C       NORMALISATION DE LA BASE
         CALL PROVEC(E1,E2,E3)
 
 C       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-        CALL LCINVN(9,0.D0,P)
+        CALL VECINI(9,0.D0,P)
         DO 120 I=1,NDIM
           P(I,1)=E1(I)
           P(I,2)=E2(I)
@@ -272,7 +272,7 @@ C       FONCTIONS D'ENRICHISSEMENT
         FE(3)=SQRT(RG)*SIN(TG/2.D0)*SIN(TG)
         FE(4)=SQRT(RG)*COS(TG/2.D0)*SIN(TG)
 
-        CALL LCINVN(NDIM,0.D0,DEPLA)
+        CALL VECINI(NDIM,0.D0,DEPLA)
 
 C       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
         DO 200 IN=1,NNOP
@@ -397,9 +397,9 @@ C         RECUPERATION DU TENSEUR DE COURBURE
      &              DU1DM,DU2DM,DU3DM,U1L,U2L,U3L)
 
 C       CHAMPS SINGULIERS DANS LA BASE GLOBALE
-        CALL LCINVN(NDIM,0.D0,U1)
-        CALL LCINVN(NDIM,0.D0,U2)
-        CALL LCINVN(NDIM,0.D0,U3)
+        CALL VECINI(NDIM,0.D0,U1)
+        CALL VECINI(NDIM,0.D0,U2)
+        CALL VECINI(NDIM,0.D0,U3)
         DO 510 I=1,NDIM
           DO 511 J=1,NDIM
             U1(I) = U1(I) + P(I,J) * U1L(J)
@@ -413,7 +413,7 @@ C       -----------------------------------------------------------
 C       6) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)
 C       -----------------------------------------------------------
 
-        CALL LCINVN(12,0.D0,DFDM)
+        CALL VECINI(12,0.D0,DFDM)
         DO 600 INO=1,NNOP 
           DO 610 J=1,NDIM
             DO 620 K=1,NDIM
@@ -429,18 +429,18 @@ C       ---------------------------------------------
 C       7) CALCUL DE G, K1, K2, K3 AU POINT DE GAUSS
 C       --------------------------------------------
 
-        CALL LCINVN(3,0.D0,TZERO)
-        CALL LCINVN(12,0.D0,DZERO)
+        CALL VECINI(3,0.D0,TZERO)
+        CALL VECINI(12,0.D0,DZERO)
 
 C       POUR L'APPEL A GIL3D/GBIL2D, ON STOCKE LES CHAMPS 
 C       EN DERNIERE COLONNE DES MATRICES DES DERIVEES DES CHAMPS
 C       ON ETEND LES MATRICES : 
 C       EX : DUDM DE DIM (3,3) -> DUDME DE DIM (3,4)
-        CALL LCINVN(12,0.D0,DUDME)
-        CALL LCINVN(12,0.D0,DTDME)
-        CALL LCINVN(12,0.D0,DU1DME)
-        CALL LCINVN(12,0.D0,DU2DME)
-        CALL LCINVN(12,0.D0,DU3DME)
+        CALL VECINI(12,0.D0,DUDME)
+        CALL VECINI(12,0.D0,DTDME)
+        CALL VECINI(12,0.D0,DU1DME)
+        CALL VECINI(12,0.D0,DU2DME)
+        CALL VECINI(12,0.D0,DU3DME)
         DO 700 I=1,NDIM
           DO 701 J=1,NDIM
             DUDME(I,J) = DUDM(I,J)

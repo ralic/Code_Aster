@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -347,7 +347,7 @@ C         RQ : LA VALEUR DANS IDEPPL EST LA PRESSION DIVISÉE PAR E
 C         RÉACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
 C        (DEPDEL+DEPMOI)
           REAC=0.D0
-          CALL LCINVN(NDIM,0.D0,REAC12)
+          CALL VECINI(NDIM,0.D0,REAC12)
           DO 120 I = 1,NNOL
             PLI=PLA(I)
             IF (MALIN) THEN
@@ -372,7 +372,7 @@ C        (DEPDEL+DEPMOI)
  120      CONTINUE
 
 C         NORMALE AU CENTRE DE LA FACETTE
-          CALL LCINVN(NDIM,0.D0,NBARY)
+          CALL VECINI(NDIM,0.D0,NBARY)
           DO 122 I=1,NNOF
             NBARY(1)=NBARY(1)+NDN(1,CFACE(IFA,I))/NNOF
             NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/NNOF
@@ -420,7 +420,7 @@ C           SI CONTACT POUR CE PG : ON REMPLIT LES VECTEURS LN1 ET LN2
 
 C
 C             CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
-              CALL LCINVN(NDIM,0.D0,SAUT)
+              CALL VECINI(NDIM,0.D0,SAUT)
               DO 140 I = 1,NNO
                 DO 141 J = 1,DDLH
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
@@ -486,7 +486,7 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
 
               IF (NVIT.NE.0) THEN
 
-                CALL LCINVN(NDIM,0.D0,SAUT)
+                CALL VECINI(NDIM,0.D0,SAUT)
                 DO 161 I = 1,NNO
                   DO 162 J = 1,DDLH
                     SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
@@ -500,7 +500,7 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
  163              CONTINUE
  161            CONTINUE
 
-                CALL LCINVN(NDIM-1,0.D0,TT)
+                CALL VECINI(NDIM-1,0.D0,TT)
                 DO 165 I = 1,NNOL
                   PLI=PLA(I)
                   IF (MALIN) THEN
@@ -531,7 +531,7 @@ C             P : OPÉRATEUR DE PROJECTION
               CALL XMAFR1(NDIM,ND,P)
 
 C             PBOUL SELON L'ÉTAT D'ADHERENCE DU PG (AVEC DEPDEL)
-              CALL LCINVN(NDIM,0.D0,SAUT)
+              CALL VECINI(NDIM,0.D0,SAUT)
               DO 175 INO=1,NNO
                 DO 176 J=1,DDLH
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *

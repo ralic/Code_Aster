@@ -1,5 +1,6 @@
-# MODIF  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 01/09/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
+# ssnp131b.para = tps_job 500 mem_job 1400Mo mem_aster 30 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -321,7 +322,8 @@ tab=POST_GP(RESULTAT=RESU,
             COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
                          DEFORMATION='PETIT',),
             EXCIT=(_F(CHARGE=COND_LIM,),
-                   ),
+                   _F(CHARGE=COND_LI2,),
+                   _F(CHARGE=CHAD,),),
             SYME_CHAR='SYME',
             DIRECTION = (1., 0., 0.),
             THETA_3D=(_F(GROUP_MA='FONDFISS',

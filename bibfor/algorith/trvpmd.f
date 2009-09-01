@@ -2,7 +2,7 @@
 C
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,8 +45,8 @@ C
       J=0
       JMAX=0
       NSAUT = 0
-      CALL INITVE(NP1,TP)
-      CALL INITVE(NP1,RTP)
+      CALL VECINI(NP1,0.D0,TP)
+      CALL VECINI(NP1,0.D0,RTP)
       DO 100 I=1,NP1
         NPOINT(I) = 0
         LPOINT(I) = 0

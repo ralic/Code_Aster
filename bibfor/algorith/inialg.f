@@ -6,7 +6,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,13 +58,13 @@ C     INTRINSIC  ABS
 C
 C ROUTINES EXTERNES
 C -----------------
-C     EXTERNAL   ACCELE, DISBUT, GLOLOC, MATINI, INITVE, PROJMG
+C     EXTERNAL   ACCELE, DISBUT, GLOLOC, MATINI, LCINVN, PROJMG
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
       NPFTS = NPFMAX - NPF + 1
       CALL MATINI(NP4,NBM,0.D0,FEXTTS)
-      CALL INITVE(NP4,TEXTS)
+      CALL VECINI(NP4,0.D0,TEXTS)
 C
 C  1. DEPLACEMENT, VITESSE ET ACCELERATION INITIAUX POUR ALGO ITMI
 C     ------------------------------------------------------------

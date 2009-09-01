@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -144,7 +144,7 @@ C-----------------------------------------------------------------------
           DO 200 KPG=1,NPG
 
 C           COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            CALL LCINVN(NDIM,0.D0,XG)
+            CALL VECINI(NDIM,0.D0,XG)
             DO 210 I=1,NDIM
               DO 211 IN=1,NNO
                 XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+IN) 

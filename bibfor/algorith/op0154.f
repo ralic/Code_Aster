@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C     ---------------------------------------
          IF ( DIM .EQ. 2 ) THEN
             CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1, 1, 2, PT, N1 )
             PT(3) = 0.D0
-            CALL INITVE(3,PT2)
+            CALL VECINI(3,0.D0,PT2)
             BIDIM = .TRUE.
          ELSE
             CALL GETVR8 ( 'MODI_BASE', 'VECT_X', 1, 1, 3, PT, N1 )
@@ -156,8 +156,8 @@ C     ---------------------------------------
             IF ( DIM .EQ. 2 ) THEN
                CALL GETVR8 ( 'ROTATION', 'POIN_1', I, 1, 2, PT, N1 )
                PT(3) = 0.D0
-               CALL INITVE(3,PT2)
-               CALL INITVE(3,DIR)
+               CALL VECINI(3,0.D0,PT2)
+               CALL VECINI(3,0.D0,DIR)
                BIDIM = .TRUE.
             ELSE
                CALL GETVR8 ( 'ROTATION', 'POIN_1', I, 1, 3, PT, N1 )

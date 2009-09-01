@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     INTRINSIC  DBLE, INT
 C
 C ROUTINES EXTERNES
 C -----------------
-C     EXTERNAL   INITVE
+C     EXTERNAL   LCINVN
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -55,8 +55,8 @@ C-----------------------------------------------------------------------
 C
       IF ( NTRANS.EQ.0 ) THEN
 C
-         CALL INITVE(NP1,FEXTT0)
-         CALL INITVE(NP1,FEXTTR)
+         CALL VECINI(NP1,0.D0,FEXTT0)
+         CALL VECINI(NP1,0.D0,FEXTTR)
          NTTR = INT(2.0D0**DBLE(NPF))
          DO 10 I = 1, NBM
             FEXTT0(I) = FEXT(1,I)

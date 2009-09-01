@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C DEBUG
       ICYCL  = 0
       EPSDTC = 1.0D-04
       DT00   = DT
-      CALL INITVE ( NITMAX+1,VECDT)
+      CALL VECINI ( NITMAX+1,0.D0,VECDT)
 C DEBUG
 C
 C-----------------------------------------------------------------------
@@ -248,8 +248,8 @@ C 3.  CALCUL DES DDLS GENERALISES A L'INSTANT N+1 PAR LE SCHEMA ITMI
 C     JUSQU'A VALIDATION DE L'INSTANT N+1 (BLOC REPETER)
 C-----------------------------------------------------------------------
  100  CONTINUE
-      CALL INITVE ( NBM,DEPG)
-      CALL INITVE ( NBM,VITG)
+      CALL VECINI ( NBM,0.D0,DEPG)
+      CALL VECINI ( NBM,0.D0,VITG)
 C
 C 3.1 ESTIMATION DE LA FORCE NON-LINEAIRE A L'INSTANT N+1
 C     INEWTO = 1 INDIQUE A MDCHOE QUE LA ROUTINE APPELANTE EST NEWTON,

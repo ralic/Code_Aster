@@ -4,7 +4,7 @@
      &                  OPTION,IGTHET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -162,8 +162,8 @@ C       ET DE DFDI : DERIVVES DES FF PARENT
         ENDIF
 
 C       BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-        CALL LCINVN(NDIM,0.D0,E1)
-        CALL LCINVN(NDIM,0.D0,E2)
+        CALL VECINI(NDIM,0.D0,E1)
+        CALL VECINI(NDIM,0.D0,E2)
         LSN=0.D0
         LST=0.D0
         DO 100 INO=1,NNOP
@@ -181,7 +181,7 @@ C       NORMALISATION DE LA BASE
         CALL PROVEC(E1,E2,E3)
 
 C       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-        CALL LCINVN(9,0.D0,P)
+        CALL VECINI(9,0.D0,P)
         DO 120 I=1,NDIM
           P(I,1)=E1(I)
           P(I,2)=E2(I)
@@ -197,7 +197,7 @@ C       -----------------------------------------------
 C       1) CALCUL DES FORCES SUIVANT LES OPTIONS
 C       -----------------------------------------------
 
-        CALL LCINVN(3*2,0.D0,FORREP)
+        CALL VECINI(3*2,0.D0,FORREP)
 
         IF ((OPTION.EQ.'CALC_K_G') .OR. (OPTION.EQ.'CALC_G')) THEN
 
@@ -250,7 +250,7 @@ C       2) CALCUL DE THETA ET DE DIV(THETA)
 C       -----------------------------------
 
         DIVT= 0.D0
-        CALL LCINVN(9,0.D0,DTDM)
+        CALL VECINI(9,0.D0,DTDM)
 
         DO 390 I=1,NDIM
 
@@ -277,7 +277,7 @@ C         ---------------------------------------------
 C         3) CALCUL DU DEPLACEMENT
 C         ---------------------------------------------
 
-          CALL LCINVN(NDIM,0.D0,DEPLA)
+          CALL VECINI(NDIM,0.D0,DEPLA)
           DO 200 INO=1,NNOP
             CPT=0
 C           DDLS CLASSIQUES
@@ -302,14 +302,14 @@ C         4) CALCUL DES CHAMPS AUXILIAIRES
 C         --------------------------------
           IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
 C         CHAMPS AUXILIARES DANS LA BASE LOCALE : U1L,U2L,U3L
-            CALL LCINVN(9,0.D0,RB9)
+            CALL VECINI(9,0.D0,RB9)
             CALL CHAUXI(NDIM,MU,KA,-LST,ANGL(ILEV),RB9,.FALSE.,
      &                RB,RB9,RB9,RB9,U1L,U2L,U3L)
 
 C         CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3
-            CALL LCINVN(NDIM,0.D0,U1)
-            CALL LCINVN(NDIM,0.D0,U2)
-            CALL LCINVN(NDIM,0.D0,U3)
+            CALL VECINI(NDIM,0.D0,U1)
+            CALL VECINI(NDIM,0.D0,U2)
+            CALL VECINI(NDIM,0.D0,U3)
             DO 510 I=1,NDIM
               DO 511 J=1,NDIM
                 U1(I) = U1(I) + P(I,J) * U1L(J)
@@ -322,8 +322,8 @@ C         -----------------------------------------
 C         5) CALCUL DE 'DFOR' =  D(PRES)/DI . THETA
 C         -----------------------------------------
 
-          CALL LCINVN(9,0.D0,DPREDI)
-          CALL LCINVN(3,0.D0,DFOR)
+          CALL VECINI(9,0.D0,DPREDI)
+          CALL VECINI(3,0.D0,DFOR)
 
           DO 400 I=1,NDIM
             DO 410 J=1,NDIM

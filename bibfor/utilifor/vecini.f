@@ -1,8 +1,9 @@
-        SUBROUTINE LCINVN( N , S , X )
+        SUBROUTINE VECINI( N , S , X )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILIFOR  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -4,7 +4,7 @@
      &                      TIMED,TIMEF,VIND,SIGD  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,7 @@ C
 C         TYPESS=7
 
       IF ( TYPESS .EQ. 0) THEN
-         CALL LCINVN ( NR  , 0.D0 , DY )
+         CALL VECINI ( NR  , 0.D0 , DY )
          IF(MOD(1:6).EQ.'C_PLAN')THEN
             DEPS(3) = 0.D0
          ENDIF
@@ -106,7 +106,7 @@ C
 C - SOLUTION INITIALE = VALEUR ESSAI POUR TOUTES LES COMPOSANTES
 C
       ELSEIF ( TYPESS .EQ. 3 ) THEN
-        CALL LCINVN ( NR  , ESSAI , DY )
+        CALL VECINI ( NR  , ESSAI , DY )
         IF ( MOD(1:6).EQ.'C_PLAN' )THEN
            DEPS(3) = ESSAI
            DY(3)   = 0.D0

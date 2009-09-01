@@ -6,7 +6,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C -----------------
 C
 C ROUTINES EXTERNES
 C -----------------
-C     EXTERNAL    ALGINT, INITVE, INTFOR, INTFTR, MATRAN, PARMAT, PARMTR
+C     EXTERNAL    ALGINT, LCINVN, INTFOR, INTFTR, MATRAN, PARMAT, PARMTR
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -60,8 +60,8 @@ C-----------------------------------------------------------------------
 C  0. INITIALISATIONS
 C-----------------------------------------------------------------------
 C
-      CALL INITVE(NP1,DEPGTR)
-      CALL INITVE(NP1,VITGTR)
+      CALL VECINI(NP1,0.D0,DEPGTR)
+      CALL VECINI(NP1,0.D0,VITGTR)
 C
 C-----------------------------------------------------------------------
 C  1. PREMIERE ESTIMATION DE LA DUREE DU TRANSITOIRE

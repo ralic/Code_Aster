@@ -4,7 +4,7 @@
       REAL*8             H(IH,NEQ), WR(NEQ),WI(NEQ),Z(IZ,NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGELINE  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -404,7 +404,11 @@ C
          WI(I) = 0.D0
   255 CONTINUE
       IF (IZ.GE.NEQ) THEN
-         CALL MATINI(NEQ,NEQ,0.D0,Z)
+         DO 265 I=1,NEQ
+            DO 260 J=1,NEQ
+               Z(I,J) = 0.D0
+  260       CONTINUE
+  265    CONTINUE
       ENDIF
 C     --- SORTIE ---
  9999 CONTINUE

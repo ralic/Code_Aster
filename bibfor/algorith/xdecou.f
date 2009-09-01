@@ -6,7 +6,7 @@
       CHARACTER*24  PINTER,AINTER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -122,8 +122,8 @@ C       NUM NO DE L'HEXA
         NB=CONNEC(IT,NTB)    
         LSNA=LSN(NA)
         LSNB=LSN(NB)
-        CALL LCINVN(3,0.D0,A)
-        CALL LCINVN(3,0.D0,B)
+        CALL VECINI(3,0.D0,A)
+        CALL VECINI(3,0.D0,B)
         DO 110 I=1,NDIM  
           A(I)=ZR(IGEOM-1+NDIM*(NA-1)+I)
           B(I)=ZR(IGEOM-1+NDIM*(NB-1)+I)

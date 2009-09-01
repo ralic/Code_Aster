@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,7 @@ C-----------------------------------------------------------------------
 C
       DO 10 J=1,NBSTAT
 C
-         CALL INITVE ( NEQ, ZR(JTRAV1) )
+         CALL VECINI ( NEQ, 0.D0, ZR(JTRAV1) )
 C
          DO 20 I=1,NBMODE
 C

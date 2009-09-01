@@ -5,7 +5,7 @@
       CHARACTER*16      OPTION
       CHARACTER*24      MATE, COMPOR, PHASIN
       CHARACTER*(*)     MODELZ
-C MODIF ALGORITH  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,9 +82,9 @@ C
       LIGRMO = MODELE//'.MODELE'
 
       NBHIST = 0
-C        TEST ='NO'
-      IADTRC(1) = 0.D0
-      IADTRC(2) = 0.D0
+      TEST ='NO'
+      IADTRC(1) = 0
+      IADTRC(2) = 0
 
       DO 10 I = 1,LONG
         MATER = ZK8(JMATE+I-1)

@@ -1,8 +1,8 @@
-# MODIF  DATE 21/10/2008   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC 3 DISQUES (CADYRO : DLRR08)
 # REFERENCE : M. LALANNE, G. FERRARIS -        RORORDYNAMIC, PREDICTION IN
 # ENGINEERING - pp 68-71
-# sdll140a.para = tps_job 600 mem_job 256 ncpus 1 liste_test S
+# sdll140a.para = tps_job 600 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,7 +116,7 @@ GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
 MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        MATR_B=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(3.,1000.)));
+                                    FREQ=(3.,3000.)));
 
 TEST_RESU(RESU=(_F(RESULTAT=MODES,
                   REFERENCE='SOURCE_EXTERNE',
@@ -206,8 +206,6 @@ MODEZ=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=12 ))
-
-
 
 
 
@@ -320,6 +318,81 @@ TEST_RESU(RESU=(
                _F(RESULTAT=MODEZ,
                   REFERENCE='SOURCE_EXTERNE',
                   NUME_ORDRE=11,
+                  PARA='FREQ',
+                  VALE=715.026,),))
+                                                                                                       
+
+MACRO_PROJ_BASE(BASE=MODES,
+                PROFIL='PLEIN',
+                MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
+                                   MATR_ASSE=MASSE,),
+                                _F(MATRICE=CO('RIGE'),
+                                   MATR_ASSE=RIGIDITE,),
+                                _F(MATRICE=CO('OMGE'),
+                                   MATR_ASSE=GYOM,),),);
+
+
+MOD2ETAG=MODE_ITER_SIMULT(MATR_A=RIGE,
+                          MATR_B=MAGE,
+                          MATR_C=OMGE,
+                          METHODE='QZ',
+                          CALC_FREQ=_F(OPTION='TOUT'),)
+
+TEST_RESU(RESU=(
+               _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=1,
+                  PARA='FREQ',
+                  VALE=55.408,),
+                  
+               _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=2,
+                  PARA='FREQ',
+                  VALE=67.209,),
+                  
+                 _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=4,
+                  PARA='FREQ',
+                  VALE=157.904,),
+                  
+               _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=5,
+                  PARA='FREQ',
+                  VALE=193.706,),
+
+               _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=6,
+                  PARA='FREQ',
+                  VALE=249.898,),
+                  
+  
+               _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=8,
+                  PARA='FREQ',
+                  VALE=407.619,),
+    
+                _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=9,
+                  PRECISION=.002,
+                  PARA='FREQ',
+                  VALE=446.622,),
+     
+               _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=11,
+                  PARA='FREQ',
+                  PRECISION=.002,
+                  VALE=622.654,),
+                 
+               _F(RESULTAT=MOD2ETAG,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NUME_ORDRE=12,
                   PARA='FREQ',
                   VALE=715.026,),))
                                                                                                        

@@ -2,7 +2,7 @@
      &                  BASLOC,NNOP,NPG,DEPL,LSN,LST,IDECPG,IGTHET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -158,12 +158,12 @@ C     ------------------------------------------------------------------
       DO 10 KPG=1,NPGBIS
 
 C       INITIALISATIONS
-        CALL LCINVN(9,0.D0,DTDM)
-        CALL LCINVN(9,0.D0,DUDM)
+        CALL VECINI(9,0.D0,DTDM)
+        CALL VECINI(9,0.D0,DUDM)
 
 
 C       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-        CALL LCINVN(NDIM,0.D0,XG)
+        CALL VECINI(NDIM,0.D0,XG)
         DO 101 I=1,NDIM
           DO 102 N=1,NNO
             XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+N) 
@@ -187,8 +187,8 @@ C       1) COORDONNÉES POLAIRES ET BASE LOCALE
 C       --------------------------------------
 
 C       BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-        CALL LCINVN(3,0.D0,E1)
-        CALL LCINVN(3,0.D0,E2)
+        CALL VECINI(3,0.D0,E1)
+        CALL VECINI(3,0.D0,E2)
         LSNG=0.D0
         LSTG=0.D0
         DO 100 INO=1,NNOP
@@ -206,7 +206,7 @@ C       NORMALISATION DE LA BASE
         CALL PROVEC(E1,E2,E3)
 
 C       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-        CALL LCINVN(9,0.D0,P)
+        CALL VECINI(9,0.D0,P)
         DO 120 I=1,NDIM
           P(I,1)=E1(I)
           P(I,2)=E2(I)
@@ -248,7 +248,7 @@ C       FONCTIONS D'ENRICHISSEMENT
         FE(3)=SQRT(RG)*SIN(TG/2.D0)*SIN(TG)
         FE(4)=SQRT(RG)*COS(TG/2.D0)*SIN(TG)
 
-        CALL LCINVN(NDIM,0.D0,DEPLA)
+        CALL VECINI(NDIM,0.D0,DEPLA)
 
 C       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
         DO 200 IN=1,NNOP

@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,12 +89,12 @@ C
 C - SOLUTION INITIALE = NUL
 C
                 IF ( TYPESS .EQ. 0 ) THEN
-                   CALL LCINVN ( 4*NDT+1 , 0.D0 , DY )
+                   CALL VECINI ( 4*NDT+1 , 0.D0 , DY )
 C
 C - SOLUTION INITIALE = ELASTIQUE
 C
                 ELSEIF ( TYPESS .EQ. 1 ) THEN
-                   CALL LCINVN ( 4*NDT+1 , 0.D0 , DY    )
+                   CALL VECINI ( 4*NDT+1 , 0.D0 , DY    )
                    CALL LCPRMV ( HOOK    , DEPS , DSIG  )
                    CALL LCEQVN ( NDT     , DSIG , DY(1) )
 C
@@ -161,7 +161,7 @@ C
 C - SOLUTION INITIALE = VALEUR ESSAI POUR TOUTES LES COMPOSANTES
 C
                 ELSEIF ( TYPESS .EQ. 3 ) THEN
-                   CALL LCINVN ( 4*NDT+1     , ESSAI , DY   )
+                   CALL VECINI ( 4*NDT+1     , ESSAI , DY   )
                 ENDIF
 C
 C

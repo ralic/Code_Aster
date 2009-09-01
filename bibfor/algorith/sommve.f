@@ -2,7 +2,7 @@
 C
 C ********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C ****************** DEBUT DU CODE EXECUTABLE ************************
 C
       IER = 0
-      CALL INITVE(NP,VECRES)
+      CALL VECINI(NP,0.D0,VECRES)
 C
       IF (N1 .GT. NP .OR. N2 .GT.NP .OR. N1 .NE. N2) THEN
         IER = 1

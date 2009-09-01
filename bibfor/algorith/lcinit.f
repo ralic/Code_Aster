@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,9 +69,6 @@ C
          CALL CVMINI(TYPESS,ESSAI,MOD,NMAT,MATERF,
      1                TIMED,TIMEF,YD,EPSD,DEPS,DY)
 C
-      ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
-         CALL INSINI(TYPESS,ESSAI,MOD,NMAT,MATERF,YD,DEPS,DY)
-C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMIN(TYPESS,ESSAI,MOD,NMAT,MATERF,NR, NVI,YD,DEPS,DY,
      1                      COMP,NBCOMM, CPMONO, PGL,TOUTMS,
@@ -81,7 +78,7 @@ C
      &               DEPS,DY)
       ELSE
 C        SOLUTION INITIALE = ZERO
-         CALL LCINVN ( NR  , 0.D0 , DY )
+         CALL VECINI ( NR  , 0.D0 , DY )
          IF(MOD(1:6).EQ.'C_PLAN')THEN
             DEPS(3) = 0.D0
          ENDIF

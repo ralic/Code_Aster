@@ -1,6 +1,6 @@
-# MODIF  DATE 04/11/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL ELASTIQUE D'UN ANNEAU CREUX SOUMIS A UNE PRESSION INTARIEURE
-# perf001c.para = tps_job 1300 mem_job 1700 ncpus 1 liste_test P
+# perf001c.para = tps_job 1200 mem_job 1700Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

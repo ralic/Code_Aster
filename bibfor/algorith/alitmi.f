@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C
 C ROUTINES EXTERNES
 C -----------------
 C     EXTERNAL      ADIMVE, CALCMD, CALCMI, CALFMN, CALFNL, COUPLA,
-C    &              ESTIVD, MATINI, INITVE, NEWTON, PROJMD,
+C    &              ESTIVD, MATINI, LCINVN, NEWTON, PROJMD,
 C    &              PROJVD, SOMMMA, TESTCH,
 C DEBUG
 C     EXTERNAL      DCOPY
@@ -126,20 +126,20 @@ C DEBUG
       INEWTO = 0
       CALL MATINI ( NP1,NP1,0.D0,VG)
       CALL MATINI ( NP1,NP1,0.D0,VD)
-      CALL INITVE ( NP1,FMODT)
-      CALL INITVE ( NP1,DEPG0T)
-      CALL INITVE ( NP1,VITG0T)
-      CALL INITVE ( NP1,FMOD0T)
+      CALL VECINI ( NP1, 0.D0, FMODT)
+      CALL VECINI ( NP1, 0.D0, DEPG0T)
+      CALL VECINI ( NP1, 0.D0, VITG0T)
+      CALL VECINI ( NP1, 0.D0, FMOD0T)
 C
 C-----------------------------------------------------------------------
 C     ESTIMATION DES DDLS GENERALISES A L'INSTANT N+1
 C     (REPETER JUSQU'A VALIDATION DE L'INSTANT N+1)
 C-----------------------------------------------------------------------
   10  CONTINUE
-      CALL INITVE ( NP1,DEPGE)
-      CALL INITVE ( NP1,VITGE)
-      CALL INITVE ( NP1,DEPG)
-      CALL INITVE ( NP1,VITG)
+      CALL VECINI ( NP1, 0.D0, DEPGE)
+      CALL VECINI ( NP1, 0.D0, VITGE)
+      CALL VECINI ( NP1, 0.D0, DEPG)
+      CALL VECINI ( NP1, 0.D0, VITG)
 CC
 CC 1.  ESTIMATION DES DDLS A L'INSTANT N+1 PAR LE SCHEMA D'EULER
 CC     ---------------------------------------------------------

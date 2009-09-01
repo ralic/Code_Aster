@@ -5,7 +5,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,15 +47,15 @@ C -----------------
 C
 C ROUTINES EXTERNES
 C -----------------
-C     EXTERNAL    ALGINT, INITVE, INTFOR, MATRAN, PARMAT, TSTPAR
+C     EXTERNAL    ALGINT, LCINVN, INTFOR, MATRAN, PARMAT, TSTPAR
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
 C  0. INITIALISATIONS
 C     ---------------
       ITESTM = 0
-      CALL INITVE(NP1,DEPG)
-      CALL INITVE(NP1,VITG)
+      CALL VECINI(NP1,0.D0,DEPG)
+      CALL VECINI(NP1,0.D0,VITG)
 C 
 C  1. TEST SUR LES MODIF. DES PARAMETRES DE CALCUL
 C     --------------------------------------------

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,9 +201,9 @@ C         BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
  111      CONTINUE
 
 C         ON RENOMME LES SOMMETS DU SOUS-ELEMENT
-          CALL LCINVN(3,0.D0,A)
-          CALL LCINVN(3,0.D0,B)
-          CALL LCINVN(3,0.D0,AB)
+          CALL VECINI(3,0.D0,A)
+          CALL VECINI(3,0.D0,B)
+          CALL VECINI(3,0.D0,AB)
           DO 113 J=1,NDIM
             A(J)=ZR(JCOORS-1+NDIM*(1-1)+J)
             B(J)=ZR(JCOORS-1+NDIM*(2-1)+J)
@@ -221,7 +221,7 @@ C           CREATION DU REPERE LOCAL 2D : (AB,Y)
           ELSEIF (NDIME.EQ.1) THEN
 C           CREATION DU REPERE LOCAL 1D : AB/NAB
             CALL NORMEV(AB,NAB)
-            CALL LCINVN(3,0.D0,ND) 
+            CALL VECINI(3,0.D0,ND) 
             ND(1) = AB(2)
             ND(2) = -AB(1)
           ENDIF
@@ -271,7 +271,7 @@ C           CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             ENDIF
 
 C           COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
-            CALL LCINVN(NDIME,0.D0,GLOC)
+            CALL VECINI(NDIME,0.D0,GLOC)
             DO 210 J=1,NNO
               VF=ZR(IVF-1+NNO*(KPG-1)+J)
               DO 211 K=1,NDIME
@@ -284,7 +284,7 @@ C           JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
      &         IBID,IBID,IBID,RBID,RBID,'NON',XE,FF,RBID,RBID,RBID,RBID)
 
 C           COORDONNES REELLES DU POINT DE GAUSS              
-            CALL LCINVN(4,0.D0,XG)
+            CALL VECINI(4,0.D0,XG)
             DO 220 I=1,NDIM
               DO 221 IN=1,NNO
                 XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+IN)
@@ -325,7 +325,7 @@ C             FONCTIONS D'ENRICHISSEMENT
 C           CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
 C           -----------------------------------------------
 
-            CALL LCINVN(3,0.D0,FORREP)
+            CALL VECINI(3,0.D0,FORREP)
             NOMPAR(1)='X'
             NOMPAR(2)='Y'
             IF (NDIM.EQ.3) NOMPAR(3)='Z'
@@ -372,7 +372,7 @@ C             VALEUR DE LA PRESSION
             ELSEIF (OPTION.EQ.'CHAR_MECA_FR2D3D'.OR.
      &              OPTION.EQ.'CHAR_MECA_FR1D2D') THEN
 
-              CALL LCINVN(NDIM,0.D0,FORREP)
+              CALL VECINI(NDIM,0.D0,FORREP)
               DO 270 INO = 1,NNOP
                 DO 271 J=1,NDIM
                   FORREP(J)=FORREP(J)+ZR(IFORC-1+NDIM*(INO-1)+J)*FF(INO)

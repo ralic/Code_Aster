@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF CALCULEL  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -328,6 +328,52 @@ C        . LERES0 : IDEM POUR RESUCO
 
         NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
         LERES1 = ZK24(ADRECG+2*NRPASS-2) (1:19)
+
+C    ------------------------------------------------------------------
+C    -- RECOPIE DES PARAMETRES DANS LA NOUVELLE SD RESULTAT
+C    ------------------------------------------------------------------
+
+        IF (NEWCAL) THEN
+          DO 475,IAUX = 1,NRPASS - 1
+            IF (ZK24(ADCRRS+IAUX-1)(1:19).EQ.LERES1) THEN
+              GO TO 490
+            END IF
+  475     CONTINUE
+          NOMPAR = '&&'//NOMPRO//'.NOMS_PARA '
+          CALL RSNOPA(RESUCO,2,NOMPAR,NBAC,NBPA)
+          NBPARA = NBAC + NBPA
+          CALL JEVEUO(NOMPAR,'L',JPA)
+          DO 510,IAUX = 1,NBORDR
+            IORDR = ZI(JORDR+IAUX-1)
+            DO 500 J = 1,NBPARA
+              CALL RSADPA(RESUCO,'L',1,ZK16(JPA+J-1),IORDR,1,IADIN,TYPE)
+              CALL RSADPA(LERES1,'E',1,ZK16(JPA+J-1),IORDR,1,IADOU,TYPE)
+              IF (TYPE(1:1).EQ.'I') THEN
+                ZI(IADOU) = ZI(IADIN)
+              ELSE IF (TYPE(1:1).EQ.'R') THEN
+                ZR(IADOU) = ZR(IADIN)
+              ELSE IF (TYPE(1:1).EQ.'C') THEN
+                ZC(IADOU) = ZC(IADIN)
+              ELSE IF (TYPE(1:3).EQ.'K80') THEN
+                ZK80(IADOU) = ZK80(IADIN)
+              ELSE IF (TYPE(1:3).EQ.'K32') THEN
+                ZK32(IADOU) = ZK32(IADIN)
+              ELSE IF (TYPE(1:3).EQ.'K24') THEN
+                ZK24(IADOU) = ZK24(IADIN)
+              ELSE IF (TYPE(1:3).EQ.'K16') THEN
+                ZK16(IADOU) = ZK16(IADIN)
+              ELSE IF (TYPE(1:2).EQ.'K8') THEN
+                ZK8(IADOU) = ZK8(IADIN)
+              END IF
+  500       CONTINUE
+  510     CONTINUE
+          ZK24(ADCRRS+NRPASS-1)(1:19) = LERES1
+        END IF
+
+C    ------------------------------------------------------------------
+C    -- FIN RECOPIE DES PARAMETRES DANS LA NOUVELLE SD RESULTAT
+C    ------------------------------------------------------------------
+
 
 C DANS LE CAS D'UN CALCUL STANDARD :
         IF (NOPASE.EQ.' ') THEN
@@ -2494,44 +2540,11 @@ C     ------------------------------------------------------------------
             ENDIF
           ENDIF
   440   CONTINUE
+C
 C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
-        IF (NEWCAL) THEN
-          DO 475,IAUX = 1,NRPASS - 1
-            IF (ZK24(ADCRRS+IAUX-1)(1:19).EQ.LERES1) THEN
-              GO TO 490
-            END IF
-  475     CONTINUE
-          NOMPAR = '&&'//NOMPRO//'.NOMS_PARA '
-          CALL RSNOPA(RESUCO,2,NOMPAR,NBAC,NBPA)
-          NBPARA = NBAC + NBPA
-          CALL JEVEUO(NOMPAR,'L',JPA)
-          DO 510,IAUX = 1,NBORDR
-            IORDR = ZI(JORDR+IAUX-1)
-            DO 500 J = 1,NBPARA
-              CALL RSADPA(RESUCO,'L',1,ZK16(JPA+J-1),IORDR,1,IADIN,TYPE)
-              CALL RSADPA(LERES1,'E',1,ZK16(JPA+J-1),IORDR,1,IADOU,TYPE)
-              IF (TYPE(1:1).EQ.'I') THEN
-                ZI(IADOU) = ZI(IADIN)
-              ELSE IF (TYPE(1:1).EQ.'R') THEN
-                ZR(IADOU) = ZR(IADIN)
-              ELSE IF (TYPE(1:1).EQ.'C') THEN
-                ZC(IADOU) = ZC(IADIN)
-              ELSE IF (TYPE(1:3).EQ.'K80') THEN
-                ZK80(IADOU) = ZK80(IADIN)
-              ELSE IF (TYPE(1:3).EQ.'K32') THEN
-                ZK32(IADOU) = ZK32(IADIN)
-              ELSE IF (TYPE(1:3).EQ.'K24') THEN
-                ZK24(IADOU) = ZK24(IADIN)
-              ELSE IF (TYPE(1:3).EQ.'K16') THEN
-                ZK16(IADOU) = ZK16(IADIN)
-              ELSE IF (TYPE(1:2).EQ.'K8') THEN
-                ZK8(IADOU) = ZK8(IADIN)
-              END IF
-  500       CONTINUE
-  510     CONTINUE
-          ZK24(ADCRRS+NRPASS-1)(1:19) = LERES1
-        END IF
+C
   490 CONTINUE
+C
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
       GO TO 530
   520 CONTINUE

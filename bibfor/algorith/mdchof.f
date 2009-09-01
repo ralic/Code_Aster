@@ -7,7 +7,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C
 C ROUTINES EXTERNES
 C -----------------
 C     EXTERNAL     CALJAC, CALRES, DEIMPJ, DISBUT, FTEST1, GLOLOC,
-C    &             INITVE, LOCGLO, PROJGM, PROJMG
+C    &             LCINVN, LOCGLO, PROJGM, PROJMG
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -86,9 +86,9 @@ C
          IF ( IMPR.GE.2 ) IFR = IUNIFI('RESULTAT')
       ENDIF
 C
-      CALL INITVE(NP1,FMOD)
-      CALL INITVE(NP1,FMRES)
-      CALL INITVE(3,FLOC)
+      CALL VECINI(NP1,0.D0,FMOD)
+      CALL VECINI(NP1,0.D0,FMRES)
+      CALL VECINI(3,0.D0,FLOC)
 C
       LATEST = TESTC
       TESTC = 0
@@ -194,7 +194,7 @@ C
 C  1.4.4.   CONVERSION DDLS PHYSIQUES -> DDLS GENERALISES
 C           (FORCES MODALES)
 C           ----------------
-            CALL INITVE(NP1,FTMP)
+            CALL VECINI(NP1,0.D0,FTMP)
             CALL PROJGM(NP1,NP2,IC,NBM,PHII,FGLO,FTMP)
             DO 20 J = 1, NBM
                FMOD(J) = FMOD(J) + FTMP(J)
@@ -203,7 +203,7 @@ C
 C  1.4.5.   CONVERSION DDLS PHYSIQUES -> DDLS GENERALISES
 C           (FORCES RESIDUELLES)
 C           --------------------
-            CALL INITVE(NP1,FTMP)
+            CALL VECINI(NP1,0.D0,FTMP)
             CALL PROJGM(NP1,NP2,IC,NBM,PHII,FGLRES,FTMP)
             DO 30 J = 1, NBM
                FMRES(J) = FMRES(J) + FTMP(J)
