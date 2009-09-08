@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 # ssnv112b.para = tps_job 60 mem_job 200Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,56 +32,69 @@
 # GRNO: A B  F
 # GRMA: FACEEF     FACEAE   FACEAB   FACESUP   FACEINF
 
+DEBUT(CODE=_F(NOM='SSNV112B',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-DEBUT(CODE=_F(NOM='SSNV112B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
-PRE_GMSH()
-M1=LIRE_MAILLAGE( )
+PRE_GMSH();
 
-M = CREA_MAILLAGE(MAILLAGE = M1,
-                  LINE_QUAD = _F(TOUT='OUI'),)
+M1=LIRE_MAILLAGE();
 
-M = DEFI_GROUP( reuse         = M,
-                 MAILLAGE      = M,
-                 CREA_GROUP_MA =(_F(NOM='VOLUME',GROUP_MA='GM8'),
-                                 _F(NOM='FACEEF',GROUP_MA='GM7'),
-                                 _F(NOM='FACEAE',GROUP_MA='GM6'),
-                                 _F(NOM='FACEAB',GROUP_MA='GM5'),
-                                 _F(NOM='FACSUP',GROUP_MA='GM4'),
-                                 _F(NOM='FACINF',GROUP_MA='GM3'),),
-                 CREA_GROUP_NO = (_F (GROUP_MA = ('FACEAB','FACSUP','FACINF'),),
-                                  _F (NOM= 'A', GROUP_MA = 'GM1',),
-                                  _F (NOM='F', GROUP_MA = 'GM2',),),)
+M=CREA_MAILLAGE(MAILLAGE=M1,
+                LINE_QUAD=_F(TOUT='OUI',),);
 
-MO=AFFE_MODELE( MAILLAGE=M,
-                VERIF='MAILLE',
-                AFFE=_F(  GROUP_MA = ('VOLUME','FACEEF','FACEAE'),
-                          PHENOMENE = 'MECANIQUE',
-                          MODELISATION = '3D_INCO_GD' ))
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_MA=(_F(NOM='VOLUME',
+                               GROUP_MA='GM8',),
+                            _F(NOM='FACEEF',
+                               GROUP_MA='GM7',),
+                            _F(NOM='FACEAE',
+                               GROUP_MA='GM6',),
+                            _F(NOM='FACEAB',
+                               GROUP_MA='GM5',),
+                            _F(NOM='FACSUP',
+                               GROUP_MA='GM4',),
+                            _F(NOM='FACINF',
+                               GROUP_MA='GM3',),),
+             CREA_GROUP_NO=(_F(GROUP_MA=('FACEAB','FACSUP','FACINF',),),
+                            _F(GROUP_MA='GM1',
+                               NOM='A',),
+                            _F(GROUP_MA='GM2',
+                               NOM='F',),),);
 
-M=MODI_MAILLAGE( reuse=M,
-                 MAILLAGE=M,
-                 ORIE_PEAU_3D=_F(  GROUP_MA = ( 'FACEEF', 'FACEAE','FACEAB' ),  )
-                      )
+MO=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE',),
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D_INCO_GD',),);
 
-MA=DEFI_MATERIAU( ELAS=_F(  E = 200000.,
-                            NU = 0.49999,
-                            ALPHA = 0.,    ),
-                  ECRO_LINE=_F(D_SIGM_EPSI = 0.,
-                               SY = 1.E10),          )
+M=MODI_MAILLAGE(reuse =M,
+                MAILLAGE=M,
+                ORIE_PEAU_3D=_F(GROUP_MA=('FACEEF','FACEAE','FACEAB',),),);
 
-CM=AFFE_MATERIAU( MAILLAGE=M,
-                  AFFE=_F(  TOUT = 'OUI',
-                  MATER = MA,            ))
+MA=DEFI_MATERIAU(ELAS=_F(E=200000.,
+                         NU=0.49999,
+                         ALPHA=0.,),
+                 ECRO_LINE=_F(D_SIGM_EPSI=0.,
+                              SY=1.E10,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MA,),);
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=(
-                         _F(  GROUP_NO = 'FACEAB',   DY = 0.,     ),
-                         _F(  GROUP_NO = 'FACSUP',   DZ = 0.,     ),
-                         _F(  GROUP_NO = 'FACINF',   DZ = 0.,     )),
-                  FACE_IMPO=(_F(  GROUP_MA = 'FACEEF',   DNOR = 0.,   ),
-                             _F(  GROUP_MA = 'FACEAE',   DNOR = -6.E-5,   ),
-                             ),
-                  )
+                  DDL_IMPO=(_F(GROUP_NO='FACEAB',
+                               DY=0.,),
+                            _F(GROUP_NO='FACSUP',
+                               DZ=0.,),
+                            _F(GROUP_NO='FACINF',
+                               DZ=0.,),),
+                  FACE_IMPO=(_F(GROUP_MA='FACEEF',
+                                DNOR=0.,),
+                             _F(GROUP_MA='FACEAE',
+                                DNOR=-6.E-5,),),);
+
 # DXF = DEFI_FONCTION (NOM_PARA = 'X',
 #                      VALE = (0.1, 0., 0.2, 6.E-4 ),)
 # DYF = DEFI_FONCTION (NOM_PARA = 'Y',
@@ -95,142 +108,245 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
 #                                 _F( GROUP_MA = 'FACEEF',DNOR = DX0,),
 #                                 _F( GROUP_MA = 'FACEAB', DNOR = DX0, ),),)
 
+INSTANTS=DEFI_LIST_REEL(DEBUT=0.,
+                        INTERVALLE=_F(JUSQU_A=1.,
+                                      NOMBRE=1,),);
 
-INSTANTS = DEFI_LIST_REEL (
-             DEBUT= 0.,
-             INTERVALLE= _F(JUSQU_A= 1.,
-                            NOMBRE=1),
-             ) ;
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                          1.,1.,
+                          ),);
 
+DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTANTS),);
 
-RAMPE    = DEFI_FONCTION (
-             NOM_PARA= 'INST',
-             VALE    = (
-               0., 0.,
-               1., 1.,
-               ),
-             ) ;
+EVOL=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CH,
+                            FONC_MULT=RAMPE,),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                DEFORMATION='SIMO_MIEHE',),
+                   INCREMENT=_F(LIST_INST=DEFLIST,),
+                   NEWTON=_F(REAC_ITER=1,),
+                   CONVERGENCE=_F(SIGM_REFE=60.0,
+                                  EPSI_REFE=3.E-4,
+                                  RESI_REFE_RELA=1.E-3,),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              PCENT_PIVOT=100,),);
 
-DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTANTS),)
+EVOL=CALC_ELEM(reuse =EVOL,
+               RESULTAT=EVOL,
+               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
 
-EVOL   = STAT_NON_LINE (
-             MODELE= MO,
-             CHAM_MATER= CM,
-             EXCIT= (_F(CHARGE= CH,
-#              ),
-#                      _F(CHARGE=CH2,
-                        FONC_MULT= RAMPE),
-                     ),
-             INCREMENT= _F(LIST_INST=DEFLIST,),
-             COMP_INCR= _F(
-               RELATION= 'VMIS_ISOT_LINE',
-               DEFORMATION='SIMO_MIEHE'),
-             SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=100),
-             NEWTON= _F(
-               REAC_ITER= 1,
-               ),
-             CONVERGENCE=_F(RESI_REFE_RELA=1.E-3,
-                            SIGM_REFE = 60 ,
-                            EPSI_REFE = 3.E-4),            ) ;
-EVOL = CALC_ELEM (reuse=EVOL,
-              RESULTAT= EVOL,
+EVOL=CALC_NO(reuse =EVOL,
+             RESULTAT=EVOL,
+             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
 
-              OPTION= (
-               'SIEF_ELNO_ELGA',
-               'EQUI_ELNO_SIGM',
-#                'ERRE_ELEM_SIGM',
-#                'ERRE_ELNO_ELEM',
-           ),   ) ;
-
-EVOL = CALC_NO (reuse=EVOL,
-                RESULTAT= EVOL,
-                 OPTION  = (
-               'SIEF_NOEU_ELGA',
-               'EQUI_NOEU_SIGM',
-                ),
-              ) ;
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
 #        POUR UN  SOLIDE INCOMPRESSIBLE NU = 0.5
 #---------------------------------------------------------------
-TEST_RESU(RESU=(
+
 #     DEPLACEMENTS
-         _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
-         GROUP_NO = 'A',     NOM_CMP = 'DY',            VALE = 0., REFERENCE = 'ANALYTIQUE'),
-         _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 2.E-3,
-         GROUP_NO = 'A',     NOM_CMP = 'DX',            VALE = 6.E-5, REFERENCE = 'ANALYTIQUE'),
+TEST_RESU(RESU=(_F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='A',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-05,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=6e-05,
+                   CRITERE='RELATIF',
+                   PRECISION=0.002,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='F',
+                   VALE=2.1217941e-05,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='F',
+                   VALE=2.1217941e-05,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
-        _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-         GROUP_NO = 'F',     NOM_CMP = 'DY',            VALE =  2.1217941E-5, REFERENCE = 'ANALYTIQUE'),
-        _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-         GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE =  2.1217941E-5, REFERENCE = 'ANALYTIQUE'),
-),)
-TEST_RESU(RESU=(
     # CONTRAINTES
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
- GROUP_NO = 'A',   NOM_CMP = 'SIYY',      VALE = 99.9566, REFERENCE = 'ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 2.5E-2,
- GROUP_NO = 'A',   NOM_CMP = 'SIXX',      VALE = -59.9955, REFERENCE = 'ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 2.E-2,
- GROUP_NO = 'A',   NOM_CMP = 'SIZZ',      VALE = 19.9326, REFERENCE = 'ANALYTIQUE'),
-           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',     PRECISION = 3.,
- GROUP_NO = 'A',   NOM_CMP = 'SIXY',      VALE = 0., REFERENCE = 'ANALYTIQUE'),
+TEST_RESU(RESU=(_F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='A',
+                   VALE=99.9566,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=-59.9955,
+                   CRITERE='RELATIF',
+                   PRECISION=0.025,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   GROUP_NO='A',
+                   VALE=19.9326,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIXY',
+                   GROUP_NO='A',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=3.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='F',
+                   VALE=20.003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='F',
+                   VALE=20.003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIZZ',
+                   GROUP_NO='F',
+                   VALE=20.003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIXY',
+                   GROUP_NO='F',
+                   VALE=-20.003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
 
-
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
- GROUP_NO = 'F', NOM_CMP = 'SIXX',      VALE = 20.003, REFERENCE = 'ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
- GROUP_NO = 'F', NOM_CMP = 'SIYY',      VALE = 20.003, REFERENCE = 'ANALYTIQUE'),
-           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
- GROUP_NO = 'F', NOM_CMP = 'SIZZ',      VALE = 20.003, REFERENCE = 'ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- GROUP_NO = 'F', NOM_CMP = 'SIXY',      VALE = -20.003, REFERENCE = 'ANALYTIQUE'))
-          )
-TEST_RESU(RESU=(
     # CONTRAINTES EQUIVALENTES
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'VMIS',      VALE = 138.5226, REFERENCE='ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'TRESCA',      VALE = 159.9521, REFERENCE='ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 2.5E-2,
- GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'PRIN_1',      VALE = -59.9955, REFERENCE='ANALYTIQUE'),
-            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
- GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'PRIN_2',      VALE = 19.9326, REFERENCE='ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'PRIN_3',      VALE = 99.9566, REFERENCE='ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'VMIS_SG',      VALE = 138.5226, REFERENCE='ANALYTIQUE'),
-),)
+TEST_RESU(RESU=(_F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CMP='VMIS',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=138.5226,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CMP='TRESCA',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=159.9521,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CMP='PRIN_1',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=-59.9955,
+                   CRITERE='RELATIF',
+                   PRECISION=0.025,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CMP='PRIN_2',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=19.9326,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CMP='PRIN_3',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=99.9566,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EVOL,
+                   INST=1.0,
+                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='M1',
+                   GROUP_NO='A',
+                   VALE=138.5226,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),),);
+
 #--------------------------------------------------------------------------------
+#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
+
+TEST_RESU(RESU=_F(RESULTAT=EVOL,
+                  INST=1.0,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='NUEST',
+                  MAILLE='M537',
+                  POINT=1,
+                  VALE=2.1148842082445,
+                  CRITERE='RELATIF',
+                  PRECISION=6.E-7,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.0.16',),);
+
+TEST_RESU(RESU=_F(RESULTAT=EVOL,
+                  INST=1.0,
+                  NOM_CHAM='ERRE_ELNO_ELEM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M537',
+                  GROUP_NO='A',
+                  VALE=6.4335040227032E-04,
+                  CRITERE='RELATIF',
+                  PRECISION=6.E-7,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.0.16',),);
+
+FIN();
+
 #
-# #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-#
-# TEST_RESU(RESU=(
-#            _F( RESULTAT = EVOL,
-#                INST = 1.,
-#                NOM_CHAM = 'ERRE_ELEM_SIGM',
-#                CRITERE = 'RELATIF',
-#                PRECISION = 0.0001,
-#                POINT = 1,
-#                MAILLE='M531',
-#                NOM_CMP = 'NUEST',
-#                VALE = 1.5172144847269E+00,
-#                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
-#              ),
-#             );
-#
-# TEST_RESU(RESU=(
-#            _F( RESULTAT = EVOL,
-#                INST = 1.,
-#                NOM_CHAM = 'ERRE_ELNO_ELEM',
-#                CRITERE = 'RELATIF',
-#                PRECISION = 0.0001,
-#                GROUP_NO= 'A',
-#                MAILLE='M531',
-#                NOM_CMP = 'ERREST',
-#                VALE = 4.6036685268355E-04,
-#                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
-#              ),
-#             );
-FIN( )
-#
+

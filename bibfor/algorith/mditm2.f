@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,7 @@ C     EXTERNAL      ACCELE, ADIMVE, ALITMI, CALTOL, CALVOL, DEFMCF,
 C    &              DEFTTR, ECRBAS, ECRCHO, ECRGEN, INIALG, INIPAR,
 C    &              INIPCT, MDALLO, MDCHOF, MDITM3, PROJMP,
 C    &              PROJVD, SOMMVE, TRANSI
-C    &              UTTCPU, VARDEP,
+C    &              UTTCPU('CPU.MDITM2', VARDEP,
 C    &              GETRES, JEDEMA, JELIRA, JEMARQ, JEVEUO
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -295,9 +295,9 @@ C
 C
 C 7.3 DEBUT DU BLOC 'TANT QUE'
 C     ------------------------
-      CALL UTTCPU ( 1,'INIT',4,TPS1)
+      CALL UTTCPU('CPU.MDITM2','INIT',' ')
  100  CONTINUE
-      CALL UTTCPU ( 1,'DEBUT',4,TPS1)
+      CALL UTTCPU('CPU.MDITM2','DEBUT',' ')
       LATEST = TESTC
 C
 C --- TANT QUE TC EST INFERIEUR A LA DUREE DE LA SIMULATION
@@ -440,7 +440,8 @@ C
 C --- SORTIE DU BLOC 'TANT QUE' SI MANQUE DE TEMPS CPU
 C
       IERCPU = 0
-      CALL UTTCPU ( 1,'FIN',4,TPS1)
+      CALL UTTCPU('CPU.MDITM2','FIN',' ')
+      CALL UTTCPR('CPU.MDITM2',4,TPS1)
       IF ( (TPS1(4).GT.(0.90D0*(TPS1(1)-20.0D0))).OR.
      &     (TPS1(1).LT.20.0D0) ) THEN
          IERCPU = 1

@@ -1,6 +1,6 @@
       SUBROUTINE DIAGP3(TENS,VECP,VALP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,6 @@ C ----------------------------------------------------------------------
       REAL*8  F,G
       REAL*8  TPS(6)
 
-C      CALL UTTCPU(88,'DEBUT',6,TPS)
 
 
       CALL R8INIR(9,0.D0,VECP,1)
@@ -283,7 +282,6 @@ C        ENDIF
 
 
 9999  CONTINUE
-C      CALL UTTCPU(88,'FIN',6,TPS)
 C      IF (MOD(INT(TPS(2)),100000).EQ.0) THEN
 C        write (6,*) 'NB APP = ',TPS(2),' ; TOT = ',TPS(3),
 C     &              ' ; MOY = ',TPS(4)

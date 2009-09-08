@@ -1,0 +1,122 @@
+# MODIF  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+# TITRE VALIDATION DE LA COMBINAISON DE MATRICES NON SYMETRIQUES
+# zzzz256a.para = tps_job 30 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ256A',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='NON',),);
+
+MAILLA0=LIRE_MAILLAGE();
+
+MAILLA=CREA_MAILLAGE(MAILLAGE=MAILLA0,
+                     CREA_POI1=_F(NOM_GROUP_MA='M_DISCRE',
+                                  NOEUD='N1',),);
+
+AFMO=AFFE_MODELE(MAILLAGE=MAILLA,
+                 AFFE=(_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='2D_DIS_T',),
+                       _F(GROUP_MA='M_DISCRE',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='2D_DIS_T',),),);
+
+AFCAEL=AFFE_CARA_ELEM(MODELE=AFMO,
+                      DISCRET_2D=(_F(CARA='K_T_N',
+                                     GROUP_MA='M_DISCRE',
+                                     VALE=(0.0,1.0,0.0,0.0,),
+                                     SYME='NON',),
+                                  _F(CARA='M_T_D_N',
+                                     GROUP_MA='M_DISCRE',
+                                     VALE=1.0,),),);
+
+AFEMEC=AFFE_CHAR_MECA(MODELE=AFMO,
+                      FORCE_NODALE=_F(NOEUD='N1',
+                                      FX=1,
+                                      FY=1,),);
+
+CAVEEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                      CHARGE=AFEMEC,
+                      CARA_ELEM=AFCAEL,);
+
+MASEL=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=AFMO,
+                     CARA_ELEM=AFCAEL,
+                     CHARGE=AFEMEC,);
+
+RIGEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=AFMO,
+                     CARA_ELEM=AFCAEL,
+                     CHARGE=AFEMEC,);
+
+NUDDL=NUME_DDL(MODELE=AFMO,
+               CHARGE=AFEMEC,);
+
+MASSE=ASSE_MATRICE(MATR_ELEM=MASEL,
+                   NUME_DDL=NUDDL,);
+
+RIGI=ASSE_MATRICE(MATR_ELEM=RIGEL,
+                  NUME_DDL=NUDDL,);
+
+VEC1=ASSE_VECTEUR(VECT_ELEM=CAVEEL,
+                  NUME_DDL=NUDDL,);
+
+MAT1=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSE,
+                               COEF_R=1.0,),
+                            _F(MATR_ASSE=RIGI,
+                               COEF_R=1.0,),),);
+
+MASSE=FACTORISER(reuse =MASSE,
+                MATR_ASSE=MASSE,);
+
+SOL1=RESOUDRE(MATR=MASSE,
+              CHAM_NO=VEC1,);
+
+MAT1=FACTORISER(reuse =MAT1,
+                MATR_ASSE=MAT1,);
+
+SOL2=RESOUDRE(MATR=MAT1,
+              CHAM_NO=VEC1,);
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=SOL1,
+                      NOEUD='N1',
+                      NOM_CMP='DX',
+                      VALE=1,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
+                   _F(CHAM_GD=SOL1,
+                      NOEUD='N1',
+                      NOM_CMP='DY',
+                      VALE=1,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
+                   _F(CHAM_GD=SOL2,
+                      NOEUD='N1',
+                      NOM_CMP='DX',
+                      VALE=0,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
+                   _F(CHAM_GD=SOL2,
+                      NOEUD='N1',
+                      NOM_CMP='DY',
+                      VALE=1,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),),);
+
+FIN();

@@ -1,5 +1,6 @@
-#@ MODIF V_AU_PLUS_UN Validation  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF V_AU_PLUS_UN Validation  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -5,7 +5,7 @@
      &     NRL,DEB,VOIS,SUIT,IER,NEC,PRNO,DEEQ,
      &     NOEUD,DDL,INVPND,PERMND,SPNDND,XADJD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     TOLE CRP_21
+C     TOLE CRP_21 CRS_602
       IMPLICIT NONE
 
       INTEGER NEQ,DIAG(0:NEQ),LGIND,LGADJN
@@ -40,7 +40,7 @@ C     VARIABLES LOCALES
       INTEGER NNZ(1:NEQ),QSIZE(NEQ),LLIST(NEQ),SUIV(NEQ)
       INTEGER LIBRE,IOVFLO,NCMPA,IFM,NIV,P(NEQ),Q(N2),NRL
       INTEGER IT,NBPAR,IERRC,DEBUT,LRM
-      CHARACTER*80 TXT80(4)
+      CHARACTER*256 TXT256(4)
       CHARACTER*128 REP,LOGIEL
       INTEGER NEC,PRNO(*),DEEQ(*),INO,NBCMP,ULNUME,IULM1,IULM2
       LOGICAL LFETI
@@ -73,7 +73,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C****************************************************************
-C     CALL UTTCPU(2,'DEBUT',6,TEMPS)
 C****************************************************************
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 C
@@ -261,19 +260,19 @@ C     FERMETURE DU FICHIER
          NBPAR=4
          CALL REPOUT(1,LRM,REP)
          LOGIEL = REP(1:LRM)//'onmetis'
-         TXT80(1)=LOGIEL
-         TXT80(2)='fort.'
-         CALL CODENT(IULM1,'G',TXT80(2)(6:80))
+         TXT256(1)=LOGIEL
+         TXT256(2)='fort.'
+         CALL CODENT(IULM1,'G',TXT256(2)(6:256))
 
-         TXT80(4)='fort.'
-         CALL CODENT(IULM2,'G',TXT80(4)(6:80))
+         TXT256(4)='fort.'
+         CALL CODENT(IULM2,'G',TXT256(4)(6:256))
          IF (NIV.LE.1) THEN
            NIV2 = 0
          ELSE
            NIV2 = NIV
          ENDIF
-         CALL CODENT( NIV2 , 'G' , TXT80(3)  )
-         CALL APLEXT(NIV2,NBPAR,TXT80,IERRC)
+         CALL CODENT( NIV2 , 'G' , TXT256(3)  )
+         CALL APLEXT(NIV2,NBPAR,TXT256,IERRC)
          IF (IERRC .NE. 0) THEN
 C     TRAITEMENT D'ERREUR
             IER = 1
@@ -288,7 +287,6 @@ C     FERMETURE DU FICHIER
 C     CLOSE(UNIT=85)
       ENDIF
 C****************************************************************
-C     CALL UTTCPU(2,'FIN  ',6,TEMPS)
 C****************************************************************
 C.....................................................................
       LGIND = LGIND * DDLMOY

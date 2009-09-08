@@ -1,5 +1,6 @@
-#@ MODIF checksd Execution  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF checksd Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

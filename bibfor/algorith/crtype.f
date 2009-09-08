@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -326,8 +326,8 @@ C ----- MOT CLE LIST_INST PRESENT :
           CALL RSEXCH(RESU,NSYMB,ICOMPT,NOMCH,IRET)
           IF (IRET.EQ.0) THEN
             CALL RSADPA(RESU,'L',1,'INST',ICOMPT,0,IAD,K8B)
-            VALKK(1) = ZK8(JCHAM+ICOMPT-1)
-            VALKK(2) = CHAMP(1:8)
+            VALKK(1) = NOMCH
+            VALKK(2) = ZK8(JCHAM+J-1)
             VALR(1) = ZR(IAD)
             VALR(2) = TPS
             VALR(3) = PREC

@@ -9,7 +9,7 @@
 C     -----------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,13 +54,13 @@ C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      LMAT(3), LMATRA, LMTPSC
+      INTEGER      LMAT(3), LMATRA, LMTPSC, JPOMR, JREFE
       CHARACTER*24 NMAT(3),NMATRA,NMTPSC
       REAL*8       ASHIFT, EPS, CONSTR(3) , R8DEPI, CONSTC(6)
       REAL*8 VALR(2)
       CHARACTER*1  TYPCST(3)
       CHARACTER*8  NAMDDL
-      CHARACTER*19 MASSE,AMOR
+      CHARACTER*19 MASSE,AMOR,NOMI,NOMT
 C     ------------------------------------------------------------------
       DATA NAMDDL/'        '/
 C     ------------------------------------------------------------------
@@ -92,9 +92,23 @@ C --- POUR QZ CALCUL DE LA MATRICE SHIFTEE ET DE SA FACTORISEE INUTILE
       IF (LQZ) GOTO 999
 C
       IF (FMIN.EQ.0.D0) THEN
+         JPOMR=0
+         DO 15 ICOMB = 1,3
+C           ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
+            NOMI=NMAT(ICOMB)
+            CALL JEVEUO(NOMI//'.REFA','L',JREFE)
+            IF ( ZK24(JREFE-1+9).EQ.'MR' ) THEN
+               JPOMR=ICOMB
+            ENDIF
+   15    CONTINUE
 C
 C        --- DECALAGE REEL ---
-         CALL MTDEFS(MATOPA,RAIDE,'V','R')
+         IF ( JPOMR.EQ.0 ) THEN
+            CALL MTDEFS(MATOPA,RAIDE,'V','R')
+         ELSE
+            NOMT = NMAT(JPOMR)
+            CALL MTDEFS(MATOPA,NOMT,'V','C')
+         ENDIF
          CALL MTDSCR(MATOPA)
          NMATRA=MATOPA(1:19)//'.&INT'
          CALL JEVEUO(MATOPA(1:19)//'.&INT','E',LMATRA)
@@ -108,9 +122,23 @@ C        --- DECALAGE REEL ---
          LMTPSC = 0
 C
       ELSE
+         JPOMR=0
+         DO 25 ICOMB = 1,3
+C           ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
+            NOMI=NMAT(ICOMB)
+            CALL JEVEUO(NOMI//'.REFA','L',JREFE)
+            IF ( ZK24(JREFE-1+9).EQ.'MR' ) THEN
+               JPOMR=ICOMB
+            ENDIF
+   25    CONTINUE
 C
 C        --- DECALAGE COMPLEXE ---
-         CALL MTDEFS(MATOPA,RAIDE,'V','C')
+         IF ( JPOMR.EQ.0 ) THEN
+            CALL MTDEFS(MATOPA,RAIDE,'V','C')
+         ELSE
+            NOMT = NMAT(JPOMR)
+            CALL MTDEFS(MATOPA,NOMT,'V','C')
+         ENDIF
          CALL MTDSCR(MATOPA)
          NMATRA=MATOPA(1:19)//'.&INT'
          CALL JEVEUO(MATOPA(1:19)//'.&INT','E',LMATRA)
@@ -125,7 +153,12 @@ C        --- DECALAGE COMPLEXE ---
          CONSTC(6) = 0.D0
          CALL MTCMBL(3,TYPCST,CONSTC,NMAT,NMATRA,NAMDDL,' ','ELIM=')
          IF (APPR.EQ.'R') THEN
-            CALL MTDEFS(MATPSC,RAIDE,'V','R')
+            IF ( JPOMR.EQ.0 ) THEN
+               CALL MTDEFS(MATPSC,RAIDE,'V','R')
+            ELSE
+               NOMT = NMAT(JPOMR)
+               CALL MTDEFS(MATPSC,NOMT,'V','R')
+            ENDIF
             CALL MTDSCR(MATPSC)
             NMTPSC=MATPSC(1:19)//'.&INT'
             CALL JEVEUO(MATPSC(1:19)//'.&INT','E',LMTPSC)

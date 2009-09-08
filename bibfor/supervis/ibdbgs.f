@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     OPTION DE DEBUG DEMANDE
+C     TRAITEMENT DES MOTS CLE DEBUG/MESURE_TEMPS/MEMOIRE
+C     DES COMMANDES DEBUT ET POURSUITE
 C     ------------------------------------------------------------------
 C            0 TOUT C'EST BIEN PASSE
 C            1 ERREUR DANS LA LECTURE DE LA COMMANDE
@@ -45,6 +46,10 @@ C     ----- DEBUT COMMON DE DEBUG JEVEUX
       COMMON /UNDFJE/  LUNDEF,IDEBUG
       REAL*8           TBLOC
       COMMON /RTBLJE/  TBLOC
+
+C     -- COMMON MESTPS POUR MESURE_TEMPS
+      INTEGER          MTPNIV
+      COMMON /MESTPS/  MTPNIV
 
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
@@ -117,6 +122,12 @@ C     -----------------------------------------------------
          IFI = IUNIFI ( 'RESULTAT' )
          CALL IMPVEM  ( IFI )
       ENDIF
+
+
+C     -- MESURE_TEMPS:
+C     -----------------------------------------------------
+      CALL GETVIS('MESURE_TEMPS','NIVE_DETAIL',1,1,1,MTPNIV,L)
+
 
 C     -- MEMOIRE / GESTION ...  :
 C     -----------------------------------------------------

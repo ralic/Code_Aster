@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF calculel4 Messages  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,6 +42,17 @@ Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
 3 : _("""
 Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
   Seul FORMAT='MED' est autorisé
+"""),
+
+4 : _("""
+Erreur :
+  On cherche à modifier le "type" (réel(R), complexe(C), entier(I), fonction(K8)) d'un champ.
+  C'est impossible.
+  Types incriminés : %(k1)s et %(k2)s
+Conseils :
+  Il s'agit peut-etre d'une erreur de programmation.
+  S'il s'agit de la commande CREA_CHAMP, vérifiez le mot clé TYPE_CHAM.
+
 """),
 
 

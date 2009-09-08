@@ -2,8 +2,8 @@
      &                  COMPOR,LISCHA,CARCRI,ITERAT,FONACT,
      &                  SDDYNA,VALMOI,VALPLU,POUGD ,SOLALG,
      &                  MERIGI,VEFINT,OPTIOZ,TABRET,CODERE)
-C 
-C MODIF ALGORITH  DATE 10/11/2008   AUTEUR ABBAS M.ABBAS 
+C
+C MODIF ALGORITH  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE
 C CALCUL DES VECTEURS ELEMENTAIRES DES FORCES INTERNES
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -88,30 +88,31 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      NBOUT,NBIN
-      PARAMETER    (NBOUT=7, NBIN=53)
+      PARAMETER    (NBOUT=8, NBIN=53)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
 C
       LOGICAL      ISFONC,LMACR
-      LOGICAL      MATRIX,VECTOR,CODINT
+      LOGICAL      MATRIX,VECTOR,CODINT,CONEXT
       INTEGER      NCHAR,IRET,IRES,IAREFE
       CHARACTER*8  K8BID
       CHARACTER*24 CACO3D
       CHARACTER*24 LIGRMO,K24BID
+      CHARACTER*24 SIGEXT
       CHARACTER*24 SIGPLU,VARPLU
       CHARACTER*16 OPTION
       LOGICAL      DEBUG
-      INTEGER      IFMDBG,NIVDBG       
+      INTEGER      IFMDBG,NIVDBG
 C
       DATA CACO3D/'&&MERIMO.CARA_ROTA_FICTIF'/
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()      
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)      
+      CALL JEMARQ()
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
-C       
+C
       OPTION = OPTIOZ
       LIGRMO = MODELE(1:8)//'.MODELE'
       IF (NIVDBG.GE.2) THEN
@@ -124,62 +125,74 @@ C
  10   CONTINUE
 C
 C --- FONCTIONNALITES ACTIVEES
-C    
-      LMACR  = ISFONC(FONACT,'MACR_ELEM_STAT')        
+C
+      LMACR  = ISFONC(FONACT,'MACR_ELEM_STAT')
 C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT)  
+     &            NBOUT ,LPAOUT,LCHOUT)
 C
 C --- ACCES AUX CHARGEMENTS
-C 
+C
       CALL JEEXIN(LISCHA(1:19)//'.LCHA',IRET)
       IF (IRET.EQ.0) THEN
         NCHAR = 0
       ELSE
         CALL JELIRA(LISCHA(1:19)//'.LCHA','LONMAX',NCHAR,K8BID)
       END IF
-C     
+C
 C --- DECOMPACTION VARIABLES CHAPEAUX
 C
+      CALL DESAGG(VALMOI,K24BID,K24BID,K24BID,K24BID,
+     &            K24BID,K24BID,SIGEXT,K24BID)
+
       CALL DESAGG(VALPLU,K24BID,SIGPLU,VARPLU,K24BID,
-     &            K24BID,K24BID,K24BID,K24BID)           
+     &            K24BID,K24BID,K24BID,K24BID)
 C
 C --- PREPARATION DES CHAMPS D'ENTREE POUR RIGIDITE TANGENTE (MERIMO)
-C          
+C
       CALL MERIMP(MODELE,CARELE,MATE  ,COMREF,
      &            COMPOR,LISCHA,CARCRI,ITERAT,SDDYNA,
-     &            VALMOI,VALPLU,POUGD ,SOLALG,CACO3D,     
+     &            VALMOI,VALPLU,POUGD ,SOLALG,CACO3D,
      &            FONACT,NBIN  ,LPAIN ,LCHIN)
-C	 
-C --- TYPE DE SORTIES: 
+C
+C --- TYPE DE SORTIES:
 C --- MATRIX: MATRICE TANGENTE
-C --- VECTOR: FORCES INTERIEURES 
-C --- CODINT: CODE RETOUR ERREUR INTEG. LDC 
+C --- VECTOR: FORCES INTERIEURES
+C --- CODINT: CODE RETOUR ERREUR INTEG. LDC
 C
       IF (OPTION(1:9).EQ.'FULL_MECA') THEN
         MATRIX = .TRUE.
         VECTOR = .TRUE.
-        CODINT = .TRUE.     
+        CODINT = .TRUE.
+        CONEXT = .FALSE.
       ELSE IF (OPTION(1:10).EQ.'RIGI_MECA ') THEN
         MATRIX = .TRUE.
         VECTOR = .FALSE.
-        CODINT = .FALSE.                 
+        CODINT = .FALSE.
+        CONEXT = .FALSE.
+      ELSE IF (OPTION(1:16).EQ.'RIGI_MECA_IMPLEX') THEN
+        MATRIX = .TRUE.
+        VECTOR = .FALSE.
+        CODINT = .FALSE.
+        CONEXT = .TRUE.
       ELSE IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
         MATRIX = .TRUE.
         VECTOR = .FALSE.
-        CODINT = .FALSE.                
+        CODINT = .FALSE.
+        CONEXT = .FALSE.
       ELSE IF (OPTION(1:9).EQ.'RAPH_MECA') THEN
         MATRIX = .FALSE.
         VECTOR = .TRUE.
-        CODINT = .TRUE.                
+        CODINT = .TRUE.
+        CONEXT = .FALSE.
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
 C
 C --- AFFICHAGE
-C      
+C
       IF (NIVDBG.GE.2) THEN
         WRITE (IFMDBG,*) '<CALCUL> ... OPTION: ',OPTION
         IF (MATRIX) THEN
@@ -190,7 +203,11 @@ C
           WRITE (IFMDBG,*) '<CALCUL> ... CALCUL DES VECT_ELEM '//
      &                  ' DES FORCES INTERNES '
         ENDIF
-      ENDIF       
+        IF (CONEXT) THEN
+          WRITE (IFMDBG,*) '<CALCUL> ... CALCUL DES CONTRAINTES '//
+     &                  ' EXTRAPOLEES POUR IMPL_EX '
+        ENDIF
+      ENDIF
 C
 C --- PREPARATION DES MATR_ELEM ET VECT_ELEM
 C
@@ -198,18 +215,18 @@ C
         CALL JEEXIN(MERIGI//'.RELR',IRET)
         IF (IRET.EQ.0) THEN
           CALL JEEXIN(MERIGI//'.RERR',IRES)
-          IF (IRES.EQ.0) THEN     
+          IF (IRES.EQ.0) THEN
             CALL MEMARE(BASE  ,MERIGI,MODELE(1:8),MATE,CARELE,
-     &                  'RIGI_MECA') 
+     &                  'RIGI_MECA')
           ENDIF
           IF (LMACR) THEN
             CALL JEVEUO(MERIGI//'.RERR','E',IAREFE)
-            ZK24(IAREFE-1+3) = 'OUI_SOUS_STRUC'      
+            ZK24(IAREFE-1+3) = 'OUI_SOUS_STRUC'
           ENDIF
         ENDIF
         CALL JEDETR(MERIGI//'.RELR')
         CALL REAJRE(MERIGI,' ',BASE)
-      ENDIF  
+      ENDIF
 C
       IF (VECTOR) THEN
         CALL JEEXIN(VEFINT//'.RELR',IRET)
@@ -218,7 +235,7 @@ C
         END IF
         CALL JEDETR(VEFINT//'.RELR')
         CALL REAJRE(VEFINT,' ',BASE)
-      ENDIF          
+      ENDIF
 C
 C --- CHAMPS DE SORTIE
 C
@@ -240,8 +257,12 @@ C
       ENDIF
       IF (CODINT) THEN
         LPAOUT(6) = 'PCODRET'
-        LCHOUT(6) = CODERE 
-      ENDIF         
+        LCHOUT(6) = CODERE
+      ENDIF
+      IF (CONEXT) THEN
+        LPAOUT(8) = 'PCONTXR'
+        LCHOUT(8) = SIGEXT
+      ENDIF
 C
 C --- APPEL A CALCUL
 C
@@ -249,10 +270,10 @@ C
         CALL DBGCAL(OPTION,IFMDBG,
      &              NBIN  ,LPAIN ,LCHIN ,
      &              NBOUT ,LPAOUT,LCHOUT)
-      ENDIF   
-C      
+      ENDIF
+C
       CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,
-     &                              NBOUT,LCHOUT,LPAOUT,BASE)    
+     &                              NBOUT,LCHOUT,LPAOUT,BASE)
 C
 C --- SAUVEGARDE MATR_ELEM/VECT_ELEM
 C
@@ -263,13 +284,13 @@ C
 C
       IF (VECTOR) THEN
         CALL REAJRE(VEFINT,LCHOUT(3),BASE)
-      ENDIF      
+      ENDIF
 C
 C --- SAUVEGARDE CODE RETOUR ERREUR
 C
       IF (CODINT) THEN
         CALL NMIRET(LCHOUT(6),TABRET)
-      ENDIF        
+      ENDIF
 C
    20 CONTINUE
       CALL JEDEMA()

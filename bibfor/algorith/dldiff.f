@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -277,14 +277,14 @@ C
       ISTOP = 0
       IPAS = 0
       TEMPS = T0
-      CALL UTTCPU(1, 'INIT', 4, TPS1)
+      CALL UTTCPU('CPU.DLDIFF', 'INIT',' ')
 C
       DO 30 , IPEPA = 1 , NPATOT
         IPAS = IPAS+1
         IF (IPAS.GT.NPATOT) GOTO 3900
         ISTOC = 0
         TEMPS = TEMPS + DT
-        CALL UTTCPU(1, 'DEBUT', 4, TPS1)
+        CALL UTTCPU('CPU.DLDIFF', 'DEBUT',' ')
 
 C 3.1. ==> BOUCLE SUR LES CAS STANDARD ET SENSIBLES
 
@@ -310,7 +310,8 @@ C 3.1. ==> BOUCLE SUR LES CAS STANDARD ET SENSIBLES
 C
 C 3.2. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
 
-        CALL UTTCPU(1, 'FIN', 4, TPS1)
+        CALL UTTCPU('CPU.DLDIFF', 'FIN',' ')
+        CALL UTTCPR('CPU.DLDIFF', 4, TPS1)
         IF ( TPS1(1) .LT. 5.D0  .OR. TPS1(4).GT.TPS1(1) ) THEN
            IF ( IPEPA .NE. NPATOT ) THEN
             ISTOP = 1

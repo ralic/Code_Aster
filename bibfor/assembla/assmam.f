@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ASSEMBLA  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,6 +121,9 @@ C----------------------------------------------------------------------
       DBG=.FALSE.
       CALL JEDBG2(IDBGAV,0)
       CALL INFNIV(IFM,NIV)
+      CALL UTTCPU('CPU.CALC.1','DEBUT',' ')
+      CALL UTTCPU('CPU.ASSE.1','DEBUT',' ')
+      CALL UTTCPU('CPU.ASSE.2','DEBUT',' ')
 
       BASE1=BASE
       MATDEV=MATAS
@@ -148,14 +151,14 @@ C----------------------------------------------------------------------
         ICONX1=0
         ICONX2=0
       ENDIF
-      
+
       CALL JEEXIN(NUDEV//'.NUML.NULG',IMATD)
       IF ( IMATD.NE.0 ) THEN
         CALL JEVEUO(NUDEV//'.NUML.NUEQ','L',JNUEQ)
       ELSE
         CALL JEVEUO(NUDEV//'.NUME.NUEQ','L',JNUEQ)
       ENDIF
-      
+
 C     ELLAGR : 0 : PAS D'ELEMENT DE LAGRANGE
 C              1 : IL EXISTE DES ELEMENTS DE LAGRANGE
       ELLAGR=0
@@ -380,8 +383,8 @@ C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
         IF (IDDOK) THEN
           IF (LFETI) CALL JEMARQ()
           IF ((NIV.GE.2) .OR. (LFETIC)) THEN
-            CALL UTTCPU(90,'INIT ',6,TEMPS)
-            CALL UTTCPU(90,'DEBUT',6,TEMPS)
+            CALL UTTCPU('CPU.ASSMAM','INIT ',' ')
+            CALL UTTCPU('CPU.ASSMAM','DEBUT',' ')
           ENDIF
 
 C         -- CALCUL DE MAT19 ET NU14 :
@@ -707,18 +710,12 @@ C         -- MONITORING:
           IF ((INFOFE(3:3).EQ.'T') .AND. (IDD.EQ.NBSD)) CALL UTIMSD(IFM,
      &        2,.FALSE.,.TRUE.,MATDEV,1,' ')
           IF ((NIV.GE.2) .OR. (LFETIC)) THEN
-            CALL UTTCPU(90,'FIN  ',6,TEMPS)
+            CALL UTTCPU('CPU.ASSMAM','FIN',' ')
+            CALL UTTCPR('CPU.ASSMAM',6,TEMPS)
             IF (NIV.GE.2)WRITE (IFM,'(A44,D11.4,D11.4)')
      &          'TEMPS CPU/SYS ASSEMBLAGE M                : ',TEMPS(5),
      &          TEMPS(6)
             IF (LFETIC)ZR(IFCPU+IDD)=ZR(IFCPU+IDD)+TEMPS(5)+TEMPS(6)
-C           POUR QUE CELA FONCTIONNE AVEC MUMPS CENTRALISE
-            CALL JEEXIN('&MUMPS.INFO.CPU.ASSE',IRET)
-            IF (IRET.NE.0) THEN
-              CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
-              CALL JEVEUO('&MUMPS.INFO.CPU.ASSE','E',IFCPU)
-              ZR(IFCPU+RANG)=ZR(IFCPU+RANG)+TEMPS(5)+TEMPS(6)
-            ENDIF
           ENDIF
 
 
@@ -776,5 +773,8 @@ C         -- MISE A L'ECHELLE DES COEF. DE LAGRANGE SI NECESSAIRE :
      &    IRET)
 
 C     CALL UTIMSD(6,-1,.FALSE.,.TRUE.,MATAS,1,' ')
+      CALL UTTCPU('CPU.CALC.1','FIN',' ')
+      CALL UTTCPU('CPU.ASSE.1','FIN',' ')
+      CALL UTTCPU('CPU.ASSE.2','FIN',' ')
       CALL JEDEMA()
       END

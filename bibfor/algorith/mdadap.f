@@ -32,7 +32,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2009   AUTEUR BRIE N.BRIE 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -314,7 +314,7 @@ C
 C
       TEMPS = TINIT
       TARCH = TINIT+ DTARCH
-      CALL UTTCPU (1,'INIT',4,TPS1)
+      CALL UTTCPU('CPU.MDADAP','INIT',' ')
       IVERI = 0
       NBPASC = 1
 C
@@ -325,10 +325,10 @@ C
 C       DO 30 WHILE(TEMPS .LT. TFIN)
 C
          IF (IVERI.EQ.0) THEN
-           CALL UTTCPU(1, 'DEBUT', 4, TPS1)
+           CALL UTTCPU('CPU.MDADAP', 'DEBUT',' ')
          ELSE
            IF (MOD(IVERI,NBPASC).EQ.0) THEN
-             CALL UTTCPU(1, 'DEBUT', 4, TPS1)
+             CALL UTTCPU('CPU.MDADAP', 'DEBUT',' ')
            ENDIF
          ENDIF
 C
@@ -540,13 +540,15 @@ C       ON FIXE UN TEMPS MOYEN PAR PAS A UN MINIMUM DE 0.001 S
 C       ACTIF POUR LA VERSION SOLARIS
 C
           IF (IVERI.EQ.0) THEN
-            CALL UTTCPU(1, 'FIN', 4, TPS1)
+            CALL UTTCPU('CPU.MDADAP', 'FIN',' ')
+            CALL UTTCPR('CPU.MDADAP',4, TPS1)
             TJOB = TPS1(1)
             TMOY = MAX(TPS1(4),1.D-3)
             NBPASC = INT(1.D-02 * (TPS1(1)/TMOY)) + 1
           ELSE
             IF (MOD(IVERI,NBPASC).EQ.0) THEN
-              CALL UTTCPU(1, 'FIN', 4, TPS1)
+              CALL UTTCPU('CPU.MDADAP', 'FIN',' ')
+              CALL UTTCPR('CPU.MDADAP',4, TPS1)
               IF (TPS1(1).LE.MAX(TJOB/100.D0,15.D0)) THEN
                GOTO 31
               ENDIF

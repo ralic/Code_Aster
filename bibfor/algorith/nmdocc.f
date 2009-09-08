@@ -2,7 +2,7 @@
      &                  NOMCMP,NCMPMA,MECA)
 C RESPONSABLE PROIX J-M.PROIX
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,14 +39,13 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       PARAMETER (DIMANV=4)
       INTEGER NBNVI(DIMANV),NCOMEL,NVMETA,NT
       CHARACTER*19 COMPOR,COMPEL
-      CHARACTER*1  K1BID
       CHARACTER*8  NOMA,K8B,TYPMCL(2),NOMGRD,NOMCMP(*),SDCOMP
-      CHARACTER*16 TYMATG,MOCLEF(2),COMP,TXCP,DEFO,RESO,MOCLES(2)
+      CHARACTER*16 TYMATG,MOCLEF(2),COMP,TXCP,DEFO,MOCLES(2)
       CHARACTER*16 TEXTE(2),COMCOD,LCOMEL(5),NOMKIT(DIMAKI)
       CHARACTER*19 CES2
-      CHARACTER*24  CARCRI,MESMAI,MODELE
+      CHARACTER*24  MESMAI,MODELE
       LOGICAL EXIST,GETEXM,EXIPMF,MECA
-      
+
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER        ZI
       COMMON /IVARJE/ZI(1)
@@ -72,14 +71,14 @@ C ----------------------------------------------------------------------
       COMPEL = '&&NMDOCC.COMPEL'
 
       CALL DISMOI('I','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMA,IRET)
-      
+
 C ======================================================================
       IF (MECA) THEN
 C        ON CREE UNE CARTE ELAS SUR TOUT LE MAILLAGE. 
          CALL CRCMEL(NBMO1,MOCLEF,COMPEL,CES2,MODELE,NCMPMA,NOMCMP,NT)
 C        SI COMP_ELAS ET COMP_INCR SONT ABSENTS (POUR CALC_G)
          IF (NT.EQ.0) THEN
-            COMPOR=COMPEL         
+            COMPOR=COMPEL
             GOTO 170
          ENDIF
       ENDIF
@@ -121,26 +120,26 @@ C         POUR COMPORTEMENTS KIT_
 
 C         SAISIE ET VERIFICATION DU TYPE DE DEFORMATION UTILISEE
           CALL NMDOGD(MOCLEF(I),COMP,K,NCOMEL,LCOMEL,DEFO)
-                
+
 C         SAISIE ET VERIFICATION DE DEBORST
           CALL NMDOCP(MOCLEF(I),COMP,K,NCOMEL,LCOMEL,TXCP)
-          
+
 C         APPEL A LCINFO POUR RECUPERER LE NOMBRE DE VARIABLES INTERNES
           CALL LCCREE(NCOMEL, LCOMEL, COMCOD)
           CALL LCINFO(COMCOD, NUMLC, NBVARI)
-          
+
 C         CAS PARTICULIER DE META A INTEGRER DANS cata_comportement.py
           IF (COMP(1:4).EQ.'META') THEN
-             IF (DEFO.EQ.'SIMO_MIEHE') NVMETA=NVMETA+1
-             NBVARI=NVMETA
+            IF (DEFO.EQ.'SIMO_MIEHE') NVMETA=NVMETA+1
+            NBVARI=NVMETA
           ENDIF
-          
+
 C         Verif que DEFO est possible pour COMP
           CALL LCTEST(COMCOD,'DEFORMATION',DEFO,IRET)
           IF (IRET.EQ.0) THEN
-             TEXTE(1)=DEFO
-             TEXTE(2)=COMP
-             CALL U2MESG('F','COMPOR1_44',2,TEXTE,0,0,0,0.D0)
+            TEXTE(1)=DEFO
+            TEXTE(2)=COMP
+            CALL U2MESG('F','COMPOR1_44',2,TEXTE,0,0,0,0.D0)
           ENDIF
 
 C ======================================================================
@@ -148,31 +147,31 @@ C         CAS PARTICULIERS
           TYMATG=' '
           EXIST = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')
           IF (EXIST) THEN
-             CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TYMATG,N1)
-             IF (N1.GT.0) THEN
-                IF (TYMATG.EQ.'TANGENTE_SECANTE') NBVARI=NBVARI+1
-             ENDIF
-          ENDIF          
-C         CAS PARTICULIER DE MONOCRISTAL  
+            CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TYMATG,N1)
+            IF (N1.GT.0) THEN
+              IF (TYMATG.EQ.'TANGENTE_SECANTE') NBVARI=NBVARI+1
+            ENDIF
+          ENDIF
+C         CAS PARTICULIER DE MONOCRISTAL
           IF (COMP(1:8).EQ.'MONOCRIS') THEN
-              CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
-              CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
-              NBVARI=ZI(ICPRI-1+3)
-              ZK16(JVALV-1+7) = SDCOMP
-              IF (TXCP.EQ.'DEBORST') NBVARI=NBVARI+4
+            CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
+            CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
+            NBVARI=ZI(ICPRI-1+3)
+            ZK16(JVALV-1+7) = SDCOMP
+            IF (TXCP.EQ.'DEBORST') NBVARI=NBVARI+4
           ELSEIF (COMP(1:8).EQ.'POLYCRIS') THEN
-              CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
-              CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
-              NBVARI=ZI(ICPRI-1+3)
-              ZK16(JVALV-1+7) = SDCOMP
-              IF (TXCP.EQ.'DEBORST') NBVARI=NBVARI+4
+            CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
+            CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
+            NBVARI=ZI(ICPRI-1+3)
+            ZK16(JVALV-1+7) = SDCOMP
+            IF (TXCP.EQ.'DEBORST') NBVARI=NBVARI+4
           ENDIF
           IF (COMP(1:8).EQ.'MULTIFIB') EXIPMF=.TRUE.
           IF (COMP(1:4).EQ.'ZMAT') THEN
-             CALL GETVIS(MOCLEF,'NB_VARI',K,1,1,NBVARZ,N1)
-             NBVARI=NBVARZ+NBVARI
-             CALL GETVIS(MOCLEF,'UNITE',K,1,1,NUNIT,N1)
-             WRITE (ZK16(JVALV-1+7),'(I16)') NUNIT
+            CALL GETVIS(MOCLEF,'NB_VARI',K,1,1,NBVARZ,N1)
+            NBVARI=NBVARZ+NBVARI
+            CALL GETVIS(MOCLEF,'UNITE',K,1,1,NUNIT,N1)
+            WRITE (ZK16(JVALV-1+7),'(I16)') NUNIT
           ENDIF
 C         POUR COMPORTEMENT KIT_
           DO 140 II = 1,DIMAKI
@@ -183,15 +182,15 @@ C         POUR COMPORTEMENT KIT_
             END IF
   140     CONTINUE
           IF ((COMP(1:5).EQ.'KIT_H').OR.(COMP(1:6).EQ.'KIT_TH')) THEN
-             DO 180 INV = 1, DIMANV
-                WRITE (ZK16(JVALV-1+7+DIMAKI+INV),'(I16)') NBNVI(INV)
- 180         CONTINUE
+            DO 180 INV = 1, DIMANV
+              WRITE (ZK16(JVALV-1+7+DIMAKI+INV),'(I16)') NBNVI(INV)
+ 180        CONTINUE
           ENDIF
           IF (COMP.EQ.'KIT_DDI') THEN
-              IF ((NOMKIT(1)(1:4).EQ.'GLRC').OR.
-     &            (NOMKIT(2)(1:4).EQ.'GLRC')) THEN
-                  NBVARI=NBVARI+10
-              ENDIF
+            IF ((NOMKIT(1)(1:4).EQ.'GLRC').OR.
+     &          (NOMKIT(2)(1:4).EQ.'GLRC')) THEN
+              NBVARI=NBVARI+10
+            ENDIF
           END IF
 C         FIN DES CAS PARTICULIERS
 C ======================================================================
@@ -200,9 +199,9 @@ C ======================================================================
      &                TYPMCL,MESMAI,NBMA)
 C         verifications
           IF (MECA) THEN
-             CALL NMDOVM(MODELE,MESMAI,NBMA,CES2,COMCOD,COMP,TXCP)
+            CALL NMDOVM(MODELE,MESMAI,NBMA,CES2,COMCOD,COMP,TXCP)
           ENDIF
-     
+
 C         REMPLISSAGE DES CMP
 
           ZK16(JVALV-1+1) = COMP
@@ -212,9 +211,9 @@ C         REMPLISSAGE DES CMP
           ZK16(JVALV-1+5) = TXCP
 C         ON ECRIT NUMLC EN POSITION 6 (CMP XXX1)
           IF (COMP(1:8).NE.'MULTIFIB') THEN
-             WRITE (ZK16(JVALV-1+6),'(I16)') NUMLC
+            WRITE (ZK16(JVALV-1+6),'(I16)') NUMLC
           ENDIF
-          
+
           IF (NBMA.NE.0) THEN
             CALL JEVEUO(MESMAI,'L',JMA)
             CALL NOCART(COMPOR,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMPMA)
@@ -226,16 +225,16 @@ C -----   PAR DEFAUT C'EST TOUT='OUI'
 
   150   CONTINUE
   160 CONTINUE
-  
+
 C ======================================================================
       IF (MECA) THEN
-          CALL NMDOFU(COMPEL,COMPOR)
+        CALL NMDOFU(COMPEL,COMPOR)
       ENDIF
 C ======================================================================
 C     SI MULTIFIBRE, ON FUSIONNE AVEC LA CARTE CREEE DANS AFFE_MATERIAU
 C      / AFFE_COMPOR - RCCOMP.F
       IF (EXIPMF) THEN
-         CALL NMDPMF(COMPOR)
+        CALL NMDPMF(COMPOR)
       ENDIF
 C ======================================================================
  170  CONTINUE

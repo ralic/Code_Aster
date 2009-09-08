@@ -1,7 +1,7 @@
       SUBROUTINE FETSKP()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -276,8 +276,8 @@ C FIN APPEL EXTERNE DE SCOTCH
 C         APPEL DE SCOTCH PAR LIBRAIRIE (PASSAGE PAR FETSCO.C)
           CALL WKVECT('&&FETSKP.NMAP','V V S',NBMATO,NMAP)
           IF ( NIV .GE. 2 ) THEN
-            CALL UTTCPU(18,'INIT',6,TMPS)
-            CALL UTTCPU(18,'DEBUT',6,TMPS)
+            CALL UTTCPU('CPU.FETSKP','INIT',' ')
+            CALL UTTCPU('CPU.FETSKP','DEBUT',' ')
           ENDIF
           WRITE(IFM,*) ' '
           WRITE(IFM,*) '***************** SCOTCH *****************'
@@ -290,7 +290,8 @@ C         APPEL DE SCOTCH PAR LIBRAIRIE (PASSAGE PAR FETSCO.C)
           CALL FETSCO (NBMATO,NBLIEN,ZI4(CO),ZI4(IDCO),NBPART,ZI4(NMAP),
      &                ZI4(EDLO),ZI4(VELO),ERR)
           IF ( NIV .GE. 2 ) THEN
-            CALL UTTCPU(18,'FIN',6,TMPS)
+            CALL UTTCPU('CPU.FETSKP','FIN',' ')
+            CALL UTTCPR('CPU.FETSKP',6,TMPS)
             WRITE(IFM,*) ' * TEMPS DE PARTITIONNEMENT  :',TMPS(3)
           ENDIF
           WRITE(IFM,*) '*************** FIN SCOTCH ***************'

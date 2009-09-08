@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPC MUMPS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPC MUMPS  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -135,14 +135,14 @@ C --- MUMPS PARALLELE DISTRIBUE ?
       LDIST=(ZK24(JREFA-1+11).NE.'MPI_COMPLET')
       RANG=XMPSK%MYID
       NBPROC=XMPSK%NPROCS
-      
+
 C --- MATRICE ASTER DISTRIBUEE ?
       LMD = .FALSE.
       LMD = ZK24(JSLVK-1+10)(1:3).EQ.'OUI'
 
 C --- POUR MONITORING
       CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &            IETDEB,IETRAT,RCTDEB)
+     &            IETDEB,IETRAT,RCTDEB,LDIST)
 
 
 C     ------------------------------------------------
@@ -168,7 +168,7 @@ C       ------------------------------------------------
 C        REMPLISSAGE DE LA MATRICE MUMPS :
 C       ------------------------------------------------
         CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)
+     &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE,LMD)
         CALL JJLDYN(IBID)
 
@@ -176,11 +176,16 @@ C       ------------------------------------------------
 C        ANALYSE MUMPS:
 C       ------------------------------------------------
         CALL AMUMPT(2,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)
+     &              IETDEB,IETRAT,RCTDEB,LDIST)
+C       -- ON INTERROMPT LA MESURE CPU.RESO.4 PENDANT CPU.RESO.3 :
+        CALL UTTCPU('CPU.RESO.4','FIN',' ')
+        CALL UTTCPU('CPU.RESO.3','DEBUT',' ')
         XMPSK%JOB = 1
         CALL ZMUMPS(XMPSK)
+        CALL UTTCPU('CPU.RESO.3','FIN',' ')
+        CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
         CALL AMUMPT(4,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)
+     &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
@@ -210,11 +215,17 @@ C       ------------------------------------------------
         XMPSK%JOB = 2
         IF (LRESOL) CALL ZMUMPS(XMPSK)
         CALL AMUMPT(6,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)
+     &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
 C       ------------------------------------------------
+        VALR(1)=(XMPSK%INFOG(13)*100.D0)/XMPSK%N
+        VALR(2)=XMPSK%ICNTL(14)*1.D0
+        IF (VALR(1).GE.VALR(2)) THEN
+C     PROBLEME DU TROP GRAND NBRE DE PIVOTS NUMERIQUES
+          CALL U2MESR('I','FACTOR_73',2,VALR)
+        ENDIF
         IF (XMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
         ELSE IF ((XMPSK%INFOG(1).EQ.-8).OR.(XMPSK%INFOG(1).EQ.-9).OR.
@@ -264,7 +275,7 @@ C       ------------------------------------------------
 C        PRETRAITEMENTS ASTER DU/DES SECOND(S) MEMBRE(S) :
 C       ------------------------------------------------
         CALL AMUMPT(7,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)
+     &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPP(0,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
      &              RBID,CSOLU,VCINE)
 
@@ -272,11 +283,11 @@ C       ------------------------------------------------
 C        RESOLUTION MUMPS :
 C       ------------------------------------------------
         CALL AMUMPT(8,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)
+     &              IETDEB,IETRAT,RCTDEB,LDIST)
         XMPSK%JOB = 3
         IF (LRESOL) CALL ZMUMPS(XMPSK)
         CALL AMUMPT(10,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)
+     &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
@@ -313,7 +324,7 @@ C       ------------------------------------------------
 C        AFFICHAGE DU MONITORING :
 C       ------------------------------------------------
         CALL AMUMPT(12,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
-     &              IETDEB,IETRAT,RCTDEB)
+     &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C     ------------------------------------------------
 C     ------------------------------------------------

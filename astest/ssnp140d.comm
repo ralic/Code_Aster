@@ -1,0 +1,185 @@
+# MODIF  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+# TITRE ESSAI DE TRACTION D UNE PLAQUE TROUEE AVEC LA METHODE IMPLEX
+# ssnp140d.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP140D', NIV_PUB_WEB='INTERNET',),);
+
+# LECTURE DU MAILLAGE
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(GROUP_MA='34',),);
+
+# AFFECTATION DU MODELE SUR LE MAILLAGE
+MODE=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='D_PLAN',),);
+
+# DEFINITION DES PARAMETRES DE LA LOI DE COMPORTEMENT
+MA=DEFI_MATERIAU(ELAS=_F(E=20000.,
+                         NU=0.,),
+                 BETON_ECRO_LINE=_F(D_SIGM_EPSI=-2000.,
+                              SYT=2.,),);
+
+# AFFECTATION DU MATERIAU SUR L ENSEMBLE DU MAILLAGE
+MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MA,),);
+
+# CONDITIONS AUX LIMITES ET CHARGEMENTS
+CHAR=AFFE_CHAR_MECA(MODELE=MODE,
+                    DDL_IMPO=(_F(GROUP_MA='12',
+                                  DY=0.0,),
+                               _F(GROUP_MA='45',
+                                  DX=0.0,),),);
+
+CHAR2=AFFE_CHAR_MECA(MODELE=MODE,
+                     DDL_IMPO=_F(GROUP_MA='34',
+                                  DY=0.3,),);
+
+F_DEPL=DEFI_FONCTION(NOM_PARA    = 'INST',
+                     VALE        = (0,0, 1,1),
+                     PROL_DROITE = 'LINEAIRE',);
+
+# DISCRETISATION EN TEMPS
+TFIN = 0.01
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=TFIN,
+                                    NOMBRE=50,),);
+
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),);
+
+L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=TFIN,
+                                    NOMBRE=200,),);
+
+DEFLIS2 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),);
+
+IARCH = DEFI_LIST_REEL(
+  DEBUT = 0.,
+  INTERVALLE = (
+    _F(JUSQU_A =  TFIN, NOMBRE = 25),
+    )
+  )
+
+# RESOLUTION AVEC LA METHODE ITERATIVE DE NEWTON-RAPHSON
+RESUNL=STAT_NON_LINE(MODELE=MODE,
+                     CHAM_MATER=MATE,
+                     EXCIT=(_F(CHARGE=CHAR,),
+                            _F(CHARGE=CHAR2,
+                               FONC_MULT=F_DEPL,),),
+                     COMP_INCR=_F(RELATION='ENDO_ISOT_BETON',),
+                     INCREMENT=_F(LIST_INST=DEFLIST,
+                                  INST_FIN=TFIN,),
+                     NEWTON=_F(REAC_ITER=1,
+                               MATRICE='TANGENTE',
+                               REAC_INCR=1,),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
+
+# EXTRACTION DE LA COURBE FORCE APPLIQUEE EN FONCTION DU TEMPS
+RESUNL=CALC_NO(reuse =RESUNL,
+               RESULTAT=RESUNL,
+               OPTION=('FORC_NODA',),);
+
+FORC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='FORCE',
+                             RESULTAT=RESUNL,
+                             NOM_CHAM='FORC_NODA',
+                             GROUP_NO='34',
+                             RESULTANTE='DY',),);
+
+FX=RECU_FONCTION(TABLE=FORC,
+                 PARA_X='INST',
+                 PARA_Y='DY',
+                 INTERPOL='LIN',
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT');
+
+# RESOLUTION AVEC LA METHODE IMPL-EX
+RESUIE=STAT_NON_LINE(MODELE=MODE,
+                     CHAM_MATER=MATE,
+                     EXCIT=(_F(CHARGE=CHAR,),
+                            _F(CHARGE=CHAR2, FONC_MULT=F_DEPL,),),
+                     COMP_INCR=_F(RELATION='IMPLEX_ISOT_BETO',),
+                     INCREMENT=_F(LIST_INST=DEFLIS2,
+                                  INST_FIN=TFIN,),
+                     METHODE = 'IMPL_EX',
+                     IMPL_EX=_F(),
+);
+
+# EXTRACTION DE LA COURBE FORCE APPLIQUEE EN FONCTION DU TEMPS
+RESUIE=CALC_NO(reuse =RESUIE,
+               RESULTAT=RESUIE,
+               OPTION=('FORC_NODA',),);
+
+FORCIE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='FORCE',
+                               RESULTAT=RESUIE,
+                               NOM_CHAM='FORC_NODA',
+                               GROUP_NO='34',
+                               RESULTANTE='DY',),);
+
+FXIE=RECU_FONCTION(TABLE=FORCIE,
+                   PARA_X='INST',
+                   PARA_Y='DY',
+                   INTERPOL='LIN',
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT');
+
+# DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
+DIFF=CALC_FONCTION(COMB=(
+                          _F( FONCTION = FX, COEF =  1.), 
+                          _F( FONCTION = FXIE, COEF = -1.), 
+                          ) );
+
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 4.00000E-04,VALE_REFE=0.,PRECISION=1e-12,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 8.00000E-04,VALE_REFE=0.,PRECISION=1e-12,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 1.20000E-03,VALE_REFE=0.,PRECISION=1e-12,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 1.60000E-03,VALE_REFE=0.,PRECISION=1e-12,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 2.00000E-03,VALE_REFE=0.,PRECISION=1e-12,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 3.20000E-03,VALE_REFE=0.,PRECISION=0.545,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 4.00000E-03,VALE_REFE=0.,PRECISION=3.546,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 6.00000E-03,VALE_REFE=0.,PRECISION=0.573,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 8.00000E-03,VALE_REFE=0.,PRECISION=0.632,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 1.00000E-02,VALE_REFE=0.,PRECISION=0.667,CRITERE='ABSOLU',),
+            ),);
+
+# CALCUL DU CRITERE DES MOINDRES CARRES ENTRE LES DEUX COURBES
+# ON INTEGRE LA DIFF DES DEUX COURBES ET ON SOMME LES TERMES
+INT=CALC_FONCTION(INTEGRE=(
+                          _F( FONCTION = DIFF,),
+                          ) );
+
+TINT=CREA_TABLE(FONCTION= _F(FONCTION = DIFF,
+                             PARA = ('INST','DY')),);
+
+TEST_TABLE( TABLE=TINT,
+            NOM_PARA='DY',
+            TYPE_TEST='SOMM_ABS',
+            REFERENCE='NON_REGRESSION',
+            PRECISION=1.E-10,
+            VALE=1.1762847938940e2,);
+
+
+FIN();

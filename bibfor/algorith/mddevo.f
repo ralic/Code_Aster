@@ -28,7 +28,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -209,14 +209,15 @@ C     --- ARCHIVAGE DONNEES INITIALES ---
      &            ZR(JVINT),IREDST,DREDST )
 C
       TEMPS = TINIT + DT1
-      CALL UTTCPU (1,'INIT',4,TPS1)
+      CALL UTTCPU('CPU.MDDEVO','INIT',' ')
       N100 = NBPAS/100 + 1
 C
 C     --- BOUCLE TEMPORELLE ---
 C
       DO 30 I = 1 , NBPAS
 C
-         IF (I.EQ.1.OR.MOD(I,N100).EQ.0) CALL UTTCPU (1,'DEBUT',4,TPS1)
+         IF (I.EQ.1.OR.MOD(I,N100).EQ.0)
+     &         CALL UTTCPU('CPU.MDDEVO','DEBUT',' ')
 C
          DO 32 IM = 0,NBMOD1
             IM1 = IM + 1
@@ -325,7 +326,8 @@ C
 C        --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---
 C
          IF (I.EQ.1 .OR. MOD(I,N100).EQ.0) THEN
-          CALL UTTCPU (1,'FIN',4,TPS1)
+          CALL UTTCPU('CPU.MDDEVO','FIN',' ')
+          CALL UTTCPR('CPU.MDDEVO',4,TPS1)
           IF (MAX(5.D0,N100*TPS1(4)).GT.0.90D0*TPS1(1)) THEN
            CALL MDSIZE (NOMRES,ISTO1,NBMODE,LPSTO,NBCHOC,NBREDE)
            IF (NOMRES.EQ.'&&OP0074') THEN

@@ -9,7 +9,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,7 +109,11 @@ C     -----------------------------------------------------------------
       CALL JEVEUO(MATRES//'.REFA','E',JREFAR)
       CALL ASSERT(ZK24(JREFAR-1+9) (1:1).EQ.'M')
       SYMR = ZK24(JREFAR-1+9) .EQ. 'MS'
-      IF (SYMR) CALL ASSERT(NBLOC.EQ.1)
+      IF (SYMR) THEN
+        CALL ASSERT(NBLOC.EQ.1)
+      ELSE
+        CALL ASSERT(NBLOC.EQ.2)
+      ENDIF
 
       CALL ASSERT(DDLEXC.EQ.' '.OR.DDLEXC.EQ.'LAGR')
       CALL WKVECT('&&MTCMBL.LISPOINT','V V I',NBCOMB,IDLIMA)
@@ -125,8 +129,12 @@ C     -----------------------------------------------------------------
         CALL JELIRA(MATI//'.VALM','NMAXOC',NBLOC,KBID)
         CALL JEVEUO(MATI//'.REFA','L',JREFAI)
         SYMI = ZK24(JREFAI-1+9) .EQ. 'MS'
-        CALL ASSERT(NBLOC.EQ.1.OR.NBLOC.EQ.2)
-        IF (SYMI) CALL ASSERT(NBLOC.EQ.1)
+        IF (SYMI) THEN
+          CALL ASSERT(NBLOC.EQ.1)
+        ELSE
+          CALL ASSERT(NBLOC.EQ.2)
+          CALL ASSERT(.NOT.SYMR)
+        ENDIF
 C        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         IF (MATI.EQ.MATRES) REUTIL=.TRUE.
    10 CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem2 Messages  DATE 08/09/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,6 +140,16 @@ cata_msg = {
      de fissure trouvés. Si c'est normal, contactez votre correspondant.
 """),
 
+50 : _("""
+  -> Le maillage utilisé pour la représentation des level sets est 2D
+     mais il contient des éléments 1D aussi.
+  -> La méthode upwind sélectionnée dans PROPA_FISS peut gérer des
+     grilles 2D définies seulement par des éléments QUAD4.
+  -> Risque & Conseil:
+     Veuillez donner un maillage défini seulement par des éléments
+     QUAD4.
+  """),
+
 51 : _("""
   -> Il n'y a aucune maille enrichie.
   -> Risque & Conseil:
@@ -147,28 +157,19 @@ cata_msg = {
   """),
 
 52 : _("""
-  -> Dans le maillage il y a des éléments qui ne sont pas disponibles
-     pour la méthode upwind (PROPA_FISS).
-  -> Ces éléments ne sont pas considérés.
+  -> Le maillage utilisé pour la représentation des level sets est 3D
+     mais il contient des éléments 2D et/ou 1D aussi.
+  -> La méthode upwind sélectionnée dans PROPA_FISS peut gérer des
+     grilles 3D définies seulement par des éléments HEXA8.
   -> Risque & Conseil:
-     Pour le cas 2D, on peut utiliser uniquement des éléments de type
-     QUAD4. Pour le cas 3D, on peut utiliser uniquement des éléments de
-     type HEXA8.
-     Tous les noeuds des éléments qui ne sont pas disponibles sont
-     toutefois partagés avec un élément QUAD4 ou HEXA8. Il se peut que
-     ces éléments soient des éléments auxiliaires (par exemple, éléments
-     surfaciques) qui peuvent être ignorés dans la méthode upwind.
- 
-     Veuillez vérifier que les éléments QUAD4 ou HEXA8 sont définis
-     correctement.
+     Veuillez donner un maillage défini seulement par des éléments
+     HEXA8.
   """),
   
 53 : _("""
   -> Dans le maillage utilisé pour la représentation des level sets,
      il y a des éléments qui ne sont pas disponibles pour la méthode 
      upwind (PROPA_FISS).
-  -> En plus, il y a quelques noeuds du maillage qui appartiennent 
-     uniquement à ces éléments.
   -> Risque & Conseil:
      Veuillez vérifier le maillage et utiliser uniquement des éléments
      QUAD4 en 2D et HEXA8 en 3D.
@@ -325,11 +326,23 @@ cata_msg = {
   
 76 : _("""
   -> Une seule valeur des facteurs d'intensité de contraintes (SIF) a
-     été donné pour chaque point du fond de la fissure et donc le
-     rapport de charge du cycle de fatigue a été fixé égal à zéro.
+     été donné pour chaque point du fond de la fissure. Cela ne permit
+     pas de bien définir le cycle de fatigue.
+  -> En défaut, le rapport de charge du cycle de fatigue a été fixé égal
+     à zéro et les  SIF donnés ont été affectés à le chargement maximal
+     du cycle.
   -> Risque & Conseil:
-     Veuillez vérifier si cette valeur du rapport de charge est correct.
-     Sinon veuillez donner un tableau avec les SIF correspondant à les
+     Veuillez vérifier si les hypothèses faits ci-dessus sont correctes.
+     Dans ce cas, c'est mieux de les bien expliciter en utilisant dans
+     PROPA_FISS l'opérateur COMP_LINE comme ceci:
+
+     COMP_LINE=_F(COEF_MULT_MINI=0.,
+                  COEF_MULT_MAXI=1.),
+     
+     Cela permit d'éviter aussi l'émission de cette alarme.
+     
+     Sinon, si le rapport de charge du cycle de fatigue n'est pas égal à
+     zéro, veuillez donner un tableau avec les SIF correspondants à les
      conditions de chargement maximal et minimal du cycle de fatigue.
   """),
   

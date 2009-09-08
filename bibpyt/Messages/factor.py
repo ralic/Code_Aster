@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF factor Messages  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -249,15 +249,10 @@ Solution :
   Contactez l'assistance.
 """),
 
-#-----------------------------------------------------------------------------------------------
-63: _("""
-Information Solveur MUMPS :
-  Déséquilibrage de charge maximum supérieur à %(r1)g %% sur au moins une des 6 étapes profilées.
-Conseils: Pour optimiser l'équilibrage de votre calcul, vous pouvez essayer
-        - d'enlever du modèle les mailles qui ne participent pas au calcul,
-        - utiliser l'option PARALLELISME='DISTRIBUE_SD',
-        - diminuer le nombre de processeurs utilisés.
-"""),
+
+
+
+
 
 #-----------------------------------------------------------------------------------------------
 
@@ -334,7 +329,7 @@ Solveur MUMPS :
 Solveur MUMPS :
   Vous avez activé l'option IMPR='OUI_NOSOLVE' en surchargeant AMUMPS.F. La résolu
   tion du système linéaire en cours ne va donc pas s'effectuer mais sa matrice et
-  son second membre vont être écrits dans le fichier d'unité logique %(i1)d. 
+  son second membre vont être écrits dans le fichier d'unité logique %(i1)d.
   Après cette écriture, l'execution Aster s'arrête en ERREUR_FATALE pour vous
   permettre de récuperer plus rapidement votre fichier.
   Vous pouvez le récupérer (sur le proc 0) via ASTK.
@@ -352,12 +347,15 @@ Solution:
 
 73: _("""
 Solveur MUMPS :
-  Lors de la factorisation numérique, le nombre de pivots s'est avéré supérieur à 10% de
-  la taille du problème. Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien
-  la qualité de celui-ci en fin de résolution via la mot-clé RESI_RELA.
+  Lors de la factorisation numérique, le pourcentage de pivots, %(r1)d %, a dépassé le pourcentage
+  prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2)d %.
+  Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien la qualité de celui-ci
+  en fin de résolution via la mot-clé RESI_RELA.
 Solution:
-  Si ce n'est pas fait, activez l'option prétraitements (PRETRAITEMENTS='AUTO') ou
-  désactivez l'option ELIM_LAGR2 (ELIM_LAGR2='NON') si vous avez beaucoup de Lagranges.
+  Pour améliorer la qualité de la solution vous pouvez activez les options de pré et post-
+  traitements (PRETRAITEMENTS='AUTO' et POSTTRAITEMENTS='FORCE' ou 'AUTO'), durcir le critère
+  de qualité RESI_RELA ou, si vous avez beaucoup de Lagranges (>10% de la taille du pb),
+  désactivez l'option ELIM_LAGR2 (ELIM_LAGR2='NON').
   Sinon, contactez l'équipe de développement.
 """),
 

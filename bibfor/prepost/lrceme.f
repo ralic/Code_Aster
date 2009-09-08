@@ -5,7 +5,7 @@
      &                    NROFIC, LIGREL, OPTION, PARAM, 
      &                    NBPGMA, NBPGMM, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/10/2008   AUTEUR ASSIRE A.ASSIRE 
+C MODIF PREPOST  DATE 07/09/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,18 +98,23 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'LRCEME' )
 C
-      INTEGER IAUX, NAUX
-      INTEGER NTYPEL,NPGMAX
+      INTEGER IAUX, NAUX, UNITE, NBCHAM, NBCMP, JCMP
+      INTEGER NTYPEL,NPGMAX, TYCHA, JUNIT
       PARAMETER(NTYPEL=26,NPGMAX=27)
       INTEGER VALI(2),INDPG(NTYPEL,NPGMAX)
       INTEGER NBMAI, NBVATO,NBMA, JNBPGM, IBID
       INTEGER JCESD,JCESV,JCESL,JCESC,JCESK
-      INTEGER IFM, NIVINF
+      INTEGER IFM, NIVINF, TYGEO, IDFIMD
       INTEGER JNOCMP, NCMPRF, JCMPVA, NBCMPA, IRET, I, J,NNCP
-C
+      INTEGER EDLECT
+      PARAMETER (EDLECT=0)
+
       CHARACTER*1  SAUX01
-      CHARACTER*8  K8B
+      CHARACTER*8  K8B,SAUX08
       CHARACTER*19 CHAMES
+      CHARACTER*32 NOMCHA
+      CHARACTER*200 NOFIMD
+      CHARACTER*255 KFIC
 C
       LOGICAL      TTT
 C
@@ -176,7 +181,9 @@ C
           DO 20 I=1,NBCMPA
              TTT=.FALSE.
              DO 30 J=1,NCMPRF
-              IF (ZK8(JCMPVA+I-1).EQ.ZK8(JNOCMP+J-1)) TTT=.TRUE.
+              IF (ZK8(JCMPVA+I-1).EQ.ZK8(JNOCMP+J-1)) THEN
+                        TTT=.TRUE.
+               ENDIF
  30          CONTINUE
              IF (.NOT.TTT) THEN
                 CALL U2MESS('F','MED_66')
@@ -185,8 +192,44 @@ C
         ELSE
           CALL U2MESS('F','MED_70')
         ENDIF
+
+      ELSE
+      
+           CALL GETVIS ( ' ', 'UNITE', 0, 1, 1, UNITE, IAUX )
+           CALL ULISOG(UNITE, KFIC, SAUX01)
+           IF ( KFIC(1:1).EQ.' ' ) THEN
+             CALL CODENT ( UNITE, 'G', SAUX08 )
+             NOFIMD = 'fort.'//SAUX08
+           ELSE
+             NOFIMD = KFIC(1:200)
+           ENDIF
+           CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, IRET )
+           CALL EFNCHA ( IDFIMD, 0, NBCHAM, IRET)
+           DO 777 I=1,NBCHAM
+               CALL EFNCHA(IDFIMD,I,NBCMP,IRET)
+               CALL WKVECT('&&LRCEME.NOMCMP_K16','V V K16',NBCMP,JCMP)
+               CALL WKVECT('&&LRCEME.UNITCMP','V V K16',NBCMP,JUNIT)
+               CALL EFCHAI(IDFIMD,I,NOMCHA,TYCHA,ZK16(JCMP),
+     &                     ZK16(JUNIT),NBCMP,IRET)
+               IF( NOMCHA.EQ.NOCHMD)THEN
+                 NCMPRF=NBCMP
+                 CALL WKVECT('&&LRCEME.NOMCMP_K8','V V K8',NBCMP,JNOCMP)
+                 DO 778 J=1,NBCMP
+                    ZK8(JNOCMP+J-1)=ZK16(JCMP+J-1)(1:8)
+ 778             CONTINUE
+                 GOTO 780
+               ENDIF
+               CALL JEDETR('&&LRCEME.NOMCMP_K16')
+               CALL JEDETR('&&LRCEME.UNITCMP')
+ 777       CONTINUE
+           CALL EFFERM ( IDFIMD, IRET )
+
       ENDIF
 C
+ 780  CONTINUE
+      CALL JEDETR('&&LRCEME.NOMCMP_K16')
+      CALL JEDETR('&&LRCEME.UNITCMP')
+
       IF (TYPECH(1:4).EQ.'ELGA')THEN
         CALL CESCRE ( 'V', CHAMES, TYPECH, NOMAAS, NOMGD, NCMPRF,
      &               ZK8(JNOCMP),NBPGMA,-1,-NCMPRF)
@@ -194,7 +237,7 @@ C
         CALL CESCRE ( 'V', CHAMES, TYPECH, NOMAAS, NOMGD, NCMPRF,
      &               ZK8(JNOCMP),-1,-1,-NCMPRF)
       ENDIF
-
+      
 C
       CALL JEVEUO ( CHAMES//'.CESK', 'L', JCESK )
       CALL JEVEUO ( CHAMES//'.CESD', 'L', JCESD )
@@ -249,7 +292,7 @@ C
 C      IF(TYPECH(1:4).EQ.'ELGA')THEN
 C        CALL JEDETR('&&LRCEME_NBPG_MAILLE')
 C      ENDIF
-
+      CALL JEDETR('&&LRCEME.NOMCMP_K8')
       CALL JEDEMA ( )
 C
       IF ( NIVINF.GT.1 ) THEN

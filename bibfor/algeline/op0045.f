@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -421,7 +421,11 @@ C     ------------------------------------------------------------------
       NSTOC = 0
       IF (MODRIG .EQ. 'MODE_RIGIDE') THEN
         VECRIG = '&&OP0045.MODE.RIGID'
+        CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
+        CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
         CALL TLDLG2(LRAIDE,NPREC,NSTOC,VECRIG,IBID,KBID)
+        CALL UTTCPU('CPU.RESO.1','FIN',' ')
+        CALL UTTCPU('CPU.RESO.4','FIN',' ')
         IF (NSTOC.NE.0) CALL JEVEUO(VECRIG,'E',LXRIG)
       ENDIF
 
@@ -1156,7 +1160,7 @@ C     DE LA SENSIBILITE
      &            ZI(LRESUI),ZK24(LRESUK))
         ENDIF
       ENDIF
-  
+
 C     ------------------------------------------------------------------
 
  9999 CONTINUE

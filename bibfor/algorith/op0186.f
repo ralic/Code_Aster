@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,7 @@ C 0.3. ==> VARIABLES LOCALES
      &        IFM,NIV,NOPT,LONCH,ITERAT,TYPESE,
      &        JTEMPP,JTEMPM,JTEMP,NBPASE,NRORES,JTEMPI,I,JCRR
       INTEGER NCHAR,JLCHA,IALICH,JFCHA,JINFC,JINF,IALIFC
-      INTEGER ITAB(2)
-      INTEGER DERNIE
+      INTEGER ITAB(2),DERNIE,IRET
       REAL*8 PARMER(2),TPSTHE(6),DELTAT,TIMET,TIMTDT,TPS1(4),
      &       TPS2(4),TPS3(4),TPEX,PARCRR(2),THETA,KHI,RHO,TESTR,TESTM,
      &       PARA(2),R8VIDE,DIINST,INSTAP
@@ -72,7 +71,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*8 EVOLSC,SAUX08,NOPASE,MAILLA
       CHARACTER*12 K12BID
       CHARACTER*13 INPSCO
-      CHARACTER*14 SDOBSE       
+      CHARACTER*14 SDOBSE
       CHARACTER*16 TYSD
       CHARACTER*19 INFCHA,SOLVEU,MAPREC, LISCHA,SDDISC,
      &             K19BLA,LISINS
@@ -107,7 +106,7 @@ C ----------------------------------------------------------------------
       DATA FMT3/'(A,16X,A,8X,A,6X,A,3X,A,6X,A,4X,A)'/
       DATA FMT4/'(A,12X,A,2X,A,17X,A,9X,A,4X,A)'/
       DATA SDDISC            /'&&OP0186.PARTPS'/
-      DATA SDOBSE            /'&&OP0186.OBSER'/      
+      DATA SDOBSE            /'&&OP0186.OBSER'/
 C ----------------------------------------------------------------------
 
 C     MESURE DE TEMPS CPU :
@@ -212,10 +211,12 @@ C **********************************************************************
 C                 BOUCLE SUR LES PAS DE TEMPS
 C **********************************************************************
 
-      CALL UTTCPU(1,'INIT',4,TPS1)
-      CALL UTTCPU(2,'INIT',4,TPS2)
-      CALL UTTCPU(3,'INIT',4,TPS3)
+      CALL UTTCPU('CPU.OP0186.1','INIT',' ')
+      CALL UTTCPR('CPU.OP0186.1',4,TPS1)
       TPEX = TPS1(3)
+      CALL UTTCPU('CPU.OP0186.2','INIT',' ')
+      CALL UTTCPU('CPU.OP0186.3','INIT',' ')
+      CALL UTTCPR('CPU.OP0186.3',4,TPS3)
       PREM = .TRUE.
       REASRG = .FALSE.
       REASMS = .FALSE.
@@ -249,7 +250,7 @@ C --- MATRICE TANGENTE REACTUALISEE POUR UN NOUVEAU DT
 
         REASMA = .TRUE.
 
-          CALL UTTCPU(1,'DEBUT',4,TPS1)
+          CALL UTTCPU('CPU.OP0186.1','DEBUT',' ')
           TPSTHE(1) = INSTAP
           TPSTHE(2) = DELTAT
           TPSTHE(3) = THETA
@@ -400,7 +401,7 @@ C A = MATASS, B=VEC2ND, SOLUTION=VTEMPM
 
             IF (TYPESE.NE.0) THEN
               CALL RESOUD(MATASS,MAPREC,VEC2ND,SOLVEU,CNCHCI,'V',VTEMPM,
-     &                    ' ',0,R8BID,C16BID)              
+     &                    ' ',0,R8BID,C16BID)
 
 C ON STOCKE LA SOLUTION VTEMPM DANS VTEMP
               GO TO 40
@@ -437,7 +438,7 @@ C --- REPRISE DE LA BOUCLE D'ITERATIONS DE NEWTON-RAPHSON
 
 C --- DOIT ON REACTUALISER LA MATRICE TANGENTE
 
-            CALL UTTCPU(2,'DEBUT',4,TPS2)
+            CALL UTTCPU('CPU.OP0186.2','DEBUT',' ')
             ITERAT = ITERAT + 1
             REASMA = .FALSE.
             KREAS = 'NON'
@@ -496,7 +497,8 @@ C SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
               WRITE (IFM,FMT1)
               CALL NMIMPR('IMPR','ERREUR','ITER_MAXI',0.D0,0)
             ENDIF
-            CALL UTTCPU(2,'FIN',4,TPS2)
+            CALL UTTCPU('CPU.OP0186.2','FIN',' ')
+            CALL UTTCPR('CPU.OP0186.2',4,TPS2)
             IF ((.NOT.CONVER) .AND. (.NOT.ITEMAX)) THEN
               IF (2.D0*TPS2(4).GT.0.95D0*TPS2(1)-TPS3(4)) THEN
                 WRITE (IFM,FMT1)
@@ -523,7 +525,7 @@ C ======================================================================
 C INDIRECTION POUR PB INSENSIBLE (TYPESE.EQ.1)
    40       CONTINUE
 
-            CALL UTTCPU(3,'DEBUT',4,TPS3)
+            CALL UTTCPU('CPU.OP0186.3','DEBUT',' ')
 
             IF (NRORES.EQ.0) CALL COPISD('CHAMP_GD','V',VHYDRP(1:19),
      &                                   VHYDR(1:19))
@@ -569,7 +571,8 @@ C VTEMPM --> VTEMP ET ON ARCHIVE VTEMP
             CALL NTSTOC(SDDISC,LOSTAT,NUMORD,FINPAS,INCR,RESULT,COMPOR,
      &                  NOMCH,VTEMP,VTEMPM,VHYDR,LONCH,INSTAP,CRITHE,
      &                  PARA,MODELE,MATE,CARELE,LISCHA)
-            CALL UTTCPU(3,'FIN',4,TPS3)
+            CALL UTTCPU('CPU.OP0186.3','FIN',' ')
+            CALL UTTCPR('CPU.OP0186.3',4,TPS3)
 
 C --- FIN BOUCLE SUR LES RESOLUTIONS PB STD/PB DERIVEE
    50     CONTINUE
@@ -583,7 +586,8 @@ C -- OBSERVATION EVENTUELLE
       ENDIF
 
 C --- TEMPS DISPONIBLE POUR CONTINUER ?
-          CALL UTTCPU(1,'FIN',4,TPS1)
+          CALL UTTCPU('CPU.OP0186.1','FIN',' ')
+          CALL UTTCPR('CPU.OP0186.1',4,TPS1)
           WRITE (IFM,FMT)
           WRITE (IFM,'(A,21X,A,1PE10.2,37X,A)') '*','DUREE:',
      &      TPS1(3) - TPEX,'*'

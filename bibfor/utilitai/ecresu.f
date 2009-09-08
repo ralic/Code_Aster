@@ -4,7 +4,7 @@
       CHARACTER*(*) RESIN,RESOU,GRAND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C  Champs
 C  Nombre d'equations : NEQ
       CHDEP2 = CHDEP(1:19)//'.VALE'
       CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
-      CALL WKVECT('&&PARAMACC','V V R',NBVA,LTPS)
+      CALL WKVECT('&&ECRESU.PARAMACC','V V R',NBVA,LTPS)
 C
 C  Creation objet resultat en sortie si non existence
 C
@@ -160,6 +160,7 @@ C  On finalise le RESOU
          ZK24(JORDR+6) = ZK24(JREFE+6)
          CALL JELIBE(KREFE//'.REFD')
       ENDIF
-C
+
+      CALL JEDETR('&&ECRESU.PARAMACC')
       CALL JEDEMA()
       END

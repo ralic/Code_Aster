@@ -1,7 +1,7 @@
       SUBROUTINE PRERES(SOLVEZ,BASE,IRET,MATPRE,MATASS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,8 @@ C----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEDBG2(IDBGAV,0)
       CALL INFNIV(IFM,NIV)
+      CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
+      CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
 
       DBG=.TRUE.
       DBG=.FALSE.
@@ -160,9 +162,9 @@ C ATTENTION SI FETI LIBERATION MEMOIRE PREVUE EN FIN DE BOUCLE
 
         IF (IDDOK) THEN
           IF (LFETI) CALL JEMARQ()
-          IF ((NIV.GE.2).OR.(LFETIC)) THEN
-            CALL UTTCPU(52,'INIT ',6,TEMPS)
-            CALL UTTCPU(52,'DEBUT',6,TEMPS)
+          IF (LFETIC) THEN
+            CALL UTTCPU('CPU.PRERES.FETI','INIT',' ')
+            CALL UTTCPU('CPU.PRERES.FETI','DEBUT',' ')
           ENDIF
 
           IF (IDD.GT.0) THEN
@@ -233,12 +235,10 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             IRET=0
           ENDIF
 
-          IF ((NIV.GE.2).OR.(LFETIC)) THEN
-            CALL UTTCPU(52,'FIN  ',6,TEMPS)
-            IF (NIV.GE.2) WRITE(IFM,'(A44,D11.4,D11.4)')
-     &         'TEMPS CPU/SYS FACTORISATION NUM           : ',TEMPS(5),
-     &          TEMPS(6)
-            IF (LFETIC) ZR(IFCPU+IDD)=TEMPS(5)+TEMPS(6)
+          IF (LFETIC) THEN
+            CALL UTTCPU('CPU.PRERES.FETI','FIN',' ')
+            CALL UTTCPR('CPU.PRERES.FETI',6,TEMPS)
+            ZR(IFCPU+IDD)=TEMPS(5)+TEMPS(6)
           ENDIF
           IF (LFETI) CALL JEDEMA()
 
@@ -251,5 +251,7 @@ C========================================
  9999 CONTINUE
 
       CALL JEDBG2(IBID,IDBGAV)
+      CALL UTTCPU('CPU.RESO.1','FIN',' ')
+      CALL UTTCPU('CPU.RESO.4','FIN',' ')
       CALL JEDEMA()
       END

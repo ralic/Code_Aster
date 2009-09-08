@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,7 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
                            into=("OUI","NON"),defaut="OUI"),
          IMPR_MACRO      =SIMP(fr="affichage des sous-commandes produites par les macros dans le fichier mess",
                            statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
+
          BASE            =FACT(fr="définition des paramètres associés aux bases JEVEUX",
                                statut='f',min=1,max=2,
            FICHIER         =SIMP(fr="nom de la base",statut='o',typ='TXM'),
@@ -38,18 +39,22 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
            LONG_ENRE       =SIMP(fr="longueur des enregistrements",statut='f',typ='I'),
            LONG_REPE       =SIMP(fr="longueur du répertoire",statut='f',typ='I'),
          ),
+
          IMPRESSION      =FACT(statut='f',min=1,max=3,
            FICHIER         =SIMP(statut='o',typ='TXM'),
            UNITE           =SIMP(statut='o',typ='I'),
          ),
+
          CATALOGUE       =FACT(statut='f',min=1,max=10,
            FICHIER         =SIMP(statut='o',typ='TXM'),
            TITRE           =SIMP(statut='f',typ='TXM'),
            UNITE           =SIMP(statut='f',typ='I'),
          ),
+
          ERREUR          =FACT(fr="comportement en cas d'erreur",statut='f',min=1,max=1,
            ERREUR_F        =SIMP(statut='f',typ='TXM',into=('ABORT','EXCEPTION'),defaut='ABORT'),
          ),
+
          DEBUG           =FACT(fr="option de déboggage reservée aux développeurs",
                                statut='f',min=1,max=1,
            JXVERI          =SIMP(fr="vérifie l intégrité de la segmentation mémoire",
@@ -61,6 +66,17 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
            ENVIMA          =SIMP(fr="imprime les valeurs définies dans ENVIMA",
                                  statut='f',typ='TXM',into=('TEST',)),
          ),
+
+         MESURE_TEMPS     =FACT(fr="Pour choisir les mesures de temps consommé dans les commandes",
+                               statut='f',min=1,max=1,
+           NIVE_DETAIL      =SIMP(fr="niveau de détail des impressions",
+                                 statut='f',typ='I',into=(0,1,2,3),defaut=1),
+                                 # 0 : rien
+                                 # 1 : impression en fin de commande des mesures principales
+                                 # 2 : impression en fin de commande des mesures principales et secondaires
+                                 # 3 : impression des mesures principales et secondaires pour chaque pas de temps
+         ),
+
          MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='d',min=1,max=1,
            GESTION         =SIMP(statut='f',typ='TXM',into=('COMPACTE','RAPIDE'),defaut='RAPIDE'),
            TYPE_ALLOCATION =SIMP(statut='f',typ='I',into=(1,2,3,4),defaut=1),
@@ -69,7 +85,7 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
            PARTITION       =SIMP(statut='f',typ='R' ),
            DYNAMIQUE       =SIMP(statut='f',typ='I',defaut=1),
          ),
- 
+
          RESERVE_CPU     =FACT(fr="reserve de temps pour terminer une execution",statut='d',max=1,
            regles=(EXCLUS('VALE','POURCENTAGE'),),
            VALE            =SIMP(statut='f',typ='I',val_min=0),

@@ -6,7 +6,7 @@
      +     CHAINE,SUIV,PLACE,NBASS,NCBLOC,LGBLOC,NBLOC,
      +     LGIND,NBSND,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,7 +76,6 @@ C     ( COL(J),J=DIAG(LAMBDA2-1)+2,DIAG(LAMBDA2)-1 )
 C----------------------------------- FACTORISATION SYMBOLIQUE
       DIAG(0) = 0
 C*************************************************************
-C     CALL UTTCPU(3,'DEBUT',6,TEMPS)
 C*************************************************************
       CALL FACSMB(N1,NBSND,SUPND,INVSUP,PAREND,XADJ1,ADJNC1,ANC,NOUV,
      +     FILS,FRERE,LOCAL,GLOBAL,ADRESS,LFRONT,
@@ -84,7 +83,6 @@ C*************************************************************
      +     DELG,LGIND,IER)
       IF(IER.NE.0) GOTO 999
 C*************************************************************
-C     CALL UTTCPU(3,'FIN  ',6,TEMPS)
 C*************************************************************
 C
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
@@ -108,12 +106,10 @@ C     EVALUATION DE MXFACT
  110  CONTINUE
 C-------------------------------ESTIMATION DE LA PILE
 C*************************************************************
-C     CALL UTTCPU(4,'DEBUT',6,TEMPS)
 C*************************************************************
       CALL MLTPOS(NBSND,PAREND,FILS,FRERE,ADPILE,LFRONT,SEQ,DHEAD,ESTIM,
      +     QSIZE,SUIV,MARKER,LLIST)
 C*************************************************************
-C     CALL UTTCPU(4,'FIN  ',6,TEMPS)
 C*************************************************************
 C
       IF (NIV.EQ.2) THEN
@@ -140,7 +136,6 @@ C--------------------------------CALCUL DES ADRESSES DES
       ENDIF
 C     COEFFICIENTS INITIAUX
 C*************************************************************
-C     CALL UTTCPU(5,'DEBUT',6,TEMPS)
 C*************************************************************
       CALL MLTPAS(N1,NBSND,SUPND,XADJ1,ADJNC1,ANC,NOUV,SEQ,GLOBAL,
      +     ADRESS,NBLIGN,LGSN,NBLOC,NCBLOC,LGBLOC,DIAG,COL,
@@ -148,7 +143,6 @@ C*************************************************************
 C     PRNO,DEEQ,NEC,LBD2,NRL,RL,MARKER)
 
 C*************************************************************
-C     CALL UTTCPU(5,'FIN  ',6,TEMPS)
 C*************************************************************
 C     IF (NIV.EQ.2) THEN
 C     WRITE(IFM,*)'POINTEUR DES TERMES INITIAUX: '//

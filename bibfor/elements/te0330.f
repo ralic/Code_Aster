@@ -1,7 +1,7 @@
       SUBROUTINE TE0330(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 08/09/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C ----------------------------------------------------------------------
       INTEGER NNO,NBPG(10),NCEQ,NPG,NNOS,NCMP
       INTEGER NDIM1,NBVA
       REAL*8 EQPG(NEQMAX*NPGMAX),EQNO(NEQMAX*NNOMAX)
-      REAL*8 SIGMA(30), FSTAB(12)
+      REAL*8 SIGMA(30), FSTAB(12), HYD
       CHARACTER*6  TYPMOD
       CHARACTER*16 NOMTE,OPTION
 
@@ -130,6 +130,23 @@ C -       EXTRAPOLATION AUX NOEUDS
           IF(TYPMOD.NE.'COQUE') THEN
              CALL PPGAN2(JGANO,NCMP,EQPG,ZR(IEQUIF))
           ENDIF
+          
+C         CORRECTION NECESSAIRE POUR VMIS_SG
+C         IL NE FAUT PAS CALCULER VMIS_SG EXTRAPOLE AUX NOEUDS
+C         MAIS PLUTOT  ELNO(VMIS)*SIGNE(ELNO(TRACE))          
+          DO 130 I = 1,NNO
+C           RECALCUL DE LA TRACE, MAL CALCULEE PAR PPGAN2
+            HYD=ZR(IEQUIF-1+NCMP*(I-1)+3)+ZR(IEQUIF-1+NCMP*(I-1)+4)+
+     &          ZR(IEQUIF-1+NCMP*(I-1)+5)
+            ZR(IEQUIF-1+NCMP*(I-1)+7)=HYD
+C ------    EQUIVALENT FATIGUE = SECOND INVARIANT * SIGNE(PREMIER INV)
+            IF ( HYD .GE. 0.D0 ) THEN
+               ZR(IEQUIF-1+NCMP*(I-1)+6)=  ZR(IEQUIF-1+NCMP*(I-1)+1)
+            ELSE
+               ZR(IEQUIF-1+NCMP*(I-1)+6)= -ZR(IEQUIF-1+NCMP*(I-1)+1)
+            ENDIF
+  130    CONTINUE
+
 
 C -       STOCKAGE
 

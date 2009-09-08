@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 20/07/2009   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMUN  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -140,6 +140,9 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "VMIS_POU_FLEJOU", # RESP. : FLEJOU J.L.FLEJOU
                                         "VMIS_POU_LINE",   # RESP. : PROIX J.M.PROIX
                                         "ZMAT",            # RESP. : PROIX J.M.PROIX
+                                        "IMPLEX_FRAG",     # RESP. : BARGELLINI R.BARGELLINI
+                                        "IMPLEX_ISOT_BETO",# RESP. : BARGELLINI R.BARGELLINI
+                                        "IMPLEX_ISOT_LINE",# RESP. : BARGELLINI R.BARGELLINI
                                      ) ),
            b_monox     = BLOC(condition = "RELATION == 'MONOCRISTAL' ",
                                  fr="SD issue de DEFI_COMPOR",

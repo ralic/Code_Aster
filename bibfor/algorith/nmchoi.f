@@ -1,9 +1,9 @@
       SUBROUTINE NMCHOI(PHASE ,
      &                  SDDYNA,METPRE,METCOR,REASMA,REAMOR,OPTRIG,
-     &                  LCRIGI,LCFINT)
+     &                  LCRIGI,LCFINT,FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*16 METCOR,METPRE,OPTRIG
-      LOGICAL      REASMA,REAMOR,LCRIGI,LCFINT,REAMO2
+      LOGICAL      REASMA,REAMOR,LCRIGI,LCFINT,REAMO2,FONACT(*),ISFONC
       CHARACTER*19 SDDYNA
       CHARACTER*10 PHASE
 C 
@@ -33,26 +33,26 @@ C
 C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C CALCUL DES MATR_ELEM DE RIGIDITE ET OPTION DE CALCUL POUR MERIMO
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
 C IN  PHASE  : PHASE DE CALCUL
 C                'PREDICTION'
-C                'CORRECTION' 
-C                'FORCES_INT' 
+C                'CORRECTION'
+C                'FORCES_INT'
 C IN  SDDYNA : SD DYNAMIQUE
 C IN  METCOR : TYPE DE MATRICE DE CORRECTION
 C IN  METPRE : TYPE DE MATRICE DE PREDICTION
 C IN  REASMA : REASSEMBLAGE MATRICE GLOBALE
-C OUT OPTRIG : OPTION DE CALCUL DE MERIMO 
+C OUT OPTRIG : OPTION DE CALCUL DE MERIMO
 C OUT LCRIGI : .TRUE. SI MATR_ELEM DE RIGIDITE A CALCULER
 C OUT LCFINT : .TRUE. SI VECT_ELEM DES FORCES INTERNES A CALCULER
-C      
+C
 C ----------------------------------------------------------------------
 C
-      LOGICAL NDYNLO,LEXPL,LAMOR
-C      
+      LOGICAL NDYNLO,LEXPL,LAMOR,LIMPEX
+C
 C ----------------------------------------------------------------------
 C
 
@@ -65,8 +65,8 @@ C
 C
 C --- FONCTIONNALITES ACTIVEES
 C
-      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')  
-      LAMOR  = NDYNLO(SDDYNA,'MAT_AMORT')   
+      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
+      LAMOR  = NDYNLO(SDDYNA,'MAT_AMORT')
 C
 C --- OPTION DE CALCUL DE MERIMO
 C
@@ -88,6 +88,13 @@ C
         ELSE
           OPTRIG = 'RIGI_MECA'
         END IF
+C
+C --- METHODE IMPL_EX
+C
+        LIMPEX = ISFONC(FONACT,'IMPL_EX')
+        IF (LIMPEX) THEN
+          OPTRIG = 'RIGI_MECA_IMPLEX'
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
@@ -98,18 +105,18 @@ C
         IF (LAMOR) THEN
           LCRIGI  = .TRUE.
         ELSE
-          LCRIGI  = .FALSE.  
-        ENDIF          
+          LCRIGI  = .FALSE.
+        ENDIF
       ELSE
         IF (PHASE.EQ.'PREDICTION') THEN
-          LCRIGI = REASMA    
-        ENDIF    
+          LCRIGI = REASMA
+        ENDIF
       ENDIF
 C
 C --- SI ON DOIT RECALCULER L AMORTISSEMENT DE RAYLEIGH
 C
       IF (LAMOR) THEN
-        REAMO2 = NDYNLO(SDDYNA,'RAYLEIGH_KTAN')      
+        REAMO2 = NDYNLO(SDDYNA,'RAYLEIGH_KTAN')
         IF(REAMOR .AND. (.NOT. REAMO2)) THEN
           LCRIGI = .TRUE.
           OPTRIG = 'RIGI_MECA'
@@ -119,16 +126,16 @@ C          OPTRIG = 'RIGI_MECA_TANG'
       ENDIF
 C
 C --- VECT_ELEM DES FORCES INTERNES A CALCULER ?
-C      
+C
       IF (PHASE.EQ.'PREDICTION') THEN
         IF (OPTRIG(1:9).EQ.'FULL_MECA') THEN
-          LCFINT  = .TRUE.   
+          LCFINT  = .TRUE.
         ELSE IF (OPTRIG(1:10).EQ.'RIGI_MECA ') THEN
-          LCFINT  = .FALSE.                 
+          LCFINT  = .FALSE.
         ELSE IF (OPTRIG(1:10).EQ.'RIGI_MECA_') THEN
-          LCFINT  = .FALSE.               
+          LCFINT  = .FALSE.
         ELSE IF (OPTRIG(1:9).EQ.'RAPH_MECA') THEN
-          LCFINT  = .TRUE.               
+          LCFINT  = .TRUE.
         ELSE
           CALL ASSERT(.FALSE.)
         END IF
@@ -136,8 +143,6 @@ C
         LCFINT = LCRIGI 
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF  
-
-
+      ENDIF
 C
       END

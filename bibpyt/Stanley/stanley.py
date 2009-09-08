@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 04/05/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 07/09/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2989,6 +2989,13 @@ class PRE_STANLEY :
        dico[evol].append( n_modele )      # modele
        dico[evol].append( n_chammater )   # mater
        dico[evol].append( n_caraelem )    # cara_elem
+
+       # Si le resultat ne contient pas de modele ou de chammater on le supprime de la liste
+       if not n_modele or not n_chammater: dico.pop(evol)
+
+    # Si on n'a pas un seul resultat exploitable
+    if not dico:
+       UTMESS('F','STANLEY_37',valk=['Au moins un resultat contenant un modele et un cham_mater.'] )
 
     return dico
 

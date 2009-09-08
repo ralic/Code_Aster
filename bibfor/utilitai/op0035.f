@@ -1,7 +1,7 @@
       SUBROUTINE OP0035 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,8 @@ C=======================================================================
 
       DO 100 K=1,NBVAL
         IF ( ZK16(JKVAL+K-1) .EQ. 'CPU_RESTANT' ) THEN
-          CALL UTTCPU (0,'    ',1,RVAL)
+C         -- TEMPS CPU RESTANT :
+          CALL UTTRST (RVAL)
           CALL TBAJLI(RESULT,NBVAL,ZK16(JKVAL+K-1),IBID,RVAL,
      &                CBID,K8BID,0)
         ELSEIF ( ZK16(JKVAL+K-1) .EQ. 'UNITE_LIBRE' ) THEN

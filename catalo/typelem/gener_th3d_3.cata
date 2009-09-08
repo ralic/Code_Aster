@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
+%& MODIF TYPELEM  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,9 +42,7 @@ ENTETE__ ELEMENT__ THER_PYRAM13     MAILLE__ PYRAM13
    ELREFE__  TR6       GAUSS__  RIGI=FPG6   MASS=FPG6
    OPTION__   CHAR_THER_GRAI_F        -1
    OPTION__   CHAR_THER_GRAI_R        -1
-   OPTION__   DURT_ELGA_META          -1
    OPTION__   DURT_ELNO_META          -1
-   OPTION__   META_ELGA_TEMP          -1
    OPTION__   META_ELNO_TEMP          -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   ERRE_ELEM_TEMP_R        -2
@@ -56,9 +54,7 @@ ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5
    ELREFE__  TR3       GAUSS__  RIGI=COT3  MASS=COT3
    OPTION__   CHAR_THER_GRAI_F        -1
    OPTION__   CHAR_THER_GRAI_R        -1
-   OPTION__   DURT_ELGA_META          -1
    OPTION__   DURT_ELNO_META          -1
-   OPTION__   META_ELGA_TEMP          -1
    OPTION__   META_ELNO_TEMP          -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   ERRE_ELEM_TEMP_R        -2

@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 27/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF utilitai2 Messages  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,21 +94,16 @@ cata_msg = {
  group_ma_sol_sol: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
-41 : _("""
- on ne traite que les matrices symetriques.
-"""),
 
-42 : _("""
- on ne traite que les matrices reelles.
-"""),
 
-45 : _("""
- manque une maille tardive
-"""),
+
 
 47 : _("""
  le fichier " %(k1)s " n'est relie a aucune unite logique.
 """),
+
+
+
 
 52 : _("""
  ajout de l'option "SIEF_ELGA_DEPL", les charges sont-elles correctes ?

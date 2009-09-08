@@ -1,8 +1,9 @@
+
       SUBROUTINE  AMUMPT(OPTION,KMONIT,TEMPS,RANG,NBPROC,KXMPS,
-     &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB)
+     &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPT MUMPS  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -31,13 +32,14 @@ C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
 C IN  LQUALI :  LOG   : LOGICAL EN CAS DE CRITERE DE QUALITE
 C IN  RDESQ  :  R8    : PARAMETRE POUR LE DESEQUILIBRAGE MAX
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
+C IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
 C---------------------------------------------------------------
  
       INTEGER      OPTION,RANG,NBPROC,KXMPS,IETDEB,IETRAT
       CHARACTER*1  TYPE
       CHARACTER*24 KMONIT(12)
       REAL*8       TEMPS(6),RDESQ,RCTDEB
-      LOGICAL      LQUALI
+      LOGICAL      LQUALI,LDIST
 
 #ifdef _HAVE_MUMPS
 
@@ -100,7 +102,6 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         XMPSK=>DMPS(KXMPS4)
         N=XMPSK%N
         INFO(9)=XMPSK%INFO(9)
-        INFO(10)=XMPSK%INFO(10)
         INFO(15)=XMPSK%INFO(15)
         INFO(16)=XMPSK%INFO(16)
         INFO(17)=XMPSK%INFO(17)
@@ -112,7 +113,6 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         YMPSK=>ZMPS(KXMPS4)
         N=YMPSK%N
         INFO(9)=YMPSK%INFO(9)
-        INFO(10)=YMPSK%INFO(10)
         INFO(15)=YMPSK%INFO(15)
         INFO(16)=YMPSK%INFO(16)
         INFO(17)=YMPSK%INFO(17)
@@ -133,24 +133,12 @@ C     FIN DE COMMANDE (NUM_DDL/FACTORISER/RESOUDRE)
 C --- VECTEURS DE MONITORING
       KMONIT(1)='&MUMPS.INFO.MAILLE'
       KMONIT(2)='&MUMPS.INFO.MEMOIRE'
-      KMONIT(3)='&MUMPS.INFO.CPU.FACS'
-      KMONIT(4)='&MUMPS.INFO.CPU.ANAL'
-      KMONIT(5)='&MUMPS.INFO.CPU.FACN'
-      KMONIT(6)='&MUMPS.INFO.CPU.CAEL'
-      KMONIT(7)='&MUMPS.INFO.CPU.ASSE'
-      KMONIT(8)='&MUMPS.INFO.CPU.SOLV'
       KMONIT(9)='&MUMPS.NB.MAILLE'
       KMONIT(10)='&MUMPS.INFO.MEM.EIC'
       KMONIT(11)='&MUMPS.INFO.MEM.EOC'
       KMONIT(12)='&MUMPS.INFO.MEM.USE'
       CALL JEVEUO(KMONIT(1),'E',MONIT(1))
       CALL JEVEUO(KMONIT(2),'E',MONIT(2))
-      CALL JEVEUO(KMONIT(3),'E',MONIT(3))
-      CALL JEVEUO(KMONIT(4),'E',MONIT(4))
-      CALL JEVEUO(KMONIT(5),'E',MONIT(5))
-      CALL JEVEUO(KMONIT(6),'E',MONIT(6))
-      CALL JEVEUO(KMONIT(7),'E',MONIT(7))
-      CALL JEVEUO(KMONIT(8),'E',MONIT(8))
       CALL JEVEUO(KMONIT(9),'E',MONIT(9))
       CALL JEVEUO(KMONIT(10),'E',MONIT(10))
       CALL JEVEUO(KMONIT(11),'E',MONIT(11))
@@ -168,8 +156,8 @@ C --      ON NE FAIT RIEN DE PLUS !
             CALL CPU_TIME(RCTDEB)
           ENDIF
         ELSE IF (OPTION.EQ.2) THEN
-          CALL UTTCPU(70,'INIT ',6,TEMPS)
-          CALL UTTCPU(70,'DEBUT',6,TEMPS)
+          CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
+          CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
           IF (LDEBUG) THEN
             CALL SYSTEM_CLOCK(IETFIN)
             RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
@@ -180,12 +168,12 @@ C --      ON NE FAIT RIEN DE PLUS !
             CALL CPU_TIME(RCTDEB)
           ENDIF
         ELSE IF (OPTION.EQ.4) THEN
-          CALL UTTCPU(70,'FIN  ',6,TEMPS)
-          ZR(MONIT(4)+RANG)=TEMPS(5)+TEMPS(6)
+          CALL UTTCPU('CPU.AMUMPT','FIN',' ')
+          CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
           ZI(MONIT(10)+RANG)=INFO(15)
           ZI(MONIT(11)+RANG)=INFO(17)
-          CALL UTTCPU(70,'INIT ',6,TEMPS)
-          CALL UTTCPU(70,'DEBUT',6,TEMPS)
+          CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
+          CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
           IF (LDEBUG) THEN
             CALL SYSTEM_CLOCK(IETFIN)
             RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
@@ -196,8 +184,8 @@ C --      ON NE FAIT RIEN DE PLUS !
             CALL CPU_TIME(RCTDEB)
           ENDIF
         ELSE IF (OPTION.EQ.6) THEN
-          CALL UTTCPU(70,'FIN  ',6,TEMPS)
-          ZR(MONIT(5)+RANG)=TEMPS(5)+TEMPS(6)
+          CALL UTTCPU('CPU.AMUMPT','FIN',' ')
+          CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
           ZI(MONIT(2)+RANG)=INFO(9)
           ZI(MONIT(12)+RANG)=INFO(16)
           CALL MUMMPI(4,IFM,NIV,KMONIT(1),NBPROC,IBID)
@@ -215,8 +203,8 @@ C --      ON NE FAIT RIEN DE PLUS !
             CALL CPU_TIME(RCTDEB)
           ENDIF
         ELSE IF (OPTION.EQ.8) THEN
-          CALL UTTCPU(70,'INIT ',6,TEMPS)
-          CALL UTTCPU(70,'DEBUT',6,TEMPS)
+          CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
+          CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
           IF (LDEBUG) THEN
             CALL SYSTEM_CLOCK(IETFIN)
             RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
@@ -227,8 +215,8 @@ C --      ON NE FAIT RIEN DE PLUS !
             CALL CPU_TIME(RCTDEB)
           ENDIF
         ELSE IF (OPTION.EQ.10) THEN
-          CALL UTTCPU(70,'FIN  ',6,TEMPS)
-          ZR(MONIT(8)+RANG)=TEMPS(5)+TEMPS(6)
+          CALL UTTCPU('CPU.AMUMPT','FIN',' ')
+          CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
           IF (LDEBUG) THEN
             CALL SYSTEM_CLOCK(IETFIN)
             RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
@@ -247,12 +235,6 @@ C --      ON NE FAIT RIEN DE PLUS !
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
           ENDIF
 C -- COMMUNICATION DES DONNEES DU MONITORING
-           CALL MUMMPI(4,IFM,NIV,KMONIT(3),NBPROC,IBID)
-           CALL MUMMPI(4,IFM,NIV,KMONIT(4),NBPROC,IBID)
-           CALL MUMMPI(4,IFM,NIV,KMONIT(5),NBPROC,IBID)
-           CALL MUMMPI(4,IFM,NIV,KMONIT(6),NBPROC,IBID)
-           CALL MUMMPI(4,IFM,NIV,KMONIT(7),NBPROC,IBID)
-           CALL MUMMPI(4,IFM,NIV,KMONIT(8),NBPROC,IBID)
            CALL MUMMPI(4,IFM,NIV,KMONIT(10),NBPROC,IBID)
            CALL MUMMPI(4,IFM,NIV,KMONIT(11),NBPROC,IBID)
            CALL MUMMPI(4,IFM,NIV,KMONIT(12),NBPROC,IBID)
@@ -281,6 +263,12 @@ C -- AFFICHAGE
                IAUX2=IAUX2+ZI(MONIT(1)+K)
                IAUX3=IAUX3+ZI(MONIT(2)+K)
              ENDDO
+C -- EN CENTRALISE ON NE FAIT PAS LA SOMME
+             IF (.NOT.LDIST) THEN
+               IAUX1=IAUX1/NBPROC
+               CALL ASSERT(IAUX1.EQ.ZI(MONIT(9)))
+             ENDIF
+C
              WRITE(IFM,*)'--------------------------------------------'
      &          //'---------------'
              WRITE(IFM,1003)IAUX1,IAUX2,IAUX3
@@ -288,58 +276,7 @@ C -- AFFICHAGE
              DO I=1,18
                RMONIT(I)=0.D0
              ENDDO
-             WRITE(IFM,*)'TEMPS CPU+SYSTEME'
-             WRITE(IFM,*)'RANG '//
-     &        ' ASTER: FACS CALCUL_ELEM  ASSEMBLAGE '//
-     &        '| MUMPS: ANALYSE  FACTO_NUM  RESOL'
-             DO K=0,NBPROC-1
-               WRITE(IFM,1002)K,ZR(MONIT(3)+K),ZR(MONIT(6)+K),
-     &           ZR(MONIT(7)+K),ZR(MONIT(4)+K),ZR(MONIT(5)+K),
-     &           ZR(MONIT(8)+K)
-                 DO I=1,6
-                   RMONIT(I)=RMONIT(I)+(ZR(MONIT(I+2)+K)/NBPROC)
-                 ENDDO
-             ENDDO
-             WRITE(IFM,*)'------------------------------------------'//
-     &                   '-----------------------------------'
-             RAUX=0.D0
-             DO I=1,6
-               RAUX=RAUX+RMONIT(I)
-             ENDDO
-             DO I=1,6
-               IF (RAUX.NE.0.D0)
-     &           RMONIT(6+I)=100.D0*RMONIT(I)/RAUX
-             ENDDO
-             DO K=0,NBPROC-1
-               DO I=1,6
-                 RAUX=ZR(MONIT(I+2)+K)-RMONIT(I)
-                 IF (DABS(RAUX).GT.DABS(RMONIT(12+I)))
-     &             RMONIT(12+I)=RAUX
-               ENDDO
-             ENDDO
-             DO I=1,6
-               IF (RMONIT(I).NE.0.D0)
-     &           RMONIT(12+I)=100.D0*RMONIT(12+I)/RMONIT(I)
-             ENDDO
-             WRITE(IFM,1004)RMONIT(1),RMONIT(4),RMONIT(5),RMONIT(2),
-     &                   RMONIT(3),RMONIT(6)
-             WRITE(IFM,*)'EN % : VALEUR RELATIVE ET DESEQUILIBRAGE MAX'
-             WRITE(IFM,1005)RMONIT(7),RMONIT(10),RMONIT(11),RMONIT(8),
-     &                   RMONIT(9),RMONIT(12)
-             WRITE(IFM,1006)RMONIT(13),RMONIT(16),RMONIT(17),RMONIT(14),
-     &                   RMONIT(15),RMONIT(18)
-             WRITE(IFM,*)
-             IF (NBPROC.GT.1) THEN
-               DO I=1,6
-                 RAUX=ABS(RMONIT(I+6)*RMONIT(I+12))/100
-                 VALR(1)=RDESQ
-                 IF (RAUX.GE.RDESQ) THEN
-                   CALL U2MESR('I','FACTOR_63',1,VALR)
-                   GOTO 998
-                 ENDIF
-               ENDDO
-             ENDIF
-  998        CONTINUE
+
 C            MONITORING MEMOIRE
              IF (TYPE.EQ.'R') THEN             
                IBID=XMPSK%ICNTL(22)
@@ -427,15 +364,8 @@ C            POUR LES CALCULS DES MIN
      &            1PD10.2)
  1009      FORMAT('MAXIMUM :      ',1PD10.2,'      ',1PD10.2,'      ',
      &            1PD10.2)
-C ON REINITIALISE LES VECTEURS DE MONITORING POUR L'EVENTUELLE
-C RESOLUTION SUIVANTE (SURTOUT POUR MONIT(6) ET MONIT(7)
+
            DO I=1,NBPROC
-             ZR(MONIT(3)+I-1)=0.D0
-             ZR(MONIT(4)+I-1)=0.D0
-             ZR(MONIT(5)+I-1)=0.D0
-             ZR(MONIT(6)+I-1)=0.D0
-             ZR(MONIT(7)+I-1)=0.D0
-             ZR(MONIT(8)+I-1)=0.D0
              ZI(MONIT(10)+I-1)=0
              ZI(MONIT(11)+I-1)=0
              ZI(MONIT(12)+I-1)=0             

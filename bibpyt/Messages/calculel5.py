@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 22/06/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -331,10 +331,9 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  ecla_pg : champ vide nom_cham:  %(k1)s  nume_ordre :  %(i1)d
 """),
 
-84 : _("""
- elrefe mal programme nom local cherche (nomte elrefe famille)  %(k1)s
- parmi les existants  %(k2)s
-"""),
+
+
+
 
 85 : _("""
  pb liste de mailles carte : %(k1)s  numero entite : %(i1)d

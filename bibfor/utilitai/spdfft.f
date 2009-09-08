@@ -4,22 +4,22 @@
       INTEGER             NSENS
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     REALISATION N.GREFFET
 C     CALCUL DE LA FFT OU DE LA FFT-1 (E. BOYERE 09/06/00)
@@ -63,7 +63,7 @@ C     ---  NOMBRE DE POINTS ----
          N = N + 1
          GOTO 100
       ENDIF
-C     Methode de prise en compte du signal : 
+C     Methode de prise en compte du signal :
 C     -TRONCATURE : on tronque au 2**N inferieur le plus proche de NBVA
 C     -PROL_ZERO : on prolonge le signal avec des zero pour aller
 C                   au 2**N le plus proche superieur a NBVA
@@ -94,7 +94,7 @@ C     --- RECOPIE DES VARIABLES ---
                ZC(LTRA+NBVA+I-1) =  DCMPLX(0.D0,0.D0)
  1999       CONTINUE
          ENDIF
-  
+
          CALL FFT(ZC(LTRA),NBPTS,1)
          PAS = ZR(LVAR+1)-ZR(LVAR)
          NOMFS = 'FCT_FFT'
@@ -127,8 +127,8 @@ C         NBPTS=2*NBPTS
          DO 201 I = 1, (NBPTS2/2)
             II = (2*I)-1
             ZC(LTRA+I-1) = DCMPLX(ZR(LFON+II-1),ZR(LFON+II))
-            ZC(LTRA+NBPTS2-I+1) = 
-     &               DCMPLX(ZR(LFON+II-1),-ZR(LFON+II)) 
+            ZC(LTRA+NBPTS2-I+1) =
+     &               DCMPLX(ZR(LFON+II-1),-ZR(LFON+II))
   201    CONTINUE
          IF ( (NBPTS.GT.NBVA) .AND. (SYM.EQ.'NON') ) THEN
             DO 2999 I = 1,(NBPTS-NBVA)
@@ -154,11 +154,11 @@ C         NBPTS=2*NBPTS
   202    CONTINUE
 C         PAS2 = (1.D0/ZR(LVAR+NBVA-1))*(DBLE(NBVA)/DBLE(NBPTS2))
          DO 203 I = 1,NBPTS2
-            ZR(LRES1+I-1) = DBLE(ZC(LTRA+I-1))            
+            ZR(LRES1+I-1) = DBLE(ZC(LTRA+I-1))
   203    CONTINUE
       ENDIF
-C
-      CALL JEDETC('V','&&',1)      
-C
+
+      CALL JEDETR('&&TRAVAIL')
+
       CALL JEDEMA()
       END

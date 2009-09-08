@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF UTTCSM UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,10 +20,13 @@
 /* ------------------------------------------------------------------ */
 #include "aster.h"
 
-/* temps(sec) consommes user et systeme pour ce processus   	 	*/
+/* retourne 3 temps(sec) : consommes user et systeme pour ce processus
+                           + temps elapsed (depuis epoch)
+*/
 
 #ifdef _POSIX
 #include <sys/times.h>
+#include <sys/time.h>
 #include <unistd.h>
 #endif
 
@@ -33,7 +36,7 @@
 /*
    On trouve parfois ceci :
    "CLK_TCK is described as an obsolete name for CLOCKS_PER_SEC"
-   
+
    Quand les deux sont définis, il y a un facteur 10000 entre
    les deux (CLOCKS_PER_SEC = 1e6, CLK_TCK = 100).
 */
@@ -47,6 +50,28 @@
 
 void DEFP(UTTCSM, uttcsm, DOUBLE *t_csm)
 {
+
+/* calcul de elaps : date depuis epoch en secondes
+   ce nombre est stocké dans un double
+   Sur calibre5, la valeur semble s'incrémenter de seconde en seconde : elaps est enfait un entier !
+time_t t1, t0, *pt1 ;
+DOUBLE elaps;
+t0=0;
+t1=time(NULL);
+elaps=difftime(t1,t0);
+*/
+
+
+/* calcul de elaps avec gettimeofday  */
+DOUBLE elaps;
+struct timeval tv;
+struct timezone tz;
+gettimeofday(&tv,&tz);
+elaps=(DOUBLE) tv.tv_sec + (DOUBLE) tv.tv_usec / 1000000.;
+
+t_csm[2]=elaps;
+
+
 #ifdef _POSIX
    struct tms temps;
    times (&temps);

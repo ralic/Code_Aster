@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
       INTEGER JLCHA,JFCHA,JINFC
       INTEGER NOPT,NCHAR,JINF,I,IALIFC,IALICH
       INTEGER NEQ,NUMORD,DERNIE
-      INTEGER NBPASE, NRPASE
+      INTEGER NBPASE, NRPASE,IRET
       INTEGER PARMEI(1), PARCRI(1)
 C
       REAL*8 PARMER(1), PARCRR(1), PARA(2), VALR(2)
@@ -95,7 +95,7 @@ C ----------------------------------------------------------------------
       DATA TPSTHE/6*0.D0/
       DATA SDDISC    /'&&OP0025.SDDISC'/
       DATA SDOBSE            /'&&OP0025.OBSER'/
-      
+
 C DEB ------------------------------------------------------------------
 C====
 C 1. PREALABLES
@@ -198,7 +198,7 @@ C====
 C 3. BOUCLES SUR LES PAS DE TEMPS
 C====
 C
-      CALL UTTCPU(1,'INIT',4,TPS1)
+      CALL UTTCPU('CPU.OP0025','INIT',' ')
 
 200   CONTINUE
 
@@ -207,7 +207,7 @@ C --- RECUPERATION DU PAS DE TEMPS ET DES PARAMETRES DE RESOLUTION
 C --- CETTE BOUCLE IF SERT A MAINTENIR LE NUMERO D ORDRE
 C --- A 1 DANS LE CAS D UN CALCUL STATIONNAIRE.
 C --- IL FAUT EN EFFET PROCEDER A CE CALCUL AVANT DE PARCOURIR
-C --- LA LISTE D INSTANT DE LA SD SDDISC 
+C --- LA LISTE D INSTANT DE LA SD SDDISC
 
         IF (LOSTAT) THEN
           IF (.NOT.EVOL) THEN
@@ -230,7 +230,7 @@ C --- LA LISTE D INSTANT DE LA SD SDDISC
         PARA(2) = DELTAT
 C --- MATRICE TANGENTE REACTUALISEE POUR UN NOUVEAU DT
 
-          CALL UTTCPU(1,'DEBUT',4,TPS1)
+          CALL UTTCPU('CPU.OP0025','DEBUT',' ')
           TPSTHE(1) = INSTAP
           TPSTHE(2) = DELTAT
           TPSTHE(3) = THETA
@@ -281,7 +281,8 @@ C
           ELSE
             FINPAS = DIDERN(SDDISC, NUMORD)
           ENDIF
-          CALL UTTCPU(1,'FIN',4,TPS1)
+          CALL UTTCPU('CPU.OP0025','FIN',' ')
+          CALL UTTCPR('CPU.OP0025',4,TPS1)
           IF ( TPS1(4).GT..95D0*TPS1(1)-TPS1(4) ) THEN
             VALI = NUMORD
             VALR(1) = TPS1(4)

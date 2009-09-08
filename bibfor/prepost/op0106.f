@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*8  K8BID,CTYP,CRIT,NOMCMP(3),NOPASE,NOMA,MATERI
       CHARACTER*13 INPSCO
       CHARACTER*16 OPTION,OPTIO2,TYSD,TYPE,OPER
-      CHARACTER*16 TYPMCL(4),MOTCLE(4),MCL(2),TYPMO
+      CHARACTER*16 TYPMCL(4),MOTCLE(4),MCL(2),TYPMO,K16BID,COMPEX
       CHARACTER*19 LERES0,RESUCO,KNUM,INFCHA,LIGREL,RESUC1
       CHARACTER*19 CHDEP2,CHAMS0,CHAMS1,PRFCHN
       CHARACTER*24 CHAMNO,NUME,VFONO,VAFONO,SIGMA,CHDEPL
@@ -109,6 +109,11 @@ C     ------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL INFMAJ()
+
+C --- ON STOCKE LE COMPORTEMENT EN CAS D'ERREUR AVANT MNL : COMPEX
+C --- PUIS ON PASSE DANS LE MODE "VALIDATION DU CONCEPT EN CAS D'ERREUR"
+      CALL ONERRF(' ',COMPEX,IBID)
+      CALL ONERRF('EXCEPTION+VALID',K16BID,IBID  )
 
       CALL INFMUE()
       CNFPIP = ' '
@@ -510,14 +515,14 @@ C       ================================================================
               ZK24(JREF+3) = ZK24(LREF+3)
               ZK24(JREF+4) = ZK24(LREF+4)
               ZK24(JREF+5) = ZK24(LREF+5)
-              ZK24(JREF+6) = ZK24(LREF+6)       
+              ZK24(JREF+6) = ZK24(LREF+6)
               IF (ZK24(JREF).NE.' ') THEN
                 CALL DISMOI('F','NOM_NUME_DDL',ZK24(JREF),'MATR_ASSE',
      &                      IBID,NUMREF,IRET)
               ENDIF
             END IF
 
-            IF (TYSD.EQ.'MODE_MECA' .OR. 
+            IF (TYSD.EQ.'MODE_MECA' .OR.
      &           TYSD.EQ.'DYNA_TRANS') THEN
               NUMREF = ' '
               CALL JEVEUO(LERES0//'.REFD','L',JREF)
@@ -760,7 +765,7 @@ C             --- CALCUL DU CHAMNO DE REACTION PAR RECOPIE DE FORC_NODA
               END IF
 
 C           --- TRAITEMENT DES MODE_MECA ---
-              IF (TYSD.EQ.'MODE_MECA' .AND. 
+              IF (TYSD.EQ.'MODE_MECA' .AND.
      &            TYPMO(1:8).EQ.'MODE_DYN') THEN
                 CALL RSADPA(LERES0,'L',1,'OMEGA2',IORDR,0,IAD,CTYP)
                 OMEGA2 = ZR(IAD)
@@ -775,7 +780,7 @@ C           --- TRAITEMENT DES MODE_MECA ---
                 CALL JEDETR('&&'//NOMPRO//'.TRAV')
 
 C           --- TRAITEMENT DES MODE_STAT ---
-              ELSE IF (TYSD.EQ.'MODE_MECA' .AND. 
+              ELSE IF (TYSD.EQ.'MODE_MECA' .AND.
      &            TYPMO(1:8).EQ.'MODE_STA') THEN
                 CALL RSADPA(LERES0,'L',1,'TYPE_DEFO',IORDR,0,IAD,CTYP)
                 IF (ZK16(IAD) (1:9).EQ.'FORC_IMPO') THEN
@@ -913,6 +918,9 @@ C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
       IF (NBNO.NE.0) CALL JEDETR(MESNOE)
       CALL JEDETR(KNUM)
       CALL DETRSD('CHAMP_GD',BIDON)
+
+C --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
+      CALL ONERRF(COMPEX,K16BID,IBID  )
 
   260 CONTINUE
       CALL INFBAV()

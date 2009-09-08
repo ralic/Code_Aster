@@ -5,7 +5,7 @@
       CHARACTER*16      OPTION
       CHARACTER*24      MATE, COMPOR, PHASIN
       CHARACTER*(*)     MODELZ
-C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,9 +59,9 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8   K8B, MODELE, NOMCM2(2), MATER, TIMCMP(6), LPAIN(8),
      +              LPAOUT(2)
       CHARACTER*16  OPTIO2
-      CHARACTER*19  SDTEMP
+      CHARACTER*19  SDTEMP,LCHIN(8), LCHOUT(2)
       CHARACTER*24  CH24, LIGRMO, TEMPE, TEMPA, NOMCH, CHTIME, KORDRE,
-     +              LCHIN(8), LCHOUT(2), CHMATE, TEMPI, CHFTRC
+     +              CHMATE, TEMPI, CHFTRC
 
       DATA TIMCMP/ 'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ',
      &             'R       ', 'RHO     '/
@@ -72,6 +72,9 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       MODELE = MODELZ
       IFM = IUNIFI('MESSAGE')
+
+      CALL INICAL(8,LPAIN,LCHIN,2,LPAOUT,LCHOUT)
+
 C
 C --- RECUPERATION DE LA STRUCTURE DE DONNEES MATERIAU
 C

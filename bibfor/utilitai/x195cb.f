@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,9 +62,11 @@ C     -----------------------------------------------------------------
 
 C     -- 1. CREATION DU CHAMP "OUT" SUR LE MODELE DU 1ER CHAMP "IN"
 C     -------------------------------------------------------------
+C     -- ATTENTION : LA COMMANDE PEUT ETRE REENTRANTE,
+C        IL NE FAUT PAS DETRUIRE CHOU TOUT DE SUITE.
       CALL GETVID('COMB','CHAM_GD',1,1,1,CH1,IB)
-      CH2=CHOU
-      CALL COPISD('CHAMP','G',CH1,CH2)
+      CH2='&&X195CB.CHOU'
+      CALL COPISD('CHAMP','V',CH1,CH2)
 C     -- INITIALISATION A ZERO :
       CALL JEVEUO(CH2//'.VALE','E',JVALE2)
       CALL JELIRA(CH2//'.VALE','LONMAX',N1,KBID)
@@ -112,6 +114,12 @@ C       -- CUMUL DES VALEURS :
  12       CONTINUE
         ENDIF
  10   CONTINUE
+
+
+C     -- RECOPIE DE CH2 DANS CHOU :
+C     -------------------------------
+      CALL COPISD('CHAMP','G',CH2,CHOU)
+      CALL DETRSD('CHAMP',CH2)
 
       CALL JEDEMA()
       END

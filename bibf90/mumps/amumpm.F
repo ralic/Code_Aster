@@ -2,7 +2,7 @@
      &                  TYPE,LMD)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 30/06/2009   AUTEUR SELLENET N.SELLENET 
+!& MODIF AMUMPM MUMPS  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -160,11 +160,15 @@ C --- DES CAS SYM EN MUMPS NON SYMETRIQUE
       ENDIF
 
 C       ------------------------------------------------
-C       DETERMINATION DU NBRE LOCAL DE TERMES PAR PROC EN MODE DIST
-C       NZLOC
+C       DETERMINATION DU NBRE LOCAL DE TERMES PAR PROC: NZLOC
+C       EN CENTRALISE (LDIST=.FALSE.): PROC 0 GERE TOUS LES TERMES POUR
+C         LES FOURNIR A MUMPS. CE DERNIER ENSUITE LES REDISPATCHE PAR
+C         PAQUETS SUR TOUS LES AUTRES PROCS.
+C       EN DISTRIBUE (LDIST=.TRUE.): CHAQUE PROC FOURNIT LES TERMES
+C         DONT IL A LA RESPONSABILITE.
 C       ------------------------------------------------
       
-      IF (LDIST) THEN
+      IF (((RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
         NZLOC=0
         JCOLL=1
         DO KTERM = 1, NZ
@@ -192,13 +196,16 @@ C -- SOUS LA DIAGONALE :
 C       WRITE(IFM,*)'<AMUMPM> PROC/NZLOC ',RANG,NZLOC
       ENDIF
 
+C  -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS.
+C  -- MAIS CELA PEUT ETRE COUTEUX EN // AVEC DES ACCES DISQUES
+C  -- LENTS.
+
       CALL JJLDYN(IBID)       
 
 C       ------------------------------------------------
 C       ALLOCATION DES OBJETS MUMPS F90
 C       ------------------------------------------------
       IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
-C       -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS:
                     
         IF (LDIST) THEN
           IF (LTYPR) THEN
@@ -264,7 +271,9 @@ C --- PARTIE TRIANGULAIRE SUPERIEURE
             JCOLG=ILIGG
             ILIGG=COLTMP
           ENDIF
-          IF ((LDIST.AND.LNN).OR.(.NOT.LDIST)) THEN
+
+C ---- TERME NON NUL
+          IF (LNN) THEN
             ITERM=ITERM+1
             IF (LDIST) THEN
               IF (LTYPR) THEN
@@ -314,7 +323,7 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
               IF (LMNSY) CAUX=ZC(JVALE2-1+KTERM)
               IF (CAUX.NE.(0.D0,0.D0)) LNN=.TRUE.
             ENDIF
-            IF ((LDIST.AND.LNN).OR.(.NOT.LDIST)) THEN
+            IF (LNN) THEN
               ITERM=ITERM+1
               IF (LMD) THEN
                 ILIGG=ZI(JNULOGL+ILIGL-1)

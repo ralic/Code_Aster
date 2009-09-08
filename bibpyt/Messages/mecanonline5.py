@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline5 Messages  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,6 +36,12 @@ Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
 4 : _("""
  Le contact avec méthode continue ou XFEM avec du contact nécessite de réactualiser la matrice tangente
  à chaque itération (REAC_ITER = 1).
+"""),
+
+5 : _("""
+ Vous utilisez une méthode de contact discrète qui apporte une contribution à la matrice tangente à
+ chaque itération. La réactualisation est donc forcée (REAC_ITER=1) et ce même si vous utilisez la matrice
+ 'ELASTIQUE'.
 """),
 
 7 : _("""
@@ -146,6 +152,10 @@ option PROJ_MODAL et que l'archivage a été fait (mot-clef ARCHIVAGE de DYNA_NON_
 
 """),
 
+33 : _("""
+Dynamique non-linéaire
+La méthode IMPL_EX n'est pas possible.
+"""),
 
 45 : _("""
 Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'

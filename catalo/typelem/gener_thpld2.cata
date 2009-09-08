@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 20/07/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,10 +27,8 @@ ENTETE__ ELEMENT__ THPLQL9          MAILLE__ QUAD9
    ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
    OPTION__   CHAR_THER_TNL           -1
-   OPTION__   DURT_ELGA_META          -1
    OPTION__   DURT_ELNO_META          -1
    OPTION__   EPOT_ELEM_TEMP          -1
-   OPTION__   META_ELGA_TEMP          -1
    OPTION__   META_ELNO_TEMP          -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
@@ -44,10 +42,8 @@ ENTETE__ ELEMENT__ THPLTL6          MAILLE__ TRIA6
    ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
    OPTION__   CHAR_THER_TNL           -1
-   OPTION__   DURT_ELGA_META          -1
    OPTION__   DURT_ELNO_META          -1
    OPTION__   EPOT_ELEM_TEMP          -1
-   OPTION__   META_ELGA_TEMP          -1
    OPTION__   META_ELNO_TEMP          -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1

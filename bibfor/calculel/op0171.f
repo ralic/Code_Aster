@@ -1,7 +1,7 @@
       SUBROUTINE OP0171 (IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
       INTEGER      JLCHA,FLCHA,IALICH,IALIFH,NCHAR,JINFC,JINF
       INTEGER      I,JFCHA ,IALIFC
       REAL*8       TPSTHE(6),TPSNP1,TESTN,TESTR
-      REAL*8       TPS1(4),TPS2(4),TPS3(4),TPEX
+      REAL*8       TPS1(4),TPS2(4),TPEX
       REAL*8       PARCRR(9),TESTI,EPSR,EPSL
       REAL*8       R8AUX(1)
       COMPLEX*16   CBID
@@ -210,54 +210,54 @@ C
 C
 C ======================================================================
 C
-      CALL UTTCPU (1,'INIT',4,TPS1)
-      CALL UTTCPU (3,'INIT',4,TPS3)
+      CALL UTTCPU('CPU.OP0171.1','INIT',' ')
+      CALL UTTCPU('CPU.OP0171.1','DEBUT',' ')
+      CALL UTTCPR('CPU.OP0171.1',4,TPS1)
       TPEX = TPS1(3)
-C
-          CALL UTTCPU (2,'INIT',4,TPS2)
-          CALL UTTCPU (1,'DEBUT',4,TPS1)
-          ICOMPT = 0
-          TPSTHE(1) = TPSNP1
-          TPSTHE(2) = 0.D0
-          TPSTHE(3) = 0.D0
-          TPSTHE(4) = 0.D0
-          TPSTHE(5) = 0.D0
-          TPSTHE(6) = 0.D0
-          WRITE (IFM,FMT)
+      CALL UTTCPU('CPU.OP0171.2','INIT',' ')
+
+      ICOMPT = 0
+      TPSTHE(1) = TPSNP1
+      TPSTHE(2) = 0.D0
+      TPSTHE(3) = 0.D0
+      TPSTHE(4) = 0.D0
+      TPSTHE(5) = 0.D0
+      TPSTHE(6) = 0.D0
+      WRITE (IFM,FMT)
 C
 C --- DUPLICATION DES STRUCTURES DE DONNEES ET RECUPERATION D'ADRESSES
 C
-          CALL COPISD('CHAMP_GD','V',VTEMP(1:19),VTEMPM(1:19))
-          CALL COPISD('CHAMP_GD','V',VTEMP(1:19),VTEMPP(1:19))
-          CALL COPISD('CHAMP_GD','V',VTEMP(1:19),VEC2ND(1:19))
-          CALL JEVEUO (VTEMP(1:19 )//'.VALE','E',JTEMP)
-          CALL JEVEUO (VTEMPM(1:19)//'.VALE','E',JTEMPM)
-          CALL JEVEUO (VTEMPP(1:19)//'.VALE','E',JTEMPP)
-          CALL JEVEUO (VEC2ND(1:19)//'.VALE','E',J2ND)
-          CALL JELIRA (VEC2ND(1:19)//'.VALE','LONMAX',LONCH,K8BID)
+      CALL COPISD('CHAMP_GD','V',VTEMP(1:19),VTEMPM(1:19))
+      CALL COPISD('CHAMP_GD','V',VTEMP(1:19),VTEMPP(1:19))
+      CALL COPISD('CHAMP_GD','V',VTEMP(1:19),VEC2ND(1:19))
+      CALL JEVEUO (VTEMP(1:19 )//'.VALE','E',JTEMP)
+      CALL JEVEUO (VTEMPM(1:19)//'.VALE','E',JTEMPM)
+      CALL JEVEUO (VTEMPP(1:19)//'.VALE','E',JTEMPP)
+      CALL JEVEUO (VEC2ND(1:19)//'.VALE','E',J2ND)
+      CALL JELIRA (VEC2ND(1:19)//'.VALE','LONMAX',LONCH,K8BID)
 C
 C --- COMPTEUR ET CRITERES D'ARRET
 C
-          ITERL = 0
-          TESTI = 1.D0
-          TESTR = 1.D0
-          REASVT = .TRUE.
-          REASMT = .TRUE.
-          WRITE (IFM,FMT)
-          WRITE (IFM,10002)
-10002     FORMAT ('*',1X,'ITERATION',1X,'*',1X,'CRIT_TEMPER',1X,'*',1X,
-     &         'VALE_TEST_TEMPER',1X,'*',1X,'CRIT_ENTHAL',1X,'*',1X,
-     &         'VALE_TEST_ENTHAL',1X,'*')
-10001     FORMAT ('*',3X,I4,A1,7X,4(1PD11.3,A1,3X),3X,'*')
+      ITERL = 0
+      TESTI = 1.D0
+      TESTR = 1.D0
+      REASVT = .TRUE.
+      REASMT = .TRUE.
+      WRITE (IFM,FMT)
+      WRITE (IFM,10002)
+10002 FORMAT ('*',1X,'ITERATION',1X,'*',1X,'CRIT_TEMPER',1X,'*',1X,
+     &     'VALE_TEST_TEMPER',1X,'*',1X,'CRIT_ENTHAL',1X,'*',1X,
+     &     'VALE_TEST_ENTHAL',1X,'*')
+10001 FORMAT ('*',3X,I4,A1,7X,4(1PD11.3,A1,3X),3X,'*')
 
-          WRITE (IFM,FMT)
+      WRITE (IFM,FMT)
 C
 C ======================================================================
 C        ITERATIONS DU PROBLEME DE TRANSPORT EN THERMIQUE N_LINEAIRE
 C ======================================================================
 C
- 2000     CONTINUE
-          CALL UTTCPU (2,'DEBUT',4,TPS2)
+ 2000  CONTINUE
+          CALL UTTCPU('CPU.OP0171.2','DEBUT',' ')
 C
 C --- ACTUALISATION EVENTUELLE DES VECTEURS ET DES MATRICES
 C
@@ -313,7 +313,8 @@ C - EVALUATION DE LA CONVERGENCE ET AFFICHAGE
 C
              IIFM = IUNIFI ('MESSAGE')
          WRITE(IIFM,10001) ITERL,CE1,EPSR,CE2,TESTI,CE1,EPSL,CE2,TESTR
-             CALL UTTCPU (2,'FIN',4,TPS2)
+             CALL UTTCPU('CPU.OP0171.2','FIN',' ')
+             CALL UTTCPR('CPU.OP0171.2',4,TPS2)
 C
 C - Y A-T-IL ASSEZ DE TEMPS POUR REFAIRE UNE ITERATION ?
 C
@@ -333,7 +334,6 @@ C *** ON S'ARRETE... (CONVERGENCE OU NOMBRE MAX D'ITERATIONS ATTEINT)
 C
           ELSE
 C
-            CALL UTTCPU (2,'FIN',4,TPS2)
 C
             IF ((PARCRI(9).EQ.0).AND.(ITERL.GE.ITMAXL)) THEN
               WRITE (IFM,FMT)
@@ -363,7 +363,8 @@ C --- COPIE DE LA SD INFO_CHARGE DANS LA BASE GLOBALE
             ZI(JINFC+I-1)=ZI(JINF+I-1)
  52       CONTINUE
 
-          CALL UTTCPU(1,'FIN',4,TPS1)
+          CALL UTTCPU('CPU.OP0171.1','FIN',' ')
+          CALL UTTCPR('CPU.OP0171.1',4,TPS1)
           WRITE(IFM,FMT)
           WRITE(IFM,'(A,21X,A,1PE10.2,21X,A)')
      &                                 '*','DUREE:',TPS1(3)-TPEX,'*'

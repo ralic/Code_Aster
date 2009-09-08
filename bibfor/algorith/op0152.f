@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -429,25 +429,8 @@ C     ------------------------------------------------------------
       CALL UALFVA(NOMRES,'G')
 
 
-C-----------------MENAGE FINAL SUR VOLATILE-----------------------
-      CALL JEDETC('V','.CODI',20)
-      CALL JEDETC('V','.MATE_CODE',9)
-      CALL JEDETC('V','&',1)
-      CALL JEDETC('V','_',1)
-      CALL JEDETC('V',NU,1)
-      CALL JEDETC('V',NUM,1)
-      CALL JEDETC('V','NUM',1)
-      CALL JEDETC('V',MA,1)
-      CALL JEDETC('V',MAX,1)
-      CALL JEDETC('V',MAY,1)
-      CALL JEDETC('V',MAZ,1)
-      CALL JEDETC('V','PHIB19',1)
-      CALL JEDETC('V','MA',1)
-      CALL JEDETC('V','B',1)
-      CALL JEDETC('V','PHPLO',1)
-C
       CALL JEDETC('G','&&RIGFLU',1)
       CALL JEDETC('G','&&CALMAA',1)
-C
+
       CALL JEDEMA()
       END

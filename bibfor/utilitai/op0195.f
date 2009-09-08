@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,8 +86,9 @@ C     ------------------------------------------------------------------
 
       CALL GETRES(CHOU,TYPCO,KBID)
       CALL EXISD('CHAMP',CHOU,TEST)
-      IF ((TEST.EQ.1) .AND. (OPERA.NE.'ASSE')) THEN
-        CALL U2MESS('F','UTILITAI3_43')
+      IF (TEST.EQ.1) THEN
+        IF (.NOT.((OPERA.EQ.'ASSE').OR.(OPERA.EQ.'COMB')))
+     &       CALL U2MESS('F','UTILITAI3_43')
       ENDIF
       CALL GETVTX(' ','TYPE_CHAM',0,1,1,TYCHR1,IB)
       TYCHR = TYCHR1(1:4)

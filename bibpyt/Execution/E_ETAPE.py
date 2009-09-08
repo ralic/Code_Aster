@@ -1,5 +1,6 @@
-#@ MODIF E_ETAPE Execution  DATE 06/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF E_ETAPE Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG

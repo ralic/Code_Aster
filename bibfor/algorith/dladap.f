@@ -6,7 +6,7 @@
      &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -335,7 +335,7 @@ C
       TARCH = TINIT + DTARCH
       DT1 = 0.D0
       DT2 = DTI
-      CALL UTTCPU(1, 'INIT', 4, TPS1)
+      CALL UTTCPU('CPU.DLADAP', 'INIT',' ')
       NRPASE = 0
 C
    30 CONTINUE
@@ -345,10 +345,10 @@ C
         ERR = 100.D0
         NR = 0
         IF (IVERI.EQ.0) THEN
-          CALL UTTCPU(1, 'DEBUT', 4, TPS1)
+          CALL UTTCPU('CPU.DLADAP', 'DEBUT',' ')
         ELSE
           IF (MOD(IVERI,NBPASC).EQ.0) THEN
-            CALL UTTCPU(1, 'DEBUT', 4, TPS1)
+            CALL UTTCPU('CPU.DLADAP', 'DEBUT',' ')
           ENDIF
         ENDIF
 C
@@ -469,13 +469,15 @@ C ------------- TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
 C
 C ------------- VERIFICATION DU TEMPS DE CALCUL RESTANT
         IF (IVERI.EQ.0) THEN
-          CALL UTTCPU(1, 'FIN', 4, TPS1)
+          CALL UTTCPU('CPU.DLADAP', 'FIN',' ')
+          CALL UTTCPR('CPU.DLADAP', 4, TPS1)
           TJOB = TPS1(1)
           IF (TPS1(4) .EQ. 0.D0) TPS1(4)=1.D-02
           NBPASC = INT(1.D-02 * (TPS1(1)/TPS1(4)))+1
         ELSE
           IF (MOD(IVERI,NBPASC).EQ.0) THEN
-            CALL UTTCPU(1, 'FIN', 4, TPS1)
+            CALL UTTCPU('CPU.DLADAP', 'FIN',' ')
+            CALL UTTCPR('CPU.DLADAP', 4, TPS1)
             IF (TPS1(1).LE.MAX(TJOB/100.D0,15.D0)) THEN
              GOTO 9999
             ENDIF

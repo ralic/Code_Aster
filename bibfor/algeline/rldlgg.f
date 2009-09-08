@@ -5,7 +5,7 @@
       COMPLEX*16 CXSOL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 MAT19
       CHARACTER*8 METRES
 C------------------------------------------------------------------
+      CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
+      CALL UTTCPU('CPU.RESO.5','DEBUT',' ')
+
       MAT19=ZK24(ZI(LMAT+1))
       CALL DISMOI('F','METH_RESO',MAT19,'MATR_ASSE',IBID,METRES,IBID)
       CALL RLDLG3(METRES,LMAT,XSOL,CXSOL,NBSOL)
+
+      CALL UTTCPU('CPU.RESO.1','FIN',' ')
+      CALL UTTCPU('CPU.RESO.5','FIN',' ')
       END

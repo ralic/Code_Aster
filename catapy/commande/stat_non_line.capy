@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/07/2009   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,10 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                    reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS'),
-                 CONCEPT_SENSIBLE('ENSEMBLE'),),
+                 CONCEPT_SENSIBLE('ENSEMBLE'),
+#                 AU_MOINS_UN('NEWTON','IMPL_EX'),
+#                 EXCLUS('NEWTON','IMPL_EX'),
+                ),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
@@ -102,8 +105,6 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
          ),),
 
          INCREMENT       =C_INCREMENT(),
-
-         NEWTON          =C_NEWTON(),
 
          RECH_LINEAIRE   =C_RECH_LINEAIRE(),
 
@@ -220,9 +221,21 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            INST_CALCUL       =SIMP(statut='f',typ='TXM',defaut="LISTE_ARCHIVAGE",into=("LISTE_ARCHIVAGE","TOUT_PAS",) ),
          ),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                               fr="Liste des paramètres de sensibilité",
+                               fr="Liste des paramétres de sensibilité",
                                ang="List of sensitivity parameters"),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+
+#         NEWTON  = C_NEWTON(),
+#         IMPL_EX = C_IMPL_EX(),
+
+#         **C_ALGO_RESOLUTION()
+         METHODE = SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPL_EX")),
+         b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
+                           NEWTON = C_NEWTON(),
+                        ),
+         b_meth_impl_ex = BLOC(condition = "METHODE == 'IMPL_EX'",
+                           IMPL_EX = C_IMPL_EX(),
+                        ),
  )
 

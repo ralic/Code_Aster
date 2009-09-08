@@ -1,21 +1,21 @@
-#@ MODIF utilitai5 Messages  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai5 Messages  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -224,19 +224,25 @@ cata_msg = {
 """),
 
 54 : _("""
+Erreur Programmeur / UTTCPU :
  l"argument "indi" est non valide
 """),
 
 55 : _("""
- l"appel a uttcpu ne peut etre effectue avec la valeur "debut" pour l"argument para
+Erreur Programmeur / UTTCPU  :
+ L"appel a uttcpu ne peut etre effectue avec la valeur "DEBUT" pour l"argument PARA
+ Il faut d'abord avoir fait "INIT".
 """),
 
 56 : _("""
- l"appel a uttcpu ne peut etre effectue avec la valeur "fin" pour l"argument para
+Erreur Programmeur / UTTCPU  :
+ L"appel a uttcpu ne peut etre effectué avec la valeur "FIN" pour l"argument PARA.
+ Il faut d'abord avoir fait "DEBUT".
 """),
 
 57 : _("""
- l"appel a uttcpu ne peut etre effectue avec la valeur  %(k1)s  pour l"argument para
+Erreur Programmeur / UTTCPU  :
+ L"appel a uttcpu ne peut etre effectue avec la valeur  %(k1)s  pour l"argument PARA
 """),
 
 58 : _("""
@@ -272,24 +278,24 @@ cata_msg = {
 """),
 
 93 : _("""
- Vous essayez de stocker le modèle, le champ matériau ou 
+ Vous essayez de stocker le modèle, le champ matériau ou
  des caractéristiques élémentaires dans la SD résultat.
  Ce n'est pas possible pour une SD résultat de type %(k1)s,
- on ne stocke aucun de ces trois éléments. 
+ on ne stocke aucun de ces trois éléments.
 """),
 
 94 : _("""
  Vous essayer de stocker la SD charge dans la SD résultat.
  Ce n'est pas possible pour une SD résultat de type %(k1)s,
- on ne stocke pas la charge. 
+ on ne stocke pas la charge.
 """),
 
 95 : _("""
-  le noeud %(k1)s ne supporte pas la composante %(k2)s 
+  le noeud %(k1)s ne supporte pas la composante %(k2)s
 """),
 
 96 : _("""
-  le noeud %(k1)s le noeud %(k2)s ne supporte pas la composante %(k3)s 
+  le noeud %(k1)s le noeud %(k2)s ne supporte pas la composante %(k3)s
 """),
 
 97 : _("""

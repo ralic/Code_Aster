@@ -1,10 +1,10 @@
       SUBROUTINE NMARCH(RESULT,NUMINS,SDDISC,FORCE ,COMPOR,
      &                  SDCRIT,CARCRI,RESOCO,VALPLU,INCR  ,
-     &                  MODELE,MATE  ,CARELE,FONACT,LISCH2, 
+     &                  MODELE,MATE  ,CARELE,FONACT,LISCH2,
      &                  SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C
       LOGICAL      DIINCL,NDYNLO,ISFONC
       LOGICAL      LDYNA ,LCONT ,LERRT,LGRFL
       CHARACTER*19 CNOINR,CNSINR
-      CHARACTER*24 CHGRFL,CHGRF2      
+      CHARACTER*24 CHGRFL,CHGRF2
 C
 C ----------------------------------------------------------------------
 C
@@ -108,7 +108,7 @@ C
       LCONT  = ISFONC(FONACT,'CONTACT')
       LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')
       LERRT  = ISFONC(FONACT,'ERRE_TEMPS')
-      LGRFL  = NDYNLO(SDDYNA,'FORCE_FLUIDE')     
+      LGRFL  = NDYNLO(SDDYNA,'FORCE_FLUIDE')
 C
 C --- DECOMPACTION DES VARIABLES CHAPEAUX
 C
@@ -124,12 +124,16 @@ C --- NUMERO D'ARCHIVAGE
 C
       NUMARC = DIARCH(SDDISC,NUMINS,FORCE,INCR)
 C
+C --- IMPRESSION EVENTUELLE DES MESURES DE TEMPS
+C
+      CALL UTTCPG('IMPR','INCR')
+C
 C ----------------------------------------------------------------------
 C
       IF (NUMARC.GE.0) THEN
 C
 C --- INSTANT COURANT
-C      
+C
         INSTAP = DIINST(SDDISC,NUMINS)
 C
 C --- INSTANT DEJA ARCHIVE ?
@@ -140,9 +144,9 @@ C
           IF (INSTAP.EQ.INSTAN) THEN
             GOTO 999
           ENDIF
-        ENDIF  
-        
-        CALL NMIMPR('IMPR','ARCH_TETE',' ',R8BID,IBID)             
+        ENDIF
+
+        CALL NMIMPR('IMPR','ARCH_TETE',' ',R8BID,IBID)
 C
 C --- ON SIGNALE QUE L'ON A BIEN ARCHIVE
 C
@@ -237,11 +241,11 @@ C
             CALL NMIMPR('IMPR','ARCHIVAGE','VARI_ELGA',INSTAP,NUMARC)
           END IF
         END IF
-C 
+C
 C --- CALCUL DES INDICATEURS D'ERREUR EN TEMPS EN THM UNIQUEMENT
 C
         IF (LERRT) THEN
-C      
+C
 C --- ARCHIVAGE DE VALEURS INITIALES NULLES
 C
           IF (NUMARC.EQ.0) THEN
@@ -250,7 +254,7 @@ C
             ZR(JINST) = 0.D0
             CALL RSADPA(RESULT,'E',1,'ERRE_TPS_GLOB',
      &                  NUMARC,0,JINST,K8BID)
-            ZR(JINST) = 0.D0      
+            ZR(JINST) = 0.D0
           ENDIF
 C
 C --- ARCHIVAGE DE THETA
@@ -259,7 +263,7 @@ C
           THETA = ZR(IVALE+3)
           CALL RSADPA(RESULT,'E',1,'PARM_THETA',NUMARC,0,JINST,K8BID)
           ZR(JINST) = THETA
-        ENDIF                     
+        ENDIF
 C
 C --- ARCHIVAGES CAS DYNAMIQUE
 C
@@ -275,10 +279,11 @@ C
         CHGRFL = '&&OP0070.GRAPPE_FLUIDE  '
         CHGRF2 = '&&OP0070.GRAPPE_FLUIDE_C'
         CALL GFCOPY(CHGRF2,CHGRFL)
-      ENDIF       
-      
+      ENDIF
+
+
 C
-  999 CONTINUE     
+  999 CONTINUE
 C
       CALL JEDEMA()
       END

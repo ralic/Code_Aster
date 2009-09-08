@@ -1,6 +1,6 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/09/2009   AUTEUR MESSIER J.MESSIER 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
-# sslp320b.para = tps_job 150 mem_job 150Mo ncpus 1 liste_test S
+# sslp320b.para = tps_job 200 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -205,6 +205,8 @@ for i in range(1,NPAS+1) :
                                    MATER=ACIER,),
                  DA_MAX=DA,
                  RAYON=RP,
+                 COMP_LINE =_F(COEF_MULT_MINI=0.,
+                               COEF_MULT_MAXI=1.,),
                  );
                       
 #Test des coordonnees du fond de fissure y proche de yinit

@@ -1,5 +1,6 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM GRANDES DEFORMATIONS
+# ssnv112d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,9 @@
 #             BORDAB=GRNM11     FACEEF=GRMA12     FACEAE=GRMA13
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV112D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV112D',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 M=LIRE_MAILLAGE();
 
@@ -42,8 +45,9 @@ MO=AFFE_MODELE(MAILLAGE=M,
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.4999,
-                         ALPHA=0.0,),
-                 ECRO_LINE=_F(SY=1.E10, D_SIGM_EPSI=0.)        );
+                         ALPHA=0.,),
+                 ECRO_LINE=_F(D_SIGM_EPSI=0.,
+                              SY=1.E10,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
@@ -58,18 +62,18 @@ CLIM=AFFE_CHAR_MECA(MODELE=MO,
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   FACE_IMPO=_F(GROUP_MA='GRMA13',
                                DX=6e-05,),);
+
 #                       PRES_REP=_F(  GROUP_MA = 'GRMA13',  PRES = PRES) )
 
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.0,
                                      NOMBRE=1,),);
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,1.0,1.0,),
-                    PROL_DROITE='CONSTANT',);
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),PROL_DROITE='CONSTANT',);
 
-EVOL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=600),
-                   MODELE=MO,
+EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE=CLIM,),
                           _F(CHARGE=CH,
@@ -78,26 +82,20 @@ EVOL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=600),
                                 DEFORMATION='SIMO_MIEHE',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-
-                   CONVERGENCE=_F(RESI_REFE_RELA=1.E-3,
-                            SIGM_REFE = 60 ,
-                            EPSI_REFE = 3.E-4), );
+                   CONVERGENCE=_F(SIGM_REFE=60.0,
+                                  EPSI_REFE=3.E-4,
+                                  RESI_REFE_RELA=1.E-3,),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              PCENT_PIVOT=600,),);
 
 EVOL=CALC_ELEM(reuse =EVOL,
                RESULTAT=EVOL,
-               OPTION=(
-               #'EPSI_ELNO_DEPL',
-               'SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',
-               #'EQUI_ELNO_EPSI','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',
-               ),);
+               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
 
 EVOL=CALC_NO(reuse =EVOL,
              RESULTAT=EVOL,
-             OPTION=(
-             #'EPSI_NOEU_DEPL',
-             'SIEF_NOEU_ELGA',
-             #'EQUI_NOEU_EPSI',
-             'EQUI_NOEU_SIGM',),);
+             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
+
 #---------------------------------------------------------------
 # POSTTRAITEMENT ETUDE 1
 #---------------------------------------------------------------
@@ -138,6 +136,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    CRITERE='ABSOLU',
                    PRECISION=1e-05,
                    REFERENCE='ANALYTIQUE',),),);
+
 #-----------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(RESULTAT=EVOL,
@@ -273,30 +272,32 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='ANALYTIQUE',),),);
+
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-# TEST_RESU(RESU=_F(RESULTAT=EVOL,
-#                   INST=1.0,
-#                   NOM_CHAM='ERRE_ELEM_SIGM',
-#                   NOM_CMP='NUEST',
-#                   MAILLE='M2',
-#                   POINT=1,
-#                   VALE=0.0405641695723,
-#                   CRITERE='RELATIF',
-#                   PRECISION=0.001,
-#                   REFERENCE='NON_REGRESSION',
-#                   VERSION='8.2.15',),);
-#
-# TEST_RESU(RESU=_F(RESULTAT=EVOL,
-#                   INST=1.0,
-#                   NOM_CHAM='ERRE_ELNO_ELEM',
-#                   NOM_CMP='ERREST',
-#                   MAILLE='M2',
-#                   GROUP_NO='A',
-#                   VALE=7.34831459848e-05,
-#                   CRITERE='RELATIF',
-#                   PRECISION=0.001,
-#                   REFERENCE='NON_REGRESSION',
-#                   VERSION='8.2.15',),);
+TEST_RESU(RESU=_F(RESULTAT=EVOL,
+                  INST=1.0,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='NUEST',
+                  MAILLE='M2',
+                  POINT=1,
+                  VALE=6.3337380280555E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=5e-07,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.0.16',),);
+
+TEST_RESU(RESU=_F(RESULTAT=EVOL,
+                  INST=1.0,
+                  NOM_CHAM='ERRE_ELNO_ELEM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M2',
+                  GROUP_NO='A',
+                  VALE=1.1473115529256E-07,
+                  CRITERE='RELATIF',
+                  PRECISION=5e-07,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.0.16',),);
+
 FIN();

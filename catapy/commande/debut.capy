@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,6 +73,16 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
                                  statut='f',typ='TXM',into=('TEST',)),
          ),
 
+         MESURE_TEMPS     =FACT(fr="Pour choisir les mesures de temps consommé dans les commandes",
+                               statut='d',min=1,max=1,
+           NIVE_DETAIL      =SIMP(fr="niveau de détail des impressions",
+                                 statut='f',typ='I',into=(0,1,2,3),defaut=1),
+                                 # 0 : rien
+                                 # 1 : impression en fin de commande des mesures principales
+                                 # 2 : impression en fin de commande des mesures principales et secondaires
+                                 # 3 : impression des mesures principales et secondaires pour chaque pas de temps
+         ),
+
          MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='d',min=1,max=1,
            GESTION         =SIMP(statut='f',typ='TXM',into=('COMPACTE','RAPIDE'),defaut='RAPIDE'),
            TYPE_ALLOCATION =SIMP(statut='f',typ='I',into=(1,2,3,4),defaut=1),
@@ -81,7 +91,7 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
            PARTITION       =SIMP(statut='f',typ='R'),
            DYNAMIQUE       =SIMP(statut='f',typ='I',defaut=1),
          ),
- 
+
          RESERVE_CPU     =FACT(fr="reserve de temps pour terminer une execution",statut='d',max=1,
            regles=(EXCLUS('VALE','POURCENTAGE'),),
 #          par défaut VALE fixée à 10. dans le FORTRAN si CODE présent

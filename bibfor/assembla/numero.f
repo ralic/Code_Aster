@@ -1,6 +1,6 @@
       SUBROUTINE NUMERO(NUPOSS,MODELZ,INFCHZ,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,8 +73,8 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*24 LCHARG,LLIGR,NOMLIG,SDFETI,NOMSDA,K24B,K24CF,
      &             KSOLVF,LLIGRS,INFOFE,NOOBJ,K24MUL
       CHARACTER*32 JEXNUM
-      LOGICAL      LFETI,LFETIC,LCF,LMUMPS
-      
+      LOGICAL      LFETI,LFETIC,LCF
+
 C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
 C-----------------------------------------------------------------------
@@ -82,6 +82,10 @@ C CONSTRUCTION D'UN OBJET JEVEUX CONTENANT LA LISTE DES CHARGES ET
 C LE NOM DU MODELE DE CALCUL
 C-----------------------------------------------------------------------
       CALL JEMARQ()
+      CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
+      CALL UTTCPU('CPU.RESO.2','DEBUT',' ')
+
+
       LIGRCF='&&OP0070.RESOC.LIGR'
       K24CF='&&NUMERO.FETI.CONTACT'
       CALL JEEXIN(LIGRCF//'.LIEL',IRET)
@@ -100,7 +104,7 @@ C-----------------------------------------------------------------------
         CALL JEVEUO(LCHARG,'L',JCHAR)
       ENDIF
       LLIGR = '&&NUMERO.LISTE_LIGREL'
- 
+
 C     LISTE AUGMENTEE POUR L'EVENTUEL LIGRCF
       IF (LCF) THEN
         CALL WKVECT(LLIGR,'V V K24',NCHAR+2,JLLIGR)
@@ -153,34 +157,22 @@ C SOLVEUR FETI ?
         LFETI=.FALSE.
         INFOFE='FFFFFFFFFFFFFFFFFFFFFFFF'
       ENDIF
-C SOLVEUR MUMPS ?
-      IF ((METHOD(1:5).EQ.'MUMPS').AND.(NIV.GE.2)) THEN
-        LMUMPS=.TRUE.
-        CALL JEVEUO('&MUMPS.INFO.CPU.FACS','E',IFCPU)
-        CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
-      ELSE
-         LMUMPS=.FALSE.
-      ENDIF
+
 C CALCUL TEMPS
-      IF ((NIV.GE.2).OR.(LFETIC)) THEN
-        CALL UTTCPU(50,'INIT ',6,TEMPS)
-        CALL UTTCPU(50,'DEBUT',6,TEMPS)
+      IF (LFETIC) THEN
+        CALL UTTCPU('CPU.NUMERO.FETI','INIT',' ')
+        CALL UTTCPU('CPU.NUMERO.FETI','DEBUT',' ')
       ENDIF
 C --------------------------------------------------------------
 C CREATION ET REMPLISSAGE DE LA SD NUME_DDL "MAITRE"
 C --------------------------------------------------------------
       CALL NUMER2(NUPOSS,NBLIG,ZK24(JLLIGR),' ',SOLVEU,BASE,NU,NEQUAG)
 
-      IF ((NIV.GE.2).OR.(LFETIC)) THEN
-        CALL UTTCPU(50,'FIN  ',6,TEMPS)
-        IF (NIV.GE.2) WRITE(IFM,'(A44,D11.4,D11.4)')
-     &    'TEMPS CPU/SYS FACT SYMB                   : ',TEMPS(5),
-     &     TEMPS(6)
-        IF (LFETIC) THEN
-          CALL JEVEUO('&FETI.INFO.CPU.FACS','E',IFCPU)
-          ZR(IFCPU)=TEMPS(5)+TEMPS(6)
-        ENDIF
-        IF (LMUMPS) ZR(IFCPU+RANG)=TEMPS(5)+TEMPS(6)
+      IF (LFETIC) THEN
+        CALL UTTCPU('CPU.NUMERO.FETI','FIN',' ')
+        CALL UTTCPR('CPU.NUMERO.FETI',6,TEMPS)
+        CALL JEVEUO('&FETI.INFO.CPU.FACS','E',IFCPU)
+        ZR(IFCPU)=TEMPS(5)+TEMPS(6)
       ENDIF
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -262,7 +254,7 @@ C DE GCNCON.
             CALL JEVEUO(LIGRCF(1:19)//'.FEL1','L',IFEL1)
             DO 35 IDD=1,NBSD
               K24B=ZK24(IFEL1+IDD-1)
-              IF ((K24B.NE.' ').AND.(K24B(1:19).NE.LIGRCF(1:19))) 
+              IF ((K24B.NE.' ').AND.(K24B(1:19).NE.LIGRCF(1:19)))
      &          CALL DETRSD('LIGREL',K24B)
    35       CONTINUE
             CALL JEDETR(LIGRCF(1:19)//'.FEL1')
@@ -294,9 +286,9 @@ C========================================
         DO 30 I=1,NBSD
           IF (ZI(ILIMPI+I).EQ.1) THEN
 
-            IF ((NIV.GE.2).OR.(LFETIC)) THEN
-              CALL UTTCPU(50,'INIT ',6,TEMPS)
-              CALL UTTCPU(50,'DEBUT',6,TEMPS)
+            IF (LFETIC) THEN
+              CALL UTTCPU('CPU.NUMERO.FETI','INIT',' ')
+              CALL UTTCPU('CPU.NUMERO.FETI','DEBUT',' ')
             ENDIF
             CALL JEMARQ()
             CALL JEVEUO(JEXNUM(NOMSDA,I),'L',ILIMA)
@@ -351,12 +343,10 @@ C MONITORING
      &        WRITE(IFM,*)'<FETI/NUMERO> SD ',I,' ',NOMFE2
             IF (INFOFE(2:2).EQ.'T')
      &        CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMFE2,1,' ')
-            IF ((NIV.GE.2).OR.(LFETIC)) THEN
-              CALL UTTCPU(50,'FIN  ',6,TEMPS)
-              IF (NIV.GE.2) WRITE(IFM,'(A44,D11.4,D14.4)')
-     &          'TEMPS CPU/SYS FACT SYMB                   : ',TEMPS(5),
-     &          TEMPS(6)
-              IF (LFETIC) ZR(IFCPU+I)=TEMPS(5)+TEMPS(6)
+            IF (LFETIC) THEN
+              CALL UTTCPU('CPU.NUMERO.FETI','FIN',' ')
+              CALL UTTCPR('CPU.NUMERO.FETI',6,TEMPS)
+              ZR(IFCPU+I)=TEMPS(5)+TEMPS(6)
             ENDIF
             CALL JEDEMA()
 
@@ -425,5 +415,9 @@ C SOUS-STRUCTURATION QUI EST ILLICITE AVEC FETI, MAIS ON NE SAIT JAMAIS)
    40   CONTINUE
       ENDIF
       CALL JEDETR(LLIGR)
+
+
+      CALL UTTCPU('CPU.RESO.1','FIN',' ')
+      CALL UTTCPU('CPU.RESO.2','FIN',' ')
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 08/09/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE FATIGUE VIBRATOIRE D'UNE AUBE DE VENTILATEUR
 # sdlv129a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,6 +77,16 @@ TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
                   REFERENCE='NON_REGRESSION',
                   PRECISION=0.01,),);
 
+TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CMP='VMIS',
+                  MAILLE='M294',
+                  NOEUD = 'N111',
+                  VALE=2.981633E+02,
+                  REFERENCE='NON_REGRESSION',
+                  PRECISION=0.01,),);
+
 #
 # CALCUL DES CONTRAINTES MODALES
 #
@@ -117,7 +127,27 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NOM_CMP='VMIS_SG',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=-3.802607E+01,
+                  VALE=-2.97812567E+01,
+                  REFERENCE='NON_REGRESSION',
+                  PRECISION=0.01,),);       
+                             
+TEST_RESU(RESU=_F(RESULTAT=MODE,
+                  NUME_MODE=1,
+                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CMP='VMIS',
+                  MAILLE='M294',
+                  NOEUD = 'N111',
+                  VALE=9.498365E+00,
+                  REFERENCE='NON_REGRESSION',
+                  PRECISION=0.01,),);
+
+TEST_RESU(RESU=_F(RESULTAT=MODE,
+                  NUME_MODE=2,
+                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CMP='VMIS',
+                  MAILLE='M294',
+                  NOEUD = 'N111',
+                  VALE=2.97812567E+01,
                   REFERENCE='NON_REGRESSION',
                   PRECISION=0.01,),);                  
 #
@@ -228,7 +258,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12,
                   NOM_CMP='DOMA',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=1.2308E+01,
+                  VALE=1.43884E+01,
                   REFERENCE='ANALYTIQUE',
                   PRECISION=0.01,),);
 
@@ -244,7 +274,7 @@ TEST_TABLE(  TABLE=TDMG12,
                            VALE_K   = 'MIN'),),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='VALE',
-             VALE=6.27749E+00,
+             VALE=7.44918541,
              PRECISION = 1.E-4,
            )
 
@@ -267,7 +297,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12b,
                   NOM_CMP='DOMA',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=1.5908E+01,
+                  VALE=1.867847966E+01,
                   REFERENCE='ANALYTIQUE',
                   PRECISION=0.01,),);
 
@@ -283,7 +313,7 @@ TEST_TABLE(  TABLE=TDMG12b,
                            VALE_K   = 'MIN'),),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='VALE',
-             VALE=8.0193453E+00,
+             VALE=9.538073372,
              PRECISION = 1.E-4,
            )
 FIN();

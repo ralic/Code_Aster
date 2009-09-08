@@ -1,7 +1,7 @@
       SUBROUTINE NMDOMT(METHOD,PARMET,NOMCMD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,19 +23,19 @@ C
       IMPLICIT NONE
       CHARACTER*16 METHOD(*),NOMCMD
       REAL*8       PARMET(*)
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (LECTURE)
 C
 C LECTURE DES DONNEES DE RESOLUTION
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
 C IN  NOMCMD  : COMMANDE APPELANTE
 C OUT METHOD  : DESCRIPTION DE LA METHODE DE RESOLUTION
-C                 1 : NOM DE LA METHODE NON LINEAIRE : NEWTON
+C                 1 : NOM DE LA METHODE NON LINEAIRE (NEWTON OU IMPL_EX)
 C                 2 : TYPE DE MATRICE (TANGENTE OU ELASTIQUE)
 C                 3 : -- INUTILISE --
 C                 4 : -- INUTILISE --
@@ -61,70 +61,104 @@ C ----------------------------------------------------------------------
 C
       INTEGER      IRET, ITMP,REINCR, REITER, NOCC
       REAL*8       PASMIN
-      INTEGER      IFM,NIV 
-C      
+      INTEGER      IFM,NIV
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ... LECTURE DONNEES RESOLUTION' 
+        WRITE (IFM,*) '<MECANONLINE> ... LECTURE DONNEES RESOLUTION'
       ENDIF
+
+C
+C --- RECUPERATION DE LA METHODE DE RESOLUTION
+C
+      CALL GETFAC('NEWTON',NOCC)
+      IF (NOCC .GT. 0) THEN 
+        METHOD(1) = 'NEWTON'
+      ELSEIF (NOCC .EQ. 0) THEN
+        CALL GETFAC('IMPL_EX',NOCC)
+        IF (NOCC .GT. 0) THEN 
+          METHOD(1) = 'IMPL_EX'
+        END IF
+      ELSE
+        CALL ASSERT(.FALSE.)
+      END IF
+
 C
 C --- INITIALISATIONS
-C      
-      METHOD(1) = 'NEWTON'
-      METHOD(7) = 'CORDE'
+C
+      IF (METHOD(1) .EQ. 'NEWTON') THEN
+        CALL GETVTX('NEWTON','MATRICE',1,1,1,METHOD(2),IRET)
 
-      CALL GETVTX('NEWTON','MATRICE',1,1,1,METHOD(2),IRET)
+        CALL GETVIS('NEWTON','REAC_INCR',1,1,1,REINCR,IRET)
+        IF (REINCR.LT.0) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE
+          PARMET(1) = REINCR
+        ENDIF
 
-      CALL GETVIS('NEWTON','REAC_INCR',1,1,1,REINCR,IRET)
-      IF (REINCR.LT.0) THEN
-        CALL ASSERT(.FALSE.)
-      ELSE
-        PARMET(1) = REINCR
-      ENDIF
+        CALL GETVIS('NEWTON','REAC_ITER',1,1,1,REITER,IRET)
+        IF(REITER.LT.0) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE
+          PARMET(2) = REITER
+        ENDIF
 
-      CALL GETVIS('NEWTON','REAC_ITER',1,1,1,REITER,IRET)
-      IF(REITER.LT.0) THEN
-        CALL ASSERT(.FALSE.)
-      ELSE
-        PARMET(2) = REITER
-      ENDIF
-      CALL GETVIS('NEWTON','REAC_ITER_ELAS',1,1,1,REITER,IRET)
-      IF(REITER.LT.0) THEN
-        CALL ASSERT(.FALSE.)
-      ELSE
-        PARMET(4) = REITER
-      ENDIF
+        CALL GETVIS('NEWTON','REAC_ITER_ELAS',1,1,1,REITER,IRET)
+        IF(REITER.LT.0) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE
+          PARMET(4) = REITER
+        ENDIF
 
-      CALL GETVR8('NEWTON','PAS_MINI_ELAS',1,1,1,PASMIN,IRET)
-      IF ( IRET .LE. 0 ) THEN
-        PARMET(3) = -9999.0D0
-      ELSE
-        PARMET(3) = PASMIN
-      ENDIF      
-      
-      CALL GETVTX('NEWTON','PREDICTION',1,1,1,METHOD(5),IRET)
-      IF (IRET.LE.0) THEN
-        METHOD(5) = METHOD(2)
-      ELSE IF (METHOD(2).EQ.'ELASTIQUE'
+        CALL GETVR8('NEWTON','PAS_MINI_ELAS',1,1,1,PASMIN,IRET)
+        IF ( IRET .LE. 0 ) THEN
+          PARMET(3) = -9999.0D0
+        ELSE
+          PARMET(3) = PASMIN
+        ENDIF
+
+        CALL GETVTX('NEWTON','PREDICTION',1,1,1,METHOD(5),IRET)
+        IF (IRET.LE.0) THEN
+          METHOD(5) = METHOD(2)
+        ELSE IF (METHOD(2).EQ.'ELASTIQUE'
      &   .AND. METHOD(5).EQ.'TANGENTE') THEN
-        METHOD(5) = 'ELASTIQUE'
-      END IF
+          METHOD(5) = 'ELASTIQUE'
+        END IF
 
-      IF (METHOD(5).EQ.'DEPL_CALCULE') THEN
-        CALL GETVID('NEWTON','EVOL_NOLI',1,1,1,METHOD(6),IRET)
-        IF (IRET.LE.0) CALL U2MESS('F','MECANONLINE5_45')
+        IF (METHOD(5).EQ.'DEPL_CALCULE') THEN
+          CALL GETVID('NEWTON','EVOL_NOLI',1,1,1,METHOD(6),IRET)
+          IF (IRET.LE.0) CALL U2MESS('F','MECANONLINE5_45')
+        END IF
+      ELSEIF (METHOD(1) .EQ. 'IMPL_EX') THEN
+        CALL GETVIS('IMPL_EX','REAC_INCR',1,1,1,REINCR,IRET)
+        IF (REINCR.LT.0) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE
+          PARMET(1) = REINCR
+        ENDIF
+
+        CALL GETVTX('IMPL_EX','PREDICTION',1,1,1,METHOD(5),IRET)
+        IF (METHOD(5).NE.'TANGENTE' 
+     &      .AND. METHOD(5).NE.'SECANTE') CALL ASSERT(.FALSE.)
+      ELSE
+C   LA METHODE EST INEXISTANTE
+       CALL ASSERT(.FALSE.)
       END IF
+C
+C --- PARAMETRES DE LA RECHERCHE LINEAIRE
+C
+      METHOD(7) = 'CORDE'
 
       IF (NOMCMD(1:4).EQ.'DYNA') THEN
         NOCC = 0
       ELSE
         CALL GETFAC('RECH_LINEAIRE',NOCC)
-      ENDIF  
+      ENDIF
       IF (NOCC.NE.0) THEN
         CALL GETVTX('RECH_LINEAIRE','METHODE',1,1,1,METHOD(7),IRET)
         CALL GETVR8('RECH_LINEAIRE','RESI_LINE_RELA',1,1,1,PARMET(11),

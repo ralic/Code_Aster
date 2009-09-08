@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF dvp Messages  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,6 +50,14 @@ cata_msg={
    On ne sait pas traiter ce type d'élément : %(k1)s
 """),
 
+5 : _("""
+ Erreur de programmation :
+  On ne trouve pas le triplet ( %(k1)s )
+  correspondant à (nomte elrefe famille).
+ Conseils :
+  Vérifiez le catalogue d'éléments.
+  L'elrefe ou la famille de points de Gauss ne sont pas définis.
+"""),
 
 97 : _("""
    Erreur signalée dans la bibliothèque MED

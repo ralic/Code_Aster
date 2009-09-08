@@ -32,7 +32,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -284,14 +284,14 @@ C
      &            ZR(JVINT),IREDST,DREDST )
 C
       TEMPS = TINIT + DT
-      CALL UTTCPU (1,'INIT',4,TPS1)
+      CALL UTTCPU('CPU.MDEUL1','INIT',' ')
       N100 = NBPAS/100 + 1
 C
 C     --- BOUCLE TEMPORELLE ---
 C
       DO 30 I = 1 , NBPAS
 C
-         IF (MOD(I,N100).EQ.0) CALL UTTCPU (1,'DEBUT',4,TPS1)
+         IF (MOD(I,N100).EQ.0) CALL UTTCPU('CPU.MDEUL1','DEBUT',' ')
 C
          DO 40 IM = 0,NBMOD1
 C           --- VITESSES GENERALISEES ---
@@ -401,7 +401,8 @@ C
 C        --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---
 C
          IF (MOD(I,N100).EQ.0) THEN
-          CALL UTTCPU (1,'FIN',4,TPS1)
+          CALL UTTCPU('CPU.MDEUL1','FIN',' ')
+          CALL UTTCPR('CPU.MDEUL1',4,TPS1)
           IF (MAX(5.D0,N100*TPS1(4)).GT.0.90D0*TPS1(1)) THEN
            CALL MDSIZE (NOMRES,ISTO1,NEQGEN,LPSTO,NBCHOC,NBREDE)
            IF (NOMRES.EQ.'&&OP0074') THEN

@@ -7,7 +7,7 @@
       LOGICAL PILMEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C RESPONSABLE ROSE C.ROSE
 C     TOLE CRP_4
 C ======================================================================
@@ -251,8 +251,8 @@ C--------------------------------------------------------------------
       CALL WKVECT(NMPRV2,' V V R ',NEQ,TABR2)
       CALL WKVECT(NMPRVI,' V V I ',NEQ,TEMPI)
       CALL WKVECT(NMPRI2,' V V I ',NEQ,TABI2)
-      CALL UTTCPU(7,'INIT',6,TEMPS)
-      CALL UTTCPU(7,'DEBUT',6,TEMPS)
+      CALL UTTCPU('CPU.MULFR8','INIT',' ')
+      CALL UTTCPU('CPU.MULFR8','DEBUT',' ')
 C     3.2)                               ASSEMBLAGE ET FACTORISATION
 C     APPEL A MLTFAS1
       IF (PILMEM) THEN
@@ -326,7 +326,8 @@ C     MATRICE SINGULIERE :
       ZK24(JREFA-1+8)='DECT'
 
 
-      CALL UTTCPU(7,'FIN  ',6,TEMPS)
+      CALL UTTCPU('CPU.MULFR8','FIN',' ')
+      CALL UTTCPR('CPU.MULFR8',6,TEMPS)
       IF (NIV.EQ.2) THEN
          WRITE (IFM,*) ' FACTORISATION DE LA MATRICE.'//'TEMPS CPU',
      +        TEMPS(3),' + TEMPS CPU SYSTEME ',TEMPS(6)

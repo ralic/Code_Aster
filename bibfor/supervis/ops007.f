@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 07/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C   (SAUF SI ON DEMANDE A LES SUPPRIMER DANS UNE MACRO PAR EXEMPLE)
                KCH = ZK24(JOBJ+II-1)
                L=LXLGUT(KCH)
                IF (L.GT.0) THEN
-                  CALL JEDETC(KLAS,KCH(1:L-1),ZI(JPO+II-1))
+                  CALL JEDETC(KLAS,KCH(1:L),ZI(JPO+II-1))
                   IF (L.LE.8) THEN
 C                    SI L<=8, C'EST PEUT-ETRE UN CONCEPT, ON ESSAIE DE
 C                    LE MARQUER COMME DETRUIT DANS LA BASE

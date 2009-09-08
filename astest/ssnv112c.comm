@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (TRIA6 QUAD8) PLAN
+# ssnv112c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,9 @@
 #              BORDAB=GRNM11    FACEEF=GRMA12     FACEAE=GRMA13
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV112C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV112C',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 M=LIRE_MAILLAGE();
 
@@ -39,9 +42,9 @@ MO=AFFE_MODELE(MAILLAGE=M,
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.4999,
-                         ALPHA=0.0,),
-                 ECRO_LINE=_F(SY=1.E6,
-                              D_SIGM_EPSI=0.),        );
+                         ALPHA=0.,),
+                 ECRO_LINE=_F(D_SIGM_EPSI=0.,
+                              SY=1.E6,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
@@ -59,9 +62,9 @@ L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.0,
                                      NOMBRE=1,),);
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,1.0,1.0,),
-                    PROL_DROITE='CONSTANT',);
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),PROL_DROITE='CONSTANT',);
 
 EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
@@ -71,25 +74,20 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                 DEFORMATION='SIMO_MIEHE',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-                   SOLVEUR=_F(METHODE='MUMPS'),
-                   CONVERGENCE=_F(RESI_REFE_RELA=1.E-3,
-                            SIGM_REFE = 60 ,
-                            EPSI_REFE = 3.E-4),   );
+                   CONVERGENCE=_F(SIGM_REFE=60.0,
+                                  EPSI_REFE=3.E-4,
+                                  RESI_REFE_RELA=1.E-3,),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              PCENT_PIVOT=50,),);
 
 EVOL=CALC_ELEM(reuse =EVOL,
                RESULTAT=EVOL,
-               OPTION=(
-                  #   'EPSI_ELNO_DEPL','EQUI_ELNO_EPSI',
-                     'SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',
-                  #   'ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',
-                     ),);
+               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
 
 EVOL=CALC_NO(reuse =EVOL,
              RESULTAT=EVOL,
-             OPTION=(
-             #'EPSI_NOEU_DEPL',#'EQUI_NOEU_EPSI',
-             'SIEF_NOEU_ELGA',
-             'EQUI_NOEU_SIGM',),);
+             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
+
 #---------------------------------------------------------------
 #    POSTTRAITEMENT
 
@@ -271,31 +269,32 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    CRITERE='RELATIF',
                    PRECISION=0.02,
                    REFERENCE='ANALYTIQUE',),),);
+
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-# TEST_RESU(RESU=_F(RESULTAT=EVOL,
-#                   INST=1.0,
-#                   NOM_CHAM='ERRE_ELEM_SIGM',
-#                   NOM_CMP='NUEST',
-#                   MAILLE='M2',
-#                   POINT=1,
-#                   VALE=0.470176437591,
-#                   CRITERE='RELATIF',
-#                   PRECISION=0.001,
-#                   REFERENCE='NON_REGRESSION',
-#                   VERSION='8.2.15',),);
-#
-# TEST_RESU(RESU=_F(RESULTAT=EVOL,
-#                   INST=1.0,
-#                   NOM_CHAM='ERRE_ELNO_ELEM',
-#                   NOM_CMP='ERREST',
-#                   MAILLE='M2',
-#                   GROUP_NO='A',
-#                   VALE=0.00238001366298,
-#                   CRITERE='RELATIF',
-#                   PRECISION=0.001,
-#                   REFERENCE='NON_REGRESSION',
-#                   VERSION='8.2.15',),);
+TEST_RESU(RESU=_F(RESULTAT=EVOL,
+                  INST=1.0,
+                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CMP='NUEST',
+                  MAILLE='M2',
+                  POINT=1,
+                  VALE=7.7148429516808E-04,
+                  CRITERE='RELATIF',
+                  PRECISION=5e-07,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.0.16',),);
+
+TEST_RESU(RESU=_F(RESULTAT=EVOL,
+                  INST=1.0,
+                  NOM_CHAM='ERRE_ELNO_ELEM',
+                  NOM_CMP='ERREST',
+                  MAILLE='M2',
+                  GROUP_NO='A',
+                  VALE=3.8996140668055E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=5e-07,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.0.16',),);
 
 FIN();

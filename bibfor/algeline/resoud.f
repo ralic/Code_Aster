@@ -2,7 +2,7 @@
      &                  CRITER,NSECM,RSOLU,CSOLU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,6 +96,8 @@ C ----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEDBG2(IDBGAV,0)
       CALL INFNIV(IFM,NIV)
+      CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
+      CALL UTTCPU('CPU.RESO.5','DEBUT',' ')
 
       MATR19=MATASS
       MPRE19=MATPRE
@@ -189,13 +191,6 @@ C     -- SI 'FETI', ON NE PEUT PAS APPELER MTDSCR :
 
 
 
-      IF (NIV.GE.2) THEN
-        CALL UTTCPU(53,'INIT ',6,TEMPS)
-        CALL UTTCPU(53,'DEBUT',6,TEMPS)
-      ENDIF
-
-
-
 
       IF (METRES.EQ.'LDLT' .OR. METRES.EQ.'MULT_FRO') THEN
 C     ----------------------------------------------------
@@ -267,14 +262,6 @@ C     ----------------------------------
       ENDIF
 
 
-      IF (NIV.GE.2) THEN
-        CALL UTTCPU(53,'FIN  ',6,TEMPS)
-        WRITE (IFM,'(A44,D11.4,D11.4)')
-     &    'TEMPS CPU/SYS SOLVEUR                     : ',TEMPS(5),
-     &    TEMPS(6)
-      ENDIF
-
-
 C     -- RECOPIE DANS LE CHAMP SOLUTION S'IL Y LIEU :
       IF ((NSECM.EQ.0).AND.(METRES.NE.'FETI')) THEN
         CALL JEVEUO(CSOL19//'.VALE','E',JVALS)
@@ -294,5 +281,7 @@ C     -- RECOPIE DANS LE CHAMP SOLUTION S'IL Y LIEU :
 
 
       CALL JEDBG2(IBID,IDBGAV)
+      CALL UTTCPU('CPU.RESO.1','FIN',' ')
+      CALL UTTCPU('CPU.RESO.5','FIN',' ')
       CALL JEDEMA()
       END

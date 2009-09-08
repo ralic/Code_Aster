@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/09/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 # wtna108a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='WTNA108A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('ALGORITH16_97'))
+    #  IGNORE_ALARM=('ALGORITH16_97')
+      )
 
 PRE_GIBI()
 
@@ -295,7 +296,7 @@ TEST_RESU(RESU=(
                   NOM_CMP='VMIS_SG',
                   MAILLE='M12',
                   NOEUD='N28',
-                  VALE= -3.98575E+03,
+                  VALE= -8.57952E+03,
                   REFERENCE='NON_REGRESSION',
                   VERSION = '9.2.18', ),))
 
@@ -352,7 +353,7 @@ TEST_RESU(RESU=(
                   NOM_CMP='VMIS_SG',
                   MAILLE='M12',
                   NOEUD='N28',
-                  VALE= -2.92889E+03,
+                  VALE= -8.70985E+03,
                   REFERENCE='NON_REGRESSION',
                   VERSION = '9.2.18', ),))
 

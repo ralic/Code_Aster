@@ -3,9 +3,9 @@
      &                    ITPS, PARTPS,
      &                    NUMEDD, VECASS,
      &                    ASSMAT, SOLVEU, MATASS, MAPREC,
-     &                    BASE, TPS1, TPS2, TPS3, COMPOR )
+     &                    BASE, COMPOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,6 @@ C IN  ASSMAT  : BOOLEEN POUR LE CALCUL DE LA MATRICE
 C IN  SOLVEU  : METHODE DE RESOLUTION 'LDLT' OU 'GCPC'
 C IN/OUT  MAPREC  : MATRICE PRECONDITIONNEE
 C IN  BASE    : BASE DE TRAVAIL
-C IN/OUT TPS1,2,3 : TEMPS DE CALCUL
 C IN  COMPOR : COMPOR POUR LES MULTIFIBRE (POU_D_EM)
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
@@ -71,7 +70,6 @@ C 0.1. ==> ARGUMENTS
       CHARACTER*(*) MATE
 
       REAL*8 PARTPS(*),RBID
-      REAL*8 TPS1(4), TPS2(4), TPS3(4)
 
 C 0.2. ==> COMMUNS
 
@@ -183,7 +181,7 @@ C====
      &              NUMEDD, ASSMAT, SOLVEU,
      &              VECASS, MATASS, MAPREC, CNCHCI,
      &              TYPESE, STYPSE, NOPASE, VAPRIN, REPRIN,
-     &              BASE, TPS1, TPS2, TPS3, COMPOR )
+     &              BASE, COMPOR )
 
 C====
 C 4. RESOLUTION AVEC VECASS COMME SECOND MEMBRE
@@ -255,7 +253,7 @@ C*** LES CRITERES
       CALL RSADPA (RESULT, 'E', 1, ZK16(JCRK+1), ITPS,0,JPARA,K8BID)
         ZR(JPARA) = ZR(JCRR)
       ENDIF
-      CALL UTTCPU(3, 'FIN', 4, TPS3)
+      CALL UTTCPU('CPU.OP0046.3', 'FIN',' ')
 
  1000 FORMAT(1P,3X,'CHAMP STOCKE : ',A16,' INSTANT : ',1PE12.5,
      &         '  NUMERO D''ORDRE : ',I5)

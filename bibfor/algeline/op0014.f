@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,16 +62,23 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 
 
+
       CALL GETRES(MATFAC,CONCEP,NOMCMD)
       MFAC = MATFAC
       CALL GETVID('  ','MATR_ASSE',0,1,1,MATASS,IBID)
       MASS = MATASS
-C
+      CALL DISMOI('F','METH_RESO',MASS,'MATR_ASSE',IBID,METRES,IBID)
+
+      IF (METRES.EQ.'GCPC'.OR.METRES.EQ.'PETSC'.OR.
+     &    METRES.EQ.'MUMPS') THEN
+        CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
+        CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
+      ENDIF
+
+
 C     CAS DU SOLVEUR  GCPC :
 C     ---------------------
-C
-      CALL DISMOI('F','METH_RESO',MASS,'MATR_ASSE',IBID,METRES,IBID)
-      IF(METRES(1:4).EQ.'GCPC')THEN
+      IF(METRES.EQ.'GCPC')THEN
 C        VERIFICATION : CONCEPT REENTRANT INTERDIT
          CALL EXISD('MATR_ASSE',MATFAC,IRET)
          IF(IRET.EQ.1)THEN
@@ -85,10 +92,8 @@ C        VERIFICATION : MATR_ASSE A VALEURS COMPLEXES INTERDIT
          CALL PCLDLT(MFAC,MASS,NIREMP,'G')
          GO TO 9999
       ENDIF
-C
-C     CAS DU SOLVEUR MUMPS :
-C     ----------------------
-C
+
+
       CALL GETVIS('  ','NPREC',0,1,1,NPREC,IBID)
       CALL GETVTX('  ','STOP_SINGULIER',0,1,1,KSTOP,IBID)
       IF (KSTOP.EQ.'OUI') THEN
@@ -97,8 +102,11 @@ C
         ISTOP = 1
       END IF
 
-      CALL DISMOI('F','METH_RESO',MASS,'MATR_ASSE',IBID,METRES,IBID)
-      IF (METRES(1:5).EQ.'MUMPS') THEN
+
+
+C     CAS DU SOLVEUR MUMPS :
+C     ----------------------
+      IF (METRES.EQ.'MUMPS') THEN
          KOOC='NON'
          IF (MASS.NE.MFAC) CALL COPISD('MATR_ASSE','G',MASS,MFAC)
          CALL DISMOI('F','SOLVEUR',MASS,'MATR_ASSE',IBID,SOLVEU,IER1)
@@ -120,12 +128,11 @@ C
          IF (IRET.NE.0) CALL U2MESS('F','FACTOR_42')
          GO TO 9999
       END IF
-C
+
+
 C     CAS DU SOLVEUR PETSC :
 C     ----------------------
-C
-      CALL DISMOI('F','METH_RESO',MASS,'MATR_ASSE',IBID,METRES,IBID)
-      IF (METRES(1:6).EQ.'PETSC') THEN
+      IF (METRES.EQ.'PETSC') THEN
 C        OBLIGATOIRE POUR AVOIR UN CONCEPT DE SORTIE SD_VERI OK
          IF (MASS.NE.MFAC) CALL COPISD('MATR_ASSE','G',MASS,MFAC)
 C        ON EST OBLIGE DE MODIFIER DIRECTEMENT MASS
@@ -145,7 +152,8 @@ C        ON EST OBLIGE DE MODIFIER DIRECTEMENT MASS
          IRET=0
          GO TO 9999
       END IF
-C
+
+
 C     CAS DES SOLVEURS LDLT ET MULT_FRONT :
 C     -------------------------------------
 C
@@ -240,6 +248,14 @@ C     ------------------ FACTORISATION EFFECTIVE -------------------
 C     --------------------------------------------------------------
 
  9999 CONTINUE
+
+      IF (METRES.EQ.'GCPC'.OR.METRES.EQ.'PETSC'.OR.
+     &    METRES.EQ.'MUMPS') THEN
+        CALL UTTCPU('CPU.RESO.1','FIN',' ')
+        CALL UTTCPU('CPU.RESO.4','FIN',' ')
+      ENDIF
+
       CALL TITRE
+
       CALL JEDEMA()
       END

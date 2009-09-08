@@ -1,8 +1,8 @@
-      SUBROUTINE NMCPL3(OPTION,CRIT,DEPS,DSIDEP,NDIM,SIGP,VIP,
+      SUBROUTINE NMCPL3(COMPOR,OPTION,CRIT,DEPS,DSIDEP,NDIM,SIGP,VIP,
      &                  CPL,ICP,CONV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 08/09/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C VAR SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 C VAR VIP     : LES 4 DERNIERES SONT RELATIVES A LA METHODE DE BORST 
 
       IMPLICIT NONE
-      CHARACTER*16 OPTION
+      CHARACTER*16 OPTION,COMPOR(*)
       INTEGER      K,L,NDIM,NCPMAX,ICP,CPL
       LOGICAL      CONV,VECTEU
       REAL*8       VIP(*),DEPS(*),CRIT(*),DSIDEP(6,6),SIGP(4),SIGPEQ
@@ -48,42 +48,54 @@ C VAR VIP     : LES 4 DERNIERES SONT RELATIVES A LA METHODE DE BORST
       NCPMAX = NINT(CRIT(9))
 
       SIGNUL=CRIT(3)
-      PREC=CRIT(3)
+      PREC=CRIT(8)
 
       CONV = .TRUE.
       
       IF (VECTEU) THEN
       
-        SIGPEQ=0.D0
-        DO 141 K = 1,2*NDIM
-          SIGPEQ = SIGPEQ + SIGP(K)**2
- 141    CONTINUE
-        SIGPEQ = SQRT(SIGPEQ)
-
-        IF (SIGPEQ.LT.SIGNUL) THEN
-          PRECR=PREC
-        ELSE
-          PRECR=PREC*SIGPEQ
+C       DANS LE CAS D=1 ON NE FAIT RIEN CAR LES CONTRAINTES SONT NULLES
+        IF (COMPOR(1).EQ.'ENDO_ISOT_BETON') THEN
+           IF (VIP(2).GT.1.5D0) GOTO 9999
         ENDIF
-
+      
+        IF (PREC.GT.0.D0) THEN
+C PRECISION RELATIVE        
+           SIGPEQ=0.D0
+           DO 141 K = 1,2*NDIM
+             SIGPEQ = SIGPEQ + SIGP(K)**2
+ 141       CONTINUE
+           SIGPEQ = SQRT(SIGPEQ)
+           IF (SIGPEQ.LT.SIGNUL) THEN
+             PRECR=PREC
+           ELSE
+             PRECR=PREC*SIGPEQ
+           ENDIF
+        ELSE
+C PRECISION ABSOLUE        
+            PRECR=ABS(PREC)
+        ENDIF
         CONV = (ICP.GE.NCPMAX .OR. ABS(SIGP(3)).LT.PRECR)   
 
         IF(.NOT. CONV) THEN
-          IF((CPL .EQ. 2) .AND. ABS(DSIDEP(3,3)).GT.PRECR) THEN 
-
-           DEPS(3) = DEPS(3) - SIGP(3)/DSIDEP(3,3)
-          
-          ELSEIF(ABS(DSIDEP(2,2)).GT.PRECR) THEN 
-          
-           CALL ASSERT(CPL .EQ. 1)
-           DDEZZ = -(SIGP(3) - DSIDEP(3,2)/DSIDEP(2,2)*SIGP(2))
+          IF (CPL .EQ. 2) THEN
+             IF (ABS(DSIDEP(3,3)).GT.PRECR) THEN 
+                DEPS(3) = DEPS(3) - SIGP(3)/DSIDEP(3,3)
+             ELSE
+                CONV=.TRUE.
+             ENDIF
+          ELSEIF (CPL .EQ. 1) THEN
+             IF (ABS(DSIDEP(2,2)).GT.PRECR) THEN 
+                DDEZZ = -(SIGP(3) - DSIDEP(3,2)/DSIDEP(2,2)*SIGP(2))
      &              /(DSIDEP(3,3)- DSIDEP(3,2)*DSIDEP(2,3)/DSIDEP(2,2))
-           DEPS(3) = DEPS(3) + DDEZZ
-           DEPS(2) = DEPS(2) - (SIGP(2) + DSIDEP(2,3)*DDEZZ)/DSIDEP(2,2)
-          
+                DEPS(3) = DEPS(3) + DDEZZ
+                DEPS(2)=DEPS(2)-(SIGP(2)+DSIDEP(2,3)*DDEZZ)/DSIDEP(2,2)
+             ELSE
+                CONV=.TRUE.
+             ENDIF
           ENDIF  
         ENDIF     
       
       ENDIF
-      
+ 9999 CONTINUE      
       END

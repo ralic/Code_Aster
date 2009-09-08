@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,9 +58,11 @@ C----------------------------------------------------------------------
       CHARACTER*24 CHARGE
 C----------------------------------------------------------------------
       CALL INFMAJ
-
       CALL INFNIV(IFM,NIV)
-C----------------------------------------------------------------------
+
+      CALL GETVTX ( ' ', 'METHODE', 0,1,1, METHOD, NBID )
+      CALL GETVTX ( ' ', 'RENUM'  , 0,1,1, RENUM,  NBID )
+
       CHARGE = '&&OP0011.CHARGES   .LCHA'
       BASE ='GG'
 
@@ -68,9 +70,6 @@ C --- RECUPERATION DU CONCEPT RESULTAT ET DE SON NOM UTILISATEUR :
 C     ----------------------------------------------------------
       CALL GETRES(NUUTI,TYPE,OPER)
       NUDEV = NUUTI
-
-      CALL GETVTX ( ' ', 'METHODE', 0,1,1, METHOD, NBID )
-      CALL GETVTX ( ' ', 'RENUM'  , 0,1,1, RENUM,  NBID )
 
 
 C     -- CREATION D'UNE SD SOLVEUR :
@@ -96,12 +95,17 @@ C
          GOTO 20
       ENDIF
 
+
       NBMAT = -NBMAT
       CALL GETVID ( ' ', 'MATR_RIGI', 0,1,NBMAT, TLIMAT, NBMAT )
       CALL WKVECT('&&OP001_LIST_MATEL','V V K24',NBMAT,IMATEL)
       DO 10 IL=1,NBMAT
         ZK24(IMATEL+IL-1)=TLIMAT(IL)
  10   CONTINUE
+
+
+      CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
+      CALL UTTCPU('CPU.RESO.2','DEBUT',' ')
 
 C --- CALCUL DE LA NUMEROTATION PROPREMENT DITE :
 C     -----------------------------------------
@@ -111,13 +115,19 @@ C --- CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
 C     -----------------------------------------------------------
       CALL PROMOR (NUDEV,'G')
 
+      CALL UTTCPU('CPU.RESO.1','FIN',' ')
+      CALL UTTCPU('CPU.RESO.2','FIN',' ')
+
 
 C --- CREATION DE L'OBJET .NSLV :
 C     -------------------------------------
       CALL WKVECT(NUDEV//'.NSLV','G V K24',1,JNSLV)
       ZK24(JNSLV-1+1)=SOLVEU
 
+
  20   CONTINUE
+
+
 
 C --- MENAGE :
 C     ------

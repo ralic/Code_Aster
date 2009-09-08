@@ -1,0 +1,53 @@
+      SUBROUTINE STATI1 (NVAL,SERIE,MOYENN,ECTYPE)
+      IMPLICIT NONE
+      INTEGER NVAL
+      REAL*8 SERIE(NVAL),MOYENN,ECTYPE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PELLET J.PELLET
+C ----------------------------------------------------------------------
+C  CALCULE LA MOYENNE ET L'ECART-TYPE D'UNE SERIE DE VALEURS REELLES
+C  IN : NVAL  : NB DE VALEURS DE LA SERIE
+C  IN : SERIE : LISTE DES VALEURS LA SERIE
+C  OUT: MOYENN : VALEUR DE LA MOYENNE
+C  OUT: ECTYPE : VALEUR DE L'ECART-TYPE
+C ----------------------------------------------------------------------
+
+      INTEGER K
+      REAL*8 X1
+C----------------------------------------------------------------------
+      CALL ASSERT(NVAL.GE.1)
+
+
+C     -- MOYENNE :
+      MOYENN=0.D0
+      DO 1, K=1,NVAL
+        MOYENN=MOYENN+SERIE(K)
+1     CONTINUE
+      MOYENN=MOYENN/NVAL
+
+
+C     -- ECART-TYPE :
+      ECTYPE=0.D0
+      DO 2, K=1,NVAL
+        ECTYPE=ECTYPE+(SERIE(K)-MOYENN)**2
+2     CONTINUE
+      ECTYPE=SQRT(ECTYPE/NVAL)
+
+      END

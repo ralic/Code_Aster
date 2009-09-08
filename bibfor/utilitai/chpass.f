@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,19 +45,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 
-      INTEGER N1,IB,NBOCC,IOCC,NBTROU,JNUTRO,NBMOCL,JDESC,LNOM,IBID
+      INTEGER N1,IB,NBOCC,IOCC,NBTROU,JNUTRO,NBMOCL,LNOM,IBID
       LOGICAL CHGCMP,CUMUL,LCUMUL(2)
-      INTEGER NCMP,JLICMP,GD,JCMPGD,JLICM2,IRET,NNCP,JREFE,NEQ,NCHG
+      INTEGER NCMP,JLICMP,GD,JCMPGD,JLICM2,IRET,NNCP,NCHG
       REAL*8 COEFR,LCOEFR(2)
       COMPLEX*16 COEFC,LCOEFC(2)
-      CHARACTER*1 TYPVEC
-      CHARACTER*6 K6B
       CHARACTER*8 KBID,MODELE
-      CHARACTER*8 CHAMP,NOMGD,NOMGD2,K8B
+      CHARACTER*8 CHAMP,NOMGD,NOMGD2
       CHARACTER*3 PROL0,TSCA
       CHARACTER*16 LIMOCL(5),TYMOCL(5),TYPEM
-      CHARACTER*19 CHS1,CHS2,NUTROU,LICHS(2),CESMOD,OPTION,CESRAZ
-      CHARACTER*19 CHS3,LIGREL,CHAMN2
+      CHARACTER*19 CHS1,CHS2,NUTROU,LICHS(2),CESMOD,OPTION
+      CHARACTER*19 CHS3,LIGREL
       CHARACTER*24 CNOM,VALK(3)
 
       LOGICAL LCOC
@@ -171,7 +169,6 @@ C     ---------------------------------
 
 C     4- BOUCLE SUR LES OCCURENCES DU MOT CLE "ASSE" :
 C     -----------------------------------------------------
-      CALL GETFAC('ASSE',NBOCC)
       NCHG = 0
       DO 20,IOCC = 1,NBOCC
         CALL GETVID('ASSE','CHAM_GD',IOCC,1,1,CHAMP,IB)
@@ -284,7 +281,6 @@ C       ----------------------------------------------------
 
 C     5 TRANSFORMATION DU CHAMP_S EN CHAMP :
 C     ----------------------------------------------------
-   30 CONTINUE
       IF (TYCH2.EQ.'NOEU') THEN
         CALL CNSCNO(CHS3,' ','NON','G',CHOU,'F',IBID)
 
@@ -293,7 +289,7 @@ C     ----------------------------------------------------
       ENDIF
 
 
-C     7- MENAGE :
+C     6- MENAGE :
 C     -----------------------------------------------------
       CALL DETRSD('CHAM_NO_S',CHS1)
       CALL DETRSD('CHAM_NO_S',CHS2)
@@ -304,9 +300,6 @@ C     -----------------------------------------------------
 
       CALL DETRSD('CHAM_ELEM_S',CESMOD)
       CALL JEDETR(NUTROU)
-
-
-   40 CONTINUE
 
       CALL JEDEMA()
       END

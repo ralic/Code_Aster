@@ -1,5 +1,6 @@
-#@ MODIF E_JDC Execution  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -292,23 +293,32 @@ class JDC:
          if e.nom == 'FIN':
             fin_etape = e
             break
-      assert fin_etape != None, "Il manque l'étape FIN !"
-      # insertion de l'étape FIN du jdc juste après l'étape courante
-      self.etapes.insert(self.index_etape_courante + 1, fin_etape)
-      # si ArretCPUError, on supprime tout ce qui peut coûter
-      if isinstance(exc_val, self.codex.ArretCPUError):
-         # faire évoluer avec fin.capy
-         fin_etape.valeur.update({
-            'FORMAT_HDF'  : 'NON',
-            'RETASSAGE'   : 'NON',
-            'INFO_RESU'   : 'NON',
-         })
-         fin_etape.McBuild()
-      try:
-         # raise EOFError op9999 > jefini > xfini(19)
-         fin_etape.BuildExec()
-      except EOFError:
-         pass
+      if fin_etape is None:
+         # au moins en PAR_LOT='NON', FIN n'est pas dans la liste des étapes
+         #XXX (MC) je ne sais pas pourquoi, on "passe" en par lot NON
+         self.set_par_lot("NON")
+         fin_cmd = self.get_cmd("FIN")
+         try:
+            fin_cmd()
+         except:
+            pass
+      else:
+         # insertion de l'étape FIN du jdc juste après l'étape courante
+         self.etapes.insert(self.index_etape_courante + 1, fin_etape)
+         # si ArretCPUError, on supprime tout ce qui peut coûter
+         if isinstance(exc_val, self.codex.ArretCPUError):
+            # faire évoluer avec fin.capy
+            fin_etape.valeur.update({
+               'FORMAT_HDF'  : 'NON',
+               'RETASSAGE'   : 'NON',
+               'INFO_RESU'   : 'NON',
+            })
+            fin_etape.McBuild()
+         try:
+            # raise EOFError op9999 > jefini > xfini(19)
+            fin_etape.BuildExec()
+         except EOFError:
+            pass
 
 
    def get_liste_etapes(self):
