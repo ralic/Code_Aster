@@ -1,7 +1,20 @@
-      SUBROUTINE JELIBF ( COND , CLAS )
+      SUBROUTINE JELIBF ( COND , CLAS , INFO )
+C MODIF JEVEUX  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C ----------------------------------------------------------------------
+C ROUTINE UTILISATEUR PERMETTANT DE LIBERER TOUS LES OBJETS D'UNE BASE
+C         ET DE FERMER LES FICHIERS ASSOCIES
+C IN : CLAS NOM DE LA CLASSE ASSOCIEE ('G','V', ...)
+C IN : COND TYPE DE FERMETURE
+C      = 'SAUVE' 
+C      = 'ERREUR'
+C      = 'DETRUIT'
+C      = 'LIBERE'
+C IN : INFO = 0 MODE SILENCIEUX
+C      INFO = 1 MODE BAVARD
+C
+C ----------------------------------------------------------------------
 C TOLE CRS_505 CRS_508 CRP_18
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +34,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       COND , CLAS
+      INTEGER             INFO
 C ----------------------------------------------------------------------
       CHARACTER*1      K1ZON
       COMMON /KZONJE/  K1ZON(8)
@@ -87,7 +101,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8      KCOND,VALK(1),NOM
       CHARACTER*32     NOMCAR
       INTEGER          IADCAR,IADDAC(2),LGBL,VALI(7),IADCDY,IBID,
-     &                 IADDAD(2),KLEC,KECR,INFO
+     &                 IADDAD(2),KLEC,KECR
       REAL*8           VALR(1)
 C DEB ------------------------------------------------------------------
       KCOND = COND
@@ -284,7 +298,9 @@ C
       VALI(6)= NREMAX(IC)
       VALI(7)= (NREUTI(IC)*100)/NREMAX(IC)
 C
-      CALL U2MESG ('I','JEVEUX_22',1,VALK,7,VALI,0,VALR)
+      IF ( INFO .GE. 1 ) THEN
+        CALL U2MESG ('I','JEVEUX_22',1,VALK,7,VALI,0,VALR)
+      ENDIF 
 C
       IF ( KCOND .NE. 'LIBERE  ' ) THEN
         IF ( IADCAR.NE. 0 ) THEN

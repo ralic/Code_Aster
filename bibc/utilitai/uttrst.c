@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------- */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTRST UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF UTTRST UTILITAI  DATE 14/09/2009   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -27,7 +27,7 @@ void DEFP(UTTCSM, uttcsm, DOUBLE *);
 
 void DEFP(UTTRST, uttrst, DOUBLE *t_rst)
 {
-  DOUBLE t_csm[2] , t_lim;
+  DOUBLE t_csm[3] , t_lim;
   uttcsm_ (t_csm);
   uttlim_ (&t_lim);
   *t_rst = t_lim - t_csm[0] - t_csm[1];

@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF elements Messages  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,11 +196,6 @@ cata_msg = {
 43 : _("""
  impossibilité :
  vous avez un materiau de type "ELAS_COQUE" et le determinant de la sous-matrice de Hooke relative au cisaillement est nul.
-"""),
-
-45 : _("""
- L'un des coefficients materiaux N_VP et M_VP de la loi de comportement VENDO_CHAB 
-  est négatif. Or ce n'est physiquement pas possible.
 """),
 
 46 : _("""

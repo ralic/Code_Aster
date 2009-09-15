@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -284,7 +284,17 @@ C ------------------------------------------------------
         CALL ASSERT(IRET.EQ.0)
       ENDIF
 
-C
+
+C 8.  VERIFICATION DE LA COHERENCE DU MAILLAGE SOUS-JACENT :
+C ---------------------------------------------------------
+      IF (MA.NE.' ') THEN
+        CALL DISMOI('F','NOM_MAILLA',CHOU,'CHAMP',IB,MA2,IB)
+        VALK(1)=MA2
+        VALK(2)=MA
+        IF (MA.NE.MA2) CALL U2MESK('F','CALCULEL4_78',2,VALK)
+      ENDIF
+
+
       CALL JEDEMA()
 
       END

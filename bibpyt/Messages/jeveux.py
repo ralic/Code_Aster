@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 03/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,7 +96,10 @@ cata_msg = {
 """),
 
 21 : _("""
-     REOUVERTURE DE LA BASE                  :  %(k1)s
+
+     RE-OUVERTURE DE LA BASE
+
+     NOM DE LA BASE                          :  %(k1)s
      CREEE AVEC LA VERSION                   :  %(k2)s
      NOMBRE D'ENREGISTREMENTS UTILISES       :  %(i1)d
      NOMBRE D'ENREGISTREMENTS MAXIMUM        :  %(i2)d
@@ -107,6 +110,9 @@ cata_msg = {
 """),
 
 22 : _("""
+
+     FERMETURE DE LA BASE
+
      NOM DE LA BASE                          :  %(k1)s
      NOMBRE D'ENREGISTREMENTS UTILISES       :  %(i1)d
      NOMBRE D'ENREGISTREMENTS MAXIMUM        :  %(i2)d
@@ -300,5 +306,12 @@ cata_msg = {
 
 """),
 
+63 : _("""
 
+ Critère de destruction du fichier associé à la base %(k1)s atteint (%(r1)g %% ) 
+ Nombre d'enregistrements utilisés : %(i1)d 
+ Nombre maximum d'enregistrements  : %(i2)d  
+
+"""), 
+ 
 }

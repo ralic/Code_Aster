@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF algorith6 Messages  DATE 14/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,15 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+ GAMMA_T et GAMMA_C ne doivent pas être égal à 1 en même temps.
+"""),
+
+2 : _("""
+ -> La valeur de SYC %(r1)s ne permet pas de respecter GAMMA_C < 1.
+ -> Conseil : Choisissez une valeur de SYC inférieure à %(r2)s
+"""),
 
 8 : _("""
  erreur point intégration (dvlp)

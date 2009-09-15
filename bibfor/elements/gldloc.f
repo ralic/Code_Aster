@@ -3,7 +3,7 @@
      &                   DA1,DA2,KDMAX,TOLD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 14/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,14 +21,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
       IMPLICIT NONE
-      REAL*8             VIM(*),GF,GMT,GMC,QFF(2),TR2D,EPS33,COF1
-      REAL*8             LAMBDA,DEUXMU,SEUIL,ALF,Q2D,TOLD
-      REAL*8             DE33D1,DE33D2,KSI2D,DA1,DA2,COF2
-      INTEGER            KDMAX
+      REAL*8  VIM(*),GMT,GMC,QFF(2),TR2D,EPS33,COF1
+      REAL*8  LAMBDA,DEUXMU,SEUIL,ALF,Q2D,TOLD
+      REAL*8  DE33D1,DE33D2,KSI2D,DA1,DA2,COF2
+      INTEGER KDMAX
 
 C ----------------------------------------------------------------------
 C
-C      CALCUL D'ENDOMMAGEMENT (DA1 ET DA2) ET DE LA COMPOSANTE DE 
+C      CALCUL D'ENDOMMAGEMENT (DA1 ET DA2) ET DE LA COMPOSANTE DE
 C       DEFORMATION EPS33, APPELE PAR "LCGLDM" (LOI GLRC_DM)
 C
 C IN:
@@ -55,138 +55,120 @@ C       ELAS1   : .TRUE. SI DA1 == VIM(1)
 C       ELAS2   : .TRUE. SI DA2 == VIM(2)
 C ----------------------------------------------------------------------
 
-      REAL*8      DM1,DM2,DF1,DF2,DKSI1,DKSI2,QM1,QM2
-      REAL*8      RD1,RD2,DR1D,DR2D,DD1,DD2,DAREF
-      INTEGER     I
-      LOGICAL     LCONV1,LCONV2
+      REAL*8  DKSI1,DKSI2,QM1,QM2
+      REAL*8  RD1,RD2,DR1D,DR2D,DD1,DD2,DAREF
+      INTEGER I
+      LOGICAL LCONV1,LCONV2
 
+      INTEGER DEG
+      REAL*8  POLY(4),XX2(8),R8PREM
 C ----------------------------------------------------------------------
       QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
-      QM2 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+      QM2 = QM1
 
-C----SOLUTION EXACTE SI QFF = 0        
-      IF(QM1.GT.0.0D0) THEN
-        DM1 = SQRT(QM1/SEUIL) - 1.0D0
-      ELSE
-        DM1 = 0.0D0
-      ENDIF    
+      DEG = 4
 
-      IF(QM2.GT.0.0D0) THEN
-        DM2 = SQRT(QM2/SEUIL) - 1.0D0
-      ELSE
-        DM2 = 0.0D0
-      ENDIF    
+      POLY(1)= (- QM1*ALF**2 + SEUIL*ALF**2 - QFF(1))/SEUIL
+      POLY(2)= (-2.D0*(QM1*ALF+QFF(1)-SEUIL*(ALF+ALF**2)))/SEUIL
+      POLY(3)= (-QM1 - QFF(1) + SEUIL*(1.D0+4.D0*ALF+ALF**2))/SEUIL
+      POLY(4)= 2.D0+2.D0*ALF
 
-      IF(DM1.LT.VIM(1)) DM1 = VIM(1)
-      IF(DM2.LT.VIM(2)) DM2 = VIM(2)
+      DA1 = VIM(1)
+      CALL ZEROPN( DEG, POLY, XX2 )
+      DO 20 I=1,DEG
+        IF (ABS(XX2((I-1)*2+2)).LT.R8PREM()) THEN
+          DA1 = MAX(DA1,XX2((I-1)*2+1))
+        ENDIF
+ 20   CONTINUE
 
-C----SOLUTION EXACTE SI QM = 0        
-      IF(QFF(1).GT.0.0D0) THEN
-        DF1 = SQRT(QFF(1)/SEUIL) - ALF
-      ELSE
-        DF1 = 0.0D0
-      ENDIF    
+      POLY(1)= (- QM2*ALF**2 + SEUIL*ALF**2 - QFF(2))/SEUIL
+      POLY(2)= (-2.D0*(QM2*ALF+QFF(2)-SEUIL*(ALF+ALF**2)))/SEUIL
+      POLY(3)= (-QM2 - QFF(2) + SEUIL*(1.D0+4.D0*ALF+ALF**2))/SEUIL
+      POLY(4)= 2.D0+2.D0*ALF
 
-      IF(QFF(2).GT.0.0D0) THEN
-        DF2 = SQRT(QFF(2)/SEUIL) - ALF
-      ELSE
-        DF2 = 0.0D0
-      ENDIF    
-
-      IF(DF1.LT.VIM(1)) DF1 = VIM(1)
-      IF(DF2.LT.VIM(2)) DF2 = VIM(2)
-        
-C----VAL. INITIALES POUR D1,D2,CONSTRUITES A PARTIR DE DM1,DM2,DF1,DF2
-      IF(DF1.GT.DM1) THEN
-        DA1 = DF1
-      ELSE
-        DA1 = DM1        
-      ENDIF         
-
-      IF(DF2.GT.DM2) THEN
-        DA2 = DF2
-      ELSE
-        DA2 = DM2        
-      ENDIF         
-
+      DA2 = VIM(2)
+      CALL ZEROPN( DEG, POLY, XX2 )
+      DO 21 I=1,DEG
+        IF (ABS(XX2((I-1)*2+2)).LT.R8PREM()) THEN
+          DA2 = MAX(DA2,XX2((I-1)*2+1))
+        ENDIF
+ 21   CONTINUE
 
       CALL CEPS33 (LAMBDA,DEUXMU,TR2D,DA1,DA2,GMT,GMC
-     &                   ,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
+     &            ,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
 
       QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
-      QM2 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+      QM2 = QM1
 
-      RD1 = QM1/(1.0D0 + DA1)**2  - SEUIL
-      RD2 = QM2/(1.0D0 + DA2)**2  - SEUIL
+      RD1 = QM1/(1.0D0 + DA1)**2 - SEUIL
+      RD2 = QM2/(1.0D0 + DA2)**2 - SEUIL
 
 C----CONTRIBUTION DES COURBURES---------
-      RD1 = RD1 + QFF(1)/(ALF + DA1)**2 
-      RD2 = RD2 + QFF(2)/(ALF + DA2)**2 
+      RD1 = RD1 + QFF(1)/(ALF + DA1)**2
+      RD2 = RD2 + QFF(2)/(ALF + DA2)**2
 
       DAREF = MAX(DA1,DA2)
       DAREF = MAX(DAREF,1.0D-6)
+
 C-----VERIFIER SI SEUIL EST ATTEINT
 C      LCONV1 = (ABS(RD1*DA1) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
 C      LCONV2 = (ABS(RD2*DA2) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
       LCONV1 = (ABS(RD1*DAREF) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
       LCONV2 = (ABS(RD2*DAREF) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
 
-      IF((.NOT. LCONV1 .AND. DA1.GE.VIM(1)) 
-     &     .OR. ( .NOT. LCONV2 .AND. DA2.GE.VIM(2) )) THEN
-        
-          DO 60, I = 1,KDMAX
+      IF((.NOT. LCONV1 .AND. DA1.GE.VIM(1))
+     &    .OR. (.NOT. LCONV2 .AND. DA2.GE.VIM(2))) THEN
 
-             DR1D  = (COF1*EPS33 + COF2)*DE33D1/(1.0D0 + DA1)**2 
-     &             - 2.0D0*QM1   /(1.0D0 + DA1)**3 
-     &             - 2.0D0*QFF(1)/(ALF   + DA1)**3  
-             DR2D  = (COF1*EPS33 + COF2)*DE33D2/(1.0D0 + DA2)**2 
-     &             - 2.0D0*QM2   /(1.0D0 + DA2)**3
-     &             - 2.0D0*QFF(2)/(ALF   + DA2)**3  
+        DO 60, I = 1,KDMAX
+          DR1D  = (COF1*EPS33 + COF2)*DE33D1/(1.0D0 + DA1)**2
+     &          - 2.0D0*QM1   /(1.0D0 + DA1)**3
+     &          - 2.0D0*QFF(1)/(ALF   + DA1)**3
+          DR2D  = (COF1*EPS33 + COF2)*DE33D2/(1.0D0 + DA2)**2
+     &          - 2.0D0*QM2   /(1.0D0 + DA2)**3
+     &          - 2.0D0*QFF(2)/(ALF   + DA2)**3
 
-             IF(ABS(DR1D) .LT. 1.0D-14 ) THEN
-               DD1 = 0.0D0
-             ELSE
-               DD1 = - RD1/DR1D
-             ENDIF  
-             IF(ABS(DR2D) .LT. 1.0D-14 ) THEN
-               DD2 = 0.0D0
-             ELSE  
-               DD2 = - RD2/DR2D
-             ENDIF  
+          IF(ABS(DR1D) .LT. 1.0D-14 ) THEN
+            DD1 = 0.0D0
+          ELSE
+            DD1 = - RD1/DR1D
+          ENDIF
 
-             IF(( (ABS(DD1*RD1) .LT. TOLD) .OR. 
-     &           ( (RD1 .LT. 0.0D0 .AND. DA1 .LE. VIM(1))) ) 
-     &        .AND. 
-     &           ( (ABS(DD2*RD2) .LT. TOLD) .OR. 
-     &           ( (RD2 .LT. 0.0D0 .AND. DA2 .LE. VIM(2))) ) ) 
-     &          GOTO 61   
-      
-             DA1 = DA1 + DD1
-             DA2 = DA2 + DD2
-             
-             IF(DA1.LT.0.0D0 .AND. RD1.LT.0.0D0) DA1 = VIM(1)
-             IF(DA2.LT.0.0D0 .AND. RD2.LT.0.0D0) DA2 = VIM(2)
+          IF(ABS(DR2D) .LT. 1.0D-14 ) THEN
+            DD2 = 0.0D0
+          ELSE
+            DD2 = - RD2/DR2D
+          ENDIF
 
-             CALL CEPS33 (LAMBDA,DEUXMU,TR2D,DA1,DA2,GMT,GMC
-     &                   ,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
+          IF(((ABS(DD1*RD1) .LT. TOLD) .OR.
+     &       ((RD1 .LT. 0.0D0 .AND. DA1 .LE. VIM(1))))
+     &        .AND. ((ABS(DD2*RD2) .LT. TOLD) .OR.
+     &        ((RD2 .LT. 0.0D0 .AND. DA2 .LE. VIM(2)))))
+     &        GOTO 61
 
-             QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
-             QM2 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+          DA1 = DA1 + DD1
+          DA2 = DA2 + DD2
 
-             RD1 = QM1/(1.0D0 + DA1)**2 - SEUIL
-             RD2 = QM2/(1.0D0 + DA2)**2 - SEUIL
+          IF(DA1.LT.0.0D0 .AND. RD1.LT.0.0D0) DA1 = VIM(1)
+          IF(DA2.LT.0.0D0 .AND. RD2.LT.0.0D0) DA2 = VIM(2)
+
+          CALL CEPS33 (LAMBDA,DEUXMU,TR2D,DA1,DA2,GMT,GMC
+     &                ,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
+
+          QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+          QM2 = QM1
+
+          RD1 = QM1/(1.0D0 + DA1)**2 - SEUIL
+          RD2 = QM2/(1.0D0 + DA2)**2 - SEUIL
 
 C----CONTRIBUTION DES COURBURES---------
-             RD1 = RD1 + QFF(1)/(ALF + DA1)**2 
-             RD2 = RD2 + QFF(2)/(ALF + DA2)**2 
+          RD1 = RD1 + QFF(1)/(ALF + DA1)**2
+          RD2 = RD2 + QFF(2)/(ALF + DA2)**2
 
-60         CONTINUE       
-61         CONTINUE       
+60      CONTINUE
+61      CONTINUE
 C----FIN BOUCLE NEWTON SUR D1,D2,EPS33
-           IF(I .GT. KDMAX) THEN 
-              CALL U2MESS('F','ELEMENTS4_68')
-           ENDIF
-
-C  R1&2 < 0.0
-         ENDIF    
+        IF(I .GT. KDMAX) THEN
+          CALL U2MESS('F','ELEMENTS4_68')
+        ENDIF
+      ENDIF
       END

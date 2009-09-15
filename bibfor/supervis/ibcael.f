@@ -3,7 +3,7 @@
       CHARACTER*(*)     TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,16 +22,19 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     -----------------------------------------------------------------
       CHARACTER*8     NOMF
+      INTEGER         INFO
+C
+      INFO = 1
       NOMF = 'ELEMBASE'
       IF ( TYPE.EQ.'ECRIRE') THEN
          CALL JEINIF('DEBUT','SAUVE',NOMF,'C',300,512,100)
          CALL JEDUPC('G','&CATA',1,'C','&BATA',.FALSE.)
-         CALL JELIBF('SAUVE','C')
+         CALL JELIBF('SAUVE','C', INFO)
          CALL U2MESS('I','SUPERVIS_16')
       ELSE
          CALL JEINIF('POURSUITE','SAUVE',NOMF,'C',300,512,100)
          CALL JEDUPC('C','&BATA',1,'G','&CATA',.FALSE.)
-         CALL JELIBF('SAUVE','C')
+         CALL JELIBF('SAUVE','C',INFO)
          CALL U2MESS('I','SUPERVIS_17')
       ENDIF
       END

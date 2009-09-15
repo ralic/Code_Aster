@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,7 +165,8 @@ Conseils :
 """),
 
 59 : _("""
- maillages 1 differents.
+Erreur utilisateur dans PROJ_CHAMP :
+ Les maillages associés au MODELE_1 et au RESULTAT sont differents : %(k1)s et %(k2)s.
 """),
 
 60 : _("""
@@ -236,6 +237,15 @@ Conseils :
 
 
 
+
+78 : _("""
+Erreur utilisateur dans CREA_CHAMP :
+  Le maillage associé au champ créé par la commande (%(k1)s) est différent
+  de celui qui est fourni par l'utilisateur via les mots clés MAILLAGE ou MODELE (%(k2)s).
+Conseil :
+  Il faut vérifier les mots clés MAILLAGE ou MODELE.
+  Remarque : ces mots clés sont peut etre inutiles pour cette utilisation de CREA_CHAMP.
+"""),
 
 79 : _("""
  La grandeur :  %(k1)s  n'existe pas dans le catalogue des grandeurs.

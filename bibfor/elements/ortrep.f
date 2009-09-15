@@ -1,6 +1,6 @@
       SUBROUTINE ORTREP (MATER, NDIM, COOR, REPERE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    MATER          IN      I        MATERIAU
 C    NDIM           IN      I        DIMENSION DE LA MODELISATION
-C    COOR           IN      R        COORDONNEE DU POINT 
+C    COOR           IN      R        COORDONNEE DU POINT
 C                                    (CAS CYLINDRIQUE)
 C    REPERE(7)      OUT     R        VALEURS DEFINISSANT LE REPERE
 C                                    D'ORTHOTROPIE
@@ -113,7 +113,7 @@ C           ----------------
             ELSE
 C
 C-----      LES INFORMATIONS FOURNIES SONT POUR UN REPERE
-C-----      CYLINDRIQUES. ON TRANSFORME DIRECTEMENT 
+C-----      CYLINDRIQUES. ON TRANSFORME DIRECTEMENT
 C-----      EN REPERE LOCAL CARTESIEN
               ALPHA=ZR(ICAMAS+1)*R8DGRD()
               BETA =ZR(ICAMAS+2)*R8DGRD()
@@ -127,7 +127,7 @@ C-----      EN REPERE LOCAL CARTESIEN
               DO 1 I=1,3
                 XG(I)=P(1,I)
                 YG(I)=P(2,I)
-    1         CONTINUE     
+    1         CONTINUE
               CALL ANGVXY(XG, YG, ANGMAS)
               REPERE(1)=1.D0
               REPERE(2)=ANGMAS(1)
@@ -158,7 +158,7 @@ C           --------------
 C
            ELSE
               REPERE(1)=1.D0
-              CALL U2MESS('A','ELEMENTS2_38')
+              CALL U2MESS('F','ELEMENTS2_38')
            ENDIF
          ENDIF
         ENDIF

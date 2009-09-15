@@ -1,6 +1,7 @@
-# MODIF  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE
+# forma01c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -225,24 +226,6 @@ IMPR_TABLE(TABLE=TS,
            TITRE='SIYY = f(EPAIS)',);
 
 
-# TESTS DE NON REGRESSION
-
-TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
-                   INST=10.0,
-                   NOM_CHAM='TEMP',
-                   NOM_CMP='TEMP',
-                   GROUP_NO='AI1',
-                   VALE=70.0,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='5.6.6',),
-                _F(RESULTAT=RESUT,
-                   INST=10.0,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
-                   TYPE_TEST='MAX',
-                   VALE=118027656.664,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='7.01.13',),),);
-
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='EFOND',),
@@ -275,30 +258,6 @@ TABDEP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 GROUP_NO='PB',
                                 TOUT_CMP='OUI',),);
 
-TEST_TABLE(TABLE=TABDEP1,
-           NOM_PARA='DX',
-           VALE=-0.029136,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=TABDEP1,
-           NOM_PARA='DY',
-           VALE=0.106526,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=TABDEP2,
-           NOM_PARA='DX',
-           VALE=-0.27661,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=TABDEP2,
-           NOM_PARA='DY',
-           VALE=0.44726,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
 # Calcul des resultantes aux extremites
 
 RESU1=CALC_NO(reuse =RESU1,
@@ -326,6 +285,52 @@ FAPP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 IMPR_TABLE(TABLE=FAPP,);
 
 IMPR_TABLE(TABLE=REAC,);
+
+
+
+
+# TESTS DE NON REGRESSION
+
+TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
+                   INST=10.0,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   GROUP_NO='AI1',
+                   VALE=70.0,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='5.6.6',),
+                _F(RESULTAT=RESUT,
+                   INST=10.0,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   TYPE_TEST='MAX',
+                   VALE=2.617528734E+08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.01.13',),),);
+
+TEST_TABLE(TABLE=TABDEP1,
+           NOM_PARA='DX',
+           VALE=-0.029136,
+           PRECISION=0.0001,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TABDEP1,
+           NOM_PARA='DY',
+           VALE=0.106526,
+           PRECISION=0.0001,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TABDEP2,
+           NOM_PARA='DX',
+           VALE=-0.27661,
+           PRECISION=0.0001,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TABDEP2,
+           NOM_PARA='DY',
+           VALE=0.44726,
+           PRECISION=0.0001,
+           REFERENCE='NON_REGRESSION',);
+
 
 FIN();
 #

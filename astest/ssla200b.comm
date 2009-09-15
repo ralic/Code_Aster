@@ -1,4 +1,4 @@
-# MODIF  DATE 08/09/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXIS_SI
 # RESPONSABLE VABHHTS J.PELLET
 # ssla200b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -188,13 +188,9 @@ FO17=DEFI_FONCTION(    NOM_PARA='TEMP',
 #    DEFINITION DES CARACTERISTIQUES ELEMENTAIRES : AXES LOCAUX
 # ----------------------------------------------------------------------
 CARA1=AFFE_CARA_ELEM(    MODELE=MO,MASSIF=(
-                           _F(
-       GROUP_MA = 'TOUT',
-
-                                    ANGL_REP = (21.4, 5.8, -16.7,)),
-                           _F(  GROUP_MA = ('GMA10', 'GMA11', 'GMA12',),
-                                    ANGL_AXE = (57.4, 22.7,),
-                                    ORIG_AXE = (1.1, 0.5, 0.6,))) )
+                           _F( GROUP_MA = 'TOUT', ANGL_REP = 21.4),
+                           _F(  GROUP_MA = ('GMA10', 'GMA11', 'GMA12',), ANGL_REP = 0.),
+                          ))
 
 # ----------------------------------------------------------------------
 #    DEFINITION ET AFFECTATION DES MATERIAUX : COMPORTEMENTS ELASTIQUES

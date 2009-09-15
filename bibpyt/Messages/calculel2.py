@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,10 +71,12 @@ Conseil :
 """),
 
 12: _("""
- Le CHAM_NO %(k3)s est vide.
+Erreur lors de la transformation du cham_no_s (%(k1)s) en cham_no (%(k2)s):
+Le cham_no_s est vide (i.e. il n'a aucune valeur).
 """),
 
 13: _("""
+Erreur lors d'une transformation de cham_no_s en cham_no :
  Il manque la composante: %(k1)s  sur le noeud: %(k2)s pour le CHAM_NO: %(k3)s
 """),
 

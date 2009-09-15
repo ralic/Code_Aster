@@ -3,7 +3,7 @@
       INTEGER            ICMD  , ICOND , IERTOT, IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     COMMON POUR INDIQUER SI LES CALCULS ELEMENTAIRES SONT DISTRIBUES
 
 
       INTEGER    NUOPER,IUNERR,IUNRES,IUNIFI,NUOP2,IBID,IMAAV,IMAAP
-      REAL*8      TPS1(4),TPRES
+      REAL*8      TPS1(4),TPRES,PCENT
       CHARACTER*6  NOMMAR
       CHARACTER*8  CMDUSR,K8BID
 C     ------------------------------------------------------------------
@@ -117,6 +117,9 @@ C        (IL FAUT LE FAIRE AVANT LA DESTRUCTION DES OBJETS VOLATILES)
 C     -- DESTRUCTION DES OBJETS DE LA BASE VOLATILE :
       IF (ICOND .EQ. 0)  THEN
          CALL JEDETV()
+C	 
+         PCENT = 0.01D0
+         CALL JEREOU('V' , PCENT )
          CALL JERECU('G')
       ENDIF
 

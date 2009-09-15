@@ -3,7 +3,7 @@
       INTEGER IGMSH, IMOD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/07/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 14/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C --------- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------
 C
       CHARACTER*4  CT(3)
       CHARACTER*8  RQUOI
-      CHARACTER*12 AUT,DEBFIC,FINNOD,DEBELM
+      CHARACTER*12 AUT,DEBFIC,FINNOD,DEBELM,DEBNO
       CHARACTER*14 AUT1
       INTEGER      I,IMES,IUNIFI,NBMAIL,NBNODE,VERSIO,MAXNOD,NBTYMA
       INTEGER      VALI(1)
@@ -92,7 +92,11 @@ C     -----------------------------------------
         VERSIO = 2
         READ(IGMSH,*)
         READ(IGMSH,*)
-        READ(IGMSH,*)
+  20    CONTINUE
+        READ(IGMSH,*) DEBNO
+        IF ( DEBNO(1:6).NE.'$Nodes' ) THEN
+           GOTO 20
+        ENDIF
       ELSE
         CALL U2MESS('F','PREPOST6_38')
       ENDIF

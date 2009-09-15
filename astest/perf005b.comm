@@ -1,4 +1,4 @@
-# MODIF  DATE 29/06/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 14/09/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005b.para = tps_job 760 mem_job 165Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,7 +60,11 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='LIM2',     DZ=0.0,),),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT='SMAI', GROUP_MA_ESCL='SESC', ),);
+                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
+                               GROUP_MA_ESCL='SESC',
+                               # Nombre de noeuds esclaves = 664
+                               NB_RESOL=30,
+                               ),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1,),);
 
@@ -99,10 +103,10 @@ SIELNO=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=RESU,
 TEST_RESU(CHAM_NO=_F(CHAM_GD=SIELNO, GROUP_NO='G1', NOM_CMP='SIYY', VALE=-2798.300,
                      CRITERE='RELATIF', PRECISION=0.05, REFERENCE='ANALYTIQUE',),);
 
-if 0 : # pour compter les noeuds en contact (ceux qui ont CONT != 0.) :
-    XXX=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_INFC_R', INFO=2,
-                     NOM_CHAM='VALE_CONT', RESULTAT=RESU, NUME_ORDRE=1)
-    # pour compter les noeuds en contact, on peut faire :
-    #    cat xxxx.mess |  grep 'N[0-9]* *| *0"backslash".[1-9]' | wc -l
+# pour compter les noeuds en contact (ceux qui ont CONT != 0.) :
+# XXX=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_INFC_R', INFO=2,
+#                  NOM_CHAM='VALE_CONT', RESULTAT=RESU, NUME_ORDRE=1)
+# # pour compter les noeuds en contact, on peut faire :
+# #    cat xxxx.mess |  grep 'N[0-9]* *| *0"backslash".[1-9]' | wc -l
 
 FIN();

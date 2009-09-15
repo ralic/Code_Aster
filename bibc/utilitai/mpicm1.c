@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MPICM1 UTILITAI  DATE 24/11/2008   AUTEUR PELLET J.PELLET */
+/* MODIF MPICM1 UTILITAI  DATE 14/09/2009   AUTEUR DESOZA T.DESOZA */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,8 +17,8 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 
+#include <stdlib.h>
 #include "aster.h"
-
 
 void DEFSSPPP(MPICM1, mpicm1,
                    _IN char *optmpi, STRING_SIZE loptmpi,
@@ -27,11 +27,20 @@ void DEFSSPPP(MPICM1, mpicm1,
 
 {
 #if defined _USE_MPI
+   char *optmpiNull, *typscaNull;
+   optmpiNull = (char *)malloc((loptmpi+1)*sizeof(char));
+   typscaNull = (char *)malloc((ltypsca+1)*sizeof(char));
+   strncpy(optmpiNull, optmpi, loptmpi);
+   strncpy(typscaNull, typsca, ltypsca);
+   optmpiNull[loptmpi]='\0';
+   typscaNull[ltypsca]='\0';
+   
    void DEFSSPPP(MPICM1A, mpicm1a, char *, STRING_SIZE, char *, STRING_SIZE, INTEGER *, INTEGER *, DOUBLE *);
    #define CALL_MPICM1A(a,b,c,d,e) CALLSSPPP(MPICM1A,mpicm1a,a,b,c,d,e)
 
-   CALL_MPICM1A(optmpi, typsca, nbv, vi, vr);
+   CALL_MPICM1A(optmpiNull, typscaNull, nbv, vi, vr);
 
-
+   free(optmpiNull);
+   free(typscaNull);
 #endif
 }

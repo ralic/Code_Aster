@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ C
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C     ==================================================================
-      INTEGER          VALI(5)         
+      INTEGER          VALI(5) , INFO        
       CHARACTER*8      KCOND , STAOU
       CHARACTER*24     LADATE
 C     ------------------------------------------------------------------
@@ -72,9 +72,10 @@ C     -------------  EDITION SEGMENTATION MEMOIRE ----------------------
       ENDIF
 C     -------------  LIBERATION FICHIER --------------------------------
       IF ( KCOND .NE. 'ERREUR  ' )   THEN
+        INFO = 1
         DO 10 I = 1 , NBFIC
           IF ( CLASSE(I:I) .NE. ' ' ) THEN
-            CALL JELIBF ( STAOU , CLASSE(I:I) )
+            CALL JELIBF ( STAOU , CLASSE(I:I) , INFO )
           ENDIF
    10   CONTINUE
 C       -----------  DESALLOCATION GESTION DES MARQUES -----------------
@@ -107,11 +108,11 @@ C
         IFM = IUNIFI('MESSAGE')
         IF (IFM .GT. 0) THEN
           IF ( LDYN .EQ. 1 ) THEN
-            VALI(1) = MXDYN/(1024*1024)
+            VALI(1) = NINT(MXDYN/(1024*1024))
             VALI(2) = LISZON*LOIS/(1024*1024)
             VALI(3) = NBDYN
             VALI(4) = NBFREE
-            VALI(5) = MLDYN/(1024*1024)
+            VALI(5) = NINT(MLDYN/(1024*1024))
             WRITE(IFM,*) ' '
             WRITE(IFM,*) '  STATISTIQUES CONCERNANT L'''
      &                 //'ALLOCATION DYNAMIQUE :' 

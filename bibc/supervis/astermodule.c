@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 06/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF astermodule supervis  DATE 14/09/2009   AUTEUR DESOZA T.DESOZA */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2337,6 +2337,8 @@ PyObject *args;
          }
          CALL_JEDETR("&&GETCON.PTEUR_NOM");
          CALL_JEDEMA();
+         free(nom);
+         free(val);
          return dico;
        }
         catch(CodeAbortAster){
@@ -2547,7 +2549,7 @@ PyObject *args;
    CSTRING_FCPY(nomsd32, 32, nomsd);
 
 /* Identifiant de la SD resultat */
-   nbval = 1;
+   nbval = 3;
    val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
    nom = (char *)malloc(24*sizeof(char));
    strcpy(nom, "LIST_RESULTAT");
@@ -2586,7 +2588,8 @@ PyObject *args;
      PyDict_SetItem(dico,key,liste);
      }
 
-   free(liord);
+     free(liord);
+     free(liscmp);
    }
 
 
@@ -2614,7 +2617,7 @@ PyObject *args;
                 PyList_Append(liste,PyFloat_FromDouble(rval[i]));
 
             PyDict_SetItem(dico,key,liste);
-            };
+          };
 
           free(ival);
           free(rval);
@@ -2644,11 +2647,13 @@ PyObject *args;
             PyDict_SetItem(dico,key,liste);
           }
 
-      free(ival);
-      free(rval);
+          free(ival);
+          free(rval);
    }
 
    CALL_JEDEMA();
+   free(nom);
+   free(val);
    return dico;
 }
 
@@ -3056,6 +3061,7 @@ PyObject *args;
 
    free(nompar);
    free(valpar);
+   free(nomres);
    free(valres);
    free(codret);
 

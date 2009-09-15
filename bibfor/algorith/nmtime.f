@@ -1,7 +1,7 @@
       SUBROUTINE NMTIME(PHASEZ,TIMEZ ,SDTIME,VALL  ,VALR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,23 +118,23 @@ C
       IF (PHASE.EQ.'INIT') THEN
         IF (TIMER.EQ.'ALL') THEN
           CALL UTTCPU('CPU.NMTIME.PAS','INIT',' ')
-          ZR(JTDEB+1-1) = ZR(JTPAS+3-1)
           CALL UTTCPU('CPU.NMTIME.ITE','INIT',' ')
-          ZR(JTDEB+2-1) = ZR(JTITE+3-1)
           CALL UTTCPU('CPU.NMTIME.ARC','INIT',' ')
-          ZR(JTDEB+3-1) = ZR(JTARC+3-1)
+          ZR(JTDEB+1-1) = 0.D0
+          ZR(JTDEB+2-1) = 0.D0
+          ZR(JTDEB+3-1) = 0.D0
         ELSEIF (TIMER.EQ.'PAS') THEN
           CALL UTTCPU('CPU.NMTIME.PAS','INIT',' ')
-          ZR(JTDEB+1-1) = ZR(JTPAS+3-1)
+          ZR(JTDEB+1-1) = 0.D0
         ELSEIF (TIMER.EQ.'ITE') THEN
           CALL UTTCPU('CPU.NMTIME.ITE','INIT',' ')
-          ZR(JTDEB+2-1) = ZR(JTITE+3-1)
+          ZR(JTDEB+2-1) = 0.D0
         ELSEIF (TIMER.EQ.'ARC') THEN
           CALL UTTCPU('CPU.NMTIME.ARC','INIT',' ')
-          ZR(JTDEB+3-1) = ZR(JTARC+3-1)
+          ZR(JTDEB+3-1) = 0.D0
         ELSEIF (TIMER.EQ.'TMP') THEN
           CALL UTTCPU('CPU.NMTIME.TMP','INIT',' ')
-          ZR(JTDEB+4-1) = ZR(JTTMP+3-1)
+          ZR(JTDEB+4-1) = 0.D0
         ELSEIF (TIMER.EQ.'STA') THEN
           DO 10 INBR = 1,10
             ZI(JTINFI+INBR-1) = 0

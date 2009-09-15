@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrat hdf  DATE 27/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdfrat hdf  DATE 14/09/2009   AUTEUR DESOZA T.DESOZA */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -34,7 +34,7 @@ INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INT
 {
   hid_t ida,attr,atyp,aspa;  
   herr_t ret;
-  STRING_SIZE k;
+  int k;
   int rank;
   long iret=-1,lt;
   hsize_t sdim[1]; 
@@ -60,5 +60,6 @@ INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INT
     } 
     ret  = H5Aclose(attr);
   } 
+  free(nom);
   return iret;
 }

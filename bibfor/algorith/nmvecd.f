@@ -5,7 +5,7 @@
      &                    ETATF, IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C-----------------------------------------------------------------------
       REAL*8      DAMMAX, EPSI, R8PREM
       PARAMETER  (DAMMAX = 0.99D0)
 C
-      REAL*8     R8GAEM, DKRON(6,6), SC, DSCDR, UNSSC, ARG
+      REAL*8     R8MIEM, DKRON(6,6), SC, DSCDR, UNSSC, ARG
       REAL*8     CA1, CA0, DRPDSC, DRPDSE, UNSSEM, EC, UNMD, EA
       REAL*8     SY, UNSM, GK, GR, GA, EPSVPM(6), EPST(6),EPSTH(6)
       REAL*8     DSEDB(6), DSEDB2(6,6), SE, D, R, GN, SEMSY, GM, CRIT
@@ -97,8 +97,9 @@ C
 C-----------------------------------------------------------------------
 C-- 1. INITIALISATIONS
 C   ===================
-      EPSI   = SQRT( R8PREM() )
+CJMP      EPSI   = SQRT( R8PREM() )
 C     EPSI   = 1.D-15
+      EPSI=R8MIEM()
       IER = 0
       SY   = MATE(1,2)
       GN   = MATE(4,2)
@@ -135,7 +136,7 @@ C   ----------------------------
         ETATF(3)='DAMMAXO'
       ENDIF
       IF (D.LT.0.D0) THEN
-        IER = 1
+        IER = 10
         GOTO 9999
       ENDIF
       UNMD = 1.D0-D
@@ -292,7 +293,7 @@ C
 C-- 5. ERREURS
 C   ----------
 05001 CONTINUE
-      IER = 1
+      IER = 11
 C
 09999 CONTINUE
       END

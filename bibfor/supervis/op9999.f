@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IUNIFI, ICHK
+      INTEGER      IUNIFI, ICHK , INFO
       INTEGER      IEND, IVERI, IFM, NOCC, IUNERR, IUNRES, IUNMES
       LOGICAL      ULEXIS
       CHARACTER*8  K8B, OUINON, OUIPER, TYPRES, OUIHDF
@@ -50,6 +50,7 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       IFIN = 1
+      INFO = 1
 
 C     TEST ERREUR E SANS ERREUR F
 C     1ER PASSAGE ICOND=1, ON AFFICHE LE RECAPITULATIF DES ALARMES
@@ -117,13 +118,13 @@ C     --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
       CALL JXVERI(' ',' ')
 C
 C     --- CLOTURE DES FICHIERS ---
-      CALL JELIBF( 'SAUVE' , 'G' )
+      CALL JELIBF( 'SAUVE' , 'G' , INFO)
       IF (IUNERR.GT.0) WRITE(IUNERR,*)
      +        '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
       IF (IUNRES.GT.0) WRITE(IUNRES,*)
      +        '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
 
-      CALL JELIBF( 'DETRUIT' , 'V' )
+      CALL JELIBF( 'DETRUIT' , 'V' , INFO)
 C
 C     --- RETASSAGE EFFECTIF ----
       IF(OUINON .EQ. 'OUI') THEN

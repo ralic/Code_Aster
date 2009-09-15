@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,7 +182,8 @@ C
       IF ( IER .EQ. 0 ) THEN
 C
 C        --- DESTRUCTION DE LA BASE TEMPORAIRE VOLATILE ---
-         CALL JELIBF('DETRUIT','V')
+         INFO = 0
+         CALL JELIBF('DETRUIT','V',INFO)
 C
 C        --- RE-DEFINITION DE L'ENVIRONNEMENT SELON DESIRS UTILISATEUR -
 C

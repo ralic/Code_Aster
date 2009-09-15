@@ -1,7 +1,7 @@
       SUBROUTINE NMVEND(FAMI,KPG,KSP,MATERD,MATERF,NMAT,DT1,EPSM,DEPS,
-     &         SIGM,VIM,NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,IER)
+     &         SIGM,VIM,NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,ITER,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_7
+C TOLE CRP_21
 C-----------------------------------------------------------------------
       IMPLICIT NONE
 C
@@ -58,19 +59,19 @@ C                1=NOOK
 C
 C INFO P(1)=RPOINT,  P(2)=DFOINT
 C-----------------------------------------------------------------------
-      INTEGER     I,NDT,NDI,NITER,IR,IRET,IRET1,IRET2,IRET3
+      INTEGER     I,NDT,NDI,NITER,IR,IRET,IRET1,IRET2,IRET3,IT2,ITER
       REAL*8      DAMMAX, EPSI, R8PREM, PREC,PRECR,VAL0,DEVSE(6),SIGE(6)
 C
       REAL*8  EPST(6),DEPSTH(6), EPSED(6),E,NU,ALPHAP,ALPHAM,DD,DR
       COMMON /TDIM/   NDT  , NDI
       REAL*8   NMFEND,DKOOH(6,6),HOOKF(6,6),XAP,EPSEF(6),DEPSE(6)
       REAL*8   H1SIGF(6),LCNRTS,SEQ1MD,SEQE,TROISK,TROIKM,SIGMMO
-      REAL*8   TP,TM,TREF
-      EXTERNAL NMFEND
-      COMMON /FVENDO/MU,SYVP,KVP,RM,DM,SEQE,AD,DT,NVP,MVP,RD,IR
-      REAL*8 MU,SYVP,KVP,MVP,SEQ,AD,DT,NVP,UNSURN,UNSURM,RM,DM,RD
+      REAL*8   TP,TM,TREF,X(4),Y(4),NMFEDD,R8MIEM
+      EXTERNAL NMFEND,NMFEDD
+      COMMON /FVENDO/MU,SYVP,KVP,RM,DM,SEQE,AD,DT,RD,IR,UNSURN,UNSURM
+      REAL*8 MU,SYVP,KVP,SEQ,AD,DT,UNSURN,UNSURM,RM,DM,RD,NVP
       REAL*8 EM,NUM,DEVSIG(6),DEPSMO,COEF,SIGPMO,DF,VAL1,DEVSM(6),MUM
-      REAL*8 DEVEP(6),VALX,DENO,    DFDS(6), D2FDS(6,6)
+      REAL*8 DEVEP(6),VALX,DENO,VALP1,DFDS(6), D2FDS(6,6),TEST
 C
 C-----------------------------------------------------------------------
 C-- 1. INITIALISATIONS
@@ -79,6 +80,7 @@ C   ===================
       PREC =  CRIT(3)
       IER = 0
       DT=DT1
+      IT2=0
 
       RM=VIM(NB+2)
       DM=VIM(NB+3)
@@ -101,12 +103,11 @@ C   ===================
       ALPHAM=MATERD(3,1)
       SYVP = MATERF(1,2)
       NVP  = MATERF(4,2)
-      MVP  = 1.D0/MATERF(5,2)
       KVP  = 1.D0/MATERF(6,2)   
       RD   = MATERF(7,2)
       AD   = MATERF(8,2)
       UNSURN=1.D0/NVP
-      UNSURM=1.D0/MVP
+      UNSURM=MATERF(5,2)
 
       CALL LCDEVI(SIGM,DEVSM)
       CALL LCDEVI(DEPS,DEVEP)
@@ -140,61 +141,106 @@ C -- TEMPERATURE
 
 
       SEQE= LCNRTS(DEVSE)
+      
       IF (SEQE.GT.SYVP)THEN
+      
 C RESOLUTION DE L'EQUATION EN DR
+
          VAL0 = NMFEND(0.D0)
          IF (VAL0.GT.0.D0) THEN
-           IER=1
+           IER=21
            GOTO 9999
          ENDIF
 
-C        CALCUL D'UNE APPROXILATION INITIALE DE LA SOLUTION
+C        PRECISION RELATIVE DE RESOLUTION : F(X) < PREC         
+         PRECR = PREC * ABS(VAL0) 
+
+C        APPROXIMATION INITIALE  DE LA BORNE SUPERIEURE
          XAP = SEQE/MU/3.D0
-
+         
+   30    CONTINUE         
+C        RECHERCHE DE LA BORNE SUPERIEURE
          VAL1 = NMFEND(XAP)
-         IF (VAL1.LT.0.D0) THEN
-C EXPLORATION DE L'INTERVALLE (0,XAP)
-            DO 22 I=1,NITER
-               XAP=XAP/10.D0
-               IF (NMFEND(XAP).GE.0.D0) THEN
-                  GOTO 21
-               ENDIF
-22          CONTINUE
-C EXPLORATION DE L'INTERVALLE (XAP,1)
-            DO 20 I=1,NITER
+         IF (ABS(VAL1).LT.PRECR) THEN
+            DR=XAP
+            GOTO 50
+         ELSEIF (VAL1.GT.0.D0) THEN
+C           LA SOLUTION EST DANS L INTERVALLE (0,XAP)
+            GOTO 21
+         ELSE         
+C           LA BORNE SUPERIEURE DOIT VERIFIER F(XAP) >0
+C           ICI F(XAP) <0. SI F'(XAP) >0, XAP EST A AUGMENTER
+            VALP1=NMFEDD(XAP)
+            IF (VALP1.GT.0.D0) THEN
                XAP=XAP*10.D0
-               IF (XAP.GT.1.D0) THEN
-                  IER=1
+               IT2=IT2+1
+               IF (IT2.GT.NITER) THEN
+                  IER=22
                   GOTO 9999
-               ELSE
-                  VALX=NMFEND(XAP)
-                  IF (VALX.GE.0.D0)  GOTO 21
                ENDIF
-20          CONTINUE
-            IER=1
-            GOTO 9999
-         ELSE
-C RECHERCHE DU PLUS PETIT X TEL QUE F(X) >0 DANS L'INTERVALLE(0,XAP)
-            DO 23 I=1,NITER
-               XAP=XAP/10.D0
-               VALX=NMFEND(XAP)
-               IF (VALX.LT.0.D0) THEN
-                  XAP=XAP*10.D0
-                  GOTO 21
-               ENDIF
-23          CONTINUE
+               GOTO 30  
+            ELSE      
+C              RECHERCHE DE XAP TEL QUE F(XAP) >0 
+C              A FAIRE : UNE VRAIE DICHOTOMIE
+               DO 22 I = 1, NITER
+                 XAP = XAP/2.D0
+                 IF (ABS(XAP).LT.R8MIEM()) THEN
+                   DR=0.D0
+                   GOTO 50
+                 ENDIF
+                 VAL1 = NMFEND(XAP)
+                 IF (VAL1.GT.0.D0) GOTO 21
+  22           CONTINUE
+               IER=23
+               GOTO 9999
+            ENDIF
          ENDIF
+         
 21       CONTINUE
+C        RESOLUTION DE L'EQUATION EN DR PAR METHODE DE CORDES
+         X(1) = 0.D0
+         X(2) = XAP
+         Y(1) = VAL0
+         Y(2) = VAL1
+         X(3) = X(1)
+         Y(3) = Y(1)
+         X(4) = X(2)
+         Y(4) = Y(2)
+C
+         IF (ABS(Y(4)).LT.PRECR) THEN
+            DR=X(4)
+            GOTO 50
+         ENDIF
+         DO 40 ITER = 1, NITER
+           IF (Y(1).GT.0 .OR. Y(2).LT.0) THEN
+              CALL U2MESS('A','ALGORITH6_78')
+              IER=24
+              GOTO 9999
+           ENDIF
+           IF (X(3).EQ.X(4)) THEN
+              CALL U2MESS('A','ALGORITH9_84')
+              IER=25
+              GOTO 9999
+           ENDIF
+           CALL ZEROCO(X,Y)
+           Y(4) = NMFEND(X(4))
+C          DOUBLE CRITERE : F<EPSI ET DR/R < EPSI
+           IF (ABS(Y(4)).LT.PRECR) THEN
+              IF(ABS(RM+X(4)).GT.R8PREM()) THEN
+                 TEST=ABS(X(4)-X(3))/ABS(RM+X(4))
+              ELSE
+                 TEST=ABS(X(4)-X(3))
+              ENDIF
+              IF (TEST.LT.PRECR) THEN
+                 DR=X(4)
+                 GOTO 50
+              ENDIF
+           ENDIF
+  40     CONTINUE
+         IER=26
+         GOTO 9999
 
-         PRECR = PREC * ABS(VAL0)
-         CALL ZEROFO(NMFEND,VAL0,XAP,PRECR,NITER,DR,IER)
-         IF (IER.NE.0) THEN
-            GOTO 9999
-         ENDIF
-         IF (DR.LE.0.D0) THEN
-           IER=1
-           GOTO 9999
-         ENDIF
+  50     CONTINUE
 
          SEQ1MD=KVP*((DR/DT)**UNSURN)*((RM+DR)**UNSURM)+SYVP
          DD=DT*(SEQ1MD/AD)**RD
@@ -212,33 +258,6 @@ C RECHERCHE DU PLUS PETIT X TEL QUE F(X) >0 DANS L'INTERVALLE(0,XAP)
          DO 16 I=1,6
             DEVSIG(I)=(1.D0-DF)*DEVSE(I)/DENO
  16      CONTINUE
-
-        VALX= LCNRTS(DEVSIG)
-        IF (ABS(VALX-SEQ).GT.(PREC*VALX)) THEN
-           IER=1
-           GOTO 9999
-        ENDIF
-        VALX= LCNRTS(DEVSE)
-        IF (ABS(VALX-SEQE).GT.(PREC*VALX)) THEN
-           IER=1
-           GOTO 9999
-        ENDIF
-
-        CALL LCDVMI(DEVSE,0.D0,VAL0,DFDS,D2FDS,VAL0)
-        IF (ABS(VAL0-SEQE).GT.(PREC*SEQE)) THEN
-           IER=1
-           GOTO 9999
-        ENDIF
-        CALL LCDVMI(DEVSIG,0.D0,VALX,DFDS,D2FDS,VAL0)
-        IF (ABS(VALX-SEQ).GT.(PREC*SEQ)) THEN
-           IER=1
-           GOTO 9999
-        ENDIF
-        IF (ABS(VAL0-SEQ).GT.(PREC*SEQ)) THEN
-           IER=1
-           GOTO 9999
-        ENDIF
-
 
 
       ELSE

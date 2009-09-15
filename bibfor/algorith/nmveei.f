@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C ----------------------------------------------------------------------
       REAL*8       ZERO, DAMMAX, DET,EPSTHP,EPSTHM
       PARAMETER  (NB = 6, NP = 2, NI = 9, NR = 8, NT=3*NB)
       PARAMETER  (NMAT = 90)
-      PARAMETER  ( UN   = 1.D0   )
+      PARAMETER  ( UN   = 1   )
       PARAMETER  ( ZERO = 0.D0   )
       PARAMETER  (DAMMAX = 0.99D0)
 C
@@ -112,12 +112,12 @@ C
 C
       INTEGER       ITMAX, I, IER, ITER,IRET2,IRET3, IRET4
       INTEGER       NDT, NVI, NRV, NDI, K, L
-      INTEGER       NBCOMM(NMAT,3)
+      INTEGER       NBCOMM(NMAT,3),ISIMP
 C
       REAL*8        TOLER, DELTX, SUMX, DT, SE2,GK,GR
       REAL*8        VIND(NI), MATM(NMAT,2), A(6,6), B(6)
       REAL*8        MATE(NMAT,2), HOOK(6,6), HOOKM(6,6)
-      REAL*8        P(NP), BETA(NB), EP(NT), RM, DM,D
+      REAL*8        P(NP), BETA(NB), EP(NT), RM, DM,D,UNMD
       REAL*8        DSGDE(NB,NB), DSGDB(NB,NB), DSGDP(NB,NP)
       REAL*8        RB(NB), RP(NP), DRBDB(NB,NB), DRBDP(NB,NP)
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
@@ -140,6 +140,7 @@ C-- 1. INITIALISATIONS :
 C----------------------
       ITMAX =  INT(CRIT(1))
       IER=0
+      
       IF ( ITMAX .LE. 0 )ITMAX = -ITMAX
       TOLER =  CRIT(3)
       LOI   =  COMPOR(1)
@@ -240,12 +241,22 @@ C REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
 
       GK   = MATE(9,2)
       GR   = MATE(7,2)
+      ISIMP=0
       IF (OPTION(1:9).EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
       IF (ABS(GR-GK).LE.TOLER*GR) THEN
        IF (.NOT.CPLAN) THEN
          CALL NMVEND(FAMI,KPG,KSP,MATM,MATE,NMAT,DT,EPSM,DEPS,SIGM,VIM,
-     &               NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,IER)
-         IF (IER.GT.0) GOTO 801
+     &               NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,ITER,IER)
+         ISIMP=1
+         IF (IER.GT.0) THEN
+            GOTO 801
+         ELSE
+            CALL NMVECD ( IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,
+     &                  P, NP, BETA, NB, EP, RM, DM,
+     &                  DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
+     &                  RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
+            GOTO 230
+         ENDIF
        ENDIF
       ENDIF
       ENDIF
@@ -265,7 +276,9 @@ C
      &                  DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
      &                  RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
 
-         IF (IER.NE.0) GOTO 801
+         IF (IER.NE.0) THEN
+            GOTO 801
+         ENDIF
 C
 C-- 2.1. RESOLUTION DU SYSTEME
 C               DRBDB(NB,NB) DRBDP(NB,NP)   DB(NB)    -RB(NB)
@@ -294,7 +307,11 @@ C
           DELTB = ZERO
           SUMB = ZERO
           DO 00210 I=1,NB
-            BETA(I)=BETA(I)+DBETA(I)
+            IF (ISIMP.EQ.0) THEN
+                BETA(I)=BETA(I)+DBETA(I)
+            ELSE
+                ISIMP=0
+            ENDIF    
             DELTB=DELTB+ABS(DBETA(I))
             SUMB=SUMB+ABS(BETA(I))
 00210     CONTINUE
@@ -303,7 +320,11 @@ C
           DELTX = ZERO
           SUMX = ZERO
           DO 00220 I=1,NP
-            P(I)=P(I)+DP(I)
+            IF (ISIMP.EQ.0) THEN
+                P(I)=P(I)+DP(I)
+            ELSE
+                ISIMP=0
+            ENDIF    
             DELTX=DELTX+ABS(DP(I))
             SUMX=SUMX+ABS(P(I))
 00220     CONTINUE
@@ -316,13 +337,14 @@ C
 
 00200   CONTINUE
 C-- NOMBRE D'ITERATIONS MAXI ATTEINT: ARRET DU PROGRAMME
+        VIP(NB+4) = DBLE(ITER)
         GOTO 801
 C
 00230   CONTINUE
         IF (ETATF(2).EQ.'TANGENT')THEN
           CALL U2MESS('A','ALGORITH8_66')
         ENDIF
-C-- STOCKAGE DANS L'INDICATERU DU NOMBRE D'ITERATIONS
+C-- STOCKAGE DANS L'INDICATEUR DU NOMBRE D'ITERATIONS
         VIP(NB+4) = MAX(VIP(NB+4),DBLE(ITER))
 C
 C-- 2.4 ACTUALISATION DES CONTRAINTES ET DES VARIABLES INTERNES
@@ -333,7 +355,7 @@ C--------------------------------------------------------------
 C
         IF (ETATF(3).EQ.'DAMMAXO')THEN
           CALL U2MESS('A','ALGORITH8_67')
-          VIP(NB+3) = UN
+          VIP(NB+3) = DAMMAX
           VIP(NB+1) = VIM(NB+1) + DT * P(1)/(UN-DAMMAX)
           DO 00240 I= 1, NB
             VIP(I) = VIM(I) + DT * P(1)/(UN-DAMMAX) * DSEDB(I)
@@ -380,12 +402,12 @@ C-- RIGIDITE TANGENTE (RIGI_MECA_ELAS,FULL_MECA_ELAS)->MATRICE ELASTIQUE
 C             MATRICE SECANTE=MATRICE ELASTIQUE
 C             CALL LCEQMN(NB, HOOK, DSIDEP)
              IF( OPTION.EQ.'FULL_MECA_ELAS') THEN
-                D=VIP(NB+3)
+                UNMD=1.D0 - VIP(NB+3)
              ELSE
-                D=VIM(NB+3)
+                UNMD=1.D0 - VIM(NB+3)
              ENDIF
 C             MATRICE SECANTE=MATRICE ELASTIQUE*(1-D)
-             CALL LCPRSM(D,HOOK,DSIDEP)
+             CALL LCPRSM(UNMD,HOOK,DSIDEP)
         ENDIF
 C
 C-- MODIFICATION EN CONTRAINTE PLANES POUR TENIR COMPTE DE
